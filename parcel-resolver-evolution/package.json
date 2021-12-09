@@ -1,0 +1,14 @@
+{
+  "name": "parcel-resolver-evolution",
+  "version": "1.0.0",
+  "description": "parcel resolver for the dashboard evolution data files",
+  "main": "index.js",
+  "engines": {
+    "parcel": "2.x"
+  },
+  "peerDependencies": {
+    "fast-glob": "^3.2.7",
+    "fs-extra": "^10.0.0",
+    "gray-matter": "^4.0.3"
+  }
+}
