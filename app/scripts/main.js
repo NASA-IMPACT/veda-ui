@@ -4,7 +4,7 @@ import T from 'prop-types';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { DevseedUiThemeProvider } from '@devseed-ui/theme-provider';
 
-import theme from './styles/theme';
+import theme, { GlobalStyles } from './styles/theme';
 import history from './utils/history';
 
 // Views
@@ -14,6 +14,7 @@ const Home = lazy(() => import('./components/home'));
 const DatasetOverview = lazy(
   () => import('./components/datasets/single/overview')
 );
+const Sandbox = lazy(() => import('./components/sandbox'));
 
 // Contexts
 
@@ -42,10 +43,12 @@ function Root() {
     <BrowserRouter history={history}>
       <Composer components={composingComponents}>
         <DevseedUiThemeProvider theme={theme}>
+          <GlobalStyles />
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
               <Route path='/' element={<Home />} />
               <Route path='/dataset-overview' element={<DatasetOverview />} />
+              <Route path='/sandbox' element={<Sandbox />} />
               <Route path='*' element={<UhOh />} />
             </Routes>
           </Suspense>
