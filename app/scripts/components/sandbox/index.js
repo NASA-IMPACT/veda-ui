@@ -6,7 +6,16 @@ import { add, glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import App from '../common/app';
 import Constrainer from '../../styles/constrainer';
 import { PageMainContent } from '../../styles/page';
-import { MyHeading, MyLead, MyProse } from '../../styles/theme';
+import {
+  variableGlsp,
+  variableBaseType,
+  variableProseVSpace
+} from '../../styles/variable-utils';
+import {
+  VarHeading,
+  VarLead,
+  VarProse
+} from '../../styles/variable-components';
 
 const IntroFold = styled.div`
   position: relative;
@@ -25,39 +34,39 @@ const IntroFoldInner = styled(Constrainer)`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: ${glsp(
-    add(themeVal('layout.gap.xsmall'), 1),
-    themeVal('layout.gap.xsmall')
+    add(themeVal('layout.glspMultiplier.xsmall'), 1),
+    themeVal('layout.glspMultiplier.xsmall')
   )};
   max-width: ${themeVal('layout.max')};
   margin: 0 auto;
 
   ${media.smallUp`
     gap: ${glsp(
-      add(themeVal('layout.gap.small'), 1),
-      themeVal('layout.gap.small')
+      add(themeVal('layout.glspMultiplier.small'), 1),
+      themeVal('layout.glspMultiplier.small')
     )};
   `}
 
   ${media.mediumUp`
     grid-template-columns: repeat(8, 1fr);
     gap: ${glsp(
-      add(themeVal('layout.gap.medium'), 1),
-      themeVal('layout.gap.medium')
+      add(themeVal('layout.glspMultiplier.medium'), 1),
+      themeVal('layout.glspMultiplier.medium')
     )};
   `}
 
   ${media.largeUp`
     grid-template-columns: repeat(12, 1fr);
     gap: ${glsp(
-      add(themeVal('layout.gap.large'), 1),
-      themeVal('layout.gap.large')
+      add(themeVal('layout.glspMultiplier.large'), 1),
+      themeVal('layout.glspMultiplier.large')
     )};
   `}
 
   ${media.xlargeUp`
     gap: ${glsp(
-      add(themeVal('layout.gap.xlarge'), 1),
-      themeVal('layout.gap.xlarge')
+      add(themeVal('layout.glspMultiplier.xlarge'), 1),
+      themeVal('layout.glspMultiplier.xlarge')
     )};
   `}
 
@@ -73,6 +82,33 @@ const IntroFoldCopy = styled.div`
   gap: ${glsp(2)};
 `;
 
+const Wrapper = styled.div`
+  font-size: ${variableBaseType('1rem')};
+
+  > * {
+    margin-bottom: ${variableProseVSpace()};
+  }
+`;
+
+const ResponsiveList = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: ${variableGlsp()};
+
+  li {
+    grid-column: auto / span 3;
+    background: ${themeVal('color.primary')};
+    padding: ${variableGlsp(0.5, 1)};
+  }
+
+  div {
+    background: #fff;
+  }
+`;
+
 function Sandbox() {
   return (
     <App pageTitle='Welcome'>
@@ -80,13 +116,13 @@ function Sandbox() {
         <IntroFold>
           <IntroFoldInner>
             <IntroFoldCopy>
-              <MyProse>
+              <VarProse>
                 <h1>Headline</h1>
-                <MyLead>
+                <VarLead>
                   Donec id rutrum elit, vel accumsan urna. Ut tincidunt cursus
                   nulla, sit amet aliquet felis. Aliquam consectetur non lacus
                   malesuada dignissim.
-                </MyLead>
+                </VarLead>
                 <p>
                   Nulla fermentum odio eget lacus condimentum, sed volutpat
                   tortor pellentesque. Nulla placerat scelerisque lorem at
@@ -114,37 +150,65 @@ function Sandbox() {
                   />
                   <figcaption>An image from Unsplash</figcaption>
                 </figure>
-              </MyProse>
+              </VarProse>
 
-              <MyHeading size='xxsmall'>Heading xxsmall</MyHeading>
+              <ResponsiveList>
+                <li>
+                  <div>Box</div>
+                </li>
+                <li>
+                  <div>Box2</div>
+                </li>
+                <li>
+                  <div>Box3</div>
+                </li>
+                <li>
+                  <div>Box4</div>
+                </li>
+              </ResponsiveList>
+
+              <VarHeading size='xxsmall'>Heading xxsmall</VarHeading>
+              <Wrapper>
+                <p>
+                  Etiam risus tortor, dapibus sed porttitor eu, pharetra eu
+                  eros.
+                </p>
+                <p>
+                  Class aptent taciti sociosqu ad litora torquent per conubia
+                  nostra, per inceptos himenaeos. Etiam risus tortor, dapibus
+                  sed porttitor eu, pharetra eu eros. Donec id rutrum elit, vel
+                  accumsan urna. Ut tincidunt cursus nulla, sit amet aliquet
+                  felis. Aliquam consectetur non lacus malesuada dignissim.
+                </p>
+              </Wrapper>
               <p>
                 Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
               </p>
-              <MyHeading size='xsmall'>Heading xsmall</MyHeading>
+              <VarHeading size='xsmall'>Heading xsmall</VarHeading>
               <p>
                 Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
               </p>
-              <MyHeading size='small'>Heading small</MyHeading>
+              <VarHeading size='small'>Heading small</VarHeading>
               <p>
                 Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
               </p>
-              <MyHeading size='medium'>Heading medium</MyHeading>
+              <VarHeading size='medium'>Heading medium</VarHeading>
               <p>
                 Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
               </p>
-              <MyHeading size='large'>Heading large</MyHeading>
+              <VarHeading size='large'>Heading large</VarHeading>
               <p>
                 Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
               </p>
-              <MyHeading size='xlarge'>Heading xlarge</MyHeading>
+              <VarHeading size='xlarge'>Heading xlarge</VarHeading>
               <p>
                 Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
               </p>
-              <MyHeading size='xxlarge'>Heading xxlarge</MyHeading>
+              <VarHeading size='xxlarge'>Heading xxlarge</VarHeading>
               <p>
                 Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
               </p>
-              <MyHeading size='jumbo'>Heading jumbo</MyHeading>
+              <VarHeading size='jumbo'>Heading jumbo</VarHeading>
               <p>
                 Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
               </p>

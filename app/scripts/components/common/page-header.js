@@ -11,10 +11,10 @@ import NasaLogo from './nasa-logo';
 const appTitle = process.env.APP_TITLE;
 
 const innerSpacingCss = (size) => css`
-  gap: ${glsp(themeVal(`layout.gap.${size}`))};
+  gap: ${glsp(themeVal(`layout.glspMultiplier.${size}`))};
   padding: ${glsp(
-    divide(themeVal(`layout.gap.${size}`), 2),
-    themeVal(`layout.gap.${size}`)
+    divide(themeVal(`layout.glspMultiplier.${size}`), 2),
+    themeVal(`layout.glspMultiplier.${size}`)
   )};
 `;
 

@@ -26,39 +26,39 @@ export const IntroFoldInner = styled(Constrainer)`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: ${glsp(
-    add(themeVal('layout.gap.xsmall'), 1),
-    themeVal('layout.gap.xsmall')
+    add(themeVal('layout.glspMultiplier.xsmall'), 1),
+    themeVal('layout.glspMultiplier.xsmall')
   )};
   max-width: ${themeVal('layout.max')};
   margin: 0 auto;
 
   ${media.smallUp`
     gap: ${glsp(
-      add(themeVal('layout.gap.small'), 1),
-      themeVal('layout.gap.small')
+      add(themeVal('layout.glspMultiplier.small'), 1),
+      themeVal('layout.glspMultiplier.small')
     )};
   `}
 
   ${media.mediumUp`
     grid-template-columns: repeat(8, 1fr);
     gap: ${glsp(
-      add(themeVal('layout.gap.medium'), 1),
-      themeVal('layout.gap.medium')
+      add(themeVal('layout.glspMultiplier.medium'), 1),
+      themeVal('layout.glspMultiplier.medium')
     )};
   `}
 
   ${media.largeUp`
     grid-template-columns: repeat(12, 1fr);
     gap: ${glsp(
-      add(themeVal('layout.gap.large'), 1),
-      themeVal('layout.gap.large')
+      add(themeVal('layout.glspMultiplier.large'), 1),
+      themeVal('layout.glspMultiplier.large')
     )};
   `}
 
   ${media.xlargeUp`
     gap: ${glsp(
-      add(themeVal('layout.gap.xlarge'), 1),
-      themeVal('layout.gap.xlarge')
+      add(themeVal('layout.glspMultiplier.xlarge'), 1),
+      themeVal('layout.glspMultiplier.xlarge')
     )};
   `}
 
