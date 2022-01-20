@@ -1,13 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { add, glsp, media, themeVal } from '@devseed-ui/theme-provider';
+import {
+  add,
+  glsp,
+  media,
+  themeVal,
+  visuallyHidden
+} from '@devseed-ui/theme-provider';
 import { Prose } from '@devseed-ui/typography';
 
 import App from '../../../common/app';
 import PageLocalNav from '../../../common/page-local-nav';
 import Constrainer from '../../../../styles/constrainer';
 import { PageMainContent } from '../../../../styles/page';
+import {
+  Panel,
+  PanelBody,
+  PanelHeader,
+  PanelTitle,
+  PanelWidget,
+  PanelWidgetBody,
+  PanelWidgetHeader,
+  PanelWidgetTitle
+} from '../../../../styles/panel';
 
 export const IntroFold = styled.div`
   position: relative;
@@ -20,6 +36,8 @@ export const IntroFold = styled.div`
   ${media.largeUp`
     padding: ${glsp(4, 0)};
   `}
+
+  ${visuallyHidden}
 `;
 
 export const IntroFoldInner = styled(Constrainer)`
@@ -74,11 +92,10 @@ export const IntroFoldCopy = styled.div`
   gap: ${glsp(2)};
 `;
 
-export const IntroFoldActions = styled.div`
+export const Explorer = styled.div`
+  flex-grow: 1;
   display: flex;
   flex-flow: row nowrap;
-  gap: ${glsp(0.75)};
-  align-items: center;
 `;
 
 function DatasetExploration() {
@@ -90,7 +107,7 @@ function DatasetExploration() {
           <IntroFoldInner>
             <IntroFoldCopy>
               <Prose>
-                <h1>Exploration</h1>
+                <h1>Explore the dataset</h1>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                   gravida sem quis ultrices vulputate. Ut eu pretium eros, eu
@@ -103,6 +120,32 @@ function DatasetExploration() {
             </IntroFoldCopy>
           </IntroFoldInner>
         </IntroFold>
+        <Explorer>
+          <Panel>
+            <PanelHeader>
+              <PanelTitle>Controls</PanelTitle>
+            </PanelHeader>
+            <PanelBody>
+              <PanelWidget>
+                <PanelWidgetHeader>
+                  <PanelWidgetTitle>Widget title</PanelWidgetTitle>
+                </PanelWidgetHeader>
+                <PanelWidgetBody>
+                  <p>Panel content goes here.</p>
+                </PanelWidgetBody>
+              </PanelWidget>
+
+              <PanelWidget>
+                <PanelWidgetHeader>
+                  <PanelWidgetTitle>Widget title</PanelWidgetTitle>
+                </PanelWidgetHeader>
+                <PanelWidgetBody>
+                  <p>Panel content goes here.</p>
+                </PanelWidgetBody>
+              </PanelWidget>
+            </PanelBody>
+          </Panel>
+        </Explorer>
       </PageMainContent>
     </App>
   );
