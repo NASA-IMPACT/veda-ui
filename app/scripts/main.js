@@ -11,9 +11,13 @@ import history from './utils/history';
 import UhOh from './components/uhoh';
 import ErrorBoundary from './components/uhoh/fatal-error';
 const Home = lazy(() => import('./components/home'));
-const DatasetOverview = lazy(
-  () => import('./components/datasets/single/overview')
+const DatasetOverview = lazy(() =>
+  import('./components/datasets/single/overview')
 );
+const DatasetExploration = lazy(() =>
+  import('./components/datasets/single/exploration')
+);
+const DatasetUsage = lazy(() => import('./components/datasets/single/usage'));
 const Sandbox = lazy(() => import('./components/sandbox'));
 
 // Contexts
@@ -47,7 +51,15 @@ function Root() {
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
               <Route path='/' element={<Home />} />
-              <Route path='/dataset-overview' element={<DatasetOverview />} />
+              <Route
+                path='/datasets/single/exploration'
+                element={<DatasetExploration />}
+              />
+              <Route
+                path='/datasets/single/overview'
+                element={<DatasetOverview />}
+              />
+              <Route path='/datasets/single/usage' element={<DatasetUsage />} />
               <Route path='/sandbox' element={<Sandbox />} />
               <Route path='*' element={<UhOh />} />
             </Routes>

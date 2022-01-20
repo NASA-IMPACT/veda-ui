@@ -78,13 +78,13 @@ function PageLocalNav(props) {
       </LocalTitle>
       <LocalMenu>
         <li>
-          <Link to='/'>Overview</Link>
+          <Link to='/datasets/single/overview'>Overview</Link>
         </li>
         <li>
-          <Link to='/'>Exploration</Link>
+          <Link to='/datasets/single/exploration'>Exploration</Link>
         </li>
         <li>
-          <Link to='/'>Usage</Link>
+          <Link to='/datasets/single/usage'>Usage</Link>
         </li>
       </LocalMenu>
     </PageLocalNavSelf>
