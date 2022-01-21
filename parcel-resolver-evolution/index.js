@@ -42,11 +42,13 @@ async function loadOptionalContent(logger, root, globPath, type) {
           });
         }
 
+        if (data.published === false) return null;
+
         return data;
       })
     );
     return {
-      data: data,
+      data: data.filter(Boolean),
       globPath: loadPath,
       filePaths: paths
     };

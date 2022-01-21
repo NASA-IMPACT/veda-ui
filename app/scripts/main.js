@@ -3,25 +3,41 @@ import { render } from 'react-dom';
 import T from 'prop-types';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { DevseedUiThemeProvider } from '@devseed-ui/theme-provider';
+import deltaThematics from 'delta/thematics';
 
 import theme, { GlobalStyles } from './styles/theme';
 import history from './utils/history';
+import LayoutRoot, {
+  LayoutRootContextProvider
+} from './components/common/layout-root';
 
 // Views
 import UhOh from './components/uhoh';
 import ErrorBoundary from './components/uhoh/fatal-error';
+const RootHome = lazy(() => import('./components/root-home'));
+const RootAbout = lazy(() => import('./components/root-about'));
+
 const Home = lazy(() => import('./components/home'));
-const DatasetOverview = lazy(
-  () => import('./components/datasets/single/overview')
-);
+const About = lazy(() => import('./components/about'));
+const DiscoveriesHub = lazy(() => import('./components/discoveries/hub'));
+const DiscoveriesSingle = lazy(() => import('./components/discoveries/single'));
+
+const DatasetsHub = lazy(() => import('./components/datasets/hub'));
+const DatasetsExplore = lazy(() => import('./components/datasets/s-explore'));
+const DatasetsUsage = lazy(() => import('./components/datasets/s-usage'));
+const DatasetsOverview = lazy(() => import('./components/datasets/s-overview'));
+
 const Sandbox = lazy(() => import('./components/sandbox'));
 
 // Contexts
 
 const composingComponents = [
   // Add contexts here.
-  ErrorBoundary
+  ErrorBoundary,
+  LayoutRootContextProvider
 ];
+
+const hasSeveralThematicAreas = deltaThematics.length > 1;
 
 // Root component.
 function Root() {
@@ -41,19 +57,52 @@ function Root() {
 
   return (
     <BrowserRouter history={history}>
-      <Composer components={composingComponents}>
-        <DevseedUiThemeProvider theme={theme}>
+      <DevseedUiThemeProvider theme={theme}>
+        <Composer components={composingComponents}>
           <GlobalStyles />
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
-              <Route path='/' element={<Home />} />
-              <Route path='/dataset-overview' element={<DatasetOverview />} />
-              <Route path='/sandbox' element={<Sandbox />} />
-              <Route path='*' element={<UhOh />} />
+              <Route path='/' element={<LayoutRoot />}>
+                {hasSeveralThematicAreas && (
+                  <>
+                    <Route index element={<RootHome />} />
+                    <Route path='about' element={<RootAbout />} />
+                  </>
+                )}
+
+                {process.env.NODE_ENV !== 'production' && (
+                  <Route path='/sandbox/*' element={<Sandbox />} />
+                )}
+
+                <Route path={hasSeveralThematicAreas ? ':thematicId' : '/'}>
+                  <Route index element={<Home />} />
+                  <Route path='about' element={<About />} />
+                  <Route path='discoveries' element={<DiscoveriesHub />} />{' '}
+                  <Route
+                    path='discoveries/:discoveryId'
+                    element={<DiscoveriesSingle />}
+                  />
+                  <Route path='datasets' element={<DatasetsHub />} />
+                  <Route
+                    path='datasets/:datasetId'
+                    element={<DatasetsExplore />}
+                  />
+                  <Route
+                    path='datasets/:datasetId/usage'
+                    element={<DatasetsUsage />}
+                  />
+                  <Route
+                    path='datasets/:datasetId/overview'
+                    element={<DatasetsOverview />}
+                  />
+                </Route>
+
+                <Route path='*' element={<UhOh />} />
+              </Route>
             </Routes>
           </Suspense>
-        </DevseedUiThemeProvider>
-      </Composer>
+        </Composer>
+      </DevseedUiThemeProvider>
     </BrowserRouter>
   );
 }

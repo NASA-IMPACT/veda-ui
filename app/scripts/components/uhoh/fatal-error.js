@@ -1,8 +1,9 @@
 import React from 'react';
+import UhOh from '.';
+
+import LayoutRoot from '../common/layout-root';
 
 import { makeAbsUrl } from '../../utils/history';
-
-import App from '../common/app';
 
 export default class ErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
@@ -15,8 +16,20 @@ export default class ErrorBoundary extends React.Component {
   }
 
   render() {
-    return this.state.error ? (
-      <App pageTitle='Server error'>
+    const { error } = this.state;
+
+    // eslint-disable-next-line react/prop-types
+    if (!error) return this.props.children;
+
+    if (error.resNotFound)
+      return (
+        <LayoutRoot pageTitle='Server error'>
+          <UhOh />
+        </LayoutRoot>
+      );
+
+    return (
+      <LayoutRoot pageTitle='Server error'>
         <p>UhOh</p>
         <p>That&apos;s a fatal error</p>
         <p>
@@ -36,10 +49,7 @@ export default class ErrorBoundary extends React.Component {
             email
           </a>
         </p>
-      </App>
-    ) : (
-      // eslint-disable-next-line react/prop-types
-      this.props.children
+      </LayoutRoot>
     );
   }
 }

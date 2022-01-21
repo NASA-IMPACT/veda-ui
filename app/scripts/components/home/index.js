@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-
 import { add, glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import { Prose } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 
-import App from '../common/app';
+import { LayoutProps } from '../common/layout-root';
 import Constrainer from '../../styles/constrainer';
 import { PageMainContent } from '../../styles/page';
 
-import deltaThematics, {
-  thematics,
-  datasets,
-  discoveries
-} from 'delta/thematics';
+import { resourceNotFound } from '../uhoh';
+import { useThematicArea } from '../../utils/thematics';
 
 export const IntroFold = styled.div`
   position: relative;
@@ -89,101 +85,52 @@ export const IntroFoldActions = styled.div`
 `;
 
 function Home() {
+  const thematic = useThematicArea();
+  if (!thematic) return resourceNotFound();
+
   return (
-    <App pageTitle='Welcome'>
-      <PageMainContent>
-        <IntroFold>
-          <IntroFoldInner>
-            <IntroFoldCopy>
-              <Prose>
-                <h1>Welcome</h1>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  gravida sem quis ultrices vulputate. Ut eu pretium eros, eu
-                  molestie augue. Etiam risus justo, consectetur at erat vel,
-                  fringilla commodo felis. Suspendisse rutrum tortor ac nulla
-                  volutpat lobortis. Phasellus tempus nunc risus, eu mollis erat
-                  ullamcorper a.
-                </p>
-              </Prose>
-              <IntroFoldActions>
-                <Button
-                  forwardedAs={Link}
-                  to='/'
-                  size='large'
-                  variation='primary-outline'
-                >
-                  Explore the data
-                </Button>
-                <span>or</span>
-                <Button
-                  forwardedAs={Link}
-                  to='/'
-                  size='large'
-                  variation='primary-fill'
-                >
-                  Learn more
-                </Button>
-              </IntroFoldActions>
-              <Thematics />
-            </IntroFoldCopy>
-          </IntroFoldInner>
-        </IntroFold>
-      </PageMainContent>
-    </App>
+    <PageMainContent>
+      <LayoutProps title={thematic.name} />
+      <IntroFold>
+        <IntroFoldInner>
+          <IntroFoldCopy>
+            <Prose>
+              <h1>Thematic area: {thematic.name}</h1>
+              <p>{thematic.description}</p>
+            </Prose>
+            <IntroFoldActions>
+              <Button
+                forwardedAs={Link}
+                to='discoveries'
+                size='large'
+                variation='primary-outline'
+              >
+                Discoveries
+              </Button>
+              <span>or</span>
+              <Button
+                forwardedAs={Link}
+                to='datasets'
+                size='large'
+                variation='primary-outline'
+              >
+                Datasets
+              </Button>
+              <span>or</span>
+              <Button
+                forwardedAs={Link}
+                to='about'
+                size='large'
+                variation='primary-fill'
+              >
+                Learn more
+              </Button>
+            </IntroFoldActions>
+          </IntroFoldCopy>
+        </IntroFoldInner>
+      </IntroFold>
+    </PageMainContent>
   );
 }
 
 export default Home;
-
-function Thematics() {
-  const [aboutMdx, setAboutMdx] = useState();
-
-  const load = async (page) => {
-    const r = await page();
-    setAboutMdx(r);
-  };
-
-  return (
-    <div>
-      <ul>
-        {deltaThematics.map((t) => (
-          <li key={t.id}>
-            <Button
-              variation='primary-fill'
-              onClick={() => load(thematics[t.id].content)}
-            >
-              {t.name}
-            </Button>
-            <ul>
-              {t.discoveries.map((d) => (
-                <li key={d.id}>
-                  <Button
-                    variation='primary-fill'
-                    onClick={() => load(discoveries[d.id].content)}
-                  >
-                    discovery: {d.name}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-            <ul>
-              {t.datasets.map((d) => (
-                <li key={d.id}>
-                  <Button
-                    variation='primary-fill'
-                    onClick={() => load(datasets[d.id].content)}
-                  >
-                    datasets: {d.name}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
-
-      <div>{aboutMdx ? <aboutMdx.default /> : null}</div>
-    </div>
-  );
-}
