@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { glsp, themeVal, media, divide } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { createHeadingStyles } from '@devseed-ui/typography';
+import { variableGlsp } from '../../styles/variable-utils';
 
 const innerSpacingCss = (size) => css`
   gap: ${glsp(themeVal(`layout.glspMultiplier.${size}`))};
@@ -23,26 +24,11 @@ const PageLocalNavSelf = styled.nav`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  gap: ${glsp()};
+  gap: ${variableGlsp()};
+  padding: ${variableGlsp(0.75, 1)};
   background: ${themeVal('color.primary')};
   color: ${themeVal('color.surface')};
   animation: ${reveal} 0.32s ease 0s 1;
-
-  ${media.smallUp`
-    ${innerSpacingCss('xsmall')}
-  `}
-
-  ${media.mediumUp`
-    ${innerSpacingCss('medium')}
-  `}
-
-  ${media.largeUp`
-    ${innerSpacingCss('large')}
-  `}
-
-  ${media.xlargeUp`
-    ${innerSpacingCss('xlarge')}
-  `}
 `;
 
 const LocalTitle = styled.div`

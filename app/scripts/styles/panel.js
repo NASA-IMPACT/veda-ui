@@ -21,7 +21,7 @@ export const PanelBody = styled.div`
 `;
 
 export const PanelWidget = styled.div`
-  padding: ${variableGlsp()};
+  padding: ${variableGlsp(0.5, 1)};
   background: ${themeVal('color.surface')};
   box-shadow: 0 0 0 1px ${themeVal('color.base-100a')};
 `;
