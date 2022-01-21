@@ -1,12 +1,17 @@
 import React from 'react';
 import T from 'prop-types';
 import styled, { css } from 'styled-components';
-
 import { Link } from 'react-router-dom';
-
-import { glsp, themeVal, media, divide } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { createHeadingStyles } from '@devseed-ui/typography';
+
+import { glsp, themeVal, divide } from '@devseed-ui/theme-provider';
+import { variableGlsp } from '../../styles/variable-utils';
+import {
+  datasetExplorePath,
+  datasetOverviewPath,
+  datasetUsagePath
+} from '../../utils/routes';
 
 const innerSpacingCss = (size) => css`
   gap: ${glsp(themeVal(`layout.glspMultiplier.${size}`))};
@@ -23,26 +28,11 @@ const PageLocalNavSelf = styled.nav`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  gap: ${glsp()};
+  gap: ${variableGlsp()};
+  padding: ${variableGlsp(0.75, 1)};
   background: ${themeVal('color.primary')};
   color: ${themeVal('color.surface')};
   animation: ${reveal} 0.32s ease 0s 1;
-
-  ${media.smallUp`
-    ${innerSpacingCss('xsmall')}
-  `}
-
-  ${media.mediumUp`
-    ${innerSpacingCss('medium')}
-  `}
-
-  ${media.largeUp`
-    ${innerSpacingCss('large')}
-  `}
-
-  ${media.xlargeUp`
-    ${innerSpacingCss('xlarge')}
-  `}
 `;
 
 const LocalTitle = styled.div`
@@ -71,20 +61,22 @@ const LocalMenu = styled.ul`
 `;
 
 function PageLocalNav(props) {
+  const { thematic, dataset, title } = props;
+
   return (
     <PageLocalNavSelf>
       <LocalTitle>
-        <Link to='/'>{props.title}</Link>
+        <Link to={datasetOverviewPath(thematic, dataset)}>{title}</Link>
       </LocalTitle>
       <LocalMenu>
         <li>
-          <Link to='/'>Overview</Link>
+          <Link to={datasetOverviewPath(thematic, dataset)}>Overview</Link>
         </li>
         <li>
-          <Link to='/'>Exploration</Link>
+          <Link to={datasetExplorePath(thematic, dataset)}>Exploration</Link>
         </li>
         <li>
-          <Link to='/'>Usage</Link>
+          <Link to={datasetUsagePath(thematic, dataset)}>Usage</Link>
         </li>
       </LocalMenu>
     </PageLocalNavSelf>
@@ -94,5 +86,7 @@ function PageLocalNav(props) {
 export default PageLocalNav;
 
 PageLocalNav.propTypes = {
-  title: T.string
+  title: T.string,
+  thematic: T.object,
+  dataset: T.object
 };

@@ -9,11 +9,11 @@ export const datasetRootPath = (thematic, dataset) => {
 };
 
 export const datasetExplorePath = (thematic, dataset) => {
-  return `${datasetRootPath(thematic, dataset)}`;
+  return `${datasetRootPath(thematic, dataset)}/explore`;
 };
 
 export const datasetOverviewPath = (thematic, dataset) => {
-  return `${datasetRootPath(thematic, dataset)}/overview`;
+  return `${datasetRootPath(thematic, dataset)}`;
 };
 
 export const datasetUsagePath = (thematic, dataset) => {

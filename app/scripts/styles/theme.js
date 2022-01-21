@@ -23,7 +23,7 @@ export default function themeOverrides() {
       glspMultiplier: {
         xsmall: 1,
         small: 1,
-        medium: 2,
+        medium: 1.5,
         large: 2,
         xlarge: 2
       }
@@ -37,34 +37,34 @@ export default function themeOverrides() {
 export const GlobalStyles = createGlobalStyle`
   :root {
     --base-text-multiplier: ${themeVal('type.base.sizeMultiplier.xsmall')};
-    --base-space-multiplier: ${themeVal('layout.spaceMultiplier.xsmall')};
+    --base-space-multiplier: ${themeVal('layout.glspMultiplier.xsmall')};
   }
 
   ${media.smallUp`
     :root {
       --base-text-multiplier: ${themeVal('type.base.sizeMultiplier.small')};
-      --base-space-multiplier: ${themeVal('layout.spaceMultiplier.small')};
+      --base-space-multiplier: ${themeVal('layout.glspMultiplier.small')};
     }
   `}
 
   ${media.mediumUp`
     :root {
       --base-text-multiplier: ${themeVal('type.base.sizeMultiplier.medium')};
-      --base-space-multiplier: ${themeVal('layout.spaceMultiplier.medium')};
+      --base-space-multiplier: ${themeVal('layout.glspMultiplier.medium')};
     }
   `}
 
   ${media.largeUp`
     :root {
       --base-text-multiplier: ${themeVal('type.base.sizeMultiplier.large')};
-      --base-space-multiplier: ${themeVal('layout.spaceMultiplier.large')};
+      --base-space-multiplier: ${themeVal('layout.glspMultiplier.large')};
     }
   `}
 
   ${media.xlargeUp`
     :root {
       --base-text-multiplier: ${themeVal('type.base.sizeMultiplier.xlarge')};
-      --base-space-multiplier: ${themeVal('layout.spaceMultiplier.xlarge')};
+      --base-space-multiplier: ${themeVal('layout.glspMultiplier.xlarge')};
     }
   `}
 `;

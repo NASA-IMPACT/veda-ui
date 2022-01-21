@@ -85,15 +85,15 @@ function Root() {
                   <Route path='datasets' element={<DatasetsHub />} />
                   <Route
                     path='datasets/:datasetId'
-                    element={<DatasetsExplore />}
+                    element={<DatasetsOverview />}
                   />
                   <Route
                     path='datasets/:datasetId/usage'
                     element={<DatasetsUsage />}
                   />
                   <Route
-                    path='datasets/:datasetId/overview'
-                    element={<DatasetsOverview />}
+                    path='datasets/:datasetId/explore'
+                    element={<DatasetsExplore />}
                   />
                 </Route>
 

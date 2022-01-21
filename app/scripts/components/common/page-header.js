@@ -7,6 +7,7 @@ import { reveal } from '@devseed-ui/animation';
 
 import { filterComponentProps } from '../../styles/utils/general';
 import NasaLogo from './nasa-logo';
+import { variableGlsp } from '../../styles/variable-utils';
 
 const appTitle = process.env.APP_TITLE;
 
@@ -19,10 +20,11 @@ const innerSpacingCss = (size) => css`
 `;
 
 const PageHeaderSelf = styled.header`
-  ${innerSpacingCss('xsmall')}
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  gap: ${variableGlsp()};
+  padding: ${variableGlsp(0.75, 1)};
   background: ${themeVal('color.primary')};
   animation: ${reveal} 0.32s ease 0s 1;
 
@@ -30,22 +32,6 @@ const PageHeaderSelf = styled.header`
   &:visited {
     color: ${themeVal('color.surface')};
   }
-
-  ${media.smallUp`
-    ${innerSpacingCss('xsmall')}
-  `}
-
-  ${media.mediumUp`
-    ${innerSpacingCss('medium')}
-  `}
-
-  ${media.largeUp`
-    ${innerSpacingCss('large')}
-  `}
-
-  ${media.xlargeUp`
-    ${innerSpacingCss('xlarge')}
-  `}
 `;
 
 const Brand = styled.div`

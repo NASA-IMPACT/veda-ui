@@ -3,7 +3,6 @@ import { Link, Route, Routes } from 'react-router-dom';
 import { Prose } from '@devseed-ui/typography';
 
 import Constrainer from '../../styles/constrainer';
-
 import SandboxTypography from './typography';
 
 function Sandbox() {
