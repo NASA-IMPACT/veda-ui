@@ -4,8 +4,12 @@ import { themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp } from './variable-utils';
 
 export const Panel = styled.div`
+  position: relative;
+  z-index: 10;
   background: ${themeVal('color.surface')};
   box-shadow: ${themeVal('boxShadow.elevationD')};
+  width: 100%;
+  max-width: 24rem;
 `;
 
 export const PanelHeader = styled.div`

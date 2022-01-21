@@ -24,6 +24,7 @@ import {
   PanelWidgetHeader,
   PanelWidgetTitle
 } from '../../../../styles/panel';
+import { variableGlsp } from '../../../../styles/variable-utils';
 
 export const IntroFold = styled.div`
   position: relative;
@@ -98,6 +99,12 @@ export const Explorer = styled.div`
   flex-flow: row nowrap;
 `;
 
+export const Carto = styled.div`
+  flex-grow: 1;
+  padding: ${variableGlsp()};
+  background: ${themeVal('color.base-50')};
+`;
+
 function DatasetExploration() {
   return (
     <App pageTitle='Dataset exploration'>
@@ -145,6 +152,10 @@ function DatasetExploration() {
               </PanelWidget>
             </PanelBody>
           </Panel>
+
+          <Carto>
+            <p>Map content goes here.</p>
+          </Carto>
         </Explorer>
       </PageMainContent>
     </App>
