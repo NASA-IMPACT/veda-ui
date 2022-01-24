@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import {
   add,
@@ -15,9 +15,12 @@ import Constrainer from '../../../styles/constrainer';
 import { PageMainContent } from '../../../styles/page';
 import {
   Panel,
+  PanelActions,
   PanelBody,
   PanelHeader,
+  PanelHeadline,
   PanelTitle,
+  PanelToggle,
   PanelWidget,
   PanelWidgetBody,
   PanelWidgetHeader,
@@ -29,6 +32,7 @@ import {
   useThematicArea,
   useThematicAreaDataset
 } from '../../../utils/thematics';
+import { CollecticonSlidersHorizontal } from '@devseed-ui/collecticons';
 
 export const IntroFold = styled.div`
   position: relative;
@@ -112,6 +116,7 @@ export const Carto = styled.div`
 function DatasetsExplore() {
   const thematic = useThematicArea();
   const dataset = useThematicAreaDataset();
+  const [panelOpen, setPanelOpen] = useState(true);
 
   if (!thematic || !dataset) return resourceNotFound();
 
@@ -142,9 +147,23 @@ function DatasetsExplore() {
           </IntroFoldInner>
         </IntroFold>
         <Explorer>
-          <Panel>
+          <Panel revealed={panelOpen}>
             <PanelHeader>
-              <PanelTitle>Controls</PanelTitle>
+              <PanelHeadline>
+                <PanelTitle>Controls</PanelTitle>
+              </PanelHeadline>
+              <PanelActions>
+                <PanelToggle
+                  variation='primary-fill'
+                  fitting='skinny'
+                  onClick={() => setPanelOpen((v) => !v)}
+                >
+                  <CollecticonSlidersHorizontal
+                    title='Toggle panel visibility'
+                    meaningful
+                  />
+                </PanelToggle>
+              </PanelActions>
             </PanelHeader>
             <PanelBody>
               <PanelWidget>

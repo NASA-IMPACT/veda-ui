@@ -1,6 +1,7 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { themeVal } from '@devseed-ui/theme-provider';
+import { themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
+import { Button } from '@devseed-ui/button';
 import { variableGlsp } from './variable-utils';
 
 export const Panel = styled.div`
@@ -8,16 +9,37 @@ export const Panel = styled.div`
   z-index: 10;
   background: ${themeVal('color.surface')};
   box-shadow: ${themeVal('boxShadow.elevationD')};
-  width: 100%;
-  max-width: 24rem;
+  width: 24rem;
+  margin-left: -24rem;
+
+  ${({ revealed }) =>
+    revealed &&
+    css`
+      margin: 0;
+    `}
 `;
 
 export const PanelHeader = styled.div`
+  position: relative;
+`;
+
+export const PanelHeadline = styled.div`
+  ${visuallyHidden}
   padding: ${variableGlsp()};
+`;
+
+export const PanelActions = styled.div`
+  /* styled-component */
 `;
 
 export const PanelTitle = styled.h2`
   /* styled-component */
+`;
+
+export const PanelToggle = styled(Button)`
+  position: absolute;
+  top: ${variableGlsp()};
+  left: calc(100% + ${variableGlsp()});
 `;
 
 export const PanelBody = styled.div`
