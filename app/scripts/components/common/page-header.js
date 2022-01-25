@@ -1,7 +1,7 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
-import { glsp, themeVal, media, divide } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { reveal } from '@devseed-ui/animation';
 
@@ -10,14 +10,6 @@ import NasaLogo from './nasa-logo';
 import { variableGlsp } from '../../styles/variable-utils';
 
 const appTitle = process.env.APP_TITLE;
-
-const innerSpacingCss = (size) => css`
-  gap: ${glsp(themeVal(`layout.glspMultiplier.${size}`))};
-  padding: ${glsp(
-    divide(themeVal(`layout.glspMultiplier.${size}`), 2),
-    themeVal(`layout.glspMultiplier.${size}`)
-  )};
-`;
 
 const PageHeaderSelf = styled.header`
   display: flex;

@@ -57,7 +57,8 @@ export const PanelWidget = styled.article`
   gap: ${variableGlsp(0.25)};
   padding: ${variableGlsp(0.5, 1)};
   background: ${themeVal('color.surface')};
-  box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')}, 0 -1px 0 0 ${themeVal('color.base-100a')};
+  box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')},
+    0 -1px 0 0 ${themeVal('color.base-100a')};
 `;
 
 export const PanelWidgetHeader = styled.div`
@@ -66,8 +67,8 @@ export const PanelWidgetHeader = styled.div`
 
 export const PanelWidgetTitle = styled.h3`
   ${createOverlineStyles()}
+  background: transparent;
 `;
-
 
 export const PanelWidgetBody = styled.div`
   /* styled-component */
