@@ -1,12 +1,15 @@
 import styled, { css } from 'styled-components';
 
 import { themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
+import { createOverlineStyles } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { variableGlsp } from './variable-utils';
 
 export const Panel = styled.div`
   position: relative;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
   background: ${themeVal('color.surface')};
   box-shadow: ${themeVal('boxShadow.elevationD')};
   width: 24rem;
@@ -43,23 +46,29 @@ export const PanelToggle = styled(Button)`
 `;
 
 export const PanelBody = styled.div`
-  /* styled-component */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 `;
 
-export const PanelWidget = styled.div`
+export const PanelWidget = styled.article`
+  display: flex;
+  flex-direction: column;
+  gap: ${variableGlsp(0.25)};
   padding: ${variableGlsp(0.5, 1)};
   background: ${themeVal('color.surface')};
-  box-shadow: 0 0 0 1px ${themeVal('color.base-100a')};
+  box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')}, 0 -1px 0 0 ${themeVal('color.base-100a')};
 `;
 
 export const PanelWidgetHeader = styled.div`
   /* styled-component */
 `;
 
-export const PanelWidgetBody = styled.div`
-  /* styled-component */
+export const PanelWidgetTitle = styled.h3`
+  ${createOverlineStyles()}
 `;
 
-export const PanelWidgetTitle = styled.h3`
+
+export const PanelWidgetBody = styled.div`
   /* styled-component */
 `;
