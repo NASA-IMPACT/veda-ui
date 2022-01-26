@@ -2,7 +2,7 @@
 
 The base idea behind Delta architecture is the separation of concerns between ui code and configuration.  
 That is why the ui repo (`delta-ui`) is used as a submodule of `delta-config`.
-A user wishing to setup a new Delta instance, only has to fork `delta-config`, change the configuration variables and the content, and that is it.
+A user wishing to setup a new Delta instance, only has to fork `delta-config`, change the configuration variables and the content, and you are ready to launch your own instance.
 
 For development purposes, the ui repo can be run directly without the need to have the `delta-config` code around.  
 In this case the data is loaded from the `mock/` folder, which replicates the structure one would find in `delta-config`.
