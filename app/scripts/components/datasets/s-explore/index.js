@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   add,
   glsp,
@@ -102,9 +102,11 @@ export const IntroFoldCopy = styled.div`
 `;
 
 export const Explorer = styled.div`
+  position: relative;
   flex-grow: 1;
   display: flex;
   flex-flow: row nowrap;
+  overflow: hidden;
 `;
 
 export const Carto = styled.div`
@@ -116,7 +118,7 @@ export const Carto = styled.div`
 function DatasetsExplore() {
   const thematic = useThematicArea();
   const dataset = useThematicAreaDataset();
-  const [panelOpen, setPanelOpen] = useState(true);
+  const [panelRevealed, setpanelRevealed] = useState(true);
 
   if (!thematic || !dataset) return resourceNotFound();
 
@@ -147,7 +149,7 @@ function DatasetsExplore() {
           </IntroFoldInner>
         </IntroFold>
         <Explorer>
-          <Panel revealed={panelOpen}>
+          <Panel revealed={panelRevealed}>
             <PanelHeader>
               <PanelHeadline>
                 <PanelTitle>Controls</PanelTitle>
@@ -156,7 +158,8 @@ function DatasetsExplore() {
                 <PanelToggle
                   variation='primary-fill'
                   fitting='skinny'
-                  onClick={() => setPanelOpen((v) => !v)}
+                  onClick={() => setpanelRevealed((v) => !v)}
+                  active={panelRevealed}
                 >
                   <CollecticonSlidersHorizontal
                     title='Toggle panel visibility'
