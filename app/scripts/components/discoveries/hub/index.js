@@ -11,7 +11,7 @@ import { resourceNotFound } from '../../uhoh';
 import { useThematicArea } from '../../../utils/thematics';
 
 const List = styled.ul`
-  ${listReset()};
+  ${listReset()}
   display: flex;
   gap: ${glsp(2)};
   margin-top: ${glsp(3)};

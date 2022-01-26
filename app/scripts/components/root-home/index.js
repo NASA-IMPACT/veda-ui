@@ -10,7 +10,7 @@ import deltaThematics from 'delta/thematics';
 import { LayoutProps } from '../common/layout-root';
 
 const ThematicList = styled.ul`
-  ${listReset()};
+  ${listReset()}
   display: flex;
   gap: ${glsp(2)};
   margin-top: ${glsp(3)};

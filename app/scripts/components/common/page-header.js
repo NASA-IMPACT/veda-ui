@@ -5,7 +5,6 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { reveal } from '@devseed-ui/animation';
 
-import { filterComponentProps } from '../../styles/utils/general';
 import NasaLogo from './nasa-logo';
 import { variableGlsp } from '../../styles/variable-utils';
 
@@ -104,16 +103,6 @@ const GlobalMenuLink = styled(Button)`
   /* styled-component */
 `;
 
-// See documentation of filterComponentProp as to why this is
-const propsToFilter = [
-  'variation',
-  'size',
-  'hideText',
-  'active',
-  'visuallyDisabled'
-];
-const StyledNavLink = filterComponentProps(NavLink, propsToFilter);
-
 function PageHeader() {
   return (
     <PageHeaderSelf>
@@ -128,7 +117,7 @@ function PageHeader() {
         <GlobalMenu>
           <li>
             <GlobalMenuLink
-              forwardedAs={StyledNavLink}
+              forwardedAs={NavLink}
               to='/'
               end
               variation='achromic-text'
