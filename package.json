@@ -65,6 +65,7 @@
     "@devseed-ui/collecticons": "^4.0.0",
     "@devseed-ui/form": "^4.0.0",
     "@devseed-ui/global-loading": "^4.0.0",
+    "@devseed-ui/shadow-scrollbar": "^4.0.0",
     "@devseed-ui/theme-provider": "^4.0.0",
     "@devseed-ui/typography": "^4.0.0",
     "history": "^5.1.0",

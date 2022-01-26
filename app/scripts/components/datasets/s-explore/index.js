@@ -33,6 +33,7 @@ import {
   useThematicAreaDataset
 } from '../../../utils/thematics';
 import { CollecticonSlidersHorizontal } from '@devseed-ui/collecticons';
+import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
 export const IntroFold = styled.div`
   position: relative;
@@ -177,7 +178,6 @@ function DatasetsExplore() {
                   <p>Panel content goes here.</p>
                 </PanelWidgetBody>
               </PanelWidget>
-
               <PanelWidget>
                 <PanelWidgetHeader>
                   <PanelWidgetTitle>Widget title</PanelWidgetTitle>

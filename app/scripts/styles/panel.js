@@ -4,10 +4,12 @@ import { media, themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
 import { createOverlineStyles } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { variableGlsp } from './variable-utils';
+import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
 const panelWidth = {
   xsmall: '20rem',
-  small: '24rem'
+  small: '22rem',
+  medium: '24rem'
 };
 
 export const Panel = styled.div`
@@ -24,6 +26,11 @@ export const Panel = styled.div`
     margin-left: -${panelWidth.small};
   `}
 
+  ${media.mediumUp`
+    width: ${panelWidth.medium};
+    margin-left: -${panelWidth.medium};
+  `}
+
   ${media.mediumDown`
     position: absolute;
     inset: 0;
@@ -33,7 +40,7 @@ export const Panel = styled.div`
     revealed &&
     css`
       & {
-        margin: 0;
+        margin-left: 0;
       }
     `}
   
@@ -74,7 +81,6 @@ export const PanelHeader = styled.div`
 
 export const PanelHeadline = styled.div`
   ${visuallyHidden}
-  padding: ${variableGlsp()};
 `;
 
 export const PanelActions = styled.div`
@@ -91,7 +97,7 @@ export const PanelToggle = styled(Button)`
   left: calc(100% + ${variableGlsp()});
 `;
 
-export const PanelBody = styled.div`
+export const PanelBody = styled(ShadowScrollbar)`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
