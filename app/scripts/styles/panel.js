@@ -3,8 +3,8 @@ import styled, { css } from 'styled-components';
 import { media, themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
 import { createOverlineStyles } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
-import { variableGlsp } from './variable-utils';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
+import { variableGlsp } from './variable-utils';
 
 const panelWidth = {
   xsmall: '20rem',
@@ -119,7 +119,6 @@ export const PanelWidgetHeader = styled.div`
 
 export const PanelWidgetTitle = styled.h3`
   ${createOverlineStyles()}
-  background: transparent;
 `;
 
 export const PanelWidgetBody = styled.div`

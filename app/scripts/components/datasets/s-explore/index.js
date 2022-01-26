@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import {
   add,
   glsp,
@@ -33,7 +33,6 @@ import {
   useThematicAreaDataset
 } from '../../../utils/thematics';
 import { CollecticonSlidersHorizontal } from '@devseed-ui/collecticons';
-import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
 export const IntroFold = styled.div`
   position: relative;
