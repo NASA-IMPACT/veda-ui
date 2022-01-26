@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import {
   add,
@@ -8,6 +8,7 @@ import {
   visuallyHidden
 } from '@devseed-ui/theme-provider';
 import { Prose } from '@devseed-ui/typography';
+import { CollecticonSlidersHorizontal } from '@devseed-ui/collecticons';
 
 import { resourceNotFound } from '../../uhoh';
 import PageLocalNav from '../../common/page-local-nav';
@@ -15,9 +16,13 @@ import Constrainer from '../../../styles/constrainer';
 import { PageMainContent } from '../../../styles/page';
 import {
   Panel,
+  PanelActions,
   PanelBody,
   PanelHeader,
+  PanelHeadline,
+  PanelInner,
   PanelTitle,
+  PanelToggle,
   PanelWidget,
   PanelWidgetBody,
   PanelWidgetHeader,
@@ -29,6 +34,8 @@ import {
   useThematicArea,
   useThematicAreaDataset
 } from '../../../utils/thematics';
+
+import { useMediaQuery } from '../../../utils/use-media-query';
 
 export const IntroFold = styled.div`
   position: relative;
@@ -98,9 +105,11 @@ export const IntroFoldCopy = styled.div`
 `;
 
 export const Explorer = styled.div`
+  position: relative;
   flex-grow: 1;
   display: flex;
   flex-flow: row nowrap;
+  overflow: hidden;
 `;
 
 export const Carto = styled.div`
@@ -113,11 +122,29 @@ function DatasetsExplore() {
   const thematic = useThematicArea();
   const dataset = useThematicAreaDataset();
 
+  const { isMediumDown } = useMediaQuery();
+
+  const [panelRevealed, setPanelRevealed] = useState(!isMediumDown);
+
+  const panelBodyRef = useRef(null);
+  // Click listener for the whole body panel so we can close it when clicking
+  // the overlay on medium down media query.
+  const onPanelClick = useCallback((e) => {
+    if (!panelBodyRef.current?.contains(e.target)) {
+      setPanelRevealed(false);
+    }
+  }, []);
+
+  // Close panel when media query changes.
+  useEffect(() => {
+    setPanelRevealed(!isMediumDown);
+  }, [isMediumDown]);
+
   if (!thematic || !dataset) return resourceNotFound();
 
   return (
     <>
-      <LayoutProps title={dataset.data.name} />
+      <LayoutProps title={dataset.data.name} hideFooter />
       <PageLocalNav
         title={dataset.data.name}
         thematic={thematic}
@@ -142,29 +169,45 @@ function DatasetsExplore() {
           </IntroFoldInner>
         </IntroFold>
         <Explorer>
-          <Panel>
-            <PanelHeader>
-              <PanelTitle>Controls</PanelTitle>
-            </PanelHeader>
-            <PanelBody>
-              <PanelWidget>
-                <PanelWidgetHeader>
-                  <PanelWidgetTitle>Widget title</PanelWidgetTitle>
-                </PanelWidgetHeader>
-                <PanelWidgetBody>
-                  <p>Panel content goes here.</p>
-                </PanelWidgetBody>
-              </PanelWidget>
-
-              <PanelWidget>
-                <PanelWidgetHeader>
-                  <PanelWidgetTitle>Widget title</PanelWidgetTitle>
-                </PanelWidgetHeader>
-                <PanelWidgetBody>
-                  <p>Panel content goes here.</p>
-                </PanelWidgetBody>
-              </PanelWidget>
-            </PanelBody>
+          <Panel revealed={panelRevealed} onClick={onPanelClick}>
+            <PanelInner ref={panelBodyRef}>
+              <PanelHeader>
+                <PanelHeadline>
+                  <PanelTitle>Controls</PanelTitle>
+                </PanelHeadline>
+                <PanelActions>
+                  <PanelToggle
+                    variation='primary-fill'
+                    fitting='skinny'
+                    onClick={() => setPanelRevealed((v) => !v)}
+                    active={panelRevealed}
+                  >
+                    <CollecticonSlidersHorizontal
+                      title='Toggle panel visibility'
+                      meaningful
+                    />
+                  </PanelToggle>
+                </PanelActions>
+              </PanelHeader>
+              <PanelBody>
+                <PanelWidget>
+                  <PanelWidgetHeader>
+                    <PanelWidgetTitle>Widget title</PanelWidgetTitle>
+                  </PanelWidgetHeader>
+                  <PanelWidgetBody>
+                    <p>Panel content goes here.</p>
+                  </PanelWidgetBody>
+                </PanelWidget>
+                <PanelWidget>
+                  <PanelWidgetHeader>
+                    <PanelWidgetTitle>Widget title</PanelWidgetTitle>
+                  </PanelWidgetHeader>
+                  <PanelWidgetBody>
+                    <p>Panel content goes here.</p>
+                  </PanelWidgetBody>
+                </PanelWidget>
+              </PanelBody>
+            </PanelInner>
           </Panel>
 
           <Carto>

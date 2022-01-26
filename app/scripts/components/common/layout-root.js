@@ -26,7 +26,7 @@ const PageBody = styled.div`
 
 function LayoutRoot(props) {
   const { children } = props;
-  const { title } = useContext(LayoutRootContext);
+  const { title, hideFooter } = useContext(LayoutRootContext);
 
   const truncatedTitle =
     title?.length > 32 ? `${title.slice(0, 32)}...` : title;
@@ -44,7 +44,7 @@ function LayoutRoot(props) {
         <Outlet />
         {children}
       </PageBody>
-      <PageFooter />
+      <PageFooter isHidden={hideFooter} />
     </Page>
   );
 }

@@ -20,6 +20,8 @@ export default function themeOverrides() {
       }
     },
     layout: {
+      min: '384px',
+      max: '1440px',
       glspMultiplier: {
         xsmall: 1,
         small: 1,

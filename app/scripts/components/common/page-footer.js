@@ -1,43 +1,18 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import T from 'prop-types';
+import styled from 'styled-components';
 
-import {
-  glsp,
-  media,
-  themeVal,
-  rgba,
-  visuallyHidden,
-  divide
-} from '@devseed-ui/theme-provider';
+import { themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
-const innerSpacingCss = (size) => css`
-  padding: ${glsp(
-    divide(themeVal(`layout.glspMultiplier.${size}`), 2),
-    themeVal(`layout.glspMultiplier.${size}`)
-  )};
-`;
+import { variableGlsp } from '../../styles/variable-utils';
 
 const PageFooterSelf = styled.footer`
-  ${innerSpacingCss('xsmall')}
-  background-color: ${rgba(themeVal('color.surface'), 0.92)};
+  padding: ${variableGlsp()};
+  background: ${themeVal('color.surface')};
   animation: ${reveal} 0.32s ease 0s 1;
 
-  ${media.smallUp`
-    ${innerSpacingCss('xsmall')}
-  `}
-
-  ${media.mediumUp`
-    ${innerSpacingCss('medium')}
-  `}
-
-  ${media.largeUp`
-    ${innerSpacingCss('large')}
-  `}
-
-  ${media.xlargeUp`
-    ${innerSpacingCss('xlarge')}
-  `}
+  ${({ isHidden }) => isHidden && visuallyHidden}
 `;
 
 const FooterCredits = styled.address`
@@ -70,14 +45,14 @@ const FooterCredits = styled.address`
   }
 `;
 
-function PageFooter() {
+function PageFooter(props) {
   const nowDate = new Date();
 
   return (
-    <PageFooterSelf>
+    <PageFooterSelf isHidden={props.isHidden}>
       <FooterCredits>
         <p>
-          <a href='https://earthdata.nasa.gov/' title='Visit NASA Earthdata'>
+          <a href='https://earthdata.nasa.gov/'>
             <span>By</span>
             NASA <strong>Earthdata</strong>
             <span>on</span>{' '}
@@ -92,3 +67,7 @@ function PageFooter() {
 }
 
 export default PageFooter;
+
+PageFooter.propTypes = {
+  isHidden: T.bool
+};
