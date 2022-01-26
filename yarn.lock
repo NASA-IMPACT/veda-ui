@@ -7509,6 +7509,11 @@ range-parser@1.2.0:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
   integrity sha1-9JvmtIeJTdxA3MlKMi9hEJLgDV4=
 
+react-cool-dimensions@^2.0.7:
+  version "2.0.7"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-cool-dimensions/-/react-cool-dimensions-2.0.7.tgz#2fe6657608f034cd7c89f149ed14e79cf1cb2d50"
+  integrity sha512-z1VwkAAJ5d8QybDRuYIXTE41RxGr5GYsv1bQhbOBE8cMfoZQZpcF0odL64vdgrQVzat2jayedj1GoYi80FWcbA==
+
 react-custom-scrollbars@^4.2.1:
   version "4.2.1"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-custom-scrollbars/-/react-custom-scrollbars-4.2.1.tgz#830fd9502927e97e8a78c2086813899b2a8b66db"
