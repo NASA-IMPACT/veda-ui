@@ -963,6 +963,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
+  version "7.16.7"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@babel%2fruntime/-/runtime-7.16.7.tgz#03ff99f64106588c9c403c6ecb8c3bafbbdff1fa"
+  integrity sha512-9E9FJowqAsytyOY6LG+1KuueckRL+aQW+mKvXRXnuFGyRAyepJPmEo9vgMfXUA6O9u3IeEdv9MAkppFcaQwogQ==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.12.7", "@babel/template@^7.16.0":
   version "7.16.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@babel%2ftemplate/-/template-7.16.0.tgz#d16a35ebf4cd74e202083356fab21dd89363ddd6"
@@ -995,57 +1002,58 @@
     "@babel/helper-validator-identifier" "^7.15.7"
     to-fast-properties "^2.0.0"
 
-"@devseed-ui/animation@^4.0.0-rc.1":
-  version "4.0.0-rc.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fanimation/-/animation-4.0.0-rc.1.tgz#dda75f142cb0cce3e9f9b69564006681ffc61b50"
-  integrity sha512-ug8XcLiTjbimYqemjGNR4O9E+4dLVZ8mbdJgOT1VLhtJprsLRzoV4XH1YDuLlg2MchdDUjw4UPEFjokH0H8M3Q==
+"@devseed-ui/animation@^4.0.0":
+  version "4.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fanimation/-/animation-4.0.0.tgz#d8063604e790c2309f4bbfe45483d435909ce2da"
+  integrity sha512-ZXmjXdYj19JKzYphaehuIPp4bnsd5hSntGTCwGsqKSq6Vbcf0uhRAQZazhNhw0FzhBmA98xeX9FeWHnpIlaQ3A==
 
-"@devseed-ui/button@4.0.0-rc.1":
-  version "4.0.0-rc.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fbutton/-/button-4.0.0-rc.1.tgz#55b3715c0547db633ea3876d4798f33fb8e333a3"
-  integrity sha512-gnpd8Vv6uaCeRyAI0hepPDkSkMb+EOCtGIGekOYSlHEpxrf/VPsiEHw0oVIA1sGldF/o0KyxgeTkMPfqp0X+2Q==
+"@devseed-ui/button@^4.0.0":
+  version "4.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fbutton/-/button-4.0.0.tgz#8dbe0eacaaba5e291021966015c8ed1bc6acae0f"
+  integrity sha512-LeGHXgtrbpF29yPVL2GPHkYvFjmulW4LbXRSVG1UU1CS+Ja8cGPfYsU/AXoER/Pc4MnoaMnag/mBl6u3cwYUpw==
   dependencies:
-    "@devseed-ui/collecticons" "4.0.0-rc.1"
-    "@devseed-ui/theme-provider" "^4.0.0-rc.1"
+    "@devseed-ui/collecticons" "^4.0.0"
+    "@devseed-ui/theme-provider" "^4.0.0"
 
-"@devseed-ui/collecticons@4.0.0-rc.1":
-  version "4.0.0-rc.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fcollecticons/-/collecticons-4.0.0-rc.1.tgz#525cd65db946bc927ff429f797deaf80cc68b784"
-  integrity sha512-UOWHsNQXWep+LUdq1OaC9OpwVt0LuohYLFL6T0WmsRmA7doReaPj7koEpVCaYyATJ5qMx+bUlTyyLYmJQp9wSQ==
+"@devseed-ui/collecticons@^4.0.0":
+  version "4.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fcollecticons/-/collecticons-4.0.0.tgz#d7636b15c61d152e7bc34725ce1ce8d2aa2f81d0"
+  integrity sha512-Eo/ipM1C/6kSANTFq0WhbalAk5ZQZ2b4hQy1m1bA2NXd3DgyNZTzp8URIu6aAMBW4IiHLgX1zYPLw2OLfLMq1w==
 
-"@devseed-ui/form@2.0.0-rc.1":
-  version "2.0.0-rc.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fform/-/form-2.0.0-rc.1.tgz#9b8333d0b146f412f344e1ca99553e02a7598446"
-  integrity sha512-JfDpCqVUgTYsIpv+1jFolwDraOZrc/GAgSci066eM97HXQYpaRdrKnH6yKnRluwevN+/V+A8f+/sarPpRUbFAg==
+"@devseed-ui/form@^4.0.0":
+  version "4.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fform/-/form-4.0.0.tgz#242c15935d10c986e043ac00a9d7b2815fbcc14e"
+  integrity sha512-wi29CYeWWVIlcQRKoki9kIsjm/kQO6nc0/6XgL6akx/0Vuye7CZna8ZFZsLyAtHrlaRgQnkvQYK5N1kQCFMGww==
   dependencies:
-    "@devseed-ui/animation" "^4.0.0-rc.1"
-    "@devseed-ui/collecticons" "4.0.0-rc.1"
-    "@devseed-ui/theme-provider" "^4.0.0-rc.1"
-    "@devseed-ui/typography" "2.0.0-rc.1"
+    "@devseed-ui/animation" "^4.0.0"
+    "@devseed-ui/collecticons" "^4.0.0"
+    "@devseed-ui/theme-provider" "^4.0.0"
+    "@devseed-ui/typography" "^4.0.0"
 
-"@devseed-ui/global-loading@^3.0.0-rc.1":
-  version "3.0.0-rc.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fglobal-loading/-/global-loading-3.0.0-rc.1.tgz#6126b0658bbef019769f1b66a30ac47d5a25bb4b"
-  integrity sha512-/aJY+uaud4vihfOoCYGHqIIceYdXufbrczJSpdA3ZLSrTFXgau6Xmf14GF6FVm4pRgm8zeTYjQBTFdJnXnCqaQ==
+"@devseed-ui/global-loading@^4.0.0":
+  version "4.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fglobal-loading/-/global-loading-4.0.0.tgz#39606dec3319d667537399cf0d4cee4c2ec05995"
+  integrity sha512-ooIXAXsBSEI6na1iiGb0Oq9TgAn9HuqrnKoKEI2tJfkrb6Nxuhp9U9wcnh5+W/Sdr0RzUjiqc41mNwc6IvKR9w==
   dependencies:
-    "@devseed-ui/animation" "^4.0.0-rc.1"
-    "@devseed-ui/collecticons" "4.0.0-rc.1"
-    "@devseed-ui/theme-provider" "^4.0.0-rc.1"
+    "@devseed-ui/animation" "^4.0.0"
+    "@devseed-ui/collecticons" "^4.0.0"
+    "@devseed-ui/theme-provider" "^4.0.0"
+    react-transition-group "^4.3.0"
 
-"@devseed-ui/theme-provider@4.0.0-rc.1", "@devseed-ui/theme-provider@^4.0.0-rc.1":
-  version "4.0.0-rc.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftheme-provider/-/theme-provider-4.0.0-rc.1.tgz#f7535aea6c31847b7b131fe7e0e9cc024e824f6e"
-  integrity sha512-h428J1Mp8sF0k02twZfskPnH5wMKZxRGovGT4pNIU/JlPDQcNVPQxR4HU1nbm/L86OA0Qg0/OxVJ84F+FBTRxQ==
+"@devseed-ui/theme-provider@^4.0.0":
+  version "4.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftheme-provider/-/theme-provider-4.0.0.tgz#0b816e6c17ac91f6d63980927b5dc89da6d6ca7a"
+  integrity sha512-Q77ACOEj4dK0T2LvEHS7yvz9MQREw07sPB2zVhY4TkxH9DibsWWOUDEbnPnL0b24RXuRiEnitGpMgzZgu1piNQ==
   dependencies:
     lodash.get "^4.4.2"
     polished "^3.4.2"
 
-"@devseed-ui/typography@2.0.0-rc.1":
-  version "2.0.0-rc.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftypography/-/typography-2.0.0-rc.1.tgz#221722ea753e560f8b4d0a86accae41725d419b6"
-  integrity sha512-9+gbtZd9heDPmO48Jq6Vumtfp/5fEPFiSsTBG3yAtg/D7X1tM/EJu8gCFQnAxkCAVlVEUlOrdRZcFd73T5Jj6A==
+"@devseed-ui/typography@^4.0.0":
+  version "4.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftypography/-/typography-4.0.0.tgz#cd55675bbe0bfe97258082331eb328666ae1e790"
+  integrity sha512-1Bzp7a5696ayJR60WP7DWnoRK0EbUGGP+UUWm8k6i5rAFiGqE+UNx40ZWePFrFaB/ZQ9F7cG1YEGSLdzBQvnIg==
   dependencies:
-    "@devseed-ui/theme-provider" "^4.0.0-rc.1"
+    "@devseed-ui/theme-provider" "^4.0.0"
 
 "@emotion/is-prop-valid@^0.8.8":
   version "0.8.8"

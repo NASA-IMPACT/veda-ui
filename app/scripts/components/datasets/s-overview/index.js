@@ -1,16 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+
 import { add, glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import { Prose } from '@devseed-ui/typography';
-import { Button } from '@devseed-ui/button';
 
-import { LayoutProps } from '../common/layout-root';
-import Constrainer from '../../styles/constrainer';
-import { PageMainContent } from '../../styles/page';
+import { LayoutProps } from '../../common/layout-root';
+import { resourceNotFound } from '../../uhoh';
+import Constrainer from '../../../styles/constrainer';
+import { PageMainContent } from '../../../styles/page';
+import PageLocalNav from '../../common/page-local-nav';
 
-import { resourceNotFound } from '../uhoh';
-import { useThematicArea } from '../../utils/thematics';
+import {
+  useMdxPageLoader,
+  useThematicArea,
+  useThematicAreaDataset
+} from '../../../utils/thematics';
 
 export const IntroFold = styled.div`
   position: relative;
@@ -84,53 +88,36 @@ export const IntroFoldActions = styled.div`
   align-items: center;
 `;
 
-function Home() {
+function DatasetsOverview() {
   const thematic = useThematicArea();
-  if (!thematic) return resourceNotFound();
+  const dataset = useThematicAreaDataset();
+  const pageMdx = useMdxPageLoader(dataset?.content);
+
+  if (!thematic || !dataset) return resourceNotFound();
 
   return (
-    <PageMainContent>
-      <LayoutProps title={thematic.name} />
-      <IntroFold>
-        <IntroFoldInner>
-          <IntroFoldCopy>
-            <Prose>
-              <h1>Thematic area: {thematic.name}</h1>
-              <p>{thematic.description}</p>
-            </Prose>
-            <IntroFoldActions>
-              <Button
-                forwardedAs={Link}
-                to='discoveries'
-                size='large'
-                variation='primary-outline'
-              >
-                Discoveries
-              </Button>
-              <span>or</span>
-              <Button
-                forwardedAs={Link}
-                to='datasets'
-                size='large'
-                variation='primary-outline'
-              >
-                Datasets
-              </Button>
-              <span>or</span>
-              <Button
-                forwardedAs={Link}
-                to='about'
-                size='large'
-                variation='primary-fill'
-              >
-                Learn more
-              </Button>
-            </IntroFoldActions>
-          </IntroFoldCopy>
-        </IntroFoldInner>
-      </IntroFold>
-    </PageMainContent>
+    <>
+      <LayoutProps title={`${dataset.data.name} overview`} />
+      <PageLocalNav
+        title={dataset.data.name}
+        thematic={thematic}
+        dataset={dataset}
+      />
+      <PageMainContent>
+        <IntroFold>
+          <IntroFoldInner>
+            <IntroFoldCopy>
+              <Prose>
+                <h1>Overview</h1>
+                {pageMdx.status === 'loading' && <p>Loading page content</p>}
+                {pageMdx.status === 'success' && <pageMdx.MdxContent />}
+              </Prose>
+            </IntroFoldCopy>
+          </IntroFoldInner>
+        </IntroFold>
+      </PageMainContent>
+    </>
   );
 }
 
-export default Home;
+export default DatasetsOverview;

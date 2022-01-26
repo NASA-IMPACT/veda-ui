@@ -4,10 +4,16 @@ import styled from 'styled-components';
 import { add, glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import { Prose } from '@devseed-ui/typography';
 
-import App from '../../../common/app';
-import PageLocalNav from '../../../common/page-local-nav';
-import Constrainer from '../../../../styles/constrainer';
-import { PageMainContent } from '../../../../styles/page';
+import { LayoutProps } from '../../common/layout-root';
+import { resourceNotFound } from '../../uhoh';
+import Constrainer from '../../../styles/constrainer';
+import { PageMainContent } from '../../../styles/page';
+import PageLocalNav from '../../common/page-local-nav';
+
+import {
+  useThematicArea,
+  useThematicAreaDataset
+} from '../../../utils/thematics';
 
 export const IntroFold = styled.div`
   position: relative;
@@ -26,39 +32,39 @@ export const IntroFoldInner = styled(Constrainer)`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: ${glsp(
-    add(themeVal('layout.gap.xsmall'), 1),
-    themeVal('layout.gap.xsmall')
+    add(themeVal('layout.glspMultiplier.xsmall'), 1),
+    themeVal('layout.glspMultiplier.xsmall')
   )};
   max-width: ${themeVal('layout.max')};
   margin: 0 auto;
 
   ${media.smallUp`
     gap: ${glsp(
-      add(themeVal('layout.gap.small'), 1),
-      themeVal('layout.gap.small')
+      add(themeVal('layout.glspMultiplier.small'), 1),
+      themeVal('layout.glspMultiplier.small')
     )};
   `}
 
   ${media.mediumUp`
     grid-template-columns: repeat(8, 1fr);
     gap: ${glsp(
-      add(themeVal('layout.gap.medium'), 1),
-      themeVal('layout.gap.medium')
+      add(themeVal('layout.glspMultiplier.medium'), 1),
+      themeVal('layout.glspMultiplier.medium')
     )};
   `}
 
   ${media.largeUp`
     grid-template-columns: repeat(12, 1fr);
     gap: ${glsp(
-      add(themeVal('layout.gap.large'), 1),
-      themeVal('layout.gap.large')
+      add(themeVal('layout.glspMultiplier.large'), 1),
+      themeVal('layout.glspMultiplier.large')
     )};
   `}
 
   ${media.xlargeUp`
     gap: ${glsp(
-      add(themeVal('layout.gap.xlarge'), 1),
-      themeVal('layout.gap.xlarge')
+      add(themeVal('layout.glspMultiplier.xlarge'), 1),
+      themeVal('layout.glspMultiplier.xlarge')
     )};
   `}
 
@@ -81,31 +87,34 @@ export const IntroFoldActions = styled.div`
   align-items: center;
 `;
 
-function DatasetOverview() {
+function DatasetsUsage() {
+  const thematic = useThematicArea();
+  const dataset = useThematicAreaDataset();
+
+  if (!thematic || !dataset) return resourceNotFound();
+
   return (
-    <App pageTitle='Dataset overview'>
-      <PageLocalNav title='Dataset title example' />
+    <>
+      <LayoutProps title={`${dataset.data.name} usage`} />
+      <PageLocalNav
+        title={dataset.data.name}
+        thematic={thematic}
+        dataset={dataset}
+      />
       <PageMainContent>
         <IntroFold>
           <IntroFoldInner>
             <IntroFoldCopy>
               <Prose>
-                <h1>Overview</h1>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  gravida sem quis ultrices vulputate. Ut eu pretium eros, eu
-                  molestie augue. Etiam risus justo, consectetur at erat vel,
-                  fringilla commodo felis. Suspendisse rutrum tortor ac nulla
-                  volutpat lobortis. Phasellus tempus nunc risus, eu mollis erat
-                  ullamcorper a.
-                </p>
+                <h1>Usage</h1>
+                <p>And how exactly does this dataset get used?</p>
               </Prose>
             </IntroFoldCopy>
           </IntroFoldInner>
         </IntroFold>
       </PageMainContent>
-    </App>
+    </>
   );
 }
 
-export default DatasetOverview;
+export default DatasetsUsage;

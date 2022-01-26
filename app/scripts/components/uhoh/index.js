@@ -1,10 +1,14 @@
 import React from 'react';
 
-import App from '../common/app';
+export const resourceNotFound = () => {
+  const e = new Error('Resource not found');
+  e.resNotFound = true;
+  return e;
+};
 
 function UhOh() {
   return (
-    <App pageTitle='Not Found'>
+    <div>
       <p>UhOh</p>
       <p>That&apos;s a 404 error</p>
       <p>
@@ -17,7 +21,7 @@ function UhOh() {
           email
         </a>
       </p>
-    </App>
+    </div>
   );
 }
 

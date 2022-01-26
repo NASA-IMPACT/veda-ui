@@ -13,8 +13,8 @@ import { reveal } from '@devseed-ui/animation';
 
 const innerSpacingCss = (size) => css`
   padding: ${glsp(
-    divide(themeVal(`layout.gap.${size}`), 2),
-    themeVal(`layout.gap.${size}`)
+    divide(themeVal(`layout.glspMultiplier.${size}`), 2),
+    themeVal(`layout.glspMultiplier.${size}`)
   )};
 `;
 
