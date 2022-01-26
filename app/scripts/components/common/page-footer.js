@@ -1,4 +1,5 @@
 import React from 'react';
+import T from 'prop-types';
 import styled, { css } from 'styled-components';
 
 import {
@@ -22,6 +23,8 @@ const PageFooterSelf = styled.footer`
   ${innerSpacingCss('xsmall')}
   background-color: ${rgba(themeVal('color.surface'), 0.92)};
   animation: ${reveal} 0.32s ease 0s 1;
+
+  ${({ isHidden }) => isHidden && visuallyHidden}
 
   ${media.smallUp`
     ${innerSpacingCss('xsmall')}
@@ -70,11 +73,11 @@ const FooterCredits = styled.address`
   }
 `;
 
-function PageFooter() {
+function PageFooter(props) {
   const nowDate = new Date();
 
   return (
-    <PageFooterSelf>
+    <PageFooterSelf isHidden={props.isHidden}>
       <FooterCredits>
         <p>
           <a href='https://earthdata.nasa.gov/' title='Visit NASA Earthdata'>
@@ -92,3 +95,7 @@ function PageFooter() {
 }
 
 export default PageFooter;
+
+PageFooter.propTypes = {
+  isHidden: T.bool
+};

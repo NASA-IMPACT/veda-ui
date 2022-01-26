@@ -122,7 +122,7 @@ function DatasetsExplore() {
 
   return (
     <>
-      <LayoutProps title={dataset.data.name} />
+      <LayoutProps title={dataset.data.name} hideFooter />
       <PageLocalNav
         title={dataset.data.name}
         thematic={thematic}
