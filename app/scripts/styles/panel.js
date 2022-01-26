@@ -43,20 +43,11 @@ export const Panel = styled.div`
         margin-left: 0;
       }
     `}
-  
-  &::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background: ${themeVal('color.surface')};
-    box-shadow: ${themeVal('boxShadow.elevationD')};
-  }
 
   &::after {
     content: '';
     position: absolute;
-    z-index: -2;
+    z-index: -1;
     background: transparent;
     width: 0;
     height: 100%;
@@ -73,6 +64,14 @@ export const Panel = styled.div`
         }
       `}
   }
+`;
+
+export const PanelInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background: ${themeVal('color.surface')};
+  box-shadow: ${themeVal('boxShadow.elevationD')};
 `;
 
 export const PanelHeader = styled.div`
