@@ -81,7 +81,7 @@ import deltaThematics, {
 
 ### parcel-resolver-evolution
 
-Custom resolver module used to create the faux module that outputs the structure above. It reads all the files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
+[Custom resolver module](https://github.com/NASA-IMPACT/delta-ui/blob/main/parcel-resolver-evolution/index.js) is used to create the faux module that outputs the structure above. It reads all the mdx files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
 The content part (the MDX) is not handled by this resolver, but left untouched and when trying to import a `MDX` file, the correct resolver will kick in.
 
 ### parcel-transformer-mdx-front
