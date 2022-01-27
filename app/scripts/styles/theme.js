@@ -17,6 +17,9 @@ export default function themeOverrides() {
           large: 1.25,
           xlarge: 1.5
         }
+      },
+      heading: {
+        settings: '"wdth" 100, "wght" 700'
       }
     },
     layout: {
