@@ -3,10 +3,18 @@ import styled from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
+import { Heading, Overline } from '@devseed-ui/typography';
 
+import deltaThematics from 'delta/thematics';
 import NasaLogo from './nasa-logo';
 import { variableGlsp } from '../../styles/variable-utils';
-import { Heading, Overline } from '@devseed-ui/typography';
+import { useThematicArea } from '../../utils/thematics';
+import {
+  thematicAboutPath,
+  thematicDatasetsPath,
+  thematicDiscoveriesPath,
+  thematicRootPath
+} from '../../utils/routes';
 
 const appTitle = process.env.APP_TITLE;
 
@@ -169,6 +177,8 @@ const GlobalMenuLink = styled(NavLink)`
 `;
 
 function PageHeader() {
+  const thematic = useThematicArea();
+
   return (
     <PageHeaderSelf>
       <Brand>
@@ -186,39 +196,53 @@ function PageHeader() {
           <GlobalNavbody>
             <GlobalNavBlock>
               <GlobalNavBlockTitle>Sections</GlobalNavBlockTitle>
-              <GlobalMenu>
-                <li>
-                  <GlobalMenuLink to='/'>Welcome</GlobalMenuLink>
-                </li>
-                <li>
-                  <GlobalMenuLink to='/datasets'>Datasets</GlobalMenuLink>
-                </li>
-                <li>
-                  <GlobalMenuLink to='/discoveries'>Discoveries</GlobalMenuLink>
-                </li>
-                <li>
-                  <GlobalMenuLink to='/about'>About</GlobalMenuLink>
-                </li>
-              </GlobalMenu>
+              {thematic ? (
+                <GlobalMenu>
+                  <li>
+                    <GlobalMenuLink to={thematicRootPath(thematic)}>
+                      Welcome
+                    </GlobalMenuLink>
+                  </li>
+                  <li>
+                    <GlobalMenuLink to={thematicDatasetsPath(thematic)}>
+                      Datasets
+                    </GlobalMenuLink>
+                  </li>
+                  <li>
+                    <GlobalMenuLink to={thematicDiscoveriesPath(thematic)}>
+                      Discoveries
+                    </GlobalMenuLink>
+                  </li>
+                  <li>
+                    <GlobalMenuLink to={thematicAboutPath(thematic)}>
+                      About
+                    </GlobalMenuLink>
+                  </li>
+                </GlobalMenu>
+              ) : (
+                <GlobalMenu>
+                  <li>
+                    <GlobalMenuLink to='/'>Welcome</GlobalMenuLink>
+                  </li>
+                  <li>
+                    <GlobalMenuLink to='/about'>About</GlobalMenuLink>
+                  </li>
+                </GlobalMenu>
+              )}
             </GlobalNavBlock>
 
-            <GlobalNavBlock>
-              <GlobalNavBlockTitle>Thematic areas</GlobalNavBlockTitle>
-              <GlobalMenu>
-                <li>
-                  <GlobalMenuLink to='/'>Area 1</GlobalMenuLink>
-                </li>
-                <li>
-                  <GlobalMenuLink to='/'>Area 2</GlobalMenuLink>
-                </li>
-                <li>
-                  <GlobalMenuLink to='/'>Area 3</GlobalMenuLink>
-                </li>
-                <li>
-                  <GlobalMenuLink to='/'>Area 4</GlobalMenuLink>
-                </li>
-              </GlobalMenu>
-            </GlobalNavBlock>
+            {deltaThematics.length > 1 && (
+              <GlobalNavBlock>
+                <GlobalNavBlockTitle>Thematic areas</GlobalNavBlockTitle>
+                <GlobalMenu>
+                  {deltaThematics.map((t) => (
+                    <li key={t.id}>
+                      <GlobalMenuLink to={`/${t.id}`}>{t.name}</GlobalMenuLink>
+                    </li>
+                  ))}
+                </GlobalMenu>
+              </GlobalNavBlock>
+            )}
           </GlobalNavbody>
         </GlobalNavInner>
       </GlobalNav>

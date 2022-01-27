@@ -9,11 +9,13 @@ import { useEffect, useState } from 'react';
 export function useThematicArea() {
   const { thematicId } = useParams();
 
-  // If there's no thematic id in the url we assume the app is setup with only
-  // one thematic area, and therefore return the first one.
-  if (!thematicId) return deltaThematics[0];
+  // If there's only one thematic area, the app is setup with only one thematic
+  // area, and therefore return the first one.
+  if (deltaThematics.length === 1) {
+    return deltaThematics[0];
+  }
 
-  return deltaThematics.find((t) => t.id === thematicId);
+  return deltaThematics.find((t) => t.id === thematicId) || null;
 }
 
 /**
