@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Button } from '@devseed-ui/button';
+import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
 import NasaLogo from './nasa-logo';
 import { variableGlsp } from '../../styles/variable-utils';
+import { Heading, Overline } from '@devseed-ui/typography';
 
 const appTitle = process.env.APP_TITLE;
 
@@ -85,22 +85,87 @@ const Brand = styled.div`
 `;
 
 const GlobalNav = styled.nav`
-  margin-left: auto;
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 0 auto;
+    z-index: -1;
+    background: transparent;
+    width: 0;
+    transition: background 0.64s ease 0s;
+
+    ${media.mediumDown`
+      background: ${themeVal('color.base-300a')};
+      width: 200vw;
+    `}
+  }
+`;
+
+const GlobalNavInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: ${themeVal('color.primary')};
+  box-shadow: ${themeVal('boxShadow.elevationD')};
+`;
+
+const GlobalNavHeader = styled.div`
+  padding: ${variableGlsp()};
+`;
+
+const GlobalNavbody = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: ${variableGlsp()};
+`;
+
+const GlobalNavTitle = styled(Heading).attrs({
+  as: 'span',
+  size: 'small'
+})`
+  /* styled-component */
+`;
+
+const GlobalNavBlock = styled.div`
+  /* styled-component */
+`;
+
+const GlobalNavBlockTitle = styled(Overline).attrs({
+  as: 'span'
+})`
+  display: block;
+  padding: ${variableGlsp(0.25, 1)};
+  color: currentColor;
+  opacity: 0.64;
 `;
 
 const GlobalMenu = styled.ul`
+  ${listReset()}
   display: flex;
-  flex: 1;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  gap: ${glsp(0.5)};
-  margin: 0;
-  list-style: none;
+  flex-flow: column nowrap;
+
+  ${media.largeUp`
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: ${glsp(0.5)};
+  `}
 `;
 
-const GlobalMenuLink = styled(Button)`
-  /* styled-component */
+const GlobalMenuLink = styled(NavLink)`
+  display: block;
+  color: currentColor;
+  font-weight: bold;
+  text-decoration: none;
+  padding: ${variableGlsp(0.25, 1)};
 `;
 
 function PageHeader() {
@@ -113,19 +178,49 @@ function PageHeader() {
           <span>{appTitle}</span>
         </Link>
       </Brand>
-      <GlobalNav>
-        <GlobalMenu>
-          <li>
-            <GlobalMenuLink
-              forwardedAs={NavLink}
-              to='/'
-              end
-              variation='achromic-text'
-            >
-              Welcome
-            </GlobalMenuLink>
-          </li>
-        </GlobalMenu>
+      <GlobalNav aria-label='Global'>
+        <GlobalNavInner>
+          <GlobalNavHeader>
+            <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
+          </GlobalNavHeader>
+          <GlobalNavbody>
+            <GlobalNavBlock>
+              <GlobalNavBlockTitle>Sections</GlobalNavBlockTitle>
+              <GlobalMenu>
+                <li>
+                  <GlobalMenuLink to='/'>Welcome</GlobalMenuLink>
+                </li>
+                <li>
+                  <GlobalMenuLink to='/datasets'>Datasets</GlobalMenuLink>
+                </li>
+                <li>
+                  <GlobalMenuLink to='/discoveries'>Discoveries</GlobalMenuLink>
+                </li>
+                <li>
+                  <GlobalMenuLink to='/about'>About</GlobalMenuLink>
+                </li>
+              </GlobalMenu>
+            </GlobalNavBlock>
+
+            <GlobalNavBlock>
+              <GlobalNavBlockTitle>Thematic areas</GlobalNavBlockTitle>
+              <GlobalMenu>
+                <li>
+                  <GlobalMenuLink to='/'>Area 1</GlobalMenuLink>
+                </li>
+                <li>
+                  <GlobalMenuLink to='/'>Area 2</GlobalMenuLink>
+                </li>
+                <li>
+                  <GlobalMenuLink to='/'>Area 3</GlobalMenuLink>
+                </li>
+                <li>
+                  <GlobalMenuLink to='/'>Area 4</GlobalMenuLink>
+                </li>
+              </GlobalMenu>
+            </GlobalNavBlock>
+          </GlobalNavbody>
+        </GlobalNavInner>
       </GlobalNav>
     </PageHeaderSelf>
   );
