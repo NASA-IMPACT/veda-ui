@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
+
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
+import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
+import { Button } from '@devseed-ui/button';
+import { CollecticonHamburgerMenu } from '@devseed-ui/collecticons';
 
 import deltaThematics from 'delta/thematics';
 import NasaLogo from './nasa-logo';
@@ -15,8 +19,6 @@ import {
   thematicDiscoveriesPath,
   thematicRootPath
 } from '../../utils/routes';
-import { Button } from '@devseed-ui/button';
-import { CollecticonHamburgerMenu } from '@devseed-ui/collecticons';
 
 import { useMediaQuery } from '../../utils/use-media-query';
 
@@ -146,6 +148,7 @@ const GlobalNavInner = styled.div`
 
 const GlobalNavHeader = styled.div`
   padding: ${variableGlsp()};
+  box-shadow: 0 1px 0 0 ${themeVal('color.surface-100a')};
 `;
 
 const GlobalNavTitle = styled(Heading).attrs({
@@ -165,11 +168,13 @@ export const GlobalNavToggle = styled(Button)`
   right: calc(100% + ${variableGlsp()});
 `;
 
-const GlobalNavbody = styled.div`
+const GlobalNavbody = styled(ShadowScrollbar).attrs({
+  topShadowVariation: 'dark',
+  bottomShadowVariation: 'dark'
+})`
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: ${variableGlsp()};
 `;
 
 const GlobalNavBlock = styled.div`
@@ -180,7 +185,7 @@ const GlobalNavBlockTitle = styled(Overline).attrs({
   as: 'span'
 })`
   display: block;
-  padding: ${variableGlsp(0.25, 1)};
+  padding: ${variableGlsp(1, 1, 0.25, 1)};
   color: currentColor;
   opacity: 0.64;
 `;
