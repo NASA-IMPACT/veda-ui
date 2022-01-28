@@ -40,6 +40,8 @@ const PageHeaderSelf = styled.header`
 `;
 
 const Brand = styled.div`
+  flex-shrink: 0;
+
   a {
     display: grid;
     align-items: center;
@@ -103,7 +105,7 @@ const GlobalNav = styled.nav`
   inset: 0 0 0 auto;
   z-index: 900;
   display: flex;
-  flex-direction: column;
+  flex-flow: column nowrap;
   width: 20rem;
   margin-right: -20rem;
   transition: margin 0.24s ease 0s;
@@ -115,6 +117,18 @@ const GlobalNav = styled.nav`
         margin-right: 0;
       }
     `}
+
+  ${media.mediumUp`
+    position: static;
+    flex-direction: row;
+    flex: 1 0 auto;
+    background: red;
+  }
+
+    &:before {
+      content: '';
+    }
+  `}
 
   &::after {
     content: '';
@@ -143,12 +157,23 @@ const GlobalNavInner = styled.div`
   flex-direction: column;
   flex: 1;
   background-color: ${themeVal('color.primary')};
-  box-shadow: ${themeVal('boxShadow.elevationD')};
+
+  ${media.mediumDown`
+    box-shadow: ${themeVal('boxShadow.elevationD')};
+  `}
+
+  ${media.mediumUp`
+    /* background: yellow; */
+  `}
 `;
 
 const GlobalNavHeader = styled.div`
   padding: ${variableGlsp()};
   box-shadow: 0 1px 0 0 ${themeVal('color.surface-100a')};
+
+  ${media.mediumUp`
+    display: none;
+  `}
 `;
 
 const GlobalNavTitle = styled(Heading).attrs({
@@ -168,13 +193,18 @@ export const GlobalNavToggle = styled(Button)`
   right: calc(100% + ${variableGlsp()});
 `;
 
-const GlobalNavbody = styled(ShadowScrollbar).attrs({
+const GlobalNavBody = styled(ShadowScrollbar).attrs({
   topShadowVariation: 'dark',
   bottomShadowVariation: 'dark'
 })`
   display: flex;
   flex-direction: column;
   flex: 1;
+
+  ${media.mediumUp`
+    flex-direction: row;
+    gap: ${variableGlsp()};
+  `}
 `;
 
 const GlobalNavBlock = styled.div`
@@ -188,6 +218,10 @@ const GlobalNavBlockTitle = styled(Overline).attrs({
   padding: ${variableGlsp(1, 1, 0.25, 1)};
   color: currentColor;
   opacity: 0.64;
+
+  ${media.mediumUp`
+    padding: 0;
+  `}
 `;
 
 const GlobalMenu = styled.ul`
@@ -195,11 +229,11 @@ const GlobalMenu = styled.ul`
   display: flex;
   flex-flow: column nowrap;
 
-  ${media.largeUp`
+  ${media.mediumUp`
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    gap: ${glsp(0.5)};
+    gap: ${glsp()};
   `}
 `;
 
@@ -209,12 +243,16 @@ const GlobalMenuLink = styled(NavLink)`
   font-weight: bold;
   text-decoration: none;
   padding: ${variableGlsp(0.25, 1)};
+
+  ${media.mediumUp`
+    padding: 0;
+  `}
 `;
 
 function PageHeader() {
   const thematic = useThematicArea();
 
-  const { isMediumDown } = useMediaQuery();
+  const { isSmallDown, isMediumDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(!isMediumDown);
 
@@ -262,7 +300,7 @@ function PageHeader() {
               </GlobalNavToggle>
             </GlobalNavActions>
           </GlobalNavHeader>
-          <GlobalNavbody>
+          <GlobalNavBody as={isSmallDown ? undefined : 'div'}>
             <GlobalNavBlock>
               <GlobalNavBlockTitle>Sections</GlobalNavBlockTitle>
               {thematic ? (
@@ -312,7 +350,7 @@ function PageHeader() {
                 </GlobalMenu>
               </GlobalNavBlock>
             )}
-          </GlobalNavbody>
+          </GlobalNavBody>
         </GlobalNavInner>
       </GlobalNav>
     </PageHeaderSelf>
