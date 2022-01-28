@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
@@ -15,6 +15,10 @@ import {
   thematicDiscoveriesPath,
   thematicRootPath
 } from '../../utils/routes';
+import { Button } from '@devseed-ui/button';
+import { CollecticonHamburgerMenu } from '@devseed-ui/collecticons';
+
+import { useMediaQuery } from '../../utils/use-media-query';
 
 const appTitle = process.env.APP_TITLE;
 
@@ -99,6 +103,16 @@ const GlobalNav = styled.nav`
   display: flex;
   flex-direction: column;
   width: 20rem;
+  margin-right: -20rem;
+  transition: margin 0.24s ease 0s;
+
+  ${({ revealed }) =>
+    revealed &&
+    css`
+      & {
+        margin-right: 0;
+      }
+    `}
 
   &::after {
     content: '';
@@ -109,10 +123,16 @@ const GlobalNav = styled.nav`
     width: 0;
     transition: background 0.64s ease 0s;
 
-    ${media.mediumDown`
-      background: ${themeVal('color.base-300a')};
-      width: 200vw;
-    `}
+    ${({ revealed }) =>
+      revealed &&
+      css`
+        & {
+          ${media.mediumDown`
+            background: ${themeVal('color.base-300a')};
+            width: 200vw;
+        `}
+        }
+      `}
   }
 `;
 
@@ -128,18 +148,28 @@ const GlobalNavHeader = styled.div`
   padding: ${variableGlsp()};
 `;
 
-const GlobalNavbody = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: ${variableGlsp()};
-`;
-
 const GlobalNavTitle = styled(Heading).attrs({
   as: 'span',
   size: 'small'
 })`
   /* styled-component */
+`;
+
+export const GlobalNavActions = styled.div`
+  /* styled-component */
+`;
+
+export const GlobalNavToggle = styled(Button)`
+  position: absolute;
+  top: ${variableGlsp()};
+  right: calc(100% + ${variableGlsp()});
+`;
+
+const GlobalNavbody = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: ${variableGlsp()};
 `;
 
 const GlobalNavBlock = styled.div`
@@ -179,6 +209,24 @@ const GlobalMenuLink = styled(NavLink)`
 function PageHeader() {
   const thematic = useThematicArea();
 
+  const { isMediumDown } = useMediaQuery();
+
+  const [globalNavRevealed, setGlobalNavRevealed] = useState(!isMediumDown);
+
+  const globalNavBodyRef = useRef(null);
+  // Click listener for the whole global nav body so we can close it when clicking
+  // the overlay on medium down media query.
+  const onGlobalNavClick = useCallback((e) => {
+    if (!globalNavBodyRef.current?.contains(e.target)) {
+      setGlobalNavRevealed(false);
+    }
+  }, []);
+
+  // Close global nav when media query changes.
+  useEffect(() => {
+    setGlobalNavRevealed(!isMediumDown);
+  }, [isMediumDown]);
+
   return (
     <PageHeaderSelf>
       <Brand>
@@ -187,10 +235,27 @@ function PageHeader() {
           <span>Earthdata</span> <span>{appTitle}</span>
         </Link>
       </Brand>
-      <GlobalNav aria-label='Global'>
-        <GlobalNavInner>
+      <GlobalNav
+        aria-label='Global'
+        revealed={globalNavRevealed}
+        onClick={onGlobalNavClick}
+      >
+        <GlobalNavInner ref={globalNavBodyRef}>
           <GlobalNavHeader>
             <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
+            <GlobalNavActions>
+              <GlobalNavToggle
+                variation='achromic-text'
+                fitting='skinny'
+                onClick={() => setGlobalNavRevealed((v) => !v)}
+                active={globalNavRevealed}
+              >
+                <CollecticonHamburgerMenu
+                  title='Toggle global nav visibility'
+                  meaningful
+                />
+              </GlobalNavToggle>
+            </GlobalNavActions>
           </GlobalNavHeader>
           <GlobalNavbody>
             <GlobalNavBlock>
