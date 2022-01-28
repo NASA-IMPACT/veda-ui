@@ -184,8 +184,7 @@ function PageHeader() {
       <Brand>
         <Link to='/'>
           <NasaLogo />
-          <span>Earthdata</span>
-          <span>{appTitle}</span>
+          <span>Earthdata</span> <span>{appTitle}</span>
         </Link>
       </Brand>
       <GlobalNav aria-label='Global'>
