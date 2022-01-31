@@ -158,7 +158,7 @@ const GlobalNavInner = styled.div`
   flex: 1;
   background-color: ${themeVal('color.primary')};
 
-  ${media.mediumDown`
+  ${media.smallDown`
     box-shadow: ${themeVal('boxShadow.elevationD')};
   `}
 
@@ -198,6 +198,11 @@ const GlobalNavBody = styled(ShadowScrollbar).attrs({
   bottomShadowVariation: 'dark'
 })`
   display: flex;
+  flex: 1;
+`;
+
+const GlobalNavBodyInner = styled.div`
+  display: flex;
   flex-direction: column;
   flex: 1;
 
@@ -209,6 +214,14 @@ const GlobalNavBody = styled(ShadowScrollbar).attrs({
 
 const GlobalNavBlock = styled.div`
   /* styled-component */
+`;
+
+const ThemesNavBlock = styled.div`
+  ${GlobalNavBlock};
+
+  ${media.smallDown`
+    order: 2;
+  `}
 `;
 
 const GlobalNavBlockTitle = styled(Overline).attrs({
@@ -238,6 +251,7 @@ const GlobalMenu = styled.ul`
 `;
 
 const GlobalMenuLink = styled(NavLink)`
+  position: relative;
   display: block;
   color: currentColor;
   font-weight: bold;
@@ -245,8 +259,22 @@ const GlobalMenuLink = styled(NavLink)`
   padding: ${variableGlsp(0.25, 1)};
 
   ${media.mediumUp`
-    padding: 0;
+    padding: ${glsp(0.5, 0)};
   `}
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0.25rem;
+    background: currentColor;
+  }
+
+  &.active::after {
+    width: 100%;
+  }
 `;
 
 function PageHeader() {
@@ -301,55 +329,58 @@ function PageHeader() {
             </GlobalNavActions>
           </GlobalNavHeader>
           <GlobalNavBody as={isSmallDown ? undefined : 'div'}>
-            <GlobalNavBlock>
-              <GlobalNavBlockTitle>Sections</GlobalNavBlockTitle>
-              {thematic ? (
-                <GlobalMenu>
-                  <li>
-                    <GlobalMenuLink to={thematicRootPath(thematic)}>
-                      Welcome
-                    </GlobalMenuLink>
-                  </li>
-                  <li>
-                    <GlobalMenuLink to={thematicDatasetsPath(thematic)}>
-                      Datasets
-                    </GlobalMenuLink>
-                  </li>
-                  <li>
-                    <GlobalMenuLink to={thematicDiscoveriesPath(thematic)}>
-                      Discoveries
-                    </GlobalMenuLink>
-                  </li>
-                  <li>
-                    <GlobalMenuLink to={thematicAboutPath(thematic)}>
-                      About
-                    </GlobalMenuLink>
-                  </li>
-                </GlobalMenu>
-              ) : (
-                <GlobalMenu>
-                  <li>
-                    <GlobalMenuLink to='/'>Welcome</GlobalMenuLink>
-                  </li>
-                  <li>
-                    <GlobalMenuLink to='/about'>About</GlobalMenuLink>
-                  </li>
-                </GlobalMenu>
+            <GlobalNavBodyInner>
+              {deltaThematics.length > 1 && (
+                <ThemesNavBlock>
+                  <GlobalNavBlockTitle>Thematic areas</GlobalNavBlockTitle>
+                  <GlobalMenu>
+                    {deltaThematics.map((t) => (
+                      <li key={t.id}>
+                        <GlobalMenuLink to={`/${t.id}`} aria-current={null}>
+                          {t.name}
+                        </GlobalMenuLink>
+                      </li>
+                    ))}
+                  </GlobalMenu>
+                </ThemesNavBlock>
               )}
-            </GlobalNavBlock>
-
-            {deltaThematics.length > 1 && (
               <GlobalNavBlock>
-                <GlobalNavBlockTitle>Thematic areas</GlobalNavBlockTitle>
-                <GlobalMenu>
-                  {deltaThematics.map((t) => (
-                    <li key={t.id}>
-                      <GlobalMenuLink to={`/${t.id}`}>{t.name}</GlobalMenuLink>
+                <GlobalNavBlockTitle>Sections</GlobalNavBlockTitle>
+                {thematic ? (
+                  <GlobalMenu>
+                    <li>
+                      <GlobalMenuLink to={thematicRootPath(thematic)} end>
+                        Welcome
+                      </GlobalMenuLink>
                     </li>
-                  ))}
-                </GlobalMenu>
+                    <li>
+                      <GlobalMenuLink to={thematicDatasetsPath(thematic)}>
+                        Datasets
+                      </GlobalMenuLink>
+                    </li>
+                    <li>
+                      <GlobalMenuLink to={thematicDiscoveriesPath(thematic)}>
+                        Discoveries
+                      </GlobalMenuLink>
+                    </li>
+                    <li>
+                      <GlobalMenuLink to={thematicAboutPath(thematic)} end>
+                        About
+                      </GlobalMenuLink>
+                    </li>
+                  </GlobalMenu>
+                ) : (
+                  <GlobalMenu>
+                    <li>
+                      <GlobalMenuLink to='/'>Welcome</GlobalMenuLink>
+                    </li>
+                    <li>
+                      <GlobalMenuLink to='/about'>About</GlobalMenuLink>
+                    </li>
+                  </GlobalMenu>
+                )}
               </GlobalNavBlock>
-            )}
+            </GlobalNavBodyInner>
           </GlobalNavBody>
         </GlobalNavInner>
       </GlobalNav>
