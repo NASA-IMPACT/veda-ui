@@ -8,6 +8,8 @@ import MetaTags from './meta-tags';
 import PageHeader from './page-header';
 import PageFooter from './page-footer';
 
+import { useThematicArea } from '../../utils/thematics';
+
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
 
@@ -27,16 +29,18 @@ const PageBody = styled.div`
 function LayoutRoot(props) {
   const { children } = props;
   const { title, hideFooter } = useContext(LayoutRootContext);
+  const thematic = useThematicArea();
 
   const truncatedTitle =
     title?.length > 32 ? `${title.slice(0, 32)}...` : title;
 
   const fullTitle = truncatedTitle ? `${truncatedTitle} — ` : '';
+  const thematicTitle = thematic ? `: ${thematic.name}` : '';
 
   return (
     <Page>
       <MetaTags
-        title={`${fullTitle}${appTitle}`}
+        title={`${fullTitle}${appTitle}${thematicTitle}`}
         description={appDescription}
       />
       <PageHeader />
