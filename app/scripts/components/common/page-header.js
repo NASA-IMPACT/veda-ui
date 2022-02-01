@@ -120,9 +120,8 @@ const GlobalNav = styled.nav`
 
   ${media.mediumUp`
     position: static;
-    flex-direction: row;
-    flex: 1 0 auto;
-    background: red;
+    flex: 1;
+    margin: 0;
   }
 
     &:before {
@@ -212,13 +211,13 @@ const GlobalNavBodyInner = styled.div`
   `}
 `;
 
-const GlobalNavBlock = styled.div`
-  /* styled-component */
+const SectionsNavBlock = styled.div`
+  ${media.mediumUp`
+    margin-left: auto;
+  `}
 `;
 
 const ThemesNavBlock = styled.div`
-  ${GlobalNavBlock};
-
   ${media.smallDown`
     order: 2;
   `}
@@ -241,6 +240,7 @@ const GlobalMenu = styled.ul`
   ${listReset()}
   display: flex;
   flex-flow: column nowrap;
+  gap: ${glsp(0.5)};
 
   ${media.mediumUp`
     flex-direction: row;
@@ -256,10 +256,10 @@ const GlobalMenuLink = styled(NavLink)`
   color: currentColor;
   font-weight: bold;
   text-decoration: none;
-  padding: ${variableGlsp(0.25, 1)};
+  padding: ${variableGlsp(0, 1)};
 
   ${media.mediumUp`
-    padding: ${glsp(0.5, 0)};
+    padding: ${glsp(0.25, 0, 0.75, 0)};
   `}
 
   &::after {
@@ -267,13 +267,24 @@ const GlobalMenuLink = styled(NavLink)`
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 0;
-    height: 0.25rem;
+    width: 0.25rem;
+    height: 0;
     background: currentColor;
+
+    ${media.mediumUp`
+      width: 0;
+      height: 0.25rem;
+    `}
   }
 
   &.active::after {
-    width: 100%;
+    ${media.smallDown`
+      height: 100%;
+    `}
+
+    ${media.mediumUp`
+      width: 100%;
+    `}
   }
 `;
 
@@ -330,7 +341,7 @@ function PageHeader() {
           </GlobalNavHeader>
           <GlobalNavBody as={isSmallDown ? undefined : 'div'}>
             <GlobalNavBodyInner>
-              {deltaThematics.length > 1 && (
+              {thematic && deltaThematics.length > 1 && (
                 <ThemesNavBlock>
                   <GlobalNavBlockTitle>Thematic areas</GlobalNavBlockTitle>
                   <GlobalMenu>
@@ -344,7 +355,7 @@ function PageHeader() {
                   </GlobalMenu>
                 </ThemesNavBlock>
               )}
-              <GlobalNavBlock>
+              <SectionsNavBlock>
                 <GlobalNavBlockTitle>Sections</GlobalNavBlockTitle>
                 {thematic ? (
                   <GlobalMenu>
@@ -379,7 +390,7 @@ function PageHeader() {
                     </li>
                   </GlobalMenu>
                 )}
-              </GlobalNavBlock>
+              </SectionsNavBlock>
             </GlobalNavBodyInner>
           </GlobalNavBody>
         </GlobalNavInner>
