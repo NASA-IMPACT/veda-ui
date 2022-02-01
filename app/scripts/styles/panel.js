@@ -58,7 +58,7 @@ export const Panel = styled.div`
       css`
         & {
           ${media.mediumDown`
-            background: ${themeVal('color.base-300a')};
+            background: ${themeVal('color.base-400a')};
             width: 200vw;
         `}
         }

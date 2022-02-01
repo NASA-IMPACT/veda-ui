@@ -7,7 +7,10 @@ import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { Button } from '@devseed-ui/button';
-import { CollecticonHamburgerMenu } from '@devseed-ui/collecticons';
+import {
+  CollecticonChevronDownSmall,
+  CollecticonHamburgerMenu
+} from '@devseed-ui/collecticons';
 
 import deltaThematics from 'delta/thematics';
 import NasaLogo from './nasa-logo';
@@ -142,8 +145,8 @@ const GlobalNav = styled.nav`
       revealed &&
       css`
         & {
-          ${media.mediumDown`
-            background: ${themeVal('color.base-300a')};
+          ${media.smallDown`
+            background: ${themeVal('color.base-400a')};
             width: 200vw;
         `}
         }
@@ -169,10 +172,6 @@ const GlobalNavInner = styled.div`
 const GlobalNavHeader = styled.div`
   padding: ${variableGlsp()};
   box-shadow: 0 1px 0 0 ${themeVal('color.surface-100a')};
-
-  ${media.mediumUp`
-    display: none;
-  `}
 `;
 
 const GlobalNavTitle = styled(Heading).attrs({
@@ -288,12 +287,34 @@ const GlobalMenuLink = styled(NavLink)`
   }
 `;
 
+const MenuWrapper = styled.div`
+  position: relative;
+
+  ${media.mediumUp`
+    ${GlobalMenu} {
+      display: none;
+      position: absolute;
+      top: 100%;
+      padding: ${glsp()};
+      background: ${themeVal('color.surface')};
+      color: ${themeVal('color.base')};
+      box-shadow: ${themeVal('boxShadow.elevationC')};
+    }
+
+    &:hover ${GlobalMenu} {
+      display: flex;
+      flex-flow: column;
+      align-items: start
+    }
+  `}
+`;
+
 function PageHeader() {
   const thematic = useThematicArea();
 
-  const { isSmallDown, isMediumDown } = useMediaQuery();
+  const { isSmallDown, isMediumUp } = useMediaQuery();
 
-  const [globalNavRevealed, setGlobalNavRevealed] = useState(!isMediumDown);
+  const [globalNavRevealed, setGlobalNavRevealed] = useState(!isSmallDown);
 
   const globalNavBodyRef = useRef(null);
   // Click listener for the whole global nav body so we can close it when clicking
@@ -306,8 +327,8 @@ function PageHeader() {
 
   // Close global nav when media query changes.
   useEffect(() => {
-    setGlobalNavRevealed(!isMediumDown);
-  }, [isMediumDown]);
+    setGlobalNavRevealed(!isSmallDown);
+  }, [isSmallDown]);
 
   return (
     <PageHeaderSelf>
@@ -323,36 +344,45 @@ function PageHeader() {
         onClick={onGlobalNavClick}
       >
         <GlobalNavInner ref={globalNavBodyRef}>
-          <GlobalNavHeader>
-            <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
-            <GlobalNavActions>
-              <GlobalNavToggle
-                variation='achromic-text'
-                fitting='skinny'
-                onClick={() => setGlobalNavRevealed((v) => !v)}
-                active={globalNavRevealed}
-              >
-                <CollecticonHamburgerMenu
-                  title='Toggle global nav visibility'
-                  meaningful
-                />
-              </GlobalNavToggle>
-            </GlobalNavActions>
-          </GlobalNavHeader>
+          {isSmallDown && (
+            <GlobalNavHeader>
+              <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
+              <GlobalNavActions>
+                <GlobalNavToggle
+                  variation='achromic-text'
+                  fitting='skinny'
+                  onClick={() => setGlobalNavRevealed((v) => !v)}
+                  active={globalNavRevealed}
+                >
+                  <CollecticonHamburgerMenu
+                    title='Toggle global nav visibility'
+                    meaningful
+                  />
+                </GlobalNavToggle>
+              </GlobalNavActions>
+            </GlobalNavHeader>
+          )}
           <GlobalNavBody as={isSmallDown ? undefined : 'div'}>
             <GlobalNavBodyInner>
               {thematic && deltaThematics.length > 1 && (
                 <ThemesNavBlock>
                   <GlobalNavBlockTitle>Thematic areas</GlobalNavBlockTitle>
-                  <GlobalMenu>
-                    {deltaThematics.map((t) => (
-                      <li key={t.id}>
-                        <GlobalMenuLink to={`/${t.id}`} aria-current={null}>
-                          {t.name}
-                        </GlobalMenuLink>
-                      </li>
-                    ))}
-                  </GlobalMenu>
+                  <MenuWrapper>
+                    {isMediumUp && (
+                      <Button variation='achromic-text'>
+                        {thematic.name} <CollecticonChevronDownSmall />
+                      </Button>
+                    )}
+                    <GlobalMenu>
+                      {deltaThematics.map((t) => (
+                        <li key={t.id}>
+                          <GlobalMenuLink to={`/${t.id}`} aria-current={null}>
+                            {t.name}
+                          </GlobalMenuLink>
+                        </li>
+                      ))}
+                    </GlobalMenu>
+                  </MenuWrapper>
                 </ThemesNavBlock>
               )}
               <SectionsNavBlock>
