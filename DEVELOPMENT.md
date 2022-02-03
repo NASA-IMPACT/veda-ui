@@ -87,3 +87,7 @@ The content part (the MDX) is not handled by this resolver, but left untouched a
 ### parcel-transformer-mdx-front
 
 Since having frontmatter code is not supported by `MDX` files, this custom resolver, strips the frontmatter before reaching the `MDX` resolver.
+
+### Troubleshooting
+
+If you run into errors after making changes to mdx files, it could be from [Parcel's cache issue](https://github.com/parcel-bundler/parcel/issues/7247). Try deleting Parcel cache by running `rm -rf .parcel-cache`.
