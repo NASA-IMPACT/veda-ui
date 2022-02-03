@@ -1,4 +1,6 @@
 import React from 'react';
+import styled from 'styled-components';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { LayoutProps } from '../../common/layout-root';
 import { PageMainContent } from '../../../styles/page';
