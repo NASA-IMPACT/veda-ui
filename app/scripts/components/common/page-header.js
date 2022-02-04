@@ -5,10 +5,12 @@ import { Link, NavLink } from 'react-router-dom';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
+import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { Button } from '@devseed-ui/button';
 import {
   CollecticonChevronDownSmall,
+  CollecticonChevronUpSmall,
   CollecticonHamburgerMenu
 } from '@devseed-ui/collecticons';
 
@@ -24,6 +26,7 @@ import {
 } from '../../utils/routes';
 
 import { useMediaQuery } from '../../utils/use-media-query';
+import UnscrollableBody from './unscrollable-body';
 
 const appTitle = process.env.APP_TITLE;
 
@@ -163,10 +166,6 @@ const GlobalNavInner = styled.div`
   ${media.smallDown`
     box-shadow: ${themeVal('boxShadow.elevationD')};
   `}
-
-  ${media.mediumUp`
-    /* background: yellow; */
-  `}
 `;
 
 const GlobalNavHeader = styled.div`
@@ -197,6 +196,22 @@ const GlobalNavBody = styled(ShadowScrollbar).attrs({
 })`
   display: flex;
   flex: 1;
+
+  .shadow-top {
+    background: linear-gradient(
+      to top,
+      ${themeVal('color.primary-600')}00 0%,
+      ${themeVal('color.primary-600')} 100%
+    );
+  }
+
+  .shadow-bottom {
+    background: linear-gradient(
+      to bottom,
+      ${themeVal('color.primary-600')}00 0%,
+      ${themeVal('color.primary-600')} 100%
+    );
+  }
 `;
 
 const GlobalNavBodyInner = styled.div`
@@ -210,15 +225,32 @@ const GlobalNavBodyInner = styled.div`
   `}
 `;
 
-const SectionsNavBlock = styled.div`
+const NavBlock = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${glsp(0.25)};
+
+  ${media.mediumUp`
+    flex-direction: row;
+    align-items: center;
+    gap: ${glsp(1.5)};
+  `}
+`;
+
+const SectionsNavBlock = styled(NavBlock)`
   ${media.mediumUp`
     margin-left: auto;
   `}
 `;
 
-const ThemesNavBlock = styled.div`
+const ThemesNavBlock = styled(NavBlock)`
   ${media.smallDown`
     order: 2;
+  `}
+
+  ${media.mediumUp`
+    padding-left: ${variableGlsp()};
+    box-shadow: -1px 0 0 0 ${themeVal('color.surface-100a')};
   `}
 `;
 
@@ -245,34 +277,45 @@ const GlobalMenu = styled.ul`
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    gap: ${glsp()};
+    gap: ${glsp(1.5)};
   `}
 `;
 
 const GlobalMenuLink = styled(NavLink)`
+  appearance: none;
   position: relative;
-  display: block;
+  display: flex;
+  gap: ${glsp(0.25)};
+  align-items: center;
+  border: 0;
+  background: none;
+  cursor: pointer;
   color: currentColor;
   font-weight: bold;
   text-decoration: none;
   padding: ${variableGlsp(0, 1)};
+  transition: all 0.32s ease 0s;
 
   ${media.mediumUp`
-    padding: ${glsp(0.25, 0, 0.75, 0)};
+    padding: ${glsp(0.5, 0)};
   `}
+
+  &:hover {
+    opacity: 0.64;
+  }
 
   &::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 0.25rem;
+    width: 0.125rem;
     height: 0;
     background: currentColor;
 
     ${media.mediumUp`
       width: 0;
-      height: 0.25rem;
+      height: 0.125rem;
     `}
   }
 
@@ -285,28 +328,6 @@ const GlobalMenuLink = styled(NavLink)`
       width: 100%;
     `}
   }
-`;
-
-const MenuWrapper = styled.div`
-  position: relative;
-
-  ${media.mediumUp`
-    ${GlobalMenu} {
-      display: none;
-      position: absolute;
-      top: 100%;
-      padding: ${glsp()};
-      background: ${themeVal('color.surface')};
-      color: ${themeVal('color.base')};
-      box-shadow: ${themeVal('boxShadow.elevationC')};
-    }
-
-    &:hover ${GlobalMenu} {
-      display: flex;
-      flex-flow: column;
-      align-items: start
-    }
-  `}
 `;
 
 function PageHeader() {
@@ -332,6 +353,7 @@ function PageHeader() {
 
   return (
     <PageHeaderSelf>
+      {globalNavRevealed && isSmallDown && <UnscrollableBody />}
       <Brand>
         <Link to='/'>
           <NasaLogo />
@@ -366,14 +388,40 @@ function PageHeader() {
             <GlobalNavBodyInner>
               {thematic && deltaThematics.length > 1 && (
                 <ThemesNavBlock>
-                  <GlobalNavBlockTitle>Thematic areas</GlobalNavBlockTitle>
-                  <MenuWrapper>
-                    {isMediumUp && (
-                      <Button variation='achromic-text'>
-                        {thematic.name} <CollecticonChevronDownSmall />
-                      </Button>
-                    )}
-                    <GlobalMenu>
+                  <GlobalNavBlockTitle>Theme</GlobalNavBlockTitle>
+                  {isMediumUp ? (
+                    <Dropdown
+                      alignment='left'
+                      // eslint-disable-next-line no-unused-vars
+                      triggerElement={({ active, className, ...rest }) => (
+                        <GlobalMenuLink {...rest} as='button'>
+                          {thematic.name}{' '}
+                          {active ? (
+                            <CollecticonChevronUpSmall />
+                          ) : (
+                            <CollecticonChevronDownSmall />
+                          )}
+                        </GlobalMenuLink>
+                      )}
+                    >
+                      <DropMenu id='themes-nav-block'>
+                        {deltaThematics.map((t) => (
+                          <li key={t.id}>
+                            <DropMenuItem
+                              as={NavLink}
+                              to={`/${t.id}`}
+                              aria-current={null}
+                              active={t.id === thematic.id}
+                              data-dropdown='click.close'
+                            >
+                              {t.name}
+                            </DropMenuItem>
+                          </li>
+                        ))}
+                      </DropMenu>
+                    </Dropdown>
+                  ) : (
+                    <GlobalMenu id='themes-nav-block'>
                       {deltaThematics.map((t) => (
                         <li key={t.id}>
                           <GlobalMenuLink to={`/${t.id}`} aria-current={null}>
@@ -382,11 +430,11 @@ function PageHeader() {
                         </li>
                       ))}
                     </GlobalMenu>
-                  </MenuWrapper>
+                  )}
                 </ThemesNavBlock>
               )}
               <SectionsNavBlock>
-                <GlobalNavBlockTitle>Sections</GlobalNavBlockTitle>
+                <GlobalNavBlockTitle>Section</GlobalNavBlockTitle>
                 {thematic ? (
                   <GlobalMenu>
                     <li>

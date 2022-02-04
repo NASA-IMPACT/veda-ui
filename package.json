@@ -63,6 +63,7 @@
     "@devseed-ui/animation": "^4.0.0",
     "@devseed-ui/button": "^4.0.0",
     "@devseed-ui/collecticons": "^4.0.0",
+    "@devseed-ui/dropdown": "^4.0.2",
     "@devseed-ui/form": "^4.0.0",
     "@devseed-ui/global-loading": "^4.0.0",
     "@devseed-ui/shadow-scrollbar": "^4.0.0",

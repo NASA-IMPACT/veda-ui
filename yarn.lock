@@ -1015,10 +1015,34 @@
     "@devseed-ui/collecticons" "^4.0.0"
     "@devseed-ui/theme-provider" "^4.0.0"
 
+"@devseed-ui/button@^4.0.2":
+  version "4.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fbutton/-/button-4.0.2.tgz#6a2674f19b1210c19458a243203a49409f623fd7"
+  integrity sha512-K6DyMQ5LBRiosBmoKxulckWeuKyYXEKPWMFIszZWAeq6p9d0mvKd5wkDXEXvZ8y4wZFtWiBoIh52Z9xu7xDcCQ==
+  dependencies:
+    "@devseed-ui/collecticons" "^4.0.2"
+    "@devseed-ui/theme-provider" "^4.0.2"
+
 "@devseed-ui/collecticons@^4.0.0":
   version "4.0.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fcollecticons/-/collecticons-4.0.0.tgz#d7636b15c61d152e7bc34725ce1ce8d2aa2f81d0"
   integrity sha512-Eo/ipM1C/6kSANTFq0WhbalAk5ZQZ2b4hQy1m1bA2NXd3DgyNZTzp8URIu6aAMBW4IiHLgX1zYPLw2OLfLMq1w==
+
+"@devseed-ui/collecticons@^4.0.2":
+  version "4.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fcollecticons/-/collecticons-4.0.2.tgz#d20af8522bfb41a6a6cc0920e94c9665a286f354"
+  integrity sha512-4z+TSOTBYRW2KAwPfTIiAWcX0e7A5y1e8HahPbv0W53RT7+2/V3q518tJtgBcMVub8ig1hU52r0e4+qLskvhGQ==
+
+"@devseed-ui/dropdown@^4.0.2":
+  version "4.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fdropdown/-/dropdown-4.0.2.tgz#bc227f350818dda77d0214022e4f8d54ff4de42c"
+  integrity sha512-3KR0nypmLaU9pgDEDoNjFcixTpZJhFyMBQF6JtvW4g2Wmb8vlpM3dR6CkuJJnfTgqeSAxJ1SUNjwuIo6D0Obmw==
+  dependencies:
+    "@devseed-ui/button" "^4.0.2"
+    "@devseed-ui/theme-provider" "^4.0.2"
+    "@devseed-ui/typography" "^4.0.2"
+    react-tether "^2.0.7"
+    react-transition-group "^4.3.0"
 
 "@devseed-ui/form@^4.0.0":
   version "4.0.0"
@@ -1057,12 +1081,27 @@
     lodash.get "^4.4.2"
     polished "^3.4.2"
 
+"@devseed-ui/theme-provider@^4.0.2":
+  version "4.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftheme-provider/-/theme-provider-4.0.2.tgz#8fbb67709414bdc2803377e4a3b618366a57765b"
+  integrity sha512-Db4Rx1BYTIiGneMiimyF1B+5WOgy67OxfN/5PR1v583qxRBUqprcPfLOZ2WnYnnubyJ8VW67/LuLGP8KcAytgA==
+  dependencies:
+    lodash.get "^4.4.2"
+    polished "^3.4.2"
+
 "@devseed-ui/typography@^4.0.0":
   version "4.0.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftypography/-/typography-4.0.0.tgz#cd55675bbe0bfe97258082331eb328666ae1e790"
   integrity sha512-1Bzp7a5696ayJR60WP7DWnoRK0EbUGGP+UUWm8k6i5rAFiGqE+UNx40ZWePFrFaB/ZQ9F7cG1YEGSLdzBQvnIg==
   dependencies:
     "@devseed-ui/theme-provider" "^4.0.0"
+
+"@devseed-ui/typography@^4.0.2":
+  version "4.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftypography/-/typography-4.0.2.tgz#18da6ab84467d4258001b66c383ff92681332492"
+  integrity sha512-lGWjehRWdM9mQ4pLAXiE6OhZVrBqRoP6SdesDvHcmCQpd1HqDPg8q2Svv4X66eR8tmy5ynhL0JMaBXURUTKSZA==
+  dependencies:
+    "@devseed-ui/theme-provider" "^4.0.2"
 
 "@emotion/is-prop-valid@^0.8.8":
   version "0.8.8"
@@ -7577,6 +7616,14 @@ react-side-effect@^2.1.0:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-side-effect/-/react-side-effect-2.1.1.tgz#66c5701c3e7560ab4822a4ee2742dee215d72eb3"
   integrity sha512-2FoTQzRNTncBVtnzxFOk2mCpcfxQpenBMbk5kSVBg5UcPqV9fRbgY2zhb7GTWWOlpFmAxhClBDlIq8Rsubz1yQ==
 
+react-tether@^2.0.7:
+  version "2.0.8"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-tether/-/react-tether-2.0.8.tgz#770bb2c4b794c96fe163404273e8b5b7ddb3c153"
+  integrity sha512-k5imIcN7shOy0z59WKLljvBwmGqzAcqsjHtBk8h03F3aFn+Wdz4p56ecOLCqvBb/gpQp9WEFv+Saclro6GZQCQ==
+  dependencies:
+    prop-types "^15.6.2"
+    tether "^1.4.5"
+
 react-transition-group@^4.3.0:
   version "4.4.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"
@@ -8708,6 +8755,11 @@ terser@^5.2.0, terser@^5.8.0:
     commander "^2.20.0"
     source-map "~0.7.2"
     source-map-support "~0.5.20"
+
+tether@^1.4.5:
+  version "1.4.7"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/tether/-/tether-1.4.7.tgz#d56a818590d8fe72e387f77a67f93ab96d8e1fb2"
+  integrity sha512-Z0J1aExjoFU8pybVkQAo/vD2wfSO63r+XOPfWQMC5qtf1bI7IWqNk4MiyBcgvvnY8kqnY06dVdvwTK2S3PU/Fw==
 
 text-table@^0.2.0:
   version "0.2.0"
