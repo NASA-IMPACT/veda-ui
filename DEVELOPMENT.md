@@ -90,4 +90,4 @@ Since having frontmatter code is not supported by `MDX` files, this custom resol
 
 ### Troubleshooting
 
-If you run into errors after making changes to mdx files, it could be from [Parcel's cache issue](https://github.com/parcel-bundler/parcel/issues/7247). Try deleting Parcel cache by running `rm -rf .parcel-cache`.
+If you run into errors after making changes to mdx files, it could be from [Parcel's cache issue](https://github.com/parcel-bundler/parcel/issues/7247). Try deleting Parcel cache by running `rm -rf .parcel-cache`. If this doesn't resolve your problem, try `yarn clean` to start from a clean slate and report your error to [Daniel](https://github.com/danielfdsilva) or [Hanbyul](https://github.com/hanbyul-here).
