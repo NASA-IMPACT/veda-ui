@@ -1,8 +1,16 @@
 import { themeVal } from '@devseed-ui/theme-provider';
 import { css } from 'styled-components';
 
-const variableType = (base, variable) =>
-  css`calc(${base} * var(${variable}, 1));`;
+// DEV NOTE: The use of a `const template =` declaration is to prevent stylelint
+// from complaining about weird css declarations.
+
+const variableType = (base, variable) => {
+  const template = `calc(${base} * var(${variable}, 1));`;
+
+  return css`
+    ${template}
+  `;
+};
 
 /**
  * Returns the correct type size taking into account the provided value and the
@@ -24,10 +32,15 @@ export const variableBaseType = (base) =>
  *
  * @returns CSS expression like calc(glsp * 1.5 * var(--base-text-multiplier))
  */
-export const variableProseVSpace = () =>
-  css`calc(
+export const variableProseVSpace = () => {
+  const template = `calc(
     ${themeVal('layout.space')} * 1.5 * var(--base-text-multiplier, 1)
   )`;
+
+  return css`
+    ${template}
+  `;
+};
 
 /**
  * Similar behavior to glsp but varies according to the current media query. The
