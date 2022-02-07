@@ -5,11 +5,7 @@ import { css } from 'styled-components';
 // from complaining about weird css declarations.
 
 const variableType = (base, variable) => {
-  const template = `calc(${base} * var(${variable}, 1));`;
-
-  return css`
-    ${template}
-  `;
+  return css`calc(${base} * var(${variable}, 1));`;
 };
 
 /**
@@ -33,13 +29,9 @@ export const variableBaseType = (base) =>
  * @returns CSS expression like calc(glsp * 1.5 * var(--base-text-multiplier))
  */
 export const variableProseVSpace = () => {
-  const template = `calc(
+  return css`calc(
     ${themeVal('layout.space')} * 1.5 * var(--base-text-multiplier, 1)
   )`;
-
-  return css`
-    ${template}
-  `;
 };
 
 /**

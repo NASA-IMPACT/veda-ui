@@ -3,6 +3,7 @@ import React from 'react';
 import { LayoutProps } from '../../common/layout-root';
 import Constrainer from '../../../styles/constrainer';
 import { PageMainContent } from '../../../styles/page';
+import PageHero from '../../common/page-hero';
 import { resourceNotFound } from '../../uhoh';
 
 import {
@@ -21,9 +22,8 @@ function DiscoveriesSingle() {
   return (
     <PageMainContent>
       <LayoutProps title={discovery.data.name} />
+      <PageHero />
       <Constrainer>
-        <h1>Discovery: {discovery.data.name}</h1>
-
         {pageMdx.status === 'loading' && <p>Loading page content</p>}
         {pageMdx.status === 'success' && <pageMdx.MdxContent />}
       </Constrainer>

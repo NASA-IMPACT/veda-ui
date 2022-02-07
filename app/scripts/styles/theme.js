@@ -13,9 +13,9 @@ export default function themeOverrides() {
         sizeMultiplier: {
           xsmall: 1,
           small: 1,
-          medium: 1.25,
+          medium: 1,
           large: 1.25,
-          xlarge: 1.5
+          xlarge: 1.25
         }
       },
       heading: {
