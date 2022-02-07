@@ -355,7 +355,7 @@ function PageHeader() {
 
   const { isMediumDown } = useMediaQuery();
 
-  const [globalNavRevealed, setGlobalNavRevealed] = useState(!isMediumDown);
+  const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
 
   const globalNavBodyRef = useRef(null);
   // Click listener for the whole global nav body so we can close it when clicking
@@ -368,8 +368,10 @@ function PageHeader() {
 
   // Close global nav when media query changes.
   useEffect(() => {
-    setGlobalNavRevealed(!isMediumDown);
+    if (!isMediumDown) setGlobalNavRevealed(false);
   }, [isMediumDown]);
+
+  const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
 
   return (
     <PageHeaderSelf>
@@ -413,7 +415,11 @@ function PageHeader() {
                     <GlobalMenu id='themes-nav-block'>
                       {deltaThematics.map((t) => (
                         <li key={t.id}>
-                          <GlobalMenuLink to={`/${t.id}`} aria-current={null}>
+                          <GlobalMenuLink
+                            to={`/${t.id}`}
+                            aria-current={null}
+                            onClick={closeNavOnClick}
+                          >
                             {t.name}
                           </GlobalMenuLink>
                         </li>
@@ -458,22 +464,36 @@ function PageHeader() {
                 {thematic ? (
                   <GlobalMenu>
                     <li>
-                      <GlobalMenuLink to={thematicRootPath(thematic)} end>
+                      <GlobalMenuLink
+                        to={thematicRootPath(thematic)}
+                        end
+                        onClick={closeNavOnClick}
+                      >
                         Welcome
                       </GlobalMenuLink>
                     </li>
                     <li>
-                      <GlobalMenuLink to={thematicDatasetsPath(thematic)}>
+                      <GlobalMenuLink
+                        to={thematicDatasetsPath(thematic)}
+                        onClick={closeNavOnClick}
+                      >
                         Datasets
                       </GlobalMenuLink>
                     </li>
                     <li>
-                      <GlobalMenuLink to={thematicDiscoveriesPath(thematic)}>
+                      <GlobalMenuLink
+                        to={thematicDiscoveriesPath(thematic)}
+                        onClick={closeNavOnClick}
+                      >
                         Discoveries
                       </GlobalMenuLink>
                     </li>
                     <li>
-                      <GlobalMenuLink to={thematicAboutPath(thematic)} end>
+                      <GlobalMenuLink
+                        to={thematicAboutPath(thematic)}
+                        end
+                        onClick={closeNavOnClick}
+                      >
                         About
                       </GlobalMenuLink>
                     </li>
@@ -481,10 +501,14 @@ function PageHeader() {
                 ) : (
                   <GlobalMenu>
                     <li>
-                      <GlobalMenuLink to='/'>Welcome</GlobalMenuLink>
+                      <GlobalMenuLink to='/' onClick={closeNavOnClick}>
+                        Welcome
+                      </GlobalMenuLink>
                     </li>
                     <li>
-                      <GlobalMenuLink to='/about'>About</GlobalMenuLink>
+                      <GlobalMenuLink to='/about' onClick={closeNavOnClick}>
+                        About
+                      </GlobalMenuLink>
                     </li>
                   </GlobalMenu>
                 )}
