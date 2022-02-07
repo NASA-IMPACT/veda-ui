@@ -56,12 +56,10 @@ export const Panel = styled.div`
     ${({ revealed }) =>
       revealed &&
       css`
-        & {
-          ${media.mediumDown`
-            background: ${themeVal('color.base-400a')};
-            width: 200vw;
+        ${media.mediumDown`
+          background: ${themeVal('color.base-400a')};
+          width: 200vw;
         `}
-        }
       `}
   }
 `;
