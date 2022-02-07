@@ -53,9 +53,7 @@ function PageFooter(props) {
       <FooterCredits>
         <p>
           <a href='https://earthdata.nasa.gov/'>
-            <span>By</span>
-            NASA <strong>Earthdata</strong>
-            <span>on</span>{' '}
+            <span>By</span> NASA <strong>Earthdata</strong> <span>on</span>{' '}
             <time dateTime={nowDate.getFullYear()}>
               {nowDate.getFullYear()}
             </time>

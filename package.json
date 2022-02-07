@@ -57,12 +57,15 @@
     "posthtml-expressions": "^1.9.0",
     "prettier": "^2.4.1",
     "stylelint": "^13.12",
-    "stylelint-config-recommended": "^3.0.0"
+    "stylelint-config-recommended": "^3.0.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-processor-styled-components": "^1.10.0"
   },
   "dependencies": {
     "@devseed-ui/animation": "^4.0.0",
     "@devseed-ui/button": "^4.0.0",
     "@devseed-ui/collecticons": "^4.0.0",
+    "@devseed-ui/dropdown": "^4.0.2",
     "@devseed-ui/form": "^4.0.0",
     "@devseed-ui/global-loading": "^4.0.0",
     "@devseed-ui/shadow-scrollbar": "^4.0.0",

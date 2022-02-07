@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
 import { Link } from 'react-router-dom';
 
+import deltaThematics from 'delta/thematics';
 import Constrainer from '../../styles/constrainer';
 import { PageMainContent } from '../../styles/page';
 
-import deltaThematics from 'delta/thematics';
 import { LayoutProps } from '../common/layout-root';
 
 const ThematicList = styled.ul`

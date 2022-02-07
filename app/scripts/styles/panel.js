@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import { media, themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
-import { createOverlineStyles } from '@devseed-ui/typography';
+import { Overline } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { variableGlsp } from './variable-utils';
@@ -56,12 +56,10 @@ export const Panel = styled.div`
     ${({ revealed }) =>
       revealed &&
       css`
-        & {
-          ${media.mediumDown`
-            background: ${themeVal('color.base-300a')};
-            width: 200vw;
+        ${media.mediumDown`
+          background: ${themeVal('color.base-400a')};
+          width: 200vw;
         `}
-        }
       `}
   }
 `;
@@ -116,8 +114,10 @@ export const PanelWidgetHeader = styled.div`
   /* styled-component */
 `;
 
-export const PanelWidgetTitle = styled.h3`
-  ${createOverlineStyles()}
+export const PanelWidgetTitle = styled(Overline).attrs({
+  as: 'h3'
+})`
+  /* styled-component */
 `;
 
 export const PanelWidgetBody = styled.div`
