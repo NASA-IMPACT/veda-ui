@@ -2,7 +2,13 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
 
-import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
+import {
+  glsp,
+  listReset,
+  media,
+  themeVal,
+  truncated
+} from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
 import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
@@ -124,7 +130,7 @@ const GlobalNav = styled.nav`
       }
     `}
 
-  ${media.mediumUp`
+  ${media.largeUp`
     position: static;
     flex: 1;
     margin: 0;
@@ -134,6 +140,8 @@ const GlobalNav = styled.nav`
       content: '';
     }
   `}
+
+  /* Show page nav backdrop on small screens */
 
   &::after {
     content: '';
@@ -147,12 +155,10 @@ const GlobalNav = styled.nav`
     ${({ revealed }) =>
       revealed &&
       css`
-        & {
-          ${media.smallDown`
-            background: ${themeVal('color.base-400a')};
-            width: 200vw;
+        ${media.mediumDown`
+          background: ${themeVal('color.base-400a')};
+          width: 200vw;
         `}
-        }
       `}
   }
 `;
@@ -163,7 +169,7 @@ const GlobalNavInner = styled.div`
   flex: 1;
   background-color: ${themeVal('color.primary')};
 
-  ${media.smallDown`
+  ${media.mediumDown`
     box-shadow: ${themeVal('boxShadow.elevationD')};
   `}
 `;
@@ -219,7 +225,7 @@ const GlobalNavBodyInner = styled.div`
   flex-direction: column;
   flex: 1;
 
-  ${media.mediumUp`
+  ${media.largeUp`
     flex-direction: row;
     gap: ${variableGlsp()};
   `}
@@ -230,7 +236,7 @@ const NavBlock = styled.div`
   flex-flow: column nowrap;
   gap: ${glsp(0.25)};
 
-  ${media.mediumUp`
+  ${media.largeUp`
     flex-direction: row;
     align-items: center;
     gap: ${glsp(1.5)};
@@ -238,17 +244,17 @@ const NavBlock = styled.div`
 `;
 
 const SectionsNavBlock = styled(NavBlock)`
-  ${media.mediumUp`
+  ${media.largeUp`
     margin-left: auto;
   `}
 `;
 
 const ThemesNavBlock = styled(NavBlock)`
-  ${media.smallDown`
+  ${media.mediumDown`
     order: 2;
   `}
 
-  ${media.mediumUp`
+  ${media.largeUp`
     padding-left: ${variableGlsp()};
     box-shadow: -1px 0 0 0 ${themeVal('color.surface-100a')};
   `}
@@ -262,7 +268,7 @@ const GlobalNavBlockTitle = styled(Overline).attrs({
   color: currentColor;
   opacity: 0.64;
 
-  ${media.mediumUp`
+  ${media.largeUp`
     padding: 0;
   `}
 `;
@@ -273,7 +279,7 @@ const GlobalMenu = styled.ul`
   flex-flow: column nowrap;
   gap: ${glsp(0.5)};
 
-  ${media.mediumUp`
+  ${media.largeUp`
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
@@ -293,16 +299,23 @@ const GlobalMenuLink = styled(NavLink)`
   color: currentColor;
   font-weight: bold;
   text-decoration: none;
+  text-align: left;
   padding: ${variableGlsp(0, 1)};
   transition: all 0.32s ease 0s;
 
-  ${media.mediumUp`
+  ${media.largeUp`
     padding: ${glsp(0.5, 0)};
   `}
 
   &:hover {
     opacity: 0.64;
   }
+
+  > * {
+    flex-shrink: 0;
+  }
+
+  /* Menu link line decoration */
 
   &::after {
     content: '';
@@ -313,29 +326,36 @@ const GlobalMenuLink = styled(NavLink)`
     height: 0;
     background: currentColor;
 
-    ${media.mediumUp`
+    ${media.largeUp`
       width: 0;
       height: 0.125rem;
     `}
   }
 
   &.active::after {
-    ${media.smallDown`
+    ${media.mediumDown`
       height: 100%;
     `}
 
-    ${media.mediumUp`
+    ${media.largeUp`
       width: 100%;
     `}
+  }
+`;
+
+const ThemeToggle = styled(GlobalMenuLink)`
+  > span {
+    ${truncated()}
+    max-width: 8rem;
   }
 `;
 
 function PageHeader() {
   const thematic = useThematicArea();
 
-  const { isSmallDown, isMediumUp } = useMediaQuery();
+  const { isMediumDown } = useMediaQuery();
 
-  const [globalNavRevealed, setGlobalNavRevealed] = useState(!isSmallDown);
+  const [globalNavRevealed, setGlobalNavRevealed] = useState(!isMediumDown);
 
   const globalNavBodyRef = useRef(null);
   // Click listener for the whole global nav body so we can close it when clicking
@@ -348,12 +368,12 @@ function PageHeader() {
 
   // Close global nav when media query changes.
   useEffect(() => {
-    setGlobalNavRevealed(!isSmallDown);
-  }, [isSmallDown]);
+    setGlobalNavRevealed(!isMediumDown);
+  }, [isMediumDown]);
 
   return (
     <PageHeaderSelf>
-      {globalNavRevealed && isSmallDown && <UnscrollableBody />}
+      {globalNavRevealed && isMediumDown && <UnscrollableBody />}
       <Brand>
         <Link to='/'>
           <NasaLogo />
@@ -366,7 +386,7 @@ function PageHeader() {
         onClick={onGlobalNavClick}
       >
         <GlobalNavInner ref={globalNavBodyRef}>
-          {isSmallDown && (
+          {isMediumDown && (
             <GlobalNavHeader>
               <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
               <GlobalNavActions>
@@ -384,24 +404,34 @@ function PageHeader() {
               </GlobalNavActions>
             </GlobalNavHeader>
           )}
-          <GlobalNavBody as={isSmallDown ? undefined : 'div'}>
+          <GlobalNavBody as={isMediumDown ? undefined : 'div'}>
             <GlobalNavBodyInner>
               {thematic && deltaThematics.length > 1 && (
                 <ThemesNavBlock>
                   <GlobalNavBlockTitle>Theme</GlobalNavBlockTitle>
-                  {isMediumUp ? (
+                  {isMediumDown ? (
+                    <GlobalMenu id='themes-nav-block'>
+                      {deltaThematics.map((t) => (
+                        <li key={t.id}>
+                          <GlobalMenuLink to={`/${t.id}`} aria-current={null}>
+                            {t.name}
+                          </GlobalMenuLink>
+                        </li>
+                      ))}
+                    </GlobalMenu>
+                  ) : (
                     <Dropdown
                       alignment='left'
                       // eslint-disable-next-line no-unused-vars
                       triggerElement={({ active, className, ...rest }) => (
-                        <GlobalMenuLink {...rest} as='button'>
-                          {thematic.name}{' '}
+                        <ThemeToggle {...rest} as='button'>
+                          <span>{thematic.name}</span>{' '}
                           {active ? (
                             <CollecticonChevronUpSmall />
                           ) : (
                             <CollecticonChevronDownSmall />
                           )}
-                        </GlobalMenuLink>
+                        </ThemeToggle>
                       )}
                     >
                       <DropMenu id='themes-nav-block'>
@@ -420,16 +450,6 @@ function PageHeader() {
                         ))}
                       </DropMenu>
                     </Dropdown>
-                  ) : (
-                    <GlobalMenu id='themes-nav-block'>
-                      {deltaThematics.map((t) => (
-                        <li key={t.id}>
-                          <GlobalMenuLink to={`/${t.id}`} aria-current={null}>
-                            {t.name}
-                          </GlobalMenuLink>
-                        </li>
-                      ))}
-                    </GlobalMenu>
                   )}
                 </ThemesNavBlock>
               )}
