@@ -2,7 +2,7 @@
 
 The base idea behind Delta architecture is the separation of concerns between ui code and configuration.  
 That is why the ui repo (`delta-ui`) is used as a submodule of `delta-config`.
-A user wishing to setup a new Delta instance, only has to fork `delta-config`, change the configuration variables and the content, and that is it.
+A user wishing to setup a new Delta instance, only has to fork `delta-config`, change the configuration variables and the content, and you are ready to launch your own instance.
 
 For development purposes, the ui repo can be run directly without the need to have the `delta-config` code around.  
 In this case the data is loaded from the `mock/` folder, which replicates the structure one would find in `delta-config`.
@@ -81,9 +81,13 @@ import deltaThematics, {
 
 ### parcel-resolver-evolution
 
-Custom resolver module used to create the faux module that outputs the structure above. It reads all the files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
+[Custom resolver module](https://github.com/NASA-IMPACT/delta-ui/blob/main/parcel-resolver-evolution/index.js) is used to create the faux module that outputs the structure above. It reads all the mdx files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
 The content part (the MDX) is not handled by this resolver, but left untouched and when trying to import a `MDX` file, the correct resolver will kick in.
 
 ### parcel-transformer-mdx-front
 
 Since having frontmatter code is not supported by `MDX` files, this custom resolver, strips the frontmatter before reaching the `MDX` resolver.
+
+### Troubleshooting
+
+If you run into errors after making changes to mdx files, it could be from [Parcel's cache issue](https://github.com/parcel-bundler/parcel/issues/7247). Try deleting Parcel cache by running `rm -rf .parcel-cache`. If this doesn't resolve your problem, try `yarn clean` to start from a clean slate and file an issue.
