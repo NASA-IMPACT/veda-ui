@@ -42,7 +42,11 @@ export function useMediaQuery() {
     [theme.mediaRanges]
   );
 
-  const { observe, currentBreakpoint, width } = useDimensions({
+  const {
+    observe,
+    currentBreakpoint,
+    width: calculatedWidth
+  } = useDimensions({
     breakpoints,
     updateOnBreakpointChange: true
   });
@@ -50,6 +54,12 @@ export function useMediaQuery() {
   useEffect(() => {
     observe(document.body);
   }, [observe]);
+
+  // On first mount react-cool-dimension will return a width of 0, which breaks
+  // the media queries styles because there's a mismatch between the css media
+  // queries and the js.
+  const width =
+    calculatedWidth || (typeof window !== 'undefined' ? window.innerWidth : 0);
 
   const rangeBooleans = useMemo(
     () =>
