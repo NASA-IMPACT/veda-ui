@@ -1,32 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { csv } from 'd3-fetch';
+import T from 'prop-types';
+import { csv, json } from 'd3-fetch';
 import { ResponsiveLineCanvas } from '@nivo/line';
 
-const Chart = ({ dataPath }) => {
+const fileExtensionRegex = /(?:\.([^.]+))?$/;
+function formatData({ data, idKey, xKey, yKey }) {
+  const dataWId = data.reduce((acc, curr) => {
+    if (!acc.find((e) => e.id === curr.County)) {
+      const newEntry = {
+        id: curr[idKey],
+        data: []
+      };
+      acc.push(newEntry);
+    }
+    acc
+      .find((e) => e.id === curr.County)
+      .data.push({
+        x: curr[xKey],
+        y: curr[yKey]
+      });
+    return acc;
+  }, []);
+  return dataWId;
+}
+
+const Chart = ({ dataPath, idKey, xKey, yKey }) => {
   const [data, setData] = useState([]);
+  const extension = fileExtensionRegex.exec(dataPath)[1];
+
   useEffect(() => {
     const getData = async () => {
-      const data = await csv(dataPath);
-      const dataWId = data.reduce((acc, curr) => {
-        if (!acc.find((e) => e.id === curr.County)) {
-          const newEntry = {
-            id: curr.County,
-            data: []
-          };
-          acc.push(newEntry);
-        }
-        acc
-          .find((e) => e.id === curr.County)
-          .data.push({
-            x: curr['Test Date'],
-            y: curr['New Positives']
-          });
-        return acc;
-      }, []);
-      setData(dataWId);
+      let data;
+      if (extension === 'csv') data = await csv(dataPath);
+      else data = await json(dataPath);
+      const formattedData = formatData({ data, extension, idKey, xKey, yKey });
+      setData(formattedData);
     };
     getData();
-  }, [dataPath]);
+  }, [dataPath, idKey, xKey, yKey, extension]);
   return (
     <div style={{ width: '100%', height: '500px' }}>
       <ResponsiveLineCanvas
@@ -40,9 +51,17 @@ const Chart = ({ dataPath }) => {
           stacked: true,
           reverse: false
         }}
+        enableGridX={false}
       />
     </div>
   );
+};
+
+Chart.propTypes = {
+  dataPath: T.string,
+  idKey: T.string,
+  xKey: T.string,
+  yKey: T.string
 };
 
 export default Chart;
