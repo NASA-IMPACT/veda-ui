@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import T from 'prop-types';
 import { csv, json } from 'd3-fetch';
 import { ResponsiveLineCanvas } from '@nivo/line';
+import { interpolatePlasma } from 'd3-scale-chromatic'; // https://github.com/d3/d3-scale-chromatic
 
 const fileExtensionRegex = /(?:\.([^.]+))?$/;
 function formatData({ data, idKey, xKey, yKey }) {
@@ -64,6 +65,12 @@ function getLegend() {
   ];
 }
 
+function getColors(steps) {
+  return new Array(steps).fill(0).map((e, idx) => {
+    return interpolatePlasma(idx / steps);
+  });
+}
+
 const Chart = ({ dataPath, idKey, xKey, yKey }) => {
   const [data, setData] = useState([]);
   const extension = fileExtensionRegex.exec(dataPath)[1];
@@ -88,6 +95,7 @@ const Chart = ({ dataPath, idKey, xKey, yKey }) => {
           format: '%Y-%m-%d',
           precision: 'day'
         }}
+        colors={getColors(data.length)}
         xFormat='time:%Y-%m-%d'
         yScale={{
           type: 'linear',
