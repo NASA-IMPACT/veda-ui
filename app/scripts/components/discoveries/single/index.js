@@ -22,7 +22,10 @@ function DiscoveriesSingle() {
   return (
     <PageMainContent>
       <LayoutProps title={discovery.data.name} />
-      <PageHero />
+      <PageHero
+        title={discovery.data.name}
+        description={discovery.data.description}
+      />
       <Constrainer>
         {pageMdx.status === 'loading' && <p>Loading page content</p>}
         {pageMdx.status === 'success' && <pageMdx.MdxContent />}

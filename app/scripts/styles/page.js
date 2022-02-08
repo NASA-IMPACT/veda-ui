@@ -19,7 +19,9 @@ export const PageMainTitle = styled(VarHeading).attrs({
 
 export const PageOverline = styled(Overline)`
   order: -1;
+  color: inherit;
   font-size: ${variableBaseType('0.75rem')};
+  line-height: ${variableBaseType('1rem')};
 
   > * {
     line-height: inherit;
@@ -27,5 +29,5 @@ export const PageOverline = styled(Overline)`
 `;
 
 export const PageSubtitle = styled(Subtitle)`
-  /* styled-component */
+  color: inherit;
 `;
