@@ -24,6 +24,46 @@ function formatData({ data, idKey, xKey, yKey }) {
   return dataWId;
 }
 
+function getBottomAxis() {
+  const tickNum = 10; // adjust per screen size
+  return {
+    tickValues: tickNum,
+    tickSize: 5,
+    tickPadding: 5,
+    tickRotation: 0,
+    format: '%Y-%m-%d'
+  };
+}
+
+function getLegend() {
+  return [
+    {
+      anchor: 'bottom-right',
+      direction: 'column',
+      justify: false,
+      translateX: 100,
+      translateY: 0,
+      itemsSpacing: 0,
+      itemDirection: 'left-to-right',
+      itemWidth: 80,
+      itemHeight: 20,
+      itemOpacity: 0.75,
+      symbolSize: 12,
+      symbolShape: 'square',
+      symbolBorderColor: 'rgba(0, 0, 0, .5)',
+      effects: [
+        {
+          on: 'hover',
+          style: {
+            itemBackground: 'rgba(0, 0, 0, .03)',
+            itemOpacity: 1
+          }
+        }
+      ]
+    }
+  ];
+}
+
 const Chart = ({ dataPath, idKey, xKey, yKey }) => {
   const [data, setData] = useState([]);
   const extension = fileExtensionRegex.exec(dataPath)[1];
@@ -42,8 +82,13 @@ const Chart = ({ dataPath, idKey, xKey, yKey }) => {
     <div style={{ width: '100%', height: '500px' }}>
       <ResponsiveLineCanvas
         data={data}
-        margin={{ top: 50, right: 10, bottom: 50, left: 60 }}
-        xScale={{ type: 'point' }}
+        margin={{ top: 50, right: 100, bottom: 50, left: 60 }}
+        xScale={{
+          type: 'time',
+          format: '%Y-%m-%d',
+          precision: 'day'
+        }}
+        xFormat='time:%Y-%m-%d'
         yScale={{
           type: 'linear',
           min: 'auto',
@@ -52,6 +97,9 @@ const Chart = ({ dataPath, idKey, xKey, yKey }) => {
           reverse: false
         }}
         enableGridX={false}
+        enablePoints={false}
+        axisBottom={getBottomAxis()}
+        legends={getLegend()}
       />
     </div>
   );
