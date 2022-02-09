@@ -29,7 +29,7 @@ const Content = styled(Prose)`
 `;
 
 function FoldProse(props) {
-const { children } = props;
+  const { children } = props;
 
   return (
     <FoldProseSelf>

@@ -9,6 +9,7 @@ import Constrainer from '../../../styles/constrainer';
 import { PageMainContent } from '../../../styles/page';
 
 import { useThematicArea } from '../../../utils/thematics';
+import PageHero from '../../common/page-hero';
 
 const List = styled.ul`
   ${listReset()}
@@ -30,8 +31,11 @@ function DatasetsHub() {
   return (
     <PageMainContent>
       <LayoutProps title='Datasets' />
+      <PageHero
+        title='Datasets'
+        description='This dashboard explores key indicators to track and compare changes over time.'
+      />
       <Constrainer>
-        <h1>{thematic.data.name} Datasets</h1>
         <List>
           {thematic.data.datasets.map((t) => (
             <li key={t.id}>
