@@ -1467,208 +1467,55 @@
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@iarna%2ftoml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@istanbuljs/load-nyc-config@^1.0.0":
-  version "1.1.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@istanbuljs%2fload-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
-  integrity sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==
+"@mapbox/geojson-rewind@^0.5.1":
+  version "0.5.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@mapbox%2fgeojson-rewind/-/geojson-rewind-0.5.1.tgz#adbe16dc683eb40e90934c51a5e28c7bbf44f4e1"
+  integrity sha512-eL7fMmfTBKjrb+VFHXCGv9Ot0zc3C0U+CwXo1IrP+EPwDczLoXv34Tgq3y+2mPSFNVUXgU42ILWJTC7145KPTA==
   dependencies:
-    camelcase "^5.3.1"
-    find-up "^4.1.0"
-    get-package-type "^0.1.0"
-    js-yaml "^3.13.1"
-    resolve-from "^5.0.0"
+    get-stream "^6.0.1"
+    minimist "^1.2.5"
 
-"@istanbuljs/schema@^0.1.2":
-  version "0.1.3"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@istanbuljs%2fschema/-/schema-0.1.3.tgz#e45e384e4b8ec16bce2fd903af78450f6bf7ec98"
-  integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
+"@mapbox/geojson-types@^1.0.2":
+  version "1.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@mapbox%2fgeojson-types/-/geojson-types-1.0.2.tgz#9aecf642cb00eab1080a57c4f949a65b4a5846d6"
+  integrity sha512-e9EBqHHv3EORHrSfbR9DqecPNn+AmuAoQxV6aL8Xu30bJMJR1o8PZLZzpk1Wq7/NfCbuhmakHTPYRhoqLsXRnw==
 
-"@jest/console@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2fconsole/-/console-27.5.1.tgz#260fe7239602fe5130a94f1aa386eff54b014bba"
-  integrity sha512-kZ/tNpS3NXn0mlXXXPNuDZnb4c0oZ20r4K5eemM2k30ZC3G0T02nXUvyhf5YdbXWHPEJLc9qGLxEZ216MdL+Zg==
+"@mapbox/jsonlint-lines-primitives@^2.0.2":
+  version "2.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@mapbox%2fjsonlint-lines-primitives/-/jsonlint-lines-primitives-2.0.2.tgz#ce56e539f83552b58d10d672ea4d6fc9adc7b234"
+  integrity sha1-zlblOfg1UrWNENZy6k1vya3HsjQ=
+
+"@mapbox/mapbox-gl-supported@^2.0.0":
+  version "2.0.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@mapbox%2fmapbox-gl-supported/-/mapbox-gl-supported-2.0.1.tgz#c15367178d8bfe4765e6b47b542fe821ce259c7b"
+  integrity sha512-HP6XvfNIzfoMVfyGjBckjiAOQK9WfX0ywdLubuPMPv+Vqf5fj0uCbgBQYpiqcWZT6cbyyRnTSXDheT1ugvF6UQ==
+
+"@mapbox/point-geometry@0.1.0", "@mapbox/point-geometry@^0.1.0", "@mapbox/point-geometry@~0.1.0":
+  version "0.1.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@mapbox%2fpoint-geometry/-/point-geometry-0.1.0.tgz#8a83f9335c7860effa2eeeca254332aa0aeed8f2"
+  integrity sha1-ioP5M1x4YO/6Lu7KJUMyqgru2PI=
+
+"@mapbox/tiny-sdf@^2.0.2":
+  version "2.0.5"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@mapbox%2ftiny-sdf/-/tiny-sdf-2.0.5.tgz#cdba698d3d65087643130f9af43a2b622ce0b372"
+  integrity sha512-OhXt2lS//WpLdkqrzo/KwB7SRD8AiNTFFzuo9n14IBupzIMa67yGItcK7I2W9D8Ghpa4T04Sw9FWsKCJG50Bxw==
+
+"@mapbox/unitbezier@^0.0.0":
+  version "0.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@mapbox%2funitbezier/-/unitbezier-0.0.0.tgz#15651bd553a67b8581fb398810c98ad86a34524e"
+  integrity sha1-FWUb1VOme4WB+zmIEMmK2Go0Uk4=
+
+"@mapbox/vector-tile@^1.3.1":
+  version "1.3.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@mapbox%2fvector-tile/-/vector-tile-1.3.1.tgz#d3a74c90402d06e89ec66de49ec817ff53409666"
+  integrity sha512-MCEddb8u44/xfQ3oD+Srl/tNcQoqTw3goGk2oLsrFxOTc3dUp+kAnby3PvAeeBYSMSjSPD1nd1AJA6W49WnoUw==
   dependencies:
-    "@jest/types" "^27.5.1"
-    "@types/node" "*"
-    chalk "^4.0.0"
-    jest-message-util "^27.5.1"
-    jest-util "^27.5.1"
-    slash "^3.0.0"
+    "@mapbox/point-geometry" "~0.1.0"
 
-"@jest/core@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2fcore/-/core-27.5.1.tgz#267ac5f704e09dc52de2922cbf3af9edcd64b626"
-  integrity sha512-AK6/UTrvQD0Cd24NSqmIA6rKsu0tKIxfiCducZvqxYdmMisOYAsdItspT+fQDQYARPf8XgjAFZi0ogW2agH5nQ==
-  dependencies:
-    "@jest/console" "^27.5.1"
-    "@jest/reporters" "^27.5.1"
-    "@jest/test-result" "^27.5.1"
-    "@jest/transform" "^27.5.1"
-    "@jest/types" "^27.5.1"
-    "@types/node" "*"
-    ansi-escapes "^4.2.1"
-    chalk "^4.0.0"
-    emittery "^0.8.1"
-    exit "^0.1.2"
-    graceful-fs "^4.2.9"
-    jest-changed-files "^27.5.1"
-    jest-config "^27.5.1"
-    jest-haste-map "^27.5.1"
-    jest-message-util "^27.5.1"
-    jest-regex-util "^27.5.1"
-    jest-resolve "^27.5.1"
-    jest-resolve-dependencies "^27.5.1"
-    jest-runner "^27.5.1"
-    jest-runtime "^27.5.1"
-    jest-snapshot "^27.5.1"
-    jest-util "^27.5.1"
-    jest-validate "^27.5.1"
-    jest-watcher "^27.5.1"
-    micromatch "^4.0.4"
-    rimraf "^3.0.0"
-    slash "^3.0.0"
-    strip-ansi "^6.0.0"
-
-"@jest/environment@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2fenvironment/-/environment-27.5.1.tgz#d7425820511fe7158abbecc010140c3fd3be9c74"
-  integrity sha512-/WQjhPJe3/ghaol/4Bq480JKXV/Rfw8nQdN7f41fM8VDHLcxKXou6QyXAh3EFr9/bVG3x74z1NWDkP87EiY8gA==
-  dependencies:
-    "@jest/fake-timers" "^27.5.1"
-    "@jest/types" "^27.5.1"
-    "@types/node" "*"
-    jest-mock "^27.5.1"
-
-"@jest/fake-timers@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2ffake-timers/-/fake-timers-27.5.1.tgz#76979745ce0579c8a94a4678af7a748eda8ada74"
-  integrity sha512-/aPowoolwa07k7/oM3aASneNeBGCmGQsc3ugN4u6s4C/+s5M64MFo/+djTdiwcbQlRfFElGuDXWzaWj6QgKObQ==
-  dependencies:
-    "@jest/types" "^27.5.1"
-    "@sinonjs/fake-timers" "^8.0.1"
-    "@types/node" "*"
-    jest-message-util "^27.5.1"
-    jest-mock "^27.5.1"
-    jest-util "^27.5.1"
-
-"@jest/globals@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2fglobals/-/globals-27.5.1.tgz#7ac06ce57ab966566c7963431cef458434601b2b"
-  integrity sha512-ZEJNB41OBQQgGzgyInAv0UUfDDj3upmHydjieSxFvTRuZElrx7tXg/uVQ5hYVEwiXs3+aMsAeEc9X7xiSKCm4Q==
-  dependencies:
-    "@jest/environment" "^27.5.1"
-    "@jest/types" "^27.5.1"
-    expect "^27.5.1"
-
-"@jest/reporters@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2freporters/-/reporters-27.5.1.tgz#ceda7be96170b03c923c37987b64015812ffec04"
-  integrity sha512-cPXh9hWIlVJMQkVk84aIvXuBB4uQQmFqZiacloFuGiP3ah1sbCxCosidXFDfqG8+6fO1oR2dTJTlsOy4VFmUfw==
-  dependencies:
-    "@bcoe/v8-coverage" "^0.2.3"
-    "@jest/console" "^27.5.1"
-    "@jest/test-result" "^27.5.1"
-    "@jest/transform" "^27.5.1"
-    "@jest/types" "^27.5.1"
-    "@types/node" "*"
-    chalk "^4.0.0"
-    collect-v8-coverage "^1.0.0"
-    exit "^0.1.2"
-    glob "^7.1.2"
-    graceful-fs "^4.2.9"
-    istanbul-lib-coverage "^3.0.0"
-    istanbul-lib-instrument "^5.1.0"
-    istanbul-lib-report "^3.0.0"
-    istanbul-lib-source-maps "^4.0.0"
-    istanbul-reports "^3.1.3"
-    jest-haste-map "^27.5.1"
-    jest-resolve "^27.5.1"
-    jest-util "^27.5.1"
-    jest-worker "^27.5.1"
-    slash "^3.0.0"
-    source-map "^0.6.0"
-    string-length "^4.0.1"
-    terminal-link "^2.0.0"
-    v8-to-istanbul "^8.1.0"
-
-"@jest/source-map@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2fsource-map/-/source-map-27.5.1.tgz#6608391e465add4205eae073b55e7f279e04e8cf"
-  integrity sha512-y9NIHUYF3PJRlHk98NdC/N1gl88BL08aQQgu4k4ZopQkCw9t9cV8mtl3TV8b/YCB8XaVTFrmUTAJvjsntDireg==
-  dependencies:
-    callsites "^3.0.0"
-    graceful-fs "^4.2.9"
-    source-map "^0.6.0"
-
-"@jest/test-result@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2ftest-result/-/test-result-27.5.1.tgz#56a6585fa80f7cdab72b8c5fc2e871d03832f5bb"
-  integrity sha512-EW35l2RYFUcUQxFJz5Cv5MTOxlJIQs4I7gxzi2zVU7PJhOwfYq1MdC5nhSmYjX1gmMmLPvB3sIaC+BkcHRBfag==
-  dependencies:
-    "@jest/console" "^27.5.1"
-    "@jest/types" "^27.5.1"
-    "@types/istanbul-lib-coverage" "^2.0.0"
-    collect-v8-coverage "^1.0.0"
-
-"@jest/test-sequencer@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2ftest-sequencer/-/test-sequencer-27.5.1.tgz#4057e0e9cea4439e544c6353c6affe58d095745b"
-  integrity sha512-LCheJF7WB2+9JuCS7VB/EmGIdQuhtqjRNI9A43idHv3E4KltCTsPsLxvdaubFHSYwY/fNjMWjl6vNRhDiN7vpQ==
-  dependencies:
-    "@jest/test-result" "^27.5.1"
-    graceful-fs "^4.2.9"
-    jest-haste-map "^27.5.1"
-    jest-runtime "^27.5.1"
-
-"@jest/transform@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2ftransform/-/transform-27.5.1.tgz#6c3501dcc00c4c08915f292a600ece5ecfe1f409"
-  integrity sha512-ipON6WtYgl/1329g5AIJVbUuEh0wZVbdpGwC99Jw4LwuoBNS95MVphU6zOeD9pDkon+LLbFL7lOQRapbB8SCHw==
-  dependencies:
-    "@babel/core" "^7.1.0"
-    "@jest/types" "^27.5.1"
-    babel-plugin-istanbul "^6.1.1"
-    chalk "^4.0.0"
-    convert-source-map "^1.4.0"
-    fast-json-stable-stringify "^2.0.0"
-    graceful-fs "^4.2.9"
-    jest-haste-map "^27.5.1"
-    jest-regex-util "^27.5.1"
-    jest-util "^27.5.1"
-    micromatch "^4.0.4"
-    pirates "^4.0.4"
-    slash "^3.0.0"
-    source-map "^0.6.1"
-    write-file-atomic "^3.0.0"
-
-"@jest/types@^27.5.1":
-  version "27.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jest%2ftypes/-/types-27.5.1.tgz#3c79ec4a8ba61c170bf937bcf9e98a9df175ec80"
-  integrity sha512-Cx46iJ9QpwQTjIdq5VJu2QTMMs3QlEjI0x1QbBP5W1+nMzyc2XmimiRR/CbX9TO0cPTeUlxWMOu8mslYsJ8DEw==
-  dependencies:
-    "@types/istanbul-lib-coverage" "^2.0.0"
-    "@types/istanbul-reports" "^3.0.0"
-    "@types/node" "*"
-    "@types/yargs" "^16.0.0"
-    chalk "^4.0.0"
-
-"@jridgewell/resolve-uri@^3.0.3":
-  version "3.0.5"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jridgewell%2fresolve-uri/-/resolve-uri-3.0.5.tgz#68eb521368db76d040a6315cdb24bf2483037b9c"
-  integrity sha512-VPeQ7+wH0itvQxnG+lIzWgkysKIr3L9sslimFW55rHMdGu/qCQ5z5h9zq4gI8uBtqkpHhsF4Z/OwExufUCThew==
-
-"@jridgewell/sourcemap-codec@^1.4.10":
-  version "1.4.11"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jridgewell%2fsourcemap-codec/-/sourcemap-codec-1.4.11.tgz#771a1d8d744eeb71b6adb35808e1a6c7b9b8c8ec"
-  integrity sha512-Fg32GrJo61m+VqYSdRSjRXMjQ06j8YIYfcTqndLYVAaHmroZHLJZCydsWBOTDqXS2v+mjxohBWEMfg97GXmYQg==
-
-"@jridgewell/trace-mapping@^0.3.0":
-  version "0.3.4"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@jridgewell%2ftrace-mapping/-/trace-mapping-0.3.4.tgz#f6a0832dffd5b8a6aaa633b7d9f8e8e94c83a0c3"
-  integrity sha512-vFv9ttIedivx0ux3QSjhgtCVjPZd5l46ZOMDSCwnH1yUO2e964gO8LZGyv2QkqcgR6TnBU1v+1IFqmeoG+0UJQ==
-  dependencies:
-    "@jridgewell/resolve-uri" "^3.0.3"
-    "@jridgewell/sourcemap-codec" "^1.4.10"
+"@mapbox/whoots-js@^3.1.0":
+  version "3.1.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@mapbox%2fwhoots-js/-/whoots-js-3.1.0.tgz#497c67a1cef50d1a2459ba60f315e448d2ad87fe"
+  integrity sha512-Es6WcD0nO5l+2BOQS4uLfNPYQaNDfbot3X1XUoloz+x0mPDS3eeORZJl06HXjwBG1fOGwCRnzK88LMdxKRrd6Q==
 
 "@mdx-js/mdx@^1.6.22":
   version "1.6.22"
@@ -4186,19 +4033,10 @@ css-what@^5.0.0:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/css-what/-/css-what-5.1.0.tgz#3f7b707aadf633baf62c2ceb8579b545bb40f7fe"
   integrity sha512-arSMRWIIFY0hV8pIxZMEfmMI47Wj3R/aWpZDDxWYCPEiOMv6tfOrnpDtgxBYPEQD4V0Y/958+1TdC3iWTFcUPw==
 
-css.escape@^1.5.1:
-  version "1.5.1"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/css.escape/-/css.escape-1.5.1.tgz#42e27d4fa04ae32f931a4b4d4191fa9cddee97cb"
-  integrity sha1-QuJ9T6BK4y+TGktNQZH6nN3ul8s=
-
-css@^3.0.0:
-  version "3.0.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/css/-/css-3.0.0.tgz#4447a4d58fdd03367c516ca9f64ae365cee4aa5d"
-  integrity sha512-DG9pFfwOrzc+hawpmqX/dHYHJG+Bsdb0klhyi1sDneOgGOXy9wQIC8hzyVp1e4NRYDBdxcylvywPkkXCHAzTyQ==
-  dependencies:
-    inherits "^2.0.4"
-    source-map "^0.6.1"
-    source-map-resolve "^0.6.0"
+csscolorparser@~1.0.3:
+  version "1.0.3"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/csscolorparser/-/csscolorparser-1.0.3.tgz#b34f391eea4da8f3e98231e2ccd8df9c041f171b"
+  integrity sha1-s085HupNqPPpgjHizNjfnAQfFxs=
 
 cssesc@^3.0.0:
   version "3.0.0"
@@ -4639,6 +4477,11 @@ each-props@^1.3.2:
   dependencies:
     is-plain-object "^2.0.1"
     object.defaults "^1.1.0"
+
+earcut@^2.2.3:
+  version "2.2.3"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/earcut/-/earcut-2.2.3.tgz#d44ced2ff5a18859568e327dd9c7d46b16f55cf4"
+  integrity sha512-iRDI1QeCQIhMCZk48DRDMVgQSSBDmbzzNhnxIo+pwx3swkfjMh6vh0nWLq1NdvGHLKH6wIrAM3vQWeTj6qeoug==
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
@@ -5534,6 +5377,11 @@ gensync@^1.0.0-beta.1, gensync@^1.0.0-beta.2:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/gensync/-/gensync-1.0.0-beta.2.tgz#32a6ee76c3d7f52d46b2b1ae5d93fea8580a25e0"
   integrity sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==
 
+geojson-vt@^3.2.1:
+  version "3.2.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/geojson-vt/-/geojson-vt-3.2.1.tgz#f8adb614d2c1d3f6ee7c4265cad4bbf3ad60c8b7"
+  integrity sha512-EvGQQi/zPrDA6zr6BnJD/YhwAkBP8nnJ9emh3EnHQKVMfg/MRVtPbMYdgVy/IaEmn4UfagD2a6fafPDL5hbtwg==
+
 get-caller-file@^1.0.1:
   version "1.0.3"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/get-caller-file/-/get-caller-file-1.0.3.tgz#f978fa4c90d1dfe7ff2d6beda2a515e713bdcf4a"
@@ -5568,7 +5416,7 @@ get-stdin@^8.0.0:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/get-stdin/-/get-stdin-8.0.0.tgz#cbad6a73feb75f6eeb22ba9e01f89aa28aa97a53"
   integrity sha512-sY22aA6xchAzprjyqmSEQv4UbAAzRN0L2dQB0NlN5acTTK9Don6nhoc3eAbUnpZiCANAMfd/+40kVdKfFygohg==
 
-get-stream@^6.0.0:
+get-stream@^6.0.1:
   version "6.0.1"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/get-stream/-/get-stream-6.0.1.tgz#a262d8eef67aced57c2852ad6167526a43cbf7b7"
   integrity sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==
@@ -5592,6 +5440,11 @@ getpass@^0.1.1:
   integrity sha1-Xv+OPmhNVprkyysSgmBOi6YhSfo=
   dependencies:
     assert-plus "^1.0.0"
+
+gl-matrix@^3.3.0:
+  version "3.4.3"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/gl-matrix/-/gl-matrix-3.4.3.tgz#fc1191e8320009fd4d20e9339595c6041ddc22c9"
+  integrity sha512-wcCp8vu8FT22BnvKVPjXa/ICBWRq/zjFfdofZy1WSpQZpphblv12/bOQLBC1rMM7SGOFS9ltVmKOHil5+Ml7gA==
 
 glob-parent@^3.1.0:
   version "3.1.0"
@@ -5766,6 +5619,11 @@ gray-matter@^4.0.3:
     kind-of "^6.0.2"
     section-matter "^1.0.0"
     strip-bom-string "^1.0.0"
+
+grid-index@^1.1.0:
+  version "1.1.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/grid-index/-/grid-index-1.1.0.tgz#97f8221edec1026c8377b86446a7c71e79522ea7"
+  integrity sha512-HZRwumpOGUrHyxO5bqKZL0B0GlUpwtCAzZ42sgxUPniu33R1LSFH5yrIcBCHjkctCAh3mtWKcKd9J4vDDdeVHA==
 
 gulp-cli@^2.2.0:
   version "2.3.0"
@@ -6188,7 +6046,7 @@ icss-utils@^4.0.0, icss-utils@^4.1.1:
   dependencies:
     postcss "^7.0.14"
 
-ieee754@^1.1.13:
+ieee754@^1.1.12, ieee754@^1.1.13:
   version "1.2.1"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
   integrity sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==
@@ -7398,6 +7256,11 @@ just-debounce@^1.0.0:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/just-debounce/-/just-debounce-1.1.0.tgz#2f81a3ad4121a76bc7cb45dbf704c0d76a8e5ddf"
   integrity sha512-qpcRocdkUmf+UTNBYx5w6dexX5J31AKK1OmPwH630a83DdVVUIngk55RSAiIGpQyoH0dlr872VHfPjnQnK1qDQ==
 
+kdbush@^3.0.0:
+  version "3.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/kdbush/-/kdbush-3.0.0.tgz#f8484794d47004cc2d85ed3a79353dbe0abc2bf0"
+  integrity sha512-hRkd6/XW4HTsA9vjVpY9tuXJYLSlelnkTmVFu4M9/7MIYQtFcHpbugAU7UbOfjOiVSVYl2fqgBuJ32JUmRo5Ew==
+
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/kind-of/-/kind-of-3.2.2.tgz#31ea21a734bab9bbb0f32466d893aea51e4a3c64"
@@ -7687,6 +7550,35 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+mapbox-gl@^2.7.0:
+  version "2.7.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/mapbox-gl/-/mapbox-gl-2.7.0.tgz#ff8f6e6f948ed468ae75c9d71884aa59af67505a"
+  integrity sha512-7sNoQIpizMjoQkFIcxpWzFCcMd8GJFN0Po00oFZGm1X7xS5XMrzwu+ClfO/ehZqKLa9IS7E3Pj0e2PT+9KeqaA==
+  dependencies:
+    "@mapbox/geojson-rewind" "^0.5.1"
+    "@mapbox/geojson-types" "^1.0.2"
+    "@mapbox/jsonlint-lines-primitives" "^2.0.2"
+    "@mapbox/mapbox-gl-supported" "^2.0.0"
+    "@mapbox/point-geometry" "^0.1.0"
+    "@mapbox/tiny-sdf" "^2.0.2"
+    "@mapbox/unitbezier" "^0.0.0"
+    "@mapbox/vector-tile" "^1.3.1"
+    "@mapbox/whoots-js" "^3.1.0"
+    csscolorparser "~1.0.3"
+    earcut "^2.2.3"
+    geojson-vt "^3.2.1"
+    gl-matrix "^3.3.0"
+    grid-index "^1.1.0"
+    minimist "^1.2.5"
+    murmurhash-js "^1.0.0"
+    pbf "^3.2.1"
+    potpack "^1.0.1"
+    quickselect "^2.0.0"
+    rw "^1.3.3"
+    supercluster "^7.1.4"
+    tinyqueue "^2.0.3"
+    vt-pbf "^3.1.3"
+
 markdown-escapes@^1.0.0:
   version "1.0.4"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/markdown-escapes/-/markdown-escapes-1.0.4.tgz#c95415ef451499d7602b91095f3c8e8975f78535"
@@ -7957,6 +7849,11 @@ msgpackr@^1.5.0:
   integrity sha512-I1CXFG8BYYSeIhtDlHpUVMsdDiyvP9JAh1d9QoBnkPx3ETPeH/1lR14hweM9GETs09wCWlaOyhtXxIc9boxAAA==
   optionalDependencies:
     msgpackr-extract "^1.0.14"
+
+murmurhash-js@^1.0.0:
+  version "1.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/murmurhash-js/-/murmurhash-js-1.0.0.tgz#b06278e21fc6c37fa5313732b0412bcb6ae15f51"
+  integrity sha1-sGJ44h/Gw3+lMTcysEEry2rhX1E=
 
 mute-stdout@^1.0.0:
   version "1.0.1"
@@ -8560,6 +8457,14 @@ path-type@^4.0.0:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+pbf@^3.2.1:
+  version "3.2.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/pbf/-/pbf-3.2.1.tgz#b4c1b9e72af966cd82c6531691115cc0409ffe2a"
+  integrity sha512-ClrV7pNOn7rtmoQVF4TS1vyU0WhYRnP92fzbfF75jAIwpnzdJXf8iTd4CMEqO4yUenH6NDqLiwjqlh6QgZzgLQ==
+  dependencies:
+    ieee754 "^1.1.12"
+    resolve-protobuf-schema "^2.1.0"
+
 pbkdf2@^3.0.3:
   version "3.1.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/pbkdf2/-/pbkdf2-3.1.2.tgz#dd822aa0887580e52f1a039dc3eda108efae3075"
@@ -9085,6 +8990,11 @@ posthtml@^0.16.4, posthtml@^0.16.5:
     posthtml-parser "^0.10.0"
     posthtml-render "^3.0.0"
 
+potpack@^1.0.1:
+  version "1.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/potpack/-/potpack-1.0.2.tgz#23b99e64eb74f5741ffe7656b5b5c4ddce8dfc14"
+  integrity sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==
+
 prefix-style@2.0.1:
   version "2.0.1"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/prefix-style/-/prefix-style-2.0.1.tgz#66bba9a870cfda308a5dc20e85e9120932c95a06"
@@ -9174,7 +9084,12 @@ property-information@^5.0.0, property-information@^5.3.0:
   dependencies:
     xtend "^4.0.0"
 
-psl@^1.1.28, psl@^1.1.33:
+protocol-buffers-schema@^3.3.1:
+  version "3.6.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/protocol-buffers-schema/-/protocol-buffers-schema-3.6.0.tgz#77bc75a48b2ff142c1ad5b5b90c94cd0fa2efd03"
+  integrity sha512-TdDRD+/QNdrCGCE7v8340QyuXd4kIWIgapsE2+n/SaGiSSbomYl4TjHlvIoCWRpE7wFt02EpB35VVA2ImcBVqw==
+
+psl@^1.1.28:
   version "1.8.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/psl/-/psl-1.8.0.tgz#9326f8bcfb013adcc005fdff056acce020e51c24"
   integrity sha512-RIdOzyoavK+hA18OGGWDqUTsCLhtA7IcZ/6NCs4fFJaHBDab+pDDmDIByWFRQJq2Cd7r1OoQxBGKOaztq+hjIQ==
@@ -9233,6 +9148,13 @@ purgecss@^4.0.0:
     postcss "^8.3.5"
     postcss-selector-parser "^6.0.6"
 
+qs@^6.10.3:
+  version "6.10.3"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/qs/-/qs-6.10.3.tgz#d6cde1b2ffca87b5aa57889816c5f81535e22e8e"
+  integrity sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ==
+  dependencies:
+    side-channel "^1.0.4"
+
 qs@~6.5.2:
   version "6.5.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
@@ -9257,6 +9179,11 @@ quick-lru@^4.0.1:
   version "4.0.1"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/quick-lru/-/quick-lru-4.0.1.tgz#5b8878f113a58217848c6482026c73e1ba57727f"
   integrity sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==
+
+quickselect@^2.0.0:
+  version "2.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/quickselect/-/quickselect-2.0.0.tgz#f19680a486a5eefb581303e023e98faaf25dd018"
+  integrity sha512-RKJ22hX8mHe3Y6wH/N3wCM6BWtjaxIyyUIkpHOvfFnxdI4yD4tBXEBKSbriGujF6jnSVkJrffuo6vxACiSSxIw==
 
 raf@^3.1.0:
   version "3.4.1"
@@ -9782,6 +9709,13 @@ resolve-options@^1.1.0:
   dependencies:
     value-or-function "^3.0.0"
 
+resolve-protobuf-schema@^2.1.0:
+  version "2.1.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/resolve-protobuf-schema/-/resolve-protobuf-schema-2.1.0.tgz#9ca9a9e69cf192bbdaf1006ec1973948aa4a3758"
+  integrity sha512-kI5ffTiZWmJaS/huM8wZfEMer1eRd7oJQhDuxeCLe3t7N7mX3z94CN0xPxBQxFYQTSNz9T0i+v6inKqSdK8xrQ==
+  dependencies:
+    protocol-buffers-schema "^3.3.1"
+
 resolve-url@^0.2.1:
   version "0.2.1"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
@@ -9856,6 +9790,11 @@ run-parallel@^1.1.9:
   integrity sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==
   dependencies:
     queue-microtask "^1.2.2"
+
+rw@^1.3.3:
+  version "1.3.3"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/rw/-/rw-1.3.3.tgz#3f862dfa91ab766b14885ef4d01124bfda074fb4"
+  integrity sha1-P4Yt+pGrdmsUiF700BEkv9oHT7Q=
 
 safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@^5.2.0, safe-buffer@~5.2.0:
   version "5.2.1"
@@ -10517,6 +10456,13 @@ sugarss@^2.0.0:
   dependencies:
     postcss "^7.0.2"
 
+supercluster@^7.1.4:
+  version "7.1.4"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/supercluster/-/supercluster-7.1.4.tgz#6762aabfd985d3390b49f13b815567d5116a828a"
+  integrity sha512-GhKkRM1jMR6WUwGPw05fs66pOFWhf59lXq+Q3J3SxPvhNcmgOtLRV6aVQPMRsmXdpaeFJGivt+t7QXUPL3ff4g==
+  dependencies:
+    kdbush "^3.0.0"
+
 supports-color@^2.0.0:
   version "2.0.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
@@ -10684,10 +10630,10 @@ timsort@^0.3.0:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
 
-tmpl@1.0.5:
-  version "1.0.5"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/tmpl/-/tmpl-1.0.5.tgz#8683e0b902bb9c20c4f726e3c0b69f36518c07cc"
-  integrity sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==
+tinyqueue@^2.0.3:
+  version "2.0.3"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/tinyqueue/-/tinyqueue-2.0.3.tgz#64d8492ebf39e7801d7bd34062e29b45b2035f08"
+  integrity sha512-ppJZNDuKGgxzkHihX8v9v9G5f+18gzaTfrukGrq6ueg0lmH4nqVnA2IPG0AEH3jKEk2GRJCUhDoqpoiw3PHLBA==
 
 to-absolute-glob@^2.0.0:
   version "2.0.2"
@@ -11304,7 +11250,16 @@ vm-browserify@^1.1.2:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
-w3c-hr-time@^1.0.1, w3c-hr-time@^1.0.2:
+vt-pbf@^3.1.3:
+  version "3.1.3"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/vt-pbf/-/vt-pbf-3.1.3.tgz#68fd150756465e2edae1cc5c048e063916dcfaac"
+  integrity sha512-2LzDFzt0mZKZ9IpVF2r69G9bXaP2Q2sArJCmcCgvfTdCCZzSyz4aCLoQyUilu37Ll56tCblIZrXFIjNUpGIlmA==
+  dependencies:
+    "@mapbox/point-geometry" "0.1.0"
+    "@mapbox/vector-tile" "^1.3.1"
+    pbf "^3.2.1"
+
+w3c-hr-time@^1.0.1:
   version "1.0.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/w3c-hr-time/-/w3c-hr-time-1.0.2.tgz#0a89cdf5cc15822df9c360543676963e0cc308cd"
   integrity sha512-z8P5DvDNjKDoFIHK7q8r8lackT6l+jo/Ye3HOle7l9nICP9lf1Ci25fy9vHd0JOWewkIFzXIEig3TdKT7JQ5fQ==
