@@ -431,7 +431,7 @@ function PageHeader() {
                       // eslint-disable-next-line no-unused-vars
                       triggerElement={({ active, className, ...rest }) => (
                         <ThemeToggle {...rest} as='button'>
-                          <span>{thematic.name}</span>{' '}
+                          <span>{thematic.data.name}</span>{' '}
                           {active ? (
                             <CollecticonChevronUpSmall />
                           ) : (
@@ -447,7 +447,7 @@ function PageHeader() {
                               as={NavLink}
                               to={`/${t.id}`}
                               aria-current={null}
-                              active={t.id === thematic.id}
+                              active={t.id === thematic.data.id}
                               data-dropdown='click.close'
                             >
                               {t.name}

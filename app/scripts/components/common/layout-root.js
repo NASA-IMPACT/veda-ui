@@ -35,7 +35,7 @@ function LayoutRoot(props) {
     title?.length > 32 ? `${title.slice(0, 32)}...` : title;
 
   const fullTitle = truncatedTitle ? `${truncatedTitle} — ` : '';
-  const thematicTitle = thematic ? `: ${thematic.name}` : '';
+  const thematicTitle = thematic ? `: ${thematic.data.name}` : '';
 
   return (
     <Page>

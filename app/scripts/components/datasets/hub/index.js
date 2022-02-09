@@ -31,9 +31,9 @@ function DatasetsHub() {
     <PageMainContent>
       <LayoutProps title='Datasets' />
       <Constrainer>
-        <h1>{thematic.name} Datasets</h1>
+        <h1>{thematic.data.name} Datasets</h1>
         <List>
-          {thematic.datasets.map((t) => (
+          {thematic.data.datasets.map((t) => (
             <li key={t.id}>
               <Link to={`${t.id}`}>
                 <h2>{t.name}</h2>

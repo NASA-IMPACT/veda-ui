@@ -31,9 +31,9 @@ function DiscoveriesHub() {
     <PageMainContent>
       <LayoutProps title='Discoveries' />
       <Constrainer>
-        <h1>{thematic.name} Discoveries</h1>
+        <h1>{thematic.data.name} Discoveries</h1>
         <List>
-          {thematic.discoveries.map((t) => (
+          {thematic.data.discoveries.map((t) => (
             <li key={t.id}>
               <Link to={`${t.id}`}>
                 <h2>{t.name}</h2>

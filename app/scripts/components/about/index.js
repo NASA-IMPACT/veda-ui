@@ -9,20 +9,18 @@ import PageHero from '../common/page-hero';
 
 import { useMdxPageLoader, useThematicArea } from '../../utils/thematics';
 
-import { thematics } from 'delta/thematics';
-
 function About() {
   const thematic = useThematicArea();
-  const pageMdx = useMdxPageLoader(thematics[thematic?.id]?.content);
+  const pageMdx = useMdxPageLoader(thematic?.content);
 
   if (!thematic) return resourceNotFound();
 
   return (
     <PageMainContent>
-      <LayoutProps title={`About ${thematic.name}`} />
+      <LayoutProps title={`About ${thematic.data.name}`} />
       <PageHero
-        title={thematic.about?.title || 'n/a'}
-        description={thematic.about?.description}
+        title={thematic.data.about?.title || 'n/a'}
+        description={thematic.data.about?.description}
       />
       <FoldProse>
         {pageMdx.status === 'loading' && <p>Loading page content</p>}
