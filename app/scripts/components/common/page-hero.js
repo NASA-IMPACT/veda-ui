@@ -41,6 +41,11 @@ const PageHeroSelf = styled.div`
         min-height: 28rem;
       `}
     `}
+
+  ${MediaAttribution} {
+    bottom: ${variableGlsp()};
+    right: ${variableGlsp()};
+  }
 `;
 
 const PageHeroInner = styled(Constrainer)`
@@ -88,7 +93,6 @@ export const PageHeroCover = styled.figure`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1;
 
   &::before {
     content: '';

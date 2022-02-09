@@ -58,9 +58,10 @@ const MediaAttributionInner = styled.span`
 `;
 
 function MediaAttribution(props) {
-  const { author, url } = props;
+  const { author, url, ...rest } = props;
+
   return (
-    <MediaAttributionSelf>
+    <MediaAttributionSelf {...rest}>
       <MediaAttributionInner as='a' href={url} target='_blank' rel='noreferrer'>
         <CollecticonCircleInformation />
         <strong>Image by {author}</strong>
@@ -69,7 +70,9 @@ function MediaAttribution(props) {
   );
 }
 
-export default MediaAttribution;
+export default styled(MediaAttribution)`
+  /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
+`;
 
 MediaAttribution.propTypes = {
   author: T.string,
