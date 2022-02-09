@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { LayoutProps } from '../../common/layout-root';
-import Constrainer from '../../../styles/constrainer';
 import { PageMainContent } from '../../../styles/page';
 import PageHero from '../../common/page-hero';
+import FoldProse from '../../common/fold';
 import { resourceNotFound } from '../../uhoh';
 
 import {
@@ -11,6 +11,7 @@ import {
   useThematicArea,
   useThematicAreaDiscovery
 } from '../../../utils/thematics';
+
 
 function DiscoveriesSingle() {
   const thematic = useThematicArea();
@@ -26,10 +27,10 @@ function DiscoveriesSingle() {
         title={discovery.data.name}
         description={discovery.data.description}
       />
-      <Constrainer>
+      <FoldProse>
         {pageMdx.status === 'loading' && <p>Loading page content</p>}
         {pageMdx.status === 'success' && <pageMdx.MdxContent />}
-      </Constrainer>
+      </FoldProse>
     </PageMainContent>
   );
 }

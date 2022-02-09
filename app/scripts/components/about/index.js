@@ -1,11 +1,13 @@
 import React from 'react';
 
 import { LayoutProps } from '../common/layout-root';
-import Constrainer from '../../styles/constrainer';
+import FoldProse from '../common/fold';
+
 import { PageMainContent } from '../../styles/page';
 import { resourceNotFound } from '../uhoh';
 
 import { useThematicArea } from '../../utils/thematics';
+
 
 function About() {
   const thematic = useThematicArea();
@@ -14,12 +16,12 @@ function About() {
   return (
     <PageMainContent>
       <LayoutProps title={`About ${thematic.name}`} />
-      <Constrainer>
-        <h1>About: {thematic.name}</h1>
+      <FoldProse>
+        <h1>About</h1>
         <p>
           Here you can find some information about this specific thematic area.
         </p>
-      </Constrainer>
+      </FoldProse>
     </PageMainContent>
   );
 }
