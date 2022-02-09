@@ -60,9 +60,20 @@ const MediaAttributionInner = styled.span`
 function MediaAttribution(props) {
   const { author, url, ...rest } = props;
 
+  if (!author) return null;
+
+  const innerProps = url
+    ? {
+        as: 'a',
+        href: url,
+        target: '_blank',
+        rel: 'noreferrer noopener'
+      }
+    : {};
+
   return (
     <MediaAttributionSelf {...rest}>
-      <MediaAttributionInner as='a' href={url} target='_blank' rel='noreferrer'>
+      <MediaAttributionInner {...innerProps}>
         <CollecticonCircleInformation />
         <strong>Image by {author}</strong>
       </MediaAttributionInner>

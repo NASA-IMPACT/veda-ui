@@ -12,7 +12,6 @@ import {
   useThematicAreaDiscovery
 } from '../../../utils/thematics';
 
-
 function DiscoveriesSingle() {
   const thematic = useThematicArea();
   const discovery = useThematicAreaDiscovery();
@@ -26,6 +25,11 @@ function DiscoveriesSingle() {
       <PageHero
         title={discovery.data.name}
         description={discovery.data.description}
+        publishedDate={discovery.data.pubDate}
+        coverSrc='https://picsum.photos/id/1002/2048/1024'
+        coverAlt='Generic placeholder by lorem picsum'
+        attributionAuthor='Lorem Picsum'
+        attributionUrl='https://picsum.photos/'
       />
       <FoldProse>
         {pageMdx.status === 'loading' && <p>Loading page content</p>}

@@ -1,5 +1,6 @@
 import React from 'react';
 import T from 'prop-types';
+import { format } from 'date-fns';
 import styled, { css } from 'styled-components';
 
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
@@ -23,8 +24,8 @@ const PageHeroSelf = styled.div`
   min-height: 12rem;
   animation: ${reveal} 0.32s ease 0s 1;
 
-  ${({ variation }) =>
-    variation === 'dark' &&
+  ${({ isCover }) =>
+    isCover &&
     css`
       color: ${themeVal('color.surface')};
       min-height: 16rem;
@@ -87,7 +88,7 @@ const PageHeroDescription = styled(VarLead)`
   `}
 `;
 
-export const PageHeroCover = styled.figure`
+const PageHeroCover = styled.figure`
   position: absolute;
   top: 0;
   left: 0;
@@ -107,7 +108,7 @@ export const PageHeroCover = styled.figure`
   }
 `;
 
-export const PageHeroCoverItem = styled.div`
+const PageHeroCoverItem = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -125,35 +126,48 @@ export const PageHeroCoverItem = styled.div`
 `;
 
 function PageHero(props) {
-  const { title, description } = props;
+  const {
+    title,
+    description,
+    publishedDate,
+    coverSrc,
+    coverAlt,
+    attributionAuthor,
+    attributionUrl
+  } = props;
+
+  const hasImage = coverSrc && coverAlt;
+
+  const date =
+    publishedDate && typeof publishedDate === 'string'
+      ? new Date(publishedDate)
+      : publishedDate;
 
   return (
-    <PageHeroSelf variation='dark'>
+    <PageHeroSelf isCover={hasImage}>
       <PageHeroInner>
         <PageHeroHGroup>
           <PageMainTitle>{title}</PageMainTitle>
-          <PageOverline>
-            Published on{' '}
-            <time dateTime='2021-06-16' pubdate='pubdate'>
-              June 16, 2021
-            </time>
-          </PageOverline>
+          {date && (
+            <PageOverline>
+              Published on{' '}
+              <time dateTime={format(date, 'yyyy-MM-dd')} pubdate='pubdate'>
+                {format(date, 'MMM d, yyyy')}
+              </time>
+            </PageOverline>
+          )}
         </PageHeroHGroup>
         {description && (
           <PageHeroDescription>{description}</PageHeroDescription>
         )}
-        <PageHeroCover>
-          <PageHeroCoverItem>
-            <img
-              src='https://picsum.photos/id/1002/2048/1024'
-              alt='Page cover'
-            />
-          </PageHeroCoverItem>
-          <MediaAttribution
-            author='Lorem Picsum'
-            url='https://picsum.photos/'
-          />
-        </PageHeroCover>
+        {hasImage && (
+          <PageHeroCover>
+            <PageHeroCoverItem>
+              <img src={coverSrc} alt={coverAlt} />
+            </PageHeroCoverItem>
+            <MediaAttribution author={attributionAuthor} url={attributionUrl} />
+          </PageHeroCover>
+        )}
       </PageHeroInner>
     </PageHeroSelf>
   );
@@ -163,5 +177,10 @@ export default PageHero;
 
 PageHero.propTypes = {
   title: T.string,
-  description: T.string
+  description: T.string,
+  publishedDate: T.oneOfType([T.string, T.instanceOf(Date)]),
+  coverSrc: T.string,
+  coverAlt: T.string,
+  attributionAuthor: T.string,
+  attributionUrl: T.string
 };

@@ -5,22 +5,28 @@ import FoldProse from '../common/fold';
 
 import { PageMainContent } from '../../styles/page';
 import { resourceNotFound } from '../uhoh';
+import PageHero from '../common/page-hero';
 
-import { useThematicArea } from '../../utils/thematics';
+import { useMdxPageLoader, useThematicArea } from '../../utils/thematics';
 
+import { thematics } from 'delta/thematics';
 
 function About() {
   const thematic = useThematicArea();
+  const pageMdx = useMdxPageLoader(thematics[thematic?.id]?.content);
+
   if (!thematic) return resourceNotFound();
 
   return (
     <PageMainContent>
       <LayoutProps title={`About ${thematic.name}`} />
+      <PageHero
+        title={thematic.about?.title || 'n/a'}
+        description={thematic.about?.description}
+      />
       <FoldProse>
-        <h1>About</h1>
-        <p>
-          Here you can find some information about this specific thematic area.
-        </p>
+        {pageMdx.status === 'loading' && <p>Loading page content</p>}
+        {pageMdx.status === 'success' && <pageMdx.MdxContent />}
       </FoldProse>
     </PageMainContent>
   );
