@@ -33,18 +33,47 @@ async function loadOptionalContent(logger, root, globPath, type) {
     const data = await Promise.all(
       paths.map(async (p) => {
         const content = await fs.readFile(p, 'utf-8');
-        const { data } = matter(content);
+        let frontMatterData;
+        try {
+          // Pass an empty options object to avoid data being cached which is a
+          // problem if there is an error. When an error happens the data is
+          // cached as empty and no error are thrown the second time.
+          frontMatterData = matter(content, {}).data;
+        } catch (error) {
+          logger.error({
+            message: error.message,
+            codeFrames: [
+              {
+                filePath: p,
+                code: error.mark.buffer,
+                codeHighlights: [
+                  {
+                    start: {
+                      line: error.mark.line,
+                      column: error.mark.column
+                    },
+                    end: {
+                      line: error.mark.line,
+                      column: error.mark.column
+                    }
+                  }
+                ]
+              }
+            ]
+          });
+          return null;
+        }
 
-        if (!data.id) {
+        if (!frontMatterData.id) {
           logger.error({
             message: `Missing "id" on ${type} ${path.basename(p)}`,
             hints: ['Add an "id" property to the file\'s frontmatter.']
           });
         }
 
-        if (data.published === false) return null;
+        if (frontMatterData.published === false) return null;
 
-        return data;
+        return frontMatterData;
       })
     );
     return {
