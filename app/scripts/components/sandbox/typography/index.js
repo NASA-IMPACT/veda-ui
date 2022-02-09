@@ -108,7 +108,7 @@ const ResponsiveList = styled.ul`
   }
 `;
 
-function Sandbox() {
+function SandboxType() {
   return (
     <PageMainContent>
       <IntroFold>
@@ -215,4 +215,4 @@ function Sandbox() {
   );
 }
 
-export default Sandbox;
+export default SandboxType;

@@ -4,11 +4,13 @@ import { Prose } from '@devseed-ui/typography';
 
 import Constrainer from '../../styles/constrainer';
 import SandboxTypography from './typography';
+import SandboxMap from './map';
 
 function Sandbox() {
   return (
     <Routes>
       <Route path='typography' element={<SandboxTypography />} />
+      <Route path='map' element={<SandboxMap />} />
       <Route
         index
         element={
@@ -19,6 +21,9 @@ function Sandbox() {
               <ol>
                 <li>
                   <Link to='typography'>Typography</Link>
+                </li>
+                <li>
+                  <Link to='map'>Map</Link>
                 </li>
               </ol>
             </Prose>
