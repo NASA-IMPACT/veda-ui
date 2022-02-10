@@ -9,5 +9,6 @@
   "rules": {
     "font-family-no-missing-generic-family-keyword": null,
     "no-descending-specificity": [true, { "severity": "warning" }]
-  }
+  },
+  "ignoreFiles": ["app/scripts/styles/variable-utils.js"]
 }

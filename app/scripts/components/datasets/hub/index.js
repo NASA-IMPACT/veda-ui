@@ -1,27 +1,15 @@
 import React from 'react';
-import styled from 'styled-components';
-import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
 import { Link } from 'react-router-dom';
 
 import { LayoutProps } from '../../common/layout-root';
-import { resourceNotFound } from '../../uhoh';
-import Constrainer from '../../../styles/constrainer';
+import PageHero from '../../common/page-hero';
+import { Fold } from '../../common/fold';
+
 import { PageMainContent } from '../../../styles/page';
+import { Card, CardList } from '../../../styles/card';
+import { resourceNotFound } from '../../uhoh';
 
 import { useThematicArea } from '../../../utils/thematics';
-
-const List = styled.ul`
-  ${listReset()}
-  display: flex;
-  gap: ${glsp(2)};
-  margin-top: ${glsp(3)};
-
-  li {
-    padding: ${glsp()};
-    border-radius: ${themeVal('shape.rounded')};
-    box-shadow: ${themeVal('boxShadow.elevationC')};
-  }
-`;
 
 function DatasetsHub() {
   const thematic = useThematicArea();
@@ -30,18 +18,23 @@ function DatasetsHub() {
   return (
     <PageMainContent>
       <LayoutProps title='Datasets' />
-      <Constrainer>
-        <h1>{thematic.name} Datasets</h1>
-        <List>
-          {thematic.datasets.map((t) => (
+      <PageHero
+        title='Datasets'
+        description='This dashboard explores key indicators to track and compare changes over time.'
+      />
+      <Fold>
+        <CardList>
+          {thematic.data.datasets.map((t) => (
             <li key={t.id}>
-              <Link to={`${t.id}`}>
-                <h2>{t.name}</h2>
-              </Link>
+              <Card>
+                <Link to={`${t.id}`}>
+                  <h2>{t.name}</h2>
+                </Link>
+              </Card>
             </li>
           ))}
-        </List>
-      </Constrainer>
+        </CardList>
+      </Fold>
     </PageMainContent>
   );
 }

@@ -115,7 +115,7 @@ export const Explorer = styled.div`
 export const Carto = styled.div`
   flex-grow: 1;
   padding: ${variableGlsp()};
-  background: ${themeVal('color.base-50')};
+  background: ${themeVal('color.surface')};
 `;
 
 function DatasetsExplore() {

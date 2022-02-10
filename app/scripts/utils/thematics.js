@@ -1,6 +1,10 @@
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import deltaThematics, { discoveries, datasets } from 'delta/thematics';
-import { useEffect, useState } from 'react';
+import deltaThematics, {
+  thematics,
+  discoveries,
+  datasets
+} from 'delta/thematics';
 
 /**
  * Returns the data for the thematic are taking the url parameter into account.
@@ -11,11 +15,22 @@ export function useThematicArea() {
 
   // If there's only one thematic area, the app is setup with only one thematic
   // area, and therefore return the first one.
-  if (deltaThematics.length === 1) {
-    return deltaThematics[0];
-  }
+  const tId = deltaThematics.length === 1 ? deltaThematics[0].id : thematicId;
 
-  return deltaThematics.find((t) => t.id === thematicId) || null;
+  return useMemo(() => {
+    // Relationship data between thematics and datasets/discoveries.
+    const relData = deltaThematics.find((d) => d.id === tId);
+
+    if (!relData) return null;
+
+    return {
+      ...thematics[tId],
+      data: {
+        ...relData,
+        ...thematics[tId].data
+      }
+    };
+  }, [tId]);
 }
 
 /**
@@ -32,7 +47,7 @@ export function useThematicAreaDiscovery() {
 
   // Stop if the discovery doesn't exist or if it doesn't belong to this
   // thematic area.
-  if (!discovery || !discovery.data.thematics.includes(thematic.id)) {
+  if (!discovery || !discovery.data.thematics.includes(thematic.data.id)) {
     return null;
   }
 
@@ -53,7 +68,7 @@ export function useThematicAreaDataset() {
 
   // Stop if the datasets doesn't exist or if it doesn't belong to this
   // thematic area.
-  if (!dataset || !dataset.data.thematics.includes(thematic.id)) {
+  if (!dataset || !dataset.data.thematics.includes(thematic.data.id)) {
     return null;
   }
 

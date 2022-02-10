@@ -106,7 +106,7 @@ const Brand = styled.div`
       grid-row: 2;
       font-size: 1.25rem;
       line-height: 1.5rem;
-      font-weight: ${themeVal('type.base.light')};
+      font-weight: ${themeVal('type.base.regular')};
       letter-spacing: -0.025em;
     }
   }
@@ -377,7 +377,11 @@ function PageHeader() {
     <PageHeaderSelf>
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
       <Brand>
-        <Link to='/'>
+        <Link
+          to={
+            deltaThematics.length > 1 && thematic ? `/${thematic.data.id}` : '/'
+          }
+        >
           <NasaLogo />
           <span>Earthdata</span> <span>{appTitle}</span>
         </Link>
@@ -431,7 +435,7 @@ function PageHeader() {
                       // eslint-disable-next-line no-unused-vars
                       triggerElement={({ active, className, ...rest }) => (
                         <ThemeToggle {...rest} as='button'>
-                          <span>{thematic.name}</span>{' '}
+                          <span>{thematic.data.name}</span>{' '}
                           {active ? (
                             <CollecticonChevronUpSmall />
                           ) : (
@@ -447,7 +451,7 @@ function PageHeader() {
                               as={NavLink}
                               to={`/${t.id}`}
                               aria-current={null}
-                              active={t.id === thematic.id}
+                              active={t.id === thematic.data.id}
                               data-dropdown='click.close'
                             >
                               {t.name}

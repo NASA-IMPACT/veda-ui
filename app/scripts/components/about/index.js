@@ -1,25 +1,31 @@
 import React from 'react';
 
 import { LayoutProps } from '../common/layout-root';
-import Constrainer from '../../styles/constrainer';
+import { FoldProse } from '../common/fold';
+
 import { PageMainContent } from '../../styles/page';
 import { resourceNotFound } from '../uhoh';
+import PageHero from '../common/page-hero';
 
-import { useThematicArea } from '../../utils/thematics';
+import { useMdxPageLoader, useThematicArea } from '../../utils/thematics';
 
 function About() {
   const thematic = useThematicArea();
+  const pageMdx = useMdxPageLoader(thematic?.content);
+
   if (!thematic) return resourceNotFound();
 
   return (
     <PageMainContent>
-      <LayoutProps title={`About ${thematic.name}`} />
-      <Constrainer>
-        <h1>About: {thematic.name}</h1>
-        <p>
-          Here you can find some information about this specific thematic area.
-        </p>
-      </Constrainer>
+      <LayoutProps title={`About ${thematic.data.name}`} />
+      <PageHero
+        title={thematic.data.about?.title || 'n/a'}
+        description={thematic.data.about?.description}
+      />
+      <FoldProse>
+        {pageMdx.status === 'loading' && <p>Loading page content</p>}
+        {pageMdx.status === 'success' && <pageMdx.MdxContent />}
+      </FoldProse>
     </PageMainContent>
   );
 }

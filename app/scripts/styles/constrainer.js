@@ -1,31 +1,21 @@
 import styled from 'styled-components';
-import { themeVal, glsp, media } from '@devseed-ui/theme-provider';
+import { media, themeVal } from '@devseed-ui/theme-provider';
+import { variableGlsp } from './variable-utils';
 
 const Constrainer = styled.div`
-  padding-left: ${glsp(themeVal('layout.glspMultiplier.xsmall'))};
-  padding-right: ${glsp(themeVal('layout.glspMultiplier.xsmall'))};
-  margin: 0 auto;
+  display: grid;
+  gap: ${variableGlsp()};
+  grid-template-columns: repeat(4, 1fr);
   width: 100%;
   max-width: ${themeVal('layout.max')};
-
-  ${media.smallUp`
-    padding-left: ${glsp(themeVal('layout.glspMultiplier.small'))};
-    padding-right: ${glsp(themeVal('layout.glspMultiplier.small'))};
-  `}
+  margin: 0 auto;
 
   ${media.mediumUp`
-    padding-left: ${glsp(themeVal('layout.glspMultiplier.medium'))};
-    padding-right: ${glsp(themeVal('layout.glspMultiplier.medium'))};
+    grid-template-columns: repeat(8, 1fr);
   `}
 
   ${media.largeUp`
-    padding-left: ${glsp(themeVal('layout.glspMultiplier.large'))};
-    padding-right: ${glsp(themeVal('layout.glspMultiplier.large'))};
-  `}
-
-  ${media.xlargeUp`
-    padding-left: ${glsp(themeVal('layout.glspMultiplier.xlarge'))};
-    padding-right: ${glsp(themeVal('layout.glspMultiplier.xlarge'))};
+    grid-template-columns: repeat(12, 1fr);
   `}
 `;
 

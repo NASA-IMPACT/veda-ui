@@ -8,6 +8,7 @@ import Constrainer from '../../styles/constrainer';
 import { PageMainContent } from '../../styles/page';
 
 import { LayoutProps } from '../common/layout-root';
+import PageHero from '../common/page-hero';
 
 const ThematicList = styled.ul`
   ${listReset()}
@@ -25,9 +26,10 @@ const ThematicList = styled.ul`
 function RootHome() {
   return (
     <PageMainContent>
-      <LayoutProps title='Thematic areas' />
+      <LayoutProps title='Welcome' />
+      <PageHero title='Welcome' />
       <Constrainer>
-        <h1>Thematic Areas</h1>
+        <h2>Explore the areas</h2>
         <ThematicList>
           {deltaThematics.map((t) => (
             <li key={t.id}>

@@ -1,7 +1,7 @@
 import deltaThematics from 'delta/thematics';
 
 export const thematicRootPath = (thematic, path = '') => {
-  const t = thematic.id || thematic;
+  const t = thematic.data.id || thematic;
 
   const tPath = deltaThematics.length > 1 ? `/${t}` : `/`;
   if (!path) return tPath;

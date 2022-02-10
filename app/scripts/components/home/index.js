@@ -90,13 +90,13 @@ function Home() {
 
   return (
     <PageMainContent>
-      <LayoutProps title={thematic.name} />
+      <LayoutProps title={thematic.data.name} />
       <IntroFold>
         <IntroFoldInner>
           <IntroFoldCopy>
             <Prose>
-              <h1>Thematic area: {thematic.name}</h1>
-              <p>{thematic.description}</p>
+              <h1>Thematic area: {thematic.data.name}</h1>
+              <p>{thematic.data.description}</p>
             </Prose>
             <IntroFoldActions>
               <Button
