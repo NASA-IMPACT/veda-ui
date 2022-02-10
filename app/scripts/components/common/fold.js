@@ -28,7 +28,7 @@ const Content = styled(Prose)`
   `}
 `;
 
-export default function Fold(props) {
+export function Fold(props) {
   const { children } = props;
 
   return (
@@ -37,6 +37,10 @@ export default function Fold(props) {
     </FoldProseSelf>
   );
 }
+
+Fold.propTypes = {
+  children: T.node
+};
 
 export function FoldProse(props) {
   const { children } = props;
@@ -49,10 +53,6 @@ export function FoldProse(props) {
     </FoldProseSelf>
   );
 }
-
-Fold.propTypes = {
-  children: T.node
-};
 
 FoldProse.propTypes = {
   children: T.node

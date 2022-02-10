@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { LayoutProps } from '../../common/layout-root';
 import PageHero from '../../common/page-hero';
-import Fold from '../../common/fold';
+import { Fold } from '../../common/fold';
 
 import { PageMainContent } from '../../../styles/page';
 import { Card, CardList } from '../../../styles/card';
