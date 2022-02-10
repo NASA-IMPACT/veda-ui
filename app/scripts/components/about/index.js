@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { LayoutProps } from '../common/layout-root';
-import FoldProse from '../common/fold';
+import { FoldProse } from '../common/fold';
 
 import { PageMainContent } from '../../styles/page';
 import { resourceNotFound } from '../uhoh';

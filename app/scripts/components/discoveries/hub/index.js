@@ -1,29 +1,15 @@
 import React from 'react';
-import styled from 'styled-components';
-import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
 import { Link } from 'react-router-dom';
 
 import { LayoutProps } from '../../common/layout-root';
 import PageHero from '../../common/page-hero';
+import Fold from '../../common/fold';
 
-import Constrainer from '../../../styles/constrainer';
 import { PageMainContent } from '../../../styles/page';
+import { Card, CardList } from '../../../styles/card';
 import { resourceNotFound } from '../../uhoh';
 
 import { useThematicArea } from '../../../utils/thematics';
-
-const List = styled.ul`
-  ${listReset()}
-  display: flex;
-  gap: ${glsp(2)};
-  margin-top: ${glsp(3)};
-
-  li {
-    padding: ${glsp()};
-    border-radius: ${themeVal('shape.rounded')};
-    box-shadow: ${themeVal('boxShadow.elevationC')};
-  }
-`;
 
 function DiscoveriesHub() {
   const thematic = useThematicArea();
@@ -36,17 +22,19 @@ function DiscoveriesHub() {
         title='Discoveries'
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
       />
-      <Constrainer>
-        <List>
+      <Fold>
+        <CardList>
           {thematic.data.discoveries.map((t) => (
             <li key={t.id}>
-              <Link to={`${t.id}`}>
-                <h2>{t.name}</h2>
-              </Link>
+              <Card>
+                <Link to={`${t.id}`}>
+                  <h2>{t.name}</h2>
+                </Link>
+              </Card>
             </li>
           ))}
-        </List>
-      </Constrainer>
+        </CardList>
+      </Fold>
     </PageMainContent>
   );
 }

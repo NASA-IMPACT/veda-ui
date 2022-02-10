@@ -3,7 +3,7 @@ import React from 'react';
 import { LayoutProps } from '../../common/layout-root';
 import { PageMainContent } from '../../../styles/page';
 import PageHero from '../../common/page-hero';
-import FoldProse from '../../common/fold';
+import { FoldProse } from '../../common/fold';
 import { resourceNotFound } from '../../uhoh';
 
 import {
