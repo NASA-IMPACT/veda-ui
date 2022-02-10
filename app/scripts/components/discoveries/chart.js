@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import T from 'prop-types';
 import { csv, json } from 'd3-fetch';
-import { ResponsiveLineCanvas } from '@nivo/line';
+import { ResponsiveLine } from '@nivo/line';
 import { interpolatePlasma } from 'd3-scale-chromatic'; // https://github.com/d3/d3-scale-chromatic
 
 const fileExtensionRegex = /(?:\.([^.]+))?$/;
@@ -25,14 +25,14 @@ function formatData({ data, idKey, xKey, yKey }) {
   return dataWId;
 }
 
-function getBottomAxis() {
+function getBottomAxis(dateFormat) {
   const tickNum = 10; // adjust per screen size
   return {
     tickValues: tickNum,
     tickSize: 5,
     tickPadding: 5,
     tickRotation: 0,
-    format: '%Y-%m-%d'
+    format: dateFormat
   };
 }
 
@@ -71,7 +71,7 @@ function getColors(steps) {
   });
 }
 
-const Chart = ({ dataPath, idKey, xKey, yKey }) => {
+const Chart = ({ dataPath, idKey, xKey, yKey, dateFormat }) => {
   const [data, setData] = useState([]);
   const extension = fileExtensionRegex.exec(dataPath)[1];
 
@@ -87,16 +87,16 @@ const Chart = ({ dataPath, idKey, xKey, yKey }) => {
   }, [dataPath, idKey, xKey, yKey, extension]);
   return (
     <div style={{ width: '100%', height: '500px' }}>
-      <ResponsiveLineCanvas
+      <ResponsiveLine
         data={data}
         margin={{ top: 50, right: 100, bottom: 50, left: 60 }}
         xScale={{
           type: 'time',
-          format: '%Y-%m-%d',
+          format: dateFormat,
           precision: 'day'
         }}
         colors={getColors(data.length)}
-        xFormat='time:%Y-%m-%d'
+        xFormat={`time:${dateFormat}`}
         yScale={{
           type: 'linear',
           min: 'auto',
@@ -106,7 +106,8 @@ const Chart = ({ dataPath, idKey, xKey, yKey }) => {
         }}
         enableGridX={false}
         enablePoints={false}
-        axisBottom={getBottomAxis()}
+        enableSlices='x'
+        axisBottom={getBottomAxis(dateFormat)}
         legends={getLegend()}
       />
     </div>
