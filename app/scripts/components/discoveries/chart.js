@@ -1,8 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import T from 'prop-types';
+import styled from 'styled-components';
 import { csv, json } from 'd3-fetch';
 import { ResponsiveLine } from '@nivo/line';
 import { interpolatePlasma } from 'd3-scale-chromatic'; // https://github.com/d3/d3-scale-chromatic
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
+
+const TooltipWrapper = styled.div`
+  background-color: ${themeVal('color.surface')};
+  border: 1px solid ${themeVal('color.base-300a')};
+  padding: ${glsp(0.5)};
+  > div:not(:last-child) {
+    padding-bottom: ${glsp(0.25)};
+  }
+`;
+
+const TooltipItem = styled.div`
+  width: 12px;
+  height: 12px;
+  background-color: ${(props) => props.color};
+  display: inline-block;
+  margin-right: ${glsp(0.5)};
+`;
 
 const fileExtensionRegex = /(?:\.([^.]+))?$/;
 function formatData({ data, idKey, xKey, yKey }) {
@@ -110,36 +129,18 @@ const Chart = ({ dataPath, idKey, xKey, yKey, dateFormat }) => {
         axisBottom={getBottomAxis(dateFormat)}
         legends={getLegend()}
         sliceTooltip={({ slice }) => {
-          console.log(slice.points[0]);
           return (
-            <div
-              style={{
-                background: 'white',
-                padding: '9px 12px',
-                border: '1px solid #ccc'
-              }}
-            >
-              <strong>{slice?.points[0].data.xFormatted}</strong>
+            <TooltipWrapper>
+              <div>
+                <strong>{slice?.points[0].data.xFormatted}</strong>
+              </div>
               {slice.points.map((point) => (
-                <div
-                  key={point.id}
-                  style={{
-                    padding: '3px 0'
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '12px',
-                      height: '12px',
-                      backgroundColor: point.serieColor,
-                      display: 'inline-block',
-                      marginRight: '3px'
-                    }}
-                  />
+                <div key={point.id}>
+                  <TooltipItem color={point.serieColor} />
                   <strong>{point.serieId}</strong> : {point.data.yFormatted}
                 </div>
               ))}
-            </div>
+            </TooltipWrapper>
           );
         }}
       />
