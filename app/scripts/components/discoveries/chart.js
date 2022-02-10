@@ -109,6 +109,39 @@ const Chart = ({ dataPath, idKey, xKey, yKey, dateFormat }) => {
         enableSlices='x'
         axisBottom={getBottomAxis(dateFormat)}
         legends={getLegend()}
+        sliceTooltip={({ slice }) => {
+          console.log(slice.points[0]);
+          return (
+            <div
+              style={{
+                background: 'white',
+                padding: '9px 12px',
+                border: '1px solid #ccc'
+              }}
+            >
+              <strong>{slice?.points[0].data.xFormatted}</strong>
+              {slice.points.map((point) => (
+                <div
+                  key={point.id}
+                  style={{
+                    padding: '3px 0'
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '12px',
+                      height: '12px',
+                      backgroundColor: point.serieColor,
+                      display: 'inline-block',
+                      marginRight: '3px'
+                    }}
+                  />
+                  <strong>{point.serieId}</strong> : {point.data.yFormatted}
+                </div>
+              ))}
+            </div>
+          );
+        }}
       />
     </div>
   );
