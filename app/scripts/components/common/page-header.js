@@ -106,7 +106,7 @@ const Brand = styled.div`
       grid-row: 2;
       font-size: 1.25rem;
       line-height: 1.5rem;
-      font-weight: ${themeVal('type.base.light')};
+      font-weight: ${themeVal('type.base.regular')};
       letter-spacing: -0.025em;
     }
   }
