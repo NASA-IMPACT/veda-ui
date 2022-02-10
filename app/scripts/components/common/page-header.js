@@ -377,7 +377,11 @@ function PageHeader() {
     <PageHeaderSelf>
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
       <Brand>
-        <Link to='/'>
+        <Link
+          to={
+            deltaThematics.length > 1 && thematic ? `/${thematic.data.id}` : '/'
+          }
+        >
           <NasaLogo />
           <span>Earthdata</span> <span>{appTitle}</span>
         </Link>
