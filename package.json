@@ -82,5 +82,10 @@
     "react-router": "^6.0.0",
     "react-router-dom": "^6.0.0",
     "styled-components": "^5.3.3"
+  },
+  "alias": {
+    "$components": "~/app/scripts/components",
+    "$styles": "~/app/scripts/styles",
+    "$utils": "~/app/scripts/utils"
   }
 }
