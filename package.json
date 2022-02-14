@@ -37,6 +37,8 @@
     "@parcel/reporter-bundle-buddy": "^2.0.0",
     "@parcel/resolver-glob": "^2.0.1",
     "@parcel/transformer-mdx": "^2.0.1",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.2",
     "babel-jest": "^27.5.1",
     "babel-plugin-styled-components": "^1.13.3",
     "del": "^6.0.0",
