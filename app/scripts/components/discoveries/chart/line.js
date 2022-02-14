@@ -60,6 +60,9 @@ const LineChart = ({
     <div style={{ width: '100%', height: '500px' }}>
       <ResponsiveLine
         data={data}
+        animate={true}
+        enableCrosshair={true}
+        crosshairType='x'
         margin={{ top: 50, right: 100, bottom: 50, left: 60 }}
         xScale={{
           type: 'time',
@@ -86,6 +89,7 @@ const LineChart = ({
           'areas',
           customLayerComponent,
           'lines',
+          'crosshair',
           'slices',
           'axes',
           'points',
