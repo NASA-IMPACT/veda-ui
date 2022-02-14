@@ -1,11 +1,10 @@
 import React from 'react';
 import T from 'prop-types';
-import { Defs } from '@nivo/core';
 import { area } from 'd3-shape';
 
 /* eslint-disable react/display-name */
 const AreaLayer = (customProps) => (nivoProps) => {
-  const { highlightStart, highlightEnd } = customProps;
+  const { highlightStart, highlightEnd, highlightLabel } = customProps;
   const { series, xScale, innerHeight } = nivoProps;
 
   if (series.length > 0) {
@@ -17,6 +16,9 @@ const AreaLayer = (customProps) => (nivoProps) => {
         e.data.x.getTime() > startTime.getTime() &&
         e.data.x.getTime() < endTime.getTime()
     );
+    const centralXPoint = xScale(
+      filteredData[Math.floor(filteredData.length / 2)].data.x
+    );
 
     // areaGenerator is used to make 'highlight band'
     const areaGenerator = area()
@@ -25,35 +27,35 @@ const AreaLayer = (customProps) => (nivoProps) => {
       .y1(() => 0);
 
     return (
-      <React.Fragment>
-        <Defs
-          defs={[
-            {
-              id: 'pattern',
-              type: 'patternLines',
-              background: 'transparent',
-              color: '#3daff7',
-              lineWidth: 1,
-              spacing: 6,
-              rotation: -45
-            }
-          ]}
-        />
+      <g>
         <path
           d={areaGenerator(filteredData)}
-          fill='url(#pattern)'
-          fillOpacity={0.6}
+          fill='#3daff7'
+          fillOpacity={0.3}
           stroke='#3daff7'
           strokeWidth={1}
         />
-      </React.Fragment>
+        <text
+          dominantBaseline='central'
+          textAnchor='middle'
+          transform={`translate(${centralXPoint},-10) rotate(0)`}
+          style={{
+            fontFamily: 'sans-serif',
+            fontSize: '12px',
+            fill: '#3daff7'
+          }}
+        >
+          {highlightLabel}
+        </text>
+      </g>
     );
   } else return <></>;
 };
 /* eslint-enable react/display-name */
 AreaLayer.propTypes = {
   highlightStart: T.string,
-  highlightEnd: T.string
+  highlightEnd: T.string,
+  highlightLabel: T.string
 };
 
 export default AreaLayer;

@@ -4,11 +4,15 @@ import LineChart from './line';
 import AreaLayer from './area-layer';
 
 const Chart = (props) => {
-  const { highlightStart, highlightEnd } = props;
+  const { highlightStart, highlightEnd, highlightLabel } = props;
   return (
     <LineChart
       {...props}
-      customLayerComponent={AreaLayer({ highlightStart, highlightEnd })}
+      customLayerComponent={AreaLayer({
+        highlightStart,
+        highlightEnd,
+        highlightLabel
+      })}
     />
   );
 };
@@ -20,7 +24,8 @@ Chart.propTypes = {
   yKey: T.string,
   dateFormat: T.string,
   highlightStart: T.string,
-  highlightEnd: T.string
+  highlightEnd: T.string,
+  highlightLabel: T.string
 };
 
 export default Chart;

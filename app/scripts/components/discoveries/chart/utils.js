@@ -1,8 +1,8 @@
-import { interpolatePlasma } from 'd3-scale-chromatic';
+import { interpolateViridis } from 'd3-scale-chromatic';
 
 function getColors(steps) {
   return new Array(steps).fill(0).map((e, idx) => {
-    return interpolatePlasma(idx / steps);
+    return interpolateViridis(idx / steps);
   });
 }
 
