@@ -10000,11 +10000,6 @@ yargs@^7.1.0:
     y18n "^3.2.1"
     yargs-parser "^5.0.1"
 
-yarn@^1.22.17:
-  version "1.22.17"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/yarn/-/yarn-1.22.17.tgz#bf910747d22497b573131f7341c0e1d15c74036c"
-  integrity sha512-H0p241BXaH0UN9IeH//RT82tl5PfNraVpSpEoW+ET7lmopNC61eZ+A+IDvU8FM6Go5vx162SncDL8J1ZjRBriQ==
-
 zwitch@^1.0.0:
   version "1.0.5"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/zwitch/-/zwitch-1.0.5.tgz#d11d7381ffed16b742f6af7b3f223d5cd9fe9920"
