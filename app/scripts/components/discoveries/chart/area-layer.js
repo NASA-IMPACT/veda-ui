@@ -2,7 +2,14 @@ import React from 'react';
 import T from 'prop-types';
 import { area } from 'd3-shape';
 
+// empty layer to render when there is no highlight band
+// This is to meet nivo's custom layer proptype
+export const EmptyLayer = () => {
+  return <g />;
+};
+
 /* eslint-disable react/display-name */
+
 const AreaLayer = (customProps) => (nivoProps) => {
   const { highlightStart, highlightEnd, highlightLabel } = customProps;
   const { series, xScale, innerHeight } = nivoProps;
@@ -49,7 +56,7 @@ const AreaLayer = (customProps) => (nivoProps) => {
         </text>
       </g>
     );
-  } else return <></>;
+  } else return <g />;
 };
 /* eslint-enable react/display-name */
 AreaLayer.propTypes = {

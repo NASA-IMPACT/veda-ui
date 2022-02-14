@@ -1,20 +1,19 @@
 import React from 'react';
 import T from 'prop-types';
 import LineChart from './line';
-import AreaLayer from './area-layer';
+import AreaLayer, { EmptyLayer } from './area-layer';
 
 const Chart = (props) => {
   const { highlightStart, highlightEnd, highlightLabel } = props;
-  return (
-    <LineChart
-      {...props}
-      customLayerComponent={AreaLayer({
-        highlightStart,
-        highlightEnd,
-        highlightLabel
-      })}
-    />
-  );
+  const customLayer =
+    highlightStart || highlightEnd
+      ? AreaLayer({
+          highlightStart,
+          highlightEnd,
+          highlightLabel
+        })
+      : EmptyLayer;
+  return <LineChart {...props} customLayerComponent={customLayer} />;
 };
 
 Chart.propTypes = {
