@@ -113,11 +113,18 @@ const LineChart = ({
             </TooltipWrapper>
           );
         }}
+        theme={{
+          grid: {
+            line: {
+              stroke: '#efefef',
+              strokeWidth: 1
+            }
+          }
+        }}
       />
     </div>
   );
 };
-
 LineChart.propTypes = {
   dataPath: T.string,
   idKey: T.string,
