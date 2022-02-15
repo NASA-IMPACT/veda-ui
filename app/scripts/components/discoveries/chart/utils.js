@@ -21,6 +21,14 @@ const legendConfig = [
     symbolBorderColor: 'rgba(0, 0, 0, .5)'
   }
 ];
+const chartTheme = {
+  grid: {
+    line: {
+      stroke: '#efefef',
+      strokeWidth: 1
+    }
+  }
+};
 
 function getColors(steps) {
   return new Array(steps).fill(0).map((e, idx) => {
@@ -61,6 +69,7 @@ function getFormattedData({ data, idKey, xKey, yKey }) {
 
 export {
   chartMargin,
+  chartTheme,
   itemHeight,
   fileExtensionRegex,
   legendConfig,

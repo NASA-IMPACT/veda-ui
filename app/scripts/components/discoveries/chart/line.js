@@ -1,36 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import T from 'prop-types';
-import styled from 'styled-components';
 import { csv, json } from 'd3-fetch';
 import { ResponsiveLine } from '@nivo/line';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { useMediaQuery } from '$utils/use-media-query';
 import {
   chartMargin,
+  chartTheme,
   fileExtensionRegex,
   legendConfig,
   getFormattedData,
   getBottomAxis,
   getColors
 } from './utils';
-
-const TooltipWrapper = styled.div`
-  background-color: ${themeVal('color.surface')};
-  border: 1px solid ${themeVal('color.base-300a')};
-  padding: ${glsp(0.5)};
-  border-radius: ${themeVal('shape.rounded')};
-  > div:not(:last-child) {
-    padding-bottom: ${glsp(0.25)};
-  }
-`;
-
-const TooltipItem = styled.div`
-  width: 12px;
-  height: 12px;
-  background-color: ${(props) => props.color};
-  display: inline-block;
-  margin-right: ${glsp(0.5)};
-`;
+import TooltipComponent from './tooltip';
 
 const LineChart = ({
   dataPath,
@@ -76,10 +58,7 @@ const LineChart = ({
         xFormat={`time:${dateFormat}`}
         yScale={{
           type: 'linear',
-          min: 'auto',
-          max: 'auto',
-          stacked: true,
-          reverse: false
+          stacked: true
         }}
         enableGridX={false}
         enablePoints={false}
@@ -98,29 +77,8 @@ const LineChart = ({
           'points',
           'legends'
         ]}
-        sliceTooltip={({ slice }) => {
-          return (
-            <TooltipWrapper>
-              <div>
-                <strong>{slice?.points[0].data.xFormatted}</strong>
-              </div>
-              {slice.points.map((point) => (
-                <div key={point.id}>
-                  <TooltipItem color={point.serieColor} />
-                  <strong>{point.serieId}</strong> : {point.data.yFormatted}
-                </div>
-              ))}
-            </TooltipWrapper>
-          );
-        }}
-        theme={{
-          grid: {
-            line: {
-              stroke: '#efefef',
-              strokeWidth: 1
-            }
-          }
-        }}
+        sliceTooltip={TooltipComponent}
+        theme={chartTheme}
       />
     </div>
   );
