@@ -23,7 +23,7 @@ const renderHeadingSize = (props = {}) => {
   const { size = 'medium' } = props;
 
   return css`
-    font-size: calc(${sizeMapping[size]} * var(--base-text-multiplier, 1));
+    font-size: calc(${sizeMapping[size]} + var(--base-text-increment, 0rem));
     ${size === 'xxsmall' && 'line-height: 1rem;'}
   `;
 };
@@ -54,18 +54,39 @@ export const VarProse = styled(Prose)`
   h4,
   h5,
   h6 {
-    margin-bottom: calc(
-      ${themeVal('layout.space')} * var(--base-text-multiplier, 1)
-    );
+    margin-bottom: calc(${variableProseVSpace()} / 2);
 
     &:not(:first-child) {
       margin-top: calc(${variableProseVSpace()} * 2);
     }
   }
 
+  h1 {
+    ${renderHeadingSize({ size: 'xxlarge' })}
+  }
+
+  h2 {
+    ${renderHeadingSize({ size: 'xlarge' })}
+  }
+
+  h3 {
+    ${renderHeadingSize({ size: 'large' })}
+  }
+
+  h4 {
+    ${renderHeadingSize({ size: 'medium' })}
+  }
+
+  h5 {
+    ${renderHeadingSize({ size: 'small' })}
+  }
+
+  h6 {
+    ${renderHeadingSize({ size: 'xsmall' })}
+  }
+
   > * {
-    margin-bottom: ${variableProseVSpace()}
-    );
+    margin-bottom: ${variableProseVSpace()};
   }
 
   > *:last-child {
