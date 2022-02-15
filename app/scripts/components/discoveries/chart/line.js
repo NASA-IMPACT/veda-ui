@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import { csv, json } from 'd3-fetch';
 import { ResponsiveLine } from '@nivo/line';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { useMediaQuery } from '$utils/use-media-query';
 import {
+  chartMargin,
   fileExtensionRegex,
   legendConfig,
   getFormattedData,
@@ -16,6 +18,7 @@ const TooltipWrapper = styled.div`
   background-color: ${themeVal('color.surface')};
   border: 1px solid ${themeVal('color.base-300a')};
   padding: ${glsp(0.5)};
+  border-radius: ${themeVal('shape.rounded')};
   > div:not(:last-child) {
     padding-bottom: ${glsp(0.25)};
   }
@@ -39,6 +42,7 @@ const LineChart = ({
 }) => {
   const [data, setData] = useState([]);
   const extension = fileExtensionRegex.exec(dataPath)[1];
+  const { isMediumDown } = useMediaQuery();
 
   useEffect(() => {
     const getData = async () => {
@@ -63,11 +67,10 @@ const LineChart = ({
         animate={true}
         enableCrosshair={true}
         crosshairType='x'
-        margin={{ top: 50, right: 100, bottom: 50, left: 60 }}
+        margin={chartMargin}
         xScale={{
           type: 'time',
-          format: dateFormat,
-          precision: 'day'
+          format: dateFormat
         }}
         colors={getColors(data.length)}
         xFormat={`time:${dateFormat}`}
@@ -81,7 +84,7 @@ const LineChart = ({
         enableGridX={false}
         enablePoints={false}
         enableSlices='x'
-        axisBottom={getBottomAxis(dateFormat)}
+        axisBottom={getBottomAxis(dateFormat, isMediumDown)}
         legends={legendConfig}
         layers={[
           'grid',

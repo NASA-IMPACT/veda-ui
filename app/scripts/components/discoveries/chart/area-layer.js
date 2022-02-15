@@ -1,12 +1,23 @@
 import React from 'react';
 import T from 'prop-types';
+import styled from 'styled-components';
 import { area } from 'd3-shape';
+import { chartMargin, itemHeight } from './utils';
+
+const HighlightLabel = styled.text`
+  font-family: sans-serif;
+  font-size: 12px;
+  dominant-baseline: hanging;
+`;
 
 // empty layer to render when there is no highlight band
 // This is to meet nivo's custom layer proptype
 export const EmptyLayer = () => {
   return <g />;
 };
+
+const highlightColor = '#3daff7';
+const highlightOpacity = 0.3;
 
 /* eslint-disable react/display-name */
 
@@ -23,10 +34,6 @@ const AreaLayer = (customProps) => (nivoProps) => {
         e.data.x.getTime() > startTime.getTime() &&
         e.data.x.getTime() < endTime.getTime()
     );
-    const centralXPoint = xScale(
-      filteredData[Math.floor(filteredData.length / 2)].data.x
-    );
-
     // areaGenerator is used to make 'highlight band'
     const areaGenerator = area()
       .x0((d) => xScale(d.data.x))
@@ -37,23 +44,24 @@ const AreaLayer = (customProps) => (nivoProps) => {
       <g>
         <path
           d={areaGenerator(filteredData)}
-          fill='#3daff7'
-          fillOpacity={0.3}
-          stroke='#3daff7'
-          strokeWidth={1}
+          fill={highlightColor}
+          fillOpacity={highlightOpacity}
         />
-        <text
-          dominantBaseline='central'
-          textAnchor='middle'
-          transform={`translate(${centralXPoint},-10) rotate(0)`}
-          style={{
-            fontFamily: 'sans-serif',
-            fontSize: '12px',
-            fill: '#3daff7'
-          }}
+        <g
+          transform={`translate(0,${
+            innerHeight + chartMargin.bottom - itemHeight * 3
+          }) rotate(0)`}
         >
-          {highlightLabel}
-        </text>
+          <rect
+            width='10'
+            height='10'
+            fill={highlightColor}
+            fillOpacity={highlightOpacity}
+          />
+          <HighlightLabel transform='translate(15, 0)'>
+            {highlightLabel}
+          </HighlightLabel>
+        </g>
       </g>
     );
   } else return <g />;
