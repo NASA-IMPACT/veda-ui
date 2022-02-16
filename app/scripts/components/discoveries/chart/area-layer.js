@@ -2,7 +2,7 @@ import React from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 import { area } from 'd3-shape';
-import { chartMargin, itemHeight } from './utils';
+import { chartMargin, itemWidth, itemHeight, height } from './utils';
 
 const HighlightLabel = styled.text`
   font-family: sans-serif;
@@ -23,7 +23,7 @@ const highlightOpacity = 0.3;
 
 const AreaLayer = (customProps) => (nivoProps) => {
   const { highlightStart, highlightEnd, highlightLabel } = customProps;
-  const { series, xScale, innerHeight } = nivoProps;
+  const { series, xScale, innerWidth, height, innerHeight } = nivoProps;
 
   if (series.length > 0) {
     const startTime = new Date(highlightStart);
@@ -48,8 +48,8 @@ const AreaLayer = (customProps) => (nivoProps) => {
           fillOpacity={highlightOpacity}
         />
         <g
-          transform={`translate(0,${
-            innerHeight + chartMargin.bottom - itemHeight * 3
+          transform={`translate(${innerWidth / 2 - itemWidth / 2},${
+            innerHeight + 30
           }) rotate(0)`}
         >
           <rect

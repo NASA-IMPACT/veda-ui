@@ -7,7 +7,7 @@ import {
   chartMargin,
   chartTheme,
   fileExtensionRegex,
-  legendConfig,
+  getLegendConfig,
   getFormattedData,
   getBottomAxis,
   getColors
@@ -24,7 +24,7 @@ const LineChart = ({
 }) => {
   const [data, setData] = useState([]);
   const extension = fileExtensionRegex.exec(dataPath)[1];
-  const { isMediumDown } = useMediaQuery();
+  const { isMediumUp } = useMediaQuery();
 
   useEffect(() => {
     const getData = async () => {
@@ -63,8 +63,8 @@ const LineChart = ({
         enableGridX={false}
         enablePoints={false}
         enableSlices='x'
-        axisBottom={getBottomAxis(dateFormat, isMediumDown)}
-        legends={legendConfig}
+        axisBottom={getBottomAxis(dateFormat, isMediumUp)}
+        legends={getLegendConfig(data, isMediumUp)}
         layers={[
           'grid',
           'markers',
