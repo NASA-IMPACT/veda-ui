@@ -22,17 +22,14 @@ function getLegendData({ data, width, itemWidth }) {
         color: getColors(data.length)[dataIdx + itemsPerRow * idx]
       })),
     direction: 'row',
-    justify: false,
     translateX: 0,
-    translateY: chartMargin.bottom - itemHeight * idx,
-    itemsSpacing: 0,
+    translateY: itemHeight * (idx + 1) + 45,
     itemDirection: 'left-to-right',
     itemWidth,
     itemHeight: itemHeight,
     itemOpacity: 0.75,
     symbolSize: 12,
-    symbolShape: 'square',
-    symbolBorderColor: 'rgba(0, 0, 0, .5)'
+    symbolShape: 'square'
   }));
 }
 

@@ -20,6 +20,7 @@ const LineChart = ({
   xKey,
   yKey,
   dateFormat,
+  isThereHighlight,
   customLayerComponent
 }) => {
   const [data, setData] = useState([]);
@@ -89,7 +90,8 @@ LineChart.propTypes = {
   xKey: T.string,
   yKey: T.string,
   dateFormat: T.string,
-  customLayerComponent: T.func
+  customLayerComponent: T.func,
+  isThereHighlight: T.bool
 };
 
 export default LineChart;

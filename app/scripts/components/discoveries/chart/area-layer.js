@@ -26,8 +26,12 @@ const AreaLayer = (customProps) => (nivoProps) => {
   const { series, xScale, innerWidth, height, innerHeight } = nivoProps;
 
   if (series.length > 0) {
-    const startTime = new Date(highlightStart);
-    const endTime = new Date(highlightEnd);
+    const startTime = highlightStart
+      ? new Date(highlightStart)
+      : series[0].data[0].data.x;
+    const endTime = highlightEnd
+      ? new Date(highlightEnd)
+      : series[0].data[series[0].data.length - 1].data.x;
 
     const filteredData = series[0].data.filter(
       (e) =>

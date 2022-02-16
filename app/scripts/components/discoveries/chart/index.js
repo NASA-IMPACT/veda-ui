@@ -13,7 +13,13 @@ const Chart = (props) => {
           highlightLabel
         })
       : EmptyLayer;
-  return <LineChart {...props} customLayerComponent={customLayer} />;
+  return (
+    <LineChart
+      {...props}
+      customLayerComponent={customLayer}
+      isThereHighlight={!!(highlightStart || highlightEnd)}
+    />
+  );
 };
 
 Chart.propTypes = {
