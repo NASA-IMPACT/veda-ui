@@ -48,19 +48,6 @@ export const VarLead = styled(Lead)`
 export const VarProse = styled(Prose)`
   font-size: ${variableBaseType(themeVal('type.base.size'))};
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin-bottom: calc(${variableProseVSpace()} / 2);
-
-    &:not(:first-child) {
-      margin-top: calc(${variableProseVSpace()} * 2);
-    }
-  }
-
   h1 {
     ${renderHeadingSize({ size: 'xxlarge' })}
   }
@@ -83,6 +70,19 @@ export const VarProse = styled(Prose)`
 
   h6 {
     ${renderHeadingSize({ size: 'xsmall' })}
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-bottom: calc(${variableProseVSpace()} / 2);
+
+    &:not(:first-child) {
+      margin-top: calc(${variableProseVSpace()} * 2);
+    }
   }
 
   > * {
