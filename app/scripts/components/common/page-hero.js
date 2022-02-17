@@ -9,7 +9,6 @@ import { reveal } from '@devseed-ui/animation';
 import { PageLead, PageMainTitle, PageOverline } from '../../styles/page';
 import Constrainer from '../../styles/constrainer';
 import { variableGlsp } from '../../styles/variable-utils';
-import { VarLead } from '../../styles/variable-components';
 import MediaAttribution from './media-attribution';
 
 const PageHeroSelf = styled.div`

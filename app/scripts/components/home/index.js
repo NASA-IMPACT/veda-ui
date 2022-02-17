@@ -1,29 +1,28 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
-import { Prose } from '@devseed-ui/typography';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 
-import { LayoutProps } from '../common/layout-root';
+import { LayoutProps } from '$components/common/layout-root';
 import { Fold } from '$components/common/fold';
-import { PageLead, PageMainContent, PageMainTitle } from '../../styles/page';
+import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
 
-import { resourceNotFound } from '../uhoh';
-import { useThematicArea } from '../../utils/thematics';
+import { resourceNotFound } from '$components/uhoh';
+import { useThematicArea } from '$utils/thematics';
 
-export const IntroFold = styled(Fold)`
+const IntroFold = styled(Fold)`
   background: ${themeVal('color.base-50')};
 `;
 
-export const IntroFoldCopy = styled.div`
+const IntroFoldCopy = styled.div`
   grid-column: 1 / span 8;
   display: flex;
   flex-direction: column;
   gap: ${glsp(2)};
 `;
 
-export const IntroFoldActions = styled.div`
+const IntroFoldActions = styled.div`
   display: flex;
   flex-flow: row nowrap;
   gap: ${glsp(0.75)};
