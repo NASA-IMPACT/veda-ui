@@ -10,6 +10,8 @@ import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
 
 import { resourceNotFound } from '$components/uhoh';
 import { useThematicArea } from '$utils/thematics';
+import Constrainer from '$styles/constrainer';
+import { GridIsFull, GridIsHalf, GridIsQuarter } from '$styles/grid';
 
 const IntroFold = styled(Fold)`
   background: ${themeVal('color.base-50')};
@@ -36,8 +38,9 @@ function Home() {
   return (
     <PageMainContent>
       <LayoutProps title={thematic.data.name} />
-      <IntroFold>
-        <IntroFoldCopy>
+      <Constrainer>
+        <GridIsHalf num={1}> Image </GridIsHalf>
+        <GridIsHalf num={2}>
           <PageMainTitle>
             Welcome to the {thematic.data.name} dashboard
           </PageMainTitle>
@@ -52,8 +55,25 @@ function Home() {
               Learn more
             </Button>
           </IntroFoldActions>
-        </IntroFoldCopy>
-      </IntroFold>
+        </GridIsHalf>
+        <GridIsFull>
+          <h3> Featured discoveries</h3>
+          <div> Carousel </div>
+        </GridIsFull>
+        <GridIsFull>
+          <h3> Featured Datasets</h3>
+        </GridIsFull>
+        <GridIsHalf num={1}> Nitrogen Dioxide </GridIsHalf>
+        <GridIsHalf num={2}> Get Air Quality </GridIsHalf>
+
+        <GridIsFull>
+          <h3> Other thematic areas</h3>
+        </GridIsFull>
+        <GridIsQuarter num={1}> Area 1 </GridIsQuarter>
+        <GridIsQuarter num={2}> Area 2 </GridIsQuarter>
+        <GridIsQuarter num={3}> Area 3 </GridIsQuarter>
+        <GridIsQuarter num={4}> Area 4 </GridIsQuarter>
+      </Constrainer>
     </PageMainContent>
   );
 }
