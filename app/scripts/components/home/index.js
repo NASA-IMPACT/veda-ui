@@ -38,8 +38,10 @@ function Home() {
   return (
     <PageMainContent>
       <LayoutProps title={thematic.data.name} />
-      <Constrainer>
-        <GridIsHalf num={1}> Image </GridIsHalf>
+      <IntroFold>
+        <GridIsHalf num={1}>
+          <img src='https://via.placeholder.com/350x150' />
+        </GridIsHalf>
         <GridIsHalf num={2}>
           <PageMainTitle>
             Welcome to the {thematic.data.name} dashboard
@@ -56,16 +58,23 @@ function Home() {
             </Button>
           </IntroFoldActions>
         </GridIsHalf>
+      </IntroFold>
+      <Fold>
         <GridIsFull>
           <h3> Featured discoveries</h3>
-          <div> Carousel </div>
         </GridIsFull>
+        <GridIsFull>
+          <img src='https://via.placeholder.com/1050x350' />
+        </GridIsFull>
+      </Fold>
+      <Fold>
         <GridIsFull>
           <h3> Featured Datasets</h3>
         </GridIsFull>
         <GridIsHalf num={1}> Nitrogen Dioxide </GridIsHalf>
         <GridIsHalf num={2}> Get Air Quality </GridIsHalf>
-
+      </Fold>
+      <Fold>
         <GridIsFull>
           <h3> Other thematic areas</h3>
         </GridIsFull>
@@ -73,7 +82,7 @@ function Home() {
         <GridIsQuarter num={2}> Area 2 </GridIsQuarter>
         <GridIsQuarter num={3}> Area 3 </GridIsQuarter>
         <GridIsQuarter num={4}> Area 4 </GridIsQuarter>
-      </Constrainer>
+      </Fold>
     </PageMainContent>
   );
 }
