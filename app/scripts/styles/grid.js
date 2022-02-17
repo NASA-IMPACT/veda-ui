@@ -15,7 +15,6 @@ export const GridIsFull = styled.div`
 
 export const GridIsHalf = styled.div`
   grid-column: ${(props) => (props.num - 1) * 2 + 1} / span 2;
-
   ${media.mediumUp`
   grid-column:${(props) => (props.num - 1) * 4 + 1} / span 4;
   `}

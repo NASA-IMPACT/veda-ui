@@ -10,7 +10,6 @@ import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
 
 import { resourceNotFound } from '$components/uhoh';
 import { useThematicArea } from '$utils/thematics';
-import Constrainer from '$styles/constrainer';
 import { GridIsFull, GridIsHalf, GridIsQuarter } from '$styles/grid';
 
 const IntroFold = styled(Fold)`
@@ -22,6 +21,14 @@ const IntroFoldCopy = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${glsp(2)};
+`;
+const FeatureCard = styled.div`
+  padding: ${glsp(1)};
+  background: ${themeVal('color.base-50')};
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 `;
 
 const IntroFoldActions = styled.div`
@@ -64,24 +71,72 @@ function Home() {
           <h3> Featured discoveries</h3>
         </GridIsFull>
         <GridIsFull>
-          <img src='https://via.placeholder.com/1050x350' />
+          <FeatureCard>
+            <img src='https://via.placeholder.com/750x100' />
+          </FeatureCard>
         </GridIsFull>
       </Fold>
       <Fold>
         <GridIsFull>
           <h3> Featured Datasets</h3>
         </GridIsFull>
-        <GridIsHalf num={1}> Nitrogen Dioxide </GridIsHalf>
-        <GridIsHalf num={2}> Get Air Quality </GridIsHalf>
+        <GridIsHalf num={1}>
+          <FeatureCard>
+            <h4> Nitrogen Dioxide</h4>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Suspendisse facilisis sollicitudin magna, eget accumsan dolor
+              molestie quis. Aliquam sit amet erat nec risus dapibus efficitur.
+              Sed tristique ultrices libero eu pulvinar. Pellentesque ac auctor
+              felis. Vestibulum varius mattis lectus, at dignissim nulla
+              interdum.
+            </p>
+            <Button
+              forwardedAs={Link}
+              to='about'
+              size='large'
+              variation='primary-fill'
+            >
+              Learn more
+            </Button>
+          </FeatureCard>
+        </GridIsHalf>
+        <GridIsHalf num={2}>
+          <FeatureCard>
+            <h4> Get air quality data</h4>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Suspendisse facilisis sollicitudin magna, eget accumsan dolor
+              molestie quis. Aliquam sit amet erat nec risus dapibus efficitur.
+              Sed tristique ultrices libero eu pulvinar. Pellentesque ac auctor
+              felis. Vestibulum varius mattis lectus, at dignissim nulla
+              interdum.
+            </p>
+          </FeatureCard>
+        </GridIsHalf>
       </Fold>
       <Fold>
         <GridIsFull>
           <h3> Other thematic areas</h3>
         </GridIsFull>
-        <GridIsQuarter num={1}> Area 1 </GridIsQuarter>
-        <GridIsQuarter num={2}> Area 2 </GridIsQuarter>
-        <GridIsQuarter num={3}> Area 3 </GridIsQuarter>
-        <GridIsQuarter num={4}> Area 4 </GridIsQuarter>
+        <GridIsHalf num={1}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+          facilisis sollicitudin magna, eget accumsan dolor molestie quis.
+          Aliquam sit amet erat nec risus dapibus efficitur. Sed tristique
+          ultrices libero eu pulvinar. Pellentesque ac auctor felis.
+        </GridIsHalf>
+        <GridIsQuarter num={1}>
+          <FeatureCard> Area 1</FeatureCard>
+        </GridIsQuarter>
+        <GridIsQuarter num={2}>
+          <FeatureCard> Area 2</FeatureCard>
+        </GridIsQuarter>
+        <GridIsQuarter num={3}>
+          <FeatureCard> Area 3</FeatureCard>
+        </GridIsQuarter>
+        <GridIsQuarter num={4}>
+          <FeatureCard> Area 4</FeatureCard>
+        </GridIsQuarter>
       </Fold>
     </PageMainContent>
   );
