@@ -9,6 +9,7 @@ export default function themeOverrides() {
     },
     type: {
       base: {
+        leadSize: '1.25rem',
         extrabold: '800',
         // Increments to the type.base.size for each media breakpoint.
         sizeIncrement: {
