@@ -1,36 +1,33 @@
 import { themeVal } from '@devseed-ui/theme-provider';
-import { css } from 'styled-components';
-
-// DEV NOTE: The use of a `const template =` declaration is to prevent stylelint
-// from complaining about weird css declarations.
+import { css as cssNoHighlight } from 'styled-components';
 
 const variableType = (base, variable) => {
-  return css`calc(${base} * var(${variable}, 1));`;
+  return cssNoHighlight`calc(${base} + var(${variable}, 0rem))`;
 };
 
 /**
  * Returns the correct type size taking into account the provided value and the
- * multiplier (for the base text) for the current media query.
+ * increment (for the base text) for the current media query.
  *
- * @param {string} base The bse size to use. This will be the size which is
- * multiplied by the multiplier defined in the theme.
+ * @param {string} base The base size to use. This will be the size on top of
+ * which the increment defined in the theme is added.
  *
  * @returns CSS expression
- *          like calc(base * var(--base-text-multiplier))
+ *          like calc(base * var(--base-text-increment))
  */
 export const variableBaseType = (base) =>
-  variableType(base, '--base-text-multiplier');
+  variableType(base, '--base-text-increment');
 
 /**
  * Returns the correct vertical space for prose contexts, taking into account
- * the default prose spacing to use (glsp * 1.5) and the text multiplier. The
- * result is the space scaling together with the font size.
+ * the font-size for each media breakpoint. The result is the space scaling
+ * together with the font size.
  *
- * @returns CSS expression like calc(glsp * 1.5 * var(--base-text-multiplier))
+ * @returns CSS expression like calc(1rem + 0.5rem var(--base-text-increment))
  */
 export const variableProseVSpace = () => {
-  return css`calc(
-    ${themeVal('layout.space')} * 1.5 * var(--base-text-multiplier, 1)
+  return cssNoHighlight`calc(
+    ${variableBaseType(themeVal('type.base.size'))} + 0.5rem
   )`;
 };
 
@@ -45,14 +42,13 @@ export const variableProseVSpace = () => {
  */
 export const variableGlsp = (...args) => {
   args = args.length ? args : [1];
-  const c = css;
   const fns = args.map(
     (m) =>
-      c`calc(${themeVal(
+      cssNoHighlight`calc(${themeVal(
         'layout.space'
       )} * var(--base-space-multiplier, 1) * ${m})`
   );
 
   const spaces = Array(args.length - 1).fill(' ');
-  return css(['', ...spaces, ''], ...fns);
+  return cssNoHighlight(['', ...spaces, ''], ...fns);
 };

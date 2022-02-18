@@ -28,19 +28,23 @@ const Content = styled(Prose)`
   `}
 `;
 
-export function Fold(props) {
-  const { children } = props;
+function FoldComponent(props) {
+  const { children, ...rest } = props;
 
   return (
-    <FoldProseSelf>
+    <FoldProseSelf {...rest}>
       <FoldInner>{children}</FoldInner>
     </FoldProseSelf>
   );
 }
 
-Fold.propTypes = {
+FoldComponent.propTypes = {
   children: T.node
 };
+
+export const Fold = styled(FoldComponent)`
+  /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
+`;
 
 export function FoldProse(props) {
   const { children } = props;

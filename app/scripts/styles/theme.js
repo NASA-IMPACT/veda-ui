@@ -9,13 +9,14 @@ export default function themeOverrides() {
     },
     type: {
       base: {
+        leadSize: '1.25rem',
         extrabold: '800',
-        sizeMultiplier: {
-          xsmall: 1,
-          small: 1,
-          medium: 1,
-          large: 1.25,
-          xlarge: 1.25
+        // Increments to the type.base.size for each media breakpoint.
+        sizeIncrement: {
+          small: '0rem',
+          medium: '0.25rem',
+          large: '0.25rem',
+          xlarge: '0.5rem'
         }
       },
       heading: {
@@ -41,34 +42,33 @@ export default function themeOverrides() {
  */
 export const GlobalStyles = createGlobalStyle`
   :root {
-    --base-text-multiplier: ${themeVal('type.base.sizeMultiplier.xsmall')};
     --base-space-multiplier: ${themeVal('layout.glspMultiplier.xsmall')};
   }
 
   ${media.smallUp`
     :root {
-      --base-text-multiplier: ${themeVal('type.base.sizeMultiplier.small')};
+      --base-text-increment: ${themeVal('type.base.sizeIncrement.small')};
       --base-space-multiplier: ${themeVal('layout.glspMultiplier.small')};
     }
   `}
 
   ${media.mediumUp`
     :root {
-      --base-text-multiplier: ${themeVal('type.base.sizeMultiplier.medium')};
+      --base-text-increment: ${themeVal('type.base.sizeIncrement.medium')};
       --base-space-multiplier: ${themeVal('layout.glspMultiplier.medium')};
     }
   `}
 
   ${media.largeUp`
     :root {
-      --base-text-multiplier: ${themeVal('type.base.sizeMultiplier.large')};
+      --base-text-increment: ${themeVal('type.base.sizeIncrement.large')};
       --base-space-multiplier: ${themeVal('layout.glspMultiplier.large')};
     }
   `}
 
   ${media.xlargeUp`
     :root {
-      --base-text-multiplier: ${themeVal('type.base.sizeMultiplier.xlarge')};
+      --base-text-increment: ${themeVal('type.base.sizeIncrement.xlarge')};
       --base-space-multiplier: ${themeVal('layout.glspMultiplier.xlarge')};
     }
   `}

@@ -6,10 +6,9 @@ import styled, { css } from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
-import { PageMainTitle, PageOverline } from '../../styles/page';
+import { PageLead, PageMainTitle, PageOverline } from '../../styles/page';
 import Constrainer from '../../styles/constrainer';
 import { variableGlsp } from '../../styles/variable-utils';
-import { VarLead } from '../../styles/variable-components';
 import MediaAttribution from './media-attribution';
 
 const PageHeroSelf = styled.div`
@@ -67,24 +66,6 @@ const PageHeroHGroup = styled.div`
 
   ${media.largeUp`
     grid-column: 1 / span 6;
-  `}
-`;
-
-const PageHeroDescription = styled(VarLead)`
-  position: relative;
-  z-index: 3;
-  grid-column: 1 / span 4;
-  grid-row: 2;
-  color: inherit;
-
-  ${media.mediumUp`
-    grid-column: 1 / span 6;
-    grid-row: 2;
-  `}
-
-  ${media.largeUp`
-    grid-column: 7 / span 6;
-    grid-row: 1;
   `}
 `;
 
@@ -157,9 +138,7 @@ function PageHero(props) {
             </PageOverline>
           )}
         </PageHeroHGroup>
-        {description && (
-          <PageHeroDescription>{description}</PageHeroDescription>
-        )}
+        {description && <PageLead>{description}</PageLead>}
         {hasImage && (
           <PageHeroCover>
             <PageHeroCoverItem>
