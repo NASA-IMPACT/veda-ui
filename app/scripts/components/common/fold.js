@@ -3,9 +3,9 @@ import T from 'prop-types';
 
 import styled from 'styled-components';
 import { media } from '@devseed-ui/theme-provider';
-import { Prose } from '@devseed-ui/typography';
 
 import { variableGlsp } from '../../styles/variable-utils';
+import { VarProse } from '$styles/variable-components';
 import Constrainer from '../../styles/constrainer';
 
 const FoldProseSelf = styled.div`
@@ -16,7 +16,7 @@ const FoldInner = styled(Constrainer)`
   /* styled-component */
 `;
 
-const Content = styled(Prose)`
+const Content = styled(VarProse)`
   grid-column: 1 / span 4;
 
   ${media.mediumUp`
