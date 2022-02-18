@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { media } from '@devseed-ui/theme-provider';
+import { variableGlsp } from './variable-utils';
 
 export const GridIsFull = styled.div`
   grid-column: 1 / span 4;
@@ -31,4 +32,18 @@ export const GridIsQuarter = styled.div`
   ${media.largeUp`
   grid-column: ${(props) => (props.num - 1) * 3 + 1} / span 3;
   `}
+`;
+
+export const GridTemplateHalf = styled.div`
+  display: grid;
+  grid-column: 1/-1;
+  grid-template-columns: repeat(2, 1fr);
+  gap: ${variableGlsp()};
+`;
+
+export const GridTemplateQuarter = styled.div`
+  display: grid;
+  grid-column: 1/-1;
+  grid-template-columns: repeat(4, 1fr);
+  gap: ${variableGlsp()};
 `;
