@@ -1,7 +1,15 @@
 {
-  "parser": "@babel/eslint-parser", // Specifies the ESLint parser
+  "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
+  "plugins": [
+    "react",
+    "react-hooks",
+    "@typescript-eslint",
+    "inclusive-language",
+    "jest"
+  ],
   "extends": [
     "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
     "plugin:jest/recommended"
@@ -16,13 +24,13 @@
     "node": true,
     "es6": true
   },
-  "plugins": ["react", "react-hooks", "inclusive-language", "jest"],
   "parserOptions": {
     "requireConfigFile": false,
     "babelOptions": {
       "presets": [
         "@babel/preset-env",
-        "@babel/preset-react"
+        "@babel/preset-react",
+        "@babel/preset-typescript"
       ]
     },
     "ecmaFeatures": {
@@ -32,7 +40,15 @@
     "sourceType": "module" // Allows for the use of imports
   },
   "rules": {
-    "prettier/prettier": ["error", {"semi": true, "singleQuote": true, "jsxSingleQuote": true, "parser": "flow"}],
+    "prettier/prettier": [
+      "error",
+      {
+        "semi": true,
+        "singleQuote": true,
+        "jsxSingleQuote": true,
+        "parser": "flow"
+      }
+    ],
     "inclusive-language/use-inclusive-words": "error",
     "semi": [2, "always"],
     "jsx-quotes": [2, "prefer-single"],
@@ -41,6 +57,7 @@
     "semi-spacing": [2, { "before": false, "after": true }],
     "no-dupe-else-if": 0,
     "no-setter-return": 0,
+
     "prefer-promise-reject-errors": 0,
     "react/button-has-type": 2,
     "react/default-props-match-prop-types": 2,
@@ -49,9 +66,12 @@
     "react/jsx-curly-spacing": 2,
     "react/jsx-curly-newline": 2,
     "react/jsx-equals-spacing": 2,
-    "react/jsx-max-props-per-line": [2, { "maximum": 1, "when": "multiline"}],
+    "react/jsx-max-props-per-line": [2, { "maximum": 1, "when": "multiline" }],
     "react/jsx-first-prop-new-line": 2,
-    "react/jsx-curly-brace-presence": [2, { "props": "never", "children": "never" }],
+    "react/jsx-curly-brace-presence": [
+      2,
+      { "props": "never", "children": "never" }
+    ],
     "react/jsx-pascal-case": 2,
     "react/jsx-props-no-multi-spaces": 2,
     "react/jsx-tag-spacing": [2, { "beforeClosing": "never" }],
