@@ -11,7 +11,7 @@ import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
 import { resourceNotFound } from '$components/uhoh';
 import { useThematicArea } from '$utils/thematics';
 import {
-  GridIsFull,
+  GridTemplateFull,
   GridTemplateHalf,
   GridTemplateQuarter
 } from '$styles/grid';
@@ -73,19 +73,19 @@ function Home() {
         </GridTemplateHalf>
       </IntroFold>
       <Fold>
-        <GridIsFull>
+        <GridTemplateFull>
           <h3> Featured discoveries</h3>
-        </GridIsFull>
-        <GridIsFull>
+        </GridTemplateFull>
+        <GridTemplateFull>
           <FeatureCard>
             <img src='https://via.placeholder.com/750x100' />
           </FeatureCard>
-        </GridIsFull>
+        </GridTemplateFull>
       </Fold>
       <Fold>
-        <GridIsFull>
+        <GridTemplateFull>
           <h3> Featured Datasets</h3>
-        </GridIsFull>
+        </GridTemplateFull>
         <GridTemplateHalf>
           <FeatureCard>
             <h4> Nitrogen Dioxide</h4>
@@ -120,9 +120,9 @@ function Home() {
         </GridTemplateHalf>
       </Fold>
       <Fold>
-        <GridIsFull>
+        <GridTemplateFull>
           <h3> Other thematic areas</h3>
-        </GridIsFull>
+        </GridTemplateFull>
         <GridTemplateHalf>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
           facilisis sollicitudin magna, eget accumsan dolor molestie quis.
