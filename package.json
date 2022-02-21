@@ -12,6 +12,7 @@
   },
   "license": "BSD-3-Clause",
   "source": "./app/index.html",
+  "types": "./app/scripts/main.d.ts",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "serve": "NODE_ENV=development gulp serve",
@@ -32,6 +33,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.16.8",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.7",
     "@mdx-js/react": "^1.6.22",
     "@parcel/reporter-bundle-analyzer": "^2.0.0",
     "@parcel/reporter-bundle-buddy": "^2.0.0",
@@ -39,6 +41,8 @@
     "@parcel/transformer-mdx": "^2.0.1",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
     "babel-jest": "^27.5.1",
     "babel-plugin-styled-components": "^1.13.3",
     "del": "^6.0.0",
@@ -65,7 +69,8 @@
     "stylelint": "^13.12",
     "stylelint-config-recommended": "^3.0.0",
     "stylelint-config-styled-components": "^0.1.1",
-    "stylelint-processor-styled-components": "^1.10.0"
+    "stylelint-processor-styled-components": "^1.10.0",
+    "typescript": "^4.5.5"
   },
   "dependencies": {
     "@devseed-ui/animation": "^4.0.0",
