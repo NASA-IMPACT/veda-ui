@@ -1,0 +1,40 @@
+---
+id: sandbox
+name: Sandbox
+thematics:
+  - water
+  - fire
+
+timeseries:
+  isPeriodic: true
+  density: month
+
+layers:
+  - id: no2-monthly
+    name: No2
+    type: raster
+    description: no2 dataset
+    zoomExtent:
+      - 4
+      - 16
+    sourceParams:
+      resampling_method: bilinear
+      bidx: 1
+      color_formula: gamma r 1.05
+      colormap_name: coolwarm
+      rescale:
+        - 0
+        - 1.5e16
+    compare:
+      stacCol: nightlights-hd-monthly
+      datetime: ::fn (bag) => {
+          return new Date('2021-09-01T00:00:00Z');
+        }
+      sourceParams:
+        bidx: 1
+        colormap_name: inferno
+        rescale:
+          - 0
+          - 255
+---
+# Nightlights
