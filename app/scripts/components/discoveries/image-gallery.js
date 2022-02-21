@@ -3,6 +3,7 @@ import T from 'prop-types';
 import styled from 'styled-components';
 import { glsp, media } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
+import { GridTemplateFull } from '$styles/grid';
 
 const ImageContainer = styled.div`
   ${media.mediumDown`
@@ -48,6 +49,11 @@ const GallerySideBySide = styled.div`
   }
 `;
 
+const CaptionContainer = styled(GridTemplateFull)`
+  text-align; center;
+  margin-top:  ${glsp(1)};
+`;
+
 function ImageGallery({ images }) {
   return (
     <Gallery>
@@ -69,23 +75,34 @@ function ImageSideBySide({ images }) {
   );
 }
 
-function Image({ images }) {
-  switch (images.length) {
-    case 1:
-      return (
-        <ImageContainer>
-          <img src={images[0].src} alt={images[0].alt} loading='lazy' />
-        </ImageContainer>
-      );
-    case 2:
-      return <ImageSideBySide images={images} />;
-    case 3:
-      return <ImageGallery images={images} />;
+function Image({ images, caption }) {
+  function getImages() {
+    switch (images.length) {
+      case 1:
+        return (
+          <ImageContainer>
+            <img src={images[0].src} alt={images[0].alt} loading='lazy' />
+          </ImageContainer>
+        );
+      case 2:
+        return <ImageSideBySide images={images} />;
+      case 3:
+        return <ImageGallery images={images} />;
+    }
   }
+  return (
+    <div>
+      {getImages()}
+      <CaptionContainer>
+        <caption>{caption}</caption>
+      </CaptionContainer>
+    </div>
+  );
 }
 
 Image.prototype = {
-  images: T.array
+  images: T.array,
+  caption: T.string
 };
 
 export default Image;
