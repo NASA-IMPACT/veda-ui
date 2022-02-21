@@ -29,7 +29,7 @@ const IntroFoldCopy = styled.div`
 const FeatureCard = styled.div`
   padding: ${glsp(1)};
   background: ${themeVal('color.base-50')};
-  height: 300px;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
