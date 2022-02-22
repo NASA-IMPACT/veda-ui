@@ -3,6 +3,6 @@
   "reporters": ["...", "@parcel/reporter-bundle-analyzer"],
   "resolvers": ["parcel-resolver-thematics", "@parcel/resolver-glob", "..."],
   "transformers": {
-    "*.mdx": ["parcel-transformer-mdx-frontmatter", "@parcel/transformer-mdx", "..."]
+    "*.mdx": ["parcel-transformer-mdx-frontmatter", "parcel-transformer-mdx"]
   }
 }
