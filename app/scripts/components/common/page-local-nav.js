@@ -66,6 +66,8 @@ const LocalMenu = styled.ul`
   flex-flow: row nowrap;
   align-items: center;
   gap: ${glsp()};
+  max-width: 1/3vw;
+  overflow: scroll;
 
   a,
   a:visited {
