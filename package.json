@@ -21,7 +21,7 @@
     "lint": "yarn lint:js && yarn lint:css",
     "lint:js": "eslint app/scripts/ --ext .js",
     "lint:css": "stylelint 'app/styles/**/**' 'app/scripts/**/*.js'",
-    "test": "echo \"No tests\" && exit 0"
+    "test": "jest"
   },
   "engines": {
     "node": "16.x"
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/eslint-parser": "^7.16.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.16.8",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@mdx-js/react": "^1.6.22",
@@ -36,12 +37,16 @@
     "@parcel/reporter-bundle-buddy": "^2.0.0",
     "@parcel/resolver-glob": "^2.0.1",
     "@parcel/transformer-mdx": "^2.0.1",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.2",
+    "babel-jest": "^27.5.1",
     "babel-plugin-styled-components": "^1.13.3",
     "del": "^6.0.0",
     "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-inclusive-language": "^2.1.1",
+    "eslint-plugin-jest": "^26.1.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
@@ -50,6 +55,7 @@
     "fs-extra": "^10.0.0",
     "gray-matter": "^4.0.3",
     "gulp": "^4.0.2",
+    "jest": "^27.5.1",
     "parcel": "^2.0.0",
     "parcel-resolver-evolution": "link:./parcel-resolver-evolution",
     "parcel-transformer-mdx-front": "link:./parcel-transformer-mdx-front",
@@ -88,5 +94,21 @@
     "$components": "~/app/scripts/components",
     "$styles": "~/app/scripts/styles",
     "$utils": "~/app/scripts/utils"
+  },
+  "jest": {
+    "verbose": true,
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "globals": {
+      "NODE_ENV": "test"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "moduleDirectories": [
+      "node_modules"
+    ]
   }
 }
