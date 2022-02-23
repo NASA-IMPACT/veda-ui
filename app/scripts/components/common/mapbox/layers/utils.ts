@@ -66,6 +66,7 @@ export const getCompareLayerData = (
       id: otherLayer.id,
       type: otherLayer.type,
       zoomExtent: compareInternal.zoomExtent || otherLayer.zoomExtent,
+      datetime: compareInternal.datetime,
       sourceParams: defaultsDeep(
         {},
         compareSTAC.sourceParams,

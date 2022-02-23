@@ -1,9 +1,10 @@
 ---
 id: sandbox
 name: Sandbox
+description: Travel restrictions and lockdown measures have disrupted the shipping industry and the global economy broadly. NASA researchers are using artificial intelligence to track shipping activities across major ports in the U.S.
 thematics:
-  - water
-  - fire
+  - agriculture
+  - air-quality
 
 timeseries:
   isPeriodic: true
@@ -26,15 +27,25 @@ layers:
         - 0
         - 1.5e16
     compare:
-      stacCol: nightlights-hd-monthly
-      datetime: ::fn (bag) => {
-          return new Date('2021-09-01T00:00:00Z');
+      datasetId: sandbox
+      layerId: no2-monthly
+      datetime: ::js ({ datetime }) => {
+          const d = new Date(datetime.getTime());
+          d.setFullYear(d.getFullYear() - 1);
+          return d
         }
-      sourceParams:
-        bidx: 1
-        colormap_name: inferno
-        rescale:
-          - 0
-          - 255
+  - id: nightlights-hd-monthly
+    name: Nightlights Monthly
+    type: raster
+    description: The nightlights dataset
+    zoomExtent:
+      - 4
+      - 16
+    sourceParams:
+      bidx: 1
+      colormap_name: inferno
+      rescale:
+        - 0
+        - 255
 ---
 # Nightlights

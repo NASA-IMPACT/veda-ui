@@ -109,7 +109,8 @@ function MapboxMapComponent(props) {
     };
   }, [id, isComparing, isMapCompareLoaded, isMapLoaded]);
 
-  const isTimeseries = dataset?.timeseries;
+  // const isTimeseries = layerData?.timeseries;
+  const isTimeseries = true;
   const layerType = layerData?.type;
   const MapLayerComponent = getLayerComponent(isTimeseries, layerType);
   const shouldRenderCompare = isMapLoaded && isComparing;
@@ -117,7 +118,7 @@ function MapboxMapComponent(props) {
   // Some properties defined in the dataset layer config may be functions that
   // need to be resolved before rendering them. These functions accept data to
   // return the correct value.
-  const resolverBag = useMemo(() => ({}), []);
+  const resolverBag = useMemo(() => ({ datetime: date }), [date]);
 
   // Layers source parameters.
   const layerSourceParams = useMemo(
