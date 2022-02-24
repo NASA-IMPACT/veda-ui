@@ -8368,11 +8368,11 @@ pako@~1.0.5:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
   integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
 
-"parcel-resolver-evolution@link:./parcel-resolver-evolution":
+"parcel-resolver-thematics@link:./parcel-resolver-thematics":
   version "0.0.0"
   uid ""
 
-"parcel-transformer-mdx-front@link:./parcel-transformer-mdx-front":
+"parcel-transformer-mdx-frontmatter@link:./parcel-transformer-mdx-frontmatter":
   version "0.0.0"
   uid ""
 
