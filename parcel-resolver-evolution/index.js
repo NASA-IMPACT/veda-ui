@@ -97,11 +97,28 @@ async function loadOptionalContent(logger, root, globPath, type) {
  *    function. When the module exports this it will be valid javascript code.
  *
  * @param {obj} data The object to stringify.
+ * @param {string} filePath The path of the file where the data comes from.
  * @returns string
  */
-function stringifyDataFns(data) {
+function stringifyDataFns(data, filePath) {
   const jsonVal = JSON.stringify(data, (k, v) => {
-    return typeof v === 'string' && v.startsWith('::js') ? `${v} ::js` : v;
+    if (typeof v === 'string') {
+      if (v.startsWith('::js')) {
+        return `${v} ::js`;
+      }
+
+      // Handle file requires
+      if (v.startsWith('::file')) {
+        const p = v.replace(/^::file ?/, '');
+        // file path is relative from the mdx file. Make it relative to this
+        // module, so it works with the require.
+        const absResourcePath = path.resolve(path.dirname(filePath), p);
+        const relResourceFromModule = path.relative(__dirname, absResourcePath);
+        // Export as a js expression so that is picked up below.
+        return `::js require('${relResourceFromModule}') ::js`;
+      }
+    }
+    return v;
   });
   return jsonVal.replaceAll(/("::js ?| ?::js")/gim, '');
 }
@@ -121,7 +138,7 @@ function generateImports(data, paths) {
     .map((o, i) =>
       o.id
         ? `'${o.id}': {
-          data: ${stringifyDataFns(o)},
+          data: ${stringifyDataFns(o, paths[i])},
           content: () => import('${path.relative(__dirname, paths[i])}')
         }`
         : null
