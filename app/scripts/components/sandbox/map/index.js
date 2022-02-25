@@ -1,10 +1,9 @@
-import { FormCheckable } from '@devseed-ui/form';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { FormCheckable } from '@devseed-ui/form';
 
 import Constrainer from '../../../styles/constrainer';
 import { PageMainContent } from '../../../styles/page';
-
 import MapboxMap from '../../common/mapbox';
 
 const DemoMap = styled(MapboxMap)`
@@ -65,8 +64,6 @@ function SandboxMap() {
     compare: false,
     compareSupport: true
   });
-
-  // TODO Domain belongs to the dataset and should be requested here, after the layer gets selected.
 
   return (
     <PageMainContent>

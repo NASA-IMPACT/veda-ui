@@ -104,7 +104,8 @@
   "alias": {
     "$components": "~/app/scripts/components",
     "$styles": "~/app/scripts/styles",
-    "$utils": "~/app/scripts/utils"
+    "$utils": "~/app/scripts/utils",
+    "$context": "~/app/scripts/context"
   },
   "jest": {
     "verbose": true,

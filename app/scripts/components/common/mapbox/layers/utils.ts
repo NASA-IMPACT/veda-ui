@@ -12,6 +12,11 @@ import {
 
 import { MapLayerRasterTimeseries } from './raster-timeseries';
 
+export const RASTER_ENDPOINT =
+  'https://b38fnvpkoh.execute-api.us-east-1.amazonaws.com';
+export const STAC_ENDPOINT =
+  'https://j2wlly6xg8.execute-api.us-east-1.amazonaws.com';
+
 export const getLayerComponent = (isTimeseries, layerType) => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
@@ -78,14 +83,23 @@ export const getCompareLayerData = (
   throw new Error('Layer specified in compare was not found.');
 };
 
-export function resolveConfigFunctions<T>(datum: T, bag: DatasetDatumFnResolverBag): T;
-export function resolveConfigFunctions(datum: DatasetDatumFn<DatasetDatumReturnType>, bag: DatasetDatumFnResolverBag): DatasetDatumReturnType;
-export function resolveConfigFunctions(datum: any, bag: DatasetDatumFnResolverBag): any {
+export function resolveConfigFunctions<T>(
+  datum: T,
+  bag: DatasetDatumFnResolverBag
+): T;
+export function resolveConfigFunctions(
+  datum: DatasetDatumFn<DatasetDatumReturnType>,
+  bag: DatasetDatumFnResolverBag
+): DatasetDatumReturnType;
+export function resolveConfigFunctions(
+  datum: any,
+  bag: DatasetDatumFnResolverBag
+): any {
   if (Array.isArray(datum)) {
-    return datum.map(v => resolveConfigFunctions(v, bag));
+    return datum.map((v) => resolveConfigFunctions(v, bag));
   }
 
-  if (datum != null && typeof datum === "object") {
+  if (datum != null && typeof datum === 'object') {
     // Use for loop instead of reduce as it faster.
     const ready = {};
     for (const [k, v] of Object.entries(datum as object)) {
@@ -94,7 +108,7 @@ export function resolveConfigFunctions(datum: any, bag: DatasetDatumFnResolverBa
     return ready;
   }
 
-  if (typeof datum === "function") {
+  if (typeof datum === 'function') {
     return datum(bag);
   }
 

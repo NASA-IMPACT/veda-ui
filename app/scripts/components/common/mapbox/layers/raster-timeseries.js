@@ -2,8 +2,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import qs from 'qs';
 
-const RASTER_ENDPOINT =
-  'https://b38fnvpkoh.execute-api.us-east-1.amazonaws.com';
+import { RASTER_ENDPOINT } from './utils';
 
 export function MapLayerRasterTimeseries(props) {
   const { id, layerId, date, mapInstance, sourceParams = {} } = props;
@@ -28,7 +27,6 @@ export function MapLayerRasterTimeseries(props) {
           ]
         }
       });
-      console.log('🚀 ~ file: map.js ~ line 123 ~ load ~ data', response.data);
 
       const tileParams = qs.stringify(
         {
@@ -38,7 +36,7 @@ export function MapLayerRasterTimeseries(props) {
         { arrayFormat: 'comma' }
       );
 
-      console.log('Adding source and layer', id);
+      console.log('Adding source and layer', id, response.data.tiles);
 
       mapInstance.addSource(id, {
         type: 'raster',
