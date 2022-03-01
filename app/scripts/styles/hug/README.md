@@ -1,13 +1,13 @@
-# Human Universal Gridder (Hug)
+# 🤗 Human Universal Gridder (Hug)
 
 The Human Universal Gridder (Hug) is a layout component with two main purposes:
 
 1. Create a grid that remains centered on the page and has leading and trailing columns of varying size.
-2. Handle subgrids when a Ug is nested within another Ug.
+2. Handle subgrids when a Hug is nested within another Hug.
 
 ![Human Universal Gridder's grid definition](./media/grid.png)
 
-The image above shows the grid that gets created when a Ug is used. The number of columns varies according to the screen size:
+The image above shows the grid that gets created when a Hug is used. The number of columns varies according to the screen size:
 - Small screens: 4 columns
 - Medium screens: 8 columns
 - Large screens: 12 columns

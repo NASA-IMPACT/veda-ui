@@ -8,7 +8,7 @@ import { themeVal, media } from '@devseed-ui/theme-provider';
 
 import { variableGlsp } from '../variable-utils';
 
-// Human Universal Gridder
+// 🤗 Human Universal Gridder
 //
 // Grid:
 //   start    1    2    3    4    5    6    7    8    9   10   11   12     end
@@ -134,7 +134,7 @@ const validateGridLineNames = (cols) => {
 
   // There was an error. Show the user info for debugging.
   if (error) {
-    throw new Error(`Human Universal Gridder
+    throw new Error(`🤗 Human Universal Gridder
 
     ${JSON.stringify(cols)}
 
@@ -204,6 +204,14 @@ function makeGrid(columns: number, mdQuery: MdQuery) {
 
       const startIdx = columnTemplate.findIndex((col) => col.name === start);
       const endIdx = columnTemplate.findIndex((col) => col.name === end);
+
+      if (startIdx === -1 || endIdx === -1) {
+        const line = startIdx === -1 ? start : end;
+        throw new Error(`🤗 Human Universal Gridder
+
+The grid line \`${line}\` does not exist in the ${mdQuery} media query which has ${columns} columns.
+Grid lines for ${mdQuery}: ${columnTemplate.map(c => c.name).join(' | ')}`);
+      }
 
       const lastColumn = columnTemplate[endIdx];
       gridTemplateColumns = [
