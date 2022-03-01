@@ -10,10 +10,12 @@ import {
 import { Prose } from '@devseed-ui/typography';
 import { CollecticonSlidersHorizontal } from '@devseed-ui/collecticons';
 
-import { resourceNotFound } from '../../uhoh';
-import PageLocalNav from '../../common/page-local-nav';
-import Constrainer from '../../../styles/constrainer';
-import { PageMainContent } from '../../../styles/page';
+import { resourceNotFound } from '$components/uhoh';
+import PageLocalNav, {
+  DatasetsLocalMenu
+} from '$components/common/page-local-nav';
+import Constrainer from '$styles/constrainer';
+import { PageMainContent } from '$styles/page';
 import {
   Panel,
   PanelActions,
@@ -27,15 +29,13 @@ import {
   PanelWidgetBody,
   PanelWidgetHeader,
   PanelWidgetTitle
-} from '../../../styles/panel';
-import { variableGlsp } from '../../../styles/variable-utils';
-import { LayoutProps } from '../../common/layout-root';
-import {
-  useThematicArea,
-  useThematicAreaDataset
-} from '../../../utils/thematics';
+} from '$styles/panel';
+import { LayoutProps } from '$components/common/layout-root';
 
-import { useMediaQuery } from '../../../utils/use-media-query';
+import { variableGlsp } from '$styles/variable-utils';
+import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
+import { useMediaQuery } from '$utils/use-media-query';
+import { thematicDatasetsPath } from '$utils/routes';
 
 export const IntroFold = styled.div`
   position: relative;
@@ -146,9 +146,14 @@ function DatasetsExplore() {
     <>
       <LayoutProps title={dataset.data.name} hideFooter />
       <PageLocalNav
-        title={dataset.data.name}
-        thematic={thematic}
-        dataset={dataset}
+        parentName='Dataset'
+        parentLabel='Datasets'
+        parentTo={thematicDatasetsPath(thematic)}
+        items={thematic.data.datasets}
+        currentId={dataset.data.id}
+        localMenuCmp={
+          <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
+        }
       />
       <PageMainContent>
         <IntroFold>

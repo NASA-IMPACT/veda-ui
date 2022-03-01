@@ -3,7 +3,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:jest/recommended"
   ],
   "settings": {
     "react": {
@@ -15,7 +16,7 @@
     "node": true,
     "es6": true
   },
-  "plugins": ["react", "react-hooks", "inclusive-language"],
+  "plugins": ["react", "react-hooks", "inclusive-language", "jest"],
   "parserOptions": {
     "requireConfigFile": false,
     "babelOptions": {
