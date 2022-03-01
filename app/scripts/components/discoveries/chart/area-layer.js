@@ -2,12 +2,26 @@ import React from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 import { area } from 'd3-shape';
-import { chartMargin, itemWidth, itemHeight, height } from './utils';
+import { themeVal } from '@devseed-ui/theme-provider';
+import { itemWidth } from './utils';
+
+const highlightColorThemeValue = 'color.info-300a';
 
 const HighlightLabel = styled.text`
   font-family: sans-serif;
   font-size: 12px;
   dominant-baseline: hanging;
+`;
+
+const HighlightLabelMarker = styled.rect`
+  width: 10px;
+  height: 10px;
+  fill: ${themeVal(highlightColorThemeValue)};
+`;
+
+const HighlightArea = styled.path`
+  d=${(props) => props.d};
+  fill: ${themeVal(highlightColorThemeValue)};
 `;
 
 // empty layer to render when there is no highlight band
@@ -16,14 +30,11 @@ export const EmptyLayer = () => {
   return <g />;
 };
 
-const highlightColor = '#3daff7';
-const highlightOpacity = 0.3;
-
 /* eslint-disable react/display-name */
 
 const AreaLayer = (customProps) => (nivoProps) => {
   const { highlightStart, highlightEnd, highlightLabel } = customProps;
-  const { series, xScale, innerWidth, height, innerHeight } = nivoProps;
+  const { series, xScale, innerWidth, innerHeight } = nivoProps;
 
   if (series.length > 0) {
     const startTime = highlightStart
@@ -46,22 +57,13 @@ const AreaLayer = (customProps) => (nivoProps) => {
 
     return (
       <g>
-        <path
-          d={areaGenerator(filteredData)}
-          fill={highlightColor}
-          fillOpacity={highlightOpacity}
-        />
+        <HighlightArea d={areaGenerator(filteredData)} />
         <g
           transform={`translate(${innerWidth / 2 - itemWidth / 2},${
             innerHeight + 30
           }) rotate(0)`}
         >
-          <rect
-            width='10'
-            height='10'
-            fill={highlightColor}
-            fillOpacity={highlightOpacity}
-          />
+          <HighlightLabelMarker />
           <HighlightLabel transform='translate(15, 0)'>
             {highlightLabel}
           </HighlightLabel>
