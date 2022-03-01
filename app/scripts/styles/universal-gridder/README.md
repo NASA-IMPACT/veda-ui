@@ -12,9 +12,11 @@ The image above shows the grid that gets created when a Ug is used. The number o
 - Medium screens: 8 columns
 - Large screens: 12 columns
 
-![Universal Gridder animation](./media/ug-responsive.mp4)
+**Ug responsiveness in action:**  
 
-<detail>
+https://user-images.githubusercontent.com/1090606/156192701-350da28a-7bf4-4129-a50b-303ca3a90304.mp4
+
+<details>
   <summary>Code</summary>
 
 ```js
@@ -48,7 +50,7 @@ const ExampleUg = styled(Ug)`
   <p className='trailing'>Trailing Column</p>
 </ExampleUg>
 ```
-</detail>
+</details>
 
 As you can see from the video, the grid will always be centered on the page (with a maximum width bound to the theme property `layout.max`), the leading/trailing columns will take up the rest of the space and will shrink until they disappear.  
 The centered grid will also always have a buffer from the side of the page which is something that does not exist in a traditional css grid.
