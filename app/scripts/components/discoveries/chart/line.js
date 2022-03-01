@@ -20,7 +20,6 @@ const LineChart = ({
   xKey,
   yKey,
   dateFormat,
-  isThereHighlight,
   customLayerComponent
 }) => {
   const [data, setData] = useState([]);

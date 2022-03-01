@@ -7,6 +7,7 @@ const TooltipWrapper = styled.div`
   border: 1px solid ${themeVal('color.base-300a')};
   padding: ${glsp(0.5)};
   border-radius: ${themeVal('shape.rounded')};
+  font-size: 0.75rem;
   > div:not(:last-child) {
     padding-bottom: ${glsp(0.25)};
   }

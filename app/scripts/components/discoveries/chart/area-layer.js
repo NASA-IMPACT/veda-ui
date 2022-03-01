@@ -14,8 +14,8 @@ const HighlightLabel = styled.text`
 `;
 
 const HighlightLabelMarker = styled.rect`
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   fill: ${themeVal(highlightColorThemeValue)};
 `;
 
