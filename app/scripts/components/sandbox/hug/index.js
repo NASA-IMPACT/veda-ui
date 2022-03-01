@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import UniversalGridder from '$styles/universal-gridder';
+import Hug from '$styles/hug';
 
 import { PageMainContent } from '../../../styles/page';
 
-const UniGrid = styled(UniversalGridder)`
+const ColoredHug = styled(Hug)`
   padding: 1rem 0;
+
   ${({ c }) => `background-color: ${c}`}
 `;
 
@@ -17,8 +18,8 @@ const Content = styled.div`
 function SandboxUniGridder() {
   return (
     <PageMainContent>
-      <UniGrid c='#9fd2ea'>
-        <UniGrid
+      <ColoredHug c='#9fd2ea'>
+        <ColoredHug
           c='#f9b057'
           grid={{
             smallUp: ['full-start', 'full-end'],
@@ -33,8 +34,8 @@ function SandboxUniGridder() {
             <br />
             largeUp: content-2/content-5
           </Content>
-        </UniGrid>
-        <UniGrid
+        </ColoredHug>
+        <ColoredHug
           c='#d65555'
           grid={{
             smallUp: ['full-start', 'full-end'],
@@ -49,11 +50,11 @@ function SandboxUniGridder() {
             <br />
             largeUp: content-6/full-end
           </Content>
-        </UniGrid>
-        <UniGrid c='#7ea059' grid={['full-start', 'full-end']}>
+        </ColoredHug>
+        <ColoredHug c='#7ea059' grid={['full-start', 'full-end']}>
           <Content>Always full-start/full-end</Content>
-        </UniGrid>
-      </UniGrid>
+        </ColoredHug>
+      </ColoredHug>
     </PageMainContent>
   );
 }

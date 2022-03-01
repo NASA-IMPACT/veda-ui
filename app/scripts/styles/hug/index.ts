@@ -8,6 +8,8 @@ import { themeVal, media } from '@devseed-ui/theme-provider';
 
 import { variableGlsp } from '../variable-utils';
 
+// Human Universal Gridder
+//
 // Grid:
 //   start    1    2    3    4    5    6    7    8    9   10   11   12     end
 // |      |*|  |*|  |*|  |*|  |*|  |*|  |*|  |*|  |*|  |*|  |*|  |*|  |*|      |
@@ -20,14 +22,15 @@ import { variableGlsp } from '../variable-utils';
 // window size.
 // Each column takes up a 12th of the max content width (defined in the theme).
 // Grid gaps are marked with an asterisk.
-// Each instance or Universal Gridder, nested inside another Universal Gridder
-// must define its grid for the different media queries, through a grid prop.
+// Each instance of Human Universal Gridder, nested inside another Human
+// Universal Gridder must define its grid for the different media queries,
+// through a grid prop.
 // If the grid for a given media query is not defined the previous one will be
 // used (<media query>Up pattern).
 // The value for each media query breakpoint is an array with a start and an end
 // column. It works much like the `grid-column` property of css.
-//    <UniversalGridder>
-//      <UniversalGridder
+//    <Hug>
+//      <Hug
 //        grid={{
 //          smallUp: ['full-start', 'full-end'],
 //          mediumUp: ['content-2', 'content-4'],
@@ -35,8 +38,8 @@ import { variableGlsp } from '../variable-utils';
 //        }}
 //      >
 //        Subgrid 1
-//      </UniversalGridder>
-//      <UniversalGridder
+//      </Hug>
+//      <Hug
 //        grid={{
 //          smallUp: ['full-start', 'full-end'],
 //          // mediumUp is not defined, so smallUp will be used until largeUp.
@@ -44,12 +47,12 @@ import { variableGlsp } from '../variable-utils';
 //        }}
 //      >
 //        Subgrid 2
-//      </UniversalGridder>
-//    </UniversalGridder>
+//      </Hug>
+//    </Hug>
 //
-// The Universal Gridder will define a grid whose line names are always the same
-// regardless of how many nested grids there are. Therefore an element placed on
-// `content-5` will be aligned with the top most `content-5`.
+// The Human Universal Gridder will define a grid whose line names are always
+// the same regardless of how many nested grids there are. Therefore an element
+// placed on `content-5` will be aligned with the top most `content-5`.
 
 // Line names to be used on the grid.
 // In a css grid, the lines are named, not the columns.
@@ -100,7 +103,7 @@ type GridderDefinition = {
   [K in MdQueryUp]?: GridderRange;
 };
 
-interface UniversalGridderProps {
+interface HugProps {
   // Remap the keys
   // https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as
   readonly grid?:
@@ -131,7 +134,7 @@ const validateGridLineNames = (cols) => {
 
   // There was an error. Show the user info for debugging.
   if (error) {
-    throw new Error(`Universal Gridder
+    throw new Error(`Human Universal Gridder
 
     ${JSON.stringify(cols)}
 
@@ -147,7 +150,7 @@ ${error}`);
  * @returns css
  */
 function makeGrid(columns: number, mdQuery: MdQuery) {
-  return ({ grid }: UniversalGridderProps) => {
+  return ({ grid }: HugProps) => {
     const gridGap = variableGlsp();
     const layoutMax = themeVal('layout.max');
 
@@ -201,6 +204,7 @@ function makeGrid(columns: number, mdQuery: MdQuery) {
 
       const startIdx = columnTemplate.findIndex((col) => col.name === start);
       const endIdx = columnTemplate.findIndex((col) => col.name === end);
+
       const lastColumn = columnTemplate[endIdx];
       gridTemplateColumns = [
         ...columnTemplate.slice(startIdx, endIdx),
@@ -273,7 +277,7 @@ const _media = media as unknown as {
   [K in keyof typeof media]: ThemedCssFunction<DefaultTheme>;
 };
 
-const UniversalGridder = styled.div<UniversalGridderProps>`
+const Hug = styled.div<HugProps>`
   display: grid;
   ${makeGrid(4, mdQueryOrdered[0])}
 
@@ -294,4 +298,4 @@ const UniversalGridder = styled.div<UniversalGridderProps>`
   `}
 `;
 
-export default UniversalGridder;
+export default Hug;

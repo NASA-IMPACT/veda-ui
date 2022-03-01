@@ -4,13 +4,13 @@ import { Prose } from '@devseed-ui/typography';
 
 import Constrainer from '../../styles/constrainer';
 import SandboxTypography from './typography';
-import SandboxUniGridder from './gridder';
+import SandboxHug from './hug';
 
 function Sandbox() {
   return (
     <Routes>
       <Route path='typography' element={<SandboxTypography />} />
-      <Route path='gridder' element={<SandboxUniGridder />} />
+      <Route path='hug' element={<SandboxHug />} />
       <Route
         index
         element={
@@ -21,6 +21,7 @@ function Sandbox() {
               <ol>
                 <li>
                   <Link to='typography'>Typography</Link>
+                  <Link to='hug'>Human Universal Gridder (Hug)</Link>
                 </li>
               </ol>
             </Prose>
