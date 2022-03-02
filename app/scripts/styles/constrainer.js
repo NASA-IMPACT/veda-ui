@@ -9,6 +9,8 @@ const Constrainer = styled.div`
   width: 100%;
   max-width: ${themeVal('layout.max')};
   margin: 0 auto;
+  padding-left: ${variableGlsp()};
+  padding-right: ${variableGlsp()};
 
   ${media.mediumUp`
     grid-template-columns: repeat(8, 1fr);

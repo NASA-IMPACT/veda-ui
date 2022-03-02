@@ -18,7 +18,6 @@ const PageHeroSelf = styled.div`
   flex-flow: column nowrap;
   gap: ${glsp()};
   justify-content: flex-end;
-  padding: ${variableGlsp(2, 1)};
   background: ${themeVal('color.base-50')};
   min-height: 12rem;
   animation: ${reveal} 0.32s ease 0s 1;
@@ -49,6 +48,8 @@ const PageHeroSelf = styled.div`
 `;
 
 const PageHeroInner = styled(Constrainer)`
+  padding-top: ${variableGlsp(2)};
+  padding-bottom: ${variableGlsp(2)};
   align-items: end;
 `;
 
