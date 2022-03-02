@@ -1,13 +1,18 @@
 import React from 'react';
-import UhOh from '.';
+import T from 'prop-types';
+import { useLocation } from 'react-router-dom';
 
-import LayoutRoot from '$components/common/layout-root';
+import UhOh from '.';
+import LayoutRoot, {
+  LayoutProps,
+  LayoutRootContextProvider
+} from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { FoldProse } from '$components/common/fold';
-
-import { makeAbsUrl } from '../../utils/history';
-
 import { PageMainContent } from '$styles/page';
+
+import { makeAbsUrl } from '$utils/history';
+import { useEffectPrevious } from '$utils/use-effect-previous';
 
 export default class ErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
@@ -17,25 +22,65 @@ export default class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { error: null };
+    this.clearError = this.clearError.bind(this);
+  }
+
+  clearError() {
+    this.setState({ error: null });
   }
 
   render() {
-    const { error } = this.state;
+    return (
+      <Child
+        error={this.state.error}
+        clearError={this.clearError}
+        {...this.props}
+      />
+    );
+  }
+}
 
-    // eslint-disable-next-line react/prop-types
-    if (!error) return this.props.children;
+// Child component only needed to use hooks.
+function Child(props) {
+  const { children, error, clearError } = props;
+  const { pathname } = useLocation();
 
-    if (error.resNotFound)
-      return (
-        <LayoutRoot pageTitle='Server error'>
+  // If the pathname changed (because the user navigated) clear the error so the
+  // page renders again.
+  useEffectPrevious(
+    (_, mounted) => {
+      if (mounted) clearError();
+    },
+    [pathname]
+  );
+
+  // eslint-disable-next-line react/prop-types
+  if (!error) return children;
+
+  // Note (this is a chicken and egg problem)
+  // The error boundary wraps all the contexts (via Composer in main.js) to be
+  // able to capture errors that happen in them. When an error occurs those
+  // contexts are not rendered and so here we have to add the contexts needed by
+  // the elements.
+
+  if (error.resNotFound)
+    return (
+      <LayoutRootContextProvider>
+        <LayoutRoot>
           <UhOh />
         </LayoutRoot>
-      );
+      </LayoutRootContextProvider>
+    );
 
-    return (
-      <LayoutRoot pageTitle='Server error'>
+  return (
+    <LayoutRootContextProvider>
+      <LayoutRoot>
+        <LayoutProps title='Critical Error' />
         <PageMainContent>
-          <PageHero title='Server Error' description="That's a fatal error." />
+          <PageHero
+            title='Critical Error'
+            description="That's a fatal error."
+          />
           <FoldProse>
             <p>
               Something went wrong and we were not able to fulfill your request.
@@ -61,6 +106,12 @@ export default class ErrorBoundary extends React.Component {
           </FoldProse>
         </PageMainContent>
       </LayoutRoot>
-    );
-  }
+    </LayoutRootContextProvider>
+  );
 }
+
+Child.propTypes = {
+  children: T.node,
+  error: T.object,
+  clearError: T.func
+};
