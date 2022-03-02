@@ -11,6 +11,7 @@ import { resourceNotFound } from '$components/uhoh';
 
 import SandboxTypography from './typography';
 import SandboxHug from './hug';
+import SandboxContentBlocks from './content-blocks';
 
 const pages = [
   {
@@ -22,6 +23,11 @@ const pages = [
     id: 'hug',
     name: 'Human Universal Gridder (Hug)',
     component: SandboxHug
+  },
+  {
+    id: 'content-blocks',
+    name: 'Content Blocks',
+    component: SandboxContentBlocks
   }
 ];
 
