@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { add, glsp, media, themeVal } from '@devseed-ui/theme-provider';
 
 import Constrainer from '../../../styles/constrainer';
-import { PageMainContent } from '../../../styles/page';
 import {
   variableGlsp,
   variableBaseType,
@@ -110,108 +109,90 @@ const ResponsiveList = styled.ul`
 
 function Sandbox() {
   return (
-    <PageMainContent>
-      <IntroFold>
-        <IntroFoldInner>
-          <IntroFoldCopy>
-            <VarProse>
-              <h1>Headline</h1>
-              <VarLead>
-                Donec id rutrum elit, vel accumsan urna. Ut tincidunt cursus
-                nulla, sit amet aliquet felis. Aliquam consectetur non lacus
-                malesuada dignissim.
-              </VarLead>
-              <p>
-                Nulla fermentum odio eget lacus condimentum, sed volutpat tortor
-                pellentesque. Nulla placerat scelerisque lorem at pharetra.
-              </p>
-              <dl>
-                <dt>Phasellus</dt>
-                <dd>Ex viverra eros cursus</dd>
-                <dt>Pellentesque non nec lorem</dt>
-                <dd>Nunc tempus, mi eu suscipit</dd>
-                <dt>pellentesque, elit leo finibus</dt>
-                <dd>Lorem ipsum dolor</dd>
-              </dl>
-              <p>
-                Class aptent taciti sociosqu ad litora torquent per conubia
-                nostra, per inceptos himenaeos. Etiam risus tortor, dapibus sed
-                porttitor eu, pharetra eu eros. Donec id rutrum elit, vel
-                accumsan urna. Ut tincidunt cursus nulla, sit amet aliquet
-                felis. Aliquam consectetur non lacus malesuada dignissim.
-              </p>
-              <figure>
-                <img
-                  src='https://source.unsplash.com/random/1000x400'
-                  alt='Placeholder'
-                />
-                <figcaption>An image from Unsplash</figcaption>
-              </figure>
-            </VarProse>
+    <IntroFold>
+      <IntroFoldInner>
+        <IntroFoldCopy>
+          <VarProse>
+            <h1>Headline</h1>
+            <VarLead>
+              Donec id rutrum elit, vel accumsan urna. Ut tincidunt cursus
+              nulla, sit amet aliquet felis. Aliquam consectetur non lacus
+              malesuada dignissim.
+            </VarLead>
+            <p>
+              Nulla fermentum odio eget lacus condimentum, sed volutpat tortor
+              pellentesque. Nulla placerat scelerisque lorem at pharetra.
+            </p>
+            <dl>
+              <dt>Phasellus</dt>
+              <dd>Ex viverra eros cursus</dd>
+              <dt>Pellentesque non nec lorem</dt>
+              <dd>Nunc tempus, mi eu suscipit</dd>
+              <dt>pellentesque, elit leo finibus</dt>
+              <dd>Lorem ipsum dolor</dd>
+            </dl>
+            <p>
+              Class aptent taciti sociosqu ad litora torquent per conubia
+              nostra, per inceptos himenaeos. Etiam risus tortor, dapibus sed
+              porttitor eu, pharetra eu eros. Donec id rutrum elit, vel accumsan
+              urna. Ut tincidunt cursus nulla, sit amet aliquet felis. Aliquam
+              consectetur non lacus malesuada dignissim.
+            </p>
+            <figure>
+              <img
+                src='https://source.unsplash.com/random/1000x400'
+                alt='Placeholder'
+              />
+              <figcaption>An image from Unsplash</figcaption>
+            </figure>
+          </VarProse>
 
-            <ResponsiveList>
-              <li>
-                <div>Box</div>
-              </li>
-              <li>
-                <div>Box2</div>
-              </li>
-              <li>
-                <div>Box3</div>
-              </li>
-              <li>
-                <div>Box4</div>
-              </li>
-            </ResponsiveList>
+          <ResponsiveList>
+            <li>
+              <div>Box</div>
+            </li>
+            <li>
+              <div>Box2</div>
+            </li>
+            <li>
+              <div>Box3</div>
+            </li>
+            <li>
+              <div>Box4</div>
+            </li>
+          </ResponsiveList>
 
-            <VarHeading size='xxsmall'>Heading xxsmall</VarHeading>
-            <Wrapper>
-              <p>
-                Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
-              </p>
-              <p>
-                Class aptent taciti sociosqu ad litora torquent per conubia
-                nostra, per inceptos himenaeos. Etiam risus tortor, dapibus sed
-                porttitor eu, pharetra eu eros. Donec id rutrum elit, vel
-                accumsan urna. Ut tincidunt cursus nulla, sit amet aliquet
-                felis. Aliquam consectetur non lacus malesuada dignissim.
-              </p>
-            </Wrapper>
+          <VarHeading size='xxsmall'>Heading xxsmall</VarHeading>
+          <Wrapper>
             <p>
               Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
             </p>
-            <VarHeading size='xsmall'>Heading xsmall</VarHeading>
             <p>
-              Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
+              Class aptent taciti sociosqu ad litora torquent per conubia
+              nostra, per inceptos himenaeos. Etiam risus tortor, dapibus sed
+              porttitor eu, pharetra eu eros. Donec id rutrum elit, vel accumsan
+              urna. Ut tincidunt cursus nulla, sit amet aliquet felis. Aliquam
+              consectetur non lacus malesuada dignissim.
             </p>
-            <VarHeading size='small'>Heading small</VarHeading>
-            <p>
-              Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
-            </p>
-            <VarHeading size='medium'>Heading medium</VarHeading>
-            <p>
-              Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
-            </p>
-            <VarHeading size='large'>Heading large</VarHeading>
-            <p>
-              Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
-            </p>
-            <VarHeading size='xlarge'>Heading xlarge</VarHeading>
-            <p>
-              Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
-            </p>
-            <VarHeading size='xxlarge'>Heading xxlarge</VarHeading>
-            <p>
-              Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
-            </p>
-            <VarHeading size='jumbo'>Heading jumbo</VarHeading>
-            <p>
-              Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.
-            </p>
-          </IntroFoldCopy>
-        </IntroFoldInner>
-      </IntroFold>
-    </PageMainContent>
+          </Wrapper>
+          <p>Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.</p>
+          <VarHeading size='xsmall'>Heading xsmall</VarHeading>
+          <p>Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.</p>
+          <VarHeading size='small'>Heading small</VarHeading>
+          <p>Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.</p>
+          <VarHeading size='medium'>Heading medium</VarHeading>
+          <p>Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.</p>
+          <VarHeading size='large'>Heading large</VarHeading>
+          <p>Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.</p>
+          <VarHeading size='xlarge'>Heading xlarge</VarHeading>
+          <p>Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.</p>
+          <VarHeading size='xxlarge'>Heading xxlarge</VarHeading>
+          <p>Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.</p>
+          <VarHeading size='jumbo'>Heading jumbo</VarHeading>
+          <p>Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.</p>
+        </IntroFoldCopy>
+      </IntroFoldInner>
+    </IntroFold>
   );
 }
 
