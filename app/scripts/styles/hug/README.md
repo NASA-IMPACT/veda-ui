@@ -64,8 +64,8 @@ We're taking advantage of the ability of naming grid lines in css' `grid-templat
 
 If you need a refresher on css grids check [Css Trick's A Complete Guide to Grid](https://css-tricks.com/snippets/css/complete-guide-grid/).
 
-You have to use the actual line names with Hug as something like `span 2` will cause unexpected behaviors.
-You can check the image at the beginning for a visual understanding of the grid lines, but here's the full list:
+You have to use the actual line names with Hug as something like `span 2` will cause unexpected behaviors.  
+You can check the [image at the beginning](./media/grid.png) for a visual understanding of the grid lines, but here's the full list:
 ```
 full-start
 content-start
@@ -84,7 +84,9 @@ content-end
 full-end
 ```
 
-_Caveat: Lines `content-5` though `content-12` will exist depending on the media query. For example, for small screens you'll have `full-start`, `content-start`, `content-2`, `content-3`, `content-4`, `content-end`, `full-end`._
+_**Note**: Even though the line name `content-1` does not exist, it is the same as `content-start`. We considered it a better expertience to have consistent start and end names for the content (`content-start`/`content-end`)._  
+
+_**Caveat**: Lines `content-5` though `content-12` will exist depending on the media query. For example, for small screens you'll have `full-start`, `content-start`, `content-2`, `content-3`, `content-4`, `content-end`, `full-end`._
 
 ## Nested Hug
 
