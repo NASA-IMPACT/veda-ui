@@ -1,7 +1,7 @@
 {
-  "name": "parcel-resolver-evolution",
+  "name": "parcel-resolver-thematics",
   "version": "1.0.0",
-  "description": "parcel resolver for the dashboard evolution data files",
+  "description": "Parcel resolver for Delta data files",
   "main": "index.js",
   "engines": {
     "parcel": "2.x"

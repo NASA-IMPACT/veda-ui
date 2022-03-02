@@ -1,5 +1,5 @@
 {
-  "name": "parcel-transformer-mdx-front",
+  "name": "parcel-transformer-mdx-frontmatter",
   "version": "1.0.0",
   "description": "Parcel transformer to remove frontmatter from mdx files",
   "main": "index.js",
