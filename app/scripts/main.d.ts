@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 declare module 'delta/thematics' {
   import { MDXModule } from 'mdx/types';
 

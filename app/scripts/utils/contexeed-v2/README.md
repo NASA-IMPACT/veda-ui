@@ -30,71 +30,71 @@ All the options accepted by useContexeedApi() can be found in `types.ts` under `
 ## Example
 
 ```js
-  const {
-    getState,
-    fetchAll,
-    fetchOne,
-    updateOne,
-    deleteOne
-  } = useContexeedApi({
-    name: 'myData',
-    requests: {
-      fetchAll: () => ({
-        url: '/example'
-      }),
-      fetchOne: (id) => ({
-        url: `/example/${id}`
-      })
-    },
-    mutations: {
-      updateOne: (id, data) => ({
-        url: `/example/${id}`,
-        requestOptions: {
-          method: 'post',
-          data
-        }
-      }),
-      deleteOne: (id) => ({
-        url: `/example/${id}`,
-        requestOptions: {
-          method: 'delete'
+const {
+  getState,
+  fetchAll,
+  fetchOne,
+  updateOne,
+  deleteOne
+} = useContexeedApi({
+  name: "myData",
+  requests: {
+    fetchAll: () => ({
+      url: "/example",
+    }),
+    fetchOne: (id) => ({
+      url: `/example/${id}`,
+    }),
+  },
+  mutations: {
+    updateOne: (id, data) => ({
+      url: `/example/${id}`,
+      requestOptions: {
+        method: "post",
+        data,
+      },
+    }),
+    deleteOne: (id) => ({
+      url: `/example/${id}`,
+      requestOptions: {
+        method: "delete",
+      },
+      onDone: (finish, { error, invalidate }) => {
+        // When we delete something we want to invalidate the state.
+        return !error ? invalidate() : finish();
+      },
+    }),
+    // If no hook functions are provided, this is the default.
+    defaultWithAllSteps: () => ({
+      url: `/example`,
+      requestOptions: {
+        method: "post",
+        headers: {
+          Authorization: "Bearer something",
         },
-        onDone: (finish, { error, invalidate }) => {
-          // When we delete something we want to invalidate the state.
-          return !error ? invalidate() : finish();
-        }
-      }),
-      // If no hook functions are provided, this is the default.
-      defaultWithAllSteps: () => {
-        url: `/example`,
-        requestOptions: {
-          method: 'post'
-          headers: {
-            Authorization: 'Bearer something'
-          },
-          data: {
-            title: 'Some title'
-          }
+        data: {
+          title: "Some title",
         },
-        overrideRequest: async ({ axios, requestOptions }) => {
-          const response =  await axios({
-            url: `/example`,
-            ...requestOptions
-          });
+      },
+      overrideRequest: async ({ axios, requestOptions }) => {
+        const response = await axios({
+          url: `/example`,
+          ...requestOptions,
+        });
 
-          // By default the data part of the axios response is passed to transformData.
-          return response.data;
-        },
-        transformData: (data) => {
-          return data;
-        }),
-        transformError: (error) => {
-          return error;
-        }),
-        onDone: (finish) => {
-          return finish();
-        })
-      }
-    }
-  });
+        // By default the data part of the axios response is passed to transformData.
+        return response.data;
+      },
+      transformData: (data) => {
+        return data;
+      },
+      transformError: (error) => {
+        return error;
+      },
+      onDone: (finish) => {
+        return finish();
+      },
+    }),
+  },
+});
 ```
