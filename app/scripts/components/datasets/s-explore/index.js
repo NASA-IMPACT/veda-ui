@@ -140,7 +140,7 @@ function DatasetsExplore() {
     setPanelRevealed(!isMediumDown);
   }, [isMediumDown]);
 
-  if (!thematic || !dataset) return resourceNotFound();
+  if (!thematic || !dataset) throw resourceNotFound();
 
   return (
     <>

@@ -19,7 +19,7 @@ function DiscoveriesSingle() {
   const discovery = useThematicAreaDiscovery();
   const pageMdx = useMdxPageLoader(discovery?.content);
 
-  if (!thematic || !discovery) return resourceNotFound();
+  if (!thematic || !discovery) throw resourceNotFound();
 
   const { media } = discovery.data;
 

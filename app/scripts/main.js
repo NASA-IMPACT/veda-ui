@@ -58,8 +58,8 @@ function Root() {
   return (
     <BrowserRouter history={history}>
       <DevseedUiThemeProvider theme={theme}>
+        <GlobalStyles />
         <Composer components={composingComponents}>
-          <GlobalStyles />
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
               <Route path='/' element={<LayoutRoot />}>
