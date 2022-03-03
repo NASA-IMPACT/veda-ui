@@ -14,9 +14,9 @@ export default function themeOverrides() {
         // Increments to the type.base.size for each media breakpoint.
         sizeIncrement: {
           small: '0rem',
-          medium: '0.25rem',
+          medium: '0rem',
           large: '0.25rem',
-          xlarge: '0.5rem'
+          xlarge: '0.25rem'
         }
       },
       heading: {
