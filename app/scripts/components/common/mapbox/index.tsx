@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 import mapboxgl from 'mapbox-gl';
@@ -6,14 +12,9 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 
-import { datasets } from 'delta/thematics';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { SimpleMap } from './map';
 import { useDatasetLayer } from '$context/layer-data';
-
-// TODO: Token from config
-mapboxgl.accessToken =
-  'pk.eyJ1IjoiY292aWQtbmFzYSIsImEiOiJja2F6eHBobTUwMzVzMzFueGJuczF6ZzdhIn0.8va1fkyaWgM57_gZ2rBMMg';
 
 const MapsContainer = styled.div`
   position: relative;
@@ -27,7 +28,8 @@ const mapOptions = {
   zoom: 3
 };
 
-function MapboxMapComponent(props) {
+function MapboxMapComponent(props, ref) {
+  // eslint-disable-next-line react/prop-types
   const { className, id, as, datasetId, layerId, date, isComparing } = props;
 
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -38,6 +40,13 @@ function MapboxMapComponent(props) {
 
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    resize: () => {
+      mapRef.current?.resize();
+      mapCompareRef.current?.resize();
+    }
+  }));
 
   // const dataset = useMemo(() => datasets[datasetId]?.data, [datasetId]);
   // console.log('🚀 ~ file: map.js ~ MapboxMapComponent ~ dataset', dataset);
@@ -162,15 +171,18 @@ function MapboxMapComponent(props) {
   );
 }
 
-MapboxMapComponent.propTypes = {
-  as: T.string,
-  className: T.string,
-  id: T.string,
-  datasetId: T.string,
-  layerId: T.string,
-  date: T.instanceOf(Date),
-  isComparing: T.bool
-};
+interface MapboxMapProps {
+  as: string;
+  className: string;
+  id: string;
+  datasetId: string;
+  layerId: string;
+  date: Date;
+  isComparing: boolean;
+}
+
+const MapboxMapComponentFwd =
+  React.forwardRef<MapboxMapProps>(MapboxMapComponent);
 
 /**
  * Mapbox map component
@@ -179,6 +191,6 @@ MapboxMapComponent.propTypes = {
  *    Defaults to mapbox-container
  * @param {string} className Css class for styling
  */
-export default styled(MapboxMapComponent)`
+export default styled(MapboxMapComponentFwd)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;

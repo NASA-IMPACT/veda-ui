@@ -35,11 +35,14 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     mapRef.current = mbMap;
 
     // Add zoom controls.
-    mbMap.addControl(new mapboxgl.NavigationControl(), 'top-left');
+    mbMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
     // Remove compass.
     document.querySelector('.mapboxgl-ctrl .mapboxgl-ctrl-compass').remove();
 
     onLoad && mbMap.once('load', onLoad);
+
+    // Trigger a resize to handle flex layout quirks.
+    setTimeout(() => mbMap.resize(), 1);
 
     return () => mbMap.remove();
     // Only use the props on mount. We don't want to update the map if they
