@@ -1,8 +1,8 @@
 {
   "extends": ["@parcel/config-default"],
   "reporters": ["...", "@parcel/reporter-bundle-analyzer"],
-  "resolvers": ["parcel-resolver-evolution", "@parcel/resolver-glob", "..."],
+  "resolvers": ["parcel-resolver-thematics", "@parcel/resolver-glob", "..."],
   "transformers": {
-    "*.mdx": ["parcel-transformer-mdx-front", "@parcel/transformer-mdx", "..."]
+    "*.mdx": ["parcel-transformer-mdx-frontmatter", "parcel-transformer-mdx"]
   }
 }

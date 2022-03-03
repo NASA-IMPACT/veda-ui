@@ -19,7 +19,9 @@ function DiscoveriesSingle() {
   const discovery = useThematicAreaDiscovery();
   const pageMdx = useMdxPageLoader(discovery?.content);
 
-  if (!thematic || !discovery) return resourceNotFound();
+  if (!thematic || !discovery) throw resourceNotFound();
+
+  const { media } = discovery.data;
 
   return (
     <>
@@ -36,10 +38,10 @@ function DiscoveriesSingle() {
           title={discovery.data.name}
           description={discovery.data.description}
           publishedDate={discovery.data.pubDate}
-          coverSrc='https://picsum.photos/id/1002/2048/1024'
-          coverAlt='Generic placeholder by lorem picsum'
-          attributionAuthor='Lorem Picsum'
-          attributionUrl='https://picsum.photos/'
+          coverSrc={media?.src}
+          coverAlt={media?.alt}
+          attributionAuthor={media?.author?.name}
+          attributionUrl={media?.author?.url}
         />
         <FoldProse>
           {pageMdx.status === 'loading' && <p>Loading page content</p>}

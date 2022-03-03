@@ -16,7 +16,7 @@ function DatasetsUsage() {
   const thematic = useThematicArea();
   const dataset = useThematicAreaDataset();
 
-  if (!thematic || !dataset) return resourceNotFound();
+  if (!thematic || !dataset) throw resourceNotFound();
 
   return (
     <>

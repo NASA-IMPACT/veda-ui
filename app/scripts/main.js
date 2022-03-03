@@ -5,29 +5,29 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { DevseedUiThemeProvider } from '@devseed-ui/theme-provider';
 import deltaThematics from 'delta/thematics';
 
-import theme, { GlobalStyles } from './styles/theme';
-import history from './utils/history';
+import theme, { GlobalStyles } from '$styles/theme';
+import history from '$utils/history';
 import LayoutRoot, {
   LayoutRootContextProvider
-} from './components/common/layout-root';
+} from '$components/common/layout-root';
 
 // Views
-import UhOh from './components/uhoh';
-import ErrorBoundary from './components/uhoh/fatal-error';
-const RootHome = lazy(() => import('./components/root-home'));
-const RootAbout = lazy(() => import('./components/root-about'));
+import UhOh from '$components/uhoh';
+import ErrorBoundary from '$components/uhoh/fatal-error';
+const RootHome = lazy(() => import('$components/root-home'));
+const RootAbout = lazy(() => import('$components/root-about'));
 
-const Home = lazy(() => import('./components/home'));
-const About = lazy(() => import('./components/about'));
-const DiscoveriesHub = lazy(() => import('./components/discoveries/hub'));
-const DiscoveriesSingle = lazy(() => import('./components/discoveries/single'));
+const Home = lazy(() => import('$components/home'));
+const About = lazy(() => import('$components/about'));
+const DiscoveriesHub = lazy(() => import('$components/discoveries/hub'));
+const DiscoveriesSingle = lazy(() => import('$components/discoveries/single'));
 
-const DatasetsHub = lazy(() => import('./components/datasets/hub'));
-const DatasetsExplore = lazy(() => import('./components/datasets/s-explore'));
-const DatasetsUsage = lazy(() => import('./components/datasets/s-usage'));
-const DatasetsOverview = lazy(() => import('./components/datasets/s-overview'));
+const DatasetsHub = lazy(() => import('$components/datasets/hub'));
+const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
+const DatasetsUsage = lazy(() => import('$components/datasets/s-usage'));
+const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
-const Sandbox = lazy(() => import('./components/sandbox'));
+const Sandbox = lazy(() => import('$components/sandbox'));
 
 // Contexts
 import { LayerDataProvider } from './context/layer-data';
@@ -60,8 +60,8 @@ function Root() {
   return (
     <BrowserRouter history={history}>
       <DevseedUiThemeProvider theme={theme}>
+        <GlobalStyles />
         <Composer components={composingComponents}>
-          <GlobalStyles />
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
               <Route path='/' element={<LayoutRoot />}>

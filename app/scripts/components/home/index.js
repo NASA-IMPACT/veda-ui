@@ -44,7 +44,7 @@ const IntroFoldActions = styled.div`
 
 function Home() {
   const thematic = useThematicArea();
-  if (!thematic) return resourceNotFound();
+  if (!thematic) throw resourceNotFound();
 
   return (
     <PageMainContent>

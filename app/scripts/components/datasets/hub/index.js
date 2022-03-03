@@ -13,7 +13,7 @@ import { useThematicArea } from '../../../utils/thematics';
 
 function DatasetsHub() {
   const thematic = useThematicArea();
-  if (!thematic) return resourceNotFound();
+  if (!thematic) throw resourceNotFound();
 
   return (
     <PageMainContent>

@@ -21,7 +21,7 @@ function DatasetsOverview() {
   const dataset = useThematicAreaDataset();
   const pageMdx = useMdxPageLoader(dataset?.content);
 
-  if (!thematic || !dataset) return resourceNotFound();
+  if (!thematic || !dataset) throw resourceNotFound();
 
   return (
     <>

@@ -13,7 +13,7 @@ function About() {
   const thematic = useThematicArea();
   const pageMdx = useMdxPageLoader(thematic?.content);
 
-  if (!thematic) return resourceNotFound();
+  if (!thematic) throw resourceNotFound();
 
   return (
     <PageMainContent>

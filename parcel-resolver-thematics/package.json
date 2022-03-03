@@ -1,0 +1,14 @@
+{
+  "name": "parcel-resolver-thematics",
+  "version": "1.0.0",
+  "description": "Parcel resolver for Delta data files",
+  "main": "index.js",
+  "engines": {
+    "parcel": "2.x"
+  },
+  "peerDependencies": {
+    "fast-glob": "^3.2.7",
+    "fs-extra": "^10.0.0",
+    "gray-matter": "^4.0.3"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "parcel-transformer-mdx-frontmatter",
+  "version": "1.0.0",
+  "description": "Parcel transformer to remove frontmatter from mdx files",
+  "main": "index.js",
+  "engines": {
+    "parcel": "2.x"
+  },
+  "peerDependencies": {
+    "gray-matter": "^4.0.3"
+  }
+}
