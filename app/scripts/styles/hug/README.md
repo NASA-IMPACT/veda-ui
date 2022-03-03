@@ -211,3 +211,49 @@ For example if you need your content to start at the middle of the page with a b
 ```
 
 The parent Hug provides the main grid. The nested Hug has the background, and the `div` child positions the content.
+
+### Auto-placement of child items
+The CSS Grid Layout specification contains rules that control what happens when you create a grid and do not specify a position for the child elements.  
+The default behavior it to put an element inside each column, which means that when using a Hug with a grid `full-start/full-end` the fluid columns will also get an element.
+
+The following code:
+```jsx
+// ❌  Bad
+<Hug>
+  {Array(14).fill(0).map((e, idx) => {
+    return (
+      <div style={{ backgroundColor: 'skyblue', padding: '.5rem' }}>
+        column {idx + 1}
+      </div>
+    );
+  })}
+</Hug>
+```
+
+Will lead to this following result which looks good, but you probably want your auto-placed items to all have the same size:
+
+![](./media/auto-place.png)
+
+However, this placement will become a problem when you screen size gets smaller:
+
+![](./media/auto-place-error.png)
+
+This happens because, even though the fluid columns now have a size of 0 they are still columns and are not skipped.
+
+The easiest way to fix this (while still using auto-placement) is to add a nested Hug, which only takes up the `content-start/content-end` grid:
+```jsx
+// ✅  Good
+<Hug>
+  <Hug grid={{ xsmallUp: ['content-start', 'content-end'] }}>
+    {Array(14).fill(0).map((e, idx) => {
+      return (
+        <div style={{ backgroundColor: 'skyblue', padding: '.5rem' }}>
+          column {idx + 1}
+        </div>
+      );
+    })}
+  </Hug>
+</Hug>
+```
+
+![](./media/auto-place-fix.png)

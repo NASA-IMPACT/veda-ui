@@ -276,8 +276,8 @@ const getGridProp = (grid, mdQuery) => {
     // No override. Check previous media range.
   }
 
-  // full-start to full-end
-  return [gridLineNames[0], gridLineNames[gridLineNames.length - 1]];
+  // content-start to content-end
+  return [gridLineNames[1], gridLineNames[gridLineNames.length - 2]];
 };
 
 // Redeclare the media function to fix the types defined in the UI library.
