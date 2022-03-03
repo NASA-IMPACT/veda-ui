@@ -134,3 +134,80 @@ Example:
   </Hug>
 </Hug>
 ```
+
+## Usage details
+
+### Nested Hug needs to be a direct descendant of another Hug
+Much like with css grids, an element can only be positioned in a grid if its parent has a grid.
+
+```jsx
+// ❌  Bad
+<Hug>
+  <div>
+    <Hug></Hug>
+  </div>
+</Hug>
+
+// ✅  Good
+<Hug>
+  <Hug>
+    <div></div>
+  </Hug>
+</Hug>
+```
+
+### Hug's `grid` prop
+Hug should only use a `grid` prop if it is a nested Hug. It uses the provided values to compute its grid in relation to the parent.  
+The top level Hug does not need to compute anything in relation to a parent and therefore does not need a `grid`.
+
+```jsx
+// ❌  Bad
+<body>
+  <Hug grid={{ smallUp: ['content-start', 'content-end'] }}>
+    <Hug grid={{ smallUp: ['content-start', 'content-2'] }}></Hug>
+  </Hug>
+</body>
+
+// ✅  Good
+<body>
+  <Hug>
+    <Hug grid={{ smallUp: ['content-start', 'content-2'] }}></Hug>
+  </Hug>
+</body>
+```
+
+### Contents inside Hug
+Hug should be used as a structural layout element and not have inline elements as a direct descendants.  
+After having a grid defined you should use a block element (`div`, `section`, etc) to position your content. Since Hug provides a grid, the positioning of these elements should be done with css as if it were a normal grid.
+
+```jsx
+// ❌  Bad
+<Hug>
+  <Hug grid={{ smallUp: ['content-start', 'content-2'] }}>Some content</Hug>
+  <Hug grid={{ smallUp: ['content-2', 'content-4'] }}>More content</Hug>
+</Hug>
+
+// ✅  Good
+// Using inline styles only for example purposes. Styling should be done with
+// styled-components to account for media queries.
+<Hug>
+  <div style={{ gridColumn: 'content-start/content-2' }}>Some content</div>
+  <div style={{ gridColumn: 'content-2/content-4' }}>More content</div>
+</Hug>
+```
+
+A good rule of thumb to decide whether or not to nest Hug is to think if you need your content to have columns.  
+For example if you need your content to start at the middle of the page with a background that starts at beginning you'd do something like:
+
+```jsx
+<Hug>
+  <Hug
+    grid={{ largeUp: ['content-start', 'content-end'] }}
+    style={{ background: 'red' }}
+  >
+    <div style={{ gridColumn: 'content-6/content-end' }}>Some content</div>
+  </Hug>
+</Hug>
+```
+
+The parent Hug provides the main grid. The nested Hug has the background, and the `div` child positions the content.
