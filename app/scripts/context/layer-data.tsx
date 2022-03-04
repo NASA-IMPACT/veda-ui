@@ -1,6 +1,9 @@
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
-import T from 'prop-types';
+import { useEffect, useMemo } from 'react';
 import { datasets } from 'delta/thematics';
+// Unstated Next provides a small wrapper around React's context api which makes
+// handling typescript typing possible.
+// More at: https://betterprogramming.pub/how-to-use-react-context-with-typescript-the-easy-way-2ed1010f6e84
+import { createContainer } from 'unstated-next';
 
 import { useContexeedApi } from '$utils/contexeed-v2';
 import {
@@ -8,16 +11,12 @@ import {
   STAC_ENDPOINT
 } from '$components/common/mapbox/layers/utils';
 
-// Context
-const LayerDataContext = createContext(null);
-
-// Context provider
-export const LayerDataProvider = ({ children }) => {
+const useHook = () => {
   const { fetchLayerData, getState } = useContexeedApi({
     name: 'layers',
     slicedState: true,
     requests: {
-      fetchLayerData: ({ id }) => ({
+      fetchLayerData: ({ id }: { id: string }) => ({
         sliceKey: id,
         url: `${STAC_ENDPOINT}/collections/${id}`,
         transformData: (data) => ({
@@ -31,24 +30,24 @@ export const LayerDataProvider = ({ children }) => {
     }
   });
 
-  const contextValue = {
+  return {
     fetchLayerData,
     getState
   };
-
-  return (
-    <LayerDataContext.Provider value={contextValue}>
-      {children}
-    </LayerDataContext.Provider>
-  );
 };
 
-LayerDataProvider.propTypes = {
-  children: T.node
-};
+// Container
+const LayerDataContainer = createContainer(useHook);
+
+// Container provider
+export const LayerDataProvider = LayerDataContainer.Provider;
+
+// /////////////////////////////////////////////////////////////////////////////
+// Consumers and helpers
+// /////////////////////////////////////////////////////////////////////////////
 
 const useLayersInit = (layers) => {
-  const { fetchLayerData, getState } = useContext(LayerDataContext);
+  const { fetchLayerData, getState } = LayerDataContainer.useContainer();
 
   useEffect(() => {
     if (!layers) return null;
