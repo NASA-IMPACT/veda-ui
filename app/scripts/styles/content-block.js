@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Subtitle } from '@devseed-ui/typography';
+import { glsp } from '@devseed-ui/theme-provider';
 
 import { variableGlsp, variableProseVSpace } from './variable-utils';
 import { VarProse } from './variable-components';
 
 import Hug from './hug';
+
+import { FigcaptionInner, Figure } from '$components/common/figure';
 
 export const ContentBlock = styled(Hug)`
   padding-top: ${variableGlsp(2)};
@@ -33,50 +34,48 @@ export const ContentBlockProse = styled(VarProse)`
     }
   }
 
+  ${FigcaptionInner} {
+    padding: ${glsp(1, 0, 0, 0)};
+
+    &::after {
+      display: none;
+    }
+  }
+
   [class*='align-'] {
     margin-bottom: ${variableProseVSpace()};
 
     figcaption {
-      padding: ${glsp(1, 0, 0, 0)};
+      padding: 0;
     }
   }
 
   .align-left {
     float: left;
     margin-right: ${variableProseVSpace()};
-
-    figcaption {
-      text-align: left;
-    }
   }
 
   .align-right {
     float: right;
     margin-left: ${variableProseVSpace()};
 
-    figcaption {
+    ${FigcaptionInner} {
+      align-items: end;
       text-align: right;
+    }
+  }
+
+  .align-center {
+    margin-left: 50%;
+    transform: translate(-50%, 0);
+
+    ${FigcaptionInner} {
+      align-items: center;
+      text-align: center;
     }
   }
 `;
 
-export const ContentBlockFigure = styled.figure`
+export const ContentBlockFigure = styled(Figure)`
   /* styled-component */
-`;
-
-export const ContentBlockFigcaption = styled(Subtitle).attrs({
-  as: 'figcaption'
-})`
-  position: relative;
-  padding: ${variableGlsp(0.5, 1)};
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: ${variableGlsp(1)};
-    width: ${glsp(2)};
-    height: 1px;
-    background: ${themeVal('color.base-100a')};
-  }
 `;

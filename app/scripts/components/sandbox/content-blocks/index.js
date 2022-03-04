@@ -10,6 +10,13 @@ import {
   ContentBlockFigcaption
 } from '$styles/content-block';
 
+import {
+  Figure,
+  Figcaption,
+  FigcaptionInner,
+  FigureAttribution
+} from '$components/common/figure';
+
 const ContentBlockPAlpha = styled(ContentBlock)`
   ${ContentBlockProse} {
     grid-column: content-start / content-end;
@@ -50,6 +57,17 @@ const ContentBlockFGama = styled(ContentBlock)`
   ${ContentBlockFigure} {
     grid-column: full-start / full-end;
   }
+`;
+
+const ContentBlockFDelta = styled(ContentBlock)`
+  ${ContentBlockFigure} {
+    grid-column: full-start / full-end;
+  }
+`;
+
+const NestedFigure = styled(Figure)`
+  float: left;
+  width: 50%;
 `;
 
 const ContentBlockPFAlpha = styled(ContentBlock)`
@@ -122,36 +140,48 @@ function SandboxContentBlocks() {
       <ContentBlockPAlpha>
         <ContentBlockProse>
           <h2>CB Prose Alpha</h2>
-          <figure className='align-left'>
+          <Figure className='align-left'>
             <img
               alt='Media example'
               src='http://via.placeholder.com/256x128?text=align-left'
               width='256'
-              height='128'
+              height='80'
             />
-            <figcaption>Lorem ipsum.</figcaption>
-          </figure>
+            <Figcaption>
+              <FigcaptionInner>Lorem ipsum.</FigcaptionInner>{' '}
+              <FigureAttribution
+                author='Lorem Picsum.'
+                url='https://picsum.photos/id/1002/2048/1024'
+                forwardedAs='span'
+              />
+            </Figcaption>
+          </Figure>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
             vel tristique sapien, non suscipit lacus. Mauris vestibulum bibendum
             sem eget pellentesque. Cras viverra urna felis, non placerat felis
-            aliquet at. Mauris aliquam malesuada libero non rutrum.
-          </p>
-          <p>
-            Aenean pharetra suscipit nisl id tempus. In eget tellus eros. Mauris
+            aliquet at. Mauris aliquam malesuada libero non rutrum. Aenean
+            pharetra suscipit nisl id tempus. In eget tellus eros. Mauris
             dignissim odio quis sapien pulvinar, ac varius sapien consectetur.
             Morbi scelerisque ex sit amet est tempor, nec tempus metus
             scelerisque.
           </p>
-          <figure className='align-right'>
+          <Figure className='align-right'>
             <img
               alt='Media example'
-              src='http://via.placeholder.com/256x128?text=align-left'
+              src='http://via.placeholder.com/256x128?text=align-right'
               width='256'
-              height='128'
+              height='80'
             />
-            <figcaption>Lorem ipsum.</figcaption>
-          </figure>
+            <Figcaption>
+              <FigcaptionInner>Lorem ipsum.</FigcaptionInner>{' '}
+              <FigureAttribution
+                author='Lorem Picsum.'
+                url='https://picsum.photos/id/1002/2048/1024'
+                forwardedAs='span'
+              />
+            </Figcaption>
+          </Figure>
           <p>
             Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
             nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
@@ -162,15 +192,22 @@ function SandboxContentBlocks() {
             pulvinar tristique. Class aptent taciti sociosqu ad litora torquent
             per conubia nostra, per inceptos himenaeos.
           </p>
-          <figure className='align-center'>
+          <Figure className='align-center'>
             <img
               alt='Media example'
-              src='http://via.placeholder.com/256x128?text=align-left'
+              src='http://via.placeholder.com/256x128?text=align-center'
               width='256'
               height='128'
             />
-            <figcaption>Lorem ipsum.</figcaption>
-          </figure>
+            <Figcaption>
+              <FigcaptionInner>Lorem ipsum.</FigcaptionInner>{' '}
+              <FigureAttribution
+                author='Lorem Picsum.'
+                url='https://picsum.photos/id/1002/2048/1024'
+                forwardedAs='span'
+              />
+            </Figcaption>
+          </Figure>
           <p>
             Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
             nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
@@ -217,39 +254,92 @@ function SandboxContentBlocks() {
 
       <ContentBlockFAlpha>
         <ContentBlockFigure>
-          <div>
-            <img
-              src='https://picsum.photos/id/1002/2048/1024'
-              alt='Generic placeholder by lorem picsum'
+          <img
+            src='https://picsum.photos/id/1002/2048/1024'
+            alt='Generic placeholder by lorem picsum'
+          />
+          <Figcaption>
+            <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
+            <FigureAttribution
+              author='Lorem Picsum.'
+              url='https://picsum.photos/id/1002/2048/1024'
+              forwardedAs='span'
             />
-          </div>
-          <ContentBlockFigcaption>By Lorem Picsum.</ContentBlockFigcaption>
+          </Figcaption>
         </ContentBlockFigure>
       </ContentBlockFAlpha>
 
       <ContentBlockFBeta>
         <ContentBlockFigure>
-          <div>
-            <img
-              src='https://picsum.photos/id/1002/2048/1024'
-              alt='Generic placeholder by lorem picsum'
+          <img
+            src='https://picsum.photos/id/1002/2048/1024'
+            alt='Generic placeholder by lorem picsum'
+          />
+          <Figcaption>
+            <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
+            <FigureAttribution
+              author='Lorem Picsum.'
+              url='https://picsum.photos/id/1002/2048/1024'
+              forwardedAs='span'
             />
-          </div>
-          <ContentBlockFigcaption>By Lorem Picsum.</ContentBlockFigcaption>
+          </Figcaption>
         </ContentBlockFigure>
       </ContentBlockFBeta>
 
       <ContentBlockFGama>
         <ContentBlockFigure>
-          <div>
-            <img
-              src='https://picsum.photos/id/1002/2048/1024'
-              alt='Generic placeholder by lorem picsum'
+          <img
+            src='https://picsum.photos/id/1002/2048/1024'
+            alt='Generic placeholder by lorem picsum'
+          />
+          <Figcaption>
+            <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
+            <FigureAttribution
+              author='Lorem Picsum.'
+              url='https://picsum.photos/id/1002/2048/1024'
+              forwardedAs='span'
             />
-          </div>
-          <ContentBlockFigcaption>By Lorem Picsum.</ContentBlockFigcaption>
+          </Figcaption>
         </ContentBlockFigure>
       </ContentBlockFGama>
+
+      <ContentBlockFDelta>
+        <ContentBlockFigure role='group'>
+          <NestedFigure role='group'>
+            <a href='/'>
+              <img
+                src='https://picsum.photos/id/1002/2048/1024'
+                alt='Generic placeholder by lorem picsum'
+              />
+            </a>
+            <Figcaption>
+              <FigureAttribution
+                author='Lorem Picsum.'
+                url='https://picsum.photos/id/1002/2048/1024'
+                forwardedAs='span'
+              />
+            </Figcaption>
+          </NestedFigure>
+          <NestedFigure role='group'>
+            <a href='/'>
+              <img
+                src='https://picsum.photos/id/1002/2048/1024'
+                alt='Generic placeholder by lorem picsum'
+              />
+            </a>
+            <Figcaption>
+              <FigureAttribution
+                author='Lorem Picsum.'
+                url='https://picsum.photos/id/1002/2048/1024'
+                forwardedAs='span'
+              />
+            </Figcaption>
+          </NestedFigure>
+          <Figcaption>
+            <FigcaptionInner>Figures A and B.</FigcaptionInner>
+          </Figcaption>
+        </ContentBlockFigure>
+      </ContentBlockFDelta>
 
       <ContentBlockPFAlpha>
         <ContentBlockProse>
@@ -278,13 +368,18 @@ function SandboxContentBlocks() {
           </p>
         </ContentBlockProse>
         <ContentBlockFigure>
-          <div>
-            <img
-              src='https://picsum.photos/id/1002/2048/1920'
-              alt='Generic placeholder by lorem picsum'
+          <img
+            src='https://picsum.photos/id/1002/2048/1920'
+            alt='Generic placeholder by lorem picsum'
+          />
+          <Figcaption>
+            <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
+            <FigureAttribution
+              author='Lorem Picsum.'
+              url='https://picsum.photos/id/1002/2048/1024'
+              forwardedAs='span'
             />
-          </div>
-          <ContentBlockFigcaption>By Lorem Picsum.</ContentBlockFigcaption>
+          </Figcaption>
         </ContentBlockFigure>
       </ContentBlockPFAlpha>
 
@@ -315,13 +410,18 @@ function SandboxContentBlocks() {
           </p>
         </ContentBlockProse>
         <ContentBlockFigure>
-          <div>
-            <img
-              src='https://picsum.photos/id/1002/2048/1620'
-              alt='Generic placeholder by lorem picsum'
+          <img
+            src='https://picsum.photos/id/1002/2048/1620'
+            alt='Generic placeholder by lorem picsum'
+          />
+          <Figcaption>
+            <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
+            <FigureAttribution
+              author='Lorem Picsum.'
+              url='https://picsum.photos/id/1002/2048/1024'
+              forwardedAs='span'
             />
-          </div>
-          <ContentBlockFigcaption>By Lorem Picsum.</ContentBlockFigcaption>
+          </Figcaption>
         </ContentBlockFigure>
       </ContentBlockPFGama>
     </>

@@ -9,7 +9,7 @@ import { reveal } from '@devseed-ui/animation';
 import { PageLead, PageMainTitle, PageOverline } from '../../styles/page';
 import Constrainer from '../../styles/constrainer';
 import { variableGlsp } from '../../styles/variable-utils';
-import MediaAttribution from './media-attribution';
+import { Figcaption, Figure, FigureAttribution } from './figure';
 
 const PageHeroSelf = styled.div`
   position: relative;
@@ -41,8 +41,8 @@ const PageHeroSelf = styled.div`
       `}
     `}
 
-  ${MediaAttribution} {
-    bottom: ${variableGlsp()};
+  ${FigureAttribution} {
+    top: ${variableGlsp()};
     right: ${variableGlsp()};
   }
 `;
@@ -70,40 +70,23 @@ const PageHeroHGroup = styled.div`
   `}
 `;
 
-const PageHeroCover = styled.figure`
+const PageHeroCover = styled(Figure)`
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background: ${themeVal('color.base-400a')};
-    mix-blend-mode: multiply;
-    z-index: 2;
-  }
-`;
-
-const PageHeroCoverItem = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
+  inset: 0;
 
   img {
-    position: relative;
     height: 100%;
     width: 100%;
-    z-index: 1;
     object-fit: cover;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: ${themeVal('color.base-400a')};
+    mix-blend-mode: multiply;
   }
 `;
 
@@ -142,10 +125,13 @@ function PageHero(props) {
         {description && <PageLead>{description}</PageLead>}
         {hasImage && (
           <PageHeroCover>
-            <PageHeroCoverItem>
-              <img src={coverSrc} alt={coverAlt} />
-            </PageHeroCoverItem>
-            <MediaAttribution author={attributionAuthor} url={attributionUrl} />
+            <img src={coverSrc} alt={coverAlt} />
+            <Figcaption>
+              <FigureAttribution
+                author={attributionAuthor}
+                url={attributionUrl}
+              />
+            </Figcaption>
           </PageHeroCover>
         )}
       </PageHeroInner>
