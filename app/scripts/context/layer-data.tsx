@@ -74,7 +74,7 @@ const useLayersInit = (layers: DatasetLayer[]) => {
 
     // Merge the data from STAC and the data from the configuration into a
     // single object with meta information about the request status.
-    const mergeSTACData = <T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized>(baseData: T): StateSlice<T> => {
+    const mergeSTACData = <T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized>(baseData: T): StateSlice<T & STACLayerData> => {
       if (!baseData) return null;
 
       const dataSTAC = getState<STACLayerData>(baseData.id);
