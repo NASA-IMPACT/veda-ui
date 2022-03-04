@@ -204,7 +204,10 @@ function SandboxContentBlocks() {
             nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
             pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
             felis vel nisi lobortis, quis blandit mauris accumsan. Donec
-            vehicula ipsum orci, sit amet interdum est commodo sed. Duis
+            vehicula ipsum orci, sit amet interdum est commodo sed.
+          </p>
+          <h3>Lorem ipsum</h3>
+          <p>
             fermentum odio ut condimentum lobortis. Pellentesque pretium quam at
             pulvinar tristique. Class aptent taciti sociosqu ad litora torquent
             per conubia nostra, per inceptos himenaeos.

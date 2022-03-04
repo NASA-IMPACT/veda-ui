@@ -21,6 +21,18 @@ export const ContentBlock = styled(Hug)`
 export const ContentBlockProse = styled(VarProse)`
   gap: ${variableGlsp()};
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    &:first-child {
+      column-span: all;
+      break-inside: avoid;
+    }
+  }
+
   [class*='align-'] {
     margin-bottom: ${variableProseVSpace()};
 
