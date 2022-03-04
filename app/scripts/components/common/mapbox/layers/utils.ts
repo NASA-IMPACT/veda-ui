@@ -83,18 +83,25 @@ export const getCompareLayerData = (
   throw new Error('Layer specified in compare was not found.');
 };
 
-export function resolveConfigFunctions<T>(
-  datum: T,
-  bag: DatasetDatumFnResolverBag
-): T;
-export function resolveConfigFunctions(
-  datum: DatasetDatumFn<DatasetDatumReturnType>,
-  bag: DatasetDatumFnResolverBag
-): DatasetDatumReturnType;
-export function resolveConfigFunctions(
-  datum: any,
-  bag: DatasetDatumFnResolverBag
-): any {
+type Fn = (...args: any[]) => any
+
+type ObjResMap<T> = {
+  [K in keyof T]: Res<T[K]>
+}
+
+type Res<T> = T extends Fn
+  ? T extends DatasetDatumFn<DatasetDatumReturnType>
+    ? DatasetDatumReturnType
+    : never
+  : T extends any[]
+    ? Array<Res<T[number]>>
+    : T extends object
+      ? ObjResMap<T>
+      : T;
+
+export function resolveConfigFunctions<T>(datum: T, bag: DatasetDatumFnResolverBag): Res<T>
+export function resolveConfigFunctions<T extends Array<any>>(datum: T, bag: DatasetDatumFnResolverBag): Array<Res<T[number]>>
+export function resolveConfigFunctions(datum: any, bag: DatasetDatumFnResolverBag): any {
   if (Array.isArray(datum)) {
     return datum.map((v) => resolveConfigFunctions(v, bag));
   }

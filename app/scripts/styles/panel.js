@@ -12,6 +12,8 @@ const panelWidth = {
   medium: '24rem'
 };
 
+export const PANEL_REVEAL_DURATION = 240;
+
 export const Panel = styled.div`
   position: relative;
   z-index: 10;
@@ -19,7 +21,7 @@ export const Panel = styled.div`
   flex-direction: column;
   width: ${panelWidth.xsmall};
   margin-left: -${panelWidth.xsmall};
-  transition: margin 0.24s ease 0s;
+  transition: margin ${PANEL_REVEAL_DURATION}ms ease 0s;
 
   ${media.smallUp`
     width: ${panelWidth.small};

@@ -1,20 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import {
-  add,
-  glsp,
-  media,
-  themeVal,
-  visuallyHidden
-} from '@devseed-ui/theme-provider';
-import { Prose } from '@devseed-ui/typography';
+import { themeVal } from '@devseed-ui/theme-provider';
 import { CollecticonSlidersHorizontal } from '@devseed-ui/collecticons';
+import { DatePicker } from '@devseed-ui/date-picker';
 
 import { resourceNotFound } from '$components/uhoh';
 import PageLocalNav, {
   DatasetsLocalMenu
 } from '$components/common/page-local-nav';
-import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 import {
   Panel,
@@ -28,83 +21,19 @@ import {
   PanelWidget,
   PanelWidgetBody,
   PanelWidgetHeader,
-  PanelWidgetTitle
+  PanelWidgetTitle,
+  PANEL_REVEAL_DURATION
 } from '$styles/panel';
 import { LayoutProps } from '$components/common/layout-root';
+import MapboxMap from '$components/common/mapbox';
+import DatasetLayers from './dataset-layers';
 
-import { variableGlsp } from '$styles/variable-utils';
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { useMediaQuery } from '$utils/use-media-query';
 import { thematicDatasetsPath } from '$utils/routes';
+import { useDatasetLayers } from '$context/layer-data';
 
-export const IntroFold = styled.div`
-  position: relative;
-  padding: ${glsp(2, 0)};
-
-  ${media.mediumUp`
-    padding: ${glsp(3, 0)};
-  `}
-
-  ${media.largeUp`
-    padding: ${glsp(4, 0)};
-  `}
-
-  ${visuallyHidden}
-`;
-
-export const IntroFoldInner = styled(Constrainer)`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: ${glsp(
-    add(themeVal('layout.glspMultiplier.xsmall'), 1),
-    themeVal('layout.glspMultiplier.xsmall')
-  )};
-  max-width: ${themeVal('layout.max')};
-  margin: 0 auto;
-
-  ${media.smallUp`
-    gap: ${glsp(
-      add(themeVal('layout.glspMultiplier.small'), 1),
-      themeVal('layout.glspMultiplier.small')
-    )};
-  `}
-
-  ${media.mediumUp`
-    grid-template-columns: repeat(8, 1fr);
-    gap: ${glsp(
-      add(themeVal('layout.glspMultiplier.medium'), 1),
-      themeVal('layout.glspMultiplier.medium')
-    )};
-  `}
-
-  ${media.largeUp`
-    grid-template-columns: repeat(12, 1fr);
-    gap: ${glsp(
-      add(themeVal('layout.glspMultiplier.large'), 1),
-      themeVal('layout.glspMultiplier.large')
-    )};
-  `}
-
-  ${media.xlargeUp`
-    gap: ${glsp(
-      add(themeVal('layout.glspMultiplier.xlarge'), 1),
-      themeVal('layout.glspMultiplier.xlarge')
-    )};
-  `}
-
-  > * {
-    grid-column: 1 / -1;
-  }
-`;
-
-export const IntroFoldCopy = styled.div`
-  grid-column: 1 / span 8;
-  display: flex;
-  flex-direction: column;
-  gap: ${glsp(2)};
-`;
-
-export const Explorer = styled.div`
+const Explorer = styled.div`
   position: relative;
   flex-grow: 1;
   display: flex;
@@ -112,13 +41,19 @@ export const Explorer = styled.div`
   overflow: hidden;
 `;
 
-export const Carto = styled.div`
+const Carto = styled.div`
+  position: relative;
   flex-grow: 1;
-  padding: ${variableGlsp()};
   background: ${themeVal('color.surface')};
+
+  ${MapboxMap} {
+    position: absolute;
+    inset: 0;
+  }
 `;
 
 function DatasetsExplore() {
+  const mapboxRef = useRef(null);
   const thematic = useThematicArea();
   const dataset = useThematicAreaDataset();
 
@@ -129,16 +64,35 @@ function DatasetsExplore() {
   const panelBodyRef = useRef(null);
   // Click listener for the whole body panel so we can close it when clicking
   // the overlay on medium down media query.
-  const onPanelClick = useCallback((e) => {
-    if (!panelBodyRef.current?.contains(e.target)) {
-      setPanelRevealed(false);
-    }
-  }, []);
+  const onPanelClick = useCallback(
+    (e) => {
+      if (isMediumDown && !panelBodyRef.current?.contains(e.target)) {
+        setPanelRevealed(false);
+      }
+    },
+    [isMediumDown]
+  );
 
   // Close panel when media query changes.
   useEffect(() => {
     setPanelRevealed(!isMediumDown);
   }, [isMediumDown]);
+  // When the panel changes resize the map after a the animation finishes.
+  useEffect(() => {
+    const id = setTimeout(
+      () => mapboxRef.current?.resize(),
+      PANEL_REVEAL_DURATION
+    );
+    return () => id && clearTimeout(id);
+  }, [panelRevealed]);
+
+  const [params, setParams] = useState({
+    layer: null,
+    date: null
+  });
+
+  // const asyncLayers = useDatasetLayers(dataset.data.id);
+  // console.log("🚀 ~ file: index.js ~ line 90 ~ DatasetsExplore ~ asyncLayers", asyncLayers);
 
   if (!thematic || !dataset) throw resourceNotFound();
 
@@ -156,23 +110,6 @@ function DatasetsExplore() {
         }
       />
       <PageMainContent>
-        <IntroFold>
-          <IntroFoldInner>
-            <IntroFoldCopy>
-              <Prose>
-                <h1>Explore the dataset</h1>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  gravida sem quis ultrices vulputate. Ut eu pretium eros, eu
-                  molestie augue. Etiam risus justo, consectetur at erat vel,
-                  fringilla commodo felis. Suspendisse rutrum tortor ac nulla
-                  volutpat lobortis. Phasellus tempus nunc risus, eu mollis erat
-                  ullamcorper a.
-                </p>
-              </Prose>
-            </IntroFoldCopy>
-          </IntroFoldInner>
-        </IntroFold>
         <Explorer>
           <Panel revealed={panelRevealed} onClick={onPanelClick}>
             <PanelInner ref={panelBodyRef}>
@@ -197,26 +134,42 @@ function DatasetsExplore() {
               <PanelBody>
                 <PanelWidget>
                   <PanelWidgetHeader>
-                    <PanelWidgetTitle>Widget title</PanelWidgetTitle>
+                    <PanelWidgetTitle>Date</PanelWidgetTitle>
                   </PanelWidgetHeader>
                   <PanelWidgetBody>
-                    <p>Panel content goes here.</p>
+                    <DatePicker
+                      id='date-picker'
+                      alignment='left'
+                      direction='down'
+                      max={null}
+                      min={null}
+                      // onConfirm={}
+                      value={{
+                        end: null,
+                        start: null
+                      }}
+                    />
                   </PanelWidgetBody>
                 </PanelWidget>
                 <PanelWidget>
                   <PanelWidgetHeader>
-                    <PanelWidgetTitle>Widget title</PanelWidgetTitle>
+                    <PanelWidgetTitle>Layers</PanelWidgetTitle>
                   </PanelWidgetHeader>
                   <PanelWidgetBody>
-                    <p>Panel content goes here.</p>
+                    <DatasetLayers dataset={dataset.data} />
                   </PanelWidgetBody>
                 </PanelWidget>
               </PanelBody>
             </PanelInner>
           </Panel>
-
           <Carto>
-            <p>Map content goes here.</p>
+            <MapboxMap
+              ref={mapboxRef}
+              datasetId={dataset.data.id}
+              layerId={null}
+              date={null}
+              isComparing={null}
+            />
           </Carto>
         </Explorer>
       </PageMainContent>
