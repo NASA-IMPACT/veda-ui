@@ -1,15 +1,23 @@
 import { useEffect, useMemo } from 'react';
-import { datasets } from 'delta/thematics';
+import { DatasetLayer, DatasetLayerCompareNormalized, datasets } from 'delta/thematics';
 // Unstated Next provides a small wrapper around React's context api which makes
 // handling typescript typing possible.
 // More at: https://betterprogramming.pub/how-to-use-react-context-with-typescript-the-easy-way-2ed1010f6e84
 import { createContainer } from 'unstated-next';
 
-import { useContexeedApi } from '$utils/contexeed-v2';
+import { StateSlice, useContexeedApi } from '$utils/contexeed-v2';
 import {
   getCompareLayerData,
   STAC_ENDPOINT
 } from '$components/common/mapbox/layers/utils';
+
+interface STACLayerData {
+  timeseries: {
+    isPeriodic: boolean,
+    timeDensity: 'day' | 'month' | null,
+    domain: Array<string>
+  };
+}
 
 const useHook = () => {
   const { fetchLayerData, getState } = useContexeedApi({
@@ -46,7 +54,7 @@ export const LayerDataProvider = LayerDataContainer.Provider;
 // Consumers and helpers
 // /////////////////////////////////////////////////////////////////////////////
 
-const useLayersInit = (layers) => {
+const useLayersInit = (layers: DatasetLayer[]) => {
   const { fetchLayerData, getState } = LayerDataContainer.useContainer();
 
   useEffect(() => {
@@ -66,11 +74,11 @@ const useLayersInit = (layers) => {
 
     // Merge the data from STAC and the data from the configuration into a
     // single object with meta information about the request status.
-    const mergeSTACData = (baseData) => {
+    const mergeSTACData = <T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized>(baseData: T): StateSlice<T> => {
       if (!baseData) return null;
 
-      const dataSTAC = getState(baseData.id);
-      if (dataSTAC.status !== 'succeeded') return dataSTAC;
+      const dataSTAC = getState<STACLayerData>(baseData.id);
+      if (dataSTAC.status !== 'succeeded') return dataSTAC as StateSlice<null>;
 
       return {
         ...dataSTAC,
@@ -102,7 +110,7 @@ const useLayersInit = (layers) => {
 };
 
 // Context consumers.
-export const useDatasetLayer = (datasetId, layerId) => {
+export const useDatasetLayer = (datasetId?: string, layerId?: string) => {
   const hasParams = !!datasetId && !!layerId;
   // Get the layer information from the dataset defined in the configuration.
   const layer = datasets[datasetId]?.data.layers?.find((l) => l.id === layerId);
