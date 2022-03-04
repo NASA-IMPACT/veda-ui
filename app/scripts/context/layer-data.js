@@ -47,10 +47,63 @@ LayerDataProvider.propTypes = {
   children: T.node
 };
 
-// Context consumers.
-export const useDatasetLayer = (datasetId, layerId) => {
+const useLayersInit = (layers) => {
   const { fetchLayerData, getState } = useContext(LayerDataContext);
 
+  useEffect(() => {
+    if (!layers) return null;
+
+    layers.forEach((layer) => {
+      fetchLayerData({ id: layer.id });
+      const compareLayer = getCompareLayerData(layer);
+      if (compareLayer && compareLayer.id !== layer.id) {
+        fetchLayerData({ id: compareLayer.id });
+      }
+    });
+  }, [fetchLayerData, layers]);
+
+  return useMemo(() => {
+    if (!layers) return null;
+
+    // Merge the data from STAC and the data from the configuration into a
+    // single object with meta information about the request status.
+    const mergeSTACData = (baseData) => {
+      if (!baseData) return null;
+
+      const dataSTAC = getState(baseData.id);
+      if (dataSTAC.status !== 'succeeded') return dataSTAC;
+
+      return {
+        ...dataSTAC,
+        data: {
+          ...baseData,
+          ...dataSTAC.data
+        }
+      };
+    };
+
+    return layers.map((layer) => {
+      // Remove compare from layer.
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+      const { compare, ...layerProps } = layer;
+
+      // The compare definition needs to be resolved to a real layer before
+      // returning. The values for the compare layer will depend on how it is
+      // defined:
+      // is if from a dataset?
+      // is it a layer defined in-line?
+      const compareLayer = getCompareLayerData(layer);
+
+      return {
+        baseLayer: mergeSTACData(layerProps),
+        compareLayer: mergeSTACData(compareLayer)
+      };
+    });
+  }, [getState, layers]);
+};
+
+// Context consumers.
+export const useDatasetLayer = (datasetId, layerId) => {
   const hasParams = !!datasetId && !!layerId;
   // Get the layer information from the dataset defined in the configuration.
   const layer = datasets[datasetId]?.data.layers?.find((l) => l.id === layerId);
@@ -61,57 +114,19 @@ export const useDatasetLayer = (datasetId, layerId) => {
     throw new Error(`Layer [${layerId}] not found in dataset [${datasetId}]`);
   }
 
-  // Get data from STAC for the baseLayer.
-  useEffect(() => {
-    if (!hasParams) return null;
-    fetchLayerData({ id: layer.id });
-  }, [fetchLayerData, layer, hasParams]);
+  const asyncLayers = useLayersInit(layer && [layer]);
 
-  // The compare definition needs to be resolved to a real layer before making
-  // any STAC request.
-  // The values for the compare layer will depend on how it is defined:
-  // is if from a dataset?
-  // is it a layer defined in-line?
-  const compareLayer = useMemo(() => getCompareLayerData(layer), [layer]);
-
-  // Get data from STAC for the compare layer
-  useEffect(() => {
-    if (!hasParams || !compareLayer) return null;
-    setTimeout(() => {
-      fetchLayerData({ id: compareLayer.id });
-    }, 0);
-  }, [fetchLayerData, compareLayer, hasParams]);
-
-  return useMemo(() => {
-    if (!hasParams)
-      return {
+  return useMemo(
+    () =>
+      asyncLayers?.[0] || {
         baseLayer: null,
         compareLayer: null
-      };
+      },
+    [asyncLayers]
+  );
+};
 
-    // Remove compare from layer
-    const { compare, ...layerProps } = layer;
-
-    // Merge the data from STAC and the data from the configuration into a
-    // single object with meta information about the request status.
-    const mergeSTACData = (configData) => {
-      if (!configData) return null;
-
-      const dataSTAC = getState(configData.id);
-      if (dataSTAC.status !== 'succeeded') return dataSTAC;
-
-      return {
-        ...dataSTAC,
-        data: {
-          ...configData,
-          ...dataSTAC.data
-        }
-      };
-    };
-
-    return {
-      baseLayer: mergeSTACData(layerProps),
-      compareLayer: mergeSTACData(compareLayer)
-    };
-  }, [hasParams, getState, layer, compareLayer]);
+export const useDatasetLayers = (datasetId) => {
+  // Get the layer information from the dataset defined in the configuration.
+  return useLayersInit(datasets[datasetId]?.data.layers);
 };
