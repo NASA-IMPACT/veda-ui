@@ -30,7 +30,7 @@ export const ContentBlockProse = styled(VarProse)`
   h6 {
     &:first-child {
       column-span: all;
-      break-inside: avoid;
+      max-width: 52rem;
     }
   }
 

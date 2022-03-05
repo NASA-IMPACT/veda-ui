@@ -73,19 +73,13 @@ const PageHeroHGroup = styled.div`
 const PageHeroCover = styled(Figure)`
   position: absolute;
   inset: 0;
+  z-index: 1;
+  background: ${themeVal('color.base-400')};
 
   img {
     height: 100%;
     width: 100%;
     object-fit: cover;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    background: ${themeVal('color.base-400a')};
     mix-blend-mode: multiply;
   }
 `;
