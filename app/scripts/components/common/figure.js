@@ -27,7 +27,6 @@ export const Figcaption = styled.figcaption`
 export const FigcaptionInner = styled(Subtitle).attrs({
   as: 'span'
 })`
-  position: relative;
   padding: ${variableGlsp(0.5, 1, 0, 1)};
   flex-grow: 1;
   display: flex;
@@ -36,7 +35,7 @@ export const FigcaptionInner = styled(Subtitle).attrs({
   text-align: left;
 
   &::after {
-    content: ' ';
+    content: '';
     width: ${glsp(2)};
     height: 1px;
     margin-top: calc(${variableGlsp(0.5)} - 1px);
