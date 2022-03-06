@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { glsp } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { variableGlsp, variableProseVSpace } from './variable-utils';
 import { VarProse } from './variable-components';
@@ -31,7 +31,23 @@ export const ContentBlockProse = styled(VarProse)`
     &:first-child {
       column-span: all;
       max-width: 52rem;
+      display: flex;
+      flex-direction: column;
+      gap: calc(${glsp()} - ${glsp(0.25)});
+      margin-bottom: ${variableProseVSpace()};
+
+      &::before {
+        content: '';
+        width: ${glsp(2)};
+        height: ${glsp(0.25)};
+        border-radius: ${themeVal('shape.rounded')};
+        background: ${themeVal('color.primary')};
+      }
     }
+  }
+
+  *:not(p) {
+    break-inside: avoid;
   }
 
   ${FigcaptionInner} {
@@ -43,8 +59,6 @@ export const ContentBlockProse = styled(VarProse)`
   }
 
   [class*='align-'] {
-    margin-bottom: ${variableProseVSpace()};
-
     figcaption {
       padding: 0;
     }
