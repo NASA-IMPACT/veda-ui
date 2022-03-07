@@ -1,4 +1,5 @@
 import defaultsDeep from 'lodash.defaultsdeep';
+import { eachDayOfInterval, eachMonthOfInterval } from 'date-fns';
 import {
   datasets,
   DatasetLayer,
@@ -10,6 +11,7 @@ import {
   DatasetLayerCompareNormalized
 } from 'delta/thematics';
 
+import { AsyncDatasetLayer } from '$context/layer-data';
 import { MapLayerRasterTimeseries } from './raster-timeseries';
 
 export const RASTER_ENDPOINT =
@@ -83,25 +85,34 @@ export const getCompareLayerData = (
   throw new Error('Layer specified in compare was not found.');
 };
 
-type Fn = (...args: any[]) => any
+type Fn = (...args: any[]) => any;
 
 type ObjResMap<T> = {
-  [K in keyof T]: Res<T[K]>
-}
+  [K in keyof T]: Res<T[K]>;
+};
 
 type Res<T> = T extends Fn
   ? T extends DatasetDatumFn<DatasetDatumReturnType>
     ? DatasetDatumReturnType
     : never
   : T extends any[]
-    ? Array<Res<T[number]>>
-    : T extends object
-      ? ObjResMap<T>
-      : T;
+  ? Array<Res<T[number]>>
+  : T extends object
+  ? ObjResMap<T>
+  : T;
 
-export function resolveConfigFunctions<T>(datum: T, bag: DatasetDatumFnResolverBag): Res<T>
-export function resolveConfigFunctions<T extends Array<any>>(datum: T, bag: DatasetDatumFnResolverBag): Array<Res<T[number]>>
-export function resolveConfigFunctions(datum: any, bag: DatasetDatumFnResolverBag): any {
+export function resolveConfigFunctions<T>(
+  datum: T,
+  bag: DatasetDatumFnResolverBag
+): Res<T>;
+export function resolveConfigFunctions<T extends Array<any>>(
+  datum: T,
+  bag: DatasetDatumFnResolverBag
+): Array<Res<T[number]>>;
+export function resolveConfigFunctions(
+  datum: any,
+  bag: DatasetDatumFnResolverBag
+): any {
   if (Array.isArray(datum)) {
     return datum.map((v) => resolveConfigFunctions(v, bag));
   }
@@ -120,4 +131,74 @@ export function resolveConfigFunctions(datum: any, bag: DatasetDatumFnResolverBa
   }
 
   return datum;
+}
+
+/**
+ * Checks the loading status of a layer taking into account the base layer and
+ * the compare layer if any.
+ * @param asyncLayer The async layer to check
+ * @returns Coalesced status
+ */
+export function checkLayerLoadStatus(asyncLayer: AsyncDatasetLayer) {
+  const { baseLayer, compareLayer } = asyncLayer;
+
+  if (
+    baseLayer.status === 'succeeded' &&
+    (!compareLayer || compareLayer.status === 'succeeded')
+  ) {
+    return 'succeeded';
+  }
+
+  if (
+    baseLayer.status === 'loading' ||
+    (compareLayer && compareLayer.status === 'loading')
+  ) {
+    return 'loading';
+  }
+
+  if (
+    baseLayer.status === 'failed' ||
+    (compareLayer && compareLayer.status === 'failed')
+  ) {
+    return 'failed';
+  }
+
+  return 'idle';
+}
+
+declare global {
+  interface Array<T> {
+    last: T;
+  }
+}
+
+type AsyncDatasetLayerData<T extends keyof AsyncDatasetLayer> =
+  AsyncDatasetLayer[T]['data'];
+
+export function resolveLayerTemporalExtent(
+  layerData:
+    | AsyncDatasetLayerData<'baseLayer'>
+    | AsyncDatasetLayerData<'compareLayer'>
+): Date[] {
+  if (!layerData?.timeseries) return null;
+
+  const { domain, isPeriodic, timeDensity } = layerData.timeseries;
+
+  if (!isPeriodic) return domain.map(d => new Date(d));
+
+  if (timeDensity === 'month') {
+    return eachMonthOfInterval({
+      start: new Date(domain[0]),
+      end: new Date(domain.last)
+    });
+  } else if (timeDensity === 'day') {
+    return eachDayOfInterval({
+      start: new Date(domain[0]),
+      end: new Date(domain.last)
+    });
+  }
+
+  throw new Error(
+    `Invalid time density [${timeDensity}] on layer [${layerData.id}]`
+  );
 }

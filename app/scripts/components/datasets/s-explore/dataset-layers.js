@@ -14,56 +14,44 @@ import {
   themeVal,
   truncated
 } from '@devseed-ui/theme-provider';
+import { checkLayerLoadStatus } from '$components/common/mapbox/layers/utils';
 
 const LayerList = styled.ol`
   ${listReset()};
 `;
 
 export default function DatasetLayers(props) {
-  const { dataset } = props;
+  const { layers, onAction, selectedLayerId } = props;
 
-  const asyncLayers = useDatasetLayers(dataset.id);
-
-  // A layer that is considered ready when its data and the compare layer data
+  // A layer is considered ready when its data and the compare layer data
   // (if any) is also loaded.
   const layersStatuses = useMemo(() => {
-    return asyncLayers.reduce(
+    return layers.reduce(
       (acc, l) => {
-        const { baseLayer, compareLayer } = l;
-
-        if (
-          baseLayer.status === 'succeeded' &&
-          (!compareLayer || compareLayer.status === 'succeeded')
-        ) {
-          acc[0].push(l);
-        }
-
-        if (
-          baseLayer.status === 'loading' ||
-          (compareLayer && compareLayer.status === 'loading')
-        ) {
-          acc[1].push(l);
-        }
-
-        if (
-          baseLayer.status === 'failed' ||
-          (compareLayer && compareLayer.status === 'failed')
-        ) {
-          acc[2].push(l);
+        switch (checkLayerLoadStatus(l)) {
+          case 'succeeded':
+            acc[0].push(l);
+            break;
+          case 'loading':
+            acc[1].push(l);
+            break;
+          case 'failed':
+            acc[2].push(l);
+            break;
         }
 
         return acc;
       },
       [
-        // Ready.
+        // Ready
         [],
-        // Loading.
+        // Loading
         [],
         // Error
         []
       ]
     );
-  }, [asyncLayers]);
+  }, [layers]);
 
   const [lReady, lLoading, lError] = layersStatuses;
 
@@ -81,6 +69,8 @@ export default function DatasetLayers(props) {
                 id={baseLayer.data.id}
                 name={baseLayer.data.name}
                 info={baseLayer.data.description}
+                active={baseLayer.data.id === selectedLayerId}
+                onToggleClick={() => onAction('layer.toggle', baseLayer.data)}
               />
             </li>
           ))}
@@ -91,7 +81,7 @@ export default function DatasetLayers(props) {
 }
 
 DatasetLayers.propTypes = {
-  dataset: T.object
+  layers: T.array
 };
 
 const LayerSelf = styled(AccordionFold)`
@@ -153,7 +143,7 @@ const LayerBodyInner = styled(VarProse)`
 `;
 
 function Layer(props) {
-  const { id, name, info } = props;
+  const { id, name, info, active, onToggleClick } = props;
 
   return (
     <LayerSelf
@@ -182,8 +172,8 @@ function Layer(props) {
               id={`toggle-${id}`}
               name={`toggle-${id}`}
               // disabled={disabled}
-              // checked={active}
-              // onChange={onToggleClick}
+              checked={active}
+              onChange={onToggleClick}
             >
               Toggle layer visibility
             </FormSwitch>
