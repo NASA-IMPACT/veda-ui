@@ -10,49 +10,65 @@ export function MapLayerRasterTimeseries(props) {
   useEffect(() => {
     if (!id || !layerId || !date) return;
 
+    const controller = new AbortController();
+
     const load = async () => {
-      console.log('start loading');
-      const response = await axios.post(`${RASTER_ENDPOINT}/mosaic/register`, {
-        filter: {
-          op: 'and',
-          args: [
-            {
-              op: 'eq',
-              args: [{ property: 'datetime' }, date.toISOString()]
-            },
-            {
-              op: 'eq',
-              args: [{ property: 'collection' }, layerId]
-            }
-          ]
-        }
-      });
+      try {
+        console.log('start loading');
+        const payload = {
+          filter: {
+            op: 'and',
+            args: [
+              {
+                op: 'eq',
+                args: [{ property: 'datetime' }, date.toISOString()]
+              },
+              {
+                op: 'eq',
+                args: [{ property: 'collection' }, layerId]
+              }
+            ]
+          }
+        };
 
-      const tileParams = qs.stringify(
-        {
-          assets: 'cog_default',
-          ...sourceParams
-        },
-        { arrayFormat: 'comma' }
-      );
+        const response = await axios.post(
+          `${RASTER_ENDPOINT}/mosaic/register`,
+          payload,
+          {
+            signal: controller.signal
+          }
+        );
 
-      console.log('Adding source and layer', id, response.data.tiles);
+        const tileParams = qs.stringify(
+          {
+            assets: 'cog_default',
+            ...sourceParams
+          },
+          { arrayFormat: 'comma' }
+        );
 
-      mapInstance.addSource(id, {
-        type: 'raster',
-        url: `${response.data.tiles}?${tileParams}`
-      });
+        console.log('Adding source and layer', id, response.data.tiles);
 
-      mapInstance.addLayer({
-        id: id,
-        type: 'raster',
-        source: id
-      });
+        mapInstance.addSource(id, {
+          type: 'raster',
+          url: `${response.data.tiles}?${tileParams}`
+        });
+
+        mapInstance.addLayer({
+          id: id,
+          type: 'raster',
+          source: id
+        });
+      } catch (error) {
+        return;
+      }
     };
 
     load();
 
     return () => {
+      controller && controller.abort();
+
       if (mapInstance.getSource(id)) {
         mapInstance.removeLayer(id);
         mapInstance.removeSource(id);
