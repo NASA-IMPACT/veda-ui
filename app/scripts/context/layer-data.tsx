@@ -54,7 +54,12 @@ export const LayerDataProvider = LayerDataContainer.Provider;
 // Consumers and helpers
 // /////////////////////////////////////////////////////////////////////////////
 
-const useLayersInit = (layers: DatasetLayer[]) => {
+export interface AsyncDatasetLayer {
+  baseLayer: StateSlice<Omit<DatasetLayer, 'compare'> & STACLayerData>;
+  compareLayer: StateSlice<DatasetLayerCompareNormalized & STACLayerData>;
+}
+
+const useLayersInit = (layers: DatasetLayer[]) : AsyncDatasetLayer[]  => {
   const { fetchLayerData, getState } = LayerDataContainer.useContainer();
 
   useEffect(() => {
