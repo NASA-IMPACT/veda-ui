@@ -113,7 +113,17 @@ function DiscoveriesSingle() {
               components={{
                 h2: (props) => <h2 {...props} className='test-class' />,
                 p: ExperimentP,
-                Block: ContentBlockProse,
+                Block: (props) => {
+                  if (props.children.length)
+                    props.children.map((e) => {
+                      // native component
+                      if (typeof e.type == 'object') console.log(e.type.target);
+                      // any customized component
+                      else console.log(e.type.name);
+                    });
+
+                  return <ContentBlockProse {...props} />;
+                },
                 Chart
               }}
             >
