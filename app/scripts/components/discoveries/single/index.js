@@ -113,6 +113,10 @@ function DiscoveriesSingle() {
               components={{
                 h2: (props) => <h2 {...props} className='test-class' />,
                 p: ExperimentP,
+                img: (props) => {
+                  if (props.type == 'full') return <img {...props} />;
+                  return <p> not full </p>;
+                },
                 Block: (props) => {
                   if (props.children.length)
                     props.children.map((e) => {
