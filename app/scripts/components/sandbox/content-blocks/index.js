@@ -191,6 +191,7 @@ function SandboxContentBlocks() {
               src='http://via.placeholder.com/256x128?text=align-left'
               width='256'
               height='80'
+              loading='lazy'
             />
             <Figcaption>
               <FigcaptionInner>Lorem ipsum.</FigcaptionInner>{' '}
@@ -218,6 +219,7 @@ function SandboxContentBlocks() {
               src='http://via.placeholder.com/256x128?text=align-right'
               width='256'
               height='80'
+              loading='lazy'
             />
             <Figcaption>
               <FigcaptionInner>Lorem ipsum.</FigcaptionInner>{' '}
@@ -322,6 +324,7 @@ function SandboxContentBlocks() {
               src='http://via.placeholder.com/256x128?text=align-left'
               width='256'
               height='80'
+              loading='lazy'
             />
             <Figcaption>
               <FigcaptionInner>Lorem ipsum.</FigcaptionInner>{' '}
@@ -359,6 +362,7 @@ function SandboxContentBlocks() {
           <img
             src='https://picsum.photos/id/1002/2048/1024'
             alt='Generic placeholder by lorem picsum'
+            loading='lazy'
           />
           <Figcaption>
             <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
@@ -393,6 +397,7 @@ function SandboxContentBlocks() {
           <img
             src='https://picsum.photos/id/1002/2048/1024'
             alt='Generic placeholder by lorem picsum'
+            loading='lazy'
           />
           <Figcaption>
             <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
@@ -431,6 +436,7 @@ function SandboxContentBlocks() {
           <img
             src='https://picsum.photos/id/1002/2048/1620'
             alt='Generic placeholder by lorem picsum'
+            loading='lazy'
           />
           <Figcaption>
             <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
@@ -469,6 +475,7 @@ function SandboxContentBlocks() {
           <img
             src='https://picsum.photos/id/1002/2048/1620'
             alt='Generic placeholder by lorem picsum'
+            loading='lazy'
           />
           <Figcaption>
             <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
@@ -501,6 +508,7 @@ function SandboxContentBlocks() {
           <img
             src='https://picsum.photos/id/1002/2048/1260'
             alt='Generic placeholder by lorem picsum'
+            loading='lazy'
           />
           <Figcaption>
             <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
@@ -533,6 +541,7 @@ function SandboxContentBlocks() {
           <img
             src='https://picsum.photos/id/1002/2048/1260'
             alt='Generic placeholder by lorem picsum'
+            loading='lazy'
           />
           <Figcaption>
             <FigcaptionInner>Figure A.</FigcaptionInner>{' '}
