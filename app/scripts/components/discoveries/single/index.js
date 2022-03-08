@@ -1,4 +1,5 @@
 import React from 'react';
+import { MDXProvider } from '@mdx-js/react';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -12,7 +13,9 @@ import {
   useThematicArea,
   useThematicAreaDiscovery
 } from '$utils/thematics';
+
 import { thematicDiscoveriesPath } from '$utils/routes';
+import Chart from '$components/discoveries/chart/';
 
 function DiscoveriesSingle() {
   const thematic = useThematicArea();
@@ -45,7 +48,16 @@ function DiscoveriesSingle() {
         />
         <FoldProse>
           {pageMdx.status === 'loading' && <p>Loading page content</p>}
-          {pageMdx.status === 'success' && <pageMdx.MdxContent />}
+          {pageMdx.status === 'success' && (
+            <MDXProvider
+              components={{
+                h2: (props) => <h2 {...props} className='test-class' />,
+                Chart
+              }}
+            >
+              <pageMdx.MdxContent />
+            </MDXProvider>
+          )}
         </FoldProse>
       </PageMainContent>
     </>
