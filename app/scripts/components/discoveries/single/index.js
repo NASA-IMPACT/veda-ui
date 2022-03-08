@@ -1,5 +1,7 @@
 import React from 'react';
 import { MDXProvider } from '@mdx-js/react';
+import styled from 'styled-components';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -7,6 +9,9 @@ import { FoldProse } from '$components/common/fold';
 import { resourceNotFound } from '$components/uhoh';
 import PageLocalNav from '$components/common/page-local-nav';
 import { PageMainContent } from '$styles/page';
+
+import { variableGlsp, variableProseVSpace } from '$styles/variable-utils';
+import { VarProse } from '$styles/variable-components';
 
 import {
   useMdxPageLoader,
@@ -16,6 +21,61 @@ import {
 
 import { thematicDiscoveriesPath } from '$utils/routes';
 import Chart from '$components/discoveries/chart/';
+
+export const ContentBlockProse = styled(VarProse)`
+  font-size: 1rem;
+  gap: ${variableGlsp()};
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    &:first-child {
+      column-span: all;
+      max-width: 52rem;
+      display: flex;
+      flex-direction: column;
+      gap: calc(${glsp()} - ${glsp(0.25)});
+      margin-bottom: ${variableProseVSpace()};
+      &::before {
+        content: '';
+        width: ${glsp(2)};
+        height: ${glsp(0.25)};
+        border-radius: ${themeVal('shape.rounded')};
+        background: ${themeVal('color.primary')};
+      }
+    }
+  }
+  *:not(p) {
+    break-inside: avoid;
+  }
+
+  [class*='align-'] {
+    figcaption {
+      padding: 0;
+    }
+  }
+  .align-left {
+    float: left;
+    margin-right: ${variableProseVSpace()};
+  }
+  .align-right {
+    float: right;
+    margin-left: ${variableProseVSpace()};
+  }
+  .align-center {
+    margin-left: 50%;
+    transform: translate(-50%, 0);
+  }
+  p {
+    background-color: transparent;
+  }
+`;
+
+const ExperimentP = styled.p`
+  background-color: red;
+`;
 
 function DiscoveriesSingle() {
   const thematic = useThematicArea();
@@ -52,6 +112,8 @@ function DiscoveriesSingle() {
             <MDXProvider
               components={{
                 h2: (props) => <h2 {...props} className='test-class' />,
+                p: ExperimentP,
+                Block: ContentBlockProse,
                 Chart
               }}
             >
