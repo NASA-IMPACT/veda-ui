@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const InteractiveLink = styled.a`
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: -1;
   pointer-events: auto;
   font-size: 0;
   margin: 0;
@@ -15,8 +15,6 @@ export const Wrapper = styled.div`
   position: relative;
 
   > *:not(a) {
-    position: relative;
-    z-index: 2;
     pointer-events: none;
   }
 `;
@@ -39,8 +37,6 @@ export const Wrapper = styled.div`
  *   position: relative;
  *
  *   > *:not(a) {
- *     position: relative;
- *     z-index: 2;
  *     pointer-events: none;
  *   }
  *
