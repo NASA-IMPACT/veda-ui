@@ -1,9 +1,18 @@
 import styled from 'styled-components';
 
-import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
-import { variableGlsp } from './variable-utils';
+import {
+  glsp,
+  listReset,
+  media,
+  multiply,
+  themeVal
+} from '@devseed-ui/theme-provider';
 
-export const CardList = styled.ul`
+import { variableBaseType, variableGlsp } from './variable-utils';
+import { VarHeading } from './variable-components';
+import { Overline } from '@devseed-ui/typography';
+
+export const CardList = styled.ol`
   ${listReset()}
   grid-column: 1 / -1;
   display: grid;
@@ -23,21 +32,42 @@ export const Card = styled.article`
   position: relative;
   display: flex;
   flex-flow: column nowrap;
-  border-radius: ${themeVal('shape.rounded')};
+  border-radius: ${multiply(themeVal('shape.rounded'), 2)};
   box-shadow: ${themeVal('boxShadow.elevationD')};
   height: 100%;
   overflow: hidden;
   transition: all 0.24s ease-in-out 0s;
 
-  > * {
+  /* > * {
     padding: ${glsp()};
-  }
+  } */
 `;
 
 export const CardHeader = styled.header`
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${variableGlsp()};
+  padding: ${variableGlsp()};
+`;
+
+export const CardTitle = styled(VarHeading).attrs({
+  as: 'h3',
+  size: 'medium'
+})`
   /* styled-component */
 `;
 
-export const CardTitle = styled.h3`
-  /* styled-component */
+export const CardOverline = styled(Overline)`
+  order: -1;
+  color: inherit;
+  font-size: ${variableBaseType('0.75rem')};
+  line-height: ${variableBaseType('1rem')};
+
+  > * {
+    line-height: inherit;
+  }
+`;
+
+export const CardBody = styled.div`
+  padding: ${variableGlsp()};
 `;
