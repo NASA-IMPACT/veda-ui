@@ -164,6 +164,19 @@ const ContentBlockPFDelta = styled(ContentBlock)`
   }
 `;
 
+// This does't handle the case where prose has inline images
+function getImgsAndParagraphs(pChildren) {
+  const children = Array.isArray(pChildren) ? pChildren : [pChildren];
+
+  const imageChild = children.find((e) => e.type.name === 'Image');
+  const notImageChildren = children.filter((e) => e.type.name !== 'Image');
+
+  return {
+    imageChild,
+    notImageChildren
+  };
+}
+
 function Block(props) {
   const { type } = props;
   switch (type) {
@@ -198,64 +211,53 @@ function Block(props) {
         </ContentBlockFGama>
       );
     case 'pf1': {
-      const imageChild = props.children.filter(
-        (e) => e.type.name === 'Image'
-      )[0];
-      const notImageChildren = props.children.filter(
-        (e) => e.type.name !== 'Image'
+      const { imageChild, notImageChildren } = getImgsAndParagraphs(
+        props.children
       );
       return (
         <ContentBlockPFAlpha>
           <ContentBlockProse children={notImageChildren} />
           <ContentBlockFigure>
-            <Image {...imageChild.props} />
+            {imageChild && <Image {...imageChild.props} />}
           </ContentBlockFigure>
         </ContentBlockPFAlpha>
       );
     }
     case 'pf2': {
-      const imageChild = props.children.filter(
-        (e) => e.type.name === 'Image'
-      )[0];
-      const notImageChildren = props.children.filter(
-        (e) => e.type.name !== 'Image'
+      const { imageChild, notImageChildren } = getImgsAndParagraphs(
+        props.children
       );
       return (
         <ContentBlockPFBeta>
           <ContentBlockFigure>
-            <Image {...imageChild.props} />
+            {imageChild && <Image {...imageChild.props} />}
           </ContentBlockFigure>
           <ContentBlockProse children={notImageChildren} />
         </ContentBlockPFBeta>
       );
     }
     case 'pf3': {
-      const imageChild = props.children.filter(
-        (e) => e.type.name === 'Image'
-      )[0];
-      const notImageChildren = props.children.filter(
-        (e) => e.type.name !== 'Image'
+      const { imageChild, notImageChildren } = getImgsAndParagraphs(
+        props.children
       );
       return (
         <ContentBlockPFGama>
           <ContentBlockProse children={notImageChildren} />
           <ContentBlockFigure>
-            <Image {...imageChild.props} />
+            {imageChild && <Image {...imageChild.props} />}
           </ContentBlockFigure>
         </ContentBlockPFGama>
       );
     }
     case 'pf4': {
-      const imageChild = props.children.filter(
-        (e) => e.type.name === 'Image'
-      )[0];
-      const notImageChildren = props.children.filter(
-        (e) => e.type.name !== 'Image'
+      const { imageChild, notImageChildren } = getImgsAndParagraphs(
+        props.children
       );
+
       return (
         <ContentBlockPFDelta>
           <ContentBlockFigure>
-            <Image {...imageChild.props} />
+            {imageChild && <Image {...imageChild.props} />}
           </ContentBlockFigure>
           <ContentBlockProse children={notImageChildren} />
         </ContentBlockPFDelta>
