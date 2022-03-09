@@ -6,8 +6,9 @@ import React, {
   useState
 } from 'react';
 import styled from 'styled-components';
-import { themeVal } from '@devseed-ui/theme-provider';
+import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
+import { themeVal } from '@devseed-ui/theme-provider';
 import { CollecticonSlidersHorizontal } from '@devseed-ui/collecticons';
 import { DatePicker } from '@devseed-ui/date-picker';
 
@@ -39,13 +40,12 @@ import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { useMediaQuery } from '$utils/use-media-query';
 import { thematicDatasetsPath } from '$utils/routes';
 import { useDatasetLayers } from '$context/layer-data';
-import { useLocation, useNavigate } from 'react-router';
+import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { Link } from 'react-router-dom';
 import {
   checkLayerLoadStatus,
   resolveLayerTemporalExtent
 } from '$components/common/mapbox/layers/utils';
-import { useEffectPrevious } from '$utils/use-effect-previous';
 
 const Explorer = styled.div`
   position: relative;
@@ -65,6 +65,16 @@ const Carto = styled.div`
     inset: 0;
   }
 `;
+
+function getDatePickerView(timeDensity) {
+  // If the data's time density is monthly only allow the user to select a month
+  // by setting the picker to a early view.
+  if (timeDensity === 'month') {
+    return 'year';
+  }
+
+  return 'month';
+}
 
 function DatasetsExplore() {
   const mapboxRef = useRef(null);
@@ -118,11 +128,19 @@ function DatasetsExplore() {
   const [selectedDatetime, setSelectedDatetime] = useQsState.memo({
     key: 'datetime',
     default: null,
+    // The Date picker returns the selected date at the beginning of the day for
+    // the user's timezone. This becomes a problem when converting to string.
+    // For example, being in the West European Time when we select September
+    // 1st the date is initialized as: Wed Sep 01 2021 00:00:00 GMT+0100
+    // which means that if we convert to string using toISOString() it actually
+    // is 2021-08-31T23:00:00.000Z. Through toUtcDateString we avoid this.
+    dehydrator: (v) => (v ? userTzDate2utcString(v) : null),
+    // The same problem happens when reading the date. Using utcDate handles the
+    // reverse issue.
     hydrator: (v) => {
-      const d = new Date(v);
+      const d = utcString2userTzDate(v);
       return isNaN(d.getTime()) ? null : d;
-    },
-    dehydrator: (v) => (v ? v.toISOString() : null)
+    }
   });
 
   // END QsState setup
@@ -143,6 +161,12 @@ function DatasetsExplore() {
     });
   }, [asyncLayers, selectedLayerId]);
 
+  // Get the active layer timeseries data so we can render the date selector.
+  const activeLayerTimeseries = useMemo(
+    () => (activeLayer ? activeLayer.baseLayer.data.timeseries : null),
+    [activeLayer]
+  );
+
   // Available dates for the baseLayer of the currently active layer.
   // null if there's no active layer or it hasn't loaded yet.
   // TODO: How to handle intersection with the compareLayer domain.
@@ -156,13 +180,13 @@ function DatasetsExplore() {
 
   // When the available dates for the selected layer change, check if the
   // currently selected date is a valid one, otherwise reset to the first one in
-  // the domain. Since the selected date it stored in the url we need to make
-  // sure it actually exist.
+  // the domain. Since the selected date is stored in the url we need to make
+  // sure it actually exists.
   useEffectPrevious(
-    ([prevDates] = []) => {
-      const firstDomainDate = availableActiveLayerDates?.[0];
-      const prevFirstDate = prevDates?.[0];
-      if (firstDomainDate !== prevFirstDate) {
+    ([prevAvailableDates] = []) => {
+      const currDates = JSON.stringify(availableActiveLayerDates);
+      const prevDates = JSON.stringify(prevAvailableDates);
+      if (availableActiveLayerDates && currDates !== prevDates) {
         // Since the available dates changes, check if the currently selected
         // one is valid.
         const validDate = !!availableActiveLayerDates.find(
@@ -170,11 +194,24 @@ function DatasetsExplore() {
         );
 
         if (!validDate) {
-          setSelectedDatetime(firstDomainDate);
+          setSelectedDatetime(availableActiveLayerDates[0]);
         }
       }
     },
     [availableActiveLayerDates, selectedDatetime, setSelectedDatetime]
+  );
+
+  const datePickerConfirm = useCallback(
+    (range) => setSelectedDatetime(range.start),
+    [setSelectedDatetime]
+  );
+
+  const datePickerValue = useMemo(
+    () => ({
+      end: selectedDatetime,
+      start: selectedDatetime
+    }),
+    [selectedDatetime]
   );
 
   /** *********************************************************************** */
@@ -231,31 +268,27 @@ function DatasetsExplore() {
                 </PanelActions>
               </PanelHeader>
               <PanelBody>
-                <PanelWidget>
-                  <PanelWidgetHeader>
-                    <PanelWidgetTitle>Date</PanelWidgetTitle>
-                  </PanelWidgetHeader>
-                  <PanelWidgetBody>
-                    <DatePicker
-                      id='date-picker'
-                      alignment='left'
-                      direction='down'
-                      max={availableActiveLayerDates?.last}
-                      min={availableActiveLayerDates?.[0]}
-                      onConfirm={useCallback(
-                        (range) => setSelectedDatetime(range.start),
-                        [setSelectedDatetime]
-                      )}
-                      value={useMemo(
-                        () => ({
-                          end: selectedDatetime,
-                          start: selectedDatetime
-                        }),
-                        [selectedDatetime]
-                      )}
-                    />
-                  </PanelWidgetBody>
-                </PanelWidget>
+                {activeLayerTimeseries && (
+                  <PanelWidget>
+                    <PanelWidgetHeader>
+                      <PanelWidgetTitle>Date</PanelWidgetTitle>
+                    </PanelWidgetHeader>
+                    <PanelWidgetBody>
+                      <DatePicker
+                        id='date-picker'
+                        alignment='left'
+                        direction='down'
+                        view={getDatePickerView(
+                          activeLayerTimeseries.timeDensity
+                        )}
+                        max={availableActiveLayerDates?.last}
+                        min={availableActiveLayerDates?.[0]}
+                        onConfirm={datePickerConfirm}
+                        value={datePickerValue}
+                      />
+                    </PanelWidgetBody>
+                  </PanelWidget>
+                )}
                 <PanelWidget>
                   <PanelWidgetHeader>
                     <PanelWidgetTitle>Layers</PanelWidgetTitle>

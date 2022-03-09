@@ -3,6 +3,7 @@ import axios from 'axios';
 import qs from 'qs';
 
 import { RASTER_ENDPOINT } from './utils';
+import { userTzDate2utcString } from '$utils/date';
 
 export function MapLayerRasterTimeseries(props) {
   const { id, layerId, date, mapInstance, sourceParams = {} } = props;
@@ -21,7 +22,7 @@ export function MapLayerRasterTimeseries(props) {
             args: [
               {
                 op: 'eq',
-                args: [{ property: 'datetime' }, date.toISOString()]
+                args: [{ property: 'datetime' }, userTzDate2utcString(date)]
               },
               {
                 op: 'eq',
