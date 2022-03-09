@@ -30,11 +30,13 @@ const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 const Sandbox = lazy(() => import('$components/sandbox'));
 
 // Contexts
+import { LayerDataProvider } from './context/layer-data';
 
 const composingComponents = [
   // Add contexts here.
   ErrorBoundary,
-  LayoutRootContextProvider
+  LayoutRootContextProvider,
+  LayerDataProvider
 ];
 
 const hasSeveralThematicAreas = deltaThematics.length > 1;
