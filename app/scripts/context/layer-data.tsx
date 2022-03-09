@@ -135,7 +135,8 @@ export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
     throw new Error(`Layer [${layerId}] not found in dataset [${datasetId}]`);
   }
 
-  const asyncLayers = useLayersInit(layer && [layer]);
+  const layerAsArray = useMemo(() => layer && [layer], [layer]);
+  const asyncLayers = useLayersInit(layerAsArray);
 
   return useMemo(
     () =>

@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState
 } from 'react';
-import T from 'prop-types';
 import styled from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -41,6 +40,7 @@ function MapboxMapComponent(props, ref) {
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
 
+  // Add ref control operations to allow map to be controlled by the parent.
   useImperativeHandle(ref, () => ({
     resize: () => {
       mapRef.current?.resize();
@@ -48,24 +48,14 @@ function MapboxMapComponent(props, ref) {
     }
   }));
 
-  // const dataset = useMemo(() => datasets[datasetId]?.data, [datasetId]);
-  // console.log('🚀 ~ file: map.js ~ MapboxMapComponent ~ dataset', dataset);
   const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
-
-  console.log('🚀 ~ MapboxMapComponent', datasetId, layerId, date);
-  console.log('🚀 ~ file: map.js ~ MapboxMapComponent ~ baseLayer', baseLayer);
-  console.log(
-    '🚀 ~ file: map.js ~ MapboxMapComponent ~ compareLayer',
-    compareLayer
-  );
 
   const shouldRenderCompare = isMapLoaded && isComparing;
 
   // Compare control
   useEffect(() => {
-    if (!isMapLoaded || !isComparing || !isMapCompareLoaded) {
-      return;
-    }
+    if (!isMapLoaded || !isComparing || !isMapCompareLoaded) return;
+
     const compareControl = new CompareMbGL(
       mapRef.current,
       mapCompareRef.current,
@@ -88,21 +78,17 @@ function MapboxMapComponent(props, ref) {
 
   // Resolve data needed for the base layer once the layer is loaded
   const [baseLayerResolvedData, BaseLayerComponent] = useMemo(() => {
-    if (baseLayer?.status !== 'succeeded') {
-      return [null, null];
-    }
-    const data = resolveConfigFunctions(baseLayer.data, resolverBag);
+    if (baseLayer?.status !== 'succeeded') return [null, null];
 
+    const data = resolveConfigFunctions(baseLayer.data, resolverBag);
     return [data, getLayerComponent(data.timeseries, data.type)];
   }, [baseLayer, resolverBag]);
 
   // Resolve data needed for the compare layer once it is loaded.
   const [compareLayerResolvedData, CompareLayerComponent] = useMemo(() => {
-    if (compareLayer?.status !== 'succeeded') {
-      return [null, null];
-    }
-    const data = resolveConfigFunctions(compareLayer.data, resolverBag);
+    if (compareLayer?.status !== 'succeeded') return [null, null];
 
+    const data = resolveConfigFunctions(compareLayer.data, resolverBag);
     return [data, getLayerComponent(data.timeseries, data.type)];
   }, [compareLayer, resolverBag]);
 
@@ -159,6 +145,7 @@ function MapboxMapComponent(props, ref) {
             mapRef={mapCompareRef}
             containerRef={mapCompareContainer}
             onLoad={() => setMapCompareLoaded(true)}
+            onUnmount={() => setMapCompareLoaded(false)}
             mapOptions={{
               ...mapOptions,
               center: mapRef.current?.getCenter(),

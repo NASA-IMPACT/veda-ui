@@ -9,8 +9,12 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonSlidersHorizontal } from '@devseed-ui/collecticons';
+import {
+  CollecticonSlidersHorizontal,
+  CollecticonSwapHorizontal
+} from '@devseed-ui/collecticons';
 import { DatePicker } from '@devseed-ui/date-picker';
+import { Button } from '@devseed-ui/button';
 
 import { resourceNotFound } from '$components/uhoh';
 import PageLocalNav, {
@@ -143,6 +147,13 @@ function DatasetsExplore() {
     }
   });
 
+  const [isComparing, setComparing] = useQsState.memo({
+    key: 'comparing',
+    default: false,
+    hydrator: (v) => v === 'true',
+    dehydrator: (v) => v.toString()
+  });
+
   // END QsState setup
   /** *********************************************************************** */
 
@@ -169,14 +180,31 @@ function DatasetsExplore() {
 
   // Available dates for the baseLayer of the currently active layer.
   // null if there's no active layer or it hasn't loaded yet.
-  // TODO: How to handle intersection with the compareLayer domain.
-  const availableActiveLayerDates = useMemo(
-    () =>
-      activeLayer
-        ? resolveLayerTemporalExtent(activeLayer.baseLayer.data)
-        : null,
-    [activeLayer]
-  );
+  const availableActiveLayerDates = useMemo(() => {
+    if (!activeLayer) return null;
+    const { baseLayer, compareLayer } = activeLayer;
+
+    if (isComparing && compareLayer) {
+      const bTimeDensity = baseLayer.data.timeseries.timeDensity;
+      const cTimeDensity = compareLayer.data.timeseries.timeDensity;
+
+      if (bTimeDensity !== cTimeDensity) {
+        throw new Error(`Failed to enable compare.
+Time density value must be the same for both layers.
+Base layer: ${baseLayer.data.id} >> ${bTimeDensity}
+Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
+`);
+      }
+    }
+
+    return resolveLayerTemporalExtent(activeLayer.baseLayer.data);
+  }, [activeLayer, isComparing]);
+
+  useEffect(() => {
+    if (activeLayer && !activeLayer.compareLayer) {
+      setComparing(false);
+    }
+  }, [activeLayer, setComparing]);
 
   // When the available dates for the selected layer change, check if the
   // currently selected date is a valid one, otherwise reset to the first one in
@@ -268,12 +296,12 @@ function DatasetsExplore() {
                 </PanelActions>
               </PanelHeader>
               <PanelBody>
-                {activeLayerTimeseries && (
-                  <PanelWidget>
-                    <PanelWidgetHeader>
-                      <PanelWidgetTitle>Date</PanelWidgetTitle>
-                    </PanelWidgetHeader>
-                    <PanelWidgetBody>
+                <PanelWidget>
+                  <PanelWidgetHeader>
+                    <PanelWidgetTitle>Date</PanelWidgetTitle>
+                  </PanelWidgetHeader>
+                  <PanelWidgetBody>
+                    {activeLayerTimeseries && (
                       <DatePicker
                         id='date-picker'
                         alignment='left'
@@ -286,9 +314,19 @@ function DatasetsExplore() {
                         onConfirm={datePickerConfirm}
                         value={datePickerValue}
                       />
-                    </PanelWidgetBody>
-                  </PanelWidget>
-                )}
+                    )}
+                    {!!activeLayer?.compareLayer && (
+                      <Button
+                        variation='base-text'
+                        active={isComparing}
+                        onClick={() => setComparing(!isComparing)}
+                      >
+                        <CollecticonSwapHorizontal title='Toggle comparison' />
+                        Compare
+                      </Button>
+                    )}
+                  </PanelWidgetBody>
+                </PanelWidget>
                 <PanelWidget>
                   <PanelWidgetHeader>
                     <PanelWidgetTitle>Layers</PanelWidgetTitle>
@@ -310,7 +348,7 @@ function DatasetsExplore() {
               datasetId={dataset.data.id}
               layerId={activeLayer?.baseLayer.data?.id}
               date={selectedDatetime}
-              isComparing={null}
+              isComparing={isComparing}
             />
           </Carto>
         </Explorer>

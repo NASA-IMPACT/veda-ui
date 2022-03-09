@@ -175,6 +175,14 @@ declare global {
 type AsyncDatasetLayerData<T extends keyof AsyncDatasetLayer> =
   AsyncDatasetLayer[T]['data'];
 
+/**
+ * Resolves the temporal extend of the given Async Layer.
+ * Uses the properties from the timeseries to generate the layer's full temporal
+ * extent.
+ *
+ * @param layerData The Async layer data.
+ * @returns Array of Dates
+ */
 export function resolveLayerTemporalExtent(
   layerData:
     | AsyncDatasetLayerData<'baseLayer'>
@@ -184,7 +192,7 @@ export function resolveLayerTemporalExtent(
 
   const { domain, isPeriodic, timeDensity } = layerData.timeseries;
 
-  if (!isPeriodic) return domain.map(d => new Date(d));
+  if (!isPeriodic) return domain.map((d) => new Date(d));
 
   if (timeDensity === 'month') {
     return eachMonthOfInterval({

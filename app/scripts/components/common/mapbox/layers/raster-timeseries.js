@@ -5,6 +5,8 @@ import qs from 'qs';
 import { RASTER_ENDPOINT } from './utils';
 import { userTzDate2utcString } from '$utils/date';
 
+const LOG = true;
+
 export function MapLayerRasterTimeseries(props) {
   const { id, layerId, date, mapInstance, sourceParams = {} } = props;
 
@@ -15,7 +17,14 @@ export function MapLayerRasterTimeseries(props) {
 
     const load = async () => {
       try {
-        console.log('start loading');
+        LOG &&
+          /* eslint-disable-next-line no-console */
+          console.groupCollapsed(
+            'MapLayerRasterTimeseries %cLoading',
+            'color: orange;',
+            id
+          );
+
         const payload = {
           filter: {
             op: 'and',
@@ -31,6 +40,12 @@ export function MapLayerRasterTimeseries(props) {
             ]
           }
         };
+
+        /* eslint-disable no-console */
+        LOG && console.log('Payload', payload);
+        LOG && console.log('Source Params', sourceParams);
+        LOG && console.groupEnd();
+        /* eslint-enable no-console */
 
         const response = await axios.post(
           `${RASTER_ENDPOINT}/mosaic/register`,
@@ -48,7 +63,17 @@ export function MapLayerRasterTimeseries(props) {
           { arrayFormat: 'comma' }
         );
 
-        console.log('Adding source and layer', id, response.data.tiles);
+        /* eslint-disable no-console */
+        LOG &&
+          console.groupCollapsed(
+            'MapLayerRasterTimeseries %cAdding',
+            'color: green;',
+            id
+          );
+        LOG && console.log('Url', response.data.tiles);
+        LOG && console.log('STAC response', response.data);
+        LOG && console.groupEnd();
+        /* eslint-enable no-console */
 
         mapInstance.addSource(id, {
           type: 'raster',
@@ -61,6 +86,9 @@ export function MapLayerRasterTimeseries(props) {
           source: id
         });
       } catch (error) {
+        LOG &&
+          /* eslint-disable-next-line no-console */
+          console.log('MapLayerRasterTimeseries %cAborted', 'color: red;', id);
         return;
       }
     };
@@ -70,7 +98,7 @@ export function MapLayerRasterTimeseries(props) {
     return () => {
       controller && controller.abort();
 
-      if (mapInstance.getSource(id)) {
+      if (mapInstance?.getSource(id)) {
         mapInstance.removeLayer(id);
         mapInstance.removeSource(id);
       }

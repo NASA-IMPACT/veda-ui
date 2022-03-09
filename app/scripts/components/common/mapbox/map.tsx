@@ -20,11 +20,13 @@ interface SimpleMapProps {
   mapRef: MutableRefObject<mapboxgl.Map>;
   containerRef: RefObject<HTMLDivElement>;
   onLoad(e: mapboxgl.EventData): void;
+  onUnmount?: () => void;
   mapOptions: any;
 }
 
 export function SimpleMap(props: SimpleMapProps): JSX.Element {
-  const { mapRef, containerRef, onLoad, mapOptions, ...rest } = props;
+  const { mapRef, containerRef, onLoad, onUnmount, mapOptions, ...rest } =
+    props;
 
   useEffect(() => {
     const mbMap = new mapboxgl.Map({
@@ -44,7 +46,11 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     // Trigger a resize to handle flex layout quirks.
     setTimeout(() => mbMap.resize(), 1);
 
-    return () => mbMap.remove();
+    return () => {
+      mbMap.remove();
+      mapRef.current = null;
+      onUnmount?.();
+    };
     // Only use the props on mount. We don't want to update the map if they
     // change.
   }, []);
