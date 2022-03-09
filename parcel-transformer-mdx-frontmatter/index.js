@@ -6,9 +6,15 @@ module.exports = new Transformer({
   async transform({ asset }) {
     const code = await asset.getCode();
 
-    // Remove frontmatter from file.
-    const { content } = matter(code);
-    asset.setCode(content);
+    try {
+      // Remove frontmatter from file.
+      const { content } = matter(code, {});
+      asset.setCode(content);
+    } catch (error) {
+      // Return empty if errored. The parcel-resolver-evolution will take care
+      // of logging the correct errors.
+      return [];
+    }
 
     return [asset];
   }
