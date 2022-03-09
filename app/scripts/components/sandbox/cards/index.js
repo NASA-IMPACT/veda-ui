@@ -1,27 +1,38 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { Fold } from '$components/common/fold';
+import { ElementInteractive } from '$components/common/element-interactive';
 import {
   Card,
   CardBody,
+  CardFigure,
   CardHeader,
+  CardLabel,
   CardList,
   CardOverline,
   CardTitle
 } from '$styles/card';
-import React from 'react';
 
 function SandboxCards() {
   return (
     <Fold>
       <CardList>
         <li>
-          <Card>
+          <ElementInteractive
+            as={Card}
+            linkLabel='View more'
+            linkProps={{
+              as: Link,
+              to: '/'
+            }}
+          >
             <CardHeader>
-              <Link to=''>
-                <CardTitle>Card title</CardTitle>
-                <CardOverline>Card overline</CardOverline>
-              </Link>
+              <CardTitle>Card title</CardTitle>
+              <CardOverline>
+                <CardLabel>Discovery</CardLabel> pubslished on{' '}
+                <time dateTime='2021-10-26'>Oct 26, 2021</time>
+              </CardOverline>
             </CardHeader>
             <CardBody>
               <p>
@@ -29,7 +40,14 @@ function SandboxCards() {
                 congue elit erat, vel lobortis velit porta vel.
               </p>
             </CardBody>
-          </Card>
+            <CardFigure>
+              <img
+                src='https://picsum.photos/id/1002/2048/1024'
+                alt='Generic placeholder by lorem picsum'
+                loading='lazy'
+              />
+            </CardFigure>
+          </ElementInteractive>
         </li>
       </CardList>
     </Fold>

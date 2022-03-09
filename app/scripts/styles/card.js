@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import {
   glsp,
@@ -7,10 +7,12 @@ import {
   multiply,
   themeVal
 } from '@devseed-ui/theme-provider';
+import { Overline, Subtitle } from '@devseed-ui/typography';
 
-import { variableBaseType, variableGlsp } from './variable-utils';
+import { variableGlsp } from './variable-utils';
 import { VarHeading } from './variable-components';
-import { Overline } from '@devseed-ui/typography';
+
+import { Figure } from '$components/common/figure';
 
 export const CardList = styled.ol`
   ${listReset()}
@@ -38,15 +40,29 @@ export const Card = styled.article`
   overflow: hidden;
   transition: all 0.24s ease-in-out 0s;
 
-  /* > * {
-    padding: ${glsp()};
-  } */
+  ${({ isStateFocus }) =>
+    isStateFocus &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationC')};
+      transform: translate(0, 0.125rem);
+    `}
+  ${({ isStateOver }) =>
+    isStateOver &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationC')};
+      transform: translate(0, 0.125rem);
+    `}
+  ${({ isStateActive }) =>
+    isStateActive &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationB')};
+      transform: translate(0, 0.125rem);
+    `}
 `;
 
 export const CardHeader = styled.header`
   display: flex;
   flex-flow: column nowrap;
-  gap: ${variableGlsp()};
   padding: ${variableGlsp()};
 `;
 
@@ -60,14 +76,42 @@ export const CardTitle = styled(VarHeading).attrs({
 export const CardOverline = styled(Overline)`
   order: -1;
   color: inherit;
-  font-size: ${variableBaseType('0.75rem')};
-  line-height: ${variableBaseType('1rem')};
+  opacity: 0.64;
 
   > * {
     line-height: inherit;
   }
 `;
 
+export const CardSubtitle = styled(Subtitle)`
+  color: inherit;
+  opacity: 0.64;
+
+  > * {
+    line-height: inherit;
+  }
+`;
+
+export const CardLabel = styled.span`
+  position: absolute;
+  top: ${variableGlsp()};
+  left: ${variableGlsp()};
+  display: inline-block;
+  vertical-align: top;
+  color: ${themeVal('color.surface')};
+  border-radius: ${themeVal('shape.rounded')};
+  padding: ${glsp(0.125, 0.25)};
+  background: ${themeVal('color.base')};
+`;
+
 export const CardBody = styled.div`
   padding: ${variableGlsp()};
+
+  &:not(:first-child) {
+    padding-top: 0;
+  }
+`;
+
+export const CardFigure = styled(Figure)`
+  order: -1;
 `;
