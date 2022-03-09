@@ -9,7 +9,7 @@ import { reveal } from '@devseed-ui/animation';
 import { PageLead, PageMainTitle, PageOverline } from '../../styles/page';
 import Constrainer from '../../styles/constrainer';
 import { variableGlsp } from '../../styles/variable-utils';
-import MediaAttribution from './media-attribution';
+import { Figcaption, Figure, FigureAttribution } from './figure';
 
 const PageHeroSelf = styled.div`
   position: relative;
@@ -18,7 +18,6 @@ const PageHeroSelf = styled.div`
   flex-flow: column nowrap;
   gap: ${glsp()};
   justify-content: flex-end;
-  padding: ${variableGlsp(2, 1)};
   background: ${themeVal('color.base-50')};
   min-height: 12rem;
   animation: ${reveal} 0.32s ease 0s 1;
@@ -42,13 +41,15 @@ const PageHeroSelf = styled.div`
       `}
     `}
 
-  ${MediaAttribution} {
-    bottom: ${variableGlsp()};
+  ${FigureAttribution} {
+    top: ${variableGlsp()};
     right: ${variableGlsp()};
   }
 `;
 
 const PageHeroInner = styled(Constrainer)`
+  padding-top: ${variableGlsp(2)};
+  padding-bottom: ${variableGlsp(2)};
   align-items: end;
 `;
 
@@ -69,40 +70,17 @@ const PageHeroHGroup = styled.div`
   `}
 `;
 
-const PageHeroCover = styled.figure`
+const PageHeroCover = styled(Figure)`
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background: ${themeVal('color.base-400a')};
-    mix-blend-mode: multiply;
-    z-index: 2;
-  }
-`;
-
-const PageHeroCoverItem = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 1;
+  background: ${themeVal('color.base-400')};
 
   img {
-    position: relative;
     height: 100%;
     width: 100%;
-    z-index: 1;
     object-fit: cover;
+    mix-blend-mode: multiply;
   }
 `;
 
@@ -141,10 +119,13 @@ function PageHero(props) {
         {description && <PageLead>{description}</PageLead>}
         {hasImage && (
           <PageHeroCover>
-            <PageHeroCoverItem>
-              <img src={coverSrc} alt={coverAlt} />
-            </PageHeroCoverItem>
-            <MediaAttribution author={attributionAuthor} url={attributionUrl} />
+            <img src={coverSrc} alt={coverAlt} />
+            <Figcaption>
+              <FigureAttribution
+                author={attributionAuthor}
+                url={attributionUrl}
+              />
+            </Figcaption>
           </PageHeroCover>
         )}
       </PageHeroInner>

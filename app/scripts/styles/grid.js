@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { media } from '@devseed-ui/theme-provider';
 import { variableGlsp } from './variable-utils';
 
 export const GridTemplateFull = styled.div`

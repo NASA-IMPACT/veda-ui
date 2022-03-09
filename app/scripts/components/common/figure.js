@@ -1,12 +1,51 @@
 import React from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
+
 import { glsp, themeVal, truncated } from '@devseed-ui/theme-provider';
+import { Subtitle } from '@devseed-ui/typography';
 import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 
-const MediaAttributionSelf = styled.p`
+import { variableGlsp } from '$styles/variable-utils';
+
+export const Figure = styled.figure`
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+
+  > a {
+    display: block;
+  }
+`;
+
+export const Figcaption = styled.figcaption`
+  clear: both;
+  display: flex;
+  flex-flow: row nowrap;
+`;
+
+export const FigcaptionInner = styled(Subtitle).attrs({
+  as: 'span'
+})`
+  padding: ${variableGlsp(0.5, 1, 0, 1)};
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  text-align: left;
+
+  &::after {
+    content: '';
+    width: ${glsp(2)};
+    height: 1px;
+    margin-top: calc(${variableGlsp(0.5)} - 1px);
+    background: ${themeVal('color.base-100a')};
+  }
+`;
+
+const FigureAttributionSelf = styled.p`
   position: absolute;
-  bottom: ${glsp()};
+  top: ${glsp()};
   right: ${glsp()};
   z-index: 40;
   max-width: calc(100% - ${glsp(2)}); /* stylelint-disable-line */
@@ -26,7 +65,7 @@ const MediaAttributionSelf = styled.p`
   }
 `;
 
-const MediaAttributionInner = styled.span`
+const FigureAttributionInner = styled.span`
   display: flex;
   flex-flow: nowrap;
   align-items: center;
@@ -57,7 +96,7 @@ const MediaAttributionInner = styled.span`
   }
 `;
 
-function MediaAttribution(props) {
+function FigureAttributionCmp(props) {
   const { author, url, ...rest } = props;
 
   if (!author) return null;
@@ -72,20 +111,20 @@ function MediaAttribution(props) {
     : {};
 
   return (
-    <MediaAttributionSelf {...rest}>
-      <MediaAttributionInner {...innerProps}>
+    <FigureAttributionSelf {...rest}>
+      <FigureAttributionInner {...innerProps}>
         <CollecticonCircleInformation />
-        <strong>Image by {author}</strong>
-      </MediaAttributionInner>
-    </MediaAttributionSelf>
+        <strong>By {author}</strong>
+      </FigureAttributionInner>
+    </FigureAttributionSelf>
   );
 }
 
-export default styled(MediaAttribution)`
+export const FigureAttribution = styled(FigureAttributionCmp)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
 
-MediaAttribution.propTypes = {
+FigureAttributionCmp.propTypes = {
   author: T.string,
   url: T.string
 };

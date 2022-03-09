@@ -12,6 +12,7 @@ import { resourceNotFound } from '$components/uhoh';
 import SandboxTypography from './typography';
 import SandboxHug from './hug';
 import SandboxMap from './map';
+import SandboxContentBlocks from './content-blocks';
 
 const pages = [
   {
@@ -28,6 +29,11 @@ const pages = [
     id: 'map',
     name: 'Mapbox map',
     component: SandboxMap
+  },
+  {
+    id: 'content-blocks',
+    name: 'Content Blocks',
+    component: SandboxContentBlocks
   }
 ];
 
