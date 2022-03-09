@@ -33,3 +33,11 @@ export const Card = styled.article`
     padding: ${glsp()};
   }
 `;
+
+export const CardHeader = styled.header`
+  /* styled-component */
+`;
+
+export const CardTitle = styled.h3`
+  /* styled-component */
+`;

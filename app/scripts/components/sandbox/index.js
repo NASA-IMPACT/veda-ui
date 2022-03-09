@@ -13,6 +13,7 @@ import SandboxTypography from './typography';
 import SandboxHug from './hug';
 import SandboxMap from './map';
 import SandboxContentBlocks from './content-blocks';
+import SandboxCards from './cards';
 
 const pages = [
   {
@@ -34,6 +35,11 @@ const pages = [
     id: 'content-blocks',
     name: 'Content Blocks',
     component: SandboxContentBlocks
+  },
+  {
+    id: 'cards',
+    name: 'Cards',
+    component: SandboxCards
   }
 ];
 
