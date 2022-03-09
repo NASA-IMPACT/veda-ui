@@ -1,5 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useMemo } from 'react';
-import { DatasetLayer, DatasetLayerCompareNormalized, datasets } from 'delta/thematics';
+import {
+  DatasetLayer,
+  DatasetLayerCompareNormalized,
+  datasets
+} from 'delta/thematics';
 // Unstated Next provides a small wrapper around React's context api which makes
 // handling typescript typing possible.
 // More at: https://betterprogramming.pub/how-to-use-react-context-with-typescript-the-easy-way-2ed1010f6e84
@@ -13,9 +18,9 @@ import {
 
 interface STACLayerData {
   timeseries: {
-    isPeriodic: boolean,
-    timeDensity: 'day' | 'month' | null,
-    domain: Array<string>
+    isPeriodic: boolean;
+    timeDensity: 'day' | 'month' | null;
+    domain: Array<string>;
   };
 }
 
@@ -59,7 +64,7 @@ export interface AsyncDatasetLayer {
   compareLayer: StateSlice<DatasetLayerCompareNormalized & STACLayerData>;
 }
 
-const useLayersInit = (layers: DatasetLayer[]) : AsyncDatasetLayer[]  => {
+const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
   const { fetchLayerData, getState } = LayerDataContainer.useContainer();
 
   useEffect(() => {
@@ -79,7 +84,11 @@ const useLayersInit = (layers: DatasetLayer[]) : AsyncDatasetLayer[]  => {
 
     // Merge the data from STAC and the data from the configuration into a
     // single object with meta information about the request status.
-    const mergeSTACData = <T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized>(baseData: T): StateSlice<T & STACLayerData> => {
+    const mergeSTACData = <
+      T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized
+    >(
+      baseData: T
+    ): StateSlice<T & STACLayerData> => {
       if (!baseData) return null;
 
       const dataSTAC = getState<STACLayerData>(baseData.id);
@@ -115,7 +124,7 @@ const useLayersInit = (layers: DatasetLayer[]) : AsyncDatasetLayer[]  => {
 };
 
 // Context consumers.
-export const useDatasetLayer = (datasetId?: string, layerId?: string) => {
+export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
   const hasParams = !!datasetId && !!layerId;
   // Get the layer information from the dataset defined in the configuration.
   const layer = datasets[datasetId]?.data.layers?.find((l) => l.id === layerId);
@@ -138,7 +147,7 @@ export const useDatasetLayer = (datasetId?: string, layerId?: string) => {
   );
 };
 
-export const useDatasetLayers = (datasetId) => {
+export const useDatasetAsyncLayers = (datasetId) => {
   // Get the layer information from the dataset defined in the configuration.
   return useLayersInit(datasets[datasetId]?.data.layers);
 };

@@ -21,12 +21,12 @@ const LayerList = styled.ol`
 `;
 
 export default function DatasetLayers(props) {
-  const { layers, onAction, selectedLayerId } = props;
+  const { asyncLayers, onAction, selectedLayerId } = props;
 
   // A layer is considered ready when its data and the compare layer data
   // (if any) is also loaded.
   const layersStatuses = useMemo(() => {
-    return layers.reduce(
+    return asyncLayers.reduce(
       (acc, l) => {
         switch (checkLayerLoadStatus(l)) {
           case 'succeeded':
@@ -51,7 +51,7 @@ export default function DatasetLayers(props) {
         []
       ]
     );
-  }, [layers]);
+  }, [asyncLayers]);
 
   const [lReady, lLoading, lError] = layersStatuses;
 
@@ -81,7 +81,9 @@ export default function DatasetLayers(props) {
 }
 
 DatasetLayers.propTypes = {
-  layers: T.array
+  asyncLayers: T.array,
+  onAction: T.func,
+  selectedLayerId: T.string
 };
 
 const LayerSelf = styled(AccordionFold)`

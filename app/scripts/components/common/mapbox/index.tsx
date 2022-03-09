@@ -14,7 +14,7 @@ import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { SimpleMap } from './map';
-import { useDatasetLayer } from '$context/layer-data';
+import { useDatasetAsyncLayer } from '$context/layer-data';
 
 const MapsContainer = styled.div`
   position: relative;
@@ -50,7 +50,7 @@ function MapboxMapComponent(props, ref) {
 
   // const dataset = useMemo(() => datasets[datasetId]?.data, [datasetId]);
   // console.log('🚀 ~ file: map.js ~ MapboxMapComponent ~ dataset', dataset);
-  const { baseLayer, compareLayer } = useDatasetLayer(datasetId, layerId);
+  const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
 
   console.log('🚀 ~ MapboxMapComponent', datasetId, layerId, date);
   console.log('🚀 ~ file: map.js ~ MapboxMapComponent ~ baseLayer', baseLayer);

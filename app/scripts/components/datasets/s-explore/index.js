@@ -39,9 +39,9 @@ import DatasetLayers from './dataset-layers';
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { useMediaQuery } from '$utils/use-media-query';
 import { thematicDatasetsPath } from '$utils/routes';
-import { useDatasetLayers } from '$context/layer-data';
+import { useEffectPrevious } from '$utils/use-effect-previous';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
-import { Link } from 'react-router-dom';
+import { useDatasetAsyncLayers } from '$context/layer-data';
 import {
   checkLayerLoadStatus,
   resolveLayerTemporalExtent
@@ -151,7 +151,7 @@ function DatasetsExplore() {
   // has the following structure:
   // Array of { baseLayer, compareLayer }
   // See the type definitions in the layer-data context for more.
-  const asyncLayers = useDatasetLayers(dataset.data.id);
+  const asyncLayers = useDatasetAsyncLayers(dataset.data.id);
 
   // Current active layer if is loaded, undefined otherwise.
   const activeLayer = useMemo(() => {
@@ -295,7 +295,7 @@ function DatasetsExplore() {
                   </PanelWidgetHeader>
                   <PanelWidgetBody>
                     <DatasetLayers
-                      layers={asyncLayers}
+                      asyncLayers={asyncLayers}
                       selectedLayerId={selectedLayerId}
                       onAction={onLayerAction}
                     />
