@@ -1,19 +1,19 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import T from 'prop-types';
-import styled from 'styled-components';
-import { AccordionManager, AccordionFold } from '@devseed-ui/accordion';
-
-import { useDatasetLayers } from '$context/layer-data';
-import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
-import { Button } from '@devseed-ui/button';
-import { FormSwitch } from '@devseed-ui/form';
-import { VarProse } from '$styles/variable-components';
+import styled, { css } from 'styled-components';
 import {
   glsp,
   listReset,
   themeVal,
   truncated
 } from '@devseed-ui/theme-provider';
+import { AccordionManager, AccordionFold } from '@devseed-ui/accordion';
+import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
+import { Button } from '@devseed-ui/button';
+import { ElementInteractive } from '$components/common/element-interactive';
+import { VarProse } from '$styles/variable-components';
+import { variableGlsp } from '$styles/variable-utils';
+
 import { checkLayerLoadStatus } from '$components/common/mapbox/layers/utils';
 
 const LayerList = styled.ol`
@@ -86,8 +86,54 @@ DatasetLayers.propTypes = {
   selectedLayerId: T.string
 };
 
-const LayerSelf = styled(AccordionFold)`
+const LayerSelf = styled.article`
   position: relative;
+  border-radius: 0;
+  margin-left: ${variableGlsp(-1)};
+  margin-right: ${variableGlsp(-1)};
+  padding-left: ${variableGlsp()};
+  padding-right: ${variableGlsp()};
+
+  > div {
+    background: none;
+  }
+
+  > *:not(a) {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  a,
+  button {
+    pointer-events: auto;
+  }
+
+  &::before {
+    content: '';
+    background: ${themeVal('color.primary')};
+    position: absolute;
+    left: 0;
+    width: 0;
+    height: 100%;
+    transition: width 240ms ease-in-out;
+  }
+
+  ${({ isStateOver }) =>
+    isStateOver &&
+    css`
+      background: ${themeVal('color.base-50a')};
+    `}
+
+  ${({ isSelected }) =>
+    isSelected &&
+    css`
+      background: ${themeVal('color.base-100a')};
+
+      &::before {
+        width: ${glsp(0.25)};
+      }
+    `}
 `;
 
 const LayerHeader = styled.header`
@@ -148,45 +194,56 @@ function Layer(props) {
   const { id, name, info, active, onToggleClick } = props;
 
   return (
-    <LayerSelf
-      id={`layer-${id}`}
-      forwardedAs='article'
-      renderHeader={({ isExpanded, toggleExpanded }) => (
-        <LayerHeader>
-          <LayerHeadline>
-            <LayerTitle>{name}</LayerTitle>
-          </LayerHeadline>
-          <LayerToolbar>
-            <Button
-              variation='base-text'
-              fitting='skinny'
-              // disabled={!info}
-              active={isExpanded}
-              onClick={toggleExpanded}
-            >
-              <CollecticonCircleInformation
-                title='Information about layer'
-                meaningful
-              />
-            </Button>
-            <FormSwitch
-              hideText
-              id={`toggle-${id}`}
-              name={`toggle-${id}`}
-              // disabled={disabled}
-              checked={active}
-              onChange={onToggleClick}
-            >
-              Toggle layer visibility
-            </FormSwitch>
-          </LayerToolbar>
-        </LayerHeader>
-      )}
-      renderBody={() => (
-        <LayerBodyInner>
-          {info || <p>No info available for this layer.</p>}
-        </LayerBodyInner>
-      )}
-    />
+    <ElementInteractive
+      as={LayerSelf}
+      isSelected={active}
+      linkLabel='Toggle layer'
+      linkProps={{
+        href: '#',
+        onClick: (e) => {
+          e.preventDefault();
+          onToggleClick();
+        }
+      }}
+    >
+      <AccordionFold
+        id={`layer-${id}`}
+        forwardedAs='div'
+        renderHeader={({ isExpanded, toggleExpanded }) => (
+          <LayerHeader>
+            <LayerHeadline>
+              <LayerTitle>{name}</LayerTitle>
+            </LayerHeadline>
+            <LayerToolbar>
+              <Button
+                variation='base-text'
+                fitting='skinny'
+                // disabled={!info}
+                active={isExpanded}
+                onClick={toggleExpanded}
+              >
+                <CollecticonCircleInformation
+                  title='Information about layer'
+                  meaningful
+                />
+              </Button>
+            </LayerToolbar>
+          </LayerHeader>
+        )}
+        renderBody={() => (
+          <LayerBodyInner>
+            {info || <p>No info available for this layer.</p>}
+          </LayerBodyInner>
+        )}
+      />
+    </ElementInteractive>
   );
 }
+
+Layer.propTypes = {
+  id: T.string,
+  name: T.string,
+  info: T.node,
+  active: T.bool,
+  onToggleClick: T.func
+};
