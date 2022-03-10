@@ -32,14 +32,16 @@ function SandboxCards() {
                 Cities Experiencing Clearer Air During Lockdowns
               </CardTitle>
               <CardOverline>
-                <CardLabel>Discovery</CardLabel> published on{' '}
-                <time dateTime='2021-10-26'>Oct 26, 2021</time>
+                <CardLabel as={Link} to='/test'>
+                  Discovery
+                </CardLabel>{' '}
+                published on <time dateTime='2021-10-26'>Oct 26, 2021</time>
               </CardOverline>
             </CardHeader>
             <CardBody>
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
-                varius erat in interdum vulputate.
+                varius erat in vulputate.
               </p>
             </CardBody>
             <CardFigure>
@@ -65,7 +67,9 @@ function SandboxCards() {
             <CardHeader>
               <CardTitle>Nitrogen Dioxide (NO₂)</CardTitle>
               <CardOverline>
-                <CardLabel>Dataset</CardLabel>
+                <CardLabel as={Link} to='/'>
+                  Dataset
+                </CardLabel>
               </CardOverline>
             </CardHeader>
             <CardBody>

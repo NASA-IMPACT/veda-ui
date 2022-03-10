@@ -125,6 +125,17 @@ export const CardLabel = styled.span`
   border-radius: ${themeVal('shape.ellipsoid')};
   padding: ${glsp(0.125, 0.5)};
   background: ${themeVal('color.base-400a')};
+  pointer-events: auto;
+  transition: all 0.24s ease 0s;
+
+  &,
+  &:visited {
+    text-decoration: none;
+  }
+
+  &:hover {
+    opacity: 0.64;
+  }
 `;
 
 export const CardBody = styled.div`
@@ -132,6 +143,7 @@ export const CardBody = styled.div`
 
   &:not(:first-child) {
     padding-top: 0;
+    margin-top: ${variableGlsp(-0.5)};
   }
 `;
 
