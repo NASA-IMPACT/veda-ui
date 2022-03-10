@@ -36,7 +36,6 @@ function renderCardType({ cardType }) {
       return css`
         padding-top: ${variableGlsp()};
         color: ${themeVal('color.surface')};
-        justify-content: flex-end;
 
         ${CardFigure} {
           position: absolute;
@@ -56,6 +55,7 @@ export const Card = styled.article`
   position: relative;
   display: flex;
   flex-flow: column nowrap;
+  justify-content: flex-end;
   border-radius: ${multiply(themeVal('shape.rounded'), 2)};
   box-shadow: ${themeVal('boxShadow.elevationD')};
   height: 100%;
