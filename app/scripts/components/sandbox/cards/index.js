@@ -30,7 +30,40 @@ function SandboxCards() {
             <CardHeader>
               <CardTitle>Card title</CardTitle>
               <CardOverline>
-                <CardLabel>Discovery</CardLabel> pubslished on{' '}
+                <CardLabel>Discovery</CardLabel> published on{' '}
+                <time dateTime='2021-10-26'>Oct 26, 2021</time>
+              </CardOverline>
+            </CardHeader>
+            <CardBody>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
+                congue elit erat, vel lobortis velit porta vel.
+              </p>
+            </CardBody>
+            <CardFigure>
+              <img
+                src='https://picsum.photos/id/1002/2048/1024'
+                alt='Generic placeholder by lorem picsum'
+                loading='lazy'
+              />
+            </CardFigure>
+          </ElementInteractive>
+        </li>
+
+        <li>
+          <ElementInteractive
+            as={Card}
+            linkLabel='View more'
+            linkProps={{
+              as: Link,
+              to: '/'
+            }}
+            cardType='dataset'
+          >
+            <CardHeader>
+              <CardTitle>Card title</CardTitle>
+              <CardOverline>
+                <CardLabel>Dataset</CardLabel> published on{' '}
                 <time dateTime='2021-10-26'>Oct 26, 2021</time>
               </CardOverline>
             </CardHeader>

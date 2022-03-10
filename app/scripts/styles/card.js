@@ -30,6 +30,27 @@ export const CardList = styled.ol`
   `}
 `;
 
+function renderCardType({ cardType }) {
+  switch (cardType) {
+    case 'dataset':
+      return css`
+        color: ${themeVal('color.surface')};
+        justify-content: flex-end;
+
+        ${CardFigure} {
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          background: ${themeVal('color.base-400')};
+        }
+      `;
+    default:
+      return css`
+        background: transparent;
+      `;
+  }
+}
+
 export const Card = styled.article`
   position: relative;
   display: flex;
@@ -39,6 +60,8 @@ export const Card = styled.article`
   height: 100%;
   overflow: hidden;
   transition: all 0.24s ease-in-out 0s;
+
+  ${renderCardType}
 
   ${({ isStateFocus }) =>
     isStateFocus &&
@@ -114,4 +137,11 @@ export const CardBody = styled.div`
 
 export const CardFigure = styled(Figure)`
   order: -1;
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    mix-blend-mode: multiply;
+  }
 `;
