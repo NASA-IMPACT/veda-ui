@@ -8,8 +8,8 @@ import { reveal } from '@devseed-ui/animation';
 import { variableGlsp } from '../../styles/variable-utils';
 
 const PageFooterSelf = styled.footer`
-  padding: ${variableGlsp()};
-  background: ${themeVal('color.surface')};
+  padding: ${variableGlsp(0.75, 1)};
+  background: ${themeVal('color.base-50')};
   animation: ${reveal} 0.32s ease 0s 1;
 
   ${({ isHidden }) => isHidden && visuallyHidden}
