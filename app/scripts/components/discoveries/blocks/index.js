@@ -180,37 +180,37 @@ function getImgsAndParagraphs(pChildren) {
 function Block(props) {
   const { type } = props;
   switch (type) {
-    case 'p1':
+    case 'prose':
       return (
         <ContentBlockPAlpha>
           <ContentBlockProse {...props} />
         </ContentBlockPAlpha>
       );
-    case 'p2':
+    case 'prose-wide':
       return (
         <ContentBlockPBeta>
           <ContentBlockProse {...props} />
         </ContentBlockPBeta>
       );
-    case 'f1':
+    case 'figure':
       return (
         <ContentBlockFAlpha>
           <ContentBlockFigure {...props} />
         </ContentBlockFAlpha>
       );
-    case 'f2':
+    case 'figure-wide':
       return (
         <ContentBlockFBeta>
           <ContentBlockFigure {...props} />
         </ContentBlockFBeta>
       );
-    case 'f3':
+    case 'figure-full':
       return (
         <ContentBlockFGama>
           <ContentBlockFigure {...props} />
         </ContentBlockFGama>
       );
-    case 'pf1': {
+    case 'prose-left-figure-right': {
       const { imageChild, notImageChildren } = getImgsAndParagraphs(
         props.children
       );
@@ -223,7 +223,7 @@ function Block(props) {
         </ContentBlockPFAlpha>
       );
     }
-    case 'pf2': {
+    case 'prose-right-figure-left': {
       const { imageChild, notImageChildren } = getImgsAndParagraphs(
         props.children
       );
@@ -236,7 +236,7 @@ function Block(props) {
         </ContentBlockPFBeta>
       );
     }
-    case 'pf3': {
+    case 'prose-left-figure-right-full': {
       const { imageChild, notImageChildren } = getImgsAndParagraphs(
         props.children
       );
@@ -249,7 +249,7 @@ function Block(props) {
         </ContentBlockPFGama>
       );
     }
-    case 'pf4': {
+    case 'prose-right-figure-left-full': {
       const { imageChild, notImageChildren } = getImgsAndParagraphs(
         props.children
       );
