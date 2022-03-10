@@ -109,6 +109,7 @@ function MapboxMapComponent(props, ref) {
           mapInstance={mapRef.current}
           date={date}
           sourceParams={baseLayerResolvedData.sourceParams}
+          zoomExtent={baseLayerResolvedData.zoomExtent}
         />
       )}
 
