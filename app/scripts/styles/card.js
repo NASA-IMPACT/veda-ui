@@ -32,8 +32,9 @@ export const CardList = styled.ol`
 
 function renderCardType({ cardType }) {
   switch (cardType) {
-    case 'dataset':
+    case 'cover':
       return css`
+        padding-top: ${variableGlsp()};
         color: ${themeVal('color.surface')};
         justify-content: flex-end;
 
@@ -87,11 +88,12 @@ export const CardHeader = styled.header`
   display: flex;
   flex-flow: column nowrap;
   padding: ${variableGlsp()};
+  gap: ${glsp(0.25)};
 `;
 
 export const CardTitle = styled(VarHeading).attrs({
   as: 'h3',
-  size: 'medium'
+  size: 'small'
 })`
   /* styled-component */
 `;
@@ -99,7 +101,6 @@ export const CardTitle = styled(VarHeading).attrs({
 export const CardOverline = styled(Overline)`
   order: -1;
   color: inherit;
-  opacity: 0.64;
 
   > * {
     line-height: inherit;
@@ -108,7 +109,6 @@ export const CardOverline = styled(Overline)`
 
 export const CardSubtitle = styled(Subtitle)`
   color: inherit;
-  opacity: 0.64;
 
   > * {
     line-height: inherit;
@@ -118,13 +118,13 @@ export const CardSubtitle = styled(Subtitle)`
 export const CardLabel = styled.span`
   position: absolute;
   top: ${variableGlsp()};
-  left: ${variableGlsp()};
+  right: ${variableGlsp()};
   display: inline-block;
   vertical-align: top;
   color: ${themeVal('color.surface')};
-  border-radius: ${themeVal('shape.rounded')};
-  padding: ${glsp(0.125, 0.25)};
-  background: ${themeVal('color.base')};
+  border-radius: ${themeVal('shape.ellipsoid')};
+  padding: ${glsp(0.125, 0.5)};
+  background: ${themeVal('color.base-400a')};
 `;
 
 export const CardBody = styled.div`

@@ -28,7 +28,9 @@ function SandboxCards() {
             }}
           >
             <CardHeader>
-              <CardTitle>Card title</CardTitle>
+              <CardTitle>
+                Cities Experiencing Clearer Air During Lockdowns
+              </CardTitle>
               <CardOverline>
                 <CardLabel>Discovery</CardLabel> published on{' '}
                 <time dateTime='2021-10-26'>Oct 26, 2021</time>
@@ -36,8 +38,8 @@ function SandboxCards() {
             </CardHeader>
             <CardBody>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
-                congue elit erat, vel lobortis velit porta vel.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
+                varius erat in interdum vulputate.
               </p>
             </CardBody>
             <CardFigure>
@@ -58,19 +60,18 @@ function SandboxCards() {
               as: Link,
               to: '/'
             }}
-            cardType='dataset'
+            cardType='cover'
           >
             <CardHeader>
-              <CardTitle>Card title</CardTitle>
+              <CardTitle>Nitrogen Dioxide (NO₂)</CardTitle>
               <CardOverline>
-                <CardLabel>Dataset</CardLabel> published on{' '}
-                <time dateTime='2021-10-26'>Oct 26, 2021</time>
+                <CardLabel>Dataset</CardLabel>
               </CardOverline>
             </CardHeader>
             <CardBody>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
-                congue elit erat, vel lobortis velit porta vel.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
+                varius erat in interdum vulputate.
               </p>
             </CardBody>
             <CardFigure>
