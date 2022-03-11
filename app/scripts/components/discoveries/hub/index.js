@@ -1,16 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { Fold } from '$components/common/fold';
-import { ElementInteractive } from '$components/common/element-interactive';
+import { Card, CardList } from '$components/common/card';
+import { resourceNotFound } from '$components/uhoh';
+import { PageMainContent } from '$styles/page';
 
-import { PageMainContent } from '../../../styles/page';
-import { Card, CardHeader, CardList, CardTitle } from '../../../styles/card';
-import { resourceNotFound } from '../../uhoh';
-
-import { useThematicArea } from '../../../utils/thematics';
+import { useThematicArea } from '$utils/thematics';
 
 function DiscoveriesHub() {
   const thematic = useThematicArea();
@@ -28,18 +25,7 @@ function DiscoveriesHub() {
         <CardList>
           {thematic.data.discoveries.map((t) => (
             <li key={t.id}>
-              <ElementInteractive
-                as={Card}
-                linkLabel='View more'
-                linkProps={{
-                  as: Link,
-                  to: t.id
-                }}
-              >
-                <CardHeader>
-                  <CardTitle>{t.name}</CardTitle>
-                </CardHeader>
-              </ElementInteractive>
+              <Card linkLabel='View more' linkTo={t.id} title={t.name} />
             </li>
           ))}
         </CardList>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import deltaThematics from 'delta/thematics';
@@ -7,17 +6,8 @@ import { PageMainContent } from '../../styles/page';
 
 import { LayoutProps } from '../common/layout-root';
 import PageHero from '../common/page-hero';
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  CardList,
-  CardOverline,
-  CardSubtitle,
-  CardTitle
-} from '$styles/card';
+import { Card, CardList } from '$components/common/card';
 import { Fold } from '$components/common/fold';
-import { ElementInteractive } from '$components/common/element-interactive';
 import { visuallyHidden } from '@devseed-ui/theme-provider';
 
 const WelcomeFold = styled(Fold)`
@@ -37,25 +27,13 @@ function RootHome() {
         <CardList>
           {deltaThematics.map((t) => (
             <li key={t.id}>
-              <ElementInteractive
-                as={Card}
+              <Card
                 linkLabel='View more'
-                linkProps={{
-                  as: Link,
-                  to: t.id
-                }}
-              >
-                <CardHeader>
-                  <CardTitle>{t.name}</CardTitle>
-                  <CardOverline>
-                    {t.datasets.length} datasets, {t.discoveries.length}{' '}
-                    discoveries
-                  </CardOverline>
-                </CardHeader>
-                <CardBody>
-                  <p>{t.description}</p>
-                </CardBody>
-              </ElementInteractive>
+                linkTo={t.id}
+                title={t.name}
+                description={t.description}
+                overline={`has ${t.datasets.length} datasets & ${t.discoveries.length} discoveries`}
+              />
             </li>
           ))}
         </CardList>

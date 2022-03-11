@@ -1,4 +1,8 @@
+import React from 'react';
+import T from 'prop-types';
 import styled, { css } from 'styled-components';
+import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
 
 import {
   glsp,
@@ -7,11 +11,12 @@ import {
   multiply,
   themeVal
 } from '@devseed-ui/theme-provider';
-import { Overline, Subtitle } from '@devseed-ui/typography';
+import { Overline } from '@devseed-ui/typography';
 
-import { variableGlsp } from './variable-utils';
-import { VarHeading } from './variable-components';
+import { variableGlsp } from '$styles/variable-utils';
 
+import { ElementInteractive } from '$components/common/element-interactive';
+import { VarHeading } from '$styles/variable-components';
 import { Figure } from '$components/common/figure';
 
 export const CardList = styled.ol`
@@ -51,7 +56,7 @@ function renderCardType({ cardType }) {
   }
 }
 
-export const Card = styled.article`
+const CardSelf = styled.article`
   position: relative;
   display: flex;
   flex-flow: column nowrap;
@@ -84,21 +89,21 @@ export const Card = styled.article`
     `}
 `;
 
-export const CardHeader = styled.header`
+const CardHeader = styled.header`
   display: flex;
   flex-flow: column nowrap;
   padding: ${variableGlsp()};
   gap: ${glsp(0.25)};
 `;
 
-export const CardTitle = styled(VarHeading).attrs({
+const CardTitle = styled(VarHeading).attrs({
   as: 'h3',
   size: 'small'
 })`
   /* styled-component */
 `;
 
-export const CardOverline = styled(Overline)`
+const CardOverline = styled(Overline)`
   order: -1;
   color: inherit;
 
@@ -107,15 +112,7 @@ export const CardOverline = styled(Overline)`
   }
 `;
 
-export const CardSubtitle = styled(Subtitle)`
-  color: inherit;
-
-  > * {
-    line-height: inherit;
-  }
-`;
-
-export const CardLabel = styled.span`
+const CardLabel = styled.span`
   position: absolute;
   top: ${variableGlsp()};
   right: ${variableGlsp()};
@@ -138,7 +135,7 @@ export const CardLabel = styled.span`
   }
 `;
 
-export const CardBody = styled.div`
+const CardBody = styled.div`
   padding: ${variableGlsp()};
 
   &:not(:first-child) {
@@ -147,7 +144,7 @@ export const CardBody = styled.div`
   }
 `;
 
-export const CardFigure = styled(Figure)`
+const CardFigure = styled(Figure)`
   order: -1;
 
   img {
@@ -156,4 +153,83 @@ export const CardFigure = styled(Figure)`
     object-fit: cover;
     mix-blend-mode: multiply;
   }
+`;
+
+function CardComponent(props) {
+  const {
+    className,
+    title,
+    cardType,
+    description,
+    linkLabel,
+    linkTo,
+    date,
+    overline,
+    imgSrc,
+    imgAlt,
+    parentName,
+    parentTo
+  } = props;
+
+  return (
+    <ElementInteractive
+      as={CardSelf}
+      cardType={cardType}
+      className={className}
+      linkLabel={linkLabel || 'View more'}
+      linkProps={{
+        as: Link,
+        to: linkTo
+      }}
+    >
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardOverline>
+          {parentName && parentTo && (
+            <CardLabel as={Link} to={parentTo}>
+              {parentName}
+            </CardLabel>
+          )}
+          {(date && (
+            <>
+              published on
+              <time dateTime={format(date, 'yyyy-MM-dd')}>
+                {format(date, 'MMM d, yyyy')}
+              </time>
+            </>
+          )) ||
+            overline}
+        </CardOverline>
+      </CardHeader>
+      {description && (
+        <CardBody>
+          <p>{description}</p>
+        </CardBody>
+      )}
+      {imgSrc && (
+        <CardFigure>
+          <img src={imgSrc} alt={imgAlt} loading='lazy' />
+        </CardFigure>
+      )}
+    </ElementInteractive>
+  );
+}
+
+CardComponent.propTypes = {
+  title: T.string.isRequired,
+  linkLabel: T.string.isRequired,
+  linkTo: T.string.isRequired,
+  className: T.string,
+  cardType: T.oneOf(['classic', 'cover']),
+  description: T.string,
+  date: T.instanceOf(Date),
+  overline: T.node,
+  imgSrc: T.string,
+  imgAlt: T.string,
+  parentName: T.string,
+  parentTo: T.string
+};
+
+export const Card = styled(CardComponent)`
+  /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
