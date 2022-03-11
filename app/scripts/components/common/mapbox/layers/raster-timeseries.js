@@ -123,7 +123,13 @@ export function MapLayerRasterTimeseries(props) {
         // Create points from bboxes
         const points = responseData.features.map((f) => {
           const [w, s, e, n] = f.bbox;
-          return [(w + e) / 2, (s + n) / 2];
+          return {
+            bounds: [
+              [w, s],
+              [e, n]
+            ],
+            center: [(w + e) / 2, (s + n) / 2]
+          };
         });
 
         /* eslint-disable no-console */
@@ -138,9 +144,19 @@ export function MapLayerRasterTimeseries(props) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        addedMarkers = points.map((p) =>
-          new mapboxgl.Marker().setLngLat(p).addTo(mapInstance)
-        );
+        addedMarkers = points.map((p) => {
+          const marker = new mapboxgl.Marker()
+            .setLngLat(p.center)
+            .addTo(mapInstance);
+
+          marker
+            .getElement()
+            .addEventListener('click', () =>
+              mapInstance.fitBounds(p.bounds, { padding: 32 })
+            );
+
+          return marker;
+        });
       } catch (error) {
         LOG &&
           /* eslint-disable-next-line no-console */

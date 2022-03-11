@@ -13,6 +13,10 @@ const SingleMapContainer = styled.div`
     position: absolute;
     inset: 0;
   }
+
+  .mapboxgl-marker:hover {
+    cursor: pointer;
+  }
 `;
 
 interface SimpleMapProps {
