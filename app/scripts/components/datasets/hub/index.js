@@ -1,15 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
-import { LayoutProps } from '../../common/layout-root';
-import PageHero from '../../common/page-hero';
-import { Fold } from '../../common/fold';
+import { LayoutProps } from '$components/common/layout-root';
+import PageHero from '$components/common/page-hero';
+import { Fold } from '$components/common/fold';
+import { Card, CardList } from '$components/common/card';
+import { resourceNotFound } from '$components/uhoh';
 
-import { PageMainContent } from '../../../styles/page';
-import { Card, CardList } from '../../../styles/card';
-import { resourceNotFound } from '../../uhoh';
-
-import { useThematicArea } from '../../../utils/thematics';
+import { PageMainContent } from '$styles/page';
+import { useThematicArea } from '$utils/thematics';
+import { thematicDatasetsPath } from '$utils/routes';
 
 function DatasetsHub() {
   const thematic = useThematicArea();
@@ -23,14 +22,21 @@ function DatasetsHub() {
         description='This dashboard explores key indicators to track and compare changes over time.'
       />
       <Fold>
+        <h2>Browse</h2>
         <CardList>
           {thematic.data.datasets.map((t) => (
             <li key={t.id}>
-              <Card>
-                <Link to={`${t.id}`}>
-                  <h2>{t.name}</h2>
-                </Link>
-              </Card>
+              <Card
+                cardType='cover'
+                linkLabel='View more'
+                linkTo={t.id}
+                title={t.name}
+                parentName='Dataset'
+                parentTo={thematicDatasetsPath(thematic)}
+                description={t.description}
+                imgSrc={t.media.src}
+                imgAlt={t.media.alt}
+              />
             </li>
           ))}
         </CardList>

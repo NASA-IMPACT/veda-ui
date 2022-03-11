@@ -1,25 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
-import { Link } from 'react-router-dom';
 
 import deltaThematics from 'delta/thematics';
-import Constrainer from '../../styles/constrainer';
 import { PageMainContent } from '../../styles/page';
 
 import { LayoutProps } from '../common/layout-root';
 import PageHero from '../common/page-hero';
+import { Card, CardList } from '$components/common/card';
+import { Fold } from '$components/common/fold';
+import { visuallyHidden } from '@devseed-ui/theme-provider';
 
-const ThematicList = styled.ul`
-  ${listReset()}
-  display: flex;
-  gap: ${glsp(2)};
-  margin-top: ${glsp(3)};
-
-  li {
-    padding: ${glsp()};
-    border-radius: ${themeVal('shape.rounded')};
-    box-shadow: ${themeVal('boxShadow.elevationC')};
+const WelcomeFold = styled(Fold)`
+  h2:first-of-type {
+    ${visuallyHidden}
   }
 `;
 
@@ -28,23 +21,27 @@ function RootHome() {
     <PageMainContent>
       <LayoutProps title='Welcome' />
       <PageHero title='Welcome' />
-      <Constrainer>
+      <WelcomeFold>
         <h2>Explore the areas</h2>
-        <ThematicList>
+        <CardList>
           {deltaThematics.map((t) => (
             <li key={t.id}>
-              <Link to={`/${t.id}`}>
-                <h2>{t.name}</h2>
-                <p>{t.description}</p>
-                <small>
-                  {t.datasets.length} datasets, {t.discoveries.length}{' '}
-                  discoveries
-                </small>
-              </Link>
+              <Card
+                cardType='cover'
+                linkLabel='View more'
+                linkTo={t.id}
+                title={t.name}
+                parentName='Area'
+                parentTo='/'
+                description={t.description}
+                overline={`has ${t.datasets.length} datasets & ${t.discoveries.length} discoveries`}
+                imgSrc={t.media.src}
+                imgAlt={t.media.alt}
+              />
             </li>
           ))}
-        </ThematicList>
-      </Constrainer>
+        </CardList>
+      </WelcomeFold>
     </PageMainContent>
   );
 }

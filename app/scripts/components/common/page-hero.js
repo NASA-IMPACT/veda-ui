@@ -110,7 +110,7 @@ function PageHero(props) {
           {date && (
             <PageOverline>
               Published on{' '}
-              <time dateTime={format(date, 'yyyy-MM-dd')} pubdate='pubdate'>
+              <time dateTime={format(date, 'yyyy-MM-dd')}>
                 {format(date, 'MMM d, yyyy')}
               </time>
             </PageOverline>

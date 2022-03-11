@@ -414,7 +414,7 @@ function PageHeader() {
             <GlobalNavBodyInner>
               {thematic && deltaThematics.length > 1 && (
                 <ThemesNavBlock>
-                  <GlobalNavBlockTitle>Theme</GlobalNavBlockTitle>
+                  <GlobalNavBlockTitle>Area</GlobalNavBlockTitle>
                   {isMediumDown ? (
                     <GlobalMenu id='themes-nav-block'>
                       {deltaThematics.map((t) => (

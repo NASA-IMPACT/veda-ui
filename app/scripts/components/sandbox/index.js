@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link, Route, Routes, useParams } from 'react-router-dom';
+import { Route, Routes, useParams } from 'react-router-dom';
 
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { Fold } from '$components/common/fold';
-import { Card, CardList } from '$styles/card';
+import { Card, CardList } from '$components/common/card';
 import PageLocalNav from '$components/common/page-local-nav';
 import { resourceNotFound } from '$components/uhoh';
 
@@ -13,6 +13,7 @@ import SandboxTypography from './typography';
 import SandboxHug from './hug';
 import SandboxMap from './map';
 import SandboxContentBlocks from './content-blocks';
+import SandboxCards from './cards';
 
 const pages = [
   {
@@ -34,6 +35,11 @@ const pages = [
     id: 'content-blocks',
     name: 'Content Blocks',
     component: SandboxContentBlocks
+  },
+  {
+    id: 'cards',
+    name: 'Cards',
+    component: SandboxCards
   }
 ];
 
@@ -75,11 +81,7 @@ function Sandbox() {
               <CardList>
                 {pages.map((p) => (
                   <li key={p.id}>
-                    <Card>
-                      <h2>
-                        <Link to={p.id}>{p.name}</Link>
-                      </h2>
-                    </Card>
+                    <Card linkLabel='View more' linkTo={p.id} title={p.name} />
                   </li>
                 ))}
               </CardList>

@@ -4,28 +4,21 @@ import { Link } from 'react-router-dom';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 
+import deltaThematics from 'delta/thematics';
+
 import { LayoutProps } from '$components/common/layout-root';
 import { Fold } from '$components/common/fold';
 import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
 
 import { resourceNotFound } from '$components/uhoh';
 import { useThematicArea } from '$utils/thematics';
-import {
-  GridTemplateFull,
-  GridTemplateHalf,
-  GridTemplateQuarter
-} from '$styles/grid';
+import { GridTemplateFull, GridTemplateHalf } from '$styles/grid';
+import { Card, CardList } from '$components/common/card';
 
 const IntroFold = styled(Fold)`
   background: ${themeVal('color.base-50')};
 `;
 
-const IntroFoldCopy = styled.div`
-  grid-column: 1 / span 8;
-  display: flex;
-  flex-direction: column;
-  gap: ${glsp(2)};
-`;
 const FeatureCard = styled.div`
   padding: ${glsp(1)};
   background: ${themeVal('color.base-50')};
@@ -45,6 +38,10 @@ const IntroFoldActions = styled.div`
 function Home() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
+
+  const otherThematicAreas = deltaThematics.filter(
+    (t) => t.id !== thematic.data.id
+  );
 
   return (
     <PageMainContent>
@@ -119,23 +116,29 @@ function Home() {
           </FeatureCard>
         </GridTemplateHalf>
       </Fold>
-      <Fold>
-        <GridTemplateFull>
-          <h3> Other thematic areas</h3>
-        </GridTemplateFull>
-        <GridTemplateHalf>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-          facilisis sollicitudin magna, eget accumsan dolor molestie quis.
-          Aliquam sit amet erat nec risus dapibus efficitur. Sed tristique
-          ultrices libero eu pulvinar. Pellentesque ac auctor felis.
-        </GridTemplateHalf>
-        <GridTemplateQuarter>
-          <FeatureCard> Area 1</FeatureCard>
-          <FeatureCard> Area 2</FeatureCard>
-          <FeatureCard> Area 3</FeatureCard>
-          <FeatureCard> Area 4</FeatureCard>
-        </GridTemplateQuarter>
-      </Fold>
+      {!!otherThematicAreas.length && (
+        <Fold>
+          <h2>Other thematic areas</h2>
+          <CardList>
+            {otherThematicAreas.map((t) => (
+              <li key={t.id}>
+                <Card
+                  cardType='cover'
+                  linkLabel='View more'
+                  linkTo={`/${t.id}`}
+                  title={t.name}
+                  parentName='Area'
+                  parentTo='/'
+                  description={t.description}
+                  overline={`has ${t.datasets.length} datasets & ${t.discoveries.length} discoveries`}
+                  imgSrc={t.media.src}
+                  imgAlt={t.media.alt}
+                />
+              </li>
+            ))}
+          </CardList>
+        </Fold>
+      )}
     </PageMainContent>
   );
 }
