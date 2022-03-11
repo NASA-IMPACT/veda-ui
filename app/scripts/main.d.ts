@@ -3,6 +3,15 @@
 declare module 'delta/thematics' {
   import { MDXModule } from 'mdx/types';
 
+  interface Media {
+    src: string;
+    alt: string;
+    author?: {
+      name: string;
+      url: string
+    }
+  }
+
   /**
    * Base structure for each of the data types in delta/thematics.
    */
@@ -26,6 +35,8 @@ declare module 'delta/thematics' {
   interface ThematicData {
     id: string;
     name: string;
+    description: string;
+    media?: Media
   }
 
   interface DatasetSourceParams {
@@ -84,6 +95,7 @@ declare module 'delta/thematics' {
     name: string;
     thematics: string[];
     description: string;
+    media?: Media
     layers: DatasetLayer[];
   }
 
@@ -93,6 +105,8 @@ declare module 'delta/thematics' {
   interface DiscoveryData {
     id: string;
     name: string;
+    description: string;
+    media?: Media
     thematics: string[];
   }
 

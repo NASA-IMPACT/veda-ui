@@ -8,6 +8,7 @@ import { resourceNotFound } from '$components/uhoh';
 
 import { PageMainContent } from '$styles/page';
 import { useThematicArea } from '$utils/thematics';
+import { thematicDatasetsPath } from '$utils/routes';
 
 function DatasetsHub() {
   const thematic = useThematicArea();
@@ -25,7 +26,17 @@ function DatasetsHub() {
         <CardList>
           {thematic.data.datasets.map((t) => (
             <li key={t.id}>
-              <Card linkLabel='View more' linkTo={t.id} title={t.name} />
+              <Card
+                cardType='cover'
+                linkLabel='View more'
+                linkTo={t.id}
+                title={t.name}
+                parentName='Dataset'
+                parentTo={thematicDatasetsPath(thematic)}
+                description={t.description}
+                imgSrc={t.media.src}
+                imgAlt={t.media.alt}
+              />
             </li>
           ))}
         </CardList>

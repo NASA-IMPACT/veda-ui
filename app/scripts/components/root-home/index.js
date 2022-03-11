@@ -13,7 +13,6 @@ import { visuallyHidden } from '@devseed-ui/theme-provider';
 const WelcomeFold = styled(Fold)`
   h2:first-of-type {
     ${visuallyHidden}
-    background: red;
   }
 `;
 
@@ -28,11 +27,16 @@ function RootHome() {
           {deltaThematics.map((t) => (
             <li key={t.id}>
               <Card
+                cardType='cover'
                 linkLabel='View more'
                 linkTo={t.id}
                 title={t.name}
+                parentName='Area'
+                parentTo='/'
                 description={t.description}
                 overline={`has ${t.datasets.length} datasets & ${t.discoveries.length} discoveries`}
+                imgSrc={t.media.src}
+                imgAlt={t.media.alt}
               />
             </li>
           ))}
