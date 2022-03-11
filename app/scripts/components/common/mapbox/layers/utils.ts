@@ -127,7 +127,11 @@ export function resolveConfigFunctions(
   }
 
   if (typeof datum === 'function') {
-    return datum(bag);
+    try {
+      return datum(bag);
+    } catch (error) {
+      return null;
+    }
   }
 
   return datum;

@@ -218,7 +218,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
         // Since the available dates changes, check if the currently selected
         // one is valid.
         const validDate = !!availableActiveLayerDates.find(
-          (d) => d.getTime() === selectedDatetime.getTime()
+          (d) => d.getTime() === selectedDatetime?.getTime()
         );
 
         if (!validDate) {
