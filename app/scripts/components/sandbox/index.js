@@ -5,7 +5,8 @@ import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { Fold } from '$components/common/fold';
-import { Card, CardList } from '$styles/card';
+import { Card, CardHeader, CardList, CardTitle } from '$styles/card';
+import { ElementInteractive } from '$components/common/element-interactive';
 import PageLocalNav from '$components/common/page-local-nav';
 import { resourceNotFound } from '$components/uhoh';
 
@@ -81,11 +82,18 @@ function Sandbox() {
               <CardList>
                 {pages.map((p) => (
                   <li key={p.id}>
-                    <Card>
-                      <h2>
-                        <Link to={p.id}>{p.name}</Link>
-                      </h2>
-                    </Card>
+                    <ElementInteractive
+                      as={Card}
+                      linkLabel='View more'
+                      linkProps={{
+                        as: Link,
+                        to: p.id
+                      }}
+                    >
+                      <CardHeader>
+                        <CardTitle>{p.name}</CardTitle>
+                      </CardHeader>
+                    </ElementInteractive>
                   </li>
                 ))}
               </CardList>

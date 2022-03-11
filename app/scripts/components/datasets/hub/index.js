@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { LayoutProps } from '../../common/layout-root';
-import PageHero from '../../common/page-hero';
-import { Fold } from '../../common/fold';
+import { LayoutProps } from '$components/common/layout-root';
+import PageHero from '$components/common/page-hero';
+import { Fold } from '$components/common/fold';
+import { ElementInteractive } from '$components/common/element-interactive';
 
 import { PageMainContent } from '../../../styles/page';
-import { Card, CardList } from '../../../styles/card';
+import { Card, CardHeader, CardList, CardTitle } from '../../../styles/card';
 import { resourceNotFound } from '../../uhoh';
 
 import { useThematicArea } from '../../../utils/thematics';
@@ -23,14 +24,22 @@ function DatasetsHub() {
         description='This dashboard explores key indicators to track and compare changes over time.'
       />
       <Fold>
+        <h2>Browse</h2>
         <CardList>
           {thematic.data.datasets.map((t) => (
             <li key={t.id}>
-              <Card>
-                <Link to={`${t.id}`}>
-                  <h2>{t.name}</h2>
-                </Link>
-              </Card>
+              <ElementInteractive
+                as={Card}
+                linkLabel='View more'
+                linkProps={{
+                  as: Link,
+                  to: t.id
+                }}
+              >
+                <CardHeader>
+                  <CardTitle>{t.name}</CardTitle>
+                </CardHeader>
+              </ElementInteractive>
             </li>
           ))}
         </CardList>
