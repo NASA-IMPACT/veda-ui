@@ -9,11 +9,12 @@ import deltaThematics from 'delta/thematics';
 import { LayoutProps } from '$components/common/layout-root';
 import { Fold } from '$components/common/fold';
 import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
+import { GridTemplateFull, GridTemplateHalf } from '$styles/grid';
+import { Card, CardList } from '$components/common/card';
 
 import { resourceNotFound } from '$components/uhoh';
 import { useThematicArea } from '$utils/thematics';
-import { GridTemplateFull, GridTemplateHalf } from '$styles/grid';
-import { Card, CardList } from '$components/common/card';
+import { thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
 
 const IntroFold = styled(Fold)`
   background: ${themeVal('color.base-50')};
@@ -43,9 +44,59 @@ function Home() {
     (t) => t.id !== thematic.data.id
   );
 
+  const featuredDatasets = thematic.data.datasets.filter((d) => d.featured);
+  const featuredDiscoveries = thematic.data.discoveries.filter(
+    (d) => d.featured
+  );
+
   return (
     <PageMainContent>
       <LayoutProps title={thematic.data.name} />
+      {!!featuredDatasets.length && (
+        <Fold>
+          <h2>Featured datasets</h2>
+          <CardList>
+            {featuredDatasets.map((t) => (
+              <li key={t.id}>
+                <Card
+                  cardType='cover'
+                  linkLabel='View more'
+                  linkTo={t.id}
+                  title={t.name}
+                  parentName='Dataset'
+                  parentTo={thematicDatasetsPath(thematic)}
+                  description={t.description}
+                  imgSrc={t.media.src}
+                  imgAlt={t.media.alt}
+                />
+              </li>
+            ))}
+          </CardList>
+        </Fold>
+      )}
+      {!!featuredDiscoveries.length && (
+        <Fold>
+          <h2>Featured discoveries</h2>
+          <CardList>
+            {featuredDiscoveries.map((t) => (
+              <li key={t.id}>
+                <Card
+                  linkLabel='View more'
+                  linkTo={t.id}
+                  title={t.name}
+                  parentName='Discovery'
+                  parentTo={thematicDiscoveriesPath(thematic)}
+                  description={t.description}
+                  date={t.pubDate ? new Date(t.pubDate) : null}
+                  imgSrc={t.media.src}
+                  imgAlt={t.media.alt}
+                />
+              </li>
+            ))}
+          </CardList>
+        </Fold>
+      )}
+
       <IntroFold>
         <GridTemplateHalf>
           <div>
