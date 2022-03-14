@@ -162,38 +162,36 @@ const ContentBlockPFDelta = styled(ContentBlock)`
   }
 `;
 
+const blockType = {
+  defaultProse: ContentBlockPAlpha,
+  wideProse: ContentBlockPBeta,
+  defaultFigure: ContentBlockFAlpha,
+  wideFigure: ContentBlockFBeta,
+  fullFigure: ContentBlockFGama,
+  defaultProseFigure: ContentBlockPFAlpha,
+  defaultFigureProse: ContentBlockPFBeta,
+  fullProseFigure: ContentBlockPFGama,
+  fullFigureProse: ContentBlockPFDelta
+};
+
 function Block(props) {
   const { children, type } = props;
+  const typeName = type ? type : 'default';
   const hasMultiplechildren = Array.isArray(children);
   if (!hasMultiplechildren) {
-    if (children.type.displayName == 'Prose') {
-      if (type === 'wide') {
-        return <ContentBlockPBeta {...props} />;
-      } else {
-        return <ContentBlockPAlpha {...props} />;
-      }
-    } else if (children.type.displayName == 'Figure') {
-      if (type === 'wide') {
-        return <ContentBlockFBeta {...props} />;
-      } else if (type === 'full') {
-        return <ContentBlockFGama {...props} />;
-      }
-    } else {
-      return <ContentBlockPAlpha {...props} />;
-    }
+    return React.createElement(
+      blockType[`${typeName}${children.type.displayName}`],
+      props
+    );
   } else {
-    const childrenTypes = children.map((e) => e.type.displayName);
-    if (type === 'full') {
-      if (childrenTypes[0] === 'Prose')
-        return <ContentBlockPFGama {...props} />;
-      else if (childrenTypes[0] === 'Figure')
-        return <ContentBlockPFDelta {...props} />;
-    } else {
-      if (childrenTypes[0] === 'Prose')
-        return <ContentBlockPFAlpha {...props} />;
-      else if (childrenTypes[0] === 'Figure')
-        return <ContentBlockPFBeta {...props} />;
-    }
+    const childrenComponents = children.reduce(
+      (acc, curr) => acc + curr.type.displayName,
+      ''
+    );
+    return React.createElement(
+      blockType[`${typeName}${childrenComponents}`],
+      props
+    );
   }
 }
 
