@@ -19,6 +19,7 @@ import { ContentBlockProse, ContentBlockFigure } from '$styles/content-block';
 import Block from '$components/discoveries/blocks';
 import Chart from '$components/discoveries/chart/';
 import Image from '$components/discoveries/images/';
+import { Caption } from '$components/discoveries/images/';
 
 function DiscoveriesSingle() {
   const thematic = useThematicArea();
@@ -57,6 +58,7 @@ function DiscoveriesSingle() {
               Block,
               Prose: ContentBlockProse,
               Figure: ContentBlockFigure,
+              Caption,
               Image,
               Chart
             }}

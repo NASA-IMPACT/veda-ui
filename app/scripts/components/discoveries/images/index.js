@@ -8,20 +8,19 @@ import {
   FigureAttribution
 } from '$components/common/figure';
 
+export const Caption = function ({ attr, attrAuthor, attrUrl }) {
+  return (
+    <Figcaption>
+      <FigcaptionInner>{attr}</FigcaptionInner>
+      <FigureAttribution author={attrAuthor} url={attrUrl} forwardedAs='span' />
+    </Figcaption>
+  );
+};
+
 const Image = function (props) {
   const { src, alt, align, attr } = props;
   const imageAlign = align ? align : 'center';
-  return (
-    <Figure className={`align-${imageAlign}`}>
-      <img loading='lazy' {...props} />
-      {attr && (
-        <Figcaption>
-          <FigcaptionInner>{alt}</FigcaptionInner>
-          <FigureAttribution author={attr} url={src} forwardedAs='span' />
-        </Figcaption>
-      )}
-    </Figure>
-  );
+  return <img loading='lazy' {...props} className={`align-${imageAlign}`} />;
 };
 Image.propTypes = {
   src: T.string,

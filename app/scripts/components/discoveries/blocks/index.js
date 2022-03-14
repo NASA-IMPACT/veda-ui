@@ -9,8 +9,6 @@ import {
   ContentBlockFigure
 } from '$styles/content-block';
 
-import Image from '$components/discoveries/images';
-
 export const ContentBlockPAlpha = styled(ContentBlock)`
   ${ContentBlockProse} {
     grid-column: content-start / content-end;

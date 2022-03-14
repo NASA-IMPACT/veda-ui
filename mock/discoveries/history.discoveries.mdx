@@ -126,8 +126,12 @@ Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. 
     <Image
       src='https://picsum.photos/id/1002/2048/1024'
       alt='Generic placeholder by lorem picsum'
-      attr='Lorem Picsum'
     />
+    <Caption 
+      attr='image' 
+      attrAuthor='somebody' 
+      attrUrl='https://developmentseed.org'
+    /> 
   </Figure>
 </Block>
 
@@ -137,8 +141,12 @@ Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. 
   <Image
     src='https://picsum.photos/id/1002/2048/1024'
     alt='Generic placeholder by lorem picsum'
-    attr='Lorem Picsum'
   />
+    <Caption 
+      attr='image' 
+      attrAuthor='somebody' 
+      attrUrl='https://developmentseed.org'
+    /> 
   </Figure>
 </Block>
 
@@ -146,17 +154,21 @@ Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. 
 
 <Block type='wide'>
   <Figure>
-<Chart
-  dataPath='/public/example.csv'
-  dateFormat="%m/%d/%Y" 
-  idKey='County' 
-  xKey='Test Date' 
-  yKey='New Positives' 
-  highlightStart = '12/10/2021'
-  highlightEnd = '01/20/2022'
-  highlightLabel = 'Omicron'
-/>
-</Figure>
+    <Chart
+      dataPath='/public/example.csv'
+      dateFormat="%m/%d/%Y" 
+      idKey='County' 
+      xKey='Test Date' 
+      yKey='New Positives' 
+      highlightStart = '12/10/2021'
+      highlightEnd = '01/20/2022'
+      highlightLabel = 'Omicron'
+    />
+    <Caption 
+      attrAuthor='somebody' 
+      attrUrl='https://developmentseed.org'
+    /> 
+  </Figure>
 </Block>
 
 <Block>
@@ -178,84 +190,99 @@ nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
 pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
 felis vel nisi lobortis, quis blandit mauris accumsan.
 </Prose>
-<Figure>
-<Image
-src='https://picsum.photos/id/1002/2048/1620'
-alt='Generic placeholder by lorem picsum'
-attr='Lorem Picsum'
-/>
-</Figure>
+  <Figure>
+    <Image
+    src='https://picsum.photos/id/1002/2048/1620'
+    alt='Generic placeholder by lorem picsum'
+    attr='Lorem Picsum'
+    />
+    <Caption 
+      attrAuthor='somebody' 
+      attrUrl='https://developmentseed.org'
+    /> 
+  </Figure>
 </Block>
 
 <Block>
   <Figure>
-<Image
-src='https://picsum.photos/id/1002/2048/1620'
-alt='Generic placeholder by lorem picsum'
-attr='Lorem Picsum'
-/>
-</Figure>
-<Prose>
-## CB Prose+Figure Beta
+    <Image
+    src='https://picsum.photos/id/1002/2048/1620'
+    alt='Generic placeholder by lorem picsum'
+    attr='Lorem Picsum'
+    />
+    <Caption 
+      attrAuthor='somebody' 
+      attrUrl='https://developmentseed.org'
+    /> 
+  </Figure>
+  <Prose>
+  ## CB Prose+Figure Beta
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
-vel tristique sapien, non suscipit lacus. Mauris vestibulum bibendum
-sem eget pellentesque. Cras viverra urna felis, non placerat felis
-aliquet at. Mauris aliquam malesuada libero non rutrum.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
+  vel tristique sapien, non suscipit lacus. Mauris vestibulum bibendum
+  sem eget pellentesque. Cras viverra urna felis, non placerat felis
+  aliquet at. Mauris aliquam malesuada libero non rutrum.
 
-Aenean pharetra suscipit nisl id tempus. In eget tellus eros. Mauris
-dignissim odio quis sapien pulvinar, ac varius sapien consectetur.
-Morbi scelerisque ex sit amet est tempor, nec tempus metus
-scelerisque.
+  Aenean pharetra suscipit nisl id tempus. In eget tellus eros. Mauris
+  dignissim odio quis sapien pulvinar, ac varius sapien consectetur.
+  Morbi scelerisque ex sit amet est tempor, nec tempus metus
+  scelerisque.
 
-Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
-nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
-pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
-felis vel nisi lobortis, quis blandit mauris accumsan.
-</Prose>
-
+  Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
+  nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
+  pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
+  felis vel nisi lobortis, quis blandit mauris accumsan.
+  </Prose>
 
 </Block>
 
 
 <Block type='full'>
-<Prose>
-## CB Prose+Figure Gama
+  <Prose>
+  ## CB Prose+Figure Gama
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
-vel tristique sapien, non suscipit lacus. Mauris vestibulum bibendum
-sem eget pellentesque. Cras viverra urna felis, non placerat felis
-aliquet at. Mauris aliquam malesuada libero non rutrum.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
+  vel tristique sapien, non suscipit lacus. Mauris vestibulum bibendum
+  sem eget pellentesque. Cras viverra urna felis, non placerat felis
+  aliquet at. Mauris aliquam malesuada libero non rutrum.
 
-Aenean pharetra suscipit nisl id tempus. In eget tellus eros. Mauris
-dignissim odio quis sapien pulvinar, ac varius sapien consectetur.
-Morbi scelerisque ex sit amet est tempor, nec tempus metus
-scelerisque.
+  Aenean pharetra suscipit nisl id tempus. In eget tellus eros. Mauris
+  dignissim odio quis sapien pulvinar, ac varius sapien consectetur.
+  Morbi scelerisque ex sit amet est tempor, nec tempus metus
+  scelerisque.
 
-Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
-nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
-pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
-felis vel nisi lobortis, quis blandit mauris accumsan.
-</Prose>
-<Figure>
-<Image
-src='https://picsum.photos/id/1002/2048/1620'
-alt='Generic placeholder by lorem picsum'
-attr='Lorem Picsum'
-/>
-</Figure>
+  Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
+  nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
+  pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
+  felis vel nisi lobortis, quis blandit mauris accumsan.
+  </Prose>
+  <Figure>
+    <Image
+    src='https://picsum.photos/id/1002/2048/1620'
+    alt='Generic placeholder by lorem picsum'
+    attr='Lorem Picsum'
+    />
+    <Caption 
+      attrAuthor='somebody' 
+      attrUrl='https://developmentseed.org'
+    /> 
+  </Figure>
 </Block>
 
 
 <Block type='full'>
 
-<Figure>
-<Image
-src='https://picsum.photos/id/1002/2048/1620'
-alt='Generic placeholder by lorem picsum'
-attr='Lorem Picsum'
-/>
-</Figure>
+  <Figure>
+    <Image
+    src='https://picsum.photos/id/1002/2048/1620'
+    alt='Generic placeholder by lorem picsum'
+    attr='Lorem Picsum'
+    />
+    <Caption 
+      attrAuthor='somebody' 
+      attrUrl='https://developmentseed.org'
+    /> 
+  </Figure>
 <Prose>
 ## CB Prose+Figure Delta
 
@@ -277,13 +304,17 @@ felis vel nisi lobortis, quis blandit mauris accumsan.
 </Block>
 
 <Block type='full'>
-<Figure>
-  <Image
-  src='https://picsum.photos/id/1002/2048/1620'
-  alt='Generic placeholder by lorem picsum'
-  attr='Lorem Picsum'
-  />
-</Figure>
+  <Figure>
+    <Image
+    src='https://picsum.photos/id/1002/2048/1620'
+    alt='Generic placeholder by lorem picsum'
+    attr='Lorem Picsum'
+    />
+    <Caption 
+      attrAuthor='somebody' 
+      attrUrl='https://developmentseed.org'
+    /> 
+  </Figure>
 <Prose />
 </Block>
 
