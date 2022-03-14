@@ -52,51 +52,6 @@ function Home() {
   return (
     <PageMainContent>
       <LayoutProps title={thematic.data.name} />
-      {!!featuredDatasets.length && (
-        <Fold>
-          <h2>Featured datasets</h2>
-          <CardList>
-            {featuredDatasets.map((t) => (
-              <li key={t.id}>
-                <Card
-                  cardType='cover'
-                  linkLabel='View more'
-                  linkTo={t.id}
-                  title={t.name}
-                  parentName='Dataset'
-                  parentTo={thematicDatasetsPath(thematic)}
-                  description={t.description}
-                  imgSrc={t.media.src}
-                  imgAlt={t.media.alt}
-                />
-              </li>
-            ))}
-          </CardList>
-        </Fold>
-      )}
-      {!!featuredDiscoveries.length && (
-        <Fold>
-          <h2>Featured discoveries</h2>
-          <CardList>
-            {featuredDiscoveries.map((t) => (
-              <li key={t.id}>
-                <Card
-                  linkLabel='View more'
-                  linkTo={t.id}
-                  title={t.name}
-                  parentName='Discovery'
-                  parentTo={thematicDiscoveriesPath(thematic)}
-                  description={t.description}
-                  date={t.pubDate ? new Date(t.pubDate) : null}
-                  imgSrc={t.media.src}
-                  imgAlt={t.media.alt}
-                />
-              </li>
-            ))}
-          </CardList>
-        </Fold>
-      )}
-
       <IntroFold>
         <GridTemplateHalf>
           <div>
@@ -120,6 +75,53 @@ function Home() {
           </div>
         </GridTemplateHalf>
       </IntroFold>
+
+      {!!featuredDiscoveries.length && (
+        <Fold>
+          <h2>Featured discoveries</h2>
+          <CardList>
+            {featuredDiscoveries.map((t) => (
+              <li key={t.id}>
+                <Card
+                  linkLabel='View more'
+                  linkTo={t.id}
+                  title={t.name}
+                  parentName='Discovery'
+                  parentTo={thematicDiscoveriesPath(thematic)}
+                  description={t.description}
+                  date={t.pubDate ? new Date(t.pubDate) : null}
+                  imgSrc={t.media.src}
+                  imgAlt={t.media.alt}
+                />
+              </li>
+            ))}
+          </CardList>
+        </Fold>
+      )}
+
+      {!!featuredDatasets.length && (
+        <Fold>
+          <h2>Featured datasets</h2>
+          <CardList>
+            {featuredDatasets.map((t) => (
+              <li key={t.id}>
+                <Card
+                  cardType='cover'
+                  linkLabel='View more'
+                  linkTo={t.id}
+                  title={t.name}
+                  parentName='Dataset'
+                  parentTo={thematicDatasetsPath(thematic)}
+                  description={t.description}
+                  imgSrc={t.media.src}
+                  imgAlt={t.media.alt}
+                />
+              </li>
+            ))}
+          </CardList>
+        </Fold>
+      )}
+
       <Fold>
         <GridTemplateFull>
           <h3> Featured discoveries</h3>
