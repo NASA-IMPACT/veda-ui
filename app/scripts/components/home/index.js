@@ -2,7 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { glsp, media, multiply, themeVal } from '@devseed-ui/theme-provider';
+import {
+  glsp,
+  listReset,
+  media,
+  multiply,
+  themeVal
+} from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 
 import deltaThematics from 'delta/thematics';
@@ -16,12 +22,11 @@ import { resourceNotFound } from '$components/uhoh';
 
 import { VarProse } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
-import { GridTemplateFull, GridTemplateHalf } from '$styles/grid';
 import Hug from '$styles/hug';
 import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
 
-import { Fold } from '$components/common/fold';
-import { Card, CardList } from '$components/common/card';
+import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
+import { Card, CardBody, CardHeader, CardList, CardSelf, CardTitle } from '$components/common/card';
 
 const IntroFold = styled(Hug)`
   padding-top: ${variableGlsp(2)};
@@ -60,13 +65,27 @@ const IntroFoldActions = styled.div`
   align-items: center;
 `;
 
-const FeatureCard = styled.div`
-  padding: ${glsp(1)};
-  background: ${themeVal('color.base-50')};
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+const FeaturedDatasets = styled.div`
+  grid-column: 1 / -1;
+  grid-row: 2;
+
+  ${media.largeUp`
+    grid-column: 1 / 7;
+  `}
+`;
+
+const FeaturedDatasetsList = styled.ol`
+  ${listReset()}
+`;
+
+const FeaturedAnalysis = styled(CardSelf)`
+  grid-column: 1 / -1;
+  grid-row: 3;
+
+  ${media.largeUp`
+    grid-column: 7 / span 6;
+    grid-row: 2;
+  `}
 `;
 
 function Home() {
@@ -85,6 +104,7 @@ function Home() {
   return (
     <PageMainContent>
       <LayoutProps title={thematic.data.name} />
+
       <IntroFold>
         <IntroFoldFigure>
           <img
@@ -112,7 +132,17 @@ function Home() {
 
       {!!featuredDiscoveries.length && (
         <Fold>
-          <h2>Featured discoveries</h2>
+          <FoldHeader>
+            <FoldTitle>Featured discoveries</FoldTitle>
+            <Button
+              forwardedAs={Link}
+              to='discoveries'
+              size='large'
+              variation='primary-outline'
+            >
+              View all
+            </Button>
+          </FoldHeader>
           <CardList>
             {featuredDiscoveries.map((t) => (
               <li key={t.id}>
@@ -135,67 +165,60 @@ function Home() {
 
       {!!featuredDatasets.length && (
         <Fold>
-          <h2>Featured datasets</h2>
-          <CardList>
-            {featuredDatasets.map((t) => (
-              <li key={t.id}>
-                <Card
-                  cardType='cover'
-                  linkLabel='View more'
-                  linkTo={t.id}
-                  title={t.name}
-                  parentName='Dataset'
-                  parentTo={thematicDatasetsPath(thematic)}
-                  description={t.description}
-                  imgSrc={t.media.src}
-                  imgAlt={t.media.alt}
-                />
-              </li>
-            ))}
-          </CardList>
+          <FoldHeader>
+            <FoldTitle>Featured datasets</FoldTitle>
+            <Button
+              forwardedAs={Link}
+              to='datasets'
+              size='large'
+              variation='primary-outline'
+            >
+              View all
+            </Button>
+          </FoldHeader>
+          <FeaturedDatasets>
+            <FeaturedDatasetsList>
+              {featuredDatasets.map((t) => (
+                <li key={t.id}>
+                  <Card
+                    cardType='cover'
+                    linkLabel='View more'
+                    linkTo={t.id}
+                    title={t.name}
+                    parentName='Dataset'
+                    parentTo={thematicDatasetsPath(thematic)}
+                    description={t.description}
+                    imgSrc={t.media.src}
+                    imgAlt={t.media.alt}
+                  />
+                </li>
+              ))}
+            </FeaturedDatasetsList>
+          </FeaturedDatasets>
+
+          <FeaturedAnalysis>
+            <CardHeader>
+              <CardTitle>Get air quality data</CardTitle>
+            </CardHeader>
+            <CardBody>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse facilisis sollicitudin magna, eget accumsan dolor
+                molestie quis. Aliquam sit amet erat nec risus dapibus
+                efficitur. Sed tristique ultrices libero eu pulvinar.
+                Pellentesque ac auctor felis. Vestibulum varius mattis lectus,
+                at dignissim nulla interdum.
+              </p>
+            </CardBody>
+          </FeaturedAnalysis>
         </Fold>
       )}
 
-      <Fold>
-        <GridTemplateFull>
-          <h3> Featured Datasets</h3>
-        </GridTemplateFull>
-        <GridTemplateHalf>
-          <FeatureCard>
-            <h4> Nitrogen Dioxide</h4>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse facilisis sollicitudin magna, eget accumsan dolor
-              molestie quis. Aliquam sit amet erat nec risus dapibus efficitur.
-              Sed tristique ultrices libero eu pulvinar. Pellentesque ac auctor
-              felis. Vestibulum varius mattis lectus, at dignissim nulla
-              interdum.
-            </p>
-            <Button
-              forwardedAs={Link}
-              to='about'
-              size='large'
-              variation='primary-fill'
-            >
-              Learn more
-            </Button>
-          </FeatureCard>
-          <FeatureCard>
-            <h4> Get air quality data</h4>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse facilisis sollicitudin magna, eget accumsan dolor
-              molestie quis. Aliquam sit amet erat nec risus dapibus efficitur.
-              Sed tristique ultrices libero eu pulvinar. Pellentesque ac auctor
-              felis. Vestibulum varius mattis lectus, at dignissim nulla
-              interdum.
-            </p>
-          </FeatureCard>
-        </GridTemplateHalf>
-      </Fold>
       {!!otherThematicAreas.length && (
         <Fold>
-          <h2>Other thematic areas</h2>
+          <FoldHeader>
+            <FoldTitle>Other thematic areas</FoldTitle>
+          </FoldHeader>
           <CardList>
             {otherThematicAreas.map((t) => (
               <li key={t.id}>
