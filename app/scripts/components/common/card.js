@@ -56,7 +56,7 @@ function renderCardType({ cardType }) {
   }
 }
 
-const CardSelf = styled.article`
+export const CardSelf = styled.article`
   position: relative;
   display: flex;
   flex-flow: column nowrap;
@@ -89,21 +89,21 @@ const CardSelf = styled.article`
     `}
 `;
 
-const CardHeader = styled.header`
+export const CardHeader = styled.header`
   display: flex;
   flex-flow: column nowrap;
   padding: ${variableGlsp()};
   gap: ${glsp(0.25)};
 `;
 
-const CardTitle = styled(VarHeading).attrs({
+export const CardTitle = styled(VarHeading).attrs({
   as: 'h3',
   size: 'small'
 })`
   /* styled-component */
 `;
 
-const CardOverline = styled(Overline)`
+export const CardOverline = styled(Overline)`
   order: -1;
   color: inherit;
 
@@ -135,7 +135,7 @@ const CardLabel = styled.span`
   }
 `;
 
-const CardBody = styled.div`
+export const CardBody = styled.div`
   padding: ${variableGlsp()};
 
   &:not(:first-child) {
