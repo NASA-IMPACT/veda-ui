@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { media } from '@devseed-ui/theme-provider';
 
 import { variableGlsp } from '../../styles/variable-utils';
-import { VarProse } from '$styles/variable-components';
+import { VarHeading, VarProse } from '$styles/variable-components';
 import Constrainer from '../../styles/constrainer';
 
 const FoldProseSelf = styled.div`
@@ -18,6 +18,25 @@ const FoldProseSelf = styled.div`
 `;
 
 const FoldInner = styled(Constrainer)`
+  /* styled-component */
+`;
+
+export const FoldHeader = styled.div`
+  grid-column: 1 / -1;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${variableGlsp()};
+  justify-content: space-between;
+`;
+
+export const FoldHGroup = styled.div`
+  gap: ${variableGlsp(0.125)};
+`;
+
+export const FoldTitle = styled(VarHeading).attrs({
+  as: 'h2',
+  size: 'large'
+})`
   /* styled-component */
 `;
 
