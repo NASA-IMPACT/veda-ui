@@ -1,23 +1,63 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
+
+import { glsp, media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 
 import deltaThematics from 'delta/thematics';
 
 import { LayoutProps } from '$components/common/layout-root';
-import { Fold } from '$components/common/fold';
-import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
-import { GridTemplateFull, GridTemplateHalf } from '$styles/grid';
-import { Card, CardList } from '$components/common/card';
+
+import { thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
+import { useThematicArea } from '$utils/thematics';
 
 import { resourceNotFound } from '$components/uhoh';
-import { useThematicArea } from '$utils/thematics';
-import { thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
 
-const IntroFold = styled(Fold)`
-  background: ${themeVal('color.base-50')};
+import { VarProse } from '$styles/variable-components';
+import { variableGlsp } from '$styles/variable-utils';
+import { GridTemplateFull, GridTemplateHalf } from '$styles/grid';
+import Hug from '$styles/hug';
+import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
+
+import { Fold } from '$components/common/fold';
+import { Card, CardList } from '$components/common/card';
+
+const IntroFold = styled(Hug)`
+  padding-top: ${variableGlsp(2)};
+  padding-bottom: ${variableGlsp(2)};
+  align-items: center;
+  background: ${themeVal('color.primary')};
+  color: ${themeVal('color.surface')};
+  box-shadow: inset 0 1px 0 0 ${themeVal('color.surface-100a')};
+`;
+
+const IntroFoldFigure = styled.figure`
+  grid-column: content-start / content-end;
+
+  ${media.largeUp`
+    grid-column:  content-start / content-7;
+    grid-row: 1;
+  `}
+
+  img {
+    border-radius: ${multiply(themeVal('shape.rounded'), 2)};
+  }
+`;
+
+const IntroFoldProse = styled(VarProse)`
+  grid-column: content-start / content-end;
+
+  ${media.largeUp`
+    grid-column: content-8 / content-end;
+  `}
+`;
+
+const IntroFoldActions = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${glsp(0.75)};
+  align-items: center;
 `;
 
 const FeatureCard = styled.div`
@@ -27,13 +67,6 @@ const FeatureCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-`;
-
-const IntroFoldActions = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  gap: ${glsp(0.75)};
-  align-items: center;
 `;
 
 function Home() {
@@ -53,27 +86,28 @@ function Home() {
     <PageMainContent>
       <LayoutProps title={thematic.data.name} />
       <IntroFold>
-        <GridTemplateHalf>
-          <div>
-            <img src='https://via.placeholder.com/350x150' />
-          </div>
-          <div>
-            <PageMainTitle>
-              Welcome to the {thematic.data.name} dashboard
-            </PageMainTitle>
-            <PageLead>{thematic.data.description}</PageLead>
-            <IntroFoldActions>
-              <Button
-                forwardedAs={Link}
-                to='about'
-                size='large'
-                variation='primary-fill'
-              >
-                Learn more
-              </Button>
-            </IntroFoldActions>
-          </div>
-        </GridTemplateHalf>
+        <IntroFoldFigure>
+          <img
+            src='https://via.placeholder.com/1024x512'
+            alt='Placeholder image'
+          />
+        </IntroFoldFigure>
+        <IntroFoldProse>
+          <PageMainTitle>
+            Welcome to the {thematic.data.name} dashboard
+          </PageMainTitle>
+          <PageLead>{thematic.data.description}</PageLead>
+          <IntroFoldActions>
+            <Button
+              forwardedAs={Link}
+              to='about'
+              size='large'
+              variation='achromic-outline'
+            >
+              Learn more
+            </Button>
+          </IntroFoldActions>
+        </IntroFoldProse>
       </IntroFold>
 
       {!!featuredDiscoveries.length && (
@@ -122,16 +156,6 @@ function Home() {
         </Fold>
       )}
 
-      <Fold>
-        <GridTemplateFull>
-          <h3> Featured discoveries</h3>
-        </GridTemplateFull>
-        <GridTemplateFull>
-          <FeatureCard>
-            <img src='https://via.placeholder.com/750x100' />
-          </FeatureCard>
-        </GridTemplateFull>
-      </Fold>
       <Fold>
         <GridTemplateFull>
           <h3> Featured Datasets</h3>

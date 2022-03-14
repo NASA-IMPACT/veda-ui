@@ -11,6 +11,10 @@ import Constrainer from '../../styles/constrainer';
 const FoldProseSelf = styled.div`
   padding-top: ${variableGlsp(2)};
   padding-bottom: ${variableGlsp(2)};
+
+  & + & {
+    padding-top: 0;
+  }
 `;
 
 const FoldInner = styled(Constrainer)`
