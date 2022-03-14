@@ -15,6 +15,7 @@ import {
 
 import { thematicDiscoveriesPath } from '$utils/routes';
 
+import { ContentBlockProse, ContentBlockFigure } from '$styles/content-block';
 import Block from '$components/discoveries/blocks';
 import Chart from '$components/discoveries/chart/';
 import Image from '$components/discoveries/images/';
@@ -54,6 +55,8 @@ function DiscoveriesSingle() {
           <MDXProvider
             components={{
               Block,
+              Prose: ContentBlockProse,
+              Figure: ContentBlockFigure,
               Image,
               Chart
             }}

@@ -178,97 +178,37 @@ function getImgsAndParagraphs(pChildren) {
 }
 
 function Block(props) {
-  const { type } = props;
-  switch (type) {
-    case 'prose':
-      return (
-        <ContentBlockPAlpha>
-          <ContentBlockProse {...props} />
-        </ContentBlockPAlpha>
-      );
-    case 'prose-wide':
-      return (
-        <ContentBlockPBeta>
-          <ContentBlockProse {...props} />
-        </ContentBlockPBeta>
-      );
-    case 'figure':
-      return (
-        <ContentBlockFAlpha>
-          <ContentBlockFigure {...props} />
-        </ContentBlockFAlpha>
-      );
-    case 'figure-wide':
-      return (
-        <ContentBlockFBeta>
-          <ContentBlockFigure {...props} />
-        </ContentBlockFBeta>
-      );
-    case 'figure-full':
-      return (
-        <ContentBlockFGama>
-          <ContentBlockFigure {...props} />
-        </ContentBlockFGama>
-      );
-    case 'prose-left-figure-right': {
-      const { imageChild, notImageChildren } = getImgsAndParagraphs(
-        props.children
-      );
-      return (
-        <ContentBlockPFAlpha>
-          <ContentBlockProse children={notImageChildren} />
-          <ContentBlockFigure>
-            {imageChild && <Image {...imageChild.props} />}
-          </ContentBlockFigure>
-        </ContentBlockPFAlpha>
-      );
+  const { children, type } = props;
+  const hasMultiplechildren = Array.isArray(children);
+  if (!hasMultiplechildren) {
+    if (children.type.displayName == 'Prose') {
+      if (type === 'wide') {
+        return <ContentBlockPBeta {...props} />;
+      } else {
+        return <ContentBlockPAlpha {...props} />;
+      }
+    } else if (children.type.displayName == 'Figure') {
+      if (type === 'wide') {
+        return <ContentBlockFBeta {...props} />;
+      } else if (type === 'full') {
+        return <ContentBlockFGama {...props} />;
+      }
+    } else {
+      return <ContentBlockPAlpha {...props} />;
     }
-    case 'prose-right-figure-left': {
-      const { imageChild, notImageChildren } = getImgsAndParagraphs(
-        props.children
-      );
-      return (
-        <ContentBlockPFBeta>
-          <ContentBlockFigure>
-            {imageChild && <Image {...imageChild.props} />}
-          </ContentBlockFigure>
-          <ContentBlockProse children={notImageChildren} />
-        </ContentBlockPFBeta>
-      );
+  } else {
+    const childrenTypes = children.map((e) => e.type.displayName);
+    if (type === 'full') {
+      if (childrenTypes[0] === 'Prose')
+        return <ContentBlockPFGama {...props} />;
+      else if (childrenTypes[0] === 'Figure')
+        return <ContentBlockPFDelta {...props} />;
+    } else {
+      if (childrenTypes[0] === 'Prose')
+        return <ContentBlockPFAlpha {...props} />;
+      else if (childrenTypes[0] === 'Figure')
+        return <ContentBlockPFBeta {...props} />;
     }
-    case 'prose-left-figure-right-full': {
-      const { imageChild, notImageChildren } = getImgsAndParagraphs(
-        props.children
-      );
-      return (
-        <ContentBlockPFGama>
-          <ContentBlockProse children={notImageChildren} />
-          <ContentBlockFigure>
-            {imageChild && <Image {...imageChild.props} />}
-          </ContentBlockFigure>
-        </ContentBlockPFGama>
-      );
-    }
-    case 'prose-right-figure-left-full': {
-      const { imageChild, notImageChildren } = getImgsAndParagraphs(
-        props.children
-      );
-
-      return (
-        <ContentBlockPFDelta>
-          <ContentBlockFigure>
-            {imageChild && <Image {...imageChild.props} />}
-          </ContentBlockFigure>
-          <ContentBlockProse children={notImageChildren} />
-        </ContentBlockPFDelta>
-      );
-    }
-    default:
-      return (
-        <ContentBlockPAlpha>
-          <ContentBlockProse {...props} />
-        </ContentBlockPAlpha>
-      );
   }
 }
 

@@ -15,6 +15,7 @@ thematics:
 ---
 
 <Block>
+  <Prose>
 ## CB Prose Alpha
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae ornare lectus, ac accumsan erat. Cras eget eleifend ligula. Curabitur ac nisi tempor, molestie lorem vitae, consectetur turpis. Etiam hendrerit et sapien ac interdum.
@@ -106,58 +107,45 @@ When governments began implementing shutdowns at the start of the COVID-19 pande
 Phasellus nec magna tristique, imperdiet mauris hendrerit, posuere sem. Vestibulum in lobortis tortor.
 
 Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. Nunc luctus orci mi, sed pretium nibh consequat sit amet. In congue metus a ullamcorper sollicitudin.
+</Prose>
 </Block>
 
-<Block type='prose-wide'>
-
+<Block type='wide'>
+<Prose>
 ## CB Prose Beta
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
-vel tristique sapien, non suscipit lacus. Mauris vestibulum bibendum
-sem eget pellentesque. Cras viverra urna felis, non placerat felis
-aliquet at. Mauris aliquam malesuada libero non rutrum.
-
-<Image src="http://via.placeholder.com/256x128?text=align-left" align="left" alt="Media example" attr="tux" width="256" />
-
-Aenean pharetra suscipit nisl id tempus. In eget tellus eros. Mauris
-dignissim odio quis sapien pulvinar, ac varius sapien consectetur.
-Morbi scelerisque ex sit amet est tempor, nec tempus metus
-scelerisque.
-
-Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
-nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
-pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
-felis vel nisi lobortis, quis blandit mauris accumsan. Donec
-vehicula ipsum orci, sit amet interdum est commodo sed.
-
-</Block>
-
-<Block type='figure'>
-<Image
-  src='https://picsum.photos/id/1002/2048/1024'
-  alt='Generic placeholder by lorem picsum'
-  attr='Lorem Picsum'
-/>
+<Image src="http://via.placeholder.com/1256x328?text=align-left" align="left" alt="Media example" attr="tux" />
+<Image src="http://via.placeholder.com/1256x328?text=align-left" align="left" alt="Media example" attr="tux" />
+</Prose>
 </Block>
 
 
-<Block type='figure-wide'>
-<Image
-  src='https://picsum.photos/id/1002/2048/1024'
-  alt='Generic placeholder by lorem picsum'
-  attr='Lorem Picsum'
-/>
+
+<Block type='full'>
+  <Figure>
+    <Image
+      src='https://picsum.photos/id/1002/2048/1024'
+      alt='Generic placeholder by lorem picsum'
+      attr='Lorem Picsum'
+    />
+  </Figure>
 </Block>
 
-<Block type='figure-full'>
-<Image
-  src='https://picsum.photos/id/1002/2048/1024'
-  alt='Generic placeholder by lorem picsum'
-  attr='Lorem Picsum'
-/>
+
+<Block type='wide'>
+  <Figure>
+  <Image
+    src='https://picsum.photos/id/1002/2048/1024'
+    alt='Generic placeholder by lorem picsum'
+    attr='Lorem Picsum'
+  />
+  </Figure>
 </Block>
 
-<Block type='figure-wide'>
+
+
+<Block type='wide'>
+  <Figure>
 <Chart
   dataPath='/public/example.csv'
   dateFormat="%m/%d/%Y" 
@@ -168,10 +156,11 @@ vehicula ipsum orci, sit amet interdum est commodo sed.
   highlightEnd = '01/20/2022'
   highlightLabel = 'Omicron'
 />
+</Figure>
 </Block>
 
-<Block type='prose-left-figure-right'>
-
+<Block>
+<Prose>
 ## CB Prose+Figure Alpha
           
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
@@ -188,18 +177,25 @@ Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
 nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
 pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
 felis vel nisi lobortis, quis blandit mauris accumsan.
-
-
+</Prose>
+<Figure>
 <Image
 src='https://picsum.photos/id/1002/2048/1620'
 alt='Generic placeholder by lorem picsum'
 attr='Lorem Picsum'
 />
-
+</Figure>
 </Block>
 
-<Block type='prose-right-figure-left'>
-
+<Block>
+  <Figure>
+<Image
+src='https://picsum.photos/id/1002/2048/1620'
+alt='Generic placeholder by lorem picsum'
+attr='Lorem Picsum'
+/>
+</Figure>
+<Prose>
 ## CB Prose+Figure Beta
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
@@ -216,18 +212,14 @@ Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
 nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
 pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
 felis vel nisi lobortis, quis blandit mauris accumsan.
+</Prose>
 
-<Image
-src='https://picsum.photos/id/1002/2048/1620'
-alt='Generic placeholder by lorem picsum'
-attr='Lorem Picsum'
-/>
 
 </Block>
 
 
-<Block type='prose-left-figure-right-full'>
-
+<Block type='full'>
+<Prose>
 ## CB Prose+Figure Gama
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
@@ -244,18 +236,27 @@ Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
 nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
 pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
 felis vel nisi lobortis, quis blandit mauris accumsan.
-
+</Prose>
+<Figure>
 <Image
 src='https://picsum.photos/id/1002/2048/1620'
 alt='Generic placeholder by lorem picsum'
 attr='Lorem Picsum'
 />
-
+</Figure>
 </Block>
 
 
-<Block type='prose-right-figure-left-full'>
+<Block type='full'>
 
+<Figure>
+<Image
+src='https://picsum.photos/id/1002/2048/1620'
+alt='Generic placeholder by lorem picsum'
+attr='Lorem Picsum'
+/>
+</Figure>
+<Prose>
 ## CB Prose+Figure Delta
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
@@ -272,36 +273,32 @@ Donec est tellus, finibus lobortis vestibulum tincidunt, egestas id
 nunc. Praesent interdum turpis eu libero iaculis iaculis. Sed tempor
 pulvinar sapien, dapibus commodo orci suscipit ac. Maecenas placerat
 felis vel nisi lobortis, quis blandit mauris accumsan.
-
-<Image
-src='https://picsum.photos/id/1002/2048/1620'
-alt='Generic placeholder by lorem picsum'
-attr='Lorem Picsum'
-/>
-
+</Prose>
 </Block>
 
-<Block type='prose-right-figure-left-full'>
-
+<Block type='full'>
+<Figure>
   <Image
   src='https://picsum.photos/id/1002/2048/1620'
   alt='Generic placeholder by lorem picsum'
   attr='Lorem Picsum'
   />
-
+</Figure>
+<Prose />
 </Block>
 
-<Block type='prose-right-figure-left'>
-
+<Block type='full'>
+  <Figure />
+<Prose>
 ## Delta with only prose
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
 vel tristique sapien, non suscipit lacus. Mauris vestibulum bibendum
 sem eget pellentesque. Cras viverra urna felis, non placerat felis
 aliquet at. Mauris aliquam malesuada libero non rutrum.
+</Prose>
 
 </Block>
-
 
 
 ## When not wrapped in a Block

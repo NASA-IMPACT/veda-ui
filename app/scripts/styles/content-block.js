@@ -19,7 +19,7 @@ export const ContentBlock = styled(Hug)`
   }
 `;
 
-export const ContentBlockProse = styled(VarProse)`
+const ContentBlockProse = styled(VarProse)`
   gap: ${variableGlsp()};
 
   h1,
@@ -90,6 +90,12 @@ export const ContentBlockProse = styled(VarProse)`
   }
 `;
 
-export const ContentBlockFigure = styled(Figure)`
+ContentBlockProse.displayName = 'Prose';
+
+const ContentBlockFigure = styled(Figure)`
   /* styled-component */
 `;
+
+ContentBlockFigure.displayName = 'Figure';
+
+export { ContentBlockFigure, ContentBlockProse };
