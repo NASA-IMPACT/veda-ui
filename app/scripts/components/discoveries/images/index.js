@@ -12,15 +12,32 @@ export const Caption = function ({ attr, attrAuthor, attrUrl }) {
   return (
     <Figcaption>
       <FigcaptionInner>{attr}</FigcaptionInner>
-      <FigureAttribution author={attrAuthor} url={attrUrl} forwardedAs='span' />
+      {attrAuthor && attrUrl && (
+        <FigureAttribution
+          author={attrAuthor}
+          url={attrUrl}
+          forwardedAs='span'
+        />
+      )}
     </Figcaption>
   );
 };
 
 const Image = function (props) {
-  const { src, alt, align, attr } = props;
+  const { align, attr } = props;
   const imageAlign = align ? align : 'center';
-  return <img loading='lazy' {...props} className={`align-${imageAlign}`} />;
+  return attr ? (
+    <Figure className={`align-${imageAlign}`}>
+      <img loading='lazy' {...props} />
+      <Caption
+        attr={attr}
+        attrAuthor={props.attrAuthor}
+        attrUrl={props.attrUrl}
+      />
+    </Figure>
+  ) : (
+    <img loading='lazy' {...props} />
+  );
 };
 Image.propTypes = {
   src: T.string,

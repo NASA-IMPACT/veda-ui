@@ -162,19 +162,6 @@ const ContentBlockPFDelta = styled(ContentBlock)`
   }
 `;
 
-// This does't handle the case where prose has inline images
-function getImgsAndParagraphs(pChildren) {
-  const children = Array.isArray(pChildren) ? pChildren : [pChildren];
-
-  const imageChild = children.find((e) => e.type.name === 'Image');
-  const notImageChildren = children.filter((e) => e.type.name !== 'Image');
-
-  return {
-    imageChild,
-    notImageChildren
-  };
-}
-
 function Block(props) {
   const { children, type } = props;
   const hasMultiplechildren = Array.isArray(children);
