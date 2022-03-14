@@ -2,9 +2,9 @@ import React from 'react';
 import T from 'prop-types';
 
 import styled from 'styled-components';
-import { media } from '@devseed-ui/theme-provider';
+import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 
-import { variableGlsp } from '../../styles/variable-utils';
+import { variableGlsp, variableProseVSpace } from '../../styles/variable-utils';
 import { VarHeading, VarProse } from '$styles/variable-components';
 import Constrainer from '../../styles/constrainer';
 
@@ -27,6 +27,7 @@ export const FoldHeader = styled.div`
   flex-flow: row nowrap;
   gap: ${variableGlsp()};
   justify-content: space-between;
+  align-items: flex-end;
 `;
 
 export const FoldHGroup = styled.div`
@@ -37,7 +38,19 @@ export const FoldTitle = styled(VarHeading).attrs({
   as: 'h2',
   size: 'large'
 })`
-  /* styled-component */
+  column-span: all;
+  max-width: 52rem;
+  display: flex;
+  flex-direction: column;
+  gap: calc(${glsp()} - ${glsp(0.25)});
+
+  &::before {
+    content: '';
+    width: ${glsp(2)};
+    height: ${glsp(0.25)};
+    border-radius: ${themeVal('shape.rounded')};
+    background: ${themeVal('color.primary')};
+  }
 `;
 
 const Content = styled(VarProse)`
