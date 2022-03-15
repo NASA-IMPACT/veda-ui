@@ -5,7 +5,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp, variableProseVSpace } from './variable-utils';
 import { VarProse } from './variable-components';
 
-import Hug from './hug';
+import Hug from './hug/index.ts';
 
 import { FigcaptionInner, Figure } from '$components/common/figure';
 
