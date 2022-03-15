@@ -11,7 +11,7 @@ import {
 export const Caption = function ({ attr, attrAuthor, attrUrl }) {
   return (
     <Figcaption>
-      <FigcaptionInner>{attr}</FigcaptionInner>
+      {attr && <FigcaptionInner>{attr}</FigcaptionInner>}
       {attrAuthor && attrUrl && (
         <FigureAttribution
           author={attrAuthor}
@@ -23,17 +23,20 @@ export const Caption = function ({ attr, attrAuthor, attrUrl }) {
   );
 };
 
+Caption.propTypes = {
+  attr: T.string,
+  attrAuthor: T.string,
+  attrUrl: T.string
+};
+
 const Image = function (props) {
-  const { align, attr } = props;
+  const { align, attr, attrAuthor } = props;
   const imageAlign = align ? align : 'center';
-  return attr ? (
+  return attr || attrAuthor ? (
+    // if it is an inline image with a caption
     <Figure className={`align-${imageAlign}`}>
       <img loading='lazy' {...props} />
-      <Caption
-        attr={attr}
-        attrAuthor={props.attrAuthor}
-        attrUrl={props.attrUrl}
-      />
+      <Caption attr={attr} attrAuthor={attrAuthor} attrUrl={props.attrUrl} />
     </Figure>
   ) : (
     <img loading='lazy' {...props} />
@@ -43,7 +46,9 @@ Image.propTypes = {
   src: T.string,
   alt: T.string,
   align: T.string,
-  attr: T.string
+  attr: T.string,
+  attrAuthor: T.string,
+  attrUrl: T.string
 };
 
 export default Image;

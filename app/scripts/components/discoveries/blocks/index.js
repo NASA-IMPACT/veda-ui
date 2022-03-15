@@ -186,27 +186,24 @@ const blockType = {
 
 function BlockComponent(props) {
   const { children, error, type } = props;
-  const typeName = type ? type : 'default';
-  const hasMultiplechildren = Array.isArray(children);
-
   if (error)
     return (
       <ErrorBlock>
         <ContentBlockProse>
-          There is an error in this block. Did you pass the wrong type name?
+          There is an error in this block. Did you pass a wrong type name?
         </ContentBlockProse>
       </ErrorBlock>
     );
   else {
+    const typeName = type ? type : 'default';
+    const hasMultiplechildren = Array.isArray(children);
     // Prose or Figure
     if (!hasMultiplechildren) {
-      // if (!blockType[`${typeName}${children.type.displayName}`])
       return React.createElement(
         blockType[`${typeName}${children.type.displayName}`],
         props
       );
-
-      // Prose and Figure
+      // Prose + Figure
     } else {
       const childrenComponents = children.reduce(
         (acc, curr) => acc + curr.type.displayName,
@@ -221,7 +218,11 @@ function BlockComponent(props) {
   }
 }
 
-class Block extends React.Component {
+BlockComponent.propTypes = {
+  type: T.string
+};
+
+class BlockErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
     return { error: error };
   }
@@ -244,12 +245,8 @@ class Block extends React.Component {
     });
   }
 }
-BlockComponent.propTypes = {
-  type: T.string
-};
-
 const BlockWithError = (props) => (
-  <Block {...props} childToRender={BlockComponent} />
+  <BlockErrorBoundary {...props} childToRender={BlockComponent} />
 );
 
 export default BlockWithError;
