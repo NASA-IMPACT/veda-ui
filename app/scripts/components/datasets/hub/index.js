@@ -2,7 +2,7 @@ import React from 'react';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import { Fold } from '$components/common/fold';
+import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
 import { resourceNotFound } from '$components/uhoh';
 
@@ -22,7 +22,9 @@ function DatasetsHub() {
         description='This dashboard explores key indicators to track and compare changes over time.'
       />
       <Fold>
-        <h2>Browse</h2>
+        <FoldHeader>
+          <FoldTitle>Browse</FoldTitle>
+        </FoldHeader>
         <CardList>
           {thematic.data.datasets.map((t) => (
             <li key={t.id}>

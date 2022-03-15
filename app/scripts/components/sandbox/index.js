@@ -4,7 +4,7 @@ import { Route, Routes, useParams } from 'react-router-dom';
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import { Fold } from '$components/common/fold';
+import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
 import PageLocalNav from '$components/common/page-local-nav';
 import { resourceNotFound } from '$components/uhoh';
@@ -78,6 +78,9 @@ function Sandbox() {
             <LayoutProps title='Sandbox' />
             <PageHero title='Sandbox' />
             <Fold>
+              <FoldHeader>
+                <FoldTitle>Browse</FoldTitle>
+              </FoldHeader>
               <CardList>
                 {pages.map((p) => (
                   <li key={p.id}>

@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import deltaThematics from 'delta/thematics';
 import { PageMainContent } from '../../styles/page';
@@ -7,22 +6,19 @@ import { PageMainContent } from '../../styles/page';
 import { LayoutProps } from '../common/layout-root';
 import PageHero from '../common/page-hero';
 import { Card, CardList } from '$components/common/card';
-import { Fold } from '$components/common/fold';
-import { visuallyHidden } from '@devseed-ui/theme-provider';
+import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 
-const WelcomeFold = styled(Fold)`
-  h2:first-of-type {
-    ${visuallyHidden}
-  }
-`;
+const appTitle = process.env.APP_TITLE;
 
 function RootHome() {
   return (
     <PageMainContent>
       <LayoutProps title='Welcome' />
-      <PageHero title='Welcome' />
-      <WelcomeFold>
-        <h2>Explore the areas</h2>
+      <PageHero title={`Welcome to the ${appTitle}`} />
+      <Fold>
+        <FoldHeader>
+          <FoldTitle>Browse the thematic areas</FoldTitle>
+        </FoldHeader>
         <CardList>
           {deltaThematics.map((t) => (
             <li key={t.id}>
@@ -41,7 +37,7 @@ function RootHome() {
             </li>
           ))}
         </CardList>
-      </WelcomeFold>
+      </Fold>
     </PageMainContent>
   );
 }

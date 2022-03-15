@@ -114,7 +114,7 @@ function Home() {
         </IntroFoldFigure>
         <IntroFoldProse>
           <PageMainTitle>
-            Welcome to the {thematic.data.name} dashboard
+            Welcome to the {thematic.data.name} thematic area
           </PageMainTitle>
           <PageLead>{thematic.data.description}</PageLead>
           <IntroFoldActions>
