@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import T from 'prop-types';
-import { media } from '@devseed-ui/theme-provider';
+import { media, themeVal, glsp } from '@devseed-ui/theme-provider';
 
 import {
   ContentBlock,
@@ -16,6 +16,16 @@ export const ContentBlockPAlpha = styled(ContentBlock)`
     ${media.largeUp`
       grid-column:  content-3 / content-11;
     `}
+  }
+`;
+
+const ErrorBlock = styled(ContentBlockPAlpha)`
+  color: ${themeVal('color.danger-500')};
+  border: 3px solid ${themeVal('color.danger-500')};
+  margin-bottom: ${glsp(1)};
+  ${ContentBlockProse} {
+    padding: ${glsp(2)};
+    font-weight: bold;
   }
 `;
 
@@ -174,29 +184,72 @@ const blockType = {
   fullFigureProse: ContentBlockPFDelta
 };
 
-function Block(props) {
-  const { children, type } = props;
+function BlockComponent(props) {
+  const { children, error, type } = props;
   const typeName = type ? type : 'default';
   const hasMultiplechildren = Array.isArray(children);
-  if (!hasMultiplechildren) {
-    return React.createElement(
-      blockType[`${typeName}${children.type.displayName}`],
-      props
+
+  if (error)
+    return (
+      <ErrorBlock>
+        <ContentBlockProse>
+          There is an error in this block. Did you pass the wrong type name?
+        </ContentBlockProse>
+      </ErrorBlock>
     );
-  } else {
-    const childrenComponents = children.reduce(
-      (acc, curr) => acc + curr.type.displayName,
-      ''
-    );
-    return React.createElement(
-      blockType[`${typeName}${childrenComponents}`],
-      props
-    );
+  else {
+    // Prose or Figure
+    if (!hasMultiplechildren) {
+      // if (!blockType[`${typeName}${children.type.displayName}`])
+      return React.createElement(
+        blockType[`${typeName}${children.type.displayName}`],
+        props
+      );
+
+      // Prose and Figure
+    } else {
+      const childrenComponents = children.reduce(
+        (acc, curr) => acc + curr.type.displayName,
+        ''
+      );
+      // if (!blockType[`${typeName}${childrenComponents}`])
+      return React.createElement(
+        blockType[`${typeName}${childrenComponents}`],
+        props
+      );
+    }
   }
 }
 
-Block.propTypes = {
+class Block extends React.Component {
+  static getDerivedStateFromError(error) {
+    return { error: error };
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+    this.clearError = this.clearError.bind(this);
+  }
+
+  clearError() {
+    this.setState({ error: null });
+  }
+
+  render() {
+    return React.createElement(this.props.childToRender, {
+      error: this.state.error,
+      clearError: this.clearError,
+      ...this.props
+    });
+  }
+}
+BlockComponent.propTypes = {
   type: T.string
 };
 
-export default Block;
+const BlockWithError = (props) => (
+  <Block {...props} childToRender={BlockComponent} />
+);
+
+export default BlockWithError;
