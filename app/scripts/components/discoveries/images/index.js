@@ -23,6 +23,10 @@ export const Caption = function ({ attr, attrAuthor, attrUrl }) {
   );
 };
 
+export const CaptionDisplayName = 'Caption';
+
+Caption.displayName = CaptionDisplayName;
+
 Caption.propTypes = {
   attr: T.string,
   attrAuthor: T.string,

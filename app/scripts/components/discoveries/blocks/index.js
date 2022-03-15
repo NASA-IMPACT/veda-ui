@@ -3,11 +3,9 @@ import styled from 'styled-components';
 import T from 'prop-types';
 import { media, themeVal, glsp } from '@devseed-ui/theme-provider';
 
-import {
-  ContentBlock,
-  ContentBlockProse,
-  ContentBlockFigure
-} from '$styles/content-block';
+import { ContentBlock, ContentBlockProse } from '$styles/content-block';
+
+import ContentBlockFigure from './figure';
 
 export const ContentBlockPAlpha = styled(ContentBlock)`
   ${ContentBlockProse} {
@@ -16,16 +14,6 @@ export const ContentBlockPAlpha = styled(ContentBlock)`
     ${media.largeUp`
       grid-column:  content-3 / content-11;
     `}
-  }
-`;
-
-const ErrorBlock = styled(ContentBlockPAlpha)`
-  color: ${themeVal('color.danger-500')};
-  border: 3px solid ${themeVal('color.danger-500')};
-  margin-bottom: ${glsp(1)};
-  ${ContentBlockProse} {
-    padding: ${glsp(2)};
-    font-weight: bold;
   }
 `;
 
@@ -172,6 +160,15 @@ const ContentBlockPFDelta = styled(ContentBlock)`
   }
 `;
 
+export const ErrorBlock = styled.div`
+  width: 100vw;
+  color: ${themeVal('color.danger-500')};
+  border: 3px solid ${themeVal('color.danger-500')};
+  margin-bottom: ${glsp(1)};
+  padding: ${glsp(3)};
+  font-weight: bold;
+`;
+
 const blockType = {
   defaultProse: ContentBlockPAlpha,
   wideProse: ContentBlockPBeta,
@@ -186,15 +183,17 @@ const blockType = {
 
 function BlockComponent(props) {
   const { children, error, type } = props;
-  if (error)
+  if (error) {
     return (
       <ErrorBlock>
-        <ContentBlockProse>
-          There is an error in this block. Did you pass a wrong type name?
-        </ContentBlockProse>
+        There is an error in this block.
+        <ul>
+          <li>Did you pass a wrong type name?</li>
+          <li>Did you pass more than one caption for one figure?</li>
+        </ul>
       </ErrorBlock>
     );
-  else {
+  } else {
     const typeName = type ? type : 'default';
     const hasMultiplechildren = Array.isArray(children);
     // Prose or Figure
@@ -249,4 +248,5 @@ const BlockWithError = (props) => (
   <BlockErrorBoundary {...props} childToRender={BlockComponent} />
 );
 
+export { BlockErrorBoundary };
 export default BlockWithError;

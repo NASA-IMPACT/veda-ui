@@ -15,8 +15,9 @@ import {
 
 import { thematicDiscoveriesPath } from '$utils/routes';
 
-import { ContentBlockProse, ContentBlockFigure } from '$styles/content-block';
+import { ContentBlockProse } from '$styles/content-block';
 import Block from '$components/discoveries/blocks';
+import ContentBlockFigure from '$components/discoveries/blocks/figure';
 import Chart from '$components/discoveries/chart/';
 import Image from '$components/discoveries/images/';
 import { Caption } from '$components/discoveries/images/';
