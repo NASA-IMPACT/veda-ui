@@ -9,7 +9,8 @@ const ContentBlockFigure = (props) => {
   const captionChild = children.filter(
     (e) => e.type.displayName === CaptionDisplayName
   );
-  if (captionChild.length > 1) throw Error;
+  if (captionChild.length > 1)
+    throw Error('More than one caption for a figure');
 
   return <Figure {...props} />;
 };

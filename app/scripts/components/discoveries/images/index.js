@@ -36,14 +36,21 @@ Caption.propTypes = {
 const Image = function (props) {
   const { align, attr, attrAuthor } = props;
   const imageAlign = align ? align : 'center';
+  const propsWithoutAttrs = Object.keys(props).reduce((acc, curr) => {
+    if (curr.startsWith('attr')) return acc;
+    else {
+      acc[curr] = props[curr];
+      return acc;
+    }
+  }, {});
   return attr || attrAuthor ? (
     // if it is an inline image with a caption
     <Figure className={`align-${imageAlign}`}>
-      <img loading='lazy' {...props} />
+      <img loading='lazy' {...propsWithoutAttrs} />
       <Caption attr={attr} attrAuthor={attrAuthor} attrUrl={props.attrUrl} />
     </Figure>
   ) : (
-    <img loading='lazy' {...props} />
+    <img loading='lazy' {...propsWithoutAttrs} />
   );
 };
 Image.propTypes = {

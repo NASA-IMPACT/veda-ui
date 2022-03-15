@@ -186,7 +186,7 @@ function BlockComponent(props) {
   if (error) {
     return (
       <ErrorBlock>
-        There is an error in this block.
+        There is an error in this block: {error.message}
         <ul>
           <li>Did you pass a wrong type name?</li>
           <li>Did you pass more than one caption for one figure?</li>
