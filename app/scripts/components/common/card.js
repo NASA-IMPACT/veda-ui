@@ -13,7 +13,7 @@ import {
 } from '@devseed-ui/theme-provider';
 import { Overline } from '@devseed-ui/typography';
 
-import { variableGlsp } from '$styles/variable-utils';
+import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 import { ElementInteractive } from '$components/common/element-interactive';
 import { VarHeading } from '$styles/variable-components';
@@ -47,6 +47,28 @@ function renderCardType({ cardType }) {
           inset: 0;
           z-index: -1;
           background: ${themeVal('color.base-400')};
+        }
+      `;
+    case 'featured':
+      return css`
+        padding-top: ${variableGlsp()};
+        color: ${themeVal('color.surface')};
+
+        ${CardFigure} {
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          background: ${themeVal('color.base-400')};
+        }
+
+        ${CardTitle} {
+          font-size: ${variableBaseType('1.5rem')};
+          max-width: 52rem;
+        }
+
+        ${CardBody} {
+          font-size: ${variableBaseType('1rem')};
+          max-width: 52rem;
         }
       `;
     default:

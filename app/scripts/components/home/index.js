@@ -26,7 +26,14 @@ import Hug from '$styles/hug';
 import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
 
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
-import { Card, CardBody, CardHeader, CardList, CardSelf, CardTitle } from '$components/common/card';
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  CardList,
+  CardSelf,
+  CardTitle
+} from '$components/common/card';
 
 const IntroFold = styled(Hug)`
   padding-top: ${variableGlsp(2)};
@@ -65,26 +72,63 @@ const IntroFoldActions = styled.div`
   align-items: center;
 `;
 
-const FeaturedDatasets = styled.div`
+const FeaturedSlider = styled.div`
   grid-column: 1 / -1;
   grid-row: 2;
+`;
+
+const FeaturedList = styled.ol`
+  ${listReset()}
+
+  li > * {
+    min-height: 16rem;
+
+    ${media.smallUp`
+      min-height: 20rem;
+    `}
+
+    ${media.mediumUp`
+      min-height: 20rem;
+    `}
+
+    ${media.largeUp`
+      min-height: 24rem;
+    `}
+
+    ${media.xlargeUp`
+      min-height: 28rem;
+    `}
+  }
+
+  li:not(:first-child) {
+    display: none;
+  }
+`;
+
+const DatasetsFeaturedSlider = styled.div`
+  grid-column: 1 / -1;
+  grid-row: 2;
+
+  ${media.mediumUp`
+    grid-column: 1 / 5;
+  `}
 
   ${media.largeUp`
     grid-column: 1 / 7;
   `}
 `;
 
-const FeaturedDatasetsList = styled.ol`
-  ${listReset()}
-`;
-
 const FeaturedAnalysis = styled(CardSelf)`
   grid-column: 1 / -1;
   grid-row: 3;
 
+  ${media.mediumUp`
+    grid-column: 5 / 9;
+    grid-row: 2;
+  `}
+
   ${media.largeUp`
     grid-column: 7 / span 6;
-    grid-row: 2;
   `}
 `;
 
@@ -143,23 +187,26 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <CardList>
-            {featuredDiscoveries.map((t) => (
-              <li key={t.id}>
-                <Card
-                  linkLabel='View more'
-                  linkTo={t.id}
-                  title={t.name}
-                  parentName='Discovery'
-                  parentTo={thematicDiscoveriesPath(thematic)}
-                  description={t.description}
-                  date={t.pubDate ? new Date(t.pubDate) : null}
-                  imgSrc={t.media.src}
-                  imgAlt={t.media.alt}
-                />
-              </li>
-            ))}
-          </CardList>
+          <FeaturedSlider>
+            <FeaturedList>
+              {featuredDiscoveries.map((t) => (
+                <li key={t.id}>
+                  <Card
+                    cardType='featured'
+                    linkLabel='View more'
+                    linkTo={t.id}
+                    title={t.name}
+                    parentName='Discovery'
+                    parentTo={thematicDiscoveriesPath(thematic)}
+                    description={t.description}
+                    date={t.pubDate ? new Date(t.pubDate) : null}
+                    imgSrc={t.media.src}
+                    imgAlt={t.media.alt}
+                  />
+                </li>
+              ))}
+            </FeaturedList>
+          </FeaturedSlider>
         </Fold>
       )}
 
@@ -176,12 +223,12 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <FeaturedDatasets>
-            <FeaturedDatasetsList>
+          <DatasetsFeaturedSlider>
+            <FeaturedList>
               {featuredDatasets.map((t) => (
                 <li key={t.id}>
                   <Card
-                    cardType='cover'
+                    cardType='featured'
                     linkLabel='View more'
                     linkTo={t.id}
                     title={t.name}
@@ -193,8 +240,8 @@ function Home() {
                   />
                 </li>
               ))}
-            </FeaturedDatasetsList>
-          </FeaturedDatasets>
+            </FeaturedList>
+          </DatasetsFeaturedSlider>
 
           <FeaturedAnalysis>
             <CardHeader>
@@ -230,7 +277,7 @@ function Home() {
                   parentName='Area'
                   parentTo='/'
                   description={t.description}
-                  overline={`has ${t.datasets.length} datasets & ${t.discoveries.length} discoveries`}
+                  overline={`${t.datasets.length} datasets / ${t.discoveries.length} discoveries`}
                   imgSrc={t.media.src}
                   imgAlt={t.media.alt}
                 />
