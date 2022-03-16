@@ -192,7 +192,7 @@ function CardComponent(props) {
           )}
           {(date && (
             <>
-              published on
+              published on{' '}
               <time dateTime={format(date, 'yyyy-MM-dd')}>
                 {format(date, 'MMM d, yyyy')}
               </time>

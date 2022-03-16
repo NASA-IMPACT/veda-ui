@@ -14,7 +14,7 @@ function RootHome() {
   return (
     <PageMainContent>
       <LayoutProps title='Welcome' />
-      <PageHero title={`Welcome to the ${appTitle}`} />
+      <PageHero title={`Welcome to ${appTitle}`} />
       <Fold>
         <FoldHeader>
           <FoldTitle>Browse the thematic areas</FoldTitle>
@@ -30,7 +30,7 @@ function RootHome() {
                 parentName='Area'
                 parentTo='/'
                 description={t.description}
-                overline={`has ${t.datasets.length} datasets & ${t.discoveries.length} discoveries`}
+                overline={`${t.datasets.length} datasets / ${t.discoveries.length} discoveries`}
                 imgSrc={t.media.src}
                 imgAlt={t.media.alt}
               />
