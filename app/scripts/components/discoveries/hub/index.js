@@ -2,7 +2,7 @@ import React from 'react';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import { Fold } from '$components/common/fold';
+import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
 import { resourceNotFound } from '$components/uhoh';
 import { PageMainContent } from '$styles/page';
@@ -22,7 +22,9 @@ function DiscoveriesHub() {
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
       />
       <Fold>
-        <h2>Browse</h2>
+        <FoldHeader>
+          <FoldTitle>Browse</FoldTitle>
+        </FoldHeader>
         <CardList>
           {thematic.data.discoveries.map((t) => (
             <li key={t.id}>

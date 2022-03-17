@@ -34,8 +34,8 @@ const PageLocalNavSelf = styled.nav`
   justify-content: space-between;
   gap: ${variableGlsp()};
   padding: ${variableGlsp(0.5, 1)};
-  background: ${themeVal('color.base-50')};
-  box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')};
+  background: ${themeVal('color.primary')};
+  color: ${themeVal('color.surface')};
   animation: ${reveal} 0.32s ease 0s 1;
 `;
 

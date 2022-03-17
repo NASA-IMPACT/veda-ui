@@ -13,7 +13,7 @@ import {
 } from '@devseed-ui/theme-provider';
 import { Overline } from '@devseed-ui/typography';
 
-import { variableGlsp } from '$styles/variable-utils';
+import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 import { ElementInteractive } from '$components/common/element-interactive';
 import { VarHeading } from '$styles/variable-components';
@@ -49,6 +49,28 @@ function renderCardType({ cardType }) {
           background: ${themeVal('color.base-400')};
         }
       `;
+    case 'featured':
+      return css`
+        padding-top: ${variableGlsp()};
+        color: ${themeVal('color.surface')};
+
+        ${CardFigure} {
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          background: ${themeVal('color.base-400')};
+        }
+
+        ${CardTitle} {
+          font-size: ${variableBaseType('1.5rem')};
+          max-width: 52rem;
+        }
+
+        ${CardBody} {
+          font-size: ${variableBaseType('1rem')};
+          max-width: 52rem;
+        }
+      `;
     default:
       return css`
         background: transparent;
@@ -56,7 +78,7 @@ function renderCardType({ cardType }) {
   }
 }
 
-const CardSelf = styled.article`
+export const CardSelf = styled.article`
   position: relative;
   display: flex;
   flex-flow: column nowrap;
@@ -89,21 +111,21 @@ const CardSelf = styled.article`
     `}
 `;
 
-const CardHeader = styled.header`
+export const CardHeader = styled.header`
   display: flex;
   flex-flow: column nowrap;
   padding: ${variableGlsp()};
   gap: ${glsp(0.25)};
 `;
 
-const CardTitle = styled(VarHeading).attrs({
+export const CardTitle = styled(VarHeading).attrs({
   as: 'h3',
   size: 'small'
 })`
   /* styled-component */
 `;
 
-const CardOverline = styled(Overline)`
+export const CardOverline = styled(Overline)`
   order: -1;
   color: inherit;
 
@@ -135,7 +157,7 @@ const CardLabel = styled.span`
   }
 `;
 
-const CardBody = styled.div`
+export const CardBody = styled.div`
   padding: ${variableGlsp()};
 
   &:not(:first-child) {
@@ -192,7 +214,7 @@ function CardComponent(props) {
           )}
           {(date && (
             <>
-              published on
+              published on{' '}
               <time dateTime={format(date, 'yyyy-MM-dd')}>
                 {format(date, 'MMM d, yyyy')}
               </time>

@@ -2,19 +2,55 @@ import React from 'react';
 import T from 'prop-types';
 
 import styled from 'styled-components';
-import { media } from '@devseed-ui/theme-provider';
+import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 
 import { variableGlsp } from '../../styles/variable-utils';
-import { VarProse } from '$styles/variable-components';
+import { VarHeading, VarProse } from '$styles/variable-components';
 import Constrainer from '../../styles/constrainer';
 
 const FoldProseSelf = styled.div`
   padding-top: ${variableGlsp(2)};
   padding-bottom: ${variableGlsp(2)};
+
+  & + & {
+    padding-top: 0;
+  }
 `;
 
 const FoldInner = styled(Constrainer)`
   /* styled-component */
+`;
+
+export const FoldHeader = styled.div`
+  grid-column: 1 / -1;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${variableGlsp()};
+  justify-content: space-between;
+  align-items: flex-end;
+`;
+
+export const FoldHGroup = styled.div`
+  gap: ${variableGlsp(0.125)};
+`;
+
+export const FoldTitle = styled(VarHeading).attrs({
+  as: 'h2',
+  size: 'large'
+})`
+  column-span: all;
+  max-width: 52rem;
+  display: flex;
+  flex-direction: column;
+  gap: calc(${glsp()} - ${glsp(0.25)});
+
+  &::before {
+    content: '';
+    width: ${glsp(2)};
+    height: ${glsp(0.25)};
+    border-radius: ${themeVal('shape.rounded')};
+    background: ${themeVal('color.primary')};
+  }
 `;
 
 const Content = styled(VarProse)`
