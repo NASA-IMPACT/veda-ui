@@ -105,15 +105,14 @@ export const PanelBody = styled(ShadowScrollbar)`
 export const PanelWidget = styled.article`
   display: flex;
   flex-direction: column;
-  gap: ${variableGlsp(0.25)};
-  padding: ${variableGlsp(0.5, 1)};
   background: ${themeVal('color.surface')};
-  box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')},
-    0 -1px 0 0 ${themeVal('color.base-100a')};
 `;
 
-export const PanelWidgetHeader = styled.div`
-  /* styled-component */
+export const PanelWidgetHeader = styled.header`
+  position: relative;
+  z-index: 1;
+  padding: ${variableGlsp(0.5, 1, 0.25, 1)};
+  background: ${themeVal('color.surface')};
 `;
 
 export const PanelWidgetTitle = styled(Overline).attrs({

@@ -8,7 +8,11 @@ import {
   truncated
 } from '@devseed-ui/theme-provider';
 import { AccordionManager, AccordionFold } from '@devseed-ui/accordion';
-import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
+import {
+  CollecticonArrowLoop,
+  CollecticonCircleInformation,
+  CollecticonCircleXmark
+} from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
 import {
   ElementInteractive,
@@ -18,67 +22,98 @@ import { VarProse } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
 
 import { checkLayerLoadStatus } from '$components/common/mapbox/layers/utils';
+import {
+  LoadingSkeleton,
+  LoadingSkeletonGroup
+} from '$components/common/loading-skeleton';
+import { Heading, Subtitle } from '@devseed-ui/typography';
 
 const LayerList = styled.ol`
   ${listReset()};
+
+  > li {
+    box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')},
+      0 -1px 0 0 ${themeVal('color.base-100a')};
+    background: ${themeVal('color.surface')};
+  }
+`;
+
+const InlineAlert = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${glsp(0.5)};
+  padding: ${variableGlsp(0.5, 1)};
+  background: ${themeVal('color.danger-100')};
+  color: ${themeVal('color.danger')};
+
+  ${CollecticonCircleXmark} {
+    flex-shrink: 0;
+  }
+
+  ${Button} {
+    margin-left: auto;
+  }
+`;
+
+const LoadingLayer = styled(LoadingSkeletonGroup)`
+  padding: ${variableGlsp(0.5, 1)};
 `;
 
 export default function DatasetLayers(props) {
   const { asyncLayers, onAction, selectedLayerId } = props;
 
-  // A layer is considered ready when its data and the compare layer data
-  // (if any) is also loaded.
-  const layersStatuses = useMemo(() => {
-    return asyncLayers.reduce(
-      (acc, l) => {
-        switch (checkLayerLoadStatus(l)) {
-          case 'succeeded':
-            acc[0].push(l);
-            break;
-          case 'loading':
-            acc[1].push(l);
-            break;
-          case 'failed':
-            acc[2].push(l);
-            break;
-        }
-
-        return acc;
-      },
-      [
-        // Ready
-        [],
-        // Loading
-        [],
-        // Error
-        []
-      ]
-    );
-  }, [asyncLayers]);
-
-  const [lReady, lLoading, lError] = layersStatuses;
-
   return (
-    <AccordionManager allowMultiple>
-      {!!lLoading.length && <p>{lLoading.length} are loading</p>}
-
-      {!!lError.length && <p>{lError.length} errored</p>}
-
-      {!!lReady.length && (
-        <LayerList>
-          {lReady.map(({ baseLayer }) => (
-            <li key={baseLayer.data.id}>
-              <Layer
-                id={baseLayer.data.id}
-                name={baseLayer.data.name}
-                info={baseLayer.data.description}
-                active={baseLayer.data.id === selectedLayerId}
-                onToggleClick={() => onAction('layer.toggle', baseLayer.data)}
-              />
-            </li>
-          ))}
-        </LayerList>
-      )}
+    <AccordionManager>
+      <LayerList>
+        {asyncLayers.map((l, idx) => {
+          // A layer is considered ready when its data and the compare layer
+          // data (if any) is also loaded.
+          const status = checkLayerLoadStatus(l);
+          switch (status) {
+            case 'loading':
+              return (
+                /* eslint-disable-next-line react/no-array-index-key */
+                <li key={idx}>
+                  <LoadingLayer>
+                    <LoadingSkeleton />
+                    <LoadingSkeleton />
+                  </LoadingLayer>
+                </li>
+              );
+            case 'failed':
+              return (
+                /* eslint-disable-next-line react/no-array-index-key */
+                <li key={idx}>
+                  <InlineAlert>
+                    <CollecticonCircleXmark size='large' />
+                    <p>Failed loading</p>
+                    <Button fitting='skinny' size='small' variation='base-text'>
+                      <CollecticonArrowLoop
+                        size='small'
+                        meaningful
+                        title='Retry layer loading'
+                      />
+                    </Button>
+                  </InlineAlert>
+                </li>
+              );
+            case 'succeeded':
+              return (
+                <li key={l.baseLayer.data.id}>
+                  <Layer
+                    id={l.baseLayer.data.id}
+                    name={l.baseLayer.data.name}
+                    info={l.baseLayer.data.description}
+                    active={l.baseLayer.data.id === selectedLayerId}
+                    onToggleClick={() => {
+                      onAction('layer.toggle', l.baseLayer.data);
+                    }}
+                  />
+                </li>
+              );
+          }
+        })}
+      </LayerList>
     </AccordionManager>
   );
 }
@@ -91,10 +126,6 @@ DatasetLayers.propTypes = {
 
 const LayerSelf = styled(ElementInteractiveWrapper)`
   border-radius: 0;
-  margin-left: ${variableGlsp(-1)};
-  margin-right: ${variableGlsp(-1)};
-  padding-left: ${variableGlsp()};
-  padding-right: ${variableGlsp()};
 
   > div {
     background: none;
@@ -118,13 +149,17 @@ const LayerSelf = styled(ElementInteractiveWrapper)`
   ${({ isStateOver }) =>
     isStateOver &&
     css`
-      background: ${themeVal('color.base-50a')};
+      background: ${themeVal('color.primary-100')};
     `}
 
   ${({ isSelected }) =>
     isSelected &&
     css`
-      background: ${themeVal('color.base-100a')};
+      background: ${themeVal('color.primary-50')};
+
+      ${LayerTitle} {
+        color: ${themeVal('color.primary')};
+      }
 
       &::before {
         width: ${glsp(0.25)};
@@ -133,10 +168,10 @@ const LayerSelf = styled(ElementInteractiveWrapper)`
 `;
 
 const LayerHeader = styled.header`
-  display: grid;
-  grid-auto-columns: 1fr min-content;
-  padding: ${glsp(0.5, 0)};
-  grid-gap: ${glsp(0.5)};
+  display: flex;
+  flex-flow: column nowrap;
+  padding: ${variableGlsp(0.5, 1)};
+  gap: ${glsp(0.5)};
 `;
 
 const LayerHeadline = styled.div`
@@ -144,11 +179,15 @@ const LayerHeadline = styled.div`
   min-width: 0px;
 `;
 
-const LayerTitle = styled.h1`
+const LayerHGroup = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${glsp(0.5)};
+  justify-content: space-between;
+`;
+
+const LayerTitle = styled(Heading).attrs({ as: 'h4', size: 'xsmall' })`
   ${truncated()}
-  font-size: 1rem;
-  line-height: 1.25rem;
-  margin: 0;
 
   sub {
     bottom: 0;
@@ -174,11 +213,10 @@ const LayerBodyInner = styled(VarProse)`
   position: relative;
   z-index: 8;
   box-shadow: inset 0 1px 0 0 ${themeVal('color.base-100a')};
-  background: rgba(255, 255, 255, 0.02);
   font-size: 0.875rem;
   line-height: 1.25rem;
-  backdrop-filter: saturate(48%);
-  padding: ${glsp()};
+  padding: ${variableGlsp(0.5, 1)};
+  background: ${themeVal('color.base-50a')};
 
   /* stylelint-disable-next-line no-descending-specificity */
   > * {
@@ -192,6 +230,7 @@ function Layer(props) {
   return (
     <ElementInteractive
       as={LayerSelf}
+      forwardedAs='article'
       isSelected={active}
       linkLabel='Toggle layer'
       linkProps={{
@@ -207,23 +246,27 @@ function Layer(props) {
         forwardedAs='div'
         renderHeader={({ isExpanded, toggleExpanded }) => (
           <LayerHeader>
-            <LayerHeadline>
-              <LayerTitle>{name}</LayerTitle>
-            </LayerHeadline>
-            <LayerToolbar>
-              <Button
-                variation='base-text'
-                fitting='skinny'
-                // disabled={!info}
-                active={isExpanded}
-                onClick={toggleExpanded}
-              >
-                <CollecticonCircleInformation
-                  title='Information about layer'
-                  meaningful
-                />
-              </Button>
-            </LayerToolbar>
+            <LayerHGroup>
+              <LayerHeadline>
+                <LayerTitle>{name}</LayerTitle>
+                {/* <Subtitle as='p'>Subtitle</Subtitle> */}
+              </LayerHeadline>
+              <LayerToolbar>
+                <Button
+                  variation='base-text'
+                  fitting='skinny'
+                  size='small'
+                  // disabled={!info}
+                  active={isExpanded}
+                  onClick={toggleExpanded}
+                >
+                  <CollecticonCircleInformation
+                    title='Information about layer'
+                    meaningful
+                  />
+                </Button>
+              </LayerToolbar>
+            </LayerHGroup>
           </LayerHeader>
         )}
         renderBody={() => (
