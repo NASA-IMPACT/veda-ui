@@ -34,6 +34,7 @@ import {
   CardSelf,
   CardTitle
 } from '$components/common/card';
+import Pluralize from '$utils/pluralize';
 
 const IntroFold = styled(Hug)`
   padding-top: ${variableGlsp(2)};
@@ -175,8 +176,8 @@ function Home() {
       </IntroFold>
 
       {!!featuredDiscoveries.length && (
-        <Fold>
-          <FoldHeader>
+        <Fold forwardedAs='section'>
+          <FoldHeader as='header'>
             <FoldTitle>Featured discoveries</FoldTitle>
             <Button
               forwardedAs={Link}
@@ -194,7 +195,7 @@ function Home() {
                   <Card
                     cardType='featured'
                     linkLabel='View more'
-                    linkTo={t.id}
+                    linkTo={`${thematicDiscoveriesPath(thematic)}/${t.id}`}
                     title={t.name}
                     parentName='Discovery'
                     parentTo={thematicDiscoveriesPath(thematic)}
@@ -211,8 +212,8 @@ function Home() {
       )}
 
       {!!featuredDatasets.length && (
-        <Fold>
-          <FoldHeader>
+        <Fold forwardedAs='section'>
+          <FoldHeader as='header'>
             <FoldTitle>Featured datasets</FoldTitle>
             <Button
               forwardedAs={Link}
@@ -230,7 +231,7 @@ function Home() {
                   <Card
                     cardType='featured'
                     linkLabel='View more'
-                    linkTo={t.id}
+                    linkTo={`${thematicDatasetsPath(thematic)}/${t.id}`}
                     title={t.name}
                     parentName='Dataset'
                     parentTo={thematicDatasetsPath(thematic)}
@@ -262,8 +263,8 @@ function Home() {
       )}
 
       {!!otherThematicAreas.length && (
-        <Fold>
-          <FoldHeader>
+        <Fold forwardedAs='section'>
+          <FoldHeader as='header'>
             <FoldTitle>Other thematic areas</FoldTitle>
           </FoldHeader>
           <CardList>
@@ -277,7 +278,17 @@ function Home() {
                   parentName='Area'
                   parentTo='/'
                   description={t.description}
-                  overline={`${t.datasets.length} datasets / ${t.discoveries.length} discoveries`}
+                  overline={
+                    <>
+                      <Pluralize singular='dataset' count={t.datasets.length} />{' '}
+                      /{' '}
+                      <Pluralize
+                        singular='discovery'
+                        plural='discoveries'
+                        count={t.discoveries.length}
+                      />
+                    </>
+                  }
                   imgSrc={t.media.src}
                   imgAlt={t.media.alt}
                 />

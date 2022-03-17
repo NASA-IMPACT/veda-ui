@@ -242,7 +242,7 @@ CardComponent.propTypes = {
   linkLabel: T.string.isRequired,
   linkTo: T.string.isRequired,
   className: T.string,
-  cardType: T.oneOf(['classic', 'cover']),
+  cardType: T.oneOf(['classic', 'cover', 'featured']),
   description: T.string,
   date: T.instanceOf(Date),
   overline: T.node,
