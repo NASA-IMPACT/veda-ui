@@ -1,12 +1,13 @@
 import React from 'react';
 
 import deltaThematics from 'delta/thematics';
-import { PageMainContent } from '../../styles/page';
 
-import { LayoutProps } from '../common/layout-root';
-import PageHero from '../common/page-hero';
+import { PageMainContent } from '$styles/page';
+import { LayoutProps } from '$components/common/layout-root';
+import PageHero from '$components/common/page-hero';
 import { Card, CardList } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
+import Pluralize from '$utils/pluralize';
 
 const appTitle = process.env.APP_TITLE;
 
@@ -30,7 +31,16 @@ function RootHome() {
                 parentName='Area'
                 parentTo='/'
                 description={t.description}
-                overline={`${t.datasets.length} datasets / ${t.discoveries.length} discoveries`}
+                overline={
+                  <>
+                    <Pluralize singular='dataset' count={t.datasets.length} /> /{' '}
+                    <Pluralize
+                      singular='discovery'
+                      plural='discoveries'
+                      count={t.discoveries.length}
+                    />
+                  </>
+                }
                 imgSrc={t.media.src}
                 imgAlt={t.media.alt}
               />

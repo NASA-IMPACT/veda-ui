@@ -34,6 +34,7 @@ import {
   CardSelf,
   CardTitle
 } from '$components/common/card';
+import Pluralize from '$utils/pluralize';
 
 const IntroFold = styled(Hug)`
   padding-top: ${variableGlsp(2)};
@@ -277,7 +278,17 @@ function Home() {
                   parentName='Area'
                   parentTo='/'
                   description={t.description}
-                  overline={`${t.datasets.length} datasets / ${t.discoveries.length} discoveries`}
+                  overline={
+                    <>
+                      <Pluralize singular='dataset' count={t.datasets.length} />{' '}
+                      /{' '}
+                      <Pluralize
+                        singular='discovery'
+                        plural='discoveries'
+                        count={t.discoveries.length}
+                      />
+                    </>
+                  }
                   imgSrc={t.media.src}
                   imgAlt={t.media.alt}
                 />
