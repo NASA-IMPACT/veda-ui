@@ -34,15 +34,9 @@ Caption.propTypes = {
 };
 
 const Image = function (props) {
-  const { align, attr, attrAuthor } = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { align, attr, attrAuthor, attrUrl, ...propsWithoutAttrs } = props;
   const imageAlign = align ? align : 'center';
-  const propsWithoutAttrs = Object.keys(props).reduce((acc, curr) => {
-    if (curr.startsWith('attr')) return acc;
-    else {
-      acc[curr] = props[curr];
-      return acc;
-    }
-  }, {});
   return attr || attrAuthor ? (
     // if it is an inline image with a caption
     <Figure className={`align-${imageAlign}`}>
