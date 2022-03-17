@@ -4,8 +4,6 @@
  */
 import React from 'react';
 import { render } from '@testing-library/react';
-
-import { ContentBlockProse } from '$styles/content-block';
 import Block from '$components/discoveries/blocks';
 import Figure from '$components/discoveries/blocks/figure';
 import { Caption } from '$components/discoveries/images';

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import T from 'prop-types';
 import { Figure } from '$components/common/figure';
 import { CaptionDisplayName } from '$components/discoveries/images';
 import { BlockErrorBoundary } from './';
@@ -15,11 +16,16 @@ const ContentBlockFigure = (props) => {
   return <Figure {...props} />;
 };
 
+ContentBlockFigure.propTypes = {
+  children: T.node
+};
+
 const FigureWithError = (props) => (
   <BlockErrorBoundary {...props} childToRender={ContentBlockFigure} />
 );
 
 export const figureDisplayName = 'Figure';
+
 const StyledContentBlockFigure = styled(FigureWithError)`
   /* styled-component */
 `;

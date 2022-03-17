@@ -206,6 +206,14 @@ function BlockComponent(props) {
       ''
     );
 
+    // Check if there was any error that editor could make
+    // providing a helpful error message
+    if (!['default', 'wide', 'full'].includes(typeName))
+      throw Error(`We do not support typeName ${typeName}`);
+
+    if (!blockType[`${typeName}${childrenComponents}`])
+      throw Error('We do not support this composition of Blocks.');
+
     return React.createElement(
       blockType[`${typeName}${childrenComponents}`],
       props
@@ -242,6 +250,11 @@ class BlockErrorBoundary extends React.Component {
     });
   }
 }
+
+BlockErrorBoundary.propTypes = {
+  childToRender: T.node
+};
+
 const BlockWithError = (props) => (
   <BlockErrorBoundary {...props} childToRender={BlockComponent} />
 );
