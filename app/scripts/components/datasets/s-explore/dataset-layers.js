@@ -10,7 +10,10 @@ import {
 import { AccordionManager, AccordionFold } from '@devseed-ui/accordion';
 import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
-import { ElementInteractive } from '$components/common/element-interactive';
+import {
+  ElementInteractive,
+  Wrapper as ElementInteractiveWrapper
+} from '$components/common/element-interactive';
 import { VarProse } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
 
@@ -86,8 +89,7 @@ DatasetLayers.propTypes = {
   selectedLayerId: T.string
 };
 
-const LayerSelf = styled.article`
-  position: relative;
+const LayerSelf = styled(ElementInteractiveWrapper)`
   border-radius: 0;
   margin-left: ${variableGlsp(-1)};
   margin-right: ${variableGlsp(-1)};
@@ -96,12 +98,6 @@ const LayerSelf = styled.article`
 
   > div {
     background: none;
-  }
-
-  > *:not(a) {
-    position: relative;
-    z-index: 2;
-    pointer-events: none;
   }
 
   a,
