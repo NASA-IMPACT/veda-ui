@@ -176,8 +176,8 @@ function Home() {
       </IntroFold>
 
       {!!featuredDiscoveries.length && (
-        <Fold>
-          <FoldHeader>
+        <Fold forwardedAs='section'>
+          <FoldHeader as='header'>
             <FoldTitle>Featured discoveries</FoldTitle>
             <Button
               forwardedAs={Link}
@@ -212,8 +212,8 @@ function Home() {
       )}
 
       {!!featuredDatasets.length && (
-        <Fold>
-          <FoldHeader>
+        <Fold forwardedAs='section'>
+          <FoldHeader as='header'>
             <FoldTitle>Featured datasets</FoldTitle>
             <Button
               forwardedAs={Link}
@@ -263,8 +263,8 @@ function Home() {
       )}
 
       {!!otherThematicAreas.length && (
-        <Fold>
-          <FoldHeader>
+        <Fold forwardedAs='section'>
+          <FoldHeader as='header'>
             <FoldTitle>Other thematic areas</FoldTitle>
           </FoldHeader>
           <CardList>
