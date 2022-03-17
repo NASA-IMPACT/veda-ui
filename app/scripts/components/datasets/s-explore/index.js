@@ -126,7 +126,7 @@ function DatasetsExplore() {
 
   const [selectedLayerId, setSelectedLayerId] = useQsState.memo({
     key: 'layer',
-    default: null
+    default: dataset.data.layers[0].id
   });
 
   const [selectedDatetime, setSelectedDatetime] = useQsState.memo({
