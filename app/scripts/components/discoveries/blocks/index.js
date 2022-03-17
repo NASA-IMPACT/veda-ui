@@ -161,7 +161,7 @@ const ContentBlockPFDelta = styled(ContentBlock)`
 `;
 
 export const ErrorBlock = styled.div`
-  width: 100vw;
+  width: 100%;
   color: ${themeVal('color.danger-500')};
   border: 3px solid ${themeVal('color.danger-500')};
   margin-bottom: ${glsp(1)};
@@ -194,31 +194,29 @@ function BlockComponent(props) {
       </ErrorBlock>
     );
   } else {
+    // Concat block type name (default, wide, full)
+    // and children component type name (Figure, Prose)
+    // to return matching block type
+    // ex. <Block type='wide'><Figure /></Block> will result in 'wideFigure'
     const typeName = type ? type : 'default';
-    const hasMultiplechildren = Array.isArray(children);
-    // Prose or Figure
-    if (!hasMultiplechildren) {
-      return React.createElement(
-        blockType[`${typeName}${children.type.displayName}`],
-        props
-      );
-      // Prose + Figure
-    } else {
-      const childrenComponents = children.reduce(
-        (acc, curr) => acc + curr.type.displayName,
-        ''
-      );
-      // if (!blockType[`${typeName}${childrenComponents}`])
-      return React.createElement(
-        blockType[`${typeName}${childrenComponents}`],
-        props
-      );
-    }
+    const childrenAsArray = Array.isArray(children) ? children : [children];
+
+    const childrenComponents = childrenAsArray.reduce(
+      (acc, curr) => acc + curr.type.displayName,
+      ''
+    );
+
+    return React.createElement(
+      blockType[`${typeName}${childrenComponents}`],
+      props
+    );
   }
 }
 
 BlockComponent.propTypes = {
-  type: T.string
+  type: T.string,
+  error: T.bool,
+  children: T.node
 };
 
 class BlockErrorBoundary extends React.Component {
