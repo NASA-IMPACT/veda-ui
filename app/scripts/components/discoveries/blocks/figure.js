@@ -7,12 +7,14 @@ import { BlockErrorBoundary } from './';
 
 const ContentBlockFigure = (props) => {
   const { children } = props;
-  const captionChild = children.filter(
-    (e) => e.type.displayName === CaptionDisplayName
-  );
-  if (captionChild.length > 1)
-    throw Error('More than one caption for a figure');
-
+  // Figure can be empty
+  if (children) {
+    const captionChild = children.filter(
+      (e) => e.type.displayName === CaptionDisplayName
+    );
+    if (captionChild.length > 1)
+      throw Error('More than one caption for a figure');
+  }
   return <Figure {...props} />;
 };
 

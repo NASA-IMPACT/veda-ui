@@ -3,9 +3,13 @@ import styled from 'styled-components';
 import T from 'prop-types';
 import { media, themeVal, glsp } from '@devseed-ui/theme-provider';
 
-import { ContentBlock, ContentBlockProse } from '$styles/content-block';
+import {
+  ContentBlock,
+  ContentBlockProse,
+  proseDisplayName
+} from '$styles/content-block';
 
-import ContentBlockFigure from './figure';
+import ContentBlockFigure, { figureDisplayName } from './figure';
 
 export const ContentBlockPAlpha = styled(ContentBlock)`
   ${ContentBlockProse} {
@@ -166,31 +170,46 @@ export const ErrorBlock = styled.div`
   border: 3px solid ${themeVal('color.danger-500')};
   margin-bottom: ${glsp(1)};
   padding: ${glsp(3)};
-  font-weight: bold;
 `;
 
-const blockType = {
-  defaultProse: ContentBlockPAlpha,
-  wideProse: ContentBlockPBeta,
-  defaultFigure: ContentBlockFAlpha,
-  wideFigure: ContentBlockFBeta,
-  fullFigure: ContentBlockFGama,
-  defaultProseFigure: ContentBlockPFAlpha,
-  defaultFigureProse: ContentBlockPFBeta,
-  fullProseFigure: ContentBlockPFGama,
-  fullFigureProse: ContentBlockPFDelta
+const defaultBlockName = 'default';
+const wideBlockName = 'wide';
+const fullBlockName = 'full';
+
+// This will result an object like below
+// { defaultProse: ContentBlockPAlpha,
+// wideProse: ContentBlockPBeta,
+// defaultFigure; ContentBlockFAlpha,
+// ...
+// fullProseFigure: ContentBlockPFGama
+// fullFigureProse: ContentBlockPFDelta }
+const matchingBlocks = {
+  [`${defaultBlockName}${proseDisplayName}`]: ContentBlockPAlpha,
+  [`${wideBlockName}${proseDisplayName}`]: ContentBlockPBeta,
+  [`${defaultBlockName}${figureDisplayName}`]: ContentBlockFAlpha,
+  [`${wideBlockName}${figureDisplayName}`]: ContentBlockFBeta,
+  [`${fullBlockName}${figureDisplayName}`]: ContentBlockFGama,
+  [`${defaultBlockName}${proseDisplayName}${figureDisplayName}`]:
+    ContentBlockPFAlpha,
+  [`${defaultBlockName}${figureDisplayName}${proseDisplayName}`]:
+    ContentBlockPFBeta,
+  [`${fullBlockName}${proseDisplayName}${figureDisplayName}`]:
+    ContentBlockPFGama,
+  [`${fullBlockName}${figureDisplayName}${proseDisplayName}`]:
+    ContentBlockPFDelta
 };
 
+export const generalErrorMessage = 'There is an error in this block';
+export const blockTypeErrorMessage = 'We do not support block type';
+export const contentTypeErrorMessage =
+  'We do not support this composition of contents';
 function BlockComponent(props) {
   const { children, error, type } = props;
   if (error) {
     return (
       <ErrorBlock>
-        There is an error in this block: {error.message}
-        <ul>
-          <li>Did you pass a wrong type name?</li>
-          <li>Did you pass more than one caption for one figure?</li>
-        </ul>
+        <span>{generalErrorMessage} : </span>
+        <strong>{error.message}</strong>
       </ErrorBlock>
     );
   } else {
@@ -208,14 +227,14 @@ function BlockComponent(props) {
 
     // Check if there was any error that editor could make
     // providing a helpful error message
-    if (!['default', 'wide', 'full'].includes(typeName))
-      throw Error(`We do not support typeName ${typeName}`);
+    if (![defaultBlockName, wideBlockName, fullBlockName].includes(typeName))
+      throw Error(`${blockTypeErrorMessage} '${typeName}'`);
 
-    if (!blockType[`${typeName}${childrenComponents}`])
-      throw Error('We do not support this composition of Blocks.');
+    if (!matchingBlocks[`${typeName}${childrenComponents}`])
+      throw Error(contentTypeErrorMessage);
 
     return React.createElement(
-      blockType[`${typeName}${childrenComponents}`],
+      matchingBlocks[`${typeName}${childrenComponents}`],
       props
     );
   }
@@ -252,7 +271,7 @@ class BlockErrorBoundary extends React.Component {
 }
 
 BlockErrorBoundary.propTypes = {
-  childToRender: T.node
+  childToRender: T.elementType
 };
 
 const BlockWithError = (props) => (

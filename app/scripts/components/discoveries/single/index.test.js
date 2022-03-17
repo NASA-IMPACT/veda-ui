@@ -4,17 +4,21 @@
  */
 import React from 'react';
 import { render } from '@testing-library/react';
-import Block from '$components/discoveries/blocks';
+import Block, {
+  generalErrorMessage,
+  blockTypeErrorMessage,
+  contentTypeErrorMessage
+} from '$components/discoveries/blocks';
 import Figure from '$components/discoveries/blocks/figure';
 import { Caption } from '$components/discoveries/images';
 
-test('Throws an error when content is not wrapped with Prose', () => {
+test('Throws a content type when not supported content composition is passed', () => {
   const { getByText } = render(
     <Block>
       <p>test</p>
     </Block>
   );
-  expect(getByText(/There is an error in this block: /)).toBeDefined();
+  expect(getByText(new RegExp(contentTypeErrorMessage, 'g'))).toBeDefined();
 });
 
 test('Throws an error when a block has two captions', () => {
@@ -26,5 +30,16 @@ test('Throws an error when a block has two captions', () => {
       </Figure>
     </Block>
   );
-  expect(getByText(/There is an error in this block: /)).toBeDefined();
+  expect(getByText(new RegExp(generalErrorMessage, 'g'))).toBeDefined();
+});
+
+test('Throws an error when a block has wrong type name', () => {
+  const { getByText } = render(
+    <Block type='almost-full'>
+      <Figure>
+        <Caption />
+      </Figure>
+    </Block>
+  );
+  expect(getByText(new RegExp(blockTypeErrorMessage, 'g'))).toBeDefined();
 });

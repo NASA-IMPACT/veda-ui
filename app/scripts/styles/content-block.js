@@ -89,13 +89,11 @@ const ContentBlockProse = styled(VarProse)`
     }
   }
 `;
-
-ContentBlockProse.displayName = 'Prose';
+export const proseDisplayName = 'Prose';
+ContentBlockProse.displayName = proseDisplayName;
 
 const ContentBlockFigure = styled(Figure)`
   /* styled-component */
 `;
-
-ContentBlockFigure.displayName = 'Figure';
 
 export { ContentBlockFigure, ContentBlockProse };
