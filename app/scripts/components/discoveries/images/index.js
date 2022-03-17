@@ -8,17 +8,11 @@ import {
   FigureAttribution
 } from '$components/common/figure';
 
-export const Caption = function ({ attr, attrAuthor, attrUrl }) {
+export const Caption = function ({ children, attrAuthor, attrUrl }) {
   return (
     <Figcaption>
-      {attr && <FigcaptionInner>{attr}</FigcaptionInner>}
-      {attrAuthor && attrUrl && (
-        <FigureAttribution
-          author={attrAuthor}
-          url={attrUrl}
-          forwardedAs='span'
-        />
-      )}
+      {children && <FigcaptionInner>{children}</FigcaptionInner>}
+      <FigureAttribution author={attrAuthor} url={attrUrl} forwardedAs='span' />
     </Figcaption>
   );
 };
@@ -28,9 +22,9 @@ export const CaptionDisplayName = 'Caption';
 Caption.displayName = CaptionDisplayName;
 
 Caption.propTypes = {
-  attr: T.string,
   attrAuthor: T.string,
-  attrUrl: T.string
+  attrUrl: T.string,
+  children: T.node
 };
 
 const Image = function (props) {
@@ -41,7 +35,9 @@ const Image = function (props) {
     // if it is an inline image with a caption
     <Figure className={`align-${imageAlign}`}>
       <img loading='lazy' {...propsWithoutAttrs} />
-      <Caption attr={attr} attrAuthor={attrAuthor} attrUrl={props.attrUrl} />
+      <Caption attrAuthor={attrAuthor} attrUrl={props.attrUrl}>
+        {attr}
+      </Caption>
     </Figure>
   ) : (
     <img loading='lazy' {...propsWithoutAttrs} />
