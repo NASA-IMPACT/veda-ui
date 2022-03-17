@@ -12,7 +12,6 @@
   },
   "license": "BSD-3-Clause",
   "source": "./app/index.html",
-  "types": "./app/scripts/main.d.ts",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "serve": "NODE_ENV=development gulp serve",
