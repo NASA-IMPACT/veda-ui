@@ -194,7 +194,7 @@ function Home() {
                   <Card
                     cardType='featured'
                     linkLabel='View more'
-                    linkTo={t.id}
+                    linkTo={`${thematicDiscoveriesPath(thematic)}/${t.id}`}
                     title={t.name}
                     parentName='Discovery'
                     parentTo={thematicDiscoveriesPath(thematic)}
@@ -230,7 +230,7 @@ function Home() {
                   <Card
                     cardType='featured'
                     linkLabel='View more'
-                    linkTo={t.id}
+                    linkTo={`${thematicDatasetsPath(thematic)}/${t.id}`}
                     title={t.name}
                     parentName='Dataset'
                     parentTo={thematicDatasetsPath(thematic)}
