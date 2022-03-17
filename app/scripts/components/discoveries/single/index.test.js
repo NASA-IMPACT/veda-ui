@@ -8,9 +8,9 @@ import Block, {
   generalErrorMessage,
   blockTypeErrorMessage,
   contentTypeErrorMessage
-} from '$components/discoveries/blocks';
-import Figure from '$components/discoveries/blocks/figure';
-import { Caption } from '$components/discoveries/images';
+} from '$components/common/blocks';
+import Figure from '$components/common/blocks/figure';
+import { Caption } from '$components/common/images';
 
 test('Throws a content type when not supported content composition is passed', () => {
   const { getByText } = render(

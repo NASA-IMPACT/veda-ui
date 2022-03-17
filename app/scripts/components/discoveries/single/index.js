@@ -15,11 +15,11 @@ import {
 
 import { thematicDiscoveriesPath } from '$utils/routes';
 
+import Block from '$components/common/blocks';
+import ContentBlockFigure from '$components/common/blocks/figure';
+import Image from '$components/common/images/';
 import { ContentBlockProse } from '$styles/content-block';
-import Block from '$components/discoveries/blocks';
-import ContentBlockFigure from '$components/discoveries/blocks/figure';
 import Chart from '$components/discoveries/chart/';
-import Image from '$components/discoveries/images/';
 import { Caption } from '$components/discoveries/images/';
 
 function DiscoveriesSingle() {
