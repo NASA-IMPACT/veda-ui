@@ -12,12 +12,13 @@ import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
-import { SimpleMap } from './map';
 import { useDatasetAsyncLayer } from '$context/layer-data';
 import {
   MapLoading,
   LoadingSkeleton
 } from '$components/common/loading-skeleton';
+import { SimpleMap } from './map';
+import MapMessage from './map-message';
 
 const MapsContainer = styled.div`
   position: relative;
@@ -138,13 +139,12 @@ function MapboxMapComponent(props, ref) {
             onStatusChange={setCompareLayerStatus}
           />
         )}
-      {shouldRenderCompare && compareLayerStatus === 'loading' && (
-        <MapLoading position='right'>
-          <LoadingSkeleton />
-          <LoadingSkeleton />
-          <LoadingSkeleton />
-        </MapLoading>
-      )}
+
+      {/*
+        Normally we only need 1 loading which is centered. If we're comparing we
+        need to render a loading for each layer, but instead of centering them,
+        we show them on top of their respective map.
+      */}
       {baseLayerStatus === 'loading' && (
         <MapLoading position={shouldRenderCompare ? 'left' : 'center'}>
           <LoadingSkeleton />
@@ -152,6 +152,23 @@ function MapboxMapComponent(props, ref) {
           <LoadingSkeleton />
         </MapLoading>
       )}
+      {shouldRenderCompare && compareLayerStatus === 'loading' && (
+        <MapLoading position='right'>
+          <LoadingSkeleton />
+          <LoadingSkeleton />
+          <LoadingSkeleton />
+        </MapLoading>
+      )}
+
+      <MapMessage
+        id='compare-message'
+        active={!!(shouldRenderCompare && compareLayerResolvedData)}
+      >
+        {compareLayerResolvedData?.mapLabel}
+      </MapMessage>
+      {/*
+        Maps container
+      */}
       <MapsContainer
         as={as}
         className={className}

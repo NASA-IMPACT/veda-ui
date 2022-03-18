@@ -48,37 +48,42 @@ export const getCompareLayerData = (
   // case of a STAC layer defined inline the missing properties are inherited
   // from the parent layer.
   if (compareSTAC.stacCol) {
+    // Extract properties that need special handling, letting the other ones
+    // through.
+    const { stacCol, type, zoomExtent, sourceParams, ...passThroughProps } =
+      compareSTAC;
+
     return {
-      id: compareSTAC.stacCol,
-      type: compareSTAC.type || layerData.type,
-      zoomExtent: compareSTAC.zoomExtent || layerData.zoomExtent,
-      datetime: compareSTAC.datetime,
-      sourceParams: defaultsDeep(
-        {},
-        compareSTAC.sourceParams,
-        layerData.sourceParams
-      )
+      id: stacCol,
+      type: type || layerData.type,
+      zoomExtent: zoomExtent || layerData.zoomExtent,
+      sourceParams: defaultsDeep({}, sourceParams, layerData.sourceParams),
+      ...passThroughProps
     };
   }
 
   // When we're comparing against a layer from another dataset, that layer's
   // properties are overridden with the ones provided in the compare object.
   if (compareInternal.layerId) {
-    const datasetData = datasets[compareInternal.datasetId].data;
-    const otherLayer = datasetData.layers.find(
-      (l) => l.id === compareInternal.layerId
-    );
+    // Extract properties that need special handling, letting the other ones
+    // through.
+    const {
+      datasetId,
+      layerId,
+      zoomExtent,
+      sourceParams,
+      ...passThroughProps
+    } = compareInternal;
+
+    const datasetData = datasets[datasetId].data;
+    const otherLayer = datasetData.layers.find((l) => l.id === layerId);
 
     return {
       id: otherLayer.id,
       type: otherLayer.type,
-      zoomExtent: compareInternal.zoomExtent || otherLayer.zoomExtent,
-      datetime: compareInternal.datetime,
-      sourceParams: defaultsDeep(
-        {},
-        compareSTAC.sourceParams,
-        otherLayer.sourceParams
-      )
+      zoomExtent: zoomExtent || otherLayer.zoomExtent,
+      sourceParams: defaultsDeep({}, sourceParams, otherLayer.sourceParams),
+      ...passThroughProps
     };
   }
 
