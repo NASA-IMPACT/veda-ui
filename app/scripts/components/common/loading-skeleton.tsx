@@ -1,5 +1,5 @@
+/* eslint-disable prettier/prettier */
 import styled, { keyframes, css } from 'styled-components';
-import T from 'prop-types';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 const pulse = keyframes`
@@ -12,7 +12,15 @@ const pulse = keyframes`
   }
 `;
 
-export const LoadingSkeleton = styled.span`
+interface LoadingSkeletonProps {
+  inline?: boolean;
+  width?: number;
+  size?: 'large';
+  variation?: 'light';
+  type?: 'heading';
+}
+
+export const LoadingSkeleton = styled.span<LoadingSkeletonProps>`
   display: ${({ inline }) => (inline ? 'inline-block' : 'block')};
   background: ${themeVal('color.base-100')};
   height: 1rem;
@@ -26,22 +34,13 @@ export const LoadingSkeleton = styled.span`
   ${({ variation }) => variation === 'light' && 'background: rgba(#fff, 0.48);'}
 
   /* type modifier */
-  ${({ type }) =>
+  ${({ type, variation }) =>
     type === 'heading' &&
     css`
       background: ${themeVal('color.base-200')};
-      ${({ variation }) =>
-        variation === 'light' && 'background: rgba(#fff, 0.80);'}
+      ${variation === 'light' && 'background: rgba(#fff, 0.80);'}
     `}
 `;
-
-LoadingSkeleton.propTypes = {
-  type: T.string,
-  variation: T.string,
-  size: T.string,
-  width: T.number,
-  inline: T.bool
-};
 
 export const LoadingSkeletonGroup = styled.div`
   display: flex;
@@ -49,22 +48,28 @@ export const LoadingSkeletonGroup = styled.div`
   gap: ${glsp(0.5)};
 `;
 
-LoadingSkeletonGroup.propTypes = {
-  style: T.object,
-  children: T.node
-};
+interface MapLoadingProps {
+  position?: 'left' | 'right' | 'center';
+}
 
-export const MapLoading = styled.div`
+export const MapLoading = styled.div<MapLoadingProps>`
   position: absolute;
+  z-index: 1;
   display: grid;
   top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
   grid-template-columns: repeat(1fr, 3);
   grid-template-rows: repeat(1fr, 3);
   width: 8rem;
   aspect-ratio: 1;
   gap: ${glsp(0.5)};
+
+  ${({ position }) => {
+    
+    if (position === 'left') return 'left: 25%;';
+    if (position === 'right') return 'left: 75%;';
+    return 'left: 50%;';
+  }}
 
   > * {
     height: auto;

@@ -14,6 +14,10 @@ import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { SimpleMap } from './map';
 import { useDatasetAsyncLayer } from '$context/layer-data';
+import {
+  MapLoading,
+  LoadingSkeleton
+} from '$components/common/loading-skeleton';
 
 const MapsContainer = styled.div`
   position: relative;
@@ -39,6 +43,9 @@ function MapboxMapComponent(props, ref) {
 
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
+
+  const [baseLayerStatus, setBaseLayerStatus] = useState('idle');
+  const [compareLayerStatus, setCompareLayerStatus] = useState('idle');
 
   // Add ref control operations to allow map to be controlled by the parent.
   useImperativeHandle(ref, () => ({
@@ -110,6 +117,7 @@ function MapboxMapComponent(props, ref) {
           date={date}
           sourceParams={baseLayerResolvedData.sourceParams}
           zoomExtent={baseLayerResolvedData.zoomExtent}
+          onStatusChange={setBaseLayerStatus}
         />
       )}
 
@@ -127,8 +135,23 @@ function MapboxMapComponent(props, ref) {
             mapInstance={mapCompareRef.current}
             date={compareLayerResolvedData.datetime}
             sourceParams={compareLayerResolvedData.sourceParams}
+            onStatusChange={setCompareLayerStatus}
           />
         )}
+      {shouldRenderCompare && compareLayerStatus === 'loading' && (
+        <MapLoading position='right'>
+          <LoadingSkeleton />
+          <LoadingSkeleton />
+          <LoadingSkeleton />
+        </MapLoading>
+      )}
+      {baseLayerStatus === 'loading' && (
+        <MapLoading position={shouldRenderCompare ? 'left' : 'center'}>
+          <LoadingSkeleton />
+          <LoadingSkeleton />
+          <LoadingSkeleton />
+        </MapLoading>
+      )}
       <MapsContainer
         as={as}
         className={className}

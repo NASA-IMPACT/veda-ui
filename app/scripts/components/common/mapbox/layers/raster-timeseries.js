@@ -60,7 +60,8 @@ export function MapLayerRasterTimeseries(props) {
     date,
     mapInstance,
     sourceParams = {},
-    zoomExtent
+    zoomExtent,
+    onStatusChange: changeStatus
   } = props;
 
   const [showMarkers, setShowMarkers] = useState(
@@ -76,6 +77,7 @@ export function MapLayerRasterTimeseries(props) {
       setShowMarkers(showMarkers);
     };
 
+    zoomEnd();
     mapInstance.on('zoomend', zoomEnd);
 
     return () => {
@@ -92,6 +94,7 @@ export function MapLayerRasterTimeseries(props) {
 
     const load = async () => {
       try {
+        changeStatus?.('loading');
         LOG &&
           /* eslint-disable-next-line no-console */
           console.groupCollapsed(
@@ -157,7 +160,12 @@ export function MapLayerRasterTimeseries(props) {
 
           return marker;
         });
+
+        changeStatus?.('succeeded');
       } catch (error) {
+        if (!controller.signal.aborted) {
+          changeStatus?.('failed');
+        }
         LOG &&
           /* eslint-disable-next-line no-console */
           console.log(
@@ -173,12 +181,13 @@ export function MapLayerRasterTimeseries(props) {
 
     return () => {
       controller && controller.abort();
+      changeStatus?.('idle');
 
       if (mapInstance) {
         addedMarkers.forEach((marker) => marker.remove());
       }
     };
-  }, [id, layerId, date, mapInstance, showMarkers, sourceParams]);
+  }, [id, changeStatus, layerId, date, mapInstance, showMarkers, sourceParams]);
 
   // Request and manage tiles.
   useEffect(() => {
@@ -187,6 +196,7 @@ export function MapLayerRasterTimeseries(props) {
     const controller = new AbortController();
 
     const load = async () => {
+      changeStatus?.('loading');
       try {
         LOG &&
           /* eslint-disable-next-line no-console */
@@ -242,7 +252,11 @@ export function MapLayerRasterTimeseries(props) {
           type: 'raster',
           source: id
         });
+        changeStatus?.('succeeded');
       } catch (error) {
+        if (!controller.signal.aborted) {
+          changeStatus?.('failed');
+        }
         LOG &&
           /* eslint-disable-next-line no-console */
           console.log('MapLayerRasterTimeseries %cAborted', 'color: red;', id);
@@ -254,13 +268,14 @@ export function MapLayerRasterTimeseries(props) {
 
     return () => {
       controller && controller.abort();
+      changeStatus?.('idle');
 
       if (mapInstance?.getSource(id)) {
         mapInstance.removeLayer(id);
         mapInstance.removeSource(id);
       }
     };
-  }, [id, layerId, date, mapInstance, showMarkers, sourceParams]);
+  }, [id, changeStatus, layerId, date, mapInstance, showMarkers, sourceParams]);
 
   return null;
 }
