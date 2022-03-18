@@ -9,6 +9,8 @@ import Hug from './hug/index.ts';
 
 import { FigcaptionInner, Figure } from '$components/common/figure';
 
+import { proseDisplayName } from '$components/common/blocks/block-constant';
+
 export const ContentBlock = styled(Hug)`
   padding-top: ${variableGlsp(2)};
   padding-bottom: ${variableGlsp(2)};
@@ -89,7 +91,8 @@ const ContentBlockProse = styled(VarProse)`
     }
   }
 `;
-export const proseDisplayName = 'Prose';
+
+// assign displayName that a block can tell
 ContentBlockProse.displayName = proseDisplayName;
 
 const ContentBlockFigure = styled(Figure)`

@@ -3,13 +3,20 @@ import styled from 'styled-components';
 import T from 'prop-types';
 import { media, themeVal, glsp } from '@devseed-ui/theme-provider';
 
-import {
-  ContentBlock,
-  ContentBlockProse,
-  proseDisplayName
-} from '$styles/content-block';
+import { ContentBlock, ContentBlockProse } from '$styles/content-block';
 
-import ContentBlockFigure, { figureDisplayName } from './figure';
+import {
+  defaultBlockName,
+  wideBlockName,
+  fullBlockName,
+  generalErrorMessage,
+  blockTypeErrorMessage,
+  contentTypeErrorMessage,
+  figureDisplayName,
+  proseDisplayName
+} from './block-constant';
+
+import ContentBlockFigure from './figure';
 
 export const ContentBlockPAlpha = styled(ContentBlock)`
   ${ContentBlockProse} {
@@ -172,10 +179,6 @@ export const ErrorBlock = styled.div`
   padding: ${glsp(3)};
 `;
 
-const defaultBlockName = 'default';
-const wideBlockName = 'wide';
-const fullBlockName = 'full';
-
 // This will result an object like below
 // { defaultProse: ContentBlockPAlpha,
 // wideProse: ContentBlockPBeta,
@@ -198,11 +201,6 @@ const matchingBlocks = {
   [`${fullBlockName}${figureDisplayName}${proseDisplayName}`]:
     ContentBlockPFDelta
 };
-
-export const generalErrorMessage = 'There is an error in this block';
-export const blockTypeErrorMessage = 'We do not support block type';
-export const contentTypeErrorMessage =
-  'We do not support this composition of contents';
 function BlockComponent(props) {
   const { children, error, type } = props;
   if (error) {
@@ -225,8 +223,6 @@ function BlockComponent(props) {
       ''
     );
 
-    // Check if there was any error that editor could make
-    // providing a helpful error message
     if (![defaultBlockName, wideBlockName, fullBlockName].includes(typeName))
       throw Error(`${blockTypeErrorMessage} '${typeName}'`);
 

@@ -8,6 +8,8 @@ import {
   FigureAttribution
 } from '$components/common/figure';
 
+import { CaptionDisplayName } from '$components/common/blocks/block-constant';
+
 export const Caption = function ({ children, attrAuthor, attrUrl }) {
   return (
     <Figcaption>
@@ -16,8 +18,6 @@ export const Caption = function ({ children, attrAuthor, attrUrl }) {
     </Figcaption>
   );
 };
-
-export const CaptionDisplayName = 'Caption';
 
 Caption.displayName = CaptionDisplayName;
 
