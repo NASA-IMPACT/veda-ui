@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   DatasetLayer,
   DatasetLayerCompareNormalized,
@@ -62,22 +62,27 @@ export const LayerDataProvider = LayerDataContainer.Provider;
 export interface AsyncDatasetLayer {
   baseLayer: StateSlice<Omit<DatasetLayer, 'compare'> & STACLayerData>;
   compareLayer: StateSlice<DatasetLayerCompareNormalized & STACLayerData>;
+  reFetch: (() => void) | null;
 }
 
 const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
   const { fetchLayerData, getState } = LayerDataContainer.useContainer();
 
-  useEffect(() => {
-    if (!layers) return null;
-
-    layers.forEach((layer) => {
+  const fetchData = useCallback(
+    (layer) => {
       fetchLayerData({ id: layer.id });
       const compareLayer = getCompareLayerData(layer);
       if (compareLayer && compareLayer.id !== layer.id) {
         fetchLayerData({ id: compareLayer.id });
       }
-    });
-  }, [fetchLayerData, layers]);
+    },
+    [fetchLayerData]
+  );
+
+  useEffect(() => {
+    if (!layers) return null;
+    layers.forEach(fetchData);
+  }, [fetchData, layers]);
 
   return useMemo(() => {
     if (!layers) return null;
@@ -117,10 +122,11 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 
       return {
         baseLayer: mergeSTACData(layerProps),
-        compareLayer: mergeSTACData(compareLayer)
+        compareLayer: mergeSTACData(compareLayer),
+        reFetch: () => fetchData(layer)
       };
     });
-  }, [getState, layers]);
+  }, [getState, fetchData, layers]);
 };
 
 // Context consumers.
@@ -142,7 +148,8 @@ export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
     () =>
       asyncLayers?.[0] || {
         baseLayer: null,
-        compareLayer: null
+        compareLayer: null,
+        reFetch: null
       },
     [asyncLayers]
   );

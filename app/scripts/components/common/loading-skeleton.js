@@ -53,3 +53,35 @@ LoadingSkeletonGroup.propTypes = {
   style: T.object,
   children: T.node
 };
+
+export const MapLoading = styled.div`
+  position: absolute;
+  display: grid;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  grid-template-columns: repeat(1fr, 3);
+  grid-template-rows: repeat(1fr, 3);
+  width: 8rem;
+  aspect-ratio: 1;
+  gap: ${glsp(0.5)};
+
+  > * {
+    height: auto;
+  }
+
+  > *:nth-child(1) {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 2;
+  }
+
+  > *:nth-child(2) {
+    grid-column: 3 / span 1;
+    grid-row: 2 / span 1;
+  }
+
+  > *:nth-child(3) {
+    grid-column: 2 / span 1;
+    grid-row: 3 / span 1;
+  }
+`;
