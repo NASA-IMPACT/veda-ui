@@ -33,10 +33,8 @@ layers:
       datasetId: sandbox
       layerId: no2-monthly
       datetime: |
-        ::js ({ datetime }) => {
-          const d = new Date(datetime.getTime());
-          d.setFullYear(d.getFullYear() - 1);
-          return d;
+        ::js ({ datetime, dateFns }) => {
+          return dateFns.sub(datetime, { years: 1 });
         }
       mapLabel: |
         ::js ({ datetime, dateFns }) => {
