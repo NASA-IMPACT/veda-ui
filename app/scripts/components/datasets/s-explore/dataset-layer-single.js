@@ -21,6 +21,7 @@ import {
 
 const LayerSelf = styled(ElementInteractiveWrapper)`
   border-radius: 0;
+  transition: background 0.16s ease 0s;
 
   > div {
     background: none;
