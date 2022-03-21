@@ -8,7 +8,7 @@ import {
   FigureAttribution
 } from '$components/common/figure';
 
-import { CaptionDisplayName } from '$components/common/blocks/block-constant';
+import { captionDisplayName } from '$components/common/blocks/block-constant';
 
 export const Caption = function ({ children, attrAuthor, attrUrl }) {
   return (
@@ -19,7 +19,7 @@ export const Caption = function ({ children, attrAuthor, attrUrl }) {
   );
 };
 
-Caption.displayName = CaptionDisplayName;
+Caption.displayName = captionDisplayName;
 
 Caption.propTypes = {
   attrAuthor: T.string,

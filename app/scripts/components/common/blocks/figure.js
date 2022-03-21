@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import T from 'prop-types';
 import { Figure } from '$components/common/figure';
-import { figureDisplayName, CaptionDisplayName } from './block-constant';
+import { figureDisplayName, captionDisplayName } from './block-constant';
 import { BlockErrorBoundary } from './';
 
 const ContentBlockFigure = (props) => {
@@ -10,7 +10,7 @@ const ContentBlockFigure = (props) => {
   // Figure can be empty
   if (children) {
     const captionChild = children.filter(
-      (e) => e.type.displayName === CaptionDisplayName
+      (e) => e.type.displayName === captionDisplayName
     );
     if (captionChild.length > 1)
       throw Error('More than one caption for a figure');

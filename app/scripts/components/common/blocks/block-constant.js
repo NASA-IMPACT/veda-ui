@@ -9,4 +9,4 @@ export const contentTypeErrorMessage =
 
 export const figureDisplayName = 'Figure';
 export const proseDisplayName = 'Prose';
-export const CaptionDisplayName = 'Caption';
+export const captionDisplayName = 'Caption';
