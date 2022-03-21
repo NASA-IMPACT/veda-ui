@@ -40,10 +40,7 @@ export default function LayerAlert(props) {
         variation='base-text'
         onClick={onRetryClick}
       >
-        <CollecticonArrowLoop
-          meaningful
-          title='Retry layer loading'
-        />
+        <CollecticonArrowLoop meaningful title='Retry layer loading' />
       </Button>
     </InlineAlert>
   );
