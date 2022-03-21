@@ -41,7 +41,6 @@ export default function LayerAlert(props) {
         onClick={onRetryClick}
       >
         <CollecticonArrowLoop
-          size='small'
           meaningful
           title='Retry layer loading'
         />
