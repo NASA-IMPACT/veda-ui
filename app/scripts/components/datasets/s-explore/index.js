@@ -8,8 +8,10 @@ import React, {
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
-import { themeVal } from '@devseed-ui/theme-provider';
+import { glsp, themeVal, truncated } from '@devseed-ui/theme-provider';
 import {
+  CollecticonChevronDownSmall,
+  CollecticonChevronUpSmall,
   CollecticonSlidersHorizontal,
   CollecticonSwapHorizontal
 } from '@devseed-ui/collecticons';
@@ -53,6 +55,7 @@ import {
   checkLayerLoadStatus,
   resolveLayerTemporalExtent
 } from '$components/common/mapbox/layers/utils';
+import { Heading } from '@devseed-ui/typography';
 
 const Explorer = styled.div`
   position: relative;
@@ -70,6 +73,36 @@ const Carto = styled.div`
   ${MapboxMap} {
     position: absolute;
     inset: 0;
+  }
+`;
+
+const HeadingButton = styled.button`
+  appearance: none;
+  max-width: 100%;
+  position: relative;
+  display: flex;
+  gap: ${glsp(0.25)};
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: currentColor;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: left;
+  transition: all 0.32s ease 0s;
+
+  &:hover {
+    opacity: 0.64;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  > span {
+    ${truncated}
   }
 `;
 
@@ -325,22 +358,38 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
                               min={availableActiveLayerDates?.[0]}
                               onConfirm={datePickerConfirm}
                               value={datePickerValue}
+                              renderTriggerElement={(
+                                { active, className, ...rest },
+                                label
+                              ) => {
+                                return (
+                                  <Heading as='h4' size='xmall'>
+                                    <HeadingButton {...rest} as='button'>
+                                      <span>{label}</span>{' '}
+                                      {active ? (
+                                        <CollecticonChevronUpSmall />
+                                      ) : (
+                                        <CollecticonChevronDownSmall />
+                                      )}
+                                    </HeadingButton>
+                                  </Heading>
+                                );
+                              }}
                             />
                           )}
                         </WidgetItemHeadline>
                         <Toolbar size='small'>
-                          {!!activeLayer?.compareLayer && (
-                            <ToolbarIconButton
-                              variation='base-text'
-                              active={isComparing}
-                              onClick={() => setComparing(!isComparing)}
-                            >
-                              <CollecticonSwapHorizontal
-                                title='Toggle comparison'
-                                meaningful
-                              />
-                            </ToolbarIconButton>
-                          )}
+                          <ToolbarIconButton
+                            variation='base-text'
+                            active={isComparing}
+                            disabled={!activeLayer?.compareLayer}
+                            onClick={() => setComparing(!isComparing)}
+                          >
+                            <CollecticonSwapHorizontal
+                              title='Toggle comparison'
+                              meaningful
+                            />
+                          </ToolbarIconButton>
                         </Toolbar>
                       </WidgetItemHGroup>
                     </WidgetItemHeader>
