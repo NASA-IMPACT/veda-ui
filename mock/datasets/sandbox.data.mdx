@@ -32,11 +32,16 @@ layers:
     compare:
       datasetId: sandbox
       layerId: no2-monthly
-      datetime: ::js ({ datetime }) => {
+      datetime: |
+        ::js ({ datetime }) => {
           const d = new Date(datetime.getTime());
           d.setFullYear(d.getFullYear() - 1);
-          return d
-      mapLabel: () => 'Comparing';
+          return d;
+        }
+      mapLabel: |
+        ::js ({ datetime, dateFns }) => {
+          const comparingDate = dateFns.sub(datetime, { years: 1 });
+          return `${dateFns.format(datetime, 'LLL YYYY')} - ${dateFns.format(comparingDate, 'LLL YYYY')}`;
         }
   - id: nightlights-hd-monthly
     name: Nightlights Monthly
