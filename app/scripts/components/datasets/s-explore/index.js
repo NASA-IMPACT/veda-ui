@@ -14,7 +14,7 @@ import {
   CollecticonSwapHorizontal
 } from '@devseed-ui/collecticons';
 import { DatePicker } from '@devseed-ui/date-picker';
-import { Button } from '@devseed-ui/button';
+import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 
 import { resourceNotFound } from '$components/uhoh';
 import PageLocalNav, {
@@ -34,7 +34,10 @@ import {
   PanelWidgetBody,
   PanelWidgetHeader,
   PanelWidgetTitle,
-  PANEL_REVEAL_DURATION
+  PANEL_REVEAL_DURATION,
+  WidgetItemHeader,
+  WidgetItemHeadline,
+  WidgetItemHGroup
 } from '$styles/panel';
 import { LayoutProps } from '$components/common/layout-root';
 import MapboxMap from '$components/common/mapbox';
@@ -301,30 +304,40 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
                     <PanelWidgetTitle>Date</PanelWidgetTitle>
                   </PanelWidgetHeader>
                   <PanelWidgetBody>
-                    {activeLayerTimeseries && (
-                      <DatePicker
-                        id='date-picker'
-                        alignment='left'
-                        direction='down'
-                        view={getDatePickerView(
-                          activeLayerTimeseries.timeDensity
-                        )}
-                        max={availableActiveLayerDates?.last}
-                        min={availableActiveLayerDates?.[0]}
-                        onConfirm={datePickerConfirm}
-                        value={datePickerValue}
-                      />
-                    )}
-                    {!!activeLayer?.compareLayer && (
-                      <Button
-                        variation='base-text'
-                        active={isComparing}
-                        onClick={() => setComparing(!isComparing)}
-                      >
-                        <CollecticonSwapHorizontal title='Toggle comparison' />
-                        Compare
-                      </Button>
-                    )}
+                    <WidgetItemHeader>
+                      <WidgetItemHGroup>
+                        <WidgetItemHeadline>
+                          {activeLayerTimeseries && (
+                            <DatePicker
+                              id='date-picker'
+                              alignment='left'
+                              direction='down'
+                              view={getDatePickerView(
+                                activeLayerTimeseries.timeDensity
+                              )}
+                              max={availableActiveLayerDates?.last}
+                              min={availableActiveLayerDates?.[0]}
+                              onConfirm={datePickerConfirm}
+                              value={datePickerValue}
+                            />
+                          )}
+                        </WidgetItemHeadline>
+                        <Toolbar size='small'>
+                          {!!activeLayer?.compareLayer && (
+                            <ToolbarIconButton
+                              variation='base-text'
+                              active={isComparing}
+                              onClick={() => setComparing(!isComparing)}
+                            >
+                              <CollecticonSwapHorizontal
+                                title='Toggle comparison'
+                                meaningful
+                              />
+                            </ToolbarIconButton>
+                          )}
+                        </Toolbar>
+                      </WidgetItemHGroup>
+                    </WidgetItemHeader>
                   </PanelWidgetBody>
                 </PanelWidget>
                 <PanelWidget>

@@ -1,6 +1,11 @@
 import styled, { css } from 'styled-components';
 
-import { media, themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
+import {
+  glsp,
+  media,
+  themeVal,
+  visuallyHidden
+} from '@devseed-ui/theme-provider';
 import { Overline } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
@@ -123,4 +128,22 @@ export const PanelWidgetTitle = styled(Overline).attrs({
 
 export const PanelWidgetBody = styled.div`
   /* styled-component */
+`;
+
+export const WidgetItemHeader = styled.header`
+  display: flex;
+  flex-flow: column nowrap;
+  padding: ${variableGlsp(0.5, 1)};
+  gap: ${glsp(0.5)};
+`;
+
+export const WidgetItemHeadline = styled.div`
+  min-width: 0px;
+`;
+
+export const WidgetItemHGroup = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${glsp(0.5)};
+  justify-content: space-between;
 `;

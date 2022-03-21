@@ -89,6 +89,7 @@
     "@devseed-ui/global-loading": "^4.0.0",
     "@devseed-ui/shadow-scrollbar": "^4.0.0",
     "@devseed-ui/theme-provider": "^4.0.0",
+    "@devseed-ui/toolbar": "^4.0.2",
     "@devseed-ui/typography": "^4.0.0",
     "@nivo/core": "^0.79.0",
     "@nivo/line": "^0.79.1",

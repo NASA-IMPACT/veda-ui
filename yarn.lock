@@ -1131,6 +1131,15 @@
     lodash.get "^4.4.2"
     polished "^3.4.2"
 
+"@devseed-ui/toolbar@^4.0.2":
+  version "4.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftoolbar/-/toolbar-4.0.2.tgz#1f085aff2d09973671818e54a515745316f74fbc"
+  integrity sha512-D6XU/uibKgcJPE98QxZaneElG1s54kGjJffnnp9SyNQCPzcYD48SmY7oazVBH+15Q2w/4jU2c0+RKxHjzoqAgg==
+  dependencies:
+    "@devseed-ui/button" "^4.0.2"
+    "@devseed-ui/theme-provider" "^4.0.2"
+    "@devseed-ui/typography" "^4.0.2"
+
 "@devseed-ui/typography@^4.0.0", "@devseed-ui/typography@^4.0.2":
   version "4.0.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftypography/-/typography-4.0.2.tgz#18da6ab84467d4258001b66c383ff92681332492"

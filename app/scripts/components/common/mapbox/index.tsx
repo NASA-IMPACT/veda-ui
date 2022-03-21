@@ -30,7 +30,7 @@ const mapOptions = {
   logoPosition: 'bottom-left',
   pitchWithRotate: false,
   dragRotate: false,
-  zoom: 3
+  zoom: 1
 };
 
 function MapboxMapComponent(props, ref) {

@@ -4,8 +4,8 @@ import styled, { css } from 'styled-components';
 import { glsp, themeVal, truncated } from '@devseed-ui/theme-provider';
 import { AccordionFold } from '@devseed-ui/accordion';
 import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
-import { Button } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
+import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 
 import {
   ElementInteractive,
@@ -13,6 +13,11 @@ import {
 } from '$components/common/element-interactive';
 import { VarProse } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
+import {
+  WidgetItemHeader,
+  WidgetItemHeadline,
+  WidgetItemHGroup
+} from '$styles/panel';
 
 const LayerSelf = styled(ElementInteractiveWrapper)`
   border-radius: 0;
@@ -57,45 +62,11 @@ const LayerSelf = styled(ElementInteractiveWrapper)`
     `}
 `;
 
-const LayerHeader = styled.header`
-  display: flex;
-  flex-flow: column nowrap;
-  padding: ${variableGlsp(0.5, 1)};
-  gap: ${glsp(0.5)};
-`;
-
-const LayerHeadline = styled.div`
-  grid-row: 1;
-  min-width: 0px;
-`;
-
-const LayerHGroup = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  gap: ${glsp(0.5)};
-  justify-content: space-between;
-`;
-
 const LayerTitle = styled(Heading).attrs({ as: 'h4', size: 'xsmall' })`
   ${truncated()}
 
   sub {
     bottom: 0;
-  }
-`;
-
-const LayerToolbar = styled.div`
-  grid-row: 1;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: flex-start;
-
-  > * {
-    margin-top: -0.125rem;
-  }
-
-  > *:not(:first-child) {
-    margin-left: ${glsp(0.25)};
   }
 `;
 
@@ -135,17 +106,15 @@ export function Layer(props) {
         id={`layer-${id}`}
         forwardedAs='div'
         renderHeader={({ isExpanded, toggleExpanded }) => (
-          <LayerHeader>
-            <LayerHGroup>
-              <LayerHeadline>
+          <WidgetItemHeader>
+            <WidgetItemHGroup>
+              <WidgetItemHeadline>
                 <LayerTitle>{name}</LayerTitle>
                 {/* <Subtitle as='p'>Subtitle</Subtitle> */}
-              </LayerHeadline>
-              <LayerToolbar>
-                <Button
+              </WidgetItemHeadline>
+              <Toolbar size='small'>
+                <ToolbarIconButton
                   variation='base-text'
-                  fitting='skinny'
-                  size='small'
                   // disabled={!info}
                   active={isExpanded}
                   onClick={toggleExpanded}
@@ -154,10 +123,10 @@ export function Layer(props) {
                     title='Information about layer'
                     meaningful
                   />
-                </Button>
-              </LayerToolbar>
-            </LayerHGroup>
-          </LayerHeader>
+                </ToolbarIconButton>
+              </Toolbar>
+            </WidgetItemHGroup>
+          </WidgetItemHeader>
         )}
         renderBody={() => (
           <LayerBodyInner>
