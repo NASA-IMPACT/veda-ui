@@ -21,7 +21,7 @@ import {
 
 const LayerSelf = styled(ElementInteractiveWrapper)`
   border-radius: 0;
-  transition: background 0.16s ease 0s;
+  transition: background 0.16s ease-in-out 0s;
 
   > div {
     background: none;
@@ -36,10 +36,12 @@ const LayerSelf = styled(ElementInteractiveWrapper)`
     content: '';
     background: ${themeVal('color.primary')};
     position: absolute;
+    top: 50%;
     left: 0;
-    width: 0;
-    height: 100%;
-    transition: width 240ms ease-in-out;
+    width: ${glsp(0.25)};
+    height: 0;
+    transform: translate(0, -50%);
+    transition: height 0.16s ease-in-out 0s;
   }
 
   ${({ isStateOver }) =>
@@ -58,7 +60,7 @@ const LayerSelf = styled(ElementInteractiveWrapper)`
       }
 
       &::before {
-        width: ${glsp(0.25)};
+        height: 100%;
       }
     `}
 `;
