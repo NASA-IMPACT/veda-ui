@@ -1,8 +1,8 @@
 import React from 'react';
+import { MDXProvider } from '@mdx-js/react';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import { FoldProse } from '$components/common/fold';
 import { resourceNotFound } from '$components/uhoh';
 import PageLocalNav from '$components/common/page-local-nav';
 import { PageMainContent } from '$styles/page';
@@ -12,7 +12,15 @@ import {
   useThematicArea,
   useThematicAreaDiscovery
 } from '$utils/thematics';
+
 import { thematicDiscoveriesPath } from '$utils/routes';
+
+import Block from '$components/common/blocks';
+import ContentBlockFigure from '$components/common/blocks/figure';
+import Image from '$components/common/images/';
+import { ContentBlockProse } from '$styles/content-block';
+import Chart from '$components/discoveries/chart/';
+import { Caption } from '$components/discoveries/images/';
 
 function DiscoveriesSingle() {
   const thematic = useThematicArea();
@@ -43,10 +51,22 @@ function DiscoveriesSingle() {
           attributionAuthor={media?.author?.name}
           attributionUrl={media?.author?.url}
         />
-        <FoldProse>
-          {pageMdx.status === 'loading' && <p>Loading page content</p>}
-          {pageMdx.status === 'success' && <pageMdx.MdxContent />}
-        </FoldProse>
+
+        {pageMdx.status === 'loading' && <p>Loading page content</p>}
+        {pageMdx.status === 'success' && (
+          <MDXProvider
+            components={{
+              Block,
+              Prose: ContentBlockProse,
+              Figure: ContentBlockFigure,
+              Caption,
+              Image,
+              Chart
+            }}
+          >
+            <pageMdx.MdxContent />
+          </MDXProvider>
+        )}
       </PageMainContent>
     </>
   );

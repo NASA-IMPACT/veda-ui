@@ -76,6 +76,7 @@
     "stylelint-config-recommended": "^3.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-processor-styled-components": "^1.10.0",
+    "ts-jest": "^27.1.3",
     "typescript": "^4.5.5"
   },
   "dependencies": {
@@ -121,7 +122,8 @@
   "jest": {
     "verbose": true,
     "transform": {
-      "^.+\\.js$": "babel-jest"
+      "^.+\\.js$": "babel-jest",
+      "^.+\\.ts?$": "ts-jest"
     },
     "globals": {
       "NODE_ENV": "test"
@@ -132,6 +134,12 @@
     ],
     "moduleDirectories": [
       "node_modules"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^\\$styles(.*)$": "<rootDir>/app/scripts/styles$1",
+      "^\\$components(.*)$": "<rootDir>/app/scripts/components$1",
+      "^\\$utils(.*)$": "<rootDir>/app/scripts/utils$1",
+      "^\\$context(.*)$": "<rootDir>/app/scripts/context$1"
+    }
   }
 }

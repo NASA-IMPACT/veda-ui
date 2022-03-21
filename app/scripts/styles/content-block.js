@@ -5,9 +5,11 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp, variableProseVSpace } from './variable-utils';
 import { VarProse } from './variable-components';
 
-import Hug from './hug';
+import Hug from './hug/index.ts';
 
 import { FigcaptionInner, Figure } from '$components/common/figure';
+
+import { proseDisplayName } from '$components/common/blocks/block-constant';
 
 export const ContentBlock = styled(Hug)`
   padding-top: ${variableGlsp(2)};
@@ -19,7 +21,7 @@ export const ContentBlock = styled(Hug)`
   }
 `;
 
-export const ContentBlockProse = styled(VarProse)`
+const ContentBlockProse = styled(VarProse)`
   gap: ${variableGlsp()};
 
   h1,
@@ -90,6 +92,11 @@ export const ContentBlockProse = styled(VarProse)`
   }
 `;
 
-export const ContentBlockFigure = styled(Figure)`
+// assign displayName that a block can tell
+ContentBlockProse.displayName = proseDisplayName;
+
+const ContentBlockFigure = styled(Figure)`
   /* styled-component */
 `;
+
+export { ContentBlockFigure, ContentBlockProse };
