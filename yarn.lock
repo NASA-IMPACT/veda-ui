@@ -8959,6 +8959,11 @@ react-lifecycles-compat@^3.0.4:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-nl2br@^1.0.2:
+  version "1.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-nl2br/-/react-nl2br-1.0.2.tgz#ebe2431245caa631242cb10a739ac9bb5b2b6da3"
+  integrity sha512-gjuv4thrXRYvDhd82ceW1fr6sBkF9ngESIuwSevznK9hBEh1KXV0SPeZKScVbHWkaKUq1aMTFeIt04JdIz4p7g==
+
 react-refresh@^0.9.0:
   version "0.9.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-refresh/-/react-refresh-0.9.0.tgz#71863337adc3e5c2f8a6bfddd12ae3bfe32aafbf"

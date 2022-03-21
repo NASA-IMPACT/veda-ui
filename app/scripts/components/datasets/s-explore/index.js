@@ -88,6 +88,12 @@ function DatasetsExplore() {
   const thematic = useThematicArea();
   const dataset = useThematicAreaDataset();
 
+  if (!dataset.data.layers?.length) {
+    throw new Error(
+      `There are no layers defined in dataset ${dataset.data.id}`
+    );
+  }
+
   /** *********************************************************************** */
   // Panel relate stuff to ensure it opens and closes and this action resizes
   // the map.
