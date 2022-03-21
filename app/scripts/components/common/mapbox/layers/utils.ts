@@ -135,6 +135,8 @@ export function resolveConfigFunctions(
     try {
       return datum(bag);
     } catch (error) {
+      /* eslint-disable-next-line no-console */
+      console.error('Failed to resolve function %s(%o) with error %s', datum.name, bag, error.message);
       return null;
     }
   }

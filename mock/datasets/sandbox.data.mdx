@@ -41,7 +41,7 @@ layers:
       mapLabel: |
         ::js ({ datetime, dateFns }) => {
           const comparingDate = dateFns.sub(datetime, { years: 1 });
-          return `${dateFns.format(datetime, 'LLL YYYY')} - ${dateFns.format(comparingDate, 'LLL YYYY')}`;
+          return `${dateFns.format(datetime, 'LLL yyyy')} - ${dateFns.format(comparingDate, 'LLL yyyy')}`;
         }
   - id: nightlights-hd-monthly
     name: Nightlights Monthly

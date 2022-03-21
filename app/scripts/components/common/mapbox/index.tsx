@@ -10,6 +10,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
+import * as dateFns from 'date-fns';
 
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { useDatasetAsyncLayer } from '$context/layer-data';
@@ -82,13 +83,16 @@ function MapboxMapComponent(props, ref) {
   // Some properties defined in the dataset layer config may be functions that
   // need to be resolved before rendering them. These functions accept data to
   // return the correct value.
-  const resolverBag = useMemo(() => ({ datetime: date }), [date]);
+  const resolverBag = useMemo(() => ({ datetime: date, dateFns }), [date]);
 
   // Resolve data needed for the base layer once the layer is loaded
   const [baseLayerResolvedData, BaseLayerComponent] = useMemo(() => {
     if (baseLayer?.status !== 'succeeded') return [null, null];
 
-    const data = resolveConfigFunctions(baseLayer.data, resolverBag);
+    // Include access to raw data.
+    const bag = { ...resolverBag, raw: baseLayer.data };
+    const data = resolveConfigFunctions(baseLayer.data, bag);
+
     return [data, getLayerComponent(data.timeseries, data.type)];
   }, [baseLayer, resolverBag]);
 
@@ -96,7 +100,10 @@ function MapboxMapComponent(props, ref) {
   const [compareLayerResolvedData, CompareLayerComponent] = useMemo(() => {
     if (compareLayer?.status !== 'succeeded') return [null, null];
 
-    const data = resolveConfigFunctions(compareLayer.data, resolverBag);
+    // Include access to raw data.
+    const bag = { ...resolverBag, raw: compareLayer.data };
+    const data = resolveConfigFunctions(compareLayer.data, bag);
+
     return [data, getLayerComponent(data.timeseries, data.type)];
   }, [compareLayer, resolverBag]);
 
