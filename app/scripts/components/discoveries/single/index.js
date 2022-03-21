@@ -20,7 +20,7 @@ import ContentBlockFigure from '$components/common/blocks/figure';
 import Image from '$components/common/images/';
 import { ContentBlockProse } from '$styles/content-block';
 import Chart from '$components/discoveries/chart/';
-import { Caption } from '$components/discoveries/images/';
+import { Caption } from '$components/common/images/';
 
 function DiscoveriesSingle() {
   const thematic = useThematicArea();
