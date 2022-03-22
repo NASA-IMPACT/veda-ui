@@ -125,28 +125,5 @@
     "$styles": "~/app/scripts/styles",
     "$utils": "~/app/scripts/utils",
     "$context": "~/app/scripts/context"
-  },
-  "jest": {
-    "verbose": true,
-    "transform": {
-      "^.+\\.js$": "babel-jest",
-      "^.+\\.ts?$": "ts-jest"
-    },
-    "globals": {
-      "NODE_ENV": "test"
-    },
-    "moduleFileExtensions": [
-      "js",
-      "jsx"
-    ],
-    "moduleDirectories": [
-      "node_modules"
-    ],
-    "moduleNameMapper": {
-      "^\\$styles(.*)$": "<rootDir>/app/scripts/styles$1",
-      "^\\$components(.*)$": "<rootDir>/app/scripts/components$1",
-      "^\\$utils(.*)$": "<rootDir>/app/scripts/utils$1",
-      "^\\$context(.*)$": "<rootDir>/app/scripts/context$1"
-    }
   }
 }
