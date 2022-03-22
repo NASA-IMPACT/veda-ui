@@ -21,6 +21,7 @@ import Image from '$components/common/images/';
 import { ContentBlockProse } from '$styles/content-block';
 import Chart from '$components/discoveries/chart/';
 import { Caption } from '$components/common/images/';
+import Map from '$components/common/blocks/map';
 
 function DiscoveriesSingle() {
   const thematic = useThematicArea();
@@ -61,7 +62,8 @@ function DiscoveriesSingle() {
               Figure: ContentBlockFigure,
               Caption,
               Image,
-              Chart
+              Chart,
+              Map
             }}
           >
             <pageMdx.MdxContent />
