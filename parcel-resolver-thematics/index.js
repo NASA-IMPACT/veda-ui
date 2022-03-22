@@ -281,6 +281,8 @@ module.exports = new Resolver({
         });
       `;
 
+      // Store the generated code in a file for debug purposed.
+      // The generated file will be gitignored.
       fs.writeFile(
         path.join(__dirname, 'delta-thematic.out.js'),
         `/**
@@ -288,7 +290,7 @@ module.exports = new Resolver({
  * WARNING!!!
  *
  * This file is the generated output of the delta/thematic resolver.
- * It is meant only or debugging purposes and should not be used directly.
+ * It is meant only or debugging purposes and should not be loaded directly.
  *
 */
 ${moduleCode}`
