@@ -11,6 +11,7 @@ import {
   DatasetLayerCompareNormalized
 } from 'delta/thematics';
 
+import { utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { MapLayerRasterTimeseries } from './raster-timeseries';
 
@@ -203,17 +204,17 @@ export function resolveLayerTemporalExtent(
 
   const { domain, isPeriodic, timeDensity } = layerData.timeseries;
 
-  if (!isPeriodic) return domain.map((d) => new Date(d));
+  if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
 
   if (timeDensity === 'month') {
     return eachMonthOfInterval({
-      start: new Date(domain[0]),
-      end: new Date(domain.last)
+      start: utcString2userTzDate(domain[0]),
+      end: utcString2userTzDate(domain.last)
     });
   } else if (timeDensity === 'day') {
     return eachDayOfInterval({
-      start: new Date(domain[0]),
-      end: new Date(domain.last)
+      start: utcString2userTzDate(domain[0]),
+      end: utcString2userTzDate(domain.last)
     });
   }
 
