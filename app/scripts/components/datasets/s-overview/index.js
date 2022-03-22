@@ -50,23 +50,21 @@ function DatasetsOverview() {
           title={dataset.data.name}
           description={dataset.data.description}
         />
-        <FoldProse>
-          {pageMdx.status === 'loading' && <p>Loading page content</p>}
-          {pageMdx.status === 'success' && (
-            <MDXProvider
-              components={{
-                Block,
-                Prose: ContentBlockProse,
-                Figure: ContentBlockFigure,
-                Caption,
-                Image,
-                Chart
-              }}
-            >
-              <pageMdx.MdxContent />
-            </MDXProvider>
-          )}
-        </FoldProse>
+        {pageMdx.status === 'loading' && <p>Loading page content</p>}
+        {pageMdx.status === 'success' && (
+          <MDXProvider
+            components={{
+              Block,
+              Prose: ContentBlockProse,
+              Figure: ContentBlockFigure,
+              Caption,
+              Image,
+              Chart
+            }}
+          >
+            <pageMdx.MdxContent />
+          </MDXProvider>
+        )}
       </PageMainContent>
     </>
   );
