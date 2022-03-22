@@ -1,4 +1,5 @@
 import React from 'react';
+import { MDXProvider } from '@mdx-js/react';
 
 import { LayoutProps } from '$components/common/layout-root';
 import { resourceNotFound } from '$components/uhoh';
@@ -14,6 +15,14 @@ import {
   useThematicArea,
   useThematicAreaDataset
 } from '$utils/thematics';
+
+import Block from '$components/common/blocks';
+import ContentBlockFigure from '$components/common/blocks/figure';
+import Image from '$components/common/images/';
+import { ContentBlockProse } from '$styles/content-block';
+import Chart from '$components/discoveries/chart/';
+import { Caption } from '$components/common/images/';
+
 import { thematicDatasetsPath } from '$utils/routes';
 
 function DatasetsOverview() {
@@ -43,7 +52,18 @@ function DatasetsOverview() {
         />
         <FoldProse>
           {pageMdx.status === 'loading' && <p>Loading page content</p>}
-          {pageMdx.status === 'success' && <pageMdx.MdxContent />}
+          <MDXProvider
+            components={{
+              Block,
+              Prose: ContentBlockProse,
+              Figure: ContentBlockFigure,
+              Caption,
+              Image,
+              Chart
+            }}
+          >
+            <pageMdx.MdxContent />
+          </MDXProvider>
         </FoldProse>
       </PageMainContent>
     </>
