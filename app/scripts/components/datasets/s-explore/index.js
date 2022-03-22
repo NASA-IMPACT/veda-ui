@@ -386,9 +386,10 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
                             onClick={() => setComparing(!isComparing)}
                           >
                             <CollecticonSwapHorizontal
-                              title='Toggle comparison'
+                              title='Compare to'
                               meaningful
                             />
+                            Baseline
                           </ToolbarIconButton>
                         </Toolbar>
                       </WidgetItemHGroup>
