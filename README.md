@@ -1,4 +1,4 @@
-# Dashboard Evolution
+# Delta
 TODO: Description
 
 ## Installation and Usage
@@ -30,6 +30,7 @@ yarn install
 Configuration is done using [dot.env](https://parceljs.org/features/node-emulation/#.env-files) files.
 
 These files are used to simplify the configuration of the app and should not contain sensitive information.
+
 #### Starting the app
 
 ```
@@ -41,6 +42,7 @@ The site will automatically refresh since it is bundled with livereload.
 
 ### Development doc
 Refer to [DEVELOPMENT](https://github.com/NASA-IMPACT/delta-ui/blob/main/DEVELOPMENT.md) docs to read about architecture.
+
 # Deployment
 To prepare the app for deployment run:
 
