@@ -1,3 +1,5 @@
+const pkg = require('./package.json');
+
 /*
  * For a detailed explanation regarding each configuration property, visit:
  * https://jestjs.io/docs/configuration
@@ -74,11 +76,22 @@ module.exports = {
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
+  // This has to be kept in sync with the alias field of package.json
   moduleNameMapper: {
-    '^\\$styles(.*)$': '<rootDir>/app/scripts/styles$1',
-    '^\\$components(.*)$': '<rootDir>/app/scripts/components$1',
-    '^\\$utils(.*)$': '<rootDir>/app/scripts/utils$1',
-    '^\\$context(.*)$': '<rootDir>/app/scripts/context$1'
+    // To simplify keeping the alias in sync the code below converts the aliases
+    // defined in the package.json to module mappings:
+    // From:
+    // "$styles": "~/app/scripts/styles"
+    // To:
+    // '^\\$styles(.*)$': '<rootDir>/app/scripts/styles$1'
+    ...Object.entries(pkg.alias).reduce((acc, [key, value]) => {
+      return value.startsWith('~/')
+        ? {
+            ...acc,
+            [`^\\${key}(.*)$`]: `<rootDir>${value.substring(1)}$1`
+          }
+        : acc;
+    }, {})
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
