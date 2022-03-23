@@ -132,7 +132,7 @@ async function loadOptionalContent(logger, root, globPath, type) {
 function stringifyDataFns(data, filePath) {
   const jsonVal = JSON.stringify(data, (k, v) => {
     if (typeof v === 'string') {
-      if (v.startsWith('::js')) {
+      if (v.match(/^(\r|\n\s)*::js/gim)) {
         return `${v} ::js`;
       }
 
@@ -149,7 +149,29 @@ function stringifyDataFns(data, filePath) {
     }
     return v;
   });
-  return jsonVal.replaceAll(/("::js ?| ?::js")/gim, '');
+
+  const regex = new RegExp('(" *::js)(?:(?!::js).)+(::js")', 'gm');
+  const matches = jsonVal.matchAll(regex);
+
+  // Stringified version of the string after all replacements.
+  let newVal = '';
+  // Index of the last match.
+  let index = 0;
+  for (const match of matches) {
+    // Anything before the match is left as is.
+    newVal += jsonVal.substring(index, match.index);
+    // Store the last index so we can keep the content from this match till the
+    // next match, during the next iteration.
+    index = match.index + match[0].length;
+    // Replace the ::js indicator and any new lines.
+    newVal += match[0]
+      .replaceAll(/("::js *| *::js")/gi, '')
+      .replaceAll('\\n', '\n');
+  }
+  // Add the rest from the last match.
+  newVal += jsonVal.substring(index);
+
+  return newVal;
 }
 
 function generateImports(data, paths) {
@@ -258,6 +280,21 @@ module.exports = new Resolver({
           };
         });
       `;
+
+      // Store the generated code in a file for debug purposed.
+      // The generated file will be gitignored.
+      fs.writeFile(
+        path.join(__dirname, 'delta-thematic.out.js'),
+        `/**
+ *
+ * WARNING!!!
+ *
+ * This file is the generated output of the delta/thematic resolver.
+ * It is meant only or debugging purposes and should not be loaded directly.
+ *
+*/
+${moduleCode}`
+      );
 
       const resolved = {
         // When resolving the mdx files, parcel looks at the parent file to know

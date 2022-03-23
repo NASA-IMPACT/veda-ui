@@ -9,7 +9,7 @@ import { makeApiAction } from './make-api-action';
 type CtxeedStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
 type FnType = (...args: Array<any>) => any;
 
-interface StateSlice<D> {
+export interface StateSlice<D> {
   status: CtxeedStatus;
   mutationStatus: CtxeedStatus;
   receivedAt: number;
@@ -143,22 +143,22 @@ interface ContexeedApiConfig {
   };
 }
 
-type Actions<T> = {
-  [K in keyof T]: (...args: any[]) => Promise<DispatchedAction>;
+type Actions<T extends { [key: string]: ContexeedApiAction }> = {
+  [K in keyof T]: (...args: Parameters<T[K]>) => Promise<DispatchedAction>;
 };
 
 type ContexeedApi<C extends ContexeedApiConfig> = Actions<C['requests']> & Actions<C['mutations']> & {
   /** Invalidate action already dispatchable. If contexeed is defined as a
    * slicedState a key will be required. */
-  invalidate(key?: string): any;
+  invalidate(key?: string): DispatchedAction;
 
   /** Function to get the current state. If contexeed is defined as a
    * slicedState a key will be required and the returned state will be a state
    * slice. */
-  getState(key?: string): any;
+  getState<T>(key?: string): StateSlice<T>;
 
   /** The state in raw format as stored in the reducer. */
-  rawState: any;
+  rawState: { [key: string]: StateSlice<any> } | StateSlice<any>;
 
   /** The reducer's dispatch function. It supports dispatching thunks. */
   dispatch(action: { type: string } | FnType): any;

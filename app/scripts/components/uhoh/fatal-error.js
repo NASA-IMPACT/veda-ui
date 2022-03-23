@@ -1,6 +1,7 @@
 import React from 'react';
 import T from 'prop-types';
 import { useLocation } from 'react-router-dom';
+import nl2br from 'react-nl2br';
 
 import UhOh from '.';
 import LayoutRoot, {
@@ -103,6 +104,12 @@ function Child(props) {
                 {process.env.APP_CONTACT_EMAIL}
               </a>
             </p>
+
+            <details>
+              <summary>Error details</summary>
+              <strong>{error.message}</strong>
+              <p>{nl2br(error.stack)}</p>
+            </details>
           </FoldProse>
         </PageMainContent>
       </LayoutRoot>

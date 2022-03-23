@@ -61,6 +61,7 @@ declare module 'delta/thematics' {
   
   interface DatasetLayerCommonCompareProps extends DatasetLayerCommonProps {
     datetime?: string | (DatasetDatumFn<DatasetDatumReturnType>);
+    mapLabel?: string | (DatasetDatumFn<DatasetDatumReturnType>);
   }
   
   export interface DatasetLayerCompareSTAC extends DatasetLayerCommonCompareProps {

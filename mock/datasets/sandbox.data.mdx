@@ -13,18 +13,14 @@ thematics:
   - agriculture
   - air-quality
 
-timeseries:
-  isPeriodic: true
-  density: month
-
 layers:
   - id: no2-monthly
     name: No2
     type: raster
     description: no2 dataset
     zoomExtent:
-      - 4
-      - 16
+      - 0
+      - 20
     sourceParams:
       resampling_method: bilinear
       bidx: 1
@@ -36,10 +32,14 @@ layers:
     compare:
       datasetId: sandbox
       layerId: no2-monthly
-      datetime: ::js ({ datetime }) => {
-          const d = new Date(datetime.getTime());
-          d.setFullYear(d.getFullYear() - 1);
-          return d
+      datetime: |
+        ::js ({ datetime, dateFns }) => {
+          return dateFns.sub(datetime, { years: 1 });
+        }
+      mapLabel: |
+        ::js ({ datetime, dateFns }) => {
+          const comparingDate = dateFns.sub(datetime, { years: 1 });
+          return `${dateFns.format(datetime, 'LLL yyyy')} - ${dateFns.format(comparingDate, 'LLL yyyy')}`;
         }
   - id: nightlights-hd-monthly
     name: Nightlights Monthly
@@ -54,5 +54,8 @@ layers:
       rescale:
         - 0
         - 255
+  - id: dev-fail
+    name: Failing layer
+    type: raster
 ---
 # Nightlights
