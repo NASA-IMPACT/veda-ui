@@ -6,7 +6,7 @@ import { glsp, themeVal, truncated } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 
-import { variableGlsp } from '$styles/variable-utils';
+import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 export const Figure = styled.figure`
   position: relative;
@@ -32,6 +32,7 @@ export const FigcaptionInner = styled(Subtitle).attrs({
   display: flex;
   flex-direction: column;
   align-items: start;
+  font-size: ${variableBaseType('0.75rem')};
   text-align: left;
 
   &::after {
