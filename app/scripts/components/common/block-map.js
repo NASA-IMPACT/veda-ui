@@ -1,7 +1,6 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
-import { themeVal } from '@devseed-ui/theme-provider';
 
 import { useDatasetAsyncLayers } from '$context/layer-data';
 import { utcString2userTzDate } from '$utils/date';
@@ -11,7 +10,6 @@ import { checkLayerLoadStatus } from '$components/common/mapbox/layers/utils';
 const Carto = styled.div`
   position: relative;
   flex-grow: 1;
-  background: ${themeVal('color.surface')};
   height: 500px;
 
   ${MapboxMap} {
@@ -20,7 +18,9 @@ const Carto = styled.div`
   }
 `;
 
+// This global variable is used to give unique ID 
 let mapInstanceId = 0;
+
 function MapBlock({ datasetId, dateTime, layerId, isComparing }) {
   const mapboxRef = useRef(null);
   const selectedDatetime = utcString2userTzDate(new Date(dateTime));

@@ -21,7 +21,7 @@ import Image from '$components/common/images/';
 import { ContentBlockProse } from '$styles/content-block';
 import Chart from '$components/discoveries/chart/';
 import { Caption } from '$components/common/images/';
-import Map from '$components/common/blocks/map';
+import Map from '$components/common/block-map';
 
 function DiscoveriesSingle() {
   const thematic = useThematicArea();
