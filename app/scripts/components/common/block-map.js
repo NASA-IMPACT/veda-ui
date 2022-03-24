@@ -18,7 +18,7 @@ const Carto = styled.div`
   }
 `;
 
-// This global variable is used to give unique ID 
+// This global variable is used to give unique ID to mapbox container
 let mapInstanceId = 0;
 
 function MapBlock({ datasetId, dateTime, layerId, isComparing }) {
