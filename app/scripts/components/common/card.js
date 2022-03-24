@@ -9,7 +9,8 @@ import {
   listReset,
   media,
   multiply,
-  themeVal
+  themeVal,
+  visuallyHidden
 } from '@devseed-ui/theme-provider';
 import { Overline } from '@devseed-ui/typography';
 
@@ -132,6 +133,10 @@ export const CardOverline = styled(Overline)`
 
   > * {
     line-height: inherit;
+  }
+
+  i {
+    ${visuallyHidden()}
   }
 `;
 
