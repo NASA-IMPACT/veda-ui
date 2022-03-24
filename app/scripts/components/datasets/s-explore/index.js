@@ -49,7 +49,7 @@ export const IntroFold = styled.div`
     padding: ${glsp(4, 0)};
   `}
 
-  ${visuallyHidden}
+  ${visuallyHidden()}
 `;
 
 export const IntroFoldInner = styled(Constrainer)`

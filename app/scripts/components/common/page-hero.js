@@ -47,7 +47,7 @@ const PageHeroSelf = styled.div`
       `}
     `}
 
-  ${({ isHidden }) => isHidden && visuallyHidden}
+  ${({ isHidden }) => isHidden && visuallyHidden()}
 
   ${FigureAttribution} {
     top: ${variableGlsp()};
@@ -100,7 +100,8 @@ function PageHero(props) {
     coverSrc,
     coverAlt,
     attributionAuthor,
-    attributionUrl
+    attributionUrl,
+    isHidden
   } = props;
 
   const hasImage = coverSrc && coverAlt;
@@ -111,7 +112,7 @@ function PageHero(props) {
       : publishedDate;
 
   return (
-    <PageHeroSelf isCover={hasImage} isHidden={props.isHidden}>
+    <PageHeroSelf isCover={hasImage} isHidden={isHidden}>
       <PageHeroInner>
         <PageHeroHGroup>
           <PageMainTitle>{title}</PageMainTitle>
