@@ -3,10 +3,15 @@ import T from 'prop-types';
 import { format } from 'date-fns';
 import styled, { css } from 'styled-components';
 
-import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
+import {
+  glsp,
+  media,
+  themeVal,
+  visuallyHidden
+} from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
-import { PageLead, PageMainTitle, PageOverline } from '../../styles/page';
+import { PageDetails, PageMainTitle, PageOverline } from '../../styles/page';
 import Constrainer from '../../styles/constrainer';
 import { variableGlsp } from '../../styles/variable-utils';
 import { Figcaption, Figure, FigureAttribution } from './figure';
@@ -41,6 +46,8 @@ const PageHeroSelf = styled.div`
         min-height: 28rem;
       `}
     `}
+
+  ${({ isHidden }) => isHidden && visuallyHidden()}
 
   ${FigureAttribution} {
     top: ${variableGlsp()};
@@ -88,12 +95,13 @@ const PageHeroCover = styled(Figure)`
 function PageHero(props) {
   const {
     title,
-    description,
+    detailsContent,
     publishedDate,
     coverSrc,
     coverAlt,
     attributionAuthor,
-    attributionUrl
+    attributionUrl,
+    isHidden
   } = props;
 
   const hasImage = coverSrc && coverAlt;
@@ -104,7 +112,7 @@ function PageHero(props) {
       : publishedDate;
 
   return (
-    <PageHeroSelf isCover={hasImage}>
+    <PageHeroSelf isCover={hasImage} isHidden={isHidden}>
       <PageHeroInner>
         <PageHeroHGroup>
           <PageMainTitle>{title}</PageMainTitle>
@@ -117,7 +125,7 @@ function PageHero(props) {
             </PageOverline>
           )}
         </PageHeroHGroup>
-        {description && <PageLead>{description}</PageLead>}
+        {detailsContent && <PageDetails>{detailsContent}</PageDetails>}
         {hasImage && (
           <PageHeroCover>
             <img src={coverSrc} alt={coverAlt} />
@@ -138,10 +146,11 @@ export default PageHero;
 
 PageHero.propTypes = {
   title: T.string,
-  description: T.string,
+  detailsContent: T.node,
   publishedDate: T.oneOfType([T.string, T.instanceOf(Date)]),
   coverSrc: T.string,
   coverAlt: T.string,
   attributionAuthor: T.string,
-  attributionUrl: T.string
+  attributionUrl: T.string,
+  isHidden: T.bool
 };

@@ -5,7 +5,7 @@ import PageHero from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
 import { resourceNotFound } from '$components/uhoh';
-import { PageMainContent } from '$styles/page';
+import { PageLead, PageMainContent } from '$styles/page';
 
 import { useThematicArea } from '$utils/thematics';
 import { thematicDiscoveriesPath } from '$utils/routes';
@@ -19,7 +19,12 @@ function DiscoveriesHub() {
       <LayoutProps title='Discoveries' />
       <PageHero
         title='Discoveries'
-        description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
+        detailsContent={
+          <PageLead>
+            Explore the guided narratives below to discover how NASA satellites
+            and other Earth observing resources reveal a changing planet.
+          </PageLead>
+        }
       />
       <Fold>
         <FoldHeader>

@@ -10,7 +10,7 @@ import LayoutRoot, {
 } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { FoldProse } from '$components/common/fold';
-import { PageMainContent } from '$styles/page';
+import { PageLead, PageMainContent } from '$styles/page';
 
 import { makeAbsUrl } from '$utils/history';
 import { useEffectPrevious } from '$utils/use-effect-previous';
@@ -80,7 +80,7 @@ function Child(props) {
         <PageMainContent>
           <PageHero
             title='Critical Error'
-            description="That's a fatal error."
+            detailsContent={<PageLead>That&apos;s a fatal error.</PageLead>}
           />
           <FoldProse>
             <p>

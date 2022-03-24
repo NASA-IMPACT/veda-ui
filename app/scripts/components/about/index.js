@@ -3,7 +3,7 @@ import React from 'react';
 import { LayoutProps } from '../common/layout-root';
 import { FoldProse } from '../common/fold';
 
-import { PageMainContent } from '../../styles/page';
+import { PageLead, PageMainContent } from '../../styles/page';
 import { resourceNotFound } from '../uhoh';
 import PageHero from '../common/page-hero';
 
@@ -20,7 +20,7 @@ function About() {
       <LayoutProps title={`About ${thematic.data.name}`} />
       <PageHero
         title={thematic.data.about?.title || 'n/a'}
-        description={thematic.data.about?.description}
+        detailsContent={<PageLead>{thematic.data.about?.description}</PageLead>}
       />
       <FoldProse>
         {pageMdx.status === 'loading' && <p>Loading page content</p>}

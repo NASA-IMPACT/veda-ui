@@ -32,7 +32,7 @@ function DatasetsUsage() {
         }
       />
       <PageMainContent>
-        <PageHero title='Usage' description={dataset.data.description} />
+        <PageHero title={`${dataset.data.name} usage`} />
         <FoldProse>
           <p>And how exactly does this dataset get used?</p>
         </FoldProse>

@@ -48,7 +48,7 @@ const ContentBlockProse = styled(VarProse)`
     }
   }
 
-  *:not(p) {
+  * {
     break-inside: avoid;
   }
 

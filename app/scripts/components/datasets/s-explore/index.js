@@ -16,12 +16,16 @@ import {
   CollecticonSwapHorizontal
 } from '@devseed-ui/collecticons';
 import { DatePicker } from '@devseed-ui/date-picker';
-import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
+import { Toolbar, ToolbarButton } from '@devseed-ui/toolbar';
+import { Heading } from '@devseed-ui/typography';
 
 import { resourceNotFound } from '$components/uhoh';
 import PageLocalNav, {
   DatasetsLocalMenu
 } from '$components/common/page-local-nav';
+import { LayoutProps } from '$components/common/layout-root';
+import MapboxMap from '$components/common/mapbox';
+import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import {
   Panel,
@@ -41,8 +45,6 @@ import {
   WidgetItemHeadline,
   WidgetItemHGroup
 } from '$styles/panel';
-import { LayoutProps } from '$components/common/layout-root';
-import MapboxMap from '$components/common/mapbox';
 import DatasetLayers from './dataset-layers';
 
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
@@ -55,7 +57,6 @@ import {
   checkLayerLoadStatus,
   resolveLayerTemporalExtent
 } from '$components/common/mapbox/layers/utils';
-import { Heading } from '@devseed-ui/typography';
 
 const Explorer = styled.div`
   position: relative;
@@ -102,7 +103,7 @@ const HeadingButton = styled.button`
   }
 
   > span {
-    ${truncated}
+    ${truncated()}
   }
 `;
 
@@ -316,6 +317,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
         }
       />
       <PageMainContent>
+        <PageHero title={`${dataset.data.name} exploration`} isHidden />
         <Explorer>
           <Panel revealed={panelRevealed} onClick={onPanelClick}>
             <PanelInner ref={panelBodyRef}>
@@ -379,7 +381,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
                           )}
                         </WidgetItemHeadline>
                         <Toolbar size='small'>
-                          <ToolbarIconButton
+                          <ToolbarButton
                             variation='base-text'
                             active={isComparing}
                             disabled={!activeLayer?.compareLayer}
@@ -390,7 +392,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
                               meaningful
                             />
                             Baseline
-                          </ToolbarIconButton>
+                          </ToolbarButton>
                         </Toolbar>
                       </WidgetItemHGroup>
                     </WidgetItemHeader>

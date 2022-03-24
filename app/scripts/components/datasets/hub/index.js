@@ -6,7 +6,7 @@ import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
 import { resourceNotFound } from '$components/uhoh';
 
-import { PageMainContent } from '$styles/page';
+import { PageLead, PageMainContent } from '$styles/page';
 import { useThematicArea } from '$utils/thematics';
 import { thematicDatasetsPath } from '$utils/routes';
 
@@ -19,7 +19,12 @@ function DatasetsHub() {
       <LayoutProps title='Datasets' />
       <PageHero
         title='Datasets'
-        description='This dashboard explores key indicators to track and compare changes over time.'
+        detailsContent={
+          <PageLead>
+            This dashboard explores key indicators to track and compare changes
+            over time.
+          </PageLead>
+        }
       />
       <Fold>
         <FoldHeader>

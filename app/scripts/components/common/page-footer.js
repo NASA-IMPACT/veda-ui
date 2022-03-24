@@ -12,7 +12,7 @@ const PageFooterSelf = styled.footer`
   background: ${themeVal('color.base-50')};
   animation: ${reveal} 0.32s ease 0s 1;
 
-  ${({ isHidden }) => isHidden && visuallyHidden}
+  ${({ isHidden }) => isHidden && visuallyHidden()}
 `;
 
 const FooterCredits = styled.address`
@@ -24,11 +24,11 @@ const FooterCredits = styled.address`
   justify-content: flex-end;
 
   span {
-    ${visuallyHidden}
+    ${visuallyHidden()}
   }
 
   h3 {
-    ${visuallyHidden}
+    ${visuallyHidden()}
   }
 
   small {

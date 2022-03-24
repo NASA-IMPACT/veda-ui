@@ -84,7 +84,7 @@ export const PanelHeader = styled.div`
 `;
 
 export const PanelHeadline = styled.div`
-  ${visuallyHidden}
+  ${visuallyHidden()}
 `;
 
 export const PanelActions = styled.div`
