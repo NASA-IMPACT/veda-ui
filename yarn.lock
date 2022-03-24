@@ -1043,6 +1043,14 @@
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@bcoe%2fv8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@devseed-ui/accordion@^4.0.2":
+  version "4.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2faccordion/-/accordion-4.0.2.tgz#a62090a0cef675433bdf3057cfb38cee7f302897"
+  integrity sha512-tWv/i00qB6ixaOI3Id+KOfdM/BrTyAw9kvbTuWaCj/KJTojfVkbwbHvZu8u4/Vkt3R2dTLnboytKSbm0TqE76g==
+  dependencies:
+    "@devseed-ui/collecticons" "^4.0.2"
+    "@devseed-ui/theme-provider" "^4.0.2"
+
 "@devseed-ui/animation@^4.0.0":
   version "4.0.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fanimation/-/animation-4.0.0.tgz#d8063604e790c2309f4bbfe45483d435909ce2da"
@@ -1061,6 +1069,20 @@
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fcollecticons/-/collecticons-4.0.2.tgz#d20af8522bfb41a6a6cc0920e94c9665a286f354"
   integrity sha512-4z+TSOTBYRW2KAwPfTIiAWcX0e7A5y1e8HahPbv0W53RT7+2/V3q518tJtgBcMVub8ig1hU52r0e4+qLskvhGQ==
 
+"@devseed-ui/date-picker@^4.0.2":
+  version "4.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fdate-picker/-/date-picker-4.0.2.tgz#1d3e8fefd5f755f326f9433ab24cfce75eb55e1b"
+  integrity sha512-VBo7/LCS+v0lJhxbzfItix+Hk+VujOqiLDHD0Y7w+MeTwMsQCdJQc/jSIo7zHywOvsnxAckYeIJTDFnRcvoyRw==
+  dependencies:
+    "@devseed-ui/button" "^4.0.2"
+    "@devseed-ui/collecticons" "^4.0.2"
+    "@devseed-ui/dropdown" "^4.0.2"
+    "@devseed-ui/form" "^4.0.2"
+    "@devseed-ui/theme-provider" "^4.0.2"
+    "@devseed-ui/typography" "^4.0.2"
+    date-fns "^2.9.0"
+    react-calendar "^3.3.0"
+
 "@devseed-ui/dropdown@^4.0.2":
   version "4.0.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fdropdown/-/dropdown-4.0.2.tgz#bc227f350818dda77d0214022e4f8d54ff4de42c"
@@ -1072,7 +1094,7 @@
     react-tether "^2.0.7"
     react-transition-group "^4.3.0"
 
-"@devseed-ui/form@^4.0.0":
+"@devseed-ui/form@^4.0.0", "@devseed-ui/form@^4.0.2":
   version "4.0.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fform/-/form-4.0.2.tgz#6dbe2c80e0e3b7b56475666cade06bcd2d5d265c"
   integrity sha512-3LYuNCNjJUJyX08fKzauiVNGa1HZcZ4LkAxUWKAwKm5JE0oxYkiBsDWNbtNcMb4nbejr74QeRuqyUuFc3bRHnA==
@@ -1108,6 +1130,15 @@
   dependencies:
     lodash.get "^4.4.2"
     polished "^3.4.2"
+
+"@devseed-ui/toolbar@^4.0.2":
+  version "4.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftoolbar/-/toolbar-4.0.2.tgz#1f085aff2d09973671818e54a515745316f74fbc"
+  integrity sha512-D6XU/uibKgcJPE98QxZaneElG1s54kGjJffnnp9SyNQCPzcYD48SmY7oazVBH+15Q2w/4jU2c0+RKxHjzoqAgg==
+  dependencies:
+    "@devseed-ui/button" "^4.0.2"
+    "@devseed-ui/theme-provider" "^4.0.2"
+    "@devseed-ui/typography" "^4.0.2"
 
 "@devseed-ui/typography@^4.0.0", "@devseed-ui/typography@^4.0.2":
   version "4.0.2"
@@ -2677,6 +2708,11 @@
     "@typescript-eslint/types" "5.13.0"
     eslint-visitor-keys "^3.0.0"
 
+"@wojtekmaj/date-utils@^1.0.2":
+  version "1.0.3"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@wojtekmaj%2fdate-utils/-/date-utils-1.0.3.tgz#2dcfd92881425c5923e429c2aec86fb3609032a1"
+  integrity sha512-1VPkkTBk07gMR1fjpBtse4G+oJqpmE+0gUFB0dg3VIL7qJmUVaBoD/vlzMm/jNeOPfvlmerl1lpnsZyBUFIRuw==
+
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.5"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
@@ -4040,7 +4076,7 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-date-fns@^2.28.0:
+date-fns@^2.28.0, date-fns@^2.9.0:
   version "2.28.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/date-fns/-/date-fns-2.28.0.tgz#9570d656f5fc13143e50c975a3b6bbeb46cd08b2"
   integrity sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==
@@ -5117,6 +5153,13 @@ get-symbol-description@^1.0.0:
   dependencies:
     call-bind "^1.0.2"
     get-intrinsic "^1.1.1"
+
+get-user-locale@^1.2.0:
+  version "1.4.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/get-user-locale/-/get-user-locale-1.4.0.tgz#a2c4b5da46feec9f03c9b07d197b1620490a5370"
+  integrity sha512-gQo03lP1OArHLKlnoglqrGGl7b04u2EP9Xutmp72cMdtrrSD7ZgIsCsUKZynYWLDkVJW33Cj3pliP7uP0UonHQ==
+  dependencies:
+    lodash.once "^4.1.1"
 
 get-value@^2.0.3, get-value@^2.0.6:
   version "2.0.6"
@@ -6869,6 +6912,11 @@ lodash.merge@^4.6.2:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
+lodash.once@^4.1.1:
+  version "4.1.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
+  integrity sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=
+
 lodash.truncate@^4.4.2:
   version "4.4.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
@@ -7289,6 +7337,11 @@ meow@^9.0.0:
     trim-newlines "^3.0.0"
     type-fest "^0.18.0"
     yargs-parser "^20.2.3"
+
+merge-class-names@^1.1.1:
+  version "1.4.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/merge-class-names/-/merge-class-names-1.4.2.tgz#78d6d95ab259e7e647252a7988fd25a27d5a8835"
+  integrity sha512-bOl98VzwCGi25Gcn3xKxnR5p/WrhWFQB59MS/aGENcmUc6iSm96yrFDF0XSNurX9qN4LbJm0R9kfvsQ17i8zCw==
 
 merge-stream@^2.0.0:
   version "2.0.0"
@@ -8765,7 +8818,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.5.10, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.8.1"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -8818,7 +8871,15 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-qs@^6.10.3:
+qs-state-hook@^1.1.0:
+  version "1.1.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/qs-state-hook/-/qs-state-hook-1.1.0.tgz#925038ec9ff140888ba0667546839102f08fdf2d"
+  integrity sha512-3yM3VbWIA60ONnM3SXg26fWx0JujaMbEjZtMqtjLzQLs0tKbY2butxn4jbFG8+3SoQu91FH4Myaf+GoT01rRdA==
+  dependencies:
+    lodash.debounce "^4.0.8"
+    qs "^6.9.6"
+
+qs@^6.10.3, qs@^6.9.6:
   version "6.10.3"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/qs/-/qs-6.10.3.tgz#d6cde1b2ffca87b5aa57889816c5f81535e22e8e"
   integrity sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ==
@@ -8846,6 +8907,16 @@ raf@^3.1.0:
   integrity sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==
   dependencies:
     performance-now "^2.1.0"
+
+react-calendar@^3.3.0:
+  version "3.7.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-calendar/-/react-calendar-3.7.0.tgz#951d56e91afb33b1c1e019cb790349fbffcc6894"
+  integrity sha512-zkK95zWLWLC6w3O7p3SHx/FJXEyyD2UMd4jr3CrKD+G73N+G5vEwrXxYQCNivIPoFNBjqoyYYGlkHA+TBDPLCw==
+  dependencies:
+    "@wojtekmaj/date-utils" "^1.0.2"
+    get-user-locale "^1.2.0"
+    merge-class-names "^1.1.1"
+    prop-types "^15.6.0"
 
 react-cool-dimensions@^2.0.7:
   version "2.0.7"
@@ -8900,6 +8971,11 @@ react-lifecycles-compat@^3.0.4:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-nl2br@^1.0.2:
+  version "1.0.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-nl2br/-/react-nl2br-1.0.2.tgz#ebe2431245caa631242cb10a739ac9bb5b2b6da3"
+  integrity sha512-gjuv4thrXRYvDhd82ceW1fr6sBkF9ngESIuwSevznK9hBEh1KXV0SPeZKScVbHWkaKUq1aMTFeIt04JdIz4p7g==
+
 react-refresh@^0.9.0:
   version "0.9.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-refresh/-/react-refresh-0.9.0.tgz#71863337adc3e5c2f8a6bfddd12ae3bfe32aafbf"
@@ -8933,7 +9009,7 @@ react-tether@^2.0.7:
     prop-types "^15.6.2"
     tether "^1.4.5"
 
-react-transition-group@^4.3.0:
+react-transition-group@^4.3.0, react-transition-group@^4.4.2:
   version "4.4.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"
   integrity sha512-/RNYfRAMlZwDSr6z4zNKV6xu53/e2BuaBbGhbyYIXTrmgu/bGHzmqOs7mJSJBHy9Ud+ApHx3QjrkKSp1pxvlFg==
@@ -10595,6 +10671,11 @@ unset-value@^1.0.0:
   dependencies:
     has-value "^0.3.1"
     isobject "^3.0.0"
+
+unstated-next@^1.1.0:
+  version "1.1.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/unstated-next/-/unstated-next-1.1.0.tgz#7bb4911a12fdf3cc8ad3eb11a0b315e4a8685ea8"
+  integrity sha512-AAn47ZncPvgBGOvMcn8tSRxsrqwf2VdAPxLASTuLJvZt4rhKfDvUkmYZLGfclImSfTVMv7tF4ynaVxin0JjDCA==
 
 upath@^1.1.1:
   version "1.2.0"

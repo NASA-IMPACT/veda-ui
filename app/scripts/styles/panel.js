@@ -1,6 +1,11 @@
 import styled, { css } from 'styled-components';
 
-import { media, themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
+import {
+  glsp,
+  media,
+  themeVal,
+  visuallyHidden
+} from '@devseed-ui/theme-provider';
 import { Overline } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
@@ -12,6 +17,8 @@ const panelWidth = {
   medium: '24rem'
 };
 
+export const PANEL_REVEAL_DURATION = 240;
+
 export const Panel = styled.div`
   position: relative;
   z-index: 10;
@@ -19,7 +26,7 @@ export const Panel = styled.div`
   flex-direction: column;
   width: ${panelWidth.xsmall};
   margin-left: -${panelWidth.xsmall};
-  transition: margin 0.24s ease 0s;
+  transition: margin ${PANEL_REVEAL_DURATION}ms ease 0s;
 
   ${media.smallUp`
     width: ${panelWidth.small};
@@ -103,15 +110,14 @@ export const PanelBody = styled(ShadowScrollbar)`
 export const PanelWidget = styled.article`
   display: flex;
   flex-direction: column;
-  gap: ${variableGlsp(0.25)};
-  padding: ${variableGlsp(0.5, 1)};
   background: ${themeVal('color.surface')};
-  box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')},
-    0 -1px 0 0 ${themeVal('color.base-100a')};
 `;
 
-export const PanelWidgetHeader = styled.div`
-  /* styled-component */
+export const PanelWidgetHeader = styled.header`
+  position: relative;
+  z-index: 1;
+  padding: ${variableGlsp(0.5, 1, 0.25, 1)};
+  background: ${themeVal('color.surface')};
 `;
 
 export const PanelWidgetTitle = styled(Overline).attrs({
@@ -122,4 +128,22 @@ export const PanelWidgetTitle = styled(Overline).attrs({
 
 export const PanelWidgetBody = styled.div`
   /* styled-component */
+`;
+
+export const WidgetItemHeader = styled.header`
+  display: flex;
+  flex-flow: column nowrap;
+  padding: ${variableGlsp(0.5, 1)};
+  gap: ${glsp(0.5)};
+`;
+
+export const WidgetItemHeadline = styled.div`
+  min-width: 0px;
+`;
+
+export const WidgetItemHGroup = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${glsp(0.5)};
+  justify-content: space-between;
 `;

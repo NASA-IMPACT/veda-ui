@@ -3,7 +3,8 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { render } from '@testing-library/react';
+
+import renderWithTheme from '$test/utils';
 import Block from '$components/common/blocks/';
 import {
   generalErrorMessage,
@@ -15,7 +16,7 @@ import { Caption } from '$components/common/images';
 
 describe('Block edge case tests', () => {
   it('Throws a content type when not supported content composition is passed', () => {
-    const { getByText } = render(
+    const { getByText } = renderWithTheme(
       <Block>
         <p>test</p>
       </Block>
@@ -24,7 +25,7 @@ describe('Block edge case tests', () => {
   });
 
   it('Throws an error when a block has two captions', () => {
-    const { getByText } = render(
+    const { getByText } = renderWithTheme(
       <Block>
         <Figure>
           <Caption />
@@ -36,7 +37,7 @@ describe('Block edge case tests', () => {
   });
 
   it('Throws an error when a block has wrong type name', () => {
-    const { getByText } = render(
+    const { getByText } = renderWithTheme(
       <Block type='almost-full'>
         <Figure>
           <Caption />

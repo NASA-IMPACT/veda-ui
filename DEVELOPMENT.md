@@ -79,10 +79,12 @@ import deltaThematics, {
 }
 ```
 
-### parcel-resolver-evolution
+### parcel-resolver-thematics
 
-[Custom resolver module](https://github.com/NASA-IMPACT/delta-ui/blob/main/parcel-resolver-evolution/index.js) is used to create the faux module that outputs the structure above. It reads all the mdx files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
+[Custom resolver module](https://github.com/NASA-IMPACT/delta-ui/blob/main/parcel-resolver-thematics/index.js) is used to create the faux module that outputs the structure above. It reads all the mdx files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
 The content part (the MDX) is not handled by this resolver, but left untouched and when trying to import a `MDX` file, the correct resolver will kick in.
+
+The faux module is virtual and is not loaded from a file, but for debug purposes the generated module code is output to `parcel-resolver-thematics/delta-thematic.out.js` during runtime. This file is gitignored, so you'll have to run the project to see it.
 
 ### parcel-transformer-mdx-front
 
@@ -91,3 +93,17 @@ Since having frontmatter code is not supported by `MDX` files, this custom resol
 ### Troubleshooting
 
 If you run into errors after making changes to mdx files, it could be from [Parcel's cache issue](https://github.com/parcel-bundler/parcel/issues/7247). Try deleting Parcel cache by running `rm -rf .parcel-cache`. If this doesn't resolve your problem, try `yarn clean` to start from a clean slate and file an issue.
+
+## Module aliases
+
+To simplify file access we use aliases for the most common paths so that they can be imported more easily.  
+For example, to access file inside the `styles` folder you'd use `$styles/filename` instead of having to use a relative path. This get's very handy when we have several nested folders.
+
+Currently the following aliases exist:
+- `$components/<file>` => `app/scripts/components`
+- `$styles/<file>` => `app/scripts/styles`
+- `$utils/<file>` => `app/scripts/utils`
+- `$context/<file>` => `app/scripts/context`
+
+To add a new alias, add the respecting naming and path under `alias` in the `package.json`.  
+The test runner (Jest) also has to be made aware of the mapping, and this is done through some code in `jest.config.js` under `moduleNameMapper`. You shouldn't need to do anything there, but if things break it is a place to look at.

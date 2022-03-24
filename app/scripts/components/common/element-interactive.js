@@ -13,6 +13,7 @@ const InteractiveLink = styled.a`
 
 export const Wrapper = styled.div`
   position: relative;
+  z-index: 1;
 
   > *:not(a) {
     pointer-events: none;
