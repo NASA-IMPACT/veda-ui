@@ -7,7 +7,6 @@ import {
   themeVal,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
-import { Prose } from '@devseed-ui/typography';
 import { CollecticonSlidersHorizontal } from '@devseed-ui/collecticons';
 
 import { resourceNotFound } from '$components/uhoh';
