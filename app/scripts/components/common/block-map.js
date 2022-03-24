@@ -10,7 +10,7 @@ import { checkLayerLoadStatus } from '$components/common/mapbox/layers/utils';
 const Carto = styled.div`
   position: relative;
   flex-grow: 1;
-  height: 500px;
+  height: 32rem;
 
   ${MapboxMap} {
     position: absolute;
