@@ -51,7 +51,6 @@ function DiscoveriesSingle() {
           attributionAuthor={media?.author?.name}
           attributionUrl={media?.author?.url}
         />
-
         {pageMdx.status === 'loading' && <p>Loading page content</p>}
         {pageMdx.status === 'success' && (
           <MDXProvider
