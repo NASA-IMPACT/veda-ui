@@ -16,7 +16,7 @@ import {
   CollecticonSwapHorizontal
 } from '@devseed-ui/collecticons';
 import { DatePicker } from '@devseed-ui/date-picker';
-import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
+import { Toolbar, ToolbarButton } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 
 import { resourceNotFound } from '$components/uhoh';
@@ -381,7 +381,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
                           )}
                         </WidgetItemHeadline>
                         <Toolbar size='small'>
-                          <ToolbarIconButton
+                          <ToolbarButton
                             variation='base-text'
                             active={isComparing}
                             disabled={!activeLayer?.compareLayer}
@@ -392,7 +392,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
                               meaningful
                             />
                             Baseline
-                          </ToolbarIconButton>
+                          </ToolbarButton>
                         </Toolbar>
                       </WidgetItemHGroup>
                     </WidgetItemHeader>
