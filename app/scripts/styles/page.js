@@ -4,7 +4,7 @@ import { media } from '@devseed-ui/theme-provider';
 import { Overline, Subtitle } from '@devseed-ui/typography';
 
 import { VarHeading, VarLead } from './variable-components';
-import { variableBaseType } from './variable-utils';
+import { variableBaseType, variableGlsp } from './variable-utils';
 
 export const PageMainContent = styled.main`
   flex-grow: 1;
@@ -34,11 +34,14 @@ export const PageSubtitle = styled(Subtitle)`
   color: inherit;
 `;
 
-export const PageLead = styled(VarLead)`
+export const PageDetails = styled.div`
   position: relative;
   z-index: 3;
   grid-column: 1 / span 4;
   grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: ${variableGlsp()};
   color: inherit;
 
   ${media.mediumUp`
@@ -50,4 +53,12 @@ export const PageLead = styled(VarLead)`
     grid-column: 7 / span 6;
     grid-row: 1;
   `}
+`;
+
+export const PageLead = styled(VarLead)`
+  color: inherit;
+`;
+
+export const PageActions = styled.div`
+  /* styled-component */
 `;

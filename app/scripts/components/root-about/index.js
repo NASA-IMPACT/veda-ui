@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { LayoutProps } from '../common/layout-root';
-import { PageMainContent } from '../../styles/page';
+import { PageLead, PageMainContent } from '../../styles/page';
 
 import PageHero from '../common/page-hero';
 import { FoldProse } from '../common/fold';
@@ -12,7 +12,7 @@ function RootAbout() {
       <LayoutProps title='Thematic about' />
       <PageHero
         title='About the Dashboard'
-        description='Lorem ipsum dolor sit amet.'
+        detailsContent={<PageLead>Lorem ipsum dolor sit amet.</PageLead>}
       />
       <FoldProse>
         <p>

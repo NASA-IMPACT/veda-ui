@@ -36,6 +36,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { useMediaQuery } from '$utils/use-media-query';
 import { thematicDatasetsPath } from '$utils/routes';
+import PageHero from '$components/common/page-hero';
 
 export const IntroFold = styled.div`
   position: relative;
@@ -156,23 +157,7 @@ function DatasetsExplore() {
         }
       />
       <PageMainContent>
-        <IntroFold>
-          <IntroFoldInner>
-            <IntroFoldCopy>
-              <Prose>
-                <h1>Explore the dataset</h1>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  gravida sem quis ultrices vulputate. Ut eu pretium eros, eu
-                  molestie augue. Etiam risus justo, consectetur at erat vel,
-                  fringilla commodo felis. Suspendisse rutrum tortor ac nulla
-                  volutpat lobortis. Phasellus tempus nunc risus, eu mollis erat
-                  ullamcorper a.
-                </p>
-              </Prose>
-            </IntroFoldCopy>
-          </IntroFoldInner>
-        </IntroFold>
+        <PageHero title={`${dataset.data.name} exploration`} isHidden />
         <Explorer>
           <Panel revealed={panelRevealed} onClick={onPanelClick}>
             <PanelInner ref={panelBodyRef}>

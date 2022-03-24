@@ -3,12 +3,11 @@ import { MDXProvider } from '@mdx-js/react';
 
 import { LayoutProps } from '$components/common/layout-root';
 import { resourceNotFound } from '$components/uhoh';
-import { PageMainContent } from '$styles/page';
+import { PageActions, PageLead, PageMainContent } from '$styles/page';
 import PageLocalNav, {
   DatasetsLocalMenu
 } from '$components/common/page-local-nav';
 import PageHero from '$components/common/page-hero';
-import { FoldProse } from '$components/common/fold';
 
 import {
   useMdxPageLoader,
@@ -23,7 +22,9 @@ import { ContentBlockProse } from '$styles/content-block';
 import Chart from '$components/discoveries/chart/';
 import { Caption } from '$components/common/images/';
 
-import { thematicDatasetsPath } from '$utils/routes';
+import { datasetExplorePath, thematicDatasetsPath } from '$utils/routes';
+import { Button } from '@devseed-ui/button';
+import { Link } from 'react-router-dom';
 
 function DatasetsOverview() {
   const thematic = useThematicArea();
@@ -48,7 +49,25 @@ function DatasetsOverview() {
       <PageMainContent>
         <PageHero
           title={dataset.data.name}
-          description={dataset.data.description}
+          detailsContent={
+            <>
+              <PageLead>{dataset.data.description}</PageLead>
+              <PageActions>
+                <Button
+                  forwardedAs={Link}
+                  to={datasetExplorePath(thematic, dataset)}
+                  size='large'
+                  variation='achromic-outline'
+                >
+                  Explore the data
+                </Button>
+              </PageActions>
+            </>
+          }
+          coverSrc={dataset.data.media?.src}
+          coverAlt={dataset.data.media?.alt}
+          attributionAuthor={dataset.data.media?.author?.name}
+          attributionUrl={dataset.data.media?.author?.url}
         />
         {pageMdx.status === 'loading' && <p>Loading page content</p>}
         {pageMdx.status === 'success' && (

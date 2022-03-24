@@ -5,7 +5,7 @@ import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { resourceNotFound } from '$components/uhoh';
 import PageLocalNav from '$components/common/page-local-nav';
-import { PageMainContent } from '$styles/page';
+import { PageLead, PageMainContent } from '$styles/page';
 
 import {
   useMdxPageLoader,
@@ -44,7 +44,7 @@ function DiscoveriesSingle() {
       <PageMainContent>
         <PageHero
           title={discovery.data.name}
-          description={discovery.data.description}
+          detailsContent={<PageLead>{discovery.data.description}</PageLead>}
           publishedDate={discovery.data.pubDate}
           coverSrc={media?.src}
           coverAlt={media?.alt}

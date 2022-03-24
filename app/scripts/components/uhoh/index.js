@@ -3,7 +3,7 @@ import React from 'react';
 import { FoldProse } from '$components/common/fold';
 import PageHero from '$components/common/page-hero';
 import { LayoutProps } from '$components/common/layout-root';
-import { PageMainContent } from '$styles/page';
+import { PageLead, PageMainContent } from '$styles/page';
 
 export const resourceNotFound = () => {
   const e = new Error('Resource not found');
@@ -16,7 +16,10 @@ function UhOh() {
     <>
       <LayoutProps title='Not found' />
       <PageMainContent>
-        <PageHero title='Page not found' description="That's a 404 error." />
+        <PageHero
+          title='Page not found'
+          detailsContent={<PageLead>That&apos;s a 404 error.</PageLead>}
+        />
         <FoldProse>
           <p>
             We were not able to find the page you are looking for. It may have
