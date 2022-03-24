@@ -27,7 +27,7 @@ export const Figcaption = styled.figcaption`
 export const FigcaptionInner = styled(Subtitle).attrs({
   as: 'span'
 })`
-  padding: ${variableGlsp(0.5, 1, 0, 1)};
+  padding: ${variableGlsp(0.5, 0, 0, 0)};
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -38,8 +38,8 @@ export const FigcaptionInner = styled(Subtitle).attrs({
   &::after {
     content: '';
     width: ${glsp(2)};
-    height: 1px;
-    margin-top: calc(${variableGlsp(0.5)} - 1px);
+    height: ${themeVal('layout.border')};
+    margin-top: calc(${variableGlsp(0.5)} - ${themeVal('layout.border')});
     background: ${themeVal('color.base-100a')};
   }
 `;
