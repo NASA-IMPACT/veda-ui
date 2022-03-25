@@ -20,7 +20,7 @@ import { useThematicArea } from '$utils/thematics';
 
 import { resourceNotFound } from '$components/uhoh';
 
-import { VarProse } from '$styles/variable-components';
+import { VarHeading, VarProse } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
 import Hug from '$styles/hug';
 import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
@@ -35,6 +35,8 @@ import {
   CardTitle
 } from '$components/common/card';
 import Pluralize from '$utils/pluralize';
+import { zeroPad } from '$utils/format';
+import { Overline } from '@devseed-ui/typography';
 
 const IntroFold = styled(Hug)`
   padding-top: ${variableGlsp(2)};
@@ -56,6 +58,40 @@ const IntroFoldFigure = styled.figure`
   img {
     border-radius: ${multiply(themeVal('shape.rounded'), 2)};
   }
+`;
+
+const StatsList = styled.dl`
+  display: grid;
+  grid-auto-columns: min-content;
+  grid-auto-rows: auto;
+  grid-auto-flow: column;
+  gap: ${variableGlsp(0, 1)};
+  align-items: end;
+
+  a,
+  a:visited {
+    display: block;
+    color: inherit;
+  }
+`;
+
+const StatsListKey = styled(Overline).attrs({
+  as: 'dt'
+})`
+  grid-row: 1;
+  opacity: 0.64;
+  color: inherit;
+
+  && {
+    font-weight: 400;
+  }
+`;
+
+const StatsListValue = styled(VarHeading).attrs({
+  as: 'dd',
+  size: 'xxlarge'
+})`
+  grid-row: 2;
 `;
 
 const IntroFoldProse = styled(VarProse)`
@@ -162,6 +198,33 @@ function Home() {
             Welcome to the {thematic.data.name} thematic area
           </PageMainTitle>
           <PageLead>{thematic.data.description}</PageLead>
+          <StatsList>
+            <StatsListKey>
+              <Pluralize
+                singular='Dataset'
+                count={thematic.data.datasets.length}
+                showCount={false}
+              />
+            </StatsListKey>
+            <StatsListValue>
+              <Link to='datasets'>
+                {zeroPad(thematic.data.datasets.length)}
+              </Link>
+            </StatsListValue>
+            <StatsListKey>
+              <Pluralize
+                singular='Discovery'
+                plural='Discoveries'
+                count={thematic.data.datasets.length}
+                showCount={false}
+              />
+            </StatsListKey>
+            <StatsListValue>
+              <Link to='discoveries'>
+                {zeroPad(thematic.data.datasets.length)}
+              </Link>
+            </StatsListValue>
+          </StatsList>
           <IntroFoldActions>
             <Button
               forwardedAs={Link}
