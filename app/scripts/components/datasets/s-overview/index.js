@@ -35,7 +35,7 @@ function DatasetsOverview() {
 
   return (
     <>
-      <LayoutProps title={`${dataset.data.name} overview`} />
+      <LayoutProps title={`${dataset.data.name} Overview`} />
       <PageLocalNav
         parentName='Dataset'
         parentLabel='Datasets'
@@ -48,7 +48,7 @@ function DatasetsOverview() {
       />
       <PageMainContent>
         <PageHero
-          title={dataset.data.name}
+          title={`${dataset.data.name} Overview`}
           detailsContent={
             <>
               <PageLead>{dataset.data.description}</PageLead>
