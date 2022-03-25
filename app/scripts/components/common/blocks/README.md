@@ -21,10 +21,9 @@ This doc assumes that you already know how to write Markdown, and are familiar w
 </table>
 
 
-Only `Prose` and `Figure` can be direct children of Block. Any raw markdown contents can be wrapped with `Prose`, any media contents or custom components (Image, Map, Chart) should be wrapped with Figure. 
+We currently (2022, March) have 8 types of Blocks for layout. Mind that only `Prose` and `Figure` can be direct children of Block. Any raw markdown contents can be wrapped with `Prose`, any media contents or custom components (Image, Map, Chart) should be wrapped with Figure. 
 
-
-<table>
+<table style="margin-top: 20px">
 <tr>
 <td> Type </td><td width='300px'> Syntax </td> <td> Result </td>
 </tr>
@@ -199,9 +198,24 @@ Only `Prose` and `Figure` can be direct children of Block. Any raw markdown cont
 </table>
 
 
-### Image (inside of Prose)
+### Image 
 
-You can use `Image` component to display any kind of image. If you need to put images inside of Prose block, there is an additional parameter, `align` that needs to be passed to decided alignment of image inside of paragraphs.
+You can use `Image` component to display any kind of image. Depending on where Image is used (is it inside of `Prose` as an inline image? or inside of `Figure`?), there are additional attributes you need to pass. 
+
+Also you can pass any attribute that you can use with `<img />` HTML element and these will get passed down. Ex. you can pass width of image or height of image with `width`, `height`.
+
+| Option | Type | Default | Description|
+|---|---|---|---|
+| src | string | '' | Path for image. If using local image, please look at the section below. |
+| alt | string | '' | Description for image, this will be used for screen readers. |
+| align | string, enum (left, right, center) | 'center' | <b>For inline image.</b> Alignment of image. |
+| attr | string | '' | <b>For inline image.</b>  Caption text for inline image. |
+| attrAuthor | string | '' | Info for image author. When omitted, attribution mark on right top wouldn't show up. |
+| attrUrl | string | '' | Link for image attribution. |
+
+#### Inline image
+
+Syntax for an inline Image, left aligned, embedded in Prose will look like below.
 
 ```
   <Image 
@@ -215,26 +229,24 @@ You can use `Image` component to display any kind of image. If you need to put i
   />
 ```
 
-There are two ways of putting caption for your image,
+#### Figure Image with Caption
 
-1. use attr props (recommended for inline image)
+You can replace `attr` option with `<Caption>` component if your image is used in `Figure` block. In this way, you can display rich text as Caption. 
 
-2. use Caption component (recommended for Figure )
+Syntax for `Image` component with  `<Caption>` is like below.
 
-
-#### Caption
 
 ```
   <Figure>
     <Image
       src='https://picsum.photos/id/1002/2048/1024'
-      alt='Generic placeholder by lorem picsum'
+      alt='description for image'
     />
     <Caption 
-      attrAuthor='somebody' 
+      attrAuthor='Development Seed' 
       attrUrl='https://developmentseed.org'
     >
-      This is an image.
+      This is an image. This is <a href="link">the link</a>.
     </Caption> 
   <Figure>
 ```
