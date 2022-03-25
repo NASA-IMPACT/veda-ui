@@ -42,30 +42,32 @@ function DiscoveriesSingle() {
         currentId={discovery.data.id}
       />
       <PageMainContent>
-        <PageHero
-          title={discovery.data.name}
-          detailsContent={<PageLead>{discovery.data.description}</PageLead>}
-          publishedDate={discovery.data.pubDate}
-          coverSrc={media?.src}
-          coverAlt={media?.alt}
-          attributionAuthor={media?.author?.name}
-          attributionUrl={media?.author?.url}
-        />
-        {pageMdx.status === 'loading' && <p>Loading page content</p>}
-        {pageMdx.status === 'success' && (
-          <MDXProvider
-            components={{
-              Block,
-              Prose: ContentBlockProse,
-              Figure: ContentBlockFigure,
-              Caption,
-              Image,
-              Chart
-            }}
-          >
-            <pageMdx.MdxContent />
-          </MDXProvider>
-        )}
+        <article>
+          <PageHero
+            title={discovery.data.name}
+            detailsContent={<PageLead>{discovery.data.description}</PageLead>}
+            publishedDate={discovery.data.pubDate}
+            coverSrc={media?.src}
+            coverAlt={media?.alt}
+            attributionAuthor={media?.author?.name}
+            attributionUrl={media?.author?.url}
+          />
+          {pageMdx.status === 'loading' && <p>Loading page content</p>}
+          {pageMdx.status === 'success' && (
+            <MDXProvider
+              components={{
+                Block,
+                Prose: ContentBlockProse,
+                Figure: ContentBlockFigure,
+                Caption,
+                Image,
+                Chart
+              }}
+            >
+              <pageMdx.MdxContent />
+            </MDXProvider>
+          )}
+        </article>
       </PageMainContent>
     </>
   );
