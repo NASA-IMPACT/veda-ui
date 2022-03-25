@@ -1,7 +1,7 @@
 ## How to write contents for Delta dashboard
 
 ### Prerequisites
-This doc assumes that you already know how to write Markdown, and are familiar with the concept of Component. 
+This doc assumes that you already know how to write [Markdown](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax), and are familiar with the concept of Component. 
 
 ### Block
 
@@ -116,8 +116,8 @@ We currently (2022, March) have 8 types of Blocks for layout. Mind that only `Pr
       My markdown contents
     </Prose>
     <Figure>
-      <Image src='' />
-      <Caption> caption </Caption>
+      <Image ... />
+      <Caption> ... </Caption>
     </Figure>
   </Block>
   ```
@@ -136,8 +136,8 @@ We currently (2022, March) have 8 types of Blocks for layout. Mind that only `Pr
   ```
   <Block>
     <Figure>
-      <Image src='' />
-      <Caption> caption </Caption>
+      <Image ... />
+      <Caption> ... </Caption>
     </Figure>
     <Prose>
       My markdown contents
@@ -161,8 +161,8 @@ We currently (2022, March) have 8 types of Blocks for layout. Mind that only `Pr
       My markdown contents
     </Prose>
     <Figure>
-      <Image src='' />
-      <Caption> caption </Caption>
+      <Image ... />
+      <Caption> ... </Caption>
     </Figure>
   </Block>
   ```
@@ -181,8 +181,8 @@ We currently (2022, March) have 8 types of Blocks for layout. Mind that only `Pr
   ```
   <Block type='full'>
     <Figure>
-      <Image src='' />
-      <Caption> caption </Caption>
+      <Image ... />
+      <Caption> ... </Caption>
     </Figure>
     <Prose>
       My markdown contents
@@ -223,9 +223,9 @@ Syntax for an inline Image, left aligned, embedded in Prose will look like below
     alt="Media example" 
     align="left" 
     attr="example caption" 
-    attrAuthor="penguin"
-    attrUrl="https://linux.org"
-    width="256" 
+    attrAuthor="example author"
+    attrUrl="https://example.com"
+    width="256"
   />
 ```
 
@@ -251,10 +251,51 @@ Syntax for `Image` component with  `<Caption>` is like below.
   <Figure>
 ```
 
-#### Map
+#### How to use local image
+
+WIP
+
 ### Chart
 
+| Option | Type | Default | Description|
+|---|---|---|---|
+| dataPath | string | '' | Path for data. The data should be either in `csv` or `json` format. |
+| xKey | string | '' | Attribute to be used for x axis. |
+| yKey | string | '' | Attribute to be used for y axis |
+| idKey | string | '' | Attribute for each data point |
+| dateFormat | string | '' | Template for how temporal date is formatted. This follows [d3's convention for date format](https://github.com/d3/d3-time-format#locale_format) |
+| highlightStart | string | '' | Start point for x axis to draw highlighted area. |
+| highlightEnd | string | '' | End point of x axis to draw highlighted area.
+| highlightLabel | string | '' | Label for highlighted area. |
 
-## Some gotachas
+Syntax for Chart used in Wide Figure Block looks like this
 
-- Do not use H1 for your header. 
+```
+<Block type='wide'>
+  <Figure>
+    <Chart
+      dataPath='example.csv'
+      dateFormat="%m/%d/%Y" 
+      idKey='County' 
+      xKey='Test Date' 
+      yKey='New Positives' 
+      highlightStart = '12/10/2021'
+      highlightEnd = '01/20/2022'
+      highlightLabel = 'Omicron'
+    />
+    <Caption 
+      attrAuthor='attribution for wide figure block, chart' 
+      attrUrl='https://developmentseed.org'
+    /> 
+  </Figure>
+</Block>
+
+```
+
+
+
+### Map
+
+## Some gotchas
+
+- Do not use h1(`#h1`) for your header.
