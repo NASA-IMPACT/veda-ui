@@ -201,18 +201,6 @@ function Home() {
           <StatsList>
             <StatsListKey>
               <Pluralize
-                singular='Dataset'
-                count={thematic.data.datasets.length}
-                showCount={false}
-              />
-            </StatsListKey>
-            <StatsListValue>
-              <Link to='datasets'>
-                {zeroPad(thematic.data.datasets.length)}
-              </Link>
-            </StatsListValue>
-            <StatsListKey>
-              <Pluralize
                 singular='Discovery'
                 plural='Discoveries'
                 count={thematic.data.datasets.length}
@@ -221,6 +209,18 @@ function Home() {
             </StatsListKey>
             <StatsListValue>
               <Link to='discoveries'>
+                {zeroPad(thematic.data.datasets.length)}
+              </Link>
+            </StatsListValue>
+            <StatsListKey>
+              <Pluralize
+                singular='Dataset'
+                count={thematic.data.datasets.length}
+                showCount={false}
+              />
+            </StatsListKey>
+            <StatsListValue>
+              <Link to='datasets'>
                 {zeroPad(thematic.data.datasets.length)}
               </Link>
             </StatsListValue>
