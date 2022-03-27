@@ -18,7 +18,7 @@ function UhOh() {
       <PageMainContent>
         <PageHero
           title='Page not found'
-          detailsContent={<PageLead>That&apos;s a 404 error.</PageLead>}
+          heroBlockBetaContent={<PageLead>That&apos;s a 404 error.</PageLead>}
         />
         <FoldProse>
           <p>

@@ -49,7 +49,7 @@ function DatasetsOverview() {
       <PageMainContent>
         <PageHero
           title={`${dataset.data.name} Overview`}
-          detailsContent={
+          heroBlockBetaContent={
             <>
               <PageLead>{dataset.data.description}</PageLead>
               <PageActions>

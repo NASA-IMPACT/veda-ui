@@ -12,7 +12,7 @@ function RootAbout() {
       <LayoutProps title='Thematic about' />
       <PageHero
         title='About the Dashboard'
-        detailsContent={<PageLead>Lorem ipsum dolor sit amet.</PageLead>}
+        heroBlockBetaContent={<PageLead>Lorem ipsum dolor sit amet.</PageLead>}
       />
       <FoldProse>
         <p>

@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
-import { media } from '@devseed-ui/theme-provider';
-import { Overline, Subtitle } from '@devseed-ui/typography';
+import { Overline } from '@devseed-ui/typography';
 
 import { VarHeading, VarLead } from './variable-components';
-import { variableBaseType, variableGlsp } from './variable-utils';
+import { variableBaseType } from './variable-utils';
 
 export const PageMainContent = styled.main`
   flex-grow: 1;
@@ -24,35 +23,11 @@ export const PageOverline = styled(Overline)`
   color: inherit;
   font-size: ${variableBaseType('0.75rem')};
   line-height: ${variableBaseType('1rem')};
+  opacity: 0.64;
 
   > * {
     line-height: inherit;
   }
-`;
-
-export const PageSubtitle = styled(Subtitle)`
-  color: inherit;
-`;
-
-export const PageDetails = styled.div`
-  position: relative;
-  z-index: 3;
-  grid-column: 1 / span 4;
-  grid-row: 2;
-  display: flex;
-  flex-direction: column;
-  gap: ${variableGlsp()};
-  color: inherit;
-
-  ${media.mediumUp`
-    grid-column: 1 / span 6;
-    grid-row: 2;
-  `}
-
-  ${media.largeUp`
-    grid-column: 7 / span 6;
-    grid-row: 1;
-  `}
 `;
 
 export const PageLead = styled(VarLead)`

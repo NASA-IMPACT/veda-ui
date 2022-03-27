@@ -19,7 +19,7 @@ function DiscoveriesHub() {
       <LayoutProps title='Discoveries' />
       <PageHero
         title='Discoveries'
-        detailsContent={
+        heroBlockBetaContent={
           <PageLead>
             Explore the guided narratives below to discover how NASA satellites
             and other Earth observing resources reveal a changing planet.

@@ -11,7 +11,7 @@ import {
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
-import { PageDetails, PageMainTitle, PageOverline } from '../../styles/page';
+import { PageMainTitle, PageOverline } from '../../styles/page';
 import Constrainer from '../../styles/constrainer';
 import { variableGlsp } from '../../styles/variable-utils';
 import { Figcaption, Figure, FigureAttribution } from './figure';
@@ -62,11 +62,30 @@ const PageHeroInner = styled(Constrainer)`
 `;
 
 const PageHeroHGroup = styled.div`
-  position: relative;
-  z-index: 3;
   display: flex;
   flex-flow: column;
   gap: ${variableGlsp(0.125)};
+`;
+
+const PageHeroCover = styled(Figure)`
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: ${themeVal('color.base-400')};
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    mix-blend-mode: multiply;
+  }
+`;
+
+const PageHeroBlockAlpha = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${variableGlsp()};
+
   grid-column: 1 / span 4;
 
   ${media.mediumUp`
@@ -78,24 +97,29 @@ const PageHeroHGroup = styled.div`
   `}
 `;
 
-const PageHeroCover = styled(Figure)`
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: ${themeVal('color.base-400')};
+const PageHeroBlockBeta = styled.div`
+  grid-column: 1 / span 4;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: ${variableGlsp()};
 
-  img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    mix-blend-mode: multiply;
-  }
+  ${media.mediumUp`
+    grid-column: 1 / span 6;
+    grid-row: 2;
+  `}
+
+  ${media.largeUp`
+    grid-column: 7 / span 6;
+    grid-row: 1;
+  `}
 `;
 
 function PageHero(props) {
   const {
     title,
-    detailsContent,
+    heroBlockBetaContent,
+    heroBlockAlphaAddon,
     publishedDate,
     coverSrc,
     coverAlt,
@@ -114,18 +138,23 @@ function PageHero(props) {
   return (
     <PageHeroSelf isCover={hasImage} isHidden={isHidden}>
       <PageHeroInner>
-        <PageHeroHGroup>
-          <PageMainTitle>{title}</PageMainTitle>
-          {date && (
-            <PageOverline>
-              Published on{' '}
-              <time dateTime={format(date, 'yyyy-MM-dd')}>
-                {format(date, 'MMM d, yyyy')}
-              </time>
-            </PageOverline>
-          )}
-        </PageHeroHGroup>
-        {detailsContent && <PageDetails>{detailsContent}</PageDetails>}
+        <PageHeroBlockAlpha>
+          <PageHeroHGroup>
+            <PageMainTitle>{title}</PageMainTitle>
+            {date && (
+              <PageOverline>
+                Published on{' '}
+                <time dateTime={format(date, 'yyyy-MM-dd')}>
+                  {format(date, 'MMM d, yyyy')}
+                </time>
+              </PageOverline>
+            )}
+          </PageHeroHGroup>
+          {heroBlockAlphaAddon && <>{heroBlockAlphaAddon}</>}
+        </PageHeroBlockAlpha>
+        {heroBlockBetaContent && (
+          <PageHeroBlockBeta>{heroBlockBetaContent}</PageHeroBlockBeta>
+        )}
         {hasImage && (
           <PageHeroCover>
             <img src={coverSrc} alt={coverAlt} />
@@ -146,7 +175,8 @@ export default PageHero;
 
 PageHero.propTypes = {
   title: T.string,
-  detailsContent: T.node,
+  heroBlockBetaContent: T.node,
+  heroBlockAlphaAddon: T.node,
   publishedDate: T.oneOfType([T.string, T.instanceOf(Date)]),
   coverSrc: T.string,
   coverAlt: T.string,

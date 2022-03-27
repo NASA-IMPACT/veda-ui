@@ -45,7 +45,7 @@ function DiscoveriesSingle() {
         <article>
           <PageHero
             title={discovery.data.name}
-            detailsContent={<PageLead>{discovery.data.description}</PageLead>}
+            heroBlockBetaContent={<PageLead>{discovery.data.description}</PageLead>}
             publishedDate={discovery.data.pubDate}
             coverSrc={media?.src}
             coverAlt={media?.alt}
