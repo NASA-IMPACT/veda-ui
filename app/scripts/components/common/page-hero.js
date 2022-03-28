@@ -45,6 +45,15 @@ const PageHeroSelf = styled.div`
       ${media.xlargeUp`
         min-height: 28rem;
       `}
+
+      &::before {
+        position: absolute;
+        z-index: 2;
+        inset: 0 0 auto 0;
+        height: ${themeVal('layout.border')};
+        background: ${themeVal('color.base-300a')};
+        content: '';
+      }
     `}
 
   ${({ isHidden }) => isHidden && visuallyHidden()}
@@ -56,7 +65,7 @@ const PageHeroSelf = styled.div`
 `;
 
 const PageHeroInner = styled(Constrainer)`
-  padding-top: ${variableGlsp(2)};
+  padding-top: ${variableGlsp(4)};
   padding-bottom: ${variableGlsp(2)};
   align-items: end;
 `;
