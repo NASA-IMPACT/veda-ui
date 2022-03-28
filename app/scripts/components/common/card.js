@@ -40,7 +40,7 @@ function renderCardType({ cardType }) {
   switch (cardType) {
     case 'cover':
       return css`
-        padding-top: ${variableGlsp()};
+        padding-top: ${variableGlsp(2)};
         color: ${themeVal('color.surface')};
         justify-content: flex-end;
 
