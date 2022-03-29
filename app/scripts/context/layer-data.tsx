@@ -11,10 +11,7 @@ import {
 import { createContainer } from 'unstated-next';
 
 import { StateSlice, useContexeedApi } from '$utils/contexeed-v2';
-import {
-  getCompareLayerData,
-  STAC_ENDPOINT
-} from '$components/common/mapbox/layers/utils';
+import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 
 interface STACLayerData {
   timeseries: {
@@ -31,7 +28,7 @@ const useHook = () => {
     requests: {
       fetchLayerData: ({ id }: { id: string }) => ({
         sliceKey: id,
-        url: `${STAC_ENDPOINT}/collections/${id}`,
+        url: `${process.env.API_STAC_ENDPOINT}/collections/${id}`,
         transformData: (data) => ({
           timeseries: {
             isPeriodic: data['dashboard:is_periodic'],
