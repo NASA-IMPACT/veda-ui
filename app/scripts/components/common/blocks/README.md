@@ -255,6 +255,7 @@ Syntax for an inline Image, left aligned, embedded in Prose can be written like 
   </td>
   
   <td>
+  
       Use this type of `Image` when you  need to put an image inside of `Prose`.
   </td> 
   </tr>
@@ -286,6 +287,7 @@ Syntax for an inline Image, left aligned, embedded in Prose can be written like 
   ![Screenshot of full figure Image component](./media/image-figure.jpg)
   </td> 
   <td>
+
   You can replace `attr` option with `<Caption>` component if your image is used in `Figure` block. In this way, you can display rich text as Caption. 
   </td>
 </tr>
