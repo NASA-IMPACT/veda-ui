@@ -17,10 +17,9 @@ import {
 
 import Block from '$components/common/blocks';
 import ContentBlockFigure from '$components/common/blocks/figure';
-import Image from '$components/common/images/';
+import Image, { Caption } from '$components/common/blocks/images/';
 import { ContentBlockProse } from '$styles/content-block';
-import Chart from '$components/discoveries/chart/';
-import { Caption } from '$components/common/images/';
+import Chart from '$components/common/blocks/chart/';
 
 import { datasetExplorePath, thematicDatasetsPath } from '$utils/routes';
 import { Button } from '@devseed-ui/button';
