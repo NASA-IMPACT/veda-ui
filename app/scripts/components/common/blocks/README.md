@@ -216,11 +216,9 @@ Also you can pass any attribute that you can use with `<img />` HTML element and
 | attrAuthor | string | '' | Info for image author. When omitted, attribution mark on the right-top part of the figure wouldn't show up. |
 | attrUrl | string | '' | Link for image attribution. |
 
-#### Inline image
+#### Inline image & Figure image
 
-Syntax for an inline Image, left aligned, embedded in Prose can be written like below.
-
-
+`Image` component can take different attributes depending on its context. When `Image` is used in `Prose`, it is inline image. When `Image` is used in `Figure`, it is Figure image. The table below shows the syntax for each type of image.
 
 <table>
   <tr>
@@ -255,7 +253,7 @@ Syntax for an inline Image, left aligned, embedded in Prose can be written like 
   </td>
   
   <td>
-  
+
       Use this type of `Image` when you  need to put an image inside of `Prose`.
   </td> 
   </tr>
@@ -293,7 +291,6 @@ Syntax for an inline Image, left aligned, embedded in Prose can be written like 
 </tr>
 
 </table>
-
 
 
 #### How to use local image
