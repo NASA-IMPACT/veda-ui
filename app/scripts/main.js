@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { render } from 'react-dom';
 import T from 'prop-types';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider } from '@devseed-ui/theme-provider';
 import deltaThematics from 'delta/thematics';
 
@@ -41,6 +41,14 @@ const composingComponents = [
 
 const hasSeveralThematicAreas = deltaThematics.length > 1;
 
+function ScrollTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [pathname]);
+  return null;
+}
+
 // Root component.
 function Root() {
   useEffect(() => {
@@ -59,6 +67,7 @@ function Root() {
 
   return (
     <BrowserRouter history={history}>
+      <ScrollTop />
       <DevseedUiThemeProvider theme={theme}>
         <GlobalStyles />
         <Composer components={composingComponents}>
