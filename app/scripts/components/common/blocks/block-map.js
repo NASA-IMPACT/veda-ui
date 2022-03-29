@@ -36,6 +36,7 @@ function MapBlock({ datasetId, dateTime, layerId, isComparing }) {
         layerId={layerId}
         date={selectedDatetime}
         isComparing={isComparing}
+        cooperativeGestures
       />
     </Carto>
   );

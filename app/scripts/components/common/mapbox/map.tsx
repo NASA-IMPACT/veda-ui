@@ -35,7 +35,6 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
   useEffect(() => {
     const mbMap = new mapboxgl.Map({
       container: containerRef.current,
-      cooperativeGestures: true,
       ...mapOptions
     });
 

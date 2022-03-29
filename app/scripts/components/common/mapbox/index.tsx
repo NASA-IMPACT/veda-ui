@@ -34,8 +34,18 @@ const mapOptions = {
 };
 
 function MapboxMapComponent(props, ref) {
-  // eslint-disable-next-line react/prop-types
-  const { className, id, as, datasetId, layerId, date, isComparing } = props;
+  /* eslint-disable react/prop-types */
+  const {
+    className,
+    id,
+    as,
+    datasetId,
+    layerId,
+    date,
+    isComparing,
+    cooperativeGestures
+  } = props;
+  /* eslint-enable react/prop-types */
 
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -186,7 +196,7 @@ function MapboxMapComponent(props, ref) {
           mapRef={mapRef}
           containerRef={mapContainer}
           onLoad={() => setMapLoaded(true)}
-          mapOptions={mapOptions}
+          mapOptions={{ ...mapOptions, cooperativeGestures }}
         />
         {shouldRenderCompare && (
           <SimpleMap
@@ -196,6 +206,7 @@ function MapboxMapComponent(props, ref) {
             onUnmount={() => setMapCompareLoaded(false)}
             mapOptions={{
               ...mapOptions,
+              cooperativeGestures,
               center: mapRef.current?.getCenter(),
               zoom: mapRef.current?.getZoom()
             }}
@@ -214,6 +225,7 @@ interface MapboxMapProps {
   layerId: string;
   date: Date;
   isComparing: boolean;
+  cooperativeGestures: boolean;
 }
 
 const MapboxMapComponentFwd =
