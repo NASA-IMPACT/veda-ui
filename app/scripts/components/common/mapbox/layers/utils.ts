@@ -15,11 +15,6 @@ import { utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { MapLayerRasterTimeseries } from './raster-timeseries';
 
-export const RASTER_ENDPOINT =
-  'https://b38fnvpkoh.execute-api.us-east-1.amazonaws.com';
-export const STAC_ENDPOINT =
-  'https://j2wlly6xg8.execute-api.us-east-1.amazonaws.com';
-
 export const getLayerComponent = (isTimeseries, layerType) => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;

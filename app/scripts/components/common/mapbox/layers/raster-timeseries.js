@@ -3,7 +3,6 @@ import axios from 'axios';
 import qs from 'qs';
 import mapboxgl from 'mapbox-gl';
 
-import { RASTER_ENDPOINT, STAC_ENDPOINT } from './utils';
 import { userTzDate2utcString } from '$utils/date';
 
 const LOG = true;
@@ -118,7 +117,7 @@ export function MapLayerRasterTimeseries(props) {
         /* eslint-enable no-console */
 
         const responseData = await requestQuickCache(
-          `${STAC_ENDPOINT}/search`,
+          `${process.env.API_STAC_ENDPOINT}/search`,
           payload,
           controller
         );
@@ -217,7 +216,7 @@ export function MapLayerRasterTimeseries(props) {
         /* eslint-enable no-console */
 
         const responseData = await requestQuickCache(
-          `${RASTER_ENDPOINT}/mosaic/register`,
+          `${process.env.API_RASTER_ENDPOINT}/mosaic/register`,
           payload,
           controller
         );
