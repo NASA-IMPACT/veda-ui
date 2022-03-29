@@ -35,6 +35,7 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
   useEffect(() => {
     const mbMap = new mapboxgl.Map({
       container: containerRef.current,
+      cooperativeGestures: true,
       ...mapOptions
     });
 
@@ -42,6 +43,7 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
 
     // Add zoom controls.
     mbMap.addControl(new mapboxgl.NavigationControl(), 'bottom-left');
+
     // Remove compass.
     document.querySelector('.mapboxgl-ctrl .mapboxgl-ctrl-compass').remove();
 
