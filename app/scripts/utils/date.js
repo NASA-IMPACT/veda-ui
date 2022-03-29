@@ -42,3 +42,19 @@ export function userTzDate2utcString(date) {
   const d = new Date(date.getTime() - tz * 60000);
   return d.toISOString();
 }
+
+/**
+ * Check if the date is yyyy-mm-dd format
+ * Ex. 2019/10-03 : invalid
+ * 2019/01/02: invalid
+ * 2019/13/01: invalid
+ */
+
+export function isValidDate(dateString) {
+  var regEx = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateString.match(regEx)) return false; // Invalid format
+  var d = new Date(dateString);
+  var dNum = d.getTime();
+  if (!dNum && dNum !== 0) return false; // NaN value, Invalid date
+  return d.toISOString().slice(0, 10) === dateString;
+}

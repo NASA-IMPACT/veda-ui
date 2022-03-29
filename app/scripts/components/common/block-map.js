@@ -1,8 +1,8 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useRef } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 
-import { utcString2userTzDate } from '$utils/date';
+import { utcString2userTzDate, isValidDate } from '$utils/date';
 import MapboxMap from '$components/common/mapbox';
 
 const Carto = styled.div`
@@ -21,6 +21,10 @@ let mapInstanceId = 0;
 
 function MapBlock({ datasetId, dateTime, layerId, isComparing }) {
   const mapboxRef = useRef(null);
+  if (!isValidDate(dateTime))
+    throw Error(
+      'Date format is wrong. Did you pass the right date in yyyy-mm-dd format? '
+    );
   const selectedDatetime = utcString2userTzDate(dateTime);
 
   return (
