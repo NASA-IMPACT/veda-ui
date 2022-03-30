@@ -29,14 +29,14 @@ Caption.propTypes = {
 
 const Image = function (props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { align, attr, attrAuthor, attrUrl, ...propsWithoutAttrs } = props;
+  const { align, caption, attrAuthor, attrUrl, ...propsWithoutAttrs } = props;
   const imageAlign = align ? align : 'center';
-  return attr || attrAuthor ? (
+  return caption || attrAuthor ? (
     // if it is an inline image with a caption
     <Figure className={`align-${imageAlign}`}>
       <img loading='lazy' {...propsWithoutAttrs} />
       <Caption attrAuthor={attrAuthor} attrUrl={props.attrUrl}>
-        {attr}
+        {caption}
       </Caption>
     </Figure>
   ) : (
@@ -47,7 +47,7 @@ Image.propTypes = {
   src: T.string,
   alt: T.string,
   align: T.string,
-  attr: T.string,
+  caption: T.string,
   attrAuthor: T.string,
   attrUrl: T.string
 };
