@@ -41,6 +41,16 @@ layers:
           const comparingDate = dateFns.sub(datetime, { years: 1 });
           return `${dateFns.format(datetime, 'LLL yyyy')} - ${dateFns.format(comparingDate, 'LLL yyyy')}`;
         }
+    legend:
+      type: gradient
+      min: less
+      max: more
+      stops:
+        - "#08041d"
+        - "#1f0a46"
+        - "#52076c"
+        - "#f57c16"
+        - "#f7cf39"
   - id: nightlights-hd-monthly
     name: Nightlights Monthly
     type: raster
@@ -54,6 +64,23 @@ layers:
       rescale:
         - 0
         - 255
+    legend:
+      type: categorical
+      stops: 
+        - color: "#3C8EC4"
+          label: "Exceptional"
+        - color: "#6ECC51"
+          label: "Favourable"
+        - color: "#F3EF4F"
+          label: "Watch"
+        - color: "#DF6335"
+          label: "Poor"
+        - color: "#7E170E"
+          label: "Failure"
+        - color: "#777879"
+          label: "Out of season"
+        - color: "#794416"
+          label: "No data"
   - id: dev-fail
     name: Failing layer
     type: raster
