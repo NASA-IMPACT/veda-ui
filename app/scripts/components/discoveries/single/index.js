@@ -61,7 +61,8 @@ function DiscoveriesSingle() {
                 Figure: ContentBlockFigure,
                 Caption,
                 Image,
-                Chart
+                Chart,
+                Map
               }}
             >
               <pageMdx.MdxContent />
