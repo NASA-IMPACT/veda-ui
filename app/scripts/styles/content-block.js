@@ -96,7 +96,9 @@ const ContentBlockProse = styled(VarProse)`
 ContentBlockProse.displayName = proseDisplayName;
 
 const ContentBlockFigure = styled(Figure)`
-  /* styled-component */
+  img {
+    width: 100%;
+  }
 `;
 
 export { ContentBlockFigure, ContentBlockProse };

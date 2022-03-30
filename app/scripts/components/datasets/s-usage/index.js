@@ -20,7 +20,7 @@ function DatasetsUsage() {
 
   return (
     <>
-      <LayoutProps title={`${dataset.data.name} usage`} />
+      <LayoutProps title={`${dataset.data.name} Usage`} />
       <PageLocalNav
         parentName='Dataset'
         parentLabel='Datasets'
@@ -32,7 +32,7 @@ function DatasetsUsage() {
         }
       />
       <PageMainContent>
-        <PageHero title={`${dataset.data.name} usage`} />
+        <PageHero title={`${dataset.data.name} Usage`} />
         <FoldProse>
           <p>And how exactly does this dataset get used?</p>
         </FoldProse>

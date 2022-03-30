@@ -478,18 +478,18 @@ function PageHeader() {
                     </li>
                     <li>
                       <GlobalMenuLink
-                        to={thematicDatasetsPath(thematic)}
-                        onClick={closeNavOnClick}
-                      >
-                        Datasets
-                      </GlobalMenuLink>
-                    </li>
-                    <li>
-                      <GlobalMenuLink
                         to={thematicDiscoveriesPath(thematic)}
                         onClick={closeNavOnClick}
                       >
                         Discoveries
+                      </GlobalMenuLink>
+                    </li>
+                    <li>
+                      <GlobalMenuLink
+                        to={thematicDatasetsPath(thematic)}
+                        onClick={closeNavOnClick}
+                      >
+                        Datasets
                       </GlobalMenuLink>
                     </li>
                     <li>

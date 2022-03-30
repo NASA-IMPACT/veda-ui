@@ -33,8 +33,15 @@ function RootHome() {
                 description={t.description}
                 overline={
                   <>
-                    <Pluralize singular='dataset' count={t.datasets.length} /> /{' '}
+                    <i>Contains </i>
                     <Pluralize
+                      zero='no datasets'
+                      singular='dataset'
+                      count={t.datasets.length}
+                    />{' '}
+                    /{' '}
+                    <Pluralize
+                      zero='no discoveries'
                       singular='discovery'
                       plural='discoveries'
                       count={t.discoveries.length}

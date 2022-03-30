@@ -11,10 +11,11 @@ import {
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
-import { PageDetails, PageMainTitle, PageOverline } from '../../styles/page';
-import Constrainer from '../../styles/constrainer';
-import { variableGlsp } from '../../styles/variable-utils';
+import { PageLead, PageMainTitle, PageOverline } from '$styles/page';
+import Constrainer from '$styles/constrainer';
+import { variableGlsp } from '$styles/variable-utils';
 import { Figcaption, Figure, FigureAttribution } from './figure';
+import Try from './try-render';
 
 const PageHeroSelf = styled.div`
   position: relative;
@@ -45,6 +46,15 @@ const PageHeroSelf = styled.div`
       ${media.xlargeUp`
         min-height: 28rem;
       `}
+
+      &::before {
+        position: absolute;
+        z-index: 2;
+        inset: 0 0 auto 0;
+        height: ${themeVal('layout.border')};
+        background: ${themeVal('color.base-300a')};
+        content: '';
+      }
     `}
 
   ${({ isHidden }) => isHidden && visuallyHidden()}
@@ -56,17 +66,36 @@ const PageHeroSelf = styled.div`
 `;
 
 const PageHeroInner = styled(Constrainer)`
-  padding-top: ${variableGlsp(2)};
+  padding-top: ${variableGlsp(4)};
   padding-bottom: ${variableGlsp(2)};
   align-items: end;
 `;
 
-const PageHeroHGroup = styled.div`
-  position: relative;
-  z-index: 3;
+export const PageHeroHGroup = styled.div`
   display: flex;
   flex-flow: column;
   gap: ${variableGlsp(0.125)};
+`;
+
+const PageHeroCover = styled(Figure)`
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: ${themeVal('color.base-400')};
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    mix-blend-mode: multiply;
+  }
+`;
+
+const PageHeroBlockAlpha = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${variableGlsp()};
+
   grid-column: 1 / span 4;
 
   ${media.mediumUp`
@@ -78,24 +107,30 @@ const PageHeroHGroup = styled.div`
   `}
 `;
 
-const PageHeroCover = styled(Figure)`
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: ${themeVal('color.base-400')};
+const PageHeroBlockBeta = styled.div`
+  grid-column: 1 / span 4;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: ${variableGlsp()};
 
-  img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    mix-blend-mode: multiply;
-  }
+  ${media.mediumUp`
+    grid-column: 1 / span 6;
+    grid-row: 2;
+  `}
+
+  ${media.largeUp`
+    grid-column: 7 / span 6;
+    grid-row: 1;
+  `}
 `;
 
 function PageHero(props) {
   const {
     title,
-    detailsContent,
+    description,
+    renderAlphaBlock,
+    renderBetaBlock,
     publishedDate,
     coverSrc,
     coverAlt,
@@ -114,18 +149,15 @@ function PageHero(props) {
   return (
     <PageHeroSelf isCover={hasImage} isHidden={isHidden}>
       <PageHeroInner>
-        <PageHeroHGroup>
-          <PageMainTitle>{title}</PageMainTitle>
-          {date && (
-            <PageOverline>
-              Published on{' '}
-              <time dateTime={format(date, 'yyyy-MM-dd')}>
-                {format(date, 'MMM d, yyyy')}
-              </time>
-            </PageOverline>
-          )}
-        </PageHeroHGroup>
-        {detailsContent && <PageDetails>{detailsContent}</PageDetails>}
+        <Try fn={renderAlphaBlock} wrapWith={PageHeroBlockAlpha}>
+          <PageHeroHGroup>
+            <PageMainTitle>{title}</PageMainTitle>
+            <PageOverlineDate date={date} />
+          </PageHeroHGroup>
+        </Try>
+        <Try fn={renderBetaBlock} wrapWith={PageHeroBlockBeta}>
+          {description && <PageLead>{description}</PageLead>}
+        </Try>
         {hasImage && (
           <PageHeroCover>
             <img src={coverSrc} alt={coverAlt} />
@@ -146,11 +178,33 @@ export default PageHero;
 
 PageHero.propTypes = {
   title: T.string,
-  detailsContent: T.node,
+  description: T.string,
+  renderAlphaBlock: T.func,
+  renderBetaBlock: T.func,
   publishedDate: T.oneOfType([T.string, T.instanceOf(Date)]),
   coverSrc: T.string,
   coverAlt: T.string,
   attributionAuthor: T.string,
   attributionUrl: T.string,
   isHidden: T.bool
+};
+
+export function PageOverlineDate(props) {
+  const { date } = props;
+  if (!date) {
+    return null
+  }
+
+  return (
+    <PageOverline>
+      Published on{' '}
+      <time dateTime={format(date, 'yyyy-MM-dd')}>
+        {format(date, 'MMM d, yyyy')}
+      </time>
+    </PageOverline>
+  )
+}
+
+PageHero.PageOverlineDate = {
+  date: T.instanceOf(Date)
 };

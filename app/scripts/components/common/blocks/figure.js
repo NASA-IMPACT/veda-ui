@@ -27,7 +27,9 @@ const FigureWithError = (props) => (
 );
 
 const StyledContentBlockFigure = styled(FigureWithError)`
-  /* styled-component */
+  img {
+    width: 100%;
+  }
 `;
 StyledContentBlockFigure.displayName = figureDisplayName;
 
