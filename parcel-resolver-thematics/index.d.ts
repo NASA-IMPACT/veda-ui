@@ -92,7 +92,7 @@ declare module 'delta/thematics' {
    * Data structure for the Datasets frontmatter.
    */
   interface DatasetData {
-    featured?: boolean;
+    featuredOn?: string[];
     id: string;
     name: string;
     thematics: string[];
@@ -105,7 +105,7 @@ declare module 'delta/thematics' {
    * Data structure for the Discoveries frontmatter.
    */
   interface DiscoveryData {
-    featured?: boolean;
+    featuredOn?: string[];
     id: string;
     name: string;
     description: string;

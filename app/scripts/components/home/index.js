@@ -36,6 +36,7 @@ import {
   CardSelf,
   CardTitle
 } from '$components/common/card';
+import { CollecticonShrinkToLeft } from '@devseed-ui/collecticons';
 
 const StatsList = styled.dl`
   display: grid;
@@ -141,10 +142,17 @@ function Home() {
     (t) => t.id !== thematic.data.id
   );
 
-  const featuredDatasets = thematic.data.datasets.filter((d) => d.featured);
-  const featuredDiscoveries = thematic.data.discoveries.filter(
-    (d) => d.featured
-  );
+  const featuredDatasets = thematic.data.datasets.filter((d) => {
+    if (d.featuredOn?.find((thematicId) => thematicId === thematic.data.id))
+      return true;
+    else return false;
+  });
+
+  const featuredDiscoveries = thematic.data.discoveries.filter((d) => {
+    if (d.featuredOn?.find((thematicId) => thematicId === thematic.data.id))
+      return true;
+    else return false;
+  });
 
   return (
     <PageMainContent>
@@ -243,7 +251,6 @@ function Home() {
           </FeaturedSlider>
         </Fold>
       )}
-
       {!!featuredDatasets.length && (
         <Fold forwardedAs='section'>
           <FoldHeader as='header'>
