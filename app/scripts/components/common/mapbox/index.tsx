@@ -20,6 +20,7 @@ import {
 } from '$components/common/loading-skeleton';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
+import LayerLegend from './layer-legend';
 
 const MapsContainer = styled.div`
   position: relative;
@@ -167,12 +168,29 @@ function MapboxMapComponent(props, ref) {
         </MapLoading>
       )}
 
+      {/*
+        Map overlay element
+        Message shown when the map is in compare mode to indicate what's
+        being compared.
+      */}
       <MapMessage
         id='compare-message'
         active={!!(shouldRenderCompare && compareLayerResolvedData)}
       >
         {compareLayerResolvedData?.mapLabel}
       </MapMessage>
+
+      {/*
+        Map overlay element
+        Layer legend for the active layer.
+      */}
+      {baseLayerResolvedData?.legend && (
+        <LayerLegend
+          title={baseLayerResolvedData.name}
+          {...baseLayerResolvedData.legend}
+        />
+      )}
+
       {/*
         Maps container
       */}
