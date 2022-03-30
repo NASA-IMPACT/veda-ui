@@ -4,11 +4,11 @@
  * @param {number} value The value to round
  * @param {number} decimals The number of decimals to keep. Default to 2
  */
-export function round(value, decimals = 2) {
+export function round(value: number, decimals = 2) {
   return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
 }
 
-export function shortenLargeNumber(value, decimals = 2) {
+export function shortenLargeNumber(value: number, decimals = 2) {
   if (value / 1e9 >= 1) {
     return {
       num: round(value / 1e9, decimals),
@@ -29,6 +29,13 @@ export function shortenLargeNumber(value, decimals = 2) {
     num: value,
     unit: ''
   };
+}
+
+interface FormatThousandsOptions {
+  decimals?: number;
+  separator?: string;
+  forceDecimals?: boolean;
+  shorten?: boolean;
 }
 
 /**
@@ -59,7 +66,7 @@ export function shortenLargeNumber(value, decimals = 2) {
  * formatThousands(1/2, { decimals: 5, forceDecimals: true})    0.50000
  *
  */
-export function formatThousands(num, options) {
+export function formatThousands(num: number, options: FormatThousandsOptions) {
   const opts = {
     decimals: 2,
     separator: ',',
@@ -83,7 +90,7 @@ export function formatThousands(num, options) {
 
   let largeNumUnit = '';
   if (opts.shorten) {
-    const { num, unit } = shortenLargeNumber(int, 0);
+    const { num, unit } = shortenLargeNumber(Number(int), 0);
     int = num.toString();
     largeNumUnit = unit;
   }
@@ -110,13 +117,13 @@ export function formatThousands(num, options) {
  *
  * @returns string
  */
-export const zeroPad = (num, length = 2) => {
+export const zeroPad = (num: number, length = 2) => {
   const prefix = num < 0 ? '-' : '';
 
   const abdsNum = Math.abs(num);
   const wholeNum = Math.floor(abdsNum);
   const padLength = Math.max(length - String(wholeNum).length, 0);
 
-  var pads = new Array(padLength + 1).join('0');
+  const pads = new Array(padLength + 1).join('0');
   return prefix + pads + abdsNum;
 };
