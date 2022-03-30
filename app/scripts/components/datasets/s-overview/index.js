@@ -35,7 +35,7 @@ function DatasetsOverview() {
 
   return (
     <>
-      <LayoutProps title={`${dataset.data.name} overview`} />
+      <LayoutProps title={`${dataset.data.name} Overview`} />
       <PageLocalNav
         parentName='Dataset'
         parentLabel='Datasets'
@@ -48,8 +48,8 @@ function DatasetsOverview() {
       />
       <PageMainContent>
         <PageHero
-          title={dataset.data.name}
-          detailsContent={
+          title={`${dataset.data.name} Overview`}
+          renderBetaBlock={() => (
             <>
               <PageLead>{dataset.data.description}</PageLead>
               <PageActions>
@@ -63,7 +63,7 @@ function DatasetsOverview() {
                 </Button>
               </PageActions>
             </>
-          }
+          )}
           coverSrc={dataset.data.media?.src}
           coverAlt={dataset.data.media?.alt}
           attributionAuthor={dataset.data.media?.author?.name}

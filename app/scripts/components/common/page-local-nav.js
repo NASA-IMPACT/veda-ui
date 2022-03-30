@@ -63,7 +63,7 @@ const LocalMenu = styled.ul`
   align-items: center;
   gap: ${glsp()};
   max-width: 1/3vw;
-  overflow: scroll;
+  overflow: auto;
 
   a,
   a:visited {

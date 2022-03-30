@@ -305,7 +305,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
 
   return (
     <>
-      <LayoutProps title={dataset.data.name} hideFooter />
+      <LayoutProps title={`${dataset.data.name} Exploration`} hideFooter />
       <PageLocalNav
         parentName='Dataset'
         parentLabel='Datasets'
@@ -317,7 +317,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
         }
       />
       <PageMainContent>
-        <PageHero title={`${dataset.data.name} exploration`} isHidden />
+        <PageHero title={`${dataset.data.name} Exploration`} isHidden />
         <Explorer>
           <Panel revealed={panelRevealed} onClick={onPanelClick}>
             <PanelInner ref={panelBodyRef}>

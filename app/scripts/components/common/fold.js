@@ -28,6 +28,10 @@ export const FoldHeader = styled.div`
   gap: ${variableGlsp()};
   justify-content: space-between;
   align-items: flex-end;
+
+  > a {
+    flex-shrink: 0;
+  }
 `;
 
 export const FoldHGroup = styled.div`

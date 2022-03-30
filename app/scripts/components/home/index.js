@@ -2,14 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import {
-  glsp,
-  listReset,
-  media,
-  multiply,
-  themeVal
-} from '@devseed-ui/theme-provider';
+import { listReset, media } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
+import { Overline } from '@devseed-ui/typography';
 
 import deltaThematics from 'delta/thematics';
 
@@ -17,14 +12,21 @@ import { LayoutProps } from '$components/common/layout-root';
 
 import { thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
 import { useThematicArea } from '$utils/thematics';
+import Pluralize from '$utils/pluralize';
+import { zeroPad } from '$utils/format';
 
 import { resourceNotFound } from '$components/uhoh';
 
-import { VarProse } from '$styles/variable-components';
-import { variableGlsp } from '$styles/variable-utils';
-import Hug from '$styles/hug';
-import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
+import { VarHeading } from '$styles/variable-components';
+import { variableBaseType, variableGlsp } from '$styles/variable-utils';
+import {
+  PageActions,
+  PageLead,
+  PageMainContent,
+  PageMainTitle
+} from '$styles/page';
 
+import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import {
   Card,
@@ -34,43 +36,41 @@ import {
   CardSelf,
   CardTitle
 } from '$components/common/card';
-import Pluralize from '$utils/pluralize';
 
-const IntroFold = styled(Hug)`
-  padding-top: ${variableGlsp(2)};
-  padding-bottom: ${variableGlsp(2)};
-  align-items: center;
-  background: ${themeVal('color.primary')};
-  color: ${themeVal('color.surface')};
-  box-shadow: inset 0 1px 0 0 ${themeVal('color.surface-100a')};
-`;
+const StatsList = styled.dl`
+  display: grid;
+  grid-auto-columns: min-content;
+  grid-auto-rows: auto;
+  grid-auto-flow: column;
+  gap: ${variableGlsp(0, 1)};
+  align-items: end;
 
-const IntroFoldFigure = styled.figure`
-  grid-column: content-start / content-end;
-
-  ${media.largeUp`
-    grid-column:  content-start / content-7;
-    grid-row: 1;
-  `}
-
-  img {
-    border-radius: ${multiply(themeVal('shape.rounded'), 2)};
+  a,
+  a:visited {
+    display: block;
+    color: inherit;
   }
 `;
 
-const IntroFoldProse = styled(VarProse)`
-  grid-column: content-start / content-end;
+const StatsListKey = styled(Overline).attrs({
+  as: 'dt'
+})`
+  grid-row: 1;
+  opacity: 0.64;
+  color: inherit;
+  font-size: ${variableBaseType('0.75rem')};
+  line-height: ${variableBaseType('1rem')};
 
-  ${media.largeUp`
-    grid-column: content-8 / content-end;
-  `}
+  && {
+    font-weight: 400;
+  }
 `;
 
-const IntroFoldActions = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  gap: ${glsp(0.75)};
-  align-items: center;
+const StatsListValue = styled(VarHeading).attrs({
+  as: 'dd',
+  size: 'jumbo'
+})`
+  grid-row: 2;
 `;
 
 const FeaturedSlider = styled.div`
@@ -149,31 +149,64 @@ function Home() {
   return (
     <PageMainContent>
       <LayoutProps title={thematic.data.name} />
-
-      <IntroFold>
-        <IntroFoldFigure>
-          <img
-            src='https://via.placeholder.com/1024x512'
-            alt='Placeholder image'
-          />
-        </IntroFoldFigure>
-        <IntroFoldProse>
-          <PageMainTitle>
-            Welcome to the {thematic.data.name} thematic area
-          </PageMainTitle>
-          <PageLead>{thematic.data.description}</PageLead>
-          <IntroFoldActions>
-            <Button
-              forwardedAs={Link}
-              to='about'
-              size='large'
-              variation='achromic-outline'
-            >
-              Learn more
-            </Button>
-          </IntroFoldActions>
-        </IntroFoldProse>
-      </IntroFold>
+      <PageHero
+        title={`Welcome to the ${thematic.data.name} thematic area`}
+        renderAlphaBlock={() => (
+          <>
+            <PageHeroHGroup>
+              <PageMainTitle>
+                Welcome to the {thematic.data.name} thematic area
+              </PageMainTitle>
+            </PageHeroHGroup>
+            <StatsList>
+              <StatsListKey>
+                <Pluralize
+                  singular='Discovery'
+                  plural='Discoveries'
+                  count={thematic.data.datasets.length}
+                  showCount={false}
+                />
+              </StatsListKey>
+              <StatsListValue>
+                <Link to='discoveries'>
+                  {zeroPad(thematic.data.datasets.length)}
+                </Link>
+              </StatsListValue>
+              <StatsListKey>
+                <Pluralize
+                  singular='Dataset'
+                  count={thematic.data.datasets.length}
+                  showCount={false}
+                />
+              </StatsListKey>
+              <StatsListValue>
+                <Link to='datasets'>
+                  {zeroPad(thematic.data.datasets.length)}
+                </Link>
+              </StatsListValue>
+            </StatsList>
+          </>
+        )}
+        renderBetaBlock={() => (
+          <>
+            <PageLead>{thematic.data.description}</PageLead>
+            <PageActions>
+              <Button
+                forwardedAs={Link}
+                to='about'
+                size='large'
+                variation='achromic-outline'
+              >
+                Learn more
+              </Button>
+            </PageActions>
+          </>
+        )}
+        coverSrc={thematic.data.media?.src}
+        coverAlt={thematic.data.media?.alt}
+        attributionAuthor={thematic.data.media?.author?.name}
+        attributionUrl={thematic.data.media?.author?.url}
+      />
 
       {!!featuredDiscoveries.length && (
         <Fold forwardedAs='section'>
@@ -280,9 +313,15 @@ function Home() {
                   description={t.description}
                   overline={
                     <>
-                      <Pluralize singular='dataset' count={t.datasets.length} />{' '}
-                      /{' '}
+                      <i>Contains </i>
                       <Pluralize
+                        zero='no datasets'
+                        singular='dataset'
+                        count={t.datasets.length}
+                      />
+                      {' / '}
+                      <Pluralize
+                        zero='no discoveries'
                         singular='discovery'
                         plural='discoveries'
                         count={t.discoveries.length}

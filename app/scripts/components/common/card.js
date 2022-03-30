@@ -9,7 +9,8 @@ import {
   listReset,
   media,
   multiply,
-  themeVal
+  themeVal,
+  visuallyHidden
 } from '@devseed-ui/theme-provider';
 import { Overline } from '@devseed-ui/typography';
 
@@ -39,7 +40,7 @@ function renderCardType({ cardType }) {
   switch (cardType) {
     case 'cover':
       return css`
-        padding-top: ${variableGlsp()};
+        padding-top: ${variableGlsp(2)};
         color: ${themeVal('color.surface')};
         justify-content: flex-end;
 
@@ -132,6 +133,10 @@ export const CardOverline = styled(Overline)`
 
   > * {
     line-height: inherit;
+  }
+
+  i {
+    ${visuallyHidden()}
   }
 `;
 

@@ -115,7 +115,7 @@ function FigureAttributionCmp(props) {
     <FigureAttributionSelf {...rest}>
       <FigureAttributionInner {...innerProps}>
         <CollecticonCircleInformation />
-        <strong>By {author}</strong>
+        <strong>Figure by {author}</strong>
       </FigureAttributionInner>
     </FigureAttributionSelf>
   );
