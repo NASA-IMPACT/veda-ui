@@ -1,6 +1,8 @@
 import { createUITheme, media, themeVal } from '@devseed-ui/theme-provider';
 import { createGlobalStyle } from 'styled-components';
 
+import reactTippyStyles from './vendor/tippyjs-react';
+
 export default function themeOverrides() {
   return createUITheme({
     color: {
@@ -41,6 +43,8 @@ export default function themeOverrides() {
  * Print values for all variables across media queries.
  */
 export const GlobalStyles = createGlobalStyle`
+  ${reactTippyStyles()}
+
   :root {
     --base-space-multiplier: ${themeVal('layout.glspMultiplier.xsmall')};
   }
