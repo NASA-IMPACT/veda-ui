@@ -212,7 +212,7 @@ Also you can pass any attribute that you can use with `<img />` HTML element and
 | src | string | '' | Path for image. If using local image, please look at the section below. |
 | alt | string | '' | Description for image, this will be used for screen readers. |
 | align | string, enum (left, right, center) | 'center' | <b>For inline image.</b> Alignment of image. |
-| attr | string | '' | <b>For inline image.</b>  Caption text for inline image. |
+| caption | string | '' | <b>For inline image.</b>  Caption text for inline image. |
 | attrAuthor | string | '' | Info for image author. When omitted, attribution mark on the right-top part of the figure wouldn't show up. |
 | attrUrl | string | '' | Link for image attribution. |
 
@@ -239,7 +239,7 @@ Also you can pass any attribute that you can use with `<img />` HTML element and
       src="http://via.placeholder.com/256x128?text=align-left" 
       alt="Media example" 
       align="left" 
-      attr="example caption" 
+      caption="example caption" 
       attrAuthor="example author"
       attrUrl="https://example.com"
       width="256"
