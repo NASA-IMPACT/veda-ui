@@ -26,6 +26,8 @@ Understanding of MDX is not required to write contents for Delta dashboard, but 
 
 We currently (2022, March) have 8 types of Blocks for layout. Mind that only `Prose` and `Figure` can be direct children of Block. Any raw markdown contents can be wrapped with `Prose`. Any media contents or custom components (`Image`, `Map`, `Chart` ...) should be wrapped with `Figure`. If you are using a `Block` with more than one child element, mind that the order of children decides which one goes where. For example, in `FigureProse` Block, `<Figure>` comes before `<Prose>` in the syntax. In result, `Figure` shows up on the left, and `Prose` shows up on the right.
 
+Layouts do work in any size of screen, but this documentation mainly addresses how they are represented on large (> 991px) screens.
+
 <table style="margin-top: 20px">
 <tr>
 <th> Type </th><th width='300px'> Syntax </th> <th> Result </th>
