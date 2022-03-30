@@ -11,7 +11,7 @@ import {
   truncated,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
-import { variableGlsp } from '$styles/variable-utils';
+import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 type LayerLegendCommonProps = {
   title: string;
@@ -34,14 +34,16 @@ const printLegendVal = (val: string | number) =>
 const LayerLegendSelf = styled.div`
   position: absolute;
   z-index: 8;
-  bottom: 2rem;
+  bottom: ${variableGlsp()};
   right: ${variableGlsp()};
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${glsp(0.5)};
   padding: ${variableGlsp(0.5, 1)};
   border-radius: ${themeVal('shape.rounded')};
   box-shadow: ${themeVal('boxShadow.elevationB')};
   background-color: ${themeVal('color.surface')};
-  width: 25rem;
-  max-width: calc(100% - ${variableGlsp(2)});
+  width: 20rem;
 `;
 
 const LegendList = styled.dl`
@@ -103,8 +105,9 @@ const LegendSwatch = styled.span<LegendSwatchProps>`
   cursor: ${({ hasHelp }) => (hasHelp ? 'help' : 'auto')};
 `;
 
-const LayerLegendTitle = styled.h2`
-  font-size: 0.875rem;
+const LayerLegendTitle = styled.h3`
+  font-size: ${variableBaseType('0.75rem')};
+  line-height: ${variableBaseType('1rem')};
 `;
 
 function LayerLegend(
