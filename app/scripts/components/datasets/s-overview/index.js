@@ -20,6 +20,7 @@ import ContentBlockFigure from '$components/common/blocks/figure';
 import Image, { Caption } from '$components/common/blocks/images/';
 import { ContentBlockProse } from '$styles/content-block';
 import Chart from '$components/common/blocks/chart/';
+import Map from '$components/common/blocks/block-map';
 
 import { datasetExplorePath, thematicDatasetsPath } from '$utils/routes';
 import { Button } from '@devseed-ui/button';
@@ -77,7 +78,8 @@ function DatasetsOverview() {
               Figure: ContentBlockFigure,
               Caption,
               Image,
-              Chart
+              Chart,
+              Map
             }}
           >
             <pageMdx.MdxContent />
