@@ -49,7 +49,7 @@ function DatasetsOverview() {
       <PageMainContent>
         <PageHero
           title={`${dataset.data.name} Overview`}
-          heroBlockBetaContent={
+          renderBetaBlock={() => (
             <>
               <PageLead>{dataset.data.description}</PageLead>
               <PageActions>
@@ -63,7 +63,7 @@ function DatasetsOverview() {
                 </Button>
               </PageActions>
             </>
-          }
+          )}
           coverSrc={dataset.data.media?.src}
           coverAlt={dataset.data.media?.alt}
           attributionAuthor={dataset.data.media?.author?.name}

@@ -19,9 +19,14 @@ import { resourceNotFound } from '$components/uhoh';
 
 import { VarHeading } from '$styles/variable-components';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
-import { PageActions, PageLead, PageMainContent } from '$styles/page';
+import {
+  PageActions,
+  PageLead,
+  PageMainContent,
+  PageMainTitle
+} from '$styles/page';
 
-import PageHero from '$components/common/page-hero';
+import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import {
   Card,
@@ -146,36 +151,43 @@ function Home() {
       <LayoutProps title={thematic.data.name} />
       <PageHero
         title={`Welcome to the ${thematic.data.name} thematic area`}
-        heroBlockAlphaAddon={
-          <StatsList>
-            <StatsListKey>
-              <Pluralize
-                singular='Discovery'
-                plural='Discoveries'
-                count={thematic.data.datasets.length}
-                showCount={false}
-              />
-            </StatsListKey>
-            <StatsListValue>
-              <Link to='discoveries'>
-                {zeroPad(thematic.data.datasets.length)}
-              </Link>
-            </StatsListValue>
-            <StatsListKey>
-              <Pluralize
-                singular='Dataset'
-                count={thematic.data.datasets.length}
-                showCount={false}
-              />
-            </StatsListKey>
-            <StatsListValue>
-              <Link to='datasets'>
-                {zeroPad(thematic.data.datasets.length)}
-              </Link>
-            </StatsListValue>
-          </StatsList>
-        }
-        heroBlockBetaContent={
+        renderAlphaBlock={() => (
+          <>
+            <PageHeroHGroup>
+              <PageMainTitle>
+                Welcome to the {thematic.data.name} thematic area
+              </PageMainTitle>
+            </PageHeroHGroup>
+            <StatsList>
+              <StatsListKey>
+                <Pluralize
+                  singular='Discovery'
+                  plural='Discoveries'
+                  count={thematic.data.datasets.length}
+                  showCount={false}
+                />
+              </StatsListKey>
+              <StatsListValue>
+                <Link to='discoveries'>
+                  {zeroPad(thematic.data.datasets.length)}
+                </Link>
+              </StatsListValue>
+              <StatsListKey>
+                <Pluralize
+                  singular='Dataset'
+                  count={thematic.data.datasets.length}
+                  showCount={false}
+                />
+              </StatsListKey>
+              <StatsListValue>
+                <Link to='datasets'>
+                  {zeroPad(thematic.data.datasets.length)}
+                </Link>
+              </StatsListValue>
+            </StatsList>
+          </>
+        )}
+        renderBetaBlock={() => (
           <>
             <PageLead>{thematic.data.description}</PageLead>
             <PageActions>
@@ -189,7 +201,7 @@ function Home() {
               </Button>
             </PageActions>
           </>
-        }
+        )}
         coverSrc={thematic.data.media?.src}
         coverAlt={thematic.data.media?.alt}
         attributionAuthor={thematic.data.media?.author?.name}

@@ -27,9 +27,7 @@ function About() {
       <LayoutProps title={`About ${thematic.data.name}`} />
       <PageHero
         title={thematic.data.about?.title || 'n/a'}
-        heroBlockBetaContent={
-          <PageLead>{thematic.data.about?.description}</PageLead>
-        }
+        description={thematic.data.about?.description}
       />
       {pageMdx.status === 'loading' && <p>Loading page content</p>}
       {pageMdx.status === 'success' && (

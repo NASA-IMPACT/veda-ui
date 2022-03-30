@@ -19,12 +19,7 @@ function DatasetsHub() {
       <LayoutProps title='Datasets' />
       <PageHero
         title='Datasets'
-        heroBlockBetaContent={
-          <PageLead>
-            This dashboard explores key indicators to track and compare changes
-            over time.
-          </PageLead>
-        }
+        description='This dashboard explores key indicators to track and compare changes over time.'
       />
       <Fold>
         <FoldHeader>

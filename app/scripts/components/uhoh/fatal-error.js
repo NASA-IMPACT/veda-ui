@@ -80,9 +80,7 @@ function Child(props) {
         <PageMainContent>
           <PageHero
             title='Critical Error'
-            heroBlockBetaContent={
-              <PageLead>That&apos;s a fatal error.</PageLead>
-            }
+            description={`That's a fatal error.`}
           />
           <FoldProse>
             <p>

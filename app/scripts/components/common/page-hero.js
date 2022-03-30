@@ -11,10 +11,11 @@ import {
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
-import { PageMainTitle, PageOverline } from '../../styles/page';
-import Constrainer from '../../styles/constrainer';
-import { variableGlsp } from '../../styles/variable-utils';
+import { PageLead, PageMainTitle, PageOverline } from '$styles/page';
+import Constrainer from '$styles/constrainer';
+import { variableGlsp } from '$styles/variable-utils';
 import { Figcaption, Figure, FigureAttribution } from './figure';
+import Try from './try-render';
 
 const PageHeroSelf = styled.div`
   position: relative;
@@ -70,7 +71,7 @@ const PageHeroInner = styled(Constrainer)`
   align-items: end;
 `;
 
-const PageHeroHGroup = styled.div`
+export const PageHeroHGroup = styled.div`
   display: flex;
   flex-flow: column;
   gap: ${variableGlsp(0.125)};
@@ -127,8 +128,9 @@ const PageHeroBlockBeta = styled.div`
 function PageHero(props) {
   const {
     title,
-    heroBlockBetaContent,
-    heroBlockAlphaAddon,
+    description,
+    renderAlphaBlock,
+    renderBetaBlock,
     publishedDate,
     coverSrc,
     coverAlt,
@@ -147,23 +149,15 @@ function PageHero(props) {
   return (
     <PageHeroSelf isCover={hasImage} isHidden={isHidden}>
       <PageHeroInner>
-        <PageHeroBlockAlpha>
+        <Try fn={renderAlphaBlock} wrapWith={PageHeroBlockAlpha}>
           <PageHeroHGroup>
             <PageMainTitle>{title}</PageMainTitle>
-            {date && (
-              <PageOverline>
-                Published on{' '}
-                <time dateTime={format(date, 'yyyy-MM-dd')}>
-                  {format(date, 'MMM d, yyyy')}
-                </time>
-              </PageOverline>
-            )}
+            <PageOverlineDate date={date} />
           </PageHeroHGroup>
-          {heroBlockAlphaAddon && <>{heroBlockAlphaAddon}</>}
-        </PageHeroBlockAlpha>
-        {heroBlockBetaContent && (
-          <PageHeroBlockBeta>{heroBlockBetaContent}</PageHeroBlockBeta>
-        )}
+        </Try>
+        <Try fn={renderBetaBlock} wrapWith={PageHeroBlockBeta}>
+          {description && <PageLead>{description}</PageLead>}
+        </Try>
         {hasImage && (
           <PageHeroCover>
             <img src={coverSrc} alt={coverAlt} />
@@ -184,12 +178,33 @@ export default PageHero;
 
 PageHero.propTypes = {
   title: T.string,
-  heroBlockBetaContent: T.node,
-  heroBlockAlphaAddon: T.node,
+  description: T.string,
+  renderAlphaBlock: T.func,
+  renderBetaBlock: T.func,
   publishedDate: T.oneOfType([T.string, T.instanceOf(Date)]),
   coverSrc: T.string,
   coverAlt: T.string,
   attributionAuthor: T.string,
   attributionUrl: T.string,
   isHidden: T.bool
+};
+
+export function PageOverlineDate(props) {
+  const { date } = props;
+  if (!date) {
+    return null
+  }
+
+  return (
+    <PageOverline>
+      Published on{' '}
+      <time dateTime={format(date, 'yyyy-MM-dd')}>
+        {format(date, 'MMM d, yyyy')}
+      </time>
+    </PageOverline>
+  )
+}
+
+PageHero.PageOverlineDate = {
+  date: T.instanceOf(Date)
 };
