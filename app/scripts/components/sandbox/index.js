@@ -14,6 +14,7 @@ import SandboxHug from './hug';
 import SandboxMap from './map';
 import SandboxContentBlocks from './content-blocks';
 import SandboxCards from './cards';
+import SandboxMDXPage from './mdx-page';
 
 const pages = [
   {
@@ -35,6 +36,11 @@ const pages = [
     id: 'content-blocks',
     name: 'Content Blocks',
     component: SandboxContentBlocks
+  },
+  {
+    id: 'mdx-page',
+    name: 'Mdx page',
+    component: SandboxMDXPage
   },
   {
     id: 'cards',
