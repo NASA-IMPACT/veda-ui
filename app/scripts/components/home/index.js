@@ -28,15 +28,7 @@ import {
 
 import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  CardList,
-  CardSelf,
-  CardTitle
-} from '$components/common/card';
-import { CollecticonShrinkToLeft } from '@devseed-ui/collecticons';
+import { Card, CardList } from '$components/common/card';
 
 const StatsList = styled.dl`
   display: grid;
@@ -116,15 +108,11 @@ function Home() {
   );
 
   const featuredDatasets = thematic.data.datasets.filter((d) => {
-    if (d.featuredOn?.find((thematicId) => thematicId === thematic.data.id))
-      return true;
-    else return false;
+    return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
   });
 
   const featuredDiscoveries = thematic.data.discoveries.filter((d) => {
-    if (d.featuredOn?.find((thematicId) => thematicId === thematic.data.id))
-      return true;
-    else return false;
+    return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
   });
 
   return (
