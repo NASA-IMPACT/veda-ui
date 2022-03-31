@@ -15,12 +15,12 @@ import {
 
 import { thematicDiscoveriesPath } from '$utils/routes';
 
+import { ContentBlockProse } from '$styles/content-block';
 import Block from '$components/common/blocks';
 import ContentBlockFigure from '$components/common/blocks/figure';
-import Image from '$components/common/images/';
-import { ContentBlockProse } from '$styles/content-block';
-import Chart from '$components/discoveries/chart/';
-import { Caption } from '$components/common/images/';
+import Image, { Caption } from '$components/common/blocks/images/';
+import Chart from '$components/common/blocks/chart/';
+import Map from '$components/common/blocks/block-map';
 
 function DiscoveriesSingle() {
   const thematic = useThematicArea();
@@ -61,7 +61,8 @@ function DiscoveriesSingle() {
                 Figure: ContentBlockFigure,
                 Caption,
                 Image,
-                Chart
+                Chart,
+                Map
               }}
             >
               <pageMdx.MdxContent />

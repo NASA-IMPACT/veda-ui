@@ -8,7 +8,7 @@ import { BlockErrorBoundary } from './';
 const ContentBlockFigure = (props) => {
   const { children } = props;
   // Figure can be empty
-  if (children) {
+  if (children && children.length) {
     const captionChild = children.filter(
       (e) => e.type.displayName === captionDisplayName
     );

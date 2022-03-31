@@ -3,18 +3,18 @@ import { MDXProvider } from '@mdx-js/react';
 
 import { LayoutProps } from '../common/layout-root';
 
-import { PageLead, PageMainContent } from '../../styles/page';
+import { PageMainContent } from '../../styles/page';
 import { resourceNotFound } from '../uhoh';
 import PageHero from '../common/page-hero';
-import { Caption } from '$components/common/images/';
 
 import { useMdxPageLoader, useThematicArea } from '../../utils/thematics';
 
 import Block from '$components/common/blocks';
 import ContentBlockFigure from '$components/common/blocks/figure';
-import Image from '$components/common/images/';
+import Image, { Caption } from '$components/common/blocks/images/';
 import { ContentBlockProse } from '$styles/content-block';
-import Chart from '$components/discoveries/chart/';
+import Chart from '$components/common/blocks/chart/';
+import Map from '$components/common/blocks/block-map';
 
 function About() {
   const thematic = useThematicArea();
@@ -38,7 +38,8 @@ function About() {
             Figure: ContentBlockFigure,
             Caption,
             Image,
-            Chart
+            Chart,
+            Map
           }}
         >
           <pageMdx.MdxContent />
