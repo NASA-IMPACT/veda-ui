@@ -1,35 +1,22 @@
 import React from 'react';
-import { MDXProvider } from '@mdx-js/react';
+import { Button } from '@devseed-ui/button';
+import { Link } from 'react-router-dom';
 
-import { LayoutProps } from '$components/common/layout-root';
 import { resourceNotFound } from '$components/uhoh';
+import { LayoutProps } from '$components/common/layout-root';
 import { PageActions, PageLead, PageMainContent } from '$styles/page';
 import PageLocalNav, {
   DatasetsLocalMenu
 } from '$components/common/page-local-nav';
 import PageHero from '$components/common/page-hero';
+import MdxContent from '$components/common/mdx-content';
 
-import {
-  useMdxPageLoader,
-  useThematicArea,
-  useThematicAreaDataset
-} from '$utils/thematics';
-
-import Block from '$components/common/blocks';
-import ContentBlockFigure from '$components/common/blocks/figure';
-import Image, { Caption } from '$components/common/blocks/images/';
-import { ContentBlockProse } from '$styles/content-block';
-import Chart from '$components/common/blocks/chart/';
-import Map from '$components/common/blocks/block-map';
-
+import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { datasetExplorePath, thematicDatasetsPath } from '$utils/routes';
-import { Button } from '@devseed-ui/button';
-import { Link } from 'react-router-dom';
 
 function DatasetsOverview() {
   const thematic = useThematicArea();
   const dataset = useThematicAreaDataset();
-  const pageMdx = useMdxPageLoader(dataset?.content);
 
   if (!thematic || !dataset) throw resourceNotFound();
 
@@ -69,22 +56,7 @@ function DatasetsOverview() {
           attributionAuthor={dataset.data.media?.author?.name}
           attributionUrl={dataset.data.media?.author?.url}
         />
-        {pageMdx.status === 'loading' && <p>Loading page content</p>}
-        {pageMdx.status === 'success' && (
-          <MDXProvider
-            components={{
-              Block,
-              Prose: ContentBlockProse,
-              Figure: ContentBlockFigure,
-              Caption,
-              Image,
-              Chart,
-              Map
-            }}
-          >
-            <pageMdx.MdxContent />
-          </MDXProvider>
-        )}
+        <MdxContent loader={dataset?.content} />
       </PageMainContent>
     </>
   );
