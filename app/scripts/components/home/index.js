@@ -107,19 +107,6 @@ const FeaturedList = styled.ol`
   }
 `;
 
-const DatasetsFeaturedSlider = styled.div`
-  grid-column: 1 / -1;
-  grid-row: 2;
-
-  ${media.mediumUp`
-    grid-column: 1 / 5;
-  `}
-
-  ${media.largeUp`
-    grid-column: 1 / 7;
-  `}
-`;
-
 function Home() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
