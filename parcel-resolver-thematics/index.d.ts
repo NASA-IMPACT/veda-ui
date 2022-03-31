@@ -1,64 +1,26 @@
-/* eslint-disable prettier/prettier */
-
 declare module 'delta/thematics' {
   import { MDXModule } from 'mdx/types';
 
-  interface Media {
-    src: string;
-    alt: string;
-    author?: {
-      name: string;
-      url: string
-    }
-  }
-
-  /**
-   * Base structure for each of the data types in delta/thematics.
-   */
-  interface DeltaDatum<T> {
-    [key: string]: {
-      /**
-       * Contains all the variables in the content's front matter.
-       */
-      data: T;
-      /**
-       * Promise to return the MDX content. Setup this way to allow dynamic
-       * module loading.
-       */
-      content: Promise<MDXModule>;
-    };
-  }
-
-  /**
-   * Data structure for the Thematics frontmatter.
-   */
-  interface ThematicData {
-    id: string;
-    name: string;
-    description: string;
-    media?: Media
-  }
-
-  interface DatasetSourceParams {
-    colormap_name: string;
-    rescale: number[];
-  }
-  
+  // ///////////////////////////////////////////////////////////////////////////
+  //  Datasets                                                                //
+  // ///////////////////////////////////////////////////////////////////////////
   type DatasetLayerType = 'raster' | 'vector';
-  
-  export interface DatasetDatumFnResolverBag {
-    [key: string]: any;
+
+  //
+  // Dataset Layers
+  //
+  interface DatasetSourceParams {
+    colormap_name?: string;
+    rescale?: number[];
+  }
+
+  interface DatasetLayerCommonProps {
+    zoomExtent?: number[];
+    sourceParams?: DatasetSourceParams;
   }
   
-  type Primitives = string | number | boolean | null | undefined;
   export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
   export type DatasetDatumReturnType = Primitives | Date;
-  
-  interface DatasetLayerCommonProps {
-    zoomExtent: number[];
-    sourceParams: DatasetSourceParams;
-  }
-  
   interface DatasetLayerCommonCompareProps extends DatasetLayerCommonProps {
     datetime?: string | (DatasetDatumFn<DatasetDatumReturnType>);
     mapLabel?: string | (DatasetDatumFn<DatasetDatumReturnType>);
@@ -80,13 +42,36 @@ declare module 'delta/thematics' {
     description: string;
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal;
+    legend: LayerLegendCategorical | LayerLegendGradient
   }
-  
-  
+
+  // A normalized compare layer is the result after the compare definition is
+  // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
+  // difference with a "base" dataset layer is not having a name and
+  // description.
   export interface DatasetLayerCompareNormalized extends DatasetLayerCommonCompareProps {
     id: string;
     type: DatasetLayerType;
-  } 
+  }
+
+  // TODO: Complete once known
+  export interface DatasetDatumFnResolverBag {
+    [key: string]: any;
+  }
+
+  export interface LayerLegendGradient {
+    type: 'gradient';
+    min: string | number;
+    max: string | number;
+    stops: string[];
+  }
+
+  type CategoricalStop = { color: string; label: string; }
+
+  export interface LayerLegendCategorical {
+    type: 'categorical';
+    stops: CategoricalStop[];
+  }
 
   /**
    * Data structure for the Datasets frontmatter.
@@ -101,6 +86,10 @@ declare module 'delta/thematics' {
     layers: DatasetLayer[];
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+  //  Discoveries                                                             //
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Data structure for the Discoveries frontmatter.
    */
@@ -111,6 +100,52 @@ declare module 'delta/thematics' {
     description: string;
     media?: Media
     thematics: string[];
+  }
+
+  // ///////////////////////////////////////////////////////////////////////////
+  //  Thematic areas                                                          //
+  // ///////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Data structure for the Thematics frontmatter.
+   */
+   interface ThematicData {
+    id: string;
+    name: string;
+    description: string;
+    media?: Media
+  }
+
+  // ///////////////////////////////////////////////////////////////////////////
+  //  General interfaces and types                                            //
+  // ///////////////////////////////////////////////////////////////////////////
+  type Primitives = string | number | boolean | null | undefined;
+
+  interface Media {
+    src: string;
+    alt: string;
+    author?: {
+      name: string;
+      url: string
+    }
+  }
+
+
+  /**
+   * Base structure for each of the data types in delta/thematics.
+   */
+   interface DeltaDatum<T> {
+    [key: string]: {
+      /**
+       * Contains all the variables in the content's front matter.
+       */
+      data: T;
+      /**
+       * Promise to return the MDX content. Setup this way to allow dynamic
+       * module loading.
+       */
+      content: Promise<MDXModule>;
+    };
   }
 
   /**

@@ -12,7 +12,7 @@ interface MessageProps {
 const Message = styled.div<MessageProps>`
   position: absolute;
   left: 50%;
-  z-index: 10;
+  z-index: 8;
   transform: translate(-50%, 0);
   padding: ${glsp(0.5, 0.75)};
   background: #fff;
