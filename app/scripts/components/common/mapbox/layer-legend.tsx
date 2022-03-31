@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
 import { LayerLegendCategorical, LayerLegendGradient } from 'delta/thematics';
 
 import { formatThousands } from '$utils/format';
@@ -12,6 +10,8 @@ import {
   visuallyHidden
 } from '@devseed-ui/theme-provider';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
+
+import { Tip } from '../tip';
 
 type LayerLegendCommonProps = {
   title: string;
@@ -124,11 +124,11 @@ function LayerLegend(
           {stops.map((stop) => (
             <React.Fragment key={stop.color}>
               <dt>
-                <Tippy content={stop.label}>
+                <Tip content={stop.label}>
                   <LegendSwatch stops={stop.color} hasHelp>
                     {stop.color}
                   </LegendSwatch>
-                </Tippy>
+                </Tip>
               </dt>
               <dd>
                 {/*

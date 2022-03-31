@@ -1,7 +1,6 @@
+import { reactTippyStyles } from '$components/common/tip';
 import { createUITheme, media, themeVal } from '@devseed-ui/theme-provider';
 import { createGlobalStyle } from 'styled-components';
-
-import reactTippyStyles from './vendor/tippyjs-react';
 
 export default function themeOverrides() {
   return createUITheme({
