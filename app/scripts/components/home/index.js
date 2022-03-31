@@ -28,14 +28,7 @@ import {
 
 import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  CardList,
-  CardSelf,
-  CardTitle
-} from '$components/common/card';
+import { Card, CardList } from '$components/common/card';
 
 const StatsList = styled.dl`
   display: grid;
@@ -106,33 +99,6 @@ const FeaturedList = styled.ol`
   }
 `;
 
-const DatasetsFeaturedSlider = styled.div`
-  grid-column: 1 / -1;
-  grid-row: 2;
-
-  ${media.mediumUp`
-    grid-column: 1 / 5;
-  `}
-
-  ${media.largeUp`
-    grid-column: 1 / 7;
-  `}
-`;
-
-const FeaturedAnalysis = styled(CardSelf)`
-  grid-column: 1 / -1;
-  grid-row: 3;
-
-  ${media.mediumUp`
-    grid-column: 5 / 9;
-    grid-row: 2;
-  `}
-
-  ${media.largeUp`
-    grid-column: 7 / span 6;
-  `}
-`;
-
 function Home() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
@@ -141,10 +107,13 @@ function Home() {
     (t) => t.id !== thematic.data.id
   );
 
-  const featuredDatasets = thematic.data.datasets.filter((d) => d.featured);
-  const featuredDiscoveries = thematic.data.discoveries.filter(
-    (d) => d.featured
-  );
+  const featuredDatasets = thematic.data.datasets.filter((d) => {
+    return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
+  });
+
+  const featuredDiscoveries = thematic.data.discoveries.filter((d) => {
+    return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
+  });
 
   return (
     <PageMainContent>
@@ -243,7 +212,6 @@ function Home() {
           </FeaturedSlider>
         </Fold>
       )}
-
       {!!featuredDatasets.length && (
         <Fold forwardedAs='section'>
           <FoldHeader as='header'>
@@ -257,7 +225,7 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <DatasetsFeaturedSlider>
+          <FeaturedSlider>
             <FeaturedList>
               {featuredDatasets.map((t) => (
                 <li key={t.id}>
@@ -275,23 +243,7 @@ function Home() {
                 </li>
               ))}
             </FeaturedList>
-          </DatasetsFeaturedSlider>
-
-          <FeaturedAnalysis>
-            <CardHeader>
-              <CardTitle>Get air quality data</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse facilisis sollicitudin magna, eget accumsan dolor
-                molestie quis. Aliquam sit amet erat nec risus dapibus
-                efficitur. Sed tristique ultrices libero eu pulvinar.
-                Pellentesque ac auctor felis. Vestibulum varius mattis lectus,
-                at dignissim nulla interdum.
-              </p>
-            </CardBody>
-          </FeaturedAnalysis>
+          </FeaturedSlider>
         </Fold>
       )}
 
