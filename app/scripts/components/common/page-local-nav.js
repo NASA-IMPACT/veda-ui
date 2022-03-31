@@ -1,7 +1,7 @@
 import React from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useMatch } from 'react-router-dom';
 import {
   glsp,
   themeVal,
@@ -138,6 +138,9 @@ function PageLocalNav(props) {
   const { localMenuCmp, parentName, parentLabel, parentTo, items, currentId } =
     props;
 
+  const matchy = useMatch('/:thematicId/datasets/:dataId/:page');
+  let currentPage = matchy ? matchy.params.page : '';
+
   const currentItem = items.find((o) => o.id === currentId);
 
   return (
@@ -169,7 +172,7 @@ function PageLocalNav(props) {
                   <li key={t.id}>
                     <DropMenuItem
                       as={NavLink}
-                      to={`${parentTo}/${t.id}`}
+                      to={`${parentTo}/${t.id}/${currentPage}`}
                       aria-current={null}
                       active={t.id === currentItem.id}
                       data-dropdown='click.close'
