@@ -120,20 +120,6 @@ const DatasetsFeaturedSlider = styled.div`
   `}
 `;
 
-const FeaturedAnalysis = styled(CardSelf)`
-  grid-column: 1 / -1;
-  grid-row: 3;
-
-  ${media.mediumUp`
-    grid-column: 5 / 9;
-    grid-row: 2;
-  `}
-
-  ${media.largeUp`
-    grid-column: 7 / span 6;
-  `}
-`;
-
 function Home() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
@@ -264,7 +250,7 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <DatasetsFeaturedSlider>
+          <FeaturedSlider>
             <FeaturedList>
               {featuredDatasets.map((t) => (
                 <li key={t.id}>
@@ -282,23 +268,7 @@ function Home() {
                 </li>
               ))}
             </FeaturedList>
-          </DatasetsFeaturedSlider>
-
-          <FeaturedAnalysis>
-            <CardHeader>
-              <CardTitle>Get air quality data</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse facilisis sollicitudin magna, eget accumsan dolor
-                molestie quis. Aliquam sit amet erat nec risus dapibus
-                efficitur. Sed tristique ultrices libero eu pulvinar.
-                Pellentesque ac auctor felis. Vestibulum varius mattis lectus,
-                at dignissim nulla interdum.
-              </p>
-            </CardBody>
-          </FeaturedAnalysis>
+          </FeaturedSlider>
         </Fold>
       )}
 
