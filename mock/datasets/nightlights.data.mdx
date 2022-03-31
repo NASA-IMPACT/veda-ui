@@ -1,0 +1,48 @@
+---
+id: nightlights
+name: 'Nightlights'
+description: 'Lights'
+media:
+  src: ::file ./img-placeholder-4.jpg
+  alt: Placeholder
+  author:
+    name: Placeholder
+    url: https://unsplash.com/
+thematics:
+  - covid-19
+layers:
+  - id: nightlights-hd-monthly
+    name: Nightlights Monthly
+    type: raster
+    description: The nightlights dataset
+    zoomExtent:
+      - 4
+      - 16
+    sourceParams:
+      bidx: 1
+      colormap_name: inferno
+      rescale:
+        - 0
+        - 255
+    legend:
+      type: gradient
+      min: Less
+      max: More
+      stops:
+        - '#08041d'
+        - '#1f0a46'
+        - '#52076c'
+        - '#f57c16'
+        - '#f7cf39'
+---
+
+<Block>
+<Prose>
+## Nightlights
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae ornare lectus, ac accumsan erat. Cras eget eleifend ligula. Curabitur ac nisi tempor, molestie lorem vitae, consectetur turpis. Etiam hendrerit et sapien ac interdum.
+
+Phasellus nec magna tristique, imperdiet mauris hendrerit, posuere sem. Vestibulum in lobortis tortor.
+
+</Prose>
+</Block>
