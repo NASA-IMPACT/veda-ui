@@ -15,7 +15,8 @@ thematics:
   - air-quality
   - covid-19
 ---
-<Block>
+
+<Block type='full'>
 <Prose>
 ## Going through changes
 
@@ -28,5 +29,44 @@ As the pandemic has progressed, these scenarios have largely played out: during 
 The impacts on specific air pollutants have been varied and dependant on their lifespan in the atmosphere. Those pollutants with short lifespans, such as nitrogen dioxide (NO2), decreased dramatically and quickly along with emissions.
 
 Today, air quality levels are beginning to approach pre-pandemic levels, and scientists are just beginning to dive into the new measurements collected throughout this unprecedented time.
+</Prose>
+<Figure>
+  <Map
+    datasetId='no2'
+    layerId='no2-monthly-diff'
+    dateTime='2018-03-01'
+  />
+  <Caption 
+    attrAuthor='NASA' 
+    attrUrl='https://nasa.gov/'
+  >
+    This layer shows changes in nitrogen dioxide (NO₂) levels in µmol/m₂. Redder colors indicate increases in NO₂. Bluer colors indicate lower levels of NO₂.
+  </Caption> 
+</Figure>
+</Block>
+
+<Block type='full'>
+<Figure>
+  <Map
+    datasetId='no2'
+    layerId='no2-monthly'
+    dateTime='2021-03-01'
+    isComparing
+  />
+  <Caption 
+    attrAuthor='NASA' 
+    attrUrl='https://nasa.gov/'
+  >
+    Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
+  </Caption> 
+</Figure>
+</Block>
+
+<Block>
+<Prose>
+## Measuring Air Pollution on the Ground at Airports
+New research during the pandemic is also looking at how COVID-related travel bans are impacting air quality around airports. Current conditions create a unique opportunity to study airport-related pollutants, especially nitrogen dioxide and formaldehyde. While travel bans and strict regulations around air travel have been in place, air traffic has yet to return to previous levels, and many planes remain grounded.
+
+Scientists have installed two sensors at the Baltimore-Washington International Airport and two sensors at the Hartsfield-Jackson Atlanta International Airport to better characterize how airplanes contribute to air pollution. They are comparing the on-the-ground sensor information from NASA's [Pandora Project](https://pandora.gsfc.nasa.gov/ "Explore the Pandora Project") with satellite information from TROPOMI. So far, they have found that nitrogen dioxide hotspots in Atlanta shifted from the airport, shown here, to the city center from April-June 2020. By September, however, satellites revealed the airport had reemerged as a dominant nitrogen dioxide emission source.
 </Prose>
 </Block>

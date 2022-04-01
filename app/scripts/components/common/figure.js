@@ -34,6 +34,7 @@ export const FigcaptionInner = styled(Subtitle).attrs({
   align-items: start;
   font-size: ${variableBaseType('0.75rem')};
   text-align: left;
+  max-width: 52rem;
 
   &::after {
     content: '';

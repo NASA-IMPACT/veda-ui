@@ -1,6 +1,8 @@
 ---
 id: no2
 name: 'Nitrogen Dioxide'
+featuredOn:
+  - covid-19
 description: "Since the outbreak of the novel coronavirus, atmospheric concentrations of nitrogen dioxide have changed by as much as 60% in some regions."
 media:
   src: ::file ./no2--dataset-cover.jpg
@@ -12,8 +14,81 @@ thematics:
   - agriculture
   - air-quality
   - covid-19
-featuredOn:
-  - covid-19
+layers:
+  - id: no2-monthly
+    name: No2
+    type: raster
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sodales semper risus, suscipit varius diam facilisis non.'
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      resampling_method: bilinear
+      bidx: 1
+      color_formula: gamma r 1.05
+      colormap_name: coolwarm
+      rescale:
+        - 0
+        - 1.5e16
+    compare:
+      datasetId: no2
+      layerId: no2-monthly
+      datetime: |
+        ::js ({ datetime, dateFns }) => {
+          return dateFns.sub(datetime, { years: 1 });
+        }
+      mapLabel: |
+        ::js ({ datetime, dateFns }) => {
+          const comparingDate = dateFns.sub(datetime, { years: 1 });
+          return `${dateFns.format(datetime, 'LLL yyyy')} - ${dateFns.format(comparingDate, 'LLL yyyy')}`;
+        }
+    legend:
+      type: gradient
+      min: "Less"
+      max: "More"
+      stops:
+        - "#99c5e0"
+        - "#f9eaa9"
+        - "#f7765d"
+        - "#c13b72"
+        - "#461070"
+        - "#050308"
+  - id: no2-monthly-diff
+    name: No2 (Diff)
+    type: raster
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sodales semper risus, suscipit varius diam facilisis non.'
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      resampling_method: bilinear
+      bidx: 1
+      colormap_name: rdbu_r
+      rescale:
+        - -8e15
+        - 8e15
+    compare:
+      datasetId: no2
+      layerId: no2-monthly-diff
+      datetime: |
+        ::js ({ datetime, dateFns }) => {
+          return dateFns.sub(datetime, { years: 1 });
+        }
+      mapLabel: |
+        ::js ({ datetime, dateFns }) => {
+          const comparingDate = dateFns.sub(datetime, { years: 1 });
+          return `${dateFns.format(datetime, 'LLL yyyy')} - ${dateFns.format(comparingDate, 'LLL yyyy')}`;
+        }
+    legend:
+      type: gradient
+      min: "< -3"
+      max: "> 3"
+      stops:
+        - "#3A88BD"
+        - "#C9E0ED"
+        - "#E4EEF3"
+        - "#FDDCC9"
+        - "#DD7059"
 ---
 
 <Block type='full'>
