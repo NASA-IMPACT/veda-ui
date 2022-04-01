@@ -38,11 +38,77 @@ layers:
 
 <Block>
 <Prose>
-## Nightlights
+Images of Earth at night give us an extraordinary view of human activity over time. The nighttime environment illuminates Earth features, including city infrastructure, lightning flashes, fishing boats navigating open water, gas flares, aurora, and natural hazards, such as lava flowing from an active volcano. Paired with the moonlight, researchers can also spot snow and ice, as well as other reflective surfaces that allow nighttime land and ocean analysis.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae ornare lectus, ac accumsan erat. Cras eget eleifend ligula. Curabitur ac nisi tempor, molestie lorem vitae, consectetur turpis. Etiam hendrerit et sapien ac interdum.
+During the COVID-19 pandemic, researchers are using night light observations to track variations in energy use, migration, and transportation in response to social distancing and lockdown measures.
+</Prose>
+</Block>
 
-Phasellus nec magna tristique, imperdiet mauris hendrerit, posuere sem. Vestibulum in lobortis tortor.
+<Block type='full'>
+<Prose>
+## Scientific research
+Nightlights data are collected by the [Visible Infrared Radiometer Suite (VIIRS) Day/Night Band (DNB)](https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/viirs/) on the Suomi-National Polar-Orbiting Partnership (Suomi-NPP) platform, a joint National Oceanic and Atmospheric Administration (NOAA) and NASA satellite. The images are produced by [NASA’s Black Marble](https://blackmarble.gsfc.nasa.gov/) products suite. All data are calibrated daily, corrected, and validated with ground measurements for science-ready analysis.
 
+[New research](https://science.nasa.gov/earth-science/rrnes-awards) funded by NASA’s Rapid Response and Novel Research in the Earth Sciences (RRNES) program seeks to discover what nightlights can tell us about the impacts of novel coronavirus-related shutdowns.
+</Prose>
+<Figure>
+  <Image
+  src={new URL('./nighttime-lights--wuhan-bef-after.png', import.meta.url).href}
+  alt='Lighting changes in Jianghan District'
+  />
+  <Caption 
+    attrAuthor='NASA' 
+    attrUrl='https://nasa.gov/'
+  >
+    Lighting changes in Jianghan District, a commercial area of Wuhan, and nearby residential areas.
+  </Caption> 
+</Figure>
+</Block>
+
+<Block type='full'>
+<Figure>
+  <Map
+    datasetId='sandbox'
+    layerId='no2-monthly'
+    dateTime='2018-03-01'
+    isComparing={true}
+  />
+  <Caption 
+    attrAuthor='NASA' 
+    attrUrl='https://nasa.gov/'
+  >
+    Images of the cities of Wuhan (left) and Hefei (top right) before and after COVID-19 related shutdowns were enacted.
+  </Caption> 
+</Figure>
+<Prose>
+## Interpreting the data
+Each spotlight city has a slider for turning night lights on and off. The darker purple indicates fewer night lights, while the lighter yellow indicates more. By comparing regions before and after guidelines to shelter-in-place began, researchers are able to visualize the extent to which social distancing measures affected various economic activities based on whether light pollution increased or decreased, which highways were shut down, and which cities stayed the same.
+
+The products featured are 500-meter (VNP46) and 30-meter Black Marble High Definition (HD) nighttime lights. Black Marble HD downscales radiances from the 500-meter product to street level using optical imagery from Landsat 8, a NASA and U.S. Geological Survey (USGS) satellite, along with OpenStreetMap ancillary layers. This helps visualize neighborhoods and commercial centers that have less activity – or closures – due to social distancing restrictions.
+</Prose>
+</Block>
+
+<Block>
+<Prose>
+## Credits
+Black Marble data courtesy of [Universities Space Research Association (USRA) Earth from Space Institute (EfSI)](https://www.usra.edu/efsi-our-mission) and NASA Goddard Space Flight Center’s [Terrestrial Information Systems Laboratory](https://science.gsfc.nasa.gov/earth/terrestrialinfo/) using VIIRS day-night band data from the Suomi National Polar-orbiting Partnership and Landsat-8 Operational Land Imager (OLI) data from the U.S. Geological Survey.
+</Prose>
+</Block>
+
+<Block>
+<Prose>
+## Additional resources
+### NASA Features
+
+* [Nighttime Images Capture Change In China](https://earthobservatory.nasa.gov/images/146481/nighttime-images-capture-change-in-china)
+
+### Explore the data
+
+* [Nighttime Images Show Changes In Human Activity](https://earthdata.nasa.gov/learn/articles/feature-articles/nighttime-images-wuhan)
+
+### Explore the Missions
+
+* [NASA’s Black Marble](https://blackmarble.gsfc.nasa.gov/)
+* [Suomi National Polar-orbiting Partnership (Suomi NPP)](https://www.nasa.gov/mission_pages/NPP/main/index.html)
 </Prose>
 </Block>
