@@ -295,9 +295,26 @@ Also you can pass any attribute that you can use with `<img />` HTML element and
 </table>
 
 
-#### How to use local image
+#### How to use local image (assets)
 
-...WIP...
+Because of internal build process, you need to wrap the path with specific template when using local assets like below.
+
+```
+new URL('where-your-image-is.jpg', import.meta.url).href
+```
+
+For example, if you put an image `image.jpg` inside of the folder where your mdx file is, the syntax for `Image` component will be like below.
+
+```
+<Image
+  src={new URL('./img.jpg', import.meta.url).href}
+  align="left" 
+  attr="tux" 
+  attrAuthor="penguin"
+  attrUrl="https://linux.org"
+  width="256" 
+/>
+```
 
 ### Chart
 
@@ -340,7 +357,15 @@ Syntax for Chart used in Wide Figure Block looks like this
 
 ### Map
 
-...WIP...
+| Option | Type | Default | Description|
+|---|---|---|---|
+| datasetId | string | '' | `id` defined in dataset mdx. |
+| layerId | string | '' | `id` for layer to display. The layer should be a part of the dataset above. |
+| dateTime | string | '' | Optional. This string should follow `yyyy-mm-dd` format. When omitted, the very first available dateTime for the dataset will be displayed |
+| isComparing | boolean | `false` | Optional. If the compare layer in the dataset needs to be turned on, pass `true`. |
+
+
+
 
 ## Some gotchas
 
