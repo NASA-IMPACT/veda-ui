@@ -142,7 +142,6 @@ function PageLocalNav(props) {
   let currentPage = matchy ? matchy.params.page : '';
 
   const currentItem = items.find((o) => o.id === currentId);
-  console.log(currentId);
   return (
     <PageLocalNavSelf>
       <LocalBreadcrumb>
