@@ -364,6 +364,18 @@ Syntax for Chart used in Wide Figure Block looks like this
 | dateTime | string | '' | Optional. This string should follow `yyyy-mm-dd` format. When omitted, the very first available dateTime for the dataset will be displayed |
 | isComparing | boolean | `false` | Optional. If the compare layer in the dataset needs to be turned on, pass `true`. |
 
+Syntax for Map, which displays `nightlights-hd-monthly` layer from `sandbox` dataset in full figure block looks like this:
+
+```
+<Block type='full'>
+  <Figure>
+    <Map datasetId='sandbox' layerId='nightlights-hd-monthly' dateTime='2020-03-01' isComparing={false} />
+    <Caption>
+      The caption displays below the map.
+    </Caption>
+  </Figure>
+</Block>
+```
 
 
 
