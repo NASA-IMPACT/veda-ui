@@ -142,7 +142,7 @@ function PageLocalNav(props) {
   let currentPage = matchy ? matchy.params.page : '';
 
   const currentItem = items.find((o) => o.id === currentId);
-
+  console.log(currentId);
   return (
     <PageLocalNavSelf>
       <LocalBreadcrumb>
@@ -173,7 +173,7 @@ function PageLocalNav(props) {
                     <DropMenuItem
                       as={NavLink}
                       to={`${parentTo}/${t.id}/${currentPage}`}
-                      aria-current={null}
+                      aria-current={t.id === currentId ? 'page' : 'null'}
                       active={t.id === currentItem.id}
                       data-dropdown='click.close'
                     >
