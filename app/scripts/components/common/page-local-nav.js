@@ -138,8 +138,9 @@ function PageLocalNav(props) {
   const { localMenuCmp, parentName, parentLabel, parentTo, items, currentId } =
     props;
 
-  const matchy = useMatch('/:thematicId/datasets/:dataId/:page');
-  let currentPage = matchy ? matchy.params.page : '';
+  // Keep the url structure on dataset pages
+  const datasetPageMatch = useMatch('/:thematicId/datasets/:dataId/:page');
+  const currentPage = datasetPageMatch ? datasetPageMatch.params.page : '';
 
   const currentItem = items.find((o) => o.id === currentId);
   return (
