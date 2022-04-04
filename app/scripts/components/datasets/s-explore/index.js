@@ -268,6 +268,14 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
           setSelectedDatetime(availableActiveLayerDates[0]);
         }
       }
+      // When current explore page is selected in local nav
+      if (
+        availableActiveLayerDates &&
+        currDates === prevDates &&
+        !selectedDatetime
+      ) {
+        setSelectedDatetime(availableActiveLayerDates[0]);
+      }
     },
     [availableActiveLayerDates, selectedDatetime, setSelectedDatetime]
   );
