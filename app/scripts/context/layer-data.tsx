@@ -156,3 +156,36 @@ export const useDatasetAsyncLayers = (datasetId) => {
   // Get the layer information from the dataset defined in the configuration.
   return useLayersInit(datasets[datasetId]?.data.layers);
 };
+
+type ReferencedLayer = {
+  datasetId: string;
+  layerId: string;
+  skipCompare?: boolean;
+}
+
+export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
+  // Get the layers from the different datasets.
+  const layers = referencedLayers.map(({ datasetId, layerId, skipCompare }) => {
+    // Get the layer information from the dataset defined in the configuration.
+    const layer = datasets[datasetId]?.data.layers?.find((l) => l.id === layerId);
+  
+    // The layers must be defined in the configuration otherwise it is not
+    // possible to load them.
+    if (!layer) {
+      throw new Error(`Layer [${layerId}] not found in dataset [${datasetId}]`);
+    }
+
+    // Skip the compare to avoid unnecessary network requests.
+    if (skipCompare) {
+      return {
+        ...layer,
+        compare: null
+      };
+    }
+    
+    return layer;
+  });
+
+  // Get the layer information from the dataset defined in the configuration.
+  return useLayersInit(layers);
+};
