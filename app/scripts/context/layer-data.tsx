@@ -133,7 +133,7 @@ export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
   const layer = datasets[datasetId]?.data.layers?.find((l) => l.id === layerId);
 
   // The layers must be defined in the configuration otherwise it is not
-  // possible to load the,.
+  // possible to load them.
   if (hasParams && !layer) {
     throw new Error(`Layer [${layerId}] not found in dataset [${datasetId}]`);
   }

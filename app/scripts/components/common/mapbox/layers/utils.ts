@@ -15,7 +15,7 @@ import { utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { MapLayerRasterTimeseries } from './raster-timeseries';
 
-export const getLayerComponent = (isTimeseries, layerType) => {
+export const getLayerComponent = (isTimeseries: boolean, layerType: 'raster' | 'vector'): React.FunctionComponent<any> | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
   }
@@ -179,7 +179,7 @@ declare global {
   }
 }
 
-type AsyncDatasetLayerData<T extends keyof AsyncDatasetLayer> =
+type AsyncDatasetLayerData<T extends 'baseLayer' | 'compareLayer'> =
   AsyncDatasetLayer[T]['data'];
 
 /**

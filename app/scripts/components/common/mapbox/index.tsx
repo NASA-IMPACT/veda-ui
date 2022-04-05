@@ -104,7 +104,7 @@ function MapboxMapComponent(props, ref) {
     const bag = { ...resolverBag, raw: baseLayer.data };
     const data = resolveConfigFunctions(baseLayer.data, bag);
 
-    return [data, getLayerComponent(data.timeseries, data.type)];
+    return [data, getLayerComponent(!!data.timeseries, data.type)];
   }, [baseLayer, resolverBag]);
 
   // Resolve data needed for the compare layer once it is loaded.
@@ -115,7 +115,7 @@ function MapboxMapComponent(props, ref) {
     const bag = { ...resolverBag, raw: compareLayer.data };
     const data = resolveConfigFunctions(compareLayer.data, bag);
 
-    return [data, getLayerComponent(data.timeseries, data.type)];
+    return [data, getLayerComponent(!!data.timeseries, data.type)];
   }, [compareLayer, resolverBag]);
 
   return (

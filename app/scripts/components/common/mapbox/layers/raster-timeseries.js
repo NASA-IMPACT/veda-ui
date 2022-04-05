@@ -5,6 +5,7 @@ import mapboxgl from 'mapbox-gl';
 
 import { userTzDate2utcString } from '$utils/date';
 
+// Whether or not to print the request logs.
 const LOG = true;
 
 /**
@@ -84,7 +85,9 @@ export function MapLayerRasterTimeseries(props) {
     };
   }, [zoomExtent, mapInstance]);
 
-  // Request and manage markers.
+  //
+  // Markers
+  //
   useEffect(() => {
     if (!id || !layerId || !date || !showMarkers) return;
 
@@ -94,13 +97,6 @@ export function MapLayerRasterTimeseries(props) {
     const load = async () => {
       try {
         changeStatus?.('loading');
-        LOG &&
-          /* eslint-disable-next-line no-console */
-          console.groupCollapsed(
-            'MapLayerRasterTimeseries %cLoading Markers',
-            'color: orange;',
-            id
-          );
 
         const payload = {
           filter: getFilterPayload(userTzDate2utcString(date), layerId),
@@ -112,6 +108,12 @@ export function MapLayerRasterTimeseries(props) {
         };
 
         /* eslint-disable no-console */
+        LOG &&
+          console.groupCollapsed(
+            'MapLayerRasterTimeseries %cLoading Markers',
+            'color: orange;',
+            id
+          );
         LOG && console.log('Payload', payload);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
@@ -188,7 +190,9 @@ export function MapLayerRasterTimeseries(props) {
     };
   }, [id, changeStatus, layerId, date, mapInstance, showMarkers, sourceParams]);
 
-  // Request and manage tiles.
+  //
+  // Tiles
+  //
   useEffect(() => {
     if (!id || !layerId || !date || showMarkers) return;
 
@@ -197,19 +201,17 @@ export function MapLayerRasterTimeseries(props) {
     const load = async () => {
       changeStatus?.('loading');
       try {
-        LOG &&
-          /* eslint-disable-next-line no-console */
-          console.groupCollapsed(
-            'MapLayerRasterTimeseries %cLoading',
-            'color: orange;',
-            id
-          );
-
         const payload = {
           filter: getFilterPayload(userTzDate2utcString(date), layerId)
         };
 
         /* eslint-disable no-console */
+        LOG &&
+          console.groupCollapsed(
+            'MapLayerRasterTimeseries %cLoading',
+            'color: orange;',
+            id
+          );
         LOG && console.log('Payload', payload);
         LOG && console.log('Source Params', sourceParams);
         LOG && console.groupEnd();
