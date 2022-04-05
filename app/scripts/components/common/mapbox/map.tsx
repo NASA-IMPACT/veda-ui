@@ -38,11 +38,10 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
 
     mapRef.current = mbMap;
 
-    // Add zoom controls.
-    mbMap.addControl(new mapboxgl.NavigationControl(), 'bottom-left');
-
-    // Remove compass.
-    document.querySelector('.mapboxgl-ctrl .mapboxgl-ctrl-compass').remove();
+    // Add zoom controls without compass.
+    if (mapOptions?.interactive !== false) {
+      mbMap.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-left');
+    }
 
     onLoad && mbMap.once('load', onLoad);
 

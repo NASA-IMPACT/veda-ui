@@ -248,11 +248,21 @@ export function MapLayerRasterTimeseries(props) {
           url: `${responseData.tiles}?${tileParams}`
         });
 
-        mapInstance.addLayer({
-          id: id,
-          type: 'raster',
-          source: id
-        });
+        mapInstance.addLayer(
+          {
+            id: id,
+            type: 'raster',
+            source: id,
+            // FIXME: This will break the explore page map. Styles should be optional.
+            paint: {
+              'raster-opacity': 0,
+              'raster-opacity-transition': {
+                duration: 320
+              }
+            }
+          },
+          'admin-0-boundary-bg'
+        );
         changeStatus?.('succeeded');
       } catch (error) {
         if (!controller.signal.aborted) {
