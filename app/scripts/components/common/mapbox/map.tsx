@@ -4,9 +4,7 @@ import styled from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-// TODO: Token from config
-mapboxgl.accessToken =
-  'pk.eyJ1IjoiY292aWQtbmFzYSIsImEiOiJja2F6eHBobTUwMzVzMzFueGJuczF6ZzdhIn0.8va1fkyaWgM57_gZ2rBMMg';
+mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
 
 const SingleMapContainer = styled.div`
   && {

@@ -27,7 +27,7 @@ const MapsContainer = styled.div`
 `;
 
 const mapOptions = {
-  style: 'mapbox://styles/covid-nasa/ckb01h6f10bn81iqg98ne0i2y',
+  style: process.env.MAPBOX_STYLE_URL,
   logoPosition: 'bottom-left',
   pitchWithRotate: false,
   dragRotate: false,
