@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import T from 'prop-types';
 import { csv, json } from 'd3-fetch';
 import { ResponsiveLine } from '@nivo/line';
@@ -13,6 +14,15 @@ import {
   getColors
 } from './utils';
 import TooltipComponent from './tooltip';
+
+const ChartWrapper = styled.div`
+  width: 100%;
+  height: 32rem;
+`;
+
+export const ChartPlaceholder = styled(ChartWrapper)`
+  background-color: red;
+`;
 
 const LineChart = ({
   dataPath,
@@ -43,7 +53,7 @@ const LineChart = ({
     getData();
   }, [dataPath, idKey, xKey, yKey, extension]);
   return (
-    <div style={{ width: '100%', height: '500px' }}>
+    <ChartWrapper>
       <ResponsiveLine
         data={data}
         animate={true}
@@ -80,7 +90,7 @@ const LineChart = ({
         sliceTooltip={TooltipComponent}
         theme={chartTheme}
       />
-    </div>
+    </ChartWrapper>
   );
 };
 LineChart.propTypes = {
