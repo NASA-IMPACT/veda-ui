@@ -19,6 +19,7 @@ import Hug from '$styles/hug';
 import { AsyncDatasetLayer, useAsyncLayers } from '$context/layer-data';
 import { chapterDisplayName, ChapterProps, ScrollyChapter } from './chapter';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
+import { S_SUCCEEDED } from '$utils/status';
 
 type ResolvedLayer = {
   layer: AsyncDatasetLayer['baseLayer']['data'];
@@ -159,12 +160,14 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
  * @param count Total count to reach.
  * @returns [areAllLayersAddedToTheMap, onLoadCb]
  */
-function useAllLayersAdded(count) {
+function useAllLayersAdded(
+  count
+): [boolean, (cb: { status: string }) => void] {
   const succeededCount = useRef(0);
   const [allAdded, setAdded] = useState(false);
 
   const onLoadCb = useCallback(
-    (status) => {
+    ({ status }) => {
       if (status === 'succeeded' && ++succeededCount.current >= count) {
         setAdded(true);
       }
@@ -199,9 +202,20 @@ export function ScrollytellingBlock(props) {
   // All layers must be loaded, resolved, and added to the map before we
   // initialize scrollama. This is needed because in a scrollytelling map we
   // need to preload everything so smooth transitions can be applied.
-  const [areAllLayersLoaded, onLayerStatusChange] = useAllLayersAdded(
+  const [areAllLayersLoaded, onLayerLoadSuccess] = useAllLayersAdded(
     resolvedLayers.length
   );
+
+  const onLayerStatusChange = useCallback((result) => {
+    if (result.status === S_SUCCEEDED) {
+      mapRef.current.setPaintProperty(result.id, 'raster-opacity', 0);
+      mapRef.current.setPaintProperty(result.id, 'raster-opacity-transition', {
+        duration: 320
+      });
+    }
+
+    onLayerLoadSuccess(result);
+  }, [onLayerLoadSuccess]);
 
   useEffect(() => {
     if (!areAllLayersLoaded) return;
@@ -230,6 +244,7 @@ export function ScrollytellingBlock(props) {
         const id = getChapterLayerKey(chapter);
 
         // Hide all other layers except this one.
+        // Layers may have been made visible on previous chapters.
         chapterProps.forEach((c) => {
           const otherLayerId = getChapterLayerKey(c);
           if (mapRef.current.getLayer(otherLayerId)) {
@@ -260,6 +275,8 @@ export function ScrollytellingBlock(props) {
             if (!resolvedLayer) return null;
 
             const { runtimeData, Component: LayerCmp, layer } = resolvedLayer;
+
+            if (!LayerCmp) return null;
 
             // Each layer type is added to the map through a component. This
             // component has all the logic needed to add/update/remove the
