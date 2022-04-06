@@ -72,6 +72,7 @@ interface MapLayerRasterTimeseriesProps {
   sourceParams: object;
   zoomExtent: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+  isHidden: boolean;
 }
 
 type Statuses = {
@@ -88,7 +89,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     mapInstance,
     sourceParams = {},
     zoomExtent,
-    onStatusChange
+    onStatusChange,
+    isHidden
   } = props;
 
   const minZoom = zoomExtent?.[0];
@@ -239,7 +241,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           el.addEventListener('click', () =>
             mapInstance.fitBounds(p.bounds, { padding: 32 })
           );
-          el.style.display = showMarkers ? '' : 'none';
+          el.style.display = !isHidden && showMarkers ? '' : 'none';
 
           return marker;
         });
@@ -271,8 +273,9 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         addedMarkers.current = [];
       }
     };
-    // The showMarkers dep is left out on purpose, as it is controlled below,
-    // but we need the value to initialize the markers visibility.
+    // The showMarkers and isHidden dep are left out on purpose, as visibility
+    // is controlled below, but we need the value to initialize the markers
+    // visibility.
   }, [id, changeStatus, layerId, date, minZoom, mapInstance, sourceParams]);
 
   //
@@ -340,6 +343,12 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             source: id,
             layout: {
               visibility: showMarkers ? 'none' : 'visible'
+            },
+            paint: {
+              'raster-opacity': Number(!isHidden),
+              'raster-opacity-transition': {
+                duration: 320
+              }
             }
           },
           'admin-0-boundary-bg'
@@ -367,8 +376,9 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         mapInstance.removeSource(id);
       }
     };
-    // The showMarkers dep is left out on purpose, as it is controlled below,
-    // but we need the value to initialize the layer visibility.
+    // The showMarkers and isHidden dep are left out on purpose, as visibility
+    // is controlled below, but we need the value to initialize the layer
+    // visibility.
   }, [id, changeStatus, layerId, date, mapInstance, sourceParams]);
 
   //
@@ -378,13 +388,14 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     if (mapInstance.getLayer(id)) {
       const visibility = showMarkers ? 'none' : 'visible';
       mapInstance.setLayoutProperty(id, 'visibility', visibility);
+      mapInstance.setPaintProperty(id, 'raster-opacity', Number(!isHidden));
     }
 
-    addedMarkers.current.forEach(
-      (marker) =>
-        (marker.getElement().style.display = showMarkers ? '' : 'none')
-    );
-  }, [id, mapInstance, showMarkers]);
+    addedMarkers.current.forEach((marker) => {
+      const display = isHidden ? 'none' : showMarkers ? '' : 'none';
+      marker.getElement().style.display = display;
+    });
+  }, [id, mapInstance, showMarkers, isHidden]);
 
   return null;
 }

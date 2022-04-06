@@ -19,7 +19,6 @@ import Hug from '$styles/hug';
 import { AsyncDatasetLayer, useAsyncLayers } from '$context/layer-data';
 import { chapterDisplayName, ChapterProps, ScrollyChapter } from './chapter';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
-import { S_SUCCEEDED } from '$utils/status';
 
 type ResolvedLayer = {
   layer: AsyncDatasetLayer['baseLayer']['data'];
@@ -199,6 +198,10 @@ export function ScrollytellingBlock(props) {
 
   const resolvedLayers = useMapLayersFromChapters(chapterProps);
 
+  const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(
+    null
+  );
+
   // All layers must be loaded, resolved, and added to the map before we
   // initialize scrollama. This is needed because in a scrollytelling map we
   // need to preload everything so smooth transitions can be applied.
@@ -206,28 +209,15 @@ export function ScrollytellingBlock(props) {
     resolvedLayers.length
   );
 
-  const onLayerStatusChange = useCallback((result) => {
-    if (result.status === S_SUCCEEDED) {
-      mapRef.current.setPaintProperty(result.id, 'raster-opacity', 0);
-      mapRef.current.setPaintProperty(result.id, 'raster-opacity-transition', {
-        duration: 320
-      });
-    }
-
-    onLayerLoadSuccess(result);
-  }, [onLayerLoadSuccess]);
-
   useEffect(() => {
     if (!areAllLayersLoaded) return;
 
     // Setup initial map state which will be the values on the first chapter.
     const initialCh = chapterProps[0];
-    mapRef.current.setZoom(initialCh.zoom);
-    mapRef.current.setCenter(initialCh.center);
-    const id = getChapterLayerKey(initialCh);
-    if (mapRef.current.getLayer(id)) {
-      mapRef.current.setPaintProperty(id, 'raster-opacity', 1);
-    }
+    mapRef.current?.setZoom(initialCh.zoom);
+    mapRef.current?.setCenter(initialCh.center);
+
+    setActiveChapter(initialCh);
 
     const scroller = scrollama();
 
@@ -241,22 +231,9 @@ export function ScrollytellingBlock(props) {
         const { index } = response;
 
         const chapter = chapterProps[index];
-        const id = getChapterLayerKey(chapter);
+        setActiveChapter(chapter);
 
-        // Hide all other layers except this one.
-        // Layers may have been made visible on previous chapters.
-        chapterProps.forEach((c) => {
-          const otherLayerId = getChapterLayerKey(c);
-          if (mapRef.current.getLayer(otherLayerId)) {
-            mapRef.current.setPaintProperty(
-              otherLayerId,
-              'raster-opacity',
-              otherLayerId === id ? 1 : 0
-            );
-          }
-        });
-
-        mapRef.current.flyTo({
+        mapRef.current?.flyTo({
           center: chapter.center,
           zoom: chapter.zoom
         });
@@ -266,6 +243,9 @@ export function ScrollytellingBlock(props) {
       scroller.destroy();
     };
   }, [chapterProps, areAllLayersLoaded]);
+
+  const activeChapterLayerId =
+    activeChapter && getChapterLayerKey(activeChapter);
 
   return (
     <ScrollyMapWrapper>
@@ -293,7 +273,11 @@ export function ScrollytellingBlock(props) {
                 date={runtimeData.datetime}
                 sourceParams={layer.sourceParams}
                 zoomExtent={layer.zoomExtent}
-                onStatusChange={onLayerStatusChange}
+                onStatusChange={onLayerLoadSuccess}
+                isHidden={
+                  !activeChapterLayerId ||
+                  activeChapterLayerId !== runtimeData.id
+                }
               />
             );
           })}
