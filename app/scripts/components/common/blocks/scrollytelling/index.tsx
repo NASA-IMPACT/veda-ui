@@ -22,8 +22,8 @@ import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 
 type ResolvedLayer = {
   layer: AsyncDatasetLayer['baseLayer']['data'];
-  Component: React.FunctionComponent<any>;
-  runtimeData: { datetime: Date; id: string };
+  Component: React.FunctionComponent<any> | null;
+  runtimeData: { datetime?: Date; id: string };
 } | null;
 
 const ScrollyMapWrapper = styled.div``;
@@ -54,10 +54,15 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
       throw new Error('Found a non Chapter in a ScrollytellingBlock');
     }
     // Extract the props from the chapters.
-    return chapters.map((c) => ({
-      ...c.props,
-      datetime: c.props.datetime && utcString2userTzDate(c.props.datetime)
-    }));
+    return chapters.map(
+      (c) =>
+        ({
+          ...c.props,
+          datetime: c.props.datetime
+            ? utcString2userTzDate(c.props.datetime)
+            : undefined
+        } as unknown as ScrollyChapter)
+    );
   }, [children]);
 }
 
@@ -159,9 +164,7 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
  * @param count Total count to reach.
  * @returns [areAllLayersAddedToTheMap, onLoadCb]
  */
-function useAllLayersAdded(
-  count
-): [boolean, (cb: { status: string }) => void] {
+function useAllLayersAdded(count): [boolean, (cb: { status: string }) => void] {
   const succeededCount = useRef(0);
   const [allAdded, setAdded] = useState(false);
 
@@ -190,7 +193,7 @@ export function ScrollytellingBlock(props) {
   const { children } = props;
 
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const mapRef = useRef<mapboxgl.Map>(null);
   const [isMapLoaded, setMapLoaded] = useState(false);
 
   // Extract the props from the chapters.

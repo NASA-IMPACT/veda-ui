@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
+mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
 const SingleMapContainer = styled.div`
   && {
@@ -19,7 +19,7 @@ const SingleMapContainer = styled.div`
 
 interface SimpleMapProps {
   [key: string]: unknown;
-  mapRef: MutableRefObject<mapboxgl.Map>;
+  mapRef: MutableRefObject<mapboxgl.Map | null>;
   containerRef: RefObject<HTMLDivElement>;
   onLoad(e: mapboxgl.EventData): void;
   onUnmount?: () => void;

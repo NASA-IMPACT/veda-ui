@@ -11,11 +11,11 @@ export interface ChapterProps {
   zoom: number;
   datasetId: string;
   layerId: string;
-  datetime: string;
+  datetime?: string;
 }
 
 export interface ScrollyChapter extends Omit<ChapterProps, 'datetime'> {
-  datetime: Date;
+  datetime?: Date;
 }
 
 export const chapterDisplayName = 'Chapter';

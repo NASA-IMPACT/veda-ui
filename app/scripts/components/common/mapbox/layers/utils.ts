@@ -32,7 +32,7 @@ export const getLayerComponent = (isTimeseries: boolean, layerType: 'raster' | '
  */
 export const getCompareLayerData = (
   layerData: DatasetLayer | null
-): DatasetLayerCompareNormalized => {
+): DatasetLayerCompareNormalized | null => {
   if (!layerData?.compare) return null;
   const { compare } = layerData;
 
@@ -72,7 +72,9 @@ export const getCompareLayerData = (
     } = compareInternal;
 
     const datasetData = datasets[datasetId].data;
-    const otherLayer = datasetData.layers.find((l) => l.id === layerId);
+    const otherLayer = datasetData?.layers?.find((l) => l.id === layerId);
+
+    if (!otherLayer) return null;
 
     return {
       id: otherLayer.id,
@@ -194,7 +196,7 @@ export function resolveLayerTemporalExtent(
   layerData:
     | AsyncDatasetLayerData<'baseLayer'>
     | AsyncDatasetLayerData<'compareLayer'>
-): Date[] {
+): Date[] | null {
   if (!layerData?.timeseries) return null;
 
   const { domain, isPeriodic, timeDensity } = layerData.timeseries;

@@ -254,7 +254,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
   // the domain. Since the selected date is stored in the url we need to make
   // sure it actually exists.
   useEffectPrevious(
-    ([prevAvailableDates] = []) => {
+    ([prevAvailableDates]) => {
       const currDates = JSON.stringify(availableActiveLayerDates);
       const prevDates = JSON.stringify(prevAvailableDates);
       if (availableActiveLayerDates && currDates !== prevDates) {

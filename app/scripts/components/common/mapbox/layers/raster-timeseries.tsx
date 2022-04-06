@@ -147,7 +147,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       // Only emit on status change.
       if (newStatus !== statuses.current.global) {
         statuses.current.global = newStatus;
-        onStatusChange({ status: newStatus, id });
+        onStatusChange?.({ status: newStatus, id });
       }
     },
     [id, onStatusChange]
