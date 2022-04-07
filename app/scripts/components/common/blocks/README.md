@@ -24,7 +24,9 @@ Understanding of MDX is not required to write contents for Delta dashboard, but 
 </table>
 
 
-We currently (2022, March) have 8 types of Blocks for layout. Mind that only `Prose` and `Figure` can be direct children of Block. Any raw markdown contents can be wrapped with `Prose`. Any media contents or custom components (`Image`, `Map`, `Chart` ...) should be wrapped with `Figure`. If you are using a `Block` with more than one child element, mind that the order of children decides which one goes where. For example, in `FigureProse` Block, `<Figure>` comes before `<Prose>` in the syntax. In result, `Figure` shows up on the left, and `Prose` shows up on the right.
+We currently (2022, March) have 8 types of Blocks for layout. Mind that only `Prose` and `Figure` can be direct children of Block. Any raw markdown contents can be wrapped with `Prose`. Any media contents or custom components (`Image`, `Map`, `Chart` ...) should be wrapped with `Figure`.
+
+> If you are using a `Block` with more than one child element, mind that the order of children decides which one goes where. For example, in `FigureProse` Block, `<Figure>` comes before `<Prose>` in the syntax. In result, `Figure` shows up on the left, and `Prose` shows up on the right.
 
 Layouts do work in any size of screen, but this documentation mainly addresses how they are represented on large (> 991px) screens.
 
@@ -36,7 +38,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
   <td> Default Prose Block </td>
   <td> 
 
-  ```code
+  ```jsx
   <Block>
     <Prose>
       ### Your markdown header
@@ -56,7 +58,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
   <td> Wide Prose Block </td>
   <td> 
 
-  ```code
+  ```jsx
   <Block type='wide'>
     <Prose>
       ### Your markdown header
@@ -76,7 +78,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
   <td> Wide Figure Block </td>
   <td> 
 
-  ```
+  ```jsx
   <Block type='wide'>
     <Figure>
       <Image ... />
@@ -96,7 +98,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
   <td> Full Figure Block </td>
   <td> 
 
-  ```code
+  ```jsx
   <Block type='full'>
     <Figure>
       <Image ... />
@@ -115,7 +117,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
   <td> Prose Figure Block </td>
   <td> 
 
-  ```
+  ```jsx
   <Block>
     <Prose>
       My markdown contents
@@ -138,7 +140,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
   <td> Figure Prose Block </td>
   <td> 
 
-  ```
+  ```jsx
   <Block>
     <Figure>
       <Image ... />
@@ -160,7 +162,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
   <td> Prose Full Figure Block </td>
   <td> 
 
-  ```
+  ```jsx
   <Block type='full'>
     <Prose>
       My markdown contents
@@ -183,7 +185,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
   <td> 
 
 
-  ```
+  ```jsx
   <Block type='full'>
     <Figure>
       <Image ... />
@@ -211,32 +213,29 @@ Also you can pass any attribute that you can use with `<img />` HTML element and
 
 | Option | Type | Default | Description|
 |---|---|---|---|
-| src | string | '' | Path for image. If using local image, please look at the section below. |
-| alt | string | '' | Description for image, this will be used for screen readers. |
-| align | string, enum (left, right, center) | 'center' | <b>For inline image.</b> Alignment of image. |
-| caption | string | '' | <b>For inline image.</b>  Caption text for inline image. |
-| attrAuthor | string | '' | Info for image author. When omitted, attribution mark on the right-top part of the figure wouldn't show up. |
-| attrUrl | string | '' | Link for image attribution. |
+| src | string | `''` | Path for image. If using local image, please look at the section below. |
+| alt | string | `''` | Description for image, this will be used for screen readers. |
+| align | string, enum (left, right, center) | `center` | <b>For inline image.</b> Alignment of image. |
+| caption | string | `''` | <b>For inline image.</b>  Caption text for inline image. |
+| attrAuthor | string | `''` | Info for image author. When omitted, attribution mark on the right-top part of the figure wouldn't show up. |
+| attrUrl | string | `''` | Link for image attribution. |
 
 #### Inline image & Figure image
 
-`Image` component can take different attributes depending on its context. When `Image` is used in `Prose`, it is inline image. When `Image` is used in `Figure`, it is Figure image. The table below shows the syntax for each type of image.
+`Image` component can take different attributes depending on its context.  
+
+When `Image` is used in `Prose`, it is inline image ad should be used when you need to put an image inside of `Prose`.
 
 <table>
   <tr>
-    <th>Type of image</th>
     <th>Syntax</th>
     <th>How it looks on the page</th>
-    <th>Description</th> 
   </tr>
 
   <tr>
-    <td>
-      Inline
-    </td>
-    <td>
+  <td>
 
-  ```
+  ```jsx
     <Image 
       src="http://via.placeholder.com/256x128?text=align-left" 
       alt="Media example" 
@@ -248,26 +247,27 @@ Also you can pass any attribute that you can use with `<img />` HTML element and
     />
   ```
   </td>
-
   <td> 
  
   ![Screenshot of inline Image component](./media/image-inline.jpg)
   </td>
-  
-  <td>
+  </tr>
+</table>
 
-      Use this type of `Image` when you  need to put an image inside of `Prose`.
-  </td> 
+
+When `Image` is used in `Figure`, it is Figure image.  
+You can replace `attr` option with `<Caption>` component if your image is used in `Figure` block. In this way, you can display rich text as Caption. 
+
+<table>
+  <tr>
+    <th>Syntax</th>
+    <th>How it looks on the page</th>
   </tr>
 
-<tr>
-<td>
+  <tr>
+  <td>
 
-  Figure
- </td>
-<td>
-
-  ```
+  ```jsx
     <Figure type='full'>
       <Image
         src="http://via.placeholder.com/1200x800?text=figure" 
@@ -281,31 +281,27 @@ Also you can pass any attribute that you can use with `<img />` HTML element and
       </Caption> 
     </Figure>
   ```
- </td>
- <td > 
-
-  ![Screenshot of full figure Image component](./media/image-figure.jpg)
-  </td> 
-  <td>
-
-  You can replace `attr` option with `<Caption>` component if your image is used in `Figure` block. In this way, you can display rich text as Caption. 
   </td>
-</tr>
-
+  <td> 
+ 
+  ![Screenshot of full figure Image component](./media/image-figure.jpg)
+  </td>
+  </tr>
 </table>
+
 
 
 #### How to use local image (assets)
 
 Because of internal build process, you need to wrap the path with specific template when using local assets like below.
 
-```
+```js
 new URL('where-your-image-is.jpg', import.meta.url).href
 ```
 
 For example, if you put an image `image.jpg` inside of the folder where your mdx file is, the syntax for `Image` component will be like below.
 
-```
+```jsx
 <Image
   src={new URL('./img.jpg', import.meta.url).href}
   align="left" 
@@ -320,18 +316,18 @@ For example, if you put an image `image.jpg` inside of the folder where your mdx
 
 | Option | Type | Default | Description|
 |---|---|---|---|
-| dataPath | string | '' | Path for data. The data should be either in `csv` or `json` format. |
-| xKey | string | '' | Attribute to be used for x axis. |
-| yKey | string | '' | Attribute to be used for y axis |
-| idKey | string | '' | Attribute for each data point |
-| dateFormat | string | '' | Template for how temporal date is formatted. This follows [d3's convention for date format](https://github.com/d3/d3-time-format#locale_format) |
-| highlightStart | string | '' | Start point for x axis to draw highlighted area. |
-| highlightEnd | string | '' | End point of x axis to draw highlighted area.
-| highlightLabel | string | '' | Label for highlighted area. |
+| dataPath | string | `''` | Path for data. The data should be either in `csv` or `json` format. |
+| xKey | string | `''` | Attribute to be used for x axis. |
+| yKey | string | `''` | Attribute to be used for y axis |
+| idKey | string | `''` | Attribute for each data point |
+| dateFormat | string | `''` | Template for how temporal date is formatted. This follows [d3's convention for date format](https://github.com/d3/d3-time-format#locale_format) |
+| highlightStart | string | `''` | Start point for x axis to draw highlighted area. |
+| highlightEnd | string | `''` | End point of x axis to draw highlighted area.
+| highlightLabel | string | `''` | Label for highlighted area. |
 
 Syntax for Chart used in Wide Figure Block looks like this
 
-```
+```jsx
 <Block type='wide'>
   <Figure>
     <Chart
@@ -359,14 +355,14 @@ Syntax for Chart used in Wide Figure Block looks like this
 
 | Option | Type | Default | Description|
 |---|---|---|---|
-| datasetId | string | '' | `id` defined in dataset mdx. |
-| layerId | string | '' | `id` for layer to display. The layer should be a part of the dataset above. |
-| dateTime | string | '' | Optional. This string should follow `yyyy-mm-dd` format. When omitted, the very first available dateTime for the dataset will be displayed |
+| datasetId | string | `''` | `id` defined in dataset mdx. |
+| layerId | string | `''` | `id` for layer to display. The layer should be a part of the dataset above. |
+| dateTime | string | `''` | Optional. This string should follow `yyyy-mm-dd` format. When omitted, the very first available dateTime for the dataset will be displayed |
 | isComparing | boolean | `false` | Optional. If the compare layer in the dataset needs to be turned on, pass `true`. |
 
 Syntax for Map, which displays `nightlights-hd-monthly` layer from `sandbox` dataset in full figure block looks like this:
 
-```
+```jsx
 <Block type='full'>
   <Figure>
     <Map datasetId='sandbox' layerId='nightlights-hd-monthly' dateTime='2020-03-01' isComparing={false} />
@@ -381,4 +377,4 @@ Syntax for Map, which displays `nightlights-hd-monthly` layer from `sandbox` dat
 
 ## Some gotchas
 
-- Do not use h1(`# heading 1`) for your header. h1 is reserved for page title.
+- Do not use h1(`# heading 1`) for your header. `h1` is reserved for page title.
