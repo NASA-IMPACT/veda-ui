@@ -9,6 +9,7 @@ import T from 'prop-types';
 import styled from 'styled-components';
 import dateFns from 'date-fns';
 import scrollama from 'scrollama';
+import { CSSTransition, SwitchTransition } from 'react-transition-group';
 
 import { SimpleMap } from '$components/common/mapbox/map';
 import {
@@ -295,10 +296,20 @@ export function ScrollytellingBlock(props) {
           Layer legend for the active layer.
         */}
         {activeChapterLayer?.layer.legend && (
-          <LayerLegend
-            title={activeChapterLayer.layer.name}
-            {...activeChapterLayer.layer.legend}
-          />
+          <SwitchTransition>
+            <CSSTransition
+              key={activeChapterLayer.layer.name}
+              addEndListener={(node, done) => {
+                node.addEventListener('transitionend', done, false);
+              }}
+              classNames='reveal'
+            >
+              <LayerLegend
+                title={activeChapterLayer.layer.name}
+                {...activeChapterLayer.layer.legend}
+              />
+            </CSSTransition>
+          </SwitchTransition>
         )}
 
         <SimpleMap
