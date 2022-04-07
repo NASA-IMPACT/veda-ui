@@ -177,18 +177,10 @@ function MapboxMapComponent(props, ref) {
         we show them on top of their respective map.
       */}
       {baseLayerStatus === S_LOADING && (
-        <MapLoading position={shouldRenderCompare ? 'left' : 'center'}>
-          <LoadingSkeleton />
-          <LoadingSkeleton />
-          <LoadingSkeleton />
-        </MapLoading>
+        <MapLoading position={shouldRenderCompare ? 'left' : 'center'} />
       )}
       {shouldRenderCompare && compareLayerStatus === S_LOADING && (
-        <MapLoading position='right'>
-          <LoadingSkeleton />
-          <LoadingSkeleton />
-          <LoadingSkeleton />
-        </MapLoading>
+        <MapLoading position='right' />
       )}
 
       {/*

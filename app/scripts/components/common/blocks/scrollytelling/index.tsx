@@ -26,6 +26,7 @@ import Hug from '$styles/hug';
 import LayerLegend from '$components/common/mapbox/layer-legend';
 import MapMessage from '$components/common/mapbox/map-message';
 import { chapterDisplayName, ChapterProps, ScrollyChapter } from './chapter';
+import { MapLoading } from '$components/common/loading-skeleton';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -283,7 +284,8 @@ export function ScrollytellingBlock(props) {
     (resolvedLayer) => resolvedLayer?.runtimeData.id === activeChapterLayerId
   );
 
-  const didFailLayerLoading = resolvedStatus.some(s => s === S_FAILED);
+  const didFailLayerLoading = resolvedStatus.some((s) => s === S_FAILED);
+  const areLayersLoading = !didFailLayerLoading && !areAllLayersLoaded;
 
   return (
     <ScrollyMapWrapper>
@@ -320,6 +322,8 @@ export function ScrollytellingBlock(props) {
             );
           })}
 
+        {areLayersLoading && <MapLoading />}
+
         {/*
           Map overlay element
           Map message
@@ -329,7 +333,8 @@ export function ScrollytellingBlock(props) {
           active={didFailLayerLoading}
           isInvalid
         >
-          <CollecticonCircleXmark /> There was a problem loading the map data. Refresh the page and try again.
+          <CollecticonCircleXmark /> There was a problem loading the map data.
+          Refresh the page and try again.
         </MapMessage>
 
         {/*

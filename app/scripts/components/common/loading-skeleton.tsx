@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+import React from "react";
 import styled, { keyframes, css } from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
@@ -52,7 +52,7 @@ interface MapLoadingProps {
   position?: 'left' | 'right' | 'center';
 }
 
-export const MapLoading = styled.div<MapLoadingProps>`
+const MapLoadingWrapper = styled.div<MapLoadingProps>`
   position: absolute;
   z-index: 1;
   display: grid;
@@ -65,7 +65,6 @@ export const MapLoading = styled.div<MapLoadingProps>`
   gap: ${glsp(0.5)};
 
   ${({ position }) => {
-    
     if (position === 'left') return 'left: 25%;';
     if (position === 'right') return 'left: 75%;';
     return 'left: 50%;';
@@ -90,3 +89,13 @@ export const MapLoading = styled.div<MapLoadingProps>`
     grid-row: 3 / span 1;
   }
 `;
+
+export const MapLoading = (props) => {
+  return (
+    <MapLoadingWrapper {...props}>
+      <LoadingSkeleton />
+      <LoadingSkeleton />
+      <LoadingSkeleton />
+    </MapLoadingWrapper>
+  );
+};
