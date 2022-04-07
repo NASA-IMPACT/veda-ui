@@ -181,8 +181,7 @@ declare global {
   }
 }
 
-type AsyncDatasetLayerData<T extends 'baseLayer' | 'compareLayer'> =
-  AsyncDatasetLayer[T]['data'];
+type AsyncDatasetLayerData<T extends 'baseLayer' | 'compareLayer'> = Exclude<AsyncDatasetLayer[T], null>['data'];
 
 /**
  * Resolves the temporal extend of the given Async Layer.

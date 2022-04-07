@@ -21,9 +21,10 @@ import { AsyncDatasetLayer, useAsyncLayers } from '$context/layer-data';
 import { chapterDisplayName, ChapterProps, ScrollyChapter } from './chapter';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import LayerLegend from '$components/common/mapbox/layer-legend';
+import { S_SUCCEEDED } from '$utils/status';
 
 type ResolvedLayer = {
-  layer: AsyncDatasetLayer['baseLayer']['data'];
+  layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
   Component: React.FunctionComponent<any> | null;
   runtimeData: { datetime?: Date; id: string };
 } | null;
@@ -126,7 +127,7 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   // the layer. For example the datetime, results from a user action (picking
   // on the calendar or in this case setting it in the MDX).
   return asyncLayers.map(({ baseLayer }, index) => {
-    if (baseLayer?.status !== 'succeeded') return null;
+    if (baseLayer?.status !== S_SUCCEEDED || !baseLayer.data) return null;
 
     if (resolvedLayersCache.current[index]) {
       return resolvedLayersCache.current[index];

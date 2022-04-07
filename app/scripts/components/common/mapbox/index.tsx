@@ -64,7 +64,8 @@ function MapboxMapComponent(props, ref) {
     ({ status }) => setBaseLayerStatus(status),
     []
   );
-  const [compareLayerStatus, setCompareLayerStatus] = useState<ActionStatus>(S_IDLE);
+  const [compareLayerStatus, setCompareLayerStatus] =
+    useState<ActionStatus>(S_IDLE);
   const onCompareLayerStatusChange = useCallback(
     ({ status }) => setCompareLayerStatus(status),
     []
@@ -108,7 +109,8 @@ function MapboxMapComponent(props, ref) {
 
   // Resolve data needed for the base layer once the layer is loaded
   const [baseLayerResolvedData, BaseLayerComponent] = useMemo(() => {
-    if (baseLayer?.status !== S_SUCCEEDED) return [null, null];
+    if (baseLayer?.status !== S_SUCCEEDED || !baseLayer.data)
+      return [null, null];
 
     // Include access to raw data.
     const bag = { ...resolverBag, raw: baseLayer.data };
@@ -119,7 +121,8 @@ function MapboxMapComponent(props, ref) {
 
   // Resolve data needed for the compare layer once it is loaded.
   const [compareLayerResolvedData, CompareLayerComponent] = useMemo(() => {
-    if (compareLayer?.status !== S_SUCCEEDED) return [null, null];
+    if (compareLayer?.status !== S_SUCCEEDED || !compareLayer.data)
+      return [null, null];
 
     // Include access to raw data.
     const bag = { ...resolverBag, raw: compareLayer.data };
