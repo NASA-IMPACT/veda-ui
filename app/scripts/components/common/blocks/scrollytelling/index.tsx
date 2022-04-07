@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
+import { media } from '$utils/devseed-ui';
 
 import { SimpleMap } from '$components/common/mapbox/map';
 import {
@@ -32,10 +33,15 @@ type ResolvedLayer = {
 const ScrollyMapWrapper = styled.div``;
 
 const TheMap = styled.div`
-  height: calc(100vh - 4rem);
+  height: calc(100vh - 3rem);
   position: sticky;
-  top: 4rem;
+  top: 3rem;
   z-index: -1;
+
+  ${media.mediumUp`
+    height: calc(100vh - 4rem);
+    top: 4rem;
+  `}
 `;
 
 /**
