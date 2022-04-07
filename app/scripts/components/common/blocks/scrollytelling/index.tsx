@@ -19,6 +19,7 @@ import Hug from '$styles/hug';
 import { AsyncDatasetLayer, useAsyncLayers } from '$context/layer-data';
 import { chapterDisplayName, ChapterProps, ScrollyChapter } from './chapter';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
+import LayerLegend from '$components/common/mapbox/layer-legend';
 
 type ResolvedLayer = {
   layer: AsyncDatasetLayer['baseLayer']['data'];
@@ -250,6 +251,10 @@ export function ScrollytellingBlock(props) {
   const activeChapterLayerId =
     activeChapter && getChapterLayerKey(activeChapter);
 
+  const activeChapterLayer = resolvedLayers.find(
+    (resolvedLayer) => resolvedLayer?.runtimeData.id === activeChapterLayerId
+  );
+
   return (
     <ScrollyMapWrapper>
       <TheMap>
@@ -284,6 +289,18 @@ export function ScrollytellingBlock(props) {
               />
             );
           })}
+
+        {/*
+          Map overlay element
+          Layer legend for the active layer.
+        */}
+        {activeChapterLayer?.layer.legend && (
+          <LayerLegend
+            title={activeChapterLayer.layer.name}
+            {...activeChapterLayer.layer.legend}
+          />
+        )}
+
         <SimpleMap
           className='root'
           mapRef={mapRef}
