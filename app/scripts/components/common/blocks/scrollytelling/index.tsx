@@ -10,19 +10,22 @@ import styled from 'styled-components';
 import dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
+import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 import { media } from '$utils/devseed-ui';
 
-import { SimpleMap } from '$components/common/mapbox/map';
 import {
   getLayerComponent,
   resolveConfigFunctions
 } from '$components/common/mapbox/layers/utils';
-import Hug from '$styles/hug';
 import { AsyncDatasetLayer, useAsyncLayers } from '$context/layer-data';
-import { chapterDisplayName, ChapterProps, ScrollyChapter } from './chapter';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
+import { S_FAILED, S_SUCCEEDED } from '$utils/status';
+
+import { SimpleMap } from '$components/common/mapbox/map';
+import Hug from '$styles/hug';
 import LayerLegend from '$components/common/mapbox/layer-legend';
-import { S_SUCCEEDED } from '$utils/status';
+import MapMessage from '$components/common/mapbox/map-message';
+import { chapterDisplayName, ChapterProps, ScrollyChapter } from './chapter';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -132,37 +135,51 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   // layer definition data, the runtimeData belongs to the application and not
   // the layer. For example the datetime, results from a user action (picking
   // on the calendar or in this case setting it in the MDX).
-  return asyncLayers.map(({ baseLayer }, index) => {
-    if (baseLayer?.status !== S_SUCCEEDED || !baseLayer.data) return null;
+  const resolvedLayers = useMemo(
+    () =>
+      asyncLayers.map(({ baseLayer }, index) => {
+        if (baseLayer?.status !== S_SUCCEEDED || !baseLayer.data) return null;
 
-    if (resolvedLayersCache.current[index]) {
-      return resolvedLayersCache.current[index];
-    }
+        if (resolvedLayersCache.current[index]) {
+          return resolvedLayersCache.current[index];
+        }
 
-    // Some properties defined in the dataset layer config may be functions
-    // that need to be resolved before rendering them. These functions accept
-    // data to return the correct value. Include access to raw data.
-    const datetime = uniqueChapterLayers[index].datetime;
-    const bag = {
-      datetime,
-      dateFns,
-      raw: baseLayer.data
-    };
-    const data = resolveConfigFunctions(baseLayer.data, bag);
+        // Some properties defined in the dataset layer config may be functions
+        // that need to be resolved before rendering them. These functions accept
+        // data to return the correct value. Include access to raw data.
+        const datetime = uniqueChapterLayers[index].datetime;
+        const bag = {
+          datetime,
+          dateFns,
+          raw: baseLayer.data
+        };
+        const data = resolveConfigFunctions(baseLayer.data, bag);
 
-    const resolved = {
-      layer: data,
-      Component: getLayerComponent(!!data.timeseries, data.type),
-      runtimeData: {
-        datetime,
-        id: getChapterLayerKey(uniqueChapterLayers[index])
-      }
-    };
+        const resolved = {
+          layer: data,
+          Component: getLayerComponent(!!data.timeseries, data.type),
+          runtimeData: {
+            datetime,
+            id: getChapterLayerKey(uniqueChapterLayers[index])
+          }
+        };
 
-    resolvedLayersCache.current[index] = resolved;
+        resolvedLayersCache.current[index] = resolved;
 
-    return resolved;
-  });
+        return resolved;
+      }),
+    [uniqueChapterLayers, asyncLayers]
+  );
+
+  const resolvedStatus = useMemo(
+    () => asyncLayers.map(({ baseLayer }) => baseLayer?.status),
+    [asyncLayers]
+  );
+
+  return [resolvedLayers, resolvedStatus] as [
+    typeof resolvedLayers,
+    typeof resolvedStatus
+  ];
 }
 
 /**
@@ -210,7 +227,8 @@ export function ScrollytellingBlock(props) {
   // Extract the props from the chapters.
   const chapterProps = useChapterPropsFromChildren(children);
 
-  const resolvedLayers = useMapLayersFromChapters(chapterProps);
+  const [resolvedLayers, resolvedStatus] =
+    useMapLayersFromChapters(chapterProps);
 
   const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(
     null
@@ -265,6 +283,8 @@ export function ScrollytellingBlock(props) {
     (resolvedLayer) => resolvedLayer?.runtimeData.id === activeChapterLayerId
   );
 
+  const didFailLayerLoading = resolvedStatus.some(s => s === S_FAILED);
+
   return (
     <ScrollyMapWrapper>
       <TheMap>
@@ -299,6 +319,18 @@ export function ScrollytellingBlock(props) {
               />
             );
           })}
+
+        {/*
+          Map overlay element
+          Map message
+        */}
+        <MapMessage
+          id='scrolly-map-message'
+          active={didFailLayerLoading}
+          isInvalid
+        >
+          <CollecticonCircleXmark /> There was a problem loading the map data. Refresh the page and try again.
+        </MapMessage>
 
         {/*
           Map overlay element

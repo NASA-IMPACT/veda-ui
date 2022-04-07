@@ -60,7 +60,9 @@ type NullableStateSlice<S> = StateSlice<S | null>;
 
 export interface AsyncDatasetLayer {
   baseLayer: NullableStateSlice<Omit<DatasetLayer, 'compare'> & STACLayerData>;
-  compareLayer: NullableStateSlice<DatasetLayerCompareNormalized & STACLayerData> | null;
+  compareLayer: NullableStateSlice<
+    DatasetLayerCompareNormalized & STACLayerData
+  > | null;
   reFetch: (() => void) | null;
 }
 
@@ -87,7 +89,10 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
     // single object with meta information about the request status.
     function mergeSTACData<T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized>(baseData: T): NullableStateSlice<T & STACLayerData> {
       const dataSTAC = getState<STACLayerData>(baseData.id);
-      if (dataSTAC.status !== 'succeeded') return dataSTAC as unknown as StateSlice<null>;
+
+      if (dataSTAC.status !== 'succeeded') {
+        return dataSTAC as unknown as StateSlice<null>;
+      }
 
       return {
         ...dataSTAC,
