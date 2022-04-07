@@ -192,7 +192,9 @@ function useAllLayersAdded(count): [boolean, (cb: { status: string }) => void] {
 const mapOptions = {
   style: process.env.MAPBOX_STYLE_URL,
   interactive: false,
-  trackResize: true
+  trackResize: true,
+  center: [0, 0],
+  zoom: 1
 };
 
 //

@@ -132,7 +132,7 @@ export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
     throw new Error(`Layer [${layerId}] not found in dataset [${datasetId}]`);
   }
 
-  const layerAsArray = useMemo(() => layer ? [layer] : [], [layer]);
+  const layerAsArray = useMemo(() => (layer ? [layer] : []), [layer]);
   const asyncLayers = useLayersInit(layerAsArray);
 
   return useMemo(
@@ -155,30 +155,38 @@ type ReferencedLayer = {
   datasetId: string;
   layerId: string;
   skipCompare?: boolean;
-}
+};
 
 export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
   // Get the layers from the different datasets.
-  const layers = referencedLayers.map(({ datasetId, layerId, skipCompare }) => {
-    // Get the layer information from the dataset defined in the configuration.
-    const layer = datasets[datasetId]?.data.layers?.find((l) => l.id === layerId) as DatasetLayer | null;
-  
-    // The layers must be defined in the configuration otherwise it is not
-    // possible to load them.
-    if (!layer) {
-      throw new Error(`Layer [${layerId}] not found in dataset [${datasetId}]`);
-    }
+  const layers = useMemo(
+    () =>
+      referencedLayers.map(({ datasetId, layerId, skipCompare }) => {
+        // Get the layer information from the dataset defined in the configuration.
+        const layer = datasets[datasetId]?.data.layers?.find(
+          (l) => l.id === layerId
+        ) as DatasetLayer | null;
 
-    // Skip the compare to avoid unnecessary network requests.
-    if (skipCompare) {
-      return {
-        ...layer,
-        compare: null
-      };
-    }
-    
-    return layer;
-  });
+        // The layers must be defined in the configuration otherwise it is not
+        // possible to load them.
+        if (!layer) {
+          throw new Error(
+            `Layer [${layerId}] not found in dataset [${datasetId}]`
+          );
+        }
+
+        // Skip the compare to avoid unnecessary network requests.
+        if (skipCompare) {
+          return {
+            ...layer,
+            compare: null
+          };
+        }
+
+        return layer;
+      }),
+    [referencedLayers]
+  );
 
   // Get the layer information from the dataset defined in the configuration.
   return useLayersInit(layers);
