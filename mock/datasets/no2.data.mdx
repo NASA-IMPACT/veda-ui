@@ -40,7 +40,7 @@ layers:
       mapLabel: |
         ::js ({ datetime, dateFns }) => {
           const comparingDate = dateFns.sub(datetime, { years: 1 });
-          return `${dateFns.format(datetime, 'LLL yyyy')} - ${dateFns.format(comparingDate, 'LLL yyyy')}`;
+          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(comparingDate, 'LLL yyyy')}`;
         }
     legend:
       type: gradient
