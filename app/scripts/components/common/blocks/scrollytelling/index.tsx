@@ -27,6 +27,7 @@ import LayerLegend from '$components/common/mapbox/layer-legend';
 import MapMessage from '$components/common/mapbox/map-message';
 import { chapterDisplayName, ChapterProps, ScrollyChapter } from './chapter';
 import { MapLoading } from '$components/common/loading-skeleton';
+import { BlockErrorBoundary } from '..';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -218,7 +219,7 @@ const mapOptions = {
 //
 // Scrollytelling Block React Component
 //
-export function ScrollytellingBlock(props) {
+function Scrollytelling(props) {
   const { children } = props;
 
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -371,6 +372,10 @@ export function ScrollytellingBlock(props) {
   );
 }
 
-ScrollytellingBlock.propTypes = {
+Scrollytelling.propTypes = {
   children: T.node
 };
+
+export function ScrollytellingBlock(props) {
+  return <BlockErrorBoundary {...props} childToRender={Scrollytelling} />;
+}
