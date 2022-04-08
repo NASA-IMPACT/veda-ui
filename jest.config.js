@@ -73,7 +73,7 @@ module.exports = {
   moduleDirectories: ['node_modules'],
 
   // An array of file extensions your modules use
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node', 'css'],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   // This has to be kept in sync with the alias field of package.json
@@ -91,7 +91,9 @@ module.exports = {
             [`^\\${key}(.*)$`]: `<rootDir>${value.substring(1)}$1`
           }
         : acc;
-    }, {})
+    }, {}),
+    '.+\\.(css|styl|less|sass|scss)$':
+      '<rootDir>/node_modules/jest-css-modules-transform'
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

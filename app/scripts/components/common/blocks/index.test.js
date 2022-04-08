@@ -12,7 +12,7 @@ import {
   contentTypeErrorMessage
 } from '$components/common/blocks/block-constant';
 import Figure from '$components/common/blocks/figure';
-import { Caption } from '$components/common/images';
+import { Caption } from '$components/common/blocks/images';
 
 describe('Block edge case tests', () => {
   it('Throws a content type when not supported content composition is passed', () => {
