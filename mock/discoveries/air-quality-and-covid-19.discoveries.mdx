@@ -16,59 +16,74 @@ thematics:
   - covid-19
 ---
 
-<Block type='full'>
-<Prose>
-## Going through changes
-
-When governments began implementing shutdowns at the start of the COVID-19 pandemic, scientists wondered how the atmosphere would respond to the sudden change in human behavior.
-
-With people largely confined to their homes to slow the spread of the novel coronavirus, scientists expected there were likely to be fewer cars, planes, and ships burning and emitting fossil fuels.
-
-As the pandemic has progressed, these scenarios have largely played out: during the strictest lockdown periods, locations around the world experienced substantial reductions in transportation-related fossil fuel emissions.
-
-The impacts on specific air pollutants have been varied and dependant on their lifespan in the atmosphere. Those pollutants with short lifespans, such as nitrogen dioxide (NO2), decreased dramatically and quickly along with emissions.
-
-Today, air quality levels are beginning to approach pre-pandemic levels, and scientists are just beginning to dive into the new measurements collected throughout this unprecedented time.
-</Prose>
-<Figure>
-  <Map
+<ScrollytellingBlock>
+  <Chapter
+    center={[0, 0]}
+    zoom={2}
     datasetId='no2'
     layerId='no2-monthly-diff'
-    dateTime='2018-03-01'
-    center={[117.7654, 35.511]}
-    zoom={4}
-  />
-  <Caption 
-    attrAuthor='NASA' 
-    attrUrl='https://nasa.gov/'
+    datetime='2021-03-01'
   >
-    This layer shows changes in nitrogen dioxide (NO₂) levels in µmol/m₂. Redder colors indicate increases in NO₂. Bluer colors indicate lower levels of NO₂.
-  </Caption> 
-</Figure>
-</Block>
+    ## Going through changes
+    When governments began implementing shutdowns at the start of the COVID-19 pandemic, scientists wondered how the atmosphere would respond to the sudden change in human behavior.
+  </Chapter>
+  <Chapter
+    center={[-83.0059, 34.3382]}
+    zoom={4.5}
+    datasetId='no2'
+    layerId='no2-monthly-diff'
+    datetime='2020-03-01'
+  >
+    With people largely confined to their homes to slow the spread of the novel coronavirus, scientists expected there were likely to be fewer cars, planes, and ships burning and emitting fossil fuels.
+  </Chapter>
+  <Chapter
+    center={[117.5001, 28.7899]}
+    zoom={4}
+    datasetId='no2'
+    layerId='no2-monthly-diff'
+    datetime='2020-03-01'
+  >
+    As the pandemic has progressed, these scenarios have largely played out: during the strictest lockdown periods, locations around the world experienced substantial reductions in transportation-related fossil fuel emissions. The impacts on specific air pollutants have been varied and dependent on their lifespan in the atmosphere.
+  </Chapter>
+  <Chapter
+    center={[6.7151, 47.3183]}
+    zoom={4}
+    datasetId='no2'
+    layerId='no2-monthly-diff'
+    datetime='2020-03-01'
+  >
+    Those pollutants with short lifespans, such as nitrogen dioxide (NO2), decreased dramatically and quickly along with emissions.
+  </Chapter>
+  <Chapter
+    center={[0, 0]}
+    zoom={2}
+    datasetId='no2'
+    layerId='no2-monthly-diff'
+    datetime='2021-03-01'
+  >
+    Today, air quality levels are beginning to approach pre-pandemic levels, and scientists are just beginning to dive into the new measurements collected throughout this unprecedented time.
+  </Chapter>
+</ScrollytellingBlock>
 
 <Block type='full'>
-<Figure>
-  <Map
-    datasetId='no2'
-    layerId='no2-monthly'
-    dateTime='2021-03-01'
-    isComparing
-  />
-  <Caption 
-    attrAuthor='NASA' 
-    attrUrl='https://nasa.gov/'
-  >
-    Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
-  </Caption> 
-</Figure>
-</Block>
+  <Prose>
+    ## Measuring Air Pollution on the Ground at Airports
+    New research during the pandemic is also looking at how COVID-related travel bans are impacting air quality around airports. Current conditions create a unique opportunity to study airport-related pollutants, especially nitrogen dioxide and formaldehyde. While travel bans and strict regulations around air travel have been in place, air traffic has yet to return to previous levels, and many planes remain grounded.
 
-<Block>
-<Prose>
-## Measuring Air Pollution on the Ground at Airports
-New research during the pandemic is also looking at how COVID-related travel bans are impacting air quality around airports. Current conditions create a unique opportunity to study airport-related pollutants, especially nitrogen dioxide and formaldehyde. While travel bans and strict regulations around air travel have been in place, air traffic has yet to return to previous levels, and many planes remain grounded.
-
-Scientists have installed two sensors at the Baltimore-Washington International Airport and two sensors at the Hartsfield-Jackson Atlanta International Airport to better characterize how airplanes contribute to air pollution. They are comparing the on-the-ground sensor information from NASA's [Pandora Project](https://pandora.gsfc.nasa.gov/ "Explore the Pandora Project") with satellite information from TROPOMI. So far, they have found that nitrogen dioxide hotspots in Atlanta shifted from the airport, shown here, to the city center from April-June 2020. By September, however, satellites revealed the airport had reemerged as a dominant nitrogen dioxide emission source.
-</Prose>
+    Scientists have installed two sensors at the Baltimore-Washington International Airport and two sensors at the Hartsfield-Jackson Atlanta International Airport to better characterize how airplanes contribute to air pollution. They are comparing the on-the-ground sensor information from NASA's [Pandora Project](https://pandora.gsfc.nasa.gov/ "Explore the Pandora Project") with satellite information from TROPOMI. So far, they have found that nitrogen dioxide hotspots in Atlanta shifted from the airport, shown here, to the city center from April-June 2020. By September, however, satellites revealed the airport had reemerged as a dominant nitrogen dioxide emission source.
+  </Prose>
+  <Figure>
+    <Map
+      datasetId='no2'
+      layerId='no2-monthly'
+      dateTime='2021-03-01'
+      isComparing
+    />
+    <Caption 
+      attrAuthor='NASA' 
+      attrUrl='https://nasa.gov/'
+    >
+      Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
+    </Caption> 
+  </Figure>
 </Block>
