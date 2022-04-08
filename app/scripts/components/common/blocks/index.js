@@ -201,12 +201,26 @@ const ContentBlockPFDelta = styled(ContentBlock)`
   }
 `;
 
-export const ErrorBlock = styled.div`
+const ErrorBlock = styled.div`
   width: 100%;
-  color: ${themeVal('color.danger-500')};
-  border: 3px solid ${themeVal('color.danger-500')};
-  margin-bottom: ${glsp(1)};
+  color: ${themeVal('color.danger')};
+  border: 3px solid ${themeVal('color.danger')};
+  margin: ${glsp()};
   padding: ${glsp(3)};
+
+  > div {
+    max-width: 40rem;
+    margin: 0 auto;
+
+    > * {
+      display: block;
+    }
+  }
+`;
+
+const ErrorHints = styled.div`
+  margin-top: ${glsp()};
+  color: ${themeVal('color.base')};
 `;
 
 // This will result an object like below
@@ -263,7 +277,7 @@ BlockComponent.propTypes = {
   children: T.node
 };
 
-class BlockErrorBoundary extends React.Component {
+export class BlockErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
     return { error: error };
   }
@@ -282,11 +296,22 @@ class BlockErrorBoundary extends React.Component {
     const { error } = this.state;
     const { childToRender: Block, passErrorToChild, ...rest } = this.props;
 
-    if (this.state.error && !passErrorToChild) {
+    if (error && !passErrorToChild) {
       return (
         <ErrorBlock>
-          <span>{generalErrorMessage} : </span>
-          <strong>{error.message}</strong>
+          <div>
+            <small>{generalErrorMessage}</small>
+            <strong>{error.message}</strong>
+            {!!error.hints?.length && (
+              <ErrorHints>
+                <p>Hints:</p>
+                {error.hints.map((e, i) => (
+                  /* eslint-disable-next-line react/no-array-index-key */
+                  <p key={i}>{e}</p>
+                ))}
+              </ErrorHints>
+            )}
+          </div>
         </ErrorBlock>
       );
     }
@@ -305,5 +330,11 @@ const BlockWithError = (props) => (
   <BlockErrorBoundary {...props} childToRender={BlockComponent} />
 );
 
-export { BlockErrorBoundary };
+export class HintedError extends Error {
+  constructor(message, hints = []) {
+    super(message);
+    this.hints = hints;
+  }
+}
+
 export default BlockWithError;

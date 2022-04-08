@@ -25,9 +25,14 @@ import { SimpleMap } from '$components/common/mapbox/map';
 import Hug from '$styles/hug';
 import LayerLegend from '$components/common/mapbox/layer-legend';
 import MapMessage from '$components/common/mapbox/map-message';
-import { chapterDisplayName, ChapterProps, ScrollyChapter } from './chapter';
+import {
+  chapterDisplayName,
+  ChapterProps,
+  ScrollyChapter,
+  validateChapter
+} from './chapter';
 import { MapLoading } from '$components/common/loading-skeleton';
-import { BlockErrorBoundary } from '..';
+import { BlockErrorBoundary, HintedError } from '..';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -65,8 +70,22 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
     >[];
 
     if (chapters.some((c) => c.type.displayName !== chapterDisplayName)) {
-      throw new Error('Found a non Chapter in a ScrollytellingBlock');
+      const e = new HintedError('Invalid ScrollytellingBlock children');
+      e.hints = ['You can only use <Chapter> inside <ScrollytellingBlock>'];
+      throw e;
     }
+
+    const chErrors = chapters.reduce(
+      (acc, ch, idx) => acc.concat(validateChapter(ch.props, idx)),
+      [] as string[]
+    );
+
+    if (chErrors.length) {
+      const e = new HintedError('Malformed ScrollytellingBlock Chapter');
+      e.hints = chErrors;
+      throw e;
+    }
+
     // Extract the props from the chapters.
     return chapters.map(
       (c) =>

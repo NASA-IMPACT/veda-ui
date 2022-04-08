@@ -6,6 +6,7 @@ import { media, multiply } from '$utils/devseed-ui';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlockProse } from '$styles/content-block';
+import { utcString2userTzDate } from '$utils/date';
 
 export interface ChapterProps {
   center: [number, number];
@@ -13,6 +14,7 @@ export interface ChapterProps {
   datasetId: string;
   layerId: string;
   datetime?: string;
+  children: any;
 }
 
 export interface ScrollyChapter extends Omit<ChapterProps, 'datetime'> {
@@ -51,3 +53,32 @@ Chapter.displayName = chapterDisplayName;
 Chapter.propTypes = {
   children: T.node
 };
+
+export function validateChapter(chapter: ChapterProps, index) {
+  const reqProperties = ['center', 'zoom', 'datasetId', 'layerId'];
+  const missing = reqProperties.filter((p) => chapter[p] === undefined);
+
+  const missingError =
+    !!missing.length &&
+    `- Missing some properties: ${missing.map((p) => `[${p}]`).join(', ')}`;
+
+  const dateError =
+    chapter.datetime &&
+    isNaN(utcString2userTzDate(chapter.datetime).getTime()) &&
+    '- Invalid datetime. Use YYYY-MM-DD format';
+
+  const contentError =
+    !chapter.children &&
+    '- Missing content. Add some between <Chapter ...props>content here</Chapter>';
+
+  if (missingError || dateError || contentError) {
+    return [
+      `Chapter ${index + 1}:`,
+      missingError,
+      dateError,
+      contentError
+    ].filter(Boolean) as string[];
+  }
+
+  return [];
+}
