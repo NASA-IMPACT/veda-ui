@@ -19,7 +19,7 @@ const Carto = styled.div`
 // This global variable is used to give unique ID to mapbox container
 let mapInstanceId = 0;
 
-function MapBlock({ datasetId, dateTime, layerId, isComparing }) {
+function MapBlock({ datasetId, dateTime, layerId, isComparing, center, zoom }) {
   const mapboxRef = useRef(null);
   if (!isValidDate(dateTime))
     throw Error(
@@ -36,6 +36,7 @@ function MapBlock({ datasetId, dateTime, layerId, isComparing }) {
         layerId={layerId}
         date={selectedDatetime}
         isComparing={isComparing}
+        initialPosition={{ lng: center?.[0], lat: center?.[1], zoom }}
         cooperativeGestures
       />
     </Carto>
@@ -46,7 +47,9 @@ MapBlock.propTypes = {
   datasetId: T.string,
   dateTime: T.string,
   layerId: T.string,
-  isComparing: T.bool
+  isComparing: T.bool,
+  center: T.arrayOf(T.number),
+  zoom: T.number
 };
 
 export default MapBlock;
