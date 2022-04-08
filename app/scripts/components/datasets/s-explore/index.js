@@ -172,6 +172,21 @@ function DatasetsExplore() {
     default: dataset.data.layers[0].id
   });
 
+  const [mapPosition, setMapPosition] = useQsState.memo({
+    key: 'position',
+    default: null,
+    hydrator: (v) => {
+      if (!v) return null;
+      const [lng, lat, zoom] = v.split('|').map(Number);
+      return { lng, lat, zoom };
+    },
+    dehydrator: (v) => {
+      if (!v) return null;
+      const { lng, lat, zoom } = v;
+      return [lng, lat, zoom].join('|');
+    }
+  });
+
   const [selectedDatetime, setSelectedDatetime] = useQsState.memo({
     key: 'datetime',
     default: null,
@@ -420,6 +435,8 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
               layerId={activeLayer?.baseLayer.data?.id}
               date={selectedDatetime}
               isComparing={isComparing}
+              initialPosition={mapPosition}
+              onPositionChange={setMapPosition}
             />
           </Carto>
         </Explorer>

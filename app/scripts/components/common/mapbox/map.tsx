@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+import { round } from '$utils/format';
+
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
 const SingleMapContainer = styled.div`
@@ -22,15 +24,18 @@ interface SimpleMapProps {
   mapRef: MutableRefObject<mapboxgl.Map | null>;
   containerRef: RefObject<HTMLDivElement>;
   onLoad(e: mapboxgl.EventData): void;
+  onMoveEnd?(e: mapboxgl.EventData): void;
   onUnmount?: () => void;
-  mapOptions: any;
+  mapOptions: Partial<Omit<mapboxgl.MapboxOptions, 'container'>>;
 }
 
 export function SimpleMap(props: SimpleMapProps): JSX.Element {
-  const { mapRef, containerRef, onLoad, onUnmount, mapOptions, ...rest } =
+  const { mapRef, containerRef, onLoad, onMoveEnd, onUnmount, mapOptions, ...rest } =
     props;
 
   useEffect(() => {
+    if (!containerRef.current) return;
+
     const mbMap = new mapboxgl.Map({
       container: containerRef.current,
       ...mapOptions
@@ -44,6 +49,17 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     }
 
     onLoad && mbMap.once('load', onLoad);
+
+    onMoveEnd && mbMap.on('moveend', (e) => {
+      onMoveEnd({
+        // The existence of originalEvent indicates that it was not caused by
+        // a method call.
+        userInitiated: Object.prototype.hasOwnProperty.call(e, 'originalEvent'),
+        lng: round(mbMap.getCenter().lng, 4),
+        lat: round(mbMap.getCenter().lat, 4),
+        zoom: round(mbMap.getZoom(), 2)
+      });
+    });
 
     // Trigger a resize to handle flex layout quirks.
     setTimeout(() => mbMap.resize(), 1);
@@ -68,5 +84,6 @@ SimpleMap.propTypes = {
     current: T.object
   }).isRequired,
   onLoad: T.func,
+  onMoveEnd: T.func,
   mapOptions: T.object.isRequired
 };
