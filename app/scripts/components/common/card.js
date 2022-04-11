@@ -149,7 +149,7 @@ const CardLabel = styled.span`
   color: ${themeVal('color.surface')};
   border-radius: ${themeVal('shape.ellipsoid')};
   padding: ${glsp(0.125, 0.5)};
-  background: ${themeVal('color.base-400a')};
+  background: ${themeVal('color.base-300a')};
   pointer-events: auto;
   transition: all 0.24s ease 0s;
 
