@@ -19,22 +19,21 @@ function MdxContent(props) {
   }
 
   if (pageMdx.status === 'success') {
-    return <ContentLoading />;
-    // return (
-    //   <MDXProvider
-    //     components={{
-    //       Block,
-    //       Prose: ContentBlockProse,
-    //       Figure: ContentBlockFigure,
-    //       Caption,
-    //       Image,
-    //       Chart,
-    //       Map
-    //     }}
-    //   >
-    //     <pageMdx.MdxContent />
-    //   </MDXProvider>
-    // );
+    return (
+      <MDXProvider
+        components={{
+          Block,
+          Prose: ContentBlockProse,
+          Figure: ContentBlockFigure,
+          Caption,
+          Image,
+          Chart,
+          Map
+        }}
+      >
+        <pageMdx.MdxContent />
+      </MDXProvider>
+    );
   }
 
   return null;
