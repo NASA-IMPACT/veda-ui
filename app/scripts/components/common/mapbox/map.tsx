@@ -24,19 +24,18 @@ const SingleMapContainer = styled.div`
     > * {
       display: flex;
       flex-flow: column nowrap;
-      gap: ${glsp()};
+      gap: ${glsp(0.5)};
       align-items: flex-start;
       float: none;
       pointer-events: auto;
     }
 
-    .mapboxgl-ctrl,
-    .mapboxgl-ctrl-logo {
+    .mapboxgl-ctrl {
       margin: 0;
     }
 
     .mapboxgl-ctrl-attrib {
-      order: 3;
+      order: 100;
       padding: 0;
       background: none;
     }
@@ -45,12 +44,34 @@ const SingleMapContainer = styled.div`
       color: ${themeVal('color.surface')};
       border-radius: ${themeVal('shape.ellipsoid')};
       padding: ${glsp(0.125, 0.5)};
+      font-size: 0.75rem;
+      line-height: 1rem;
       background: ${themeVal('color.base-400a')};
+      transform: translateY(-0.075rem);
 
       a,
       a:visited {
         color: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        vertical-align: top;
+        text-decoration: none;
       }
+
+      a:hover {
+        opacity: 0.64;
+      }
+    }
+  }
+
+  .mapboxgl-ctrl-logo,
+  .mapboxgl-ctrl-attrib-inner {
+    margin: 0;
+    opacity: 0.48;
+    transition: all 0.24s ease-in-out 0s;
+
+    &:hover {
+      opacity: 1;
     }
   }
 
@@ -89,13 +110,16 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
 
     mapRef.current = mbMap;
 
-    // Add zoom controls without compass.
-    if (mapOptions?.interactive !== false) {
-      mbMap.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-left');
-    }
-
     // Include attribution.
     mbMap.addControl(new mapboxgl.AttributionControl(), 'bottom-left');
+
+    // Add zoom controls without compass.
+    if (mapOptions?.interactive !== false) {
+      mbMap.addControl(
+        new mapboxgl.NavigationControl({ showCompass: false }),
+        'top-left'
+      );
+    }
 
     onLoad && mbMap.once('load', onLoad);
 
