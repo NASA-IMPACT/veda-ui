@@ -1,10 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import qs from 'qs';
 import mapboxgl from 'mapbox-gl';
 
 import { userTzDate2utcString } from '$utils/date';
+import {
+  ActionStatus,
+  S_FAILED,
+  S_IDLE,
+  S_LOADING,
+  S_SUCCEEDED
+} from '$utils/status';
 
+// Whether or not to print the request logs.
 const LOG = true;
 
 /**
@@ -14,7 +22,7 @@ const LOG = true;
  * @param {string} collection STAC collection to request
  * @returns Object
  */
-function getFilterPayload(dateStr, collection) {
+function getFilterPayload(dateStr: string, collection: string) {
   return {
     op: 'and',
     args: [
@@ -37,8 +45,12 @@ function getFilterPayload(dateStr, collection) {
 // marker position, and if above we have to register a mosaic query. Since this
 // switching can happen several times, we cache the api response using the
 // request params as key.
-const quickCache = new Map();
-async function requestQuickCache(url, payload, controller) {
+const quickCache = new Map<string, any>();
+async function requestQuickCache(
+  url: string,
+  payload,
+  controller: AbortController
+) {
   const key = `${url}${JSON.stringify(payload)}`;
 
   // No cache found, make request.
@@ -52,7 +64,24 @@ async function requestQuickCache(url, payload, controller) {
   return quickCache.get(key);
 }
 
-export function MapLayerRasterTimeseries(props) {
+interface MapLayerRasterTimeseriesProps {
+  id: string;
+  layerId: string;
+  date: Date;
+  mapInstance: mapboxgl.Map;
+  sourceParams: object;
+  zoomExtent: [number, number];
+  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+  isHidden: boolean;
+}
+
+type Statuses = {
+  global: ActionStatus;
+  layer: ActionStatus;
+  'zoom-markers': ActionStatus;
+};
+
+export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   const {
     id,
     layerId,
@@ -60,11 +89,68 @@ export function MapLayerRasterTimeseries(props) {
     mapInstance,
     sourceParams = {},
     zoomExtent,
-    onStatusChange: changeStatus
+    onStatusChange,
+    isHidden
   } = props;
 
+  const minZoom = zoomExtent?.[0];
+
   const [showMarkers, setShowMarkers] = useState(
-    mapInstance.getZoom() < zoomExtent?.[0]
+    mapInstance.getZoom() < minZoom
+  );
+
+  const addedMarkers = useRef<mapboxgl.Marker[]>([]);
+
+  // Status tracking.
+  // A raster timeseries layer has a base layer and may have markers.
+  // The status is succeeded only if all requests succeed.
+  const statuses = useRef<Statuses>({
+    global: S_IDLE,
+    layer: S_IDLE,
+    // If there's no marker layer (i.e. there's no min zoom extent), set it to
+    // succeeded to be ignored.
+    'zoom-markers': !minZoom ? S_SUCCEEDED : S_IDLE
+  });
+
+  const changeStatus = useCallback(
+    ({
+      status,
+      context
+    }: {
+      status: ActionStatus;
+      context: 'zoom-markers' | 'layer';
+    }) => {
+      // Set the new status
+      statuses.current[context] = status;
+
+      const layersToCheck = [
+        statuses.current['zoom-markers'],
+        statuses.current.layer
+      ];
+
+      let newStatus = statuses.current.global;
+      // All must succeed to be considered successful.
+      if (layersToCheck.every((s) => s === S_SUCCEEDED)) {
+        newStatus = S_SUCCEEDED;
+
+        // One failed status is enough for all.
+        // Failed takes priority over loading.
+      } else if (layersToCheck.some((s) => s === S_FAILED)) {
+        newStatus = S_FAILED;
+        // One loading status is enough for all.
+      } else if (layersToCheck.some((s) => s === S_LOADING)) {
+        newStatus = S_LOADING;
+      } else if (layersToCheck.some((s) => s === S_IDLE)) {
+        newStatus = S_IDLE;
+      }
+
+      // Only emit on status change.
+      if (newStatus !== statuses.current.global) {
+        statuses.current.global = newStatus;
+        onStatusChange?.({ status: newStatus, id });
+      }
+    },
+    [id, onStatusChange]
   );
 
   // Control whether or not to show markers depending on the zoom level. The min
@@ -72,7 +158,7 @@ export function MapLayerRasterTimeseries(props) {
   // loaded and markers are shown instead.
   useEffect(() => {
     const zoomEnd = () => {
-      const showMarkers = mapInstance.getZoom() < zoomExtent?.[0];
+      const showMarkers = mapInstance.getZoom() < minZoom;
       setShowMarkers(showMarkers);
     };
 
@@ -82,25 +168,19 @@ export function MapLayerRasterTimeseries(props) {
     return () => {
       mapInstance?.off('zoomend', zoomEnd);
     };
-  }, [zoomExtent, mapInstance]);
+  }, [minZoom, mapInstance]);
 
-  // Request and manage markers.
+  //
+  // Markers
+  //
   useEffect(() => {
-    if (!id || !layerId || !date || !showMarkers) return;
+    if (!id || !layerId || !date || !minZoom) return;
 
     const controller = new AbortController();
-    let addedMarkers = [];
 
     const load = async () => {
       try {
-        changeStatus?.('loading');
-        LOG &&
-          /* eslint-disable-next-line no-console */
-          console.groupCollapsed(
-            'MapLayerRasterTimeseries %cLoading Markers',
-            'color: orange;',
-            id
-          );
+        changeStatus?.({ status: 'loading', context: 'zoom-markers' });
 
         const payload = {
           filter: getFilterPayload(userTzDate2utcString(date), layerId),
@@ -112,6 +192,12 @@ export function MapLayerRasterTimeseries(props) {
         };
 
         /* eslint-disable no-console */
+        LOG &&
+          console.groupCollapsed(
+            'MapLayerRasterTimeseries %cLoading Markers',
+            'color: orange;',
+            id
+          );
         LOG && console.log('Payload', payload);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
@@ -146,24 +232,24 @@ export function MapLayerRasterTimeseries(props) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        addedMarkers = points.map((p) => {
+        addedMarkers.current = points.map((p) => {
           const marker = new mapboxgl.Marker()
             .setLngLat(p.center)
             .addTo(mapInstance);
 
-          marker
-            .getElement()
-            .addEventListener('click', () =>
-              mapInstance.fitBounds(p.bounds, { padding: 32 })
-            );
+          const el = marker.getElement();
+          el.addEventListener('click', () =>
+            mapInstance.fitBounds(p.bounds, { padding: 32 })
+          );
+          el.style.display = !isHidden && showMarkers ? '' : 'none';
 
           return marker;
         });
 
-        changeStatus?.('succeeded');
+        changeStatus?.({ status: 'succeeded', context: 'zoom-markers' });
       } catch (error) {
         if (!controller.signal.aborted) {
-          changeStatus?.('failed');
+          changeStatus?.({ status: 'failed', context: 'zoom-markers' });
         }
         LOG &&
           /* eslint-disable-next-line no-console */
@@ -180,36 +266,40 @@ export function MapLayerRasterTimeseries(props) {
 
     return () => {
       controller && controller.abort();
-      changeStatus?.('idle');
+      changeStatus?.({ status: 'idle', context: 'zoom-markers' });
 
       if (mapInstance) {
-        addedMarkers.forEach((marker) => marker.remove());
+        addedMarkers.current.forEach((marker) => marker.remove());
+        addedMarkers.current = [];
       }
     };
-  }, [id, changeStatus, layerId, date, mapInstance, showMarkers, sourceParams]);
+    // The showMarkers and isHidden dep are left out on purpose, as visibility
+    // is controlled below, but we need the value to initialize the markers
+    // visibility.
+  }, [id, changeStatus, layerId, date, minZoom, mapInstance, sourceParams]);
 
-  // Request and manage tiles.
+  //
+  // Tiles
+  //
   useEffect(() => {
-    if (!id || !layerId || !date || showMarkers) return;
+    if (!id || !layerId || !date) return;
 
     const controller = new AbortController();
 
     const load = async () => {
-      changeStatus?.('loading');
+      changeStatus?.({ status: 'loading', context: 'layer' });
       try {
-        LOG &&
-          /* eslint-disable-next-line no-console */
-          console.groupCollapsed(
-            'MapLayerRasterTimeseries %cLoading',
-            'color: orange;',
-            id
-          );
-
         const payload = {
           filter: getFilterPayload(userTzDate2utcString(date), layerId)
         };
 
         /* eslint-disable no-console */
+        LOG &&
+          console.groupCollapsed(
+            'MapLayerRasterTimeseries %cLoading',
+            'color: orange;',
+            id
+          );
         LOG && console.log('Payload', payload);
         LOG && console.log('Source Params', sourceParams);
         LOG && console.groupEnd();
@@ -246,15 +336,27 @@ export function MapLayerRasterTimeseries(props) {
           url: `${responseData.tiles}?${tileParams}`
         });
 
-        mapInstance.addLayer({
-          id: id,
-          type: 'raster',
-          source: id
-        });
-        changeStatus?.('succeeded');
+        mapInstance.addLayer(
+          {
+            id: id,
+            type: 'raster',
+            source: id,
+            layout: {
+              visibility: showMarkers ? 'none' : 'visible'
+            },
+            paint: {
+              'raster-opacity': Number(!isHidden),
+              'raster-opacity-transition': {
+                duration: 320
+              }
+            }
+          },
+          'admin-0-boundary-bg'
+        );
+        changeStatus?.({ status: 'succeeded', context: 'layer' });
       } catch (error) {
         if (!controller.signal.aborted) {
-          changeStatus?.('failed');
+          changeStatus?.({ status: 'failed', context: 'layer' });
         }
         LOG &&
           /* eslint-disable-next-line no-console */
@@ -267,14 +369,33 @@ export function MapLayerRasterTimeseries(props) {
 
     return () => {
       controller && controller.abort();
-      changeStatus?.('idle');
+      changeStatus?.({ status: 'idle', context: 'layer' });
 
       if (mapInstance?.getSource(id)) {
         mapInstance.removeLayer(id);
         mapInstance.removeSource(id);
       }
     };
-  }, [id, changeStatus, layerId, date, mapInstance, showMarkers, sourceParams]);
+    // The showMarkers and isHidden dep are left out on purpose, as visibility
+    // is controlled below, but we need the value to initialize the layer
+    // visibility.
+  }, [id, changeStatus, layerId, date, mapInstance, sourceParams]);
+
+  //
+  // Visibility control for the layer and the markers.
+  //
+  useEffect(() => {
+    if (mapInstance.getLayer(id)) {
+      const visibility = showMarkers ? 'none' : 'visible';
+      mapInstance.setLayoutProperty(id, 'visibility', visibility);
+      mapInstance.setPaintProperty(id, 'raster-opacity', Number(!isHidden));
+    }
+
+    addedMarkers.current.forEach((marker) => {
+      const display = isHidden ? 'none' : showMarkers ? '' : 'none';
+      marker.getElement().style.display = display;
+    });
+  }, [id, mapInstance, showMarkers, isHidden]);
 
   return null;
 }

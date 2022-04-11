@@ -56,9 +56,13 @@ export const LayerDataProvider = LayerDataContainer.Provider;
 // Consumers and helpers
 // /////////////////////////////////////////////////////////////////////////////
 
+type NullableStateSlice<S> = StateSlice<S | null>;
+
 export interface AsyncDatasetLayer {
-  baseLayer: StateSlice<Omit<DatasetLayer, 'compare'> & STACLayerData>;
-  compareLayer: StateSlice<DatasetLayerCompareNormalized & STACLayerData>;
+  baseLayer: NullableStateSlice<Omit<DatasetLayer, 'compare'> & STACLayerData>;
+  compareLayer: NullableStateSlice<
+    DatasetLayerCompareNormalized & STACLayerData
+  > | null;
   reFetch: (() => void) | null;
 }
 
@@ -77,24 +81,18 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
   );
 
   useEffect(() => {
-    if (!layers) return null;
     layers.forEach(fetchData);
   }, [fetchData, layers]);
 
   return useMemo(() => {
-    if (!layers) return null;
-
     // Merge the data from STAC and the data from the configuration into a
     // single object with meta information about the request status.
-    const mergeSTACData = <
-      T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized
-    >(
-      baseData: T
-    ): StateSlice<T & STACLayerData> => {
-      if (!baseData) return null;
-
+    function mergeSTACData<T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized>(baseData: T): NullableStateSlice<T & STACLayerData> {
       const dataSTAC = getState<STACLayerData>(baseData.id);
-      if (dataSTAC.status !== 'succeeded') return dataSTAC as StateSlice<null>;
+
+      if (dataSTAC.status !== 'succeeded') {
+        return dataSTAC as unknown as StateSlice<null>;
+      }
 
       return {
         ...dataSTAC,
@@ -103,7 +101,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
           ...dataSTAC.data
         }
       };
-    };
+    }
 
     return layers.map((layer) => {
       // Remove compare from layer.
@@ -119,7 +117,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 
       return {
         baseLayer: mergeSTACData(layerProps),
-        compareLayer: mergeSTACData(compareLayer),
+        compareLayer: compareLayer && mergeSTACData(compareLayer),
         reFetch: () => fetchData(layer)
       };
     });
@@ -130,15 +128,16 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
   const hasParams = !!datasetId && !!layerId;
   // Get the layer information from the dataset defined in the configuration.
-  const layer = datasets[datasetId]?.data.layers?.find((l) => l.id === layerId);
+  const layersList = datasetId ? datasets[datasetId]?.data.layers : [];
+  const layer = layersList.find((l) => l.id === layerId);
 
   // The layers must be defined in the configuration otherwise it is not
-  // possible to load the,.
+  // possible to load them.
   if (hasParams && !layer) {
     throw new Error(`Layer [${layerId}] not found in dataset [${datasetId}]`);
   }
 
-  const layerAsArray = useMemo(() => layer && [layer], [layer]);
+  const layerAsArray = useMemo(() => (layer ? [layer] : []), [layer]);
   const asyncLayers = useLayersInit(layerAsArray);
 
   return useMemo(
@@ -155,4 +154,45 @@ export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
 export const useDatasetAsyncLayers = (datasetId) => {
   // Get the layer information from the dataset defined in the configuration.
   return useLayersInit(datasets[datasetId]?.data.layers);
+};
+
+type ReferencedLayer = {
+  datasetId: string;
+  layerId: string;
+  skipCompare?: boolean;
+};
+
+export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
+  // Get the layers from the different datasets.
+  const layers = useMemo(
+    () =>
+      referencedLayers.map(({ datasetId, layerId, skipCompare }) => {
+        // Get the layer information from the dataset defined in the configuration.
+        const layer = datasets[datasetId]?.data.layers?.find(
+          (l) => l.id === layerId
+        ) as DatasetLayer | null;
+
+        // The layers must be defined in the configuration otherwise it is not
+        // possible to load them.
+        if (!layer) {
+          throw new Error(
+            `Layer [${layerId}] not found in dataset [${datasetId}]`
+          );
+        }
+
+        // Skip the compare to avoid unnecessary network requests.
+        if (skipCompare) {
+          return {
+            ...layer,
+            compare: null
+          };
+        }
+
+        return layer;
+      }),
+    [referencedLayers]
+  );
+
+  // Get the layer information from the dataset defined in the configuration.
+  return useLayersInit(layers);
 };

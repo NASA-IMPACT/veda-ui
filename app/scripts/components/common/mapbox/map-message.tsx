@@ -7,6 +7,7 @@ const fadeDuration = 240;
 
 interface MessageProps {
   show: boolean;
+  isInvalid?: boolean;
 }
 
 const Message = styled.div<MessageProps>`
@@ -15,12 +16,24 @@ const Message = styled.div<MessageProps>`
   z-index: 8;
   transform: translate(-50%, 0);
   padding: ${glsp(0.5, 0.75)};
-  background: #fff;
   box-shadow: ${themeVal('boxShadow.elevationA')};
   border-radius: ${themeVal('shape.rounded')};
   font-size: 0.875rem;
   line-height: 1rem;
   text-align: center;
+  display: flex;
+  align-items: center;
+  gap: ${glsp(0.5)};
+
+  ${({ isInvalid }) =>
+    isInvalid
+      ? css`
+          background: ${themeVal('color.danger')};
+          color: ${themeVal('color.surface')};
+        `
+      : css`
+          background: #fff;
+        `}
 
   transition: all ${fadeDuration}ms ease-in-out;
   ${({ show }) =>
@@ -41,10 +54,11 @@ interface MapMessageProps {
   id: string;
   active: boolean;
   children: React.ReactNode;
+  isInvalid?: boolean;
 }
 
 export default function MapMessage(props: MapMessageProps) {
-  const { id, children, active } = props;
+  const { id, children, active, isInvalid } = props;
 
   return (
     <TransitionGroup component={null}>
@@ -52,7 +66,10 @@ export default function MapMessage(props: MapMessageProps) {
         <Transition key={id} timeout={fadeDuration}>
           {(state) => {
             return (
-              <Message show={state === 'entered' || state === 'entering'}>
+              <Message
+                show={state === 'entered' || state === 'entering'}
+                isInvalid={isInvalid}
+              >
                 {children}
               </Message>
             );

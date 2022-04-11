@@ -4,9 +4,7 @@ import styled from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-// TODO: Token from config
-mapboxgl.accessToken =
-  'pk.eyJ1IjoiY292aWQtbmFzYSIsImEiOiJja2F6eHBobTUwMzVzMzFueGJuczF6ZzdhIn0.8va1fkyaWgM57_gZ2rBMMg';
+mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
 const SingleMapContainer = styled.div`
   && {
@@ -21,7 +19,7 @@ const SingleMapContainer = styled.div`
 
 interface SimpleMapProps {
   [key: string]: unknown;
-  mapRef: MutableRefObject<mapboxgl.Map>;
+  mapRef: MutableRefObject<mapboxgl.Map | null>;
   containerRef: RefObject<HTMLDivElement>;
   onLoad(e: mapboxgl.EventData): void;
   onUnmount?: () => void;
@@ -40,11 +38,10 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
 
     mapRef.current = mbMap;
 
-    // Add zoom controls.
-    mbMap.addControl(new mapboxgl.NavigationControl(), 'bottom-left');
-
-    // Remove compass.
-    document.querySelector('.mapboxgl-ctrl .mapboxgl-ctrl-compass').remove();
+    // Add zoom controls without compass.
+    if (mapOptions?.interactive !== false) {
+      mbMap.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-left');
+    }
 
     onLoad && mbMap.once('load', onLoad);
 

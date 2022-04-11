@@ -10,13 +10,13 @@ type EffectPreviousCb<T> = (previous: T, mounted: boolean) => void | (() => void
  * @param {array} deps Hook dependencies.
  */
 export function useEffectPrevious<T extends React.DependencyList>(cb: EffectPreviousCb<T> , deps: T) {
-  const prev = useRef<React.DependencyList>();
+  const prev = useRef<React.DependencyList>([]);
   const mounted = useRef(false);
-  const unchangingCb = useRef<EffectPreviousCb<React.DependencyList>>(cb);
+  const unchangingCb = useRef<EffectPreviousCb<T>>(cb);
   unchangingCb.current = cb;
 
   useEffect(() => {
-    const r = unchangingCb.current(prev.current, mounted.current);
+    const r = unchangingCb.current(prev.current as T, mounted.current);
     prev.current = deps;
     if (!mounted.current) mounted.current = true;
     return r;

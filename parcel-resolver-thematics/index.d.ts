@@ -41,7 +41,7 @@ declare module 'delta/thematics' {
     name: string;
     description: string;
     type: DatasetLayerType;
-    compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal;
+    compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend: LayerLegendCategorical | LayerLegendGradient
   }
 
