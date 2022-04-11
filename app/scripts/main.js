@@ -12,7 +12,7 @@ import LayoutRoot, {
 } from '$components/common/layout-root';
 
 // Page loading
-import PageLoading from '$components/common/page-loading';
+import { PageLoading } from '$components/common/loading-skeleton';
 
 // Views
 import UhOh from '$components/uhoh';
