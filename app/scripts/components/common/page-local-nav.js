@@ -2,6 +2,8 @@ import React from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 import { Link, NavLink, useMatch } from 'react-router-dom';
+import deltaThematics from 'delta/thematics';
+
 import {
   glsp,
   themeVal,
@@ -134,12 +136,18 @@ const SectionLink = styled(LocalMenuLink)`
   }
 `;
 
+// When there's only w thematic are, we don't use :thematicId.
+const pagePath =
+  deltaThematics.length > 1
+    ? '/:thematicId/datasets/:dataId/:page'
+    : '/datasets/:dataId/:page';
+
 function PageLocalNav(props) {
   const { localMenuCmp, parentName, parentLabel, parentTo, items, currentId } =
     props;
 
   // Keep the url structure on dataset pages
-  const datasetPageMatch = useMatch('/:thematicId/datasets/:dataId/:page');
+  const datasetPageMatch = useMatch(pagePath);
   const currentPage = datasetPageMatch ? datasetPageMatch.params.page : '';
 
   const currentItem = items.find((o) => o.id === currentId);
@@ -173,7 +181,7 @@ function PageLocalNav(props) {
                     <DropMenuItem
                       as={NavLink}
                       to={`${parentTo}/${t.id}/${currentPage}`}
-                      aria-current={t.id === currentId ? 'page' : 'null'}
+                      aria-current={t.id === currentId ? 'page' : null}
                       active={t.id === currentItem.id}
                       data-dropdown='click.close'
                     >
