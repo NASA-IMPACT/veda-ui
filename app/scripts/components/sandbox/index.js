@@ -15,6 +15,7 @@ import SandboxMap from './map';
 import SandboxContentBlocks from './content-blocks';
 import SandboxCards from './cards';
 import SandboxMDXPage from './mdx-page';
+import SandboxMDXScrolly from './mdx-scrollytelling';
 
 const pages = [
   {
@@ -41,6 +42,11 @@ const pages = [
     id: 'mdx-page',
     name: 'Mdx page',
     component: SandboxMDXPage
+  },
+  {
+    id: 'mdx-scrolly',
+    name: 'Scrollytelling',
+    component: SandboxMDXScrolly
   },
   {
     id: 'cards',

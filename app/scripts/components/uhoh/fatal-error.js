@@ -10,7 +10,7 @@ import LayoutRoot, {
 } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { FoldProse } from '$components/common/fold';
-import { PageLead, PageMainContent } from '$styles/page';
+import { PageMainContent } from '$styles/page';
 
 import { makeAbsUrl } from '$utils/history';
 import { useEffectPrevious } from '$utils/use-effect-previous';

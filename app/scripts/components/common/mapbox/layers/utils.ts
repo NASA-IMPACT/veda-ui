@@ -15,7 +15,7 @@ import { utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { MapLayerRasterTimeseries } from './raster-timeseries';
 
-export const getLayerComponent = (isTimeseries, layerType) => {
+export const getLayerComponent = (isTimeseries: boolean, layerType: 'raster' | 'vector'): React.FunctionComponent<any> | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
   }
@@ -32,7 +32,7 @@ export const getLayerComponent = (isTimeseries, layerType) => {
  */
 export const getCompareLayerData = (
   layerData: DatasetLayer | null
-): DatasetLayerCompareNormalized => {
+): DatasetLayerCompareNormalized | null => {
   if (!layerData?.compare) return null;
   const { compare } = layerData;
 
@@ -72,7 +72,9 @@ export const getCompareLayerData = (
     } = compareInternal;
 
     const datasetData = datasets[datasetId].data;
-    const otherLayer = datasetData.layers.find((l) => l.id === layerId);
+    const otherLayer = datasetData?.layers?.find((l) => l.id === layerId);
+
+    if (!otherLayer) return null;
 
     return {
       id: otherLayer.id,
@@ -179,8 +181,7 @@ declare global {
   }
 }
 
-type AsyncDatasetLayerData<T extends keyof AsyncDatasetLayer> =
-  AsyncDatasetLayer[T]['data'];
+type AsyncDatasetLayerData<T extends 'baseLayer' | 'compareLayer'> = Exclude<AsyncDatasetLayer[T], null>['data'];
 
 /**
  * Resolves the temporal extend of the given Async Layer.
@@ -194,7 +195,7 @@ export function resolveLayerTemporalExtent(
   layerData:
     | AsyncDatasetLayerData<'baseLayer'>
     | AsyncDatasetLayerData<'compareLayer'>
-): Date[] {
+): Date[] | null {
   if (!layerData?.timeseries) return null;
 
   const { domain, isPeriodic, timeDensity } = layerData.timeseries;

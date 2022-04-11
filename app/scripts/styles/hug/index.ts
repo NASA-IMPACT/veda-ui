@@ -189,8 +189,8 @@ function makeGrid(columns: number, mdQuery: MdQuery) {
       { name: 'full-end', value: '[full-end]' }
     ];
 
-    let gridTemplateColumns = null;
-    let gridColumn = undefined;
+    let gridTemplateColumns;
+    let gridColumn;
 
     // If the user defined a grid property compute the subgrid.
     // This does two things:

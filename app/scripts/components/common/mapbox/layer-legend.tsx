@@ -44,6 +44,27 @@ const LayerLegendSelf = styled.div`
   box-shadow: ${themeVal('boxShadow.elevationB')};
   background-color: ${themeVal('color.surface')};
   width: 20rem;
+
+  &.reveal-enter {
+    opacity: 0;
+    bottom: 4rem;
+  }
+  &.reveal-exit {
+    opacity: 1;
+    bottom: ${variableGlsp()};
+  }
+  &.reveal-enter-active {
+    opacity: 1;
+    bottom: ${variableGlsp()};
+  }
+  &.reveal-exit-active {
+    opacity: 0;
+    bottom: 4rem;
+  }
+  &.reveal-enter-active,
+  &.reveal-exit-active {
+    transition: bottom 240ms ease-in-out, opacity 240ms ease-in-out ;
+  }
 `;
 
 const LegendList = styled.dl`

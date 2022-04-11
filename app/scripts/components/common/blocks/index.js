@@ -201,12 +201,26 @@ const ContentBlockPFDelta = styled(ContentBlock)`
   }
 `;
 
-export const ErrorBlock = styled.div`
+const ErrorBlock = styled.div`
   width: 100%;
-  color: ${themeVal('color.danger-500')};
-  border: 3px solid ${themeVal('color.danger-500')};
-  margin-bottom: ${glsp(1)};
+  color: ${themeVal('color.danger')};
+  border: 3px solid ${themeVal('color.danger')};
+  margin: ${glsp()};
   padding: ${glsp(3)};
+
+  > div {
+    max-width: 40rem;
+    margin: 0 auto;
+
+    > * {
+      display: block;
+    }
+  }
+`;
+
+const ErrorHints = styled.div`
+  margin-top: ${glsp()};
+  color: ${themeVal('color.base')};
 `;
 
 // This will result an object like below
@@ -232,47 +246,38 @@ const matchingBlocks = {
     ContentBlockPFDelta
 };
 function BlockComponent(props) {
-  const { children, error, type } = props;
-  if (error) {
-    return (
-      <ErrorBlock>
-        <span>{generalErrorMessage} : </span>
-        <strong>{error.message}</strong>
-      </ErrorBlock>
-    );
-  } else {
-    // Concat block type name (default, wide, full)
-    // and children component type name (Figure, Prose)
-    // to return matching block type
-    // ex. <Block type='wide'><Figure /></Block> will result in 'wideFigure'
-    const typeName = type ? type : 'default';
-    const childrenAsArray = Array.isArray(children) ? children : [children];
+  const { children, type } = props;
 
-    const childrenComponents = childrenAsArray.reduce(
-      (acc, curr) => acc + curr.type.displayName,
-      ''
-    );
+  // Concat block type name (default, wide, full)
+  // and children component type name (Figure, Prose)
+  // to return matching block type
+  // ex. <Block type='wide'><Figure /></Block> will result in 'wideFigure'
+  const typeName = type ? type : 'default';
+  const childrenAsArray = React.Children.toArray(children);
 
-    if (![defaultBlockName, wideBlockName, fullBlockName].includes(typeName))
-      throw Error(`${blockTypeErrorMessage} '${typeName}'`);
+  const childrenComponents = childrenAsArray.reduce(
+    (acc, curr) => acc + curr.type.displayName,
+    ''
+  );
 
-    if (!matchingBlocks[`${typeName}${childrenComponents}`])
-      throw Error(contentTypeErrorMessage);
+  if (![defaultBlockName, wideBlockName, fullBlockName].includes(typeName))
+    throw Error(`${blockTypeErrorMessage} '${typeName}'`);
 
-    return React.createElement(
-      matchingBlocks[`${typeName}${childrenComponents}`],
-      props
-    );
-  }
+  if (!matchingBlocks[`${typeName}${childrenComponents}`])
+    throw Error(contentTypeErrorMessage);
+
+  return React.createElement(
+    matchingBlocks[`${typeName}${childrenComponents}`],
+    props
+  );
 }
 
 BlockComponent.propTypes = {
   type: T.string,
-  error: T.bool,
   children: T.node
 };
 
-class BlockErrorBoundary extends React.Component {
+export class BlockErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
     return { error: error };
   }
@@ -288,15 +293,36 @@ class BlockErrorBoundary extends React.Component {
   }
 
   render() {
-    return React.createElement(this.props.childToRender, {
-      error: this.state.error,
-      clearError: this.clearError,
-      ...this.props
-    });
+    const { error } = this.state;
+    const { childToRender: Block, passErrorToChild, ...rest } = this.props;
+
+    if (error && !passErrorToChild) {
+      return (
+        <ErrorBlock>
+          <div>
+            <small>{generalErrorMessage}</small>
+            <strong>{error.message}</strong>
+            {!!error.hints?.length && (
+              <ErrorHints>
+                <p>Hints:</p>
+                {error.hints.map((e, i) => (
+                  /* eslint-disable-next-line react/no-array-index-key */
+                  <p key={i}>{e}</p>
+                ))}
+              </ErrorHints>
+            )}
+          </div>
+        </ErrorBlock>
+      );
+    }
+
+    return <Block error={error} clearError={this.clearError} {...rest} />;
   }
 }
 
 BlockErrorBoundary.propTypes = {
+  // Let the block handle the error instead of the Boundary.
+  passErrorToChild: T.bool,
   childToRender: T.elementType
 };
 
@@ -304,5 +330,11 @@ const BlockWithError = (props) => (
   <BlockErrorBoundary {...props} childToRender={BlockComponent} />
 );
 
-export { BlockErrorBoundary };
+export class HintedError extends Error {
+  constructor(message, hints = []) {
+    super(message);
+    this.hints = hints;
+  }
+}
+
 export default BlockWithError;
