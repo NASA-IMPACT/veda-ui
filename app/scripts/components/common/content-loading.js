@@ -14,11 +14,11 @@ const pulse = keyframes`
   }
 `;
 
-const PageLoadingSelf = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
+const ContentLoadingSelf = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 24vh);
   gap: ${variableGlsp()};
-  height: 100vh;
   padding: ${variableGlsp()};
   background: ${themeVal('color.surface')};
 
@@ -28,15 +28,21 @@ const PageLoadingSelf = styled.div`
   }
 
   > div:nth-child(1) {
-    height: 10%;
+    grid-column: 1 / span 1;
   }
 
   > div:nth-child(2) {
-    height: 25%;
+    grid-column: 2 / span 3;
   }
 
   > div:nth-child(3) {
-    flex-grow: 1;
+    grid-column: 1 / span 3;
+    grid-row: 2;
+  }
+
+  > div:nth-child(4) {
+    grid-column: 4 / span 1;
+    grid-row: 2;
   }
 
   p {
@@ -44,15 +50,16 @@ const PageLoadingSelf = styled.div`
   }
 `;
 
-function PageLoading() {
+function ContentLoading() {
   return (
-    <PageLoadingSelf>
+    <ContentLoadingSelf>
       <div />
       <div />
       <div />
-      <p>Loading page...</p>
-    </PageLoadingSelf>
+      <div />
+      <p>Loading contents...</p>
+    </ContentLoadingSelf>
   );
 }
 
-export default PageLoading;
+export default ContentLoading;

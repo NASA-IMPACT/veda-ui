@@ -74,46 +74,47 @@ function Root() {
       <DevseedUiThemeProvider theme={theme}>
         <GlobalStyles />
         <Composer components={composingComponents}>
-          <Routes>
-            <Route path='/' element={<PageLoading />}>
-              {/* <Route path='/' element={<LayoutRoot />}> */}
-              {hasSeveralThematicAreas && (
-                <>
-                  <Route index element={<RootHome />} />
-                  <Route path='about' element={<RootAbout />} />
-                </>
-              )}
+          <Suspense fallback={<PageLoading />}>
+            <Routes>
+              <Route path='/' element={<LayoutRoot />}>
+                {hasSeveralThematicAreas && (
+                  <>
+                    <Route index element={<RootHome />} />
+                    <Route path='about' element={<RootAbout />} />
+                  </>
+                )}
 
-              {process.env.NODE_ENV !== 'production' && (
-                <Route path='/sandbox/*' element={<Sandbox />} />
-              )}
+                {process.env.NODE_ENV !== 'production' && (
+                  <Route path='/sandbox/*' element={<Sandbox />} />
+                )}
 
-              <Route path={hasSeveralThematicAreas ? ':thematicId' : '/'}>
-                <Route index element={<Home />} />
-                <Route path='about' element={<About />} />
-                <Route path='discoveries' element={<DiscoveriesHub />} />{' '}
-                <Route
-                  path='discoveries/:discoveryId'
-                  element={<DiscoveriesSingle />}
-                />
-                <Route path='datasets' element={<DatasetsHub />} />
-                <Route
-                  path='datasets/:datasetId'
-                  element={<DatasetsOverview />}
-                />
-                <Route
-                  path='datasets/:datasetId/usage'
-                  element={<DatasetsUsage />}
-                />
-                <Route
-                  path='datasets/:datasetId/explore'
-                  element={<DatasetsExplore />}
-                />
+                <Route path={hasSeveralThematicAreas ? ':thematicId' : '/'}>
+                  <Route index element={<Home />} />
+                  <Route path='about' element={<About />} />
+                  <Route path='discoveries' element={<DiscoveriesHub />} />{' '}
+                  <Route
+                    path='discoveries/:discoveryId'
+                    element={<DiscoveriesSingle />}
+                  />
+                  <Route path='datasets' element={<DatasetsHub />} />
+                  <Route
+                    path='datasets/:datasetId'
+                    element={<DatasetsOverview />}
+                  />
+                  <Route
+                    path='datasets/:datasetId/usage'
+                    element={<DatasetsUsage />}
+                  />
+                  <Route
+                    path='datasets/:datasetId/explore'
+                    element={<DatasetsExplore />}
+                  />
+                </Route>
+
+                <Route path='*' element={<UhOh />} />
               </Route>
-
-              <Route path='*' element={<UhOh />} />
-            </Route>
-          </Routes>
+            </Routes>
+          </Suspense>
         </Composer>
       </DevseedUiThemeProvider>
     </BrowserRouter>
