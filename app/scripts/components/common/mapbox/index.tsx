@@ -20,7 +20,6 @@ import { MapLoading } from '$components/common/loading-skeleton';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
-import { openStdin } from 'process';
 
 const MapsContainer = styled.div`
   position: relative;
