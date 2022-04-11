@@ -3,10 +3,10 @@ import T from 'prop-types';
 import styled from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { round } from '$utils/format';
 import { variableGlsp } from '$styles/variable-utils';
-import { glsp } from '@devseed-ui/theme-provider';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
@@ -22,27 +22,41 @@ const SingleMapContainer = styled.div`
     pointer-events: none;
 
     > * {
-      float: none;
-      pointer-events: auto;
       display: flex;
       flex-flow: column nowrap;
-      gap: ${glsp(0.5)};
+      gap: ${glsp()};
       align-items: flex-start;
+      float: none;
+      pointer-events: auto;
     }
 
-    .mapboxgl-ctrl {
+    .mapboxgl-ctrl,
+    .mapboxgl-ctrl-logo {
       margin: 0;
+    }
+
+    .mapboxgl-ctrl-attrib {
+      order: 3;
+      padding: 0;
+      background: none;
+    }
+
+    .mapboxgl-ctrl-attrib-inner {
+      color: ${themeVal('color.surface')};
+      border-radius: ${themeVal('shape.ellipsoid')};
+      padding: ${glsp(0.125, 0.5)};
+      background: ${themeVal('color.base-400a')};
+
+      a,
+      a:visited {
+        color: inherit;
+      }
     }
   }
 
   .mapboxgl-ctrl-bottom-left {
     flex-direction: row;
     align-items: flex-end;
-    gap: ${glsp()};
-  }
-
-  .mapboxgl-ctrl-logo {
-    margin: 0;
   }
 
   .mapboxgl-marker:hover {
@@ -69,6 +83,7 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
 
     const mbMap = new mapboxgl.Map({
       container: containerRef.current,
+      attributionControl: false,
       ...mapOptions
     });
 
@@ -78,6 +93,9 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     if (mapOptions?.interactive !== false) {
       mbMap.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-left');
     }
+
+    // Include attribution.
+    mbMap.addControl(new mapboxgl.AttributionControl(), 'bottom-left');
 
     onLoad && mbMap.once('load', onLoad);
 
