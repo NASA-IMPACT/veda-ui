@@ -45,10 +45,10 @@ export const FigcaptionInner = styled(Subtitle).attrs({
   }
 `;
 
-const FigureAttributionSelf = styled.p`
+export const FigureAttributionSelf = styled.p`
   position: absolute;
-  top: ${glsp()};
-  right: ${glsp()};
+  top: ${variableGlsp()};
+  right: ${variableGlsp()};
   z-index: 40;
   max-width: calc(100% - ${glsp(2)}); /* stylelint-disable-line */
   height: 1.5rem;
