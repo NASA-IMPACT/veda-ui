@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { utcString2userTzDate, isValidDate } from '$utils/date';
 import MapboxMap from '$components/common/mapbox';
+import { validateRangeNum } from '$utils/utils';
 
 const Carto = styled.div`
   position: relative;
@@ -19,12 +20,24 @@ const Carto = styled.div`
 // This global variable is used to give unique ID to mapbox container
 let mapInstanceId = 0;
 
+const lngValidator = validateRangeNum(-180, 180);
+const latValidator = validateRangeNum(-90, 90);
+
 function MapBlock({ datasetId, dateTime, layerId, isComparing, center, zoom }) {
   const mapboxRef = useRef(null);
-  if (!isValidDate(dateTime))
+  if (!isValidDate(dateTime)) {
     throw Error(
       'Date format is wrong. Did you pass the right date in yyyy-mm-dd format? '
     );
+  }
+
+  // center is not required, but if provided must be in the correct range.
+  if (center && (!lngValidator(center[0]) || !latValidator(center[1]))) {
+    throw Error(
+      'center format is wrong. Did you use [longitude, latitude] format? '
+    );
+  }
+
   const selectedDatetime = utcString2userTzDate(dateTime);
 
   return (
