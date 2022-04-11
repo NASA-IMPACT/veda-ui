@@ -3,6 +3,7 @@ import T from 'prop-types';
 import { MDXProvider } from '@mdx-js/react';
 
 import { useMdxPageLoader } from '$utils/thematics';
+import { ContentLoading } from '$components/common/loading-skeleton';
 import Block from '$components/common/blocks';
 import ContentBlockFigure from '$components/common/blocks/figure';
 import { ContentBlockProse } from '$styles/content-block';
@@ -16,7 +17,7 @@ function MdxContent(props) {
   const pageMdx = useMdxPageLoader(props.loader);
 
   if (pageMdx.status === 'loading') {
-    return <p>Loading page content</p>;
+    return <ContentLoading />;
   }
 
   if (pageMdx.status === 'success') {

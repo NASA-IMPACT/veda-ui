@@ -11,6 +11,9 @@ import LayoutRoot, {
   LayoutRootContextProvider
 } from '$components/common/layout-root';
 
+// Page loading
+import { PageLoading } from '$components/common/loading-skeleton';
+
 // Views
 import UhOh from '$components/uhoh';
 import ErrorBoundary from '$components/uhoh/fatal-error';
@@ -71,7 +74,7 @@ function Root() {
       <DevseedUiThemeProvider theme={theme}>
         <GlobalStyles />
         <Composer components={composingComponents}>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<PageLoading />}>
             <Routes>
               <Route path='/' element={<LayoutRoot />}>
                 {hasSeveralThematicAreas && (
