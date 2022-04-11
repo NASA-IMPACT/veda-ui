@@ -5,6 +5,8 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import { round } from '$utils/format';
+import { variableGlsp } from '$styles/variable-utils';
+import { glsp } from '@devseed-ui/theme-provider';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
@@ -12,6 +14,35 @@ const SingleMapContainer = styled.div`
   && {
     position: absolute;
     inset: 0;
+  }
+
+  .mapboxgl-control-container {
+    position: absolute;
+    inset: ${variableGlsp()};
+    pointer-events: none;
+
+    > * {
+      float: none;
+      pointer-events: auto;
+      display: flex;
+      flex-flow: column nowrap;
+      gap: ${glsp(0.5)};
+      align-items: flex-start;
+    }
+
+    .mapboxgl-ctrl {
+      margin: 0;
+    }
+  }
+
+  .mapboxgl-ctrl-bottom-left {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: ${glsp()};
+  }
+
+  .mapboxgl-ctrl-logo {
+    margin: 0;
   }
 
   .mapboxgl-marker:hover {

@@ -43,7 +43,7 @@ const LayerLegendSelf = styled.div`
   border-radius: ${themeVal('shape.rounded')};
   box-shadow: ${themeVal('boxShadow.elevationB')};
   background-color: ${themeVal('color.surface')};
-  width: 20rem;
+  width: 18rem;
 
   &.reveal-enter {
     opacity: 0;

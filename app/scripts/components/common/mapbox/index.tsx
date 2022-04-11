@@ -16,7 +16,9 @@ import * as dateFns from 'date-fns';
 import { ActionStatus, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { useDatasetAsyncLayer } from '$context/layer-data';
-import { MapLoading } from '$components/common/loading-skeleton';
+import {
+  MapLoading
+} from '$components/common/loading-skeleton';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
