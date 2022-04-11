@@ -57,7 +57,7 @@ export const FigureAttributionSelf = styled.p`
   border-radius: ${themeVal('shape.ellipsoid')};
   padding: ${glsp(0, 0.25)};
   font-size: 0.75rem;
-  background: ${themeVal('color.base-300a')};
+  background: ${themeVal('color.base-400a')};
   overflow: hidden;
 
   a,
