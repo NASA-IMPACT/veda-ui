@@ -39,11 +39,11 @@ const LayerLegendSelf = styled.div`
   display: flex;
   flex-flow: column nowrap;
   gap: ${glsp(0.5)};
-  padding: ${variableGlsp(0.5, 1)};
+  padding: ${variableGlsp(0.5, 0.75)};
   border-radius: ${themeVal('shape.rounded')};
   box-shadow: ${themeVal('boxShadow.elevationB')};
   background-color: ${themeVal('color.surface')};
-  width: 18rem;
+  width: 16rem;
 
   &.reveal-enter {
     opacity: 0;
