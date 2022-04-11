@@ -162,15 +162,21 @@ function DatasetsExplore() {
   /** *********************************************************************** */
   // Setup Qs State to store data in the url's query string
   // react-router function to get the navigation.
-  const navigate = useNavigate();
-  const useQsState = useQsStateCreator({
-    commit: navigate
-  });
+  // There's a bug in qs-state-hook related with the commit function. Basically
+  // the function gets scoped and it does not get updated. Using a ref fixes the
+  // scoping problem.
+  const navigate = useRef();
+  navigate.current = useNavigate();
+  const commit = useCallback((opts) => navigate.current(opts), []);
+  const useQsState = useQsStateCreator({ commit });
 
-  const [selectedLayerId, setSelectedLayerId] = useQsState.memo({
-    key: 'layer',
-    default: dataset.data.layers[0].id
-  });
+  const [selectedLayerId, setSelectedLayerId] = useQsState.memo(
+    {
+      key: 'layer',
+      default: dataset.data.layers[0].id
+    },
+    [dataset]
+  );
 
   const [selectedDatetime, setSelectedDatetime] = useQsState.memo({
     key: 'datetime',
