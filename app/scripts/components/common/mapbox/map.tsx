@@ -7,6 +7,16 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { round } from '$utils/format';
 import { variableGlsp } from '$styles/variable-utils';
+import {
+  createButtonGroupStyles,
+  createButtonStyles
+} from '@devseed-ui/button';
+
+import {
+  iconDataURI,
+  CollecticonPlusSmall,
+  CollecticonMinusSmall
+} from '@devseed-ui/collecticons';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
@@ -78,6 +88,86 @@ const SingleMapContainer = styled.div`
   .mapboxgl-ctrl-bottom-left {
     flex-direction: row;
     align-items: flex-end;
+  }
+
+  .mapboxgl-ctrl-group {
+    ${createButtonGroupStyles({ orientation: 'vertical' })}
+    background: none;
+
+    &,
+    &:not(:empty) {
+      box-shadow: ${themeVal('boxShadow.elevationA')};
+    }
+
+    > button {
+      span {
+        display: none;
+      }
+
+      &::before {
+        display: inline-block;
+        content: '';
+        background-repeat: no-repeat;
+        background-size: 1rem 1rem;
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+
+    > button:first-child:not(:last-child) {
+      &,
+      &::after {
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+      &::after {
+        clip-path: inset(-100% -100% 0 -100%);
+      }
+    }
+    > button:last-child:not(:first-child) {
+      &,
+      &::after {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+
+      &::after {
+        clip-path: inset(0 -100% -100% -100%);
+      }
+    }
+    > button:not(:first-child):not(:last-child) {
+      &,
+      &::after {
+        border-radius: 0;
+      }
+
+      &::after {
+        clip-path: inset(0 -100%);
+      }
+    }
+    > button + button {
+      margin-top: -${themeVal('button.shape.border')};
+    }
+  }
+
+  .mapboxgl-ctrl-zoom-in.mapboxgl-ctrl-zoom-in,
+  .mapboxgl-ctrl-zoom-out.mapboxgl-ctrl-zoom-out {
+    ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
+  }
+
+  .mapboxgl-ctrl-zoom-in.mapboxgl-ctrl-zoom-in::before {
+    background-image: url('${({ theme }) =>
+      iconDataURI(CollecticonPlusSmall, {
+        color: theme.color.surface
+      })}');
+  }
+
+  .mapboxgl-ctrl-zoom-out.mapboxgl-ctrl-zoom-out::before {
+    background-image: url('${({ theme }) =>
+      iconDataURI(CollecticonMinusSmall, {
+        color: theme.color.surface
+      })}');
   }
 
   .mapboxgl-marker:hover {
