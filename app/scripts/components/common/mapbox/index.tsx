@@ -16,10 +16,7 @@ import * as dateFns from 'date-fns';
 import { ActionStatus, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { useDatasetAsyncLayer } from '$context/layer-data';
-import {
-  MapLoading,
-  LoadingSkeleton
-} from '$components/common/loading-skeleton';
+import { MapLoading } from '$components/common/loading-skeleton';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
@@ -28,15 +25,29 @@ const MapsContainer = styled.div`
   position: relative;
 `;
 
-const mapOptions = {
+const mapOptions: Partial<mapboxgl.MapboxOptions> = {
   style: process.env.MAPBOX_STYLE_URL,
   logoPosition: 'bottom-left',
+  trackResize: true,
   pitchWithRotate: false,
   dragRotate: false,
   zoom: 1
 };
 
-function MapboxMapComponent(props, ref) {
+const getMapPositionOptions = (position) => {
+  const opts = {} as Pick<typeof mapOptions, 'center' | 'zoom'>;
+  if (position?.lng !== undefined && position?.lat !== undefined) {
+    opts.center = [position.lng, position.lat];
+  }
+
+  if (position?.zoom) {
+    opts.zoom = position.zoom;
+  }
+
+  return opts;
+};
+
+function MapboxMapComponent(props: MapboxMapProps, ref) {
   /* eslint-disable react/prop-types */
   const {
     className,
@@ -46,7 +57,9 @@ function MapboxMapComponent(props, ref) {
     layerId,
     date,
     isComparing,
-    cooperativeGestures
+    cooperativeGestures,
+    onPositionChange,
+    initialPosition
   } = props;
   /* eslint-enable react/prop-types */
 
@@ -219,7 +232,12 @@ function MapboxMapComponent(props, ref) {
           mapRef={mapRef}
           containerRef={mapContainer}
           onLoad={() => setMapLoaded(true)}
-          mapOptions={{ ...mapOptions, cooperativeGestures }}
+          onMoveEnd={onPositionChange}
+          mapOptions={{
+            ...mapOptions,
+            ...getMapPositionOptions(initialPosition),
+            cooperativeGestures
+          }}
         />
         {shouldRenderCompare && (
           <SimpleMap
@@ -240,15 +258,28 @@ function MapboxMapComponent(props, ref) {
   );
 }
 
+type MapPosition = {
+  lng: number;
+  lat: number;
+  zoom: number;
+};
+
 interface MapboxMapProps {
-  as: string;
+  as?: any;
   className: string;
   id: string;
   datasetId: string;
   layerId: string;
-  date: Date;
-  isComparing: boolean;
-  cooperativeGestures: boolean;
+  date?: Date;
+  isComparing?: boolean;
+  cooperativeGestures?: boolean;
+  initialPosition?: MapPosition;
+  onPositionChange?: (
+    result: MapPosition & {
+      userInitiated: boolean;
+    }
+  ) => void;
+  children?: React.ReactNode;
 }
 
 const MapboxMapComponentFwd =

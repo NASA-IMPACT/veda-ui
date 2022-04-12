@@ -202,14 +202,18 @@ const ContentBlockPFDelta = styled(ContentBlock)`
 `;
 
 const ErrorBlock = styled.div`
+  margin: ${glsp(1, 0)};
+  padding: ${glsp(0, 1)};
+`;
+
+const ErrorBlockInner = styled.div`
   width: 100%;
   color: ${themeVal('color.danger')};
   border: 3px solid ${themeVal('color.danger')};
-  margin: ${glsp()};
   padding: ${glsp(3)};
 
   > div {
-    max-width: 40rem;
+    max-width: 48rem;
     margin: 0 auto;
 
     > * {
@@ -298,20 +302,22 @@ export class BlockErrorBoundary extends React.Component {
 
     if (error && !passErrorToChild) {
       return (
-        <ErrorBlock>
-          <div>
-            <small>{generalErrorMessage}</small>
-            <strong>{error.message}</strong>
-            {!!error.hints?.length && (
-              <ErrorHints>
-                <p>Hints:</p>
-                {error.hints.map((e, i) => (
-                  /* eslint-disable-next-line react/no-array-index-key */
-                  <p key={i}>{e}</p>
-                ))}
-              </ErrorHints>
-            )}
-          </div>
+        <ErrorBlock className={rest.className}>
+          <ErrorBlockInner>
+            <div>
+              <small>{generalErrorMessage}</small>
+              <strong>{error.message}</strong>
+              {!!error.hints?.length && (
+                <ErrorHints>
+                  <p>Hints:</p>
+                  {error.hints.map((e, i) => (
+                    /* eslint-disable-next-line react/no-array-index-key */
+                    <p key={i}>{e}</p>
+                  ))}
+                </ErrorHints>
+              )}
+            </div>
+          </ErrorBlockInner>
         </ErrorBlock>
       );
     }
