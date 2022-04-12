@@ -20,7 +20,6 @@ const HighlightLabelMarker = styled.rect`
 `;
 
 const HighlightArea = styled.path`
-  d=${(props) => props.d};
   fill: ${themeVal(highlightColorThemeValue)};
 `;
 

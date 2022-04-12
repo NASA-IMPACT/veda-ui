@@ -6,7 +6,7 @@ import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
 import { resourceNotFound } from '$components/uhoh';
 
-import { PageLead, PageMainContent } from '$styles/page';
+import { PageMainContent } from '$styles/page';
 import { useThematicArea } from '$utils/thematics';
 import { thematicDatasetsPath } from '$utils/routes';
 

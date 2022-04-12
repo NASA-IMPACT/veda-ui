@@ -186,8 +186,15 @@ interface SimpleMapProps {
 }
 
 export function SimpleMap(props: SimpleMapProps): JSX.Element {
-  const { mapRef, containerRef, onLoad, onMoveEnd, onUnmount, mapOptions, ...rest } =
-    props;
+  const {
+    mapRef,
+    containerRef,
+    onLoad,
+    onMoveEnd,
+    onUnmount,
+    mapOptions,
+    ...rest
+  } = props;
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -213,16 +220,20 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
 
     onLoad && mbMap.once('load', onLoad);
 
-    onMoveEnd && mbMap.on('moveend', (e) => {
-      onMoveEnd({
-        // The existence of originalEvent indicates that it was not caused by
-        // a method call.
-        userInitiated: Object.prototype.hasOwnProperty.call(e, 'originalEvent'),
-        lng: round(mbMap.getCenter().lng, 4),
-        lat: round(mbMap.getCenter().lat, 4),
-        zoom: round(mbMap.getZoom(), 2)
+    onMoveEnd &&
+      mbMap.on('moveend', (e) => {
+        onMoveEnd({
+          // The existence of originalEvent indicates that it was not caused by
+          // a method call.
+          userInitiated: Object.prototype.hasOwnProperty.call(
+            e,
+            'originalEvent'
+          ),
+          lng: round(mbMap.getCenter().lng, 4),
+          lat: round(mbMap.getCenter().lat, 4),
+          zoom: round(mbMap.getZoom(), 2)
+        });
       });
-    });
 
     // Trigger a resize to handle flex layout quirks.
     setTimeout(() => mbMap.resize(), 1);

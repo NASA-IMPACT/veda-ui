@@ -7,7 +7,11 @@ import { VarProse } from './variable-components';
 
 import Hug from './hug/index.ts';
 
-import { FigcaptionInner, Figure, FigureAttributionSelf } from '$components/common/figure';
+import {
+  FigcaptionInner,
+  Figure,
+  FigureAttributionSelf
+} from '$components/common/figure';
 
 import { proseDisplayName } from '$components/common/blocks/block-constant';
 

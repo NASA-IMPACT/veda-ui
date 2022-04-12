@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { LayoutProps } from '../common/layout-root';
-import { PageLead, PageMainContent } from '../../styles/page';
+import { PageMainContent } from '../../styles/page';
 
 import PageHero from '../common/page-hero';
 import { FoldProse } from '../common/fold';
