@@ -89,8 +89,7 @@ LineChart.propTypes = {
   xKey: T.string,
   yKey: T.string,
   dateFormat: T.string,
-  customLayerComponent: T.func,
-  isThereHighlight: T.bool
+  customLayerComponent: T.func
 };
 
 export default LineChart;

@@ -45,10 +45,10 @@ export const FigcaptionInner = styled(Subtitle).attrs({
   }
 `;
 
-const FigureAttributionSelf = styled.p`
+export const FigureAttributionSelf = styled.p`
   position: absolute;
-  top: ${glsp()};
-  right: ${glsp()};
+  top: ${variableGlsp()};
+  right: ${variableGlsp()};
   z-index: 40;
   max-width: calc(100% - ${glsp(2)}); /* stylelint-disable-line */
   height: 1.5rem;
@@ -57,7 +57,7 @@ const FigureAttributionSelf = styled.p`
   border-radius: ${themeVal('shape.ellipsoid')};
   padding: ${glsp(0, 0.25)};
   font-size: 0.75rem;
-  background: ${themeVal('color.base-300a')};
+  background: ${themeVal('color.base-400a')};
   overflow: hidden;
 
   a,

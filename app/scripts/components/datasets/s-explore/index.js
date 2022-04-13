@@ -12,7 +12,8 @@ import { glsp, themeVal, truncated } from '@devseed-ui/theme-provider';
 import {
   CollecticonChevronDownSmall,
   CollecticonChevronUpSmall,
-  CollecticonSlidersHorizontal,
+  CollecticonExpandFromLeft,
+  CollecticonShrinkToLeft,
   CollecticonSwapHorizontal
 } from '@devseed-ui/collecticons';
 import { DatePicker } from '@devseed-ui/date-picker';
@@ -74,6 +75,10 @@ const Carto = styled.div`
   ${MapboxMap} {
     position: absolute;
     inset: 0;
+
+    .mapboxgl-ctrl-top-left {
+      margin-top: 2.5rem;
+    }
   }
 `;
 
@@ -351,12 +356,18 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
                     variation='primary-fill'
                     fitting='skinny'
                     onClick={() => setPanelRevealed((v) => !v)}
-                    active={panelRevealed}
                   >
-                    <CollecticonSlidersHorizontal
-                      title='Toggle panel visibility'
-                      meaningful
-                    />
+                    {panelRevealed ? (
+                      <CollecticonShrinkToLeft
+                        title='Toggle panel visibility'
+                        meaningful
+                      />
+                    ) : (
+                      <CollecticonExpandFromLeft
+                        title='Toggle panel visibility'
+                        meaningful
+                      />
+                    )}
                   </PanelToggle>
                 </PanelActions>
               </PanelHeader>

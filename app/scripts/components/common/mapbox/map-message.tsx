@@ -1,7 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Transition, TransitionGroup } from 'react-transition-group';
+
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { variableGlsp } from '$styles/variable-utils';
 
 const fadeDuration = 240;
 
@@ -18,7 +20,7 @@ const Message = styled.div<MessageProps>`
   padding: ${glsp(0.5, 0.75)};
   box-shadow: ${themeVal('boxShadow.elevationA')};
   border-radius: ${themeVal('shape.rounded')};
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   line-height: 1rem;
   text-align: center;
   display: flex;
@@ -40,12 +42,12 @@ const Message = styled.div<MessageProps>`
     show
       ? css`
           visibility: visible;
-          top: 0.5rem;
+          top: ${variableGlsp()};
           opacity: 1;
         `
       : css`
           visibility: hidden;
-          top: -2rem;
+          top: -${variableGlsp()};
           opacity: 0;
         `}
 `;

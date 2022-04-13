@@ -192,7 +192,7 @@ PageHero.propTypes = {
 export function PageOverlineDate(props) {
   const { date } = props;
   if (!date) {
-    return null
+    return null;
   }
 
   return (
@@ -202,9 +202,9 @@ export function PageOverlineDate(props) {
         {format(date, 'MMM d, yyyy')}
       </time>
     </PageOverline>
-  )
+  );
 }
 
-PageHero.PageOverlineDate = {
+PageOverlineDate.propTypes = {
   date: T.instanceOf(Date)
 };

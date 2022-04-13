@@ -1,4 +1,5 @@
 import React from 'react';
+import T from 'prop-types';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
@@ -8,6 +9,7 @@ const TooltipWrapper = styled.div`
   padding: ${glsp(0.5)};
   border-radius: ${themeVal('shape.rounded')};
   font-size: 0.75rem;
+
   > div:not(:last-child) {
     padding-bottom: ${glsp(0.25)};
   }
@@ -35,6 +37,10 @@ const TooltipComponent = ({ slice }) => {
       ))}
     </TooltipWrapper>
   );
+};
+
+TooltipComponent.propTypes = {
+  slice: T.object
 };
 
 export default TooltipComponent;

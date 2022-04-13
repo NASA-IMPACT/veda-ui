@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 
 /**
@@ -11,7 +12,6 @@ import React from 'react';
  * @prop {any} rest Remaining props are passed to the function
  */
 export default function Try(props) {
-  /* eslint-disable-next-line react/prop-types */
   const { fn: F, wrapWith: W, children, ...rest } = props;
 
   let value = children;
@@ -24,8 +24,8 @@ export default function Try(props) {
   }
 
   if (React.isValidElement(W) || W?.styledComponentId) {
-    return value ? <W>{value}</W> : null
+    return value ? <W>{value}</W> : null;
   }
 
-  return value || null
+  return value || null;
 }
