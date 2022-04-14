@@ -15,13 +15,11 @@ import {
 } from './utils';
 import TooltipComponent from './tooltip';
 
+export const chartHeight = '32rem';
+
 const ChartWrapper = styled.div`
   width: 100%;
-  height: 32rem;
-`;
-
-export const ChartPlaceholder = styled(ChartWrapper)`
-  background-color: red;
+  height: ${chartHeight};
 `;
 
 const LineChart = ({

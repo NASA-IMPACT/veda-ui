@@ -40,10 +40,12 @@ type ResolvedLayer = {
   runtimeData: { datetime?: Date; id: string };
 } | null;
 
+export const scrollyMapHeight = 'calc(100vh - 3rem)';
+
 const ScrollyMapWrapper = styled.div``;
 
 const TheMap = styled.div`
-  height: calc(100vh - 3rem);
+  height: ${scrollyMapHeight};
   position: sticky;
   top: 3rem;
   z-index: -1;

@@ -6,10 +6,11 @@ import { utcString2userTzDate, isValidDate } from '$utils/date';
 import MapboxMap from '$components/common/mapbox';
 import { validateRangeNum } from '$utils/utils';
 
+export const mapHeight = '32rem';
 const Carto = styled.div`
   position: relative;
   flex-grow: 1;
-  height: 32rem;
+  height: ${mapHeight};
 
   ${MapboxMap} {
     position: absolute;
