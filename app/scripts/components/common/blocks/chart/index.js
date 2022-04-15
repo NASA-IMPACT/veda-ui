@@ -1,10 +1,8 @@
 import React from 'react';
 import T from 'prop-types';
-import LazyLoad from 'react-lazyload';
 
-import LineChart, { chartHeight } from './line';
+import LineChart from './line';
 import AreaLayer, { EmptyLayer } from './area-layer';
-import { LoadingSkeleton } from '$components/common/loading-skeleton';
 
 const Chart = (props) => {
   const { highlightStart, highlightEnd, highlightLabel } = props;
@@ -36,16 +34,4 @@ Chart.propTypes = {
   highlightLabel: T.string
 };
 
-function LazyChart(props) {
-  return (
-    <LazyLoad
-      placeholder={<LoadingSkeleton height={chartHeight} />}
-      offset={-500}
-      once
-    >
-      <Chart {...props} />
-    </LazyLoad>
-  );
-}
-
-export default LazyChart;
+export default Chart;
