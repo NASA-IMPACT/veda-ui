@@ -24,15 +24,12 @@ const LOG = true;
  */
 function getFilterPayload(dateStr: string, collection: string) {
   return {
-    op: 'and',
-    args: [
+    'and': [
       {
-        op: 'eq',
-        args: [{ property: 'datetime' }, dateStr]
+        'eq': [{ property: 'datetime' }, dateStr]
       },
       {
-        op: 'eq',
-        args: [{ property: 'collection' }, collection]
+        'eq': [{ property: 'collection' }, collection]
       }
     ]
   };
