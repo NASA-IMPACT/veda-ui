@@ -1,5 +1,6 @@
 import React from 'react';
 import T from 'prop-types';
+
 import LineChart from './line';
 import AreaLayer, { EmptyLayer } from './area-layer';
 

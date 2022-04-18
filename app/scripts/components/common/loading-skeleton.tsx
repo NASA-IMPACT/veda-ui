@@ -16,6 +16,7 @@ const pulse = keyframes`
 interface LoadingSkeletonProps {
   inline?: boolean;
   width?: number;
+  height?: string;
   size?: 'large';
   variation?: 'light';
   type?: 'heading';
@@ -24,7 +25,7 @@ interface LoadingSkeletonProps {
 export const LoadingSkeleton = styled.span<LoadingSkeletonProps>`
   display: ${({ inline }) => (inline ? 'inline-block' : 'block')};
   background: ${themeVal('color.base-100')};
-  height: 1rem;
+  height: ${({ height }) => (height ? height : '1rem')};
   width: ${({ width }) => (width || 1) * 100}%;
   animation: ${pulse} 0.8s ease 0s infinite alternate;
 
