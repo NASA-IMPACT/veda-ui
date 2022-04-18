@@ -46,12 +46,17 @@ const TheMap = styled.div`
   height: calc(100vh - 3rem);
   position: sticky;
   top: 3rem;
-  z-index: -1;
 
   ${media.mediumUp`
     height: calc(100vh - 4rem);
     top: 4rem;
   `}
+`;
+
+const TheChapters = styled(Hug)`
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
 `;
 
 /**
@@ -386,7 +391,7 @@ function Scrollytelling(props) {
           mapOptions={mapOptions}
         />
       </TheMap>
-      <Hug>{children}</Hug>
+      <TheChapters>{children}</TheChapters>
     </ScrollyMapWrapper>
   );
 }

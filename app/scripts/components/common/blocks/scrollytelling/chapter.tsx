@@ -37,6 +37,7 @@ const ChapterSelf = styled.div`
     padding: ${variableGlsp()};
     border-radius: ${multiply(themeVal('shape.rounded'), 2)};
     box-shadow: ${themeVal('boxShadow.elevationD')};
+    pointer-events: auto;
   }
 `;
 
