@@ -37,6 +37,7 @@ const PageLocalNavSelf = styled.nav`
   gap: ${variableGlsp()};
   padding: ${variableGlsp(0.5, 1)};
   background: ${themeVal('color.primary')};
+  box-shadow: 0 -1px 0 0 ${themeVal('color.surface-200a')};
   color: ${themeVal('color.surface')};
   animation: ${reveal} 0.32s ease 0s 1;
 `;
@@ -80,7 +81,7 @@ const LocalMenuLink = styled(NavLink)`
   display: flex;
   gap: ${glsp(0.25)};
   align-items: center;
-  padding: ${glsp(0.25, 0)};
+  padding: ${glsp(0.5, 0)};
   border: 0;
   background: none;
   cursor: pointer;

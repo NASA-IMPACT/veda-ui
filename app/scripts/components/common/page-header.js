@@ -92,7 +92,10 @@ const Brand = styled.div`
       grid-row: 1 / span 2;
       height: 2.5rem;
       width: auto;
-      transform: scale(1.125);
+
+      ${media.mediumUp`
+        transform: scale(1.125);
+      `}
     }
 
     span:first-of-type {
@@ -176,7 +179,7 @@ const GlobalNavInner = styled.div`
 
 const GlobalNavHeader = styled.div`
   padding: ${variableGlsp()};
-  box-shadow: 0 1px 0 0 ${themeVal('color.surface-100a')};
+  box-shadow: 0 1px 0 0 ${themeVal('color.surface-200a')};
 `;
 
 const GlobalNavTitle = styled(Heading).attrs({
@@ -256,7 +259,7 @@ const ThemesNavBlock = styled(NavBlock)`
 
   ${media.largeUp`
     padding-left: ${variableGlsp()};
-    box-shadow: -1px 0 0 0 ${themeVal('color.surface-100a')};
+    box-shadow: -1px 0 0 0 ${themeVal('color.surface-200a')};
   `}
 `;
 
