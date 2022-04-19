@@ -15,6 +15,7 @@ export interface ChapterProps {
   datasetId: string;
   layerId: string;
   datetime?: string;
+  showBaseMap?: boolean;
   children: any;
 }
 
@@ -59,9 +60,18 @@ const lngValidator = validateRangeNum(-180, 180);
 const latValidator = validateRangeNum(-90, 90);
 
 export function validateChapter(chapter: ChapterProps, index) {
-  const reqProperties = ['center', 'zoom', 'datasetId', 'layerId'];
-  const missing = reqProperties.filter((p) => chapter[p] === undefined);
+  const dataProperties = ['layerId', 'datasetId'];
+  const mapProperties = ['center', 'zoom'];
+  const showBaseMapProp = 'showBaseMap';
 
+  const missingDataProps = dataProperties.filter((p) => {
+    if (chapter[showBaseMapProp]) return false;
+    else chapter[p] === undefined;
+    });
+  const missingMapProps = mapProperties.filter((p) => chapter[p] === undefined);
+  
+  const missing = [...missingDataProps, ...missingMapProps];
+  console.log(missingDataProps);
   const missingError =
     !!missing.length &&
     `- Missing some properties: ${missing.map((p) => `[${p}]`).join(', ')}`;
