@@ -21,6 +21,7 @@ import {
 
 const LayerSelf = styled(ElementInteractiveWrapper)`
   border-radius: 0;
+  background: ${themeVal('color.surface')};
   transition: background 0.16s ease-in-out 0s;
 
   > div {
