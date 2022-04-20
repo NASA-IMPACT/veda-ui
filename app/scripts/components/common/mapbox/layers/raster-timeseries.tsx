@@ -24,12 +24,15 @@ const LOG = true;
  */
 function getFilterPayload(dateStr: string, collection: string) {
   return {
-    'and': [
+    op: 'and',
+    args: [
       {
-        'eq': [{ property: 'datetime' }, dateStr]
+        op: 'eq',
+        args: [{ property: 'datetime' }, dateStr]
       },
       {
-        'eq': [{ property: 'collection' }, collection]
+        op: 'eq',
+        args: [{ property: 'collection' }, collection]
       }
     ]
   };
@@ -180,6 +183,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         changeStatus?.({ status: 'loading', context: 'zoom-markers' });
 
         const payload = {
+          "filter-lang": "cql2-json",
           filter: getFilterPayload(userTzDate2utcString(date), layerId),
           limit: 500,
           fields: {
@@ -287,6 +291,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       changeStatus?.({ status: 'loading', context: 'layer' });
       try {
         const payload = {
+          "filter-lang": "cql2-json",
           filter: getFilterPayload(userTzDate2utcString(date), layerId)
         };
 
