@@ -179,7 +179,7 @@ const GlobalNavInner = styled.div`
 
 const GlobalNavHeader = styled.div`
   padding: ${variableGlsp()};
-  box-shadow: 0 1px 0 0 ${themeVal('color.surface-200a')};
+  box-shadow: inset 0 -1px 0 0 ${themeVal('color.surface-200a')};
 `;
 
 const GlobalNavTitle = styled(Heading).attrs({
