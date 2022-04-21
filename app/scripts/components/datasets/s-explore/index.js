@@ -58,6 +58,7 @@ import {
   checkLayerLoadStatus,
   resolveLayerTemporalExtent
 } from '$components/common/mapbox/layers/utils';
+import { variableGlsp } from '$styles/variable-utils';
 
 const Explorer = styled.div`
   position: relative;
@@ -77,7 +78,7 @@ const Carto = styled.div`
     inset: 0;
 
     .mapboxgl-ctrl-top-left {
-      margin-top: 2.5rem;
+      margin-top: calc(2rem + ${variableGlsp(0.5)});
     }
   }
 `;

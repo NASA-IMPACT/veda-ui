@@ -105,6 +105,11 @@ export const PanelBody = styled(ShadowScrollbar)`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+
+  > div > div:nth-child(2),
+  > div > div:nth-child(3) {
+    z-index: 1;
+  }
 `;
 
 export const PanelWidget = styled.article`

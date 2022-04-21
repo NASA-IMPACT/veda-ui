@@ -27,7 +27,6 @@ const PageHeroSelf = styled.div`
   background: ${themeVal('color.primary')};
   color: ${themeVal('color.surface')};
   min-height: 12rem;
-  box-shadow: inset 0 1px 0 0 ${themeVal('color.surface-100a')};
   animation: ${reveal} 0.32s ease 0s 1;
 
   ${({ isCover }) =>
