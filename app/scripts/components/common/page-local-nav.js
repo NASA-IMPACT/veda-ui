@@ -18,6 +18,7 @@ import {
 import { reveal } from '@devseed-ui/animation';
 import { Overline } from '@devseed-ui/typography';
 import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
+import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
 import { variableGlsp } from '$styles/variable-utils';
 import {
@@ -32,7 +33,8 @@ const PageLocalNavSelf = styled.nav`
   z-index: 100;
   display: flex;
   flex-flow: row nowrap;
-  align-items: end;
+  /* align-items: end; */
+  align-items: stretch;
   justify-content: space-between;
   gap: ${variableGlsp()};
   padding: ${variableGlsp(0.5, 1)};
@@ -59,14 +61,49 @@ const LocalBreadcrumb = styled.ol`
   }
 `;
 
+const NavBlock = styled(ShadowScrollbar).attrs({
+  leftShadowVariation: 'dark',
+  rightShadowVariation: 'dark'
+})`
+  display: flex;
+  align-items: center;
+  flex-flow: row nowrap;
+  flex-basis: 12rem;
+
+  ${media.smallUp`
+    flex-grow: 1;
+  `}
+
+  .shadow-left {
+    background: linear-gradient(
+      to left,
+      ${themeVal('color.primary')}00 0%,
+      ${themeVal('color.primary')} 100%
+    );
+  }
+
+  .shadow-right {
+    background: linear-gradient(
+      to right,
+      ${themeVal('color.primary')}00 0%,
+      ${themeVal('color.primary')} 100%
+    );
+  }
+
+  .scroll-area > div {
+    ${media.smallUp`
+      display: flex;
+      justify-content: flex-end;
+    `}
+  }
+`;
+
 const LocalMenu = styled.ul`
   ${listReset()}
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   gap: ${glsp()};
-  max-width: 1/3vw;
-  overflow: auto;
 
   a,
   a:visited {
@@ -219,23 +256,25 @@ export function DatasetsLocalMenu(props) {
   const { thematic, dataset } = props;
 
   return (
-    <LocalMenu>
-      <li>
-        <LocalMenuLink to={datasetOverviewPath(thematic, dataset)} end>
-          Overview
-        </LocalMenuLink>
-      </li>
-      <li>
-        <LocalMenuLink to={datasetExplorePath(thematic, dataset)} end>
-          Exploration
-        </LocalMenuLink>
-      </li>
-      <li>
-        <LocalMenuLink to={datasetUsagePath(thematic, dataset)} end>
-          Usage
-        </LocalMenuLink>
-      </li>
-    </LocalMenu>
+    <NavBlock>
+      <LocalMenu>
+        <li>
+          <LocalMenuLink to={datasetOverviewPath(thematic, dataset)} end>
+            Overview
+          </LocalMenuLink>
+        </li>
+        <li>
+          <LocalMenuLink to={datasetExplorePath(thematic, dataset)} end>
+            Exploration
+          </LocalMenuLink>
+        </li>
+        <li>
+          <LocalMenuLink to={datasetUsagePath(thematic, dataset)} end>
+            Usage
+          </LocalMenuLink>
+        </li>
+      </LocalMenu>
+    </NavBlock>
   );
 }
 
