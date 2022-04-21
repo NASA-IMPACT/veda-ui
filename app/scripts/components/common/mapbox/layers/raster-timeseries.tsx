@@ -183,6 +183,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         changeStatus?.({ status: 'loading', context: 'zoom-markers' });
 
         const payload = {
+          "filter-lang": "cql2-json",
           filter: getFilterPayload(userTzDate2utcString(date), layerId),
           limit: 500,
           fields: {
@@ -290,6 +291,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       changeStatus?.({ status: 'loading', context: 'layer' });
       try {
         const payload = {
+          "filter-lang": "cql2-json",
           filter: getFilterPayload(userTzDate2utcString(date), layerId)
         };
 
@@ -326,14 +328,15 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             'color: green;',
             id
           );
-        LOG && console.log('Url', responseData.tiles);
+        // links[0] : metadata , links[1]: tile
+        LOG && console.log('Url', responseData.links[1].href);
         LOG && console.log('STAC response', responseData);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
         mapInstance.addSource(id, {
           type: 'raster',
-          url: `${responseData.tiles}?${tileParams}`
+          url: `${responseData.links[1].href}?${tileParams}`
         });
 
         mapInstance.addLayer(
