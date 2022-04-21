@@ -8,7 +8,8 @@ import { ContentLoading } from '$components/common/loading-skeleton';
 import Block from '$components/common/blocks';
 import ContentBlockFigure from '$components/common/blocks/figure';
 import { ContentBlockProse } from '$styles/content-block';
-import Chart, { chartHeight } from '$components/common/blocks/chart';
+import Chart from '$components/common/blocks/chart';
+import { chartHeight } from '$components/common/blocks/chart/line';
 
 import Image, { Caption } from '$components/common/blocks/images';
 import Map, { mapHeight } from '$components/common/blocks/block-map';
