@@ -33,7 +33,6 @@ const PageLocalNavSelf = styled.nav`
   z-index: 100;
   display: flex;
   flex-flow: row nowrap;
-  /* align-items: end; */
   align-items: stretch;
   justify-content: space-between;
   gap: ${variableGlsp()};
@@ -61,10 +60,7 @@ const LocalBreadcrumb = styled.ol`
   }
 `;
 
-const NavBlock = styled(ShadowScrollbar).attrs({
-  leftShadowVariation: 'dark',
-  rightShadowVariation: 'dark'
-})`
+const NavBlock = styled(ShadowScrollbar)`
   display: flex;
   align-items: center;
   flex-flow: row nowrap;
