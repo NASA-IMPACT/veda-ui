@@ -61,7 +61,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     isComparing,
     cooperativeGestures,
     onPositionChange,
-    initialPosition
+    initialPosition,
+    withGeocoder
   } = props;
   /* eslint-enable react/prop-types */
 
@@ -240,6 +241,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             ...getMapPositionOptions(initialPosition),
             cooperativeGestures
           }}
+          withGeocoder={withGeocoder}
         />
         {shouldRenderCompare && (
           <SimpleMap
@@ -253,6 +255,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
               center: mapRef.current?.getCenter(),
               zoom: mapRef.current?.getZoom()
             }}
+            withGeocoder={withGeocoder}
           />
         )}
       </MapsContainer>
@@ -281,6 +284,7 @@ interface MapboxMapProps {
       userInitiated: boolean;
     }
   ) => void;
+  withGeocoder?: boolean;
   children?: React.ReactNode;
 }
 
