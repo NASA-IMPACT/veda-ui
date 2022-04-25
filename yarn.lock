@@ -8973,6 +8973,11 @@ react-calendar@^3.3.0:
     merge-class-names "^1.1.1"
     prop-types "^15.6.0"
 
+react-compare-image@^3.1.0:
+  version "3.1.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-compare-image/-/react-compare-image-3.1.0.tgz#effa6dda23fed0700d41f71b5158f75208b61aa7"
+  integrity sha512-47ISXkAx9KXA0rjgbQvaFK5AVbxVwP1XjTQEgsmMDN8bWpONVg/IoYmelRBdMs9gQICQCIw1se/cLENEBwHWlQ==
+
 react-cool-dimensions@^2.0.7:
   version "2.0.7"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-cool-dimensions/-/react-cool-dimensions-2.0.7.tgz#2fe6657608f034cd7c89f149ed14e79cf1cb2d50"

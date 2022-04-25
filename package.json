@@ -113,6 +113,7 @@
     "qs": "^6.10.3",
     "qs-state-hook": "^1.1.0",
     "react": "^17.0.2",
+    "react-compare-image": "^3.1.0",
     "react-cool-dimensions": "^2.0.7",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
