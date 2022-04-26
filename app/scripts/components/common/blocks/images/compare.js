@@ -27,30 +27,35 @@ export const MediaCompare = styled.figure`
   }
 `;
 
-function CompareImage({ leftImage, rightImage }) {
+function CompareImage({
+  leftImageSrc,
+  leftImageAlt,
+  leftImageLabel,
+  rightImageSrc,
+  rightImageAlt,
+  rightImageLabel
+}) {
   return (
     <MediaCompare>
       <ReactCompareImage
-        leftImage={leftImage.src}
-        leftImageAlt={leftImage.alt}
-        leftImageLabel={leftImage.label}
-        rightImage={rightImage.src}
-        rightImageAlt={rightImage.alt}
-        rightImageLabel={rightImage.label}
+        leftImage={leftImageSrc}
+        leftImageAlt={leftImageAlt}
+        leftImageLabel={leftImageLabel}
+        rightImage={rightImageSrc}
+        rightImageAlt={rightImageAlt}
+        rightImageLabel={rightImageLabel}
       />
     </MediaCompare>
   );
 }
 
-const ImageToCompareShape = {
-  src: T.string.isRequired,
-  alt: T.string.isRequired,
-  label: T.string
-};
-
 CompareImage.propTypes = {
-  leftImage: T.shape(ImageToCompareShape),
-  rightImage: T.shape(ImageToCompareShape)
+  leftImage: T.string.isRequired,
+  leftImageAlt: T.string.isRequired,
+  leftImageLabel: T.string,
+  rightImage: T.string.isRequired,
+  rightImageAlt: T.string.isRequired,
+  rightImageLabel: T.string
 };
 
 export default CompareImage;
