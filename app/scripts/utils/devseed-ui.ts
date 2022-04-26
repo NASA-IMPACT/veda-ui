@@ -7,6 +7,11 @@ import {
   media as _media,
   multiply as _multiply
 } from '@devseed-ui/theme-provider';
+import {
+  Toolbar as _Toolbar,
+  ToolbarIconButton as _ToolbarIconButton
+} from '@devseed-ui/toolbar';
+import { ButtonProps } from '@devseed-ui/button';
 
 type themeValReturn = (props: {
   theme: { [key: string]: string | number };
@@ -23,3 +28,17 @@ export const multiply = _multiply as <
   a: T,
   b: number | string
 ) => number | string;
+
+
+interface ToolbarProps {
+  /**
+   * Size property to pass to contextual enabled elements, namely
+   * ToolbarButton and ToolbarIconButton.
+   * @default medium
+   */
+  size?: ButtonProps['size'];
+}
+
+
+export const Toolbar = _Toolbar as unknown as React.FC<ToolbarProps>;
+export const ToolbarIconButton = _ToolbarIconButton as unknown as React.FC<Omit<ButtonProps, 'fitting'>>;

@@ -14,6 +14,7 @@ import {
 import { VarProse } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
 import {
+  WidgetItemBodyInner,
   WidgetItemHeader,
   WidgetItemHeadline,
   WidgetItemHGroup
@@ -74,21 +75,6 @@ const LayerTitle = styled(Heading).attrs({ as: 'h4', size: 'xsmall' })`
   }
 `;
 
-const LayerBodyInner = styled(VarProse)`
-  position: relative;
-  z-index: 8;
-  box-shadow: inset 0 1px 0 0 ${themeVal('color.base-100a')};
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  padding: ${variableGlsp(0.5, 1)};
-  background: ${themeVal('color.base-50a')};
-
-  /* stylelint-disable-next-line no-descending-specificity */
-  > * {
-    margin-bottom: ${glsp(0.75)};
-  }
-`;
-
 export function Layer(props) {
   const { id, name, info, active, onToggleClick } = props;
 
@@ -133,9 +119,9 @@ export function Layer(props) {
           </WidgetItemHeader>
         )}
         renderBody={() => (
-          <LayerBodyInner>
+          <WidgetItemBodyInner>
             {info || <p>No info available for this layer.</p>}
-          </LayerBodyInner>
+          </WidgetItemBodyInner>
         )}
       />
     </ElementInteractive>

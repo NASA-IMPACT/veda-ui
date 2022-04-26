@@ -217,7 +217,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       */}
       {baseLayerResolvedData?.legend && (
         <LayerLegend
+          id={`base-${baseLayerResolvedData.id}`}
           title={baseLayerResolvedData.name}
+          description={baseLayerResolvedData.description}
           {...baseLayerResolvedData.legend}
         />
       )}
