@@ -449,6 +449,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
           <Carto>
             <MapboxMap
               ref={mapboxRef}
+              withGeocoder
               datasetId={dataset.data.id}
               layerId={activeLayer?.baseLayer.data?.id}
               date={selectedDatetime}

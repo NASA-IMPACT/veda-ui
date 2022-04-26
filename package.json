@@ -93,6 +93,7 @@
     "@devseed-ui/theme-provider": "^4.0.0",
     "@devseed-ui/toolbar": "^4.0.2",
     "@devseed-ui/typography": "^4.0.0",
+    "@mapbox/mapbox-gl-geocoder": "^5.0.0",
     "@nivo/core": "^0.79.0",
     "@nivo/line": "^0.79.1",
     "@tippyjs/react": "^4.2.6",

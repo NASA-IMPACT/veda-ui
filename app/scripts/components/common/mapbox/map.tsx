@@ -2,6 +2,7 @@ import React, { useEffect, RefObject, MutableRefObject } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 import mapboxgl from 'mapbox-gl';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { round } from '$utils/format';
 
@@ -16,6 +17,7 @@ const SingleMapContainer = styled.div`
   }
   ${MapboxStyleOverride}
 `;
+
 interface SimpleMapProps {
   [key: string]: unknown;
   mapRef: MutableRefObject<mapboxgl.Map | null>;
@@ -24,6 +26,7 @@ interface SimpleMapProps {
   onMoveEnd?(e: mapboxgl.EventData): void;
   onUnmount?: () => void;
   mapOptions: Partial<Omit<mapboxgl.MapboxOptions, 'container'>>;
+  withGeocoder?: boolean;
 }
 
 export function SimpleMap(props: SimpleMapProps): JSX.Element {
@@ -34,6 +37,7 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     onMoveEnd,
     onUnmount,
     mapOptions,
+    withGeocoder,
     ...rest
   } = props;
 
@@ -50,6 +54,23 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
 
     // Include attribution.
     mbMap.addControl(new mapboxgl.AttributionControl(), 'bottom-left');
+
+    // Add Geocoder control
+    if (withGeocoder) {
+      const geocoderControl = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        marker: false,
+        collapsed: true
+      }) as MapboxGeocoder & { _inputEl: HTMLInputElement };
+
+      // Close the geocoder when the result is selected.
+      geocoderControl.on('result', () => {
+        geocoderControl.clear();
+        geocoderControl._inputEl.blur();
+      });
+
+      mbMap.addControl(geocoderControl, 'top-left');
+    }
 
     // Add zoom controls without compass.
     if (mapOptions?.interactive !== false) {
