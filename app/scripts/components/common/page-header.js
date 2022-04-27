@@ -347,6 +347,7 @@ const GlobalMenuLink = styled(NavLink)`
 `;
 
 const ThemeToggle = styled(GlobalMenuLink)`
+  /* stylelint-disable-next-line no-descending-specificity */
   > span {
     ${truncated()}
     max-width: 8rem;

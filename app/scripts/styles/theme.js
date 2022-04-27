@@ -42,6 +42,7 @@ export default function themeOverrides() {
  * Print values for all variables across media queries.
  */
 export const GlobalStyles = createGlobalStyle`
+  /* stylelint-disable-next-line selector-type-no-unknown */
   ${reactTippyStyles()}
 
   :root {

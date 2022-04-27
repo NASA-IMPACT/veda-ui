@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ReactCompareImage from 'react-compare-image';
 import T from 'prop-types';
 
-import { glsp, themeVal, media } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 export const MediaCompare = styled.figure`
   /* Style for plugin (react compare image) */
