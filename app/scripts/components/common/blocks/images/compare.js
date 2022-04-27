@@ -50,10 +50,10 @@ function CompareImage({
 }
 
 CompareImage.propTypes = {
-  leftImage: T.string.isRequired,
+  leftImageSrc: T.string.isRequired,
   leftImageAlt: T.string.isRequired,
   leftImageLabel: T.string,
-  rightImage: T.string.isRequired,
+  rightImageSrc: T.string.isRequired,
   rightImageAlt: T.string.isRequired,
   rightImageLabel: T.string
 };
