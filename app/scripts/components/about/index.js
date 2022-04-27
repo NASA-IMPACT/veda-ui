@@ -12,10 +12,13 @@ function About() {
   const thematic = useThematicArea();
 
   if (!thematic) throw resourceNotFound();
-
+  console.log(thematic.data);
   return (
     <PageMainContent>
-      <LayoutProps title={`About ${thematic.data.name}`} />
+      <LayoutProps
+        title={`About ${thematic.data.name}`}
+        description={thematic.data.description}
+      />
       <PageHero
         title={thematic.data.about?.title || 'n/a'}
         description={thematic.data.about?.description}

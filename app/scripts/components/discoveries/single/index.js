@@ -20,7 +20,10 @@ function DiscoveriesSingle() {
 
   return (
     <>
-      <LayoutProps title={discovery.data.name} />
+      <LayoutProps
+        title={discovery.data.name}
+        description={discovery.data.description}
+      />
       <PageLocalNav
         parentName='Discovery'
         parentLabel='Discoveries'
