@@ -22,7 +22,10 @@ function DatasetsOverview() {
 
   return (
     <>
-      <LayoutProps title={`${dataset.data.name} Overview`} />
+      <LayoutProps
+        title={`${dataset.data.name} Overview`}
+        description={dataset.data.description}
+      />
       <PageLocalNav
         parentName='Dataset'
         parentLabel='Datasets'

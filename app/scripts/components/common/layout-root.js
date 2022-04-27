@@ -29,7 +29,7 @@ const PageBody = styled.div`
 function LayoutRoot(props) {
   const { children } = props;
   const { title, description, hideFooter } = useContext(LayoutRootContext);
-  console.log(description);
+
   const thematic = useThematicArea();
 
   const truncatedTitle =
@@ -41,7 +41,7 @@ function LayoutRoot(props) {
     <Page>
       <MetaTags
         title={`${fullTitle}${appTitle}${thematicTitle}`}
-        description={description}
+        description={description ? description : appDescription}
       />
       <PageHeader />
       <PageBody>
