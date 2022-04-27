@@ -11,11 +11,29 @@
       layerId='no2-monthly'
       dateTime='2018-03-01'
       isComparing={true}
+      compareLabel='Overriding label'
     />
     <Caption
       attrAuthor='somebody'
       attrUrl='https://developmentseed.org'
+    >
+      Comparing dates set via the configuration function
+    </Caption>
+  </Figure>
+</Block>
+
+<Block type='wide'>
+  <Figure>
+    <Map
+      datasetId='sandbox'
+      layerId='no2-monthly'
+      dateTime='2020-03-01'
+      compareDateTime='2018-03-01'
+      isComparing={true}
     />
+    <Caption>
+      Comparing dates set manually
+    </Caption>
   </Figure>
 </Block>
 
@@ -57,6 +75,12 @@
   </Prose>
 </Block>
 
+
+<Block>
+  <Figure>
+    <Map />
+  </Figure>
+</Block>
 
 <Block>
   <Prose>

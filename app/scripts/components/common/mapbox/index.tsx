@@ -16,12 +16,11 @@ import * as dateFns from 'date-fns';
 import { ActionStatus, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { useDatasetAsyncLayer } from '$context/layer-data';
-import {
-  MapLoading
-} from '$components/common/loading-skeleton';
+import { MapLoading } from '$components/common/loading-skeleton';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
+import { DatasetDatumFnResolverBag } from 'delta/thematics';
 
 const MapsContainer = styled.div`
   position: relative;
@@ -58,6 +57,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     datasetId,
     layerId,
     date,
+    compareDate,
+    compareLabel,
     isComparing,
     cooperativeGestures,
     onPositionChange,
@@ -121,7 +122,10 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   // Some properties defined in the dataset layer config may be functions that
   // need to be resolved before rendering them. These functions accept data to
   // return the correct value.
-  const resolverBag = useMemo(() => ({ datetime: date, dateFns }), [date]);
+  const resolverBag = useMemo<DatasetDatumFnResolverBag>(
+    () => ({ datetime: date, userCompareDatetime: compareDate, dateFns }),
+    [date, compareDate]
+  );
 
   // Resolve data needed for the base layer once the layer is loaded
   const [baseLayerResolvedData, BaseLayerComponent] = useMemo(() => {
@@ -146,6 +150,15 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
     return [data, getLayerComponent(!!data.timeseries, data.type)];
   }, [compareLayer, resolverBag]);
+
+  // Get the compare to date.
+  // If a compare date is specified use the given one, otherwise use the result
+  // from the resolved config function.
+  // A custom date may be specified in the MDX map block.
+  const compareToDate = useMemo(
+    () => compareDate || compareLayerResolvedData?.datetime,
+    [compareLayerResolvedData?.datetime, compareDate]
+  );
 
   return (
     <>
@@ -181,7 +194,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             id={`compare-${compareLayerResolvedData.id}`}
             layerId={compareLayerResolvedData.id}
             mapInstance={mapCompareRef.current}
-            date={compareLayerResolvedData.datetime}
+            date={compareToDate}
             sourceParams={compareLayerResolvedData.sourceParams}
             onStatusChange={onCompareLayerStatusChange}
           />
@@ -203,12 +216,13 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         Map overlay element
         Message shown when the map is in compare mode to indicate what's
         being compared.
+        If the user provided an override value (compareLabel), use that.
       */}
       <MapMessage
         id='compare-message'
         active={!!(shouldRenderCompare && compareLayerResolvedData)}
       >
-        {compareLayerResolvedData?.mapLabel}
+        {compareLabel || compareLayerResolvedData?.mapLabel}
       </MapMessage>
 
       {/*
@@ -279,6 +293,7 @@ export interface MapboxMapProps {
   layerId: string;
   date?: Date;
   compareDate?: Date;
+  compareLabel?: string;
   isComparing?: boolean;
   cooperativeGestures?: boolean;
   initialPosition?: Partial<MapPosition>;
@@ -293,10 +308,11 @@ export interface MapboxMapProps {
 
 type MapboxMapRef = {
   resize: () => void;
-}
+};
 
-const MapboxMapComponentFwd =
-  React.forwardRef<MapboxMapRef, MapboxMapProps>(MapboxMapComponent);
+const MapboxMapComponentFwd = React.forwardRef<MapboxMapRef, MapboxMapProps>(
+  MapboxMapComponent
+);
 
 /**
  * Mapbox map component
