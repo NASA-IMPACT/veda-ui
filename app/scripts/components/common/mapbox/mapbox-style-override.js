@@ -63,6 +63,7 @@ const MapboxStyleOverride = css`
     }
   }
 
+  /* stylelint-disable no-descending-specificity */
   .mapboxgl-ctrl-logo,
   .mapboxgl-ctrl-attrib-inner {
     margin: 0;
@@ -73,6 +74,7 @@ const MapboxStyleOverride = css`
       opacity: 1;
     }
   }
+  /* stylelint-enable no-descending-specificity */
 
   .mapboxgl-ctrl-bottom-left {
     flex-direction: row;
@@ -101,6 +103,10 @@ const MapboxStyleOverride = css`
         width: 1rem;
         height: 1rem;
       }
+    }
+
+    > button + button {
+      margin-top: -${themeVal('button.shape.border')};
     }
 
     > button:first-child:not(:last-child) {
@@ -134,9 +140,6 @@ const MapboxStyleOverride = css`
       &::after {
         clip-path: inset(0 -100%);
       }
-    }
-    > button + button {
-      margin-top: -${themeVal('button.shape.border')};
     }
   }
 
