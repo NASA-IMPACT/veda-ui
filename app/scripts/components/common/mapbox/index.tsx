@@ -271,16 +271,17 @@ type MapPosition = {
   zoom: number;
 };
 
-interface MapboxMapProps {
+export interface MapboxMapProps {
   as?: any;
-  className: string;
+  className?: string;
   id: string;
   datasetId: string;
   layerId: string;
   date?: Date;
+  compareDate?: Date;
   isComparing?: boolean;
   cooperativeGestures?: boolean;
-  initialPosition?: MapPosition;
+  initialPosition?: Partial<MapPosition>;
   onPositionChange?: (
     result: MapPosition & {
       userInitiated: boolean;
@@ -290,8 +291,12 @@ interface MapboxMapProps {
   children?: React.ReactNode;
 }
 
+type MapboxMapRef = {
+  resize: () => void;
+}
+
 const MapboxMapComponentFwd =
-  React.forwardRef<MapboxMapProps>(MapboxMapComponent);
+  React.forwardRef<MapboxMapRef, MapboxMapProps>(MapboxMapComponent);
 
 /**
  * Mapbox map component
