@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 
@@ -25,7 +25,8 @@ const lngValidator = validateRangeNum(-180, 180);
 const latValidator = validateRangeNum(-90, 90);
 
 function MapBlock({ datasetId, dateTime, layerId, isComparing, center, zoom }) {
-  const mapboxRef = useRef(null);
+  const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
+
   if (!isValidDate(dateTime)) {
     throw Error(
       'Date format is wrong. Did you pass the right date in yyyy-mm-dd format? '
@@ -44,8 +45,7 @@ function MapBlock({ datasetId, dateTime, layerId, isComparing, center, zoom }) {
   return (
     <Carto>
       <MapboxMap
-        ref={mapboxRef}
-        id={`map-${mapInstanceId++}`}
+        id={generatedId}
         datasetId={datasetId}
         layerId={layerId}
         date={selectedDatetime}
