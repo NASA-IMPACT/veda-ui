@@ -23,6 +23,7 @@ function DiscoveriesSingle() {
       <LayoutProps
         title={discovery.data.name}
         description={discovery.data.description}
+        thumbnail={media?.src}
       />
       <PageLocalNav
         parentName='Discovery'

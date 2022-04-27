@@ -12,7 +12,7 @@ function About() {
   const thematic = useThematicArea();
 
   if (!thematic) throw resourceNotFound();
-  console.log(thematic.data);
+
   return (
     <PageMainContent>
       <LayoutProps

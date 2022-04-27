@@ -25,6 +25,7 @@ function DatasetsOverview() {
       <LayoutProps
         title={`${dataset.data.name} Overview`}
         description={dataset.data.description}
+        thumbnail={dataset.data.media?.src}
       />
       <PageLocalNav
         parentName='Dataset'

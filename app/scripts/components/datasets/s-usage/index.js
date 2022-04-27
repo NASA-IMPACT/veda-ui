@@ -23,6 +23,7 @@ function DatasetsUsage() {
       <LayoutProps
         title={`${dataset.data.name} Usage`}
         description={dataset.data.description}
+        thumbnail={dataset.data.media?.src}
       />
       <PageLocalNav
         parentName='Dataset'

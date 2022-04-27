@@ -335,6 +335,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
       <LayoutProps
         title={`${dataset.data.name} Exploration`}
         description={dataset.data.description}
+        thumbnail={dataset.data.media?.src}
         hideFooter
       />
       <PageLocalNav
