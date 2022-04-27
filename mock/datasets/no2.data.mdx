@@ -93,9 +93,13 @@ layers:
 
 <Block type='full'>
   <Figure>
-    <Image
-    src='https://via.placeholder.com/960x640'
-    alt=' NO2 levels fell by as much as 30% over much of the Northeast U.S'
+    <CompareImage
+      leftImageSrc={new URL('./east_coast_mar_avg.jpg', import.meta.url).href}
+      leftImageAlt='NO2 over Northeast U.S. with wider area with higher NO2 level'
+      leftImageLabel='March 2015-2019 Avg.'
+      rightImageSrc={new URL('./east_coast_mar_20.jpg', import.meta.url).href}
+      rightImageAlt='NO2 over Northeast U.S. with smaller area with lower NO2 level'
+      rightImageLabel='March 2020'
     />
     <Caption 
       attrAuthor='NASA Scientific Visualization Studio' 
