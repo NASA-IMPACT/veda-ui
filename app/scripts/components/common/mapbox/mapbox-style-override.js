@@ -15,17 +15,6 @@ import { variableGlsp } from '$styles/variable-utils';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 const MapboxStyleOverride = css`
-  .mapboxgl-ctrl-logo,
-  .mapboxgl-ctrl-attrib-inner {
-    margin: 0;
-    opacity: 0.48;
-    transition: all 0.24s ease-in-out 0s;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
   .mapboxgl-control-container {
     position: absolute;
     inset: ${variableGlsp()};
@@ -73,6 +62,19 @@ const MapboxStyleOverride = css`
       }
     }
   }
+
+  /* stylelint-disable no-descending-specificity */
+  .mapboxgl-ctrl-logo,
+  .mapboxgl-ctrl-attrib-inner {
+    margin: 0;
+    opacity: 0.48;
+    transition: all 0.24s ease-in-out 0s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+  /* stylelint-enable no-descending-specificity */
 
   .mapboxgl-ctrl-bottom-left {
     flex-direction: row;
