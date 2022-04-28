@@ -10,6 +10,7 @@ import { Overline } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { variableGlsp } from './variable-utils';
+import { VarProse } from './variable-components';
 
 const panelWidth = {
   xsmall: '20rem',
@@ -151,4 +152,19 @@ export const WidgetItemHGroup = styled.div`
   flex-flow: row nowrap;
   gap: ${glsp(0.5)};
   justify-content: space-between;
+`;
+
+export const WidgetItemBodyInner = styled(VarProse)`
+  position: relative;
+  z-index: 8;
+  box-shadow: inset 0 1px 0 0 ${themeVal('color.base-100a')};
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  padding: ${variableGlsp(0.5, 1)};
+  background: ${themeVal('color.base-50a')};
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  > * {
+    margin-bottom: ${glsp(0.75)};
+  }
 `;

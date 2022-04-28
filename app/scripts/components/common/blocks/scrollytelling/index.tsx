@@ -238,7 +238,7 @@ const mapOptions = {
   style: process.env.MAPBOX_STYLE_URL,
   interactive: false,
   trackResize: true,
-  center: [0, 0],
+  center: [0, 0] as [number, number],
   zoom: 1
 };
 
@@ -379,6 +379,8 @@ function Scrollytelling(props) {
               classNames='reveal'
             >
               <LayerLegend
+                id={`base-${activeChapterLayer.layer.id}`}
+                description={activeChapterLayer.layer.description}
                 title={activeChapterLayer.layer.name}
                 {...activeChapterLayer.layer.legend}
               />

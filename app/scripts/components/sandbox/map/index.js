@@ -11,6 +11,7 @@ const DemoMap = styled(MapboxMap)`
 `;
 
 const Wrapper = styled.div`
+  position: relative;
   grid-column: 1 / -1;
 `;
 

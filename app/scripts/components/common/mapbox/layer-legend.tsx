@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LayerLegendCategorical, LayerLegendGradient } from 'delta/thematics';
+import { AccordionFold, AccordionManager } from '@devseed-ui/accordion';
 
 import { formatThousands } from '$utils/format';
 import {
@@ -10,11 +11,22 @@ import {
   visuallyHidden
 } from '@devseed-ui/theme-provider';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
+import {
+  WidgetItemBodyInner,
+  WidgetItemHeader,
+  WidgetItemHeadline,
+  WidgetItemHGroup
+} from '$styles/panel';
 
 import { Tip } from '../tip';
+import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
+import { Toolbar, ToolbarIconButton } from '$utils/devseed-ui';
+import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
 type LayerLegendCommonProps = {
+  id: string;
   title: string;
+  description: string;
 };
 
 type LegendSwatchProps = {
@@ -38,8 +50,6 @@ const LayerLegendSelf = styled.div`
   right: ${variableGlsp()};
   display: flex;
   flex-flow: column nowrap;
-  gap: ${glsp(0.5)};
-  padding: ${variableGlsp(0.5, 0.75)};
   border-radius: ${themeVal('shape.rounded')};
   box-shadow: ${themeVal('boxShadow.elevationB')};
   background-color: ${themeVal('color.surface')};
@@ -63,7 +73,11 @@ const LayerLegendSelf = styled.div`
   }
   &.reveal-enter-active,
   &.reveal-exit-active {
-    transition: bottom 240ms ease-in-out, opacity 240ms ease-in-out ;
+    transition: bottom 240ms ease-in-out, opacity 240ms ease-in-out;
+  }
+
+  ${WidgetItemHeader} {
+    padding: ${variableGlsp(0.5, 0.75)};
   }
 `;
 
@@ -131,65 +145,131 @@ const LayerLegendTitle = styled.h3`
   line-height: ${variableBaseType('1rem')};
 `;
 
+const LegendBody = styled(WidgetItemBodyInner)`
+  padding: 0;
+
+  .scroll-inner {
+    padding: ${variableGlsp(0.5, 1)};
+  }
+
+  .shadow-bottom {
+    border-radius: ${themeVal('shape.rounded')};
+  }
+`;
+
 function LayerLegend(
   props: LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical)
 ) {
-  const { title, type, stops } = props;
+  const { id, type, title, description } = props;
 
-  // The categorical legend uses stops differently than the others.
-  if (type === 'categorical') {
-    return (
-      <LayerLegendSelf>
-        <LayerLegendTitle>{title}</LayerLegendTitle>
-        <LegendList>
-          {stops.map((stop) => (
-            <React.Fragment key={stop.color}>
-              <dt>
-                <Tip content={stop.label}>
-                  <LegendSwatch stops={stop.color} hasHelp>
-                    {stop.color}
-                  </LegendSwatch>
-                </Tip>
-              </dt>
-              <dd>
-                {/*
-                    The 2 spans are needed so that the text can be correctly
-                    truncated. The dd element is part of a grid and has an
-                    implicit width. The first span overflows the dd, setting
-                    the final width and the second span truncates the text.
-                  */}
-                <span>
-                  <span>{stop.label}</span>
-                </span>
-              </dd>
-            </React.Fragment>
-          ))}
-        </LegendList>
-      </LayerLegendSelf>
-    );
-  } else if (type === 'gradient') {
-    const { min, max } = props;
-
-    return (
-      <LayerLegendSelf>
-        <LayerLegendTitle>{title}</LayerLegendTitle>
-        <LegendList>
-          <dt>
-            <LegendSwatch stops={stops}>
-              {stops[0]} to {stops[stops.length - 1]}
-            </LegendSwatch>
-          </dt>
-          <dd>
-            <span>{printLegendVal(min)}</span>
-            <i> – </i>
-            <span>{printLegendVal(max)}</span>
-          </dd>
-        </LegendList>
-      </LayerLegendSelf>
-    );
-  }
-
-  return null;
+  return (
+    <AccordionManager>
+      <AccordionFold
+        id={id}
+        forwardedAs={LayerLegendSelf}
+        renderHeader={({ isExpanded, toggleExpanded }) => (
+          <WidgetItemHeader>
+            <WidgetItemHGroup>
+              <WidgetItemHeadline>
+                <LayerLegendTitle>{title}</LayerLegendTitle>
+                {/* <Subtitle as='p'>Subtitle</Subtitle> */}
+              </WidgetItemHeadline>
+              <Toolbar size='small'>
+                <ToolbarIconButton
+                  variation='base-text'
+                  active={isExpanded}
+                  onClick={toggleExpanded}
+                >
+                  <CollecticonCircleInformation
+                    title='Information about layer'
+                    meaningful
+                  />
+                </ToolbarIconButton>
+              </Toolbar>
+            </WidgetItemHGroup>
+            {type === 'categorical' && (
+              <LayerCategoricalGraphic type='categorical' stops={props.stops} />
+            )}
+            {type === 'gradient' && (
+              <LayerGradientGraphic
+                type='gradient'
+                stops={props.stops}
+                min={props.min}
+                max={props.max}
+              />
+            )}
+          </WidgetItemHeader>
+        )}
+        renderBody={() => (
+          <LegendBody>
+            <ShadowScrollbar
+              scrollbarsProps={{
+                autoHeight: true,
+                autoHeightMin: 32,
+                autoHeightMax: 240
+              }}
+            >
+              <div className='scroll-inner'>
+                {description || (
+                  <p>No info available for this layer.</p>
+                )}
+              </div>
+            </ShadowScrollbar>
+          </LegendBody>
+        )}
+      />
+    </AccordionManager>
+  );
 }
 
 export default LayerLegend;
+
+function LayerCategoricalGraphic(props: LayerLegendCategorical) {
+  const { stops } = props;
+
+  return (
+    <LegendList>
+      {stops.map((stop) => (
+        <React.Fragment key={stop.color}>
+          <dt>
+            <Tip content={stop.label}>
+              <LegendSwatch stops={stop.color} hasHelp>
+                {stop.color}
+              </LegendSwatch>
+            </Tip>
+          </dt>
+          <dd>
+            {/*
+                The 2 spans are needed so that the text can be correctly
+                truncated. The dd element is part of a grid and has an
+                implicit width. The first span overflows the dd, setting
+                the final width and the second span truncates the text.
+              */}
+            <span>
+              <span>{stop.label}</span>
+            </span>
+          </dd>
+        </React.Fragment>
+      ))}
+    </LegendList>
+  );
+}
+
+function LayerGradientGraphic(props: LayerLegendGradient) {
+  const { stops, min, max } = props;
+
+  return (
+    <LegendList>
+      <dt>
+        <LegendSwatch stops={stops}>
+          {stops[0]} to {stops[stops.length - 1]}
+        </LegendSwatch>
+      </dt>
+      <dd>
+        <span>{printLegendVal(min)}</span>
+        <i> – </i>
+        <span>{printLegendVal(max)}</span>
+      </dd>
+    </LegendList>
+  );
+}
