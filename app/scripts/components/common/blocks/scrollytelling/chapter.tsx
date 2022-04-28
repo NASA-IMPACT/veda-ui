@@ -72,7 +72,7 @@ export function validateChapter(chapter: ChapterProps, index) {
   const missingMapProps = mapProperties.filter((p) => chapter[p] === undefined);
   
   const missing = [...missingDataProps, ...missingMapProps];
-  console.log(missingDataProps);
+
   const missingError =
     !!missing.length &&
     `- Missing some properties: ${missing.map((p) => `[${p}]`).join(', ')}`;

@@ -3,11 +3,10 @@ import T from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useTheme } from 'styled-components';
 import { useLocation } from 'react-router-dom';
+import defaultMetaImage from '~app/graphics/meta/default-meta-image.png';
 
-/* TO DO: set up PUBLIC_URL in .env */
-const baseUrl = process.env.PUBLIC_URL;
 const appTitle = process.env.APP_TITLE;
-
+const baseUrl = window.location.origin;
 function MetaTags({ title, description, thumbnail, children }) {
   const theme = useTheme();
   const location = useLocation();
@@ -25,12 +24,7 @@ function MetaTags({ title, description, thumbnail, children }) {
       {description ? (
         <meta name='twitter:description' content={description} />
       ) : null}
-      <meta
-        name='twitter:image'
-        content={
-          thumbnail || `${baseUrl}/assets/graphics/meta/default-meta-image.png`
-        }
-      />
+      <meta name='twitter:image' content={thumbnail || defaultMetaImage} />
 
       {/* Open Graph */}
       <meta property='og:type' content='website' />
@@ -40,12 +34,7 @@ function MetaTags({ title, description, thumbnail, children }) {
       />
       <meta property='og:site_name' content={appTitle} />
       <meta property='og:title' content={title} />
-      <meta
-        property='og:image'
-        content={
-          thumbnail || `${baseUrl}/assets/graphics/meta/default-meta-image.png`
-        }
-      />
+      <meta property='og:image' content={thumbnail || defaultMetaImage} />
       {description ? (
         <meta property='og:description' content={description} />
       ) : null}

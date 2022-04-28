@@ -12,9 +12,6 @@ import { useThematicArea } from '../../utils/thematics';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
-const baseUrl = process.env.PUBLIC_URL;
-
-const appDefaultThumbnail = `${baseUrl}/assets/graphics/meta/default-meta-image.png`;
 
 const Page = styled.div`
   display: flex;
@@ -46,7 +43,7 @@ function LayoutRoot(props) {
       <MetaTags
         title={`${fullTitle}${appTitle}${thematicTitle}`}
         description={description || appDescription}
-        thumbnail={thumbnail || appDefaultThumbnail}
+        thumbnail={thumbnail}
       />
       <PageHeader />
       <PageBody>
