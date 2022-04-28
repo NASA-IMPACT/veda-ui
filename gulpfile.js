@@ -88,9 +88,7 @@ function parcelBuild(cb) {
   // Build the app using parcel. Since the build task finishes, we have to
   // listen for it to mark the gulp task as finished.
 
-  // TODO: See that error "@parcel/optimizer-terser: "_" is redeclared" was solved
-  // https://github.com/parcel-bundler/parcel/issues/7101
-  const args = ['--config', parcelConfig, '--no-optimize'];
+  const args = ['--config', parcelConfig];
 
   const pr = spawn('node', [parcelCli, 'build', ...args, ...parcelTarget], {
     stdio: 'inherit'
