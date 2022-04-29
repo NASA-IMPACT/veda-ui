@@ -20,6 +20,7 @@ function DatasetsHub() {
       <PageHero
         title='Datasets'
         description='This dashboard explores key indicators to track and compare changes over time.'
+        thumbnail={thematic.data.media?.src}
       />
       <Fold>
         <FoldHeader>
