@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import T from 'prop-types';
 import styled from 'styled-components';
 
 import { utcString2userTzDate } from '$utils/date';
@@ -132,14 +131,5 @@ function MapBlock(props: MapBlockProps) {
     </Carto>
   );
 }
-
-MapBlock.propTypes = {
-  datasetId: T.string,
-  dateTime: T.string,
-  layerId: T.string,
-  isComparing: T.bool,
-  center: T.arrayOf(T.number),
-  zoom: T.number
-};
 
 export default MapBlock;
