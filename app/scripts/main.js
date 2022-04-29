@@ -6,7 +6,7 @@ import { DevseedUiThemeProvider } from '@devseed-ui/theme-provider';
 import deltaThematics from 'delta/thematics';
 
 import theme, { GlobalStyles } from '$styles/theme';
-import history from '$utils/history';
+import { getAppURL } from '$utils/history';
 import LayoutRoot, {
   LayoutRootContextProvider
 } from '$components/common/layout-root';
@@ -69,7 +69,7 @@ function Root() {
   }, []);
 
   return (
-    <BrowserRouter history={history}>
+    <BrowserRouter basename={getAppURL().pathname}>
       <ScrollTop />
       <DevseedUiThemeProvider theme={theme}>
         <GlobalStyles />

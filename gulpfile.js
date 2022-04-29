@@ -88,7 +88,12 @@ function parcelBuild(cb) {
   // Build the app using parcel. Since the build task finishes, we have to
   // listen for it to mark the gulp task as finished.
 
-  const args = ['--config', parcelConfig];
+  const args = [
+    '--config',
+    parcelConfig,
+    '--public-url',
+    process.env.PUBLIC_URL || '/'
+  ];
 
   const pr = spawn('node', [parcelCli, 'build', ...args, ...parcelTarget], {
     stdio: 'inherit'
