@@ -22,11 +22,9 @@ export const media = _media as unknown as {
   [K in keyof typeof _media]: ThemedCssFunction<DefaultTheme>;
 };
 
-export const multiply = _multiply as <
-  T extends number | string | themeValReturn
->(
-  a: T,
-  b: number | string
+export const multiply = _multiply as (
+  a: number | string | themeValReturn,
+  b: number | string | themeValReturn
 ) => number | string;
 
 
@@ -38,7 +36,6 @@ interface ToolbarProps {
    */
   size?: ButtonProps['size'];
 }
-
 
 export const Toolbar = _Toolbar as unknown as React.FC<ToolbarProps>;
 export const ToolbarIconButton = _ToolbarIconButton as unknown as React.FC<Omit<ButtonProps, 'fitting'>>;

@@ -63,16 +63,15 @@ const latValidator = validateRangeNum(-90, 90);
 export function validateChapter(chapter: ChapterProps, index) {
   const dataProperties = ['layerId', 'datasetId'];
   const mapProperties = ['center', 'zoom'];
-  const showBaseMapProp = 'showBaseMap';
 
   const missingDataProps = dataProperties.filter((p) => {
-    if (chapter[showBaseMapProp]) return false;
-    else chapter[p] === undefined;
-    });
+    // When showBaseMap is set the layer related properties are not needed.
+    return chapter.showBaseMap ? false : chapter[p] === undefined;
+  });
   const missingMapProps = mapProperties.filter((p) => chapter[p] === undefined);
   
   const missing = [...missingDataProps, ...missingMapProps];
-  console.log(missingDataProps);
+
   const missingError =
     !!missing.length &&
     `- Missing some properties: ${missing.map((p) => `[${p}]`).join(', ')}`;

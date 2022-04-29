@@ -38,9 +38,10 @@ layers:
           return dateFns.sub(datetime, { years: 1 });
         }
       mapLabel: |
-        ::js ({ datetime, dateFns }) => {
-          const comparingDate = dateFns.sub(datetime, { years: 1 });
-          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(comparingDate, 'LLL yyyy')}`;
+        ::js (bag) => {
+          const { dateFns } = bag;
+          const comparingDate = bag.userCompareDatetime || bag.raw.datetime(bag);
+          return `${dateFns.format(bag.datetime, 'LLL yyyy')} VS ${dateFns.format(comparingDate, 'LLL yyyy')}`;
         }
     legend:
       type: gradient

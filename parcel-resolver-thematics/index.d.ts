@@ -1,3 +1,5 @@
+import * as dateFns from 'date-fns';
+
 declare module 'delta/thematics' {
   import { MDXModule } from 'mdx/types';
 
@@ -56,7 +58,18 @@ declare module 'delta/thematics' {
 
   // TODO: Complete once known
   export interface DatasetDatumFnResolverBag {
-    [key: string]: any;
+    /* The date selected by the user */
+    datetime?: Date;
+
+    /*
+      The date to use for the comparison if the user defined one.
+      If there's no date defined and the user is comparing, the value used is
+      the one resolved from the compare.datetime function.
+    */
+    userCompareDatetime?: Date;
+
+    /* functions from date-fns package */
+    dateFns: typeof dateFns
   }
 
   export interface LayerLegendGradient {
