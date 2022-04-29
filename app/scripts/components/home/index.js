@@ -117,7 +117,11 @@ function Home() {
 
   return (
     <PageMainContent>
-      <LayoutProps title={thematic.data.name} />
+      <LayoutProps
+        title={thematic.data.name}
+        description={thematic.data.description}
+        thumbnail={thematic.data.media?.src}
+      />
       <PageHero
         title={`Welcome to the ${thematic.data.name} thematic area`}
         renderAlphaBlock={() => (

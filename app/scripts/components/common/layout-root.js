@@ -28,7 +28,9 @@ const PageBody = styled.div`
 
 function LayoutRoot(props) {
   const { children } = props;
-  const { title, hideFooter } = useContext(LayoutRootContext);
+  const { title, thumbnail, description, hideFooter } =
+    useContext(LayoutRootContext);
+
   const thematic = useThematicArea();
 
   const truncatedTitle =
@@ -36,12 +38,12 @@ function LayoutRoot(props) {
 
   const fullTitle = truncatedTitle ? `${truncatedTitle} — ` : '';
   const thematicTitle = thematic ? `: ${thematic.data.name}` : '';
-
   return (
     <Page>
       <MetaTags
         title={`${fullTitle}${appTitle}${thematicTitle}`}
-        description={appDescription}
+        description={description || appDescription}
+        thumbnail={thumbnail}
       />
       <PageHeader />
       <PageBody>

@@ -332,7 +332,12 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
 
   return (
     <>
-      <LayoutProps title={`${dataset.data.name} Exploration`} hideFooter />
+      <LayoutProps
+        title={`${dataset.data.name} Exploration`}
+        description={dataset.data.description}
+        thumbnail={dataset.data.media?.src}
+        hideFooter
+      />
       <PageLocalNav
         parentName='Dataset'
         parentLabel='Datasets'

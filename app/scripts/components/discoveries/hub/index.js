@@ -16,7 +16,11 @@ function DiscoveriesHub() {
 
   return (
     <PageMainContent>
-      <LayoutProps title='Discoveries' />
+      <LayoutProps
+        title='Discoveries'
+        description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
+        thumbnail={thematic.data.media?.src}
+      />
       <PageHero
         title='Discoveries'
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'

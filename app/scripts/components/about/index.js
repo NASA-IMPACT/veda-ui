@@ -15,7 +15,11 @@ function About() {
 
   return (
     <PageMainContent>
-      <LayoutProps title={`About ${thematic.data.name}`} />
+      <LayoutProps
+        title={`About ${thematic.data.name}`}
+        description={thematic.data.description}
+        thumbnail={thematic.data.media?.src}
+      />
       <PageHero
         title={thematic.data.about?.title || 'n/a'}
         description={thematic.data.about?.description}
