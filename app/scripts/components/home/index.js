@@ -136,13 +136,13 @@ function Home() {
                 <Pluralize
                   singular='Discovery'
                   plural='Discoveries'
-                  count={thematic.data.datasets.length}
+                  count={thematic.data.discoveries.length}
                   showCount={false}
                 />
               </StatsListKey>
               <StatsListValue>
                 <Link to='discoveries'>
-                  {zeroPad(thematic.data.datasets.length)}
+                  {zeroPad(thematic.data.discoveries.length)}
                 </Link>
               </StatsListValue>
               <StatsListKey>
