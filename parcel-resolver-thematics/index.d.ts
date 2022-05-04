@@ -1,6 +1,5 @@
-import * as dateFns from 'date-fns';
-
 declare module 'delta/thematics' {
+  import * as dateFns from 'date-fns';
   import { MDXModule } from 'mdx/types';
 
   // ///////////////////////////////////////////////////////////////////////////
