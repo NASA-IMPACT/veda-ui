@@ -14,6 +14,7 @@ import {
 import { utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { MapLayerRasterTimeseries } from './raster-timeseries';
+import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
 export const getLayerComponent = (isTimeseries: boolean, layerType: 'raster' | 'vector'): React.FunctionComponent<any> | null => {
   if (isTimeseries) {
@@ -152,27 +153,27 @@ export function checkLayerLoadStatus(asyncLayer: AsyncDatasetLayer) {
   const { baseLayer, compareLayer } = asyncLayer;
 
   if (
-    baseLayer.status === 'succeeded' &&
-    (!compareLayer || compareLayer.status === 'succeeded')
+    baseLayer.status === S_SUCCEEDED &&
+    (!compareLayer || compareLayer.status === S_SUCCEEDED)
   ) {
-    return 'succeeded';
+    return S_SUCCEEDED;
   }
 
   if (
-    baseLayer.status === 'loading' ||
-    (compareLayer && compareLayer.status === 'loading')
+    baseLayer.status === S_LOADING ||
+    (compareLayer && compareLayer.status === S_LOADING)
   ) {
-    return 'loading';
+    return S_LOADING;
   }
 
   if (
-    baseLayer.status === 'failed' ||
-    (compareLayer && compareLayer.status === 'failed')
+    baseLayer.status === S_FAILED ||
+    (compareLayer && compareLayer.status === S_FAILED)
   ) {
-    return 'failed';
+    return S_FAILED;
   }
 
-  return 'idle';
+  return S_IDLE;
 }
 
 declare global {

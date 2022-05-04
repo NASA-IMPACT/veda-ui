@@ -59,6 +59,7 @@ import {
   resolveLayerTemporalExtent
 } from '$components/common/mapbox/layers/utils';
 import { variableGlsp } from '$styles/variable-utils';
+import { S_SUCCEEDED } from '$utils/status';
 
 const Explorer = styled.div`
   position: relative;
@@ -238,7 +239,7 @@ function DatasetsExplore() {
   const activeLayer = useMemo(() => {
     return asyncLayers.find((l) => {
       const status = checkLayerLoadStatus(l);
-      return status === 'succeeded' && l.baseLayer.data.id === selectedLayerId;
+      return status === S_SUCCEEDED && l.baseLayer.data.id === selectedLayerId;
     });
   }, [asyncLayers, selectedLayerId]);
 

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { listReset, themeVal } from '@devseed-ui/theme-provider';
 import { AccordionManager } from '@devseed-ui/accordion';
 
+import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { checkLayerLoadStatus } from '$components/common/mapbox/layers/utils';
 import { Layer } from './dataset-layer-single';
 import LayerAlert from './layer-alert';
@@ -30,21 +31,21 @@ export default function DatasetLayers(props) {
           // data (if any) is also loaded.
           const status = checkLayerLoadStatus(l);
           switch (status) {
-            case 'loading':
+            case S_LOADING:
               return (
                 /* eslint-disable-next-line react/no-array-index-key */
                 <li key={idx}>
                   <InlineLayerLoadingSkeleton />
                 </li>
               );
-            case 'failed':
+            case S_FAILED:
               return (
                 /* eslint-disable-next-line react/no-array-index-key */
                 <li key={idx}>
                   <LayerAlert onRetryClick={l.reFetch} />
                 </li>
               );
-            case 'succeeded':
+            case S_SUCCEEDED:
               return (
                 <li key={l.baseLayer.data.id}>
                   <Layer

@@ -6,6 +6,8 @@ import deltaThematics, {
   datasets
 } from 'delta/thematics';
 
+import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
+
 /**
  * Returns the data for the thematic are taking the url parameter into account.
  * @returns Object
@@ -83,7 +85,7 @@ export function useThematicAreaDataset() {
  */
 export function useMdxPageLoader(loader) {
   const [pageMdx, setPageMdx] = useState({
-    status: 'idle',
+    status: S_IDLE,
     MdxContent: null
   });
 
@@ -92,13 +94,13 @@ export function useMdxPageLoader(loader) {
 
     const load = async () => {
       setPageMdx({
-        status: 'loading',
+        status: S_LOADING,
         MdxContent: null
       });
 
       const content = await loader();
       setPageMdx({
-        status: 'success',
+        status: S_SUCCEEDED,
         MdxContent: content.default
       });
     };

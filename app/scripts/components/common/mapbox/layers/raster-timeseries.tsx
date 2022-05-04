@@ -180,7 +180,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
     const load = async () => {
       try {
-        changeStatus?.({ status: 'loading', context: 'zoom-markers' });
+        changeStatus?.({ status: S_LOADING, context: 'zoom-markers' });
 
         const payload = {
           "filter-lang": "cql2-json",
@@ -247,10 +247,10 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           return marker;
         });
 
-        changeStatus?.({ status: 'succeeded', context: 'zoom-markers' });
+        changeStatus?.({ status: S_SUCCEEDED, context: 'zoom-markers' });
       } catch (error) {
         if (!controller.signal.aborted) {
-          changeStatus?.({ status: 'failed', context: 'zoom-markers' });
+          changeStatus?.({ status: S_FAILED, context: 'zoom-markers' });
         }
         LOG &&
           /* eslint-disable-next-line no-console */
@@ -288,7 +288,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     const controller = new AbortController();
 
     const load = async () => {
-      changeStatus?.({ status: 'loading', context: 'layer' });
+      changeStatus?.({ status: S_LOADING, context: 'layer' });
       try {
         const payload = {
           "filter-lang": "cql2-json",
@@ -356,10 +356,10 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           },
           'admin-0-boundary-bg'
         );
-        changeStatus?.({ status: 'succeeded', context: 'layer' });
+        changeStatus?.({ status: S_SUCCEEDED, context: 'layer' });
       } catch (error) {
         if (!controller.signal.aborted) {
-          changeStatus?.({ status: 'failed', context: 'layer' });
+          changeStatus?.({ status: S_FAILED, context: 'layer' });
         }
         LOG &&
           /* eslint-disable-next-line no-console */

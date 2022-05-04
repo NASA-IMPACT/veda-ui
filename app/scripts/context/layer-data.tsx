@@ -12,6 +12,7 @@ import { createContainer } from 'unstated-next';
 
 import { StateSlice, useContexeedApi } from '$utils/contexeed-v2';
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
+import { S_SUCCEEDED } from '$utils/status';
 
 interface STACLayerData {
   timeseries: {
@@ -90,7 +91,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
     function mergeSTACData<T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized>(baseData: T): NullableStateSlice<T & STACLayerData> {
       const dataSTAC = getState<STACLayerData>(baseData.id);
 
-      if (dataSTAC.status !== 'succeeded') {
+      if (dataSTAC.status !== S_SUCCEEDED) {
         return dataSTAC as unknown as StateSlice<null>;
       }
 
