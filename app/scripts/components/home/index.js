@@ -271,16 +271,16 @@ function Home() {
                     <>
                       <i>Contains </i>
                       <Pluralize
-                        zero='no datasets'
-                        singular='dataset'
-                        count={t.datasets.length}
-                      />
-                      {' / '}
-                      <Pluralize
                         zero='no discoveries'
                         singular='discovery'
                         plural='discoveries'
                         count={t.discoveries.length}
+                      />
+                      {' / '}
+                      <Pluralize
+                        zero='no datasets'
+                        singular='dataset'
+                        count={t.datasets.length}
                       />
                     </>
                   }
