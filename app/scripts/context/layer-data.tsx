@@ -1,16 +1,20 @@
-/* eslint-disable prettier/prettier */
-import { useCallback, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
+
+import { useDeepCompareMemo } from "use-deep-compare";
+import {
+  useQueries,
+  useQueryClient,
+  UseQueryOptions,
+  UseQueryResult
+} from 'react-query';
+import { QueryState } from 'react-query/types/core/query';
+import axios from 'axios';
 import {
   DatasetLayer,
   DatasetLayerCompareNormalized,
   datasets
 } from 'delta/thematics';
-// Unstated Next provides a small wrapper around React's context api which makes
-// handling typescript typing possible.
-// More at: https://betterprogramming.pub/how-to-use-react-context-with-typescript-the-easy-way-2ed1010f6e84
-import { createContainer } from 'unstated-next';
 
-import { StateSlice, useContexeedApi } from '$utils/contexeed-v2';
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
 
@@ -22,77 +26,96 @@ interface STACLayerData {
   };
 }
 
-const useHook = () => {
-  const { fetchLayerData, getState } = useContexeedApi({
-    name: 'layers',
-    slicedState: true,
-    requests: {
-      fetchLayerData: ({ id }: { id: string }) => ({
-        sliceKey: id,
-        url: `${process.env.API_STAC_ENDPOINT}/collections/${id}`,
-        transformData: (data) => ({
-          timeseries: {
-            isPeriodic: data['dashboard:is_periodic'],
-            timeDensity: data['dashboard:time_density'],
-            domain: data.summaries.datetime
-          }
-        })
-      })
-    }
-  });
-
+const fetchLayerById = async (id: string): Promise<STACLayerData | Error> => {
+  const { data } = await axios.get(
+    `${process.env.API_STAC_ENDPOINT}/collections/${id}?n`
+  );
   return {
-    fetchLayerData,
-    getState
+    timeseries: {
+      isPeriodic: data['dashboard:is_periodic'],
+      timeDensity: data['dashboard:time_density'],
+      domain: data.summaries.datetime
+    }
   };
 };
 
-// Container
-const LayerDataContainer = createContainer(useHook);
-
-// Container provider
-export const LayerDataProvider = LayerDataContainer.Provider;
+// Create a query object for react query.
+const makeQueryObject = (id): UseQueryOptions => ({
+  queryKey: ['layer', id],
+  queryFn: () => fetchLayerById(id),
+  // This data will not be updated in the context of a browser session, so it is
+  // safe to set the staleTime to Infinity. As specified by react-query's
+  // "Important Defaults", cached data is considered stale which means that
+  // there would be a constant refetching.
+  staleTime: Infinity,
+  // Errors are always considered stale. If any layer errors, any refocus would
+  // cause a refetch. This is normally a good thing but since we have a refetch
+  // button, this is not needed.
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+  refetchOnWindowFocus: false
+});
 
 // /////////////////////////////////////////////////////////////////////////////
 // Consumers and helpers
 // /////////////////////////////////////////////////////////////////////////////
 
-type NullableStateSlice<S> = StateSlice<S | null>;
+// Ensure that the data property cannot be undefined.
+type NullableQueryState<TData, TError = unknown> = QueryState<
+  TData | null,
+  TError
+> & { data: TData | null };
 
 export interface AsyncDatasetLayer {
-  baseLayer: NullableStateSlice<Omit<DatasetLayer, 'compare'> & STACLayerData>;
-  compareLayer: NullableStateSlice<
+  baseLayer: NullableQueryState<Omit<DatasetLayer, 'compare'> & STACLayerData>;
+  compareLayer: NullableQueryState<
     DatasetLayerCompareNormalized & STACLayerData
   > | null;
   reFetch: (() => void) | null;
 }
 
 const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
-  const { fetchLayerData, getState } = LayerDataContainer.useContainer();
+  const queryClient = useQueryClient();
 
-  const fetchData = useCallback(
-    (layer) => {
-      fetchLayerData({ id: layer.id });
-      const compareLayer = getCompareLayerData(layer);
-      if (compareLayer && compareLayer.id !== layer.id) {
-        fetchLayerData({ id: compareLayer.id });
-      }
-    },
-    [fetchLayerData]
+  const queries = useMemo(
+    () =>
+      layers.reduce((acc, layer) => {
+        acc.push(makeQueryObject(layer.id));
+
+        const compareLayer = getCompareLayerData(layer);
+        if (compareLayer && compareLayer.id !== layer.id) {
+          acc.push(makeQueryObject(compareLayer.id));
+        }
+
+        return acc;
+      }, [] as UseQueryOptions[]),
+    [layers]
   );
 
-  useEffect(() => {
-    layers.forEach(fetchData);
-  }, [fetchData, layers]);
-
-  return useMemo(() => {
+  // useQueries does not produce a stable result, so `layerQueries` will be
+  // changing on every render. This is a problem because we must compute the
+  // final layer data which should only be done if the data actually changes.
+  const layerQueries = useQueries(queries) as UseQueryResult<STACLayerData>[];
+  // There is an issue for this behavior but seems like it won't be fixed in the
+  // near future:
+  // https://github.com/tannerlinsley/react-query/issues/3049
+  // The proposed solution is to use useDeepCompareMemo which compares the
+  // dependency by value instead of by reference.
+  return useDeepCompareMemo(() => {
     // Merge the data from STAC and the data from the configuration into a
     // single object with meta information about the request status.
-    function mergeSTACData<T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized>(baseData: T): NullableStateSlice<T & STACLayerData> {
-      const dataSTAC = getState<STACLayerData>(baseData.id);
+    function mergeSTACData<
+      T extends Omit<DatasetLayer, 'compare'> | DatasetLayerCompareNormalized
+    >(baseData: T) {
+      // At this point the result of queryClient.getQueryState will never be
+      // undefined.
+      const dataSTAC = queryClient.getQueryState([
+        'layer',
+        baseData.id
+      ]) as QueryState<STACLayerData>;
 
       if (dataSTAC.status !== S_SUCCEEDED) {
-        return dataSTAC as unknown as StateSlice<null>;
+        return dataSTAC as unknown as NullableQueryState<null>;
       }
 
       return {
@@ -101,7 +124,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
           ...baseData,
           ...dataSTAC.data
         }
-      };
+      } as NullableQueryState<T & STACLayerData>;
     }
 
     return layers.map((layer) => {
@@ -119,10 +142,14 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
       return {
         baseLayer: mergeSTACData(layerProps),
         compareLayer: compareLayer && mergeSTACData(compareLayer),
-        reFetch: () => fetchData(layer)
+        reFetch: () =>
+          queryClient.refetchQueries(['layer', layer.id], {
+            active: true,
+            exact: true
+          })
       };
     });
-  }, [getState, fetchData, layers]);
+  }, [layers, queryClient, layerQueries]);
 };
 
 // Context consumers.
