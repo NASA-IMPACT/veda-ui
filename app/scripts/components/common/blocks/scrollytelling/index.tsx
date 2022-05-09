@@ -224,7 +224,7 @@ function useAllLayersAdded(count): [boolean, (cb: { status: string }) => void] {
 
   const onLoadCb = useCallback(
     ({ status }) => {
-      if (status === 'succeeded' && ++succeededCount.current >= count) {
+      if (status === S_SUCCEEDED && ++succeededCount.current >= count) {
         setAdded(true);
       }
     },
