@@ -28,7 +28,7 @@ interface STACLayerData {
 
 const fetchLayerById = async (id: string): Promise<STACLayerData | Error> => {
   const { data } = await axios.get(
-    `${process.env.API_STAC_ENDPOINT}/collections/${id}?n`
+    `${process.env.API_STAC_ENDPOINT}/collections/${id}`
   );
   return {
     timeseries: {
