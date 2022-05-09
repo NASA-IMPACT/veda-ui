@@ -3,7 +3,7 @@ import T from 'prop-types';
 import { MDXProvider } from '@mdx-js/react';
 
 import { useMdxPageLoader } from '$utils/thematics';
-import { S_LOADING } from '$utils/status';
+import { S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { ContentLoading } from '$components/common/loading-skeleton';
 import Block from '$components/common/blocks';
 import ContentBlockFigure from '$components/common/blocks/figure';
@@ -25,7 +25,7 @@ function MdxContent(props) {
     return <ContentLoading />;
   }
 
-  if (pageMdx.status === 'success') {
+  if (pageMdx.status === S_SUCCEEDED) {
     return (
       <MDXProvider
         components={{
