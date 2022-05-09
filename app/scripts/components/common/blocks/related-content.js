@@ -1,9 +1,19 @@
 import React from 'react';
+import styled from 'styled-components';
+
 import { useThematicArea } from '$utils/thematics';
 import { thematicDatasetsPath } from '$utils/routes';
 import { Card, CardList } from '$components/common/card';
-import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
-const blockNum = 3;
+import { FoldHeader, FoldTitle } from '$components/common/fold';
+import { variableGlsp } from '$styles/variable-utils';
+
+const blockNum = 2;
+
+const TwoColumnCardList = styled(CardList)`
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: ${variableGlsp(1)};
+`;
+
 function formatBlock({ id, name, description, media }, parent) {
   return { id, name, description, media, parent };
 }
@@ -19,12 +29,11 @@ export default function RelatedContent() {
   ].filter((e, idx) => idx < blockNum);
 
   return (
-    <Fold>
+    <>
       <FoldHeader>
         <FoldTitle> Related Content </FoldTitle>
       </FoldHeader>
-
-      <CardList>
+      <TwoColumnCardList>
         {relatedContents.map((t) => (
           <li key={t.id}>
             <Card
@@ -39,7 +48,7 @@ export default function RelatedContent() {
             />
           </li>
         ))}
-      </CardList>
-    </Fold>
+      </TwoColumnCardList>
+    </>
   );
 }
