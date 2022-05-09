@@ -29,7 +29,7 @@ export default function RelatedContent() {
           <li key={t.id}>
             <Card
               cardType='cover'
-              linkLabel='View more'
+              linkLabel={`View ${t.parent} ${t.name}`}
               linkTo={t.id}
               title={t.name}
               parentName={t.parent}

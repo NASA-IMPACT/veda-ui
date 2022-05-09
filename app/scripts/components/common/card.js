@@ -41,6 +41,7 @@ function renderCardType({ cardType }) {
     case 'cover':
       return css`
         padding-top: ${variableGlsp(2)};
+        background: ${themeVal('color.base-400')};
         color: ${themeVal('color.surface')};
         justify-content: flex-end;
 
