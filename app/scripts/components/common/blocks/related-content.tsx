@@ -14,8 +14,24 @@ const TwoColumnCardList = styled(CardList)`
   margin-top: ${variableGlsp(1)};
 `;
 
-function formatBlock({ id, name, description, media }, parent) {
-  return { id, name, description, media, parent };
+interface Media {
+  src: string;
+  alt: string;
+  author?: {
+    name: string;
+    url: string
+  }
+}
+
+interface FormatBlock {
+  id: string;
+  name: string;
+  media: Media;
+}
+export type parentType = 'thematic' | 'dataset' | 'discovery';
+
+function formatBlock({ id, name, media }: FormatBlock, parent: parentType) {
+  return { id, name, media, parent };
 }
 
 export default function RelatedContent() {
@@ -31,7 +47,9 @@ export default function RelatedContent() {
   return (
     <>
       <FoldHeader>
-        <FoldTitle> Related Content </FoldTitle>
+        <FoldTitle> 
+          Related Content 
+        </FoldTitle>
       </FoldHeader>
       <TwoColumnCardList>
         {relatedContents.map((t) => (
