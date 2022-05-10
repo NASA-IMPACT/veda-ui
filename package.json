@@ -120,12 +120,13 @@
     "react-helmet": "^6.1.0",
     "react-lazyload": "^3.2.0",
     "react-nl2br": "^1.0.2",
+    "react-query": "^3.38.1",
     "react-router": "^6.0.0",
     "react-router-dom": "^6.0.0",
     "react-transition-group": "^4.4.2",
     "scrollama": "^3.1.0",
     "styled-components": "^5.3.3",
-    "unstated-next": "^1.1.0"
+    "use-deep-compare": "^1.1.0"
   },
   "alias": {
     "$components": "~/app/scripts/components",
