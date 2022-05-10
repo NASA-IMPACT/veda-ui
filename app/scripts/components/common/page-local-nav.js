@@ -214,7 +214,10 @@ function PageLocalNav(props) {
                   <li key={t.id}>
                     <DropMenuItem
                       as={NavLink}
-                      to={`${parentTo}/${t.id}/${currentPage}`}
+                      to={`${parentTo}/${t.id}/${currentPage}`.replace(
+                        /\/$/,
+                        ''
+                      )}
                       aria-current={t.id === currentId ? 'page' : null}
                       active={t.id === currentItem.id}
                       data-dropdown='click.close'
