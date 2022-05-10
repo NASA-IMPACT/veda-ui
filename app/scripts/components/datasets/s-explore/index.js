@@ -144,9 +144,21 @@ function DatasetsExplore() {
 
   // Click listener for the whole body panel so we can close it when clicking
   // the overlay on medium down media query.
+  // The overlay is created with an ::after so it can't be targeted directly,
+  // but it is still part of the panel.
   const onPanelClick = useCallback(
     (e) => {
-      if (isMediumDown && !panelBodyRef.current?.contains(e.target)) {
+      const thePanel = e.currentTarget;
+      // For the panel to close the click must be done on an element inside the
+      // panel. This avoids that the panel closes when clicking the date picker,
+      // since it is not inside the panel (portaled to body).
+      const isSelfOrContained = e.target === thePanel;
+
+      if (
+        isMediumDown &&
+        isSelfOrContained &&
+        !panelBodyRef.current?.contains(e.target)
+      ) {
         setPanelRevealed(false);
       }
     },
