@@ -14,6 +14,7 @@ const TwoColumnCardList = styled(CardList)`
   margin-top: ${variableGlsp(1)};
 `;
 
+export type ParentType = 'thematic' | 'dataset' | 'discovery';
 interface Media {
   src: string;
   alt: string;
@@ -26,22 +27,36 @@ interface Media {
 interface FormatBlock {
   id: string;
   name: string;
+  link: string;
+  thematic: string;
   media: Media;
+  parent: ParentType;
 }
-export type parentType = 'thematic' | 'dataset' | 'discovery';
 
-function formatBlock({ id, name, media }: FormatBlock, parent: parentType) {
-  return { id, name, media, parent };
+function formatUrl(id: string, thematic: string, parent: string) {
+  switch(parent) {
+    case 'thematic':
+      return `/${id}`;
+    case 'dataset':
+      return `/${thematic}/datasets/${id}`;
+    case 'discoveries':
+      return `/${thematic}/discoveries/${id}`;
+  }
+
+}
+
+function formatBlock({ id, name, thematic, media, parent }: FormatBlock) {
+  return { id, name, link: formatUrl(id, thematic, parent), media, parent };
 }
 
 export default function RelatedContent() {
   const thematic = useThematicArea();
-
+  console.log(thematic.data);
   // How should we pick the contents?
   const relatedContents = [
-    formatBlock(thematic.data, 'thematic'),
-    ...thematic.data.datasets.map((e) => formatBlock(e, 'dataset')),
-    ...thematic.data.discoveries.map((e) => formatBlock(e, 'discovery'))
+    formatBlock({...thematic.data, thematic: thematic.data.id, parent: 'thematic'}),
+    ...thematic.data.datasets.map((e) => formatBlock({...e, thematic: thematic.data.id, parent: 'dataset'})),
+    ...thematic.data.discoveries.map((e) => formatBlock({...e, thematic: thematic.data.id, parent: 'discovery'}))
   ].filter((e, idx) => idx < blockNum);
 
   return (
@@ -57,7 +72,7 @@ export default function RelatedContent() {
             <Card
               cardType='cover'
               linkLabel={`View ${t.parent} ${t.name}`}
-              linkTo={t.id}
+              linkTo={t.link}
               title={t.name}
               parentName={t.parent}
               parentTo={thematicDatasetsPath(thematic)}
