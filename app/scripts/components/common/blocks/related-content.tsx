@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router';
 
 import { useThematicArea } from '$utils/thematics';
-import { thematicDatasetsPath } from '$utils/routes';
+import { thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
 import { Card, CardList } from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
@@ -36,27 +37,42 @@ interface FormatBlock {
 function formatUrl(id: string, thematic: string, parent: string) {
   switch(parent) {
     case 'thematic':
-      return `/${id}`;
+      return  {
+        parentLink: `/${id}`,
+        link: `${id}`
+      };
     case 'dataset':
-      return `/${thematic}/datasets/${id}`;
+      return  {
+        parentLink: thematicDatasetsPath(thematic),
+        link: `${thematicDatasetsPath(thematic)}/${id}`
+      };
     case 'discoveries':
-      return `/${thematic}/discoveries/${id}`;
+      return {
+        parentLink: thematicDiscoveriesPath(thematic),
+        link: `${thematicDiscoveriesPath(thematic)}/${id}`
+      };
   }
 
 }
 
 function formatBlock({ id, name, thematic, media, parent }: FormatBlock) {
-  return { id, name, link: formatUrl(id, thematic, parent), media, parent };
+  return { id, name, ...formatUrl(id, thematic, parent), media, parent };
+}
+
+function findRelatedContent(arr: array, id: string, thematic: string, parent: string) {
+  return arr.filter(e => e.id !== id).map(e => formatBlock({...e, thematic, parent}));
 }
 
 export default function RelatedContent() {
   const thematic = useThematicArea();
-  console.log(thematic.data);
+  const { thematicId, datasetId, discoveryId } = useParams();
+  const onThematicId =  (datasetId || discoveryId)? undefined: thematicId;
+
   // How should we pick the contents?
   const relatedContents = [
-    formatBlock({...thematic.data, thematic: thematic.data.id, parent: 'thematic'}),
-    ...thematic.data.datasets.map((e) => formatBlock({...e, thematic: thematic.data.id, parent: 'dataset'})),
-    ...thematic.data.discoveries.map((e) => formatBlock({...e, thematic: thematic.data.id, parent: 'discovery'}))
+    ...findRelatedContent([thematic.data], onThematicId, thematic,  'thematic'),
+    ...findRelatedContent(thematic.data.datasets, datasetId, thematic,  'dataset'),
+    ...findRelatedContent(thematic.data.discoveries, discoveryId, thematic, 'discovery')
   ].filter((e, idx) => idx < blockNum);
 
   return (
@@ -75,7 +91,7 @@ export default function RelatedContent() {
               linkTo={t.link}
               title={t.name}
               parentName={t.parent}
-              parentTo={thematicDatasetsPath(thematic)}
+              parentTo={t.parentLink}
               imgSrc={t.media.src}
               imgAlt={t.media.alt}
             />
