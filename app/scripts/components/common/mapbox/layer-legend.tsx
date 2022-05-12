@@ -149,7 +149,7 @@ const LegendBody = styled(WidgetItemBodyInner)`
   padding: 0;
 
   .scroll-inner {
-    padding: ${variableGlsp(0.5, 1)};
+    padding: ${variableGlsp(0.5, 0.75)};
   }
 
   .shadow-bottom {
