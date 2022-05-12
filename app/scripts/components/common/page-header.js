@@ -360,6 +360,11 @@ function PageHeader() {
   const { isMediumDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
+  // The menu toggle button sits inside a panel with position fixed, therefore
+  // on scrolling we need to compensate its position with some javascript. The
+  // useEffect will have a scroll listener that update the offset value until it
+  // reaches a threshold where the button is no longer on screen.
+  const [menuBtnOffset, setBtnOffset] = useState(0);
 
   const globalNavBodyRef = useRef(null);
   // Click listener for the whole global nav body so we can close it when clicking
@@ -370,9 +375,16 @@ function PageHeader() {
     }
   }, []);
 
-  // Close global nav when media query changes.
   useEffect(() => {
+    // Close global nav when media query changes.
     if (!isMediumDown) setGlobalNavRevealed(false);
+
+    // Listener for the toggle button.
+    if (isMediumDown) {
+      const handler = () => setBtnOffset(Math.min(window.pageYOffset, 60));
+      window.addEventListener('scroll', handler);
+      return () => window.removeEventListener('scroll', handler);
+    }
   }, [isMediumDown]);
 
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
@@ -405,6 +417,11 @@ function PageHeader() {
                   fitting='skinny'
                   onClick={() => setGlobalNavRevealed((v) => !v)}
                   active={globalNavRevealed}
+                  style={{
+                    transform: `translateY(-${
+                      globalNavRevealed ? 0 : menuBtnOffset
+                    }px)`
+                  }}
                 >
                   <CollecticonHamburgerMenu
                     title='Toggle global nav visibility'
