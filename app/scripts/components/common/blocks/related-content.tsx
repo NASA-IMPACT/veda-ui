@@ -72,7 +72,9 @@ export default function RelatedContent() {
     ...findRelatedContent(thematic.data.discoveries, discoveryId, thematic, 'discovery')
   ];
 
-  const relatedContents = getMultipleRandom(relatedContentsCandidates, 2);
+  if (relatedContentsCandidates.length < blockNum) throw Error('Not enough related contents.');
+
+  const relatedContents = getMultipleRandom(relatedContentsCandidates, blockNum);
 
   return (
     <>
