@@ -55,17 +55,24 @@ function findRelatedContent(arr: Array<any>, id?: string, thematic: ThematicData
   return arr.filter(e => e.id !== id).map(e => formatBlock({...e, thematic, parent}));
 }
 
+function getMultipleRandom(arr: Array<any>, num: number) {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, num);
+}
+
 export default function RelatedContent() {
   const thematic = useThematicArea();
   const { thematicId, datasetId, discoveryId } = useParams();
   const onThematicId =  (datasetId || discoveryId)? undefined: thematicId;
 
   // How should we pick the contents?
-  const relatedContents = [
+  const relatedContentsCandidates = [
     ...findRelatedContent([thematic.data], onThematicId, thematic,  'thematic'),
     ...findRelatedContent(thematic.data.datasets, datasetId, thematic,  'dataset'),
     ...findRelatedContent(thematic.data.discoveries, discoveryId, thematic, 'discovery')
-  ].filter((e, idx) => idx < blockNum);
+  ];
+
+  const relatedContents = getMultipleRandom(relatedContentsCandidates, 2);
 
   return (
     <>
