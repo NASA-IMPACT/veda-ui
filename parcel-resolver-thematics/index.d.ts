@@ -121,7 +121,7 @@ declare module 'delta/thematics' {
   /**
    * Data structure for the Thematics frontmatter.
    */
-   interface ThematicData {
+  export interface ThematicData {
     id: string;
     name: string;
     description: string;
@@ -133,7 +133,7 @@ declare module 'delta/thematics' {
   // ///////////////////////////////////////////////////////////////////////////
   type Primitives = string | number | boolean | null | undefined;
 
-  interface Media {
+  export interface Media {
     src: string;
     alt: string;
     author?: {
