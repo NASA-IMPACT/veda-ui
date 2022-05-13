@@ -155,10 +155,27 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   // If a compare date is specified use the given one, otherwise use the result
   // from the resolved config function.
   // A custom date may be specified in the MDX map block.
-  const compareToDate = useMemo(
-    () => compareDate || compareLayerResolvedData?.datetime,
-    [compareLayerResolvedData?.datetime, compareDate]
-  );
+  // If no date is specified anywhere we just use the same.
+  const compareToDate = useMemo(() => {
+    const theDate = compareDate || compareLayerResolvedData?.datetime || date;
+    return theDate instanceof Date && !isNaN(theDate.getTime())
+      ? theDate
+      : null;
+  }, [compareLayerResolvedData?.datetime, compareDate, date]);
+
+  const computedCompareLabel = useMemo(() => {
+    // Use a provided label if it exist.
+    const providedLabel = compareLabel || compareLayerResolvedData?.mapLabel;
+    if (providedLabel) return providedLabel;
+
+    // Default to date comparison.
+    return date && compareToDate
+      ? `${dateFns.format(date, 'yyyy/MM/dd')} VS ${dateFns.format(
+          compareToDate,
+          'yyyy/MM/dd'
+        )}`
+      : null;
+  }, [compareLabel, compareLayerResolvedData?.mapLabel, date, compareToDate]);
 
   return (
     <>
@@ -222,7 +239,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         id='compare-message'
         active={!!(shouldRenderCompare && compareLayerResolvedData)}
       >
-        {compareLabel || compareLayerResolvedData?.mapLabel}
+        {computedCompareLabel}
       </MapMessage>
 
       {/*
