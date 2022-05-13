@@ -50,6 +50,10 @@ function renderCardType({ cardType }) {
           z-index: -1;
           background: ${themeVal('color.base-400')};
         }
+
+        ${CardOverline} {
+          color: ${themeVal('color.surface-400a')};
+        }
       `;
     case 'featured':
       return css`
@@ -67,6 +71,10 @@ function renderCardType({ cardType }) {
         ${CardTitle} {
           font-size: ${variableBaseType('1.5rem')};
           max-width: 52rem;
+        }
+
+        ${CardOverline} {
+          color: ${themeVal('color.surface-400a')};
         }
 
         ${CardBody} {
@@ -129,7 +137,7 @@ export const CardTitle = styled(VarHeading).attrs({
 
 export const CardOverline = styled(Overline)`
   order: -1;
-  color: inherit;
+  color: ${themeVal('color.base-400a')};
 
   > * {
     line-height: inherit;

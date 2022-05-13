@@ -144,9 +144,21 @@ function DatasetsExplore() {
 
   // Click listener for the whole body panel so we can close it when clicking
   // the overlay on medium down media query.
+  // The overlay is created with an ::after so it can't be targeted directly,
+  // but it is still part of the panel.
   const onPanelClick = useCallback(
     (e) => {
-      if (isMediumDown && !panelBodyRef.current?.contains(e.target)) {
+      const thePanel = e.currentTarget;
+      // For the panel to close the click must be done on an element inside the
+      // panel. This avoids that the panel closes when clicking the date picker,
+      // since it is not inside the panel (portaled to body).
+      const isSelfOrContained = e.target === thePanel;
+
+      if (
+        isMediumDown &&
+        isSelfOrContained &&
+        !panelBodyRef.current?.contains(e.target)
+      ) {
         setPanelRevealed(false);
       }
     },
@@ -169,13 +181,10 @@ function DatasetsExplore() {
   /** *********************************************************************** */
   // Setup Qs State to store data in the url's query string
   // react-router function to get the navigation.
-  // There's a bug in qs-state-hook related with the commit function. Basically
-  // the function gets scoped and it does not get updated. Using a ref fixes the
-  // scoping problem.
-  const navigate = useRef();
-  navigate.current = useNavigate();
-  const commit = useCallback((opts) => navigate.current(opts), []);
-  const useQsState = useQsStateCreator({ commit });
+  const navigate = useNavigate();
+  const useQsState = useQsStateCreator({
+    commit: navigate
+  });
 
   const [selectedLayerId, setSelectedLayerId] = useQsState.memo(
     {

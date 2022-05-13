@@ -9270,15 +9270,15 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-qs-state-hook@^1.1.0:
-  version "1.1.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/qs-state-hook/-/qs-state-hook-1.1.0.tgz#925038ec9ff140888ba0667546839102f08fdf2d"
-  integrity sha512-3yM3VbWIA60ONnM3SXg26fWx0JujaMbEjZtMqtjLzQLs0tKbY2butxn4jbFG8+3SoQu91FH4Myaf+GoT01rRdA==
+qs-state-hook@^2.0.0:
+  version "2.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/qs-state-hook/-/qs-state-hook-2.0.0.tgz#56732eeeb915818f0c353bcc77181375aa31236c"
+  integrity sha512-VqN9cEWzwqDlDmSt1klk473BCbdZvtbNYA8EMvk80y60No2K8qtH6gTDyYUflkI7ympEW7MmhlW/6tPVbX91tw==
   dependencies:
     lodash.debounce "^4.0.8"
-    qs "^6.9.6"
+    qs "^6.10.3"
 
-qs@^6.10.3, qs@^6.9.6:
+qs@^6.10.3:
   version "6.10.3"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/qs/-/qs-6.10.3.tgz#d6cde1b2ffca87b5aa57889816c5f81535e22e8e"
   integrity sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ==
