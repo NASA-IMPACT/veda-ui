@@ -25,16 +25,24 @@ interface Media {
   }
 }
 
+interface ThematicData {
+ id: string;
+ name: string;
+ description: string;
+ media?: Media
+}
+
+
 interface FormatBlock {
   id: string;
   name: string;
   link: string;
-  thematic: string;
+  thematic: ThematicData;
   media: Media;
   parent: ParentType;
 }
 
-function formatUrl(id: string, thematic: string, parent: string) {
+function formatUrl(id: string, thematic: ThematicData, parent: string) {
   switch(parent) {
     case 'thematic':
       return  {
@@ -59,7 +67,7 @@ function formatBlock({ id, name, thematic, media, parent }: FormatBlock) {
   return { id, name, ...formatUrl(id, thematic, parent), media, parent };
 }
 
-function findRelatedContent(arr: array, id: string, thematic: string, parent: string) {
+function findRelatedContent(arr: Array<any>, id?: string, thematic: ThematicData, parent: string) {
   return arr.filter(e => e.id !== id).map(e => formatBlock({...e, thematic, parent}));
 }
 
