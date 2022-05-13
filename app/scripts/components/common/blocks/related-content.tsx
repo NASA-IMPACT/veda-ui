@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 
+import { Media, ThematicData } from 'delta/thematics';
 import { useThematicArea } from '$utils/thematics';
-import { thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
+import { thematicRootPath, thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
 import { Card, CardList } from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
@@ -16,23 +17,6 @@ const TwoColumnCardList = styled(CardList)`
 `;
 
 export type ParentType = 'thematic' | 'dataset' | 'discovery';
-interface Media {
-  src: string;
-  alt: string;
-  author?: {
-    name: string;
-    url: string
-  }
-}
-
-interface ThematicData {
- id: string;
- name: string;
- description: string;
- media?: Media
-}
-
-
 interface FormatBlock {
   id: string;
   name: string;
@@ -46,8 +30,8 @@ function formatUrl(id: string, thematic: ThematicData, parent: string) {
   switch(parent) {
     case 'thematic':
       return  {
-        parentLink: `/${id}`,
-        link: `${id}`
+        parentLink: thematicRootPath(thematic),
+        link: thematicRootPath(thematic)
       };
     case 'dataset':
       return  {
