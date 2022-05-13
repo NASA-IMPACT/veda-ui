@@ -13,7 +13,7 @@ import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import * as dateFns from 'date-fns';
 
-import { ActionStatus, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
+import { ActionStatus, S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { useDatasetAsyncLayer } from '$context/layer-data';
 import { MapLoading } from '$components/common/loading-skeleton';
@@ -48,6 +48,11 @@ const getMapPositionOptions = (position) => {
   return opts;
 };
 
+interface LayerContextStatus {
+  context: string;
+  status: ActionStatus;
+}
+
 function MapboxMapComponent(props: MapboxMapProps, ref) {
   /* eslint-disable react/prop-types */
   const {
@@ -76,15 +81,15 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
 
-  const [baseLayerStatus, setBaseLayerStatus] = useState<ActionStatus>(S_IDLE);
+  const [baseLayerStatus, setBaseLayerStatus] = useState<LayerContextStatus>({context: '', status: S_IDLE});
   const onBaseLayerStatusChange = useCallback(
-    ({ status }) => setBaseLayerStatus(status),
+    ({ context, status }) => setBaseLayerStatus({context, status}),
     []
   );
   const [compareLayerStatus, setCompareLayerStatus] =
-    useState<ActionStatus>(S_IDLE);
+    useState<LayerContextStatus>({context: '', status: S_IDLE});
   const onCompareLayerStatusChange = useCallback(
-    ({ status }) => setCompareLayerStatus(status),
+    ({ context, status }) => setCompareLayerStatus({context, status}),
     []
   );
 
@@ -176,7 +181,10 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         )}`
       : null;
   }, [compareLabel, compareLayerResolvedData?.mapLabel, date, compareToDate]);
-
+  
+  const didBaseLayerMosaicFail = baseLayerStatus.status === S_FAILED && baseLayerStatus.context === 'mosaic';
+  const didCompareLayerMosaicFail = compareLayerStatus.status === S_FAILED && compareLayerStatus.context === 'mosaic';
+  
   return (
     <>
       {/*
@@ -222,12 +230,27 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         need to render a loading for each layer, but instead of centering them,
         we show them on top of their respective map.
       */}
-      {baseLayerStatus === S_LOADING && (
+      {baseLayerStatus.status === S_LOADING && (
         <MapLoading position={shouldRenderCompare ? 'left' : 'center'} />
       )}
-      {shouldRenderCompare && compareLayerStatus === S_LOADING && (
+      {shouldRenderCompare && compareLayerStatus.status === S_LOADING && (
         <MapLoading position='right' />
       )}
+
+        <MapMessage
+          id='mosaic-base-fail-message'
+          active={didBaseLayerMosaicFail}
+        >
+          Failed to register layer {baseLayer?.data.id}
+        </MapMessage>
+      
+        <MapMessage
+          id='mosaic-compare-fail-message'
+          active={didCompareLayerMosaicFail}
+        >
+          Failed to register layer {compareLayer?.data.id}
+        </MapMessage>
+      
 
       {/*
         Map overlay element
@@ -237,7 +260,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       */}
       <MapMessage
         id='compare-message'
-        active={!!(shouldRenderCompare && compareLayerResolvedData)}
+        active={!!(shouldRenderCompare && compareLayerResolvedData && !didCompareLayerMosaicFail)}
       >
         {computedCompareLabel}
       </MapMessage>

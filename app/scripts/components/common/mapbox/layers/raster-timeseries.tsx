@@ -52,15 +52,13 @@ async function requestQuickCache(
   controller: AbortController
 ) {
   const key = `${url}${JSON.stringify(payload)}`;
-
-  // No cache found, make request.
-  if (!quickCache.has(key)) {
-    const response = await axios.post(url, payload, {
-      signal: controller.signal
-    });
-    quickCache.set(key, response.data);
-  }
-
+    // No cache found, make request.
+   if (!quickCache.has(key)) {
+      const response = await axios.post(url+'a', payload, {
+        signal: controller.signal
+      });
+      quickCache.set(key, response.data);
+    }
   return quickCache.get(key);
 }
 
@@ -147,7 +145,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       // Only emit on status change.
       if (newStatus !== statuses.current.global) {
         statuses.current.global = newStatus;
-        onStatusChange?.({ status: newStatus, id });
+        onStatusChange?.({ status: newStatus, id, context: 'mosaic' });
       }
     },
     [id, onStatusChange]
