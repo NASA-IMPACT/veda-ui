@@ -2,12 +2,23 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 
-import { Media, ThematicData } from 'delta/thematics';
+import {  
+  thematics,
+  discoveries,
+  datasets, 
+  Media, 
+  ThematicData } from 'delta/thematics';
 import { useThematicArea } from '$utils/thematics';
 import { thematicRootPath, thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
 import { Card, CardList } from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
+
+const contentCategory = {
+  'thematics': thematics,
+  'datasets': datasets,
+  'discoveries': discoveries
+};
 
 const blockNum = 2;
 
@@ -33,7 +44,7 @@ function formatUrl(id: string, thematic: ThematicData, parent: string) {
         parentLink: thematicRootPath(thematic),
         link: thematicRootPath(thematic)
       };
-    case 'dataset':
+    case 'datasets':
       return  {
         parentLink: thematicDatasetsPath(thematic),
         link: `${thematicDatasetsPath(thematic)}/${id}`
@@ -51,8 +62,22 @@ function formatBlock({ id, name, thematic, media, parent }: FormatBlock) {
   return { id, name, ...formatUrl(id, thematic, parent), media, parent };
 }
 
-function findRelatedContent(arr: Array<any>, id?: string, thematic: ThematicData, parent: string) {
-  return arr.filter(e => e.id !== id).map(e => formatBlock({...e, thematic, parent}));
+function findCurrentContent(arr: Array<any>, id: string) {
+  return arr.find(e => e.id === id);
+}
+
+function formatContents(relatedData) {
+  // relatedData.
+  const rData = Object.keys(relatedData).map(contentType => {
+    return relatedData[contentType].map(contentId => {
+      const matchingContentId = Object.keys(contentCategory[contentType]).filter(e => e === contentId)[0];
+      const matchingContent = contentCategory[contentType][matchingContentId].data;
+      const thematicId = matchingContent.thematics.length? matchingContent.thematics[0]: matchingContent.thematics;
+      return formatBlock({id:contentId, name: matchingContent.name, thematic: contentCategory.thematics[thematicId], media: matchingContent.media, contentType, parent: contentType});
+    });
+  }).flat();
+  
+  return rData;
 }
 
 function getMultipleRandom(arr: Array<any>, num: number) {
@@ -63,18 +88,15 @@ function getMultipleRandom(arr: Array<any>, num: number) {
 export default function RelatedContent() {
   const thematic = useThematicArea();
   const { thematicId, datasetId, discoveryId } = useParams();
+
   const onThematicId =  (datasetId || discoveryId)? undefined: thematicId;
+  const onDatasetId = (datasetId && !discoveryId)? datasetId : undefined;
+  const onDiscoveryId = (!datasetId && discoveryId)? discoveryId: undefined;
 
-  // How should we pick the contents?
-  const relatedContentsCandidates = [
-    ...findRelatedContent([thematic.data], onThematicId, thematic,  'thematic'),
-    ...findRelatedContent(thematic.data.datasets, datasetId, thematic,  'dataset'),
-    ...findRelatedContent(thematic.data.discoveries, discoveryId, thematic, 'discovery')
-  ];
+  const currentContent = (onThematicId)? findCurrentContent(thematic.data, onThematicId) : (onDatasetId)? findCurrentContent(thematic.data.datasets, onDatasetId) : findCurrentContent(thematic.data.discoveries, onDiscoveryId);
 
-  if (relatedContentsCandidates.length < blockNum) throw Error('Not enough related contents.');
-
-  const relatedContents = getMultipleRandom(relatedContentsCandidates, blockNum);
+  let relatedContents = formatContents(currentContent.related);
+  if (relatedContents.length > blockNum) relatedContents = getMultipleRandom(relatedContents, blockNum);
 
   return (
     <>
