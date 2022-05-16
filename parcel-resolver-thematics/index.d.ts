@@ -1,3 +1,5 @@
+import { StringLiteralLike } from 'typescript';
+
 declare module 'delta/thematics' {
   import * as dateFns from 'date-fns';
   import { MDXModule } from 'mdx/types';
@@ -86,9 +88,19 @@ declare module 'delta/thematics' {
   }
 
   /**
+   * Related Contents
+   * editors can curate contents per each category with their ids
+   */
+  export interface RelatedContentData {
+    thematics?:Array<string>;
+    datasets?: Array<string>;
+    discoveries?: Array<StringLiteralLike>;
+  }
+
+  /**
    * Data structure for the Datasets frontmatter.
    */
-  interface DatasetData {
+  export interface DatasetData {
     featuredOn?: string[];
     id: string;
     name: string;
@@ -96,6 +108,7 @@ declare module 'delta/thematics' {
     description: string;
     media?: Media
     layers: DatasetLayer[];
+    related?: RelatedContentData;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -105,13 +118,14 @@ declare module 'delta/thematics' {
   /**
    * Data structure for the Discoveries frontmatter.
    */
-  interface DiscoveryData {
+  export interface DiscoveryData {
     featuredOn?: string[];
     id: string;
     name: string;
     description: string;
     media?: Media
     thematics: string[];
+    related?: RelatedContentData;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -125,7 +139,8 @@ declare module 'delta/thematics' {
     id: string;
     name: string;
     description: string;
-    media?: Media
+    media?: Media;
+    related?: RelatedContentData;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
