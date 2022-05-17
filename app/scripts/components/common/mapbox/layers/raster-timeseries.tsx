@@ -52,6 +52,7 @@ async function requestQuickCache(
   controller: AbortController
 ) {
   const key = `${url}${JSON.stringify(payload)}`;
+
     // No cache found, make request.
    if (!quickCache.has(key)) {
       const response = await axios.post(url+'a', payload, {
