@@ -14,17 +14,15 @@ import { Card, CardList } from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 
-const thematicsString = 'thematics';
-const datasetsString = 'datasets';
-const discoveriesString = 'discoveries';
+const thematicsString = 'thematic';
+const datasetsString = 'dataset';
+const discoveriesString = 'discovery';
 
 const contentCategory = {
   [thematicsString]: thematics,
   [datasetsString]: datasets,
   [discoveriesString]: discoveries
 };
-
-const blockNum = 2;
 
 const TwoColumnCardList = styled(CardList)`
   grid-template-columns: repeat(2, 1fr);
@@ -74,22 +72,20 @@ function findCurrentContent({ parent, id }: { parent: string, id; string} ) {
 }
 
 function formatContents(relatedData: Array<RelatedContentData>) {
-  const rData = Object.keys(relatedData).map(contentType => {
-    return relatedData[contentType].map(contentId => {
-      const matchingContentId = Object.keys(contentCategory[contentType]).filter(e => e === contentId)[0];
-      const matchingContent = contentCategory[contentType][matchingContentId].data;
-      const  thematicId = (!matchingContent.thematics)? matchingContent.id : matchingContent.thematics[0];
-      return formatBlock({id:contentId, name: matchingContent.name, thematic: contentCategory.thematics[thematicId], media: matchingContent.media, contentType, parent: contentType});
-    });
-  }).flat();
+  const rData = relatedData.map(relatedContent => {
+    const {type, id} = relatedContent;
+    const matchingContentId = Object.keys(contentCategory[type]).filter(e => e === id)[0];
+    
+    if (!matchingContentId) throw Error('Something went wrong. Check the related content frontmatter.');
+    
+    const matchingContent = contentCategory[type][matchingContentId].data;
+    const  thematicId = (!matchingContent.thematics)? matchingContent.id : matchingContent.thematics[0];
+    return formatBlock({id:id, name: matchingContent.name, thematic: contentCategory[thematicsString][thematicId], media: matchingContent.media, parent: type });
+  });
   
   return rData;
 }
 
-function getMultipleRandom(arr: Array<FormatBlock>, num: number) {
-  const shuffled = [...arr].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, num);
-}
 
 function getCurrentCategory(thematicId: string | undefined, datasetId: string | undefined, discoveryId: string | undefined) {
   // if there is no dataset id nor discovery id -> thematics
@@ -123,13 +119,10 @@ export default function RelatedContent() {
   if (!currentCategory) throw Error('Something went wrong. Make sure this is used in one of content type (thematics, dataset, discovery).');
   
   const currentContent = findCurrentContent(currentCategory);
+  const relatedContents = formatContents(currentContent.related);
 
-  let relatedContents = formatContents(currentContent.related);
+  if(!relatedContents.length) throw Error('There is no related content defined.');
   
-  if (relatedContents.length < blockNum) throw Error('Make sure there are at least two related contents.');
-  // Just pick two if there are more than two related contents
-  if (relatedContents.length > blockNum) relatedContents = getMultipleRandom(relatedContents, blockNum);
-
   return (
     <>
       <FoldHeader>

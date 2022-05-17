@@ -92,9 +92,9 @@ declare module 'delta/thematics' {
    * editors can curate contents per each category with their ids
    */
   export interface RelatedContentData {
-    thematics?:Array<string>;
-    datasets?: Array<string>;
-    discoveries?: Array<StringLiteralLike>;
+    type: string;
+    id: string;
+    thematic?: string;
   }
 
   /**
@@ -108,7 +108,7 @@ declare module 'delta/thematics' {
     description: string;
     media?: Media
     layers: DatasetLayer[];
-    related?: RelatedContentData;
+    related?: Array<RelatedContentData>;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -125,7 +125,7 @@ declare module 'delta/thematics' {
     description: string;
     media?: Media
     thematics: string[];
-    related?: RelatedContentData;
+    related?: Array<RelatedContentData>;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -140,7 +140,7 @@ declare module 'delta/thematics' {
     name: string;
     description: string;
     media?: Media;
-    related?: RelatedContentData;
+    related?: Array<RelatedContentData>;
   }
 
   // ///////////////////////////////////////////////////////////////////////////

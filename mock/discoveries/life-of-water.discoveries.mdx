@@ -14,10 +14,14 @@ pubDate: 2022-02-09
 thematics:
   - agriculture
 related:
-  datasets:
-    - no2
-  discoveries:
-    - air-quality-and-covid-19
+  - type: dataset
+    id: no2
+    thematic: covid-19 # Required for types: dataset | discovery
+  - type: discovery
+    id: air-quality-and-covid-19
+    thematic: covid-19 # Required for types: dataset | discovery
+  - type: thematic
+    id: covid-19
 ---
 
 <Block>
