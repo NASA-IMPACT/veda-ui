@@ -55,7 +55,7 @@ async function requestQuickCache(
 
     // No cache found, make request.
    if (!quickCache.has(key)) {
-      const response = await axios.post(url+'a', payload, {
+      const response = await axios.post(url, payload, {
         signal: controller.signal
       });
       quickCache.set(key, response.data);
