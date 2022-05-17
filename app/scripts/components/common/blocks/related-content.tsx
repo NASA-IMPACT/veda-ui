@@ -8,19 +8,20 @@ import {
   datasets, 
   Media, 
   ThematicData,
-  RelatedContentData,
-  DiscoveryData,
-  DatasetData } from 'delta/thematics';
-import { useThematicArea } from '$utils/thematics';
+  RelatedContentData } from 'delta/thematics';
 import { thematicRootPath, thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
 import { Card, CardList } from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 
+const thematicsString = 'thematics';
+const datasetsString = 'datasets';
+const discoveriesString = 'discoveries';
+
 const contentCategory = {
-  'thematics': thematics,
-  'datasets': datasets,
-  'discoveries': discoveries
+  [thematicsString]: thematics,
+  [datasetsString]: datasets,
+  [discoveriesString]: discoveries
 };
 
 const blockNum = 2;
@@ -43,21 +44,23 @@ interface FormatBlock {
 
 function formatUrl(id: string, thematic: ThematicData, parent: string) {
   switch(parent) {
-    case 'thematic':
+    case thematicsString:
       return  {
         parentLink: thematicRootPath(thematic),
         link: thematicRootPath(thematic)
       };
-    case 'datasets':
+    case datasetsString:
       return  {
         parentLink: thematicDatasetsPath(thematic),
         link: `${thematicDatasetsPath(thematic)}/${id}`
       };
-    case 'discoveries':
+    case discoveriesString:
       return {
         parentLink: thematicDiscoveriesPath(thematic),
         link: `${thematicDiscoveriesPath(thematic)}/${id}`
       };
+    default:
+      throw Error('Something went wrong with parent data of related content.');
   }
 
 }
@@ -75,7 +78,7 @@ function formatContents(relatedData: Array<RelatedContentData>) {
     return relatedData[contentType].map(contentId => {
       const matchingContentId = Object.keys(contentCategory[contentType]).filter(e => e === contentId)[0];
       const matchingContent = contentCategory[contentType][matchingContentId].data;
-      const thematicId = matchingContent.thematics.length? matchingContent.thematics[0]: matchingContent.thematics;
+      const  thematicId = (!matchingContent.thematics)? matchingContent.id : matchingContent.thematics[0];
       return formatBlock({id:contentId, name: matchingContent.name, thematic: contentCategory.thematics[thematicId], media: matchingContent.media, contentType, parent: contentType});
     });
   }).flat();
@@ -88,25 +91,24 @@ function getMultipleRandom(arr: Array<FormatBlock>, num: number) {
   return shuffled.slice(0, num);
 }
 
-
 function getCurrentCategory(thematicId: string | undefined, datasetId: string | undefined, discoveryId: string | undefined) {
   // if there is no dataset id nor discovery id -> thematics
   if (!datasetId && !discoveryId) {
     return {
-      parent: 'thematics',
+      parent: thematicsString,
       id: thematicId
     };
   }
   // if there is dataset id but no discoveryid -> datasetId
   else if (datasetId && !discoveryId) {
     return {
-      parent: 'datasets',
+      parent: datasetsString,
       id: datasetId
     };
   }
   // it should be discovery at this point
   else if (!datasetId && discoveryId) return {
-    parent: 'discoveries',
+    parent: discoveriesString,
     id: discoveryId
   };
   else return null;
@@ -123,6 +125,9 @@ export default function RelatedContent() {
   const currentContent = findCurrentContent(currentCategory);
 
   let relatedContents = formatContents(currentContent.related);
+  
+  if (relatedContents.length < blockNum) throw Error('Make sure there are at least two related contents.');
+  // Just pick two if there are more than two related contents
   if (relatedContents.length > blockNum) relatedContents = getMultipleRandom(relatedContents, blockNum);
 
   return (
