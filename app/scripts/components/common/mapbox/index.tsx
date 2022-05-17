@@ -48,8 +48,10 @@ const getMapPositionOptions = (position) => {
   return opts;
 };
 
+type LayerContextType = 'stac' | 'mosaic';
+
 interface LayerContextStatus {
-  context: string;
+  context: LayerContextType;
   status: ActionStatus;
 }
 
@@ -81,7 +83,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
 
-  const [baseLayerStatus, setBaseLayerStatus] = useState<LayerContextStatus>({context: '', status: S_IDLE});
+  const [baseLayerStatus, setBaseLayerStatus] = useState<LayerContextStatus>({context: 'stac', status: S_IDLE});
   const onBaseLayerStatusChange = useCallback(
     ({ context, status }) => setBaseLayerStatus({context, status}),
     []
