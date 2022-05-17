@@ -14,6 +14,9 @@ import { Card, CardList } from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 
+import Block from '$components/common/blocks/';
+import ContentBlockFigure from '$components/common/blocks/figure';
+
 const thematicsString = 'thematic';
 const datasetsString = 'dataset';
 const discoveriesString = 'discovery';
@@ -124,7 +127,8 @@ export default function RelatedContent() {
   if(!relatedContents.length) throw Error('There is no related content defined.');
   
   return (
-    <>
+    <Block>
+      <ContentBlockFigure>
       <FoldHeader>
         <FoldTitle> 
           Related Content 
@@ -146,6 +150,8 @@ export default function RelatedContent() {
           </li>
         ))}
       </TwoColumnCardList>
-    </>
+      </ContentBlockFigure>
+    </Block>
+    
   );
 }
