@@ -70,7 +70,7 @@ interface MapLayerRasterTimeseriesProps {
   mapInstance: mapboxgl.Map;
   sourceParams: object;
   zoomExtent: [number, number];
-  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+  onStatusChange?: (status: ActionStatus) => void;
   isHidden: boolean;
 }
 
@@ -146,10 +146,10 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       // Only emit on status change.
       if (newStatus !== statuses.current.global) {
         statuses.current.global = newStatus;
-        onStatusChange?.({ status: newStatus, id, context: 'mosaic' });
+        onStatusChange?.(newStatus);
       }
     },
-    [id, onStatusChange]
+    [onStatusChange]
   );
 
   // Control whether or not to show markers depending on the zoom level. The min
