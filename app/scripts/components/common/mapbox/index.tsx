@@ -76,15 +76,17 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
 
-  const [baseLayerStacStatus, setBaseLayerStacStatus] = useState<ActionStatus>(S_IDLE);
+  // This baseLayerStatus is for BaseLayerComponent
+  // ex. RasterTimeSeries uses this variable to track the status of registering mosaic
+  const [baseLayerStatus, setBaseLayerStatus] = useState<ActionStatus>(S_IDLE);
   const onBaseLayerStatusChange = useCallback(
-    ({status}) => setBaseLayerStacStatus(status),
+    ({status}) => setBaseLayerStatus(status),
     []
   );
-  const [compareLayerStacStatus, setCompareLayerStacStatus] =
+  const [compareLayerStatus, setCompareLayerStatus] =
     useState<ActionStatus>(S_IDLE);
   const onCompareLayerStatusChange = useCallback(
-    (status) => setCompareLayerStacStatus(status),
+    (status) => setCompareLayerStatus(status),
     []
   );
 
@@ -222,23 +224,23 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         need to render a loading for each layer, but instead of centering them,
         we show them on top of their respective map.
       */}
-      {baseLayerStacStatus === S_LOADING && (
+      {baseLayerStatus === S_LOADING && (
         <MapLoading position={shouldRenderCompare ? 'left' : 'center'} />
       )}
-      {shouldRenderCompare && compareLayerStacStatus === S_LOADING && (
+      {shouldRenderCompare && compareLayerStatus === S_LOADING && (
         <MapLoading position='right' />
       )}
 
         <MapMessage
           id='mosaic-base-fail-message'
-          active={baseLayerStacStatus === S_FAILED}
+          active={baseLayerStatus === S_FAILED}
         >
           Failed to register layer {baseLayer?.data.id}
         </MapMessage>
       
         <MapMessage
           id='mosaic-compare-fail-message'
-          active={compareLayerStacStatus === S_FAILED}
+          active={compareLayerStatus === S_FAILED}
         >
           Failed to register layer {compareLayer?.data.id}
         </MapMessage>
@@ -252,7 +254,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       */}
       <MapMessage
         id='compare-message'
-        active={!!(shouldRenderCompare && compareLayerResolvedData && !(compareLayerStacStatus === S_FAILED))}
+        active={!!(shouldRenderCompare && compareLayerResolvedData && !(compareLayerStatus === S_FAILED))}
       >
         {computedCompareLabel}
       </MapMessage>
