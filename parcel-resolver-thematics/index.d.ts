@@ -1,5 +1,3 @@
-import { StringLiteralLike } from 'typescript';
-
 declare module 'delta/thematics' {
   import * as dateFns from 'date-fns';
   import { MDXModule } from 'mdx/types';
