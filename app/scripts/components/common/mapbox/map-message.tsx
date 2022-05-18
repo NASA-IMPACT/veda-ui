@@ -47,7 +47,7 @@ const Message = styled.div<MessageProps>`
         `
       : css`
           visibility: hidden;
-          top: -${variableGlsp()};
+          top: ${variableGlsp(-1)};
           opacity: 0;
         `}
 `;
