@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router';
 
 import {  
   thematics,
@@ -17,14 +16,14 @@ import { variableGlsp } from '$styles/variable-utils';
 import Block from '$components/common/blocks/';
 import ContentBlockFigure from '$components/common/blocks/figure';
 
-const thematicsString = 'thematic';
-const datasetsString = 'dataset';
-const discoveriesString = 'discovery';
+const thematicString = 'thematic';
+const datasetString = 'dataset';
+const discoveryString = 'discovery';
 
 const contentCategory = {
-  [thematicsString]: thematics,
-  [datasetsString]: datasets,
-  [discoveriesString]: discoveries
+  [thematicString]: thematics,
+  [datasetString]: datasets,
+  [discoveryString]: discoveries
 };
 
 const TwoColumnCardList = styled(CardList)`
@@ -38,24 +37,24 @@ interface FormatBlock {
   id: string;
   name: string;
   link: string;
-  thematic: ThematicData;
+  parentLink: string;
   media: Media;
   parent: ParentType;
 }
 
 function formatUrl(id: string, thematic: ThematicData, parent: string) {
   switch(parent) {
-    case thematicsString:
+    case thematicString:
       return  {
         parentLink: thematicRootPath(thematic),
         link: thematicRootPath(thematic)
       };
-    case datasetsString:
+    case datasetString:
       return  {
         parentLink: thematicDatasetsPath(thematic),
         link: `${thematicDatasetsPath(thematic)}/${id}`
       };
-    case discoveriesString:
+    case discoveryString:
       return {
         parentLink: thematicDiscoveriesPath(thematic),
         link: `${thematicDiscoveriesPath(thematic)}/${id}`
@@ -66,63 +65,35 @@ function formatUrl(id: string, thematic: ThematicData, parent: string) {
 
 }
 
-function formatBlock({ id, name, thematic, media, parent }: FormatBlock) {
+function formatBlock({ id, name, thematic, media, parent }): FormatBlock {
   return { id, name, ...formatUrl(id, thematic, parent), media, parent };
-}
-
-function findCurrentContent({ parent, id }: { parent: string, id; string} ) {
-  return contentCategory[parent][id].data;
 }
 
 function formatContents(relatedData: Array<RelatedContentData>) {
   const rData = relatedData.map(relatedContent => {
-    const {type, id} = relatedContent;
-    const matchingContentId = Object.keys(contentCategory[type]).filter(e => e === id)[0];
+    const { type, id } = relatedContent;
     
-    if (!matchingContentId) throw Error('Something went wrong. Check the related content frontmatter.');
+    const matchingContent = contentCategory[type][id].data;
     
-    const matchingContent = contentCategory[type][matchingContentId].data;
+    if (!matchingContent) throw Error('Something went wrong. Check the related content frontmatter.');
+    
+    const {name, media } = matchingContent;
     const  thematicId = (!matchingContent.thematics)? matchingContent.id : matchingContent.thematics[0];
-    return formatBlock({id:id, name: matchingContent.name, thematic: contentCategory[thematicsString][thematicId], media: matchingContent.media, parent: type });
+
+    return formatBlock({ id , name, thematic: contentCategory[thematicString][thematicId], media, parent: type });
   });
   
   return rData;
 }
 
 
-function getCurrentCategory(thematicId: string | undefined, datasetId: string | undefined, discoveryId: string | undefined) {
-  // if there is no dataset id nor discovery id -> thematics
-  if (!datasetId && !discoveryId) {
-    return {
-      parent: thematicsString,
-      id: thematicId
-    };
-  }
-  // if there is dataset id but no discoveryid -> datasetId
-  else if (datasetId && !discoveryId) {
-    return {
-      parent: datasetsString,
-      id: datasetId
-    };
-  }
-  // it should be discovery at this point
-  else if (!datasetId && discoveryId) return {
-    parent: discoveriesString,
-    id: discoveryId
-  };
-  else return null;
+interface RelatedContentProps {
+  related: Array<RelatedContentData>;
 }
 
-export default function RelatedContent() {
-  const { thematicId, datasetId, discoveryId } = useParams();
-
-  // Check which category this page falls into
-  const currentCategory = getCurrentCategory(thematicId, datasetId, discoveryId);
-  
-  if (!currentCategory) throw Error('Something went wrong. Make sure this is used in one of content type (thematics, dataset, discovery).');
-  
-  const currentContent = findCurrentContent(currentCategory);
-  const relatedContents = formatContents(currentContent.related);
+export default function RelatedContent(props: RelatedContentProps): JSX.Element {
+  const { related } = props;
+  const relatedContents = formatContents(related);
 
   if(!relatedContents.length) throw Error('There is no related content defined.');
   
@@ -138,7 +109,7 @@ export default function RelatedContent() {
         {relatedContents.map((t) => (
           <li key={t.id}>
             <Card
-              cardType='cover'
+              cardType={t.parent === discoveryString? 'default': 'cover'}
               linkLabel={`View ${t.parent} ${t.name}`}
               linkTo={t.link}
               title={t.name}

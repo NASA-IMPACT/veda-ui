@@ -62,7 +62,9 @@ function DatasetsOverview() {
           attributionUrl={dataset.data.media?.author?.url}
         />
         <MdxContent loader={dataset?.content} />
-        {dataset.data.related?.length > 0 && <RelatedContent />}
+        {dataset.data.related?.length > 0 && (
+          <RelatedContent related={dataset.data.related} />
+        )}
       </PageMainContent>
     </>
   );

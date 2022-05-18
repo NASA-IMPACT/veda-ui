@@ -45,7 +45,7 @@ function DiscoveriesSingle() {
             attributionUrl={media?.author?.url}
           />
           <MdxContent loader={discovery?.content} />
-          {related?.length > 0 && <RelatedContent />}
+          {related?.length > 0 && <RelatedContent related={related} />}
         </article>
       </PageMainContent>
     </>
