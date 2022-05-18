@@ -78,7 +78,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
   const [baseLayerStacStatus, setBaseLayerStacStatus] = useState<ActionStatus>(S_IDLE);
   const onBaseLayerStatusChange = useCallback(
-    (status) => setBaseLayerStacStatus(status),
+    ({status}) => setBaseLayerStacStatus(status),
     []
   );
   const [compareLayerStacStatus, setCompareLayerStacStatus] =
