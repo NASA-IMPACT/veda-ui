@@ -1,14 +1,15 @@
 import React from 'react';
-import T from 'prop-types';
 import styled from 'styled-components';
 import { listReset, themeVal } from '@devseed-ui/theme-provider';
 import { AccordionManager } from '@devseed-ui/accordion';
 
+import { datasets } from 'delta/thematics';
 import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { checkLayerLoadStatus } from '$components/common/mapbox/layers/utils';
 import { Layer } from './dataset-layer-single';
 import LayerAlert from './layer-alert';
 import { InlineLayerLoadingSkeleton } from './layer-loading';
+import { AsyncDatasetLayer } from '$context/layer-data';
 
 const LayerList = styled.ol`
   ${listReset()};
@@ -20,8 +21,15 @@ const LayerList = styled.ol`
   }
 `;
 
-export default function DatasetLayers(props) {
-  const { asyncLayers, onAction, selectedLayerId } = props;
+interface DatasetLayersProps {
+  datasetId: string;
+  asyncLayers: AsyncDatasetLayer[];
+  onAction: (action: string, payload: { [key: string]: any }) => void;
+  selectedLayerId: string;
+}
+
+export default function DatasetLayers(props: DatasetLayersProps) {
+  const { datasetId, asyncLayers, onAction, selectedLayerId } = props;
 
   return (
     <AccordionManager>
@@ -38,36 +46,39 @@ export default function DatasetLayers(props) {
                   <InlineLayerLoadingSkeleton />
                 </li>
               );
-            case S_FAILED:
+            case S_FAILED: {
+              // The order of the asyncLayers is the same as the source layers.
+              const sourceLayer = datasets[datasetId].data.layers[idx];
               return (
                 /* eslint-disable-next-line react/no-array-index-key */
                 <li key={idx}>
-                  <LayerAlert onRetryClick={l.reFetch} />
+                  <LayerAlert
+                    onRetryClick={l.reFetch}
+                    name={sourceLayer.name}
+                  />
                 </li>
               );
-            case S_SUCCEEDED:
+            }
+            case S_SUCCEEDED: {
+              // On succeed the data is never null.
+              const lData = l.baseLayer.data!;
               return (
-                <li key={l.baseLayer.data.id}>
+                <li key={lData.id}>
                   <Layer
-                    id={l.baseLayer.data.id}
-                    name={l.baseLayer.data.name}
-                    info={l.baseLayer.data.description}
-                    active={l.baseLayer.data.id === selectedLayerId}
+                    id={lData.id}
+                    name={lData.name}
+                    info={lData.description}
+                    active={lData.id === selectedLayerId}
                     onToggleClick={() => {
-                      onAction('layer.toggle', l.baseLayer.data);
+                      onAction('layer.toggle', lData);
                     }}
                   />
                 </li>
               );
+            }
           }
         })}
       </LayerList>
     </AccordionManager>
   );
 }
-
-DatasetLayers.propTypes = {
-  asyncLayers: T.array,
-  onAction: T.func,
-  selectedLayerId: T.string
-};

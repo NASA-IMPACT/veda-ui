@@ -28,12 +28,14 @@ const InlineAlert = styled.div`
 `;
 
 export default function LayerAlert(props) {
-  const { onRetryClick } = props;
+  const { onRetryClick, name } = props;
 
   return (
     <InlineAlert>
       <CollecticonCircleXmark size='large' />
-      <p>Failed loading</p>
+      <p>
+        Failed loading <strong>{name}</strong>
+      </p>
       <Button
         fitting='skinny'
         size='small'
@@ -47,5 +49,6 @@ export default function LayerAlert(props) {
 }
 
 LayerAlert.propTypes = {
-  onRetryClick: T.func
+  onRetryClick: T.func,
+  name: T.string
 };
