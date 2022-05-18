@@ -10,11 +10,11 @@ const fadeDuration = 240;
 interface MessageProps {
   show: boolean;
   isInvalid?: boolean;
+  position?: 'left' | 'right' | 'center';
 }
 
 const Message = styled.div<MessageProps>`
   position: absolute;
-  left: 50%;
   z-index: 8;
   transform: translate(-50%, 0);
   padding: ${glsp(0.5, 0.75)};
@@ -26,6 +26,12 @@ const Message = styled.div<MessageProps>`
   display: flex;
   align-items: center;
   gap: ${glsp(0.5)};
+
+  ${({ position }) => {
+    if (position === 'left') return 'left: 25%;';
+    if (position === 'right') return 'left: 75%;';
+    return 'left: 50%;';
+  }}
 
   ${({ isInvalid }) =>
     isInvalid
@@ -52,15 +58,14 @@ const Message = styled.div<MessageProps>`
         `}
 `;
 
-interface MapMessageProps {
+interface MapMessageProps extends Pick<MessageProps, 'isInvalid' | 'position'> {
   id: string;
   active: boolean;
   children: React.ReactNode;
-  isInvalid?: boolean;
 }
 
 export default function MapMessage(props: MapMessageProps) {
-  const { id, children, active, isInvalid } = props;
+  const { id, children, active, isInvalid, position } = props;
 
   return (
     <TransitionGroup component={null}>
@@ -71,6 +76,7 @@ export default function MapMessage(props: MapMessageProps) {
               <Message
                 show={state === 'entered' || state === 'entering'}
                 isInvalid={isInvalid}
+                position={position}
               >
                 {children}
               </Message>
