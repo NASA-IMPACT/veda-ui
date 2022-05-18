@@ -90,7 +90,7 @@ declare module 'delta/thematics' {
    * editors can curate contents per each category with their ids
    */
   export interface RelatedContentData {
-    type: string;
+    type: 'dataset' | 'discovery' | 'thematic';
     id: string;
     thematic?: string;
   }
