@@ -71,15 +71,15 @@ function formatBlock({ id, name, thematic, media, parent }): FormatBlock {
 
 function formatContents(relatedData: Array<RelatedContentData>) {
   const rData = relatedData.map(relatedContent => {
-    const { type, id } = relatedContent;
+    const { type, id, thematic } = relatedContent;
+    // if related content is thematic, it won't have thematic as an attribute
+    const thematicId = (!thematic)? id : thematic;
     
     const matchingContent = contentCategory[type][id].data;
     
     if (!matchingContent) throw Error('Something went wrong. Check the related content frontmatter.');
     
     const {name, media } = matchingContent;
-    const  thematicId = (!matchingContent.thematics)? matchingContent.id : matchingContent.thematics[0];
-
     return formatBlock({ id , name, thematic: contentCategory[thematicString][thematicId], media, parent: type });
   });
   
@@ -109,7 +109,7 @@ export default function RelatedContent(props: RelatedContentProps): JSX.Element 
         {relatedContents.map((t) => (
           <li key={t.id}>
             <Card
-              cardType={t.parent === discoveryString? 'default': 'cover'}
+              cardType={t.parent === discoveryString? 'classic': 'cover'}
               linkLabel={`View ${t.parent} ${t.name}`}
               linkTo={t.link}
               title={t.name}
