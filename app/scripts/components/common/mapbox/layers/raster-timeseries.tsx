@@ -53,13 +53,13 @@ async function requestQuickCache(
 ) {
   const key = `${url}${JSON.stringify(payload)}`;
 
-    // No cache found, make request.
-   if (!quickCache.has(key)) {
-      const response = await axios.post(url, payload, {
-        signal: controller.signal
-      });
-      quickCache.set(key, response.data);
-    }
+  // No cache found, make request.
+  if (!quickCache.has(key)) {
+    const response = await axios.post(url, payload, {
+      signal: controller.signal
+    });
+    quickCache.set(key, response.data);
+  }
   return quickCache.get(key);
 }
 
@@ -182,7 +182,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         changeStatus?.({ status: S_LOADING, context: 'zoom-markers' });
 
         const payload = {
-          "filter-lang": "cql2-json",
+          'filter-lang': 'cql2-json',
           filter: getFilterPayload(userTzDate2utcString(date), layerId),
           limit: 500,
           fields: {
@@ -290,7 +290,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       changeStatus?.({ status: S_LOADING, context: 'layer' });
       try {
         const payload = {
-          "filter-lang": "cql2-json",
+          'filter-lang': 'cql2-json',
           filter: getFilterPayload(userTzDate2utcString(date), layerId)
         };
 
