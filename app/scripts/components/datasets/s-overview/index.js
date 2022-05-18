@@ -10,7 +10,7 @@ import PageLocalNav, {
 } from '$components/common/page-local-nav';
 import PageHero from '$components/common/page-hero';
 import MdxContent from '$components/common/mdx-content';
-import RelatedContent from '$components/common/blocks/related-content';
+import RelatedContent from '$components/common/related-content';
 
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { datasetExplorePath, thematicDatasetsPath } from '$utils/routes';
