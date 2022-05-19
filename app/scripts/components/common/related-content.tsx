@@ -41,6 +41,7 @@ export type ParentType = 'thematic' | 'dataset' | 'discovery';
 interface FormatBlock {
   id: string;
   name: string;
+  description: string;
   link: string;
   parentLink: string;
   media: Media;
@@ -69,8 +70,8 @@ function formatUrl(id: string, thematic: ThematicData, parent: string) {
   }
 }
 
-function formatBlock({ id, name, thematic, media, parent }): FormatBlock {
-  return { id, name, ...formatUrl(id, thematic, parent), media, parent };
+function formatBlock({ id, name, description, thematic, media, parent }): FormatBlock {
+  return { id, name, description, ...formatUrl(id, thematic, parent), media, parent };
 }
 
 function formatContents(relatedData: Array<RelatedContentData>) {
@@ -87,10 +88,11 @@ function formatContents(relatedData: Array<RelatedContentData>) {
         'Something went wrong. Check the related content frontmatter.'
       );
 
-    const { name, media } = matchingContent;
+    const { name, description, media } = matchingContent;
     return formatBlock({
       id,
       name,
+      description,
       thematic: contentCategory[thematicString][thematicId],
       media,
       parent: type
@@ -116,25 +118,26 @@ export default function RelatedContent(
   return (
     <Block>
       <ContentBlockFigure>
-        <FoldHeader>
-          <FoldTitle>Related Content</FoldTitle>
-        </FoldHeader>
-        <TwoColumnCardList>
-          {relatedContents.map((t) => (
-            <li key={t.id}>
-              <Card
-                cardType={t.parent === discoveryString ? 'classic' : 'cover'}
-                linkLabel={`View ${t.parent} ${t.name}`}
-                linkTo={t.link}
-                title={t.name}
-                parentName={t.parent}
-                parentTo={t.parentLink}
-                imgSrc={t.media.src}
-                imgAlt={t.media.alt}
-              />
-            </li>
-          ))}
-        </TwoColumnCardList>
+      <FoldHeader>
+        <FoldTitle> Related Content </FoldTitle>
+      </FoldHeader>
+      <TwoColumnCardList>
+        {relatedContents.map((t) => (
+          <li key={t.id}>
+            <Card
+              cardType='cover'
+              linkLabel={`View ${t.parent} ${t.name}`}
+              linkTo={t.link}
+              title={t.name}
+              description={t.description}
+              parentName={t.parent}
+              parentTo={t.parentLink}
+              imgSrc={t.media.src}
+              imgAlt={t.media.alt}
+            />
+          </li>
+        ))}
+      </TwoColumnCardList>
       </ContentBlockFigure>
     </Block>
   );
