@@ -12,8 +12,15 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import * as dateFns from 'date-fns';
+import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
-import { ActionStatus, S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
+import {
+  ActionStatus,
+  S_FAILED,
+  S_IDLE,
+  S_LOADING,
+  S_SUCCEEDED
+} from '$utils/status';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { useDatasetAsyncLayer } from '$context/layer-data';
 import { MapLoading } from '$components/common/loading-skeleton';
@@ -77,8 +84,11 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
 
   // This baseLayerStatus is for BaseLayerComponent
-  // ex. RasterTimeSeries uses this variable to track the status of registering mosaic
-  const [baseLayerStatus, setBaseLayerStatus] = useState<ActionStatus>(S_IDLE);
+  // ex. RasterTimeSeries uses this variable to track the status of
+  // registering mosaic.
+  const [baseLayerStatus, setBaseLayerStatus] =
+    useState<ActionStatus>(S_IDLE);
+
   const onBaseLayerStatusChange = useCallback(
     ({status}) => setBaseLayerStatus(status),
     []
@@ -231,20 +241,28 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         <MapLoading position='right' />
       )}
 
-        <MapMessage
-          id='mosaic-base-fail-message'
-          active={baseLayerStatus === S_FAILED}
-        >
-          Failed to register layer {baseLayer?.data.id}
-        </MapMessage>
-      
-        <MapMessage
-          id='mosaic-compare-fail-message'
-          active={compareLayerStatus === S_FAILED}
-        >
-          Failed to register layer {compareLayer?.data.id}
-        </MapMessage>
-      
+      {/*
+        Normally we only need 1 error which is centered. If we're comparing we
+        need to render an error for each layer, but instead of centering them,
+        we show them on top of their respective map.
+      */}
+      <MapMessage
+        id='mosaic-base-fail-message'
+        active={baseLayerStatus === S_FAILED}
+        position={shouldRenderCompare ? 'left' : 'center'}
+        isInvalid
+      >
+        <CollecticonCircleXmark /> Failed to load layer {baseLayer?.data?.id}
+      </MapMessage>
+      <MapMessage
+        id='mosaic-compare-fail-message'
+        active={compareLayerStatus === S_FAILED}
+        position='right'
+        isInvalid
+      >
+        <CollecticonCircleXmark /> Failed to load compare layer{' '}
+        {compareLayer?.data?.id}
+      </MapMessage>
 
       {/*
         Map overlay element
@@ -254,7 +272,13 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       */}
       <MapMessage
         id='compare-message'
-        active={!!(shouldRenderCompare && compareLayerResolvedData && !(compareLayerStatus === S_FAILED))}
+        active={
+          !!(
+            shouldRenderCompare &&
+            compareLayerResolvedData &&
+            compareLayerStatus !== S_FAILED
+          )
+        }
       >
         {computedCompareLabel}
       </MapMessage>
