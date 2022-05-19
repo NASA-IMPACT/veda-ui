@@ -1,14 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {  
+import {
   thematics,
   discoveries,
-  datasets, 
-  Media, 
+  datasets,
+  Media,
   ThematicData,
-  RelatedContentData } from 'delta/thematics';
-import { thematicRootPath, thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
+  RelatedContentData
+} from 'delta/thematics';
+import {
+  thematicRootPath,
+  thematicDatasetsPath,
+  thematicDiscoveriesPath
+} from '$utils/routes';
 import { Card, CardList } from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
@@ -43,14 +48,14 @@ interface FormatBlock {
 }
 
 function formatUrl(id: string, thematic: ThematicData, parent: string) {
-  switch(parent) {
+  switch (parent) {
     case thematicString:
-      return  {
+      return {
         parentLink: thematicRootPath(thematic),
         link: thematicRootPath(thematic)
       };
     case datasetString:
-      return  {
+      return {
         parentLink: thematicDatasetsPath(thematic),
         link: `${thematicDatasetsPath(thematic)}/${id}`
       };
@@ -62,7 +67,6 @@ function formatUrl(id: string, thematic: ThematicData, parent: string) {
     default:
       throw Error('Something went wrong with parent data of related content.');
   }
-
 }
 
 function formatBlock({ id, name, thematic, media, parent }): FormatBlock {
@@ -70,59 +74,68 @@ function formatBlock({ id, name, thematic, media, parent }): FormatBlock {
 }
 
 function formatContents(relatedData: Array<RelatedContentData>) {
-  const rData = relatedData.map(relatedContent => {
+  const rData = relatedData.map((relatedContent) => {
     const { type, id, thematic } = relatedContent;
+    console.log("🚀 ~ file: related-content.tsx ~ line 79 ~ rData ~ relatedContent", relatedContent);
     // if related content is thematic, it won't have thematic as an attribute
-    const thematicId = (!thematic)? id : thematic;
-    
-    const matchingContent = contentCategory[type][id].data;
-    
-    if (!matchingContent) throw Error('Something went wrong. Check the related content frontmatter.');
-    
-    const {name, media } = matchingContent;
-    return formatBlock({ id , name, thematic: contentCategory[thematicString][thematicId], media, parent: type });
+    const thematicId = !thematic ? id : thematic;
+
+    const matchingContent = contentCategory[type]?.[id].data;
+
+    if (!matchingContent)
+      throw Error(
+        'Something went wrong. Check the related content frontmatter.'
+      );
+
+    const { name, media } = matchingContent;
+    return formatBlock({
+      id,
+      name,
+      thematic: contentCategory[thematicString][thematicId],
+      media,
+      parent: type
+    });
   });
-  
+
   return rData;
 }
-
 
 interface RelatedContentProps {
   related: Array<RelatedContentData>;
 }
 
-export default function RelatedContent(props: RelatedContentProps): JSX.Element {
+export default function RelatedContent(
+  props: RelatedContentProps
+): JSX.Element {
   const { related } = props;
   const relatedContents = formatContents(related);
 
-  if(!relatedContents.length) throw Error('There is no related content defined.');
-  
+  if (!relatedContents.length)
+    throw Error('There is no related content defined.');
+
   return (
     <Block>
       <ContentBlockFigure>
-      <FoldHeader>
-        <FoldTitle> 
-          Related Content 
-        </FoldTitle>
-      </FoldHeader>
-      <TwoColumnCardList>
-        {relatedContents.map((t) => (
-          <li key={t.id}>
-            <Card
-              cardType={t.parent === discoveryString? 'classic': 'cover'}
-              linkLabel={`View ${t.parent} ${t.name}`}
-              linkTo={t.link}
-              title={t.name}
-              parentName={t.parent}
-              parentTo={t.parentLink}
-              imgSrc={t.media.src}
-              imgAlt={t.media.alt}
-            />
-          </li>
-        ))}
-      </TwoColumnCardList>
+        <FoldHeader>
+          <FoldTitle>Related Content</FoldTitle>
+        </FoldHeader>
+        <TwoColumnCardList>
+          {relatedContents.map((t) => (
+            <li key={t.id}>
+              <Card
+                cardType={t.parent === discoveryString ? 'classic' : 'cover'}
+                linkLabel={`View ${t.parent} ${t.name}`}
+                linkTo={t.link}
+                title={t.name}
+                parentName={t.parent}
+                parentTo={t.parentLink}
+                imgSrc={t.media.src}
+                imgAlt={t.media.alt}
+              />
+            </li>
+          ))}
+        </TwoColumnCardList>
       </ContentBlockFigure>
     </Block>
-    
   );
 }
