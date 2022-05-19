@@ -60,7 +60,6 @@ async function requestQuickCache(
     });
     quickCache.set(key, response.data);
   }
-
   return quickCache.get(key);
 }
 
@@ -183,7 +182,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         changeStatus?.({ status: S_LOADING, context: 'zoom-markers' });
 
         const payload = {
-          "filter-lang": "cql2-json",
+          'filter-lang': 'cql2-json',
           filter: getFilterPayload(userTzDate2utcString(date), layerId),
           limit: 500,
           fields: {
@@ -291,7 +290,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       changeStatus?.({ status: S_LOADING, context: 'layer' });
       try {
         const payload = {
-          "filter-lang": "cql2-json",
+          'filter-lang': 'cql2-json',
           filter: getFilterPayload(userTzDate2utcString(date), layerId)
         };
 
