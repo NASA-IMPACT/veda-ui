@@ -151,6 +151,7 @@ export const CardOverline = styled(Overline)`
 
 const CardLabel = styled.span`
   position: absolute;
+  z-index: 1;
   top: ${variableGlsp()};
   right: ${variableGlsp()};
   display: inline-block;
