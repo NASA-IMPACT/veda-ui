@@ -42,6 +42,7 @@ interface FormatBlock {
   id: string;
   name: string;
   description: string;
+  date: string;
   link: string;
   parentLink: string;
   media: Media;
@@ -70,8 +71,8 @@ function formatUrl(id: string, thematic: ThematicData, parent: string) {
   }
 }
 
-function formatBlock({ id, name, description, thematic, media, parent }): FormatBlock {
-  return { id, name, description, ...formatUrl(id, thematic, parent), media, parent };
+function formatBlock({ id, name, description, date, thematic, media, parent }): FormatBlock {
+  return { id, name, description, date, ...formatUrl(id, thematic, parent), media, parent };
 }
 
 function formatContents(relatedData: Array<RelatedContentData>) {
@@ -88,11 +89,12 @@ function formatContents(relatedData: Array<RelatedContentData>) {
         'Something went wrong. Check the related content frontmatter.'
       );
 
-    const { name, description, media } = matchingContent;
+    const { name, description, pubDate, media } = matchingContent;
     return formatBlock({
       id,
       name,
       description,
+      date: pubDate,
       thematic: contentCategory[thematicString][thematicId],
       media,
       parent: type
@@ -129,6 +131,7 @@ export default function RelatedContent(
               linkLabel={`View ${t.parent} ${t.name}`}
               linkTo={t.link}
               title={t.name}
+              date={t.parent === discoveryString? new Date(t.date) : null}
               description={t.description}
               parentName={t.parent}
               parentTo={t.parentLink}
