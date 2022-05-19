@@ -9,6 +9,7 @@ import {
   ThematicData,
   RelatedContentData
 } from 'delta/thematics';
+import { utcString2userTzDate } from '$utils/date';
 import {
   thematicRootPath,
   thematicDatasetsPath,
@@ -78,7 +79,6 @@ function formatBlock({ id, name, description, date, thematic, media, parent }): 
 function formatContents(relatedData: Array<RelatedContentData>) {
   const rData = relatedData.map((relatedContent) => {
     const { type, id, thematic } = relatedContent;
-    console.log("🚀 ~ file: related-content.tsx ~ line 79 ~ rData ~ relatedContent", relatedContent);
     // if related content is thematic, it won't have thematic as an attribute
     const thematicId = !thematic ? id : thematic;
 
@@ -131,7 +131,7 @@ export default function RelatedContent(
               linkLabel={`View ${t.parent} ${t.name}`}
               linkTo={t.link}
               title={t.name}
-              date={t.parent === discoveryString? new Date(t.date) : null}
+              date={t.parent === discoveryString? utcString2userTzDate(t.date) : null}
               description={t.description}
               parentName={t.parent}
               parentTo={t.parentLink}
