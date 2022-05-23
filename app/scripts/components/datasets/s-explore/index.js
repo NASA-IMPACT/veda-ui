@@ -452,6 +452,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
                   </PanelWidgetHeader>
                   <PanelWidgetBody>
                     <DatasetLayers
+                      datasetId={dataset.data.id}
                       asyncLayers={asyncLayers}
                       selectedLayerId={selectedLayerId}
                       onAction={onLayerAction}

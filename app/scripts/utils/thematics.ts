@@ -6,7 +6,8 @@ import deltaThematics, {
   datasets
 } from 'delta/thematics';
 
-import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
+import { ActionStatus, S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
+import { MDXContent, MDXModule } from 'mdx/types';
 
 /**
  * Returns the data for the thematic are taking the url parameter into account.
@@ -20,9 +21,10 @@ export function useThematicArea() {
   const tId = deltaThematics.length === 1 ? deltaThematics[0].id : thematicId;
 
   return useMemo(() => {
-    // Relationship data between thematics and datasets/discoveries.
-    const relData = deltaThematics.find((d) => d.id === tId);
+    if (!tId) return null;
 
+    const relData = deltaThematics.find((d) => d.id === tId);
+    // Relationship data between thematics and datasets/discoveries.
     if (!relData) return null;
 
     return {
@@ -45,11 +47,15 @@ export function useThematicAreaDiscovery() {
   const thematic = useThematicArea();
   const { discoveryId } = useParams();
 
-  const discovery = discoveries[discoveryId];
+  const discovery = discoveries[discoveryId || ''];
 
   // Stop if the discovery doesn't exist or if it doesn't belong to this
   // thematic area.
-  if (!discovery || !discovery.data.thematics.includes(thematic.data.id)) {
+  if (
+    !thematic ||
+    !discovery ||
+    !discovery.data.thematics.includes(thematic.data.id)
+  ) {
     return null;
   }
 
@@ -66,15 +72,24 @@ export function useThematicAreaDataset() {
   const thematic = useThematicArea();
   const { datasetId } = useParams();
 
-  const dataset = datasets[datasetId];
+  const dataset = datasets[datasetId || ''];
 
   // Stop if the datasets doesn't exist or if it doesn't belong to this
   // thematic area.
-  if (!dataset || !dataset.data.thematics.includes(thematic.data.id)) {
+  if (
+    !thematic ||
+    !dataset ||
+    !dataset.data.thematics.includes(thematic.data.id)
+  ) {
     return null;
   }
 
   return dataset;
+}
+
+interface MdxPageLoadResult {
+  status: ActionStatus,
+  MdxContent: MDXContent | null
 }
 
 /**
@@ -83,14 +98,14 @@ export function useThematicAreaDataset() {
  * @param {function} loader Async function to load the mdx page
  * @returns Object
  */
-export function useMdxPageLoader(loader) {
-  const [pageMdx, setPageMdx] = useState({
+export function useMdxPageLoader(loader: () => Promise<MDXModule>) {
+  const [pageMdx, setPageMdx] = useState<MdxPageLoadResult>({
     status: S_IDLE,
     MdxContent: null
   });
 
   useEffect(() => {
-    if (!loader) return null;
+    if (!loader) return;
 
     const load = async () => {
       setPageMdx({

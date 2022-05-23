@@ -169,7 +169,7 @@ declare module 'delta/thematics' {
        * Promise to return the MDX content. Setup this way to allow dynamic
        * module loading.
        */
-      content: Promise<MDXModule>;
+      content: () => Promise<MDXModule>;
     };
   }
 
