@@ -13,7 +13,7 @@ media:
     url: https://unsplash.com/
 thematics:
   - agriculture
-  - air-quality
+  - covid-19
 
 layers:
   - id: no2-monthly
@@ -87,7 +87,15 @@ layers:
   - id: dev-fail
     name: Failing layer
     type: raster
+related:
+  - type: dataset
+    id: no2
+    thematic: covid-19
+  - type: discovery
+    id: air-quality-and-covid-19
+    thematic: covid-19 
 ---
+
 <Block>
 <Prose>
 ## Lorem ipsum dolor sit

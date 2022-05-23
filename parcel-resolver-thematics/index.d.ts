@@ -86,6 +86,16 @@ declare module 'delta/thematics' {
   }
 
   /**
+   * Related Contents
+   * editors can curate contents per each category with their ids
+   */
+  export interface RelatedContentData {
+    type: 'dataset' | 'discovery' | 'thematic';
+    id: string;
+    thematic?: string;
+  }
+
+  /**
    * Data structure for the Datasets frontmatter.
    */
   interface DatasetData {
@@ -96,6 +106,7 @@ declare module 'delta/thematics' {
     description: string;
     media?: Media
     layers: DatasetLayer[];
+    related?: Array<RelatedContentData>;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -112,6 +123,7 @@ declare module 'delta/thematics' {
     description: string;
     media?: Media
     thematics: string[];
+    related?: Array<RelatedContentData>;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -121,11 +133,12 @@ declare module 'delta/thematics' {
   /**
    * Data structure for the Thematics frontmatter.
    */
-   interface ThematicData {
+  export interface ThematicData {
     id: string;
     name: string;
     description: string;
-    media?: Media
+    media?: Media;
+    related?: Array<RelatedContentData>;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -133,7 +146,7 @@ declare module 'delta/thematics' {
   // ///////////////////////////////////////////////////////////////////////////
   type Primitives = string | number | boolean | null | undefined;
 
-  interface Media {
+  export interface Media {
     src: string;
     alt: string;
     author?: {

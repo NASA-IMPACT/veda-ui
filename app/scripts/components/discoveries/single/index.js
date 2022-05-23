@@ -6,6 +6,7 @@ import PageHero from '$components/common/page-hero';
 import PageLocalNav from '$components/common/page-local-nav';
 import { PageMainContent } from '$styles/page';
 import MdxContent from '$components/common/mdx-content';
+import RelatedContent from '$components/common/related-content';
 
 import { useThematicArea, useThematicAreaDiscovery } from '$utils/thematics';
 import { thematicDiscoveriesPath } from '$utils/routes';
@@ -16,7 +17,7 @@ function DiscoveriesSingle() {
 
   if (!thematic || !discovery) throw resourceNotFound();
 
-  const { media } = discovery.data;
+  const { media, related } = discovery.data;
 
   return (
     <>
@@ -44,6 +45,7 @@ function DiscoveriesSingle() {
             attributionUrl={media?.author?.url}
           />
           <MdxContent loader={discovery?.content} />
+          {related?.length > 0 && <RelatedContent related={related} />}
         </article>
       </PageMainContent>
     </>

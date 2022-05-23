@@ -10,6 +10,7 @@ import PageLocalNav, {
 } from '$components/common/page-local-nav';
 import PageHero from '$components/common/page-hero';
 import MdxContent from '$components/common/mdx-content';
+import RelatedContent from '$components/common/related-content';
 
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { datasetExplorePath, thematicDatasetsPath } from '$utils/routes';
@@ -61,6 +62,9 @@ function DatasetsOverview() {
           attributionUrl={dataset.data.media?.author?.url}
         />
         <MdxContent loader={dataset?.content} />
+        {dataset.data.related?.length > 0 && (
+          <RelatedContent related={dataset.data.related} />
+        )}
       </PageMainContent>
     </>
   );
