@@ -4,7 +4,7 @@ module.exports = new Transformer({
   async transform({ asset }) {
     // Using dynamic imports to work around Parcel package manager
     const { compile } = await import('@mdx-js/mdx');
-    const remarkGfm = await import('remark-gfm');
+    const { default: remarkGfm } = await import('remark-gfm');
 
     let code = await asset.getCode();
     let compiled = await compile(code, {

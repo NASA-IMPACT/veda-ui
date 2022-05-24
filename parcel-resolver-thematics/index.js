@@ -214,7 +214,8 @@ module.exports = new Resolver({
             'If you are running the UI repo directly this is expected',
             'Otherwise, create a delta.config.js file in your project config root.'
           ],
-          documentationURL: 'http://example.com/'
+          documentationURL:
+            'https://github.com/NASA-IMPACT/delta-config/blob/develop/docs/CONFIGURATION.md'
         });
       }
 
