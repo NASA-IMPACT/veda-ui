@@ -8,17 +8,11 @@ import React, {
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
-import { glsp, themeVal, truncated } from '@devseed-ui/theme-provider';
+import { themeVal } from '@devseed-ui/theme-provider';
 import {
-  CollecticonChevronDownSmall,
-  CollecticonChevronUpSmall,
   CollecticonExpandFromLeft,
-  CollecticonShrinkToLeft,
-  CollecticonSwapHorizontal
+  CollecticonShrinkToLeft
 } from '@devseed-ui/collecticons';
-import { DatePicker } from '@devseed-ui/date-picker';
-import { Toolbar, ToolbarButton } from '@devseed-ui/toolbar';
-import { Heading } from '@devseed-ui/typography';
 
 import { resourceNotFound } from '$components/uhoh';
 import PageLocalNav, {
@@ -41,10 +35,7 @@ import {
   PanelWidgetBody,
   PanelWidgetHeader,
   PanelWidgetTitle,
-  PANEL_REVEAL_DURATION,
-  WidgetItemHeader,
-  WidgetItemHeadline,
-  WidgetItemHGroup
+  PANEL_REVEAL_DURATION
 } from '$styles/panel';
 import DatasetLayers from './dataset-layers';
 
@@ -60,6 +51,7 @@ import {
 } from '$components/common/mapbox/layers/utils';
 import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
+import { PanelDateWidget } from './panel-date-widget';
 
 const Explorer = styled.div`
   position: relative;
@@ -84,49 +76,77 @@ const Carto = styled.div`
   }
 `;
 
-const HeadingButton = styled.button`
-  appearance: none;
-  max-width: 100%;
-  position: relative;
+const DatesWrapper = styled.div`
   display: flex;
-  gap: ${glsp(0.25)};
-  align-items: center;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  color: currentColor;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: left;
-  transition: all 0.32s ease 0s;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')};
 
-  &:hover {
-    opacity: 0.64;
-  }
+  > ${PanelWidget} {
+    width: 100%;
 
-  svg {
-    flex-shrink: 0;
-  }
-
-  > span {
-    ${truncated()}
+    &:not(:first-child) {
+      position: relative;
+      z-index: 10;
+      box-shadow: -1px 0 0 0 ${themeVal('color.base-100a')};
+    }
   }
 `;
 
-function getDatePickerView(timeDensity) {
-  const view = {
-    day: 'month',
-    // If the data's time density is yearly only allow the user to select a year
-    // by setting the picker to a decade view.
-    month: 'year',
-    // If the data's time density is monthly only allow the user to select a
-    // month by setting the picker to a early view.
-    year: 'decade'
-  }[timeDensity];
+const isSelectedDateValid = (dateList, prevDateList, selectedDate) => {
+  const currDates = JSON.stringify(dateList);
+  const prevDates = JSON.stringify(prevDateList);
+  if (dateList && currDates !== prevDates) {
+    // Since the available dates changes, check if the currently selected
+    // one is valid.
+    const validDate = !!dateList.find(
+      (d) => d.getTime() === selectedDate?.getTime()
+    );
 
-  return view || 'month';
-}
+    return !!validDate;
+  }
+  return true;
+};
+
+const useValidSelectedDate = (dateList, selectedDate, setDate) => {
+  useEffectPrevious(
+    ([prevDateList]) => {
+      if (!isSelectedDateValid(dateList, prevDateList, selectedDate)) {
+        setDate(dateList[0]);
+      }
+    },
+    [dateList, selectedDate, setDate]
+  );
+};
+
+const useValidSelectedCompareDate = (dateList, selectedDate, setDate) => {
+  useEffectPrevious(
+    ([prevDateList]) => {
+      // A compare date can be null.
+      if (
+        selectedDate &&
+        !isSelectedDateValid(dateList, prevDateList, selectedDate)
+      ) {
+        setDate(dateList[0]);
+      }
+    },
+    [dateList, selectedDate, setDate]
+  );
+};
+
+const useDatePickerValue = (value, setter) => {
+  const onConfirm = useCallback((range) => setter(range.start), [setter]);
+
+  const val = useMemo(
+    () => ({
+      end: value,
+      start: value
+    }),
+    [value]
+  );
+
+  return [val, onConfirm];
+};
 
 function DatasetsExplore() {
   const mapboxRef = useRef(null);
@@ -231,12 +251,21 @@ function DatasetsExplore() {
     }
   });
 
-  const [isComparing, setComparing] = useQsState.memo({
-    key: 'comparing',
-    default: false,
-    hydrator: (v) => v === 'true',
-    dehydrator: (v) => v.toString()
-  });
+  const [selectedCompareDatetime, setSelectedCompareDatetime] = useQsState.memo(
+    {
+      key: 'datetime_compare',
+      default: null,
+      dehydrator: (v) => (v ? userTzDate2utcString(v) : null),
+      // The same problem happens when reading the date. Using utcDate handles the
+      // reverse issue.
+      hydrator: (v) => {
+        const d = utcString2userTzDate(v);
+        return isNaN(d.getTime()) ? null : d;
+      }
+    }
+  );
+
+  const isComparing = !!selectedCompareDatetime;
 
   // END QsState setup
   /** *********************************************************************** */
@@ -257,8 +286,13 @@ function DatasetsExplore() {
   }, [asyncLayers, selectedLayerId]);
 
   // Get the active layer timeseries data so we can render the date selector.
+  // Done both for the base layer and the compare layer.
   const activeLayerTimeseries = useMemo(
-    () => (activeLayer ? activeLayer.baseLayer.data.timeseries : null),
+    () => activeLayer?.baseLayer.data.timeseries || null,
+    [activeLayer]
+  );
+  const activeLayerCompareTimeseries = useMemo(
+    () => activeLayer?.compareLayer?.data.timeseries || null,
     [activeLayer]
   );
 
@@ -266,64 +300,47 @@ function DatasetsExplore() {
   // null if there's no active layer or it hasn't loaded yet.
   const availableActiveLayerDates = useMemo(() => {
     if (!activeLayer) return null;
-    const { baseLayer, compareLayer } = activeLayer;
-
-    if (isComparing && compareLayer) {
-      const bTimeDensity = baseLayer.data.timeseries.timeDensity;
-      const cTimeDensity = compareLayer.data.timeseries.timeDensity;
-
-      if (bTimeDensity !== cTimeDensity) {
-        throw new Error(`Failed to enable compare.
-Time density value must be the same for both layers.
-Base layer: ${baseLayer.data.id} >> ${bTimeDensity}
-Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
-`);
-      }
-    }
-
     return resolveLayerTemporalExtent(activeLayer.baseLayer.data);
-  }, [activeLayer, isComparing]);
+  }, [activeLayer]);
+  // Available dates for the compareLayer of the currently active layer.
+  // null if there's no compare layer or it hasn't loaded yet.
+  const availableActiveLayerCompareDates = useMemo(() => {
+    if (!activeLayer?.compareLayer) return null;
+    return resolveLayerTemporalExtent(activeLayer.compareLayer.data);
+  }, [activeLayer]);
 
+  // On layer change, if there's no compare layer, unset the date.
   useEffect(() => {
     if (activeLayer && !activeLayer.compareLayer) {
-      setComparing(false);
+      setSelectedCompareDatetime(null);
     }
-  }, [activeLayer, setComparing]);
+  }, [activeLayer, setSelectedCompareDatetime]);
 
   // When the available dates for the selected layer change, check if the
   // currently selected date is a valid one, otherwise reset to the first one in
   // the domain. Since the selected date is stored in the url we need to make
   // sure it actually exists.
-  useEffectPrevious(
-    ([prevAvailableDates]) => {
-      const currDates = JSON.stringify(availableActiveLayerDates);
-      const prevDates = JSON.stringify(prevAvailableDates);
-      if (availableActiveLayerDates && currDates !== prevDates) {
-        // Since the available dates changes, check if the currently selected
-        // one is valid.
-        const validDate = !!availableActiveLayerDates.find(
-          (d) => d.getTime() === selectedDatetime?.getTime()
-        );
-
-        if (!validDate) {
-          setSelectedDatetime(availableActiveLayerDates[0]);
-        }
-      }
-    },
-    [availableActiveLayerDates, selectedDatetime, setSelectedDatetime]
+  useValidSelectedDate(
+    availableActiveLayerDates,
+    selectedDatetime,
+    setSelectedDatetime
+  );
+  // Same but for compare dates.
+  useValidSelectedCompareDate(
+    availableActiveLayerCompareDates,
+    selectedCompareDatetime,
+    setSelectedCompareDatetime
   );
 
-  const datePickerConfirm = useCallback(
-    (range) => setSelectedDatetime(range.start),
-    [setSelectedDatetime]
+  /** *********************************************************************** */
+  // Setters and values for the date picker.
+  const [datePickerValue, datePickerConfirm] = useDatePickerValue(
+    selectedDatetime,
+    setSelectedDatetime
   );
-
-  const datePickerValue = useMemo(
-    () => ({
-      end: selectedDatetime,
-      start: selectedDatetime
-    }),
-    [selectedDatetime]
+  const [datePickerCompareValue, datePickerCompareConfirm] = useDatePickerValue(
+    selectedCompareDatetime,
+    setSelectedCompareDatetime
   );
 
   /** *********************************************************************** */
@@ -392,64 +409,26 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
                 </PanelActions>
               </PanelHeader>
               <PanelBody>
-                <PanelWidget>
-                  <PanelWidgetHeader>
-                    <PanelWidgetTitle>Date</PanelWidgetTitle>
-                  </PanelWidgetHeader>
-                  <PanelWidgetBody>
-                    <WidgetItemHeader>
-                      <WidgetItemHGroup>
-                        <WidgetItemHeadline>
-                          {activeLayerTimeseries && (
-                            <DatePicker
-                              id='date-picker'
-                              alignment='left'
-                              direction='down'
-                              view={getDatePickerView(
-                                activeLayerTimeseries.timeDensity
-                              )}
-                              max={availableActiveLayerDates?.last}
-                              min={availableActiveLayerDates?.[0]}
-                              onConfirm={datePickerConfirm}
-                              value={datePickerValue}
-                              renderTriggerElement={(
-                                { active, className, ...rest },
-                                label
-                              ) => {
-                                return (
-                                  <Heading as='h4' size='xmall'>
-                                    <HeadingButton {...rest} as='button'>
-                                      <span>{label}</span>{' '}
-                                      {active ? (
-                                        <CollecticonChevronUpSmall />
-                                      ) : (
-                                        <CollecticonChevronDownSmall />
-                                      )}
-                                    </HeadingButton>
-                                  </Heading>
-                                );
-                              }}
-                            />
-                          )}
-                        </WidgetItemHeadline>
-                        <Toolbar size='small'>
-                          <ToolbarButton
-                            variation='base-text'
-                            active={isComparing}
-                            disabled={!activeLayer?.compareLayer}
-                            onClick={() => setComparing(!isComparing)}
-                          >
-                            <CollecticonSwapHorizontal
-                              title='Compare to'
-                              meaningful
-                            />
-                            Baseline
-                          </ToolbarButton>
-                        </Toolbar>
-                      </WidgetItemHGroup>
-                    </WidgetItemHeader>
-                  </PanelWidgetBody>
-                </PanelWidget>
+                <DatesWrapper>
+                  {activeLayerTimeseries && (
+                    <PanelDateWidget
+                      title='Date'
+                      value={datePickerValue}
+                      onConfirm={datePickerConfirm}
+                      timeDensity={activeLayerTimeseries?.timeDensity}
+                      availableDates={availableActiveLayerDates}
+                    />
+                  )}
+                  {activeLayerCompareTimeseries && (
+                    <PanelDateWidget
+                      title='Compare'
+                      value={datePickerCompareValue}
+                      onConfirm={datePickerCompareConfirm}
+                      timeDensity={activeLayerCompareTimeseries?.timeDensity}
+                      availableDates={availableActiveLayerCompareDates}
+                    />
+                  )}
+                </DatesWrapper>
                 <PanelWidget>
                   <PanelWidgetHeader>
                     <PanelWidgetTitle>Layers</PanelWidgetTitle>
@@ -473,6 +452,7 @@ Compare layer: ${compareLayer.data.id} >> ${cTimeDensity}
               datasetId={dataset.data.id}
               layerId={activeLayer?.baseLayer.data?.id}
               date={selectedDatetime}
+              compareDate={selectedCompareDatetime}
               isComparing={isComparing}
               initialPosition={mapPosition}
               onPositionChange={setMapPosition}

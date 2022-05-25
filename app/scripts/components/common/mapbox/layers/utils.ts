@@ -1,5 +1,9 @@
 import defaultsDeep from 'lodash.defaultsdeep';
-import { eachDayOfInterval, eachMonthOfInterval } from 'date-fns';
+import {
+  eachDayOfInterval,
+  eachMonthOfInterval,
+  eachYearOfInterval
+} from 'date-fns';
 import {
   datasets,
   DatasetLayer,
@@ -16,7 +20,10 @@ import { AsyncDatasetLayer } from '$context/layer-data';
 import { MapLayerRasterTimeseries } from './raster-timeseries';
 import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
-export const getLayerComponent = (isTimeseries: boolean, layerType: 'raster' | 'vector'): React.FunctionComponent<any> | null => {
+export const getLayerComponent = (
+  isTimeseries: boolean,
+  layerType: 'raster' | 'vector'
+): React.FunctionComponent<any> | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
   }
@@ -135,7 +142,12 @@ export function resolveConfigFunctions(
       return datum(bag);
     } catch (error) {
       /* eslint-disable-next-line no-console */
-      console.error('Failed to resolve function %s(%o) with error %s', datum.name, bag, error.message);
+      console.error(
+        'Failed to resolve function %s(%o) with error %s',
+        datum.name,
+        bag,
+        error.message
+      );
       return null;
     }
   }
@@ -182,7 +194,10 @@ declare global {
   }
 }
 
-type AsyncDatasetLayerData<T extends 'baseLayer' | 'compareLayer'> = Exclude<AsyncDatasetLayer[T], null>['data'];
+type AsyncDatasetLayerData<T extends 'baseLayer' | 'compareLayer'> = Exclude<
+  AsyncDatasetLayer[T],
+  null
+>['data'];
 
 /**
  * Resolves the temporal extend of the given Async Layer.
@@ -203,7 +218,12 @@ export function resolveLayerTemporalExtent(
 
   if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
 
-  if (timeDensity === 'month') {
+  if (timeDensity === 'year') {
+    return eachYearOfInterval({
+      start: utcString2userTzDate(domain[0]),
+      end: utcString2userTzDate(domain.last)
+    });
+  } else if (timeDensity === 'month') {
     return eachMonthOfInterval({
       start: utcString2userTzDate(domain[0]),
       end: utcString2userTzDate(domain.last)
