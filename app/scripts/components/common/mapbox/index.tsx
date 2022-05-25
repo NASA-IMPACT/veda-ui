@@ -346,9 +346,9 @@ type MapPosition = {
 export interface MapboxMapProps {
   as?: any;
   className?: string;
-  id: string;
-  datasetId: string;
-  layerId: string;
+  id?: string;
+  datasetId?: string;
+  layerId?: string;
   date?: Date;
   compareDate?: Date;
   compareLabel?: string;
@@ -364,7 +364,7 @@ export interface MapboxMapProps {
   children?: React.ReactNode;
 }
 
-type MapboxMapRef = {
+export type MapboxMapRef = {
   resize: () => void;
 };
 

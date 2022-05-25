@@ -68,7 +68,7 @@ interface PanelDateWidgetProps {
   value: DropdownDatePickerProps['value'];
   onConfirm: DropdownDatePickerProps['onConfirm'];
   timeDensity?: TimeDensity;
-  availableDates?: Date[];
+  availableDates?: Date[] | null;
 }
 
 export function PanelDateWidget(props: PanelDateWidgetProps) {

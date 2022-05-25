@@ -19,7 +19,7 @@ import PageLocalNav, {
   DatasetsLocalMenu
 } from '$components/common/page-local-nav';
 import { LayoutProps } from '$components/common/layout-root';
-import MapboxMap from '$components/common/mapbox';
+import MapboxMap, { MapboxMapRef } from '$components/common/mapbox';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import {
@@ -134,7 +134,7 @@ const useValidSelectedCompareDate = (dateList, selectedDate, setDate) => {
   );
 };
 
-const useDatePickerValue = (value, setter) => {
+const useDatePickerValue = (value: Date | null, setter: (v: Date | null) => void) => {
   const onConfirm = useCallback((range) => setter(range.start), [setter]);
 
   const val = useMemo(
@@ -145,13 +145,15 @@ const useDatePickerValue = (value, setter) => {
     [value]
   );
 
-  return [val, onConfirm];
+  return [val, onConfirm] as [typeof val, typeof onConfirm];
 };
 
 function DatasetsExplore() {
-  const mapboxRef = useRef(null);
+  const mapboxRef = useRef<MapboxMapRef>(null);
   const thematic = useThematicArea();
   const dataset = useThematicAreaDataset();
+
+  if (!thematic || !dataset) throw resourceNotFound();
 
   if (!dataset.data.layers?.length) {
     throw new Error(
@@ -162,7 +164,7 @@ function DatasetsExplore() {
   /** *********************************************************************** */
   // Panel relate stuff to ensure it opens and closes and this action resizes
   // the map.
-  const panelBodyRef = useRef(null);
+  const panelBodyRef = useRef<HTMLDivElement>(null);
   const { isMediumDown } = useMediaQuery();
   const [panelRevealed, setPanelRevealed] = useState(!isMediumDown);
 
@@ -218,7 +220,11 @@ function DatasetsExplore() {
     [dataset]
   );
 
-  const [mapPosition, setMapPosition] = useQsState.memo({
+  const [mapPosition, setMapPosition] = useQsState.memo<{
+    lng: number;
+    lat: number;
+    zoom: number;
+  }>({
     key: 'position',
     default: null,
     hydrator: (v) => {
@@ -227,13 +233,13 @@ function DatasetsExplore() {
       return { lng, lat, zoom };
     },
     dehydrator: (v) => {
-      if (!v) return null;
+      if (!v) return '';
       const { lng, lat, zoom } = v;
       return [lng, lat, zoom].join('|');
     }
   });
 
-  const [selectedDatetime, setSelectedDatetime] = useQsState.memo({
+  const [selectedDatetime, setSelectedDatetime] = useQsState.memo<Date>({
     key: 'datetime',
     default: null,
     // The Date picker returns the selected date at the beginning of the day for
@@ -242,7 +248,7 @@ function DatasetsExplore() {
     // 1st the date is initialized as: Wed Sep 01 2021 00:00:00 GMT+0100
     // which means that if we convert to string using toISOString() it actually
     // is 2021-08-31T23:00:00.000Z. Through toUtcDateString we avoid this.
-    dehydrator: (v) => (v ? userTzDate2utcString(v) : null),
+    dehydrator: (v) => (v ? userTzDate2utcString(v) : ''),
     // The same problem happens when reading the date. Using utcDate handles the
     // reverse issue.
     hydrator: (v) => {
@@ -251,19 +257,18 @@ function DatasetsExplore() {
     }
   });
 
-  const [selectedCompareDatetime, setSelectedCompareDatetime] = useQsState.memo(
-    {
+  const [selectedCompareDatetime, setSelectedCompareDatetime] =
+    useQsState.memo<Date>({
       key: 'datetime_compare',
       default: null,
-      dehydrator: (v) => (v ? userTzDate2utcString(v) : null),
+      dehydrator: (v) => (v ? userTzDate2utcString(v) : ''),
       // The same problem happens when reading the date. Using utcDate handles the
       // reverse issue.
       hydrator: (v) => {
         const d = utcString2userTzDate(v);
         return isNaN(d.getTime()) ? null : d;
       }
-    }
-  );
+    });
 
   const isComparing = !!selectedCompareDatetime;
 
@@ -281,6 +286,7 @@ function DatasetsExplore() {
   const activeLayer = useMemo(() => {
     return asyncLayers.find((l) => {
       const status = checkLayerLoadStatus(l);
+      // @ts-expect-error l.baseLayer.data is always defined if S_SUCCEEDED.
       return status === S_SUCCEEDED && l.baseLayer.data.id === selectedLayerId;
     });
   }, [asyncLayers, selectedLayerId]);
@@ -288,10 +294,12 @@ function DatasetsExplore() {
   // Get the active layer timeseries data so we can render the date selector.
   // Done both for the base layer and the compare layer.
   const activeLayerTimeseries = useMemo(
+    // @ts-expect-error if there is activeLayer the the rest is loaded.
     () => activeLayer?.baseLayer.data.timeseries || null,
     [activeLayer]
   );
   const activeLayerCompareTimeseries = useMemo(
+    // @ts-expect-error if there is activeLayer the the rest is loaded.
     () => activeLayer?.compareLayer?.data.timeseries || null,
     [activeLayer]
   );
@@ -358,8 +366,6 @@ function DatasetsExplore() {
   );
   // End onAction callback.
   /** *********************************************************************** */
-
-  if (!thematic || !dataset) throw resourceNotFound();
 
   return (
     <>
@@ -437,7 +443,7 @@ function DatasetsExplore() {
                     <DatasetLayers
                       datasetId={dataset.data.id}
                       asyncLayers={asyncLayers}
-                      selectedLayerId={selectedLayerId}
+                      selectedLayerId={selectedLayerId || undefined}
                       onAction={onLayerAction}
                     />
                   </PanelWidgetBody>
@@ -451,10 +457,10 @@ function DatasetsExplore() {
               withGeocoder
               datasetId={dataset.data.id}
               layerId={activeLayer?.baseLayer.data?.id}
-              date={selectedDatetime}
-              compareDate={selectedCompareDatetime}
+              date={selectedDatetime || undefined}
+              compareDate={selectedCompareDatetime || undefined}
               isComparing={isComparing}
-              initialPosition={mapPosition}
+              initialPosition={mapPosition || undefined}
               onPositionChange={setMapPosition}
             />
           </Carto>
