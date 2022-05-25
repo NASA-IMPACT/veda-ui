@@ -1,6 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import {
+  CarouselProvider,
+  Slider,
+  Slide,
+  ButtonBack,
+  ButtonNext
+} from 'pure-react-carousel';
+// Don't forget to setyp required CSS!
+import 'pure-react-carousel/dist/react-carousel.es.css';
 
 import { listReset, media } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
@@ -71,31 +80,36 @@ const FeaturedSlider = styled.div`
   grid-row: 2;
 `;
 
-const FeaturedList = styled.ol`
+const FeaturedList = styled.div`
   ${listReset()}
+`;
 
-  li > * {
+const FeaturedContent = styled.div`
+  width: 100%;
+
+  article {
     min-height: 16rem;
 
     ${media.smallUp`
-      min-height: 20rem;
-    `}
+    min-height: 20rem;
+  `}
 
     ${media.mediumUp`
-      min-height: 20rem;
-    `}
+    min-height: 20rem;
+  `}
 
-    ${media.largeUp`
-      min-height: 24rem;
-    `}
+  ${media.largeUp`
+    min-height: 24rem;
+  `}
 
-    ${media.xlargeUp`
-      min-height: 28rem;
-    `}
+  ${media.xlargeUp`
+    min-height: 28rem;
+  `}
   }
 
-  li:not(:first-child) {
-    display: none;
+  // overriding pure-react-carousel styles
+  > div {
+    width: 100% !important;
   }
 `;
 
@@ -194,28 +208,41 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <FeaturedSlider>
+          <CarouselProvider
+            isIntrinsicHeight={true}
+            totalSlides={featuredDiscoveries.length}
+            style={{ gridColumn: '1 / -1', gridRow: '2' }}
+          >
             <FeaturedList>
-              {featuredDiscoveries.map((t) => (
-                <li key={t.id}>
-                  <Card
-                    cardType='featured'
-                    linkLabel='View more'
-                    linkTo={`${thematicDiscoveriesPath(thematic)}/${t.id}`}
-                    title={t.name}
-                    parentName='Discovery'
-                    parentTo={thematicDiscoveriesPath(thematic)}
-                    description={t.description}
-                    date={t.pubDate ? new Date(t.pubDate) : null}
-                    imgSrc={t.media.src}
-                    imgAlt={t.media.alt}
-                  />
-                </li>
+              {featuredDiscoveries.map((t, idx) => (
+                <FeaturedContent key={t.id}>
+                  <Slide index={idx}>
+                    <Card
+                      cardType='featured'
+                      linkLabel='View more'
+                      linkTo={`${thematicDiscoveriesPath(thematic)}/${t.id}`}
+                      title={t.name}
+                      parentName='Discovery'
+                      parentTo={thematicDiscoveriesPath(thematic)}
+                      description={t.description}
+                      date={t.pubDate ? new Date(t.pubDate) : null}
+                      imgSrc={t.media.src}
+                      imgAlt={t.media.alt}
+                    />
+                  </Slide>
+                </FeaturedContent>
               ))}
             </FeaturedList>
-          </FeaturedSlider>
+            {featuredDiscoveries.length > 1 && (
+              <>
+                <ButtonBack>Back</ButtonBack>
+                <ButtonNext>Next</ButtonNext>
+              </>
+            )}
+          </CarouselProvider>
         </Fold>
       )}
+
       {!!featuredDatasets.length && (
         <Fold forwardedAs='section'>
           <FoldHeader as='header'>
@@ -229,25 +256,40 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <FeaturedSlider>
+          <CarouselProvider
+            isIntrinsicHeight={true}
+            totalSlides={featuredDatasets.length}
+            style={{ gridColumn: '1 / -1', gridRow: '2' }}
+          >
             <FeaturedList>
-              {featuredDatasets.map((t) => (
-                <li key={t.id}>
-                  <Card
-                    cardType='featured'
-                    linkLabel='View more'
-                    linkTo={`${thematicDatasetsPath(thematic)}/${t.id}`}
-                    title={t.name}
-                    parentName='Dataset'
-                    parentTo={thematicDatasetsPath(thematic)}
-                    description={t.description}
-                    imgSrc={t.media.src}
-                    imgAlt={t.media.alt}
-                  />
-                </li>
-              ))}
+              <Slider>
+                {featuredDatasets.map((t, idx) => (
+                  <FeaturedContent key={t.id}>
+                    <Slide index={idx}>
+                      <Card
+                        cardType='featured'
+                        linkLabel='View more'
+                        linkTo={`${thematicDatasetsPath(thematic)}/${t.id}`}
+                        title={t.name}
+                        parentName='Dataset'
+                        parentTo={thematicDatasetsPath(thematic)}
+                        description={t.description}
+                        imgSrc={t.media.src}
+                        imgAlt={t.media.alt}
+                      />
+                    </Slide>
+                  </FeaturedContent>
+                ))}
+              </Slider>
             </FeaturedList>
-          </FeaturedSlider>
+
+            {featuredDatasets.length > 1 && (
+              <>
+                <ButtonBack>Back</ButtonBack>
+                <ButtonNext>Next</ButtonNext>
+              </>
+            )}
+          </CarouselProvider>
         </Fold>
       )}
 
