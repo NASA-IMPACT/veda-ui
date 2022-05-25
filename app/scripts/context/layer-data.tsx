@@ -21,7 +21,7 @@ import { S_SUCCEEDED } from '$utils/status';
 interface STACLayerData {
   timeseries: {
     isPeriodic: boolean;
-    timeDensity: 'day' | 'month' | null;
+    timeDensity: 'day' | 'month' | 'year' | null;
     domain: Array<string>;
   };
 }

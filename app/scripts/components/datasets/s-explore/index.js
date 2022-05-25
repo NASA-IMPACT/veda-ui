@@ -115,13 +115,17 @@ const HeadingButton = styled.button`
 `;
 
 function getDatePickerView(timeDensity) {
-  // If the data's time density is monthly only allow the user to select a month
-  // by setting the picker to a early view.
-  if (timeDensity === 'month') {
-    return 'year';
-  }
+  const view = {
+    day: 'month',
+    // If the data's time density is yearly only allow the user to select a year
+    // by setting the picker to a decade view.
+    month: 'year',
+    // If the data's time density is monthly only allow the user to select a
+    // month by setting the picker to a early view.
+    year: 'decade'
+  }[timeDensity];
 
-  return 'month';
+  return view || 'month';
 }
 
 function DatasetsExplore() {
