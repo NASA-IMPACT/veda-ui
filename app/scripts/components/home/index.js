@@ -1,15 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import {
-  CarouselProvider,
-  Slider,
-  Slide,
-  ButtonBack,
-  ButtonNext
-} from 'pure-react-carousel';
-// Don't forget to setyp required CSS!
-import 'pure-react-carousel/dist/react-carousel.es.css';
 
 import { listReset, media } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
@@ -38,6 +29,8 @@ import {
 import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
+
+import Carousel from './Carousel';
 
 const StatsList = styled.dl`
   display: grid;
@@ -75,44 +68,6 @@ const StatsListValue = styled(VarHeading).attrs({
   grid-row: 2;
 `;
 
-const FeaturedSlider = styled.div`
-  grid-column: 1 / -1;
-  grid-row: 2;
-`;
-
-const FeaturedList = styled.div`
-  ${listReset()}
-`;
-
-const FeaturedContent = styled.div`
-  width: 100%;
-
-  article {
-    min-height: 16rem;
-
-    ${media.smallUp`
-    min-height: 20rem;
-  `}
-
-    ${media.mediumUp`
-    min-height: 20rem;
-  `}
-
-  ${media.largeUp`
-    min-height: 24rem;
-  `}
-
-  ${media.xlargeUp`
-    min-height: 28rem;
-  `}
-  }
-
-  // overriding pure-react-carousel styles
-  > div {
-    width: 100% !important;
-  }
-`;
-
 function Home() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
@@ -121,13 +76,33 @@ function Home() {
     (t) => t.id !== thematic.data.id
   );
 
-  const featuredDatasets = thematic.data.datasets.filter((d) => {
-    return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
-  });
+  const featuredDatasets = thematic.data.datasets
+    .filter((d) => {
+      return d.featuredOn?.find(
+        (thematicId) => thematicId === thematic.data.id
+      );
+    })
+    .map((d) => {
+      return {
+        ...d,
+        linkTo: `${thematicDatasetsPath(thematic)}/${d.id}`,
+        parentTo: thematicDatasetsPath(thematic)
+      };
+    });
 
-  const featuredDiscoveries = thematic.data.discoveries.filter((d) => {
-    return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
-  });
+  const featuredDiscoveries = thematic.data.discoveries
+    .filter((d) => {
+      return d.featuredOn?.find(
+        (thematicId) => thematicId === thematic.data.id
+      );
+    })
+    .map((d) => {
+      return {
+        ...d,
+        linkTo: `${thematicDiscoveriesPath(thematic)}/${d.id}`,
+        parentTo: thematicDiscoveriesPath(thematic)
+      };
+    });
 
   return (
     <PageMainContent>
@@ -208,38 +183,7 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <CarouselProvider
-            isIntrinsicHeight={true}
-            totalSlides={featuredDiscoveries.length}
-            style={{ gridColumn: '1 / -1', gridRow: '2' }}
-          >
-            <FeaturedList>
-              {featuredDiscoveries.map((t, idx) => (
-                <FeaturedContent key={t.id}>
-                  <Slide index={idx}>
-                    <Card
-                      cardType='featured'
-                      linkLabel='View more'
-                      linkTo={`${thematicDiscoveriesPath(thematic)}/${t.id}`}
-                      title={t.name}
-                      parentName='Discovery'
-                      parentTo={thematicDiscoveriesPath(thematic)}
-                      description={t.description}
-                      date={t.pubDate ? new Date(t.pubDate) : null}
-                      imgSrc={t.media.src}
-                      imgAlt={t.media.alt}
-                    />
-                  </Slide>
-                </FeaturedContent>
-              ))}
-            </FeaturedList>
-            {featuredDiscoveries.length > 1 && (
-              <>
-                <ButtonBack>Back</ButtonBack>
-                <ButtonNext>Next</ButtonNext>
-              </>
-            )}
-          </CarouselProvider>
+          <Carousel items={featuredDiscoveries} />
         </Fold>
       )}
 
@@ -256,40 +200,7 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <CarouselProvider
-            isIntrinsicHeight={true}
-            totalSlides={featuredDatasets.length}
-            style={{ gridColumn: '1 / -1', gridRow: '2' }}
-          >
-            <FeaturedList>
-              <Slider>
-                {featuredDatasets.map((t, idx) => (
-                  <FeaturedContent key={t.id}>
-                    <Slide index={idx}>
-                      <Card
-                        cardType='featured'
-                        linkLabel='View more'
-                        linkTo={`${thematicDatasetsPath(thematic)}/${t.id}`}
-                        title={t.name}
-                        parentName='Dataset'
-                        parentTo={thematicDatasetsPath(thematic)}
-                        description={t.description}
-                        imgSrc={t.media.src}
-                        imgAlt={t.media.alt}
-                      />
-                    </Slide>
-                  </FeaturedContent>
-                ))}
-              </Slider>
-            </FeaturedList>
-
-            {featuredDatasets.length > 1 && (
-              <>
-                <ButtonBack>Back</ButtonBack>
-                <ButtonNext>Next</ButtonNext>
-              </>
-            )}
-          </CarouselProvider>
+          <Carousel items={featuredDatasets} />
         </Fold>
       )}
 
