@@ -1,6 +1,6 @@
 import React from 'react';
 import T from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   CarouselProvider,
   Slider,
@@ -51,13 +51,33 @@ const FeaturedContent = styled.div`
     width: 100% !important;
   }
 `;
+const ButtonStyle = css`
+  position: absolute;
+  top: 0;
+  width: 50px;
+  height: 100%;
+  background-color: transparent;
+  border: none;
+  &:disabled {
+    cursor: auto;
+    filter: opacity(0.1);
+  }
+`;
 
+const ButtonBackPositioned = styled(ButtonBack)`
+  ${ButtonStyle}
+  left: 0;
+`;
+const ButtonNextPositioned = styled(ButtonNext)`
+  ${ButtonStyle}
+  right: 0;
+`;
 function Carousel({ items }) {
   return (
     <CarouselProvider
       isIntrinsicHeight={true}
       totalSlides={items.length}
-      style={{ gridColumn: '1 / -1', gridRow: '2' }}
+      style={{ gridColumn: '1 / -1', gridRow: '2', position: 'relative' }}
     >
       <FeaturedList>
         <Slider>
@@ -83,12 +103,12 @@ function Carousel({ items }) {
 
       {items.length > 1 && (
         <>
-          <ButtonBack>
-            <CollecticonChevronLeft />
-          </ButtonBack>
-          <ButtonNext>
-            <CollecticonChevronRight />
-          </ButtonNext>
+          <ButtonBackPositioned>
+            <CollecticonChevronLeft color='white' />
+          </ButtonBackPositioned>
+          <ButtonNextPositioned>
+            <CollecticonChevronRight color='white' />
+          </ButtonNextPositioned>
         </>
       )}
     </CarouselProvider>
