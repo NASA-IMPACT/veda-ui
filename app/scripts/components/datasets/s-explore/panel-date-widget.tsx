@@ -69,10 +69,12 @@ interface PanelDateWidgetProps {
   onConfirm: DropdownDatePickerProps['onConfirm'];
   timeDensity?: TimeDensity;
   availableDates?: Date[] | null;
+  isClearable?: boolean;
 }
 
 export function PanelDateWidget(props: PanelDateWidgetProps) {
-  const { title, onConfirm, value, timeDensity, availableDates } = props;
+  const { title, onConfirm, value, timeDensity, availableDates, isClearable } =
+    props;
 
   return (
     <PanelWidget>
@@ -90,7 +92,10 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
                 view={getDatePickerView(timeDensity)}
                 max={availableDates?.last}
                 min={availableDates?.[0]}
+                datesToRestrict={availableDates}
+                restrictMode='enable'
                 onConfirm={onConfirm}
+                isClearable={isClearable}
                 value={value}
                 renderTriggerElement={(
                   { active, className, ...rest },

@@ -432,6 +432,7 @@ function DatasetsExplore() {
                       onConfirm={datePickerCompareConfirm}
                       timeDensity={activeLayerCompareTimeseries?.timeDensity}
                       availableDates={availableActiveLayerCompareDates}
+                      isClearable
                     />
                   )}
                 </DatesWrapper>
