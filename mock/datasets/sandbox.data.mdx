@@ -78,6 +78,38 @@ layers:
           label: "Out of season"
         - color: "#794416"
           label: "No data"
+  - id: social-vulnerability-index-household
+    name: Household and Disability Score
+    type: raster
+    description: 'Household Composition & Disability (Aged 65 or Older, Aged 17 or Younger, Civilian with a Disability, Single-Parent Households) - Percentile ranking'
+    zoomExtent:
+      - 2
+      - 16
+    sourceParams:
+      resampling_method: bilinear
+      bidx: 1
+      colormap_name: oranges
+      rescale:
+        - 0
+        - 1
+    compare:
+      datasetId: sandbox
+      layerId: social-vulnerability-index-household
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    legend:
+      type: gradient
+      min: "0"
+      max: "1"
+      stops:
+      - "#fff5eb"
+      - "#fdd9b4"
+      - "#fda762"
+      - "#f3701b"
+      - "#c54102"
+      - "#7f2704"
   - id: dev-fail
     name: Failing layer
     type: raster
