@@ -135,7 +135,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   // need to be resolved before rendering them. These functions accept data to
   // return the correct value.
   const resolverBag = useMemo<DatasetDatumFnResolverBag>(
-    () => ({ datetime: date, userCompareDatetime: compareDate, dateFns }),
+    () => ({ datetime: date, compareDatetime: compareDate, dateFns }),
     [date, compareDate]
   );
 
@@ -164,16 +164,14 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   }, [compareLayer, resolverBag]);
 
   // Get the compare to date.
-  // If a compare date is specified use the given one, otherwise use the result
-  // from the resolved config function.
-  // A custom date may be specified in the MDX map block.
+  // The compare date is specified by the user.
   // If no date is specified anywhere we just use the same.
   const compareToDate = useMemo(() => {
-    const theDate = compareDate || compareLayerResolvedData?.datetime || date;
+    const theDate = compareDate || date;
     return theDate instanceof Date && !isNaN(theDate.getTime())
       ? theDate
       : null;
-  }, [compareLayerResolvedData?.datetime, compareDate, date]);
+  }, [compareDate, date]);
 
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.

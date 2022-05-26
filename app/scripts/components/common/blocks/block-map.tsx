@@ -78,7 +78,7 @@ function validateBlockProps(props: MapBlockProps) {
 }
 
 interface MapBlockProps
-  extends Pick<MapboxMapProps, 'datasetId' | 'layerId' | 'isComparing'> {
+  extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
@@ -94,7 +94,6 @@ function MapBlock(props: MapBlockProps) {
     layerId,
     dateTime,
     compareDateTime,
-    isComparing,
     compareLabel,
     center,
     zoom
@@ -120,7 +119,7 @@ function MapBlock(props: MapBlockProps) {
         datasetId={datasetId}
         layerId={layerId}
         date={selectedDatetime}
-        isComparing={isComparing}
+        isComparing={!!selectedCompareDatetime}
         compareDate={selectedCompareDatetime}
         compareLabel={compareLabel}
         initialPosition={{ lng: center?.[0], lat: center?.[1], zoom }}
