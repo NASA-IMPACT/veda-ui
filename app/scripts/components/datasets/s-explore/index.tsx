@@ -427,7 +427,7 @@ function DatasetsExplore() {
                   )}
                   {activeLayerCompareTimeseries && (
                     <PanelDateWidget
-                      title='Compare'
+                      title='Date comparison'
                       value={datePickerCompareValue}
                       onConfirm={datePickerCompareConfirm}
                       timeDensity={activeLayerCompareTimeseries?.timeDensity}
