@@ -19,6 +19,7 @@ import { utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { MapLayerRasterTimeseries } from './raster-timeseries';
 import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
+import { HintedError } from '$utils/hinted-error';
 
 export const getLayerComponent = (
   isTimeseries: boolean,
@@ -79,10 +80,26 @@ export const getCompareLayerData = (
       ...passThroughProps
     } = compareInternal;
 
-    const datasetData = datasets[datasetId].data;
-    const otherLayer = datasetData?.layers?.find((l) => l.id === layerId);
+    const errorHints: string[] = [];
 
-    if (!otherLayer) return null;
+    const datasetData = datasets[datasetId]?.data;
+    if (!datasetData) {
+      errorHints.push(`Dataset [${datasetId}] not found (compare.datasetId)`);
+    }
+
+    const otherLayer = datasetData?.layers?.find((l) => l.id === layerId);
+    if (!otherLayer) {
+      errorHints.push(
+        `Layer [${layerId}] not found in dataset [${datasetId}] (compare.layerId)`
+      );
+    }
+
+    if (!datasetData || !otherLayer) {
+      throw new HintedError(
+        `Malformed compare for layer: ${layerData.id}`,
+        errorHints
+      );
+    }
 
     return {
       id: otherLayer.id,

@@ -32,7 +32,8 @@ import {
   validateChapter
 } from './chapter';
 import { MapLoading } from '$components/common/loading-skeleton';
-import { BlockErrorBoundary, HintedError } from '..';
+import { HintedError } from '$utils/hinted-error';
+import { BlockErrorBoundary } from '..';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
