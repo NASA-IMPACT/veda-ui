@@ -77,9 +77,9 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
     >[];
 
     if (chapters.some((c) => c.type.displayName !== chapterDisplayName)) {
-      const e = new HintedError('Invalid ScrollytellingBlock children');
-      e.hints = ['You can only use <Chapter> inside <ScrollytellingBlock>'];
-      throw e;
+      throw new HintedError('Invalid ScrollytellingBlock children', [
+        'You can only use <Chapter> inside <ScrollytellingBlock>'
+      ]);
     }
 
     const chErrors = chapters.reduce(
@@ -88,9 +88,7 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
     );
 
     if (chErrors.length) {
-      const e = new HintedError('Malformed ScrollytellingBlock Chapter');
-      e.hints = chErrors;
-      throw e;
+      throw new HintedError('Malformed ScrollytellingBlock Chapter', chErrors);
     }
 
     // Extract the props from the chapters.

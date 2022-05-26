@@ -103,9 +103,7 @@ function MapBlock(props: MapBlockProps) {
   const errors = validateBlockProps(props);
 
   if (errors.length) {
-    const e = new HintedError('Malformed Map Block');
-    e.hints = errors;
-    throw e;
+    throw new HintedError('Malformed Map Block', errors);
   }
 
   const selectedDatetime = dateTime
