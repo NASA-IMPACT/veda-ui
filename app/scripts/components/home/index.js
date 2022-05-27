@@ -29,6 +29,7 @@ import {
 import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
+import GoogleForm from '$components/common/google-form';
 
 const StatsList = styled.dl`
   display: grid;
@@ -116,183 +117,186 @@ function Home() {
   });
 
   return (
-    <PageMainContent>
-      <LayoutProps
-        title={thematic.data.name}
-        description={thematic.data.description}
-        thumbnail={thematic.data.media?.src}
-      />
-      <PageHero
-        title={`Welcome to the ${thematic.data.name} thematic area`}
-        renderAlphaBlock={() => (
-          <>
-            <PageHeroHGroup>
-              <PageMainTitle>
-                Welcome to the {thematic.data.name} thematic area
-              </PageMainTitle>
-            </PageHeroHGroup>
-            <StatsList>
-              <StatsListKey>
-                <Pluralize
-                  singular='Discovery'
-                  plural='Discoveries'
-                  count={thematic.data.discoveries.length}
-                  showCount={false}
-                />
-              </StatsListKey>
-              <StatsListValue>
-                <Link to='discoveries'>
-                  {zeroPad(thematic.data.discoveries.length)}
-                </Link>
-              </StatsListValue>
-              <StatsListKey>
-                <Pluralize
-                  singular='Dataset'
-                  count={thematic.data.datasets.length}
-                  showCount={false}
-                />
-              </StatsListKey>
-              <StatsListValue>
-                <Link to='datasets'>
-                  {zeroPad(thematic.data.datasets.length)}
-                </Link>
-              </StatsListValue>
-            </StatsList>
-          </>
-        )}
-        renderBetaBlock={() => (
-          <>
-            <PageLead>{thematic.data.description}</PageLead>
-            <PageActions>
+    <>
+      <PageMainContent>
+        <LayoutProps
+          title={thematic.data.name}
+          description={thematic.data.description}
+          thumbnail={thematic.data.media?.src}
+        />
+        <PageHero
+          title={`Welcome to the ${thematic.data.name} thematic area`}
+          renderAlphaBlock={() => (
+            <>
+              <PageHeroHGroup>
+                <PageMainTitle>
+                  Welcome to the {thematic.data.name} thematic area
+                </PageMainTitle>
+              </PageHeroHGroup>
+              <StatsList>
+                <StatsListKey>
+                  <Pluralize
+                    singular='Discovery'
+                    plural='Discoveries'
+                    count={thematic.data.discoveries.length}
+                    showCount={false}
+                  />
+                </StatsListKey>
+                <StatsListValue>
+                  <Link to='discoveries'>
+                    {zeroPad(thematic.data.discoveries.length)}
+                  </Link>
+                </StatsListValue>
+                <StatsListKey>
+                  <Pluralize
+                    singular='Dataset'
+                    count={thematic.data.datasets.length}
+                    showCount={false}
+                  />
+                </StatsListKey>
+                <StatsListValue>
+                  <Link to='datasets'>
+                    {zeroPad(thematic.data.datasets.length)}
+                  </Link>
+                </StatsListValue>
+              </StatsList>
+            </>
+          )}
+          renderBetaBlock={() => (
+            <>
+              <PageLead>{thematic.data.description}</PageLead>
+              <PageActions>
+                <Button
+                  forwardedAs={Link}
+                  to='about'
+                  size='large'
+                  variation='achromic-outline'
+                >
+                  Learn more
+                </Button>
+              </PageActions>
+            </>
+          )}
+          coverSrc={thematic.data.media?.src}
+          coverAlt={thematic.data.media?.alt}
+          attributionAuthor={thematic.data.media?.author?.name}
+          attributionUrl={thematic.data.media?.author?.url}
+        />
+
+        {!!featuredDiscoveries.length && (
+          <Fold forwardedAs='section'>
+            <FoldHeader as='header'>
+              <FoldTitle>Featured discoveries</FoldTitle>
               <Button
                 forwardedAs={Link}
-                to='about'
+                to='discoveries'
                 size='large'
-                variation='achromic-outline'
+                variation='primary-outline'
               >
-                Learn more
+                View all
               </Button>
-            </PageActions>
-          </>
+            </FoldHeader>
+            <FeaturedSlider>
+              <FeaturedList>
+                {featuredDiscoveries.map((t) => (
+                  <li key={t.id}>
+                    <Card
+                      cardType='featured'
+                      linkLabel='View more'
+                      linkTo={`${thematicDiscoveriesPath(thematic)}/${t.id}`}
+                      title={t.name}
+                      parentName='Discovery'
+                      parentTo={thematicDiscoveriesPath(thematic)}
+                      description={t.description}
+                      date={t.pubDate ? new Date(t.pubDate) : null}
+                      imgSrc={t.media.src}
+                      imgAlt={t.media.alt}
+                    />
+                  </li>
+                ))}
+              </FeaturedList>
+            </FeaturedSlider>
+          </Fold>
         )}
-        coverSrc={thematic.data.media?.src}
-        coverAlt={thematic.data.media?.alt}
-        attributionAuthor={thematic.data.media?.author?.name}
-        attributionUrl={thematic.data.media?.author?.url}
-      />
+        {!!featuredDatasets.length && (
+          <Fold forwardedAs='section'>
+            <FoldHeader as='header'>
+              <FoldTitle>Featured datasets</FoldTitle>
+              <Button
+                forwardedAs={Link}
+                to='datasets'
+                size='large'
+                variation='primary-outline'
+              >
+                View all
+              </Button>
+            </FoldHeader>
+            <FeaturedSlider>
+              <FeaturedList>
+                {featuredDatasets.map((t) => (
+                  <li key={t.id}>
+                    <Card
+                      cardType='featured'
+                      linkLabel='View more'
+                      linkTo={`${thematicDatasetsPath(thematic)}/${t.id}`}
+                      title={t.name}
+                      parentName='Dataset'
+                      parentTo={thematicDatasetsPath(thematic)}
+                      description={t.description}
+                      imgSrc={t.media.src}
+                      imgAlt={t.media.alt}
+                    />
+                  </li>
+                ))}
+              </FeaturedList>
+            </FeaturedSlider>
+          </Fold>
+        )}
 
-      {!!featuredDiscoveries.length && (
-        <Fold forwardedAs='section'>
-          <FoldHeader as='header'>
-            <FoldTitle>Featured discoveries</FoldTitle>
-            <Button
-              forwardedAs={Link}
-              to='discoveries'
-              size='large'
-              variation='primary-outline'
-            >
-              View all
-            </Button>
-          </FoldHeader>
-          <FeaturedSlider>
-            <FeaturedList>
-              {featuredDiscoveries.map((t) => (
+        {!!otherThematicAreas.length && (
+          <Fold forwardedAs='section'>
+            <FoldHeader as='header'>
+              <FoldTitle>Other thematic areas</FoldTitle>
+            </FoldHeader>
+            <CardList>
+              {otherThematicAreas.map((t) => (
                 <li key={t.id}>
                   <Card
-                    cardType='featured'
+                    cardType='cover'
                     linkLabel='View more'
-                    linkTo={`${thematicDiscoveriesPath(thematic)}/${t.id}`}
+                    linkTo={`/${t.id}`}
                     title={t.name}
-                    parentName='Discovery'
-                    parentTo={thematicDiscoveriesPath(thematic)}
+                    parentName='Area'
+                    parentTo='/'
                     description={t.description}
-                    date={t.pubDate ? new Date(t.pubDate) : null}
+                    overline={
+                      <>
+                        <i>Contains </i>
+                        <Pluralize
+                          zero='no discoveries'
+                          singular='discovery'
+                          plural='discoveries'
+                          count={t.discoveries.length}
+                        />
+                        {' / '}
+                        <Pluralize
+                          zero='no datasets'
+                          singular='dataset'
+                          count={t.datasets.length}
+                        />
+                      </>
+                    }
                     imgSrc={t.media.src}
                     imgAlt={t.media.alt}
                   />
                 </li>
               ))}
-            </FeaturedList>
-          </FeaturedSlider>
-        </Fold>
-      )}
-      {!!featuredDatasets.length && (
-        <Fold forwardedAs='section'>
-          <FoldHeader as='header'>
-            <FoldTitle>Featured datasets</FoldTitle>
-            <Button
-              forwardedAs={Link}
-              to='datasets'
-              size='large'
-              variation='primary-outline'
-            >
-              View all
-            </Button>
-          </FoldHeader>
-          <FeaturedSlider>
-            <FeaturedList>
-              {featuredDatasets.map((t) => (
-                <li key={t.id}>
-                  <Card
-                    cardType='featured'
-                    linkLabel='View more'
-                    linkTo={`${thematicDatasetsPath(thematic)}/${t.id}`}
-                    title={t.name}
-                    parentName='Dataset'
-                    parentTo={thematicDatasetsPath(thematic)}
-                    description={t.description}
-                    imgSrc={t.media.src}
-                    imgAlt={t.media.alt}
-                  />
-                </li>
-              ))}
-            </FeaturedList>
-          </FeaturedSlider>
-        </Fold>
-      )}
-
-      {!!otherThematicAreas.length && (
-        <Fold forwardedAs='section'>
-          <FoldHeader as='header'>
-            <FoldTitle>Other thematic areas</FoldTitle>
-          </FoldHeader>
-          <CardList>
-            {otherThematicAreas.map((t) => (
-              <li key={t.id}>
-                <Card
-                  cardType='cover'
-                  linkLabel='View more'
-                  linkTo={`/${t.id}`}
-                  title={t.name}
-                  parentName='Area'
-                  parentTo='/'
-                  description={t.description}
-                  overline={
-                    <>
-                      <i>Contains </i>
-                      <Pluralize
-                        zero='no discoveries'
-                        singular='discovery'
-                        plural='discoveries'
-                        count={t.discoveries.length}
-                      />
-                      {' / '}
-                      <Pluralize
-                        zero='no datasets'
-                        singular='dataset'
-                        count={t.datasets.length}
-                      />
-                    </>
-                  }
-                  imgSrc={t.media.src}
-                  imgAlt={t.media.alt}
-                />
-              </li>
-            ))}
-          </CardList>
-        </Fold>
-      )}
-    </PageMainContent>
+            </CardList>
+          </Fold>
+        )}
+      </PageMainContent>
+      <GoogleForm />
+    </>
   );
 }
 
