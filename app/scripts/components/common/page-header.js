@@ -33,6 +33,7 @@ import {
 
 import { useMediaQuery } from '../../utils/use-media-query';
 import UnscrollableBody from './unscrollable-body';
+import GoogleForm from './google-form';
 
 const appTitle = process.env.APP_TITLE;
 
@@ -512,6 +513,9 @@ function PageHeader() {
                       >
                         Datasets
                       </GlobalMenuLink>
+                    </li>
+                    <li>
+                      <GoogleForm />
                     </li>
                     <li>
                       <GlobalMenuLink

@@ -1071,10 +1071,23 @@
     "@devseed-ui/collecticons" "^4.0.2"
     "@devseed-ui/theme-provider" "^4.0.2"
 
+"@devseed-ui/button@^4.1.0-rc.0":
+  version "4.1.0-rc.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fbutton/-/button-4.1.0-rc.0.tgz#8f88aff3039ecf1d5d956f71335fbeee27b65bb4"
+  integrity sha512-e/7wgQeLE2+L58C6gZBk6P6RffmbvZeEZLjszHXVeR3WfPGm9Tiee4z+qRKDc6bcgqSEnlXHhUUXMypaLMzSQg==
+  dependencies:
+    "@devseed-ui/collecticons" "^4.1.0-rc.0"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
+
 "@devseed-ui/collecticons@^4.0.0", "@devseed-ui/collecticons@^4.0.2":
   version "4.0.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fcollecticons/-/collecticons-4.0.2.tgz#d20af8522bfb41a6a6cc0920e94c9665a286f354"
   integrity sha512-4z+TSOTBYRW2KAwPfTIiAWcX0e7A5y1e8HahPbv0W53RT7+2/V3q518tJtgBcMVub8ig1hU52r0e4+qLskvhGQ==
+
+"@devseed-ui/collecticons@^4.1.0-rc.0":
+  version "4.1.0-rc.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fcollecticons/-/collecticons-4.1.0-rc.0.tgz#294a60204f9246ac67eaf8fffa2105edf6cdd2fe"
+  integrity sha512-yWsmJ37UZssgSfmEhIXCUXTU03jrI3v7ArddxPgduhzHFKwPos4Owd3tqj+CTrBChk4UvsYyY/uoFYJIR5KSFQ==
 
 "@devseed-ui/date-picker@^4.0.2":
   version "4.0.2"
@@ -1121,6 +1134,18 @@
     "@devseed-ui/theme-provider" "^4.0.2"
     react-transition-group "^4.3.0"
 
+"@devseed-ui/modal@^4.1.0-rc.0":
+  version "4.1.0-rc.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fmodal/-/modal-4.1.0-rc.0.tgz#30aab11fab000f053aaa5305dec459dbc8c2ffc3"
+  integrity sha512-q/qr6XhmDqaGnZBI4luwRw9S5q6OlrlErQVp0JcyrulW4K6VY1kwp124BqbhcueRahwYwzQHRyV4biEc4IiRbg==
+  dependencies:
+    "@devseed-ui/button" "^4.1.0-rc.0"
+    "@devseed-ui/collecticons" "^4.1.0-rc.0"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
+    "@devseed-ui/toolbar" "^4.1.0-rc.0"
+    "@devseed-ui/typography" "^4.1.0-rc.0"
+    react-transition-group "^4.3.0"
+
 "@devseed-ui/shadow-scrollbar@^4.0.0":
   version "4.0.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fshadow-scrollbar/-/shadow-scrollbar-4.0.2.tgz#aa7f0d164120505c39a8cc574d345802c813c1d7"
@@ -1138,6 +1163,14 @@
     lodash.get "^4.4.2"
     polished "^3.4.2"
 
+"@devseed-ui/theme-provider@^4.1.0-rc.0":
+  version "4.1.0-rc.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftheme-provider/-/theme-provider-4.1.0-rc.0.tgz#183c07a391e5809454efb61844a4e905b69118c2"
+  integrity sha512-ZOKcsjR53gOH1LADEHKuQkItHlvUvNkFxjLmyNm4yTXHviVSbdapCtqcORnFjaEAWBrVHWIMD14wHWs2qnuneA==
+  dependencies:
+    lodash.get "^4.4.2"
+    polished "^3.4.2"
+
 "@devseed-ui/toolbar@^4.0.2":
   version "4.0.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftoolbar/-/toolbar-4.0.2.tgz#1f085aff2d09973671818e54a515745316f74fbc"
@@ -1147,12 +1180,28 @@
     "@devseed-ui/theme-provider" "^4.0.2"
     "@devseed-ui/typography" "^4.0.2"
 
+"@devseed-ui/toolbar@^4.1.0-rc.0":
+  version "4.1.0-rc.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftoolbar/-/toolbar-4.1.0-rc.0.tgz#6abf500e9d7e3f952ff6afd3ce2cd440fca99714"
+  integrity sha512-bF5gmtlTBwcpAX33+7ULORAUfAY76vjLN0spmd2xOLUAIHht3B5/ATSr4PimwYlAQPiRbAJHx7g8uFNIIED/vA==
+  dependencies:
+    "@devseed-ui/button" "^4.1.0-rc.0"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
+    "@devseed-ui/typography" "^4.1.0-rc.0"
+
 "@devseed-ui/typography@^4.0.0", "@devseed-ui/typography@^4.0.2":
   version "4.0.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftypography/-/typography-4.0.2.tgz#18da6ab84467d4258001b66c383ff92681332492"
   integrity sha512-lGWjehRWdM9mQ4pLAXiE6OhZVrBqRoP6SdesDvHcmCQpd1HqDPg8q2Svv4X66eR8tmy5ynhL0JMaBXURUTKSZA==
   dependencies:
     "@devseed-ui/theme-provider" "^4.0.2"
+
+"@devseed-ui/typography@^4.1.0-rc.0":
+  version "4.1.0-rc.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftypography/-/typography-4.1.0-rc.0.tgz#53881bfca981cfe74e4870ccc4b83ae5dacd010b"
+  integrity sha512-UosT7sD1aHvTWKL7ypCjBu1PHqaaKhbxSXBwz46uW5q34v7X5syNh0mhrwzg/6Ilf/TOaszzbHoYoHH2lJ32zw==
+  dependencies:
+    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
 
 "@emotion/is-prop-valid@^0.8.8":
   version "0.8.8"
