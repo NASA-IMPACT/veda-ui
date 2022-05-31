@@ -14,6 +14,7 @@ import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import * as dateFns from 'date-fns';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
+import { DatasetDatumFnResolverBag } from 'delta/thematics';
 import {
   ActionStatus,
   S_FAILED,
@@ -27,7 +28,7 @@ import { MapLoading } from '$components/common/loading-skeleton';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
-import { DatasetDatumFnResolverBag } from 'delta/thematics';
+import { Aoi, AoiChangeListener } from './aoi/mb-aoi-draw';
 
 const MapsContainer = styled.div`
   position: relative;
@@ -70,7 +71,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     cooperativeGestures,
     onPositionChange,
     initialPosition,
-    withGeocoder
+    withGeocoder,
+    aoi,
+    onAoiChange
   } = props;
   /* eslint-enable react/prop-types */
 
@@ -86,11 +89,10 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
   // registering mosaic.
-  const [baseLayerStatus, setBaseLayerStatus] =
-    useState<ActionStatus>(S_IDLE);
+  const [baseLayerStatus, setBaseLayerStatus] = useState<ActionStatus>(S_IDLE);
 
   const onBaseLayerStatusChange = useCallback(
-    ({status}) => setBaseLayerStatus(status),
+    ({ status }) => setBaseLayerStatus(status),
     []
   );
   const [compareLayerStatus, setCompareLayerStatus] =
@@ -105,7 +107,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     resize: () => {
       mapRef.current?.resize();
       mapCompareRef.current?.resize();
-    }
+    },
+    instance: mapRef.current,
+    compareInstance: mapCompareRef.current
   }));
 
   const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
@@ -315,6 +319,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             cooperativeGestures
           }}
           withGeocoder={withGeocoder}
+          aoi={aoi}
+          onAoiChange={onAoiChange}
         />
         {shouldRenderCompare && (
           <SimpleMap
@@ -329,6 +335,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
               zoom: mapRef.current?.getZoom()
             }}
             withGeocoder={withGeocoder}
+            aoi={aoi}
+            onAoiChange={onAoiChange}
           />
         )}
       </MapsContainer>
@@ -361,10 +369,14 @@ export interface MapboxMapProps {
   ) => void;
   withGeocoder?: boolean;
   children?: React.ReactNode;
+  aoi?: Aoi;
+  onAoiChange?: AoiChangeListener
 }
 
 export type MapboxMapRef = {
   resize: () => void;
+  instance: mapboxgl.Map | null;
+  compareInstance: mapboxgl.Map | null;
 };
 
 const MapboxMapComponentFwd = React.forwardRef<MapboxMapRef, MapboxMapProps>(

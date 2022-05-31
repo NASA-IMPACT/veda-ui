@@ -1,12 +1,17 @@
 import React, { useEffect, RefObject, MutableRefObject } from 'react';
-import T from 'prop-types';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { round } from '$utils/format';
 
 import MapboxStyleOverride from './mapbox-style-override';
+import {
+  Aoi,
+  AoiChangeListener,
+  aoiCursorStyles,
+  useMbDraw
+} from './aoi/mb-aoi-draw';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
@@ -16,6 +21,7 @@ const SingleMapContainer = styled.div`
     inset: 0;
   }
   ${MapboxStyleOverride}
+  ${aoiCursorStyles}
 `;
 
 interface SimpleMapProps {
@@ -27,6 +33,8 @@ interface SimpleMapProps {
   onUnmount?: () => void;
   mapOptions: Partial<Omit<mapboxgl.MapboxOptions, 'container'>>;
   withGeocoder?: boolean;
+  aoi?: Aoi;
+  onAoiChange?: AoiChangeListener;
 }
 
 export function SimpleMap(props: SimpleMapProps): JSX.Element {
@@ -38,8 +46,12 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     onUnmount,
     mapOptions,
     withGeocoder,
+    aoi,
+    onAoiChange,
     ...rest
   } = props;
+
+  const theme = useTheme();
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -109,17 +121,14 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     // change.
   }, []);
 
+  useMbDraw({
+    mapRef,
+    theme,
+    onChange: onAoiChange,
+    drawing: aoi?.drawing,
+    selected: aoi?.selected,
+    feature: aoi?.feature
+  });
+
   return <SingleMapContainer ref={containerRef} {...rest} />;
 }
-
-SimpleMap.propTypes = {
-  mapRef: T.shape({
-    current: T.object
-  }).isRequired,
-  containerRef: T.shape({
-    current: T.object
-  }).isRequired,
-  onLoad: T.func,
-  onMoveEnd: T.func,
-  mapOptions: T.object.isRequired
-};
