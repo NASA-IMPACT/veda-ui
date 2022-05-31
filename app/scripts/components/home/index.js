@@ -104,6 +104,25 @@ function Home() {
       };
     });
 
+  // When there are no featured dataset, stub with the latest one (alphabetic order since dataset doesn't have pubDate)
+  const mainDatasets = featuredDatasets.length
+    ? featuredDatasets
+    : [[...thematic.data.datasets].sort()[0]];
+
+  // When there are no featured contents, stub with the latest one
+  const mainDiscoveries = featuredDiscoveries.length
+    ? featuredDiscoveries
+    : [
+        [...thematic.data.discoveries].sort(
+          (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
+        )[0]
+      ];
+
+  const mainDatasetCopy =
+    featuredDatasets.length > 1 ? 'Featured dataset' : 'Datasets';
+  const mainDiscoveryCopy =
+    featuredDiscoveries.length > 1 ? 'Featured discovery' : 'Latest discovery';
+
   return (
     <PageMainContent>
       <LayoutProps
@@ -170,10 +189,10 @@ function Home() {
         attributionUrl={thematic.data.media?.author?.url}
       />
 
-      {!!featuredDiscoveries.length && (
+      {!!mainDiscoveries.length && (
         <Fold forwardedAs='section'>
           <FoldHeader as='header'>
-            <FoldTitle>Featured discoveries</FoldTitle>
+            <FoldTitle>{mainDiscoveryCopy}</FoldTitle>
             <Button
               forwardedAs={Link}
               to='discoveries'
@@ -183,14 +202,14 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <Carousel items={featuredDiscoveries} />
+          <Carousel items={mainDiscoveries} />
         </Fold>
       )}
 
-      {!!featuredDatasets.length && (
+      {!!mainDatasets.length && (
         <Fold forwardedAs='section'>
           <FoldHeader as='header'>
-            <FoldTitle>Featured datasets</FoldTitle>
+            <FoldTitle>{mainDatasetCopy}</FoldTitle>
             <Button
               forwardedAs={Link}
               to='datasets'
@@ -200,7 +219,7 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <Carousel items={featuredDatasets} />
+          <Carousel items={mainDatasets} />
         </Fold>
       )}
 
