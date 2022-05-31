@@ -7,14 +7,18 @@ import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { glsp, media } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
 
+const formUrl =
+  'https://docs.google.com/forms/d/e/1FAIpQLSfGcd3FDsM3kQIOVKjzdPn4f88hX8RZ4Qef7qBsTtDqxjTSkg/viewform?embedded=true';
+
 const Wrapper = styled.div`
   grid-column: 1 / -1;
 `;
 const StyledGoogleForm = styled.iframe`
   width: 100%;
-  margin-top: 20px;
+  margin-top: ${variableGlsp(1)};
 `;
 
+// Global menu link style
 const ButtonAsNavLink = styled(Button)`
   appearance: none;
   position: relative;
@@ -85,8 +89,7 @@ function GoogleForm() {
             <FoldTitle>Give us feedback</FoldTitle>
           </FoldHeader>
           <StyledGoogleForm
-            src='https://docs.google.com/forms/d/e/1FAIpQLSfGcd3FDsM3kQIOVKjzdPn4f88hX8RZ4Qef7qBsTtDqxjTSkg/viewform?embedded=true'
-            width='100%'
+            src={formUrl}
             height='504'
             frameBorder='0'
             marginHeight='0'
