@@ -68,6 +68,25 @@ const StatsListValue = styled(VarHeading).attrs({
   grid-row: 2;
 `;
 
+function getDiscoveryRelatedLinks(arr, thematic) {
+  return arr.map((d) => {
+    return {
+      ...d,
+      linkTo: `${thematicDiscoveriesPath(thematic)}/${d.id}`,
+      parentTo: thematicDiscoveriesPath(thematic)
+    };
+  });
+}
+function getDatasetRelatedLinks(arr, thematic) {
+  return arr.map((d) => {
+    return {
+      ...d,
+      linkTo: `${thematicDatasetsPath(thematic)}/${d.id}`,
+      parentTo: thematicDatasetsPath(thematic)
+    };
+  });
+}
+
 function Home() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
@@ -76,52 +95,47 @@ function Home() {
     (t) => t.id !== thematic.data.id
   );
 
-  const featuredDatasets = thematic.data.datasets
-    .filter((d) => {
+  const featuredDatasets = getDatasetRelatedLinks(
+    thematic.data.datasets.filter((d) => {
       return d.featuredOn?.find(
         (thematicId) => thematicId === thematic.data.id
       );
-    })
-    .map((d) => {
-      return {
-        ...d,
-        linkTo: `${thematicDatasetsPath(thematic)}/${d.id}`,
-        parentTo: thematicDatasetsPath(thematic)
-      };
-    });
+    }),
+    thematic
+  );
 
-  const featuredDiscoveries = thematic.data.discoveries
-    .filter((d) => {
+  const featuredDiscoveries = getDiscoveryRelatedLinks(
+    thematic.data.discoveries.filter((d) => {
       return d.featuredOn?.find(
         (thematicId) => thematicId === thematic.data.id
       );
-    })
-    .map((d) => {
-      return {
-        ...d,
-        linkTo: `${thematicDiscoveriesPath(thematic)}/${d.id}`,
-        parentTo: thematicDiscoveriesPath(thematic)
-      };
-    });
+    }),
+    thematic
+  );
 
   // When there are no featured dataset, stub with the latest one (alphabetic order since dataset doesn't have pubDate)
   const mainDatasets = featuredDatasets.length
     ? featuredDatasets
-    : [[...thematic.data.datasets].sort()[0]];
+    : getDatasetRelatedLinks([[...thematic.data.datasets].sort()[0]], thematic);
 
   // When there are no featured contents, stub with the latest one
   const mainDiscoveries = featuredDiscoveries.length
     ? featuredDiscoveries
-    : [
-        [...thematic.data.discoveries].sort(
-          (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
-        )[0]
-      ];
+    : getDiscoveryRelatedLinks(
+        [
+          [...thematic.data.discoveries].sort(
+            (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
+          )[0]
+        ],
+        thematic
+      );
 
-  const mainDatasetCopy =
-    featuredDatasets.length > 1 ? 'Featured dataset' : 'Datasets';
-  const mainDiscoveryCopy =
-    featuredDiscoveries.length > 1 ? 'Featured discovery' : 'Latest discovery';
+  const mainDatasetCopy = featuredDatasets.length
+    ? 'Featured dataset'
+    : 'Datasets';
+  const mainDiscoveryCopy = featuredDiscoveries.length
+    ? 'Featured discovery'
+    : 'Latest discovery';
 
   return (
     <PageMainContent>
