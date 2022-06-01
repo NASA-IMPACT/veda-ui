@@ -11,8 +11,7 @@ declare module 'delta/thematics' {
   // Dataset Layers
   //
   interface DatasetSourceParams {
-    colormap_name?: string;
-    rescale?: number[];
+    [key: string]: any;
   }
 
   interface DatasetLayerCommonProps {
@@ -23,7 +22,6 @@ declare module 'delta/thematics' {
   export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
   export type DatasetDatumReturnType = Primitives | Date;
   interface DatasetLayerCommonCompareProps extends DatasetLayerCommonProps {
-    datetime?: string | (DatasetDatumFn<DatasetDatumReturnType>);
     mapLabel?: string | (DatasetDatumFn<DatasetDatumReturnType>);
   }
   
@@ -62,10 +60,8 @@ declare module 'delta/thematics' {
 
     /*
       The date to use for the comparison if the user defined one.
-      If there's no date defined and the user is comparing, the value used is
-      the one resolved from the compare.datetime function.
     */
-    userCompareDatetime?: Date;
+    compareDatetime?: Date;
 
     /* functions from date-fns package */
     dateFns: typeof dateFns

@@ -1,16 +1,16 @@
 import styled, { css } from 'styled-components';
-
 import {
   glsp,
-  media,
   themeVal,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
 import { Overline } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
+
 import { variableGlsp } from './variable-utils';
 import { VarProse } from './variable-components';
+import { media } from '$utils/devseed-ui';
 
 const panelWidth = {
   xsmall: '20rem',
@@ -20,7 +20,7 @@ const panelWidth = {
 
 export const PANEL_REVEAL_DURATION = 240;
 
-export const Panel = styled.div`
+export const Panel = styled.div<{ revealed: boolean }>`
   position: relative;
   z-index: 10;
   display: flex;

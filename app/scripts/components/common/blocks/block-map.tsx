@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { utcString2userTzDate } from '$utils/date';
 import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
 import { validateRangeNum } from '$utils/utils';
-import { HintedError } from '.';
+import { HintedError } from '$utils/hinted-error';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -78,7 +78,7 @@ function validateBlockProps(props: MapBlockProps) {
 }
 
 interface MapBlockProps
-  extends Pick<MapboxMapProps, 'datasetId' | 'layerId' | 'isComparing'> {
+  extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
@@ -94,7 +94,6 @@ function MapBlock(props: MapBlockProps) {
     layerId,
     dateTime,
     compareDateTime,
-    isComparing,
     compareLabel,
     center,
     zoom
@@ -103,9 +102,7 @@ function MapBlock(props: MapBlockProps) {
   const errors = validateBlockProps(props);
 
   if (errors.length) {
-    const e = new HintedError('Malformed Map Block');
-    e.hints = errors;
-    throw e;
+    throw new HintedError('Malformed Map Block', errors);
   }
 
   const selectedDatetime = dateTime
@@ -122,7 +119,7 @@ function MapBlock(props: MapBlockProps) {
         datasetId={datasetId}
         layerId={layerId}
         date={selectedDatetime}
-        isComparing={isComparing}
+        isComparing={!!selectedCompareDatetime}
         compareDate={selectedCompareDatetime}
         compareLabel={compareLabel}
         initialPosition={{ lng: center?.[0], lat: center?.[1], zoom }}

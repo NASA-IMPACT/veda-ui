@@ -1,6 +1,26 @@
 import { useEffect, useMemo } from 'react';
 import { useTheme } from 'styled-components';
 import useDimensions from 'react-cool-dimensions';
+import { DevseedUIThemeMediaRanges } from '@devseed-ui/theme-provider';
+
+type MediaBreakpointStatus = {
+  current: keyof DevseedUIThemeMediaRanges;
+  isXsmallUp: boolean;
+  isXsmallOnly: boolean;
+  isXsmallDown: boolean;
+  isSmallUp: boolean;
+  isSmallOnly: boolean;
+  isSmallDown: boolean;
+  isMediumUp: boolean;
+  isMediumOnly: boolean;
+  isMediumDown: boolean;
+  isLargeUp: boolean;
+  isLargeOnly: boolean;
+  isLargeDown: boolean;
+  isXlargeUp: boolean;
+  isXlargeOnly: boolean;
+  isXlargeDown: boolean;
+};
 
 /**
  * Returns the current media query and a series of boolean values indicating
@@ -29,17 +49,22 @@ import useDimensions from 'react-cool-dimensions';
 export function useMediaQuery() {
   const theme = useTheme();
 
+  if (!theme.mediaRanges)
+    throw new Error('There are no media ranges defined in the theme');
+
+  const ranges = Object.entries(theme.mediaRanges);
+
   // Create breakpoints from media ranges.
   const breakpoints = useMemo(
     () =>
-      Object.keys(theme.mediaRanges).reduce(
-        (acc, key) => ({
+      ranges.reduce(
+        (acc, [breakpoint, [lowerBound]]) => ({
           ...acc,
-          [key]: theme.mediaRanges[key][0] || 0
+          [breakpoint]: lowerBound || 0
         }),
         {}
       ),
-    [theme.mediaRanges]
+    [ranges]
   );
 
   const {
@@ -63,10 +88,10 @@ export function useMediaQuery() {
 
   const rangeBooleans = useMemo(
     () =>
-      Object.keys(theme.mediaRanges).reduce((acc, rangeKey) => {
+      ranges.reduce((acc, [rangeKey, bounds]) => {
         const upper = `${rangeKey.charAt(0).toUpperCase()}${rangeKey.slice(1)}`;
         const makeKey = (b) => `is${upper}${b}`;
-        let [lBound, uBound] = theme.mediaRanges[rangeKey];
+        let [lBound, uBound] = bounds;
         lBound = lBound ?? -Infinity;
         uBound = uBound ?? Infinity;
 
@@ -77,7 +102,7 @@ export function useMediaQuery() {
           [makeKey('Down')]: width <= uBound
         };
       }, {}),
-    [theme.mediaRanges, width]
+    [ranges, width]
   );
 
   return useMemo(
@@ -86,5 +111,5 @@ export function useMediaQuery() {
       ...rangeBooleans
     }),
     [currentBreakpoint, rangeBooleans]
-  );
+  ) as MediaBreakpointStatus;
 }
