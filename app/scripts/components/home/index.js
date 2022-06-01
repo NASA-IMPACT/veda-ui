@@ -113,10 +113,13 @@ function Home() {
 
   // TO DO: Ideally, these featured contents should be in carousel.
   // but for now, we are showing only one item.
-  // When there are no featured dataset, stub with the latest one (alphabetic order since dataset doesn't have pubDate)
+  // When there are no featured datasets, stub with the latest one (alphabetic order since dataset doesn't have pubDate)
   const mainDatasets = featuredDatasets.length
     ? featuredDatasets
-    : [[...thematic.data.datasets].sort()[0]];
+    : // When there is no dataset for this thematic area at all, just return an empty array
+    thematic.data.datasets.length
+    ? [[...thematic.data.datasets].sort()[0]]
+    : [];
 
   const featuredDiscoveries = thematic.data.discoveries.filter((d) => {
     return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
@@ -125,15 +128,18 @@ function Home() {
   // When there are no featured contents, stub with the latest one
   const mainDiscoveries = featuredDiscoveries.length
     ? featuredDiscoveries
-    : [
+    : // When there is no discovery for this thematic area at all, just return an empty array
+    thematic.data.discoveries.length
+    ? [
         [...thematic.data.discoveries].sort(
           (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
         )[0]
-      ];
+      ]
+    : [];
 
   const mainDatasetCopy = featuredDatasets.length
     ? 'Featured dataset'
-    : 'Datasets';
+    : 'Dataset';
   const mainDiscoveryCopy = featuredDiscoveries.length
     ? 'Featured discovery'
     : 'Latest discovery';
