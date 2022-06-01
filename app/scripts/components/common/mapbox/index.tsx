@@ -223,6 +223,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             mapInstance={mapCompareRef.current}
             date={compareToDate}
             sourceParams={compareLayerResolvedData.sourceParams}
+            zoomExtent={compareLayerResolvedData.zoomExtent}
             onStatusChange={onCompareLayerStatusChange}
           />
         )}
