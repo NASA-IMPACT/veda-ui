@@ -113,26 +113,32 @@ function Home() {
     thematic
   );
 
-  // When there are no featured dataset, stub with the latest one (alphabetic order since dataset doesn't have pubDate)
+  // When there are no featured datasets, stub with the latest one (alphabetic order since dataset doesn't have pubDate)
   const mainDatasets = featuredDatasets.length
     ? featuredDatasets
-    : getDatasetRelatedLinks([[...thematic.data.datasets].sort()[0]], thematic);
+    : // When there is no dataset for this thematic area at all, just return an empty array
+    thematic.data.datasets.length
+    ? getDatasetRelatedLinks([[...thematic.data.datasets].sort()[0]], thematic)
+    : [];
 
-  // When there are no featured contents, stub with the latest one
+  // When there are no featured discoveries, stub with the latest one
   const mainDiscoveries = featuredDiscoveries.length
     ? featuredDiscoveries
-    : getDiscoveryRelatedLinks(
+    : // When there is no discovery for this thematic area at all, just return an empty array
+    thematic.data.discoveries.length
+    ? getDiscoveryRelatedLinks(
         [
           [...thematic.data.discoveries].sort(
             (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
           )[0]
         ],
         thematic
-      );
+      )
+    : [];
 
   const mainDatasetCopy = featuredDatasets.length
     ? 'Featured dataset'
-    : 'Datasets';
+    : 'Dataset';
   const mainDiscoveryCopy = featuredDiscoveries.length
     ? 'Featured discovery'
     : 'Latest discovery';
