@@ -14,6 +14,7 @@ import { PageMainContent } from '$styles/page';
 
 import { makeAbsUrl } from '$utils/history';
 import { useEffectPrevious } from '$utils/use-effect-previous';
+import { HintedError, HintedErrorDisplay } from '$utils/hinted-error';
 
 export default class ErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
@@ -105,11 +106,19 @@ function Child(props) {
               </a>
             </p>
 
-            <details>
-              <summary>Error details</summary>
-              <strong>{error.message}</strong>
-              <p>{nl2br(error.stack)}</p>
-            </details>
+            {error instanceof HintedError ? (
+              <HintedErrorDisplay
+                title='Error details'
+                message={error.message}
+                hints={error.hints}
+              />
+            ) : (
+              <details>
+                <summary>Error details</summary>
+                <strong>{error.message}</strong>
+                <p>{nl2br(error.stack)}</p>
+              </details>
+            )}
           </FoldProse>
         </PageMainContent>
       </LayoutRoot>

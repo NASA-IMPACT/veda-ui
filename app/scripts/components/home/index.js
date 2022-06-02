@@ -111,9 +111,38 @@ function Home() {
     return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
   });
 
+  // TO DO: Ideally, these featured contents should be in carousel.
+  // but for now, we are showing only one item.
+  // When there are no featured datasets, stub with the latest one (alphabetic order since dataset doesn't have pubDate)
+  const mainDatasets = featuredDatasets.length
+    ? featuredDatasets
+    : // When there is no dataset for this thematic area at all, just return an empty array
+    thematic.data.datasets.length
+    ? [[...thematic.data.datasets].sort()[0]]
+    : [];
+
   const featuredDiscoveries = thematic.data.discoveries.filter((d) => {
     return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
   });
+
+  // When there are no featured contents, stub with the latest one
+  const mainDiscoveries = featuredDiscoveries.length
+    ? featuredDiscoveries
+    : // When there is no discovery for this thematic area at all, just return an empty array
+    thematic.data.discoveries.length
+    ? [
+        [...thematic.data.discoveries].sort(
+          (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
+        )[0]
+      ]
+    : [];
+
+  const mainDatasetCopy = featuredDatasets.length
+    ? 'Featured dataset'
+    : 'Dataset';
+  const mainDiscoveryCopy = featuredDiscoveries.length
+    ? 'Featured discovery'
+    : 'Latest discovery';
 
   return (
     <PageMainContent>
@@ -181,10 +210,10 @@ function Home() {
         attributionUrl={thematic.data.media?.author?.url}
       />
 
-      {!!featuredDiscoveries.length && (
+      {!!mainDiscoveries.length && (
         <Fold forwardedAs='section'>
           <FoldHeader as='header'>
-            <FoldTitle>Featured discoveries</FoldTitle>
+            <FoldTitle>{mainDiscoveryCopy}</FoldTitle>
             <Button
               forwardedAs={Link}
               to='discoveries'
@@ -196,7 +225,7 @@ function Home() {
           </FoldHeader>
           <FeaturedSlider>
             <FeaturedList>
-              {featuredDiscoveries.map((t) => (
+              {mainDiscoveries.map((t) => (
                 <li key={t.id}>
                   <Card
                     cardType='featured'
@@ -216,10 +245,11 @@ function Home() {
           </FeaturedSlider>
         </Fold>
       )}
-      {!!featuredDatasets.length && (
+
+      {!!mainDatasets.length && (
         <Fold forwardedAs='section'>
           <FoldHeader as='header'>
-            <FoldTitle>Featured datasets</FoldTitle>
+            <FoldTitle>{mainDatasetCopy}</FoldTitle>
             <Button
               forwardedAs={Link}
               to='datasets'
@@ -231,7 +261,7 @@ function Home() {
           </FoldHeader>
           <FeaturedSlider>
             <FeaturedList>
-              {featuredDatasets.map((t) => (
+              {mainDatasets.map((t) => (
                 <li key={t.id}>
                   <Card
                     cardType='featured'

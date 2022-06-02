@@ -18,10 +18,12 @@ import {
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
 
+export type TimeDensity = 'day' | 'month' | 'year' | null;
+
 interface STACLayerData {
   timeseries: {
     isPeriodic: boolean;
-    timeDensity: 'day' | 'month' | 'year' | null;
+    timeDensity: TimeDensity;
     domain: Array<string>;
   };
 }

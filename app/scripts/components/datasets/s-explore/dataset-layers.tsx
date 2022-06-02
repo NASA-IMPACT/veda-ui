@@ -25,7 +25,7 @@ interface DatasetLayersProps {
   datasetId: string;
   asyncLayers: AsyncDatasetLayer[];
   onAction: (action: string, payload: { [key: string]: any }) => void;
-  selectedLayerId: string;
+  selectedLayerId?: string;
 }
 
 export default function DatasetLayers(props: DatasetLayersProps) {
