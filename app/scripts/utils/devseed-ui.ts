@@ -9,7 +9,9 @@ import {
 } from '@devseed-ui/theme-provider';
 import {
   Toolbar as _Toolbar,
-  ToolbarIconButton as _ToolbarIconButton
+  ToolbarIconButton as _ToolbarIconButton,
+  VerticalDivider as _VerticalDivider,
+  VerticalDividerProps
 } from '@devseed-ui/toolbar';
 import { ButtonProps } from '@devseed-ui/button';
 
@@ -39,3 +41,4 @@ interface ToolbarProps {
 
 export const Toolbar = _Toolbar as unknown as React.FC<ToolbarProps>;
 export const ToolbarIconButton = _ToolbarIconButton as unknown as React.FC<Omit<ButtonProps, 'fitting'>>;
+export const VerticalDivider = _VerticalDivider as unknown as React.FC<VerticalDividerProps>;

@@ -28,7 +28,7 @@ import { MapLoading } from '$components/common/loading-skeleton';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
-import { Aoi, AoiChangeListener } from './aoi/mb-aoi-draw';
+import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 
 const MapsContainer = styled.div`
   position: relative;
@@ -369,8 +369,8 @@ export interface MapboxMapProps {
   ) => void;
   withGeocoder?: boolean;
   children?: React.ReactNode;
-  aoi?: Aoi;
-  onAoiChange?: AoiChangeListener
+  aoi?: AoiState;
+  onAoiChange?: AoiChangeListenerOverload
 }
 
 export type MapboxMapRef = {

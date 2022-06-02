@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { PropTypes as T } from 'prop-types';
 import {
   CollecticonArea,
   CollecticonPencil,
   CollecticonTrashBin
 } from '@devseed-ui/collecticons';
-import { VerticalDivider } from '@devseed-ui/toolbar';
-import { Toolbar, ToolbarIconButton } from '$utils/devseed-ui';
+import { Toolbar, ToolbarIconButton, VerticalDivider } from '$utils/devseed-ui';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Dropdown, DropTitle } from '@devseed-ui/dropdown';
 import { Button } from '@devseed-ui/button';
@@ -19,6 +17,7 @@ import {
   calcFeatArea,
   featureFromBounds
 } from './utils';
+import { AoiBounds, AoiChangeListenerOverload, AoiState } from './types';
 
 export const Filter = styled.section`
   display: flex;
@@ -61,18 +60,28 @@ const DropdownWide = styled(Dropdown)`
   max-width: 22rem;
 `;
 
-export default function AoiControls(props) {
+interface DropdownRef {
+  reposition: () => void;
+  open: () => void;
+  close: () => void;
+}
+
+type AoiControlsProps = {
+  onAoiChange: AoiChangeListenerOverload;
+} & Pick<AoiState, 'feature' | 'drawing' | 'selected'>;
+
+export default function AoiControls(props: AoiControlsProps) {
   const { feature, selected, drawing, onAoiChange } = props;
 
-  const dropRef = useRef();
+  const dropRef = useRef<DropdownRef>();
   const [bounds, setBounds] = useState(boundsFromFeature(feature));
 
   const onApplyClick = useCallback(() => {
     if (areBoundsValid(bounds)) {
       onAoiChange('aoi.set-feature', {
-        feature: featureFromBounds(feature, bounds)
+        feature: featureFromBounds(feature, bounds as AoiBounds)
       });
-      dropRef.current.close();
+      dropRef.current?.close();
     }
   }, [bounds, feature, onAoiChange]);
 
@@ -145,10 +154,3 @@ export default function AoiControls(props) {
     </Filter>
   );
 }
-
-AoiControls.propTypes = {
-  feature: T.object,
-  selected: T.bool,
-  drawing: T.bool,
-  onAoiChange: T.func
-};

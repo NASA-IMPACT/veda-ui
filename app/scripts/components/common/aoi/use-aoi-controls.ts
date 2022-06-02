@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
+import { AoiChangeListenerOverload, AoiState } from './types';
 
 export function useAoiControls() {
-  const [aoi, setAoi] = useState({
+  const [aoi, setAoi] = useState<AoiState>({
     drawing: false,
     selected: false,
     feature: null,
@@ -64,5 +65,5 @@ export function useAoiControls() {
     }
   }, []);
 
-  return { aoi, onAoiEvent };
+  return { aoi, onAoiEvent: onAoiEvent as AoiChangeListenerOverload };
 }

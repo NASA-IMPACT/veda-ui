@@ -2,8 +2,9 @@ import bbox from '@turf/bbox';
 import featArea from '@turf/area';
 
 import { formatThousands } from '$utils/format';
+import { AoiBounds, AoiBoundsUnset, AoiFeature, RectPolygon } from './types';
 
-export const boundsFromFeature = (feat) => {
+export const boundsFromFeature = (feat: AoiFeature | null): AoiBounds | AoiBoundsUnset => {
   if (!feat) {
     return { ne: [], sw: [] };
   }
@@ -22,13 +23,16 @@ export const boundsFromFeature = (feat) => {
  * @param {object} feature Feature to update
  * @param {object} bounds Bounds in NE/SW format
  */
-export const featureFromBounds = (feature, bounds) => {
+export const featureFromBounds = (
+  feature: AoiFeature | null,
+  bounds: AoiBounds
+): AoiFeature => {
   const {
     ne: [neLng, neLat],
     sw: [swLng, swLat]
   } = bounds;
 
-  const geometry = {
+  const geometry:RectPolygon = {
     type: 'Polygon',
     coordinates: [
       [
@@ -54,15 +58,15 @@ export const featureFromBounds = (feature, bounds) => {
       };
 };
 
-export const calcFeatArea = (feature) => {
+export const calcFeatArea = (feature: AoiFeature | null) => {
   if (!feature) return '0';
 
   // Convert from m2 to km2.
-  const km2 = featArea(feature) / 1e6;
+  const km2 = featArea(feature as any) / 1e6;
   return formatThousands(km2, { decimals: 0, shorten: true });
 };
 
-export const areBoundsValid = (bounds) => {
+export const areBoundsValid = (bounds: AoiBounds | AoiBoundsUnset) => {
   // Check if bounds are valid.
   return (
     bounds.ne[0] !== undefined &&

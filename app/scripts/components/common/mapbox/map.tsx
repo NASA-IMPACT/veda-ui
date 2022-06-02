@@ -6,12 +6,8 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { round } from '$utils/format';
 
 import MapboxStyleOverride from './mapbox-style-override';
-import {
-  Aoi,
-  AoiChangeListener,
-  aoiCursorStyles,
-  useMbDraw
-} from './aoi/mb-aoi-draw';
+import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
+import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
@@ -33,8 +29,8 @@ interface SimpleMapProps {
   onUnmount?: () => void;
   mapOptions: Partial<Omit<mapboxgl.MapboxOptions, 'container'>>;
   withGeocoder?: boolean;
-  aoi?: Aoi;
-  onAoiChange?: AoiChangeListener;
+  aoi?: AoiState;
+  onAoiChange?: AoiChangeListenerOverload;
 }
 
 export function SimpleMap(props: SimpleMapProps): JSX.Element {
