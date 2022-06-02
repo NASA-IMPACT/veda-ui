@@ -32,7 +32,8 @@ import {
   validateChapter
 } from './chapter';
 import { MapLoading } from '$components/common/loading-skeleton';
-import { BlockErrorBoundary, HintedError } from '..';
+import { HintedError } from '$utils/hinted-error';
+import { BlockErrorBoundary } from '..';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -77,9 +78,9 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
     >[];
 
     if (chapters.some((c) => c.type.displayName !== chapterDisplayName)) {
-      const e = new HintedError('Invalid ScrollytellingBlock children');
-      e.hints = ['You can only use <Chapter> inside <ScrollytellingBlock>'];
-      throw e;
+      throw new HintedError('Invalid ScrollytellingBlock children', [
+        'You can only use <Chapter> inside <ScrollytellingBlock>'
+      ]);
     }
 
     const chErrors = chapters.reduce(
@@ -88,9 +89,7 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
     );
 
     if (chErrors.length) {
-      const e = new HintedError('Malformed ScrollytellingBlock Chapter');
-      e.hints = chErrors;
-      throw e;
+      throw new HintedError('Malformed ScrollytellingBlock Chapter', chErrors);
     }
 
     // Extract the props from the chapters.
@@ -124,10 +123,13 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   // The layers are unique based on the dataset, layer id and datetime.
   // Filter out scrollytelling block that doesn't have layer first.
   const uniqueChapterLayers = useMemo(() => {
-    const unique = chList.filter(({showBaseMap}) => !showBaseMap).reduce((acc, ch) => acc.set(getChapterLayerKey(ch), ch),
-      new Map<string, ScrollyChapter>()
-    );
-    return Array.from(unique.values());    
+    const unique = chList
+      .filter(({ showBaseMap }) => !showBaseMap)
+      .reduce(
+        (acc, ch) => acc.set(getChapterLayerKey(ch), ch),
+        new Map<string, ScrollyChapter>()
+      );
+    return Array.from(unique.values());
   }, [chList]);
 
   // Create an array of datasetId & layerId to pass useAsyncLayers so that the
@@ -142,7 +144,7 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   }, [uniqueChapterLayers]);
 
   const asyncLayers = useAsyncLayers(uniqueLayerRefs);
- 
+
   // Create a ref to cache each of the async layers.
   // After the async layer data is loaded from STAC, the layer functions have
   // to be resolved by the `resolveConfigFunctions`. This function will return a
@@ -305,7 +307,9 @@ function Scrollytelling(props) {
   }, [chapterProps, areAllLayersLoaded]);
 
   const activeChapterLayerId =
-    activeChapter && !activeChapter.showBaseMap && getChapterLayerKey(activeChapter);
+    activeChapter &&
+    !activeChapter.showBaseMap &&
+    getChapterLayerKey(activeChapter);
 
   const activeChapterLayer = resolvedLayers.find(
     (resolvedLayer) => resolvedLayer?.runtimeData.id === activeChapterLayerId

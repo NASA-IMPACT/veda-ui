@@ -113,6 +113,8 @@ function Home() {
     thematic
   );
 
+  // TO DO: Ideally, these featured contents should be in carousel.
+  // but for now, we are showing only one item.
   // When there are no featured datasets, stub with the latest one (alphabetic order since dataset doesn't have pubDate)
   const mainDatasets = featuredDatasets.length
     ? featuredDatasets

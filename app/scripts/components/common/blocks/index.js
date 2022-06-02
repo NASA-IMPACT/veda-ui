@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import T from 'prop-types';
-import { media, themeVal, glsp } from '@devseed-ui/theme-provider';
+import { media } from '@devseed-ui/theme-provider';
 
 import { ContentBlock, ContentBlockProse } from '$styles/content-block';
 
@@ -19,6 +19,7 @@ import {
 import ContentBlockFigure from './figure';
 import { FigcaptionInner } from '../figure';
 import { variableGlsp } from '$styles/variable-utils';
+import { HintedErrorDisplay } from '$utils/hinted-error';
 
 export const ContentBlockPAlpha = styled(ContentBlock)`
   ${ContentBlockProse} {
@@ -201,32 +202,6 @@ const ContentBlockPFDelta = styled(ContentBlock)`
   }
 `;
 
-const ErrorBlock = styled.div`
-  margin: ${glsp(1, 0)};
-  padding: ${glsp(0, 1)};
-`;
-
-const ErrorBlockInner = styled.div`
-  width: 100%;
-  color: ${themeVal('color.danger')};
-  border: 3px solid ${themeVal('color.danger')};
-  padding: ${glsp(3)};
-
-  > div {
-    max-width: 48rem;
-    margin: 0 auto;
-
-    > * {
-      display: block;
-    }
-  }
-`;
-
-const ErrorHints = styled.div`
-  margin-top: ${glsp()};
-  color: ${themeVal('color.base')};
-`;
-
 // This will result an object like below
 // { defaultProse: ContentBlockPAlpha,
 // wideProse: ContentBlockPBeta,
@@ -302,23 +277,12 @@ export class BlockErrorBoundary extends React.Component {
 
     if (error && !passErrorToChild) {
       return (
-        <ErrorBlock className={rest.className}>
-          <ErrorBlockInner>
-            <div>
-              <small>{generalErrorMessage}</small>
-              <strong>{error.message}</strong>
-              {!!error.hints?.length && (
-                <ErrorHints>
-                  <p>Hints:</p>
-                  {error.hints.map((e, i) => (
-                    /* eslint-disable-next-line react/no-array-index-key */
-                    <p key={i}>{e}</p>
-                  ))}
-                </ErrorHints>
-              )}
-            </div>
-          </ErrorBlockInner>
-        </ErrorBlock>
+        <HintedErrorDisplay
+          title={generalErrorMessage}
+          message={error.message}
+          className={rest.className}
+          hints={error.hints}
+        />
       );
     }
 
@@ -335,12 +299,5 @@ BlockErrorBoundary.propTypes = {
 const BlockWithError = (props) => (
   <BlockErrorBoundary {...props} childToRender={BlockComponent} />
 );
-
-export class HintedError extends Error {
-  constructor(message, hints = []) {
-    super(message);
-    this.hints = hints;
-  }
-}
 
 export default BlockWithError;
