@@ -22,16 +22,17 @@ import {
 
 import deltaThematics from 'delta/thematics';
 import NasaLogo from './nasa-logo';
-import { variableGlsp } from '../../styles/variable-utils';
-import { useThematicArea } from '../../utils/thematics';
+import { variableGlsp } from '$styles/variable-utils';
+import { useThematicArea } from '$utils/thematics';
 import {
   thematicAboutPath,
   thematicDatasetsPath,
   thematicDiscoveriesPath,
   thematicRootPath
-} from '../../utils/routes';
+} from '$utils/routes';
+import GlobalMenuLinkCSS from '$styles/MenuLink';
 
-import { useMediaQuery } from '../../utils/use-media-query';
+import { useMediaQuery } from '$utils/use-media-query';
 import UnscrollableBody from './unscrollable-body';
 import GoogleForm from './google-form';
 
@@ -292,59 +293,7 @@ const GlobalMenu = styled.ul`
 `;
 
 const GlobalMenuLink = styled(NavLink)`
-  appearance: none;
-  position: relative;
-  display: flex;
-  gap: ${glsp(0.25)};
-  align-items: center;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  color: currentColor;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: left;
-  padding: ${variableGlsp(0, 1)};
-  transition: all 0.32s ease 0s;
-
-  ${media.largeUp`
-    padding: ${glsp(0.5, 0)};
-  `}
-
-  &:hover {
-    opacity: 0.64;
-  }
-
-  > * {
-    flex-shrink: 0;
-  }
-
-  /* Menu link line decoration */
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0.125rem;
-    height: 0;
-    background: currentColor;
-
-    ${media.largeUp`
-      width: 0;
-      height: 0.125rem;
-    `}
-  }
-
-  &.active::after {
-    ${media.mediumDown`
-      height: 100%;
-    `}
-
-    ${media.largeUp`
-      width: 100%;
-    `}
-  }
+  ${GlobalMenuLinkCSS}
 `;
 
 const ThemeToggle = styled(GlobalMenuLink)`
