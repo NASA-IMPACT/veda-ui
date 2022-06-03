@@ -28,6 +28,7 @@ import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { DatasetDatumFnResolverBag } from 'delta/thematics';
+import { formatCompareDate, formatSingleDate } from './utils';
 
 const MapsContainer = styled.div`
   position: relative;
@@ -86,11 +87,10 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
   // registering mosaic.
-  const [baseLayerStatus, setBaseLayerStatus] =
-    useState<ActionStatus>(S_IDLE);
+  const [baseLayerStatus, setBaseLayerStatus] = useState<ActionStatus>(S_IDLE);
 
   const onBaseLayerStatusChange = useCallback(
-    ({status}) => setBaseLayerStatus(status),
+    ({ status }) => setBaseLayerStatus(status),
     []
   );
   const [compareLayerStatus, setCompareLayerStatus] =
@@ -173,6 +173,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       : null;
   }, [compareDate, date]);
 
+  const baseTimeDensity = baseLayerResolvedData?.timeseries.timeDensity;
+  const compareTimeDensity = compareLayerResolvedData?.timeseries.timeDensity;
+
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.
     const providedLabel = compareLabel || compareLayerResolvedData?.mapLabel;
@@ -180,12 +183,21 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
     // Default to date comparison.
     return date && compareToDate
-      ? `${dateFns.format(date, 'yyyy/MM/dd')} VS ${dateFns.format(
+      ? formatCompareDate(
+          date,
           compareToDate,
-          'yyyy/MM/dd'
-        )}`
+          baseTimeDensity,
+          compareTimeDensity
+        )
       : null;
-  }, [compareLabel, compareLayerResolvedData?.mapLabel, date, compareToDate]);
+  }, [
+    compareLabel,
+    compareLayerResolvedData?.mapLabel,
+    date,
+    compareToDate,
+    baseTimeDensity,
+    compareTimeDensity
+  ]);
 
   return (
     <>
@@ -261,6 +273,27 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       >
         <CollecticonCircleXmark /> Failed to load compare layer{' '}
         {compareLayer?.data?.id}
+      </MapMessage>
+
+      {/*
+        Map overlay element
+        Message shown when the map is in compare mode to indicate what's
+        being compared.
+        If the user provided an override value (compareLabel), use that.
+      */}
+      <MapMessage
+        id='single-map-message'
+        active={
+          !!(
+            !shouldRenderCompare &&
+            date &&
+            baseLayerResolvedData &&
+            baseLayerStatus !== S_FAILED
+          )
+        }
+      >
+        {date &&
+          formatSingleDate(date, baseLayerResolvedData?.timeseries.timeDensity)}
       </MapMessage>
 
       {/*

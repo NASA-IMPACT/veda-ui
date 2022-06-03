@@ -34,6 +34,7 @@ import {
 import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
 import { BlockErrorBoundary } from '..';
+import { formatSingleDate } from '$components/common/mapbox/utils';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -358,7 +359,7 @@ function Scrollytelling(props) {
 
         {/*
           Map overlay element
-          Map message
+          Map message for loading error
         */}
         <MapMessage
           id='scrolly-map-message'
@@ -367,6 +368,22 @@ function Scrollytelling(props) {
         >
           <CollecticonCircleXmark /> There was a problem loading the map data.
           Refresh the page and try again.
+        </MapMessage>
+
+        {/*
+        Map overlay element
+        Message shown with the current date.
+      */}
+        <MapMessage
+          id='scrolly-map-date-message'
+          active={!!activeChapterLayer?.runtimeData.datetime}
+        >
+          {activeChapterLayer?.runtimeData.datetime
+            ? formatSingleDate(
+                activeChapterLayer?.runtimeData.datetime,
+                activeChapterLayer?.layer.timeseries.timeDensity
+              )
+            : null}
         </MapMessage>
 
         {/*
