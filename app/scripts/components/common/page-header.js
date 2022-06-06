@@ -30,7 +30,7 @@ import {
   thematicDiscoveriesPath,
   thematicRootPath
 } from '$utils/routes';
-import GlobalMenuLinkCSS from '$styles/MenuLink';
+import GlobalMenuLinkCSS from '$styles/menu-link';
 
 import { useMediaQuery } from '$utils/use-media-query';
 import UnscrollableBody from './unscrollable-body';

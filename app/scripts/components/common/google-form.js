@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import GlobalMenuLinkCSS from '$styles/menuLink';
+import GlobalMenuLinkCSS from '$styles/menu-link';
 import { Button } from '@devseed-ui/button';
 import { Modal } from '@devseed-ui/modal';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
