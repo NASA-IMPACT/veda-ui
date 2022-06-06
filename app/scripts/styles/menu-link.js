@@ -19,7 +19,7 @@ const GlobalMenuLinkCSS = css`
   padding: ${variableGlsp(0, 1)};
   transition: all 0.32s ease 0s;
 
-  ${media.largeUp`
+  ${media.xlargeUp`
     padding: ${glsp(0.5, 0)};
   `}
 
@@ -42,18 +42,18 @@ const GlobalMenuLinkCSS = css`
     height: 0;
     background: currentColor;
 
-    ${media.largeUp`
+    ${media.xlargeUp`
       width: 0;
       height: 0.125rem;
     `}
   }
 
   &.active::after {
-    ${media.mediumDown`
+    ${media.largeDown`
       height: 100%;
     `}
 
-    ${media.largeUp`
+    ${media.xlargeUp`
       width: 100%;
     `}
   }
