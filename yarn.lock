@@ -1121,6 +1121,18 @@
     "@devseed-ui/theme-provider" "^4.1.0-rc.0"
     react-transition-group "^4.3.0"
 
+"@devseed-ui/modal@^4.1.0-rc.0":
+  version "4.1.0-rc.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fmodal/-/modal-4.1.0-rc.0.tgz#30aab11fab000f053aaa5305dec459dbc8c2ffc3"
+  integrity sha512-q/qr6XhmDqaGnZBI4luwRw9S5q6OlrlErQVp0JcyrulW4K6VY1kwp124BqbhcueRahwYwzQHRyV4biEc4IiRbg==
+  dependencies:
+    "@devseed-ui/button" "^4.1.0-rc.0"
+    "@devseed-ui/collecticons" "^4.1.0-rc.0"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
+    "@devseed-ui/toolbar" "^4.1.0-rc.0"
+    "@devseed-ui/typography" "^4.1.0-rc.0"
+    react-transition-group "^4.3.0"
+
 "@devseed-ui/shadow-scrollbar@4.1.0-rc.0":
   version "4.1.0-rc.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fshadow-scrollbar/-/shadow-scrollbar-4.1.0-rc.0.tgz#8f3bd67ac04cdb1fe8594da07fda58122f77142f"
@@ -1138,7 +1150,7 @@
     lodash.get "^4.4.2"
     polished "^3.4.2"
 
-"@devseed-ui/toolbar@4.1.0-rc.0":
+"@devseed-ui/toolbar@4.1.0-rc.0", "@devseed-ui/toolbar@^4.1.0-rc.0":
   version "4.1.0-rc.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftoolbar/-/toolbar-4.1.0-rc.0.tgz#6abf500e9d7e3f952ff6afd3ce2cd440fca99714"
   integrity sha512-bF5gmtlTBwcpAX33+7ULORAUfAY76vjLN0spmd2xOLUAIHht3B5/ATSr4PimwYlAQPiRbAJHx7g8uFNIIED/vA==

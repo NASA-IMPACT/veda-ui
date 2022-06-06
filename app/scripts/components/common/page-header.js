@@ -22,17 +22,19 @@ import {
 
 import deltaThematics from 'delta/thematics';
 import NasaLogo from './nasa-logo';
-import { variableGlsp } from '../../styles/variable-utils';
-import { useThematicArea } from '../../utils/thematics';
+import { variableGlsp } from '$styles/variable-utils';
+import { useThematicArea } from '$utils/thematics';
 import {
   thematicAboutPath,
   thematicDatasetsPath,
   thematicDiscoveriesPath,
   thematicRootPath
-} from '../../utils/routes';
+} from '$utils/routes';
+import GlobalMenuLinkCSS from '$styles/menu-link';
 
-import { useMediaQuery } from '../../utils/use-media-query';
+import { useMediaQuery } from '$utils/use-media-query';
 import UnscrollableBody from './unscrollable-body';
+import GoogleForm from './google-form';
 
 const appTitle = process.env.APP_TITLE;
 
@@ -93,7 +95,7 @@ const Brand = styled.div`
       height: 2.5rem;
       width: auto;
 
-      ${media.mediumUp`
+      ${media.largeUp`
         transform: scale(1.125);
       `}
     }
@@ -133,7 +135,7 @@ const GlobalNav = styled.nav`
       }
     `}
 
-  ${media.largeUp`
+  ${media.xlargeUp`
     position: static;
     flex: 1;
     margin: 0;
@@ -158,7 +160,7 @@ const GlobalNav = styled.nav`
     ${({ revealed }) =>
       revealed &&
       css`
-        ${media.mediumDown`
+        ${media.largeDown`
           background: ${themeVal('color.base-400a')};
           width: 200vw;
         `}
@@ -172,7 +174,7 @@ const GlobalNavInner = styled.div`
   flex: 1;
   background-color: ${themeVal('color.primary')};
 
-  ${media.mediumDown`
+  ${media.largeDown`
     box-shadow: ${themeVal('boxShadow.elevationD')};
   `}
 `;
@@ -197,6 +199,10 @@ export const GlobalNavToggle = styled(Button)`
   position: absolute;
   top: ${variableGlsp()};
   right: calc(100% + ${variableGlsp()});
+
+  ${media.largeUp`
+    top: ${variableGlsp(0.875)};
+  `}
 `;
 
 const GlobalNavBody = styled(ShadowScrollbar).attrs({
@@ -228,7 +234,7 @@ const GlobalNavBodyInner = styled.div`
   flex-direction: column;
   flex: 1;
 
-  ${media.largeUp`
+  ${media.xlargeUp`
     flex-direction: row;
     gap: ${variableGlsp()};
   `}
@@ -239,7 +245,7 @@ const NavBlock = styled.div`
   flex-flow: column nowrap;
   gap: ${glsp(0.25)};
 
-  ${media.largeUp`
+  ${media.xlargeUp`
     flex-direction: row;
     align-items: center;
     gap: ${glsp(1.5)};
@@ -247,17 +253,17 @@ const NavBlock = styled.div`
 `;
 
 const SectionsNavBlock = styled(NavBlock)`
-  ${media.largeUp`
+  ${media.xlargeUp`
     margin-left: auto;
   `}
 `;
 
 const ThemesNavBlock = styled(NavBlock)`
-  ${media.mediumDown`
+  ${media.largeDown`
     order: 2;
   `}
 
-  ${media.largeUp`
+  ${media.xlargeUp`
     padding-left: ${variableGlsp()};
     box-shadow: -1px 0 0 0 ${themeVal('color.surface-200a')};
   `}
@@ -271,7 +277,7 @@ const GlobalNavBlockTitle = styled(Overline).attrs({
   color: currentColor;
   opacity: 0.64;
 
-  ${media.largeUp`
+  ${media.xlargeUp`
     padding: 0;
   `}
 `;
@@ -282,7 +288,7 @@ const GlobalMenu = styled.ul`
   flex-flow: column nowrap;
   gap: ${glsp(0.5)};
 
-  ${media.largeUp`
+  ${media.xlargeUp`
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
@@ -291,59 +297,7 @@ const GlobalMenu = styled.ul`
 `;
 
 const GlobalMenuLink = styled(NavLink)`
-  appearance: none;
-  position: relative;
-  display: flex;
-  gap: ${glsp(0.25)};
-  align-items: center;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  color: currentColor;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: left;
-  padding: ${variableGlsp(0, 1)};
-  transition: all 0.32s ease 0s;
-
-  ${media.largeUp`
-    padding: ${glsp(0.5, 0)};
-  `}
-
-  &:hover {
-    opacity: 0.64;
-  }
-
-  > * {
-    flex-shrink: 0;
-  }
-
-  /* Menu link line decoration */
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0.125rem;
-    height: 0;
-    background: currentColor;
-
-    ${media.largeUp`
-      width: 0;
-      height: 0.125rem;
-    `}
-  }
-
-  &.active::after {
-    ${media.mediumDown`
-      height: 100%;
-    `}
-
-    ${media.largeUp`
-      width: 100%;
-    `}
-  }
+  ${GlobalMenuLinkCSS}
 `;
 
 const ThemeToggle = styled(GlobalMenuLink)`
@@ -357,7 +311,7 @@ const ThemeToggle = styled(GlobalMenuLink)`
 function PageHeader() {
   const thematic = useThematicArea();
 
-  const { isMediumDown } = useMediaQuery();
+  const { isLargeDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
   // The menu toggle button sits inside a panel with position fixed, therefore
@@ -377,21 +331,21 @@ function PageHeader() {
 
   useEffect(() => {
     // Close global nav when media query changes.
-    if (!isMediumDown) setGlobalNavRevealed(false);
+    if (!isLargeDown) setGlobalNavRevealed(false);
 
     // Listener for the toggle button.
-    if (isMediumDown) {
+    if (isLargeDown) {
       const handler = () => setBtnOffset(Math.min(window.pageYOffset, 60));
       window.addEventListener('scroll', handler);
       return () => window.removeEventListener('scroll', handler);
     }
-  }, [isMediumDown]);
+  }, [isLargeDown]);
 
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
 
   return (
     <PageHeaderSelf>
-      {globalNavRevealed && isMediumDown && <UnscrollableBody />}
+      {globalNavRevealed && isLargeDown && <UnscrollableBody />}
       <Brand>
         <Link
           to={
@@ -408,7 +362,7 @@ function PageHeader() {
         onClick={onGlobalNavClick}
       >
         <GlobalNavInner ref={globalNavBodyRef}>
-          {isMediumDown && (
+          {isLargeDown && (
             <GlobalNavHeader>
               <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
               <GlobalNavActions>
@@ -431,12 +385,12 @@ function PageHeader() {
               </GlobalNavActions>
             </GlobalNavHeader>
           )}
-          <GlobalNavBody as={isMediumDown ? undefined : 'div'}>
+          <GlobalNavBody as={isLargeDown ? undefined : 'div'}>
             <GlobalNavBodyInner>
               {thematic && deltaThematics.length > 1 && (
                 <ThemesNavBlock>
                   <GlobalNavBlockTitle>Area</GlobalNavBlockTitle>
-                  {isMediumDown ? (
+                  {isLargeDown ? (
                     <GlobalMenu id='themes-nav-block'>
                       {deltaThematics.map((t) => (
                         <li key={t.id}>
@@ -512,6 +466,9 @@ function PageHeader() {
                       >
                         Datasets
                       </GlobalMenuLink>
+                    </li>
+                    <li>
+                      <GoogleForm />
                     </li>
                     <li>
                       <GlobalMenuLink
