@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import GlobalMenuLinkCSS from '$styles/MenuLink';
+import GlobalMenuLinkCSS from '$styles/menuLink';
 import { Button } from '@devseed-ui/button';
 import { Modal } from '@devseed-ui/modal';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
-import { glsp, media } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
-
-const formUrl =
-  'https://docs.google.com/forms/d/e/1FAIpQLSfGcd3FDsM3kQIOVKjzdPn4f88hX8RZ4Qef7qBsTtDqxjTSkg/viewform?embedded=true';
 
 const Wrapper = styled.div`
   grid-column: 1 / -1;
@@ -38,7 +34,7 @@ function GoogleForm() {
             <FoldTitle>Give us feedback</FoldTitle>
           </FoldHeader>
           <StyledGoogleForm
-            src={formUrl}
+            src={process.env.GOOGLE_FORM}
             height='504'
             frameBorder='0'
             marginHeight='0'
