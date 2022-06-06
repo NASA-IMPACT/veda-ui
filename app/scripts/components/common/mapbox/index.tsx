@@ -277,9 +277,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
       {/*
         Map overlay element
-        Message shown when the map is in compare mode to indicate what's
-        being compared.
-        If the user provided an override value (compareLabel), use that.
+        Message shown when the map is is not in compare mode. It displays the
+        date being visualized if there is one.
       */}
       <MapMessage
         id='single-map-message'
