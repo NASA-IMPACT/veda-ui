@@ -82,21 +82,6 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
 
     onLoad && mbMap.once('load', onLoad);
 
-    onMoveEnd &&
-      mbMap.on('moveend', (e) => {
-        onMoveEnd({
-          // The existence of originalEvent indicates that it was not caused by
-          // a method call.
-          userInitiated: Object.prototype.hasOwnProperty.call(
-            e,
-            'originalEvent'
-          ),
-          lng: round(mbMap.getCenter().lng, 4),
-          lat: round(mbMap.getCenter().lat, 4),
-          zoom: round(mbMap.getZoom(), 2)
-        });
-      });
-
     // Trigger a resize to handle flex layout quirks.
     setTimeout(() => mbMap.resize(), 1);
 
@@ -108,6 +93,28 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     // Only use the props on mount. We don't want to update the map if they
     // change.
   }, []);
+
+  useEffect(() => {
+    if (!mapRef.current || typeof onMoveEnd !== 'function') return;
+    const mbMap = mapRef.current;
+
+    const listener = (e) => {
+      onMoveEnd({
+        // The existence of originalEvent indicates that it was not caused by
+        // a method call.
+        userInitiated: Object.prototype.hasOwnProperty.call(e, 'originalEvent'),
+        lng: round(mbMap.getCenter().lng, 4),
+        lat: round(mbMap.getCenter().lat, 4),
+        zoom: round(mbMap.getZoom(), 2)
+      });
+    };
+
+    mbMap.on('moveend', listener);
+
+    return () => {
+      mbMap.off('moveend', listener);
+    };
+  }, [onMoveEnd, mapRef]);
 
   return <SingleMapContainer ref={containerRef} {...rest} />;
 }
