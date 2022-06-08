@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTheme } from 'styled-components';
 import axios from 'axios';
 import qs from 'qs';
 import mapboxgl from 'mapbox-gl';
@@ -92,6 +93,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     isHidden
   } = props;
 
+  const theme = useTheme();
+  const primaryColor = theme.color?.primary;
   const minZoom = zoomExtent?.[0];
 
   const [showMarkers, setShowMarkers] = useState(
@@ -233,7 +236,9 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-enable no-console */
 
         addedMarkers.current = points.map((p) => {
-          const marker = new mapboxgl.Marker()
+          const marker = new mapboxgl.Marker({
+            color: primaryColor
+          })
             .setLngLat(p.center)
             .addTo(mapInstance);
 
@@ -276,7 +281,16 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     // The showMarkers and isHidden dep are left out on purpose, as visibility
     // is controlled below, but we need the value to initialize the markers
     // visibility.
-  }, [id, changeStatus, layerId, date, minZoom, mapInstance, sourceParams]);
+  }, [
+    id,
+    changeStatus,
+    layerId,
+    date,
+    minZoom,
+    mapInstance,
+    sourceParams,
+    primaryColor
+  ]);
 
   //
   // Tiles
