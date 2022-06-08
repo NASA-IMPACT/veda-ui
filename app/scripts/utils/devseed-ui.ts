@@ -12,6 +12,10 @@ import {
   ToolbarIconButton as _ToolbarIconButton
 } from '@devseed-ui/toolbar';
 import { ButtonProps } from '@devseed-ui/button';
+import {
+  CollecticonProps,
+  iconDataURI as _iconDataURI
+} from '@devseed-ui/collecticons';
 
 type themeValReturn = (props: {
   theme: { [key: string]: string | number };
@@ -27,7 +31,6 @@ export const multiply = _multiply as (
   b: number | string | themeValReturn
 ) => number | string;
 
-
 interface ToolbarProps {
   /**
    * Size property to pass to contextual enabled elements, namely
@@ -38,4 +41,11 @@ interface ToolbarProps {
 }
 
 export const Toolbar = _Toolbar as unknown as React.FC<ToolbarProps>;
-export const ToolbarIconButton = _ToolbarIconButton as unknown as React.FC<Omit<ButtonProps, 'fitting'>>;
+export const ToolbarIconButton = _ToolbarIconButton as unknown as React.FC<
+  Omit<ButtonProps, 'fitting'>
+>;
+
+export const iconDataURI = _iconDataURI as unknown as (
+  Cmp: React.FC,
+  props: CollecticonProps
+) => string;

@@ -12,7 +12,13 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import * as dateFns from 'date-fns';
-import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
+import {
+  CollecticonCircleXmark,
+  CollecticonChevronRightSmall,
+  CollecticonChevronLeftSmall
+} from '@devseed-ui/collecticons';
+import { themeVal } from '@devseed-ui/theme-provider';
+import { DatasetDatumFnResolverBag } from 'delta/thematics';
 
 import {
   ActionStatus,
@@ -27,11 +33,44 @@ import { MapLoading } from '$components/common/loading-skeleton';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
-import { DatasetDatumFnResolverBag } from 'delta/thematics';
 import { formatCompareDate, formatSingleDate } from './utils';
+import { iconDataURI } from '$utils/devseed-ui';
+
+const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
+  color: 'white'
+});
+
+const chevronLeftURI = () => iconDataURI(CollecticonChevronLeftSmall, {
+  color: 'white'
+});
 
 const MapsContainer = styled.div`
   position: relative;
+
+  .mapboxgl-compare .compare-swiper-vertical {
+    background: ${themeVal('color.primary')};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::before,
+    &::after {
+      display: inline-block;
+      content: '';
+      background-repeat: no-repeat;
+      background-size: 1rem 1rem;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    &::before {
+      background-image: url('${chevronLeftURI()}');
+    }
+    &::after {
+      background-image: url('${chevronRightURI()}');
+    }
+  }
+
 `;
 
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
