@@ -104,13 +104,16 @@ const DotGroupPositioned = styled(DotGroup)`
     height: 8px;
     margin-right: ${variableGlsp(0.25)};
     border-radius: ${themeVal('shape.ellipsoid')};
-    background-color: white;
-    border: 0;
+    background-color: ${themeVal('color.base-100a')};
+    border: 1px solid white;
   }
   .carousel__dot--selected {
     cursor: auto;
-    filter: opacity(0.1);
+    background-color: white;
   }
+  ${media.mediumDown`
+    bottom: 0;
+`}
 `;
 function Carousel({ items }) {
   return (
