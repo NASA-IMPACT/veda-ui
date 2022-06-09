@@ -17,6 +17,7 @@ import SandboxCards from './cards';
 import SandboxMDXPage from './mdx-page';
 import SandboxMDXScrolly from './mdx-scrollytelling';
 import SandboxAOI from './aoi';
+import SandboxOverride from './override';
 
 const pages = [
   {
@@ -58,6 +59,11 @@ const pages = [
     id: 'aoi',
     name: 'Map AOI',
     component: SandboxAOI
+  },
+  {
+    id: 'override',
+    name: 'Override',
+    component: SandboxOverride
   }
 ];
 

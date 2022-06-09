@@ -5,5 +5,6 @@ module.exports = {
 
   pageOverrides: {
     aboutContent: './about.mdx',
+    'sandbox-override': './sandbox-override.mdx'
   }
 };

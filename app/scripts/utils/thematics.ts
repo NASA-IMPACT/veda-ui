@@ -6,7 +6,7 @@ import deltaThematics, {
   datasets
 } from 'delta/thematics';
 
-import { ActionStatus, S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
+import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
 import { MDXContent, MDXModule } from 'mdx/types';
 
 /**
@@ -87,9 +87,12 @@ export function useThematicAreaDataset() {
   return dataset;
 }
 
-interface MdxPageLoadResult {
-  status: ActionStatus,
-  MdxContent: MDXContent | null
+type MdxPageLoadResult = {
+  status: typeof S_IDLE | typeof S_LOADING,
+  MdxContent: null
+} | {
+  status: typeof S_SUCCEEDED,
+  MdxContent: MDXContent
 }
 
 /**
@@ -98,7 +101,7 @@ interface MdxPageLoadResult {
  * @param {function} loader Async function to load the mdx page
  * @returns Object
  */
-export function useMdxPageLoader(loader: () => Promise<MDXModule>) {
+export function useMdxPageLoader(loader?: () => Promise<MDXModule>) {
   const [pageMdx, setPageMdx] = useState<MdxPageLoadResult>({
     status: S_IDLE,
     MdxContent: null
