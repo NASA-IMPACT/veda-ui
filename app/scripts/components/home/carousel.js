@@ -1,14 +1,13 @@
 import React from 'react';
 import T from 'prop-types';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import {
   CarouselProvider,
   Slider,
   Slide,
   ButtonBack,
   ButtonNext,
-  DotGroup,
-  Dot
+  DotGroup
 } from 'pure-react-carousel';
 // required CSS for pure-react-carousel
 import 'pure-react-carousel/dist/react-carousel.es.css';
@@ -17,13 +16,24 @@ import {
   CollecticonChevronLeft,
   CollecticonChevronRight
 } from '@devseed-ui/collecticons';
-import { listReset, media, themeVal } from '@devseed-ui/theme-provider';
+import { createButtonStyles } from '@devseed-ui/button';
+import {
+  glsp,
+  listReset,
+  media,
+  themeVal,
+  visuallyHidden
+} from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
 
 import { Card } from '$components/common/card';
 
 const FeaturedList = styled.div`
   ${listReset()}
+
+  .carousel__slider {
+    border-radius: ${themeVal('shape.rounded')};
+  }
 `;
 
 const FeaturedContent = styled.div`
@@ -33,20 +43,20 @@ const FeaturedContent = styled.div`
     min-height: 16rem;
 
     ${media.smallUp`
-    min-height: 20rem;
-  `}
+      min-height: 20rem;
+    `}
 
     ${media.mediumUp`
-    min-height: 20rem;
-  `}
+      min-height: 20rem;
+    `}
 
-  ${media.largeUp`
-    min-height: 24rem;
-  `}
+    ${media.largeUp`
+      min-height: 24rem;
+    `}
 
-  ${media.xlargeUp`
-    min-height: 28rem;
-  `}
+    ${media.xlargeUp`
+      min-height: 28rem;
+    `}
   }
 
   // overriding pure-react-carousel styles
@@ -57,64 +67,64 @@ const FeaturedContent = styled.div`
 
 const ButtonGroup = styled.div`
   position: absolute;
-  bottom: ${variableGlsp(1)};
-  right: ${variableGlsp(1)};
-  ${media.mediumDown`
-    top: ${variableGlsp(1)};
-    left: ${variableGlsp(1)};
+  display: flex;
+  gap: ${variableGlsp(1)};
+  top: ${variableGlsp(1)};
+  left: ${variableGlsp(1)};
+
+  ${media.largeUp`
+    top: unset;
+    left: unset;
+    bottom: ${variableGlsp(1)};
+    right: ${variableGlsp(1)};
   `};
 `;
 
-const ButtonStyle = css`
-  width: 35px;
-  height: 35px;
-  border: none;
-  background-color: ${themeVal('color.base-400a')};
-  border-radius: ${themeVal('shape.rounded')};
-  &:disabled {
-    cursor: auto;
-    filter: opacity(0.1);
-  }
+const buttonStyle = createButtonStyles({
+  variation: 'achromic-text',
+  fitting: 'skinny'
+});
+
+const ButtonBackStyled = styled(ButtonBack)`
+  ${buttonStyle}
 `;
 
-const ButtonBackPositioned = styled(ButtonBack)`
-  ${ButtonStyle}
-  margin-right: ${variableGlsp(0.25)};
-  ${media.mediumDown`
-  
-  `}
-`;
-const ButtonNextPositioned = styled(ButtonNext)`
-  ${ButtonStyle}
-  right: 0;
-
-  ${media.mediumDown`
-    left: 50px;
-  `}
+const ButtonNextStyled = styled(ButtonNext)`
+  ${buttonStyle}
 `;
 
 const DotGroupPositioned = styled(DotGroup)`
   position: absolute;
-  bottom: ${variableGlsp(0.25)};
+  bottom: 0;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  gap: ${glsp(0.5)};
+
   /* overriding pure react carousel style */
   .carousel__dot {
-    width: 12px;
-    height: 8px;
-    margin-right: ${variableGlsp(0.25)};
+    width: 0.625rem;
+    height: 0.625rem;
+    padding: 0;
     border-radius: ${themeVal('shape.ellipsoid')};
     background-color: ${themeVal('color.base-100a')};
     border: 1px solid white;
+
+    span {
+      ${visuallyHidden()}
+    }
   }
+
   .carousel__dot--selected {
     cursor: auto;
     background-color: white;
   }
-  ${media.mediumDown`
-    bottom: 0;
-`}
+
+  ${media.largeUp`
+    bottom: ${variableGlsp(0.25)};
+  `}
 `;
+
 function Carousel({ items }) {
   return (
     <CarouselProvider
@@ -147,12 +157,12 @@ function Carousel({ items }) {
 
       {items.length > 1 && (
         <ButtonGroup>
-          <ButtonBackPositioned>
-            <CollecticonChevronLeft color='white' />
-          </ButtonBackPositioned>
-          <ButtonNextPositioned>
-            <CollecticonChevronRight color='white' />
-          </ButtonNextPositioned>
+          <ButtonBackStyled>
+            <CollecticonChevronLeft title='Go to previous slide' meaningful />
+          </ButtonBackStyled>
+          <ButtonNextStyled>
+            <CollecticonChevronRight title='Go to next slide' meaningful />
+          </ButtonNextStyled>
         </ButtonGroup>
       )}
     </CarouselProvider>
