@@ -1,15 +1,10 @@
 import { useEffect, useRef } from 'react';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import DrawRectangle from 'mapbox-gl-draw-rectangle-mode';
 import { css } from 'styled-components';
 
-import DirectSelectRectangle from './mgd-select-rectangle-mode';
+import * as RestrictedRectangleMode from './restricted-rect-mode';
 
-const modes = {
-  ...MapboxDraw.modes,
-  draw_rectangle: DrawRectangle,
-  direct_select: DirectSelectRectangle
-};
+const modes = RestrictedRectangleMode.enable(MapboxDraw.modes);
 
 export const aoiCursorStyles = css`
   &.mouse-add .mapboxgl-canvas-container {
