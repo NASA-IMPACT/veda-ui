@@ -87,7 +87,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     layerId,
     date,
     mapInstance,
-    sourceParams = {},
+    sourceParams = null,
     zoomExtent,
     onStatusChange,
     isHidden
