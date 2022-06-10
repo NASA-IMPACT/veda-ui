@@ -15,6 +15,23 @@ import {
   datasets
 } from 'delta/thematics';
 
+
+// internal fix for layers having the same id
+const indexedDatasets = Object.keys(datasets).reduce((acc, curr, idx) => {
+  const currObj = datasets[curr];
+  acc[curr] = {
+    ...currObj,
+    data: {
+      ...currObj.data,
+      layers: currObj.data.layers.map((layer, lIdx) => ({
+        ...layer,
+        idxedId: layer.id+lIdx
+      }))
+    }
+  };
+  return acc;
+}, {});
+
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
 
@@ -133,7 +150,6 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
       // Remove compare from layer.
       /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
       const { compare, ...layerProps } = layer;
-
       // The compare definition needs to be resolved to a real layer before
       // returning. The values for the compare layer will depend on how it is
       // defined:
@@ -155,11 +171,11 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 };
 
 // Context consumers.
-export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
+export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string, indexedId?: string) => {
   const hasParams = !!datasetId && !!layerId;
   // Get the layer information from the dataset defined in the configuration.
-  const layersList = datasetId ? datasets[datasetId]?.data.layers : [];
-  const layer = layersList.find((l) => l.id === layerId);
+  const layersList = datasetId ? indexedDatasets[datasetId]?.data.layers : [];
+  const layer = layersList.find((l) => l.idxedId === indexedId);
 
   // The layers must be defined in the configuration otherwise it is not
   // possible to load them.
@@ -183,7 +199,7 @@ export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
 
 export const useDatasetAsyncLayers = (datasetId) => {
   // Get the layer information from the dataset defined in the configuration.
-  return useLayersInit(datasets[datasetId]?.data.layers);
+  return useLayersInit(indexedDatasets[datasetId]?.data.layers);
 };
 
 type ReferencedLayer = {
@@ -198,7 +214,7 @@ export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
     () =>
       referencedLayers.map(({ datasetId, layerId, skipCompare }) => {
         // Get the layer information from the dataset defined in the configuration.
-        const layer = datasets[datasetId]?.data.layers?.find(
+        const layer = indexedDatasets[datasetId]?.data.layers?.find(
           (l) => l.id === layerId
         ) as DatasetLayer | null;
 

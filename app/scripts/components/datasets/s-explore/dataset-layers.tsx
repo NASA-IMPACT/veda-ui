@@ -63,12 +63,12 @@ export default function DatasetLayers(props: DatasetLayersProps) {
               // On succeed the data is never null.
               const lData = l.baseLayer.data!;
               return (
-                <li key={lData.id}>
+                <li key={`${lData.id}-${lData.name}`}>
                   <Layer
-                    id={lData.id}
+                    id={`${lData.idxedId}`}
                     name={lData.name}
                     info={lData.description}
-                    active={lData.id === selectedLayerId}
+                    active={lData.idxedId === selectedLayerId}
                     onToggleClick={() => {
                       onAction('layer.toggle', lData);
                     }}
