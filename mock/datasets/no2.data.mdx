@@ -16,32 +16,6 @@ thematics:
   - covid-19
 layers:
   - id: no2-monthly
-    name: No2 2 monthly - same but diff sourceParams
-    type: raster
-    description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
-    zoomExtent:
-      - 0
-      - 20
-    sourceParams:
-      resampling_method: bilinear
-      bidx: 0
-      color_formula: gamma r 1.05
-      colormap_name: coolwarm
-      rescale:
-        - 0
-        - 1.5e16
-    legend:
-      type: gradient
-      min: "Less"
-      max: "More"
-      stops:
-        - "#99c5e0"
-        - "#f9eaa9"
-        - "#f7765d"
-        - "#c13b72"
-        - "#461070"
-        - "#ff0000"
-  - id: no2-monthly
     name: No2
     type: raster
     description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.

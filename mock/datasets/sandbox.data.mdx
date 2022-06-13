@@ -17,6 +17,32 @@ thematics:
 
 layers:
   - id: no2-monthly
+    name: No2 2 monthly - same dataset, different parameters
+    type: raster
+    description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      resampling_method: bilinear
+      bidx: 0
+      color_formula: gamma r 1.05
+      colormap_name: coolwarm
+      rescale:
+        - 0
+        - 1.5e16
+    legend:
+      type: gradient
+      min: "Less"
+      max: "More"
+      stops:
+        - "#99c5e0"
+        - "#f9eaa9"
+        - "#f7765d"
+        - "#c13b72"
+        - "#461070"
+        - "#ff0000"
+  - id: no2-monthly
     name: No2
     type: raster
     description: no2 dataset
@@ -110,6 +136,27 @@ layers:
       - "#f3701b"
       - "#c54102"
       - "#7f2704"
+  - id: social-vulnerability-index-household
+    name: Household and Disability Score 2
+    type: raster
+    description: 'Household Composition & Disability (Aged 65 or Older, Aged 17 or Younger, Civilian with a Disability, Single-Parent Households) - Percentile ranking'
+    zoomExtent:
+      - 2
+      - 16
+    sourceParams:
+      resampling_method: bilinear
+      bidx: 1
+      colormap_name: blues
+      rescale:
+        - 0
+        - 0.5
+    legend:
+      type: gradient
+      min: "0"
+      max: "1"
+      stops:
+      - "#ffffff"
+      - "#0000ff"
   - id: dev-fail
     name: Failing layer
     type: raster
