@@ -238,7 +238,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     baseTimeDensity,
     compareTimeDensity
   ]);
-  console.log(baseLayerResolvedData?.sourceParams);
+
   return (
     <>
       {/*
@@ -360,7 +360,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       */}
       {baseLayerResolvedData?.legend && (
         <LayerLegend
-          id={`base-${baseLayerResolvedData.idxedId}`}
+          id={`base-${baseLayerResolvedData.uiLayerId}`}
           title={baseLayerResolvedData.name}
           description={baseLayerResolvedData.description}
           {...baseLayerResolvedData.legend}

@@ -65,10 +65,10 @@ export default function DatasetLayers(props: DatasetLayersProps) {
               return (
                 <li key={`${lData.id}-${lData.name}`}>
                   <Layer
-                    id={`${lData.idxedId}`}
+                    id={`${lData.uiLayerId}`}
                     name={lData.name}
                     info={lData.description}
-                    active={lData.idxedId === selectedLayerId}
+                    active={lData.uiLayerId === selectedLayerId}
                     onToggleClick={() => {
                       onAction('layer.toggle', lData);
                     }}

@@ -249,6 +249,16 @@ module.exports = new Resolver({
         result.discoveries,
         'discoveries'
       );
+      // Internal fix for dataset layers having the same id so multiple layers from the same dataset can be loaded
+      datasetsData.data = datasetsData.data.map((ds) => {
+        return {
+          ...ds,
+          layers: ds.layers.map((layer, lIdx) => ({
+            ...layer,
+            uiLayerId: `${layer.id}-${lIdx}`
+          }))
+        };
+      });
 
       // Figure out how to structure:
       // - export thematics, datasets and discoveries with their content. (frontmatter and mdx)

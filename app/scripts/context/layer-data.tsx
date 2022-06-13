@@ -16,21 +16,6 @@ import {
 } from 'delta/thematics';
 
 
-// internal fix for layers having the same id
-const indexedDatasets = Object.keys(datasets).reduce((acc, curr, idx) => {
-  const currObj = datasets[curr];
-  acc[curr] = {
-    ...currObj,
-    data: {
-      ...currObj.data,
-      layers: currObj.data.layers.map((layer, lIdx) => ({
-        ...layer,
-        idxedId: layer.id+lIdx
-      }))
-    }
-  };
-  return acc;
-}, {});
 
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
@@ -174,8 +159,8 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string, indexedId?: string) => {
   const hasParams = !!datasetId && !!layerId;
   // Get the layer information from the dataset defined in the configuration.
-  const layersList = datasetId ? indexedDatasets[datasetId]?.data.layers : [];
-  const layer = layersList.find((l) => l.idxedId === indexedId);
+  const layersList = datasetId ? datasets[datasetId]?.data.layers : [];
+  const layer = layersList.find((l) => l.uiLayerId === indexedId);
 
   // The layers must be defined in the configuration otherwise it is not
   // possible to load them.
@@ -199,7 +184,7 @@ export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string, index
 
 export const useDatasetAsyncLayers = (datasetId) => {
   // Get the layer information from the dataset defined in the configuration.
-  return useLayersInit(indexedDatasets[datasetId]?.data.layers);
+  return useLayersInit(datasets[datasetId]?.data.layers);
 };
 
 type ReferencedLayer = {
@@ -214,7 +199,7 @@ export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
     () =>
       referencedLayers.map(({ datasetId, layerId, skipCompare }) => {
         // Get the layer information from the dataset defined in the configuration.
-        const layer = indexedDatasets[datasetId]?.data.layers?.find(
+        const layer = datasets[datasetId]?.data.layers?.find(
           (l) => l.id === layerId
         ) as DatasetLayer | null;
 
