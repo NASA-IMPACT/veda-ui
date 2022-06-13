@@ -102,7 +102,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     id,
     as,
     datasetId,
-    indexedId,
+    uiLayerId,
     layerId,
     date,
     compareDate,
@@ -148,7 +148,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     }
   }));
 
-  const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId, indexedId);
+  const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId, uiLayerId);
 
   const shouldRenderCompare = isMapLoaded && isComparing;
 
@@ -420,6 +420,7 @@ export interface MapboxMapProps {
   id?: string;
   datasetId?: string;
   layerId?: string;
+  uiLayerId?: string;
   date?: Date;
   compareDate?: Date;
   compareLabel?: string;

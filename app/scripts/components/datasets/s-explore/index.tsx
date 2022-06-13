@@ -457,7 +457,7 @@ function DatasetsExplore() {
               ref={mapboxRef}
               withGeocoder
               datasetId={dataset.data.id}
-              indexedId={activeLayer?.baseLayer.data.uiLayerId}
+              uiLayerId={activeLayer?.baseLayer.data.uiLayerId}
               layerId={activeLayer?.baseLayer.data?.id}
               date={selectedDatetime || undefined}
               compareDate={selectedCompareDatetime || undefined}
