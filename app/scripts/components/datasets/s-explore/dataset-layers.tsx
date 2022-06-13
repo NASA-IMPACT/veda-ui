@@ -63,7 +63,7 @@ export default function DatasetLayers(props: DatasetLayersProps) {
               // On succeed the data is never null.
               const lData = l.baseLayer.data!;
               return (
-                <li key={`${lData.id}-${lData.name}`}>
+                <li key={`${lData.uiLayerId}`}>
                   <Layer
                     id={`${lData.uiLayerId}`}
                     name={lData.name}

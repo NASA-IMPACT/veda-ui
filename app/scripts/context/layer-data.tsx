@@ -15,8 +15,6 @@ import {
   datasets
 } from 'delta/thematics';
 
-
-
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
 
@@ -156,11 +154,11 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 };
 
 // Context consumers.
-export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string, indexedId?: string) => {
+export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string, uiLayerId?: string) => {
   const hasParams = !!datasetId && !!layerId;
   // Get the layer information from the dataset defined in the configuration.
   const layersList = datasetId ? datasets[datasetId]?.data.layers : [];
-  const layer = layersList.find((l) => l.uiLayerId === indexedId);
+  const layer = layersList.find((l) => l.uiLayerId === uiLayerId);
 
   // The layers must be defined in the configuration otherwise it is not
   // possible to load them.
