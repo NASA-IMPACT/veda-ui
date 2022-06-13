@@ -347,6 +347,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
+        if (mapInstance.getSource(id)) {
+          mapInstance.removeLayer(id);
+          mapInstance.removeSource(id);
+        }
+        
         mapInstance.addSource(id, {
           type: 'raster',
           url: `${responseData.links[1].href}?${tileParams}`
