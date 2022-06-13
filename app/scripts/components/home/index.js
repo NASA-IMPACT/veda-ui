@@ -30,7 +30,7 @@ import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
 
-import Carousel from './Carousel';
+import Carousel from './carousel';
 
 const StatsList = styled.dl`
   display: grid;
