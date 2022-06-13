@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const fg = require('fast-glob');
 const matter = require('gray-matter');
+const hash = require('object-hash');
 
 function loadDeltaConfig() {
   try {
@@ -253,9 +254,9 @@ module.exports = new Resolver({
       datasetsData.data = datasetsData.data.map((ds) => {
         return {
           ...ds,
-          layers: ds.layers.map((layer, lIdx) => ({
+          layers: ds.layers.map((layer) => ({
             ...layer,
-            uiLayerId: `${layer.id}-${lIdx}`
+            uiLayerId: `${layer.id}-${hash(layer)}`
           }))
         };
       });
