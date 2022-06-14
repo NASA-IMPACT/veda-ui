@@ -23,6 +23,19 @@ layers:
     zoomExtent:
       - 10
       - 20
+  - id: HLSS30.002
+    name: HLS
+    type: raster
+    description: 'Testing HLS'
+    zoomExtent:
+      - 10
+      - 16
+    sourceParams:
+      post_process: "swir"
+      assets:
+        - B12
+        - B8A
+        - B04
   - id: no2-monthly
     name: No2
     type: raster
