@@ -155,10 +155,11 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 
 // Context consumers.
 export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string, uiLayerId?: string) => {
-  const hasParams = !!datasetId && !!layerId;
+  const hasParams = (!!datasetId && !!layerId) || (!!datasetId && !!uiLayerId);
   // Get the layer information from the dataset defined in the configuration.
   const layersList = datasetId ? datasets[datasetId]?.data.layers : [];
-  const layer = layersList.find((l) => l.uiLayerId === uiLayerId);
+  // Find a layer if there is uiLayerId, (explore tab), then find a layer that matches layerId
+  const layer = (uiLayerId)? layersList.find((l) => l.uiLayerId === uiLayerId) : layersList.find((l) => l.id === layerId);
 
   // The layers must be defined in the configuration otherwise it is not
   // possible to load them.
