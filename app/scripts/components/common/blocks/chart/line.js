@@ -31,7 +31,8 @@ const LineChart = ({
   customLayerComponent
 }) => {
   const [data, setData] = useState([]);
-  const extension = fileExtensionRegex.exec(dataPath)[1];
+  const newDataPath = dataPath.split('?')[0];
+  const extension = fileExtensionRegex.exec(newDataPath)[1];
   const { isMediumUp } = useMediaQuery();
 
   useEffect(() => {
