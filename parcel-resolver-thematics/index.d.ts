@@ -37,7 +37,6 @@ declare module 'delta/thematics' {
   
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
-    uiLayerId: string;
     name: string;
     description: string;
     type: DatasetLayerType;
