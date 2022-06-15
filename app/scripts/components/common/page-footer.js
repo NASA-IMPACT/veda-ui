@@ -108,29 +108,17 @@ function PageFooter(props) {
       <InfoList>
         <dt>NASA official</dt>
         <dd>
-          <Button
-            element='a'
-            href='mailto:manil.maskey@nasa.gov'
-            variation='base-text'
-            size='small'
-            fitting='skinny'
-          >
+          <a href='mailto:manil.maskey@nasa.gov'>
             <CollecticonEnvelope title='Get in touch' meaningful />
-            Manil Maskey
-          </Button>
+            &nbsp;Manil Maskey
+          </a>
         </dd>
         <dt>Open source code</dt>
         <dd>
-          <Button
-            element='a'
-            href='https://github.com/NASA-IMPACT/delta-config'
-            variation='base-text'
-            size='small'
-            fitting='skinny'
-          >
+          <a href='https://github.com/NASA-IMPACT/delta-config'>
             <CollecticonBrandGithub title='Explore the code' meaningful />
-            GitHub
-          </Button>
+            &nbsp;GitHub
+          </a>
         </dd>
       </InfoList>
       <FooterCredits>
