@@ -215,7 +215,7 @@ function DatasetsExplore() {
   const [selectedLayerId, setSelectedLayerId] = useQsState.memo(
     {
       key: 'layer',
-      default: dataset.data.layers[0].id
+      default: dataset.data.layers[0].uiLayerId
     },
     [dataset]
   );
@@ -287,7 +287,7 @@ function DatasetsExplore() {
     return asyncLayers.find((l) => {
       const status = checkLayerLoadStatus(l);
       // @ts-expect-error l.baseLayer.data is always defined if S_SUCCEEDED.
-      return status === S_SUCCEEDED && l.baseLayer.data.id === selectedLayerId;
+      return status === S_SUCCEEDED && l.baseLayer.data.uiLayerId === selectedLayerId;
     });
   }, [asyncLayers, selectedLayerId]);
 
@@ -358,7 +358,7 @@ function DatasetsExplore() {
     (action, payload) => {
       switch (action) {
         case 'layer.toggle':
-          setSelectedLayerId(payload.id);
+          setSelectedLayerId(payload.uiLayerId);
           break;
       }
     },
@@ -457,6 +457,7 @@ function DatasetsExplore() {
               ref={mapboxRef}
               withGeocoder
               datasetId={dataset.data.id}
+              uiLayerId={activeLayer?.baseLayer.data.uiLayerId}
               layerId={activeLayer?.baseLayer.data?.id}
               date={selectedDatetime || undefined}
               compareDate={selectedCompareDatetime || undefined}

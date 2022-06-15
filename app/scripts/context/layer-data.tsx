@@ -133,7 +133,6 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
       // Remove compare from layer.
       /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
       const { compare, ...layerProps } = layer;
-
       // The compare definition needs to be resolved to a real layer before
       // returning. The values for the compare layer will depend on how it is
       // defined:
@@ -155,11 +154,12 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 };
 
 // Context consumers.
-export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
-  const hasParams = !!datasetId && !!layerId;
+export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string, uiLayerId?: string) => {
+  const hasParams = (!!datasetId && !!layerId) || (!!datasetId && !!uiLayerId);
   // Get the layer information from the dataset defined in the configuration.
   const layersList = datasetId ? datasets[datasetId]?.data.layers : [];
-  const layer = layersList.find((l) => l.id === layerId);
+  // Find a layer if there is uiLayerId, (explore tab), then find a layer that matches layerId
+  const layer = (uiLayerId)? layersList.find((l) => l.uiLayerId === uiLayerId) : layersList.find((l) => l.id === layerId);
 
   // The layers must be defined in the configuration otherwise it is not
   // possible to load them.

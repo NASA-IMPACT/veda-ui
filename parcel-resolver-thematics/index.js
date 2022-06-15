@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const fg = require('fast-glob');
 const matter = require('gray-matter');
+const hash = require('object-hash');
 
 function loadDeltaConfig() {
   try {
@@ -249,6 +250,17 @@ module.exports = new Resolver({
         result.discoveries,
         'discoveries'
       );
+      // Internal fix for dataset layers having the same id so multiple layers from the same dataset can be loaded
+      datasetsData.data = datasetsData.data.map((ds) => {
+        return {
+          ...ds,
+          layers: ds.layers.map((layer, idx) => ({
+            ...layer,
+            // making hash depending on layer id and index of layer - at least index should be unique
+            uiLayerId: `${layer.id}-${hash({ name: layer.name, idx })}`
+          }))
+        };
+      });
 
       // Figure out how to structure:
       // - export thematics, datasets and discoveries with their content. (frontmatter and mdx)
