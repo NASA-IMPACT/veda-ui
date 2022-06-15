@@ -254,9 +254,10 @@ module.exports = new Resolver({
       datasetsData.data = datasetsData.data.map((ds) => {
         return {
           ...ds,
-          layers: ds.layers.map((layer) => ({
+          layers: ds.layers.map((layer, idx) => ({
             ...layer,
-            uiLayerId: `${layer.id}-${hash(layer)}`
+            // making hash depending on layer id and index of layer - at least index should be unique
+            uiLayerId: `${layer.id}-${hash({ name: layer.name, idx })}`
           }))
         };
       });
