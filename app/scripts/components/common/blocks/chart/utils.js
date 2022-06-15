@@ -4,7 +4,7 @@ export const fileExtensionRegex = /(?:\.([^.]+))?$/;
 
 export const chartMargin = { top: 50, right: 10, bottom: 100, left: 60 };
 export const itemHeight = 20;
-export const itemWidth = 70;
+export const itemWidth = 120;
 
 function getLegendData({ data, width, itemWidth }) {
   const rowNum = Math.ceil((itemWidth * data.length) / width);
