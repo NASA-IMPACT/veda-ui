@@ -65,7 +65,7 @@ export const getBottomAxis = function (dateFormat, isLargeScreen) {
 
 export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
   const dataWId = data.reduce((acc, curr) => {
-    if (!acc.find((e) => e.id === curr.County)) {
+    if (!acc.find((e) => e.id === curr[idKey])) {
       const newEntry = {
         id: curr[idKey],
         data: []
@@ -73,7 +73,7 @@ export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
       acc.push(newEntry);
     }
     acc
-      .find((e) => e.id === curr.County)
+      .find((e) => e.id === curr[idKey])
       .data.push({
         x: curr[xKey],
         y: curr[yKey]
