@@ -35,8 +35,10 @@ import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import UnscrollableBody from './unscrollable-body';
 import GoogleForm from './google-form';
+import { Tip } from './tip';
 
 const appTitle = process.env.APP_TITLE;
+const appVersion = process.env.APP_VERSION;
 
 const PageHeaderSelf = styled.header`
   display: flex;
@@ -54,6 +56,7 @@ const PageHeaderSelf = styled.header`
 `;
 
 const Brand = styled.div`
+  display: flex;
   flex-shrink: 0;
 
   a {
@@ -115,6 +118,30 @@ const Brand = styled.div`
       letter-spacing: -0.025em;
     }
   }
+`;
+
+const PageTitleSecLink = styled(Link)`
+  align-self: end;
+  font-size: 0.75rem;
+  font-weight: ${themeVal('type.base.bold')};
+  line-height: 1rem;
+  text-transform: uppercase;
+  background: ${themeVal('color.surface')};
+  padding: ${glsp(0, 0.25)};
+  border-radius: ${themeVal('shape.rounded')};
+  margin: ${glsp(0.125, 0.5)};
+
+  &&,
+  &&:visited {
+    color: ${themeVal('color.primary')};
+  }
+
+  ${media.largeUp`
+    margin: ${glsp(0, 0.5)};
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    padding: 0 ${glsp(0.5)};
+  `}
 `;
 
 const GlobalNav = styled.nav`
@@ -355,6 +382,9 @@ function PageHeader() {
           <NasaLogo />
           <span>Earthdata</span> <span>{appTitle}</span>
         </Link>
+        <Tip content={`v${appVersion}`}>
+          <PageTitleSecLink to='/about'>Beta</PageTitleSecLink>
+        </Tip>
       </Brand>
       <GlobalNav
         aria-label='Global'
