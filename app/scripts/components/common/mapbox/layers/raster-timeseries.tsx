@@ -3,6 +3,7 @@ import { useTheme } from 'styled-components';
 import axios from 'axios';
 import qs from 'qs';
 import mapboxgl from 'mapbox-gl';
+import { endOfDay, startOfDay } from 'date-fns';
 
 import { userTzDate2utcString } from '$utils/date';
 import {
@@ -19,17 +20,21 @@ const LOG = true;
 /**
  * Creates the appropriate filter object to send to STAC.
  *
- * @param {string} dateStr Date to request
+ * @param {Date} date Date to request
  * @param {string} collection STAC collection to request
  * @returns Object
  */
-function getFilterPayload(dateStr: string, collection: string) {
+function getFilterPayload(date: Date, collection: string) {
   return {
     op: 'and',
     args: [
       {
-        op: 'eq',
-        args: [{ property: 'datetime' }, dateStr]
+        op: '>=',
+        args: [{ property: 'datetime' }, userTzDate2utcString(startOfDay(date))]
+      },
+      {
+        op: '<=',
+        args: [{ property: 'datetime' }, userTzDate2utcString(endOfDay(date))]
       },
       {
         op: 'eq',
@@ -186,7 +191,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
         const payload = {
           'filter-lang': 'cql2-json',
-          filter: getFilterPayload(userTzDate2utcString(date), layerId),
+          filter: getFilterPayload(date, layerId),
           limit: 500,
           fields: {
             include: ['bbox'],
@@ -305,7 +310,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       try {
         const payload = {
           'filter-lang': 'cql2-json',
-          filter: getFilterPayload(userTzDate2utcString(date), layerId)
+          filter: getFilterPayload(date, layerId)
         };
 
         /* eslint-disable no-console */
@@ -331,7 +336,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             assets: 'cog_default',
             ...sourceParams
           },
-          { arrayFormat: 'comma' }
+          // Temporary solution to pass different tile parameters for hls data
+          { arrayFormat: id.toLowerCase().includes('hls')? 'repeat':'comma' } 
         );
 
         /* eslint-disable no-console */
