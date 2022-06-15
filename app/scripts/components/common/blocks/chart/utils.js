@@ -82,3 +82,14 @@ export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
   }, []);
   return dataWId;
 };
+
+export const getMinMax = function (data) {
+  const allYVals = data.reduce((acc, curr) => {
+    curr.data.map((e) => acc.push(e.y));
+    return acc;
+  }, []);
+  return {
+    minY: Math.min(...allYVals),
+    maxY: Math.max(...allYVals)
+  };
+};

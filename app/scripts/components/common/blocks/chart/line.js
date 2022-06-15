@@ -11,7 +11,8 @@ import {
   getLegendConfig,
   getFormattedData,
   getBottomAxis,
-  getColors
+  getColors,
+  getMinMax
 } from './utils';
 import TooltipComponent from './tooltip';
 
@@ -47,10 +48,16 @@ const LineChart = ({
         xKey,
         yKey
       });
+
       setData(formattedData);
     };
     getData();
   }, [dataPath, idKey, xKey, yKey, extension]);
+
+  // Nivo has problem with negative value only scale
+  // This is a work around by passing min, max value manually
+  const { minY, maxY } = getMinMax(data);
+
   return (
     <ChartWrapper>
       <ResponsiveLine
@@ -67,7 +74,9 @@ const LineChart = ({
         xFormat={`time:${dateFormat}`}
         yScale={{
           type: 'linear',
-          stacked: true
+          min: minY,
+          max: maxY,
+          stacked: false
         }}
         enableGridX={false}
         enablePoints={false}
