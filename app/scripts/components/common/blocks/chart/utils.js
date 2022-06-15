@@ -4,7 +4,7 @@ export const fileExtensionRegex = /(?:\.([^.]+))?$/;
 
 export const chartMargin = { top: 50, right: 10, bottom: 100, left: 60 };
 export const itemHeight = 20;
-export const itemWidth = 70;
+export const itemWidth = 120;
 
 function getLegendData({ data, width, itemWidth }) {
   const rowNum = Math.ceil((itemWidth * data.length) / width);
@@ -65,7 +65,7 @@ export const getBottomAxis = function (dateFormat, isLargeScreen) {
 
 export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
   const dataWId = data.reduce((acc, curr) => {
-    if (!acc.find((e) => e.id === curr.County)) {
+    if (!acc.find((e) => e.id === curr[idKey])) {
       const newEntry = {
         id: curr[idKey],
         data: []
@@ -73,7 +73,7 @@ export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
       acc.push(newEntry);
     }
     acc
-      .find((e) => e.id === curr.County)
+      .find((e) => e.id === curr[idKey])
       .data.push({
         x: curr[xKey],
         y: curr[yKey]
@@ -81,4 +81,15 @@ export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
     return acc;
   }, []);
   return dataWId;
+};
+
+export const getMinMax = function (data) {
+  const allYVals = data.reduce((acc, curr) => {
+    curr.data.map((e) => acc.push(e.y));
+    return acc;
+  }, []);
+  return {
+    minY: Math.min(...allYVals),
+    maxY: Math.max(...allYVals)
+  };
 };
