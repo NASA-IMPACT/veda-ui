@@ -64,32 +64,34 @@ export const getBottomAxis = function (dateFormat, isLargeScreen) {
 };
 
 export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
+  let minY = 0;
+  let maxY = 0;
   const dataWId = data.reduce((acc, curr) => {
     if (!acc.find((e) => e.id === curr[idKey])) {
       const newEntry = {
         id: curr[idKey],
-        data: []
+        data: [
+          {
+            x: curr[xKey],
+            y: curr[yKey]
+          }
+        ]
       };
       acc.push(newEntry);
-    }
-    acc
-      .find((e) => e.id === curr[idKey])
-      .data.push({
-        x: curr[xKey],
-        y: curr[yKey]
-      });
-    return acc;
-  }, []);
-  return dataWId;
-};
-
-export const getMinMax = function (data) {
-  const allYVals = data.reduce((acc, curr) => {
-    curr.data.map((e) => acc.push(e.y));
+    } else
+      acc
+        .find((e) => e.id === curr[idKey])
+        .data.push({
+          x: curr[xKey],
+          y: curr[yKey]
+        });
+    minY = Math.min(minY, curr[yKey]);
+    maxY = Math.max(maxY, parseFloat(curr[yKey]));
     return acc;
   }, []);
   return {
-    minY: Math.min(...allYVals),
-    maxY: Math.max(...allYVals)
+    dataWId,
+    minY,
+    maxY
   };
 };
