@@ -80,6 +80,7 @@ layers:
     compare:
       datasetId: sandbox
       layerId: no2-monthly
+      idx: 3
       mapLabel: |
         ::js ({ dateFns, datetime, compareDatetime }) => {
           return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;

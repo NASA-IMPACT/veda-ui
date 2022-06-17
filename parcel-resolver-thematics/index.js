@@ -257,7 +257,7 @@ module.exports = new Resolver({
           layers: ds.layers.map((layer, idx) => ({
             ...layer,
             // making hash depending on layer id and index of layer - at least index should be unique
-            uiLayerId: `${layer.id}-${hash({ name: layer.name, idx })}`
+            uiLayerId: `${layer.id}-${hash({ idx })}`
           }))
         };
       });
