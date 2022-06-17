@@ -254,11 +254,23 @@ module.exports = new Resolver({
       datasetsData.data = datasetsData.data.map((ds) => {
         return {
           ...ds,
-          layers: ds.layers.map((layer, idx) => ({
-            ...layer,
-            // making hash depending on layer id and index of layer - at least index should be unique
-            uiLayerId: `${layer.id}-${hash({ idx })}`
-          }))
+          layers: ds.layers.map((layer, idx) => {
+            return layer.compare
+              ? {
+                  ...layer,
+                  compare: {
+                    ...layer.compare,
+                    uiLayerId: `${layer.compare.layerId}-${hash({ idx })}`
+                  },
+                  // making hash depending on layer id and index of layer - at least index should be unique
+                  uiLayerId: `${layer.id}-${hash({ idx })}`
+                }
+              : {
+                  ...layer,
+                  // making hash depending on layer id and index of layer - at least index should be unique
+                  uiLayerId: `${layer.id}-${hash({ idx })}`
+                };
+          })
         };
       });
 

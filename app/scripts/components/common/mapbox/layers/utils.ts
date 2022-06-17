@@ -1,4 +1,3 @@
-import hash from 'object-hash';
 import defaultsDeep from 'lodash.defaultsdeep';
 import {
   eachDayOfInterval,
@@ -76,7 +75,7 @@ export const getCompareLayerData = (
     const {
       datasetId,
       layerId,
-      idx,
+      uiLayerId,
       zoomExtent,
       sourceParams,
       ...passThroughProps
@@ -89,7 +88,7 @@ export const getCompareLayerData = (
       errorHints.push(`Dataset [${datasetId}] not found (compare.datasetId)`);
     }
 
-    const otherLayer = (idx)? datasetData?.layers?.find((l) => l.uiLayerId === `${layerId}-${hash({idx})}`) : datasetData?.layers?.find((l) => l.id === layerId);
+    const otherLayer = (uiLayerId)? datasetData?.layers?.find((l) => l.uiLayerId === uiLayerId) : datasetData?.layers?.find((l) => l.id === layerId);
 
     if (!otherLayer) {
       errorHints.push(
