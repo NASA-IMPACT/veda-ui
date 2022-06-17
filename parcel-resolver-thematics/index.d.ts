@@ -33,6 +33,7 @@ declare module 'delta/thematics' {
   export interface DatasetLayerCompareInternal extends DatasetLayerCommonCompareProps {
     datasetId: string;
     layerId: string;
+    uiLayerId?: string;
   }
   
   export interface DatasetLayer extends DatasetLayerCommonProps {
