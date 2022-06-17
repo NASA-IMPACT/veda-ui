@@ -255,7 +255,7 @@ module.exports = new Resolver({
         return {
           ...ds,
           layers: ds.layers.map((layer, idx) => {
-            return layer.compare
+            return layer.compare?.idx
               ? {
                   ...layer,
                   compare: {
