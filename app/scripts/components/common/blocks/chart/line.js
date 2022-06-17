@@ -11,8 +11,7 @@ import {
   getLegendConfig,
   getFormattedData,
   getBottomAxis,
-  getColors,
-  getMinMax
+  getColors
 } from './utils';
 import TooltipComponent from './tooltip';
 
@@ -32,6 +31,9 @@ const LineChart = ({
   customLayerComponent
 }) => {
   const [data, setData] = useState([]);
+  // Nivo's auto scale for negative value only doesn't seem to work.
+  // This is a temporary work around.
+  const [yScale, setYScale] = useState({ min: 0, max: 0 });
   const newDataPath = dataPath.split('?')[0];
   const extension = fileExtensionRegex.exec(newDataPath)[1];
   const { isMediumUp } = useMediaQuery();
@@ -41,22 +43,22 @@ const LineChart = ({
       let data;
       if (extension === 'csv') data = await csv(dataPath);
       else data = await json(dataPath);
-      const formattedData = getFormattedData({
+      const {
+        dataWId: formattedData,
+        minY,
+        maxY
+      } = getFormattedData({
         data,
         extension,
         idKey,
         xKey,
         yKey
       });
-
+      setYScale({ min: minY, max: maxY });
       setData(formattedData);
     };
     getData();
   }, [dataPath, idKey, xKey, yKey, extension]);
-
-  // Nivo has problem with negative value only scale
-  // This is a work around by passing min, max value manually
-  const { minY, maxY } = getMinMax(data);
 
   return (
     <ChartWrapper>
@@ -74,8 +76,8 @@ const LineChart = ({
         xFormat={`time:${dateFormat}`}
         yScale={{
           type: 'linear',
-          min: minY,
-          max: maxY,
+          min: yScale.min,
+          max: yScale.max,
           stacked: false
         }}
         enableGridX={false}
