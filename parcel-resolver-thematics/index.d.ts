@@ -37,6 +37,7 @@ declare module 'delta/thematics' {
   
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
+    stacCol: string;
     name: string;
     description: string;
     type: DatasetLayerType;
@@ -50,6 +51,7 @@ declare module 'delta/thematics' {
   // description.
   export interface DatasetLayerCompareNormalized extends DatasetLayerCommonCompareProps {
     id: string;
+    stacCol: string;
     type: DatasetLayerType;
   }
 

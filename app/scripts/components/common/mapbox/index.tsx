@@ -251,7 +251,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
         <BaseLayerComponent
           id={`base-${baseLayerResolvedData.id}`}
-          layerId={baseLayerResolvedData.id}
+          stacCol={baseLayerResolvedData.stacCol}
           mapInstance={mapRef.current}
           date={date}
           sourceParams={baseLayerResolvedData.sourceParams}
@@ -270,7 +270,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         CompareLayerComponent && (
           <CompareLayerComponent
             id={`compare-${compareLayerResolvedData.id}`}
-            layerId={compareLayerResolvedData.id}
+            stacCol={compareLayerResolvedData.stacCol}
             mapInstance={mapCompareRef.current}
             date={compareToDate}
             sourceParams={compareLayerResolvedData.sourceParams}

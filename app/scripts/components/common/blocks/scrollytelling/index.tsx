@@ -341,7 +341,7 @@ function Scrollytelling(props) {
                 key={runtimeData.id}
                 id={runtimeData.id}
                 mapInstance={mapRef.current}
-                layerId={layer.id}
+                stacCol={layer.stacCol}
                 date={runtimeData.datetime}
                 sourceParams={layer.sourceParams}
                 zoomExtent={layer.zoomExtent}
