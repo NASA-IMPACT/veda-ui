@@ -11,8 +11,6 @@ import {
   ElementInteractive,
   Wrapper as ElementInteractiveWrapper
 } from '$components/common/element-interactive';
-import { VarProse } from '$styles/variable-components';
-import { variableGlsp } from '$styles/variable-utils';
 import {
   WidgetItemBodyInner,
   WidgetItemHeader,
