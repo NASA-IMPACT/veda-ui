@@ -141,6 +141,7 @@ export const WidgetItemHeader = styled.header`
   flex-flow: column nowrap;
   padding: ${variableGlsp(0.5, 1)};
   gap: ${glsp(0.5)};
+  min-width: 0;
 `;
 
 export const WidgetItemHeadline = styled.div`
