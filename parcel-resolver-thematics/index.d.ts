@@ -40,6 +40,7 @@ declare module 'delta/thematics' {
     uiLayerId: string;
     name: string;
     description: string;
+    initialDatetime?: 'newest' | 'oldest' | string;
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend: LayerLegendCategorical | LayerLegendGradient
