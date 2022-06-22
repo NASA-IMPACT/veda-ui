@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import GlobalMenuLinkCSS from '$styles/menu-link';
@@ -19,6 +19,19 @@ function GoogleForm() {
 
   const close = () => setRevealed(false);
   const reveal = () => setRevealed(true);
+
+  // The development page (app/scripts/components/root-development/index.tsx)
+  // includes a button to trigger the feedback modal. That button dispatches an
+  // event, which this modal reacts to.
+  // Although this is not very React-y, it was quick to implement. The
+  // alternative would be to track the modal status more globally (through an
+  // app context for example) which would make it accessible everywhere.
+  useEffect(() => {
+    const listener = () => setRevealed(true);
+    document.addEventListener('show-feedback-modal', listener);
+    return () => document.removeEventListener('show-feedback-modal', listener);
+  }, []);
+
   return (
     <>
       <ButtonAsNavLink
