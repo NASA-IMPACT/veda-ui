@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import GlobalMenuLinkCSS from '$styles/menu-link';
@@ -19,6 +19,13 @@ function GoogleForm() {
 
   const close = () => setRevealed(false);
   const reveal = () => setRevealed(true);
+
+  useEffect(() => {
+    const listener = () => setRevealed(true);
+    document.addEventListener('show-feedback-modal', listener);
+    return () => document.removeEventListener('show-feedback-modal', listener);
+  }, []);
+
   return (
     <>
       <ButtonAsNavLink

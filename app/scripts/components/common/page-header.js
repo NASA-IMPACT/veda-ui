@@ -383,7 +383,7 @@ function PageHeader() {
           <span>Earthdata</span> <span>{appTitle}</span>
         </Link>
         <Tip content={`v${appVersion}`}>
-          <PageTitleSecLink to='/about'>Beta</PageTitleSecLink>
+          <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
         </Tip>
       </Brand>
       <GlobalNav
@@ -516,6 +516,9 @@ function PageHeader() {
                       <GlobalMenuLink to='/' onClick={closeNavOnClick}>
                         Welcome
                       </GlobalMenuLink>
+                    </li>
+                    <li>
+                      <GoogleForm />
                     </li>
                     <li>
                       <GlobalMenuLink to='/about' onClick={closeNavOnClick}>
