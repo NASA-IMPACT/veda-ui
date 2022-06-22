@@ -76,11 +76,4 @@ export const GlobalStyles = createGlobalStyle`
       --base-space-multiplier: ${themeVal('layout.glspMultiplier.xlarge')};
     }
   `}
-
-  /* avoid long a tags breaking small screen layout */
-  ${media.mediumDown`
-    a {
-      word-break: break-all;
-    }
-  `}
 `;
