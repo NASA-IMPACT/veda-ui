@@ -96,7 +96,7 @@ export const VarProse = styled(Prose)`
   /* avoid long a tags breaking small screen layout */
   ${media.mediumDown`
     a {
-      word-break: break-all;
+      word-break: break-word;
     }
   `}
 `;
