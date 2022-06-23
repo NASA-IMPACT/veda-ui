@@ -1,10 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
-import {
-  CollecticonBrandGithub,
-  CollecticonSpeechBalloon
-} from '@devseed-ui/collecticons';
+import { CollecticonSpeechBalloon } from '@devseed-ui/collecticons';
 
 import { LayoutProps } from '$components/common/layout-root';
 import { PageMainContent } from '$styles/page';
@@ -28,9 +25,10 @@ function RootDevelopment() {
       />
       <FoldProse>
         <p>
-          NASA started the development of the Dashboard in May 2020. This
-          experimental site reflects a rapid response to COVID-19 currently
-          underway and will continue to evolve as more data become available.
+          NASA started development of the VEDA Dashboard in December 2021. This
+          early version reflects the next iteration on work completed for the{' '}
+          <a href='https://earthdata.nasa.gov/covid19/'>COVID dashboard</a> and
+          will continue to evolve as more functionality is developed.
         </p>
         <p>
           This dashboard is built by the{' '}
@@ -43,34 +41,20 @@ function RootDevelopment() {
         </p>
         <p>
           We welcome your feedback to help improve the Dashboard. To do so you
-          can use the feedback option on this website. For an overview of known
-          issues, please consult the Github{' '}
-          <a href='https://github.com/NASA-IMPACT/delta-config/issues'>
-            issue queue
-          </a>
-          .
+          can use the feedback option on this website.
         </p>
-      <ContributeCta>
-        <Button
-          size='large'
-          fitting='relaxed'
-          forwardedAs='a'
-          href='https://github.com/NASA-IMPACT/delta-config'
-          variation='primary-fill'
-        >
-          <CollecticonBrandGithub /> Github
-        </Button>
-        <Button
-          size='large'
-          fitting='relaxed'
-          variation='primary-fill'
-          onClick={() => {
-            document.dispatchEvent(new Event('show-feedback-modal'));
-          }}
-        >
-          <CollecticonSpeechBalloon /> Feedback
-        </Button>
-      </ContributeCta>
+        <ContributeCta>
+          <Button
+            size='large'
+            fitting='relaxed'
+            variation='primary-fill'
+            onClick={() => {
+              document.dispatchEvent(new Event('show-feedback-modal'));
+            }}
+          >
+            <CollecticonSpeechBalloon /> Feedback
+          </Button>
+        </ContributeCta>
       </FoldProse>
     </PageMainContent>
   );

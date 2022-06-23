@@ -110,10 +110,10 @@ const ContentBlockPFBeta = styled(ContentBlock)`
 
   ${ContentBlockFigure} {
     grid-column: content-start / content-end;
+    grid-row: 2;
 
     ${media.mediumUp`
       grid-column: content-2 / content-8;
-      grid-row: 2;
     `}
 
     ${media.largeUp`
