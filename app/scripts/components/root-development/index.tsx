@@ -28,9 +28,10 @@ function RootDevelopment() {
       />
       <FoldProse>
         <p>
-          NASA started the development of the Dashboard in May 2020. This
-          experimental site reflects a rapid response to COVID-19 currently
-          underway and will continue to evolve as more data become available.
+          NASA started development of the VEDA Dashboard in December 2021. This
+          early version reflects the next iteration on work completed for the{' '}
+          <a href='https://earthdata.nasa.gov/covid19/'>COVID dashboard</a> and
+          will continue to evolve as more functionality is developed.
         </p>
         <p>
           This dashboard is built by the{' '}
@@ -50,27 +51,27 @@ function RootDevelopment() {
           </a>
           .
         </p>
-      <ContributeCta>
-        <Button
-          size='large'
-          fitting='relaxed'
-          forwardedAs='a'
-          href='https://github.com/NASA-IMPACT/delta-config'
-          variation='primary-fill'
-        >
-          <CollecticonBrandGithub /> Github
-        </Button>
-        <Button
-          size='large'
-          fitting='relaxed'
-          variation='primary-fill'
-          onClick={() => {
-            document.dispatchEvent(new Event('show-feedback-modal'));
-          }}
-        >
-          <CollecticonSpeechBalloon /> Feedback
-        </Button>
-      </ContributeCta>
+        <ContributeCta>
+          <Button
+            size='large'
+            fitting='relaxed'
+            forwardedAs='a'
+            href='https://github.com/NASA-IMPACT/delta-config'
+            variation='primary-fill'
+          >
+            <CollecticonBrandGithub /> Github
+          </Button>
+          <Button
+            size='large'
+            fitting='relaxed'
+            variation='primary-fill'
+            onClick={() => {
+              document.dispatchEvent(new Event('show-feedback-modal'));
+            }}
+          >
+            <CollecticonSpeechBalloon /> Feedback
+          </Button>
+        </ContributeCta>
       </FoldProse>
     </PageMainContent>
   );
