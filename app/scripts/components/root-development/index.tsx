@@ -1,10 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
-import {
-  CollecticonBrandGithub,
-  CollecticonSpeechBalloon
-} from '@devseed-ui/collecticons';
+import { CollecticonSpeechBalloon } from '@devseed-ui/collecticons';
 
 import { LayoutProps } from '$components/common/layout-root';
 import { PageMainContent } from '$styles/page';
@@ -44,23 +41,9 @@ function RootDevelopment() {
         </p>
         <p>
           We welcome your feedback to help improve the Dashboard. To do so you
-          can use the feedback option on this website. For an overview of known
-          issues, please consult the Github{' '}
-          <a href='https://github.com/NASA-IMPACT/delta-config/issues'>
-            issue queue
-          </a>
-          .
+          can use the feedback option on this website.
         </p>
         <ContributeCta>
-          <Button
-            size='large'
-            fitting='relaxed'
-            forwardedAs='a'
-            href='https://github.com/NASA-IMPACT/delta-config'
-            variation='primary-fill'
-          >
-            <CollecticonBrandGithub /> Github
-          </Button>
           <Button
             size='large'
             fitting='relaxed'
