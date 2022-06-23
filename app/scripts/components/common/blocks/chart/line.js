@@ -70,7 +70,8 @@ const LineChart = ({
         margin={chartMargin}
         xScale={{
           type: 'time',
-          format: dateFormat
+          format: dateFormat,
+          useUTC: false
         }}
         colors={getColors(data.length)}
         xFormat={`time:${dateFormat}`}
