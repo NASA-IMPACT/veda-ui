@@ -38,7 +38,11 @@ function DatasetsUsage() {
       <PageMainContent>
         <PageHero title={`${dataset.data.name} Usage`} />
         <FoldProse>
-          <p>{dataset.data.usage}</p>
+          {
+            dataset.data.usage?.url && dataset.data.usage?.title ?
+              <p>Check out how to use this dataset in this example notebook: <a href={dataset.data.usage?.url}>{dataset.data.usage?.title}</a></p> :
+              <p>Coming Soon!</p>
+          }
         </FoldProse>
       </PageMainContent>
     </>
