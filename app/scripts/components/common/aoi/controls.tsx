@@ -5,7 +5,7 @@ import {
   CollecticonPencil,
   CollecticonTrashBin
 } from '@devseed-ui/collecticons';
-import { Toolbar, ToolbarIconButton, VerticalDivider } from '$utils/devseed-ui';
+import { Toolbar, ToolbarIconButton, VerticalDivider } from '@devseed-ui/toolbar';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Dropdown, DropTitle } from '@devseed-ui/dropdown';
 import { Button } from '@devseed-ui/button';
@@ -115,8 +115,8 @@ export default function AoiControls(props: AoiControlsProps) {
           ref={dropRef}
           alignment='left'
           direction='down'
-          triggerElement={(props) => (
-            <ToolbarIconButton {...props}>
+          triggerElement={({ active, ...rest }) => (
+            <ToolbarIconButton {...rest}>
               <CollecticonPencil meaningful title='Edit AOI bounds' />
             </ToolbarIconButton>
           )}
