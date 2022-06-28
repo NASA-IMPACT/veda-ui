@@ -69,9 +69,9 @@ async function requestQuickCache(
   return quickCache.get(key);
 }
 
-interface MapLayerRasterTimeseriesProps {
+export interface MapLayerRasterTimeseriesProps {
   id: string;
-  layerId: string;
+  stacCol: string;
   date: Date;
   mapInstance: mapboxgl.Map;
   sourceParams: object;
@@ -89,7 +89,7 @@ type Statuses = {
 export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   const {
     id,
-    layerId,
+    stacCol,
     date,
     mapInstance,
     sourceParams,
@@ -181,7 +181,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // Markers
   //
   useEffect(() => {
-    if (!id || !layerId || !date || !minZoom) return;
+    if (!id || !stacCol || !date || !minZoom) return;
 
     const controller = new AbortController();
 
@@ -191,7 +191,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
         const payload = {
           'filter-lang': 'cql2-json',
-          filter: getFilterPayload(date, layerId),
+          filter: getFilterPayload(date, stacCol),
           limit: 500,
           fields: {
             include: ['bbox'],
@@ -289,7 +289,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   }, [
     id,
     changeStatus,
-    layerId,
+    stacCol,
     date,
     minZoom,
     mapInstance,
@@ -301,7 +301,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // Tiles
   //
   useEffect(() => {
-    if (!id || !layerId || !date) return;
+    if (!id || !stacCol || !date) return;
 
     const controller = new AbortController();
 
@@ -310,7 +310,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       try {
         const payload = {
           'filter-lang': 'cql2-json',
-          filter: getFilterPayload(date, layerId)
+          filter: getFilterPayload(date, stacCol)
         };
 
         /* eslint-disable no-console */
@@ -353,11 +353,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        if (mapInstance.getSource(id)) {
-          mapInstance.removeLayer(id);
-          mapInstance.removeSource(id);
-        }
-        
         mapInstance.addSource(id, {
           type: 'raster',
           url: `${responseData.links[1].href}?${tileParams}`
@@ -406,7 +401,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     // The showMarkers and isHidden dep are left out on purpose, as visibility
     // is controlled below, but we need the value to initialize the layer
     // visibility.
-  }, [id, changeStatus, layerId, date, mapInstance, sourceParams]);
+  }, [id, changeStatus, stacCol, date, mapInstance, sourceParams]);
 
   //
   // Visibility control for the layer and the markers.

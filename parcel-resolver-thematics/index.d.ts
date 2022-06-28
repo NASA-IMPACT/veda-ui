@@ -37,7 +37,7 @@ declare module 'delta/thematics' {
   
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
-    uiLayerId: string;
+    stacCol: string;
     name: string;
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
@@ -52,6 +52,7 @@ declare module 'delta/thematics' {
   // description.
   export interface DatasetLayerCompareNormalized extends DatasetLayerCommonCompareProps {
     id: string;
+    stacCol: string;
     type: DatasetLayerType;
   }
 

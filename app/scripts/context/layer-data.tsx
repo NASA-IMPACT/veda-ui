@@ -42,9 +42,9 @@ const fetchLayerById = async (id: string): Promise<STACLayerData | Error> => {
 };
 
 // Create a query object for react query.
-const makeQueryObject = (id): UseQueryOptions => ({
-  queryKey: ['layer', id],
-  queryFn: () => fetchLayerById(id),
+const makeQueryObject = (stacCol): UseQueryOptions => ({
+  queryKey: ['layer', stacCol],
+  queryFn: () => fetchLayerById(stacCol),
   // This data will not be updated in the context of a browser session, so it is
   // safe to set the staleTime to Infinity. As specified by react-query's
   // "Important Defaults", cached data is considered stale which means that
@@ -82,11 +82,11 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
   const queries = useMemo(
     () =>
       layers.reduce((acc, layer) => {
-        acc.push(makeQueryObject(layer.id));
+        acc.push(makeQueryObject(layer.stacCol));
 
         const compareLayer = getCompareLayerData(layer);
-        if (compareLayer && compareLayer.id !== layer.id) {
-          acc.push(makeQueryObject(compareLayer.id));
+        if (compareLayer && compareLayer.stacCol !== layer.stacCol) {
+          acc.push(makeQueryObject(compareLayer.stacCol));
         }
 
         return acc;
@@ -113,7 +113,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
       // undefined.
       const dataSTAC = queryClient.getQueryState([
         'layer',
-        baseData.id
+        baseData.stacCol
       ]) as QueryState<STACLayerData>;
 
       if (dataSTAC.status !== S_SUCCEEDED) {
@@ -133,6 +133,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
       // Remove compare from layer.
       /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
       const { compare, ...layerProps } = layer;
+
       // The compare definition needs to be resolved to a real layer before
       // returning. The values for the compare layer will depend on how it is
       // defined:
@@ -144,7 +145,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
         baseLayer: mergeSTACData(layerProps),
         compareLayer: compareLayer && mergeSTACData(compareLayer),
         reFetch: () =>
-          queryClient.refetchQueries(['layer', layer.id], {
+          queryClient.refetchQueries(['layer', layer.stacCol], {
             active: true,
             exact: true
           })
@@ -154,12 +155,11 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 };
 
 // Context consumers.
-export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string, uiLayerId?: string) => {
-  const hasParams = (!!datasetId && !!layerId) || (!!datasetId && !!uiLayerId);
+export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
+  const hasParams = !!datasetId && !!layerId;
   // Get the layer information from the dataset defined in the configuration.
   const layersList = datasetId ? datasets[datasetId]?.data.layers : [];
-  // Find a layer if there is uiLayerId, (explore tab), then find a layer that matches layerId
-  const layer = (uiLayerId)? layersList.find((l) => l.uiLayerId === uiLayerId) : layersList.find((l) => l.id === layerId);
+  const layer = layersList.find((l) => l.id === layerId);
 
   // The layers must be defined in the configuration otherwise it is not
   // possible to load them.

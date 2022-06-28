@@ -4,7 +4,6 @@ const path = require('path');
 const fs = require('fs-extra');
 const fg = require('fast-glob');
 const matter = require('gray-matter');
-const hash = require('object-hash');
 
 function loadDeltaConfig() {
   try {
@@ -202,6 +201,31 @@ function generateImports(data, paths) {
   }`;
 }
 
+function throwErrorOnDuplicate(list) {
+  let ids = {
+    // id: 'location'
+  };
+
+  list.data.forEach((item, idx) => {
+    const id = item.id;
+    // No duplicate. Store path in case a duplicate is found.
+    if (!ids[id]) {
+      ids[id] = list.filePaths[idx];
+    } else {
+      throw new ThrowableDiagnostic({
+        diagnostic: {
+          message: `Duplicate id property found.`,
+          hints: [
+            'Check the `id` on the following files',
+            ids[id],
+            list.filePaths[idx]
+          ]
+        }
+      });
+    }
+  });
+}
+
 module.exports = new Resolver({
   async resolve({ specifier, logger }) {
     if (specifier.startsWith('delta/thematics')) {
@@ -250,16 +274,45 @@ module.exports = new Resolver({
         result.discoveries,
         'discoveries'
       );
-      // Internal fix for dataset layers having the same id so multiple layers from the same dataset can be loaded
-      datasetsData.data = datasetsData.data.map((ds) => {
-        return {
-          ...ds,
-          layers: ds.layers.map((layer, idx) => ({
-            ...layer,
-            // making hash depending on layer id and index of layer - at least index should be unique
-            uiLayerId: `${layer.id}-${hash({ name: layer.name, idx })}`
-          }))
+
+      throwErrorOnDuplicate(thematicsData);
+      throwErrorOnDuplicate(datasetsData);
+      throwErrorOnDuplicate(discoveriesData);
+
+      // Check the datasets for duplicate layer ids.
+      datasetsData.data.forEach((item, idx) => {
+        let ids = {
+          // id: true
         };
+        item.layers?.forEach((layer, lIdx) => {
+          if (!layer.id) {
+            throw new ThrowableDiagnostic({
+              diagnostic: {
+                message: 'Missing dataset layer `id`',
+                hints: [
+                  `The layer (index: ${lIdx}) is missing the [id] property.`,
+                  `Check the dataset [${item.id}] at`,
+                  datasetsData.filePaths[idx]
+                ]
+              }
+            });
+          }
+
+          if (!ids[layer.id]) {
+            ids[layer.id] = true;
+          } else {
+            throw new ThrowableDiagnostic({
+              diagnostic: {
+                message: 'Duplicate dataset layer `id`',
+                hints: [
+                  `The layer id [${layer.id}] has been found multiple times.`,
+                  `Check the dataset [${item.id}] at`,
+                  datasetsData.filePaths[idx]
+                ]
+              }
+            });
+          }
+        });
       });
 
       // Figure out how to structure:

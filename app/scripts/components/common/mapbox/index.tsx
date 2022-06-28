@@ -102,7 +102,6 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     id,
     as,
     datasetId,
-    uiLayerId,
     layerId,
     date,
     compareDate,
@@ -148,7 +147,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     }
   }));
 
-  const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId, uiLayerId);
+  const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
 
   const shouldRenderCompare = isMapLoaded && isComparing;
 
@@ -252,7 +251,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
         <BaseLayerComponent
           id={`base-${baseLayerResolvedData.id}`}
-          layerId={baseLayerResolvedData.id}
+          stacCol={baseLayerResolvedData.stacCol}
           mapInstance={mapRef.current}
           date={date}
           sourceParams={baseLayerResolvedData.sourceParams}
@@ -271,7 +270,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         CompareLayerComponent && (
           <CompareLayerComponent
             id={`compare-${compareLayerResolvedData.id}`}
-            layerId={compareLayerResolvedData.id}
+            stacCol={compareLayerResolvedData.stacCol}
             mapInstance={mapCompareRef.current}
             date={compareToDate}
             sourceParams={compareLayerResolvedData.sourceParams}
@@ -360,7 +359,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       */}
       {baseLayerResolvedData?.legend && (
         <LayerLegend
-          id={`base-${baseLayerResolvedData.uiLayerId}`}
+          id={`base-${baseLayerResolvedData.id}`}
           title={baseLayerResolvedData.name}
           description={baseLayerResolvedData.description}
           {...baseLayerResolvedData.legend}
@@ -420,7 +419,6 @@ export interface MapboxMapProps {
   id?: string;
   datasetId?: string;
   layerId?: string;
-  uiLayerId?: string;
   date?: Date;
   compareDate?: Date;
   compareLabel?: string;

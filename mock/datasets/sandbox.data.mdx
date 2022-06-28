@@ -17,6 +17,7 @@ thematics:
 
 layers:
   - id: blue-tarp-planetscope
+    stacCol: blue-tarp-planetscope
     name: Blue tarp test
     type: raster
     description: Blue tarp tests
@@ -24,6 +25,7 @@ layers:
       - 10
       - 20
   - id: hls-s30-002-ej
+    stacCol: hls-s30-002-ej
     name: HLS
     type: raster
     description: 'Testing HLS'
@@ -37,7 +39,8 @@ layers:
         - B8A
         - B04
   - id: no2-monthly
-    name: No2 2 monthly - same dataset, different parameters
+    stacCol: no2-monthly
+    name: No2 2 monthly
     type: raster
     initialDatetime: 2022-01-01
     description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
@@ -63,39 +66,8 @@ layers:
         - "#c13b72"
         - "#461070"
         - "#ff0000"
-  - id: no2-monthly
-    name: No2
-    type: raster
-    description: no2 dataset
-    zoomExtent:
-      - 0
-      - 20
-    sourceParams:
-      resampling_method: bilinear
-      bidx: 1
-      color_formula: gamma r 1.05
-      colormap_name: coolwarm
-      rescale:
-        - 0
-        - 1.5e16
-    compare:
-      datasetId: sandbox
-      layerId: no2-monthly
-      mapLabel: |
-        ::js ({ dateFns, datetime, compareDatetime }) => {
-          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
-        }
-    legend:
-      type: gradient
-      min: Less
-      max: More
-      stops:
-        - "#08041d"
-        - "#1f0a46"
-        - "#52076c"
-        - "#f57c16"
-        - "#f7cf39"
   - id: nightlights-hd-monthly
+    stacCol: nightlights-hd-monthly
     name: Nightlights Monthly
     type: raster
     description: The nightlights dataset
@@ -125,7 +97,8 @@ layers:
           label: "Out of season"
         - color: "#794416"
           label: "No data"
-  - id: social-vulnerability-index-household
+  - id: social-vul-1
+    stacCol: social-vulnerability-index-household
     name: Household and Disability Score
     type: raster
     description: 'Household Composition & Disability (Aged 65 or Older, Aged 17 or Younger, Civilian with a Disability, Single-Parent Households) - Percentile ranking'
@@ -141,7 +114,7 @@ layers:
         - 1
     compare:
       datasetId: sandbox
-      layerId: social-vulnerability-index-household
+      layerId: social-vul-1
       mapLabel: |
         ::js ({ dateFns, datetime, compareDatetime }) => {
           return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
@@ -157,7 +130,8 @@ layers:
       - "#f3701b"
       - "#c54102"
       - "#7f2704"
-  - id: social-vulnerability-index-household
+  - id: social-vul-2
+    stacCol: social-vulnerability-index-household
     name: Household and Disability Score 2
     type: raster
     description: 'Household Composition & Disability (Aged 65 or Older, Aged 17 or Younger, Civilian with a Disability, Single-Parent Households) - Percentile ranking'
@@ -179,6 +153,7 @@ layers:
       - "#ffffff"
       - "#0000ff"
   - id: dev-fail
+    stacCol: dev-fail
     name: Failing layer
     type: raster
 related:
