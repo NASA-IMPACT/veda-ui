@@ -15,7 +15,8 @@ import * as dateFns from 'date-fns';
 import {
   CollecticonCircleXmark,
   CollecticonChevronRightSmall,
-  CollecticonChevronLeftSmall
+  CollecticonChevronLeftSmall,
+  iconDataURI
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { DatasetDatumFnResolverBag } from 'delta/thematics';
@@ -34,7 +35,6 @@ import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
-import { iconDataURI } from '$utils/devseed-ui';
 
 const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
   color: 'white'

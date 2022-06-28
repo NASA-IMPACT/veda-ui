@@ -2,14 +2,18 @@ import React from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 
-import { glsp, themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
+import {
+  glsp,
+  themeVal,
+  visuallyHidden,
+  media
+} from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { Button } from '@devseed-ui/button';
 import {
   CollecticonBrandGithub,
   CollecticonEnvelope
 } from '@devseed-ui/collecticons';
-import { media } from '$utils/devseed-ui';
 import { createSubtitleStyles } from '@devseed-ui/typography';
 
 import { variableGlsp } from '../../styles/variable-utils';

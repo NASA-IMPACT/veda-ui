@@ -2,14 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 import { LayerLegendCategorical, LayerLegendGradient } from 'delta/thematics';
 import { AccordionFold, AccordionManager } from '@devseed-ui/accordion';
-
-import { formatThousands } from '$utils/format';
 import {
   glsp,
   themeVal,
   truncated,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
+import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
+import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
+import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
+
+import { formatThousands } from '$utils/format';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import {
   WidgetItemBodyInner,
@@ -19,9 +22,6 @@ import {
 } from '$styles/panel';
 
 import { Tip } from '../tip';
-import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
-import { Toolbar, ToolbarIconButton } from '$utils/devseed-ui';
-import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
 type LayerLegendCommonProps = {
   id: string;
