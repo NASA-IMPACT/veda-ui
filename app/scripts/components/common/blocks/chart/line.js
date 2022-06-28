@@ -28,6 +28,7 @@ const LineChart = ({
   xKey,
   yKey,
   dateFormat,
+  yAxisLabel,
   customLayerComponent
 }) => {
   const [data, setData] = useState([]);
@@ -85,6 +86,11 @@ const LineChart = ({
         enablePoints={false}
         enableSlices='x'
         axisBottom={getBottomAxis(dateFormat, isMediumUp)}
+        axisLeft={{
+          legend: yAxisLabel,
+          legendOffset: -(chartMargin.left * 0.9),
+          legendPosition: 'middle'
+        }}
         legends={getLegendConfig(data, isMediumUp)}
         layers={[
           'grid',
@@ -109,6 +115,7 @@ LineChart.propTypes = {
   idKey: T.string,
   xKey: T.string,
   yKey: T.string,
+  yAxisLabel: T.string,
   dateFormat: T.string,
   customLayerComponent: T.func
 };
