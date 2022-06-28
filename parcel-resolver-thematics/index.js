@@ -201,6 +201,31 @@ function generateImports(data, paths) {
   }`;
 }
 
+function throwErrorOnDuplicate(list) {
+  let ids = {
+    // id: 'location'
+  };
+
+  list.data.forEach((item, idx) => {
+    const id = item.id;
+    // No duplicate. Store path in case a duplicate is found.
+    if (!ids[id]) {
+      ids[id] = list.filePaths[idx];
+    } else {
+      throw new ThrowableDiagnostic({
+        diagnostic: {
+          message: `Duplicate id property found.`,
+          hints: [
+            'Check the `id` on the following files',
+            ids[id],
+            list.filePaths[idx]
+          ]
+        }
+      });
+    }
+  });
+}
+
 module.exports = new Resolver({
   async resolve({ specifier, logger }) {
     if (specifier.startsWith('delta/thematics')) {
@@ -249,6 +274,46 @@ module.exports = new Resolver({
         result.discoveries,
         'discoveries'
       );
+
+      throwErrorOnDuplicate(thematicsData);
+      throwErrorOnDuplicate(datasetsData);
+      throwErrorOnDuplicate(discoveriesData);
+
+      // Check the datasets for duplicate layer ids.
+      datasetsData.data.forEach((item, idx) => {
+        let ids = {
+          // id: true
+        };
+        item.layers?.forEach((layer, lIdx) => {
+          if (!layer.id) {
+            throw new ThrowableDiagnostic({
+              diagnostic: {
+                message: 'Missing dataset layer `id`',
+                hints: [
+                  `The layer (index: ${lIdx}) is missing the [id] property.`,
+                  `Check the dataset [${item.id}] at`,
+                  datasetsData.filePaths[idx]
+                ]
+              }
+            });
+          }
+
+          if (!ids[layer.id]) {
+            ids[layer.id] = true;
+          } else {
+            throw new ThrowableDiagnostic({
+              diagnostic: {
+                message: 'Duplicate dataset layer `id`',
+                hints: [
+                  `The layer id [${layer.id}] has been found multiple times.`,
+                  `Check the dataset [${item.id}] at`,
+                  datasetsData.filePaths[idx]
+                ]
+              }
+            });
+          }
+        });
+      });
 
       // Figure out how to structure:
       // - export thematics, datasets and discoveries with their content. (frontmatter and mdx)
