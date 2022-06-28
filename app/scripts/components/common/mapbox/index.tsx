@@ -12,9 +12,15 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import * as dateFns from 'date-fns';
-import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
-
+import {
+  CollecticonCircleXmark,
+  CollecticonChevronRightSmall,
+  CollecticonChevronLeftSmall,
+  iconDataURI
+} from '@devseed-ui/collecticons';
+import { themeVal } from '@devseed-ui/theme-provider';
 import { DatasetDatumFnResolverBag } from 'delta/thematics';
+
 import {
   ActionStatus,
   S_FAILED,
@@ -28,10 +34,44 @@ import { MapLoading } from '$components/common/loading-skeleton';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
+import { formatCompareDate, formatSingleDate } from './utils';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
+
+const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
+  color: 'white'
+});
+
+const chevronLeftURI = () => iconDataURI(CollecticonChevronLeftSmall, {
+  color: 'white'
+});
 
 const MapsContainer = styled.div`
   position: relative;
+
+  .mapboxgl-compare .compare-swiper-vertical {
+    background: ${themeVal('color.primary')};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::before,
+    &::after {
+      display: inline-block;
+      content: '';
+      background-repeat: no-repeat;
+      background-size: 1rem 1rem;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    &::before {
+      background-image: url('${chevronLeftURI()}');
+    }
+    &::after {
+      background-image: url('${chevronRightURI()}');
+    }
+  }
+
 `;
 
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
@@ -177,6 +217,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       : null;
   }, [compareDate, date]);
 
+  const baseTimeDensity = baseLayerResolvedData?.timeseries.timeDensity;
+  const compareTimeDensity = compareLayerResolvedData?.timeseries.timeDensity;
+
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.
     const providedLabel = compareLabel || compareLayerResolvedData?.mapLabel;
@@ -184,12 +227,21 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
     // Default to date comparison.
     return date && compareToDate
-      ? `${dateFns.format(date, 'yyyy/MM/dd')} VS ${dateFns.format(
+      ? formatCompareDate(
+          date,
           compareToDate,
-          'yyyy/MM/dd'
-        )}`
+          baseTimeDensity,
+          compareTimeDensity
+        )
       : null;
-  }, [compareLabel, compareLayerResolvedData?.mapLabel, date, compareToDate]);
+  }, [
+    compareLabel,
+    compareLayerResolvedData?.mapLabel,
+    date,
+    compareToDate,
+    baseTimeDensity,
+    compareTimeDensity
+  ]);
 
   return (
     <>
@@ -204,7 +256,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
         <BaseLayerComponent
           id={`base-${baseLayerResolvedData.id}`}
-          layerId={baseLayerResolvedData.id}
+          stacCol={baseLayerResolvedData.stacCol}
           mapInstance={mapRef.current}
           date={date}
           sourceParams={baseLayerResolvedData.sourceParams}
@@ -223,7 +275,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         CompareLayerComponent && (
           <CompareLayerComponent
             id={`compare-${compareLayerResolvedData.id}`}
-            layerId={compareLayerResolvedData.id}
+            stacCol={compareLayerResolvedData.stacCol}
             mapInstance={mapCompareRef.current}
             date={compareToDate}
             sourceParams={compareLayerResolvedData.sourceParams}
@@ -265,6 +317,26 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       >
         <CollecticonCircleXmark /> Failed to load compare layer{' '}
         {compareLayer?.data?.id}
+      </MapMessage>
+
+      {/*
+        Map overlay element
+        Message shown when the map is is not in compare mode. It displays the
+        date being visualized if there is one.
+      */}
+      <MapMessage
+        id='single-map-message'
+        active={
+          !!(
+            !shouldRenderCompare &&
+            date &&
+            baseLayerResolvedData &&
+            baseLayerStatus !== S_FAILED
+          )
+        }
+      >
+        {date &&
+          formatSingleDate(date, baseLayerResolvedData?.timeseries.timeDensity)}
       </MapMessage>
 
       {/*

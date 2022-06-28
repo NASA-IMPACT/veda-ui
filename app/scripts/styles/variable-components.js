@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { themeVal } from '@devseed-ui/theme-provider';
+import { themeVal, media } from '@devseed-ui/theme-provider';
 import { Heading, Lead, Prose } from '@devseed-ui/typography';
 
 import { variableBaseType, variableProseVSpace } from './variable-utils';
@@ -92,4 +92,11 @@ export const VarProse = styled(Prose)`
   > *:last-child {
     margin-bottom: 0;
   }
+
+  /* avoid long a tags breaking small screen layout */
+  ${media.mediumDown`
+    a {
+      word-break: break-word;
+    }
+  `}
 `;

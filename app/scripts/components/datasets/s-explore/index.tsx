@@ -108,18 +108,44 @@ const isSelectedDateValid = (dateList, prevDateList, selectedDate) => {
   return true;
 };
 
-const useValidSelectedDate = (dateList, selectedDate, setDate) => {
+const getInitialDate = (dateList, initialDatetime) => {
+  if (!initialDatetime || initialDatetime === 'oldest') {
+    return dateList[0];
+  }
+
+  if (initialDatetime === 'newest') {
+    return dateList.last;
+  }
+
+  const initialDate = utcString2userTzDate(initialDatetime);
+  // Reuse isSelectedDateValid function.
+  return isSelectedDateValid(dateList, undefined, initialDate)
+    ? initialDate
+    : dateList[0];
+};
+
+const useValidSelectedDate = (
+  dateList,
+  selectedDate,
+  initialDatetime,
+  setDate
+) => {
   useEffectPrevious(
     ([prevDateList]) => {
       if (!isSelectedDateValid(dateList, prevDateList, selectedDate)) {
-        setDate(dateList[0]);
+        setDate(getInitialDate(dateList, initialDatetime));
       }
     },
     [dateList, selectedDate, setDate]
   );
 };
 
-const useValidSelectedCompareDate = (dateList, selectedDate, setDate) => {
+const useValidSelectedCompareDate = (
+  dateList,
+  selectedDate,
+  initialDatetime,
+  setDate
+) => {
   useEffectPrevious(
     ([prevDateList]) => {
       // A compare date can be null.
@@ -127,14 +153,17 @@ const useValidSelectedCompareDate = (dateList, selectedDate, setDate) => {
         selectedDate &&
         !isSelectedDateValid(dateList, prevDateList, selectedDate)
       ) {
-        setDate(dateList[0]);
+        setDate(getInitialDate(dateList, initialDatetime));
       }
     },
     [dateList, selectedDate, setDate]
   );
 };
 
-const useDatePickerValue = (value: Date | null, setter: (v: Date | null) => void) => {
+const useDatePickerValue = (
+  value: Date | null,
+  setter: (v: Date | null) => void
+) => {
   const onConfirm = useCallback((range) => setter(range.start), [setter]);
 
   const val = useMemo(
@@ -331,12 +360,14 @@ function DatasetsExplore() {
   useValidSelectedDate(
     availableActiveLayerDates,
     selectedDatetime,
+    activeLayer?.baseLayer.data?.initialDatetime,
     setSelectedDatetime
   );
   // Same but for compare dates.
   useValidSelectedCompareDate(
     availableActiveLayerCompareDates,
     selectedCompareDatetime,
+    activeLayer?.baseLayer.data?.initialDatetime,
     setSelectedCompareDatetime
   );
 

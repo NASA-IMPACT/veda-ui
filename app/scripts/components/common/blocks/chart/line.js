@@ -31,7 +31,11 @@ const LineChart = ({
   customLayerComponent
 }) => {
   const [data, setData] = useState([]);
-  const extension = fileExtensionRegex.exec(dataPath)[1];
+  // Nivo's auto scale for negative value only doesn't seem to work.
+  // This is a temporary work around.
+  const [yScale, setYScale] = useState({ min: 0, max: 0 });
+  const newDataPath = dataPath.split('?')[0];
+  const extension = fileExtensionRegex.exec(newDataPath)[1];
   const { isMediumUp } = useMediaQuery();
 
   useEffect(() => {
@@ -39,17 +43,23 @@ const LineChart = ({
       let data;
       if (extension === 'csv') data = await csv(dataPath);
       else data = await json(dataPath);
-      const formattedData = getFormattedData({
+      const {
+        dataWId: formattedData,
+        minY,
+        maxY
+      } = getFormattedData({
         data,
         extension,
         idKey,
         xKey,
         yKey
       });
+      setYScale({ min: minY, max: maxY });
       setData(formattedData);
     };
     getData();
   }, [dataPath, idKey, xKey, yKey, extension]);
+
   return (
     <ChartWrapper>
       <ResponsiveLine
@@ -60,13 +70,16 @@ const LineChart = ({
         margin={chartMargin}
         xScale={{
           type: 'time',
-          format: dateFormat
+          format: dateFormat,
+          useUTC: false
         }}
         colors={getColors(data.length)}
         xFormat={`time:${dateFormat}`}
         yScale={{
           type: 'linear',
-          stacked: true
+          min: yScale.min,
+          max: yScale.max,
+          stacked: false
         }}
         enableGridX={false}
         enablePoints={false}

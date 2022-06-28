@@ -1,8 +1,7 @@
 import React from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
-import { themeVal } from '@devseed-ui/theme-provider';
-import { media, multiply } from '$utils/devseed-ui';
+import { themeVal, media, multiply } from '@devseed-ui/theme-provider';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlockProse } from '$styles/content-block';

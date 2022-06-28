@@ -31,6 +31,10 @@ Configuration is done using [dot.env](https://parceljs.org/features/node-emulati
 
 These files are used to simplify the configuration of the app and should not contain sensitive information.
 
+#### Mapbox Token
+
+Get your Mapbox access token from Mapbox Dashboard. Put the key in `.env.local-sample` file. Copy the file and rename as `.env.local`.
+
 #### Starting the app
 
 ```

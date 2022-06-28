@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTheme } from 'styled-components';
 import axios from 'axios';
 import qs from 'qs';
 import mapboxgl from 'mapbox-gl';
+import { endOfDay, startOfDay } from 'date-fns';
 
 import { userTzDate2utcString } from '$utils/date';
 import {
@@ -18,17 +20,21 @@ const LOG = true;
 /**
  * Creates the appropriate filter object to send to STAC.
  *
- * @param {string} dateStr Date to request
+ * @param {Date} date Date to request
  * @param {string} collection STAC collection to request
  * @returns Object
  */
-function getFilterPayload(dateStr: string, collection: string) {
+function getFilterPayload(date: Date, collection: string) {
   return {
     op: 'and',
     args: [
       {
-        op: 'eq',
-        args: [{ property: 'datetime' }, dateStr]
+        op: '>=',
+        args: [{ property: 'datetime' }, userTzDate2utcString(startOfDay(date))]
+      },
+      {
+        op: '<=',
+        args: [{ property: 'datetime' }, userTzDate2utcString(endOfDay(date))]
       },
       {
         op: 'eq',
@@ -63,9 +69,9 @@ async function requestQuickCache(
   return quickCache.get(key);
 }
 
-interface MapLayerRasterTimeseriesProps {
+export interface MapLayerRasterTimeseriesProps {
   id: string;
-  layerId: string;
+  stacCol: string;
   date: Date;
   mapInstance: mapboxgl.Map;
   sourceParams: object;
@@ -83,15 +89,17 @@ type Statuses = {
 export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   const {
     id,
-    layerId,
+    stacCol,
     date,
     mapInstance,
-    sourceParams = {},
+    sourceParams,
     zoomExtent,
     onStatusChange,
     isHidden
   } = props;
 
+  const theme = useTheme();
+  const primaryColor = theme.color?.primary;
   const minZoom = zoomExtent?.[0];
 
   const [showMarkers, setShowMarkers] = useState(
@@ -173,7 +181,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // Markers
   //
   useEffect(() => {
-    if (!id || !layerId || !date || !minZoom) return;
+    if (!id || !stacCol || !date || !minZoom) return;
 
     const controller = new AbortController();
 
@@ -183,7 +191,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
         const payload = {
           'filter-lang': 'cql2-json',
-          filter: getFilterPayload(userTzDate2utcString(date), layerId),
+          filter: getFilterPayload(date, stacCol),
           limit: 500,
           fields: {
             include: ['bbox'],
@@ -233,7 +241,9 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-enable no-console */
 
         addedMarkers.current = points.map((p) => {
-          const marker = new mapboxgl.Marker()
+          const marker = new mapboxgl.Marker({
+            color: primaryColor
+          })
             .setLngLat(p.center)
             .addTo(mapInstance);
 
@@ -276,13 +286,22 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     // The showMarkers and isHidden dep are left out on purpose, as visibility
     // is controlled below, but we need the value to initialize the markers
     // visibility.
-  }, [id, changeStatus, layerId, date, minZoom, mapInstance, sourceParams]);
+  }, [
+    id,
+    changeStatus,
+    stacCol,
+    date,
+    minZoom,
+    mapInstance,
+    sourceParams,
+    primaryColor
+  ]);
 
   //
   // Tiles
   //
   useEffect(() => {
-    if (!id || !layerId || !date) return;
+    if (!id || !stacCol || !date) return;
 
     const controller = new AbortController();
 
@@ -291,7 +310,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       try {
         const payload = {
           'filter-lang': 'cql2-json',
-          filter: getFilterPayload(userTzDate2utcString(date), layerId)
+          filter: getFilterPayload(date, stacCol)
         };
 
         /* eslint-disable no-console */
@@ -317,7 +336,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             assets: 'cog_default',
             ...sourceParams
           },
-          { arrayFormat: 'comma' }
+          // Temporary solution to pass different tile parameters for hls data
+          { arrayFormat: id.toLowerCase().includes('hls')? 'repeat':'comma' } 
         );
 
         /* eslint-disable no-console */
@@ -381,7 +401,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     // The showMarkers and isHidden dep are left out on purpose, as visibility
     // is controlled below, but we need the value to initialize the layer
     // visibility.
-  }, [id, changeStatus, layerId, date, mapInstance, sourceParams]);
+  }, [id, changeStatus, stacCol, date, mapInstance, sourceParams]);
 
   //
   // Visibility control for the layer and the markers.

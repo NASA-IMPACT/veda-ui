@@ -1050,109 +1050,121 @@
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@bcoe%2fv8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@devseed-ui/accordion@4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2faccordion/-/accordion-4.1.0-rc.0.tgz#55c0175b8e674fb82212a7c5881543981a05836c"
-  integrity sha512-p2VIOm5QJrAGuPZo27pUNpdFfEfezQDurTp+M+lokjC2G5kXOJ0DLodjyu+6ZkrxpFfCSracjkIela+JYIVFgA==
+"@devseed-ui/accordion@4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2faccordion/-/accordion-4.1.0-rc.1.tgz#94258f3d109a598f1c0ade89e935ee65b920a8d6"
+  integrity sha512-bg5T4ZEU4+/pwutYPAwjOzhGCnk6Qo8zCuCikKcuwVeYUxQRiGGSbKhijty6tHXw+x6co7pHBaoIG8BDLQhEyg==
   dependencies:
-    "@devseed-ui/collecticons" "^4.1.0-rc.0"
-    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
+    "@devseed-ui/collecticons" "^4.1.0-rc.1"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.1"
 
 "@devseed-ui/animation@^4.0.0":
   version "4.0.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fanimation/-/animation-4.0.0.tgz#d8063604e790c2309f4bbfe45483d435909ce2da"
   integrity sha512-ZXmjXdYj19JKzYphaehuIPp4bnsd5hSntGTCwGsqKSq6Vbcf0uhRAQZazhNhw0FzhBmA98xeX9FeWHnpIlaQ3A==
 
-"@devseed-ui/button@4.1.0-rc.0", "@devseed-ui/button@^4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fbutton/-/button-4.1.0-rc.0.tgz#8f88aff3039ecf1d5d956f71335fbeee27b65bb4"
-  integrity sha512-e/7wgQeLE2+L58C6gZBk6P6RffmbvZeEZLjszHXVeR3WfPGm9Tiee4z+qRKDc6bcgqSEnlXHhUUXMypaLMzSQg==
+"@devseed-ui/button@4.1.0-rc.1", "@devseed-ui/button@^4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fbutton/-/button-4.1.0-rc.1.tgz#5f8a72d8aff114e8f147f7070eb643e949ec938c"
+  integrity sha512-HvRrC+Ow2yU0yrjqQAlDedkhsWAVXcJPUdYakKnPYUwNePJIUGW1XRwYGSaQvm3q8k+HdAOdaiNSdV4n3OuC8A==
   dependencies:
-    "@devseed-ui/collecticons" "^4.1.0-rc.0"
-    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
+    "@devseed-ui/collecticons" "^4.1.0-rc.1"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.1"
 
-"@devseed-ui/collecticons@4.1.0-rc.0", "@devseed-ui/collecticons@^4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fcollecticons/-/collecticons-4.1.0-rc.0.tgz#294a60204f9246ac67eaf8fffa2105edf6cdd2fe"
-  integrity sha512-yWsmJ37UZssgSfmEhIXCUXTU03jrI3v7ArddxPgduhzHFKwPos4Owd3tqj+CTrBChk4UvsYyY/uoFYJIR5KSFQ==
+"@devseed-ui/collecticons@4.1.0-rc.1", "@devseed-ui/collecticons@^4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fcollecticons/-/collecticons-4.1.0-rc.1.tgz#061dccf82e70503bca76f35b7d5d6e6381802a6b"
+  integrity sha512-5O726pGcL3/sEDTm4J+a4dOv2bE2wz42zrP3AZCPH/gD3ZoXfG2rX9mm7YHZVuMBFbXfeB1JMbbEK/kWyOXOAw==
 
-"@devseed-ui/date-picker@4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fdate-picker/-/date-picker-4.1.0-rc.0.tgz#e4662361d776ad4f23fabc555e96fd97b1dfe14d"
-  integrity sha512-OuXBF2qebXAgfjFmUN2VAV3id4xsN+zxTUi6F3qVTc0hm4bXPtKgMO5rS+J2ARrOcaju/VxeyAeTZeFo17+FVQ==
+"@devseed-ui/date-picker@4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fdate-picker/-/date-picker-4.1.0-rc.1.tgz#bd1ac6a15fdc8b0d775c8381a381d2d9ec74e230"
+  integrity sha512-za5C82WK3gwOl3lhN+GlAe6z1PQUeKPQ3LMWHYKFX/MCJtxchO2Mdg2toBPf+89I4xwrQuTnAmYdWZO1qd44AA==
   dependencies:
-    "@devseed-ui/button" "^4.1.0-rc.0"
-    "@devseed-ui/collecticons" "^4.1.0-rc.0"
-    "@devseed-ui/dropdown" "^4.1.0-rc.0"
-    "@devseed-ui/form" "^4.1.0-rc.0"
-    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
-    "@devseed-ui/typography" "^4.1.0-rc.0"
+    "@devseed-ui/button" "^4.1.0-rc.1"
+    "@devseed-ui/collecticons" "^4.1.0-rc.1"
+    "@devseed-ui/dropdown" "^4.1.0-rc.1"
+    "@devseed-ui/form" "^4.1.0-rc.1"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.1"
+    "@devseed-ui/typography" "^4.1.0-rc.1"
     date-fns "^2.9.0"
     react-calendar "^3.3.0"
 
-"@devseed-ui/dropdown@4.1.0-rc.0", "@devseed-ui/dropdown@^4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fdropdown/-/dropdown-4.1.0-rc.0.tgz#e22c5b1b8b33c7bd95a7932c072ffe87bb7e1fa5"
-  integrity sha512-vYDUD7rehF5Gv9iFHF5v4r6unbsAabXStzu+gJzUSzwsDIvMDlHyiOcb6AemeVY6MzHlUzydN1lfk5CV2BiMpQ==
+"@devseed-ui/dropdown@4.1.0-rc.1", "@devseed-ui/dropdown@^4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fdropdown/-/dropdown-4.1.0-rc.1.tgz#4deb6f906c7b9f57a9ee1b724ea51f209e4fee9c"
+  integrity sha512-fctOHMVhx+Fkoa4NBUFSiIkaK45Xz6qaJGQfHkKoEFW8OVoPNNaBUqiW0CwE7HS8v5DMnjkITaOIEZI+b9oI/Q==
   dependencies:
-    "@devseed-ui/button" "^4.1.0-rc.0"
-    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
-    "@devseed-ui/typography" "^4.1.0-rc.0"
+    "@devseed-ui/button" "^4.1.0-rc.1"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.1"
+    "@devseed-ui/typography" "^4.1.0-rc.1"
     react-tether "^2.0.7"
     react-transition-group "^4.3.0"
 
-"@devseed-ui/form@4.1.0-rc.0", "@devseed-ui/form@^4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fform/-/form-4.1.0-rc.0.tgz#c0af7b860d1151e1da294186d4a5a1bde19b86f7"
-  integrity sha512-gLtwa+QBQAvyrN9ZRUwOUyVfcxYNcLmnAEb+gxqW4K4rNpFZ82K9bzvqe/qmhbzEm8335GjQxfGBuJnDwsrI4w==
+"@devseed-ui/form@4.1.0-rc.1", "@devseed-ui/form@^4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fform/-/form-4.1.0-rc.1.tgz#67d06a85244b65364dad0403bb9fef573ae13fc9"
+  integrity sha512-Vu+ZYEu60qql4g7Rs6Na6yUO/fJm/r5bFYELPHi3GxaBwcy8JValV6j6pW7L9wO50HJt4vySzmtj0cR8foWMfw==
   dependencies:
     "@devseed-ui/animation" "^4.0.0"
-    "@devseed-ui/collecticons" "^4.1.0-rc.0"
-    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
-    "@devseed-ui/typography" "^4.1.0-rc.0"
+    "@devseed-ui/collecticons" "^4.1.0-rc.1"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.1"
+    "@devseed-ui/typography" "^4.1.0-rc.1"
 
-"@devseed-ui/global-loading@4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fglobal-loading/-/global-loading-4.1.0-rc.0.tgz#1d1c69bcaffeb5bdfe1b848a97644b6f23c3c2c8"
-  integrity sha512-V9WXxGkHQQ3pVTEo41EgVMU6dv60OXr4PHDT3nZuxBdLKrt7paIrqM3It3f5jD/sO1nODttGDhd7kd0niblM7g==
+"@devseed-ui/global-loading@4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fglobal-loading/-/global-loading-4.1.0-rc.1.tgz#e277879c249a79a5435562caee051dbd96a0c3e7"
+  integrity sha512-VwNcQqEBh3gif5TvSFiOHeBaDnTLkouVs/buxm/zwHpEadYgCb7IDBjqgF3ZdpJG3/g41hKWJv3kKCDxPhh1Vw==
   dependencies:
     "@devseed-ui/animation" "^4.0.0"
-    "@devseed-ui/collecticons" "^4.1.0-rc.0"
-    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
+    "@devseed-ui/collecticons" "^4.1.0-rc.1"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.1"
     react-transition-group "^4.3.0"
 
-"@devseed-ui/shadow-scrollbar@4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fshadow-scrollbar/-/shadow-scrollbar-4.1.0-rc.0.tgz#8f3bd67ac04cdb1fe8594da07fda58122f77142f"
-  integrity sha512-mAjBOcu9ZKD4i6bfrTWHUspH6hfQJscxHOe/vlK/3bwMy51yw0NtQedzKqrZNUmrmYPAnmlEBc0aiISmSe1V8w==
+"@devseed-ui/modal@^4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fmodal/-/modal-4.1.0-rc.1.tgz#19c50834904352d5332356729007fc70c754dee9"
+  integrity sha512-xoyn0j3NKMh2Vodv+Zcf/e4JiDygn3dgzbG8zsM+tKMA9MpC2LNgzEx8BsaqdCwR9i8x51dMpccnK/UFJgvY7Q==
   dependencies:
-    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
+    "@devseed-ui/button" "^4.1.0-rc.1"
+    "@devseed-ui/collecticons" "^4.1.0-rc.1"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.1"
+    "@devseed-ui/toolbar" "^4.1.0-rc.1"
+    "@devseed-ui/typography" "^4.1.0-rc.1"
+    react-transition-group "^4.3.0"
+
+"@devseed-ui/shadow-scrollbar@4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2fshadow-scrollbar/-/shadow-scrollbar-4.1.0-rc.1.tgz#08128ceef64791b489cf1b883683ed2572af2e72"
+  integrity sha512-jXvZe83cdDsLF/NHYRE3zCdq6LJukzJGMPV8JeOFBzC6XTnA4r4jWkQ94MBolAA8xxxLUbPO+lRfQYLEh2/fMA==
+  dependencies:
+    "@devseed-ui/theme-provider" "^4.1.0-rc.1"
     "@types/react-custom-scrollbars" "^4.0.8"
     react-custom-scrollbars "^4.2.1"
 
-"@devseed-ui/theme-provider@4.1.0-rc.0", "@devseed-ui/theme-provider@^4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftheme-provider/-/theme-provider-4.1.0-rc.0.tgz#183c07a391e5809454efb61844a4e905b69118c2"
-  integrity sha512-ZOKcsjR53gOH1LADEHKuQkItHlvUvNkFxjLmyNm4yTXHviVSbdapCtqcORnFjaEAWBrVHWIMD14wHWs2qnuneA==
+"@devseed-ui/theme-provider@4.1.0-rc.1", "@devseed-ui/theme-provider@^4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftheme-provider/-/theme-provider-4.1.0-rc.1.tgz#9a93be0eac494d9f43d8eb7b78275ae197699816"
+  integrity sha512-34F2twG8S63cMehmrAp9KTire/jYsTz1qd/+JGwc1rya7Fc/cC8ClfHigcnKYhOQGqwpR2BojR4YgTCst0YIJg==
   dependencies:
     lodash.get "^4.4.2"
     polished "^3.4.2"
 
-"@devseed-ui/toolbar@4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftoolbar/-/toolbar-4.1.0-rc.0.tgz#6abf500e9d7e3f952ff6afd3ce2cd440fca99714"
-  integrity sha512-bF5gmtlTBwcpAX33+7ULORAUfAY76vjLN0spmd2xOLUAIHht3B5/ATSr4PimwYlAQPiRbAJHx7g8uFNIIED/vA==
+"@devseed-ui/toolbar@4.1.0-rc.1", "@devseed-ui/toolbar@^4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftoolbar/-/toolbar-4.1.0-rc.1.tgz#7a6dac298cb5dc74f87d9df2a82abe1c2daffa98"
+  integrity sha512-DD9OEo619re9zuytTYoibLHZ7px/zCDpZBYaO83XI27Y/5g0sBiqPOtTSGEz/X5/e8dSwE9Itlj4c+HhQupRNg==
   dependencies:
-    "@devseed-ui/button" "^4.1.0-rc.0"
-    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
-    "@devseed-ui/typography" "^4.1.0-rc.0"
+    "@devseed-ui/button" "^4.1.0-rc.1"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.1"
+    "@devseed-ui/typography" "^4.1.0-rc.1"
 
-"@devseed-ui/typography@4.1.0-rc.0", "@devseed-ui/typography@^4.1.0-rc.0":
-  version "4.1.0-rc.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftypography/-/typography-4.1.0-rc.0.tgz#53881bfca981cfe74e4870ccc4b83ae5dacd010b"
-  integrity sha512-UosT7sD1aHvTWKL7ypCjBu1PHqaaKhbxSXBwz46uW5q34v7X5syNh0mhrwzg/6Ilf/TOaszzbHoYoHH2lJ32zw==
+"@devseed-ui/typography@4.1.0-rc.1", "@devseed-ui/typography@^4.1.0-rc.1":
+  version "4.1.0-rc.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@devseed-ui%2ftypography/-/typography-4.1.0-rc.1.tgz#5babbcbcce3bb08f451777eacc40508907a238f6"
+  integrity sha512-rYulE7VrR6TrAGFX/kj6357DLq+F378jcNnlBPONQF1WJT8/KjpB6sKxs0/ruP0LFb0aSU01wom/9AD8fHtaHQ==
   dependencies:
-    "@devseed-ui/theme-provider" "^4.1.0-rc.0"
+    "@devseed-ui/theme-provider" "^4.1.0-rc.1"
 
 "@emotion/is-prop-valid@^0.8.8":
   version "0.8.8"
@@ -9453,6 +9465,11 @@ react-fast-compare@^3.1.1:
   version "3.2.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
   integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
+
+react-ga@^3.3.1:
+  version "3.3.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-ga/-/react-ga-3.3.1.tgz#d8e1f4e05ec55ed6ff944dcb14b99011dfaf9504"
+  integrity sha512-4Vc0W5EvXAXUN/wWyxvsAKDLLgtJ3oLmhYYssx+YzphJpejtOst6cbIHCIyF50Fdxuf5DDKqRYny24yJ2y7GFQ==
 
 react-helmet@^6.1.0:
   version "6.1.0"
