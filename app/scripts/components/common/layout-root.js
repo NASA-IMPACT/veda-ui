@@ -8,7 +8,8 @@ import MetaTags from './meta-tags';
 import PageHeader from './page-header';
 import PageFooter from './page-footer';
 
-import { useThematicArea } from '../../utils/thematics';
+import { useThematicArea } from '$utils/thematics';
+import { useGoogleAnalytics } from '$utils/use-google-analytics';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
@@ -28,6 +29,9 @@ const PageBody = styled.div`
 
 function LayoutRoot(props) {
   const { children } = props;
+
+  useGoogleAnalytics();
+
   const { title, thumbnail, description, hideFooter } =
     useContext(LayoutRootContext);
 
