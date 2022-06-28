@@ -52,14 +52,29 @@ export const getColors = function (steps) {
   });
 };
 
-export const getBottomAxis = function (dateFormat, isLargeScreen) {
+export const getBottomAxis = function ({
+  dateFormat,
+  isLargeScreen,
+  xAxisLabel
+}) {
   // nivo's limit for ticknum:  https://nivo.rocks/guides/axes/
   const tickNum = isLargeScreen ? 8 : 3;
   return {
+    legend: xAxisLabel,
+    legendOffset: 30,
+    legendPosition: 'end',
     tickValues: tickNum,
     tickSize: 5,
     tickPadding: 5,
     format: dateFormat
+  };
+};
+
+export const getLeftAxis = function (yAxisLabel) {
+  return {
+    legend: yAxisLabel,
+    legendOffset: -(chartMargin.left * 0.9),
+    legendPosition: 'end'
   };
 };
 

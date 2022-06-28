@@ -11,9 +11,11 @@ import {
   getLegendConfig,
   getFormattedData,
   getBottomAxis,
-  getColors
+  getColors,
+  getLeftAxis
 } from './utils';
 import TooltipComponent from './tooltip';
+import Title from './title-desc';
 
 export const chartHeight = '32rem';
 
@@ -28,8 +30,9 @@ const LineChart = ({
   xKey,
   yKey,
   dateFormat,
+  xAxisLabel,
   yAxisLabel,
-  customLayerComponent
+  customLayerComponents
 }) => {
   const [data, setData] = useState([]);
   // Nivo's auto scale for negative value only doesn't seem to work.
@@ -85,18 +88,19 @@ const LineChart = ({
         enableGridX={false}
         enablePoints={false}
         enableSlices='x'
-        axisBottom={getBottomAxis(dateFormat, isMediumUp)}
-        axisLeft={{
-          legend: yAxisLabel,
-          legendOffset: -(chartMargin.left * 0.9),
-          legendPosition: 'middle'
-        }}
+        axisBottom={getBottomAxis({
+          dateFormat,
+          isLargeScreen: isMediumUp,
+          xAxisLabel
+        })}
+        axisLeft={getLeftAxis(yAxisLabel)}
         legends={getLegendConfig(data, isMediumUp)}
         layers={[
+          Title,
           'grid',
           'markers',
           'areas',
-          customLayerComponent,
+          ...customLayerComponents,
           'lines',
           'crosshair',
           'slices',
@@ -115,9 +119,10 @@ LineChart.propTypes = {
   idKey: T.string,
   xKey: T.string,
   yKey: T.string,
+  xAxisLabel: T.string,
   yAxisLabel: T.string,
   dateFormat: T.string,
-  customLayerComponent: T.func
+  customLayerComponents: T.array
 };
 
 export default LineChart;

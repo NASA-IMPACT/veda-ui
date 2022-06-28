@@ -3,10 +3,12 @@ import T from 'prop-types';
 
 import LineChart from './line';
 import AreaLayer, { EmptyLayer } from './area-layer';
+import ChartTitle from './title-desc';
 
 const Chart = (props) => {
-  const { highlightStart, highlightEnd, highlightLabel } = props;
-  const customLayer =
+  const { highlightStart, highlightEnd, highlightLabel, altTitle, altDesc } =
+    props;
+  const areaLayer =
     highlightStart || highlightEnd
       ? AreaLayer({
           highlightStart,
@@ -14,10 +16,15 @@ const Chart = (props) => {
           highlightLabel
         })
       : EmptyLayer;
+
+  const titleLayer =
+    altTitle || altDesc
+      ? ChartTitle({ title: altTitle, desc: altDesc })
+      : EmptyLayer;
   return (
     <LineChart
       {...props}
-      customLayerComponent={customLayer}
+      customLayerComponents={[areaLayer, titleLayer]}
       isThereHighlight={!!(highlightStart || highlightEnd)}
     />
   );
@@ -28,6 +35,10 @@ Chart.propTypes = {
   idKey: T.string,
   xKey: T.string,
   yKey: T.string,
+  xAxisLabel: T.string,
+  yAxisLabel: T.string,
+  altTitle: T.string,
+  altDesc: T.string,
   dateFormat: T.string,
   highlightStart: T.string,
   highlightEnd: T.string,
