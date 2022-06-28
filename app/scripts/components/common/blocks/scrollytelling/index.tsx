@@ -11,7 +11,7 @@ import * as dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
-import { media } from '$utils/devseed-ui';
+import { media } from '@devseed-ui/theme-provider';
 
 import {
   getLayerComponent,
