@@ -40,6 +40,8 @@ Chart.propTypes = {
   altTitle: T.string,
   altDesc: T.string,
   dateFormat: T.string,
+  colors: T.array,
+  colorScheme: T.string,
   highlightStart: T.string,
   highlightEnd: T.string,
   highlightLabel: T.string

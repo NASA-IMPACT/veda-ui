@@ -1,4 +1,4 @@
-import { interpolateViridis } from 'd3-scale-chromatic';
+import * as d3ScaleChromatic from 'd3-scale-chromatic';
 
 export const fileExtensionRegex = /(?:\.([^.]+))?$/;
 
@@ -6,7 +6,8 @@ export const chartMargin = { top: 50, right: 10, bottom: 100, left: 60 };
 export const itemHeight = 20;
 export const itemWidth = 120;
 
-function getLegendData({ data, width, itemWidth }) {
+export function getLegendConfig({ data, isMediumUp, colors, colorScheme }) {
+  const width = isMediumUp ? 600 : 450;
   const rowNum = Math.ceil((itemWidth * data.length) / width);
   const itemsPerRow = Math.floor(data.length / rowNum);
   return new Array(rowNum).fill(0).map((elem, idx) => ({
@@ -19,7 +20,11 @@ function getLegendData({ data, width, itemWidth }) {
       .map((e, dataIdx) => ({
         id: e.id,
         label: e.id,
-        color: getColors(data.length)[dataIdx + itemsPerRow * idx]
+        color: colors
+          ? colors[dataIdx]
+          : getColors({ steps: data.length, colorScheme })[
+              dataIdx + itemsPerRow * idx
+            ]
       })),
     direction: 'row',
     translateX: 0,
@@ -33,10 +38,6 @@ function getLegendData({ data, width, itemWidth }) {
   }));
 }
 
-export const getLegendConfig = (data, isMediumUp) => {
-  return getLegendData({ data, itemWidth, width: isMediumUp ? 600 : 450 });
-};
-
 export const chartTheme = {
   grid: {
     line: {
@@ -46,9 +47,17 @@ export const chartTheme = {
   }
 };
 
-export const getColors = function (steps) {
+function getInterpoateFunction(colorScheme) {
+  const fnName = `interpolate${
+    colorScheme[0].toUpperCase() + colorScheme.slice(1)
+  }`;
+  return d3ScaleChromatic[fnName];
+}
+
+export const getColors = function ({ steps, colorScheme }) {
+  const colorFn = getInterpoateFunction(colorScheme);
   return new Array(steps).fill(0).map((e, idx) => {
-    return interpolateViridis(idx / steps);
+    return colorFn(idx / steps);
   });
 };
 
@@ -83,9 +92,15 @@ export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
   let maxY = 0;
 
   let dataToSort = [...data];
-  dataToSort.sort((a, b) => {
-    return new Date(a[xKey]) - new Date(b[xKey]);
-  });
+  dataToSort
+    .sort((a, b) => {
+      // sort by alphabetical order
+      return a[yKey].toLowerCase().localeCompare(b[yKey].toLowerCase());
+    })
+    .sort((a, b) => {
+      // sort by date (x axis)
+      return new Date(a[xKey]) - new Date(b[xKey]);
+    });
 
   const dataWId = dataToSort.reduce((acc, curr) => {
     if (!acc.find((e) => e.id === curr[idKey])) {

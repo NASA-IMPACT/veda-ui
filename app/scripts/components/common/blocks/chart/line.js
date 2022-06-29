@@ -29,6 +29,8 @@ const LineChart = ({
   idKey,
   xKey,
   yKey,
+  colors,
+  colorScheme = 'viridis',
   dateFormat,
   xAxisLabel,
   yAxisLabel,
@@ -77,7 +79,9 @@ const LineChart = ({
           format: dateFormat,
           useUTC: false
         }}
-        colors={getColors(data.length)}
+        colors={
+          colors ? colors : getColors({ steps: data.length, colorScheme })
+        }
         xFormat={`time:${dateFormat}`}
         yScale={{
           type: 'linear',
@@ -94,7 +98,7 @@ const LineChart = ({
           xAxisLabel
         })}
         axisLeft={getLeftAxis(yAxisLabel)}
-        legends={getLegendConfig(data, isMediumUp)}
+        legends={getLegendConfig({ data, isMediumUp, colors, colorScheme })}
         layers={[
           Title,
           'grid',
@@ -119,6 +123,8 @@ LineChart.propTypes = {
   idKey: T.string,
   xKey: T.string,
   yKey: T.string,
+  colors: T.array,
+  colorScheme: T.string,
   xAxisLabel: T.string,
   yAxisLabel: T.string,
   dateFormat: T.string,
