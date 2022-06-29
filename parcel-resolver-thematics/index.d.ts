@@ -103,6 +103,10 @@ declare module 'delta/thematics' {
     name: string;
     thematics: string[];
     description: string;
+    usage?: {
+      url: string;
+      title: string
+    };
     media?: Media
     layers: DatasetLayer[];
     related?: Array<RelatedContentData>;

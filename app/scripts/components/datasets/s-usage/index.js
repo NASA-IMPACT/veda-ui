@@ -11,12 +11,15 @@ import PageHero from '$components/common/page-hero';
 
 import { thematicDatasetsPath } from '$utils/routes';
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
+import EmptyHub from '$components/common/empty-hub';
 
 function DatasetsUsage() {
   const thematic = useThematicArea();
   const dataset = useThematicAreaDataset();
 
   if (!thematic || !dataset) throw resourceNotFound();
+
+  const datasetUsage = dataset.data.usage;
 
   return (
     <>
@@ -38,7 +41,14 @@ function DatasetsUsage() {
       <PageMainContent>
         <PageHero title={`${dataset.data.name} Usage`} />
         <FoldProse>
-          <p>And how exactly does this dataset get used?</p>
+          {datasetUsage?.url && datasetUsage?.title ? (
+            <p>
+              Check out how to use this dataset in this example notebook:{' '}
+              <a href={datasetUsage.url}>{datasetUsage.title}</a>.
+            </p>
+          ) : (
+            <EmptyHub>Coming soon!</EmptyHub>
+          )}
         </FoldProse>
       </PageMainContent>
     </>
