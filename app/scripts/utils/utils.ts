@@ -14,7 +14,7 @@
  * @param {number} a Dividend
  * @param {number} n Divisor
  */
-export function mod(a, n) {
+export function mod(a: number, n: number) {
   return ((a % n) + n) % n;
 }
 
@@ -26,7 +26,7 @@ export function mod(a, n) {
  *
  * @returns {function} Validator function.
  */
-export function validateRangeNum(min, max) {
+export function validateRangeNum(min: number, max: number) {
   return (raw) => {
     const value = Number(raw);
     return !isNaN(value) && raw !== '' && value >= min && value <= max;

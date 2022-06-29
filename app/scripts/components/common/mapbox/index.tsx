@@ -35,6 +35,7 @@ import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
+import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 
 const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
   color: 'white'
@@ -110,7 +111,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     cooperativeGestures,
     onPositionChange,
     initialPosition,
-    withGeocoder
+    withGeocoder,
+    aoi,
+    onAoiChange
   } = props;
   /* eslint-enable react/prop-types */
 
@@ -144,7 +147,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     resize: () => {
       mapRef.current?.resize();
       mapCompareRef.current?.resize();
-    }
+    },
+    instance: mapRef.current,
+    compareInstance: mapCompareRef.current
   }));
 
   const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
@@ -386,6 +391,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             cooperativeGestures
           }}
           withGeocoder={withGeocoder}
+          aoi={aoi}
+          onAoiChange={onAoiChange}
         />
         {shouldRenderCompare && (
           <SimpleMap
@@ -400,6 +407,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
               zoom: mapRef.current?.getZoom()
             }}
             withGeocoder={withGeocoder}
+            aoi={aoi}
+            onAoiChange={onAoiChange}
           />
         )}
       </MapsContainer>
@@ -432,10 +441,14 @@ export interface MapboxMapProps {
   ) => void;
   withGeocoder?: boolean;
   children?: React.ReactNode;
+  aoi?: AoiState;
+  onAoiChange?: AoiChangeListenerOverload
 }
 
 export type MapboxMapRef = {
   resize: () => void;
+  instance: mapboxgl.Map | null;
+  compareInstance: mapboxgl.Map | null;
 };
 
 const MapboxMapComponentFwd = React.forwardRef<MapboxMapRef, MapboxMapProps>(
