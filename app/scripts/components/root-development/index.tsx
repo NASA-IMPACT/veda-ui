@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
-import { CollecticonSpeechBalloon, CollecticonBrandGithub } from '@devseed-ui/collecticons';
+import {
+  CollecticonSpeechBalloon,
+  CollecticonBrandGithub
+} from '@devseed-ui/collecticons';
 
 import { LayoutProps } from '$components/common/layout-root';
 import { PageMainContent } from '$styles/page';
@@ -55,13 +58,13 @@ function RootDevelopment() {
             <CollecticonSpeechBalloon /> Feedback
           </Button>
           <Button
-          size='large'
-          fitting='relaxed'
-          forwardedAs='a'
-          href='https://github.com/NASA-IMPACT/delta-config/releases'
-          variation='primary-fill'
+            size='large'
+            fitting='relaxed'
+            forwardedAs='a'
+            href='https://github.com/NASA-IMPACT/delta-config/releases'
+            variation='primary-fill'
           >
-          <CollecticonBrandGithub /> Releases
+            <CollecticonBrandGithub /> Releases
           </Button>
         </ContributeCta>
       </FoldProse>
