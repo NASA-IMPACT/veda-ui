@@ -81,7 +81,13 @@ export const getLeftAxis = function (yAxisLabel) {
 export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
   let minY = 0;
   let maxY = 0;
-  const dataWId = data.reduce((acc, curr) => {
+
+  let dataToSort = [...data];
+  dataToSort.sort((a, b) => {
+    return new Date(a[xKey]) - new Date(b[xKey]);
+  });
+
+  const dataWId = dataToSort.reduce((acc, curr) => {
     if (!acc.find((e) => e.id === curr[idKey])) {
       const newEntry = {
         id: curr[idKey],
@@ -104,6 +110,7 @@ export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
     maxY = Math.max(maxY, parseFloat(curr[yKey]));
     return acc;
   }, []);
+
   return {
     dataWId,
     minY,
