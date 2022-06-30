@@ -4,43 +4,14 @@ const { default: ThrowableDiagnostic } = require('@parcel/diagnostic');
 const path = require('path');
 const fs = require('fs-extra');
 const fg = require('fast-glob');
-const matter = require('gray-matter');
 
 const stringifyYmlWithFns = require('./stringify-yml-func');
 const { loadDeltaConfig } = require('./config');
-
-async function getFrontmatterData(filePath, logger) {
-  const content = await fs.readFile(filePath, 'utf-8');
-  try {
-    // Pass an empty options object to avoid data being cached which is a
-    // problem if there is an error. When an error happens the data is
-    // cached as empty and no error are thrown the second time.
-    return matter(content, {}).data;
-  } catch (error) {
-    logger.error({
-      message: error.message,
-      codeFrames: [
-        {
-          filePath,
-          code: error.mark.buffer,
-          codeHighlights: [
-            {
-              start: {
-                line: error.mark.line,
-                column: error.mark.column
-              },
-              end: {
-                line: error.mark.line,
-                column: error.mark.column
-              }
-            }
-          ]
-        }
-      ]
-    });
-    return null;
-  }
-}
+const { getFrontmatterData } = require('./frontmatter');
+const {
+  validateContentTypeId,
+  validateDatasetLayerId
+} = require('./validation');
 
 async function loadOptionalContent(logger, root, globPath, type) {
   try {
@@ -158,31 +129,6 @@ async function loadPageOverridesConfig(pageOverrides, root, logger) {
   return generateMdxDataObject(data.filter(Boolean));
 }
 
-function throwErrorOnDuplicate(list) {
-  let ids = {
-    // id: 'location'
-  };
-
-  list.data.forEach((item, idx) => {
-    const id = item.id;
-    // No duplicate. Store path in case a duplicate is found.
-    if (!ids[id]) {
-      ids[id] = list.filePaths[idx];
-    } else {
-      throw new ThrowableDiagnostic({
-        diagnostic: {
-          message: `Duplicate id property found.`,
-          hints: [
-            'Check the `id` on the following files',
-            ids[id],
-            list.filePaths[idx]
-          ]
-        }
-      });
-    }
-  });
-}
-
 module.exports = new Resolver({
   async resolve({ specifier, logger }) {
     if (specifier.startsWith('delta/thematics')) {
@@ -232,45 +178,12 @@ module.exports = new Resolver({
         'discoveries'
       );
 
-      throwErrorOnDuplicate(thematicsData);
-      throwErrorOnDuplicate(datasetsData);
-      throwErrorOnDuplicate(discoveriesData);
+      validateContentTypeId(thematicsData);
+      validateContentTypeId(datasetsData);
+      validateContentTypeId(discoveriesData);
 
       // Check the datasets for duplicate layer ids.
-      datasetsData.data.forEach((item, idx) => {
-        let ids = {
-          // id: true
-        };
-        item.layers?.forEach((layer, lIdx) => {
-          if (!layer.id) {
-            throw new ThrowableDiagnostic({
-              diagnostic: {
-                message: 'Missing dataset layer `id`',
-                hints: [
-                  `The layer (index: ${lIdx}) is missing the [id] property.`,
-                  `Check the dataset [${item.id}] at`,
-                  datasetsData.filePaths[idx]
-                ]
-              }
-            });
-          }
-
-          if (!ids[layer.id]) {
-            ids[layer.id] = true;
-          } else {
-            throw new ThrowableDiagnostic({
-              diagnostic: {
-                message: 'Duplicate dataset layer `id`',
-                hints: [
-                  `The layer id [${layer.id}] has been found multiple times.`,
-                  `Check the dataset [${item.id}] at`,
-                  datasetsData.filePaths[idx]
-                ]
-              }
-            });
-          }
-        });
-      });
+      validateDatasetLayerId(datasetsData);
 
       // Prepare data to be used by generateMdxDataObject();
       const thematicsImportData = thematicsData.data.map((o, i) => ({
