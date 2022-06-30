@@ -43,7 +43,7 @@ function DatasetsUsage() {
         <FoldProse>
           {datasetUsage?.url && datasetUsage?.title ? (
             <p>
-              Check out how to use this dataset in this example notebook:{' '}
+              Check out how to use this dataset in this example notebook (using <code>collection='{dataset.data.layers[0].id}'</code>):{' '}
               <a href={datasetUsage.url}>{datasetUsage.title}</a>.
             </p>
           ) : (
