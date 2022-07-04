@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { utcString2userTzDate } from '$utils/date';
@@ -9,9 +9,8 @@ import {
   Projection,
   projectionDefault,
   ProjectionName,
-  projectionsList
+  validateProjectionBlockProps
 } from '../mapbox/projection-selector';
-import { useEffect } from 'react';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -73,43 +72,11 @@ function validateBlockProps(props: MapBlockProps) {
     isNaN(utcString2userTzDate(compareDateTime).getTime()) &&
     '- Invalid compareDateTime. Use YYYY-MM-DD format';
 
-  // Projections
-  const projectionErrors: string[] = [];
-  if (projectionName) {
-    const allowedProjections = projectionsList.map((p) => p.id);
-    const projectionsConic = projectionsList
-      .filter((p) => p.isConic)
-      .map((p) => p.id);
-
-    if (!allowedProjections.includes(projectionName)) {
-      const a = allowedProjections.join(', ');
-      projectionErrors.push(`- Invalid projectionName. Must be one of: ${a}.`);
-    }
-
-    if (projectionsConic.includes(projectionName)) {
-      if (
-        !projectionCenter ||
-        !lngValidator(projectionCenter[0]) ||
-        !latValidator(projectionCenter[1])
-      ) {
-        const o = projectionsConic.join(', ');
-        projectionErrors.push(
-          `- Invalid projectionCenter. This property is required for ${o} projections. Use [longitude, latitude].`
-        );
-      }
-
-      if (
-        !projectionParallels ||
-        !latValidator(projectionParallels[0]) ||
-        !latValidator(projectionParallels[1])
-      ) {
-        const o = projectionsConic.join(', ');
-        projectionErrors.push(
-          `- Invalid projectionParallels. This property is required for ${o} projections. Use [Southern parallel latitude, Northern parallel latitude].`
-        );
-      }
-    }
-  }
+  const projectionErrors = validateProjectionBlockProps({
+    name: projectionName,
+    center: projectionCenter,
+    parallels: projectionParallels
+  });
 
   return [
     missingError,
@@ -127,9 +94,9 @@ interface MapBlockProps extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
   center?: [number, number];
   zoom?: number;
   compareLabel?: string;
-  projectionName: ProjectionName;
-  projectionCenter: Projection['center'];
-  projectionParallels: Projection['parallels'];
+  projectionName?: ProjectionName;
+  projectionCenter?: Projection['center'];
+  projectionParallels?: Projection['parallels'];
   allowProjectionChange?: boolean;
 }
 

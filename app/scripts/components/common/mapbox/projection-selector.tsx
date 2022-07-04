@@ -255,3 +255,45 @@ type ProjectionSelectorProps = {
   onChange: (projection: Projection) => void;
   projection: Projection;
 };
+
+export function validateProjectionBlockProps({
+  name,
+  center,
+  parallels
+}: Partial<Projection>) {
+  // Projections
+  const projectionErrors: string[] = [];
+  if (name) {
+    const allowedProjections = projectionsList.map((p) => p.id);
+    const projectionsConic = projectionsList
+      .filter((p) => p.isConic)
+      .map((p) => p.id);
+
+    if (!allowedProjections.includes(name)) {
+      const a = allowedProjections.join(', ');
+      projectionErrors.push(`- Invalid projectionName. Must be one of: ${a}.`);
+    }
+
+    if (projectionsConic.includes(name)) {
+      if (!center || !validateLon(center[0]) || !validateLat(center[1])) {
+        const o = projectionsConic.join(', ');
+        projectionErrors.push(
+          `- Invalid projectionCenter. This property is required for ${o} projections. Use [longitude, latitude].`
+        );
+      }
+
+      if (
+        !parallels ||
+        !validateLat(parallels[0]) ||
+        !validateLat(parallels[1])
+      ) {
+        const o = projectionsConic.join(', ');
+        projectionErrors.push(
+          `- Invalid projectionParallels. This property is required for ${o} projections. Use [Southern parallel latitude, Northern parallel latitude].`
+        );
+      }
+    }
+  }
+
+  return projectionErrors;
+}
