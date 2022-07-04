@@ -111,7 +111,7 @@
     "intersection-observer": "^0.12.0",
     "lodash.defaultsdeep": "^4.6.1",
     "lodash.get": "^4.4.2",
-    "mapbox-gl": "^2.7.0",
+    "mapbox-gl": "^2.9.1",
     "mapbox-gl-compare": "^0.4.0",
     "mapbox-gl-draw-rectangle-mode": "^1.0.4",
     "polished": "^4.1.3",
