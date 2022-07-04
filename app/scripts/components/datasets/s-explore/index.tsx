@@ -268,6 +268,25 @@ function DatasetsExplore() {
     }
   });
 
+  const [mapProjection, setMapProjection] = useQsState.memo<Projection>({
+    key: 'projection',
+    default: projectionDefault,
+    hydrator: (v) => {
+      if (!v) return null;
+      const [name, rawCenter, rawParallels] = v.split('|');
+      const center = rawCenter ? rawCenter.split(',').map(Number) : undefined;
+      const parallels = rawParallels
+        ? rawParallels.split(',').map(Number)
+        : undefined;
+      return { name, center, parallels } as Projection;
+    },
+    dehydrator: (v) => {
+      if (!v) return '';
+      const { name, center, parallels } = v;
+      return `${name}|${center?.join(',') || ''}|${parallels?.join(',') || ''}`;
+    }
+  });
+
   const [selectedDatetime, setSelectedDatetime] = useQsState.memo<Date>({
     key: 'datetime',
     default: null,
@@ -494,6 +513,8 @@ function DatasetsExplore() {
               isComparing={isComparing}
               initialPosition={mapPosition || undefined}
               onPositionChange={setMapPosition}
+              projection={mapProjection || projectionDefault}
+              onProjectionChange={setMapProjection}
             />
           </Carto>
         </Explorer>
