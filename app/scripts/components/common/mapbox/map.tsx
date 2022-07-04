@@ -81,7 +81,7 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     // Include attribution.
     mbMap.addControl(new mapboxgl.AttributionControl(), 'bottom-left');
 
-    if (onProjectionChange) {
+    if (onProjectionChange && projection) {
       mapRef.current?.addControl(mapProjectionControl, 'top-left');
     }
 

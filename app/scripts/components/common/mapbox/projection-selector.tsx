@@ -116,7 +116,7 @@ const projectionConicParallel = [
 ];
 
 // Default value for the projection state.
-export const projectionDefault = {
+export const projectionDefault: Projection = {
   name: 'mercator'
 };
 

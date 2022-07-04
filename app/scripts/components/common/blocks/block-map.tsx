@@ -1,10 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { utcString2userTzDate } from '$utils/date';
 import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
 import { validateRangeNum } from '$utils/utils';
 import { HintedError } from '$utils/hinted-error';
+import {
+  Projection,
+  projectionDefault,
+  ProjectionName,
+  projectionsList
+} from '../mapbox/projection-selector';
+import { useEffect } from 'react';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -25,7 +32,15 @@ const lngValidator = validateRangeNum(-180, 180);
 const latValidator = validateRangeNum(-90, 90);
 
 function validateBlockProps(props: MapBlockProps) {
-  const { dateTime, compareDateTime, center, zoom } = props;
+  const {
+    dateTime,
+    compareDateTime,
+    center,
+    zoom,
+    projectionName,
+    projectionCenter,
+    projectionParallels
+  } = props;
 
   const requiredProperties = ['datasetId', 'layerId', 'dateTime'];
   const missingMapProps = requiredProperties.filter(
@@ -58,32 +73,64 @@ function validateBlockProps(props: MapBlockProps) {
     isNaN(utcString2userTzDate(compareDateTime).getTime()) &&
     '- Invalid compareDateTime. Use YYYY-MM-DD format';
 
-  if (
-    missingError ||
-    dateError ||
-    zoomError ||
-    centerError ||
-    compareDateError
-  ) {
-    return [
-      missingError,
-      dateError,
-      zoomError,
-      centerError,
-      compareDateError
-    ].filter(Boolean) as string[];
+  // Projections
+  const projectionErrors: string[] = [];
+  if (projectionName) {
+    const allowedProjections = projectionsList.map((p) => p.id);
+    const projectionsConic = projectionsList
+      .filter((p) => p.isConic)
+      .map((p) => p.id);
+
+    if (!allowedProjections.includes(projectionName)) {
+      const a = allowedProjections.join(', ');
+      projectionErrors.push(`- Invalid projectionName. Must be one of: ${a}.`);
+    }
+
+    if (projectionsConic.includes(projectionName)) {
+      if (
+        !projectionCenter ||
+        !lngValidator(projectionCenter[0]) ||
+        !latValidator(projectionCenter[1])
+      ) {
+        const o = projectionsConic.join(', ');
+        projectionErrors.push(
+          `- Invalid projectionCenter. This property is required for ${o} projections. Use [longitude, latitude].`
+        );
+      }
+
+      if (
+        !projectionParallels ||
+        !latValidator(projectionParallels[0]) ||
+        !latValidator(projectionParallels[1])
+      ) {
+        const o = projectionsConic.join(', ');
+        projectionErrors.push(
+          `- Invalid projectionParallels. This property is required for ${o} projections. Use [Southern parallel latitude, Northern parallel latitude].`
+        );
+      }
+    }
   }
 
-  return [];
+  return [
+    missingError,
+    dateError,
+    zoomError,
+    centerError,
+    compareDateError,
+    ...projectionErrors
+  ].filter(Boolean) as string[];
 }
 
-interface MapBlockProps
-  extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
+interface MapBlockProps extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
   zoom?: number;
   compareLabel?: string;
+  projectionName: ProjectionName;
+  projectionCenter: Projection['center'];
+  projectionParallels: Projection['parallels'];
+  allowProjectionChange?: boolean;
 }
 
 function MapBlock(props: MapBlockProps) {
@@ -96,7 +143,11 @@ function MapBlock(props: MapBlockProps) {
     compareDateTime,
     compareLabel,
     center,
-    zoom
+    zoom,
+    projectionName,
+    projectionCenter,
+    projectionParallels,
+    allowProjectionChange
   } = props;
 
   const errors = validateBlockProps(props);
@@ -112,6 +163,24 @@ function MapBlock(props: MapBlockProps) {
     ? utcString2userTzDate(compareDateTime)
     : undefined;
 
+  const projectionStart = useMemo(
+    () =>
+      projectionName
+        ? {
+            name: projectionName,
+            center: projectionCenter,
+            parallels: projectionParallels
+          }
+        : projectionDefault,
+    [projectionName, projectionCenter, projectionParallels]
+  );
+
+  const [projection, setProjection] = useState(projectionStart);
+
+  useEffect(() => {
+    setProjection(projectionStart);
+  }, [projectionStart]);
+
   return (
     <Carto>
       <MapboxMap
@@ -124,6 +193,8 @@ function MapBlock(props: MapBlockProps) {
         compareLabel={compareLabel}
         initialPosition={{ lng: center?.[0], lat: center?.[1], zoom }}
         cooperativeGestures
+        projection={projection}
+        onProjectionChange={allowProjectionChange ? setProjection : undefined}
       />
     </Carto>
   );
