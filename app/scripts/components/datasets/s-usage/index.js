@@ -54,7 +54,7 @@ function DatasetsUsage() {
               </p>
               <p>
                 For reference, the following STAC collection ID&apos;s are
-                available:
+                associated with this dataset:
               </p>
               <ul>
                 {Array.from(layerIdsSet).map((id) => (
