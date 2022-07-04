@@ -1,5 +1,6 @@
 declare module 'delta/thematics' {
   import * as dateFns from 'date-fns';
+  import mapboxgl from 'mapbox-gl';
   import { MDXModule } from 'mdx/types';
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -41,6 +42,7 @@ declare module 'delta/thematics' {
     name: string;
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
+    projection: mapboxgl.MapboxOptions['projection'];
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend: LayerLegendCategorical | LayerLegendGradient

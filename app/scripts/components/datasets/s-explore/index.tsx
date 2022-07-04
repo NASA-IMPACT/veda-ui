@@ -52,6 +52,10 @@ import {
 import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { PanelDateWidget } from './panel-date-widget';
+import {
+  Projection,
+  projectionDefault
+} from '$components/common/mapbox/projection-selector';
 
 const Explorer = styled.div`
   position: relative;
@@ -349,6 +353,32 @@ function DatasetsExplore() {
   const activeLayerCompareTimeseries = useMemo(
     // @ts-expect-error if there is activeLayer the the rest is loaded.
     () => activeLayer?.compareLayer?.data.timeseries || null,
+    [activeLayer]
+  );
+
+  // On layer change, if reset the projection.
+  // When activating a layer always use the layer projection (if defined),
+  // otherwise default to mercator. If this is the first layer loading (like
+  // when the user enters the page), then use the projection in the url. This is
+  // needed in case the url was shared with a different projection.
+  useEffectPrevious(
+    (prev) => {
+      const prevActiveData = prev[0]?.baseLayer.data;
+      const currActiveData = activeLayer?.baseLayer.data;
+
+      if (
+        !prevActiveData ||
+        !currActiveData ||
+        prevActiveData.id === currActiveData.id
+      )
+        return;
+
+      if (currActiveData?.projection?.name) {
+        setMapProjection(currActiveData?.projection);
+      } else {
+        setMapProjection(projectionDefault);
+      }
+    },
     [activeLayer]
   );
 
