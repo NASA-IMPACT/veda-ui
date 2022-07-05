@@ -21,6 +21,11 @@ function DatasetsUsage() {
 
   const datasetUsage = dataset.data.usage;
 
+  const layerIdsSet = dataset.data.layers.reduce(
+    (acc, layer) => acc.add(layer.stacCol),
+    new Set()
+  );
+
   return (
     <>
       <LayoutProps
@@ -42,10 +47,23 @@ function DatasetsUsage() {
         <PageHero title={`${dataset.data.name} Usage`} />
         <FoldProse>
           {datasetUsage?.url && datasetUsage?.title ? (
-            <p>
-              Check out how to use this dataset in this example notebook:{' '}
-              <a href={datasetUsage.url}>{datasetUsage.title}</a>.
-            </p>
+            <>
+              <p>
+                Check out how to use this dataset in this example notebook:{' '}
+                <a href={datasetUsage.url}>{datasetUsage.title}</a>.
+              </p>
+              <p>
+                For reference, the following STAC collection ID&apos;s are
+                associated with this dataset:
+              </p>
+              <ul>
+                {Array.from(layerIdsSet).map((id) => (
+                  <li key={id}>
+                    <code>{id}</code>
+                  </li>
+                ))}
+              </ul>
+            </>
           ) : (
             <EmptyHub>Coming soon!</EmptyHub>
           )}
