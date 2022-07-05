@@ -91,10 +91,9 @@ export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
   let minY = 0;
   let maxY = 0;
 
-  let dataToSort = [...data];
-  dataToSort
+  let dataToSort = [...data]
     .sort((a, b) => {
-      // sort by alphabetical order
+      // sort by alphabetical order (y axis)
       return a[yKey].toLowerCase().localeCompare(b[yKey].toLowerCase());
     })
     .sort((a, b) => {
