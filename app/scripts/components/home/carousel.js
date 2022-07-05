@@ -29,6 +29,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { Card } from '$components/common/card';
 
 const FeaturedList = styled.div`
+  /* ignore stylelint parseError */
   ${listReset()}
 
   .carousel__slider {
@@ -59,7 +60,7 @@ const FeaturedContent = styled.div`
     `}
   }
 
-  // overriding pure-react-carousel styles
+  /* overriding pure-react-carousel styles */
   > div {
     width: 100% !important;
   }
