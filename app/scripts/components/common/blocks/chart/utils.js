@@ -4,7 +4,7 @@ export const fileExtensionRegex = /(?:\.([^.]+))?$/;
 export const defaultChartMargin = { top: 50, right: 10, bottom: 100, left: 60 };
 
 export const itemHeight = 20;
-export const itemWidth = 120;
+export const itemWidth = 115;
 export const largeScreenItemNum = 5;
 export const smallScreenItemNum = 3;
 export const chartBottomPadding = 40;
