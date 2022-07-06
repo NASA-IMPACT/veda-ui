@@ -1,15 +1,19 @@
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 
 export const fileExtensionRegex = /(?:\.([^.]+))?$/;
+export const defaultChartMargin = { top: 50, right: 10, bottom: 100, left: 60 };
 
-export const chartMargin = { top: 50, right: 10, bottom: 100, left: 60 };
 export const itemHeight = 20;
 export const itemWidth = 120;
+export const largeScreenItemNum = 5;
+export const smallScreenItemNum = 3;
+export const chartBottomPadding = 40;
 
 export function getLegendConfig({ data, isMediumUp, colors, colorScheme }) {
-  const width = isMediumUp ? 600 : 450;
+  const width = isMediumUp ? itemWidth * 5 : itemWidth * 3;
   const rowNum = Math.ceil((itemWidth * data.length) / width);
-  const itemsPerRow = Math.floor(data.length / rowNum);
+
+  const itemsPerRow = isMediumUp ? largeScreenItemNum : smallScreenItemNum;
   return new Array(rowNum).fill(0).map((elem, idx) => ({
     anchor: 'bottom',
     data: data
@@ -82,7 +86,7 @@ export const getBottomAxis = function ({
 export const getLeftAxis = function (yAxisLabel) {
   return {
     legend: yAxisLabel,
-    legendOffset: -(chartMargin.left * 0.9),
+    legendOffset: -(defaultChartMargin.left * 0.9),
     legendPosition: 'end'
   };
 };

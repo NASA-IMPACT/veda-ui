@@ -5,14 +5,18 @@ import { csv, json } from 'd3-fetch';
 import { ResponsiveLine } from '@nivo/line';
 import { useMediaQuery } from '$utils/use-media-query';
 import {
-  chartMargin,
+  defaultChartMargin,
   chartTheme,
   fileExtensionRegex,
   getLegendConfig,
   getFormattedData,
   getBottomAxis,
   getColors,
-  getLeftAxis
+  getLeftAxis,
+  smallScreenItemNum,
+  largeScreenItemNum,
+  chartBottomPadding,
+  itemHeight
 } from './utils';
 import TooltipComponent from './tooltip';
 import Title from './title-desc';
@@ -39,6 +43,7 @@ const LineChart = ({
   const [data, setData] = useState([]);
   // Nivo's auto scale for negative value only doesn't seem to work.
   // This is a temporary work around.
+  const [chartMargin, setChartMargin] = useState(defaultChartMargin);
   const [yScale, setYScale] = useState({ min: 0, max: 0 });
   const newDataPath = dataPath.split('?')[0];
   const extension = fileExtensionRegex.exec(newDataPath)[1];
@@ -65,6 +70,22 @@ const LineChart = ({
     };
     getData();
   }, [dataPath, idKey, xKey, yKey, extension]);
+
+  useEffect(() => {
+    isMediumUp
+      ? setChartMargin({
+          ...defaultChartMargin,
+          bottom:
+            Math.ceil(data.length / largeScreenItemNum) * itemHeight +
+            chartBottomPadding
+        })
+      : setChartMargin({
+          ...defaultChartMargin,
+          bottom:
+            Math.ceil(data.length / smallScreenItemNum) * itemHeight +
+            chartBottomPadding
+        });
+  }, [isMediumUp, data.length]);
 
   return (
     <ChartWrapper>
