@@ -287,7 +287,8 @@ function Scrollytelling(props) {
     // setup the instance, pass callback functions
     scroller
       .setup({
-        step: '[data-step]'
+        step: '[data-step]',
+        offset: 0.8
         // ,debug: true
       })
       .onStepEnter((response) => {
