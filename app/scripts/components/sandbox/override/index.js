@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import Constrainer from '../../../styles/constrainer';
 import { PageMainContent } from '../../../styles/page';
-import ComponentOverride from '$components/common/component-override';
+import { ComponentOverride } from '$components/common/page-overrides';
 import { VarProse } from '$styles/variable-components';
 
 const Wrapper = styled.div`
@@ -15,7 +15,11 @@ function SandboxOverride() {
     <PageMainContent>
       <Constrainer>
         <Wrapper>
-          <ComponentOverride with='sandbox-override'>
+          <ComponentOverride
+            with='sandbox-override'
+            from='sandbox'
+            prop2='yet another prop'
+          >
             <VarProse>
               <p>
                 If you are seeing this message, the page override for{' '}
