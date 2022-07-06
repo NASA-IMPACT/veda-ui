@@ -91,15 +91,14 @@ export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
   let minY = 0;
   let maxY = 0;
 
-  let dataToSort = [...data]
-    .sort((a, b) => {
-      // sort by alphabetical order (y axis)
-      return a[yKey].toLowerCase().localeCompare(b[yKey].toLowerCase());
-    })
-    .sort((a, b) => {
-      // sort by date (x axis)
-      return new Date(a[xKey]) - new Date(b[xKey]);
-    });
+  let dataToSort = [...data].sort((a, b) => {
+    // sort by date (x axis)
+    const dateGap = new Date(a[xKey]) - new Date(b[xKey]);
+    return dateGap
+      ? // sort by id key when date is the same
+        dateGap
+      : a[idKey].localeCompare(b[idKey], { sensitivity: 'base' });
+  });
 
   const dataWId = dataToSort.reduce((acc, curr) => {
     if (!acc.find((e) => e.id === curr[idKey])) {
