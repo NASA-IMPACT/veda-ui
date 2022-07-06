@@ -45,7 +45,8 @@ The system will watch files and execute tasks whenever one of them changes.
 The site will automatically refresh since it is bundled with livereload.
 
 ### Development doc
-Refer to [DEVELOPMENT](https://github.com/NASA-IMPACT/delta-ui/blob/main/DEVELOPMENT.md) docs to read about architecture.
+- Refer to [DEVELOPMENT](./DEVELOPMENT.md) docs to read about architecture.
+- Refer to [PAGE_OVERRIDES](./PAGE_OVERRIDES.md) for information about the component/content overriding feature.
 
 # Deployment
 To prepare the app for deployment run:
