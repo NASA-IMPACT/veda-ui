@@ -7,7 +7,7 @@ const ChartTitle = (customProps) => (nivoProps) => {
   const { title, desc } = customProps;
   return (
     <>
-      <title> {title}</title>
+      <title>{title}</title>
       <desc>{desc}</desc>
     </>
   );
