@@ -1,13 +1,13 @@
 import React from 'react';
-import { config } from 'delta/thematics';
+import { getOverride } from 'delta/thematics';
 
 import { LayoutProps } from '$components/common/layout-root';
 import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
 import { FoldProse } from '$components/common/fold';
-import MdxContent from '$components/common/mdx-content';
+import { ContentOverride } from '$components/common/page-overrides';
 
-const aboutContent = config.pageOverrides?.aboutContent;
+const aboutContent = getOverride('aboutContent');
 
 function RootAbout() {
   return (
@@ -19,16 +19,14 @@ function RootAbout() {
           aboutContent?.data.description || 'Lorem ipsum dolor sit amet.'
         }
       />
-      {aboutContent ? (
-        <MdxContent loader={aboutContent.content} />
-      ) : (
+      <ContentOverride with='aboutContent'>
         <FoldProse>
           <p>
             This is the root about. Here you can find info about the whole app,
             with its many thematic areas.
           </p>
         </FoldProse>
-      )}
+      </ContentOverride>
     </PageMainContent>
   );
 }

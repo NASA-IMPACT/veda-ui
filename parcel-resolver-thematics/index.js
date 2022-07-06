@@ -203,13 +203,15 @@ module.exports = new Resolver({
       }));
 
       const moduleCode = `
-        export const config = {
+        const config = {
           pageOverrides: ${await loadPageOverridesConfig(
             result.pageOverrides,
             root,
             logger
           )}
         };
+
+        export const getOverride = (key) => config.pageOverrides[key];
 
         export const thematics = ${generateMdxDataObject(thematicsImportData)};
         export const datasets = ${generateMdxDataObject(datasetsImportData)};

@@ -215,13 +215,9 @@ declare module 'delta/thematics' {
   declare const _default: DeltaThematicListItem[];
   export default _default;
 
+  export type PageOverrides = 'aboutContent' | 'sandbox-override';
   /**
    * Configuration export for specific overrides.
    */
-  export const config: {
-    pageOverrides: {
-      aboutContent?: DeltaDatum<any>;
-      'sandbox-override'?: DeltaDatum<any>;
-    }
-  };
+  export const getOverride: (key: PageOverrides) => DeltaDatum<any> | undefined;
 }
