@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { listReset, media } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { Overline } from '@devseed-ui/typography';
 
@@ -29,6 +28,8 @@ import {
 import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
+
+import Carousel from './carousel';
 
 const StatsList = styled.dl`
   display: grid;
@@ -66,38 +67,24 @@ const StatsListValue = styled(VarHeading).attrs({
   grid-row: 2;
 `;
 
-const FeaturedSlider = styled.div`
-  grid-column: 1 / -1;
-  grid-row: 2;
-`;
-
-const FeaturedList = styled.ol`
-  ${listReset()}
-
-  li > * {
-    min-height: 16rem;
-
-    ${media.smallUp`
-      min-height: 20rem;
-    `}
-
-    ${media.mediumUp`
-      min-height: 20rem;
-    `}
-
-    ${media.largeUp`
-      min-height: 24rem;
-    `}
-
-    ${media.xlargeUp`
-      min-height: 28rem;
-    `}
-  }
-
-  li:not(:first-child) {
-    display: none;
-  }
-`;
+function getDiscoveryRelatedLinks(arr, thematic) {
+  return arr.map((d) => {
+    return {
+      ...d,
+      linkTo: `${thematicDiscoveriesPath(thematic)}/${d.id}`,
+      parentTo: thematicDiscoveriesPath(thematic)
+    };
+  });
+}
+function getDatasetRelatedLinks(arr, thematic) {
+  return arr.map((d) => {
+    return {
+      ...d,
+      linkTo: `${thematicDatasetsPath(thematic)}/${d.id}`,
+      parentTo: thematicDatasetsPath(thematic)
+    };
+  });
+}
 
 function Home() {
   const thematic = useThematicArea();
@@ -107,9 +94,23 @@ function Home() {
     (t) => t.id !== thematic.data.id
   );
 
-  const featuredDatasets = thematic.data.datasets.filter((d) => {
-    return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
-  });
+  const featuredDatasets = getDatasetRelatedLinks(
+    thematic.data.datasets.filter((d) => {
+      return d.featuredOn?.find(
+        (thematicId) => thematicId === thematic.data.id
+      );
+    }),
+    thematic
+  );
+
+  const featuredDiscoveries = getDiscoveryRelatedLinks(
+    thematic.data.discoveries.filter((d) => {
+      return d.featuredOn?.find(
+        (thematicId) => thematicId === thematic.data.id
+      );
+    }),
+    thematic
+  );
 
   // TO DO: Ideally, these featured contents should be in carousel.
   // but for now, we are showing only one item.
@@ -118,23 +119,22 @@ function Home() {
     ? featuredDatasets
     : // When there is no dataset for this thematic area at all, just return an empty array
     thematic.data.datasets.length
-    ? [[...thematic.data.datasets].sort()[0]]
+    ? getDatasetRelatedLinks([[...thematic.data.datasets].sort()[0]], thematic)
     : [];
 
-  const featuredDiscoveries = thematic.data.discoveries.filter((d) => {
-    return d.featuredOn?.find((thematicId) => thematicId === thematic.data.id);
-  });
-
-  // When there are no featured contents, stub with the latest one
+  // When there are no featured discoveries, stub with the latest one
   const mainDiscoveries = featuredDiscoveries.length
     ? featuredDiscoveries
     : // When there is no discovery for this thematic area at all, just return an empty array
     thematic.data.discoveries.length
-    ? [
-        [...thematic.data.discoveries].sort(
-          (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
-        )[0]
-      ]
+    ? getDiscoveryRelatedLinks(
+        [
+          [...thematic.data.discoveries].sort(
+            (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
+          )[0]
+        ],
+        thematic
+      )
     : [];
 
   const mainDatasetCopy = featuredDatasets.length
@@ -223,26 +223,7 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <FeaturedSlider>
-            <FeaturedList>
-              {mainDiscoveries.map((t) => (
-                <li key={t.id}>
-                  <Card
-                    cardType='featured'
-                    linkLabel='View more'
-                    linkTo={`${thematicDiscoveriesPath(thematic)}/${t.id}`}
-                    title={t.name}
-                    parentName='Discovery'
-                    parentTo={thematicDiscoveriesPath(thematic)}
-                    description={t.description}
-                    date={t.pubDate ? new Date(t.pubDate) : null}
-                    imgSrc={t.media.src}
-                    imgAlt={t.media.alt}
-                  />
-                </li>
-              ))}
-            </FeaturedList>
-          </FeaturedSlider>
+          <Carousel items={mainDiscoveries} />
         </Fold>
       )}
 
@@ -259,25 +240,7 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <FeaturedSlider>
-            <FeaturedList>
-              {mainDatasets.map((t) => (
-                <li key={t.id}>
-                  <Card
-                    cardType='featured'
-                    linkLabel='View more'
-                    linkTo={`${thematicDatasetsPath(thematic)}/${t.id}`}
-                    title={t.name}
-                    parentName='Dataset'
-                    parentTo={thematicDatasetsPath(thematic)}
-                    description={t.description}
-                    imgSrc={t.media.src}
-                    imgAlt={t.media.alt}
-                  />
-                </li>
-              ))}
-            </FeaturedList>
-          </FeaturedSlider>
+          <Carousel items={mainDatasets} />
         </Fold>
       )}
 
