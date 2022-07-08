@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 import { Link, NavLink, useMatch } from 'react-router-dom';
@@ -20,6 +20,7 @@ import { Overline } from '@devseed-ui/typography';
 import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
+import useScrollDirection from '$utils/use-scroll-direction';
 import { variableGlsp } from '$styles/variable-utils';
 import {
   datasetExplorePath,
@@ -27,9 +28,11 @@ import {
   datasetUsagePath
 } from '$utils/routes';
 
+// add scroll direction detection, and adjust top position of pageLocalSelf, also add animation
+// ex/ scrolling up: top: 60px; scrolling down: top: 0
+// do the similar thing to global nav
 const PageLocalNavSelf = styled.nav`
   position: sticky;
-  top: 0;
   z-index: 100;
   display: flex;
   flex-flow: row nowrap;
@@ -184,9 +187,17 @@ function PageLocalNav(props) {
   const datasetPageMatch = useMatch(pagePath);
   const currentPage = datasetPageMatch ? datasetPageMatch.params.page : '';
 
+  const [scrollDir, setScrollDir] = useScrollDirection();
+  const [navTopPosition, setNavTopPosition] = useState(0);
+
+  useEffect(() => {
+    if (scrollDir === 'up') setNavTopPosition('60px');
+    else if (scrollDir === 'down') setNavTopPosition('0');
+  }, [scrollDir]);
+
   const currentItem = items.find((o) => o.id === currentId);
   return (
-    <PageLocalNavSelf>
+    <PageLocalNavSelf style={{ top: navTopPosition }}>
       <LocalBreadcrumb>
         <li>
           <SectionParentLink to={parentTo} aria-label={parentLabel}>

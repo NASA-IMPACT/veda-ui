@@ -24,6 +24,7 @@ import deltaThematics from 'delta/thematics';
 import NasaLogo from './nasa-logo';
 import { variableGlsp } from '$styles/variable-utils';
 import { useThematicArea } from '$utils/thematics';
+import useScrollDirection from '$utils/use-scroll-direction';
 import {
   thematicAboutPath,
   thematicDatasetsPath,
@@ -362,16 +363,25 @@ function PageHeader() {
 
     // Listener for the toggle button.
     if (isLargeDown) {
-      const handler = () => setBtnOffset(Math.min(window.pageYOffset, 60));
-      window.addEventListener('scroll', handler);
-      return () => window.removeEventListener('scroll', handler);
+      // const handler = () => setBtnOffset(Math.min(window.pageYOffset, 60));
+      // window.addEventListener('scroll', handler);
+      // return () => window.removeEventListener('scroll', handler);
     }
   }, [isLargeDown]);
 
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
 
+  const [scrollDir, setScrollDir] = useScrollDirection();
+  const [navTopStyle, setNavTopStyle] = useState({ position: 'relative' });
+
+  useEffect(() => {
+    if (scrollDir === 'up')
+      setNavTopStyle({ position: 'sticky', top: '0', zIndex: '100000' });
+    else if (scrollDir === 'down') setNavTopStyle({ position: 'relative' });
+  }, [scrollDir]);
+
   return (
-    <PageHeaderSelf>
+    <PageHeaderSelf style={navTopStyle}>
       {globalNavRevealed && isLargeDown && <UnscrollableBody />}
       <Brand>
         <Link
