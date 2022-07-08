@@ -64,12 +64,12 @@ const SelectorButton = styled(Button)`
   }
 `;
 
-export type Projection = Exclude<
+export type ProjectionOptions = Exclude<
   mapboxgl.MapboxOptions['projection'],
   undefined
 >;
 
-export type ProjectionName = Projection['name'];
+export type ProjectionName = ProjectionOptions['name'];
 
 export const projectionsList: {
   id: ProjectionName;
@@ -116,7 +116,7 @@ const projectionConicParallel = [
 ];
 
 // Default value for the projection state.
-export const projectionDefault: Projection = {
+export const projectionDefault: ProjectionOptions = {
   name: 'mercator'
 };
 
@@ -150,8 +150,8 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
 
   return (
     <DropdownWithScroll
-      triggerElement={({ active, ...bag }) => (
-        <SelectorButton active={active as boolean} {...bag}>
+      triggerElement={(bag) => (
+        <SelectorButton {...bag}>
           <CollecticonGlobe meaningful title='Select projection to use' />
         </SelectorButton>
       )}
@@ -252,15 +252,15 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
 export default ProjectionSelector;
 
 type ProjectionSelectorProps = {
-  onChange: (projection: Projection) => void;
-  projection: Projection;
+  onChange: (projection: ProjectionOptions) => void;
+  projection: ProjectionOptions;
 };
 
 export function validateProjectionBlockProps({
   name,
   center,
   parallels
-}: Partial<Projection>) {
+}: Partial<ProjectionOptions>) {
   // Projections
   const projectionErrors: string[] = [];
   if (name) {

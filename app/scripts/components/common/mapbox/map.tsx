@@ -8,7 +8,7 @@ import { round } from '$utils/format';
 import MapboxStyleOverride from './mapbox-style-override';
 import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
-import ProjectionSelector, { Projection } from './projection-selector';
+import ProjectionSelector, { ProjectionOptions } from './projection-selector';
 import { useMapboxControl } from './use-mapbox-control';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
@@ -33,8 +33,8 @@ interface SimpleMapProps {
   withGeocoder?: boolean;
   aoi?: AoiState;
   onAoiChange?: AoiChangeListenerOverload;
-  projection?: Projection;
-  onProjectionChange?: (projection: Projection) => void;
+  projection?: ProjectionOptions;
+  onProjectionChange?: (projection: ProjectionOptions) => void;
 }
 
 export function SimpleMap(props: SimpleMapProps): JSX.Element {

@@ -6,7 +6,7 @@ import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
 import { validateRangeNum } from '$utils/utils';
 import { HintedError } from '$utils/hinted-error';
 import {
-  Projection,
+  ProjectionOptions,
   projectionDefault,
   ProjectionName,
   validateProjectionBlockProps
@@ -95,8 +95,8 @@ interface MapBlockProps extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
   zoom?: number;
   compareLabel?: string;
   projectionName?: ProjectionName;
-  projectionCenter?: Projection['center'];
-  projectionParallels?: Projection['parallels'];
+  projectionCenter?: ProjectionOptions['center'];
+  projectionParallels?: ProjectionOptions['parallels'];
   allowProjectionChange?: boolean;
 }
 

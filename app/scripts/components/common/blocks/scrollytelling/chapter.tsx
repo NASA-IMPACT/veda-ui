@@ -8,7 +8,7 @@ import { ContentBlockProse } from '$styles/content-block';
 import { utcString2userTzDate } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
 import {
-  Projection,
+  ProjectionOptions,
   ProjectionName,
   validateProjectionBlockProps
 } from '$components/common/mapbox/projection-selector';
@@ -21,8 +21,8 @@ export interface ChapterProps {
   datetime?: string;
   showBaseMap?: boolean;
   projectionName?: ProjectionName;
-  projectionCenter?: Projection['center'];
-  projectionParallels?: Projection['parallels'];
+  projectionCenter?: ProjectionOptions['center'];
+  projectionParallels?: ProjectionOptions['parallels'];
   children: any;
 }
 

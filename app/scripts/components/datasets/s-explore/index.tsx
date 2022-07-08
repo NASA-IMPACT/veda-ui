@@ -53,7 +53,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { PanelDateWidget } from './panel-date-widget';
 import {
-  Projection,
+  ProjectionOptions,
   projectionDefault
 } from '$components/common/mapbox/projection-selector';
 
@@ -272,7 +272,7 @@ function DatasetsExplore() {
     }
   });
 
-  const [mapProjection, setMapProjection] = useQsState.memo<Projection>({
+  const [mapProjection, setMapProjection] = useQsState.memo<ProjectionOptions>({
     key: 'projection',
     default: projectionDefault,
     hydrator: (v) => {
@@ -282,7 +282,7 @@ function DatasetsExplore() {
       const parallels = rawParallels
         ? rawParallels.split(',').map(Number)
         : undefined;
-      return { name, center, parallels } as Projection;
+      return { name, center, parallels } as ProjectionOptions;
     },
     dehydrator: (v) => {
       if (!v) return '';

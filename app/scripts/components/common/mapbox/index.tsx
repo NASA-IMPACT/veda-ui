@@ -36,7 +36,7 @@ import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
-import { Projection } from './projection-selector';
+import { ProjectionOptions } from './projection-selector';
 
 const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
   color: 'white'
@@ -450,8 +450,8 @@ export interface MapboxMapProps {
   children?: React.ReactNode;
   aoi?: AoiState;
   onAoiChange?: AoiChangeListenerOverload,
-  projection?: Projection,
-  onProjectionChange?: (projection: Projection) => void
+  projection?: ProjectionOptions,
+  onProjectionChange?: (projection: ProjectionOptions) => void
 }
 
 export type MapboxMapRef = {
