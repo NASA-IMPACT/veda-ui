@@ -167,3 +167,21 @@ export function LocalWidget() {
   <LocalWidget />
 </footer>
 ```
+
+## Manually testing the overrides
+To manually check that the override you just created works as expected, modify the `mock/delta.config.js` file and add the override key and file path under `pageOverrides`:
+
+Example:
+```js
+  pageOverrides: {
+    yourOverrideKey: '<file path>.mdx'
+  }
+```
+
+Then create the MDX file with the new content:
+
+```jsx
+<p>This is the new <a href='/root'>content</a></p>
+```
+
+💡 To ensure all settings are reloaded stop your development server and restart cleaning the cache: `yarn clean && yarn serve`
