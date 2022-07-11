@@ -1,30 +1,17 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { Resolver } = require('@parcel/plugin');
 const { default: ThrowableDiagnostic } = require('@parcel/diagnostic');
 const path = require('path');
 const fs = require('fs-extra');
 const fg = require('fast-glob');
-const matter = require('gray-matter');
 
-function loadDeltaConfig() {
-  try {
-    const configPath = fs.realpathSync(process.env.DELTA_CONFIG_PATH);
-    return {
-      configPath,
-      result: require(configPath),
-      root: path.dirname(configPath)
-    };
-  } catch (error) {
-    const configPath = fs.realpathSync(
-      path.join(__dirname, '../mock/delta.config.js')
-    );
-    return {
-      isDev: true,
-      configPath: configPath,
-      result: require(configPath),
-      root: path.dirname(configPath)
-    };
-  }
-}
+const stringifyYmlWithFns = require('./stringify-yml-func');
+const { loadDeltaConfig } = require('./config');
+const { getFrontmatterData } = require('./frontmatter');
+const {
+  validateContentTypeId,
+  validateDatasetLayerId
+} = require('./validation');
 
 async function loadOptionalContent(logger, root, globPath, type) {
   try {
@@ -32,37 +19,8 @@ async function loadOptionalContent(logger, root, globPath, type) {
     const paths = await fg(loadPath);
     const data = await Promise.all(
       paths.map(async (p) => {
-        const content = await fs.readFile(p, 'utf-8');
-        let frontMatterData;
-        try {
-          // Pass an empty options object to avoid data being cached which is a
-          // problem if there is an error. When an error happens the data is
-          // cached as empty and no error are thrown the second time.
-          frontMatterData = matter(content, {}).data;
-        } catch (error) {
-          logger.error({
-            message: error.message,
-            codeFrames: [
-              {
-                filePath: p,
-                code: error.mark.buffer,
-                codeHighlights: [
-                  {
-                    start: {
-                      line: error.mark.line,
-                      column: error.mark.column
-                    },
-                    end: {
-                      line: error.mark.line,
-                      column: error.mark.column
-                    }
-                  }
-                ]
-              }
-            ]
-          });
-          return null;
-        }
+        const frontMatterData = await getFrontmatterData(p, logger);
+        if (!frontMatterData) return null;
 
         if (!frontMatterData.id) {
           logger.error({
@@ -94,136 +52,81 @@ async function loadOptionalContent(logger, root, globPath, type) {
   }
 }
 
-/**
- * Stringify the given object so that it can be used in the delta/thematics
- * module.
- *
- * We need to support functions in the yaml frontmatter so that some of the
- * values can be dynamically calculated. This would for example be:
- *
- *   id: some-id
- *   name: Some name
- *   datetime: (date) => date - 5 years // pseudo code
- *
- * Although evaluating functions could be supported by the yaml parser the
- * parcel module resolver must return the module contents as a string and
- * converting javascript back to source is complicated. The solution is to not
- * touch the function code, but instead remove the quotes so it is no longer a
- * string but javascript code. As this is exported as code it will be parsed
- * when the module is imported.
- *
- * This is done in a couple of steps:
- * 1) To define that the text in the yaml is javascript the user has to add `::js`
- *   id: some-id
- *   name: Some name
- *   datetime: ::js (date) => date - 5 years
- *
- * 2) When we're stringifying the frontmatter to json, if we're dealing with a
- *    function we add another ::js at the end. The result is:
- *   '{ "id": "some-id", "name": "Some name", "datetime": "::js (date) => date - 5 years ::js" }'
- *
- * 3) The last step is to use the ::js guards to remove the quotes around the
- *    function. When the module exports this it will be valid javascript code.
- *
- * @param {obj} data The object to stringify.
- * @param {string} filePath The path of the file where the data comes from.
- * @returns string
- */
-function stringifyDataFns(data, filePath) {
-  const jsonVal = JSON.stringify(data, (k, v) => {
-    if (typeof v === 'string') {
-      if (v.match(/^(\r|\n\s)*::js/gim)) {
-        return `${v} ::js`;
-      }
-
-      // Handle file requires
-      if (v.startsWith('::file')) {
-        const p = v.replace(/^::file ?/, '');
-        // file path is relative from the mdx file. Make it relative to this
-        // module, so it works with the require.
-        const absResourcePath = path.resolve(path.dirname(filePath), p);
-        const relResourceFromModule = path.relative(__dirname, absResourcePath);
-        // Export as a js expression so that is picked up below.
-        return `::js require('${relResourceFromModule}') ::js`;
-      }
-    }
-    return v;
-  });
-
-  const regex = new RegExp('(" *::js)(?:(?!::js).)+(::js")', 'gm');
-  const matches = jsonVal.matchAll(regex);
-
-  // Stringified version of the string after all replacements.
-  let newVal = '';
-  // Index of the last match.
-  let index = 0;
-  for (const match of matches) {
-    // Anything before the match is left as is.
-    newVal += jsonVal.substring(index, match.index);
-    // Store the last index so we can keep the content from this match till the
-    // next match, during the next iteration.
-    index = match.index + match[0].length;
-    // Replace the ::js indicator and any new lines.
-    newVal += match[0]
-      .replaceAll(/("::js *| *::js")/gi, '')
-      .replaceAll('\\n', '\n');
-  }
-  // Add the rest from the last match.
-  newVal += jsonVal.substring(index);
-
-  return newVal;
-}
-
-function generateImports(data, paths) {
-  // {
-  //   id1: {
-  //     data: {},
-  //     content: () => MDX
-  //   },
-  //   id2: {
-  //     data: {},
-  //     content: () => MDX
-  //   }
-  // }
+// data = Array<{
+//   key: string,
+//   data: object,
+//   filePath: string
+// }>
+function generateMdxDataObject(data) {
   const imports = data
-    .map((o, i) =>
-      o.id
-        ? `'${o.id}': {
-          data: ${stringifyDataFns(o, paths[i])},
-          content: () => import('${path.relative(__dirname, paths[i])}')
+    .map(({ key, data, filePath }) =>
+      key
+        ? `'${key}': {
+          data: ${stringifyYmlWithFns(data, filePath)},
+          content: () => import('${path.relative(__dirname, filePath)}')
         }`
         : null
     )
     .filter(Boolean);
 
   return `{
-    ${imports.join(',\n')}
-  }`;
+      ${imports.join(',\n')}
+    }`;
 }
 
-function throwErrorOnDuplicate(list) {
-  let ids = {
-    // id: 'location'
-  };
+// Using all the "key: path" combinations under config.pageOverrides, load the
+// file at the given path, and return an object with a data object and a
+// content.
+// From something like (config.pageOverrides):
+// {
+//   aboutContent: './about.mdx',
+//   footerComp: './footer.mdx'
+// }
+// returns:
+// {
+//   aboutContent: {
+//     data: {}, // Any yaml frontmatter defined in the file
+//     content: () => MDX // A promise that resolves to the MDX content.
+//   },
+//   footerComp: {
+//     data: {},
+//     content: () => MDX
+//   }
+// }
+async function loadPageOverridesConfig(pageOverrides, root, logger) {
+  if (!pageOverrides) {
+    return '{}';
+  }
 
-  list.data.forEach((item, idx) => {
-    const id = item.id;
-    // No duplicate. Store path in case a duplicate is found.
-    if (!ids[id]) {
-      ids[id] = list.filePaths[idx];
-    } else {
-      throw new ThrowableDiagnostic({
-        diagnostic: {
-          message: `Duplicate id property found.`,
-          hints: [
-            'Check the `id` on the following files',
-            ids[id],
-            list.filePaths[idx]
-          ]
+  const data = await Promise.all(
+    Object.entries(pageOverrides).map(async ([key, mdxPath]) => {
+      const absolutePath = path.resolve(root, mdxPath);
+      try {
+        return {
+          key,
+          data: (await getFrontmatterData(absolutePath, logger)) || {},
+          filePath: absolutePath
+        };
+      } catch (error) {
+        // If the file does not exist, skip.
+        if (error.code === 'ENOENT') {
+          logger.warn({
+            message: `File for pageOverrides.${key} failed loading and was skipped.`,
+            hints: [
+              `Check that the path defined in delta.config.js is correct`,
+              `Path: ${mdxPath}`,
+              `Resolved to: ${absolutePath}`
+            ]
+          });
+          return null;
         }
-      });
-    }
-  });
+
+        throw error;
+      }
+    })
+  );
+
+  return generateMdxDataObject(data.filter(Boolean));
 }
 
 module.exports = new Resolver({
@@ -275,62 +178,45 @@ module.exports = new Resolver({
         'discoveries'
       );
 
-      throwErrorOnDuplicate(thematicsData);
-      throwErrorOnDuplicate(datasetsData);
-      throwErrorOnDuplicate(discoveriesData);
+      validateContentTypeId(thematicsData);
+      validateContentTypeId(datasetsData);
+      validateContentTypeId(discoveriesData);
 
       // Check the datasets for duplicate layer ids.
-      datasetsData.data.forEach((item, idx) => {
-        let ids = {
-          // id: true
-        };
-        item.layers?.forEach((layer, lIdx) => {
-          if (!layer.id) {
-            throw new ThrowableDiagnostic({
-              diagnostic: {
-                message: 'Missing dataset layer `id`',
-                hints: [
-                  `The layer (index: ${lIdx}) is missing the [id] property.`,
-                  `Check the dataset [${item.id}] at`,
-                  datasetsData.filePaths[idx]
-                ]
-              }
-            });
-          }
+      validateDatasetLayerId(datasetsData);
 
-          if (!ids[layer.id]) {
-            ids[layer.id] = true;
-          } else {
-            throw new ThrowableDiagnostic({
-              diagnostic: {
-                message: 'Duplicate dataset layer `id`',
-                hints: [
-                  `The layer id [${layer.id}] has been found multiple times.`,
-                  `Check the dataset [${item.id}] at`,
-                  datasetsData.filePaths[idx]
-                ]
-              }
-            });
-          }
-        });
-      });
-
-      // Figure out how to structure:
-      // - export thematics, datasets and discoveries with their content. (frontmatter and mdx)
-      // - Export list of thematics with datasets and discoveries (only frontmatter)
+      // Prepare data to be used by generateMdxDataObject();
+      const thematicsImportData = thematicsData.data.map((o, i) => ({
+        key: o.id,
+        data: o,
+        filePath: thematicsData.filePaths[i]
+      }));
+      const datasetsImportData = datasetsData.data.map((o, i) => ({
+        key: o.id,
+        data: o,
+        filePath: datasetsData.filePaths[i]
+      }));
+      const discoveriesImportData = discoveriesData.data.map((o, i) => ({
+        key: o.id,
+        data: o,
+        filePath: discoveriesData.filePaths[i]
+      }));
 
       const moduleCode = `
-        export const thematics = ${generateImports(
-          thematicsData.data,
-          thematicsData.filePaths
-        )};
-        export const datasets = ${generateImports(
-          datasetsData.data,
-          datasetsData.filePaths
-        )};
-        export const discoveries = ${generateImports(
-          discoveriesData.data,
-          discoveriesData.filePaths
+        const config = {
+          pageOverrides: ${await loadPageOverridesConfig(
+            result.pageOverrides,
+            root,
+            logger
+          )}
+        };
+
+        export const getOverride = (key) => config.pageOverrides[key];
+
+        export const thematics = ${generateMdxDataObject(thematicsImportData)};
+        export const datasets = ${generateMdxDataObject(datasetsImportData)};
+        export const discoveries = ${generateMdxDataObject(
+          discoveriesImportData
         )};
 
         // Create thematics list.

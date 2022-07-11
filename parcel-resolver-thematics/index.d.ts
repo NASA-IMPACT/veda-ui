@@ -162,19 +162,21 @@ declare module 'delta/thematics' {
   /**
    * Base structure for each of the data types in delta/thematics.
    */
-   interface DeltaDatum<T> {
-    [key: string]: {
-      /**
-       * Contains all the variables in the content's front matter.
-       */
-      data: T;
-      /**
-       * Promise to return the MDX content. Setup this way to allow dynamic
-       * module loading.
-       */
-      content: () => Promise<MDXModule>;
-    };
+   interface DeltaData<T> {
+    [key: string]: DeltaDatum<T>;
   }
+
+  interface DeltaDatum<T> {
+    /**
+    * Contains all the variables in the content's front matter.
+    */
+    data: T;
+    /**
+    * Promise to return the MDX content. Setup this way to allow dynamic
+    * module loading.
+    */
+    content: () => Promise<MDXModule>;
+ }
 
   /**
    * Named exports: datasets.
@@ -212,4 +214,10 @@ declare module 'delta/thematics' {
    */
   declare const _default: DeltaThematicListItem[];
   export default _default;
+
+  export type PageOverrides = 'aboutContent' | 'sandbox-override';
+  /**
+   * Configuration export for specific overrides.
+   */
+  export const getOverride: (key: PageOverrides) => DeltaDatum<any> | undefined;
 }

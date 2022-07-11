@@ -1,0 +1,42 @@
+import Block from '$components/common/blocks';
+import { ContentBlockProse } from '$styles/content-block';
+
+<Block>
+  <ContentBlockProse>
+    ## The component override
+
+    The `ComponentOverride` is used to replace certain parts of the UI.  
+    Through the `delta.config.js` the user can define a MDX file to load in a certain place.
+
+    For example, the following configuration:
+    ```
+    pageOverrides: {
+      aboutContent: './about.mdx',
+      'sandbox-override': './sandbox-override.mdx'
+    }
+    ```
+
+    states that the content fot the about page should come from the `./about.mdx` file, and that the content for this page should come from `./sandbox-override.mdx`.
+
+    _Try to comment the `sandbox-override` line and re-run the project to see what happens._
+
+    ### As a developer
+
+    As a developer the `ComponentOverride` should be implement as follows:
+
+    ```
+    <ComponentOverride with='{key}'>
+      <p>Some fallback content.</p>
+    </ComponentOverride>
+    ```
+
+    The value of `{key}` can be any of the `pageOverrides` keys, passed as a string. If an override is privided, it will be rendered. Otherwise the fallback is rendered.
+
+    To add a new override:
+    1) Implement the `ComponentOverride` in the appropriate place defining a key.
+    2) Add the key to the `delta/thematics` types (`parcel-resolver-thematics/index.d.ts`)
+
+    Any other prop passed to `ComponentOverride` are avilable under `props.`:  
+    **{JSON.stringify(props)}**
+  </ContentBlockProse>
+</Block>
