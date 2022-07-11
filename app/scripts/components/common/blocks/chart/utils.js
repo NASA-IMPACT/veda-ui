@@ -1,14 +1,19 @@
-import { interpolateViridis } from 'd3-scale-chromatic';
+import * as d3ScaleChromatic from 'd3-scale-chromatic';
 
 export const fileExtensionRegex = /(?:\.([^.]+))?$/;
+export const defaultChartMargin = { top: 50, right: 10, bottom: 100, left: 60 };
 
-export const chartMargin = { top: 50, right: 10, bottom: 100, left: 60 };
 export const itemHeight = 20;
-export const itemWidth = 120;
+export const itemWidth = 115;
+export const largeScreenItemNum = 5;
+export const smallScreenItemNum = 3;
+export const chartBottomPadding = 40;
 
-function getLegendData({ data, width, itemWidth }) {
+export function getLegendConfig({ data, isMediumUp, colors, colorScheme }) {
+  const width = isMediumUp ? itemWidth * 5 : itemWidth * 3;
   const rowNum = Math.ceil((itemWidth * data.length) / width);
-  const itemsPerRow = Math.floor(data.length / rowNum);
+
+  const itemsPerRow = isMediumUp ? largeScreenItemNum : smallScreenItemNum;
   return new Array(rowNum).fill(0).map((elem, idx) => ({
     anchor: 'bottom',
     data: data
@@ -19,7 +24,11 @@ function getLegendData({ data, width, itemWidth }) {
       .map((e, dataIdx) => ({
         id: e.id,
         label: e.id,
-        color: getColors(data.length)[dataIdx + itemsPerRow * idx]
+        color: colors
+          ? colors[dataIdx]
+          : getColors({ steps: data.length, colorScheme })[
+              dataIdx + itemsPerRow * idx
+            ]
       })),
     direction: 'row',
     translateX: 0,
@@ -33,10 +42,6 @@ function getLegendData({ data, width, itemWidth }) {
   }));
 }
 
-export const getLegendConfig = (data, isMediumUp) => {
-  return getLegendData({ data, itemWidth, width: isMediumUp ? 600 : 450 });
-};
-
 export const chartTheme = {
   grid: {
     line: {
@@ -46,16 +51,31 @@ export const chartTheme = {
   }
 };
 
-export const getColors = function (steps) {
+function getInterpoateFunction(colorScheme) {
+  const fnName = `interpolate${
+    colorScheme[0].toUpperCase() + colorScheme.slice(1)
+  }`;
+  return d3ScaleChromatic[fnName];
+}
+
+export const getColors = function ({ steps, colorScheme }) {
+  const colorFn = getInterpoateFunction(colorScheme);
   return new Array(steps).fill(0).map((e, idx) => {
-    return interpolateViridis(idx / steps);
+    return colorFn(idx / steps);
   });
 };
 
-export const getBottomAxis = function (dateFormat, isLargeScreen) {
+export const getBottomAxis = function ({
+  dateFormat,
+  isLargeScreen,
+  xAxisLabel
+}) {
   // nivo's limit for ticknum:  https://nivo.rocks/guides/axes/
   const tickNum = isLargeScreen ? 8 : 3;
   return {
+    legend: xAxisLabel,
+    legendOffset: 30,
+    legendPosition: 'end',
     tickValues: tickNum,
     tickSize: 5,
     tickPadding: 5,
@@ -63,10 +83,28 @@ export const getBottomAxis = function (dateFormat, isLargeScreen) {
   };
 };
 
+export const getLeftAxis = function (yAxisLabel) {
+  return {
+    legend: yAxisLabel,
+    legendOffset: -(defaultChartMargin.left * 0.9),
+    legendPosition: 'end'
+  };
+};
+
 export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
   let minY = 0;
   let maxY = 0;
-  const dataWId = data.reduce((acc, curr) => {
+
+  let dataToSort = [...data].sort((a, b) => {
+    // sort by date (x axis)
+    const dateGap = new Date(a[xKey]) - new Date(b[xKey]);
+    return dateGap
+      ? // sort by id key when date is the same
+        dateGap
+      : a[idKey].localeCompare(b[idKey], { sensitivity: 'base' });
+  });
+
+  const dataWId = dataToSort.reduce((acc, curr) => {
     if (!acc.find((e) => e.id === curr[idKey])) {
       const newEntry = {
         id: curr[idKey],
@@ -89,6 +127,7 @@ export const getFormattedData = function ({ data, idKey, xKey, yKey }) {
     maxY = Math.max(maxY, parseFloat(curr[yKey]));
     return acc;
   }, []);
+
   return {
     dataWId,
     minY,
