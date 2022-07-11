@@ -9,5 +9,17 @@
       "$utils/*": ["app/scripts/utils/*"],
       "$context/*": ["app/scripts/context/*"]
     }
-  }
+  },
+  "exclude": [
+    ".git",
+    ".app-cache",
+    ".parcel-cache",
+    "parcel-bundle-reports",
+    ".npm",
+    ".npm-tmp",
+    "dist",
+    "dist*",
+    "node_modules",
+    "**/node_modules/*",
+  ]
 }
