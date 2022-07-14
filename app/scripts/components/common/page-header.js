@@ -360,13 +360,6 @@ function PageHeader() {
   useEffect(() => {
     // Close global nav when media query changes.
     if (!isLargeDown) setGlobalNavRevealed(false);
-
-    // Listener for the toggle button.
-    if (isLargeDown) {
-      const handler = () => setBtnOffset(Math.min(window.pageYOffset, 60));
-      window.addEventListener('scroll', handler);
-      return () => window.removeEventListener('scroll', handler);
-    }
   }, [isLargeDown]);
 
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
@@ -385,6 +378,7 @@ function PageHeader() {
           top: topPosition,
           zIndex: '100000'
         });
+        setBtnOffset(topPosition);
       } else if (scrollDir === 'down') {
         const topPosition =
           scrolledAmount > 63 ? '-64px' : `${-scrolledAmount}px`;
@@ -393,6 +387,7 @@ function PageHeader() {
           top: topPosition,
           zIndex: '100000'
         });
+        setBtnOffset(topPosition);
       }
     }
   }, [scrollDir, scrolledAmount, isLargeDown]);
@@ -429,9 +424,9 @@ function PageHeader() {
                   onClick={() => setGlobalNavRevealed((v) => !v)}
                   active={globalNavRevealed}
                   style={{
-                    transform: `translateY(-${
+                    transform: `translateY(${
                       globalNavRevealed ? 0 : menuBtnOffset
-                    }px)`
+                    })`
                   }}
                 >
                   <CollecticonHamburgerMenu
