@@ -68,7 +68,7 @@ interface PanelDateWidgetProps {
   value: DropdownDatePickerProps['value'];
   onConfirm: DropdownDatePickerProps['onConfirm'];
   timeDensity?: TimeDensity;
-  availableDates?: Date[] | null;
+  availableDates?: Date[];
   isClearable?: boolean;
 }
 

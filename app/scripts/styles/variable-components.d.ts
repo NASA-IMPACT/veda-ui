@@ -1,7 +1,23 @@
-import { HeadingProps } from '@devseed-ui/typography';
+import { DefaultTheme, StyledComponent } from 'styled-components';
+import { HeadingProps, Heading, Lead, Prose } from '@devseed-ui/typography';
 
-function VarHeading(props: HeadingProps): JSX.Element;
+export const VarHeading: StyledComponent<
+  Heading,
+  DefaultTheme,
+  HeadingProps,
+  never
+>;
 
-function VarLead(props): JSX.Element;
+export const VarLead: StyledComponent<
+  Lead,
+  DefaultTheme,
+  HeadingProps,
+  never
+>;
 
-function VarProse(props): JSX.Element;
+export const VarProse: StyledComponent<
+  Prose,
+  DefaultTheme,
+  HeadingProps,
+  never
+>;

@@ -72,8 +72,24 @@ function formatUrl(id: string, thematic: ThematicData, parent: string) {
   }
 }
 
-function formatBlock({ id, name, description, date, thematic, media, parent }): FormatBlock {
-  return { id, name, description, date, ...formatUrl(id, thematic, parent), media, parent };
+function formatBlock({
+  id,
+  name,
+  description,
+  date,
+  thematic,
+  media,
+  parent
+}): FormatBlock {
+  return {
+    id,
+    name,
+    description,
+    date,
+    ...formatUrl(id, thematic, parent),
+    media,
+    parent
+  };
 }
 
 function formatContents(relatedData: Array<RelatedContentData>) {
@@ -120,27 +136,31 @@ export default function RelatedContent(
   return (
     <Block>
       <ContentBlockFigure>
-      <FoldHeader>
-        <FoldTitle> Related Content </FoldTitle>
-      </FoldHeader>
-      <TwoColumnCardList>
-        {relatedContents.map((t) => (
-          <li key={t.id}>
-            <Card
-              cardType='cover'
-              linkLabel={`View ${t.parent} ${t.name}`}
-              linkTo={t.link}
-              title={t.name}
-              date={t.parent === discoveryString? utcString2userTzDate(t.date) : null}
-              description={t.description}
-              parentName={t.parent}
-              parentTo={t.parentLink}
-              imgSrc={t.media.src}
-              imgAlt={t.media.alt}
-            />
-          </li>
-        ))}
-      </TwoColumnCardList>
+        <FoldHeader>
+          <FoldTitle>Related Content</FoldTitle>
+        </FoldHeader>
+        <TwoColumnCardList>
+          {relatedContents.map((t) => (
+            <li key={t.id}>
+              <Card
+                cardType='cover'
+                linkLabel={`View ${t.parent} ${t.name}`}
+                linkTo={t.link}
+                title={t.name}
+                date={
+                  t.parent === discoveryString
+                    ? utcString2userTzDate(t.date)
+                    : null
+                }
+                description={t.description}
+                parentName={t.parent}
+                parentTo={t.parentLink}
+                imgSrc={t.media.src}
+                imgAlt={t.media.alt}
+              />
+            </li>
+          ))}
+        </TwoColumnCardList>
       </ContentBlockFigure>
     </Block>
   );

@@ -336,14 +336,16 @@ function DatasetsExplore() {
   // Available dates for the baseLayer of the currently active layer.
   // null if there's no active layer or it hasn't loaded yet.
   const availableActiveLayerDates = useMemo(() => {
-    if (!activeLayer) return null;
-    return resolveLayerTemporalExtent(activeLayer.baseLayer.data);
+    if (!activeLayer) return undefined;
+    return resolveLayerTemporalExtent(activeLayer.baseLayer.data) || undefined;
   }, [activeLayer]);
   // Available dates for the compareLayer of the currently active layer.
   // null if there's no compare layer or it hasn't loaded yet.
   const availableActiveLayerCompareDates = useMemo(() => {
-    if (!activeLayer?.compareLayer) return null;
-    return resolveLayerTemporalExtent(activeLayer.compareLayer.data);
+    if (!activeLayer?.compareLayer) return undefined;
+    return (
+      resolveLayerTemporalExtent(activeLayer.compareLayer.data) || undefined
+    );
   }, [activeLayer]);
 
   // On layer change, if there's no compare layer, unset the date.
