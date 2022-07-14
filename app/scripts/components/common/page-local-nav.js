@@ -20,6 +20,7 @@ import { Overline } from '@devseed-ui/typography';
 import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
+import { useMediaQuery } from '$utils/use-media-query';
 import useScrollDirection from '$utils/use-scroll-direction';
 import { variableGlsp } from '$styles/variable-utils';
 import {
@@ -187,13 +188,24 @@ function PageLocalNav(props) {
   const datasetPageMatch = useMatch(pagePath);
   const currentPage = datasetPageMatch ? datasetPageMatch.params.page : '';
 
-  const [scrollDir, setScrollDir] = useScrollDirection();
+  const [scrollDir, scrolledAmount] = useScrollDirection();
+  const { isLargeDown } = useMediaQuery();
   const [navTopPosition, setNavTopPosition] = useState(0);
 
   useEffect(() => {
-    if (scrollDir === 'up') setNavTopPosition('60px');
-    else if (scrollDir === 'down') setNavTopPosition('0');
-  }, [scrollDir]);
+    if (isLargeDown) {
+      if (scrollDir === 'up') {
+        // console.log(scrolledAmount);
+        const topPosition =
+          scrolledAmount > 63 ? '64px' : `${scrolledAmount}px`;
+        setNavTopPosition(topPosition);
+      } else if (scrollDir === 'down') {
+        const topPosition =
+          scrolledAmount > 63 ? '0' : `${64 - scrolledAmount}px`;
+        setNavTopPosition(topPosition);
+      }
+    }
+  }, [scrollDir, scrolledAmount, isLargeDown]);
 
   const currentItem = items.find((o) => o.id === currentId);
   return (
