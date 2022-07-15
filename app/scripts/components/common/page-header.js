@@ -339,7 +339,7 @@ const ThemeToggle = styled(GlobalMenuLink)`
 function PageHeader() {
   const thematic = useThematicArea();
 
-  const { isLargeDown } = useMediaQuery();
+  const { isLargeDown, isMediumDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
   // The menu toggle button sits inside a panel with position fixed, therefore
@@ -368,29 +368,27 @@ function PageHeader() {
   const [navTopStyle, setNavTopStyle] = useState({ position: 'relative' });
 
   useEffect(() => {
-    if (isLargeDown) {
-      if (scrollDir === 'up') {
-        // console.log(scrolledAmount);
-        const topPosition =
-          scrolledAmount > 63 ? '0' : `-${64 - scrolledAmount}px`;
-        setNavTopStyle({
-          position: 'sticky',
-          top: topPosition,
-          zIndex: '100000'
-        });
-        setBtnOffset(topPosition);
-      } else if (scrollDir === 'down') {
-        const topPosition =
-          scrolledAmount > 63 ? '-64px' : `${-scrolledAmount}px`;
-        setNavTopStyle({
-          position: 'sticky',
-          top: topPosition,
-          zIndex: '100000'
-        });
-        setBtnOffset(topPosition);
-      }
+    const navHeight = isLargeDown ? (isMediumDown ? 64 : 76) : 88;
+    let topPosition;
+    if (scrollDir === 'up') {
+      // console.log(scrolledAmount);
+      topPosition =
+        scrolledAmount > navHeight - 1
+          ? '0'
+          : `-${navHeight - scrolledAmount}px`;
+    } else if (scrollDir === 'down') {
+      topPosition =
+        scrolledAmount > navHeight - 1
+          ? `-${navHeight}px`
+          : `${-scrolledAmount}px`;
     }
-  }, [scrollDir, scrolledAmount, isLargeDown]);
+    setNavTopStyle({
+      position: 'sticky',
+      top: topPosition,
+      zIndex: '100000'
+    });
+    if (isLargeDown) setBtnOffset(topPosition);
+  }, [scrollDir, scrolledAmount, isLargeDown, isMediumDown]);
 
   return (
     <PageHeaderSelf style={navTopStyle}>

@@ -189,23 +189,25 @@ function PageLocalNav(props) {
   const currentPage = datasetPageMatch ? datasetPageMatch.params.page : '';
 
   const [scrollDir, scrolledAmount] = useScrollDirection();
-  const { isLargeDown } = useMediaQuery();
+  const { isLargeDown, isMediumDown } = useMediaQuery();
   const [navTopPosition, setNavTopPosition] = useState(0);
 
   useEffect(() => {
-    if (isLargeDown) {
-      if (scrollDir === 'up') {
-        // console.log(scrolledAmount);
-        const topPosition =
-          scrolledAmount > 63 ? '64px' : `${scrolledAmount}px`;
-        setNavTopPosition(topPosition);
-      } else if (scrollDir === 'down') {
-        const topPosition =
-          scrolledAmount > 63 ? '0' : `${64 - scrolledAmount}px`;
-        setNavTopPosition(topPosition);
-      }
+    const navHeight = isLargeDown ? (isMediumDown ? 64 : 76) : 88;
+    let topPosition;
+    if (scrollDir === 'up') {
+      topPosition =
+        scrolledAmount > navHeight - 1
+          ? `${navHeight}px`
+          : `${scrolledAmount}px`;
+    } else if (scrollDir === 'down') {
+      topPosition =
+        scrolledAmount > navHeight - 1
+          ? '0'
+          : `${navHeight - scrolledAmount}px`;
     }
-  }, [scrollDir, scrolledAmount, isLargeDown]);
+    setNavTopPosition(topPosition);
+  }, [scrollDir, scrolledAmount, isLargeDown, isMediumDown]);
 
   const currentItem = items.find((o) => o.id === currentId);
   return (
