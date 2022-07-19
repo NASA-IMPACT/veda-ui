@@ -335,7 +335,7 @@ const ThemeToggle = styled(GlobalMenuLink)`
   }
 `;
 
-function PageHeader() {
+function PageHeader({ className }) {
   const thematic = useThematicArea();
 
   const { isLargeDown } = useMediaQuery();
@@ -371,7 +371,7 @@ function PageHeader() {
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
 
   return (
-    <PageHeaderSelf>
+    <PageHeaderSelf className={className}>
       {globalNavRevealed && isLargeDown && <UnscrollableBody />}
       <Brand>
         <Link

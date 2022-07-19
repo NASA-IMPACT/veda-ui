@@ -32,17 +32,18 @@ function DatasetsUsage() {
         title={`${dataset.data.name} Usage`}
         description={dataset.data.description}
         thumbnail={dataset.data.media?.src}
+        localNavProps={{
+          parentName: 'Dataset',
+          parentLabel: 'Datasets',
+          parentTo: thematicDatasetsPath(thematic),
+          items: thematic.data.datasets,
+          currentId: dataset.data.id,
+          localMenuCmp: (
+            <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
+          )
+        }}
       />
-      <PageLocalNav
-        parentName='Dataset'
-        parentLabel='Datasets'
-        parentTo={thematicDatasetsPath(thematic)}
-        items={thematic.data.datasets}
-        currentId={dataset.data.id}
-        localMenuCmp={
-          <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
-        }
-      />
+
       <PageMainContent>
         <PageHero title={`${dataset.data.name} Usage`} />
         <FoldProse>

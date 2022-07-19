@@ -25,14 +25,15 @@ function DiscoveriesSingle() {
         title={discovery.data.name}
         description={discovery.data.description}
         thumbnail={media?.src}
+        localNavProps={{
+          parentName: 'Discovery',
+          parentLabel: 'Discoveries',
+          parentTo: thematicDiscoveriesPath(thematic),
+          items: thematic.data.discoveries,
+          currentId: discovery.data.id
+        }}
       />
-      <PageLocalNav
-        parentName='Discovery'
-        parentLabel='Discoveries'
-        parentTo={thematicDiscoveriesPath(thematic)}
-        items={thematic.data.discoveries}
-        currentId={discovery.data.id}
-      />
+
       <PageMainContent>
         <article>
           <PageHero
