@@ -44,6 +44,7 @@ const PageHeaderSelf = styled.header`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  justify-content: space-between;
   gap: ${variableGlsp()};
   padding: ${variableGlsp(0.75, 1)};
   background: ${themeVal('color.primary')};
@@ -223,13 +224,11 @@ export const GlobalNavActions = styled.div`
 `;
 
 export const GlobalNavToggle = styled(Button)`
-  position: absolute;
-  top: ${variableGlsp()};
-  right: calc(100% + ${variableGlsp()});
+  z-index: 2000;
 
   ${media.largeUp`
-    top: ${variableGlsp(0.875)};
-  `}
+      top: ${variableGlsp(0.875)};
+    `}
 `;
 
 const GlobalNavBody = styled(ShadowScrollbar).attrs({
@@ -341,11 +340,6 @@ function PageHeader({ className }) {
   const { isLargeDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
-  // The menu toggle button sits inside a panel with position fixed, therefore
-  // on scrolling we need to compensate its position with some javascript. The
-  // useEffect will have a scroll listener that update the offset value until it
-  // reaches a threshold where the button is no longer on screen.
-  const [menuBtnOffset, setBtnOffset] = useState(0);
 
   const globalNavBodyRef = useRef(null);
   // Click listener for the whole global nav body so we can close it when clicking
@@ -359,13 +353,6 @@ function PageHeader({ className }) {
   useEffect(() => {
     // Close global nav when media query changes.
     if (!isLargeDown) setGlobalNavRevealed(false);
-
-    // Listener for the toggle button.
-    if (isLargeDown) {
-      const handler = () => setBtnOffset(Math.min(window.pageYOffset, 60));
-      window.addEventListener('scroll', handler);
-      return () => window.removeEventListener('scroll', handler);
-    }
   }, [isLargeDown]);
 
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
@@ -386,6 +373,21 @@ function PageHeader({ className }) {
           <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
         </Tip>
       </Brand>
+      {isLargeDown && (
+        <GlobalNavActions>
+          <GlobalNavToggle
+            variation='achromic-text'
+            fitting='skinny'
+            onClick={() => setGlobalNavRevealed((v) => !v)}
+            active={globalNavRevealed}
+          >
+            <CollecticonHamburgerMenu
+              title='Toggle global nav visibility'
+              meaningful
+            />
+          </GlobalNavToggle>
+        </GlobalNavActions>
+      )}
       <GlobalNav
         aria-label='Global'
         revealed={globalNavRevealed}
@@ -393,27 +395,11 @@ function PageHeader({ className }) {
       >
         <GlobalNavInner ref={globalNavBodyRef}>
           {isLargeDown && (
-            <GlobalNavHeader>
-              <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
-              <GlobalNavActions>
-                <GlobalNavToggle
-                  variation='achromic-text'
-                  fitting='skinny'
-                  onClick={() => setGlobalNavRevealed((v) => !v)}
-                  active={globalNavRevealed}
-                  style={{
-                    transform: `translateY(-${
-                      globalNavRevealed ? 0 : menuBtnOffset
-                    }px)`
-                  }}
-                >
-                  <CollecticonHamburgerMenu
-                    title='Toggle global nav visibility'
-                    meaningful
-                  />
-                </GlobalNavToggle>
-              </GlobalNavActions>
-            </GlobalNavHeader>
+            <>
+              <GlobalNavHeader>
+                <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
+              </GlobalNavHeader>
+            </>
           )}
           <GlobalNavBody as={isLargeDown ? undefined : 'div'}>
             <GlobalNavBodyInner>
