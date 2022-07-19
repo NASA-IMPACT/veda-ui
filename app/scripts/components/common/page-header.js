@@ -225,10 +225,6 @@ export const GlobalNavActions = styled.div`
 
 export const GlobalNavToggle = styled(Button)`
   z-index: 2000;
-
-  ${media.largeUp`
-      top: ${variableGlsp(0.875)};
-    `}
 `;
 
 const GlobalNavBody = styled(ShadowScrollbar).attrs({

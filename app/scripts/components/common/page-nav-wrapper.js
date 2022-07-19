@@ -27,6 +27,7 @@ const AnimatedPageHeader = styled(PageHeader)`
 
 function PageNavWrapper({ localNavProps }) {
   const scrollDir = useScrollDirection();
+
   return (
     <NavWrapper>
       <AnimatedPageHeader className={localNavProps ? scrollDir : ''} />
