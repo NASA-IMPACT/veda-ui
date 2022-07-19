@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 const throttle = require('lodash.throttle');
 
 const useScrollDirection = () => {
-  const [scrollDir, setScrollDir] = useState('up');
+  const initialScrollDir = window.pageYOffset === 0 ? 'up' : 'down';
+  const [scrollDir, setScrollDir] = useState(initialScrollDir);
 
   useEffect(() => {
     const threshold = 64;
