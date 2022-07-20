@@ -9,7 +9,7 @@ import {
   DropTitle
 } from '@devseed-ui/dropdown';
 import { Button, createButtonStyles } from '@devseed-ui/button';
-import { glsp } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { FormFieldsetHeader, FormLegend } from '@devseed-ui/form';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
@@ -34,6 +34,15 @@ const ProjectionOptions = styled.div`
   }
 `;
 
+const DropHeader = styled.div`
+  padding: ${glsp()};
+  box-shadow: inset 0 -1px 0 0 ${themeVal('color.base-100a')};
+`;
+
+const DropBody = styled.div`
+  padding: ${glsp(0, 0, 1, 0)};
+`;
+
 /**
  * Override Dropdown styles to play well with the shadow scrollbar.
  */
@@ -42,7 +51,6 @@ const DropdownWithScroll = styled(Dropdown)`
 
   ${DropTitle} {
     margin: 0;
-    padding: ${glsp(1, 1, 0, 1)};
   }
 
   ${DropMenu} {
@@ -158,93 +166,97 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
       direction='down'
       alignment='left'
     >
-      <DropTitle>Map projections</DropTitle>
-      <ShadowScrollbar scrollbarsProps={shadowScrollbarProps}>
-        <DropMenu>
-          {projectionsList.map((proj) => (
-            <li key={proj.id}>
-              <DropMenuItem
-                active={proj.id === projection.name}
-                href='#'
-                // data-dropdown='click.close'
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (proj.isConic) {
-                    onChange({
-                      ...conicValues[proj.id],
-                      name: proj.id
-                    });
-                  } else {
-                    onChange({ name: proj.id });
-                  }
-                }}
-              >
-                {proj.label}
-              </DropMenuItem>
-              {proj.isConic && proj.id === projection.name && (
-                <ProjectionOptions>
-                  <FormFieldsetCompact>
-                    <FormFieldsetHeader>
-                      <FormLegend>Center Lon/Lat</FormLegend>
-                    </FormFieldsetHeader>
-                    <FormFieldsetBodyColumns>
-                      {projectionConicCenter.map((field, idx) => (
-                        <StressedFormGroupInput
-                          key={field.id}
-                          hideHeader
-                          inputType='text'
-                          inputSize='small'
-                          id={`center-${field.id}`}
-                          name={`center-${field.id}`}
-                          label={field.label}
-                          value={conicValues[proj.id].center?.[idx]}
-                          validate={field.validate}
-                          onChange={(value) => {
-                            onChangeConicValues(
-                              Number(value),
-                              proj.id,
-                              'center',
-                              idx
-                            );
-                          }}
-                        />
-                      ))}
-                    </FormFieldsetBodyColumns>
-                  </FormFieldsetCompact>
-                  <FormFieldsetCompact>
-                    <FormFieldsetHeader>
-                      <FormLegend>S/N Parallels</FormLegend>
-                    </FormFieldsetHeader>
-                    <FormFieldsetBodyColumns>
-                      {projectionConicParallel.map((field, idx) => (
-                        <StressedFormGroupInput
-                          key={field.id}
-                          hideHeader
-                          inputType='text'
-                          inputSize='small'
-                          id={`parallels-${field.id}`}
-                          name={`parallels-${field.id}`}
-                          label={field.label}
-                          value={conicValues[proj.id].parallels?.[idx]}
-                          validate={field.validate}
-                          onChange={(value) => {
-                            onChangeConicValues(
-                              Number(value),
-                              proj.id,
-                              'parallels',
-                              idx
-                            );
-                          }}
-                        />
-                      ))}
-                    </FormFieldsetBodyColumns>
-                  </FormFieldsetCompact>
-                </ProjectionOptions>
-              )}
-            </li>
-          ))}
-        </DropMenu>
-      </ShadowScrollbar>
+      <DropHeader>
+        <DropTitle>Map projections</DropTitle>
+      </DropHeader>
+      <DropBody>
+        <ShadowScrollbar scrollbarsProps={shadowScrollbarProps}>
+          <DropMenu>
+            {projectionsList.map((proj) => (
+              <li key={proj.id}>
+                <DropMenuItem
+                  active={proj.id === projection.name}
+                  href='#'
+                  // data-dropdown='click.close'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (proj.isConic) {
+                      onChange({
+                        ...conicValues[proj.id],
+                        name: proj.id
+                      });
+                    } else {
+                      onChange({ name: proj.id });
+                    }
+                  }}
+                >
+                  {proj.label}
+                </DropMenuItem>
+                {proj.isConic && proj.id === projection.name && (
+                  <ProjectionOptions>
+                    <FormFieldsetCompact>
+                      <FormFieldsetHeader>
+                        <FormLegend>Center Lon/Lat</FormLegend>
+                      </FormFieldsetHeader>
+                      <FormFieldsetBodyColumns>
+                        {projectionConicCenter.map((field, idx) => (
+                          <StressedFormGroupInput
+                            key={field.id}
+                            hideHeader
+                            inputType='text'
+                            inputSize='small'
+                            id={`center-${field.id}`}
+                            name={`center-${field.id}`}
+                            label={field.label}
+                            value={conicValues[proj.id].center?.[idx]}
+                            validate={field.validate}
+                            onChange={(value) => {
+                              onChangeConicValues(
+                                Number(value),
+                                proj.id,
+                                'center',
+                                idx
+                              );
+                            }}
+                          />
+                        ))}
+                      </FormFieldsetBodyColumns>
+                    </FormFieldsetCompact>
+                    <FormFieldsetCompact>
+                      <FormFieldsetHeader>
+                        <FormLegend>S/N Parallels</FormLegend>
+                      </FormFieldsetHeader>
+                      <FormFieldsetBodyColumns>
+                        {projectionConicParallel.map((field, idx) => (
+                          <StressedFormGroupInput
+                            key={field.id}
+                            hideHeader
+                            inputType='text'
+                            inputSize='small'
+                            id={`parallels-${field.id}`}
+                            name={`parallels-${field.id}`}
+                            label={field.label}
+                            value={conicValues[proj.id].parallels?.[idx]}
+                            validate={field.validate}
+                            onChange={(value) => {
+                              onChangeConicValues(
+                                Number(value),
+                                proj.id,
+                                'parallels',
+                                idx
+                              );
+                            }}
+                          />
+                        ))}
+                      </FormFieldsetBodyColumns>
+                    </FormFieldsetCompact>
+                  </ProjectionOptions>
+                )}
+              </li>
+            ))}
+          </DropMenu>
+        </ShadowScrollbar>
+      </DropBody>
     </DropdownWithScroll>
   );
 }
