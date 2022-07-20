@@ -26,14 +26,21 @@ const AnimatedPageHeader = styled(PageHeader)`
 `;
 
 function PageNavWrapper({ localNavProps }) {
-  const scrollDir = useScrollDirection();
+  // Not all the pages have two navigations.
+  // We do not need to use scroll direction/animation if there is a single nav
+  const renderLocalNav = !!localNavProps;
+  const scrollDir = useScrollDirection(renderLocalNav);
 
   return (
     <NavWrapper>
-      <AnimatedPageHeader className={localNavProps ? scrollDir : ''} />
-      {localNavProps && <PageLocalNav {...localNavProps} />}
+      <AnimatedPageHeader className={renderLocalNav ? scrollDir : ''} />
+      {renderLocalNav && <PageLocalNav {...localNavProps} />}
     </NavWrapper>
   );
 }
+
+PageNavWrapper.propTypes = {
+  localNavProps: T.object
+};
 
 export default PageNavWrapper;
