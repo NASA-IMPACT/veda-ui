@@ -72,6 +72,9 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     const mbMap = new mapboxgl.Map({
       container: containerRef.current,
       attributionControl: false,
+      // Disable world copied to fix marker position errors when changing
+      // projections. More at https://github.com/NASA-IMPACT/delta-ui/pull/201#issuecomment-1185390161
+      renderWorldCopies: false,
       projection,
       ...mapOptions
     });
