@@ -63,7 +63,6 @@
     "gulp": "^4.0.2",
     "jest": "^27.5.1",
     "jest-css-modules-transform": "^4.3.0",
-    "lodash.throttle": "^4.1.1",
     "parcel": "^2.0.0",
     "parcel-resolver-thematics": "link:./parcel-resolver-thematics",
     "parcel-transformer-mdx": "link:./parcel-transformer-mdx",

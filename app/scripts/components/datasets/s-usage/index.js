@@ -3,9 +3,7 @@ import React from 'react';
 import { LayoutProps } from '$components/common/layout-root';
 import { resourceNotFound } from '$components/uhoh';
 import { PageMainContent } from '$styles/page';
-import PageLocalNav, {
-  DatasetsLocalMenu
-} from '$components/common/page-local-nav';
+import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import { FoldProse } from '$components/common/fold';
 import PageHero from '$components/common/page-hero';
 

@@ -6,7 +6,6 @@ import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
-import PageLocalNav from '$components/common/page-local-nav';
 import { resourceNotFound } from '$components/uhoh';
 
 import SandboxTypography from './typography';

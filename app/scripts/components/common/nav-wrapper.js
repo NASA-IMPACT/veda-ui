@@ -5,7 +5,6 @@ import PageHeader from './page-header';
 
 import PageLocalNav from '$components/common/page-local-nav';
 import useScrollDirection from '$utils/use-scroll-direction';
-import { render } from '@testing-library/react';
 
 const NavWrapper = styled.div`
   position: sticky;

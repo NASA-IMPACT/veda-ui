@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-const throttle = require('lodash.throttle');
 
 const useScrollDirection = () => {
 
@@ -29,17 +28,17 @@ const useScrollDirection = () => {
 
     const onScroll = () => {
       if (!ticking) {
+        // instead of setting a specific number of ms to wait (throttling), 
+        // pass it to the browser to be processed on the next frame, whenever that may be.
         window.requestAnimationFrame(updateScrollDir);
         ticking = true;
       }
     };
 
-    const throttledScroll = throttle(onScroll, 100);
-
-    window.addEventListener('scroll', throttledScroll);
+    window.addEventListener('scroll', onScroll);
 
     return () => {
-      window.removeEventListener('scroll', throttledScroll);
+      window.removeEventListener('scroll', onScroll);
     };
   }, []);
 

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import T from 'prop-types';
 import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -520,5 +521,9 @@ function PageHeader({ className }) {
     </PageHeaderSelf>
   );
 }
+
+PageHeader.propTypes = {
+  className: T.string
+};
 
 export default PageHeader;
