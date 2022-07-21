@@ -12,6 +12,7 @@
       dateTime='2018-03-01'
       isComparing={true}
       compareLabel='Overriding label'
+      projectionName='globe'
     />
     <Caption
       attrAuthor='somebody'
@@ -25,10 +26,12 @@
 <Block type='wide'>
   <Figure>
     <Map
-      datasetId='sandbox'
+      datasetId='no2'
       layerId='no2-monthly'
       dateTime='2020-03-01'
       compareDateTime='2018-03-01'
+      projectionName='equirectangular'
+      allowProjectionChange
       isComparing={true}
     />
     <Caption>

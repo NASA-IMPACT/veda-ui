@@ -36,6 +36,7 @@ import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
+import { ProjectionOptions } from './projection-selector';
 
 const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
   color: 'white'
@@ -113,7 +114,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     initialPosition,
     withGeocoder,
     aoi,
-    onAoiChange
+    onAoiChange,
+    projection,
+    onProjectionChange
   } = props;
   /* eslint-enable react/prop-types */
 
@@ -393,6 +396,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           withGeocoder={withGeocoder}
           aoi={aoi}
           onAoiChange={onAoiChange}
+          projection={projection}
+          onProjectionChange={onProjectionChange}
         />
         {shouldRenderCompare && (
           <SimpleMap
@@ -409,6 +414,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             withGeocoder={withGeocoder}
             aoi={aoi}
             onAoiChange={onAoiChange}
+            projection={projection}
+            onProjectionChange={onProjectionChange}
           />
         )}
       </MapsContainer>
@@ -442,7 +449,9 @@ export interface MapboxMapProps {
   withGeocoder?: boolean;
   children?: React.ReactNode;
   aoi?: AoiState;
-  onAoiChange?: AoiChangeListenerOverload
+  onAoiChange?: AoiChangeListenerOverload,
+  projection?: ProjectionOptions,
+  onProjectionChange?: (projection: ProjectionOptions) => void
 }
 
 export type MapboxMapRef = {

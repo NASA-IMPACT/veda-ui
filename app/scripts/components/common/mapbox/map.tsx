@@ -8,6 +8,8 @@ import { round } from '$utils/format';
 import MapboxStyleOverride from './mapbox-style-override';
 import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
+import ProjectionSelector, { ProjectionOptions } from './projection-selector';
+import { useMapboxControl } from './use-mapbox-control';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
@@ -31,6 +33,8 @@ interface SimpleMapProps {
   withGeocoder?: boolean;
   aoi?: AoiState;
   onAoiChange?: AoiChangeListenerOverload;
+  projection?: ProjectionOptions;
+  onProjectionChange?: (projection: ProjectionOptions) => void;
 }
 
 export function SimpleMap(props: SimpleMapProps): JSX.Element {
@@ -44,10 +48,23 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     withGeocoder,
     aoi,
     onAoiChange,
+    projection,
+    onProjectionChange,
     ...rest
   } = props;
 
   const theme = useTheme();
+
+  const mapProjectionControl = useMapboxControl(() => {
+    if (!projection || !onProjectionChange) return null;
+
+    return (
+      <ProjectionSelector
+        projection={projection}
+        onChange={onProjectionChange}
+      />
+    );
+  }, [projection, onProjectionChange]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -55,6 +72,10 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     const mbMap = new mapboxgl.Map({
       container: containerRef.current,
       attributionControl: false,
+      // Disable world copied to fix marker position errors when changing
+      // projections. More at https://github.com/NASA-IMPACT/delta-ui/pull/201#issuecomment-1185390161
+      renderWorldCopies: false,
+      projection,
       ...mapOptions
     });
 
@@ -62,6 +83,10 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
 
     // Include attribution.
     mbMap.addControl(new mapboxgl.AttributionControl(), 'bottom-left');
+
+    if (onProjectionChange && projection) {
+      mapRef.current?.addControl(mapProjectionControl, 'top-left');
+    }
 
     // Add Geocoder control
     if (withGeocoder) {
@@ -101,6 +126,11 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     // Only use the props on mount. We don't want to update the map if they
     // change.
   }, []);
+
+  useEffect(() => {
+    if (!mapRef.current || !projection) return;
+    mapRef.current.setProjection({...projection});
+  }, [mapRef, projection]);
 
   useEffect(() => {
     if (!mapRef.current || typeof onMoveEnd !== 'function') return;

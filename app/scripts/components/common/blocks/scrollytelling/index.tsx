@@ -301,6 +301,16 @@ function Scrollytelling(props) {
           center: chapter.center,
           zoom: chapter.zoom
         });
+
+        const projection = chapter.projectionName
+          ? {
+              name: chapter.projectionName,
+              center: chapter.projectionCenter,
+              parallels: chapter.projectionParallels
+            }
+          : undefined;
+
+        projection && mapRef.current?.setProjection(projection);
       });
 
     return () => {

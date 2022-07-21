@@ -7,6 +7,11 @@ import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlockProse } from '$styles/content-block';
 import { utcString2userTzDate } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
+import {
+  ProjectionOptions,
+  ProjectionName,
+  validateProjectionBlockProps
+} from '$components/common/mapbox/projection-selector';
 
 export interface ChapterProps {
   center: [number, number];
@@ -15,6 +20,9 @@ export interface ChapterProps {
   layerId: string;
   datetime?: string;
   showBaseMap?: boolean;
+  projectionName?: ProjectionName;
+  projectionCenter?: ProjectionOptions['center'];
+  projectionParallels?: ProjectionOptions['parallels'];
   children: any;
 }
 
@@ -68,7 +76,7 @@ export function validateChapter(chapter: ChapterProps, index) {
     return chapter.showBaseMap ? false : chapter[p] === undefined;
   });
   const missingMapProps = mapProperties.filter((p) => chapter[p] === undefined);
-  
+
   const missing = [...missingDataProps, ...missingMapProps];
 
   const missingError =
@@ -89,15 +97,19 @@ export function validateChapter(chapter: ChapterProps, index) {
   const centerError =
     !centerValid && '- Invalid center coordinates. Use [longitude, latitude]';
 
-  if (missingError || dateError || contentError || centerError) {
-    return [
-      `Chapter ${index + 1}:`,
-      missingError,
-      dateError,
-      contentError,
-      centerError
-    ].filter(Boolean) as string[];
-  }
+  const projectionErrors = validateProjectionBlockProps({
+    name: chapter.projectionName,
+    center: chapter.projectionCenter,
+    parallels: chapter.projectionParallels
+  });
 
-  return [];
+  const errors = [
+    missingError,
+    dateError,
+    contentError,
+    centerError,
+    ...projectionErrors
+  ].filter(Boolean) as string[];
+
+  return errors.length ? [`Chapter ${index + 1}:`, ...errors] : [];
 }

@@ -5,6 +5,7 @@ import { FormCheckable } from '@devseed-ui/form';
 import Constrainer from '../../../styles/constrainer';
 import { PageMainContent } from '../../../styles/page';
 import MapboxMap from '../../common/mapbox';
+import { projectionDefault } from '$components/common/mapbox/projection-selector';
 
 const DemoMap = styled(MapboxMap)`
   height: 40rem;
@@ -65,6 +66,8 @@ function SandboxMap() {
     compare: false,
     compareSupport: true
   });
+
+  const [projection, setProjection] = useState(projectionDefault);
 
   return (
     <PageMainContent>
@@ -142,12 +145,15 @@ function SandboxMap() {
                 </FormCheckable>
               ))}
             </div>
+            <hr />
           </div>
           <DemoMap
             datasetId={params.dataset}
             layerId={params.layer}
             date={params.date}
             isComparing={params.compare}
+            projection={projection}
+            onProjectionChange={setProjection}
           />
         </Wrapper>
       </Constrainer>

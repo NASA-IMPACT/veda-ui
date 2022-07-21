@@ -52,6 +52,10 @@ import {
 import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { PanelDateWidget } from './panel-date-widget';
+import {
+  ProjectionOptions,
+  projectionDefault
+} from '$components/common/mapbox/projection-selector';
 
 const Explorer = styled.div`
   position: relative;
@@ -268,6 +272,25 @@ function DatasetsExplore() {
     }
   });
 
+  const [mapProjection, setMapProjection] = useQsState.memo<ProjectionOptions>({
+    key: 'projection',
+    default: projectionDefault,
+    hydrator: (v) => {
+      if (!v) return null;
+      const [name, rawCenter, rawParallels] = v.split('|');
+      const center = rawCenter ? rawCenter.split(',').map(Number) : undefined;
+      const parallels = rawParallels
+        ? rawParallels.split(',').map(Number)
+        : undefined;
+      return { name, center, parallels } as ProjectionOptions;
+    },
+    dehydrator: (v) => {
+      if (!v) return '';
+      const { name, center, parallels } = v;
+      return `${name}|${center?.join(',') || ''}|${parallels?.join(',') || ''}`;
+    }
+  });
+
   const [selectedDatetime, setSelectedDatetime] = useQsState.memo<Date>({
     key: 'datetime',
     default: null,
@@ -330,6 +353,32 @@ function DatasetsExplore() {
   const activeLayerCompareTimeseries = useMemo(
     // @ts-expect-error if there is activeLayer the the rest is loaded.
     () => activeLayer?.compareLayer?.data.timeseries || null,
+    [activeLayer]
+  );
+
+  // On layer change, if reset the projection.
+  // When activating a layer always use the layer projection (if defined),
+  // otherwise default to mercator. If this is the first layer loading (like
+  // when the user enters the page), then use the projection in the url. This is
+  // needed in case the url was shared with a different projection.
+  useEffectPrevious(
+    (prev) => {
+      const prevActiveData = prev[0]?.baseLayer.data;
+      const currActiveData = activeLayer?.baseLayer.data;
+
+      if (
+        !prevActiveData ||
+        !currActiveData ||
+        prevActiveData.id === currActiveData.id
+      )
+        return;
+
+      if (currActiveData?.projection?.name) {
+        setMapProjection(currActiveData?.projection);
+      } else {
+        setMapProjection(projectionDefault);
+      }
+    },
     [activeLayer]
   );
 
@@ -496,6 +545,8 @@ function DatasetsExplore() {
               isComparing={isComparing}
               initialPosition={mapPosition || undefined}
               onPositionChange={setMapPosition}
+              projection={mapProjection || projectionDefault}
+              onProjectionChange={setMapProjection}
             />
           </Carto>
         </Explorer>
