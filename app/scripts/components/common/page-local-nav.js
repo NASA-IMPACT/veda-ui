@@ -186,7 +186,7 @@ function PageLocalNav(props) {
 
   const currentItem = items.find((o) => o.id === currentId);
   return (
-    <PageLocalNavSelf aria-label='Page Navigation'>
+    <PageLocalNavSelf aria-label='Page Navigation' role='navigation'>
       <LocalBreadcrumb>
         <li>
           <SectionParentLink to={parentTo} aria-label={parentLabel}>

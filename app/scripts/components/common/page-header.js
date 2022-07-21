@@ -372,20 +372,23 @@ function PageHeader({ className }) {
       {isLargeDown && (
         <GlobalNavActions>
           <GlobalNavToggle
+            aria-label={
+              globalNavRevealed
+                ? 'Close Global Navigation'
+                : 'Open Global Navigation'
+            }
             variation='achromic-text'
             fitting='skinny'
             onClick={() => setGlobalNavRevealed((v) => !v)}
             active={globalNavRevealed}
           >
-            <CollecticonHamburgerMenu
-              title='Toggle global nav visibility'
-              meaningful
-            />
+            <CollecticonHamburgerMenu />
           </GlobalNavToggle>
         </GlobalNavActions>
       )}
       <GlobalNav
         aria-label='Global Navigation'
+        role='navigation'
         revealed={globalNavRevealed}
         onClick={onGlobalNavClick}
       >
