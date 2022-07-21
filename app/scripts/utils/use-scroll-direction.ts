@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 const throttle = require('lodash.throttle');
 
 const useScrollDirection = () => {
+
+  // threshold should be bigger than navHeight
+  const threshold = 90;
+  
   // When user freshly loads the page : show nav
-  // When user refreshes the window in the middle of page || deep link : hide nav
+  // When user lands on the middle of page : hide nav
   const initialScrollDir = window.pageYOffset === 0 ? 'up' : 'down';
   const [scrollDir, setScrollDir] = useState(initialScrollDir);
 
   useEffect(() => {
-    // Make sure threshold is larger than navHeight
-    const threshold = 90;
     let lastScrollY = window.pageYOffset;
     let ticking = false;
 
@@ -32,7 +34,7 @@ const useScrollDirection = () => {
       }
     };
 
-    const throttledScroll = throttle(onScroll, 50);
+    const throttledScroll = throttle(onScroll, 100);
 
     window.addEventListener('scroll', throttledScroll);
 
