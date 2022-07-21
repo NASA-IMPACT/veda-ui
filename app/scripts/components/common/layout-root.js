@@ -10,7 +10,7 @@ import PageFooter from './page-footer';
 
 import { useThematicArea } from '$utils/thematics';
 import { useGoogleAnalytics } from '$utils/use-google-analytics';
-import PageNavWrapper from '$components/common/nav-wrapper';
+import NavWrapper from '$components/common/nav-wrapper';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
@@ -50,7 +50,7 @@ function LayoutRoot(props) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
-      <PageNavWrapper localNavProps={localNavProps} />
+      <NavWrapper localNavProps={localNavProps} />
       <PageBody>
         <Outlet />
         {children}
