@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 const throttle = require('lodash.throttle');
 
-const useScrollDirection = (active) => {
+const useScrollDirection = () => {
   // When user freshly loads the page : show nav
   // When user refreshes the window in the middle of page || deep link : hide nav
   const initialScrollDir = window.pageYOffset === 0 ? 'up' : 'down';
@@ -34,12 +34,12 @@ const useScrollDirection = (active) => {
 
     const throttledScroll = throttle(onScroll, 50);
 
-    if (active) window.addEventListener('scroll', throttledScroll);
+    window.addEventListener('scroll', throttledScroll);
 
     return () => {
-      if (active) window.removeEventListener('scroll', throttledScroll);
+      window.removeEventListener('scroll', throttledScroll);
     };
-  }, [active]);
+  }, []);
 
   return scrollDir;
 };

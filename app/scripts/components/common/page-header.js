@@ -385,7 +385,7 @@ function PageHeader({ className }) {
         </GlobalNavActions>
       )}
       <GlobalNav
-        aria-label='Global'
+        aria-label='Global Navigation'
         revealed={globalNavRevealed}
         onClick={onGlobalNavClick}
       >

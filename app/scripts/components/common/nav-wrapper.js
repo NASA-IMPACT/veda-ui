@@ -5,7 +5,6 @@ import PageHeader from './page-header';
 
 import PageLocalNav from '$components/common/page-local-nav';
 import useScrollDirection from '$utils/use-scroll-direction';
-import { render } from '@testing-library/react';
 
 const NavWrapper = styled.div`
   position: sticky;
@@ -26,33 +25,19 @@ const AnimatedPageHeader = styled(PageHeader)`
   }
 `;
 
-function MultipleNav({ localNavProps }) {
-  const scrollDir = useScrollDirection();
+function PageNavWrapper({ localNavProps }) {
+  // Not all the pages have two navigations.
+  // We do not need to use scroll direction/animation if there is a single nav
+  const renderLocalNav = !!localNavProps;
+  const scrollDir = useScrollDirection(renderLocalNav);
 
   return (
     <NavWrapper>
-      <AnimatedPageHeader className={scrollDir} />
-      <PageLocalNav {...localNavProps} />
+      <AnimatedPageHeader className={renderLocalNav ? scrollDir : ''} />
+      {renderLocalNav && <PageLocalNav {...localNavProps} />}
     </NavWrapper>
   );
 }
-
-function PageNavWrapper({ localNavProps }) {
-  const renderLocalNav = !!localNavProps;
-
-  // Not all the pages have multiple navs.
-  // We do not need to use scroll direction/animation if there is a single nav
-  return (
-    <>
-      {renderLocalNav && <PageHeader />}
-      {!renderLocalNav && <MultipleNav />}
-    </>
-  );
-}
-
-MultipleNav.propTypes = {
-  localNavProps: T.object
-};
 
 PageNavWrapper.propTypes = {
   localNavProps: T.object
