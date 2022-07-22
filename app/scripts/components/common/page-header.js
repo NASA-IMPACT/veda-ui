@@ -66,13 +66,11 @@ const PageHeaderSelf = styled.header`
   }
   &.down {
     /* 
-      this value should cover the total height of global nav (page-header)
+      this value should cover the total height of global nav
       2.5rem : height of the nav derived from svg logo height of the nav
-      1rem * var(--base-space-multiplier, 1) * 0.75 * 2 : padding of top and bottom derived from variableGlsp (0.75)
+      variableGlsp(0.75) * 2 : padding of top and bottom derived from variableGlsp (0.75)
     */
-    margin-top: calc(
-      -2.5rem - (1rem * var(--base-space-multiplier, 1) * 0.75 * 2)
-    );
+    margin-top: calc(-2.5rem - (${variableGlsp(0.75)} * 2));
   }
 `;
 
