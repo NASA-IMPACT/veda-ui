@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import T from 'prop-types';
 import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -43,6 +42,8 @@ import { Tip } from './tip';
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
 
+const scrollDownMargin = css`calc(-2.5rem - (${variableGlsp(0.75)} * 2))`;
+
 const PageHeaderSelf = styled.header`
   display: flex;
   flex-flow: row nowrap;
@@ -58,20 +59,15 @@ const PageHeaderSelf = styled.header`
     color: ${themeVal('color.surface')};
   }
 
-  /* nav animation (show/hide depending on scroll direction) related style */
+  /* 
+    nav animation (show/hide depending on scroll direction) related style
+    value for scroll down should cover the total height of global nav
+    2.5rem : height of the nav derived from svg logo height of the nav
+    variableGlsp(0.75) * 2 : padding of top and bottom derived from variableGlsp (0.75) 
+  */
   transition: margin-top 0.32s ease-out;
-  margin-top: 0;
-  &.up {
-    margin-top: 0;
-  }
-  &.down {
-    /* 
-      this value should cover the total height of global nav
-      2.5rem : height of the nav derived from svg logo height of the nav
-      variableGlsp(0.75) * 2 : padding of top and bottom derived from variableGlsp (0.75)
-    */
-    margin-top: calc(-2.5rem - (${variableGlsp(0.75)} * 2));
-  }
+  margin-top: ${({ scrollDir }) =>
+    scrollDir == 'down' ? scrollDownMargin : '0'};
 `;
 
 const Brand = styled.div`
@@ -375,7 +371,7 @@ function PageHeader() {
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
 
   return (
-    <PageHeaderSelf className={scrollDir}>
+    <PageHeaderSelf scrollDir={scrollDir}>
       {globalNavRevealed && isLargeDown && <UnscrollableBody />}
       <Brand>
         <Link
