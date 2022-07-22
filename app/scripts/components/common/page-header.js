@@ -32,7 +32,7 @@ import {
 } from '$utils/routes';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 
-import useScrollDirection from '$utils/use-scroll-direction';
+import useScrollDirection, { SCROLL_DOWN } from '$utils/use-scroll-direction';
 
 import { useMediaQuery } from '$utils/use-media-query';
 import UnscrollableBody from './unscrollable-body';
@@ -67,7 +67,7 @@ const PageHeaderSelf = styled.header`
   */
   transition: margin-top 0.32s ease-out;
   margin-top: ${({ scrollDir }) =>
-    scrollDir == 'down' ? scrollDownMargin : '0'};
+    scrollDir == SCROLL_DOWN ? scrollDownMargin : '0'};
 `;
 
 const Brand = styled.div`

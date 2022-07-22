@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 
+export const SCROLL_UP ='up';
+export const SCROLL_DOWN ='down';
+
 const useScrollDirection = () => {
 
   // threshold should be bigger than navHeight
@@ -7,7 +10,7 @@ const useScrollDirection = () => {
   
   // When user freshly loads the page : show nav
   // When user lands on the middle of page : hide nav
-  const initialScrollDir = window.pageYOffset === 0 ? 'up' : 'down';
+  const initialScrollDir = window.pageYOffset === 0 ? SCROLL_UP : SCROLL_DOWN;
   const [scrollDir, setScrollDir] = useState(initialScrollDir);
 
   useEffect(() => {
@@ -21,7 +24,7 @@ const useScrollDirection = () => {
         ticking = false;
         return;
       }
-      setScrollDir(scrollY > lastScrollY ? 'down' : 'up');
+      setScrollDir(scrollY > lastScrollY ? SCROLL_DOWN : SCROLL_UP);
       lastScrollY = scrollY > 0 ? scrollY : 0;
       ticking = false;
     };
