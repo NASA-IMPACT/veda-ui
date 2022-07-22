@@ -33,6 +33,8 @@ import {
 } from '$utils/routes';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 
+import useScrollDirection from '$utils/use-scroll-direction';
+
 import { useMediaQuery } from '$utils/use-media-query';
 import UnscrollableBody from './unscrollable-body';
 import GoogleForm from './google-form';
@@ -54,6 +56,23 @@ const PageHeaderSelf = styled.header`
   &,
   &:visited {
     color: ${themeVal('color.surface')};
+  }
+
+  /* nav animation (show/hide depending on scroll direction) related style */
+  transition: margin-top 0.32s ease-out;
+  margin-top: 0;
+  &.up {
+    margin-top: 0;
+  }
+  &.down {
+    /* 
+      this value should cover the total height of global nav (page-header)
+      2.5rem : height of the nav derived from svg logo height of the nav
+      1rem * var(--base-space-multiplier, 1) * 0.75 * 2 : padding of top and bottom derived from variableGlsp (0.75)
+    */
+    margin-top: calc(
+      -2.5rem - (1rem * var(--base-space-multiplier, 1) * 0.75 * 2)
+    );
   }
 `;
 
@@ -331,7 +350,7 @@ const ThemeToggle = styled(GlobalMenuLink)`
   }
 `;
 
-function PageHeader({ className }) {
+function PageHeader() {
   const thematic = useThematicArea();
 
   const { isLargeDown } = useMediaQuery();
@@ -352,10 +371,13 @@ function PageHeader({ className }) {
     if (!isLargeDown) setGlobalNavRevealed(false);
   }, [isLargeDown]);
 
+  // Detect scroll direction to show/hide global nav
+  const scrollDir = useScrollDirection();
+
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
 
   return (
-    <PageHeaderSelf className={className}>
+    <PageHeaderSelf className={scrollDir}>
       {globalNavRevealed && isLargeDown && <UnscrollableBody />}
       <Brand>
         <Link
@@ -521,9 +543,5 @@ function PageHeader({ className }) {
     </PageHeaderSelf>
   );
 }
-
-PageHeader.propTypes = {
-  className: T.string
-};
 
 export default PageHeader;
