@@ -3,7 +3,6 @@ import React from 'react';
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import PageLocalNav from '$components/common/page-local-nav';
 import { PageMainContent } from '$styles/page';
 import MdxContent from '$components/common/mdx-content';
 import RelatedContent from '$components/common/related-content';
@@ -25,14 +24,15 @@ function DiscoveriesSingle() {
         title={discovery.data.name}
         description={discovery.data.description}
         thumbnail={media?.src}
+        localNavProps={{
+          parentName: 'Discovery',
+          parentLabel: 'Discoveries',
+          parentTo: thematicDiscoveriesPath(thematic),
+          items: thematic.data.discoveries,
+          currentId: discovery.data.id
+        }}
       />
-      <PageLocalNav
-        parentName='Discovery'
-        parentLabel='Discoveries'
-        parentTo={thematicDiscoveriesPath(thematic)}
-        items={thematic.data.discoveries}
-        currentId={discovery.data.id}
-      />
+
       <PageMainContent>
         <article>
           <PageHero

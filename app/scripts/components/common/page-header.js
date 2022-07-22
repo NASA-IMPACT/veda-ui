@@ -32,6 +32,8 @@ import {
 } from '$utils/routes';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 
+import useScrollDirection, { SCROLL_DOWN } from '$utils/use-scroll-direction';
+
 import { useMediaQuery } from '$utils/use-media-query';
 import UnscrollableBody from './unscrollable-body';
 import GoogleForm from './google-form';
@@ -40,10 +42,13 @@ import { Tip } from './tip';
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
 
+const scrollDownMargin = css`calc(-2.5rem - (${variableGlsp(0.75)} * 2))`;
+
 const PageHeaderSelf = styled.header`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  justify-content: space-between;
   gap: ${variableGlsp()};
   padding: ${variableGlsp(0.75, 1)};
   background: ${themeVal('color.primary')};
@@ -53,6 +58,16 @@ const PageHeaderSelf = styled.header`
   &:visited {
     color: ${themeVal('color.surface')};
   }
+
+  /* 
+    nav animation (show/hide depending on scroll direction) related style
+    value for scroll down should cover the total height of global nav
+    2.5rem : height of the nav derived from svg logo height of the nav
+    variableGlsp(0.75) * 2 : padding of top and bottom derived from variableGlsp (0.75) 
+  */
+  transition: margin-top 0.32s ease-out;
+  margin-top: ${({ scrollDir }) =>
+    scrollDir == SCROLL_DOWN ? scrollDownMargin : '0'};
 `;
 
 const Brand = styled.div`
@@ -223,13 +238,7 @@ export const GlobalNavActions = styled.div`
 `;
 
 export const GlobalNavToggle = styled(Button)`
-  position: absolute;
-  top: ${variableGlsp()};
-  right: calc(100% + ${variableGlsp()});
-
-  ${media.largeUp`
-    top: ${variableGlsp(0.875)};
-  `}
+  z-index: 2000;
 `;
 
 const GlobalNavBody = styled(ShadowScrollbar).attrs({
@@ -341,11 +350,6 @@ function PageHeader() {
   const { isLargeDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
-  // The menu toggle button sits inside a panel with position fixed, therefore
-  // on scrolling we need to compensate its position with some javascript. The
-  // useEffect will have a scroll listener that update the offset value until it
-  // reaches a threshold where the button is no longer on screen.
-  const [menuBtnOffset, setBtnOffset] = useState(0);
 
   const globalNavBodyRef = useRef(null);
   // Click listener for the whole global nav body so we can close it when clicking
@@ -359,19 +363,15 @@ function PageHeader() {
   useEffect(() => {
     // Close global nav when media query changes.
     if (!isLargeDown) setGlobalNavRevealed(false);
-
-    // Listener for the toggle button.
-    if (isLargeDown) {
-      const handler = () => setBtnOffset(Math.min(window.pageYOffset, 60));
-      window.addEventListener('scroll', handler);
-      return () => window.removeEventListener('scroll', handler);
-    }
   }, [isLargeDown]);
+
+  // Detect scroll direction to show/hide global nav
+  const scrollDir = useScrollDirection();
 
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
 
   return (
-    <PageHeaderSelf>
+    <PageHeaderSelf scrollDir={scrollDir}>
       {globalNavRevealed && isLargeDown && <UnscrollableBody />}
       <Brand>
         <Link
@@ -386,34 +386,36 @@ function PageHeader() {
           <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
         </Tip>
       </Brand>
+      {isLargeDown && (
+        <GlobalNavActions>
+          <GlobalNavToggle
+            aria-label={
+              globalNavRevealed
+                ? 'Close Global Navigation'
+                : 'Open Global Navigation'
+            }
+            variation='achromic-text'
+            fitting='skinny'
+            onClick={() => setGlobalNavRevealed((v) => !v)}
+            active={globalNavRevealed}
+          >
+            <CollecticonHamburgerMenu />
+          </GlobalNavToggle>
+        </GlobalNavActions>
+      )}
       <GlobalNav
-        aria-label='Global'
+        aria-label='Global Navigation'
+        role='navigation'
         revealed={globalNavRevealed}
         onClick={onGlobalNavClick}
       >
         <GlobalNavInner ref={globalNavBodyRef}>
           {isLargeDown && (
-            <GlobalNavHeader>
-              <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
-              <GlobalNavActions>
-                <GlobalNavToggle
-                  variation='achromic-text'
-                  fitting='skinny'
-                  onClick={() => setGlobalNavRevealed((v) => !v)}
-                  active={globalNavRevealed}
-                  style={{
-                    transform: `translateY(-${
-                      globalNavRevealed ? 0 : menuBtnOffset
-                    }px)`
-                  }}
-                >
-                  <CollecticonHamburgerMenu
-                    title='Toggle global nav visibility'
-                    meaningful
-                  />
-                </GlobalNavToggle>
-              </GlobalNavActions>
-            </GlobalNavHeader>
+            <>
+              <GlobalNavHeader>
+                <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
+              </GlobalNavHeader>
+            </>
           )}
           <GlobalNavBody as={isLargeDown ? undefined : 'div'}>
             <GlobalNavBodyInner>

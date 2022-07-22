@@ -5,11 +5,12 @@ import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
 
 import MetaTags from './meta-tags';
-import PageHeader from './page-header';
+
 import PageFooter from './page-footer';
 
 import { useThematicArea } from '$utils/thematics';
 import { useGoogleAnalytics } from '$utils/use-google-analytics';
+import NavWrapper from '$components/common/nav-wrapper';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
@@ -32,7 +33,7 @@ function LayoutRoot(props) {
 
   useGoogleAnalytics();
 
-  const { title, thumbnail, description, hideFooter } =
+  const { title, thumbnail, description, hideFooter, localNavProps } =
     useContext(LayoutRootContext);
 
   const thematic = useThematicArea();
@@ -49,7 +50,7 @@ function LayoutRoot(props) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
-      <PageHeader />
+      <NavWrapper localNavProps={localNavProps} />
       <PageBody>
         <Outlet />
         {children}

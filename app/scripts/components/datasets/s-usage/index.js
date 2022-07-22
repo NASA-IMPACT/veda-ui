@@ -3,9 +3,7 @@ import React from 'react';
 import { LayoutProps } from '$components/common/layout-root';
 import { resourceNotFound } from '$components/uhoh';
 import { PageMainContent } from '$styles/page';
-import PageLocalNav, {
-  DatasetsLocalMenu
-} from '$components/common/page-local-nav';
+import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import { FoldProse } from '$components/common/fold';
 import PageHero from '$components/common/page-hero';
 
@@ -32,17 +30,18 @@ function DatasetsUsage() {
         title={`${dataset.data.name} Usage`}
         description={dataset.data.description}
         thumbnail={dataset.data.media?.src}
+        localNavProps={{
+          parentName: 'Dataset',
+          parentLabel: 'Datasets',
+          parentTo: thematicDatasetsPath(thematic),
+          items: thematic.data.datasets,
+          currentId: dataset.data.id,
+          localMenuCmp: (
+            <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
+          )
+        }}
       />
-      <PageLocalNav
-        parentName='Dataset'
-        parentLabel='Datasets'
-        parentTo={thematicDatasetsPath(thematic)}
-        items={thematic.data.datasets}
-        currentId={dataset.data.id}
-        localMenuCmp={
-          <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
-        }
-      />
+
       <PageMainContent>
         <PageHero title={`${dataset.data.name} Usage`} />
         <FoldProse>

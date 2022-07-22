@@ -5,9 +5,7 @@ import { Link } from 'react-router-dom';
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
 import { PageActions, PageLead, PageMainContent } from '$styles/page';
-import PageLocalNav, {
-  DatasetsLocalMenu
-} from '$components/common/page-local-nav';
+import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import PageHero from '$components/common/page-hero';
 import MdxContent from '$components/common/mdx-content';
 import RelatedContent from '$components/common/related-content';
@@ -27,17 +25,18 @@ function DatasetsOverview() {
         title={`${dataset.data.name} Overview`}
         description={dataset.data.description}
         thumbnail={dataset.data.media?.src}
+        localNavProps={{
+          parentName: 'Dataset',
+          parentLabel: 'Datasets',
+          parentTo: thematicDatasetsPath(thematic),
+          items: thematic.data.datasets,
+          currentId: dataset.data.id,
+          localMenuCmp: (
+            <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
+          )
+        }}
       />
-      <PageLocalNav
-        parentName='Dataset'
-        parentLabel='Datasets'
-        parentTo={thematicDatasetsPath(thematic)}
-        items={thematic.data.datasets}
-        currentId={dataset.data.id}
-        localMenuCmp={
-          <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
-        }
-      />
+
       <PageMainContent>
         <PageHero
           title={`${dataset.data.name} Overview`}
