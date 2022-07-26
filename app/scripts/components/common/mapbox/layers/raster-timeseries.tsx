@@ -372,8 +372,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
                 duration: 320
               }
             }
-          },
-          'admin-0-boundary-bg'
+          }
         );
         changeStatus?.({ status: S_SUCCEEDED, context: 'layer' });
       } catch (error) {

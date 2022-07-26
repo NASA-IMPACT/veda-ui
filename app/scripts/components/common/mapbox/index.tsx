@@ -76,7 +76,29 @@ const MapsContainer = styled.div`
 `;
 
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
-  style: process.env.MAPBOX_STYLE_URL,
+  style: {
+    'version': 8,
+    'sources': {
+    'raster-tiles': {
+    'type': 'raster',
+    'tiles': [
+      `https://tiles0.planet.com/basemaps/v1/planet-tiles/global_monthly_2016_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=${process.env.PLANET_TOKEN}`
+    ],
+    'tileSize': 256,
+    'attribution':
+    'Map tiles by <a target="_top" rel="noopener" href="https://planet.com">Planet</a>'
+    }
+    },
+    'layers': [
+    {
+    'id': 'planet-tiles',
+    'type': 'raster',
+    'source': 'raster-tiles',
+    'minzoom': 0,
+    'maxzoom': 22
+    }
+    ]
+    },
   logoPosition: 'bottom-left',
   trackResize: true,
   pitchWithRotate: false,
