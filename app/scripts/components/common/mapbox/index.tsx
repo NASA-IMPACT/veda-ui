@@ -7,7 +7,7 @@ import React, {
   useState
 } from 'react';
 import styled from 'styled-components';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl-2';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -37,6 +37,7 @@ import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import { ProjectionOptions } from './projection-selector';
+import ZarrLayer from '$components/common/mapbox/layers/zarr'
 
 const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
   color: 'white'
@@ -128,6 +129,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
+  
 
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
@@ -154,9 +156,12 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     instance: mapRef.current,
     compareInstance: mapCompareRef.current
   }));
+  
+  
 
-  const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
-
+  const { layer, baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId || 'zarr-test');
+  
+  const isZarr = layer?.type === 'zarr'
   const shouldRenderCompare = isMapLoaded && isComparing;
 
   // Compare control
@@ -188,6 +193,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
   // Resolve data needed for the base layer once the layer is loaded
   const [baseLayerResolvedData, BaseLayerComponent] = useMemo(() => {
+    
+    if (isZarr) return [null, ZarrLayer]
     if (baseLayer?.status !== S_SUCCEEDED || !baseLayer.data)
       return [null, null];
 
@@ -195,8 +202,10 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     const bag = { ...resolverBag, raw: baseLayer.data };
     const data = resolveConfigFunctions(baseLayer.data, bag);
 
+    
+
     return [data, getLayerComponent(!!data.timeseries, data.type)];
-  }, [baseLayer, resolverBag]);
+  }, [baseLayer, resolverBag, isZarr]);
 
   // Resolve data needed for the compare layer once it is loaded.
   const [compareLayerResolvedData, CompareLayerComponent] = useMemo(() => {
@@ -256,7 +265,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         The function getLayerComponent() should be used to get the correct
         component.
       */}
-      {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
+      {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && !isZarr && (
         <BaseLayerComponent
           id={`base-${baseLayerResolvedData.id}`}
           stacCol={baseLayerResolvedData.stacCol}
@@ -267,7 +276,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           onStatusChange={onBaseLayerStatusChange}
         />
       )}
-
+      {isZarr && <BaseLayerComponent />}
       {/*
         Adding a layer to the comparison map is also done through a component,
         which is this case targets a different map instance.
@@ -382,7 +391,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         className={className}
         id={id || 'mapbox-container'}
       >
-        <SimpleMap
+        {!isZarr && (<SimpleMap
           className='root'
           mapRef={mapRef}
           containerRef={mapContainer}
@@ -398,7 +407,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           onAoiChange={onAoiChange}
           projection={projection}
           onProjectionChange={onProjectionChange}
-        />
+        />)}
+        
         {shouldRenderCompare && (
           <SimpleMap
             mapRef={mapCompareRef}

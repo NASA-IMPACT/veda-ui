@@ -15,6 +15,7 @@ import {
   datasets
 } from 'delta/thematics';
 
+import ZarrLayer from '$components/common/mapbox/layers/zarr'
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
 
@@ -169,21 +170,33 @@ export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
 
   const layerAsArray = useMemo(() => (layer ? [layer] : []), [layer]);
   const asyncLayers = useLayersInit(layerAsArray);
+  const tempArray = asyncLayers.map(e => ({
+    layer,
+    ...e
+  }));
+  
 
   return useMemo(
     () =>
-      asyncLayers?.[0] || {
+    tempArray?.[0] || {
+        layer,
         baseLayer: null,
         compareLayer: null,
         reFetch: null
       },
-    [asyncLayers]
+    [layer, tempArray]
   );
 };
 
 export const useDatasetAsyncLayers = (datasetId) => {
   // Get the layer information from the dataset defined in the configuration.
-  return useLayersInit(datasets[datasetId]?.data.layers);
+  const asyncLayers = useLayersInit(datasets[datasetId]?.data.layers);
+  
+  return asyncLayers.map((e,idx) => ({
+    layer: datasets[datasetId]?.data.layers[idx],
+    ...e
+  }));
+  // return useLayersInit(datasets[datasetId]?.data.layers);
 };
 
 type ReferencedLayer = {
@@ -217,12 +230,16 @@ export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
             compare: null
           };
         }
-
         return layer;
       }),
     [referencedLayers]
   );
 
   // Get the layer information from the dataset defined in the configuration.
-  return useLayersInit(layers);
+  const asyncLayers = useLayersInit(layers);
+  
+  return asyncLayers.map((e,idx) => ({
+    layer: referencedLayers[idx],
+    ...e
+  }));
 };

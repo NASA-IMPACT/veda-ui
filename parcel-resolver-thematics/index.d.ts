@@ -1,6 +1,6 @@
 declare module 'delta/thematics' {
   import * as dateFns from 'date-fns';
-  import mapboxgl from 'mapbox-gl';
+  import mapboxgl from 'mapbox-gl-2';
   import { MDXModule } from 'mdx/types';
 
   // ///////////////////////////////////////////////////////////////////////////

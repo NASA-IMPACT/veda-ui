@@ -1,4 +1,4 @@
-import mapboxgl from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl-2';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { ThemeProvider, useTheme } from 'styled-components';

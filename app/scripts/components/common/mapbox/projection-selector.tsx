@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl-2';
 import { CollecticonGlobe } from '@devseed-ui/collecticons';
 import {
   Dropdown,

@@ -182,7 +182,6 @@ export function resolveConfigFunctions(
  */
 export function checkLayerLoadStatus(asyncLayer: AsyncDatasetLayer) {
   const { baseLayer, compareLayer } = asyncLayer;
-
   if (
     baseLayer.status === S_SUCCEEDED &&
     (!compareLayer || compareLayer.status === S_SUCCEEDED)

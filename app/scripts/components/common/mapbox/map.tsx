@@ -1,6 +1,6 @@
 import React, { useEffect, RefObject, MutableRefObject } from 'react';
 import styled, { useTheme } from 'styled-components';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl-2';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { round } from '$utils/format';

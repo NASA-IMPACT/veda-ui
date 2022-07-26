@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTheme } from 'styled-components';
 import axios from 'axios';
 import qs from 'qs';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl-2';
 import { endOfDay, startOfDay } from 'date-fns';
 
 import { userTzDate2utcString } from '$utils/date';

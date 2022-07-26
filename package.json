@@ -81,6 +81,8 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
+    "@carbonplan/colormaps": "^3.0.2",
+    "@carbonplan/maps": "^2.2.0",
     "@devseed-ui/accordion": "4.1.0-rc.2",
     "@devseed-ui/animation": "4.1.0-rc.2",
     "@devseed-ui/button": "4.1.0-rc.2",
@@ -111,7 +113,7 @@
     "intersection-observer": "^0.12.0",
     "lodash.defaultsdeep": "^4.6.1",
     "lodash.get": "^4.4.2",
-    "mapbox-gl": "^2.9.1",
+    "mapbox-gl-2": "npm:mapbox-gl@2.9.2",
     "mapbox-gl-compare": "^0.4.0",
     "mapbox-gl-draw-rectangle-mode": "^1.0.4",
     "polished": "^4.1.3",

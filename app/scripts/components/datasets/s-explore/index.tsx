@@ -56,7 +56,7 @@ import {
   ProjectionOptions,
   projectionDefault
 } from '$components/common/mapbox/projection-selector';
-
+import ZarrLayer from '$components/common/mapbox/layers/zarr';
 const Explorer = styled.div`
   position: relative;
   flex-grow: 1;
@@ -533,12 +533,13 @@ function DatasetsExplore() {
               </PanelBody>
             </PanelInner>
           </Panel>
+          
           <Carto>
             <MapboxMap
               ref={mapboxRef}
               withGeocoder
               datasetId={dataset.data.id}
-              layerId={activeLayer?.baseLayer.data?.id}
+              layerId={activeLayer?.baseLayer.data?.id || activeLayer?.layer?.id}
               date={selectedDatetime || undefined}
               compareDate={selectedCompareDatetime || undefined}
               isComparing={isComparing}
@@ -548,6 +549,7 @@ function DatasetsExplore() {
               onProjectionChange={setMapProjection}
             />
           </Carto>
+
         </Explorer>
       </PageMainContent>
     </>

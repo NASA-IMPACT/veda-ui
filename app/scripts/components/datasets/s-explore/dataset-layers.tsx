@@ -30,11 +30,24 @@ interface DatasetLayersProps {
 
 export default function DatasetLayers(props: DatasetLayersProps) {
   const { datasetId, asyncLayers, onAction, selectedLayerId } = props;
-
+  
   return (
     <AccordionManager>
       <LayerList>
         {asyncLayers.map((l, idx) => {
+          if (l.layer?.type === 'zarr' ) return (
+            <li key={datasetId}>
+              <Layer
+                id={l.layer.id}
+                name={l.layer.name}
+                info={l.layer.description}
+                active={l.layer.id === selectedLayerId}
+                onToggleClick={() => {
+                  onAction('layer.toggle', l.layer);
+                }}
+              />
+            </li>
+          );
           // A layer is considered ready when its data and the compare layer
           // data (if any) is also loaded.
           const status = checkLayerLoadStatus(l);
