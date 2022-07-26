@@ -391,8 +391,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         className={className}
         id={id || 'mapbox-container'}
       >
-        {!isZarr && (<SimpleMap
+        <SimpleMap
           className='root'
+          style={{display: isZarr?'none':'block'}}
           mapRef={mapRef}
           containerRef={mapContainer}
           onLoad={() => setMapLoaded(true)}
@@ -407,7 +408,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           onAoiChange={onAoiChange}
           projection={projection}
           onProjectionChange={onProjectionChange}
-        />)}
+        />
         
         {shouldRenderCompare && (
           <SimpleMap
