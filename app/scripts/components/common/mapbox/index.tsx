@@ -37,7 +37,7 @@ import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import { ProjectionOptions } from './projection-selector';
-import ZarrLayer from '$components/common/mapbox/layers/zarr'
+import ZarrLayer from '$components/common/mapbox/layers/zarr';
 
 const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
   color: 'white'
@@ -161,7 +161,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
   const { layer, baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId || 'zarr-test');
   
-  const isZarr = layer?.type === 'zarr'
+  const isZarr = layer?.type === 'zarr';
   const shouldRenderCompare = isMapLoaded && isComparing;
 
   // Compare control
@@ -194,7 +194,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   // Resolve data needed for the base layer once the layer is loaded
   const [baseLayerResolvedData, BaseLayerComponent] = useMemo(() => {
     
-    if (isZarr) return [null, ZarrLayer]
+    if (isZarr) return [null, ZarrLayer];
     if (baseLayer?.status !== S_SUCCEEDED || !baseLayer.data)
       return [null, null];
 
@@ -393,7 +393,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       >
         <SimpleMap
           className='root'
-          style={{display: isZarr?'none':'block'}}
+          style={{visibility: isZarr?'hidden':'visible'}}
           mapRef={mapRef}
           containerRef={mapContainer}
           onLoad={() => setMapLoaded(true)}
