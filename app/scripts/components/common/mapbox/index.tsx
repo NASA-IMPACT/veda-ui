@@ -161,7 +161,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
   const { layer, baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId || 'zarr-test');
   
-  const isZarr = layer?.type === 'zarr';
+  const isZarr = layer?.type === 'zarr' || false;
   const shouldRenderCompare = isMapLoaded && isComparing;
 
   // Compare control

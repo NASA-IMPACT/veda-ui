@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { Map, Raster } from '@carbonplan/maps';
 import { useColormap } from '@carbonplan/colormaps';
+import ParameterControls from './parameter-control';
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/';
 
@@ -14,7 +15,16 @@ const Index = () => {
   const [band, setBand] = useState('tavg');
   const [colormapName, setColormapName] = useState('warm');
   const colormap = useColormap(colormapName, {});
-
+  const getters = { display, debug, opacity, clim, month, band, colormapName };
+  const setters = {
+    setDisplay,
+    setDebug,
+    setOpacity,
+    setClim,
+    setMonth,
+    setBand,
+    setColormapName
+  };
   return (
     <>
       <div
@@ -23,7 +33,7 @@ const Index = () => {
           height: '100%'
         }}
       >
-        <Map zoom={2} center={[0, 0]} debug={debug} style={{zIndex: '2000'}}>
+        <Map zoom={2} center={[0, 0]} debug={debug} style={{ zIndex: '2000' }}>
           <Raster
             colormap={colormap}
             clim={clim}
@@ -34,6 +44,7 @@ const Index = () => {
             variable='climate'
             selector={{ month, band }}
           />
+          <ParameterControls getters={getters} setters={setters} />
         </Map>
       </div>
     </>
