@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga4';
 
 const gaTrackingCode = process.env.GOOGLE_ANALYTICS_ID;
 
@@ -17,8 +17,7 @@ export function useGoogleAnalytics() {
 
   useEffect(() => {
     if (gaTrackingCode) {
-      const currentPath = location.pathname + location.search;
-      ReactGA.pageview(currentPath);
+      ReactGA.send('pageview');
     }
   }, [location]);
 }
