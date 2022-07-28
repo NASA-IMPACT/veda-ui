@@ -79,7 +79,7 @@ const mapOptions: Partial<mapboxgl.MapboxOptions> = {
   style: {
     'version': 8,
     'sources': {
-    'raster-tiles': {
+    'base-tiles': {
     'type': 'raster',
     'tiles': [
       `https://tiles0.planet.com/basemaps/v1/planet-tiles/global_monthly_2016_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=${process.env.PLANET_TOKEN}`
@@ -93,7 +93,7 @@ const mapOptions: Partial<mapboxgl.MapboxOptions> = {
     {
     'id': 'planet-tiles',
     'type': 'raster',
-    'source': 'raster-tiles',
+    'source': 'base-tiles',
     'minzoom': 0,
     'maxzoom': 22
     }
@@ -415,6 +415,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             ...getMapPositionOptions(initialPosition),
             cooperativeGestures
           }}
+          date={date}
           withGeocoder={withGeocoder}
           aoi={aoi}
           onAoiChange={onAoiChange}

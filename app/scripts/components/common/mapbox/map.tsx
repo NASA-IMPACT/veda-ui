@@ -22,6 +22,28 @@ const SingleMapContainer = styled.div`
   ${aoiCursorStyles}
 `;
 
+function formatNum(num) {
+  return num < 10? '0'+ num : num;
+}
+
+function formatDate(dateData){
+  return dateData.getFullYear() + '_' + (formatNum(dateData.getMonth()+1));
+}
+
+function getSourceData(dateData) {
+  // https://api.planet.com/basemaps/v1/mosaics?api_key=${}
+  // oldest : 2016_02
+  const date = (!dateData || dateData < new Date('2016-02'))? '2016_02' : formatDate(dateData);
+  return {
+        'type': 'raster',
+        'tiles': [
+          `https://tiles0.planet.com/basemaps/v1/planet-tiles/global_monthly_${date}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${process.env.PLANET_TOKEN}`
+        ],
+        'tileSize': 256,
+        'attribution':
+        'Map tiles by <a target="_top" rel="noopener" href="https://planet.com">Planet</a>'
+      };
+}
 interface SimpleMapProps {
   [key: string]: unknown;
   mapRef: MutableRefObject<mapboxgl.Map | null>;
@@ -45,6 +67,7 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     onMoveEnd,
     onUnmount,
     mapOptions,
+    date,
     withGeocoder,
     aoi,
     onAoiChange,
@@ -131,6 +154,22 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     if (!mapRef.current || !projection) return;
     mapRef.current.setProjection({...projection});
   }, [mapRef, projection]);
+
+  useEffect(() => {
+    if(!date || !mapRef) return;
+    if (mapRef?.current.getSource('base-tiles')) {
+      mapRef.current.removeLayer('planet-tiles');
+      mapRef.current.removeSource('base-tiles');
+      mapRef.current.addSource('base-tiles', getSourceData(date));
+      mapRef.current.addLayer({
+        'id': 'planet-tiles',
+        'type': 'raster',
+        'source': 'base-tiles',
+        'minzoom': 0,
+        'maxzoom': 22
+        });
+    }
+  },[date, mapRef]);
 
   useEffect(() => {
     if (!mapRef.current || typeof onMoveEnd !== 'function') return;
