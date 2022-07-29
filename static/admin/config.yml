@@ -1,0 +1,17 @@
+backend:
+  name: test-repo
+  local_backend: true
+  branch: exp/netlify-cms
+publish_mode: editorial_workflow
+media_folder: "images/uploads" 
+collections:
+  - label: "Dataset"
+    name: "dataset"
+    folder: "_mocks/dataset"
+    create: true
+    fields:
+      - {label: "ID", name: "id", widget: "string"}
+      - {label: "Name", name: "name", widget: "string"}
+      - {label: "Featured on", name: "featuredOn", widget: "list"}
+      - {label: "Featured Image", name: "thumbnail", widget: "image"}
+      - {label: "Body", name: "body", widget: "markdown"}
