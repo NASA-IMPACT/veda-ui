@@ -3,7 +3,7 @@
 backend:
   # uncomment the line below to test local
   # name: test-repo
-  name: veda-config-ui
+  name: git-gateway
   branch: exp/netlify-cms
 publish_mode: editorial_workflow
 media_folder: "images/uploads" 
