@@ -15,13 +15,14 @@
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "serve": "NODE_ENV=development gulp serve",
-    "build": "NODE_ENV=production gulp",
+    "build": "lambda:build && NODE_ENV=production gulp",
     "stage": "NODE_ENV=staging gulp",
     "clean": "gulp clean",
     "lint": "yarn lint:js && yarn lint:css",
     "lint:js": "eslint app/scripts/ --ext .js",
     "lint:css": "stylelint 'app/styles/**/**' 'app/scripts/**/*.js'",
-    "test": "jest"
+    "test": "jest",
+    "lambda:build": "netlify-lambda build lambda"
   },
   "engines": {
     "node": "16.x"
@@ -63,6 +64,7 @@
     "gulp": "^4.0.2",
     "jest": "^27.5.1",
     "jest-css-modules-transform": "^4.3.0",
+    "netlify-lambda": "^2.0.15",
     "parcel": "^2.0.0",
     "parcel-resolver-thematics": "link:./parcel-resolver-thematics",
     "parcel-transformer-mdx": "link:./parcel-transformer-mdx",
@@ -72,6 +74,7 @@
     "prettier": "^2.4.1",
     "process": "^0.11.10",
     "remark-gfm": "^3.0.1",
+    "request": "^2.88.2",
     "stream-browserify": "^3.0.0",
     "stylelint": "^13.12",
     "stylelint-config-recommended": "^3.0.0",
