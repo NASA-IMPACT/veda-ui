@@ -1,6 +1,9 @@
+# uncomment the line below to test local
 # local_backend: true
 backend:
-  name: test-repo
+  # uncomment the line below to test local
+  # name: test-repo
+  name: veda-config-ui
   branch: exp/netlify-cms
 publish_mode: editorial_workflow
 media_folder: "images/uploads" 
