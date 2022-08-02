@@ -1,4 +1,4 @@
-local_backend: true
+# local_backend: true
 backend:
   name: test-repo
   branch: exp/netlify-cms
@@ -27,6 +27,18 @@ collections:
         widget: "select"
         multiple: true
         options: ["agriculture", "air-quality", "covid-19"]
+      - label: "Image"
+        name: "media"
+        widget: 'object'
+        fields:
+          - {label: 'File', name: 'src', widget: 'image'}
+          - {label: 'Alt text', name: 'alt', widget: 'string'}
+          - label: 'Author' 
+            name: 'author'
+            widget: 'object'
+            fields:
+              - {label: 'Name', name: 'name', widget: 'string'}
+              - {label: 'URL', name: 'url', widget: 'string'}
       - label: "Layers"
         name: layers
         widget: list
@@ -40,6 +52,9 @@ collections:
             data_path:  collections
             value_field: id
             display_field: id
+          - label: "Layer Name"
+            name: 'name'
+            widget: "string"
           - label: "Description"
             name: 'description'
             widget: "string"
@@ -56,3 +71,4 @@ collections:
             fields: 
               - {label: "bidx", name: "bidx", widget: "string"}
               - {label: "colormap name", name: "colormap_name", widget: "select", options: ['inferno']}
+      - {label: "Body", name: "body", widget: "markdown"}
