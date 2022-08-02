@@ -1,17 +1,58 @@
+local_backend: true
 backend:
   name: test-repo
-  local_backend: true
   branch: exp/netlify-cms
 publish_mode: editorial_workflow
 media_folder: "images/uploads" 
 collections:
   - label: "Dataset"
     name: "dataset"
-    folder: "_mocks/dataset"
+    folder: "mock/datasets"
     create: true
+    extension: 'mdx'
+    format: 'frontmatter'
+    identifier_field: fields.id
+    slug: "{{fields.id}}.data"
     fields:
+      - label: "Featured on"
+        name: "featuredOn"
+        widget: "select"
+        multiple: true
+        options: ["agriculture", "air-quality", "covid-19"]
       - {label: "ID", name: "id", widget: "string"}
       - {label: "Name", name: "name", widget: "string"}
-      - {label: "Featured on", name: "featuredOn", widget: "list"}
-      - {label: "Featured Image", name: "thumbnail", widget: "image"}
-      - {label: "Body", name: "body", widget: "markdown"}
+      - {label: "Description", name: "description", widget: "string"}
+      - label: "Thematics"
+        name: "thematics"
+        widget: "select"
+        multiple: true
+        options: ["agriculture", "air-quality", "covid-19"]
+      - label: "Layers"
+        name: layers
+        widget: list
+        fields: 
+          - {label: "ID", name: "id", widget: "string"}
+          - label: STAC ID
+            name: stacCol
+            widget: select-async
+            # widget options:
+            url: https://staging-stac.delta-backend.xyz/collections
+            data_path:  collections
+            value_field: id
+            display_field: id
+          - label: "Description"
+            name: 'description'
+            widget: "string"
+          - label: "type"
+            name: type
+            widget: "select"
+            options: ["raster"]
+          - label: "Zoom Extent"
+            name: zoomExtent
+            widget: list
+          - label: 'Source parameter'
+            name: sourceParam
+            widget: object
+            fields: 
+              - {label: "bidx", name: "bidx", widget: "string"}
+              - {label: "colormap name", name: "colormap_name", widget: "select", options: ['inferno']}
