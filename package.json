@@ -15,7 +15,7 @@
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "serve": "NODE_ENV=development gulp serve",
-    "build": "NODE_ENV=production gulp && lambda:build",
+    "build": "NODE_ENV=production gulp && yarn lambda:build",
     "stage": "NODE_ENV=staging gulp",
     "clean": "gulp clean",
     "lint": "yarn lint:js && yarn lint:css",
