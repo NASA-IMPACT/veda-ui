@@ -37,7 +37,7 @@ function getSourceData(dateData) {
   return {
         'type': 'raster',
         'tiles': [
-          `https://tiles0.planet.com/basemaps/v1/planet-tiles/global_monthly_${date}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${process.env.PLANET_TOKEN}`
+          `/.netlify/functions/getplanet?z={z}&x={x}&y={y}&date=${date}`
         ],
         'tileSize': 256,
         'attribution':

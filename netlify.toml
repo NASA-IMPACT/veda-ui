@@ -3,3 +3,9 @@
   functions = "functions/"
   publish = "dist/"
   command = "yarn build"
+
+[dev]
+    publish = "public/"
+    functions = "functions/"
+    targetPort = 9000
+    functionsPort = 52041

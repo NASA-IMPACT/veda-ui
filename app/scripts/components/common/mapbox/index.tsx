@@ -82,7 +82,7 @@ const mapOptions: Partial<mapboxgl.MapboxOptions> = {
     'base-tiles': {
     'type': 'raster',
     'tiles': [
-      `https://tiles0.planet.com/basemaps/v1/planet-tiles/global_monthly_2016_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=${process.env.PLANET_TOKEN}`
+      "/.netlify/functions/getplanet?z={z}&x={x}&y={y}&date=2016_02"
     ],
     'tileSize': 256,
     'attribution':
