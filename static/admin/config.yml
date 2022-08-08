@@ -8,14 +8,48 @@ backend:
 publish_mode: editorial_workflow
 media_folder: "images/uploads" 
 collections:
-  - label: "Dataset"
-    name: "dataset"
+  - name: "thematic"
+    label: "thematic"
+    folder: "mock/thematic"
+    create: true
+    extension: 'mdx'
+    format: 'frontmatter'
+    title: fields.id
+    identifier_field: fields.id
+    slug: "{{fields.id}}.thematic"
+    summary: "{{fields.name}}"
+    fields:
+      - {label: "ID", name: "id", widget: "string"}
+      - {label: "Thematic name", name: "name", widget: "string"}
+      - {label: "Description", name: "description", widget: "string"}
+      - label: "About"
+        name: "about"
+        widget: 'object'
+        fields:
+          - {label: 'Title', name: 'title', widget: 'string'}
+          - {label: 'Description', name: 'description', widget: 'string'}
+      - label: "Image"
+        name: "media"
+        widget: 'object'
+        fields:
+          - {label: 'File', name: 'src', widget: 'image'}
+          - {label: 'Alt text', name: 'alt', widget: 'string'}
+          - label: 'Author' 
+            name: 'author'
+            widget: 'object'
+            fields:
+              - {label: 'Name', name: 'name', widget: 'string'}
+              - {label: 'URL', name: 'url', widget: 'string'}
+  - name: "dataset"
+    label: "Dataset"
     folder: "mock/datasets"
     create: true
     extension: 'mdx'
     format: 'frontmatter'
+    title: fields.id
     identifier_field: fields.id
     slug: "{{fields.id}}.data"
+    summary: "{{fields.name}}"
     fields:
       - label: "Featured on"
         name: "featuredOn"
