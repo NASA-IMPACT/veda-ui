@@ -36,7 +36,7 @@
     //
     // Additionally, it's recommended that you use non-greedy capturing groups (e.g.
     // `(.*?)` vs `(.*)`), especially if matching against newline characters.
-    pattern: /^<Block>$\s*?(.*?)\n\n(.*?)\n^<\/Block>$/ms,
+    pattern: /^<Block/ms,
     // Given a RegExp Match object
     // (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match#return_value),
     // return an object with one property for each field defined in `fields`.
@@ -53,10 +53,7 @@
     // This is used to serialize the data from the custom widget to the
     // markdown document
     toBlock: function(data) {
-      return `
-      <Block type="${data.type}">
-      </Block>
-  `;
+      return `<Block type="${data.type}"></Block>`;
     },
     // Preview output for this component. Can either be a string or a React component
     // (component gives better render performance)
@@ -99,7 +96,7 @@
         widget: 'string'
       }
     ],
-
+    pattern: /^<Block/ms,
     fromBlock: function(match) {
       return {
         dataPath: match[1],
@@ -111,22 +108,22 @@
     },
 
     toBlock: function(data) {
-      return `
-      <Chart
-        dataPath="${data.dataPath}"
-        dateFormat="${data.dateFormat}"
-        idKey="${data.idKey}"  
-        xKey="${data.xKey}"
-        yKey="${data.yKey}"
-      >
-      </Chart>
+      return `<Block><Figure>
+          <Chart
+            dataPath="${data.dataPath}"
+            dateFormat="${data.dateFormat}"
+            idKey="${data.idKey}"  
+            xKey="${data.xKey}"
+            yKey="${data.yKey}"
+          >
+          </Chart>
+      </Figure></Block>
   `;
     },
 
     toPreview: function(data) {
       return `
-      <div
-      >
+      <div>
         Chart
       </div>
   `;
