@@ -33,7 +33,7 @@ function formatDate(dateData){
 function getSourceData(dateData) {
   // https://api.planet.com/basemaps/v1/mosaics?api_key=${}
   // oldest : 2016_02
-  const date = (!dateData || dateData < new Date('2016-02'))? '2016_02' : formatDate(dateData);
+  const date = (!dateData || dateData < new Date('2016-01'))? '2016_01' : formatDate(dateData);
   return {
         'type': 'raster',
         'tiles': [

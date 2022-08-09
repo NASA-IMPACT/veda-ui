@@ -83,7 +83,7 @@ function formatDate(dateData){
 }
 
 function getMapOptions(dateData) {
-  const date = (!dateData || dateData < new Date('2016-02'))? '2016_02' : formatDate(dateData);
+  const date = (!dateData || dateData < new Date('2016-01'))? '2016_01' : formatDate(dateData);
   return {
     style: {
       'version': 8,
@@ -124,7 +124,7 @@ const mapOptions: Partial<mapboxgl.MapboxOptions> = {
     'base-tiles': {
     'type': 'raster',
     'tiles': [
-      "/.netlify/functions/getplanet?z={z}&x={x}&y={y}&date=2016_02"
+      "/.netlify/functions/getplanet?z={z}&x={x}&y={y}&date=2016_01"
     ],
     'tileSize': 256,
     'attribution':
