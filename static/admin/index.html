@@ -12,5 +12,126 @@
 <script>
     CMS.registerWidget(AsyncSelectWidget.Widget)
 </script>
+<script>
+  CMS.registerEditorComponent({
+    // Internal id of the component
+    id: "block",
+    // Visible label
+    label: "Block",
+    // Fields the user need to fill out when adding an instance of the component
+    fields: [
+      {
+        name: 'type',
+        label: 'Type',
+        widget: 'select',
+        options: ["full", "wide"]
+      }
+    ],
+    // Regex pattern used to search for instances of this block in the markdown document.
+    // Patterns are run in a multline environment (against the entire markdown document),
+    // and so generally should make use of the multiline flag (`m`). If you need to capture
+    // newlines in your capturing groups, you can either use something like
+    // `([\S\s]*)`, or you can additionally enable the "dot all" flag (`s`),
+    // which will cause `(.*)` to match newlines as well.
+    //
+    // Additionally, it's recommended that you use non-greedy capturing groups (e.g.
+    // `(.*?)` vs `(.*)`), especially if matching against newline characters.
+    pattern: /^<Block>$\s*?(.*?)\n\n(.*?)\n^<\/Block>$/ms,
+    // Given a RegExp Match object
+    // (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match#return_value),
+    // return an object with one property for each field defined in `fields`.
+    //
+    // This is used to populate the custom widget in the markdown editor in the CMS.
+    fromBlock: function(match) {
+      return {
+        type: match[1]
+      };
+    },
+    // Given an object with one property for each field defined in `fields`,
+    // return the string you wish to be inserted into your markdown.
+    //
+    // This is used to serialize the data from the custom widget to the
+    // markdown document
+    toBlock: function(data) {
+      return `
+      <Block type="${data.type}">
+      </Block>
+  `;
+    },
+    // Preview output for this component. Can either be a string or a React component
+    // (component gives better render performance)
+    toPreview: function(data) {
+      return `
+      <div> Block, Prose </div>
+  `;
+    }
+  });
+
+  CMS.registerEditorComponent({
+    // Internal id of the component
+    id: "chart",
+    // Visible label
+    label: "Chart",
+    fields: [
+      {
+        name: 'dataPath',
+        label: 'Data Path',
+        widget: 'string'
+      },
+      {
+        name: 'dateFormat',
+        label: 'Date Format',
+        widget: 'string'
+      },
+      {
+        name: 'idKey',
+        label: 'ID Key',
+        widget: 'string'
+      },
+      {
+        name: 'xKey',
+        label: 'Key for X axis',
+        widget: 'string'
+      },
+      {
+        name: 'yKey',
+        label: 'Key for Y axis',
+        widget: 'string'
+      }
+    ],
+
+    fromBlock: function(match) {
+      return {
+        dataPath: match[1],
+        dateFormat: match[2],
+        idKey: match[3],
+        xKey: match[4],
+        yKey: match[5]
+      };
+    },
+
+    toBlock: function(data) {
+      return `
+      <Chart
+        dataPath="${data.dataPath}"
+        dateFormat="${data.dateFormat}"
+        idKey="${data.idKey}"  
+        xKey="${data.xKey}"
+        yKey="${data.yKey}"
+      >
+      </Chart>
+  `;
+    },
+
+    toPreview: function(data) {
+      return `
+      <div
+      >
+        Chart
+      </div>
+  `;
+    }
+  });
+  </script>
 </body>
 </html>
