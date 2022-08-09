@@ -75,6 +75,48 @@ const MapsContainer = styled.div`
 
 `;
 
+function formatNum(num) {
+  return num < 10? '0'+ num : num;
+}
+function formatDate(dateData){
+  return dateData.getFullYear() + '_' + (formatNum(dateData.getMonth()+1));
+}
+
+function getMapOptions(dateData) {
+  const date = (!dateData || dateData < new Date('2016-02'))? '2016_02' : formatDate(dateData);
+  return {
+    style: {
+      'version': 8,
+      'sources': {
+      'base-tiles': {
+      'type': 'raster',
+      'tiles': [
+        `/.netlify/functions/getplanet?z={z}&x={x}&y={y}&date=${date}`
+      ],
+      'tileSize': 256,
+      'attribution':
+      'Map tiles by <a target="_top" rel="noopener" href="https://planet.com">Planet</a>'
+      }
+      },
+      'layers': [
+      {
+      'id': 'planet-tiles',
+      'type': 'raster',
+      'source': 'base-tiles',
+      'minzoom': 0,
+      'maxzoom': 22
+      }
+      ]
+      },
+    logoPosition: 'bottom-left',
+    trackResize: true,
+    pitchWithRotate: false,
+    dragRotate: false,
+    zoom: 1
+  };
+}
+
+
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
   style: {
     'version': 8,
@@ -411,7 +453,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           onLoad={() => setMapLoaded(true)}
           onMoveEnd={onPositionChange}
           mapOptions={{
-            ...mapOptions,
+            ...getMapOptions(date),
             ...getMapPositionOptions(initialPosition),
             cooperativeGestures
           }}
