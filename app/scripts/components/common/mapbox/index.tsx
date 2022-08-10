@@ -1,4 +1,5 @@
-import React, {
+import * as React from 'react';
+import {
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -7,7 +8,7 @@ import React, {
   useState
 } from 'react';
 import styled from 'styled-components';
-import mapboxgl from 'mapbox-gl';
+import * as mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -36,7 +37,7 @@ import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
-import { ProjectionOptions } from './projection-selector';
+import { ProjectionOptions } from './projection-selector.types';
 
 const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
   color: 'white'

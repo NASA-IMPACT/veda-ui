@@ -1,38 +1,22 @@
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
-import mapboxgl from 'mapbox-gl';
 import { CollecticonGlobe } from '@devseed-ui/collecticons';
-import {
-  Dropdown,
-  DropMenu,
-  DropMenuItem,
-  DropTitle
-} from '@devseed-ui/dropdown';
+import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import { Button, createButtonStyles } from '@devseed-ui/button';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { FormFieldsetHeader, FormLegend } from '@devseed-ui/form';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
-import { FormFieldsetBodyColumns, FormFieldsetCompact } from '$styles/fieldset';
-import StressedFormGroupInput from '../stressed-form-group-input';
-import { validateRangeNum } from '$utils/utils';
-
-import { useState } from 'react';
-
-const ProjectionOptions = styled.div`
-  padding: ${glsp(0, 1)};
-
-  ${FormFieldsetHeader} {
-    padding-top: ${glsp(0.5)};
-    padding-bottom: 0;
-    border: none;
-  }
-
-  ${FormFieldsetBodyColumns} {
-    padding-top: ${glsp(0.5)};
-    padding-bottom: ${glsp(0.5)};
-  }
-`;
+import {
+  ProjectionItemConic,
+  ProjectionItemCustom,
+  ProjectionItemSimple
+} from './projection-selector-items';
+import {
+  MbProjectionOptions,
+  ProjectionListItem,
+  ProjectionOptions,
+  ProjectionSelectorProps
+} from './projection-selector.types';
 
 const DropHeader = styled.div`
   padding: ${glsp()};
@@ -72,60 +56,84 @@ const SelectorButton = styled(Button)`
   }
 `;
 
-export type ProjectionOptions = Exclude<
-  mapboxgl.MapboxOptions['projection'],
-  undefined
->;
-
-export type ProjectionName = ProjectionOptions['name'];
-
-export const projectionsList: {
-  id: ProjectionName;
-  label: string;
-  isConic?: boolean;
-}[] = [
-  { id: 'globe', label: 'Globe' },
-  { id: 'albers', label: 'Albers', isConic: true },
-  { id: 'equalEarth', label: 'Equal Earth' },
-  { id: 'equirectangular', label: 'Equirectangular' },
+// The id is internal to the app.
+// The mbId is the projection name to use with mapbox. This is needed because
+// multiple projections can be made from the same mapbox Id just by tweaking the
+// parallels and center values
+export const projectionsList: ProjectionListItem[] = [
+  { id: 'globe', mbId: 'globe', label: 'Globe' },
+  {
+    id: 'albers',
+    mbId: 'albers',
+    label: 'Albers',
+    conicValues: {
+      center: [-96, 37.5],
+      parallels: [29.5, 45.5]
+    }
+  },
+  { id: 'equalEarth', mbId: 'equalEarth', label: 'Equal Earth' },
+  { id: 'equirectangular', mbId: 'equirectangular', label: 'Equirectangular' },
   {
     id: 'lambertConformalConic',
+    mbId: 'lambertConformalConic',
     label: 'Lambert Conformal Conic',
-    isConic: true
+    conicValues: {
+      center: [0, 30],
+      parallels: [30, 30]
+    }
   },
-  { id: 'mercator', label: 'Mercator' },
-  { id: 'naturalEarth', label: 'Natural Earth' },
-  { id: 'winkelTripel', label: 'Winkel Tripel' }
-];
-
-// The conic projections require additional values.
-const projectionConicDefault = {
-  albers: {
-    center: [-96, 37.5],
-    parallels: [29.5, 45.5]
+  { id: 'mercator', mbId: 'mercator', label: 'Mercator' },
+  { id: 'naturalEarth', mbId: 'naturalEarth', label: 'Natural Earth' },
+  { id: 'winkelTripel', mbId: 'winkelTripel', label: 'Winkel Tripel' },
+  {
+    id: 'polarNorth',
+    mbId: 'lambertConformalConic',
+    label: 'Polar North',
+    isCustom: true,
+    conicValues: {
+      center: [-40, 0],
+      parallels: [90, 90]
+    }
   },
-  lambertConformalConic: {
-    center: [0, 30],
-    parallels: [30, 30]
+  {
+    id: 'polarSouth',
+    mbId: 'lambertConformalConic',
+    label: 'Polar South',
+    isCustom: true,
+    conicValues: {
+      center: [-40, 0],
+      parallels: [-89.99, -89.99]
+    }
   }
+];
+
+/**
+ * Return the correct format needed by mapbox to display the projection. We use
+ * custom projections that do not exist in mapbox and therefore we need to get
+ * the correct name and parallels and center values.
+ * For example the projection with id polarNorth is actually named
+ * lambertConformalConic
+ */
+export const convertProjectionToMapbox = (
+  projection: ProjectionOptions
+): MbProjectionOptions => {
+  const p = projectionsList.find((proj) => proj.id === projection.id);
+
+  if (!p) {
+    /* eslint-disable-next-line no-console */
+    console.error('projection', projection);
+    throw new Error(`Invalid projection with id: ${projection.id}`);
+  }
+
+  return {
+    ...projection,
+    name: p.mbId
+  };
 };
-
-const validateLon = validateRangeNum(-180, 180);
-const validateLat = validateRangeNum(-90, 90);
-
-const projectionConicCenter = [
-  { id: 'lng', label: 'Center Longitude', validate: validateLon },
-  { id: 'lat', label: 'Center Latitude', validate: validateLat }
-];
-
-const projectionConicParallel = [
-  { id: 'sParLat', label: 'Southern Parallel Lat', validate: validateLat },
-  { id: 'nParLat', label: 'Northern Parallel Lat', validate: validateLat }
-];
 
 // Default value for the projection state.
 export const projectionDefault: ProjectionOptions = {
-  name: 'mercator'
+  id: 'mercator'
 };
 
 const shadowScrollbarProps = {
@@ -135,26 +143,6 @@ const shadowScrollbarProps = {
 
 function ProjectionSelector(props: ProjectionSelectorProps) {
   const { projection, onChange } = props;
-
-  // Keep the values the user enters to be able to restore them whenever they
-  // switch projections.
-  const [conicValues, setConicValues] = useState(projectionConicDefault);
-
-  // Store the conic values for the selected projection and register the change
-  // for the parent.
-  const onChangeConicValues = (value, projName, field, idx) => {
-    const newConic = {
-      ...conicValues[projName],
-      [field]: Object.assign([], conicValues[projName][field], {
-        [idx]: value
-      })
-    };
-    setConicValues((v) => ({
-      ...v,
-      [projName]: newConic
-    }));
-    onChange({ ...projection, ...newConic });
-  };
 
   return (
     <DropdownWithScroll
@@ -172,88 +160,41 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
       <DropBody>
         <ShadowScrollbar scrollbarsProps={shadowScrollbarProps}>
           <DropMenu>
-            {projectionsList.map((proj) => (
-              <li key={proj.id}>
-                <DropMenuItem
-                  active={proj.id === projection.name}
-                  href='#'
-                  // data-dropdown='click.close'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (proj.isConic) {
-                      onChange({
-                        ...conicValues[proj.id],
-                        name: proj.id
-                      });
-                    } else {
-                      onChange({ name: proj.id });
-                    }
-                  }}
-                >
-                  {proj.label}
-                </DropMenuItem>
-                {proj.isConic && proj.id === projection.name && (
-                  <ProjectionOptions>
-                    <FormFieldsetCompact>
-                      <FormFieldsetHeader>
-                        <FormLegend>Center Lon/Lat</FormLegend>
-                      </FormFieldsetHeader>
-                      <FormFieldsetBodyColumns>
-                        {projectionConicCenter.map((field, idx) => (
-                          <StressedFormGroupInput
-                            key={field.id}
-                            hideHeader
-                            inputType='text'
-                            inputSize='small'
-                            id={`center-${field.id}`}
-                            name={`center-${field.id}`}
-                            label={field.label}
-                            value={conicValues[proj.id].center?.[idx]}
-                            validate={field.validate}
-                            onChange={(value) => {
-                              onChangeConicValues(
-                                Number(value),
-                                proj.id,
-                                'center',
-                                idx
-                              );
-                            }}
-                          />
-                        ))}
-                      </FormFieldsetBodyColumns>
-                    </FormFieldsetCompact>
-                    <FormFieldsetCompact>
-                      <FormFieldsetHeader>
-                        <FormLegend>S/N Parallels</FormLegend>
-                      </FormFieldsetHeader>
-                      <FormFieldsetBodyColumns>
-                        {projectionConicParallel.map((field, idx) => (
-                          <StressedFormGroupInput
-                            key={field.id}
-                            hideHeader
-                            inputType='text'
-                            inputSize='small'
-                            id={`parallels-${field.id}`}
-                            name={`parallels-${field.id}`}
-                            label={field.label}
-                            value={conicValues[proj.id].parallels?.[idx]}
-                            validate={field.validate}
-                            onChange={(value) => {
-                              onChangeConicValues(
-                                Number(value),
-                                proj.id,
-                                'parallels',
-                                idx
-                              );
-                            }}
-                          />
-                        ))}
-                      </FormFieldsetBodyColumns>
-                    </FormFieldsetCompact>
-                  </ProjectionOptions>
-                )}
-              </li>
-            ))}
+            {projectionsList.map((proj) => {
+              if (proj.isCustom && proj.conicValues) {
+                return (
+                  <ProjectionItemCustom
+                    key={proj.id}
+                    onChange={onChange}
+                    id={proj.id}
+                    label={proj.label}
+                    defaultConicValues={proj.conicValues}
+                    activeProjection={projection}
+                  />
+                );
+              } else if (proj.conicValues) {
+                return (
+                  <ProjectionItemConic
+                    key={proj.id}
+                    onChange={onChange}
+                    id={proj.id}
+                    label={proj.label}
+                    defaultConicValues={proj.conicValues}
+                    activeProjection={projection}
+                  />
+                );
+              } else {
+                return (
+                  <ProjectionItemSimple
+                    key={proj.id}
+                    onChange={onChange}
+                    id={proj.id}
+                    label={proj.label}
+                    activeProjection={projection}
+                  />
+                );
+              }
+            })}
           </DropMenu>
         </ShadowScrollbar>
       </DropBody>
@@ -262,11 +203,6 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
 }
 
 export default ProjectionSelector;
-
-type ProjectionSelectorProps = {
-  onChange: (projection: ProjectionOptions) => void;
-  projection: ProjectionOptions;
-};
 
 export function validateProjectionBlockProps({
   name,

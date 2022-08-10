@@ -1,6 +1,7 @@
-import React, { useEffect, RefObject, MutableRefObject } from 'react';
+import * as React from 'react';
+import { useEffect, RefObject, MutableRefObject } from 'react';
 import styled, { useTheme } from 'styled-components';
-import mapboxgl from 'mapbox-gl';
+import * as mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { round } from '$utils/format';
@@ -8,9 +9,13 @@ import { round } from '$utils/format';
 import MapboxStyleOverride from './mapbox-style-override';
 import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
-import ProjectionSelector, { ProjectionOptions } from './projection-selector';
+import ProjectionSelector, {
+  convertProjectionToMapbox
+} from './projection-selector';
 import { useMapboxControl } from './use-mapbox-control';
+import { ProjectionOptions } from './projection-selector.types';
 
+// @ts-expect-error Changing mapboxgl.accessToken is expected
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
 const SingleMapContainer = styled.div`
@@ -75,7 +80,7 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
       // Disable world copied to fix marker position errors when changing
       // projections. More at https://github.com/NASA-IMPACT/delta-ui/pull/201#issuecomment-1185390161
       renderWorldCopies: false,
-      projection,
+      projection: projection && convertProjectionToMapbox(projection),
       ...mapOptions
     });
 
@@ -129,7 +134,8 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
 
   useEffect(() => {
     if (!mapRef.current || !projection) return;
-    mapRef.current.setProjection({...projection});
+    // @ts-expect-error setProjection is missing on type
+    mapRef.current.setProjection({ ...convertProjectionToMapbox(projection) });
   }, [mapRef, projection]);
 
   useEffect(() => {

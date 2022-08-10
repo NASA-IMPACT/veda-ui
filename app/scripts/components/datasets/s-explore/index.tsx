@@ -1,4 +1,5 @@
-import React, {
+import * as React from 'react';
+import {
   useCallback,
   useEffect,
   useMemo,
@@ -15,9 +16,7 @@ import {
 } from '@devseed-ui/collecticons';
 
 import { resourceNotFound } from '$components/uhoh';
-import PageLocalNav, {
-  DatasetsLocalMenu
-} from '$components/common/page-local-nav';
+import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import { LayoutProps } from '$components/common/layout-root';
 import MapboxMap, { MapboxMapRef } from '$components/common/mapbox';
 import PageHero from '$components/common/page-hero';
@@ -52,10 +51,8 @@ import {
 import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { PanelDateWidget } from './panel-date-widget';
-import {
-  ProjectionOptions,
-  projectionDefault
-} from '$components/common/mapbox/projection-selector';
+import { projectionDefault } from '$components/common/mapbox/projection-selector';
+import { ProjectionOptions } from '$components/common/mapbox/projection-selector.types';
 
 const Explorer = styled.div`
   position: relative;
@@ -277,17 +274,17 @@ function DatasetsExplore() {
     default: projectionDefault,
     hydrator: (v) => {
       if (!v) return null;
-      const [name, rawCenter, rawParallels] = v.split('|');
+      const [id, rawCenter, rawParallels] = v.split('|');
       const center = rawCenter ? rawCenter.split(',').map(Number) : undefined;
       const parallels = rawParallels
         ? rawParallels.split(',').map(Number)
         : undefined;
-      return { name, center, parallels } as ProjectionOptions;
+      return { id, center, parallels } as ProjectionOptions;
     },
     dehydrator: (v) => {
       if (!v) return '';
-      const { name, center, parallels } = v;
-      return `${name}|${center?.join(',') || ''}|${parallels?.join(',') || ''}`;
+      const { id, center, parallels } = v;
+      return `${id}|${center?.join(',') || ''}|${parallels?.join(',') || ''}`;
     }
   });
 
@@ -456,13 +453,14 @@ function DatasetsExplore() {
         description={dataset.data.description}
         thumbnail={dataset.data.media?.src}
         localNavProps={{
-          parentName:'Dataset',
-          parentLabel:'Datasets',
-          parentTo:thematicDatasetsPath(thematic),
-          items:thematic.data.datasets,
-          currentId:dataset.data.id,
-          localMenuCmp:
-          <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
+          parentName: 'Dataset',
+          parentLabel: 'Datasets',
+          parentTo: thematicDatasetsPath(thematic),
+          items: thematic.data.datasets,
+          currentId: dataset.data.id,
+          localMenuCmp: (
+            <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
+          )
         }}
         hideFooter
       />
