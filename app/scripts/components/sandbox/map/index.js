@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormCheckable } from '@devseed-ui/form';
 
-import Constrainer from '../../../styles/constrainer';
-import { PageMainContent } from '../../../styles/page';
-import MapboxMap from '../../common/mapbox';
-import { projectionDefault } from '$components/common/mapbox/projection-selector';
+import Constrainer from '$styles/constrainer';
+import { PageMainContent } from '$styles/page';
+import MapboxMap from '$components/common/mapbox';
+import { projectionDefault } from '$components/common/mapbox/projection-selector/utils';
 
 const DemoMap = styled(MapboxMap)`
   height: 40rem;

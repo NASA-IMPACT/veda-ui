@@ -7,7 +7,8 @@ import React, {
 } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
-import dateFns from 'date-fns';
+// Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
+import * as dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';

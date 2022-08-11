@@ -11,7 +11,8 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
-import dateFns from 'date-fns';
+// Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
+import * as dateFns from 'date-fns';
 import {
   CollecticonCircleXmark,
   CollecticonChevronRightSmall,
