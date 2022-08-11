@@ -12,7 +12,7 @@ import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import ProjectionSelector from './projection-selector';
 import { useMapboxControl } from './use-mapbox-control';
-import { convertProjectionToMapbox } from './projection-selector-utils';
+import { convertProjectionToMapbox } from './projection-selector/utils';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 

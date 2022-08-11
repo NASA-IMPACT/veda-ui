@@ -35,7 +35,7 @@ import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
 import { BlockErrorBoundary } from '..';
 import { formatSingleDate } from '$components/common/mapbox/utils';
-import { convertProjectionToMapbox } from '$components/common/mapbox/projection-selector-utils';
+import { convertProjectionToMapbox } from '$components/common/mapbox/projection-selector/utils';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;

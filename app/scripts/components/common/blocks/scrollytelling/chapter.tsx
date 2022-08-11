@@ -7,7 +7,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlockProse } from '$styles/content-block';
 import { utcString2userTzDate } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
-import { validateProjectionBlockProps } from '$components/common/mapbox/projection-selector-utils';
+import { validateProjectionBlockProps } from '$components/common/mapbox/projection-selector/utils';
 
 /* eslint-disable react/no-unused-prop-types */
 export interface ChapterProps {

@@ -10,9 +10,9 @@ import {
   ProjectionItemConic,
   ProjectionItemCustom,
   ProjectionItemSimple
-} from './projection-selector-items';
-import { ProjectionSelectorProps } from './projection-selector.types';
-import { projectionsList } from './projection-selector-utils';
+} from './items';
+import { ProjectionSelectorProps } from './types';
+import { projectionsList } from './utils';
 
 const DropHeader = styled.div`
   padding: ${glsp()};

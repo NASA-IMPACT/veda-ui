@@ -5,13 +5,13 @@ import { glsp } from '@devseed-ui/theme-provider';
 import { FormFieldsetHeader, FormLegend } from '@devseed-ui/form';
 
 import { FormFieldsetBodyColumns, FormFieldsetCompact } from '$styles/fieldset';
-import StressedFormGroupInput from '../stressed-form-group-input';
+import StressedFormGroupInput from '../../stressed-form-group-input';
 
 import {
   ProjectionItemConicProps,
   ProjectionItemProps
-} from './projection-selector.types';
-import { validateLat, validateLon } from './projection-selector-utils';
+} from './types';
+import { validateLat, validateLon } from './utils';
 
 const ProjectionOptionsForm = styled.div`
   padding: ${glsp(0, 1)};

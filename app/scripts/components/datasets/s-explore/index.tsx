@@ -51,7 +51,7 @@ import {
 import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { PanelDateWidget } from './panel-date-widget';
-import { projectionDefault } from '$components/common/mapbox/projection-selector-utils';
+import { projectionDefault } from '$components/common/mapbox/projection-selector/utils';
 
 const Explorer = styled.div`
   position: relative;
