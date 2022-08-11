@@ -35,6 +35,7 @@ import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
 import { BlockErrorBoundary } from '..';
 import { formatSingleDate } from '$components/common/mapbox/utils';
+import { convertProjectionToMapbox } from '$components/common/mapbox/projection-selector-utils';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -302,15 +303,17 @@ function Scrollytelling(props) {
           zoom: chapter.zoom
         });
 
-        const projection = chapter.projectionName
+        const projection = chapter.projectionId
           ? {
-              name: chapter.projectionName,
+              id: chapter.projectionId,
               center: chapter.projectionCenter,
               parallels: chapter.projectionParallels
             }
           : undefined;
 
-        projection && mapRef.current?.setProjection(projection);
+        projection &&
+          // @ts-expect-error setProjection is missing on type
+          mapRef.current?.setProjection(convertProjectionToMapbox(projection));
       });
 
     return () => {

@@ -7,11 +7,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlockProse } from '$styles/content-block';
 import { utcString2userTzDate } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
-import {
-  ProjectionOptions,
-  ProjectionName,
-  validateProjectionBlockProps
-} from '$components/common/mapbox/projection-selector';
+import { validateProjectionBlockProps } from '$components/common/mapbox/projection-selector-utils';
 
 export interface ChapterProps {
   center: [number, number];
@@ -20,10 +16,10 @@ export interface ChapterProps {
   layerId: string;
   datetime?: string;
   showBaseMap?: boolean;
-  projectionName?: ProjectionName;
+  projectionId?: ProjectionOptions['id'];
   projectionCenter?: ProjectionOptions['center'];
   projectionParallels?: ProjectionOptions['parallels'];
-  children: any;
+  children: React.ReactNode;
 }
 
 export interface ScrollyChapter extends Omit<ChapterProps, 'datetime'> {
@@ -98,7 +94,7 @@ export function validateChapter(chapter: ChapterProps, index) {
     !centerValid && '- Invalid center coordinates. Use [longitude, latitude]';
 
   const projectionErrors = validateProjectionBlockProps({
-    name: chapter.projectionName,
+    id: chapter.projectionId,
     center: chapter.projectionCenter,
     parallels: chapter.projectionParallels
   });
