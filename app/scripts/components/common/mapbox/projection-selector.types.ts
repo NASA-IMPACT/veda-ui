@@ -1,16 +1,4 @@
-import * as mapboxgl from 'mapbox-gl';
-
-export type MbProjectionOptions = Exclude<
-  mapboxgl.MapboxOptions['projection'],
-  undefined
->;
-
-export type ProjectionOptions = Pick<
-  MbProjectionOptions,
-  'parallels' | 'center'
-> & {
-  id: MbProjectionOptions['name'] | 'polarNorth' | 'polarSouth';
-};
+import { MbProjectionOptions, ProjectionOptions } from 'delta/thematics';
 
 export type ProjectionConicOptions = {
   center: [number, number];

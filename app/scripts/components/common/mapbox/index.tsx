@@ -20,7 +20,7 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { DatasetDatumFnResolverBag } from 'delta/thematics';
+import { DatasetDatumFnResolverBag, ProjectionOptions } from 'delta/thematics';
 
 import {
   ActionStatus,
@@ -37,7 +37,6 @@ import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
-import { ProjectionOptions } from './projection-selector.types';
 
 const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
   color: 'white'
@@ -451,7 +450,7 @@ export interface MapboxMapProps {
   children?: React.ReactNode;
   aoi?: AoiState;
   onAoiChange?: AoiChangeListenerOverload,
-  projection?: ProjectionOptions,
+  projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void
 }
 

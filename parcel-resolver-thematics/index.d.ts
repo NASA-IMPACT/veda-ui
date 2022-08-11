@@ -11,6 +11,18 @@ declare module 'delta/thematics' {
   //
   // Dataset Layers
   //
+  export type MbProjectionOptions = Exclude<
+    mapboxgl.MapboxOptions['projection'],
+    undefined
+  >;
+
+  export type ProjectionOptions = Pick<
+    MbProjectionOptions,
+    'parallels' | 'center'
+  > & {
+    id: MbProjectionOptions['name'] | 'polarNorth' | 'polarSouth';
+  };
+
   interface DatasetSourceParams {
     [key: string]: any;
   }
@@ -42,7 +54,7 @@ declare module 'delta/thematics' {
     name: string;
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
-    projection: mapboxgl.MapboxOptions['projection'];
+    projection: ProjectionOptions;
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend: LayerLegendCategorical | LayerLegendGradient

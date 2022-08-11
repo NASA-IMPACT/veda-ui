@@ -4,16 +4,16 @@ import styled, { useTheme } from 'styled-components';
 import * as mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { ProjectionOptions } from 'delta/thematics';
+
 import { round } from '$utils/format';
 
 import MapboxStyleOverride from './mapbox-style-override';
 import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
-import ProjectionSelector, {
-  convertProjectionToMapbox
-} from './projection-selector';
+import ProjectionSelector from './projection-selector';
 import { useMapboxControl } from './use-mapbox-control';
-import { ProjectionOptions } from './projection-selector.types';
+import { convertProjectionToMapbox } from './projection-selector-utils';
 
 // @ts-expect-error Changing mapboxgl.accessToken is expected
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';

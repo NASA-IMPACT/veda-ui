@@ -14,6 +14,7 @@ import {
   CollecticonExpandFromLeft,
   CollecticonShrinkToLeft
 } from '@devseed-ui/collecticons';
+import { ProjectionOptions } from 'delta/thematics';
 
 import { resourceNotFound } from '$components/uhoh';
 import { DatasetsLocalMenu } from '$components/common/page-local-nav';
@@ -51,8 +52,7 @@ import {
 import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { PanelDateWidget } from './panel-date-widget';
-import { projectionDefault } from '$components/common/mapbox/projection-selector';
-import { ProjectionOptions } from '$components/common/mapbox/projection-selector.types';
+import { projectionDefault } from '$components/common/mapbox/projection-selector-utils';
 
 const Explorer = styled.div`
   position: relative;
@@ -370,7 +370,7 @@ function DatasetsExplore() {
       )
         return;
 
-      if (currActiveData?.projection?.name) {
+      if (currActiveData?.projection?.id) {
         setMapProjection(currActiveData?.projection);
       } else {
         setMapProjection(projectionDefault);

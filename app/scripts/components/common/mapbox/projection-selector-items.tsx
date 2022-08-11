@@ -7,12 +7,12 @@ import { FormFieldsetHeader, FormLegend } from '@devseed-ui/form';
 
 import { FormFieldsetBodyColumns, FormFieldsetCompact } from '$styles/fieldset';
 import StressedFormGroupInput from '../stressed-form-group-input';
-import { validateRangeNum } from '$utils/utils';
 
 import {
   ProjectionItemConicProps,
   ProjectionItemProps
 } from './projection-selector.types';
+import { validateLat, validateLon } from './projection-selector-utils';
 
 const ProjectionOptionsForm = styled.div`
   padding: ${glsp(0, 1)};
@@ -28,9 +28,6 @@ const ProjectionOptionsForm = styled.div`
     padding-bottom: ${glsp(0.5)};
   }
 `;
-
-const validateLon = validateRangeNum(-180, 180);
-const validateLat = validateRangeNum(-90, 90);
 
 const projectionConicCenter = [
   { id: 'lng', label: 'Center Longitude', validate: validateLon },
