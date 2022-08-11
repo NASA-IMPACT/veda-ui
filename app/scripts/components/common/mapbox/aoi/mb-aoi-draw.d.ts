@@ -1,4 +1,5 @@
-import { DefaultTheme } from 'styled-components';
+import { MutableRefObject } from 'react';
+import { DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components';
 import { AoiChangeListener, AoiState } from '$components/common/aoi/types';
 
 export const aoiCursorStyles: FlattenInterpolation<ThemeProps>;

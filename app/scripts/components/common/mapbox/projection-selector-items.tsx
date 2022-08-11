@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DropMenuItem } from '@devseed-ui/dropdown';
 import { glsp } from '@devseed-ui/theme-provider';

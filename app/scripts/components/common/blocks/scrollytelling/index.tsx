@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
-import * as dateFns from 'date-fns';
+import dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
@@ -196,7 +196,11 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
           }
         };
 
-        resolvedLayersCache.current[index] = resolved;
+        // Need to set it as ResolvedLayer because the "resolveConfigFunctions"
+        // is doing something weird to the tuples and converting something like
+        // "center: [number, number]" to "center: number[]" which fails
+        // validation.
+        resolvedLayersCache.current[index] = resolved as ResolvedLayer;
 
         return resolved;
       }),

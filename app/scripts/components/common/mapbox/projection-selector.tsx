@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { CollecticonGlobe } from '@devseed-ui/collecticons';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';

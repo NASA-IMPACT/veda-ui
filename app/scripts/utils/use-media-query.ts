@@ -52,7 +52,9 @@ export function useMediaQuery() {
   if (!theme.mediaRanges)
     throw new Error('There are no media ranges defined in the theme');
 
-  const ranges = Object.entries(theme.mediaRanges);
+  const ranges = Object.entries(
+    theme.mediaRanges as { [key: string]: [number | null , number | null ] }
+  );
 
   // Create breakpoints from media ranges.
   const breakpoints = useMemo(
@@ -90,7 +92,7 @@ export function useMediaQuery() {
     () =>
       ranges.reduce((acc, [rangeKey, bounds]) => {
         const upper = `${rangeKey.charAt(0).toUpperCase()}${rangeKey.slice(1)}`;
-        const makeKey = (b) => `is${upper}${b}`;
+        const makeKey = (b: string) => `is${upper}${b}`;
         let [lBound, uBound] = bounds;
         lBound = lBound ?? -Infinity;
         uBound = uBound ?? Infinity;

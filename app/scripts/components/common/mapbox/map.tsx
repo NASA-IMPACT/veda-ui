@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { useEffect, RefObject, MutableRefObject } from 'react';
+import React, { useEffect, RefObject, MutableRefObject } from 'react';
 import styled, { useTheme } from 'styled-components';
-import * as mapboxgl from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ProjectionOptions } from 'delta/thematics';
@@ -15,7 +14,6 @@ import ProjectionSelector from './projection-selector';
 import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './projection-selector-utils';
 
-// @ts-expect-error Changing mapboxgl.accessToken is expected
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 
 const SingleMapContainer = styled.div`

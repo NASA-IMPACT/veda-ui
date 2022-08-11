@@ -224,6 +224,7 @@ const matchingBlocks = {
   [`${fullBlockName}${figureDisplayName}${proseDisplayName}`]:
     ContentBlockPFDelta
 };
+
 function BlockComponent(props) {
   const { children, type } = props;
 
@@ -239,11 +240,13 @@ function BlockComponent(props) {
     ''
   );
 
-  if (![defaultBlockName, wideBlockName, fullBlockName].includes(typeName))
+  if (![defaultBlockName, wideBlockName, fullBlockName].includes(typeName)) {
     throw Error(`${blockTypeErrorMessage} '${typeName}'`);
+  }
 
-  if (!matchingBlocks[`${typeName}${childrenComponents}`])
+  if (!matchingBlocks[`${typeName}${childrenComponents}`]) {
     throw Error(contentTypeErrorMessage);
+  }
 
   return React.createElement(
     matchingBlocks[`${typeName}${childrenComponents}`],

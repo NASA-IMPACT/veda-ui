@@ -1,5 +1,4 @@
-import * as React from 'react';
-import {
+import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -8,11 +7,11 @@ import {
   useState
 } from 'react';
 import styled from 'styled-components';
-import * as mapboxgl from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
-import * as dateFns from 'date-fns';
+import dateFns from 'date-fns';
 import {
   CollecticonCircleXmark,
   CollecticonChevronRightSmall,
@@ -38,13 +37,15 @@ import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 
-const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
-  color: 'white'
-});
+const chevronRightURI = () =>
+  iconDataURI(CollecticonChevronRightSmall, {
+    color: 'white'
+  });
 
-const chevronLeftURI = () => iconDataURI(CollecticonChevronLeftSmall, {
-  color: 'white'
-});
+const chevronLeftURI = () =>
+  iconDataURI(CollecticonChevronLeftSmall, {
+    color: 'white'
+  });
 
 const MapsContainer = styled.div`
   position: relative;
@@ -72,7 +73,6 @@ const MapsContainer = styled.div`
       background-image: url('${chevronRightURI()}');
     }
   }
-
 `;
 
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
@@ -226,7 +226,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.
     const providedLabel = compareLabel || compareLayerResolvedData?.mapLabel;
-    if (providedLabel) return providedLabel;
+    if (providedLabel) return providedLabel as string;
 
     // Default to date comparison.
     return date && compareToDate
@@ -449,9 +449,9 @@ export interface MapboxMapProps {
   withGeocoder?: boolean;
   children?: React.ReactNode;
   aoi?: AoiState;
-  onAoiChange?: AoiChangeListenerOverload,
+  onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
-  onProjectionChange?: (projection: ProjectionOptions) => void
+  onProjectionChange?: (projection: ProjectionOptions) => void;
 }
 
 export type MapboxMapRef = {

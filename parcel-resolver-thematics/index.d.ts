@@ -31,23 +31,25 @@ declare module 'delta/thematics' {
     zoomExtent?: number[];
     sourceParams?: DatasetSourceParams;
   }
-  
+
   export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
   export type DatasetDatumReturnType = Primitives | Date;
   interface DatasetLayerCommonCompareProps extends DatasetLayerCommonProps {
-    mapLabel?: string | (DatasetDatumFn<DatasetDatumReturnType>);
+    mapLabel?: string | DatasetDatumFn<DatasetDatumReturnType>;
   }
-  
-  export interface DatasetLayerCompareSTAC extends DatasetLayerCommonCompareProps {
+
+  export interface DatasetLayerCompareSTAC
+    extends DatasetLayerCommonCompareProps {
     stacCol: string;
     type: DatasetLayerType;
   }
-  
-  export interface DatasetLayerCompareInternal extends DatasetLayerCommonCompareProps {
+
+  export interface DatasetLayerCompareInternal
+    extends DatasetLayerCommonCompareProps {
     datasetId: string;
     layerId: string;
   }
-  
+
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
@@ -57,14 +59,15 @@ declare module 'delta/thematics' {
     projection: ProjectionOptions;
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
-    legend: LayerLegendCategorical | LayerLegendGradient
+    legend: LayerLegendCategorical | LayerLegendGradient;
   }
 
   // A normalized compare layer is the result after the compare definition is
   // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
   // difference with a "base" dataset layer is not having a name and
   // description.
-  export interface DatasetLayerCompareNormalized extends DatasetLayerCommonCompareProps {
+  export interface DatasetLayerCompareNormalized
+    extends DatasetLayerCommonCompareProps {
     id: string;
     stacCol: string;
     type: DatasetLayerType;
@@ -81,7 +84,7 @@ declare module 'delta/thematics' {
     compareDatetime?: Date;
 
     /* functions from date-fns package */
-    dateFns: typeof dateFns
+    dateFns: typeof dateFns;
   }
 
   export interface LayerLegendGradient {
@@ -91,7 +94,7 @@ declare module 'delta/thematics' {
     stops: string[];
   }
 
-  type CategoricalStop = { color: string; label: string; }
+  type CategoricalStop = { color: string; label: string };
 
   export interface LayerLegendCategorical {
     type: 'categorical';
@@ -119,9 +122,9 @@ declare module 'delta/thematics' {
     description: string;
     usage?: {
       url: string;
-      title: string
+      title: string;
     };
-    media?: Media
+    media?: Media;
     layers: DatasetLayer[];
     related?: Array<RelatedContentData>;
   }
@@ -138,7 +141,7 @@ declare module 'delta/thematics' {
     id: string;
     name: string;
     description: string;
-    media?: Media
+    media?: Media;
     thematics: string[];
     related?: Array<RelatedContentData>;
   }
@@ -168,29 +171,28 @@ declare module 'delta/thematics' {
     alt: string;
     author?: {
       name: string;
-      url: string
-    }
+      url: string;
+    };
   }
-
 
   /**
    * Base structure for each of the data types in delta/thematics.
    */
-   interface DeltaData<T> {
+  interface DeltaData<T> {
     [key: string]: DeltaDatum<T>;
   }
 
   interface DeltaDatum<T> {
     /**
-    * Contains all the variables in the content's front matter.
-    */
+     * Contains all the variables in the content's front matter.
+     */
     data: T;
     /**
-    * Promise to return the MDX content. Setup this way to allow dynamic
-    * module loading.
-    */
+     * Promise to return the MDX content. Setup this way to allow dynamic
+     * module loading.
+     */
     content: () => Promise<MDXModule>;
- }
+  }
 
   /**
    * Named exports: datasets.
@@ -226,7 +228,7 @@ declare module 'delta/thematics' {
    * respective datasets and discoveries. It contains no MDX content, just the
    * frontmatter data.
    */
-  declare const _default: DeltaThematicListItem[];
+  const _default: DeltaThematicListItem[];
   export default _default;
 
   export type PageOverrides = 'aboutContent' | 'sandbox-override';
