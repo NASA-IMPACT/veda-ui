@@ -96,7 +96,7 @@ export function validateProjectionBlockProps({
   if (id) {
     const allowedProjections = projectionsList.map((p) => p.id);
     const projectionsConic = projectionsList
-      .filter((p) => !!p.conicValues)
+      .filter((p) => !p.isCustom && !!p.conicValues)
       .map((p) => p.id);
 
     if (!allowedProjections.includes(id)) {
