@@ -1,9 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
-import { glsp, truncated } from '@devseed-ui/theme-provider';
 import {
-  CollecticonChevronDownSmall,
-  CollecticonChevronUpSmall
+  CollecticonCalendar,
+  CollecticonChevronLeftSmall,
+  CollecticonChevronRightSmall
 } from '@devseed-ui/collecticons';
 import { DatePicker, DropdownDatePickerProps } from '@devseed-ui/date-picker';
 import { Heading } from '@devseed-ui/typography';
@@ -18,36 +17,13 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 import { TimeDensity } from '$context/layer-data';
-
-const HeadingButton = styled.button`
-  appearance: none;
-  max-width: 100%;
-  position: relative;
-  display: flex;
-  gap: ${glsp(0.25)};
-  align-items: center;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  color: currentColor;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: left;
-  transition: all 0.32s ease 0s;
-
-  &:hover {
-    opacity: 0.64;
-  }
-
-  svg {
-    flex-shrink: 0;
-  }
-
-  > span {
-    ${truncated()}
-  }
-`;
+import {
+  Toolbar,
+  ToolbarIconButton,
+  VerticalDivider
+} from '@devseed-ui/toolbar';
+import { format } from 'date-fns';
+import { mod } from '$utils/utils';
 
 function getDatePickerView(timeDensity?: TimeDensity) {
   const view = {
@@ -72,9 +48,26 @@ interface PanelDateWidgetProps {
   isClearable?: boolean;
 }
 
+const formatDate = (date: Date | null, view: string) => {
+  if (!date) return 'Date';
+
+  switch (view) {
+    case 'decade':
+      return format(date, 'yyyy');
+    case 'year':
+      return format(date, 'MMM yyyy');
+    default:
+      return format(date, 'MMM do, yyyy');
+  }
+};
+
 export function PanelDateWidget(props: PanelDateWidgetProps) {
   const { title, onConfirm, value, timeDensity, availableDates, isClearable } =
     props;
+
+  const currIndex = availableDates?.findIndex(
+    (d) => d.getTime() === value.start?.getTime()
+  ) ?? -1;
 
   return (
     <PanelWidget>
@@ -85,6 +78,40 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
         <WidgetItemHeader>
           <WidgetItemHGroup>
             <WidgetItemHeadline>
+              <Heading as='h4' size='xsmall'>
+                {formatDate(value.start, getDatePickerView(timeDensity))}
+              </Heading>
+            </WidgetItemHeadline>
+            <Toolbar size='small'>
+              {!!availableDates && (
+                <React.Fragment>
+                  <ToolbarIconButton
+                    disabled={currIndex <= 0}
+                    onClick={() => {
+                      const p =
+                        availableDates[
+                          mod(currIndex - 1, availableDates.length)
+                        ];
+                      onConfirm({ start: p, end: p });
+                    }}
+                  >
+                    <CollecticonChevronLeftSmall />
+                  </ToolbarIconButton>
+                  <ToolbarIconButton
+                    disabled={currIndex < 0 || currIndex >= availableDates.length - 1}
+                    onClick={() => {
+                      const n =
+                        availableDates[
+                          mod(currIndex + 1, availableDates.length)
+                        ];
+                      onConfirm({ start: n, end: n });
+                    }}
+                  >
+                    <CollecticonChevronRightSmall />
+                  </ToolbarIconButton>
+                </React.Fragment>
+              )}
+              <VerticalDivider />
               <DatePicker
                 id='date-picker'
                 alignment='left'
@@ -97,25 +124,15 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
                 onConfirm={onConfirm}
                 isClearable={isClearable}
                 value={value}
-                renderTriggerElement={(
-                  { active, className, ...rest },
-                  label
-                ) => {
+                renderTriggerElement={(props) => {
                   return (
-                    <Heading as='h4' size='xsmall'>
-                      <HeadingButton {...rest} as='button'>
-                        <span>{label === 'Date' ? 'None' : label}</span>{' '}
-                        {active ? (
-                          <CollecticonChevronUpSmall />
-                        ) : (
-                          <CollecticonChevronDownSmall />
-                        )}
-                      </HeadingButton>
-                    </Heading>
+                    <ToolbarIconButton {...props}>
+                      <CollecticonCalendar />
+                    </ToolbarIconButton>
                   );
                 }}
               />
-            </WidgetItemHeadline>
+            </Toolbar>
           </WidgetItemHGroup>
         </WidgetItemHeader>
       </PanelWidgetBody>

@@ -14,6 +14,7 @@ import {
   CollecticonShrinkToLeft
 } from '@devseed-ui/collecticons';
 import { ProjectionOptions } from 'delta/thematics';
+import { FormSwitch } from '@devseed-ui/form';
 
 import { resourceNotFound } from '$components/uhoh';
 import { DatasetsLocalMenu } from '$components/common/page-local-nav';
@@ -77,19 +78,15 @@ const Carto = styled.div`
 `;
 
 const DatesWrapper = styled.div`
-  display: flex;
   position: relative;
   z-index: 10;
   box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')};
 
   > ${PanelWidget} {
     width: 100%;
-
-    &:not(:first-child) {
-      position: relative;
-      z-index: 10;
-      box-shadow: -1px 0 0 0 ${themeVal('color.base-100a')};
-    }
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 -1px 0 0 ${themeVal('color.base-100a')};
   }
 `;
 
@@ -503,6 +500,7 @@ function DatasetsExplore() {
                       availableDates={availableActiveLayerDates}
                     />
                   )}
+                  <FormSwitch textPlacement='right'>Toggle date comparison</FormSwitch>
                   {activeLayerCompareTimeseries && (
                     <PanelDateWidget
                       title='Date comparison'
