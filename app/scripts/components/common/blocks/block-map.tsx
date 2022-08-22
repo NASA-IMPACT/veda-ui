@@ -6,7 +6,11 @@ import { utcString2userTzDate } from '$utils/date';
 import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
 import { validateRangeNum } from '$utils/utils';
 import { HintedError } from '$utils/hinted-error';
-import { projectionDefault, validateProjectionBlockProps } from '../mapbox/projection-selector/utils';
+import {
+  convertProjectionToMapbox,
+  projectionDefault,
+  validateProjectionBlockProps
+} from '../mapbox/projection-selector/utils';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -126,17 +130,23 @@ function MapBlock(props: MapBlockProps) {
     ? utcString2userTzDate(compareDateTime)
     : undefined;
 
-  const projectionStart = useMemo(
-    () =>
-      projectionId
-        ? {
-            id: projectionId,
-            center: projectionCenter,
-            parallels: projectionParallels
-          }
-        : projectionDefault,
-    [projectionId, projectionCenter, projectionParallels]
-  );
+  const projectionStart = useMemo(() => {
+    if (projectionId) {
+      // Ensure that the default center and parallels are used if none are
+      // provided.
+      const projection = convertProjectionToMapbox({
+        id: projectionId,
+        center: projectionCenter,
+        parallels: projectionParallels
+      });
+      return {
+        ...projection,
+        id: projectionId
+      };
+    } else {
+      return projectionDefault;
+    }
+  }, [projectionId, projectionCenter, projectionParallels]);
 
   const [projection, setProjection] = useState(projectionStart);
 
