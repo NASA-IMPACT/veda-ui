@@ -261,6 +261,7 @@ BlockComponent.propTypes = {
 
 export class BlockErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
+    error.CRAOverlayIgnore = true;
     return { error: error };
   }
 
