@@ -46,6 +46,7 @@ interface PanelDateWidgetProps {
   timeDensity?: TimeDensity;
   availableDates?: Date[];
   isClearable?: boolean;
+  children?: React.ReactNode;
 }
 
 const formatDate = (date: Date | null, view: string) => {
@@ -62,12 +63,19 @@ const formatDate = (date: Date | null, view: string) => {
 };
 
 export function PanelDateWidget(props: PanelDateWidgetProps) {
-  const { title, onConfirm, value, timeDensity, availableDates, isClearable } =
-    props;
+  const {
+    title,
+    onConfirm,
+    value,
+    timeDensity,
+    availableDates,
+    isClearable,
+    children
+  } = props;
 
-  const currIndex = availableDates?.findIndex(
-    (d) => d.getTime() === value.start?.getTime()
-  ) ?? -1;
+  const currIndex =
+    availableDates?.findIndex((d) => d.getTime() === value.start?.getTime()) ??
+    -1;
 
   return (
     <PanelWidget>
@@ -98,7 +106,9 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
                     <CollecticonChevronLeftSmall />
                   </ToolbarIconButton>
                   <ToolbarIconButton
-                    disabled={currIndex < 0 || currIndex >= availableDates.length - 1}
+                    disabled={
+                      currIndex < 0 || currIndex >= availableDates.length - 1
+                    }
                     onClick={() => {
                       const n =
                         availableDates[
@@ -134,6 +144,7 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
               />
             </Toolbar>
           </WidgetItemHGroup>
+          {children}
         </WidgetItemHeader>
       </PanelWidgetBody>
     </PanelWidget>
