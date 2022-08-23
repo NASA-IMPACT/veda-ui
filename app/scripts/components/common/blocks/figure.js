@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import T from 'prop-types';
 import { Figure } from '$components/common/figure';
 import { figureDisplayName, captionDisplayName } from './block-constant';
-import { BlockErrorBoundary } from './';
+import { BlockErrorBoundary } from '.';
 
 const ContentBlockFigure = (props) => {
   const { children } = props;

@@ -2,21 +2,21 @@ import { DefaultTheme, StyledComponent } from 'styled-components';
 import { HeadingProps, Heading, Lead, Prose } from '@devseed-ui/typography';
 
 export const VarHeading: StyledComponent<
-  Heading,
+  typeof Heading,
   DefaultTheme,
   HeadingProps,
   never
 >;
 
 export const VarLead: StyledComponent<
-  Lead,
+  typeof Lead,
   DefaultTheme,
   HeadingProps,
   never
 >;
 
 export const VarProse: StyledComponent<
-  Prose,
+  typeof Prose,
   DefaultTheme,
   HeadingProps,
   never

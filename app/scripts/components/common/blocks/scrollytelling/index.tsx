@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
+// Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import * as dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
@@ -35,6 +36,7 @@ import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
 import { BlockErrorBoundary } from '..';
 import { formatSingleDate } from '$components/common/mapbox/utils';
+import { convertProjectionToMapbox } from '$components/common/mapbox/projection-selector/utils';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -195,7 +197,11 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
           }
         };
 
-        resolvedLayersCache.current[index] = resolved;
+        // Need to set it as ResolvedLayer because the "resolveConfigFunctions"
+        // is doing something weird to the tuples and converting something like
+        // "center: [number, number]" to "center: number[]" which fails
+        // validation.
+        resolvedLayersCache.current[index] = resolved as ResolvedLayer;
 
         return resolved;
       }),
@@ -302,15 +308,17 @@ function Scrollytelling(props) {
           zoom: chapter.zoom
         });
 
-        const projection = chapter.projectionName
+        const projection = chapter.projectionId
           ? {
-              name: chapter.projectionName,
+              id: chapter.projectionId,
               center: chapter.projectionCenter,
               parallels: chapter.projectionParallels
             }
           : undefined;
 
-        projection && mapRef.current?.setProjection(projection);
+        projection &&
+          // @ts-expect-error setProjection is missing on type
+          mapRef.current?.setProjection(convertProjectionToMapbox(projection));
       });
 
     return () => {

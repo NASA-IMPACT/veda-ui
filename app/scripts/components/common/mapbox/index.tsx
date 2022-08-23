@@ -11,6 +11,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
+// Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import * as dateFns from 'date-fns';
 import {
   CollecticonCircleXmark,
@@ -19,7 +20,7 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { DatasetDatumFnResolverBag } from 'delta/thematics';
+import { DatasetDatumFnResolverBag, ProjectionOptions } from 'delta/thematics';
 
 import {
   ActionStatus,
@@ -36,15 +37,16 @@ import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
-import { ProjectionOptions } from './projection-selector';
 
-const chevronRightURI = () => iconDataURI(CollecticonChevronRightSmall, {
-  color: 'white'
-});
+const chevronRightURI = () =>
+  iconDataURI(CollecticonChevronRightSmall, {
+    color: 'white'
+  });
 
-const chevronLeftURI = () => iconDataURI(CollecticonChevronLeftSmall, {
-  color: 'white'
-});
+const chevronLeftURI = () =>
+  iconDataURI(CollecticonChevronLeftSmall, {
+    color: 'white'
+  });
 
 const MapsContainer = styled.div`
   position: relative;
@@ -72,7 +74,6 @@ const MapsContainer = styled.div`
       background-image: url('${chevronRightURI()}');
     }
   }
-
 `;
 
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
@@ -226,7 +227,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.
     const providedLabel = compareLabel || compareLayerResolvedData?.mapLabel;
-    if (providedLabel) return providedLabel;
+    if (providedLabel) return providedLabel as string;
 
     // Default to date comparison.
     return date && compareToDate
@@ -449,9 +450,9 @@ export interface MapboxMapProps {
   withGeocoder?: boolean;
   children?: React.ReactNode;
   aoi?: AoiState;
-  onAoiChange?: AoiChangeListenerOverload,
-  projection?: ProjectionOptions,
-  onProjectionChange?: (projection: ProjectionOptions) => void
+  onAoiChange?: AoiChangeListenerOverload;
+  projection?: ProjectionOptions;
+  onProjectionChange?: (projection: ProjectionOptions) => void;
 }
 
 export type MapboxMapRef = {

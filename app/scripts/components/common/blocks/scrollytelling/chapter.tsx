@@ -1,18 +1,15 @@
 import React from 'react';
-import T from 'prop-types';
 import styled from 'styled-components';
 import { themeVal, media, multiply } from '@devseed-ui/theme-provider';
+import { ProjectionOptions } from 'delta/thematics';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlockProse } from '$styles/content-block';
 import { utcString2userTzDate } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
-import {
-  ProjectionOptions,
-  ProjectionName,
-  validateProjectionBlockProps
-} from '$components/common/mapbox/projection-selector';
+import { validateProjectionBlockProps } from '$components/common/mapbox/projection-selector/utils';
 
+/* eslint-disable react/no-unused-prop-types */
 export interface ChapterProps {
   center: [number, number];
   zoom: number;
@@ -20,11 +17,12 @@ export interface ChapterProps {
   layerId: string;
   datetime?: string;
   showBaseMap?: boolean;
-  projectionName?: ProjectionName;
+  projectionId?: ProjectionOptions['id'];
   projectionCenter?: ProjectionOptions['center'];
   projectionParallels?: ProjectionOptions['parallels'];
-  children: any;
+  children: React.ReactNode;
 }
+/* eslint-enable react/no-unused-prop-types */
 
 export interface ScrollyChapter extends Omit<ChapterProps, 'datetime'> {
   datetime?: Date;
@@ -49,7 +47,7 @@ const ChapterSelf = styled.div`
   }
 `;
 
-export function Chapter(props) {
+export function Chapter(props: ChapterProps) {
   const { children } = props;
   return (
     <ChapterSelf data-step>
@@ -59,10 +57,6 @@ export function Chapter(props) {
 }
 
 Chapter.displayName = chapterDisplayName;
-
-Chapter.propTypes = {
-  children: T.node
-};
 
 const lngValidator = validateRangeNum(-180, 180);
 const latValidator = validateRangeNum(-90, 90);
@@ -98,7 +92,7 @@ export function validateChapter(chapter: ChapterProps, index) {
     !centerValid && '- Invalid center coordinates. Use [longitude, latitude]';
 
   const projectionErrors = validateProjectionBlockProps({
-    name: chapter.projectionName,
+    id: chapter.projectionId,
     center: chapter.projectionCenter,
     parallels: chapter.projectionParallels
   });

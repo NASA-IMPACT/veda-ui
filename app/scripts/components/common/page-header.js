@@ -42,7 +42,11 @@ import { Tip } from './tip';
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
 
-const scrollDownMargin = css`calc(-2.5rem - (${variableGlsp(0.75)} * 2))`;
+// To avoid linting errors.
+const cssNoHighlight = css;
+const scrollDownMargin = cssNoHighlight`calc(-2.5rem - (${variableGlsp(
+  0.75
+)} * 2))`;
 
 const PageHeaderSelf = styled.header`
   display: flex;
