@@ -28,9 +28,12 @@ const dates = [
   new Date('2022-09-01'),
   new Date('2022-10-01'),
   new Date('2022-11-01'),
-  new Date('2022-12-01')
+  new Date('2022-12-01'),
+  new Date('2023-05-01')
 ];
-const readyDates = prepareDates(dates, 'month');
+const readyDatesD = prepareDates(dates, 'day');
+const readyDatesM = prepareDates(dates, 'month');
+const readyDatesY = prepareDates(dates, 'year');
 
 function SandboxTimeseries() {
   return (
@@ -38,7 +41,16 @@ function SandboxTimeseries() {
       <Constrainer>
         <Wrapper>
           <Box>
-            <TimeseriesControl data={readyDates} />
+            <h2>Month</h2>
+            <TimeseriesControl data={readyDatesM} timeUnit='month' />
+          </Box>
+          <Box>
+            <h2>Year</h2>
+            <TimeseriesControl data={readyDatesY} timeUnit='year' />
+          </Box>
+          <Box>
+            <h2>Day</h2>
+            <TimeseriesControl data={readyDatesD} timeUnit='day' />
           </Box>
         </Wrapper>
       </Constrainer>

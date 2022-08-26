@@ -8,8 +8,12 @@ import { DataPoints, DataLine } from './data-points';
 import TriggerRect from './trigger-rect';
 import { TimeseriesContext } from './context';
 import { FaderDefinition, MASK_ID } from './faders';
-import DateAxis from './date-axis';
-import { DATA_POINT_WIDTH, TimeseriesData } from './constants';
+import { DateAxis, DateAxisParent } from './date-axis';
+import {
+  DATA_POINT_WIDTH,
+  TimeseriesData,
+  TimeseriesTimeUnit
+} from './constants';
 
 const StyledSvg = styled.svg`
   display: block;
@@ -18,23 +22,27 @@ const StyledSvg = styled.svg`
 
 type TimeseriesControlProps = {
   data: TimeseriesData;
+  timeUnit: TimeseriesTimeUnit;
 };
 
 function TimeseriesControl(props: TimeseriesControlProps) {
-  const { data } = props;
+  const { data, timeUnit } = props;
   const { observe, width, height, outerWidth, outerHeight, margin } =
     useChartDimensions();
-
   const svgRef = useRef<SVGElement>(null);
   const [zoomXTranslation, setZoomXTranslation] = useState(0);
 
-  const x = useMemo(
-    () =>
-      scaleTime()
-        .domain([data[0].date, data.last.date])
-        .range([0, data.length * DATA_POINT_WIDTH]),
-    [data]
-  );
+  const getUID = useMemo(() => {
+    const id = `ts-${Math.random().toString(36).substring(2, 8)}`;
+    return (base) => `${id}-${base}`;
+  }, []);
+
+  const x = useMemo(() => {
+    const dataWidth = data.length * DATA_POINT_WIDTH;
+    return scaleTime()
+      .domain([data[0].date, data.last.date])
+      .range([16, Math.max(dataWidth, width) - 16]);
+  }, [data, width]);
 
   const onChartZoom = useCallback((event) => {
     setZoomXTranslation(event.transform.x);
@@ -51,22 +59,23 @@ function TimeseriesControl(props: TimeseriesControlProps) {
           outerHeight,
           margin,
           x,
-          zoomXTranslation
+          zoomXTranslation,
+          timeUnit,
+          getUID
         }}
       >
         <StyledSvg ref={svgRef} width={outerWidth} height={outerHeight}>
           <defs>
             <FaderDefinition />
           </defs>
-          <g
-            transform={`translate(${margin.left},${margin.top})`}
-            id='canvas'
-            mask={`url(#${MASK_ID})`}
-          >
-            <DataLine />
-            <DataPoints />
+          <g transform={`translate(${margin.left},${margin.top})`}>
+            <g mask={`url(#${getUID(MASK_ID)})`}>
+              <DataLine />
+              <DataPoints />
+              <DateAxis />
+            </g>
             <TriggerRect onZoom={onChartZoom} />
-            <DateAxis />
+            <DateAxisParent />
           </g>
         </StyledSvg>
       </TimeseriesContext.Provider>

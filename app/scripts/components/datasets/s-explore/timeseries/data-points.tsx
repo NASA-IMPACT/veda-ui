@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { select } from 'd3';
 
 import { useTimeseriesContext } from './context';
-import { CHART_HEIGHT } from './constants';
 
 const StyledG = styled.g`
   .data-point {
@@ -26,11 +25,11 @@ export function DataPoints() {
 
     rootG
       .selectAll('circle.data-point')
-      .data(data)
+      .data(data.filter((d) => d.hasData))
       .join('circle')
       .attr('class', 'data-point')
       .attr('cx', (d) => x(d.date))
-      .attr('cy', CHART_HEIGHT / 2)
+      .attr('cy', 12)
       .attr('r', 4);
 
     rootG
@@ -39,7 +38,7 @@ export function DataPoints() {
       .join('circle')
       .attr('class', 'data-point-valid')
       .attr('cx', (d) => x(d.date))
-      .attr('cy', CHART_HEIGHT / 2)
+      .attr('cy', 12)
       .attr('r', 2);
   }, [data, x]);
 
@@ -53,15 +52,15 @@ export function DataPoints() {
 }
 
 export function DataLine() {
-  const { height, data, x, zoomXTranslation } = useTimeseriesContext();
+  const { data, x, zoomXTranslation } = useTimeseriesContext();
 
   return (
     <line
       className='data-line'
-      x1={0}
-      y1={height / 2}
+      x1={x(data[0].date)}
+      y1={12}
       x2={x(data.last.date)}
-      y2={height / 2}
+      y2={12}
       stroke='black'
       transform={`translate(${zoomXTranslation}, 0)`}
     />

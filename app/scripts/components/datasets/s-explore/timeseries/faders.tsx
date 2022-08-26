@@ -4,9 +4,10 @@ import { useTimeseriesContext } from './context';
 import { getZoomTranslateExtent } from './trigger-rect';
 
 export const MASK_ID = 'gradient-mask';
+const FADE_ID = 'fade-gradient';
 
 export function FaderDefinition() {
-  const { zoomXTranslation, width,height, data, x } = useTimeseriesContext();
+  const { zoomXTranslation, width,height, data, x, getUID } = useTimeseriesContext();
 
   const [[xMinExtent], [xMaxExtent]] = getZoomTranslateExtent(data, x);
 
@@ -31,7 +32,7 @@ export function FaderDefinition() {
 
   return (
     <React.Fragment>
-      <linearGradient id='fade-gradient'>
+      <linearGradient id={getUID(FADE_ID)}>
         <stop
           className='fade-stop-0'
           stopOpacity={leftOpc}
@@ -57,13 +58,13 @@ export function FaderDefinition() {
           offset='100%'
         />
       </linearGradient>
-      <mask id={MASK_ID}>
+      <mask id={getUID(MASK_ID)}>
         <rect
           x={0}
           y={0}
           width={width}
           height={height}
-          fill='url(#fade-gradient)'
+          fill={`url(#${getUID(FADE_ID)})`}
         />
       </mask>
     </React.Fragment>

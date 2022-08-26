@@ -9,13 +9,13 @@ export function getZoomTranslateExtent(
 ): [[number, number], [number, number]] {
   const lastDate = data.last.date;
   return [
-    [-8, 0],
-    [xScale(lastDate) + 8, 0]
+    [0, 0],
+    [xScale(lastDate) + 16, 0]
   ];
 }
 
 type TriggerRectProps = {
-  onZoom: (event) => void
+  onZoom: (event) => void;
 };
 
 export default function TriggerRect(props: TriggerRectProps) {

@@ -7,7 +7,7 @@ import {
   format
 } from 'date-fns';
 
-import { CHART_HEIGHT } from './constants';
+import { CHART_HEIGHT, TimeseriesTimeUnit } from './constants';
 
 const margin = { top: 0, right: 0, bottom: 0, left: 0 };
 
@@ -31,7 +31,7 @@ export function useChartDimensions() {
 
 export function prepareDates(
   dates: Date[],
-  timeUnit: 'day' | 'month' | 'year'
+  timeUnit: TimeseriesTimeUnit
 ) {
   const domain = extent<Date, Date>(dates, (d) => d) as Date[];
 
