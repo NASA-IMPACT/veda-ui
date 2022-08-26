@@ -18,6 +18,7 @@ import SandboxMDXScrolly from './mdx-scrollytelling';
 import SandboxAOI from './aoi';
 import SandboxChart from './mdx-chart';
 import SandboxOverride from './override';
+import SandboxTimeseries from './timeseries';
 
 const pages = [
   {
@@ -69,6 +70,11 @@ const pages = [
     id: 'override',
     name: 'Override',
     component: SandboxOverride
+  },
+  {
+    id: 'timeseries',
+    name: 'Timeseries',
+    component: SandboxTimeseries
   }
 ];
 
