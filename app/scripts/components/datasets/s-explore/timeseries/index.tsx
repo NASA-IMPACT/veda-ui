@@ -22,11 +22,12 @@ const StyledSvg = styled.svg`
 
 type TimeseriesControlProps = {
   data: TimeseriesData;
+  value?: Date;
   timeUnit: TimeseriesTimeUnit;
 };
 
 function TimeseriesControl(props: TimeseriesControlProps) {
-  const { data, timeUnit } = props;
+  const { data, value, timeUnit } = props;
   const { observe, width, height, outerWidth, outerHeight, margin } =
     useChartDimensions();
   const svgRef = useRef<SVGElement>(null);
@@ -53,6 +54,7 @@ function TimeseriesControl(props: TimeseriesControlProps) {
       <TimeseriesContext.Provider
         value={{
           data,
+          value,
           width,
           height,
           outerWidth,

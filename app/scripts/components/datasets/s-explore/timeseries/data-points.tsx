@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { select } from 'd3';
+import { select, Selection } from 'd3';
+import { startOfDay, startOfMonth, startOfYear } from 'date-fns';
 
 import { useTimeseriesContext } from './context';
 
@@ -14,10 +15,35 @@ const StyledG = styled.g`
   .data-point-valid {
     fill: black;
   }
+
+  .select-highlight {
+    fill: none;
+    stroke-width: 2px;
+    stroke: black;
+  }
 `;
 
+function animateHighlight(
+  circle: Selection<SVGCircleElement, Date, SVGGElement | null, unknown>
+) {
+  return circle
+    .attr('r', 1)
+    .style('opacity', 1)
+    .transition()
+    .duration(1500)
+    .style('opacity', 0)
+    .attr('r', 10)
+    .on('end', () => animateHighlight(circle));
+}
+
+const startOfTimeUnit = {
+  year: startOfYear,
+  month: startOfMonth,
+  day: startOfDay
+};
+
 export function DataPoints() {
-  const { data, x, zoomXTranslation } = useTimeseriesContext();
+  const { data, value, timeUnit, x, zoomXTranslation } = useTimeseriesContext();
   const container = useRef<SVGGElement>(null);
 
   useEffect(() => {
@@ -41,6 +67,27 @@ export function DataPoints() {
       .attr('cy', 12)
       .attr('r', 2);
   }, [data, x]);
+
+  useEffect(() => {
+    const rootG = select(container.current);
+
+    const val = value ? [startOfTimeUnit[timeUnit](value)] : [];
+
+    rootG
+      .selectAll('.select-highlight')
+      .data(val)
+      .join(
+        (enter) =>
+          enter
+            .append('circle')
+            .lower()
+            .attr('class', 'select-highlight')
+            .attr('cy', 12)
+            .attr('cx', (d) => x(d))
+            .call(animateHighlight),
+        (update) => update.attr('cx', (d) => x(d)).call(animateHighlight)
+      );
+  }, [value, timeUnit, x]);
 
   return (
     <StyledG

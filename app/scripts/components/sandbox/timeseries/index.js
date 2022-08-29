@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { DatePicker } from '@devseed-ui/date-picker';
 
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
@@ -36,21 +37,51 @@ const readyDatesM = prepareDates(dates, 'month');
 const readyDatesY = prepareDates(dates, 'year');
 
 function SandboxTimeseries() {
+  const [activeDate, setActiveDate] = useState({
+    start: dates[0],
+    end: dates[0]
+  });
+
   return (
     <PageMainContent>
       <Constrainer>
         <Wrapper>
+          <DatePicker
+            id='date-picker'
+            alignment='left'
+            direction='down'
+            view='month'
+            max={dates.last}
+            min={dates[0]}
+            datesToRestrict={dates}
+            restrictMode='enable'
+            onConfirm={setActiveDate}
+            value={activeDate}
+            isClearable
+          />
           <Box>
             <h2>Month</h2>
-            <TimeseriesControl data={readyDatesM} timeUnit='month' />
+            <TimeseriesControl
+              data={readyDatesM}
+              value={activeDate.start}
+              timeUnit='month'
+            />
           </Box>
           <Box>
             <h2>Year</h2>
-            <TimeseriesControl data={readyDatesY} timeUnit='year' />
+            <TimeseriesControl
+              data={readyDatesY}
+              value={activeDate.start}
+              timeUnit='year'
+            />
           </Box>
           <Box>
             <h2>Day</h2>
-            <TimeseriesControl data={readyDatesD} timeUnit='day' />
+            <TimeseriesControl
+              data={readyDatesD}
+              value={activeDate.start}
+              timeUnit='day'
+            />
           </Box>
         </Wrapper>
       </Constrainer>

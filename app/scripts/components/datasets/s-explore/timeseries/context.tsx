@@ -5,6 +5,7 @@ import { TimeseriesData, TimeseriesTimeUnit } from './constants';
 
 type TimeseriesContextProps = {
   data: TimeseriesData;
+  value?: Date;
   width: number;
   height: number;
   outerWidth: number;
