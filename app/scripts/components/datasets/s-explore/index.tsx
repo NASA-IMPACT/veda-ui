@@ -14,6 +14,7 @@ import {
   CollecticonShrinkToLeft
 } from '@devseed-ui/collecticons';
 import { ProjectionOptions } from 'delta/thematics';
+import { FormSwitch } from '@devseed-ui/form';
 
 import { resourceNotFound } from '$components/uhoh';
 import { DatasetsLocalMenu } from '$components/common/page-local-nav';
@@ -77,19 +78,15 @@ const Carto = styled.div`
 `;
 
 const DatesWrapper = styled.div`
-  display: flex;
   position: relative;
   z-index: 10;
   box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')};
 
   > ${PanelWidget} {
     width: 100%;
-
-    &:not(:first-child) {
-      position: relative;
-      z-index: 10;
-      box-shadow: -1px 0 0 0 ${themeVal('color.base-100a')};
-    }
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 -1px 0 0 ${themeVal('color.base-100a')};
   }
 `;
 
@@ -318,7 +315,7 @@ function DatasetsExplore() {
       }
     });
 
-  const isComparing = !!selectedCompareDatetime;
+  const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
 
   // END QsState setup
   /** *********************************************************************** */
@@ -352,7 +349,7 @@ function DatasetsExplore() {
     [activeLayer]
   );
 
-  // On layer change, if reset the projection.
+  // On layer change, reset the projection.
   // When activating a layer always use the layer projection (if defined),
   // otherwise default to mercator. If this is the first layer loading (like
   // when the user enters the page), then use the projection in the url. This is
@@ -396,9 +393,23 @@ function DatasetsExplore() {
   // On layer change, if there's no compare layer, unset the date.
   useEffect(() => {
     if (activeLayer && !activeLayer.compareLayer) {
+      setIsComparing(false);
       setSelectedCompareDatetime(null);
     }
   }, [activeLayer, setSelectedCompareDatetime]);
+
+  // Deselect compare dates when compare toggle changes.
+  useEffect(() => {
+    if (isComparing && availableActiveLayerCompareDates?.length) {
+      setSelectedCompareDatetime(availableActiveLayerCompareDates.last);
+    } else {
+      setSelectedCompareDatetime(null);
+    }
+  }, [
+    isComparing,
+    availableActiveLayerCompareDates,
+    setSelectedCompareDatetime
+  ]);
 
   // When the available dates for the selected layer change, check if the
   // currently selected date is a valid one, otherwise reset to the first one in
@@ -501,16 +512,27 @@ function DatasetsExplore() {
                       onConfirm={datePickerConfirm}
                       timeDensity={activeLayerTimeseries?.timeDensity}
                       availableDates={availableActiveLayerDates}
-                    />
+                    >
+                      {activeLayerCompareTimeseries && (
+                        <FormSwitch
+                          id='compare-date-toggle'
+                          name='compare-date-toggle'
+                          checked={isComparing}
+                          textPlacement='right'
+                          onChange={() => setIsComparing((v) => !v)}
+                        >
+                          Toggle date comparison
+                        </FormSwitch>
+                      )}
+                    </PanelDateWidget>
                   )}
-                  {activeLayerCompareTimeseries && (
+                  {isComparing && activeLayerCompareTimeseries && (
                     <PanelDateWidget
                       title='Date comparison'
                       value={datePickerCompareValue}
                       onConfirm={datePickerCompareConfirm}
                       timeDensity={activeLayerCompareTimeseries?.timeDensity}
                       availableDates={availableActiveLayerCompareDates}
-                      isClearable
                     />
                   )}
                 </DatesWrapper>
