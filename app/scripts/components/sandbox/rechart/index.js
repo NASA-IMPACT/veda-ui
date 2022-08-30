@@ -32,7 +32,7 @@ function Rechart() {
             dataPath='/public/example.csv'
             dateFormat='%m/%d/%Y'
             idKey='County'
-            xKey='Test Date'
+            xKey='Year'
             yKey='New Positives'
             highlightStart='03/10/2020'
             highlightEnd='05/01/2020'

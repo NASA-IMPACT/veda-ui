@@ -25,7 +25,6 @@ const TooltipItem = styled.div`
 `;
 
 const TooltipComponent = ({
-  chartData,
   colors,
   dateFormat,
   xKey,
@@ -34,23 +33,22 @@ const TooltipComponent = ({
   label
 }) => {
   if (active && payload && payload.length) {
-    // slicing
-    const currentData = chartData.filter((e) => e[xKey] === label);
     return (
       <TooltipWrapper>
         <div>
           <strong>{dateFormatter(label, dateFormat)}</strong>
         </div>
-        {currentData.map((point, idx) => {
-          const { [xKey]: xKeyVal, ...properties } = point;
-          return (
-            <div key={JSON.stringify(properties)}>
-              <TooltipItem color={colors[idx]} />
-              <strong>{Object.keys(properties)[0]}</strong> :
-              {Object.values(properties)[0]}
-            </div>
-          );
-        })}
+        {Object.keys(payload[0].payload)
+          .filter((key) => key !== xKey)
+          .map((key, idx) => {
+            const point = payload[0].payload[key];
+            return (
+              <div key={`${key}`}>
+                <TooltipItem color={colors[idx]} />
+                <strong>{key}</strong> :{point}
+              </div>
+            );
+          })}
       </TooltipWrapper>
     );
   }

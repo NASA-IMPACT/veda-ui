@@ -6,12 +6,14 @@ export const dateFormatter = (date, dateFormat) => {
 };
 
 export const getTicks = (data, xKey) => {
-  return data.map((e) => new Date(e[xKey]));
+  const ticks = data.map((e) => new Date(e[xKey]));
+  return ticks;
 };
 
 export const getDomain = (data, xKey) => {
   if (!data.length) return [0, 0];
-  return [data[0][xKey], data[data.length - 1][xKey]];
+  const domain = [data[0][xKey], data[data.length - 1][xKey]];
+  return domain;
 };
 
 export const convertToTime = ({ timeString, dateFormat, debug }) => {
@@ -22,12 +24,24 @@ export const convertToTime = ({ timeString, dateFormat, debug }) => {
 };
 
 export function getFData({ data, idKey, xKey, yKey, dateFormat }) {
+  const midData = data.reduce((acc, curr) => {
+    if (!acc[curr[xKey]]) {
+      acc[curr[xKey]] = {
+        [curr[idKey]]: parseFloat(curr[yKey])
+      };
+    } else {
+      acc[curr[xKey]] = {
+        ...acc[curr[xKey]],
+        [curr[idKey]]: parseFloat(curr[yKey])
+      };
+    }
+    return acc;
+  }, {});
   const uniqueKeys = Array.from(new Set(data.map((d) => d[idKey])));
-
-  const fData = data.map((d) => {
+  const fData = Object.keys(midData).map((e) => {
     return {
-      [xKey]: convertToTime({ timeString: d[xKey], dateFormat }),
-      [d[idKey]]: parseFloat(d[yKey])
+      ...midData[e],
+      [xKey]: convertToTime({ timeString: e, dateFormat })
     };
   });
   return {

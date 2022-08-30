@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  Brush,
   Label,
   ResponsiveContainer,
   ReferenceArea
@@ -20,6 +21,7 @@ import {
   dateFormatter,
   getTicks,
   getDomain,
+  yDomain,
   getFData,
   convertToTime
 } from './utils';
@@ -27,6 +29,16 @@ import {
 const LineChartWithFont = styled(LineChart)`
   font-size: 12px;
 `;
+
+const syncId = 'syncsync';
+const syncMethodFunction = (index, data, chartData, xKey) => {
+  return chartData.findIndex((e) => {
+    return (
+      new Date(e[xKey]).getYear() ===
+      new Date(data.activePayload[0].payload[xKey]).getYear()
+    );
+  });
+};
 
 const RLineChart = function ({
   dataPath,
@@ -36,6 +48,8 @@ const RLineChart = function ({
   colors,
   colorScheme = 'viridis',
   dateFormat,
+  altTitle,
+  altDesc,
   highlightStart,
   highlightEnd,
   highlightLabel,
@@ -43,11 +57,13 @@ const RLineChart = function ({
   yAxisLabel
 }) {
   const [chartData, setChartData] = useState([]);
+  const [brushedData, setBrushedData] = useState([]);
   const [uniqueKeys, setUniqueKeys] = useState([]);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(0);
   useEffect(() => {
     const getData = async () => {
       let data = await csv(dataPath);
-
       const { fData, uniqueKeys } = getFData({
         data,
         xKey,
@@ -56,16 +72,45 @@ const RLineChart = function ({
         dateFormat
       });
       setChartData(fData);
+      console.log(fData);
+      setBrushedData(fData);
+      setEndIndex(10);
       setUniqueKeys(uniqueKeys);
     };
 
     getData();
-  }, [setChartData, setUniqueKeys, idKey, xKey, yKey, dataPath, dateFormat]);
+  }, [
+    setChartData,
+    setBrushedData,
+    setUniqueKeys,
+    idKey,
+    xKey,
+    yKey,
+    dataPath,
+    dateFormat
+  ]);
+
   const ticks = getTicks(chartData, xKey);
   const domain = getDomain(chartData, xKey);
+
   const lineColors = colors
     ? colors
     : getColors({ steps: uniqueKeys.length, colorScheme });
+
+  const handleOnChange = (event) => {
+    console.log(event);
+    const startIndex = event.startIndex;
+    const endIndex = event.endIndex;
+    const newData = chartData.filter((e) => {
+      return (
+        new Date(e[xKey]) > new Date(chartData[startIndex][xKey]) ||
+        new Date(e[xKey]) < new Date(chartData[endIndex][xKey])
+      );
+    });
+    setStartIndex(startIndex);
+    setEndIndex(endIndexs);
+    setChartData(newData);
+  };
   return (
     <ResponsiveContainer width='100%' height='80%' maxHeight='400px'>
       <LineChartWithFont
@@ -90,6 +135,7 @@ const RLineChart = function ({
         <YAxis>
           <Label value={yAxisLabel} angle={-90} position='insideLeft' />
         </YAxis>
+
         {highlightStart && (
           <ReferenceArea
             x1={convertToTime({
@@ -119,16 +165,33 @@ const RLineChart = function ({
         <Tooltip
           content={
             <TooltipComponent
-              chartData={chartData}
               dateFormat={dateFormat}
               xKey={xKey}
               colors={lineColors}
             />
           }
         />
+        <Brush />
       </LineChartWithFont>
     </ResponsiveContainer>
   );
+};
+
+RLineChart.propTypes = {
+  dataPath: T.string,
+  idKey: T.string,
+  xKey: T.string,
+  yKey: T.string,
+  xAxisLabel: T.string,
+  yAxisLabel: T.string,
+  altTitle: T.string,
+  altDesc: T.string,
+  dateFormat: T.string,
+  colors: T.array,
+  colorScheme: T.string,
+  highlightStart: T.string,
+  highlightEnd: T.string,
+  highlightLabel: T.string
 };
 
 export default RLineChart;
