@@ -24,6 +24,7 @@ function Rechart() {
             idKey='Data Type'
             dateFormat='%Y'
             yKey='United States Change from 2005'
+            colors={['red', 'grey']}
             xAxisLabel='x axis label'
             yAxisLabel='y axis label'
           />

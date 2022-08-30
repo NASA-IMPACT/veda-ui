@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import T from 'prop-types';
 import { csv, json } from 'd3-fetch';
 import styled from 'styled-components';
-import { timeFormat, timeParse } from 'd3-time-format';
+
 import {
   LineChart,
   Line,
@@ -13,68 +13,20 @@ import {
   ResponsiveContainer,
   ReferenceArea
 } from 'recharts';
+
 import { getColors } from '$components/common/blocks/chart/utils';
+import TooltipComponent from './tooltip';
+import {
+  dateFormatter,
+  getTicks,
+  getDomain,
+  getFData,
+  convertToTime
+} from './utils';
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 12px;
 `;
-
-const getTicks = (data, xKey) => {
-  return data.map((e) => new Date(e[xKey]));
-};
-
-const getDomain = (data, xKey) => {
-  if (!data.length) return [0, 0];
-  return [data[0][xKey], data[data.length - 1][xKey]];
-};
-
-const convertToTime = ({ timeString, dateFormat, debug }) => {
-  if (debug) console.log(timeString);
-  const parseDate = timeParse(dateFormat);
-
-  return parseDate(timeString).getTime();
-};
-
-function getFData({ data, idKey, xKey, yKey, dateFormat }) {
-  let uniqueKeys = [];
-  const slicedData = data.reduce((acc, curr) => {
-    if (!acc[curr[idKey]]) {
-      uniqueKeys.push(curr[idKey]);
-      acc[curr[idKey]] = [];
-    }
-    acc[curr[idKey]].push({
-      [xKey]: convertToTime({ timeString: curr[xKey], dateFormat }),
-      [curr[idKey]]: parseFloat(curr[yKey])
-    });
-    return acc;
-  }, []);
-
-  const fData = data.map((d) => {
-    return {
-      [xKey]: convertToTime({ timeString: d[xKey], dateFormat }),
-      [d[idKey]]: parseFloat(d[yKey])
-    };
-  });
-  return {
-    uniqueKeys,
-    slicedData,
-    fData
-  };
-}
-
-const CustomTooltip = ({ testData, active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className='custom-tooltip'>
-        <p className='label'>
-          {`${new Date(label)} : ${testData} ${payload[0].value}`}
-        </p>
-      </div>
-    );
-  }
-
-  return null;
-};
 
 const RLineChart = function ({
   dataPath,
@@ -96,7 +48,7 @@ const RLineChart = function ({
     const getData = async () => {
       let data = await csv(dataPath);
 
-      const { fData, slicedData, uniqueKeys } = getFData({
+      const { fData, uniqueKeys } = getFData({
         data,
         xKey,
         idKey,
@@ -106,16 +58,9 @@ const RLineChart = function ({
       setChartData(fData);
       setUniqueKeys(uniqueKeys);
     };
-    console.log(slicedData);
+
     getData();
   }, [setChartData, setUniqueKeys, idKey, xKey, yKey, dataPath, dateFormat]);
-  console.log(uniqueKeys);
-  console.log(chartData);
-  const dateFormatter = (date) => {
-    const format = timeFormat(dateFormat);
-    return format(date);
-  };
-
   const ticks = getTicks(chartData, xKey);
   const domain = getDomain(chartData, xKey);
   const lineColors = colors
@@ -123,16 +68,24 @@ const RLineChart = function ({
     : getColors({ steps: uniqueKeys.length, colorScheme });
   return (
     <ResponsiveContainer width='100%' height='80%' maxHeight='400px'>
-      <LineChartWithFont data={chartData}>
+      <LineChartWithFont
+        data={chartData}
+        margin={{
+          top: 20,
+          right: 30,
+          left: 20,
+          bottom: 20
+        }}
+      >
         <XAxis
           scale='time'
           type='number'
           dataKey={xKey}
           domain={domain}
-          tickFormatter={dateFormatter}
+          tickFormatter={(t) => dateFormatter(t, dateFormat)}
           ticks={ticks}
         >
-          <Label value={xAxisLabel} offset={0} position='insideBottom' />
+          <Label value={xAxisLabel} offset={0} position='bottom' />
         </XAxis>
         <YAxis>
           <Label value={yAxisLabel} angle={-90} position='insideLeft' />
@@ -156,13 +109,23 @@ const RLineChart = function ({
               type='linear'
               isAnimationActive={false}
               dot={false}
+              activeDot={false}
               key={`${k}-line`}
               dataKey={k}
               stroke={lineColors[idx]}
             />
           );
         })}
-        <Tooltip content={<CustomTooltip testData='data' />} />
+        <Tooltip
+          content={
+            <TooltipComponent
+              chartData={chartData}
+              dateFormat={dateFormat}
+              xKey={xKey}
+              colors={lineColors}
+            />
+          }
+        />
       </LineChartWithFont>
     </ResponsiveContainer>
   );
