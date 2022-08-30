@@ -23,8 +23,10 @@ const StyledG = styled.g`
   }
 `;
 
+type HighlightCircle = Selection<SVGCircleElement, Date, SVGGElement | null, unknown>;
+
 function animateHighlight(
-  circle: Selection<SVGCircleElement, Date, SVGGElement | null, unknown>
+  circle: HighlightCircle
 ) {
   return circle
     .attr('r', 1)
@@ -71,22 +73,30 @@ export function DataPoints() {
   useEffect(() => {
     const rootG = select(container.current);
 
-    const val = value ? [startOfTimeUnit[timeUnit](value)] : [];
+    const val = value ? startOfTimeUnit[timeUnit](value) : null;
 
-    rootG
-      .selectAll('.select-highlight')
-      .data(val)
-      .join(
-        (enter) =>
-          enter
-            .append('circle')
-            .lower()
-            .attr('class', 'select-highlight')
-            .attr('cy', 12)
-            .attr('cx', (d) => x(d))
-            .call(animateHighlight),
-        (update) => update.attr('cx', (d) => x(d)).call(animateHighlight)
-      );
+    if (val) {
+      let circle = rootG.select('.select-highlight') as HighlightCircle;
+
+      if (circle.empty()) {
+        circle = rootG
+          .append('circle')
+          .lower()
+          .datum(val)
+          .attr('class', 'select-highlight')
+          .attr('cy', 12);
+      }
+
+      circle
+      .attr('cx', (d) => x(d))
+      .call(animateHighlight);
+    }
+
+    return () => {
+      if (val) {
+        rootG.select('.select-highlight').remove();
+      }
+    };
   }, [value, timeUnit, x]);
 
   return (

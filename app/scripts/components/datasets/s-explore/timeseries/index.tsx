@@ -20,6 +20,7 @@ import {
   TimeseriesData,
   TimeseriesTimeUnit
 } from './constants';
+import { useEffectPrevious } from '$utils/use-effect-previous';
 
 const StyledSvg = styled.svg`
   display: block;
@@ -70,26 +71,19 @@ function TimeseriesControl(props: TimeseriesControlProps) {
     }
   }, []);
 
-  useEffect(() => {
-    if (!value) return;
+  useEffectPrevious(
+    (deps, mounted) => {
+      if (!value || !mounted) return;
 
-    const triggerRect = select(svgRef.current).select<SVGRectElement>(
-      '.trigger-rect'
-    );
+      const triggerRect = select(svgRef.current)
+        .select<SVGRectElement>('.trigger-rect')
+        .transition()
+        .duration(500);
 
-    function isDateInViewport(date) {
-      const zoomProp = triggerRect.property('__zoom');
-      const xTranslation = Math.max(zoomProp.x * -1, 0);
-      const visibleArea = [xTranslation, xTranslation + width];
-      const xPosOriginal = x(date);
-
-      return xPosOriginal >= visibleArea[0] && xPosOriginal <= visibleArea[1];
-    }
-
-    if (!isDateInViewport(value)) {
       zoomBehavior.translateTo(triggerRect, x(value), 0);
-    }
-  }, [value, width, x, zoomBehavior]);
+    },
+    [value, width, x, zoomBehavior]
+  );
 
   return (
     <div style={{ position: 'relative' }} ref={observe}>
@@ -119,10 +113,7 @@ function TimeseriesControl(props: TimeseriesControlProps) {
               <DataPoints />
               <DateAxis />
             </g>
-            <TriggerRect
-              onDataClick={onChange}
-              onDataOverOut={onDataOverOut}
-            />
+            <TriggerRect onDataClick={onChange} onDataOverOut={onDataOverOut} />
             <DateAxisParent />
           </g>
         </StyledSvg>
