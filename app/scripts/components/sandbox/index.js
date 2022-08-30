@@ -18,8 +18,13 @@ import SandboxMDXScrolly from './mdx-scrollytelling';
 import SandboxAOI from './aoi';
 import SandboxChart from './mdx-chart';
 import SandboxOverride from './override';
-
+import Rechart from './rechart';
 const pages = [
+  {
+    id: 'rechart',
+    name: 'Rechart',
+    component: Rechart
+  },
   {
     id: 'typography',
     name: 'Typography',
