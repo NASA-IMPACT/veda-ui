@@ -1,14 +1,14 @@
 import React, {
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState
 } from 'react';
 import styled from 'styled-components';
-import { themeVal } from '@devseed-ui/theme-provider';
 import { scaleTime, select, zoom } from 'd3';
+import { themeVal } from '@devseed-ui/theme-provider';
 
+import { useEffectPrevious } from '$utils/use-effect-previous';
 import { getZoomTranslateExtent, useChartDimensions } from './utils';
 import { DataPoints, DataLine } from './data-points';
 import TriggerRect from './trigger-rect';
@@ -20,7 +20,6 @@ import {
   TimeseriesData,
   TimeseriesTimeUnit
 } from './constants';
-import { useEffectPrevious } from '$utils/use-effect-previous';
 
 const StyledSvg = styled.svg`
   display: block;
