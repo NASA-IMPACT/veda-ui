@@ -1,4 +1,4 @@
-import { ScaleTime } from 'd3';
+import { ScaleTime, ZoomBehavior } from 'd3';
 import { createContext, useContext } from 'react';
 
 import { TimeseriesData, TimeseriesTimeUnit } from './constants';
@@ -13,6 +13,7 @@ type TimeseriesContextProps = {
   margin: { top: number; bottom: number; left: number; right: number };
   x: ScaleTime<number, number, never>;
   zoomXTranslation: number;
+  zoomBehavior: ZoomBehavior<SVGRectElement, unknown>;
   timeUnit: TimeseriesTimeUnit;
   getUID: (base: string) => string
 };

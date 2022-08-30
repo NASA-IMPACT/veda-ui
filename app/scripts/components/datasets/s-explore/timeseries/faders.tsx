@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useTimeseriesContext } from './context';
-import { getZoomTranslateExtent } from './trigger-rect';
+import { getZoomTranslateExtent } from './utils';
 
 export const MASK_ID = 'gradient-mask';
 const FADE_ID = 'fade-gradient';

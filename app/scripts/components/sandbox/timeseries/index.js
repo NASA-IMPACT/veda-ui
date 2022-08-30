@@ -65,6 +65,7 @@ function SandboxTimeseries() {
               data={readyDatesM}
               value={activeDate.start}
               timeUnit='month'
+              onChange={({ date }) => setActiveDate({ start: date, end: date })}
             />
           </Box>
           <Box>
@@ -73,6 +74,7 @@ function SandboxTimeseries() {
               data={readyDatesY}
               value={activeDate.start}
               timeUnit='year'
+              onChange={({ date }) => setActiveDate({ start: date, end: date })}
             />
           </Box>
           <Box>
@@ -81,6 +83,7 @@ function SandboxTimeseries() {
               data={readyDatesD}
               value={activeDate.start}
               timeUnit='day'
+              onChange={({ date }) => setActiveDate({ start: date, end: date })}
             />
           </Box>
         </Wrapper>

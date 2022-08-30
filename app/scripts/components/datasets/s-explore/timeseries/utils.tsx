@@ -29,10 +29,7 @@ export function useChartDimensions() {
   };
 }
 
-export function prepareDates(
-  dates: Date[],
-  timeUnit: TimeseriesTimeUnit
-) {
+export function prepareDates(dates: Date[], timeUnit: TimeseriesTimeUnit) {
   const domain = extent<Date, Date>(dates, (d) => d) as Date[];
 
   const dateFormat = {
@@ -58,4 +55,15 @@ export function prepareDates(
     date: d,
     hasData: searchStrs.includes(format(d, dateFormat))
   }));
+}
+
+export function getZoomTranslateExtent(
+  data,
+  xScale
+): [[number, number], [number, number]] {
+  const lastDate = data.last.date;
+  return [
+    [0, 0],
+    [xScale(lastDate) + 16, 0]
+  ];
 }

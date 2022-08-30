@@ -1,9 +1,15 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { scaleTime } from 'd3';
+import { scaleTime, select, zoom } from 'd3';
 
-import { useChartDimensions } from './utils';
+import { getZoomTranslateExtent, useChartDimensions } from './utils';
 import { DataPoints, DataLine } from './data-points';
 import TriggerRect from './trigger-rect';
 import { TimeseriesContext } from './context';
@@ -21,22 +27,24 @@ const StyledSvg = styled.svg`
 `;
 
 type TimeseriesControlProps = {
+  id?: string;
   data: TimeseriesData;
   value?: Date;
   timeUnit: TimeseriesTimeUnit;
+  onChange: ({ date: Date }) => void;
 };
 
 function TimeseriesControl(props: TimeseriesControlProps) {
-  const { data, value, timeUnit } = props;
+  const { id, data, value, timeUnit, onChange } = props;
   const { observe, width, height, outerWidth, outerHeight, margin } =
     useChartDimensions();
   const svgRef = useRef<SVGElement>(null);
-  const [zoomXTranslation, setZoomXTranslation] = useState(0);
 
+  // Unique id creator
   const getUID = useMemo(() => {
-    const id = `ts-${Math.random().toString(36).substring(2, 8)}`;
-    return (base) => `${id}-${base}`;
-  }, []);
+    const rand = `ts-${Math.random().toString(36).substring(2, 8)}`;
+    return (base) => `${id || rand}-${base}`;
+  }, [id]);
 
   const x = useMemo(() => {
     const dataWidth = data.length * DATA_POINT_WIDTH;
@@ -45,9 +53,43 @@ function TimeseriesControl(props: TimeseriesControlProps) {
       .range([16, Math.max(dataWidth, width) - 16]);
   }, [data, width]);
 
-  const onChartZoom = useCallback((event) => {
-    setZoomXTranslation(event.transform.x);
+  const [zoomXTranslation, setZoomXTranslation] = useState(0);
+  const zoomBehavior = useMemo(
+    () =>
+      zoom<SVGRectElement, unknown>()
+        .translateExtent(getZoomTranslateExtent(data, x))
+        .on('zoom', (event) => {
+          setZoomXTranslation(event.transform.x);
+        }),
+    [data, x]
+  );
+
+  const onDataOverOut = useCallback(({ hover }) => {
+    if (svgRef.current) {
+      svgRef.current.style.cursor = hover ? 'pointer' : '';
+    }
   }, []);
+
+  useEffect(() => {
+    if (!value) return;
+
+    const triggerRect = select(svgRef.current).select<SVGRectElement>(
+      '.trigger-rect'
+    );
+
+    function isDateInViewport(date) {
+      const zoomProp = triggerRect.property('__zoom');
+      const xTranslation = Math.max(zoomProp.x * -1, 0);
+      const visibleArea = [xTranslation, xTranslation + width];
+      const xPosOriginal = x(date);
+
+      return xPosOriginal >= visibleArea[0] && xPosOriginal <= visibleArea[1];
+    }
+
+    if (!isDateInViewport(value)) {
+      zoomBehavior.translateTo(triggerRect, x(value), 0);
+    }
+  }, [value, width, x, zoomBehavior]);
 
   return (
     <div style={{ position: 'relative' }} ref={observe}>
@@ -62,6 +104,7 @@ function TimeseriesControl(props: TimeseriesControlProps) {
           margin,
           x,
           zoomXTranslation,
+          zoomBehavior,
           timeUnit,
           getUID
         }}
@@ -76,7 +119,10 @@ function TimeseriesControl(props: TimeseriesControlProps) {
               <DataPoints />
               <DateAxis />
             </g>
-            <TriggerRect onZoom={onChartZoom} />
+            <TriggerRect
+              onDataClick={onChange}
+              onDataOverOut={onDataOverOut}
+            />
             <DateAxisParent />
           </g>
         </StyledSvg>
