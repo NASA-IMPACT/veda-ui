@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { format } from 'date-fns';
 import { DatePicker } from '@devseed-ui/date-picker';
+import { Button } from '@devseed-ui/button';
+import {
+  CollecticonChevronLeftSmall,
+  CollecticonChevronRightSmall
+} from '@devseed-ui/collecticons';
 
 import Constrainer from '$styles/constrainer';
+import { mod } from '$utils/utils';
 import { PageMainContent } from '$styles/page';
 import TimeseriesControl from '$components/datasets/s-explore/timeseries';
 import { prepareDates } from '$components/datasets/s-explore/timeseries/utils';
@@ -42,6 +49,17 @@ function SandboxTimeseries() {
     end: dates[0]
   });
 
+  const navigateDate = (modifier = 1) => {
+    const idx = dates.findIndex(
+      (d) => format(d, 'yyyy-MM-dd') === format(activeDate.start, 'yyyy-MM-dd')
+    );
+    const nDate = dates[mod(idx + modifier, dates.length)];
+    setActiveDate({
+      start: nDate,
+      end: nDate
+    });
+  };
+
   return (
     <PageMainContent>
       <Constrainer>
@@ -59,6 +77,20 @@ function SandboxTimeseries() {
             value={activeDate}
             isClearable
           />
+          <Button
+            onClick={() => {
+              navigateDate(-1);
+            }}
+          >
+            <CollecticonChevronLeftSmall />
+          </Button>
+          <Button
+            onClick={() => {
+              navigateDate();
+            }}
+          >
+            <CollecticonChevronRightSmall />
+          </Button>
           <Box>
             <h2>Month</h2>
             <TimeseriesControl
