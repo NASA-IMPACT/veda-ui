@@ -40,6 +40,7 @@ function TimeseriesControl(props: TimeseriesControlProps) {
   const { observe, width, height, outerWidth, outerHeight, margin } =
     useChartDimensions();
   const svgRef = useRef<SVGElement>(null);
+  const [hoveringDataPoint, setHoveringDataPoint] = useState(null);
 
   // Unique id creator
   const getUID = useMemo(() => {
@@ -65,7 +66,9 @@ function TimeseriesControl(props: TimeseriesControlProps) {
     [data, x]
   );
 
-  const onDataOverOut = useCallback(({ hover }) => {
+  const onDataOverOut = useCallback(({ hover, date }) => {
+    setHoveringDataPoint(date || null);
+
     if (svgRef.current) {
       svgRef.current.style.cursor = hover ? 'pointer' : '';
     }
@@ -90,6 +93,7 @@ function TimeseriesControl(props: TimeseriesControlProps) {
       <TimeseriesContext.Provider
         value={{
           data,
+          hoveringDataPoint, 
           value,
           width,
           height,

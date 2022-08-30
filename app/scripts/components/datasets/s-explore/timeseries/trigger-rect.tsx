@@ -30,7 +30,8 @@ function getHotZone(zones: HotZone[], mouse) {
 
 export default function TriggerRect(props: TriggerRectProps) {
   const { onDataOverOut, onDataClick } = props;
-  const { width, height, data, x, zoomXTranslation, zoomBehavior } = useTimeseriesContext();
+  const { width, height, data, x, zoomXTranslation, zoomBehavior } =
+    useTimeseriesContext();
   const elRef = useRef<SVGRectElement>(null);
   const hoverDataRef = useRef(false);
 
@@ -71,6 +72,12 @@ export default function TriggerRect(props: TriggerRectProps) {
             date: currHover ? zone.date : null
           });
         }
+      })
+      .on('mouseout', () => {
+        onDataOverOut({
+          hover: false,
+          date: null
+        });
       })
       .on('dblclick.zoom', null)
       .on('wheel.zoom', null);

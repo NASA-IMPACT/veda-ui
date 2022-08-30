@@ -10,6 +10,11 @@ const StyledG = styled.g`
     fill: #fff;
     stroke-width: 1px;
     stroke: grey;
+    transition: fill 160ms ease-in;
+
+    &.over {
+      fill: red;
+    }
   }
 
   .data-point-valid {
@@ -23,11 +28,14 @@ const StyledG = styled.g`
   }
 `;
 
-type HighlightCircle = Selection<SVGCircleElement, Date, SVGGElement | null, unknown>;
+type HighlightCircle = Selection<
+  SVGCircleElement,
+  Date,
+  SVGGElement | null,
+  unknown
+>;
 
-function animateHighlight(
-  circle: HighlightCircle
-) {
+function animateHighlight(circle: HighlightCircle) {
   return circle
     .attr('r', 1)
     .style('opacity', 1)
@@ -45,17 +53,22 @@ const startOfTimeUnit = {
 };
 
 export function DataPoints() {
-  const { data, value, timeUnit, x, zoomXTranslation } = useTimeseriesContext();
+  const { data, value, timeUnit, x, zoomXTranslation, hoveringDataPoint } =
+    useTimeseriesContext();
   const container = useRef<SVGGElement>(null);
 
   useEffect(() => {
     const rootG = select(container.current);
 
+    const classAttr = (d, c) => {
+      return hoveringDataPoint === d.date ? `${c} over` : c;
+    };
+
     rootG
       .selectAll('circle.data-point')
       .data(data.filter((d) => d.hasData))
       .join('circle')
-      .attr('class', 'data-point')
+      .attr('class', (d) => classAttr(d, 'data-point'))
       .attr('cx', (d) => x(d.date))
       .attr('cy', 12)
       .attr('r', 4);
@@ -64,11 +77,11 @@ export function DataPoints() {
       .selectAll('circle.data-point-valid')
       .data(data.filter((d) => d.hasData))
       .join('circle')
-      .attr('class', 'data-point-valid')
+      .attr('class', (d) => classAttr(d, 'data-point-valid'))
       .attr('cx', (d) => x(d.date))
       .attr('cy', 12)
       .attr('r', 2);
-  }, [data, x]);
+  }, [data, x, hoveringDataPoint]);
 
   useEffect(() => {
     const rootG = select(container.current);
@@ -87,9 +100,7 @@ export function DataPoints() {
           .attr('cy', 12);
       }
 
-      circle
-      .attr('cx', (d) => x(d))
-      .call(animateHighlight);
+      circle.attr('cx', (d) => x(d)).call(animateHighlight);
     }
 
     return () => {
