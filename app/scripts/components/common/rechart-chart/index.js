@@ -12,7 +12,8 @@ import {
   Brush,
   Label,
   ResponsiveContainer,
-  ReferenceArea
+  ReferenceArea,
+  Legend
 } from 'recharts';
 
 import { getColors } from '$components/common/blocks/chart/utils';
@@ -130,7 +131,8 @@ const RLineChart = function ({
             />
           }
         />
-        <Brush dataKey={xKey} />
+        <Legend verticalAlign='bottom' align='center' iconType='rect' />
+        {/* <Brush dataKey={xKey} /> */}
       </LineChartWithFont>
     </ResponsiveContainer>
   );
