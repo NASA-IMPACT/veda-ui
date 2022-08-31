@@ -16,11 +16,15 @@ const TooltipWrapper = styled.div`
   }
 `;
 
-const TooltipItem = styled.div`
+export const ListItem = styled.div`
   width: 12px;
   height: 12px;
   background-color: ${(props) => props.color};
   display: inline-block;
+  margin-right: ${glsp(0.25)};
+`;
+
+const TooltipItem = styled(ListItem)`
   margin-right: ${glsp(0.5)};
 `;
 

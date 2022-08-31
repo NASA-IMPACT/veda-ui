@@ -10,30 +10,34 @@ import {
   YAxis,
   Tooltip,
   Brush,
+  CartesianGrid,
   Label,
   ResponsiveContainer,
   ReferenceArea,
   Legend
 } from 'recharts';
 
-import { getColors } from '$components/common/blocks/chart/utils';
 import TooltipComponent from './tooltip';
+import LegendComponent from './legend';
+
+import { getColors } from '$components/common/blocks/chart/utils';
+
 import { dateFormatter, getFData, convertToTime } from './utils';
 
 const LineChartWithFont = styled(LineChart)`
-  font-size: 12px;
+  font-size: 0.8rem;
 `;
 
-const syncId = 'syncsync';
+// const syncId = 'syncsync';
 
-const syncMethodFunction = (index, data, chartData, xKey) => {
-  return chartData.findIndex((e) => {
-    return (
-      new Date(e[xKey]).getYear() ===
-      new Date(data.activePayload[0].payload[xKey]).getYear()
-    );
-  });
-};
+// const syncMethodFunction = (index, data, chartData, xKey) => {
+//   return chartData.findIndex((e) => {
+//     return (
+//       new Date(e[xKey]).getYear() ===
+//       new Date(data.activePayload[0].payload[xKey]).getYear()
+//     );
+//   });
+// };
 
 const RLineChart = function ({
   dataPath,
@@ -86,16 +90,17 @@ const RLineChart = function ({
           bottom: 20
         }}
       >
+        <CartesianGrid stroke='#efefef' vertical={false} />
         <XAxis
           dataKey={xKey}
+          axisLine={false}
           tickFormatter={(t) => dateFormatter(t, dateFormat)}
         >
           <Label value={xAxisLabel} offset={0} position='bottom' />
         </XAxis>
-        <YAxis>
+        <YAxis axisLine={false}>
           <Label value={yAxisLabel} angle={-90} position='insideLeft' />
         </YAxis>
-
         {highlightStart && (
           <ReferenceArea
             x1={convertToTime({
@@ -131,7 +136,12 @@ const RLineChart = function ({
             />
           }
         />
-        <Legend verticalAlign='bottom' align='center' iconType='rect' />
+        <Legend
+          verticalAlign='bottom'
+          width='500px'
+          wrapperStyle={{ width: '100%' }}
+          content={<LegendComponent />}
+        />
         {/* <Brush dataKey={xKey} /> */}
       </LineChartWithFont>
     </ResponsiveContainer>
