@@ -24,10 +24,15 @@ import AltTitle from './alt-title';
 
 import { getColors } from '$components/common/blocks/chart/utils';
 
-import { dateFormatter, getFData, convertToTime } from './utils';
+import { dateFormatter, getFData, chartHeight, convertToTime } from './utils';
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 0.8rem;
+`;
+
+const ChartWrapper = styled.div`
+  width: 100%;
+  height: ${chartHeight};
 `;
 
 // const syncId = 'syncsync';
@@ -82,72 +87,74 @@ const RLineChart = function ({
     : getColors({ steps: uniqueKeys.length, colorScheme });
 
   return (
-    <ResponsiveContainer width='100%' height='80%' maxHeight='400px'>
-      <LineChartWithFont
-        data={chartData}
-        margin={{
-          top: 20,
-          right: 30,
-          left: 20,
-          bottom: 20
-        }}
-      >
-        <AltTitle title={altTitle} desc={altDesc} />
-        <CartesianGrid stroke='#efefef' vertical={false} />
-        <XAxis
-          dataKey={xKey}
-          axisLine={false}
-          tickFormatter={(t) => dateFormatter(t, dateFormat)}
+    <ChartWrapper>
+      <ResponsiveContainer>
+        <LineChartWithFont
+          data={chartData}
+          margin={{
+            top: 20,
+            right: 30,
+            left: 20,
+            bottom: 20
+          }}
         >
-          <Label value={xAxisLabel} offset={0} position='bottom' />
-        </XAxis>
-        <YAxis axisLine={false}>
-          <Label value={yAxisLabel} angle={-90} position='insideLeft' />
-        </YAxis>
-        {highlightStart && (
-          <ReferenceArea
-            x1={convertToTime({
-              timeString: highlightStart,
-              dateFormat
-            })}
-            x2={convertToTime({
-              timeString: highlightEnd,
-              dateFormat
-            })}
-            label={highlightLabel}
+          <AltTitle title={altTitle} desc={altDesc} />
+          <CartesianGrid stroke='#efefef' vertical={false} />
+          <XAxis
+            dataKey={xKey}
+            axisLine={false}
+            tickFormatter={(t) => dateFormatter(t, dateFormat)}
+          >
+            <Label value={xAxisLabel} offset={0} position='bottom' />
+          </XAxis>
+          <YAxis axisLine={false}>
+            <Label value={yAxisLabel} angle={-90} position='insideLeft' />
+          </YAxis>
+          {highlightStart && (
+            <ReferenceArea
+              x1={convertToTime({
+                timeString: highlightStart,
+                dateFormat
+              })}
+              x2={convertToTime({
+                timeString: highlightEnd,
+                dateFormat
+              })}
+              label={highlightLabel}
+            />
+          )}
+          {uniqueKeys.map((k, idx) => {
+            return (
+              <Line
+                type='linear'
+                isAnimationActive={false}
+                dot={false}
+                activeDot={false}
+                key={`${k}-line`}
+                dataKey={k}
+                stroke={lineColors[idx]}
+              />
+            );
+          })}
+          <Tooltip
+            content={
+              <TooltipComponent
+                dateFormat={dateFormat}
+                xKey={xKey}
+                colors={lineColors}
+              />
+            }
           />
-        )}
-        {uniqueKeys.map((k, idx) => {
-          return (
-            <Line
-              type='linear'
-              isAnimationActive={false}
-              dot={false}
-              activeDot={false}
-              key={`${k}-line`}
-              dataKey={k}
-              stroke={lineColors[idx]}
-            />
-          );
-        })}
-        <Tooltip
-          content={
-            <TooltipComponent
-              dateFormat={dateFormat}
-              xKey={xKey}
-              colors={lineColors}
-            />
-          }
-        />
-        <Legend
-          verticalAlign='bottom'
-          width='500px'
-          wrapperStyle={{ width: '100%' }}
-          content={<LegendComponent />}
-        />
-        {/* <Brush dataKey={xKey} /> */}
-      </LineChartWithFont>
-    </ResponsiveContainer>
+          <Legend
+            verticalAlign='bottom'
+            width='500px'
+            wrapperStyle={{ width: '100%' }}
+            content={<LegendComponent />}
+          />
+          {/* <Brush dataKey={xKey} /> */}
+        </LineChartWithFont>
+      </ResponsiveContainer>
+    </ChartWrapper>
   );
 };
 
