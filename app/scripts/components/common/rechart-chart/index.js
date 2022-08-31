@@ -10,6 +10,7 @@ import {
   YAxis,
   Tooltip,
   Brush,
+  Customized,
   CartesianGrid,
   Label,
   ResponsiveContainer,
@@ -19,6 +20,7 @@ import {
 
 import TooltipComponent from './tooltip';
 import LegendComponent from './legend';
+import AltTitle from './alt-title';
 
 import { getColors } from '$components/common/blocks/chart/utils';
 
@@ -90,6 +92,7 @@ const RLineChart = function ({
           bottom: 20
         }}
       >
+        <AltTitle title={altTitle} desc={altDesc} />
         <CartesianGrid stroke='#efefef' vertical={false} />
         <XAxis
           dataKey={xKey}

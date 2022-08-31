@@ -24,7 +24,8 @@ function Rechart() {
             idKey='Data Type'
             dateFormat='%Y'
             yKey='United States Change from 2005'
-            colors={['red', 'grey']}
+            altTitle='no2 and so2'
+            altDesc='no2 and so2 has decreased'
             xAxisLabel='x axis label'
             yAxisLabel='y axis label'
           />
@@ -34,6 +35,8 @@ function Rechart() {
             idKey='County'
             xKey='Year'
             yKey='New Positives'
+            altTitle='covid case in Kings county'
+            altDesc='peak in omicron'
             highlightStart='03/10/2020'
             highlightEnd='05/01/2020'
             highlightLabel='Omicron'
