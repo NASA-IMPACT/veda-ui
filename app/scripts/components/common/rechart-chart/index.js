@@ -17,20 +17,14 @@ import {
 
 import { getColors } from '$components/common/blocks/chart/utils';
 import TooltipComponent from './tooltip';
-import {
-  dateFormatter,
-  getTicks,
-  getDomain,
-  yDomain,
-  getFData,
-  convertToTime
-} from './utils';
+import { dateFormatter, getFData, convertToTime } from './utils';
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 12px;
 `;
 
 const syncId = 'syncsync';
+
 const syncMethodFunction = (index, data, chartData, xKey) => {
   return chartData.findIndex((e) => {
     return (
@@ -57,10 +51,8 @@ const RLineChart = function ({
   yAxisLabel
 }) {
   const [chartData, setChartData] = useState([]);
-  const [brushedData, setBrushedData] = useState([]);
   const [uniqueKeys, setUniqueKeys] = useState([]);
-  const [startIndex, setStartIndex] = useState(0);
-  const [endIndex, setEndIndex] = useState(0);
+
   useEffect(() => {
     const getData = async () => {
       let data = await csv(dataPath);
@@ -72,45 +64,16 @@ const RLineChart = function ({
         dateFormat
       });
       setChartData(fData);
-      console.log(fData);
-      setBrushedData(fData);
-      setEndIndex(10);
       setUniqueKeys(uniqueKeys);
     };
 
     getData();
-  }, [
-    setChartData,
-    setBrushedData,
-    setUniqueKeys,
-    idKey,
-    xKey,
-    yKey,
-    dataPath,
-    dateFormat
-  ]);
-
-  const ticks = getTicks(chartData, xKey);
-  const domain = getDomain(chartData, xKey);
+  }, [setChartData, setUniqueKeys, idKey, xKey, yKey, dataPath, dateFormat]);
 
   const lineColors = colors
     ? colors
     : getColors({ steps: uniqueKeys.length, colorScheme });
 
-  const handleOnChange = (event) => {
-    console.log(event);
-    const startIndex = event.startIndex;
-    const endIndex = event.endIndex;
-    const newData = chartData.filter((e) => {
-      return (
-        new Date(e[xKey]) > new Date(chartData[startIndex][xKey]) ||
-        new Date(e[xKey]) < new Date(chartData[endIndex][xKey])
-      );
-    });
-    setStartIndex(startIndex);
-    setEndIndex(endIndexs);
-    setChartData(newData);
-  };
   return (
     <ResponsiveContainer width='100%' height='80%' maxHeight='400px'>
       <LineChartWithFont
@@ -123,12 +86,8 @@ const RLineChart = function ({
         }}
       >
         <XAxis
-          scale='time'
-          type='number'
           dataKey={xKey}
-          domain={domain}
           tickFormatter={(t) => dateFormatter(t, dateFormat)}
-          ticks={ticks}
         >
           <Label value={xAxisLabel} offset={0} position='bottom' />
         </XAxis>
@@ -171,7 +130,7 @@ const RLineChart = function ({
             />
           }
         />
-        <Brush />
+        <Brush dataKey={xKey} />
       </LineChartWithFont>
     </ResponsiveContainer>
   );

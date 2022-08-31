@@ -24,7 +24,10 @@ export const convertToTime = ({ timeString, dateFormat, debug }) => {
 };
 
 export function getFData({ data, idKey, xKey, yKey, dateFormat }) {
-  const midData = data.reduce((acc, curr) => {
+  const uniqueKeys = Array.from(new Set(data.map((d) => d[idKey])));
+  let fData = [];
+
+  data.reduce((acc, curr) => {
     if (!acc[curr[xKey]]) {
       acc[curr[xKey]] = {
         [curr[idKey]]: parseFloat(curr[yKey])
@@ -34,16 +37,18 @@ export function getFData({ data, idKey, xKey, yKey, dateFormat }) {
         ...acc[curr[xKey]],
         [curr[idKey]]: parseFloat(curr[yKey])
       };
+
+      if (Object.keys(acc[curr[xKey]]).length === uniqueKeys.length) {
+        fData.push({
+          ...acc[curr[xKey]],
+          [xKey]: convertToTime({ timeString: curr[xKey], dateFormat })
+        });
+      }
     }
+
     return acc;
   }, {});
-  const uniqueKeys = Array.from(new Set(data.map((d) => d[idKey])));
-  const fData = Object.keys(midData).map((e) => {
-    return {
-      ...midData[e],
-      [xKey]: convertToTime({ timeString: e, dateFormat })
-    };
-  });
+
   return {
     uniqueKeys,
     fData
