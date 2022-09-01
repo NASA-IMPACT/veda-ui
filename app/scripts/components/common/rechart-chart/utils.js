@@ -1,7 +1,5 @@
 import { timeFormat, timeParse } from 'd3-time-format';
 
-export const chartHeight = '32rem';
-
 export const dateFormatter = (date, dateFormat) => {
   const format = timeFormat(dateFormat);
   return format(date);

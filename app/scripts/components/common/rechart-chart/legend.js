@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { ListItem } from './tooltip';
+import { highlightColorThemeValue } from './constants';
 
 const LegendWrapper = styled.ul`
   max-width: ${(props) => props.width};
@@ -20,6 +21,30 @@ const LegendItem = styled.li`
     align-self: center;
   }
 `;
+
+const HighlightLabel = styled.text`
+  font-family: sans-serif;
+  font-size: 12px;
+  dominant-baseline: hanging;
+`;
+
+const HighlightLabelMarker = styled.rect`
+  width: 12px;
+  height: 12px;
+  fill: ${themeVal(highlightColorThemeValue)};
+`;
+
+export const ReferenceLegendComponent = (props) => {
+  const { width, highlightLabel } = props;
+  return (
+    <g transform={`translate(${width - 100}, 0) rotate(0)`}>
+      <HighlightLabelMarker />
+      <HighlightLabel transform='translate(15, 0)'>
+        {highlightLabel}
+      </HighlightLabel>
+    </g>
+  );
+};
 
 const LegendComponent = (props) => {
   const { payload, width } = props;

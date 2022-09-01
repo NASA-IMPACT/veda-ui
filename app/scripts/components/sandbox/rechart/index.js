@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Chart from '$components/common/rechart-chart/';
+import Chart from '$components/common/rechart-chart/block';
 
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
@@ -16,6 +16,9 @@ function Rechart() {
     <PageMainContent>
       <Constrainer>
         <Wrapper>
+          <p>
+            <h2> block chart </h2>
+          </p>
           <Chart
             dataPath={
               new URL('../../sandbox/mdx-chart/aq.csv', import.meta.url)
