@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { ListItem } from './tooltip';
-import { highlightColorThemeValue } from './constants';
+import { highlightColorThemeValue } from './constant';
 
 const LegendWrapper = styled.ul`
   max-width: ${(props) => props.width};

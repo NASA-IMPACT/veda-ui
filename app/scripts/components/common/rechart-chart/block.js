@@ -5,7 +5,7 @@ import { csv, json } from 'd3-fetch';
 import Chart from './';
 
 import { getFData } from './utils';
-import { fileExtensionRegex } from './constants';
+import { fileExtensionRegex } from './constant';
 
 const BlockChart = function (props) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;

@@ -15,7 +15,6 @@ import {
   Legend,
   Customized
 } from 'recharts';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { getColors } from '$components/common/blocks/chart/utils';
 import { useMediaQuery } from '$utils/use-media-query';
@@ -25,12 +24,7 @@ import LegendComponent, { ReferenceLegendComponent } from './legend';
 import AltTitle from './alt-title';
 
 import { dateFormatter, convertToTime } from './utils';
-import {
-  chartHeight,
-  defaultMargin,
-  highlightColorThemeValue,
-  highlightColor
-} from './constants';
+import { chartHeight, defaultMargin, highlightColor } from './constant';
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 0.8rem;
