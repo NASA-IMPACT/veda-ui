@@ -41,10 +41,6 @@ const ChartWrapper = styled.div`
   height: ${chartHeight};
 `;
 
-const StyledReferenceArea = styled(ReferenceArea)`
-  fill: ${themeVal(highlightColorThemeValue)} !important;
-`;
-
 const RLineChart = function ({
   chartData,
   uniqueKeys,
@@ -61,11 +57,8 @@ const RLineChart = function ({
   yAxisLabel
 }) {
   const [chartMargin, setChartMargin] = useState(defaultMargin);
+  const [lineColors, setLineColors] = useState(colors);
   const { isMediumUp } = useMediaQuery();
-
-  const lineColors = colors
-    ? colors
-    : getColors({ steps: uniqueKeys.length, colorScheme });
 
   useEffect(() => {
     if (isMediumUp) {
@@ -76,7 +69,14 @@ const RLineChart = function ({
         left: 0
       });
     }
-  }, [isMediumUp]);
+  }, [isMediumUp, setChartMargin]);
+  useEffect(() => {
+    const lineColors = colors
+      ? colors
+      : getColors({ steps: uniqueKeys.length, colorScheme });
+
+    setLineColors(lineColors);
+  }, [uniqueKeys, colors, colorScheme]);
 
   const renderHighlight = highlightStart || highlightEnd;
 
@@ -126,6 +126,7 @@ const RLineChart = function ({
                 activeDot={false}
                 key={`${k}-line`}
                 dataKey={k}
+                strokeWidth={2}
                 stroke={lineColors[idx]}
               />
             );

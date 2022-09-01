@@ -21,7 +21,7 @@ export const ListItem = styled.div`
   height: 12px;
   background-color: ${(props) => props.color};
   display: inline-block;
-  margin-right: ${glsp(0.25)};
+  margin-right: ${glsp(0.2)};
 `;
 
 const TooltipItem = styled(ListItem)`

@@ -5,17 +5,6 @@ export const dateFormatter = (date, dateFormat) => {
   return format(date);
 };
 
-export const getTicks = (data, xKey) => {
-  const ticks = data.map((e) => new Date(e[xKey]));
-  return ticks;
-};
-
-export const getDomain = (data, xKey) => {
-  if (!data.length) return [0, 0];
-  const domain = [data[0][xKey], data[data.length - 1][xKey]];
-  return domain;
-};
-
 export const convertToTime = ({ timeString, dateFormat, debug }) => {
   if (debug) console.log(timeString);
   const parseDate = timeParse(dateFormat);
@@ -24,10 +13,11 @@ export const convertToTime = ({ timeString, dateFormat, debug }) => {
 };
 
 export function getFData({ data, idKey, xKey, yKey, dateFormat }) {
-  const uniqueKeys = Array.from(new Set(data.map((d) => d[idKey])));
-  let fData = [];
+  const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort();
 
+  let fData = [];
   data.reduce((acc, curr) => {
+    // Use acc object so we don't have to iterate (ex.Array.find) the array to find an element
     if (!acc[curr[xKey]]) {
       acc[curr[xKey]] = {
         [curr[idKey]]: parseFloat(curr[yKey])
@@ -37,7 +27,7 @@ export function getFData({ data, idKey, xKey, yKey, dateFormat }) {
         ...acc[curr[xKey]],
         [curr[idKey]]: parseFloat(curr[yKey])
       };
-
+      // Once the object got all the attributes with matching xKey, push it to final data
       if (Object.keys(acc[curr[xKey]]).length === uniqueKeys.length) {
         fData.push({
           ...acc[curr[xKey]],
