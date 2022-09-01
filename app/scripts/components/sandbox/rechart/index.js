@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Chart from '$components/common/rechart-chart/block';
-import { Fold, FoldProse, FoldTitle } from '$components/common/fold';
+import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 
@@ -17,9 +17,9 @@ function Rechart() {
       <Constrainer>
         <Wrapper>
           <Fold>
-            <FoldTitle>
-              <h2> Chart for MDX </h2>
-            </FoldTitle>
+            <FoldHeader>
+              <FoldTitle>Chart for MDX</FoldTitle>
+            </FoldHeader>
           </Fold>
           <Chart
             dataPath={

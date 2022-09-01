@@ -1,21 +1,22 @@
 import { timeFormat, timeParse } from 'd3-time-format';
 
-export const dateFormatter = (date, dateFormat) => {
+export const dateFormatter = (date: string, dateFormat: string) => {
   const format = timeFormat(dateFormat);
   return format(date);
 };
 
-export const convertToTime = ({ timeString, dateFormat, debug }) => {
+// TODO: better type dateFormat withi @types/d3 
+export const convertToTime = ({ timeString, dateFormat, debug}: {timeString: string, dateFormat: string, debug?: boolean}) => {
   if (debug) console.log(timeString);
   const parseDate = timeParse(dateFormat);
 
   return parseDate(timeString).getTime();
 };
 
-export function getFData({ data, idKey, xKey, yKey, dateFormat }) {
+export function getFData({ data, idKey, xKey, yKey, dateFormat }: { data: any[], idKey: string, xKey: string, yKey: string, dateFormat: string }) {
   const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort();
 
-  let fData = [];
+  const fData: any[] = [];
   data.reduce((acc, curr) => {
     // Use acc object so we don't have to iterate (ex.Array.find) the array to find an element
     if (!acc[curr[xKey]]) {
