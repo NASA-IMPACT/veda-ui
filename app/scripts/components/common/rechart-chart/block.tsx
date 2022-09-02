@@ -2,16 +2,21 @@ import React, { useState, useEffect } from 'react';
 import T from 'prop-types';
 import { csv, json } from 'd3-fetch';
 
-import Chart from './';
+import Chart, {CommonLineChartProps} from './';
 
 import { getFData } from './utils';
 import { fileExtensionRegex } from './constant';
+interface BlockChartProp extends CommonLineChartProps {
+  dataPath: string;
+  idKey: string;
+  yKey: string;
+}
 
-const BlockChart = function (props) {
+const BlockChart = function (props:BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
 
-  const [chartData, setChartData] = useState([]);
-  const [uniqueKeys, setUniqueKeys] = useState([]);
+  const [chartData, setChartData] = useState<object[]>([]);
+  const [uniqueKeys, setUniqueKeys] = useState<string[]>([]);
 
   const newDataPath = dataPath.split('?')[0];
   const extension = fileExtensionRegex.exec(newDataPath)[1];
@@ -45,24 +50,7 @@ const BlockChart = function (props) {
     dateFormat
   ]);
 
-  return <Chart chartData={chartData} uniqueKeys={uniqueKeys} {...props} />;
-};
-
-BlockChart.propTypes = {
-  dataPath: T.string,
-  idKey: T.string,
-  xKey: T.string,
-  yKey: T.string,
-  xAxisLabel: T.string,
-  yAxisLabel: T.string,
-  altTitle: T.string,
-  altDesc: T.string,
-  dateFormat: T.string,
-  colors: T.array,
-  colorScheme: T.string,
-  highlightStart: T.string,
-  highlightEnd: T.string,
-  highlightLabel: T.string
+  return <Chart chartData={chartData} uniqueKeys={uniqueKeys} renderLegend={true} {...props} />;
 };
 
 export default BlockChart;

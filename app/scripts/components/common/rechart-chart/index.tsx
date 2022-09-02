@@ -35,21 +35,47 @@ const ChartWrapper = styled.div`
   height: ${chartHeight};
 `;
 
-const RLineChart = function ({
-  chartData,
-  uniqueKeys,
-  xKey,
-  colors,
-  colorScheme = 'viridis',
-  dateFormat,
-  altTitle,
-  altDesc,
-  highlightStart,
-  highlightEnd,
-  highlightLabel,
-  xAxisLabel,
-  yAxisLabel
-}) {
+// interface DataUinit {
+//   [key: string]: Date;
+// }
+
+export interface CommonLineChartProps {
+  xKey: string;
+  altTitle: string;
+  altDesc: string;
+  dateFormat: string;
+  colors: string[];
+  colorScheme: string;
+  renderLegend?: boolean;
+  xAxisLabel?: string;
+  yAxisLabel?: string;
+  highlightStart?: string;
+  highlightEnd?: string;
+  highlightLabel: string;
+}
+
+interface RLineChartProps extends CommonLineChartProps {
+  chartData: object[];
+  uniqueKeys: string[];
+}
+
+const RLineChart = function (props: RLineChartProps) {
+  const {
+    chartData,
+    uniqueKeys,
+    xKey,
+    colors,
+    colorScheme = 'viridis',
+    dateFormat,
+    altTitle,
+    altDesc,
+    renderLegend = false,
+    highlightStart,
+    highlightEnd,
+    highlightLabel,
+    xAxisLabel,
+    yAxisLabel
+  } = props;
   const [chartMargin, setChartMargin] = useState(defaultMargin);
   const [lineColors, setLineColors] = useState(colors);
   const { isMediumUp } = useMediaQuery();
@@ -64,6 +90,7 @@ const RLineChart = function ({
       });
     }
   }, [isMediumUp, setChartMargin]);
+  
   useEffect(() => {
     const lineColors = colors
       ? colors
@@ -134,12 +161,14 @@ const RLineChart = function ({
               />
             }
           />
-          <Legend
-            verticalAlign='bottom'
-            width='500px'
-            wrapperStyle={{ width: '100%' }}
-            content={<LegendComponent />}
-          />
+
+          {renderLegend && 
+            <Legend
+              verticalAlign='bottom'
+              width={700}
+              wrapperStyle={{ width: '100%' }}
+              content={<LegendComponent />}
+            />}
           {/* <Brush dataKey={xKey} /> */}
         </LineChartWithFont>
       </ResponsiveContainer>

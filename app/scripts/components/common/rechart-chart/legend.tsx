@@ -1,8 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { LegendProps, LineChart } from 'recharts/types';
+
 import { ListItem } from './tooltip';
 import { highlightColorThemeValue } from './constant';
+
+// NEED HELP: getting error: 'LineChart' refers to a value, but is being used as a type here. Did you mean 'typeof LineChart'
+interface ReferenceLegendComponentProps extends LineChart {
+  highlightLabel: string;
+}
 
 const LegendWrapper = styled.ul`
   max-width: ${(props) => props.width};
@@ -34,7 +41,7 @@ const HighlightLabelMarker = styled.rect`
   fill: ${themeVal(highlightColorThemeValue)};
 `;
 
-export const ReferenceLegendComponent = (props) => {
+export const ReferenceLegendComponent = (props:ReferenceLegendComponentProps) => {
   const { width, highlightLabel } = props;
   return (
     <g transform={`translate(${width - 100}, 0) rotate(0)`}>
@@ -46,17 +53,20 @@ export const ReferenceLegendComponent = (props) => {
   );
 };
 
-const LegendComponent = (props) => {
+const LegendComponent = (props:LegendProps) => {
   const { payload, width } = props;
-  return (
-    <LegendWrapper width={width}>
-      {payload.map((entry, index) => (
-        <LegendItem key={`item-${index}`}>
-          <ListItem color={entry.color} />
-          {entry.value}
-        </LegendItem>
-      ))}
-    </LegendWrapper>
-  );
+  if (payload) {
+    return (
+      <LegendWrapper width={width}>
+        {payload.map((entry) => (
+          <LegendItem key={`item-${entry.value}`}>
+            <ListItem color={entry.color} />
+            {entry.value}
+          </LegendItem>
+        ))}
+      </LegendWrapper>
+    );
+  } 
+  return null;
 };
 export default LegendComponent;

@@ -1,7 +1,11 @@
 import React from 'react';
-import T from 'prop-types';
 
-function AltTitle({ title, desc }) {
+interface AltTitleProps {
+  title: string;
+  desc: string;
+}
+function AltTitle(props: AltTitleProps) {
+  const { title, desc } = props;
   return (
     <>
       <title>{title}</title>
@@ -9,10 +13,5 @@ function AltTitle({ title, desc }) {
     </>
   );
 }
-
-AltTitle.props = {
-  title: T.string,
-  desc: T.string
-};
 
 export default AltTitle;
