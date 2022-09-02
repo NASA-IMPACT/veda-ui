@@ -24,7 +24,7 @@ import LegendComponent, { ReferenceLegendComponent } from './legend';
 import AltTitle from './alt-title';
 
 import { dateFormatter, convertToTime } from './utils';
-import { chartHeight, defaultMargin, highlightColor } from './constant';
+import { chartHeight, defaultMargin, highlightColor, legendWidth } from './constant';
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 0.8rem;
@@ -165,7 +165,7 @@ const RLineChart = function (props: RLineChartProps) {
           {renderLegend && 
             <Legend
               verticalAlign='bottom'
-              width={700}
+              width={legendWidth}
               wrapperStyle={{ width: '100%' }}
               content={<LegendComponent />}
             />}

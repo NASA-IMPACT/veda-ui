@@ -10,3 +10,4 @@ export const highlightColorThemeValue = 'color.info-300a';
 export const highlightColor = 'rgba(46, 134, 171, 0.32)';
 
 export const fileExtensionRegex = /(?:\.([^.]+))?$/;
+export const legendWidth = 700;
