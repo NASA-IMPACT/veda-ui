@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { select, Selection } from 'd3';
 import { startOfDay, startOfMonth, startOfYear } from 'date-fns';
+import { themeVal } from '@devseed-ui/theme-provider';
 
 import { useTimeseriesContext } from './context';
 
@@ -9,16 +10,16 @@ const StyledG = styled.g`
   .data-point {
     fill: #fff;
     stroke-width: 1px;
-    stroke: grey;
+    stroke: ${themeVal('color.base-100')};
     transition: fill 160ms ease-in;
 
     &.over {
-      fill: red;
+      fill: ${themeVal('color.base')};
     }
   }
 
   .data-point-valid {
-    fill: black;
+    fill: ${themeVal('color.base')};
   }
 
   .select-highlight {
@@ -26,6 +27,10 @@ const StyledG = styled.g`
     stroke-width: 2px;
     stroke: black;
   }
+`;
+
+const DataLineSelf = styled.line`
+  stroke: ${themeVal('color.base-100')};
 `;
 
 type HighlightCircle = Selection<
@@ -123,13 +128,12 @@ export function DataLine() {
   const { data, x, zoomXTranslation } = useTimeseriesContext();
 
   return (
-    <line
+    <DataLineSelf
       className='data-line'
       x1={x(data[0].date)}
       y1={12}
       x2={x(data.last.date)}
       y2={12}
-      stroke='black'
       transform={`translate(${zoomXTranslation}, 0)`}
     />
   );

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { select } from 'd3';
 import { format } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
+import { createSubtitleStyles } from '@devseed-ui/typography';
 
 import { useTimeseriesContext } from './context';
 
@@ -25,9 +26,10 @@ const parentSearchFormat = {
 const StyledG = styled.g`
   .date-value,
   .date-parent-value {
+    ${createSubtitleStyles()}
     fill: ${themeVal('color.base-400')};
-    font-size: 0.625rem;
-    font-weight: ${themeVal('type.base.bold')};
+    font-size: 0.75rem;
+    line-height: 1rem;
   }
 `;
 
@@ -69,7 +71,7 @@ export function DateAxisParent() {
     if (timeUnit === 'year') {
       parentG.selectAll('text.date-parent-value').remove();
     } else {
-      const uniqueYears = data.reduce((acc, { date }) => {
+      const uniqueParent = data.reduce((acc, { date }) => {
         const exists = acc.find((d) => {
           return (
             format(d, parentSearchFormat[timeUnit]) ===
@@ -81,7 +83,7 @@ export function DateAxisParent() {
 
       parentG
         .selectAll('text.date-parent-value')
-        .data(uniqueYears)
+        .data(uniqueParent)
         .join('text')
         .attr('class', 'date-parent-value')
         .attr('y', 30)
@@ -99,20 +101,27 @@ export function DateAxisParent() {
         const expectedPosition = x(d);
         const expectedAfterTrans = expectedPosition + zoomXTranslation;
 
+        const nextNode = n[i + 1];
+
         let maxPos = Infinity;
-        if (n[i + 1]) {
+        // If there's a node after this one, that node will push on this one, so
+        // the max "x" position for this node will be start of the next.
+        if (nextNode) {
           // Width of current node.
-          const { width: nodeW } = n[i].getBBox();
+          const { width: nextNodeW } = nextNode.getBBox();
           // Position of the next item.
           const nextItemPos =
-            x(select<SVGTextElement, Date>(n[i + 1]).datum()) +
+            x(select<SVGTextElement, Date>(nextNode).datum()) +
             zoomXTranslation;
 
-          // Include some padding
-          maxPos = nextItemPos - nodeW;
+          maxPos = nextItemPos - nextNodeW;
         }
 
-        const xTrans = Math.min(Math.max(expectedAfterTrans, 32), maxPos);
+        // The node should stay close to the left, so we get the width / 2
+        // because of text anchor middle. Add 4px for spacing.
+        const leftPadding = n[i].getBBox().width / 2 + 4;
+
+        const xTrans = Math.min(Math.max(expectedAfterTrans, leftPadding), maxPos);
         select(n[i]).attr('x', xTrans);
       });
   }, [zoomXTranslation, x]);

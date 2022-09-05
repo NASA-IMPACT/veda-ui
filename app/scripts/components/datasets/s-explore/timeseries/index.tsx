@@ -1,10 +1,6 @@
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
+import debounce from 'lodash.debounce';
 import { scaleTime, select, zoom } from 'd3';
 import { themeVal } from '@devseed-ui/theme-provider';
 
@@ -70,7 +66,7 @@ function TimeseriesControl(props: TimeseriesControlProps) {
     setHoveringDataPoint(date || null);
 
     if (svgRef.current) {
-      svgRef.current.style.cursor = hover ? 'pointer' : '';
+      svgRef.current.style.cursor = hover ? 'pointer' : 'ew-resize';
     }
   }, []);
 
@@ -83,7 +79,7 @@ function TimeseriesControl(props: TimeseriesControlProps) {
       <TimeseriesContext.Provider
         value={{
           data,
-          hoveringDataPoint, 
+          hoveringDataPoint,
           value,
           width,
           height,
@@ -107,8 +103,8 @@ function TimeseriesControl(props: TimeseriesControlProps) {
               <DataPoints />
               <DateAxis />
             </g>
-            <TriggerRect onDataClick={onChange} onDataOverOut={onDataOverOut} />
             <DateAxisParent />
+            <TriggerRect onDataClick={onChange} onDataOverOut={onDataOverOut} />
           </g>
         </StyledSvg>
       </TimeseriesContext.Provider>
