@@ -16,6 +16,7 @@ import {
   TimeseriesData,
   TimeseriesTimeUnit
 } from './constants';
+import useReducedMotion from '$utils/use-prefers-reduced-motion';
 
 const StyledSvg = styled.svg`
   display: block;
@@ -115,6 +116,8 @@ function TimeseriesControl(props: TimeseriesControlProps) {
 export default TimeseriesControl;
 
 function useRecenterSlider({ value, width, x, zoomBehavior, svgRef }) {
+  const reduceMotion = useReducedMotion();
+
   // The recenter function must be debounced because if it is triggered while
   // another animation is already running, the X translation extent gets messed
   // up. Debouncing a function with React is tricky. Since the function must
@@ -143,6 +146,16 @@ function useRecenterSlider({ value, width, x, zoomBehavior, svgRef }) {
   useEffectPrevious(
     (deps, mounted) => {
       if (!value || !mounted) return;
+
+      // No animation if reduce motion.
+      if (reduceMotion) {
+        zoomBehavior.translateTo(
+          select(svgRef.current).select('.trigger-rect'),
+          x(value),
+          0
+        );
+        return;
+      }
 
       debouncedRecenter();
 

@@ -5,6 +5,7 @@ import { startOfDay, startOfMonth, startOfYear } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { useTimeseriesContext } from './context';
+import useReducedMotion from '$utils/use-prefers-reduced-motion';
 
 const StyledG = styled.g`
   .data-point {
@@ -25,7 +26,7 @@ const StyledG = styled.g`
   .select-highlight {
     fill: none;
     stroke-width: 2px;
-    stroke: black;
+    stroke: ${themeVal('color.base')};
   }
 `;
 
@@ -61,6 +62,8 @@ export function DataPoints() {
   const { data, value, timeUnit, x, zoomXTranslation, hoveringDataPoint } =
     useTimeseriesContext();
   const container = useRef<SVGGElement>(null);
+
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const rootG = select(container.current);
@@ -105,7 +108,14 @@ export function DataPoints() {
           .attr('cy', 12);
       }
 
-      circle.attr('cx', (d) => x(d)).call(animateHighlight);
+      circle.attr('cx', (d) => x(d));
+
+      // Animate or not.
+      if (reduceMotion) {
+        circle.attr('r', 6).style('opacity', 1);
+      } else {
+        circle.call(animateHighlight);
+      }
     }
 
     return () => {
@@ -113,7 +123,7 @@ export function DataPoints() {
         rootG.select('.select-highlight').remove();
       }
     };
-  }, [value, timeUnit, x]);
+  }, [value, timeUnit, x, reduceMotion]);
 
   return (
     <StyledG
