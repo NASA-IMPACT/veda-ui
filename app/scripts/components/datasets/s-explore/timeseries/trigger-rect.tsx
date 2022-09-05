@@ -50,10 +50,14 @@ export default function TriggerRect(props: TriggerRectProps) {
   }, [data, x, zoomXTranslation]);
 
   useEffect(() => {
-    const element = elRef.current;
-
-    select(element)
+    select(elRef.current)
       .call(zoomBehavior)
+      .on('dblclick.zoom', null)
+      .on('wheel.zoom', null);
+  }, [zoomBehavior, x]);
+
+  useEffect(() => {
+    select(elRef.current)
       .on('click', (event) => {
         const zone = getHotZone(dataHotZones, event);
         if (zone) {
@@ -78,10 +82,8 @@ export default function TriggerRect(props: TriggerRectProps) {
           hover: false,
           date: null
         });
-      })
-      .on('dblclick.zoom', null)
-      .on('wheel.zoom', null);
-  }, [zoomBehavior, data, x, dataHotZones, onDataClick, onDataOverOut]);
+      });
+  }, [dataHotZones, onDataClick, onDataOverOut]);
 
   return (
     <rect
