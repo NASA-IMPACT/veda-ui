@@ -34,7 +34,7 @@ const StyledG = styled.g`
 `;
 
 export function DateAxis() {
-  const { data, x, zoomXTranslation, timeUnit } = useTimeseriesContext();
+  const { data, x, zoomXTranslation, timeDensity } = useTimeseriesContext();
   const dateGRef = useRef<SVGGElement>(null);
 
   useEffect(() => {
@@ -49,8 +49,8 @@ export function DateAxis() {
       .attr('y', 16)
       .attr('dy', '1em')
       .attr('text-anchor', 'middle')
-      .text((d) => format(d.date, timeFormat[timeUnit]));
-  }, [data, x, timeUnit]);
+      .text((d) => format(d.date, timeFormat[timeDensity]));
+  }, [data, x, timeDensity]);
 
   return (
     <StyledG
@@ -62,20 +62,20 @@ export function DateAxis() {
 }
 
 export function DateAxisParent() {
-  const { data, x, zoomXTranslation, timeUnit } = useTimeseriesContext();
+  const { data, x, zoomXTranslation, timeDensity } = useTimeseriesContext();
   const parentGref = useRef<SVGGElement>(null);
 
   useEffect(() => {
     const parentG = select(parentGref.current);
     // There's no parent for the year time unit.
-    if (timeUnit === 'year') {
+    if (timeDensity === 'year') {
       parentG.selectAll('text.date-parent-value').remove();
     } else {
       const uniqueParent = data.reduce((acc, { date }) => {
         const exists = acc.find((d) => {
           return (
-            format(d, parentSearchFormat[timeUnit]) ===
-            format(date, parentSearchFormat[timeUnit])
+            format(d, parentSearchFormat[timeDensity]) ===
+            format(date, parentSearchFormat[timeDensity])
           );
         });
         return exists ? acc : acc.concat(date);
@@ -89,9 +89,9 @@ export function DateAxisParent() {
         .attr('y', 30)
         .attr('dy', '1em')
         .attr('text-anchor', 'middle')
-        .text((d) => format(d, parentTimeFormat[timeUnit]));
+        .text((d) => format(d, parentTimeFormat[timeDensity]));
     }
-  }, [data, x, timeUnit]);
+  }, [data, x, timeDensity]);
 
   useEffect(() => {
     select(parentGref.current)

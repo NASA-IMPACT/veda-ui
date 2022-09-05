@@ -1,6 +1,6 @@
 export type TimeseriesData = Array<{ date: Date; hasData: boolean }>;
 
-export type TimeseriesTimeUnit = 'day' | 'month' | 'year';
+export type TimeseriesTimeDensity = 'day' | 'month' | 'year';
 
 export const DATA_POINT_WIDTH = 32;
 

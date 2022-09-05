@@ -52,14 +52,14 @@ function animateHighlight(circle: HighlightCircle) {
     .on('end', () => animateHighlight(circle));
 }
 
-const startOfTimeUnit = {
+const startOfTimeDensity = {
   year: startOfYear,
   month: startOfMonth,
   day: startOfDay
 };
 
 export function DataPoints() {
-  const { data, value, timeUnit, x, zoomXTranslation, hoveringDataPoint } =
+  const { data, value, timeDensity, x, zoomXTranslation, hoveringDataPoint } =
     useTimeseriesContext();
   const container = useRef<SVGGElement>(null);
 
@@ -94,7 +94,7 @@ export function DataPoints() {
   useEffect(() => {
     const rootG = select(container.current);
 
-    const val = value ? startOfTimeUnit[timeUnit](value) : null;
+    const val = value ? startOfTimeDensity[timeDensity](value) : null;
 
     if (val) {
       let circle = rootG.select('.select-highlight') as HighlightCircle;
@@ -123,7 +123,7 @@ export function DataPoints() {
         rootG.select('.select-highlight').remove();
       }
     };
-  }, [value, timeUnit, x, reduceMotion]);
+  }, [value, timeDensity, x, reduceMotion]);
 
   return (
     <StyledG

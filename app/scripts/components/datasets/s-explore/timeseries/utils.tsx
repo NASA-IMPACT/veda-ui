@@ -7,7 +7,7 @@ import {
   format
 } from 'date-fns';
 
-import { CHART_HEIGHT, TimeseriesTimeUnit } from './constants';
+import { CHART_HEIGHT, TimeseriesTimeDensity } from './constants';
 
 const margin = { top: 0, right: 0, bottom: 0, left: 0 };
 
@@ -29,20 +29,20 @@ export function useChartDimensions() {
   };
 }
 
-export function prepareDates(dates: Date[], timeUnit: TimeseriesTimeUnit) {
+export function prepareDates(dates: Date[], timeDensityity: TimeseriesTimeDensity) {
   const domain = extent<Date, Date>(dates, (d) => d) as Date[];
 
   const dateFormat = {
     day: 'yyyy-MM-dd',
     month: 'yyyy-MM',
     year: 'yyyy'
-  }[timeUnit];
+  }[timeDensityity];
 
   const intervalFn = {
     day: eachDayOfInterval,
     month: eachMonthOfInterval,
     year: eachYearOfInterval
-  }[timeUnit];
+  }[timeDensityity];
 
   const searchStrs = dates.map((d) => format(d, dateFormat));
 

@@ -14,7 +14,7 @@ import { DateAxis, DateAxisParent } from './date-axis';
 import {
   DATA_POINT_WIDTH,
   TimeseriesData,
-  TimeseriesTimeUnit
+  TimeseriesTimeDensity
 } from './constants';
 import useReducedMotion from '$utils/use-prefers-reduced-motion';
 
@@ -28,12 +28,12 @@ type TimeseriesControlProps = {
   id?: string;
   data: TimeseriesData;
   value?: Date;
-  timeUnit: TimeseriesTimeUnit;
+  timeDensity: TimeseriesTimeDensity;
   onChange: ({ date: Date }) => void;
 };
 
 function TimeseriesControl(props: TimeseriesControlProps) {
-  const { id, data, value, timeUnit, onChange } = props;
+  const { id, data, value, timeDensity, onChange } = props;
   const { observe, width, height, outerWidth, outerHeight, margin } =
     useChartDimensions();
   const svgRef = useRef<SVGElement>(null);
@@ -90,7 +90,7 @@ function TimeseriesControl(props: TimeseriesControlProps) {
           x,
           zoomXTranslation,
           zoomBehavior,
-          timeUnit,
+          timeDensity,
           getUID
         }}
       >

@@ -1,7 +1,7 @@
 import { ScaleTime, ZoomBehavior } from 'd3';
 import { createContext, useContext } from 'react';
 
-import { TimeseriesData, TimeseriesTimeUnit } from './constants';
+import { TimeseriesData, TimeseriesTimeDensity } from './constants';
 
 type TimeseriesContextProps = {
   data: TimeseriesData;
@@ -15,7 +15,7 @@ type TimeseriesContextProps = {
   x: ScaleTime<number, number, never>;
   zoomXTranslation: number;
   zoomBehavior: ZoomBehavior<SVGRectElement, unknown>;
-  timeUnit: TimeseriesTimeUnit;
+  timeDensity: TimeseriesTimeDensity;
   getUID: (base: string) => string
 };
 

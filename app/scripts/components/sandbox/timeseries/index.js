@@ -96,7 +96,7 @@ function SandboxTimeseries() {
             <TimeseriesControl
               data={readyDatesM}
               value={activeDate.start}
-              timeUnit='month'
+              timeDensity='month'
               onChange={({ date }) => setActiveDate({ start: date, end: date })}
             />
           </Box>
@@ -105,7 +105,7 @@ function SandboxTimeseries() {
             <TimeseriesControl
               data={readyDatesY}
               value={activeDate.start}
-              timeUnit='year'
+              timeDensity='year'
               onChange={({ date }) => setActiveDate({ start: date, end: date })}
             />
           </Box>
@@ -114,7 +114,7 @@ function SandboxTimeseries() {
             <TimeseriesControl
               data={readyDatesD}
               value={activeDate.start}
-              timeUnit='day'
+              timeDensity='day'
               onChange={({ date }) => setActiveDate({ start: date, end: date })}
             />
           </Box>
