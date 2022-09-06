@@ -6,7 +6,7 @@ export const dateFormatter = (date: Date, dateFormat: string) => {
   return format(date);
 };
 
-export const convertToTime = ({ timeString, dateFormat}: {timeString: string, dateFormat: string}) => {
+export const convertToTime = ({ timeString, dateFormat}: {timeString: string | undefined, dateFormat: string}) => {
   if (!timeString) return null;
 
   const parseDate = timeParse(dateFormat);
