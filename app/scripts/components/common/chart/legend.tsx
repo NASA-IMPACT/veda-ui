@@ -54,7 +54,7 @@ export const ReferenceLegendComponent = (props:ReferenceLegendComponentProps) =>
   );
 };
 
-const LegendComponent = (props:LegendProps) => {
+export const LegendComponent = (props:LegendProps) => {
   const { payload, width } = props;
   if (payload) {
     return (
@@ -70,4 +70,3 @@ const LegendComponent = (props:LegendProps) => {
   } 
   return null;
 };
-export default LegendComponent;

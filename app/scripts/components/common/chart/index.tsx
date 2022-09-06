@@ -21,7 +21,7 @@ import { useMediaQuery } from '$utils/use-media-query';
 import { getColors } from './utils';
 
 import TooltipComponent from './tooltip';
-import LegendComponent, { ReferenceLegendComponent } from './legend';
+import { LegendComponent, ReferenceLegendComponent } from './legend';
 import AltTitle from './alt-title';
 
 import { dateFormatter, convertToTime } from './utils';
@@ -175,22 +175,6 @@ const RLineChart = function (props: RLineChartProps) {
       </ResponsiveContainer>
     </ChartWrapper>
   );
-};
-
-RLineChart.propTypes = {
-  chartData: T.array,
-  uniqueKeys: T.array,
-  xKey: T.string,
-  xAxisLabel: T.string,
-  yAxisLabel: T.string,
-  altTitle: T.string,
-  altDesc: T.string,
-  dateFormat: T.string,
-  colors: T.array,
-  colorScheme: T.string,
-  highlightStart: T.string,
-  highlightEnd: T.string,
-  highlightLabel: T.string
 };
 
 export default RLineChart;

@@ -22,10 +22,7 @@ const BlockChart = function (props:BlockChartProp) {
 
   useEffect(() => {
     const getData = async () => {
-      let data;
-      if (extension === 'csv') data = await csv(dataPath);
-      else data = await json(dataPath);
-
+      const data= (extension === 'csv')? await csv(dataPath): await json(dataPath);
       const { fData, uniqueKeys } = getFData({
         data,
         xKey,
