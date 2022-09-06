@@ -1,4 +1,5 @@
 import { timeFormat, timeParse } from 'd3-time-format';
+import * as d3ScaleChromatic from 'd3-scale-chromatic';
 
 export const dateFormatter = (date: Date, dateFormat: string) => {
   const format = timeFormat(dateFormat);
@@ -47,3 +48,17 @@ export function getFData({ data, idKey, xKey, yKey, dateFormat }: { data: any[],
     fData
   };
 }
+
+function getInterpoateFunction(colorScheme: string) {
+  const fnName = `interpolate${
+    colorScheme[0].toUpperCase() + colorScheme.slice(1)
+  }`;
+  return d3ScaleChromatic[fnName];
+}
+
+export const getColors = function ({ steps, colorScheme } : {steps: number, colorScheme: string}) {
+  const colorFn = getInterpoateFunction(colorScheme);
+  return new Array(steps).fill(0).map((e, idx) => {
+    return colorFn(idx / steps);
+  });
+};

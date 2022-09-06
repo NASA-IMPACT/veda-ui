@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Chart from '$components/common/rechart-chart/block';
+import Chart from '$components/common/chart/block';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';

@@ -16,15 +16,10 @@ import SandboxCards from './cards';
 import SandboxMDXPage from './mdx-page';
 import SandboxMDXScrolly from './mdx-scrollytelling';
 import SandboxAOI from './aoi';
-import SandboxChart from './mdx-chart';
 import SandboxOverride from './override';
-import Rechart from './rechart';
+import SandboxChart from './chart';
+
 const pages = [
-  {
-    id: 'rechart',
-    name: 'Rechart',
-    component: Rechart
-  },
   {
     id: 'typography',
     name: 'Typography',
