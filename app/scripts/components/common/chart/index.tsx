@@ -16,7 +16,7 @@ import {
   Customized
 } from 'recharts';
 
-import { getColors } from '$components/common/blocks/chart/utils';
+import { getColors } from './utils';
 import { useMediaQuery } from '$utils/use-media-query';
 
 import TooltipComponent from './tooltip';

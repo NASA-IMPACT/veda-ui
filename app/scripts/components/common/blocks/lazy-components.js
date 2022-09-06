@@ -2,7 +2,7 @@ import React from 'react';
 import LazyLoad from 'react-lazyload';
 
 import Chart from '$components/common/chart/block';
-import { chartHeight } from '$components/common/blocks/chart/line';
+import { chartHeight } from '$components/common/chart/constant';
 
 import CompareImage from '$components/common/blocks/images/compare';
 
