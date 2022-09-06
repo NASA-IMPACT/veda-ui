@@ -90,7 +90,7 @@ const RLineChart = function (props: RLineChartProps) {
         left: 0
       });
     }
-  }, [isMediumUp, setChartMargin]);
+  }, [isMediumUp]);
   
   useEffect(() => {
     const lineColors = colors
