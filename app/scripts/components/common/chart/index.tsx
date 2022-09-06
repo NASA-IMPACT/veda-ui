@@ -16,8 +16,9 @@ import {
   Customized
 } from 'recharts';
 
-import { getColors } from './utils';
 import { useMediaQuery } from '$utils/use-media-query';
+
+import { getColors } from './utils';
 
 import TooltipComponent from './tooltip';
 import LegendComponent, { ReferenceLegendComponent } from './legend';

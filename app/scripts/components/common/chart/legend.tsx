@@ -1,13 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import { LegendProps } from 'recharts/types';
+import { CategoricalChartProps } from 'recharts/types/chart/generateCategoricalChart';
+
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { LegendProps, LineChart } from 'recharts/types';
 
 import { ListItem } from './tooltip';
 import { highlightColorThemeValue } from './constant';
 
-// NEED HELP: getting error: 'LineChart' refers to a value, but is being used as a type here. Did you mean 'typeof LineChart'
-interface ReferenceLegendComponentProps extends LineChart {
+interface ReferenceLegendComponentProps extends CategoricalChartProps {
   highlightLabel: string;
 }
 

@@ -1,8 +1,9 @@
 import React from 'react';
-import T from 'prop-types';
-import { TooltipProps } from 'recharts/types';
 import styled from 'styled-components';
+import { TooltipProps } from 'recharts/types';
+
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+
 import { dateFormatter } from './utils';
 
 interface TooltipComponentProps extends TooltipProps<number, string> {
