@@ -38,7 +38,7 @@ function Rechart() {
             dataPath='/public/example.csv'
             dateFormat='%m/%d/%Y'
             idKey='County'
-            xKey='Year'
+            xKey='Test Date'
             yKey='New Positives'
             altTitle='covid case in Kings county'
             altDesc='peak in omicron'

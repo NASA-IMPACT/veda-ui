@@ -17,7 +17,7 @@ import SandboxMDXPage from './mdx-page';
 import SandboxMDXScrolly from './mdx-scrollytelling';
 import SandboxAOI from './aoi';
 import SandboxOverride from './override';
-import SandboxChart from './chart';
+import SandboxChart from './mdx-chart';
 
 const pages = [
   {
