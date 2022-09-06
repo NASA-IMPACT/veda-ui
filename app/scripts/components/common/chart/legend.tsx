@@ -15,7 +15,7 @@ interface ReferenceLegendComponentProps extends CategoricalChartProps {
 const LegendWrapper = styled.ul`
   max-width: ${(props) => props.width};
   margin: 0 auto;
-  margin-top: ${glsp(0.6)};
+  margin-top: ${glsp(0.75)};
   text-align: center;
 `;
 
@@ -31,8 +31,7 @@ const LegendItem = styled.li`
 `;
 
 const HighlightLabel = styled.text`
-  font-family: sans-serif;
-  font-size: 12px;
+  font-size: 0.75rem;
   dominant-baseline: hanging;
 `;
 
