@@ -32,48 +32,42 @@ export function getFData({ data, idKey, xKey, yKey, dateFormat }: { data: any[],
   const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort();
 
   // Format csv/json data into chart suitable data
-  // ex. When XKey is Year, uniqueKeys are ['no2', 'so2']
-  // Format [{Year: 2005, no2: 0 }, {Year: 2005, so2: 10}] to [{Year: 2005, no2: 0, so2: 10}]
-  // Using an object(keyObject) with xKeyValue, so we can process data without iteration. 
-  // keyObject is shaped like: {2005: [{no2: 0, so2:10}]} 
-  // Once the array length equals to uniqueKeys length, (once all the needed values were saved)
-  // the unit gets properly formatted like below and is pushed to final data to return
-  // [{Year: 2005, no2: 0, so2: 10},...]
+  // ## From:
+  // {
+  //   "xkey": xKey value,
+  //   "yKey": yKey value,
+  //   "idKey": idKey value
+  // }
+  // ## to
+  // {
+  //   "xkey": xKey value,
+  //   "idKey value": yKey value
+  // }
 
-  const { fData } = data.reduce(({ keyObject, fData}, curr) => {
-    // Use acc object so we don't have to iterate (ex.Array.find) the array to find an element
-    if (!keyObject[curr[xKey]]) {
-      keyObject[curr[xKey]] = {
-        [curr[idKey]]: parseFloat(curr[yKey])
+  // This reduce function will yield an object with x values as keys / data units as values
+  // we will use the values of this object
+  const fData = data.reduce((keyObject, entry) => {
+    if (!keyObject[entry[xKey]]) {
+      keyObject[entry[xKey]] = {
+        [xKey]: convertToTime({
+          timeString: entry[xKey],
+          dateFormat
+        }),
+        [entry[idKey]]: parseFloat(entry[yKey])
       };
     } else {
-      keyObject[curr[xKey]] = {
-        ...keyObject[curr[xKey]],
-        [curr[idKey]]: parseFloat(curr[yKey])
+      keyObject[entry[xKey]] = {
+        ...keyObject[entry[xKey]],
+        [entry[idKey]]: parseFloat(entry[yKey])
       };
-    // Once the array length equals to uniqueKeys length, (once all the needed values were saved)
-    // the unit gest properly formatted and pushed to final data to return
-      if (Object.keys(keyObject[curr[xKey]]).length === uniqueKeys.length) {
-        fData.push({
-          ...keyObject[curr[xKey]],
-          [xKey]: convertToTime({
-            timeString: curr[xKey],
-            dateFormat
-          })
-        });
-      }
     }
 
-    return {
-      keyObject,
-      fData
-    };
-  }, { keyObject: {}, fData:[]});
-
+    return keyObject;
+  }, {});
 
   return {
     uniqueKeys,
-    fData
+    fData: Object.values(fData)
   };
 }
 
