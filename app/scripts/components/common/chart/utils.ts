@@ -6,7 +6,13 @@ export const dateFormatter = (date: Date, dateFormat: string) => {
   return format(date);
 };
 
-export const convertToTime = ({ timeString, dateFormat}: {timeString: string | undefined, dateFormat: string}) => {
+export const convertToTime = ({
+  timeString,
+  dateFormat
+}: {
+  timeString: string | undefined;
+  dateFormat: string;
+}) => {
   if (!timeString) return null;
 
   const parseDate = timeParse(dateFormat);
@@ -14,21 +20,32 @@ export const convertToTime = ({ timeString, dateFormat}: {timeString: string | u
 };
 
 /**
- * Returns 
+ * Returns
  * {
  *    uniqueKeys: an array of unique keys to represent each line of the chart (and accompanying components such as legend, tooltip)
  *    fData: data to feed chart. one unit looks like: { xKeyValue: Date, otherPropertiesDrivenFromUniqueKeys }
  * }
  * ex. If uniqueKeys are =['no2', 'so2'], xKey is Year, the unit will look like { Year: Date, no2: value, so2: value}
- * 
- * @param {object[]} data 
+ *
+ * @param {object[]} data
  * @param {string} idKey The key or getter of a group of data which should be unique in a Chart
  * @param {string} xKey The key or getter for x-axis which is corresponding to the data.
  * @param {string} yKey The key or getter for y-axis which is corresponding to the data.
  * @param {string} dateFormat How the date was formatted (following d3-date-format ex. %m/%d/%Y)
  */
-
-export function getFData({ data, idKey, xKey, yKey, dateFormat }: { data: any[], idKey: string, xKey: string, yKey: string, dateFormat: string }) {
+export function getFData({
+  data,
+  idKey,
+  xKey,
+  yKey,
+  dateFormat
+}: {
+  data: any[];
+  idKey: string;
+  xKey: string;
+  yKey: string;
+  dateFormat: string;
+}) {
   const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort();
 
   // Format csv/json data into chart suitable data
@@ -84,9 +101,14 @@ function getInterpolateFunction(colorScheme: string) {
   return d3ScaleChromatic[fnName];
 }
 
-export const getColors = function ({ steps, colorScheme } : {steps: number, colorScheme: string}) {
+export const getColors = function ({
+  steps,
+  colorScheme
+}: {
+  steps: number;
+  colorScheme: string;
+}) {
   const colorFn = getInterpolateFunction(colorScheme);
-  return new Array(steps).fill(0).map((e, idx) => {
-    return colorFn(idx / steps);
-  });
+
+  return new Array(steps).fill(0).map((e, idx) => colorFn(idx / steps));
 };

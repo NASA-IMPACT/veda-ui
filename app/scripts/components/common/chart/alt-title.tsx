@@ -4,8 +4,10 @@ interface AltTitleProps {
   title: string;
   desc: string;
 }
-function AltTitle(props: AltTitleProps) {
+
+export default function AltTitle(props: AltTitleProps) {
   const { title, desc } = props;
+
   return (
     <>
       <title>{title}</title>
@@ -13,5 +15,3 @@ function AltTitle(props: AltTitleProps) {
     </>
   );
 }
-
-export default AltTitle;
