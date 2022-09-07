@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import T from 'prop-types';
 import styled from 'styled-components';
-
 import {
   LineChart,
   Line,
@@ -18,14 +16,16 @@ import {
 
 import { useMediaQuery } from '$utils/use-media-query';
 
-import { getColors } from './utils';
-
 import TooltipComponent from './tooltip';
-import { LegendComponent, ReferenceLegendComponent } from './legend';
 import AltTitle from './alt-title';
-
-import { dateFormatter, convertToTime } from './utils';
-import { chartHeight, defaultMargin, highlightColor, legendWidth } from './constant';
+import { LegendComponent, ReferenceLegendComponent } from './legend';
+import { getColors, dateFormatter, convertToTime } from './utils';
+import {
+  chartHeight,
+  defaultMargin,
+  highlightColor,
+  legendWidth
+} from './constant';
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 0.8rem;
@@ -35,10 +35,6 @@ const ChartWrapper = styled.div`
   width: 100%;
   height: ${chartHeight};
 `;
-
-// interface DataUinit {
-//   [key: string]: Date;
-// }
 
 export interface CommonLineChartProps {
   xKey: string;
@@ -60,7 +56,7 @@ interface RLineChartProps extends CommonLineChartProps {
   uniqueKeys: string[];
 }
 
-const RLineChart = function (props: RLineChartProps) {
+export default function RLineChart (props: RLineChartProps) {
   const {
     chartData,
     uniqueKeys,
@@ -77,21 +73,20 @@ const RLineChart = function (props: RLineChartProps) {
     xAxisLabel,
     yAxisLabel
   } = props;
+
   const [chartMargin, setChartMargin] = useState(defaultMargin);
   const [lineColors, setLineColors] = useState(colors);
   const { isMediumUp } = useMediaQuery();
 
   useEffect(() => {
-    if (isMediumUp) {
-      return;
-    } else {
+    if (!isMediumUp) {
       setChartMargin({
         ...defaultMargin,
         left: 0
       });
     }
   }, [isMediumUp]);
-  
+
   useEffect(() => {
     const lineColors = colors
       ? colors
@@ -163,18 +158,17 @@ const RLineChart = function (props: RLineChartProps) {
             }
           />
 
-          {renderLegend && 
+          {renderLegend && (
             <Legend
               verticalAlign='bottom'
               width={legendWidth}
               wrapperStyle={{ width: '100%' }}
               content={<LegendComponent />}
-            />}
+            />
+          )}
           {/* <Brush dataKey={xKey} /> */}
         </LineChartWithFont>
       </ResponsiveContainer>
     </ChartWrapper>
   );
-};
-
-export default RLineChart;
+}

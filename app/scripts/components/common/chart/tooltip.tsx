@@ -1,15 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TooltipProps } from 'recharts/types';
-
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { dateFormatter } from './utils';
 
 interface TooltipComponentProps extends TooltipProps<number, string> {
-  colors: string[],
-  dateFormat: string,
-  xKey: string
+  colors: string[];
+  dateFormat: string;
+  xKey: string;
 }
 
 const TooltipWrapper = styled.div`
@@ -36,15 +35,9 @@ const TooltipItem = styled(ListItem)`
   margin-right: ${glsp(0.5)};
 `;
 
-const TooltipComponent = (props: TooltipComponentProps) => {
-  const {
-    colors,
-    dateFormat,
-    xKey,
-    active,
-    payload,
-    label
-  } = props;
+export default function TooltipComponent(props: TooltipComponentProps) {
+  const { colors, dateFormat, xKey, active, payload, label } = props;
+
   if (active && payload && payload.length) {
     return (
       <TooltipWrapper>
@@ -65,7 +58,6 @@ const TooltipComponent = (props: TooltipComponentProps) => {
       </TooltipWrapper>
     );
   }
-  return null;
-};
 
-export default TooltipComponent;
+  return null;
+}

@@ -3,15 +3,15 @@ import { csv, json } from 'd3-fetch';
 
 import { getFData } from './utils';
 import { fileExtensionRegex } from './constant';
+import Chart, { CommonLineChartProps } from './';
 
-import Chart, {CommonLineChartProps} from './';
 interface BlockChartProp extends CommonLineChartProps {
   dataPath: string;
   idKey: string;
   yKey: string;
 }
 
-const BlockChart = function (props:BlockChartProp) {
+export default function BlockChart (props: BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
 
   const [chartData, setChartData] = useState<object[]>([]);
@@ -22,7 +22,9 @@ const BlockChart = function (props:BlockChartProp) {
 
   useEffect(() => {
     const getData = async () => {
-      const data= (extension === 'csv')? await csv(dataPath): await json(dataPath);
+      const data =
+        extension === 'csv' ? await csv(dataPath) : await json(dataPath);
+
       const { fData, uniqueKeys } = getFData({
         data,
         xKey,
@@ -30,6 +32,7 @@ const BlockChart = function (props:BlockChartProp) {
         yKey,
         dateFormat
       });
+
       setChartData(fData);
       setUniqueKeys(uniqueKeys);
     };
@@ -46,7 +49,12 @@ const BlockChart = function (props:BlockChartProp) {
     dateFormat
   ]);
 
-  return <Chart chartData={chartData} uniqueKeys={uniqueKeys} renderLegend={true} {...props} />;
-};
-
-export default BlockChart;
+  return (
+    <Chart
+      chartData={chartData}
+      uniqueKeys={uniqueKeys}
+      renderLegend={true}
+      {...props}
+    />
+  );
+}

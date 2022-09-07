@@ -15,7 +15,7 @@ import {
 
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
 
-export const LazyChart = function (props) {
+export function LazyChart(props) {
   return (
     <LazyLoad
       placeholder={<LoadingSkeleton height={chartHeight} />}
@@ -25,9 +25,9 @@ export const LazyChart = function (props) {
       <Chart {...props} />
     </LazyLoad>
   );
-};
+}
 
-export const LazyScrollyTelling = function (props) {
+export function LazyScrollyTelling(props) {
   return (
     <LazyLoad
       placeholder={<LoadingSkeleton height={scrollyMapHeight} />}
@@ -37,9 +37,9 @@ export const LazyScrollyTelling = function (props) {
       <ScrollytellingBlock {...props} />
     </LazyLoad>
   );
-};
+}
 
-export const LazyMap = function (props) {
+export function LazyMap(props) {
   return (
     <LazyLoad
       placeholder={<LoadingSkeleton height={mapHeight} />}
@@ -49,13 +49,13 @@ export const LazyMap = function (props) {
       <Map {...props} />
     </LazyLoad>
   );
-};
+}
 
-export const LazyCompareImage = function (props) {
+export function LazyCompareImage(props) {
   return (
     // We don't know the height of image, passing an arbitrary number (200) for placeholder height
     <LazyLoad placeholder={<LoadingSkeleton height={200} />} offset={50} once>
       <CompareImage {...props} />
     </LazyLoad>
   );
-};
+}

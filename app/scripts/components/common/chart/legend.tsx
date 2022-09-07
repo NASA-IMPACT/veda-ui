@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { LegendProps } from 'recharts/types';
 import { CategoricalChartProps } from 'recharts/types/chart/generateCategoricalChart';
-
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { ListItem } from './tooltip';
@@ -41,10 +40,13 @@ const HighlightLabelMarker = styled.rect`
   fill: ${themeVal(highlightColorThemeValue)};
 `;
 
-export const ReferenceLegendComponent = (props:ReferenceLegendComponentProps) => {
+export const ReferenceLegendComponent = (
+  props: ReferenceLegendComponentProps
+) => {
   const { width, highlightLabel } = props;
+
   return (
-    <g transform={`translate(${width - 100}, 0) rotate(0)`}>
+    <g transform={`translate(${width ? width - 100 : 0}, 0) rotate(0)`}>
       <HighlightLabelMarker />
       <HighlightLabel transform='translate(15, 0)'>
         {highlightLabel}
@@ -53,8 +55,9 @@ export const ReferenceLegendComponent = (props:ReferenceLegendComponentProps) =>
   );
 };
 
-export const LegendComponent = (props:LegendProps) => {
+export const LegendComponent = (props: LegendProps) => {
   const { payload, width } = props;
+
   if (payload) {
     return (
       <LegendWrapper width={width}>
@@ -66,6 +69,7 @@ export const LegendComponent = (props:LegendProps) => {
         ))}
       </LegendWrapper>
     );
-  } 
+  }
+
   return null;
 };
