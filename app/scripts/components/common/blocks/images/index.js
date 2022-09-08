@@ -9,14 +9,14 @@ import {
 
 import { captionDisplayName } from '$components/common/blocks/block-constant';
 
-export const Caption = function ({ children, attrAuthor, attrUrl }) {
+export function Caption({ children, attrAuthor, attrUrl }) {
   return (
     <Figcaption>
       {children && <FigcaptionInner>{children}</FigcaptionInner>}
       <FigureAttribution author={attrAuthor} url={attrUrl} forwardedAs='span' />
     </Figcaption>
   );
-};
+}
 
 Caption.displayName = captionDisplayName;
 
@@ -26,7 +26,7 @@ Caption.propTypes = {
   children: T.node
 };
 
-const Image = function (props) {
+export default function Image(props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { align, caption, attrAuthor, attrUrl, ...propsWithoutAttrs } = props;
   const imageAlign = align ? align : 'center';
@@ -41,7 +41,8 @@ const Image = function (props) {
   ) : (
     <img loading='lazy' {...propsWithoutAttrs} />
   );
-};
+}
+
 Image.propTypes = {
   src: T.string,
   alt: T.string,
@@ -50,5 +51,3 @@ Image.propTypes = {
   attrAuthor: T.string,
   attrUrl: T.string
 };
-
-export default Image;
