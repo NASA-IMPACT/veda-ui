@@ -1,4 +1,5 @@
-export const chartHeight = '32rem';
+export const chartMaxHeight = 500;
+export const chartAspectRatio = 1.77; // 16:9
 export const defaultMargin = {
   top: 20,
   right: 30,
