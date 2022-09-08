@@ -1,3 +1,4 @@
+export const chartMinHeight = 200;
 export const chartMaxHeight = 500;
 export const chartAspectRatio = 1.77; // 16:9
 export const defaultMargin = {
