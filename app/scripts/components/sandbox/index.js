@@ -16,9 +16,9 @@ import SandboxCards from './cards';
 import SandboxMDXPage from './mdx-page';
 import SandboxMDXScrolly from './mdx-scrollytelling';
 import SandboxAOI from './aoi';
-import SandboxChart from './mdx-chart';
 import SandboxOverride from './override';
 import SandboxTimeseries from './timeseries';
+import SandboxChart from './mdx-chart';
 
 const pages = [
   {

@@ -35,7 +35,8 @@ type LegendSwatchProps = {
 };
 
 const makeGradient = (stops: string[]) => {
-  const d = 100 / stops.length - 1;
+  if (stops.length === 1) return stops[0];
+  const d = 100 / (stops.length - 1);
   const steps = stops.map((s, i) => `${s} ${i * d}%`);
   return `linear-gradient(to right, ${steps.join(', ')})`;
 };
