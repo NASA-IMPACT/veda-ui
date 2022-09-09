@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { lazy } from 'react';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
 import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
-import MdxContent from '$components/common/mdx-content';
+
+const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
 import { useThematicArea } from '$utils/thematics';
 
