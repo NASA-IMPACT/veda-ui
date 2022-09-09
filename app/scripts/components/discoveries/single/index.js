@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { lazy } from 'react';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
-import MdxContent from '$components/common/mdx-content';
 import RelatedContent from '$components/common/related-content';
 
 import { useThematicArea, useThematicAreaDiscovery } from '$utils/thematics';
 import { thematicDiscoveriesPath } from '$utils/routes';
+
+const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
 function DiscoveriesSingle() {
   const thematic = useThematicArea();

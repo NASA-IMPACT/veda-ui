@@ -1,6 +1,6 @@
-import React from 'react';
-import MdxContent from '$components/common/mdx-content';
+import React, { lazy } from 'react';
 
+const MdxContent = lazy(() => import('$components/common/mdx-content'));
 const pageLoader = () => import('./page.mdx');
 
 function SandboxMDXPage() {

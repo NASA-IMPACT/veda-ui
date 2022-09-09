@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { Button } from '@devseed-ui/button';
 import { Link } from 'react-router-dom';
 
@@ -7,11 +7,12 @@ import { LayoutProps } from '$components/common/layout-root';
 import { PageActions, PageLead, PageMainContent } from '$styles/page';
 import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import PageHero from '$components/common/page-hero';
-import MdxContent from '$components/common/mdx-content';
 import RelatedContent from '$components/common/related-content';
 
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { datasetExplorePath, thematicDatasetsPath } from '$utils/routes';
+
+const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
 function DatasetsOverview() {
   const thematic = useThematicArea();

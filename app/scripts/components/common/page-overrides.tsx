@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { getOverride, PageOverrides } from 'delta/thematics';
 
 import { useMdxPageLoader } from '$utils/thematics';
 import { S_SUCCEEDED } from '$utils/status';
-import MdxContent from './mdx-content';
+
+const MdxContent = lazy(() => import('./mdx-content'));
 
 interface ComponentOverrideProps {
   [key: string]: any;
