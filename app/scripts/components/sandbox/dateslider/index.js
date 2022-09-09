@@ -11,8 +11,8 @@ import {
 import Constrainer from '$styles/constrainer';
 import { mod } from '$utils/utils';
 import { PageMainContent } from '$styles/page';
-import TimeseriesControl from '$components/datasets/s-explore/timeseries';
-import { prepareDates } from '$components/datasets/s-explore/timeseries/utils';
+import DateSliderControl from '$components/common/dateslider';
+import { prepareDates } from '$components/common/dateslider/utils';
 
 const Wrapper = styled.div`
   position: relative;
@@ -93,7 +93,7 @@ function SandboxTimeseries() {
           </Button>
           <Box>
             <h2>Month</h2>
-            <TimeseriesControl
+            <DateSliderControl
               data={readyDatesM}
               value={activeDate.start}
               timeDensity='month'
@@ -102,7 +102,7 @@ function SandboxTimeseries() {
           </Box>
           <Box>
             <h2>Year</h2>
-            <TimeseriesControl
+            <DateSliderControl
               data={readyDatesY}
               value={activeDate.start}
               timeDensity='year'
@@ -111,7 +111,7 @@ function SandboxTimeseries() {
           </Box>
           <Box>
             <h2>Day</h2>
-            <TimeseriesControl
+            <DateSliderControl
               data={readyDatesD}
               value={activeDate.start}
               timeDensity='day'

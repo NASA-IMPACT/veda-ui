@@ -24,8 +24,8 @@ import {
 } from '@devseed-ui/toolbar';
 import { format } from 'date-fns';
 import { mod } from '$utils/utils';
-import DateSliderControl from './timeseries';
-import { prepareDates } from './timeseries/utils';
+import DateSliderControl from '$components/common/dateslider';
+import { prepareDates } from '$components/common/dateslider/utils';
 
 function getDatePickerView(timeDensity?: TimeDensity) {
   const view = {
