@@ -101,7 +101,12 @@ export default function RLineChart (props: RLineChartProps) {
 
   return (
     <ChartWrapper>
-      <ResponsiveContainer aspect={chartAspectRatio} debounce={500} minHeight={chartMinHeight} maxHeight={chartMaxHeight}>
+      <ResponsiveContainer
+        aspect={chartAspectRatio}
+        debounce={500}
+        minHeight={chartMinHeight}
+        maxHeight={chartMaxHeight}
+      >
         <LineChartWithFont data={chartData} margin={chartMargin}>
           <AltTitle title={altTitle} desc={altDesc} />
           <CartesianGrid stroke='#efefef' vertical={false} />
