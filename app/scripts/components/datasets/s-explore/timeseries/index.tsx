@@ -8,13 +8,13 @@ import { useEffectPrevious } from '$utils/use-effect-previous';
 import { getZoomTranslateExtent, useChartDimensions } from './utils';
 import { DataPoints, DataLine } from './data-points';
 import TriggerRect from './trigger-rect';
-import { TimeseriesContext } from './context';
+import { DateSliderContext } from './context';
 import { FaderDefinition, MASK_ID } from './faders';
 import { DateAxis, DateAxisParent } from './date-axis';
 import {
   DATA_POINT_WIDTH,
-  TimeseriesData,
-  TimeseriesTimeDensity
+  DateSliderData,
+  DateSliderTimeDensity
 } from './constants';
 import useReducedMotion from '$utils/use-prefers-reduced-motion';
 
@@ -24,15 +24,15 @@ const StyledSvg = styled.svg`
   font-family: ${themeVal('type.base.family')};
 `;
 
-type TimeseriesControlProps = {
+type DateSliderControlProps = {
   id?: string;
-  data: TimeseriesData;
+  data: DateSliderData;
   value?: Date;
-  timeDensity: TimeseriesTimeDensity;
-  onChange: ({ date: Date }) => void;
+  timeDensity: DateSliderTimeDensity;
+  onChange: (value: { date: Date }) => void;
 };
 
-function TimeseriesControl(props: TimeseriesControlProps) {
+export default function DateSliderControl(props: DateSliderControlProps) {
   const { id, data, value, timeDensity, onChange } = props;
   const { observe, width, height, outerWidth, outerHeight, margin } =
     useChartDimensions();
@@ -77,7 +77,7 @@ function TimeseriesControl(props: TimeseriesControlProps) {
 
   return (
     <div style={{ position: 'relative' }} ref={observe}>
-      <TimeseriesContext.Provider
+      <DateSliderContext.Provider
         value={{
           data,
           hoveringDataPoint,
@@ -108,12 +108,10 @@ function TimeseriesControl(props: TimeseriesControlProps) {
             <TriggerRect onDataClick={onChange} onDataOverOut={onDataOverOut} />
           </g>
         </StyledSvg>
-      </TimeseriesContext.Provider>
+      </DateSliderContext.Provider>
     </div>
   );
 }
-
-export default TimeseriesControl;
 
 function useRecenterSlider({ value, width, x, zoomBehavior, svgRef }) {
   const reduceMotion = useReducedMotion();

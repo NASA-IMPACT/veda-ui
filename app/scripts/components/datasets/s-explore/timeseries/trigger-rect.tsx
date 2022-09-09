@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { select } from 'd3';
 
-import { useTimeseriesContext } from './context';
+import { useDateSliderContext } from './context';
 
 type TriggerRectProps = {
   onDataOverOut: (result: { hover: boolean; date: Date | null }) => void;
@@ -31,7 +31,7 @@ function getHotZone(zones: HotZone[], mouse) {
 export default function TriggerRect(props: TriggerRectProps) {
   const { onDataOverOut, onDataClick } = props;
   const { width, height, data, x, zoomXTranslation, zoomBehavior } =
-    useTimeseriesContext();
+    useDateSliderContext();
   const elRef = useRef<SVGRectElement>(null);
   const hoverDataRef = useRef(false);
 

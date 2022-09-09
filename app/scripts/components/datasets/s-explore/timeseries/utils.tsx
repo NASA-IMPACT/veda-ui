@@ -7,7 +7,7 @@ import {
   format
 } from 'date-fns';
 
-import { CHART_HEIGHT, TimeseriesTimeDensity } from './constants';
+import { CHART_HEIGHT, DateSliderTimeDensity } from './constants';
 
 const margin = { top: 0, right: 0, bottom: 0, left: 0 };
 
@@ -29,7 +29,7 @@ export function useChartDimensions() {
   };
 }
 
-export function prepareDates(dates: Date[], timeDensityity: TimeseriesTimeDensity) {
+export function prepareDates(dates: Date[], timeDensityity: DateSliderTimeDensity) {
   const domain = extent<Date, Date>(dates, (d) => d) as Date[];
 
   const dateFormat = {

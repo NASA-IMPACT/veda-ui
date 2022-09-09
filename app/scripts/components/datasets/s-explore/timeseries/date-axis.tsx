@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { createSubtitleStyles } from '@devseed-ui/typography';
 
-import { useTimeseriesContext } from './context';
+import { useDateSliderContext } from './context';
 
 const timeFormat = {
   day: 'dd',
@@ -34,7 +34,7 @@ const StyledG = styled.g`
 `;
 
 export function DateAxis() {
-  const { data, x, zoomXTranslation, timeDensity } = useTimeseriesContext();
+  const { data, x, zoomXTranslation, timeDensity } = useDateSliderContext();
   const dateGRef = useRef<SVGGElement>(null);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export function DateAxis() {
 }
 
 export function DateAxisParent() {
-  const { data, x, zoomXTranslation, timeDensity } = useTimeseriesContext();
+  const { data, x, zoomXTranslation, timeDensity } = useDateSliderContext();
   const parentGref = useRef<SVGGElement>(null);
 
   useEffect(() => {

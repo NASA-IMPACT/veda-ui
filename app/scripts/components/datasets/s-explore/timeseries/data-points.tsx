@@ -4,7 +4,7 @@ import { select, Selection } from 'd3';
 import { startOfDay, startOfMonth, startOfYear } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 
-import { useTimeseriesContext } from './context';
+import { useDateSliderContext } from './context';
 import useReducedMotion from '$utils/use-prefers-reduced-motion';
 
 const StyledG = styled.g`
@@ -60,7 +60,7 @@ const startOfTimeDensity = {
 
 export function DataPoints() {
   const { data, value, timeDensity, x, zoomXTranslation, hoveringDataPoint } =
-    useTimeseriesContext();
+    useDateSliderContext();
   const container = useRef<SVGGElement>(null);
 
   const reduceMotion = useReducedMotion();
@@ -135,7 +135,7 @@ export function DataPoints() {
 }
 
 export function DataLine() {
-  const { data, x, zoomXTranslation } = useTimeseriesContext();
+  const { data, x, zoomXTranslation } = useDateSliderContext();
 
   return (
     <DataLineSelf

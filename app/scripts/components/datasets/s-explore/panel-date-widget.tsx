@@ -24,7 +24,7 @@ import {
 } from '@devseed-ui/toolbar';
 import { format } from 'date-fns';
 import { mod } from '$utils/utils';
-import TimeseriesControl from './timeseries';
+import DateSliderControl from './timeseries';
 import { prepareDates } from './timeseries/utils';
 
 function getDatePickerView(timeDensity?: TimeDensity) {
@@ -79,7 +79,7 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
     availableDates?.findIndex((d) => d.getTime() === value.start?.getTime()) ??
     -1;
 
-  const timeSliderDates = useMemo(
+  const dateSliderDates = useMemo(
     () =>
       availableDates && timeDensity
         ? prepareDates(availableDates, timeDensity)
@@ -154,9 +154,9 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
               />
             </Toolbar>
           </WidgetItemHGroup>
-          {timeSliderDates && timeDensity && (
-            <TimeseriesControl
-              data={timeSliderDates}
+          {dateSliderDates && timeDensity && (
+            <DateSliderControl
+              data={dateSliderDates}
               value={value.start || undefined}
               timeDensity={timeDensity}
               onChange={({ date }) => onConfirm({ start: date, end: date })}

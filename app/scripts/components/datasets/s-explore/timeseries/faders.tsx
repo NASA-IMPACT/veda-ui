@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { useTimeseriesContext } from './context';
+import { useDateSliderContext } from './context';
 import { getZoomTranslateExtent } from './utils';
 
 export const MASK_ID = 'gradient-mask';
 const FADE_ID = 'fade-gradient';
 
 export function FaderDefinition() {
-  const { zoomXTranslation, width,height, data, x, getUID } = useTimeseriesContext();
+  const { zoomXTranslation, width,height, data, x, getUID } = useDateSliderContext();
 
   const [[xMinExtent], [xMaxExtent]] = getZoomTranslateExtent(data, x);
 
