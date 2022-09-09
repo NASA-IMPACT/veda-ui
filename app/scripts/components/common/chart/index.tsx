@@ -77,7 +77,7 @@ export default function RLineChart(props: RLineChartProps) {
   } = props;
 
   const [chartMargin, setChartMargin] = useState(defaultMargin);
-  const [lineColors, setLineColors] = useState(colors);
+
   const { isMediumUp } = useMediaQuery();
 
   useEffect(() => {
@@ -89,13 +89,9 @@ export default function RLineChart(props: RLineChartProps) {
     }
   }, [isMediumUp]);
 
-  useEffect(() => {
-    const lineColors = colors
-      ? colors
-      : getColors({ steps: uniqueKeys.length, colorScheme });
-
-    setLineColors(lineColors);
-  }, [uniqueKeys, colors, colorScheme]);
+  const lineColors = colors
+    ? colors
+    : getColors({ steps: uniqueKeys.length, colorScheme });
 
   const renderHighlight = highlightStart || highlightEnd;
 

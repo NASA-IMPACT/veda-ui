@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import Chart from '$components/common/chart/block';
+import Chart from '$components/common/chart/analysis';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 import Hug from '$styles/hug';
+import timeSeriesData from './sample-timeseries-data.json';
 
 const Wrapper = styled.div`
   position: relative;
@@ -12,7 +13,10 @@ const Wrapper = styled.div`
   min-height: 600px;
 `;
 
-function Rechart() {
+// manually aggregated data from the endpoint below for testing purpose. date ranges from 202203 to 202205
+// https://staging-raster.delta-backend.com/cog/statistics?url="s3://veda-data-store-staging/geoglam/CropMonitor_${date}.tif"1
+
+export default function AnalysisChart() {
   return (
     <PageMainContent>
       <Constrainer>
@@ -30,16 +34,13 @@ function Rechart() {
               }}
             >
               <Chart
-                dataPath={
-                  new URL('../../sandbox/mdx-chart/aq.csv', import.meta.url)
-                    .href
-                }
-                xKey='Year'
-                idKey='Data Type'
-                dateFormat='%Y'
-                yKey='United States Change from 2005'
-                altTitle='no2 and so2'
-                altDesc='no2 and so2 has decreased'
+                chartData={timeSeriesData}
+                uniqueKeys={['min', 'max', 'std']}
+                xKey='Date'
+                dates={['202203', '202204', '202205']}
+                dateFormat='%Y%m'
+                altTitle='alt title'
+                altDesc='alt desc'
                 xAxisLabel='x axis label'
                 yAxisLabel='y axis label'
               />
@@ -51,16 +52,15 @@ function Rechart() {
               }}
             >
               <Chart
-                dataPath='/public/example.csv'
-                dateFormat='%m/%d/%Y'
-                idKey='County'
-                xKey='Test Date'
-                yKey='New Positives'
-                altTitle='covid case in Kings county'
-                altDesc='peak in omicron'
-                highlightStart='03/10/2020'
-                highlightEnd='05/01/2020'
-                highlightLabel='Omicron'
+                chartData={timeSeriesData}
+                uniqueKeys={['min', 'max', 'std']}
+                xKey='Date'
+                dates={['202203', '202204', '202205']}
+                dateFormat='%Y%m'
+                altTitle='alt title'
+                altDesc='alt desc'
+                xAxisLabel='x axis label'
+                yAxisLabel='y axis label'
               />
             </Hug>
           </Hug>
@@ -69,5 +69,3 @@ function Rechart() {
     </PageMainContent>
   );
 }
-
-export default Rechart;
