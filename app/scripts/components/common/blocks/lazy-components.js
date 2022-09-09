@@ -18,7 +18,7 @@ import { LoadingSkeleton } from '$components/common/loading-skeleton';
 export function LazyChart(props) {
   return (
     <LazyLoad
-      placeholder={<LoadingSkeleton height={chartMaxHeight + 'px'} />}
+      placeholder={<LoadingSkeleton height={`${chartMaxHeight}px`} />}
       offset={50}
       once
     >
