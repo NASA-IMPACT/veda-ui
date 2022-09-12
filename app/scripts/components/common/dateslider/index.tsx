@@ -8,7 +8,6 @@ import { useEffectPrevious } from '$utils/use-effect-previous';
 import { getZoomTranslateExtent, useChartDimensions } from './utils';
 import { DataPoints, DataLine } from './data-points';
 import TriggerRect from './trigger-rect';
-import { DateSliderContext } from './context';
 import { FaderDefinition, MASK_ID } from './faders';
 import { DateAxis, DateAxisParent } from './date-axis';
 import {
@@ -77,38 +76,53 @@ export default function DateSliderControl(props: DateSliderControlProps) {
 
   return (
     <div style={{ position: 'relative' }} ref={observe}>
-      <DateSliderContext.Provider
-        value={{
-          data,
-          hoveringDataPoint,
-          value,
-          width,
-          height,
-          outerWidth,
-          outerHeight,
-          margin,
-          x,
-          zoomXTranslation,
-          zoomBehavior,
-          timeDensity,
-          getUID
-        }}
-      >
-        <StyledSvg ref={svgRef} width={outerWidth} height={outerHeight}>
-          <defs>
-            <FaderDefinition />
-          </defs>
-          <g transform={`translate(${margin.left},${margin.top})`}>
-            <g mask={`url(#${getUID(MASK_ID)})`}>
-              <DataLine />
-              <DataPoints />
-              <DateAxis />
-            </g>
-            <DateAxisParent />
-            <TriggerRect onDataClick={onChange} onDataOverOut={onDataOverOut} />
+      <StyledSvg ref={svgRef} width={outerWidth} height={outerHeight}>
+        <defs>
+          <FaderDefinition
+            data={data}
+            x={x}
+            zoomXTranslation={zoomXTranslation}
+            width={width}
+            height={height}
+            getUID={getUID}
+          />
+        </defs>
+        <g transform={`translate(${margin.left},${margin.top})`}>
+          <g mask={`url(#${getUID(MASK_ID)})`}>
+            <DataLine data={data} x={x} zoomXTranslation={zoomXTranslation} />
+            <DataPoints
+              data={data}
+              hoveringDataPoint={hoveringDataPoint}
+              value={value}
+              x={x}
+              zoomXTranslation={zoomXTranslation}
+              timeDensity={timeDensity}
+            />
+            <DateAxis
+              data={data}
+              x={x}
+              zoomXTranslation={zoomXTranslation}
+              timeDensity={timeDensity}
+            />
           </g>
-        </StyledSvg>
-      </DateSliderContext.Provider>
+          <DateAxisParent
+            data={data}
+            x={x}
+            zoomXTranslation={zoomXTranslation}
+            timeDensity={timeDensity}
+          />
+          <TriggerRect
+            onDataClick={onChange}
+            onDataOverOut={onDataOverOut}
+            width={width}
+            height={height}
+            data={data}
+            x={x}
+            zoomXTranslation={zoomXTranslation}
+            zoomBehavior={zoomBehavior}
+          />
+        </g>
+      </StyledSvg>
     </div>
   );
 }

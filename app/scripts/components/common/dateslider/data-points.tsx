@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { select, Selection } from 'd3';
+import { ScaleTime, select, Selection } from 'd3';
 import { startOfDay, startOfMonth, startOfYear } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 
-import { useDateSliderContext } from './context';
 import useReducedMotion from '$utils/use-prefers-reduced-motion';
+import { DateSliderData, DateSliderTimeDensity } from './constants';
 
 const StyledG = styled.g`
   .data-point {
@@ -58,9 +58,18 @@ const startOfTimeDensity = {
   day: startOfDay
 };
 
-export function DataPoints() {
+interface DataPointsProps {
+  data: DateSliderData;
+  hoveringDataPoint: Date | null;
+  value?: Date;
+  x: ScaleTime<number, number, never>;
+  zoomXTranslation: number;
+  timeDensity: DateSliderTimeDensity;
+}
+
+export function DataPoints(props: DataPointsProps) {
   const { data, value, timeDensity, x, zoomXTranslation, hoveringDataPoint } =
-    useDateSliderContext();
+    props;
   const container = useRef<SVGGElement>(null);
 
   const reduceMotion = useReducedMotion();
@@ -134,8 +143,15 @@ export function DataPoints() {
   );
 }
 
-export function DataLine() {
-  const { data, x, zoomXTranslation } = useDateSliderContext();
+
+interface DataLineProps {
+  data: DateSliderData;
+  x: ScaleTime<number, number, never>;
+  zoomXTranslation: number;
+}
+
+export function DataLine(props: DataLineProps) {
+  const { data, x, zoomXTranslation } = props;
 
   return (
     <DataLineSelf

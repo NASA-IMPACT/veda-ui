@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { select } from 'd3';
+import { ScaleTime, select } from 'd3';
 import { format } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { createSubtitleStyles } from '@devseed-ui/typography';
 
-import { useDateSliderContext } from './context';
+import { DateSliderData, DateSliderTimeDensity } from './constants';
 
 const timeFormat = {
   day: 'dd',
@@ -33,8 +33,15 @@ const StyledG = styled.g`
   }
 `;
 
-export function DateAxis() {
-  const { data, x, zoomXTranslation, timeDensity } = useDateSliderContext();
+interface DateAxisProps {
+  data: DateSliderData;
+  x: ScaleTime<number, number, never>;
+  zoomXTranslation: number;
+  timeDensity: DateSliderTimeDensity;
+}
+
+export function DateAxis(props: DateAxisProps) {
+  const { data, x, zoomXTranslation, timeDensity } = props;
   const dateGRef = useRef<SVGGElement>(null);
 
   useEffect(() => {
@@ -61,8 +68,15 @@ export function DateAxis() {
   );
 }
 
-export function DateAxisParent() {
-  const { data, x, zoomXTranslation, timeDensity } = useDateSliderContext();
+interface DateAxisParentProps {
+  data: DateSliderData;
+  x: ScaleTime<number, number, never>;
+  zoomXTranslation: number;
+  timeDensity: DateSliderTimeDensity;
+}
+
+export function DateAxisParent(props: DateAxisParentProps) {
+  const { data, x, zoomXTranslation, timeDensity } = props;
   const parentGref = useRef<SVGGElement>(null);
 
   useEffect(() => {

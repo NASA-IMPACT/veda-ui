@@ -1,11 +1,17 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { select } from 'd3';
+import { ScaleTime, select, ZoomBehavior } from 'd3';
 
-import { useDateSliderContext } from './context';
+import { DateSliderData } from './constants';
 
 type TriggerRectProps = {
   onDataOverOut: (result: { hover: boolean; date: Date | null }) => void;
   onDataClick: (result: { date: Date }) => void;
+  data: DateSliderData;
+  x: ScaleTime<number, number, never>;
+  zoomXTranslation: number;
+  width: number;
+  height: number;
+  zoomBehavior: ZoomBehavior<SVGRectElement, unknown>;
 };
 
 type Point = {
@@ -29,9 +35,17 @@ function getHotZone(zones: HotZone[], mouse) {
 }
 
 export default function TriggerRect(props: TriggerRectProps) {
-  const { onDataOverOut, onDataClick } = props;
-  const { width, height, data, x, zoomXTranslation, zoomBehavior } =
-    useDateSliderContext();
+  const {
+    onDataOverOut,
+    onDataClick,
+    width,
+    height,
+    data,
+    x,
+    zoomXTranslation,
+    zoomBehavior
+  } = props;
+
   const elRef = useRef<SVGRectElement>(null);
   const hoverDataRef = useRef(false);
 
