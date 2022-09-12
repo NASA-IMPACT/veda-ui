@@ -2,9 +2,7 @@ import { useEffect, useRef } from 'react';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { css } from 'styled-components';
 
-import * as RestrictedRectangleMode from './restricted-rect-mode';
-
-const modes = RestrictedRectangleMode.enable(MapboxDraw.modes);
+import { computeDrawStyles } from './style';
 
 export const aoiCursorStyles = css`
   &.mouse-add .mapboxgl-canvas-container {
@@ -17,122 +15,6 @@ export const aoiCursorStyles = css`
     cursor: move;
   }
 `;
-
-const computeDrawStyles = (theme) => [
-  {
-    id: 'gl-draw-polygon-fill-inactive',
-    type: 'fill',
-    filter: [
-      'all',
-      ['==', 'active', 'false'],
-      ['==', '$type', 'Polygon'],
-      ['!=', 'mode', 'static']
-    ],
-    paint: {
-      'fill-color': theme.color.primary,
-      'fill-outline-color': theme.color.primary,
-      'fill-opacity': 0.16
-    }
-  },
-  {
-    id: 'gl-draw-polygon-fill-active',
-    type: 'fill',
-    filter: ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon']],
-    paint: {
-      'fill-color': theme.color.primary,
-      'fill-outline-color': theme.color.primary,
-      'fill-opacity': 0.16
-    }
-  },
-  {
-    id: 'gl-draw-polygon-stroke-inactive',
-    type: 'line',
-    filter: [
-      'all',
-      ['==', 'active', 'false'],
-      ['==', '$type', 'Polygon'],
-      ['!=', 'mode', 'static']
-    ],
-    layout: {
-      'line-cap': 'round',
-      'line-join': 'round'
-    },
-    paint: {
-      'line-color': theme.color.primary,
-      'line-width': 2
-    }
-  },
-  {
-    id: 'gl-draw-polygon-stroke-active',
-    type: 'line',
-    filter: ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon']],
-    layout: {
-      'line-cap': 'round',
-      'line-join': 'round'
-    },
-    paint: {
-      'line-color': theme.color.primary,
-      'line-dasharray': [0.64, 2],
-      'line-width': 2
-    }
-  },
-  {
-    id: 'gl-draw-polygon-and-line-vertex-stroke-inactive',
-    type: 'circle',
-    filter: [
-      'all',
-      ['==', 'meta', 'vertex'],
-      ['==', '$type', 'Point'],
-      ['!=', 'mode', 'static']
-    ],
-    paint: {
-      'circle-radius': 6,
-      'circle-color': '#fff'
-    }
-  },
-  {
-    id: 'gl-draw-polygon-and-line-vertex-inactive',
-    type: 'circle',
-    filter: [
-      'all',
-      ['==', 'meta', 'vertex'],
-      ['==', '$type', 'Point'],
-      ['!=', 'mode', 'static']
-    ],
-    paint: {
-      'circle-radius': 4,
-      'circle-color': theme.color.primary
-    }
-  },
-  {
-    id: 'gl-draw-point-stroke-active',
-    type: 'circle',
-    filter: [
-      'all',
-      ['==', '$type', 'Point'],
-      ['==', 'active', 'true'],
-      ['!=', 'meta', 'midpoint']
-    ],
-    paint: {
-      'circle-radius': 8,
-      'circle-color': '#fff'
-    }
-  },
-  {
-    id: 'gl-draw-point-active',
-    type: 'circle',
-    filter: [
-      'all',
-      ['==', '$type', 'Point'],
-      ['!=', 'meta', 'midpoint'],
-      ['==', 'active', 'true']
-    ],
-    paint: {
-      'circle-radius': 6,
-      'circle-color': theme.color.primary
-    }
-  }
-];
 
 export function useMbDraw({
   mapRef,
@@ -149,7 +31,7 @@ export function useMbDraw({
     if (!mbMap) return;
 
     const newMbDraw = new MapboxDraw({
-      modes: modes,
+      modes: MapboxDraw.modes,
       displayControlsDefault: false,
       styles: computeDrawStyles(theme)
     });
@@ -167,9 +49,14 @@ export function useMbDraw({
     const drawUpdateListener = (e) =>
       onChange?.('aoi.update', { feature: e.features[0] });
 
+    const drawModeListener = (e) =>
+      e.mode === 'simple_select' &&
+      onChange?.('aoi.selection', { selected: false });
+
     mbMap
       .on('draw.create', drawCreateListener)
       .on('draw.selectionchange', drawSelectionListener)
+      .on('draw.modechange', drawModeListener)
       .on('draw.update', drawUpdateListener);
 
     return () => {
@@ -188,7 +75,7 @@ export function useMbDraw({
   useEffect(() => {
     const mbDraw = mbDrawRef.current;
     if (!mbDraw) return;
-    return mbDraw.changeMode(drawing ? 'draw_rectangle' : 'simple_select');
+    return mbDraw.changeMode(drawing ? 'draw_polygon' : 'simple_select');
   }, [drawing]);
 
   // Set / delete the feature.
@@ -216,9 +103,9 @@ export function useMbDraw({
         mbDraw.changeMode('direct_select', {
           featureId: feature.id
         });
-      } else {
-        mbDraw.changeMode('simple_select');
       }
+    } else {
+      mbDraw.changeMode('simple_select');
     }
   }, [selected, feature]);
 }
