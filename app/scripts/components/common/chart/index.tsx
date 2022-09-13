@@ -53,9 +53,13 @@ export interface CommonLineChartProps {
   highlightLabel: string;
 }
 
+interface UniqueKeyUnit {
+  label: string;
+  active: boolean;
+}
 interface RLineChartProps extends CommonLineChartProps {
   chartData: object[];
-  uniqueKeys: string[];
+  uniqueKeys: UniqueKeyUnit[];
 }
 
 export default function RLineChart(props: RLineChartProps) {
@@ -147,10 +151,10 @@ export default function RLineChart(props: RLineChartProps) {
                 isAnimationActive={false}
                 dot={false}
                 activeDot={false}
-                key={`${k}-line`}
-                dataKey={k}
+                key={`${k.label}-line`}
+                dataKey={k.label}
                 strokeWidth={2}
-                stroke={lineColors[idx]}
+                stroke={k.active ? lineColors[idx] : 'transparent'}
               />
             );
           })}

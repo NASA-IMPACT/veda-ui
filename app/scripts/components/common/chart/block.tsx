@@ -11,7 +11,7 @@ interface BlockChartProp extends CommonLineChartProps {
   yKey: string;
 }
 
-export default function BlockChart (props: BlockChartProp) {
+export default function BlockChart(props: BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
 
   const [chartData, setChartData] = useState<object[]>([]);
@@ -33,8 +33,13 @@ export default function BlockChart (props: BlockChartProp) {
         dateFormat
       });
 
+      const formattedUniqueKeys = uniqueKeys.map((e) => ({
+        label: e,
+        active: true
+      }));
+
       setChartData(fData);
-      setUniqueKeys(uniqueKeys);
+      setUniqueKeys(formattedUniqueKeys);
     };
 
     getData();

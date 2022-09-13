@@ -28,6 +28,9 @@ const LegendItem = styled.li`
     align-self: center;
   }
 `;
+const ClickableLegendItem = styled(LegendItem)`
+  cursor: pointer;
+`;
 
 const HighlightLabel = styled.text`
   font-size: 0.75rem;
@@ -53,6 +56,30 @@ export const ReferenceLegendComponent = (
       </HighlightLabel>
     </g>
   );
+};
+
+export const AnalysisLegendComponent = (props: LegendProps) => {
+  const { payload, width } = props;
+
+  if (payload) {
+    return (
+      <LegendWrapper width={width}>
+        {payload.map((entry) => (
+          <ClickableLegendItem
+            key={`item-${entry.value}`}
+            onClick={(e) => {
+              e.preventDefault();
+              entry.onClick(entry.value);
+            }}
+          >
+            <ListItem color={entry.color} />
+            {entry.value}
+          </ClickableLegendItem>
+        ))}
+      </LegendWrapper>
+    );
+  }
+  return null;
 };
 
 export const LegendComponent = (props: LegendProps) => {

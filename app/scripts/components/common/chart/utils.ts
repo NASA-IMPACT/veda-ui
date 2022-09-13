@@ -47,7 +47,6 @@ export function formatTimeSeriesData({
   xKey: string;
   bandIndex?: number;
 }) {
-  Object.entries(uniqueKeys);
   return timeSeriesData.map((e, idx) => {
     const currentStat = e.properties.statistics[bandIndex];
     return {
@@ -138,7 +137,7 @@ function getInterpolateFunction(colorScheme: string) {
 
 export const getColors = function ({
   steps,
-  colorScheme
+  colorScheme = 'viridis'
 }: {
   steps: number;
   colorScheme: string;
