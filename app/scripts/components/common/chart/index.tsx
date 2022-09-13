@@ -53,7 +53,7 @@ export interface CommonLineChartProps {
   highlightLabel: string;
 }
 
-interface UniqueKeyUnit {
+export interface UniqueKeyUnit {
   label: string;
   active: boolean;
 }
@@ -163,6 +163,7 @@ export default function RLineChart(props: RLineChartProps) {
               <TooltipComponent
                 dateFormat={dateFormat}
                 xKey={xKey}
+                uniqueKeys={uniqueKeys}
                 colors={lineColors}
               />
             }
