@@ -21,7 +21,9 @@ import AltTitle from './alt-title';
 import { LegendComponent, ReferenceLegendComponent } from './legend';
 import { getColors, dateFormatter, convertToTime } from './utils';
 import {
-  chartHeight,
+  chartMinHeight,
+  chartMaxHeight,
+  chartAspectRatio,
   defaultMargin,
   highlightColor,
   legendWidth
@@ -33,7 +35,7 @@ const LineChartWithFont = styled(LineChart)`
 
 const ChartWrapper = styled.div`
   width: 100%;
-  height: ${chartHeight};
+  grid-column: 1/-1;
 `;
 
 export interface CommonLineChartProps {
@@ -99,7 +101,12 @@ export default function RLineChart (props: RLineChartProps) {
 
   return (
     <ChartWrapper>
-      <ResponsiveContainer debounce={500}>
+      <ResponsiveContainer
+        aspect={chartAspectRatio}
+        debounce={500}
+        minHeight={chartMinHeight}
+        maxHeight={chartMaxHeight}
+      >
         <LineChartWithFont data={chartData} margin={chartMargin}>
           <AltTitle title={altTitle} desc={altDesc} />
           <CartesianGrid stroke='#efefef' vertical={false} />

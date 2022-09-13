@@ -18,6 +18,7 @@ import SandboxMDXScrolly from './mdx-scrollytelling';
 import SandboxAOI from './aoi';
 import SandboxOverride from './override';
 import SandboxChart from './mdx-chart';
+import SandboxAnalysisChart from './analysis-chart';
 
 const pages = [
   {
@@ -54,6 +55,11 @@ const pages = [
     id: 'mdx-chart',
     name: 'Chart',
     component: SandboxChart
+  },
+  {
+    id: 'analysis-chart',
+    name: 'Analysis Page Chart',
+    component: SandboxAnalysisChart
   },
   {
     id: 'cards',

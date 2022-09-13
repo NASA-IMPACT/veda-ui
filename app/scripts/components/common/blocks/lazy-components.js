@@ -2,7 +2,7 @@ import React from 'react';
 import LazyLoad from 'react-lazyload';
 
 import Chart from '$components/common/chart/block';
-import { chartHeight } from '$components/common/chart/constant';
+import { chartMaxHeight } from '$components/common/chart/constant';
 
 import CompareImage from '$components/common/blocks/images/compare';
 
@@ -18,7 +18,7 @@ import { LoadingSkeleton } from '$components/common/loading-skeleton';
 export function LazyChart(props) {
   return (
     <LazyLoad
-      placeholder={<LoadingSkeleton height={chartHeight} />}
+      placeholder={<LoadingSkeleton height={`${chartMaxHeight}px`} />}
       offset={50}
       once
     >
