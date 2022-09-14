@@ -51,6 +51,7 @@ export function useAoiControls() {
       case 'aoi.selection':
         setAoi((state) => ({
           ...state,
+          drawing: false,
           selected: payload.selected,
           actionOrigin: payload.selected ? 'map' : null
         }));

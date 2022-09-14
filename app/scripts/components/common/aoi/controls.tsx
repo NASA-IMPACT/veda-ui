@@ -1,23 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {
   CollecticonArea,
-  CollecticonPencil,
   CollecticonTrashBin
 } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton, VerticalDivider } from '@devseed-ui/toolbar';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Dropdown, DropTitle } from '@devseed-ui/dropdown';
-import { Button } from '@devseed-ui/button';
 
-import BoundsFieldset from '$components/common/bounds-fieldset';
 import {
-  areBoundsValid,
-  boundsFromFeature,
   calcFeatArea,
-  featureFromBounds
 } from './utils';
-import { AoiBounds, AoiChangeListenerOverload, AoiState } from './types';
+import { AoiChangeListenerOverload, AoiState } from './types';
 
 export const Filter = styled.section`
   display: flex;
@@ -56,38 +49,12 @@ export const FilterHeadToolbar = styled.div`
   align-items: flex-start;
 `;
 
-const DropdownWide = styled(Dropdown)`
-  max-width: 22rem;
-`;
-
-interface DropdownRef {
-  reposition: () => void;
-  open: () => void;
-  close: () => void;
-}
-
 type AoiControlsProps = {
   onAoiChange: AoiChangeListenerOverload;
 } & Pick<AoiState, 'feature' | 'drawing' | 'selected'>;
 
 export default function AoiControls(props: AoiControlsProps) {
   const { feature, selected, drawing, onAoiChange } = props;
-
-  const dropRef = useRef<DropdownRef>();
-  const [bounds, setBounds] = useState(boundsFromFeature(feature));
-
-  const onApplyClick = useCallback(() => {
-    if (areBoundsValid(bounds)) {
-      onAoiChange('aoi.set-feature', {
-        feature: featureFromBounds(feature, bounds as AoiBounds)
-      });
-      dropRef.current?.close();
-    }
-  }, [bounds, feature, onAoiChange]);
-
-  useEffect(() => {
-    setBounds(boundsFromFeature(feature));
-  }, [feature]);
 
   return (
     <Filter>
@@ -111,45 +78,6 @@ export default function AoiControls(props: AoiControlsProps) {
         >
           <CollecticonArea meaningful title='AOI' />
         </ToolbarIconButton>
-        <DropdownWide
-          ref={dropRef}
-          alignment='left'
-          direction='down'
-          triggerElement={({ active, ...rest }) => (
-            <ToolbarIconButton {...rest}>
-              <CollecticonPencil meaningful title='Edit AOI bounds' />
-            </ToolbarIconButton>
-          )}
-        >
-          <DropTitle>Edit AOI</DropTitle>
-
-          <BoundsFieldset
-            id='ne'
-            title='Northeast bounds'
-            value={bounds.ne || []}
-            onChange={(value) => setBounds((b) => ({ ...b, ne: value }))}
-            placeholders={[-8.9, 39.0]}
-          />
-
-          <BoundsFieldset
-            id='sw'
-            title='Southwest bounds'
-            value={bounds.sw || []}
-            onChange={(value) => setBounds((b) => ({ ...b, sw: value }))}
-            placeholders={[-9.6, 38.6]}
-          />
-
-          <div>
-            <Button
-              disabled={!areBoundsValid(bounds)}
-              onClick={onApplyClick}
-              variation='primary-fill'
-              fitting='baggy'
-            >
-              Save
-            </Button>
-          </div>
-        </DropdownWide>
       </Toolbar>
     </Filter>
   );
