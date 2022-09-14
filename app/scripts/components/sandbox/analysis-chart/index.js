@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Chart from '$components/common/chart/analysis';
-import { AnalysisLegendComponent } from '$components/common/chart/Legend';
+import { AnalysisLegendComponent } from '$components/common/chart/legend';
 import {
   formatTimeSeriesData,
   getColors
@@ -27,7 +27,8 @@ const MainPanel = styled.div`
   margin-bottom: 50px;
   padding: 20px;
 `;
-// manually aggregated data from the endpoint below for testing purpose. date ranges from 202203 to 202205
+
+// manually collected data from the endpoint below for testing purpose. date ranges from 202203 to 202205
 // https://staging-raster.delta-backend.com/cog/statistics?url="s3://veda-data-store-staging/geoglam/CropMonitor_${date}.tif"1
 
 const dataForChart1 = {

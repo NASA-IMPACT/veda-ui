@@ -48,10 +48,7 @@ export default function TooltipComponent(props: TooltipComponentProps) {
           <strong>{dateFormatter(label, dateFormat)}</strong>
         </div>
         {Object.keys(payload[0].payload)
-          .filter((key) => key !== xKey)
-          .filter((key) => {
-            return !inactiveKeys.includes(key);
-          })
+          .filter((key) => key !== xKey && !inactiveKeys.includes(key))
           .map((key, idx) => {
             const point = payload[0].payload[key];
             return (
