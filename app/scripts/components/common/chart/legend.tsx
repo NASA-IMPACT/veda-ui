@@ -58,7 +58,7 @@ export const ReferenceLegendComponent = (
   );
 };
 
-export const AnalysisLegendComponent = (props: LegendProps) => {
+export const AnalysisLegendComponent = (props) => {
   const { payload, width } = props;
 
   if (payload) {
@@ -73,7 +73,7 @@ export const AnalysisLegendComponent = (props: LegendProps) => {
             }}
           >
             <ListItem color={entry.color} />
-            {entry.value}
+            {entry.label}
           </ClickableLegendItem>
         ))}
       </LegendWrapper>

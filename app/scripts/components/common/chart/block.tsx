@@ -35,6 +35,7 @@ export default function BlockChart(props: BlockChartProp) {
 
       const formattedUniqueKeys = uniqueKeys.map((e) => ({
         label: e,
+        value: e,
         active: true
       }));
 

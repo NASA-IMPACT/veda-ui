@@ -34,11 +34,10 @@ const MainPanel = styled.div`
 const dataForChart1 = {
   timeSeriesData: timeSeriesData345,
   dates: ['202203', '202204', '202205'],
-  uniqueKeys: ['min', 'max', 'std'],
-  uniqueKeysWithStatus: [
-    { label: 'min', active: true },
-    { label: 'max', active: true },
-    { label: 'std', active: true }
+  uniqueKeys: [
+    { label: 'Min', value: 'min', active: true },
+    { label: 'Max', value: 'max', active: true },
+    { label: 'STD', value: 'std', active: true }
   ],
   dateFormat: '%Y%m',
   xKey: 'Date'
@@ -47,11 +46,10 @@ const dataForChart1 = {
 const dataForChart2 = {
   timeSeriesData: timeSeriesData234,
   dates: ['202202', '202203', '202204', '202205'],
-  uniqueKeys: ['min', 'max', 'std'],
-  uniqueKeysWithStatus: [
-    { label: 'min', active: true },
-    { label: 'max', active: true },
-    { label: 'std', active: true }
+  uniqueKeys: [
+    { label: 'Min', value: 'min', active: true },
+    { label: 'Max', value: 'max', active: true },
+    { label: 'STD', value: 'std', active: true }
   ],
   dateFormat: '%Y%m',
   xKey: 'Date'
@@ -63,12 +61,12 @@ export default function AnalysisChart() {
   const legendColors = getColors({ steps: chartData1.length });
 
   const [dynamicUniqueKeys, setDynamicUniqueKeys] = useState(
-    dataForChart1.uniqueKeysWithStatus
+    dataForChart1.uniqueKeys
   );
 
   function onLegendClick(e) {
     const newobj = dynamicUniqueKeys.map((key) => {
-      if (key.label === e) {
+      if (key.value === e) {
         return {
           ...key,
           active: !key.active
@@ -97,10 +95,9 @@ export default function AnalysisChart() {
             >
               <MainPanel>
                 <AnalysisLegendComponent
-                  payload={chartData1.map((e, idx) => ({
+                  payload={dynamicUniqueKeys.map((e, idx) => ({
                     ...e,
                     color: legendColors[idx],
-                    value: dataForChart1.uniqueKeys[idx],
                     onClick: onLegendClick
                   }))}
                   width='500px'

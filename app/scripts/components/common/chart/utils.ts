@@ -1,7 +1,6 @@
 import { timeFormat, timeParse } from 'd3-time-format';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
-import { object } from 'prop-types';
-import { accessToken } from 'mapbox-gl';
+import { UniqueKeyUnit } from '.';
 
 export const dateFormatter = (date: Date, dateFormat: string) => {
   const format = timeFormat(dateFormat);
@@ -43,7 +42,7 @@ export function formatTimeSeriesData({
   timeSeriesData: object[];
   dates: string[]; // 202205, 202206,...
   dateFormat: string; // %y/%m/%d..
-  uniqueKeys: string[]; // min,max,,
+  uniqueKeys: UniqueKeyUnit[]; // min,max,,
   xKey: string;
   bandIndex?: number;
 }) {
@@ -51,10 +50,9 @@ export function formatTimeSeriesData({
     const currentStat = e.properties.statistics[bandIndex];
     return {
       [xKey]: convertToTime({ timeString: dates[idx], dateFormat }),
-      ...uniqueKeys.reduce(
-        (acc, curr) => ({ ...acc, [curr]: currentStat[curr] }),
-        {}
-      )
+      ...uniqueKeys.reduce((acc, curr) => {
+        return { ...acc, [curr.label]: currentStat[curr.value] };
+      }, {})
     };
   });
 }
