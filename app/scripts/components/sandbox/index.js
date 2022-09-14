@@ -17,6 +17,7 @@ import SandboxMDXPage from './mdx-page';
 import SandboxMDXScrolly from './mdx-scrollytelling';
 import SandboxAOI from './aoi';
 import SandboxOverride from './override';
+import SandboxDateslider from './dateslider';
 import SandboxChart from './mdx-chart';
 import SandboxAnalysisChart from './analysis-chart';
 
@@ -75,6 +76,11 @@ const pages = [
     id: 'override',
     name: 'Override',
     component: SandboxOverride
+  },
+  {
+    id: 'dateslider',
+    name: 'Dateslider',
+    component: SandboxDateslider
   }
 ];
 

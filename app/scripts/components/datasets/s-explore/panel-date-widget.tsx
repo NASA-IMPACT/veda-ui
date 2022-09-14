@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   CollecticonCalendar,
   CollecticonChevronLeftSmall,
@@ -24,6 +24,8 @@ import {
 } from '@devseed-ui/toolbar';
 import { format } from 'date-fns';
 import { mod } from '$utils/utils';
+import DateSliderControl from '$components/common/dateslider';
+import { prepareDates } from '$components/common/dateslider/utils';
 
 function getDatePickerView(timeDensity?: TimeDensity) {
   const view = {
@@ -34,7 +36,7 @@ function getDatePickerView(timeDensity?: TimeDensity) {
     // If the data's time density is monthly only allow the user to select a
     // month by setting the picker to a early view.
     year: 'decade'
-  }[timeDensity || 'day'];
+  }[timeDensity || 'month'];
 
   return view as Exclude<DropdownDatePickerProps['view'], undefined>;
 }
@@ -76,6 +78,14 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
   const currIndex =
     availableDates?.findIndex((d) => d.getTime() === value.start?.getTime()) ??
     -1;
+
+  const dateSliderDates = useMemo(
+    () =>
+      availableDates && timeDensity
+        ? prepareDates(availableDates, timeDensity)
+        : null,
+    [availableDates, timeDensity]
+  );
 
   return (
     <PanelWidget>
@@ -144,6 +154,14 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
               />
             </Toolbar>
           </WidgetItemHGroup>
+          {dateSliderDates && timeDensity && (
+            <DateSliderControl
+              data={dateSliderDates}
+              value={value.start || undefined}
+              timeDensity={timeDensity}
+              onChange={({ date }) => onConfirm({ start: date, end: date })}
+            />
+          )}
           {children}
         </WidgetItemHeader>
       </PanelWidgetBody>
