@@ -7,5 +7,5 @@ interface AnalysisChartProps extends CommonLineChartProps {
 }
 
 export default function AnalysisChartProps(props: AnalysisChartProps) {
-  return <Chart {...props} renderLegend={false} />;
+  return <Chart {...props} renderLegend={false} renderBrush={true} />;
 }

@@ -8,6 +8,7 @@ import {
   Tooltip,
   CartesianGrid,
   Label,
+  Brush,
   ResponsiveContainer,
   ReferenceArea,
   Legend,
@@ -46,6 +47,7 @@ export interface CommonLineChartProps {
   colors: string[];
   colorScheme: string;
   renderLegend?: boolean;
+  renderBrush?: boolean;
   xAxisLabel?: string;
   yAxisLabel?: string;
   highlightStart?: string;
@@ -73,6 +75,7 @@ export default function RLineChart(props: RLineChartProps) {
     altTitle,
     altDesc,
     renderLegend = false,
+    renderBrush = false,
     highlightStart,
     highlightEnd,
     highlightLabel,
@@ -117,8 +120,13 @@ export default function RLineChart(props: RLineChartProps) {
             dataKey={xKey}
             axisLine={false}
             tickFormatter={(t) => dateFormatter(t, dateFormat)}
+            height={renderBrush ? 50 : 30}
           >
-            <Label value={xAxisLabel} offset={-5} position='bottom' />
+            <Label
+              value={xAxisLabel}
+              offset={renderBrush ? -30 : -5}
+              position='bottom'
+            />
           </XAxis>
           <YAxis axisLine={false}>
             <Label value={yAxisLabel} angle={-90} position='insideLeft' />
@@ -177,7 +185,13 @@ export default function RLineChart(props: RLineChartProps) {
               content={<LegendComponent />}
             />
           )}
-          {/* <Brush dataKey={xKey} /> */}
+          {renderBrush && (
+            <Brush
+              dataKey={xKey}
+              height={20}
+              tickFormatter={(t) => dateFormatter(t, dateFormat)}
+            />
+          )}
         </LineChartWithFont>
       </ResponsiveContainer>
     </ChartWrapper>
