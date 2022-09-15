@@ -119,6 +119,8 @@ export default function RLineChart(props: RLineChartProps) {
             scale='time'
             domain={['dataMin', 'dataMax']}
             dataKey={xKey}
+            type='number'
+            domain={['dataMin', 'dataMax']}
             axisLine={false}
             tickFormatter={(t) => dateFormatter(t, dateFormat)}
             height={renderBrush ? 50 : 30}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Chart from '$components/common/chart/analysis';
-import { AnalysisLegendComponent } from '$components/common/chart/legend';
+import Chart from '$components/common/chart/analysis/';
+import { AnalysisLegendComponent } from '$components/common/chart/analysis/control';
 import {
   formatTimeSeriesData,
   getColors
@@ -11,6 +11,7 @@ import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 import Hug from '$styles/hug';
+
 import timeSeriesData345 from './sample-timeseries-data-345.json';
 import timeSeriesData234 from './sample-timeseries-data-234.json';
 
@@ -33,25 +34,33 @@ const MainPanel = styled.div`
 
 const dataForChart1 = {
   timeSeriesData: timeSeriesData345,
-  dates: ['202203', '202204', '202205'],
+  dates: ['2022/03', '2022/04', '2022/05'],
   uniqueKeys: [
     { label: 'Min', value: 'min', active: true },
     { label: 'Max', value: 'max', active: true },
     { label: 'STD', value: 'std', active: true }
   ],
-  dateFormat: '%Y%m',
+  dateFormat: '%Y/%m',
   xKey: 'Date'
 };
 
 const dataForChart2 = {
   timeSeriesData: timeSeriesData234,
-  dates: ['202202', '202203', '202204', '202205'],
+  dates: [
+    '2021/10',
+    '2021/11',
+    '2022/01',
+    '2022/02',
+    '2022/03',
+    '2022/04',
+    '2022/05'
+  ],
   uniqueKeys: [
     { label: 'Min', value: 'min', active: true },
     { label: 'Max', value: 'max', active: true },
     { label: 'STD', value: 'std', active: true }
   ],
-  dateFormat: '%Y%m',
+  dateFormat: '%Y/%m',
   xKey: 'Date'
 };
 
@@ -117,7 +126,7 @@ export default function AnalysisChart() {
                 uniqueKeys={dynamicUniqueKeys}
                 xKey={dataForChart1.xKey}
                 dates={dataForChart1.dates}
-                dateFormat='%Y%m'
+                dateFormat={dataForChart1.dateFormat}
                 altTitle='alt title'
                 altDesc='alt desc'
                 xAxisLabel='x axis label'
@@ -135,7 +144,7 @@ export default function AnalysisChart() {
                 uniqueKeys={dynamicUniqueKeys}
                 xKey={dataForChart2.xKey}
                 dates={dataForChart2.dates}
-                dateFormat='%Y%m'
+                dateFormat={dataForChart2.dateFormat}
                 altTitle='alt title'
                 altDesc='alt desc'
                 xAxisLabel='x axis label'

@@ -11,14 +11,14 @@ interface ReferenceLegendComponentProps extends CategoricalChartProps {
   highlightLabel: string;
 }
 
-const LegendWrapper = styled.ul`
+export const LegendWrapper = styled.ul`
   max-width: ${(props) => props.width};
   margin: 0 auto;
   margin-top: ${glsp(0.75)};
   text-align: center;
 `;
 
-const LegendItem = styled.li`
+export const LegendItem = styled.li`
   display: inline-flex;
   list-style: none;
   margin-right: ${glsp(0.25)};
@@ -27,9 +27,6 @@ const LegendItem = styled.li`
   * {
     align-self: center;
   }
-`;
-const ClickableLegendItem = styled(LegendItem)`
-  cursor: pointer;
 `;
 
 const HighlightLabel = styled.text`
@@ -56,30 +53,6 @@ export const ReferenceLegendComponent = (
       </HighlightLabel>
     </g>
   );
-};
-
-export const AnalysisLegendComponent = (props) => {
-  const { payload, width } = props;
-
-  if (payload) {
-    return (
-      <LegendWrapper width={width}>
-        {payload.map((entry) => (
-          <ClickableLegendItem
-            key={`item-${entry.value}`}
-            onClick={(e) => {
-              e.preventDefault();
-              entry.onClick(entry.value);
-            }}
-          >
-            <ListItem color={entry.color} />
-            {entry.label}
-          </ClickableLegendItem>
-        ))}
-      </LegendWrapper>
-    );
-  }
-  return null;
 };
 
 export const LegendComponent = (props: LegendProps) => {
