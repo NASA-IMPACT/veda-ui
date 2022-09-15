@@ -111,6 +111,8 @@ export default function RLineChart (props: RLineChartProps) {
           <AltTitle title={altTitle} desc={altDesc} />
           <CartesianGrid stroke='#efefef' vertical={false} />
           <XAxis
+            type='number'
+            domain={['dataMin', 'dataMax']}
             dataKey={xKey}
             axisLine={false}
             tickFormatter={(t) => dateFormatter(t, dateFormat)}
