@@ -65,9 +65,7 @@ const dataForChart2 = {
 };
 
 export default function AnalysisChart() {
-  const chartData1 = formatTimeSeriesData(dataForChart1);
-  const chartData2 = formatTimeSeriesData(dataForChart2);
-  const legendColors = getColors({ steps: chartData1.length });
+  const legendColors = getColors({ steps: dataForChart1.uniqueKeys.length });
 
   const [dynamicUniqueKeys, setDynamicUniqueKeys] = useState(
     dataForChart1.uniqueKeys
@@ -122,7 +120,7 @@ export default function AnalysisChart() {
               }}
             >
               <Chart
-                chartData={chartData1}
+                timeSeriesData={dataForChart1.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
                 xKey={dataForChart1.xKey}
                 dates={dataForChart1.dates}
@@ -140,7 +138,7 @@ export default function AnalysisChart() {
               }}
             >
               <Chart
-                chartData={chartData2}
+                timeSeriesData={dataForChart2.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
                 xKey={dataForChart2.xKey}
                 dates={dataForChart2.dates}

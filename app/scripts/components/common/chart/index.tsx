@@ -27,7 +27,8 @@ import {
   chartAspectRatio,
   defaultMargin,
   highlightColor,
-  legendWidth
+  legendWidth,
+  brushRelatedConfigs
 } from './constant';
 
 const LineChartWithFont = styled(LineChart)`
@@ -53,6 +54,7 @@ export interface CommonLineChartProps {
   highlightStart?: string;
   highlightEnd?: string;
   highlightLabel: string;
+  uniqueKeys: UniqueKeyUnit[];
 }
 
 export interface UniqueKeyUnit {
@@ -62,7 +64,6 @@ export interface UniqueKeyUnit {
 }
 interface RLineChartProps extends CommonLineChartProps {
   chartData: object[];
-  uniqueKeys: UniqueKeyUnit[];
 }
 
 export default function RLineChart(props: RLineChartProps) {
@@ -119,15 +120,21 @@ export default function RLineChart(props: RLineChartProps) {
             scale='time'
             domain={['dataMin', 'dataMax']}
             dataKey={xKey}
-            type='number'
-            domain={['dataMin', 'dataMax']}
             axisLine={false}
             tickFormatter={(t) => dateFormatter(t, dateFormat)}
-            height={renderBrush ? 50 : 30}
+            height={
+              renderBrush
+                ? brushRelatedConfigs.with.xAxisHeight
+                : brushRelatedConfigs.without.xAxisHeight
+            }
           >
             <Label
               value={xAxisLabel}
-              offset={renderBrush ? -30 : -5}
+              offset={
+                renderBrush
+                  ? brushRelatedConfigs.with.labelOffset
+                  : brushRelatedConfigs.without.labelOffset
+              }
               position='bottom'
             />
           </XAxis>
@@ -191,7 +198,7 @@ export default function RLineChart(props: RLineChartProps) {
           {renderBrush && (
             <Brush
               dataKey={xKey}
-              height={20}
+              height={30}
               tickFormatter={(t) => dateFormatter(t, dateFormat)}
             />
           )}

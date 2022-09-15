@@ -17,8 +17,6 @@ export const convertToTime = ({
   if (!timeString) return null;
 
   const parseDate = timeParse(dateFormat);
-  console.log(timeString);
-  console.log(parseDate(timeString));
   return parseDate(timeString).getTime();
 };
 

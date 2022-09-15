@@ -5,27 +5,43 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { LegendWrapper, LegendItem } from '$components/common/chart/legend';
 import { ListItem } from '$components/common/chart/tooltip';
 
+interface LegendEntryUnit {
+  label: string;
+  color: string;
+  value: string;
+  active: boolean;
+  onClick: (arg: string) => void;
+}
+interface AnalysisLegendComponentProps {
+  payload: LegendEntryUnit[];
+}
+
 const ClickableLegendItem = styled(LegendItem)`
   cursor: pointer;
 `;
 
-interface AnalysisLegendComponentProps {}
+const TogglableListItem = styled(ListItem)`
+  background-color: ${(props) =>
+    props.active ? props.color : themeVal('color.base-400')};
+`;
 
-export const AnalysisLegendComponent = (props) => {
-  const { payload, width } = props;
+export const AnalysisLegendComponent = (
+  props: AnalysisLegendComponentProps
+) => {
+  const { payload } = props;
 
   if (payload) {
     return (
-      <LegendWrapper width={width}>
+      <LegendWrapper>
         {payload.map((entry) => (
           <ClickableLegendItem
             key={`item-${entry.value}`}
-            onClick={(e) => {
-              e.preventDefault();
+            onClick={(event) => {
+              event.preventDefault();
               entry.onClick(entry.value);
             }}
           >
-            <ListItem color={entry.color} />
+            <TogglableListItem color={entry.color} active={entry.active} />
             {entry.label}
           </ClickableLegendItem>
         ))}
