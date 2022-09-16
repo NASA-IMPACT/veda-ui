@@ -8,7 +8,6 @@ import {
   Tooltip,
   CartesianGrid,
   Label,
-  Brush,
   ResponsiveContainer,
   ReferenceArea,
   Legend,
@@ -16,9 +15,10 @@ import {
 } from 'recharts';
 
 import { useMediaQuery } from '$utils/use-media-query';
-
+import renderBrushComponent from './brush';
 import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
+
 import { LegendComponent, ReferenceLegendComponent } from './legend';
 import { getColors, dateFormatter, convertToTime } from './utils';
 import {
@@ -195,31 +195,39 @@ export default function RLineChart(props: RLineChartProps) {
               content={<LegendComponent />}
             />
           )}
-          {renderBrush && (
-            <Brush
-              data={chartData}
-              dataKey={xKey}
-              height={30}
-              tickFormatter={(t) => dateFormatter(t, dateFormat)}
-            >
-              <LineChartWithFont data={chartData} margin={chartMargin}>
-                {uniqueKeys.map((k, idx) => {
-                  return (
-                    <Line
-                      type='linear'
-                      isAnimationActive={false}
-                      dot={false}
-                      activeDot={false}
-                      key={`${k.value}-line`}
-                      dataKey={k.label}
-                      strokeWidth={1}
-                      stroke={k.active ? lineColors[idx] : 'transparent'}
-                    />
-                  );
-                })}
-              </LineChartWithFont>
-            </Brush>
-          )}
+          {
+            renderBrush &&
+              renderBrushComponent({
+                chartData,
+                xKey,
+                uniqueKeys,
+                lineColors,
+                dateFormat
+              })
+            // <Brush
+            //   data={chartData}
+            //   xKey={xKey}
+            //   uniqueKeys={uniqueKeys}
+            //   lineColors={lineColors}
+            // >
+            //   <LineChart data={chartData} margin={chartMargin}>
+            //     {uniqueKeys.map((k, idx) => {
+            //       return (
+            //         <Line
+            //           type='linear'
+            //           isAnimationActive={false}
+            //           dot={false}
+            //           activeDot={false}
+            //           key={`${k.value}-line`}
+            //           dataKey={k.label}
+            //           strokeWidth={0.5}
+            //           stroke={k.active ? lineColors[idx] : 'transparent'}
+            //         />
+            //       );
+            //     })}
+            //   </LineChart>
+            // </Brush>
+          }
         </LineChartWithFont>
       </ResponsiveContainer>
     </ChartWrapper>
