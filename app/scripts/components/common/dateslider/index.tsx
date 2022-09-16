@@ -35,7 +35,7 @@ export default function DateSliderControl(props: DateSliderControlProps) {
   const { id, data, value, timeDensity, onChange } = props;
   const { observe, width, height, outerWidth, outerHeight, margin } =
     useChartDimensions();
-  const svgRef = useRef<SVGElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [hoveringDataPoint, setHoveringDataPoint] = useState(null);
 
   // Unique id creator
@@ -89,7 +89,7 @@ export default function DateSliderControl(props: DateSliderControlProps) {
         </defs>
         <g transform={`translate(${margin.left},${margin.top})`}>
           <g mask={`url(#${getUID(MASK_ID)})`}>
-            <DataLine data={data} x={x} zoomXTranslation={zoomXTranslation} />
+            <DataLine x={x} zoomXTranslation={zoomXTranslation} />
             <DataPoints
               data={data}
               hoveringDataPoint={hoveringDataPoint}

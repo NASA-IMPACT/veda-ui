@@ -118,6 +118,17 @@ function SandboxTimeseries() {
               onChange={({ date }) => setActiveDate({ start: date, end: date })}
             />
           </Box>
+          <Box>
+            <h2>Single</h2>
+            <DateSliderControl
+              data={[readyDatesY[0]]}
+              value={readyDatesY[0].date}
+              timeDensity='year'
+              onChange={() => {
+                /* no-op */
+              }}
+            />
+          </Box>
         </Wrapper>
       </Constrainer>
     </PageMainContent>
