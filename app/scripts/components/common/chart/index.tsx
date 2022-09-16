@@ -58,7 +58,7 @@ interface RLineChartProps extends CommonLineChartProps {
   uniqueKeys: string[];
 }
 
-export default function RLineChart (props: RLineChartProps) {
+export default function RLineChart(props: RLineChartProps) {
   const {
     chartData,
     uniqueKeys,
@@ -111,6 +111,9 @@ export default function RLineChart (props: RLineChartProps) {
           <AltTitle title={altTitle} desc={altDesc} />
           <CartesianGrid stroke='#efefef' vertical={false} />
           <XAxis
+            type='number'
+            scale='time'
+            domain={['dataMin', 'dataMax']}
             dataKey={xKey}
             axisLine={false}
             tickFormatter={(t) => dateFormatter(t, dateFormat)}
