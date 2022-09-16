@@ -197,10 +197,28 @@ export default function RLineChart(props: RLineChartProps) {
           )}
           {renderBrush && (
             <Brush
+              data={chartData}
               dataKey={xKey}
               height={30}
               tickFormatter={(t) => dateFormatter(t, dateFormat)}
-            />
+            >
+              <LineChartWithFont data={chartData} margin={chartMargin}>
+                {uniqueKeys.map((k, idx) => {
+                  return (
+                    <Line
+                      type='linear'
+                      isAnimationActive={false}
+                      dot={false}
+                      activeDot={false}
+                      key={`${k.value}-line`}
+                      dataKey={k.label}
+                      strokeWidth={1}
+                      stroke={k.active ? lineColors[idx] : 'transparent'}
+                    />
+                  );
+                })}
+              </LineChartWithFont>
+            </Brush>
           )}
         </LineChartWithFont>
       </ResponsiveContainer>
