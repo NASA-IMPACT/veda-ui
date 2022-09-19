@@ -13,6 +13,7 @@ import { mod } from '$utils/utils';
 import { PageMainContent } from '$styles/page';
 import DateSliderControl from '$components/common/dateslider';
 import { prepareDates } from '$components/common/dateslider/utils';
+import { utcString2userTzDate } from '$utils/date';
 
 const Wrapper = styled.div`
   position: relative;
@@ -25,19 +26,19 @@ const Box = styled.div`
 `;
 
 const dates = [
-  new Date('2021-01-01'),
-  new Date('2022-01-01'),
-  new Date('2022-02-01'),
-  new Date('2022-03-01'),
-  new Date('2022-05-01'),
-  new Date('2022-06-01'),
-  new Date('2022-07-01'),
-  new Date('2022-08-01'),
-  new Date('2022-09-01'),
-  new Date('2022-10-01'),
-  new Date('2022-11-01'),
-  new Date('2022-12-01'),
-  new Date('2023-05-01')
+  utcString2userTzDate('2021-01-01'),
+  utcString2userTzDate('2022-01-01'),
+  utcString2userTzDate('2022-02-01'),
+  utcString2userTzDate('2022-03-01'),
+  utcString2userTzDate('2022-05-01'),
+  utcString2userTzDate('2022-06-01'),
+  utcString2userTzDate('2022-07-01'),
+  utcString2userTzDate('2022-08-01'),
+  utcString2userTzDate('2022-09-01'),
+  utcString2userTzDate('2022-10-01'),
+  utcString2userTzDate('2022-11-01'),
+  utcString2userTzDate('2022-12-01'),
+  utcString2userTzDate('2023-05-01')
 ];
 const readyDatesD = prepareDates(dates, 'day');
 const readyDatesM = prepareDates(dates, 'month');
@@ -116,6 +117,17 @@ function SandboxTimeseries() {
               value={activeDate.start}
               timeDensity='day'
               onChange={({ date }) => setActiveDate({ start: date, end: date })}
+            />
+          </Box>
+          <Box>
+            <h2>Single</h2>
+            <DateSliderControl
+              data={[readyDatesY[0]]}
+              value={readyDatesY[0].date}
+              timeDensity='year'
+              onChange={() => {
+                /* no-op */
+              }}
             />
           </Box>
         </Wrapper>

@@ -143,22 +143,23 @@ export function DataPoints(props: DataPointsProps) {
   );
 }
 
-
 interface DataLineProps {
-  data: DateSliderData;
   x: ScaleTime<number, number, never>;
   zoomXTranslation: number;
 }
 
 export function DataLine(props: DataLineProps) {
-  const { data, x, zoomXTranslation } = props;
+  const { x, zoomXTranslation } = props;
+
+  // The line should occupy the full scale.
+  const [x1, x2] = x.range();
 
   return (
     <DataLineSelf
       className='data-line'
-      x1={x(data[0].date)}
+      x1={x1}
       y1={12}
-      x2={x(data.last.date)}
+      x2={x2}
       y2={12}
       transform={`translate(${zoomXTranslation}, 0)`}
     />

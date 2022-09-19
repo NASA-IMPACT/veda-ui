@@ -29,7 +29,10 @@ export function useChartDimensions() {
   };
 }
 
-export function prepareDates(dates: Date[], timeDensityity: DateSliderTimeDensity) {
+export function prepareDates(
+  dates: Date[],
+  timeDensityity: DateSliderTimeDensity
+) {
   const domain = extent<Date, Date>(dates, (d) => d) as Date[];
 
   const dateFormat = {
@@ -61,9 +64,11 @@ export function getZoomTranslateExtent(
   data,
   xScale
 ): [[number, number], [number, number]] {
-  const lastDate = data.last.date;
+  // The translation extent should always at least encompass the full chart.
+  // This handle problems coming from having only 1 data point.
+  const end = Math.max(xScale(data.last.date), xScale.range()[1]);
   return [
     [0, 0],
-    [xScale(lastDate) + 16, 0]
+    [end + 16, 0]
   ];
 }
