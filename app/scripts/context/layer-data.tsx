@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 
 import { useDeepCompareMemo } from "use-deep-compare";
 import {
+  QueryState,
   useQueries,
   useQueryClient,
   UseQueryOptions,
   UseQueryResult
-} from 'react-query';
-import { QueryState } from 'react-query/types/core/query';
+} from '@tanstack/react-query';
 import axios from 'axios';
 import {
   DatasetLayer,
@@ -97,7 +97,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
   // useQueries does not produce a stable result, so `layerQueries` will be
   // changing on every render. This is a problem because we must compute the
   // final layer data which should only be done if the data actually changes.
-  const layerQueries = useQueries(queries) as UseQueryResult<STACLayerData>[];
+  const layerQueries = useQueries({ queries }) as UseQueryResult<STACLayerData>[];
   // There is an issue for this behavior but seems like it won't be fixed in the
   // near future:
   // https://github.com/tannerlinsley/react-query/issues/3049
@@ -146,7 +146,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
         compareLayer: compareLayer && mergeSTACData(compareLayer),
         reFetch: () =>
           queryClient.refetchQueries(['layer', layer.stacCol], {
-            active: true,
+            type: 'active',
             exact: true
           })
       };
