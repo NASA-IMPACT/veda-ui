@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Chart from '$components/common/chart/analysis/';
 import { AnalysisLegendComponent } from '$components/common/chart/analysis/control';
-import {
-  formatTimeSeriesData,
-  getColors
-} from '$components/common/chart/utils';
+import { getColors } from '$components/common/chart/utils';
 
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import Constrainer from '$styles/constrainer';

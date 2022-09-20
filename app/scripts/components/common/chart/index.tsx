@@ -204,29 +204,6 @@ export default function RLineChart(props: RLineChartProps) {
                 lineColors,
                 dateFormat
               })
-            // <Brush
-            //   data={chartData}
-            //   xKey={xKey}
-            //   uniqueKeys={uniqueKeys}
-            //   lineColors={lineColors}
-            // >
-            //   <LineChart data={chartData} margin={chartMargin}>
-            //     {uniqueKeys.map((k, idx) => {
-            //       return (
-            //         <Line
-            //           type='linear'
-            //           isAnimationActive={false}
-            //           dot={false}
-            //           activeDot={false}
-            //           key={`${k.value}-line`}
-            //           dataKey={k.label}
-            //           strokeWidth={0.5}
-            //           stroke={k.active ? lineColors[idx] : 'transparent'}
-            //         />
-            //       );
-            //     })}
-            //   </LineChart>
-            // </Brush>
           }
         </LineChartWithFont>
       </ResponsiveContainer>

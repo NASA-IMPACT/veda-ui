@@ -23,5 +23,4 @@ export const brushRelatedConfigs = {
     xAxisHeight: 30,
     labelOffset: -5
   }
-}
-
+};

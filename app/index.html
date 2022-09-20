@@ -74,7 +74,29 @@
     }
   </style>
   <script>
+    function allowCRAOverlay(allow) {
+      const styles = document.getElementById('suppress-cra-overlay-styles');
+      if (!styles) return;
+      styles.disabled = allow;
+    }
 
+    window.addEventListener('error', function (e) {
+      const { error } = e;
+      if (!error.captured) {
+        error.captured = true;
+        allowCRAOverlay(false);
+        e.preventDefault();
+        // Revisit this error after the error boundary element processed it.
+        setTimeout(() => {
+          // Can be set by the error boundary error handler.
+          if (!error.CRAOverlayIgnore) {
+            // But if it wasn't caught by a boundary, release it back to the wild.
+            allowCRAOverlay(true)
+            throw error;
+          }
+        })
+      }
+    });
   </script>
 
 </head>
