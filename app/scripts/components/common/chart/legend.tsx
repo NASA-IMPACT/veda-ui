@@ -11,14 +11,14 @@ interface ReferenceLegendComponentProps extends CategoricalChartProps {
   highlightLabel: string;
 }
 
-const LegendWrapper = styled.ul`
+export const LegendWrapper = styled.ul`
   max-width: ${(props) => props.width};
   margin: 0 auto;
   margin-top: ${glsp(0.75)};
   text-align: center;
 `;
 
-const LegendItem = styled.li`
+export const LegendItem = styled.li`
   display: inline-flex;
   list-style: none;
   margin-right: ${glsp(0.25)};

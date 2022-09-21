@@ -3,7 +3,7 @@ import { csv, json } from 'd3-fetch';
 
 import { getFData } from './utils';
 import { fileExtensionRegex } from './constant';
-import Chart, { CommonLineChartProps } from './';
+import Chart, { UniqueKeyUnit, CommonLineChartProps } from './';
 
 interface BlockChartProp extends CommonLineChartProps {
   dataPath: string;
@@ -11,11 +11,11 @@ interface BlockChartProp extends CommonLineChartProps {
   yKey: string;
 }
 
-export default function BlockChart (props: BlockChartProp) {
+export default function BlockChart(props: BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
 
   const [chartData, setChartData] = useState<object[]>([]);
-  const [uniqueKeys, setUniqueKeys] = useState<string[]>([]);
+  const [uniqueKeys, setUniqueKeys] = useState<UniqueKeyUnits[]>([]);
 
   const newDataPath = dataPath.split('?')[0];
   const extension = fileExtensionRegex.exec(newDataPath)[1];
@@ -33,8 +33,14 @@ export default function BlockChart (props: BlockChartProp) {
         dateFormat
       });
 
+      const formattedUniqueKeys = uniqueKeys.map((e) => ({
+        label: e,
+        value: e,
+        active: true
+      }));
+
       setChartData(fData);
-      setUniqueKeys(uniqueKeys);
+      setUniqueKeys(formattedUniqueKeys);
     };
 
     getData();
