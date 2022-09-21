@@ -20,7 +20,11 @@ import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
 import ExportPNG from './analysis/export-png';
 
-import { LegendComponent, ReferenceLegendComponent } from './legend';
+import {
+  LegendComponent,
+  ReferenceLegendComponent,
+  getLegendStringForScreenshot
+} from './legend';
 import { getColors, dateFormatter, convertToTime } from './utils';
 import {
   chartMinHeight,
@@ -90,6 +94,7 @@ export default function RLineChart(props: RLineChartProps) {
 
   const { isMediumUp } = useMediaQuery();
   const svgRef = createRef();
+  const legendRef = createRef();
   useEffect(() => {
     if (!isMediumUp) {
       setChartMargin({
@@ -196,9 +201,6 @@ export default function RLineChart(props: RLineChartProps) {
               content={<LegendComponent />}
             />
           )}
-          {!renderLegend && (
-            <Legend verticalAlign='bottom' width={legendWidth} />
-          )}
           {renderBrush &&
             renderBrushComponent({
               chartData,
@@ -209,7 +211,21 @@ export default function RLineChart(props: RLineChartProps) {
             })}
         </LineChartWithFont>
       </ResponsiveContainer>
-      <ExportPNG svgRef={svgRef} />
+      {/* {!renderLegend && (
+        <LegendForScreeshot
+          ref={legendRef}
+          id='screenshot-legend'
+          uniqueKeys={uniqueKeys}
+          colors={lineColors}
+        />
+      )} */}
+      <ExportPNG
+        svgRef={svgRef}
+        legendSvgString={getLegendStringForScreenshot({
+          uniqueKeys,
+          lineColors
+        })}
+      />
     </ChartWrapper>
   );
 }

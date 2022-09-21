@@ -73,3 +73,28 @@ export const LegendComponent = (props: LegendProps) => {
 
   return null;
 };
+
+const TextWithFont = styled.text`
+  font-size: 12px;
+`;
+
+export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
+  const legendWidth = 80;
+  const legendsString = uniqueKeys
+    .filter((k) => k.active)
+    .map(
+      (entry, idx) =>
+        `<g transform="translate(${idx * legendWidth}, 0)">
+          <rect width='12' height='12' fill='${lineColors[idx]}' />
+          <text x='20' y='10'> ${entry.label}</text>
+        </g>`
+    )
+    .join(' ');
+  return (
+    `<svg xmlns='http://www.w3.org/2000/svg' width='${
+      legendWidth * uniqueKeys.length
+    }' height='40'>` +
+    legendsString +
+    '</svg>'
+  );
+}
