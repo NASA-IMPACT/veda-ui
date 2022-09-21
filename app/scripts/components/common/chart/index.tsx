@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -18,6 +18,7 @@ import { useMediaQuery } from '$utils/use-media-query';
 import renderBrushComponent from './brush';
 import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
+import ExportPNG from './analysis/export-png';
 
 import { LegendComponent, ReferenceLegendComponent } from './legend';
 import { getColors, dateFormatter, convertToTime } from './utils';
@@ -88,7 +89,7 @@ export default function RLineChart(props: RLineChartProps) {
   const [chartMargin, setChartMargin] = useState(defaultMargin);
 
   const { isMediumUp } = useMediaQuery();
-
+  const svgRef = createRef();
   useEffect(() => {
     if (!isMediumUp) {
       setChartMargin({
@@ -112,7 +113,7 @@ export default function RLineChart(props: RLineChartProps) {
         minHeight={chartMinHeight}
         maxHeight={chartMaxHeight}
       >
-        <LineChartWithFont data={chartData} margin={chartMargin}>
+        <LineChartWithFont ref={svgRef} data={chartData} margin={chartMargin}>
           <AltTitle title={altTitle} desc={altDesc} />
           <CartesianGrid stroke='#efefef' vertical={false} />
           <XAxis
@@ -195,18 +196,20 @@ export default function RLineChart(props: RLineChartProps) {
               content={<LegendComponent />}
             />
           )}
-          {
-            renderBrush &&
-              renderBrushComponent({
-                chartData,
-                xKey,
-                uniqueKeys,
-                lineColors,
-                dateFormat
-              })
-          }
+          {!renderLegend && (
+            <Legend verticalAlign='bottom' width={legendWidth} />
+          )}
+          {renderBrush &&
+            renderBrushComponent({
+              chartData,
+              xKey,
+              uniqueKeys,
+              lineColors,
+              dateFormat
+            })}
         </LineChartWithFont>
       </ResponsiveContainer>
+      <ExportPNG svgRef={svgRef} />
     </ChartWrapper>
   );
 }
