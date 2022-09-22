@@ -80,6 +80,7 @@ const TextWithFont = styled.text`
 
 export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
   const legendWidth = 80;
+  const legendHeight = 40;
   const legendsString = uniqueKeys
     .filter((k) => k.active)
     .map(
@@ -90,15 +91,7 @@ export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
         </g>`
     )
     .join(' ');
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-  svg.setAttribute('width', legendWidth * uniqueKeys.length + '');
-  svg.setAttribute('height', '40');
-  svg.setAttribute('style', `font-family:"Open Sans",sans-serif;`);
-  svg.innerHTML = legendsString;
-  const fontNode = getFontStyle();
-  svg.appendChild(fontNode);
-  console.log(svg);
-
-  return svg;
+  return `<g width=${
+    legendWidth * uniqueKeys
+  } height=${legendHeight}>${legendsString}</g>`;
 }

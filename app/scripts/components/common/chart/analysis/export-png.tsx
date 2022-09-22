@@ -8,16 +8,19 @@ import {
   brushHeight
 } from '$components/common/chart/constant';
 
+const URL = window.URL || window.webkitURL || window;
+
 const PNGWidth = 800;
 const PNGHeight = PNGWidth / chartAspectRatio;
 
 const brushAreaHeight = brushHeight * 1.6;
 
 const NoDisplayImage = styled.img`
-  display: block;
+  display: none;
 `;
 
-export function getFontStyle() {
+function getFontStyle() {
+  // font url needs to be encoded to be embedded into svg
   const encodedFontUrl = window.btoa(
     'https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4taVIUwaEQbjB_mQ.woff2'
   );
@@ -28,6 +31,26 @@ export function getFontStyle() {
   style.type = 'text/css';
   style.appendChild(document.createTextNode(fontStyleAsString));
   return style;
+}
+
+export function getLegendSVG(legendsString) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.innerHTML = legendsString;
+  return svg;
+}
+
+function getDataURLFromSVG(svgElement) {
+  // Inject font styles to SVG
+  const fontNode = getFontStyle();
+  svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  svgElement.setAttribute('style', `font-family:"Open Sans",sans-serif;`);
+  svgElement.appendChild(fontNode);
+
+  const blob = new Blob([svgElement.outerHTML], {
+    type: 'image/svg+xml;charset=utf-8'
+  });
+  const blobURL = URL.createObjectURL(blob);
+  return blobURL;
 }
 
 export default function ExportPNG({ svgRef, legendSvgString }) {
@@ -41,40 +64,22 @@ export default function ExportPNG({ svgRef, legendSvgString }) {
   useEffect(() => {
     if (!svgRef.current) return;
 
+    // Extract SVG element from svgRef (div wrapper around chart SVG)
     const svg = svgRef.current.container.getElementsByTagName('svg')[0];
-
+    // Scale up/down the chart to make it width 800px
     const originalSVGWidth = svg.getAttribute('width');
-
-    const clonedSvgElement = svg.cloneNode(true);
-    const FontStyleElement = getFontStyle();
-    clonedSvgElement.setAttribute(
-      'style',
-      `font-family: "Open Sans",sans-serif;`
-    );
-    clonedSvgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    clonedSvgElement.setAttribute('width', PNGWidth);
-    clonedSvgElement.setAttribute('height', PNGHeight);
-    clonedSvgElement.appendChild(FontStyleElement);
-
     setZoomRatio(PNGWidth / originalSVGWidth);
 
-    const wrapper = document.createElement('div');
-    wrapper.appendChild(clonedSvgElement);
+    const clonedSvgElement = svg.cloneNode(true);
+    clonedSvgElement.setAttribute('width', PNGWidth);
+    clonedSvgElement.setAttribute('height', PNGHeight);
 
-    const blob = new Blob([wrapper.innerHTML], {
-      type: 'image/svg+xml;charset=utf-8'
-    });
+    const legendSVG = getLegendSVG(legendSvgString);
 
-    const URL = window.URL || window.webkitURL || window;
-    const blobURL = URL.createObjectURL(blob);
-    const legendBlob = new Blob([legendSvgString.outerHTML], {
-      type: 'image/svg+xml;charset=utf-8'
-    });
-    const legendUrl = URL.createObjectURL(legendBlob);
-    console.log(legendUrl);
-    //'data:image/svg+xml;base64,' + window.btoa(legendSvgString);
+    const blobUrl = getDataURLFromSVG(clonedSvgElement);
+    const legendUrl = getDataURLFromSVG(legendSVG);
 
-    setImgUrl(blobURL);
+    setImgUrl(blobUrl);
     setLegendUrl(legendUrl);
   }, [svgRef, legendSvgString]);
 
@@ -93,6 +98,7 @@ export default function ExportPNG({ svgRef, legendSvgString }) {
     ctx.rect(0, 0, PNGWidth, PNGHeight);
     ctx.fillStyle = 'white';
     ctx?.fill();
+    // draw chart (crop brush part)
     ctx.drawImage(
       img,
       0,
@@ -104,8 +110,10 @@ export default function ExportPNG({ svgRef, legendSvgString }) {
       PNGWidth,
       PNGHeight - brushAreaHeight * zoomRatio
     );
-    ctx.drawImage(lgd, 100, PNGHeight - brushAreaHeight * zoomRatio);
+    // draw legend
+    ctx.drawImage(lgd, 80, PNGHeight - brushAreaHeight * zoomRatio);
 
+    // save it as jpg
     const jpg = c.toDataURL('image/jpg');
     FileSaver.saveAs(jpg, 'chart.jpg');
   }, [zoomRatio]);
@@ -121,12 +129,7 @@ export default function ExportPNG({ svgRef, legendSvgString }) {
         height={PNGHeight}
         src={imgUrl}
       />
-      <NoDisplayImage
-        ref={legendRef}
-        width={PNGWidth}
-        height={brushAreaHeight}
-        src={legendUrl}
-      />
+      <NoDisplayImage ref={legendRef} src={legendUrl} />
     </div>
   );
 }
