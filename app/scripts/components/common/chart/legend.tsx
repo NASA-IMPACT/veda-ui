@@ -73,6 +73,9 @@ export const LegendComponent = (props: LegendProps) => {
   return null;
 };
 
+// The legend on dashboard is consist of HTML elements to make the alignment easy
+// However, SVG needs to be 'pure' to be exportable
+// Creating SVG version of legend for exporting purpose
 export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
   const legendWidth = 80;
   const legendHeight = 40;
