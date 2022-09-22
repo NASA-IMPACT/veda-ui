@@ -250,10 +250,8 @@ ${moduleCode}`
 
       const resolved = {
         // When resolving the mdx files, parcel looks at the parent file to know
-        // where to resolve them from and this file has to exist. However if we
-        // use a glob for the file path, parcel doesn't complain that the file
-        // doesn't exist.
-        filePath: path.join(__dirname, '/delta.js'),
+        // where to resolve them from and this file has to exist.
+        filePath: path.join(__dirname, '/delta-thematic.out.js'),
         code: moduleCode,
         invalidateOnFileChange: [
           configPath,
