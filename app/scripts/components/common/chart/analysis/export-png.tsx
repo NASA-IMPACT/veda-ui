@@ -11,8 +11,19 @@ const PNGHeight = PNGWidth/chartAspectRatio;
 const brushAreaHeight = (brushHeight * 1.6);
 
 const NoDisplayImage = styled.img`
-  display: none;
+  display: block;
 `;
+
+function getFontStyle() {
+  const encodedFontUrl = window.btoa('https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4taVIUwaEQbjB_mQ.woff2');
+  const fontStyleAsString = `@font-face { font-family: "Open Sans",sans-serif; 
+  src: url("data:application/font-woff;charset=utf-8;base64,${encodedFontUrl}") format('woff2');}`;
+
+  const style = document.createElement('style');
+  style.type = 'text/css';
+  style.appendChild(document.createTextNode(fontStyleAsString));
+  return style;
+}
 
 export default function ExportPNG({ svgRef, legendSvgString }) {
 
@@ -32,10 +43,13 @@ export default function ExportPNG({ svgRef, legendSvgString }) {
     
 
     const clonedSvgElement = svg.cloneNode(true);
-
+    const FontStyleElement = getFontStyle();
+    clonedSvgElement.setAttribute('style', `font-family: "Open Sans",sans-serif;`);
     clonedSvgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     clonedSvgElement.setAttribute('width', PNGWidth);
     clonedSvgElement.setAttribute('height', PNGHeight);
+    clonedSvgElement.appendChild(FontStyleElement);
+    
     setZoomRatio(PNGWidth/originalSVGWidth);
 
     const wrapper = document.createElement('div');
@@ -66,11 +80,9 @@ export default function ExportPNG({ svgRef, legendSvgString }) {
     const lgd = legendRef.current;
 
     // Fill background (white)
-
     ctx.rect(0, 0, PNGWidth, PNGHeight);
     ctx.fillStyle = 'white';
     ctx?.fill();
-    console.log(zoomRatio);
     
     ctx.drawImage(img, 0, 0, PNGWidth, PNGHeight - brushAreaHeight*zoomRatio, 0, 0, PNGWidth, PNGHeight - brushAreaHeight*zoomRatio);
     ctx.drawImage(lgd, 100, PNGHeight - brushAreaHeight*zoomRatio);

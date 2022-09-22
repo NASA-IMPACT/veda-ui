@@ -13,6 +13,7 @@ import {
   Legend,
   Customized
 } from 'recharts';
+import { themeVal } from '@devseed-ui/theme-provider';
 
 import { useMediaQuery } from '$utils/use-media-query';
 import renderBrushComponent from './brush';
@@ -37,6 +38,7 @@ import {
 } from './constant';
 
 const LineChartWithFont = styled(LineChart)`
+font-family: ${themeVal('type.base.family')};
   font-size: 0.8rem;
 `;
 

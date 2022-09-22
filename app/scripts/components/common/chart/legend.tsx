@@ -95,6 +95,7 @@ export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
       legendWidth * uniqueKeys.length
     }' height='40'>` +
     legendsString +
+    `style="font-family: "Open Sans",sans-serif"` + 
     '</svg>'
   );
 }
