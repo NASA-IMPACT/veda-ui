@@ -21,9 +21,7 @@ const NoDisplayImage = styled.img`
 
 function getFontStyle() {
   // font url needs to be encoded to be embedded into svg
-  const encodedFontUrl = window.btoa(
-    'https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4taVIUwaEQbjB_mQ.woff2'
-  );
+  const encodedFontUrl = window.btoa('/open-sans.woff2');
   const fontStyleAsString = `@font-face { font-family: "Open Sans",sans-serif; 
   src: url("data:application/font-woff;charset=utf-8;base64,${encodedFontUrl}") format('woff2');}`;
 
