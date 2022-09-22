@@ -6,7 +6,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { ListItem } from './tooltip';
 import { highlightColorThemeValue } from './constant';
-
+import { getFontStyle } from './analysis/export-png';
 interface ReferenceLegendComponentProps extends CategoricalChartProps {
   highlightLabel: string;
 }
@@ -90,12 +90,15 @@ export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
         </g>`
     )
     .join(' ');
-  return (
-    `<svg xmlns='http://www.w3.org/2000/svg' width='${
-      legendWidth * uniqueKeys.length
-    }' height='40'>` +
-    legendsString +
-    `style="font-family: "Open Sans",sans-serif"` + 
-    '</svg>'
-  );
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  svg.setAttribute('width', legendWidth * uniqueKeys.length + '');
+  svg.setAttribute('height', '40');
+  svg.setAttribute('style', `font-family:"Open Sans",sans-serif;`);
+  svg.innerHTML = legendsString;
+  const fontNode = getFontStyle();
+  svg.appendChild(fontNode);
+  console.log(svg);
+
+  return svg;
 }
