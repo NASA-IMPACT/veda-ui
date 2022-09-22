@@ -1,11 +1,25 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
+import styled from 'styled-components';
 import FileSaver from 'file-saver';
+import { Button } from '@devseed-ui/button';
+
+import {  chartAspectRatio, brushHeight} from '$components/common/chart/constant';
+
+const PNGWidth = 800;
+const PNGHeight = PNGWidth/chartAspectRatio;
+
+const brushAreaHeight = (brushHeight * 1.6);
+
+const NoDisplayImage = styled.img`
+  display: none;
+`;
 
 export default function ExportPNG({ svgRef, legendSvgString }) {
-  const [imgWidth, setImgWidth] = useState(0);
-  const [imgHeight, setImgHeight] = useState(0);
+
   const imgRef = useRef(null);
   const legendRef = useRef(null);
+
+  const [zoomRatio, setZoomRatio] = useState(1);
   const [imgUrl, setImgUrl] = useState('');
   const [legendUrl, setLegendUrl] = useState('');
 
@@ -14,12 +28,15 @@ export default function ExportPNG({ svgRef, legendSvgString }) {
 
     const svg = svgRef.current.container.getElementsByTagName('svg')[0];
 
-    const { width, height } = svg.getBBox();
-    setImgWidth(width);
-    setImgHeight(height);
+    const originalSVGWidth = svg.getAttribute('width');
+    
+
     const clonedSvgElement = svg.cloneNode(true);
 
     clonedSvgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    clonedSvgElement.setAttribute('width', PNGWidth);
+    clonedSvgElement.setAttribute('height', PNGHeight);
+    setZoomRatio(PNGWidth/originalSVGWidth);
 
     const wrapper = document.createElement('div');
     wrapper.appendChild(clonedSvgElement);
@@ -27,10 +44,7 @@ export default function ExportPNG({ svgRef, legendSvgString }) {
     const blob = new Blob([wrapper.innerHTML], {
       type: 'image/svg+xml;charset=utf-8'
     });
-    // const legendBlob = legendSvgString.toDataURL();
-    // new Blob([legendSvgString], {
-    //   type: 'image/svg+xml;charset=utf-8'
-    // });
+
     const URL = window.URL || window.webkitURL || window;
     const blobURL = URL.createObjectURL(blob);
     const legendUrl =
@@ -43,39 +57,45 @@ export default function ExportPNG({ svgRef, legendSvgString }) {
   const handleDownload = useCallback(() => {
     if (!imgRef.current) return;
     const c = document.createElement('canvas');
-    c.width = imgWidth;
-    c.height = imgHeight;
+    
+    c.width = PNGWidth;
+    c.height = PNGHeight;
+    
     const ctx = c.getContext('2d');
     const img = imgRef.current;
     const lgd = legendRef.current;
 
-    ctx.drawImage(img, 0, 0, imgWidth, imgHeight-40, 0, 0, imgWidth, imgHeight-40);
-    ctx.drawImage(lgd, 0, imgHeight - 40, 300, 40);
+    // Fill background (white)
+
+    ctx.rect(0, 0, PNGWidth, PNGHeight);
+    ctx.fillStyle = 'white';
+    ctx?.fill();
+    console.log(zoomRatio);
+    
+    ctx.drawImage(img, 0, 0, PNGWidth, PNGHeight - brushAreaHeight*zoomRatio, 0, 0, PNGWidth, PNGHeight - brushAreaHeight*zoomRatio);
+    ctx.drawImage(lgd, 100, PNGHeight - brushAreaHeight*zoomRatio);
+
     const jpg = c.toDataURL('image/jpg');
     FileSaver.saveAs(jpg, 'chart.jpg');
-  }, [imgWidth, imgHeight]);
+  }, [zoomRatio]);
 
   return (
-    <>
-      <button type='submit' onClick={handleDownload}>
-        <span>Download</span>
-      </button>
-      <img
-        style={{display: 'none'}}
+    <div>
+      <Button type='submit' variation='primary-fill' onClick={handleDownload}>
+        <span>Export as PNG</span>
+      </Button>
+      <NoDisplayImage
         ref={imgRef}
-        crossOrigin='anonymous'
-        width={imgWidth}
-        height={imgHeight}
+        width={PNGWidth}
+        height={PNGHeight}
         src={imgUrl}
       />
-      <img
-      style={{display: 'none'}}
+      <NoDisplayImage
         ref={legendRef}
-        crossOrigin='anonymous'
-        width={300}
-        height={40}
+        width={PNGWidth}
+        height={brushAreaHeight}
         src={legendUrl}
       />
-    </>
+    </div>
   );
 }

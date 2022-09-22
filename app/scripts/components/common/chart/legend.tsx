@@ -84,7 +84,7 @@ export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
     .filter((k) => k.active)
     .map(
       (entry, idx) =>
-        `<g transform="translate(${idx * legendWidth}, 0)">
+        `<g transform="translate(${idx * legendWidth}, 10)">
           <rect width='12' height='12' fill='${lineColors[idx]}' />
           <text x='20' y='10'> ${entry.label}</text>
         </g>`

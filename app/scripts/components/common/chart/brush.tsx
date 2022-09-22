@@ -2,6 +2,7 @@ import React from 'react';
 import { Brush, LineChart, Line } from 'recharts';
 import { UniqueKeyUnit } from './';
 import { dateFormatter } from './utils';
+import { brushHeight } from './constant';
 
 // Recharts has problem rendering composed components in React
 // so we are using the function returns the  component with desired props/data instead of making this into a component
@@ -21,6 +22,7 @@ export default function renderBrushComponent(param: BrushParam) {
     <Brush
       data={chartData}
       dataKey={xKey}
+      height={brushHeight}
       tickFormatter={(t) => dateFormatter(t, dateFormat)}
     >
       <LineChart data={chartData}>

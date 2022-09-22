@@ -43,6 +43,8 @@ const LineChartWithFont = styled(LineChart)`
 const ChartWrapper = styled.div`
   width: 100%;
   grid-column: 1/-1;
+  display: flex;
+  flex-direction: column;
 `;
 
 export interface CommonLineChartProps {
@@ -54,6 +56,7 @@ export interface CommonLineChartProps {
   colorScheme: string;
   renderLegend?: boolean;
   renderBrush?: boolean;
+  renderExport?: boolean;
   xAxisLabel?: string;
   yAxisLabel?: string;
   highlightStart?: string;
@@ -83,6 +86,7 @@ export default function RLineChart(props: RLineChartProps) {
     altDesc,
     renderLegend = false,
     renderBrush = false,
+    renderExport= false,
     highlightStart,
     highlightEnd,
     highlightLabel,
@@ -211,21 +215,13 @@ export default function RLineChart(props: RLineChartProps) {
             })}
         </LineChartWithFont>
       </ResponsiveContainer>
-      {/* {!renderLegend && (
-        <LegendForScreeshot
-          ref={legendRef}
-          id='screenshot-legend'
-          uniqueKeys={uniqueKeys}
-          colors={lineColors}
-        />
-      )} */}
-      <ExportPNG
+      {renderExport && <ExportPNG
         svgRef={svgRef}
         legendSvgString={getLegendStringForScreenshot({
           uniqueKeys,
           lineColors
         })}
-      />
+                       />}
     </ChartWrapper>
   );
 }

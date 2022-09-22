@@ -26,6 +26,7 @@ export default function AnalysisChartProps(props: AnalysisChartProps) {
       chartData={chartData}
       renderLegend={false}
       renderBrush={true}
+      renderExport={true}
     />
   );
 }
