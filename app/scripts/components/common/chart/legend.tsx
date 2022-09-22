@@ -6,7 +6,6 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { ListItem } from './tooltip';
 import { highlightColorThemeValue } from './constant';
-import { getFontStyle } from './analysis/export-png';
 interface ReferenceLegendComponentProps extends CategoricalChartProps {
   highlightLabel: string;
 }
@@ -73,10 +72,6 @@ export const LegendComponent = (props: LegendProps) => {
 
   return null;
 };
-
-const TextWithFont = styled.text`
-  font-size: 12px;
-`;
 
 export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
   const legendWidth = 80;

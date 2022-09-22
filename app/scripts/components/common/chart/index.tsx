@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from 'react';
+import React, { useState, useEffect, createRef, RefObject } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -38,7 +38,7 @@ import {
 } from './constant';
 
 const LineChartWithFont = styled(LineChart)`
-font-family: ${themeVal('type.base.family')};
+  font-family: ${themeVal('type.base.family')};
   font-size: 0.8rem;
 `;
 
@@ -88,7 +88,7 @@ export default function RLineChart(props: RLineChartProps) {
     altDesc,
     renderLegend = false,
     renderBrush = false,
-    renderExport= false,
+    renderExport = false,
     highlightStart,
     highlightEnd,
     highlightLabel,
@@ -99,8 +99,8 @@ export default function RLineChart(props: RLineChartProps) {
   const [chartMargin, setChartMargin] = useState(defaultMargin);
 
   const { isMediumUp } = useMediaQuery();
-  const svgRef = createRef();
-  const legendRef = createRef();
+  const svgWrapperRef = createRef<HTMLDivElement>();
+
   useEffect(() => {
     if (!isMediumUp) {
       setChartMargin({
@@ -124,7 +124,11 @@ export default function RLineChart(props: RLineChartProps) {
         minHeight={chartMinHeight}
         maxHeight={chartMaxHeight}
       >
-        <LineChartWithFont ref={svgRef} data={chartData} margin={chartMargin}>
+        <LineChartWithFont
+          ref={svgWrapperRef}
+          data={chartData}
+          margin={chartMargin}
+        >
           <AltTitle title={altTitle} desc={altDesc} />
           <CartesianGrid stroke='#efefef' vertical={false} />
           <XAxis
@@ -217,13 +221,15 @@ export default function RLineChart(props: RLineChartProps) {
             })}
         </LineChartWithFont>
       </ResponsiveContainer>
-      {renderExport && <ExportPNG
-        svgRef={svgRef}
-        legendSvgString={getLegendStringForScreenshot({
-          uniqueKeys,
-          lineColors
-        })}
-                       />}
+      {renderExport && (
+        <ExportPNG
+          svgWrapperRef={svgWrapperRef}
+          legendSvgString={getLegendStringForScreenshot({
+            uniqueKeys,
+            lineColors
+          })}
+        />
+      )}
     </ChartWrapper>
   );
 }
