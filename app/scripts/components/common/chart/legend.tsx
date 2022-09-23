@@ -39,9 +39,7 @@ const HighlightLabelMarker = styled.rect`
   fill: ${themeVal(highlightColorThemeValue)};
 `;
 
-export const ReferenceLegendComponent = (
-  props: ReferenceLegendComponentProps
-) => {
+export function ReferenceLegendComponent(props: ReferenceLegendComponentProps) {
   const { width, highlightLabel } = props;
 
   return (
@@ -52,9 +50,9 @@ export const ReferenceLegendComponent = (
       </HighlightLabel>
     </g>
   );
-};
+}
 
-export const LegendComponent = (props: LegendProps) => {
+export function LegendComponent(props: LegendProps) {
   const { payload, width } = props;
 
   if (payload) {
@@ -71,25 +69,4 @@ export const LegendComponent = (props: LegendProps) => {
   }
 
   return null;
-};
-
-// The legend on dashboard is consist of HTML elements to make the alignment easy
-// However, SVG needs to be 'pure' to be exportable
-// Creating SVG version of legend for exporting purpose
-export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
-  const legendWidth = 80;
-  const legendHeight = 40;
-  const legendsString = uniqueKeys
-    .filter((k) => k.active)
-    .map(
-      (entry, idx) =>
-        `<g transform="translate(${idx * legendWidth}, 10)">
-          <rect width='12' height='12' fill='${lineColors[idx]}' />
-          <text x='20' y='10'> ${entry.label}</text>
-        </g>`
-    )
-    .join(' ');
-  return `<g width=${
-    legendWidth * uniqueKeys
-  } height=${legendHeight}>${legendsString}</g>`;
 }

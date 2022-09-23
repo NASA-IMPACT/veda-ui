@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef, RefObject } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -13,7 +13,6 @@ import {
   Legend,
   Customized
 } from 'recharts';
-import { themeVal } from '@devseed-ui/theme-provider';
 
 import { useMediaQuery } from '$utils/use-media-query';
 import renderBrushComponent from './brush';
@@ -21,12 +20,15 @@ import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
 import ExportPNG from './analysis/export-png';
 
+import { LegendComponent, ReferenceLegendComponent } from './legend';
+
 import {
-  LegendComponent,
-  ReferenceLegendComponent,
+  getColors,
+  dateFormatter,
+  convertToTime,
   getLegendStringForScreenshot
-} from './legend';
-import { getColors, dateFormatter, convertToTime } from './utils';
+} from './utils';
+
 import {
   chartMinHeight,
   chartMaxHeight,
@@ -38,17 +40,13 @@ import {
 } from './constant';
 
 const LineChartWithFont = styled(LineChart)`
-  font-family: ${themeVal('type.base.family')};
   font-size: 0.8rem;
 `;
 
 const ChartWrapper = styled.div`
   width: 100%;
   grid-column: 1/-1;
-  display: flex;
-  flex-direction: column;
 `;
-
 export interface CommonLineChartProps {
   xKey: string;
   altTitle: string;
@@ -121,6 +119,7 @@ export default function RLineChart(props: RLineChartProps) {
       <ResponsiveContainer
         aspect={chartAspectRatio}
         debounce={500}
+        height='auto'
         minHeight={chartMinHeight}
         maxHeight={chartMaxHeight}
       >
