@@ -150,7 +150,7 @@ export default function ExportPNGButton(props: ChartToPNGProps) {
   const chartImageUrl = useChartToPNG({ svgWrapperRef, legendSvgString });
   const debug = false;
   const handleDownload = useCallback(() => {
-    FileSaver.saveAs(chartImageUrl, 'chart.jpg');
+    FileSaver.saveAs(chartImageUrl, 'chart-' + Date.now() + '.jpg');
   }, [chartImageUrl]);
   return (
     <div>
