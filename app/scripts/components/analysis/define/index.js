@@ -9,6 +9,12 @@ import {
   VerticalDivider
 } from '@devseed-ui/toolbar';
 import {
+  Form,
+  FormGroupStructure,
+  FormHelperMessage,
+  FormInput
+} from '@devseed-ui/form';
+import {
   CollecticonArea,
   CollecticonCircleInformation,
   CollecticonEllipsisVertical,
@@ -30,7 +36,8 @@ import { VarHeading } from '$styles/variable-components';
 export const Block = styled.section`
   padding-top: ${variableGlsp(2)};
   padding-bottom: ${variableGlsp(2)};
-  box-shadow: -1px 0 0 0 ${themeVal('color.base-100a')};
+  background: ${themeVal('color.surface')};
+  box-shadow: 0 0 0 1px ${themeVal('color.base-100a')};
 `;
 
 const BlockInner = styled(Constrainer)`
@@ -70,6 +77,12 @@ export const MapContainer = styled.div`
   background: ${themeVal('color.base-50')};
   border-radius: ${multiply(themeVal('shape.rounded'), 2)};
   min-height: 24rem;
+`;
+
+const FormBlock = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${variableGlsp()};
 `;
 
 export default function Analysis() {
@@ -119,6 +132,47 @@ export default function Analysis() {
             <MapContainer>
               <p>Map goes here.</p>
             </MapContainer>
+          </BlockBody>
+        </BlockInner>
+      </Block>
+
+      <Block>
+        <BlockInner>
+          <BlockHeader>
+            <BlockHeadline>
+              <BlockTitle>Date</BlockTitle>
+            </BlockHeadline>
+            <BlockActions>
+              <Toolbar size='small'>
+                <ToolbarLabel>Actions</ToolbarLabel>
+                <ToolbarIconButton variation='base-text'>
+                  <CollecticonEllipsisVertical title='Options' meaningful />
+                </ToolbarIconButton>
+              </Toolbar>
+            </BlockActions>
+          </BlockHeader>
+          <BlockBody>
+            <Form>
+              <FormBlock>
+                <FormGroupStructure label='Start' id='input-text-a' required>
+                  <FormInput
+                    type='text'
+                    size='large'
+                    id='input-text-a'
+                    placeholder='YYYY / MM / DD'
+                  />
+                </FormGroupStructure>
+
+                <FormGroupStructure label='End' id='input-text-b'>
+                  <FormInput
+                    type='text'
+                    size='large'
+                    id='input-text-b'
+                    placeholder='YYYY / MM / DD'
+                  />
+                </FormGroupStructure>
+              </FormBlock>
+            </Form>
           </BlockBody>
         </BlockInner>
       </Block>
