@@ -8,15 +8,9 @@ import {
   ToolbarLabel,
   VerticalDivider
 } from '@devseed-ui/toolbar';
-import {
-  Form,
-  FormGroupStructure,
-  FormHelperMessage,
-  FormInput
-} from '@devseed-ui/form';
+import { Form, FormGroupStructure, FormInput } from '@devseed-ui/form';
 import {
   CollecticonArea,
-  CollecticonCircleInformation,
   CollecticonEllipsisVertical,
   CollecticonTrashBin,
   CollecticonUpload2
