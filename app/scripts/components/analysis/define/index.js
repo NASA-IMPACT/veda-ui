@@ -1,14 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { multiply, themeVal } from '@devseed-ui/theme-provider';
+import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import {
   Toolbar,
   ToolbarIconButton,
   ToolbarLabel,
   VerticalDivider
 } from '@devseed-ui/toolbar';
-import { Form, FormGroupStructure, FormInput } from '@devseed-ui/form';
+import {
+  Form,
+  FormCheckable,
+  FormGroupStructure,
+  FormInput
+} from '@devseed-ui/form';
 import {
   CollecticonArea,
   CollecticonEllipsisVertical,
@@ -77,6 +82,32 @@ const FormBlock = styled.div`
   display: flex;
   flex-flow: row nowrap;
   gap: ${variableGlsp()};
+
+  > * {
+    width: 50%;
+  }
+`;
+
+const CheckableGroup = styled.div`
+  display: grid;
+  gap: ${variableGlsp()};
+  grid-template-columns: repeat(2, 1fr);
+  background: ${themeVal('color.surface')};
+
+  ${media.mediumUp`
+    grid-template-columns: repeat(3, 1fr);
+  `}
+
+  ${media.xlargeUp`
+    grid-template-columns: repeat(4, 1fr);
+  `}
+`;
+
+const Checkable = styled.div`
+  padding: ${variableGlsp()};
+  background: ${themeVal('color.surface')};
+  box-shadow: 0 0 0 1px ${themeVal('color.base-100a')};
+  border-radius: ${themeVal('shape.rounded')};
 `;
 
 export default function Analysis() {
@@ -103,7 +134,7 @@ export default function Analysis() {
             <BlockActions>
               <Toolbar size='small'>
                 <ToolbarLabel>Actions</ToolbarLabel>
-                <ToolbarIconButton variation='base-text'>
+                <ToolbarIconButton variation='base-text' disabled>
                   <CollecticonTrashBin title='Delete shape' meaningful />
                 </ToolbarIconButton>
                 <VerticalDivider variation='dark' />
@@ -166,6 +197,87 @@ export default function Analysis() {
                   />
                 </FormGroupStructure>
               </FormBlock>
+            </Form>
+          </BlockBody>
+        </BlockInner>
+      </Block>
+
+      <Block>
+        <BlockInner>
+          <BlockHeader>
+            <BlockHeadline>
+              <BlockTitle>Datasets</BlockTitle>
+            </BlockHeadline>
+          </BlockHeader>
+          <BlockBody>
+            <Form>
+              <CheckableGroup>
+                <Checkable>
+                  <FormCheckable
+                    id='example-checkable'
+                    name='example-checkable'
+                    textPlacement='right'
+                    type='checkbox'
+                  >
+                    Dataset name
+                  </FormCheckable>
+                </Checkable>
+
+                <Checkable>
+                  <FormCheckable
+                    id='example-checkable'
+                    name='example-checkable'
+                    textPlacement='right'
+                    type='checkbox'
+                  >
+                    Dataset name
+                  </FormCheckable>
+                </Checkable>
+
+                <Checkable>
+                  <FormCheckable
+                    id='example-checkable'
+                    name='example-checkable'
+                    textPlacement='right'
+                    type='checkbox'
+                  >
+                    Dataset name
+                  </FormCheckable>
+                </Checkable>
+
+                <Checkable>
+                  <FormCheckable
+                    id='example-checkable'
+                    name='example-checkable'
+                    textPlacement='right'
+                    type='checkbox'
+                  >
+                    Dataset name
+                  </FormCheckable>
+                </Checkable>
+
+                <Checkable>
+                  <FormCheckable
+                    id='example-checkable'
+                    name='example-checkable'
+                    textPlacement='right'
+                    type='checkbox'
+                  >
+                    Dataset name
+                  </FormCheckable>
+                </Checkable>
+
+                <Checkable>
+                  <FormCheckable
+                    id='example-checkable'
+                    name='example-checkable'
+                    textPlacement='right'
+                    type='checkbox'
+                  >
+                    Dataset name
+                  </FormCheckable>
+                </Checkable>
+              </CheckableGroup>
             </Form>
           </BlockBody>
         </BlockInner>
