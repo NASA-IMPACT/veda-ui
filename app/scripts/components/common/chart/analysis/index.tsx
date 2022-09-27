@@ -23,6 +23,7 @@ export default function AnalysisChartProps(props: AnalysisChartProps) {
   return (
     <Chart
       {...props}
+      syncId='analysis'
       chartData={chartData}
       renderLegend={false}
       renderBrush={true}

@@ -64,6 +64,7 @@ export interface UniqueKeyUnit {
 }
 interface RLineChartProps extends CommonLineChartProps {
   chartData: object[];
+  syncId?: string;
 }
 
 export default function RLineChart(props: RLineChartProps) {
@@ -78,6 +79,7 @@ export default function RLineChart(props: RLineChartProps) {
     altDesc,
     renderLegend = false,
     renderBrush = false,
+    syncId,
     highlightStart,
     highlightEnd,
     highlightLabel,
@@ -104,6 +106,42 @@ export default function RLineChart(props: RLineChartProps) {
 
   const renderHighlight = highlightStart || highlightEnd;
 
+  function findMatching(date1, date2) {
+    const formatted1 = dateFormatter(date1, dateFormat);
+    const formatted2 = dateFormatter(date2, dateFormat);
+    if (formatted1 === formatted2) return true;
+    return false;
+  }
+  function findReverseMatching(date1, date2, formatterFromData) {
+    const formatted1 = formatterFromData(date1, dateFormat);
+    const formatted2 = formatterFromData(date2, dateFormat);
+    if (formatted1 === formatted2) return true;
+    return false;
+  }
+  const syncMethodFunction = (index, data, chartData, xKey) => {
+    const { activeLabel } = data;
+    const formatterFromData = data.activePayload[0].formatter;
+
+    let matchingIndex;
+    for (let i = 0; i < chartData.length; i++) {
+      const e = chartData[i];
+      if (findMatching(e[xKey], activeLabel)) {
+        matchingIndex = i;
+        break;
+      }
+    }
+    if (matchingIndex === undefined) {
+      for (let i = 0; i < chartData.length; i++) {
+        const e = chartData[i];
+        if (findReverseMatching(e[xKey], activeLabel, formatterFromData)) {
+          matchingIndex = i;
+          break;
+        }
+      }
+    }
+    return matchingIndex;
+  };
+
   return (
     <ChartWrapper>
       <ResponsiveContainer
@@ -112,7 +150,14 @@ export default function RLineChart(props: RLineChartProps) {
         minHeight={chartMinHeight}
         maxHeight={chartMaxHeight}
       >
-        <LineChartWithFont data={chartData} margin={chartMargin}>
+        <LineChartWithFont
+          data={chartData}
+          margin={chartMargin}
+          syncId={syncId}
+          syncMethod={(index, data) => {
+            return syncMethodFunction(index, data, chartData, xKey);
+          }}
+        >
           <AltTitle title={altTitle} desc={altDesc} />
           <CartesianGrid stroke='#efefef' vertical={false} />
           <XAxis
@@ -173,10 +218,12 @@ export default function RLineChart(props: RLineChartProps) {
                 dataKey={k.label}
                 strokeWidth={2}
                 stroke={k.active ? lineColors[idx] : 'transparent'}
+                formatter={(value) => dateFormatter(value, dateFormat)}
               />
             );
           })}
           <Tooltip
+            labelFormatter={() => undefined}
             content={
               <TooltipComponent
                 dateFormat={dateFormat}
@@ -195,16 +242,14 @@ export default function RLineChart(props: RLineChartProps) {
               content={<LegendComponent />}
             />
           )}
-          {
-            renderBrush &&
-              renderBrushComponent({
-                chartData,
-                xKey,
-                uniqueKeys,
-                lineColors,
-                dateFormat
-              })
-          }
+          {renderBrush &&
+            renderBrushComponent({
+              chartData,
+              xKey,
+              uniqueKeys,
+              lineColors,
+              dateFormat
+            })}
         </LineChartWithFont>
       </ResponsiveContainer>
     </ChartWrapper>
