@@ -7,10 +7,6 @@ export const dateFormatter = (date: Date, dateFormat: string) => {
   return format(date);
 };
 
-export const getDateFormatter = (dateFormat) => {
-  return timeFormat(dateFormat);
-};
-
 export const convertToTime = ({
   timeString,
   dateFormat
@@ -149,18 +145,36 @@ export const getColors = function ({
   return new Array(steps).fill(0).map((e, idx) => colorFn(idx / steps));
 };
 
-function findMatching({ date1, date2, formatter }) {
+function findMatching({
+  date1,
+  date2,
+  formatter
+}: {
+  date1: Date;
+  date2: Date;
+  formatter: (d: Date) => string;
+}) {
   const formatted1 = formatter(date1);
   const formatted2 = formatter(date2);
   if (formatted1 === formatted2) return true;
   return false;
 }
 
-export function syncMethodFunction({ data, chartData, xKey, dateFormat }) {
+export function syncMethodFunction({
+  data,
+  chartData,
+  xKey,
+  dateFormat
+}: {
+  data: any;
+  chartData: object[];
+  xKey: string;
+  dateFormat: string;
+}) {
   const { activeLabel, activePayload } = data;
   const formatterFromData = activePayload[0].formatter;
 
-  let matchingIndex = undefined;
+  let matchingIndex: number | null = null;
 
   for (let i = 0; i < chartData.length; i++) {
     const e = chartData[i];
@@ -176,7 +190,7 @@ export function syncMethodFunction({ data, chartData, xKey, dateFormat }) {
     }
   }
 
-  if (matchingIndex === undefined) {
+  if (matchingIndex === null) {
     for (let i = 0; i < chartData.length; i++) {
       const e = chartData[i];
       if (

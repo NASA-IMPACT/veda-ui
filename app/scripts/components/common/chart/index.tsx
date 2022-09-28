@@ -23,7 +23,6 @@ import { LegendComponent, ReferenceLegendComponent } from './legend';
 import {
   getColors,
   dateFormatter,
-  getDateFormatter,
   convertToTime,
   syncMethodFunction
 } from './utils';
@@ -36,7 +35,6 @@ import {
   legendWidth,
   brushRelatedConfigs
 } from './constant';
-import { timeFormat } from 'd3-time-format';
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 0.8rem;
@@ -125,7 +123,7 @@ export default function RLineChart(props: RLineChartProps) {
           data={chartData}
           margin={chartMargin}
           syncId={syncId}
-          syncMethod={(index, data) => {
+          syncMethod={(index: number, data: any) => {
             return syncMethodFunction({ data, chartData, xKey, dateFormat });
           }}
         >
