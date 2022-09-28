@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { QueryClient } from '@tanstack/react-query';
+import { FeatureCollection, Polygon } from 'geojson';
 import { DatasetLayer } from 'delta/thematics';
 
 import EventEmitter from './mini-events';
+import { userTzDate2utcString } from '$utils/date';
 
 export type TimeseriesDataUnit = {
   date: string;
@@ -70,9 +72,16 @@ interface StacDatasetsTimeseriesEvented {
 }
 
 export function requestStacDatasetsTimeseries({
+  date,
+  aoi,
   layers,
   queryClient
 }: {
+  date: {
+    start: Date;
+    end: Date;
+  };
+  aoi: FeatureCollection<Polygon>;
   layers: DatasetLayer[];
   queryClient: QueryClient;
 }) {
@@ -81,6 +90,8 @@ export function requestStacDatasetsTimeseries({
   // Start the request for each layer.
   layers.forEach(async (layer, index) => {
     requestTimeseries({
+      date,
+      aoi,
       layer,
       queryClient,
       eventEmitter,
@@ -94,16 +105,18 @@ export function requestStacDatasetsTimeseries({
   } as StacDatasetsTimeseriesEvented;
 }
 
-async function getDatasetAssets({ date, id }, opts) {
+async function getDatasetAssets({ date, id, aoi }, opts) {
   const { data } = await axios.post(
     `${process.env.API_STAC_ENDPOINT}/search`,
     {
       'filter-lang': 'cql2-json',
-      limit: 100,
+      limit: 10000,
       fields: {
         include: ['assets.cog_default.href', 'properties.start_datetime'],
         exclude: ['collection', 'links']
       },
+      // TODO: Only supports intersection on a single geometry???
+      intersects: aoi.geometry,
       filter: {
         op: 'and',
         args: [
@@ -147,6 +160,11 @@ async function getDatasetAssets({ date, id }, opts) {
 }
 
 type TimeseriesRequesterParams = {
+  date: {
+    start: Date;
+    end: Date;
+  };
+  aoi: FeatureCollection<Polygon>;
   layer: DatasetLayer;
   queryClient: QueryClient;
   eventEmitter: ReturnType<typeof EventEmitter>;
@@ -155,6 +173,8 @@ type TimeseriesRequesterParams = {
 
 // Make requests and emit events.
 async function requestTimeseries({
+  date,
+  aoi,
   layer,
   queryClient,
   eventEmitter,
@@ -190,9 +210,10 @@ async function requestTimeseries({
         getDatasetAssets(
           {
             id,
+            aoi: aoi.features[0],
             date: {
-              start: '2015-01-01T00:00:00.000Z',
-              end: '2022-01-01T00:00:00.000Z'
+              start: userTzDate2utcString(date.start),
+              end: userTzDate2utcString(date.end)
             }
           },
           { signal }
@@ -216,11 +237,13 @@ async function requestTimeseries({
         const statistics = await queryClient.fetchQuery(
           ['analysis', 'asset', url],
           async ({ signal }) => {
-            const { data } = await axios(
+            const { data } = await axios.post(
               `${process.env.API_RASTER_ENDPOINT}/cog/statistics?url=${url}`,
+              // TODO: Crashing with an FC. Check
+              aoi.features[0],
               { signal }
             );
-            return { date, ...data['1'] };
+            return { date, ...data.properties.statistics['1'] };
           },
           {
             staleTime: Infinity

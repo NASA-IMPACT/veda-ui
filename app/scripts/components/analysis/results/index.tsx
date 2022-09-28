@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import styled from 'styled-components';
 
 import { listReset, media } from '@devseed-ui/theme-provider';
@@ -23,6 +24,8 @@ import { VarHeading } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
 
 import { useThematicArea } from '$utils/thematics';
+import { useAnalysisParams } from './use-analysis-params';
+import { requestStacDatasetsTimeseries } from './timeseries-data';
 
 export const ResultsList = styled.ol`
   ${listReset()};
@@ -69,6 +72,34 @@ const ResultBody = styled.div`
 export default function AnalysisResults() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
+
+  const queryClient = useQueryClient();
+  const [requestStatus, setRequestStatus] = useState([]);
+  const { date, datasetsLayers, aoi } = useAnalysisParams();
+
+  console.log("🚀 ~ file: index.tsx ~ line 20 ~ AnalysisResults ~ requestStatus", requestStatus);
+
+  useEffect(() => {
+    if (!date.start || !datasetsLayers || !aoi) return;
+
+    setRequestStatus([]);
+    queryClient.cancelQueries(['analysis']);
+    const requester = requestStacDatasetsTimeseries({
+      date,
+      aoi,
+      layers: datasetsLayers,
+      queryClient
+    });
+
+    requester.on('data', (data, index) => {
+      setRequestStatus((dataStore) =>
+        Object.assign([], dataStore, {
+          [index]: data
+        })
+      );
+    });
+    
+  }, [queryClient, date, datasetsLayers, aoi]);
 
   return (
     <PageMainContent>
