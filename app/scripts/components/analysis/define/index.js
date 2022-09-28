@@ -16,6 +16,7 @@ import {
 } from '@devseed-ui/form';
 import {
   CollecticonArea,
+  CollecticonCircleInformation,
   CollecticonEllipsisVertical,
   CollecticonTrashBin,
   CollecticonUpload2
@@ -66,7 +67,9 @@ export const BlockActions = styled.div`
 `;
 
 export const BlockBody = styled.div`
-  /* styled-component */
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${variableGlsp()};
 `;
 
 export const MapContainer = styled.div`
@@ -108,6 +111,21 @@ const Checkable = styled.div`
   background: ${themeVal('color.surface')};
   box-shadow: 0 0 0 1px ${themeVal('color.base-100a')};
   border-radius: ${themeVal('shape.rounded')};
+`;
+
+export const Note = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${variableGlsp(0.5)};
+  justify-content: center;
+  align-items: center;
+  background: ${themeVal('color.base-50')};
+  border-radius: ${multiply(themeVal('shape.rounded'), 2)};
+  min-height: 12rem;
+
+  [class*='Collecticon'] {
+    opacity: 0.32;
+  }
 `;
 
 export default function Analysis() {
@@ -210,6 +228,10 @@ export default function Analysis() {
             </BlockHeadline>
           </BlockHeader>
           <BlockBody>
+            <Note>
+              <CollecticonCircleInformation size='large' />
+              <p>To select datasets, please define an area and a date first.</p>
+            </Note>
             <Form>
               <CheckableGroup>
                 <Checkable>
