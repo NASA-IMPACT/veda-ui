@@ -8,7 +8,7 @@ import { Toolbar } from '@devseed-ui/toolbar';
 
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
-import { requestStacDatasetsTimeseries } from './timeseries-data';
+import { requestStacDatasetsTimeseries } from '$components/analysis/results/timeseries-data';
 
 const Wrapper = styled.div`
   position: relative;
@@ -20,7 +20,7 @@ export default function SandboxRequest() {
   const [requestStatus, setRequestStatus] = useState([]);
 
   /* eslint-disable-next-line */
-  console.log("Requets status", requestStatus);
+  console.log('Requets status', requestStatus);
 
   const queryClient = useQueryClient();
 
