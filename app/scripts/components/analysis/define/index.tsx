@@ -197,21 +197,21 @@ export default function Analysis() {
           <BlockBody>
             <Form>
               <FormBlock>
-                <FormGroupStructure label='Start' id='input-text-a' required>
+                <FormGroupStructure label='Start' id='start-date' required>
                   <FormInput
-                    type='text'
+                    type='date'
                     size='large'
-                    id='input-text-a'
-                    placeholder='YYYY / MM / DD'
+                    id='start-date'
+                    name='start-date'
                   />
                 </FormGroupStructure>
 
-                <FormGroupStructure label='End' id='input-text-b'>
+                <FormGroupStructure label='End' id='end-date' required>
                   <FormInput
-                    type='text'
+                    type='date'
                     size='large'
-                    id='input-text-b'
-                    placeholder='YYYY / MM / DD'
+                    id='end-date'
+                    name='end-date'
                   />
                 </FormGroupStructure>
               </FormBlock>
