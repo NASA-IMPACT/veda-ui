@@ -23,7 +23,7 @@ import {
 } from '@devseed-ui/collecticons';
 
 import { LayoutProps } from '$components/common/layout-root';
-import PageHero from '$components/common/page-hero';
+import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
 import { resourceNotFound } from '$components/uhoh';
 
 import { useThematicArea } from '$utils/thematics';
@@ -139,7 +139,7 @@ export default function Analysis() {
         description='Visualize insights from a selected area over a period of time.'
         thumbnail={thematic.data.media?.src}
       />
-      <PageHero
+      <PageHeroAnalysis
         title='Analysis'
         description='Visualize insights from a selected area over a period of time.'
       />
