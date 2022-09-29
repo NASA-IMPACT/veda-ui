@@ -120,9 +120,11 @@ export const Note = styled.div`
   gap: ${variableGlsp(0.5)};
   justify-content: center;
   align-items: center;
+  text-align: center;
   background: ${themeVal('color.base-50')};
   border-radius: ${multiply(themeVal('shape.rounded'), 2)};
   min-height: 12rem;
+  padding: ${variableGlsp()};
 
   [class*='Collecticon'] {
     opacity: 0.32;
