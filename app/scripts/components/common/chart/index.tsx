@@ -20,13 +20,12 @@ import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
 import ExportPNG from './analysis/export-png';
 
-import { LegendComponent, ReferenceLegendComponent } from './legend';
+import { LegendComponent, ReferenceLegendComponent, getLegendStringForScreenshot } from './legend';
 
 import {
   getColors,
   dateFormatter,
-  convertToTime,
-  getLegendStringForScreenshot
+  convertToTime
 } from './utils';
 
 import {
