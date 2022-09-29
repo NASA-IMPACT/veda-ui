@@ -80,7 +80,11 @@ export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
   const legendHeight = 40;
 
   return renderToStaticMarkup(
-    <g width={legendWidth * uniqueKeys.length} height={legendHeight}>
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      width={legendWidth * uniqueKeys.length}
+      height={legendHeight}
+    >
       {uniqueKeys
         .filter((k) => k.active)
         .map((entry, idx) => (
@@ -94,6 +98,6 @@ export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
             </text>
           </g>
         ))}
-    </g>
+    </svg>
   );
 }

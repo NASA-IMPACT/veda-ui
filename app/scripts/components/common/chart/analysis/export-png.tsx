@@ -6,6 +6,7 @@ import {
   chartAspectRatio,
   brushHeight
 } from '$components/common/chart/constant';
+import { image } from 'd3-fetch';
 
 const URL = window.URL || window.webkitURL || window;
 const chartPNGPadding = 20;
@@ -27,9 +28,9 @@ function getFontStyle() {
 }
 
 export function getLegendSVG(legendsString: string) {
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.innerHTML = legendsString;
-  return svg;
+  const wrapperDiv = document.createElement('div');
+  wrapperDiv.innerHTML = legendsString;
+  return wrapperDiv.firstChild;
 }
 
 function getDataURLFromSVG(svgElement: SVGElement) {
@@ -145,13 +146,99 @@ const useChartToPNG = (props: ChartToPNGProps) => {
   return chartImageUrl;
 };
 
+function drawOnCanvas(chartImage, legendImage, zoomRatio) {
+  if (!chartImage.complete || !legendImage.complete) return;
+  const c = document.createElement('canvas');
+  const canvasWidth = PNGWidth + chartPNGPadding * 2;
+  const canvasHeight = PNGHeight + chartPNGPadding * 2;
+  c.width = canvasWidth;
+  c.height = canvasHeight;
+
+  const ctx = c.getContext('2d');
+  if (ctx) {
+    // Draw white background
+    ctx.rect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+
+    // Draw chart (crop out brush part)
+    ctx.drawImage(
+      chartImage,
+      0,
+      0,
+      PNGWidth,
+      PNGHeight - brushAreaHeight * zoomRatio,
+      0,
+      chartPNGPadding,
+      PNGWidth,
+      PNGHeight - brushAreaHeight * zoomRatio
+    );
+    // Draw legend
+    ctx.drawImage(
+      legendImage,
+      0,
+      0,
+      legendImage.width,
+      legendImage.height,
+      canvasWidth - legendImage.width,
+      PNGHeight - brushAreaHeight * zoomRatio + 20,
+      legendImage.width,
+      legendImage.height
+    );
+
+    // export it as jpg dataurl
+    const jpg = c.toDataURL('image/jpg');
+    return jpg;
+  }
+}
+
+function loadImageWithPromise(url) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.addEventListener('load', () => {
+      resolve(image);
+    });
+    image.src = url;
+  });
+}
+
+export default function exportFunctionTest({ svgWrapperRef, legendSvgString }) {
+  console.log(ref);
+  console.log(ref.current.container);
+  const svgWrapper = svgWrapperRef.current;
+  if (!svgWrapper) return;
+
+  // Extract SVG element from svgRef (div wrapper around chart SVG)
+
+  const svg = svgWrapper.container.getElementsByTagName('svg')[0];
+  // Scale up/down the chart to make it width 800px
+  const originalSVGWidth = svg.getAttribute('width');
+  const zoomRatio = PNGWidth / originalSVGWidth;
+
+  const clonedSvgElement = svg.cloneNode(true);
+  clonedSvgElement.setAttribute('width', PNGWidth);
+  clonedSvgElement.setAttribute('height', PNGHeight);
+
+  const legendSVG = getLegendSVG(legendSvgString);
+
+  const chartUrl = getDataURLFromSVG(clonedSvgElement);
+  const legendUrl = getDataURLFromSVG(legendSVG);
+
+  const chartImage = new Image();
+  const legendImage = new Image();
+
+  chartImage.src = chartUrl;
+  legendImage.src = legendUrl;
+}
+
 export default function ExportPNGButton(props: ChartToPNGProps) {
   const { svgWrapperRef, legendSvgString } = props;
-  const chartImageUrl = useChartToPNG({ svgWrapperRef, legendSvgString });
+  // const chartImageUrl = useChartToPNG({ svgWrapperRef, legendSvgString });
   const debug = false;
   const handleDownload = useCallback(() => {
-    FileSaver.saveAs(chartImageUrl, 'chart-' + Date.now() + '.jpg');
-  }, [chartImageUrl]);
+    exportFunctionTest({ svgWrapperRef, legendSvgString });
+    // FileSaver.saveAs(chartImageUrl, 'chart-' + Date.now() + '.jpg');
+  }, [svgWrapperRef]);
   return (
     <div>
       <Button type='submit' variation='primary-fill' onClick={handleDownload}>
