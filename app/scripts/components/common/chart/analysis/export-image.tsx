@@ -1,4 +1,5 @@
-import React, { useState, RefObject, useCallback } from 'react';
+import React, { useState, RefObject, Component, useCallback } from 'react';
+
 import FileSaver from 'file-saver';
 import { Button } from '@devseed-ui/button';
 
@@ -14,8 +15,13 @@ const PNGWidth = 800 - chartPNGPadding * 2;
 const brushAreaHeight = brushHeight * 1.6;
 const PNGHeight = PNGWidth / chartAspectRatio - brushAreaHeight;
 
+// Rechart does not export the type for wrapper component (CategoricalChartWrapper)
+// Working around
+interface ChartWrapper extends Component {
+  container: HTMLElement;
+}
 interface ChartToImageProps {
-  svgWrapperRef: RefObject<HTMLDivElement>;
+  svgWrapperRef: RefObject<ChartWrapper>;
   legendSvgString: string;
 }
 
@@ -114,28 +120,30 @@ export async function exportImage({
   legendSvgString
 }: ChartToImageProps) {
   const svgWrapper = svgWrapperRef.current;
-  if (!svgWrapper) return;
 
+  if (!svgWrapper) return;
   // Extract SVG element from svgRef (div wrapper around chart SVG)
 
   const svg = svgWrapper.container.getElementsByTagName('svg')[0];
   // Scale up/down the chart to make it width 800px
-  const originalSVGWidth = svg.getAttribute('width');
-  const zoomRatio = PNGWidth / originalSVGWidth;
+  if (svg) {
+    const originalSVGWidth = parseInt(svg.getAttribute('width') || '800');
+    const zoomRatio = PNGWidth / originalSVGWidth;
 
-  const clonedSvgElement = svg.cloneNode(true);
-  clonedSvgElement.setAttribute('width', PNGWidth);
-  clonedSvgElement.setAttribute('height', PNGHeight);
+    const clonedSvgElement = svg.cloneNode(true) as SVGElement;
+    clonedSvgElement.setAttribute('width', PNGWidth.toString());
+    clonedSvgElement.setAttribute('height', PNGHeight.toString());
 
-  const legendSVG = getLegendSVG(legendSvgString);
+    const legendSVG = getLegendSVG(legendSvgString) as SVGElement;
 
-  const chartUrl = getDataURLFromSVG(clonedSvgElement);
-  const legendUrl = getDataURLFromSVG(legendSVG);
+    const chartUrl = getDataURLFromSVG(clonedSvgElement);
+    const legendUrl = getDataURLFromSVG(legendSVG);
 
-  const chartImage = await loadImageWithPromise(chartUrl);
-  const legendImage = await loadImageWithPromise(legendUrl);
+    const chartImage = await loadImageWithPromise(chartUrl);
+    const legendImage = await loadImageWithPromise(legendUrl);
 
-  return drawOnCanvas({ chartImage, legendImage, zoomRatio });
+    return drawOnCanvas({ chartImage, legendImage, zoomRatio });
+  } else throw Error('No SVG specified');
 }
 
 export default function ExportPNGButton(props: ChartToImageProps) {
