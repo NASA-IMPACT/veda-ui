@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import qs from 'qs';
 import { useLocation, useNavigate } from 'react-router';
-import { FeatureCollection, Polygon } from 'geojson';
+import { Feature, MultiPolygon } from 'geojson';
 import { DatasetLayer, datasets as deltaDatasets } from 'delta/thematics';
 
 import { thematicAnalysisPath } from '$utils/routes';
@@ -18,7 +18,7 @@ type AnalysisParams =
         end: Date;
       };
       datasetsLayers: DatasetLayer[];
-      aoi: FeatureCollection<Polygon>;
+      aoi: Feature<MultiPolygon>;
     }
   | {
       date: {
@@ -118,8 +118,8 @@ export function useAnalysisParams(): AnalysisParams {
         error.forEach((s) => console.log(s));
         console.log('Redirecting user');
         /* eslint-enable no-console */
-        // TODO: Uncomment!!!
-        // navigate(analysisPath);
+
+        navigate(analysisPath);
       } else {
         throw error;
       }
