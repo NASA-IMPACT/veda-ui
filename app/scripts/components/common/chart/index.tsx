@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from 'react';
+import React, { RefObject, useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -18,15 +18,13 @@ import { useMediaQuery } from '$utils/use-media-query';
 import renderBrushComponent from './brush';
 import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
-import ExportPNG from './analysis/export-png';
-
-import { LegendComponent, ReferenceLegendComponent, getLegendStringForScreenshot } from './legend';
 
 import {
-  getColors,
-  dateFormatter,
-  convertToTime
-} from './utils';
+  LegendComponent,
+  ReferenceLegendComponent
+} from './legend';
+
+import { getColors, dateFormatter, convertToTime } from './utils';
 
 import {
   chartMinHeight,
@@ -53,9 +51,9 @@ export interface CommonLineChartProps {
   dateFormat: string;
   colors: string[];
   colorScheme: string;
+  forwarded?: boolean;
   renderLegend?: boolean;
   renderBrush?: boolean;
-  renderExport?: boolean;
   xAxisLabel?: string;
   yAxisLabel?: string;
   highlightStart?: string;
@@ -73,7 +71,10 @@ interface RLineChartProps extends CommonLineChartProps {
   chartData: object[];
 }
 
-export default function RLineChart(props: RLineChartProps) {
+export default function RLineChart(
+  props: RLineChartProps,
+  ref: RefObject<HTMLDivElement>
+) {
   const {
     chartData,
     uniqueKeys,
@@ -83,9 +84,9 @@ export default function RLineChart(props: RLineChartProps) {
     dateFormat,
     altTitle,
     altDesc,
+    forwarded = false,
     renderLegend = false,
     renderBrush = false,
-    renderExport = false,
     highlightStart,
     highlightEnd,
     highlightLabel,
@@ -123,7 +124,7 @@ export default function RLineChart(props: RLineChartProps) {
         maxHeight={chartMaxHeight}
       >
         <LineChartWithFont
-          ref={svgWrapperRef}
+          ref={forwarded ? ref : svgWrapperRef}
           data={chartData}
           margin={chartMargin}
         >
@@ -219,15 +220,8 @@ export default function RLineChart(props: RLineChartProps) {
             })}
         </LineChartWithFont>
       </ResponsiveContainer>
-      {renderExport && (
-        <ExportPNG
-          svgWrapperRef={svgWrapperRef}
-          legendSvgString={getLegendStringForScreenshot({
-            uniqueKeys,
-            lineColors
-          })}
-        />
-      )}
     </ChartWrapper>
   );
 }
+
+export const ChartWithRef = React.forwardRef(RLineChart);

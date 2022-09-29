@@ -1,14 +1,17 @@
 import React, { useRef, useMemo } from 'react';
-import Chart, {
-  LineChartWithRef,
-  CommonLineChartProps
-} from '$components/common/chart';
+import styled from 'styled-components';
+import { ChartWithRef, CommonLineChartProps } from '$components/common/chart';
 import {
   formatTimeSeriesData,
   getColors
 } from '$components/common/chart/utils';
-import ExportPNG from './export-png';
+import ExportImage from './export-image';
 import { getLegendStringForScreenshot } from '../legend';
+
+const Wrapper = styled.div`
+  width: 100$;
+  grid-column: 1/-1;
+`;
 
 interface AnalysisChartProps extends CommonLineChartProps {
   timeSeriesData: object[];
@@ -17,7 +20,9 @@ interface AnalysisChartProps extends CommonLineChartProps {
 
 export default function AnalysisChartProps(props: AnalysisChartProps) {
   const { timeSeriesData, dates, uniqueKeys, dateFormat, xKey } = props;
+
   const chartRef = useRef(null);
+
   const chartData = useMemo(() => {
     return formatTimeSeriesData({
       timeSeriesData,
@@ -27,19 +32,28 @@ export default function AnalysisChartProps(props: AnalysisChartProps) {
       xKey
     });
   }, [timeSeriesData, dates, uniqueKeys, dateFormat, xKey]);
+
   const lineColors = useMemo(() => {
     return getColors({ steps: uniqueKeys.length, colorScheme: 'viridis' });
   }, [uniqueKeys]);
+
   return (
-    <div>
-      <LineChartWithRef
+    <Wrapper>
+      <ChartWithRef
         {...props}
         ref={chartRef}
         chartData={chartData}
         renderLegend={false}
         renderBrush={true}
-        renderExport={true}
+        forwarded={true}
       />
-    </div>
+      <ExportImage
+        svgWrapperRef={chartRef}
+        legendSvgString={getLegendStringForScreenshot({
+          uniqueKeys,
+          lineColors
+        })}
+      />
+    </Wrapper>
   );
 }
