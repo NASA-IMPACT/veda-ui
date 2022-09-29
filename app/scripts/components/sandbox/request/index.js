@@ -8,12 +8,39 @@ import { Toolbar } from '@devseed-ui/toolbar';
 
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
+
 import { requestStacDatasetsTimeseries } from '$components/analysis/results/timeseries-data';
+import { utcString2userTzDate } from '$utils/date';
 
 const Wrapper = styled.div`
   position: relative;
   grid-column: 1 / -1;
 `;
+
+const date = {
+  start: utcString2userTzDate('2015-01-01T00:00:00.000Z'),
+  end: utcString2userTzDate('2022-01-01T00:00:00.000Z')
+};
+
+// Must be a MultiPolygon since the api is currently crashing with a Polygon FC.
+const aoi = {
+  type: 'Feature',
+  properties: {},
+  geometry: {
+    type: 'MultiPolygon',
+    coordinates: [
+      [
+        [
+          [-180, -90],
+          [180, -90],
+          [180, 90],
+          [-180, 90],
+          [-180, -90]
+        ]
+      ]
+    ]
+  }
+};
 
 export default function SandboxRequest() {
   const [selectedLayers, setSelectedLayers] = useState([]);
@@ -32,6 +59,8 @@ export default function SandboxRequest() {
     setRequestStatus([]);
     queryClient.cancelQueries(['analysis']);
     const requester = requestStacDatasetsTimeseries({
+      date,
+      aoi,
       layers,
       queryClient
     });

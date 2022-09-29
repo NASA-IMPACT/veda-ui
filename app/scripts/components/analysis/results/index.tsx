@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { Navigate } from 'react-router';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -8,18 +9,17 @@ import { resourceNotFound } from '$components/uhoh';
 import { PageMainContent } from '$styles/page';
 
 import { useThematicArea } from '$utils/thematics';
+import { thematicAnalysisPath } from '$utils/routes';
 import { useAnalysisParams } from './use-analysis-params';
-import { requestStacDatasetsTimeseries } from './timeseries-data';
+import { requestStacDatasetsTimeseries, TimeseriesData } from './timeseries-data';
 
 export default function AnalysisResults() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
 
   const queryClient = useQueryClient();
-  const [requestStatus, setRequestStatus] = useState([]);
-  const { date, datasetsLayers, aoi } = useAnalysisParams();
-
-  console.log("🚀 ~ file: index.tsx ~ line 20 ~ AnalysisResults ~ requestStatus", requestStatus);
+  const [requestStatus, setRequestStatus] = useState<TimeseriesData[]>([]);
+  const { date, datasetsLayers, aoi, errors } = useAnalysisParams();
 
   useEffect(() => {
     if (!date.start || !datasetsLayers || !aoi) return;
@@ -40,8 +40,11 @@ export default function AnalysisResults() {
         })
       );
     });
-    
   }, [queryClient, date, datasetsLayers, aoi]);
+
+  if (errors) {
+    return <Navigate to={thematicAnalysisPath(thematic)} replace />;
+  }
 
   return (
     <PageMainContent>
@@ -59,7 +62,32 @@ export default function AnalysisResults() {
           <FoldTitle>Analysis Results</FoldTitle>
         </FoldHeader>
         <div>
-          <p>Content goes here.</p>
+          {!!requestStatus.length && (
+            <ul>
+              {requestStatus.map((l) => (
+                <li key={l.id}>
+                  <h5>{l.name}</h5>
+                  {l.status === 'errored' && (
+                    <p>Something went wrong: {l.error.message}</p>
+                  )}
+
+                  {l.status === 'loading' && (
+                    <p>
+                      {l.meta.loaded} of {l.meta.total} loaded. Wait
+                    </p>
+                  )}
+
+                  {l.status === 'succeeded' && !!l.data.length && (
+                    <p>All good. Can show data now.</p>
+                  )}
+
+                  {l.status === 'succeeded' && !l.data.length && (
+                    <p>There is no data available</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </Fold>
     </PageMainContent>

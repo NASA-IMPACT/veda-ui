@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import qs from 'qs';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation } from 'react-router';
 import { Feature, MultiPolygon } from 'geojson';
 import { DatasetLayer, datasets as deltaDatasets } from 'delta/thematics';
 
-import { thematicAnalysisPath } from '$utils/routes';
-import { useThematicArea } from '$utils/thematics';
 import { utcString2userTzDate } from '$utils/date';
 import { polygonUrlDecode } from '$utils/polygon-url';
 
@@ -19,6 +17,7 @@ type AnalysisParams =
       };
       datasetsLayers: DatasetLayer[];
       aoi: Feature<MultiPolygon>;
+      errors: null
     }
   | {
       date: {
@@ -27,28 +26,28 @@ type AnalysisParams =
       };
       datasetsLayers: null;
       aoi: null;
+      errors: null | any[];
     };
 
-export function useAnalysisParams(): AnalysisParams {
-  const thematic = useThematicArea();
-  const location = useLocation();
-  const navigate = useNavigate();
+const initialState = {
+  date: {
+    start: null,
+    end: null
+  },
+  datasetsLayers: null,
+  aoi: null,
+  errors: null
+};
 
-  const [params, setParams] = useState<AnalysisParams>({
-    date: {
-      start: null,
-      end: null
-    },
-    datasetsLayers: null,
-    aoi: null
-  });
+export function useAnalysisParams(): AnalysisParams {
+  const location = useLocation();
+
+  const [params, setParams] = useState<AnalysisParams>(initialState);
 
   useEffect(() => {
     const { start, end, datasets, aoi } = qs.parse(location.search, {
       ignoreQueryPrefix: true
     });
-
-    const analysisPath = thematicAnalysisPath(thematic);
 
     try {
       if (!start || !end || !datasets || !aoi) {
@@ -110,21 +109,24 @@ export function useAnalysisParams(): AnalysisParams {
           end: endDate
         },
         datasetsLayers: layers,
-        aoi: geojson
+        aoi: geojson,
+        errors: null
       });
     } catch (error) {
       if (Array.isArray(error)) {
         /* eslint-disable no-console */
         error.forEach((s) => console.log(s));
-        console.log('Redirecting user');
         /* eslint-enable no-console */
 
-        navigate(analysisPath);
+        setParams({
+          ...initialState,
+          errors: error
+        });
       } else {
         throw error;
       }
     }
-  }, [thematic, navigate, location.search]);
+  }, [location.search]);
 
   return params;
 }
