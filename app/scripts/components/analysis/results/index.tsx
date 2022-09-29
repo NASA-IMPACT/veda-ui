@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { Navigate } from 'react-router';
 import styled from 'styled-components';
 
 import { listReset, media } from '@devseed-ui/theme-provider';
@@ -24,8 +25,12 @@ import { VarHeading } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
 
 import { useThematicArea } from '$utils/thematics';
+import { thematicAnalysisPath } from '$utils/routes';
 import { useAnalysisParams } from './use-analysis-params';
-import { requestStacDatasetsTimeseries } from './timeseries-data';
+import {
+  requestStacDatasetsTimeseries,
+  TimeseriesData
+} from './timeseries-data';
 
 export const ResultsList = styled.ol`
   ${listReset()};
@@ -74,10 +79,8 @@ export default function AnalysisResults() {
   if (!thematic) throw resourceNotFound();
 
   const queryClient = useQueryClient();
-  const [requestStatus, setRequestStatus] = useState([]);
-  const { date, datasetsLayers, aoi } = useAnalysisParams();
-
-  console.log("🚀 ~ file: index.tsx ~ line 20 ~ AnalysisResults ~ requestStatus", requestStatus);
+  const [requestStatus, setRequestStatus] = useState<TimeseriesData[]>([]);
+  const { date, datasetsLayers, aoi, errors } = useAnalysisParams();
 
   useEffect(() => {
     if (!date.start || !datasetsLayers || !aoi) return;
@@ -98,8 +101,11 @@ export default function AnalysisResults() {
         })
       );
     });
-    
   }, [queryClient, date, datasetsLayers, aoi]);
+
+  if (errors) {
+    return <Navigate to={thematicAnalysisPath(thematic)} replace />;
+  }
 
   return (
     <PageMainContent>
@@ -131,13 +137,43 @@ export default function AnalysisResults() {
                     </ToolbarIconButton>
                     <VerticalDivider variation='dark' />
                     <ToolbarIconButton variation='base-text'>
-                      <CollecticonCircleInformation title='More info' meaningful />
+                      <CollecticonCircleInformation
+                        title='More info'
+                        meaningful
+                      />
                     </ToolbarIconButton>
                   </Toolbar>
                 </ResultActions>
               </ResultHeader>
               <ResultBody>
-                <p>Content goes here.</p>
+                <div>
+                  {!!requestStatus.length && (
+                    <ul>
+                      {requestStatus.map((l) => (
+                        <li key={l.id}>
+                          <h5>{l.name}</h5>
+                          {l.status === 'errored' && (
+                            <p>Something went wrong: {l.error.message}</p>
+                          )}
+
+                          {l.status === 'loading' && (
+                            <p>
+                              {l.meta.loaded} of {l.meta.total} loaded. Wait
+                            </p>
+                          )}
+
+                          {l.status === 'succeeded' && !!l.data.length && (
+                            <p>All good. Can show data now.</p>
+                          )}
+
+                          {l.status === 'succeeded' && !l.data.length && (
+                            <p>There is no data available</p>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </ResultBody>
             </Result>
           </li>
