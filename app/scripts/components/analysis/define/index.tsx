@@ -84,7 +84,7 @@ export const MapContainer = styled.div`
 const FormBlock = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  gap: ${variableGlsp()};
+  gap: ${variableGlsp(0.5)};
 
   > * {
     width: 50%;
@@ -93,7 +93,7 @@ const FormBlock = styled.div`
 
 const CheckableGroup = styled.div`
   display: grid;
-  gap: ${variableGlsp()};
+  gap: ${variableGlsp(0.5)};
   grid-template-columns: repeat(2, 1fr);
   background: ${themeVal('color.surface')};
 
@@ -106,8 +106,8 @@ const CheckableGroup = styled.div`
   `}
 `;
 
-const Checkable = styled.div`
-  padding: ${variableGlsp()};
+const FormCheckableCustom = styled(FormCheckable)`
+  padding: ${variableGlsp(0.5)};
   background: ${themeVal('color.surface')};
   box-shadow: 0 0 0 1px ${themeVal('color.base-100a')};
   border-radius: ${themeVal('shape.rounded')};
@@ -234,71 +234,59 @@ export default function Analysis() {
             </Note>
             <Form>
               <CheckableGroup>
-                <Checkable>
-                  <FormCheckable
-                    id='example-checkable'
-                    name='example-checkable'
-                    textPlacement='right'
-                    type='checkbox'
-                  >
-                    Dataset name
-                  </FormCheckable>
-                </Checkable>
+                <FormCheckableCustom
+                  id='dataset-a'
+                  name='dataset-a'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
 
-                <Checkable>
-                  <FormCheckable
-                    id='example-checkable'
-                    name='example-checkable'
-                    textPlacement='right'
-                    type='checkbox'
-                  >
-                    Dataset name
-                  </FormCheckable>
-                </Checkable>
+                <FormCheckableCustom
+                  id='dataset-b'
+                  name='dataset-b'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
 
-                <Checkable>
-                  <FormCheckable
-                    id='example-checkable'
-                    name='example-checkable'
-                    textPlacement='right'
-                    type='checkbox'
-                  >
-                    Dataset name
-                  </FormCheckable>
-                </Checkable>
+                <FormCheckableCustom
+                  id='dataset-c'
+                  name='dataset-c'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
 
-                <Checkable>
-                  <FormCheckable
-                    id='example-checkable'
-                    name='example-checkable'
-                    textPlacement='right'
-                    type='checkbox'
-                  >
-                    Dataset name
-                  </FormCheckable>
-                </Checkable>
+                <FormCheckableCustom
+                  id='dataset-d'
+                  name='dataset-d'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
 
-                <Checkable>
-                  <FormCheckable
-                    id='example-checkable'
-                    name='example-checkable'
-                    textPlacement='right'
-                    type='checkbox'
-                  >
-                    Dataset name
-                  </FormCheckable>
-                </Checkable>
+                <FormCheckableCustom
+                  id='dataset-e'
+                  name='dataset-e'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
 
-                <Checkable>
-                  <FormCheckable
-                    id='example-checkable'
-                    name='example-checkable'
-                    textPlacement='right'
-                    type='checkbox'
-                  >
-                    Dataset name
-                  </FormCheckable>
-                </Checkable>
+                <FormCheckableCustom
+                  id='dataset-f'
+                  name='dataset-f'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
               </CheckableGroup>
             </Form>
           </BlockBody>
