@@ -7,6 +7,8 @@ interface AnalysisChartProps extends CommonLineChartProps {
   dates: string[];
 }
 
+const syncId = 'analysis';
+
 export default function AnalysisChartProps(props: AnalysisChartProps) {
   const { timeSeriesData, dates, uniqueKeys, dateFormat, xKey } = props;
 
@@ -23,7 +25,7 @@ export default function AnalysisChartProps(props: AnalysisChartProps) {
   return (
     <Chart
       {...props}
-      syncId='analysis'
+      syncId={syncId}
       chartData={chartData}
       renderLegend={false}
       renderBrush={true}

@@ -160,13 +160,29 @@ function findMatching({
   return false;
 }
 
+/**
+ * method to sync charts on the analysis page
+ * active chart is the chart that user is interacting with
+ * This method will iterate through with inactive chart's dateformat first
+ * ex. When inactive chart's dateformat is %Y/%m 2022/03,
+ * and active chart's dateformat is %Y 2022
+ * active chart's date will get formatted as 2022/01 -> returns unmatch
+ * then this will be iterated through with active chart's dateformat
+ * so inactive chart's dateformat will be 2022 -> returns match
+ *
+ * @param {object} data data of active chart. coming from rechart
+ * @param {object[]} chartData data for inactive chart
+ * @param {string} xKey xKey for inactive chart
+ * @param {string} dateFormat dateFormat for inactive chart
+ */
+
 export function syncMethodFunction({
   data,
   chartData,
   xKey,
   dateFormat
 }: {
-  data: any;
+  data: any; // Recharts define data payload as any
   chartData: object[];
   xKey: string;
   dateFormat: string;
