@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { QueryClient } from '@tanstack/react-query';
-import { FeatureCollection, Polygon } from 'geojson';
+import { Feature, MultiPolygon } from 'geojson';
 import { DatasetLayer } from 'delta/thematics';
 
 import EventEmitter from './mini-events';
@@ -81,7 +81,7 @@ export function requestStacDatasetsTimeseries({
     start: Date;
     end: Date;
   };
-  aoi: FeatureCollection<Polygon>;
+  aoi: Feature<MultiPolygon>;
   layers: DatasetLayer[];
   queryClient: QueryClient;
 }) {
@@ -164,7 +164,7 @@ type TimeseriesRequesterParams = {
     start: Date;
     end: Date;
   };
-  aoi: FeatureCollection<Polygon>;
+  aoi: Feature<MultiPolygon>;
   layer: DatasetLayer;
   queryClient: QueryClient;
   eventEmitter: ReturnType<typeof EventEmitter>;
@@ -210,7 +210,7 @@ async function requestTimeseries({
         getDatasetAssets(
           {
             id,
-            aoi: aoi.features[0],
+            aoi,
             date: {
               start: userTzDate2utcString(date.start),
               end: userTzDate2utcString(date.end)
@@ -239,8 +239,7 @@ async function requestTimeseries({
           async ({ signal }) => {
             const { data } = await axios.post(
               `${process.env.API_RASTER_ENDPOINT}/cog/statistics?url=${url}`,
-              // TODO: Crashing with an FC. Check
-              aoi.features[0],
+              aoi,
               { signal }
             );
             return { date, ...data.properties.statistics['1'] };
