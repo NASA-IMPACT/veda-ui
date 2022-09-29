@@ -32,6 +32,7 @@ import { PageMainContent } from '$styles/page';
 import Constrainer from '$styles/constrainer';
 import { variableGlsp } from '$styles/variable-utils';
 import { VarHeading } from '$styles/variable-components';
+import { Dropdown, DropMenu, DropMenuItem, DropTitle } from '@devseed-ui/dropdown';
 
 export const Block = styled.section`
   padding-top: ${variableGlsp(2)};
@@ -162,12 +163,33 @@ export default function Analysis() {
                 <ToolbarIconButton variation='base-text'>
                   <CollecticonUpload2 title='Upload geoJSON' meaningful />
                 </ToolbarIconButton>
-                <ToolbarIconButton variation='base-text'>
-                  <CollecticonEllipsisVertical
-                    title='More options'
-                    meaningful
-                  />
-                </ToolbarIconButton>
+                <Dropdown
+                  alignment='right'
+                  triggerElement={(props) => (
+                    <ToolbarIconButton variation='base-text' {...props}>
+                      <CollecticonEllipsisVertical
+                        title='More options'
+                        meaningful
+                      />
+                    </ToolbarIconButton>
+                  )}
+                >
+                  <DropTitle>Select a country</DropTitle>
+                  <DropMenu>
+                    <li>
+                      <DropMenuItem href='#'>Country name A</DropMenuItem>
+                    </li>
+                    <li>
+                      <DropMenuItem href='#'>Country name B</DropMenuItem>
+                    </li>
+                    <li>
+                      <DropMenuItem href='#'>Country name C</DropMenuItem>
+                    </li>
+                    <li>
+                      <DropMenuItem href='#'>Country name D</DropMenuItem>
+                    </li>
+                  </DropMenu>
+                </Dropdown>
               </Toolbar>
             </BlockActions>
           </BlockHeader>
@@ -188,9 +210,33 @@ export default function Analysis() {
             <BlockActions>
               <Toolbar size='small'>
                 <ToolbarLabel>Actions</ToolbarLabel>
-                <ToolbarIconButton variation='base-text'>
-                  <CollecticonEllipsisVertical title='Options' meaningful />
-                </ToolbarIconButton>
+                <Dropdown
+                  alignment='right'
+                  triggerElement={(props) => (
+                    <ToolbarIconButton variation='base-text' {...props}>
+                      <CollecticonEllipsisVertical
+                        title='More options'
+                        meaningful
+                      />
+                    </ToolbarIconButton>
+                  )}
+                >
+                  <DropTitle>Select a date preset</DropTitle>
+                  <DropMenu>
+                    <li>
+                      <DropMenuItem href='#'>Preset A</DropMenuItem>
+                    </li>
+                    <li>
+                      <DropMenuItem href='#'>Preset B</DropMenuItem>
+                    </li>
+                    <li>
+                      <DropMenuItem href='#'>Preset C</DropMenuItem>
+                    </li>
+                    <li>
+                      <DropMenuItem href='#'>Preset D</DropMenuItem>
+                    </li>
+                  </DropMenu>
+                </Dropdown>
               </Toolbar>
             </BlockActions>
           </BlockHeader>
