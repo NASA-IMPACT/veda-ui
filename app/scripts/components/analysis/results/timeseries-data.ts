@@ -6,6 +6,7 @@ import { DatasetLayer } from 'delta/thematics';
 import EventEmitter from './mini-events';
 import { userTzDate2utcString } from '$utils/date';
 import { ConcurrencyManager, ConcurrencyManagerInstance } from './concurrency';
+import { TimeDensity } from '$context/layer-data';
 
 export const TIMESERIES_DATA_BASE_ID = 'analysis';
 
@@ -29,6 +30,13 @@ export type TimeseriesDataUnit = {
   percentile_98: number;
 };
 
+type TimeseriesDataResult = {
+  isPeriodic: boolean;
+  timeDensity: TimeDensity;
+  domain: string[];
+  timeseries: TimeseriesDataUnit[];
+};
+
 // Different options based on status.
 export type TimeseriesData =
   | {
@@ -50,7 +58,7 @@ export type TimeseriesData =
         total: number;
         loaded: number;
       };
-      data: TimeseriesDataUnit[];
+      data: TimeseriesDataResult;
       error: null;
     }
   | {
@@ -122,8 +130,12 @@ async function getDatasetAssets(
   opts: AxiosRequestConfig,
   concurrencyManager: ConcurrencyManagerInstance
 ) {
-  const { data } = await concurrencyManager.queue(() =>
-    axios.post(
+  const data = await concurrencyManager.queue(async () => {
+    const collectionReqRes = await axios.get(
+      `${process.env.API_STAC_ENDPOINT}/collections/${id}`
+    );
+
+    const searchReqRes = await axios.post(
       `${process.env.API_STAC_ENDPOINT}/search`,
       {
         'filter-lang': 'cql2-json',
@@ -168,13 +180,20 @@ async function getDatasetAssets(
         }
       },
       opts
-    )
-  );
+    );
 
-  return data.features.map((o) => ({
-    date: o.properties.start_datetime,
-    url: o.assets.cog_default.href
-  }));
+    return {
+      isPeriodic: collectionReqRes.data['dashboard:is_periodic'],
+      timeDensity: collectionReqRes.data['dashboard:time_density'],
+      domain: collectionReqRes.data.summaries.datetime,
+      assets: searchReqRes.data.features.map((o) => ({
+        date: o.properties.start_datetime,
+        url: o.assets.cog_default.href
+      }))
+    };
+  });
+
+  return data;
 }
 
 type TimeseriesRequesterParams = {
@@ -244,17 +263,19 @@ async function requestTimeseries({
       }
     );
 
+    const { assets, ...otherCollectionProps } = layerInfoFromSTAC;
+
     onData({
       ...layersBase,
       status: 'loading',
       meta: {
-        total: layerInfoFromSTAC.length,
+        total: assets.length,
         loaded: 0
       }
     });
 
     const layerStatistics = await Promise.all(
-      layerInfoFromSTAC.map(async ({ date, url }) => {
+      assets.map(async ({ date, url }) => {
         const statistics = await queryClient.fetchQuery(
           [TIMESERIES_DATA_BASE_ID, 'asset', url],
           async ({ signal }) => {
@@ -275,7 +296,7 @@ async function requestTimeseries({
         onData({
           ...layersBase,
           meta: {
-            total: layerInfoFromSTAC.length,
+            total: assets.length,
             loaded: (layersBase.meta.loaded || 0) + 1
           }
         });
@@ -288,10 +309,13 @@ async function requestTimeseries({
       ...layersBase,
       status: 'succeeded',
       meta: {
-        total: layerInfoFromSTAC.length,
-        loaded: layerInfoFromSTAC.length
+        total: assets.length,
+        loaded: assets.length
       },
-      data: layerStatistics
+      data: {
+        ...otherCollectionProps,
+        timeseries: layerStatistics
+      }
     });
   } catch (error) {
     // Discard abort related errors.
