@@ -11,7 +11,11 @@ import { PageMainContent } from '$styles/page';
 import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
 import { useAnalysisParams } from './use-analysis-params';
-import { requestStacDatasetsTimeseries, TimeseriesData } from './timeseries-data';
+import {
+  requestStacDatasetsTimeseries,
+  TimeseriesData,
+  TIMESERIES_DATA_BASE_ID
+} from './timeseries-data';
 
 export default function AnalysisResults() {
   const thematic = useThematicArea();
@@ -25,7 +29,7 @@ export default function AnalysisResults() {
     if (!date.start || !datasetsLayers || !aoi) return;
 
     setRequestStatus([]);
-    queryClient.cancelQueries(['analysis']);
+    queryClient.cancelQueries([TIMESERIES_DATA_BASE_ID]);
     const requester = requestStacDatasetsTimeseries({
       date,
       aoi,
