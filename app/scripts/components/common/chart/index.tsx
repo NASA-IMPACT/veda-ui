@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { RefObject, useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -26,6 +26,7 @@ import {
   convertToTime,
   syncMethodFunction
 } from './utils';
+
 import {
   chartMinHeight,
   chartMaxHeight,
@@ -44,7 +45,6 @@ const ChartWrapper = styled.div`
   width: 100%;
   grid-column: 1/-1;
 `;
-
 export interface CommonLineChartProps {
   xKey: string;
   altTitle: string;
@@ -72,7 +72,7 @@ interface RLineChartProps extends CommonLineChartProps {
   syncId?: string;
 }
 
-export default function RLineChart(props: RLineChartProps) {
+function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
   const {
     chartData,
     uniqueKeys,
@@ -110,16 +110,17 @@ export default function RLineChart(props: RLineChartProps) {
     : getColors({ steps: uniqueKeys.length, colorScheme });
 
   const renderHighlight = highlightStart || highlightEnd;
-
   return (
     <ChartWrapper>
       <ResponsiveContainer
         aspect={chartAspectRatio}
         debounce={500}
+        height='auto'
         minHeight={chartMinHeight}
         maxHeight={chartMaxHeight}
       >
         <LineChartWithFont
+          ref={ref}
           data={chartData}
           margin={chartMargin}
           syncId={syncId}
@@ -224,3 +225,5 @@ export default function RLineChart(props: RLineChartProps) {
     </ChartWrapper>
   );
 }
+
+export default React.forwardRef(RLineChart);
