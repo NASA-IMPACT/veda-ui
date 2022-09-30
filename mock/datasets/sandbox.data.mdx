@@ -156,6 +156,32 @@ layers:
       stops:
       - "#ffffff"
       - "#0000ff"
+  - id: epa-annual-emissions_1b2b_natural_gas_processing
+    stacCol: EPA-annual-emissions_1B2b_Natural_Gas_Processing
+    name: Natural Gas Processing
+    type: raster
+    description: Non-combustion emissions from sector 1B2b for natural gas processing.
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      colormap_name: rainbow
+      rescale:
+        - 0
+        - 963867416985
+      nodata: 0
+    legend:
+      type: gradient
+      min: 0
+      max: 963867416985
+      stops:
+        - '#60007d'
+        - '#30137d'
+        - '#1960ae'
+        - '#7ac300'
+        - '#f2ce00'
+        - '#ef6a01'
+        - '#cc0019'
   - id: dev-fail
     stacCol: dev-fail
     name: Failing layer

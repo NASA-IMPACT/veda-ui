@@ -100,8 +100,8 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
                 {formatDate(value.start, getDatePickerView(timeDensity))}
               </Heading>
             </WidgetItemHeadline>
-            <Toolbar size='small'>
-              {!!availableDates && (
+            {!!availableDates && (
+              <Toolbar size='small'>
                 <React.Fragment>
                   <ToolbarIconButton
                     disabled={currIndex <= 0}
@@ -129,30 +129,33 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
                   >
                     <CollecticonChevronRightSmall />
                   </ToolbarIconButton>
+                  <VerticalDivider />
+                  <DatePicker
+                    id='date-picker'
+                    alignment='left'
+                    direction='down'
+                    view={getDatePickerView(timeDensity)}
+                    max={availableDates.last}
+                    min={availableDates[0]}
+                    datesToRestrict={availableDates}
+                    restrictMode='enable'
+                    onConfirm={onConfirm}
+                    isClearable={isClearable}
+                    value={value}
+                    renderTriggerElement={(props) => {
+                      return (
+                        <ToolbarIconButton
+                          {...props}
+                          disabled={availableDates.length == 1}
+                        >
+                          <CollecticonCalendar />
+                        </ToolbarIconButton>
+                      );
+                    }}
+                  />
                 </React.Fragment>
-              )}
-              <VerticalDivider />
-              <DatePicker
-                id='date-picker'
-                alignment='left'
-                direction='down'
-                view={getDatePickerView(timeDensity)}
-                max={availableDates?.last}
-                min={availableDates?.[0]}
-                datesToRestrict={availableDates}
-                restrictMode='enable'
-                onConfirm={onConfirm}
-                isClearable={isClearable}
-                value={value}
-                renderTriggerElement={(props) => {
-                  return (
-                    <ToolbarIconButton {...props}>
-                      <CollecticonCalendar />
-                    </ToolbarIconButton>
-                  );
-                }}
-              />
-            </Toolbar>
+              </Toolbar>
+            )}
           </WidgetItemHGroup>
           {dateSliderDates && timeDensity && (
             <DateSliderControl
