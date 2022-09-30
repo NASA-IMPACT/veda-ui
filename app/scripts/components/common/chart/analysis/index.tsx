@@ -6,7 +6,7 @@ import {
   getColors
 } from '$components/common/chart/utils';
 import ExportImage from './export-image';
-import { getLegendStringForScreenshot } from '../legend';
+import { getLegendStringForScreenshot } from './svg-legend';
 
 const Wrapper = styled.div`
   width: 100$;
