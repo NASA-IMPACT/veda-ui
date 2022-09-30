@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import FileSaver from 'file-saver';
 import { Button } from '@devseed-ui/button';
 
-import { exportImage } from './utils';
+import { exportImage, ChartToImageProps } from './utils';
 
 export default function ExportPNGButton(props: ChartToImageProps) {
   const { svgWrapperRef, legendSvgString } = props;

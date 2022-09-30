@@ -16,7 +16,7 @@ const PNGHeight = PNGWidth / chartAspectRatio - brushAreaHeight;
 interface ChartWrapper extends Component {
   container: HTMLElement;
 }
-interface ChartToImageProps {
+export interface ChartToImageProps {
   svgWrapperRef: RefObject<ChartWrapper>;
   legendSvgString: string;
 }

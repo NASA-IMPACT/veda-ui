@@ -19,10 +19,7 @@ import renderBrushComponent from './brush';
 import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
 
-import {
-  LegendComponent,
-  ReferenceLegendComponent
-} from './legend';
+import { LegendComponent, ReferenceLegendComponent } from './legend';
 
 import { getColors, dateFormatter, convertToTime } from './utils';
 
@@ -97,7 +94,6 @@ export default function RLineChart(
   const [chartMargin, setChartMargin] = useState(defaultMargin);
 
   const { isMediumUp } = useMediaQuery();
-  const svgWrapperRef = createRef<HTMLDivElement>();
 
   useEffect(() => {
     if (!isMediumUp) {
@@ -124,7 +120,7 @@ export default function RLineChart(
         maxHeight={chartMaxHeight}
       >
         <LineChartWithFont
-          ref={forwarded ? ref : svgWrapperRef}
+          ref={forwarded ? ref : null}
           data={chartData}
           margin={chartMargin}
         >
