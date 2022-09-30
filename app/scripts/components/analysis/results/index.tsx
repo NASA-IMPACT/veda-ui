@@ -81,11 +81,11 @@ export default function AnalysisResults() {
                     </p>
                   )}
 
-                  {l.status === 'succeeded' && !!l.data.length && (
+                  {l.status === 'succeeded' && !!l.data.timeseries.length && (
                     <p>All good. Can show data now.</p>
                   )}
 
-                  {l.status === 'succeeded' && !l.data.length && (
+                  {l.status === 'succeeded' && !l.data.timeseries.length && (
                     <p>There is no data available</p>
                   )}
                 </li>
