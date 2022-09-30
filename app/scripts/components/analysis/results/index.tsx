@@ -1,8 +1,10 @@
 import React from 'react';
 
 import { LayoutProps } from '$components/common/layout-root';
-import PageHero from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
+
+import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
+
 import { resourceNotFound } from '$components/uhoh';
 import { PageMainContent } from '$styles/page';
 
@@ -15,17 +17,17 @@ export default function AnalysisResults() {
   return (
     <PageMainContent>
       <LayoutProps
-        title='Analysis Results'
-        description='Visualize insights from a selected area over a period of time.'
+        title='Analysis'
+        description='Covering 8 datasets over a 50 M km2 area from Apr 7 to Sep 7, 2022.'
         thumbnail={thematic.data.media?.src}
       />
-      <PageHero
-        title='Analysis Results'
-        description='Visualize insights from a selected area over a period of time.'
+      <PageHeroAnalysis
+        title='Analysis'
+        description='Covering 8 datasets over a 50 M km2 area from Apr 7 to Sep 7, 2022.'
       />
       <Fold>
         <FoldHeader>
-          <FoldTitle>Analysis Results</FoldTitle>
+          <FoldTitle>Results</FoldTitle>
         </FoldHeader>
         <div>
           <p>Content goes here.</p>

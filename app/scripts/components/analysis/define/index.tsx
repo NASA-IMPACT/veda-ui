@@ -143,7 +143,7 @@ export default function Analysis() {
         thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
-        title='Analysis'
+        title='Start analysis'
         description='Visualize insights from a selected area over a period of time.'
       />
       <Block>
