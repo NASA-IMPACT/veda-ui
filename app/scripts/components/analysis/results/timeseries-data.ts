@@ -7,6 +7,8 @@ import EventEmitter from './mini-events';
 import { userTzDate2utcString } from '$utils/date';
 import { ConcurrencyManager, ConcurrencyManagerInstance } from './concurrency';
 
+export const TIMESERIES_DATA_BASE_ID = 'analysis';
+
 export type TimeseriesDataUnit = {
   date: string;
   min: number;
@@ -223,7 +225,7 @@ async function requestTimeseries({
 
   try {
     const layerInfoFromSTAC = await queryClient.fetchQuery(
-      ['analysis', 'dataset', id],
+      [TIMESERIES_DATA_BASE_ID, 'dataset', id],
       ({ signal }) =>
         getDatasetAssets(
           {
@@ -254,7 +256,7 @@ async function requestTimeseries({
     const layerStatistics = await Promise.all(
       layerInfoFromSTAC.map(async ({ date, url }) => {
         const statistics = await queryClient.fetchQuery(
-          ['analysis', 'asset', url],
+          [TIMESERIES_DATA_BASE_ID, 'asset', url],
           async ({ signal }) => {
             return concurrencyManager.queue(async () => {
               const { data } = await axios.post(

@@ -29,7 +29,8 @@ import { thematicAnalysisPath } from '$utils/routes';
 import { useAnalysisParams } from './use-analysis-params';
 import {
   requestStacDatasetsTimeseries,
-  TimeseriesData
+  TimeseriesData,
+  TIMESERIES_DATA_BASE_ID
 } from './timeseries-data';
 
 export const ResultsList = styled.ol`
@@ -86,7 +87,7 @@ export default function AnalysisResults() {
     if (!date.start || !datasetsLayers || !aoi) return;
 
     setRequestStatus([]);
-    queryClient.cancelQueries(['analysis']);
+    queryClient.cancelQueries([TIMESERIES_DATA_BASE_ID]);
     const requester = requestStacDatasetsTimeseries({
       date,
       aoi,
