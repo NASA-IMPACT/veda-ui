@@ -1,10 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { QueryClient } from '@tanstack/react-query';
 import { Feature, MultiPolygon } from 'geojson';
 import { DatasetLayer } from 'delta/thematics';
 
 import EventEmitter from './mini-events';
 import { userTzDate2utcString } from '$utils/date';
+import { ConcurrencyManager, ConcurrencyManagerInstance } from './concurrency';
 
 export type TimeseriesDataUnit = {
   date: string;
@@ -105,52 +106,67 @@ export function requestStacDatasetsTimeseries({
   } as StacDatasetsTimeseriesEvented;
 }
 
-async function getDatasetAssets({ date, id, aoi }, opts) {
-  const { data } = await axios.post(
-    `${process.env.API_STAC_ENDPOINT}/search`,
-    {
-      'filter-lang': 'cql2-json',
-      limit: 10000,
-      fields: {
-        include: ['assets.cog_default.href', 'properties.start_datetime'],
-        exclude: ['collection', 'links']
+type DatasetAssetsRequestParams = {
+  id: string;
+  date: {
+    start: string;
+    end: string;
+  };
+  aoi: Feature<MultiPolygon>;
+};
+
+async function getDatasetAssets(
+  { date, id, aoi }: DatasetAssetsRequestParams,
+  opts: AxiosRequestConfig,
+  concurrencyManager: ConcurrencyManagerInstance
+) {
+  const { data } = await concurrencyManager.queue(() =>
+    axios.post(
+      `${process.env.API_STAC_ENDPOINT}/search`,
+      {
+        'filter-lang': 'cql2-json',
+        limit: 10000,
+        fields: {
+          include: ['assets.cog_default.href', 'properties.start_datetime'],
+          exclude: ['collection', 'links']
+        },
+        // TODO: Only supports intersection on a single geometry???
+        intersects: aoi.geometry,
+        filter: {
+          op: 'and',
+          args: [
+            {
+              op: '>=',
+              args: [
+                {
+                  property: 'datetime'
+                },
+                date.start
+              ]
+            },
+            {
+              op: '<=',
+              args: [
+                {
+                  property: 'datetime'
+                },
+                date.end
+              ]
+            },
+            {
+              op: 'eq',
+              args: [
+                {
+                  property: 'collection'
+                },
+                id
+              ]
+            }
+          ]
+        }
       },
-      // TODO: Only supports intersection on a single geometry???
-      intersects: aoi.geometry,
-      filter: {
-        op: 'and',
-        args: [
-          {
-            op: '>=',
-            args: [
-              {
-                property: 'datetime'
-              },
-              date.start
-            ]
-          },
-          {
-            op: '<=',
-            args: [
-              {
-                property: 'datetime'
-              },
-              date.end
-            ]
-          },
-          {
-            op: 'eq',
-            args: [
-              {
-                property: 'collection'
-              },
-              id
-            ]
-          }
-        ]
-      }
-    },
-    opts
+      opts
+    )
   );
 
   return data.features.map((o) => ({
@@ -181,6 +197,8 @@ async function requestTimeseries({
   index
 }: TimeseriesRequesterParams) {
   const id = layer.id;
+
+  const concurrencyManager = ConcurrencyManager();
 
   let layersBase: TimeseriesData = {
     id,
@@ -216,7 +234,8 @@ async function requestTimeseries({
               end: userTzDate2utcString(date.end)
             }
           },
-          { signal }
+          { signal },
+          concurrencyManager
         ),
       {
         staleTime: Infinity
@@ -237,12 +256,14 @@ async function requestTimeseries({
         const statistics = await queryClient.fetchQuery(
           ['analysis', 'asset', url],
           async ({ signal }) => {
-            const { data } = await axios.post(
-              `${process.env.API_RASTER_ENDPOINT}/cog/statistics?url=${url}`,
-              aoi,
-              { signal }
-            );
-            return { date, ...data.properties.statistics['1'] };
+            return concurrencyManager.queue(async () => {
+              const { data } = await axios.post(
+                `${process.env.API_RASTER_ENDPOINT}/cog/statistics?url=${url}`,
+                aoi,
+                { signal }
+              );
+              return { date, ...data.properties.statistics['1'] };
+            });
           },
           {
             staleTime: Infinity
