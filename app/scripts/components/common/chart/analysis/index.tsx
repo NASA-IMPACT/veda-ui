@@ -9,7 +9,7 @@ import ExportImage from './export-image';
 import { getLegendStringForScreenshot } from './svg-legend';
 
 const Wrapper = styled.div`
-  width: 100$;
+  width: 100%;
   grid-column: 1/-1;
 `;
 
@@ -45,6 +45,7 @@ export default function AnalysisChartProps(props: AnalysisChartProps) {
         chartData={chartData}
         renderLegend={false}
         renderBrush={true}
+        colors={lineColors}
       />
       <ExportImage
         svgWrapperRef={chartRef}

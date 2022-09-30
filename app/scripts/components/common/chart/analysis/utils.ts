@@ -6,7 +6,7 @@ import {
 
 const URL = window.URL || window.webkitURL || window;
 const chartPNGPadding = 20;
-const PNGWidth = 800 - chartPNGPadding * 2;
+const PNGWidth = 1920 - chartPNGPadding * 2;
 
 const brushAreaHeight = brushHeight * 1.6;
 const PNGHeight = PNGWidth / chartAspectRatio - brushAreaHeight;
@@ -90,10 +90,10 @@ function drawOnCanvas({ chartImage, legendImage, zoomRatio }) {
       0,
       legendImage.width,
       legendImage.height,
-      canvasWidth - legendImage.width - chartPNGPadding * 2,
+      canvasWidth - legendImage.width * zoomRatio - chartPNGPadding * 2,
       PNGHeight - brushAreaHeight * zoomRatio + 20,
-      legendImage.width,
-      legendImage.height
+      legendImage.width * zoomRatio,
+      legendImage.height * zoomRatio
     );
 
     const jpg = c.toDataURL('image/jpg');

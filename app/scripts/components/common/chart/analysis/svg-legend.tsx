@@ -22,7 +22,7 @@ export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
             transform={`translate(${idx * legendWidth}, 10)`}
           >
             <rect width={12} height={12} fill={lineColors[idx]} />
-            <text x={20} y={10}>
+            <text x={20} y={10} fontSize='12px'>
               {entry.label}
             </text>
           </g>
