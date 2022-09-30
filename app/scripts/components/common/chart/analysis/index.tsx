@@ -1,6 +1,6 @@
 import React, { useRef, useMemo } from 'react';
 import styled from 'styled-components';
-import { ChartWithRef, CommonLineChartProps } from '$components/common/chart';
+import Chart, { CommonLineChartProps } from '$components/common/chart';
 import {
   formatTimeSeriesData,
   getColors
@@ -39,13 +39,12 @@ export default function AnalysisChartProps(props: AnalysisChartProps) {
 
   return (
     <Wrapper>
-      <ChartWithRef
+      <Chart
         {...props}
         ref={chartRef}
         chartData={chartData}
         renderLegend={false}
         renderBrush={true}
-        forwarded={true}
       />
       <ExportImage
         svgWrapperRef={chartRef}

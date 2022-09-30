@@ -48,7 +48,6 @@ export interface CommonLineChartProps {
   dateFormat: string;
   colors: string[];
   colorScheme: string;
-  forwarded?: boolean;
   renderLegend?: boolean;
   renderBrush?: boolean;
   xAxisLabel?: string;
@@ -68,10 +67,7 @@ interface RLineChartProps extends CommonLineChartProps {
   chartData: object[];
 }
 
-export default function RLineChart(
-  props: RLineChartProps,
-  ref: RefObject<HTMLDivElement>
-) {
+function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
   const {
     chartData,
     uniqueKeys,
@@ -81,7 +77,6 @@ export default function RLineChart(
     dateFormat,
     altTitle,
     altDesc,
-    forwarded = false,
     renderLegend = false,
     renderBrush = false,
     highlightStart,
@@ -109,7 +104,6 @@ export default function RLineChart(
     : getColors({ steps: uniqueKeys.length, colorScheme });
 
   const renderHighlight = highlightStart || highlightEnd;
-
   return (
     <ChartWrapper>
       <ResponsiveContainer
@@ -119,11 +113,7 @@ export default function RLineChart(
         minHeight={chartMinHeight}
         maxHeight={chartMaxHeight}
       >
-        <LineChartWithFont
-          ref={forwarded ? ref : null}
-          data={chartData}
-          margin={chartMargin}
-        >
+        <LineChartWithFont ref={ref} data={chartData} margin={chartMargin}>
           <AltTitle title={altTitle} desc={altDesc} />
           <CartesianGrid stroke='#efefef' vertical={false} />
           <XAxis
@@ -220,4 +210,4 @@ export default function RLineChart(
   );
 }
 
-export const ChartWithRef = React.forwardRef(RLineChart);
+export default React.forwardRef(RLineChart);
