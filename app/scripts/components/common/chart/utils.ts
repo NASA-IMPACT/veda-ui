@@ -144,3 +144,4 @@ export const getColors = function ({
 
   return new Array(steps).fill(0).map((e, idx) => colorFn(idx / steps));
 };
+

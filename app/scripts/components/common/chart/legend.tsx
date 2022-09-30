@@ -6,7 +6,6 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { ListItem } from './tooltip';
 import { highlightColorThemeValue } from './constant';
-
 interface ReferenceLegendComponentProps extends CategoricalChartProps {
   highlightLabel: string;
 }
@@ -40,9 +39,7 @@ const HighlightLabelMarker = styled.rect`
   fill: ${themeVal(highlightColorThemeValue)};
 `;
 
-export const ReferenceLegendComponent = (
-  props: ReferenceLegendComponentProps
-) => {
+export function ReferenceLegendComponent(props: ReferenceLegendComponentProps) {
   const { width, highlightLabel } = props;
 
   return (
@@ -53,9 +50,9 @@ export const ReferenceLegendComponent = (
       </HighlightLabel>
     </g>
   );
-};
+}
 
-export const LegendComponent = (props: LegendProps) => {
+export function LegendComponent(props: LegendProps) {
   const { payload, width } = props;
 
   if (payload) {
@@ -72,4 +69,4 @@ export const LegendComponent = (props: LegendProps) => {
   }
 
   return null;
-};
+}
