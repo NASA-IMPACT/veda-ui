@@ -20,6 +20,7 @@ import SandboxOverride from './override';
 import SandboxDateslider from './dateslider';
 import SandboxChart from './mdx-chart';
 import SandboxAnalysisChart from './analysis-chart';
+import SandboxRequest from './request';
 
 const pages = [
   {
@@ -81,6 +82,11 @@ const pages = [
     id: 'dateslider',
     name: 'Dateslider',
     component: SandboxDateslider
+  },
+  {
+    id: 'request',
+    name: 'Requests',
+    component: SandboxRequest
   }
 ];
 

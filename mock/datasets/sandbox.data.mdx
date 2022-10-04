@@ -38,65 +38,6 @@ layers:
         - B12
         - B8A
         - B04
-  - id: no2-monthly
-    stacCol: no2-monthly
-    name: No2 2 monthly
-    type: raster
-    initialDatetime: 2022-01-01
-    description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
-    zoomExtent:
-      - 0
-      - 20
-    sourceParams:
-      resampling_method: bilinear
-      bidx: 0
-      color_formula: gamma r 1.05
-      colormap_name: coolwarm
-      rescale:
-        - 0
-        - 1.5e16
-    legend:
-      type: gradient
-      min: "Less"
-      max: "More"
-      stops:
-        - "#99c5e0"
-        - "#f9eaa9"
-        - "#f7765d"
-        - "#c13b72"
-        - "#461070"
-        - "#ff0000"
-  - id: nightlights-hd-monthly
-    stacCol: nightlights-hd-monthly
-    name: Nightlights Monthly
-    type: raster
-    description: The nightlights dataset
-    zoomExtent:
-      - 4
-      - 16
-    sourceParams:
-      bidx: 1
-      colormap_name: inferno
-      rescale:
-        - 0
-        - 255
-    legend:
-      type: categorical
-      stops: 
-        - color: "#3C8EC4"
-          label: "Exceptional"
-        - color: "#6ECC51"
-          label: "Favourable"
-        - color: "#F3EF4F"
-          label: "Watch"
-        - color: "#DF6335"
-          label: "Poor"
-        - color: "#7E170E"
-          label: "Failure"
-        - color: "#777879"
-          label: "Out of season"
-        - color: "#794416"
-          label: "No data"
   - id: social-vul-1
     stacCol: social-vulnerability-index-household
     name: Household and Disability Score
@@ -156,11 +97,11 @@ layers:
       stops:
       - "#ffffff"
       - "#0000ff"
-  - id: epa-annual-emissions_1b2b_natural_gas_processing
-    stacCol: EPA-annual-emissions_1B2b_Natural_Gas_Processing
-    name: Natural Gas Processing
+  - id: epa-annual-emissions_1b1a_coal_mining_underground
+    stacCol: EPA-annual-emissions_1B1a_Coal_Mining_Underground
+    name: Underground Coal Mines
     type: raster
-    description: Non-combustion emissions from sector 1B2b for natural gas processing.
+    description: Emissions from sector 1B1a from underground coal mining.
     zoomExtent:
       - 0
       - 20
@@ -168,12 +109,12 @@ layers:
       colormap_name: rainbow
       rescale:
         - 0
-        - 963867416985
+        - 2022634652958
       nodata: 0
     legend:
       type: gradient
       min: 0
-      max: 963867416985
+      max: 2022634652958
       stops:
         - '#60007d'
         - '#30137d'
