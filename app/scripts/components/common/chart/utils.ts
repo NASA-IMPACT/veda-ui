@@ -46,15 +46,17 @@ export function formatTimeSeriesData({
   xKey: string;
   bandIndex?: number;
 }) {
-  return timeSeriesData.map((e, idx) => {
-    const currentStat = e.properties.statistics[bandIndex];
-    return {
-      [xKey]: convertToTime({ timeString: dates[idx], dateFormat }),
-      ...uniqueKeys.reduce((acc, curr) => {
-        return { ...acc, [curr.label]: currentStat[curr.value] };
-      }, {})
-    };
-  });
+  return timeSeriesData
+    .map((e, idx) => {
+      const currentStat = e; //.properties.statistics[bandIndex];
+      return {
+        [xKey]: convertToTime({ timeString: dates[idx], dateFormat }),
+        ...uniqueKeys.reduce((acc, curr) => {
+          return { ...acc, [curr.label]: currentStat[curr.value] };
+        }, {})
+      };
+    })
+    .sort((a, b) => a[xKey] - b[xKey]);
 }
 
 /**
@@ -144,4 +146,3 @@ export const getColors = function ({
 
   return new Array(steps).fill(0).map((e, idx) => colorFn(idx / steps));
 };
-

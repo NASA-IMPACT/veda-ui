@@ -9,6 +9,8 @@ import { Toolbar } from '@devseed-ui/toolbar';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 
+import Chart from '$components/common/chart/analysis/';
+import { dateFormatter } from '$components/common/chart/utils';
 import { requestStacDatasetsTimeseries } from '$components/analysis/results/timeseries-data';
 import { utcString2userTzDate } from '$utils/date';
 
@@ -151,17 +153,47 @@ export default function SandboxRequest() {
                     </p>
                   )}
 
-                  {l.status === 'succeeded' && !!l.data.length && (
-                    <p>All good. Can show data now.</p>
+                  {l.status === 'succeeded' && !!l.data.timeseries.length && (
+                    <>
+                      <p>All good. Can show data now.</p>
+                      <Chart
+                        timeSeriesData={l.data.timeseries}
+                        uniqueKeys={[
+                          { label: 'Min', value: 'min', active: true },
+                          { label: 'Max', value: 'max', active: true },
+                          { label: 'STD', value: 'std', active: true }
+                        ]}
+                        xKey='date'
+                        dates={l.data.timeseries.map((e) =>
+                          dateFormatter(new Date(e.date), '%Y/%m')
+                        )}
+                        dateFormat='%Y/%m'
+                        altTitle='alt title'
+                        altDesc='alt desc'
+                        xAxisLabel='x axis label'
+                        yAxisLabel='y axis label'
+                      />
+                    </>
                   )}
 
-                  {l.status === 'succeeded' && !l.data.length && (
+                  {l.status === 'succeeded' && !l.data.timeseries.length && (
                     <p>There is no data available</p>
                   )}
                 </li>
               ))}
             </ul>
           )}
+          {/* <Chart
+            timeSeriesData={dataForChart1.timeSeriesData}
+            uniqueKeys={dynamicUniqueKeys}
+            xKey={dataForChart1.xKey}
+            dates={dataForChart1.dates}
+            dateFormat={dataForChart1.dateFormat}
+            altTitle='alt title'
+            altDesc='alt desc'
+            xAxisLabel='x axis label'
+            yAxisLabel='y axis label'
+          /> */}
         </Wrapper>
       </Constrainer>
     </PageMainContent>
