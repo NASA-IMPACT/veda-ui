@@ -1,4 +1,4 @@
-import { timeFormat, timeParse } from 'd3-time-format';
+import { timeFormat, timeParse } from 'd3';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { UniqueKeyUnit } from '.';
 
