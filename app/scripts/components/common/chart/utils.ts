@@ -29,32 +29,31 @@ export const convertToTime = ({
  * @param {string} dateFormat How the date was formatted (following d3-date-format ex. %m/%d/%Y)
  * @param {string[]} uniqueKeys
  * @param {string} xKey The key or getter for x-axis which is corresponding to the data.
- * @param {number} bandIndex
  */
 export function formatTimeSeriesData({
   timeSeriesData,
   dates,
   dateFormat,
   uniqueKeys,
-  xKey = 'date',
-  bandIndex = 1
+  xKey = 'date'
 }: {
   timeSeriesData: object[];
   dates: string[]; // 202205, 202206,...
   dateFormat: string; // %y/%m/%d..
   uniqueKeys: UniqueKeyUnit[]; // min,max,,
   xKey: string;
-  bandIndex?: number;
 }) {
-  return timeSeriesData.map((e, idx) => {
-    const currentStat = e.properties.statistics[bandIndex];
-    return {
-      [xKey]: convertToTime({ timeString: dates[idx], dateFormat }),
-      ...uniqueKeys.reduce((acc, curr) => {
-        return { ...acc, [curr.label]: currentStat[curr.value] };
-      }, {})
-    };
-  });
+  return timeSeriesData
+    .map((e, idx) => {
+      const currentStat = e;
+      return {
+        [xKey]: convertToTime({ timeString: dates[idx], dateFormat }),
+        ...uniqueKeys.reduce((acc, curr) => {
+          return { ...acc, [curr.label]: currentStat[curr.value] };
+        }, {})
+      };
+    })
+    .sort((a, b) => a[xKey] - b[xKey]);
 }
 
 /**
@@ -144,4 +143,3 @@ export const getColors = function ({
 
   return new Array(steps).fill(0).map((e, idx) => colorFn(idx / steps));
 };
-
