@@ -143,3 +143,8 @@ export const getColors = function ({
 
   return new Array(steps).fill(0).map((e, idx) => colorFn(idx / steps));
 };
+
+export function preciseNum(x:number, f = 3) {
+  return (Math.abs(x) < 100000) ? x: Number(x).toPrecision(f);
+
+}

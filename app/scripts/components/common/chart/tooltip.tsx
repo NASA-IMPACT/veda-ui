@@ -4,7 +4,7 @@ import { TooltipProps } from 'recharts/types';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { UniqueKeyUnit } from './';
-import { dateFormatter } from './utils';
+import { dateFormatter, preciseNum } from './utils';
 
 interface TooltipComponentProps extends TooltipProps<number, string> {
   colors: string[];
@@ -54,7 +54,7 @@ export default function TooltipComponent(props: TooltipComponentProps) {
             return (
               <div key={`${key}`}>
                 <TooltipItem color={colors[idx]} />
-                <strong>{key}</strong> :{point}
+                <strong>{key}</strong> :{preciseNum(point)}
               </div>
             );
           })}
