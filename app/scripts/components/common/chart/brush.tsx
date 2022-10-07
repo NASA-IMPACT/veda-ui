@@ -33,7 +33,7 @@ export default function renderBrushComponent(param: BrushParam) {
               isAnimationActive={false}
               dot={false}
               activeDot={false}
-              key={`${k.value}-line`}
+              key={`${k.value}-line-brush`}
               dataKey={k.label}
               strokeWidth={0.5}
               stroke={k.active ? lineColors[idx] : 'transparent'}

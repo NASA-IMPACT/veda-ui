@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Chart from '$components/common/chart/analysis/';
 import { AnalysisLegendComponent } from '$components/common/chart/analysis/control';
-import { getColors } from '$components/common/chart/utils';
+import { getColors, dateFormatter } from '$components/common/chart/utils';
 
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import Constrainer from '$styles/constrainer';
+import { utcString2userTzDate } from '$utils/date';
 import { PageMainContent } from '$styles/page';
 import Hug from '$styles/hug';
 
@@ -30,35 +31,31 @@ const MainPanel = styled.div`
 // https://staging-raster.delta-backend.com/cog/statistics?url="s3://veda-data-store-staging/geoglam/CropMonitor_${date}.tif"1
 
 const dataForChart1 = {
-  timeSeriesData: timeSeriesData345,
-  dates: ['2022/03', '2022/04', '2022/05'],
+  timeSeriesData: timeSeriesData345.timeseries,
+  dates: timeSeriesData345.timeseries.map((e) =>
+    dateFormatter(utcString2userTzDate(e.date), '%Y/%m')
+  ),
   uniqueKeys: [
     { label: 'Min', value: 'min', active: true },
     { label: 'Max', value: 'max', active: true },
     { label: 'STD', value: 'std', active: true }
   ],
   dateFormat: '%Y/%m',
-  xKey: 'Date'
+  xKey: 'date'
 };
 
 const dataForChart2 = {
-  timeSeriesData: timeSeriesData234,
-  dates: [
-    '2021/10',
-    '2021/11',
-    '2022/01',
-    '2022/02',
-    '2022/03',
-    '2022/04',
-    '2022/05'
-  ],
+  timeSeriesData: timeSeriesData234.timeseries,
+  dates: timeSeriesData234.timeseries.map((e) =>
+    dateFormatter(utcString2userTzDate(e.date), '%Y/%m')
+  ),
   uniqueKeys: [
     { label: 'Min', value: 'min', active: true },
     { label: 'Max', value: 'max', active: true },
     { label: 'STD', value: 'std', active: true }
   ],
   dateFormat: '%Y/%m',
-  xKey: 'Date'
+  xKey: 'date'
 };
 
 export default function AnalysisChart() {

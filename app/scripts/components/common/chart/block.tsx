@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { csv, json } from 'd3-fetch';
+import { csv, json } from 'd3';
 
 import { getFData } from './utils';
 import { fileExtensionRegex } from './constant';
-import Chart, { UniqueKeyUnit, CommonLineChartProps } from './';
+import Chart, { CommonLineChartProps } from './';
 
 interface BlockChartProp extends CommonLineChartProps {
   dataPath: string;
