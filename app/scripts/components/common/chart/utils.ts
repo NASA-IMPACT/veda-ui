@@ -144,7 +144,16 @@ export const getColors = function ({
   return new Array(steps).fill(0).map((e, idx) => colorFn(idx / steps));
 };
 
-export function preciseNum(x:number, f = 3) {
+function preciseNum(x:number, f = 3) {
   return (Math.abs(x) < 100000) ? x: Number(x).toPrecision(f);
+}
+// TO DO: adjust default parameter 
+function fixNum(x:number, f = 3) {
+  if (Number.isInteger(x)) return x;
+  else return x.toFixed(f);
+}
 
+export function getNumForChart(x: number) {
+  if (Math.abs(x) < 100000) return fixNum(x);
+  else return preciseNum(x);
 }
