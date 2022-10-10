@@ -33,7 +33,8 @@ import {
   FoldHeader,
   FoldHeadline,
   FoldHeadActions,
-  FoldTitle
+  FoldTitle,
+  FoldBody
 } from '$components/common/fold';
 
 import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
@@ -102,35 +103,36 @@ export default function AnalysisResults() {
             </Dropdown>
           </FoldHeadActions>
         </FoldHeader>
-
-        <CardList>
-          <li>
-            <CardSelf>
-              <CardHeader>
-                <CardHeadline>
-                  <CardTitle>Dataset name</CardTitle>
-                </CardHeadline>
-                <CardActions>
-                  <Toolbar size='small'>
-                    <ToolbarIconButton variation='base-text'>
-                      <CollecticonDownload2 title='Download' meaningful />
-                    </ToolbarIconButton>
-                    <VerticalDivider variation='dark' />
-                    <ToolbarIconButton variation='base-text'>
-                      <CollecticonCircleInformation
-                        title='More info'
-                        meaningful
-                      />
-                    </ToolbarIconButton>
-                  </Toolbar>
-                </CardActions>
-              </CardHeader>
-              <CardBody>
-                <p>Content goes here.</p>
-              </CardBody>
-            </CardSelf>
-          </li>
-        </CardList>
+        <FoldBody>
+          <CardList>
+            <li>
+              <CardSelf>
+                <CardHeader>
+                  <CardHeadline>
+                    <CardTitle>Dataset name</CardTitle>
+                  </CardHeadline>
+                  <CardActions>
+                    <Toolbar size='small'>
+                      <ToolbarIconButton variation='base-text'>
+                        <CollecticonDownload2 title='Download' meaningful />
+                      </ToolbarIconButton>
+                      <VerticalDivider variation='dark' />
+                      <ToolbarIconButton variation='base-text'>
+                        <CollecticonCircleInformation
+                          title='More info'
+                          meaningful
+                        />
+                      </ToolbarIconButton>
+                    </Toolbar>
+                  </CardActions>
+                </CardHeader>
+                <CardBody>
+                  <p>Content goes here.</p>
+                </CardBody>
+              </CardSelf>
+            </li>
+          </CardList>
+        </FoldBody>
       </Fold>
     </PageMainContent>
   );
