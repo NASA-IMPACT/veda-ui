@@ -21,6 +21,7 @@
     "lint": "yarn lint:js && yarn lint:css",
     "lint:js": "eslint app/scripts/ --ext .js",
     "lint:css": "stylelint 'app/styles/**/**' 'app/scripts/**/*.js'",
+    "ts-check": "yarn tsc --noEmit --skipLibCheck",
     "test": "jest"
   },
   "engines": {
