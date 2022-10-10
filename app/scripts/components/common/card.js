@@ -124,9 +124,21 @@ export const CardSelf = styled.article`
 
 export const CardHeader = styled.header`
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-end;
   padding: ${variableGlsp()};
+  gap: ${variableGlsp()};
+`;
+
+export const CardHeadline = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
   gap: ${glsp(0.25)};
+`;
+
+export const CardActions = styled.div`
+  /* styled-component */
 `;
 
 export const CardTitle = styled(VarHeading).attrs({
@@ -221,23 +233,25 @@ function CardComponent(props) {
       }}
     >
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardOverline>
-          {parentName && parentTo && (
-            <CardLabel as={Link} to={parentTo}>
-              {parentName}
-            </CardLabel>
-          )}
-          {(date && (
-            <>
-              published on{' '}
-              <time dateTime={format(date, 'yyyy-MM-dd')}>
-                {format(date, 'MMM d, yyyy')}
-              </time>
-            </>
-          )) ||
-            overline}
-        </CardOverline>
+        <CardHeadline>
+          <CardTitle>{title}</CardTitle>
+          <CardOverline>
+            {parentName && parentTo && (
+              <CardLabel as={Link} to={parentTo}>
+                {parentName}
+              </CardLabel>
+            )}
+            {(date && (
+              <>
+                published on{' '}
+                <time dateTime={format(date, 'yyyy-MM-dd')}>
+                  {format(date, 'MMM d, yyyy')}
+                </time>
+              </>
+            )) ||
+              overline}
+          </CardOverline>
+        </CardHeadline>
       </CardHeader>
       {description && (
         <CardBody>

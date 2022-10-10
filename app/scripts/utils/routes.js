@@ -21,6 +21,10 @@ export const thematicAboutPath = (thematic) => {
   return thematicRootPath(thematic, 'about');
 };
 
+export const thematicAnalysisPath = (thematic) => {
+  return thematicRootPath(thematic, 'analysis');
+};
+
 export const datasetRootPath = (thematic, dataset) => {
   const d = dataset.data.id || dataset;
   return `${thematicDatasetsPath(thematic)}/${d}`;
