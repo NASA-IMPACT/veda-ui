@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { Navigate } from 'react-router';
+import styled from 'styled-components';
 
 import {
   Dropdown,
@@ -50,10 +53,46 @@ import {
 } from '$styles/infographics';
 
 import { useThematicArea } from '$utils/thematics';
+import { thematicAnalysisPath } from '$utils/routes';
+import { useAnalysisParams } from './use-analysis-params';
+import {
+  requestStacDatasetsTimeseries,
+  TimeseriesData,
+  TIMESERIES_DATA_BASE_ID
+} from './timeseries-data';
 
 export default function AnalysisResults() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
+
+  const queryClient = useQueryClient();
+  const [requestStatus, setRequestStatus] = useState<TimeseriesData[]>([]);
+  const { date, datasetsLayers, aoi, errors } = useAnalysisParams();
+
+  useEffect(() => {
+    if (!date.start || !datasetsLayers || !aoi) return;
+
+    setRequestStatus([]);
+    queryClient.cancelQueries([TIMESERIES_DATA_BASE_ID]);
+    const requester = requestStacDatasetsTimeseries({
+      date,
+      aoi,
+      layers: datasetsLayers,
+      queryClient
+    });
+
+    requester.on('data', (data, index) => {
+      setRequestStatus((dataStore) =>
+        Object.assign([], dataStore, {
+          [index]: data
+        })
+      );
+    });
+  }, [queryClient, date, datasetsLayers, aoi]);
+
+  if (errors) {
+    return <Navigate to={thematicAnalysisPath(thematic)} replace />;
+  }
 
   return (
     <PageMainContent>
@@ -104,34 +143,56 @@ export default function AnalysisResults() {
           </FoldHeadActions>
         </FoldHeader>
         <FoldBody>
-          <CardList>
-            <li>
-              <CardSelf>
-                <CardHeader>
-                  <CardHeadline>
-                    <CardTitle>Dataset name</CardTitle>
-                  </CardHeadline>
-                  <CardActions>
-                    <Toolbar size='small'>
-                      <ToolbarIconButton variation='base-text'>
-                        <CollecticonDownload2 title='Download' meaningful />
-                      </ToolbarIconButton>
-                      <VerticalDivider variation='dark' />
-                      <ToolbarIconButton variation='base-text'>
-                        <CollecticonCircleInformation
-                          title='More info'
-                          meaningful
-                        />
-                      </ToolbarIconButton>
-                    </Toolbar>
-                  </CardActions>
-                </CardHeader>
-                <CardBody>
-                  <p>Content goes here.</p>
-                </CardBody>
-              </CardSelf>
-            </li>
-          </CardList>
+          {!!requestStatus.length && (
+            <CardList>
+              {requestStatus.map((l) => (
+                <li key={l.id}>
+                  <CardSelf>
+                    <CardHeader>
+                      <CardHeadline>
+                        <CardTitle>{l.name}</CardTitle>
+                      </CardHeadline>
+                      <CardActions>
+                        <Toolbar size='small'>
+                          <ToolbarIconButton variation='base-text'>
+                            <CollecticonDownload2 title='Download' meaningful />
+                          </ToolbarIconButton>
+                          <VerticalDivider variation='dark' />
+                          <ToolbarIconButton variation='base-text'>
+                            <CollecticonCircleInformation
+                              title='More info'
+                              meaningful
+                            />
+                          </ToolbarIconButton>
+                        </Toolbar>
+                      </CardActions>
+                    </CardHeader>
+                    <CardBody>
+                      {l.status === 'errored' && (
+                        <p>Something went wrong: {l.error.message}</p>
+                      )}
+
+                      {l.status === 'loading' && (
+                        <p>
+                          {l.meta.loaded} of {l.meta.total} loaded. Wait
+                        </p>
+                      )}
+
+                      {l.status === 'succeeded' &&
+                        !!l.data.timeseries.length && (
+                          <p>All good. Can show data now.</p>
+                        )}
+
+                      {l.status === 'succeeded' &&
+                        !l.data.timeseries.length && (
+                          <p>There is no data available</p>
+                        )}
+                    </CardBody>
+                  </CardSelf>
+                </li>
+              ))}
+            </CardList>
+          )}
         </FoldBody>
       </Fold>
     </PageMainContent>
