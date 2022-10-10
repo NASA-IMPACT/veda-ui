@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { RefObject, useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -20,7 +20,9 @@ import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
 
 import { LegendComponent, ReferenceLegendComponent } from './legend';
+
 import { getColors, dateFormatter, convertToTime } from './utils';
+
 import {
   chartMinHeight,
   chartMaxHeight,
@@ -39,7 +41,6 @@ const ChartWrapper = styled.div`
   width: 100%;
   grid-column: 1/-1;
 `;
-
 export interface CommonLineChartProps {
   xKey: string;
   altTitle: string;
@@ -66,7 +67,7 @@ interface RLineChartProps extends CommonLineChartProps {
   chartData: object[];
 }
 
-export default function RLineChart(props: RLineChartProps) {
+function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
   const {
     chartData,
     uniqueKeys,
@@ -103,16 +104,16 @@ export default function RLineChart(props: RLineChartProps) {
     : getColors({ steps: uniqueKeys.length, colorScheme });
 
   const renderHighlight = highlightStart || highlightEnd;
-
   return (
     <ChartWrapper>
       <ResponsiveContainer
         aspect={chartAspectRatio}
         debounce={500}
+        height='auto'
         minHeight={chartMinHeight}
         maxHeight={chartMaxHeight}
       >
-        <LineChartWithFont data={chartData} margin={chartMargin}>
+        <LineChartWithFont ref={ref} data={chartData} margin={chartMargin}>
           <AltTitle title={altTitle} desc={altDesc} />
           <CartesianGrid stroke='#efefef' vertical={false} />
           <XAxis
@@ -195,18 +196,18 @@ export default function RLineChart(props: RLineChartProps) {
               content={<LegendComponent />}
             />
           )}
-          {
-            renderBrush &&
-              renderBrushComponent({
-                chartData,
-                xKey,
-                uniqueKeys,
-                lineColors,
-                dateFormat
-              })
-          }
+          {renderBrush &&
+            renderBrushComponent({
+              chartData,
+              xKey,
+              uniqueKeys,
+              lineColors,
+              dateFormat
+            })}
         </LineChartWithFont>
       </ResponsiveContainer>
     </ChartWrapper>
   );
 }
+
+export default React.forwardRef(RLineChart);

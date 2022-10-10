@@ -14,6 +14,8 @@ export const highlightColor = 'rgba(46, 134, 171, 0.32)';
 export const fileExtensionRegex = /(?:\.([^.]+))?$/;
 export const legendWidth = 700;
 
+export const brushHeight = 40;
+
 export const brushRelatedConfigs = {
   with: {
     xAxisHeight: 50,
