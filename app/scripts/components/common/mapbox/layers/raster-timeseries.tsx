@@ -310,7 +310,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       try {
         const payload = {
           'filter-lang': 'cql2-json',
-          filter: getFilterPayload(date, stacCol)
+          filter: getFilterPayload(date, stacCol),
         };
 
         /* eslint-disable no-console */
@@ -324,6 +324,13 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.log('Source Params', sourceParams);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
+
+        const stacResponseData = await requestQuickCache(
+          `${process.env.API_STAC_ENDPOINT}/search`,
+          payload,
+          controller
+        );
+        const layerBounds = stacResponseData.features[0]?.bbox;
 
         const responseData = await requestQuickCache(
           `${process.env.API_RASTER_ENDPOINT}/mosaic/register`,
@@ -376,6 +383,19 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           'admin-0-boundary-bg'
         );
         changeStatus?.({ status: S_SUCCEEDED, context: 'layer' });
+
+        if (layerBounds) {
+          const [minXLayer, minYLayer, maxXLayer, maxYLayer ] = layerBounds;
+          const [[minXMap, minYMap],[maxXMap, maxYMap]] = mapInstance.getBounds().toArray();
+          const isOutside = maxXLayer < minXMap || minXLayer > maxXMap || maxYLayer < minYMap || minYLayer > maxYMap;
+          const layerExtentSmaller = maxXLayer - minXLayer < maxXMap - minXMap && maxYLayer - minYLayer < maxYMap - minYMap;
+
+          // only fitBounds if layer extent is smaller than viewport extent (ie zoom to area of interest), 
+          // or if layer extent does not overlap at all with viewport extent (ie pan to area of interest)
+          if (layerExtentSmaller || isOutside) {
+            mapInstance.fitBounds(layerBounds);
+          }
+        }
       } catch (error) {
         if (!controller.signal.aborted) {
           changeStatus?.({ status: S_FAILED, context: 'layer' });
