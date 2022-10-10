@@ -2,6 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { listReset, media } from '@devseed-ui/theme-provider';
+
+import {
+  Dropdown,
+  DropMenu,
+  DropMenuItem,
+  DropTitle
+} from '@devseed-ui/dropdown';
+import { Button } from '@devseed-ui/button';
 import {
   Toolbar,
   ToolbarIconButton,
@@ -9,18 +17,33 @@ import {
   VerticalDivider
 } from '@devseed-ui/toolbar';
 import {
+  CollecticonChevronDownSmall,
   CollecticonCircleInformation,
   CollecticonDownload2
 } from '@devseed-ui/collecticons';
 
 import { LayoutProps } from '$components/common/layout-root';
-import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
+import {
+  Fold,
+  FoldHeader,
+  FoldHeadline,
+  FoldHeadActions,
+  FoldTitle
+} from '$components/common/fold';
+
 import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
 import { resourceNotFound } from '$components/uhoh';
 
 import { PageMainContent } from '$styles/page';
 import { VarHeading } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
+import {
+  Legend,
+  LegendTitle,
+  LegendList,
+  LegendSwatch,
+  LegendLabel
+} from '$styles/infographics';
 
 import { useThematicArea } from '$utils/thematics';
 
@@ -83,7 +106,40 @@ export default function AnalysisResults() {
       />
       <Fold>
         <FoldHeader>
-          <FoldTitle>Results</FoldTitle>
+          <FoldHeadline>
+            <FoldTitle>Results</FoldTitle>
+          </FoldHeadline>
+          <FoldHeadActions>
+            <Legend>
+              <LegendTitle>Legend</LegendTitle>
+              <LegendList>
+                <LegendSwatch>Red</LegendSwatch>
+                <LegendLabel>Min</LegendLabel>
+              </LegendList>
+            </Legend>
+
+            <Dropdown
+              alignment='right'
+              triggerElement={(props) => (
+                <Button variation='base-text' {...props}>
+                  View <CollecticonChevronDownSmall />
+                </Button>
+              )}
+            >
+              <DropTitle>View options</DropTitle>
+              <DropMenu>
+                <li>
+                  <DropMenuItem href='#'>Option A</DropMenuItem>
+                </li>
+                <li>
+                  <DropMenuItem href='#'>Option B</DropMenuItem>
+                </li>
+                <li>
+                  <DropMenuItem href='#'>Option C</DropMenuItem>
+                </li>
+              </DropMenu>
+            </Dropdown>
+          </FoldHeadActions>
         </FoldHeader>
         <ResultsList>
           <li>
@@ -100,7 +156,10 @@ export default function AnalysisResults() {
                     </ToolbarIconButton>
                     <VerticalDivider variation='dark' />
                     <ToolbarIconButton variation='base-text'>
-                      <CollecticonCircleInformation title='More info' meaningful />
+                      <CollecticonCircleInformation
+                        title='More info'
+                        meaningful
+                      />
                     </ToolbarIconButton>
                   </Toolbar>
                 </ResultActions>

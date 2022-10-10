@@ -34,6 +34,17 @@ export const FoldHeader = styled.div`
   }
 `;
 
+export const FoldHeadline = styled.div`
+  /* styled-component */
+`;
+
+export const FoldHeadActions = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: ${variableGlsp()};
+`;
+
 export const FoldHGroup = styled.div`
   gap: ${variableGlsp(0.125)};
 `;
