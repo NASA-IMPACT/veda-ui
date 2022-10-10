@@ -68,6 +68,13 @@ export const FoldTitle = styled(VarHeading).attrs({
   }
 `;
 
+export const FoldBody = styled.div`
+  grid-column: 1 / -1;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${variableGlsp()};
+`;
+
 const Content = styled(VarProse)`
   grid-column: 1 / span 4;
 
