@@ -1,7 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
-
-import { listReset, media } from '@devseed-ui/theme-provider';
 
 import {
   Dropdown,
@@ -13,7 +10,6 @@ import { Button } from '@devseed-ui/button';
 import {
   Toolbar,
   ToolbarIconButton,
-  ToolbarLabel,
   VerticalDivider
 } from '@devseed-ui/toolbar';
 import {
@@ -23,6 +19,15 @@ import {
 } from '@devseed-ui/collecticons';
 
 import { LayoutProps } from '$components/common/layout-root';
+import {
+  CardList,
+  CardSelf,
+  CardHeader,
+  CardHeadline,
+  CardTitle,
+  CardActions,
+  CardBody
+} from '$components/common/card';
 import {
   Fold,
   FoldHeader,
@@ -35,8 +40,6 @@ import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
 import { resourceNotFound } from '$components/uhoh';
 
 import { PageMainContent } from '$styles/page';
-import { VarHeading } from '$styles/variable-components';
-import { variableGlsp } from '$styles/variable-utils';
 import {
   Legend,
   LegendTitle,
@@ -46,48 +49,6 @@ import {
 } from '$styles/infographics';
 
 import { useThematicArea } from '$utils/thematics';
-
-export const ResultsList = styled.ol`
-  ${listReset()};
-  display: grid;
-  gap: ${variableGlsp()};
-  grid-template-columns: repeat(2, 1fr);
-
-  ${media.mediumUp`
-    grid-template-columns: repeat(3, 1fr);
-  `}
-
-  ${media.xlargeUp`
-    grid-template-columns: repeat(4, 1fr);
-  `}
-`;
-
-const Result = styled.article`
-  /* styled-component */
-`;
-
-const ResultHeader = styled.header`
-  /* styled-component */
-`;
-
-const ResultHeadline = styled.div`
-  /* styled-component */
-`;
-
-export const ResultTitle = styled(VarHeading).attrs({
-  as: 'h3',
-  size: 'large'
-})`
-  /* styled-component */
-`;
-
-const ResultActions = styled.div`
-  /* styled-component */
-`;
-
-const ResultBody = styled.div`
-  /* styled-component */
-`;
 
 export default function AnalysisResults() {
   const thematic = useThematicArea();
@@ -141,17 +102,17 @@ export default function AnalysisResults() {
             </Dropdown>
           </FoldHeadActions>
         </FoldHeader>
-        <ResultsList>
+
+        <CardList>
           <li>
-            <Result>
-              <ResultHeader>
-                <ResultHeadline>
-                  <ResultTitle>Dataset name</ResultTitle>
-                </ResultHeadline>
-                <ResultActions>
+            <CardSelf>
+              <CardHeader>
+                <CardHeadline>
+                  <CardTitle>Dataset name</CardTitle>
+                </CardHeadline>
+                <CardActions>
                   <Toolbar size='small'>
-                    <ToolbarLabel>Actions</ToolbarLabel>
-                    <ToolbarIconButton variation='base-text' disabled>
+                    <ToolbarIconButton variation='base-text'>
                       <CollecticonDownload2 title='Download' meaningful />
                     </ToolbarIconButton>
                     <VerticalDivider variation='dark' />
@@ -162,14 +123,14 @@ export default function AnalysisResults() {
                       />
                     </ToolbarIconButton>
                   </Toolbar>
-                </ResultActions>
-              </ResultHeader>
-              <ResultBody>
+                </CardActions>
+              </CardHeader>
+              <CardBody>
                 <p>Content goes here.</p>
-              </ResultBody>
-            </Result>
+              </CardBody>
+            </CardSelf>
           </li>
-        </ResultsList>
+        </CardList>
       </Fold>
     </PageMainContent>
   );
