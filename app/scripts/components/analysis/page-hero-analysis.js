@@ -15,6 +15,7 @@ import {
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
 
+import MapboxMap from '$components/common/mapbox';
 import { PageLead, PageMainTitle } from '$styles/page';
 import Constrainer from '$styles/constrainer';
 import { variableGlsp } from '$styles/variable-utils';
@@ -39,6 +40,33 @@ const PageHeroInner = styled(Constrainer)`
   padding-top: ${variableGlsp(4)};
   padding-bottom: ${variableGlsp(2)};
   align-items: end;
+`;
+
+const PageHeroMedia = styled(MapboxMap)`
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  > * {
+    mix-blend-mode: screen;
+    filter: grayscale(100%);
+
+    /* Improve performance */
+    transform: translate3d(0, 0, 0);
+  }
+
+  &::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      to top,
+      ${themeVal('color.primary-500')} 0%,
+      ${themeVal('color.primary-500')}00 100%
+    );
+    content: '';
+  }
 `;
 
 export const PageHeroHGroup = styled.div`
@@ -81,7 +109,7 @@ const PageHeroBlockBeta = styled.div`
   `}
 `;
 
-export const PageHeroActions = styled.div`
+const PageHeroActions = styled.div`
   display: flex;
   flex-flow: row nowrap;
   justify-content: end;
@@ -112,6 +140,7 @@ function PageHeroAnalysis(props) {
           </PageHeroActions>
         </Try>
       </PageHeroInner>
+      <PageHeroMedia mapOptions={{ interactive: false }} />
     </PageHeroSelf>
   );
 }
