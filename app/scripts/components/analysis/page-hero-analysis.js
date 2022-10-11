@@ -60,12 +60,9 @@ const PageHeroMedia = styled(MapboxMap)`
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: linear-gradient(
-      to top,
-      ${themeVal('color.primary-500')} 0%,
-      ${themeVal('color.primary-500')}00 100%
-    );
+    background: ${themeVal('color.primary-500')};
     content: '';
+    mix-blend-mode: multiply;
   }
 `;
 
