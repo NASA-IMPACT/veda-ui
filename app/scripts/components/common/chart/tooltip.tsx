@@ -49,12 +49,13 @@ export default function TooltipComponent(props: TooltipComponentProps) {
           <strong>{timeFormatter(label, dateFormat)}</strong>
         </div>
         {uniqueKeys
+          .map((e,idx) => ({label: e.label, color: colors[idx]}))
           .filter((key) =>!inactiveKeys.includes(key.label))
-          .map((key, idx) => {
+          .map((key) => {
             const point = payload[0].payload[key.label];
             return (
               <div key={`${key}`}>
-                <TooltipItem color={colors[idx]} />
+                <TooltipItem color={key.color} />
                 <strong>{key.label}</strong> :{point}
               </div>
             );
