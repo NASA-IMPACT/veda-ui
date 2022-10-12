@@ -78,7 +78,8 @@ export function getFData({
   yKey,
   dateFormat
 }: {
-  data: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any[]; // This type should get specified once the chart is put together
   idKey: string;
   xKey: string;
   yKey: string;
@@ -146,7 +147,7 @@ export const getColors = function ({
 };
 
 export function getNumForChart(x: number) {
-  if (x / 1e3 < 1) return round(x);
+  if (x / 1e3 < 1) return round(x).toString();
   const { num, unit } = shortenLargeNumber(x);
   return `${num}${unit}`; 
 }
