@@ -193,7 +193,6 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
             );
           })}
           <Tooltip
-            labelFormatter={() => undefined}
             content={
               <TooltipComponent
                 dateFormat={dateFormat}

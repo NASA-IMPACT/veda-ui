@@ -153,22 +153,20 @@ function findMatching({
   date2: Date;
   formatter: (d: Date) => string;
 }) {
-  const formatted1 = formatter(date1);
-  const formatted2 = formatter(date2);
-  if (formatted1 === formatted2) return true;
-  return false;
+  return formatter(date1) === formatter(date2);
 }
 
 /**
  * method to sync charts on the analysis page
- * active chart is the chart that user is interacting with
- * This method will iterate through with inactive chart's dateformat first
- * ex. When inactive chart's dateformat is %Y/%m 2022/03,
- * and active chart's dateformat is %Y 2022
- * active chart's date will get formatted as 2022/01 -> returns unmatch
- * then this will be iterated through with active chart's dateformat
- * so inactive chart's dateformat will be 2022 -> returns match
- *
+ * matches two dates in different formats by consolidating formats
+ * (active chart is the chart that user is interacting with, inactive charts are the rest of the page)
+ * ex. When active chart's format is less granular:
+ * When active chart's dateformat is %Y 2022, inactive charts format is %Y/%m 2022/03
+ * inactive chart's value gets formatted as active chart's dateformat (2022) - returns true
+ * ex. When active chart's format is more granular:
+ * When active chart's dateformat is %Y/%m 2022/03, inactive charts format is %Y 2022
+ * inactive chart's value gets formatted as active format first 2022/01, 
+ * since there is no matching, the method will try again to consolidate dateformat with inactive chart's format
  * @param {object} data data of active chart. coming from rechart
  * @param {object[]} chartData data for inactive chart
  * @param {string} xKey xKey for inactive chart
@@ -181,6 +179,7 @@ export function syncMethodFunction({
   xKey,
   dateFormat
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any; // Recharts define data payload as any
   chartData: object[];
   xKey: string;
