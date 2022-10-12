@@ -22,7 +22,7 @@ import AltTitle from './alt-title';
 import { LegendComponent, ReferenceLegendComponent } from './legend';
 import {
   getColors,
-  dateFormatter,
+  timeFormatter,
   convertToTime,
   syncMethodFunction
 } from './utils';
@@ -126,7 +126,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
           data={chartData}
           margin={chartMargin}
           syncId={syncId}
-          syncMethod={(index: number, data: any) => {
+          syncMethod={(tick, data) => {
             return syncMethodFunction({ data, chartData, xKey, dateFormat });
           }}
         >
@@ -138,7 +138,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
             domain={['dataMin', 'dataMax']}
             dataKey={xKey}
             axisLine={false}
-            tickFormatter={(t) => dateFormatter(t, dateFormat)}
+            tickFormatter={(t) => timeFormatter(t, dateFormat)}
             height={
               renderBrush
                 ? brushRelatedConfigs.with.xAxisHeight
@@ -190,7 +190,6 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
                 dataKey={k.label}
                 strokeWidth={2}
                 stroke={k.active ? lineColors[idx] : 'transparent'}
-                formatter={(value) => dateFormatter(value, dateFormat)}
               />
             );
           })}

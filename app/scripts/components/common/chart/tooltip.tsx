@@ -4,7 +4,7 @@ import { TooltipProps } from 'recharts/types';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { UniqueKeyUnit } from './';
-import { dateFormatter } from './utils';
+import { timeFormatter } from './utils';
 
 interface TooltipComponentProps extends TooltipProps<number, string> {
   colors: string[];
@@ -38,23 +38,24 @@ const TooltipItem = styled(ListItem)`
 `;
 
 export default function TooltipComponent(props: TooltipComponentProps) {
-  const { colors, dateFormat, xKey, uniqueKeys, active, payload, label } =
+  const { colors, dateFormat, uniqueKeys, active, payload, label } =
     props;
+  
   const inactiveKeys = uniqueKeys.filter((e) => !e.active).map((e) => e.label);
   if (active && payload && payload.length) {
     return (
       <TooltipWrapper>
         <div>
-          <strong>{dateFormatter(label, dateFormat)}</strong>
+          <strong>{timeFormatter(label, dateFormat)}</strong>
         </div>
-        {Object.keys(payload[0].payload)
-          .filter((key) => key !== xKey && !inactiveKeys.includes(key))
+        {uniqueKeys
+          .filter((key) =>!inactiveKeys.includes(key.label))
           .map((key, idx) => {
-            const point = payload[0].payload[key];
+            const point = payload[0].payload[key.label];
             return (
               <div key={`${key}`}>
                 <TooltipItem color={colors[idx]} />
-                <strong>{key}</strong> :{point}
+                <strong>{key.label}</strong> :{point}
               </div>
             );
           })}

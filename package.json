@@ -136,7 +136,7 @@
     "react-router": "^6.0.0",
     "react-router-dom": "^6.0.0",
     "react-transition-group": "^4.4.2",
-    "recharts": "^2.1.13",
+    "recharts": "2.1.12",
     "scrollama": "^3.1.0",
     "styled-components": "^5.3.3",
     "use-deep-compare": "^1.1.0"

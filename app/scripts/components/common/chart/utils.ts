@@ -2,6 +2,10 @@ import { timeFormat, timeParse } from 'd3';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { UniqueKeyUnit } from '.';
 
+export const timeFormatter = (time: number, dateFormat: string) => {
+  return dateFormatter(new Date(new Date(time)), dateFormat);
+};
+
 export const dateFormatter = (date: Date, dateFormat: string) => {
   const format = timeFormat(dateFormat);
   return format(date);
@@ -47,6 +51,7 @@ export function formatTimeSeriesData({
       const currentStat = e;
       return {
         [xKey]: convertToTime({ timeString: dates[idx], dateFormat }),
+        dateFormat,
         ...uniqueKeys.reduce((acc, curr) => {
           return { ...acc, [curr.label]: currentStat[curr.value] };
         }, {})
@@ -184,8 +189,9 @@ export function syncMethodFunction({
   xKey: string;
   dateFormat: string;
 }) {
+
   const { activeLabel, activePayload } = data;
-  const formatterFromData = activePayload[0].formatter;
+  const dateFormatFromData = activePayload[0].payload.dateFormat;
 
   let matchingIndex: number | null = null;
 
@@ -210,7 +216,7 @@ export function syncMethodFunction({
         findMatching({
           date1: e[xKey],
           date2: activeLabel,
-          formatter: formatterFromData
+          formatter: (value) => dateFormatter(value, dateFormatFromData)
         })
       ) {
         matchingIndex = i;
