@@ -10,6 +10,7 @@ import PageFooter from './page-footer';
 
 import { useThematicArea } from '$utils/thematics';
 import { useGoogleAnalytics } from '$utils/use-google-analytics';
+import { useSlidingStickyHeader } from '$utils/use-sliding-sticky-header';
 import NavWrapper from '$components/common/nav-wrapper';
 
 const appTitle = process.env.APP_TITLE;
@@ -72,9 +73,17 @@ export const LayoutRootContext = createContext({});
 export function LayoutRootContextProvider({ children }) {
   const [layoutProps, setLayoutProps] = useState({});
 
+  // Put the header size and visibility status in the context so that children
+  // elements can access them for positioning purposes.
+  const { isHeaderHidden, headerHeight, wrapperHeight } =
+    useSlidingStickyHeader();
+
   const ctx = {
     ...layoutProps,
-    setLayoutProps
+    setLayoutProps,
+    isHeaderHidden,
+    headerHeight,
+    wrapperHeight
   };
 
   return (
@@ -96,4 +105,18 @@ export function LayoutProps(props) {
   }, [setLayoutProps, props]);
 
   return null;
+}
+
+/**
+ * Hook to access the values needed to position the sticky headers.
+ */
+export function useSlidingStickyHeaderProps() {
+  const { isHeaderHidden, headerHeight, wrapperHeight } =
+    useContext(LayoutRootContext);
+
+  return {
+    isHeaderHidden,
+    headerHeight,
+    wrapperHeight
+  };
 }
