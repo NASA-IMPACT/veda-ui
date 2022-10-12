@@ -120,7 +120,7 @@ export function getFData({
 
   return {
     uniqueKeys,
-    fData: Object.values(fData)
+    fData: Object.values(fData) as object[]
   };
 }
 

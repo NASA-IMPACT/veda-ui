@@ -26,6 +26,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { useThematicArea } from '$utils/thematics';
 import {
   thematicAboutPath,
+  thematicAnalysisPath,
   thematicDatasetsPath,
   thematicDiscoveriesPath,
   thematicRootPath
@@ -501,6 +502,14 @@ function PageHeader() {
                         onClick={closeNavOnClick}
                       >
                         Datasets
+                      </GlobalMenuLink>
+                    </li>
+                    <li>
+                      <GlobalMenuLink
+                        to={thematicAnalysisPath(thematic)}
+                        onClick={closeNavOnClick}
+                      >
+                        Analysis
                       </GlobalMenuLink>
                     </li>
                     <li>

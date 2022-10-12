@@ -3,7 +3,7 @@ import { csv, json } from 'd3';
 
 import { getFData } from './utils';
 import { fileExtensionRegex } from './constant';
-import Chart, { CommonLineChartProps } from './';
+import Chart, { CommonLineChartProps, UniqueKeyUnit } from './';
 
 interface BlockChartProp extends CommonLineChartProps {
   dataPath: string;
@@ -15,15 +15,16 @@ export default function BlockChart(props: BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
 
   const [chartData, setChartData] = useState<object[]>([]);
-  const [uniqueKeys, setUniqueKeys] = useState<UniqueKeyUnits[]>([]);
+  const [uniqueKeys, setUniqueKeys] = useState<UniqueKeyUnit[]>([]);
 
   const newDataPath = dataPath.split('?')[0];
   const extension = fileExtensionRegex.exec(newDataPath)[1];
 
   useEffect(() => {
     const getData = async () => {
-      const data =
-        extension === 'csv' ? await csv(dataPath) : await json(dataPath);
+      const data = (
+        extension === 'csv' ? await csv(dataPath) : await json(dataPath)
+      ) as any[];
 
       const { fData, uniqueKeys } = getFData({
         data,
@@ -57,10 +58,10 @@ export default function BlockChart(props: BlockChartProp) {
 
   return (
     <Chart
+      {...props}
       chartData={chartData}
       uniqueKeys={uniqueKeys}
       renderLegend={true}
-      {...props}
     />
   );
 }

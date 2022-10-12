@@ -198,19 +198,19 @@ declare module 'delta/thematics' {
    * Named exports: datasets.
    * Object with all the delta datasets keyed by the dataset id.
    */
-  export const datasets: DeltaDatum<DatasetData>;
+  export const datasets: DeltaData<DatasetData>;
 
   /**
    * Named exports: discoveries.
    * Object with all the delta discoveries keyed by the discovery id.
    */
-  export const discoveries: DeltaDatum<DiscoveryData>;
+  export const discoveries: DeltaData<DiscoveryData>;
 
   /**
    * Named exports: thematics.
    * Object with all the delta thematics keyed by the thematic id.
    */
-  export const thematics: DeltaDatum<ThematicData>;
+  export const thematics: DeltaData<ThematicData>;
 
   interface DeltaThematicListItem extends ThematicData {
     /**
