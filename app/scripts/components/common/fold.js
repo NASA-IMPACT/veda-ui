@@ -34,6 +34,17 @@ export const FoldHeader = styled.div`
   }
 `;
 
+export const FoldHeadline = styled.div`
+  /* styled-component */
+`;
+
+export const FoldHeadActions = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: ${variableGlsp()};
+`;
+
 export const FoldHGroup = styled.div`
   gap: ${variableGlsp(0.125)};
 `;
@@ -55,6 +66,13 @@ export const FoldTitle = styled(VarHeading).attrs({
     border-radius: ${themeVal('shape.rounded')};
     background: ${themeVal('color.primary')};
   }
+`;
+
+export const FoldBody = styled.div`
+  grid-column: 1 / -1;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${variableGlsp()};
 `;
 
 const Content = styled(VarProse)`
