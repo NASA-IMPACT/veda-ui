@@ -41,12 +41,6 @@ import { HEADER_ID } from '$utils/use-sliding-sticky-header';
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
 
-// To avoid linting errors.
-const cssNoHighlight = css;
-const scrollDownMargin = cssNoHighlight`calc(-2.5rem - (${variableGlsp(
-  0.75
-)} * 2))`;
-
 const PageHeaderSelf = styled.header`
   display: flex;
   flex-flow: row nowrap;

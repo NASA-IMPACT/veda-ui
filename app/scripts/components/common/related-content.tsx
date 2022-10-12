@@ -7,7 +7,8 @@ import {
   datasets,
   Media,
   ThematicData,
-  RelatedContentData
+  RelatedContentData,
+  DiscoveryData
 } from 'delta/thematics';
 import { utcString2userTzDate } from '$utils/date';
 import {
@@ -100,17 +101,19 @@ function formatContents(relatedData: Array<RelatedContentData>) {
 
     const matchingContent = contentCategory[type]?.[id].data;
 
-    if (!matchingContent)
+    if (!matchingContent) {
       throw Error(
         'Something went wrong. Check the related content frontmatter.'
       );
+    }
 
-    const { name, description, pubDate, media } = matchingContent;
+
+    const { name, description, media } = matchingContent;
     return formatBlock({
       id,
       name,
       description,
-      date: pubDate,
+      date: (matchingContent as DiscoveryData).pubDate,
       thematic: contentCategory[thematicString][thematicId],
       media,
       parent: type
