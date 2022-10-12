@@ -1,6 +1,7 @@
 import { timeFormat, timeParse } from 'd3';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { UniqueKeyUnit } from '.';
+import { round, shortenLargeNumber } from '$utils/format';
 
 export const dateFormatter = (date: Date, dateFormat: string) => {
   const format = timeFormat(dateFormat);
@@ -144,16 +145,8 @@ export const getColors = function ({
   return new Array(steps).fill(0).map((e, idx) => colorFn(idx / steps));
 };
 
-function preciseNum(x:number, f = 3) {
-  return (Math.abs(x) < 100000) ? x: Number(x).toPrecision(f);
-}
-// TO DO: adjust default parameter 
-function fixNum(x:number, f = 3) {
-  if (Number.isInteger(x)) return x;
-  else return x.toFixed(f);
-}
-
 export function getNumForChart(x: number) {
-  if (Math.abs(x) < 100000) return fixNum(x);
-  else return preciseNum(x);
+  if (x / 1e3 < 1) return round(x);
+  const { num, unit } = shortenLargeNumber(x);
+  return `${num}${unit}`; 
 }
