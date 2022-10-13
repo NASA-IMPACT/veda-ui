@@ -25,6 +25,7 @@ export function useSlidingStickyHeader() {
     let reqId;
     let lastTs = 0;
     let prevY = window.pageYOffset;
+    let scrollUpDelta = 0;
 
     function tick(ts) {
       if (!lastTs || ts - lastTs >= 10) {
@@ -54,14 +55,21 @@ export function useSlidingStickyHeader() {
           wrapperEl.style.transition = 'none';
           // Visible if within its height.
           setHidden(false);
+          scrollUpDelta = 0;
         } else if (currY < prevY) {
-          wrapperEl.style.transition = '';
           // Scrolling up.
-          setHidden(false);
+          scrollUpDelta += prevY - currY;
+          // When scrolling up we want some travel before showing the header
+          // again.
+          if (scrollUpDelta > 64) {
+            wrapperEl.style.transition = '';
+            setHidden(false);
+          }
         } else if (currY > prevY) {
           wrapperEl.style.transition = '';
           // Scrolling down.
           setHidden(true);
+          scrollUpDelta = 0;
         }
 
         prevY = currY;
