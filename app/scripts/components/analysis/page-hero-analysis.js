@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import T from 'prop-types';
 import styled, { css } from 'styled-components';
 import {
@@ -46,9 +46,14 @@ const PageHeroSelf = styled.div`
 `;
 
 const PageHeroInner = styled(Constrainer)`
-  padding-top: ${variableGlsp(4)};
-  padding-bottom: ${variableGlsp(2)};
+  transition: padding 0.32s ease-out;
   align-items: end;
+
+  ${({ isStuck }) =>
+    css`
+      padding-top: ${variableGlsp(isStuck ? 1 : 4)};
+      padding-bottom: ${variableGlsp(isStuck ? 1 : 2)};
+    `}
 `;
 
 const PageHeroMedia = styled(MapboxMap)`
@@ -136,26 +141,39 @@ function PageHeroAnalysis(props) {
   // happens the header height must be removed from the equation.
   const minTop = wrapperHeight - headerHeight;
 
+  const isStuck = useIsStuck(headerHeight);
+
   return (
     <PageHeroSelf
       isHidden={isHidden}
       shouldSlideHeader={isHeaderHidden}
       minTop={minTop}
       maxTop={maxTop}
+      isStuck={isStuck}
     >
-      <PageHeroInner>
+      <PageHeroInner isStuck={isStuck}>
         <Try fn={renderAlphaBlock} wrapWith={PageHeroBlockAlpha}>
           <PageHeroHGroup>
-            <PageMainTitle>{title}</PageMainTitle>
+            <PageMainTitle size={isStuck ? 'medium' : undefined}>
+              {title}
+            </PageMainTitle>
           </PageHeroHGroup>
           {description && <PageLead>{description}</PageLead>}
         </Try>
         <Try fn={renderBetaBlock} wrapWith={PageHeroBlockBeta}>
           <PageHeroActions>
-            <Button type='button' size='large' variation='achromic-outline'>
+            <Button
+              type='button'
+              size={isStuck ? 'small' : 'large'}
+              variation='achromic-outline'
+            >
               <CollecticonXmarkSmall /> Cancel
             </Button>
-            <Button type='button' size='large' variation='achromic-outline'>
+            <Button
+              type='button'
+              size={isStuck ? 'small' : 'large'}
+              variation='achromic-outline'
+            >
               <CollecticonTickSmall /> Save
             </Button>
           </PageHeroActions>
@@ -175,3 +193,51 @@ PageHeroAnalysis.propTypes = {
   renderBetaBlock: T.func,
   isHidden: T.bool
 };
+
+function useIsStuck(threshold) {
+  const [isStuck, setStuck] = useState(window.scrollY > threshold);
+
+  useEffect(() => {
+    // Check for the observer pixel.
+    // https://mediatemple.net/blog/web-development-tech/using-intersectionobserver-to-check-if-page-scrolled-past-certain-point-2/
+    const pixel = document.createElement('div');
+    pixel.id = 'page-hero-pixel';
+
+    const style = {
+      position: 'absolute',
+      width: '1px',
+      height: '1px',
+      left: 0,
+      pointerEvents: 'none'
+    };
+
+    for (const [key, value] of Object.entries(style)) {
+      pixel.style[key] = value;
+    }
+
+    document.body.appendChild(pixel);
+
+    const observer = new IntersectionObserver(
+      ([e]) => {
+        setStuck(e.intersectionRatio < 1);
+      },
+      { threshold: 1 }
+    );
+
+    observer.observe(pixel);
+
+    return () => {
+      observer.unobserve(pixel);
+      pixel.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = document.querySelector('#page-hero-pixel');
+    if (el) {
+      el.style.top = `${threshold}px`;
+    }
+  }, [threshold]);
+
+  return isStuck;
+}
