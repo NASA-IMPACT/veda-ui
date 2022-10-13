@@ -14,10 +14,10 @@ export const convertToTime = ({
   timeString: string | undefined;
   dateFormat: string;
 }) => {
-  if (!timeString) return null;
+  if (!timeString) return undefined;
 
   const parseDate = timeParse(dateFormat);
-  return parseDate(timeString).getTime();
+  return parseDate(timeString)?.getTime();
 };
 
 /**
@@ -121,7 +121,7 @@ export function getFData({
 
   return {
     uniqueKeys,
-    fData: Object.values(fData)
+    fData: Object.values(fData) as object[]
   };
 }
 

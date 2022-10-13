@@ -1,4 +1,4 @@
-import React, { RefObject, useState, useEffect, createRef } from 'react';
+import React, { RefObject, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -41,6 +41,7 @@ const ChartWrapper = styled.div`
   width: 100%;
   grid-column: 1/-1;
 `;
+
 export interface CommonLineChartProps {
   xKey: string;
   altTitle: string;
@@ -63,6 +64,7 @@ export interface UniqueKeyUnit {
   value: string;
   active: boolean;
 }
+
 interface RLineChartProps extends CommonLineChartProps {
   chartData: object[];
 }
