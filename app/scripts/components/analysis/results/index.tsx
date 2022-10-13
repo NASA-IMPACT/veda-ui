@@ -118,24 +118,39 @@ export default function AnalysisResults() {
               <LegendList>
                 <LegendSwatch>
                   <svg height='8' width='8'>
-                    <title>{theme.color.primary}</title>
-                    <circle cx='4' cy='4' r='4' fill={theme.color.primary} />
+                    <title>{theme.color.infographicA}</title>
+                    <circle
+                      cx='4'
+                      cy='4'
+                      r='4'
+                      fill={theme.color.infographicA}
+                    />
                   </svg>
                 </LegendSwatch>
                 <LegendLabel>Min</LegendLabel>
 
                 <LegendSwatch>
                   <svg height='8' width='8'>
-                    <title>{theme.color.primary}</title>
-                    <circle cx='4' cy='4' r='4' fill={theme.color.primary} />
+                    <title>{theme.color.infographicB}</title>
+                    <circle
+                      cx='4'
+                      cy='4'
+                      r='4'
+                      fill={theme.color.infographicB}
+                    />
                   </svg>
                 </LegendSwatch>
                 <LegendLabel>Average</LegendLabel>
 
                 <LegendSwatch>
                   <svg height='8' width='8'>
-                    <title>{theme.color.primary}</title>
-                    <circle cx='4' cy='4' r='4' fill={theme.color.primary} />
+                    <title>{theme.color.infographicD}</title>
+                    <circle
+                      cx='4'
+                      cy='4'
+                      r='4'
+                      fill={theme.color.infographicD}
+                    />
                   </svg>
                 </LegendSwatch>
                 <LegendLabel>Max</LegendLabel>

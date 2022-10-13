@@ -6,7 +6,11 @@ export default function themeOverrides() {
   return createUITheme({
     color: {
       base: '#2c3e50',
-      primary: '#2276ac'
+      primary: '#2276ac',
+      infographicA: '#fcab10',
+      infographicB: '#f4442e',
+      infographicC: '#b62b6e',
+      infographicD: '#2ca58d'
     },
     type: {
       base: {
