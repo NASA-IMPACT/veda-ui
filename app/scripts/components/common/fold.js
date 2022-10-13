@@ -42,7 +42,7 @@ export const FoldHeadActions = styled.div`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  gap: ${variableGlsp()};
+  gap: ${variableGlsp(0.5)};
 `;
 
 export const FoldHGroup = styled.div`

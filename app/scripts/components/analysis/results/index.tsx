@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
+import { useTheme } from 'styled-components';
 
 import {
   Dropdown,
@@ -64,6 +65,8 @@ export default function AnalysisResults() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
 
+  const theme = useTheme();
+
   const queryClient = useQueryClient();
   const [requestStatus, setRequestStatus] = useState<TimeseriesData[]>([]);
   const { date, datasetsLayers, aoi, errors } = useAnalysisParams();
@@ -113,8 +116,29 @@ export default function AnalysisResults() {
             <Legend>
               <LegendTitle>Legend</LegendTitle>
               <LegendList>
-                <LegendSwatch>Red</LegendSwatch>
+                <LegendSwatch>
+                  <svg height='8' width='8'>
+                    <title>{theme.color.primary}</title>
+                    <circle cx='4' cy='4' r='4' fill={theme.color.primary} />
+                  </svg>
+                </LegendSwatch>
                 <LegendLabel>Min</LegendLabel>
+
+                <LegendSwatch>
+                  <svg height='8' width='8'>
+                    <title>{theme.color.primary}</title>
+                    <circle cx='4' cy='4' r='4' fill={theme.color.primary} />
+                  </svg>
+                </LegendSwatch>
+                <LegendLabel>Average</LegendLabel>
+
+                <LegendSwatch>
+                  <svg height='8' width='8'>
+                    <title>{theme.color.primary}</title>
+                    <circle cx='4' cy='4' r='4' fill={theme.color.primary} />
+                  </svg>
+                </LegendSwatch>
+                <LegendLabel>Max</LegendLabel>
               </LegendList>
             </Legend>
 
