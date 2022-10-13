@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTheme } from 'styled-components';
-import axios from 'axios';
 import qs from 'qs';
-import mapboxgl from 'mapbox-gl';
-import { endOfDay, startOfDay } from 'date-fns';
+import mapboxgl, { LngLatBoundsLike } from 'mapbox-gl';
 
-import { userTzDate2utcString } from '$utils/date';
 import {
   ActionStatus,
   S_FAILED,
@@ -13,61 +10,17 @@ import {
   S_LOADING,
   S_SUCCEEDED
 } from '$utils/status';
+import {
+  checkFitBoundsFromLayer,
+  getFilterPayload,
+  getMergedBBox,
+  requestQuickCache
+} from './utils';
 
 // Whether or not to print the request logs.
 const LOG = true;
 
-/**
- * Creates the appropriate filter object to send to STAC.
- *
- * @param {Date} date Date to request
- * @param {string} collection STAC collection to request
- * @returns Object
- */
-function getFilterPayload(date: Date, collection: string) {
-  return {
-    op: 'and',
-    args: [
-      {
-        op: '>=',
-        args: [{ property: 'datetime' }, userTzDate2utcString(startOfDay(date))]
-      },
-      {
-        op: '<=',
-        args: [{ property: 'datetime' }, userTzDate2utcString(endOfDay(date))]
-      },
-      {
-        op: 'eq',
-        args: [{ property: 'collection' }, collection]
-      }
-    ]
-  };
-}
-
-// There are cases when the data can't be displayed properly on low zoom levels.
-// In these cases instead of displaying the raster tiles, we display markers to
-// indicate whether or not there is data in a given location. When the user
-// crosses the marker threshold, if below the min zoom we have to request the
-// marker position, and if above we have to register a mosaic query. Since this
-// switching can happen several times, we cache the api response using the
-// request params as key.
-const quickCache = new Map<string, any>();
-async function requestQuickCache(
-  url: string,
-  payload,
-  controller: AbortController
-) {
-  const key = `${url}${JSON.stringify(payload)}`;
-
-  // No cache found, make request.
-  if (!quickCache.has(key)) {
-    const response = await axios.post(url, payload, {
-      signal: controller.signal
-    });
-    quickCache.set(key, response.data);
-  }
-  return quickCache.get(key);
-}
+const FIT_BOUNDS_PADDING = 32;
 
 export interface MapLayerRasterTimeseriesProps {
   id: string;
@@ -79,6 +32,10 @@ export interface MapLayerRasterTimeseriesProps {
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
 }
+
+export type StacFeature = {
+  bbox: [number, number, number, number];
+};
 
 type Statuses = {
   global: ActionStatus;
@@ -114,9 +71,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   const statuses = useRef<Statuses>({
     global: S_IDLE,
     layer: S_IDLE,
-    // If there's no marker layer (i.e. there's no min zoom extent), set it to
-    // succeeded to be ignored.
-    'zoom-markers': !minZoom ? S_SUCCEEDED : S_IDLE
+    'zoom-markers': S_IDLE
   });
 
   const changeStatus = useCallback(
@@ -178,17 +133,17 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   }, [minZoom, mapInstance]);
 
   //
-  // Markers
+  // Load stac collection features
   //
+  const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
   useEffect(() => {
-    if (!id || !stacCol || !date || !minZoom) return;
+    if (!id || !stacCol || !date) return;
 
     const controller = new AbortController();
 
     const load = async () => {
       try {
         changeStatus?.({ status: S_LOADING, context: 'zoom-markers' });
-
         const payload = {
           'filter-lang': 'cql2-json',
           filter: getFilterPayload(date, stacCol),
@@ -216,18 +171,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           controller
         );
 
-        // Create points from bboxes
-        const points = responseData.features.map((f) => {
-          const [w, s, e, n] = f.bbox;
-          return {
-            bounds: [
-              [w, s],
-              [e, n]
-            ],
-            center: [(w + e) / 2, (s + n) / 2]
-          };
-        });
-
         /* eslint-disable no-console */
         LOG &&
           console.groupCollapsed(
@@ -236,26 +179,10 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             id
           );
         LOG && console.log('STAC response', responseData);
-        LOG && console.log('Points', points);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        addedMarkers.current = points.map((p) => {
-          const marker = new mapboxgl.Marker({
-            color: primaryColor
-          })
-            .setLngLat(p.center)
-            .addTo(mapInstance);
-
-          const el = marker.getElement();
-          el.addEventListener('click', () =>
-            mapInstance.fitBounds(p.bounds, { padding: 32 })
-          );
-          el.style.display = !isHidden && showMarkers ? '' : 'none';
-
-          return marker;
-        });
-
+        setStacCollection(responseData.features);
         changeStatus?.({ status: S_SUCCEEDED, context: 'zoom-markers' });
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -271,13 +198,48 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         return;
       }
     };
-
     load();
-
     return () => {
       controller && controller.abort();
       changeStatus?.({ status: 'idle', context: 'zoom-markers' });
+    };
+  }, [id, changeStatus, stacCol, date]);
 
+  //
+  // Markers
+  //
+  useEffect(() => {
+    if (!id || !stacCol || !date || !minZoom || !stacCollection) return;
+
+    // Create points from bboxes
+    const points = stacCollection.map((f) => {
+      const [w, s, e, n] = f.bbox;
+      return {
+        bounds: [
+          [w, s],
+          [e, n]
+        ] as LngLatBoundsLike,
+        center: [(w + e) / 2, (s + n) / 2] as [number, number]
+      };
+    });
+
+    addedMarkers.current = points.map((p) => {
+      const marker = new mapboxgl.Marker({
+        color: primaryColor
+      })
+        .setLngLat(p.center)
+        .addTo(mapInstance);
+
+      const el = marker.getElement();
+      el.addEventListener('click', () =>
+        mapInstance.fitBounds(p.bounds, { padding: FIT_BOUNDS_PADDING })
+      );
+      el.style.display = !isHidden && showMarkers ? '' : 'none';
+
+      return marker;
+    });
+
+    return () => {
       if (mapInstance) {
         addedMarkers.current.forEach((marker) => marker.remove());
         addedMarkers.current = [];
@@ -290,6 +252,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     id,
     changeStatus,
     stacCol,
+    stacCollection,
     date,
     minZoom,
     mapInstance,
@@ -301,7 +264,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // Tiles
   //
   useEffect(() => {
-    if (!id || !stacCol || !date) return;
+    if (!id || !stacCol || !date || !stacCollection) return;
 
     const controller = new AbortController();
 
@@ -310,7 +273,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       try {
         const payload = {
           'filter-lang': 'cql2-json',
-          filter: getFilterPayload(date, stacCol),
+          filter: getFilterPayload(date, stacCol)
         };
 
         /* eslint-disable no-console */
@@ -325,13 +288,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const stacResponseData = await requestQuickCache(
-          `${process.env.API_STAC_ENDPOINT}/search`,
-          payload,
-          controller
-        );
-        const layerBounds = stacResponseData.features[0]?.bbox;
-
         const responseData = await requestQuickCache(
           `${process.env.API_RASTER_ENDPOINT}/mosaic/register`,
           payload,
@@ -344,7 +300,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             ...sourceParams
           },
           // Temporary solution to pass different tile parameters for hls data
-          { arrayFormat: id.toLowerCase().includes('hls')? 'repeat':'comma' } 
+          { arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma' }
         );
 
         /* eslint-disable no-console */
@@ -383,18 +339,10 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           'admin-0-boundary-bg'
         );
         changeStatus?.({ status: S_SUCCEEDED, context: 'layer' });
+        const layerBounds = getMergedBBox(stacCollection);
 
-        if (layerBounds) {
-          const [minXLayer, minYLayer, maxXLayer, maxYLayer ] = layerBounds;
-          const [[minXMap, minYMap],[maxXMap, maxYMap]] = mapInstance.getBounds().toArray();
-          const isOutside = maxXLayer < minXMap || minXLayer > maxXMap || maxYLayer < minYMap || minYLayer > maxYMap;
-          const layerExtentSmaller = maxXLayer - minXLayer < maxXMap - minXMap && maxYLayer - minYLayer < maxYMap - minYMap;
-
-          // only fitBounds if layer extent is smaller than viewport extent (ie zoom to area of interest), 
-          // or if layer extent does not overlap at all with viewport extent (ie pan to area of interest)
-          if (layerExtentSmaller || isOutside) {
-            mapInstance.fitBounds(layerBounds);
-          }
+        if (checkFitBoundsFromLayer(layerBounds, mapInstance)) {
+          mapInstance.fitBounds(layerBounds, { padding: FIT_BOUNDS_PADDING });
         }
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -421,7 +369,15 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     // The showMarkers and isHidden dep are left out on purpose, as visibility
     // is controlled below, but we need the value to initialize the layer
     // visibility.
-  }, [id, changeStatus, stacCol, date, mapInstance, sourceParams]);
+  }, [
+    id,
+    changeStatus,
+    stacCol,
+    stacCollection,
+    date,
+    mapInstance,
+    sourceParams
+  ]);
 
   //
   // Visibility control for the layer and the markers.
