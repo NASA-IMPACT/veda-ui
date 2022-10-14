@@ -5,6 +5,7 @@ import {
   glsp,
   media,
   themeVal,
+  truncated,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
@@ -20,41 +21,8 @@ import Constrainer from '$styles/constrainer';
 import Try from '../common/try-render';
 
 import { variableGlsp } from '$styles/variable-utils';
+import { useMediaQuery } from '$utils/use-media-query';
 import { useSlidingStickyHeaderProps } from '../common/layout-root';
-
-const PageHeroSelf = styled.div`
-  position: sticky;
-  z-index: 1;
-  display: flex;
-  flex-flow: column nowrap;
-  gap: ${glsp()};
-  justify-content: flex-end;
-  background: ${themeVal('color.primary')};
-  color: ${themeVal('color.surface')};
-  min-height: 12rem;
-  animation: ${reveal} 0.32s ease 0s 1;
-
-  ${({ isHidden }) => isHidden && visuallyHidden()}
-
-  transition: top 0.32s ease-out;
-  ${({ shouldSlideHeader, minTop, maxTop }) => {
-    const topVal = shouldSlideHeader ? minTop : maxTop;
-    return css`
-      top: ${topVal}px;
-    `;
-  }}
-`;
-
-const PageHeroInner = styled(Constrainer)`
-  transition: padding 0.32s ease-out;
-  align-items: end;
-
-  ${({ isStuck }) =>
-    css`
-      padding-top: ${variableGlsp(isStuck ? 1 : 4)};
-      padding-bottom: ${variableGlsp(isStuck ? 1 : 2)};
-    `}
-`;
 
 const PageHeroMedia = styled(MapboxMap)`
   position: absolute;
@@ -80,16 +48,11 @@ const PageHeroMedia = styled(MapboxMap)`
   }
 `;
 
-export const PageHeroHGroup = styled.div`
-  display: flex;
-  flex-flow: column;
-  gap: ${variableGlsp(0.125)};
-`;
-
 const PageHeroBlockAlpha = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${variableGlsp()};
+  min-width: 0;
 
   grid-column: 1 / span 4;
 
@@ -120,16 +83,110 @@ const PageHeroBlockBeta = styled.div`
   `}
 `;
 
+const PageHeroSelf = styled.div`
+  position: sticky;
+  z-index: 1;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${glsp()};
+  justify-content: flex-end;
+  background: ${themeVal('color.primary')};
+  color: ${themeVal('color.surface')};
+  min-height: 14rem;
+  animation: ${reveal} 0.32s ease 0s 1;
+  transition: top 0.32s ease-out, min-height 0.32s ease-out;
+
+  ${({ isHidden }) => isHidden && visuallyHidden()}
+
+  ${({ shouldSlideHeader, minTop, maxTop }) => {
+    const topVal = shouldSlideHeader ? minTop : maxTop;
+    return css`
+      top: ${topVal}px;
+    `;
+  }}
+
+  ${({ isStuck }) =>
+    isStuck &&
+    css`
+      min-height: 0;
+    `}
+
+  ${PageHeroMedia} {
+    transition: opacity 0.32s ease-out;
+    opacity: ${({ isStuck }) => Number(!isStuck)};
+  }
+
+  ${PageLead} {
+    transition: font-size 0.32s ease-out;
+    ${({ isStuck }) =>
+      isStuck &&
+      css`
+        ${truncated()}
+        font-size: ${themeVal('type.base.size')};
+      `}
+  }
+
+  ${PageHeroBlockAlpha} {
+    transition: gap 0.32s ease-out;
+    ${({ isStuck }) =>
+      isStuck &&
+      css`
+        gap: 0;
+      `}
+  }
+
+  ${PageHeroBlockBeta} {
+    ${({ isStuck }) =>
+      isStuck &&
+      css`
+        margin-left: auto;
+      `}
+  }
+`;
+
+const PageHeroInner = styled(Constrainer)`
+  align-items: end;
+  transition: padding 0.32s ease-out;
+
+  ${({ isStuck }) =>
+    isStuck
+      ? css`
+          display: flex;
+          flex-flow: row nowrap;
+          padding-top: ${variableGlsp()};
+          padding-bottom: ${variableGlsp()};
+        `
+      : css`
+          padding-top: ${variableGlsp(4)};
+          padding-bottom: ${variableGlsp(2)};
+        `}
+`;
+
+export const PageHeroHGroup = styled.div`
+  display: flex;
+  flex-flow: column;
+  gap: ${variableGlsp(0.125)};
+`;
+
 const PageHeroActions = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  justify-content: end;
   gap: ${variableGlsp(0.25)};
+
+  ${media.largeUp`
+    justify-content: end;
+  `}
 `;
 
 function PageHeroAnalysis(props) {
-  const { title, description, renderAlphaBlock, renderBetaBlock, isHidden } =
-    props;
+  const {
+    title,
+    description,
+    renderAlphaBlock,
+    renderBetaBlock,
+    isHidden,
+    isResults = false
+  } = props;
 
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();
@@ -143,6 +200,8 @@ function PageHeroAnalysis(props) {
 
   const isStuck = useIsStuck(headerHeight);
 
+  const { isLargeUp } = useMediaQuery();
+
   return (
     <PageHeroSelf
       isHidden={isHidden}
@@ -154,7 +213,7 @@ function PageHeroAnalysis(props) {
       <PageHeroInner isStuck={isStuck}>
         <Try fn={renderAlphaBlock} wrapWith={PageHeroBlockAlpha}>
           <PageHeroHGroup>
-            <PageMainTitle size={isStuck ? 'medium' : undefined}>
+            <PageMainTitle size={isStuck ? 'xsmall' : undefined}>
               {title}
             </PageMainTitle>
           </PageHeroHGroup>
@@ -164,14 +223,14 @@ function PageHeroAnalysis(props) {
           <PageHeroActions>
             <Button
               type='button'
-              size={isStuck ? 'small' : 'large'}
+              size={isStuck ? 'small' : isLargeUp ? 'large' : 'medium'}
               variation='achromic-outline'
             >
               <CollecticonXmarkSmall /> Cancel
             </Button>
             <Button
               type='button'
-              size={isStuck ? 'small' : 'large'}
+              size={isStuck ? 'small' : isLargeUp ? 'large' : 'medium'}
               variation='achromic-outline'
             >
               <CollecticonTickSmall /> Save
@@ -179,7 +238,7 @@ function PageHeroAnalysis(props) {
           </PageHeroActions>
         </Try>
       </PageHeroInner>
-      <PageHeroMedia />
+      {isResults && <PageHeroMedia />}
     </PageHeroSelf>
   );
 }
@@ -191,7 +250,8 @@ PageHeroAnalysis.propTypes = {
   description: T.string,
   renderAlphaBlock: T.func,
   renderBetaBlock: T.func,
-  isHidden: T.bool
+  isHidden: T.bool,
+  isResults: T.bool
 };
 
 function useIsStuck(threshold) {

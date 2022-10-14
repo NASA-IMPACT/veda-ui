@@ -103,6 +103,7 @@ export default function AnalysisResults() {
       <PageHeroAnalysis
         title='Analysis'
         description='Covering 8 datasets over a 50 M km2 area from Apr 7 to Sep 7, 2022.'
+        isResults
       />
       <Fold>
         <FoldHeader>
