@@ -86,7 +86,7 @@ export function useSlidingStickyHeader() {
       ticking = false;
     }
 
-    function onScroll() {
+    function onEvent() {
       if (!ticking) {
         // instead of setting a specific number of ms to wait (throttling),
         // pass it to the browser to be processed on the next frame, whenever that may be.
@@ -95,10 +95,12 @@ export function useSlidingStickyHeader() {
       }
     }
 
-    window.addEventListener('scroll', onScroll);
+    window.addEventListener('scroll', onEvent);
+    window.addEventListener('resize', onEvent);
 
     return () => {
-      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('scroll', onEvent);
+      window.removeEventListener('resize', onEvent);
     };
   }, []);
 
