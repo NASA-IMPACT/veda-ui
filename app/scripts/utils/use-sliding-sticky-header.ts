@@ -86,7 +86,7 @@ export function useSlidingStickyHeader() {
       ticking = false;
     }
 
-    function onEvent() {
+    function onViewportPositionChange() {
       if (!ticking) {
         // instead of setting a specific number of ms to wait (throttling),
         // pass it to the browser to be processed on the next frame, whenever that may be.
@@ -95,12 +95,12 @@ export function useSlidingStickyHeader() {
       }
     }
 
-    window.addEventListener('scroll', onEvent);
-    window.addEventListener('resize', onEvent);
+    window.addEventListener('scroll', onViewportPositionChange);
+    window.addEventListener('resize', onViewportPositionChange);
 
     return () => {
-      window.removeEventListener('scroll', onEvent);
-      window.removeEventListener('resize', onEvent);
+      window.removeEventListener('scroll', onViewportPositionChange);
+      window.removeEventListener('resize', onViewportPositionChange);
     };
   }, []);
 
