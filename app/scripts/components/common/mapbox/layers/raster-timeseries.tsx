@@ -37,10 +37,16 @@ export type StacFeature = {
   bbox: [number, number, number, number];
 };
 
+enum STATUS_KEY {
+  Global,
+  Layer,
+  StacSearch
+}
+
 type Statuses = {
-  global: ActionStatus;
-  layer: ActionStatus;
-  'zoom-markers': ActionStatus;
+  [STATUS_KEY.Global]: ActionStatus;
+  [STATUS_KEY.Layer]: ActionStatus;
+  [STATUS_KEY.StacSearch]: ActionStatus;
 };
 
 export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
@@ -69,9 +75,9 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // A raster timeseries layer has a base layer and may have markers.
   // The status is succeeded only if all requests succeed.
   const statuses = useRef<Statuses>({
-    global: S_IDLE,
-    layer: S_IDLE,
-    'zoom-markers': S_IDLE
+    [STATUS_KEY.Global]: S_IDLE,
+    [STATUS_KEY.Layer]: S_IDLE,
+    [STATUS_KEY.StacSearch]: S_IDLE
   });
 
   const changeStatus = useCallback(
@@ -80,17 +86,17 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       context
     }: {
       status: ActionStatus;
-      context: 'zoom-markers' | 'layer';
+      context: STATUS_KEY.StacSearch | STATUS_KEY.Layer;
     }) => {
       // Set the new status
       statuses.current[context] = status;
 
       const layersToCheck = [
-        statuses.current['zoom-markers'],
-        statuses.current.layer
+        statuses.current[STATUS_KEY.StacSearch],
+        statuses.current[STATUS_KEY.Layer]
       ];
 
-      let newStatus = statuses.current.global;
+      let newStatus = statuses.current[STATUS_KEY.Global];
       // All must succeed to be considered successful.
       if (layersToCheck.every((s) => s === S_SUCCEEDED)) {
         newStatus = S_SUCCEEDED;
@@ -107,8 +113,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       }
 
       // Only emit on status change.
-      if (newStatus !== statuses.current.global) {
-        statuses.current.global = newStatus;
+      if (newStatus !== statuses.current[STATUS_KEY.Global]) {
+        statuses.current[STATUS_KEY.Global] = newStatus;
         onStatusChange?.({ status: newStatus, id });
       }
     },
@@ -143,7 +149,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
     const load = async () => {
       try {
-        changeStatus?.({ status: S_LOADING, context: 'zoom-markers' });
+        changeStatus?.({ status: S_LOADING, context: STATUS_KEY.StacSearch });
         const payload = {
           'filter-lang': 'cql2-json',
           filter: getFilterPayload(date, stacCol),
@@ -183,10 +189,10 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-enable no-console */
 
         setStacCollection(responseData.features);
-        changeStatus?.({ status: S_SUCCEEDED, context: 'zoom-markers' });
+        changeStatus?.({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
       } catch (error) {
         if (!controller.signal.aborted) {
-          changeStatus?.({ status: S_FAILED, context: 'zoom-markers' });
+          changeStatus?.({ status: S_FAILED, context: STATUS_KEY.StacSearch });
         }
         LOG &&
           /* eslint-disable-next-line no-console */
@@ -201,7 +207,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     load();
     return () => {
       controller && controller.abort();
-      changeStatus?.({ status: 'idle', context: 'zoom-markers' });
+      changeStatus?.({ status: 'idle', context: STATUS_KEY.StacSearch });
     };
   }, [id, changeStatus, stacCol, date]);
 
@@ -269,7 +275,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     const controller = new AbortController();
 
     const load = async () => {
-      changeStatus?.({ status: S_LOADING, context: 'layer' });
+      changeStatus?.({ status: S_LOADING, context: STATUS_KEY.Layer });
       try {
         const payload = {
           'filter-lang': 'cql2-json',
@@ -338,15 +344,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           },
           'admin-0-boundary-bg'
         );
-        changeStatus?.({ status: S_SUCCEEDED, context: 'layer' });
-        const layerBounds = getMergedBBox(stacCollection);
+        changeStatus?.({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
 
-        if (checkFitBoundsFromLayer(layerBounds, mapInstance)) {
-          mapInstance.fitBounds(layerBounds, { padding: FIT_BOUNDS_PADDING });
-        }
       } catch (error) {
         if (!controller.signal.aborted) {
-          changeStatus?.({ status: S_FAILED, context: 'layer' });
+          changeStatus?.({ status: S_FAILED, context: STATUS_KEY.Layer });
         }
         LOG &&
           /* eslint-disable-next-line no-console */
@@ -359,7 +361,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
     return () => {
       controller && controller.abort();
-      changeStatus?.({ status: 'idle', context: 'layer' });
+      changeStatus?.({ status: 'idle', context: STATUS_KEY.Layer });
 
       if (mapInstance?.getSource(id)) {
         mapInstance.removeLayer(id);
@@ -378,6 +380,17 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     mapInstance,
     sourceParams
   ]);
+
+  // 
+  // FitBounds when needed
+  //
+  useEffect(() => {
+    const layerBounds = getMergedBBox(stacCollection);
+
+    if (checkFitBoundsFromLayer(layerBounds, mapInstance)) {
+      mapInstance.fitBounds(layerBounds, { padding: FIT_BOUNDS_PADDING });
+    }
+  }, [mapInstance, stacCol, stacCollection]);
 
   //
   // Visibility control for the layer and the markers.

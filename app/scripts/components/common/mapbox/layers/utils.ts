@@ -321,14 +321,16 @@ export function getMergedBBox(features: StacFeature[]) {
     Number.POSITIVE_INFINITY,
     Number.NEGATIVE_INFINITY,
     Number.NEGATIVE_INFINITY
-  ] as [number, number, number, number];
-  features.forEach((feature) => {
-    if (feature.bbox[0] < mergedBBox[0]) mergedBBox[0] = feature.bbox[0];
-    if (feature.bbox[1] < mergedBBox[1]) mergedBBox[1] = feature.bbox[1];
-    if (feature.bbox[2] > mergedBBox[2]) mergedBBox[2] = feature.bbox[2];
-    if (feature.bbox[3] > mergedBBox[3]) mergedBBox[3] = feature.bbox[3];
-  });
-  return mergedBBox;
+  ];
+  return features.reduce(
+    (acc, feature) => [
+      feature.bbox[0] < acc[0] ? feature.bbox[0] : acc[0],
+      feature.bbox[1] < acc[1] ? feature.bbox[1] : acc[1],
+      feature.bbox[2] > acc[2] ? feature.bbox[2] : acc[2],
+      feature.bbox[3] > acc[3] ? feature.bbox[3] : acc[3]
+    ],
+    mergedBBox
+  ) as [number, number, number, number];
 }
 
 export function checkFitBoundsFromLayer(
