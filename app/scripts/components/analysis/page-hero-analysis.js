@@ -1,7 +1,6 @@
 import React from 'react';
 import T from 'prop-types';
-import styled from 'styled-components';
-
+import styled, { css } from 'styled-components';
 import {
   glsp,
   media,
@@ -18,11 +17,13 @@ import {
 import MapboxMap from '$components/common/mapbox';
 import { PageLead, PageMainTitle } from '$styles/page';
 import Constrainer from '$styles/constrainer';
-import { variableGlsp } from '$styles/variable-utils';
 import Try from '../common/try-render';
 
+import { variableGlsp } from '$styles/variable-utils';
+import { useSlidingStickyHeaderProps } from '../common/layout-root';
+
 const PageHeroSelf = styled.div`
-  position: relative;
+  position: sticky;
   z-index: 1;
   display: flex;
   flex-flow: column nowrap;
@@ -34,6 +35,14 @@ const PageHeroSelf = styled.div`
   animation: ${reveal} 0.32s ease 0s 1;
 
   ${({ isHidden }) => isHidden && visuallyHidden()}
+
+  transition: top 0.32s ease-out;
+  ${({ shouldSlideHeader, minTop, maxTop }) => {
+    const topVal = shouldSlideHeader ? minTop : maxTop;
+    return css`
+      top: ${topVal}px;
+    `;
+  }}
 `;
 
 const PageHeroInner = styled(Constrainer)`
@@ -117,8 +126,23 @@ function PageHeroAnalysis(props) {
   const { title, description, renderAlphaBlock, renderBetaBlock, isHidden } =
     props;
 
+  const { isHeaderHidden, headerHeight, wrapperHeight } =
+    useSlidingStickyHeaderProps();
+
+  // The page hero must be sticky at a certain distance from the top which is
+  // equal to the NavWrapper's height.
+  const maxTop = wrapperHeight;
+  // Except when the header get hidden by sliding out of the viewport. When this
+  // happens the header height must be removed from the equation.
+  const minTop = wrapperHeight - headerHeight;
+
   return (
-    <PageHeroSelf isHidden={isHidden}>
+    <PageHeroSelf
+      isHidden={isHidden}
+      shouldSlideHeader={isHeaderHidden}
+      minTop={minTop}
+      maxTop={maxTop}
+    >
       <PageHeroInner>
         <Try fn={renderAlphaBlock} wrapWith={PageHeroBlockAlpha}>
           <PageHeroHGroup>
@@ -137,7 +161,7 @@ function PageHeroAnalysis(props) {
           </PageHeroActions>
         </Try>
       </PageHeroInner>
-      <PageHeroMedia mapOptions={{ interactive: false }} />
+      <PageHeroMedia />
     </PageHeroSelf>
   );
 }

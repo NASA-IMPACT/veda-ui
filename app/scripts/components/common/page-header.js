@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
-
 import {
   glsp,
   listReset,
@@ -19,9 +18,12 @@ import {
   CollecticonChevronUpSmall,
   CollecticonHamburgerMenu
 } from '@devseed-ui/collecticons';
-
 import deltaThematics from 'delta/thematics';
+
 import NasaLogo from './nasa-logo';
+import GoogleForm from './google-form';
+import { Tip } from './tip';
+
 import { variableGlsp } from '$styles/variable-utils';
 import { useThematicArea } from '$utils/thematics';
 import {
@@ -32,22 +34,12 @@ import {
   thematicRootPath
 } from '$utils/routes';
 import GlobalMenuLinkCSS from '$styles/menu-link';
-
-import useScrollDirection, { SCROLL_DOWN } from '$utils/use-scroll-direction';
-
 import { useMediaQuery } from '$utils/use-media-query';
 import UnscrollableBody from './unscrollable-body';
-import GoogleForm from './google-form';
-import { Tip } from './tip';
+import { HEADER_ID } from '$utils/use-sliding-sticky-header';
 
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
-
-// To avoid linting errors.
-const cssNoHighlight = css;
-const scrollDownMargin = cssNoHighlight`calc(-2.5rem - (${variableGlsp(
-  0.75
-)} * 2))`;
 
 const PageHeaderSelf = styled.header`
   display: flex;
@@ -63,16 +55,6 @@ const PageHeaderSelf = styled.header`
   &:visited {
     color: ${themeVal('color.surface')};
   }
-
-  /* 
-    nav animation (show/hide depending on scroll direction) related style
-    value for scroll down should cover the total height of global nav
-    2.5rem : height of the nav derived from svg logo height of the nav
-    variableGlsp(0.75) * 2 : padding of top and bottom derived from variableGlsp (0.75) 
-  */
-  transition: margin-top 0.32s ease-out;
-  margin-top: ${({ scrollDir }) =>
-    scrollDir == SCROLL_DOWN ? scrollDownMargin : '0'};
 `;
 
 const Brand = styled.div`
@@ -370,13 +352,10 @@ function PageHeader() {
     if (!isLargeDown) setGlobalNavRevealed(false);
   }, [isLargeDown]);
 
-  // Detect scroll direction to show/hide global nav
-  const scrollDir = useScrollDirection();
-
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
 
   return (
-    <PageHeaderSelf scrollDir={scrollDir}>
+    <PageHeaderSelf id={HEADER_ID}>
       {globalNavRevealed && isLargeDown && <UnscrollableBody />}
       <Brand>
         <Link

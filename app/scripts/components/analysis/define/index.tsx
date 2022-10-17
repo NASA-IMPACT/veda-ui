@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import {
   Toolbar,
@@ -29,14 +28,12 @@ import {
 } from '@devseed-ui/collecticons';
 
 import { useThematicArea } from '$utils/thematics';
-
-import { PageMainContent } from '$styles/page';
 import { variableGlsp } from '$styles/variable-utils';
 
+import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
 import { resourceNotFound } from '$components/uhoh';
-
 import {
   Fold,
   FoldHeader,
