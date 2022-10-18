@@ -21,7 +21,7 @@ import AltTitle from './alt-title';
 
 import { LegendComponent, ReferenceLegendComponent } from './legend';
 
-import { getColors, dateFormatter, convertToTime } from './utils';
+import { getColors, dateFormatter, convertToTime, getNumForChart } from './utils';
 
 import {
   chartMinHeight,
@@ -141,8 +141,12 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
               position='bottom'
             />
           </XAxis>
-          <YAxis axisLine={false}>
-            <Label value={yAxisLabel} angle={-90} position='insideLeft' />
+          <YAxis axisLine={false} tickFormatter={t=> getNumForChart(t)}>
+            <Label 
+              value={yAxisLabel} 
+              angle={-90} 
+              position='insideLeft' 
+            />
           </YAxis>
           {renderHighlight && (
             <>

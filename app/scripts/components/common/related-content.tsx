@@ -107,7 +107,6 @@ function formatContents(relatedData: Array<RelatedContentData>) {
       );
     }
 
-
     const { name, description, media } = matchingContent;
     return formatBlock({
       id,
