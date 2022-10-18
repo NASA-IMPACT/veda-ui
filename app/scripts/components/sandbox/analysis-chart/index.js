@@ -155,7 +155,7 @@ export default function AnalysisChart() {
                 timeSeriesData={dataForChart1.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
                 xKey={dataForChart1.xKey}
-                dates={['2020', '2021', '2022']}
+                dates={['2020', '2021', '2022', '2023']}
                 dateFormat='%Y'
                 altTitle='alt title'
                 altDesc='alt desc'
