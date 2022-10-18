@@ -8,6 +8,7 @@ import {
   Tooltip,
   CartesianGrid,
   Label,
+  Brush,
   ResponsiveContainer,
   ReferenceArea,
   Legend,
@@ -15,7 +16,6 @@ import {
 } from 'recharts';
 
 import { useMediaQuery } from '$utils/use-media-query';
-import renderBrushComponent from './brush';
 import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
 
@@ -34,7 +34,8 @@ import {
   defaultMargin,
   highlightColor,
   legendWidth,
-  brushRelatedConfigs
+  brushRelatedConfigs,
+  brushHeight
 } from './constant';
 
 const LineChartWithFont = styled(LineChart)`
@@ -96,8 +97,16 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
   } = props;
 
   const [chartMargin, setChartMargin] = useState(defaultMargin);
+  const [brushStartIndex, setBrushStartIndex] = useState(0);
+  const [brushEndIndex, setBrushEndIndex] = useState(chartData.length-1);
 
   const { isMediumUp } = useMediaQuery();
+
+  function handleBrushChange(newIndex) {
+    const {startIndex, endIndex} = newIndex;
+    setBrushStartIndex(startIndex);
+    setBrushEndIndex(endIndex);
+  }
 
   useEffect(() => {
     if (!isMediumUp) {
@@ -128,7 +137,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
           margin={chartMargin}
           syncId={syncId}
           syncMethod={(tick, data) => {
-            return syncMethodFunction({ data, chartData, xKey, dateFormat });
+            return syncMethodFunction({ data, chartData, xKey, dateFormat, startIndex: brushStartIndex, endIndex: brushEndIndex });
           }}
         >
           <AltTitle title={altTitle} desc={altDesc} />
@@ -212,13 +221,32 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
             />
           )}
           {renderBrush &&
-            renderBrushComponent({
-              chartData,
-              xKey,
-              uniqueKeys,
-              lineColors,
-              dateFormat
-            })}
+            <Brush
+              data={chartData}
+              dataKey={xKey}
+              height={brushHeight}
+              tickFormatter={(t) => timeFormatter(t, dateFormat)}
+              onChange={handleBrushChange}
+              startIndex={brushStartIndex}
+              endIndex={brushEndIndex}
+            >
+            <LineChart data={chartData}>
+              {uniqueKeys.map((k) => {
+                return (
+                  <Line
+                    type='linear'
+                    isAnimationActive={false}
+                    dot={false}
+                    activeDot={false}
+                    key={`${k.value}-line-brush`}
+                    dataKey={k.label}
+                    strokeWidth={0.5}
+                    stroke={k.active ? k.color : 'transparent'}
+                  />
+                );
+              })}
+            </LineChart>
+            </Brush>}
         </LineChartWithFont>
       </ResponsiveContainer>
     </ChartWrapper>

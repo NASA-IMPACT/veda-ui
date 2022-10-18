@@ -51,7 +51,7 @@ export default function TooltipComponent(props: TooltipComponentProps) {
           .map((key) => {
             const point = payload[0].payload[key.label];
             return (
-              <div key={`${key}`}>
+              <div key={`${key.label}-key`}>
                 <TooltipItem color={key.color} />
                 <strong>{key.label}</strong> :{point}
               </div>

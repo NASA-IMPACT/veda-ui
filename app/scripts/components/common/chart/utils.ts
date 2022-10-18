@@ -181,15 +181,18 @@ export function syncMethodFunction({
   data,
   chartData,
   xKey,
-  dateFormat
+  dateFormat,
+  startIndex,
+  endIndex
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any; // Recharts define data payload as any
   chartData: object[];
   xKey: string;
   dateFormat: string;
+  startIndex: number;
+  endIndex: number;
 }) {
-
   const { activeLabel, activePayload } = data;
   const dateFormatFromData = activePayload[0].payload.dateFormat;
 
@@ -212,5 +215,5 @@ export function syncMethodFunction({
       });
     });
   }
-  return matchingIndex;
+  return (matchingIndex >= startIndex && matchingIndex <= endIndex)? matchingIndex : null;
 }
