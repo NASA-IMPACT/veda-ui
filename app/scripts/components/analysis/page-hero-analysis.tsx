@@ -8,12 +8,6 @@ import {
   visuallyHidden
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
-import { Button } from '@devseed-ui/button';
-import {
-  CollecticonPencil,
-  CollecticonTickSmall,
-  CollecticonXmarkSmall
-} from '@devseed-ui/collecticons';
 
 import { PageLead, PageMainTitle } from '$styles/page';
 import Constrainer from '$styles/constrainer';
@@ -160,10 +154,18 @@ interface PageHeroAnalysisProps {
   isHidden?: boolean;
   isResults?: boolean;
   aoiFeature?: Feature<MultiPolygon>;
+  renderActions: ({ size }: { size: string }) => React.ReactNode;
 }
 
 function PageHeroAnalysis(props: PageHeroAnalysisProps) {
-  const { title, description, isHidden, isResults = false, aoiFeature } = props;
+  const {
+    title,
+    description,
+    isHidden,
+    isResults = false,
+    aoiFeature,
+    renderActions
+  } = props;
 
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();
@@ -197,34 +199,11 @@ function PageHeroAnalysis(props: PageHeroAnalysisProps) {
           {description && <PageLead>{description}</PageLead>}
         </PageHeroBlockAlpha>
         <PageHeroBlockBeta>
-          {isResults ? (
-            <PageHeroActions>
-              <Button
-                type='button'
-                size={isStuck ? 'small' : isLargeUp ? 'large' : 'medium'}
-                variation='achromic-outline'
-              >
-                <CollecticonPencil /> Refine
-              </Button>
-            </PageHeroActions>
-          ) : (
-            <PageHeroActions>
-              <Button
-                type='button'
-                size={isStuck ? 'small' : isLargeUp ? 'large' : 'medium'}
-                variation='achromic-outline'
-              >
-                <CollecticonXmarkSmall /> Cancel
-              </Button>
-              <Button
-                type='button'
-                size={isStuck ? 'small' : isLargeUp ? 'large' : 'medium'}
-                variation='achromic-outline'
-              >
-                <CollecticonTickSmall /> Save
-              </Button>
-            </PageHeroActions>
-          )}
+          <PageHeroActions>
+            {renderActions?.({
+              size: isStuck ? 'small' : isLargeUp ? 'large' : 'medium'
+            })}
+          </PageHeroActions>
         </PageHeroBlockBeta>
       </PageHeroInner>
       {isResults && <PageHeroMedia feature={aoiFeature} />}

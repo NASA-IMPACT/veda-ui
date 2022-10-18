@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
 import {
@@ -18,7 +19,8 @@ import {
 import {
   CollecticonChevronDownSmall,
   CollecticonCircleInformation,
-  CollecticonDownload2
+  CollecticonDownload2,
+  CollecticonPencil
 } from '@devseed-ui/collecticons';
 
 import { LayoutProps } from '$components/common/layout-root';
@@ -55,7 +57,10 @@ import {
 import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
-import { useAnalysisParams } from './use-analysis-params';
+import {
+  analysisParams2QueryString,
+  useAnalysisParams
+} from './use-analysis-params';
 import {
   requestStacDatasetsTimeseries,
   TimeseriesData,
@@ -107,6 +112,12 @@ export default function AnalysisResults() {
     return <Navigate to={thematicAnalysisPath(thematic)} replace />;
   }
 
+  const analysisParamsQs = analysisParams2QueryString({
+    date,
+    datasetsLayers,
+    aoi
+  });
+
   return (
     <PageMainContent>
       <LayoutProps
@@ -119,6 +130,16 @@ export default function AnalysisResults() {
         description={pageDescription}
         isResults
         aoiFeature={aoi || undefined}
+        renderActions={({ size }) => (
+          <Button
+            forwardedAs={Link}
+            to={`${thematicAnalysisPath(thematic)}${analysisParamsQs}`}
+            size={size}
+            variation='achromic-outline'
+          >
+            <CollecticonPencil /> Refine
+          </Button>
+        )}
       />
       <Fold>
         <FoldHeader>
