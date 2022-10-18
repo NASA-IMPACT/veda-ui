@@ -3,7 +3,7 @@ import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { UniqueKeyUnit } from '.';
 
 export const timeFormatter = (time: number, dateFormat: string) => {
-  return dateFormatter(new Date(new Date(time)), dateFormat);
+  return dateFormatter(new Date(time), dateFormat);
 };
 
 export const dateFormatter = (date: Date, dateFormat: string) => {
@@ -148,7 +148,7 @@ export const getColors = function ({
   return new Array(steps).fill(0).map((e, idx) => colorFn(idx / steps));
 };
 
-function findMatching({
+function isSameFormattedDate({
   date1,
   date2,
   formatter
@@ -195,34 +195,22 @@ export function syncMethodFunction({
 
   let matchingIndex: number | null = null;
 
-  for (let i = 0; i < chartData.length; i++) {
-    const e = chartData[i];
-    if (
-      findMatching({
-        date1: e[xKey],
-        date2: activeLabel,
-        formatter: (value) => dateFormatter(value, dateFormat)
-      })
-    ) {
-      matchingIndex = i;
-      break;
-    }
-  }
+  matchingIndex = chartData.findIndex(e => {
+    return isSameFormattedDate({
+      date1: e[xKey],
+      date2: activeLabel,
+      formatter: (value) => dateFormatter(value, dateFormat)
+    });
+  });
 
   if (matchingIndex === null) {
-    for (let i = 0; i < chartData.length; i++) {
-      const e = chartData[i];
-      if (
-        findMatching({
-          date1: e[xKey],
-          date2: activeLabel,
-          formatter: (value) => dateFormatter(value, dateFormatFromData)
-        })
-      ) {
-        matchingIndex = i;
-        break;
-      }
-    }
+    matchingIndex = chartData.findIndex(e => {
+      return isSameFormattedDate({
+        date1: e[xKey],
+        date2: activeLabel,
+        formatter: (value) => dateFormatter(value, dateFormatFromData)
+      });
+    });
   }
   return matchingIndex;
 }
