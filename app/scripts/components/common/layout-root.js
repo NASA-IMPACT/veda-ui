@@ -20,6 +20,7 @@ const Page = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow-anchor: none;
 `;
 
 const PageBody = styled.div`
@@ -27,6 +28,7 @@ const PageBody = styled.div`
   animation: ${reveal} 0.48s ease 0s 1;
   display: flex;
   flex-direction: column;
+  overflow-anchor: auto;
 `;
 
 function LayoutRoot(props) {
