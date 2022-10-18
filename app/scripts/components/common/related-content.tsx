@@ -105,7 +105,10 @@ function formatContents(relatedData: Array<RelatedContentData>) {
         'Something went wrong. Check the related content frontmatter.'
       );
 
-    const { name, description, pubDate, media } = matchingContent;
+    const { name, description, pubDate, media } = matchingContent as Record<
+      string,
+      any
+    >;
     return formatBlock({
       id,
       name,
