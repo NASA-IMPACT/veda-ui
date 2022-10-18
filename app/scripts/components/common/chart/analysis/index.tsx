@@ -39,10 +39,18 @@ export default function AnalysisChartProps(props: AnalysisChartProps) {
     return getColors({ steps: uniqueKeys.length, colorScheme: 'viridis' });
   }, [uniqueKeys]);
 
+  const uniqueKeysWithColors = useMemo(() => {
+    return uniqueKeys.map((e, idx) => ({
+    ...e,
+    color: lineColors[idx]
+    }));
+  }, [uniqueKeys, lineColors]);
+  
   return (
     <Wrapper>
       <Chart
         {...props}
+        uniqueKeys={uniqueKeysWithColors}
         ref={chartRef}
         syncId={syncId}
         chartData={chartData}

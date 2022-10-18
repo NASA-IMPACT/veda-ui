@@ -7,10 +7,8 @@ import { UniqueKeyUnit } from './';
 import { timeFormatter } from './utils';
 
 interface TooltipComponentProps extends TooltipProps<number, string> {
-  colors: string[];
   dateFormat: string;
   uniqueKeys: UniqueKeyUnit[];
-  xKey: string;
 }
 
 const TooltipWrapper = styled.div`
@@ -38,7 +36,7 @@ const TooltipItem = styled(ListItem)`
 `;
 
 export default function TooltipComponent(props: TooltipComponentProps) {
-  const { colors, dateFormat, uniqueKeys, active, payload, label } =
+  const { dateFormat, uniqueKeys, active, payload, label } =
     props;
   
   const inactiveKeys = uniqueKeys.filter((e) => !e.active).map((e) => e.label);
@@ -49,7 +47,6 @@ export default function TooltipComponent(props: TooltipComponentProps) {
           <strong>{timeFormatter(label, dateFormat)}</strong>
         </div>
         {uniqueKeys
-          .map((e,idx) => ({label: e.label, color: colors[idx]}))
           .filter((key) =>!inactiveKeys.includes(key.label))
           .map((key) => {
             const point = payload[0].payload[key.label];
