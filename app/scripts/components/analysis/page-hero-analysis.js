@@ -254,6 +254,8 @@ PageHeroAnalysis.propTypes = {
   isResults: T.bool
 };
 
+const OBSERVER_PIXEL_ID = 'page-hero-pixel';
+
 function useIsStuck(threshold) {
   const [isStuck, setStuck] = useState(window.scrollY > threshold);
 
@@ -261,7 +263,7 @@ function useIsStuck(threshold) {
     // Check for the observer pixel.
     // https://mediatemple.net/blog/web-development-tech/using-intersectionobserver-to-check-if-page-scrolled-past-certain-point-2/
     const pixel = document.createElement('div');
-    pixel.id = 'page-hero-pixel';
+    pixel.id = OBSERVER_PIXEL_ID;
 
     const style = {
       position: 'absolute',
@@ -293,7 +295,7 @@ function useIsStuck(threshold) {
   }, []);
 
   useEffect(() => {
-    const el = document.querySelector('#page-hero-pixel');
+    const el = document.getElementById(OBSERVER_PIXEL_ID);
     if (el) {
       el.style.top = `${threshold}px`;
     }
