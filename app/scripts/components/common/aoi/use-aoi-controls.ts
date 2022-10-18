@@ -1,13 +1,26 @@
 import { useCallback, useState } from 'react';
+import { useDeepCompareEffect } from 'use-deep-compare';
+
 import { AoiChangeListenerOverload, AoiState } from './types';
 
-export function useAoiControls() {
+export function useAoiControls(initialState: Partial<AoiState> = {}) {
   const [aoi, setAoi] = useState<AoiState>({
     drawing: false,
     selected: false,
     feature: null,
-    actionOrigin: null
+    actionOrigin: null,
+    ...initialState
   });
+
+  useDeepCompareEffect(() => {
+    setAoi({
+      drawing: false,
+      selected: false,
+      feature: null,
+      actionOrigin: null,
+      ...initialState
+    });
+  }, [initialState]);
 
   const onAoiEvent = useCallback((action, payload) => {
     switch (action) {
