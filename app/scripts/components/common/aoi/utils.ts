@@ -1,10 +1,13 @@
 import bbox from '@turf/bbox';
 import featArea from '@turf/area';
+import { Feature, Polygon } from 'geojson';
 
 import { formatThousands } from '$utils/format';
-import { AoiBounds, AoiBoundsUnset, AoiFeature, RectPolygon } from './types';
+import { AoiBounds, AoiBoundsUnset, AoiFeature } from './types';
 
-export const boundsFromFeature = (feat: AoiFeature | null): AoiBounds | AoiBoundsUnset => {
+export const boundsFromFeature = (
+  feat: AoiFeature | null
+): AoiBounds | AoiBoundsUnset => {
   if (!feat) {
     return { ne: [], sw: [] };
   }
@@ -32,7 +35,7 @@ export const featureFromBounds = (
     sw: [swLng, swLat]
   } = bounds;
 
-  const geometry:RectPolygon = {
+  const geometry: Polygon = {
     type: 'Polygon',
     coordinates: [
       [
@@ -58,11 +61,11 @@ export const featureFromBounds = (
       };
 };
 
-export const calcFeatArea = (feature: AoiFeature | null) => {
+export const calcFeatArea = (feature: Feature<any> | null) => {
   if (!feature) return '0';
 
   // Convert from m2 to km2.
-  const km2 = featArea(feature as any) / 1e6;
+  const km2 = featArea(feature) / 1e6;
   return formatThousands(km2, { decimals: 0, shorten: true });
 };
 

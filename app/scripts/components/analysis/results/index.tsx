@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
 import { useTheme } from 'styled-components';
@@ -54,12 +54,14 @@ import {
 
 import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
+import { formatDateRange } from '$utils/date';
 import { useAnalysisParams } from './use-analysis-params';
 import {
   requestStacDatasetsTimeseries,
   TimeseriesData,
   TIMESERIES_DATA_BASE_ID
 } from './timeseries-data';
+import { calcFeatArea } from '$components/common/aoi/utils';
 
 export default function AnalysisResults() {
   const thematic = useThematicArea();
@@ -92,6 +94,15 @@ export default function AnalysisResults() {
     });
   }, [queryClient, date, datasetsLayers, aoi]);
 
+  const pageDescription = useMemo(() => {
+    if (!date.start || !datasetsLayers || !aoi) return '';
+
+    const dateLabel = formatDateRange(date);
+    const area = calcFeatArea(aoi);
+
+    return `Covering ${datasetsLayers.length} datasets over a ${area} km2 area for ${dateLabel}.`;
+  }, [date, datasetsLayers, aoi]);
+
   if (errors) {
     return <Navigate to={thematicAnalysisPath(thematic)} replace />;
   }
@@ -100,12 +111,12 @@ export default function AnalysisResults() {
     <PageMainContent>
       <LayoutProps
         title='Analysis'
-        description='Covering 8 datasets over a 50 M km2 area from Apr 7 to Sep 7, 2022.'
+        description={pageDescription}
         thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
         title='Analysis'
-        description='Covering 8 datasets over a 50 M km2 area from Apr 7 to Sep 7, 2022.'
+        description={pageDescription}
         isResults
         aoiFeature={aoi || undefined}
       />
