@@ -37,6 +37,7 @@ import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
+import { calcFeatArea } from '$components/common/aoi/utils';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -360,6 +361,28 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         }
       >
         {computedCompareLabel}
+      </MapMessage>
+
+      {/*
+        Map overlay element
+        Message shown when the aoi is being used. The message shown depends on
+        what is being done to the AOI.
+        - No area defined
+        - Drawing area shape
+        - XXkm2
+      */}
+      <MapMessage id='aoi-status' active={!!aoi}>
+        <p>
+          {aoi?.drawing ? (
+            'Drawing area shape'
+          ) : !aoi?.feature ? (
+            'No area defined'
+          ) : (
+            <>
+              {calcFeatArea(aoi.feature)} km<sup>2</sup>
+            </>
+          )}
+        </p>
       </MapMessage>
 
       {/*
