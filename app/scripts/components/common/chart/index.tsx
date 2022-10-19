@@ -1,4 +1,4 @@
-import React, { RefObject, useState, useEffect } from 'react';
+import React, { RefObject, useState, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -122,6 +122,14 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
     ? colors
     : getColors({ steps: uniqueKeys.length, colorScheme });
 
+    const uniqueKeysWithColors = useMemo(() => {
+      return uniqueKeys.map((e, idx) => ({
+      ...e,
+      color: lineColors[idx]
+      }));
+    }, [uniqueKeys, lineColors]);
+    
+
   const renderHighlight = highlightStart || highlightEnd;
   return (
     <ChartWrapper>
@@ -194,7 +202,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
               />
             </>
           )}
-          {uniqueKeys.map((k, idx) => {
+          {uniqueKeysWithColors.map((k) => {
             return (
               <Line
                 type='linear'
@@ -204,7 +212,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
                 key={`${k.value}-line`}
                 dataKey={k.label}
                 strokeWidth={2}
-                stroke={k.active ? lineColors[idx] : 'transparent'}
+                stroke={k.active ? k.color : 'transparent'}
               />
             );
           })}
@@ -212,7 +220,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
             content={
               <TooltipComponent
                 dateFormat={dateFormat}
-                uniqueKeys={uniqueKeys}
+                uniqueKeys={uniqueKeysWithColors}
               />
             }
           />
@@ -236,7 +244,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
               endIndex={brushEndIndex}
             >
             <LineChart data={chartData}>
-              {uniqueKeys.map((k) => {
+              {uniqueKeysWithColors.map((k) => {
                 return (
                   <Line
                     type='linear'
