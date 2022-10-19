@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { themeVal } from '@devseed-ui/theme-provider';
+import { rgba, themeVal } from '@devseed-ui/theme-provider';
 import mapboxgl from 'mapbox-gl';
 import { Feature, MultiPolygon } from 'geojson';
 import bbox from '@turf/bbox';
@@ -18,7 +18,7 @@ const WORLD_POLYGON = [
 
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
   style: process.env.MAPBOX_STYLE_URL,
-  logoPosition: 'bottom-left',
+  logoPosition: 'bottom-right',
   interactive: false
 };
 
@@ -70,7 +70,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
         id: 'aoi-stroke',
         type: 'line',
         source: 'aoi',
-        paint: { 'line-color': '#fff', 'line-width': 2 },
+        paint: { 'line-color': '#fff', 'line-width': 1 },
         layout: {
           'line-cap': 'round',
           'line-join': 'round'
@@ -94,7 +94,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
           top: 32,
           bottom: 32,
           right: 32,
-          left: mapRef.current.getContainer().offsetWidth / 2
+          left: 12 * 16 // 12rems
         }
       }
     );
@@ -116,6 +116,8 @@ function PageHeroMedia(props: PageHeroMediaProps) {
   );
 }
 
+const rgbaFixed = rgba as any;
+
 /**
  * Page Hero media map component
  *
@@ -123,24 +125,24 @@ function PageHeroMedia(props: PageHeroMediaProps) {
 export default styled(PageHeroMedia)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 56%;
   z-index: -1;
   pointer-events: none;
 
-  > * {
-    /* mix-blend-mode: screen;
-    filter: grayscale(100%); */
-
-    /* Improve performance */
-    transform: translate3d(0, 0, 0);
-  }
-
-  /* &::after {
+  &::after {
     position: absolute;
-    inset: 0;
+    top: 0;
+    bottom: 0;
+    width: 32%;
     z-index: 1;
-    background: ${themeVal('color.primary-500')};
+    background: linear-gradient(
+      90deg,
+      ${rgbaFixed(themeVal('color.primary-900'), 1)} 0%,
+      ${rgbaFixed(themeVal('color.primary-900'), 0)} 100%
+    );
     content: '';
-    mix-blend-mode: multiply;
-  } */
+  }
 `;
