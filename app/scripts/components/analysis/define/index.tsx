@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import {
@@ -105,6 +105,26 @@ export default function Analysis() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
 
+  const [scrollRatio, setScrollRatio] = useState<number>(0);
+
+  useEffect(() => {
+    // Generate enough thresholds to get regular updates from the observer
+    const threshold = Array(100).fill(0).map((_, i) => i/100);
+    const obs = new IntersectionObserver(([entries]) => {
+      // TODO Store that in context somehow so that it's accessible by useSlidingStickyHeader
+      (window as any).mainScrollRatio = entries.intersectionRatio;
+      setScrollRatio(entries.intersectionRatio);
+    }, {
+      threshold
+    });
+
+    // TODO use a ref on PageMainContent
+    if (document.getElementsByTagName('main')[0]) {
+      obs.observe(document.getElementsByTagName('main')[0]);
+    }
+
+  }, []);
+
   return (
     <PageMainContent>
       <LayoutProps
@@ -115,6 +135,7 @@ export default function Analysis() {
       <PageHeroAnalysis
         title='Start analysis'
         description='Visualize insights from a selected area over a period of time.'
+        scrollRatio={scrollRatio}
       />
       <Fold>
         <FoldHeader>

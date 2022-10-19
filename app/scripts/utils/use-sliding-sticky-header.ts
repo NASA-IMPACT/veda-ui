@@ -9,9 +9,9 @@ export function useSlidingStickyHeader() {
   const [wrapperHeight, setWrapperHeight] = useState(0);
 
   useEffect(() => {
-    let ticking = false;
     let prevY = window.scrollY;
     let scrollUpDelta = 0;
+    const currY = window.scrollY;
 
     const navWrapperElement = document.querySelector<HTMLElement>(`#${HEADER_WRAPPER_ID}`);
     if (!navWrapperElement) {
@@ -40,69 +40,48 @@ export function useSlidingStickyHeader() {
     });
     observer.observe(navWrapperElement);
 
-    function tick() {
-      const currY = window.scrollY;
+    const wrapperEl = document.querySelector(
+      `#${HEADER_WRAPPER_ID}`
+    ) as HTMLElement;
+    setWrapperHeight(wrapperEl?.offsetHeight || 0);
 
-      const wrapperEl = document.querySelector(
-        `#${HEADER_WRAPPER_ID}`
-      ) as HTMLElement;
-      setWrapperHeight(wrapperEl?.offsetHeight || 0);
+    const el = document.querySelector<HTMLElement>(`#${HEADER_ID}`);
+    const headerHeightQueried = el?.offsetHeight || 0;
+    setHeaderHeight(headerHeightQueried);
 
-      const el = document.querySelector<HTMLElement>(`#${HEADER_ID}`);
-      const headerHeightQueried = el?.offsetHeight || 0;
-      setHeaderHeight(headerHeightQueried);
-
-      if (currY <= headerHeightQueried) {
-        // When the header gets hidden the css transitions the element out of
-        // the viewport by applying a negative translate. (See NavWrapper). If
-        // the user scrolls to the top of the page quickly and the header
-        // still has to animate to be shown it looks like a glitch because a
-        // white area will be seen. In this situation we remove the
-        // translation so that it looks like the header is already there.
-        // Additionally this has to be done by accessing the DOM node directly
-        // instead of using a state because the styled component does not
-        // update fast enough.
-        wrapperEl.style.transition = 'none';
-        // Visible if within its height.
-        setHidden(false);
-        scrollUpDelta = 0;
-      } else if (currY < prevY) {
-        // Scrolling up.
-        scrollUpDelta += prevY - currY;
-        // When scrolling up we want some travel before showing the header
-        // again.
-        if (scrollUpDelta > 64) {
-          wrapperEl.style.transition = '';
-          setHidden(false);
-        }
-      } else if (currY > prevY) {
+    if (currY <= headerHeightQueried) {
+      // When the header gets hidden the css transitions the element out of
+      // the viewport by applying a negative translate. (See NavWrapper). If
+      // the user scrolls to the top of the page quickly and the header
+      // still has to animate to be shown it looks like a glitch because a
+      // white area will be seen. In this situation we remove the
+      // translation so that it looks like the header is already there.
+      // Additionally this has to be done by accessing the DOM node directly
+      // instead of using a state because the styled component does not
+      // update fast enough.
+      wrapperEl.style.transition = 'none';
+      // Visible if within its height.
+      setHidden(false);
+      scrollUpDelta = 0;
+    } else if (currY < prevY) {
+      // Scrolling up.
+      scrollUpDelta += prevY - currY;
+      // When scrolling up we want some travel before showing the header
+      // again.
+      if (scrollUpDelta > 64) {
         wrapperEl.style.transition = '';
-        // Scrolling down.
-        setHidden(true);
-        scrollUpDelta = 0;
+        setHidden(false);
       }
-
-      prevY = currY;
-      ticking = false;
+    } else if (currY > prevY) {
+      wrapperEl.style.transition = '';
+      // Scrolling down.
+      setHidden(true);
+      scrollUpDelta = 0;
     }
 
-    function onViewportPositionChange() {
-      if (!ticking) {
-        // instead of setting a specific number of ms to wait (throttling),
-        // pass it to the browser to be processed on the next frame, whenever that may be.
-        window.requestAnimationFrame(tick);
-        ticking = true;
-      }
-    }
+    prevY = currY;
 
-    window.addEventListener('scroll', onViewportPositionChange);
-    window.addEventListener('resize', onViewportPositionChange);
-
-    return () => {
-      window.removeEventListener('scroll', onViewportPositionChange);
-      window.removeEventListener('resize', onViewportPositionChange);
-    };
-  }, []);
+  }, [(window as any).mainScrollRatio ]);
 
   return { isHeaderHidden: isHidden, headerHeight, wrapperHeight };
 }
