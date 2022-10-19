@@ -3,7 +3,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useTheme } from 'styled-components';
-
 import {
   Dropdown,
   DropMenu,
@@ -41,10 +40,8 @@ import {
   FoldTitle,
   FoldBody
 } from '$components/common/fold';
-
 import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
 import { resourceNotFound } from '$components/uhoh';
-
 import { PageMainContent } from '$styles/page';
 import {
   Legend,
@@ -57,6 +54,7 @@ import {
 import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
+import { pluralize } from '$utils/pluralize';
 import {
   analysisParams2QueryString,
   useAnalysisParams
@@ -104,8 +102,13 @@ export default function AnalysisResults() {
 
     const dateLabel = formatDateRange(date);
     const area = calcFeatArea(aoi);
+    const datasetCount = pluralize({
+      singular: 'dataset',
+      count: datasetsLayers.length,
+      showCount: true
+    });
 
-    return `Covering ${datasetsLayers.length} datasets over a ${area} km2 area for ${dateLabel}.`;
+    return `Covering ${datasetCount} over a ${area} km2 area for ${dateLabel}.`;
   }, [date, datasetsLayers, aoi]);
 
   if (errors) {
