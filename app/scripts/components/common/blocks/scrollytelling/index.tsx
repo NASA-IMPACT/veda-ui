@@ -13,7 +13,7 @@ import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 import { media } from '@devseed-ui/theme-provider';
-
+import mapboxgl from 'mapbox-gl';
 import {
   getLayerComponent,
   resolveConfigFunctions
