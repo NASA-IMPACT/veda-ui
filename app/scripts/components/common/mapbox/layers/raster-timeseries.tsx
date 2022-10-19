@@ -385,7 +385,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // FitBounds when needed
   //
   useEffect(() => {
-    if (!stacCollection || !stacCollection.length) return;
+    if (!stacCollection.length) return;
     const layerBounds = getMergedBBox(stacCollection);
 
     if (checkFitBoundsFromLayer(layerBounds, mapInstance)) {
