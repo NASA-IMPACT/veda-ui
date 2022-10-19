@@ -1,6 +1,7 @@
 import { timeFormat, timeParse } from 'd3';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { UniqueKeyUnit } from '.';
+import { round, shortenLargeNumber } from '$utils/format';
 
 export const timeFormatter = (time: number, dateFormat: string) => {
   return dateFormatter(new Date(time), dateFormat);
@@ -81,7 +82,8 @@ export function getFData({
   yKey,
   dateFormat
 }: {
-  data: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any[]; // This type should get specified once the chart is put together
   idKey: string;
   xKey: string;
   yKey: string;
@@ -216,4 +218,9 @@ export function syncMethodFunction({
     });
   }
   return (matchingIndex >= startIndex && matchingIndex <= endIndex)? matchingIndex : null;
+}
+export function getNumForChart(x: number) {
+  if (x / 1e3 < 1) return round(x).toString();
+  const { num, unit } = shortenLargeNumber(x);
+  return `${num}${unit}`; 
 }

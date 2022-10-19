@@ -24,6 +24,7 @@ import {
   getColors,
   timeFormatter,
   convertToTime,
+  getNumForChart,
   syncMethodFunction
 } from './utils';
 
@@ -165,8 +166,12 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
               position='bottom'
             />
           </XAxis>
-          <YAxis axisLine={false}>
-            <Label value={yAxisLabel} angle={-90} position='insideLeft' />
+          <YAxis axisLine={false} tickFormatter={t=> getNumForChart(t)}>
+            <Label 
+              value={yAxisLabel} 
+              angle={-90} 
+              position='insideLeft' 
+            />
           </YAxis>
           {renderHighlight && (
             <>
