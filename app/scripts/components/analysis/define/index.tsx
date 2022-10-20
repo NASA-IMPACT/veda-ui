@@ -105,15 +105,11 @@ export default function Analysis() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
 
-  const [scrollRatio, setScrollRatio] = useState<number>(0);
-
   useEffect(() => {
     // Generate enough thresholds to get regular updates from the observer
-    const threshold = Array(100).fill(0).map((_, i) => i/100);
-    const obs = new IntersectionObserver(([entries]) => {
-      // TODO Store that in context somehow so that it's accessible by useSlidingStickyHeader
-      (window as any).mainScrollRatio = entries.intersectionRatio;
-      setScrollRatio(entries.intersectionRatio);
+    const threshold = Array(300).fill(0).map((_, i) => i/300);
+    const obs = new IntersectionObserver(() => {
+      window.tick?.();
     }, {
       threshold
     });
@@ -135,7 +131,6 @@ export default function Analysis() {
       <PageHeroAnalysis
         title='Start analysis'
         description='Visualize insights from a selected area over a period of time.'
-        scrollRatio={scrollRatio}
       />
       <Fold>
         <FoldHeader>
