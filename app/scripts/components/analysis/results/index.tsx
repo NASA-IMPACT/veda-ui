@@ -97,8 +97,9 @@ export default function AnalysisResults() {
     });
   }, [queryClient, date, datasetsLayers, aoi]);
 
-  const pageDescription = useMemo(() => {
-    if (!date.start || !datasetsLayers || !aoi) return '';
+  // Textual description for the meta tags and element for the page hero.
+  const descriptions = useMemo(() => {
+    if (!date.start || !datasetsLayers || !aoi) return { meta: '', page: '' };
 
     const dateLabel = formatDateRange(date);
     const area = calcFeatArea(aoi);
@@ -108,7 +109,18 @@ export default function AnalysisResults() {
       showCount: true
     });
 
-    return `Covering ${datasetCount} over a ${area} km2 area for ${dateLabel}.`;
+    return {
+      meta: `Covering ${datasetCount} over a ${area} km2 area for ${dateLabel}.`,
+      page: (
+        <>
+          Covering <strong>{datasetCount}</strong> over a{' '}
+          <strong>
+            {area} km<sup>2</sup>
+          </strong>{' '}
+          area for <strong>{dateLabel}</strong>.
+        </>
+      )
+    };
   }, [date, datasetsLayers, aoi]);
 
   if (errors) {
@@ -125,12 +137,12 @@ export default function AnalysisResults() {
     <PageMainContent>
       <LayoutProps
         title='Analysis'
-        description={pageDescription}
+        description={descriptions.meta}
         thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
         title='Analysis'
-        description={pageDescription}
+        description={descriptions.page}
         isResults
         aoiFeature={aoi || undefined}
         renderActions={({ size }) => (

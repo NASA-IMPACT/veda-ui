@@ -150,7 +150,7 @@ const PageHeroActions = styled.div`
 
 interface PageHeroAnalysisProps {
   title: string;
-  description: string;
+  description: React.ReactNode;
   isHidden?: boolean;
   isResults?: boolean;
   aoiFeature?: Feature<MultiPolygon>;
@@ -201,7 +201,7 @@ function PageHeroAnalysis(props: PageHeroAnalysisProps) {
         <PageHeroBlockBeta>
           <PageHeroActions>
             {renderActions?.({
-              size: isStuck ? 'small' : isLargeUp ? 'large' : 'medium'
+              size: isStuck ? 'medium' : isLargeUp ? 'large' : 'medium'
             })}
           </PageHeroActions>
         </PageHeroBlockBeta>
