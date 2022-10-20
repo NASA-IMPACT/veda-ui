@@ -111,6 +111,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
         containerRef={mapContainer}
         onLoad={() => setMapLoaded(true)}
         mapOptions={mapOptions}
+        attributionPosition='top-left'
       />
     </div>
   );
