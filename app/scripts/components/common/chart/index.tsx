@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
   ReferenceArea,
   Legend,
+  Curve,
   Customized
 } from 'recharts';
 
@@ -75,6 +76,13 @@ export interface UniqueKeyUnit {
 interface RLineChartProps extends CommonLineChartProps {
   chartData: object[];
   syncId?: string;
+}
+
+function CustomCursor (props) {
+  // work around to disalbe cursor line when there is no matching index found
+  // eslint-disable-next-line react/prop-types
+  if (props.payloadIndex < 0) return null;
+  return <Curve {...props} />;
 }
 
 function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
@@ -146,7 +154,8 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
           margin={chartMargin}
           syncId={syncId}
           syncMethod={(tick, data) => {
-            return syncMethodFunction({ data, chartData, xKey, dateFormat, startIndex: brushStartIndex, endIndex: brushEndIndex });
+            const index = syncMethodFunction({ data, chartData, xKey, dateFormat, startIndex: brushStartIndex, endIndex: brushEndIndex });
+            return index;
           }}
         >
           <AltTitle title={altTitle} desc={altDesc} />
@@ -217,6 +226,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
             );
           })}
           <Tooltip
+            cursor={<CustomCursor />}
             content={
               <TooltipComponent
                 dateFormat={dateFormat}

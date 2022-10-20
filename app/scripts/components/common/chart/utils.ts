@@ -198,7 +198,7 @@ export function syncMethodFunction({
   const { activeLabel, activePayload } = data;
   const dateFormatFromData = activePayload[0].payload.dateFormat;
 
-  let matchingIndex: number | null = null;
+  let matchingIndex: number | null = -1;
 
   matchingIndex = chartData.findIndex(e => {
     return isSameFormattedDate({
@@ -208,7 +208,7 @@ export function syncMethodFunction({
     });
   });
 
-  if (matchingIndex === null) {
+  if (matchingIndex < 0) {
     matchingIndex = chartData.findIndex(e => {
       return isSameFormattedDate({
         date1: e[xKey],
@@ -217,7 +217,8 @@ export function syncMethodFunction({
       });
     });
   }
-  return (matchingIndex >= startIndex && matchingIndex <= endIndex)? matchingIndex : null;
+  // Make sure that matching point is in current (zoomed) chart 
+  return (matchingIndex >= startIndex && matchingIndex <= endIndex)? matchingIndex: -1;
 }
 export function getNumForChart(x: number) {
   if (x / 1e3 < 1) return round(x).toString();
