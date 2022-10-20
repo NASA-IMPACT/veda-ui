@@ -145,4 +145,16 @@ export default styled(PageHeroMedia)`
     );
     content: '';
   }
+
+  &::before {
+    position: absolute;
+    top: 0;
+    right: 100%;
+    bottom: 0;
+    width: 100vw;
+    z-index: 1;
+    background: ${themeVal('color.primary-900')};
+    content: '';
+    pointer-events: none;
+  }
 `;

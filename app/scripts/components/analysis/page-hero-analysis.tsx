@@ -60,7 +60,7 @@ const PageHeroSelf = styled.div`
   flex-flow: column nowrap;
   gap: ${glsp()};
   justify-content: flex-end;
-  background: ${themeVal('color.primary-900')};
+  background: ${themeVal('color.primary')};
   color: ${themeVal('color.surface')};
   min-height: 14rem;
   animation: ${reveal} 0.32s ease 0s 1;
