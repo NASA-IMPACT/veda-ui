@@ -157,4 +157,8 @@ export default styled(PageHeroMedia)`
     content: '';
     pointer-events: none;
   }
+
+  .mapboxgl-ctrl-attrib {
+    opacity: 0;
+  }
 `;
