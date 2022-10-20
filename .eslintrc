@@ -1,15 +1,13 @@
 {
-  "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
+  "parser": "@babel/eslint-parser",
   "plugins": [
     "react",
     "react-hooks",
-    "@typescript-eslint",
     "inclusive-language",
     "jest"
   ],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
     "plugin:jest/recommended"
@@ -90,9 +88,18 @@
   },
   "overrides": [
     {
-      "files": ["*.tsx","*.ts"],
+      "files": ["**/*.ts", "**/*.tsx"],
+      "plugins": [
+        "@typescript-eslint"
+      ],
       "rules": {
-        "prettier/prettier": "off"
+        "prettier/prettier": "off",
+        "no-unused-vars": "off"
+      },
+      "extends": ["eslint:recommended" /*, "plugin:@typescript-eslint/strict"*/],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
       }
     }
   ]

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -129,7 +129,7 @@ interface RelatedContentProps {
 
 export default function RelatedContent(
   props: RelatedContentProps
-): JSX.Element {
+): ReactNode {
   const { related } = props;
   const relatedContents = formatContents(related);
 
