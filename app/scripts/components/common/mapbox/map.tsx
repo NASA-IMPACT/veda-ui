@@ -1,4 +1,4 @@
-import React, { useEffect, RefObject, MutableRefObject } from 'react';
+import React, { useEffect, RefObject, MutableRefObject, ReactNode, ReactElement } from 'react';
 import styled, { useTheme } from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -40,7 +40,7 @@ interface SimpleMapProps {
   onProjectionChange?: (projection: ProjectionOptions) => void;
 }
 
-export function SimpleMap(props: SimpleMapProps): JSX.Element {
+export function SimpleMap(props: SimpleMapProps): ReactElement {
   const {
     mapRef,
     containerRef,

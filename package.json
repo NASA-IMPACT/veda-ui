@@ -18,9 +18,9 @@
     "build": "NODE_ENV=production gulp",
     "stage": "NODE_ENV=staging gulp",
     "clean": "gulp clean",
-    "lint": "yarn lint:js && yarn lint:css",
-    "lint:js": "eslint app/scripts/ --ext .js",
-    "lint:css": "stylelint 'app/styles/**/**' 'app/scripts/**/*.js'",
+    "lint": "yarn lint:scripts && yarn lint:css",
+    "lint:scripts": "eslint app/scripts/",
+    "lint:css": "stylelint 'app/styles/**/**' 'app/scripts/**/*.(js|ts|tsx|jsx)'",
     "ts-check": "yarn tsc --noEmit --skipLibCheck",
     "test": "jest"
   },
