@@ -1,4 +1,4 @@
-import React, { RefObject, useState, useEffect } from 'react';
+import React, { RefObject, useState, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -8,20 +8,26 @@ import {
   Tooltip,
   CartesianGrid,
   Label,
+  Brush,
   ResponsiveContainer,
   ReferenceArea,
   Legend,
+  Curve,
   Customized
 } from 'recharts';
 
 import { useMediaQuery } from '$utils/use-media-query';
-import renderBrushComponent from './brush';
 import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
 
 import { LegendComponent, ReferenceLegendComponent } from './legend';
-
-import { getColors, dateFormatter, convertToTime, getNumForChart } from './utils';
+import {
+  getColors,
+  timeFormatter,
+  convertToTime,
+  getNumForChart,
+  syncMethodFunction
+} from './utils';
 
 import {
   chartMinHeight,
@@ -30,7 +36,8 @@ import {
   defaultMargin,
   highlightColor,
   legendWidth,
-  brushRelatedConfigs
+  brushRelatedConfigs,
+  brushHeight
 } from './constant';
 
 const LineChartWithFont = styled(LineChart)`
@@ -63,10 +70,19 @@ export interface UniqueKeyUnit {
   label: string;
   value: string;
   active: boolean;
+  color?: string;
 }
 
 interface RLineChartProps extends CommonLineChartProps {
   chartData: object[];
+  syncId?: string;
+}
+
+function CustomCursor (props) {
+  // work around to disalbe cursor line when there is no matching index found
+  // eslint-disable-next-line react/prop-types
+  if (props.payloadIndex < 0) return null;
+  return <Curve {...props} />;
 }
 
 function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
@@ -81,6 +97,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
     altDesc,
     renderLegend = false,
     renderBrush = false,
+    syncId,
     highlightStart,
     highlightEnd,
     highlightLabel,
@@ -89,8 +106,16 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
   } = props;
 
   const [chartMargin, setChartMargin] = useState(defaultMargin);
+  const [brushStartIndex, setBrushStartIndex] = useState(0);
+  const [brushEndIndex, setBrushEndIndex] = useState(chartData.length-1);
 
   const { isMediumUp } = useMediaQuery();
+
+  function handleBrushChange(newIndex) {
+    const {startIndex, endIndex} = newIndex;
+    setBrushStartIndex(startIndex);
+    setBrushEndIndex(endIndex);
+  }
 
   useEffect(() => {
     if (!isMediumUp) {
@@ -105,6 +130,14 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
     ? colors
     : getColors({ steps: uniqueKeys.length, colorScheme });
 
+    const uniqueKeysWithColors = useMemo(() => {
+      return uniqueKeys.map((e, idx) => ({
+      ...e,
+      color: lineColors[idx]
+      }));
+    }, [uniqueKeys, lineColors]);
+    
+
   const renderHighlight = highlightStart || highlightEnd;
   return (
     <ChartWrapper>
@@ -115,7 +148,16 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
         minHeight={chartMinHeight}
         maxHeight={chartMaxHeight}
       >
-        <LineChartWithFont ref={ref} data={chartData} margin={chartMargin}>
+        <LineChartWithFont
+          ref={ref}
+          data={chartData}
+          margin={chartMargin}
+          syncId={syncId}
+          syncMethod={(tick, data) => {
+            const index = syncMethodFunction({ data, chartData, xKey, dateFormat, startIndex: brushStartIndex, endIndex: brushEndIndex });
+            return index;
+          }}
+        >
           <AltTitle title={altTitle} desc={altDesc} />
           <CartesianGrid stroke='#efefef' vertical={false} />
           <XAxis
@@ -124,7 +166,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
             domain={['dataMin', 'dataMax']}
             dataKey={xKey}
             axisLine={false}
-            tickFormatter={(t) => dateFormatter(t, dateFormat)}
+            tickFormatter={(t) => timeFormatter(t, dateFormat)}
             height={
               renderBrush
                 ? brushRelatedConfigs.with.xAxisHeight
@@ -169,7 +211,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
               />
             </>
           )}
-          {uniqueKeys.map((k, idx) => {
+          {uniqueKeysWithColors.map((k) => {
             return (
               <Line
                 type='linear'
@@ -179,17 +221,16 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
                 key={`${k.value}-line`}
                 dataKey={k.label}
                 strokeWidth={2}
-                stroke={k.active ? lineColors[idx] : 'transparent'}
+                stroke={k.active ? k.color : 'transparent'}
               />
             );
           })}
           <Tooltip
+            cursor={<CustomCursor />}
             content={
               <TooltipComponent
                 dateFormat={dateFormat}
-                xKey={xKey}
-                uniqueKeys={uniqueKeys}
-                colors={lineColors}
+                uniqueKeys={uniqueKeysWithColors}
               />
             }
           />
@@ -203,13 +244,32 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
             />
           )}
           {renderBrush &&
-            renderBrushComponent({
-              chartData,
-              xKey,
-              uniqueKeys,
-              lineColors,
-              dateFormat
-            })}
+            <Brush
+              data={chartData}
+              dataKey={xKey}
+              height={brushHeight}
+              tickFormatter={(t) => timeFormatter(t, dateFormat)}
+              onChange={handleBrushChange}
+              startIndex={brushStartIndex}
+              endIndex={brushEndIndex}
+            >
+            <LineChart data={chartData}>
+              {uniqueKeysWithColors.map((k) => {
+                return (
+                  <Line
+                    type='linear'
+                    isAnimationActive={false}
+                    dot={false}
+                    activeDot={false}
+                    key={`${k.value}-line-brush`}
+                    dataKey={k.label}
+                    strokeWidth={0.5}
+                    stroke={k.active ? k.color : 'transparent'}
+                  />
+                );
+              })}
+            </LineChart>
+            </Brush>}
         </LineChartWithFont>
       </ResponsiveContainer>
     </ChartWrapper>

@@ -3,6 +3,10 @@ import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { UniqueKeyUnit } from '.';
 import { round, shortenLargeNumber } from '$utils/format';
 
+export const timeFormatter = (time: number, dateFormat: string) => {
+  return dateFormatter(new Date(time), dateFormat);
+};
+
 export const dateFormatter = (date: Date, dateFormat: string) => {
   const format = timeFormat(dateFormat);
   return format(date);
@@ -16,7 +20,6 @@ export const convertToTime = ({
   dateFormat: string;
 }) => {
   if (!timeString) return undefined;
-
   const parseDate = timeParse(dateFormat);
   return parseDate(timeString)?.getTime();
 };
@@ -49,6 +52,7 @@ export function formatTimeSeriesData({
       const currentStat = e;
       return {
         [xKey]: convertToTime({ timeString: dates[idx], dateFormat }),
+        dateFormat,
         ...uniqueKeys.reduce((acc, curr) => {
           return { ...acc, [curr.label]: currentStat[curr.value] };
         }, {})
@@ -146,6 +150,76 @@ export const getColors = function ({
   return new Array(steps).fill(0).map((e, idx) => colorFn(idx / steps));
 };
 
+function isSameFormattedDate({
+  date1,
+  date2,
+  formatter
+}: {
+  date1: Date;
+  date2: Date;
+  formatter: (d: Date) => string;
+}) {
+  return formatter(date1) === formatter(date2);
+}
+
+/**
+ * method to sync charts on the analysis page
+ * matches two dates in different formats by consolidating formats
+ * (active chart is the chart that user is interacting with, inactive charts are the rest of the page)
+ * ex. When active chart's format is less granular:
+ * When active chart's dateformat is %Y 2022, inactive charts format is %Y/%m 2022/03
+ * inactive chart's value gets formatted as active chart's dateformat (2022) - returns true
+ * ex. When active chart's format is more granular:
+ * When active chart's dateformat is %Y/%m 2022/03, inactive charts format is %Y 2022
+ * inactive chart's value gets formatted as active format first 2022/01, 
+ * since there is no matching, the method will try again to consolidate dateformat with inactive chart's format
+ * @param {object} data data of active chart. coming from rechart
+ * @param {object[]} chartData data for inactive chart
+ * @param {string} xKey xKey for inactive chart
+ * @param {string} dateFormat dateFormat for inactive chart
+ */
+
+export function syncMethodFunction({
+  data,
+  chartData,
+  xKey,
+  dateFormat,
+  startIndex,
+  endIndex
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any; // Recharts define data payload as any
+  chartData: object[];
+  xKey: string;
+  dateFormat: string;
+  startIndex: number;
+  endIndex: number;
+}) {
+  const { activeLabel, activePayload } = data;
+  const dateFormatFromData = activePayload[0].payload.dateFormat;
+
+  let matchingIndex: number | null = -1;
+
+  matchingIndex = chartData.findIndex(e => {
+    return isSameFormattedDate({
+      date1: e[xKey],
+      date2: activeLabel,
+      formatter: (value) => dateFormatter(value, dateFormat)
+    });
+  });
+
+  if (matchingIndex < 0) {
+    matchingIndex = chartData.findIndex(e => {
+      return isSameFormattedDate({
+        date1: e[xKey],
+        date2: activeLabel,
+        formatter: (value) => dateFormatter(value, dateFormatFromData)
+      });
+    });
+  }
+  // Make sure that matching point is in current (zoomed) chart 
+  return (matchingIndex >= startIndex && matchingIndex <= endIndex)? matchingIndex: -1;
+}
 export function getNumForChart(x: number) {
   if (x / 1e3 < 1) return round(x).toString();
   const { num, unit } = shortenLargeNumber(x);

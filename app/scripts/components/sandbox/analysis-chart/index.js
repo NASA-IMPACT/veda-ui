@@ -144,6 +144,26 @@ export default function AnalysisChart() {
               />
             </Hug>
           </Hug>
+          <Hug>
+            <Hug
+              grid={{
+                smallUp: ['full-start', 'full-end'],
+                largeUp: ['content-start', 'content-7']
+              }}
+            >
+              <Chart
+                timeSeriesData={dataForChart1.timeSeriesData}
+                uniqueKeys={dynamicUniqueKeys}
+                xKey={dataForChart1.xKey}
+                dates={['2020', '2021', '2022', '2023']}
+                dateFormat='%Y'
+                altTitle='alt title'
+                altDesc='alt desc'
+                xAxisLabel='x axis label'
+                yAxisLabel='y axis label'
+              />
+            </Hug>
+          </Hug>
         </Wrapper>
       </Constrainer>
     </PageMainContent>
