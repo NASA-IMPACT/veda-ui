@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
@@ -46,6 +46,7 @@ import {
 import AoiSelector from './aoi-selector';
 import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
 import { Tip } from '$components/common/tip';
+import { dateToInputFormat, inputFormatToDate } from '$utils/date';
 
 const FormBlock = styled.div`
   display: flex;
@@ -100,7 +101,8 @@ export default function Analysis() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
 
-  const { start, end, datasetsLayers, aoi, errors } = useAnalysisParams();
+  const { params, setAnalysisParam } = useAnalysisParams();
+  const { start, end, datasetsLayers, aoi, errors } = params;
 
   const { aoi: aoiDrawState, onAoiEvent } = useAoiControls();
 
@@ -115,6 +117,14 @@ export default function Analysis() {
     datasetsLayers,
     aoi
   });
+
+  const onStartDateChange = useCallback((e) => {
+    setAnalysisParam('start', inputFormatToDate(e.target.value));
+  }, [setAnalysisParam]);
+
+  const onEndDateChange = useCallback((e) => {
+    setAnalysisParam('end',inputFormatToDate(e.target.value));
+  }, [setAnalysisParam]);
 
   return (
     <PageMainContent>
@@ -205,6 +215,8 @@ export default function Analysis() {
                   size='large'
                   id='start-date'
                   name='start-date'
+                  value={start ? dateToInputFormat(start) : null}
+                  onChange={onStartDateChange}
                 />
               </FormGroupStructure>
 
@@ -214,6 +226,8 @@ export default function Analysis() {
                   size='large'
                   id='end-date'
                   name='end-date'
+                  value={end ? dateToInputFormat(end) : null}
+                  onChange={onEndDateChange}
                 />
               </FormGroupStructure>
             </FormBlock>

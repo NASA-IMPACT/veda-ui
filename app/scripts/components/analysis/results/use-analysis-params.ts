@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import qs from 'qs';
 import { useLocation } from 'react-router';
 import { Feature, MultiPolygon } from 'geojson';
@@ -17,7 +17,12 @@ type AnalysisParams = {
   errors: any[] | null;
 };
 
-type AnalysisParamsNull = Omit<Record<keyof AnalysisParams, null>, 'errors'> & { errors: any[] };
+type AnalysisParamsNull = Omit<Record<keyof AnalysisParams, null>, 'errors'> & {
+  errors: any[];
+};
+
+type AnyAnalysisParamsKey = keyof AnalysisParams;
+type AnyAnalysisParamsType = Date | DatasetLayer[] | Feature<MultiPolygon>;
 
 const initialState: AnalysisParamsNull = {
   start: null,
@@ -27,7 +32,13 @@ const initialState: AnalysisParamsNull = {
   errors: []
 };
 
-export function useAnalysisParams(): AnalysisParams | AnalysisParamsNull {
+export function useAnalysisParams(): {
+  params: AnalysisParams | AnalysisParamsNull;
+  setAnalysisParam: (
+    param: AnyAnalysisParamsKey,
+    value: AnyAnalysisParamsType
+  ) => void;
+} {
   const location = useLocation();
 
   const [params, setParams] = useState<AnalysisParams | AnalysisParamsNull>(
@@ -117,7 +128,17 @@ export function useAnalysisParams(): AnalysisParams | AnalysisParamsNull {
     }
   }, [location.search]);
 
-  return params;
+  const setAnalysisParam = useCallback(
+    (param: AnyAnalysisParamsKey, value: AnyAnalysisParamsType) => {
+      setParams({
+        ...params,
+        [param]: value
+      });
+    },
+    [params]
+  );
+
+  return { params, setAnalysisParam };
 }
 
 export function analysisParams2QueryString(

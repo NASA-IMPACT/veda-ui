@@ -1,4 +1,4 @@
-import { format, isSameMonth, isSameYear } from 'date-fns';
+import { format, isSameMonth, isSameYear, parse } from 'date-fns';
 
 /**
  * Create a date which matches the input date offsetting the timezone to match
@@ -129,3 +129,19 @@ export function formatDateRange(range: { start: Date; end: Date }) {
     return `${startStr} to ${endStr}`;
   }
 }
+
+/**
+ * Converts a native JS date to the format accepted by HTML inputs
+ * @param date 
+ * @returns string
+ */
+ export function dateToInputFormat(date?: Date) {
+  if (!date) return undefined;
+  return format(date, 'yyyy-MM-dd');
+}
+
+export function inputFormatToDate(inputFormat: string) {
+  return parse(inputFormat, 'yyyy-MM-dd', new Date());
+}
+
+
