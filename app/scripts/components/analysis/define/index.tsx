@@ -100,7 +100,7 @@ export default function Analysis() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
 
-  const { date, datasetsLayers, aoi, errors } = useAnalysisParams();
+  const { start, end, datasetsLayers, aoi, errors } = useAnalysisParams();
 
   const { aoi: aoiDrawState, onAoiEvent } = useAoiControls();
 
@@ -110,7 +110,8 @@ export default function Analysis() {
   const isNewAnalysis = !!errors?.length;
 
   const analysisParamsQs = analysisParams2QueryString({
-    date,
+    start,
+    end,
     datasetsLayers,
     aoi
   });

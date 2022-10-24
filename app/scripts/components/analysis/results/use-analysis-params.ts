@@ -9,40 +9,30 @@ import { polygonUrlDecode, polygonUrlEncode } from '$utils/polygon-url';
 
 // ?start=2015-01-01T00:00:00.000Z&end=2022-01-01T00:00:00.000Z&datasets=no2-monthly|blue-tarp-planetscope&aoi=-9.60205,36.72127|-7.03125,36.87962|-6.85546,39.45316|-6.52587,40.93011|-5.55908,42.11452|-9.38232,42.22851|-8.89892,40.84706|-9.93164,38.85682|-9.47021,38.08268|-8.96484,38.09998||-12.01904,25.95804|-8.65722,25.97779|-8.67919,27.68352|-13.05175,27.68352|-14.89746,25.95804|-12.04101,24.44714
 
-type AnalysisParams =
-  | {
-      date: {
-        start: Date;
-        end: Date;
-      };
-      datasetsLayers: DatasetLayer[];
-      aoi: Feature<MultiPolygon>;
-      errors: null;
-    }
-  | {
-      date: {
-        start: null;
-        end: null;
-      };
-      datasetsLayers: null;
-      aoi: null;
-      errors: null | any[];
-    };
-
-const initialState = {
-  date: {
-    start: null,
-    end: null
-  },
-  datasetsLayers: null,
-  aoi: null,
-  errors: null
+type AnalysisParams = {
+  start: Date;
+  end: Date;
+  datasetsLayers: DatasetLayer[];
+  aoi: Feature<MultiPolygon>;
+  errors: any[] | null;
 };
 
-export function useAnalysisParams(): AnalysisParams {
+type AnalysisParamsNull = Omit<Record<keyof AnalysisParams, null>, 'errors'> & { errors: any[] };
+
+const initialState: AnalysisParamsNull = {
+  start: null,
+  end: null,
+  datasetsLayers: null,
+  aoi: null,
+  errors: []
+};
+
+export function useAnalysisParams(): AnalysisParams | AnalysisParamsNull {
   const location = useLocation();
 
-  const [params, setParams] = useState<AnalysisParams>(initialState);
+  const [params, setParams] = useState<AnalysisParams | AnalysisParamsNull>(
+    initialState
+  );
 
   useEffect(() => {
     const { start, end, datasets, aoi } = qs.parse(location.search, {
@@ -104,10 +94,9 @@ export function useAnalysisParams(): AnalysisParams {
       }
 
       setParams({
-        date: {
-          start: startDate,
-          end: endDate
-        },
+        start: startDate,
+        end: endDate,
+
         datasetsLayers: layers,
         aoi: geojson,
         errors: null
@@ -132,11 +121,11 @@ export function useAnalysisParams(): AnalysisParams {
 }
 
 export function analysisParams2QueryString(
-  params: Omit<AnalysisParams, 'errors'>
+  params: Omit<AnalysisParams | AnalysisParamsNull, 'errors'>
 ) {
   const urlParams = qs.stringify({
-    start: params.date.start ? userTzDate2utcString(params.date.start) : undefined,
-    end: params.date.end ? userTzDate2utcString(params.date.end) : undefined,
+    start: params.start ? userTzDate2utcString(params.start) : undefined,
+    end: params.end ? userTzDate2utcString(params.end) : undefined,
     datasets: params.datasetsLayers
       ? params.datasetsLayers.map((d) => d.id).join('|')
       : undefined,
