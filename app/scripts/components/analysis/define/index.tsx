@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
@@ -48,6 +48,8 @@ import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
 import { Tip } from '$components/common/tip';
 import { dateToInputFormat, inputFormatToDate } from '$utils/date';
 import { Feature, MultiPolygon } from 'geojson';
+import { getFilterPayload } from '$components/common/mapbox/layers/utils';
+import axios from 'axios';
 
 const FormBlock = styled.div`
   display: flex;
@@ -132,6 +134,40 @@ export default function Analysis() {
     },
     [setAnalysisParam]
   );
+
+  const controller = useRef<AbortController>();
+
+  useEffect(() => {
+    if (!start || !end || !aoi) return;
+
+    const load = async () => {
+      try {
+
+        if (controller.current) controller.current.abort();
+        controller.current = new AbortController();
+  
+        const url = `${process.env.API_STAC_ENDPOINT}/search`;
+        
+        const payload = {
+          'filter-lang': 'cql2-json',
+          filter: getFilterPayload(start, undefined, end),
+          limit: 500,
+          fields: {
+            include: ['bbox'],
+            exclude: ['collection', 'links']
+          }
+        };
+        const response = await axios.post(url, payload, {
+          signal: controller.current.signal
+        });
+        console.log(response)
+      } catch (error) {
+        // TODO
+      }
+    };
+    load();
+
+  }, [start, end, aoi]);
 
   useEffect(() => {
     if (!aoiDrawState.drawing && aoiDrawState.feature) {
@@ -242,7 +278,7 @@ export default function Analysis() {
                   size='large'
                   id='start-date'
                   name='start-date'
-                  value={start ? dateToInputFormat(start) : null}
+                  value={start ? dateToInputFormat(start) : ''}
                   onChange={onStartDateChange}
                 />
               </FormGroupStructure>
@@ -253,7 +289,7 @@ export default function Analysis() {
                   size='large'
                   id='end-date'
                   name='end-date'
-                  value={end ? dateToInputFormat(end) : null}
+                  value={end ? dateToInputFormat(end) : ''}
                   onChange={onEndDateChange}
                 />
               </FormGroupStructure>
