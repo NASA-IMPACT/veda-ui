@@ -110,14 +110,14 @@ export default function AnalysisResults() {
     });
 
     return {
-      meta: `Covering ${datasetCount} over a ${area} km2 area for ${dateLabel}.`,
+      meta: `Covering ${datasetCount} over a ${area} km2 area from ${dateLabel}.`,
       page: (
         <>
           Covering <strong>{datasetCount}</strong> over a{' '}
           <strong>
             {area} km<sup>2</sup>
           </strong>{' '}
-          area for <strong>{dateLabel}</strong>.
+          area from <strong>{dateLabel}</strong>.
         </>
       )
     };
