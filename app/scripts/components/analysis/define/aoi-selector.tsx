@@ -36,6 +36,7 @@ import {
   AoiChangeListenerOverload,
   AoiState
 } from '$components/common/aoi/types';
+import { multiPolygonToPolygon } from '../utils';
 
 const MapContainer = styled.div`
   position: relative;
@@ -62,15 +63,7 @@ export default function AoiSelector(props: AoiSelectorProps) {
   // Keeping just the first one.
   const polygon: Feature<Polygon> | null = useDeepCompareMemo(() => {
     return qsFeature
-      ? {
-          type: 'Feature',
-          id: 'qs-feature',
-          properties: {},
-          geometry: {
-            type: 'Polygon',
-            coordinates: qsFeature.geometry.coordinates[0]
-          }
-        }
+      ? { ...multiPolygonToPolygon(qsFeature), id: 'qs-feature' }
       : null;
   }, [qsFeature]);
 

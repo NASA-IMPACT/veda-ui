@@ -293,11 +293,10 @@ export async function requestQuickCache(
  *
  * @param {Date} date Date to request
  * @param {string} collection STAC collection to request
- * @param {Date} endDate End date to request. If not specified, date will be used
  * @returns Object
  */
-export function getFilterPayload(date: Date, collection?: string, endDate?: Date) {
-  const filterPayload = {
+export function getFilterPayload(date: Date, collection: string) {
+  return {
     op: 'and',
     args: [
       {
@@ -306,17 +305,14 @@ export function getFilterPayload(date: Date, collection?: string, endDate?: Date
       },
       {
         op: '<=',
-        args: [{ property: 'datetime' }, userTzDate2utcString(endOfDay(endDate || date))]
+        args: [{ property: 'datetime' }, userTzDate2utcString(endOfDay(date))]
+      },
+      {
+        op: 'eq',
+        args: [{ property: 'collection' }, collection]
       }
     ]
   };
-  if (collection) {
-    filterPayload.args.push({
-      op: 'eq',
-      args: [{ property: 'collection' }, collection]
-    });
-  }
-  return filterPayload;
 }
 
 export function getMergedBBox(features: StacFeature[]) {

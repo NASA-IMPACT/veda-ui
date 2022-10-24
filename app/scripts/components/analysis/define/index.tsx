@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { uniqBy } from 'lodash';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarIconButton, ToolbarLabel } from '@devseed-ui/toolbar';
 import {
@@ -48,8 +49,9 @@ import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
 import { Tip } from '$components/common/tip';
 import { dateToInputFormat, inputFormatToDate } from '$utils/date';
 import { Feature, MultiPolygon } from 'geojson';
-import { getFilterPayload } from '$components/common/mapbox/layers/utils';
+import { getFilterPayload, multiPolygonToPolygon } from '../utils';
 import axios from 'axios';
+import { DatasetLayer } from 'delta/thematics';
 
 const FormBlock = styled.div`
   display: flex;
@@ -135,46 +137,68 @@ export default function Analysis() {
     [setAnalysisParam]
   );
 
-  const controller = useRef<AbortController>();
 
+  const datasetsLayersMeta: DatasetLayer[] = uniqBy(
+    thematic.data.datasets.map((dataset) => dataset.layers).flat(),
+    'stacCol'
+  );
+
+
+  const onDatasetLayerChange = useCallback((e) => {
+    const id = e.target.id;
+    const newDatasetsLayers = [...(datasetsLayers || [])];
+    if (e.target.checked) {
+      const newDatasetLayer = datasetsLayersMeta.find(l => l.id ===id);
+      if (newDatasetLayer) {
+        newDatasetsLayers.push(newDatasetLayer);
+      }
+    } else {
+      const removeAt = newDatasetsLayers.findIndex(l => l.id === id);
+      newDatasetsLayers.splice(removeAt, 1);
+    }
+    setAnalysisParam('datasetsLayers',newDatasetsLayers);
+  }, [setAnalysisParam]);
+
+  const selectedDatasetLayerIds = datasetsLayers?.map((layer) => layer.id);
+  const datasetsLayersMetaIds = datasetsLayersMeta.map((layer) => layer.id);
+
+  const controller = useRef<AbortController>();
   useEffect(() => {
-    if (!start || !end || !aoi) return;
+    if (!start || !end || !aoi || !datasetsLayersMetaIds) return;
 
     const load = async () => {
       try {
-
         if (controller.current) controller.current.abort();
         controller.current = new AbortController();
-  
+
         const url = `${process.env.API_STAC_ENDPOINT}/search`;
-        
+
         const payload = {
           'filter-lang': 'cql2-json',
-          filter: getFilterPayload(start, undefined, end),
-          limit: 500,
+          filter: getFilterPayload(start, end, multiPolygonToPolygon(aoi), datasetsLayersMetaIds),
+          // TODO
+          limit: 9999,
           fields: {
-            include: ['bbox'],
-            exclude: ['collection', 'links']
+            exclude: ['links']
           }
         };
         const response = await axios.post(url, payload, {
           signal: controller.current.signal
         });
-        console.log(response)
+        // TODO filter out datasetsLayersMeta
       } catch (error) {
         // TODO
       }
     };
     load();
-
-  }, [start, end, aoi]);
+  }, [start, end, aoi, datasetsLayersMetaIds]);
 
   useEffect(() => {
     if (!aoiDrawState.drawing && aoiDrawState.feature) {
       // Quick and dirty conversion to MultiPolygon - might be avoided if using Google-polyline?
       const toMultiPolygon: Feature<MultiPolygon> = {
         type: 'Feature',
-        properties: {...aoiDrawState.feature.properties},
+        properties: { ...aoiDrawState.feature.properties },
         geometry: {
           type: 'MultiPolygon',
           coordinates: [aoiDrawState.feature.geometry.coordinates]
@@ -182,7 +206,7 @@ export default function Analysis() {
       };
       setAnalysisParam('aoi', toMultiPolygon);
     }
-  // setAnalysisParam not added to dependency array as it causes a infinite loop
+    // setAnalysisParam not added to dependency array as it causes a infinite loop
   }, [aoiDrawState]);
 
   const readyToSelectDatasets = start && end && aoi;
@@ -306,61 +330,20 @@ export default function Analysis() {
         </FoldHeader>
         <FoldBody>
           {readyToSelectDatasets ? (
-            <Form>
+            <Form onChange={onDatasetLayerChange}>
               <CheckableGroup>
-                <FormCheckableCustom
-                  id='dataset-a'
-                  name='dataset-a'
-                  textPlacement='right'
-                  type='checkbox'
-                >
-                  Dataset name
-                </FormCheckableCustom>
-
-                <FormCheckableCustom
-                  id='dataset-b'
-                  name='dataset-b'
-                  textPlacement='right'
-                  type='checkbox'
-                >
-                  Dataset name
-                </FormCheckableCustom>
-
-                <FormCheckableCustom
-                  id='dataset-c'
-                  name='dataset-c'
-                  textPlacement='right'
-                  type='checkbox'
-                >
-                  Dataset name
-                </FormCheckableCustom>
-
-                <FormCheckableCustom
-                  id='dataset-d'
-                  name='dataset-d'
-                  textPlacement='right'
-                  type='checkbox'
-                >
-                  Dataset name
-                </FormCheckableCustom>
-
-                <FormCheckableCustom
-                  id='dataset-e'
-                  name='dataset-e'
-                  textPlacement='right'
-                  type='checkbox'
-                >
-                  Dataset name
-                </FormCheckableCustom>
-
-                <FormCheckableCustom
-                  id='dataset-f'
-                  name='dataset-f'
-                  textPlacement='right'
-                  type='checkbox'
-                >
-                  Dataset name
-                </FormCheckableCustom>
+                {datasetsLayersMeta.map((datasetLayer) => (
+                  <FormCheckableCustom
+                    key={datasetLayer.id}
+                    id={datasetLayer.id}
+                    name={datasetLayer.id}
+                    textPlacement='right'
+                    type='checkbox'
+                    checked={selectedDatasetLayerIds?.includes(datasetLayer.id)}
+                  >
+                    {datasetLayer.name}
+                  </FormCheckableCustom>
+                ))}
               </CheckableGroup>
             </Form>
           ) : (
