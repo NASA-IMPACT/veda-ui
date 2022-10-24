@@ -8,7 +8,7 @@ export const Legend = styled.div`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  gap: ${variableGlsp()};
+  gap: ${variableGlsp(0.5)};
 `;
 
 export const LegendTitle = styled(Overline).attrs({
@@ -21,15 +21,17 @@ export const LegendList = styled.dl`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  gap: ${variableGlsp()};
+  gap: ${variableGlsp(0.5)};
 `;
 
 export const LegendSwatch = styled.dt`
-  font-size: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const LegendLabel = styled(Subtitle).attrs({
   as: 'dd'
 })`
-  /* styled-component */
+  margin-left: ${variableGlsp(-0.25)};
 `;

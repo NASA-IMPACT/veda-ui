@@ -11,10 +11,10 @@ export const PageMainContent = styled.main`
   flex-direction: column;
 `;
 
-export const PageMainTitle = styled(VarHeading).attrs({
-  as: 'h1',
-  size: 'xxlarge'
-})`
+export const PageMainTitle = styled(VarHeading).attrs((props) => ({
+  as: props.as || 'h1',
+  size: props.size || 'xxlarge'
+}))`
   /* styled-component */
 `;
 

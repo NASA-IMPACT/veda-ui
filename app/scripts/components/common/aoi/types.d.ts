@@ -1,24 +1,6 @@
-export interface RectPolygon {
-  type: 'Polygon';
-  coordinates: [
-    [
-      [number, number],
-      [number, number],
-      [number, number],
-      [number, number],
-      [number, number]
-    ]
-  ];
-}
+import { Feature, Polygon } from 'geojson';
 
-export interface AoiFeature {
-  type: 'Feature';
-  id?: string;
-  properties?: {
-    [key: string]: any;
-  };
-  geometry: RectPolygon;
-}
+export type AoiFeature = Feature<Polygon>;
 
 export interface AoiBounds {
   ne: [number, number];
@@ -37,7 +19,13 @@ export interface AoiState {
   actionOrigin: null | 'panel' | 'map';
 }
 
-export type AoiChangeEvent = 'aoi.draw-click' | 'aoi.set-feature' | 'aoi.clear' | 'aoi.draw-finish' | 'aoi.selection' | 'aoi.update'
+export type AoiChangeEvent =
+  | 'aoi.draw-click'
+  | 'aoi.set-feature'
+  | 'aoi.clear'
+  | 'aoi.draw-finish'
+  | 'aoi.selection'
+  | 'aoi.update';
 
 export type AoiChangeListener = (
   event: AoiChangeEvent,

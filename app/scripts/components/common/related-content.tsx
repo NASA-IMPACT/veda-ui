@@ -7,7 +7,9 @@ import {
   datasets,
   Media,
   ThematicData,
-  RelatedContentData
+  RelatedContentData,
+  DiscoveryData,
+  DeltaDatum
 } from 'delta/thematics';
 import { utcString2userTzDate } from '$utils/date';
 import {
@@ -50,7 +52,7 @@ interface FormatBlock {
   parent: ParentType;
 }
 
-function formatUrl(id: string, thematic: ThematicData, parent: string) {
+function formatUrl(id: string, thematic: DeltaDatum<ThematicData>, parent: string) {
   switch (parent) {
     case thematicString:
       return {
@@ -100,20 +102,18 @@ function formatContents(relatedData: Array<RelatedContentData>) {
 
     const matchingContent = contentCategory[type]?.[id].data;
 
-    if (!matchingContent)
+    if (!matchingContent) {
       throw Error(
         'Something went wrong. Check the related content frontmatter.'
       );
+    }
 
-    const { name, description, pubDate, media } = matchingContent as Record<
-      string,
-      any
-    >;
+    const { name, description, media } = matchingContent;
     return formatBlock({
       id,
       name,
       description,
-      date: pubDate,
+      date: (matchingContent as DiscoveryData).pubDate,
       thematic: contentCategory[thematicString][thematicId],
       media,
       parent: type

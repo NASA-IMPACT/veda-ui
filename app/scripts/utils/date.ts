@@ -1,3 +1,5 @@
+import { format, isSameMonth, isSameYear } from 'date-fns';
+
 /**
  * Create a date which matches the input date offsetting the timezone to match
  * the user's.
@@ -84,4 +86,46 @@ export function userTzDate2utcString(date) {
 export function isValidDate(dateString?: string | null) {
   const date = utcString2userTzDate(dateString);
   return !isNaN(date.getTime());
+}
+
+/**
+ * Format the date in a pretty way as to not repeat values if the month or
+ * year are the same.
+ * Examples:
+ * Jan 1st, 2020 - Dec 31st, 2021
+ * Jan 1st - Dec 31st, 2020
+ * Dec 01-31, 2020
+ * Dec 31st, 2020
+ *
+ * @param {object} range Date range to format
+ */
+export function formatDateRange(range: { start: Date; end: Date }) {
+  const { start, end } = range;
+
+  const DATE_FORMAT_FULL = 'MMM do, yyyy';
+
+  // Format the label in a pretty way as to not repeat values if the month or
+  // year are the same.
+  // Examples:
+  // Jan 1st, 2020 — Dec 31st, 2021
+  // Jan 1st — Dec 31st, 2020
+  // Dec 01-31, 2020
+  // Dec 31st, 2020
+
+  const startStr = format(start, DATE_FORMAT_FULL);
+  const endStr = format(end, DATE_FORMAT_FULL);
+
+  if (startStr === endStr) {
+    return startStr;
+  }
+
+  // Things get trickier when we have to compare dates. Here the range plays a
+  // role.
+  if (isSameMonth(start, end) && isSameYear(start, end)) {
+    return `${format(start, 'MMM dd')}-${format(end, 'dd, yyyy')}`;
+  } else if (isSameYear(start, end)) {
+    return `${format(start, 'MMM do')} to ${endStr}`;
+  } else {
+    return `${startStr} to ${endStr}`;
+  }
 }

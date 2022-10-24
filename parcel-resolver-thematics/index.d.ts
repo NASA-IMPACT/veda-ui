@@ -114,7 +114,7 @@ declare module 'delta/thematics' {
   /**
    * Data structure for the Datasets frontmatter.
    */
-  interface DatasetData {
+  export interface DatasetData {
     featuredOn?: string[];
     id: string;
     name: string;
@@ -136,11 +136,12 @@ declare module 'delta/thematics' {
   /**
    * Data structure for the Discoveries frontmatter.
    */
-  interface DiscoveryData {
+  export interface DiscoveryData {
     featuredOn?: string[];
     id: string;
     name: string;
     description: string;
+    pubDate: string;
     media?: Media;
     thematics: string[];
     related?: Array<RelatedContentData>;
@@ -182,7 +183,7 @@ declare module 'delta/thematics' {
     [key: string]: DeltaDatum<T>;
   }
 
-  interface DeltaDatum<T> {
+  export interface DeltaDatum<T> {
     /**
      * Contains all the variables in the content's front matter.
      */

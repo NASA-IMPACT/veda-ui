@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import { Link } from 'react-router-dom';
+import { sticky } from 'tippy.js';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import {
   Toolbar,
@@ -24,19 +25,25 @@ import {
   CollecticonArea,
   CollecticonCircleInformation,
   CollecticonEllipsisVertical,
+  CollecticonTickSmall,
   CollecticonTrashBin,
-  CollecticonUpload2
+  CollecticonUpload2,
+  CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
+import { Button } from '@devseed-ui/button';
 
 import { useThematicArea } from '$utils/thematics';
+import { variableGlsp } from '$styles/variable-utils';
+import {
+  analysisParams2QueryString,
+  useAnalysisParams
+} from '../results/use-analysis-params';
+import { thematicAnalysisPath } from '$utils/routes';
 
 import { PageMainContent } from '$styles/page';
-import { variableGlsp } from '$styles/variable-utils';
-
 import { LayoutProps } from '$components/common/layout-root';
 import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
 import { resourceNotFound } from '$components/uhoh';
-
 import {
   Fold,
   FoldHeader,
@@ -45,6 +52,7 @@ import {
   FoldTitle,
   FoldBody
 } from '$components/common/fold';
+import { Tip } from '$components/common/tip';
 
 const MapContainer = styled.div`
   display: flex;
@@ -108,6 +116,19 @@ export default function Analysis() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
 
+  const { date, datasetsLayers, aoi, errors } = useAnalysisParams();
+
+  // If there are errors in the url parameters it means that this should be
+  // treated as a new analysis. If the parameters are all there and correct, the
+  // user is refining the analysis.
+  const isNewAnalysis = !!errors?.length;
+
+  const analysisParamsQs = analysisParams2QueryString({
+    date,
+    datasetsLayers,
+    aoi
+  });
+
   return (
     <PageMainContent>
       <LayoutProps
@@ -116,8 +137,34 @@ export default function Analysis() {
         thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
-        title='Start analysis'
+        title={isNewAnalysis ? 'Start analysis' : 'Refine analysis'}
         description='Visualize insights from a selected area over a period of time.'
+        renderActions={({ size }) => (
+          <>
+            {!isNewAnalysis && (
+              <Button
+                forwardedAs={Link}
+                to={`${thematicAnalysisPath(thematic)}/results${analysisParamsQs}`}
+                type='button'
+                size={size}
+                variation='achromic-outline'
+              >
+                <CollecticonXmarkSmall /> Cancel
+              </Button>
+            )}
+            <Tip
+              visible
+              placement='bottom-end'
+              content='To get results, define an area, pick a date and select datasets.'
+              sticky='reference'
+              plugins={[sticky]}
+            >
+              <Button type='button' size={size} variation='achromic-outline'>
+                <CollecticonTickSmall /> Save
+              </Button>
+            </Tip>
+          </>
+        )}
       />
       <Fold>
         <FoldHeader>
