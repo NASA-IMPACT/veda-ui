@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import T from 'prop-types';
 import styled, { css } from 'styled-components';
 import {
   glsp,
@@ -9,44 +8,15 @@ import {
   visuallyHidden
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
-import { Button } from '@devseed-ui/button';
-import {
-  CollecticonTickSmall,
-  CollecticonXmarkSmall
-} from '@devseed-ui/collecticons';
 
-import MapboxMap from '$components/common/mapbox';
 import { PageLead, PageMainTitle } from '$styles/page';
 import Constrainer from '$styles/constrainer';
-import Try from '../common/try-render';
+import PageHeroMedia from './page-hero-media';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { useMediaQuery } from '$utils/use-media-query';
 import { useSlidingStickyHeaderProps } from '../common/layout-root';
-
-const PageHeroMedia = styled(MapboxMap)`
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-
-  > * {
-    mix-blend-mode: screen;
-    filter: grayscale(100%);
-
-    /* Improve performance */
-    transform: translate3d(0, 0, 0);
-  }
-
-  &::after {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: ${themeVal('color.primary-500')};
-    content: '';
-    mix-blend-mode: multiply;
-  }
-`;
+import { Feature, MultiPolygon } from 'geojson';
 
 const PageHeroBlockAlpha = styled.div`
   display: flex;
@@ -178,14 +148,23 @@ const PageHeroActions = styled.div`
   `}
 `;
 
-function PageHeroAnalysis(props) {
+interface PageHeroAnalysisProps {
+  title: string;
+  description: React.ReactNode;
+  isHidden?: boolean;
+  isResults?: boolean;
+  aoiFeature?: Feature<MultiPolygon>;
+  renderActions: ({ size }: { size: string }) => React.ReactNode;
+}
+
+function PageHeroAnalysis(props: PageHeroAnalysisProps) {
   const {
     title,
     description,
-    renderAlphaBlock,
-    renderBetaBlock,
     isHidden,
-    isResults = false
+    isResults = false,
+    aoiFeature,
+    renderActions
   } = props;
 
   const { isHeaderHidden, headerHeight, wrapperHeight } =
@@ -211,52 +190,32 @@ function PageHeroAnalysis(props) {
       isStuck={isStuck}
     >
       <PageHeroInner isStuck={isStuck}>
-        <Try fn={renderAlphaBlock} wrapWith={PageHeroBlockAlpha}>
+        <PageHeroBlockAlpha>
           <PageHeroHGroup>
             <PageMainTitle size={isStuck ? 'xsmall' : undefined}>
               {title}
             </PageMainTitle>
           </PageHeroHGroup>
           {description && <PageLead>{description}</PageLead>}
-        </Try>
-        <Try fn={renderBetaBlock} wrapWith={PageHeroBlockBeta}>
+        </PageHeroBlockAlpha>
+        <PageHeroBlockBeta>
           <PageHeroActions>
-            <Button
-              type='button'
-              size={isStuck ? 'small' : isLargeUp ? 'large' : 'medium'}
-              variation='achromic-outline'
-            >
-              <CollecticonXmarkSmall /> Cancel
-            </Button>
-            <Button
-              type='button'
-              size={isStuck ? 'small' : isLargeUp ? 'large' : 'medium'}
-              variation='achromic-outline'
-            >
-              <CollecticonTickSmall /> Save
-            </Button>
+            {renderActions?.({
+              size: isStuck ? 'medium' : isLargeUp ? 'large' : 'medium'
+            })}
           </PageHeroActions>
-        </Try>
+        </PageHeroBlockBeta>
       </PageHeroInner>
-      {isResults && <PageHeroMedia />}
+      {isResults && <PageHeroMedia feature={aoiFeature} />}
     </PageHeroSelf>
   );
 }
 
 export default PageHeroAnalysis;
 
-PageHeroAnalysis.propTypes = {
-  title: T.string,
-  description: T.string,
-  renderAlphaBlock: T.func,
-  renderBetaBlock: T.func,
-  isHidden: T.bool,
-  isResults: T.bool
-};
-
 const OBSERVER_PIXEL_ID = 'page-hero-pixel';
 
-function useIsStuck(threshold) {
+function useIsStuck(threshold: number) {
   const [isStuck, setStuck] = useState(window.scrollY > threshold);
 
   useEffect(() => {

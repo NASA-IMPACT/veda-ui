@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import { useTheme } from 'styled-components';
-
 import {
   Dropdown,
   DropMenu,
@@ -18,7 +18,8 @@ import {
 import {
   CollecticonChevronDownSmall,
   CollecticonCircleInformation,
-  CollecticonDownload2
+  CollecticonDownload2,
+  CollecticonPencil
 } from '@devseed-ui/collecticons';
 
 import { LayoutProps } from '$components/common/layout-root';
@@ -39,10 +40,8 @@ import {
   FoldTitle,
   FoldBody
 } from '$components/common/fold';
-
 import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
 import { resourceNotFound } from '$components/uhoh';
-
 import { PageMainContent } from '$styles/page';
 import {
   Legend,
@@ -54,12 +53,18 @@ import {
 
 import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
-import { useAnalysisParams } from './use-analysis-params';
+import { formatDateRange } from '$utils/date';
+import { pluralize } from '$utils/pluralize';
+import {
+  analysisParams2QueryString,
+  useAnalysisParams
+} from './use-analysis-params';
 import {
   requestStacDatasetsTimeseries,
   TimeseriesData,
   TIMESERIES_DATA_BASE_ID
 } from './timeseries-data';
+import { calcFeatArea } from '$components/common/aoi/utils';
 
 export default function AnalysisResults() {
   const thematic = useThematicArea();
@@ -92,21 +97,64 @@ export default function AnalysisResults() {
     });
   }, [queryClient, date, datasetsLayers, aoi]);
 
+  // Textual description for the meta tags and element for the page hero.
+  const descriptions = useMemo(() => {
+    if (!date.start || !datasetsLayers || !aoi) return { meta: '', page: '' };
+
+    const dateLabel = formatDateRange(date);
+    const area = calcFeatArea(aoi);
+    const datasetCount = pluralize({
+      singular: 'dataset',
+      count: datasetsLayers.length,
+      showCount: true
+    });
+
+    return {
+      meta: `Covering ${datasetCount} over a ${area} km2 area from ${dateLabel}.`,
+      page: (
+        <>
+          Covering <strong>{datasetCount}</strong> over a{' '}
+          <strong>
+            {area} km<sup>2</sup>
+          </strong>{' '}
+          area from <strong>{dateLabel}</strong>.
+        </>
+      )
+    };
+  }, [date, datasetsLayers, aoi]);
+
   if (errors) {
     return <Navigate to={thematicAnalysisPath(thematic)} replace />;
   }
+
+  const analysisParamsQs = analysisParams2QueryString({
+    date,
+    datasetsLayers,
+    aoi
+  });
 
   return (
     <PageMainContent>
       <LayoutProps
         title='Analysis'
-        description='Covering 8 datasets over a 50 M km2 area from Apr 7 to Sep 7, 2022.'
+        description={descriptions.meta}
         thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
         title='Analysis'
-        description='Covering 8 datasets over a 50 M km2 area from Apr 7 to Sep 7, 2022.'
+        description={descriptions.page}
         isResults
+        aoiFeature={aoi || undefined}
+        renderActions={({ size }) => (
+          <Button
+            forwardedAs={Link}
+            to={`${thematicAnalysisPath(thematic)}${analysisParamsQs}`}
+            size={size}
+            variation='achromic-outline'
+          >
+            <CollecticonPencil /> Refine
+          </Button>
+        )}
       />
       <Fold>
         <FoldHeader>

@@ -4,8 +4,8 @@ import { useLocation } from 'react-router';
 import { Feature, MultiPolygon } from 'geojson';
 import { DatasetLayer, datasets as deltaDatasets } from 'delta/thematics';
 
-import { utcString2userTzDate } from '$utils/date';
-import { polygonUrlDecode } from '$utils/polygon-url';
+import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
+import { polygonUrlDecode, polygonUrlEncode } from '$utils/polygon-url';
 
 // ?start=2015-01-01T00:00:00.000Z&end=2022-01-01T00:00:00.000Z&datasets=no2-monthly|blue-tarp-planetscope&aoi=-9.60205,36.72127|-7.03125,36.87962|-6.85546,39.45316|-6.52587,40.93011|-5.55908,42.11452|-9.38232,42.22851|-8.89892,40.84706|-9.93164,38.85682|-9.47021,38.08268|-8.96484,38.09998||-12.01904,25.95804|-8.65722,25.97779|-8.67919,27.68352|-13.05175,27.68352|-14.89746,25.95804|-12.04101,24.44714
 
@@ -17,7 +17,7 @@ type AnalysisParams =
       };
       datasetsLayers: DatasetLayer[];
       aoi: Feature<MultiPolygon>;
-      errors: null
+      errors: null;
     }
   | {
       date: {
@@ -129,4 +129,19 @@ export function useAnalysisParams(): AnalysisParams {
   }, [location.search]);
 
   return params;
+}
+
+export function analysisParams2QueryString(
+  params: Omit<AnalysisParams, 'errors'>
+) {
+  const urlParams = qs.stringify({
+    start: params.date.start ? userTzDate2utcString(params.date.start) : undefined,
+    end: params.date.end ? userTzDate2utcString(params.date.end) : undefined,
+    datasets: params.datasetsLayers
+      ? params.datasetsLayers.map((d) => d.id).join('|')
+      : undefined,
+    aoi: params.aoi ? polygonUrlEncode(params.aoi, 4) : undefined
+  });
+
+  return urlParams ? `?${urlParams}` : '';
 }
