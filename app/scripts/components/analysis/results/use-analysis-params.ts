@@ -17,7 +17,7 @@ type AnalysisParams = {
   errors: any[] | null;
 };
 
-type AnalysisParamsNull = Omit<Record<keyof AnalysisParams, null>, 'errors'> & {
+type AnalysisParamsNull = Omit<Partial<AnalysisParams>, 'errors'> & {
   errors: any[];
 };
 
@@ -25,10 +25,10 @@ type AnyAnalysisParamsKey = keyof AnalysisParams;
 type AnyAnalysisParamsType = Date | DatasetLayer[] | Feature<MultiPolygon>;
 
 const initialState: AnalysisParamsNull = {
-  start: null,
-  end: null,
-  datasetsLayers: null,
-  aoi: null,
+  start: undefined,
+  end: undefined,
+  datasetsLayers: undefined,
+  aoi: undefined,
   errors: []
 };
 

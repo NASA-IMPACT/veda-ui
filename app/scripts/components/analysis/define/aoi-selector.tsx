@@ -46,7 +46,7 @@ const DemoMap = styled(MapboxMap)`
 `;
 
 interface AoiSelectorProps {
-  qsFeature: Feature<MultiPolygon> | null;
+  qsFeature?: Feature<MultiPolygon>;
   aoiDrawState: AoiState;
   onAoiEvent: AoiChangeListenerOverload;
 }

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
@@ -47,6 +47,7 @@ import AoiSelector from './aoi-selector';
 import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
 import { Tip } from '$components/common/tip';
 import { dateToInputFormat, inputFormatToDate } from '$utils/date';
+import { Feature, MultiPolygon } from 'geojson';
 
 const FormBlock = styled.div`
   display: flex;
@@ -118,13 +119,37 @@ export default function Analysis() {
     aoi
   });
 
-  const onStartDateChange = useCallback((e) => {
-    setAnalysisParam('start', inputFormatToDate(e.target.value));
-  }, [setAnalysisParam]);
+  const onStartDateChange = useCallback(
+    (e) => {
+      setAnalysisParam('start', inputFormatToDate(e.target.value));
+    },
+    [setAnalysisParam]
+  );
 
-  const onEndDateChange = useCallback((e) => {
-    setAnalysisParam('end',inputFormatToDate(e.target.value));
-  }, [setAnalysisParam]);
+  const onEndDateChange = useCallback(
+    (e) => {
+      setAnalysisParam('end', inputFormatToDate(e.target.value));
+    },
+    [setAnalysisParam]
+  );
+
+  useEffect(() => {
+    if (!aoiDrawState.drawing && aoiDrawState.feature) {
+      // Quick and dirty conversion to MultiPolygon - might be avoided if using Google-polyline?
+      const toMultiPolygon: Feature<MultiPolygon> = {
+        type: 'Feature',
+        properties: {...aoiDrawState.feature.properties},
+        geometry: {
+          type: 'MultiPolygon',
+          coordinates: [aoiDrawState.feature.geometry.coordinates]
+        }
+      };
+      setAnalysisParam('aoi', toMultiPolygon);
+    }
+  // setAnalysisParam not added to dependency array as it causes a infinite loop
+  }, [aoiDrawState]);
+
+  const readyToSelectDatasets = start && end && aoi;
 
   return (
     <PageMainContent>
@@ -141,7 +166,9 @@ export default function Analysis() {
             {!isNewAnalysis && (
               <Button
                 forwardedAs={Link}
-                to={`${thematicAnalysisPath(thematic)}/results${analysisParamsQs}`}
+                to={`${thematicAnalysisPath(
+                  thematic
+                )}/results${analysisParamsQs}`}
                 type='button'
                 size={size}
                 variation='achromic-outline'
@@ -242,67 +269,70 @@ export default function Analysis() {
           </FoldHeadline>
         </FoldHeader>
         <FoldBody>
-          <Note>
-            <CollecticonCircleInformation size='large' />
-            <p>To select datasets, please define an area and a date first.</p>
-          </Note>
-          <Form>
-            <CheckableGroup>
-              <FormCheckableCustom
-                id='dataset-a'
-                name='dataset-a'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
+          {readyToSelectDatasets ? (
+            <Form>
+              <CheckableGroup>
+                <FormCheckableCustom
+                  id='dataset-a'
+                  name='dataset-a'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
 
-              <FormCheckableCustom
-                id='dataset-b'
-                name='dataset-b'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
+                <FormCheckableCustom
+                  id='dataset-b'
+                  name='dataset-b'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
 
-              <FormCheckableCustom
-                id='dataset-c'
-                name='dataset-c'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
+                <FormCheckableCustom
+                  id='dataset-c'
+                  name='dataset-c'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
 
-              <FormCheckableCustom
-                id='dataset-d'
-                name='dataset-d'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
+                <FormCheckableCustom
+                  id='dataset-d'
+                  name='dataset-d'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
 
-              <FormCheckableCustom
-                id='dataset-e'
-                name='dataset-e'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
+                <FormCheckableCustom
+                  id='dataset-e'
+                  name='dataset-e'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
 
-              <FormCheckableCustom
-                id='dataset-f'
-                name='dataset-f'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
-            </CheckableGroup>
-          </Form>
+                <FormCheckableCustom
+                  id='dataset-f'
+                  name='dataset-f'
+                  textPlacement='right'
+                  type='checkbox'
+                >
+                  Dataset name
+                </FormCheckableCustom>
+              </CheckableGroup>
+            </Form>
+          ) : (
+            <Note>
+              <CollecticonCircleInformation size='large' />
+              <p>To select datasets, please define an area and a date first.</p>
+            </Note>
+          )}
         </FoldBody>
       </Fold>
     </PageMainContent>
