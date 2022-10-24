@@ -19,7 +19,9 @@ const WORLD_POLYGON = [
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
   style: process.env.MAPBOX_STYLE_URL,
   logoPosition: 'bottom-right',
-  interactive: false
+  interactive: false,
+  center: [0, 0],
+  zoom: 3
 };
 
 interface PageHeroMediaProps {
