@@ -260,6 +260,26 @@ export default function Analysis() {
 
   const showTip = !readyToLoadDatasets || !datasetsLayers?.length;
 
+  const infoboxMessage = useMemo(() => {
+    if (
+      readyToLoadDatasets &&
+      stacSearchStatus === S_SUCCEEDED &&
+      selectableDatasetLayers.length
+    )
+      return;
+    if (!readyToLoadDatasets) {
+      return 'To select datasets, please define an area and a date first.';
+    } else {
+      if (!selectableDatasetLayers.length) {
+        return 'No datasets available in that thematic area for the currently selected dates and area.';
+      } else if (stacSearchStatus === S_LOADING) {
+        return 'Loading...';
+      } else if (stacSearchStatus === S_FAILED) {
+        return 'Error loading datasets.';
+      }
+    }
+  }, [readyToLoadDatasets, stacSearchStatus, selectableDatasetLayers.length]);
+
   return (
     <PageMainContent>
       <LayoutProps
@@ -384,7 +404,7 @@ export default function Analysis() {
           </FoldHeadline>
         </FoldHeader>
         <FoldBody>
-          {readyToLoadDatasets && stacSearchStatus === S_SUCCEEDED ? (
+          {!infoboxMessage ? (
             <Form>
               <CheckableGroup>
                 {selectableDatasetLayers.map((datasetLayer) => (
@@ -405,17 +425,7 @@ export default function Analysis() {
           ) : (
             <Note>
               <CollecticonCircleInformation size='large' />
-              {readyToLoadDatasets ? (
-                stacSearchStatus === S_LOADING ? (
-                  <p>Loading...</p>
-                ) : (
-                  <p>Error loading</p>
-                )
-              ) : (
-                <p>
-                  To select datasets, please define an area and a date first.
-                </p>
-              )}
+              <p>{infoboxMessage}</p>
             </Note>
           )}
         </FoldBody>
