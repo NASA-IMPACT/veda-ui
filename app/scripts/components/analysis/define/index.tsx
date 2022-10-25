@@ -244,18 +244,21 @@ export default function Analysis() {
   }, [start, end, aoi, allAvailableDatasetsLayers, readyToLoadDatasets]);
 
   useEffect(() => {
-    if (!aoiDrawState.drawing && aoiDrawState.feature) {
-      // Quick and dirty conversion to MultiPolygon - might be avoided if using Google-polyline?
-      const toMultiPolygon: Feature<MultiPolygon> = {
-        type: 'Feature',
-        properties: { ...aoiDrawState.feature.properties },
-        geometry: {
-          type: 'MultiPolygon',
-          coordinates: [aoiDrawState.feature.geometry.coordinates]
-        }
-      };
-      setAnalysisParam('aoi', toMultiPolygon);
+    if (aoiDrawState.drawing) return;
+    if (!aoiDrawState.feature) {
+      setAnalysisParam('aoi', null);
+      return;
     }
+    // Quick and dirty conversion to MultiPolygon - might be avoided if using Google-polyline?
+    const toMultiPolygon: Feature<MultiPolygon> = {
+      type: 'Feature',
+      properties: { ...aoiDrawState.feature.properties },
+      geometry: {
+        type: 'MultiPolygon',
+        coordinates: [aoiDrawState.feature.geometry.coordinates]
+      }
+    };
+    setAnalysisParam('aoi', toMultiPolygon);
   }, [aoiDrawState]);
 
   const showTip = !readyToLoadDatasets || !datasetsLayers?.length;
@@ -311,13 +314,18 @@ export default function Analysis() {
                 placement='bottom-end'
                 content='To get results, define an area, pick a date and select datasets.'
               >
-                <Button type='button' size={size} variation='achromic-outline' disabled>
+                <Button
+                  type='button'
+                  size={size}
+                  variation='achromic-outline'
+                  disabled
+                >
                   <CollecticonTickSmall /> Save
                 </Button>
               </Tip>
             ) : (
               <Button
-              forwardedAs={Link}
+                forwardedAs={Link}
                 type='button'
                 size={size}
                 variation='achromic-outline'

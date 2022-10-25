@@ -36,7 +36,7 @@ export function useAnalysisParams(): {
   params: AnalysisParams | AnalysisParamsNull;
   setAnalysisParam: (
     param: AnyAnalysisParamsKey,
-    value: AnyAnalysisParamsType
+    value: AnyAnalysisParamsType | null
   ) => void;
 } {
   const location = useLocation();
