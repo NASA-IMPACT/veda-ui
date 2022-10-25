@@ -379,6 +379,7 @@ export default function Analysis() {
                   name='start-date'
                   value={start ? dateToInputFormat(start) : ''}
                   onChange={onStartDateChange}
+                  max={dateToInputFormat(end)}
                 />
               </FormGroupStructure>
 
@@ -390,6 +391,7 @@ export default function Analysis() {
                   name='end-date'
                   value={end ? dateToInputFormat(end) : ''}
                   onChange={onEndDateChange}
+                  min={dateToInputFormat(start)}
                 />
               </FormGroupStructure>
             </FormBlock>
