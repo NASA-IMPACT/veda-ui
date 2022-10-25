@@ -110,7 +110,7 @@ export default function AnalysisResults() {
     return `Covering ${datasetsLayers.length} datasets over a ${area} km2 area for ${dateLabel}.`;
   }, [start, end, datasetsLayers, aoi]);
 
-  if (errors) {
+  if (errors && errors.length) {
     return <Navigate to={thematicAnalysisPath(thematic)} replace />;
   }
 

@@ -311,12 +311,20 @@ export default function Analysis() {
                 placement='bottom-end'
                 content='To get results, define an area, pick a date and select datasets.'
               >
-                <Button type='button' size={size} variation='achromic-outline'>
+                <Button type='button' size={size} variation='achromic-outline' disabled>
                   <CollecticonTickSmall /> Save
                 </Button>
               </Tip>
             ) : (
-              <Button type='button' size={size} variation='achromic-outline'>
+              <Button
+              forwardedAs={Link}
+                type='button'
+                size={size}
+                variation='achromic-outline'
+                to={`${thematicAnalysisPath(
+                  thematic
+                )}/results${analysisParamsQs}`}
+              >
                 <CollecticonTickSmall /> Save
               </Button>
             )}
