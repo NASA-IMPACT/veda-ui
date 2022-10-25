@@ -76,15 +76,17 @@ export default function AnalysisResults() {
 
   const queryClient = useQueryClient();
   const [requestStatus, setRequestStatus] = useState<TimeseriesData[]>([]);
-  const { date, datasetsLayers, aoi, errors } = useAnalysisParams();
+  const { params } = useAnalysisParams();
+  const { start, end, datasetsLayers, aoi, errors } = params;
 
   useEffect(() => {
-    if (!date.start || !datasetsLayers || !aoi) return;
+    if (!start || !end || !datasetsLayers || !aoi) return;
 
     setRequestStatus([]);
     queryClient.cancelQueries([TIMESERIES_DATA_BASE_ID]);
     const requester = requestStacDatasetsTimeseries({
-      date,
+      start,
+      end,
       aoi,
       layers: datasetsLayers,
       queryClient
@@ -97,23 +99,24 @@ export default function AnalysisResults() {
         })
       );
     });
-  }, [queryClient, date, datasetsLayers, aoi]);
+  }, [queryClient, start, end, datasetsLayers, aoi]);
 
   const pageDescription = useMemo(() => {
-    if (!date.start || !datasetsLayers || !aoi) return '';
+    if (!start || !end || !datasetsLayers || !aoi) return '';
 
-    const dateLabel = formatDateRange(date);
+    const dateLabel = formatDateRange(start, end);
     const area = calcFeatArea(aoi);
 
     return `Covering ${datasetsLayers.length} datasets over a ${area} km2 area for ${dateLabel}.`;
-  }, [date, datasetsLayers, aoi]);
+  }, [start, end, datasetsLayers, aoi]);
 
   if (errors) {
     return <Navigate to={thematicAnalysisPath(thematic)} replace />;
   }
 
   const analysisParamsQs = analysisParams2QueryString({
-    date,
+    start,
+    end,
     datasetsLayers,
     aoi
   });

@@ -97,11 +97,10 @@ export function isValidDate(dateString?: string | null) {
  * Dec 01-31, 2020
  * Dec 31st, 2020
  *
- * @param {object} range Date range to format
+ * @param {object} start Start date to format
+ * @param {object} end End date to format
  */
-export function formatDateRange(range: { start: Date; end: Date }) {
-  const { start, end } = range;
-
+export function formatDateRange(start: Date, end: Date) {
   const DATE_FORMAT_FULL = 'MMM do, yyyy';
 
   // Format the label in a pretty way as to not repeat values if the month or
