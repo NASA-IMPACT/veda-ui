@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -8,7 +8,8 @@ import {
   Media,
   ThematicData,
   RelatedContentData,
-  DiscoveryData
+  DiscoveryData,
+  DeltaDatum
 } from 'delta/thematics';
 import { utcString2userTzDate } from '$utils/date';
 import {
@@ -51,7 +52,7 @@ interface FormatBlock {
   parent: ParentType;
 }
 
-function formatUrl(id: string, thematic: ThematicData, parent: string) {
+function formatUrl(id: string, thematic: DeltaDatum<ThematicData>, parent: string) {
   switch (parent) {
     case thematicString:
       return {
@@ -128,7 +129,7 @@ interface RelatedContentProps {
 
 export default function RelatedContent(
   props: RelatedContentProps
-): JSX.Element {
+): ReactNode {
   const { related } = props;
   const relatedContents = formatContents(related);
 

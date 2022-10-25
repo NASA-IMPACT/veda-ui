@@ -8,6 +8,7 @@ import React, {
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { uniq, uniqBy } from 'lodash';
+import { sticky } from 'tippy.js';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarIconButton, ToolbarLabel } from '@devseed-ui/toolbar';
 import {
@@ -313,6 +314,8 @@ export default function Analysis() {
                 visible
                 placement='bottom-end'
                 content='To get results, define an area, pick a date and select datasets.'
+                sticky='reference'
+                plugins={[sticky]}
               >
                 <Button
                   type='button'

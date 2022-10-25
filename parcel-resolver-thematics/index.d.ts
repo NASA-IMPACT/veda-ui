@@ -183,7 +183,7 @@ declare module 'delta/thematics' {
     [key: string]: DeltaDatum<T>;
   }
 
-  interface DeltaDatum<T> {
+  export interface DeltaDatum<T> {
     /**
      * Contains all the variables in the content's front matter.
      */

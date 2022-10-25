@@ -22,7 +22,7 @@ export default function ExportPNGButton(props: ChartToImageProps) {
   return (
     <div>
       <Button type='submit' variation='primary-fill' onClick={handleDownload}>
-        <span>Export as PNG</span>
+        <span>Export as JPG</span>
       </Button>
       {debug && <img src={imageUrl} />}
     </div>

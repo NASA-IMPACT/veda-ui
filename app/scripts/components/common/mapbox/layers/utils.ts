@@ -24,6 +24,7 @@ import { MapLayerRasterTimeseries, StacFeature } from './raster-timeseries';
 import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { HintedError } from '$utils/hinted-error';
 import mapboxgl from 'mapbox-gl';
+import React from 'react';
 
 export const getLayerComponent = (
   isTimeseries: boolean,
@@ -139,10 +140,12 @@ export function resolveConfigFunctions<T>(
   datum: T,
   bag: DatasetDatumFnResolverBag
 ): Res<T>;
+/* eslint-disable-next-line no-redeclare */
 export function resolveConfigFunctions<T extends Array<any>>(
   datum: T,
   bag: DatasetDatumFnResolverBag
 ): Array<Res<T[number]>>;
+/* eslint-disable-next-line no-redeclare */
 export function resolveConfigFunctions(
   datum: any,
   bag: DatasetDatumFnResolverBag

@@ -61,7 +61,7 @@ export const featureFromBounds = (
       };
 };
 
-export const calcFeatArea = (feature: Feature<any> | null) => {
+export const calcFeatArea = (feature: Feature | null) => {
   if (!feature) return '0';
 
   // Convert from m2 to km2.

@@ -1,9 +1,21 @@
 // Inspired by https://github.com/tsmith123/react-pluralize
 // Adapted to remove wrapper.
 
-import T from 'prop-types';
+interface PluralizeOpts {
+  singular: string;
+  plural?: string;
+  zero?: string;
+  count: number;
+  showCount?: boolean;
+}
 
-export const pluralize = ({ singular, plural, count, showCount, zero }) => {
+export const pluralize = ({
+  singular,
+  plural,
+  count,
+  showCount,
+  zero
+}: PluralizeOpts) => {
   if (count === 0 && zero) return zero;
 
   let output = singular;
@@ -14,17 +26,7 @@ export const pluralize = ({ singular, plural, count, showCount, zero }) => {
   return showCount ? `${count} ${output}` : output;
 };
 
-const Pluralize = (props) => pluralize(props);
-
-Pluralize.propTypes = {
-  singular: T.string.isRequired,
-  plural: T.string,
-  count: T.number,
-  showCount: T.bool,
-  className: T.string,
-  style: T.object,
-  zero: T.string
-};
+const Pluralize = (props: PluralizeOpts) => pluralize(props);
 
 Pluralize.defaultProps = {
   count: 1,

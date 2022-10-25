@@ -1,4 +1,4 @@
-import React, { useEffect, RefObject, MutableRefObject } from 'react';
+import React, { useEffect, RefObject, MutableRefObject, ReactNode, ReactElement } from 'react';
 import styled, { useTheme } from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -38,9 +38,10 @@ interface SimpleMapProps {
   onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
+  attributionPosition?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | false
 }
 
-export function SimpleMap(props: SimpleMapProps): JSX.Element {
+export function SimpleMap(props: SimpleMapProps): ReactElement {
   const {
     mapRef,
     containerRef,
@@ -53,6 +54,7 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     onAoiChange,
     projection,
     onProjectionChange,
+    attributionPosition = 'bottom-left',
     ...rest
   } = props;
 
@@ -83,9 +85,6 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     });
 
     mapRef.current = mbMap;
-
-    // Include attribution.
-    mbMap.addControl(new mapboxgl.AttributionControl(), 'bottom-left');
 
     if (onProjectionChange && projection) {
       mapRef.current?.addControl(mapProjectionControl, 'top-left');
@@ -129,6 +128,18 @@ export function SimpleMap(props: SimpleMapProps): JSX.Element {
     // Only use the props on mount. We don't want to update the map if they
     // change.
   }, []);
+
+  // Handle Attribution
+  useEffect(() => {
+    if (!mapRef.current || !attributionPosition) return;
+
+    const ctrl = new mapboxgl.AttributionControl();
+    mapRef.current.addControl(ctrl, attributionPosition);
+    return () => {
+      mapRef.current?.removeControl(ctrl);
+    };
+    /* mapRef is a ref */
+  }, [attributionPosition]);
 
   useEffect(() => {
     if (!mapRef.current || !projection) return;

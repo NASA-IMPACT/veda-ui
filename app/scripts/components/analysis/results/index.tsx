@@ -3,7 +3,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useTheme } from 'styled-components';
-
 import {
   Dropdown,
   DropMenu,
@@ -41,10 +40,8 @@ import {
   FoldTitle,
   FoldBody
 } from '$components/common/fold';
-
 import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
 import { resourceNotFound } from '$components/uhoh';
-
 import { PageMainContent } from '$styles/page';
 import {
   Legend,
@@ -57,6 +54,7 @@ import {
 import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
+import { pluralize } from '$utils/pluralize';
 import {
   analysisParams2QueryString,
   useAnalysisParams
@@ -101,13 +99,30 @@ export default function AnalysisResults() {
     });
   }, [queryClient, start, end, datasetsLayers, aoi]);
 
-  const pageDescription = useMemo(() => {
-    if (!start || !end || !datasetsLayers || !aoi) return '';
+  // Textual description for the meta tags and element for the page hero.
+  const descriptions = useMemo(() => {
+    if (!start || !end || !datasetsLayers || !aoi) return { meta: '', page: '' };
 
     const dateLabel = formatDateRange(start, end);
     const area = calcFeatArea(aoi);
+    const datasetCount = pluralize({
+      singular: 'dataset',
+      count: datasetsLayers.length,
+      showCount: true
+    });
 
-    return `Covering ${datasetsLayers.length} datasets over a ${area} km2 area for ${dateLabel}.`;
+    return {
+      meta: `Covering ${datasetCount} over a ${area} km2 area from ${dateLabel}.`,
+      page: (
+        <>
+          Covering <strong>{datasetCount}</strong> over a{' '}
+          <strong>
+            {area} km<sup>2</sup>
+          </strong>{' '}
+          area from <strong>{dateLabel}</strong>.
+        </>
+      )
+    };
   }, [start, end, datasetsLayers, aoi]);
 
   if (errors && errors.length) {
@@ -125,12 +140,12 @@ export default function AnalysisResults() {
     <PageMainContent>
       <LayoutProps
         title='Analysis'
-        description={pageDescription}
+        description={descriptions.meta}
         thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
         title='Analysis'
-        description={pageDescription}
+        description={descriptions.page}
         isResults
         aoiFeature={aoi || undefined}
         renderActions={({ size }) => (
