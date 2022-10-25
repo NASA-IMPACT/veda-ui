@@ -3,12 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { sticky } from 'tippy.js';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
-import {
-  Toolbar,
-  ToolbarIconButton,
-  ToolbarLabel,
-  VerticalDivider
-} from '@devseed-ui/toolbar';
+import { Toolbar, ToolbarIconButton, ToolbarLabel } from '@devseed-ui/toolbar';
 import {
   Dropdown,
   DropMenu,
@@ -22,12 +17,9 @@ import {
   FormInput
 } from '@devseed-ui/form';
 import {
-  CollecticonArea,
   CollecticonCircleInformation,
   CollecticonEllipsisVertical,
   CollecticonTickSmall,
-  CollecticonTrashBin,
-  CollecticonUpload2,
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
@@ -52,16 +44,9 @@ import {
   FoldTitle,
   FoldBody
 } from '$components/common/fold';
+import AoiSelector from './aoi-selector';
+import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
 import { Tip } from '$components/common/tip';
-
-const MapContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${themeVal('color.base-50')};
-  border-radius: ${multiply(themeVal('shape.rounded'), 2)};
-  min-height: 24rem;
-`;
 
 const FormBlock = styled.div`
   display: flex;
@@ -118,6 +103,8 @@ export default function Analysis() {
 
   const { date, datasetsLayers, aoi, errors } = useAnalysisParams();
 
+  const { aoi: aoiDrawState, onAoiEvent } = useAoiControls();
+
   // If there are errors in the url parameters it means that this should be
   // treated as a new analysis. If the parameters are all there and correct, the
   // user is refining the analysis.
@@ -166,60 +153,12 @@ export default function Analysis() {
           </>
         )}
       />
-      <Fold>
-        <FoldHeader>
-          <FoldHeadline>
-            <FoldTitle>Area</FoldTitle>
-          </FoldHeadline>
-          <FoldHeadActions>
-            <Toolbar size='small'>
-              <ToolbarLabel>Actions</ToolbarLabel>
-              <ToolbarIconButton variation='base-text' disabled>
-                <CollecticonTrashBin title='Delete shape' meaningful />
-              </ToolbarIconButton>
-              <VerticalDivider variation='dark' />
-              <ToolbarIconButton variation='base-text'>
-                <CollecticonArea title='Draw shape' meaningful />
-              </ToolbarIconButton>
-              <ToolbarIconButton variation='base-text'>
-                <CollecticonUpload2 title='Upload geoJSON' meaningful />
-              </ToolbarIconButton>
-              <Dropdown
-                alignment='right'
-                triggerElement={(props) => (
-                  <ToolbarIconButton variation='base-text' {...props}>
-                    <CollecticonEllipsisVertical
-                      title='More options'
-                      meaningful
-                    />
-                  </ToolbarIconButton>
-                )}
-              >
-                <DropTitle>Select a country</DropTitle>
-                <DropMenu>
-                  <li>
-                    <DropMenuItem href='#'>Country name A</DropMenuItem>
-                  </li>
-                  <li>
-                    <DropMenuItem href='#'>Country name B</DropMenuItem>
-                  </li>
-                  <li>
-                    <DropMenuItem href='#'>Country name C</DropMenuItem>
-                  </li>
-                  <li>
-                    <DropMenuItem href='#'>Country name D</DropMenuItem>
-                  </li>
-                </DropMenu>
-              </Dropdown>
-            </Toolbar>
-          </FoldHeadActions>
-        </FoldHeader>
-        <FoldBody>
-          <MapContainer>
-            <p>Map goes here.</p>
-          </MapContainer>
-        </FoldBody>
-      </Fold>
+
+      <AoiSelector
+        qsFeature={aoi}
+        aoiDrawState={aoiDrawState}
+        onAoiEvent={onAoiEvent}
+      />
 
       <Fold>
         <FoldHeader>
