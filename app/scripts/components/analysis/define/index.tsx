@@ -1,7 +1,13 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { uniqBy } from 'lodash';
+import { uniq, uniqBy } from 'lodash';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarIconButton, ToolbarLabel } from '@devseed-ui/toolbar';
 import {
@@ -44,6 +50,13 @@ import {
   FoldTitle,
   FoldBody
 } from '$components/common/fold';
+import {
+  ActionStatus,
+  S_IDLE,
+  S_FAILED,
+  S_LOADING,
+  S_SUCCEEDED
+} from '$utils/status';
 import AoiSelector from './aoi-selector';
 import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
 import { Tip } from '$components/common/tip';
@@ -111,6 +124,9 @@ export default function Analysis() {
 
   const { aoi: aoiDrawState, onAoiEvent } = useAoiControls();
 
+  const [stacSearchStatus, setStacSearchStatus] =
+    useState<ActionStatus>(S_IDLE);
+
   // If there are errors in the url parameters it means that this should be
   // treated as a new analysis. If the parameters are all there and correct, the
   // user is refining the analysis.
@@ -137,61 +153,95 @@ export default function Analysis() {
     [setAnalysisParam]
   );
 
-
-  const datasetsLayersMeta: DatasetLayer[] = uniqBy(
-    thematic.data.datasets.map((dataset) => dataset.layers).flat(),
-    'stacCol'
+  const allAvailableDatasetsLayers: DatasetLayer[] = useMemo(
+    () =>
+      uniqBy(
+        thematic.data.datasets.map((dataset) => dataset.layers).flat(),
+        'stacCol'
+      ),
+    [thematic.data.datasets]
   );
-
-
-  const onDatasetLayerChange = useCallback((e) => {
-    const id = e.target.id;
-    const newDatasetsLayers = [...(datasetsLayers || [])];
-    if (e.target.checked) {
-      const newDatasetLayer = datasetsLayersMeta.find(l => l.id ===id);
-      if (newDatasetLayer) {
-        newDatasetsLayers.push(newDatasetLayer);
-      }
-    } else {
-      const removeAt = newDatasetsLayers.findIndex(l => l.id === id);
-      newDatasetsLayers.splice(removeAt, 1);
-    }
-    setAnalysisParam('datasetsLayers',newDatasetsLayers);
-  }, [setAnalysisParam]);
-
   const selectedDatasetLayerIds = datasetsLayers?.map((layer) => layer.id);
-  const datasetsLayersMetaIds = datasetsLayersMeta.map((layer) => layer.id);
+  const [selectableDatasetLayers, setSelectableDatasetLayers] = useState<
+    DatasetLayer[]
+  >([]);
+  const readyToLoadDatasets = start && end && aoi;
+
+  const onDatasetLayerChange = useCallback(
+    (e) => {
+      const id = e.target.id;
+      const newDatasetsLayers = [...(datasetsLayers || [])];
+      if (e.target.checked) {
+        const newDatasetLayer = allAvailableDatasetsLayers.find(
+          (l) => l.id === id
+        );
+        if (newDatasetLayer) {
+          newDatasetsLayers.push(newDatasetLayer);
+        }
+      } else {
+        const removeAt = newDatasetsLayers.findIndex((l) => l.id === id);
+        newDatasetsLayers.splice(removeAt, 1);
+      }
+      setAnalysisParam('datasetsLayers', newDatasetsLayers);
+    },
+    [setAnalysisParam, allAvailableDatasetsLayers, datasetsLayers]
+  );
 
   const controller = useRef<AbortController>();
   useEffect(() => {
-    if (!start || !end || !aoi || !datasetsLayersMetaIds) return;
+    if (!readyToLoadDatasets || !allAvailableDatasetsLayers) return;
 
     const load = async () => {
+      setStacSearchStatus(S_LOADING);
       try {
-        if (controller.current) controller.current.abort();
+        // if (controller.current) controller.current.abort();
         controller.current = new AbortController();
 
         const url = `${process.env.API_STAC_ENDPOINT}/search`;
 
+        const allAvailableDatasetsLayersIds = allAvailableDatasetsLayers.map(
+          (layer) => layer.id
+        );
         const payload = {
           'filter-lang': 'cql2-json',
-          filter: getFilterPayload(start, end, multiPolygonToPolygon(aoi), datasetsLayersMetaIds),
-          // TODO
-          limit: 9999,
+          filter: getFilterPayload(
+            start,
+            end,
+            multiPolygonToPolygon(aoi),
+            allAvailableDatasetsLayersIds
+          ),
+          limit: 100,
           fields: {
-            exclude: ['links']
+            exclude: [
+              'links',
+              'assets',
+              'bbox',
+              'geometry',
+              'properties',
+              'stac_extensions',
+              'stac_version',
+              'type'
+            ]
           }
         };
         const response = await axios.post(url, payload, {
           signal: controller.current.signal
         });
-        // TODO filter out datasetsLayersMeta
+        setStacSearchStatus(S_SUCCEEDED);
+        const itemsParentCollections: string[] = uniq(
+          response.data.features.map((feature) => feature.collection)
+        );
+        setSelectableDatasetLayers(
+          allAvailableDatasetsLayers.filter((l) =>
+            itemsParentCollections.includes(l.id)
+          )
+        );
       } catch (error) {
-        // TODO
+        setStacSearchStatus(S_FAILED);
       }
     };
     load();
-  }, [start, end, aoi, datasetsLayersMetaIds]);
+  }, [start, end, aoi, allAvailableDatasetsLayers, readyToLoadDatasets]);
 
   useEffect(() => {
     if (!aoiDrawState.drawing && aoiDrawState.feature) {
@@ -206,10 +256,9 @@ export default function Analysis() {
       };
       setAnalysisParam('aoi', toMultiPolygon);
     }
-    // setAnalysisParam not added to dependency array as it causes a infinite loop
   }, [aoiDrawState]);
 
-  const readyToSelectDatasets = start && end && aoi;
+  const showTip = !readyToLoadDatasets || !datasetsLayers?.length;
 
   return (
     <PageMainContent>
@@ -236,15 +285,21 @@ export default function Analysis() {
                 <CollecticonXmarkSmall /> Cancel
               </Button>
             )}
-            <Tip
-              visible
-              placement='bottom-end'
-              content='To get results, define an area, pick a date and select datasets.'
-            >
+            {showTip ? (
+              <Tip
+                visible
+                placement='bottom-end'
+                content='To get results, define an area, pick a date and select datasets.'
+              >
+                <Button type='button' size={size} variation='achromic-outline'>
+                  <CollecticonTickSmall /> Save
+                </Button>
+              </Tip>
+            ) : (
               <Button type='button' size={size} variation='achromic-outline'>
                 <CollecticonTickSmall /> Save
               </Button>
-            </Tip>
+            )}
           </>
         )}
       />
@@ -329,16 +384,17 @@ export default function Analysis() {
           </FoldHeadline>
         </FoldHeader>
         <FoldBody>
-          {readyToSelectDatasets ? (
-            <Form onChange={onDatasetLayerChange}>
+          {readyToLoadDatasets && stacSearchStatus === S_SUCCEEDED ? (
+            <Form>
               <CheckableGroup>
-                {datasetsLayersMeta.map((datasetLayer) => (
+                {selectableDatasetLayers.map((datasetLayer) => (
                   <FormCheckableCustom
                     key={datasetLayer.id}
                     id={datasetLayer.id}
                     name={datasetLayer.id}
                     textPlacement='right'
                     type='checkbox'
+                    onChange={onDatasetLayerChange}
                     checked={selectedDatasetLayerIds?.includes(datasetLayer.id)}
                   >
                     {datasetLayer.name}
@@ -349,7 +405,17 @@ export default function Analysis() {
           ) : (
             <Note>
               <CollecticonCircleInformation size='large' />
-              <p>To select datasets, please define an area and a date first.</p>
+              {readyToLoadDatasets ? (
+                stacSearchStatus === S_LOADING ? (
+                  <p>Loading...</p>
+                ) : (
+                  <p>Error loading</p>
+                )
+              ) : (
+                <p>
+                  To select datasets, please define an area and a date first.
+                </p>
+              )}
             </Note>
           )}
         </FoldBody>
