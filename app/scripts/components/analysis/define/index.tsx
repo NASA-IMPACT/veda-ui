@@ -294,7 +294,7 @@ export default function Analysis() {
                 forwardedAs={Link}
                 to={`${thematicAnalysisPath(
                   thematic
-                )}/results${analysisParamsQs}`}
+                )}/results${location.search}`}
                 type='button'
                 size={size}
                 variation='achromic-outline'
