@@ -31,12 +31,17 @@ import {
 } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
 
-import { useThematicArea } from '$utils/thematics';
-import { variableGlsp } from '$styles/variable-utils';
+import { Feature, MultiPolygon } from 'geojson';
+import axios from 'axios';
+import { DatasetLayer } from 'delta/thematics';
 import {
   analysisParams2QueryString,
   useAnalysisParams
 } from '../results/use-analysis-params';
+import { getFilterPayload, multiPolygonToPolygon } from '../utils';
+import AoiSelector from './aoi-selector';
+import { useThematicArea } from '$utils/thematics';
+import { variableGlsp } from '$styles/variable-utils';
 import { thematicAnalysisPath } from '$utils/routes';
 
 import { PageMainContent } from '$styles/page';
@@ -58,14 +63,9 @@ import {
   S_LOADING,
   S_SUCCEEDED
 } from '$utils/status';
-import AoiSelector from './aoi-selector';
 import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
 import { Tip } from '$components/common/tip';
 import { dateToInputFormat, inputFormatToDate } from '$utils/date';
-import { Feature, MultiPolygon } from 'geojson';
-import { getFilterPayload, multiPolygonToPolygon } from '../utils';
-import axios from 'axios';
-import { DatasetLayer } from 'delta/thematics';
 
 const FormBlock = styled.div`
   display: flex;

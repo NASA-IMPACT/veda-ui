@@ -21,7 +21,7 @@ import {
   CollecticonTrashBin,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
-
+import { multiPolygonToPolygon } from '../utils';
 import {
   Fold,
   FoldHeader,
@@ -35,7 +35,6 @@ import {
   AoiChangeListenerOverload,
   AoiState
 } from '$components/common/aoi/types';
-import { multiPolygonToPolygon } from '../utils';
 
 const MapContainer = styled.div`
   position: relative;
