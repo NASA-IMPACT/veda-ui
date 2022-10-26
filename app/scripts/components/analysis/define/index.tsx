@@ -1,14 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { uniq, uniqBy } from 'lodash';
-import { sticky } from 'tippy.js';
+import { uniqBy } from 'lodash';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarIconButton, ToolbarLabel } from '@devseed-ui/toolbar';
 import {
@@ -25,24 +17,16 @@ import {
 } from '@devseed-ui/form';
 import {
   CollecticonCircleInformation,
-  CollecticonEllipsisVertical,
-  CollecticonTickSmall,
-  CollecticonXmarkSmall
+  CollecticonEllipsisVertical
 } from '@devseed-ui/collecticons';
-import { Button } from '@devseed-ui/button';
 
-import { Feature, MultiPolygon, Polygon } from 'geojson';
-import axios from 'axios';
 import { DatasetLayer } from 'delta/thematics';
-import {
-  analysisParams2QueryString,
-  useAnalysisParams
-} from '../results/use-analysis-params';
-import { getFilterPayload, multiPolygonToPolygon } from '../utils';
+import { useAnalysisParams } from '../results/use-analysis-params';
 import AoiSelector from './aoi-selector';
+import PageHeroActions from './page-hero-actions';
+import { useStacSearch } from './use-stac-search';
 import { useThematicArea } from '$utils/thematics';
 import { variableGlsp } from '$styles/variable-utils';
-import { thematicAnalysisPath } from '$utils/routes';
 
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
@@ -56,15 +40,8 @@ import {
   FoldTitle,
   FoldBody
 } from '$components/common/fold';
-import {
-  ActionStatus,
-  S_IDLE,
-  S_FAILED,
-  S_LOADING,
-  S_SUCCEEDED
-} from '$utils/status';
+import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
-import { Tip } from '$components/common/tip';
 import { dateToInputFormat, inputFormatToDate } from '$utils/date';
 
 const FormBlock = styled.div`
@@ -125,32 +102,10 @@ export default function Analysis() {
 
   const { aoi: aoiDrawState, onAoiEvent } = useAoiControls();
 
-  const [stacSearchStatus, setStacSearchStatus] =
-    useState<ActionStatus>(S_IDLE);
-
   // If there are errors in the url parameters it means that this should be
   // treated as a new analysis. If the parameters are all there and correct, the
   // user is refining the analysis.
   const isNewAnalysis = !!errors?.length;
-
-  const analysisParamsQs = useMemo(() => {
-    if (!start || !end || !datasetsLayers || !aoiDrawState.feature) return '';
-    // Quick and dirty conversion to MultiPolygon - might be avoided if using Google-polyline?
-    const toMultiPolygon: Feature<MultiPolygon> = {
-      type: 'Feature',
-      properties: { ...aoiDrawState.feature.properties },
-      geometry: {
-        type: 'MultiPolygon',
-        coordinates: [aoiDrawState.feature.geometry.coordinates]
-      }
-    };
-    return analysisParams2QueryString({
-      start,
-      end,
-      datasetsLayers,
-      aoi: toMultiPolygon
-    });
-  }, [start, end, datasetsLayers, aoiDrawState.feature]);
 
   const onStartDateChange = useCallback(
     (e) => {
@@ -175,10 +130,6 @@ export default function Analysis() {
     [thematic.data.datasets]
   );
   const selectedDatasetLayerIds = datasetsLayers?.map((layer) => layer.id);
-  const [selectableDatasetLayers, setSelectableDatasetLayers] = useState<
-    DatasetLayer[]
-  >([]);
-  const readyToLoadDatasets = start && end && aoiDrawState.feature;
 
   const onDatasetLayerChange = useCallback(
     (e) => {
@@ -199,61 +150,8 @@ export default function Analysis() {
     [setAnalysisParam, allAvailableDatasetsLayers, datasetsLayers]
   );
 
-  const controller = useRef<AbortController>();
-  useEffect(() => {
-    if (!readyToLoadDatasets || !allAvailableDatasetsLayers) return;
-
-    const load = async () => {
-      setStacSearchStatus(S_LOADING);
-      try {
-        // if (controller.current) controller.current.abort();
-        controller.current = new AbortController();
-
-        const url = `${process.env.API_STAC_ENDPOINT}/search`;
-
-        const allAvailableDatasetsLayersIds = allAvailableDatasetsLayers.map(
-          (layer) => layer.id
-        );
-        const payload = {
-          'filter-lang': 'cql2-json',
-          filter: getFilterPayload(
-            start,
-            end,
-            aoiDrawState.feature as Feature<Polygon>,
-            allAvailableDatasetsLayersIds
-          ),
-          limit: 100,
-          fields: {
-            exclude: [
-              'links',
-              'assets',
-              'bbox',
-              'geometry',
-              'properties',
-              'stac_extensions',
-              'stac_version',
-              'type'
-            ]
-          }
-        };
-        const response = await axios.post(url, payload, {
-          signal: controller.current.signal
-        });
-        setStacSearchStatus(S_SUCCEEDED);
-        const itemsParentCollections: string[] = uniq(
-          response.data.features.map((feature) => feature.collection)
-        );
-        setSelectableDatasetLayers(
-          allAvailableDatasetsLayers.filter((l) =>
-            itemsParentCollections.includes(l.id)
-          )
-        );
-      } catch (error) {
-        setStacSearchStatus(S_FAILED);
-      }
-    };
-    load();
-  }, [start, end, aoiDrawState.feature, allAvailableDatasetsLayers, readyToLoadDatasets]);
+  const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
+    useStacSearch({ start, end, aoi: aoiDrawState.feature });
 
   const showTip = !readyToLoadDatasets || !datasetsLayers?.length;
 
@@ -288,56 +186,20 @@ export default function Analysis() {
         title={isNewAnalysis ? 'Start analysis' : 'Refine analysis'}
         description='Visualize insights from a selected area over a period of time.'
         renderActions={({ size }) => (
-          <>
-            {!isNewAnalysis && (
-              <Button
-                forwardedAs={Link}
-                to={`${thematicAnalysisPath(
-                  thematic
-                )}/results${location.search}`}
-                type='button'
-                size={size}
-                variation='achromic-outline'
-              >
-                <CollecticonXmarkSmall /> Cancel
-              </Button>
-            )}
-            {showTip ? (
-              <Tip
-                visible
-                placement='bottom-end'
-                content='To get results, define an area, pick a date and select datasets.'
-                sticky='reference'
-                plugins={[sticky]}
-              >
-                <Button
-                  type='button'
-                  size={size}
-                  variation='achromic-outline'
-                  disabled
-                >
-                  <CollecticonTickSmall /> Save
-                </Button>
-              </Tip>
-            ) : (
-              <Button
-                forwardedAs={Link}
-                type='button'
-                size={size}
-                variation='achromic-outline'
-                to={`${thematicAnalysisPath(
-                  thematic
-                )}/results${analysisParamsQs}`}
-              >
-                <CollecticonTickSmall /> Save
-              </Button>
-            )}
-          </>
+          <PageHeroActions
+            size={size}
+            isNewAnalysis={isNewAnalysis}
+            showTip={showTip}
+            start={start}
+            end={end}
+            datasetsLayers={datasetsLayers}
+            aoi={aoiDrawState.feature}
+          />
         )}
       />
 
       <AoiSelector
-        // Use aoi intially decode from qs
+        // Use aoi initially decode from qs
         qsFeature={aoi}
         aoiDrawState={aoiDrawState}
         onAoiEvent={onAoiEvent}
