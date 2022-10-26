@@ -171,17 +171,16 @@ export default function Analysis() {
   const onDatasetLayerChange = useCallback(
     (e) => {
       const id = e.target.id;
-      const newDatasetsLayers = [...(datasetsLayers || [])];
+      let newDatasetsLayers = [...(datasetsLayers || [])];
       if (e.target.checked) {
         const newDatasetLayer = allAvailableDatasetsLayers.find(
           (l) => l.id === id
         );
         if (newDatasetLayer) {
-          newDatasetsLayers.push(newDatasetLayer);
+          newDatasetsLayers = [...newDatasetsLayers, newDatasetLayer];
         }
       } else {
-        const removeAt = newDatasetsLayers.findIndex((l) => l.id === id);
-        newDatasetsLayers.splice(removeAt, 1);
+        newDatasetsLayers = newDatasetsLayers.filter((l) => l.id !== id);
       }
       setAnalysisParam('datasetsLayers', newDatasetsLayers);
     },
