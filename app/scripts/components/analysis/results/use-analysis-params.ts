@@ -46,18 +46,18 @@ export function useAnalysisParams(): {
   );
 
   useEffect(() => {
-    const { start, end, datasets, aoi } = qs.parse(location.search, {
+    const { start, end, datasetsLayers, aoi } = qs.parse(location.search, {
       ignoreQueryPrefix: true
     });
 
     try {
-      if (!start || !end || !datasets || !aoi) {
+      if (!start || !end || !datasetsLayers || !aoi) {
         throw [
           'Missing required value from URL:',
           {
             start,
             end,
-            datasets,
+            datasetsLayers,
             aoi
           }
         ];
@@ -79,16 +79,16 @@ export function useAnalysisParams(): {
       const allDatasetLayers = Object.values(deltaDatasets).flatMap(
         (d) => d.data.layers
       );
-      const layers = datasets.split('|').map((id) =>
+      const layers = datasetsLayers.split('|').map((id) =>
         // Find the one we're looking for.
         allDatasetLayers.find((l) => l.id === id)
       );
 
-      if (!datasets.length || layers.includes(undefined)) {
+      if (!datasetsLayers.length || layers.includes(undefined)) {
         const sentences = ['Invalid dataset layer ids found:'];
         layers.forEach((l, i) => {
           if (!l) {
-            sentences.push(`- ${datasets.split('|')[i]}`);
+            sentences.push(`- ${datasetsLayers.split('|')[i]}`);
           }
         });
 
@@ -145,7 +145,7 @@ export function analysisParams2QueryString(
   const urlParams = qs.stringify({
     start: params.start ? userTzDate2utcString(params.start) : undefined,
     end: params.end ? userTzDate2utcString(params.end) : undefined,
-    datasets: params.datasetsLayers
+    datasetsLayers: params.datasetsLayers
       ? params.datasetsLayers.map((d) => d.id).join('|')
       : undefined,
     aoi: params.aoi ? polygonUrlEncode(params.aoi, 4) : undefined
