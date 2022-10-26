@@ -31,7 +31,7 @@ import {
 } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
 
-import { Feature, MultiPolygon } from 'geojson';
+import { Feature, MultiPolygon, Polygon } from 'geojson';
 import axios from 'axios';
 import { DatasetLayer } from 'delta/thematics';
 import {
@@ -133,12 +133,24 @@ export default function Analysis() {
   // user is refining the analysis.
   const isNewAnalysis = !!errors?.length;
 
-  const analysisParamsQs = analysisParams2QueryString({
-    start,
-    end,
-    datasetsLayers,
-    aoi
-  });
+  const analysisParamsQs = useMemo(() => {
+    if (!start || !end || !datasetsLayers || !aoiDrawState.feature) return '';
+    // Quick and dirty conversion to MultiPolygon - might be avoided if using Google-polyline?
+    const toMultiPolygon: Feature<MultiPolygon> = {
+      type: 'Feature',
+      properties: { ...aoiDrawState.feature.properties },
+      geometry: {
+        type: 'MultiPolygon',
+        coordinates: [aoiDrawState.feature.geometry.coordinates]
+      }
+    };
+    return analysisParams2QueryString({
+      start,
+      end,
+      datasetsLayers,
+      aoi: toMultiPolygon
+    });
+  }, [start, end, datasetsLayers, aoiDrawState.feature]);
 
   const onStartDateChange = useCallback(
     (e) => {
@@ -166,7 +178,7 @@ export default function Analysis() {
   const [selectableDatasetLayers, setSelectableDatasetLayers] = useState<
     DatasetLayer[]
   >([]);
-  const readyToLoadDatasets = start && end && aoi;
+  const readyToLoadDatasets = start && end && aoiDrawState.feature;
 
   const onDatasetLayerChange = useCallback(
     (e) => {
@@ -207,7 +219,7 @@ export default function Analysis() {
           filter: getFilterPayload(
             start,
             end,
-            multiPolygonToPolygon(aoi),
+            aoiDrawState.feature as Feature<Polygon>,
             allAvailableDatasetsLayersIds
           ),
           limit: 100,
@@ -241,25 +253,7 @@ export default function Analysis() {
       }
     };
     load();
-  }, [start, end, aoi, allAvailableDatasetsLayers, readyToLoadDatasets]);
-
-  useEffect(() => {
-    if (aoiDrawState.drawing) return;
-    if (!aoiDrawState.feature) {
-      setAnalysisParam('aoi', null);
-      return;
-    }
-    // Quick and dirty conversion to MultiPolygon - might be avoided if using Google-polyline?
-    const toMultiPolygon: Feature<MultiPolygon> = {
-      type: 'Feature',
-      properties: { ...aoiDrawState.feature.properties },
-      geometry: {
-        type: 'MultiPolygon',
-        coordinates: [aoiDrawState.feature.geometry.coordinates]
-      }
-    };
-    setAnalysisParam('aoi', toMultiPolygon);
-  }, [aoiDrawState]);
+  }, [start, end, aoiDrawState.feature, allAvailableDatasetsLayers, readyToLoadDatasets]);
 
   const showTip = !readyToLoadDatasets || !datasetsLayers?.length;
 
@@ -343,6 +337,7 @@ export default function Analysis() {
       />
 
       <AoiSelector
+        // Use aoi intially decode from qs
         qsFeature={aoi}
         aoiDrawState={aoiDrawState}
         onAoiEvent={onAoiEvent}

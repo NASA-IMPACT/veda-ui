@@ -18,7 +18,7 @@ type AnalysisParams = {
 };
 
 type AnalysisParamsNull = Omit<Partial<AnalysisParams>, 'errors'> & {
-  errors: any[];
+  errors: any[] | null;
 };
 
 type AnyAnalysisParamsKey = keyof AnalysisParams;
@@ -29,7 +29,7 @@ const initialState: AnalysisParamsNull = {
   end: undefined,
   datasetsLayers: undefined,
   aoi: undefined,
-  errors: []
+  errors: null
 };
 
 export function useAnalysisParams(): {
@@ -107,7 +107,6 @@ export function useAnalysisParams(): {
       setParams({
         start: startDate,
         end: endDate,
-
         datasetsLayers: layers,
         aoi: geojson,
         errors: null
@@ -129,12 +128,12 @@ export function useAnalysisParams(): {
 
   const setAnalysisParam = useCallback(
     (param: AnyAnalysisParamsKey, value: AnyAnalysisParamsType) => {
-      setParams({
-        ...params,
+      setParams((oldParams) => ({
+        ...oldParams,
         [param]: value
-      });
+      }));
     },
-    [params]
+    []
   );
 
   return { params, setAnalysisParam };

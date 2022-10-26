@@ -22,6 +22,15 @@ import {
   CollecticonPencil
 } from '@devseed-ui/collecticons';
 
+import {
+  analysisParams2QueryString,
+  useAnalysisParams
+} from './use-analysis-params';
+import {
+  requestStacDatasetsTimeseries,
+  TimeseriesData,
+  TIMESERIES_DATA_BASE_ID
+} from './timeseries-data';
 import { LayoutProps } from '$components/common/layout-root';
 import {
   CardList,
@@ -55,15 +64,6 @@ import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
 import { pluralize } from '$utils/pluralize';
-import {
-  analysisParams2QueryString,
-  useAnalysisParams
-} from './use-analysis-params';
-import {
-  requestStacDatasetsTimeseries,
-  TimeseriesData,
-  TIMESERIES_DATA_BASE_ID
-} from './timeseries-data';
 import { calcFeatArea } from '$components/common/aoi/utils';
 
 export default function AnalysisResults() {
