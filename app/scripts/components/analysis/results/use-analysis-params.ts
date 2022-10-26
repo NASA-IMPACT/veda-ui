@@ -117,7 +117,6 @@ export function useAnalysisParams(): {
         /* eslint-disable no-console */
         error.forEach((s) => console.log(s));
         /* eslint-enable no-console */
-
         setParams({
           ...initialState,
           errors: error

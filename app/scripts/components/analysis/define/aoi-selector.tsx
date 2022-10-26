@@ -1,7 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
-import { useDeepCompareMemo } from 'use-deep-compare';
 import bbox from '@turf/bbox';
 
 import {
@@ -61,7 +60,7 @@ export default function AoiSelector(props: AoiSelectorProps) {
   // Despite the query parameters support for multiple features on the aoi, the
   // AOI drawing tool only supports one.
   // Keeping just the first one.
-  const polygon: Feature<Polygon> | null = useDeepCompareMemo(() => {
+  const polygon: Feature<Polygon> | null = useMemo(() => {
     return qsFeature
       ? { ...multiPolygonToPolygon(qsFeature), id: 'qs-feature' }
       : null;
