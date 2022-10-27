@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
 import React, { useMemo } from 'react';
 import {
@@ -13,6 +14,12 @@ import { resourceNotFound } from '$components/uhoh';
 import { thematicAnalysisPath } from '$utils/routes';
 import { useThematicArea } from '$utils/thematics';
 import { Tip } from '$components/common/tip';
+
+// Hack needed because tippy doesn't work on disabled elements
+export const DisabledButtonWrapper = styled.div`
+  pointer-events: none;
+  opacity: .5;
+`;
 
 interface PageHeroActionsProps {
   size: string;
@@ -90,7 +97,7 @@ export default function PageHeroActions({
           content={tipContents}
           sticky='reference'
           plugins={[sticky]}
-        >
+        ><DisabledButtonWrapper>
           <Button
             type='button'
             size={size}
@@ -99,6 +106,7 @@ export default function PageHeroActions({
           >
             <CollecticonTickSmall /> Save
           </Button>
+         </DisabledButtonWrapper>
         </Tip>
       ) : (
         <Button
