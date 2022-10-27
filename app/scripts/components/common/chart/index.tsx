@@ -54,15 +54,15 @@ export interface CommonLineChartProps {
   altTitle: string;
   altDesc: string;
   dateFormat: string;
-  colors: string[];
-  colorScheme: string;
+  colors?: string[];
+  colorScheme?: string;
   renderLegend?: boolean;
   renderBrush?: boolean;
   xAxisLabel?: string;
   yAxisLabel?: string;
   highlightStart?: string;
   highlightEnd?: string;
-  highlightLabel: string;
+  highlightLabel?: string;
   uniqueKeys: UniqueKeyUnit[];
 }
 
@@ -78,7 +78,7 @@ interface RLineChartProps extends CommonLineChartProps {
   syncId?: string;
 }
 
-function CustomCursor (props) {
+function CustomCursor(props) {
   // work around to disalbe cursor line when there is no matching index found
   // eslint-disable-next-line react/prop-types
   if (props.payloadIndex < 0) return null;
@@ -107,12 +107,12 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
 
   const [chartMargin, setChartMargin] = useState(defaultMargin);
   const [brushStartIndex, setBrushStartIndex] = useState(0);
-  const [brushEndIndex, setBrushEndIndex] = useState(chartData.length-1);
+  const [brushEndIndex, setBrushEndIndex] = useState(chartData.length - 1);
 
   const { isMediumUp } = useMediaQuery();
 
   function handleBrushChange(newIndex) {
-    const {startIndex, endIndex} = newIndex;
+    const { startIndex, endIndex } = newIndex;
     setBrushStartIndex(startIndex);
     setBrushEndIndex(endIndex);
   }
@@ -130,15 +130,15 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
     ? colors
     : getColors({ steps: uniqueKeys.length, colorScheme });
 
-    const uniqueKeysWithColors = useMemo(() => {
-      return uniqueKeys.map((e, idx) => ({
+  const uniqueKeysWithColors = useMemo(() => {
+    return uniqueKeys.map((e, idx) => ({
       ...e,
       color: lineColors[idx]
-      }));
-    }, [uniqueKeys, lineColors]);
-    
+    }));
+  }, [uniqueKeys, lineColors]);
 
   const renderHighlight = highlightStart || highlightEnd;
+
   return (
     <ChartWrapper>
       <ResponsiveContainer
@@ -154,7 +154,14 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
           margin={chartMargin}
           syncId={syncId}
           syncMethod={(tick, data) => {
-            const index = syncMethodFunction({ data, chartData, xKey, dateFormat, startIndex: brushStartIndex, endIndex: brushEndIndex });
+            const index = syncMethodFunction({
+              data,
+              chartData,
+              xKey,
+              dateFormat,
+              startIndex: brushStartIndex,
+              endIndex: brushEndIndex
+            });
             return index;
           }}
         >
@@ -183,12 +190,8 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
               position='bottom'
             />
           </XAxis>
-          <YAxis axisLine={false} tickFormatter={t=> getNumForChart(t)}>
-            <Label 
-              value={yAxisLabel} 
-              angle={-90} 
-              position='insideLeft' 
-            />
+          <YAxis axisLine={false} tickFormatter={(t) => getNumForChart(t)}>
+            <Label value={yAxisLabel} angle={-90} position='insideLeft' />
           </YAxis>
           {renderHighlight && (
             <>
@@ -204,11 +207,13 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
                 fill={highlightColor}
                 isFront={true}
               />
-              <Customized
-                component={
-                  <ReferenceLegendComponent highlightLabel={highlightLabel} />
-                }
-              />
+              {!!highlightLabel && (
+                <Customized
+                  component={
+                    <ReferenceLegendComponent highlightLabel={highlightLabel} />
+                  }
+                />
+              )}
             </>
           )}
           {uniqueKeysWithColors.map((k) => {
@@ -243,7 +248,7 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
               content={<LegendComponent />}
             />
           )}
-          {renderBrush &&
+          {renderBrush && (
             <Brush
               data={chartData}
               dataKey={xKey}
@@ -253,23 +258,24 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
               startIndex={brushStartIndex}
               endIndex={brushEndIndex}
             >
-            <LineChart data={chartData}>
-              {uniqueKeysWithColors.map((k) => {
-                return (
-                  <Line
-                    type='linear'
-                    isAnimationActive={false}
-                    dot={false}
-                    activeDot={false}
-                    key={`${k.value}-line-brush`}
-                    dataKey={k.label}
-                    strokeWidth={0.5}
-                    stroke={k.active ? k.color : 'transparent'}
-                  />
-                );
-              })}
-            </LineChart>
-            </Brush>}
+              <LineChart data={chartData}>
+                {uniqueKeysWithColors.map((k) => {
+                  return (
+                    <Line
+                      type='linear'
+                      isAnimationActive={false}
+                      dot={false}
+                      activeDot={false}
+                      key={`${k.value}-line-brush`}
+                      dataKey={k.label}
+                      strokeWidth={0.5}
+                      stroke={k.active ? k.color : 'transparent'}
+                    />
+                  );
+                })}
+              </LineChart>
+            </Brush>
+          )}
         </LineChartWithFont>
       </ResponsiveContainer>
     </ChartWrapper>

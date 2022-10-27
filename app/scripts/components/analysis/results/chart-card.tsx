@@ -63,7 +63,23 @@ export default function ChartCard(props: ChartCardProps) {
 
         {status === 'succeeded' ? (
           data.timeseries.length ? (
-            <p>Ready to show data</p>
+            <Chart
+              timeSeriesData={data.timeseries}
+              uniqueKeys={[
+                { label: 'Min', value: 'min', active: true },
+                { label: 'Max', value: 'max', active: true },
+                { label: 'STD', value: 'std', active: true }
+              ]}
+              xKey='date'
+              dates={data.timeseries.map((e) =>
+                dateFormatter(new Date(e.date), '%Y/%m')
+              )}
+              dateFormat='%Y/%m'
+              altTitle='alt title'
+              altDesc='alt desc'
+              xAxisLabel='x axis label'
+              yAxisLabel='y axis label'
+            />
           ) : (
             <ChartCardNoData />
           )
