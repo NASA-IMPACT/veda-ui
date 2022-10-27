@@ -125,7 +125,7 @@ export default function AnalysisResults() {
     };
   }, [start, end, datasetsLayers, aoi]);
 
-  if (errors && errors.length) {
+  if (errors?.length) {
     return <Navigate to={thematicAnalysisPath(thematic)} replace />;
   }
 
