@@ -68,7 +68,7 @@ export default function PageHeroActions({
     if (!start || !end)
       instructions = [...instructions, 'pick start and end dates'];
     if (!aoi) instructions = [...instructions, 'define an area'];
-    if (!datasetsLayers) instructions = [...instructions, 'select datasets'];
+    if (!datasetsLayers?.length) instructions = [...instructions, 'select datasets'];
 
     let instructionsString = instructions
       .join(', ')
