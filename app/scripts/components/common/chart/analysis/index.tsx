@@ -50,13 +50,13 @@ export default function AnalysisChart(props: AnalysisChartProps) {
         renderBrush={true}
         colors={lineColors}
       />
-      <ExportImage
+      {/* <ExportImage
         svgWrapperRef={chartRef}
         legendSvgString={getLegendStringForScreenshot({
           uniqueKeys,
           lineColors
         })}
-      />
+      /> */}
     </Wrapper>
   );
 }
