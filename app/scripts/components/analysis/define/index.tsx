@@ -109,6 +109,10 @@ export default function Analysis() {
 
   const onStartDateChange = useCallback(
     (e) => {
+      if (!e.target.value || e.target.value === '') {
+        setAnalysisParam('start', null);
+        return;
+      } 
       setAnalysisParam('start', inputFormatToDate(e.target.value));
     },
     [setAnalysisParam]
@@ -116,6 +120,10 @@ export default function Analysis() {
 
   const onEndDateChange = useCallback(
     (e) => {
+      if (!e.target.value || e.target.value === '') { 
+        setAnalysisParam('end', null);
+        return;
+      }
       setAnalysisParam('end', inputFormatToDate(e.target.value));
     },
     [setAnalysisParam]
