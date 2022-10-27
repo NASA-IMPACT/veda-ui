@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Toolbar,
   ToolbarIconButton,
@@ -20,7 +20,7 @@ import {
 import { TimeseriesData } from './timeseries-data';
 import { ChartLoading } from '$components/common/loading-skeleton';
 import { ChartCardAlert, ChartCardNoData } from './chart-card-message';
-import Chart from '$components/common/chart/analysis';
+import Chart, { AnalysisChartRef } from '$components/common/chart/analysis';
 import { dateFormatter } from '$components/common/chart/utils';
 
 interface ChartCardProps {
@@ -32,6 +32,8 @@ export default function ChartCard(props: ChartCardProps) {
   const { title, chartData } = props;
   const { status, meta, data, error, name } = chartData;
 
+  const chartRef = useRef<AnalysisChartRef>(null);
+
   return (
     <CardSelf>
       <CardHeader>
@@ -40,7 +42,12 @@ export default function ChartCard(props: ChartCardProps) {
         </CardHeadline>
         <CardActions>
           <Toolbar size='small'>
-            <ToolbarIconButton variation='base-text'>
+            <ToolbarIconButton
+              variation='base-text'
+              onClick={async () => {
+                await chartRef.current?.saveAsImage();
+              }}
+            >
               <CollecticonDownload2 title='Download' meaningful />
             </ToolbarIconButton>
             <VerticalDivider variation='dark' />
@@ -64,6 +71,7 @@ export default function ChartCard(props: ChartCardProps) {
         {status === 'succeeded' ? (
           data.timeseries.length ? (
             <Chart
+              ref={chartRef}
               timeSeriesData={data.timeseries}
               uniqueKeys={[
                 { label: 'Min', value: 'min', active: true },
