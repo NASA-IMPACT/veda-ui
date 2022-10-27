@@ -1,7 +1,7 @@
 import { timeFormat, timeParse } from 'd3';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { UniqueKeyUnit } from '.';
-import { round, shortenLargeNumber } from '$utils/format';
+import { formatAsScientificNotation, round, shortenLargeNumber } from '$utils/format';
 
 export const timeFormatter = (time: number, dateFormat: string) => {
   return dateFormatter(new Date(time), dateFormat);
@@ -221,7 +221,6 @@ export function syncMethodFunction({
   return (matchingIndex >= startIndex && matchingIndex <= endIndex)? matchingIndex: -1;
 }
 export function getNumForChart(x: number) {
-  if (x / 1e3 < 1) return round(x).toString();
-  const { num, unit } = shortenLargeNumber(x);
-  return `${num}${unit}`; 
+  if (Math.abs(x / 1e3) < 1) return round(x).toString();
+  return formatAsScientificNotation(x);
 }

@@ -127,3 +127,19 @@ export const zeroPad = (num: number, length = 2) => {
   const pads = new Array(padLength + 1).join('0');
   return prefix + pads + abdsNum;
 };
+
+export const formatAsScientificNotation = (num: number, decimals = 2) => {
+  const [coefficient, exponent] = num
+    .toExponential()
+    .split('e')
+    .map((item) => Number(item));
+
+  const sups = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  const exponentSup = exponent
+    .toString()
+    .split('')
+    .map((v) => sups[v])
+    .join('');
+
+  return `${round(coefficient, decimals)}x10${exponentSup}`;
+};
