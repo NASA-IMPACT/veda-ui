@@ -1,6 +1,8 @@
-import React from "react";
+import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { glsp, themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
+import { CollecticonChartLine } from '@devseed-ui/collecticons';
+
 import { variableGlsp } from '$styles/variable-utils';
 
 const pulse = keyframes`
@@ -128,6 +130,30 @@ const ContentLoadingSelf = styled.div`
   }
 `;
 
+const ChartLoadingWrapper = styled.div`
+  position:relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+  text-align: center;
+  padding: ${variableGlsp()};
+  gap: ${glsp()};
+  aspect-ratio: 16/9;
+  color: ${themeVal('color.base-400')};
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    content: '';
+    z-index: -1;
+    padding: ${variableGlsp()};
+    background: ${themeVal('color.base-100')};
+    animation: ${pulse} 0.8s ease 0s infinite alternate;
+  }
+`;
+
 export function ContentLoading() {
   return (
     <ContentLoadingSelf>
@@ -191,3 +217,11 @@ export const MapLoading = (props) => {
   );
 };
 
+export const ChartLoading = (props: { message: React.ReactNode }) => {
+  return (
+    <ChartLoadingWrapper>
+      <CollecticonChartLine size='xlarge' />
+      <p>{props.message}</p>
+    </ChartLoadingWrapper>
+  );
+};

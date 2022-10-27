@@ -11,14 +11,7 @@ import {
 } from '@devseed-ui/dropdown';
 import { Button } from '@devseed-ui/button';
 import {
-  Toolbar,
-  ToolbarIconButton,
-  VerticalDivider
-} from '@devseed-ui/toolbar';
-import {
   CollecticonChevronDownSmall,
-  CollecticonCircleInformation,
-  CollecticonDownload2,
   CollecticonPencil
 } from '@devseed-ui/collecticons';
 
@@ -32,15 +25,7 @@ import {
   TIMESERIES_DATA_BASE_ID
 } from './timeseries-data';
 import { LayoutProps } from '$components/common/layout-root';
-import {
-  CardList,
-  CardSelf,
-  CardHeader,
-  CardHeadline,
-  CardTitle,
-  CardActions,
-  CardBody
-} from '$components/common/card';
+import { CardList } from '$components/common/card';
 import {
   Fold,
   FoldHeader,
@@ -65,6 +50,7 @@ import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
 import { pluralize } from '$utils/pluralize';
 import { calcFeatArea } from '$components/common/aoi/utils';
+import ChartCard from './chart-card';
 
 export default function AnalysisResults() {
   const thematic = useThematicArea();
@@ -159,7 +145,7 @@ export default function AnalysisResults() {
           </Button>
         )}
       />
-      <Fold>
+      <Fold style={{ height: '200vh' }}>
         <FoldHeader>
           <FoldHeadline>
             <FoldTitle>Results</FoldTitle>
@@ -237,48 +223,7 @@ export default function AnalysisResults() {
             <CardList>
               {requestStatus.map((l) => (
                 <li key={l.id}>
-                  <CardSelf>
-                    <CardHeader>
-                      <CardHeadline>
-                        <CardTitle>{l.name}</CardTitle>
-                      </CardHeadline>
-                      <CardActions>
-                        <Toolbar size='small'>
-                          <ToolbarIconButton variation='base-text'>
-                            <CollecticonDownload2 title='Download' meaningful />
-                          </ToolbarIconButton>
-                          <VerticalDivider variation='dark' />
-                          <ToolbarIconButton variation='base-text'>
-                            <CollecticonCircleInformation
-                              title='More info'
-                              meaningful
-                            />
-                          </ToolbarIconButton>
-                        </Toolbar>
-                      </CardActions>
-                    </CardHeader>
-                    <CardBody>
-                      {l.status === 'errored' && (
-                        <p>Something went wrong: {l.error.message}</p>
-                      )}
-
-                      {l.status === 'loading' && (
-                        <p>
-                          {l.meta.loaded} of {l.meta.total} loaded. Wait
-                        </p>
-                      )}
-
-                      {l.status === 'succeeded' &&
-                        !!l.data.timeseries.length && (
-                          <p>All good. Can show data now.</p>
-                        )}
-
-                      {l.status === 'succeeded' &&
-                        !l.data.timeseries.length && (
-                          <p>There is no data available</p>
-                        )}
-                    </CardBody>
-                  </CardSelf>
+                  <ChartCard title={l.name} chartData={l} />
                 </li>
               ))}
             </CardList>
