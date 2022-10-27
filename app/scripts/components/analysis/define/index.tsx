@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { uniqBy } from 'lodash';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
@@ -152,6 +152,16 @@ export default function Analysis() {
 
   const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
     useStacSearch({ start, end, aoi: aoiDrawState.feature });
+
+  // Update datasetsLayers when stac search is refreshed in case some datasetsLayers are not available anymore
+  useEffect(() => {
+    if (!datasetsLayers) return;
+    const selectableDatasetLayersIds = selectableDatasetLayers.map((layer) => layer.id);
+    const cleanedDatasetsLayers = datasetsLayers?.filter((l) => selectableDatasetLayersIds.includes(l.id));
+
+    setAnalysisParam('datasetsLayers', cleanedDatasetsLayers);
+    // Only update when stac search gets updated to avoid triggering an infinite read/set state loop
+  }, [selectableDatasetLayers, setAnalysisParam]);
 
   const showTip = !readyToLoadDatasets || !datasetsLayers?.length;
 
