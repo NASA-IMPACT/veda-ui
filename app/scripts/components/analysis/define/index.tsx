@@ -170,8 +170,10 @@ export default function Analysis() {
       readyToLoadDatasets &&
       stacSearchStatus === S_SUCCEEDED &&
       selectableDatasetLayers.length
-    )
+    ) {
       return;
+    }
+
     if (!readyToLoadDatasets) {
       return 'To select datasets, please define an area and a date first.';
     } else {
