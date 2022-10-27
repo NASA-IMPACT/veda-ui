@@ -28,7 +28,7 @@ export function useStacSearch({
       'stacCol'
     );
   }, [thematic]);
-  // const selectedDatasetLayerIds = datasetsLayers?.map((layer) => layer.id);
+
   const [selectableDatasetLayers, setSelectableDatasetLayers] = useState<
     DatasetLayer[]
   >([]);
@@ -40,7 +40,7 @@ export function useStacSearch({
     const load = async () => {
       setStacSearchStatus(S_LOADING);
       try {
-        // if (controller.current) controller.current.abort();
+        if (controller.current) controller.current.abort();
         controller.current = new AbortController();
 
         const url = `${process.env.API_STAC_ENDPOINT}/search`;
