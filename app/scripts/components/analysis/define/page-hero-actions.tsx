@@ -53,6 +53,23 @@ export default function PageHeroActions({
       aoi: toMultiPolygon
     });
   }, [start, end, datasetsLayers, aoi]);
+
+  let tipContents;
+  if (showTip) {
+    tipContents = 'To get results, ';
+    let instructions: string[] = [];
+    if (!start || !end)
+      instructions = [...instructions, 'pick start and end dates'];
+    if (!aoi) instructions = [...instructions, 'define an area'];
+    if (!datasetsLayers) instructions = [...instructions, 'select datasets'];
+
+    let instructionsString = instructions
+      .join(', ')
+      .replace(/,\s([^,]+)$/, ' and $1.');
+
+    tipContents = [tipContents, instructionsString].join('');
+  }
+
   return (
     <>
       {!isNewAnalysis && (
@@ -70,7 +87,7 @@ export default function PageHeroActions({
         <Tip
           visible
           placement='bottom-end'
-          content='To get results, define an area, pick a date and select datasets.'
+          content={tipContents}
           sticky='reference'
           plugins={[sticky]}
         >
