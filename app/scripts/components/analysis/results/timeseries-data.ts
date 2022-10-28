@@ -87,15 +87,25 @@ export function requestStacDatasetsTimeseries({
   end,
   aoi,
   layers,
-  queryClient
+  queryClient,
+  signal
 }: {
   start: Date;
   end: Date;
   aoi: Feature<MultiPolygon>;
   layers: DatasetLayer[];
   queryClient: QueryClient;
+  signal: AbortSignal;
 }) {
   const eventEmitter = EventEmitter();
+
+  const concurrencyManager = ConcurrencyManager();
+
+  // On abort clear the queue.
+  signal?.addEventListener('abort', () => {
+    queryClient.cancelQueries([TIMESERIES_DATA_BASE_ID]);
+    concurrencyManager.clear();
+  });
 
   // Start the request for each layer.
   layers.forEach(async (layer, index) => {
@@ -106,7 +116,8 @@ export function requestStacDatasetsTimeseries({
       layer,
       queryClient,
       eventEmitter,
-      index
+      index,
+      concurrencyManager
     });
   });
 
@@ -204,6 +215,7 @@ type TimeseriesRequesterParams = {
   queryClient: QueryClient;
   eventEmitter: ReturnType<typeof EventEmitter>;
   index: number;
+  concurrencyManager: ConcurrencyManagerInstance;
 };
 
 // Make requests and emit events.
@@ -214,11 +226,10 @@ async function requestTimeseries({
   layer,
   queryClient,
   eventEmitter,
-  index
+  index,
+  concurrencyManager
 }: TimeseriesRequesterParams) {
   const id = layer.id;
-
-  const concurrencyManager = ConcurrencyManager();
 
   let layersBase: TimeseriesData = {
     id,
