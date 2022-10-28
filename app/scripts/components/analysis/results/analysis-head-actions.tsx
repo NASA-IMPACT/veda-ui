@@ -1,9 +1,8 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
   Dropdown,
-  DropMenu,
-  DropMenuItem,
   DropTitle
 } from '@devseed-ui/dropdown';
 import { Button } from '@devseed-ui/button';
@@ -18,7 +17,6 @@ import {
   LegendSwatch,
   LegendLabel
 } from '$styles/infographics';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 export interface DataMetric {
   id: string;
@@ -107,21 +105,22 @@ export default function AnalysisHeadActions(props: AnalysisHeadActionsProps) {
           {dataMetrics.map((metric) => {
             const active = !!activeMetrics.find((m) => m.id === metric.id);
             return (
-            <React.Fragment key={metric.id}>
-              <LegendSwatch disabled={!active}>
-                <svg height='8' width='8'>
-                  <title>{theme.color[metric.themeColor]}</title>
-                  <circle
-                    cx='4'
-                    cy='4'
-                    r='4'
-                    fill={theme.color[metric.themeColor]}
-                  />
-                </svg>
-              </LegendSwatch>
-              <LegendLabel disabled={!active}>{metric.label}</LegendLabel>
-            </React.Fragment>
-          )})}
+              <React.Fragment key={metric.id}>
+                <LegendSwatch disabled={!active}>
+                  <svg height='8' width='8'>
+                    <title>{theme.color[metric.themeColor]}</title>
+                    <circle
+                      cx='4'
+                      cy='4'
+                      r='4'
+                      fill={theme.color[metric.themeColor]}
+                    />
+                  </svg>
+                </LegendSwatch>
+                <LegendLabel disabled={!active}>{metric.label}</LegendLabel>
+              </React.Fragment>
+            );
+          })}
         </LegendList>
       </Legend>
 

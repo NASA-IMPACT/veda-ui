@@ -1,9 +1,8 @@
 import styled from 'styled-components';
-
 import { Overline, Subtitle } from '@devseed-ui/typography';
+import { disabled } from '@devseed-ui/theme-provider';
 
 import { variableGlsp } from './variable-utils';
-import { disabled } from '@devseed-ui/theme-provider';
 
 export const Legend = styled.div`
   display: flex;
@@ -38,5 +37,5 @@ export const LegendLabel = styled(Subtitle).attrs({
 })`
   margin-left: ${variableGlsp(-0.25)};
 
-${({ disabled: d }) => d && disabled()}
+  ${({ disabled: d }) => d && disabled()}
 `;
