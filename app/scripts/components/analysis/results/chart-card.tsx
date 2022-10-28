@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+import { useTheme } from 'styled-components';
 import {
   Toolbar,
   ToolbarIconButton,
@@ -22,15 +23,30 @@ import { ChartLoading } from '$components/common/loading-skeleton';
 import { ChartCardAlert, ChartCardNoData } from './chart-card-message';
 import Chart from '$components/common/chart/analysis';
 import { dateFormatter } from '$components/common/chart/utils';
+import { DataMetric } from './analysis-head-actions';
 
 interface ChartCardProps {
   title: React.ReactNode;
   chartData: TimeseriesData;
+  activeMetrics: DataMetric[];
 }
 
 export default function ChartCard(props: ChartCardProps) {
-  const { title, chartData } = props;
+  const { title, chartData, activeMetrics } = props;
   const { status, meta, data, error, name } = chartData;
+
+  const theme = useTheme();
+
+  const { uniqueKeys, colors } = useMemo(() => {
+    return {
+      uniqueKeys: activeMetrics.map((metric) => ({
+        label: metric.chartLabel,
+        value: metric.id,
+        active: true
+      })),
+      colors: activeMetrics.map((metric) => theme.color[metric.themeColor])
+    };
+  }, [activeMetrics, theme]);
 
   return (
     <CardSelf>
@@ -65,11 +81,8 @@ export default function ChartCard(props: ChartCardProps) {
           data.timeseries.length ? (
             <Chart
               timeSeriesData={data.timeseries}
-              uniqueKeys={[
-                { label: 'Min', value: 'min', active: true },
-                { label: 'Max', value: 'max', active: true },
-                { label: 'STD', value: 'std', active: true }
-              ]}
+              uniqueKeys={uniqueKeys}
+              colors={colors}
               xKey='date'
               dates={data.timeseries.map((e) =>
                 dateFormatter(new Date(e.date), '%Y/%m')
