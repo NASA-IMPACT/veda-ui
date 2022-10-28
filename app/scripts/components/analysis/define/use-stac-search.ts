@@ -19,7 +19,7 @@ export function useStacSearch({
   aoi
 }: UseStacSearchProps) {
   const thematic = useThematicArea();
-  const controller = useRef<AbortController>();
+
   const readyToLoadDatasets = start && end && aoi;
   const allAvailableDatasetsLayers: DatasetLayer[] = useMemo(() => {
     if (!thematic?.data.datasets) return [];
@@ -36,13 +36,11 @@ export function useStacSearch({
   useState<ActionStatus>(S_IDLE);
   useEffect(() => {
     if (!readyToLoadDatasets || !allAvailableDatasetsLayers) return;
+    const controller = new AbortController();
 
     const load = async () => {
       setStacSearchStatus(S_LOADING);
       try {
-        if (controller.current) controller.current.abort();
-        controller.current = new AbortController();
-
         const url = `${process.env.API_STAC_ENDPOINT}/search`;
 
         const allAvailableDatasetsLayersIds = allAvailableDatasetsLayers.map(
@@ -71,7 +69,7 @@ export function useStacSearch({
           }
         };
         const response = await axios.post(url, payload, {
-          signal: controller.current.signal
+          signal: controller.signal
         });
         setStacSearchStatus(S_SUCCEEDED);
         const itemsParentCollections: string[] = uniq(
@@ -87,6 +85,9 @@ export function useStacSearch({
       }
     };
     load();
+    return () => {
+      controller.abort();
+    };
   }, [
     start,
     end,
