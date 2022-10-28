@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Overline, Subtitle } from '@devseed-ui/typography';
 
 import { variableGlsp } from './variable-utils';
+import { disabled } from '@devseed-ui/theme-provider';
 
 export const Legend = styled.div`
   display: flex;
@@ -28,10 +29,14 @@ export const LegendSwatch = styled.dt`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  ${({ disabled: d }) => d && disabled()}
 `;
 
 export const LegendLabel = styled(Subtitle).attrs({
   as: 'dd'
 })`
   margin-left: ${variableGlsp(-0.25)};
+
+${({ disabled: d }) => d && disabled()}
 `;

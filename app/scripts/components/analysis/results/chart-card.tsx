@@ -10,6 +10,13 @@ import {
   CollecticonDownload2
 } from '@devseed-ui/collecticons';
 
+import { TimeseriesData } from './timeseries-data';
+import {
+  ChartCardAlert,
+  ChartCardNoData,
+  ChartCardNoMetric
+} from './chart-card-message';
+import { DataMetric } from './analysis-head-actions';
 import {
   CardSelf,
   CardHeader,
@@ -18,12 +25,9 @@ import {
   CardActions,
   CardBody
 } from '$components/common/card';
-import { TimeseriesData } from './timeseries-data';
-import { ChartLoading } from '$components/common/loading-skeleton';
-import { ChartCardAlert, ChartCardNoData } from './chart-card-message';
 import Chart from '$components/common/chart/analysis';
+import { ChartLoading } from '$components/common/loading-skeleton';
 import { dateFormatter } from '$components/common/chart/utils';
-import { DataMetric } from './analysis-head-actions';
 
 interface ChartCardProps {
   title: React.ReactNode;
@@ -79,20 +83,24 @@ export default function ChartCard(props: ChartCardProps) {
 
         {status === 'succeeded' ? (
           data.timeseries.length ? (
-            <Chart
-              timeSeriesData={data.timeseries}
-              uniqueKeys={uniqueKeys}
-              colors={colors}
-              xKey='date'
-              dates={data.timeseries.map((e) =>
-                dateFormatter(new Date(e.date), '%Y/%m')
-              )}
-              dateFormat='%Y/%m'
-              altTitle={`Amount of ${name} over time`}
-              altDesc={`Amount of ${name} over time`}
-              xAxisLabel='Time'
-              yAxisLabel='Amount'
-            />
+            !activeMetrics.length ? (
+              <ChartCardNoMetric />
+            ) : (
+              <Chart
+                timeSeriesData={data.timeseries}
+                uniqueKeys={uniqueKeys}
+                colors={colors}
+                xKey='date'
+                dates={data.timeseries.map((e) =>
+                  dateFormatter(new Date(e.date), '%Y/%m')
+                )}
+                dateFormat='%Y/%m'
+                altTitle={`Amount of ${name} over time`}
+                altDesc={`Amount of ${name} over time`}
+                xAxisLabel='Time'
+                yAxisLabel='Amount'
+              />
+            )
           ) : (
             <ChartCardNoData />
           )

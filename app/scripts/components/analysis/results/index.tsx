@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import styled from 'styled-components';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 import { media } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { CollecticonPencil } from '@devseed-ui/collecticons';
@@ -17,7 +17,10 @@ import {
   TIMESERIES_DATA_BASE_ID
 } from './timeseries-data';
 import ChartCard from './chart-card';
-import AnalysisHeadActions, { dataMetrics } from './analysis-head-actions';
+import AnalysisHeadActions, {
+  DataMetric,
+  dataMetrics
+} from './analysis-head-actions';
 import { LayoutProps } from '$components/common/layout-root';
 import { CardList } from '$components/common/card';
 import {
@@ -54,6 +57,8 @@ export default function AnalysisResults() {
   const [requestStatus, setRequestStatus] = useState<TimeseriesData[]>([]);
   const { params } = useAnalysisParams();
   const { start, end, datasetsLayers, aoi, errors } = params;
+
+  const [activeMetrics, setActiveMetrics] = useState<DataMetric[]>(dataMetrics);
 
   useEffect(() => {
     if (!start || !end || !datasetsLayers || !aoi) return;
@@ -143,7 +148,10 @@ export default function AnalysisResults() {
           <FoldHeadline>
             <FoldTitle>Results</FoldTitle>
           </FoldHeadline>
-          <AnalysisHeadActions />
+          <AnalysisHeadActions
+            activeMetrics={activeMetrics}
+            onMetricsChange={setActiveMetrics}
+          />
         </FoldHeader>
         <FoldBody>
           {!!requestStatus.length && (
@@ -153,7 +161,7 @@ export default function AnalysisResults() {
                   <ChartCard
                     title={l.name}
                     chartData={l}
-                    activeMetrics={dataMetrics}
+                    activeMetrics={activeMetrics}
                   />
                 </li>
               ))}
