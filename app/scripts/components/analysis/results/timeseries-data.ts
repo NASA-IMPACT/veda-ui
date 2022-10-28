@@ -83,15 +83,14 @@ interface StacDatasetsTimeseriesEvented {
 }
 
 export function requestStacDatasetsTimeseries({
-  date,
+  start,
+  end,
   aoi,
   layers,
   queryClient
 }: {
-  date: {
-    start: Date;
-    end: Date;
-  };
+  start: Date;
+  end: Date;
   aoi: Feature<MultiPolygon>;
   layers: DatasetLayer[];
   queryClient: QueryClient;
@@ -101,7 +100,8 @@ export function requestStacDatasetsTimeseries({
   // Start the request for each layer.
   layers.forEach(async (layer, index) => {
     requestTimeseries({
-      date,
+      start,
+      end,
       aoi,
       layer,
       queryClient,
@@ -197,10 +197,8 @@ async function getDatasetAssets(
 }
 
 type TimeseriesRequesterParams = {
-  date: {
-    start: Date;
-    end: Date;
-  };
+  start: Date;
+  end: Date;
   aoi: Feature<MultiPolygon>;
   layer: DatasetLayer;
   queryClient: QueryClient;
@@ -210,7 +208,8 @@ type TimeseriesRequesterParams = {
 
 // Make requests and emit events.
 async function requestTimeseries({
-  date,
+  start,
+  end,
   aoi,
   layer,
   queryClient,
@@ -251,8 +250,8 @@ async function requestTimeseries({
             id,
             aoi,
             date: {
-              start: userTzDate2utcString(date.start),
-              end: userTzDate2utcString(date.end)
+              start: userTzDate2utcString(start),
+              end: userTzDate2utcString(end)
             }
           },
           { signal },

@@ -22,6 +22,15 @@ import {
   CollecticonPencil
 } from '@devseed-ui/collecticons';
 
+import {
+  analysisParams2QueryString,
+  useAnalysisParams
+} from './use-analysis-params';
+import {
+  requestStacDatasetsTimeseries,
+  TimeseriesData,
+  TIMESERIES_DATA_BASE_ID
+} from './timeseries-data';
 import { LayoutProps } from '$components/common/layout-root';
 import {
   CardList,
@@ -55,15 +64,6 @@ import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
 import { pluralize } from '$utils/pluralize';
-import {
-  analysisParams2QueryString,
-  useAnalysisParams
-} from './use-analysis-params';
-import {
-  requestStacDatasetsTimeseries,
-  TimeseriesData,
-  TIMESERIES_DATA_BASE_ID
-} from './timeseries-data';
 import { calcFeatArea } from '$components/common/aoi/utils';
 
 export default function AnalysisResults() {
@@ -74,15 +74,17 @@ export default function AnalysisResults() {
 
   const queryClient = useQueryClient();
   const [requestStatus, setRequestStatus] = useState<TimeseriesData[]>([]);
-  const { date, datasetsLayers, aoi, errors } = useAnalysisParams();
+  const { params } = useAnalysisParams();
+  const { start, end, datasetsLayers, aoi, errors } = params;
 
   useEffect(() => {
-    if (!date.start || !datasetsLayers || !aoi) return;
+    if (!start || !end || !datasetsLayers || !aoi) return;
 
     setRequestStatus([]);
     queryClient.cancelQueries([TIMESERIES_DATA_BASE_ID]);
     const requester = requestStacDatasetsTimeseries({
-      date,
+      start,
+      end,
       aoi,
       layers: datasetsLayers,
       queryClient
@@ -95,13 +97,13 @@ export default function AnalysisResults() {
         })
       );
     });
-  }, [queryClient, date, datasetsLayers, aoi]);
+  }, [queryClient, start, end, datasetsLayers, aoi]);
 
   // Textual description for the meta tags and element for the page hero.
   const descriptions = useMemo(() => {
-    if (!date.start || !datasetsLayers || !aoi) return { meta: '', page: '' };
+    if (!start || !end || !datasetsLayers || !aoi) return { meta: '', page: '' };
 
-    const dateLabel = formatDateRange(date);
+    const dateLabel = formatDateRange(start, end);
     const area = calcFeatArea(aoi);
     const datasetCount = pluralize({
       singular: 'dataset',
@@ -121,14 +123,15 @@ export default function AnalysisResults() {
         </>
       )
     };
-  }, [date, datasetsLayers, aoi]);
+  }, [start, end, datasetsLayers, aoi]);
 
-  if (errors) {
+  if (errors?.length) {
     return <Navigate to={thematicAnalysisPath(thematic)} replace />;
   }
 
   const analysisParamsQs = analysisParams2QueryString({
-    date,
+    start,
+    end,
     datasetsLayers,
     aoi
   });

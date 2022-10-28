@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import debounce from 'lodash.debounce';
+import { debounce } from 'lodash';
 import { scaleTime, select, zoom } from 'd3';
 import { themeVal } from '@devseed-ui/theme-provider';
 

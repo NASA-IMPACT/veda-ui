@@ -21,7 +21,7 @@ import {
   CollecticonTrashBin,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
-
+import { multiPolygonToPolygon } from '../utils';
 import {
   Fold,
   FoldHeader,
@@ -45,7 +45,7 @@ const DemoMap = styled(MapboxMap)`
 `;
 
 interface AoiSelectorProps {
-  qsFeature: Feature<MultiPolygon> | null;
+  qsFeature?: Feature<MultiPolygon>;
   aoiDrawState: AoiState;
   onAoiEvent: AoiChangeListenerOverload;
 }
@@ -61,15 +61,7 @@ export default function AoiSelector(props: AoiSelectorProps) {
   // Keeping just the first one.
   const polygon: Feature<Polygon> | null = useMemo(() => {
     return qsFeature
-      ? {
-          type: 'Feature',
-          id: 'qs-feature',
-          properties: {},
-          geometry: {
-            type: 'Polygon',
-            coordinates: qsFeature.geometry.coordinates[0]
-          }
-        }
+      ? { ...multiPolygonToPolygon(qsFeature), id: 'qs-feature' }
       : null;
   }, [qsFeature]);
 

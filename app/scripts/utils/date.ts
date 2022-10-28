@@ -1,4 +1,4 @@
-import { format, isSameMonth, isSameYear } from 'date-fns';
+import { format, isSameMonth, isSameYear, parse } from 'date-fns';
 
 /**
  * Create a date which matches the input date offsetting the timezone to match
@@ -97,11 +97,10 @@ export function isValidDate(dateString?: string | null) {
  * Dec 01-31, 2020
  * Dec 31st, 2020
  *
- * @param {object} range Date range to format
+ * @param {object} start Start date to format
+ * @param {object} end End date to format
  */
-export function formatDateRange(range: { start: Date; end: Date }) {
-  const { start, end } = range;
-
+export function formatDateRange(start: Date, end: Date) {
   const DATE_FORMAT_FULL = 'MMM do, yyyy';
 
   // Format the label in a pretty way as to not repeat values if the month or
@@ -129,3 +128,19 @@ export function formatDateRange(range: { start: Date; end: Date }) {
     return `${startStr} to ${endStr}`;
   }
 }
+
+/**
+ * Converts a native JS date to the format accepted by HTML inputs
+ * @param date 
+ * @returns string
+ */
+ export function dateToInputFormat(date?: Date) {
+  if (!date) return undefined;
+  return format(date, 'yyyy-MM-dd');
+}
+
+export function inputFormatToDate(inputFormat: string) {
+  return parse(inputFormat, 'yyyy-MM-dd', new Date());
+}
+
+

@@ -4,7 +4,8 @@
     "react",
     "react-hooks",
     "inclusive-language",
-    "jest"
+    "jest",
+    "import"
   ],
   "extends": [
     "eslint:recommended",
@@ -56,6 +57,7 @@
     "no-dupe-else-if": 0,
     "no-setter-return": 0,
     "prefer-promise-reject-errors": 0,
+    "import/order": 1,
     "react/button-has-type": 2,
     "react/default-props-match-prop-types": 2,
     "react/jsx-closing-bracket-location": 2,

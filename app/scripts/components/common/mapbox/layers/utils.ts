@@ -1,4 +1,4 @@
-import defaultsDeep from 'lodash.defaultsdeep';
+import { defaultsDeep } from 'lodash';
 import axios from 'axios';
 import {
   eachDayOfInterval,

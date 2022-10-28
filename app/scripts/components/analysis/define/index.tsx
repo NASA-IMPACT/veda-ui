@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { sticky } from 'tippy.js';
+import { uniqBy } from 'lodash';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarIconButton, ToolbarLabel } from '@devseed-ui/toolbar';
 import {
@@ -18,19 +17,16 @@ import {
 } from '@devseed-ui/form';
 import {
   CollecticonCircleInformation,
-  CollecticonEllipsisVertical,
-  CollecticonTickSmall,
-  CollecticonXmarkSmall
+  CollecticonEllipsisVertical
 } from '@devseed-ui/collecticons';
-import { Button } from '@devseed-ui/button';
 
+import { DatasetLayer } from 'delta/thematics';
+import { useAnalysisParams } from '../results/use-analysis-params';
+import AoiSelector from './aoi-selector';
+import PageHeroActions from './page-hero-actions';
+import { useStacSearch } from './use-stac-search';
 import { useThematicArea } from '$utils/thematics';
 import { variableGlsp } from '$styles/variable-utils';
-import {
-  analysisParams2QueryString,
-  useAnalysisParams
-} from '../results/use-analysis-params';
-import { thematicAnalysisPath } from '$utils/routes';
 
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
@@ -44,9 +40,9 @@ import {
   FoldTitle,
   FoldBody
 } from '$components/common/fold';
-import AoiSelector from './aoi-selector';
+import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
-import { Tip } from '$components/common/tip';
+import { dateToInputFormat, inputFormatToDate } from '$utils/date';
 
 const FormBlock = styled.div`
   display: flex;
@@ -101,7 +97,8 @@ export default function Analysis() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
 
-  const { date, datasetsLayers, aoi, errors } = useAnalysisParams();
+  const { params, setAnalysisParam } = useAnalysisParams();
+  const { start, end, datasetsLayers, aoi, errors } = params;
 
   const { aoi: aoiDrawState, onAoiEvent } = useAoiControls();
 
@@ -110,11 +107,93 @@ export default function Analysis() {
   // user is refining the analysis.
   const isNewAnalysis = !!errors?.length;
 
-  const analysisParamsQs = analysisParams2QueryString({
-    date,
-    datasetsLayers,
-    aoi
-  });
+  const onStartDateChange = useCallback(
+    (e) => {
+      if (!e.target.value || e.target.value === '') {
+        setAnalysisParam('start', null);
+        return;
+      } 
+      setAnalysisParam('start', inputFormatToDate(e.target.value));
+    },
+    [setAnalysisParam]
+  );
+
+  const onEndDateChange = useCallback(
+    (e) => {
+      if (!e.target.value || e.target.value === '') { 
+        setAnalysisParam('end', null);
+        return;
+      }
+      setAnalysisParam('end', inputFormatToDate(e.target.value));
+    },
+    [setAnalysisParam]
+  );
+
+  const allAvailableDatasetsLayers: DatasetLayer[] = useMemo(
+    () =>
+      uniqBy(
+        thematic.data.datasets.map((dataset) => dataset.layers).flat(),
+        'stacCol'
+      ),
+    [thematic.data.datasets]
+  );
+  const selectedDatasetLayerIds = datasetsLayers?.map((layer) => layer.id);
+
+  const onDatasetLayerChange = useCallback(
+    (e) => {
+      const id = e.target.id;
+      let newDatasetsLayers = [...(datasetsLayers || [])];
+      if (e.target.checked) {
+        const newDatasetLayer = allAvailableDatasetsLayers.find(
+          (l) => l.id === id
+        );
+        if (newDatasetLayer) {
+          newDatasetsLayers = [...newDatasetsLayers, newDatasetLayer];
+        }
+      } else {
+        newDatasetsLayers = newDatasetsLayers.filter((l) => l.id !== id);
+      }
+      setAnalysisParam('datasetsLayers', newDatasetsLayers);
+    },
+    [setAnalysisParam, allAvailableDatasetsLayers, datasetsLayers]
+  );
+
+  const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
+    useStacSearch({ start, end, aoi: aoiDrawState.feature });
+
+  // Update datasetsLayers when stac search is refreshed in case some datasetsLayers are not available anymore
+  useEffect(() => {
+    if (!datasetsLayers) return;
+    const selectableDatasetLayersIds = selectableDatasetLayers.map((layer) => layer.id);
+    const cleanedDatasetsLayers = datasetsLayers?.filter((l) => selectableDatasetLayersIds.includes(l.id));
+
+    setAnalysisParam('datasetsLayers', cleanedDatasetsLayers);
+    // Only update when stac search gets updated to avoid triggering an infinite read/set state loop
+  }, [selectableDatasetLayers, setAnalysisParam]);
+
+  const showTip = !readyToLoadDatasets || !datasetsLayers?.length;
+
+  const infoboxMessage = useMemo(() => {
+    if (
+      readyToLoadDatasets &&
+      stacSearchStatus === S_SUCCEEDED &&
+      selectableDatasetLayers.length
+    ) {
+      return;
+    }
+
+    if (!readyToLoadDatasets) {
+      return 'To select datasets, please define an area and a date first.';
+    } else {
+      if (!selectableDatasetLayers.length) {
+        return 'No datasets available in that thematic area for the currently selected dates and area.';
+      } else if (stacSearchStatus === S_LOADING) {
+        return 'Loading...';
+      } else if (stacSearchStatus === S_FAILED) {
+        return 'Error loading datasets.';
+      }
+    }
+  }, [readyToLoadDatasets, stacSearchStatus, selectableDatasetLayers.length]);
 
   return (
     <PageMainContent>
@@ -127,34 +206,20 @@ export default function Analysis() {
         title={isNewAnalysis ? 'Start analysis' : 'Refine analysis'}
         description='Visualize insights from a selected area over a period of time.'
         renderActions={({ size }) => (
-          <>
-            {!isNewAnalysis && (
-              <Button
-                forwardedAs={Link}
-                to={`${thematicAnalysisPath(thematic)}/results${analysisParamsQs}`}
-                type='button'
-                size={size}
-                variation='achromic-outline'
-              >
-                <CollecticonXmarkSmall /> Cancel
-              </Button>
-            )}
-            <Tip
-              visible
-              placement='bottom-end'
-              content='To get results, define an area, pick a date and select datasets.'
-              sticky='reference'
-              plugins={[sticky]}
-            >
-              <Button type='button' size={size} variation='achromic-outline'>
-                <CollecticonTickSmall /> Save
-              </Button>
-            </Tip>
-          </>
+          <PageHeroActions
+            size={size}
+            isNewAnalysis={isNewAnalysis}
+            showTip={showTip}
+            start={start}
+            end={end}
+            datasetsLayers={datasetsLayers}
+            aoi={aoiDrawState.feature}
+          />
         )}
       />
 
       <AoiSelector
+        // Use aoi initially decode from qs
         qsFeature={aoi}
         aoiDrawState={aoiDrawState}
         onAoiEvent={onAoiEvent}
@@ -207,6 +272,9 @@ export default function Analysis() {
                   size='large'
                   id='start-date'
                   name='start-date'
+                  value={start ? dateToInputFormat(start) : ''}
+                  onChange={onStartDateChange}
+                  max={dateToInputFormat(end)}
                 />
               </FormGroupStructure>
 
@@ -216,6 +284,9 @@ export default function Analysis() {
                   size='large'
                   id='end-date'
                   name='end-date'
+                  value={end ? dateToInputFormat(end) : ''}
+                  onChange={onEndDateChange}
+                  min={dateToInputFormat(start)}
                 />
               </FormGroupStructure>
             </FormBlock>
@@ -230,67 +301,30 @@ export default function Analysis() {
           </FoldHeadline>
         </FoldHeader>
         <FoldBody>
-          <Note>
-            <CollecticonCircleInformation size='large' />
-            <p>To select datasets, please define an area and a date first.</p>
-          </Note>
-          <Form>
-            <CheckableGroup>
-              <FormCheckableCustom
-                id='dataset-a'
-                name='dataset-a'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
-
-              <FormCheckableCustom
-                id='dataset-b'
-                name='dataset-b'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
-
-              <FormCheckableCustom
-                id='dataset-c'
-                name='dataset-c'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
-
-              <FormCheckableCustom
-                id='dataset-d'
-                name='dataset-d'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
-
-              <FormCheckableCustom
-                id='dataset-e'
-                name='dataset-e'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
-
-              <FormCheckableCustom
-                id='dataset-f'
-                name='dataset-f'
-                textPlacement='right'
-                type='checkbox'
-              >
-                Dataset name
-              </FormCheckableCustom>
-            </CheckableGroup>
-          </Form>
+          {!infoboxMessage ? (
+            <Form>
+              <CheckableGroup>
+                {selectableDatasetLayers.map((datasetLayer) => (
+                  <FormCheckableCustom
+                    key={datasetLayer.id}
+                    id={datasetLayer.id}
+                    name={datasetLayer.id}
+                    textPlacement='right'
+                    type='checkbox'
+                    onChange={onDatasetLayerChange}
+                    checked={selectedDatasetLayerIds?.includes(datasetLayer.id)}
+                  >
+                    {datasetLayer.name}
+                  </FormCheckableCustom>
+                ))}
+              </CheckableGroup>
+            </Form>
+          ) : (
+            <Note>
+              <CollecticonCircleInformation size='large' />
+              <p>{infoboxMessage}</p>
+            </Note>
+          )}
         </FoldBody>
       </Fold>
     </PageMainContent>
