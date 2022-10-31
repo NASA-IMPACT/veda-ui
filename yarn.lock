@@ -6311,6 +6311,11 @@ gonzales-pe@^4.3.0:
   dependencies:
     minimist "^1.2.5"
 
+google-polyline@^1.0.3:
+  version "1.0.3"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/google-polyline/-/google-polyline-1.0.3.tgz#b1fafd8841059f7049d4ba6767c386be979510dc"
+  integrity sha512-36BnqVxmVcR8lTvzO6aeXdICNChAwQLlfMkR1P9IBpTWE8hA6bAbQHCVArwMHB5WIMq9owywtAkjioe3crNq4Q==
+
 got@^10.7.0:
   version "10.7.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/got/-/got-10.7.0.tgz#62889dbcd6cca32cd6a154cc2d0c6895121d091f"
