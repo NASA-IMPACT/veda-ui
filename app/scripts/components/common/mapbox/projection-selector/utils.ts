@@ -1,7 +1,7 @@
 import { MbProjectionOptions, ProjectionOptions } from 'delta/thematics';
 
-import { validateRangeNum } from '$utils/utils';
 import { ProjectionListItem } from './types';
+import { validateRangeNum } from '$utils/utils';
 
 // The id is internal to the app.
 // The mbId is the projection name to use with mapbox. This is needed because

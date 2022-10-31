@@ -2,9 +2,9 @@ import React from 'react';
 import T from 'prop-types';
 import { FormFieldsetHeader, FormLegend } from '@devseed-ui/form';
 
+import StressedFormGroupInput from './stressed-form-group-input';
 import { validateRangeNum } from '$utils/utils';
 import { FormFieldsetCompact, FormFieldsetBodyColumns } from '$styles/fieldset';
-import StressedFormGroupInput from './stressed-form-group-input';
 
 export default function BoundsFieldset(props) {
   const validateLon = validateRangeNum(-180, 180);

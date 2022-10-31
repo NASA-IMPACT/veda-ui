@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 
 import { variableGlsp } from '../../styles/variable-utils';
-import { VarHeading, VarProse } from '$styles/variable-components';
 import Constrainer from '../../styles/constrainer';
+import { VarHeading, VarProse } from '$styles/variable-components';
 
 const FoldProseSelf = styled.div`
   padding-top: ${variableGlsp(2)};

@@ -12,6 +12,7 @@ import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
+import { Tip } from '../tip';
 import { formatThousands } from '$utils/format';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import {
@@ -21,7 +22,6 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 
-import { Tip } from '../tip';
 
 type LayerLegendCommonProps = {
   id: string;

@@ -1,12 +1,12 @@
 import React, { useRef, useMemo } from 'react';
 import styled from 'styled-components';
+import ExportImage from './export-image';
+import { getLegendStringForScreenshot } from './svg-legend';
 import Chart, { CommonLineChartProps } from '$components/common/chart';
 import {
   formatTimeSeriesData,
   getColors
 } from '$components/common/chart/utils';
-import ExportImage from './export-image';
-import { getLegendStringForScreenshot } from './svg-legend';
 
 const Wrapper = styled.div`
   width: 100%;

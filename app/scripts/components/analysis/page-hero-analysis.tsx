@@ -9,14 +9,14 @@ import {
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
+import { Feature, MultiPolygon } from 'geojson';
+import { useSlidingStickyHeaderProps } from '../common/layout-root';
+import PageHeroMedia from './page-hero-media';
 import { PageLead, PageMainTitle } from '$styles/page';
 import Constrainer from '$styles/constrainer';
-import PageHeroMedia from './page-hero-media';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { useMediaQuery } from '$utils/use-media-query';
-import { useSlidingStickyHeaderProps } from '../common/layout-root';
-import { Feature, MultiPolygon } from 'geojson';
 
 const PageHeroBlockAlpha = styled.div`
   display: flex;

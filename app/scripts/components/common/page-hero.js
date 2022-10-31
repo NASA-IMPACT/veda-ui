@@ -11,11 +11,11 @@ import {
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
+import { Figcaption, Figure, FigureAttribution } from './figure';
+import Try from './try-render';
 import { PageLead, PageMainTitle, PageOverline } from '$styles/page';
 import Constrainer from '$styles/constrainer';
 import { variableGlsp } from '$styles/variable-utils';
-import { Figcaption, Figure, FigureAttribution } from './figure';
-import Try from './try-render';
 
 const PageHeroSelf = styled.div`
   position: relative;

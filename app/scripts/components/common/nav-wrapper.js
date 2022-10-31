@@ -3,10 +3,10 @@ import T from 'prop-types';
 import styled, { css } from 'styled-components';
 
 import PageHeader from './page-header';
+import { useSlidingStickyHeaderProps } from './layout-root';
 import PageLocalNav from '$components/common/page-local-nav';
 
 import { HEADER_WRAPPER_ID } from '$utils/use-sliding-sticky-header';
-import { useSlidingStickyHeaderProps } from './layout-root';
 
 const NavWrapper = styled.div`
   position: sticky;

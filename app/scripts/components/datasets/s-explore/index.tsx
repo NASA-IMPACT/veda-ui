@@ -16,6 +16,8 @@ import {
 import { ProjectionOptions } from 'delta/thematics';
 import { FormSwitch } from '@devseed-ui/form';
 
+import DatasetLayers from './dataset-layers';
+import { PanelDateWidget } from './panel-date-widget';
 import { resourceNotFound } from '$components/uhoh';
 import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import { LayoutProps } from '$components/common/layout-root';
@@ -37,7 +39,6 @@ import {
   PanelWidgetTitle,
   PANEL_REVEAL_DURATION
 } from '$styles/panel';
-import DatasetLayers from './dataset-layers';
 
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { useMediaQuery } from '$utils/use-media-query';
@@ -51,7 +52,6 @@ import {
 } from '$components/common/mapbox/layers/utils';
 import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
-import { PanelDateWidget } from './panel-date-widget';
 import { projectionDefault } from '$components/common/mapbox/projection-selector/utils';
 
 const Explorer = styled.div`

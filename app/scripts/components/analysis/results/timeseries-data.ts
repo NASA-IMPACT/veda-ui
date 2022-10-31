@@ -4,8 +4,8 @@ import { Feature, MultiPolygon } from 'geojson';
 import { DatasetLayer } from 'delta/thematics';
 
 import EventEmitter from './mini-events';
-import { userTzDate2utcString } from '$utils/date';
 import { ConcurrencyManager, ConcurrencyManagerInstance } from './concurrency';
+import { userTzDate2utcString } from '$utils/date';
 import { TimeDensity } from '$context/layer-data';
 
 export const TIMESERIES_DATA_BASE_ID = 'analysis';

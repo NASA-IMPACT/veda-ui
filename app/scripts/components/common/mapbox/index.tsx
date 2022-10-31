@@ -22,6 +22,14 @@ import {
 import { themeVal } from '@devseed-ui/theme-provider';
 import { DatasetDatumFnResolverBag, ProjectionOptions } from 'delta/thematics';
 
+import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
+import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
+import { SimpleMap } from './map';
+import MapMessage from './map-message';
+import LayerLegend from './layer-legend';
+import { formatCompareDate, formatSingleDate } from './utils';
+import { MapLoading } from '$components/common/loading-skeleton';
+import { useDatasetAsyncLayer } from '$context/layer-data';
 import {
   ActionStatus,
   S_FAILED,
@@ -29,14 +37,6 @@ import {
   S_LOADING,
   S_SUCCEEDED
 } from '$utils/status';
-import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
-import { useDatasetAsyncLayer } from '$context/layer-data';
-import { MapLoading } from '$components/common/loading-skeleton';
-import { SimpleMap } from './map';
-import MapMessage from './map-message';
-import LayerLegend from './layer-legend';
-import { formatCompareDate, formatSingleDate } from './utils';
-import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import { calcFeatArea } from '$components/common/aoi/utils';
 
 const chevronRightURI = () =>
