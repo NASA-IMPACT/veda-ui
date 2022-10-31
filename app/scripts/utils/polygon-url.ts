@@ -38,22 +38,13 @@ export function polygonUrlDecode(polygonStr: string) {
  *
  */
 export function polygonUrlEncode(
-  f: Feature<MultiPolygon>,
-  precision = Infinity
+  f: Feature<MultiPolygon>
 ) {
   return f.geometry.coordinates
     .map((polygon) => {
       const points = polygon[0]
         // Remove last coordinate since it is repeated.
-        .slice(0, -1)
-        .map((point) => {
-          let p = point;
-          if (precision !== Infinity) {
-            const m = Math.pow(10, precision);
-            p = point.map((v) => Math.floor(v * m) / m);
-          }
-          return p;
-        });
+        .slice(0, -1);
       return encode(points);
     })
     .join('||');
