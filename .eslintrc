@@ -98,7 +98,7 @@
         "prettier/prettier": "off",
         "no-unused-vars": "off"
       },
-      "extends": ["eslint:recommended" /*, "plugin:@typescript-eslint/strict"*/],
+      "extends": ["eslint:recommended", "plugin:@typescript-eslint/strict"],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
         "project": ["./tsconfig.json"]

@@ -35,7 +35,7 @@ export function useStacSearch({
   const [stacSearchStatus, setStacSearchStatus] =
   useState<ActionStatus>(S_IDLE);
   useEffect(() => {
-    if (!readyToLoadDatasets || !allAvailableDatasetsLayers) return;
+    if (!readyToLoadDatasets) return;
     const controller = new AbortController();
 
     const load = async () => {
