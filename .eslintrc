@@ -5,7 +5,8 @@
     "react-hooks",
     "inclusive-language",
     "jest",
-    "import"
+    "import",
+    "fp"
   ],
   "extends": [
     "eslint:recommended",
@@ -85,8 +86,9 @@
     "react/style-prop-object": 2,
     "react/void-dom-elements-no-children": 2,
     "react/function-component-definition": [2, { "namedComponents": ["function-declaration", "arrow-function"] }],
-    "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
-    "react-hooks/exhaustive-deps": "warn" // Checks effect dependencies
+    "react-hooks/rules-of-hooks": 2, // Checks rules of Hooks
+    "react-hooks/exhaustive-deps": 1, // Checks effect dependencies
+    "fp/no-mutating-methods": 1
   },
   "overrides": [
     {
