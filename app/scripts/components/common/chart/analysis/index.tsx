@@ -2,13 +2,13 @@ import React, { useRef, useMemo, useImperativeHandle } from 'react';
 import styled from 'styled-components';
 import FileSaver from 'file-saver';
 
+import { ChartWrapperRef, exportImage } from './utils';
+import { getLegendStringForScreenshot } from './svg-legend';
 import Chart, { CommonLineChartProps } from '$components/common/chart';
 import {
   formatTimeSeriesData,
   getColors
 } from '$components/common/chart/utils';
-import { getLegendStringForScreenshot } from './svg-legend';
-import { ChartWrapperRef, exportImage } from './utils';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -74,13 +74,6 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
           renderBrush={true}
           colors={lineColors}
         />
-        {/* <ExportImage
-        svgWrapperRef={chartRef}
-        legendSvgString={getLegendStringForScreenshot({
-          uniqueKeys,
-          lineColors
-        })}
-      /> */}
       </Wrapper>
     );
   }
