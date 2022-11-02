@@ -30,7 +30,7 @@ interface ChartCardProps {
 
 export default function ChartCard(props: ChartCardProps) {
   const { title, chartData } = props;
-  const { status, meta, data, error } = chartData;
+  const { status, meta, data, error, name } = chartData;
 
   return (
     <CardSelf>
@@ -75,10 +75,10 @@ export default function ChartCard(props: ChartCardProps) {
                 dateFormatter(new Date(e.date), '%Y/%m')
               )}
               dateFormat='%Y/%m'
-              altTitle='alt title'
-              altDesc='alt desc'
-              xAxisLabel='x axis label'
-              yAxisLabel='y axis label'
+              altTitle={`Amount of ${name} over time`}
+              altDesc={`Amount of ${name} over time`}
+              xAxisLabel='Time'
+              yAxisLabel='Amount'
             />
           ) : (
             <ChartCardNoData />

@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import { useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
+import { media } from '@devseed-ui/theme-provider';
 import {
   Dropdown,
   DropMenu,
@@ -24,6 +25,7 @@ import {
   TimeseriesData,
   TIMESERIES_DATA_BASE_ID
 } from './timeseries-data';
+import ChartCard from './chart-card';
 import { LayoutProps } from '$components/common/layout-root';
 import { CardList } from '$components/common/card';
 import {
@@ -50,7 +52,16 @@ import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
 import { pluralize } from '$utils/pluralize';
 import { calcFeatArea } from '$components/common/aoi/utils';
-import ChartCard from './chart-card';
+
+const ChartCardList = styled(CardList)`
+  > li {
+    min-width: 0;
+  }
+
+  ${media.largeUp`
+    grid-template-columns: repeat(2, 1fr);
+  `}
+`;
 
 export default function AnalysisResults() {
   const thematic = useThematicArea();
@@ -87,7 +98,8 @@ export default function AnalysisResults() {
 
   // Textual description for the meta tags and element for the page hero.
   const descriptions = useMemo(() => {
-    if (!start || !end || !datasetsLayers || !aoi) return { meta: '', page: '' };
+    if (!start || !end || !datasetsLayers || !aoi)
+      return { meta: '', page: '' };
 
     const dateLabel = formatDateRange(start, end);
     const area = calcFeatArea(aoi);
@@ -145,7 +157,7 @@ export default function AnalysisResults() {
           </Button>
         )}
       />
-      <Fold style={{ height: '200vh' }}>
+      <Fold>
         <FoldHeader>
           <FoldHeadline>
             <FoldTitle>Results</FoldTitle>
@@ -220,13 +232,13 @@ export default function AnalysisResults() {
         </FoldHeader>
         <FoldBody>
           {!!requestStatus.length && (
-            <CardList>
+            <ChartCardList>
               {requestStatus.map((l) => (
                 <li key={l.id}>
                   <ChartCard title={l.name} chartData={l} />
                 </li>
               ))}
-            </CardList>
+            </ChartCardList>
           )}
         </FoldBody>
       </Fold>

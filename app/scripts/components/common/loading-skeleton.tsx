@@ -15,6 +15,10 @@ const pulse = keyframes`
   }
 `;
 
+const pulsingAnimation = css`
+  animation: ${pulse} 0.8s ease 0s infinite alternate;
+`;
+
 interface LoadingSkeletonProps {
   inline?: boolean;
   width?: number;
@@ -29,7 +33,7 @@ export const LoadingSkeleton = styled.span<LoadingSkeletonProps>`
   background: ${themeVal('color.base-100')};
   height: ${({ height }) => (height ? height : '1rem')};
   width: ${({ width }) => (width || 1) * 100}%;
-  animation: ${pulse} 0.8s ease 0s infinite alternate;
+  ${pulsingAnimation}
 
   /* Size modifier */
   ${({ size }) => size === 'large' && 'height: 2.25rem;'}
@@ -104,7 +108,7 @@ const ContentLoadingSelf = styled.div`
 
   > div {
     background: ${themeVal('color.base-100')};
-    animation: ${pulse} 0.8s ease 0s infinite alternate;
+    ${pulsingAnimation}
   }
 
   > div:nth-child(1) {
@@ -131,7 +135,7 @@ const ContentLoadingSelf = styled.div`
 `;
 
 const ChartLoadingWrapper = styled.div`
-  position:relative;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -150,7 +154,7 @@ const ChartLoadingWrapper = styled.div`
     z-index: -1;
     padding: ${variableGlsp()};
     background: ${themeVal('color.base-100')};
-    animation: ${pulse} 0.8s ease 0s infinite alternate;
+    ${pulsingAnimation}
   }
 `;
 
@@ -176,7 +180,7 @@ const PageLoadingSelf = styled.div`
 
   > div {
     background: ${themeVal('color.base-100')};
-    animation: ${pulse} 0.8s ease 0s infinite alternate;
+    ${pulsingAnimation}
   }
 
   > div:nth-child(1) {
