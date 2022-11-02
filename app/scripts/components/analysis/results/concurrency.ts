@@ -1,5 +1,5 @@
 export function ConcurrencyManager(concurrentRequests = 15) {
-  let queue = [] as (() => Promise<void>)[];
+  let queue: (() => Promise<void>)[] = [];
   let running = 0;
 
   const run = async () => {
