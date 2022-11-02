@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { format } from 'date-fns';
+import { reverse } from 'd3';
 import {
   Toolbar,
   ToolbarIconButton,
@@ -30,9 +32,26 @@ interface ChartCardProps {
 
 export default function ChartCard(props: ChartCardProps) {
   const { title, chartData } = props;
-  const { status, meta, data, error, name } = chartData;
+  const { status, meta, data, error, name, id } = chartData;
 
   const chartRef = useRef<AnalysisChartRef>(null);
+
+  const onExportClick = useCallback(() => {
+    if (!chartRef.current?.instance || !chartData.data) return;
+
+    // Get start and end dates from chart instance.
+    const { dataStartIndex, dataEndIndex } = chartRef.current.instance
+      .state as any;
+    // The indexes expect the data to be ascending, so we have to reverse the
+    // data.
+    const data = reverse(chartData.data.timeseries);
+    const dFormat = 'yyyy-MM-dd';
+    const startDate = format(new Date(data[dataStartIndex].date), dFormat);
+    const endDate = format(new Date(data[dataEndIndex].date), dFormat);
+
+    const filename = `chart.${id}.${startDate}-${endDate}`;
+    chartRef.current?.saveAsImage(filename);
+  }, [id, chartData.data]);
 
   return (
     <CardSelf>
@@ -42,12 +61,7 @@ export default function ChartCard(props: ChartCardProps) {
         </CardHeadline>
         <CardActions>
           <Toolbar size='small'>
-            <ToolbarIconButton
-              variation='base-text'
-              onClick={async () => {
-                await chartRef.current?.saveAsImage();
-              }}
-            >
+            <ToolbarIconButton variation='base-text' onClick={onExportClick}>
               <CollecticonDownload2 title='Download' meaningful />
             </ToolbarIconButton>
             <VerticalDivider variation='dark' />

@@ -22,7 +22,7 @@ interface AnalysisChartProps extends CommonLineChartProps {
 
 export interface AnalysisChartRef {
   instance: ChartWrapperRef | null;
-  saveAsImage: () => Promise<void>;
+  saveAsImage: (name?: string) => Promise<void>;
 }
 
 const syncId = 'analysis';
@@ -49,7 +49,7 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
 
     useImperativeHandle(ref, () => ({
       instance: chartRef.current,
-      saveAsImage: async () => {
+      saveAsImage: async (name = 'chart') => {
         if (!chartRef.current) return;
 
         const chartImageUrl = await exportImage({
@@ -59,7 +59,7 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
             lineColors
           })
         });
-        FileSaver.saveAs(chartImageUrl, 'chart-' + Date.now() + '.jpg');
+        FileSaver.saveAs(chartImageUrl, `${name}.jpg`);
       }
     }));
 
