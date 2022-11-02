@@ -1,6 +1,7 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useMemo} from 'react';
 import { format } from 'date-fns';
 import { reverse } from 'd3';
+import { useTheme } from 'styled-components';
 import {
   Toolbar,
   ToolbarIconButton,
@@ -12,7 +13,12 @@ import {
 } from '@devseed-ui/collecticons';
 
 import { TimeseriesData } from './timeseries-data';
-import { ChartCardAlert, ChartCardNoData } from './chart-card-message';
+import {
+  ChartCardAlert,
+  ChartCardNoData,
+  ChartCardNoMetric
+} from './chart-card-message';
+import { DataMetric } from './analysis-head-actions';
 import {
   CardSelf,
   CardHeader,
@@ -21,8 +27,8 @@ import {
   CardActions,
   CardBody
 } from '$components/common/card';
-import { ChartLoading } from '$components/common/loading-skeleton';
 import Chart, { AnalysisChartRef } from '$components/common/chart/analysis';
+import { ChartLoading } from '$components/common/loading-skeleton';
 import { dateFormatter } from '$components/common/chart/utils';
 import { Tip } from '$components/common/tip';
 import { composeVisuallyDisabled } from '$utils/utils';
@@ -30,6 +36,7 @@ import { composeVisuallyDisabled } from '$utils/utils';
 interface ChartCardProps {
   title: React.ReactNode;
   chartData: TimeseriesData;
+  activeMetrics: DataMetric[];
 }
 
 const ChartDownloadButton = composeVisuallyDisabled(ToolbarIconButton);
@@ -48,7 +55,7 @@ const getNoDownloadReason = ({ status, data }: TimeseriesData) => {
 };
 
 export default function ChartCard(props: ChartCardProps) {
-  const { title, chartData } = props;
+  const { title, chartData, activeMetrics } = props;
   const { status, meta, data, error, name, id } = chartData;
 
   const chartRef = useRef<AnalysisChartRef>(null);
@@ -76,6 +83,19 @@ export default function ChartCard(props: ChartCardProps) {
     const filename = `chart.${id}.${startDate}-${endDate}`;
     chartRef.current?.saveAsImage(filename);
   }, [id, chartData.data]);
+
+  const theme = useTheme();
+
+  const { uniqueKeys, colors } = useMemo(() => {
+    return {
+      uniqueKeys: activeMetrics.map((metric) => ({
+        label: metric.chartLabel,
+        value: metric.id,
+        active: true
+      })),
+      colors: activeMetrics.map((metric) => theme.color[metric.themeColor])
+    };
+  }, [activeMetrics, theme]);
 
   return (
     <CardSelf>
@@ -118,24 +138,25 @@ export default function ChartCard(props: ChartCardProps) {
 
         {status === 'succeeded' ? (
           data.timeseries.length ? (
-            <Chart
-              ref={chartRef}
-              timeSeriesData={data.timeseries}
-              uniqueKeys={[
-                { label: 'Min', value: 'min', active: true },
-                { label: 'Max', value: 'max', active: true },
-                { label: 'STD', value: 'std', active: true }
-              ]}
-              xKey='date'
-              dates={data.timeseries.map((e) =>
-                dateFormatter(new Date(e.date), '%Y/%m')
-              )}
-              dateFormat='%Y/%m'
-              altTitle={`Amount of ${name} over time`}
-              altDesc={`Amount of ${name} over time`}
-              xAxisLabel='Time'
-              yAxisLabel='Amount'
-            />
+            !activeMetrics.length ? (
+              <ChartCardNoMetric />
+            ) : (
+              <Chart
+                ref={chartRef}
+                timeSeriesData={data.timeseries}
+                uniqueKeys={uniqueKeys}
+                colors={colors}
+                xKey='date'
+                dates={data.timeseries.map((e) =>
+                  dateFormatter(new Date(e.date), '%Y/%m')
+                )}
+                dateFormat='%Y/%m'
+                altTitle={`Amount of ${name} over time`}
+                altDesc={`Amount of ${name} over time`}
+                xAxisLabel='Time'
+                yAxisLabel='Amount'
+              />
+            )
           ) : (
             <ChartCardNoData />
           )

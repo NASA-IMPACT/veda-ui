@@ -16,10 +16,8 @@ import {
   Customized
 } from 'recharts';
 
-import { useMediaQuery } from '$utils/use-media-query';
 import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
-
 import { LegendComponent, ReferenceLegendComponent } from './legend';
 import {
   getColors,
@@ -28,7 +26,6 @@ import {
   getNumForChart,
   syncMethodFunction
 } from './utils';
-
 import {
   chartMinHeight,
   chartMaxHeight,
@@ -40,6 +37,7 @@ import {
   brushHeight
 } from './constant';
 import { ChartWrapperRef } from './analysis/utils';
+import { useMediaQuery } from '$utils/use-media-query';
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 0.8rem;
@@ -128,9 +126,11 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       }
     }, [isMediumUp]);
 
-    const lineColors = colors
+  const lineColors = useMemo(() => {
+    return colors
       ? colors
       : getColors({ steps: uniqueKeys.length, colorScheme });
+  }, [uniqueKeys, colorScheme, colors]);
 
     const uniqueKeysWithColors = useMemo(() => {
       return uniqueKeys.map((e, idx) => ({

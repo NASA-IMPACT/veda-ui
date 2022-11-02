@@ -36,6 +36,17 @@ export function ChartCardNoData() {
   );
 }
 
+export function ChartCardNoMetric() {
+  return (
+    <MessageWrapper>
+      <CollecticonChartLine size='xlarge' />
+      <p>
+        There are no metrics selected to display.
+      </p>
+    </MessageWrapper>
+  );
+}
+
 export function ChartCardAlert(props: { message: React.ReactNode }) {
   return (
     <MessageWrapper isError>

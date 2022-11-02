@@ -43,10 +43,6 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
       });
     }, [timeSeriesData, dates, uniqueKeys, dateFormat, xKey]);
 
-    const lineColors = useMemo(() => {
-      return getColors({ steps: uniqueKeys.length, colorScheme: 'viridis' });
-    }, [uniqueKeys]);
-
     useImperativeHandle(
       ref,
       () => ({
@@ -58,13 +54,13 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
             svgWrapperRef: chartRef,
             legendSvgString: getLegendStringForScreenshot({
               uniqueKeys,
-              lineColors
+              lineColors: props.colors
             })
           });
           FileSaver.saveAs(chartImageUrl, `${name}.jpg`);
         }
       }),
-      [uniqueKeys, lineColors]
+      [uniqueKeys, props.colors]
     );
 
     return (
@@ -76,7 +72,6 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
           chartData={chartData}
           renderLegend={false}
           renderBrush={true}
-          colors={lineColors}
         />
       </Wrapper>
     );
