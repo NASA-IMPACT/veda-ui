@@ -129,6 +129,8 @@ export const zeroPad = (num: number, length = 2) => {
 };
 
 export const formatAsScientificNotation = (num: number, decimals = 2) => {
+  if (!isFinite(num)) return `${Math.sign(num) === -1 ? '-' : ''}∞`;
+
   const [coefficient, exponent] = num
     .toExponential()
     .split('e')

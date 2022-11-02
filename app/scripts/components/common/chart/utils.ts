@@ -220,7 +220,8 @@ export function syncMethodFunction({
   // Make sure that matching point is in current (zoomed) chart 
   return (matchingIndex >= startIndex && matchingIndex <= endIndex)? matchingIndex: -1;
 }
-export function getNumForChart(x: number) {
+export function getNumForChart(x?: number) {
+  if (x === undefined || isNaN(x)) return 'n/a';
   if (Math.abs(x / 1e3) < 1) return round(x).toString();
   return formatAsScientificNotation(x);
 }
