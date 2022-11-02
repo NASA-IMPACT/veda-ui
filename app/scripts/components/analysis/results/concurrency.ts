@@ -1,5 +1,5 @@
 export function ConcurrencyManager(concurrentRequests = 15) {
-  const queue = [] as (() => Promise<void>)[];
+  let queue: (() => Promise<void>)[] = [];
   let running = 0;
 
   const run = async () => {
@@ -14,6 +14,9 @@ export function ConcurrencyManager(concurrentRequests = 15) {
   };
 
   return {
+    clear: () => {
+      queue = [];
+    },
     queue: <T>(taskFn: () => Promise<T>): Promise<T> => {
       let resolve;
       let reject;
