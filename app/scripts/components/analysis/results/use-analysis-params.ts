@@ -148,7 +148,7 @@ export function analysisParams2QueryString(
     datasetsLayers: params.datasetsLayers
       ? params.datasetsLayers.map((d) => d.id).join('|')
       : undefined,
-    aoi: params.aoi ? polygonUrlEncode(params.aoi, 4) : undefined
+    aoi: params.aoi ? polygonUrlEncode(params.aoi) : undefined
   });
 
   return urlParams ? `?${urlParams}` : '';
