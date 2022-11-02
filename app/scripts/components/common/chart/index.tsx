@@ -126,9 +126,11 @@ function RLineChart(props: RLineChartProps, ref: RefObject<HTMLDivElement>) {
     }
   }, [isMediumUp]);
 
-  const lineColors = colors
-    ? colors
-    : getColors({ steps: uniqueKeys.length, colorScheme });
+  const lineColors = useMemo(() => {
+    return colors
+      ? colors
+      : getColors({ steps: uniqueKeys.length, colorScheme });
+  }, [uniqueKeys, colorScheme, colors]);
 
   const uniqueKeysWithColors = useMemo(() => {
     return uniqueKeys.map((e, idx) => ({

@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+import { useTheme } from 'styled-components';
 import {
   Toolbar,
   ToolbarIconButton,
@@ -9,6 +10,13 @@ import {
   CollecticonDownload2
 } from '@devseed-ui/collecticons';
 
+import { TimeseriesData } from './timeseries-data';
+import {
+  ChartCardAlert,
+  ChartCardNoData,
+  ChartCardNoMetric
+} from './chart-card-message';
+import { DataMetric } from './analysis-head-actions';
 import {
   CardSelf,
   CardHeader,
@@ -17,20 +25,32 @@ import {
   CardActions,
   CardBody
 } from '$components/common/card';
-import { TimeseriesData } from './timeseries-data';
-import { ChartLoading } from '$components/common/loading-skeleton';
-import { ChartCardAlert, ChartCardNoData } from './chart-card-message';
 import Chart from '$components/common/chart/analysis';
+import { ChartLoading } from '$components/common/loading-skeleton';
 import { dateFormatter } from '$components/common/chart/utils';
 
 interface ChartCardProps {
   title: React.ReactNode;
   chartData: TimeseriesData;
+  activeMetrics: DataMetric[];
 }
 
 export default function ChartCard(props: ChartCardProps) {
-  const { title, chartData } = props;
+  const { title, chartData, activeMetrics } = props;
   const { status, meta, data, error, name } = chartData;
+
+  const theme = useTheme();
+
+  const { uniqueKeys, colors } = useMemo(() => {
+    return {
+      uniqueKeys: activeMetrics.map((metric) => ({
+        label: metric.chartLabel,
+        value: metric.id,
+        active: true
+      })),
+      colors: activeMetrics.map((metric) => theme.color[metric.themeColor])
+    };
+  }, [activeMetrics, theme]);
 
   return (
     <CardSelf>
@@ -63,23 +83,24 @@ export default function ChartCard(props: ChartCardProps) {
 
         {status === 'succeeded' ? (
           data.timeseries.length ? (
-            <Chart
-              timeSeriesData={data.timeseries}
-              uniqueKeys={[
-                { label: 'Min', value: 'min', active: true },
-                { label: 'Max', value: 'max', active: true },
-                { label: 'STD', value: 'std', active: true }
-              ]}
-              xKey='date'
-              dates={data.timeseries.map((e) =>
-                dateFormatter(new Date(e.date), '%Y/%m')
-              )}
-              dateFormat='%Y/%m'
-              altTitle={`Amount of ${name} over time`}
-              altDesc={`Amount of ${name} over time`}
-              xAxisLabel='Time'
-              yAxisLabel='Amount'
-            />
+            !activeMetrics.length ? (
+              <ChartCardNoMetric />
+            ) : (
+              <Chart
+                timeSeriesData={data.timeseries}
+                uniqueKeys={uniqueKeys}
+                colors={colors}
+                xKey='date'
+                dates={data.timeseries.map((e) =>
+                  dateFormatter(new Date(e.date), '%Y/%m')
+                )}
+                dateFormat='%Y/%m'
+                altTitle={`Amount of ${name} over time`}
+                altDesc={`Amount of ${name} over time`}
+                xAxisLabel='Time'
+                yAxisLabel='Amount'
+              />
+            )
           ) : (
             <ChartCardNoData />
           )

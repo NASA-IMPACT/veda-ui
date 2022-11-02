@@ -35,9 +35,6 @@ export default function AnalysisChart(props: AnalysisChartProps) {
     });
   }, [timeSeriesData, dates, uniqueKeys, dateFormat, xKey]);
 
-  const lineColors = useMemo(() => {
-    return getColors({ steps: uniqueKeys.length, colorScheme: 'viridis' });
-  }, [uniqueKeys]);
 
   return (
     <Wrapper>
@@ -48,7 +45,6 @@ export default function AnalysisChart(props: AnalysisChartProps) {
         chartData={chartData}
         renderLegend={false}
         renderBrush={true}
-        colors={lineColors}
       />
       {/* <ExportImage
         svgWrapperRef={chartRef}
