@@ -105,7 +105,7 @@ export function requestStacDatasetsTimeseries({
   signal?.addEventListener('abort', () => {
     queryClient.cancelQueries([TIMESERIES_DATA_BASE_ID]);
     concurrencyManager.clear();
-  });
+  }, { once: true });
 
   // Start the request for each layer.
   layers.forEach(async (layer, index) => {
