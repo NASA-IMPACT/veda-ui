@@ -21,7 +21,7 @@ interface AnalysisChartProps extends CommonLineChartProps {
 }
 
 export interface AnalysisChartRef {
-  instance: ChartWrapperRef | null;
+  instanceRef: React.MutableRefObject<ChartWrapperRef | null>;
   saveAsImage: (name?: string) => Promise<void>;
 }
 
@@ -47,21 +47,25 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
       return getColors({ steps: uniqueKeys.length, colorScheme: 'viridis' });
     }, [uniqueKeys]);
 
-    useImperativeHandle(ref, () => ({
-      instance: chartRef.current,
-      saveAsImage: async (name = 'chart') => {
-        if (!chartRef.current) return;
+    useImperativeHandle(
+      ref,
+      () => ({
+        instanceRef: chartRef,
+        saveAsImage: async (name = 'chart') => {
+          if (!chartRef.current) return;
 
-        const chartImageUrl = await exportImage({
-          svgWrapperRef: chartRef,
-          legendSvgString: getLegendStringForScreenshot({
-            uniqueKeys,
-            lineColors
-          })
-        });
-        FileSaver.saveAs(chartImageUrl, `${name}.jpg`);
-      }
-    }));
+          const chartImageUrl = await exportImage({
+            svgWrapperRef: chartRef,
+            legendSvgString: getLegendStringForScreenshot({
+              uniqueKeys,
+              lineColors
+            })
+          });
+          FileSaver.saveAs(chartImageUrl, `${name}.jpg`);
+        }
+      }),
+      [uniqueKeys, lineColors]
+    );
 
     return (
       <Wrapper>

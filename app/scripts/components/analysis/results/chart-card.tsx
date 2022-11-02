@@ -37,11 +37,11 @@ export default function ChartCard(props: ChartCardProps) {
   const chartRef = useRef<AnalysisChartRef>(null);
 
   const onExportClick = useCallback(() => {
-    if (!chartRef.current?.instance || !chartData.data) return;
+    if (!chartRef.current?.instanceRef.current || !chartData.data) return;
 
     // Get start and end dates from chart instance.
-    const { dataStartIndex, dataEndIndex } = chartRef.current.instance
-      .state as any;
+    const { dataStartIndex, dataEndIndex } = chartRef.current.instanceRef
+      .current.state as any;
     // The indexes expect the data to be ascending, so we have to reverse the
     // data.
     const data = reverse(chartData.data.timeseries);
