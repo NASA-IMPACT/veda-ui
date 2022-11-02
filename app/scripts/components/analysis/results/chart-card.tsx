@@ -24,11 +24,28 @@ import {
 import { ChartLoading } from '$components/common/loading-skeleton';
 import Chart, { AnalysisChartRef } from '$components/common/chart/analysis';
 import { dateFormatter } from '$components/common/chart/utils';
+import { Tip } from '$components/common/tip';
+import { composeVisuallyDisabled } from '$utils/utils';
 
 interface ChartCardProps {
   title: React.ReactNode;
   chartData: TimeseriesData;
 }
+
+const ChartDownloadButton = composeVisuallyDisabled(ToolbarIconButton);
+
+const getNoDownloadReason = ({ status, data }: TimeseriesData) => {
+  if (status === 'errored') {
+    return 'Data loading errored. Download is not available.';
+  }
+  if (status === 'loading') {
+    return 'Download will be available once the data finishes loading.';
+  }
+  if (status === 'succeeded' && !data.timeseries.length) {
+    return 'There is no data to download.';
+  }
+  return '';
+};
 
 export default function ChartCard(props: ChartCardProps) {
   const { title, chartData } = props;
@@ -36,8 +53,15 @@ export default function ChartCard(props: ChartCardProps) {
 
   const chartRef = useRef<AnalysisChartRef>(null);
 
+  const noDownloadReason = getNoDownloadReason(chartData);
+
   const onExportClick = useCallback(() => {
-    if (!chartRef.current?.instanceRef.current || !chartData.data) return;
+    if (
+      !chartRef.current?.instanceRef.current ||
+      !chartData.data?.timeseries.length
+    ) {
+      return;
+    }
 
     // Get start and end dates from chart instance.
     const { dataStartIndex, dataEndIndex } = chartRef.current.instanceRef
@@ -61,9 +85,19 @@ export default function ChartCard(props: ChartCardProps) {
         </CardHeadline>
         <CardActions>
           <Toolbar size='small'>
-            <ToolbarIconButton variation='base-text' onClick={onExportClick}>
-              <CollecticonDownload2 title='Download' meaningful />
-            </ToolbarIconButton>
+            <Tip
+              content={noDownloadReason}
+              disabled={!noDownloadReason}
+              hideOnClick={false}
+            >
+              <ChartDownloadButton
+                variation='base-text'
+                onClick={onExportClick}
+                visuallyDisabled={!!noDownloadReason}
+              >
+                <CollecticonDownload2 title='Download' meaningful />
+              </ChartDownloadButton>
+            </Tip>
             <VerticalDivider variation='dark' />
             <ToolbarIconButton variation='base-text'>
               <CollecticonCircleInformation title='More info' meaningful />
