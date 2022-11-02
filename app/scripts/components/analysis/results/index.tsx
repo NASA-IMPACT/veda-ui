@@ -49,6 +49,14 @@ const ChartCardList = styled(CardList)`
   `}
 `;
 
+const AnalysisFold = styled(Fold)`
+  /* When the page is too small, the shrinking header causes itself to become
+  unstuck (because the page stops having an overflow). Since this happens only
+  under specific screen sizes, this small hack solves the problem with minimal
+  visual impact. */
+  min-height: calc(100vh - 190px);
+`;
+
 export default function AnalysisResults() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
@@ -143,7 +151,7 @@ export default function AnalysisResults() {
           </Button>
         )}
       />
-      <Fold>
+      <AnalysisFold>
         <FoldHeader>
           <FoldHeadline>
             <FoldTitle>Results</FoldTitle>
@@ -168,7 +176,7 @@ export default function AnalysisResults() {
             </ChartCardList>
           )}
         </FoldBody>
-      </Fold>
+      </AnalysisFold>
     </PageMainContent>
   );
 }
