@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { format } from 'date-fns';
 import { reverse } from 'd3';
 import {
@@ -11,6 +11,8 @@ import {
   CollecticonDownload2
 } from '@devseed-ui/collecticons';
 
+import { TimeseriesData } from './timeseries-data';
+import { ChartCardAlert, ChartCardNoData } from './chart-card-message';
 import {
   CardSelf,
   CardHeader,
@@ -19,9 +21,7 @@ import {
   CardActions,
   CardBody
 } from '$components/common/card';
-import { TimeseriesData } from './timeseries-data';
 import { ChartLoading } from '$components/common/loading-skeleton';
-import { ChartCardAlert, ChartCardNoData } from './chart-card-message';
 import Chart, { AnalysisChartRef } from '$components/common/chart/analysis';
 import { dateFormatter } from '$components/common/chart/utils';
 
