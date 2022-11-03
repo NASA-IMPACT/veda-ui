@@ -13,11 +13,12 @@ const PNGHeight = PNGWidth / chartAspectRatio - brushAreaHeight;
 
 // Rechart does not export the type for wrapper component (CategoricalChartWrapper)
 // Working around
-interface ChartWrapper extends Component {
+export interface ChartWrapperRef extends Component {
   container: HTMLElement;
-  }
-  export interface ChartToImageProps {
-  svgWrapperRef: RefObject<ChartWrapper>;
+}
+
+export interface ChartToImageProps {
+  svgWrapperRef: RefObject<ChartWrapperRef>;
   legendSvgString: string;
 }
 

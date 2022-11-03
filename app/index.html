@@ -82,7 +82,7 @@
 
     window.addEventListener('error', function (e) {
       const { error } = e;
-      if (!error.captured) {
+      if (error && !error.captured) {
         error.captured = true;
         allowCRAOverlay(false);
         e.preventDefault();
