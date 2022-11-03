@@ -7,6 +7,7 @@ import { Overline } from '@devseed-ui/typography';
 
 import deltaThematics from 'delta/thematics';
 
+import Carousel from './carousel';
 import { LayoutProps } from '$components/common/layout-root';
 
 import { thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
@@ -28,8 +29,6 @@ import {
 import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
-
-import Carousel from './carousel';
 
 const StatsList = styled.dl`
   display: grid;

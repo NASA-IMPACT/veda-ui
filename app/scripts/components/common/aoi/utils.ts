@@ -2,8 +2,8 @@ import bbox from '@turf/bbox';
 import featArea from '@turf/area';
 import { Feature, Polygon } from 'geojson';
 
-import { formatThousands } from '$utils/format';
 import { AoiBounds, AoiBoundsUnset, AoiFeature } from './types';
+import { formatThousands } from '$utils/format';
 
 export const boundsFromFeature = (
   feat: AoiFeature | null

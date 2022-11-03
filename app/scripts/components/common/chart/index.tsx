@@ -16,7 +16,6 @@ import {
   Customized
 } from 'recharts';
 
-import { useMediaQuery } from '$utils/use-media-query';
 import TooltipComponent from './tooltip';
 import AltTitle from './alt-title';
 
@@ -39,6 +38,7 @@ import {
   brushRelatedConfigs,
   brushHeight
 } from './constant';
+import { useMediaQuery } from '$utils/use-media-query';
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 0.8rem;

@@ -1,13 +1,6 @@
 import React from 'react';
 import { Route, Routes, useParams } from 'react-router-dom';
 
-import { PageMainContent } from '$styles/page';
-import { LayoutProps } from '$components/common/layout-root';
-import PageHero from '$components/common/page-hero';
-import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
-import { Card, CardList } from '$components/common/card';
-import { resourceNotFound } from '$components/uhoh';
-
 import SandboxTypography from './typography';
 import SandboxHug from './hug';
 import SandboxMap from './map';
@@ -21,6 +14,12 @@ import SandboxDateslider from './dateslider';
 import SandboxChart from './mdx-chart';
 import SandboxAnalysisChart from './analysis-chart';
 import SandboxRequest from './request';
+import { resourceNotFound } from '$components/uhoh';
+import { Card, CardList } from '$components/common/card';
+import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
+import PageHero from '$components/common/page-hero';
+import { LayoutProps } from '$components/common/layout-root';
+import { PageMainContent } from '$styles/page';
 
 const pages = [
   {

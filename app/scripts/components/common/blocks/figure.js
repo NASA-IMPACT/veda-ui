@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import T from 'prop-types';
-import { Figure } from '$components/common/figure';
 import { figureDisplayName, captionDisplayName } from './block-constant';
 import { BlockErrorBoundary } from '.';
+import { Figure } from '$components/common/figure';
 
 const ContentBlockFigure = (props) => {
   const { children } = props;

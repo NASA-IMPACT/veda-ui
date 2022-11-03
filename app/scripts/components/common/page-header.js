@@ -24,6 +24,7 @@ import NasaLogo from './nasa-logo';
 import GoogleForm from './google-form';
 import { Tip } from './tip';
 
+import UnscrollableBody from './unscrollable-body';
 import { variableGlsp } from '$styles/variable-utils';
 import { useThematicArea } from '$utils/thematics';
 import {
@@ -35,7 +36,6 @@ import {
 } from '$utils/routes';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
-import UnscrollableBody from './unscrollable-body';
 import { HEADER_ID } from '$utils/use-sliding-sticky-header';
 
 const appTitle = process.env.APP_TITLE;

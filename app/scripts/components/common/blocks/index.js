@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import T from 'prop-types';
 import { media } from '@devseed-ui/theme-provider';
 
-import { ContentBlock, ContentBlockProse } from '$styles/content-block';
-
+import { FigcaptionInner } from '../figure';
 import {
   defaultBlockName,
   wideBlockName,
@@ -15,9 +14,9 @@ import {
   figureDisplayName,
   proseDisplayName
 } from './block-constant';
-
 import ContentBlockFigure from './figure';
-import { FigcaptionInner } from '../figure';
+import { ContentBlock, ContentBlockProse } from '$styles/content-block';
+
 import { variableGlsp } from '$styles/variable-utils';
 import { HintedErrorDisplay } from '$utils/hinted-error';
 

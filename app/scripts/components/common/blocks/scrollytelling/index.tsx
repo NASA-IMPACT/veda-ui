@@ -14,6 +14,13 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 import { media } from '@devseed-ui/theme-provider';
 import mapboxgl from 'mapbox-gl';
+import { BlockErrorBoundary } from '..';
+import {
+  chapterDisplayName,
+  ChapterProps,
+  ScrollyChapter,
+  validateChapter
+} from './chapter';
 import {
   getLayerComponent,
   resolveConfigFunctions
@@ -26,15 +33,8 @@ import { SimpleMap } from '$components/common/mapbox/map';
 import Hug from '$styles/hug';
 import LayerLegend from '$components/common/mapbox/layer-legend';
 import MapMessage from '$components/common/mapbox/map-message';
-import {
-  chapterDisplayName,
-  ChapterProps,
-  ScrollyChapter,
-  validateChapter
-} from './chapter';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
-import { BlockErrorBoundary } from '..';
 import { formatSingleDate } from '$components/common/mapbox/utils';
 import { convertProjectionToMapbox } from '$components/common/mapbox/projection-selector/utils';
 

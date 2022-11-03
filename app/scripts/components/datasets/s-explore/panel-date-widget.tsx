@@ -8,6 +8,12 @@ import { DatePicker, DropdownDatePickerProps } from '@devseed-ui/date-picker';
 import { Heading } from '@devseed-ui/typography';
 
 import {
+  Toolbar,
+  ToolbarIconButton,
+  VerticalDivider
+} from '@devseed-ui/toolbar';
+import { format } from 'date-fns';
+import {
   PanelWidget,
   PanelWidgetBody,
   PanelWidgetHeader,
@@ -17,12 +23,6 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 import { TimeDensity } from '$context/layer-data';
-import {
-  Toolbar,
-  ToolbarIconButton,
-  VerticalDivider
-} from '@devseed-ui/toolbar';
-import { format } from 'date-fns';
 import { mod } from '$utils/utils';
 import DateSliderControl from '$components/common/dateslider';
 import { prepareDates } from '$components/common/dateslider/utils';

@@ -6,8 +6,8 @@ import deltaThematics, {
   datasets
 } from 'delta/thematics';
 
-import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
 import { MDXContent, MDXModule } from 'mdx/types';
+import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
 
 /**
  * Returns the data for the thematic are taking the url parameter into account.

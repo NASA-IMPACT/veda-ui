@@ -4,7 +4,6 @@ import { debounce } from 'lodash';
 import { scaleTime, select, zoom } from 'd3';
 import { themeVal } from '@devseed-ui/theme-provider';
 
-import { useEffectPrevious } from '$utils/use-effect-previous';
 import { getZoomTranslateExtent, useChartDimensions } from './utils';
 import { DataPoints, DataLine } from './data-points';
 import TriggerRect from './trigger-rect';
@@ -15,6 +14,7 @@ import {
   DateSliderData,
   DateSliderTimeDensity
 } from './constants';
+import { useEffectPrevious } from '$utils/use-effect-previous';
 import useReducedMotion from '$utils/use-prefers-reduced-motion';
 
 const StyledSvg = styled.svg`
