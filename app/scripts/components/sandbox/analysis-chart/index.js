@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import timeSeriesData345 from './sample-timeseries-data-345.json';
+import timeSeriesData234 from './sample-timeseries-data-234.json';
 import Chart from '$components/common/chart/analysis/';
 import { AnalysisLegendComponent } from '$components/common/chart/analysis/control';
 import { getColors, dateFormatter } from '$components/common/chart/utils';
@@ -9,9 +11,6 @@ import Constrainer from '$styles/constrainer';
 import { utcString2userTzDate } from '$utils/date';
 import { PageMainContent } from '$styles/page';
 import Hug from '$styles/hug';
-
-import timeSeriesData345 from './sample-timeseries-data-345.json';
-import timeSeriesData234 from './sample-timeseries-data-234.json';
 
 const Wrapper = styled.div`
   position: relative;

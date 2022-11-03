@@ -6,7 +6,6 @@ import {
   eachYearOfInterval
 } from 'date-fns';
 import { endOfDay, startOfDay } from 'date-fns';
-import { userTzDate2utcString } from '$utils/date';
 import {
   datasets,
   DatasetLayer,
@@ -17,14 +16,15 @@ import {
   DatasetDatumReturnType,
   DatasetLayerCompareNormalized
 } from 'delta/thematics';
+import mapboxgl from 'mapbox-gl';
+import React from 'react';
+import { MapLayerRasterTimeseries, StacFeature } from './raster-timeseries';
+import { userTzDate2utcString } from '$utils/date';
 
 import { utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
-import { MapLayerRasterTimeseries, StacFeature } from './raster-timeseries';
 import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { HintedError } from '$utils/hinted-error';
-import mapboxgl from 'mapbox-gl';
-import React from 'react';
 
 export const getLayerComponent = (
   isTimeseries: boolean,

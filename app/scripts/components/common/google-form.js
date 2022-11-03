@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import GlobalMenuLinkCSS from '$styles/menu-link';
 import { Button } from '@devseed-ui/button';
 import { Modal } from '@devseed-ui/modal';
+import GlobalMenuLinkCSS from '$styles/menu-link';
 
 const StyledGoogleForm = styled.iframe`
   width: 100%;

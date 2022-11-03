@@ -5,14 +5,14 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ProjectionOptions } from 'delta/thematics';
 
-import { round } from '$utils/format';
 
+import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import MapboxStyleOverride from './mapbox-style-override';
 import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
-import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import ProjectionSelector from './projection-selector';
 import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './projection-selector/utils';
+import { round } from '$utils/format';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
 

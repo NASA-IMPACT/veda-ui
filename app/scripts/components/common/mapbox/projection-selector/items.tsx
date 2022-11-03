@@ -4,7 +4,6 @@ import { DropMenuItem } from '@devseed-ui/dropdown';
 import { glsp } from '@devseed-ui/theme-provider';
 import { FormFieldsetHeader, FormLegend } from '@devseed-ui/form';
 
-import { FormFieldsetBodyColumns, FormFieldsetCompact } from '$styles/fieldset';
 import StressedFormGroupInput from '../../stressed-form-group-input';
 
 import {
@@ -12,6 +11,7 @@ import {
   ProjectionItemProps
 } from './types';
 import { validateLat, validateLon } from './utils';
+import { FormFieldsetBodyColumns, FormFieldsetCompact } from '$styles/fieldset';
 
 const ProjectionOptionsForm = styled.div`
   padding: ${glsp(0, 1)};

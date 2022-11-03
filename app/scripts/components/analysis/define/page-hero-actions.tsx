@@ -70,7 +70,7 @@ export default function PageHeroActions({
     if (!aoi) instructions = [...instructions, 'define an area'];
     if (!datasetsLayers?.length) instructions = [...instructions, 'select datasets'];
 
-    let instructionsString = instructions
+    const instructionsString = instructions
       .join(', ')
       .replace(/,\s([^,]+)$/, ' and $1.');
 

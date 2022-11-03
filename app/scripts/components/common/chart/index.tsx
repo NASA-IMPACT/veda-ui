@@ -1,4 +1,4 @@
-import React, { RefObject, useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,

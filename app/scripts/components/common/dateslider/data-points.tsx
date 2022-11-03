@@ -4,8 +4,8 @@ import { ScaleTime, select, Selection } from 'd3';
 import { startOfDay, startOfMonth, startOfYear } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 
-import useReducedMotion from '$utils/use-prefers-reduced-motion';
 import { DateSliderData, DateSliderTimeDensity } from './constants';
+import useReducedMotion from '$utils/use-prefers-reduced-motion';
 
 const StyledG = styled.g`
   .data-point {

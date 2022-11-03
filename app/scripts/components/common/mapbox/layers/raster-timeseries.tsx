@@ -4,18 +4,18 @@ import qs from 'qs';
 import mapboxgl, { LngLatBoundsLike } from 'mapbox-gl';
 
 import {
+  checkFitBoundsFromLayer,
+  getFilterPayload,
+  getMergedBBox,
+  requestQuickCache
+} from './utils';
+import {
   ActionStatus,
   S_FAILED,
   S_IDLE,
   S_LOADING,
   S_SUCCEEDED
 } from '$utils/status';
-import {
-  checkFitBoundsFromLayer,
-  getFilterPayload,
-  getMergedBBox,
-  requestQuickCache
-} from './utils';
 
 // Whether or not to print the request logs.
 const LOG = true;

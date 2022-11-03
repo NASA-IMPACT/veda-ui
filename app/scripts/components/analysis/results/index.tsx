@@ -13,8 +13,7 @@ import {
 } from './use-analysis-params';
 import {
   requestStacDatasetsTimeseries,
-  TimeseriesData,
-  TIMESERIES_DATA_BASE_ID
+  TimeseriesData
 } from './timeseries-data';
 import ChartCard from './chart-card';
 import AnalysisHeadActions, {
@@ -71,14 +70,16 @@ export default function AnalysisResults() {
   useEffect(() => {
     if (!start || !end || !datasetsLayers || !aoi) return;
 
+    const controller = new AbortController();
+
     setRequestStatus([]);
-    queryClient.cancelQueries([TIMESERIES_DATA_BASE_ID]);
     const requester = requestStacDatasetsTimeseries({
       start,
       end,
       aoi,
       layers: datasetsLayers,
-      queryClient
+      queryClient,
+      signal: controller.signal
     });
 
     requester.on('data', (data, index) => {
@@ -88,12 +89,17 @@ export default function AnalysisResults() {
         })
       );
     });
+
+    return () => {
+      controller.abort();
+    };
   }, [queryClient, start, end, datasetsLayers, aoi]);
 
   // Textual description for the meta tags and element for the page hero.
   const descriptions = useMemo(() => {
-    if (!start || !end || !datasetsLayers || !aoi)
+    if (!start || !end || !datasetsLayers || !aoi) {
       return { meta: '', page: '' };
+    }
 
     const dateLabel = formatDateRange(start, end);
     const area = calcFeatArea(aoi);
@@ -139,7 +145,7 @@ export default function AnalysisResults() {
         title='Analysis'
         description={descriptions.page}
         isResults
-        aoiFeature={aoi || undefined}
+        aoiFeature={aoi ?? undefined}
         renderActions={({ size }) => (
           <Button
             forwardedAs={Link}

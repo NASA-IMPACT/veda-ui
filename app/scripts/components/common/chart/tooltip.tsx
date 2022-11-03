@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { TooltipProps } from 'recharts/types';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
-import { UniqueKeyUnit } from './';
 import { timeFormatter, getNumForChart } from './utils';
+import { UniqueKeyUnit } from './';
 
 interface TooltipComponentProps extends TooltipProps<number, string> {
   dateFormat: string;

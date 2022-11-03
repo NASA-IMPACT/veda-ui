@@ -1,6 +1,6 @@
-import { userTzDate2utcString } from '$utils/date';
 import { endOfDay, startOfDay } from 'date-fns';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
+import { userTzDate2utcString } from '$utils/date';
 
 /**
  * Creates the appropriate filter object to send to STAC.

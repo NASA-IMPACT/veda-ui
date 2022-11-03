@@ -5,10 +5,7 @@ import FileSaver from 'file-saver';
 import { ChartWrapperRef, exportImage } from './utils';
 import { getLegendStringForScreenshot } from './svg-legend';
 import Chart, { CommonLineChartProps } from '$components/common/chart';
-import {
-  formatTimeSeriesData,
-  getColors
-} from '$components/common/chart/utils';
+import { formatTimeSeriesData } from '$components/common/chart/utils';
 
 const Wrapper = styled.div`
   width: 100%;

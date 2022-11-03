@@ -1,5 +1,6 @@
 import { Feature, MultiPolygon } from 'geojson';
 import gjv from 'geojson-validation';
+import { decode, encode } from 'google-polyline';
 
 /**
  * Decodes a multi polygon string converting it into a MultiPolygon feature.
@@ -16,10 +17,7 @@ export function polygonUrlDecode(polygonStr: string) {
     geometry: {
       type: 'MultiPolygon',
       coordinates: polygonStr.split('||').map((polygon) => {
-        const coords = polygon
-          .split('|')
-          .map((coord) => coord.split(',').map(Number));
-
+        const coords = decode(polygon);
         return [[...coords, coords[0]]];
       })
     }
@@ -39,23 +37,16 @@ export function polygonUrlDecode(polygonStr: string) {
  * | separates points
  *
  */
-export function polygonUrlEncode(f: Feature<MultiPolygon>, precision = Infinity) {
+export function polygonUrlEncode(
+  f: Feature<MultiPolygon>
+) {
   return f.geometry.coordinates
-    .map((polygon) =>
-      polygon[0]
+    .map((polygon) => {
+      const points = polygon[0]
         // Remove last coordinate since it is repeated.
-        .slice(0, -1)
-        .map((point) => {
-          let p = point;
-          if (precision !== Infinity) {
-            const m = Math.pow(10, precision);
-            p = point.map((v) => Math.floor(v * m) / m);
-          }
-
-          return p.join(',');
-        })
-        .join('|')
-    )
+        .slice(0, -1);
+      return encode(points);
+    })
     .join('||');
 }
 

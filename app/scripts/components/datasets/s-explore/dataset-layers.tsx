@@ -4,11 +4,11 @@ import { listReset, themeVal } from '@devseed-ui/theme-provider';
 import { AccordionManager } from '@devseed-ui/accordion';
 
 import { datasets } from 'delta/thematics';
-import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
-import { checkLayerLoadStatus } from '$components/common/mapbox/layers/utils';
 import { Layer } from './dataset-layer-single';
 import LayerAlert from './layer-alert';
 import { InlineLayerLoadingSkeleton } from './layer-loading';
+import { checkLayerLoadStatus } from '$components/common/mapbox/layers/utils';
+import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { AsyncDatasetLayer } from '$context/layer-data';
 
 const LayerList = styled.ol`
