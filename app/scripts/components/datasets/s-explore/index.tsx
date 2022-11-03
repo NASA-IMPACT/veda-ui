@@ -398,20 +398,28 @@ function DatasetsExplore() {
     }
   }, [activeLayer, setSelectedCompareDatetime]);
 
+  const initialDatetime = activeLayer?.baseLayer.data?.initialDatetime;
+
   // Deselect compare dates when compare toggle changes.
-  useEffectPrevious(([prevIsComparing]) => {
-    // Only trigger this when user is toggling comparison
-    if (isComparing === prevIsComparing || prevIsComparing === undefined) return;
-    if (isComparing && availableActiveLayerCompareDates?.length) {
-      setSelectedCompareDatetime(selectedCompareDatetime ?? availableActiveLayerCompareDates.last);
+  useEffect(() => {
+    if (isComparing) {
+      if (
+        !selectedCompareDatetime &&
+        availableActiveLayerCompareDates?.length
+      ) {
+        setSelectedCompareDatetime(
+          getInitialDate(availableActiveLayerCompareDates, initialDatetime)
+        );
+      }
     } else {
       setSelectedCompareDatetime(null);
     }
-  },[
+  }, [
     isComparing,
     availableActiveLayerCompareDates,
     setSelectedCompareDatetime,
-    selectedCompareDatetime 
+    selectedCompareDatetime,
+    initialDatetime
   ]);
 
   // When the available dates for the selected layer change, check if the
@@ -421,14 +429,14 @@ function DatasetsExplore() {
   useValidSelectedDate(
     availableActiveLayerDates,
     selectedDatetime,
-    activeLayer?.baseLayer.data?.initialDatetime,
+    initialDatetime,
     setSelectedDatetime
   );
   // Same but for compare dates.
   useValidSelectedCompareDate(
     availableActiveLayerCompareDates,
     selectedCompareDatetime,
-    activeLayer?.baseLayer.data?.initialDatetime,
+    initialDatetime,
     setSelectedCompareDatetime
   );
 
