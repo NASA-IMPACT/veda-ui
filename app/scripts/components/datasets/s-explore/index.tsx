@@ -399,16 +399,19 @@ function DatasetsExplore() {
   }, [activeLayer, setSelectedCompareDatetime]);
 
   // Deselect compare dates when compare toggle changes.
-  useEffect(() => {
+  useEffectPrevious(([prevIsComparing]) => {
+    // Only trigger this when user is toggling comparison
+    if (isComparing === prevIsComparing || prevIsComparing === undefined) return;
     if (isComparing && availableActiveLayerCompareDates?.length) {
-      setSelectedCompareDatetime(availableActiveLayerCompareDates.last);
+      setSelectedCompareDatetime(selectedCompareDatetime ?? availableActiveLayerCompareDates.last);
     } else {
       setSelectedCompareDatetime(null);
     }
-  }, [
+  },[
     isComparing,
     availableActiveLayerCompareDates,
-    setSelectedCompareDatetime
+    setSelectedCompareDatetime,
+    selectedCompareDatetime 
   ]);
 
   // When the available dates for the selected layer change, check if the
