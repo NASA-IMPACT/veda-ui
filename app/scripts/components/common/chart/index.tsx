@@ -1,4 +1,4 @@
-import React, { RefObject, useState, useMemo, useEffect } from 'react';
+import React, { RefObject, useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -63,6 +63,7 @@ export interface CommonLineChartProps {
   highlightEnd?: string;
   highlightLabel?: string;
   uniqueKeys: UniqueKeyUnit[];
+  onBrushChange?: (idx: { startIndex: number; endIndex: number }) => void;
 }
 
 export interface UniqueKeyUnit {
@@ -78,7 +79,7 @@ interface RLineChartProps extends CommonLineChartProps {
 }
 
 function CustomCursor(props) {
-  // work around to disalbe cursor line when there is no matching index found
+  // work around to disable cursor line when there is no matching index found
   // eslint-disable-next-line react/prop-types
   if (props.payloadIndex < 0) return null;
   return <Curve {...props} />;
@@ -102,7 +103,8 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       highlightEnd,
       highlightLabel,
       xAxisLabel,
-      yAxisLabel
+      yAxisLabel,
+      onBrushChange
     } = props;
 
     const [chartMargin, setChartMargin] = useState(defaultMargin);
@@ -111,11 +113,17 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
 
     const { isMediumUp } = useMediaQuery();
 
-    function handleBrushChange(newIndex) {
+    const handleBrushChange = useCallback((newIndex) => {
       const { startIndex, endIndex } = newIndex;
       setBrushStartIndex(startIndex);
       setBrushEndIndex(endIndex);
-    }
+      onBrushChange?.(newIndex);
+    }, [onBrushChange]);
+
+    useEffect(() => {
+      // Fire brush callback on mount to have the correct starting values.
+      onBrushChange?.({ startIndex: 0, endIndex: chartData.length - 1 });
+    }, []);
 
     useEffect(() => {
       if (!isMediumUp) {
@@ -126,11 +134,11 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       }
     }, [isMediumUp]);
 
-  const lineColors = useMemo(() => {
-    return colors
-      ? colors
-      : getColors({ steps: uniqueKeys.length, colorScheme });
-  }, [uniqueKeys, colorScheme, colors]);
+    const lineColors = useMemo(() => {
+      return colors
+        ? colors
+        : getColors({ steps: uniqueKeys.length, colorScheme });
+    }, [uniqueKeys, colorScheme, colors]);
 
     const uniqueKeysWithColors = useMemo(() => {
       return uniqueKeys.map((e, idx) => ({

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useMemo} from 'react';
+import React, { useCallback, useRef, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { reverse } from 'd3';
 import { useTheme } from 'styled-components';
@@ -59,30 +59,27 @@ export default function ChartCard(props: ChartCardProps) {
   const { status, meta, data, error, name, id } = chartData;
 
   const chartRef = useRef<AnalysisChartRef>(null);
-
+  // Capture the brush changes to be able to get the correct dates for the
+  // export filename.
+  const [brushIndex, setBrushIndex] = useState({ startIndex: 0, endIndex: 0 });
   const noDownloadReason = getNoDownloadReason(chartData);
 
   const onExportClick = useCallback(() => {
-    if (
-      !chartRef.current?.instanceRef.current ||
-      !chartData.data?.timeseries.length
-    ) {
+    if (!chartData.data?.timeseries.length) {
       return;
     }
 
-    // Get start and end dates from chart instance.
-    const { dataStartIndex, dataEndIndex } = chartRef.current.instanceRef
-      .current.state as any;
+    const { startIndex, endIndex } = brushIndex;
     // The indexes expect the data to be ascending, so we have to reverse the
     // data.
     const data = reverse(chartData.data.timeseries);
     const dFormat = 'yyyy-MM-dd';
-    const startDate = format(new Date(data[dataStartIndex].date), dFormat);
-    const endDate = format(new Date(data[dataEndIndex].date), dFormat);
+    const startDate = format(new Date(data[startIndex].date), dFormat);
+    const endDate = format(new Date(data[endIndex].date), dFormat);
 
     const filename = `chart.${id}.${startDate}-${endDate}`;
     chartRef.current?.saveAsImage(filename);
-  }, [id, chartData.data]);
+  }, [id, chartData.data, brushIndex]);
 
   const theme = useTheme();
 
@@ -155,6 +152,7 @@ export default function ChartCard(props: ChartCardProps) {
                 altDesc={`Amount of ${name} over time`}
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
+                onBrushChange={setBrushIndex}
               />
             )
           ) : (
