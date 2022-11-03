@@ -1,6 +1,8 @@
-import React from "react";
+import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { glsp, themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
+import { CollecticonChartLine } from '@devseed-ui/collecticons';
+
 import { variableGlsp } from '$styles/variable-utils';
 
 const pulse = keyframes`
@@ -11,6 +13,10 @@ const pulse = keyframes`
   100% {
     opacity: 1;
   }
+`;
+
+const pulsingAnimation = css`
+  animation: ${pulse} 0.8s ease 0s infinite alternate;
 `;
 
 interface LoadingSkeletonProps {
@@ -27,7 +33,7 @@ export const LoadingSkeleton = styled.span<LoadingSkeletonProps>`
   background: ${themeVal('color.base-100')};
   height: ${({ height }) => (height ? height : '1rem')};
   width: ${({ width }) => (width || 1) * 100}%;
-  animation: ${pulse} 0.8s ease 0s infinite alternate;
+  ${pulsingAnimation}
 
   /* Size modifier */
   ${({ size }) => size === 'large' && 'height: 2.25rem;'}
@@ -102,7 +108,7 @@ const ContentLoadingSelf = styled.div`
 
   > div {
     background: ${themeVal('color.base-100')};
-    animation: ${pulse} 0.8s ease 0s infinite alternate;
+    ${pulsingAnimation}
   }
 
   > div:nth-child(1) {
@@ -128,6 +134,30 @@ const ContentLoadingSelf = styled.div`
   }
 `;
 
+const ChartLoadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+  text-align: center;
+  padding: ${variableGlsp()};
+  gap: ${glsp()};
+  aspect-ratio: 16/9;
+  color: ${themeVal('color.base-400')};
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    content: '';
+    z-index: -1;
+    padding: ${variableGlsp()};
+    background: ${themeVal('color.base-100')};
+    ${pulsingAnimation}
+  }
+`;
+
 export function ContentLoading() {
   return (
     <ContentLoadingSelf>
@@ -150,7 +180,7 @@ const PageLoadingSelf = styled.div`
 
   > div {
     background: ${themeVal('color.base-100')};
-    animation: ${pulse} 0.8s ease 0s infinite alternate;
+    ${pulsingAnimation}
   }
 
   > div:nth-child(1) {
@@ -191,3 +221,11 @@ export const MapLoading = (props) => {
   );
 };
 
+export const ChartLoading = (props: { message: React.ReactNode }) => {
+  return (
+    <ChartLoadingWrapper>
+      <CollecticonChartLine size='xlarge' />
+      <p>{props.message}</p>
+    </ChartLoadingWrapper>
+  );
+};

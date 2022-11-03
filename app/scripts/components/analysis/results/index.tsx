@@ -1,26 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import styled from 'styled-components';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import { useTheme } from 'styled-components';
-import {
-  Dropdown,
-  DropMenu,
-  DropMenuItem,
-  DropTitle
-} from '@devseed-ui/dropdown';
+import { media } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
-import {
-  Toolbar,
-  ToolbarIconButton,
-  VerticalDivider
-} from '@devseed-ui/toolbar';
-import {
-  CollecticonChevronDownSmall,
-  CollecticonCircleInformation,
-  CollecticonDownload2,
-  CollecticonPencil
-} from '@devseed-ui/collecticons';
+import { CollecticonPencil } from '@devseed-ui/collecticons';
 
 import {
   analysisParams2QueryString,
@@ -30,51 +15,57 @@ import {
   requestStacDatasetsTimeseries,
   TimeseriesData
 } from './timeseries-data';
+import ChartCard from './chart-card';
+import AnalysisHeadActions, {
+  DataMetric,
+  dataMetrics
+} from './analysis-head-actions';
 import { LayoutProps } from '$components/common/layout-root';
-import {
-  CardList,
-  CardSelf,
-  CardHeader,
-  CardHeadline,
-  CardTitle,
-  CardActions,
-  CardBody
-} from '$components/common/card';
+import { CardList } from '$components/common/card';
 import {
   Fold,
   FoldHeader,
   FoldHeadline,
-  FoldHeadActions,
   FoldTitle,
   FoldBody
 } from '$components/common/fold';
 import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
 import { resourceNotFound } from '$components/uhoh';
 import { PageMainContent } from '$styles/page';
-import {
-  Legend,
-  LegendTitle,
-  LegendList,
-  LegendSwatch,
-  LegendLabel
-} from '$styles/infographics';
-
 import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
 import { pluralize } from '$utils/pluralize';
 import { calcFeatArea } from '$components/common/aoi/utils';
 
+const ChartCardList = styled(CardList)`
+  > li {
+    min-width: 0;
+  }
+
+  ${media.largeUp`
+    grid-template-columns: repeat(2, 1fr);
+  `}
+`;
+
+const AnalysisFold = styled(Fold)`
+  /* When the page is too small, the shrinking header causes itself to become
+  unstuck (because the page stops having an overflow). Since this happens only
+  under specific screen sizes, this small hack solves the problem with minimal
+  visual impact. */
+  min-height: calc(100vh - 190px);
+`;
+
 export default function AnalysisResults() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
-
-  const theme = useTheme();
 
   const queryClient = useQueryClient();
   const [requestStatus, setRequestStatus] = useState<TimeseriesData[]>([]);
   const { params } = useAnalysisParams();
   const { start, end, datasetsLayers, aoi, errors } = params;
+
+  const [activeMetrics, setActiveMetrics] = useState<DataMetric[]>(dataMetrics);
 
   useEffect(() => {
     if (!start || !end || !datasetsLayers || !aoi) return;
@@ -154,7 +145,7 @@ export default function AnalysisResults() {
         title='Analysis'
         description={descriptions.page}
         isResults
-        aoiFeature={aoi || undefined}
+        aoiFeature={aoi ?? undefined}
         renderActions={({ size }) => (
           <Button
             forwardedAs={Link}
@@ -166,132 +157,32 @@ export default function AnalysisResults() {
           </Button>
         )}
       />
-      <Fold>
+      <AnalysisFold>
         <FoldHeader>
           <FoldHeadline>
             <FoldTitle>Results</FoldTitle>
           </FoldHeadline>
-          <FoldHeadActions>
-            <Legend>
-              <LegendTitle>Legend</LegendTitle>
-              <LegendList>
-                <LegendSwatch>
-                  <svg height='8' width='8'>
-                    <title>{theme.color.infographicA}</title>
-                    <circle
-                      cx='4'
-                      cy='4'
-                      r='4'
-                      fill={theme.color.infographicA}
-                    />
-                  </svg>
-                </LegendSwatch>
-                <LegendLabel>Min</LegendLabel>
-
-                <LegendSwatch>
-                  <svg height='8' width='8'>
-                    <title>{theme.color.infographicB}</title>
-                    <circle
-                      cx='4'
-                      cy='4'
-                      r='4'
-                      fill={theme.color.infographicB}
-                    />
-                  </svg>
-                </LegendSwatch>
-                <LegendLabel>Average</LegendLabel>
-
-                <LegendSwatch>
-                  <svg height='8' width='8'>
-                    <title>{theme.color.infographicD}</title>
-                    <circle
-                      cx='4'
-                      cy='4'
-                      r='4'
-                      fill={theme.color.infographicD}
-                    />
-                  </svg>
-                </LegendSwatch>
-                <LegendLabel>Max</LegendLabel>
-              </LegendList>
-            </Legend>
-
-            <Dropdown
-              alignment='right'
-              triggerElement={(props) => (
-                <Button variation='base-text' {...props}>
-                  View <CollecticonChevronDownSmall />
-                </Button>
-              )}
-            >
-              <DropTitle>View options</DropTitle>
-              <DropMenu>
-                <li>
-                  <DropMenuItem href='#'>Option A</DropMenuItem>
-                </li>
-                <li>
-                  <DropMenuItem href='#'>Option B</DropMenuItem>
-                </li>
-                <li>
-                  <DropMenuItem href='#'>Option C</DropMenuItem>
-                </li>
-              </DropMenu>
-            </Dropdown>
-          </FoldHeadActions>
+          <AnalysisHeadActions
+            activeMetrics={activeMetrics}
+            onMetricsChange={setActiveMetrics}
+          />
         </FoldHeader>
         <FoldBody>
           {!!requestStatus.length && (
-            <CardList>
+            <ChartCardList>
               {requestStatus.map((l) => (
                 <li key={l.id}>
-                  <CardSelf>
-                    <CardHeader>
-                      <CardHeadline>
-                        <CardTitle>{l.name}</CardTitle>
-                      </CardHeadline>
-                      <CardActions>
-                        <Toolbar size='small'>
-                          <ToolbarIconButton variation='base-text'>
-                            <CollecticonDownload2 title='Download' meaningful />
-                          </ToolbarIconButton>
-                          <VerticalDivider variation='dark' />
-                          <ToolbarIconButton variation='base-text'>
-                            <CollecticonCircleInformation
-                              title='More info'
-                              meaningful
-                            />
-                          </ToolbarIconButton>
-                        </Toolbar>
-                      </CardActions>
-                    </CardHeader>
-                    <CardBody>
-                      {l.status === 'errored' && (
-                        <p>Something went wrong: {l.error.message}</p>
-                      )}
-
-                      {l.status === 'loading' && (
-                        <p>
-                          {l.meta.loaded} of {l.meta.total} loaded. Wait
-                        </p>
-                      )}
-
-                      {l.status === 'succeeded' &&
-                        !!l.data.timeseries.length && (
-                          <p>All good. Can show data now.</p>
-                        )}
-
-                      {l.status === 'succeeded' &&
-                        !l.data.timeseries.length && (
-                          <p>There is no data available</p>
-                        )}
-                    </CardBody>
-                  </CardSelf>
+                  <ChartCard
+                    title={l.name}
+                    chartData={l}
+                    activeMetrics={activeMetrics}
+                  />
                 </li>
               ))}
-            </CardList>
+            </ChartCardList>
           )}
         </FoldBody>
-      </Fold>
+      </AnalysisFold>
     </PageMainContent>
   );
 }

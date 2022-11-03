@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-
 import { Overline, Subtitle } from '@devseed-ui/typography';
+import { disabled } from '@devseed-ui/theme-provider';
 
 import { variableGlsp } from './variable-utils';
 
@@ -28,10 +28,14 @@ export const LegendSwatch = styled.dt`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  ${({ disabled: d }) => d && disabled()}
 `;
 
 export const LegendLabel = styled(Subtitle).attrs({
   as: 'dd'
 })`
   margin-left: ${variableGlsp(-0.25)};
+
+  ${({ disabled: d }) => d && disabled()}
 `;

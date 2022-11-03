@@ -1,3 +1,7 @@
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { visuallyDisabled } from '@devseed-ui/theme-provider';
+
 /**
  * Calculates the integer remainder of a division of a by n, handling negative
  * modulo in the mathematically expected way.
@@ -43,4 +47,32 @@ export function isEqualObj(a, b) {
   // Exist early if they're the same.
   if (a === b) return true;
   return JSON.stringify(a) === JSON.stringify(b);
+}
+
+/**
+ * Adds a visuallyDisabled prop to the component that when set to true visually
+ * disables the component (through css) and prevents a click.
+ *
+ * @param Comp React Component to enhance
+ * @returns Enhanced styled component.
+ */
+export function composeVisuallyDisabled(Comp) {
+  return styled(Comp).attrs((props) => {
+    const onClickOriginal = props.onClick;
+    return {
+      onClick: (e) => {
+        if (props.visuallyDisabled) {
+          e.preventDefault();
+          return;
+        }
+        return onClickOriginal?.(e);
+      }
+    };
+  })`
+    ${({ visuallyDisabled: vd }) =>
+      vd &&
+      css`
+        ${visuallyDisabled()}
+      `}
+  `;
 }

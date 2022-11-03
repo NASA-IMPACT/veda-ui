@@ -13,7 +13,9 @@ export function useSlidingStickyHeader() {
     let prevY = window.scrollY;
     let scrollUpDelta = 0;
 
-    const navWrapperElement = document.querySelector<HTMLElement>(`#${HEADER_WRAPPER_ID}`);
+    const navWrapperElement = document.querySelector<HTMLElement>(
+      `#${HEADER_WRAPPER_ID}`
+    );
     if (!navWrapperElement) {
       throw new Error(`Element #${HEADER_WRAPPER_ID} was not found.`);
     }
@@ -29,7 +31,8 @@ export function useSlidingStickyHeader() {
         // Get the height of the header and he wrapper. Both are needed because in
         // some pages the wrapper contains the local nav as well.
         const headerHeightQueried =
-          document.querySelector<HTMLElement>(`#${HEADER_ID}`)?.offsetHeight || 0;
+          document.querySelector<HTMLElement>(`#${HEADER_ID}`)?.offsetHeight ||
+          0;
 
         setHeaderHeight(headerHeightQueried);
         setWrapperHeight(navWrapperElement.offsetHeight);
@@ -40,9 +43,7 @@ export function useSlidingStickyHeader() {
     });
     observer.observe(navWrapperElement);
 
-    function tick() {
-      const currY = window.scrollY;
-
+    function tick(currY) {
       const wrapperEl = document.querySelector(
         `#${HEADER_WRAPPER_ID}`
       ) as HTMLElement;
@@ -51,6 +52,15 @@ export function useSlidingStickyHeader() {
       const el = document.querySelector<HTMLElement>(`#${HEADER_ID}`);
       const headerHeightQueried = el?.offsetHeight || 0;
       setHeaderHeight(headerHeightQueried);
+
+      // When the document is scrolled quickly to the bottom of the page, the
+      // shrinking header causes the scroll event to be fired again, and since
+      // the page is shrinking, the scrollY is decreasing leading to the page
+      // header being shown as it is being considered a scroll up.
+      // By checking if we are at the bottom, we can prevent this.
+      const atTheBottom =
+        window.innerHeight + Math.ceil(window.pageYOffset) >=
+        document.body.offsetHeight;
 
       if (currY <= headerHeightQueried) {
         // When the header gets hidden the css transitions the element out of
@@ -66,7 +76,7 @@ export function useSlidingStickyHeader() {
         // Visible if within its height.
         setHidden(false);
         scrollUpDelta = 0;
-      } else if (currY < prevY) {
+      } else if (currY < prevY && !atTheBottom) {
         // Scrolling up.
         scrollUpDelta += prevY - currY;
         // When scrolling up we want some travel before showing the header
@@ -83,14 +93,16 @@ export function useSlidingStickyHeader() {
       }
 
       prevY = currY;
-      ticking = false;
     }
 
-    function onViewportPositionChange() {
+    function onViewportPositionChange(e) {
       if (!ticking) {
         // instead of setting a specific number of ms to wait (throttling),
         // pass it to the browser to be processed on the next frame, whenever that may be.
-        window.requestAnimationFrame(tick);
+        window.requestAnimationFrame(() => {
+          tick(window.scrollY);
+          ticking = false;
+        });
         ticking = true;
       }
     }
