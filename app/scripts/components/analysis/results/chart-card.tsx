@@ -94,6 +94,13 @@ export default function ChartCard(props: ChartCardProps) {
     };
   }, [activeMetrics, theme]);
 
+  const chartDates = useMemo(
+    () =>
+      data?.timeseries.map((e) => dateFormatter(new Date(e.date), '%Y/%m')) ??
+      [],
+    [data?.timeseries]
+  );
+
   return (
     <CardSelf>
       <CardHeader>
@@ -144,9 +151,7 @@ export default function ChartCard(props: ChartCardProps) {
                 uniqueKeys={uniqueKeys}
                 colors={colors}
                 xKey='date'
-                dates={data.timeseries.map((e) =>
-                  dateFormatter(new Date(e.date), '%Y/%m')
-                )}
+                dates={chartDates}
                 dateFormat='%Y/%m'
                 altTitle={`Amount of ${name} over time`}
                 altDesc={`Amount of ${name} over time`}
