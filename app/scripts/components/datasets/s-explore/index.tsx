@@ -181,7 +181,7 @@ function DatasetsExplore() {
 
   if (!thematic || !dataset) throw resourceNotFound();
 
-  if (!dataset.data.layers?.length) {
+  if (!dataset.data.layers.length) {
     throw new Error(
       `There are no layers defined in dataset ${dataset.data.id}`
     );
@@ -227,7 +227,7 @@ function DatasetsExplore() {
       () => mapboxRef.current?.resize(),
       PANEL_REVEAL_DURATION
     );
-    return () => id && clearTimeout(id);
+    return () => clearTimeout(id);
   }, [panelRevealed]);
 
   /** *********************************************************************** */
@@ -280,7 +280,7 @@ function DatasetsExplore() {
     dehydrator: (v) => {
       if (!v) return '';
       const { id, center, parallels } = v;
-      return `${id}|${center?.join(',') || ''}|${parallels?.join(',') || ''}`;
+      return `${id}|${center?.join(',') ?? ''}|${parallels?.join(',') ?? ''}`;
     }
   });
 
@@ -340,12 +340,12 @@ function DatasetsExplore() {
   // Done both for the base layer and the compare layer.
   const activeLayerTimeseries = useMemo(
     // @ts-expect-error if there is activeLayer the the rest is loaded.
-    () => activeLayer?.baseLayer.data.timeseries || null,
+    () => activeLayer?.baseLayer.data.timeseries ?? null,
     [activeLayer]
   );
   const activeLayerCompareTimeseries = useMemo(
     // @ts-expect-error if there is activeLayer the the rest is loaded.
-    () => activeLayer?.compareLayer?.data.timeseries || null,
+    () => activeLayer?.compareLayer?.data.timeseries ?? null,
     [activeLayer]
   );
 
@@ -366,8 +366,8 @@ function DatasetsExplore() {
       )
         return;
 
-      if (currActiveData?.projection?.id) {
-        setMapProjection(currActiveData?.projection);
+      if (currActiveData.projection.id) {
+        setMapProjection(currActiveData.projection);
       } else {
         setMapProjection(projectionDefault);
       }
@@ -379,14 +379,14 @@ function DatasetsExplore() {
   // null if there's no active layer or it hasn't loaded yet.
   const availableActiveLayerDates = useMemo(() => {
     if (!activeLayer) return undefined;
-    return resolveLayerTemporalExtent(activeLayer.baseLayer.data) || undefined;
+    return resolveLayerTemporalExtent(activeLayer.baseLayer.data) ?? undefined;
   }, [activeLayer]);
   // Available dates for the compareLayer of the currently active layer.
   // null if there's no compare layer or it hasn't loaded yet.
   const availableActiveLayerCompareDates = useMemo(() => {
     if (!activeLayer?.compareLayer) return undefined;
     return (
-      resolveLayerTemporalExtent(activeLayer.compareLayer.data) || undefined
+      resolveLayerTemporalExtent(activeLayer.compareLayer.data) ?? undefined
     );
   }, [activeLayer]);
 
@@ -513,7 +513,7 @@ function DatasetsExplore() {
                       title='Date'
                       value={datePickerValue}
                       onConfirm={datePickerConfirm}
-                      timeDensity={activeLayerTimeseries?.timeDensity}
+                      timeDensity={activeLayerTimeseries.timeDensity}
                       availableDates={availableActiveLayerDates}
                     >
                       {activeLayerCompareTimeseries && (
@@ -534,7 +534,7 @@ function DatasetsExplore() {
                       title='Date comparison'
                       value={datePickerCompareValue}
                       onConfirm={datePickerCompareConfirm}
-                      timeDensity={activeLayerCompareTimeseries?.timeDensity}
+                      timeDensity={activeLayerCompareTimeseries.timeDensity}
                       availableDates={availableActiveLayerCompareDates}
                     />
                   )}
@@ -547,7 +547,7 @@ function DatasetsExplore() {
                     <DatasetLayers
                       datasetId={dataset.data.id}
                       asyncLayers={asyncLayers}
-                      selectedLayerId={selectedLayerId || undefined}
+                      selectedLayerId={selectedLayerId ?? undefined}
                       onAction={onLayerAction}
                     />
                   </PanelWidgetBody>
@@ -561,12 +561,12 @@ function DatasetsExplore() {
               withGeocoder
               datasetId={dataset.data.id}
               layerId={activeLayer?.baseLayer.data?.id}
-              date={selectedDatetime || undefined}
-              compareDate={selectedCompareDatetime || undefined}
+              date={selectedDatetime ?? undefined}
+              compareDate={selectedCompareDatetime ?? undefined}
               isComparing={isComparing}
-              initialPosition={mapPosition || undefined}
+              initialPosition={mapPosition ?? undefined}
               onPositionChange={setMapPosition}
-              projection={mapProjection || projectionDefault}
+              projection={mapProjection ?? projectionDefault}
               onProjectionChange={setMapProjection}
             />
           </Carto>
