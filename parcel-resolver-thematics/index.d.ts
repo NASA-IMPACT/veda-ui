@@ -23,13 +23,9 @@ declare module 'delta/thematics' {
     id: MbProjectionOptions['name'] | 'polarNorth' | 'polarSouth';
   };
 
-  interface DatasetSourceParams {
-    [key: string]: any;
-  }
-
   interface DatasetLayerCommonProps {
     zoomExtent?: number[];
-    sourceParams?: DatasetSourceParams;
+    sourceParams?: Record<string, any>;
   }
 
   export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
@@ -94,7 +90,10 @@ declare module 'delta/thematics' {
     stops: string[];
   }
 
-  type CategoricalStop = { color: string; label: string };
+  interface CategoricalStop {
+    color: string;
+    label: string;
+  }
 
   export interface LayerLegendCategorical {
     type: 'categorical';
@@ -126,7 +125,7 @@ declare module 'delta/thematics' {
     };
     media?: Media;
     layers: DatasetLayer[];
-    related?: Array<RelatedContentData>;
+    related?: RelatedContentData[];
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -144,7 +143,7 @@ declare module 'delta/thematics' {
     pubDate: string;
     media?: Media;
     thematics: string[];
-    related?: Array<RelatedContentData>;
+    related?: RelatedContentData[];
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -159,7 +158,7 @@ declare module 'delta/thematics' {
     name: string;
     description: string;
     media?: Media;
-    related?: Array<RelatedContentData>;
+    related?: RelatedContentData[];
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -179,9 +178,7 @@ declare module 'delta/thematics' {
   /**
    * Base structure for each of the data types in delta/thematics.
    */
-  interface DeltaData<T> {
-    [key: string]: DeltaDatum<T>;
-  }
+  type DeltaData<T> = Record<string, DeltaDatum<T>>;
 
   export interface DeltaDatum<T> {
     /**
@@ -217,11 +214,11 @@ declare module 'delta/thematics' {
     /**
      * Datasets that are related to this thematic area.
      */
-    datasets: [DatasetData];
+    datasets: DatasetData[];
     /**
      * Discoveries that are related to this thematic area.
      */
-    discoveries: [DiscoveryData];
+    discoveries: DiscoveryData[];
   }
 
   /**
