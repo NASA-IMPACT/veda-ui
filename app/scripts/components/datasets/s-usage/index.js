@@ -49,9 +49,11 @@ function DatasetsUsage() {
             <>
               <p>
                 Check out how to use this dataset:{' '}
+                <ul>
                 {datasetUsage.map((du) => (
                   <li>{du.description}:{' '}<a href={du.url}>{du.title}</a></li>
                 ))}
+                </ul>
               </p>
               <p>
                 For reference, the following STAC collection ID&apos;s are
