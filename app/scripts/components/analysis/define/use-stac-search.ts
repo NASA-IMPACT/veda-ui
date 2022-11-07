@@ -4,7 +4,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { uniq, uniqBy } from 'lodash';
 import axios from 'axios';
 import { getFilterPayload } from '../utils';
-import { ActionStatus, S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
+import {
+  ActionStatus,
+  S_FAILED,
+  S_IDLE,
+  S_LOADING,
+  S_SUCCEEDED
+} from '$utils/status';
 import { useThematicArea } from '$utils/thematics';
 
 interface UseStacSearchProps {
@@ -13,14 +19,11 @@ interface UseStacSearchProps {
   aoi?: Feature<Polygon> | null;
 }
 
-export function useStacSearch({
-  start,
-  end,
-  aoi
-}: UseStacSearchProps) {
+export function useStacSearch({ start, end, aoi }: UseStacSearchProps) {
   const thematic = useThematicArea();
 
-  const readyToLoadDatasets = start && end && aoi;
+  const readyToLoadDatasets = !!(start && end && aoi);
+
   const allAvailableDatasetsLayers: DatasetLayer[] = useMemo(() => {
     if (!thematic?.data.datasets) return [];
     return uniqBy(
@@ -32,8 +35,10 @@ export function useStacSearch({
   const [selectableDatasetLayers, setSelectableDatasetLayers] = useState<
     DatasetLayer[]
   >([]);
+
   const [stacSearchStatus, setStacSearchStatus] =
-  useState<ActionStatus>(S_IDLE);
+    useState<ActionStatus>(S_IDLE);
+
   useEffect(() => {
     if (!readyToLoadDatasets) return;
     const controller = new AbortController();
@@ -84,17 +89,13 @@ export function useStacSearch({
         setStacSearchStatus(S_FAILED);
       }
     };
+
     load();
+
     return () => {
       controller.abort();
     };
-  }, [
-    start,
-    end,
-    aoi,
-    allAvailableDatasetsLayers,
-    readyToLoadDatasets
-  ]);
+  }, [start, end, aoi, allAvailableDatasetsLayers, readyToLoadDatasets]);
 
   return { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets };
 }
