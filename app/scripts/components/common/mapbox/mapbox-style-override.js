@@ -17,6 +17,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 const MapboxStyleOverride = css`
   .mapboxgl-control-container {
     position: absolute;
+    z-index: 2;
     inset: ${variableGlsp()};
     pointer-events: none;
 

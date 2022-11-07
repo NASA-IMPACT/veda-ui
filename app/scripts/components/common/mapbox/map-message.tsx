@@ -15,7 +15,7 @@ interface MessageProps {
 
 const Message = styled.div<MessageProps>`
   position: absolute;
-  z-index: 8;
+  z-index: 2;
   transform: translate(-50%, 0);
   padding: ${glsp(0.5, 0.75)};
   box-shadow: ${themeVal('boxShadow.elevationA')};
