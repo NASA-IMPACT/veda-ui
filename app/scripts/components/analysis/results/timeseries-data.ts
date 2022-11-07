@@ -159,29 +159,9 @@ async function getDatasetAssets(
           include: ['assets.cog_default.href', 'properties.start_datetime'],
           exclude: ['collection', 'links']
         },
-        // TODO: Only supports intersection on a single geometry???
-        intersects: aoi.geometry,
         filter: {
           op: 'and',
           args: [
-            {
-              op: '>=',
-              args: [
-                {
-                  property: 'datetime'
-                },
-                date.start
-              ]
-            },
-            {
-              op: '<=',
-              args: [
-                {
-                  property: 'datetime'
-                },
-                date.end
-              ]
-            },
             {
               op: 'eq',
               args: [
@@ -189,6 +169,22 @@ async function getDatasetAssets(
                   property: 'collection'
                 },
                 id
+              ]
+            },
+            {
+              op: 's_intersects',
+              args: [{ property: 'geometry' }, aoi.geometry]
+            },
+            {
+              op: 't_intersects',
+              args: [
+                { property: 'datetime' },
+                {
+                  interval: [
+                    date.start,
+                    date.end
+                  ]
+                }
               ]
             }
           ]
