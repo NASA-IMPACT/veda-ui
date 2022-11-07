@@ -110,6 +110,11 @@ declare module 'delta/thematics' {
     thematic?: string;
   }
 
+  export interface DatasetUsage {
+    url: string;
+    description: string;
+    title: string;
+  }
   /**
    * Data structure for the Datasets frontmatter.
    */
@@ -119,10 +124,7 @@ declare module 'delta/thematics' {
     name: string;
     thematics: string[];
     description: string;
-    usage?: {
-      url: string;
-      title: string;
-    };
+    usage?: DatasetUsage[];
     media?: Media;
     layers: DatasetLayer[];
     related?: RelatedContentData[];

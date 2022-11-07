@@ -45,11 +45,13 @@ function DatasetsUsage() {
       <PageMainContent>
         <PageHero title={`${dataset.data.name} Usage`} />
         <FoldProse>
-          {datasetUsage?.url && datasetUsage?.title ? (
+          {datasetUsage?.length > 0 ? (
             <>
               <p>
-                Check out how to use this dataset in this example notebook:{' '}
-                <a href={datasetUsage.url}>{datasetUsage.title}</a>.
+                Check out how to use this dataset:{' '}
+                {datasetUsage.map((du) => (
+                  <li>{du.description}:{' '}<a href={du.url}>{du.title}</a></li>
+                ))}
               </p>
               <p>
                 For reference, the following STAC collection ID&apos;s are
