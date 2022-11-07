@@ -14,17 +14,14 @@ import { resourceNotFound } from '$components/uhoh';
 import { thematicAnalysisPath } from '$utils/routes';
 import { useThematicArea } from '$utils/thematics';
 import { Tip } from '$components/common/tip';
+import { composeVisuallyDisabled } from '$utils/utils';
 
-// Hack needed because tippy doesn't work on disabled elements
-export const DisabledButtonWrapper = styled.div`
-  pointer-events: none;
-  opacity: .5;
-`;
+const SaveButton = composeVisuallyDisabled(Button);
 
 interface PageHeroActionsProps {
   size: string;
   isNewAnalysis: boolean;
-  showTip: Boolean;
+  showTip: boolean;
   start?: Date;
   end?: Date;
   datasetsLayers?: DatasetLayer[];
@@ -68,7 +65,8 @@ export default function PageHeroActions({
     if (!start || !end)
       instructions = [...instructions, 'pick start and end dates'];
     if (!aoi) instructions = [...instructions, 'define an area'];
-    if (!datasetsLayers?.length) instructions = [...instructions, 'select datasets'];
+    if (!datasetsLayers?.length)
+      instructions = [...instructions, 'select datasets'];
 
     const instructionsString = instructions
       .join(', ')
@@ -97,23 +95,21 @@ export default function PageHeroActions({
           content={tipContents}
           sticky='reference'
           plugins={[sticky]}
-        ><DisabledButtonWrapper>
-          <Button
+        >
+          <SaveButton
             type='button'
             size={size}
             variation='achromic-outline'
-            disabled
+            visuallyDisabled={true}
           >
             <CollecticonTickSmall /> Save
-          </Button>
-         </DisabledButtonWrapper>
+          </SaveButton>
         </Tip>
       ) : (
         <Button
           forwardedAs={Link}
-          type='button'
-          size={size}
           variation='achromic-outline'
+          size={size}
           to={`${thematicAnalysisPath(thematic)}/results${analysisParamsQs}`}
         >
           <CollecticonTickSmall /> Save
