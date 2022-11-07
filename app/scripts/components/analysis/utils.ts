@@ -13,7 +13,7 @@ import { userTzDate2utcString } from '$utils/date';
 export function getFilterPayload(
   start: Date,
   end: Date,
-  aoiFeature: Feature<Polygon>,
+  aoiFeature: Feature<Polygon | MultiPolygon>,
   collections: string[]
 ) {
   const filterPayload = {

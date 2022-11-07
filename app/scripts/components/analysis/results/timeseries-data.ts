@@ -3,9 +3,9 @@ import { QueryClient } from '@tanstack/react-query';
 import { Feature, MultiPolygon } from 'geojson';
 import { DatasetLayer } from 'delta/thematics';
 
+import { getFilterPayload } from '../utils';
 import EventEmitter from './mini-events';
 import { ConcurrencyManager, ConcurrencyManagerInstance } from './concurrency';
-import { userTzDate2utcString } from '$utils/date';
 import { TimeDensity } from '$context/layer-data';
 
 export const TIMESERIES_DATA_BASE_ID = 'analysis';
@@ -133,15 +133,13 @@ export function requestStacDatasetsTimeseries({
 
 interface DatasetAssetsRequestParams {
   id: string;
-  date: {
-    start: string;
-    end: string;
-  };
+  dateStart: Date;
+  dateEnd: Date;
   aoi: Feature<MultiPolygon>;
 }
 
 async function getDatasetAssets(
-  { date, id, aoi }: DatasetAssetsRequestParams,
+  { dateStart, dateEnd, id, aoi }: DatasetAssetsRequestParams,
   opts: AxiosRequestConfig,
   concurrencyManager: ConcurrencyManagerInstance
 ) {
@@ -159,36 +157,7 @@ async function getDatasetAssets(
           include: ['assets.cog_default.href', 'properties.start_datetime'],
           exclude: ['collection', 'links']
         },
-        filter: {
-          op: 'and',
-          args: [
-            {
-              op: 'eq',
-              args: [
-                {
-                  property: 'collection'
-                },
-                id
-              ]
-            },
-            {
-              op: 's_intersects',
-              args: [{ property: 'geometry' }, aoi.geometry]
-            },
-            {
-              op: 't_intersects',
-              args: [
-                { property: 'datetime' },
-                {
-                  interval: [
-                    date.start,
-                    date.end
-                  ]
-                }
-              ]
-            }
-          ]
-        }
+        filter: getFilterPayload(dateStart, dateEnd, aoi, [id])
       },
       opts
     );
@@ -260,10 +229,8 @@ async function requestTimeseries({
           {
             id,
             aoi,
-            date: {
-              start: userTzDate2utcString(start),
-              end: userTzDate2utcString(end)
-            }
+            dateStart: start,
+            dateEnd: end
           },
           { signal },
           concurrencyManager
