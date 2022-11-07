@@ -112,7 +112,7 @@ export default function Analysis() {
       if (!e.target.value || e.target.value === '') {
         setAnalysisParam('start', null);
         return;
-      } 
+      }
       setAnalysisParam('start', inputFormatToDate(e.target.value));
     },
     [setAnalysisParam]
@@ -120,7 +120,7 @@ export default function Analysis() {
 
   const onEndDateChange = useCallback(
     (e) => {
-      if (!e.target.value || e.target.value === '') { 
+      if (!e.target.value || e.target.value === '') {
         setAnalysisParam('end', null);
         return;
       }
@@ -161,14 +161,20 @@ export default function Analysis() {
   const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
     useStacSearch({ start, end, aoi: aoiDrawState.feature });
 
-  // Update datasetsLayers when stac search is refreshed in case some datasetsLayers are not available anymore
+  // Update datasetsLayers when stac search is refreshed in case some
+  // datasetsLayers are not available anymore
   useEffect(() => {
     if (!datasetsLayers) return;
-    const selectableDatasetLayersIds = selectableDatasetLayers.map((layer) => layer.id);
-    const cleanedDatasetsLayers = datasetsLayers?.filter((l) => selectableDatasetLayersIds.includes(l.id));
+    const selectableDatasetLayersIds = selectableDatasetLayers.map(
+      (layer) => layer.id
+    );
+    const cleanedDatasetsLayers = datasetsLayers?.filter((l) =>
+      selectableDatasetLayersIds.includes(l.id)
+    );
 
     setAnalysisParam('datasetsLayers', cleanedDatasetsLayers);
-    // Only update when stac search gets updated to avoid triggering an infinite read/set state loop
+    // Only update when stac search gets updated to avoid triggering an infinite
+    // read/set state loop
   }, [selectableDatasetLayers, setAnalysisParam]);
 
   const showTip = !readyToLoadDatasets || !datasetsLayers?.length;
@@ -185,12 +191,12 @@ export default function Analysis() {
     if (!readyToLoadDatasets) {
       return 'To select datasets, please define an area and a date first.';
     } else {
-      if (!selectableDatasetLayers.length) {
-        return 'No datasets available in that thematic area for the currently selected dates and area.';
-      } else if (stacSearchStatus === S_LOADING) {
+      if (stacSearchStatus === S_LOADING) {
         return 'Loading...';
       } else if (stacSearchStatus === S_FAILED) {
         return 'Error loading datasets.';
+      } else if (!selectableDatasetLayers.length) {
+        return 'No datasets available in that thematic area for the currently selected dates and area.';
       }
     }
   }, [readyToLoadDatasets, stacSearchStatus, selectableDatasetLayers.length]);

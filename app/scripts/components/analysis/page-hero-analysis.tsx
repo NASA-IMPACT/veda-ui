@@ -55,7 +55,7 @@ const PageHeroBlockBeta = styled.div`
 
 const PageHeroSelf = styled.div`
   position: sticky;
-  z-index: 1;
+  z-index: 10;
   display: flex;
   flex-flow: column nowrap;
   gap: ${glsp()};

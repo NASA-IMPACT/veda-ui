@@ -71,6 +71,9 @@ export default function AoiSelector(props: AoiSelectorProps) {
       onAoiEvent('aoi.set-feature', { feature: polygon });
       const featureBbox = bbox(polygon) as [number, number, number, number];
       mapRef.current?.instance?.fitBounds(featureBbox, { padding: 32 });
+    } else {
+      onAoiEvent('aoi.clear');
+      mapRef.current?.instance?.flyTo({ zoom: 1, center: [0, 0] });
     }
   }, [onAoiEvent, polygon]);
 
