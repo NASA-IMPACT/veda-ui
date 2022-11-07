@@ -10,7 +10,7 @@ import { TimeDensity } from '$context/layer-data';
 
 export const TIMESERIES_DATA_BASE_ID = 'analysis';
 
-export type TimeseriesDataUnit = {
+export interface TimeseriesDataUnit {
   date: string;
   min: number;
   max: number;
@@ -28,14 +28,14 @@ export type TimeseriesDataUnit = {
   valid_pixels: number;
   percentile_2: number;
   percentile_98: number;
-};
+}
 
-type TimeseriesDataResult = {
+interface TimeseriesDataResult {
   isPeriodic: boolean;
   timeDensity: TimeDensity;
   domain: string[];
   timeseries: TimeseriesDataUnit[];
-};
+}
 
 // Different options based on status.
 export type TimeseriesData =
@@ -102,10 +102,14 @@ export function requestStacDatasetsTimeseries({
   const concurrencyManager = ConcurrencyManager();
 
   // On abort clear the queue.
-  signal?.addEventListener('abort', () => {
-    queryClient.cancelQueries([TIMESERIES_DATA_BASE_ID]);
-    concurrencyManager.clear();
-  }, { once: true });
+  signal.addEventListener(
+    'abort',
+    () => {
+      queryClient.cancelQueries([TIMESERIES_DATA_BASE_ID]);
+      concurrencyManager.clear();
+    },
+    { once: true }
+  );
 
   // Start the request for each layer.
   layers.forEach(async (layer, index) => {
@@ -127,14 +131,14 @@ export function requestStacDatasetsTimeseries({
   } as StacDatasetsTimeseriesEvented;
 }
 
-type DatasetAssetsRequestParams = {
+interface DatasetAssetsRequestParams {
   id: string;
   date: {
     start: string;
     end: string;
   };
   aoi: Feature<MultiPolygon>;
-};
+}
 
 async function getDatasetAssets(
   { date, id, aoi }: DatasetAssetsRequestParams,
@@ -207,7 +211,7 @@ async function getDatasetAssets(
   return data;
 }
 
-type TimeseriesRequesterParams = {
+interface TimeseriesRequesterParams {
   start: Date;
   end: Date;
   aoi: Feature<MultiPolygon>;
@@ -216,7 +220,7 @@ type TimeseriesRequesterParams = {
   eventEmitter: ReturnType<typeof EventEmitter>;
   index: number;
   concurrencyManager: ConcurrencyManagerInstance;
-};
+}
 
 // Make requests and emit events.
 async function requestTimeseries({
@@ -254,7 +258,7 @@ async function requestTimeseries({
 
   try {
     const layerInfoFromSTAC = await queryClient.fetchQuery(
-      [TIMESERIES_DATA_BASE_ID, 'dataset', id],
+      [TIMESERIES_DATA_BASE_ID, 'dataset', id, aoi, start, end],
       ({ signal }) =>
         getDatasetAssets(
           {
@@ -307,7 +311,7 @@ async function requestTimeseries({
           ...layersBase,
           meta: {
             total: assets.length,
-            loaded: (layersBase.meta.loaded || 0) + 1
+            loaded: (layersBase.meta.loaded ?? 0) + 1
           }
         });
 
