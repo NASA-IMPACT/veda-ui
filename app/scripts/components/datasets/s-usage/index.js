@@ -17,7 +17,7 @@ function DatasetsUsage() {
 
   if (!thematic || !dataset) throw resourceNotFound();
 
-  const datasetUsage = dataset.data.usage;
+  const datasetUsages = dataset.data.usage;
 
   const layerIdsSet = dataset.data.layers.reduce(
     (acc, layer) => acc.add(layer.stacCol),
@@ -45,12 +45,17 @@ function DatasetsUsage() {
       <PageMainContent>
         <PageHero title={`${dataset.data.name} Usage`} />
         <FoldProse>
-          {datasetUsage?.url && datasetUsage?.title ? (
+          {datasetUsages?.length ? (
             <>
-              <p>
-                Check out how to use this dataset in this example notebook:{' '}
-                <a href={datasetUsage.url}>{datasetUsage.title}</a>.
-              </p>
+              <p>Check out how to use this dataset:</p>
+              <ul>
+                {datasetUsages.map((datasetUsage) => (
+                  <li key={datasetUsage.url}>
+                    {datasetUsage.label}:{' '}
+                    <a href={datasetUsage.url}>{datasetUsage.title}</a>
+                  </li>
+                ))}
+              </ul>
               <p>
                 For reference, the following STAC collection ID&apos;s are
                 associated with this dataset:
