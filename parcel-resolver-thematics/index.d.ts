@@ -112,7 +112,7 @@ declare module 'delta/thematics' {
 
   export interface DatasetUsage {
     url: string;
-    description: string;
+    label: string;
     title: string;
   }
   /**
