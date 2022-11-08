@@ -47,17 +47,15 @@ function DatasetsUsage() {
         <FoldProse>
           {datasetUsages?.length ? (
             <>
-              <p>
-                Check out how to use this dataset:{' '}
-                <ul>
-                  {datasetUsages.map((datasetUsage) => (
-                    <li key={datasetUsage.url}>
-                      {datasetUsage.description}:{' '}
-                      <a href={datasetUsage.url}>{datasetUsage.title}</a>
-                    </li>
-                  ))}
-                </ul>
-              </p>
+              <p>Check out how to use this dataset:</p>
+              <ul>
+                {datasetUsages.map((datasetUsage) => (
+                  <li key={datasetUsage.url}>
+                    {datasetUsage.label}:{' '}
+                    <a href={datasetUsage.url}>{datasetUsage.title}</a>
+                  </li>
+                ))}
+              </ul>
               <p>
                 For reference, the following STAC collection ID&apos;s are
                 associated with this dataset:
