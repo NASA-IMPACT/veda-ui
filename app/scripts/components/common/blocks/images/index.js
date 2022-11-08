@@ -28,18 +28,18 @@ Caption.propTypes = {
 
 export default function Image(props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { align, caption, attrAuthor, ...propsWithoutAttrs } = props;
+  const { align, caption, attrAuthor, alt, ...propsWithoutAttrs } = props;
   const imageAlign = align ? align : 'center';
   return caption || attrAuthor ? (
     // if it is an inline image with a caption
     <Figure className={`align-${imageAlign}`}>
-      <img loading='lazy' {...propsWithoutAttrs} />
+      <img loading='lazy' alt={alt} {...propsWithoutAttrs} />
       <Caption attrAuthor={attrAuthor} attrUrl={props.attrUrl}>
         {caption}
       </Caption>
     </Figure>
   ) : (
-    <img loading='lazy' {...propsWithoutAttrs} />
+    <img loading='lazy' alt={alt} {...propsWithoutAttrs} />
   );
 }
 

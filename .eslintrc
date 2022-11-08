@@ -6,13 +6,15 @@
     "inclusive-language",
     "jest",
     "import",
-    "fp"
+    "fp",
+    "jsx-a11y"
   ],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
-    "plugin:jest/recommended"
+    "plugin:jest/recommended",
+    "plugin:jsx-a11y/recommended"
   ],
   "settings": {
     "react": {
