@@ -17,7 +17,7 @@ function DatasetsUsage() {
 
   if (!thematic || !dataset) throw resourceNotFound();
 
-  const datasetUsage = dataset.data.usage;
+  const datasetUsages = dataset.data.usage;
 
   const layerIdsSet = dataset.data.layers.reduce(
     (acc, layer) => acc.add(layer.stacCol),
@@ -45,14 +45,17 @@ function DatasetsUsage() {
       <PageMainContent>
         <PageHero title={`${dataset.data.name} Usage`} />
         <FoldProse>
-          {datasetUsage?.length > 0 ? (
+          {datasetUsages?.length ? (
             <>
               <p>
                 Check out how to use this dataset:{' '}
                 <ul>
-                {datasetUsage.map((du) => (
-                  <li>{du.description}:{' '}<a href={du.url}>{du.title}</a></li>
-                ))}
+                  {datasetUsages.map((datasetUsage) => (
+                    <li key={datasetUsage.url}>
+                      {datasetUsage.description}:{' '}
+                      <a href={datasetUsage.url}>{datasetUsage.title}</a>
+                    </li>
+                  ))}
                 </ul>
               </p>
               <p>
