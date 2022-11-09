@@ -36,5 +36,5 @@ export function ComponentOverride(props: ComponentOverrideProps) {
 export function ContentOverride(props: ComponentOverrideProps) {
   const loader = getOverride(props.with)?.content;
 
-  return loader ? <MdxContent loader={loader} /> : props.children;
+  return loader ? <MdxContent loader={loader} /> : <>{props.children}</>;
 }

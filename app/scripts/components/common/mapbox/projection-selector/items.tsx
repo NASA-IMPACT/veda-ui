@@ -72,7 +72,7 @@ export function ProjectionItemConic(props: ProjectionItemConicProps) {
   // Keep the values the user enters to be able to restore them whenever they
   // switch projections.
   const [conicValues, setConicValues] = useState(
-    activeConicValues || defaultConicValues
+    activeConicValues ?? defaultConicValues
   );
 
   // Store the conic values for the selected projection and register the change
@@ -143,7 +143,7 @@ export function ProjectionItemConic(props: ProjectionItemConicProps) {
                   id={`parallels-${field.id}`}
                   name={`parallels-${field.id}`}
                   label={field.label}
-                  value={conicValues.parallels?.[idx]}
+                  value={conicValues.parallels?.[idx].toString() ?? ''}
                   validate={field.validate}
                   onChange={(value) => {
                     onChangeConicValues(Number(value), 'parallels', idx);

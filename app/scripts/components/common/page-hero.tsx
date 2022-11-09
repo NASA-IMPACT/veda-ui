@@ -1,5 +1,4 @@
 import React from 'react';
-import T from 'prop-types';
 import { format } from 'date-fns';
 import styled, { css } from 'styled-components';
 
@@ -17,7 +16,7 @@ import { PageLead, PageMainTitle, PageOverline } from '$styles/page';
 import Constrainer from '$styles/constrainer';
 import { variableGlsp } from '$styles/variable-utils';
 
-const PageHeroSelf = styled.div`
+const PageHeroSelf = styled.div<{ isCover: boolean; isHidden: boolean }>`
   position: relative;
   z-index: 1;
   display: flex;
@@ -124,7 +123,20 @@ const PageHeroBlockBeta = styled.div`
   `}
 `;
 
-function PageHero(props) {
+interface PageHeroProps {
+  title: string;
+  description?: string;
+  renderAlphaBlock?: () => JSX.Element;
+  renderBetaBlock?: () => JSX.Element;
+  publishedDate?: string | Date;
+  coverSrc?: string;
+  coverAlt?: string;
+  attributionAuthor?: string;
+  attributionUrl?: string;
+  isHidden?: boolean;
+}
+
+function PageHero(props: PageHeroProps) {
   const {
     title,
     description,
@@ -138,15 +150,16 @@ function PageHero(props) {
     isHidden
   } = props;
 
-  const hasImage = coverSrc && coverAlt;
+  const hasImage = !!(coverSrc && coverAlt);
 
-  const date =
-    publishedDate && typeof publishedDate === 'string'
+  const date = publishedDate
+    ? typeof publishedDate === 'string'
       ? new Date(publishedDate)
-      : publishedDate;
+      : publishedDate
+    : undefined;
 
   return (
-    <PageHeroSelf isCover={hasImage} isHidden={isHidden}>
+    <PageHeroSelf isCover={hasImage} isHidden={!!isHidden}>
       <PageHeroInner>
         <Try fn={renderAlphaBlock} wrapWith={PageHeroBlockAlpha}>
           <PageHeroHGroup>
@@ -175,20 +188,7 @@ function PageHero(props) {
 
 export default PageHero;
 
-PageHero.propTypes = {
-  title: T.string,
-  description: T.string,
-  renderAlphaBlock: T.func,
-  renderBetaBlock: T.func,
-  publishedDate: T.oneOfType([T.string, T.instanceOf(Date)]),
-  coverSrc: T.string,
-  coverAlt: T.string,
-  attributionAuthor: T.string,
-  attributionUrl: T.string,
-  isHidden: T.bool
-};
-
-export function PageOverlineDate(props) {
+export function PageOverlineDate(props: { date?: Date }) {
   const { date } = props;
   if (!date) {
     return null;
@@ -203,7 +203,3 @@ export function PageOverlineDate(props) {
     </PageOverline>
   );
 }
-
-PageOverlineDate.propTypes = {
-  date: T.instanceOf(Date)
-};

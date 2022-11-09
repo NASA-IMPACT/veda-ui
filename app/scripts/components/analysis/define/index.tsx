@@ -315,6 +315,7 @@ export default function Analysis() {
                     key={datasetLayer.id}
                     id={datasetLayer.id}
                     name={datasetLayer.id}
+                    value={datasetLayer.id}
                     textPlacement='right'
                     type='checkbox'
                     onChange={onDatasetLayerChange}

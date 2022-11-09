@@ -168,7 +168,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     const compareControl = new CompareMbGL(
       mapRef.current,
       mapCompareRef.current,
-      `#${id || 'mapbox-container'}`,
+      `#${id ?? 'mapbox-container'}`,
       {
         mousemove: false,
         orientation: 'vertical'
@@ -227,7 +227,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.
-    const providedLabel = compareLabel || compareLayerResolvedData?.mapLabel;
+    const providedLabel = compareLabel ?? compareLayerResolvedData?.mapLabel;
     if (providedLabel) return providedLabel as string;
 
     // Default to date comparison.
@@ -404,7 +404,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       <MapsContainer
         as={as}
         className={className}
-        id={id || 'mapbox-container'}
+        id={id ?? 'mapbox-container'}
       >
         <SimpleMap
           className='root'
@@ -447,11 +447,11 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   );
 }
 
-type MapPosition = {
+interface MapPosition {
   lng: number;
   lat: number;
   zoom: number;
-};
+}
 
 export interface MapboxMapProps {
   as?: any;
@@ -478,11 +478,11 @@ export interface MapboxMapProps {
   onProjectionChange?: (projection: ProjectionOptions) => void;
 }
 
-export type MapboxMapRef = {
+export interface MapboxMapRef {
   resize: () => void;
   instance: mapboxgl.Map | null;
   compareInstance: mapboxgl.Map | null;
-};
+}
 
 const MapboxMapComponentFwd = React.forwardRef<MapboxMapRef, MapboxMapProps>(
   MapboxMapComponent

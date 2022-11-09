@@ -52,7 +52,11 @@ interface FormatBlock {
   parent: ParentType;
 }
 
-function formatUrl(id: string, thematic: DeltaDatum<ThematicData>, parent: string) {
+function formatUrl(
+  id: string,
+  thematic: DeltaDatum<ThematicData>,
+  parent: string
+) {
   switch (parent) {
     case thematicString:
       return {
@@ -94,12 +98,15 @@ function formatBlock({
   };
 }
 
-function formatContents(relatedData: Array<RelatedContentData>) {
+function formatContents(relatedData: RelatedContentData[]) {
   const rData = relatedData.map((relatedContent) => {
     const { type, id, thematic } = relatedContent;
     // if related content is thematic, it won't have thematic as an attribute
     const thematicId = !thematic ? id : thematic;
 
+    // Even though type should be one of the defined values, this values comes
+    // from user generated content and we can't be sure, so the checks are in
+    // place.
     const matchingContent = contentCategory[type]?.[id].data;
 
     if (!matchingContent) {
@@ -124,12 +131,10 @@ function formatContents(relatedData: Array<RelatedContentData>) {
 }
 
 interface RelatedContentProps {
-  related: Array<RelatedContentData>;
+  related: RelatedContentData[];
 }
 
-export default function RelatedContent(
-  props: RelatedContentProps
-): ReactNode {
+export default function RelatedContent(props: RelatedContentProps): ReactNode {
   const { related } = props;
   const relatedContents = formatContents(related);
 

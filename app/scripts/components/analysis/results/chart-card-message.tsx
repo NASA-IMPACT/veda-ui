@@ -8,7 +8,7 @@ import {
 
 import { variableGlsp } from '$styles/variable-utils';
 
-const MessageWrapper = styled.div`
+const MessageWrapper = styled.div<{ isError?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,9 +40,7 @@ export function ChartCardNoMetric() {
   return (
     <MessageWrapper>
       <CollecticonChartLine size='xlarge' />
-      <p>
-        There are no metrics selected to display.
-      </p>
+      <p>There are no metrics selected to display.</p>
     </MessageWrapper>
   );
 }

@@ -48,8 +48,8 @@ function RootHome() {
                     />
                   </>
                 }
-                imgSrc={t.media.src}
-                imgAlt={t.media.alt}
+                imgSrc={t.media?.src}
+                imgAlt={t.media?.alt}
               />
             </li>
           ))}

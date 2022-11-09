@@ -3,6 +3,22 @@ import T from 'prop-types';
 
 import { useSafeState } from '$utils/use-safe-state';
 
+interface StressedFieldProps {
+  render: (renderProps: {
+    ref: React.Ref<HTMLInputElement>
+    errored: boolean;
+    value: string;
+    handlers: {
+      onKeyPress: (e: React.KeyboardEvent) => void;
+      onBlur: () => void;
+      onChange: (e: React.FormEvent<HTMLInputElement>) => void;
+    };
+  }) => JSX.Element;
+  value: string;
+  validate: (value: string) => boolean;
+  onChange: (draftValue: string, setDraftValue: React.Dispatch<string>) => void;
+}
+
 /**
  * Component to control the value of a given input.
  * The component accepts a validation function and validates the inserted value.
@@ -19,10 +35,10 @@ import { useSafeState } from '$utils/use-safe-state';
  *    {function} onChangeHandler Internal change handler to attach the field
  *    {function} onBlurHandler Internal blur handler to attach the field
  */
-export default function StressedField(props) {
+export default function StressedField(props: StressedFieldProps) {
   const { render, value, validate, onChange } = props;
 
-  const fieldRef = useRef(null);
+  const fieldRef = useRef<HTMLInputElement>(null);
   const [errored, setErrored] = useSafeState(false);
   const [draftValue, setDraftValue] = useSafeState(value);
 
@@ -50,15 +66,19 @@ export default function StressedField(props) {
   };
 
   // setDraftValue is a hook and wont change.
-  /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  const onChangeHandler = useCallback((e) => setDraftValue(e.target.value), []);
+  const onChangeHandler = useCallback(
+    (e: React.FormEvent<HTMLInputElement>) =>
+      setDraftValue(e.currentTarget.value),
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    []
+  );
 
-  const onKeypressHandler = (e) => {
+  const onKeypressHandler = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       if (validate(draftValue)) {
         // If the field is valid blur which will trigger validation a store
         // the value.
-        fieldRef.current.blur();
+        fieldRef.current?.blur();
       } else {
         validateField();
       }

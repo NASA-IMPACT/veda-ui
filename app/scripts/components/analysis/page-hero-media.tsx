@@ -39,7 +39,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
   useEffect(() => {
     if (!isMapLoaded || !mapRef.current) return;
 
-    const aoiSource = mapRef.current?.getSource('aoi');
+    const aoiSource = mapRef.current.getSource('aoi');
 
     // Quick copy.
     const featureInverse = JSON.parse(
@@ -48,6 +48,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
     // Add a full polygon to reverse the feature.
     featureInverse.geometry.coordinates[0].unshift(WORLD_POLYGON);
 
+    // Contrary to mapbox types getSource can return null.
     if (!aoiSource) {
       mapRef.current.addSource('aoi-inverse', {
         type: 'geojson',
@@ -59,7 +60,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
         type: 'fill',
         source: 'aoi-inverse',
         paint: {
-          'fill-color': shade(0.8, theme.color.primary),
+          'fill-color': shade(0.8, theme.color!.primary!),
           'fill-opacity': 0.8
         }
       });

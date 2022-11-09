@@ -22,10 +22,10 @@ function About() {
         thumbnail={thematic.data.media?.src}
       />
       <PageHero
-        title={thematic.data.about?.title || 'n/a'}
+        title={thematic.data.about?.title ?? 'n/a'}
         description={thematic.data.about?.description}
       />
-      <MdxContent loader={thematic?.content} />
+      <MdxContent loader={thematic.content} />
     </PageMainContent>
   );
 }

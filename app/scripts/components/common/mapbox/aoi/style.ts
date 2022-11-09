@@ -11,8 +11,8 @@ export const computeDrawStyles = (theme: DefaultTheme) => [
       ['!=', 'mode', 'static']
     ],
     paint: {
-      'fill-color': theme.color.primary,
-      'fill-outline-color': theme.color.primary,
+      'fill-color': theme.color?.primary,
+      'fill-outline-color': theme.color?.primary,
       'fill-opacity': 0.16
     }
   },
@@ -30,7 +30,7 @@ export const computeDrawStyles = (theme: DefaultTheme) => [
       'line-join': 'round'
     },
     paint: {
-      'line-color': theme.color.primary,
+      'line-color': theme.color?.primary,
       'line-width': 2
     }
   },
@@ -39,8 +39,8 @@ export const computeDrawStyles = (theme: DefaultTheme) => [
     type: 'fill',
     filter: ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon']],
     paint: {
-      'fill-color': theme.color.primary,
-      'fill-outline-color': theme.color.primary,
+      'fill-color': theme.color?.primary,
+      'fill-outline-color': theme.color?.primary,
       'fill-opacity': 0.16
     }
   },
@@ -53,7 +53,7 @@ export const computeDrawStyles = (theme: DefaultTheme) => [
       'line-join': 'round'
     },
     paint: {
-      'line-color': theme.color.primary,
+      'line-color': theme.color?.primary,
       'line-dasharray': [0.64, 2],
       'line-width': 2
     }
@@ -67,7 +67,7 @@ export const computeDrawStyles = (theme: DefaultTheme) => [
       'line-join': 'round'
     },
     paint: {
-      'line-color': theme.color.primary,
+      'line-color': theme.color?.primary,
       'line-dasharray': [0.64, 2],
       'line-width': 2
     }
@@ -97,7 +97,7 @@ export const computeDrawStyles = (theme: DefaultTheme) => [
     ],
     paint: {
       'circle-radius': 4,
-      'circle-color': theme.color.primary
+      'circle-color': theme.color?.primary
     }
   },
   {
@@ -125,7 +125,7 @@ export const computeDrawStyles = (theme: DefaultTheme) => [
     ],
     paint: {
       'circle-radius': 6,
-      'circle-color': theme.color.primary
+      'circle-color': theme.color?.primary
     }
   },
   {

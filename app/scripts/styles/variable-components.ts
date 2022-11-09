@@ -19,7 +19,9 @@ const sizeMapping = {
   jumbo: '3rem'
 };
 
-const renderHeadingSize = (props = {}) => {
+type HeadingSizes = keyof typeof sizeMapping;
+
+const renderHeadingSize = (props: { size?: HeadingSizes } = {}) => {
   const { size = 'medium' } = props;
 
   return css`
@@ -28,7 +30,7 @@ const renderHeadingSize = (props = {}) => {
   `;
 };
 
-export const VarHeading = styled(Heading)`
+export const VarHeading = styled(Heading)<{ size?: HeadingSizes }>`
   /* Size */
   ${renderHeadingSize}
 `;

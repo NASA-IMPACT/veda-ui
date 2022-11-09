@@ -117,7 +117,7 @@ export function formatThousands(num: number, options: FormatThousandsOptions) {
  *
  * @returns string
  */
-export const zeroPad = (num: number, length = 2) => {
+export function zeroPad(num: number, length = 2) {
   const prefix = num < 0 ? '-' : '';
 
   const abdsNum = Math.abs(num);
@@ -126,9 +126,9 @@ export const zeroPad = (num: number, length = 2) => {
 
   const pads = new Array(padLength + 1).join('0');
   return prefix + pads + abdsNum;
-};
+}
 
-export const formatAsScientificNotation = (num: number, decimals = 2) => {
+export function formatAsScientificNotation(num: number, decimals = 2) {
   if (!isFinite(num)) return `${Math.sign(num) === -1 ? '-' : ''}∞`;
 
   const [coefficient, exponent] = num
@@ -144,4 +144,4 @@ export const formatAsScientificNotation = (num: number, decimals = 2) => {
     .join('');
 
   return `${round(coefficient, decimals)}x10${exponentSup}`;
-};
+}
