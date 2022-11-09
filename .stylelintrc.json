@@ -16,7 +16,7 @@
     ]
   },
   "ignoreFiles": [
-    "app/scripts/styles/variable-utils.js",
+    "app/scripts/styles/variable-utils.ts",
     "app/scripts/styles/hug/index.ts",
     "**/*.d.ts"
   ]
