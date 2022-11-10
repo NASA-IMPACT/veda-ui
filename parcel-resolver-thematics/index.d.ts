@@ -161,6 +161,10 @@ declare module 'delta/thematics' {
     description: string;
     media?: Media;
     related?: RelatedContentData[];
+    about?: {
+      title: string
+      description: string
+    }
   }
 
   // ///////////////////////////////////////////////////////////////////////////

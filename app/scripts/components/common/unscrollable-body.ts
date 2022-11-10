@@ -5,7 +5,7 @@ function UnscrollableBody() {
     document.body.style.overflow = 'hidden';
 
     return () => {
-      document.body.style.overflow = null;
+      document.body.style.overflow = '';
     };
   }, []);
 

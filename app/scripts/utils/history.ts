@@ -1,4 +1,4 @@
-const publicUrl = process.env.PUBLIC_URL || '';
+const publicUrl = process.env.PUBLIC_URL ?? '';
 
 export const getAppURL = () => {
   const { protocol, host } = window.location;

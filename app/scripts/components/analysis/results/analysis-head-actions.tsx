@@ -1,10 +1,7 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import {
-  Dropdown,
-  DropTitle
-} from '@devseed-ui/dropdown';
+import { Dropdown, DropTitle } from '@devseed-ui/dropdown';
 import { Button } from '@devseed-ui/button';
 import { CollecticonChevronDownSmall } from '@devseed-ui/collecticons';
 import { FormSwitch } from '@devseed-ui/form';
@@ -65,7 +62,7 @@ const MetricList = styled.ul`
   }
 `;
 
-const MetricSwitch = styled(FormSwitch)`
+const MetricSwitch = styled(FormSwitch)<{ metricThemeColor: string }>`
   display: grid;
   grid-template-columns: min-content 1fr auto;
 
@@ -108,12 +105,12 @@ export default function AnalysisHeadActions(props: AnalysisHeadActionsProps) {
               <React.Fragment key={metric.id}>
                 <LegendSwatch disabled={!active}>
                   <svg height='8' width='8'>
-                    <title>{theme.color[metric.themeColor]}</title>
+                    <title>{theme.color?.[metric.themeColor]}</title>
                     <circle
                       cx='4'
                       cy='4'
                       r='4'
-                      fill={theme.color[metric.themeColor]}
+                      fill={theme.color?.[metric.themeColor]}
                     />
                   </svg>
                 </LegendSwatch>
@@ -142,6 +139,7 @@ export default function AnalysisHeadActions(props: AnalysisHeadActionsProps) {
                   metricThemeColor={metric.themeColor}
                   name={`switch-metric-${metric.id}`}
                   id={`switch-metric-${metric.id}`}
+                  value={`switch-metric-${metric.id}`}
                   title='Toggle metric on/off'
                   checked={checked}
                   onChange={() => handleMetricChange(metric, !checked)}

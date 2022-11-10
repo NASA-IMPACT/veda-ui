@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { LegendProps } from 'recharts/types';
 import { CategoricalChartProps } from 'recharts/types/chart/generateCategoricalChart';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
@@ -10,11 +10,15 @@ interface ReferenceLegendComponentProps extends CategoricalChartProps {
   highlightLabel: string;
 }
 
-export const LegendWrapper = styled.ul`
-  max-width: ${(props) => props.width};
+export const LegendWrapper = styled.ul<{ width?: number }>`
   margin: 0 auto;
   margin-top: ${glsp(0.75)};
   text-align: center;
+  ${({ width }) =>
+    width &&
+    css`
+      max-width: ${width}px;
+    `};
 `;
 
 export const LegendItem = styled.li`

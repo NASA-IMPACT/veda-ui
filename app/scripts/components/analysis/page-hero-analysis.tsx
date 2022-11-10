@@ -8,6 +8,7 @@ import {
   visuallyHidden
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
+import { ButtonProps } from '@devseed-ui/button';
 
 import { Feature, MultiPolygon } from 'geojson';
 import { useSlidingStickyHeaderProps } from '../common/layout-root';
@@ -53,7 +54,15 @@ const PageHeroBlockBeta = styled.div`
   `}
 `;
 
-const PageHeroSelf = styled.div`
+interface PageHeroSelfProps {
+  isStuck: boolean;
+  isHidden: boolean;
+  shouldSlideHeader: boolean;
+  minTop: number;
+  maxTop: number;
+}
+
+const PageHeroSelf = styled.div<PageHeroSelfProps>`
   position: sticky;
   z-index: 10;
   display: flex;
@@ -154,7 +163,7 @@ interface PageHeroAnalysisProps {
   isHidden?: boolean;
   isResults?: boolean;
   aoiFeature?: Feature<MultiPolygon>;
-  renderActions: ({ size }: { size: string }) => React.ReactNode;
+  renderActions?: ({ size }: { size: ButtonProps['size'] }) => React.ReactNode;
 }
 
 function PageHeroAnalysis(props: PageHeroAnalysisProps) {
@@ -183,7 +192,7 @@ function PageHeroAnalysis(props: PageHeroAnalysisProps) {
 
   return (
     <PageHeroSelf
-      isHidden={isHidden}
+      isHidden={!!isHidden}
       shouldSlideHeader={isHeaderHidden}
       minTop={minTop}
       maxTop={maxTop}
@@ -206,7 +215,7 @@ function PageHeroAnalysis(props: PageHeroAnalysisProps) {
           </PageHeroActions>
         </PageHeroBlockBeta>
       </PageHeroInner>
-      {isResults && <PageHeroMedia feature={aoiFeature} />}
+      {isResults && aoiFeature && <PageHeroMedia feature={aoiFeature} />}
     </PageHeroSelf>
   );
 }

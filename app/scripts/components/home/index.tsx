@@ -118,7 +118,8 @@ function Home() {
     ? featuredDatasets
     : // When there is no dataset for this thematic area at all, just return an empty array
     thematic.data.datasets.length
-    ? getDatasetRelatedLinks([[...thematic.data.datasets].sort()[0]], thematic)
+    ? /* eslint-disable-next-line fp/no-mutating-methods */
+      getDatasetRelatedLinks([[...thematic.data.datasets].sort()[0]], thematic)
     : [];
 
   // When there are no featured discoveries, stub with the latest one
@@ -128,8 +129,10 @@ function Home() {
     thematic.data.discoveries.length
     ? getDiscoveryRelatedLinks(
         [
+          /* eslint-disable-next-line fp/no-mutating-methods */
           [...thematic.data.discoveries].sort(
-            (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
+            (a, b) =>
+              new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
           )[0]
         ],
         thematic
@@ -276,8 +279,8 @@ function Home() {
                       />
                     </>
                   }
-                  imgSrc={t.media.src}
-                  imgAlt={t.media.alt}
+                  imgSrc={t.media?.src}
+                  imgAlt={t.media?.alt}
                 />
               </li>
             ))}

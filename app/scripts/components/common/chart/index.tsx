@@ -147,7 +147,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       }));
     }, [uniqueKeys, lineColors]);
 
-    const renderHighlight = highlightStart || highlightEnd;
+    const renderHighlight = !!(highlightStart ?? highlightEnd);
 
     return (
       <ChartWrapper>
@@ -159,7 +159,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
           maxHeight={chartMaxHeight}
         >
           <LineChartWithFont
-            ref={ref}
+            ref={ref as any}
             data={chartData}
             margin={chartMargin}
             syncId={syncId}

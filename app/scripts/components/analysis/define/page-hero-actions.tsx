@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { Button } from '@devseed-ui/button';
+import { Button, ButtonProps } from '@devseed-ui/button';
 import React, { useMemo } from 'react';
 import {
   CollecticonTickSmall,
@@ -19,7 +18,7 @@ import { composeVisuallyDisabled } from '$utils/utils';
 const SaveButton = composeVisuallyDisabled(Button);
 
 interface PageHeroActionsProps {
-  size: string;
+  size: ButtonProps['size'];
   isNewAnalysis: boolean;
   showTip: boolean;
   start?: Date;
@@ -39,9 +38,11 @@ export default function PageHeroActions({
 }: PageHeroActionsProps) {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
+
   const analysisParamsQs = useMemo(() => {
     if (!start || !end || !datasetsLayers || !aoi) return '';
-    // Quick and dirty conversion to MultiPolygon - might be avoided if using Google-polyline?
+    // Quick and dirty conversion to MultiPolygon - might be avoided if using
+    // Google-polyline?
     const toMultiPolygon: Feature<MultiPolygon> = {
       type: 'Feature',
       properties: { ...aoi.properties },
@@ -50,6 +51,7 @@ export default function PageHeroActions({
         coordinates: [aoi.geometry.coordinates]
       }
     };
+
     return analysisParams2QueryString({
       start,
       end,
@@ -59,6 +61,7 @@ export default function PageHeroActions({
   }, [start, end, datasetsLayers, aoi]);
 
   let tipContents;
+
   if (showTip) {
     tipContents = 'To get results, ';
     let instructions: string[] = [];

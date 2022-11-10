@@ -528,6 +528,7 @@ function DatasetsExplore() {
                         <FormSwitch
                           id='compare-date-toggle'
                           name='compare-date-toggle'
+                          value='compare-date-toggle'
                           checked={isComparing}
                           textPlacement='right'
                           onChange={() => setIsComparing((v) => !v)}

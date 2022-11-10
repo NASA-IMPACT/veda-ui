@@ -50,5 +50,5 @@ export const variableGlsp = (...args) => {
   );
 
   const spaces = Array(args.length - 1).fill(' ');
-  return cssNoHighlight(['', ...spaces, ''], ...fns);
+  return cssNoHighlight(['', ...spaces, ''] as any, ...fns);
 };

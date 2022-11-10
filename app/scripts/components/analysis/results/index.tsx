@@ -145,7 +145,7 @@ export default function AnalysisResults() {
         title='Analysis'
         description={descriptions.page}
         isResults
-        aoiFeature={aoi ?? undefined}
+        aoiFeature={aoi}
         renderActions={({ size }) => (
           <Button
             forwardedAs={Link}

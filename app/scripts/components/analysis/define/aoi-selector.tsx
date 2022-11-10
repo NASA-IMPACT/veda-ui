@@ -53,7 +53,7 @@ interface AoiSelectorProps {
 export default function AoiSelector(props: AoiSelectorProps) {
   const { onAoiEvent, qsFeature, aoiDrawState } = props;
   const { selected, drawing, feature } = aoiDrawState;
-  const mapRef = useRef<MapboxMapRef>();
+  const mapRef = useRef<MapboxMapRef>(null);
 
   // Technical debt
   // Despite the query parameters support for multiple features on the aoi, the

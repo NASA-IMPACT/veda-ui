@@ -1,8 +1,25 @@
 import React from 'react';
-import T from 'prop-types';
-import { FormInput, FormGroupStructure } from '@devseed-ui/form';
+import {
+  FormInput,
+  FormGroupStructure,
+  formSkinStylesProps
+} from '@devseed-ui/form';
 
 import StressedField from './stressed-field';
+
+interface StressedFormGroupInputProps {
+  id: string;
+  name: string;
+  label: string;
+  value: number | string;
+  inputType: 'number' | 'text';
+  inputSize?: formSkinStylesProps['size'];
+  placeholder?: number | string;
+  validate: (value: string) => boolean;
+  onChange: (draftValue: string, setDraftValue: React.Dispatch<string>) => void;
+  helper?: JSX.Element | null;
+  hideHeader: boolean;
+}
 
 /**
  * From group input structure implementing a stressed field.
@@ -19,7 +36,9 @@ import StressedField from './stressed-field';
  * @prop {string} placeholder Input placeholder value.
  * @prop {function} validate Validation function callback. Must return boolean
  */
-export default function StressedFormGroupInput(props) {
+export default function StressedFormGroupInput(
+  props: StressedFormGroupInputProps
+) {
   const {
     id,
     name,
@@ -28,7 +47,6 @@ export default function StressedFormGroupInput(props) {
     validate,
     inputType,
     inputSize,
-    inputVariation,
     placeholder,
     onChange,
     helper,
@@ -43,21 +61,20 @@ export default function StressedFormGroupInput(props) {
       helper={helper}
     >
       <StressedField
-        value={value}
+        value={value.toString()}
         validate={validate}
         onChange={onChange}
         render={({ ref, errored, value, handlers }) => (
           <FormInput
             ref={ref}
             type={inputType}
-            variation={inputVariation}
             name={name}
             id={id}
             invalid={errored}
             stressed={errored}
             size={inputSize}
             value={value}
-            placeholder={placeholder}
+            placeholder={placeholder?.toString()}
             {...handlers}
           />
         )}
@@ -65,18 +82,3 @@ export default function StressedFormGroupInput(props) {
     </FormGroupStructure>
   );
 }
-
-StressedFormGroupInput.propTypes = {
-  id: T.string,
-  name: T.string,
-  label: T.string,
-  value: T.oneOfType([T.string, T.number]),
-  inputType: T.oneOf(['number', 'text']),
-  inputSize: T.string,
-  inputVariation: T.string,
-  placeholder: T.oneOfType([T.string, T.number]),
-  validate: T.func,
-  onChange: T.func,
-  helper: T.node,
-  hideHeader: T.bool
-};

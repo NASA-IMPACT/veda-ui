@@ -69,11 +69,22 @@ LayoutRoot.propTypes = {
 
 export default LayoutRoot;
 
-// Context
-export const LayoutRootContext = createContext({});
+interface LayoutRootContextProps extends Record<string, any> {
+  setLayoutProps: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+  isHeaderHidden: boolean;
+  headerHeight: number;
+  wrapperHeight: number;
+}
 
-export function LayoutRootContextProvider({ children }) {
-  const [layoutProps, setLayoutProps] = useState({});
+// Context
+export const LayoutRootContext = createContext({} as LayoutRootContextProps);
+
+export function LayoutRootContextProvider({
+  children
+}: {
+  children: React.ReactNode;
+}) {
+  const [layoutProps, setLayoutProps] = useState<Record<string, any>>({});
 
   // Put the header size and visibility status in the context so that children
   // elements can access them for positioning purposes.

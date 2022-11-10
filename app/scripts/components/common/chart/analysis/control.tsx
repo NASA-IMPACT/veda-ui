@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { themeVal } from '@devseed-ui/theme-provider';
 
 import { LegendWrapper, LegendItem } from '$components/common/chart/legend';
 import { ListItem } from '$components/common/chart/tooltip';
@@ -12,17 +12,18 @@ interface LegendEntryUnit {
   active: boolean;
   onClick: (arg: string) => void;
 }
+
 interface AnalysisLegendComponentProps {
-  payload: LegendEntryUnit[];
+  payload?: LegendEntryUnit[];
 }
 
 const ClickableLegendItem = styled(LegendItem)`
   cursor: pointer;
 `;
 
-const TogglableListItem = styled(ListItem)`
-  background-color: ${(props) =>
-    props.active ? props.color : themeVal('color.base-400')};
+const TogglableListItem = styled(ListItem)<{ active: boolean; color: string }>`
+  background-color: ${({ active, color }) =>
+    active ? color : themeVal('color.base-400')};
 `;
 
 export const AnalysisLegendComponent = (

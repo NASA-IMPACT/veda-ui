@@ -48,7 +48,7 @@ const getNoDownloadReason = ({ status, data }: TimeseriesData) => {
   if (status === 'loading') {
     return 'Download will be available once the data finishes loading.';
   }
-  if (status === 'succeeded' && !data.timeseries.length) {
+  if (!data.timeseries.length) {
     return 'There is no data to download.';
   }
   return '';
@@ -90,7 +90,7 @@ export default function ChartCard(props: ChartCardProps) {
         value: metric.id,
         active: true
       })),
-      colors: activeMetrics.map((metric) => theme.color[metric.themeColor])
+      colors: activeMetrics.map((metric) => theme.color?.[metric.themeColor])
     };
   }, [activeMetrics, theme]);
 

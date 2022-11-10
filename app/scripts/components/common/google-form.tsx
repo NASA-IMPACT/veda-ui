@@ -54,10 +54,10 @@ function GoogleForm() {
         content={
           <StyledGoogleForm
             src={process.env.GOOGLE_FORM}
-            height='504'
-            frameBorder='0'
-            marginHeight='0'
-            marginWidth='0'
+            height={504}
+            frameBorder={0}
+            marginHeight={0}
+            marginWidth={0}
           >
             Loading…
           </StyledGoogleForm>
