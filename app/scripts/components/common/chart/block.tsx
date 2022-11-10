@@ -7,9 +7,11 @@ import Chart, { CommonLineChartProps, UniqueKeyUnit } from './';
 
 interface BlockChartProp extends CommonLineChartProps {
   dataPath: string;
-  idKey: string;
+  idKey?: string;
   yKey: string;
 }
+
+const subIdKey = 'subIdeKey';
 
 export default function BlockChart(props: BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
@@ -22,14 +24,13 @@ export default function BlockChart(props: BlockChartProp) {
 
   useEffect(() => {
     const getData = async () => {
-      const data = (
-        extension === 'csv' ? await csv(dataPath) : await json(dataPath)
-      ) as any[];
+      const data = extension === 'csv' ? await csv(dataPath) : await json(dataPath);
+      const dataToUse = idKey? data: data.map(e => ({...e, [subIdKey]: ''}));
 
       const { fData, uniqueKeys } = getFData({
-        data,
+        data: dataToUse,
         xKey,
-        idKey,
+        idKey: idKey? idKey: subIdKey,
         yKey,
         dateFormat
       });

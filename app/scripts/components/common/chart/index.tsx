@@ -252,7 +252,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
               }
             />
 
-            {renderLegend && (
+            {renderLegend && uniqueKeysWithColors.length > 1 && (
               <Legend
                 verticalAlign='bottom'
                 width={legendWidth}

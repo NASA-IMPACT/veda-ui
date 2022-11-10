@@ -53,7 +53,7 @@ export default function TooltipComponent(props: TooltipComponentProps) {
             return (
               <div key={`${key.label}-key`}>
                 <TooltipItem color={key.color} />
-                <strong>{key.label}</strong> :{getNumForChart(point)}
+                <strong>{key.label}</strong> {!!key.label.length && ":" }{getNumForChart(point)}
               </div>
             );
           })}
