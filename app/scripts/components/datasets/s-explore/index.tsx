@@ -11,10 +11,12 @@ import useQsStateCreator from 'qs-state-hook';
 import { themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonExpandFromLeft,
-  CollecticonShrinkToLeft
+  CollecticonShrinkToLeft,
+  CollecticonCode
 } from '@devseed-ui/collecticons';
 import { ProjectionOptions } from 'delta/thematics';
 import { FormSwitch } from '@devseed-ui/form';
+import { Button } from '@devseed-ui/button';
 
 import DatasetLayers from './dataset-layers';
 import { PanelDateWidget } from './panel-date-widget';
@@ -88,6 +90,11 @@ const DatesWrapper = styled.div`
     z-index: 10;
     box-shadow: 0 -1px 0 0 ${themeVal('color.base-100a')};
   }
+`;
+
+const ButtonWrapper = styled.div`
+  display: grid;
+  margin: 30px;
 `;
 
 const isSelectedDateValid = (dateList, prevDateList, selectedDate) => {
@@ -467,6 +474,7 @@ function DatasetsExplore() {
   // End onAction callback.
   /** *********************************************************************** */
 
+  const datasetUsages = dataset.data.usage;
   return (
     <>
       <LayoutProps
@@ -559,6 +567,20 @@ function DatasetsExplore() {
                       selectedLayerId={selectedLayerId ?? undefined}
                       onAction={onLayerAction}
                     />
+                    {datasetUsages?.length && (
+                      <ButtonWrapper>
+                        <Button
+                          fitting="regular"
+                          radius="rounded"
+                          size="medium"
+                          variation="primary-fill"
+                          forwardedAs="a"
+                          href={datasetUsages[1].url}
+                        >
+                          <CollecticonCode />  Explore in Hub
+                        </Button>
+                      </ButtonWrapper>
+                    )}
                   </PanelWidgetBody>
                 </PanelWidget>
               </PanelBody>
