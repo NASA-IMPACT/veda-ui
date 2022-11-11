@@ -25,7 +25,11 @@ export default function BlockChart(props: BlockChartProp) {
   useEffect(() => {
     const getData = async () => {
 
-      const data:DSVRowArray | object[] | undefined =  extension === 'csv' ? await csv(dataPath) : await json(dataPath);
+      const data =
+      extension === 'csv'
+        ? (await csv(dataPath)) as DSVRowArray
+        : (await json(dataPath)) as unknown as object[];
+
 
       if (data) {
         const dataToUse = idKey? data: data.map(e => ({...e, [subIdKey]: ''}));
