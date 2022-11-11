@@ -24,16 +24,16 @@ export default function BlockChart(props: BlockChartProp) {
 
   useEffect(() => {
     const getData = async () => {
-
+      try {
       const data =
       extension === 'csv'
         ? (await csv(dataPath)) as DSVRowArray
-        : (await json(dataPath)) as unknown as object[];
+        : (await json(dataPath).then(d => [d].flat())) as object[];
 
-
-      if (data) {
+        // if no idKey is provided (when there are only two columns in the data), sub it with empty data
         const dataToUse = idKey? data: data.map(e => ({...e, [subIdKey]: ''}));
-        const { fData, uniqueKeys } = getFData({
+        
+        const { fData, uniqueKeys } = getFData({  
           data: dataToUse,
           xKey,
           idKey: idKey? idKey: subIdKey,
@@ -49,8 +49,8 @@ export default function BlockChart(props: BlockChartProp) {
   
         setChartData(fData);
         setUniqueKeys(formattedUniqueKeys);
-      } else {
-        throw Error('Something went wrong with chart data.');
+      } catch(e) {
+        throw new Error('Something went wrong with chart data.');
       }
     };
 
