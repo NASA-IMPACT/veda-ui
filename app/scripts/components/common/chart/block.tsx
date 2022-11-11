@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { csv, json } from 'd3';
+import { csv, json, DSVRowArray } from 'd3';
 
 import { getFData } from './utils';
 import { fileExtensionRegex } from './constant';
@@ -24,25 +24,30 @@ export default function BlockChart(props: BlockChartProp) {
 
   useEffect(() => {
     const getData = async () => {
-      const data = extension === 'csv' ? await csv(dataPath) : await json(dataPath);
-      const dataToUse = idKey? data: data.map(e => ({...e, [subIdKey]: ''}));
 
-      const { fData, uniqueKeys } = getFData({
-        data: dataToUse,
-        xKey,
-        idKey: idKey? idKey: subIdKey,
-        yKey,
-        dateFormat
-      });
+      const data:DSVRowArray | object[] | undefined =  extension === 'csv' ? await csv(dataPath) : await json(dataPath);
 
-      const formattedUniqueKeys = uniqueKeys.map((e) => ({
-        label: e,
-        value: e,
-        active: true
-      }));
-
-      setChartData(fData);
-      setUniqueKeys(formattedUniqueKeys);
+      if (data) {
+        const dataToUse = idKey? data: data.map(e => ({...e, [subIdKey]: ''}));
+        const { fData, uniqueKeys } = getFData({
+          data: dataToUse,
+          xKey,
+          idKey: idKey? idKey: subIdKey,
+          yKey,
+          dateFormat
+        });
+  
+        const formattedUniqueKeys = uniqueKeys.map((e) => ({
+          label: e,
+          value: e,
+          active: true
+        }));
+  
+        setChartData(fData);
+        setUniqueKeys(formattedUniqueKeys);
+      } else {
+        throw Error('Something went wrong with chart data.');
+      }
     };
 
     getData();
