@@ -474,7 +474,12 @@ function DatasetsExplore() {
   // End onAction callback.
   /** *********************************************************************** */
 
-  const datasetUsages = dataset.data.usage;
+  let hubLink;
+  if (dataset.data.usage && dataset.data.usage.length > 0) {
+    // find the hub link
+    let hubUsage = dataset.data.usage.find(u => u.label.includes('Hub') || u.label.includes('hub'));
+    hubLink = hubUsage.url;
+  };
   return (
     <>
       <LayoutProps
@@ -567,7 +572,7 @@ function DatasetsExplore() {
                       selectedLayerId={selectedLayerId ?? undefined}
                       onAction={onLayerAction}
                     />
-                    {datasetUsages?.length && (
+                    {hubLink && (
                       <ButtonWrapper>
                         <Button
                           fitting="regular"
@@ -575,7 +580,7 @@ function DatasetsExplore() {
                           size="medium"
                           variation="primary-fill"
                           forwardedAs="a"
-                          href={datasetUsages[1].url}
+                          href={hubLink}
                         >
                           <CollecticonCode />  Explore in Hub
                         </Button>
