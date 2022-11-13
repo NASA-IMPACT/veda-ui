@@ -1,5 +1,6 @@
 import { timeFormat, timeParse } from 'd3';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
+import { NumberLiteralTypeAnnotation } from '@babel/types';
 import { UniqueKeyUnit } from '.';
 import { formatAsScientificNotation, round, shortenLargeNumber } from '$utils/format';
 
@@ -184,23 +185,25 @@ export function syncMethodFunction({
   chartData,
   xKey,
   dateFormat,
-  startIndex,
-  endIndex
+  startDate,
+  endDate
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any; // Recharts define data payload as any
   chartData: object[];
   xKey: string;
   dateFormat: string;
-  startIndex: number;
-  endIndex: number;
+  startDate: number;
+  endDate: number;
 }) {
   const { activeLabel, activePayload } = data;
   const dateFormatFromData = activePayload[0].payload.dateFormat;
 
   let matchingIndex: number | null = -1;
+  // Make sure that matching point is in current (zoomed) chart 
+  const filteredChartData = chartData.filter(e=> e[xKey] <= endDate && e[xKey] >= startDate);
 
-  matchingIndex = chartData.findIndex(e => {
+  matchingIndex = filteredChartData.findIndex(e => {
     return isSameFormattedDate({
       date1: e[xKey],
       date2: activeLabel,
@@ -217,8 +220,8 @@ export function syncMethodFunction({
       });
     });
   }
-  // Make sure that matching point is in current (zoomed) chart 
-  return (matchingIndex >= startIndex && matchingIndex <= endIndex)? matchingIndex: -1;
+
+  return matchingIndex;
 }
 export function getNumForChart(x?: number) {
   if (x === undefined || isNaN(x)) return 'n/a';

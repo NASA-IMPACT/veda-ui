@@ -170,7 +170,9 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
                 xKey,
                 dateFormat,
                 startIndex: brushStartIndex,
-                endIndex: brushEndIndex
+                endIndex: brushEndIndex,
+                startDate: chartData[brushStartIndex][xKey],
+                endDate: chartData[brushStartIndex][xKey],
               });
               return index;
             }}
