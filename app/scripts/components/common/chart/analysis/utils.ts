@@ -1,8 +1,11 @@
 import { RefObject, Component } from 'react';
+import FileSaver from 'file-saver';
+import { unparse } from 'papaparse';
 import {
   chartAspectRatio,
   brushHeight
 } from '$components/common/chart/constant';
+import { TimeseriesDataUnit } from '$components/analysis/results/timeseries-data';
 
 const URL = window.URL || window.webkitURL || window;
 const chartPNGPadding = 20;
@@ -141,4 +144,25 @@ export async function exportImage({
 
     return drawOnCanvas({ chartImage, legendImage, zoomRatio });
   } else throw Error('No SVG specified');
+}
+
+export function exportCsv(
+  filename: string,
+  data: TimeseriesDataUnit[],
+  startDate: string,
+  endDate: string
+) {
+  const startTimestamp = +new Date(startDate);
+  const endTimestamp = +new Date(endDate);
+  const filtered = data.filter((row) => {
+    const timestamp = +new Date(row.date);
+    return timestamp >= startTimestamp && timestamp <= endTimestamp;
+  });
+  const csv = unparse(filtered, {
+    columns: ['date', 'min', 'mean', 'max', 'std']
+  });
+  FileSaver.saveAs(
+    new Blob([csv], { type: 'text/csv;charset=utf-8' }),
+    `${filename}.csv`
+  );
 }
