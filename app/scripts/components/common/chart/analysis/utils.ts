@@ -4,12 +4,16 @@ import {
   brushHeight
 } from '$components/common/chart/constant';
 
-const URL = window.URL || window.webkitURL || window;
+const URL = window.URL;
+
 const chartPNGPadding = 20;
+// Export in full HD.
 const PNGWidth = 1920 - chartPNGPadding * 2;
 
-const brushAreaHeight = brushHeight * 1.6;
-const PNGHeight = PNGWidth / chartAspectRatio - brushAreaHeight;
+const titleAreaHeight = 64;
+const brushAreaHeight = brushHeight + 40;
+const chartExportHeight = PNGWidth / chartAspectRatio - brushAreaHeight;
+const chartExportWidth = PNGWidth;
 
 // Rechart does not export the type for wrapper component (CategoricalChartWrapper)
 // Working around
@@ -18,6 +22,7 @@ export interface ChartWrapperRef extends Component {
 }
 
 export interface ChartToImageProps {
+  title: string;
   svgWrapperRef: RefObject<ChartWrapperRef>;
   legendSvgString: string;
 }
@@ -57,53 +62,103 @@ function getDataURLFromSVG(svgElement: SVGElement) {
   return blobURL;
 }
 
-function drawOnCanvas({ chartImage, legendImage, zoomRatio }) {
+interface DrawOnCanvasParams {
+  chartImage: HTMLImageElement;
+  legendImage: HTMLImageElement;
+  zoomRatio: number;
+  title: string;
+}
+
+function drawOnCanvas({
+  chartImage,
+  legendImage,
+  zoomRatio,
+  title
+}: DrawOnCanvasParams) {
   const c = document.createElement('canvas');
+  const legendWidth = legendImage.width * zoomRatio;
+  const legendHeight = legendImage.height * zoomRatio;
+
+  // Height of all elements and the padding between them.
+  const PNGHeight =
+    titleAreaHeight + chartExportHeight + legendHeight + chartPNGPadding * 2;
+
   const canvasWidth = PNGWidth + chartPNGPadding * 2;
   const canvasHeight = PNGHeight + chartPNGPadding * 2;
   c.width = canvasWidth;
   c.height = canvasHeight;
 
+  // Current Y coord where to start drawing
+  let currentY = chartPNGPadding;
+
   const ctx = c.getContext('2d');
 
-  if (ctx) {
-    // Draw white background
-    ctx.rect(0, 0, canvasWidth, canvasHeight);
-    ctx.fillStyle = 'white';
-    ctx.fill();
+  if (!ctx) throw new Error('Failed to get canvas context to export chart.');
 
-    // Draw chart (crop out brush part)
-    ctx.drawImage(
-      chartImage,
-      0,
-      0,
-      PNGWidth,
-      PNGHeight - brushAreaHeight * zoomRatio,
-      0,
-      chartPNGPadding,
-      PNGWidth,
-      PNGHeight - brushAreaHeight * zoomRatio
-    );
-    // Draw legend
-    ctx.drawImage(
-      legendImage,
-      0,
-      0,
-      legendImage.width,
-      legendImage.height,
-      canvasWidth - legendImage.width * zoomRatio - chartPNGPadding * 2,
-      PNGHeight - brushAreaHeight * zoomRatio + 20,
-      legendImage.width * zoomRatio,
-      legendImage.height * zoomRatio
-    );
+  // Draw white background
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    const jpg = c.toDataURL('image/jpg');
-    return jpg;
-  }
+  // DEBUG AREAS
+  // 🎯 Uncomment to view areas.
+  // ctx.fillStyle = 'rgba(0, 0, 0, 0.32)';
+  // ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // ctx.fillStyle = 'rgba(0, 0, 0, 0.16)';
+  // // - title area
+  // ctx.fillRect(chartPNGPadding, currentY, PNGWidth, titleAreaHeight);
+  // currentY += titleAreaHeight + chartPNGPadding;
+  // // - chart area
+  // ctx.fillRect(chartPNGPadding, currentY, PNGWidth, chartExportHeight);
+  // currentY += chartExportHeight + chartPNGPadding;
+  // // - legend area
+  // ctx.fillRect(chartPNGPadding, currentY, PNGWidth, legendHeight);
+  // currentY = chartPNGPadding;
+  // END DEBUG AREAS
+
+  // Draw the title.
+  ctx.fillStyle = 'black';
+  ctx.font = 'bold 48px "Open Sans"';
+  ctx.textAlign = 'center';
+
+  ctx.fillText(title, canvasWidth / 2, currentY + 48);
+
+  currentY += titleAreaHeight + chartPNGPadding;
+
+  // Draw chart (crop out brush part)
+  ctx.drawImage(
+    chartImage,
+    0,
+    0,
+    chartImage.width,
+    chartImage.height - brushAreaHeight * zoomRatio,
+    0,
+    currentY,
+    chartExportWidth,
+    chartExportHeight
+  );
+
+  currentY += chartExportHeight + chartPNGPadding;
+
+  // Draw legend
+  ctx.drawImage(
+    legendImage,
+    0,
+    0,
+    legendImage.width,
+    legendImage.height,
+    PNGWidth - legendWidth,
+    currentY,
+    legendWidth,
+    legendHeight
+  );
+
+  const jpg = c.toDataURL('image/jpg');
+  return jpg;
 }
 
 function loadImageWithPromise(url: string) {
-  return new Promise((resolve) => {
+  return new Promise<HTMLImageElement>((resolve) => {
     const image = new Image();
     image.addEventListener('load', () => {
       resolve(image);
@@ -113,23 +168,26 @@ function loadImageWithPromise(url: string) {
 }
 
 export async function exportImage({
+  title,
   svgWrapperRef,
   legendSvgString
 }: ChartToImageProps) {
   const svgWrapper = svgWrapperRef.current;
 
-  if (!svgWrapper) return;
   // Extract SVG element from svgRef (div wrapper around chart SVG)
+  const svg = svgWrapper?.container.getElementsByTagName('svg')[0] as
+    | SVGSVGElement
+    | undefined;
 
-  const svg = svgWrapper.container.getElementsByTagName('svg')[0];
   // Scale up/down the chart to make it width 800px
   if (svg) {
-    const originalSVGWidth = parseInt(svg.getAttribute('width') || '800');
+    const originalSVGWidth = parseInt(svg.getAttribute('width') ?? '800');
     const zoomRatio = PNGWidth / originalSVGWidth;
 
     const clonedSvgElement = svg.cloneNode(true) as SVGElement;
-    clonedSvgElement.setAttribute('width', PNGWidth.toString());
-    clonedSvgElement.setAttribute('height', PNGHeight.toString());
+    clonedSvgElement.setAttribute('width', chartExportWidth.toString());
+    clonedSvgElement.setAttribute('height', chartExportHeight.toString());
+    clonedSvgElement.querySelector('g.recharts-brush')?.remove();
 
     const legendSVG = getLegendSVG(legendSvgString) as SVGElement;
 
@@ -139,6 +197,8 @@ export async function exportImage({
     const chartImage = await loadImageWithPromise(chartUrl);
     const legendImage = await loadImageWithPromise(legendUrl);
 
-    return drawOnCanvas({ chartImage, legendImage, zoomRatio });
-  } else throw Error('No SVG specified');
+    return drawOnCanvas({ chartImage, legendImage, zoomRatio, title });
+  } else {
+    throw Error('No SVG specified');
+  }
 }

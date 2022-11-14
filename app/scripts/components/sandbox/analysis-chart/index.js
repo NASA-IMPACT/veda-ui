@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { Button } from '@devseed-ui/button';
+
 import timeSeriesData345 from './sample-timeseries-data-345.json';
 import timeSeriesData234 from './sample-timeseries-data-234.json';
 import Chart from '$components/common/chart/analysis/';
@@ -77,6 +79,12 @@ export default function AnalysisChart() {
     setDynamicUniqueKeys(newobj);
   }
 
+  const chartRef = useRef();
+
+  const onExportClick = useCallback(() => {
+    chartRef.current?.saveAsImage('test-chart.jpg');
+  }, []);
+
   return (
     <PageMainContent>
       <Constrainer>
@@ -112,7 +120,12 @@ export default function AnalysisChart() {
                 largeUp: ['content-start', 'content-7']
               }}
             >
+              <Button onClick={onExportClick} variation='primary-fill'>
+                Export
+              </Button>
               <Chart
+                ref={chartRef}
+                colors={['red', 'blue', 'green']}
                 timeSeriesData={dataForChart1.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
                 xKey={dataForChart1.xKey}

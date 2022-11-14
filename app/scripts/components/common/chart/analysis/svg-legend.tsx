@@ -6,7 +6,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 // Creating SVG version of legend for exporting purpose
 export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
   const legendWidth = 80;
-  const legendHeight = 40;
+  const legendHeight = 16;
 
   return renderToStaticMarkup(
     <svg
@@ -19,10 +19,10 @@ export function getLegendStringForScreenshot({ uniqueKeys, lineColors }) {
         .map((entry, idx) => (
           <g
             key={entry.label}
-            transform={`translate(${idx * legendWidth}, 10)`}
+            transform={`translate(${idx * legendWidth}, 0)`}
           >
-            <rect width={12} height={12} fill={lineColors[idx]} />
-            <text x={20} y={10} fontSize='12px'>
+            <circle cx={6} cy={8} r={6} fill={lineColors[idx]} />
+            <text x={20} y={0} dy='1em' fontSize='12px'>
               {entry.label}
             </text>
           </g>
