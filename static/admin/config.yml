@@ -85,7 +85,7 @@ collections:
             name: stacCol
             widget: select-async
             # widget options:
-            url: https://staging-stac.delta-backend.xyz/collections
+            url: https://staging-stac.delta-backend.com/collections
             data_path:  collections
             value_field: id
             display_field: id
