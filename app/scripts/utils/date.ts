@@ -1,4 +1,12 @@
-import { format, isSameMonth, isSameYear, parse } from 'date-fns';
+import {
+  format,
+  isSameMonth,
+  isSameYear,
+  parse,
+  endOfYear,
+  startOfYear,
+  sub
+} from 'date-fns';
 
 /**
  * Create a date which matches the input date offsetting the timezone to match
@@ -131,10 +139,10 @@ export function formatDateRange(start: Date, end: Date) {
 
 /**
  * Converts a native JS date to the format accepted by HTML inputs
- * @param date 
+ * @param date
  * @returns string
  */
- export function dateToInputFormat(date?: Date) {
+export function dateToInputFormat(date?: Date) {
   if (!date) return undefined;
   return format(date, 'yyyy-MM-dd');
 }
@@ -143,4 +151,26 @@ export function inputFormatToDate(inputFormat: string) {
   return parse(inputFormat, 'yyyy-MM-dd', new Date());
 }
 
-
+export type DateRangePreset =
+  | 'thisYear'
+  | 'last30Days'
+  | 'lastYear'
+  | 'last10Years';
+export function getRangeFromPreset(preset: DateRangePreset): {
+  start: Date;
+  end: Date;
+} {
+  const end = preset === 'thisYear' ? endOfYear(new Date()) : new Date();
+  let start = startOfYear(new Date());
+  if (preset === 'last30Days') {
+    start = sub(end, { days: 30 });
+  } else if (preset === 'lastYear') {
+    start = sub(end, { years: 1 });
+  } else if (preset === 'last10Years') {
+    start = sub(end, { years: 10 });
+  }
+  return {
+    start,
+    end
+  };
+}

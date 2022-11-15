@@ -42,7 +42,12 @@ import {
 } from '$components/common/fold';
 import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
-import { dateToInputFormat, inputFormatToDate } from '$utils/date';
+import {
+  DateRangePreset,
+  dateToInputFormat,
+  getRangeFromPreset,
+  inputFormatToDate
+} from '$utils/date';
 
 const FormBlock = styled.div`
   display: flex;
@@ -125,6 +130,15 @@ export default function Analysis() {
         return;
       }
       setAnalysisParam('end', inputFormatToDate(e.target.value));
+    },
+    [setAnalysisParam]
+  );
+
+  const onDatePresetClick = useCallback(
+    (preset: DateRangePreset) => {
+      const { start, end } = getRangeFromPreset(preset);
+      setAnalysisParam('start', start);
+      setAnalysisParam('end', end);
     },
     [setAnalysisParam]
   );
@@ -253,16 +267,36 @@ export default function Analysis() {
                 <DropTitle>Select a date preset</DropTitle>
                 <DropMenu>
                   <li>
-                    <DropMenuItem href='#'>Preset A</DropMenuItem>
+                    <DropMenuItem
+                      role='button'
+                      onClick={() => onDatePresetClick('thisYear')}
+                    >
+                      This year
+                    </DropMenuItem>
                   </li>
                   <li>
-                    <DropMenuItem href='#'>Preset B</DropMenuItem>
+                    <DropMenuItem
+                      role='button'
+                      onClick={() => onDatePresetClick('last30Days')}
+                    >
+                      Last 30 days
+                    </DropMenuItem>
                   </li>
                   <li>
-                    <DropMenuItem href='#'>Preset C</DropMenuItem>
+                    <DropMenuItem
+                      role='button'
+                      onClick={() => onDatePresetClick('lastYear')}
+                    >
+                      Last year
+                    </DropMenuItem>
                   </li>
                   <li>
-                    <DropMenuItem href='#'>Preset D</DropMenuItem>
+                    <DropMenuItem
+                      role='button'
+                      onClick={() => onDatePresetClick('last10Years')}
+                    >
+                      Last 10 years
+                    </DropMenuItem>
                   </li>
                 </DropMenu>
               </Dropdown>
