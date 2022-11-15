@@ -30,8 +30,8 @@ Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. 
       dateFormat='%Y'
       xKey='year'
       yKey='change'
-      xAxisLabel='Year'
-      yAxisLabel='United States Change from 2005'
+      xAxisLabel='NO2 change from 2005 to 2010'
+      yAxisLabel=''
     />
   </Prose>
 </Block>
@@ -41,7 +41,7 @@ Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. 
   <Prose>
     ## JSON
     <Chart
-      dataPath={new URL('./raw:sample.json', import.meta.url).href}
+      dataPath={new URL('raw:./sample.json', import.meta.url).href}
       dateFormat='%Y'
       xKey='time'
       yKey='visitors'
