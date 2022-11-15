@@ -11,16 +11,17 @@ import { HEADER_WRAPPER_ID } from '$utils/use-sliding-sticky-header';
 const NavWrapper = styled.div`
   position: sticky;
   top: 0;
-  z-index: 1000;
+  width: 100%;
+  z-index: 10000;
 
-  transition: transform 0.32s ease-out;
+  transition: top 0.32s ease-out;
   ${({ shouldSlideHeader, headerHeight }) =>
     // Hide the header by translating the nav by the header's height. The
     // translate is in the NavWrapper and not the header because in this way the
     // localNav (also inside the NavWrapper) will stick to the top.
     shouldSlideHeader &&
     css`
-      transform: translate(0, -${headerHeight}px);
+      top: -${headerHeight}px;
     `}
 `;
 
