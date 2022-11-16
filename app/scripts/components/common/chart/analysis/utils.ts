@@ -6,6 +6,7 @@ import {
   brushHeight
 } from '$components/common/chart/constant';
 import { TimeseriesDataUnit } from '$components/analysis/results/timeseries-data';
+import { DataMetric } from '$components/analysis/results/analysis-head-actions';
 
 const URL = window.URL || window.webkitURL || window;
 const chartPNGPadding = 20;
@@ -150,7 +151,8 @@ export function exportCsv(
   filename: string,
   data: TimeseriesDataUnit[],
   startDate: string,
-  endDate: string
+  endDate: string,
+  activeMetrics: DataMetric[]
 ) {
   const startTimestamp = +new Date(startDate);
   const endTimestamp = +new Date(endDate);
@@ -159,7 +161,7 @@ export function exportCsv(
     return timestamp >= startTimestamp && timestamp <= endTimestamp;
   });
   const csv = unparse(filtered, {
-    columns: ['date', 'min', 'mean', 'max', 'std']
+    columns: ['date', ...activeMetrics.map((m) => m.id)]
   });
   FileSaver.saveAs(
     new Blob([csv], { type: 'text/csv;charset=utf-8' }),

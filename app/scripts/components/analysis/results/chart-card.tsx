@@ -90,10 +90,10 @@ export default function ChartCard(props: ChartCardProps) {
       if (type === 'image') {
         chartRef.current?.saveAsImage(filename);
       } else {
-        exportCsv(filename, data, data[startIndex].date, data[endIndex].date);
+        exportCsv(filename, data, data[startIndex].date, data[endIndex].date, activeMetrics);
       }
     },
-    [id, chartData.data, brushIndex]
+    [id, chartData.data, brushIndex, activeMetrics]
   );
 
   const theme = useTheme();
