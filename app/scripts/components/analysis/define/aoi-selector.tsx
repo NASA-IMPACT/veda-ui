@@ -75,28 +75,25 @@ export default function AoiSelector({
       : null;
   }, [qsFeature]);
 
-  const [currentRegionPreset, setCurrentRegionPreset] =
-    useState<RegionPreset | null>(null);
+  const setFeature = useCallback((feature: Feature<Polygon>) => {
+    onAoiEvent('aoi.set-feature', { feature });
+    const featureBbox = bbox(feature) as [number, number, number, number];
+    mapRef.current?.instance?.fitBounds(featureBbox, { padding: 32 });
+  }, [onAoiEvent]);
+
   const onRegionPresetClick = useCallback((preset: RegionPreset) => {
-    setCurrentRegionPreset(preset);
-  }, []);
+    setFeature({ ...FeatureByRegionPreset[preset], id: 'region-preset-feature' });
+  }, [setFeature]);
 
   // Use the feature from the url qs or the region preset as the initial state to center the map.
   useEffect(() => {
-    if (qsPolygon || currentRegionPreset) {
-      const polygon = currentRegionPreset
-        ? FeatureByRegionPreset[currentRegionPreset]
-        : qsPolygon;
-      if (polygon) {
-        onAoiEvent('aoi.set-feature', { feature: polygon });
-        const featureBbox = bbox(polygon) as [number, number, number, number];
-        mapRef.current?.instance?.fitBounds(featureBbox, { padding: 32 });
-      }
+    if (qsPolygon) {
+      setFeature(qsPolygon);
     } else {
       onAoiEvent('aoi.clear');
       mapRef.current?.instance?.flyTo({ zoom: 1, center: [0, 0] });
     }
-  }, [onAoiEvent, qsPolygon, currentRegionPreset]);
+  }, [onAoiEvent, qsPolygon, setFeature]);
 
   return (
     <Fold>

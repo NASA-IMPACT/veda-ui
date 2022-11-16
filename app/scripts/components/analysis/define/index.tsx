@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { uniqBy } from 'lodash';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
@@ -135,7 +135,8 @@ export default function Analysis() {
   );
 
   const onDatePresetClick = useCallback(
-    (preset: DateRangePreset) => {
+    (e: MouseEvent, preset: DateRangePreset) => {
+      e.preventDefault();
       const { start, end } = getRangeFromPreset(preset);
       setAnalysisParam('start', start);
       setAnalysisParam('end', end);
@@ -269,7 +270,8 @@ export default function Analysis() {
                   <li>
                     <DropMenuItem
                       role='button'
-                      onClick={() => onDatePresetClick('thisYear')}
+                      href='#'
+                      onClick={(e) => onDatePresetClick(e, 'yearToDate')}
                     >
                       This year
                     </DropMenuItem>
@@ -277,7 +279,8 @@ export default function Analysis() {
                   <li>
                     <DropMenuItem
                       role='button'
-                      onClick={() => onDatePresetClick('last30Days')}
+                      href='#'
+                      onClick={(e) => onDatePresetClick(e, 'last30Days')}
                     >
                       Last 30 days
                     </DropMenuItem>
@@ -285,7 +288,8 @@ export default function Analysis() {
                   <li>
                     <DropMenuItem
                       role='button'
-                      onClick={() => onDatePresetClick('lastYear')}
+                      href='#'
+                      onClick={(e) => onDatePresetClick(e, 'lastYear')}
                     >
                       Last year
                     </DropMenuItem>
@@ -293,7 +297,8 @@ export default function Analysis() {
                   <li>
                     <DropMenuItem
                       role='button'
-                      onClick={() => onDatePresetClick('last10Years')}
+                      href='#'
+                      onClick={(e) => onDatePresetClick(e, 'last10Years')}
                     >
                       Last 10 years
                     </DropMenuItem>

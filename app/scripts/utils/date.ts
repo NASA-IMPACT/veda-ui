@@ -152,7 +152,7 @@ export function inputFormatToDate(inputFormat: string) {
 }
 
 export type DateRangePreset =
-  | 'thisYear'
+  | 'yearToDate'
   | 'last30Days'
   | 'lastYear'
   | 'last10Years';
@@ -160,7 +160,7 @@ export function getRangeFromPreset(preset: DateRangePreset): {
   start: Date;
   end: Date;
 } {
-  const end = preset === 'thisYear' ? endOfYear(new Date()) : new Date();
+  const end = new Date();
   let start = startOfYear(new Date());
   if (preset === 'last30Days') {
     start = sub(end, { days: 30 });
