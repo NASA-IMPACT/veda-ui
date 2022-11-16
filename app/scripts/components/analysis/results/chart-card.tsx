@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useMemo, useState } from 'react';
+import React, { useCallback, useRef, useMemo, useState, MouseEvent } from 'react';
 import { format } from 'date-fns';
 import { reverse } from 'd3';
 import { useTheme } from 'styled-components';
@@ -72,7 +72,8 @@ export default function ChartCard(props: ChartCardProps) {
   const noDownloadReason = getNoDownloadReason(chartData);
 
   const onExportClick = useCallback(
-    (type: 'image' | 'text') => {
+    (e: MouseEvent, type: 'image' | 'text') => {
+      e.preventDefault();
       if (!chartData.data?.timeseries.length) {
         return;
       }
@@ -90,7 +91,13 @@ export default function ChartCard(props: ChartCardProps) {
       if (type === 'image') {
         chartRef.current?.saveAsImage(filename);
       } else {
-        exportCsv(filename, data, data[startIndex].date, data[endIndex].date, activeMetrics);
+        exportCsv(
+          filename,
+          data,
+          data[startIndex].date,
+          data[endIndex].date,
+          activeMetrics
+        );
       }
     },
     [id, chartData.data, brushIndex, activeMetrics]
@@ -147,7 +154,8 @@ export default function ChartCard(props: ChartCardProps) {
                 <li>
                   <DropMenuItem
                     role='button'
-                    onClick={() => onExportClick('image')}
+                    onClick={(e) => onExportClick(e, 'image')}
+                    href='#'
                   >
                     Image (JPG)
                   </DropMenuItem>
@@ -155,7 +163,8 @@ export default function ChartCard(props: ChartCardProps) {
                 <li>
                   <DropMenuItem
                     role='button'
-                    onClick={() => onExportClick('text')}
+                    onClick={(e) => onExportClick(e, 'text')}
+                    href='#'
                   >
                     Text (CSV)
                   </DropMenuItem>
