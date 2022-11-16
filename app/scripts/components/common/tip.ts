@@ -10,6 +10,10 @@ export const Tip = Typpy;
 // Wrap in body to increase specificity.
 export const reactTippyStyles = () => css`
   body {
+    [data-tippy-root] {
+      z-index: 800 !important;
+    }
+
     .tippy-box {
       background-color: ${themeVal('color.base')};
       border-radius: ${themeVal('shape.rounded')};

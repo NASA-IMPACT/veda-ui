@@ -12,7 +12,7 @@ const NavWrapper = styled.div`
   position: sticky;
   top: 0;
   width: 100%;
-  z-index: 10000;
+  z-index: 900;
 
   transition: top 0.32s ease-out;
   ${({ shouldSlideHeader, headerHeight }) =>
