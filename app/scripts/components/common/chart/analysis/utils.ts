@@ -1,8 +1,12 @@
 import { RefObject, Component } from 'react';
+import FileSaver from 'file-saver';
+import { unparse } from 'papaparse';
 import {
   chartAspectRatio,
   brushHeight
 } from '$components/common/chart/constant';
+import { TimeseriesDataUnit } from '$components/analysis/results/timeseries-data';
+import { DataMetric } from '$components/analysis/results/analysis-head-actions';
 
 const URL = window.URL;
 
@@ -153,8 +157,8 @@ function drawOnCanvas({
     legendHeight
   );
 
-  const jpg = c.toDataURL('image/jpg');
-  return jpg;
+  const png = c.toDataURL();
+  return png;
 }
 
 function loadImageWithPromise(url: string) {
@@ -201,4 +205,26 @@ export async function exportImage({
   } else {
     throw Error('No SVG specified');
   }
+}
+
+export function exportCsv(
+  filename: string,
+  data: TimeseriesDataUnit[],
+  startDate: string,
+  endDate: string,
+  activeMetrics: DataMetric[]
+) {
+  const startTimestamp = +new Date(startDate);
+  const endTimestamp = +new Date(endDate);
+  const filtered = data.filter((row) => {
+    const timestamp = +new Date(row.date);
+    return timestamp >= startTimestamp && timestamp <= endTimestamp;
+  });
+  const csv = unparse(filtered, {
+    columns: ['date', ...activeMetrics.map((m) => m.id)]
+  });
+  FileSaver.saveAs(
+    new Blob([csv], { type: 'text/csv;charset=utf-8' }),
+    `${filename}.csv`
+  );
 }

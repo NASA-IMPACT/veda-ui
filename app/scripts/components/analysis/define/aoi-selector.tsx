@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import styled from 'styled-components';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
@@ -22,6 +28,7 @@ import {
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
 import { multiPolygonToPolygon } from '../utils';
+import { FeatureByRegionPreset, RegionPreset } from './constants';
 import {
   Fold,
   FoldHeader,
@@ -35,6 +42,7 @@ import {
   AoiChangeListenerOverload,
   AoiState
 } from '$components/common/aoi/types';
+import DropMenuItemButton from '$styles/drop-menu-item-button';
 
 const MapContainer = styled.div`
   position: relative;
@@ -50,8 +58,11 @@ interface AoiSelectorProps {
   onAoiEvent: AoiChangeListenerOverload;
 }
 
-export default function AoiSelector(props: AoiSelectorProps) {
-  const { onAoiEvent, qsFeature, aoiDrawState } = props;
+export default function AoiSelector({
+  onAoiEvent,
+  qsFeature,
+  aoiDrawState
+}: AoiSelectorProps) {
   const { selected, drawing, feature } = aoiDrawState;
   const mapRef = useRef<MapboxMapRef>(null);
 
@@ -59,23 +70,40 @@ export default function AoiSelector(props: AoiSelectorProps) {
   // Despite the query parameters support for multiple features on the aoi, the
   // AOI drawing tool only supports one.
   // Keeping just the first one.
-  const polygon: Feature<Polygon> | null = useMemo(() => {
+  const qsPolygon: Feature<Polygon> | null = useMemo(() => {
     return qsFeature
       ? { ...multiPolygonToPolygon(qsFeature), id: 'qs-feature' }
       : null;
   }, [qsFeature]);
 
-  // Use the feature from the url qs as the initial state to center the map.
-  useEffect(() => {
-    if (polygon) {
-      onAoiEvent('aoi.set-feature', { feature: polygon });
-      const featureBbox = bbox(polygon) as [number, number, number, number];
+  const setFeature = useCallback(
+    (feature: Feature<Polygon>) => {
+      onAoiEvent('aoi.set-feature', { feature });
+      const featureBbox = bbox(feature) as [number, number, number, number];
       mapRef.current?.instance?.fitBounds(featureBbox, { padding: 32 });
+    },
+    [onAoiEvent]
+  );
+
+  const onRegionPresetClick = useCallback(
+    (preset: RegionPreset) => {
+      setFeature({
+        ...FeatureByRegionPreset[preset],
+        id: 'region-preset-feature'
+      });
+    },
+    [setFeature]
+  );
+
+  // Use the feature from the url qs or the region preset as the initial state to center the map.
+  useEffect(() => {
+    if (qsPolygon) {
+      setFeature(qsPolygon);
     } else {
       onAoiEvent('aoi.clear');
       mapRef.current?.instance?.flyTo({ zoom: 1, center: [0, 0] });
     }
-  }, [onAoiEvent, polygon]);
+  }, [onAoiEvent, qsPolygon, setFeature]);
 
   return (
     <Fold>
@@ -115,19 +143,14 @@ export default function AoiSelector(props: AoiSelectorProps) {
                 </ToolbarIconButton>
               )}
             >
-              <DropTitle>Select a country</DropTitle>
+              <DropTitle>Select a region</DropTitle>
               <DropMenu>
                 <li>
-                  <DropMenuItem href='#'>Country name A</DropMenuItem>
-                </li>
-                <li>
-                  <DropMenuItem href='#'>Country name B</DropMenuItem>
-                </li>
-                <li>
-                  <DropMenuItem href='#'>Country name C</DropMenuItem>
-                </li>
-                <li>
-                  <DropMenuItem href='#'>Country name D</DropMenuItem>
+                  <DropMenuItemButton
+                    onClick={() => onRegionPresetClick('world')}
+                  >
+                    World
+                  </DropMenuItemButton>
                 </li>
               </DropMenu>
             </Dropdown>

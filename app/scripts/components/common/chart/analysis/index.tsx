@@ -56,7 +56,7 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
               lineColors: props.colors
             })
           });
-          FileSaver.saveAs(chartImageUrl, `${name}.jpg`);
+          FileSaver.saveAs(chartImageUrl, `${name}.png`);
         }
       }),
       [uniqueKeys, props.colors, altTitle]

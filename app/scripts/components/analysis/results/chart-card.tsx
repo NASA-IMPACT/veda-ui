@@ -1,4 +1,10 @@
-import React, { useCallback, useRef, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useRef,
+  useMemo,
+  useState,
+  MouseEvent
+} from 'react';
 import { format } from 'date-fns';
 import { reverse } from 'd3';
 import { useTheme } from 'styled-components';
@@ -11,6 +17,7 @@ import {
   CollecticonCircleInformation,
   CollecticonDownload2
 } from '@devseed-ui/collecticons';
+import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 
 import { TimeseriesData } from './timeseries-data';
 import {
@@ -32,6 +39,8 @@ import { ChartLoading } from '$components/common/loading-skeleton';
 import { dateFormatter } from '$components/common/chart/utils';
 import { Tip } from '$components/common/tip';
 import { composeVisuallyDisabled } from '$utils/utils';
+import { exportCsv } from '$components/common/chart/analysis/utils';
+import DropMenuItemButton from '$styles/drop-menu-item-button';
 
 interface ChartCardProps {
   title: React.ReactNode;
@@ -64,22 +73,37 @@ export default function ChartCard(props: ChartCardProps) {
   const [brushIndex, setBrushIndex] = useState({ startIndex: 0, endIndex: 0 });
   const noDownloadReason = getNoDownloadReason(chartData);
 
-  const onExportClick = useCallback(() => {
-    if (!chartData.data?.timeseries.length) {
-      return;
-    }
+  const onExportClick = useCallback(
+    (e: MouseEvent, type: 'image' | 'text') => {
+      e.preventDefault();
+      if (!chartData.data?.timeseries.length) {
+        return;
+      }
 
-    const { startIndex, endIndex } = brushIndex;
-    // The indexes expect the data to be ascending, so we have to reverse the
-    // data.
-    const data = reverse(chartData.data.timeseries);
-    const dFormat = 'yyyy-MM-dd';
-    const startDate = format(new Date(data[startIndex].date), dFormat);
-    const endDate = format(new Date(data[endIndex].date), dFormat);
+      const { startIndex, endIndex } = brushIndex;
+      // The indexes expect the data to be ascending, so we have to reverse the
+      // data.
+      const data = reverse(chartData.data.timeseries);
+      const dFormat = 'yyyy-MM-dd';
+      const startDate = format(new Date(data[startIndex].date), dFormat);
+      const endDate = format(new Date(data[endIndex].date), dFormat);
 
-    const filename = `chart.${id}.${startDate}-${endDate}`;
-    chartRef.current?.saveAsImage(filename);
-  }, [id, chartData.data, brushIndex]);
+      const filename = `chart.${id}.${startDate}-${endDate}`;
+
+      if (type === 'image') {
+        chartRef.current?.saveAsImage(filename);
+      } else {
+        exportCsv(
+          filename,
+          data,
+          data[startIndex].date,
+          data[endIndex].date,
+          activeMetrics
+        );
+      }
+    },
+    [id, chartData.data, brushIndex, activeMetrics]
+  );
 
   const theme = useTheme();
 
@@ -109,19 +133,41 @@ export default function ChartCard(props: ChartCardProps) {
         </CardHeadline>
         <CardActions>
           <Toolbar size='small'>
-            <Tip
-              content={noDownloadReason}
-              disabled={!noDownloadReason}
-              hideOnClick={false}
+            <Dropdown
+              alignment='right'
+              triggerElement={(props) => (
+                <Tip
+                  content={noDownloadReason}
+                  disabled={!noDownloadReason}
+                  hideOnClick={false}
+                >
+                  <ChartDownloadButton
+                    {...props}
+                    variation='base-text'
+                    visuallyDisabled={!!noDownloadReason}
+                  >
+                    <CollecticonDownload2 title='Download' meaningful />
+                  </ChartDownloadButton>
+                </Tip>
+              )}
             >
-              <ChartDownloadButton
-                variation='base-text'
-                onClick={onExportClick}
-                visuallyDisabled={!!noDownloadReason}
-              >
-                <CollecticonDownload2 title='Download' meaningful />
-              </ChartDownloadButton>
-            </Tip>
+              <DropTitle>Select a file format</DropTitle>
+              <DropMenu>
+                <li>
+                  <DropMenuItemButton
+                    onClick={(e) => onExportClick(e, 'image')}
+                  >
+                    Image (PNG)
+                  </DropMenuItemButton>
+                </li>
+                <li>
+                  <DropMenuItemButton onClick={(e) => onExportClick(e, 'text')}>
+                    Text (CSV)
+                  </DropMenuItemButton>
+                </li>
+              </DropMenu>
+            </Dropdown>
+
             <VerticalDivider variation='dark' />
             <ToolbarIconButton variation='base-text'>
               <CollecticonCircleInformation title='More info' meaningful />
