@@ -26,7 +26,8 @@ const syncId = 'analysis';
 
 export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
   function AnalysisChart(props, ref) {
-    const { timeSeriesData, dates, uniqueKeys, dateFormat, xKey } = props;
+    const { timeSeriesData, dates, uniqueKeys, dateFormat, xKey, altTitle } =
+      props;
 
     const chartRef = useRef<ChartWrapperRef>(null);
 
@@ -48,6 +49,7 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
           if (!chartRef.current) return;
 
           const chartImageUrl = await exportImage({
+            title: altTitle,
             svgWrapperRef: chartRef,
             legendSvgString: getLegendStringForScreenshot({
               uniqueKeys,
@@ -57,7 +59,7 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
           FileSaver.saveAs(chartImageUrl, `${name}.jpg`);
         }
       }),
-      [uniqueKeys, props.colors]
+      [uniqueKeys, props.colors, altTitle]
     );
 
     return (

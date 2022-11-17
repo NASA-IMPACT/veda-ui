@@ -34,11 +34,11 @@ export type AoiChangeListener = (
   }
 ) => void;
 
-export type AoiChangeListenerOverload = {
-  (action: 'aoi.draw-click', payload?: never): void;
-  (action: 'aoi.set-feature', payload: { feature: AoiFeature }): void;
-  (action: 'aoi.clear', payload?: never): void;
-  (action: 'aoi.draw-finish', payload: { feature: AoiFeature }): void;
+export interface AoiChangeListenerOverload {
+  (action: 'aoi.draw-click' | 'aoi.clear', payload?: never): void;
+  (
+    action: 'aoi.draw-finish' | 'aoi.set-feature' | 'aoi.update',
+    payload: { feature: AoiFeature }
+  ): void;
   (action: 'aoi.selection', payload: { selected: boolean }): void;
-  (action: 'aoi.update', payload: { feature: AoiFeature }): void;
-};
+}
