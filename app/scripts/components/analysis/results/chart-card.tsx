@@ -1,4 +1,10 @@
-import React, { useCallback, useRef, useMemo, useState, MouseEvent } from 'react';
+import React, {
+  useCallback,
+  useRef,
+  useMemo,
+  useState,
+  MouseEvent
+} from 'react';
 import { format } from 'date-fns';
 import { reverse } from 'd3';
 import { useTheme } from 'styled-components';
@@ -11,12 +17,7 @@ import {
   CollecticonCircleInformation,
   CollecticonDownload2
 } from '@devseed-ui/collecticons';
-import {
-  Dropdown,
-  DropMenu,
-  DropMenuItem,
-  DropTitle
-} from '@devseed-ui/dropdown';
+import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 
 import { TimeseriesData } from './timeseries-data';
 import {
@@ -39,6 +40,7 @@ import { dateFormatter } from '$components/common/chart/utils';
 import { Tip } from '$components/common/tip';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { exportCsv } from '$components/common/chart/analysis/utils';
+import DropMenuItemButton from '$styles/drop-menu-item-button';
 
 interface ChartCardProps {
   title: React.ReactNode;
@@ -152,22 +154,16 @@ export default function ChartCard(props: ChartCardProps) {
               <DropTitle>Select a file format</DropTitle>
               <DropMenu>
                 <li>
-                  <DropMenuItem
-                    role='button'
+                  <DropMenuItemButton
                     onClick={(e) => onExportClick(e, 'image')}
-                    href='#'
                   >
                     Image (JPG)
-                  </DropMenuItem>
+                  </DropMenuItemButton>
                 </li>
                 <li>
-                  <DropMenuItem
-                    role='button'
-                    onClick={(e) => onExportClick(e, 'text')}
-                    href='#'
-                  >
+                  <DropMenuItemButton onClick={(e) => onExportClick(e, 'text')}>
                     Text (CSV)
-                  </DropMenuItem>
+                  </DropMenuItemButton>
                 </li>
               </DropMenu>
             </Dropdown>
