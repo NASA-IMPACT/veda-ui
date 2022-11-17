@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { csv, json } from 'd3';
+import { csv, json, DSVRowArray } from 'd3';
 
 import { getFData } from './utils';
 import { fileExtensionRegex } from './constant';
@@ -7,9 +7,11 @@ import Chart, { CommonLineChartProps, UniqueKeyUnit } from './';
 
 interface BlockChartProp extends CommonLineChartProps {
   dataPath: string;
-  idKey: string;
+  idKey?: string;
   yKey: string;
 }
+
+const subIdKey = 'subIdeKey';
 
 export default function BlockChart(props: BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
@@ -22,26 +24,34 @@ export default function BlockChart(props: BlockChartProp) {
 
   useEffect(() => {
     const getData = async () => {
-      const data = (
-        extension === 'csv' ? await csv(dataPath) : await json(dataPath)
-      ) as any[];
+      try {
+      const data =
+      extension === 'csv'
+        ? (await csv(dataPath)) as DSVRowArray
+        : (await json(dataPath).then(d => [d].flat())) as object[];
 
-      const { fData, uniqueKeys } = getFData({
-        data,
-        xKey,
-        idKey,
-        yKey,
-        dateFormat
-      });
-
-      const formattedUniqueKeys = uniqueKeys.map((e) => ({
-        label: e,
-        value: e,
-        active: true
-      }));
-
-      setChartData(fData);
-      setUniqueKeys(formattedUniqueKeys);
+        // if no idKey is provided (when there are only two columns in the data), sub it with empty data
+        const dataToUse = idKey? data: data.map(e => ({...e, [subIdKey]: ''}));
+        
+        const { fData, uniqueKeys } = getFData({  
+          data: dataToUse,
+          xKey,
+          idKey: idKey? idKey: subIdKey,
+          yKey,
+          dateFormat
+        });
+  
+        const formattedUniqueKeys = uniqueKeys.map((e) => ({
+          label: e,
+          value: e,
+          active: true
+        }));
+  
+        setChartData(fData);
+        setUniqueKeys(formattedUniqueKeys);
+      } catch(e) {
+        throw new Error('Something went wrong with chart data.');
+      }
     };
 
     getData();

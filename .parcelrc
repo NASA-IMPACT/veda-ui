@@ -4,6 +4,7 @@
   "reporters": ["...", "@parcel/reporter-bundle-analyzer"],
   "resolvers": ["parcel-resolver-thematics", "@parcel/resolver-glob", "..."],
   "transformers": {
+    "raw:*": ["@parcel/transformer-raw"],
     "*.mdx": ["parcel-transformer-mdx-frontmatter", "parcel-transformer-mdx"]
   }
 }

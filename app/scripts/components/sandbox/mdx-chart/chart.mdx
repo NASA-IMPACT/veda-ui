@@ -15,13 +15,42 @@ When governments began implementing shutdowns at the start of the COVID-19 pande
   xAxisLabel='Year'
   yAxisLabel='United States Change from 2005'
 />
-
 Phasellus nec magna tristique, imperdiet mauris hendrerit, posuere sem. Vestibulum in lobortis tortor.
 
 Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. Nunc luctus orci mi, sed pretium nibh consequat sit amet. In congue metus a ullamcorper sollicitudin.
 
 </Prose>
 </Block>
+
+<Block>
+  <Prose>
+    ## CSV with only two columns (no idKey)
+    <Chart
+      dataPath={new URL('./two-column.csv', import.meta.url).href}
+      dateFormat='%Y'
+      xKey='year'
+      yKey='change'
+      xAxisLabel='NO2 change from 2005 to 2010'
+      yAxisLabel=''
+    />
+  </Prose>
+</Block>
+
+
+<Block>
+  <Prose>
+    ## JSON
+    <Chart
+      dataPath={new URL('raw:./sample.json', import.meta.url).href}
+      dateFormat='%Y'
+      xKey='time'
+      yKey='visitors'
+      xAxisLabel='Year'
+      yAxisLabel='United States Change from 2005'
+    />
+  </Prose>
+</Block>
+
 
 <Block type='wide'>
   <Figure>

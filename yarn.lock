@@ -2588,7 +2588,7 @@
     posthtml-render "^3.0.0"
     semver "^5.7.1"
 
-"@parcel/transformer-raw@2.7.0":
+"@parcel/transformer-raw@2.7.0", "@parcel/transformer-raw@~2.7.0":
   version "2.7.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/@parcel%2ftransformer-raw/-/transformer-raw-2.7.0.tgz#d6d8b94d1b33efc3dbf748ec1954c8917a2e1566"
   integrity sha512-sDnItWCFSDez0izK1i5cgv+kXzZTbcJh4rNpVIgmE1kBLvAz608sqgcCkavb2wVJIvLesxYM+5G4p1CwkDlZ1g==
@@ -6221,12 +6221,9 @@ gensync@^1.0.0-beta.1, gensync@^1.0.0-beta.2:
   integrity sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==
 
 geojson-flatten@^1.0.4:
-  version "1.0.4"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/geojson-flatten/-/geojson-flatten-1.0.4.tgz#cdfef2e9042996fcaa14fe658db6d88c99c20930"
-  integrity sha512-PpscUXxO6dvvhZxtwuqiI5v+1C/IQYPJRMWoQeaF2oohJgfGYSHKVAe8L+yUqF34PH/hmq9JlwmO+juPw+95/Q==
-  dependencies:
-    get-stdin "^7.0.0"
-    minimist "^1.2.5"
+  version "1.1.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/geojson-flatten/-/geojson-flatten-1.1.1.tgz#601aae07ba6406281ebca683573dcda69eba04c7"
+  integrity sha512-k/6BCd0qAt7vdqdM1LkLfAy72EsLDy0laNwX0x2h49vfYCiQkRc4PSra8DNEdJ10EKRpwEvDXMb0dBknTJuWpQ==
 
 geojson-validation@^1.0.2:
   version "1.0.2"
@@ -6266,11 +6263,6 @@ get-port@^4.2.0:
   version "4.2.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/get-port/-/get-port-4.2.0.tgz#e37368b1e863b7629c43c5a323625f95cf24b119"
   integrity sha512-/b3jarXkH8KJoOMQc3uVGHASwGLPq3gSFJ7tgJm2diza+bydJPTGOibin2steecKeOylE8oY2JERlVWkAJO6yw==
-
-get-stdin@^7.0.0:
-  version "7.0.0"
-  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/get-stdin/-/get-stdin-7.0.0.tgz#8d5de98f15171a125c5e516643c7a6d0ea8a96f6"
-  integrity sha512-zRKcywvrXlXsA0v0i9Io4KDRaAw7+a1ZpjRwl9Wox8PFlVCCHra7E9c4kqXCoCM9nR5tBkaTTZRBoCm60bFqTQ==
 
 get-stdin@^8.0.0:
   version "8.0.0"
