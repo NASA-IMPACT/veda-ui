@@ -131,7 +131,7 @@ export default function AnalysisChart() {
                 xKey={dataForChart1.xKey}
                 dates={dataForChart1.dates}
                 dateFormat={dataForChart1.dateFormat}
-                altTitle='alt title'
+                altTitle='alt title1'
                 altDesc='alt desc'
                 xAxisLabel='x axis label'
                 yAxisLabel='y axis label'
@@ -150,7 +150,7 @@ export default function AnalysisChart() {
                 dates={dataForChart2.dates}
                 dateFormat={dataForChart2.dateFormat}
                 altTitle='alt title'
-                altDesc='alt desc'
+                altDesc='alt desc2'
                 xAxisLabel='x axis label'
                 yAxisLabel='y axis label'
               />
@@ -169,7 +169,25 @@ export default function AnalysisChart() {
                 xKey={dataForChart1.xKey}
                 dates={['2020', '2021', '2022', '2023']}
                 dateFormat='%Y'
-                altTitle='alt title'
+                altTitle='alt title3'
+                altDesc='alt desc'
+                xAxisLabel='x axis label'
+                yAxisLabel='y axis label'
+              />
+            </Hug>
+            <Hug
+              grid={{
+                smallUp: ['full-start', 'full-end'],
+                largeUp: ['content-7', 'content-end']
+              }}
+            >
+              <Chart
+                timeSeriesData={dataForChart1.timeSeriesData}
+                uniqueKeys={dynamicUniqueKeys}
+                xKey={dataForChart1.xKey}
+                dates={dataForChart1.dates}
+                dateFormat={dataForChart1.dateFormat}
+                altTitle='alt title4'
                 altDesc='alt desc'
                 xAxisLabel='x axis label'
                 yAxisLabel='y axis label'
