@@ -31,8 +31,8 @@ const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
 const DatasetsUsage = lazy(() => import('$components/datasets/s-usage'));
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
-const Analysis = lazy(() => import('$components/analysis/define'));
-const AnalysisResults = lazy(() => import('$components/analysis/results'));
+// const Analysis = lazy(() => import('$components/analysis/define'));
+// const AnalysisResults = lazy(() => import('$components/analysis/results'));
 
 const Sandbox = lazy(() => import('$components/sandbox'));
 
@@ -117,11 +117,11 @@ function Root() {
                     path='datasets/:datasetId/explore'
                     element={<DatasetsExplore />}
                   />
-                  <Route path='analysis' element={<Analysis />} />
+                  {/* <Route path='analysis' element={<Analysis />} />
                   <Route
                     path='analysis/results'
                     element={<AnalysisResults />}
-                  />
+                  /> */}
                 </Route>
 
                 <Route path='*' element={<UhOh />} />
