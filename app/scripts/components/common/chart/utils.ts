@@ -47,6 +47,7 @@ export function formatTimeSeriesData({
   uniqueKeys: UniqueKeyUnit[]; // min,max,,
   xKey: string;
 }) {
+  /* eslint-disable-next-line fp/no-mutating-methods */
   return timeSeriesData
     .map((e, idx) => {
       const currentStat = e;
@@ -89,6 +90,7 @@ export function getFData({
   yKey: string;
   dateFormat: string;
 }) {
+  /* eslint-disable-next-line fp/no-mutating-methods */
   const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort();
 
   // Format csv/json data into chart suitable data

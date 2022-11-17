@@ -95,7 +95,7 @@ export function useSlidingStickyHeader() {
       prevY = currY;
     }
 
-    function onViewportPositionChange(e) {
+    function onViewportPositionChange() {
       if (!ticking) {
         // instead of setting a specific number of ms to wait (throttling),
         // pass it to the browser to be processed on the next frame, whenever that may be.

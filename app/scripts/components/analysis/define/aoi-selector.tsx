@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
@@ -15,12 +9,7 @@ import {
   ToolbarLabel,
   VerticalDivider
 } from '@devseed-ui/toolbar';
-import {
-  Dropdown,
-  DropMenu,
-  DropMenuItem,
-  DropTitle
-} from '@devseed-ui/dropdown';
+import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
   CollecticonArea,
   CollecticonEllipsisVertical,

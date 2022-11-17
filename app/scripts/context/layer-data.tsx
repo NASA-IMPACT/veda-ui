@@ -24,7 +24,7 @@ interface STACLayerData {
   timeseries: {
     isPeriodic: boolean;
     timeDensity: TimeDensity;
-    domain: Array<string>;
+    domain: string[];
   };
 }
 
@@ -81,16 +81,16 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 
   const queries = useMemo(
     () =>
-      layers.reduce((acc, layer) => {
-        acc.push(makeQueryObject(layer.stacCol));
+      layers.reduce<UseQueryOptions[]>((acc, layer) => {
+        let queries = acc.concat(makeQueryObject(layer.stacCol));
 
         const compareLayer = getCompareLayerData(layer);
         if (compareLayer && compareLayer.stacCol !== layer.stacCol) {
-          acc.push(makeQueryObject(compareLayer.stacCol));
+          queries = queries.concat(makeQueryObject(compareLayer.stacCol));
         }
 
-        return acc;
-      }, [] as UseQueryOptions[]),
+        return queries;
+      }, []),
     [layers]
   );
 
@@ -186,11 +186,11 @@ export const useDatasetAsyncLayers = (datasetId) => {
   return useLayersInit(datasets[datasetId]?.data.layers);
 };
 
-type ReferencedLayer = {
+interface ReferencedLayer {
   datasetId: string;
   layerId: string;
   skipCompare?: boolean;
-};
+}
 
 export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
   // Get the layers from the different datasets.

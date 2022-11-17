@@ -1,10 +1,14 @@
-import React, { useEffect, RefObject, MutableRefObject, ReactNode, ReactElement } from 'react';
+import React, {
+  useEffect,
+  RefObject,
+  MutableRefObject,
+  ReactElement
+} from 'react';
 import styled, { useTheme } from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ProjectionOptions } from 'delta/thematics';
-
 
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import MapboxStyleOverride from './mapbox-style-override';
@@ -14,7 +18,7 @@ import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './projection-selector/utils';
 import { round } from '$utils/format';
 
-mapboxgl.accessToken = process.env.MAPBOX_TOKEN || '';
+mapboxgl.accessToken = process.env.MAPBOX_TOKEN ?? '';
 
 const SingleMapContainer = styled.div`
   && {
@@ -29,7 +33,7 @@ interface SimpleMapProps {
   [key: string]: unknown;
   mapRef: MutableRefObject<mapboxgl.Map | null>;
   containerRef: RefObject<HTMLDivElement>;
-  onLoad(e: mapboxgl.EventData): void;
+  onLoad?(e: mapboxgl.EventData): void;
   onMoveEnd?(e: mapboxgl.EventData): void;
   onUnmount?: () => void;
   mapOptions: Partial<Omit<mapboxgl.MapboxOptions, 'container'>>;
@@ -38,7 +42,12 @@ interface SimpleMapProps {
   onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
-  attributionPosition?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | false
+  attributionPosition?:
+    | 'top-right'
+    | 'top-left'
+    | 'bottom-right'
+    | 'bottom-left'
+    | false;
 }
 
 export function SimpleMap(props: SimpleMapProps): ReactElement {
@@ -87,7 +96,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     mapRef.current = mbMap;
 
     if (onProjectionChange && projection) {
-      mapRef.current?.addControl(mapProjectionControl, 'top-left');
+      mapRef.current.addControl(mapProjectionControl, 'top-left');
     }
 
     // Add Geocoder control

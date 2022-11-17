@@ -86,9 +86,9 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
       ]);
     }
 
-    const chErrors = chapters.reduce(
+    const chErrors = chapters.reduce<string[]>(
       (acc, ch, idx) => acc.concat(validateChapter(ch.props, idx)),
-      [] as string[]
+      []
     );
 
     if (chErrors.length) {

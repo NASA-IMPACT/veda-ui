@@ -3,12 +3,7 @@ import styled from 'styled-components';
 import { uniqBy } from 'lodash';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarIconButton, ToolbarLabel } from '@devseed-ui/toolbar';
-import {
-  Dropdown,
-  DropMenu,
-  DropMenuItem,
-  DropTitle
-} from '@devseed-ui/dropdown';
+import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
   Form,
   FormCheckable,
@@ -326,7 +321,7 @@ export default function Analysis() {
                   value={end ? dateToInputFormat(end) : ''}
                   onChange={onEndDateChange}
                   min={dateToInputFormat(start)}
-                  max={(new Date()).toISOString().split('T')[0]}
+                  max={new Date().toISOString().split('T')[0]}
                 />
               </FormGroupStructure>
             </FormBlock>

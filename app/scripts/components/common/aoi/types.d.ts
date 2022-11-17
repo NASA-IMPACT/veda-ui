@@ -29,9 +29,7 @@ export type AoiChangeEvent =
 
 export type AoiChangeListener = (
   event: AoiChangeEvent,
-  payload?: {
-    [key: string]: any;
-  }
+  payload?: Record<string, any>
 ) => void;
 
 export interface AoiChangeListenerOverload {
