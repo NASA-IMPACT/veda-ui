@@ -157,8 +157,8 @@ function drawOnCanvas({
     legendHeight
   );
 
-  const jpg = c.toDataURL('image/jpg');
-  return jpg;
+  const png = c.toDataURL();
+  return png;
 }
 
 function loadImageWithPromise(url: string) {

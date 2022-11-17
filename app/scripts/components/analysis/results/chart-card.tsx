@@ -157,7 +157,7 @@ export default function ChartCard(props: ChartCardProps) {
                   <DropMenuItemButton
                     onClick={(e) => onExportClick(e, 'image')}
                   >
-                    Image (JPG)
+                    Image (PNG)
                   </DropMenuItemButton>
                 </li>
                 <li>
