@@ -280,6 +280,7 @@ export default function Analysis() {
                   name='start-date'
                   value={start ? dateToInputFormat(start) : ''}
                   onChange={onStartDateChange}
+                  min='1900-01-01'
                   max={dateToInputFormat(end)}
                 />
               </FormGroupStructure>
@@ -293,6 +294,7 @@ export default function Analysis() {
                   value={end ? dateToInputFormat(end) : ''}
                   onChange={onEndDateChange}
                   min={dateToInputFormat(start)}
+                  max={(new Date()).toISOString().split('T')[0]}
                 />
               </FormGroupStructure>
             </FormBlock>
