@@ -42,6 +42,7 @@ import {
   AoiChangeListenerOverload,
   AoiState
 } from '$components/common/aoi/types';
+import DropMenuItemButton from '$styles/drop-menu-item-button';
 
 const MapContainer = styled.div`
   position: relative;
@@ -75,15 +76,24 @@ export default function AoiSelector({
       : null;
   }, [qsFeature]);
 
-  const setFeature = useCallback((feature: Feature<Polygon>) => {
-    onAoiEvent('aoi.set-feature', { feature });
-    const featureBbox = bbox(feature) as [number, number, number, number];
-    mapRef.current?.instance?.fitBounds(featureBbox, { padding: 32 });
-  }, [onAoiEvent]);
+  const setFeature = useCallback(
+    (feature: Feature<Polygon>) => {
+      onAoiEvent('aoi.set-feature', { feature });
+      const featureBbox = bbox(feature) as [number, number, number, number];
+      mapRef.current?.instance?.fitBounds(featureBbox, { padding: 32 });
+    },
+    [onAoiEvent]
+  );
 
-  const onRegionPresetClick = useCallback((preset: RegionPreset) => {
-    setFeature({ ...FeatureByRegionPreset[preset], id: 'region-preset-feature' });
-  }, [setFeature]);
+  const onRegionPresetClick = useCallback(
+    (preset: RegionPreset) => {
+      setFeature({
+        ...FeatureByRegionPreset[preset],
+        id: 'region-preset-feature'
+      });
+    },
+    [setFeature]
+  );
 
   // Use the feature from the url qs or the region preset as the initial state to center the map.
   useEffect(() => {
@@ -136,12 +146,11 @@ export default function AoiSelector({
               <DropTitle>Select a region</DropTitle>
               <DropMenu>
                 <li>
-                  <DropMenuItem
-                    role='button'
+                  <DropMenuItemButton
                     onClick={() => onRegionPresetClick('world')}
                   >
                     World
-                  </DropMenuItem>
+                  </DropMenuItemButton>
                 </li>
               </DropMenu>
             </Dropdown>

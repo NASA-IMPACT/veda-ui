@@ -48,6 +48,7 @@ import {
   getRangeFromPreset,
   inputFormatToDate
 } from '$utils/date';
+import DropMenuItemButton from '$styles/drop-menu-item-button';
 
 const FormBlock = styled.div`
   display: flex;
@@ -268,40 +269,32 @@ export default function Analysis() {
                 <DropTitle>Select a date preset</DropTitle>
                 <DropMenu>
                   <li>
-                    <DropMenuItem
-                      role='button'
-                      href='#'
+                    <DropMenuItemButton
                       onClick={(e) => onDatePresetClick(e, 'yearToDate')}
                     >
                       This year
-                    </DropMenuItem>
+                    </DropMenuItemButton>
                   </li>
                   <li>
-                    <DropMenuItem
-                      role='button'
-                      href='#'
+                    <DropMenuItemButton
                       onClick={(e) => onDatePresetClick(e, 'last30Days')}
                     >
                       Last 30 days
-                    </DropMenuItem>
+                    </DropMenuItemButton>
                   </li>
                   <li>
-                    <DropMenuItem
-                      role='button'
-                      href='#'
+                    <DropMenuItemButton
                       onClick={(e) => onDatePresetClick(e, 'lastYear')}
                     >
                       Last year
-                    </DropMenuItem>
+                    </DropMenuItemButton>
                   </li>
                   <li>
-                    <DropMenuItem
-                      role='button'
-                      href='#'
+                    <DropMenuItemButton
                       onClick={(e) => onDatePresetClick(e, 'last10Years')}
                     >
                       Last 10 years
-                    </DropMenuItem>
+                    </DropMenuItemButton>
                   </li>
                 </DropMenu>
               </Dropdown>
