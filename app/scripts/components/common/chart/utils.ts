@@ -1,8 +1,7 @@
 import { timeFormat, timeParse } from 'd3';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
-import { NumberLiteralTypeAnnotation } from '@babel/types';
 import { UniqueKeyUnit } from '.';
-import { formatAsScientificNotation, round, shortenLargeNumber } from '$utils/format';
+import { formatAsScientificNotation, round } from '$utils/format';
 
 export const timeFormatter = (time: number, dateFormat: string) => {
   return dateFormatter(new Date(time), dateFormat);
