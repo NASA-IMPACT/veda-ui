@@ -163,17 +163,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             data={chartData}
             margin={chartMargin}
             syncId={syncId}
-            syncMethod={(tick, data) => {
-              const index = syncMethodFunction({
-                data,
-                chartData,
-                xKey,
-                dateFormat,
-                startDate: chartData[brushStartIndex][xKey],
-                endDate: chartData[brushStartIndex][xKey],
-              });
-              return index;
-            }}
+            syncMethod='value'
           >
             <AltTitle title={altTitle} desc={altDesc} />
             <CartesianGrid stroke='#efefef' vertical={false} />
