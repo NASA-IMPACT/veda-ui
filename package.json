@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/NASA-IMPACT/dashboard-evolution.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "Apache-2.0",
   "source": "./app/index.html",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
