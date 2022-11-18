@@ -49,6 +49,9 @@ const ChartWrapper = styled.div`
 `;
 
 export interface CommonLineChartProps {
+  id: string;
+  activeStartDate: number;
+  activeEndDate: number;
   xKey: string;
   altTitle: string;
   altDesc: string;
@@ -129,6 +132,20 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
     }, []);
 
     useEffect(() => {
+      const newStartIndex = chartData.findIndex(e => e[xKey] === activeStartDate);
+      const newEndIndex = chartData.findIndex(e => {
+        return e[xKey] === activeEndDate;
+      });
+
+      if (newStartIndex > -1 && newStartIndex !== brushStartIndex) {
+        setBrushStartIndex(newStartIndex);
+      } 
+      if (newEndIndex > -1 && newEndIndex !== brushEndIndex) {
+        setBrushEndIndex(newEndIndex);
+      }
+    }, [activeStartDate, activeEndDate, chartData, brushStartIndex, brushEndIndex, xKey]);
+
+    useEffect(() => {
       if (!isMediumUp) {
         setChartMargin({
           ...defaultMargin,
@@ -154,7 +171,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
 
     return (
       <ChartWrapper>
-        <ResponsiveContainer
+        <ResponsiveContainer 
           aspect={chartAspectRatio}
           debounce={500}
           height='auto'
@@ -162,6 +179,8 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
           maxHeight={chartMaxHeight}
         >
           <LineChartWithFont
+            // enforcing rerendering when brushindex change
+            key={`${brushStartIndex}${brushEndIndex}${id}-line`}
             ref={ref as any}
             data={chartData}
             margin={chartMargin}
@@ -265,10 +284,10 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             )}
             {renderBrush && (
               <Brush
-                key={`${activeStartDate}${activeEndDate}${id}brush`}
                 data={chartData}
                 dataKey={xKey}
                 height={brushHeight}
+                travellerWidth={15}
                 tickFormatter={(t) => timeFormatter(t, dateFormat)}
                 onChange={handleBrushChange}
                 startIndex={brushStartIndex}

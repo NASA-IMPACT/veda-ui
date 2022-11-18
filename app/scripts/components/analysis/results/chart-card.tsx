@@ -75,7 +75,9 @@ export default function ChartCard(props: ChartCardProps) {
   const [brushIndex, setBrushIndex] = useState({ startIndex: 0, endIndex: 0 });
   const noDownloadReason = getNoDownloadReason(chartData);
 
-  const ascendingData = useMemo(() => {
+  // The indexes expect the data to be ascending, so we have to reverse the
+  // data.
+  const dataInAscOrder = useMemo(() => {
     if (!chartData.data?.timeseries.length) {
       return;
     }
@@ -85,13 +87,12 @@ export default function ChartCard(props: ChartCardProps) {
   const onExportClick = useCallback(
     (e: MouseEvent, type: 'image' | 'text') => {
       e.preventDefault();
-      if (!ascendingData) {
+      if (!dataInAscOrder) {
         return;
       }
       const { startIndex, endIndex } = brushIndex;
-      // The indexes expect the data to be ascending, so we have to reverse the
-      // data.
-      const data = ascendingData;//reverse(chartData.data.timeseries);
+
+      const data = dataInAscOrder;//reverse(chartData.data.timeseries);
       const dFormat = 'yyyy-MM-dd';
       const startDate = format(new Date(data[startIndex].date), dFormat);
       const endDate = format(new Date(data[endIndex].date), dFormat);
@@ -110,7 +111,7 @@ export default function ChartCard(props: ChartCardProps) {
         );
       }
     },
-    [id, ascendingData, brushIndex, activeMetrics]
+    [id, dataInAscOrder, brushIndex, activeMetrics]
   );
 
   const theme = useTheme();
@@ -200,7 +201,7 @@ export default function ChartCard(props: ChartCardProps) {
               <ChartCardNoMetric />
             ) : (
               <Chart
-                id={id+title}
+                id={id}
                 activeStartDate={activeBrushDates.start}
                 activeEndDate={activeBrushDates.end}
                 ref={chartRef}
@@ -214,14 +215,13 @@ export default function ChartCard(props: ChartCardProps) {
                 altDesc={`Amount of ${name} over time`}
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
-                mainBrushIndex={brushIndex}
                 onBrushChange={(newIndex) => {
                   setBrushIndex(newIndex);
-                  if(!ascendingData) return;
-                  setActiveBrushDates(
-                    {start: new Date(ascendingData[newIndex.startIndex].date).getTime(),
-                    end: new Date(ascendingData[newIndex.endIndex].date).getTime()}
-                  );
+                  if(!dataInAscOrder) return;
+                  setActiveBrushDates({
+                      start: new Date(dataInAscOrder[newIndex.startIndex].date).getTime(),
+                      end: new Date(dataInAscOrder[newIndex.endIndex].date).getTime()
+                    });
                 }}
               />
             )

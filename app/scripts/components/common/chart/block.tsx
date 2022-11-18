@@ -11,7 +11,7 @@ interface BlockChartProp extends CommonLineChartProps {
   yKey: string;
 }
 
-const subIdKey = 'subIdeKey';
+const subIdKey = 'subIdKey';
 
 export default function BlockChart(props: BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
@@ -69,6 +69,7 @@ export default function BlockChart(props: BlockChartProp) {
   return (
     <Chart
       {...props}
+      id={newDataPath + yKey}
       chartData={chartData}
       uniqueKeys={uniqueKeys}
       renderLegend={true}
