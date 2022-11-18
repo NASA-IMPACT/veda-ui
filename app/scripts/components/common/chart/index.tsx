@@ -66,6 +66,7 @@ export interface CommonLineChartProps {
   highlightEnd?: string;
   highlightLabel?: string;
   uniqueKeys: UniqueKeyUnit[];
+  setLocalBrushIndex?: (idx: { startIndex: number; endIndex: number }) => void;
   onBrushChange?: (idx: { startIndex: number; endIndex: number }) => void;
 }
 
@@ -110,6 +111,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       highlightLabel,
       xAxisLabel,
       yAxisLabel,
+      setLocalBrushIndex,
       onBrushChange
     } = props;
 
@@ -128,9 +130,14 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
 
     useEffect(() => {
       // Fire brush callback on mount to have the correct starting values.
-      onBrushChange?.({ startIndex: 0, endIndex: chartData.length - 1 });
+      setLocalBrushIndex?.({ startIndex: 0, endIndex: chartData.length - 1 });
     }, []);
 
+    useEffect(() => {
+      setLocalBrushIndex?.({ startIndex: brushStartIndex, endIndex: brushEndIndex });
+    },[brushStartIndex, brushEndIndex, setLocalBrushIndex]);
+
+    // Set brush range again when active date changes
     useEffect(() => {
       const newStartIndex = chartData.findIndex(e => e[xKey] === activeStartDate);
       const newEndIndex = chartData.findIndex(e => {

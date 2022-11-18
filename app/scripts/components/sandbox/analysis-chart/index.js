@@ -65,6 +65,18 @@ export default function AnalysisChart() {
   const [dynamicUniqueKeys, setDynamicUniqueKeys] = useState(
     dataForChart1.uniqueKeys
   );
+  const [activeBrushDates, setActiveBrushDates] = useState({
+    start: 0,
+    end: 0
+  });
+
+  function onBrushChange(newIndex, data) {
+    console.log(newIndex);
+    setActiveBrushDates({
+      start: new Date(data.timeSeriesData[newIndex.startIndex].date).getTime(),
+      end: new Date(data.timeSeriesData[newIndex.endIndex].date).getTime()
+    });
+  }
 
   function onLegendClick(e) {
     const newobj = dynamicUniqueKeys.map((key) => {
@@ -114,6 +126,7 @@ export default function AnalysisChart() {
             </Hug>
           </Hug>
           <Hug>
+            {JSON.stringify(activeBrushDates)}
             <Hug
               grid={{
                 smallUp: ['full-start', 'full-end'],
@@ -125,6 +138,9 @@ export default function AnalysisChart() {
               </Button>
               <Chart
                 ref={chartRef}
+                id='chart1'
+                activeStartDate={activeBrushDates.start}
+                activeEndDate={activeBrushDates.end}
                 colors={['red', 'blue', 'green']}
                 timeSeriesData={dataForChart1.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
@@ -135,24 +151,9 @@ export default function AnalysisChart() {
                 altDesc='alt desc'
                 xAxisLabel='x axis label'
                 yAxisLabel='y axis label'
-              />
-            </Hug>
-            <Hug
-              grid={{
-                smallUp: ['full-start', 'full-end'],
-                largeUp: ['content-7', 'content-end']
-              }}
-            >
-              <Chart
-                timeSeriesData={dataForChart2.timeSeriesData}
-                uniqueKeys={dynamicUniqueKeys}
-                xKey={dataForChart2.xKey}
-                dates={dataForChart2.dates}
-                dateFormat={dataForChart2.dateFormat}
-                altTitle='alt title'
-                altDesc='alt desc2'
-                xAxisLabel='x axis label'
-                yAxisLabel='y axis label'
+                onBrushChange={(newIndex) => {
+                  onBrushChange(newIndex, dataForChart1);
+                }}
               />
             </Hug>
           </Hug>
@@ -160,28 +161,13 @@ export default function AnalysisChart() {
             <Hug
               grid={{
                 smallUp: ['full-start', 'full-end'],
-                largeUp: ['content-start', 'content-7']
-              }}
-            >
-              <Chart
-                timeSeriesData={dataForChart1.timeSeriesData}
-                uniqueKeys={dynamicUniqueKeys}
-                xKey={dataForChart1.xKey}
-                dates={['2020', '2021', '2022', '2023']}
-                dateFormat='%Y'
-                altTitle='alt title3'
-                altDesc='alt desc'
-                xAxisLabel='x axis label'
-                yAxisLabel='y axis label'
-              />
-            </Hug>
-            <Hug
-              grid={{
-                smallUp: ['full-start', 'full-end'],
                 largeUp: ['content-7', 'content-end']
               }}
             >
               <Chart
+                id='chart4'
+                activeStartDate={activeBrushDates.start}
+                activeEndDate={activeBrushDates.end}
                 timeSeriesData={dataForChart1.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
                 xKey={dataForChart1.xKey}
@@ -191,6 +177,9 @@ export default function AnalysisChart() {
                 altDesc='alt desc'
                 xAxisLabel='x axis label'
                 yAxisLabel='y axis label'
+                onBrushChange={(newIndex) => {
+                  onBrushChange(newIndex, dataForChart1);
+                }}
               />
             </Hug>
           </Hug>

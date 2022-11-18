@@ -215,8 +215,8 @@ export default function ChartCard(props: ChartCardProps) {
                 altDesc={`Amount of ${name} over time`}
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
+                setLocalBrushIndex={setBrushIndex}
                 onBrushChange={(newIndex) => {
-                  setBrushIndex(newIndex);
                   if(!dataInAscOrder) return;
                   setActiveBrushDates({
                       start: new Date(dataInAscOrder[newIndex.startIndex].date).getTime(),
