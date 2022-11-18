@@ -90,10 +90,8 @@ const DatesWrapper = styled.div`
   }
 `;
 
-const isSelectedDateValid = (dateList, prevDateList, selectedDate) => {
-  const currDates = JSON.stringify(dateList);
-  const prevDates = JSON.stringify(prevDateList);
-  if (dateList && currDates !== prevDates) {
+const isSelectedDateValid = (dateList, selectedDate) => {
+  if (dateList) {
     // Since the available dates changes, check if the currently selected
     // one is valid.
     const validDate = !!dateList.find(
@@ -116,9 +114,7 @@ const getInitialDate = (dateList, initialDatetime) => {
 
   const initialDate = utcString2userTzDate(initialDatetime);
   // Reuse isSelectedDateValid function.
-  return isSelectedDateValid(dateList, undefined, initialDate)
-    ? initialDate
-    : dateList[0];
+  return isSelectedDateValid(dateList, initialDate) ? initialDate : dateList[0];
 };
 
 const useValidSelectedDate = (
@@ -127,14 +123,11 @@ const useValidSelectedDate = (
   initialDatetime,
   setDate
 ) => {
-  useEffectPrevious(
-    ([prevDateList]) => {
-      if (!isSelectedDateValid(dateList, prevDateList, selectedDate)) {
-        setDate(getInitialDate(dateList, initialDatetime));
-      }
-    },
-    [dateList, selectedDate, setDate]
-  );
+  useEffect(() => {
+    if (!isSelectedDateValid(dateList, selectedDate)) {
+      setDate(getInitialDate(dateList, initialDatetime));
+    }
+  }, [dateList, selectedDate, initialDatetime, setDate]);
 };
 
 const useValidSelectedCompareDate = (
@@ -143,18 +136,12 @@ const useValidSelectedCompareDate = (
   initialDatetime,
   setDate
 ) => {
-  useEffectPrevious(
-    ([prevDateList]) => {
-      // A compare date can be null.
-      if (
-        selectedDate &&
-        !isSelectedDateValid(dateList, prevDateList, selectedDate)
-      ) {
-        setDate(getInitialDate(dateList, initialDatetime));
-      }
-    },
-    [dateList, selectedDate, setDate]
-  );
+  useEffect(() => {
+    // A compare date can be null.
+    if (selectedDate && !isSelectedDateValid(dateList, selectedDate)) {
+      setDate(getInitialDate(dateList, initialDatetime));
+    }
+  }, [dateList, selectedDate, initialDatetime, setDate]);
 };
 
 const useDatePickerValue = (
