@@ -84,6 +84,14 @@ export default function ChartCard(props: ChartCardProps) {
     return reverse(chartData.data.timeseries);
   },[chartData.data]);
   
+  const onBrushChange = useCallback((newIndex) => {
+    if(!dataInAscOrder) return;
+    setActiveBrushDates({
+        start: new Date(dataInAscOrder[newIndex.startIndex].date).getTime(),
+        end: new Date(dataInAscOrder[newIndex.endIndex].date).getTime()
+      });
+  },[dataInAscOrder,setActiveBrushDates]);
+
   const onExportClick = useCallback(
     (e: MouseEvent, type: 'image' | 'text') => {
       e.preventDefault();
@@ -215,14 +223,8 @@ export default function ChartCard(props: ChartCardProps) {
                 altDesc={`Amount of ${name} over time`}
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
-                onBrushChange={(newIndex) => {
-                  setBrushIndex(newIndex);
-                  if(!dataInAscOrder) return;
-                  setActiveBrushDates({
-                      start: new Date(dataInAscOrder[newIndex.startIndex].date).getTime(),
-                      end: new Date(dataInAscOrder[newIndex.endIndex].date).getTime()
-                    });
-                }}
+                setLocalBrushIndex={setBrushIndex}
+                onBrushChange={onBrushChange}
               />
             )
           ) : (
