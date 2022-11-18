@@ -41,12 +41,15 @@ import { Tip } from '$components/common/tip';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { exportCsv } from '$components/common/chart/analysis/utils';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
-
+export interface ActiveDates {
+  start: number; 
+  end: number;
+}
 interface ChartCardProps {
   title: React.ReactNode;
   chartData: TimeseriesData;
   activeMetrics: DataMetric[];
-  activeBrushDates: {start: number; end: number };
+  activeBrushDates: ActiveDates;
   setActiveBrushDates: (dates: { start: number; end: number }) => void;
 }
 

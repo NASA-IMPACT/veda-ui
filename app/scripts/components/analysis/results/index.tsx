@@ -15,7 +15,7 @@ import {
   requestStacDatasetsTimeseries,
   TimeseriesData
 } from './timeseries-data';
-import ChartCard from './chart-card';
+import ChartCard, { ActiveDates } from './chart-card';
 import AnalysisHeadActions, {
   DataMetric,
   dataMetrics
@@ -66,7 +66,7 @@ export default function AnalysisResults() {
   const { start, end, datasetsLayers, aoi, errors } = params;
 
   const [activeMetrics, setActiveMetrics] = useState<DataMetric[]>(dataMetrics);
-  const [activeBrushDates, setActiveBrushDates] = useState<object>({start: 0, end: 0});
+  const [activeBrushDates, setActiveBrushDates] = useState<ActiveDates>({start: 0, end: 0});
 
   useEffect(() => {
     if (!start || !end || !datasetsLayers || !aoi) return;
