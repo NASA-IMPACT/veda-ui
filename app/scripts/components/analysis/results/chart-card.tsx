@@ -46,7 +46,7 @@ interface ChartCardProps {
   title: React.ReactNode;
   chartData: TimeseriesData;
   activeMetrics: DataMetric[];
-  activeBrushDates: object;
+  activeBrushDates: {start: number; end: number };
   setActiveBrushDates: (dates: { start: number; end: number }) => void;
 }
 
