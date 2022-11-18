@@ -363,10 +363,11 @@ function DatasetsExplore() {
         !prevActiveData ||
         !currActiveData ||
         prevActiveData.id === currActiveData.id
-      )
+      ) {
         return;
+      }
 
-      if (currActiveData.projection.id) {
+      if (currActiveData.projection?.id) {
         setMapProjection(currActiveData.projection);
       } else {
         setMapProjection(projectionDefault);
