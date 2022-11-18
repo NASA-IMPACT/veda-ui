@@ -131,6 +131,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
     useEffect(() => {
       // Fire brush callback on mount to have the correct starting values.
       setLocalBrushIndex?.({ startIndex: 0, endIndex: chartData.length - 1 });
+      onBrushChange?.({ startIndex: 0, endIndex: chartData.length - 1 });
     }, []);
 
     useEffect(() => {
