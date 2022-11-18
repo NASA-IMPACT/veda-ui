@@ -66,6 +66,7 @@ export default function AnalysisResults() {
   const { start, end, datasetsLayers, aoi, errors } = params;
 
   const [activeMetrics, setActiveMetrics] = useState<DataMetric[]>(dataMetrics);
+  const [activeBrushDates, setActiveBrushDates] = useState<object>({start: 0, end: 0});
 
   useEffect(() => {
     if (!start || !end || !datasetsLayers || !aoi) return;
@@ -175,6 +176,8 @@ export default function AnalysisResults() {
                   <ChartCard
                     title={l.name}
                     chartData={l}
+                    activeBrushDates={activeBrushDates}
+                    setActiveBrushDates={setActiveBrushDates}
                     activeMetrics={activeMetrics}
                   />
                 </li>

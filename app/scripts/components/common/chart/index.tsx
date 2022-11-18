@@ -88,6 +88,9 @@ function CustomCursor(props) {
 export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
   function RLineChart(props, ref) {
     const {
+      id,
+      activeStartDate,
+      activeEndDate,
       chartData,
       uniqueKeys,
       xKey,
@@ -169,8 +172,8 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
                 chartData,
                 xKey,
                 dateFormat,
-                startDate: chartData[brushStartIndex][xKey],
-                endDate: chartData[brushStartIndex][xKey],
+                startDate: activeStartDate,
+                endDate: activeEndDate,
               });
               return index;
             }}
@@ -262,6 +265,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             )}
             {renderBrush && (
               <Brush
+                key={`${activeStartDate}${activeEndDate}${id}brush`}
                 data={chartData}
                 dataKey={xKey}
                 height={brushHeight}

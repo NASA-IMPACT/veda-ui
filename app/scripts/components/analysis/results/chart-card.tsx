@@ -46,6 +46,8 @@ interface ChartCardProps {
   title: React.ReactNode;
   chartData: TimeseriesData;
   activeMetrics: DataMetric[];
+  activeBrushDates: object;
+  setActiveBrushDates: (dates: { start: number; end: number }) => void;
 }
 
 const ChartDownloadButton = composeVisuallyDisabled(ToolbarIconButton);
@@ -64,7 +66,7 @@ const getNoDownloadReason = ({ status, data }: TimeseriesData) => {
 };
 
 export default function ChartCard(props: ChartCardProps) {
-  const { title, chartData, activeMetrics } = props;
+  const { title, chartData, activeMetrics, activeBrushDates, setActiveBrushDates } = props;
   const { status, meta, data, error, name, id } = chartData;
 
   const chartRef = useRef<AnalysisChartRef>(null);
@@ -73,17 +75,23 @@ export default function ChartCard(props: ChartCardProps) {
   const [brushIndex, setBrushIndex] = useState({ startIndex: 0, endIndex: 0 });
   const noDownloadReason = getNoDownloadReason(chartData);
 
+  const ascendingData = useMemo(() => {
+    if (!chartData.data?.timeseries.length) {
+      return;
+    }
+    return reverse(chartData.data.timeseries);
+  },[chartData.data]);
+  
   const onExportClick = useCallback(
     (e: MouseEvent, type: 'image' | 'text') => {
       e.preventDefault();
-      if (!chartData.data?.timeseries.length) {
+      if (!ascendingData) {
         return;
       }
-
       const { startIndex, endIndex } = brushIndex;
       // The indexes expect the data to be ascending, so we have to reverse the
       // data.
-      const data = reverse(chartData.data.timeseries);
+      const data = ascendingData;//reverse(chartData.data.timeseries);
       const dFormat = 'yyyy-MM-dd';
       const startDate = format(new Date(data[startIndex].date), dFormat);
       const endDate = format(new Date(data[endIndex].date), dFormat);
@@ -102,7 +110,7 @@ export default function ChartCard(props: ChartCardProps) {
         );
       }
     },
-    [id, chartData.data, brushIndex, activeMetrics]
+    [id, ascendingData, brushIndex, activeMetrics]
   );
 
   const theme = useTheme();
@@ -124,7 +132,7 @@ export default function ChartCard(props: ChartCardProps) {
       [],
     [data?.timeseries]
   );
-
+  
   return (
     <CardSelf>
       <CardHeader>
@@ -192,6 +200,9 @@ export default function ChartCard(props: ChartCardProps) {
               <ChartCardNoMetric />
             ) : (
               <Chart
+                id={id+title}
+                activeStartDate={activeBrushDates.start}
+                activeEndDate={activeBrushDates.end}
                 ref={chartRef}
                 timeSeriesData={data.timeseries}
                 uniqueKeys={uniqueKeys}
@@ -203,7 +214,15 @@ export default function ChartCard(props: ChartCardProps) {
                 altDesc={`Amount of ${name} over time`}
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
-                onBrushChange={setBrushIndex}
+                mainBrushIndex={brushIndex}
+                onBrushChange={(newIndex) => {
+                  setBrushIndex(newIndex);
+                  if(!ascendingData) return;
+                  setActiveBrushDates(
+                    {start: new Date(ascendingData[newIndex.startIndex].date).getTime(),
+                    end: new Date(ascendingData[newIndex.endIndex].date).getTime()}
+                  );
+                }}
               />
             )
           ) : (
