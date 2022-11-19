@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -121,12 +121,20 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
 
     const { isMediumUp } = useMediaQuery();
 
+    const indexRef = useRef();
+
     const handleBrushChange = useCallback((newIndex) => {
-      const { startIndex, endIndex } = newIndex;
+      //const { startIndex, endIndex } = newIndex;
+      indexRef.current = newIndex;
+    }, []);
+
+    const onMouseRelease = useCallback(()=> {
+      if(!indexRef.current) return;
+      const { startIndex, endIndex } = indexRef.current;
       setBrushStartIndex(startIndex);
       setBrushEndIndex(endIndex);
-      onBrushChange?.(newIndex);
-    }, [onBrushChange]);
+      onBrushChange?.({startIndex, endIndex});
+    },[onBrushChange]);
 
     useEffect(() => {
       // Fire brush callback on mount to have the correct starting values.
@@ -189,6 +197,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
           <LineChartWithFont
             // enforcing rerendering when brushindex change
             key={`${brushStartIndex}${brushEndIndex}${id}-line`}
+            onMouseUp={onMouseRelease}
             ref={ref as any}
             data={chartData}
             margin={chartMargin}
