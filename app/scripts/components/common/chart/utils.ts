@@ -173,7 +173,7 @@ function isSameFormattedDate({
  * inactive chart's value gets formatted as active chart's dateformat (2022) - returns true
  * ex. When active chart's format is more granular:
  * When active chart's dateformat is %Y/%m 2022/03, inactive charts format is %Y 2022
- * inactive chart's value gets formatted as active format first 2022/01, 
+ * inactive chart's value gets formatted as active format first 2022/01,
  * since there is no matching, the method will try again to consolidate dateformat with inactive chart's format
  * @param {object} data data of active chart. coming from rechart
  * @param {object[]} chartData data for inactive chart
@@ -201,10 +201,12 @@ export function syncMethodFunction({
   const dateFormatFromData = activePayload[0].payload.dateFormat;
 
   let matchingIndex: number | null = -1;
-  // Make sure that matching point is in current (zoomed) chart 
-  const filteredChartData = chartData.filter(e=> e[xKey] <= endDate && e[xKey] >= startDate);
+  // Make sure that matching point is in current (zoomed) chart
+  const filteredChartData = chartData.filter(
+    (e) => e[xKey] <= endDate && e[xKey] >= startDate
+  );
 
-  matchingIndex = filteredChartData.findIndex(e => {
+  matchingIndex = filteredChartData.findIndex((e) => {
     return isSameFormattedDate({
       date1: e[xKey],
       date2: activeLabel,
@@ -213,7 +215,7 @@ export function syncMethodFunction({
   });
 
   if (matchingIndex < 0) {
-    matchingIndex = chartData.findIndex(e => {
+    matchingIndex = chartData.findIndex((e) => {
       return isSameFormattedDate({
         date1: e[xKey],
         date2: activeLabel,
@@ -226,6 +228,8 @@ export function syncMethodFunction({
 }
 export function getNumForChart(x?: number) {
   if (x === undefined || isNaN(x)) return 'n/a';
-  if (Math.abs(x / 1e3) < 1) return round(x).toString();
+  if (x === 0) return '0';
+  // Between 0.001 and 1000 just round.
+  if (Math.abs(x) < 1000 && Math.abs(x) >= 0.001) return round(x, 3).toString();
   return formatAsScientificNotation(x);
 }

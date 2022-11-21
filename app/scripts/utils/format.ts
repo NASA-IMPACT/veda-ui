@@ -132,16 +132,18 @@ export function formatAsScientificNotation(num: number, decimals = 2) {
   if (!isFinite(num)) return `${Math.sign(num) === -1 ? '-' : ''}∞`;
 
   const [coefficient, exponent] = num
-    .toExponential()
-    .split('e')
-    .map((item) => Number(item));
+  .toExponential()
+  .split('e')
+  .map((item) => Number(item));
 
   const sups = '⁰¹²³⁴⁵⁶⁷⁸⁹';
-  const exponentSup = exponent
+  const exponentSup = Math.abs(exponent)
     .toString()
     .split('')
     .map((v) => sups[v])
     .join('');
+  
+  const sign = exponent < 0 ? '⁻':'';
 
-  return `${round(coefficient, decimals)}x10${exponentSup}`;
+  return `${round(coefficient, decimals)}x10${sign}${exponentSup}`;
 }
