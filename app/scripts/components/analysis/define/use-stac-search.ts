@@ -1,6 +1,6 @@
 import { DatasetLayer } from 'delta/thematics';
 import { Feature, Polygon } from 'geojson';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { uniq, uniqBy } from 'lodash';
 import axios from 'axios';
 import { getFilterPayload } from '../utils';

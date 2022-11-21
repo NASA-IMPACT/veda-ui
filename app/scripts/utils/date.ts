@@ -3,7 +3,6 @@ import {
   isSameMonth,
   isSameYear,
   parse,
-  endOfYear,
   startOfYear,
   sub
 } from 'date-fns';
