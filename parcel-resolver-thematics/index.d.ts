@@ -52,10 +52,10 @@ declare module 'delta/thematics' {
     name: string;
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
-    projection: ProjectionOptions;
+    projection?: ProjectionOptions;
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
-    legend: LayerLegendCategorical | LayerLegendGradient;
+    legend?: LayerLegendCategorical | LayerLegendGradient;
   }
 
   // A normalized compare layer is the result after the compare definition is
