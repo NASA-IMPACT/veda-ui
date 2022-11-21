@@ -2,8 +2,10 @@ import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
 
-import timeSeriesData345 from './sample-timeseries-data-345.json';
-import timeSeriesData234 from './sample-timeseries-data-234.json';
+import dataDaily from './sample-daily.json';
+import dataMonthly from './sample-monthly.json';
+import dataYearly from './sample-yearly.json';
+
 import Chart from '$components/common/chart/analysis/';
 import { AnalysisLegendComponent } from '$components/common/chart/analysis/control';
 import { getColors, dateFormatter } from '$components/common/chart/utils';
@@ -28,12 +30,23 @@ const MainPanel = styled.div`
   padding: 20px;
 `;
 
-// manually collected data from the endpoint below for testing purpose. date ranges from 202203 to 202205
-// https://staging-raster.delta-backend.com/cog/statistics?url="s3://veda-data-store-staging/geoglam/CropMonitor_${date}.tif"1
+const dailyChartData = {
+  timeSeriesData: dataDaily,
+  dates: dataDaily.map((e) =>
+    dateFormatter(utcString2userTzDate(e.date), '%Y/%m/%d')
+  ),
+  uniqueKeys: [
+    { label: 'Min', value: 'min', active: true },
+    { label: 'Max', value: 'max', active: true },
+    { label: 'STD', value: 'std', active: true }
+  ],
+  dateFormat: '%Y/%m/%d',
+  xKey: 'date'
+};
 
-const dataForChart1 = {
-  timeSeriesData: timeSeriesData345.timeseries,
-  dates: timeSeriesData345.timeseries.map((e) =>
+const monthlyChartData = {
+  timeSeriesData: dataMonthly,
+  dates: dataMonthly.map((e) =>
     dateFormatter(utcString2userTzDate(e.date), '%Y/%m')
   ),
   uniqueKeys: [
@@ -45,25 +58,25 @@ const dataForChart1 = {
   xKey: 'date'
 };
 
-const dataForChart2 = {
-  timeSeriesData: timeSeriesData234.timeseries,
-  dates: timeSeriesData234.timeseries.map((e) =>
-    dateFormatter(utcString2userTzDate(e.date), '%Y/%m')
+const yearlyChartData = {
+  timeSeriesData: dataYearly,
+  dates: dataYearly.map((e) =>
+    dateFormatter(utcString2userTzDate(e.date), '%Y')
   ),
   uniqueKeys: [
     { label: 'Min', value: 'min', active: true },
     { label: 'Max', value: 'max', active: true },
     { label: 'STD', value: 'std', active: true }
   ],
-  dateFormat: '%Y/%m',
+  dateFormat: '%Y',
   xKey: 'date'
 };
 
 export default function AnalysisChart() {
-  const legendColors = getColors({ steps: dataForChart1.uniqueKeys.length });
+  const legendColors = getColors({ steps: dailyChartData.uniqueKeys.length });
 
   const [dynamicUniqueKeys, setDynamicUniqueKeys] = useState(
-    dataForChart1.uniqueKeys
+    dailyChartData.uniqueKeys
   );
 
   function onLegendClick(e) {
@@ -80,7 +93,6 @@ export default function AnalysisChart() {
   }
 
   const chartRef = useRef();
-
   const onExportClick = useCallback(() => {
     chartRef.current?.saveAsImage('test-chart.jpg');
   }, []);
@@ -125,16 +137,16 @@ export default function AnalysisChart() {
               </Button>
               <Chart
                 ref={chartRef}
-                colors={['red', 'blue', 'green']}
-                timeSeriesData={dataForChart1.timeSeriesData}
+                colors={legendColors}
+                timeSeriesData={dailyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={dataForChart1.xKey}
-                dates={dataForChart1.dates}
-                dateFormat={dataForChart1.dateFormat}
+                xKey={dailyChartData.xKey}
+                dates={dailyChartData.dates}
+                dateFormat={dailyChartData.dateFormat}
                 altTitle='alt title1'
                 altDesc='alt desc'
-                xAxisLabel='x axis label'
-                yAxisLabel='y axis label'
+                xAxisLabel='Time'
+                yAxisLabel='Amount'
               />
             </Hug>
             <Hug
@@ -144,15 +156,16 @@ export default function AnalysisChart() {
               }}
             >
               <Chart
-                timeSeriesData={dataForChart2.timeSeriesData}
+                colors={legendColors}
+                timeSeriesData={monthlyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={dataForChart2.xKey}
-                dates={dataForChart2.dates}
-                dateFormat={dataForChart2.dateFormat}
-                altTitle='alt title'
-                altDesc='alt desc2'
-                xAxisLabel='x axis label'
-                yAxisLabel='y axis label'
+                xKey={monthlyChartData.xKey}
+                dates={monthlyChartData.dates}
+                dateFormat={monthlyChartData.dateFormat}
+                altTitle='alt title1'
+                altDesc='alt desc'
+                xAxisLabel='Time'
+                yAxisLabel='Amount'
               />
             </Hug>
           </Hug>
@@ -164,33 +177,16 @@ export default function AnalysisChart() {
               }}
             >
               <Chart
-                timeSeriesData={dataForChart1.timeSeriesData}
+                colors={legendColors}
+                timeSeriesData={yearlyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={dataForChart1.xKey}
-                dates={['2020', '2021', '2022', '2023']}
-                dateFormat='%Y'
-                altTitle='alt title3'
+                xKey={yearlyChartData.xKey}
+                dates={yearlyChartData.dates}
+                dateFormat={yearlyChartData.dateFormat}
+                altTitle='alt title1'
                 altDesc='alt desc'
-                xAxisLabel='x axis label'
-                yAxisLabel='y axis label'
-              />
-            </Hug>
-            <Hug
-              grid={{
-                smallUp: ['full-start', 'full-end'],
-                largeUp: ['content-7', 'content-end']
-              }}
-            >
-              <Chart
-                timeSeriesData={dataForChart1.timeSeriesData}
-                uniqueKeys={dynamicUniqueKeys}
-                xKey={dataForChart1.xKey}
-                dates={dataForChart1.dates}
-                dateFormat={dataForChart1.dateFormat}
-                altTitle='alt title4'
-                altDesc='alt desc'
-                xAxisLabel='x axis label'
-                yAxisLabel='y axis label'
+                xAxisLabel='Time'
+                yAxisLabel='Amount'
               />
             </Hug>
           </Hug>
