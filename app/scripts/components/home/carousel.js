@@ -126,7 +126,7 @@ const DotGroupPositioned = styled(DotGroup)`
   `}
 `;
 
-function Carousel({ items }) {
+function Carousel({ items, parentName }) {
   return (
     <CarouselProvider
       isIntrinsicHeight={true}
@@ -143,7 +143,7 @@ function Carousel({ items }) {
                   linkLabel='View more'
                   linkTo={t.linkTo}
                   title={t.name}
-                  parentName='Dataset'
+                  parentName={parentName}
                   parentTo={t.parentTo}
                   description={t.description}
                   imgSrc={t.media.src}
@@ -171,7 +171,8 @@ function Carousel({ items }) {
 }
 
 Carousel.propTypes = {
-  items: T.array
+  items: T.array,
+  parentName: T.string
 };
 
 export default Carousel;

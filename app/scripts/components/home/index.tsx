@@ -225,7 +225,7 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <Carousel items={mainDiscoveries} />
+          <Carousel items={mainDiscoveries} parentName='Discovery' />
         </Fold>
       )}
 
@@ -242,7 +242,7 @@ function Home() {
               View all
             </Button>
           </FoldHeader>
-          <Carousel items={mainDatasets} />
+          <Carousel items={mainDatasets} parentName='Dataset' />
         </Fold>
       )}
 
