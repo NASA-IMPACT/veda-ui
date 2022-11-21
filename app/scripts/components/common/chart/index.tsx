@@ -121,15 +121,13 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
 
     const { isMediumUp } = useMediaQuery();
 
-    const indexRef = useRef();
+    const indexRef = useRef({startIndex: 0, endIndex: 0});
 
     const handleBrushChange = useCallback((newIndex) => {
-      //const { startIndex, endIndex } = newIndex;
       indexRef.current = newIndex;
     }, []);
 
     const onMouseRelease = useCallback(()=> {
-      if(!indexRef.current) return;
       const { startIndex, endIndex } = indexRef.current;
       setBrushStartIndex(startIndex);
       setBrushEndIndex(endIndex);
@@ -197,22 +195,25 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
           <LineChartWithFont
             // enforcing rerendering when brushindex change
             key={`${brushStartIndex}${brushEndIndex}${id}-line`}
+            // update brush index only when mouse gets released
             onMouseUp={onMouseRelease}
+            onMouseLeave={onMouseRelease}
             ref={ref as any}
             data={chartData}
             margin={chartMargin}
             syncId={syncId}
-            syncMethod={(tick, data) => {
-              const index = syncMethodFunction({
-                data,
-                chartData,
-                xKey,
-                dateFormat,
-                startDate: activeStartDate,
-                endDate: activeEndDate,
-              });
-              return index;
-            }}
+            syncMethod='value'
+            // syncMethod={(tick, data) => {
+            //   const index = syncMethodFunction({
+            //     data,
+            //     chartData,
+            //     xKey,
+            //     dateFormat,
+            //     startDate: activeStartDate,
+            //     endDate: activeEndDate,
+            //   });
+            //   return index;
+            // }}
           >
             <AltTitle title={altTitle} desc={altDesc} />
             <CartesianGrid stroke='#efefef' vertical={false} />
