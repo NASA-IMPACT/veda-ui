@@ -273,7 +273,6 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
                 <Line
                   type='linear'
                   isAnimationActive={false}
-                  dot={false}
                   activeDot={false}
                   key={`${k.value}-line`}
                   dataKey={k.label}
@@ -317,7 +316,6 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
                       <Line
                         type='linear'
                         isAnimationActive={false}
-                        dot={false}
                         activeDot={false}
                         key={`${k.value}-line-brush`}
                         dataKey={k.label}
