@@ -6,11 +6,12 @@ backend:
   name: git-gateway
   branch: netlify-cms
 publish_mode: editorial_workflow
-media_folder: "images/uploads" 
+media_folder: "mock/uploads"
 collections:
   - name: "thematic"
     label: "thematic"
     folder: "mock/thematic"
+    media_folder: "mock/thematic"
     create: true
     extension: 'mdx'
     format: 'frontmatter'
@@ -21,7 +22,7 @@ collections:
     fields:
       - {label: "ID", name: "id", widget: "string"}
       - {label: "Thematic name", name: "name", widget: "string"}
-      - {label: "Description", name: "description", widget: "string"}
+      - {label: "Description", name: "description", widget: "text"}
       - label: "About"
         name: "about"
         widget: 'object'
@@ -43,6 +44,9 @@ collections:
   - name: "dataset"
     label: "Dataset"
     folder: "mock/datasets"
+    media_folder: "mock/datasets"
+    editor:
+      preview: false
     create: true
     extension: 'mdx'
     format: 'frontmatter'
@@ -98,15 +102,50 @@ collections:
             widget: "string"
           - label: "type"
             name: type
-            widget: "select"
-            options: ["raster"]
+            widget: "string"
+            default: "raster"
           - label: "Zoom Extent"
             name: zoomExtent
             widget: list
           - label: 'Source parameter'
-            name: sourceParam
+            name: sourceParams
             widget: object
-            fields: 
-              - {label: "bidx", name: "bidx", widget: "string"}
-              - {label: "colormap name", name: "colormap_name", widget: "select", options: ['inferno']}
-      - {label: "Body", name: "body", widget: "markdown"}
+            fields:
+              - label: rescale
+                name: rescale
+                widget: list
+                required: false
+              - label: bidx
+                name: bidx
+                widget: string
+                required: false
+              - label: colormap name
+                name: colormap_name
+                widget: string
+                required: false
+          - label: "Legend"
+            name: "legend"
+            widget: "object"
+            fields:
+            - {label: "Type", name: "type", widget: "select", options: ['categorical','gradient'] }
+            - {label: "Min", name: "min", widget: "string" }
+            - {label: "Max", name: "max", widget: "string" }
+            - label: "Stops for Gradient"
+              name: "stops"
+              widget: list
+          - label: Projection
+            name: projection
+            widget: object
+            required: false
+            fields:
+              - {label: "ID", name: "id", widget: "select", options: ['albers', 'equalEarth', 'equirectangular', 'lambertConformalConic', 'mercator', 'naturalEarth', 'winkelTripel', 'globe', 'polarNorth', 'polarSouth'] }
+              - {label: "Center (float, float)", name: "center", widget: "list" }
+              - {label: "Parallels (float, float) ", name: "parallels", widget: "list" }
+
+        # - label: "Stops for Category"
+        #   name: "stops"
+        #   widget: "list"
+        #   fields:
+        #     - {label: "color", name: "", widget: "text" }
+        #     - {label: "label", name: "label", widget: "text" }
+
