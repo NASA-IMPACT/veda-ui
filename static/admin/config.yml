@@ -148,4 +148,5 @@ collections:
         #   fields:
         #     - {label: "color", name: "", widget: "text" }
         #     - {label: "label", name: "label", widget: "text" }
+      - {label: "Body", name: "body", widget: "markdown"}
 
