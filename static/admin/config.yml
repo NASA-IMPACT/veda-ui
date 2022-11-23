@@ -63,7 +63,7 @@ collections:
         options: ["agriculture", "air-quality", "covid-19"]
       - {label: "ID", name: "id", widget: "string"}
       - {label: "Name", name: "name", widget: "string"}
-      - {label: "Description", name: "description", widget: "string"}
+      - {label: "Description", name: "description", widget: "text"}
       - label: "Thematics"
         name: "thematics"
         widget: "select"
@@ -128,8 +128,8 @@ collections:
             widget: "object"
             fields:
             - {label: "Type", name: "type", widget: "select", options: ['categorical','gradient'] }
-            - {label: "Min", name: "min", widget: "string" }
-            - {label: "Max", name: "max", widget: "string" }
+            - {label: "Min value label", name: "min", widget: "string" }
+            - {label: "Max value label", name: "max", widget: "string" }
             - label: "Stops for Gradient"
               name: "stops"
               widget: list
