@@ -49,6 +49,7 @@ collections:
     title: fields.id
     identifier_field: fields.id
     slug: "{{fields.id}}.data"
+    preview_path: "{{fields.thematics[0]}}/datasets/{{fields.id}}/explore"
     summary: "{{fields.name}}"
     fields:
       - label: "Featured on"
