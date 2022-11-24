@@ -5,6 +5,7 @@ import { Button } from '@devseed-ui/button';
 import dataDaily from './sample-daily.json';
 import dataMonthly from './sample-monthly.json';
 import dataYearly from './sample-yearly.json';
+import dataYearly2 from './sample-yearly2.json';
 
 import Chart from '$components/common/chart/analysis/';
 import { AnalysisLegendComponent } from '$components/common/chart/analysis/control';
@@ -30,47 +31,26 @@ const MainPanel = styled.div`
   padding: 20px;
 `;
 
-const dailyChartData = {
-  timeSeriesData: dataDaily,
-  dates: dataDaily.map((e) =>
-    dateFormatter(utcString2userTzDate(e.date), '%Y/%m/%d')
-  ),
-  uniqueKeys: [
-    { label: 'Min', value: 'min', active: true },
-    { label: 'Max', value: 'max', active: true },
-    { label: 'STD', value: 'std', active: true }
-  ],
-  dateFormat: '%Y/%m/%d',
-  xKey: 'date'
-};
+function makeData(data, dateFormat) {
+  return {
+    timeSeriesData: data,
+    dates: data.map((e) =>
+      dateFormatter(utcString2userTzDate(e.date), dateFormat)
+    ),
+    uniqueKeys: [
+      { label: 'Min', value: 'min', active: true },
+      { label: 'Max', value: 'max', active: true },
+      { label: 'STD', value: 'std', active: true }
+    ],
+    dateFormat: dateFormat,
+    xKey: 'date'
+  };
+}
 
-const monthlyChartData = {
-  timeSeriesData: dataMonthly,
-  dates: dataMonthly.map((e) =>
-    dateFormatter(utcString2userTzDate(e.date), '%Y/%m')
-  ),
-  uniqueKeys: [
-    { label: 'Min', value: 'min', active: true },
-    { label: 'Max', value: 'max', active: true },
-    { label: 'STD', value: 'std', active: true }
-  ],
-  dateFormat: '%Y/%m',
-  xKey: 'date'
-};
-
-const yearlyChartData = {
-  timeSeriesData: dataYearly,
-  dates: dataYearly.map((e) =>
-    dateFormatter(utcString2userTzDate(e.date), '%Y')
-  ),
-  uniqueKeys: [
-    { label: 'Min', value: 'min', active: true },
-    { label: 'Max', value: 'max', active: true },
-    { label: 'STD', value: 'std', active: true }
-  ],
-  dateFormat: '%Y',
-  xKey: 'date'
-};
+const dailyChartData = makeData(dataDaily, '%Y/%m/%d');
+const monthlyChartData = makeData(dataMonthly, '%Y/%m');
+const yearlyChartData = makeData(dataYearly, '%Y');
+const yearly2ChartData = makeData(dataYearly2, '%Y');
 
 export default function AnalysisChart() {
   const legendColors = getColors({ steps: dailyChartData.uniqueKeys.length });
@@ -132,6 +112,7 @@ export default function AnalysisChart() {
                 largeUp: ['content-start', 'content-7']
               }}
             >
+              <h2>Daily</h2>
               <Button onClick={onExportClick} variation='primary-fill'>
                 Export
               </Button>
@@ -155,6 +136,7 @@ export default function AnalysisChart() {
                 largeUp: ['content-7', 'content-end']
               }}
             >
+              <h2>Monthly</h2>
               <Chart
                 colors={legendColors}
                 timeSeriesData={monthlyChartData.timeSeriesData}
@@ -176,6 +158,7 @@ export default function AnalysisChart() {
                 largeUp: ['content-start', 'content-7']
               }}
             >
+              <h2>Yearly</h2>
               <Chart
                 colors={legendColors}
                 timeSeriesData={yearlyChartData.timeSeriesData}
@@ -183,6 +166,26 @@ export default function AnalysisChart() {
                 xKey={yearlyChartData.xKey}
                 dates={yearlyChartData.dates}
                 dateFormat={yearlyChartData.dateFormat}
+                altTitle='alt title1'
+                altDesc='alt desc'
+                xAxisLabel='Time'
+                yAxisLabel='Amount'
+              />
+            </Hug>
+            <Hug
+              grid={{
+                smallUp: ['full-start', 'full-end'],
+                largeUp: ['content-7', 'content-end']
+              }}
+            >
+              <h2>Yearly 2</h2>
+              <Chart
+                colors={legendColors}
+                timeSeriesData={yearly2ChartData.timeSeriesData}
+                uniqueKeys={dynamicUniqueKeys}
+                xKey={yearly2ChartData.xKey}
+                dates={yearly2ChartData.dates}
+                dateFormat={yearly2ChartData.dateFormat}
                 altTitle='alt title1'
                 altDesc='alt desc'
                 xAxisLabel='Time'
