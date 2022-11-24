@@ -154,7 +154,11 @@ async function getDatasetAssets(
         'filter-lang': 'cql2-json',
         limit: 10000,
         fields: {
-          include: ['assets.cog_default.href', 'properties.start_datetime'],
+          include: [
+            'assets.cog_default.href',
+            'properties.start_datetime',
+            'properties.datetime'
+          ],
           exclude: ['collection', 'links']
         },
         filter: getFilterPayload(dateStart, dateEnd, aoi, [id])
@@ -167,7 +171,7 @@ async function getDatasetAssets(
       timeDensity: collectionReqRes.data['dashboard:time_density'],
       domain: collectionReqRes.data.summaries.datetime,
       assets: searchReqRes.data.features.map((o) => ({
-        date: o.properties.start_datetime,
+        date: o.properties.start_datetime || o.properties.datetime,
         url: o.assets.cog_default.href
       }))
     };
