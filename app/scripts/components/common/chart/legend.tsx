@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { LegendProps } from 'recharts/types';
+import { LegendProps } from 'recharts';
 import { CategoricalChartProps } from 'recharts/types/chart/generateCategoricalChart';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 

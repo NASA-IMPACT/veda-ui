@@ -9,8 +9,8 @@ import {
   ThematicData,
   RelatedContentData,
   DiscoveryData,
-  DeltaDatum
-} from 'delta/thematics';
+  VedaDatum
+} from 'veda/thematics';
 import { utcString2userTzDate } from '$utils/date';
 import {
   thematicRootPath,
@@ -54,7 +54,7 @@ interface FormatBlock {
 
 function formatUrl(
   id: string,
-  thematic: DeltaDatum<ThematicData>,
+  thematic: VedaDatum<ThematicData>,
   parent: string
 ) {
   switch (parent) {

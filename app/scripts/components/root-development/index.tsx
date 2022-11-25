@@ -61,7 +61,7 @@ function RootDevelopment() {
             size='large'
             fitting='relaxed'
             forwardedAs='a'
-            href='https://github.com/NASA-IMPACT/delta-config/releases'
+            href='https://github.com/NASA-IMPACT/veda-config/releases'
             variation='primary-fill'
           >
             <CollecticonBrandGithub /> Releases

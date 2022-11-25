@@ -18,7 +18,7 @@ import {
   CollecticonChevronUpSmall,
   CollecticonHamburgerMenu
 } from '@devseed-ui/collecticons';
-import deltaThematics from 'delta/thematics';
+import vedaThematics from 'veda/thematics';
 
 import NasaLogo from './nasa-logo';
 import GoogleForm from './google-form';
@@ -360,7 +360,7 @@ function PageHeader() {
       <Brand>
         <Link
           to={
-            deltaThematics.length > 1 && thematic ? `/${thematic.data.id}` : '/'
+            vedaThematics.length > 1 && thematic ? `/${thematic.data.id}` : '/'
           }
         >
           <NasaLogo />
@@ -403,12 +403,12 @@ function PageHeader() {
           )}
           <GlobalNavBody as={isLargeDown ? undefined : 'div'}>
             <GlobalNavBodyInner>
-              {thematic && deltaThematics.length > 1 && (
+              {thematic && vedaThematics.length > 1 && (
                 <ThemesNavBlock>
                   <GlobalNavBlockTitle>Area</GlobalNavBlockTitle>
                   {isLargeDown ? (
                     <GlobalMenu id='themes-nav-block'>
-                      {deltaThematics.map((t) => (
+                      {vedaThematics.map((t) => (
                         <li key={t.id}>
                           <GlobalMenuLink
                             to={`/${t.id}`}
@@ -436,7 +436,7 @@ function PageHeader() {
                       )}
                     >
                       <DropMenu id='themes-nav-block'>
-                        {deltaThematics.map((t) => (
+                        {vedaThematics.map((t) => (
                           <li key={t.id}>
                             <DropMenuItem
                               as={NavLink}

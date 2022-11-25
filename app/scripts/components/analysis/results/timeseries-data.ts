@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { QueryClient } from '@tanstack/react-query';
 import { Feature, MultiPolygon } from 'geojson';
-import { DatasetLayer } from 'delta/thematics';
+import { DatasetLayer } from 'veda/thematics';
 
 import { getFilterPayload } from '../utils';
 import EventEmitter from './mini-events';

@@ -2,7 +2,7 @@ import React from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 import { Link, NavLink, useMatch } from 'react-router-dom';
-import deltaThematics from 'delta/thematics';
+import vedaThematics from 'veda/thematics';
 
 import {
   glsp,
@@ -172,7 +172,7 @@ const SectionLink = styled(LocalMenuLink)`
 
 // When there's only w thematic are, we don't use :thematicId.
 const pagePath =
-  deltaThematics.length > 1
+  vedaThematics.length > 1
     ? '/:thematicId/datasets/:dataId/:page'
     : '/datasets/:dataId/:page';
 

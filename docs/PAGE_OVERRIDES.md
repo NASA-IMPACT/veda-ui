@@ -1,15 +1,15 @@
 # Overrides
 
-💡 These notes cover the development part of the content overrides. For usage check [delta-config](https://github.com/NASA-IMPACT/delta-config/).
+💡 These notes cover the development part of the content overrides. For usage check [veda-config](https://github.com/NASA-IMPACT/veda-config/).
 
-The delta ui should be flexible enough to allow instances to be configured to fit that instance's needs.  
+The veda ui should be flexible enough to allow instances to be configured to fit that instance's needs.  
 Perhaps one instance needs a different footer or a different logo. It is not possible to provide configuration options for all use cases, so we want to allow for components to be replaced entirely via overrides.
 
 There are essentially 2 types of possible overrides:
 - Content Overrides - Allows the instance to replace the content of a given page. They should allow the usage of all MDX Blocks, and can include frontmatter variables.
 - Component Overrides - Allows the instance to alter specific components of the app, by providing new javascript code for it. No MDX Blocks nor frontmatter available.
 
-🧑‍🎓  When new component or content overrides are added, do not forget to update the documentation in [delta-config](https://github.com/NASA-IMPACT/delta-config/) and add the override key to `delta/thematics` types (`parcel-resolver-thematics/index.d.ts`).
+🧑‍🎓  When new component or content overrides are added, do not forget to update the documentation in [veda-config](https://github.com/NASA-IMPACT/veda-config/) and add the override key to `veda/thematics` types (`parcel-resolver-thematics/index.d.ts`).
 
 ## Content overrides
 A content override will show a content loading placeholder while the MDX data is being loaded, supports MDX Blocks and frontmatter variables.
@@ -46,7 +46,7 @@ The title will be provided through the frontmatter and the content will be the b
 We start by using the `ContentOverride` component.  
 This component accepts a `with` prop which specifies the override key to use.  
 
-🧑‍🎓 This is the key to be added to `delta.config.js`, and being a content override it should follow the `<name>Content` schema.  
+🧑‍🎓 This is the key to be added to `veda.config.js`, and being a content override it should follow the `<name>Content` schema.  
 
 The `children` of the component will be the default value in case the override is not provided by the user.
 
@@ -77,11 +77,11 @@ The new `About` would look like:
  export default About;
 ```
 
-Now that we handled the content, we just need to include the frontmatter variables. To achieve this we use the `getOverride` function from `delta/thematics`:
+Now that we handled the content, we just need to include the frontmatter variables. To achieve this we use the `getOverride` function from `veda/thematics`:
 
 ```diff
  // Some imports omitted for simplicity.
-+import { getOverride } from 'delta/thematics'; 
++import { getOverride } from 'veda/thematics'; 
  import { ContentOverride } from '$components/common/page-overrides';
 +
 +const aboutContent = getOverride('aboutContent');
@@ -169,7 +169,7 @@ export function LocalWidget() {
 ```
 
 ## Manually testing the overrides
-To manually check that the override you just created works as expected, modify the `mock/delta.config.js` file and add the override key and file path under `pageOverrides`:
+To manually check that the override you just created works as expected, modify the `mock/veda.config.js` file and add the override key and file path under `pageOverrides`:
 
 Example:
 ```js

@@ -8,7 +8,7 @@ import styled, { useTheme } from 'styled-components';
 import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { ProjectionOptions } from 'delta/thematics';
+import { ProjectionOptions } from 'veda/thematics';
 
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import MapboxStyleOverride from './mapbox-style-override';
@@ -87,7 +87,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
       container: containerRef.current,
       attributionControl: false,
       // Disable world copied to fix marker position errors when changing
-      // projections. More at https://github.com/NASA-IMPACT/delta-ui/pull/201#issuecomment-1185390161
+      // projections. More at https://github.com/NASA-IMPACT/veda-ui/pull/201#issuecomment-1185390161
       renderWorldCopies: false,
       projection: projection && convertProjectionToMapbox(projection),
       ...mapOptions

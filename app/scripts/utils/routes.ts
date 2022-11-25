@@ -1,16 +1,16 @@
-import deltaThematics, {
+import vedaThematics, {
   DatasetData,
-  DeltaDatum,
+  VedaDatum,
   ThematicData
-} from 'delta/thematics';
+} from 'veda/thematics';
 
-type ThematicOrString = DeltaDatum<ThematicData> | string;
-type DatasetOrString = DeltaDatum<DatasetData> | string;
+type ThematicOrString = VedaDatum<ThematicData> | string;
+type DatasetOrString = VedaDatum<DatasetData> | string;
 
 export const thematicRootPath = (thematic: ThematicOrString, path = '') => {
   const t = typeof thematic === 'string' ? thematic : thematic.data.id;
 
-  const tPath = deltaThematics.length > 1 ? `/${t}` : `/`;
+  const tPath = vedaThematics.length > 1 ? `/${t}` : `/`;
   if (!path) return tPath;
 
   return `${tPath.replace(/\/$/, '')}/${path}`;

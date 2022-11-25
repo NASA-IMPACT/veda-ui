@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { listReset, themeVal } from '@devseed-ui/theme-provider';
 import { AccordionManager } from '@devseed-ui/accordion';
 
-import { datasets } from 'delta/thematics';
+import { datasets } from 'veda/thematics';
 import { Layer } from './dataset-layer-single';
 import LayerAlert from './layer-alert';
 import { InlineLayerLoadingSkeleton } from './layer-loading';

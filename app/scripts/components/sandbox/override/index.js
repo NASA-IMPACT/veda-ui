@@ -27,7 +27,7 @@ function SandboxOverride() {
               </p>
               <p>
                 Create a file called <code>sandbox-override.js</code> and add
-                the correct path to the <code>delta.config.js</code> file.
+                the correct path to the <code>veda.config.js</code> file.
               </p>
               <p>Something like:</p>
               <p>

@@ -13,7 +13,7 @@ import {
   CollecticonExpandFromLeft,
   CollecticonShrinkToLeft
 } from '@devseed-ui/collecticons';
-import { ProjectionOptions } from 'delta/thematics';
+import { ProjectionOptions } from 'veda/thematics';
 import { FormSwitch } from '@devseed-ui/form';
 
 import DatasetLayers from './dataset-layers';

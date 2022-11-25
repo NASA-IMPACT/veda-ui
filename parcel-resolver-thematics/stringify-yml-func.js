@@ -2,7 +2,7 @@
 const path = require('path');
 
 /**
- * Stringify the given object so that it can be used in the delta/thematics
+ * Stringify the given object so that it can be used in the veda/thematics
  * module.
  *
  * We need to support functions in the yaml frontmatter so that some of the

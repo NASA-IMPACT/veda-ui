@@ -1,6 +1,6 @@
 import React from 'react';
 
-import deltaThematics from 'delta/thematics';
+import vedaThematics from 'veda/thematics';
 
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
@@ -21,7 +21,7 @@ function RootHome() {
           <FoldTitle>Browse the thematic areas</FoldTitle>
         </FoldHeader>
         <CardList>
-          {deltaThematics.map((t) => (
+          {vedaThematics.map((t) => (
             <li key={t.id}>
               <Card
                 cardType='cover'

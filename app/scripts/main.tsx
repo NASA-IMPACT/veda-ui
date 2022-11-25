@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import T from 'prop-types';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
-import deltaThematics from 'delta/thematics';
+import vedaThematics from 'veda/thematics';
 
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
@@ -49,7 +49,7 @@ const composingComponents = [
   LayoutRootContextProvider
 ];
 
-const hasSeveralThematicAreas = deltaThematics.length > 1;
+const hasSeveralThematicAreas = vedaThematics.length > 1;
 
 function ScrollTop() {
   const { pathname } = useLocation();

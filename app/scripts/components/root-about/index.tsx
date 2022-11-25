@@ -1,5 +1,5 @@
 import React from 'react';
-import { getOverride } from 'delta/thematics';
+import { getOverride } from 'veda/thematics';
 
 import { LayoutProps } from '$components/common/layout-root';
 import { PageMainContent } from '$styles/page';

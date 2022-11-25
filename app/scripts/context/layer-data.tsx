@@ -13,7 +13,7 @@ import {
   DatasetLayer,
   DatasetLayerCompareNormalized,
   datasets
-} from 'delta/thematics';
+} from 'veda/thematics';
 
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';

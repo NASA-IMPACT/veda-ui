@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TooltipProps } from 'recharts/types';
+import { TooltipProps } from 'recharts';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { timeFormatter, getNumForChart } from './utils';
-import { UniqueKeyUnit } from './';
+import { UniqueKeyUnit } from '.';
 
 interface TooltipComponentProps extends TooltipProps<number, string> {
   dateFormat: string;

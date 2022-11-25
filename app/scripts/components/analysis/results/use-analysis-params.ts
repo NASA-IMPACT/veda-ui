@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import qs from 'qs';
 import { useLocation } from 'react-router';
 import { Feature, MultiPolygon } from 'geojson';
-import { DatasetLayer, datasets as deltaDatasets } from 'delta/thematics';
+import { DatasetLayer, datasets as vedaDatasets } from 'veda/thematics';
 
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { polygonUrlDecode, polygonUrlEncode } from '$utils/polygon-url';
@@ -76,7 +76,7 @@ export function useAnalysisParams(): {
       }
 
       // Create an array with all the dataset layers.
-      const allDatasetLayers = Object.values(deltaDatasets).flatMap(
+      const allDatasetLayers = Object.values(vedaDatasets).flatMap(
         (d) => d.data.layers
       );
       const layers = datasetsLayers.split('|').map((id) =>
