@@ -127,7 +127,7 @@ function PageFooter(props) {
         <dd>
           <Button
             forwardedAs='a'
-            href='https://github.com/NASA-IMPACT/delta-config'
+            href='https://github.com/NASA-IMPACT/veda-config'
             variation='base-text'
             size='small'
             fitting='skinny'

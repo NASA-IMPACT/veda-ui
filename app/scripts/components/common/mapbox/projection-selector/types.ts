@@ -1,4 +1,4 @@
-import { MbProjectionOptions, ProjectionOptions } from 'delta/thematics';
+import { MbProjectionOptions, ProjectionOptions } from 'veda/thematics';
 
 export type ProjectionConicOptions = {
   center: [number, number];

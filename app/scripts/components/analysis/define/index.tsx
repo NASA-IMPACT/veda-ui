@@ -15,7 +15,7 @@ import {
   CollecticonEllipsisVertical
 } from '@devseed-ui/collecticons';
 
-import { DatasetLayer } from 'delta/thematics';
+import { DatasetLayer } from 'veda/thematics';
 import { useAnalysisParams } from '../results/use-analysis-params';
 import AoiSelector from './aoi-selector';
 import PageHeroActions from './page-hero-actions';

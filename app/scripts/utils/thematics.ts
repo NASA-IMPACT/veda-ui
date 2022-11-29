@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import deltaThematics, {
+import vedaThematics, {
   thematics,
   discoveries,
   datasets
-} from 'delta/thematics';
+} from 'veda/thematics';
 
 import { MDXContent, MDXModule } from 'mdx/types';
 import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
@@ -18,12 +18,12 @@ export function useThematicArea() {
 
   // If there's only one thematic area, the app is setup with only one thematic
   // area, and therefore return the first one.
-  const tId = deltaThematics.length === 1 ? deltaThematics[0].id : thematicId;
+  const tId = vedaThematics.length === 1 ? vedaThematics[0].id : thematicId;
 
   return useMemo(() => {
     if (!tId) return null;
 
-    const relData = deltaThematics.find((d) => d.id === tId);
+    const relData = vedaThematics.find((d) => d.id === tId);
     // Relationship data between thematics and datasets/discoveries.
     if (!relData) return null;
 

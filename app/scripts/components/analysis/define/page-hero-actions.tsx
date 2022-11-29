@@ -6,7 +6,7 @@ import {
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
 import { sticky } from 'tippy.js';
-import { DatasetLayer } from 'delta/thematics';
+import { DatasetLayer } from 'veda/thematics';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { analysisParams2QueryString } from '../results/use-analysis-params';
 import { resourceNotFound } from '$components/uhoh';

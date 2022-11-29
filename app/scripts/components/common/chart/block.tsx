@@ -3,7 +3,7 @@ import { csv, json, DSVRowArray } from 'd3';
 
 import { getFData } from './utils';
 import { fileExtensionRegex } from './constant';
-import Chart, { CommonLineChartProps, UniqueKeyUnit } from './';
+import Chart, { CommonLineChartProps, UniqueKeyUnit } from '.';
 
 interface BlockChartProp extends CommonLineChartProps {
   dataPath: string;

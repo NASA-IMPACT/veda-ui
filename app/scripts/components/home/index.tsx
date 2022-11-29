@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@devseed-ui/button';
 import { Overline } from '@devseed-ui/typography';
 
-import deltaThematics from 'delta/thematics';
+import vedaThematics from 'veda/thematics';
 
 import Carousel from './carousel';
 import { LayoutProps } from '$components/common/layout-root';
@@ -89,7 +89,7 @@ function Home() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
 
-  const otherThematicAreas = deltaThematics.filter(
+  const otherThematicAreas = vedaThematics.filter(
     (t) => t.id !== thematic.data.id
   );
 

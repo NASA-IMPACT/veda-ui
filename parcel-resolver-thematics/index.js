@@ -6,7 +6,7 @@ const fs = require('fs-extra');
 const fg = require('fast-glob');
 
 const stringifyYmlWithFns = require('./stringify-yml-func');
-const { loadDeltaConfig } = require('./config');
+const { loadVedaConfig } = require('./config');
 const { getFrontmatterData } = require('./frontmatter');
 const {
   validateContentTypeId,
@@ -42,7 +42,7 @@ async function loadOptionalContent(logger, root, globPath, type) {
   } catch (error) {
     logger.warn({
       message: `Path for "${type}" not found. This will result in an empty list.`,
-      hints: [`Provide a path for "${type}" in your delta.config.js`]
+      hints: [`Provide a path for "${type}" in your veda.config.js`]
     });
     return {
       data: [],
@@ -113,7 +113,7 @@ async function loadPageOverridesConfig(pageOverrides, root, logger) {
           logger.warn({
             message: `File for pageOverrides.${key} failed loading and was skipped.`,
             hints: [
-              `Check that the path defined in delta.config.js is correct`,
+              `Check that the path defined in veda.config.js is correct`,
               `Path: ${mdxPath}`,
               `Resolved to: ${absolutePath}`
             ]
@@ -131,19 +131,19 @@ async function loadPageOverridesConfig(pageOverrides, root, logger) {
 
 module.exports = new Resolver({
   async resolve({ specifier, logger }) {
-    if (specifier.startsWith('delta/thematics')) {
-      const { isDev, result, root, configPath } = loadDeltaConfig();
+    if (specifier.startsWith('veda/thematics')) {
+      const { isDev, result, root, configPath } = loadVedaConfig();
 
       if (isDev) {
         logger.warn({
           message:
-            'Could not find delta.config.js. Currently using development data.',
+            'Could not find veda.config.js. Currently using development data.',
           hints: [
             'If you are running the UI repo directly this is expected',
-            'Otherwise, create a delta.config.js file in your project config root.'
+            'Otherwise, create a veda.config.js file in your project config root.'
           ],
           documentationURL:
-            'https://github.com/NASA-IMPACT/delta-config/blob/develop/docs/CONFIGURATION.md'
+            'https://github.com/NASA-IMPACT/veda-config/blob/develop/docs/CONFIGURATION.md'
         });
       }
 
@@ -152,7 +152,7 @@ module.exports = new Resolver({
         throw new ThrowableDiagnostic({
           diagnostic: {
             message: 'Path for "thematics" not found.',
-            hints: ['Provide a path for "thematics" in your delta.config.js']
+            hints: ['Provide a path for "thematics" in your veda.config.js']
           }
         });
       }
@@ -236,12 +236,12 @@ module.exports = new Resolver({
       // Store the generated code in a file for debug purposed.
       // The generated file will be gitignored.
       fs.writeFile(
-        path.join(__dirname, 'delta-thematic.out.js'),
+        path.join(__dirname, 'veda-thematic.out.js'),
         `/**
  *
  * WARNING!!!
  *
- * This file is the generated output of the delta/thematic resolver.
+ * This file is the generated output of the veda/thematic resolver.
  * It is meant only or debugging purposes and should not be loaded directly.
  *
 */
@@ -251,7 +251,7 @@ ${moduleCode}`
       const resolved = {
         // When resolving the mdx files, parcel looks at the parent file to know
         // where to resolve them from and this file has to exist.
-        filePath: path.join(__dirname, '/delta-thematic.out.js'),
+        filePath: path.join(__dirname, '/veda-thematic.out.js'),
         code: moduleCode,
         invalidateOnFileChange: [
           configPath,

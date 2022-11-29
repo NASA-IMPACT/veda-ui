@@ -15,7 +15,7 @@ import {
   DatasetDatumFnResolverBag,
   DatasetDatumReturnType,
   DatasetLayerCompareNormalized
-} from 'delta/thematics';
+} from 'veda/thematics';
 import mapboxgl from 'mapbox-gl';
 import React from 'react';
 import { MapLayerRasterTimeseries, StacFeature } from './raster-timeseries';

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { LayerLegendCategorical, LayerLegendGradient } from 'delta/thematics';
+import { LayerLegendCategorical, LayerLegendGradient } from 'veda/thematics';
 import { AccordionFold, AccordionManager } from '@devseed-ui/accordion';
 import {
   glsp,

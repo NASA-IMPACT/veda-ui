@@ -1,4 +1,4 @@
-import { MbProjectionOptions, ProjectionOptions } from 'delta/thematics';
+import { MbProjectionOptions, ProjectionOptions } from 'veda/thematics';
 
 import { ProjectionListItem } from './types';
 import { validateRangeNum } from '$utils/utils';

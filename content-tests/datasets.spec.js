@@ -3,18 +3,18 @@ import fs from 'fs-extra';
 import fg from 'fast-glob';
 import matter from 'gray-matter';
 
-// If running the tests from delta-config the env environment will contain the
+// If running the tests from veda-config the env environment will contain the
 // path, otherwise use the mock
-const deltaConfigPath =
+const vedaConfigPath =
   process.env.DELTA_CONFIG_PATH ||
-  path.join(__dirname, '../mock/delta.config.js');
+  path.join(__dirname, '../mock/veda.config.js');
 
 /* eslint-disable-next-line */
-const deltaConfig = require(deltaConfigPath);
+const vedaConfig = require(vedaConfigPath);
 
 // Get the dataset paths from what's defined in the config.
-const root = path.dirname(deltaConfigPath);
-const globPath = path.resolve(root, deltaConfig.datasets);
+const root = path.dirname(vedaConfigPath);
+const globPath = path.resolve(root, vedaConfig.datasets);
 const datasetPaths = fg.sync(globPath);
 
 describe('Test datasets structure', () => {

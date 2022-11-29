@@ -1,4 +1,4 @@
-declare module 'delta/thematics' {
+declare module 'veda/thematics' {
   import * as dateFns from 'date-fns';
   import mapboxgl from 'mapbox-gl';
   import { MDXModule } from 'mdx/types';
@@ -182,11 +182,11 @@ declare module 'delta/thematics' {
   }
 
   /**
-   * Base structure for each of the data types in delta/thematics.
+   * Base structure for each of the data types in veda/thematics.
    */
-  type DeltaData<T> = Record<string, DeltaDatum<T>>;
+  type VedaData<T> = Record<string, VedaDatum<T>>;
 
-  export interface DeltaDatum<T> {
+  export interface VedaDatum<T> {
     /**
      * Contains all the variables in the content's front matter.
      */
@@ -200,23 +200,23 @@ declare module 'delta/thematics' {
 
   /**
    * Named exports: datasets.
-   * Object with all the delta datasets keyed by the dataset id.
+   * Object with all the veda datasets keyed by the dataset id.
    */
-  export const datasets: DeltaData<DatasetData>;
+  export const datasets: VedaData<DatasetData>;
 
   /**
    * Named exports: discoveries.
-   * Object with all the delta discoveries keyed by the discovery id.
+   * Object with all the veda discoveries keyed by the discovery id.
    */
-  export const discoveries: DeltaData<DiscoveryData>;
+  export const discoveries: VedaData<DiscoveryData>;
 
   /**
    * Named exports: thematics.
-   * Object with all the delta thematics keyed by the thematic id.
+   * Object with all the veda thematics keyed by the thematic id.
    */
-  export const thematics: DeltaData<ThematicData>;
+  export const thematics: VedaData<ThematicData>;
 
-  interface DeltaThematicListItem extends ThematicData {
+  interface VedaThematicListItem extends ThematicData {
     /**
      * Datasets that are related to this thematic area.
      */
@@ -232,12 +232,12 @@ declare module 'delta/thematics' {
    * respective datasets and discoveries. It contains no MDX content, just the
    * frontmatter data.
    */
-  const _default: DeltaThematicListItem[];
+  const _default: VedaThematicListItem[];
   export default _default;
 
   export type PageOverrides = 'aboutContent' | 'sandbox-override';
   /**
    * Configuration export for specific overrides.
    */
-  export const getOverride: (key: PageOverrides) => DeltaDatum<any> | undefined;
+  export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
 }

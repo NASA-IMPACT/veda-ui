@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { ProjectionOptions } from 'delta/thematics';
+import { ProjectionOptions } from 'veda/thematics';
 
 import {
   convertProjectionToMapbox,

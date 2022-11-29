@@ -1,7 +1,7 @@
 {
   "name": "parcel-resolver-thematics",
   "version": "1.0.0",
-  "description": "Parcel resolver for Delta data files",
+  "description": "Parcel resolver for Veda data files",
   "main": "./index.js",
   "types": "./index.d.ts",
   "engines": {

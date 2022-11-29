@@ -6,7 +6,7 @@ import { ContentBlockProse } from '$styles/content-block';
     ## The component override
 
     The `ComponentOverride` is used to replace certain parts of the UI.  
-    Through the `delta.config.js` the user can define a MDX file to load in a certain place.
+    Through the `veda.config.js` the user can define a MDX file to load in a certain place.
 
     For example, the following configuration:
     ```
@@ -34,7 +34,7 @@ import { ContentBlockProse } from '$styles/content-block';
 
     To add a new override:
     1) Implement the `ComponentOverride` in the appropriate place defining a key.
-    2) Add the key to the `delta/thematics` types (`parcel-resolver-thematics/index.d.ts`)
+    2) Add the key to the `veda/thematics` types (`parcel-resolver-thematics/index.d.ts`)
 
     Any other prop passed to `ComponentOverride` are avilable under `props.`:  
     **{JSON.stringify(props)}**
