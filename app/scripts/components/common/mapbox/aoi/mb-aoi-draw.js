@@ -71,13 +71,6 @@ export function useMbDraw({
     };
   }, [mapRef, theme, onChange]);
 
-  // Start/stop the drawing.
-  useEffect(() => {
-    const mbDraw = mbDrawRef.current;
-    if (!mbDraw) return;
-    return mbDraw.changeMode(drawing ? 'draw_polygon' : 'simple_select');
-  }, [drawing]);
-
   // Set / delete the feature.
   useEffect(() => {
     const mbDraw = mbDrawRef.current;
@@ -108,4 +101,11 @@ export function useMbDraw({
       mbDraw.changeMode('simple_select');
     }
   }, [selected, feature]);
+
+  // Start/stop the drawing.
+  useEffect(() => {
+    const mbDraw = mbDrawRef.current;
+    if (!mbDraw) return;
+    return mbDraw.changeMode(drawing ? 'draw_polygon' : 'simple_select');
+  }, [drawing]);
 }

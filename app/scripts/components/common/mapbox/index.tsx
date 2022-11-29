@@ -379,7 +379,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             'No area defined'
           ) : (
             <>
-              {calcFeatArea(aoi.feature)} km<sup>2</sup>
+              {calcFeatArea(aoi.feature)} km<sup>2</sup> area
             </>
           )}
         </p>
