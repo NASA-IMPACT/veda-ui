@@ -1,5 +1,7 @@
 # VEDA Dashboard
 
+change
+
 ![VEDA logo](./docs/media/veda_logo_blue_text_transparent.png)
 
 Veda is a dashboard to explore data.
