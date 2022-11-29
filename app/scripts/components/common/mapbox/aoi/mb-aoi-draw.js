@@ -28,7 +28,7 @@ export function useMbDraw({
 
   useEffect(() => {
     const mbMap = mapRef.current;
-    if (!mbMap) return;
+    if (!mbMap || !onChange || !mbMap._interactive) return;
 
     const newMbDraw = new MapboxDraw({
       modes: MapboxDraw.modes,
