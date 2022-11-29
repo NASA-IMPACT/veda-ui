@@ -1,0 +1,40 @@
+---
+featuredOn:
+  - agriculture
+id: test-id
+name: TEST ID
+description: description
+thematics:
+  - agriculture
+media:
+  src: mock/datasets/nasa-71747-unsplash.jpg
+  alt: splash image
+  author:
+    name: nasa
+    url: https://nasa.gov
+layers:
+  - type: raster
+    id: layer-id
+    stacCol: nightlights-500m-daily
+    name: Night Lights
+    description: Night Lights descriptiuon
+    zoomExtent:
+      - "2"
+      - "16"
+    legend:
+      type: gradient
+      min: "0"
+      max: "10"
+      stops:
+        - "#ff0000"
+        - "#00ff00"
+    projection:
+      id: mercator
+      center:
+        - "0"
+        - "0"
+      parallels:
+        - "0"
+        - "0"
+---
+A﻿bout text
