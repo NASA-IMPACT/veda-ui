@@ -46,6 +46,9 @@ interface ChartCardProps {
   title: React.ReactNode;
   chartData: TimeseriesData;
   activeMetrics: DataMetric[];
+  defineRange: [Date, Date];
+  brushRange: [Date, Date];
+  onBrushRangeChange: (range: [Date, Date]) => void;
 }
 
 const ChartDownloadButton = composeVisuallyDisabled(ToolbarIconButton);
@@ -64,7 +67,14 @@ const getNoDownloadReason = ({ status, data }: TimeseriesData) => {
 };
 
 export default function ChartCard(props: ChartCardProps) {
-  const { title, chartData, activeMetrics } = props;
+  const {
+    title,
+    chartData,
+    activeMetrics,
+    defineRange,
+    brushRange,
+    onBrushRangeChange
+  } = props;
   const { status, meta, data, error, name, id } = chartData;
 
   const chartRef = useRef<AnalysisChartRef>(null);
@@ -204,6 +214,9 @@ export default function ChartCard(props: ChartCardProps) {
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
                 onBrushChange={setBrushIndex}
+                defineRange={defineRange}
+                brushRange={brushRange}
+                onBrushRangeChange={onBrushRangeChange}
               />
             )
           ) : (

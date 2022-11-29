@@ -123,16 +123,31 @@ export default function AnalysisResults() {
     };
   }, [start, end, datasetsLayers, aoi]);
 
-  if (errors?.length) {
-    return <Navigate to={thematicAnalysisPath(thematic)} replace />;
-  }
-
   const analysisParamsQs = analysisParams2QueryString({
     start,
     end,
     datasetsLayers,
     aoi
   });
+
+  const defineRange: [Date, Date] | null = useMemo(
+    () => (start && end ? [start, end] : null),
+    [start, end]
+  );
+
+  const [brushRange, setBrushRange] = useState<[Date, Date] | null>(null);
+
+  useEffect(() => {
+    if (defineRange && !brushRange) {
+      // TODO auto fit to available data
+      setBrushRange(defineRange);
+    }
+  }, [defineRange, brushRange]);
+
+
+  if (errors?.length) {
+    return <Navigate to={thematicAnalysisPath(thematic)} replace />;
+  }
 
   return (
     <PageMainContent>
@@ -168,7 +183,7 @@ export default function AnalysisResults() {
           />
         </FoldHeader>
         <FoldBody>
-          {!!requestStatus.length && (
+          {!!requestStatus.length && defineRange && brushRange && (
             <ChartCardList>
               {requestStatus.map((l) => (
                 <li key={l.id}>
@@ -176,6 +191,9 @@ export default function AnalysisResults() {
                     title={l.name}
                     chartData={l}
                     activeMetrics={activeMetrics}
+                    defineRange={defineRange}
+                    brushRange={brushRange}
+                    onBrushRangeChange={(range) => setBrushRange(range)}
                   />
                 </li>
               ))}
