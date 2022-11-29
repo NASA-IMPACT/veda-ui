@@ -1,19 +1,21 @@
-import { Link } from 'react-router-dom';
-import { Button, ButtonProps } from '@devseed-ui/button';
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { sticky } from 'tippy.js';
+import { Feature, MultiPolygon, Polygon } from 'geojson';
+import { Button, ButtonProps } from '@devseed-ui/button';
 import {
   CollecticonTickSmall,
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
-import { sticky } from 'tippy.js';
 import { DatasetLayer } from 'veda/thematics';
-import { Feature, MultiPolygon, Polygon } from 'geojson';
+
 import { analysisParams2QueryString } from '../results/use-analysis-params';
+import { Tip } from '$components/common/tip';
 import { resourceNotFound } from '$components/uhoh';
 import { thematicAnalysisPath } from '$utils/routes';
 import { useThematicArea } from '$utils/thematics';
-import { Tip } from '$components/common/tip';
 import { composeVisuallyDisabled } from '$utils/utils';
+import { useMediaQuery } from '$utils/use-media-query';
 
 const SaveButton = composeVisuallyDisabled(Button);
 
@@ -37,6 +39,7 @@ export default function PageHeroActions({
   aoi
 }: PageHeroActionsProps) {
   const thematic = useThematicArea();
+  const { isLargeUp } = useMediaQuery();
   if (!thematic) throw resourceNotFound();
 
   const analysisParamsQs = useMemo(() => {
@@ -93,8 +96,8 @@ export default function PageHeroActions({
       )}
       {showTip ? (
         <Tip
-          visible
-          placement='bottom-end'
+          visible={isLargeUp ? true : undefined}
+          placement={isLargeUp ? 'left' : 'bottom-end'}
           content={tipContents}
           sticky='reference'
           plugins={[sticky]}
