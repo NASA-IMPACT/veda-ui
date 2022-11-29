@@ -105,7 +105,7 @@ export default function PageHeroActions({
             variation='achromic-outline'
             visuallyDisabled={true}
           >
-            <CollecticonTickSmall /> Save
+            <CollecticonTickSmall /> Generate
           </SaveButton>
         </Tip>
       ) : (
@@ -115,7 +115,7 @@ export default function PageHeroActions({
           size={size}
           to={`${thematicAnalysisPath(thematic)}/results${analysisParamsQs}`}
         >
-          <CollecticonTickSmall /> Save
+          <CollecticonTickSmall /> Generate
         </Button>
       )}
     </>

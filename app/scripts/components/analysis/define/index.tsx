@@ -216,12 +216,12 @@ export default function Analysis() {
     <PageMainContent>
       <LayoutProps
         title='Analysis'
-        description='Visualize insights from a selected area over a period of time.'
+        description='Generate timeseries data for your area of interest.'
         thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
         title={isNewAnalysis ? 'Start analysis' : 'Refine analysis'}
-        description='Visualize insights from a selected area over a period of time.'
+        description='Generate timeseries data for your area of interest.'
         renderActions={({ size }) => (
           <PageHeroActions
             size={size}
