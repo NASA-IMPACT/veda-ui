@@ -233,7 +233,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
                 <Line
                   type='linear'
                   isAnimationActive={false}
-                  dot={false}
+                  dot={{ r:2, strokeWidth: 1}}
                   activeDot={false}
                   key={`${k.value}-line`}
                   dataKey={k.label}
