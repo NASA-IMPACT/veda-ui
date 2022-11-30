@@ -1,0 +1,45 @@
+---
+featuredOn:
+  - air-quality
+id: test-dataset
+name: Test Dataset
+description: test dataset
+thematics:
+  - air-quality
+media:
+  src: mock/datasets/nasa-71747-unsplash.jpg
+  alt: NASA splash image
+  author:
+    name: "NASA "
+    url: https://nasa.gov
+layers:
+  - sourceParams:
+      rescale:
+        - "1"
+      bidx: "1"
+      colormap_name: inferno
+    name: night lights
+    legend:
+      type: gradient
+      min: "0"
+      max: max
+      stops:
+        - "#ff0000"
+        - "#0000ff"
+    projection:
+      id: mercator
+      center:
+        - "0"
+        - "0"
+      parallels:
+        - "0"
+        - "0"
+    type: raster
+    id: layer-id
+    description: test layer with night lights data
+    stacCol: nightlights-500m-daily
+    zoomExtent:
+      - "6"
+      - "20"
+---
+B﻿ody text
