@@ -22,7 +22,7 @@ export interface AnalysisChartRef {
   saveAsImage: (name?: string) => Promise<void>;
 }
 
-const syncId = 'analysis';
+const syncId = null;
 
 export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
   function AnalysisChart(props, ref) {
