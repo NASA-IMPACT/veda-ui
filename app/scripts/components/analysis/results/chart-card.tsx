@@ -46,7 +46,7 @@ interface ChartCardProps {
   title: React.ReactNode;
   chartData: TimeseriesData;
   activeMetrics: DataMetric[];
-  defineRange: [Date, Date];
+  availableDomain: [Date, Date];
   brushRange: [Date, Date];
   onBrushRangeChange: (range: [Date, Date]) => void;
 }
@@ -71,7 +71,7 @@ export default function ChartCard(props: ChartCardProps) {
     title,
     chartData,
     activeMetrics,
-    defineRange,
+    availableDomain,
     brushRange,
     onBrushRangeChange
   } = props;
@@ -214,7 +214,7 @@ export default function ChartCard(props: ChartCardProps) {
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
                 onBrushChange={setBrushIndex}
-                defineRange={defineRange}
+                availableDomain={availableDomain}
                 brushRange={brushRange}
                 onBrushRangeChange={onBrushRangeChange}
               />

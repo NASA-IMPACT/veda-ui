@@ -130,7 +130,7 @@ export default function AnalysisResults() {
     aoi
   });
 
-  const defineRange: [Date, Date] | null = useMemo(
+  const availableDomain: [Date, Date] | null = useMemo(
     () => (start && end ? [start, end] : null),
     [start, end]
   );
@@ -138,11 +138,11 @@ export default function AnalysisResults() {
   const [brushRange, setBrushRange] = useState<[Date, Date] | null>(null);
 
   useEffect(() => {
-    if (defineRange && !brushRange) {
+    if (availableDomain && !brushRange) {
       // TODO auto fit to available data
-      setBrushRange(defineRange);
+      setBrushRange(availableDomain);
     }
-  }, [defineRange, brushRange]);
+  }, [availableDomain, brushRange]);
 
 
   if (errors?.length) {
@@ -183,7 +183,7 @@ export default function AnalysisResults() {
           />
         </FoldHeader>
         <FoldBody>
-          {!!requestStatus.length && defineRange && brushRange && (
+          {!!requestStatus.length && availableDomain && brushRange && (
             <ChartCardList>
               {requestStatus.map((l) => (
                 <li key={l.id}>
@@ -191,7 +191,7 @@ export default function AnalysisResults() {
                     title={l.name}
                     chartData={l}
                     activeMetrics={activeMetrics}
-                    defineRange={defineRange}
+                    availableDomain={availableDomain}
                     brushRange={brushRange}
                     onBrushRangeChange={(range) => setBrushRange(range)}
                   />

@@ -34,11 +34,11 @@ import {
   highlightColor,
   legendWidth,
   brushRelatedConfigs,
-  brushHeight
+  brushHeight,
 } from './constant';
 import { ChartWrapperRef } from './analysis/utils';
+import BrushCustom from './analysis/brush';
 import { useMediaQuery } from '$utils/use-media-query';
-import useBrush from '$components/analysis/results/useBrush';
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 0.8rem;
@@ -50,45 +50,9 @@ const ChartWrapper = styled.div`
 `;
 
 const BrushContainer = styled.div`
-  position: relative;
-  background: pink;
-`;
-
-const BrushNew = styled.div<{ x: number; width: number; height: number }>`
-  position: absolute;
-  top: 0;
-  left: ${({ x }) => x}px;
-  width: ${({ width }) => width}px;
-  height: ${({ height }) => height}px;
-`;
-
-const BrushComponent = styled.button`
-  position: absolute;
-  height: 100%;
-  padding: 0;
-  border: 1px solid rgb(110, 110, 110);
-`;
-
-const BrushTraveller = styled(BrushComponent)`
-  width: 8px;
-  cursor: ew-resize;
-  z-index: 1;
-  padding: 0;
-  background: rgb(110, 110, 110);
-`;
-
-const BrushTravellerStart = styled(BrushTraveller)`
-  left: -4px;
-`;
-const BrushTravellerEnd = styled(BrushTraveller)`
-  right: -4px;
-`;
-const BrushDrag = styled(BrushComponent)`
   width: 100%;
-  cursor: move;
-  background: rgba(110, 110, 110, 0.3);
+  position: relative;
 `;
-
 export interface CommonLineChartProps {
   xKey: string;
   altTitle: string;
@@ -105,7 +69,7 @@ export interface CommonLineChartProps {
   highlightLabel?: string;
   uniqueKeys: UniqueKeyUnit[];
   onBrushChange?: (idx: { startIndex: number; endIndex: number }) => void;
-  defineRange: [Date, Date];
+  availableDomain: [Date, Date];
   brushRange: [Date, Date];
   onBrushRangeChange: (range: [Date, Date]) => void;
 }
@@ -149,7 +113,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       xAxisLabel,
       yAxisLabel,
       onBrushChange,
-      defineRange,
+      availableDomain,
       brushRange,
       onBrushRangeChange
     } = props;
@@ -199,31 +163,14 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
 
     const renderHighlight = !!(highlightStart ?? highlightEnd);
 
-    const changeCallback = useCallback(
-      (start, end) => {
-        // console.log(start, end);
-        onBrushRangeChange([start, end]);
-      },
-      [onBrushRangeChange]
-    );
-
-    const {
-      brushX,
-      brushWidth,
-      onBrushMouseDown,
-      onBrushMouseUp,
-      onBrushMouseMove
-    } = useBrush(440, defineRange, brushRange, changeCallback);
-
-
     const xAxisDomain = useMemo(() => {
-      console.log(brushRange)
+      // console.log(brushRange);
       return [+brushRange[0], +brushRange[1]];
     }, [brushRange]);
 
-    const brusXAxisDomain = useMemo(() => {
-      return [+defineRange[0], +defineRange[1]];
-    }, [defineRange]);
+    const brushXAxisDomain = useMemo(() => {
+      return [+availableDomain[0], +availableDomain[1]];
+    }, [availableDomain]);
 
     return (
       <ChartWrapper>
@@ -238,18 +185,18 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             ref={ref as any}
             data={chartData}
             margin={chartMargin}
-            // syncId={syncId}
-            // syncMethod={(tick, data) => {
-            //   const index = syncMethodFunction({
-            //     data,
-            //     chartData,
-            //     xKey,
-            //     dateFormat,
-            //     startDate: chartData[brushStartIndex][xKey],
-            //     endDate: chartData[brushStartIndex][xKey]
-            //   });
-            //   return index;
-            // }}
+            syncId={syncId}
+            syncMethod={(tick, data) => {
+              const index = syncMethodFunction({
+                data,
+                chartData,
+                xKey,
+                dateFormat,
+                startDate: chartData[brushStartIndex][xKey],
+                endDate: chartData[brushStartIndex][xKey]
+              });
+              return index;
+            }}
           >
             <AltTitle title={altTitle} desc={altDesc} />
             <CartesianGrid stroke='#efefef' vertical={false} />
@@ -371,22 +318,20 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
         <BrushContainer>
           <ResponsiveContainer
             aspect={chartAspectRatio}
-            debounce={500}
-            // height={80}
-            // minHeight={chartMinHeight}
             maxHeight={brushHeight}
-            width={440}
+            width='100%'
           >
-            <LineChart data={chartData}>
-            <XAxis
-              type='number'
-              scale='time'
-              domain={brusXAxisDomain}
-              dataKey={xKey}
-              axisLine={false}
-              tickFormatter={(t) => timeFormatter(t, dateFormat)}
-              height={40}
-            />
+            <LineChart
+              data={chartData}
+              margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+            >
+              <XAxis
+                type='number'
+                scale='time'
+                domain={brushXAxisDomain}
+                dataKey={xKey}
+                hide={true}
+              />
               {uniqueKeysWithColors.map((k) => {
                 return (
                   <Line
@@ -403,18 +348,11 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
               })}
             </LineChart>
           </ResponsiveContainer>
-          <BrushNew
-            height={brushHeight}
-            onMouseDown={onBrushMouseDown}
-            onMouseUp={onBrushMouseUp}
-            onMouseMove={onBrushMouseMove}
-            x={brushX}
-            width={brushWidth}
-          >
-            <BrushTravellerStart data-role='start' />
-            <BrushDrag data-role='drag' />
-            <BrushTravellerEnd data-role='end' />
-          </BrushNew>
+          <BrushCustom
+            availableDomain={availableDomain}
+            brushRange={brushRange}
+            onBrushRangeChange={onBrushRangeChange}
+          />
         </BrushContainer>
       </ChartWrapper>
     );
