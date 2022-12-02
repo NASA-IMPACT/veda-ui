@@ -34,6 +34,7 @@ function watcher() {
   // ---
   // Watch static files. DO NOT REMOVE.
   gulp.watch(['static/**/*'], copyFiles);
+  gulp.watch(['admin/**/*'], copyNetlifyCMS);
 }
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -55,6 +56,11 @@ function copyFiles() {
   return gulp
     .src([path.join(__dirname, 'static/**/*'), 'static/**/*'])
     .pipe(gulp.dest('dist'));
+}
+
+function copyNetlifyCMS() {
+  // Copy Netifly CMS file to static folder
+  return gulp.src('admin/**/*').pipe(gulp.dest('dist/admin'));
 }
 
 // Below are the parcel related tasks. One for the build process and other to
@@ -111,17 +117,17 @@ module.exports.clean = clean;
 module.exports.serve = gulp.series(
   gulp.parallel(
     // Task to copy the files. DO NOT REMOVE
-    copyFiles
+    copyFiles,
+    copyNetlifyCMS
   ),
   gulp.parallel(watcher, parcelServe)
 );
 
+// do not deploy netlify cms to production
+const parallelTasks =
+  process.env.NODE_ENV === 'production'
+    ? gulp.parallel(copyFiles)
+    : gulp.parallel(copyFiles, copyNetlifyCMS);
+
 // Task orchestration used during the production process.
-module.exports.default = gulp.series(
-  clean,
-  gulp.parallel(
-    // Task to copy the files. DO NOT REMOVE
-    copyFiles
-  ),
-  parcelBuild
-);
+module.exports.default = gulp.series(clean, parallelTasks, parcelBuild);
