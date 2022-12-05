@@ -67,8 +67,8 @@ function Brush(props: BrushProps) {
   const { availableDomain, brushRange, onBrushRangeChange } = props;
 
   const changeCallback = useCallback(
-    (start, end) => {
-      onBrushRangeChange([start, end]);
+    (newSelection) => {
+      onBrushRangeChange(newSelection);
     },
     [onBrushRangeChange]
   );

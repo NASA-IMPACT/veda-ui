@@ -139,7 +139,7 @@ export default function AnalysisResults() {
 
   useEffect(() => {
     if (availableDomain && !brushRange) {
-      // TODO auto fit to available data
+      // TODO auto fit to available data? For now taking the whole user-defined range
       setBrushRange(availableDomain);
     }
   }, [availableDomain, brushRange]);

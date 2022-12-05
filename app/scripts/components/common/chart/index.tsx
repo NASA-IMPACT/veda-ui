@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -8,7 +8,6 @@ import {
   Tooltip,
   CartesianGrid,
   Label,
-  Brush,
   ResponsiveContainer,
   ReferenceArea,
   Legend,
@@ -24,7 +23,7 @@ import {
   timeFormatter,
   convertToTime,
   getNumForChart,
-  syncMethodFunction
+  // syncMethodFunction
 } from './utils';
 import {
   chartMinHeight,
@@ -68,7 +67,6 @@ export interface CommonLineChartProps {
   highlightEnd?: string;
   highlightLabel?: string;
   uniqueKeys: UniqueKeyUnit[];
-  onBrushChange?: (idx: { startIndex: number; endIndex: number }) => void;
   availableDomain: [Date, Date];
   brushRange: [Date, Date];
   onBrushRangeChange: (range: [Date, Date]) => void;
@@ -83,7 +81,7 @@ export interface UniqueKeyUnit {
 
 interface RLineChartProps extends CommonLineChartProps {
   chartData: object[];
-  syncId?: string;
+  // syncId?: string;
 }
 
 function CustomCursor(props) {
@@ -106,38 +104,19 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       altDesc,
       renderLegend = false,
       renderBrush = false,
-      syncId,
+      // syncId,
       highlightStart,
       highlightEnd,
       highlightLabel,
       xAxisLabel,
       yAxisLabel,
-      onBrushChange,
       availableDomain,
       brushRange,
       onBrushRangeChange
     } = props;
 
     const [chartMargin, setChartMargin] = useState(defaultMargin);
-    const [brushStartIndex, setBrushStartIndex] = useState(0);
-    const [brushEndIndex, setBrushEndIndex] = useState(chartData.length - 1);
-
     const { isMediumUp } = useMediaQuery();
-
-    const handleBrushChange = useCallback(
-      (newIndex) => {
-        const { startIndex, endIndex } = newIndex;
-        setBrushStartIndex(startIndex);
-        setBrushEndIndex(endIndex);
-        onBrushChange?.(newIndex);
-      },
-      [onBrushChange]
-    );
-
-    useEffect(() => {
-      // Fire brush callback on mount to have the correct starting values.
-      onBrushChange?.({ startIndex: 0, endIndex: chartData.length - 1 });
-    }, []);
 
     useEffect(() => {
       if (!isMediumUp) {
@@ -164,7 +143,6 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
     const renderHighlight = !!(highlightStart ?? highlightEnd);
 
     const xAxisDomain = useMemo(() => {
-      // console.log(brushRange);
       return [+brushRange[0], +brushRange[1]];
     }, [brushRange]);
 
@@ -185,18 +163,18 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             ref={ref as any}
             data={chartData}
             margin={chartMargin}
-            syncId={syncId}
-            syncMethod={(tick, data) => {
-              const index = syncMethodFunction({
-                data,
-                chartData,
-                xKey,
-                dateFormat,
-                startDate: chartData[brushStartIndex][xKey],
-                endDate: chartData[brushStartIndex][xKey]
-              });
-              return index;
-            }}
+            // syncId={syncId}
+            // syncMethod={(tick, data) => {
+            //   const index = syncMethodFunction({
+            //     data,
+            //     chartData,
+            //     xKey,
+            //     dateFormat,
+            //     startDate: chartData[brushStartIndex][xKey],
+            //     endDate: chartData[brushStartIndex][xKey]
+            //   });
+            //   return index;
+            // }}
           >
             <AltTitle title={altTitle} desc={altDesc} />
             <CartesianGrid stroke='#efefef' vertical={false} />
@@ -285,34 +263,6 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
               />
             )}
 
-            {renderBrush && (
-              <Brush
-                data={chartData}
-                dataKey={xKey}
-                height={brushHeight}
-                tickFormatter={(t) => timeFormatter(t, dateFormat)}
-                onChange={handleBrushChange}
-                startIndex={brushStartIndex}
-                endIndex={brushEndIndex}
-              >
-                <LineChart data={chartData}>
-                  {uniqueKeysWithColors.map((k) => {
-                    return (
-                      <Line
-                        type='linear'
-                        isAnimationActive={false}
-                        dot={false}
-                        activeDot={false}
-                        key={`${k.value}-line-brush`}
-                        dataKey={k.label}
-                        strokeWidth={0.5}
-                        stroke={k.active ? k.color : 'transparent'}
-                      />
-                    );
-                  })}
-                </LineChart>
-              </Brush>
-            )}
           </LineChartWithFont>
         </ResponsiveContainer>
         <BrushContainer>

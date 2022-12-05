@@ -3,10 +3,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 type DraggingState = 'start' | 'drag' | 'end';
 
+/**
+ * 
+ * @param  {[Date, Date]} domain Overall domain for the brush
+ * @param {[Date, Date]} currentValues Current start and end for the brush selection. This state needs to be managed from outside the hook.
+ * @param {function} changeCallback Callback to call when user updated brush. Receives a [Date, Date] argument
+ * @param {number} minBrushWidthPx Minimum Width of the brush allowed, defaults to 10
+ * @returns {{ wrapperRef, onBrushMouseDown, containerStyles}} 
+ */
 function useBrush(
   domain: [Date, Date],
   currentValues: [Date, Date],
-  changeCallback: (start, end) => void,
+  changeCallback: ([start, end]: [Date, Date]) => void,
   minBrushWidthPx = 10
 ) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -17,7 +25,7 @@ function useBrush(
   
   const scale = useMemo(() => {
     return scaleTime()
-      .domain(domain as [any, any])
+      .domain(domain)
       .range([0, wrapperWidth]);
   }, [domain, wrapperWidth]);
 
@@ -85,7 +93,7 @@ function useBrush(
         newEnd = newEnd > domain[1] ? domain[1] : newEnd;
       }
 
-      changeCallback(newStart, newEnd);
+      changeCallback([newStart, newEnd]);
     },
     [
       dragging,
@@ -118,8 +126,6 @@ function useBrush(
   return {
     wrapperRef,
     onBrushMouseDown,
-    brushX,
-    brushWidth,
     containerStyles
   };
 }

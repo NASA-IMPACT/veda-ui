@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useRef,
-  useMemo,
-  useState,
-  MouseEvent
-} from 'react';
+import React, { useCallback, useRef, useMemo, MouseEvent } from 'react';
 import { format } from 'date-fns';
 import { reverse } from 'd3';
 import { useTheme } from 'styled-components';
@@ -78,9 +72,6 @@ export default function ChartCard(props: ChartCardProps) {
   const { status, meta, data, error, name, id } = chartData;
 
   const chartRef = useRef<AnalysisChartRef>(null);
-  // Capture the brush changes to be able to get the correct dates for the
-  // export filename.
-  const [brushIndex, setBrushIndex] = useState({ startIndex: 0, endIndex: 0 });
   const noDownloadReason = getNoDownloadReason(chartData);
 
   const onExportClick = useCallback(
@@ -90,29 +81,23 @@ export default function ChartCard(props: ChartCardProps) {
         return;
       }
 
-      const { startIndex, endIndex } = brushIndex;
+      const [startDate, endDate] = brushRange;
       // The indexes expect the data to be ascending, so we have to reverse the
       // data.
       const data = reverse(chartData.data.timeseries);
       const dFormat = 'yyyy-MM-dd';
-      const startDate = format(new Date(data[startIndex].date), dFormat);
-      const endDate = format(new Date(data[endIndex].date), dFormat);
+      const startDateFormatted = format(startDate, dFormat);
+      const endDateFormatted = format(endDate, dFormat);
 
-      const filename = `chart.${id}.${startDate}-${endDate}`;
+      const filename = `chart.${id}.${startDateFormatted}-${endDateFormatted}`;
 
       if (type === 'image') {
         chartRef.current?.saveAsImage(filename);
       } else {
-        exportCsv(
-          filename,
-          data,
-          data[startIndex].date,
-          data[endIndex].date,
-          activeMetrics
-        );
+        exportCsv(filename, data, startDate, endDate, activeMetrics);
       }
     },
-    [id, chartData.data, brushIndex, activeMetrics]
+    [id, chartData.data, brushRange, activeMetrics]
   );
 
   const theme = useTheme();
@@ -213,7 +198,6 @@ export default function ChartCard(props: ChartCardProps) {
                 altDesc={`Amount of ${name} over time`}
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
-                onBrushChange={setBrushIndex}
                 availableDomain={availableDomain}
                 brushRange={brushRange}
                 onBrushRangeChange={onBrushRangeChange}
