@@ -37,7 +37,7 @@ const MapContainer = styled.div`
   position: relative;
 `;
 
-const DemoMap = styled(MapboxMap)`
+const AoiMap = styled(MapboxMap)`
   min-height: 24rem;
 `;
 
@@ -148,7 +148,7 @@ export default function AoiSelector({
       </FoldHeader>
       <FoldBody>
         <MapContainer>
-          <DemoMap
+          <AoiMap
             ref={mapRef}
             aoi={aoiDrawState}
             onAoiChange={onAoiEvent}

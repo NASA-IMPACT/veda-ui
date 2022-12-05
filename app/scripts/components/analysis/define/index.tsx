@@ -101,7 +101,7 @@ export default function Analysis() {
   const { params, setAnalysisParam } = useAnalysisParams();
   const { start, end, datasetsLayers, aoi, errors } = params;
 
-  const { aoi: aoiDrawState, onAoiEvent } = useAoiControls();
+  const { aoi: aoiDrawState, onAoiEvent } = useAoiControls({ drawing: true });
 
   // If there are errors in the url parameters it means that this should be
   // treated as a new analysis. If the parameters are all there and correct, the
@@ -216,12 +216,12 @@ export default function Analysis() {
     <PageMainContent>
       <LayoutProps
         title='Analysis'
-        description='Visualize insights from a selected area over a period of time.'
+        description='Generate timeseries data for your area of interest.'
         thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
         title={isNewAnalysis ? 'Start analysis' : 'Refine analysis'}
-        description='Visualize insights from a selected area over a period of time.'
+        description='Generate timeseries data for your area of interest.'
         renderActions={({ size }) => (
           <PageHeroActions
             size={size}
