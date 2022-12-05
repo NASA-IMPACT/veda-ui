@@ -51,6 +51,8 @@ const ChartWrapper = styled.div`
 const BrushContainer = styled.div`
   width: 100%;
   position: relative;
+  border: 1px solid #efefef;
+  border-radius: 0.25rem;
 `;
 export interface CommonLineChartProps {
   xKey: string;
@@ -186,6 +188,8 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
               axisLine={false}
               tickFormatter={(t) => timeFormatter(t, dateFormat)}
               allowDataOverflow={true}
+              interval={20}
+              minTickGap={100000}
               height={
                 renderBrush
                   ? brushRelatedConfigs.with.xAxisHeight

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import {  brushHeight } from '../constant';
+import { brushHeight } from '../constant';
 import useBrush from './useBrush';
 
 const BrushWrapper = styled.div`
@@ -36,7 +36,7 @@ const BrushTraveller = styled(BrushComponent)`
   &:after {
     content: ' ';
     border: 1px solid white;
-    opacity: .7;
+    opacity: 0.7;
     width: 3px;
     height: 10px;
     display: block;
