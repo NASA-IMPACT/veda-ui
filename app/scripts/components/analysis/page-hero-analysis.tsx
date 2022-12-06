@@ -215,7 +215,9 @@ function PageHeroAnalysis(props: PageHeroAnalysisProps) {
           </PageHeroActions>
         </PageHeroBlockBeta>
       </PageHeroInner>
-      {isResults && aoiFeature && <PageHeroMedia feature={aoiFeature} />}
+      {isResults && aoiFeature && (
+        <PageHeroMedia feature={aoiFeature} isHeaderStuck={isStuck} />
+      )}
     </PageHeroSelf>
   );
 }

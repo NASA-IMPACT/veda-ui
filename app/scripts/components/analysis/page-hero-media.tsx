@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { rgba, themeVal } from '@devseed-ui/theme-provider';
 import mapboxgl from 'mapbox-gl';
 import { Feature, MultiPolygon } from 'geojson';
 import bbox from '@turf/bbox';
 import { shade } from 'polished';
+import { rgba, themeVal } from '@devseed-ui/theme-provider';
+import { reveal } from '@devseed-ui/animation';
 
 import { SimpleMap } from '$components/common/mapbox/map';
+import { useEffectPrevious } from '$utils/use-effect-previous';
 
 const WORLD_POLYGON = [
   [180, 90],
@@ -26,18 +28,45 @@ const mapOptions: Partial<mapboxgl.MapboxOptions> = {
 
 interface PageHeroMediaProps {
   feature: Feature<MultiPolygon>;
+  isHeaderStuck: boolean;
 }
 
 function PageHeroMedia(props: PageHeroMediaProps) {
-  const { feature, ...rest } = props;
+  const { feature, isHeaderStuck, ...rest } = props;
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map>(null);
   const [isMapLoaded, setMapLoaded] = useState(false);
 
   const theme = useTheme();
 
+  // Delay the mount of the hero media to avoid the map showing with the wrong
+  // size. See: https://github.com/NASA-IMPACT/veda-ui/issues/330
+  // The issue:
+  // If on the analysis define page we press the generate button when the header
+  // is stuck (this happens if we scrolled down the page) then the analysis
+  // results page will be loaded with the header also stuck. This causes the map
+  // to mount and read the parent height when it is contracted. The header will
+  // then expand but the map will not.
+  // The solution:
+  // If the header starts as stuck we delay the mounting of the map so by the
+  // time the map mounts, the parent already has its final size. In the case
+  // that the header is already unstuck when the page loads, this is not needed.
+  const [shouldMount, setShouldMount] = useState(!isHeaderStuck);
+  useEffectPrevious(
+    ([wasStuck]) => {
+      if (!shouldMount && wasStuck && !isHeaderStuck) {
+        const tid = setTimeout(() => setShouldMount(true), 350);
+
+        return () => {
+          clearTimeout(tid);
+        };
+      }
+    },
+    [isHeaderStuck, shouldMount]
+  );
+
   useEffect(() => {
-    if (!isMapLoaded || !mapRef.current) return;
+    if (!shouldMount || !isMapLoaded || !mapRef.current) return;
 
     const aoiSource = mapRef.current.getSource('aoi');
 
@@ -104,9 +133,9 @@ function PageHeroMedia(props: PageHeroMediaProps) {
     /*
      theme.color.primary will never change. Having it being set once is enough
     */
-  }, [isMapLoaded, feature]);
+  }, [shouldMount, isMapLoaded, feature]);
 
-  return (
+  return shouldMount ? (
     <div {...rest}>
       <SimpleMap
         className='root'
@@ -117,7 +146,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
         attributionPosition='top-left'
       />
     </div>
-  );
+  ) : null;
 }
 
 const rgbaFixed = rgba as any;
@@ -135,6 +164,7 @@ export default styled(PageHeroMedia)`
   width: 64%;
   z-index: -1;
   pointer-events: none;
+  animation: ${reveal} 2s ease 0s 1;
 
   &::after {
     position: absolute;
