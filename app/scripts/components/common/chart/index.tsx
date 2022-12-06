@@ -22,7 +22,7 @@ import {
   getColors,
   timeFormatter,
   convertToTime,
-  getNumForChart,
+  getNumForChart
   // syncMethodFunction
 } from './utils';
 import {
@@ -33,7 +33,7 @@ import {
   highlightColor,
   legendWidth,
   brushRelatedConfigs,
-  brushHeight,
+  brushHeight
 } from './constant';
 import { ChartWrapperRef } from './analysis/utils';
 import BrushCustom from './analysis/brush';
@@ -82,7 +82,7 @@ export interface UniqueKeyUnit {
 }
 
 interface RLineChartProps extends CommonLineChartProps {
-  chartData: Record<string, any>[];
+  chartData: (Record<string, any> & { date: number })[];
   // syncId?: string;
 }
 
@@ -152,11 +152,35 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       return [+availableDomain[0], +availableDomain[1]];
     }, [availableDomain]);
 
-    // This is a hack to manually compute xAxis intervale - needed because https://github.com/recharts/recharts/issues/2126
+    // Generate fake values before and after data range in order for recharts to show ticks - see  - needed because https://github.com/recharts/recharts/issues/2126
+    const chartDataWithFakeValues = useMemo(() => {
+      const firstDate = chartData[0].date;
+      const lastDate = chartData[chartData.length - 1].date;
+      const interval = chartData[1].date - firstDate;
+      let currentFakeDate = firstDate;
+      let prependValues: { date: number}[] = [];
+      while (currentFakeDate > +availableDomain[0]) {
+        currentFakeDate -= interval;
+        prependValues = [{ date: currentFakeDate }, ...prependValues];
+      }
+      currentFakeDate = lastDate;
+      let appendValues: { date: number}[] = [];
+      while (currentFakeDate < +availableDomain[1]) {
+        currentFakeDate += interval;
+        appendValues = [...appendValues, { date: currentFakeDate }];
+      }
+      return [...prependValues, ...chartData, ...appendValues];
+    }, [chartData, availableDomain]);
+
+    // This is a hack to manually compute xAxis interval - needed because https://github.com/recharts/recharts/issues/2126
     const xAxisInterval = useMemo(() => {
-      const numValuesInBrushRange = chartData.filter(d => d.date > +brushRange[0] && d.date < +brushRange[1]).length;
+      const numValuesInBrushRange = chartDataWithFakeValues.filter(
+        (d) => d.date > +brushRange[0] && d.date < +brushRange[1]
+      ).length;
       return Math.round(numValuesInBrushRange / 5);
-    }, [chartData, brushRange]);
+    }, [chartDataWithFakeValues, brushRange]);
+
+
 
     return (
       <ChartWrapper>
@@ -169,17 +193,17 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
         >
           <LineChartWithFont
             ref={ref as any}
-            data={chartData}
+            data={chartDataWithFakeValues}
             margin={chartMargin}
             // syncId={syncId}
             // syncMethod={(tick, data) => {
             //   const index = syncMethodFunction({
             //     data,
-            //     chartData,
+            //     chartDataWithFakeValues,
             //     xKey,
             //     dateFormat,
-            //     startDate: chartData[brushStartIndex][xKey],
-            //     endDate: chartData[brushStartIndex][xKey]
+            //     startDate: chartDataWithFakeValues[brushStartIndex][xKey],
+            //     endDate: chartDataWithFakeValues[brushStartIndex][xKey]
             //   });
             //   return index;
             // }}
@@ -271,7 +295,6 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
                 content={<LegendComponent />}
               />
             )}
-
           </LineChartWithFont>
         </ResponsiveContainer>
         <BrushContainer>
@@ -281,7 +304,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             width='100%'
           >
             <LineChart
-              data={chartData}
+              data={chartDataWithFakeValues}
               margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
             >
               <XAxis
