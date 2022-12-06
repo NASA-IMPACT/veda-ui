@@ -82,7 +82,7 @@ export interface UniqueKeyUnit {
 }
 
 interface RLineChartProps extends CommonLineChartProps {
-  chartData: object[];
+  chartData: Record<string, any>[];
   // syncId?: string;
 }
 
@@ -152,6 +152,12 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       return [+availableDomain[0], +availableDomain[1]];
     }, [availableDomain]);
 
+    // This is a hack to manually compute xAxis intervale - needed because https://github.com/recharts/recharts/issues/2126
+    const xAxisInterval = useMemo(() => {
+      const numValuesInBrushRange = chartData.filter(d => d.date > +brushRange[0] && d.date < +brushRange[1]).length;
+      return Math.round(numValuesInBrushRange / 5);
+    }, [chartData, brushRange]);
+
     return (
       <ChartWrapper>
         <ResponsiveContainer
@@ -188,8 +194,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
               axisLine={false}
               tickFormatter={(t) => timeFormatter(t, dateFormat)}
               allowDataOverflow={true}
-              interval={20}
-              minTickGap={100000}
+              interval={xAxisInterval}
               height={
                 renderBrush
                   ? brushRelatedConfigs.with.xAxisHeight
