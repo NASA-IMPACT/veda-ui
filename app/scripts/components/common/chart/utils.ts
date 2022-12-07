@@ -24,6 +24,10 @@ export const convertToTime = ({
   return parseDate(timeString)?.getTime();
 };
 
+type FormattedTimeSeriesData = Record<string, number | string> & {
+  date: number
+  dateFormat: string
+}
 /**
  * Returns data to feed chart. one unit looks like: { xKeyValue: Date, otherPropertiesDrivenFromUniqueKeys }
  * ex. If uniqueKeys are =['no2', 'so2'], xKey is Year, the unit will look like { Year: Date, no2: value, so2: value}
@@ -32,34 +36,32 @@ export const convertToTime = ({
  * @param {string[]} dates
  * @param {string} dateFormat How the date was formatted (following d3-date-format ex. %m/%d/%Y)
  * @param {string[]} uniqueKeys
- * @param {string} xKey The key or getter for x-axis which is corresponding to the data.
  */
 export function formatTimeSeriesData({
   timeSeriesData,
   dates,
   dateFormat,
   uniqueKeys,
-  xKey = 'date'
 }: {
-  timeSeriesData: object[];
+  timeSeriesData: Record<string, any>[];
   dates: string[]; // 202205, 202206,...
   dateFormat: string; // %y/%m/%d..
   uniqueKeys: UniqueKeyUnit[]; // min,max,,
-  xKey: string;
-}) {
+}): FormattedTimeSeriesData[] {
   /* eslint-disable-next-line fp/no-mutating-methods */
   return timeSeriesData
     .map((e, idx) => {
       const currentStat = e;
+      const date: number = convertToTime({ timeString: dates[idx], dateFormat }) ?? 0;
       return {
-        [xKey]: convertToTime({ timeString: dates[idx], dateFormat }),
+        date,
         dateFormat,
         ...uniqueKeys.reduce((acc, curr) => {
           return { ...acc, [curr.label]: currentStat[curr.value] };
         }, {})
       };
     })
-    .sort((a, b) => a[xKey] - b[xKey]);
+    .sort((a, b) => a.date - b.date);
 }
 
 /**
@@ -72,21 +74,18 @@ export function formatTimeSeriesData({
  *
  * @param {object[]} data
  * @param {string} idKey The key or getter of a group of data which should be unique in a Chart
- * @param {string} xKey The key or getter for x-axis which is corresponding to the data.
  * @param {string} yKey The key or getter for y-axis which is corresponding to the data.
  * @param {string} dateFormat How the date was formatted (following d3-date-format ex. %m/%d/%Y)
  */
 export function getFData({
   data,
   idKey,
-  xKey,
   yKey,
   dateFormat
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any[]; // This type should get specified once the chart is put together
   idKey: string;
-  xKey: string;
   yKey: string;
   dateFormat: string;
 }) {
@@ -109,17 +108,17 @@ export function getFData({
   // This reduce function will yield an object with x values as keys / data units as values
   // we will use the values of this object
   const fData = data.reduce((keyObject, entry) => {
-    if (!keyObject[entry[xKey]]) {
-      keyObject[entry[xKey]] = {
-        [xKey]: convertToTime({
-          timeString: entry[xKey],
+    if (!keyObject[entry.date]) {
+      keyObject[entry.date] = {
+        date: convertToTime({
+          timeString: entry.date,
           dateFormat
         }),
         [entry[idKey]]: parseFloat(entry[yKey])
       };
     } else {
-      keyObject[entry[xKey]] = {
-        ...keyObject[entry[xKey]],
+      keyObject[entry.date] = {
+        ...keyObject[entry.date],
         [entry[idKey]]: parseFloat(entry[yKey])
       };
     }
@@ -177,22 +176,19 @@ function isSameFormattedDate({
  * since there is no matching, the method will try again to consolidate dateformat with inactive chart's format
  * @param {object} data data of active chart. coming from rechart
  * @param {object[]} chartData data for inactive chart
- * @param {string} xKey xKey for inactive chart
  * @param {string} dateFormat dateFormat for inactive chart
  */
 
 export function syncMethodFunction({
   data,
   chartData,
-  xKey,
   dateFormat,
   startDate,
   endDate
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any; // Recharts define data payload as any
-  chartData: object[];
-  xKey: string;
+  chartData: any[];
   dateFormat: string;
   startDate: number;
   endDate: number;
@@ -203,12 +199,12 @@ export function syncMethodFunction({
   let matchingIndex: number | null = -1;
   // Make sure that matching point is in current (zoomed) chart
   const filteredChartData = chartData.filter(
-    (e) => e[xKey] <= endDate && e[xKey] >= startDate
+    (e) => e.date <= endDate && e.date >= startDate
   );
 
   matchingIndex = filteredChartData.findIndex((e) => {
     return isSameFormattedDate({
-      date1: e[xKey],
+      date1: e.date,
       date2: activeLabel,
       formatter: (value) => dateFormatter(value, dateFormat)
     });
@@ -217,7 +213,7 @@ export function syncMethodFunction({
   if (matchingIndex < 0) {
     matchingIndex = chartData.findIndex((e) => {
       return isSameFormattedDate({
-        date1: e[xKey],
+        date1: e.date,
         date2: activeLabel,
         formatter: (value) => dateFormatter(value, dateFormatFromData)
       });

@@ -26,7 +26,7 @@ export interface AnalysisChartRef {
 
 export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
   function AnalysisChart(props, ref) {
-    const { timeSeriesData, dates, uniqueKeys, dateFormat, xKey, altTitle } =
+    const { timeSeriesData, dates, uniqueKeys, dateFormat, altTitle } =
       props;
 
     const chartRef = useRef<ChartWrapperRef>(null);
@@ -37,10 +37,9 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
         dates,
         uniqueKeys,
         dateFormat,
-        xKey
       });
-    }, [timeSeriesData, dates, uniqueKeys, dateFormat, xKey]);
-
+    }, [timeSeriesData, dates, uniqueKeys, dateFormat]);
+    
     useImperativeHandle(
       ref,
       () => ({

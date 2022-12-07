@@ -9,7 +9,6 @@ When governments began implementing shutdowns at the start of the COVID-19 pande
   dataPath={new URL('./aq.csv', import.meta.url).href}
   dateFormat='%Y'
   idKey='Data Type'
-  xKey='Year'
   yKey='United States Change from 2005'
   colors={['red', 'grey']}
   xAxisLabel='Year'
@@ -28,7 +27,6 @@ Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. 
     <Chart
       dataPath={new URL('./two-column.csv', import.meta.url).href}
       dateFormat='%Y'
-      xKey='year'
       yKey='change'
       xAxisLabel='NO2 change from 2005 to 2010'
       yAxisLabel=''
@@ -43,7 +41,6 @@ Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. 
     <Chart
       dataPath={new URL('raw:./sample.json', import.meta.url).href}
       dateFormat='%Y'
-      xKey='time'
       yKey='visitors'
       xAxisLabel='Year'
       yAxisLabel='United States Change from 2005'
@@ -58,7 +55,6 @@ Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. 
       dataPath='/public/example.csv'
       dateFormat='%m/%d/%Y'
       idKey='County'
-      xKey='Test Date'
       yKey='New Positives'
       highlightStart='12/10/2021'
       highlightEnd='01/20/2022'

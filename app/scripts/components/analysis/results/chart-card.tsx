@@ -191,7 +191,6 @@ export default function ChartCard(props: ChartCardProps) {
                 timeSeriesData={data.timeseries}
                 uniqueKeys={uniqueKeys}
                 colors={colors}
-                xKey='date'
                 dates={chartDates}
                 dateFormat='%Y/%m'
                 altTitle={`Amount of ${name} over time`}

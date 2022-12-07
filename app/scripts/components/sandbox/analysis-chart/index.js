@@ -49,8 +49,7 @@ function makeData(data, dateFormat) {
       { label: 'Max', value: 'max', active: true },
       { label: 'STD', value: 'std', active: true }
     ],
-    dateFormat: dateFormat,
-    xKey: 'date'
+    dateFormat: dateFormat
   };
 }
 
@@ -78,7 +77,7 @@ function ChartWrapper(props) {
   }, [availableDomain, brushRange, setBrushRange]);
 
   if (!brushRange) return null;
-
+  console.log(brushRange)
   return (
     <Chart
       {...props}
@@ -162,7 +161,6 @@ export default function AnalysisChart() {
                 colors={legendColors}
                 timeSeriesData={dailyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={dailyChartData.xKey}
                 dates={dailyChartData.dates}
                 dateFormat={dailyChartData.dateFormat}
                 altTitle='alt title1'
@@ -182,7 +180,6 @@ export default function AnalysisChart() {
                 colors={legendColors}
                 timeSeriesData={monthlyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={monthlyChartData.xKey}
                 dates={monthlyChartData.dates}
                 dateFormat={monthlyChartData.dateFormat}
                 altTitle='alt title1'
@@ -204,7 +201,6 @@ export default function AnalysisChart() {
                 colors={legendColors}
                 timeSeriesData={yearlyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={yearlyChartData.xKey}
                 dates={yearlyChartData.dates}
                 dateFormat={yearlyChartData.dateFormat}
                 altTitle='alt title1'
@@ -224,7 +220,6 @@ export default function AnalysisChart() {
                 colors={legendColors}
                 timeSeriesData={yearly2ChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={yearly2ChartData.xKey}
                 dates={yearly2ChartData.dates}
                 dateFormat={yearly2ChartData.dateFormat}
                 altTitle='alt title1'

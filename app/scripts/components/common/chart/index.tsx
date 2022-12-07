@@ -55,7 +55,6 @@ const BrushContainer = styled.div`
   border-radius: 0.25rem;
 `;
 export interface CommonLineChartProps {
-  xKey: string;
   altTitle: string;
   altDesc: string;
   dateFormat: string;
@@ -98,7 +97,6 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
     const {
       chartData,
       uniqueKeys,
-      xKey,
       colors,
       colorScheme = 'viridis',
       dateFormat,
@@ -116,6 +114,8 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       brushRange,
       onBrushRangeChange
     } = props;
+
+    console.log(brushRange)
 
     const [chartMargin, setChartMargin] = useState(defaultMargin);
     const { isMediumUp } = useMediaQuery();
@@ -200,10 +200,9 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             //   const index = syncMethodFunction({
             //     data,
             //     chartDataWithFakeValues,
-            //     xKey,
             //     dateFormat,
-            //     startDate: chartDataWithFakeValues[brushStartIndex][xKey],
-            //     endDate: chartDataWithFakeValues[brushStartIndex][xKey]
+            //     startDate: chartDataWithFakeValues[brushStartIndex].date,
+            //     endDate: chartDataWithFakeValues[brushStartIndex].date
             //   });
             //   return index;
             // }}
@@ -214,7 +213,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
               type='number'
               scale='time'
               domain={xAxisDomain}
-              dataKey={xKey}
+              dataKey='date'
               axisLine={false}
               tickFormatter={(t) => timeFormatter(t, dateFormat)}
               allowDataOverflow={true}
@@ -311,7 +310,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
                 type='number'
                 scale='time'
                 domain={brushXAxisDomain}
-                dataKey={xKey}
+                dataKey='date'
                 hide={true}
               />
               {uniqueKeysWithColors.map((k) => {
