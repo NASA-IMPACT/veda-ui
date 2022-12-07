@@ -210,12 +210,12 @@ export async function exportImage({
 export function exportCsv(
   filename: string,
   data: TimeseriesDataUnit[],
-  startDate: string,
-  endDate: string,
+  startDate: Date,
+  endDate: Date,
   activeMetrics: DataMetric[]
 ) {
-  const startTimestamp = +new Date(startDate);
-  const endTimestamp = +new Date(endDate);
+  const startTimestamp = +startDate;
+  const endTimestamp = +endDate;
   const filtered = data.filter((row) => {
     const timestamp = +new Date(row.date);
     return timestamp >= startTimestamp && timestamp <= endTimestamp;

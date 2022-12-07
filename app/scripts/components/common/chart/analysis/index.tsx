@@ -22,11 +22,11 @@ export interface AnalysisChartRef {
   saveAsImage: (name?: string) => Promise<void>;
 }
 
-const syncId = 'analysis';
+// const syncId = 'analysis';
 
 export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
   function AnalysisChart(props, ref) {
-    const { timeSeriesData, dates, uniqueKeys, dateFormat, xKey, altTitle } =
+    const { timeSeriesData, dates, uniqueKeys, dateFormat, altTitle } =
       props;
 
     const chartRef = useRef<ChartWrapperRef>(null);
@@ -37,10 +37,9 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
         dates,
         uniqueKeys,
         dateFormat,
-        xKey
       });
-    }, [timeSeriesData, dates, uniqueKeys, dateFormat, xKey]);
-
+    }, [timeSeriesData, dates, uniqueKeys, dateFormat]);
+    
     useImperativeHandle(
       ref,
       () => ({
@@ -67,7 +66,7 @@ export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
         <Chart
           {...props}
           ref={chartRef}
-          syncId={syncId}
+          // syncId={syncId}
           chartData={chartData}
           renderLegend={false}
           renderBrush={true}

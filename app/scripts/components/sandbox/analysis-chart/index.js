@@ -1,4 +1,11 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
+import T from 'prop-types';
 import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
 
@@ -42,8 +49,7 @@ function makeData(data, dateFormat) {
       { label: 'Max', value: 'max', active: true },
       { label: 'STD', value: 'std', active: true }
     ],
-    dateFormat: dateFormat,
-    xKey: 'date'
+    dateFormat: dateFormat
   };
 }
 
@@ -51,6 +57,39 @@ const dailyChartData = makeData(dataDaily, '%Y/%m/%d');
 const monthlyChartData = makeData(dataMonthly, '%Y/%m');
 const yearlyChartData = makeData(dataYearly, '%Y');
 const yearly2ChartData = makeData(dataYearly2, '%Y');
+
+// Simple wrapper to handle brush state. Can also be syncronized across all chart components
+function ChartWrapper(props) {
+  const availableDomain = useMemo(
+    () => [
+      new Date(props.timeSeriesData[0].date),
+      new Date(props.timeSeriesData[props.timeSeriesData.length - 1].date)
+    ],
+    [props.timeSeriesData]
+  );
+
+  const [brushRange, setBrushRange] = useState(null);
+
+  useEffect(() => {
+    if (availableDomain && !brushRange) {
+      setBrushRange(availableDomain);
+    }
+  }, [availableDomain, brushRange, setBrushRange]);
+
+  if (!brushRange) return null;
+  return (
+    <Chart
+      {...props}
+      availableDomain={availableDomain}
+      brushRange={brushRange}
+      onBrushRangeChange={(range) => setBrushRange(range)}
+    />
+  );
+}
+
+ChartWrapper.propTypes = {
+  timeSeriesData: T.array.isRequired
+};
 
 export default function AnalysisChart() {
   const legendColors = getColors({ steps: dailyChartData.uniqueKeys.length });
@@ -116,12 +155,11 @@ export default function AnalysisChart() {
               <Button onClick={onExportClick} variation='primary-fill'>
                 Export
               </Button>
-              <Chart
+              <ChartWrapper
                 ref={chartRef}
                 colors={legendColors}
                 timeSeriesData={dailyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={dailyChartData.xKey}
                 dates={dailyChartData.dates}
                 dateFormat={dailyChartData.dateFormat}
                 altTitle='alt title1'
@@ -137,11 +175,10 @@ export default function AnalysisChart() {
               }}
             >
               <h2>Monthly</h2>
-              <Chart
+              <ChartWrapper
                 colors={legendColors}
                 timeSeriesData={monthlyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={monthlyChartData.xKey}
                 dates={monthlyChartData.dates}
                 dateFormat={monthlyChartData.dateFormat}
                 altTitle='alt title1'
@@ -159,11 +196,10 @@ export default function AnalysisChart() {
               }}
             >
               <h2>Yearly</h2>
-              <Chart
+              <ChartWrapper
                 colors={legendColors}
                 timeSeriesData={yearlyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={yearlyChartData.xKey}
                 dates={yearlyChartData.dates}
                 dateFormat={yearlyChartData.dateFormat}
                 altTitle='alt title1'
@@ -179,11 +215,10 @@ export default function AnalysisChart() {
               }}
             >
               <h2>Yearly 2</h2>
-              <Chart
+              <ChartWrapper
                 colors={legendColors}
                 timeSeriesData={yearly2ChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
-                xKey={yearly2ChartData.xKey}
                 dates={yearly2ChartData.dates}
                 dateFormat={yearly2ChartData.dateFormat}
                 altTitle='alt title1'

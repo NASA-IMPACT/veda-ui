@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { csv, json, DSVRowArray } from 'd3';
 
-import { getFData } from './utils';
+import { FormattedTimeSeriesData, getFData } from './utils';
 import { fileExtensionRegex } from './constant';
 import Chart, { CommonLineChartProps, UniqueKeyUnit } from '.';
 
 interface BlockChartProp extends CommonLineChartProps {
   dataPath: string;
   idKey?: string;
+  xKey: string;
   yKey: string;
 }
 
@@ -16,7 +17,7 @@ const subIdKey = 'subIdeKey';
 export default function BlockChart(props: BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
 
-  const [chartData, setChartData] = useState<object[]>([]);
+  const [chartData, setChartData] = useState<FormattedTimeSeriesData[]>([]);
   const [uniqueKeys, setUniqueKeys] = useState<UniqueKeyUnit[]>([]);
 
   const newDataPath = dataPath.split('?')[0];
@@ -35,8 +36,8 @@ export default function BlockChart(props: BlockChartProp) {
         
         const { fData, uniqueKeys } = getFData({  
           data: dataToUse,
-          xKey,
           idKey: idKey? idKey: subIdKey,
+          xKey,
           yKey,
           dateFormat
         });
