@@ -77,7 +77,6 @@ function ChartWrapper(props) {
   }, [availableDomain, brushRange, setBrushRange]);
 
   if (!brushRange) return null;
-  console.log(brushRange)
   return (
     <Chart
       {...props}

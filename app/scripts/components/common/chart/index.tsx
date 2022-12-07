@@ -68,9 +68,9 @@ export interface CommonLineChartProps {
   highlightEnd?: string;
   highlightLabel?: string;
   uniqueKeys: UniqueKeyUnit[];
-  availableDomain: [Date, Date];
-  brushRange: [Date, Date];
-  onBrushRangeChange: (range: [Date, Date]) => void;
+  availableDomain?: [Date, Date];
+  brushRange?: [Date, Date];
+  onBrushRangeChange?: (range: [Date, Date]) => void;
 }
 
 export interface UniqueKeyUnit {
@@ -115,8 +115,6 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       onBrushRangeChange
     } = props;
 
-    console.log(brushRange)
-
     const [chartMargin, setChartMargin] = useState(defaultMargin);
     const { isMediumUp } = useMediaQuery();
 
@@ -145,42 +143,44 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
     const renderHighlight = !!(highlightStart ?? highlightEnd);
 
     const xAxisDomain = useMemo(() => {
+      if (!renderBrush || !brushRange) return null;
       return [+brushRange[0], +brushRange[1]];
-    }, [brushRange]);
+    }, [renderBrush, brushRange]);
 
     const brushXAxisDomain = useMemo(() => {
+      if (!renderBrush || !availableDomain) return null;
       return [+availableDomain[0], +availableDomain[1]];
-    }, [availableDomain]);
+    }, [renderBrush, availableDomain]);
 
     // Generate fake values before and after data range in order for recharts to show ticks - see  - needed because https://github.com/recharts/recharts/issues/2126
     const chartDataWithFakeValues = useMemo(() => {
+      if (!renderBrush || !availableDomain) return chartData;
       const firstDate = chartData[0].date;
       const lastDate = chartData[chartData.length - 1].date;
       const interval = chartData[1].date - firstDate;
       let currentFakeDate = firstDate;
-      let prependValues: { date: number}[] = [];
+      let prependValues: { date: number }[] = [];
       while (currentFakeDate > +availableDomain[0]) {
         currentFakeDate -= interval;
         prependValues = [{ date: currentFakeDate }, ...prependValues];
       }
       currentFakeDate = lastDate;
-      let appendValues: { date: number}[] = [];
+      let appendValues: { date: number }[] = [];
       while (currentFakeDate < +availableDomain[1]) {
         currentFakeDate += interval;
         appendValues = [...appendValues, { date: currentFakeDate }];
       }
       return [...prependValues, ...chartData, ...appendValues];
-    }, [chartData, availableDomain]);
+    }, [renderBrush, chartData, availableDomain]);
 
     // This is a hack to manually compute xAxis interval - needed because https://github.com/recharts/recharts/issues/2126
     const xAxisInterval = useMemo(() => {
+      if (!renderBrush || !brushRange) return null;
       const numValuesInBrushRange = chartDataWithFakeValues.filter(
         (d) => d.date > +brushRange[0] && d.date < +brushRange[1]
       ).length;
       return Math.round(numValuesInBrushRange / 5);
-    }, [chartDataWithFakeValues, brushRange]);
-
-
+    }, [renderBrush, chartDataWithFakeValues, brushRange]);
 
     return (
       <ChartWrapper>
@@ -212,12 +212,12 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             <XAxis
               type='number'
               scale='time'
-              domain={xAxisDomain}
+              domain={xAxisDomain ?? ['dataMin', 'dataMax']}
               dataKey='date'
               axisLine={false}
               tickFormatter={(t) => timeFormatter(t, dateFormat)}
               allowDataOverflow={true}
-              interval={xAxisInterval}
+              interval={xAxisInterval ?? 'preserveEnd'}
               height={
                 renderBrush
                   ? brushRelatedConfigs.with.xAxisHeight
@@ -296,45 +296,47 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             )}
           </LineChartWithFont>
         </ResponsiveContainer>
-        <BrushContainer>
-          <ResponsiveContainer
-            aspect={chartAspectRatio}
-            maxHeight={brushHeight}
-            width='100%'
-          >
-            <LineChart
-              data={chartDataWithFakeValues}
-              margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+        {renderBrush && brushXAxisDomain && availableDomain && brushRange && onBrushRangeChange && (
+          <BrushContainer>
+            <ResponsiveContainer
+              aspect={chartAspectRatio}
+              maxHeight={brushHeight}
+              width='100%'
             >
-              <XAxis
-                type='number'
-                scale='time'
-                domain={brushXAxisDomain}
-                dataKey='date'
-                hide={true}
-              />
-              {uniqueKeysWithColors.map((k) => {
-                return (
-                  <Line
-                    type='linear'
-                    isAnimationActive={false}
-                    dot={false}
-                    activeDot={false}
-                    key={`${k.value}-line-brush_`}
-                    dataKey={k.label}
-                    strokeWidth={0.5}
-                    stroke={k.active ? k.color : 'transparent'}
-                  />
-                );
-              })}
-            </LineChart>
-          </ResponsiveContainer>
-          <BrushCustom
-            availableDomain={availableDomain}
-            brushRange={brushRange}
-            onBrushRangeChange={onBrushRangeChange}
-          />
-        </BrushContainer>
+              <LineChart
+                data={chartDataWithFakeValues}
+                margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+              >
+                <XAxis
+                  type='number'
+                  scale='time'
+                  domain={brushXAxisDomain}
+                  dataKey='date'
+                  hide={true}
+                />
+                {uniqueKeysWithColors.map((k) => {
+                  return (
+                    <Line
+                      type='linear'
+                      isAnimationActive={false}
+                      dot={false}
+                      activeDot={false}
+                      key={`${k.value}-line-brush_`}
+                      dataKey={k.label}
+                      strokeWidth={0.5}
+                      stroke={k.active ? k.color : 'transparent'}
+                    />
+                  );
+                })}
+              </LineChart>
+            </ResponsiveContainer>
+            <BrushCustom
+              availableDomain={availableDomain}
+              brushRange={brushRange}
+              onBrushRangeChange={onBrushRangeChange}
+            />
+          </BrushContainer>
+        )}
       </ChartWrapper>
     );
   }
