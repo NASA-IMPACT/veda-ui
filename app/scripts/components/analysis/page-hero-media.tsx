@@ -7,6 +7,7 @@ import { shade } from 'polished';
 import { rgba, themeVal } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
+import { HERO_TRANSITION_DURATION } from './page-hero-analysis';
 import { SimpleMap } from '$components/common/mapbox/map';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 
@@ -55,7 +56,10 @@ function PageHeroMedia(props: PageHeroMediaProps) {
   useEffectPrevious(
     ([wasStuck]) => {
       if (!shouldMount && wasStuck && !isHeaderStuck) {
-        const tid = setTimeout(() => setShouldMount(true), 350);
+        const tid = setTimeout(
+          () => setShouldMount(true),
+          HERO_TRANSITION_DURATION
+        );
 
         return () => {
           clearTimeout(tid);
