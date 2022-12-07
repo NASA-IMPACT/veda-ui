@@ -1,6 +1,7 @@
 import React from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
+import { format } from 'date-fns';
 
 import {
   glsp,
@@ -17,6 +18,7 @@ import {
 import { createSubtitleStyles } from '@devseed-ui/typography';
 
 import { variableGlsp } from '../../styles/variable-utils';
+import { Tip } from '$components/common/tip';
 
 const PageFooterSelf = styled.footer`
   padding: ${variableGlsp(0.75, 1)};
@@ -40,7 +42,7 @@ const FooterCredits = styled.address`
   flex-flow: column nowrap;
   justify-content: flex-end;
 
-  span {
+  a span {
     ${visuallyHidden()}
   }
 
@@ -145,6 +147,15 @@ function PageFooter(props) {
               {nowDate.getFullYear()}
             </time>
           </a>
+          {' • '}
+          <Tip
+            content={`Released on ${format(
+              new Date(+process.env.APP_BUILD_TIME),
+              'PPPP'
+            )}`}
+          >
+            <span>v{process.env.APP_VERSION}</span>
+          </Tip>
         </p>
       </FooterCredits>
     </PageFooterSelf>
