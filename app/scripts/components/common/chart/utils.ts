@@ -24,7 +24,7 @@ export const convertToTime = ({
   return parseDate(timeString)?.getTime();
 };
 
-type FormattedTimeSeriesData = Record<string, number | string> & {
+export type FormattedTimeSeriesData = Record<string, number | string> & {
   date: number
   dateFormat: string
 }
@@ -74,21 +74,24 @@ export function formatTimeSeriesData({
  *
  * @param {object[]} data
  * @param {string} idKey The key or getter of a group of data which should be unique in a Chart
+ * @param {string} xKey The key or getter for x-axis which is corresponding to the data.
  * @param {string} yKey The key or getter for y-axis which is corresponding to the data.
  * @param {string} dateFormat How the date was formatted (following d3-date-format ex. %m/%d/%Y)
  */
 export function getFData({
   data,
   idKey,
+  xKey,
   yKey,
   dateFormat
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any[]; // This type should get specified once the chart is put together
   idKey: string;
+  xKey: string;
   yKey: string;
   dateFormat: string;
-}) {
+}): { uniqueKeys: any[], fData: FormattedTimeSeriesData[] } {
   /* eslint-disable-next-line fp/no-mutating-methods */
   const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort();
 
@@ -108,27 +111,27 @@ export function getFData({
   // This reduce function will yield an object with x values as keys / data units as values
   // we will use the values of this object
   const fData = data.reduce((keyObject, entry) => {
-    if (!keyObject[entry.date]) {
-      keyObject[entry.date] = {
+    if (!keyObject[entry[xKey]]) {
+      keyObject[entry[xKey]] = {
         date: convertToTime({
-          timeString: entry.date,
+          timeString: entry[xKey],
           dateFormat
         }),
         [entry[idKey]]: parseFloat(entry[yKey])
       };
     } else {
-      keyObject[entry.date] = {
-        ...keyObject[entry.date],
+      keyObject[entry[xKey]] = {
+        ...keyObject[entry[xKey]],
         [entry[idKey]]: parseFloat(entry[yKey])
       };
     }
-
     return keyObject;
   }, {});
 
+
   return {
     uniqueKeys,
-    fData: Object.values(fData) as object[]
+    fData: Object.values(fData)
   };
 }
 
