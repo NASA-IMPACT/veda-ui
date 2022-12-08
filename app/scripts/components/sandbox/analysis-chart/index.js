@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import T from 'prop-types';
+import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
 
@@ -58,38 +51,7 @@ const monthlyChartData = makeData(dataMonthly, '%Y/%m');
 const yearlyChartData = makeData(dataYearly, '%Y');
 const yearly2ChartData = makeData(dataYearly2, '%Y');
 
-// Simple wrapper to handle brush state. Can also be syncronized across all chart components
-function ChartWrapper(props) {
-  const availableDomain = useMemo(
-    () => [
-      new Date(props.timeSeriesData[0].date),
-      new Date(props.timeSeriesData[props.timeSeriesData.length - 1].date)
-    ],
-    [props.timeSeriesData]
-  );
-
-  const [brushRange, setBrushRange] = useState(null);
-
-  useEffect(() => {
-    if (availableDomain && !brushRange) {
-      setBrushRange(availableDomain);
-    }
-  }, [availableDomain, brushRange, setBrushRange]);
-
-  if (!brushRange) return null;
-  return (
-    <Chart
-      {...props}
-      availableDomain={availableDomain}
-      brushRange={brushRange}
-      onBrushRangeChange={(range) => setBrushRange(range)}
-    />
-  );
-}
-
-ChartWrapper.propTypes = {
-  timeSeriesData: T.array.isRequired
-};
+const availableDomain = [new Date(2015), new Date(2022, 4)];
 
 export default function AnalysisChart() {
   const legendColors = getColors({ steps: dailyChartData.uniqueKeys.length });
@@ -115,6 +77,8 @@ export default function AnalysisChart() {
   const onExportClick = useCallback(() => {
     chartRef.current?.saveAsImage('test-chart.jpg');
   }, []);
+
+  const [brushRange, setBrushRange] = useState([...availableDomain]);
 
   return (
     <PageMainContent>
@@ -155,7 +119,7 @@ export default function AnalysisChart() {
               <Button onClick={onExportClick} variation='primary-fill'>
                 Export
               </Button>
-              <ChartWrapper
+              <Chart
                 ref={chartRef}
                 colors={legendColors}
                 timeSeriesData={dailyChartData.timeSeriesData}
@@ -166,6 +130,9 @@ export default function AnalysisChart() {
                 altDesc='alt desc'
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
+                availableDomain={availableDomain}
+                brushRange={brushRange}
+                onBrushRangeChange={(range) => setBrushRange(range)}
               />
             </Hug>
             <Hug
@@ -175,7 +142,7 @@ export default function AnalysisChart() {
               }}
             >
               <h2>Monthly</h2>
-              <ChartWrapper
+              <Chart
                 colors={legendColors}
                 timeSeriesData={monthlyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
@@ -185,6 +152,9 @@ export default function AnalysisChart() {
                 altDesc='alt desc'
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
+                availableDomain={availableDomain}
+                brushRange={brushRange}
+                onBrushRangeChange={(range) => setBrushRange(range)}
               />
             </Hug>
           </Hug>
@@ -196,7 +166,7 @@ export default function AnalysisChart() {
               }}
             >
               <h2>Yearly</h2>
-              <ChartWrapper
+              <Chart
                 colors={legendColors}
                 timeSeriesData={yearlyChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
@@ -206,6 +176,9 @@ export default function AnalysisChart() {
                 altDesc='alt desc'
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
+                availableDomain={availableDomain}
+                brushRange={brushRange}
+                onBrushRangeChange={(range) => setBrushRange(range)}
               />
             </Hug>
             <Hug
@@ -215,7 +188,7 @@ export default function AnalysisChart() {
               }}
             >
               <h2>Yearly 2</h2>
-              <ChartWrapper
+              <Chart
                 colors={legendColors}
                 timeSeriesData={yearly2ChartData.timeSeriesData}
                 uniqueKeys={dynamicUniqueKeys}
@@ -225,6 +198,9 @@ export default function AnalysisChart() {
                 altDesc='alt desc'
                 xAxisLabel='Time'
                 yAxisLabel='Amount'
+                availableDomain={availableDomain}
+                brushRange={brushRange}
+                onBrushRangeChange={(range) => setBrushRange(range)}
               />
             </Hug>
           </Hug>
