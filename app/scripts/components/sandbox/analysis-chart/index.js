@@ -51,7 +51,10 @@ const monthlyChartData = makeData(dataMonthly, '%Y/%m');
 const yearlyChartData = makeData(dataYearly, '%Y');
 const yearly2ChartData = makeData(dataYearly2, '%Y');
 
-const availableDomain = [new Date(2015), new Date(2022, 4)];
+const availableDomain = [
+  new Date('2015-01-01T00:00:00.000Z'),
+  new Date('2022-04-01T00:00:00.000Z')
+];
 
 export default function AnalysisChart() {
   const legendColors = getColors({ steps: dailyChartData.uniqueKeys.length });
