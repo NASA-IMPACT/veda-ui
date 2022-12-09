@@ -83,8 +83,13 @@ declare module 'veda/thematics' {
     dateFns: typeof dateFns;
   }
 
+  interface LayerLegendUnit {
+    label: string
+  }
+
   export interface LayerLegendGradient {
     type: 'gradient';
+    unit?: LayerLegendUnit;
     min: string | number;
     max: string | number;
     stops: string[];
@@ -97,6 +102,7 @@ declare module 'veda/thematics' {
 
   export interface LayerLegendCategorical {
     type: 'categorical';
+    unit?: LayerLegendUnit;
     stops: CategoricalStop[];
   }
 
