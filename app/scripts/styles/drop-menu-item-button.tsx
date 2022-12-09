@@ -11,4 +11,15 @@ const DropMenuItemButton = styled(DropMenuItem).attrs({
   cursor: pointer;
 `;
 
+// TODO extend
+export const DropMenuItemFileInput = styled(DropMenuItem).attrs({
+  as: 'input',
+  // 'data-dropdown': 'click.close'
+})`
+  background: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+`;
+
 export default DropMenuItemButton;

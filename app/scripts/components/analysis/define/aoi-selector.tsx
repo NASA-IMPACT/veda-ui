@@ -1,6 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import styled from 'styled-components';
-import { Feature, MultiPolygon, Polygon } from 'geojson';
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
 
 import {
@@ -31,7 +37,9 @@ import {
   AoiChangeListenerOverload,
   AoiState
 } from '$components/common/aoi/types';
-import DropMenuItemButton from '$styles/drop-menu-item-button';
+import DropMenuItemButton, {
+  DropMenuItemFileInput
+} from '$styles/drop-menu-item-button';
 
 const MapContainer = styled.div`
   position: relative;
@@ -94,6 +102,36 @@ export default function AoiSelector({
     }
   }, [onAoiEvent, qsPolygon, setFeature]);
 
+  const [uploadFileError, setUploadFileError] = useState<string | null>(null);
+  const onUploadFile = useCallback(
+    (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.addEventListener('load', (event) => {
+        const rawGeoJSON = event.target?.result;
+        if (!rawGeoJSON) setUploadFileError('Error uploading file');
+        let feature;
+        try {
+          const geoJSON = JSON.parse(rawGeoJSON as string) as FeatureCollection;
+          feature = geoJSON.features[0];
+        } catch (e) {
+          setUploadFileError('Error uploading file: Invalid JSON');
+        }
+        if (!feature)
+          setUploadFileError('Error uploading file: Invalid GeoJSON');
+        setFeature({
+          ...feature,
+          id: 'file-feature'
+        });
+      });
+      reader.addEventListener('error', () => {
+        setUploadFileError('Error uploading file');
+      });
+      reader.readAsText(file);
+    },
+    [setFeature]
+  );
+
   return (
     <Fold>
       <FoldHeader>
@@ -140,6 +178,19 @@ export default function AoiSelector({
                   >
                     World
                   </DropMenuItemButton>
+                </li>
+              </DropMenu>
+
+              <DropMenu>
+                <li>
+                  {/* <DropMenuItemButton> */}
+                  <DropMenuItemFileInput
+                    type='file'
+                    onChange={onUploadFile}
+                    accept='.json, .geojson, .zip'
+                  />
+                  {uploadFileError && <div>{uploadFileError}</div>}
+                  {/* </DropMenuItemButton> */}
                 </li>
               </DropMenu>
             </Dropdown>
