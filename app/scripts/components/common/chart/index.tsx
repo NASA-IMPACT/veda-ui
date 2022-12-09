@@ -23,7 +23,6 @@ import {
   timeFormatter,
   convertToTime,
   getNumForChart
-  // syncMethodFunction
 } from './utils';
 import {
   chartMinHeight,
@@ -81,8 +80,8 @@ export interface UniqueKeyUnit {
 }
 
 interface RLineChartProps extends CommonLineChartProps {
-  chartData: (Record<string, any> & { date: number })[];
-  // syncId?: string;
+  chartData: (Record<string, number | string> & { date: number })[];
+  syncId?: string;
 }
 
 function CustomCursor(props) {
@@ -104,7 +103,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
       altDesc,
       renderLegend = false,
       renderBrush = false,
-      // syncId,
+      syncId,
       highlightStart,
       highlightEnd,
       highlightLabel,
@@ -195,17 +194,8 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             ref={ref as any}
             data={chartDataWithFakeValues}
             margin={chartMargin}
-            // syncId={syncId}
-            // syncMethod={(tick, data) => {
-            //   const index = syncMethodFunction({
-            //     data,
-            //     chartDataWithFakeValues,
-            //     dateFormat,
-            //     startDate: chartDataWithFakeValues[brushStartIndex].date,
-            //     endDate: chartDataWithFakeValues[brushStartIndex].date
-            //   });
-            //   return index;
-            // }}
+            syncId={syncId}
+            syncMethod='value'
           >
             <AltTitle title={altTitle} desc={altDesc} />
             <CartesianGrid stroke='#efefef' vertical={false} />
@@ -296,47 +286,51 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
             )}
           </LineChartWithFont>
         </ResponsiveContainer>
-        {renderBrush && brushXAxisDomain && availableDomain && brushRange && onBrushRangeChange && (
-          <BrushContainer>
-            <ResponsiveContainer
-              aspect={chartAspectRatio}
-              maxHeight={brushHeight}
-              width='100%'
-            >
-              <LineChart
-                data={chartDataWithFakeValues}
-                margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+        {renderBrush &&
+          brushXAxisDomain &&
+          availableDomain &&
+          brushRange &&
+          onBrushRangeChange && (
+            <BrushContainer>
+              <ResponsiveContainer
+                aspect={chartAspectRatio}
+                maxHeight={brushHeight}
+                width='100%'
               >
-                <XAxis
-                  type='number'
-                  scale='time'
-                  domain={brushXAxisDomain}
-                  dataKey='date'
-                  hide={true}
-                />
-                {uniqueKeysWithColors.map((k) => {
-                  return (
-                    <Line
-                      type='linear'
-                      isAnimationActive={false}
-                      dot={false}
-                      activeDot={false}
-                      key={`${k.value}-line-brush_`}
-                      dataKey={k.label}
-                      strokeWidth={0.5}
-                      stroke={k.active ? k.color : 'transparent'}
-                    />
-                  );
-                })}
-              </LineChart>
-            </ResponsiveContainer>
-            <BrushCustom
-              availableDomain={availableDomain}
-              brushRange={brushRange}
-              onBrushRangeChange={onBrushRangeChange}
-            />
-          </BrushContainer>
-        )}
+                <LineChart
+                  data={chartDataWithFakeValues}
+                  margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+                >
+                  <XAxis
+                    type='number'
+                    scale='time'
+                    domain={brushXAxisDomain}
+                    dataKey='date'
+                    hide={true}
+                  />
+                  {uniqueKeysWithColors.map((k) => {
+                    return (
+                      <Line
+                        type='linear'
+                        isAnimationActive={false}
+                        dot={false}
+                        activeDot={false}
+                        key={`${k.value}-line-brush_`}
+                        dataKey={k.label}
+                        strokeWidth={0.5}
+                        stroke={k.active ? k.color : 'transparent'}
+                      />
+                    );
+                  })}
+                </LineChart>
+              </ResponsiveContainer>
+              <BrushCustom
+                availableDomain={availableDomain}
+                brushRange={brushRange}
+                onBrushRangeChange={onBrushRangeChange}
+              />
+            </BrushContainer>
+          )}
       </ChartWrapper>
     );
   }
