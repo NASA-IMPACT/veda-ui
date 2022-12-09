@@ -2,8 +2,7 @@ import { RefObject, Component } from 'react';
 import FileSaver from 'file-saver';
 import { unparse } from 'papaparse';
 import {
-  chartAspectRatio,
-  brushHeight
+  chartAspectRatio
 } from '$components/common/chart/constant';
 import { TimeseriesDataUnit } from '$components/analysis/results/timeseries-data';
 import { DataMetric } from '$components/analysis/results/analysis-head-actions';
@@ -15,8 +14,7 @@ const chartPNGPadding = 20;
 const PNGWidth = 1920 - chartPNGPadding * 2;
 
 const titleAreaHeight = 64;
-const brushAreaHeight = brushHeight + 40;
-const chartExportHeight = PNGWidth / chartAspectRatio - brushAreaHeight;
+const chartExportHeight = PNGWidth / chartAspectRatio;
 const chartExportWidth = PNGWidth;
 
 // Rechart does not export the type for wrapper component (CategoricalChartWrapper)
@@ -135,7 +133,7 @@ function drawOnCanvas({
     0,
     0,
     chartImage.width,
-    chartImage.height - brushAreaHeight * zoomRatio,
+    chartImage.height,
     0,
     currentY,
     chartExportWidth,
