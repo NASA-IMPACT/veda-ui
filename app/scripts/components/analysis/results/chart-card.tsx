@@ -69,7 +69,7 @@ export default function ChartCard(props: ChartCardProps) {
     brushRange,
     onBrushRangeChange
   } = props;
-  const { status, meta, data, error, name, id } = chartData;
+  const { status, meta, data, error, name, id, layer } = chartData;
 
   const chartRef = useRef<AnalysisChartRef>(null);
   const noDownloadReason = getNoDownloadReason(chartData);
@@ -196,7 +196,7 @@ export default function ChartCard(props: ChartCardProps) {
                 altTitle={`Amount of ${name} over time`}
                 altDesc={`Amount of ${name} over time`}
                 xAxisLabel='Time'
-                yAxisLabel='Amount'
+                yAxisLabel={layer.legend?.unit?.label ?? 'Amount'}
                 availableDomain={availableDomain}
                 brushRange={brushRange}
                 onBrushRangeChange={onBrushRangeChange}

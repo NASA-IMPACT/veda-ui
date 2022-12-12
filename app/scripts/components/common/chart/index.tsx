@@ -45,6 +45,10 @@ const LineChartWithFont = styled(LineChart)`
 const ChartWrapper = styled.div`
   width: 100%;
   grid-column: 1/-1;
+
+  .label-y {
+    text-anchor: middle;
+  }
 `;
 
 const BrushContainer = styled.div`
@@ -225,7 +229,12 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
               />
             </XAxis>
             <YAxis axisLine={false} tickFormatter={(t) => getNumForChart(t)}>
-              <Label value={yAxisLabel} angle={-90} position='insideLeft' />
+              <Label
+                className='label-y'
+                value={yAxisLabel}
+                angle={-90}
+                position='left'
+              />
             </YAxis>
             {renderHighlight && (
               <>
@@ -257,7 +266,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
                 <Line
                   type='linear'
                   isAnimationActive={false}
-                  dot={{ r:2, strokeWidth: 1}}
+                  dot={{ r: 2, strokeWidth: 1 }}
                   activeDot={false}
                   key={`${k.value}-line`}
                   dataKey={k.label}

@@ -19,7 +19,7 @@ export const brushHeight = 50;
 export const brushRelatedConfigs = {
   with: {
     xAxisHeight: 50,
-    labelOffset: -30
+    labelOffset: -16
   },
   without: {
     xAxisHeight: 30,

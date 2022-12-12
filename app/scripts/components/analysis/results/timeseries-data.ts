@@ -43,6 +43,7 @@ export type TimeseriesData =
       id: string;
       name: string;
       status: 'loading';
+      layer: DatasetLayer;
       meta: {
         total: null | number;
         loaded: null | number;
@@ -54,6 +55,7 @@ export type TimeseriesData =
       id: string;
       name: string;
       status: 'succeeded';
+      layer: DatasetLayer;
       meta: {
         total: number;
         loaded: number;
@@ -65,6 +67,7 @@ export type TimeseriesData =
       id: string;
       name: string;
       status: 'errored';
+      layer: DatasetLayer;
       meta: {
         total: null | number;
         loaded: null | number;
@@ -208,6 +211,7 @@ async function requestTimeseries({
     id,
     name: layer.name,
     status: 'loading',
+    layer,
     meta: {
       total: null,
       loaded: null
