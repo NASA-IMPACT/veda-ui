@@ -157,7 +157,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
 
     // Generate fake values before and after data range in order for recharts to show ticks - see  - needed because https://github.com/recharts/recharts/issues/2126
     const chartDataWithFakeValues = useMemo(() => {
-      if (!renderBrush || !availableDomain) return chartData;
+      if (!renderBrush || !availableDomain || chartData.length <= 1) return chartData;
       const firstDate = chartData[0].date;
       const lastDate = chartData[chartData.length - 1].date;
       const interval = chartData[1].date - firstDate;
