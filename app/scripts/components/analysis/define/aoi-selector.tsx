@@ -24,6 +24,7 @@ import {
 } from '@devseed-ui/collecticons';
 import { multiPolygonToPolygon } from '../utils';
 import { FeatureByRegionPreset, RegionPreset } from './constants';
+import useCustomAoI from './use-custom-aoi';
 import {
   Fold,
   FoldHeader,
@@ -102,35 +103,7 @@ export default function AoiSelector({
     }
   }, [onAoiEvent, qsPolygon, setFeature]);
 
-  const [uploadFileError, setUploadFileError] = useState<string | null>(null);
-  const onUploadFile = useCallback(
-    (event) => {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.addEventListener('load', (event) => {
-        const rawGeoJSON = event.target?.result;
-        if (!rawGeoJSON) setUploadFileError('Error uploading file');
-        let feature;
-        try {
-          const geoJSON = JSON.parse(rawGeoJSON as string) as FeatureCollection;
-          feature = geoJSON.features[0];
-        } catch (e) {
-          setUploadFileError('Error uploading file: Invalid JSON');
-        }
-        if (!feature)
-          setUploadFileError('Error uploading file: Invalid GeoJSON');
-        setFeature({
-          ...feature,
-          id: 'file-feature'
-        });
-      });
-      reader.addEventListener('error', () => {
-        setUploadFileError('Error uploading file');
-      });
-      reader.readAsText(file);
-    },
-    [setFeature]
-  );
+  const { onUploadFile, uploadFileError } = useCustomAoI(setFeature);
 
   return (
     <Fold>
