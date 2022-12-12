@@ -3,10 +3,9 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState
 } from 'react';
 import styled from 'styled-components';
-import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+import { Feature, MultiPolygon, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
 
 import {
@@ -24,7 +23,7 @@ import {
 } from '@devseed-ui/collecticons';
 import { multiPolygonToPolygon } from '../utils';
 import { FeatureByRegionPreset, RegionPreset } from './constants';
-import useCustomAoI from './use-custom-aoi';
+import useCustomAoI, { acceptExtensions } from './use-custom-aoi';
 import {
   Fold,
   FoldHeader,
@@ -160,7 +159,7 @@ export default function AoiSelector({
                   <DropMenuItemFileInput
                     type='file'
                     onChange={onUploadFile}
-                    accept='.json, .geojson, .zip'
+                    accept={acceptExtensions}
                   />
                   {uploadFileError && <div>{uploadFileError}</div>}
                   {/* </DropMenuItemButton> */}
