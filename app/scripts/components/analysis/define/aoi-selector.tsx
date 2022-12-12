@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState
 } from 'react';
 import styled from 'styled-components';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
@@ -14,6 +15,7 @@ import {
   ToolbarLabel,
   VerticalDivider
 } from '@devseed-ui/toolbar';
+
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
   CollecticonArea,
@@ -23,7 +25,7 @@ import {
 } from '@devseed-ui/collecticons';
 import { multiPolygonToPolygon } from '../utils';
 import { FeatureByRegionPreset, RegionPreset } from './constants';
-import useCustomAoI, { acceptExtensions } from './use-custom-aoi';
+import AoIUploadModal from './aoi-upload-modal';
 import {
   Fold,
   FoldHeader,
@@ -37,9 +39,7 @@ import {
   AoiChangeListenerOverload,
   AoiState
 } from '$components/common/aoi/types';
-import DropMenuItemButton, {
-  DropMenuItemFileInput
-} from '$styles/drop-menu-item-button';
+import DropMenuItemButton from '$styles/drop-menu-item-button';
 
 const MapContainer = styled.div`
   position: relative;
@@ -102,10 +102,17 @@ export default function AoiSelector({
     }
   }, [onAoiEvent, qsPolygon, setFeature]);
 
-  const { onUploadFile, uploadFileError } = useCustomAoI(setFeature);
+  const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
 
   return (
     <Fold>
+      {aoiModalRevealed && (
+        <AoIUploadModal
+          setFeature={setFeature}
+          revealed={true}
+          onCloseClick={() => setAoIModalRevealed(false)}
+        />
+      )}
       <FoldHeader>
         <FoldHeadline>
           <FoldTitle>Area</FoldTitle>
@@ -155,14 +162,9 @@ export default function AoiSelector({
 
               <DropMenu>
                 <li>
-                  {/* <DropMenuItemButton> */}
-                  <DropMenuItemFileInput
-                    type='file'
-                    onChange={onUploadFile}
-                    accept={acceptExtensions}
-                  />
-                  {uploadFileError && <div>{uploadFileError}</div>}
-                  {/* </DropMenuItemButton> */}
+                  <DropMenuItemButton onClick={() => setAoIModalRevealed(true)}>
+                    Upload custom area...
+                  </DropMenuItemButton>
                 </li>
               </DropMenu>
             </Dropdown>
