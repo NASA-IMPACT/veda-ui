@@ -60,7 +60,7 @@ function useCustomAoI() {
 
       setUploadFileWarnings(warnings);
       setUploadFileError(null);
-      setFeature(feature);
+      setFeature({ ...feature, id: 'aoi-upload' });
     };
 
     const onError = () => {
