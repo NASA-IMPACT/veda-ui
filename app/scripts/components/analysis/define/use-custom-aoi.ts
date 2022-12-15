@@ -1,4 +1,4 @@
-import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import shp from 'shpjs';
 import simplify from 'simplify-js';
@@ -54,7 +54,7 @@ function useCustomAoI() {
 
     const onLoad = async () => {
       if (!reader.current) return;
-      let geojson: FeatureCollection;
+      let geojson;
       if (typeof reader.current.result === 'string') {
         const rawGeoJSON = reader.current.result;
         if (!rawGeoJSON) {
@@ -62,7 +62,7 @@ function useCustomAoI() {
           return;
         }
         try {
-          geojson = JSON.parse(rawGeoJSON as string) as FeatureCollection;
+          geojson = JSON.parse(rawGeoJSON as string);
         } catch (e) {
           setError('Error uploading file: Invalid JSON');
           return;
@@ -71,7 +71,7 @@ function useCustomAoI() {
         geojson = await shp(reader.current.result);
       }
       let feature: Feature = geojson.features[0];
-      if (!feature) {
+      if (!geojson.features || !geojson.features.length) {
         setError('Error uploading file: Invalid GeoJSON');
         return;
       }
