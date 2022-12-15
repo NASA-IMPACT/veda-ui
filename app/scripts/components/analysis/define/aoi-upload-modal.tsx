@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Feature } from 'geojson';
 import { Modal, ModalFooter, ModalHeadline } from '@devseed-ui/modal';
@@ -56,8 +56,14 @@ export default function AoIUploadModal({
   onCloseClick,
   setFeature
 }: AoIUploadModalProps) {
-  const { onUploadFile, uploadFileError, uploadFileWarnings, fileInfo, feature } =
-    useCustomAoI();
+  const {
+    feature,
+    onUploadFile,
+    uploadFileError,
+    uploadFileWarnings,
+    fileInfo,
+    reset
+  } = useCustomAoI();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const onUploadClick = useCallback(() => {
@@ -69,6 +75,10 @@ export default function AoIUploadModal({
     setFeature(feature);
     onCloseClick();
   }, [feature, setFeature, onCloseClick]);
+
+  useEffect(() => {
+    if (!revealed) reset();
+  }, [revealed, reset]);
 
   return (
     <Modal
@@ -92,7 +102,12 @@ export default function AoIUploadModal({
               <CollecticonArrowUp />
               Upload file...
             </Button>
-            {fileInfo && <div>File: {fileInfo.name}, type: {fileInfo.type} (.{fileInfo.extension}) </div>}
+            {fileInfo && (
+              <div>
+                File: {fileInfo.name}, type: {fileInfo.type} (.
+                {fileInfo.extension}){' '}
+              </div>
+            )}
             <FileInput
               type='file'
               onChange={onUploadFile}
@@ -107,9 +122,10 @@ export default function AoIUploadModal({
           )}
           {uploadFileWarnings.length > 0 && (
             <UploadWarnings>
-              
               {uploadFileWarnings.map((w) => (
-                <div key={w}><CollecticonCircleInformation />{' '}{w}</div>
+                <div key={w}>
+                  <CollecticonCircleInformation /> {w}
+                </div>
               ))}
             </UploadWarnings>
           )}

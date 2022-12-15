@@ -106,13 +106,11 @@ export default function AoiSelector({
 
   return (
     <Fold>
-      {aoiModalRevealed && (
-        <AoIUploadModal
-          setFeature={setFeature}
-          revealed={true}
-          onCloseClick={() => setAoIModalRevealed(false)}
-        />
-      )}
+      <AoIUploadModal
+        setFeature={setFeature}
+        revealed={aoiModalRevealed}
+        onCloseClick={() => setAoIModalRevealed(false)}
+      />
       <FoldHeader>
         <FoldHeadline>
           <FoldTitle>Area</FoldTitle>

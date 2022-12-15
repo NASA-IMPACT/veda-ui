@@ -13,13 +13,19 @@ export interface FileInfo {
   type: 'Shapefile' | 'GeoJSON';
 }
 
-function simplifyFeature(feature: Feature<Polygon>, tolerance: number): Feature<Polygon> {
+function simplifyFeature(
+  feature: Feature<Polygon>,
+  tolerance: number
+): Feature<Polygon> {
   return {
     ...feature,
     geometry: {
       ...feature.geometry,
       coordinates: feature.geometry.coordinates.map((coords) => {
-        return simplify(coords.map(c => ({x: c[0], y: c[1]})), tolerance).map(c => ([c.x, c.y]));
+        return simplify(
+          coords.map((c) => ({ x: c[0], y: c[1] })),
+          tolerance
+        ).map((c) => [c.x, c.y]);
       })
     }
   };
@@ -91,10 +97,9 @@ function useCustomAoI() {
         return;
       }
 
-      
       const originalNumFeatures = getNumPoints(feature as Feature<Polygon>);
       let numFeatures = originalNumFeatures;
-      let tolerance = .001;
+      let tolerance = 0.001;
       while (numFeatures > 2000) {
         feature = simplifyFeature(feature as Feature<Polygon>, tolerance);
         numFeatures = getNumPoints(feature as Feature<Polygon>);
@@ -107,7 +112,6 @@ function useCustomAoI() {
           `Your geometry has been simplified (${originalNumFeatures} down to ${numFeatures} points).`
         ];
       }
-
 
       setUploadFileWarnings(warnings);
       setUploadFileError(null);
@@ -155,12 +159,21 @@ function useCustomAoI() {
       reader.current.readAsText(file);
     }
   }, []);
+
+  const reset = useCallback(() => {
+    setFeature(null);
+    setUploadFileWarnings([]);
+    setUploadFileError(null);
+    setFileInfo(null);
+  }, []);
+
   return {
+    feature,
     onUploadFile,
     uploadFileError,
     uploadFileWarnings,
     fileInfo,
-    feature
+    reset
   };
 }
 
