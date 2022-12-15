@@ -64,11 +64,16 @@ function useCustomAoI() {
         try {
           geojson = JSON.parse(rawGeoJSON as string);
         } catch (e) {
-          setError('Error uploading file: Invalid JSON');
+          setError('Error uploading file: invalid JSON');
           return;
         }
       } else {
-        geojson = await shp(reader.current.result);
+        try {
+          geojson = await shp(reader.current.result);
+        } catch (e) {
+          setError(`Error uploading file: invalid Shapefile (${e.message})`);
+          return;
+        }
       }
       let feature: Feature = geojson.features[0];
       if (!geojson.features || !geojson.features.length) {
@@ -97,19 +102,19 @@ function useCustomAoI() {
         return;
       }
 
-      const originalNumFeatures = getNumPoints(feature as Feature<Polygon>);
-      let numFeatures = originalNumFeatures;
+      const originalNumPoints = getNumPoints(feature as Feature<Polygon>);
+      let numPoints = originalNumPoints;
       let tolerance = 0.001;
-      while (numFeatures > 2000) {
+      while (numPoints > 2000) {
         feature = simplifyFeature(feature as Feature<Polygon>, tolerance);
-        numFeatures = getNumPoints(feature as Feature<Polygon>);
+        numPoints = getNumPoints(feature as Feature<Polygon>);
         tolerance *= 5;
       }
 
-      if (originalNumFeatures !== numFeatures) {
+      if (originalNumPoints !== numPoints) {
         warnings = [
           ...warnings,
-          `Your geometry has been simplified (${originalNumFeatures} down to ${numFeatures} points).`
+          `Your geometry has been simplified (${originalNumPoints} down to ${numPoints} points).`
         ];
       }
 
