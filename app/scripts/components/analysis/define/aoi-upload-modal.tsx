@@ -107,9 +107,9 @@ export default function AoIUploadModal({
           )}
           {uploadFileWarnings.length > 0 && (
             <UploadWarnings>
-              <CollecticonCircleInformation />{' '}
+              
               {uploadFileWarnings.map((w) => (
-                <span key={w}>{w}</span>
+                <div key={w}><CollecticonCircleInformation />{' '}{w}</div>
               ))}
             </UploadWarnings>
           )}

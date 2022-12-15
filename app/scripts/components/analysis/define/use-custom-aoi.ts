@@ -1,6 +1,7 @@
-import { Feature, FeatureCollection, MultiPolygon } from 'geojson';
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import shp from 'shpjs';
+import simplify from 'simplify-js';
 import { multiPolygonToPolygon } from '../utils';
 
 const extensions = ['geojson', 'json', 'zip'];
@@ -10,6 +11,24 @@ export interface FileInfo {
   name: string;
   extension: string;
   type: 'Shapefile' | 'GeoJSON';
+}
+
+function simplifyFeature(feature: Feature<Polygon>, tolerance: number): Feature<Polygon> {
+  return {
+    ...feature,
+    geometry: {
+      ...feature.geometry,
+      coordinates: feature.geometry.coordinates.map((coords) => {
+        return simplify(coords.map(c => ({x: c[0], y: c[1]})), tolerance).map(c => ([c.x, c.y]));
+      })
+    }
+  };
+}
+
+function getNumPoints(feature: Feature<Polygon>): number {
+  return feature.geometry.coordinates.reduce((acc, current) => {
+    return acc + current.length;
+  }, 0);
 }
 
 function useCustomAoI() {
@@ -71,6 +90,24 @@ function useCustomAoI() {
         );
         return;
       }
+
+      
+      const originalNumFeatures = getNumPoints(feature as Feature<Polygon>);
+      let numFeatures = originalNumFeatures;
+      let tolerance = .001;
+      while (numFeatures > 2000) {
+        feature = simplifyFeature(feature as Feature<Polygon>, tolerance);
+        numFeatures = getNumPoints(feature as Feature<Polygon>);
+        tolerance *= 5;
+      }
+
+      if (originalNumFeatures !== numFeatures) {
+        warnings = [
+          ...warnings,
+          `Your geometry has been simplified (${originalNumFeatures} down to ${numFeatures} points).`
+        ];
+      }
+
 
       setUploadFileWarnings(warnings);
       setUploadFileError(null);
