@@ -1,14 +1,15 @@
-import { Feature, FeatureCollection } from 'geojson';
+import { Feature, FeatureCollection, MultiPolygon } from 'geojson';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import shp from 'shpjs';
+import { multiPolygonToPolygon } from '../utils';
 
 const extensions = ['geojson', 'json', 'zip'];
 export const acceptExtensions = extensions.map((ext) => `.${ext}`).join(', ');
 
 export interface FileInfo {
-  name: string
-  extension: string
-  type: 'Shapefile' | 'GeoJSON'
+  name: string;
+  extension: string;
+  type: 'Shapefile' | 'GeoJSON';
 }
 
 function useCustomAoI() {
@@ -44,7 +45,7 @@ function useCustomAoI() {
       } else {
         geojson = await shp(reader.current.result);
       }
-      const feature: Feature = geojson.features[0];
+      let feature: Feature = geojson.features[0];
       if (!feature) {
         setError('Error uploading file: Invalid GeoJSON');
         return;
@@ -56,6 +57,19 @@ function useCustomAoI() {
           ...warnings,
           'Your file contains multiple features. Only the first one will be used.'
         ];
+      }
+
+      if (feature.geometry.type === 'MultiPolygon') {
+        warnings = [
+          ...warnings,
+          'Your geometry contains multiple polygons. Only the first one will be used.'
+        ];
+        feature = multiPolygonToPolygon(feature as Feature<MultiPolygon>);
+      } else if (feature.geometry.type !== 'Polygon') {
+        setError(
+          'Wrong geometry type. Only polygons or multi polygons are accepted.'
+        );
+        return;
       }
 
       setUploadFileWarnings(warnings);
@@ -85,7 +99,7 @@ function useCustomAoI() {
 
     const [, extension] = file.name.match(/^.*\.(json|geojson|zip)$/i);
 
-    if (!extensions.includes(extension))  {
+    if (!extensions.includes(extension)) {
       setUploadFileError(
         'Wrong file type. Only zipped shapefiles and geojson files are accepted.'
       );
@@ -104,7 +118,13 @@ function useCustomAoI() {
       reader.current.readAsText(file);
     }
   }, []);
-  return { onUploadFile, uploadFileError, uploadFileWarnings, fileInfo, feature };
+  return {
+    onUploadFile,
+    uploadFileError,
+    uploadFileWarnings,
+    fileInfo,
+    feature
+  };
 }
 
 export default useCustomAoI;
