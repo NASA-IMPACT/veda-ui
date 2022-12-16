@@ -10,7 +10,7 @@ import {
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
-import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
+import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { Button } from '@devseed-ui/button';
 import {
@@ -23,6 +23,7 @@ import vedaThematics from 'veda/thematics';
 import NasaLogo from './nasa-logo';
 import GoogleForm from './google-form';
 import { Tip } from './tip';
+import DropdownScrollable from './dropdown-scrollable';
 
 import UnscrollableBody from './unscrollable-body';
 import { variableGlsp } from '$styles/variable-utils';
@@ -421,7 +422,7 @@ function PageHeader() {
                       ))}
                     </GlobalMenu>
                   ) : (
-                    <Dropdown
+                    <DropdownScrollable
                       alignment='left'
                       // eslint-disable-next-line no-unused-vars
                       triggerElement={({ active, className, ...rest }) => (
@@ -450,7 +451,7 @@ function PageHeader() {
                           </li>
                         ))}
                       </DropMenu>
-                    </Dropdown>
+                    </DropdownScrollable>
                   )}
                 </ThemesNavBlock>
               )}
