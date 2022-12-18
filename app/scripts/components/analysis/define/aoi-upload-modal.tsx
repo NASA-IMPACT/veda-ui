@@ -77,7 +77,7 @@ export default function AoIUploadModal({
   }, [feature, setFeature, onCloseClick]);
 
   useEffect(() => {
-    if (!revealed) reset();
+    if (revealed) reset();
   }, [revealed, reset]);
 
   return (
