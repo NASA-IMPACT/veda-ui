@@ -99,7 +99,8 @@
       "plugins": ["@typescript-eslint"],
       "rules": {
         "prettier/prettier": 0,
-        "@typescript-eslint/no-unused-vars": 2
+        "@typescript-eslint/no-unused-vars": 2,
+        "@typescript-eslint/no-non-null-assertion": 0
       },
       // Weird behavior with no-unused-vars
       // See https://stackoverflow.com/a/58513127

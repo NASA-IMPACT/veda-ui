@@ -22,20 +22,20 @@ const LOG = true;
 
 const FIT_BOUNDS_PADDING = 32;
 
-export interface MapLayerRasterTimeseriesProps {
+interface MapLayerRasterTimeseriesProps {
   id: string;
   stacCol: string;
-  date: Date;
+  date?: Date;
   mapInstance: mapboxgl.Map;
   sourceParams: object;
-  zoomExtent: [number, number];
+  zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
 }
 
-export type StacFeature = {
+export interface StacFeature {
   bbox: [number, number, number, number];
-};
+}
 
 enum STATUS_KEY {
   Global,
@@ -43,11 +43,11 @@ enum STATUS_KEY {
   StacSearch
 }
 
-type Statuses = {
+interface Statuses {
   [STATUS_KEY.Global]: ActionStatus;
   [STATUS_KEY.Layer]: ActionStatus;
   [STATUS_KEY.StacSearch]: ActionStatus;
-};
+}
 
 export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   const {
@@ -63,7 +63,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
   const theme = useTheme();
   const primaryColor = theme.color?.primary;
-  const minZoom = zoomExtent?.[0];
+  const minZoom = zoomExtent?.[0] ?? -Infinity;
 
   const [showMarkers, setShowMarkers] = useState(
     mapInstance.getZoom() < minZoom
@@ -134,7 +134,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     mapInstance.on('zoomend', zoomEnd);
 
     return () => {
-      mapInstance?.off('zoomend', zoomEnd);
+      mapInstance.off('zoomend', zoomEnd);
     };
   }, [minZoom, mapInstance]);
 
@@ -149,7 +149,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
     const load = async () => {
       try {
-        changeStatus?.({ status: S_LOADING, context: STATUS_KEY.StacSearch });
+        changeStatus({ status: S_LOADING, context: STATUS_KEY.StacSearch });
         const payload = {
           'filter-lang': 'cql2-json',
           filter: getFilterPayload(date, stacCol),
@@ -163,7 +163,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-disable no-console */
         LOG &&
           console.groupCollapsed(
-            'MapLayerRasterTimeseries %cLoading Markers',
+            'MapLayerRasterTimeseries %cLoading STAC features',
             'color: orange;',
             id
           );
@@ -180,7 +180,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-disable no-console */
         LOG &&
           console.groupCollapsed(
-            'MapLayerRasterTimeseries %cAdding Markers',
+            'MapLayerRasterTimeseries %cAdding STAC features',
             'color: green;',
             id
           );
@@ -189,15 +189,16 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-enable no-console */
 
         setStacCollection(responseData.features);
-        changeStatus?.({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
+        changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
       } catch (error) {
         if (!controller.signal.aborted) {
-          changeStatus?.({ status: S_FAILED, context: STATUS_KEY.StacSearch });
+          setStacCollection([]);
+          changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
         }
         LOG &&
           /* eslint-disable-next-line no-console */
           console.log(
-            'MapLayerRasterTimeseries %cAborted Markers',
+            'MapLayerRasterTimeseries %cAborted STAC features',
             'color: red;',
             id
           );
@@ -206,8 +207,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     };
     load();
     return () => {
-      controller && controller.abort();
-      changeStatus?.({ status: 'idle', context: STATUS_KEY.StacSearch });
+      controller.abort();
+      changeStatus({ status: 'idle', context: STATUS_KEY.StacSearch });
     };
   }, [id, changeStatus, stacCol, date]);
 
@@ -215,7 +216,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // Markers
   //
   useEffect(() => {
-    if (!id || !stacCol || !date || !minZoom || !stacCollection) return;
+    if (!id || !stacCol || !date || !minZoom || !stacCollection.length) return;
 
     // Create points from bboxes
     const points = stacCollection.map((f) => {
@@ -246,17 +247,14 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     });
 
     return () => {
-      if (mapInstance) {
-        addedMarkers.current.forEach((marker) => marker.remove());
-        addedMarkers.current = [];
-      }
+      addedMarkers.current.forEach((marker) => marker.remove());
+      addedMarkers.current = [];
     };
     // The showMarkers and isHidden dep are left out on purpose, as visibility
     // is controlled below, but we need the value to initialize the markers
     // visibility.
   }, [
     id,
-    changeStatus,
     stacCol,
     stacCollection,
     date,
@@ -270,12 +268,12 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // Tiles
   //
   useEffect(() => {
-    if (!id || !stacCol || !date || !stacCollection) return;
+    if (!id || !stacCol || !date || !stacCollection.length) return;
 
     const controller = new AbortController();
 
     const load = async () => {
-      changeStatus?.({ status: S_LOADING, context: STATUS_KEY.Layer });
+      changeStatus({ status: S_LOADING, context: STATUS_KEY.Layer });
       try {
         const payload = {
           'filter-lang': 'cql2-json',
@@ -285,7 +283,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-disable no-console */
         LOG &&
           console.groupCollapsed(
-            'MapLayerRasterTimeseries %cLoading',
+            'MapLayerRasterTimeseries %cLoading Mosaic',
             'color: orange;',
             id
           );
@@ -312,7 +310,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-disable no-console */
         LOG &&
           console.groupCollapsed(
-            'MapLayerRasterTimeseries %cAdding',
+            'MapLayerRasterTimeseries %cAdding Mosaic',
             'color: green;',
             id
           );
@@ -344,15 +342,18 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           },
           'admin-0-boundary-bg'
         );
-        changeStatus?.({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
-
+        changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
       } catch (error) {
         if (!controller.signal.aborted) {
-          changeStatus?.({ status: S_FAILED, context: STATUS_KEY.Layer });
+          changeStatus({ status: S_FAILED, context: STATUS_KEY.Layer });
         }
         LOG &&
           /* eslint-disable-next-line no-console */
-          console.log('MapLayerRasterTimeseries %cAborted', 'color: red;', id);
+          console.log(
+            'MapLayerRasterTimeseries %cAborted Mosaic',
+            'color: red;',
+            id
+          );
         return;
       }
     };
@@ -360,10 +361,14 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     load();
 
     return () => {
-      controller && controller.abort();
-      changeStatus?.({ status: 'idle', context: STATUS_KEY.Layer });
+      controller.abort();
+      changeStatus({ status: 'idle', context: STATUS_KEY.Layer });
 
-      if (mapInstance?.getSource(id)) {
+      const source = mapInstance.getSource(id) as
+        | mapboxgl.AnySourceImpl
+        | undefined;
+
+      if (source) {
         mapInstance.removeLayer(id);
         mapInstance.removeSource(id);
       }
@@ -381,7 +386,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     sourceParams
   ]);
 
-  // 
+  //
   // FitBounds when needed
   //
   useEffect(() => {

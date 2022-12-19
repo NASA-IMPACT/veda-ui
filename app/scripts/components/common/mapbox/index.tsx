@@ -216,7 +216,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   // The compare date is specified by the user.
   // If no date is specified anywhere we just use the same.
   const compareToDate = useMemo(() => {
-    const theDate = compareDate || date;
+    const theDate = compareDate ?? date;
     return theDate instanceof Date && !isNaN(theDate.getTime())
       ? theDate
       : null;
@@ -454,6 +454,7 @@ interface MapPosition {
 }
 
 export interface MapboxMapProps {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   as?: any;
   className?: string;
   id?: string;

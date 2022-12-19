@@ -31,6 +31,9 @@ interface DatasetLayersProps {
 export default function DatasetLayers(props: DatasetLayersProps) {
   const { datasetId, asyncLayers, onAction, selectedLayerId } = props;
 
+  const dataset = datasets[datasetId];
+  if (!dataset) return null;
+
   return (
     <AccordionManager>
       <LayerList>
@@ -49,7 +52,7 @@ export default function DatasetLayers(props: DatasetLayersProps) {
               );
             case S_FAILED: {
               // The order of the asyncLayers is the same as the source layers.
-              const sourceLayer = datasets[datasetId].data.layers[idx];
+              const sourceLayer = dataset.data.layers[idx];
               return (
                 /* eslint-disable-next-line react/no-array-index-key */
                 <li key={idx}>

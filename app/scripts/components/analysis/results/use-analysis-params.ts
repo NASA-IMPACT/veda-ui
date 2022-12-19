@@ -77,7 +77,9 @@ export function useAnalysisParams(): {
 
       // Create an array with all the dataset layers.
       const allDatasetLayers = Object.values(vedaDatasets).flatMap(
-        (d) => d.data.layers
+        // When accessing the object values with Object.values, they'll always
+        // be defined.
+        (d) => d!.data.layers
       );
       const layers = datasetsLayers.split('|').map((id) =>
         // Find the one we're looking for.
