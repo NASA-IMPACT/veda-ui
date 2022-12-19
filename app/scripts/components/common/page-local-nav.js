@@ -17,8 +17,10 @@ import {
 } from '@devseed-ui/collecticons';
 import { reveal } from '@devseed-ui/animation';
 import { Overline } from '@devseed-ui/typography';
-import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
+import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
+
+import DropdownScrollable from './dropdown-scrollable';
 
 import { variableGlsp } from '$styles/variable-utils';
 import {
@@ -195,7 +197,7 @@ function PageLocalNav(props) {
         </li>
         <li>
           {items.length > 1 ? (
-            <Dropdown
+            <DropdownScrollable
               alignment='left'
               // eslint-disable-next-line no-unused-vars
               triggerElement={({ active, className, ...rest }) => (
@@ -227,7 +229,7 @@ function PageLocalNav(props) {
                   </li>
                 ))}
               </DropMenu>
-            </Dropdown>
+            </DropdownScrollable>
           ) : (
             <SectionLink as={Link} to={`${parentTo}/${currentId}`}>
               <span>{currentItem.name}</span>
