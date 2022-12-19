@@ -107,7 +107,7 @@ function formatContents(relatedData: RelatedContentData[]) {
     // Even though type should be one of the defined values, this values comes
     // from user generated content and we can't be sure, so the checks are in
     // place.
-    const matchingContent = contentCategory[type]?.[id].data;
+    const matchingContent = contentCategory[type][id]?.data;
 
     if (!matchingContent) {
       throw Error(

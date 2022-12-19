@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useDeepCompareMemo } from "use-deep-compare";
+import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   QueryState,
   useQueries,
@@ -76,6 +76,12 @@ export interface AsyncDatasetLayer {
   reFetch: (() => void) | null;
 }
 
+interface NullAsyncDatasetLayer {
+  baseLayer: null;
+  compareLayer: null;
+  reFetch: null;
+}
+
 const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
   const queryClient = useQueryClient();
 
@@ -97,7 +103,9 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
   // useQueries does not produce a stable result, so `layerQueries` will be
   // changing on every render. This is a problem because we must compute the
   // final layer data which should only be done if the data actually changes.
-  const layerQueries = useQueries({ queries }) as UseQueryResult<STACLayerData>[];
+  const layerQueries = useQueries({
+    queries
+  }) as UseQueryResult<STACLayerData>[];
   // There is an issue for this behavior but seems like it won't be fixed in the
   // near future:
   // https://github.com/tannerlinsley/react-query/issues/3049
@@ -111,6 +119,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
     >(baseData: T) {
       // At this point the result of queryClient.getQueryState will never be
       // undefined.
+      /* eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style */
       const dataSTAC = queryClient.getQueryState([
         'layer',
         baseData.stacCol
@@ -155,10 +164,14 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 };
 
 // Context consumers.
-export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
+export const useDatasetAsyncLayer = (
+  datasetId?: string,
+  layerId?: string
+): NullAsyncDatasetLayer | AsyncDatasetLayer => {
   const hasParams = !!datasetId && !!layerId;
+  const dataset = datasets[datasetId ?? ''];
   // Get the layer information from the dataset defined in the configuration.
-  const layersList = datasetId ? datasets[datasetId]?.data.layers : [];
+  const layersList = dataset ? dataset.data.layers : [];
   const layer = layersList.find((l) => l.id === layerId);
 
   // The layers must be defined in the configuration otherwise it is not
@@ -172,7 +185,7 @@ export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
 
   return useMemo(
     () =>
-      asyncLayers?.[0] || {
+      asyncLayers[0] || {
         baseLayer: null,
         compareLayer: null,
         reFetch: null
@@ -182,8 +195,9 @@ export const useDatasetAsyncLayer = (datasetId?: string, layerId?: string) => {
 };
 
 export const useDatasetAsyncLayers = (datasetId) => {
+  const dataset = datasets[datasetId ?? ''];
   // Get the layer information from the dataset defined in the configuration.
-  return useLayersInit(datasets[datasetId]?.data.layers);
+  return useLayersInit(dataset?.data.layers ?? []);
 };
 
 interface ReferencedLayer {
@@ -197,8 +211,9 @@ export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
   const layers = useMemo(
     () =>
       referencedLayers.map(({ datasetId, layerId, skipCompare }) => {
+        const layers = datasets[datasetId]?.data.layers;
         // Get the layer information from the dataset defined in the configuration.
-        const layer = datasets[datasetId]?.data.layers?.find(
+        const layer = layers?.find(
           (l) => l.id === layerId
         ) as DatasetLayer | null;
 

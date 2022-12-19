@@ -25,13 +25,14 @@ export function useThematicArea() {
 
     const relData = vedaThematics.find((d) => d.id === tId);
     // Relationship data between thematics and datasets/discoveries.
-    if (!relData) return null;
+    const thematic = thematics[tId];
+    if (!relData || !thematic) return null;
 
     return {
-      ...thematics[tId],
+      ...thematic,
       data: {
         ...relData,
-        ...thematics[tId].data
+        ...thematic.data
       }
     };
   }, [tId]);
@@ -47,7 +48,7 @@ export function useThematicAreaDiscovery() {
   const thematic = useThematicArea();
   const { discoveryId } = useParams();
 
-  const discovery = discoveries[discoveryId || ''];
+  const discovery = discoveries[discoveryId ?? ''];
 
   // Stop if the discovery doesn't exist or if it doesn't belong to this
   // thematic area.
@@ -72,7 +73,7 @@ export function useThematicAreaDataset() {
   const thematic = useThematicArea();
   const { datasetId } = useParams();
 
-  const dataset = datasets[datasetId || ''];
+  const dataset = datasets[datasetId ?? ''];
 
   // Stop if the datasets doesn't exist or if it doesn't belong to this
   // thematic area.

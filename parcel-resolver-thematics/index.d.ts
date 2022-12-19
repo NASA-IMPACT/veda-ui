@@ -190,7 +190,7 @@ declare module 'veda/thematics' {
   /**
    * Base structure for each of the data types in veda/thematics.
    */
-  type VedaData<T> = Record<string, VedaDatum<T>>;
+  type VedaData<T> = Record<string, VedaDatum<T> | undefined>;
 
   export interface VedaDatum<T> {
     /**
