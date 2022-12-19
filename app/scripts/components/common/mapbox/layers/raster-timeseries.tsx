@@ -63,7 +63,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
   const theme = useTheme();
   const primaryColor = theme.color?.primary;
-  const minZoom = zoomExtent?.[0] ?? -Infinity;
+  const minZoom = zoomExtent?.[0] ?? 0;
 
   const [showMarkers, setShowMarkers] = useState(
     mapInstance.getZoom() < minZoom
