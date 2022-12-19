@@ -19,7 +19,7 @@ import {
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
   CollecticonArea,
-  CollecticonEllipsisVertical,
+  CollecticonGlobe,
   CollecticonTrashBin,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
@@ -133,35 +133,30 @@ export default function AoiSelector({
             >
               <CollecticonArea title='Draw shape' meaningful />
             </ToolbarIconButton>
-            <ToolbarIconButton variation='base-text'>
+            <ToolbarIconButton
+              variation='base-text'
+              onClick={() => setAoIModalRevealed(true)}
+            >
               <CollecticonUpload2 title='Upload geoJSON' meaningful />
             </ToolbarIconButton>
             <Dropdown
               alignment='right'
               triggerElement={(props) => (
                 <ToolbarIconButton variation='base-text' {...props}>
-                  <CollecticonEllipsisVertical
+                  <CollecticonGlobe
                     title='More options'
                     meaningful
                   />
                 </ToolbarIconButton>
               )}
             >
-              <DropTitle>Select a region</DropTitle>
+              <DropTitle>Select a region (BETA)</DropTitle>
               <DropMenu>
                 <li>
                   <DropMenuItemButton
                     onClick={() => onRegionPresetClick('world')}
                   >
                     World
-                  </DropMenuItemButton>
-                </li>
-              </DropMenu>
-
-              <DropMenu>
-                <li>
-                  <DropMenuItemButton onClick={() => setAoIModalRevealed(true)}>
-                    Upload custom area...
                   </DropMenuItemButton>
                 </li>
               </DropMenu>

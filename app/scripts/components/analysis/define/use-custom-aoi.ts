@@ -58,7 +58,7 @@ function useCustomAoI() {
       if (typeof reader.current.result === 'string') {
         const rawGeoJSON = reader.current.result;
         if (!rawGeoJSON) {
-          setError('Error uploading file');
+          setError('Error uploading file.');
           return;
         }
         try {
@@ -85,14 +85,14 @@ function useCustomAoI() {
       if (geojson.features.length > 1) {
         warnings = [
           ...warnings,
-          'Your file contains multiple features. Only the first one will be used.'
+          'Files containing multiple features are not supported. Only the first feature will be used.'
         ];
       }
 
       if (feature.geometry.type === 'MultiPolygon') {
         warnings = [
           ...warnings,
-          'Your geometry contains multiple polygons. Only the first one will be used.'
+          'Files containing multiple polygons are not supported. Only the first polygon will be used.'
         ];
         feature = multiPolygonToPolygon(feature as Feature<MultiPolygon>);
       } else if (feature.geometry.type !== 'Polygon') {
@@ -114,7 +114,7 @@ function useCustomAoI() {
       if (originalNumPoints !== numPoints) {
         warnings = [
           ...warnings,
-          `Your geometry has been simplified (${originalNumPoints} down to ${numPoints} points).`
+          `The geometry has been simplified (${originalNumPoints} down to ${numPoints} points).`
         ];
       }
 

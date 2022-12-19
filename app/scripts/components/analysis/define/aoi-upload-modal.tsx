@@ -1,10 +1,16 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Feature } from 'geojson';
-import { Modal, ModalFooter, ModalHeadline } from '@devseed-ui/modal';
+import { Modal, ModalHeadline, ModalFooter } from '@devseed-ui/modal';
+import { Heading, Subtitle } from '@devseed-ui/typography';
 
 import { Button } from '@devseed-ui/button';
-import { themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
+import {
+  glsp,
+  listReset,
+  themeVal,
+  visuallyHidden
+} from '@devseed-ui/theme-provider';
 import {
   CollecticonArrowUp,
   CollecticonTickSmall,
@@ -14,7 +20,7 @@ import {
   CollecticonCircleInformation
 } from '@devseed-ui/collecticons';
 import useCustomAoI, { acceptExtensions } from './use-custom-aoi';
-import { variableGlsp } from '$styles/variable-utils';
+import { variableGlsp, variableProseVSpace } from '$styles/variable-utils';
 
 const UploadFileModalFooter = styled(ModalFooter)`
   display: flex;
@@ -23,25 +29,64 @@ const UploadFileModalFooter = styled(ModalFooter)`
   gap: ${variableGlsp(0.25)};
 `;
 
-const UploadFileModalBody = styled.div`
-  & > * {
-    margin-bottom: 1rem;
-  }
+const ModalBodyInner = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${variableGlsp()};
+`;
+
+const UploadFileIntro = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${variableProseVSpace()};
+`;
+
+const FileUpload = styled.div`
+  display: flex;
+  flex-flow: nowrap;
+  align-items: center;
+  gap: ${variableGlsp(0.5)};
 `;
 
 const FileInput = styled.input`
   ${visuallyHidden()}
 `;
 
-const UploadSuccess = styled.div`
+const UploadInformation = styled.div`
+  padding: ${variableGlsp()};
+  background: ${themeVal('color.base-50')};
+  box-shadow: ${themeVal('boxShadow.inset')};
+  border-radius: ${themeVal('shape.rounded')};
+`;
+
+const UploadListInfo = styled.ul`
+  ${listReset()}
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${glsp(0.25)};
+
+  li {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: ${glsp(0.5)};
+    align-items: top;
+
+    > svg {
+      flex-shrink: 0;
+      margin-top: ${glsp(0.25)};
+    }
+  }
+`;
+
+const UploadInfoItemSuccess = styled.li`
   color: ${themeVal('color.success')};
 `;
 
-const UploadWarnings = styled.div`
+const UploadInfoItemWarnings = styled.li`
   color: ${themeVal('color.info')};
 `;
 
-const UploadError = styled.div`
+const UploadInfoItemError = styled.li`
   color: ${themeVal('color.danger')};
 `;
 
@@ -80,76 +125,85 @@ export default function AoIUploadModal({
     if (revealed) reset();
   }, [revealed, reset]);
 
+  const hasInfo = !!uploadFileWarnings.length || !!feature || uploadFileError;
+
   return (
     <Modal
       id='aoiUpload'
-      size='small'
+      size='medium'
       revealed={revealed}
       onCloseClick={onCloseClick}
       renderHeadline={() => (
         <ModalHeadline>
-          <h1>Upload custom area</h1>
+          <h2>Upload custom area</h2>
         </ModalHeadline>
       )}
       content={
-        <UploadFileModalBody>
-          <div>
-            You can upload a zippped shapefile (*.zip) or a GeoJSON file
-            (*.json, *.geojson) to define a custom area of interest.
-          </div>
-          <div>
-            <Button variation='primary-fill' onClick={onUploadClick}>
-              <CollecticonArrowUp />
-              Upload file...
-            </Button>
-            {fileInfo && (
-              <div>
-                File: {fileInfo.name}, type: {fileInfo.type} (.
-                {fileInfo.extension}){' '}
-              </div>
-            )}
-            <FileInput
-              type='file'
-              onChange={onUploadFile}
-              accept={acceptExtensions}
-              ref={fileInputRef}
-            />
-          </div>
-          {feature && (
-            <UploadSuccess>
-              <CollecticonCircleTick /> Succesfully uploaded file
-            </UploadSuccess>
+        <ModalBodyInner>
+          <UploadFileIntro>
+            <p>
+              You can upload a zipped shapefile (*.zip) or a GeoJSON file
+              (*.json, *.geojson) to define a custom area of interest.
+            </p>
+            <FileUpload>
+              <Button variation='base-outline' onClick={onUploadClick}>
+                <CollecticonArrowUp />
+                Upload file...
+              </Button>
+              {fileInfo && (
+                <Subtitle as='p'>
+                  File: {fileInfo.name} ({fileInfo.type}).
+                </Subtitle>
+              )}
+              <FileInput
+                type='file'
+                onChange={onUploadFile}
+                accept={acceptExtensions}
+                ref={fileInputRef}
+              />
+            </FileUpload>
+          </UploadFileIntro>
+
+          {hasInfo && (
+            <UploadInformation>
+              <Heading hidden>Upload information</Heading>
+
+              <UploadListInfo>
+                {uploadFileWarnings.map((w) => (
+                  <UploadInfoItemWarnings key={w}>
+                    <CollecticonCircleInformation />
+                    <span>{w}</span>
+                  </UploadInfoItemWarnings>
+                ))}
+                {feature && (
+                  <UploadInfoItemSuccess>
+                    <CollecticonCircleTick />
+                    <span>File uploaded successfully.</span>
+                  </UploadInfoItemSuccess>
+                )}
+                {uploadFileError && (
+                  <UploadInfoItemError>
+                    <CollecticonCircleExclamation /> {uploadFileError}
+                  </UploadInfoItemError>
+                )}
+              </UploadListInfo>
+            </UploadInformation>
           )}
-          {uploadFileWarnings.length > 0 && (
-            <UploadWarnings>
-              {uploadFileWarnings.map((w) => (
-                <div key={w}>
-                  <CollecticonCircleInformation /> {w}
-                </div>
-              ))}
-            </UploadWarnings>
-          )}
-          {uploadFileError && (
-            <UploadError>
-              <CollecticonCircleExclamation /> {uploadFileError}
-            </UploadError>
-          )}
-        </UploadFileModalBody>
+        </ModalBodyInner>
       }
       renderFooter={() => (
         <UploadFileModalFooter>
-          <Button variation='base-fill' title='Cancel' onClick={onCloseClick}>
+          <Button variation='base-text' onClick={onCloseClick}>
             <CollecticonXmarkSmall />
             Cancel
           </Button>
           <Button
             variation='primary-fill'
-            title='Add this area'
             disabled={!feature}
             onClick={onConfirmClick}
           >
             <CollecticonTickSmall />
-            Add this area
+            Add area
           </Button>
         </UploadFileModalFooter>
       )}
