@@ -143,7 +143,7 @@ function useCustomAoI() {
     const file = event.target.files[0];
     if (!file) return;
 
-    const [, extension] = file.name.match(/^.*\.(json|geojson|zip)$/i);
+    const [, extension] = file.name.match(/^.*\.(json|geojson|zip)$/i) ?? [];
 
     if (!extensions.includes(extension)) {
       setUploadFileError(
