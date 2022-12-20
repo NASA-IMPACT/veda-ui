@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import styled from 'styled-components';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
@@ -9,15 +15,17 @@ import {
   ToolbarLabel,
   VerticalDivider
 } from '@devseed-ui/toolbar';
+
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
   CollecticonArea,
-  CollecticonEllipsisVertical,
+  CollecticonGlobe,
   CollecticonTrashBin,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
 import { multiPolygonToPolygon } from '../utils';
 import { FeatureByRegionPreset, RegionPreset } from './constants';
+import AoIUploadModal from './aoi-upload-modal';
 import {
   Fold,
   FoldHeader,
@@ -94,8 +102,15 @@ export default function AoiSelector({
     }
   }, [onAoiEvent, qsPolygon, setFeature]);
 
+  const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
+
   return (
     <Fold>
+      <AoIUploadModal
+        setFeature={setFeature}
+        revealed={aoiModalRevealed}
+        onCloseClick={() => setAoIModalRevealed(false)}
+      />
       <FoldHeader>
         <FoldHeadline>
           <FoldTitle>Area</FoldTitle>
@@ -118,21 +133,24 @@ export default function AoiSelector({
             >
               <CollecticonArea title='Draw shape' meaningful />
             </ToolbarIconButton>
-            <ToolbarIconButton variation='base-text'>
+            <ToolbarIconButton
+              variation='base-text'
+              onClick={() => setAoIModalRevealed(true)}
+            >
               <CollecticonUpload2 title='Upload geoJSON' meaningful />
             </ToolbarIconButton>
             <Dropdown
               alignment='right'
               triggerElement={(props) => (
                 <ToolbarIconButton variation='base-text' {...props}>
-                  <CollecticonEllipsisVertical
+                  <CollecticonGlobe
                     title='More options'
                     meaningful
                   />
                 </ToolbarIconButton>
               )}
             >
-              <DropTitle>Select a region</DropTitle>
+              <DropTitle>Select a region (BETA)</DropTitle>
               <DropMenu>
                 <li>
                   <DropMenuItemButton

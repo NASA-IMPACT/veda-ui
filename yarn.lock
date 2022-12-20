@@ -6830,6 +6830,13 @@ iconv-lite@0.6, iconv-lite@0.6.3:
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
+iconv-lite@^0.4.15:
+  version "0.4.24"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
+  integrity sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==
+  dependencies:
+    safer-buffer ">= 2.1.2 < 3"
+
 ieee754@^1.1.12, ieee754@^1.2.1:
   version "1.2.1"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
@@ -6839,6 +6846,11 @@ ignore@^5.1.8, ignore@^5.2.0:
   version "5.2.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/ignore/-/ignore-5.2.0.tgz#6d3bac8fa7fe0d45d9f9be7bac2fc279577e345a"
   integrity sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==
+
+immediate@~3.0.5:
+  version "3.0.6"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
+  integrity sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==
 
 import-fresh@^3.0.0, import-fresh@^3.2.1:
   version "3.3.0"
@@ -7896,6 +7908,16 @@ jsonfile@^6.0.1:
     array-includes "^3.1.5"
     object.assign "^4.1.2"
 
+jszip@^3.5.0:
+  version "3.10.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/jszip/-/jszip-3.10.1.tgz#34aee70eb18ea1faec2f589208a157d1feb091c2"
+  integrity sha512-xXDvecyTpGLrqFrvkrUSoxxfJI5AH7U8zxxtVclpsUtMCq4JQ290LY8AW5c7Ggnr/Y/oK+bQMbqK2qmtk3pN4g==
+  dependencies:
+    lie "~3.3.0"
+    pako "~1.0.2"
+    readable-stream "~2.3.6"
+    setimmediate "^1.0.5"
+
 just-debounce@^1.0.0:
   version "1.1.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/just-debounce/-/just-debounce-1.1.0.tgz#2f81a3ad4121a76bc7cb45dbf704c0d76a8e5ddf"
@@ -8002,6 +8024,13 @@ levn@~0.3.0:
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
+
+lie@^3.0.1, lie@~3.3.0:
+  version "3.3.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/lie/-/lie-3.3.0.tgz#dcf82dee545f46074daf200c7c1c5a08e0f40f6a"
+  integrity sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==
+  dependencies:
+    immediate "~3.0.5"
 
 liftoff@^3.1.0:
   version "3.1.0"
@@ -8198,6 +8227,11 @@ lowercase-keys@^2.0.0:
   version "2.0.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/lowercase-keys/-/lowercase-keys-2.0.0.tgz#2603e78b7b4b0006cbca2fbcc8a3202558ac9479"
   integrity sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==
+
+lru-cache@^2.7.0:
+  version "2.7.3"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/lru-cache/-/lru-cache-2.7.3.tgz#6d4524e8b955f95d4f5b58851ce21dd72fb4e952"
+  integrity sha1-bUUk6LlV+V1PW1iFHOId1y+06VI=
 
 lru-cache@^6.0.0:
   version "6.0.0"
@@ -8618,6 +8652,11 @@ merge2@^1.3.0, merge2@^1.4.1:
   version "1.4.1"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
+
+mgrs@1.0.0:
+  version "1.0.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/mgrs/-/mgrs-1.0.0.tgz#fb91588e78c90025672395cb40b25f7cd6ad1829"
+  integrity sha512-awNbTOqCxK1DBGjalK3xqWIstBZgN6fxsMSiXLs9/spqWkF2pAhb2rrYCFSsr1/tT7PhcDGjZndG8SWYn0byYA==
 
 micromark-core-commonmark@^1.0.0, micromark-core-commonmark@^1.0.1:
   version "1.0.6"
@@ -9519,6 +9558,11 @@ p-try@^2.0.0:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
 
+pako@~1.0.2:
+  version "1.0.11"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
+  integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
+
 papaparse@^5.3.2:
   version "5.3.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/papaparse/-/papaparse-5.3.2.tgz#d1abed498a0ee299f103130a6109720404fbd467"
@@ -9629,6 +9673,14 @@ parse5@6.0.1, parse5@^6.0.0:
   version "6.0.1"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/parse5/-/parse5-6.0.1.tgz#e1a1c085c569b3dc08321184f19a39cc27f7c30b"
   integrity sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==
+
+parsedbf@^1.1.0:
+  version "1.1.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/parsedbf/-/parsedbf-1.1.1.tgz#f3af1a1edc432a4e3dba76bcf2c1858f2ebf8066"
+  integrity sha512-jndFmhcrzSAGCMccM4za+3bIRxqV6L2doQjYN8Xgz0kZUpyBT5I8Gs6Y6hL5GcO2rih9OBkPcLlx2uBoLi8R8Q==
+  dependencies:
+    iconv-lite "^0.4.15"
+    text-encoding-polyfill "^0.6.7"
 
 pascalcase@^0.1.1:
   version "0.1.1"
@@ -9987,6 +10039,14 @@ process@^0.11.10:
   version "0.11.10"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
   integrity sha1-czIwDoQBYb2j5podHZGn1LwW8YI=
+
+proj4@^2.1.4:
+  version "2.8.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/proj4/-/proj4-2.8.0.tgz#b2cb8f3ccd56d4dcc7c3e46155cd02caa804b170"
+  integrity sha512-baC+YcD4xsSqJ+CpCZljj2gcQDhlKb+J+Zjv/2KSBwWNjk4M0pafgQsE+mWurd84tflMIsP+7j7mtIpFDHzQfQ==
+  dependencies:
+    mgrs "1.0.0"
+    wkt-parser "^1.3.1"
 
 prompts@^2.0.1:
   version "2.4.2"
@@ -10774,7 +10834,7 @@ safe-regex@^1.1.0:
   dependencies:
     ret "~0.1.10"
 
-"safer-buffer@>= 2.1.2 < 3.0.0":
+"safer-buffer@>= 2.1.2 < 3", "safer-buffer@>= 2.1.2 < 3.0.0":
   version "2.1.2"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
@@ -10851,6 +10911,11 @@ set-value@^2.0.0, set-value@^2.0.1:
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 
+setimmediate@^1.0.5:
+  version "1.0.5"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
+  integrity sha1-KQy7Iy4waULX1+qbg3Mqt4VvgoU=
+
 shallowequal@^1.1.0:
   version "1.1.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
@@ -10868,6 +10933,17 @@ shebang-regex@^3.0.0:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
+shpjs@^4.0.4:
+  version "4.0.4"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/shpjs/-/shpjs-4.0.4.tgz#8849032ba1a738e7a983cd9c508ba3097ad2717c"
+  integrity sha512-+IcS2DoiTGqAONUEN46ZociKGJ2ecs1EVwJuSqnAOkMafxWC8noO3X/zI959RCbqHGvBr1RM1bdk4jc7fYONVg==
+  dependencies:
+    jszip "^3.5.0"
+    lie "^3.0.1"
+    lru-cache "^2.7.0"
+    parsedbf "^1.1.0"
+    proj4 "^2.1.4"
+
 side-channel@^1.0.4:
   version "1.0.4"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/side-channel/-/side-channel-1.0.4.tgz#efce5c8fdc104ee751b25c58d4290011fa5ea2cf"
@@ -10881,6 +10957,11 @@ signal-exit@^3.0.2, signal-exit@^3.0.3, signal-exit@^3.0.7:
   version "3.0.7"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/signal-exit/-/signal-exit-3.0.7.tgz#a9a1767f8af84155114eaabd73f99273c8f59ad9"
   integrity sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==
+
+simplify-js@^1.2.4:
+  version "1.2.4"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/simplify-js/-/simplify-js-1.2.4.tgz#7aab22d6df547ffd40ef0761ccd82b75287d45c7"
+  integrity sha512-vITfSlwt7h/oyrU42R83mtzFpwYk3+mkH9bOHqq/Qw6n8rtR7aE3NZQ5fbcyCUVVmuMJR6ynsAhOfK2qoah8Jg==
 
 sisteransi@^1.0.5:
   version "1.0.5"
@@ -11466,6 +11547,11 @@ tether@^1.4.5:
   version "1.4.7"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/tether/-/tether-1.4.7.tgz#d56a818590d8fe72e387f77a67f93ab96d8e1fb2"
   integrity sha512-Z0J1aExjoFU8pybVkQAo/vD2wfSO63r+XOPfWQMC5qtf1bI7IWqNk4MiyBcgvvnY8kqnY06dVdvwTK2S3PU/Fw==
+
+text-encoding-polyfill@^0.6.7:
+  version "0.6.7"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/text-encoding-polyfill/-/text-encoding-polyfill-0.6.7.tgz#4d27de0153e4c86eb2631ffd74c2f3f57969a9ec"
+  integrity sha512-/DZ1XJqhbqRkCop6s9ZFu8JrFRwmVuHg4quIRm+ziFkR3N3ec6ck6yBvJ1GYeEQZhLVwRW0rZE+C3SSJpy0RTg==
 
 text-table@^0.2.0:
   version "0.2.0"
@@ -12332,6 +12418,11 @@ which@^2.0.1:
   integrity sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==
   dependencies:
     isexe "^2.0.0"
+
+wkt-parser@^1.3.1:
+  version "1.3.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/wkt-parser/-/wkt-parser-1.3.2.tgz#deeff04a21edc5b170a60da418e9ed1d1ab0e219"
+  integrity sha512-A26BOOo7sHAagyxG7iuRhnKMO7Q3mEOiOT4oGUmohtN/Li5wameeU4S6f8vWw6NADTVKljBs8bzA8JPQgSEMVQ==
 
 word-wrap@^1.2.3, word-wrap@~1.2.3:
   version "1.2.3"
