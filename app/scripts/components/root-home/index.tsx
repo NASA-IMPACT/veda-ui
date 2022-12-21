@@ -6,7 +6,7 @@ import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { Card, CardList } from '$components/common/card';
-import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
+import { Fold, FoldHeader, FoldTitle, FoldBody } from '$components/common/fold';
 import Pluralize from '$utils/pluralize';
 
 const appTitle = process.env.APP_TITLE;
@@ -56,6 +56,32 @@ function RootHome() {
             </li>
           ))}
         </CardList>
+      </Fold>
+      <Fold>
+        <FoldHeader>
+          <FoldTitle>Featured discoveries</FoldTitle>
+        </FoldHeader>
+        <FoldBody>
+          <p>Content goes here.</p>
+        </FoldBody>
+      </Fold>
+      <Fold>
+        <FoldHeader>
+          <FoldTitle>
+            A scalable and interactive system for science data
+          </FoldTitle>
+        </FoldHeader>
+        <FoldBody>
+          <p>Content goes here.</p>
+        </FoldBody>
+      </Fold>
+      <Fold>
+        <FoldHeader>
+          <FoldTitle>VEDA serves a wide scientific audience</FoldTitle>
+        </FoldHeader>
+        <FoldBody>
+          <p>Content goes here.</p>
+        </FoldBody>
       </Fold>
     </PageMainContent>
   );
