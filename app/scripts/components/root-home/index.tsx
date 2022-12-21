@@ -6,7 +6,7 @@ import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { Card, CardList } from '$components/common/card';
-import { Fold, FoldHeader, FoldTitle, FoldBody } from '$components/common/fold';
+import { Fold, FoldHeader, FoldTitle, FoldLead, FoldBody } from '$components/common/fold';
 import Pluralize from '$utils/pluralize';
 
 const appTitle = process.env.APP_TITLE;
@@ -70,6 +70,9 @@ function RootHome() {
           <FoldTitle>
             A scalable and interactive system for science data
           </FoldTitle>
+          <FoldLead>
+            VEDA stands for Visualization, Exploration, and Data Analysis.
+          </FoldLead>
         </FoldHeader>
         <FoldBody>
           <p>Content goes here.</p>
@@ -78,6 +81,10 @@ function RootHome() {
       <Fold>
         <FoldHeader>
           <FoldTitle>VEDA serves a wide scientific audience</FoldTitle>
+          <FoldLead>
+            VEDA makes science based on NASA datasets inclusive, accessible, and
+            reproducible.
+          </FoldLead>
         </FoldHeader>
         <FoldBody>
           <p>Content goes here.</p>

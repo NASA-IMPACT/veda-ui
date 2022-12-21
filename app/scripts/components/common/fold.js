@@ -4,9 +4,9 @@ import T from 'prop-types';
 import styled from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 
-import { variableGlsp } from '../../styles/variable-utils';
-import Constrainer from '../../styles/constrainer';
-import { VarHeading, VarProse } from '$styles/variable-components';
+import { variableGlsp } from '$styles/variable-utils';
+import { VarHeading, VarLead, VarProse } from '$styles/variable-components';
+import Constrainer from '$styles/constrainer';
 
 const FoldProseSelf = styled.div`
   padding-top: ${variableGlsp(2)};
@@ -66,6 +66,10 @@ export const FoldTitle = styled(VarHeading).attrs({
     border-radius: ${themeVal('shape.rounded')};
     background: ${themeVal('color.primary')};
   }
+`;
+
+export const FoldLead = styled(VarLead)`
+  color: inherit;
 `;
 
 export const FoldBody = styled.div`
