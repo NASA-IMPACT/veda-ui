@@ -10,8 +10,9 @@ import { Card, CardList } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle, FoldLead, FoldBody } from '$components/common/fold';
 import Pluralize from '$utils/pluralize';
 import { VarProse } from '$styles/variable-components';
+import { listReset } from '@devseed-ui/theme-provider';
 
-const BlockValue = styled.div`
+const BlockValue = styled.article`
   background: red;
 `;
 
@@ -21,6 +22,26 @@ const BlockValueProse = styled(VarProse)`
 
 const BlockValueMedia = styled.figure`
   background: yellow;
+`;
+
+const BlockAudience = styled.article`
+  background: red;
+`;
+
+const BlockAudienceProse = styled(VarProse)`
+  background: blue;
+`;
+
+const BlockAudienceMedia = styled.figure`
+  background: yellow;
+`;
+
+const AudienceList = styled.ul`
+  ${listReset()}
+
+  li {
+    /* styled-component */
+  }
 `;
 
 const appTitle = process.env.APP_TITLE;
@@ -141,7 +162,83 @@ function RootHome() {
           </FoldLead>
         </FoldHeader>
         <FoldBody>
-          <p>Content goes here.</p>
+          <AudienceList>
+            <li>
+              <BlockAudience>
+                <BlockAudienceProse>
+                  <h3>Earth scientists</h3>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Donec dignissim est id odio vehicula pharetra. Praesent id
+                    felis ac nulla vulputate dignissim.
+                  </p>
+                </BlockAudienceProse>
+                <BlockAudienceMedia>
+                  <img
+                    src='http://via.placeholder.com/960x320'
+                    alt='Fold image'
+                  />
+                </BlockAudienceMedia>
+              </BlockAudience>
+            </li>
+
+            <li>
+              <BlockAudience>
+                <BlockAudienceProse>
+                  <h3>Advanced researchers</h3>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Donec dignissim est id odio vehicula pharetra. Praesent id
+                    felis ac nulla vulputate dignissim.
+                  </p>
+                </BlockAudienceProse>
+                <BlockAudienceMedia>
+                  <img
+                    src='http://via.placeholder.com/960x320'
+                    alt='Fold image'
+                  />
+                </BlockAudienceMedia>
+              </BlockAudience>
+            </li>
+
+            <li>
+              <BlockAudience>
+                <BlockAudienceProse>
+                  <h3>Data producers</h3>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Donec dignissim est id odio vehicula pharetra. Praesent id
+                    felis ac nulla vulputate dignissim.
+                  </p>
+                </BlockAudienceProse>
+                <BlockAudienceMedia>
+                  <img
+                    src='http://via.placeholder.com/960x320'
+                    alt='Fold image'
+                  />
+                </BlockAudienceMedia>
+              </BlockAudience>
+            </li>
+
+            <li>
+              <BlockAudience>
+                <BlockAudienceProse>
+                  <h3>General public</h3>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Donec dignissim est id odio vehicula pharetra. Praesent id
+                    felis ac nulla vulputate dignissim.
+                  </p>
+                </BlockAudienceProse>
+                <BlockAudienceMedia>
+                  <img
+                    src='http://via.placeholder.com/960x320'
+                    alt='Fold image'
+                  />
+                </BlockAudienceMedia>
+              </BlockAudience>
+            </li>
+          </AudienceList>
         </FoldBody>
       </Fold>
     </PageMainContent>
