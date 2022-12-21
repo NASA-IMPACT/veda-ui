@@ -20,7 +20,7 @@ function RootHome() {
       />
       <Fold>
         <FoldHeader>
-          <FoldTitle>Browse the thematic areas</FoldTitle>
+          <FoldTitle>Explore the thematic areas</FoldTitle>
         </FoldHeader>
         <CardList>
           {vedaThematics.map((t) => (
