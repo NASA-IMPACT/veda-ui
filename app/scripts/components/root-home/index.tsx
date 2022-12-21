@@ -15,7 +15,9 @@ function RootHome() {
   return (
     <PageMainContent>
       <LayoutProps title='Welcome' />
-      <PageHero title={`Welcome to ${appTitle}`} />
+      <PageHero
+        title={`Welcome to ${appTitle}: NASA’s open-source Earth Science platform in the cloud.`}
+      />
       <Fold>
         <FoldHeader>
           <FoldTitle>Browse the thematic areas</FoldTitle>
