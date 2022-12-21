@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import vedaThematics from 'veda/thematics';
 
@@ -8,6 +9,19 @@ import PageHero from '$components/common/page-hero';
 import { Card, CardList } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle, FoldLead, FoldBody } from '$components/common/fold';
 import Pluralize from '$utils/pluralize';
+import { VarProse } from '$styles/variable-components';
+
+const BlockValue = styled.div`
+  background: red;
+`;
+
+const BlockValueProse = styled(VarProse)`
+  background: blue;
+`;
+
+const BlockValueMedia = styled.figure`
+  background: yellow;
+`;
 
 const appTitle = process.env.APP_TITLE;
 
@@ -75,7 +89,47 @@ function RootHome() {
           </FoldLead>
         </FoldHeader>
         <FoldBody>
-          <p>Content goes here.</p>
+          <BlockValue>
+            <BlockValueProse>
+              <h3>Comprehensive, open-source Earth Science data catalog</h3>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                dignissim est id odio vehicula pharetra. Praesent id felis ac
+                nulla vulputate dignissim.
+              </p>
+            </BlockValueProse>
+            <BlockValueMedia>
+              <img src='http://via.placeholder.com/960x320' alt='Fold image' />
+            </BlockValueMedia>
+          </BlockValue>
+
+          <BlockValue>
+            <BlockValueProse>
+              <h3>Cloud-enabled scientific analysis</h3>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                dignissim est id odio vehicula pharetra. Praesent id felis ac
+                nulla vulputate dignissim.
+              </p>
+            </BlockValueProse>
+            <BlockValueMedia>
+              <img src='http://via.placeholder.com/960x320' alt='Fold image' />
+            </BlockValueMedia>
+          </BlockValue>
+
+          <BlockValue>
+            <BlockValueProse>
+              <h3>Science communication platform</h3>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                dignissim est id odio vehicula pharetra. Praesent id felis ac
+                nulla vulputate dignissim.
+              </p>
+            </BlockValueProse>
+            <BlockValueMedia>
+              <img src='http://via.placeholder.com/960x320' alt='Fold image' />
+            </BlockValueMedia>
+          </BlockValue>
         </FoldBody>
       </Fold>
       <Fold>
