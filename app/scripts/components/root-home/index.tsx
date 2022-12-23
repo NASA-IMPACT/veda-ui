@@ -3,41 +3,48 @@ import styled from 'styled-components';
 
 import vedaThematics from 'veda/thematics';
 
+import { listReset } from '@devseed-ui/theme-provider';
+
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { Card, CardList } from '$components/common/card';
-import { Fold, FoldHeader, FoldTitle, FoldLead, FoldBody } from '$components/common/fold';
+import {
+  Fold,
+  FoldHeader,
+  FoldTitle,
+  FoldLead,
+  FoldBody
+} from '$components/common/fold';
 import Pluralize from '$utils/pluralize';
 import { VarProse } from '$styles/variable-components';
-import { listReset } from '@devseed-ui/theme-provider';
 
 const BlockValue = styled.article`
-  background: red;
+  /* styled-component */
 `;
 
 const BlockValueProse = styled(VarProse)`
-  background: blue;
+  /* styled-component */
 `;
 
 const BlockValueMedia = styled.figure`
-  background: yellow;
+  /* styled-component */
 `;
 
 const BlockAudience = styled.article`
-  background: red;
+  /* styled-component */
 `;
 
 const BlockAudienceProse = styled(VarProse)`
-  background: blue;
+  /* styled-component */
 `;
 
 const BlockAudienceMedia = styled.figure`
-  background: yellow;
+  /* styled-component */
 `;
 
 const AudienceList = styled.ul`
-  ${listReset()}
+  ${listReset()};
 
   li {
     /* styled-component */
@@ -120,7 +127,7 @@ function RootHome() {
               </p>
             </BlockValueProse>
             <BlockValueMedia>
-              <img src='http://via.placeholder.com/960x320' alt='Fold image' />
+              <img src='https://via.placeholder.com/960x512' alt='Fold image' />
             </BlockValueMedia>
           </BlockValue>
 
@@ -134,7 +141,7 @@ function RootHome() {
               </p>
             </BlockValueProse>
             <BlockValueMedia>
-              <img src='http://via.placeholder.com/960x320' alt='Fold image' />
+              <img src='https://via.placeholder.com/960x512' alt='Fold image' />
             </BlockValueMedia>
           </BlockValue>
 
@@ -148,7 +155,7 @@ function RootHome() {
               </p>
             </BlockValueProse>
             <BlockValueMedia>
-              <img src='http://via.placeholder.com/960x320' alt='Fold image' />
+              <img src='https://via.placeholder.com/960x512' alt='Fold image' />
             </BlockValueMedia>
           </BlockValue>
         </FoldBody>
@@ -174,10 +181,7 @@ function RootHome() {
                   </p>
                 </BlockAudienceProse>
                 <BlockAudienceMedia>
-                  <img
-                    src='http://via.placeholder.com/960x320'
-                    alt='Fold image'
-                  />
+                  <img src='https://via.placeholder.com/640' alt='Fold image' />
                 </BlockAudienceMedia>
               </BlockAudience>
             </li>
@@ -193,10 +197,7 @@ function RootHome() {
                   </p>
                 </BlockAudienceProse>
                 <BlockAudienceMedia>
-                  <img
-                    src='http://via.placeholder.com/960x320'
-                    alt='Fold image'
-                  />
+                  <img src='https://via.placeholder.com/640' alt='Fold image' />
                 </BlockAudienceMedia>
               </BlockAudience>
             </li>
@@ -212,10 +213,7 @@ function RootHome() {
                   </p>
                 </BlockAudienceProse>
                 <BlockAudienceMedia>
-                  <img
-                    src='http://via.placeholder.com/960x320'
-                    alt='Fold image'
-                  />
+                  <img src='https://via.placeholder.com/640' alt='Fold image' />
                 </BlockAudienceMedia>
               </BlockAudience>
             </li>
@@ -231,10 +229,7 @@ function RootHome() {
                   </p>
                 </BlockAudienceProse>
                 <BlockAudienceMedia>
-                  <img
-                    src='http://via.placeholder.com/960x320'
-                    alt='Fold image'
-                  />
+                  <img src='https://via.placeholder.com/640' alt='Fold image' />
                 </BlockAudienceMedia>
               </BlockAudience>
             </li>
