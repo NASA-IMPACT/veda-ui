@@ -24,6 +24,11 @@ const BlockValueProse = styled(VarProse)`
   /* styled-component */
 `;
 
+const BlockValueMedia = styled.figure`
+  overflow: hidden;
+  border-radius: ${themeVal('shape.rounded')};
+`;
+
 const BlockValue = styled.article`
   display: flex;
   flex-flow: row nowrap;
@@ -33,11 +38,6 @@ const BlockValue = styled.article`
   :nth-child(even) ${BlockValueMedia} {
     order: -1;
   }
-`;
-
-const BlockValueMedia = styled.figure`
-  overflow: hidden;
-  border-radius: ${themeVal('shape.rounded')};
 `;
 
 const BlockAudience = styled.article`
