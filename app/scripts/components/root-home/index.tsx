@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import vedaThematics from 'veda/thematics';
 
-import { listReset } from '@devseed-ui/theme-provider';
+import { listReset, media, themeVal } from '@devseed-ui/theme-provider';
 
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
@@ -18,21 +18,32 @@ import {
 } from '$components/common/fold';
 import Pluralize from '$utils/pluralize';
 import { VarProse } from '$styles/variable-components';
-
-const BlockValue = styled.article`
-  /* styled-component */
-`;
+import { variableGlsp } from '$styles/variable-utils';
 
 const BlockValueProse = styled(VarProse)`
   /* styled-component */
 `;
 
+const BlockValue = styled.article`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${variableGlsp()};
+  align-items: center;
+
+  :nth-child(even) ${BlockValueMedia} {
+    order: -1;
+  }
+`;
+
 const BlockValueMedia = styled.figure`
-  /* styled-component */
+  overflow: hidden;
+  border-radius: ${themeVal('shape.rounded')};
 `;
 
 const BlockAudience = styled.article`
-  /* styled-component */
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${variableGlsp()};
 `;
 
 const BlockAudienceProse = styled(VarProse)`
@@ -40,15 +51,25 @@ const BlockAudienceProse = styled(VarProse)`
 `;
 
 const BlockAudienceMedia = styled.figure`
-  /* styled-component */
+  order: -1;
+  overflow: hidden;
+  border-radius: ${themeVal('shape.ellipsoid')};
 `;
 
 const AudienceList = styled.ul`
   ${listReset()};
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: ${variableGlsp()};
 
-  li {
-    /* styled-component */
-  }
+  ${media.mediumUp`
+    grid-template-columns: repeat(2, 1fr);
+  `}
+
+  ${media.largeUp`
+    grid-template-columns: repeat(4, 1fr);
+  `}
 `;
 
 const appTitle = process.env.APP_TITLE;
