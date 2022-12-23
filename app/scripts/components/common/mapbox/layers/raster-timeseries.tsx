@@ -373,17 +373,29 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         mapInstance.removeSource(id);
       }
     };
-    // The showMarkers and isHidden dep are left out on purpose, as visibility
+  }, [
+    // The `showMarkers` and `isHidden` dep are left out on purpose, as visibility
     // is controlled below, but we need the value to initialize the layer
     // visibility.
-  }, [
-    id,
-    changeStatus,
-    stacCol,
+
     stacCollection,
-    date,
+    // This hook depends on a series of properties, but whenever they change the
+    // `stacCollection` is guaranteed to change because a new STAC request is
+    // needed to show the data. The following properties are therefore removed
+    // from the dependency array:
+    // - id
+    // - changeStatus
+    // - stacCol
+    // - date
+    // Keeping then in would cause multiple requests because for example when
+    // `date` changes the hook runs, then the STAC request in the hook above
+    // fires and `stacCollection` changes, causing this hook to run again. This
+    // resulted in a race condition when adding the source to the map leading to
+    // an error.
     mapInstance,
-    sourceParams
+    // `sourceParams` object reference is likely to change. Compare in string
+    // format.
+    JSON.stringify(sourceParams)
   ]);
 
   //
@@ -402,7 +414,9 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // Visibility control for the layer and the markers.
   //
   useEffect(() => {
-    if (mapInstance.getLayer(id)) {
+    const layer = mapInstance.getLayer(id) as mapboxgl.AnyLayer | undefined;
+
+    if (layer) {
       const visibility = showMarkers ? 'none' : 'visible';
       mapInstance.setLayoutProperty(id, 'visibility', visibility);
       mapInstance.setPaintProperty(id, 'raster-opacity', Number(!isHidden));
