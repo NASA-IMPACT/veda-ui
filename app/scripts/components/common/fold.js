@@ -51,7 +51,7 @@ export const FoldHGroup = styled.div`
 
 export const FoldTitle = styled(VarHeading).attrs({
   as: 'h2',
-  size: 'large'
+  size: 'xlarge'
 })`
   column-span: all;
   max-width: 52rem;
