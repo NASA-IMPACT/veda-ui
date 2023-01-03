@@ -7,8 +7,18 @@ import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
 import { VarHeading, VarLead, VarProse } from '$styles/variable-components';
 import Constrainer from '$styles/constrainer';
+import Hug from '$styles/hug';
 
-const FoldProseSelf = styled.div`
+export const FoldBase = styled.div`
+  padding-top: ${variableGlsp(2)};
+  padding-bottom: ${variableGlsp(2)};
+
+  & + & {
+    padding-top: 0;
+  }
+`;
+
+export const FoldGrid = styled(Hug)`
   padding-top: ${variableGlsp(2)};
   padding-bottom: ${variableGlsp(2)};
 
@@ -95,9 +105,9 @@ function FoldComponent(props) {
   const { children, ...rest } = props;
 
   return (
-    <FoldProseSelf {...rest}>
+    <FoldBase {...rest}>
       <FoldInner>{children}</FoldInner>
-    </FoldProseSelf>
+    </FoldBase>
   );
 }
 
@@ -113,11 +123,11 @@ export function FoldProse(props) {
   const { children } = props;
 
   return (
-    <FoldProseSelf>
+    <FoldBase>
       <FoldInner>
         <Content>{children}</Content>
       </FoldInner>
-    </FoldProseSelf>
+    </FoldBase>
   );
 }
 
