@@ -65,6 +65,7 @@ const featuredDiscoveries = Object.values(discoveries)
   .sort((a, b) => (new Date(a.pubDate) > new Date(b.pubDate) ? -1 : 1));
 
 function FeaturedDiscoveries() {
+
   return (
     <Fold>
       <FoldHeader>
@@ -87,7 +88,7 @@ function FeaturedDiscoveries() {
                     // Link to the first thematic area where it is featured.
                     parentTo={discoveriesPath}
                     description={i === 0 ? d.description : undefined}
-                    date={d.pubDate ? new Date(d.pubDate) : null}
+                    date={d.pubDate ? new Date(d.pubDate) : undefined}
                     imgSrc={d.media?.src}
                     imgAlt={d.media?.alt}
                   />

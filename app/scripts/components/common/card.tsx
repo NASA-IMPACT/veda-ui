@@ -1,5 +1,4 @@
 import React from 'react';
-import T from 'prop-types';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -20,6 +19,15 @@ import { ElementInteractive } from '$components/common/element-interactive';
 import { VarHeading } from '$styles/variable-components';
 import { Figure } from '$components/common/figure';
 
+type CardType = 'classic' | 'cover' | 'featured';
+
+interface CardSelfProps {
+  isStateFocus: boolean;
+  isStateOver: boolean;
+  isStateActive: boolean;
+  cardType?: CardType;
+}
+
 export const CardList = styled.ol`
   ${listReset()}
   grid-column: 1 / -1;
@@ -36,7 +44,7 @@ export const CardList = styled.ol`
   `}
 `;
 
-function renderCardType({ cardType }) {
+function renderCardType({ cardType }: CardSelfProps) {
   switch (cardType) {
     case 'cover':
       return css`
@@ -90,7 +98,7 @@ function renderCardType({ cardType }) {
   }
 }
 
-export const CardSelf = styled.article`
+export const CardSelf = styled.article<CardSelfProps>`
   position: relative;
   display: flex;
   flex-flow: column nowrap;
@@ -205,7 +213,23 @@ const CardFigure = styled(Figure)`
   }
 `;
 
-function CardComponent(props) {
+interface CardComponentProps {
+  title: string;
+  linkLabel: string;
+  linkTo: string;
+  className?: string;
+  cardType?: CardType;
+  description?: string;
+  date?: Date;
+  overline?: React.ReactNode;
+  imgSrc?: string;
+  imgAlt?: string;
+  parentName?: string;
+  parentTo?: string;
+  onCardClickCapture?: React.MouseEventHandler;
+}
+
+function CardComponent(props: CardComponentProps) {
   const {
     className,
     title,
@@ -218,7 +242,8 @@ function CardComponent(props) {
     imgSrc,
     imgAlt,
     parentName,
-    parentTo
+    parentTo,
+    onCardClickCapture
   } = props;
 
   return (
@@ -231,6 +256,7 @@ function CardComponent(props) {
         as: Link,
         to: linkTo
       }}
+      onClickCapture={onCardClickCapture}
     >
       <CardHeader>
         <CardHeadline>
@@ -241,15 +267,16 @@ function CardComponent(props) {
                 {parentName}
               </CardLabel>
             )}
-            {(date && (
+            {date ? (
               <>
                 published on{' '}
                 <time dateTime={format(date, 'yyyy-MM-dd')}>
                   {format(date, 'MMM d, yyyy')}
                 </time>
               </>
-            )) ||
-              overline}
+            ) : (
+              overline
+            )}
           </CardOverline>
         </CardHeadline>
       </CardHeader>
@@ -266,21 +293,6 @@ function CardComponent(props) {
     </ElementInteractive>
   );
 }
-
-CardComponent.propTypes = {
-  title: T.string.isRequired,
-  linkLabel: T.string.isRequired,
-  linkTo: T.string.isRequired,
-  className: T.string,
-  cardType: T.oneOf(['classic', 'cover', 'featured']),
-  description: T.string,
-  date: T.instanceOf(Date),
-  overline: T.node,
-  imgSrc: T.string,
-  imgAlt: T.string,
-  parentName: T.string,
-  parentTo: T.string
-};
 
 export const Card = styled(CardComponent)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
