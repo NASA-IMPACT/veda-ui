@@ -6,6 +6,7 @@ import {
 } from '$components/common/chart/constant';
 import { TimeseriesDataUnit } from '$components/analysis/results/timeseries-data';
 import { DataMetric } from '$components/analysis/results/analysis-head-actions';
+import { TimeDensity } from '$context/layer-data';
 
 const URL = window.URL;
 
@@ -225,4 +226,16 @@ export function exportCsv(
     new Blob([csv], { type: 'text/csv;charset=utf-8' }),
     `${filename}.csv`
   );
+}
+
+const dateFormatsPerDensity = {
+  day: '%Y/%m/%d',
+  month: '%Y/%m',
+  year: '%Y',
+  default: '%Y/%m'
+};
+
+export function getTimeDensityFormat(td: TimeDensity | undefined) {
+  if (td) return dateFormatsPerDensity[td];
+  else return dateFormatsPerDensity.default;
 }
