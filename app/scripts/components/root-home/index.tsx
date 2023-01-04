@@ -4,9 +4,12 @@ import { Link } from 'react-router-dom';
 import { Button } from '@devseed-ui/button';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
+import { CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
+
 import vedaThematics from 'veda/thematics';
 
 import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
+
 import ThematicAreasList from './thematic-areas-list';
 import FeaturedDiscoveries from './featured-discoveries';
 import ValueProposition from './value-propostion';
@@ -25,7 +28,6 @@ import { VarProse } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
 import { PageActions, PageLead } from '$styles/page';
 import Hug from '$styles/hug';
-import { CollecticonArea, CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
 
 const BlockAudience = styled.article`
   display: flex;
