@@ -78,13 +78,17 @@ const ConnectionsList = styled.ul`
   ${listReset()};
 `;
 
+const PageHeroHome = styled(PageHero)`
+  /* styled component */
+`;
+
 const appTitle = process.env.APP_TITLE;
 
 function RootHome() {
   return (
     <PageMainContent>
       <LayoutProps title='Welcome' />
-      <PageHero
+      <PageHeroHome
         title={`Welcome to ${appTitle}`}
         renderBetaBlock={() => (
           <>

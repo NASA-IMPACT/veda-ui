@@ -147,7 +147,8 @@ function PageHero(props: PageHeroProps) {
     coverAlt,
     attributionAuthor,
     attributionUrl,
-    isHidden
+    isHidden,
+    ...rest
   } = props;
 
   const hasImage = !!(coverSrc && coverAlt);
@@ -159,7 +160,7 @@ function PageHero(props: PageHeroProps) {
     : undefined;
 
   return (
-    <PageHeroSelf isCover={hasImage} isHidden={!!isHidden}>
+    <PageHeroSelf isCover={hasImage} isHidden={!!isHidden} {...rest}>
       <PageHeroInner>
         <Try fn={renderAlphaBlock} wrapWith={PageHeroBlockAlpha}>
           <PageHeroHGroup>
@@ -186,7 +187,10 @@ function PageHero(props: PageHeroProps) {
   );
 }
 
-export default PageHero;
+export default styled(PageHero)`
+  /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
+`;
+
 
 export function PageOverlineDate(props: { date?: Date }) {
   const { date } = props;
