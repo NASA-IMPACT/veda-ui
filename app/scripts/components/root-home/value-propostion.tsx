@@ -46,7 +46,7 @@ function ValueProposition() {
         </FoldLead>
       </FoldHeader>
       <FoldBody>
-        <ContentBlockPFAlpha>
+        <ContentBlockPFBeta>
           <ContentBlockProseAlt>
             <h3>Comprehensive, open-source Earth Science data catalog</h3>
             <p>
@@ -58,9 +58,9 @@ function ValueProposition() {
           <ContentBlockFigure>
             <img src='https://via.placeholder.com/960x512' alt='Fold image' />
           </ContentBlockFigure>
-        </ContentBlockPFAlpha>
+        </ContentBlockPFBeta>
 
-        <ContentBlockPFBeta>
+        <ContentBlockPFAlpha>
           <ContentBlockFigure>
             <img src='https://via.placeholder.com/960x512' alt='Fold image' />
           </ContentBlockFigure>
@@ -72,9 +72,9 @@ function ValueProposition() {
               nulla vulputate dignissim.
             </p>
           </ContentBlockProseAlt>
-        </ContentBlockPFBeta>
+        </ContentBlockPFAlpha>
 
-        <ContentBlockPFAlpha>
+        <ContentBlockPFBeta>
           <ContentBlockProseAlt>
             <h3>Science communication platform</h3>
             <p>
@@ -86,7 +86,7 @@ function ValueProposition() {
           <ContentBlockFigure>
             <img src='https://via.placeholder.com/960x512' alt='Fold image' />
           </ContentBlockFigure>
-        </ContentBlockPFAlpha>
+        </ContentBlockPFBeta>
       </FoldBody>
     </FoldValueProposition>
   );
