@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Button } from '@devseed-ui/button';
-import { listReset, media, themeVal } from '@devseed-ui/theme-provider';
+import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
 import vedaThematics from 'veda/thematics';
 
@@ -25,6 +25,7 @@ import { VarProse } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
 import { PageActions, PageLead } from '$styles/page';
 import Hug from '$styles/hug';
+import { CollecticonArea, CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
 
 const BlockAudience = styled.article`
   display: flex;
@@ -66,7 +67,33 @@ const Connections = styled(Hug)`
 `;
 
 const ConnectionsBlock = styled.div`
-  /* styled component */
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${variableGlsp()};
+
+  &:nth-child(1) {
+    grid-column: content-start / content-3;
+
+    ${media.mediumUp`
+      grid-column: content-start / content-4;
+    `}
+
+    ${media.largeUp`
+      grid-column: content-4 / content-7;
+    `}
+  }
+
+  &:nth-child(2) {
+    grid-column: content-3 / content-end;
+
+    ${media.mediumUp`
+      grid-column: content-5 / content-end;
+    `}
+
+    ${media.largeUp`
+      grid-column: content-7 / content-10;
+    `}
+  }
 `;
 
 const ConnectionsBlockTitle = styled(Heading).attrs({
@@ -76,6 +103,28 @@ const ConnectionsBlockTitle = styled(Heading).attrs({
 
 const ConnectionsList = styled.ul`
   ${listReset()};
+
+  li {
+    margin-bottom: ${glsp(0.25)};
+  }
+
+  a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: ${glsp(0.25)};
+    font-weight: ${themeVal('button.type.weight')};
+    text-decoration: none;
+    transition: opacity 0.24s ease;
+
+    &:visited {
+      color: inherit;
+    }
+
+    &:hover {
+      opacity: 0.64;
+    }
+  }
 `;
 
 const PageHeroHome = styled(PageHero)`
@@ -199,13 +248,31 @@ function RootHome() {
 
       <Connections>
         <ConnectionsBlock>
-          <ConnectionsBlockTitle>Thematic Areas</ConnectionsBlockTitle>
+          <ConnectionsBlockTitle>Thematic areas</ConnectionsBlockTitle>
           <ConnectionsList>
             {vedaThematics.map((t) => (
               <li key={t.id}>
-                <Link to={t.id}>{t.name}</Link>
+                <Link to={t.id}>
+                  <CollecticonChevronRightSmall /> {t.name}
+                </Link>
               </li>
             ))}
+          </ConnectionsList>
+        </ConnectionsBlock>
+
+        <ConnectionsBlock>
+          <ConnectionsBlockTitle>About</ConnectionsBlockTitle>
+          <ConnectionsList>
+            <li>
+              <Link to='/about'>
+                <CollecticonChevronRightSmall /> Learn more
+              </Link>
+            </li>
+            <li>
+              <Link to=''>
+                <CollecticonChevronRightSmall /> Give feedback
+              </Link>
+            </li>
           </ConnectionsList>
         </ConnectionsBlock>
       </Connections>
