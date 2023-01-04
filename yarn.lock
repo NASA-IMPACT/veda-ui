@@ -4351,6 +4351,11 @@ classnames@^2.2.5:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
   integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
 
+classnames@^2.2.6:
+  version "2.3.2"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
+  integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
+
 clean-stack@^2.0.0:
   version "2.2.0"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/clean-stack/-/clean-stack-2.2.0.tgz#ee8472dbb129e727b31e8a10a427dee9dfe4008b"
@@ -5021,6 +5026,11 @@ date-fns@^2.28.0, date-fns@^2.9.0:
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/date-fns/-/date-fns-2.28.0.tgz#9570d656f5fc13143e50c975a3b6bbeb46cd08b2"
   integrity sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==
 
+debounce@^1.2.0:
+  version "1.2.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/debounce/-/debounce-1.2.1.tgz#38881d8f4166a5c5848020c11827b834bcb3e0a5"
+  integrity sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==
+
 debug@4, debug@^4.0.0, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4:
   version "4.3.4"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
@@ -5376,6 +5386,11 @@ earcut@^2.2.4:
   version "2.2.4"
   resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/earcut/-/earcut-2.2.4.tgz#6d02fd4d68160c114825d06890a92ecaae60343a"
   integrity sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==
+
+easy-bem@^1.1.1:
+  version "1.1.1"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/easy-bem/-/easy-bem-1.1.1.tgz#1bfcc10425498090bcfddc0f9c000aba91399e03"
+  integrity sha512-GJRqdiy2h+EXy6a8E6R+ubmqUM08BK0FWNq41k24fup6045biQ8NXxoXimiwegMQvFFV3t1emADdGNL1TlS61A==
 
 electron-to-chromium@^1.4.188:
   version "1.4.191"
@@ -10227,6 +10242,15 @@ react-helmet@^6.1.0:
     prop-types "^15.7.2"
     react-fast-compare "^3.1.1"
     react-side-effect "^2.1.0"
+
+react-indiana-drag-scroll@^2.2.0:
+  version "2.2.0"
+  resolved "http://ec2-3-82-125-171.compute-1.amazonaws.com:4873/react-indiana-drag-scroll/-/react-indiana-drag-scroll-2.2.0.tgz#657e14bbdf4888cc738e9fa8dc4384d76c348c0b"
+  integrity sha512-+W/3B2OQV0FrbdnsoIo4dww/xpH0MUQJz6ziQb7H+oBko3OCbXuzDFYnho6v6yhGrYDNWYPuFUewb89IONEl/A==
+  dependencies:
+    classnames "^2.2.6"
+    debounce "^1.2.0"
+    easy-bem "^1.1.1"
 
 react-is@^16.10.2, react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
