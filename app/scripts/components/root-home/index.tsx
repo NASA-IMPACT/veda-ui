@@ -13,53 +13,14 @@ import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
 import ThematicAreasList from './thematic-areas-list';
 import FeaturedDiscoveries from './featured-discoveries';
 import ValueProposition from './value-propostion';
+import Audience from './audience';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import {
-  Fold,
-  FoldHeader,
-  FoldTitle,
-  FoldLead,
-  FoldBody
-} from '$components/common/fold';
 import { PageMainContent } from '$styles/page';
-import { VarProse } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
 import { PageActions, PageLead } from '$styles/page';
 import Hug from '$styles/hug';
-
-const BlockAudience = styled.article`
-  display: flex;
-  flex-flow: column nowrap;
-  gap: ${variableGlsp()};
-`;
-
-const BlockAudienceProse = styled(VarProse)`
-  /* styled-component */
-`;
-
-const BlockAudienceMedia = styled.figure`
-  order: -1;
-  overflow: hidden;
-  border-radius: ${themeVal('shape.ellipsoid')};
-`;
-
-const AudienceList = styled.ul`
-  ${listReset()};
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: ${variableGlsp()};
-
-  ${media.smallUp`
-    grid-template-columns: repeat(2, 1fr);
-  `}
-
-  ${media.largeUp`
-    grid-template-columns: repeat(4, 1fr);
-  `}
-`;
 
 const Connections = styled(Hug)`
   background: ${themeVal('color.base-50')};
@@ -171,82 +132,7 @@ function RootHome() {
 
       <ValueProposition />
 
-      <Fold>
-        <FoldHeader>
-          <FoldTitle>VEDA serves a wide scientific audience</FoldTitle>
-          <FoldLead>
-            VEDA makes science based on NASA datasets inclusive, accessible, and
-            reproducible.
-          </FoldLead>
-        </FoldHeader>
-        <FoldBody>
-          <AudienceList>
-            <li>
-              <BlockAudience>
-                <BlockAudienceProse>
-                  <h3>Earth scientists</h3>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Donec dignissim est id odio vehicula pharetra. Praesent id
-                    felis ac nulla vulputate dignissim.
-                  </p>
-                </BlockAudienceProse>
-                <BlockAudienceMedia>
-                  <img src='https://via.placeholder.com/640' alt='Fold image' />
-                </BlockAudienceMedia>
-              </BlockAudience>
-            </li>
-
-            <li>
-              <BlockAudience>
-                <BlockAudienceProse>
-                  <h3>Advanced researchers</h3>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Donec dignissim est id odio vehicula pharetra. Praesent id
-                    felis ac nulla vulputate dignissim.
-                  </p>
-                </BlockAudienceProse>
-                <BlockAudienceMedia>
-                  <img src='https://via.placeholder.com/640' alt='Fold image' />
-                </BlockAudienceMedia>
-              </BlockAudience>
-            </li>
-
-            <li>
-              <BlockAudience>
-                <BlockAudienceProse>
-                  <h3>Data producers</h3>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Donec dignissim est id odio vehicula pharetra. Praesent id
-                    felis ac nulla vulputate dignissim.
-                  </p>
-                </BlockAudienceProse>
-                <BlockAudienceMedia>
-                  <img src='https://via.placeholder.com/640' alt='Fold image' />
-                </BlockAudienceMedia>
-              </BlockAudience>
-            </li>
-
-            <li>
-              <BlockAudience>
-                <BlockAudienceProse>
-                  <h3>General public</h3>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Donec dignissim est id odio vehicula pharetra. Praesent id
-                    felis ac nulla vulputate dignissim.
-                  </p>
-                </BlockAudienceProse>
-                <BlockAudienceMedia>
-                  <img src='https://via.placeholder.com/640' alt='Fold image' />
-                </BlockAudienceMedia>
-              </BlockAudience>
-            </li>
-          </AudienceList>
-        </FoldBody>
-      </Fold>
+      <Audience />
 
       <Connections>
         <ConnectionsBlock>
