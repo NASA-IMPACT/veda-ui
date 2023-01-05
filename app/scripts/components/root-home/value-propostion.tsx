@@ -15,6 +15,10 @@ import {
 import ContentBlockFigure from '$components/common/blocks/figure';
 import { ContentBlockProse } from '$styles/content-block';
 
+import imgVP01 from '../../../graphics/layout/vp-01-illu.png';
+import imgVP02 from '../../../graphics/layout/vp-02-illu.png';
+import imgVP03 from '../../../graphics/layout/vp-03-illu.png';
+
 const ContentBlockProseAlt = styled(ContentBlockProse)`
   h1,
   h2,
@@ -55,13 +59,13 @@ function ValueProposition() {
             </p>
           </ContentBlockProseAlt>
           <ContentBlockFigure>
-            <img src='https://via.placeholder.com/960x512' alt='Fold image' />
+            <img src={imgVP01} alt='Screenshot of VEDA in action.' />
           </ContentBlockFigure>
         </ContentBlockPFBeta>
 
         <ContentBlockPFAlpha>
           <ContentBlockFigure>
-            <img src='https://via.placeholder.com/960x512' alt='Fold image' />
+            <img src={imgVP02} alt='Screenshot of VEDA in action.' />
           </ContentBlockFigure>
           <ContentBlockProseAlt>
             <h3>Cloud-enabled scientific analysis</h3>
@@ -81,7 +85,7 @@ function ValueProposition() {
             </p>
           </ContentBlockProseAlt>
           <ContentBlockFigure>
-            <img src='https://via.placeholder.com/960x512' alt='Fold image' />
+            <img src={imgVP03} alt='Screenshot of VEDA in action.' />
           </ContentBlockFigure>
         </ContentBlockPFBeta>
       </FoldBody>
