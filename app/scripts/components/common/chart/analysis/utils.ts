@@ -235,7 +235,7 @@ const dateFormatsPerDensity = {
   default: '%Y/%m'
 };
 
-export function getTimeDensityFormat(td: TimeDensity | undefined) {
+export function getTimeDensityFormat(td?: TimeDensity) {
   if (td) return dateFormatsPerDensity[td];
  return dateFormatsPerDensity.default;
 }
