@@ -33,7 +33,7 @@ import { ChartLoading } from '$components/common/loading-skeleton';
 import { dateFormatter } from '$components/common/chart/utils';
 import { Tip } from '$components/common/tip';
 import { composeVisuallyDisabled } from '$utils/utils';
-import { exportCsv } from '$components/common/chart/analysis/utils';
+import { exportCsv, getTimeDensityFormat } from '$components/common/chart/analysis/utils';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 
 interface ChartCardProps {
@@ -73,6 +73,8 @@ export default function ChartCard(props: ChartCardProps) {
 
   const chartRef = useRef<AnalysisChartRef>(null);
   const noDownloadReason = getNoDownloadReason(chartData);
+
+  const timeDensityFormat = getTimeDensityFormat(data?.timeDensity);
 
   const onExportClick = useCallback(
     (e: MouseEvent, type: 'image' | 'text') => {
@@ -115,9 +117,9 @@ export default function ChartCard(props: ChartCardProps) {
 
   const chartDates = useMemo(
     () =>
-      data?.timeseries.map((e) => dateFormatter(new Date(e.date), '%Y/%m')) ??
+      data?.timeseries.map((e) => dateFormatter(new Date(e.date), timeDensityFormat)) ??
       [],
-    [data?.timeseries]
+    [data?.timeseries, timeDensityFormat]
   );
 
   return (
@@ -192,7 +194,7 @@ export default function ChartCard(props: ChartCardProps) {
                 uniqueKeys={uniqueKeys}
                 colors={colors}
                 dates={chartDates}
-                dateFormat='%Y/%m'
+                dateFormat={timeDensityFormat}
                 altTitle={`Amount of ${name} over time`}
                 altDesc={`Amount of ${name} over time`}
                 xAxisLabel='Time'
