@@ -74,7 +74,7 @@ function ContinuumScrollIndicatorSelf({ className }: { className?: string }) {
 
 export const ContinuumScrollIndicator = styled(ContinuumScrollIndicatorSelf)`
   position: absolute;
-  z-index: 1000;
+  z-index: 100;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

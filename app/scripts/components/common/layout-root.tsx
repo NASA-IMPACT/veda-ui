@@ -2,16 +2,15 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useState
 } from 'react';
-import T from 'prop-types';
+import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
+
 import { reveal } from '@devseed-ui/animation';
 
 import MetaTags from './meta-tags';
-
 import PageFooter from './page-footer';
 
 import { useThematicArea } from '$utils/thematics';
@@ -37,7 +36,7 @@ const PageBody = styled.div`
   overflow-anchor: auto;
 `;
 
-function LayoutRoot(props) {
+function LayoutRoot(props: { children: React.ReactNode }) {
   const { children } = props;
 
   useGoogleAnalytics();
@@ -68,10 +67,6 @@ function LayoutRoot(props) {
     </Page>
   );
 }
-
-LayoutRoot.propTypes = {
-  children: T.node
-};
 
 export default LayoutRoot;
 
@@ -118,14 +113,10 @@ export function LayoutRootContextProvider({
   );
 }
 
-LayoutRootContextProvider.propTypes = {
-  children: T.node
-};
-
 export function LayoutProps(props) {
   const { setLayoutProps } = useContext(LayoutRootContext);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setLayoutProps(props);
   }, [setLayoutProps, props]);
 
