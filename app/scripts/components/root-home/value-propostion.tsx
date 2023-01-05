@@ -50,9 +50,8 @@ function ValueProposition() {
           <ContentBlockProseAlt>
             <h3>Comprehensive, open-source Earth Science data catalog</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-              dignissim est id odio vehicula pharetra. Praesent id felis ac
-              nulla vulputate dignissim.
+              Explore a wide range of Earth Observation datasets from NASA and
+              other sources.
             </p>
           </ContentBlockProseAlt>
           <ContentBlockFigure>
@@ -67,9 +66,8 @@ function ValueProposition() {
           <ContentBlockProseAlt>
             <h3>Cloud-enabled scientific analysis</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-              dignissim est id odio vehicula pharetra. Praesent id felis ac
-              nulla vulputate dignissim.
+              Perform quick analysis without having to write code or download
+              data.
             </p>
           </ContentBlockProseAlt>
         </ContentBlockPFAlpha>
@@ -78,9 +76,8 @@ function ValueProposition() {
           <ContentBlockProseAlt>
             <h3>Science communication platform</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-              dignissim est id odio vehicula pharetra. Praesent id felis ac
-              nulla vulputate dignissim.
+              Share your discoveries with others through the VEDA Dashboard.
+              Submit a Feedback form for more information.
             </p>
           </ContentBlockProseAlt>
           <ContentBlockFigure>
