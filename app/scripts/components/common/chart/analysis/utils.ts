@@ -237,5 +237,5 @@ const dateFormatsPerDensity = {
 
 export function getTimeDensityFormat(td: TimeDensity | undefined) {
   if (td) return dateFormatsPerDensity[td];
-  else return dateFormatsPerDensity.default;
+ return dateFormatsPerDensity.default;
 }
