@@ -30,7 +30,7 @@ export const ContentBlockPAlpha = styled(ContentBlock)`
   }
 `;
 
-const ContentBlockPBeta = styled(ContentBlock)`
+export const ContentBlockPBeta = styled(ContentBlock)`
   ${ContentBlockProse} {
     grid-column: content-start / content-end;
 
@@ -40,7 +40,7 @@ const ContentBlockPBeta = styled(ContentBlock)`
   }
 `;
 
-const ContentBlockFAlpha = styled(ContentBlock)`
+export const ContentBlockFAlpha = styled(ContentBlock)`
   ${ContentBlockFigure} {
     grid-column: content-start / content-end;
 
@@ -50,13 +50,13 @@ const ContentBlockFAlpha = styled(ContentBlock)`
   }
 `;
 
-const ContentBlockFBeta = styled(ContentBlock)`
+export const ContentBlockFBeta = styled(ContentBlock)`
   ${ContentBlockFigure} {
     grid-column: content-start / content-end;
   }
 `;
 
-const ContentBlockFGama = styled(ContentBlock)`
+export const ContentBlockFGama = styled(ContentBlock)`
   ${ContentBlockFigure} {
     grid-column: full-start / full-end;
   }
@@ -66,7 +66,7 @@ const ContentBlockFGama = styled(ContentBlock)`
   }
 `;
 
-const ContentBlockPFAlpha = styled(ContentBlock)`
+export const ContentBlockPFAlpha = styled(ContentBlock)`
   ${ContentBlockProse} {
     grid-column: content-start / content-end;
 
@@ -94,7 +94,7 @@ const ContentBlockPFAlpha = styled(ContentBlock)`
   }
 `;
 
-const ContentBlockPFBeta = styled(ContentBlock)`
+export const ContentBlockPFBeta = styled(ContentBlock)`
   ${ContentBlockProse} {
     grid-column: content-start / content-end;
 
@@ -122,7 +122,7 @@ const ContentBlockPFBeta = styled(ContentBlock)`
   }
 `;
 
-const ContentBlockPFGama = styled(ContentBlock)`
+export const ContentBlockPFGama = styled(ContentBlock)`
   ${ContentBlockProse} {
     grid-column: content-start / content-end;
 
@@ -162,7 +162,7 @@ const ContentBlockPFGama = styled(ContentBlock)`
   }
 `;
 
-const ContentBlockPFDelta = styled(ContentBlock)`
+export const ContentBlockPFDelta = styled(ContentBlock)`
   ${ContentBlockProse} {
     grid-column: content-start / content-end;
 

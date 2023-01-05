@@ -9,14 +9,14 @@ import vedaThematics from 'veda/thematics';
 
 import Carousel from './carousel';
 import { LayoutProps } from '$components/common/layout-root';
-
+import { resourceNotFound } from '$components/uhoh';
+import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
+import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
+import { Card, CardList } from '$components/common/card';
 import { thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
 import { useThematicArea } from '$utils/thematics';
 import Pluralize from '$utils/pluralize';
 import { zeroPad } from '$utils/format';
-
-import { resourceNotFound } from '$components/uhoh';
-
 import { VarHeading } from '$styles/variable-components';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import {
@@ -25,10 +25,6 @@ import {
   PageMainContent,
   PageMainTitle
 } from '$styles/page';
-
-import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
-import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
-import { Card, CardList } from '$components/common/card';
 
 const StatsList = styled.dl`
   display: grid;

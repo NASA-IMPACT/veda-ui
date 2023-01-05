@@ -18,6 +18,7 @@
   "ignoreFiles": [
     "app/scripts/styles/variable-utils.ts",
     "app/scripts/styles/hug/index.ts",
+    "app/scripts/styles/continuum/utils.ts",
     "**/*.d.ts"
   ]
 }

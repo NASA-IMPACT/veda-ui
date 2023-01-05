@@ -4,11 +4,21 @@ import T from 'prop-types';
 import styled from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 
-import { variableGlsp } from '../../styles/variable-utils';
-import Constrainer from '../../styles/constrainer';
-import { VarHeading, VarProse } from '$styles/variable-components';
+import { variableGlsp } from '$styles/variable-utils';
+import { VarHeading, VarLead, VarProse } from '$styles/variable-components';
+import Constrainer from '$styles/constrainer';
+import Hug from '$styles/hug';
 
-const FoldProseSelf = styled.div`
+export const FoldBase = styled.div`
+  padding-top: ${variableGlsp(2)};
+  padding-bottom: ${variableGlsp(2)};
+
+  & + & {
+    padding-top: 0;
+  }
+`;
+
+export const FoldGrid = styled(Hug)`
   padding-top: ${variableGlsp(2)};
   padding-bottom: ${variableGlsp(2)};
 
@@ -51,7 +61,7 @@ export const FoldHGroup = styled.div`
 
 export const FoldTitle = styled(VarHeading).attrs({
   as: 'h2',
-  size: 'large'
+  size: 'xlarge'
 })`
   column-span: all;
   max-width: 52rem;
@@ -66,6 +76,10 @@ export const FoldTitle = styled(VarHeading).attrs({
     border-radius: ${themeVal('shape.rounded')};
     background: ${themeVal('color.primary')};
   }
+`;
+
+export const FoldLead = styled(VarLead)`
+  color: inherit;
 `;
 
 export const FoldBody = styled.div`
@@ -91,9 +105,9 @@ function FoldComponent(props) {
   const { children, ...rest } = props;
 
   return (
-    <FoldProseSelf {...rest}>
+    <FoldBase {...rest}>
       <FoldInner>{children}</FoldInner>
-    </FoldProseSelf>
+    </FoldBase>
   );
 }
 
@@ -109,11 +123,11 @@ export function FoldProse(props) {
   const { children } = props;
 
   return (
-    <FoldProseSelf>
+    <FoldBase>
       <FoldInner>
         <Content>{children}</Content>
       </FoldInner>
-    </FoldProseSelf>
+    </FoldBase>
   );
 }
 

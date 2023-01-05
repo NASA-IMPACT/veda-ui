@@ -10,6 +10,7 @@ import { getAppURL } from '$utils/history';
 import LayoutRoot, {
   LayoutRootContextProvider
 } from '$components/common/layout-root';
+import { useScrollbarWidthAsCssVar } from '$utils/use-scrollbar-width-css';
 
 // Page loading
 import { PageLoading } from '$components/common/loading-skeleton';
@@ -61,12 +62,7 @@ function ScrollTop() {
 
 // Root component.
 function Root() {
-  useEffect(() => {
-    document.documentElement.style.setProperty(
-      '--scrollbar-width',
-      window.innerWidth - document.documentElement.clientWidth + 'px'
-    );
-  }, []);
+  useScrollbarWidthAsCssVar();
 
   useEffect(() => {
     // Hide the welcome banner.

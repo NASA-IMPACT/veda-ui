@@ -41,7 +41,7 @@ function DiscoveriesHub() {
                   parentName='Discovery'
                   parentTo={thematicDiscoveriesPath(thematic)}
                   description={t.description}
-                  date={t.pubDate ? new Date(t.pubDate) : null}
+                  date={t.pubDate ? new Date(t.pubDate) : undefined}
                   imgSrc={t.media.src}
                   imgAlt={t.media.alt}
                 />

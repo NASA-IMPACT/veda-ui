@@ -158,7 +158,7 @@ export default function RelatedContent(props: RelatedContentProps): ReactNode {
                 date={
                   t.parent === discoveryString
                     ? utcString2userTzDate(t.date)
-                    : null
+                    : undefined
                 }
                 description={t.description}
                 parentName={t.parent}

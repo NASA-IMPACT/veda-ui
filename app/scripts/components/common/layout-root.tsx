@@ -1,11 +1,16 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import T from 'prop-types';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useState
+} from 'react';
+import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
+
 import { reveal } from '@devseed-ui/animation';
 
 import MetaTags from './meta-tags';
-
 import PageFooter from './page-footer';
 
 import { useThematicArea } from '$utils/thematics';
@@ -31,7 +36,7 @@ const PageBody = styled.div`
   overflow-anchor: auto;
 `;
 
-function LayoutRoot(props) {
+function LayoutRoot(props: { children?: React.ReactNode }) {
   const { children } = props;
 
   useGoogleAnalytics();
@@ -63,10 +68,6 @@ function LayoutRoot(props) {
   );
 }
 
-LayoutRoot.propTypes = {
-  children: T.node
-};
-
 export default LayoutRoot;
 
 interface LayoutRootContextProps extends Record<string, any> {
@@ -74,6 +75,8 @@ interface LayoutRootContextProps extends Record<string, any> {
   isHeaderHidden: boolean;
   headerHeight: number;
   wrapperHeight: number;
+  feedbackModalRevealed: boolean;
+  setFeedbackModalRevealed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Context
@@ -85,6 +88,8 @@ export function LayoutRootContextProvider({
   children: React.ReactNode;
 }) {
   const [layoutProps, setLayoutProps] = useState<Record<string, any>>({});
+  const [feedbackModalRevealed, setFeedbackModalRevealed] =
+    useState<boolean>(false);
 
   // Put the header size and visibility status in the context so that children
   // elements can access them for positioning purposes.
@@ -96,7 +101,9 @@ export function LayoutRootContextProvider({
     setLayoutProps,
     isHeaderHidden,
     headerHeight,
-    wrapperHeight
+    wrapperHeight,
+    feedbackModalRevealed,
+    setFeedbackModalRevealed
   };
 
   return (
@@ -106,14 +113,10 @@ export function LayoutRootContextProvider({
   );
 }
 
-LayoutRootContextProvider.propTypes = {
-  children: T.node
-};
-
 export function LayoutProps(props) {
   const { setLayoutProps } = useContext(LayoutRootContext);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setLayoutProps(props);
   }, [setLayoutProps, props]);
 
@@ -131,5 +134,25 @@ export function useSlidingStickyHeaderProps() {
     isHeaderHidden,
     headerHeight,
     wrapperHeight
+  };
+}
+
+/**
+ * Hook to access the feedback modal.
+ */
+export function useFeedbackModal() {
+  const { feedbackModalRevealed, setFeedbackModalRevealed } =
+    useContext(LayoutRootContext);
+
+  return {
+    isRevealed: feedbackModalRevealed,
+    show: useCallback(
+      () => setFeedbackModalRevealed(true),
+      [setFeedbackModalRevealed]
+    ),
+    hide: useCallback(
+      () => setFeedbackModalRevealed(false),
+      [setFeedbackModalRevealed]
+    )
   };
 }

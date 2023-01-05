@@ -359,11 +359,7 @@ function PageHeader() {
     <PageHeaderSelf id={HEADER_ID}>
       {globalNavRevealed && isLargeDown && <UnscrollableBody />}
       <Brand>
-        <Link
-          to={
-            vedaThematics.length > 1 && thematic ? `/${thematic.data.id}` : '/'
-          }
-        >
+        <Link to='/'>
           <NasaLogo />
           <span>Earthdata</span> <span>{appTitle}</span>
         </Link>

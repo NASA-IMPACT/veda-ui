@@ -3,7 +3,7 @@ import { useTheme } from 'styled-components';
 import useDimensions from 'react-cool-dimensions';
 import { DevseedUIThemeMediaRanges } from '@devseed-ui/theme-provider';
 
-type MediaBreakpointStatus = {
+interface MediaBreakpointStatus {
   current: keyof DevseedUIThemeMediaRanges;
   isXsmallUp: boolean;
   isXsmallOnly: boolean;
@@ -20,7 +20,7 @@ type MediaBreakpointStatus = {
   isXlargeUp: boolean;
   isXlargeOnly: boolean;
   isXlargeDown: boolean;
-};
+}
 
 /**
  * Returns the current media query and a series of boolean values indicating
@@ -53,7 +53,7 @@ export function useMediaQuery() {
     throw new Error('There are no media ranges defined in the theme');
 
   const ranges = Object.entries(
-    theme.mediaRanges as { [key: string]: [number | null , number | null ] }
+    theme.mediaRanges as Record<string, [number | null, number | null]>
   );
 
   // Create breakpoints from media ranges.
@@ -62,7 +62,7 @@ export function useMediaQuery() {
       ranges.reduce(
         (acc, [breakpoint, [lowerBound]]) => ({
           ...acc,
-          [breakpoint]: lowerBound || 0
+          [breakpoint]: lowerBound ?? 0
         }),
         {}
       ),
