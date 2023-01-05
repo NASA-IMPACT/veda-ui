@@ -6,7 +6,7 @@ import {
   CollecticonBrandGithub
 } from '@devseed-ui/collecticons';
 
-import { LayoutProps } from '$components/common/layout-root';
+import { LayoutProps, useFeedbackModal } from '$components/common/layout-root';
 import { PageMainContent } from '$styles/page';
 
 import PageHero from '$components/common/page-hero';
@@ -19,6 +19,8 @@ const ContributeCta = styled.div`
 `;
 
 function RootDevelopment() {
+  const { show: showFeedbackModal } = useFeedbackModal();
+
   return (
     <PageMainContent>
       <LayoutProps title='Development' />
@@ -52,7 +54,7 @@ function RootDevelopment() {
             fitting='relaxed'
             variation='primary-fill'
             onClick={() => {
-              document.dispatchEvent(new Event('show-feedback-modal'));
+              showFeedbackModal();
             }}
           >
             <CollecticonSpeechBalloon /> Feedback

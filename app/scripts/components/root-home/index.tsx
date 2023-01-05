@@ -15,7 +15,7 @@ import FeaturedDiscoveries from './featured-discoveries';
 import ValueProposition from './value-propostion';
 import Audience from './audience';
 
-import { LayoutProps } from '$components/common/layout-root';
+import { LayoutProps, useFeedbackModal } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import { variableGlsp } from '$styles/variable-utils';
@@ -97,6 +97,8 @@ const PageHeroHome = styled(PageHero)`
 const appTitle = process.env.APP_TITLE;
 
 function RootHome() {
+  const { show: showFeedbackModal } = useFeedbackModal();
+
   return (
     <PageMainContent>
       <LayoutProps title='Welcome' />
@@ -157,9 +159,15 @@ function RootHome() {
               </Link>
             </li>
             <li>
-              <Link to=''>
+              <a
+                href='#'
+                onClick={(e) => {
+                  e.preventDefault();
+                  showFeedbackModal();
+                }}
+              >
                 <CollecticonChevronRightSmall /> Give feedback
-              </Link>
+              </a>
             </li>
           </ConnectionsList>
         </ConnectionsBlock>
