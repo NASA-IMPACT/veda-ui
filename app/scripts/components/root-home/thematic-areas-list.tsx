@@ -13,6 +13,7 @@ import {
   ContinuumDragScroll
 } from '$styles/continuum';
 import { useReactIndianaScrollControl } from '$styles/continuum/use-react-indiana-scroll-controls';
+import { ContinuumScrollIndicator } from '$styles/continuum/continuum-scroll-indicator';
 
 const FoldThematicAreas = styled(FoldGrid)`
   ${FoldHeader} {
@@ -40,6 +41,7 @@ function ThematicAreasList() {
         <FoldTitle>Explore the thematic areas</FoldTitle>
       </FoldHeader>
       <ContinuumCardsDragScrollWrapper>
+        <ContinuumScrollIndicator />
         <ContinuumDragScroll hideScrollbars={false} {...scrollProps}>
           <Continuum
             listAs='ol'

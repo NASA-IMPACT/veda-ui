@@ -5,6 +5,7 @@ import DragScroll from 'react-indiana-drag-scroll';
 import { listReset } from '@devseed-ui/theme-provider';
 
 import { calcItemWidth, calcMargin } from './utils';
+import { ContinuumScrollIndicator } from './continuum-scroll-indicator';
 
 import { useMediaQuery } from '$utils/use-media-query';
 import { variableGlsp } from '$styles/variable-utils';
@@ -53,12 +54,13 @@ export const ContinuumDragScrollWrapper = styled.div`
   position: relative;
   overflow: hidden;
   cursor: grab;
+
+  &:hover {
+    ${ContinuumScrollIndicator} {
+      opacity: 0;
+    }
+  }
 `;
-// &:hover {
-//   ${ContinuumScrollIndicator} {
-//     opacity: 0;
-//   }
-// }
 
 const C = ContinuumDragScrollWrapper; // Because prettier and code formatting.
 export const ContinuumCardsDragScrollWrapper = styled(C)`
