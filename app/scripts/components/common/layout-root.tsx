@@ -36,7 +36,7 @@ const PageBody = styled.div`
   overflow-anchor: auto;
 `;
 
-function LayoutRoot(props: { children: React.ReactNode }) {
+function LayoutRoot(props: { children?: React.ReactNode }) {
   const { children } = props;
 
   useGoogleAnalytics();

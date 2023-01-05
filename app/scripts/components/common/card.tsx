@@ -22,9 +22,9 @@ import { Figure } from '$components/common/figure';
 type CardType = 'classic' | 'cover' | 'featured';
 
 interface CardSelfProps {
-  isStateFocus: boolean;
-  isStateOver: boolean;
-  isStateActive: boolean;
+  isStateFocus?: boolean;
+  isStateOver?: boolean;
+  isStateActive?: boolean;
   cardType?: CardType;
 }
 
