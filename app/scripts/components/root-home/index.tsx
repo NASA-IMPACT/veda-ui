@@ -103,12 +103,12 @@ function RootHome() {
     <PageMainContent>
       <LayoutProps title='Welcome' />
       <PageHeroHome
-        title={`Welcome to ${appTitle}`}
+        title={`Welcome to the ${appTitle}`}
         renderBetaBlock={() => (
           <>
             <PageLead>
-              {appTitle} is NASA&apos;s open-source Earth Science platform in
-              the cloud.
+              VEDA (Visualization, Exploration, and Data Analysis) is NASA&apos;s
+              open-source Earth Science platform in the cloud.
             </PageLead>
             <PageActions>
               <Button

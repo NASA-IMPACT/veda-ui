@@ -105,10 +105,10 @@ function Audience() {
           <li>
             <BlockAudience>
               <BlockAudienceProse>
-                <h3>Earth Observation Enthusiasts</h3>
+                <h3>Earth Observation enthusiasts</h3>
                 <p>
                   Discover the latest work in Earth Observation and how that
-                  might impact climate change and other important initiatives.
+                  might impact environmental change and other important initiatives.
                 </p>
               </BlockAudienceProse>
               <BlockAudienceMedia>
