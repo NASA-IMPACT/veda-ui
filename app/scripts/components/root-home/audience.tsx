@@ -5,7 +5,6 @@ import { listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import imgEnthusiasts from '../../../graphics/layout/user-enthusiasts.jpg';
 import imgScientists from '../../../graphics/layout/user-scientists.jpg';
 import imgResearcher from '../../../graphics/layout/user-researcher.jpg';
-import imgMaker from '../../../graphics/layout/user-maker.jpg';
 
 import {
   Fold,
@@ -14,11 +13,7 @@ import {
   FoldLead,
   FoldBody
 } from '$components/common/fold';
-import {
-  Figure,
-  // Figcaption,
-  // FigureAttribution
-} from '$components/common/figure';
+import { Figure } from '$components/common/figure';
 import { VarProse } from '$styles/variable-components';
 import { variableGlsp } from '$styles/variable-utils';
 
@@ -26,6 +21,7 @@ const BlockAudience = styled.article`
   display: flex;
   flex-flow: column nowrap;
   gap: ${variableGlsp()};
+  text-align: center;
 `;
 
 const BlockAudienceProse = styled(VarProse)`
@@ -50,8 +46,12 @@ const AudienceList = styled.ul`
   `}
 
   ${media.largeUp`
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   `}
+
+  li {
+    padding: ${variableGlsp(0, 2)};
+  }
 `;
 
 function Audience() {
@@ -80,12 +80,6 @@ function Audience() {
                   src={imgScientists}
                   alt='United States at night seen from orbit'
                 />
-                {/* <Figcaption>
-                  <FigureAttribution
-                    author='NASA'
-                    url='https://unsplash.com/photos/1lfI7wkGWZ4'
-                  />
-                </Figcaption> */}
               </BlockAudienceMedia>
             </BlockAudience>
           </li>
@@ -104,36 +98,6 @@ function Audience() {
                   src={imgResearcher}
                   alt='Philippine woman scientist working at a desk in front of a computer'
                 />
-                {/* <Figcaption>
-                  <FigureAttribution
-                    author='Brett Andrei Martin'
-                    url='https://unsplash.com/photos/a0TrZ9xqSDk'
-                  />
-                </Figcaption> */}
-              </BlockAudienceMedia>
-            </BlockAudience>
-          </li>
-
-          <li>
-            <BlockAudience>
-              <BlockAudienceProse>
-                <h3>Policy Makers</h3>
-                <p>
-                  Access and analyze data in real-time to inform decision
-                  making.
-                </p>
-              </BlockAudienceProse>
-              <BlockAudienceMedia>
-                <img
-                  src={imgMaker}
-                  alt='United States Capitol Dome, Exterior Shot, Daylight'
-                />
-                {/* <Figcaption>
-                  <FigureAttribution
-                    author='David Sanchez'
-                    url='https://unsplash.com/photos/W_Qj9ycEBjQ'
-                  />
-                </Figcaption> */}
               </BlockAudienceMedia>
             </BlockAudience>
           </li>
@@ -152,12 +116,6 @@ function Audience() {
                   src={imgEnthusiasts}
                   alt={`An intricate maze of small lakes and waterways define the Yukon Delta at the confluence of Alaska's Yukon and Kuskokwim Rivers with the frigid Bering Sea.`}
                 />
-                {/* <Figcaption>
-                  <FigureAttribution
-                    author='USGS'
-                    url='https://unsplash.com/photos/83PSfuiPoEs'
-                  />
-                </Figcaption> */}
               </BlockAudienceMedia>
             </BlockAudience>
           </li>
