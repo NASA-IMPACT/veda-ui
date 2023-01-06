@@ -50,6 +50,7 @@ const dailyChartData = makeData(dataDaily, '%Y/%m/%d');
 const monthlyChartData = makeData(dataMonthly, '%Y/%m');
 const yearlyChartData = makeData(dataYearly, '%Y');
 const yearly2ChartData = makeData(dataYearly2, '%Y');
+const singleData = makeData([dataYearly[0]], '%Y');
 
 const availableDomain = [
   new Date('2015-01-01T00:00:00.000Z'),
@@ -197,6 +198,31 @@ export default function AnalysisChart() {
                 uniqueKeys={dynamicUniqueKeys}
                 dates={yearly2ChartData.dates}
                 dateFormat={yearly2ChartData.dateFormat}
+                altTitle='alt title1'
+                altDesc='alt desc'
+                xAxisLabel='Time'
+                yAxisLabel='Amount'
+                availableDomain={availableDomain}
+                brushRange={brushRange}
+                onBrushRangeChange={(range) => setBrushRange(range)}
+              />
+            </Hug>
+          </Hug>
+          <Hug>
+            <Hug
+              grid={{
+                smallUp: ['full-start', 'full-end'],
+                largeUp: ['content-start', 'content-7']
+              }}
+            >
+              <h2>Single</h2>
+              <Chart
+                ref={chartRef}
+                colors={legendColors}
+                timeSeriesData={singleData.timeSeriesData}
+                uniqueKeys={dynamicUniqueKeys}
+                dates={singleData.dates}
+                dateFormat={singleData.dateFormat}
                 altTitle='alt title1'
                 altDesc='alt desc'
                 xAxisLabel='Time'
