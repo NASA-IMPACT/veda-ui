@@ -8,8 +8,8 @@ import imgVP03 from '../../../graphics/layout/vp-03-illu.png';
 import {
   FoldHeader,
   FoldTitle,
-  FoldLead,
   FoldBody,
+  FoldLead,
   FoldGrid
 } from '$components/common/fold';
 import {
@@ -19,6 +19,7 @@ import {
 import ContentBlockFigure from '$components/common/blocks/figure';
 import { ContentBlockProse } from '$styles/content-block';
 import BrowserFrame from '$styles/browser-frame';
+import { useFeedbackModal } from '$components/common/layout-root';
 
 const ContentBlockProseAlt = styled(ContentBlockProse)`
   h1,
@@ -40,14 +41,17 @@ const FoldValueProposition = styled(FoldGrid)`
 `;
 
 function ValueProposition() {
+  const { show: showFeedbackModal } = useFeedbackModal();
+
   return (
     <FoldValueProposition>
       <FoldHeader>
         <FoldTitle>
-          A scalable and interactive system for science data
+          A scalable and interactive system for science&nbsp;data
         </FoldTitle>
         <FoldLead>
-          VEDA stands for Visualization, Exploration, and Data Analysis.
+          Storing Earth data in the cloud enables many different ways of
+          interacting with the data.
         </FoldLead>
       </FoldHeader>
       <FoldBody>
@@ -86,7 +90,17 @@ function ValueProposition() {
             <h3>Science communication platform</h3>
             <p>
               Share your discoveries with others through the VEDA Dashboard.
-              Submit a Feedback form for more information.
+              Submit a{' '}
+              <a
+                href='#'
+                onClick={(e) => {
+                  e.preventDefault();
+                  showFeedbackModal();
+                }}
+              >
+                Feedback form
+              </a>{' '}
+              for more information.
             </p>
           </ContentBlockProseAlt>
           <ContentBlockFigure>
