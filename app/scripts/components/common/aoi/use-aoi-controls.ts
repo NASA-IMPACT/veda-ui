@@ -41,6 +41,7 @@ export function useAoiControls(initialState: Partial<AoiState> = {}) {
       case 'aoi.set-feature':
         setAoi((state) => ({
           ...state,
+          drawing: false,
           feature: payload.feature,
           actionOrigin: 'panel'
         }));
