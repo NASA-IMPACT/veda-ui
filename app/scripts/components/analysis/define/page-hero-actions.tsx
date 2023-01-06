@@ -1,12 +1,22 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { sticky } from 'tippy.js';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { Button, ButtonProps } from '@devseed-ui/button';
 import {
   CollecticonTickSmall,
-  CollecticonXmarkSmall
+  CollecticonXmarkSmall,
+  CollecticonArrowSpinCcw
 } from '@devseed-ui/collecticons';
+
+import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
+import {
+  Dropdown,
+  DropMenu,
+  DropTitle,
+  DropMenuItem
+} from '@devseed-ui/dropdown';
+
 import { DatasetLayer } from 'veda/thematics';
 
 import { analysisParams2QueryString } from '../results/use-analysis-params';
@@ -16,6 +26,9 @@ import { thematicAnalysisPath } from '$utils/routes';
 import { useThematicArea } from '$utils/thematics';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { useMediaQuery } from '$utils/use-media-query';
+import DropMenuItemButton from '$styles/drop-menu-item-button';
+import { getDateRangeFormatted } from '../utils';
+import styled from 'styled-components';
 
 const SaveButton = composeVisuallyDisabled(Button);
 
@@ -28,6 +41,13 @@ interface PageHeroActionsProps {
   datasetsLayers?: DatasetLayer[];
   aoi?: Feature<Polygon> | null;
 }
+interface SavedSettings {
+  url: string;
+  label: string;
+}
+
+const SAVED_SETTINGS_KEY = 'analysisSavedSettings';
+const MAX_SAVED_SETTINGS = 5;
 
 export default function PageHeroActions({
   size,
@@ -62,6 +82,45 @@ export default function PageHeroActions({
       aoi: toMultiPolygon
     });
   }, [start, end, datasetsLayers, aoi]);
+
+  const onGenerateClick = useCallback(() => {
+    console.log(datasetsLayers);
+    const savedSettingsRaw = localStorage.getItem(SAVED_SETTINGS_KEY);
+    try {
+      let savedSettings: SavedSettings[] = savedSettingsRaw
+        ? JSON.parse(savedSettingsRaw)
+        : [];
+      if (!savedSettings.find((s) => s.url === analysisParamsQs)) {
+        savedSettings = [
+          {
+            url: analysisParamsQs,
+            label: `${datasetsLayers
+              ?.map((dL) => dL.name)
+              .join(', ')} - ${getDateRangeFormatted(start, end)}`
+          },
+          ...savedSettings,
+        ];
+        if (savedSettings.length > MAX_SAVED_SETTINGS) {
+          savedSettings = savedSettings.slice(1);
+        }
+        localStorage.setItem(SAVED_SETTINGS_KEY, JSON.stringify(savedSettings));
+      }
+    } catch (e) {}
+  }, [analysisParamsQs]);
+
+  // Only need to read localStorage at component mount, because whenever the localStorage item is updated,
+  // this components gets unmounted anyways (navigating from the page using the 'Generate' button)
+  const [savedSettingsList, setSavedSettingsList] = useState<SavedSettings[]>(
+    []
+  );
+  useEffect(() => {
+    const savedSettingsRaw = localStorage.getItem('analysisSavedSettings');
+    try {
+      if (savedSettingsRaw) {
+        setSavedSettingsList(JSON.parse(savedSettingsRaw));
+      }
+    } catch (e) {}
+  }, []);
 
   let tipContents;
 
@@ -117,9 +176,45 @@ export default function PageHeroActions({
           variation='achromic-outline'
           size={size}
           to={`${thematicAnalysisPath(thematic)}/results${analysisParamsQs}`}
+          onClick={onGenerateClick}
         >
           <CollecticonTickSmall /> Generate
         </Button>
+      )}
+      {savedSettingsList.length > 0 && (
+        <Toolbar size='small'>
+          <Dropdown
+            alignment='right'
+            triggerElement={(props) => (
+              <ToolbarIconButton variation='base-text' {...props}>
+                <Button size={size} variation='achromic-outline'>
+                  <CollecticonArrowSpinCcw
+                    title='Retrieve previous settings'
+                    meaningful
+                  />
+                </Button>
+              </ToolbarIconButton>
+            )}
+          >
+            <DropTitle>Retrieve previous settings</DropTitle>
+            <DropMenu>
+              {savedSettingsList.map((savedSettings) => (
+                <li>
+                  <DropMenuItem data-dropdown='click.close'>
+                    <Button
+                      forwardedAs={Link}
+                      to={`${thematicAnalysisPath(thematic)}/${
+                        savedSettings.url
+                      }`}
+                    >
+                      {savedSettings.label}
+                    </Button>
+                  </DropMenuItem>
+                </li>
+              ))}
+            </DropMenu>
+          </Dropdown>
+        </Toolbar>
       )}
     </>
   );

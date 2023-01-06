@@ -35,6 +35,7 @@ import { Tip } from '$components/common/tip';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { exportCsv, getTimeDensityFormat } from '$components/common/chart/analysis/utils';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
+import { getDateRangeFormatted } from '../utils';
 
 interface ChartCardProps {
   title: React.ReactNode;
@@ -87,11 +88,7 @@ export default function ChartCard(props: ChartCardProps) {
       // The indexes expect the data to be ascending, so we have to reverse the
       // data.
       const data = reverse(chartData.data.timeseries);
-      const dFormat = 'yyyy-MM-dd';
-      const startDateFormatted = format(startDate, dFormat);
-      const endDateFormatted = format(endDate, dFormat);
-
-      const filename = `chart.${id}.${startDateFormatted}-${endDateFormatted}`;
+      const filename = `chart.${id}.${getDateRangeFormatted(startDate, endDate)}`;
 
       if (type === 'image') {
         chartRef.current?.saveAsImage(filename);

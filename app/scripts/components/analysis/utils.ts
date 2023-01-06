@@ -1,6 +1,7 @@
 import { endOfDay, startOfDay } from 'date-fns';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { userTzDate2utcString } from '$utils/date';
+import { format } from 'date-fns';
 
 /**
  * Creates the appropriate filter object to send to STAC.
@@ -55,4 +56,11 @@ export function multiPolygonToPolygon(
       coordinates: feature.geometry.coordinates[0]
     }
   };
+}
+
+export function getDateRangeFormatted(startDate, endDate) {
+  const dFormat = 'yyyy-MM-dd';
+  const startDateFormatted = format(startDate, dFormat);
+  const endDateFormatted = format(endDate, dFormat);
+  return [startDateFormatted, endDateFormatted].join('-')
 }
