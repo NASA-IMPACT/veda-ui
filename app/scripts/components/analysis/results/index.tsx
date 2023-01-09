@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
 import { Link } from 'react-router-dom';
+import { max } from 'd3';
 import { media } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { CollecticonPencil } from '@devseed-ui/collecticons';
@@ -130,10 +131,22 @@ export default function AnalysisResults() {
     aoi
   });
 
-  const availableDomain: [Date, Date] | null = useMemo(
-    () => (start && end ? [start, end] : null),
-    [start, end]
-  );
+  const availableDomain: [Date, Date] | null = useMemo(() => {
+    if (!start || !end) return null;
+    const onlySingleValues = requestStatus.every(
+      (rs) => rs.data?.timeseries.length === 1
+    );
+    if (!onlySingleValues) return [start, end];
+
+    // When all data only contain one value, we need to pad the domain to make sure the single value is shown in the center of the chart
+    const intervalsMs = requestStatus.map((rs) => {
+      const interval = rs.data?.timeDensity;
+      if (!interval) return 0;
+      return { day: 3600000, month: 2592000000, year: 31536000000 }[interval];
+    });
+    const maxInterval = max(intervalsMs) ?? 3600000;
+    return [new Date(+start - maxInterval), new Date(+end + maxInterval)];
+  }, [start, end, requestStatus]);
 
   const [brushRange, setBrushRange] = useState<[Date, Date] | null>(null);
 
@@ -144,7 +157,7 @@ export default function AnalysisResults() {
     }
   }, [availableDomain, brushRange]);
 
-
+  
   if (errors?.length) {
     return <Navigate to={thematicAnalysisPath(thematic)} replace />;
   }
