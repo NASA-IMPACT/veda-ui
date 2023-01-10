@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import { max } from 'd3';
+import { max, min } from 'd3';
 import { media } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { CollecticonPencil } from '@devseed-ui/collecticons';
@@ -137,6 +137,8 @@ export default function AnalysisResults() {
       (rs) => rs.data?.timeseries.length === 1
     );
     if (!onlySingleValues) return [start, end];
+    const minDate = min(requestStatus.map(rs => +new Date(rs.data!.timeseries[0]!.date))) ?? +start;
+    const maxDate = max(requestStatus.map(rs => +new Date(rs.data!.timeseries[0]!.date))) ?? +end; 
 
     // When all data only contain one value, we need to pad the domain to make sure the single value is shown in the center of the chart
     const intervalsMs = requestStatus.map((rs) => {
@@ -145,17 +147,17 @@ export default function AnalysisResults() {
       return { day: 3600000, month: 2592000000, year: 31536000000 }[interval];
     });
     const maxInterval = max(intervalsMs) ?? 3600000;
-    return [new Date(+start - maxInterval), new Date(+end + maxInterval)];
+    return [new Date(minDate - maxInterval), new Date(maxDate + maxInterval)];
   }, [start, end, requestStatus]);
 
   const [brushRange, setBrushRange] = useState<[Date, Date] | null>(null);
 
   useEffect(() => {
-    if (availableDomain && !brushRange) {
+    if (availableDomain) {
       // TODO auto fit to available data? For now taking the whole user-defined range
       setBrushRange(availableDomain);
     }
-  }, [availableDomain, brushRange]);
+  }, [availableDomain]);
 
   
   if (errors?.length) {
