@@ -141,13 +141,8 @@ export default function AnalysisResults() {
     const maxDate = max(requestStatus.map(rs => +new Date(rs.data!.timeseries[0]!.date))) ?? +end; 
 
     // When all data only contain one value, we need to pad the domain to make sure the single value is shown in the center of the chart
-    const intervalsMs = requestStatus.map((rs) => {
-      const interval = rs.data?.timeDensity;
-      if (!interval) return 0;
-      return { day: 3600000, month: 2592000000, year: 31536000000 }[interval];
-    });
-    const maxInterval = max(intervalsMs) ?? 3600000;
-    return [new Date(minDate - maxInterval), new Date(maxDate + maxInterval)];
+    // substract/add one day
+    return [new Date(minDate - 3600000), new Date(maxDate + 3600000)];
   }, [start, end, requestStatus]);
 
   const [brushRange, setBrushRange] = useState<[Date, Date] | null>(null);
