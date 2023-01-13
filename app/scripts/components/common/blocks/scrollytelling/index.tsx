@@ -6,13 +6,12 @@ import React, {
   useState
 } from 'react';
 import T from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 // Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import * as dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
-import { media } from '@devseed-ui/theme-provider';
 import mapboxgl from 'mapbox-gl';
 import { BlockErrorBoundary } from '..';
 import {
@@ -37,6 +36,8 @@ import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
 import { formatSingleDate } from '$components/common/mapbox/utils';
 import { convertProjectionToMapbox } from '$components/common/mapbox/projection-selector/utils';
+import { useSlidingStickyHeaderProps } from '$components/common/layout-root';
+import { HERO_TRANSITION_DURATION } from '$components/analysis/page-hero-analysis';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -48,14 +49,15 @@ export const scrollyMapHeight = 'calc(100vh - 3rem)';
 
 const ScrollyMapWrapper = styled.div``;
 
-const TheMap = styled.div`
+const TheMap = styled.div<{ topOffset: number }>`
   height: ${scrollyMapHeight};
   position: sticky;
-  top: 3rem;
+  transition: top ${HERO_TRANSITION_DURATION}ms ease-out,
+    height ${HERO_TRANSITION_DURATION}ms ease-out;
 
-  ${media.mediumUp`
-    height: calc(100vh - 4rem);
-    top: 4rem;
+  ${({ topOffset }) => css`
+    top: ${topOffset}px;
+    height: calc(100vh - ${topOffset}px);
   `}
 `;
 
@@ -257,6 +259,9 @@ const mapOptions = {
 function Scrollytelling(props) {
   const { children } = props;
 
+  const { isHeaderHidden, headerHeight, wrapperHeight } =
+    useSlidingStickyHeaderProps();
+
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map>(null);
   const [isMapLoaded, setMapLoaded] = useState(false);
@@ -338,9 +343,17 @@ function Scrollytelling(props) {
   const didFailLayerLoading = resolvedStatus.some((s) => s === S_FAILED);
   const areLayersLoading = !didFailLayerLoading && !areAllLayersLoaded;
 
+  // The top offset for the scrollytelling element will depend on whether the
+  // header is visible or not.
+  const topOffset = isHeaderHidden
+    ? // With the header hidden the offset is just the nav bar height.
+      wrapperHeight - headerHeight
+    : // Otherwise it's the full header height.
+      wrapperHeight;
+
   return (
     <ScrollyMapWrapper>
-      <TheMap>
+      <TheMap topOffset={topOffset}>
         {isMapLoaded &&
           resolvedLayers.map((resolvedLayer) => {
             if (!resolvedLayer) return null;
