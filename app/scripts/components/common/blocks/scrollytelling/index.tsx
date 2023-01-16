@@ -37,7 +37,7 @@ import { HintedError } from '$utils/hinted-error';
 import { formatSingleDate } from '$components/common/mapbox/utils';
 import { convertProjectionToMapbox } from '$components/common/mapbox/projection-selector/utils';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root';
-import { HERO_TRANSITION_DURATION } from '$components/analysis/page-hero-analysis';
+import { HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -52,8 +52,8 @@ const ScrollyMapWrapper = styled.div``;
 const TheMap = styled.div<{ topOffset: number }>`
   height: ${scrollyMapHeight};
   position: sticky;
-  transition: top ${HERO_TRANSITION_DURATION}ms ease-out,
-    height ${HERO_TRANSITION_DURATION}ms ease-out;
+  transition: top ${HEADER_TRANSITION_DURATION}ms ease-out,
+    height ${HEADER_TRANSITION_DURATION}ms ease-out;
 
   ${({ topOffset }) => css`
     top: ${topOffset}px;

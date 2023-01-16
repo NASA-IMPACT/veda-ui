@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 export const HEADER_ID = 'page-header';
 export const HEADER_WRAPPER_ID = 'header-wrapper';
+export const HEADER_TRANSITION_DURATION = 320;
 
 export function useSlidingStickyHeader() {
   const [isHidden, setHidden] = useState(false);
@@ -44,13 +45,19 @@ export function useSlidingStickyHeader() {
     observer.observe(navWrapperElement);
 
     function tick(currY) {
-      const wrapperEl = document.querySelector(
+      const wrapperEl = document.querySelector<HTMLElement>(
         `#${HEADER_WRAPPER_ID}`
-      ) as HTMLElement;
-      setWrapperHeight(wrapperEl?.offsetHeight || 0);
+      );
+
+      if (!wrapperEl)
+        throw new Error(
+          `Header element with ID ${HEADER_WRAPPER_ID} not found.`
+        );
+
+      setWrapperHeight(wrapperEl.offsetHeight);
 
       const el = document.querySelector<HTMLElement>(`#${HEADER_ID}`);
-      const headerHeightQueried = el?.offsetHeight || 0;
+      const headerHeightQueried = el?.offsetHeight ?? 0;
       setHeaderHeight(headerHeightQueried);
 
       // When the document is scrolled quickly to the bottom of the page, the

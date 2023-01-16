@@ -7,9 +7,9 @@ import { shade } from 'polished';
 import { rgba, themeVal } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
-import { HERO_TRANSITION_DURATION } from './page-hero-analysis';
 import { SimpleMap } from '$components/common/mapbox/map';
 import { useEffectPrevious } from '$utils/use-effect-previous';
+import { HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
 
 const WORLD_POLYGON = [
   [180, 90],
@@ -58,7 +58,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
       if (!shouldMount && wasStuck && !isHeaderStuck) {
         const tid = setTimeout(
           () => setShouldMount(true),
-          HERO_TRANSITION_DURATION
+          HEADER_TRANSITION_DURATION
         );
 
         return () => {
