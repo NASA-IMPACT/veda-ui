@@ -29,7 +29,6 @@ import UnscrollableBody from './unscrollable-body';
 import { variableGlsp } from '$styles/variable-utils';
 import { useThematicArea } from '$utils/thematics';
 import {
-  thematicAboutPath,
   thematicAnalysisPath,
   thematicDatasetsPath,
   thematicDiscoveriesPath,
@@ -490,15 +489,6 @@ function PageHeader() {
                     </li>
                     <li>
                       <GoogleForm />
-                    </li>
-                    <li>
-                      <GlobalMenuLink
-                        to={thematicAboutPath(thematic)}
-                        end
-                        onClick={closeNavOnClick}
-                      >
-                        About
-                      </GlobalMenuLink>
                     </li>
                   </GlobalMenu>
                 ) : (

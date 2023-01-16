@@ -23,7 +23,6 @@ const RootAbout = lazy(() => import('$components/root-about'));
 const RootDevelopment = lazy(() => import('$components/root-development'));
 
 const Home = lazy(() => import('$components/home'));
-const About = lazy(() => import('$components/about'));
 const DiscoveriesHub = lazy(() => import('$components/discoveries/hub'));
 const DiscoveriesSingle = lazy(() => import('$components/discoveries/single'));
 
@@ -94,7 +93,6 @@ function Root() {
 
                 <Route path={hasSeveralThematicAreas ? ':thematicId' : '/'}>
                   <Route index element={<Home />} />
-                  <Route path='about' element={<About />} />
                   <Route path='discoveries' element={<DiscoveriesHub />} />{' '}
                   <Route
                     path='discoveries/:discoveryId'
