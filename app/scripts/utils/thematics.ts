@@ -3,17 +3,24 @@ import { useParams } from 'react-router';
 import vedaThematics, {
   thematics,
   discoveries,
-  datasets
+  datasets,
+  VedaDatum,
+  VedaThematicListItem
 } from 'veda/thematics';
 
 import { MDXContent, MDXModule } from 'mdx/types';
 import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
 
 /**
+ * Interface for the Thematic area data and the related discoveries and datasets
+ */
+export type ThematicItemFull = VedaDatum<VedaThematicListItem> | null;
+
+/**
  * Returns the data for the thematic are taking the url parameter into account.
  * @returns Object
  */
-export function useThematicArea() {
+export function useThematicArea(): ThematicItemFull {
   const { thematicId } = useParams();
 
   // If there's only one thematic area, the app is setup with only one thematic

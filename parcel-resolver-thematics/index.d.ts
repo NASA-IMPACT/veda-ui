@@ -222,7 +222,7 @@ declare module 'veda/thematics' {
    */
   export const thematics: VedaData<ThematicData>;
 
-  interface VedaThematicListItem extends ThematicData {
+  export interface VedaThematicListItem extends ThematicData {
     /**
      * Datasets that are related to this thematic area.
      */

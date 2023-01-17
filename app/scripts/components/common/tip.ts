@@ -1,7 +1,7 @@
 import Typpy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { css } from 'styled-components';
-import { themeVal } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 // Re-export.
 // Keeping everything tippy related in a single file
@@ -21,6 +21,10 @@ export const reactTippyStyles = () => css`
 
     .tippy-arrow {
       color: ${themeVal('color.base')};
+    }
+
+    .tippy-content {
+      padding: ${glsp(0.25, 0.5)};
     }
   }
 `;
