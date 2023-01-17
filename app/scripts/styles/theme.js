@@ -10,7 +10,8 @@ export default function themeOverrides() {
       infographicA: '#fcab10',
       infographicB: '#f4442e',
       infographicC: '#b62b6e',
-      infographicD: '#2ca58d'
+      infographicD: '#2ca58d',
+      infographicE: '#2276ac'
     },
     type: {
       base: {
