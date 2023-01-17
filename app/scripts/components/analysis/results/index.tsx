@@ -57,6 +57,14 @@ const AnalysisFold = styled(Fold)`
   min-height: calc(100vh - 190px);
 `;
 
+const AnalysisFoldHeader = styled(FoldHeader)`
+  flex-flow: row wrap;
+
+  ${media.mediumUp`
+    flex-flow: row nowrap;
+  `}
+`;
+
 export default function AnalysisResults() {
   const thematic = useThematicArea();
   if (!thematic) throw resourceNotFound();
@@ -200,7 +208,7 @@ export default function AnalysisResults() {
         )}
       />
       <AnalysisFold>
-        <FoldHeader>
+        <AnalysisFoldHeader>
           <FoldHeadline>
             <FoldTitle>Results</FoldTitle>
           </FoldHeadline>
@@ -208,7 +216,7 @@ export default function AnalysisResults() {
             activeMetrics={activeMetrics}
             onMetricsChange={setActiveMetrics}
           />
-        </FoldHeader>
+        </AnalysisFoldHeader>
         <FoldBody>
           {!!requestStatus.length && availableDomain && brushRange && (
             <ChartCardList>
