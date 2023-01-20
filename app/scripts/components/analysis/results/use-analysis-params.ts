@@ -32,6 +32,15 @@ const initialState: AnalysisParamsNull = {
   errors: null
 };
 
+export class ValidationError extends Error {
+  hints: any[];
+
+  constructor(hints: any[]) {
+    super('Invalid parameters');
+    this.hints = hints;
+  }
+}
+
 export function useAnalysisParams(): {
   params: AnalysisParams | AnalysisParamsNull;
   setAnalysisParam: (
@@ -52,7 +61,7 @@ export function useAnalysisParams(): {
 
     try {
       if (!start || !end || !datasetsLayers || !aoi) {
-        throw [
+        throw new ValidationError([
           'Missing required value from URL:',
           {
             start,
@@ -60,19 +69,19 @@ export function useAnalysisParams(): {
             datasetsLayers,
             aoi
           }
-        ];
+        ]);
       }
 
       const startDate = utcString2userTzDate(start);
       const endDate = utcString2userTzDate(end);
       if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        throw [
+        throw new ValidationError([
           'Invalid start or end date:',
           {
             start,
             end
           }
-        ];
+        ]);
       }
 
       // Create an array with all the dataset layers.
@@ -90,11 +99,12 @@ export function useAnalysisParams(): {
         const sentences = ['Invalid dataset layer ids found:'];
         layers.forEach((l, i) => {
           if (!l) {
+            /* eslint-disable-next-line fp/no-mutating-methods */
             sentences.push(`- ${datasetsLayers.split('|')[i]}`);
           }
         });
 
-        throw sentences;
+        throw new ValidationError(sentences);
       }
 
       // lon,lat|lon,lat||lon,lat|lon,lat
@@ -103,7 +113,7 @@ export function useAnalysisParams(): {
       const { geojson, errors: gjvErrors } = polygonUrlDecode(aoi);
 
       if (gjvErrors.length) {
-        throw ['Invalid AOI string:', ...gjvErrors];
+        throw new ValidationError(['Invalid AOI string:', ...gjvErrors]);
       }
 
       setParams({
@@ -114,13 +124,13 @@ export function useAnalysisParams(): {
         errors: null
       });
     } catch (error) {
-      if (Array.isArray(error)) {
+      if (error instanceof ValidationError) {
         /* eslint-disable no-console */
-        error.forEach((s) => console.log(s));
+        error.hints.forEach((s) => console.log(s));
         /* eslint-enable no-console */
         setParams({
           ...initialState,
-          errors: error
+          errors: error.hints
         });
       } else {
         throw error;
