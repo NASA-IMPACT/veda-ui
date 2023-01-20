@@ -46,18 +46,20 @@ export function getFilterPayload(
   return filterPayload;
 }
 
-export function multiPolygonToPolygon(
-  feature: Feature<MultiPolygon | Polygon>
-): Feature<Polygon> {
-  const coordinates = feature.geometry.type === 'MultiPolygon' ? feature.geometry.coordinates[0] : [feature.geometry.coordinates[0]];
-  return {
-    type: 'Feature',
-    properties: { ...feature.properties },
-    geometry: {
-      type: 'Polygon',
-      coordinates
-    }
-  };
+export function multiPolygonToPolygons(feature: Feature<MultiPolygon>) {
+  const polygons = feature.geometry.coordinates.map(
+    (coordinates) =>
+      ({
+        type: 'Feature',
+        properties: { ...feature.properties },
+        geometry: {
+          type: 'Polygon',
+          coordinates: coordinates
+        }
+      } as Feature<Polygon>)
+  );
+
+  return polygons;
 }
 
 export function combineFeatureCollection(

@@ -125,12 +125,12 @@ export default function AoiSelector({
             >
               <CollecticonArea title='Draw shape' meaningful />
             </ToolbarIconButton>
-            {/* <ToolbarIconButton
+            <ToolbarIconButton
               variation='base-text'
               onClick={() => setAoIModalRevealed(true)}
             >
               <CollecticonUpload2 title='Upload geoJSON' meaningful />
-            </ToolbarIconButton> */}
+            </ToolbarIconButton>
             <Dropdown
               alignment='right'
               triggerElement={(props) => (

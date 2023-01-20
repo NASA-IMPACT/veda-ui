@@ -1,8 +1,11 @@
-import { Feature, MultiPolygon, Polygon } from 'geojson';
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import shp from 'shpjs';
 import simplify from 'simplify-js';
-import { multiPolygonToPolygon } from '../utils';
+import { multiPolygonToPolygons } from '../utils';
+
+import { featureCollection } from '$components/common/aoi/utils';
+import { round } from '$utils/format';
 
 const extensions = ['geojson', 'json', 'zip'];
 export const acceptExtensions = extensions.map((ext) => `.${ext}`).join(', ');
@@ -42,18 +45,20 @@ function useCustomAoI() {
   const [uploadFileError, setUploadFileError] = useState<string | null>(null);
   const [uploadFileWarnings, setUploadFileWarnings] = useState<string[]>([]);
   const reader = useRef<FileReader>();
-  const [feature, setFeature] = useState<Feature | null>(null);
+  const [fc, setFc] = useState<FeatureCollection | null>(null);
+
   useEffect(() => {
     reader.current = new FileReader();
 
     const setError = (error: string) => {
       setUploadFileError(error);
-      setFeature(null);
+      setFc(null);
       setUploadFileWarnings([]);
     };
 
     const onLoad = async () => {
       if (!reader.current) return;
+
       let geojson;
       if (typeof reader.current.result === 'string') {
         const rawGeoJSON = reader.current.result;
@@ -75,52 +80,84 @@ function useCustomAoI() {
           return;
         }
       }
-      let feature: Feature = geojson.features[0];
-      if (!geojson.features || !geojson.features.length) {
+
+      if (!geojson?.features?.length) {
         setError('Error uploading file: Invalid GeoJSON');
         return;
       }
 
       let warnings: string[] = [];
-      if (geojson.features.length > 1) {
-        warnings = [
-          ...warnings,
-          'Files containing multiple features are not supported. Only the first feature will be used.'
-        ];
-      }
 
-      if (feature.geometry.type === 'MultiPolygon' || (feature.geometry.type === 'Polygon' && feature.geometry.coordinates.length > 1)) {
-        warnings = [
-          ...warnings,
-          'Files containing multiple polygons are not supported. Only the first polygon will be used.'
-        ];
-        feature = multiPolygonToPolygon(feature as Feature<MultiPolygon | Polygon>);
-      } else if (feature.geometry.type !== 'Polygon') {
+      if (
+        geojson.features.some(
+          (feature) =>
+            !['MultiPolygon', 'Polygon'].includes(feature.geometry.type)
+        )
+      ) {
         setError(
           'Wrong geometry type. Only polygons or multi polygons are accepted.'
         );
         return;
       }
 
-      const originalNumPoints = getNumPoints(feature as Feature<Polygon>);
-      let numPoints = originalNumPoints;
+      const features: Feature<Polygon>[] = geojson.features.reduce(
+        (acc, feature: Feature<Polygon | MultiPolygon>) => {
+          if (feature.geometry.type === 'MultiPolygon') {
+            return acc.concat(
+              multiPolygonToPolygons(feature as Feature<MultiPolygon>)
+            );
+          }
+
+          return acc.concat(feature);
+        },
+        []
+      );
+
+      if (features.length > 200) {
+        setError('Only files with up to 200 polygons are accepted.');
+        return;
+      }
+
+
+      // Simplify features;
+      const originalTotalFeaturePoints = features.reduce(
+        (acc, f) => acc + getNumPoints(f),
+        0
+      );
+      let numPoints = originalTotalFeaturePoints;
       let tolerance = 0.001;
-      while (numPoints > 2000) {
-        feature = simplifyFeature(feature as Feature<Polygon>, tolerance);
-        numPoints = getNumPoints(feature as Feature<Polygon>);
+      let simplifiedFeatures = [...features];
+
+      while (numPoints > 200 || tolerance > 5) {
+        simplifiedFeatures = simplifiedFeatures.map((feature) =>
+          simplifyFeature(feature, tolerance)
+        );
+        numPoints = simplifiedFeatures.reduce(
+          (acc, f) => acc + getNumPoints(f),
+          0
+        );
         tolerance *= 5;
       }
 
-      if (originalNumPoints !== numPoints) {
+      if (originalTotalFeaturePoints !== numPoints) {
         warnings = [
           ...warnings,
-          `The geometry has been simplified (${originalNumPoints} down to ${numPoints} points).`
+          `The geometry has been simplified (${round(
+            (1 - numPoints / originalTotalFeaturePoints) * 100
+          )} % less).`
         ];
       }
 
       setUploadFileWarnings(warnings);
       setUploadFileError(null);
-      setFeature({ ...feature, id: 'aoi-upload' });
+      setFc(
+        featureCollection(
+          simplifiedFeatures.map((feat, i) => ({
+            id: `aoi-upload-${i}`,
+            ...feat
+          }))
+        )
+      );
     };
 
     const onError = () => {
@@ -135,7 +172,7 @@ function useCustomAoI() {
       reader.current.removeEventListener('load', onLoad);
       reader.current.removeEventListener('error', onError);
     };
-  }, [setFeature]);
+  }, []);
 
   const onUploadFile = useCallback((event) => {
     if (!reader.current) return;
@@ -166,14 +203,14 @@ function useCustomAoI() {
   }, []);
 
   const reset = useCallback(() => {
-    setFeature(null);
+    setFc(null);
     setUploadFileWarnings([]);
     setUploadFileError(null);
     setFileInfo(null);
   }, []);
 
   return {
-    feature,
+    fc,
     onUploadFile,
     uploadFileError,
     uploadFileWarnings,
