@@ -1,6 +1,6 @@
 import bbox from '@turf/bbox';
 import featArea from '@turf/area';
-import { Feature, Polygon } from 'geojson';
+import { Feature, FeatureCollection, Polygon } from 'geojson';
 
 import { AoiBounds, AoiBoundsUnset, AoiFeature } from './types';
 import { formatThousands } from '$utils/format';
@@ -61,11 +61,11 @@ export const featureFromBounds = (
       };
 };
 
-export const calcFeatArea = (feature: Feature | null) => {
-  if (!feature) return '0';
+export const calcFeatCollArea = (fc: FeatureCollection | null) => {
+  if (!fc?.features.length) return '0';
 
   // Convert from m2 to km2.
-  const km2 = featArea(feature) / 1e6;
+  const km2 = featArea(fc) / 1e6;
   return formatThousands(km2, { decimals: 0, shorten: true });
 };
 
@@ -78,3 +78,10 @@ export const areBoundsValid = (bounds: AoiBounds | AoiBoundsUnset) => {
     bounds.sw[1] !== undefined
   );
 };
+
+export const featureCollection = (
+  features = [] as Feature<Polygon>[]
+): FeatureCollection<Polygon> => ({
+  type: 'FeatureCollection',
+  features
+});

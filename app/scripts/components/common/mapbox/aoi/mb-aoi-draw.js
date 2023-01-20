@@ -16,14 +16,7 @@ export const aoiCursorStyles = css`
   }
 `;
 
-export function useMbDraw({
-  mapRef,
-  theme,
-  onChange,
-  drawing,
-  selected,
-  feature
-}) {
+export function useMbDraw({ mapRef, theme, onChange, drawing, fc }) {
   const mbDrawRef = useRef();
 
   useEffect(() => {
@@ -53,10 +46,14 @@ export function useMbDraw({
       e.mode === 'simple_select' &&
       onChange?.('aoi.selection', { selected: false });
 
+    const drawDeleteListener = (e) =>
+      onChange?.('aoi.delete', { ids: e.features.map((f) => f.id) });
+
     mbMap
       .on('draw.create', drawCreateListener)
       .on('draw.selectionchange', drawSelectionListener)
       .on('draw.modechange', drawModeListener)
+      .on('draw.delete', drawDeleteListener)
       .on('draw.update', drawUpdateListener);
 
     return () => {
@@ -76,31 +73,12 @@ export function useMbDraw({
     const mbDraw = mbDrawRef.current;
     if (!mbDraw) return;
 
-    if (feature) {
-      mbDraw.set({
-        type: 'FeatureCollection',
-        features: [feature]
-      });
+    if (fc) {
+      mbDraw.set(fc);
     } else {
       mbDraw.deleteAll();
     }
-  }, [feature]);
-
-  // Select the feature if the state changed.
-  useEffect(() => {
-    const mbDraw = mbDrawRef.current;
-    if (!mbDraw) return;
-
-    if (selected) {
-      if (feature) {
-        mbDraw.changeMode('direct_select', {
-          featureId: feature.id
-        });
-      }
-    } else {
-      mbDraw.changeMode('simple_select');
-    }
-  }, [selected, feature]);
+  }, [fc]);
 
   // Start/stop the drawing.
   useEffect(() => {

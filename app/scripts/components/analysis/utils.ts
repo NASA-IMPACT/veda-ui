@@ -1,5 +1,5 @@
 import { endOfDay, startOfDay } from 'date-fns';
-import { Feature, MultiPolygon, Polygon } from 'geojson';
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import { userTzDate2utcString } from '$utils/date';
 
 /**
@@ -13,7 +13,7 @@ import { userTzDate2utcString } from '$utils/date';
 export function getFilterPayload(
   start: Date,
   end: Date,
-  aoiFeature: Feature<Polygon | MultiPolygon>,
+  aoi: FeatureCollection<Polygon>,
   collections: string[]
 ) {
   const filterPayload = {
@@ -31,9 +31,11 @@ export function getFilterPayload(
           }
         ]
       },
+      // Stac search spatial intersect needs to be done on a single feature.
+      // Using a Multipolygon
       {
         op: 's_intersects',
-        args: [{ property: 'geometry' }, aoiFeature.geometry]
+        args: [{ property: 'geometry' }, combineFeatureCollection(aoi).geometry]
       },
       {
         op: 'in',
@@ -53,6 +55,19 @@ export function multiPolygonToPolygon(
     geometry: {
       type: 'Polygon',
       coordinates: feature.geometry.coordinates[0]
+    }
+  };
+}
+
+export function combineFeatureCollection(
+  fc: FeatureCollection<Polygon>
+): Feature<MultiPolygon> {
+  return {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'MultiPolygon',
+      coordinates: [fc.features.map((f) => f.geometry.coordinates[0])]
     }
   };
 }

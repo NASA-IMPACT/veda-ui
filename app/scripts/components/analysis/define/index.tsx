@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, MouseEvent } from 'react';
+import React, { useCallback, useEffect, useMemo, MouseEvent, useRef } from 'react';
 import styled from 'styled-components';
 import { uniqBy } from 'lodash';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
@@ -44,6 +44,8 @@ import {
   inputFormatToDate
 } from '$utils/date';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
+import { MapboxMapRef } from '$components/common/mapbox';
+
 
 const FormBlock = styled.div`
   display: flex;
@@ -101,7 +103,8 @@ export default function Analysis() {
   const { params, setAnalysisParam } = useAnalysisParams();
   const { start, end, datasetsLayers, aoi, errors } = params;
 
-  const { aoi: aoiDrawState, onAoiEvent } = useAoiControls({ drawing: true });
+  const mapRef = useRef<MapboxMapRef>(null);
+  const { aoi: aoiDrawState, onAoiEvent } = useAoiControls(mapRef, { drawing: true });
 
   // If there are errors in the url parameters it means that this should be
   // treated as a new analysis. If the parameters are all there and correct, the
@@ -170,7 +173,7 @@ export default function Analysis() {
   );
 
   const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
-    useStacSearch({ start, end, aoi: aoiDrawState.feature });
+    useStacSearch({ start, end, aoi: aoiDrawState.fc });
 
   // Update datasetsLayers when stac search is refreshed in case some
   // datasetsLayers are not available anymore
@@ -230,14 +233,15 @@ export default function Analysis() {
             start={start}
             end={end}
             datasetsLayers={datasetsLayers}
-            aoi={aoiDrawState.feature}
+            aoi={aoiDrawState.fc}
           />
         )}
       />
 
       <AoiSelector
+        mapRef={mapRef}
         // Use aoi initially decode from qs
-        qsFeature={aoi}
+        qsAoi={aoi}
         aoiDrawState={aoiDrawState}
         onAoiEvent={onAoiEvent}
       />

@@ -37,7 +37,7 @@ import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
 import { pluralize } from '$utils/pluralize';
-import { calcFeatArea } from '$components/common/aoi/utils';
+import { calcFeatCollArea } from '$components/common/aoi/utils';
 
 const ChartCardList = styled(CardList)`
   > li {
@@ -103,7 +103,7 @@ export default function AnalysisResults() {
     }
 
     const dateLabel = formatDateRange(start, end);
-    const area = calcFeatArea(aoi);
+    const area = calcFeatCollArea(aoi);
     const datasetCount = pluralize({
       singular: 'dataset',
       count: datasetsLayers.length,
@@ -170,7 +170,7 @@ export default function AnalysisResults() {
         title='Analysis'
         description={descriptions.page}
         isResults
-        aoiFeature={aoi}
+        aoi={aoi}
         renderActions={({ size }) => (
           <Button
             forwardedAs={Link}

@@ -1,12 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Feature, MultiPolygon, Polygon } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
 
 import {
@@ -23,7 +17,6 @@ import {
   CollecticonTrashBin,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
-import { multiPolygonToPolygon } from '../utils';
 import { FeatureByRegionPreset, RegionPreset } from './constants';
 import AoIUploadModal from './aoi-upload-modal';
 import {
@@ -40,6 +33,7 @@ import {
   AoiState
 } from '$components/common/aoi/types';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
+import { featureCollection } from '$components/common/aoi/utils';
 
 const MapContainer = styled.div`
   position: relative;
@@ -50,64 +44,62 @@ const AoiMap = styled(MapboxMap)`
 `;
 
 interface AoiSelectorProps {
-  qsFeature?: Feature<MultiPolygon>;
+  mapRef: React.RefObject<MapboxMapRef>;
+  qsAoi?: FeatureCollection<Polygon>;
   aoiDrawState: AoiState;
   onAoiEvent: AoiChangeListenerOverload;
 }
 
 export default function AoiSelector({
+  mapRef,
   onAoiEvent,
-  qsFeature,
+  qsAoi,
   aoiDrawState
 }: AoiSelectorProps) {
-  const { selected, drawing, feature } = aoiDrawState;
-  const mapRef = useRef<MapboxMapRef>(null);
+  const { selected, drawing, fc } = aoiDrawState;
 
-  // Technical debt
-  // Despite the query parameters support for multiple features on the aoi, the
-  // AOI drawing tool only supports one.
-  // Keeping just the first one.
-  const qsPolygon: Feature<Polygon> | null = useMemo(() => {
-    return qsFeature
-      ? { ...multiPolygonToPolygon(qsFeature), id: 'qs-feature' }
+  // For the drawing tool, the features need an id.
+  const qsFc: FeatureCollection<Polygon> | null = useMemo(() => {
+    return qsAoi
+      ? featureCollection(
+          qsAoi.features.map((f, i) => ({ id: `qs-feature-${i}`, ...f }))
+        )
       : null;
-  }, [qsFeature]);
+  }, [qsAoi]);
 
-  const setFeature = useCallback(
-    (feature: Feature<Polygon>) => {
-      onAoiEvent('aoi.set-feature', { feature });
-      const featureBbox = bbox(feature) as [number, number, number, number];
-      mapRef.current?.instance?.fitBounds(featureBbox, { padding: 32 });
+  const setFC = useCallback(
+    (fc: FeatureCollection<Polygon>) => {
+      onAoiEvent('aoi.set', { fc });
+      const fcBbox = bbox(fc) as [number, number, number, number];
+      mapRef.current?.instance?.fitBounds(fcBbox, { padding: 32 });
     },
     [onAoiEvent]
   );
 
   const onRegionPresetClick = useCallback(
     (preset: RegionPreset) => {
-      setFeature({
-        ...FeatureByRegionPreset[preset],
-        id: 'region-preset-feature'
-      });
+      setFC(FeatureByRegionPreset[preset]);
     },
-    [setFeature]
+    [setFC]
   );
 
-  // Use the feature from the url qs or the region preset as the initial state to center the map.
+  // Use the feature from the url qs or the region preset as the initial state
+  // to center the map.
   useEffect(() => {
-    if (qsPolygon) {
-      setFeature(qsPolygon);
+    if (qsFc) {
+      setFC(qsFc);
     } else {
       onAoiEvent('aoi.clear');
       mapRef.current?.instance?.flyTo({ zoom: 1, center: [0, 0] });
     }
-  }, [onAoiEvent, qsPolygon, setFeature]);
+  }, [onAoiEvent, qsFc, setFC]);
 
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
 
   return (
     <Fold>
       <AoIUploadModal
-        setFeature={setFeature}
+        setFC={setFC}
         revealed={aoiModalRevealed}
         onCloseClick={() => setAoIModalRevealed(false)}
       />
@@ -120,8 +112,8 @@ export default function AoiSelector({
             <ToolbarLabel>Actions</ToolbarLabel>
             <ToolbarIconButton
               variation='base-text'
-              onClick={() => onAoiEvent('aoi.clear')}
-              disabled={!feature}
+              onClick={() => onAoiEvent('aoi.trash-click')}
+              disabled={!fc?.features.length}
             >
               <CollecticonTrashBin title='Delete shape' meaningful />
             </ToolbarIconButton>
@@ -133,20 +125,17 @@ export default function AoiSelector({
             >
               <CollecticonArea title='Draw shape' meaningful />
             </ToolbarIconButton>
-            <ToolbarIconButton
+            {/* <ToolbarIconButton
               variation='base-text'
               onClick={() => setAoIModalRevealed(true)}
             >
               <CollecticonUpload2 title='Upload geoJSON' meaningful />
-            </ToolbarIconButton>
+            </ToolbarIconButton> */}
             <Dropdown
               alignment='right'
               triggerElement={(props) => (
                 <ToolbarIconButton variation='base-text' {...props}>
-                  <CollecticonGlobe
-                    title='More options'
-                    meaningful
-                  />
+                  <CollecticonGlobe title='More options' meaningful />
                 </ToolbarIconButton>
               )}
             >

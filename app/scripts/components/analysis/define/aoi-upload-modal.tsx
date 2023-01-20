@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { Feature } from 'geojson';
+import { FeatureCollection } from 'geojson';
 import { Modal, ModalHeadline, ModalFooter } from '@devseed-ui/modal';
 import { Heading, Subtitle } from '@devseed-ui/typography';
 
@@ -93,13 +93,13 @@ const UploadInfoItemError = styled.li`
 interface AoIUploadModalProps {
   revealed: boolean;
   onCloseClick: () => void;
-  setFeature: (feature: Feature) => void;
+  setFC: (fc: FeatureCollection) => void;
 }
 
 export default function AoIUploadModal({
   revealed,
   onCloseClick,
-  setFeature
+  setFC
 }: AoIUploadModalProps) {
   const {
     feature,
@@ -117,9 +117,9 @@ export default function AoIUploadModal({
 
   const onConfirmClick = useCallback(() => {
     if (!feature) return;
-    setFeature(feature);
+    setFC(feature);
     onCloseClick();
-  }, [feature, setFeature, onCloseClick]);
+  }, [feature, setFC, onCloseClick]);
 
   useEffect(() => {
     if (revealed) reset();

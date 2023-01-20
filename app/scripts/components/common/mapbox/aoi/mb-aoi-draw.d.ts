@@ -9,6 +9,6 @@ type useMbDrawParams = {
   mapRef: MutableRefObject<mapboxgl.Map | null>;
   theme: DefaultTheme;
   onChange?: AoiChangeListener;
-} & Partial<Pick<AoiState, 'feature' | 'drawing' | 'selected'>>;
+} & Partial<Pick<AoiState, 'fc' | 'drawing' | 'selected'>>;
 
 export const useMbDraw: (params: useMbDrawParams) => void;

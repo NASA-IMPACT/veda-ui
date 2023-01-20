@@ -1,5 +1,5 @@
 import { DatasetLayer } from 'veda/thematics';
-import { Feature, Polygon } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import { useEffect, useMemo, useState } from 'react';
 import { uniq, uniqBy } from 'lodash';
 import axios from 'axios';
@@ -16,7 +16,7 @@ import { useThematicArea } from '$utils/thematics';
 interface UseStacSearchProps {
   start?: Date;
   end?: Date;
-  aoi?: Feature<Polygon> | null;
+  aoi?: FeatureCollection<Polygon> | null;
 }
 
 export function useStacSearch({ start, end, aoi }: UseStacSearchProps) {

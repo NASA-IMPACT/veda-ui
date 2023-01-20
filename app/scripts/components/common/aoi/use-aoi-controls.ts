@@ -1,13 +1,18 @@
 import { useCallback, useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 
+import { MapboxMapRef } from '../mapbox';
 import { AoiChangeListenerOverload, AoiState } from './types';
+import { featureCollection } from './utils';
 
-export function useAoiControls(initialState: Partial<AoiState> = {}) {
+export function useAoiControls(
+  mapRef: React.RefObject<MapboxMapRef>,
+  initialState: Partial<AoiState> = {}
+) {
   const [aoi, setAoi] = useState<AoiState>({
     drawing: false,
     selected: false,
-    feature: null,
+    fc: null,
     actionOrigin: null,
     ...initialState
   });
@@ -16,7 +21,7 @@ export function useAoiControls(initialState: Partial<AoiState> = {}) {
     setAoi({
       drawing: false,
       selected: false,
-      feature: null,
+      fc: null,
       actionOrigin: null,
       ...initialState
     });
@@ -24,25 +29,49 @@ export function useAoiControls(initialState: Partial<AoiState> = {}) {
 
   const onAoiEvent = useCallback((action, payload) => {
     switch (action) {
-      case 'aoi.draw-click':
-        // There can only be one selection (feature) on the map
-        // If there's a feature toggle the selection.
-        // If there's no feature toggle the drawing.
+      case 'aoi.trash-click': {
+        // Find the mapDraw control by checking for properties.
+        // We need to programmatically access the mapbox draw trash method which
+        // will do different things depending on the selected mode.
+        // @ts-expect-error _controls does exist but it is an internal property.
+        const mbDraw = mapRef.current?.instance?._controls.find(
+          (c) => c.modes && typeof c.trash === 'function'
+        );
+        if (!mbDraw) return;
+
         setAoi((state) => {
-          const selected = !!state.feature && !state.selected;
+          if (state.selected) {
+            mbDraw.trash();
+            return state;
+          }
+
+          mbDraw.deleteAll();
           return {
             ...state,
-            drawing: !state.feature && !state.drawing,
-            selected,
-            actionOrigin: selected ? 'panel' : null
+            drawing: false,
+            selected: false,
+            fc: null,
+            actionOrigin: null
+          };
+        });
+
+        break;
+      }
+      case 'aoi.draw-click':
+        setAoi((state) => {
+          return {
+            ...state,
+            drawing: !state.drawing,
+            selected: false,
+            actionOrigin: null
           };
         });
         break;
-      case 'aoi.set-feature':
+      case 'aoi.set':
         setAoi((state) => ({
           ...state,
           drawing: false,
-          feature: payload.feature,
+          fc: payload.fc,
           actionOrigin: 'panel'
         }));
         break;
@@ -50,15 +79,29 @@ export function useAoiControls(initialState: Partial<AoiState> = {}) {
         setAoi({
           drawing: false,
           selected: false,
-          feature: null,
+          fc: null,
           actionOrigin: null
         });
+        break;
+      case 'aoi.delete':
+        setAoi((state) => ({
+          drawing: false,
+          selected: false,
+          fc: featureCollection(
+            (state.fc?.features ?? []).filter(
+              (f) => !payload.ids.includes(f.id)
+            )
+          ),
+          actionOrigin: null
+        }));
         break;
       case 'aoi.draw-finish':
         setAoi((state) => ({
           ...state,
           drawing: false,
-          feature: payload.feature,
+          fc: featureCollection(
+            (state.fc?.features ?? []).concat(payload.feature)
+          ),
           actionOrigin: 'map'
         }));
         break;
@@ -73,11 +116,16 @@ export function useAoiControls(initialState: Partial<AoiState> = {}) {
       case 'aoi.update':
         setAoi((state) => ({
           ...state,
-          feature: payload.feature,
+          fc: featureCollection(
+            (state.fc?.features ?? []).map((f) =>
+              f.id === payload.feature.id ? payload.feature : f
+            )
+          ),
           actionOrigin: 'map'
         }));
         break;
     }
+    // mapRef is a ref object.
   }, []);
 
   return { aoi, onAoiEvent: onAoiEvent as AoiChangeListenerOverload };
