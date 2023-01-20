@@ -47,14 +47,15 @@ export function getFilterPayload(
 }
 
 export function multiPolygonToPolygon(
-  feature: Feature<MultiPolygon>
+  feature: Feature<MultiPolygon | Polygon>
 ): Feature<Polygon> {
+  const coordinates = feature.geometry.type === 'MultiPolygon' ? feature.geometry.coordinates[0] : [feature.geometry.coordinates[0]];
   return {
     type: 'Feature',
     properties: { ...feature.properties },
     geometry: {
       type: 'Polygon',
-      coordinates: feature.geometry.coordinates[0]
+      coordinates
     }
   };
 }
