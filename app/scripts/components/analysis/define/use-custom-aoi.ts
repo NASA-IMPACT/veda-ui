@@ -89,12 +89,12 @@ function useCustomAoI() {
         ];
       }
 
-      if (feature.geometry.type === 'MultiPolygon') {
+      if (feature.geometry.type === 'MultiPolygon' || (feature.geometry.type === 'Polygon' && feature.geometry.coordinates.length > 1)) {
         warnings = [
           ...warnings,
           'Files containing multiple polygons are not supported. Only the first polygon will be used.'
         ];
-        feature = multiPolygonToPolygon(feature as Feature<MultiPolygon>);
+        feature = multiPolygonToPolygon(feature as Feature<MultiPolygon | Polygon>);
       } else if (feature.geometry.type !== 'Polygon') {
         setError(
           'Wrong geometry type. Only polygons or multi polygons are accepted.'
