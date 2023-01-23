@@ -2,7 +2,9 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { sticky } from 'tippy.js';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
-// import styled from 'styled-components';
+import styled from 'styled-components';
+
+import { glsp, listReset } from '@devseed-ui/theme-provider';
 import { Button, ButtonProps } from '@devseed-ui/button';
 import {
   CollecticonTickSmall,
@@ -13,10 +15,9 @@ import {
 import { Toolbar, ToolbarIconButton, VerticalDivider } from '@devseed-ui/toolbar';
 import {
   Dropdown,
-  DropMenu,
-  DropTitle,
-  DropMenuItem
+  DropTitle
 } from '@devseed-ui/dropdown';
+import { Subtitle } from '@devseed-ui/typography';
 
 import { DatasetLayer } from 'veda/thematics';
 
@@ -30,11 +31,53 @@ import { thematicAnalysisPath } from '$utils/routes';
 import { useThematicArea } from '$utils/thematics';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { useMediaQuery } from '$utils/use-media-query';
+import { VarHeading } from '$styles/variable-components';
 
 // import DropMenuItemButton from '$styles/drop-menu-item-button';
 
 const SaveButton = composeVisuallyDisabled(Button);
 
+const PastAnalysesMenu = styled.ol`
+  ${listReset()}
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${glsp(0.25)};
+
+  li {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: ${glsp(0.5)};
+    align-items: top;
+
+    > svg {
+      flex-shrink: 0;
+      margin-top: ${glsp(0.25)};
+    }
+  }
+`;
+
+const PastAnalysis = styled.a`
+  /* styled-component */
+`;
+
+const PastAnalysisMedia = styled.figure`
+  /* styled-component */
+`;
+
+const PastAnalysisHeadline = styled.div`
+  /* styled-component */
+`;
+
+const PastAnalysisTitle = styled(VarHeading).attrs({
+  as: 'h4',
+  size: 'xxsmall'
+})`
+  /* styled-component */
+`;
+
+const PastAnalysisSubtitle = styled(Subtitle)`
+  /* styled-component */
+`;
 interface PageHeroActionsProps {
   size: ButtonProps['size'];
   isNewAnalysis: boolean;
@@ -156,16 +199,33 @@ export default function PageHeroActions({
             triggerElement={(props) => (
               <ToolbarIconButton variation='base-text' {...props}>
                 <Button size={size} variation='achromic-outline'>
-                  <CollecticonClockBack
-                    title='Show past analyses'
-                    meaningful
-                  />
+                  <CollecticonClockBack title='Show past analyses' meaningful />
                 </Button>
               </ToolbarIconButton>
             )}
           >
             <DropTitle>Past analyses</DropTitle>
-            <DropMenu>
+            <PastAnalysesMenu>
+              <li>
+                <PastAnalysis>
+                  <PastAnalysisMedia>
+                    <img
+                      src='https://via.placeholder.com/480x240'
+                      alt='Thumbnail showing AOI'
+                    />
+                  </PastAnalysisMedia>
+                  <PastAnalysisHeadline>
+                    <PastAnalysisTitle>
+                      19 M km2 area from Feb 1st, 2020 to Jan 23rd, 2023
+                    </PastAnalysisTitle>
+                    <PastAnalysisSubtitle>
+                      N02, Dataset B, Dataset C (+2)
+                    </PastAnalysisSubtitle>
+                  </PastAnalysisHeadline>
+                </PastAnalysis>
+              </li>
+            </PastAnalysesMenu>
+            {/* <DropMenu>
               {thematicAreaSavedSettingsList.map((savedSettings) => (
                 <li key={savedSettings.url}>
                   <DropMenuItem data-dropdown='click.close'>
@@ -180,7 +240,7 @@ export default function PageHeroActions({
                   </DropMenuItem>
                 </li>
               ))}
-            </DropMenu>
+            </DropMenu> */}
           </Dropdown>
         </Toolbar>
       )}
