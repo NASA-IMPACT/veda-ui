@@ -164,7 +164,7 @@ export default function PageHeroActions({
               </ToolbarIconButton>
             )}
           >
-            <DropTitle>Show past analyses</DropTitle>
+            <DropTitle>Past analyses</DropTitle>
             <DropMenu>
               {thematicAreaSavedSettingsList.map((savedSettings) => (
                 <li key={savedSettings.url}>
