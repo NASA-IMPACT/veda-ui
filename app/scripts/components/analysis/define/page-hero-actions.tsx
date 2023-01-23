@@ -10,7 +10,7 @@ import {
   CollecticonArrowRevert
 } from '@devseed-ui/collecticons';
 
-import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
+import { Toolbar, ToolbarIconButton, VerticalDivider } from '@devseed-ui/toolbar';
 import {
   Dropdown,
   DropMenu,
@@ -146,6 +146,9 @@ export default function PageHeroActions({
           <CollecticonTickSmall /> Generate
         </Button>
       )}
+
+      <VerticalDivider variation='light' />
+
       {thematicAreaSavedSettingsList.length > 0 && (
         <Toolbar size='small'>
           <Dropdown

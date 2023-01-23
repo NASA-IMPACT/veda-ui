@@ -154,6 +154,7 @@ const PageHeroActions = styled.div`
   display: flex;
   flex-flow: row nowrap;
   gap: ${variableGlsp(0.25)};
+  align-items: center;
 
   ${media.largeUp`
     justify-content: end;
