@@ -4,7 +4,7 @@ import { sticky } from 'tippy.js';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import styled from 'styled-components';
 
-import { glsp, listReset } from '@devseed-ui/theme-provider';
+import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
 import { Button, ButtonProps } from '@devseed-ui/button';
 import {
   CollecticonTickSmall,
@@ -57,11 +57,33 @@ const PastAnalysesMenu = styled.ol`
 `;
 
 const PastAnalysis = styled.a`
-  /* styled-component */
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${glsp(0.5)};
 `;
 
 const PastAnalysisMedia = styled.figure`
-  /* styled-component */
+  position: relative;
+  order: -1;
+  height: 3rem;
+  overflow: hidden;
+  border-radius: ${themeVal('shape.rounded')};
+  flex-shrink: 0;
+  aspect-ratio: 1.5 / 1;
+  background: ${themeVal('color.base-50')};
+
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    content: '';
+    box-shadow: inset 0 0 0 1px ${themeVal('color.base-100a')};
+    border-radius: ${themeVal('shape.rounded')};
+    pointer-events: none;
+  }
 `;
 
 const PastAnalysisHeadline = styled.div`
@@ -150,6 +172,59 @@ export default function PageHeroActions({
 
   return (
     <>
+      {thematicAreaSavedSettingsList.length > 0 && (
+        <Dropdown
+          alignment='right'
+          triggerElement={(props) => (
+            <ToolbarIconButton variation='base-text' {...props}>
+              <Button size={size} variation='achromic-outline'>
+                <CollecticonClockBack title='Show past analyses' meaningful />
+              </Button>
+            </ToolbarIconButton>
+          )}
+        >
+          <DropTitle>Past analyses</DropTitle>
+          <PastAnalysesMenu>
+            <li>
+              <PastAnalysis>
+                <PastAnalysisMedia>
+                  <img
+                    src='https://via.placeholder.com/480x320'
+                    alt='Thumbnail showing AOI'
+                  />
+                </PastAnalysisMedia>
+                <PastAnalysisHeadline>
+                  <PastAnalysisTitle>
+                    19 M km2 area from Feb 1st, 2020 to Jan 23rd, 2023
+                  </PastAnalysisTitle>
+                  <PastAnalysisSubtitle>
+                    N02, Dataset B, Dataset C (+2)
+                  </PastAnalysisSubtitle>
+                </PastAnalysisHeadline>
+              </PastAnalysis>
+            </li>
+          </PastAnalysesMenu>
+          {/* <DropMenu>
+            {thematicAreaSavedSettingsList.map((savedSettings) => (
+              <li key={savedSettings.url}>
+                <DropMenuItem data-dropdown='click.close'>
+                  <Button
+                    forwardedAs={Link}
+                    to={`${thematicAnalysisPath(thematic)}/${
+                      savedSettings.url
+                    }`}
+                  >
+                    {savedSettings.label}
+                  </Button>
+                </DropMenuItem>
+              </li>
+            ))}
+          </DropMenu> */}
+        </Dropdown>
+      )}
+
+      <VerticalDivider variation='light' />
+
       {!isNewAnalysis && (
         <Button
           forwardedAs={Link}
@@ -188,61 +263,6 @@ export default function PageHeroActions({
         >
           <CollecticonTickSmall /> Generate
         </Button>
-      )}
-
-      <VerticalDivider variation='light' />
-
-      {thematicAreaSavedSettingsList.length > 0 && (
-        <Toolbar size='small'>
-          <Dropdown
-            alignment='right'
-            triggerElement={(props) => (
-              <ToolbarIconButton variation='base-text' {...props}>
-                <Button size={size} variation='achromic-outline'>
-                  <CollecticonClockBack title='Show past analyses' meaningful />
-                </Button>
-              </ToolbarIconButton>
-            )}
-          >
-            <DropTitle>Past analyses</DropTitle>
-            <PastAnalysesMenu>
-              <li>
-                <PastAnalysis>
-                  <PastAnalysisMedia>
-                    <img
-                      src='https://via.placeholder.com/480x240'
-                      alt='Thumbnail showing AOI'
-                    />
-                  </PastAnalysisMedia>
-                  <PastAnalysisHeadline>
-                    <PastAnalysisTitle>
-                      19 M km2 area from Feb 1st, 2020 to Jan 23rd, 2023
-                    </PastAnalysisTitle>
-                    <PastAnalysisSubtitle>
-                      N02, Dataset B, Dataset C (+2)
-                    </PastAnalysisSubtitle>
-                  </PastAnalysisHeadline>
-                </PastAnalysis>
-              </li>
-            </PastAnalysesMenu>
-            {/* <DropMenu>
-              {thematicAreaSavedSettingsList.map((savedSettings) => (
-                <li key={savedSettings.url}>
-                  <DropMenuItem data-dropdown='click.close'>
-                    <Button
-                      forwardedAs={Link}
-                      to={`${thematicAnalysisPath(thematic)}/${
-                        savedSettings.url
-                      }`}
-                    >
-                      {savedSettings.label}
-                    </Button>
-                  </DropMenuItem>
-                </li>
-              ))}
-            </DropMenu> */}
-          </Dropdown>
-        </Toolbar>
       )}
     </>
   );
