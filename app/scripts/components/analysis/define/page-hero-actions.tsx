@@ -7,7 +7,7 @@ import { Button, ButtonProps } from '@devseed-ui/button';
 import {
   CollecticonTickSmall,
   CollecticonXmarkSmall,
-  CollecticonArrowRevert
+  CollecticonClockBack
 } from '@devseed-ui/collecticons';
 
 import { Toolbar, ToolbarIconButton, VerticalDivider } from '@devseed-ui/toolbar';
@@ -156,7 +156,7 @@ export default function PageHeroActions({
             triggerElement={(props) => (
               <ToolbarIconButton variation='base-text' {...props}>
                 <Button size={size} variation='achromic-outline'>
-                  <CollecticonArrowRevert
+                  <CollecticonClockBack
                     title='Show past analyses'
                     meaningful
                   />
