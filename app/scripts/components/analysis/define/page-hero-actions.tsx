@@ -7,7 +7,7 @@ import { Button, ButtonProps } from '@devseed-ui/button';
 import {
   CollecticonTickSmall,
   CollecticonXmarkSmall,
-  CollecticonArrowSpinCcw
+  CollecticonArrowRevert
 } from '@devseed-ui/collecticons';
 
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
@@ -153,15 +153,15 @@ export default function PageHeroActions({
             triggerElement={(props) => (
               <ToolbarIconButton variation='base-text' {...props}>
                 <Button size={size} variation='achromic-outline'>
-                  <CollecticonArrowSpinCcw
-                    title='Retrieve previous settings'
+                  <CollecticonArrowRevert
+                    title='Show past analyses'
                     meaningful
                   />
                 </Button>
               </ToolbarIconButton>
             )}
           >
-            <DropTitle>Retrieve previous settings</DropTitle>
+            <DropTitle>Show past analyses</DropTitle>
             <DropMenu>
               {thematicAreaSavedSettingsList.map((savedSettings) => (
                 <li key={savedSettings.url}>
