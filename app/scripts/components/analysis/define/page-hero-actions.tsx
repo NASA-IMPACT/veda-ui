@@ -37,6 +37,10 @@ import { VarHeading } from '$styles/variable-components';
 
 const SaveButton = composeVisuallyDisabled(Button);
 
+const PastAnalysesDropdown = styled(Dropdown)`
+  width: 32rem;
+`;
+
 const PastAnalysesMenu = styled.ol`
   ${listReset()}
   display: flex;
@@ -48,11 +52,6 @@ const PastAnalysesMenu = styled.ol`
     flex-flow: row nowrap;
     gap: ${glsp(0.5)};
     align-items: top;
-
-    > svg {
-      flex-shrink: 0;
-      margin-top: ${glsp(0.25)};
-    }
   }
 `;
 
@@ -87,7 +86,9 @@ const PastAnalysisMedia = styled.figure`
 `;
 
 const PastAnalysisHeadline = styled.div`
-  /* styled-component */
+  display: flex;
+  flex-flow: column nowrap;
+  gap: ${glsp(0.25)};
 `;
 
 const PastAnalysisTitle = styled(VarHeading).attrs({
@@ -100,6 +101,7 @@ const PastAnalysisTitle = styled(VarHeading).attrs({
 const PastAnalysisSubtitle = styled(Subtitle)`
   /* styled-component */
 `;
+
 interface PageHeroActionsProps {
   size: ButtonProps['size'];
   isNewAnalysis: boolean;
@@ -172,8 +174,50 @@ export default function PageHeroActions({
 
   return (
     <>
+      {!isNewAnalysis && (
+        <Button
+          forwardedAs={Link}
+          to={`${thematicAnalysisPath(thematic)}/results${location.search}`}
+          type='button'
+          size={size}
+          variation='achromic-outline'
+        >
+          <CollecticonXmarkSmall /> Cancel
+        </Button>
+      )}
+      {showTip ? (
+        <Tip
+          visible={isLargeUp ? true : undefined}
+          placement={isLargeUp ? 'left' : 'bottom-end'}
+          content={tipContents}
+          sticky='reference'
+          plugins={[sticky]}
+        >
+          <SaveButton
+            type='button'
+            size={size}
+            variation='achromic-outline'
+            visuallyDisabled={true}
+          >
+            <CollecticonTickSmall /> Generate
+          </SaveButton>
+        </Tip>
+      ) : (
+        <Button
+          forwardedAs={Link}
+          variation='achromic-outline'
+          size={size}
+          to={`${thematicAnalysisPath(thematic)}/results${analysisParamsQs}`}
+          onClick={onGenerateClick}
+        >
+          <CollecticonTickSmall /> Generate
+        </Button>
+      )}
+
+      <VerticalDivider variation='light' />
+
       {thematicAreaSavedSettingsList.length > 0 && (
-        <Dropdown
+        <PastAnalysesDropdown
           alignment='right'
           triggerElement={(props) => (
             <ToolbarIconButton variation='base-text' {...props}>
@@ -220,49 +264,7 @@ export default function PageHeroActions({
               </li>
             ))}
           </DropMenu> */}
-        </Dropdown>
-      )}
-
-      <VerticalDivider variation='light' />
-
-      {!isNewAnalysis && (
-        <Button
-          forwardedAs={Link}
-          to={`${thematicAnalysisPath(thematic)}/results${location.search}`}
-          type='button'
-          size={size}
-          variation='achromic-outline'
-        >
-          <CollecticonXmarkSmall /> Cancel
-        </Button>
-      )}
-      {showTip ? (
-        <Tip
-          visible={isLargeUp ? true : undefined}
-          placement={isLargeUp ? 'left' : 'bottom-end'}
-          content={tipContents}
-          sticky='reference'
-          plugins={[sticky]}
-        >
-          <SaveButton
-            type='button'
-            size={size}
-            variation='achromic-outline'
-            visuallyDisabled={true}
-          >
-            <CollecticonTickSmall /> Generate
-          </SaveButton>
-        </Tip>
-      ) : (
-        <Button
-          forwardedAs={Link}
-          variation='achromic-outline'
-          size={size}
-          to={`${thematicAnalysisPath(thematic)}/results${analysisParamsQs}`}
-          onClick={onGenerateClick}
-        >
-          <CollecticonTickSmall /> Generate
-        </Button>
+        </PastAnalysesDropdown>
       )}
     </>
   );
