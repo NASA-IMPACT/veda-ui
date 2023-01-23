@@ -38,7 +38,7 @@ import { VarHeading } from '$styles/variable-components';
 const SaveButton = composeVisuallyDisabled(Button);
 
 const PastAnalysesDropdown = styled(Dropdown)`
-  width: 32rem;
+  max-width: 22rem;
 `;
 
 const PastAnalysesMenu = styled.ol`
@@ -46,6 +46,7 @@ const PastAnalysesMenu = styled.ol`
   display: flex;
   flex-flow: column nowrap;
   gap: ${glsp(0.25)};
+
 
   li {
     display: flex;
