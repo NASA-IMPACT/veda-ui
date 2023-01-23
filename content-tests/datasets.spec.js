@@ -6,7 +6,7 @@ import matter from 'gray-matter';
 // If running the tests from veda-config the env environment will contain the
 // path, otherwise use the mock
 const vedaConfigPath =
-  process.env.DELTA_CONFIG_PATH ||
+  process.env.VEDA_CONFIG_PATH ||
   path.join(__dirname, '../mock/veda.config.js');
 
 /* eslint-disable-next-line */
