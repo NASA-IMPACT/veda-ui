@@ -24,10 +24,6 @@ export const thematicDatasetsPath = (thematic: ThematicOrString) => {
   return thematicRootPath(thematic, 'datasets');
 };
 
-export const thematicAboutPath = (thematic: ThematicOrString) => {
-  return thematicRootPath(thematic, 'about');
-};
-
 export const thematicAnalysisPath = (thematic: ThematicOrString) => {
   return thematicRootPath(thematic, 'analysis');
 };
