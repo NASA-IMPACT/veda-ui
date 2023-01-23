@@ -133,17 +133,23 @@ export default function AnalysisResults() {
 
   const availableDomain: [Date, Date] | null = useMemo(() => {
     if (!start || !end) return null;
-    let minDate = +start;
-    let maxDate = +end;
-    requestStatus.forEach((item) => {
-      if (item.data?.timeseries) {
-        const itemDates = item.data.timeseries.map((t) => +new Date(t.date));
-        const itemMin = min(itemDates) ?? Number.POSITIVE_INFINITY;
-        const itemMax = max(itemDates) ?? Number.NEGATIVE_INFINITY;
-        if (itemMin < minDate) minDate = itemMin;
-        if (itemMax > maxDate) maxDate = itemMax;
-      }
-    });
+
+    const { minDate, maxDate } = requestStatus.reduce(
+      (acc, item) => {
+        if (item.data?.timeseries) {
+          const itemDates = item.data.timeseries.map((t) => +new Date(t.date));
+          const itemMin = min(itemDates) ?? Number.POSITIVE_INFINITY;
+          const itemMax = max(itemDates) ?? Number.NEGATIVE_INFINITY;
+
+          return {
+            minDate: itemMin < acc.minDate ? itemMin : acc.minDate,
+            maxDate: itemMax > acc.maxDate ? itemMax : acc.maxDate
+          };
+        }
+        return acc;
+      },
+      { minDate: +start, maxDate: +end }
+    );
 
     const onlySingleValues = requestStatus.every(
       (rs) => rs.data?.timeseries.length === 1
