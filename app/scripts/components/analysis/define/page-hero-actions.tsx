@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { sticky } from 'tippy.js';
-import { Feature, MultiPolygon, Polygon } from 'geojson';
-import styled from 'styled-components';
-
-import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+import styled, { useTheme } from 'styled-components';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button, ButtonProps } from '@devseed-ui/button';
 import {
   CollecticonTickSmall,
@@ -12,9 +11,11 @@ import {
   CollecticonClockBack
 } from '@devseed-ui/collecticons';
 
-import { Toolbar, ToolbarIconButton, VerticalDivider } from '@devseed-ui/toolbar';
+import { ToolbarIconButton, VerticalDivider } from '@devseed-ui/toolbar';
 import {
   Dropdown,
+  DropMenu,
+  DropMenuItem,
   DropTitle
 } from '@devseed-ui/dropdown';
 import { Subtitle } from '@devseed-ui/typography';
@@ -32,6 +33,9 @@ import { useThematicArea } from '$utils/thematics';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { useMediaQuery } from '$utils/use-media-query';
 import { VarHeading } from '$styles/variable-components';
+import { calcFeatArea } from '$components/common/aoi/utils';
+import { formatDateRange } from '$utils/date';
+import ItemTruncateCount from '$components/common/item-truncate-count';
 
 // import DropMenuItemButton from '$styles/drop-menu-item-button';
 
@@ -41,37 +45,9 @@ const PastAnalysesDropdown = styled(Dropdown)`
   max-width: 22rem;
 `;
 
-const PastAnalysesMenu = styled.ol`
-  ${listReset()}
-  display: flex;
-  flex-flow: column nowrap;
-  gap: ${glsp(0.25)};
-  margin: ${glsp(-0.25, -1, 0)};
+const PastAnalysesMenu = styled(DropMenu)``;
 
-  li {
-    display: flex;
-    flex-flow: row nowrap;
-    gap: ${glsp(0.5)};
-    align-items: top;
-  }
-`;
-
-const PastAnalysis = styled.article`
-  
-`;
-
-const PastAnalysiLink = styled.a`
-  display: flex;
-  flex-flow: row nowrap;
-  gap: ${glsp(0.5)};
-  padding: ${glsp(0.25, 1)};
-
-  &,
-  &:visited {
-    color: inherit;
-    text-decoration: none;
-  }
-`;
+const PastAnalysisItem = styled(DropMenuItem)``;
 
 const PastAnalysisMedia = styled.figure`
   position: relative;
@@ -158,13 +134,16 @@ export default function PageHeroActions({
     });
   }, [start, end, datasetsLayers, aoi]);
 
-  const { onGenerateClick, thematicAreaSavedSettingsList } = useSavedSettings(
-    thematic.data.id,
+  const { onGenerateClick, thematicAreaSavedSettingsList } = useSavedSettings({
+    thematicAreaId: thematic.data.id,
     analysisParamsQs,
-    start,
-    end,
-    datasetsLayers
-  );
+    params: {
+      start,
+      end,
+      datasets: datasetsLayers?.map((d) => d.name),
+      aoi: aoi ?? undefined
+    }
+  });
 
   let tipContents;
 
@@ -228,79 +207,103 @@ export default function PageHeroActions({
 
       <VerticalDivider variation='light' />
 
-      {thematicAreaSavedSettingsList.length > 0 && (
-        <PastAnalysesDropdown
-          alignment='right'
-          triggerElement={(props) => (
-            <ToolbarIconButton variation='base-text' {...props}>
-              <Button size={size} variation='achromic-outline'>
-                <CollecticonClockBack title='Show past analyses' meaningful />
-              </Button>
-            </ToolbarIconButton>
-          )}
-        >
-          <DropTitle>Past analyses</DropTitle>
-          <PastAnalysesMenu>
-            <li>
-              <PastAnalysis>
-                <PastAnalysiLink href='/'>
-                  <PastAnalysisHeadline>
-                    <PastAnalysisTitle>
-                      19 M km2 area from Feb 1st, 2020 to Jan 23rd, 2023
-                    </PastAnalysisTitle>
-                    <PastAnalysisSubtitle>
-                      N02, Dataset B, Dataset C (+2)
-                    </PastAnalysisSubtitle>
-                  </PastAnalysisHeadline>
-                  <PastAnalysisMedia>
-                    <img
-                      src='https://via.placeholder.com/480x320'
-                      alt='Thumbnail showing AOI'
-                    />
-                  </PastAnalysisMedia>
-                </PastAnalysiLink>
-              </PastAnalysis>
-            </li>
-
-            <li>
-              <PastAnalysis>
-                <PastAnalysiLink href='/'>
-                  <PastAnalysisHeadline>
-                    <PastAnalysisTitle>
-                      19 M km2 area from Feb 1st, 2020 to Jan 23rd, 2023
-                    </PastAnalysisTitle>
-                    <PastAnalysisSubtitle>
-                      N02, Dataset B, Dataset C (+2)
-                    </PastAnalysisSubtitle>
-                  </PastAnalysisHeadline>
-                  <PastAnalysisMedia>
-                    <img
-                      src='https://via.placeholder.com/480x320'
-                      alt='Thumbnail showing AOI'
-                    />
-                  </PastAnalysisMedia>
-                </PastAnalysiLink>
-              </PastAnalysis>
-            </li>
-          </PastAnalysesMenu>
-          {/* <DropMenu>
-            {thematicAreaSavedSettingsList.map((savedSettings) => (
+      <PastAnalysesDropdown
+        alignment='right'
+        triggerElement={(props) => (
+          <ToolbarIconButton variation='base-text' {...props}>
+            <Button
+              size={size}
+              variation='achromic-outline'
+              disabled={!thematicAreaSavedSettingsList.length}
+            >
+              <CollecticonClockBack title='Show past analyses' meaningful />
+            </Button>
+          </ToolbarIconButton>
+        )}
+      >
+        <DropTitle>Past analyses</DropTitle>
+        <PastAnalysesMenu as='ol'>
+          {thematicAreaSavedSettingsList.map((savedSettings) => {
+            const { start, end, aoi, datasets } = savedSettings.params;
+            return (
               <li key={savedSettings.url}>
-                <DropMenuItem data-dropdown='click.close'>
-                  <Button
-                    forwardedAs={Link}
-                    to={`${thematicAnalysisPath(thematic)}/${
-                      savedSettings.url
-                    }`}
+                <article>
+                  <Tip
+                    content={
+                      <>
+                        <p>
+                          {calcFeatArea(aoi)} km<sup>2</sup>
+                        </p>
+                        <p>
+                          <ItemTruncateCount items={datasets} max={Infinity} />
+                        </p>
+                      </>
+                    }
                   >
-                    {savedSettings.label}
-                  </Button>
-                </DropMenuItem>
+                    <PastAnalysisItem
+                      as={Link}
+                      to={`${thematicAnalysisPath(thematic)}/${
+                        savedSettings.url
+                      }`}
+                    >
+                      <PastAnalysisHeadline>
+                        <PastAnalysisTitle>
+                          {formatDateRange(
+                            new Date(start),
+                            new Date(end),
+                            ' — '
+                          )}
+                        </PastAnalysisTitle>
+                        <PastAnalysisSubtitle>
+                          <ItemTruncateCount items={datasets} />
+                        </PastAnalysisSubtitle>
+                      </PastAnalysisHeadline>
+                      <PastAnalysisMedia>
+                        <SavedAnalysisThumbnail aoi={aoi} />
+                      </PastAnalysisMedia>
+                    </PastAnalysisItem>
+                  </Tip>
+                </article>
               </li>
-            ))}
-          </DropMenu> */}
-        </PastAnalysesDropdown>
-      )}
+            );
+          })}
+        </PastAnalysesMenu>
+      </PastAnalysesDropdown>
     </>
   );
+}
+
+function SavedAnalysisThumbnail(props: { aoi: FeatureCollection<Polygon> }) {
+  const { aoi } = props;
+
+  const theme = useTheme();
+
+  // const styledFeatures = {
+  //   ...aoi,
+  //   features: aoi.features.map(({ geometry }) => ({
+  //     type: 'Feature',
+  //     properties: {
+  //       fill: theme.color?.primary,
+  //       'stroke-width': 2,
+  //       stroke: theme.color?.primary
+  //     },
+  //     geometry
+  //   }))
+  // };
+
+  const styledFeatures = {
+    type: 'Feature',
+    properties: {
+      fill: theme.color?.primary,
+      'stroke-width': 2,
+      stroke: theme.color?.primary
+    },
+    geometry: aoi.geometry
+  };
+
+  const encoded = encodeURIComponent(JSON.stringify(styledFeatures));
+
+  const src = `https://api.mapbox.com/styles/v1/covid-nasa/cldac5c2c003k01oebmavw4q3/static/geojson(${encoded})/auto/480x320?access_token=${process.env.MAPBOX_TOKEN}`;
+
+  return <img src={src} alt='Thumbnail showing AOI' />;
 }

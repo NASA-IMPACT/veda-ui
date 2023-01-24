@@ -107,7 +107,11 @@ export function isValidDate(dateString?: string | null) {
  * @param {object} start Start date to format
  * @param {object} end End date to format
  */
-export function formatDateRange(start: Date, end: Date) {
+export function formatDateRange(
+  start: Date,
+  end: Date,
+  datesSeparator = ' to '
+) {
   const DATE_FORMAT_FULL = 'MMM do, yyyy';
 
   // Format the label in a pretty way as to not repeat values if the month or
@@ -130,9 +134,9 @@ export function formatDateRange(start: Date, end: Date) {
   if (isSameMonth(start, end) && isSameYear(start, end)) {
     return `${format(start, 'MMM dd')}-${format(end, 'dd, yyyy')}`;
   } else if (isSameYear(start, end)) {
-    return `${format(start, 'MMM do')} to ${endStr}`;
+    return `${format(start, 'MMM do')}${datesSeparator}${endStr}`;
   } else {
-    return `${startStr} to ${endStr}`;
+    return `${startStr}${datesSeparator}${endStr}`;
   }
 }
 
