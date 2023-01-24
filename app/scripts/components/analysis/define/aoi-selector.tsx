@@ -9,6 +9,8 @@ import styled from 'styled-components';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
 
+import { themeVal } from '@devseed-ui/theme-provider';
+
 import {
   Toolbar,
   ToolbarIconButton,
@@ -41,8 +43,11 @@ import {
 } from '$components/common/aoi/types';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 
+
 const MapContainer = styled.div`
   position: relative;
+  border-radius: ${themeVal('shape.rounded')};
+  overflow: hidden;
 `;
 
 const AoiMap = styled(MapboxMap)`

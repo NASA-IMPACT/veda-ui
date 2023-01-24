@@ -46,7 +46,7 @@ const PastAnalysesMenu = styled.ol`
   display: flex;
   flex-flow: column nowrap;
   gap: ${glsp(0.25)};
-
+  margin: ${glsp(-0.25, -1, 0)};
 
   li {
     display: flex;
@@ -56,10 +56,21 @@ const PastAnalysesMenu = styled.ol`
   }
 `;
 
-const PastAnalysis = styled.a`
+const PastAnalysis = styled.article`
+  
+`;
+
+const PastAnalysiLink = styled.a`
   display: flex;
   flex-flow: row nowrap;
   gap: ${glsp(0.5)};
+  padding: ${glsp(0.25, 1)};
+
+  &,
+  &:visited {
+    color: inherit;
+    text-decoration: none;
+  }
 `;
 
 const PastAnalysisMedia = styled.figure`
@@ -232,20 +243,43 @@ export default function PageHeroActions({
           <PastAnalysesMenu>
             <li>
               <PastAnalysis>
-                <PastAnalysisMedia>
-                  <img
-                    src='https://via.placeholder.com/480x320'
-                    alt='Thumbnail showing AOI'
-                  />
-                </PastAnalysisMedia>
-                <PastAnalysisHeadline>
-                  <PastAnalysisTitle>
-                    19 M km2 area from Feb 1st, 2020 to Jan 23rd, 2023
-                  </PastAnalysisTitle>
-                  <PastAnalysisSubtitle>
-                    N02, Dataset B, Dataset C (+2)
-                  </PastAnalysisSubtitle>
-                </PastAnalysisHeadline>
+                <PastAnalysiLink href='/'>
+                  <PastAnalysisHeadline>
+                    <PastAnalysisTitle>
+                      19 M km2 area from Feb 1st, 2020 to Jan 23rd, 2023
+                    </PastAnalysisTitle>
+                    <PastAnalysisSubtitle>
+                      N02, Dataset B, Dataset C (+2)
+                    </PastAnalysisSubtitle>
+                  </PastAnalysisHeadline>
+                  <PastAnalysisMedia>
+                    <img
+                      src='https://via.placeholder.com/480x320'
+                      alt='Thumbnail showing AOI'
+                    />
+                  </PastAnalysisMedia>
+                </PastAnalysiLink>
+              </PastAnalysis>
+            </li>
+
+            <li>
+              <PastAnalysis>
+                <PastAnalysiLink href='/'>
+                  <PastAnalysisHeadline>
+                    <PastAnalysisTitle>
+                      19 M km2 area from Feb 1st, 2020 to Jan 23rd, 2023
+                    </PastAnalysisTitle>
+                    <PastAnalysisSubtitle>
+                      N02, Dataset B, Dataset C (+2)
+                    </PastAnalysisSubtitle>
+                  </PastAnalysisHeadline>
+                  <PastAnalysisMedia>
+                    <img
+                      src='https://via.placeholder.com/480x320'
+                      alt='Thumbnail showing AOI'
+                    />
+                  </PastAnalysisMedia>
+                </PastAnalysiLink>
               </PastAnalysis>
             </li>
           </PastAnalysesMenu>
