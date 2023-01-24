@@ -3,7 +3,7 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 
 import { MapboxMapRef } from '../mapbox';
 import { AoiChangeListenerOverload, AoiState } from './types';
-import { featureCollection } from './utils';
+import { makeFeatureCollection } from './utils';
 
 export function useAoiControls(
   mapRef: React.RefObject<MapboxMapRef>,
@@ -12,7 +12,7 @@ export function useAoiControls(
   const [aoi, setAoi] = useState<AoiState>({
     drawing: false,
     selected: false,
-    fc: null,
+    featureCollection: null,
     actionOrigin: null,
     ...initialState
   });
@@ -21,7 +21,7 @@ export function useAoiControls(
     setAoi({
       drawing: false,
       selected: false,
-      fc: null,
+      featureCollection: null,
       actionOrigin: null,
       ...initialState
     });
@@ -30,13 +30,11 @@ export function useAoiControls(
   const onAoiEvent = useCallback((action, payload) => {
     switch (action) {
       case 'aoi.trash-click': {
-        // Find the mapDraw control by checking for properties.
         // We need to programmatically access the mapbox draw trash method which
         // will do different things depending on the selected mode.
-        // @ts-expect-error _controls does exist but it is an internal property.
-        const mbDraw = mapRef.current?.instance?._controls.find(
-          (c) => c.modes && typeof c.trash === 'function'
-        );
+        // @ts-expect-error _drawControl does exist but it is an internal
+        // property.
+        const mbDraw = mapRef.current?.instance?._drawControl;
         if (!mbDraw) return;
 
         setAoi((state) => {
@@ -50,7 +48,7 @@ export function useAoiControls(
             ...state,
             drawing: false,
             selected: false,
-            fc: null,
+            featureCollection: null,
             actionOrigin: null
           };
         });
@@ -71,7 +69,7 @@ export function useAoiControls(
         setAoi((state) => ({
           ...state,
           drawing: false,
-          fc: payload.fc,
+          featureCollection: payload.featureCollection,
           actionOrigin: 'panel'
         }));
         break;
@@ -79,7 +77,7 @@ export function useAoiControls(
         setAoi({
           drawing: false,
           selected: false,
-          fc: null,
+          featureCollection: null,
           actionOrigin: null
         });
         break;
@@ -87,8 +85,8 @@ export function useAoiControls(
         setAoi((state) => ({
           drawing: false,
           selected: false,
-          fc: featureCollection(
-            (state.fc?.features ?? []).filter(
+          featureCollection: makeFeatureCollection(
+            (state.featureCollection?.features ?? []).filter(
               (f) => !payload.ids.includes(f.id)
             )
           ),
@@ -99,8 +97,8 @@ export function useAoiControls(
         setAoi((state) => ({
           ...state,
           drawing: false,
-          fc: featureCollection(
-            (state.fc?.features ?? []).concat(payload.feature)
+          featureCollection: makeFeatureCollection(
+            (state.featureCollection?.features ?? []).concat(payload.feature)
           ),
           actionOrigin: 'map'
         }));
@@ -116,8 +114,8 @@ export function useAoiControls(
       case 'aoi.update':
         setAoi((state) => ({
           ...state,
-          fc: featureCollection(
-            (state.fc?.features ?? []).map((f) =>
+          featureCollection: makeFeatureCollection(
+            (state.featureCollection?.features ?? []).map((f) =>
               f.id === payload.feature.id ? payload.feature : f
             )
           ),

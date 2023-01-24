@@ -61,11 +61,13 @@ export const featureFromBounds = (
       };
 };
 
-export const calcFeatCollArea = (fc: FeatureCollection | null) => {
-  if (!fc?.features.length) return '0';
+export const calcFeatCollArea = (
+  featureCollection: FeatureCollection | null
+) => {
+  if (!featureCollection?.features.length) return '0';
 
   // Convert from m2 to km2.
-  const km2 = featArea(fc) / 1e6;
+  const km2 = featArea(featureCollection) / 1e6;
   return formatThousands(km2, { decimals: 0, shorten: true });
 };
 
@@ -79,7 +81,7 @@ export const areBoundsValid = (bounds: AoiBounds | AoiBoundsUnset) => {
   );
 };
 
-export const featureCollection = (
+export const makeFeatureCollection = (
   features = [] as Feature<Polygon>[]
 ): FeatureCollection<Polygon> => ({
   type: 'FeatureCollection',

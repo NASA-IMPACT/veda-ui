@@ -173,7 +173,7 @@ export default function Analysis() {
   );
 
   const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
-    useStacSearch({ start, end, aoi: aoiDrawState.fc });
+    useStacSearch({ start, end, aoi: aoiDrawState.featureCollection });
 
   // Update datasetsLayers when stac search is refreshed in case some
   // datasetsLayers are not available anymore
@@ -233,7 +233,7 @@ export default function Analysis() {
             start={start}
             end={end}
             datasetsLayers={datasetsLayers}
-            aoi={aoiDrawState.fc}
+            aoi={aoiDrawState.featureCollection}
           />
         )}
       />

@@ -25,8 +25,8 @@ type AnyAnalysisParamsKey = keyof AnalysisParams;
 type AnyAnalysisParamsType = Date | DatasetLayer[] | FeatureCollection<Polygon>;
 
 const initialState: AnalysisParamsNull = {
-  start: new Date('2020-01-01'),
-  end: new Date('2020-03-01'),
+  start: undefined,
+  end: undefined,
   datasetsLayers: undefined,
   aoi: undefined,
   errors: null

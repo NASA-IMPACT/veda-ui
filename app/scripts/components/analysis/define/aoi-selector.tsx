@@ -33,7 +33,7 @@ import {
   AoiState
 } from '$components/common/aoi/types';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
-import { featureCollection } from '$components/common/aoi/utils';
+import { makeFeatureCollection } from '$components/common/aoi/utils';
 
 const MapContainer = styled.div`
   position: relative;
@@ -56,21 +56,26 @@ export default function AoiSelector({
   qsAoi,
   aoiDrawState
 }: AoiSelectorProps) {
-  const { selected, drawing, fc } = aoiDrawState;
+  const { selected, drawing, featureCollection } = aoiDrawState;
 
   // For the drawing tool, the features need an id.
   const qsFc: FeatureCollection<Polygon> | null = useMemo(() => {
     return qsAoi
-      ? featureCollection(
+      ? makeFeatureCollection(
           qsAoi.features.map((f, i) => ({ id: `qs-feature-${i}`, ...f }))
         )
       : null;
   }, [qsAoi]);
 
-  const setFC = useCallback(
-    (fc: FeatureCollection<Polygon>) => {
-      onAoiEvent('aoi.set', { fc });
-      const fcBbox = bbox(fc) as [number, number, number, number];
+  const setFeatureCollection = useCallback(
+    (featureCollection: FeatureCollection<Polygon>) => {
+      onAoiEvent('aoi.set', { featureCollection });
+      const fcBbox = bbox(featureCollection) as [
+        number,
+        number,
+        number,
+        number
+      ];
       mapRef.current?.instance?.fitBounds(fcBbox, { padding: 32 });
     },
     [onAoiEvent]
@@ -78,28 +83,28 @@ export default function AoiSelector({
 
   const onRegionPresetClick = useCallback(
     (preset: RegionPreset) => {
-      setFC(FeatureByRegionPreset[preset]);
+      setFeatureCollection(FeatureByRegionPreset[preset]);
     },
-    [setFC]
+    [setFeatureCollection]
   );
 
   // Use the feature from the url qs or the region preset as the initial state
   // to center the map.
   useEffect(() => {
     if (qsFc) {
-      setFC(qsFc);
+      setFeatureCollection(qsFc);
     } else {
       onAoiEvent('aoi.clear');
       mapRef.current?.instance?.flyTo({ zoom: 1, center: [0, 0] });
     }
-  }, [onAoiEvent, qsFc, setFC]);
+  }, [onAoiEvent, qsFc, setFeatureCollection]);
 
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
 
   return (
     <Fold>
       <AoIUploadModal
-        setFC={setFC}
+        setFeatureCollection={setFeatureCollection}
         revealed={aoiModalRevealed}
         onCloseClick={() => setAoIModalRevealed(false)}
       />
@@ -113,7 +118,7 @@ export default function AoiSelector({
             <ToolbarIconButton
               variation='base-text'
               onClick={() => onAoiEvent('aoi.trash-click')}
-              disabled={!fc?.features.length}
+              disabled={!featureCollection?.features.length}
             >
               <CollecticonTrashBin title='Delete shape' meaningful />
             </ToolbarIconButton>

@@ -15,7 +15,7 @@ export interface AoiBoundsUnset {
 export interface AoiState {
   drawing: boolean;
   selected: boolean;
-  fc: FeatureCollection<Polygon> | null;
+  featureCollection: FeatureCollection<Polygon> | null;
   actionOrigin: null | 'panel' | 'map';
 }
 
@@ -42,7 +42,10 @@ export interface AoiChangeListenerOverload {
     action: 'aoi.draw-finish' | 'aoi.update',
     payload: { feature: AoiFeature }
   ): void;
-  (action: 'aoi.set', payload: { fc: FeatureCollection<Polygon> }): void;
+  (
+    action: 'aoi.set',
+    payload: { featureCollection: FeatureCollection<Polygon> }
+  ): void;
   (action: 'aoi.selection', payload: { selected: boolean }): void;
   (action: 'aoi.delete', payload: { ids: string[] }): void;
 }

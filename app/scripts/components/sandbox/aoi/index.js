@@ -25,7 +25,7 @@ function SandboxAOI() {
       <Constrainer>
         <Wrapper>
           <AoiControls
-            fc={aoi.fc}
+            featureCollection={aoi.featureCollection}
             selected={aoi.selected}
             drawing={aoi.drawing}
             onAoiChange={onAoiEvent}

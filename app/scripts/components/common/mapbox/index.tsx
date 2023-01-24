@@ -375,11 +375,11 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         <p>
           {aoi?.drawing ? (
             'Drawing area shape'
-          ) : !aoi?.fc?.features.length ? (
+          ) : !aoi?.featureCollection?.features.length ? (
             'No area defined'
           ) : (
             <>
-              {calcFeatCollArea(aoi.fc)} km<sup>2</sup> area
+              {calcFeatCollArea(aoi.featureCollection)} km<sup>2</sup> area
             </>
           )}
         </p>

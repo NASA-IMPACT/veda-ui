@@ -6,7 +6,9 @@ import { decode, encode } from 'google-polyline';
  * Decodes a multi polygon string converting it into a FeatureCollection of
  * Polygons.
  *
- * lon,lat|lon,lat||lon,lat|lon,lat || separates polygons | separates points
+ * Format: polyline-encoding||polyline-encoding
+ *
+ * || separates polygons
  *
  */
 export function polygonUrlDecode(polygonStr: string) {
@@ -33,14 +35,17 @@ export function polygonUrlDecode(polygonStr: string) {
 
 /**
  * Converts a FeatureCollection of Polygons into a url string.
+ * Removes the last point of the polygon as it is the same as the first.
  *
- * lon,lat|lon,lat||lon,lat|lon,lat
+ * Format: polyline-encoding||polyline-encoding
+ *
  * || separates polygons
- * | separates points
  *
  */
-export function polygonUrlEncode(fc: FeatureCollection<Polygon>) {
-  return fc.features
+export function polygonUrlEncode(
+  featureCollection: FeatureCollection<Polygon>
+) {
+  return featureCollection.features
     .map((feature) => {
       const points = feature.geometry.coordinates[0]
         // Remove last coordinate since it is repeated.

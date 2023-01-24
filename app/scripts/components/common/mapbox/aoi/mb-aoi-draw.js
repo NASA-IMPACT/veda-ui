@@ -16,7 +16,13 @@ export const aoiCursorStyles = css`
   }
 `;
 
-export function useMbDraw({ mapRef, theme, onChange, drawing, fc }) {
+export function useMbDraw({
+  mapRef,
+  theme,
+  onChange,
+  drawing,
+  featureCollection
+}) {
   const mbDrawRef = useRef();
 
   useEffect(() => {
@@ -32,6 +38,9 @@ export function useMbDraw({ mapRef, theme, onChange, drawing, fc }) {
     mbDrawRef.current = newMbDraw;
 
     mbMap.addControl(newMbDraw, 'top-left');
+
+    // Store control for later retrieval and imperative method use.
+    mbMap._drawControl = newMbDraw;
 
     const drawCreateListener = (e) =>
       onChange?.('aoi.draw-finish', { feature: e.features[0] });
@@ -73,12 +82,12 @@ export function useMbDraw({ mapRef, theme, onChange, drawing, fc }) {
     const mbDraw = mbDrawRef.current;
     if (!mbDraw) return;
 
-    if (fc) {
-      mbDraw.set(fc);
+    if (featureCollection) {
+      mbDraw.set(featureCollection);
     } else {
       mbDraw.deleteAll();
     }
-  }, [fc]);
+  }, [featureCollection]);
 
   // Start/stop the drawing.
   useEffect(() => {

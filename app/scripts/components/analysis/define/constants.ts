@@ -1,5 +1,5 @@
 import { FeatureCollection, Polygon } from 'geojson';
-import { featureCollection } from '$components/common/aoi/utils';
+import { makeFeatureCollection } from '$components/common/aoi/utils';
 
 export type RegionPreset = 'world';
 
@@ -7,7 +7,7 @@ export const FeatureByRegionPreset: Record<
   RegionPreset,
   FeatureCollection<Polygon>
 > = {
-  world: featureCollection([
+  world: makeFeatureCollection([
     {
       type: 'Feature',
       id: 'world',

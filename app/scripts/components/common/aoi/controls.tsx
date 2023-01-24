@@ -50,23 +50,23 @@ export const FilterHeadToolbar = styled.div`
 
 type AoiControlsProps = {
   onAoiChange: AoiChangeListenerOverload;
-} & Pick<AoiState, 'fc' | 'drawing' | 'selected'>;
+} & Pick<AoiState, 'featureCollection' | 'drawing' | 'selected'>;
 
 export default function AoiControls(props: AoiControlsProps) {
-  const { fc, selected, drawing, onAoiChange } = props;
+  const { featureCollection, selected, drawing, onAoiChange } = props;
 
   return (
     <Filter>
       <FilterHeadline>
         <FilterTitle>Area of interest</FilterTitle>
         <FilterSubtitle>
-          {calcFeatCollArea(fc)} km<sup>2</sup>
+          {calcFeatCollArea(featureCollection)} km<sup>2</sup>
         </FilterSubtitle>
       </FilterHeadline>
       <Toolbar>
         <ToolbarIconButton
           onClick={() => onAoiChange('aoi.trash-click')}
-          disabled={!fc?.features.length}
+          disabled={!featureCollection?.features.length}
         >
           <CollecticonTrashBin meaningful title='Clear AOI' />
         </ToolbarIconButton>

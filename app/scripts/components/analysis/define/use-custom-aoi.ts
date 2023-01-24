@@ -4,7 +4,7 @@ import shp from 'shpjs';
 import simplify from 'simplify-js';
 import { multiPolygonToPolygons } from '../utils';
 
-import { featureCollection } from '$components/common/aoi/utils';
+import { makeFeatureCollection } from '$components/common/aoi/utils';
 import { round } from '$utils/format';
 
 const extensions = ['geojson', 'json', 'zip'];
@@ -45,14 +45,15 @@ function useCustomAoI() {
   const [uploadFileError, setUploadFileError] = useState<string | null>(null);
   const [uploadFileWarnings, setUploadFileWarnings] = useState<string[]>([]);
   const reader = useRef<FileReader>();
-  const [fc, setFc] = useState<FeatureCollection | null>(null);
+  const [featureCollection, setFeatureCollection] =
+    useState<FeatureCollection | null>(null);
 
   useEffect(() => {
     reader.current = new FileReader();
 
     const setError = (error: string) => {
       setUploadFileError(error);
-      setFc(null);
+      setFeatureCollection(null);
       setUploadFileWarnings([]);
     };
 
@@ -118,7 +119,6 @@ function useCustomAoI() {
         return;
       }
 
-
       // Simplify features;
       const originalTotalFeaturePoints = features.reduce(
         (acc, f) => acc + getNumPoints(f),
@@ -128,7 +128,7 @@ function useCustomAoI() {
       let tolerance = 0.001;
       let simplifiedFeatures = [...features];
 
-      while (numPoints > 200 || tolerance > 5) {
+      while (numPoints > 200 && tolerance < 5) {
         simplifiedFeatures = simplifiedFeatures.map((feature) =>
           simplifyFeature(feature, tolerance)
         );
@@ -150,8 +150,8 @@ function useCustomAoI() {
 
       setUploadFileWarnings(warnings);
       setUploadFileError(null);
-      setFc(
-        featureCollection(
+      setFeatureCollection(
+        makeFeatureCollection(
           simplifiedFeatures.map((feat, i) => ({
             id: `aoi-upload-${i}`,
             ...feat
@@ -203,14 +203,14 @@ function useCustomAoI() {
   }, []);
 
   const reset = useCallback(() => {
-    setFc(null);
+    setFeatureCollection(null);
     setUploadFileWarnings([]);
     setUploadFileError(null);
     setFileInfo(null);
   }, []);
 
   return {
-    fc,
+    featureCollection,
     onUploadFile,
     uploadFileError,
     uploadFileWarnings,

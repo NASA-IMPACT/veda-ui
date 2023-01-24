@@ -74,12 +74,17 @@ function PageHeroMedia(props: PageHeroMediaProps) {
   useEffect(() => {
     if (!shouldMount || !isMapLoaded || !mapRef.current) return;
 
-    const aoiSource = mapRef.current.getSource('aoi');
+    const aoiSource = mapRef.current.getSource('aoi') as
+      | mapboxgl.GeoJSONSource
+      | undefined;
 
     // Convert to multipolygon to use the inverse shading trick.
     const aoiInverse = combineFeatureCollection(aoi);
     // Add a full polygon to reverse the feature.
-    aoiInverse.geometry.coordinates[0].unshift(WORLD_POLYGON);
+    aoiInverse.geometry.coordinates[0] = [
+      WORLD_POLYGON,
+      ...aoiInverse.geometry.coordinates[0]
+    ];
 
     // Contrary to mapbox types getSource can return null.
     if (!aoiSource) {

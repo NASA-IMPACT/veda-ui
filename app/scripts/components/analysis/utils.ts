@@ -63,14 +63,16 @@ export function multiPolygonToPolygons(feature: Feature<MultiPolygon>) {
 }
 
 export function combineFeatureCollection(
-  fc: FeatureCollection<Polygon>
+  featureCollection: FeatureCollection<Polygon>
 ): Feature<MultiPolygon> {
   return {
     type: 'Feature',
     properties: {},
     geometry: {
       type: 'MultiPolygon',
-      coordinates: [fc.features.map((f) => f.geometry.coordinates[0])]
+      coordinates: [
+        featureCollection.features.map((f) => f.geometry.coordinates[0])
+      ]
     }
   };
 }

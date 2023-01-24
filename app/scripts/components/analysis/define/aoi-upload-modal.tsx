@@ -93,16 +93,16 @@ const UploadInfoItemError = styled.li`
 interface AoIUploadModalProps {
   revealed: boolean;
   onCloseClick: () => void;
-  setFC: (fc: FeatureCollection) => void;
+  setFeatureCollection: (featureCollection: FeatureCollection) => void;
 }
 
 export default function AoIUploadModal({
   revealed,
   onCloseClick,
-  setFC
+  setFeatureCollection
 }: AoIUploadModalProps) {
   const {
-    fc,
+    featureCollection,
     onUploadFile,
     uploadFileError,
     uploadFileWarnings,
@@ -116,16 +116,16 @@ export default function AoIUploadModal({
   }, []);
 
   const onConfirmClick = useCallback(() => {
-    if (!fc) return;
-    setFC(fc);
+    if (!featureCollection) return;
+    setFeatureCollection(featureCollection);
     onCloseClick();
-  }, [fc, setFC, onCloseClick]);
+  }, [featureCollection, setFeatureCollection, onCloseClick]);
 
   useEffect(() => {
     if (revealed) reset();
   }, [revealed, reset]);
 
-  const hasInfo = !!uploadFileWarnings.length || !!fc || uploadFileError;
+  const hasInfo = !!uploadFileWarnings.length || !!featureCollection || uploadFileError;
 
   return (
     <Modal
@@ -175,7 +175,7 @@ export default function AoIUploadModal({
                     <span>{w}</span>
                   </UploadInfoItemWarnings>
                 ))}
-                {fc && (
+                {featureCollection && (
                   <UploadInfoItemSuccess>
                     <CollecticonCircleTick />
                     <span>File uploaded successfully.</span>
@@ -199,7 +199,7 @@ export default function AoIUploadModal({
           </Button>
           <Button
             variation='primary-fill'
-            disabled={!fc}
+            disabled={!featureCollection}
             onClick={onConfirmClick}
           >
             <CollecticonTickSmall />
