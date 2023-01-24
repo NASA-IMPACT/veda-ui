@@ -7,7 +7,9 @@ import { max, min } from 'd3';
 import { media } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { CollecticonPencil } from '@devseed-ui/collecticons';
+import { VerticalDivider } from '@devseed-ui/toolbar';
 
+import SavedAnalysisControl from '../saved-analysis-control';
 import {
   analysisParams2QueryString,
   useAnalysisParams
@@ -172,14 +174,23 @@ export default function AnalysisResults() {
         isResults
         aoi={aoi}
         renderActions={({ size }) => (
-          <Button
-            forwardedAs={Link}
-            to={`${thematicAnalysisPath(thematic)}${analysisParamsQs}`}
-            size={size}
-            variation='achromic-outline'
-          >
-            <CollecticonPencil /> Refine
-          </Button>
+          <>
+            <Button
+              forwardedAs={Link}
+              to={`${thematicAnalysisPath(thematic)}${analysisParamsQs}`}
+              size={size}
+              variation='achromic-outline'
+            >
+              <CollecticonPencil /> Refine
+            </Button>
+
+            <VerticalDivider variation='light' />
+
+            <SavedAnalysisControl
+              size={size}
+              urlBase={`${thematicAnalysisPath(thematic)}/results`}
+            />
+          </>
         )}
       />
       <AnalysisFold>
