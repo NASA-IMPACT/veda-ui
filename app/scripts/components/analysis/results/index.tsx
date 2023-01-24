@@ -139,8 +139,12 @@ export default function AnalysisResults() {
       (rs) => rs.data?.timeseries.length === 1
     );
     if (!onlySingleValues) return [start, end];
-    const minDate = min(requestStatus.map(rs => +new Date(rs.data!.timeseries[0]!.date))) ?? +start;
-    const maxDate = max(requestStatus.map(rs => +new Date(rs.data!.timeseries[0]!.date))) ?? +end; 
+    const minDate =
+      min(requestStatus.map((rs) => +new Date(rs.data!.timeseries[0]!.date))) ??
+      +start;
+    const maxDate =
+      max(requestStatus.map((rs) => +new Date(rs.data!.timeseries[0]!.date))) ??
+      +end;
 
     // When all data only contain one value, we need to pad the domain to make sure the single value is shown in the center of the chart
     // substract/add one day
@@ -156,7 +160,6 @@ export default function AnalysisResults() {
     }
   }, [availableDomain]);
 
-  
   if (errors?.length) {
     return <Navigate to={thematicAnalysisPath(thematic)} replace />;
   }

@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useMemo, MouseEvent } from 'react';
-import { format } from 'date-fns';
 import { reverse } from 'd3';
 import { useTheme } from 'styled-components';
 import {
@@ -13,6 +12,7 @@ import {
 } from '@devseed-ui/collecticons';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 
+import { getDateRangeFormatted } from '../utils';
 import { TimeseriesData } from './timeseries-data';
 import {
   ChartCardAlert,
@@ -35,7 +35,6 @@ import { Tip } from '$components/common/tip';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { exportCsv, getTimeDensityFormat } from '$components/common/chart/analysis/utils';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
-import { getDateRangeFormatted } from '../utils';
 
 interface ChartCardProps {
   title: React.ReactNode;
