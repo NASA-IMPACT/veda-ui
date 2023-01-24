@@ -16,15 +16,15 @@ interface SavedSettings {
 
 interface useSavedSettingsParams {
   thematicAreaId: string;
-  analysisParamsQs: string;
-  params: AnalysisParams;
+  analysisParamsQs?: string;
+  params?: AnalysisParams;
 }
 
 const SAVED_SETTINGS_KEY = 'analysisSavedSettings';
 const MAX_SAVED_SETTINGS = 5;
 
 function useSavedSettings(opts: useSavedSettingsParams) {
-  const { thematicAreaId, analysisParamsQs, params } = opts;
+  const { thematicAreaId, analysisParamsQs, params = {} } = opts;
 
   // Only need to read localStorage at component mount, because whenever the
   // localStorage item is updated, this components gets unmounted anyways
@@ -45,7 +45,7 @@ function useSavedSettings(opts: useSavedSettingsParams) {
   }, []);
 
   const onGenerateClick = useCallback(() => {
-    if (Object.values(params).some((v) => !v)) {
+    if (Object.values(params).some((v) => !v) || analysisParamsQs) {
       /* eslint-disable-next-line no-console */
       console.log(
         'Analysis parameters missing. Can not save to localstorage',
@@ -64,8 +64,8 @@ function useSavedSettings(opts: useSavedSettingsParams) {
         const newThematicAreaSettings = [
           {
             thematicAreaId,
-            url: analysisParamsQs,
-            // At this point the parameters are required.
+            // At this point the params and url are required.
+            url: analysisParamsQs!,
             params: params as SavedSettings['params']
           },
           ...thematicAreaSettings.slice(0, MAX_SAVED_SETTINGS - 1)
