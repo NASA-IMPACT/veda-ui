@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { sticky } from 'tippy.js';
-import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import styled, { useTheme } from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button, ButtonProps } from '@devseed-ui/button';
@@ -33,7 +33,7 @@ import { useThematicArea } from '$utils/thematics';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { useMediaQuery } from '$utils/use-media-query';
 import { VarHeading } from '$styles/variable-components';
-import { calcFeatArea } from '$components/common/aoi/utils';
+import { calcFeatCollArea } from '$components/common/aoi/utils';
 import { formatDateRange } from '$utils/date';
 import ItemTruncateCount from '$components/common/item-truncate-count';
 
@@ -97,7 +97,7 @@ interface PageHeroActionsProps {
   start?: Date;
   end?: Date;
   datasetsLayers?: DatasetLayer[];
-  aoi?: Feature<Polygon> | null;
+  aoi?: FeatureCollection<Polygon> | null;
 }
 
 export default function PageHeroActions({
@@ -115,22 +115,11 @@ export default function PageHeroActions({
 
   const analysisParamsQs = useMemo(() => {
     if (!start || !end || !datasetsLayers || !aoi) return '';
-    // Quick and dirty conversion to MultiPolygon - might be avoided if using
-    // Google-polyline?
-    const toMultiPolygon: Feature<MultiPolygon> = {
-      type: 'Feature',
-      properties: { ...aoi.properties },
-      geometry: {
-        type: 'MultiPolygon',
-        coordinates: [aoi.geometry.coordinates]
-      }
-    };
-
     return analysisParams2QueryString({
       start,
       end,
       datasetsLayers,
-      aoi: toMultiPolygon
+      aoi
     });
   }, [start, end, datasetsLayers, aoi]);
 
@@ -232,7 +221,7 @@ export default function PageHeroActions({
                     content={
                       <>
                         <p>
-                          {calcFeatArea(aoi)} km<sup>2</sup>
+                          {calcFeatCollArea(aoi)} km<sup>2</sup>
                         </p>
                         <p>
                           <ItemTruncateCount items={datasets} max={Infinity} />
@@ -278,27 +267,17 @@ function SavedAnalysisThumbnail(props: { aoi: FeatureCollection<Polygon> }) {
 
   const theme = useTheme();
 
-  // const styledFeatures = {
-  //   ...aoi,
-  //   features: aoi.features.map(({ geometry }) => ({
-  //     type: 'Feature',
-  //     properties: {
-  //       fill: theme.color?.primary,
-  //       'stroke-width': 2,
-  //       stroke: theme.color?.primary
-  //     },
-  //     geometry
-  //   }))
-  // };
-
   const styledFeatures = {
-    type: 'Feature',
-    properties: {
-      fill: theme.color?.primary,
-      'stroke-width': 2,
-      stroke: theme.color?.primary
-    },
-    geometry: aoi.geometry
+    ...aoi,
+    features: aoi.features.map(({ geometry }) => ({
+      type: 'Feature',
+      properties: {
+        fill: theme.color?.primary,
+        'stroke-width': 2,
+        stroke: theme.color?.primary
+      },
+      geometry
+    }))
   };
 
   const encoded = encodeURIComponent(JSON.stringify(styledFeatures));

@@ -104,7 +104,9 @@ function parcelBuild(cb) {
   const pr = spawn('node', [parcelCli, 'build', ...args, ...parcelTarget], {
     stdio: 'inherit'
   });
-  pr.on('close', () => cb());
+  pr.on('close', (code) => {
+    cb(code ? 'Build failed' : undefined);
+  });
 }
 
 // //////////////////////////////////////////////////////////////////////////////

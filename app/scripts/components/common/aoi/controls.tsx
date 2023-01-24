@@ -1,15 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import { CollecticonArea, CollecticonTrashBin } from '@devseed-ui/collecticons';
 import {
-  CollecticonArea,
-  CollecticonTrashBin
-} from '@devseed-ui/collecticons';
-import { Toolbar, ToolbarIconButton, VerticalDivider } from '@devseed-ui/toolbar';
+  Toolbar,
+  ToolbarIconButton,
+  VerticalDivider
+} from '@devseed-ui/toolbar';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
-import {
-  calcFeatArea,
-} from './utils';
+import { calcFeatCollArea } from './utils';
 import { AoiChangeListenerOverload, AoiState } from './types';
 
 export const Filter = styled.section`
@@ -51,23 +50,23 @@ export const FilterHeadToolbar = styled.div`
 
 type AoiControlsProps = {
   onAoiChange: AoiChangeListenerOverload;
-} & Pick<AoiState, 'feature' | 'drawing' | 'selected'>;
+} & Pick<AoiState, 'featureCollection' | 'drawing' | 'selected'>;
 
 export default function AoiControls(props: AoiControlsProps) {
-  const { feature, selected, drawing, onAoiChange } = props;
+  const { featureCollection, selected, drawing, onAoiChange } = props;
 
   return (
     <Filter>
       <FilterHeadline>
         <FilterTitle>Area of interest</FilterTitle>
         <FilterSubtitle>
-          {calcFeatArea(feature)} km<sup>2</sup>
+          {calcFeatCollArea(featureCollection)} km<sup>2</sup>
         </FilterSubtitle>
       </FilterHeadline>
       <Toolbar>
         <ToolbarIconButton
-          onClick={() => onAoiChange('aoi.clear')}
-          disabled={!feature}
+          onClick={() => onAoiChange('aoi.trash-click')}
+          disabled={!featureCollection?.features.length}
         >
           <CollecticonTrashBin meaningful title='Clear AOI' />
         </ToolbarIconButton>

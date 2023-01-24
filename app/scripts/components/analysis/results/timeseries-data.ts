@@ -1,9 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { QueryClient } from '@tanstack/react-query';
-import { Feature, MultiPolygon } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import { DatasetLayer } from 'veda/thematics';
 
-import { getFilterPayload } from '../utils';
+import { getFilterPayload, combineFeatureCollection } from '../utils';
 import EventEmitter from './mini-events';
 import { ConcurrencyManager, ConcurrencyManagerInstance } from './concurrency';
 import { TimeDensity } from '$context/layer-data';
@@ -95,7 +95,7 @@ export function requestStacDatasetsTimeseries({
 }: {
   start: Date;
   end: Date;
-  aoi: Feature<MultiPolygon>;
+  aoi: FeatureCollection<Polygon>;
   layers: DatasetLayer[];
   queryClient: QueryClient;
   signal: AbortSignal;
@@ -138,7 +138,7 @@ interface DatasetAssetsRequestParams {
   id: string;
   dateStart: Date;
   dateEnd: Date;
-  aoi: Feature<MultiPolygon>;
+  aoi: FeatureCollection<Polygon>;
 }
 
 async function getDatasetAssets(
@@ -186,7 +186,7 @@ async function getDatasetAssets(
 interface TimeseriesRequesterParams {
   start: Date;
   end: Date;
-  aoi: Feature<MultiPolygon>;
+  aoi: FeatureCollection<Polygon>;
   layer: DatasetLayer;
   queryClient: QueryClient;
   eventEmitter: ReturnType<typeof EventEmitter>;
@@ -267,7 +267,8 @@ async function requestTimeseries({
             return concurrencyManager.queue(async () => {
               const { data } = await axios.post(
                 `${process.env.API_RASTER_ENDPOINT}/cog/statistics?url=${url}`,
-                aoi,
+                // Making a request with a FC causes a 500 (as of 2023/01/20)
+                combineFeatureCollection(aoi),
                 { signal }
               );
               return { date, ...data.properties.statistics['1'] };

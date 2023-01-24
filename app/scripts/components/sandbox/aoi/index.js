@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import Constrainer from '$styles/constrainer';
@@ -17,19 +17,20 @@ const Wrapper = styled.div`
 `;
 
 function SandboxAOI() {
-  const { aoi, onAoiEvent } = useAoiControls();
+  const mapRef = useRef();
+  const { aoi, onAoiEvent } = useAoiControls(mapRef);
 
   return (
     <PageMainContent>
       <Constrainer>
         <Wrapper>
           <AoiControls
-            feature={aoi.feature}
+            featureCollection={aoi.featureCollection}
             selected={aoi.selected}
             drawing={aoi.drawing}
             onAoiChange={onAoiEvent}
           />
-          <DemoMap aoi={aoi} onAoiChange={onAoiEvent} />
+          <DemoMap aoi={aoi} onAoiChange={onAoiEvent} ref={mapRef} />
         </Wrapper>
       </Constrainer>
     </PageMainContent>

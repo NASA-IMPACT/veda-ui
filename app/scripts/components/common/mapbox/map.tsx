@@ -181,7 +181,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     onChange: onAoiChange,
     drawing: aoi?.drawing,
     selected: aoi?.selected,
-    feature: aoi?.feature
+    featureCollection: aoi?.featureCollection
   });
 
   return <SingleMapContainer ref={containerRef} {...rest} />;

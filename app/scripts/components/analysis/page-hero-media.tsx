@@ -1,15 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import mapboxgl from 'mapbox-gl';
-import { Feature, MultiPolygon } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
 import { shade } from 'polished';
 import { rgba, themeVal } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 
-import { HERO_TRANSITION_DURATION } from './page-hero-analysis';
+import { combineFeatureCollection } from './utils';
+
 import { SimpleMap } from '$components/common/mapbox/map';
 import { useEffectPrevious } from '$utils/use-effect-previous';
+import { HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
 
 const WORLD_POLYGON = [
   [180, 90],
@@ -28,12 +30,12 @@ const mapOptions: Partial<mapboxgl.MapboxOptions> = {
 };
 
 interface PageHeroMediaProps {
-  feature: Feature<MultiPolygon>;
+  aoi: FeatureCollection<Polygon>;
   isHeaderStuck: boolean;
 }
 
 function PageHeroMedia(props: PageHeroMediaProps) {
-  const { feature, isHeaderStuck, ...rest } = props;
+  const { aoi, isHeaderStuck, ...rest } = props;
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map>(null);
   const [isMapLoaded, setMapLoaded] = useState(false);
@@ -58,7 +60,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
       if (!shouldMount && wasStuck && !isHeaderStuck) {
         const tid = setTimeout(
           () => setShouldMount(true),
-          HERO_TRANSITION_DURATION
+          HEADER_TRANSITION_DURATION
         );
 
         return () => {
@@ -72,20 +74,23 @@ function PageHeroMedia(props: PageHeroMediaProps) {
   useEffect(() => {
     if (!shouldMount || !isMapLoaded || !mapRef.current) return;
 
-    const aoiSource = mapRef.current.getSource('aoi');
+    const aoiSource = mapRef.current.getSource('aoi') as
+      | mapboxgl.GeoJSONSource
+      | undefined;
 
-    // Quick copy.
-    const featureInverse = JSON.parse(
-      JSON.stringify(feature)
-    ) as Feature<MultiPolygon>;
+    // Convert to multipolygon to use the inverse shading trick.
+    const aoiInverse = combineFeatureCollection(aoi);
     // Add a full polygon to reverse the feature.
-    featureInverse.geometry.coordinates[0].unshift(WORLD_POLYGON);
+    aoiInverse.geometry.coordinates[0] = [
+      WORLD_POLYGON,
+      ...aoiInverse.geometry.coordinates[0]
+    ];
 
     // Contrary to mapbox types getSource can return null.
     if (!aoiSource) {
       mapRef.current.addSource('aoi-inverse', {
         type: 'geojson',
-        data: featureInverse
+        data: aoiInverse
       });
 
       mapRef.current.addLayer({
@@ -99,7 +104,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
       });
       mapRef.current.addSource('aoi', {
         type: 'geojson',
-        data: feature
+        data: aoi
       });
 
       mapRef.current.addLayer({
@@ -119,25 +124,22 @@ function PageHeroMedia(props: PageHeroMediaProps) {
       const aoiInverseSource = mapRef.current.getSource(
         'aoi-inverse'
       ) as mapboxgl.GeoJSONSource;
-      aoiSource.setData(feature);
-      aoiInverseSource.setData(featureInverse);
+      aoiSource.setData(aoi);
+      aoiInverseSource.setData(aoiInverse);
     }
 
-    mapRef.current.fitBounds(
-      bbox(feature) as [number, number, number, number],
-      {
-        padding: {
-          top: 32,
-          bottom: 32,
-          right: 32,
-          left: 12 * 16 // 12rems
-        }
+    mapRef.current.fitBounds(bbox(aoi) as [number, number, number, number], {
+      padding: {
+        top: 32,
+        bottom: 32,
+        right: 32,
+        left: 12 * 16 // 12rems
       }
-    );
+    });
     /*
      theme.color.primary will never change. Having it being set once is enough
     */
-  }, [shouldMount, isMapLoaded, feature]);
+  }, [shouldMount, isMapLoaded, aoi]);
 
   return shouldMount ? (
     <div {...rest}>

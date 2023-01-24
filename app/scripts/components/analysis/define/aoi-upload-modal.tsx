@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { Feature } from 'geojson';
+import { FeatureCollection } from 'geojson';
 import { Modal, ModalHeadline, ModalFooter } from '@devseed-ui/modal';
 import { Heading, Subtitle } from '@devseed-ui/typography';
 
@@ -93,16 +93,16 @@ const UploadInfoItemError = styled.li`
 interface AoIUploadModalProps {
   revealed: boolean;
   onCloseClick: () => void;
-  setFeature: (feature: Feature) => void;
+  setFeatureCollection: (featureCollection: FeatureCollection) => void;
 }
 
 export default function AoIUploadModal({
   revealed,
   onCloseClick,
-  setFeature
+  setFeatureCollection
 }: AoIUploadModalProps) {
   const {
-    feature,
+    featureCollection,
     onUploadFile,
     uploadFileError,
     uploadFileWarnings,
@@ -116,16 +116,16 @@ export default function AoIUploadModal({
   }, []);
 
   const onConfirmClick = useCallback(() => {
-    if (!feature) return;
-    setFeature(feature);
+    if (!featureCollection) return;
+    setFeatureCollection(featureCollection);
     onCloseClick();
-  }, [feature, setFeature, onCloseClick]);
+  }, [featureCollection, setFeatureCollection, onCloseClick]);
 
   useEffect(() => {
     if (revealed) reset();
   }, [revealed, reset]);
 
-  const hasInfo = !!uploadFileWarnings.length || !!feature || uploadFileError;
+  const hasInfo = !!uploadFileWarnings.length || !!featureCollection || uploadFileError;
 
   return (
     <Modal
@@ -175,7 +175,7 @@ export default function AoIUploadModal({
                     <span>{w}</span>
                   </UploadInfoItemWarnings>
                 ))}
-                {feature && (
+                {featureCollection && (
                   <UploadInfoItemSuccess>
                     <CollecticonCircleTick />
                     <span>File uploaded successfully.</span>
@@ -199,7 +199,7 @@ export default function AoIUploadModal({
           </Button>
           <Button
             variation='primary-fill'
-            disabled={!feature}
+            disabled={!featureCollection}
             onClick={onConfirmClick}
           >
             <CollecticonTickSmall />

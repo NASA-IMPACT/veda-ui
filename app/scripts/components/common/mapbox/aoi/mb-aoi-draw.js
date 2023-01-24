@@ -21,8 +21,7 @@ export function useMbDraw({
   theme,
   onChange,
   drawing,
-  selected,
-  feature
+  featureCollection
 }) {
   const mbDrawRef = useRef();
 
@@ -40,6 +39,9 @@ export function useMbDraw({
 
     mbMap.addControl(newMbDraw, 'top-left');
 
+    // Store control for later retrieval and imperative method use.
+    mbMap._drawControl = newMbDraw;
+
     const drawCreateListener = (e) =>
       onChange?.('aoi.draw-finish', { feature: e.features[0] });
 
@@ -53,10 +55,14 @@ export function useMbDraw({
       e.mode === 'simple_select' &&
       onChange?.('aoi.selection', { selected: false });
 
+    const drawDeleteListener = (e) =>
+      onChange?.('aoi.delete', { ids: e.features.map((f) => f.id) });
+
     mbMap
       .on('draw.create', drawCreateListener)
       .on('draw.selectionchange', drawSelectionListener)
       .on('draw.modechange', drawModeListener)
+      .on('draw.delete', drawDeleteListener)
       .on('draw.update', drawUpdateListener);
 
     return () => {
@@ -76,31 +82,12 @@ export function useMbDraw({
     const mbDraw = mbDrawRef.current;
     if (!mbDraw) return;
 
-    if (feature) {
-      mbDraw.set({
-        type: 'FeatureCollection',
-        features: [feature]
-      });
+    if (featureCollection) {
+      mbDraw.set(featureCollection);
     } else {
       mbDraw.deleteAll();
     }
-  }, [feature]);
-
-  // Select the feature if the state changed.
-  useEffect(() => {
-    const mbDraw = mbDrawRef.current;
-    if (!mbDraw) return;
-
-    if (selected) {
-      if (feature) {
-        mbDraw.changeMode('direct_select', {
-          featureId: feature.id
-        });
-      }
-    } else {
-      mbDraw.changeMode('simple_select');
-    }
-  }, [selected, feature]);
+  }, [featureCollection]);
 
   // Start/stop the drawing.
   useEffect(() => {

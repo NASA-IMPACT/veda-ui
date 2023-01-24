@@ -10,7 +10,7 @@ import {
 import { reveal } from '@devseed-ui/animation';
 import { ButtonProps } from '@devseed-ui/button';
 
-import { Feature, MultiPolygon } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import { useSlidingStickyHeaderProps } from '../common/layout-root';
 import PageHeroMedia from './page-hero-media';
 import { PageLead, PageMainTitle } from '$styles/page';
@@ -18,8 +18,7 @@ import Constrainer from '$styles/constrainer';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { useMediaQuery } from '$utils/use-media-query';
-
-export const HERO_TRANSITION_DURATION = 320;
+import { HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
 
 const PageHeroBlockAlpha = styled.div`
   display: flex;
@@ -74,9 +73,9 @@ const PageHeroSelf = styled.div<PageHeroSelfProps>`
   background: ${themeVal('color.primary')};
   color: ${themeVal('color.surface')};
   min-height: 14rem;
-  animation: ${reveal} ${HERO_TRANSITION_DURATION}ms ease 0s 1;
-  transition: top ${HERO_TRANSITION_DURATION}ms ease-out,
-    min-height ${HERO_TRANSITION_DURATION}ms ease-out;
+  animation: ${reveal} ${HEADER_TRANSITION_DURATION}ms ease 0s 1;
+  transition: top ${HEADER_TRANSITION_DURATION}ms ease-out,
+    min-height ${HEADER_TRANSITION_DURATION}ms ease-out;
 
   ${({ isHidden }) => isHidden && visuallyHidden()}
 
@@ -94,12 +93,12 @@ const PageHeroSelf = styled.div<PageHeroSelfProps>`
     `}
 
   ${PageHeroMedia} {
-    transition: opacity ${HERO_TRANSITION_DURATION}ms ease-out;
+    transition: opacity ${HEADER_TRANSITION_DURATION}ms ease-out;
     opacity: ${({ isStuck }) => Number(!isStuck)};
   }
 
   ${PageLead} {
-    transition: font-size ${HERO_TRANSITION_DURATION}ms ease-out;
+    transition: font-size ${HEADER_TRANSITION_DURATION}ms ease-out;
     ${({ isStuck }) =>
       isStuck &&
       css`
@@ -109,7 +108,7 @@ const PageHeroSelf = styled.div<PageHeroSelfProps>`
   }
 
   ${PageHeroBlockAlpha} {
-    transition: gap ${HERO_TRANSITION_DURATION}ms ease-out;
+    transition: gap ${HEADER_TRANSITION_DURATION}ms ease-out;
     ${({ isStuck }) =>
       isStuck &&
       css`
@@ -128,7 +127,7 @@ const PageHeroSelf = styled.div<PageHeroSelfProps>`
 
 const PageHeroInner = styled(Constrainer)`
   align-items: end;
-  transition: padding ${HERO_TRANSITION_DURATION}ms ease-out;
+  transition: padding ${HEADER_TRANSITION_DURATION}ms ease-out;
 
   ${({ isStuck }) =>
     isStuck
@@ -166,7 +165,7 @@ interface PageHeroAnalysisProps {
   description: React.ReactNode;
   isHidden?: boolean;
   isResults?: boolean;
-  aoiFeature?: Feature<MultiPolygon>;
+  aoi?: FeatureCollection<Polygon>;
   renderActions?: ({ size }: { size: ButtonProps['size'] }) => React.ReactNode;
 }
 
@@ -176,7 +175,7 @@ function PageHeroAnalysis(props: PageHeroAnalysisProps) {
     description,
     isHidden,
     isResults = false,
-    aoiFeature,
+    aoi,
     renderActions
   } = props;
 
@@ -219,8 +218,8 @@ function PageHeroAnalysis(props: PageHeroAnalysisProps) {
           </PageHeroActions>
         </PageHeroBlockBeta>
       </PageHeroInner>
-      {isResults && aoiFeature && (
-        <PageHeroMedia feature={aoiFeature} isHeaderStuck={isStuck} />
+      {isResults && aoi && (
+        <PageHeroMedia aoi={aoi} isHeaderStuck={isStuck} />
       )}
     </PageHeroSelf>
   );

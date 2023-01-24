@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
 import { Link } from 'react-router-dom';
+import { max, min } from 'd3';
 import { media } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { CollecticonPencil } from '@devseed-ui/collecticons';
@@ -36,7 +37,7 @@ import { useThematicArea } from '$utils/thematics';
 import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
 import { pluralize } from '$utils/pluralize';
-import { calcFeatArea } from '$components/common/aoi/utils';
+import { calcFeatCollArea } from '$components/common/aoi/utils';
 
 const ChartCardList = styled(CardList)`
   > li {
@@ -102,7 +103,7 @@ export default function AnalysisResults() {
     }
 
     const dateLabel = formatDateRange(start, end);
-    const area = calcFeatArea(aoi);
+    const area = calcFeatCollArea(aoi);
     const datasetCount = pluralize({
       singular: 'dataset',
       count: datasetsLayers.length,
@@ -130,21 +131,30 @@ export default function AnalysisResults() {
     aoi
   });
 
-  const availableDomain: [Date, Date] | null = useMemo(
-    () => (start && end ? [start, end] : null),
-    [start, end]
-  );
+  const availableDomain: [Date, Date] | null = useMemo(() => {
+    if (!start || !end) return null;
+    const onlySingleValues = requestStatus.every(
+      (rs) => rs.data?.timeseries.length === 1
+    );
+    if (!onlySingleValues) return [start, end];
+    const minDate = min(requestStatus.map(rs => +new Date(rs.data!.timeseries[0]!.date))) ?? +start;
+    const maxDate = max(requestStatus.map(rs => +new Date(rs.data!.timeseries[0]!.date))) ?? +end; 
+
+    // When all data only contain one value, we need to pad the domain to make sure the single value is shown in the center of the chart
+    // substract/add one day
+    return [new Date(minDate - 3600000), new Date(maxDate + 3600000)];
+  }, [start, end, requestStatus]);
 
   const [brushRange, setBrushRange] = useState<[Date, Date] | null>(null);
 
   useEffect(() => {
-    if (availableDomain && !brushRange) {
+    if (availableDomain) {
       // TODO auto fit to available data? For now taking the whole user-defined range
       setBrushRange(availableDomain);
     }
-  }, [availableDomain, brushRange]);
+  }, [availableDomain]);
 
-
+  
   if (errors?.length) {
     return <Navigate to={thematicAnalysisPath(thematic)} replace />;
   }
@@ -160,7 +170,7 @@ export default function AnalysisResults() {
         title='Analysis'
         description={descriptions.page}
         isResults
-        aoiFeature={aoi}
+        aoi={aoi}
         renderActions={({ size }) => (
           <Button
             forwardedAs={Link}

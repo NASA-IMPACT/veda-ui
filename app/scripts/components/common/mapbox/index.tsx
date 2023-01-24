@@ -37,7 +37,7 @@ import {
   S_LOADING,
   S_SUCCEEDED
 } from '$utils/status';
-import { calcFeatArea } from '$components/common/aoi/utils';
+import { calcFeatCollArea } from '$components/common/aoi/utils';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -375,11 +375,11 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         <p>
           {aoi?.drawing ? (
             'Drawing area shape'
-          ) : !aoi?.feature ? (
+          ) : !aoi?.featureCollection?.features.length ? (
             'No area defined'
           ) : (
             <>
-              {calcFeatArea(aoi.feature)} km<sup>2</sup> area
+              {calcFeatCollArea(aoi.featureCollection)} km<sup>2</sup> area
             </>
           )}
         </p>
