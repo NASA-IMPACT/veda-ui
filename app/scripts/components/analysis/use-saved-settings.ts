@@ -45,7 +45,7 @@ function useSavedSettings(opts: useSavedSettingsParams) {
   }, []);
 
   const onGenerateClick = useCallback(() => {
-    if (Object.values(params).some((v) => !v) || analysisParamsQs) {
+    if (Object.values(params).some((v) => !v) || !analysisParamsQs) {
       /* eslint-disable-next-line no-console */
       console.log(
         'Analysis parameters missing. Can not save to localstorage',
