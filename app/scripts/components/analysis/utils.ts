@@ -46,6 +46,15 @@ export function getFilterPayload(
   return filterPayload;
 }
 
+/**
+ * Converts a MultiPolygon to a Feature Collection of polygons.
+ *
+ * @param feature MultiPolygon feature
+ * 
+ * @see combineFeatureCollection() for opposite
+ * 
+ * @returns Feature Collection of Polygons
+ */
 export function multiPolygonToPolygons(feature: Feature<MultiPolygon>) {
   const polygons = feature.geometry.coordinates.map(
     (coordinates) =>
@@ -62,6 +71,15 @@ export function multiPolygonToPolygons(feature: Feature<MultiPolygon>) {
   return polygons;
 }
 
+/**
+ * Converts a Feature Collection of polygons into a MultiPolygon
+ *
+ * @param featureCollection Feature Collection of Polygons
+ * 
+ * @see multiPolygonToPolygons() for opposite
+ *
+ * @returns MultiPolygon Feature
+ */
 export function combineFeatureCollection(
   featureCollection: FeatureCollection<Polygon>
 ): Feature<MultiPolygon> {
