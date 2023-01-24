@@ -6,7 +6,7 @@ interface ItemTruncateCountProps {
 }
 
 export default function ItemTruncateCount(props: ItemTruncateCountProps) {
-  const { items, max = 2 } = props;
+  const { items, max = 4 } = props;
 
   if (!items.length) return <React.Fragment />;
   if (items.length === 1) return <>{items[0]}</>;

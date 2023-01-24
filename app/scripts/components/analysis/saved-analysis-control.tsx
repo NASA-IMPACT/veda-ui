@@ -17,11 +17,9 @@ import { Subtitle } from '@devseed-ui/typography';
 
 import useSavedSettings from './use-saved-settings';
 
-import { Tip } from '$components/common/tip';
 import { resourceNotFound } from '$components/uhoh';
 import { useThematicArea } from '$utils/thematics';
 import { VarHeading } from '$styles/variable-components';
-import { calcFeatCollArea } from '$components/common/aoi/utils';
 import { formatDateRange } from '$utils/date';
 import ItemTruncateCount from '$components/common/item-truncate-count';
 
@@ -107,35 +105,27 @@ export default function SavedAnalysisControl({
           return (
             <li key={savedSettings.url}>
               <article>
-                <Tip
-                  content={
-                    <>
-                      <p>
-                        {calcFeatCollArea(aoi)} km<sup>2</sup>
-                      </p>
-                      <p>
-                        <ItemTruncateCount items={datasets} max={Infinity} />
-                      </p>
-                    </>
-                  }
+                <PastAnalysisItem
+                  as={Link}
+                  to={`${urlBase}${savedSettings.url}`}
                 >
-                  <PastAnalysisItem
-                    as={Link}
-                    to={`${urlBase}${savedSettings.url}`}
-                  >
-                    <PastAnalysisHeadline>
-                      <PastAnalysisTitle>
-                        {formatDateRange(new Date(start), new Date(end), ' — ')}
-                      </PastAnalysisTitle>
-                      <Subtitle>
-                        <ItemTruncateCount items={datasets} />
-                      </Subtitle>
-                    </PastAnalysisHeadline>
-                    <PastAnalysisMedia>
-                      <SavedAnalysisThumbnail aoi={aoi} />
-                    </PastAnalysisMedia>
-                  </PastAnalysisItem>
-                </Tip>
+                  <PastAnalysisHeadline>
+                    <PastAnalysisTitle>
+                      {formatDateRange(
+                        new Date(start),
+                        new Date(end),
+                        ' — ',
+                        false
+                      )}
+                    </PastAnalysisTitle>
+                    <Subtitle>
+                      <ItemTruncateCount items={datasets} />
+                    </Subtitle>
+                  </PastAnalysisHeadline>
+                  <PastAnalysisMedia>
+                    <SavedAnalysisThumbnail aoi={aoi} />
+                  </PastAnalysisMedia>
+                </PastAnalysisItem>
               </article>
             </li>
           );

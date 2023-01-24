@@ -99,25 +99,29 @@ export function isValidDate(dateString?: string | null) {
  * Format the date in a pretty way as to not repeat values if the month or
  * year are the same.
  * Examples:
- * Jan 1st, 2020 - Dec 31st, 2021
+ * Jan 1st, 2020 to Dec 31st, 2021
  * Jan 1st - Dec 31st, 2020
  * Dec 01-31, 2020
  * Dec 31st, 2020
  *
  * @param {object} start Start date to format
  * @param {object} end End date to format
+ * @param {string} datesSeparator Separator to use with dates without any common
+ * element. Defaults to " to "
+ * @param {boolean} useOrdinalDays Whether or not to use ordinal days: 1st, 2nd
  */
 export function formatDateRange(
   start: Date,
   end: Date,
-  datesSeparator = ' to '
+  datesSeparator = ' to ',
+  useOrdinalDays = true
 ) {
-  const DATE_FORMAT_FULL = 'MMM do, yyyy';
+  const DATE_FORMAT_FULL = useOrdinalDays ? 'MMM do, yyyy' : 'MMM dd, yyyy';
 
   // Format the label in a pretty way as to not repeat values if the month or
   // year are the same.
   // Examples:
-  // Jan 1st, 2020 — Dec 31st, 2021
+  // Jan 1st, 2020 to Dec 31st, 2021
   // Jan 1st — Dec 31st, 2020
   // Dec 01-31, 2020
   // Dec 31st, 2020
@@ -134,7 +138,8 @@ export function formatDateRange(
   if (isSameMonth(start, end) && isSameYear(start, end)) {
     return `${format(start, 'MMM dd')}-${format(end, 'dd, yyyy')}`;
   } else if (isSameYear(start, end)) {
-    return `${format(start, 'MMM do')}${datesSeparator}${endStr}`;
+    const monthDayFormat = useOrdinalDays ? 'MMM do' : 'MMM dd';
+    return `${format(start, monthDayFormat)}${datesSeparator}${endStr}`;
   } else {
     return `${startStr}${datesSeparator}${endStr}`;
   }
