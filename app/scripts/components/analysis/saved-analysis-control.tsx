@@ -112,6 +112,7 @@ export default function SavedAnalysisControl({
                 <PastAnalysisItem
                   as={Link}
                   to={`${urlBase}${savedSettings.url}`}
+                  data-dropdown='click.close'
                 >
                   <PastAnalysisHeadline>
                     <PastAnalysisTitle>
