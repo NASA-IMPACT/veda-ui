@@ -59,6 +59,10 @@ const PastAnalysisHeadline = styled.div`
   display: flex;
   flex-flow: column nowrap;
   gap: ${glsp(0.25)};
+
+  ${Subtitle} {
+    font-weight: initial;
+  }
 `;
 
 const PastAnalysisTitle = styled(VarHeading).attrs({
