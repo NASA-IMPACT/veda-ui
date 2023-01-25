@@ -100,6 +100,26 @@ const AnalysisFoldHeadActions = styled(FoldHeadActions)`
   }
 `;
 
+const AnalysisLegend = styled(Legend)`
+  flex-flow: column nowrap;
+  align-items: flex-start;
+
+  ${media.smallUp`
+    flex-flow: row nowrap;
+    align-items: center;
+  `};
+`;
+
+const AnalysisLegendList = styled(LegendList)`
+  display: grid;
+  grid-template-columns: repeat(6, auto);
+
+  ${media.smallUp`
+    display: flex;
+    flex-flow: row nowrap;
+  `};
+`;
+
 interface AnalysisHeadActionsProps {
   activeMetrics: DataMetric[];
   onMetricsChange: (metrics: DataMetric[]) => void;
@@ -119,9 +139,9 @@ export default function AnalysisHeadActions(props: AnalysisHeadActionsProps) {
 
   return (
     <AnalysisFoldHeadActions>
-      <Legend>
+      <AnalysisLegend>
         <LegendTitle>Legend</LegendTitle>
-        <LegendList>
+        <AnalysisLegendList>
           {dataMetrics.map((metric) => {
             const active = !!activeMetrics.find((m) => m.id === metric.id);
             return (
@@ -141,8 +161,8 @@ export default function AnalysisHeadActions(props: AnalysisHeadActionsProps) {
               </React.Fragment>
             );
           })}
-        </LegendList>
-      </Legend>
+        </AnalysisLegendList>
+      </AnalysisLegend>
 
       <Dropdown
         alignment='right'
