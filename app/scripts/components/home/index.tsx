@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -25,6 +25,8 @@ import {
   PageMainContent,
   PageMainTitle
 } from '$styles/page';
+
+const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
 const StatsList = styled.dl`
   display: grid;
@@ -207,6 +209,8 @@ function Home() {
         attributionAuthor={thematic.data.media?.author?.name}
         attributionUrl={thematic.data.media?.author?.url}
       />
+
+      <MdxContent loader={thematic.content} />
 
       {!!mainDiscoveries.length && (
         <Fold forwardedAs='section'>

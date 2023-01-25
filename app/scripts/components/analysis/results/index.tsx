@@ -135,20 +135,34 @@ export default function AnalysisResults() {
 
   const availableDomain: [Date, Date] | null = useMemo(() => {
     if (!start || !end) return null;
+
+    const { minDate, maxDate } = requestStatus.reduce(
+      (acc, item) => {
+        if (item.data?.timeseries) {
+          const itemDates = item.data.timeseries.map((t) => +new Date(t.date));
+          const itemMin = min(itemDates) ?? Number.POSITIVE_INFINITY;
+          const itemMax = max(itemDates) ?? Number.NEGATIVE_INFINITY;
+
+          return {
+            minDate: itemMin < acc.minDate ? itemMin : acc.minDate,
+            maxDate: itemMax > acc.maxDate ? itemMax : acc.maxDate
+          };
+        }
+        return acc;
+      },
+      { minDate: +start, maxDate: +end }
+    );
+
     const onlySingleValues = requestStatus.every(
       (rs) => rs.data?.timeseries.length === 1
     );
-    if (!onlySingleValues) return [start, end];
-    const minDate =
-      min(requestStatus.map((rs) => +new Date(rs.data!.timeseries[0]!.date))) ??
-      +start;
-    const maxDate =
-      max(requestStatus.map((rs) => +new Date(rs.data!.timeseries[0]!.date))) ??
-      +end;
+    if (!onlySingleValues) {
+      return [new Date(minDate), new Date(maxDate)];
+    }
 
     // When all data only contain one value, we need to pad the domain to make sure the single value is shown in the center of the chart
     // substract/add one day
-    return [new Date(minDate - 3600000), new Date(maxDate + 3600000)];
+    return [new Date(minDate - 3600000), new Date(minDate + 3600000)];
   }, [start, end, requestStatus]);
 
   const [brushRange, setBrushRange] = useState<[Date, Date] | null>(null);
