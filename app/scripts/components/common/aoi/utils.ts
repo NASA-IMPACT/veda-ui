@@ -1,5 +1,6 @@
 import bbox from '@turf/bbox';
 import featArea from '@turf/area';
+import union from '@turf/union';
 import { Feature, FeatureCollection, Polygon } from 'geojson';
 
 import { AoiBounds, AoiBoundsUnset, AoiFeature } from './types';
@@ -62,12 +63,17 @@ export const featureFromBounds = (
 };
 
 export const calcFeatCollArea = (
-  featureCollection: FeatureCollection | null
+  featureCollection: FeatureCollection<Polygon> | null
 ) => {
   if (!featureCollection?.features.length) return '0';
 
+  // Merge the features to calculate the correct area in the case of overlap.
+  const mergedFeature = featureCollection.features.reduce((acc, feature) => {
+    return union(acc, feature)!;
+  }, featureCollection.features[0]);
+
   // Convert from m2 to km2.
-  const km2 = featArea(featureCollection) / 1e6;
+  const km2 = featArea(mergedFeature) / 1e6;
   return formatThousands(km2, { decimals: 0, shorten: true });
 };
 
