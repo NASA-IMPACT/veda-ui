@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 
+import AoiControls from './controls';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 import MapboxMap from '$components/common/mapbox';
-import AoiControls from '$components/common/aoi/controls';
 import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
 
 const DemoMap = styled(MapboxMap)`

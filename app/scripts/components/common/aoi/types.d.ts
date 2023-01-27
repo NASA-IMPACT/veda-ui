@@ -1,4 +1,4 @@
-import { Feature, FeatureCollection, Polygon } from 'geojson';
+import { Feature, FeatureCollection, Polygon, Point } from 'geojson';
 
 export type AoiFeature = Feature<Polygon>;
 
@@ -15,6 +15,10 @@ export interface AoiBoundsUnset {
 export interface AoiState {
   drawing: boolean;
   selected: boolean;
+  selectedContext?: {
+    features: Feature<Polygon>[];
+    points: Feature<Point>[];
+  };
   featureCollection: FeatureCollection<Polygon> | null;
   actionOrigin: null | 'panel' | 'map';
 }
@@ -22,6 +26,7 @@ export interface AoiState {
 export type AoiChangeEvent =
   | 'aoi.draw-click'
   | 'aoi.trash-click'
+  | 'aoi.select-click'
   | 'aoi.set'
   | 'aoi.clear'
   | 'aoi.draw-finish'
@@ -35,7 +40,11 @@ export type AoiChangeListener = (
 
 export interface AoiChangeListenerOverload {
   (
-    action: 'aoi.draw-click' | 'aoi.trash-click' | 'aoi.clear',
+    action:
+      | 'aoi.draw-click'
+      | 'aoi.select-click'
+      | 'aoi.trash-click'
+      | 'aoi.clear',
     payload?: never
   ): void;
   (
@@ -46,6 +55,9 @@ export interface AoiChangeListenerOverload {
     action: 'aoi.set',
     payload: { featureCollection: FeatureCollection<Polygon> }
   ): void;
-  (action: 'aoi.selection', payload: { selected: boolean }): void;
+  (
+    action: 'aoi.selection',
+    payload: { selected: boolean; context: AoiState['selectedContext'] }
+  ): void;
   (action: 'aoi.delete', payload: { ids: string[] }): void;
 }

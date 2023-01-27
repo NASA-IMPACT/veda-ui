@@ -12,6 +12,7 @@ export function useAoiControls(
   const [aoi, setAoi] = useState<AoiState>({
     drawing: false,
     selected: false,
+    selectedContext: undefined,
     featureCollection: null,
     actionOrigin: null,
     ...initialState
@@ -21,6 +22,7 @@ export function useAoiControls(
     setAoi({
       drawing: false,
       selected: false,
+      selectedContext: undefined,
       featureCollection: null,
       actionOrigin: null,
       ...initialState
@@ -36,31 +38,27 @@ export function useAoiControls(
         // property.
         const mbDraw = mapRef.current?.instance?._drawControl;
         if (!mbDraw) return;
-
-        setAoi((state) => {
-          if (state.selected) {
-            mbDraw.trash();
-            return state;
-          }
-
-          mbDraw.deleteAll();
-          return {
-            ...state,
-            drawing: false,
-            selected: false,
-            featureCollection: null,
-            actionOrigin: null
-          };
-        });
-
+        mbDraw.trash();
         break;
       }
       case 'aoi.draw-click':
         setAoi((state) => {
           return {
             ...state,
-            drawing: !state.drawing,
+            drawing: true,
             selected: false,
+            selectedContext: undefined,
+            actionOrigin: null
+          };
+        });
+        break;
+      case 'aoi.select-click':
+        setAoi((state) => {
+          return {
+            ...state,
+            drawing: false,
+            selected: false,
+            selectedContext: undefined,
             actionOrigin: null
           };
         });
@@ -69,6 +67,7 @@ export function useAoiControls(
         setAoi((state) => ({
           ...state,
           drawing: false,
+          selectedContext: undefined,
           featureCollection: payload.featureCollection,
           actionOrigin: 'panel'
         }));
@@ -77,6 +76,7 @@ export function useAoiControls(
         setAoi({
           drawing: false,
           selected: false,
+          selectedContext: undefined,
           featureCollection: null,
           actionOrigin: null
         });
@@ -85,6 +85,7 @@ export function useAoiControls(
         setAoi((state) => ({
           drawing: false,
           selected: false,
+          selectedContext: undefined,
           featureCollection: makeFeatureCollection(
             (state.featureCollection?.features ?? []).filter(
               (f) => !payload.ids.includes(f.id)
@@ -94,20 +95,24 @@ export function useAoiControls(
         }));
         break;
       case 'aoi.draw-finish':
-        setAoi((state) => ({
-          ...state,
-          drawing: false,
-          featureCollection: makeFeatureCollection(
-            (state.featureCollection?.features ?? []).concat(payload.feature)
-          ),
-          actionOrigin: 'map'
-        }));
+        {
+          setAoi((state) => ({
+            ...state,
+            drawing: false,
+            selectedContext: undefined,
+            featureCollection: makeFeatureCollection(
+              (state.featureCollection?.features ?? []).concat(payload.feature)
+            ),
+            actionOrigin: 'map'
+          }));
+        }
         break;
       case 'aoi.selection':
         setAoi((state) => ({
           ...state,
           drawing: false,
           selected: payload.selected,
+          selectedContext: payload.context,
           actionOrigin: payload.selected ? 'map' : null
         }));
         break;

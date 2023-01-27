@@ -6,15 +6,15 @@ import bbox from '@turf/bbox';
 import {
   Toolbar,
   ToolbarIconButton,
-  ToolbarLabel,
   VerticalDivider
 } from '@devseed-ui/toolbar';
-
+import { Button, ButtonGroup } from '@devseed-ui/button';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
   CollecticonArea,
+  CollecticonClockBack,
   CollecticonGlobe,
-  CollecticonTrashBin,
+  CollecticonPencil,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
 import { FeatureByRegionPreset, RegionPreset } from './constants';
@@ -34,6 +34,7 @@ import {
 } from '$components/common/aoi/types';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { makeFeatureCollection } from '$components/common/aoi/utils';
+import { variableGlsp } from '$styles/variable-utils';
 
 const MapContainer = styled.div`
   position: relative;
@@ -41,6 +42,13 @@ const MapContainer = styled.div`
 
 const AoiMap = styled(MapboxMap)`
   min-height: 24rem;
+`;
+
+const AoiHeadActions = styled(FoldHeadActions)`
+  z-index: 1;
+  /* 2 times vertical glsp to account for paddings + 2rem which is the height of
+  the buttons */
+  transform: translate(${variableGlsp(-1)}, calc(${variableGlsp(2)} + 2rem));
 `;
 
 interface AoiSelectorProps {
@@ -56,7 +64,7 @@ export default function AoiSelector({
   qsAoi,
   aoiDrawState
 }: AoiSelectorProps) {
-  const { selected, drawing, featureCollection } = aoiDrawState;
+  const { drawing, featureCollection } = aoiDrawState;
 
   // For the drawing tool, the features need an id.
   const qsFc: FeatureCollection<Polygon> | null = useMemo(() => {
@@ -112,34 +120,42 @@ export default function AoiSelector({
         <FoldHeadline>
           <FoldTitle>Area</FoldTitle>
         </FoldHeadline>
-        <FoldHeadActions>
-          <Toolbar size='small'>
-            <ToolbarLabel>Actions</ToolbarLabel>
+        <AoiHeadActions>
+          <Toolbar>
             <ToolbarIconButton
-              variation='base-text'
-              onClick={() => onAoiEvent('aoi.trash-click')}
+              variation='primary-fill'
+              onClick={() => onAoiEvent('aoi.clear')}
               disabled={!featureCollection?.features.length}
             >
-              <CollecticonTrashBin title='Delete shape' meaningful />
+              <CollecticonClockBack title='Clear map' meaningful />
             </ToolbarIconButton>
             <VerticalDivider variation='dark' />
+            <ButtonGroup variation='primary-fill'>
+              <Button
+                onClick={() => onAoiEvent('aoi.select-click')}
+                active={!drawing}
+                fitting='skinny'
+              >
+                <CollecticonArea title='Selection mode' meaningful />
+              </Button>
+              <Button
+                onClick={() => onAoiEvent('aoi.draw-click')}
+                active={drawing}
+                fitting='skinny'
+              >
+                <CollecticonPencil title='Drawing mode' meaningful />
+              </Button>
+            </ButtonGroup>
             <ToolbarIconButton
-              variation='base-text'
-              onClick={() => onAoiEvent('aoi.draw-click')}
-              active={selected || drawing}
-            >
-              <CollecticonArea title='Draw shape' meaningful />
-            </ToolbarIconButton>
-            <ToolbarIconButton
-              variation='base-text'
               onClick={() => setAoIModalRevealed(true)}
+              variation='primary-fill'
             >
               <CollecticonUpload2 title='Upload geoJSON' meaningful />
             </ToolbarIconButton>
             <Dropdown
               alignment='right'
               triggerElement={(props) => (
-                <ToolbarIconButton variation='base-text' {...props}>
+                <ToolbarIconButton variation='primary-fill' {...props}>
                   <CollecticonGlobe title='More options' meaningful />
                 </ToolbarIconButton>
               )}
@@ -156,7 +172,7 @@ export default function AoiSelector({
               </DropMenu>
             </Dropdown>
           </Toolbar>
-        </FoldHeadActions>
+        </AoiHeadActions>
       </FoldHeader>
       <FoldBody>
         <MapContainer>

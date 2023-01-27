@@ -12,6 +12,7 @@ import { ProjectionOptions } from 'veda/thematics';
 
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import MapboxStyleOverride from './mapbox-style-override';
+import MbDrawPopover from './aoi/mb-draw-popover';
 import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
 import ProjectionSelector from './projection-selector';
 import { useMapboxControl } from './use-mapbox-control';
@@ -180,9 +181,18 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     theme,
     onChange: onAoiChange,
     drawing: aoi?.drawing,
-    selected: aoi?.selected,
+    selectedContext: aoi?.selectedContext,
     featureCollection: aoi?.featureCollection
   });
 
-  return <SingleMapContainer ref={containerRef} {...rest} />;
+  return (
+    <>
+      <SingleMapContainer ref={containerRef} {...rest} />
+      <MbDrawPopover
+        mapRef={mapRef}
+        onChange={onAoiChange}
+        selectedContext={aoi?.selectedContext}
+      />
+    </>
+  );
 }
