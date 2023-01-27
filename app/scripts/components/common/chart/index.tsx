@@ -266,8 +266,8 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
                 <Line
                   type='linear'
                   isAnimationActive={false}
-                  dot={{ r: 2, strokeWidth: 1 }}
-                  activeDot={false}
+                  dot={false}
+                  activeDot={{ r: 3 }}
                   key={`${k.value}-line`}
                   dataKey={k.label}
                   strokeWidth={2}
