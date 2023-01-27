@@ -105,7 +105,7 @@ function Audience() {
           <li>
             <BlockAudience>
               <BlockAudienceProse>
-                <h3>Earth Observation enthusiasts</h3>
+                <h3>Science enthusiasts</h3>
                 <p>
                   Discover the latest in Earth Observation, how that might impact environmental change, 
                   and how this might impact where you live.

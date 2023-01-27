@@ -128,13 +128,13 @@ function RootHome() {
         attributionUrl='https://unsplash.com/photos/hSh_X3kJ4bI'
       />
 
-      <ThematicAreasList />
+      <Audience />
 
       <FeaturedDiscoveries />
 
       <ValueProposition />
 
-      <Audience />
+      <ThematicAreasList />
 
       <Connections>
         <ConnectionsBlock>
