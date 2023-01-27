@@ -27,7 +27,7 @@ function getCenterCoords(selectedContext) {
 
   const centerPoint = centroid(makeFeatureCollection(items));
 
-  return centerPoint.geometry.coordinates;
+  return centerPoint.geometry.coordinates as [number, number];
 }
 
 export default function MbDrawPopover(props: MbDrawPopoverProps) {

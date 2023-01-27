@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import T from 'prop-types';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 
@@ -13,21 +12,43 @@ import {
   PopoverTitle,
   PopoverSubtitle,
   PopoverBody,
-  PopoverFooter
+  PopoverFooter,
+  PopoverAnchor
 } from './styled';
+import {
+  MBPopoverProps,
+  PopoverRenderFunction,
+  PopoverRenderFunctionBag
+} from './types';
 
-const Try = (props) => {
+const Try = (
+  props: {
+    fn?: PopoverRenderFunction;
+    children: React.ReactNode;
+  } & PopoverRenderFunctionBag
+) => {
   const { fn, children, ...rest } = props;
-  return typeof fn === 'function' ? fn(rest) : children || null;
+  return <>{typeof fn === 'function' ? fn(rest) : children ?? null}</>;
 };
+
+type AnchorPoints =
+  | ['top' | 'bottom']
+  | ['top' | 'bottom', 'left' | 'right']
+  | [];
 
 /**
  * Mapbox popover inner element.
- * NOT TO BE USED DIRECTLY
+ * 🛑 🛑 🛑 NOT TO BE USED DIRECTLY 🛑 🛑 🛑
  *
- * See documentation on index.js file.
+ * See documentation on index.sx file.
  */
-export default function MBPopoverInner(props) {
+export default function MBPopoverInner(
+  props: Omit<MBPopoverProps, 'onClose' | 'lngLat'> & {
+    onClose: () => void;
+    className?: string;
+    lngLat: [number, number];
+  }
+) {
   const {
     className,
     mbMap,
@@ -35,7 +56,7 @@ export default function MBPopoverInner(props) {
     closeOnMove,
     onClose,
     lngLat,
-    offset: [offsetTop, offsetBottom],
+    offset: [offsetTop, offsetBottom] = [0, 0],
     renderContents,
     renderHeader,
     renderHeadline,
@@ -44,15 +65,19 @@ export default function MBPopoverInner(props) {
     renderFooter,
     closeButton,
     title,
+    titleHLevel = 'h2',
     subtitle,
     suptitle,
     content,
     footerContent
   } = props;
 
-  const popoverEl = useRef(null);
-  const [anchorPoints, setAnchorPoints] = useState([]);
-  const [position, setPosition] = useState({
+  const popoverEl = useRef<HTMLElement>(null);
+  const [anchorPoints, setAnchorPoints] = useState<AnchorPoints>([]);
+  const [position, setPosition] = useState<{
+    top: number | null;
+    left: number | null;
+  }>({
     top: null,
     left: null
   });
@@ -95,7 +120,7 @@ export default function MBPopoverInner(props) {
       return;
     }
 
-    let anchorPoints = [];
+    let anchorPoints: AnchorPoints = [];
 
     const popoverDomRect = popoverEl.current.getBoundingClientRect();
     const halfW = popoverDomRect.width / 2;
@@ -109,9 +134,9 @@ export default function MBPopoverInner(props) {
     }
 
     if (anchorPosition.left - halfW < mapLeft) {
-      anchorPoints.push('left');
+      anchorPoints = [...anchorPoints, 'left'];
     } else if (anchorPosition.left + halfW > mapRight) {
-      anchorPoints.push('right');
+      anchorPoints = [...anchorPoints, 'right'];
     }
 
     setAnchorPoints(anchorPoints);
@@ -156,7 +181,7 @@ export default function MBPopoverInner(props) {
   const { top, left } = position;
 
   const hasPlacement = top !== null && left !== null;
-  const anchor = anchorPoints.join('-');
+  const anchor = anchorPoints.join('-') as PopoverAnchor;
 
   const popoverStyle = {
     transform: hasPlacement
@@ -176,10 +201,10 @@ export default function MBPopoverInner(props) {
               <PopoverHeader>
                 <Try fn={renderHeadline} close={destroy}>
                   <PopoverHeadline>
-                    <PopoverTitle>{title}</PopoverTitle>
+                    <PopoverTitle as={titleHLevel}>{title}</PopoverTitle>
                     {(subtitle || suptitle) && (
                       <PopoverSubtitle isSup={!subtitle}>
-                        {subtitle || suptitle}
+                        {subtitle ?? suptitle}
                       </PopoverSubtitle>
                     )}
                   </PopoverHeadline>
@@ -208,33 +233,9 @@ export default function MBPopoverInner(props) {
         </PopoverContents>
       </Popover>
     </div>,
-    document.querySelector('body')
+    document.querySelector('body') as HTMLElement
   );
 }
-
-MBPopoverInner.propTypes = {
-  onClose: T.func,
-  className: T.string,
-
-  mbMap: T.object,
-  lngLat: T.array,
-  closeOnClick: T.bool,
-  closeOnMove: T.bool,
-  closeButton: T.bool,
-  title: T.node,
-  subtitle: T.string,
-  suptitle: T.string,
-  offset: T.array,
-
-  renderContents: T.func,
-  renderHeader: T.func,
-  renderHeadline: T.func,
-  renderToolbar: T.func,
-  renderBody: T.func,
-  content: T.node,
-  renderFooter: T.func,
-  footerContent: T.node
-};
 
 MBPopoverInner.defaultProps = {
   closeOnClick: true,

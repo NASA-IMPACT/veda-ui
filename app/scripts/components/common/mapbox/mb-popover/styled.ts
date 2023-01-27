@@ -5,94 +5,97 @@ import { Toolbar } from '@devseed-ui/toolbar';
 
 import { variableGlsp } from '$styles/variable-utils';
 
+export type PopoverAnchor =
+  | 'top'
+  | 'bottom'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right';
+
 export const POPOVER_SHOW_HIDE_ANIM_TIME = 240;
 
-const applyBorderStyles =
-  () =>
-  ({ anchor }) => {
-    return {
-      'top-left': css`
-        border-top-left-radius: 0;
-      `,
-      'top-right': css`
-        border-top-right-radius: 0;
-      `,
-      'bottom-left': css`
-        border-bottom-left-radius: 0;
-      `,
-      'bottom-right': css`
-        border-bottom-right-radius: 0;
-      `
-    }[anchor];
-  };
+const applyBorderStyles = ({ anchor }: { anchor: PopoverAnchor }) => {
+  return {
+    'top-left': css`
+      border-top-left-radius: 0;
+    `,
+    'top-right': css`
+      border-top-right-radius: 0;
+    `,
+    'bottom-left': css`
+      border-bottom-left-radius: 0;
+    `,
+    'bottom-right': css`
+      border-bottom-right-radius: 0;
+    `
+  }[anchor];
+};
 
-const applyAnchorStyles =
-  () =>
-  ({ anchor }) => {
-    const centerClip = 'clip-path: polygon(50% 0, 0% 100%, 100% 100%);';
-    const cornerClip = 'clip-path: polygon(0 0, 0% 100%, 100% 100%);';
+const applyAnchorStyles = ({ anchor }: { anchor: PopoverAnchor }) => {
+  const centerClip = 'clip-path: polygon(50% 0, 0% 100%, 100% 100%);';
+  const cornerClip = 'clip-path: polygon(0 0, 0% 100%, 100% 100%);';
 
-    if (anchor === 'top' || anchor === 'bottom') {
-      const common = css`
-        ${centerClip}
-        left: 50%;
-        width: 1.5rem;
-        height: 0.75rem;
+  if (anchor === 'top' || anchor === 'bottom') {
+    const common = css`
+      ${centerClip}
+      left: 50%;
+      width: 1.5rem;
+      height: 0.75rem;
+    `;
+    if (anchor === 'top') {
+      return css`
+        ${common}
+        top: -0.75rem;
+        transform: translate(-50%, 0);
       `;
-      if (anchor === 'top') {
-        return css`
-          ${common}
-          top: -0.75rem;
-          transform: translate(-50%, 0);
-        `;
-      }
-      if (anchor === 'bottom') {
-        return css`
-          ${common}
-          bottom: -0.75rem;
-          transform: scaleY(-1) translate(-50%, 0);
-        `;
-      }
     } else {
-      const common = css`
-        ${cornerClip}
-        width: 0.75rem;
-        height: 0.75rem;
+      // anchor === 'bottom'
+      return css`
+        ${common}
+        bottom: -0.75rem;
+        transform: scaleY(-1) translate(-50%, 0);
       `;
-
-      if (anchor === 'top-left') {
-        return css`
-          ${common}
-          top: -0.75rem;
-          left: 0;
-        `;
-      }
-      if (anchor === 'top-right') {
-        return css`
-          ${common}
-          top: -0.75rem;
-          right: 0;
-          transform: scaleX(-1);
-        `;
-      }
-      if (anchor === 'bottom-left') {
-        return css`
-          ${common}
-          bottom: -0.75rem;
-          left: 0;
-          transform: scaleY(-1);
-        `;
-      }
-      if (anchor === 'bottom-right') {
-        return css`
-          ${common}
-          bottom: -0.75rem;
-          right: 0;
-          transform: scaleX(-1) scaleY(-1);
-        `;
-      }
     }
-  };
+  } else {
+    const common = css`
+      ${cornerClip}
+      width: 0.75rem;
+      height: 0.75rem;
+    `;
+
+    if (anchor === 'top-left') {
+      return css`
+        ${common}
+        top: -0.75rem;
+        left: 0;
+      `;
+    }
+    if (anchor === 'top-right') {
+      return css`
+        ${common}
+        top: -0.75rem;
+        right: 0;
+        transform: scaleX(-1);
+      `;
+    }
+    if (anchor === 'bottom-left') {
+      return css`
+        ${common}
+        bottom: -0.75rem;
+        left: 0;
+        transform: scaleY(-1);
+      `;
+    }
+    // anchor === 'bottom-right'
+    return css`
+      ${common}
+      bottom: -0.75rem;
+      right: 0;
+      transform: scaleX(-1) scaleY(-1);
+    `;
+  }
+};
 
 export const getAnchorTranslate = (pos) =>
   ({
@@ -118,7 +121,6 @@ const getTransition = (isShowing) => {
 };
 
 export const Popover = styled.article`
-  /* width: 16rem; */
   padding: 0.75rem 0;
   position: absolute;
   top: 0;
@@ -126,7 +128,10 @@ export const Popover = styled.article`
   z-index: 99999;
 `;
 
-export const PopoverContents = styled.div`
+export const PopoverContents = styled.div<{
+  verticalAttachment?: 'top' | 'bottom';
+  anchor: PopoverAnchor;
+}>`
   border-radius: ${multiply(themeVal('shape.rounded'), 2)};
   background: ${themeVal('color.surface')};
   box-shadow: ${themeVal('boxShadow.elevationD')};
@@ -134,14 +139,14 @@ export const PopoverContents = styled.div`
   transform-origin: center
     ${({ verticalAttachment: va }) => (va === 'top' ? 'top' : 'bottom')};
 
-  ${applyBorderStyles()}
+  ${applyBorderStyles}
 
   &::before {
     content: '';
     position: absolute;
     background: #fff;
 
-    ${applyAnchorStyles()}
+    ${applyAnchorStyles}
   }
 
   > *:last-child {
@@ -213,7 +218,7 @@ export const PopoverTitle = styled(Heading)`
   margin: 0;
 `;
 
-export const PopoverSubtitle = styled.p`
+export const PopoverSubtitle = styled.p<{ isSup: boolean }>`
   order: ${({ isSup }) => (isSup ? -1 : 1)};
   ${createSubtitleStyles()}
 `;

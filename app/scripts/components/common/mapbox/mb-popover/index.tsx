@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import T from 'prop-types';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import MBPopoverInner from './popover-inner';
 import { POPOVER_SHOW_HIDE_ANIM_TIME } from './styled';
+import { MBPopoverProps } from './types';
 
 // Note: This wrapper acts as the entrypoint for the popover mounting and
-// unmouting it when coordinates are removed. This approach helps to deal with
+// unmounting it when coordinates are removed. This approach helps to deal with
 // setting event listeners and managing animations
 
 /**
@@ -22,8 +22,8 @@ import { POPOVER_SHOW_HIDE_ANIM_TIME } from './styled';
  * @example
  *  <ReactPopoverGl
  *    mbMap={mbMap}
- *    lngLat={this.state.coords}
- *    onClose={() => this.setState({ coords: null })}
+ *    lngLat={coords}
+ *    onClose={() => setCoords(null)}
  * />
  *
  * If no overrides are applied, the popover structure is outlined below.
@@ -51,74 +51,21 @@ import { POPOVER_SHOW_HIDE_ANIM_TIME } from './styled';
  * @example
  * <ReactPopoverGl
  *   mbMap={mbMap}
- *   lngLat={this.state.coords}
- *   onClose={() => this.setState({ coords: null })}
+ *   lngLat={coords}
+ *   onClose={() => setCoords(null)}
  *   title='Popover Title'
  *   subtitle='Subtitle below'
  *   content={<p>This is the content</p>}
  *   footerContent={<p>This is the footer content</p>}
  * />
  *
- * @param {object} mbMap Mapbox map which the popover will use. Required.
- * @param {array} lngLat Coordinates the popover points to. Required.
- * @param {function} onClose Callback when the popover is hidden. Required.
- * @param {bool} closeOnClick Whether or not the popover should close when the
- *               map gets clicked. Default `true`.
- * @param {bool} closeOnMove Whether or not the popover should close when the
- *               map is dragged. Default `false`.
- * @param {bool} closeButton Whether or not the popover should render
- *               the default close button. Default `true`.
- * @param {string} title Title for the popover. Required unless the header is
- *                 being overridden.
- * @param {string} subtitle Subtitle for the popover. It is displayed below the
- *                 title.
- * @param {string} suptitle Suptitle for the popover. It is displayed above the
- *                 title. If both subtitle and suptitle are present, the
- *                 suptitle gets ignored.
- * @param {node} content Popover body content, rendered inside `PopoverBody`.
- *               Required unless the body is being overridden.
- * @param {node} footerContent Popover footer content, rendered
- *               inside `PopoverFooter`.
- * @param {array} offset Vertical offset for the popover. The array must have 2
- *                values. The first for the top offset the second for the
- *                bottom offset.
- * @param {function} renderContents Overrides the contents of the popover.
- *                   Anything returned by this function is rendered inside
- *                   `PopoverContents`.
- *                   Signature: fn(bag). Bag has the following props:
- *                     {function} close Method to close the popover.
- * @param {function} renderHeader Overrides the popover header element.
- *                   Anything returned by this function is rendered instead of
- *                   `PopoverHeader`.
- *                   Signature: fn(bag). Bag has the following props:
- *                     {function} close Method to close the popover.
- * @param {function} renderHeadline Overrides the popover headline element.
- *                   Anything returned by this function is rendered instead of
- *                   `PopoverHeadline`.
- *                   Signature: fn(bag). Bag has the following props:
- *                     {function} close Method to close the popover.
- * @param {function} renderToolbar Overrides the popover toolbar element.
- *                   Anything returned by this function is rendered instead of
- *                   `PopoverToolbar`.
- *                   Signature: fn(bag). Bag has the following props:
- *                     {function} close Method to close the popover.
- * @param {function} renderBody Overrides the popover body element.
- *                   Anything returned by this function is rendered instead of
- *                   `PopoverBody`.
- *                   Signature: fn(bag). Bag has the following props:
- *                     {function} close Method to close the popover.
- * @param {function} renderFooter Overrides the popover footer element.
- *                   Anything returned by this function is rendered instead of
- *                   `PopoverFooter`.
- *                   Signature: fn(bag). Bag has the following props:
- *                     {function} close Method to close the popover.
  */
-export default function MBPopover(props) {
+export default function MBPopover(props: MBPopoverProps) {
   const { mbMap, lngLat, onClose: onCloseProp, ...rest } = props;
 
   const switchingPopovers = useRef(false);
   // Store the previous lat long.
-  const pLngLat = useRef(false);
+  const pLngLat = useRef<MBPopoverProps["lngLat"]>();
 
   const onClose = useCallback(() => {
     if (switchingPopovers.current) {
@@ -179,9 +126,3 @@ export default function MBPopover(props) {
     </TransitionGroup>
   );
 }
-
-MBPopover.propTypes = {
-  onClose: T.func,
-  lngLat: T.array,
-  mbMap: T.object
-};
