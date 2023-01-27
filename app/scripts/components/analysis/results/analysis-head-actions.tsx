@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import { Dropdown, DropTitle } from '@devseed-ui/dropdown';
 import { Button } from '@devseed-ui/button';
 import { CollecticonChevronDownSmall } from '@devseed-ui/collecticons';
@@ -19,7 +19,12 @@ export interface DataMetric {
   id: string;
   label: string;
   chartLabel: string;
-  themeColor: 'infographicA' | 'infographicB' | 'infographicC' | 'infographicD';
+  themeColor:
+    | 'infographicA'
+    | 'infographicB'
+    | 'infographicC'
+    | 'infographicD'
+    | 'infographicE';
 }
 
 export const dataMetrics: DataMetric[] = [
@@ -46,6 +51,12 @@ export const dataMetrics: DataMetric[] = [
     label: 'St Deviation',
     chartLabel: 'STD',
     themeColor: 'infographicD'
+  },
+  {
+    id: 'median',
+    label: 'Median',
+    chartLabel: 'Median',
+    themeColor: 'infographicE'
   }
 ];
 
@@ -77,6 +88,38 @@ const MetricSwitch = styled(FormSwitch)<{ metricThemeColor: string }>`
   }
 `;
 
+const AnalysisFoldHeadActions = styled(FoldHeadActions)`
+  width: 100%;
+
+  ${media.mediumUp`
+    width: auto;
+  `}
+
+  ${Button} {
+    margin-left: auto;
+  }
+`;
+
+const AnalysisLegend = styled(Legend)`
+  flex-flow: column nowrap;
+  align-items: flex-start;
+
+  ${media.smallUp`
+    flex-flow: row nowrap;
+    align-items: center;
+  `};
+`;
+
+const AnalysisLegendList = styled(LegendList)`
+  display: grid;
+  grid-template-columns: repeat(6, auto);
+
+  ${media.smallUp`
+    display: flex;
+    flex-flow: row nowrap;
+  `};
+`;
+
 interface AnalysisHeadActionsProps {
   activeMetrics: DataMetric[];
   onMetricsChange: (metrics: DataMetric[]) => void;
@@ -95,10 +138,10 @@ export default function AnalysisHeadActions(props: AnalysisHeadActionsProps) {
   };
 
   return (
-    <FoldHeadActions>
-      <Legend>
+    <AnalysisFoldHeadActions>
+      <AnalysisLegend>
         <LegendTitle>Legend</LegendTitle>
-        <LegendList>
+        <AnalysisLegendList>
           {dataMetrics.map((metric) => {
             const active = !!activeMetrics.find((m) => m.id === metric.id);
             return (
@@ -118,8 +161,8 @@ export default function AnalysisHeadActions(props: AnalysisHeadActionsProps) {
               </React.Fragment>
             );
           })}
-        </LegendList>
-      </Legend>
+        </AnalysisLegendList>
+      </AnalysisLegend>
 
       <Dropdown
         alignment='right'
@@ -151,6 +194,6 @@ export default function AnalysisHeadActions(props: AnalysisHeadActionsProps) {
           })}
         </MetricList>
       </Dropdown>
-    </FoldHeadActions>
+    </AnalysisFoldHeadActions>
   );
 }

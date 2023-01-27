@@ -36,6 +36,7 @@ export const LegendLabel = styled(Subtitle).attrs({
   as: 'dd'
 })`
   margin-left: ${variableGlsp(-0.25)};
+  white-space: nowrap;
 
   ${({ disabled: d }) => d && disabled()}
 `;

@@ -1,5 +1,4 @@
 import React from 'react';
-import T from 'prop-types';
 
 import styled from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
@@ -101,7 +100,9 @@ const Content = styled(VarProse)`
   `}
 `;
 
-function FoldComponent(props) {
+function FoldComponent(
+  props: React.ComponentProps<typeof FoldBase> & { children: React.ReactNode }
+) {
   const { children, ...rest } = props;
 
   return (
@@ -111,15 +112,11 @@ function FoldComponent(props) {
   );
 }
 
-FoldComponent.propTypes = {
-  children: T.node
-};
-
 export const Fold = styled(FoldComponent)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
 
-export function FoldProse(props) {
+export function FoldProse(props: { children: React.ReactNode }) {
   const { children } = props;
 
   return (
@@ -130,7 +127,3 @@ export function FoldProse(props) {
     </FoldBase>
   );
 }
-
-FoldProse.propTypes = {
-  children: T.node
-};

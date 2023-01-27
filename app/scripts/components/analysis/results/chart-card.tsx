@@ -1,7 +1,9 @@
 import React, { useCallback, useRef, useMemo, MouseEvent } from 'react';
 import { format } from 'date-fns';
 import { reverse } from 'd3';
-import { useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
+import { Link } from 'react-router-dom';
+import { glsp } from '@devseed-ui/theme-provider';
 import {
   Toolbar,
   ToolbarIconButton,
@@ -9,9 +11,11 @@ import {
 } from '@devseed-ui/toolbar';
 import {
   CollecticonCircleInformation,
-  CollecticonDownload2
+  CollecticonDownload2,
+  CollecticonExpandTopRight
 } from '@devseed-ui/collecticons';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
+import { Button } from '@devseed-ui/button';
 
 import { TimeseriesData } from './timeseries-data';
 import {
@@ -33,8 +37,24 @@ import { ChartLoading } from '$components/common/loading-skeleton';
 import { dateFormatter } from '$components/common/chart/utils';
 import { Tip } from '$components/common/tip';
 import { composeVisuallyDisabled } from '$utils/utils';
-import { exportCsv, getTimeDensityFormat } from '$components/common/chart/analysis/utils';
+import {
+  exportCsv,
+  getTimeDensityFormat
+} from '$components/common/chart/analysis/utils';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
+import { datasetOverviewPath } from '$utils/routes';
+import { ThematicItemFull, useThematicArea } from '$utils/thematics';
+
+const InfoTipContent = styled.div`
+  padding: ${glsp(0.25)};
+  display: flex;
+  flex-flow: column;
+  gap: ${glsp(0.5)};
+
+  ${Button} {
+    align-self: flex-start;
+  }
+`;
 
 interface ChartCardProps {
   title: React.ReactNode;
@@ -60,6 +80,35 @@ const getNoDownloadReason = ({ status, data }: TimeseriesData) => {
   return '';
 };
 
+/**
+ * Get the Dataset overview path from a given dataset layer.
+ *
+ * The analysis charts refer to a dataset layer and not the dataset itself.
+ * Since each dataset layer is analyzed individually (relating to a STAC
+ * dataset), there is no information on the layer data about the parent dataset.
+ * To find the corresponding dataset we look through the layers of the datasets
+ * of the thematic area and use the found match.
+ *
+ * @param thematic Thematic area data
+ * @param layerId Id of the dataset layer
+ *
+ * @returns Internal path for Link
+ */
+const getDatasetOverviewPath = (
+  thematic: ThematicItemFull,
+  layerId: string
+) => {
+  if (!thematic) return '/';
+
+  const dataset = thematic.data.datasets.find((d) =>
+    d.layers.find((l) => l.id === layerId)
+  );
+
+  return dataset
+    ? datasetOverviewPath(thematic.data.id, dataset.id)
+    : '/';
+};
+
 export default function ChartCard(props: ChartCardProps) {
   const {
     title,
@@ -70,6 +119,8 @@ export default function ChartCard(props: ChartCardProps) {
     onBrushRangeChange
   } = props;
   const { status, meta, data, error, name, id, layer } = chartData;
+
+  const thematic = useThematicArea();
 
   const chartRef = useRef<AnalysisChartRef>(null);
   const noDownloadReason = getNoDownloadReason(chartData);
@@ -117,8 +168,9 @@ export default function ChartCard(props: ChartCardProps) {
 
   const chartDates = useMemo(
     () =>
-      data?.timeseries.map((e) => dateFormatter(new Date(e.date), timeDensityFormat)) ??
-      [],
+      data?.timeseries.map((e) =>
+        dateFormatter(new Date(e.date), timeDensityFormat)
+      ) ?? [],
     [data?.timeseries, timeDensityFormat]
   );
 
@@ -166,9 +218,28 @@ export default function ChartCard(props: ChartCardProps) {
             </Dropdown>
 
             <VerticalDivider variation='dark' />
-            <ToolbarIconButton variation='base-text'>
-              <CollecticonCircleInformation title='More info' meaningful />
-            </ToolbarIconButton>
+            <Tip
+              content={
+                <InfoTipContent>
+                  <p>{layer.description}</p>
+                  <Button
+                    forwardedAs={Link}
+                    to={getDatasetOverviewPath(thematic, layer.id)}
+                    target='_blank'
+                    variation='achromic-outline'
+                    size='small'
+                  >
+                    View dataset <CollecticonExpandTopRight />
+                  </Button>
+                </InfoTipContent>
+              }
+              trigger='click'
+              interactive
+            >
+              <ToolbarIconButton variation='base-text'>
+                <CollecticonCircleInformation title='More info' meaningful />
+              </ToolbarIconButton>
+            </Tip>
           </Toolbar>
         </CardActions>
       </CardHeader>
