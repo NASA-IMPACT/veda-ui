@@ -117,15 +117,32 @@ export function useAoiControls(
         }));
         break;
       case 'aoi.update':
-        setAoi((state) => ({
-          ...state,
-          featureCollection: makeFeatureCollection(
-            (state.featureCollection?.features ?? []).map((f) =>
-              f.id === payload.feature.id ? payload.feature : f
-            )
-          ),
-          actionOrigin: 'map'
-        }));
+        setAoi((state) => {
+          // @ts-expect-error _drawControl does exist but it is an internal
+          // property.
+          const mbDraw = mapRef.current?.instance?._drawControl;
+
+          // When a feature gets updated, if there was a selectedContext update
+          // it. This is needed to reposition the popover.
+          let selectedContext = state.selectedContext;
+          if (mbDraw && selectedContext) {
+            selectedContext = {
+              features: mbDraw.getSelected().features,
+              points: mbDraw.getSelectedPoints().features
+            };
+          }
+
+          return {
+            ...state,
+            selectedContext,
+            featureCollection: makeFeatureCollection(
+              (state.featureCollection?.features ?? []).map((f) =>
+                f.id === payload.feature.id ? payload.feature : f
+              )
+            ),
+            actionOrigin: 'map'
+          };
+        });
         break;
     }
     // mapRef is a ref object.
