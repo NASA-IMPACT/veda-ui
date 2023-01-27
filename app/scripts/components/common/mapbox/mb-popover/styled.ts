@@ -125,7 +125,7 @@ export const Popover = styled.article`
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 99999;
+  z-index: 1;
 `;
 
 export const PopoverContents = styled.div<{
