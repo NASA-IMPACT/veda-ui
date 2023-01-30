@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { glsp, multiply, themeVal } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { createSubtitleStyles, Heading } from '@devseed-ui/typography';
 import { Toolbar } from '@devseed-ui/toolbar';
 
