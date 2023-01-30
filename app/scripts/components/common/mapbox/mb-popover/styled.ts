@@ -40,20 +40,20 @@ const applyAnchorStyles = ({ anchor }: { anchor: PopoverAnchor }) => {
     const common = css`
       ${centerClip}
       left: 50%;
-      width: 1.5rem;
-      height: 0.75rem;
+      width: 1rem;
+      aspect-ratio: 2/1;
     `;
     if (anchor === 'top') {
       return css`
         ${common}
-        top: -0.75rem;
+        bottom: 100%;
         transform: translate(-50%, 0);
       `;
     } else {
       // anchor === 'bottom'
       return css`
         ${common}
-        bottom: -0.75rem;
+        top: 100%;
         transform: scaleY(-1) translate(-50%, 0);
       `;
     }
@@ -62,19 +62,20 @@ const applyAnchorStyles = ({ anchor }: { anchor: PopoverAnchor }) => {
       ${cornerClip}
       width: 0.75rem;
       height: 0.75rem;
+      pointer-events: none;
     `;
 
     if (anchor === 'top-left') {
       return css`
         ${common}
-        top: -0.75rem;
+        bottom: 100%;
         left: 0;
       `;
     }
     if (anchor === 'top-right') {
       return css`
         ${common}
-        top: -0.75rem;
+        bottom: 100%;
         right: 0;
         transform: scaleX(-1);
       `;
@@ -82,7 +83,7 @@ const applyAnchorStyles = ({ anchor }: { anchor: PopoverAnchor }) => {
     if (anchor === 'bottom-left') {
       return css`
         ${common}
-        bottom: -0.75rem;
+        top: 100%;
         left: 0;
         transform: scaleY(-1);
       `;
@@ -90,7 +91,7 @@ const applyAnchorStyles = ({ anchor }: { anchor: PopoverAnchor }) => {
     // anchor === 'bottom-right'
     return css`
       ${common}
-      bottom: -0.75rem;
+      top: 100%;
       right: 0;
       transform: scaleX(-1) scaleY(-1);
     `;
@@ -132,7 +133,7 @@ export const PopoverContents = styled.div<{
   verticalAttachment?: 'top' | 'bottom';
   anchor: PopoverAnchor;
 }>`
-  border-radius: ${multiply(themeVal('shape.rounded'), 2)};
+  border-radius: ${themeVal('shape.rounded')};
   background: ${themeVal('color.surface')};
   box-shadow: ${themeVal('boxShadow.elevationD')};
   transform: scale(1);
