@@ -156,16 +156,23 @@ export default function MBPopoverInner(
       mbMap.on('click', destroy);
     }
 
+    // For situations where the body size changes.
+    let resizeObserver;
+
     if (closeOnMove) {
       mbMap.on('move', destroy);
     } else {
       mbMap.on('move', update);
+      resizeObserver = new ResizeObserver(update);
+      // Start observing
+      resizeObserver.observe(document.body);
     }
 
     return () => {
       mbMap.off('click', destroy);
       mbMap.off('move', update);
       mbMap.off('move', destroy);
+      resizeObserver?.disconnect();
     };
   }, [mbMap, closeOnClick, closeOnMove, update, destroy]);
 

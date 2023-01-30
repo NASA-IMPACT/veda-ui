@@ -36,7 +36,6 @@ export function useMbDraw({
     });
 
     mbDrawRef.current = newMbDraw;
-    window.newMbDraw = newMbDraw;
 
     mbMap.addControl(newMbDraw, 'top-left');
 
