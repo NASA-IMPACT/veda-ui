@@ -16,6 +16,7 @@ import {
   LazyScrollyTelling,
   LazyMap
 } from '$components/common/blocks/lazy-components';
+import { NotebookConnectCalloutBlock } from '$components/common/notebook-connect';
 
 function MdxContent(props) {
   const pageMdx = useMdxPageLoader(props.loader);
@@ -37,7 +38,8 @@ function MdxContent(props) {
           Map: LazyMap,
           ScrollytellingBlock: LazyScrollyTelling,
           Chart: LazyChart,
-          CompareImage: LazyCompareImage
+          CompareImage: LazyCompareImage,
+          NotebookConnectCallout: NotebookConnectCalloutBlock
         }}
       >
         <pageMdx.MdxContent />

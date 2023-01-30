@@ -16,6 +16,7 @@ import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
 import ProjectionSelector from './projection-selector';
 import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './projection-selector/utils';
+
 import { round } from '$utils/format';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN ?? '';

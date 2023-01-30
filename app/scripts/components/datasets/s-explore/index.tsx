@@ -53,6 +53,7 @@ import {
 import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { projectionDefault } from '$components/common/mapbox/projection-selector/utils';
+import { NotebookConnectButton } from '$components/common/notebook-connect';
 
 const Explorer = styled.div`
   position: relative;
@@ -74,6 +75,13 @@ const Carto = styled.div`
     .mapboxgl-ctrl-top-left {
       margin-top: calc(2rem + ${variableGlsp(0.5)});
     }
+  }
+
+  ${NotebookConnectButton} {
+    position: absolute;
+    z-index: 1;
+    right: ${variableGlsp()};
+    top: ${variableGlsp()};
   }
 `;
 
@@ -553,6 +561,7 @@ function DatasetsExplore() {
             </PanelInner>
           </Panel>
           <Carto>
+            <NotebookConnectButton dataset={dataset} />
             <MapboxMap
               ref={mapboxRef}
               withGeocoder

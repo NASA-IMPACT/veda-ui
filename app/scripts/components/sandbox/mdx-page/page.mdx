@@ -7,17 +7,14 @@
 <Block type='wide'>
   <Figure>
     <Map
-      datasetId='sandbox'
+      datasetId='no2'
       layerId='no2-monthly'
       dateTime='2018-03-01'
       isComparing={true}
       compareLabel='Overriding label'
       projectionId='globe'
     />
-    <Caption
-      attrAuthor='somebody'
-      attrUrl='https://developmentseed.org'
-    >
+    <Caption attrAuthor='somebody' attrUrl='https://developmentseed.org'>
       Comparing dates set via the configuration function
     </Caption>
   </Figure>
@@ -34,25 +31,25 @@
       allowProjectionChange
       isComparing={true}
     />
-    <Caption>
-      Comparing dates set manually
-    </Caption>
+    <Caption>Comparing dates set manually</Caption>
   </Figure>
 </Block>
 
 <Block type='full'>
   <Figure>
-    <Map datasetId='sandbox' layerId='nightlights-hd-monthly' dateTime='2020-03-01' isComparing={false} />
-    <Caption>
-      This map has a caption **below** it!
-    </Caption>
+    <Map
+      datasetId='nighttime-lights'
+      layerId='nightlights-hd-monthly'
+      dateTime='2020-03-01'
+      isComparing={false}
+    />
+    <Caption>This map has a caption **below** it!</Caption>
   </Figure>
 </Block>
 
-
 <Block type='full'>
   <Figure>
-    <CompareImage 
+    <CompareImage
       leftImageSrc='http://via.placeholder.com/256x128?text=left-left'
       leftImageAlt='example left image for compare-image component'
       leftImageLabel='left'
@@ -60,24 +57,37 @@
       rightImageAlt='example right image for compare-image component'
       rightImageLabel='right'
     />
-    <Caption attrAuthor='Development Seed' attrUrl='https://developmentseed.org'>
+    <Caption
+      attrAuthor='Development Seed'
+      attrUrl='https://developmentseed.org'
+    >
       This component is to compare two images.
     </Caption>
   </Figure>
   <Prose>
-    ## Compare two images
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-    labore et dolore magna aliqua. A diam sollicitudin tempor id eu nisl nunc mi ipsum. Lectus 
-    arcu bibendum at varius vel pharetra vel turpis. Lorem sed risus ultricies tristique nulla.
-    Sed faucibus turpis in eu mi bibendum neque egestas congue. Mi proin sed libero enim sed. 
-    Odio aenean sed adipiscing diam donec adipiscing tristique risus. Nunc sed velit dignissim 
-    sodales ut eu sem. Duis ultricies lacus sed turpis tincidunt. Urna et pharetra pharetra
-    massa. Malesuada proin libero nunc consequat interdum varius sit. Velit ut tortor pretium
-    viverra. Et tortor consequat id porta. Gravida rutrum quisque non tellus orci ac auctor
-    augue mauris. Ut faucibus pulvinar elementum integer. Id donec ultrices tincidunt arcunon.
+    ## Compare two images Lorem ipsum dolor sit amet, consectetur adipiscing
+
+    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A
+    diam sollicitudin tempor id eu nisl nunc mi ipsum. Lectus arcu bibendum at
+    varius vel pharetra vel turpis. Lorem sed risus ultricies tristique nulla.
+    Sed faucibus turpis in eu mi bibendum neque egestas congue. Mi proin sed
+    libero enim sed. Odio aenean sed adipiscing diam donec adipiscing tristique
+    risus. Nunc sed velit dignissim sodales ut eu sem. Duis ultricies lacus sed
+    turpis tincidunt.
+
+    <NotebookConnectCallout datasetId='no2'>
+      Lorem sed risus ultricies tristique nulla. Sed faucibus turpis in eu mi
+      bibendum neque egestas congue. Mi proin sed libero enim sed. Odio aenean
+      sed adipiscing diam donec adipiscing tristique risus.
+    </NotebookConnectCallout>
+
+    Urna et pharetra pharetra massa. Malesuada proin libero
+    nunc consequat interdum varius sit. Velit ut tortor pretium viverra. Et
+    tortor consequat id porta. Gravida rutrum quisque non tellus orci ac auctor
+    augue mauris. Ut faucibus pulvinar elementum integer.
+
   </Prose>
 </Block>
-
 
 <Block>
   <Figure>
