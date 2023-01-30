@@ -49,10 +49,3 @@ export const datasetOverviewPath = (
 ) => {
   return `${datasetRootPath(thematic, dataset)}`;
 };
-
-export const datasetUsagePath = (
-  thematic: ThematicOrString,
-  dataset: DatasetOrString
-) => {
-  return `${datasetRootPath(thematic, dataset)}/usage`;
-};
