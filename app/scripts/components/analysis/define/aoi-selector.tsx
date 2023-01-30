@@ -11,9 +11,9 @@ import {
 import { Button, ButtonGroup } from '@devseed-ui/button';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
-  CollecticonArea,
-  CollecticonClockBack,
-  CollecticonGlobe,
+  CollecticonArrowLoop,
+  CollecticonHandPan,
+  CollecticonMarker,
   CollecticonPencil,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
@@ -127,23 +127,23 @@ export default function AoiSelector({
               onClick={() => onAoiEvent('aoi.clear')}
               disabled={!featureCollection?.features.length}
             >
-              <CollecticonClockBack title='Clear map' meaningful />
+              <CollecticonArrowLoop title='Clear map' meaningful />
             </ToolbarIconButton>
             <VerticalDivider variation='dark' />
             <ButtonGroup variation='primary-fill'>
-              <Button
-                onClick={() => onAoiEvent('aoi.select-click')}
-                active={!drawing}
-                fitting='skinny'
-              >
-                <CollecticonArea title='Selection mode' meaningful />
-              </Button>
               <Button
                 onClick={() => onAoiEvent('aoi.draw-click')}
                 active={drawing}
                 fitting='skinny'
               >
                 <CollecticonPencil title='Drawing mode' meaningful />
+              </Button>
+              <Button
+                onClick={() => onAoiEvent('aoi.select-click')}
+                active={!drawing}
+                fitting='skinny'
+              >
+                <CollecticonHandPan title='Selection mode' meaningful />
               </Button>
             </ButtonGroup>
             <ToolbarIconButton
@@ -156,7 +156,7 @@ export default function AoiSelector({
               alignment='right'
               triggerElement={(props) => (
                 <ToolbarIconButton variation='primary-fill' {...props}>
-                  <CollecticonGlobe title='More options' meaningful />
+                  <CollecticonMarker title='More options' meaningful />
                 </ToolbarIconButton>
               )}
             >
