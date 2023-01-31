@@ -152,9 +152,12 @@ function useCustomAoI() {
       }
 
       while (numPoints > 200 && tolerance < 5) {
-        simplifiedFeatures = simplifiedFeatures.map((feature) =>
-          simplifyFeature(feature, tolerance)
-        );
+        simplifiedFeatures = simplifiedFeatures.map((feature) => {
+          const newFeature = simplifyFeature(feature, tolerance);
+          // If the simplification would leave an invalid polygon (less than 4
+          // points), don't do it.
+          return getNumPoints(newFeature) < 4 ? feature : newFeature;
+        });
         numPoints = simplifiedFeatures.reduce(
           (acc, f) => acc + getNumPoints(f),
           0
