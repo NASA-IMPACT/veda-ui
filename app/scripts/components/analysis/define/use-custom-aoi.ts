@@ -126,7 +126,30 @@ function useCustomAoI() {
       );
       let numPoints = originalTotalFeaturePoints;
       let tolerance = 0.001;
-      let simplifiedFeatures = [...features];
+
+      // Remove holes from polygons as they're not supported.
+      let polygonHasRings = false;
+      let simplifiedFeatures = features.map<Feature<Polygon>>((feature) => {
+        if (feature.geometry.coordinates.length > 1) {
+          polygonHasRings = true;
+          return {
+            ...feature,
+            geometry: {
+              type: 'Polygon',
+              coordinates: [feature.geometry.coordinates[0]]
+            }
+          };
+        }
+
+        return feature;
+      });
+
+      if (polygonHasRings) {
+        warnings = [
+          ...warnings,
+          'Polygons with rings are not supported and were simplified to remove them'
+        ];
+      }
 
       while (numPoints > 200 && tolerance < 5) {
         simplifiedFeatures = simplifiedFeatures.map((feature) =>
