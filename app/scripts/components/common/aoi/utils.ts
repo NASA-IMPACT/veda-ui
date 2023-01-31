@@ -68,9 +68,11 @@ export const calcFeatCollArea = (
   if (!featureCollection?.features.length) return '0';
 
   // Merge the features to calculate the correct area in the case of overlap.
-  const mergedFeature = featureCollection.features.reduce((acc, feature) => {
-    return union(acc, feature)!;
-  }, featureCollection.features[0]);
+  const mergedFeature = featureCollection.features
+    .slice(1)
+    .reduce((acc, feature) => {
+      return union(acc, feature)!;
+    }, featureCollection.features[0]);
 
   // Convert from m2 to km2.
   const km2 = featArea(mergedFeature) / 1e6;
