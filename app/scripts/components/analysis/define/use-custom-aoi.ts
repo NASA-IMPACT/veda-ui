@@ -133,7 +133,9 @@ function useCustomAoI() {
         ];
       }
 
-      while (numPoints > 200 && tolerance < 5) {
+      // If we allow up to 200 polygons and each polygon needs 4 points, we need
+      // at least 800, give an additional buffer and we get 1000.
+      while (numPoints > 1000 && tolerance < 5) {
         simplifiedFeatures = simplifiedFeatures.map((feature) =>
           simplify(feature, { tolerance })
         );
@@ -141,7 +143,7 @@ function useCustomAoI() {
           (acc, f) => acc + getNumPoints(f),
           0
         );
-        tolerance *= 5;
+        tolerance = Math.min(tolerance * 1.8, 5);
       }
 
       if (originalTotalFeaturePoints !== numPoints) {
