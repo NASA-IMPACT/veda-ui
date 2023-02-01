@@ -39,7 +39,7 @@ Start with the implementation of solution 1 (Maintain current architecture). If 
 
 ### Negative Consequences
 
-- Problems pertaining to the implementation of content authoring flows and WYSIWYG elements will remain as they currently are. (1)
+- Problems pertaining to the implementation of content authoring flows and WYSIWYG elements will remain as they currently are. [^1]
 
 ## Pros and Cons of the Options
 
@@ -49,10 +49,10 @@ Extract a search index from MDX files' frontmatter at build time. Through the us
 
 - 💚 Keep the existing architecture
 - 💚 Minimal changes needed
-- 💚 Maintain instance replicability (2)
+- 💚 Maintain instance replicability [^2]
 - 🚩 Search is limited by the (potentially exponential) size of the index. This issue forces us to limit search capabilities to some properties of the frontmatter (title, description, etc)
 - 🚩 Can be tricky to build a plugin to extract content relationships from the MDX content.
-- 🚩 Limits future possibilities of building a content authoring system (1)
+- 🚩 Limits future possibilities of building a content authoring system [^1]
 
 ### [2] CMS
 
@@ -64,7 +64,7 @@ Move all the content to a headless CMS. Rearchitecture the frontend to fetch con
 - 🚩 Huge undertaking as it would require a complete new system and content migration.
 - 🚩 Dedicated team for the backend.
 - 🚩 Given the very custom nature of the project the different WYSIWYG elements would likely need to be custom built.
-- 🚩 Harder instance replicability (2)
+- 🚩 Harder instance replicability [^2]
 
 ### [3] Hybrid
 
@@ -74,8 +74,8 @@ Sync all MDX data with a 3rd party service as a CI step (E.g. Elastic Search), t
 - 💚 Very powerful search.
 - 💚 Would support [faceted search](https://github.com/NASA-IMPACT/veda-architecture/issues/162#issuecomment-1387647740)
 - 🚩 Can be tricky to build a plugin to extract content relationships from the MDX content.
-- 🚩 Limits future possibilities of building a content authoring system (1)
-- 🚩 Harder instance replicability (2)
+- 🚩 Limits future possibilities of building a content authoring system [^1]
+- 🚩 Harder instance replicability [^2]
 
 ### [4] Veda Datastore
 
@@ -83,14 +83,13 @@ Use the VEDA datastore as the source-of-truth for search rather than the MDX con
 
 - 🚩 Needs to rearchitecure the frontend.
 - 🚩 Since the data in the datastore and the data in veda-config have pretty different structures, this would lead to information mismatch and potentially the need to update multiple content configurations at the same time.
-- 🚩 Harder instance replicability (2)
+- 🚩 Harder instance replicability [^2]
 
 _Could be revisited in the future if all the data is moved to the datastore, resolving the duplication issue_
 
 ## Notes:
 
-(1) A content authoring could still be custom built to output the content into files, instead of a database. An inspiration for this could be the Netlify CMS, currently being used as a prototype. _A complete editor to power this content system should be considered almost a separate project._
+[^1]: A content authoring could still be custom built to output the content into files, instead of a database. An inspiration for this could be the Netlify CMS, currently being used as a prototype. _A complete editor to power this content system should be considered almost a separate project._
 
-(2) The current architecture was setup to allow new instances of VEDA to be created easily. The architecture relies on 2 repos: `veda-config` and `veda-ui`. The config repo holds all the content and needed settings, while the ui repo holds the app code. Users need only to fork the config repo and add their own content/change the settings, being able to update the underlying ui module when new features are released.
-  
-  > Recent research tells us that this functionality may not be as needed as it was originaly thought, but it is something to take into consideration.
+[^2]: The current architecture was setup to allow new instances of VEDA to be created easily. The architecture relies on 2 repos: `veda-config` and `veda-ui`. The config repo holds all the content and needed settings, while the ui repo holds the app code. Users need only to fork the config repo and add their own content/change the settings, being able to update the underlying ui module when new features are released.
+_Recent research tells us that this functionality may not be as needed as it was originaly thought, but it is something to take into consideration._
