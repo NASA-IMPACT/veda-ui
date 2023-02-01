@@ -46,6 +46,14 @@ const FileUpload = styled.div`
   flex-flow: nowrap;
   align-items: center;
   gap: ${variableGlsp(0.5)};
+
+  ${Button} {
+    flex-shrink: 0;
+  }
+
+  ${Subtitle} {
+    overflow-wrap: anywhere;
+  }
 `;
 
 const FileInput = styled.input`

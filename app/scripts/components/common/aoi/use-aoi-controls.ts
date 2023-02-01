@@ -5,26 +5,26 @@ import { MapboxMapRef } from '../mapbox';
 import { AoiChangeListenerOverload, AoiState } from './types';
 import { makeFeatureCollection } from './utils';
 
+const DEFAULT_PARAMETERS = {
+  drawing: false,
+  selected: false,
+  selectedContext: undefined,
+  featureCollection: null,
+  actionOrigin: null
+};
+
 export function useAoiControls(
   mapRef: React.RefObject<MapboxMapRef>,
   initialState: Partial<AoiState> = {}
 ) {
   const [aoi, setAoi] = useState<AoiState>({
-    drawing: false,
-    selected: false,
-    selectedContext: undefined,
-    featureCollection: null,
-    actionOrigin: null,
+    ...DEFAULT_PARAMETERS,
     ...initialState
   });
 
   useDeepCompareEffect(() => {
     setAoi({
-      drawing: false,
-      selected: false,
-      selectedContext: undefined,
-      featureCollection: null,
-      actionOrigin: null,
+      ...DEFAULT_PARAMETERS,
       ...initialState
     });
   }, [initialState]);
@@ -42,78 +42,55 @@ export function useAoiControls(
         break;
       }
       case 'aoi.draw-click':
-        setAoi((state) => {
-          return {
-            ...state,
-            drawing: true,
-            selected: false,
-            selectedContext: undefined,
-            actionOrigin: null
-          };
-        });
+        setAoi(({ featureCollection }) => ({
+          ...DEFAULT_PARAMETERS,
+          featureCollection,
+          drawing: true
+        }));
         break;
       case 'aoi.select-click':
-        setAoi((state) => {
-          return {
-            ...state,
-            drawing: false,
-            selected: false,
-            selectedContext: undefined,
-            actionOrigin: null
-          };
-        });
+        setAoi(({ featureCollection }) => ({
+          ...DEFAULT_PARAMETERS,
+          featureCollection
+        }));
         break;
       case 'aoi.set':
-        setAoi((state) => ({
-          ...state,
-          drawing: false,
-          selectedContext: undefined,
-          featureCollection: payload.featureCollection,
-          actionOrigin: 'panel'
+        setAoi(() => ({
+          ...DEFAULT_PARAMETERS,
+          featureCollection: payload.featureCollection
         }));
         break;
       case 'aoi.clear':
         setAoi({
-          drawing: false,
-          selected: false,
-          selectedContext: undefined,
-          featureCollection: null,
-          actionOrigin: null
+          ...DEFAULT_PARAMETERS
         });
         break;
       case 'aoi.delete':
         setAoi((state) => ({
-          drawing: false,
-          selected: false,
-          selectedContext: undefined,
+          ...DEFAULT_PARAMETERS,
           featureCollection: makeFeatureCollection(
             (state.featureCollection?.features ?? []).filter(
               (f) => !payload.ids.includes(f.id)
             )
-          ),
-          actionOrigin: null
+          )
         }));
         break;
       case 'aoi.draw-finish':
         {
-          setAoi((state) => ({
-            ...state,
-            drawing: false,
-            selectedContext: undefined,
+          setAoi(({ featureCollection }) => ({
+            ...DEFAULT_PARAMETERS,
             featureCollection: makeFeatureCollection(
-              (state.featureCollection?.features ?? []).concat(payload.feature)
-            ),
-            actionOrigin: 'map'
+              (featureCollection?.features ?? []).concat(payload.feature)
+            )
           }));
         }
         break;
       case 'aoi.selection':
-        setAoi((state) => ({
-          ...state,
-          drawing: false,
+        setAoi(({ featureCollection }) => ({
+          ...DEFAULT_PARAMETERS,
+          featureCollection,
           selected: payload.selected,
-          selectedContext: payload.context,
-          actionOrigin: payload.selected ? 'map' : null
+          selectedContext: payload.context
         }));
         break;
       case 'aoi.update':
@@ -139,8 +116,7 @@ export function useAoiControls(
               (state.featureCollection?.features ?? []).map((f) =>
                 f.id === payload.feature.id ? payload.feature : f
               )
-            ),
-            actionOrigin: 'map'
+            )
           };
         });
         break;
