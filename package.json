@@ -109,6 +109,7 @@
     "@turf/area": "^6.5.0",
     "@turf/bbox": "^6.5.0",
     "@turf/centroid": "^6.5.0",
+    "@turf/simplify": "^6.5.0",
     "@turf/union": "^6.5.0",
     "@types/geojson": "^7946.0.10",
     "@types/mdx": "^2.0.1",
@@ -148,7 +149,6 @@
     "recharts": "2.1.12",
     "scrollama": "^3.1.0",
     "shpjs": "^4.0.4",
-    "simplify-js": "^1.2.4",
     "styled-components": "^5.3.3",
     "use-deep-compare": "^1.1.0"
   },

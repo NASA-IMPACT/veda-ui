@@ -1,7 +1,7 @@
 import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import shp from 'shpjs';
-import simplify from 'simplify-js';
+import simplify from '@turf/simplify';
 import { multiPolygonToPolygons } from '../utils';
 
 import { makeFeatureCollection } from '$components/common/aoi/utils';
@@ -14,24 +14,6 @@ export interface FileInfo {
   name: string;
   extension: string;
   type: 'Shapefile' | 'GeoJSON';
-}
-
-function simplifyFeature(
-  feature: Feature<Polygon>,
-  tolerance: number
-): Feature<Polygon> {
-  return {
-    ...feature,
-    geometry: {
-      ...feature.geometry,
-      coordinates: feature.geometry.coordinates.map((coords) => {
-        return simplify(
-          coords.map((c) => ({ x: c[0], y: c[1] })),
-          tolerance
-        ).map((c) => [c.x, c.y]);
-      })
-    }
-  };
 }
 
 function getNumPoints(feature: Feature<Polygon>): number {
@@ -152,12 +134,9 @@ function useCustomAoI() {
       }
 
       while (numPoints > 200 && tolerance < 5) {
-        simplifiedFeatures = simplifiedFeatures.map((feature) => {
-          const newFeature = simplifyFeature(feature, tolerance);
-          // If the simplification would leave an invalid polygon (less than 4
-          // points), don't do it.
-          return getNumPoints(newFeature) < 4 ? feature : newFeature;
-        });
+        simplifiedFeatures = simplifiedFeatures.map((feature) =>
+          simplify(feature, { tolerance })
+        );
         numPoints = simplifiedFeatures.reduce(
           (acc, f) => acc + getNumPoints(f),
           0
