@@ -1,4 +1,4 @@
-# Dashboard V1 architecture
+# Dashboard V1 (Catalog exploration) architecture
 
 * Status: accepted
 * Deciders: @hanbyul-here @michaelgsuttles @danielfdsilva @nerik 
