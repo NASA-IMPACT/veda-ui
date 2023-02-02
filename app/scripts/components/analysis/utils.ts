@@ -1,4 +1,4 @@
-import { endOfDay, startOfDay } from 'date-fns';
+import { endOfDay, startOfDay, format } from 'date-fns';
 import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import { userTzDate2utcString } from '$utils/date';
 
@@ -93,4 +93,11 @@ export function combineFeatureCollection(
       ]
     }
   };
+}
+
+export function getDateRangeFormatted(startDate, endDate) {
+  const dFormat = 'yyyy-MM-dd';
+  const startDateFormatted = format(startDate, dFormat);
+  const endDateFormatted = format(endDate, dFormat);
+  return [startDateFormatted, endDateFormatted].join('-');
 }

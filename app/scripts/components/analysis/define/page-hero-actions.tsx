@@ -7,9 +7,13 @@ import {
   CollecticonTickSmall,
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
+import { VerticalDivider } from '@devseed-ui/toolbar';
 import { DatasetLayer } from 'veda/thematics';
 
 import { analysisParams2QueryString } from '../results/use-analysis-params';
+import useSavedSettings from '../use-saved-settings';
+import SavedAnalysisControl from '../saved-analysis-control';
+
 import { Tip } from '$components/common/tip';
 import { resourceNotFound } from '$components/uhoh';
 import { thematicAnalysisPath } from '$utils/routes';
@@ -51,6 +55,17 @@ export default function PageHeroActions({
       aoi
     });
   }, [start, end, datasetsLayers, aoi]);
+
+  const { onGenerateClick } = useSavedSettings({
+    thematicAreaId: thematic.data.id,
+    analysisParamsQs,
+    params: {
+      start,
+      end,
+      datasets: datasetsLayers?.map((d) => d.name),
+      aoi: aoi ?? undefined
+    }
+  });
 
   let tipContents;
 
@@ -106,10 +121,18 @@ export default function PageHeroActions({
           variation='achromic-outline'
           size={size}
           to={`${thematicAnalysisPath(thematic)}/results${analysisParamsQs}`}
+          onClick={onGenerateClick}
         >
           <CollecticonTickSmall /> Generate
         </Button>
       )}
+
+      <VerticalDivider variation='light' />
+
+      <SavedAnalysisControl
+        size={size}
+        urlBase={thematicAnalysisPath(thematic)}
+      />
     </>
   );
 }

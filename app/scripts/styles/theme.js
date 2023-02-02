@@ -50,6 +50,10 @@ export const GlobalStyles = createGlobalStyle`
   /* stylelint-disable-next-line selector-type-no-unknown */
   ${reactTippyStyles()}
 
+  .tether-element.tether-element {
+    z-index: 700;
+  }
+
   :root {
     --base-space-multiplier: ${themeVal('layout.glspMultiplier.xsmall')};
   }

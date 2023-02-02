@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useMemo, MouseEvent } from 'react';
-import { format } from 'date-fns';
 import { reverse } from 'd3';
 import styled, { useTheme } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -17,6 +16,7 @@ import {
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import { Button } from '@devseed-ui/button';
 
+import { getDateRangeFormatted } from '../utils';
 import { TimeseriesData } from './timeseries-data';
 import {
   ChartCardAlert,
@@ -138,11 +138,7 @@ export default function ChartCard(props: ChartCardProps) {
       // The indexes expect the data to be ascending, so we have to reverse the
       // data.
       const data = reverse(chartData.data.timeseries);
-      const dFormat = 'yyyy-MM-dd';
-      const startDateFormatted = format(startDate, dFormat);
-      const endDateFormatted = format(endDate, dFormat);
-
-      const filename = `chart.${id}.${startDateFormatted}-${endDateFormatted}`;
+      const filename = `chart.${id}.${getDateRangeFormatted(startDate, endDate)}`;
 
       if (type === 'image') {
         chartRef.current?.saveAsImage(filename);
