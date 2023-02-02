@@ -10,7 +10,7 @@ import {
 import { reveal } from '@devseed-ui/animation';
 import { ButtonProps } from '@devseed-ui/button';
 
-import { Feature, MultiPolygon } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import { useSlidingStickyHeaderProps } from '../common/layout-root';
 import PageHeroMedia from './page-hero-media';
 import { PageLead, PageMainTitle } from '$styles/page';
@@ -164,7 +164,7 @@ interface PageHeroAnalysisProps {
   description: React.ReactNode;
   isHidden?: boolean;
   isResults?: boolean;
-  aoiFeature?: Feature<MultiPolygon>;
+  aoi?: FeatureCollection<Polygon>;
   renderActions?: ({ size }: { size: ButtonProps['size'] }) => React.ReactNode;
 }
 
@@ -174,7 +174,7 @@ function PageHeroAnalysis(props: PageHeroAnalysisProps) {
     description,
     isHidden,
     isResults = false,
-    aoiFeature,
+    aoi,
     renderActions
   } = props;
 
@@ -217,8 +217,8 @@ function PageHeroAnalysis(props: PageHeroAnalysisProps) {
           </PageHeroActions>
         </PageHeroBlockBeta>
       </PageHeroInner>
-      {isResults && aoiFeature && (
-        <PageHeroMedia feature={aoiFeature} isHeaderStuck={isStuck} />
+      {isResults && aoi && (
+        <PageHeroMedia aoi={aoi} isHeaderStuck={isStuck} />
       )}
     </PageHeroSelf>
   );

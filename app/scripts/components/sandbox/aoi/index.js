@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 
+import AoiControls from './controls';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 import MapboxMap from '$components/common/mapbox';
-import AoiControls from '$components/common/aoi/controls';
 import { useAoiControls } from '$components/common/aoi/use-aoi-controls';
 
 const DemoMap = styled(MapboxMap)`
@@ -17,19 +17,20 @@ const Wrapper = styled.div`
 `;
 
 function SandboxAOI() {
-  const { aoi, onAoiEvent } = useAoiControls();
+  const mapRef = useRef();
+  const { aoi, onAoiEvent } = useAoiControls(mapRef);
 
   return (
     <PageMainContent>
       <Constrainer>
         <Wrapper>
           <AoiControls
-            feature={aoi.feature}
+            featureCollection={aoi.featureCollection}
             selected={aoi.selected}
             drawing={aoi.drawing}
             onAoiChange={onAoiEvent}
           />
-          <DemoMap aoi={aoi} onAoiChange={onAoiEvent} />
+          <DemoMap aoi={aoi} onAoiChange={onAoiEvent} ref={mapRef} />
         </Wrapper>
       </Constrainer>
     </PageMainContent>

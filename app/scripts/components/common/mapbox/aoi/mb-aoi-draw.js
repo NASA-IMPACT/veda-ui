@@ -21,8 +21,7 @@ export function useMbDraw({
   theme,
   onChange,
   drawing,
-  selected,
-  feature
+  featureCollection
 }) {
   const mbDrawRef = useRef();
 
@@ -40,23 +39,55 @@ export function useMbDraw({
 
     mbMap.addControl(newMbDraw, 'top-left');
 
+    // Store control for later retrieval and imperative method use.
+    mbMap._drawControl = newMbDraw;
+
     const drawCreateListener = (e) =>
       onChange?.('aoi.draw-finish', { feature: e.features[0] });
 
-    const drawSelectionListener = (e) =>
-      onChange?.('aoi.selection', { selected: !!e.features.length });
+    const drawSelectionListener = (e) => {
+      const mode = newMbDraw.getMode();
+      const features = e.features;
+      const points = e.points;
 
-    const drawUpdateListener = (e) =>
-      onChange?.('aoi.update', { feature: e.features[0] });
+      // A feature is only selected if in simple_select mode. When a feature is
+      // selected with direct_select mode we don't count it because it can't be
+      // deleted. This is how the plugin works. Go figure.
+      const isSelected =
+        points.length || (features.length && mode === 'simple_select');
+
+      onChange?.('aoi.selection', {
+        selected: isSelected,
+        context: isSelected
+          ? {
+              features,
+              points
+            }
+          : undefined
+      });
+    };
+
+    const drawUpdateListener = (e) => {
+      // If the user deletes points from a polygon leaving it with just 2
+      // points, it is no longer a polygon and the coordinates array will be
+      // empty. In this case don't emit the update event as mbDraw will emit a
+      // delete event right after.
+      e.features[0].geometry.coordinates.length &&
+        onChange?.('aoi.update', { feature: e.features[0] });
+    };
 
     const drawModeListener = (e) =>
       e.mode === 'simple_select' &&
       onChange?.('aoi.selection', { selected: false });
 
+    const drawDeleteListener = (e) =>
+      onChange?.('aoi.delete', { ids: e.features.map((f) => f.id) });
+
     mbMap
       .on('draw.create', drawCreateListener)
       .on('draw.selectionchange', drawSelectionListener)
       .on('draw.modechange', drawModeListener)
+      .on('draw.delete', drawDeleteListener)
       .on('draw.update', drawUpdateListener);
 
     return () => {
@@ -76,31 +107,12 @@ export function useMbDraw({
     const mbDraw = mbDrawRef.current;
     if (!mbDraw) return;
 
-    if (feature) {
-      mbDraw.set({
-        type: 'FeatureCollection',
-        features: [feature]
-      });
+    if (featureCollection) {
+      mbDraw.set(featureCollection);
     } else {
       mbDraw.deleteAll();
     }
-  }, [feature]);
-
-  // Select the feature if the state changed.
-  useEffect(() => {
-    const mbDraw = mbDrawRef.current;
-    if (!mbDraw) return;
-
-    if (selected) {
-      if (feature) {
-        mbDraw.changeMode('direct_select', {
-          featureId: feature.id
-        });
-      }
-    } else {
-      mbDraw.changeMode('simple_select');
-    }
-  }, [selected, feature]);
+  }, [featureCollection]);
 
   // Start/stop the drawing.
   useEffect(() => {

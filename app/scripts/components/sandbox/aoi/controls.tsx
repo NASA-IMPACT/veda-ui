@@ -1,16 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonArea,
-  CollecticonTrashBin
+  CollecticonClockBack,
+  CollecticonPencil
 } from '@devseed-ui/collecticons';
-import { Toolbar, ToolbarIconButton, VerticalDivider } from '@devseed-ui/toolbar';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
-
 import {
-  calcFeatArea,
-} from './utils';
-import { AoiChangeListenerOverload, AoiState } from './types';
+  Toolbar,
+  ToolbarIconButton,
+  VerticalDivider
+} from '@devseed-ui/toolbar';
+import { Button, ButtonGroup } from '@devseed-ui/button';
+
+import { calcFeatCollArea } from '../../common/aoi/utils';
+import { AoiChangeListenerOverload, AoiState } from '../../common/aoi/types';
 
 export const Filter = styled.section`
   display: flex;
@@ -51,33 +55,44 @@ export const FilterHeadToolbar = styled.div`
 
 type AoiControlsProps = {
   onAoiChange: AoiChangeListenerOverload;
-} & Pick<AoiState, 'feature' | 'drawing' | 'selected'>;
+} & Pick<AoiState, 'featureCollection' | 'drawing'>;
 
 export default function AoiControls(props: AoiControlsProps) {
-  const { feature, selected, drawing, onAoiChange } = props;
+  const { featureCollection, drawing, onAoiChange } = props;
 
   return (
     <Filter>
       <FilterHeadline>
         <FilterTitle>Area of interest</FilterTitle>
         <FilterSubtitle>
-          {calcFeatArea(feature)} km<sup>2</sup>
+          {calcFeatCollArea(featureCollection)} km<sup>2</sup>
         </FilterSubtitle>
       </FilterHeadline>
       <Toolbar>
         <ToolbarIconButton
+          variation='base-outline'
           onClick={() => onAoiChange('aoi.clear')}
-          disabled={!feature}
+          disabled={!featureCollection?.features.length}
         >
-          <CollecticonTrashBin meaningful title='Clear AOI' />
+          <CollecticonClockBack title='Clear map' meaningful />
         </ToolbarIconButton>
         <VerticalDivider variation='dark' />
-        <ToolbarIconButton
-          onClick={() => onAoiChange('aoi.draw-click')}
-          active={selected || drawing}
-        >
-          <CollecticonArea meaningful title='AOI' />
-        </ToolbarIconButton>
+        <ButtonGroup variation='base-outline'>
+          <Button
+            onClick={() => onAoiChange('aoi.select-click')}
+            active={!drawing}
+            fitting='skinny'
+          >
+            <CollecticonArea title='Selection mode' meaningful />
+          </Button>
+          <Button
+            onClick={() => onAoiChange('aoi.draw-click')}
+            active={drawing}
+            fitting='skinny'
+          >
+            <CollecticonPencil title='Drawing mode' meaningful />
+          </Button>
+        </ButtonGroup>
       </Toolbar>
     </Filter>
   );

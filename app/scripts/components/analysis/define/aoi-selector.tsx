@@ -1,29 +1,22 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Feature, MultiPolygon, Polygon } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
 
 import {
   Toolbar,
   ToolbarIconButton,
-  ToolbarLabel,
   VerticalDivider
 } from '@devseed-ui/toolbar';
-
+import { Button, ButtonGroup } from '@devseed-ui/button';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
-  CollecticonArea,
-  CollecticonGlobe,
-  CollecticonTrashBin,
+  CollecticonArrowLoop,
+  CollecticonHandPan,
+  CollecticonMarker,
+  CollecticonPencil,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
-import { multiPolygonToPolygon } from '../utils';
 import { FeatureByRegionPreset, RegionPreset } from './constants';
 import AoIUploadModal from './aoi-upload-modal';
 import {
@@ -40,6 +33,8 @@ import {
   AoiState
 } from '$components/common/aoi/types';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
+import { makeFeatureCollection } from '$components/common/aoi/utils';
+import { variableGlsp } from '$styles/variable-utils';
 
 const MapContainer = styled.div`
   position: relative;
@@ -49,65 +44,75 @@ const AoiMap = styled(MapboxMap)`
   min-height: 24rem;
 `;
 
+const AoiHeadActions = styled(FoldHeadActions)`
+  z-index: 1;
+  /* 2 times vertical glsp to account for paddings + 2rem which is the height of
+  the buttons */
+  transform: translate(${variableGlsp(-1)}, calc(${variableGlsp(2)} + 2rem));
+`;
+
 interface AoiSelectorProps {
-  qsFeature?: Feature<MultiPolygon>;
+  mapRef: React.RefObject<MapboxMapRef>;
+  qsAoi?: FeatureCollection<Polygon>;
   aoiDrawState: AoiState;
   onAoiEvent: AoiChangeListenerOverload;
 }
 
 export default function AoiSelector({
+  mapRef,
   onAoiEvent,
-  qsFeature,
+  qsAoi,
   aoiDrawState
 }: AoiSelectorProps) {
-  const { selected, drawing, feature } = aoiDrawState;
-  const mapRef = useRef<MapboxMapRef>(null);
+  const { drawing, featureCollection } = aoiDrawState;
 
-  // Technical debt
-  // Despite the query parameters support for multiple features on the aoi, the
-  // AOI drawing tool only supports one.
-  // Keeping just the first one.
-  const qsPolygon: Feature<Polygon> | null = useMemo(() => {
-    return qsFeature
-      ? { ...multiPolygonToPolygon(qsFeature), id: 'qs-feature' }
+  // For the drawing tool, the features need an id.
+  const qsFc: FeatureCollection<Polygon> | null = useMemo(() => {
+    return qsAoi
+      ? makeFeatureCollection(
+          qsAoi.features.map((f, i) => ({ id: `qs-feature-${i}`, ...f }))
+        )
       : null;
-  }, [qsFeature]);
+  }, [qsAoi]);
 
-  const setFeature = useCallback(
-    (feature: Feature<Polygon>) => {
-      onAoiEvent('aoi.set-feature', { feature });
-      const featureBbox = bbox(feature) as [number, number, number, number];
-      mapRef.current?.instance?.fitBounds(featureBbox, { padding: 32 });
+  const setFeatureCollection = useCallback(
+    (featureCollection: FeatureCollection<Polygon>) => {
+      onAoiEvent('aoi.set', { featureCollection });
+      const fcBbox = bbox(featureCollection) as [
+        number,
+        number,
+        number,
+        number
+      ];
+      mapRef.current?.instance?.fitBounds(fcBbox, { padding: 32 });
     },
     [onAoiEvent]
   );
 
   const onRegionPresetClick = useCallback(
     (preset: RegionPreset) => {
-      setFeature({
-        ...FeatureByRegionPreset[preset],
-        id: 'region-preset-feature'
-      });
+      setFeatureCollection(FeatureByRegionPreset[preset]);
     },
-    [setFeature]
+    [setFeatureCollection]
   );
 
-  // Use the feature from the url qs or the region preset as the initial state to center the map.
+  // Use the feature from the url qs or the region preset as the initial state
+  // to center the map.
   useEffect(() => {
-    if (qsPolygon) {
-      setFeature(qsPolygon);
+    if (qsFc) {
+      setFeatureCollection(qsFc);
     } else {
       onAoiEvent('aoi.clear');
       mapRef.current?.instance?.flyTo({ zoom: 1, center: [0, 0] });
     }
-  }, [onAoiEvent, qsPolygon, setFeature]);
+  }, [onAoiEvent, qsFc, setFeatureCollection]);
 
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
 
   return (
     <Fold>
       <AoIUploadModal
-        setFeature={setFeature}
+        setFeatureCollection={setFeatureCollection}
         revealed={aoiModalRevealed}
         onCloseClick={() => setAoIModalRevealed(false)}
       />
@@ -115,38 +120,43 @@ export default function AoiSelector({
         <FoldHeadline>
           <FoldTitle>Area</FoldTitle>
         </FoldHeadline>
-        <FoldHeadActions>
-          <Toolbar size='small'>
-            <ToolbarLabel>Actions</ToolbarLabel>
+        <AoiHeadActions>
+          <Toolbar>
             <ToolbarIconButton
-              variation='base-text'
+              variation='primary-fill'
               onClick={() => onAoiEvent('aoi.clear')}
-              disabled={!feature}
+              disabled={!featureCollection?.features.length}
             >
-              <CollecticonTrashBin title='Delete shape' meaningful />
+              <CollecticonArrowLoop title='Clear map' meaningful />
             </ToolbarIconButton>
             <VerticalDivider variation='dark' />
+            <ButtonGroup variation='primary-fill'>
+              <Button
+                onClick={() => onAoiEvent('aoi.draw-click')}
+                active={drawing}
+                fitting='skinny'
+              >
+                <CollecticonPencil title='Drawing mode' meaningful />
+              </Button>
+              <Button
+                onClick={() => onAoiEvent('aoi.select-click')}
+                active={!drawing}
+                fitting='skinny'
+              >
+                <CollecticonHandPan title='Selection mode' meaningful />
+              </Button>
+            </ButtonGroup>
             <ToolbarIconButton
-              variation='base-text'
-              onClick={() => onAoiEvent('aoi.draw-click')}
-              active={selected || drawing}
-            >
-              <CollecticonArea title='Draw shape' meaningful />
-            </ToolbarIconButton>
-            <ToolbarIconButton
-              variation='base-text'
               onClick={() => setAoIModalRevealed(true)}
+              variation='primary-fill'
             >
               <CollecticonUpload2 title='Upload geoJSON' meaningful />
             </ToolbarIconButton>
             <Dropdown
               alignment='right'
               triggerElement={(props) => (
-                <ToolbarIconButton variation='base-text' {...props}>
-                  <CollecticonGlobe
-                    title='More options'
-                    meaningful
-                  />
+                <ToolbarIconButton variation='primary-fill' {...props}>
+                  <CollecticonMarker title='More options' meaningful />
                 </ToolbarIconButton>
               )}
             >
@@ -162,7 +172,7 @@ export default function AoiSelector({
               </DropMenu>
             </Dropdown>
           </Toolbar>
-        </FoldHeadActions>
+        </AoiHeadActions>
       </FoldHeader>
       <FoldBody>
         <MapContainer>

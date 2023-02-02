@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import qs from 'qs';
 import { useLocation } from 'react-router';
-import { Feature, MultiPolygon } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import { DatasetLayer, datasets as vedaDatasets } from 'veda/thematics';
 
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { polygonUrlDecode, polygonUrlEncode } from '$utils/polygon-url';
 
-// ?start=2015-01-01T00:00:00.000Z&end=2022-01-01T00:00:00.000Z&datasets=no2-monthly|blue-tarp-planetscope&aoi=-9.60205,36.72127|-7.03125,36.87962|-6.85546,39.45316|-6.52587,40.93011|-5.55908,42.11452|-9.38232,42.22851|-8.89892,40.84706|-9.93164,38.85682|-9.47021,38.08268|-8.96484,38.09998||-12.01904,25.95804|-8.65722,25.97779|-8.67919,27.68352|-13.05175,27.68352|-14.89746,25.95804|-12.04101,24.44714
+// ?start=2020-01-01T00%3A00%3A00.000Z&end=2020-03-01T00%3A00%3A00.000Z&datasetsLayers=no2-monthly&aoi=ngtcAqjcyEqihCg_%60%7C%40c%7CbyAr%60tJftcApyb~%40%7C%7C%60g~vA%7DlirHc%7BhyBf%60wAngtcA%7D_qaA
 
 export interface AnalysisParams {
   start: Date;
   end: Date;
   datasetsLayers: DatasetLayer[];
-  aoi: Feature<MultiPolygon>;
+  aoi: FeatureCollection<Polygon>;
   errors: any[] | null;
 }
 
@@ -22,7 +22,7 @@ type AnalysisParamsNull = Omit<Partial<AnalysisParams>, 'errors'> & {
 };
 
 type AnyAnalysisParamsKey = keyof AnalysisParams;
-type AnyAnalysisParamsType = Date | DatasetLayer[] | Feature<MultiPolygon>;
+type AnyAnalysisParamsType = Date | DatasetLayer[] | FeatureCollection<Polygon>;
 
 const initialState: AnalysisParamsNull = {
   start: undefined,
@@ -31,6 +31,15 @@ const initialState: AnalysisParamsNull = {
   aoi: undefined,
   errors: null
 };
+
+export class ValidationError extends Error {
+  hints: any[];
+
+  constructor(hints: any[]) {
+    super('Invalid parameters');
+    this.hints = hints;
+  }
+}
 
 export function useAnalysisParams(): {
   params: AnalysisParams | AnalysisParamsNull;
@@ -52,7 +61,7 @@ export function useAnalysisParams(): {
 
     try {
       if (!start || !end || !datasetsLayers || !aoi) {
-        throw [
+        throw new ValidationError([
           'Missing required value from URL:',
           {
             start,
@@ -60,19 +69,19 @@ export function useAnalysisParams(): {
             datasetsLayers,
             aoi
           }
-        ];
+        ]);
       }
 
       const startDate = utcString2userTzDate(start);
       const endDate = utcString2userTzDate(end);
       if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        throw [
+        throw new ValidationError([
           'Invalid start or end date:',
           {
             start,
             end
           }
-        ];
+        ]);
       }
 
       // Create an array with all the dataset layers.
@@ -90,11 +99,12 @@ export function useAnalysisParams(): {
         const sentences = ['Invalid dataset layer ids found:'];
         layers.forEach((l, i) => {
           if (!l) {
+            /* eslint-disable-next-line fp/no-mutating-methods */
             sentences.push(`- ${datasetsLayers.split('|')[i]}`);
           }
         });
 
-        throw sentences;
+        throw new ValidationError(sentences);
       }
 
       // lon,lat|lon,lat||lon,lat|lon,lat
@@ -103,7 +113,7 @@ export function useAnalysisParams(): {
       const { geojson, errors: gjvErrors } = polygonUrlDecode(aoi);
 
       if (gjvErrors.length) {
-        throw ['Invalid AOI string:', ...gjvErrors];
+        throw new ValidationError(['Invalid AOI string:', ...gjvErrors]);
       }
 
       setParams({
@@ -114,13 +124,13 @@ export function useAnalysisParams(): {
         errors: null
       });
     } catch (error) {
-      if (Array.isArray(error)) {
+      if (error instanceof ValidationError) {
         /* eslint-disable no-console */
-        error.forEach((s) => console.log(s));
+        error.hints.forEach((s) => console.log(s));
         /* eslint-enable no-console */
         setParams({
           ...initialState,
-          errors: error
+          errors: error.hints
         });
       } else {
         throw error;

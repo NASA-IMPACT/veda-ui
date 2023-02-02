@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { sticky } from 'tippy.js';
-import { Feature, MultiPolygon, Polygon } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import { Button, ButtonProps } from '@devseed-ui/button';
 import {
   CollecticonTickSmall,
@@ -26,7 +26,7 @@ interface PageHeroActionsProps {
   start?: Date;
   end?: Date;
   datasetsLayers?: DatasetLayer[];
-  aoi?: Feature<Polygon> | null;
+  aoi?: FeatureCollection<Polygon> | null;
 }
 
 export default function PageHeroActions({
@@ -44,22 +44,11 @@ export default function PageHeroActions({
 
   const analysisParamsQs = useMemo(() => {
     if (!start || !end || !datasetsLayers || !aoi) return '';
-    // Quick and dirty conversion to MultiPolygon - might be avoided if using
-    // Google-polyline?
-    const toMultiPolygon: Feature<MultiPolygon> = {
-      type: 'Feature',
-      properties: { ...aoi.properties },
-      geometry: {
-        type: 'MultiPolygon',
-        coordinates: [aoi.geometry.coordinates]
-      }
-    };
-
     return analysisParams2QueryString({
       start,
       end,
       datasetsLayers,
-      aoi: toMultiPolygon
+      aoi
     });
   }, [start, end, datasetsLayers, aoi]);
 

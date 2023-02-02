@@ -1,83 +1,127 @@
 import { useCallback, useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 
+import { MapboxMapRef } from '../mapbox';
 import { AoiChangeListenerOverload, AoiState } from './types';
+import { makeFeatureCollection } from './utils';
 
-export function useAoiControls(initialState: Partial<AoiState> = {}) {
+const DEFAULT_PARAMETERS = {
+  drawing: false,
+  selected: false,
+  selectedContext: undefined,
+  featureCollection: null,
+  actionOrigin: null
+};
+
+export function useAoiControls(
+  mapRef: React.RefObject<MapboxMapRef>,
+  initialState: Partial<AoiState> = {}
+) {
   const [aoi, setAoi] = useState<AoiState>({
-    drawing: false,
-    selected: false,
-    feature: null,
-    actionOrigin: null,
+    ...DEFAULT_PARAMETERS,
     ...initialState
   });
 
   useDeepCompareEffect(() => {
     setAoi({
-      drawing: false,
-      selected: false,
-      feature: null,
-      actionOrigin: null,
+      ...DEFAULT_PARAMETERS,
       ...initialState
     });
   }, [initialState]);
 
   const onAoiEvent = useCallback((action, payload) => {
     switch (action) {
-      case 'aoi.draw-click':
-        // There can only be one selection (feature) on the map
-        // If there's a feature toggle the selection.
-        // If there's no feature toggle the drawing.
-        setAoi((state) => {
-          const selected = !!state.feature && !state.selected;
-          return {
-            ...state,
-            drawing: !state.feature && !state.drawing,
-            selected,
-            actionOrigin: selected ? 'panel' : null
-          };
-        });
+      case 'aoi.trash-click': {
+        // We need to programmatically access the mapbox draw trash method which
+        // will do different things depending on the selected mode.
+        // @ts-expect-error _drawControl does exist but it is an internal
+        // property.
+        const mbDraw = mapRef.current?.instance?._drawControl;
+        if (!mbDraw) return;
+        mbDraw.trash();
         break;
-      case 'aoi.set-feature':
-        setAoi((state) => ({
-          ...state,
-          drawing: false,
-          feature: payload.feature,
-          actionOrigin: 'panel'
+      }
+      case 'aoi.draw-click':
+        setAoi(({ featureCollection }) => ({
+          ...DEFAULT_PARAMETERS,
+          featureCollection,
+          drawing: true
+        }));
+        break;
+      case 'aoi.select-click':
+        setAoi(({ featureCollection }) => ({
+          ...DEFAULT_PARAMETERS,
+          featureCollection
+        }));
+        break;
+      case 'aoi.set':
+        setAoi(() => ({
+          ...DEFAULT_PARAMETERS,
+          featureCollection: payload.featureCollection
         }));
         break;
       case 'aoi.clear':
         setAoi({
-          drawing: false,
-          selected: false,
-          feature: null,
-          actionOrigin: null
+          ...DEFAULT_PARAMETERS
         });
         break;
-      case 'aoi.draw-finish':
+      case 'aoi.delete':
         setAoi((state) => ({
-          ...state,
-          drawing: false,
-          feature: payload.feature,
-          actionOrigin: 'map'
+          ...DEFAULT_PARAMETERS,
+          featureCollection: makeFeatureCollection(
+            (state.featureCollection?.features ?? []).filter(
+              (f) => !payload.ids.includes(f.id)
+            )
+          )
         }));
         break;
+      case 'aoi.draw-finish':
+        {
+          setAoi(({ featureCollection }) => ({
+            ...DEFAULT_PARAMETERS,
+            featureCollection: makeFeatureCollection(
+              (featureCollection?.features ?? []).concat(payload.feature)
+            )
+          }));
+        }
+        break;
       case 'aoi.selection':
-        setAoi((state) => ({
-          ...state,
-          drawing: false,
+        setAoi(({ featureCollection }) => ({
+          ...DEFAULT_PARAMETERS,
+          featureCollection,
           selected: payload.selected,
-          actionOrigin: payload.selected ? 'map' : null
+          selectedContext: payload.context
         }));
         break;
       case 'aoi.update':
-        setAoi((state) => ({
-          ...state,
-          feature: payload.feature,
-          actionOrigin: 'map'
-        }));
+        setAoi((state) => {
+          // @ts-expect-error _drawControl does exist but it is an internal
+          // property.
+          const mbDraw = mapRef.current?.instance?._drawControl;
+
+          // When a feature gets updated, if there was a selectedContext update
+          // it. This is needed to reposition the popover.
+          let selectedContext = state.selectedContext;
+          if (mbDraw && selectedContext) {
+            selectedContext = {
+              features: mbDraw.getSelected().features,
+              points: mbDraw.getSelectedPoints().features
+            };
+          }
+
+          return {
+            ...state,
+            selectedContext,
+            featureCollection: makeFeatureCollection(
+              (state.featureCollection?.features ?? []).map((f) =>
+                f.id === payload.feature.id ? payload.feature : f
+              )
+            )
+          };
+        });
         break;
     }
+    // mapRef is a ref object.
   }, []);
 
   return { aoi, onAoiEvent: onAoiEvent as AoiChangeListenerOverload };
