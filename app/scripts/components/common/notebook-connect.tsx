@@ -50,13 +50,13 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
         onClick={() => setRevealed(true)}
         size={size}
       >
-        <CollecticonCode meaningful={compact} title='Open code usage options' />
-        {compact ? '' : 'Use code'}
+        <CollecticonCode meaningful={compact} title='Open data usage options' />
+        {compact ? '' : 'Use data'}
       </Button>
       <Modal
         id='modal'
         size='medium'
-        title='Code usage'
+        title='Data usage'
         revealed={revealed}
         onCloseClick={close}
         onOverlayClick={close}
