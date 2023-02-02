@@ -1,6 +1,7 @@
 import React, { lazy } from 'react';
-import { Button } from '@devseed-ui/button';
 import { Link } from 'react-router-dom';
+import { Button } from '@devseed-ui/button';
+import { CollecticonCompass } from '@devseed-ui/collecticons';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
@@ -8,6 +9,7 @@ import { PageActions, PageLead, PageMainContent } from '$styles/page';
 import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import PageHero from '$components/common/page-hero';
 import RelatedContent from '$components/common/related-content';
+import { NotebookConnectButton } from '$components/common/notebook-connect';
 
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { datasetExplorePath, thematicDatasetsPath } from '$utils/routes';
@@ -51,8 +53,15 @@ function DatasetsOverview() {
                   size='large'
                   variation='achromic-outline'
                 >
-                  Explore the data
+                  <CollecticonCompass />
+                  Explore data
                 </Button>
+                <NotebookConnectButton
+                  dataset={dataset}
+                  size='large'
+                  compact={false}
+                  variation='achromic-outline'
+                />
               </PageActions>
             </>
           )}

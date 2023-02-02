@@ -23,11 +23,7 @@ import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import DropdownScrollable from './dropdown-scrollable';
 
 import { variableGlsp } from '$styles/variable-utils';
-import {
-  datasetExplorePath,
-  datasetOverviewPath,
-  datasetUsagePath
-} from '$utils/routes';
+import { datasetExplorePath, datasetOverviewPath } from '$utils/routes';
 
 const PageLocalNavSelf = styled.nav`
   position: sticky;
@@ -267,11 +263,6 @@ export function DatasetsLocalMenu(props) {
         <li>
           <LocalMenuLink to={datasetExplorePath(thematic, dataset)} end>
             Exploration
-          </LocalMenuLink>
-        </li>
-        <li>
-          <LocalMenuLink to={datasetUsagePath(thematic, dataset)} end>
-            Usage
           </LocalMenuLink>
         </li>
       </LocalMenu>

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Overline } from '@devseed-ui/typography';
 
 import { VarHeading, VarLead } from './variable-components';
-import { variableBaseType } from './variable-utils';
+import { variableBaseType, variableGlsp } from './variable-utils';
 
 export const PageMainContent = styled.main`
   flex-grow: 1;
@@ -35,5 +35,7 @@ export const PageLead = styled(VarLead)`
 `;
 
 export const PageActions = styled.div`
-  /* styled-component */
+  display: flex;
+  flex-direction: row nowrap;
+  gap: ${variableGlsp(0.5)};
 `;

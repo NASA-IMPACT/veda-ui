@@ -28,7 +28,6 @@ const DiscoveriesSingle = lazy(() => import('$components/discoveries/single'));
 
 const DatasetsHub = lazy(() => import('$components/datasets/hub'));
 const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
-const DatasetsUsage = lazy(() => import('$components/datasets/s-usage'));
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
 const Analysis = lazy(() => import('$components/analysis/define'));
@@ -102,10 +101,6 @@ function Root() {
                   <Route
                     path='datasets/:datasetId'
                     element={<DatasetsOverview />}
-                  />
-                  <Route
-                    path='datasets/:datasetId/usage'
-                    element={<DatasetsUsage />}
                   />
                   <Route
                     path='datasets/:datasetId/explore'
