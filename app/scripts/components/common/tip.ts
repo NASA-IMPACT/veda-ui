@@ -11,7 +11,7 @@ export const Tip = Typpy;
 export const reactTippyStyles = () => css`
   body {
     [data-tippy-root] {
-      z-index: 800 !important;
+      z-index: ${themeVal('zIndices.tooltip')} !important;
     }
 
     .tippy-box {

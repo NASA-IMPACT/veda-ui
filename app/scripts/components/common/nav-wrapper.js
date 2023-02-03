@@ -1,6 +1,7 @@
 import React from 'react';
 import T from 'prop-types';
 import styled, { css } from 'styled-components';
+import { themeVal } from '@devseed-ui/theme-provider';
 
 import PageHeader from './page-header';
 import { useSlidingStickyHeaderProps } from './layout-root';
@@ -15,7 +16,7 @@ const NavWrapper = styled.div`
   position: sticky;
   top: 0;
   width: 100%;
-  z-index: 900;
+  z-index: ${themeVal('zIndices.sticky')};
 
   transition: top ${HEADER_TRANSITION_DURATION}ms ease-out;
   ${({ shouldSlideHeader, headerHeight }) =>
