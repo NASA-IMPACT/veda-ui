@@ -6,15 +6,15 @@ import { decode, encode } from 'google-polyline';
  * Decodes a multi polygon string converting it into a FeatureCollection of
  * Polygons.
  *
- * Format: polyline-encoding||polyline-encoding
+ * Format: polyline-encoding;polyline-encoding
  *
- * || separates polygons
+ * ; separates polygons
  *
  */
 export function polygonUrlDecode(polygonStr: string) {
   const geojson = {
     type: 'FeatureCollection',
-    features: polygonStr.split('||').map((polygon) => {
+    features: polygonStr.split(';').map((polygon) => {
       const coords = decode(polygon);
       return {
         type: 'Feature',
@@ -37,9 +37,9 @@ export function polygonUrlDecode(polygonStr: string) {
  * Converts a FeatureCollection of Polygons into a url string.
  * Removes the last point of the polygon as it is the same as the first.
  *
- * Format: polyline-encoding||polyline-encoding
+ * Format: polyline-encoding;polyline-encoding
  *
- * || separates polygons
+ * ; separates polygons
  *
  */
 export function polygonUrlEncode(
@@ -52,5 +52,5 @@ export function polygonUrlEncode(
         .slice(0, -1);
       return encode(points);
     })
-    .join('||');
+    .join(';');
 }

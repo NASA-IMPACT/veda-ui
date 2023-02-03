@@ -107,9 +107,8 @@ export function useAnalysisParams(): {
         throw new ValidationError(sentences);
       }
 
-      // lon,lat|lon,lat||lon,lat|lon,lat
-      // || separates polygons
-      // | separates points
+      // polyline-encoding;polyline-encoding
+      // ; separates polygons
       const { geojson, errors: gjvErrors } = polygonUrlDecode(aoi);
 
       if (gjvErrors.length) {
