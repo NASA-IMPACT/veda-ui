@@ -1,5 +1,6 @@
 import { scaleTime } from 'd3';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useResizeObserver } from '$utils/use-resize-observer';
 
 type DraggingState = 'start' | 'drag' | 'end';
 
@@ -21,8 +22,8 @@ function useBrush(
   const [dragging, setDragging] = useState<DraggingState | null>(null);
   const initialOffsetX = useRef(0);
 
-  const wrapperWidth = wrapperRef.current ? wrapperRef.current.getBoundingClientRect().width : 300;
-  
+  const wrapperWidth = useResizeObserver(wrapperRef, { initialWidth: 300 });
+ 
   const scale = useMemo(() => {
     return scaleTime()
       .domain(domain)
