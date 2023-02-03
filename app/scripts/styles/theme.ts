@@ -2,45 +2,59 @@ import { createUITheme, media, themeVal } from '@devseed-ui/theme-provider';
 import { createGlobalStyle } from 'styled-components';
 import { reactTippyStyles } from '$components/common/tip';
 
-export default function themeOverrides() {
-  return createUITheme({
-    color: {
-      base: '#2c3e50',
-      primary: '#2276ac',
-      infographicA: '#fcab10',
-      infographicB: '#f4442e',
-      infographicC: '#b62b6e',
-      infographicD: '#2ca58d',
-      infographicE: '#2276ac'
-    },
-    type: {
-      base: {
-        leadSize: '1.25rem',
-        extrabold: '800',
-        // Increments to the type.base.size for each media breakpoint.
-        sizeIncrement: {
-          small: '0rem',
-          medium: '0rem',
-          large: '0.25rem',
-          xlarge: '0.25rem'
-        }
-      },
-      heading: {
-        settings: '"wdth" 100, "wght" 700'
+export const VEDA_OVERRIDE_THEME = {
+  zIndices: {
+    hide: -1,
+    docked: 10,
+    sticky: 900,
+    dropdown: 1000,
+    overlay: 1300,
+    modal: 1400,
+    popover: 1500,
+    skipLink: 1600,
+    toast: 1700,
+    tooltip: 1800
+  },
+  color: {
+    base: '#2c3e50',
+    primary: '#2276ac',
+    infographicA: '#fcab10',
+    infographicB: '#f4442e',
+    infographicC: '#b62b6e',
+    infographicD: '#2ca58d',
+    infographicE: '#2276ac'
+  },
+  type: {
+    base: {
+      leadSize: '1.25rem',
+      extrabold: '800',
+      // Increments to the type.base.size for each media breakpoint.
+      sizeIncrement: {
+        small: '0rem',
+        medium: '0rem',
+        large: '0.25rem',
+        xlarge: '0.25rem'
       }
     },
-    layout: {
-      min: '384px',
-      max: '1440px',
-      glspMultiplier: {
-        xsmall: 1,
-        small: 1,
-        medium: 1.5,
-        large: 2,
-        xlarge: 2
-      }
+    heading: {
+      settings: '"wdth" 100, "wght" 700'
     }
-  });
+  },
+  layout: {
+    min: '384px',
+    max: '1440px',
+    glspMultiplier: {
+      xsmall: 1,
+      small: 1,
+      medium: 1.5,
+      large: 2,
+      xlarge: 2
+    }
+  }
+};
+
+export default function themeOverrides() {
+  return createUITheme(VEDA_OVERRIDE_THEME);
 }
 
 /**
@@ -51,7 +65,7 @@ export const GlobalStyles = createGlobalStyle`
   ${reactTippyStyles()}
 
   .tether-element.tether-element {
-    z-index: 700;
+    z-index: ${themeVal('zIndices.dropdown')};
   }
 
   :root {
