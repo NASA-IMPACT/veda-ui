@@ -156,7 +156,8 @@ export function dateToInputFormat(date?: Date) {
 }
 
 export function inputFormatToDate(inputFormat: string) {
-  return parse(inputFormat, 'yyyy-MM-dd', new Date());
+  const d = parse(inputFormat, 'yyyy-MM-dd', new Date());
+  return isNaN(d.getTime()) ? null : d;
 }
 
 export type DateRangePreset =

@@ -86,7 +86,9 @@ export function useStacSearch({ start, end, aoi }: UseStacSearchProps) {
           )
         );
       } catch (error) {
-        setStacSearchStatus(S_FAILED);
+        if (!controller.signal.aborted) {
+          setStacSearchStatus(S_FAILED);
+        }
       }
     };
 
