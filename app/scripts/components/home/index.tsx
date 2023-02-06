@@ -20,7 +20,6 @@ import { zeroPad } from '$utils/format';
 import { VarHeading } from '$styles/variable-components';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import {
-  PageActions,
   PageLead,
   PageMainContent,
   PageMainTitle
@@ -189,21 +188,7 @@ function Home() {
             </StatsList>
           </>
         )}
-        renderBetaBlock={() => (
-          <>
-            <PageLead>{thematic.data.description}</PageLead>
-            <PageActions>
-              <Button
-                forwardedAs={Link}
-                to='about'
-                size='large'
-                variation='achromic-outline'
-              >
-                Learn more
-              </Button>
-            </PageActions>
-          </>
-        )}
+        renderBetaBlock={() => <PageLead>{thematic.data.description}</PageLead>}
         coverSrc={thematic.data.media?.src}
         coverAlt={thematic.data.media?.alt}
         attributionAuthor={thematic.data.media?.author?.name}
