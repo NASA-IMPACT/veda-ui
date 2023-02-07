@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { CollecticonGlobe } from '@devseed-ui/collecticons';
-import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
+import { Dropdown, DropMenu, DropMenuItem, DropTitle } from '@devseed-ui/dropdown';
 import { Button, createButtonStyles } from '@devseed-ui/button';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
+import { Subtitle } from '@devseed-ui/typography';
 
 import {
   ProjectionItemConic,
@@ -57,6 +58,22 @@ const shadowScrollbarProps = {
   autoHeightMax: 320
 };
 
+const ContentGroup = styled.div`
+  /* styled-component */
+`;
+
+const ContentGroupHeader = styled.div`
+  padding: ${glsp(1, 1, 0, 1)};
+`;
+
+const ContentGroupTitle = styled(Subtitle)`
+  /* styled-component */
+`;
+
+const ContentGroupBody = styled.div`
+  /* styled-component */
+`;
+
 function ProjectionSelector(props: ProjectionSelectorProps) {
   const { projection, onChange } = props;
 
@@ -71,47 +88,73 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
       alignment='left'
     >
       <DropHeader>
-        <DropTitle>Map projections</DropTitle>
+        <DropTitle>Map options</DropTitle>
       </DropHeader>
       <DropBody>
         <ShadowScrollbar scrollbarsProps={shadowScrollbarProps}>
-          <DropMenu>
-            {projectionsList.map((proj) => {
-              if (proj.isCustom && proj.conicValues) {
-                return (
-                  <ProjectionItemCustom
-                    key={proj.id}
-                    onChange={onChange}
-                    id={proj.id}
-                    label={proj.label}
-                    defaultConicValues={proj.conicValues}
-                    activeProjection={projection}
-                  />
-                );
-              } else if (proj.conicValues) {
-                return (
-                  <ProjectionItemConic
-                    key={proj.id}
-                    onChange={onChange}
-                    id={proj.id}
-                    label={proj.label}
-                    defaultConicValues={proj.conicValues}
-                    activeProjection={projection}
-                  />
-                );
-              } else {
-                return (
-                  <ProjectionItemSimple
-                    key={proj.id}
-                    onChange={onChange}
-                    id={proj.id}
-                    label={proj.label}
-                    activeProjection={projection}
-                  />
-                );
-              }
-            })}
-          </DropMenu>
+          <ContentGroup>
+            <ContentGroupHeader>
+              <ContentGroupTitle>Style</ContentGroupTitle>
+            </ContentGroupHeader>
+            <ContentGroupBody>
+              <DropMenu>
+                <li>
+                  <DropMenuItem href='#'>Default light</DropMenuItem>
+                </li>
+                <li>
+                  <DropMenuItem href='#'>Default dark</DropMenuItem>
+                </li>
+                <li>
+                  <DropMenuItem href='#'>Default dark</DropMenuItem>
+                </li>
+              </DropMenu>
+            </ContentGroupBody>
+          </ContentGroup>
+
+          <ContentGroup>
+            <ContentGroupHeader>
+              <ContentGroupTitle>Projection</ContentGroupTitle>
+            </ContentGroupHeader>
+            <ContentGroupBody>
+              <DropMenu>
+                {projectionsList.map((proj) => {
+                  if (proj.isCustom && proj.conicValues) {
+                    return (
+                      <ProjectionItemCustom
+                        key={proj.id}
+                        onChange={onChange}
+                        id={proj.id}
+                        label={proj.label}
+                        defaultConicValues={proj.conicValues}
+                        activeProjection={projection}
+                      />
+                    );
+                  } else if (proj.conicValues) {
+                    return (
+                      <ProjectionItemConic
+                        key={proj.id}
+                        onChange={onChange}
+                        id={proj.id}
+                        label={proj.label}
+                        defaultConicValues={proj.conicValues}
+                        activeProjection={projection}
+                      />
+                    );
+                  } else {
+                    return (
+                      <ProjectionItemSimple
+                        key={proj.id}
+                        onChange={onChange}
+                        id={proj.id}
+                        label={proj.label}
+                        activeProjection={projection}
+                      />
+                    );
+                  }
+                })}
+              </DropMenu>
+            </ContentGroupBody>
+          </ContentGroup>
         </ShadowScrollbar>
       </DropBody>
     </DropdownWithScroll>
