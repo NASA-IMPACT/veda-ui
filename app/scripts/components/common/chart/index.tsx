@@ -228,7 +228,7 @@ export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
                 position='bottom'
               />
             </XAxis>
-            <YAxis axisLine={false} tickFormatter={(t) => getNumForChart(t)}>
+            <YAxis axisLine={false} domain={['auto', 'auto']} tickFormatter={(t) => getNumForChart(t)}>
               <Label
                 className='label-y'
                 value={yAxisLabel}
