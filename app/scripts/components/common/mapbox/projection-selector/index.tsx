@@ -38,6 +38,8 @@ const MapOptionsDropdown = styled(Dropdown)`
 
   ${DropMenu} {
     margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 `;
 
@@ -61,11 +63,12 @@ const shadowScrollbarProps = {
 };
 
 const ContentGroup = styled.div`
-  /* styled-component */
+  display: flex;
+  flex-flow: column nowrap;
 `;
 
 const ContentGroupHeader = styled.div`
-  padding: ${glsp(1, 1, 0, 1)};
+  padding: ${glsp(1, 1, 0.5, 1)};
 `;
 
 const ContentGroupTitle = styled(Subtitle)`
