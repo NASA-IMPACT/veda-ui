@@ -25,10 +25,11 @@ const DropBody = styled.div`
 `;
 
 /**
- * Override Dropdown styles to play well with the shadow scrollbar.
+ * Override Dropdown styles to be wider and play well with the shadow scrollbar.
  */
-const DropdownWithScroll = styled(Dropdown)`
+const MapOptionsDropdown = styled(Dropdown)`
   padding: 0;
+  max-width: 16rem;
 
   ${DropTitle} {
     margin: 0;
@@ -74,11 +75,35 @@ const ContentGroupBody = styled.div`
   /* styled-component */
 `;
 
+const OptionMedia = styled.figure`
+  position: relative;
+  height: 2rem;
+  overflow: hidden;
+  border-radius: ${themeVal('shape.rounded')};
+  flex-shrink: 0;
+  aspect-ratio: 1.5 / 1;
+  background: ${themeVal('color.base-50')};
+  margin-left: auto;
+
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    content: '';
+    box-shadow: inset 0 0 0 1px ${themeVal('color.base-100a')};
+    border-radius: ${themeVal('shape.rounded')};
+    pointer-events: none;
+  }
+`;
+
 function ProjectionSelector(props: ProjectionSelectorProps) {
   const { projection, onChange } = props;
 
   return (
-    <DropdownWithScroll
+    <MapOptionsDropdown
       triggerElement={(bag) => (
         <SelectorButton {...bag}>
           <CollecticonGlobe meaningful title='Select projection to use' />
@@ -99,13 +124,37 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
             <ContentGroupBody>
               <DropMenu>
                 <li>
-                  <DropMenuItem href='#'>Default light</DropMenuItem>
+                  <DropMenuItem href='#'>
+                    <span>Default light</span>
+                    <OptionMedia>
+                      <img
+                        src={`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`}
+                        alt='Map style thumbnail'
+                      />
+                    </OptionMedia>
+                  </DropMenuItem>
                 </li>
                 <li>
-                  <DropMenuItem href='#'>Default dark</DropMenuItem>
+                  <DropMenuItem href='#'>
+                    <span>Default dark</span>
+                    <OptionMedia>
+                      <img
+                        src={`https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`}
+                        alt='Map style thumbnail'
+                      />
+                    </OptionMedia>
+                  </DropMenuItem>
                 </li>
                 <li>
-                  <DropMenuItem href='#'>Default dark</DropMenuItem>
+                  <DropMenuItem href='#'>
+                    <span>Satellite</span>
+                    <OptionMedia>
+                      <img
+                        src={`https://api.mapbox.com/styles/v1/covid-nasa/cldac5c2c003k01oebmavw4q3/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`}
+                        alt='Map style thumbnail'
+                      />
+                    </OptionMedia>
+                  </DropMenuItem>
                 </li>
               </DropMenu>
             </ContentGroupBody>
@@ -157,7 +206,7 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
           </ContentGroup>
         </ShadowScrollbar>
       </DropBody>
-    </DropdownWithScroll>
+    </MapOptionsDropdown>
   );
 }
 
