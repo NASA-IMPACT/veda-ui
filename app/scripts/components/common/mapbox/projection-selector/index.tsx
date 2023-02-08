@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { CollecticonGlobe } from '@devseed-ui/collecticons';
 import { Dropdown, DropMenu, DropMenuItem, DropTitle } from '@devseed-ui/dropdown';
 import { Button, createButtonStyles } from '@devseed-ui/button';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { FormSwitch } from '@devseed-ui/form';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { Subtitle } from '@devseed-ui/typography';
 
@@ -75,6 +76,14 @@ const ContentGroupBody = styled.div`
   /* styled-component */
 `;
 
+const OptionSwitch = styled(FormSwitch)`
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  width: 100%;
+  font-size: inherit;
+`;
+
 const OptionMedia = styled.figure`
   position: relative;
   height: 2rem;
@@ -122,7 +131,7 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
               <ContentGroupTitle>Style</ContentGroupTitle>
             </ContentGroupHeader>
             <ContentGroupBody>
-              <DropMenu>
+              <DropMenu as='ol'>
                 <li>
                   <DropMenuItem href='#'>
                     <span>Default light</span>
@@ -162,10 +171,30 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
 
           <ContentGroup>
             <ContentGroupHeader>
-              <ContentGroupTitle>Projection</ContentGroupTitle>
+              <ContentGroupTitle>Details</ContentGroupTitle>
             </ContentGroupHeader>
             <ContentGroupBody>
               <DropMenu>
+                <li>
+                  <DropMenuItem as='span'>
+                    <OptionSwitch>Labels</OptionSwitch>
+                  </DropMenuItem>
+                </li>
+                <li>
+                  <DropMenuItem as='span'>
+                    <OptionSwitch>Boundaries</OptionSwitch>
+                  </DropMenuItem>
+                </li>
+              </DropMenu>
+            </ContentGroupBody>
+          </ContentGroup>
+
+          <ContentGroup>
+            <ContentGroupHeader>
+              <ContentGroupTitle>Projection</ContentGroupTitle>
+            </ContentGroupHeader>
+            <ContentGroupBody>
+              <DropMenu as='ol'>
                 {projectionsList.map((proj) => {
                   if (proj.isCustom && proj.conicValues) {
                     return (
