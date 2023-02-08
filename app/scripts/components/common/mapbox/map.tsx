@@ -2,7 +2,9 @@ import React, {
   useEffect,
   RefObject,
   MutableRefObject,
-  ReactElement
+  ReactElement,
+  useState,
+  useMemo
 } from 'react';
 import styled, { useTheme } from 'styled-components';
 import mapboxgl from 'mapbox-gl';
@@ -18,6 +20,7 @@ import MapOptions from './map-options';
 import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './map-options/utils';
 
+import { BasemapId, BASEMAP_STYLES } from './map-options/basemaps';
 import { round } from '$utils/format';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN ?? '';
@@ -71,11 +74,33 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
 
   const theme = useTheme();
 
-  const mapProjectionControl = useMapboxControl(() => {
+  const [currentBasemapStyleId, setCurrentBasemapStyleId] =
+    useState<BasemapId>('satellite');
+
+  const mapOptionsControl = useMapboxControl(() => {
     if (!projection || !onProjectionChange) return null;
 
-    return <MapOptions projection={projection} onProjectionChange={onProjectionChange} />;
+    return (
+      <MapOptions
+        projection={projection}
+        onProjectionChange={onProjectionChange}
+        currentBasemapStyleId={currentBasemapStyleId}
+      />
+    );
   }, [projection, onProjectionChange]);
+
+  const styleUrl = useMemo(() => {
+    return currentBasemapStyleId
+      ? BASEMAP_STYLES.find((b) => b.id === currentBasemapStyleId)!.url
+      : BASEMAP_STYLES[0].url;
+  }, [currentBasemapStyleId]);
+
+  useEffect(() => {
+    if (!mapRef.current || !styleUrl) return;
+
+    console.log('updating style', styleUrl);
+    mapRef.current.setStyle(styleUrl);
+  }, [styleUrl]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -90,7 +115,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     mapRef.current = mbMap;
 
     if (onProjectionChange && projection) {
-      mapRef.current.addControl(mapProjectionControl, 'top-left');
+      mapRef.current.addControl(mapOptionsControl, 'top-left');
     }
 
     // Add Geocoder control

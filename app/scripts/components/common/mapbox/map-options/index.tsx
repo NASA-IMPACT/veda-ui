@@ -20,6 +20,7 @@ import {
 } from './projection-items';
 import { MapOptionsProps } from './types';
 import { projectionsList } from './utils';
+import { BASEMAP_STYLES } from './basemaps';
 
 const DropHeader = styled.div`
   padding: ${glsp()};
@@ -117,7 +118,12 @@ const OptionMedia = styled.figure`
 `;
 
 function MapOptions(props: MapOptionsProps) {
-  const { projection, onProjectionChange } = props;
+  const {
+    projection,
+    onProjectionChange,
+    currentBasemapStyleId,
+    onBasemapStyleIdChange
+  } = props;
 
   return (
     <MapOptionsDropdown
@@ -140,39 +146,27 @@ function MapOptions(props: MapOptionsProps) {
             </ContentGroupHeader>
             <ContentGroupBody>
               <DropMenu as='ol'>
-                <li>
-                  <DropMenuItem href='#'>
-                    <span>Default light</span>
-                    <OptionMedia>
-                      <img
-                        src={`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`}
-                        alt='Map style thumbnail'
-                      />
-                    </OptionMedia>
-                  </DropMenuItem>
-                </li>
-                <li>
-                  <DropMenuItem href='#'>
-                    <span>Default dark</span>
-                    <OptionMedia>
-                      <img
-                        src={`https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`}
-                        alt='Map style thumbnail'
-                      />
-                    </OptionMedia>
-                  </DropMenuItem>
-                </li>
-                <li>
-                  <DropMenuItem href='#'>
-                    <span>Satellite</span>
-                    <OptionMedia>
-                      <img
-                        src={`https://api.mapbox.com/styles/v1/covid-nasa/cldac5c2c003k01oebmavw4q3/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`}
-                        alt='Map style thumbnail'
-                      />
-                    </OptionMedia>
-                  </DropMenuItem>
-                </li>
+                {BASEMAP_STYLES.map((basemap) => (
+                  <li key={basemap.id}>
+                    <DropMenuItem
+                      href='#'
+                      active={currentBasemapStyleId === basemap.id}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (onBasemapStyleIdChange)
+                          onBasemapStyleIdChange(basemap.id);
+                      }}
+                    >
+                      <span>{basemap.label}</span>
+                      <OptionMedia>
+                        <img
+                          src={basemap.thumbnailUrl}
+                          alt='Map style thumbnail'
+                        />
+                      </OptionMedia>
+                    </DropMenuItem>
+                  </li>
+                ))}
               </DropMenu>
             </ContentGroupBody>
           </ContentGroup>

@@ -1,8 +1,11 @@
 import { MbProjectionOptions, ProjectionOptions } from 'veda/thematics';
+import { BasemapId } from './basemaps';
 
 export type MapOptionsProps = {
   onProjectionChange: (projection: ProjectionOptions) => void;
   projection: ProjectionOptions;
+  currentBasemapStyleId?: BasemapId;
+  onBasemapStyleIdChange?: (basemapId: BasemapId) => void;
 };
 
 export type ProjectionConicOptions = {
