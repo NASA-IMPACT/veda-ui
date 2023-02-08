@@ -2,7 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { CollecticonGlobe } from '@devseed-ui/collecticons';
-import { Dropdown, DropMenu, DropMenuItem, DropTitle } from '@devseed-ui/dropdown';
+import {
+  Dropdown,
+  DropMenu,
+  DropMenuItem,
+  DropTitle
+} from '@devseed-ui/dropdown';
 import { Button, createButtonStyles } from '@devseed-ui/button';
 import { FormSwitch } from '@devseed-ui/form';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
@@ -12,8 +17,8 @@ import {
   ProjectionItemConic,
   ProjectionItemCustom,
   ProjectionItemSimple
-} from './items';
-import { ProjectionSelectorProps } from './types';
+} from './projection-items';
+import { MapOptionsProps } from './types';
 import { projectionsList } from './utils';
 
 const DropHeader = styled.div`
@@ -111,14 +116,14 @@ const OptionMedia = styled.figure`
   }
 `;
 
-function ProjectionSelector(props: ProjectionSelectorProps) {
-  const { projection, onChange } = props;
+function MapOptions(props: MapOptionsProps) {
+  const { projection, onProjectionChange } = props;
 
   return (
     <MapOptionsDropdown
       triggerElement={(bag) => (
         <SelectorButton {...bag}>
-          <CollecticonGlobe meaningful title='Select projection to use' />
+          <CollecticonGlobe meaningful title='Configure map options' />
         </SelectorButton>
       )}
       direction='down'
@@ -203,7 +208,7 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
                     return (
                       <ProjectionItemCustom
                         key={proj.id}
-                        onChange={onChange}
+                        onChange={onProjectionChange}
                         id={proj.id}
                         label={proj.label}
                         defaultConicValues={proj.conicValues}
@@ -214,7 +219,7 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
                     return (
                       <ProjectionItemConic
                         key={proj.id}
-                        onChange={onChange}
+                        onChange={onProjectionChange}
                         id={proj.id}
                         label={proj.label}
                         defaultConicValues={proj.conicValues}
@@ -225,7 +230,7 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
                     return (
                       <ProjectionItemSimple
                         key={proj.id}
-                        onChange={onChange}
+                        onChange={onProjectionChange}
                         id={proj.id}
                         label={proj.label}
                         activeProjection={projection}
@@ -242,4 +247,4 @@ function ProjectionSelector(props: ProjectionSelectorProps) {
   );
 }
 
-export default ProjectionSelector;
+export default MapOptions;

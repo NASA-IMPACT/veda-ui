@@ -14,9 +14,9 @@ import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import MapboxStyleOverride from './mapbox-style-override';
 import MbDrawPopover from './aoi/mb-draw-popover';
 import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
-import ProjectionSelector from './projection-selector';
+import MapOptions from './map-options';
 import { useMapboxControl } from './use-mapbox-control';
-import { convertProjectionToMapbox } from './projection-selector/utils';
+import { convertProjectionToMapbox } from './map-options/utils';
 
 import { round } from '$utils/format';
 
@@ -74,12 +74,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
   const mapProjectionControl = useMapboxControl(() => {
     if (!projection || !onProjectionChange) return null;
 
-    return (
-      <ProjectionSelector
-        projection={projection}
-        onChange={onProjectionChange}
-      />
-    );
+    return <MapOptions projection={projection} onProjectionChange={onProjectionChange} />;
   }, [projection, onProjectionChange]);
 
   useEffect(() => {

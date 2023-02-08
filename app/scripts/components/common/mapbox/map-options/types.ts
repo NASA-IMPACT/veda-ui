@@ -1,5 +1,10 @@
 import { MbProjectionOptions, ProjectionOptions } from 'veda/thematics';
 
+export type MapOptionsProps = {
+  onProjectionChange: (projection: ProjectionOptions) => void;
+  projection: ProjectionOptions;
+};
+
 export type ProjectionConicOptions = {
   center: [number, number];
   parallels: [number, number];
@@ -13,13 +18,8 @@ export type ProjectionListItem = {
   conicValues?: ProjectionConicOptions;
 };
 
-export type ProjectionSelectorProps = {
-  onChange: (projection: ProjectionOptions) => void;
-  projection: ProjectionOptions;
-};
-
 export type ProjectionItemProps = {
-  onChange: ProjectionSelectorProps['onChange'];
+  onChange: MapOptionsProps['onProjectionChange'];
   id: ProjectionOptions['id'];
   label: string;
   activeProjection: ProjectionOptions;
