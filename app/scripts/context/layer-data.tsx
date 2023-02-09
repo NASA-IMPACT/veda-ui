@@ -29,6 +29,19 @@ interface STACLayerData {
 }
 
 const fetchLayerById = async (id: string): Promise<STACLayerData | Error> => {
+  if (id === 'eis_fire_fireline') {
+    const { data } = await axios.get(
+      'https://dev-stac.delta-backend.com/collections/eis_fire_fireline'
+    );
+    return {
+      timeseries: {
+        isPeriodic: data['dashboard:is_periodic'],
+        timeDensity: 'day',
+        domain: data.extent.temporal.interval[0]
+      }
+    };
+  }
+
   const { data } = await axios.get(
     `${process.env.API_STAC_ENDPOINT}/collections/${id}`
   );

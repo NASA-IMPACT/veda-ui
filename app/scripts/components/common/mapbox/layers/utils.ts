@@ -25,6 +25,7 @@ import { utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { HintedError } from '$utils/hinted-error';
+import { MapLayerVector } from './vector-time';
 
 export const getLayerComponent = (
   isTimeseries: boolean,
@@ -32,6 +33,7 @@ export const getLayerComponent = (
 ): React.FunctionComponent<any> | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
+    if (layerType === 'vector') return MapLayerVector;
   }
 
   return null;
