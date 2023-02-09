@@ -87,8 +87,6 @@ Use the VEDA datastore as the source-of-truth for search rather than the MDX con
 
 _Could be revisited in the future if all the data is moved to the datastore, resolving the duplication issue_
 
-## Notes:
-
 [^1]: A content authoring could still be custom built to output the content into files, instead of a database. An inspiration for this could be the Netlify CMS, currently being used as a prototype. _A complete editor to power this content system should be considered almost a separate project._
 
 [^2]: The current architecture was setup to allow new instances of VEDA to be created easily. The architecture relies on 2 repos: `veda-config` and `veda-ui`. The config repo holds all the content and needed settings, while the ui repo holds the app code. Users need only to fork the config repo and add their own content/change the settings, being able to update the underlying ui module when new features are released.
