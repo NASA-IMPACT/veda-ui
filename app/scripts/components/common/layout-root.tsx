@@ -14,7 +14,7 @@ import MetaTags from './meta-tags';
 import PageFooter from './page-footer';
 
 import { useThematicArea } from '$utils/thematics';
-import { useGoogleAnalytics } from '$utils/use-google-analytics';
+import { useGoogleTagManager } from '$utils/use-google-tag-manager';
 import { useSlidingStickyHeader } from '$utils/use-sliding-sticky-header';
 import NavWrapper from '$components/common/nav-wrapper';
 
@@ -39,7 +39,7 @@ const PageBody = styled.div`
 function LayoutRoot(props: { children?: React.ReactNode }) {
   const { children } = props;
 
-  useGoogleAnalytics();
+  useGoogleTagManager();
 
   const { title, thumbnail, description, hideFooter, localNavProps } =
     useContext(LayoutRootContext);
