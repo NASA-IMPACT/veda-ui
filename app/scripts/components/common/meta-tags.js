@@ -3,7 +3,7 @@ import T from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useTheme } from 'styled-components';
 import { useLocation } from 'react-router-dom';
-import defaultMetaImage from '~app/graphics/meta/default-meta-image.png';
+import defaultMetaImage from '~app/graphics/meta/meta-image.png';
 
 const appTitle = process.env.APP_TITLE;
 const baseUrl = window.location.origin;
