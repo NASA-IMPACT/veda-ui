@@ -6,7 +6,7 @@ import {
   convertProjectionToMapbox,
   projectionDefault,
   validateProjectionBlockProps
-} from '../mapbox/projection-selector/utils';
+} from '../mapbox/map-options/utils';
 import { utcString2userTzDate } from '$utils/date';
 import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
 import { validateRangeNum } from '$utils/utils';

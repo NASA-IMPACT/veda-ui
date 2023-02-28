@@ -35,7 +35,7 @@ import MapMessage from '$components/common/mapbox/map-message';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
 import { formatSingleDate } from '$components/common/mapbox/utils';
-import { convertProjectionToMapbox } from '$components/common/mapbox/projection-selector/utils';
+import { convertProjectionToMapbox } from '$components/common/mapbox/map-options/utils';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root';
 import { HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
 

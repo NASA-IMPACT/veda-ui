@@ -52,7 +52,7 @@ import {
 } from '$components/common/mapbox/layers/utils';
 import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
-import { projectionDefault } from '$components/common/mapbox/projection-selector/utils';
+import { projectionDefault } from '$components/common/mapbox/map-options/utils';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
 
 const Explorer = styled.div`
