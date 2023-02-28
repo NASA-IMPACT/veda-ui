@@ -4,7 +4,8 @@ import React, {
   MutableRefObject,
   ReactElement,
   useState,
-  useMemo
+  useMemo,
+  useCallback
 } from 'react';
 import styled, { useTheme } from 'styled-components';
 import mapboxgl from 'mapbox-gl';
@@ -77,6 +78,10 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
   const [currentBasemapStyleId, setCurrentBasemapStyleId] =
     useState<BasemapId>('satellite');
 
+  const onBasemapChange = useCallback((basemapId) => {
+    setCurrentBasemapStyleId(basemapId)
+  }, [])
+
   const mapOptionsControl = useMapboxControl(() => {
     if (!projection || !onProjectionChange) return null;
 
@@ -85,9 +90,10 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
         projection={projection}
         onProjectionChange={onProjectionChange}
         currentBasemapStyleId={currentBasemapStyleId}
+        onBasemapStyleIdChange={onBasemapChange}
       />
     );
-  }, [projection, onProjectionChange]);
+  }, [projection, onProjectionChange, currentBasemapStyleId, onBasemapChange]);
 
   const styleUrl = useMemo(() => {
     return currentBasemapStyleId

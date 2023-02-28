@@ -14,12 +14,15 @@ export const BASEMAP_STYLES = [
     {
       id: 'light',
       label: 'Default light',
-      url: 'mapbox://styles/covid-nasa/cldu14gii006801mgq3dn1jpd',
+      url: 'mapbox://styles/covid-nasa/cldu0tceb000701qnrl7p9woh',
       thumbnailUrl: `https://api.mapbox.com/styles/v1/mapbox/light-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`
     },
-    // {
-    //   label: 'Topo'
-    // },
+    {
+      id: 'topo',
+      label: 'Topo',
+      url: 'mapbox://styles/covid-nasa/cldu1yayu00au01qqrbdahb3m',
+      thumbnailUrl: `https://api.mapbox.com/styles/v1/covid-nasa/cldu1yayu00au01qqrbdahb3m/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`
+    },
   ];
   export type Basemap = typeof BASEMAP_STYLES
   
