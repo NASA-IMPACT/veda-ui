@@ -2,10 +2,7 @@ import React, {
   useEffect,
   RefObject,
   MutableRefObject,
-  ReactElement,
-  useState,
-  useMemo,
-  useCallback
+  ReactElement
 } from 'react';
 import styled, { useTheme } from 'styled-components';
 import mapboxgl from 'mapbox-gl';
@@ -21,7 +18,7 @@ import MapOptions from './map-options';
 import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './map-options/utils';
 
-import { BasemapId, BASEMAP_STYLES } from './map-options/basemaps';
+import { BasemapId } from './map-options/basemaps';
 import { round } from '$utils/format';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN ?? '';
@@ -48,6 +45,8 @@ interface SimpleMapProps {
   onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
+  currentBasemapStyleId?: BasemapId;
+  onBasemapStyleIdChange?: (basemapId: BasemapId) => void;
   attributionPosition?:
     | 'top-right'
     | 'top-left'
@@ -70,17 +69,12 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     projection,
     onProjectionChange,
     attributionPosition = 'bottom-left',
+    currentBasemapStyleId,
+    onBasemapStyleIdChange,
     ...rest
   } = props;
 
   const theme = useTheme();
-
-  const [currentBasemapStyleId, setCurrentBasemapStyleId] =
-    useState<BasemapId>('satellite');
-
-  const onBasemapChange = useCallback((basemapId) => {
-    setCurrentBasemapStyleId(basemapId)
-  }, [])
 
   const mapOptionsControl = useMapboxControl(() => {
     if (!projection || !onProjectionChange) return null;
@@ -90,23 +84,10 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
         projection={projection}
         onProjectionChange={onProjectionChange}
         currentBasemapStyleId={currentBasemapStyleId}
-        onBasemapStyleIdChange={onBasemapChange}
+        onBasemapStyleIdChange={onBasemapStyleIdChange}
       />
     );
-  }, [projection, onProjectionChange, currentBasemapStyleId, onBasemapChange]);
-
-  const styleUrl = useMemo(() => {
-    return currentBasemapStyleId
-      ? BASEMAP_STYLES.find((b) => b.id === currentBasemapStyleId)!.url
-      : BASEMAP_STYLES[0].url;
-  }, [currentBasemapStyleId]);
-
-  useEffect(() => {
-    if (!mapRef.current || !styleUrl) return;
-
-    console.log('updating style', styleUrl);
-    mapRef.current.setStyle(styleUrl);
-  }, [styleUrl]);
+  }, [projection, onProjectionChange, currentBasemapStyleId, onBasemapStyleIdChange]);
 
   useEffect(() => {
     if (!containerRef.current) return;

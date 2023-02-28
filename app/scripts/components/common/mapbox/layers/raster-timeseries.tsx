@@ -138,6 +138,24 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     };
   }, [minZoom, mapInstance]);
 
+  // Style status
+  const [styleLoaded, setStyleLoaded] = useState(true)
+  useEffect(() => {
+    const onStyleDataLoading = () => {
+      setStyleLoaded(false);
+    }
+    const onStyleData = () => {
+      setStyleLoaded(true);
+    }
+    mapInstance.on('styledataloading', onStyleDataLoading);
+    mapInstance.on('styledata', onStyleData);
+
+    return () => {
+      mapInstance.off('styledataloading', onStyleDataLoading);
+      mapInstance.off('styledata', onStyleData);
+    }
+  }, [mapInstance])
+
   //
   // Load stac collection features
   //
@@ -216,7 +234,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // Markers
   //
   useEffect(() => {
-    if (!id || !stacCol || !date || !minZoom || !stacCollection.length) return;
+    if (!id || !stacCol || !date || !minZoom || !stacCollection.length || !styleLoaded) return;
 
     // Create points from bboxes
     const points = stacCollection.map((f) => {
@@ -261,14 +279,15 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     minZoom,
     mapInstance,
     sourceParams,
-    primaryColor
+    primaryColor,
+    styleLoaded
   ]);
 
   //
   // Tiles
   //
   useEffect(() => {
-    if (!id || !stacCol || !date || !stacCollection.length) return;
+    if (!id || !stacCol || !date || !stacCollection.length || !styleLoaded) return;
 
     const controller = new AbortController();
 
@@ -395,7 +414,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     mapInstance,
     // `sourceParams` object reference is likely to change. Compare in string
     // format.
-    JSON.stringify(sourceParams)
+    JSON.stringify(sourceParams),
+    styleLoaded
   ]);
 
   //
