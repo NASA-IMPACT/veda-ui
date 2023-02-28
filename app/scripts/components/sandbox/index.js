@@ -14,6 +14,8 @@ import SandboxDateslider from './dateslider';
 import SandboxChart from './mdx-chart';
 import SandboxAnalysisChart from './analysis-chart';
 import SandboxRequest from './request';
+import SandboxSearch from './search';
+
 import { resourceNotFound } from '$components/uhoh';
 import { Card, CardList } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
@@ -86,6 +88,11 @@ const pages = [
     id: 'request',
     name: 'Requests',
     component: SandboxRequest
+  },
+  {
+    id: 'search',
+    name: 'Search',
+    component: SandboxSearch
   }
 ];
 
