@@ -1,3 +1,6 @@
+// It is required that all styles has a layer named "admin-0-boundary-bg".
+// Data will be added below this layer to ensure country oulines and labels are visible.
+
 export const BASEMAP_STYLES = [
   {
     id: 'satellite',
@@ -24,6 +27,9 @@ export const BASEMAP_STYLES = [
     thumbnailUrl: `https://api.mapbox.com/styles/v1/covid-nasa/cldu1yayu00au01qqrbdahb3m/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`
   }
 ];
+
+// Default style used in discoveries and analysis, satellite no labels
+export const DEFAULT_MAP_STYLE_URL = 'mapbox://styles/covid-nasa/ckb01h6f10bn81iqg98ne0i2y'
 
 export const GROUPS_BY_OPTION: Record<Option, string[]> = {
   labels: ['Natural features, natural-labels', 'Place labels, place-labels', 'Point of interest labels, poi-labels', 'Road network, road-labels', 'Transit, transit-labels'],

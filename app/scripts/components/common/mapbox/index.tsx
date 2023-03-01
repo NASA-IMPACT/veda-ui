@@ -39,6 +39,7 @@ import {
 } from '$utils/status';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
 import { useBasemap } from './map-options/use-basemap';
+import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -79,7 +80,7 @@ const MapsContainer = styled.div`
 `;
 
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
-  style: process.env.MAPBOX_STYLE_URL,
+  style: DEFAULT_MAP_STYLE_URL,
   logoPosition: 'bottom-left',
   trackResize: true,
   pitchWithRotate: false,

@@ -12,6 +12,7 @@ import { combineFeatureCollection } from './utils';
 import { SimpleMap } from '$components/common/mapbox/map';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
+import { DEFAULT_MAP_STYLE_URL } from '$components/common/mapbox/map-options/basemaps';
 
 const WORLD_POLYGON = [
   [180, 90],
@@ -22,7 +23,7 @@ const WORLD_POLYGON = [
 ];
 
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
-  style: process.env.MAPBOX_STYLE_URL,
+  style: DEFAULT_MAP_STYLE_URL,
   logoPosition: 'bottom-right',
   interactive: false,
   center: [0, 0],
