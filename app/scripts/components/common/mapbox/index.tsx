@@ -27,6 +27,8 @@ import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
+import { useBasemap } from './map-options/use-basemap';
+import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { useDatasetAsyncLayer } from '$context/layer-data';
@@ -38,8 +40,6 @@ import {
   S_SUCCEEDED
 } from '$utils/status';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
-import { useBasemap } from './map-options/use-basemap';
-import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -135,7 +135,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
   const {
     styleLoaded,
-    currentBasemapStyleId,
+    basemapStyleId,
     onBasemapStyleIdChange,
     labelsOption,
     boundariesOption,
@@ -434,7 +434,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           onAoiChange={onAoiChange}
           projection={projection}
           onProjectionChange={onProjectionChange}
-          currentBasemapStyleId={currentBasemapStyleId}
+          basemapStyleId={basemapStyleId}
           onBasemapStyleIdChange={onBasemapStyleIdChange}
           labelsOption={labelsOption}
           boundariesOption={boundariesOption}

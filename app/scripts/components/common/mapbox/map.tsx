@@ -45,7 +45,7 @@ interface SimpleMapProps {
   onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
-  currentBasemapStyleId?: BasemapId;
+  basemapStyleId?: BasemapId;
   onBasemapStyleIdChange?: (basemapId: BasemapId) => void;
   labelsOption?: boolean;
   boundariesOption?: boolean;
@@ -72,7 +72,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     projection,
     onProjectionChange,
     attributionPosition = 'bottom-left',
-    currentBasemapStyleId,
+    basemapStyleId,
     onBasemapStyleIdChange,
     labelsOption,
     boundariesOption,
@@ -89,7 +89,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
       <MapOptions
         projection={projection}
         onProjectionChange={onProjectionChange}
-        currentBasemapStyleId={currentBasemapStyleId}
+        basemapStyleId={basemapStyleId}
         onBasemapStyleIdChange={onBasemapStyleIdChange}
         labelsOption={labelsOption}
         boundariesOption={boundariesOption}
@@ -99,7 +99,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
   }, [
     projection,
     onProjectionChange,
-    currentBasemapStyleId,
+    basemapStyleId,
     onBasemapStyleIdChange,
     labelsOption,
     boundariesOption,

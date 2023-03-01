@@ -4,7 +4,7 @@ import { BasemapId, Option } from './basemaps';
 export type MapOptionsProps = {
   onProjectionChange: (projection: ProjectionOptions) => void;
   projection: ProjectionOptions;
-  currentBasemapStyleId?: BasemapId;
+  basemapStyleId?: BasemapId;
   onBasemapStyleIdChange?: (basemapId: BasemapId) => void;
   labelsOption?: boolean;
   boundariesOption?: boolean;

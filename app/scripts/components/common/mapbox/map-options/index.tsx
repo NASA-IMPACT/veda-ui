@@ -121,7 +121,7 @@ function MapOptions(props: MapOptionsProps) {
   const {
     projection,
     onProjectionChange,
-    currentBasemapStyleId,
+    basemapStyleId,
     onBasemapStyleIdChange,
     labelsOption,
     boundariesOption,
@@ -153,11 +153,10 @@ function MapOptions(props: MapOptionsProps) {
                   <li key={basemap.id}>
                     <DropMenuItem
                       href='#'
-                      active={currentBasemapStyleId === basemap.id}
+                      active={basemapStyleId === basemap.id}
                       onClick={(e) => {
                         e.preventDefault();
-                        if (onBasemapStyleIdChange)
-                          onBasemapStyleIdChange(basemap.id);
+                        onBasemapStyleIdChange?.(basemap.id);
                       }}
                     >
                       <span>{basemap.label}</span>
@@ -188,9 +187,7 @@ function MapOptions(props: MapOptionsProps) {
                       value='labels'
                       checked={labelsOption}
                       onChange={(e) => {
-                        if (onOptionChange) {
-                          onOptionChange('labels', e.target.checked);
-                        }
+                        onOptionChange?.('labels', e.target.checked);
                       }}
                     >
                       Labels
@@ -205,9 +202,7 @@ function MapOptions(props: MapOptionsProps) {
                       value='boundaries'
                       checked={boundariesOption}
                       onChange={(e) => {
-                        if (onOptionChange) {
-                          onOptionChange('boundaries', e.target.checked);
-                        }
+                        onOptionChange?.('boundaries', e.target.checked);
                       }}
                     >
                       Boundaries

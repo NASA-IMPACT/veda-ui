@@ -32,24 +32,21 @@ export function useBasemap(mapInstance: mapboxgl.Map | null) {
     };
   }, [mapInstance]);
 
-  const [currentBasemapStyleId, setCurrentBasemapStyleId] =
+  const [BasemapStyleId, setBasemapStyleId] =
     useState<BasemapId>('satellite');
 
   const onBasemapStyleIdChange = useCallback((basemapId) => {
-    setCurrentBasemapStyleId(basemapId);
+    setBasemapStyleId(basemapId);
   }, []);
 
   const styleUrl = useMemo(() => {
-    return currentBasemapStyleId
-      ? BASEMAP_STYLES.find((b) => b.id === currentBasemapStyleId)!.url
+    return BasemapStyleId
+      ? BASEMAP_STYLES.find((b) => b.id === BasemapStyleId)!.url
       : BASEMAP_STYLES[0].url;
-  }, [currentBasemapStyleId]);
+  }, [BasemapStyleId]);
 
   useEffect(() => {
     if (!mapInstance || !styleUrl) return;
-
-    // Any BaseLayerComponent (ie raster-timeseries or others) must listen to styledata/styledataloading events
-    // on the mgl instance to re-add layers
     mapInstance.setStyle(styleUrl);
   }, [mapInstance, styleUrl]);
 
@@ -103,7 +100,7 @@ export function useBasemap(mapInstance: mapboxgl.Map | null) {
 
   return {
     styleLoaded,
-    currentBasemapStyleId,
+    BasemapStyleId,
     onBasemapStyleIdChange,
     labelsOption,
     boundariesOption,
