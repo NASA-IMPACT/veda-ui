@@ -32,17 +32,17 @@ export function useBasemap(mapInstance: mapboxgl.Map | null) {
     };
   }, [mapInstance]);
 
-  const [BasemapStyleId, setBasemapStyleId] = useState<BasemapId>('satellite');
+  const [basemapStyleId, setBasemapStyleId] = useState<BasemapId>('satellite');
 
   const onBasemapStyleIdChange = useCallback((basemapId) => {
     setBasemapStyleId(basemapId);
   }, []);
 
   const styleUrl = useMemo(() => {
-    return BasemapStyleId
-      ? BASEMAP_STYLES.find((b) => b.id === BasemapStyleId)!.url
+    return basemapStyleId
+      ? BASEMAP_STYLES.find((b) => b.id === basemapStyleId)!.url
       : BASEMAP_STYLES[0].url;
-  }, [BasemapStyleId]);
+  }, [basemapStyleId]);
 
   useEffect(() => {
     if (!mapInstance || !styleUrl) return;
@@ -95,7 +95,7 @@ export function useBasemap(mapInstance: mapboxgl.Map | null) {
 
   return {
     styleLoaded,
-    BasemapStyleId,
+    basemapStyleId,
     onBasemapStyleIdChange,
     labelsOption,
     boundariesOption,

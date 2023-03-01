@@ -269,17 +269,20 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         The function getLayerComponent() should be used to get the correct
         component.
       */}
-      {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && styleLoaded && (
-        <BaseLayerComponent
-          id={`base-${baseLayerResolvedData.id}`}
-          stacCol={baseLayerResolvedData.stacCol}
-          mapInstance={mapRef.current}
-          date={date}
-          sourceParams={baseLayerResolvedData.sourceParams}
-          zoomExtent={baseLayerResolvedData.zoomExtent}
-          onStatusChange={onBaseLayerStatusChange}
-        />
-      )}
+      {isMapLoaded &&
+        baseLayerResolvedData &&
+        BaseLayerComponent &&
+        styleLoaded && (
+          <BaseLayerComponent
+            id={`base-${baseLayerResolvedData.id}`}
+            stacCol={baseLayerResolvedData.stacCol}
+            mapInstance={mapRef.current}
+            date={date}
+            sourceParams={baseLayerResolvedData.sourceParams}
+            zoomExtent={baseLayerResolvedData.zoomExtent}
+            onStatusChange={onBaseLayerStatusChange}
+          />
+        )}
 
       {/*
         Adding a layer to the comparison map is also done through a component,
