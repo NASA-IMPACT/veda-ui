@@ -5,6 +5,8 @@ import { FormattedTimeSeriesData, getFData } from './utils';
 import { fileExtensionRegex } from './constant';
 import Chart, { CommonLineChartProps, UniqueKeyUnit } from '.';
 
+import { BlockErrorBoundary } from '$components/common/blocks';
+import useAsyncError from '$utils/use-async-error';
 interface BlockChartProp extends CommonLineChartProps {
   dataPath: string;
   idKey?: string;
@@ -14,7 +16,7 @@ interface BlockChartProp extends CommonLineChartProps {
 
 const subIdKey = 'subIdeKey';
 
-export default function BlockChart(props: BlockChartProp) {
+function BlockChart(props: BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
 
   const [chartData, setChartData] = useState<FormattedTimeSeriesData[]>([]);
@@ -23,6 +25,8 @@ export default function BlockChart(props: BlockChartProp) {
   const newDataPath = dataPath.split('?')[0];
   const extension = fileExtensionRegex.exec(newDataPath)[1];
 
+  const throwAsyncError = useAsyncError();
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -30,7 +34,7 @@ export default function BlockChart(props: BlockChartProp) {
       extension === 'csv'
         ? (await csv(dataPath)) as DSVRowArray
         : (await json(dataPath).then(d => [d].flat())) as object[];
-
+      
         // if no idKey is provided (when there are only two columns in the data), sub it with empty data
         const dataToUse = idKey? data: data.map(e => ({...e, [subIdKey]: ''}));
         
@@ -47,18 +51,19 @@ export default function BlockChart(props: BlockChartProp) {
           value: e,
           active: true
         }));
-  
         setChartData(fData);
         setUniqueKeys(formattedUniqueKeys);
       } catch(e) {
-        throw new Error('Something went wrong with chart data.');
+        throwAsyncError(e);
       }
+      
     };
 
     getData();
   }, [
     setChartData,
     setUniqueKeys,
+    throwAsyncError,
     extension,
     idKey,
     xKey,
@@ -75,4 +80,9 @@ export default function BlockChart(props: BlockChartProp) {
       renderLegend={true}
     />
   );
+}
+
+
+export default function ChartBlock(props) {
+  return <BlockErrorBoundary {...props} childToRender={BlockChart} />;
 }

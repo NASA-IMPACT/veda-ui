@@ -21,6 +21,7 @@ export const convertToTime = ({
 }) => {
   if (!timeString) return undefined;
   const parseDate = timeParse(dateFormat);
+  if (!parseDate(timeString)) throw Error(`Failed to parse time with dateformat: ${dateFormat}. The data has "${timeString}" as time value. Please check if you are using the right time format: https://github.com/d3/d3-time-format.`);
   return parseDate(timeString)?.getTime();
 };
 
@@ -92,6 +93,14 @@ export function getFData({
   yKey: string;
   dateFormat: string;
 }): { uniqueKeys: any[], fData: FormattedTimeSeriesData[] } {
+  
+  // Throw an error if no key is found.
+  const columnErrors = [xKey, yKey, idKey]
+    .map(key => ({key, noErr: Object.keys(data[0]).includes(key)}))
+    .filter(e => !e.noErr)
+    .map(e => `"${e.key}" is not found in columns. Please check if the data has "${e.key}" column.`);    
+  if(columnErrors.length > 0) throw Error(columnErrors.join(' '));
+  
   /* eslint-disable-next-line fp/no-mutating-methods */
   const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort();
 
