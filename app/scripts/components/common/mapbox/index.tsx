@@ -269,7 +269,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         The function getLayerComponent() should be used to get the correct
         component.
       */}
-      {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
+      {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && styleLoaded && (
         <BaseLayerComponent
           id={`base-${baseLayerResolvedData.id}`}
           stacCol={baseLayerResolvedData.stacCol}
@@ -278,7 +278,6 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           sourceParams={baseLayerResolvedData.sourceParams}
           zoomExtent={baseLayerResolvedData.zoomExtent}
           onStatusChange={onBaseLayerStatusChange}
-          styleLoaded={styleLoaded}
         />
       )}
 

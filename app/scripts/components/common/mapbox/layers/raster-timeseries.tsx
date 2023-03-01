@@ -31,7 +31,6 @@ interface MapLayerRasterTimeseriesProps {
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
-  styleLoaded: boolean;
 }
 
 export interface StacFeature {
@@ -59,8 +58,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     sourceParams,
     zoomExtent,
     onStatusChange,
-    isHidden,
-    styleLoaded
+    isHidden
   } = props;
 
   const theme = useTheme();
@@ -218,15 +216,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // Markers
   //
   useEffect(() => {
-    if (
-      !id ||
-      !stacCol ||
-      !date ||
-      !minZoom ||
-      !stacCollection.length ||
-      !styleLoaded
-    )
-      return;
+    if (!id || !stacCol || !date || !minZoom || !stacCollection.length) return;
 
     // Create points from bboxes
     const points = stacCollection.map((f) => {
@@ -271,16 +261,14 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     minZoom,
     mapInstance,
     sourceParams,
-    primaryColor,
-    styleLoaded
+    primaryColor
   ]);
 
   //
   // Tiles
   //
   useEffect(() => {
-    if (!id || !stacCol || !date || !stacCollection.length || !styleLoaded)
-      return;
+    if (!id || !stacCol || !date || !stacCollection.length) return;
 
     const controller = new AbortController();
 
@@ -407,8 +395,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     mapInstance,
     // `sourceParams` object reference is likely to change. Compare in string
     // format.
-    JSON.stringify(sourceParams),
-    styleLoaded
+    JSON.stringify(sourceParams)
   ]);
 
   //
