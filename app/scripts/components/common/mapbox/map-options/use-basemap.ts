@@ -8,7 +8,7 @@ import {
 } from './basemaps';
 
 export function useBasemap(mapInstance: mapboxgl.Map | null) {
-  const [styleLoaded, setStyleLoaded] = useState(true);
+  const [styleLoaded, setStyleLoaded] = useState(false);
 
   // Listen to style reloads to set a state prop, which is then used as an useEffect dependency
   // to retrigger adding raster layers/markers, and to reapply options
@@ -32,8 +32,7 @@ export function useBasemap(mapInstance: mapboxgl.Map | null) {
     };
   }, [mapInstance]);
 
-  const [BasemapStyleId, setBasemapStyleId] =
-    useState<BasemapId>('satellite');
+  const [BasemapStyleId, setBasemapStyleId] = useState<BasemapId>('satellite');
 
   const onBasemapStyleIdChange = useCallback((basemapId) => {
     setBasemapStyleId(basemapId);
@@ -68,34 +67,30 @@ export function useBasemap(mapInstance: mapboxgl.Map | null) {
   // to determine wehether a layer is a labels layer or boundaries or none of those.
   useEffect(() => {
     if (!mapInstance || !styleLoaded) return;
-    try {
-      const style = mapInstance.getStyle();
-      style.layers.forEach((layer) => {
-        const layerGroup = (layer as Layer).metadata?.['mapbox:group'];
 
-        if (layerGroup) {
-          const isLabelsLayer = GROUPS_BY_OPTION.labels.includes(layerGroup);
-          const isBoundariesLayer =
-            GROUPS_BY_OPTION.boundaries.includes(layerGroup);
+    const style = mapInstance.getStyle();
+    style.layers.forEach((layer) => {
+      const layerGroup = (layer as Layer).metadata?.['mapbox:group'];
 
-          const visibility =
-            (isLabelsLayer && labelsOption) ||
-            (isBoundariesLayer && boundariesOption)
-              ? 'visible'
-              : 'none';
+      if (layerGroup) {
+        const isLabelsLayer = GROUPS_BY_OPTION.labels.includes(layerGroup);
+        const isBoundariesLayer =
+          GROUPS_BY_OPTION.boundaries.includes(layerGroup);
 
-          if (
-            (isLabelsLayer || isBoundariesLayer) &&
-            (layer as Layer).layout?.visibility !== visibility
-          ) {
-            mapInstance.setLayoutProperty(layer.id, 'visibility', visibility);
-          }
+        const visibility =
+          (isLabelsLayer && labelsOption) ||
+          (isBoundariesLayer && boundariesOption)
+            ? 'visible'
+            : 'none';
+
+        if (
+          (isLabelsLayer || isBoundariesLayer) &&
+          (layer as Layer).layout?.visibility !== visibility
+        ) {
+          mapInstance.setLayoutProperty(layer.id, 'visibility', visibility);
         }
-      });
-    } catch (e) {
-      // Mapbox GL is throwing an error at initial map mount when calling getStyle
-      // Not a proble for now but we should keep an eye on this
-    }
+      }
+    });
   }, [labelsOption, boundariesOption, styleLoaded, mapInstance]);
 
   return {
