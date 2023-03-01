@@ -39,6 +39,7 @@ import {
 } from '$utils/status';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
 import { BasemapId, BASEMAP_STYLES } from './map-options/basemaps';
+import { useBasemap } from './map-options/use-basemap';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -153,6 +154,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     mapRef.current.setStyle(styleUrl);
   }, [styleUrl]);
 
+  const { styleLoaded } = useBasemap(mapRef.current)
 
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
@@ -290,6 +292,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           sourceParams={baseLayerResolvedData.sourceParams}
           zoomExtent={baseLayerResolvedData.zoomExtent}
           onStatusChange={onBaseLayerStatusChange}
+          styleLoaded={styleLoaded}
         />
       )}
 

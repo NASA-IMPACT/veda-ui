@@ -31,6 +31,7 @@ interface MapLayerRasterTimeseriesProps {
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
+  styleLoaded: boolean;
 }
 
 export interface StacFeature {
@@ -58,7 +59,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     sourceParams,
     zoomExtent,
     onStatusChange,
-    isHidden
+    isHidden,
+    styleLoaded
   } = props;
 
   const theme = useTheme();
@@ -139,22 +141,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   }, [minZoom, mapInstance]);
 
   // Style status
-  const [styleLoaded, setStyleLoaded] = useState(true)
-  useEffect(() => {
-    const onStyleDataLoading = () => {
-      setStyleLoaded(false);
-    }
-    const onStyleData = () => {
-      setStyleLoaded(true);
-    }
-    mapInstance.on('styledataloading', onStyleDataLoading);
-    mapInstance.on('styledata', onStyleData);
-
-    return () => {
-      mapInstance.off('styledataloading', onStyleDataLoading);
-      mapInstance.off('styledata', onStyleData);
-    }
-  }, [mapInstance])
 
   //
   // Load stac collection features
