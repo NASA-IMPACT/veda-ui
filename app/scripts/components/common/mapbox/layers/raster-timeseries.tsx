@@ -140,7 +140,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     };
   }, [minZoom, mapInstance]);
 
-  // Style status
 
   //
   // Load stac collection features

@@ -38,7 +38,6 @@ import {
   S_SUCCEEDED
 } from '$utils/status';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
-import { BasemapId, BASEMAP_STYLES } from './map-options/basemaps';
 import { useBasemap } from './map-options/use-basemap';
 
 const chevronRightURI = () =>
@@ -133,28 +132,14 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
 
-  const [currentBasemapStyleId, setCurrentBasemapStyleId] =
-    useState<BasemapId>('satellite');
-
-  const onBasemapStyleIdChange = useCallback((basemapId) => {
-    setCurrentBasemapStyleId(basemapId);
-  }, []);
-
-  const styleUrl = useMemo(() => {
-    return currentBasemapStyleId
-      ? BASEMAP_STYLES.find((b) => b.id === currentBasemapStyleId)!.url
-      : BASEMAP_STYLES[0].url;
-  }, [currentBasemapStyleId]);
-
-  useEffect(() => {
-    if (!mapRef.current || !styleUrl) return;
-
-    // Any BaseLayerComponent (ie raster-timeseries or others) must listen to styledata/styledataloading events
-    // on the mgl instance to re-add layers
-    mapRef.current.setStyle(styleUrl);
-  }, [styleUrl]);
-
-  const { styleLoaded } = useBasemap(mapRef.current)
+  const {
+    styleLoaded,
+    currentBasemapStyleId,
+    onBasemapStyleIdChange,
+    labelsOption,
+    boundariesOption,
+    onOptionChange
+  } = useBasemap(mapRef.current);
 
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
@@ -450,6 +435,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           onProjectionChange={onProjectionChange}
           currentBasemapStyleId={currentBasemapStyleId}
           onBasemapStyleIdChange={onBasemapStyleIdChange}
+          labelsOption={labelsOption}
+          boundariesOption={boundariesOption}
+          onOptionChange={onOptionChange}
         />
         {shouldRenderCompare && (
           <SimpleMap

@@ -122,7 +122,10 @@ function MapOptions(props: MapOptionsProps) {
     projection,
     onProjectionChange,
     currentBasemapStyleId,
-    onBasemapStyleIdChange
+    onBasemapStyleIdChange,
+    labelsOption,
+    boundariesOption,
+    onOptionChange
   } = props;
 
   return (
@@ -179,12 +182,36 @@ function MapOptions(props: MapOptionsProps) {
               <DropMenu>
                 <li>
                   <DropMenuItem as='span'>
-                    <OptionSwitch>Labels</OptionSwitch>
+                    <OptionSwitch
+                      name='labels'
+                      id='labels'
+                      value='labels'
+                      checked={labelsOption}
+                      onChange={(e) => {
+                        if (onOptionChange) {
+                          onOptionChange('labels', e.target.checked);
+                        }
+                      }}
+                    >
+                      Labels
+                    </OptionSwitch>
                   </DropMenuItem>
                 </li>
                 <li>
                   <DropMenuItem as='span'>
-                    <OptionSwitch>Boundaries</OptionSwitch>
+                    <OptionSwitch
+                      name='boundaries'
+                      id='boundaries'
+                      value='boundaries'
+                      checked={boundariesOption}
+                      onChange={(e) => {
+                        if (onOptionChange) {
+                          onOptionChange('boundaries', e.target.checked);
+                        }
+                      }}
+                    >
+                      Boundaries
+                    </OptionSwitch>
                   </DropMenuItem>
                 </li>
               </DropMenu>

@@ -18,7 +18,7 @@ import MapOptions from './map-options';
 import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './map-options/utils';
 
-import { BasemapId } from './map-options/basemaps';
+import { BasemapId, Option } from './map-options/basemaps';
 import { round } from '$utils/format';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN ?? '';
@@ -47,6 +47,9 @@ interface SimpleMapProps {
   onProjectionChange?: (projection: ProjectionOptions) => void;
   currentBasemapStyleId?: BasemapId;
   onBasemapStyleIdChange?: (basemapId: BasemapId) => void;
+  labelsOption?: boolean;
+  boundariesOption?: boolean;
+  onOptionChange?: (option: Option, value: boolean) => void;
   attributionPosition?:
     | 'top-right'
     | 'top-left'
@@ -71,6 +74,9 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     attributionPosition = 'bottom-left',
     currentBasemapStyleId,
     onBasemapStyleIdChange,
+    labelsOption,
+    boundariesOption,
+    onOptionChange,
     ...rest
   } = props;
 
@@ -85,9 +91,20 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
         onProjectionChange={onProjectionChange}
         currentBasemapStyleId={currentBasemapStyleId}
         onBasemapStyleIdChange={onBasemapStyleIdChange}
+        labelsOption={labelsOption}
+        boundariesOption={boundariesOption}
+        onOptionChange={onOptionChange}
       />
     );
-  }, [projection, onProjectionChange, currentBasemapStyleId, onBasemapStyleIdChange]);
+  }, [
+    projection,
+    onProjectionChange,
+    currentBasemapStyleId,
+    onBasemapStyleIdChange,
+    labelsOption,
+    boundariesOption,
+    onOptionChange
+  ]);
 
   useEffect(() => {
     if (!containerRef.current) return;
