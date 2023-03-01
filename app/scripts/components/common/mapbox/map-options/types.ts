@@ -6,15 +6,15 @@ export type MapOptionsProps = {
   projection: ProjectionOptions;
   currentBasemapStyleId?: BasemapId;
   onBasemapStyleIdChange?: (basemapId: BasemapId) => void;
-  labelsOption?: boolean,
-  boundariesOption?: boolean,
-  onOptionChange?: (option: Option, value: boolean) => void
+  labelsOption?: boolean;
+  boundariesOption?: boolean;
+  onOptionChange?: (option: Option, value: boolean) => void;
 };
 
 export type ProjectionConicOptions = {
   center: [number, number];
   parallels: [number, number];
-}
+};
 
 export type ProjectionListItem = {
   id: ProjectionOptions['id'];

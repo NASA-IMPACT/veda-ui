@@ -87,7 +87,10 @@ export function useBasemap(mapInstance: mapboxgl.Map | null) {
               ? 'visible'
               : 'none';
 
-          if ((isLabelsLayer || isBoundariesLayer) && (layer as Layer).layout?.visibility !== visibility) {
+          if (
+            (isLabelsLayer || isBoundariesLayer) &&
+            (layer as Layer).layout?.visibility !== visibility
+          ) {
             mapInstance.setLayoutProperty(layer.id, 'visibility', visibility);
           }
         }
