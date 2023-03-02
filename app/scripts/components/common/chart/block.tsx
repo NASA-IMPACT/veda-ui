@@ -5,7 +5,6 @@ import { FormattedTimeSeriesData, getFData } from './utils';
 import { fileExtensionRegex } from './constant';
 import Chart, { CommonLineChartProps, UniqueKeyUnit } from '.';
 
-import { BlockErrorBoundary } from '$components/common/blocks';
 import useAsyncError from '$utils/use-async-error';
 interface BlockChartProp extends CommonLineChartProps {
   dataPath: string;
@@ -82,7 +81,4 @@ function BlockChart(props: BlockChartProp) {
   );
 }
 
-
-export default function ChartBlock(props) {
-  return <BlockErrorBoundary {...props} childToRender={BlockChart} />;
-}
+export default BlockChart;

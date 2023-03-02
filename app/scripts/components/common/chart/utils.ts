@@ -2,6 +2,7 @@ import { timeFormat, timeParse } from 'd3';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { UniqueKeyUnit } from '.';
 import { formatAsScientificNotation, round } from '$utils/format';
+import { HintedError } from '$utils/hinted-error';
 
 export const timeFormatter = (time: number, dateFormat: string) => {
   return dateFormatter(new Date(time), dateFormat);
@@ -21,7 +22,7 @@ export const convertToTime = ({
 }) => {
   if (!timeString) return undefined;
   const parseDate = timeParse(dateFormat);
-  if (!parseDate(timeString)) throw Error(`Failed to parse time with dateformat: ${dateFormat}. The data has "${timeString}" as time value. Please check if you are using the right time format: https://github.com/d3/d3-time-format.`);
+  if (!parseDate(timeString)) throw new HintedError('Failed to parse time with dateformat', [`${dateFormat}. The data has "${timeString}" as time value. Please check if you are using the right time format: https://github.com/d3/d3-time-format.`]);
   return parseDate(timeString)?.getTime();
 };
 
@@ -99,7 +100,7 @@ export function getFData({
     .map(key => ({key, noErr: Object.keys(data[0]).includes(key)}))
     .filter(e => !e.noErr)
     .map(e => `"${e.key}" is not found in columns. Please check if the data has "${e.key}" column.`);    
-  if(columnErrors.length > 0) throw Error(columnErrors.join(' '));
+  if(columnErrors.length > 0) throw new HintedError('Key not found', columnErrors);
   
   /* eslint-disable-next-line fp/no-mutating-methods */
   const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort();
