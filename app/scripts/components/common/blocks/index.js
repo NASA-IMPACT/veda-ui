@@ -241,14 +241,16 @@ function BlockComponent(props) {
   );
 
   if (![defaultBlockName, wideBlockName, fullBlockName].includes(typeName)) {
-    throw new HintedError(`${blockTypeErrorMessage} '${typeName}'`);
+    throw new HintedError(`${blockTypeErrorMessage} '${typeName}'`, [
+      `Supported block types: 'wide', 'full'`
+    ]);
   }
 
   if (!matchingBlocks[`${typeName}${childrenNames}`]) {
     let hints;
     if (childrenComponents.filter((e) => e == 'Figure').length > 1)
       hints = [
-        'Block cannot have more than one figure. Try to wrap Figures with Blocks.',
+        'Block cannot have more than one Figure. Try to wrap Figures with Blocks.',
         'Before:',
         '<Block>',
         '  <Figure><Image/></Figure>',

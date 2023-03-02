@@ -22,7 +22,7 @@ export const convertToTime = ({
 }) => {
   if (!timeString) return undefined;
   const parseDate = timeParse(dateFormat);
-  if (!parseDate(timeString)) throw new HintedError('Failed to parse time with dateformat', [`${dateFormat}. The data has "${timeString}" as time value. Please check if you are using the right time format: https://github.com/d3/d3-time-format.`]);
+  if (!parseDate(timeString)) throw new HintedError(`Failed to parse time with the dateFormat provided: ${dateFormat}.`, [`The data has "${timeString}" as value.`,` Please check if you are using the right time format: https://github.com/d3/d3-time-format.`]);
   return parseDate(timeString)?.getTime();
 };
 
