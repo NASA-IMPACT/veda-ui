@@ -18,7 +18,7 @@ import ContentBlockFigure from './figure';
 import { ContentBlock, ContentBlockProse } from '$styles/content-block';
 
 import { variableGlsp } from '$styles/variable-utils';
-import { HintedErrorDisplay } from '$utils/hinted-error';
+import { HintedError, HintedErrorDisplay } from '$utils/hinted-error';
 
 export const ContentBlockPAlpha = styled(ContentBlock)`
   ${ContentBlockProse} {
@@ -234,21 +234,50 @@ function BlockComponent(props) {
   const typeName = type ? type : 'default';
   const childrenAsArray = React.Children.toArray(children);
 
-  const childrenComponents = childrenAsArray.reduce(
-    (acc, curr) => acc + curr.type.displayName,
+  const childrenComponents = childrenAsArray.map((e) => e.type.displayName);
+  const childrenNames = childrenComponents.reduce(
+    (acc, curr) => acc + curr,
     ''
   );
 
   if (![defaultBlockName, wideBlockName, fullBlockName].includes(typeName)) {
-    throw Error(`${blockTypeErrorMessage} '${typeName}'`);
+    throw new HintedError(`${blockTypeErrorMessage} '${typeName}'`);
   }
 
-  if (!matchingBlocks[`${typeName}${childrenComponents}`]) {
-    throw Error(contentTypeErrorMessage);
+  if (!matchingBlocks[`${typeName}${childrenNames}`]) {
+    let hints;
+    if (childrenComponents.filter((e) => e == 'Figure').length > 1)
+      hints = [
+        'Block cannot have more than one figure. Try to wrap Figures with Blocks.',
+        'Before:',
+        '<Block>',
+        '  <Figure><Image/></Figure>',
+        '  <Figure><Image/></Figure>',
+        '</Block>',
+        'After:',
+        '<Block>',
+        '  <Figure><Image/></Figure>',
+        '</Block>',
+        '<Block>',
+        '  <Figure><Image/></Figure>',
+        '</Block>',
+        '--',
+        'You can take your media out from Figure if they are meant to be inline.',
+        'Before:',
+        '<Block>',
+        '  <Figure><Image/></Figure>',
+        '  <Figure><Image/></Figure>',
+        '</Block>',
+        'After:',
+        '<Block>',
+        '  <Image /> ## .... <Image />',
+        '</Block>'
+      ];
+    throw new HintedError(contentTypeErrorMessage, hints);
   }
 
   return React.createElement(
-    matchingBlocks[`${typeName}${childrenComponents}`],
+    matchingBlocks[`${typeName}${childrenNames}`],
     props
   );
 }
