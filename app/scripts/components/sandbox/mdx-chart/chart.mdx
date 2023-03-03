@@ -5,6 +5,8 @@
 
 When governments began implementing shutdowns at the start of the COVID-19 pandemic, scientists wondered how the atmosphere would respond to the sudden change in human behavior. With people largely confined to their homes to slow the spread of the novel coronavirus, scientists expected there were likely to be fewer cars, planes, and ships burning and emitting fossil fuels. As the pandemic has progressed, these scenarios have largely played out: during the strictest lockdown periods, locations around the world experienced substantial reductions in transportation-related fossil fuel emissions. The impacts on specific air pollutants have been varied and dependant on their lifespan in the atmosphere. Those pollutants with short lifespans, such as nitrogen dioxide (NO2), decreased dramatically and quickly along with emissions. Today, air quality levels are beginning to approach pre-pandemic levels, and scientists are just beginning to dive into the new measurements collected throughout this unprecedented time.
 
+### Example Chart
+
 <Chart
   dataPath={new URL('./aq.csv', import.meta.url).href}
   dateFormat='%Y'
@@ -18,6 +20,18 @@ When governments began implementing shutdowns at the start of the COVID-19 pande
 Phasellus nec magna tristique, imperdiet mauris hendrerit, posuere sem. Vestibulum in lobortis tortor.
 
 Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. Nunc luctus orci mi, sed pretium nibh consequat sit amet. In congue metus a ullamcorper sollicitudin.
+
+### Chart with errors
+<Chart
+  dataPath={new URL('./aq.csv', import.meta.url).href}
+  dateFormat='%Y'
+  idKey='Data Type'
+  xKey='Yearr'
+  yKey='United States Change from 2005'
+  colors={['red', 'grey']}
+  xAxisLabel='Year'
+  yAxisLabel='United States Change from 2005'
+/>
 
 </Prose>
 </Block>
@@ -35,7 +49,6 @@ Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. 
     />
   </Prose>
 </Block>
-
 
 <Block>
   <Prose>
