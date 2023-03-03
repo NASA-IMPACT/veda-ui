@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { themeVal, glsp } from '@devseed-ui/theme-provider';
 
 export class HintedError extends Error {
-  hints?: string[];
+  hints?: React.ReactNode[];
 
-  constructor(message, hints = [] as string[]) {
+  constructor(message, hints: React.ReactNode[] = []) {
     super(message);
     this.hints = hints;
   }
@@ -35,17 +35,27 @@ export const ErrorBlockInner = styled.div`
 export const ErrorHints = styled.div`
   margin-top: ${glsp()};
   color: ${themeVal('color.base')};
+
+  pre {
+    font-size: 0.875rem;
+  }
+`;
+
+const ErrorSubtitle = styled.div`
+  color: ${themeVal('color.base')};
+  font-size: 0.875rem;
 `;
 
 interface HintedErrorDisplayProps {
   title: string;
   message: string;
-  className?: string
-  hints?: string[]
+  className?: string;
+  hints?: React.ReactNode[];
+  subtitle?: React.ReactNode;
 }
 
 export function HintedErrorDisplay(props: HintedErrorDisplayProps) {
-  const { className, hints, message, title } = props;
+  const { className, hints, message, title, subtitle } = props;
 
   return (
     <ErrorBlock className={className}>
@@ -53,13 +63,21 @@ export function HintedErrorDisplay(props: HintedErrorDisplayProps) {
         <div>
           <small>{title}</small>
           <strong>{message}</strong>
+          {subtitle && <ErrorSubtitle>{subtitle}</ErrorSubtitle>}
           {!!hints?.length && (
             <ErrorHints>
-              <p>Hints:</p>
-              {hints.map((e, i) => (
-                /* eslint-disable-next-line react/no-array-index-key */
-                <p key={i}>{e}</p>
-              ))}
+              <p>
+                <strong>Hints:</strong>
+              </p>
+              {hints.map((e, i) =>
+                typeof e === 'string' ? (
+                  /* eslint-disable-next-line react/no-array-index-key */
+                  <p key={i}>{e}</p>
+                ) : (
+                  /* eslint-disable-next-line react/no-array-index-key */
+                  <React.Fragment key={i}>{e}</React.Fragment>
+                )
+              )}
             </ErrorHints>
           )}
         </div>
@@ -67,3 +85,17 @@ export function HintedErrorDisplay(props: HintedErrorDisplayProps) {
     </ErrorBlock>
   );
 }
+
+export const docsMessage = (
+  <p>
+    📜 Find all documentation in our{' '}
+    <a
+      href='https://github.com/NASA-IMPACT/veda-config/blob/main/docs/MDX_BLOCKS.md'
+      target='_blank'
+      rel='noreferrer nofollow'
+    >
+      <strong>Github repo</strong>
+    </a>
+    .
+  </p>
+);
