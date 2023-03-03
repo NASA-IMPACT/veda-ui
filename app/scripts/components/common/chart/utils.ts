@@ -114,7 +114,7 @@ export function getFData({
   if (columnErrors.length > 0)
     throw new HintedError('Key not found', columnErrors);
   // Check sensitivity value
-  const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+  const collator = new Intl.Collator('en', {numeric: true});
 
   /* eslint-disable-next-line fp/no-mutating-methods */
   const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort(collator.compare);
