@@ -144,6 +144,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   } = useBasemap();
 
   const mapStyleLoaded = useStyleLoaded(mapRef.current, style);
+  const mapCompareStyleLoaded = useStyleLoaded(mapCompareRef.current, style);
 
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
@@ -294,7 +295,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       {isMapCompareLoaded &&
         isComparing &&
         compareLayerResolvedData &&
-        CompareLayerComponent && (
+        CompareLayerComponent &&
+        mapCompareStyleLoaded && (
           <CompareLayerComponent
             id={`compare-${compareLayerResolvedData.id}`}
             stacCol={compareLayerResolvedData.stacCol}
