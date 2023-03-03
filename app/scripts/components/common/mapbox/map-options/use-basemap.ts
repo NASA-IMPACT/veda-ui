@@ -1,53 +1,40 @@
-import mapboxgl, { Layer } from 'mapbox-gl';
+import { Layer, Style } from 'mapbox-gl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BasemapId,
   BASEMAP_STYLES,
+  getStyleUrl,
   GROUPS_BY_OPTION,
   Option
 } from './basemaps';
 
-export function useBasemap(mapInstance: mapboxgl.Map | null) {
-  const [styleLoaded, setStyleLoaded] = useState(false);
-
-  // Listen to style reloads to set a state prop, which is then used as an useEffect dependency
-  // to retrigger adding raster layers/markers, and to reapply options
-  useEffect(() => {
-    const onStyleDataLoading = () => {
-      setStyleLoaded(false);
-    };
-    const onStyleData = () => {
-      setStyleLoaded(true);
-    };
-    if (mapInstance) {
-      mapInstance.on('styledataloading', onStyleDataLoading);
-      mapInstance.on('styledata', onStyleData);
-    }
-
-    return () => {
-      if (mapInstance) {
-        mapInstance.off('styledataloading', onStyleDataLoading);
-        mapInstance.off('styledata', onStyleData);
-      }
-    };
-  }, [mapInstance]);
-
+export function useBasemap() {
   const [basemapStyleId, setBasemapStyleId] = useState<BasemapId>('satellite');
 
   const onBasemapStyleIdChange = useCallback((basemapId) => {
     setBasemapStyleId(basemapId);
   }, []);
 
-  const styleUrl = useMemo(() => {
-    return basemapStyleId
-      ? BASEMAP_STYLES.find((b) => b.id === basemapStyleId)!.url
-      : BASEMAP_STYLES[0].url;
-  }, [basemapStyleId]);
+  const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
 
   useEffect(() => {
-    if (!mapInstance || !styleUrl) return;
-    mapInstance.setStyle(styleUrl);
-  }, [mapInstance, styleUrl]);
+    const mapboxId = basemapStyleId
+      ? BASEMAP_STYLES.find((b) => b.id === basemapStyleId)!.mapboxId
+      : BASEMAP_STYLES[0].mapboxId;
+
+    const url = getStyleUrl(mapboxId);
+    const controller = new AbortController();
+
+    const load = async () => {
+      const styleRaw = await fetch(url, { signal: controller.signal });
+      const styleJson = await styleRaw.json();
+      setBaseStyle(styleJson as Style);
+    };
+    load();
+    return () => {
+      controller.abort();
+    };
+  }, [basemapStyleId]);
 
   const [labelsOption, setLabelsOption] = useState(true);
   const [boundariesOption, setBoundariesOption] = useState(true);
@@ -65,11 +52,12 @@ export function useBasemap(mapInstance: mapboxgl.Map | null) {
   // Apply labels and boundaries options, by setting visibility on related layers
   // For simplicity's sake, the Mapbox layer group (as set in Mapbox Studio) is used
   // to determine wehether a layer is a labels layer or boundaries or none of those.
-  useEffect(() => {
-    if (!mapInstance || !styleLoaded) return;
+  const style = useMemo(() => {
+    if (!baseStyle) return;
 
-    const style = mapInstance.getStyle();
-    style.layers.forEach((layer) => {
+    const style = { ...baseStyle };
+
+    style.layers = style.layers.map((layer) => {
       const layerGroup = (layer as Layer).metadata?.['mapbox:group'];
 
       if (layerGroup) {
@@ -83,18 +71,26 @@ export function useBasemap(mapInstance: mapboxgl.Map | null) {
             ? 'visible'
             : 'none';
 
-        if (
-          (isLabelsLayer || isBoundariesLayer) &&
-          (layer as Layer).layout?.visibility !== visibility
-        ) {
-          mapInstance.setLayoutProperty(layer.id, 'visibility', visibility);
+        if (isLabelsLayer || isBoundariesLayer) {
+          return {
+            ...layer,
+            layout: {
+              ...(layer as Layer).layout,
+              visibility
+            }
+          };
         }
+
+        return { ...layer };
       }
+      return { ...layer };
     });
-  }, [labelsOption, boundariesOption, styleLoaded, mapInstance]);
+
+    return style;
+  }, [labelsOption, boundariesOption, baseStyle]);
 
   return {
-    styleLoaded,
+    style,
     basemapStyleId,
     onBasemapStyleIdChange,
     labelsOption,

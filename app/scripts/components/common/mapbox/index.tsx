@@ -29,6 +29,7 @@ import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { useBasemap } from './map-options/use-basemap';
 import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
+import { useStyleLoaded } from './use-style-loaded';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { useDatasetAsyncLayer } from '$context/layer-data';
@@ -134,13 +135,15 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
 
   const {
-    styleLoaded,
+    style,
     basemapStyleId,
     onBasemapStyleIdChange,
     labelsOption,
     boundariesOption,
     onOptionChange
-  } = useBasemap(mapRef.current);
+  } = useBasemap();
+
+  const mapStyleLoaded = useStyleLoaded(mapRef.current, style);
 
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
@@ -272,7 +275,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       {isMapLoaded &&
         baseLayerResolvedData &&
         BaseLayerComponent &&
-        styleLoaded && (
+        mapStyleLoaded && (
           <BaseLayerComponent
             id={`base-${baseLayerResolvedData.id}`}
             stacCol={baseLayerResolvedData.stacCol}
@@ -429,7 +432,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           mapOptions={{
             ...mapOptions,
             ...getMapPositionOptions(initialPosition),
-            cooperativeGestures
+            cooperativeGestures,
+            style
           }}
           withGeocoder={withGeocoder}
           aoi={aoi}
@@ -452,7 +456,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
               ...mapOptions,
               cooperativeGestures,
               center: mapRef.current?.getCenter(),
-              zoom: mapRef.current?.getZoom()
+              zoom: mapRef.current?.getZoom(),
+              style
             }}
             withGeocoder={withGeocoder}
             aoi={aoi}

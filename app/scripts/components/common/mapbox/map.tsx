@@ -161,6 +161,13 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     // change.
   }, []);
 
+  // Handle style changes
+  useEffect(() => {
+    if (!mapRef.current || !mapOptions.style) return;
+    mapRef.current.setStyle(mapOptions.style);
+    /* mapRef is a ref */
+  }, [mapOptions.style]);
+
   // Handle Attribution
   useEffect(() => {
     if (!mapRef.current || !attributionPosition) return;

@@ -1,29 +1,33 @@
 // It is required that all styles has a layer named "admin-0-boundary-bg".
 // Data will be added below this layer to ensure country oulines and labels are visible.
 
+export const BASE_STYLE_PATH = 'https://api.mapbox.com/styles/v1/covid-nasa';
+
+export const getStyleUrl = (mapboxId: string) => `${BASE_STYLE_PATH}/${mapboxId}?access_token=${process.env.MAPBOX_TOKEN}`;
+
 export const BASEMAP_STYLES = [
   {
     id: 'satellite',
     label: 'Satellite',
-    url: 'mapbox://styles/covid-nasa/cldu1cb8f00ds01p6gi583w1m',
+    mapboxId: 'cldu1cb8f00ds01p6gi583w1m',
     thumbnailUrl: `https://api.mapbox.com/styles/v1/covid-nasa/cldac5c2c003k01oebmavw4q3/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`
   },
   {
     id: 'dark',
     label: 'Default dark',
-    url: 'mapbox://styles/covid-nasa/cldu14gii006801mgq3dn1jpd',
+    mapboxId: 'cldu14gii006801mgq3dn1jpd',
     thumbnailUrl: `https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`
   },
   {
     id: 'light',
     label: 'Default light',
-    url: 'mapbox://styles/covid-nasa/cldu0tceb000701qnrl7p9woh',
+    mapboxId: 'cldu0tceb000701qnrl7p9woh',
     thumbnailUrl: `https://api.mapbox.com/styles/v1/mapbox/light-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`
   },
   {
     id: 'topo',
     label: 'Topo',
-    url: 'mapbox://styles/covid-nasa/cldu1yayu00au01qqrbdahb3m',
+    mapboxId: 'cldu1yayu00au01qqrbdahb3m',
     thumbnailUrl: `https://api.mapbox.com/styles/v1/covid-nasa/cldu1yayu00au01qqrbdahb3m/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`
   }
 ];
