@@ -1,22 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTheme } from 'styled-components';
-import qs from 'qs';
-import mapboxgl, { LngLatBoundsLike } from 'mapbox-gl';
+import { useEffect } from 'react';
+import mapboxgl from 'mapbox-gl';
+import { format } from 'date-fns/esm';
 
 import {
-  checkFitBoundsFromLayer,
-  getFilterPayload,
-  getMergedBBox,
-  requestQuickCache
-} from './utils';
-import {
   ActionStatus,
-  S_FAILED,
-  S_IDLE,
-  S_LOADING,
-  S_SUCCEEDED
 } from '$utils/status';
-import { format } from 'date-fns/esm';
 
 // Whether or not to print the request logs.
 const LOG = true;
@@ -70,7 +58,7 @@ export function MapLayerVector(props: MapLayerVectorProps) {
     mapInstance.addSource(id, {
       type: 'vector',
       tiles: [
-        `https://pzh7fedpc0.execute-api.us-west-2.amazonaws.com/collections/public.${stacCol}/tiles/{z}/{x}/{y}`
+        `https://firenrt.delta-backend.com/collections/public.${stacCol}/tiles/{z}/{x}/{y}`
       ]
     });
 
