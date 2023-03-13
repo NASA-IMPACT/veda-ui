@@ -251,7 +251,6 @@ function BlockComponent(props: BlockComponentProps) {
     (acc, curr) => acc + curr,
     ''
   );
-
   if (![defaultBlockName, wideBlockName, fullBlockName].includes(typeName)) {
     throw new HintedError(`${blockTypeErrorMessage} '${typeName}'`, [
       `Supported block types: 'wide', 'full'`

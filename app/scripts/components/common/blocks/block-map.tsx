@@ -164,7 +164,7 @@ function MapBlock(props: MapBlockProps) {
         isComparing={!!selectedCompareDatetime}
         compareDate={selectedCompareDatetime}
         compareLabel={compareLabel}
-        initialPosition={{ lng: center?.[0], lat: center?.[1], zoom }}
+        initialPosition={{ lng: center?.[0], lat: center?.[1], zoom, userDefined: !!(center && zoom) }}
         cooperativeGestures
         projection={projection}
         onProjectionChange={allowProjectionChange ? setProjection : undefined}

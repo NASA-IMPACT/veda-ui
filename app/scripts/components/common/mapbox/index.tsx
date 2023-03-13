@@ -302,6 +302,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             stacCol={compareLayerResolvedData.stacCol}
             mapInstance={mapCompareRef.current}
             date={compareToDate}
+            userDefinedInitialPosition={initialPosition?.userDefined}
             sourceParams={compareLayerResolvedData.sourceParams}
             zoomExtent={compareLayerResolvedData.zoomExtent}
             onStatusChange={onCompareLayerStatusChange}
@@ -479,6 +480,10 @@ interface MapPosition {
   zoom: number;
 }
 
+interface BlockMapPosition extends MapPosition {
+  userDefined: boolean;
+}
+
 export interface MapboxMapProps {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   as?: any;
@@ -491,7 +496,7 @@ export interface MapboxMapProps {
   compareLabel?: string;
   isComparing?: boolean;
   cooperativeGestures?: boolean;
-  initialPosition?: Partial<MapPosition>;
+  initialPosition?: Partial<BlockMapPosition>;
   onPositionChange?: (
     result: MapPosition & {
       userInitiated: boolean;

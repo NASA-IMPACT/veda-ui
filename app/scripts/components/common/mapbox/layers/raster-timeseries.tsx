@@ -31,6 +31,7 @@ interface MapLayerRasterTimeseriesProps {
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
+  userDefinedInitialPosition: boolean;
 }
 
 export interface StacFeature {
@@ -58,7 +59,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     sourceParams,
     zoomExtent,
     onStatusChange,
-    isHidden
+    isHidden,
+    userDefinedInitialPosition
   } = props;
 
   const theme = useTheme();
@@ -402,13 +404,13 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   // FitBounds when needed
   //
   useEffect(() => {
-    if (!stacCollection.length) return;
+    if (!stacCollection.length || userDefinedInitialPosition) return;
     const layerBounds = getMergedBBox(stacCollection);
 
     if (checkFitBoundsFromLayer(layerBounds, mapInstance)) {
       mapInstance.fitBounds(layerBounds, { padding: FIT_BOUNDS_PADDING });
     }
-  }, [mapInstance, stacCol, stacCollection]);
+  }, [mapInstance, stacCol, stacCollection, userDefinedInitialPosition]);
 
   //
   // Visibility control for the layer and the markers.
