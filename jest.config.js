@@ -93,7 +93,8 @@ module.exports = {
         : acc;
     }, {}),
     '.+\\.(css|styl|less|sass|scss)$':
-      '<rootDir>/node_modules/jest-css-modules-transform'
+      '<rootDir>/node_modules/jest-css-modules-transform',
+    d3: '<rootDir>/node_modules/d3/dist/d3.min.js'
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
