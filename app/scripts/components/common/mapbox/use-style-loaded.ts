@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 export function useStyleLoaded(
   mapInstance: mapboxgl.Map | null,
-  style: Style | undefined
+  style: Style | string | undefined
 ) {
   const [styleLoaded, setStyleLoaded] = useState(false);
 

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BasemapId,
   BASEMAP_STYLES,
+  DEFAULT_MAP_STYLE_URL,
   getStyleUrl,
   GROUPS_BY_OPTION,
   Option
@@ -25,12 +26,17 @@ export function useBasemap() {
     const url = getStyleUrl(mapboxId);
     const controller = new AbortController();
 
-    const load = async () => {
-      const styleRaw = await fetch(url, { signal: controller.signal });
-      const styleJson = await styleRaw.json();
-      setBaseStyle(styleJson as Style);
-    };
-    load();
+    try {
+      const load = async () => {
+        const styleRaw = await fetch(url, { signal: controller.signal });
+        const styleJson = await styleRaw.json();
+        setBaseStyle(styleJson as Style);
+      };
+      load();
+    } catch (e) {
+      /* eslint-disable-next-line no-console */
+      console.error(e);
+    }
     return () => {
       controller.abort();
     };
@@ -90,7 +96,8 @@ export function useBasemap() {
   }, [labelsOption, boundariesOption, baseStyle]);
 
   return {
-    style,
+    // Fallback to style as URL if Mapbox API failed to respond
+    style: style ?? DEFAULT_MAP_STYLE_URL,
     basemapStyleId,
     onBasemapStyleIdChange,
     labelsOption,
