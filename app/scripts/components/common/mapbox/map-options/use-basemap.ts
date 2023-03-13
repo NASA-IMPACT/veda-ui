@@ -1,5 +1,6 @@
+import { useQuery } from '@tanstack/react-query';
 import { Layer, Style } from 'mapbox-gl';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   BasemapId,
   BASEMAP_STYLES,
@@ -18,29 +19,22 @@ export function useBasemap() {
 
   const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
 
-  useEffect(() => {
+  useQuery(['basemap', basemapStyleId], async ({ signal }) => {
     const mapboxId = basemapStyleId
-      ? BASEMAP_STYLES.find((b) => b.id === basemapStyleId)!.mapboxId
-      : BASEMAP_STYLES[0].mapboxId;
-
-    const url = getStyleUrl(mapboxId);
-    const controller = new AbortController();
+    ? BASEMAP_STYLES.find((b) => b.id === basemapStyleId)!.mapboxId
+    : BASEMAP_STYLES[0].mapboxId;
 
     try {
-      const load = async () => {
-        const styleRaw = await fetch(url, { signal: controller.signal });
-        const styleJson = await styleRaw.json();
-        setBaseStyle(styleJson as Style);
-      };
-      load();
+      const url = getStyleUrl(mapboxId);
+      const styleRaw = await fetch(url, { signal });
+      const styleJson = await styleRaw.json();
+      setBaseStyle(styleJson as Style);
+      return styleJson;
     } catch (e) {
       /* eslint-disable-next-line no-console */
       console.error(e);
     }
-    return () => {
-      controller.abort();
-    };
-  }, [basemapStyleId]);
+  });
 
   const [labelsOption, setLabelsOption] = useState(true);
   const [boundariesOption, setBoundariesOption] = useState(true);
