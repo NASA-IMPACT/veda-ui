@@ -1,5 +1,11 @@
-// It is required that all styles has a layer named "admin-0-boundary-bg".
-// Data will be added below this layer to ensure country oulines and labels are visible.
+/**
+ * Basemap style requirements (followed by standaard Mapbox Studio styles)
+ * - have a layer named "admin-0-boundary-bg". Data will be added below
+ *   this layer to ensure country oulines and labels are visible.
+ * - for label and boundaries layers to be toggled on and off, they must 
+ *   belong to a group specifically named - see GROUPS_BY_OPTION for the 
+ *   list of accepted group names
+ */
 
 export const BASE_STYLE_PATH = 'https://api.mapbox.com/styles/v1/covid-nasa';
 
