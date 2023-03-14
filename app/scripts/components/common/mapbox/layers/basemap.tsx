@@ -70,6 +70,9 @@ export function Basemap(props: BasemapProps) {
             layout: {
               ...(layer as Layer).layout,
               visibility
+            },
+            metadata: {
+              layerOrderPosition: 'basemap-foreground',
             }
           };
         }

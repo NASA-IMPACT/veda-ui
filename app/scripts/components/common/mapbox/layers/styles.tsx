@@ -45,7 +45,7 @@ const LAYER_ORDER: LayerOrderPosition[] = [
 //  a style object directly usable by the map instance.
 const generateStyle = (stylesData: Record<string, GeneratorParams>) => {
   let sources: Record<string, AnySourceImpl> = {};
-  let layers: AnyLayer[] = [];
+  let layers: ExtendedLayer[] = [];
 
   Object.entries(stylesData).map(([generatorId, generatorParams]) => {
     // TODO check duplicate source ids?
@@ -54,8 +54,31 @@ const generateStyle = (stylesData: Record<string, GeneratorParams>) => {
       ...generatorParams.sources
     };
 
-    // TODO sort layers - first by LAYER_ORDER, then by generatorId
-    layers = [...layers, ...generatorParams.layers];
+    const layersWithMeta = [
+      ...generatorParams.layers.map((layer) => {
+        const metadata = layer.metadata ?? {};
+        metadata.generatorId = generatorId;
+        return { ...layer, metadata };
+      })
+    ];
+
+    layers = [...layers, ...layersWithMeta];
+  });
+
+  // Allow sort as it uses a copy of the array so mutating is ok
+  /* eslint-disable-next-line fp/no-mutating-methods */
+  layers = [...layers].sort((layerA, layerB) => {
+    const layerAOrder = layerA.metadata?.layerOrderPosition;
+    const layerBOrder = layerB.metadata?.layerOrderPosition;
+    const layerAIndex = LAYER_ORDER.indexOf(layerAOrder);
+    const layerBIndex = LAYER_ORDER.indexOf(layerBOrder);
+    const sortDeltaOrder = layerAIndex - layerBIndex;
+    const sortDeltaGeneratorId = layerA.metadata?.generatorId.localeCompare(
+      layerB.metadata?.generatorId
+    );
+    // If compared layers have different layer orders, sort by layer order, otherwise
+    // fallback on generatorId to ensure layer stacks from the same generator stay contiguous
+    return sortDeltaOrder !== 0 ? sortDeltaOrder : sortDeltaGeneratorId;
   });
 
   return {

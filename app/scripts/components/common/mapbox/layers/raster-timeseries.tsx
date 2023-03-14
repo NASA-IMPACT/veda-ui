@@ -390,7 +390,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         url: `${mosaicUrl}?${tileParams}`
       };
 
-       // TODO set up layerOrderPosition in metadata
       const mosaicLayer: RasterLayer = {
         id: id,
         type: 'raster',
@@ -403,6 +402,9 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           'raster-opacity-transition': {
             duration: 320
           }
+        },
+        metadata: {
+          layerOrderPosition: 'raster',
         }
       };
 
