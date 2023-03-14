@@ -31,6 +31,7 @@ import { useBasemap } from './map-options/use-basemap';
 import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
 import { useStyleLoaded } from './use-style-loaded';
 import { Styles } from './layers/styles';
+import { Basemap } from './layers/basemap';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { useDatasetAsyncLayer } from '$context/layer-data';
@@ -42,6 +43,7 @@ import {
   S_SUCCEEDED
 } from '$utils/status';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
+
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -279,6 +281,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         The function getLayerComponent() should be used to get the correct
         component.
       */}
+        <Basemap basemapStyleId={basemapStyleId} labelsOption={labelsOption} boundariesOption={boundariesOption} />
         {isMapLoaded &&
           baseLayerResolvedData &&
           BaseLayerComponent &&
@@ -293,27 +296,27 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
               onStatusChange={onBaseLayerStatusChange}
             />
           )}
+      </Styles>
 
-        {/*
+      {/*
         Adding a layer to the comparison map is also done through a component,
         which is this case targets a different map instance.
       */}
-        {isMapCompareLoaded &&
-          isComparing &&
-          compareLayerResolvedData &&
-          CompareLayerComponent &&
-          mapCompareStyleLoaded && (
-            <CompareLayerComponent
-              id={`compare-${compareLayerResolvedData.id}`}
-              stacCol={compareLayerResolvedData.stacCol}
-              mapInstance={mapCompareRef.current}
-              date={compareToDate}
-              sourceParams={compareLayerResolvedData.sourceParams}
-              zoomExtent={compareLayerResolvedData.zoomExtent}
-              onStatusChange={onCompareLayerStatusChange}
-            />
-          )}
-      </Styles>
+      {isMapCompareLoaded &&
+        isComparing &&
+        compareLayerResolvedData &&
+        CompareLayerComponent &&
+        mapCompareStyleLoaded && (
+          <CompareLayerComponent
+            id={`compare-${compareLayerResolvedData.id}`}
+            stacCol={compareLayerResolvedData.stacCol}
+            mapInstance={mapCompareRef.current}
+            date={compareToDate}
+            sourceParams={compareLayerResolvedData.sourceParams}
+            zoomExtent={compareLayerResolvedData.zoomExtent}
+            onStatusChange={onCompareLayerStatusChange}
+          />
+        )}
 
       {/*
         Normally we only need 1 loading which is centered. If we're comparing we

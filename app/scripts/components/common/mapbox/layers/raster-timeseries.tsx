@@ -426,60 +426,57 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     () => JSON.stringify(sourceParams),
     [sourceParams]
   );
-  useEffect(() => {
-    if (!mosaicUrl) return;
-    const tileParams = qs.stringify(
-      {
-        assets: 'cog_default',
-        ...sourceParams
-      },
-      // Temporary solution to pass different tile parameters for hls data
-      { arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma' }
-    );
-
-    const mosaicSource: RasterSource = {
-      type: 'raster',
-      url: `${mosaicUrl}?${tileParams}`
-    };
-
-    const mosaicLayer: RasterLayer = {
-      id: id,
-      type: 'raster',
-      source: id,
-      layout: {
-        visibility: showMarkers ? 'none' : 'visible'
-      },
-      paint: {
-        'raster-opacity': Number(!isHidden),
-        'raster-opacity-transition': {
-          duration: 320
-        }
-      }
-    };
-
-    updateStyle({
-      generatorId: 'raster-timeseries',
-      sources: [
+  useEffect(
+    () => {
+      if (!mosaicUrl) return;
+      const tileParams = qs.stringify(
         {
-          id,
-          source: mosaicSource
+          assets: 'cog_default',
+          ...sourceParams
+        },
+        // Temporary solution to pass different tile parameters for hls data
+        { arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma' }
+      );
+
+      const mosaicSource: RasterSource = {
+        type: 'raster',
+        url: `${mosaicUrl}?${tileParams}`
+      };
+
+      const mosaicLayer: RasterLayer = {
+        id: id,
+        type: 'raster',
+        source: id,
+        layout: {
+          visibility: showMarkers ? 'none' : 'visible'
+        },
+        paint: {
+          'raster-opacity': Number(!isHidden),
+          'raster-opacity-transition': {
+            duration: 320
+          }
         }
-      ],
-      layers: [
-        {
-          layer: mosaicLayer,
-          // before: 'admin-0-boundary-bg'
-        }
-      ]
-    });
-  }, [
-    updateStyle,
-    id,
-    mosaicUrl,
-    haveSourceParamsChanged,
-    showMarkers,
-    isHidden
-  ]);
+      };
+
+      updateStyle({
+        generatorId: 'raster-timeseries',
+        sources: [
+          {
+            id,
+            source: mosaicSource
+          }
+        ],
+        layers: [
+          {
+            layer: mosaicLayer
+            // before: 'admin-0-boundary-bg'
+          }
+        ]
+      });
+    },
+    // sourceParams not included, but using a stringified version of it to detect changes (haveSourceParamsChanged)
+    [updateStyle, id, mosaicUrl, haveSourceParamsChanged, showMarkers, isHidden]
+  );
 
   //
   // FitBounds when needed
