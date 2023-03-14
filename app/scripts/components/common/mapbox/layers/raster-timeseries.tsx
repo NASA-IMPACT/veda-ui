@@ -204,13 +204,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
         setStacCollection(responseData.features);
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
-        // updateStyle('raster-timeseries', ['test'], [42]);
-        // setTimeout(() => {
-        //   updateStyle('basemap', ['blip'], ['blop']);
-        // }, 2200);
-        // setTimeout(() => {
-        //   updateStyle('raster-timeseries', ['test'], [43]);
-        // }, 3200);
       } catch (error) {
         if (!controller.signal.aborted) {
           setStacCollection([]);
@@ -310,7 +303,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             id
           );
         LOG && console.log('Payload', payload);
-        LOG && console.log('Source Params', sourceParams);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
@@ -321,15 +313,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         );
 
         setMosaicUrl(responseData.links[1].href);
-
-        const tileParams = qs.stringify(
-          {
-            assets: 'cog_default',
-            ...sourceParams
-          },
-          // Temporary solution to pass different tile parameters for hls data
-          { arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma' }
-        );
 
         /* eslint-disable no-console */
         LOG &&
@@ -343,29 +326,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.log('STAC response', responseData);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
-
-        mapInstance.addSource(id, {
-          type: 'raster',
-          url: `${responseData.links[1].href}?${tileParams}`
-        });
-
-        mapInstance.addLayer(
-          {
-            id: id,
-            type: 'raster',
-            source: id,
-            layout: {
-              visibility: showMarkers ? 'none' : 'visible'
-            },
-            paint: {
-              'raster-opacity': Number(!isHidden),
-              'raster-opacity-transition': {
-                duration: 320
-              }
-            }
-          },
-          'admin-0-boundary-bg'
-        );
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -387,22 +347,13 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     return () => {
       controller.abort();
       changeStatus({ status: 'idle', context: STATUS_KEY.Layer });
-
-      const source = mapInstance.getSource(id) as
-        | mapboxgl.AnySourceImpl
-        | undefined;
-
-      if (source) {
-        mapInstance.removeLayer(id);
-        mapInstance.removeSource(id);
-      }
     };
   }, [
     // The `showMarkers` and `isHidden` dep are left out on purpose, as visibility
     // is controlled below, but we need the value to initialize the layer
     // visibility.
 
-    stacCollection,
+    stacCollection
     // This hook depends on a series of properties, but whenever they change the
     // `stacCollection` is guaranteed to change because a new STAC request is
     // needed to show the data. The following properties are therefore removed
@@ -416,10 +367,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     // fires and `stacCollection` changes, causing this hook to run again. This
     // resulted in a race condition when adding the source to the map leading to
     // an error.
-    mapInstance,
-    // `sourceParams` object reference is likely to change. Compare in string
-    // format.
-    JSON.stringify(sourceParams)
   ]);
 
   const haveSourceParamsChanged = useMemo(
@@ -489,24 +436,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       mapInstance.fitBounds(layerBounds, { padding: FIT_BOUNDS_PADDING });
     }
   }, [mapInstance, stacCol, stacCollection]);
-
-  //
-  // Visibility control for the layer and the markers.
-  //
-  useEffect(() => {
-    const layer = mapInstance.getLayer(id) as mapboxgl.AnyLayer | undefined;
-
-    if (layer) {
-      const visibility = showMarkers ? 'none' : 'visible';
-      mapInstance.setLayoutProperty(id, 'visibility', visibility);
-      mapInstance.setPaintProperty(id, 'raster-opacity', Number(!isHidden));
-    }
-
-    addedMarkers.current.forEach((marker) => {
-      const display = isHidden ? 'none' : showMarkers ? '' : 'none';
-      marker.getElement().style.display = display;
-    });
-  }, [id, mapInstance, showMarkers, isHidden]);
 
   return null;
 }

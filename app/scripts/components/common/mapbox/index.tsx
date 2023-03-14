@@ -29,7 +29,6 @@ import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
 import { useBasemap } from './map-options/use-basemap';
 import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
-import { useStyleLoaded } from './use-style-loaded';
 import { Styles } from './layers/styles';
 import { Basemap } from './layers/basemap';
 import { formatCompareDate, formatSingleDate } from './utils';
@@ -43,7 +42,6 @@ import {
   S_SUCCEEDED
 } from '$utils/status';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
-
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -138,16 +136,12 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
 
   const {
-    style,
     basemapStyleId,
     onBasemapStyleIdChange,
     labelsOption,
     boundariesOption,
     onOptionChange
   } = useBasemap();
-
-  const mapStyleLoaded = useStyleLoaded(mapRef.current, style);
-  const mapCompareStyleLoaded = useStyleLoaded(mapCompareRef.current, style);
 
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
@@ -266,8 +260,10 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     compareTimeDensity
   ]);
 
+  const [style, setStyle] = useState<Style | undefined>();
   const onStyleUpdate = useCallback((style: Style) => {
     console.log('Render this style:', style);
+    setStyle(style);
   }, []);
 
   return (
@@ -281,21 +277,22 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         The function getLayerComponent() should be used to get the correct
         component.
       */}
-        <Basemap basemapStyleId={basemapStyleId} labelsOption={labelsOption} boundariesOption={boundariesOption} />
-        {isMapLoaded &&
-          baseLayerResolvedData &&
-          BaseLayerComponent &&
-          mapStyleLoaded && (
-            <BaseLayerComponent
-              id={`base-${baseLayerResolvedData.id}`}
-              stacCol={baseLayerResolvedData.stacCol}
-              mapInstance={mapRef.current}
-              date={date}
-              sourceParams={baseLayerResolvedData.sourceParams}
-              zoomExtent={baseLayerResolvedData.zoomExtent}
-              onStatusChange={onBaseLayerStatusChange}
-            />
-          )}
+        <Basemap
+          basemapStyleId={basemapStyleId}
+          labelsOption={labelsOption}
+          boundariesOption={boundariesOption}
+        />
+        {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
+          <BaseLayerComponent
+            id={`base-${baseLayerResolvedData.id}`}
+            stacCol={baseLayerResolvedData.stacCol}
+            mapInstance={mapRef.current}
+            date={date}
+            sourceParams={baseLayerResolvedData.sourceParams}
+            zoomExtent={baseLayerResolvedData.zoomExtent}
+            onStatusChange={onBaseLayerStatusChange}
+          />
+        )}
       </Styles>
 
       {/*
@@ -305,8 +302,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       {isMapCompareLoaded &&
         isComparing &&
         compareLayerResolvedData &&
-        CompareLayerComponent &&
-        mapCompareStyleLoaded && (
+        CompareLayerComponent && (
           <CompareLayerComponent
             id={`compare-${compareLayerResolvedData.id}`}
             stacCol={compareLayerResolvedData.stacCol}
