@@ -27,9 +27,13 @@ const PastAnalysesDropdown = styled(Dropdown)`
   max-width: 22rem;
 `;
 
-const PastAnalysesMenu = styled(DropMenu)``;
+const PastAnalysesMenu = styled(DropMenu)`
+  /* styled-component */
+`;
 
-const PastAnalysisItem = styled(DropMenuItem)``;
+const PastAnalysisItem = styled(DropMenuItem)`
+  /* styled-component */
+`;
 
 const PastAnalysisMedia = styled.figure`
   position: relative;

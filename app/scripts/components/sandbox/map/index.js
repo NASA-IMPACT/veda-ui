@@ -5,7 +5,7 @@ import { FormCheckable } from '@devseed-ui/form';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 import MapboxMap from '$components/common/mapbox';
-import { projectionDefault } from '$components/common/mapbox/projection-selector/utils';
+import { projectionDefault } from '$components/common/mapbox/map-options/utils';
 
 const DemoMap = styled(MapboxMap)`
   height: 40rem;

@@ -14,10 +14,11 @@ import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import MapboxStyleOverride from './mapbox-style-override';
 import MbDrawPopover from './aoi/mb-draw-popover';
 import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
-import ProjectionSelector from './projection-selector';
+import MapOptions from './map-options';
 import { useMapboxControl } from './use-mapbox-control';
-import { convertProjectionToMapbox } from './projection-selector/utils';
+import { convertProjectionToMapbox } from './map-options/utils';
 
+import { BasemapId, Option } from './map-options/basemaps';
 import { round } from '$utils/format';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN ?? '';
@@ -44,6 +45,11 @@ interface SimpleMapProps {
   onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
+  basemapStyleId?: BasemapId;
+  onBasemapStyleIdChange?: (basemapId: BasemapId) => void;
+  labelsOption?: boolean;
+  boundariesOption?: boolean;
+  onOptionChange?: (option: Option, value: boolean) => void;
   attributionPosition?:
     | 'top-right'
     | 'top-left'
@@ -66,21 +72,39 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     projection,
     onProjectionChange,
     attributionPosition = 'bottom-left',
+    basemapStyleId,
+    onBasemapStyleIdChange,
+    labelsOption,
+    boundariesOption,
+    onOptionChange,
     ...rest
   } = props;
 
   const theme = useTheme();
 
-  const mapProjectionControl = useMapboxControl(() => {
+  const mapOptionsControl = useMapboxControl(() => {
     if (!projection || !onProjectionChange) return null;
 
     return (
-      <ProjectionSelector
+      <MapOptions
         projection={projection}
-        onChange={onProjectionChange}
+        onProjectionChange={onProjectionChange}
+        basemapStyleId={basemapStyleId}
+        onBasemapStyleIdChange={onBasemapStyleIdChange}
+        labelsOption={labelsOption}
+        boundariesOption={boundariesOption}
+        onOptionChange={onOptionChange}
       />
     );
-  }, [projection, onProjectionChange]);
+  }, [
+    projection,
+    onProjectionChange,
+    basemapStyleId,
+    onBasemapStyleIdChange,
+    labelsOption,
+    boundariesOption,
+    onOptionChange
+  ]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -95,7 +119,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     mapRef.current = mbMap;
 
     if (onProjectionChange && projection) {
-      mapRef.current.addControl(mapProjectionControl, 'top-left');
+      mapRef.current.addControl(mapOptionsControl, 'top-left');
     }
 
     // Add Geocoder control
@@ -136,6 +160,13 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     // Only use the props on mount. We don't want to update the map if they
     // change.
   }, []);
+
+  // Handle style changes
+  useEffect(() => {
+    if (!mapRef.current || !mapOptions.style) return;
+    mapRef.current.setStyle(mapOptions.style);
+    /* mapRef is a ref */
+  }, [mapOptions.style]);
 
   // Handle Attribution
   useEffect(() => {

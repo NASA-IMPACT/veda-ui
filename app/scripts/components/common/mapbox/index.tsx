@@ -27,6 +27,9 @@ import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import LayerLegend from './layer-legend';
+import { useBasemap } from './map-options/use-basemap';
+import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
+import { useStyleLoaded } from './use-style-loaded';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { useDatasetAsyncLayer } from '$context/layer-data';
@@ -78,7 +81,7 @@ const MapsContainer = styled.div`
 `;
 
 const mapOptions: Partial<mapboxgl.MapboxOptions> = {
-  style: process.env.MAPBOX_STYLE_URL,
+  style: DEFAULT_MAP_STYLE_URL,
   logoPosition: 'bottom-left',
   trackResize: true,
   pitchWithRotate: false,
@@ -130,6 +133,18 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
+
+  const {
+    style,
+    basemapStyleId,
+    onBasemapStyleIdChange,
+    labelsOption,
+    boundariesOption,
+    onOptionChange
+  } = useBasemap();
+
+  const mapStyleLoaded = useStyleLoaded(mapRef.current, style);
+  const mapCompareStyleLoaded = useStyleLoaded(mapCompareRef.current, style);
 
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
@@ -258,17 +273,20 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         The function getLayerComponent() should be used to get the correct
         component.
       */}
-      {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
-        <BaseLayerComponent
-          id={`base-${baseLayerResolvedData.id}`}
-          stacCol={baseLayerResolvedData.stacCol}
-          mapInstance={mapRef.current}
-          date={date}
-          sourceParams={baseLayerResolvedData.sourceParams}
-          zoomExtent={baseLayerResolvedData.zoomExtent}
-          onStatusChange={onBaseLayerStatusChange}
-        />
-      )}
+      {isMapLoaded &&
+        baseLayerResolvedData &&
+        BaseLayerComponent &&
+        mapStyleLoaded && (
+          <BaseLayerComponent
+            id={`base-${baseLayerResolvedData.id}`}
+            stacCol={baseLayerResolvedData.stacCol}
+            mapInstance={mapRef.current}
+            date={date}
+            sourceParams={baseLayerResolvedData.sourceParams}
+            zoomExtent={baseLayerResolvedData.zoomExtent}
+            onStatusChange={onBaseLayerStatusChange}
+          />
+        )}
 
       {/*
         Adding a layer to the comparison map is also done through a component,
@@ -277,7 +295,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
       {isMapCompareLoaded &&
         isComparing &&
         compareLayerResolvedData &&
-        CompareLayerComponent && (
+        CompareLayerComponent &&
+        mapCompareStyleLoaded && (
           <CompareLayerComponent
             id={`compare-${compareLayerResolvedData.id}`}
             stacCol={compareLayerResolvedData.stacCol}
@@ -415,13 +434,19 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           mapOptions={{
             ...mapOptions,
             ...getMapPositionOptions(initialPosition),
-            cooperativeGestures
+            cooperativeGestures,
+            style
           }}
           withGeocoder={withGeocoder}
           aoi={aoi}
           onAoiChange={onAoiChange}
           projection={projection}
           onProjectionChange={onProjectionChange}
+          basemapStyleId={basemapStyleId}
+          onBasemapStyleIdChange={onBasemapStyleIdChange}
+          labelsOption={labelsOption}
+          boundariesOption={boundariesOption}
+          onOptionChange={onOptionChange}
         />
         {shouldRenderCompare && (
           <SimpleMap
@@ -433,7 +458,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
               ...mapOptions,
               cooperativeGestures,
               center: mapRef.current?.getCenter(),
-              zoom: mapRef.current?.getZoom()
+              zoom: mapRef.current?.getZoom(),
+              style
             }}
             withGeocoder={withGeocoder}
             aoi={aoi}
