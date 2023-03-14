@@ -390,6 +390,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         url: `${mosaicUrl}?${tileParams}`
       };
 
+       // TODO set up layerOrderPosition in metadata
       const mosaicLayer: RasterLayer = {
         id: id,
         type: 'raster',
@@ -407,18 +408,10 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
       updateStyle({
         generatorId: 'raster-timeseries',
-        sources: [
-          {
-            id,
-            source: mosaicSource
-          }
-        ],
-        layers: [
-          {
-            layer: mosaicLayer
-            // before: 'admin-0-boundary-bg'
-          }
-        ]
+        sources: {
+          [id]: mosaicSource
+        },
+        layers: [mosaicLayer]
       });
     },
     // sourceParams not included, but using a stringified version of it to detect changes (haveSourceParamsChanged)

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { AnyLayer, AnySourceImpl, Layer, Style } from 'mapbox-gl';
+import { AnySourceImpl, Layer, Style } from 'mapbox-gl';
 import { useContext, useEffect, useState } from 'react';
 import {
   BasemapId,
@@ -7,7 +7,7 @@ import {
   getStyleUrl,
   GROUPS_BY_OPTION
 } from '../map-options/basemaps';
-import { StylesContext } from './styles';
+import { ExtendedLayer, StylesContext } from './styles';
 
 interface BasemapProps {
   basemapStyleId: BasemapId;
@@ -50,13 +50,6 @@ export function Basemap(props: BasemapProps) {
   useEffect(() => {
     if (!baseStyle) return;
 
-    const sourceWrappers = Object.entries(baseStyle.sources).map(
-      ([id, source]) => ({
-        id,
-        source: source as AnySourceImpl
-      })
-    );
-
     const layers = baseStyle.layers.map((layer) => {
       const layerGroup = (layer as Layer).metadata?.['mapbox:group'];
 
@@ -81,20 +74,17 @@ export function Basemap(props: BasemapProps) {
           };
         }
 
+        // TODO set up layerOrderPosition in metadata
         return { ...layer };
       }
+      // TODO set up layerOrderPosition in metadata
       return { ...layer };
     });
 
-    // TODO set up layerOrderPosition
-    const layersWrappers = layers.map((layer) => ({
-      layer: layer as AnyLayer
-    }));
-
     updateStyle({
       generatorId: 'basemap',
-      sources: sourceWrappers,
-      layers: layersWrappers
+      sources: baseStyle.sources as Record<string, AnySourceImpl>,
+      layers: layers as ExtendedLayer[]
     });
   }, [updateStyle, labelsOption, boundariesOption, baseStyle]);
 

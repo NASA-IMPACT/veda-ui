@@ -1,20 +1,16 @@
 import { AnyLayer, AnySourceImpl, Style } from 'mapbox-gl';
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 
-interface LayerWrapper {
-  layer: AnyLayer;
-  layerOrderPosition?: LayerOrderPosition;
-}
-
-interface SourceWrapper {
-  id: string;
-  source: AnySourceImpl;
-}
-
-interface GeneratorParams {
+export type ExtendedLayer = AnyLayer & {
+  metadata?: {
+    layerOrderPosition?: LayerOrderPosition;
+    [key: string]: any;
+  };
+};
+export interface GeneratorParams {
   generatorId: string;
-  layers: LayerWrapper[];
-  sources: SourceWrapper[];
+  layers: ExtendedLayer[];
+  sources: Record<string, AnySourceImpl>;
   sprite?: string;
   metadata?: Record<string, unknown>;
 }
@@ -52,22 +48,14 @@ const generateStyle = (stylesData: Record<string, GeneratorParams>) => {
   let layers: AnyLayer[] = [];
 
   Object.entries(stylesData).map(([generatorId, generatorParams]) => {
-    const newSources = Object.fromEntries(
-      generatorParams.sources.map((sourceWrapper) => [
-        sourceWrapper.id,
-        sourceWrapper.source
-      ])
-    );
+    // TODO check duplicate source ids?
     sources = {
       ...sources,
-      ...newSources
+      ...generatorParams.sources
     };
 
     // TODO sort layers - first by LAYER_ORDER, then by generatorId
-    const newLayers = generatorParams.layers.map(
-      (layerWrapper) => layerWrapper.layer
-    );
-    layers = [...layers, ...newLayers];
+    layers = [...layers, ...generatorParams.layers];
   });
 
   return {
