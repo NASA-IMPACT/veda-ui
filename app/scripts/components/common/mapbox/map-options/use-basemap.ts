@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Layer, Style } from 'mapbox-gl';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BasemapId,
   BASEMAP_STYLES,
@@ -19,22 +19,28 @@ export function useBasemap() {
 
   const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
 
-  useQuery(['basemap', basemapStyleId], async ({ signal }) => {
-    const mapboxId = basemapStyleId
-    ? BASEMAP_STYLES.find((b) => b.id === basemapStyleId)!.mapboxId
-    : BASEMAP_STYLES[0].mapboxId;
+  const { data: styleJson } = useQuery(
+    ['basemap', basemapStyleId],
+    async ({ signal }) => {
+      const mapboxId = basemapStyleId
+        ? BASEMAP_STYLES.find((b) => b.id === basemapStyleId)!.mapboxId
+        : BASEMAP_STYLES[0].mapboxId;
 
-    try {
-      const url = getStyleUrl(mapboxId);
-      const styleRaw = await fetch(url, { signal });
-      const styleJson = await styleRaw.json();
-      setBaseStyle(styleJson as Style);
-      return styleJson;
-    } catch (e) {
-      /* eslint-disable-next-line no-console */
-      console.error(e);
+      try {
+        const url = getStyleUrl(mapboxId);
+        const styleRaw = await fetch(url, { signal });
+        const styleJson = await styleRaw.json();
+        return styleJson;
+      } catch (e) {
+        /* eslint-disable-next-line no-console */
+        console.error(e);
+      }
     }
-  });
+  );
+
+  useEffect(() => {
+    setBaseStyle(styleJson as Style);
+  }, [styleJson]);
 
   const [labelsOption, setLabelsOption] = useState(true);
   const [boundariesOption, setBoundariesOption] = useState(true);
