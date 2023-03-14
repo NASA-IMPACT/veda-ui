@@ -7,7 +7,7 @@ import React, {
   useState
 } from 'react';
 import styled from 'styled-components';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { Style } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -30,6 +30,7 @@ import LayerLegend from './layer-legend';
 import { useBasemap } from './map-options/use-basemap';
 import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
 import { useStyleLoaded } from './use-style-loaded';
+import { Styles } from './layers/styles';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { useDatasetAsyncLayer } from '$context/layer-data';
@@ -263,9 +264,14 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     compareTimeDensity
   ]);
 
+  const onStyleUpdate = useCallback((style: Style) => {
+    console.log('Render this style:', style);
+  }, []);
+
   return (
     <>
-      {/*
+      <Styles onStyleUpdate={onStyleUpdate}>
+        {/*
         Each layer type is added to the map through a component. This component
         has all the logic needed to add/update/remove the layer.
         Which component to use will depend on the characteristics of the layer
@@ -273,40 +279,41 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         The function getLayerComponent() should be used to get the correct
         component.
       */}
-      {isMapLoaded &&
-        baseLayerResolvedData &&
-        BaseLayerComponent &&
-        mapStyleLoaded && (
-          <BaseLayerComponent
-            id={`base-${baseLayerResolvedData.id}`}
-            stacCol={baseLayerResolvedData.stacCol}
-            mapInstance={mapRef.current}
-            date={date}
-            sourceParams={baseLayerResolvedData.sourceParams}
-            zoomExtent={baseLayerResolvedData.zoomExtent}
-            onStatusChange={onBaseLayerStatusChange}
-          />
-        )}
+        {isMapLoaded &&
+          baseLayerResolvedData &&
+          BaseLayerComponent &&
+          mapStyleLoaded && (
+            <BaseLayerComponent
+              id={`base-${baseLayerResolvedData.id}`}
+              stacCol={baseLayerResolvedData.stacCol}
+              mapInstance={mapRef.current}
+              date={date}
+              sourceParams={baseLayerResolvedData.sourceParams}
+              zoomExtent={baseLayerResolvedData.zoomExtent}
+              onStatusChange={onBaseLayerStatusChange}
+            />
+          )}
 
-      {/*
+        {/*
         Adding a layer to the comparison map is also done through a component,
         which is this case targets a different map instance.
       */}
-      {isMapCompareLoaded &&
-        isComparing &&
-        compareLayerResolvedData &&
-        CompareLayerComponent &&
-        mapCompareStyleLoaded && (
-          <CompareLayerComponent
-            id={`compare-${compareLayerResolvedData.id}`}
-            stacCol={compareLayerResolvedData.stacCol}
-            mapInstance={mapCompareRef.current}
-            date={compareToDate}
-            sourceParams={compareLayerResolvedData.sourceParams}
-            zoomExtent={compareLayerResolvedData.zoomExtent}
-            onStatusChange={onCompareLayerStatusChange}
-          />
-        )}
+        {isMapCompareLoaded &&
+          isComparing &&
+          compareLayerResolvedData &&
+          CompareLayerComponent &&
+          mapCompareStyleLoaded && (
+            <CompareLayerComponent
+              id={`compare-${compareLayerResolvedData.id}`}
+              stacCol={compareLayerResolvedData.stacCol}
+              mapInstance={mapCompareRef.current}
+              date={compareToDate}
+              sourceParams={compareLayerResolvedData.sourceParams}
+              zoomExtent={compareLayerResolvedData.zoomExtent}
+              onStatusChange={onCompareLayerStatusChange}
+            />
+          )}
+      </Styles>
 
       {/*
         Normally we only need 1 loading which is centered. If we're comparing we

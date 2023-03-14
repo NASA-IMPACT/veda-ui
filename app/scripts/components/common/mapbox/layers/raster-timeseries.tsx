@@ -1,8 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { useTheme } from 'styled-components';
 import qs from 'qs';
-import mapboxgl, { LngLatBoundsLike } from 'mapbox-gl';
+import mapboxgl, {
+  LngLatBoundsLike,
+  RasterLayer,
+  RasterSource
+} from 'mapbox-gl';
 
+import { StylesContext } from './styles';
 import {
   checkFitBoundsFromLayer,
   getFilterPayload,
@@ -60,6 +72,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     onStatusChange,
     isHidden
   } = props;
+
+  const { updateStyle } = useContext(StylesContext);
 
   const theme = useTheme();
   const primaryColor = theme.color?.primary;
@@ -190,6 +204,13 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
         setStacCollection(responseData.features);
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
+        // updateStyle('raster-timeseries', ['test'], [42]);
+        // setTimeout(() => {
+        //   updateStyle('basemap', ['blip'], ['blop']);
+        // }, 2200);
+        // setTimeout(() => {
+        //   updateStyle('raster-timeseries', ['test'], [43]);
+        // }, 3200);
       } catch (error) {
         if (!controller.signal.aborted) {
           setStacCollection([]);
@@ -267,6 +288,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   //
   // Tiles
   //
+  const [mosaicUrl, setMosaicUrl] = useState<string | null>(null);
   useEffect(() => {
     if (!id || !stacCol || !date || !stacCollection.length) return;
 
@@ -297,6 +319,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           payload,
           controller
         );
+
+        setMosaicUrl(responseData.links[1].href);
 
         const tileParams = qs.stringify(
           {
@@ -396,6 +420,65 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     // `sourceParams` object reference is likely to change. Compare in string
     // format.
     JSON.stringify(sourceParams)
+  ]);
+
+  const haveSourceParamsChanged = useMemo(
+    () => JSON.stringify(sourceParams),
+    [sourceParams]
+  );
+  useEffect(() => {
+    if (!mosaicUrl) return;
+    const tileParams = qs.stringify(
+      {
+        assets: 'cog_default',
+        ...sourceParams
+      },
+      // Temporary solution to pass different tile parameters for hls data
+      { arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma' }
+    );
+
+    const mosaicSource: RasterSource = {
+      type: 'raster',
+      url: `${mosaicUrl}?${tileParams}`
+    };
+
+    const mosaicLayer: RasterLayer = {
+      id: id,
+      type: 'raster',
+      source: id,
+      layout: {
+        visibility: showMarkers ? 'none' : 'visible'
+      },
+      paint: {
+        'raster-opacity': Number(!isHidden),
+        'raster-opacity-transition': {
+          duration: 320
+        }
+      }
+    };
+
+    updateStyle({
+      generatorId: 'raster-timeseries',
+      sources: [
+        {
+          id,
+          source: mosaicSource
+        }
+      ],
+      layers: [
+        {
+          layer: mosaicLayer,
+          // before: 'admin-0-boundary-bg'
+        }
+      ]
+    });
+  }, [
+    updateStyle,
+    id,
+    mosaicUrl,
+    haveSourceParamsChanged,
+    showMarkers,
+    isHidden
   ]);
 
   //
