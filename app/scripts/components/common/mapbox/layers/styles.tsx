@@ -35,9 +35,9 @@ export type LayerOrderPosition =
 const LAYER_ORDER: LayerOrderPosition[] = [
   'basemap-background',
   'raster',
-  'markers',
   'vector',
-  'basemap-foreground'
+  'basemap-foreground',
+  'markers'
 ];
 
 // Takes in a dictionary associating each generator id with a series of
@@ -84,6 +84,9 @@ const generateStyle = (stylesData: Record<string, GeneratorParams>) => {
   return {
     version: 8,
     glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+    // This is the spritesheet used in the default satellite basemap (cldu1cb8f00ds01p6gi583w1m)
+    sprite:
+      'mapbox://sprites/covid-nasa/cldu1cb8f00ds01p6gi583w1m/e3w0e56evrnnyy9tj4v36mbo4',
     layers,
     sources
   };
