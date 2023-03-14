@@ -499,6 +499,14 @@ function PageHeader() {
                       </GlobalMenuLink>
                     </li>
                     <li>
+                      <GlobalMenuLink
+                        to='/data-catalog'
+                        onClick={closeNavOnClick}
+                      >
+                        Data Catalog
+                      </GlobalMenuLink>
+                    </li>
+                    <li>
                       <GoogleForm />
                     </li>
                     <li>
