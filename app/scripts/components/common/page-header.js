@@ -507,6 +507,14 @@ function PageHeader() {
                       </GlobalMenuLink>
                     </li>
                     <li>
+                      <GlobalMenuLink
+                        to='/discoveries'
+                        onClick={closeNavOnClick}
+                      >
+                        Discoveries
+                      </GlobalMenuLink>
+                    </li>
+                    <li>
                       <GoogleForm />
                     </li>
                     <li>
