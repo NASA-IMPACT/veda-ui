@@ -15,7 +15,7 @@ const allDatasets = Object.values(datasets)
   /* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */
   .filter((d) => !!d?.data && !!d.data.thematics?.length)
   .map((d) => d!.data)
-  .sort((a, b) => (a.name > b.name ? 1 : -1));
+  .sort((a, b) => (a.name.localeCompare(b.name));
 
 function DataCatalog() {
   return (
