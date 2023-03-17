@@ -28,6 +28,8 @@ import ErrorBoundary from '$components/uhoh/fatal-error';
 const RootHome = lazy(() => import('$components/root-home'));
 const RootAbout = lazy(() => import('$components/root-about'));
 const RootDevelopment = lazy(() => import('$components/root-development'));
+const RootDiscoveries = lazy(() => import('$components/root-discoveries'));
+const DataCatalog = lazy(() => import('$components/data-catalog'));
 
 const Home = lazy(() => import('$components/home'));
 const DiscoveriesHub = lazy(() => import('$components/discoveries/hub'));
@@ -98,6 +100,8 @@ function Root() {
                   <>
                     <Route index element={<RootHome />} />
                     <Route path='about' element={<RootAbout />} />
+                    <Route path='data-catalog' element={<DataCatalog />} />
+                    <Route path='discoveries' element={<RootDiscoveries />} />
                     <Route path='development' element={<RootDevelopment />} />
                   </>
                 )}
