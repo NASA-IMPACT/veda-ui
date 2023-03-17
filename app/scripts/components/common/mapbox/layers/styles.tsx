@@ -11,7 +11,6 @@ export interface GeneratorParams {
   generatorId: string;
   layers: ExtendedLayer[];
   sources: Record<string, AnySourceImpl>;
-  sprite?: string;
   metadata?: Record<string, unknown>;
 }
 

@@ -76,11 +76,8 @@ export function Basemap(props: BasemapProps) {
             }
           };
         }
-
-        // TODO set up layerOrderPosition in metadata
         return { ...layer };
       }
-      // TODO set up layerOrderPosition in metadata
       return { ...layer };
     });
 
