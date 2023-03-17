@@ -12,7 +12,7 @@ import * as dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { Style } from 'mapbox-gl';
 import { BlockErrorBoundary } from '..';
 import {
   chapterDisplayName,
@@ -38,7 +38,8 @@ import { formatSingleDate } from '$components/common/mapbox/utils';
 import { convertProjectionToMapbox } from '$components/common/mapbox/map-options/utils';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root';
 import { HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
-import { DEFAULT_MAP_STYLE_URL } from '$components/common/mapbox/map-options/basemaps';
+import { Styles } from '$components/common/mapbox/layers/styles';
+import { Basemap } from '$components/common/mapbox/layers/basemap';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -247,7 +248,6 @@ function useAllLayersAdded(count): [boolean, (cb: { status: string }) => void] {
 }
 
 const mapOptions = {
-  style: DEFAULT_MAP_STYLE_URL,
   interactive: false,
   trackResize: true,
   center: [0, 0] as [number, number],
@@ -272,7 +272,6 @@ function Scrollytelling(props) {
 
   const [resolvedLayers, resolvedStatus] =
     useMapLayersFromChapters(chapterProps);
-
   const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(
     null
   );
@@ -352,41 +351,49 @@ function Scrollytelling(props) {
     : // Otherwise it's the full header height.
       wrapperHeight;
 
+  const [style, setStyle] = useState<Style | undefined>();
+  const onStyleUpdate = useCallback((style: Style) => {
+    setStyle(style);
+  }, []);
+
   return (
     <ScrollyMapWrapper>
       <TheMap topOffset={topOffset}>
-        {isMapLoaded &&
-          resolvedLayers.map((resolvedLayer) => {
-            if (!resolvedLayer) return null;
+        <Styles onStyleUpdate={onStyleUpdate}>
+          <Basemap />
+          {isMapLoaded &&
+            resolvedLayers.map((resolvedLayer) => {
+              if (!resolvedLayer) return null;
 
-            const { runtimeData, Component: LayerCmp, layer } = resolvedLayer;
+              const { runtimeData, Component: LayerCmp, layer } = resolvedLayer;
 
-            if (!LayerCmp) return null;
+              if (!LayerCmp) return null;
 
-            // Each layer type is added to the map through a component. This
-            // component has all the logic needed to add/update/remove the
-            // layer. Which component to use will depend on the characteristics
-            // of the layer and dataset.
-            // The function getLayerComponent() should be used to get the
-            // correct component.
-            return (
-              <LayerCmp
-                key={runtimeData.id}
-                id={runtimeData.id}
-                mapInstance={mapRef.current}
-                stacCol={layer.stacCol}
-                date={runtimeData.datetime}
-                sourceParams={layer.sourceParams}
-                zoomExtent={layer.zoomExtent}
-                onStatusChange={onLayerLoadSuccess}
-                isHidden={
-                  !activeChapterLayerId ||
-                  activeChapterLayerId !== runtimeData.id ||
-                  activeChapter.showBaseMap
-                }
-              />
-            );
-          })}
+              // Each layer type is added to the map through a component. This
+              // component has all the logic needed to add/update/remove the
+              // layer. Which component to use will depend on the characteristics
+              // of the layer and dataset.
+              // The function getLayerComponent() should be used to get the
+              // correct component.
+              return (
+                <LayerCmp
+                  key={runtimeData.id}
+                  id={runtimeData.id}
+                  mapInstance={mapRef.current}
+                  stacCol={layer.stacCol}
+                  date={runtimeData.datetime}
+                  sourceParams={layer.sourceParams}
+                  zoomExtent={layer.zoomExtent}
+                  onStatusChange={onLayerLoadSuccess}
+                  isHidden={
+                    !activeChapterLayerId ||
+                    activeChapterLayerId !== runtimeData.id ||
+                    activeChapter.showBaseMap
+                  }
+                />
+              );
+            })}
+        </Styles>
 
         {areLayersLoading && <MapLoading />}
 
@@ -447,7 +454,7 @@ function Scrollytelling(props) {
           mapRef={mapRef}
           containerRef={mapContainer}
           onLoad={() => setMapLoaded(true)}
-          mapOptions={mapOptions}
+          mapOptions={{ ...mapOptions, style }}
         />
       </TheMap>
       <TheChapters>{children}</TheChapters>

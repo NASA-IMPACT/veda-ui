@@ -10,13 +10,12 @@ import {
 import { ExtendedLayer, StylesContext } from './styles';
 
 interface BasemapProps {
-  basemapStyleId: BasemapId;
-  labelsOption: boolean;
-  boundariesOption: boolean;
+  basemapStyleId?: BasemapId;
+  labelsOption?: boolean;
+  boundariesOption?: boolean;
 }
 
-export function Basemap(props: BasemapProps) {
-  const { basemapStyleId, labelsOption, boundariesOption } = props;
+export function Basemap({basemapStyleId = 'satellite', labelsOption = true, boundariesOption = true}: BasemapProps) {
   const { updateStyle } = useContext(StylesContext);
 
   const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
@@ -72,7 +71,7 @@ export function Basemap(props: BasemapProps) {
               visibility
             },
             metadata: {
-              layerOrderPosition: 'basemap-foreground',
+              layerOrderPosition: 'basemap-foreground'
             }
           };
         }

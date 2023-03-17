@@ -223,7 +223,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
     return points;
   }, [stacCollection]);
-  
+
   //
   // Tiles
   //
@@ -346,7 +346,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           type: 'raster',
           source: id,
           layout: {
-            visibility: isHidden ? 'none' : 'visible',
+            visibility: isHidden ? 'none' : 'visible'
           },
           paint: {
             'raster-opacity': Number(!isHidden),
