@@ -1,7 +1,14 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { render } from 'react-dom';
 import T from 'prop-types';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useParams
+} from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
 import vedaThematics from 'veda/thematics';
 
@@ -58,6 +65,15 @@ function ScrollTop() {
   return null;
 }
 
+function ThematicAboutRedirect() {
+  const params = useParams();
+  return hasSeveralThematicAreas ? (
+    <Navigate replace to={`/${params.thematicId}`} />
+  ) : (
+    <RootAbout />
+  );
+}
+
 // Root component.
 function Root() {
   useScrollbarWidthAsCssVar();
@@ -111,8 +127,8 @@ function Root() {
                     path='analysis/results'
                     element={<AnalysisResults />}
                   />
+                  <Route path='about' element={<ThematicAboutRedirect />} />
                 </Route>
-
                 <Route path='*' element={<UhOh />} />
               </Route>
             </Routes>

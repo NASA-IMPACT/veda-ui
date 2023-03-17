@@ -2,6 +2,7 @@ import { timeFormat, timeParse } from 'd3';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { UniqueKeyUnit } from '.';
 import { formatAsScientificNotation, round } from '$utils/format';
+import { HintedError } from '$utils/hinted-error';
 
 export const timeFormatter = (time: number, dateFormat: string) => {
   return dateFormatter(new Date(time), dateFormat);
@@ -21,13 +22,21 @@ export const convertToTime = ({
 }) => {
   if (!timeString) return undefined;
   const parseDate = timeParse(dateFormat);
+  if (!parseDate(timeString))
+    throw new HintedError(
+      `Failed to parse time with the dateFormat provided: ${dateFormat}.`,
+      [
+        `The data has "${timeString}" as value.`,
+        `Please check if you are using the right time format: https://github.com/d3/d3-time-format.`
+      ]
+    );
   return parseDate(timeString)?.getTime();
 };
 
 export type FormattedTimeSeriesData = Record<string, number | string> & {
-  date: number
-  dateFormat: string
-}
+  date: number;
+  dateFormat: string;
+};
 /**
  * Returns data to feed chart. one unit looks like: { xKeyValue: Date, otherPropertiesDrivenFromUniqueKeys }
  * ex. If uniqueKeys are =['no2', 'so2'], xKey is Year, the unit will look like { Year: Date, no2: value, so2: value}
@@ -41,7 +50,7 @@ export function formatTimeSeriesData({
   timeSeriesData,
   dates,
   dateFormat,
-  uniqueKeys,
+  uniqueKeys
 }: {
   timeSeriesData: Record<string, any>[];
   dates: string[]; // 202205, 202206,...
@@ -52,7 +61,9 @@ export function formatTimeSeriesData({
   return timeSeriesData
     .map((e, idx) => {
       const currentStat = e;
-      const date: number = convertToTime({ timeString: dates[idx], dateFormat }) ?? 0;
+      const date: number =
+        convertToTime({ timeString: dates[idx], dateFormat }) ?? 0;
+
       return {
         date,
         dateFormat,
@@ -91,9 +102,22 @@ export function getFData({
   xKey: string;
   yKey: string;
   dateFormat: string;
-}): { uniqueKeys: any[], fData: FormattedTimeSeriesData[] } {
+}): { uniqueKeys: any[]; fData: FormattedTimeSeriesData[] } {
+  // Throw an error if no key is found.
+  const columnErrors = [xKey, yKey, idKey]
+    .map((key) => ({ key, noErr: Object.keys(data[0]).includes(key) }))
+    .filter((e) => !e.noErr)
+    .map(
+      (e) =>
+        `"${e.key}" is not found in columns. Please check if the data has "${e.key}" column.`
+    );
+  if (columnErrors.length > 0)
+    throw new HintedError('Key not found', columnErrors);
+  // Check sensitivity value
+  const collator = new Intl.Collator('en', {numeric: true});
+
   /* eslint-disable-next-line fp/no-mutating-methods */
-  const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort();
+  const uniqueKeys = [...Array.from(new Set(data.map((d) => d[idKey])))].sort(collator.compare);
 
   // Format csv/json data into chart suitable data
   // ## From:
@@ -127,7 +151,6 @@ export function getFData({
     }
     return keyObject;
   }, {});
-
 
   return {
     uniqueKeys,

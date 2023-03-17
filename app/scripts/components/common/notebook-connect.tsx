@@ -51,7 +51,7 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
         size={size}
       >
         <CollecticonCode meaningful={compact} title='Open data usage options' />
-        {compact ? '' : 'Use data'}
+        {compact ? '' : 'Analyze data (Python)'}
       </Button>
       <Modal
         id='modal'

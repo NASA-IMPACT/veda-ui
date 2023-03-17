@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import T from 'prop-types';
 import { media } from '@devseed-ui/theme-provider';
 
 import { FigcaptionInner } from '../figure';
@@ -18,7 +17,11 @@ import ContentBlockFigure from './figure';
 import { ContentBlock, ContentBlockProse } from '$styles/content-block';
 
 import { variableGlsp } from '$styles/variable-utils';
-import { HintedErrorDisplay } from '$utils/hinted-error';
+import {
+  HintedError,
+  HintedErrorDisplay,
+  docsMessage
+} from '$utils/hinted-error';
 
 export const ContentBlockPAlpha = styled(ContentBlock)`
   ${ContentBlockProse} {
@@ -224,7 +227,12 @@ const matchingBlocks = {
     ContentBlockPFDelta
 };
 
-function BlockComponent(props) {
+interface BlockComponentProps {
+  type?: string;
+  children: React.ReactElement[];
+}
+
+function BlockComponent(props: BlockComponentProps) {
   const { children, type } = props;
 
   // Concat block type name (default, wide, full)
@@ -234,31 +242,102 @@ function BlockComponent(props) {
   const typeName = type ? type : 'default';
   const childrenAsArray = React.Children.toArray(children);
 
-  const childrenComponents = childrenAsArray.reduce(
-    (acc, curr) => acc + curr.type.displayName,
+  const childrenComponents: string[] = childrenAsArray.map(
+    // @ts-expect-error type may not exist depending on the node, but the error
+    // will be caught and this won't break.
+    (e) => e.type?.displayName ?? 'undefined'
+  );
+  const childrenNames = childrenComponents.reduce(
+    (acc, curr) => acc + curr,
     ''
   );
 
   if (![defaultBlockName, wideBlockName, fullBlockName].includes(typeName)) {
-    throw Error(`${blockTypeErrorMessage} '${typeName}'`);
+    throw new HintedError(`${blockTypeErrorMessage} '${typeName}'`, [
+      `Supported block types: 'wide', 'full'`
+    ]);
   }
 
-  if (!matchingBlocks[`${typeName}${childrenComponents}`]) {
-    throw Error(contentTypeErrorMessage);
+  if (!matchingBlocks[`${typeName}${childrenNames}`]) {
+    let hints = [
+      'The only direct children that blocks can have are Figure and Prose.',
+      'Example:',
+      <pre key='block-1'>
+        {`<Block>
+  <Figure><Image/></Figure>
+  <Prose>
+    This is some text.
+  </Prose>
+</Block>
+`}
+      </pre>
+    ];
+
+    if (childrenComponents.filter((e) => e == 'Figure').length > 1) {
+      hints = [
+        ...hints,
+        'Block cannot have more than one Figure. Try to wrap Figures with Blocks.',
+        'Before:',
+        <pre key='block-1'>
+          {`<Block>
+  <Figure><Image/></Figure>
+  <Figure><Image/></Figure>
+</Block>
+`}
+        </pre>,
+        'After:',
+        <pre key='block-2'>
+          {`<Block>
+  <Figure><Image/></Figure>
+</Block>
+<Block>
+  <Figure><Image/></Figure>
+</Block>
+`}
+        </pre>,
+        '--',
+        'If you want your image to be inline, you can drop the Figure and use the images inside a Prose.',
+        'Before:',
+        <pre key='block-3'>
+          {`<Block>
+  <Figure><Image/></Figure>
+  <Figure><Image/></Figure>
+</Block>
+`}
+        </pre>,
+        'After:',
+        <pre key='block-4'>
+          {`<Block>
+  <Prose>
+    <Image/>
+    Some more text...
+  </Prose>
+</Block>
+`}
+        </pre>
+      ];
+    }
+
+    throw new HintedError(contentTypeErrorMessage, hints);
   }
 
   return React.createElement(
-    matchingBlocks[`${typeName}${childrenComponents}`],
+    matchingBlocks[`${typeName}${childrenNames}`],
     props
   );
 }
 
-BlockComponent.propTypes = {
-  type: T.string,
-  children: T.node
-};
+interface BlockErrorBoundaryProps {
+  childToRender: any;
+  passErrorToChild?: boolean;
+  className?: string;
+  children?: React.ReactNode
+}
 
-export class BlockErrorBoundary extends React.Component {
+export class BlockErrorBoundary extends React.Component<
+  BlockErrorBoundaryProps,
+  { error: any }
+> {
   static getDerivedStateFromError(error) {
     error.CRAOverlayIgnore = true;
     return { error: error };
@@ -282,6 +361,7 @@ export class BlockErrorBoundary extends React.Component {
       return (
         <HintedErrorDisplay
           title={generalErrorMessage}
+          subtitle={docsMessage}
           message={error.message}
           className={rest.className}
           hints={error.hints}
@@ -293,14 +373,13 @@ export class BlockErrorBoundary extends React.Component {
   }
 }
 
-BlockErrorBoundary.propTypes = {
-  // Let the block handle the error instead of the Boundary.
-  passErrorToChild: T.bool,
-  childToRender: T.elementType
-};
+interface BlockWithErrorProps {
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  className?: string;
+  children?: React.ReactNode
+}
 
-const BlockWithError = (props) => (
-  <BlockErrorBoundary {...props} childToRender={BlockComponent} />
-);
-
-export default BlockWithError;
+export default function BlockWithError(props: BlockWithErrorProps) {
+  return <BlockErrorBoundary {...props} childToRender={BlockComponent} />;
+}
