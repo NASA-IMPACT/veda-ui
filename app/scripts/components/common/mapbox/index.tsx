@@ -262,8 +262,12 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
 
   const [style, setStyle] = useState<Style | undefined>();
   const onStyleUpdate = useCallback((style: Style) => {
-    console.log('Render this style:', style);
     setStyle(style);
+  }, []);
+
+  const [compareStyle, setCompareStyle] = useState<Style | undefined>();
+  const onCompareStyleUpdate = useCallback((style: Style) => {
+    setCompareStyle(style);
   }, []);
 
   return (
@@ -299,21 +303,27 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         Adding a layer to the comparison map is also done through a component,
         which is this case targets a different map instance.
       */}
-      {isMapCompareLoaded &&
-        isComparing &&
-        compareLayerResolvedData &&
-        CompareLayerComponent && (
-          <CompareLayerComponent
-            id={`compare-${compareLayerResolvedData.id}`}
-            stacCol={compareLayerResolvedData.stacCol}
-            mapInstance={mapCompareRef.current}
-            date={compareToDate}
-            sourceParams={compareLayerResolvedData.sourceParams}
-            zoomExtent={compareLayerResolvedData.zoomExtent}
-            onStatusChange={onCompareLayerStatusChange}
-          />
-        )}
-
+      <Styles onStyleUpdate={onCompareStyleUpdate}>
+        <Basemap
+          basemapStyleId={basemapStyleId}
+          labelsOption={labelsOption}
+          boundariesOption={boundariesOption}
+        />
+        {isMapCompareLoaded &&
+          isComparing &&
+          compareLayerResolvedData &&
+          CompareLayerComponent && (
+            <CompareLayerComponent
+              id={`compare-${compareLayerResolvedData.id}`}
+              stacCol={compareLayerResolvedData.stacCol}
+              mapInstance={mapCompareRef.current}
+              date={compareToDate}
+              sourceParams={compareLayerResolvedData.sourceParams}
+              zoomExtent={compareLayerResolvedData.zoomExtent}
+              onStatusChange={onCompareLayerStatusChange}
+            />
+          )}
+      </Styles>
       {/*
         Normally we only need 1 loading which is centered. If we're comparing we
         need to render a loading for each layer, but instead of centering them,
@@ -465,7 +475,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
               cooperativeGestures,
               center: mapRef.current?.getCenter(),
               zoom: mapRef.current?.getZoom(),
-              style
+              style: compareStyle
             }}
             withGeocoder={withGeocoder}
             aoi={aoi}
