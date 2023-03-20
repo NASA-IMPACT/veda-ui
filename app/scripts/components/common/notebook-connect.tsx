@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { multiply, themeVal } from '@devseed-ui/theme-provider';
+import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Button, ButtonProps } from '@devseed-ui/button';
 import {
   CollecticonBook,
@@ -11,7 +11,7 @@ import { Modal } from '@devseed-ui/modal';
 import { DatasetData, datasets, VedaDatum } from 'veda/thematics';
 
 import { HintedError } from '$utils/hinted-error';
-import { variableGlsp, variableBaseType } from '$styles/variable-utils';
+import { variableGlsp } from '$styles/variable-utils';
 
 interface NotebookConnectButtonProps {
   compact?: boolean;
@@ -23,11 +23,15 @@ interface NotebookConnectButtonProps {
 
 const DatasetUsages = styled.ul`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: ${variableGlsp()};
   margin-bottom: ${variableGlsp()};
   list-style-type: none;
   padding: 0;
+
+  ${media.smallUp`
+    grid-template-columns: 1fr 1fr;
+  `}
 `;
 
 const DatasetUsageLink = styled.a`
@@ -41,7 +45,7 @@ const DatasetUsageLink = styled.a`
   transition: transform 0.24s ease-in-out 0s, outline-width 0.16s ease-in-out 0s;
 
   & > svg {
-    flex: 1 0 auto;
+    flex: 0 0 auto;
     margin: 0.25rem 0.5rem 0 0;
   }
 
@@ -67,9 +71,10 @@ const DatasetUsageLabel = styled.div`
   & > h4 {
     font-weight: normal;
   }
+
   & > p {
     color: ${themeVal('color.base')};
-    font-size: ${variableBaseType('.5rem')};
+    font-size: 0.875rem;
   }
 `;
 
