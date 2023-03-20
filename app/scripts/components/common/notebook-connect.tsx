@@ -30,24 +30,37 @@ const DatasetUsages = styled.ul`
   padding: 0;
 `;
 
-const DatasetUsage = styled.li`
-  background: ${themeVal('color.primary-50')};
-  border-radius: ${themeVal('shape.rounded')};
-`;
-
 const DatasetUsageLink = styled.a`
   display: flex;
   padding: ${variableGlsp()};
   text-decoration: none;
+  color: ${themeVal('color.primary')};
+  border-radius: ${themeVal('shape.rounded')};
+  background: ${themeVal('color.primary-50')};
+  outline: 0 solid transparent;
+  transition: transform 0.24s ease-in-out 0s,
+    outline-width 0.16s ease-in-out 0s;
 
   & > svg {
     flex: 1 0 auto;
-    margin-right: 0.5rem;
+    margin: 0.25rem 0.5rem 0 0;
   }
 
-  color: ${themeVal('color.primary')};
   &:visited {
     color: ${themeVal('color.primary')};
+  }
+
+  &:hover {
+    transform: translate(0, 0.125rem);
+  }
+
+  &:focus-visible {
+    outline-width: 0.25rem;
+    outline-color: ${themeVal('color.primary')};;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: 0;
   }
 `;
 
@@ -129,7 +142,7 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
           <>
             <DatasetUsages>
               {datasetUsagesWithIcon.map((datasetUsage) => (
-                <DatasetUsage key={datasetUsage.url}>
+                <li key={datasetUsage.url}>
                   <DatasetUsageLink href={datasetUsage.url}>
                     {IconByType[datasetUsage.type]}
                     <DatasetUsageLabel>
@@ -137,7 +150,7 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
                       <p>{datasetUsage.label}</p>
                     </DatasetUsageLabel>
                   </DatasetUsageLink>
-                </DatasetUsage>
+                </li>
               ))}
             </DatasetUsages>
             <p>
