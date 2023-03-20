@@ -38,8 +38,7 @@ const DatasetUsageLink = styled.a`
   border-radius: ${themeVal('shape.rounded')};
   background: ${themeVal('color.primary-50')};
   outline: 0 solid transparent;
-  transition: transform 0.24s ease-in-out 0s,
-    outline-width 0.16s ease-in-out 0s;
+  transition: transform 0.24s ease-in-out 0s, outline-width 0.16s ease-in-out 0s;
 
   & > svg {
     flex: 1 0 auto;
@@ -56,7 +55,7 @@ const DatasetUsageLink = styled.a`
 
   &:focus-visible {
     outline-width: 0.25rem;
-    outline-color: ${themeVal('color.primary')};;
+    outline-color: ${themeVal('color.primary')};
   }
 
   &:focus:not(:focus-visible) {
