@@ -1,13 +1,17 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Button, ButtonProps } from '@devseed-ui/button';
-import { CollecticonCode } from '@devseed-ui/collecticons';
+import {
+  CollecticonBook,
+  CollecticonCode,
+  CollecticonCog
+} from '@devseed-ui/collecticons';
 import { Modal } from '@devseed-ui/modal';
 import { DatasetData, datasets, VedaDatum } from 'veda/thematics';
 
 import { HintedError } from '$utils/hinted-error';
-import { variableGlsp } from '$styles/variable-utils';
+import { variableGlsp, variableBaseType } from '$styles/variable-utils';
 
 interface NotebookConnectButtonProps {
   compact?: boolean;
@@ -16,6 +20,54 @@ interface NotebookConnectButtonProps {
   dataset?: VedaDatum<DatasetData>;
   className?: string;
 }
+
+const DatasetUsages = styled.ul`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${variableGlsp()};
+  margin-bottom: ${variableGlsp()};
+  list-style-type: none;
+  padding: 0;
+`;
+
+const DatasetUsage = styled.li`
+  background: ${themeVal('color.primary-50')};
+  border-radius: ${themeVal('shape.rounded')};
+`;
+
+const DatasetUsageLink = styled.a`
+  display: flex;
+  padding: ${variableGlsp()};
+  text-decoration: none;
+
+  & > svg {
+    flex: 1 0 auto;
+    margin-right: 0.5rem;
+  }
+
+  color: ${themeVal('color.primary')};
+  &:visited {
+    color: ${themeVal('color.primary')};
+  }
+`;
+
+const DatasetUsageLabel = styled.div`
+  & > h4 {
+    font-weight: normal;
+  }
+  & > p {
+    color: ${themeVal('color.base')};
+    font-size: ${variableBaseType('.5rem')};
+  }
+`;
+
+type DatasetUsageType = 'jupyter' | 'github' | 'unknown';
+
+const IconByType: Record<DatasetUsageType, any> = {
+  jupyter: <CollecticonCog />,
+  github: <CollecticonBook />,
+  unknown: <CollecticonCog />
+};
 
 function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
   const {
@@ -31,7 +83,19 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
 
   const datasetUsages = dataset?.data.usage;
 
-  if (!datasetUsages) {
+  const datasetUsagesWithIcon = useMemo(() => {
+    return datasetUsages?.map((d) => {
+      let type = 'unknown';
+      if (d.url.match('nasa-veda.2i2c.cloud')) type = 'jupyter';
+      else if (d.url.match('github.com/NASA-IMPACT/veda-docs')) type = 'github';
+      return {
+        ...d,
+        type
+      };
+    });
+  }, [datasetUsages]);
+
+  if (!datasetUsages || !datasetUsagesWithIcon) {
     return null;
   }
 
@@ -56,22 +120,26 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
       <Modal
         id='modal'
         size='medium'
-        title='Data usage'
+        title='How to use this dataset'
         revealed={revealed}
         onCloseClick={close}
         onOverlayClick={close}
         closeButton
         content={
           <>
-            <p>Check out how to use this dataset:</p>
-            <ul>
-              {datasetUsages.map((datasetUsage) => (
-                <li key={datasetUsage.url}>
-                  {datasetUsage.label}:{' '}
-                  <a href={datasetUsage.url}>{datasetUsage.title}</a>
-                </li>
+            <DatasetUsages>
+              {datasetUsagesWithIcon.map((datasetUsage) => (
+                <DatasetUsage key={datasetUsage.url}>
+                  <DatasetUsageLink href={datasetUsage.url}>
+                    {IconByType[datasetUsage.type]}
+                    <DatasetUsageLabel>
+                      <h4>{datasetUsage.title}</h4>
+                      <p>{datasetUsage.label}</p>
+                    </DatasetUsageLabel>
+                  </DatasetUsageLink>
+                </DatasetUsage>
               ))}
-            </ul>
+            </DatasetUsages>
             <p>
               For reference, the following STAC collection ID&apos;s are
               associated with this dataset:
