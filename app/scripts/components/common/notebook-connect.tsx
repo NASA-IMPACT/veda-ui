@@ -1,8 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { multiply, themeVal } from '@devseed-ui/theme-provider';
+import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Button, ButtonProps } from '@devseed-ui/button';
-import { CollecticonCode } from '@devseed-ui/collecticons';
+import {
+  CollecticonBook,
+  CollecticonCode,
+  CollecticonCog
+} from '@devseed-ui/collecticons';
 import { Modal } from '@devseed-ui/modal';
 import { DatasetData, datasets, VedaDatum } from 'veda/thematics';
 
@@ -16,6 +20,71 @@ interface NotebookConnectButtonProps {
   dataset?: VedaDatum<DatasetData>;
   className?: string;
 }
+
+const DatasetUsages = styled.ul`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: ${variableGlsp()};
+  margin-bottom: ${variableGlsp()};
+  list-style-type: none;
+  padding: 0;
+
+  ${media.smallUp`
+    grid-template-columns: 1fr 1fr;
+  `}
+`;
+
+const DatasetUsageLink = styled.a`
+  display: flex;
+  padding: ${variableGlsp()};
+  text-decoration: none;
+  color: ${themeVal('color.primary')};
+  border-radius: ${themeVal('shape.rounded')};
+  background: ${themeVal('color.primary-50')};
+  outline: 0 solid transparent;
+  transition: transform 0.24s ease-in-out 0s, outline-width 0.16s ease-in-out 0s;
+
+  & > svg {
+    flex: 0 0 auto;
+    margin: 0.25rem 0.5rem 0 0;
+  }
+
+  &:visited {
+    color: ${themeVal('color.primary')};
+  }
+
+  &:hover {
+    transform: translate(0, 0.125rem);
+  }
+
+  &:focus-visible {
+    outline-width: 0.25rem;
+    outline-color: ${themeVal('color.primary')};
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: 0;
+  }
+`;
+
+const DatasetUsageLabel = styled.div`
+  & > h4 {
+    font-weight: normal;
+  }
+
+  & > p {
+    color: ${themeVal('color.base')};
+    font-size: 0.875rem;
+  }
+`;
+
+type DatasetUsageType = 'jupyter' | 'github' | 'unknown';
+
+const IconByType: Record<DatasetUsageType, any> = {
+  jupyter: <CollecticonCog />,
+  github: <CollecticonBook />,
+  unknown: <CollecticonCog />
+};
 
 function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
   const {
@@ -31,7 +100,19 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
 
   const datasetUsages = dataset?.data.usage;
 
-  if (!datasetUsages) {
+  const datasetUsagesWithIcon = useMemo(() => {
+    return datasetUsages?.map((d) => {
+      let type = 'unknown';
+      if (d.url.match('nasa-veda.2i2c.cloud')) type = 'jupyter';
+      else if (d.url.match('github.com/NASA-IMPACT/veda-docs')) type = 'github';
+      return {
+        ...d,
+        type
+      };
+    });
+  }, [datasetUsages]);
+
+  if (!datasetUsages || !datasetUsagesWithIcon) {
     return null;
   }
 
@@ -56,22 +137,26 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
       <Modal
         id='modal'
         size='medium'
-        title='Data usage'
+        title='How to use this dataset'
         revealed={revealed}
         onCloseClick={close}
         onOverlayClick={close}
         closeButton
         content={
           <>
-            <p>Check out how to use this dataset:</p>
-            <ul>
-              {datasetUsages.map((datasetUsage) => (
+            <DatasetUsages>
+              {datasetUsagesWithIcon.map((datasetUsage) => (
                 <li key={datasetUsage.url}>
-                  {datasetUsage.label}:{' '}
-                  <a href={datasetUsage.url}>{datasetUsage.title}</a>
+                  <DatasetUsageLink href={datasetUsage.url}>
+                    {IconByType[datasetUsage.type]}
+                    <DatasetUsageLabel>
+                      <h4>{datasetUsage.title}</h4>
+                      <p>{datasetUsage.label}</p>
+                    </DatasetUsageLabel>
+                  </DatasetUsageLink>
                 </li>
               ))}
-            </ul>
+            </DatasetUsages>
             <p>
               For reference, the following STAC collection ID&apos;s are
               associated with this dataset:
