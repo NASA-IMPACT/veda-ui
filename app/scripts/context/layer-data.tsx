@@ -28,22 +28,32 @@ interface STACLayerData {
   };
 }
 
-const fetchLayerById = async (id: string): Promise<STACLayerData | Error> => {
-  if (id === 'eis_fire_fireline') {
+const fetchLayerById = async (
+  layer: DatasetLayer | DatasetLayerCompareNormalized
+): Promise<STACLayerData | Error> => {
+  const { type, stacCol } = layer;
+
+  // TODO: Normalize API data structure
+  // For the time being the vector and raster sources have different api
+  // endpoints, and different properties to get data from.
+  if (type === 'vector') {
     const { data } = await axios.get(
-      'https://dev-stac.delta-backend.com/collections/eis_fire_fireline'
+      `${process.env.API_DEV_STAC_ENDPOINT}/collections/${stacCol}`
     );
+    const featuresApiEndpoint = data.links.find((l) => l.rel === 'child').href;
+    const { data: featuresApiData } = await axios.get(featuresApiEndpoint);
+
     return {
       timeseries: {
         isPeriodic: data['dashboard:is_periodic'],
-        timeDensity: 'day',
-        domain: data.extent.temporal.interval[0]
+        timeDensity: data['dashboard:time_density'],
+        domain: featuresApiData.extent.temporal.interval[0]
       }
     };
   }
 
   const { data } = await axios.get(
-    `${process.env.API_STAC_ENDPOINT}/collections/${id}`
+    `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
   );
   return {
     timeseries: {
@@ -55,9 +65,11 @@ const fetchLayerById = async (id: string): Promise<STACLayerData | Error> => {
 };
 
 // Create a query object for react query.
-const makeQueryObject = (stacCol): UseQueryOptions => ({
-  queryKey: ['layer', stacCol],
-  queryFn: () => fetchLayerById(stacCol),
+const makeQueryObject = (
+  layer: DatasetLayer | DatasetLayerCompareNormalized
+): UseQueryOptions => ({
+  queryKey: ['layer', layer.stacCol],
+  queryFn: () => fetchLayerById(layer),
   // This data will not be updated in the context of a browser session, so it is
   // safe to set the staleTime to Infinity. As specified by react-query's
   // "Important Defaults", cached data is considered stale which means that
@@ -101,11 +113,11 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
   const queries = useMemo(
     () =>
       layers.reduce<UseQueryOptions[]>((acc, layer) => {
-        let queries = acc.concat(makeQueryObject(layer.stacCol));
+        let queries = acc.concat(makeQueryObject(layer));
 
         const compareLayer = getCompareLayerData(layer);
         if (compareLayer && compareLayer.stacCol !== layer.stacCol) {
-          queries = queries.concat(makeQueryObject(compareLayer.stacCol));
+          queries = queries.concat(makeQueryObject(compareLayer));
         }
 
         return queries;
