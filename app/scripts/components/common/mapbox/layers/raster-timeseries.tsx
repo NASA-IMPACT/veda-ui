@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import qs from 'qs';
 import mapboxgl, {
   AnyLayer,
@@ -18,7 +11,7 @@ import mapboxgl, {
 } from 'mapbox-gl';
 import { featureCollection, point } from '@turf/helpers';
 
-import { StylesContext } from './styles';
+import { useMapStyle } from './styles';
 import {
   checkFitBoundsFromLayer,
   getFilterPayload,
@@ -77,7 +70,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     isHidden
   } = props;
 
-  const { updateStyle } = useContext(StylesContext);
+  const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
 
