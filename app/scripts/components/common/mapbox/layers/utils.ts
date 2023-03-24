@@ -1,5 +1,5 @@
 import { defaultsDeep } from 'lodash';
-import axios from 'axios';
+import axios, { Method } from 'axios';
 import {
   eachDayOfInterval,
   eachMonthOfInterval,
@@ -275,18 +275,30 @@ export function resolveLayerTemporalExtent(
 // switching can happen several times, we cache the api response using the
 // request params as key.
 const quickCache = new Map<string, any>();
-export async function requestQuickCache(
-  url: string,
+interface RequestQuickCacheParams {
+  url: string;
+  method?: Method;
+  payload?: any;
+  controller: AbortController;
+}
+export async function requestQuickCache({
+  url,
   payload,
-  controller: AbortController
-) {
-  const key = `${url}${JSON.stringify(payload)}`;
+  controller,
+  method = 'post'
+}: RequestQuickCacheParams) {
+  const key = `${method}:${url}${JSON.stringify(payload)}`;
 
   // No cache found, make request.
   if (!quickCache.has(key)) {
-    const response = await axios.post(url, payload, {
-      signal: controller.signal
-    });
+    const response = await axios(
+      {
+        url,
+        method,
+        data: payload,
+        signal: controller.signal
+      }
+    );
     quickCache.set(key, response.data);
   }
   return quickCache.get(key);

@@ -164,11 +164,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const responseData = await requestQuickCache(
-          `${process.env.API_STAC_ENDPOINT}/search`,
+        const responseData = await requestQuickCache({
+          url: `${process.env.API_STAC_ENDPOINT}/search`,
           payload,
           controller
-        );
+        });
 
         /* eslint-disable no-console */
         LOG &&
@@ -252,11 +252,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const responseData = await requestQuickCache(
-          `${process.env.API_RASTER_ENDPOINT}/mosaic/register`,
+        const responseData = await requestQuickCache({
+          url: `${process.env.API_RASTER_ENDPOINT}/mosaic/register`,
           payload,
           controller
-        );
+        });
 
         setMosaicUrl(responseData.links[1].href);
 
