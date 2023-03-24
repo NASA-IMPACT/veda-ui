@@ -1,17 +1,22 @@
-import { useEffect } from 'react';
-import mapboxgl from 'mapbox-gl';
-import { format } from 'date-fns/esm';
-
-import { ActionStatus } from '$utils/status';
-import axios from 'axios';
-import { requestQuickCache } from './utils';
+import { useEffect, useMemo, useState } from 'react';
+import qs from 'qs';
+import mapboxgl, {
+  AnyLayer,
+  AnySourceImpl,
+  LineLayer,
+  LngLatLike,
+  VectorSourceImpl
+} from 'mapbox-gl';
+import { Feature } from 'geojson';
 import { endOfDay, startOfDay } from 'date-fns';
+import centroid from '@turf/centroid';
+
+import { requestQuickCache } from './utils';
+import { useMapStyle } from './styles';
+
+import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
-
-// Whether or not to print the request logs.
-const LOG = true;
-
-const FIT_BOUNDS_PADDING = 32;
+import { useTheme } from 'styled-components';
 
 interface MapLayerVectorTimeseriesProps {
   id: string;
@@ -22,22 +27,6 @@ interface MapLayerVectorTimeseriesProps {
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
-}
-
-export interface StacFeature {
-  bbox: [number, number, number, number];
-}
-
-enum STATUS_KEY {
-  Global,
-  Layer,
-  StacSearch
-}
-
-interface Statuses {
-  [STATUS_KEY.Global]: ActionStatus;
-  [STATUS_KEY.Layer]: ActionStatus;
-  [STATUS_KEY.StacSearch]: ActionStatus;
 }
 
 export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
@@ -51,54 +40,204 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     onStatusChange,
     isHidden
   } = props;
-  console.log(
-    '🚀 ~ file: features.tsx:63 ~ MapLayerVectorTimeseries ~ props',
-    props
-  );
 
+  const theme = useTheme();
+  const { updateStyle } = useMapStyle();
+  const [featuresApiEndpoint, setFeaturesApiEndpoint] = useState('');
+
+  const minZoom = zoomExtent?.[0] ?? 0;
+
+  //
+  // Get the tiles url
+  //
   useEffect(() => {
-    // Let's create some closure.
-    const _id = id;
+    const controller = new AbortController();
 
     async function load() {
-      if (!date) return;
+      try {
+        onStatusChange?.({ status: S_LOADING, id });
+        const data = await requestQuickCache({
+          url: `${process.env.API_DEV_STAC_ENDPOINT}/collections/${stacCol}`,
+          method: 'GET',
+          controller
+        });
 
-      const { data } = await axios.get(
-        `${process.env.API_DEV_STAC_ENDPOINT}/collections/${stacCol}`
-      );
-
-      const tilesEndpoint = data.links.find((l) => l.rel === 'child').href;
-
-      const start = userTzDate2utcString(startOfDay(date));
-      const end = userTzDate2utcString(endOfDay(date));
-
-      mapInstance.addSource(_id, {
-        type: 'vector',
-        tiles: [`${tilesEndpoint}/tiles/{z}/{x}/{y}?datetime=${start}/${end}`]
-      });
-
-      mapInstance.addLayer(
-        {
-          id: _id,
-          type: 'line',
-          source: _id,
-          'source-layer': 'default',
-          paint: {
-            'line-color': '#FF0000',
-            'line-width': 2
-          }
-        },
-        'admin-0-boundary-bg'
-      );
+        setFeaturesApiEndpoint(data.links.find((l) => l.rel === 'child').href);
+        onStatusChange?.({ status: S_SUCCEEDED, id });
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setFeaturesApiEndpoint('');
+          onStatusChange?.({ status: S_FAILED, id });
+        }
+        return;
+      }
     }
 
     load();
 
     return () => {
-      mapInstance.removeLayer(_id);
-      mapInstance.removeSource(_id);
+      controller.abort();
     };
-  }, [mapInstance, id, stacCol, date]);
+  }, [mapInstance, id, stacCol, date, onStatusChange]);
+
+  //
+  // Generate Mapbox GL layers and sources for raster timeseries
+  //
+  const haveSourceParamsChanged = useMemo(
+    () => JSON.stringify(sourceParams),
+    [sourceParams]
+  );
+  useEffect(() => {
+    if (!date || !featuresApiEndpoint) return;
+
+    const start = userTzDate2utcString(startOfDay(date));
+    const end = userTzDate2utcString(endOfDay(date));
+
+    const tileParams = qs.stringify({
+      ...sourceParams,
+      datetime: `${start}/${end}`
+    });
+
+    const sources: Record<string, AnySourceImpl> = {
+      [id]: {
+        type: 'vector',
+        tiles: [`${featuresApiEndpoint}/tiles/{z}/{x}/{y}?${tileParams}`]
+      } as VectorSourceImpl
+    };
+
+    const layers = [
+      {
+        id: `${id}-line-bg`,
+        type: 'line',
+        source: id,
+        'source-layer': 'default',
+        layout: {
+          visibility: isHidden ? 'none' : 'visible'
+        },
+        paint: {
+          'line-color': theme.color?.['base-300'],
+          'line-width': 4
+        },
+        // filter: ['==', '$type', 'LineString'],
+        minzoom: minZoom,
+        metadata: {
+          layerOrderPosition: 'raster'
+        }
+      },
+      {
+        id: `${id}-line-fg`,
+        type: 'line',
+        source: id,
+        'source-layer': 'default',
+        layout: {
+          visibility: isHidden ? 'none' : 'visible'
+        },
+        paint: {
+          'line-color': theme.color?.primary,
+          'line-width': 2
+        },
+        filter: ['==', '$type', 'LineString'],
+        minzoom: minZoom,
+        metadata: {
+          layerOrderPosition: 'raster'
+        }
+      },
+      {
+        id: `${id}-fill-fg`,
+        type: 'fill',
+        source: id,
+        'source-layer': 'default',
+        layout: {
+          visibility: isHidden ? 'none' : 'visible'
+        },
+        paint: {
+          'fill-color': theme.color?.primary,
+          'fill-opacity': 0.8
+        },
+        filter: ['==', '$type', 'Polygon'],
+        minzoom: minZoom,
+        metadata: {
+          layerOrderPosition: 'raster'
+        }
+      },
+      minZoom > 0
+        ? {
+            type: 'symbol',
+            id: `${id}-points`,
+            source: id,
+            'source-layer': 'default',
+            layout: {
+              'icon-image': 'leaflet-marker',
+              visibility: isHidden ? 'none' : 'visible',
+              'icon-offset': [0, -12]
+            },
+            maxzoom: minZoom,
+            metadata: {
+              layerOrderPosition: 'markers'
+            }
+          }
+        : undefined
+    ].filter(Boolean) as AnyLayer[];
+
+    updateStyle({
+      generatorId: 'vector-timeseries',
+      sources,
+      layers
+    });
+    // sourceParams not included, but using a stringified version of it to
+    // detect changes (haveSourceParamsChanged)
+    // `theme` will not change throughout the app use
+  }, [
+    id,
+    updateStyle,
+    date,
+    featuresApiEndpoint,
+    minZoom,
+    isHidden,
+    haveSourceParamsChanged
+  ]);
+
+  //
+  // Listen to mouse events on the markers layer
+  //
+  useEffect(() => {
+    const pointsSourceId = `${id}-points`;
+
+    const onPointsClick = (e) => {
+      if (!e.features.length) return;
+
+      const extractedFeat = {
+        type: 'Feature',
+        geometry: e.features[0].geometry
+      } as Feature<any>;
+
+      const center = centroid(extractedFeat).geometry.coordinates as LngLatLike;
+
+      // Zoom past the min zoom centering on the clicked feature.
+      mapInstance.flyTo({
+        zoom: minZoom,
+        center
+      });
+    };
+
+    const onPointsEnter = () => {
+      mapInstance.getCanvas().style.cursor = 'pointer';
+    };
+
+    const onPointsLeave = () => {
+      mapInstance.getCanvas().style.cursor = '';
+    };
+
+    mapInstance.on('click', pointsSourceId, onPointsClick);
+    mapInstance.on('mouseenter', pointsSourceId, onPointsEnter);
+    mapInstance.on('mouseleave', pointsSourceId, onPointsLeave);
+
+    return () => {
+      mapInstance.off('click', pointsSourceId, onPointsClick);
+      mapInstance.off('mouseenter', pointsSourceId, onPointsEnter);
+      mapInstance.off('mouseleave', pointsSourceId, onPointsLeave);
+    };
+  }, [id, mapInstance, minZoom]);
 
   return null;
 }
