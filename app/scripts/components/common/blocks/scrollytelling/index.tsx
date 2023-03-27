@@ -12,7 +12,7 @@ import * as dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
-import mapboxgl, { Style } from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import { BlockErrorBoundary } from '..';
 import {
   chapterDisplayName,
@@ -351,15 +351,10 @@ function Scrollytelling(props) {
     : // Otherwise it's the full header height.
       wrapperHeight;
 
-  const [style, setStyle] = useState<Style | undefined>();
-  const onStyleUpdate = useCallback((style: Style) => {
-    setStyle(style);
-  }, []);
-
   return (
     <ScrollyMapWrapper>
       <TheMap topOffset={topOffset}>
-        <Styles onStyleUpdate={onStyleUpdate}>
+        <Styles>
           <Basemap />
           {isMapLoaded &&
             resolvedLayers.map((resolvedLayer) => {
@@ -449,13 +444,48 @@ function Scrollytelling(props) {
           </SwitchTransition>
         )}
 
-        <SimpleMap
-          className='root'
-          mapRef={mapRef}
-          containerRef={mapContainer}
-          onLoad={() => setMapLoaded(true)}
-          mapOptions={{ ...mapOptions, style }}
-        />
+        <Styles>
+          <Basemap />
+          {isMapLoaded &&
+            resolvedLayers.map((resolvedLayer) => {
+              if (!resolvedLayer) return null;
+
+              const { runtimeData, Component: LayerCmp, layer } = resolvedLayer;
+
+              if (!LayerCmp) return null;
+
+              // Each layer type is added to the map through a component. This
+              // component has all the logic needed to add/update/remove the
+              // layer. Which component to use will depend on the characteristics
+              // of the layer and dataset.
+              // The function getLayerComponent() should be used to get the
+              // correct component.
+              return (
+                <LayerCmp
+                  key={runtimeData.id}
+                  id={runtimeData.id}
+                  mapInstance={mapRef.current}
+                  stacCol={layer.stacCol}
+                  date={runtimeData.datetime}
+                  sourceParams={layer.sourceParams}
+                  zoomExtent={layer.zoomExtent}
+                  onStatusChange={onLayerLoadSuccess}
+                  isHidden={
+                    !activeChapterLayerId ||
+                    activeChapterLayerId !== runtimeData.id ||
+                    activeChapter.showBaseMap
+                  }
+                />
+              );
+            })}
+          <SimpleMap
+            className='root'
+            mapRef={mapRef}
+            containerRef={mapContainer}
+            onLoad={() => setMapLoaded(true)}
+            mapOptions={mapOptions}
+          />
+        </Styles>
       </TheMap>
       <TheChapters>{children}</TheChapters>
     </ScrollyMapWrapper>

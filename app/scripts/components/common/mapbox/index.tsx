@@ -7,7 +7,7 @@ import React, {
   useState
 } from 'react';
 import styled from 'styled-components';
-import mapboxgl, { Style } from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -260,70 +260,8 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
     compareTimeDensity
   ]);
 
-  const [style, setStyle] = useState<Style | undefined>();
-  const onStyleUpdate = useCallback((style: Style) => {
-    setStyle(style);
-  }, []);
-
-  const [compareStyle, setCompareStyle] = useState<Style | undefined>();
-  const onCompareStyleUpdate = useCallback((style: Style) => {
-    setCompareStyle(style);
-  }, []);
-
   return (
     <>
-      <Styles onStyleUpdate={onStyleUpdate}>
-        {/*
-        Each layer type is added to the map through a component. This component
-        has all the logic needed to add/update/remove the layer.
-        Which component to use will depend on the characteristics of the layer
-        and dataset.
-        The function getLayerComponent() should be used to get the correct
-        component.
-      */}
-        <Basemap
-          basemapStyleId={basemapStyleId}
-          labelsOption={labelsOption}
-          boundariesOption={boundariesOption}
-        />
-        {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
-          <BaseLayerComponent
-            id={`base-${baseLayerResolvedData.id}`}
-            stacCol={baseLayerResolvedData.stacCol}
-            mapInstance={mapRef.current}
-            date={date}
-            sourceParams={baseLayerResolvedData.sourceParams}
-            zoomExtent={baseLayerResolvedData.zoomExtent}
-            onStatusChange={onBaseLayerStatusChange}
-          />
-        )}
-      </Styles>
-
-      {/*
-        Adding a layer to the comparison map is also done through a component,
-        which is this case targets a different map instance.
-      */}
-      <Styles onStyleUpdate={onCompareStyleUpdate}>
-        <Basemap
-          basemapStyleId={basemapStyleId}
-          labelsOption={labelsOption}
-          boundariesOption={boundariesOption}
-        />
-        {isMapCompareLoaded &&
-          isComparing &&
-          compareLayerResolvedData &&
-          CompareLayerComponent && (
-            <CompareLayerComponent
-              id={`compare-${compareLayerResolvedData.id}`}
-              stacCol={compareLayerResolvedData.stacCol}
-              mapInstance={mapCompareRef.current}
-              date={compareToDate}
-              sourceParams={compareLayerResolvedData.sourceParams}
-              zoomExtent={compareLayerResolvedData.zoomExtent}
-              onStatusChange={onCompareLayerStatusChange}
-            />
-          )}
-      </Styles>
       {/*
         Normally we only need 1 loading which is centered. If we're comparing we
         need to render a loading for each layer, but instead of centering them,
@@ -441,48 +379,98 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         className={className}
         id={id ?? 'mapbox-container'}
       >
-        <SimpleMap
-          className='root'
-          mapRef={mapRef}
-          containerRef={mapContainer}
-          onLoad={() => setMapLoaded(true)}
-          onMoveEnd={onPositionChange}
-          mapOptions={{
-            ...mapOptions,
-            ...getMapPositionOptions(initialPosition),
-            cooperativeGestures,
-            style
-          }}
-          withGeocoder={withGeocoder}
-          aoi={aoi}
-          onAoiChange={onAoiChange}
-          projection={projection}
-          onProjectionChange={onProjectionChange}
-          basemapStyleId={basemapStyleId}
-          onBasemapStyleIdChange={onBasemapStyleIdChange}
-          labelsOption={labelsOption}
-          boundariesOption={boundariesOption}
-          onOptionChange={onOptionChange}
-        />
-        {shouldRenderCompare && (
+        <Styles>
+          {/*
+        Each layer type is added to the map through a component. This component
+        has all the logic needed to add/update/remove the layer.
+        Which component to use will depend on the characteristics of the layer
+        and dataset.
+        The function getLayerComponent() should be used to get the correct
+        component.
+      */}
+          <Basemap
+            basemapStyleId={basemapStyleId}
+            labelsOption={labelsOption}
+            boundariesOption={boundariesOption}
+          />
+          {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
+            <BaseLayerComponent
+              id={`base-${baseLayerResolvedData.id}`}
+              stacCol={baseLayerResolvedData.stacCol}
+              mapInstance={mapRef.current}
+              date={date}
+              sourceParams={baseLayerResolvedData.sourceParams}
+              zoomExtent={baseLayerResolvedData.zoomExtent}
+              onStatusChange={onBaseLayerStatusChange}
+            />
+          )}
           <SimpleMap
-            mapRef={mapCompareRef}
-            containerRef={mapCompareContainer}
-            onLoad={() => setMapCompareLoaded(true)}
-            onUnmount={() => setMapCompareLoaded(false)}
+            className='root'
+            mapRef={mapRef}
+            containerRef={mapContainer}
+            onLoad={() => setMapLoaded(true)}
+            onMoveEnd={onPositionChange}
             mapOptions={{
               ...mapOptions,
-              cooperativeGestures,
-              center: mapRef.current?.getCenter(),
-              zoom: mapRef.current?.getZoom(),
-              style: compareStyle
+              ...getMapPositionOptions(initialPosition),
+              cooperativeGestures
             }}
             withGeocoder={withGeocoder}
             aoi={aoi}
             onAoiChange={onAoiChange}
             projection={projection}
             onProjectionChange={onProjectionChange}
+            basemapStyleId={basemapStyleId}
+            onBasemapStyleIdChange={onBasemapStyleIdChange}
+            labelsOption={labelsOption}
+            boundariesOption={boundariesOption}
+            onOptionChange={onOptionChange}
           />
+        </Styles>
+
+        {shouldRenderCompare && (
+          <Styles>
+            {/*
+        Adding a layer to the comparison map is also done through a component,
+        which is this case targets a different map instance.
+      */}
+            <Basemap
+              basemapStyleId={basemapStyleId}
+              labelsOption={labelsOption}
+              boundariesOption={boundariesOption}
+            />
+            {isMapCompareLoaded &&
+              isComparing &&
+              compareLayerResolvedData &&
+              CompareLayerComponent && (
+                <CompareLayerComponent
+                  id={`compare-${compareLayerResolvedData.id}`}
+                  stacCol={compareLayerResolvedData.stacCol}
+                  mapInstance={mapCompareRef.current}
+                  date={compareToDate}
+                  sourceParams={compareLayerResolvedData.sourceParams}
+                  zoomExtent={compareLayerResolvedData.zoomExtent}
+                  onStatusChange={onCompareLayerStatusChange}
+                />
+              )}
+            <SimpleMap
+              mapRef={mapCompareRef}
+              containerRef={mapCompareContainer}
+              onLoad={() => setMapCompareLoaded(true)}
+              onUnmount={() => setMapCompareLoaded(false)}
+              mapOptions={{
+                ...mapOptions,
+                cooperativeGestures,
+                center: mapRef.current?.getCenter(),
+                zoom: mapRef.current?.getZoom()
+              }}
+              withGeocoder={withGeocoder}
+              aoi={aoi}
+              onAoiChange={onAoiChange}
+              projection={projection}
+              onProjectionChange={onProjectionChange}
+            />
+          </Styles>
         )}
       </MapsContainer>
     </>

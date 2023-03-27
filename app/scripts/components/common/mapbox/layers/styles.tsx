@@ -16,6 +16,7 @@ export interface GeneratorParams {
 
 interface StylesContextType {
   updateStyle: (params: GeneratorParams) => void;
+  style?: Style
 }
 
 export const StylesContext = createContext<StylesContextType>({
@@ -46,7 +47,7 @@ const generateStyle = (stylesData: Record<string, GeneratorParams>) => {
   let sources: Record<string, AnySourceImpl> = {};
   let layers: ExtendedLayer[] = [];
 
-  Object.entries(stylesData).map(([generatorId, generatorParams]) => {
+  Object.entries(stylesData).forEach(([generatorId, generatorParams]) => {
     // TODO check duplicate source ids?
     sources = {
       ...sources,
@@ -101,6 +102,7 @@ export function Styles({
   const [stylesData, setStylesData] = useState<Record<string, GeneratorParams>>(
     {}
   );
+  const [style, setStyle] = useState<Style | undefined>();
   const updateStyle = useCallback(
     (params: GeneratorParams) => {
       setStylesData((prevStyle) => ({
@@ -113,9 +115,10 @@ export function Styles({
   useEffect(() => {
     const style = generateStyle(stylesData);
     onStyleUpdate?.(style as any);
+    setStyle(style as any);
   }, [stylesData, onStyleUpdate]);
   return (
-    <StylesContext.Provider value={{ updateStyle }}>
+    <StylesContext.Provider value={{ updateStyle, style }}>
       {children}
     </StylesContext.Provider>
   );

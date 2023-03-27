@@ -2,7 +2,8 @@ import React, {
   useEffect,
   RefObject,
   MutableRefObject,
-  ReactElement
+  ReactElement,
+  useContext
 } from 'react';
 import styled, { useTheme } from 'styled-components';
 import mapboxgl from 'mapbox-gl';
@@ -18,6 +19,7 @@ import MapOptions from './map-options';
 import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './map-options/utils';
 
+import { StylesContext } from './layers/styles';
 import { BasemapId, Option } from './map-options/basemaps';
 import { round } from '$utils/format';
 
@@ -106,6 +108,8 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     onOptionChange
   ]);
 
+  const { style } = useContext(StylesContext);
+
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -163,10 +167,10 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
 
   // Handle style changes
   useEffect(() => {
-    if (!mapRef.current || !mapOptions.style) return;
-    mapRef.current.setStyle(mapOptions.style);
+    if (!mapRef.current || !style) return;
+    mapRef.current.setStyle(style);
     /* mapRef is a ref */
-  }, [mapOptions.style]);
+  }, [style]);
 
   // Handle Attribution
   useEffect(() => {
