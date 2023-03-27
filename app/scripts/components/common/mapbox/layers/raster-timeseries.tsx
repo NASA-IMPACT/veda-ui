@@ -1,8 +1,24 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTheme } from 'styled-components';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import qs from 'qs';
-import mapboxgl, { LngLatBoundsLike } from 'mapbox-gl';
+import mapboxgl, {
+  AnyLayer,
+  AnySourceImpl,
+  GeoJSONSourceRaw,
+  LngLatBoundsLike,
+  RasterLayer,
+  RasterSource,
+  SymbolLayer
+} from 'mapbox-gl';
+import { featureCollection, point } from '@turf/helpers';
 
+import { StylesContext } from './styles';
 import {
   checkFitBoundsFromLayer,
   getFilterPayload,
@@ -61,15 +77,9 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     isHidden
   } = props;
 
-  const theme = useTheme();
-  const primaryColor = theme.color?.primary;
+  const { updateStyle } = useContext(StylesContext);
+
   const minZoom = zoomExtent?.[0] ?? 0;
-
-  const [showMarkers, setShowMarkers] = useState(
-    mapInstance.getZoom() < minZoom
-  );
-
-  const addedMarkers = useRef<mapboxgl.Marker[]>([]);
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
@@ -120,23 +130,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     },
     [id, onStatusChange]
   );
-
-  // Control whether or not to show markers depending on the zoom level. The min
-  // value for the zoomExtent is the threshold. Below this value the data is not
-  // loaded and markers are shown instead.
-  useEffect(() => {
-    const zoomEnd = () => {
-      const showMarkers = mapInstance.getZoom() < minZoom;
-      setShowMarkers(showMarkers);
-    };
-
-    zoomEnd();
-    mapInstance.on('zoomend', zoomEnd);
-
-    return () => {
-      mapInstance.off('zoomend', zoomEnd);
-    };
-  }, [minZoom, mapInstance]);
 
   //
   // Load stac collection features
@@ -215,10 +208,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   //
   // Markers
   //
-  useEffect(() => {
-    if (!id || !stacCol || !date || !minZoom || !stacCollection.length) return;
-
-    // Create points from bboxes
+  const points = useMemo(() => {
+    if (!stacCollection.length) return null;
     const points = stacCollection.map((f) => {
       const [w, s, e, n] = f.bbox;
       return {
@@ -230,43 +221,13 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       };
     });
 
-    addedMarkers.current = points.map((p) => {
-      const marker = new mapboxgl.Marker({
-        color: primaryColor
-      })
-        .setLngLat(p.center)
-        .addTo(mapInstance);
-
-      const el = marker.getElement();
-      el.addEventListener('click', () =>
-        mapInstance.fitBounds(p.bounds, { padding: FIT_BOUNDS_PADDING })
-      );
-      el.style.display = !isHidden && showMarkers ? '' : 'none';
-
-      return marker;
-    });
-
-    return () => {
-      addedMarkers.current.forEach((marker) => marker.remove());
-      addedMarkers.current = [];
-    };
-    // The showMarkers and isHidden dep are left out on purpose, as visibility
-    // is controlled below, but we need the value to initialize the markers
-    // visibility.
-  }, [
-    id,
-    stacCol,
-    stacCollection,
-    date,
-    minZoom,
-    mapInstance,
-    sourceParams,
-    primaryColor
-  ]);
+    return points;
+  }, [stacCollection]);
 
   //
   // Tiles
   //
+  const [mosaicUrl, setMosaicUrl] = useState<string | null>(null);
   useEffect(() => {
     if (!id || !stacCol || !date || !stacCollection.length) return;
 
@@ -288,7 +249,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             id
           );
         LOG && console.log('Payload', payload);
-        LOG && console.log('Source Params', sourceParams);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
@@ -298,14 +258,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           controller
         );
 
-        const tileParams = qs.stringify(
-          {
-            assets: 'cog_default',
-            ...sourceParams
-          },
-          // Temporary solution to pass different tile parameters for hls data
-          { arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma' }
-        );
+        setMosaicUrl(responseData.links[1].href);
 
         /* eslint-disable no-console */
         LOG &&
@@ -319,29 +272,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.log('STAC response', responseData);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
-
-        mapInstance.addSource(id, {
-          type: 'raster',
-          url: `${responseData.links[1].href}?${tileParams}`
-        });
-
-        mapInstance.addLayer(
-          {
-            id: id,
-            type: 'raster',
-            source: id,
-            layout: {
-              visibility: showMarkers ? 'none' : 'visible'
-            },
-            paint: {
-              'raster-opacity': Number(!isHidden),
-              'raster-opacity-transition': {
-                duration: 320
-              }
-            }
-          },
-          'admin-0-boundary-bg'
-        );
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -363,22 +293,12 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     return () => {
       controller.abort();
       changeStatus({ status: 'idle', context: STATUS_KEY.Layer });
-
-      const source = mapInstance.getSource(id) as
-        | mapboxgl.AnySourceImpl
-        | undefined;
-
-      if (source) {
-        mapInstance.removeLayer(id);
-        mapInstance.removeSource(id);
-      }
     };
   }, [
     // The `showMarkers` and `isHidden` dep are left out on purpose, as visibility
     // is controlled below, but we need the value to initialize the layer
     // visibility.
-
-    stacCollection,
+    stacCollection
     // This hook depends on a series of properties, but whenever they change the
     // `stacCollection` is guaranteed to change because a new STAC request is
     // needed to show the data. The following properties are therefore removed
@@ -392,11 +312,137 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     // fires and `stacCollection` changes, causing this hook to run again. This
     // resulted in a race condition when adding the source to the map leading to
     // an error.
-    mapInstance,
-    // `sourceParams` object reference is likely to change. Compare in string
-    // format.
-    JSON.stringify(sourceParams)
   ]);
+
+  //
+  // Generate Mapbox GL layers and sources for raster timeseries
+  //
+  const haveSourceParamsChanged = useMemo(
+    () => JSON.stringify(sourceParams),
+    [sourceParams]
+  );
+  useEffect(
+    () => {
+      let layers: AnyLayer[] = [];
+      let sources: Record<string, AnySourceImpl> = {};
+
+      if (mosaicUrl) {
+        const tileParams = qs.stringify(
+          {
+            assets: 'cog_default',
+            ...sourceParams
+          },
+          // Temporary solution to pass different tile parameters for hls data
+          { arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma' }
+        );
+
+        const mosaicSource: RasterSource = {
+          type: 'raster',
+          url: `${mosaicUrl}?${tileParams}`
+        };
+
+        const mosaicLayer: RasterLayer = {
+          id: id,
+          type: 'raster',
+          source: id,
+          layout: {
+            visibility: isHidden ? 'none' : 'visible'
+          },
+          paint: {
+            'raster-opacity': Number(!isHidden),
+            'raster-opacity-transition': {
+              duration: 320
+            }
+          },
+          minzoom: minZoom,
+          metadata: {
+            layerOrderPosition: 'raster'
+          }
+        };
+
+        sources = {
+          ...sources,
+          [id]: mosaicSource
+        };
+        layers = [...layers, mosaicLayer];
+      }
+
+      if (points && minZoom > 0) {
+        const pointsSourceId = `${id}-points`;
+        const pointsSource: GeoJSONSourceRaw = {
+          type: 'geojson',
+          data: featureCollection(
+            points.map((p) => point(p.center, { bounds: p.bounds }))
+          )
+        };
+
+        const pointsLayer: SymbolLayer = {
+          type: 'symbol',
+          id: pointsSourceId,
+          source: pointsSourceId,
+          layout: {
+            'icon-image': 'leaflet-marker',
+            visibility: isHidden ? 'none' : 'visible',
+            'icon-allow-overlap': true,
+            'icon-offset': [0, -12]
+          },
+          maxzoom: minZoom,
+          metadata: {
+            layerOrderPosition: 'markers'
+          }
+        };
+        sources = {
+          ...sources,
+          [pointsSourceId]: pointsSource as AnySourceImpl
+        };
+        layers = [...layers, pointsLayer];
+      }
+
+      updateStyle({
+        generatorId: 'raster-timeseries',
+        sources,
+        layers
+      });
+    },
+    // sourceParams not included, but using a stringified version of it to detect changes (haveSourceParamsChanged)
+    [
+      updateStyle,
+      id,
+      mosaicUrl,
+      minZoom,
+      points,
+      haveSourceParamsChanged,
+      isHidden
+    ]
+  );
+
+  //
+  // Listen to mouse events on the markers layer
+  //
+  useEffect(() => {
+    const pointsSourceId = `${id}-points`;
+
+    const onPointsClick = (e) => {
+      if (!e.features.length) return;
+      const bounds = JSON.parse(e.features[0].properties.bounds);
+      mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
+    };
+    const onPointsEnter = () => {
+      mapInstance.getCanvas().style.cursor = 'pointer';
+    };
+    const onPointsLeave = () => {
+      mapInstance.getCanvas().style.cursor = '';
+    };
+    mapInstance.on('click', pointsSourceId, onPointsClick);
+    mapInstance.on('mouseenter', pointsSourceId, onPointsEnter);
+    mapInstance.on('mouseleave', pointsSourceId, onPointsLeave);
+
+    return () => {
+      mapInstance.off('click', pointsSourceId, onPointsClick);
+      mapInstance.off('mouseenter', pointsSourceId, onPointsEnter);
+      mapInstance.off('mouseleave', pointsSourceId, onPointsLeave);
+    };
+  }, [id, mapInstance]);
 
   //
   // FitBounds when needed
@@ -409,24 +455,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       mapInstance.fitBounds(layerBounds, { padding: FIT_BOUNDS_PADDING });
     }
   }, [mapInstance, stacCol, stacCollection]);
-
-  //
-  // Visibility control for the layer and the markers.
-  //
-  useEffect(() => {
-    const layer = mapInstance.getLayer(id) as mapboxgl.AnyLayer | undefined;
-
-    if (layer) {
-      const visibility = showMarkers ? 'none' : 'visible';
-      mapInstance.setLayoutProperty(id, 'visibility', visibility);
-      mapInstance.setPaintProperty(id, 'raster-opacity', Number(!isHidden));
-    }
-
-    addedMarkers.current.forEach((marker) => {
-      const display = isHidden ? 'none' : showMarkers ? '' : 'none';
-      marker.getElement().style.display = display;
-    });
-  }, [id, mapInstance, showMarkers, isHidden]);
 
   return null;
 }
