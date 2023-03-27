@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FeatureCollection, Polygon } from 'geojson';
 import styled, { useTheme } from 'styled-components';
+import bbox from '@turf/bbox';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { ButtonProps } from '@devseed-ui/button';
 import { CollecticonClockBack } from '@devseed-ui/collecticons';
@@ -150,7 +151,7 @@ function SavedAnalysisThumbnail(props: { aoi: FeatureCollection<Polygon> }) {
   const theme = useTheme();
 
   const styledFeatures = {
-    ...aoi,
+    type: 'FeatureCollection',
     features: aoi.features.map(({ geometry }) => ({
       type: 'Feature',
       properties: {
@@ -162,9 +163,45 @@ function SavedAnalysisThumbnail(props: { aoi: FeatureCollection<Polygon> }) {
     }))
   };
 
-  const encoded = encodeURIComponent(JSON.stringify(styledFeatures));
+  let encodedGeoJson = encodeURIComponent(JSON.stringify(styledFeatures));
+  const encodedGeoJsonChars = encodedGeoJson.length;
 
-  const src = `https://api.mapbox.com/styles/v1/covid-nasa/cldac5c2c003k01oebmavw4q3/static/geojson(${encoded})/auto/480x320?access_token=${process.env.MAPBOX_TOKEN}`;
+  // If more than 8000 chars the request will fail.
+  // In this case simplify and show a bounding box.
+  const MAX_MAPBOX_API_CHARS = 8000;
+  if (encodedGeoJsonChars > MAX_MAPBOX_API_CHARS) {
+    const [w, s, e, n] = bbox(styledFeatures);
+    // We want the corners length to be 1/4 of the distance between
+    // W & E / N & S
+    const lonSide = (w * -1 + e) * 0.25;
+    const latSide = (n * -1 + s) * 0.25;
+
+    const makeCorner = (p1, p2, p3) => ({
+      type: 'Feature',
+      properties: {
+        'stroke-width': 8,
+        stroke: theme.color?.primary
+      },
+      geometry: {
+        type: 'LineString',
+        coordinates: [p1, p2, p3]
+      }
+    });
+
+    const fc = {
+      type: 'FeatureCollection',
+      features: [
+        makeCorner([w + lonSide, n], [w, n], [w, n + latSide]),
+        makeCorner([e - lonSide, n], [e, n], [e, n + latSide]),
+        makeCorner([e - lonSide, s], [e, s], [e, s - latSide]),
+        makeCorner([w + lonSide, s], [w, s], [w, s - latSide])
+      ]
+    };
+
+    encodedGeoJson = encodeURIComponent(JSON.stringify(fc));
+  }
+
+  const src = `https://api.mapbox.com/styles/v1/covid-nasa/cldac5c2c003k01oebmavw4q3/static/geojson(${encodedGeoJson})/auto/480x320?padding=32&access_token=${process.env.MAPBOX_TOKEN}`;
 
   return <img src={src} alt='Thumbnail showing AOI' />;
 }
