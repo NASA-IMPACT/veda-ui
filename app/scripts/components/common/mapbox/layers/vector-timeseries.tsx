@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTheme } from 'styled-components';
 import qs from 'qs';
 import mapboxgl, {
   AnyLayer,
   AnySourceImpl,
-  LineLayer,
   LngLatLike,
   VectorSourceImpl
 } from 'mapbox-gl';
@@ -16,7 +16,6 @@ import { useMapStyle } from './styles';
 
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
-import { useTheme } from 'styled-components';
 
 interface MapLayerVectorTimeseriesProps {
   id: string;

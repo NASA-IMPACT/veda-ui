@@ -22,7 +22,7 @@ export interface GeneratorParams {
 
 interface StylesContextType {
   updateStyle: (params: GeneratorParams) => void;
-  style?: Style
+  style?: Style;
 }
 
 export const StylesContext = createContext<StylesContextType>({
@@ -134,6 +134,6 @@ export function Styles({
 }
 
 export const useMapStyle = () => {
-  const { updateStyle } = useContext(StylesContext);
-  return { updateStyle };
+  const { updateStyle, style } = useContext(StylesContext);
+  return { updateStyle, style };
 };
