@@ -163,16 +163,17 @@ function SavedAnalysisThumbnail(props: { aoi: FeatureCollection<Polygon> }) {
     }))
   };
 
-  let encoded = encodeURIComponent(JSON.stringify(styledFeatures));
+  let encodedGeoJson = encodeURIComponent(JSON.stringify(styledFeatures));
+  const encodedGeoJsonChars = encodedGeoJson.length;
 
   // If more than 8000 chars the request will fail.
   // In this case simplify and show a bounding box.
-  if (encoded.length > 8000) {
+  if (encodedGeoJsonChars > 8000) {
     const [w, s, e, n] = bbox(styledFeatures);
     // We want the corners length to be 1/4 of the distance between
     // W & E / N & S
-    const lonSide = (w * -1 + e) *0.25;
-    const latSide = (n * -1 + s) *0.25;
+    const lonSide = (w * -1 + e) * 0.25;
+    const latSide = (n * -1 + s) * 0.25;
 
     const makeCorner = (p1, p2, p3) => ({
       type: 'Feature',
@@ -196,10 +197,10 @@ function SavedAnalysisThumbnail(props: { aoi: FeatureCollection<Polygon> }) {
       ]
     };
 
-    encoded = encodeURIComponent(JSON.stringify(fc));
+    encodedGeoJson = encodeURIComponent(JSON.stringify(fc));
   }
 
-  const src = `https://api.mapbox.com/styles/v1/covid-nasa/cldac5c2c003k01oebmavw4q3/static/geojson(${encoded})/auto/480x320?padding=32&access_token=${process.env.MAPBOX_TOKEN}`;
+  const src = `https://api.mapbox.com/styles/v1/covid-nasa/cldac5c2c003k01oebmavw4q3/static/geojson(${encodedGeoJson})/auto/480x320?padding=32&access_token=${process.env.MAPBOX_TOKEN}`;
 
   return <img src={src} alt='Thumbnail showing AOI' />;
 }
