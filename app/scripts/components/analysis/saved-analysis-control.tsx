@@ -168,7 +168,8 @@ function SavedAnalysisThumbnail(props: { aoi: FeatureCollection<Polygon> }) {
 
   // If more than 8000 chars the request will fail.
   // In this case simplify and show a bounding box.
-  if (encodedGeoJsonChars > 8000) {
+  const MAX_MAPBOX_API_CHARS = 8000;
+  if (encodedGeoJsonChars > MAX_MAPBOX_API_CHARS) {
     const [w, s, e, n] = bbox(styledFeatures);
     // We want the corners length to be 1/4 of the distance between
     // W & E / N & S
