@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'styled-components';
 import qs from 'qs';
 import mapboxgl, {
@@ -11,7 +11,7 @@ import { Feature } from 'geojson';
 import { endOfDay, startOfDay } from 'date-fns';
 import centroid from '@turf/centroid';
 
-import { requestQuickCache } from './utils';
+import { requestQuickCache, useLayerInteraction } from './utils';
 import { useMapStyle } from './styles';
 
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
@@ -199,15 +199,11 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   //
   // Listen to mouse events on the markers layer
   //
-  useEffect(() => {
-    const pointsSourceId = `${id}-points`;
-
-    const onPointsClick = (e) => {
-      if (!e.features.length) return;
-
+  const onPointsClick = useCallback(
+    (features) => {
       const extractedFeat = {
         type: 'Feature',
-        geometry: e.features[0].geometry
+        geometry: features[0].geometry
       } as Feature<any>;
 
       const center = centroid(extractedFeat).geometry.coordinates as LngLatLike;
@@ -217,26 +213,14 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
         zoom: minZoom,
         center
       });
-    };
-
-    const onPointsEnter = () => {
-      mapInstance.getCanvas().style.cursor = 'pointer';
-    };
-
-    const onPointsLeave = () => {
-      mapInstance.getCanvas().style.cursor = '';
-    };
-
-    mapInstance.on('click', pointsSourceId, onPointsClick);
-    mapInstance.on('mouseenter', pointsSourceId, onPointsEnter);
-    mapInstance.on('mouseleave', pointsSourceId, onPointsLeave);
-
-    return () => {
-      mapInstance.off('click', pointsSourceId, onPointsClick);
-      mapInstance.off('mouseenter', pointsSourceId, onPointsEnter);
-      mapInstance.off('mouseleave', pointsSourceId, onPointsLeave);
-    };
-  }, [id, mapInstance, minZoom]);
+    },
+    [mapInstance, minZoom]
+  );
+  useLayerInteraction({
+    layerId: `${id}-points`,
+    mapInstance,
+    onClick: onPointsClick
+  });
 
   return null;
 }

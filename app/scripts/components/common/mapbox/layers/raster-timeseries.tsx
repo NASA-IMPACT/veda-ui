@@ -16,7 +16,8 @@ import {
   checkFitBoundsFromLayer,
   getFilterPayload,
   getMergedBBox,
-  requestQuickCache
+  requestQuickCache,
+  useLayerInteraction
 } from './utils';
 import {
   ActionStatus,
@@ -412,30 +413,18 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   //
   // Listen to mouse events on the markers layer
   //
-  useEffect(() => {
-    const pointsSourceId = `${id}-points`;
-
-    const onPointsClick = (e) => {
-      if (!e.features.length) return;
-      const bounds = JSON.parse(e.features[0].properties.bounds);
+  const onPointsClick = useCallback(
+    (features) => {
+      const bounds = JSON.parse(features[0].properties.bounds);
       mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
-    };
-    const onPointsEnter = () => {
-      mapInstance.getCanvas().style.cursor = 'pointer';
-    };
-    const onPointsLeave = () => {
-      mapInstance.getCanvas().style.cursor = '';
-    };
-    mapInstance.on('click', pointsSourceId, onPointsClick);
-    mapInstance.on('mouseenter', pointsSourceId, onPointsEnter);
-    mapInstance.on('mouseleave', pointsSourceId, onPointsLeave);
-
-    return () => {
-      mapInstance.off('click', pointsSourceId, onPointsClick);
-      mapInstance.off('mouseenter', pointsSourceId, onPointsEnter);
-      mapInstance.off('mouseleave', pointsSourceId, onPointsLeave);
-    };
-  }, [id, mapInstance]);
+    },
+    [mapInstance]
+  );
+  useLayerInteraction({
+    layerId: `${id}-points`,
+    mapInstance,
+    onClick: onPointsClick
+  });
 
   //
   // FitBounds when needed

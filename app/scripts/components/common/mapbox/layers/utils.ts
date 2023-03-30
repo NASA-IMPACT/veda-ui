@@ -1,3 +1,6 @@
+import React, { useEffect } from 'react';
+import { Feature } from 'geojson';
+import mapboxgl from 'mapbox-gl';
 import { defaultsDeep } from 'lodash';
 import axios, { Method } from 'axios';
 import {
@@ -16,8 +19,6 @@ import {
   DatasetDatumReturnType,
   DatasetLayerCompareNormalized
 } from 'veda/thematics';
-import mapboxgl from 'mapbox-gl';
-import React from 'react';
 import { MapLayerRasterTimeseries, StacFeature } from './raster-timeseries';
 import { MapLayerVectorTimeseries } from './vector-timeseries';
 
@@ -291,14 +292,12 @@ export async function requestQuickCache({
 
   // No cache found, make request.
   if (!quickCache.has(key)) {
-    const response = await axios(
-      {
-        url,
-        method,
-        data: payload,
-        signal: controller.signal
-      }
-    );
+    const response = await axios({
+      url,
+      method,
+      data: payload,
+      signal: controller.signal
+    });
     quickCache.set(key, response.data);
   }
   return quickCache.get(key);
@@ -371,4 +370,40 @@ export function checkFitBoundsFromLayer(
   // only fitBounds if layer extent is smaller than viewport extent (ie zoom to area of interest),
   // or if layer extent does not overlap at all with viewport extent (ie pan to area of interest)
   return layerExtentSmaller || isOutside;
+}
+
+interface LayerInteractionHookOptions {
+  layerId: string;
+  mapInstance: mapboxgl.Map;
+  onClick: (features: Feature<any>[]) => void;
+}
+export function useLayerInteraction({
+  layerId,
+  mapInstance,
+  onClick
+}: LayerInteractionHookOptions) {
+  useEffect(() => {
+    const onPointsClick = (e) => {
+      if (!e.features.length) return;
+      onClick(e.features);
+    };
+
+    const onPointsEnter = () => {
+      mapInstance.getCanvas().style.cursor = 'pointer';
+    };
+
+    const onPointsLeave = () => {
+      mapInstance.getCanvas().style.cursor = '';
+    };
+
+    mapInstance.on('click', layerId, onPointsClick);
+    mapInstance.on('mouseenter', layerId, onPointsEnter);
+    mapInstance.on('mouseleave', layerId, onPointsLeave);
+
+    return () => {
+      mapInstance.off('click', layerId, onPointsClick);
+      mapInstance.off('mouseenter', layerId, onPointsEnter);
+      mapInstance.off('mouseleave', layerId, onPointsLeave);
+    };
+  }, [layerId, mapInstance, onClick]);
 }
