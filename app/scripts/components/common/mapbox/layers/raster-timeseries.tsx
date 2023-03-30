@@ -411,6 +411,19 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   );
 
   //
+  // Cleanup layers on unmount.
+  //
+  useEffect(() => {
+    return () => {
+      updateStyle({
+        generatorId: 'raster-timeseries',
+        sources: {},
+        layers: []
+      });
+    };
+  }, [updateStyle]);
+
+  //
   // Listen to mouse events on the markers layer
   //
   const onPointsClick = useCallback(
