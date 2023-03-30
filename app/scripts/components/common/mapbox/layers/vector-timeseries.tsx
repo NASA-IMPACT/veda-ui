@@ -44,7 +44,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   const { updateStyle } = useMapStyle();
   const [featuresApiEndpoint, setFeaturesApiEndpoint] = useState('');
 
-  const minZoom = zoomExtent?.[0] ?? 0;
+  const [minZoom, maxZoom] = zoomExtent ?? [0, 0];
 
   //
   // Get the tiles url
@@ -115,7 +115,15 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
         },
         paint: {
           'line-color': theme.color?.['base-300'],
-          'line-width': 4
+          'line-width': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            minZoom,
+            4,
+            maxZoom,
+            10
+          ]
         },
         // filter: ['==', '$type', 'LineString'],
         minzoom: minZoom,
@@ -133,7 +141,15 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
         },
         paint: {
           'line-color': theme.color?.primary,
-          'line-width': 2
+          'line-width': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            minZoom,
+            2,
+            maxZoom,
+            5
+          ]
         },
         filter: ['==', '$type', 'LineString'],
         minzoom: minZoom,
@@ -192,9 +208,23 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     date,
     featuresApiEndpoint,
     minZoom,
+    maxZoom,
     isHidden,
     haveSourceParamsChanged
   ]);
+
+  //
+  // Cleanup layers on unmount.
+  //
+  useEffect(() => {
+    return () => {
+      updateStyle({
+        generatorId: 'vector-timeseries',
+        sources: {},
+        layers: []
+      });
+    };
+  }, [updateStyle]);
 
   //
   // Listen to mouse events on the markers layer
