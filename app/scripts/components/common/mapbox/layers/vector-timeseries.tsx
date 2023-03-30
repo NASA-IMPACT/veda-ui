@@ -44,7 +44,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   const { updateStyle } = useMapStyle();
   const [featuresApiEndpoint, setFeaturesApiEndpoint] = useState('');
 
-  const [minZoom, maxZoom] = zoomExtent ?? [0, 0];
+  const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
 
   //
   // Get the tiles url
