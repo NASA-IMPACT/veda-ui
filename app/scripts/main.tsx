@@ -7,6 +7,7 @@ import {
   Route,
   Routes,
   useLocation,
+  useNavigate,
   useParams
 } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
@@ -76,6 +77,20 @@ function ThematicAboutRedirect() {
   );
 }
 
+function ThematicDiscoveryRedirect() {
+  const discoveryId = useParams().discoveryId;
+  return <Navigate replace to={`/discoveries/${discoveryId}`} />;
+}
+
+function ThematicDatasetRedirect({ explore = false }: { explore?: boolean }) {
+  const datasetId = useParams().datasetId;
+  let url = `/data-catalog/${datasetId}`;
+  if (explore) {
+    url += '/explore';
+  }
+  return <Navigate replace to={url} />;
+}
+
 // Root component.
 function Root() {
   useScrollbarWidthAsCssVar();
@@ -110,21 +125,48 @@ function Root() {
                   <Route path='/sandbox/*' element={<Sandbox />} />
                 )}
 
+                <Route
+                  path='/discoveries/:discoveryId'
+                  element={<DiscoveriesSingle />}
+                />
+                <Route
+                  path='/data-catalog/:datasetId'
+                  element={<DatasetsOverview />}
+                />
+                <Route
+                  path='/data-catalog/:datasetId/explore'
+                  element={<DatasetsExplore />}
+                />
+
+                {/* The following routes are redirect from the legacy thematic areas structure */}
                 <Route path={hasSeveralThematicAreas ? ':thematicId' : '/'}>
+                  {/* TODO : Redirect to discoveries with filters preset to thematic? */}
+                  {/* TODO : Enable redirection when we want to get rid of thematic area index pages */}
+                  {/* <Route index element={<Navigate replace to='/' />} /> */}
                   <Route index element={<Home />} />
-                  <Route path='discoveries' element={<DiscoveriesHub />} />{' '}
+
+                  {/* TODO : Redirect to discoveries with filters preset to thematic? */}
+                  <Route
+                    path='discoveries'
+                    element={<Navigate replace to='/discoveries' />}
+                  />
                   <Route
                     path='discoveries/:discoveryId'
-                    element={<DiscoveriesSingle />}
+                    element={<ThematicDiscoveryRedirect />}
                   />
-                  <Route path='datasets' element={<DatasetsHub />} />
+
+                  {/* TODO : Redirect to data-catalog with filters preset to thematic? */}
+                  <Route
+                    path='datasets'
+                    element={<Navigate replace to='/data-catalog' />}
+                  />
                   <Route
                     path='datasets/:datasetId'
-                    element={<DatasetsOverview />}
+                    element={<ThematicDatasetRedirect />}
                   />
                   <Route
                     path='datasets/:datasetId/explore'
-                    element={<DatasetsExplore />}
+                    element={<ThematicDatasetRedirect explore />}
                   />
                   <Route path='analysis' element={<Analysis />} />
                   <Route
@@ -133,6 +175,7 @@ function Root() {
                   />
                   <Route path='about' element={<ThematicAboutRedirect />} />
                 </Route>
+
                 <Route path='*' element={<UhOh />} />
               </Route>
             </Routes>

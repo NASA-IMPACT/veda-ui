@@ -5,15 +5,14 @@ import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import RelatedContent from '$components/common/related-content';
-
 import { useThematicArea, useThematicAreaDiscovery } from '$utils/thematics';
 import { thematicDiscoveriesPath } from '$utils/routes';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
 function DiscoveriesSingle() {
-  const thematic = useThematicArea();
   const discovery = useThematicAreaDiscovery();
+  const thematic = useThematicArea();
 
   if (!thematic || !discovery) throw resourceNotFound();
 
