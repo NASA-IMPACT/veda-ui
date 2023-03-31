@@ -148,7 +148,9 @@ export default function Analysis() {
       uniqBy(
         thematic.data.datasets.map((dataset) => dataset.layers).flat(),
         'stacCol'
-      ),
+      )
+      // TODO: Remove filter once vector datasets are supported in analysis.
+      .filter(d => d.type !== 'vector'),
     [thematic.data.datasets]
   );
   const selectedDatasetLayerIds = datasetsLayers?.map((layer) => layer.id);
