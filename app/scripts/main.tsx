@@ -7,7 +7,6 @@ import {
   Route,
   Routes,
   useLocation,
-  useNavigate,
   useParams
 } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
@@ -33,10 +32,10 @@ const RootDiscoveries = lazy(() => import('$components/root-discoveries'));
 const DataCatalog = lazy(() => import('$components/data-catalog'));
 
 const Home = lazy(() => import('$components/home'));
-const DiscoveriesHub = lazy(() => import('$components/discoveries/hub'));
+// const DiscoveriesHub = lazy(() => import('$components/discoveries/hub'));
 const DiscoveriesSingle = lazy(() => import('$components/discoveries/single'));
 
-const DatasetsHub = lazy(() => import('$components/datasets/hub'));
+// const DatasetsHub = lazy(() => import('$components/datasets/hub'));
 const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 

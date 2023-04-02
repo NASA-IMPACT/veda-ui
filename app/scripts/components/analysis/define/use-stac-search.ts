@@ -1,9 +1,10 @@
 import { DatasetLayer } from 'veda/thematics';
 import { FeatureCollection, Polygon } from 'geojson';
-import { useEffect, useMemo, useState } from 'react';
-import { uniq, uniqBy } from 'lodash';
+import { useEffect, useState } from 'react';
+import { uniq } from 'lodash';
 import axios from 'axios';
 import { getFilterPayload } from '../utils';
+import { allAvailableDatasetsLayers } from '.';
 import {
   ActionStatus,
   S_FAILED,
@@ -11,7 +12,6 @@ import {
   S_LOADING,
   S_SUCCEEDED
 } from '$utils/status';
-import { useThematicArea } from '$utils/thematics';
 
 interface UseStacSearchProps {
   start?: Date;
@@ -20,17 +20,8 @@ interface UseStacSearchProps {
 }
 
 export function useStacSearch({ start, end, aoi }: UseStacSearchProps) {
-  const thematic = useThematicArea();
-
   const readyToLoadDatasets = !!(start && end && aoi);
 
-  const allAvailableDatasetsLayers: DatasetLayer[] = useMemo(() => {
-    if (!thematic?.data.datasets) return [];
-    return uniqBy(
-      thematic.data.datasets.map((dataset) => dataset.layers).flat(),
-      'stacCol'
-    );
-  }, [thematic]);
 
   const [selectableDatasetLayers, setSelectableDatasetLayers] = useState<
     DatasetLayer[]
@@ -97,7 +88,7 @@ export function useStacSearch({ start, end, aoi }: UseStacSearchProps) {
     return () => {
       controller.abort();
     };
-  }, [start, end, aoi, allAvailableDatasetsLayers, readyToLoadDatasets]);
+  }, [start, end, aoi, readyToLoadDatasets]);
 
   return { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets };
 }
