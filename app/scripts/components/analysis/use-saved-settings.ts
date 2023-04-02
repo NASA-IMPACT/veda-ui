@@ -1,5 +1,5 @@
 import { FeatureCollection, Polygon } from 'geojson';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface AnalysisParams {
   start?: Date;
@@ -9,13 +9,11 @@ interface AnalysisParams {
 }
 
 interface SavedSettings {
-  thematicAreaId: string;
   url: string;
   params: Required<AnalysisParams>;
 }
 
 interface useSavedSettingsParams {
-  thematicAreaId: string;
   analysisParamsQs?: string;
   params?: AnalysisParams;
 }
@@ -23,8 +21,8 @@ interface useSavedSettingsParams {
 const SAVED_SETTINGS_KEY = 'analysisSavedSettings';
 const MAX_SAVED_SETTINGS = 5;
 
-function useSavedSettings(opts: useSavedSettingsParams) {
-  const { thematicAreaId, analysisParamsQs, params = {} } = opts;
+function useSavedSettings(opts: useSavedSettingsParams = {}) {
+  const { analysisParamsQs, params = {} } = opts;
 
   // Only need to read localStorage at component mount, because whenever the
   // localStorage item is updated, this components gets unmounted anyways
@@ -55,29 +53,14 @@ function useSavedSettings(opts: useSavedSettingsParams) {
     }
 
     try {
-      // Get settings for this thematic area analysis.
-      const thematicAreaSettings = savedSettingsList.filter(
-        (s) => s.thematicAreaId === thematicAreaId
-      );
-
-      if (!thematicAreaSettings.find((s) => s.url === analysisParamsQs)) {
-        const newThematicAreaSettings = [
+      if (!savedSettingsList.find((s) => s.url === analysisParamsQs)) {
+        const newSettings = [
           {
-            thematicAreaId,
             // At this point the params and url are required.
             url: analysisParamsQs!,
             params: params as SavedSettings['params']
           },
-          ...thematicAreaSettings.slice(0, MAX_SAVED_SETTINGS - 1)
-        ];
-
-        const otherThematicAreaSettings = savedSettingsList.filter(
-          (s) => s.thematicAreaId !== thematicAreaId
-        );
-
-        const newSettings = [
-          ...newThematicAreaSettings,
-          ...otherThematicAreaSettings
+          ...savedSettingsList.slice(0, MAX_SAVED_SETTINGS - 1)
         ];
 
         localStorage.setItem(SAVED_SETTINGS_KEY, JSON.stringify(newSettings));
@@ -90,15 +73,11 @@ function useSavedSettings(opts: useSavedSettingsParams) {
     // params will be left out of the dependency array since it is an object and
     // changes on every render. analysisParamsQs is the url version of params,
     // so when params change, analysisParamsQs is guaranteed to change as well.
-  }, [savedSettingsList, analysisParamsQs, thematicAreaId]);
-
-  const thematicAreaSavedSettingsList = useMemo(() => {
-    return savedSettingsList.filter((s) => s.thematicAreaId === thematicAreaId);
-  }, [savedSettingsList, thematicAreaId]);
+  }, [savedSettingsList, analysisParamsQs]);
 
   return {
     onGenerateClick,
-    thematicAreaSavedSettingsList
+    savedSettingsList
   };
 }
 

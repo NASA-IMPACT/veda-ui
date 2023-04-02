@@ -500,6 +500,14 @@ function PageHeader() {
                     </li>
                     <li>
                       <GlobalMenuLink
+                        to='/discoveries'
+                        onClick={closeNavOnClick}
+                      >
+                        Discoveries
+                      </GlobalMenuLink>
+                    </li>
+                    <li>
+                      <GlobalMenuLink
                         to='/data-catalog'
                         onClick={closeNavOnClick}
                       >
@@ -507,11 +515,8 @@ function PageHeader() {
                       </GlobalMenuLink>
                     </li>
                     <li>
-                      <GlobalMenuLink
-                        to='/discoveries'
-                        onClick={closeNavOnClick}
-                      >
-                        Discoveries
+                      <GlobalMenuLink to='/analysis' onClick={closeNavOnClick}>
+                        Analysis
                       </GlobalMenuLink>
                     </li>
                     <li>

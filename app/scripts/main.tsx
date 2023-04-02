@@ -116,6 +116,11 @@ function Root() {
                     <Route path='about' element={<RootAbout />} />
                     <Route path='data-catalog' element={<DataCatalog />} />
                     <Route path='discoveries' element={<RootDiscoveries />} />
+                    <Route path='analysis' element={<Analysis />} />
+                    <Route
+                      path='analysis/results'
+                      element={<AnalysisResults />}
+                    />
                     <Route path='development' element={<RootDevelopment />} />
                   </>
                 )}
@@ -167,10 +172,13 @@ function Root() {
                     path='datasets/:datasetId/explore'
                     element={<ThematicDatasetRedirect explore />}
                   />
-                  <Route path='analysis' element={<Analysis />} />
+                  <Route
+                    path='analysis'
+                    element={<Navigate replace to='/analysis' />}
+                  />
                   <Route
                     path='analysis/results'
-                    element={<AnalysisResults />}
+                    element={<Navigate replace to='/analysis/results' />}
                   />
                   <Route path='about' element={<ThematicAboutRedirect />} />
                 </Route>

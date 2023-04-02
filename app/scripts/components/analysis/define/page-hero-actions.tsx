@@ -15,9 +15,6 @@ import useSavedSettings from '../use-saved-settings';
 import SavedAnalysisControl from '../saved-analysis-control';
 
 import { Tip } from '$components/common/tip';
-import { resourceNotFound } from '$components/uhoh';
-import { thematicAnalysisPath } from '$utils/routes';
-import { useThematicArea } from '$utils/thematics';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { useMediaQuery } from '$utils/use-media-query';
 
@@ -42,9 +39,7 @@ export default function PageHeroActions({
   datasetsLayers,
   aoi
 }: PageHeroActionsProps) {
-  const thematic = useThematicArea();
   const { isLargeUp } = useMediaQuery();
-  if (!thematic) throw resourceNotFound();
 
   const analysisParamsQs = useMemo(() => {
     if (!start || !end || !datasetsLayers || !aoi) return '';
@@ -57,7 +52,6 @@ export default function PageHeroActions({
   }, [start, end, datasetsLayers, aoi]);
 
   const { onGenerateClick } = useSavedSettings({
-    thematicAreaId: thematic.data.id,
     analysisParamsQs,
     params: {
       start,
@@ -90,7 +84,7 @@ export default function PageHeroActions({
       {!isNewAnalysis && (
         <Button
           forwardedAs={Link}
-          to={`${thematicAnalysisPath(thematic)}/results${location.search}`}
+          to={`/analysis/results${location.search}`}
           type='button'
           size={size}
           variation='achromic-outline'
@@ -120,7 +114,7 @@ export default function PageHeroActions({
           forwardedAs={Link}
           variation='achromic-outline'
           size={size}
-          to={`${thematicAnalysisPath(thematic)}/results${analysisParamsQs}`}
+          to={`/analysis/results${analysisParamsQs}`}
           onClick={onGenerateClick}
         >
           <CollecticonTickSmall /> Generate
@@ -129,10 +123,7 @@ export default function PageHeroActions({
 
       <VerticalDivider variation='light' />
 
-      <SavedAnalysisControl
-        size={size}
-        urlBase={thematicAnalysisPath(thematic)}
-      />
+      <SavedAnalysisControl size={size} urlBase='/analysis' />
     </>
   );
 }
