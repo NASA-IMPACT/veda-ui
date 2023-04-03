@@ -8,7 +8,7 @@ import { Card, CardList } from '$components/common/card';
 import EmptyHub from '$components/common/empty-hub';
 
 import { PageMainContent } from '$styles/page';
-import { thematicDiscoveriesPath } from '$utils/routes';
+import { DISCOVERIES_PATH, getDiscoveryPath } from '$utils/routes';
 
 /* eslint-disable-next-line fp/no-mutating-methods */
 const allDiscoveries = Object.values(discoveries)
@@ -43,10 +43,10 @@ function Discoveries() {
               <li key={t.id}>
                 <Card
                   linkLabel='View more'
-                  linkTo={`${thematicDiscoveriesPath(t.thematics[0])}/${t.id}`}
+                  linkTo={getDiscoveryPath(t)}
                   title={t.name}
                   parentName='Discovery'
-                  parentTo={thematicDiscoveriesPath(t.thematics[0])}
+                  parentTo={DISCOVERIES_PATH}
                   description={t.description}
                   date={t.pubDate ? new Date(t.pubDate) : undefined}
                   imgSrc={t.media?.src}

@@ -5,8 +5,8 @@ import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import RelatedContent from '$components/common/related-content';
+import { DISCOVERIES_PATH } from '$utils/routes';
 import { useThematicArea, useThematicAreaDiscovery } from '$utils/thematics';
-import { thematicDiscoveriesPath } from '$utils/routes';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
@@ -27,7 +27,7 @@ function DiscoveriesSingle() {
         localNavProps={{
           parentName: 'Discovery',
           parentLabel: 'Discoveries',
-          parentTo: thematicDiscoveriesPath(thematic),
+          parentTo: DISCOVERIES_PATH,
           items: thematic.data.discoveries,
           currentId: discovery.data.id
         }}

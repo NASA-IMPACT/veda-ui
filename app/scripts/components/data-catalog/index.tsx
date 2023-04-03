@@ -8,7 +8,7 @@ import { Card, CardList } from '$components/common/card';
 import EmptyHub from '$components/common/empty-hub';
 
 import { PageMainContent } from '$styles/page';
-import { thematicDatasetsPath } from '$utils/routes';
+import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 
 /* eslint-disable-next-line fp/no-mutating-methods */
 const allDatasets = Object.values(datasets)
@@ -39,10 +39,10 @@ function DataCatalog() {
                 <Card
                   cardType='cover'
                   linkLabel='View more'
-                  linkTo={`${thematicDatasetsPath(t.thematics[0])}/${t.id}`}
+                  linkTo={getDatasetPath(t)}
                   title={t.name}
                   parentName='Dataset'
-                  parentTo={thematicDatasetsPath(t.thematics[0])}
+                  parentTo={DATASETS_PATH}
                   description={t.description}
                   imgSrc={t.media?.src}
                   imgAlt={t.media?.alt}

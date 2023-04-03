@@ -37,6 +37,7 @@ import { PageMainContent } from '$styles/page';
 import { formatDateRange } from '$utils/date';
 import { pluralize } from '$utils/pluralize';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
+import { ANALYSIS_PATH, ANALYSIS_RESULTS_PATH } from '$utils/routes';
 
 const ChartCardList = styled(CardList)`
   > li {
@@ -180,7 +181,7 @@ export default function AnalysisResults() {
   }, [availableDomain]);
 
   if (errors?.length) {
-    return <Navigate to='/analysis' replace />;
+    return <Navigate to={ANALYSIS_PATH} replace />;
   }
 
   return (
@@ -199,7 +200,7 @@ export default function AnalysisResults() {
           <>
             <Button
               forwardedAs={Link}
-              to={`/analysis/${analysisParamsQs}`}
+              to={`${ANALYSIS_PATH}${analysisParamsQs}`}
               size={size}
               variation='achromic-outline'
             >
@@ -208,7 +209,7 @@ export default function AnalysisResults() {
 
             <VerticalDivider variation='light' />
 
-            <SavedAnalysisControl size={size} urlBase='/analysis/results' />
+            <SavedAnalysisControl size={size} urlBase={ANALYSIS_RESULTS_PATH} />
           </>
         )}
       />

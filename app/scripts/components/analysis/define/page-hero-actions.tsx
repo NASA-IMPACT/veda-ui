@@ -17,6 +17,7 @@ import SavedAnalysisControl from '../saved-analysis-control';
 import { Tip } from '$components/common/tip';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { useMediaQuery } from '$utils/use-media-query';
+import { ANALYSIS_PATH, ANALYSIS_RESULTS_PATH } from '$utils/routes';
 
 const SaveButton = composeVisuallyDisabled(Button);
 
@@ -84,7 +85,7 @@ export default function PageHeroActions({
       {!isNewAnalysis && (
         <Button
           forwardedAs={Link}
-          to={`/analysis/results${location.search}`}
+          to={`${ANALYSIS_RESULTS_PATH}${location.search}`}
           type='button'
           size={size}
           variation='achromic-outline'
@@ -114,7 +115,7 @@ export default function PageHeroActions({
           forwardedAs={Link}
           variation='achromic-outline'
           size={size}
-          to={`/analysis/results${analysisParamsQs}`}
+          to={`${ANALYSIS_RESULTS_PATH}${analysisParamsQs}`}
           onClick={onGenerateClick}
         >
           <CollecticonTickSmall /> Generate
@@ -123,7 +124,7 @@ export default function PageHeroActions({
 
       <VerticalDivider variation='light' />
 
-      <SavedAnalysisControl size={size} urlBase='/analysis' />
+      <SavedAnalysisControl size={size} urlBase={ANALYSIS_PATH} />
     </>
   );
 }

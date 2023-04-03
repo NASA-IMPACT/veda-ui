@@ -9,7 +9,7 @@ import EmptyHub from '$components/common/empty-hub';
 
 import { PageMainContent } from '$styles/page';
 import { useThematicArea } from '$utils/thematics';
-import { thematicDatasetsPath } from '$utils/routes';
+import { DATASETS_PATH } from '$utils/routes';
 
 function DatasetsHub() {
   const thematic = useThematicArea();
@@ -37,7 +37,7 @@ function DatasetsHub() {
                   linkTo={t.id}
                   title={t.name}
                   parentName='Dataset'
-                  parentTo={thematicDatasetsPath(thematic)}
+                  parentTo={DATASETS_PATH}
                   description={t.description}
                   imgSrc={t.media.src}
                   imgAlt={t.media.alt}

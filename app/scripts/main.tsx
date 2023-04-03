@@ -49,6 +49,13 @@ const DevseedUiThemeProvider = DsTp as any;
 
 // Contexts
 import { ReactQueryProvider } from '$context/react-query';
+import {
+  ABOUT_PATH,
+  ANALYSIS_PATH,
+  ANALYSIS_RESULTS_PATH,
+  DATASETS_PATH,
+  DISCOVERIES_PATH
+} from '$utils/routes';
 
 const composingComponents = [
   // Add contexts here.
@@ -113,12 +120,15 @@ function Root() {
                 {hasSeveralThematicAreas && (
                   <>
                     <Route index element={<RootHome />} />
-                    <Route path='about' element={<RootAbout />} />
-                    <Route path='data-catalog' element={<DataCatalog />} />
-                    <Route path='discoveries' element={<RootDiscoveries />} />
-                    <Route path='analysis' element={<Analysis />} />
+                    <Route path={ABOUT_PATH} element={<RootAbout />} />
+                    <Route path={DATASETS_PATH} element={<DataCatalog />} />
                     <Route
-                      path='analysis/results'
+                      path={DISCOVERIES_PATH}
+                      element={<RootDiscoveries />}
+                    />
+                    <Route path={ANALYSIS_PATH} element={<Analysis />} />
+                    <Route
+                      path={ANALYSIS_RESULTS_PATH}
                       element={<AnalysisResults />}
                     />
                     <Route path='development' element={<RootDevelopment />} />
@@ -130,15 +140,15 @@ function Root() {
                 )}
 
                 <Route
-                  path='/discoveries/:discoveryId'
+                  path={`/${DISCOVERIES_PATH}/:discoveryId`}
                   element={<DiscoveriesSingle />}
                 />
                 <Route
-                  path='/data-catalog/:datasetId'
+                  path={`${DATASETS_PATH}/:datasetId`}
                   element={<DatasetsOverview />}
                 />
                 <Route
-                  path='/data-catalog/:datasetId/explore'
+                  path={`${DATASETS_PATH}/:datasetId/explore`}
                   element={<DatasetsExplore />}
                 />
 
@@ -152,7 +162,7 @@ function Root() {
                   {/* TODO : Redirect to discoveries with filters preset to thematic? */}
                   <Route
                     path='discoveries'
-                    element={<Navigate replace to='/discoveries' />}
+                    element={<Navigate replace to={DISCOVERIES_PATH} />}
                   />
                   <Route
                     path='discoveries/:discoveryId'

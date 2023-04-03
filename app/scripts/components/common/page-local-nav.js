@@ -2,7 +2,6 @@ import React from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 import { Link, NavLink, useMatch } from 'react-router-dom';
-import vedaThematics from 'veda/thematics';
 
 import {
   glsp,
@@ -23,7 +22,7 @@ import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import DropdownScrollable from './dropdown-scrollable';
 
 import { variableGlsp } from '$styles/variable-utils';
-import { datasetExplorePath, datasetOverviewPath } from '$utils/routes';
+import { getDatasetPath, getDatasetExplorePath } from '$utils/routes';
 
 const PageLocalNavSelf = styled.nav`
   position: sticky;
@@ -169,10 +168,7 @@ const SectionLink = styled(LocalMenuLink)`
 `;
 
 // When there's only w thematic are, we don't use :thematicId.
-const pagePath =
-  vedaThematics.length > 1
-    ? '/:thematicId/datasets/:dataId/:page'
-    : '/datasets/:dataId/:page';
+const pagePath = '/datasets/:dataId/:page';
 
 function PageLocalNav(props) {
   const { localMenuCmp, parentName, parentLabel, parentTo, items, currentId } =
@@ -250,18 +246,18 @@ PageLocalNav.propTypes = {
 };
 
 export function DatasetsLocalMenu(props) {
-  const { thematic, dataset } = props;
+  const { dataset } = props;
 
   return (
     <NavBlock>
       <LocalMenu>
         <li>
-          <LocalMenuLink to={datasetOverviewPath(thematic, dataset)} end>
+          <LocalMenuLink to={getDatasetPath(dataset.data)} end>
             Overview
           </LocalMenuLink>
         </li>
         <li>
-          <LocalMenuLink to={datasetExplorePath(thematic, dataset)} end>
+          <LocalMenuLink to={getDatasetExplorePath(dataset.data)} end>
             Exploration
           </LocalMenuLink>
         </li>
@@ -271,6 +267,5 @@ export function DatasetsLocalMenu(props) {
 }
 
 DatasetsLocalMenu.propTypes = {
-  thematic: T.object,
   dataset: T.object
 };

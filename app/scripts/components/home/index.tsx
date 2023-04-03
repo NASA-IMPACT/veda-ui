@@ -13,17 +13,18 @@ import { resourceNotFound } from '$components/uhoh';
 import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
-import { thematicDatasetsPath, thematicDiscoveriesPath } from '$utils/routes';
 import { useThematicArea } from '$utils/thematics';
 import Pluralize from '$utils/pluralize';
 import { zeroPad } from '$utils/format';
 import { VarHeading } from '$styles/variable-components';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
+import { PageLead, PageMainContent, PageMainTitle } from '$styles/page';
 import {
-  PageLead,
-  PageMainContent,
-  PageMainTitle
-} from '$styles/page';
+  DATASETS_PATH,
+  DISCOVERIES_PATH,
+  getDatasetPath,
+  getDiscoveryPath
+} from '$utils/routes';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
@@ -63,21 +64,21 @@ const StatsListValue = styled(VarHeading).attrs({
   grid-row: 2;
 `;
 
-function getDiscoveryRelatedLinks(arr, thematic) {
+function getDiscoveryRelatedLinks(arr) {
   return arr.map((d) => {
     return {
       ...d,
-      linkTo: `${thematicDiscoveriesPath(thematic)}/${d.id}`,
-      parentTo: thematicDiscoveriesPath(thematic)
+      linkTo: getDiscoveryPath(d),
+      parentTo: DISCOVERIES_PATH
     };
   });
 }
-function getDatasetRelatedLinks(arr, thematic) {
+function getDatasetRelatedLinks(arr) {
   return arr.map((d) => {
     return {
       ...d,
-      linkTo: `${thematicDatasetsPath(thematic)}/${d.id}`,
-      parentTo: thematicDatasetsPath(thematic)
+      linkTo: getDatasetPath(d),
+      parentTo: DATASETS_PATH
     };
   });
 }
@@ -95,8 +96,7 @@ function Home() {
       return d.featuredOn?.find(
         (thematicId) => thematicId === thematic.data.id
       );
-    }),
-    thematic
+    })
   );
 
   const featuredDiscoveries = getDiscoveryRelatedLinks(
@@ -104,8 +104,7 @@ function Home() {
       return d.featuredOn?.find(
         (thematicId) => thematicId === thematic.data.id
       );
-    }),
-    thematic
+    })
   );
 
   // TO DO: Ideally, these featured contents should be in carousel.
@@ -116,7 +115,7 @@ function Home() {
     : // When there is no dataset for this thematic area at all, just return an empty array
     thematic.data.datasets.length
     ? /* eslint-disable-next-line fp/no-mutating-methods */
-      getDatasetRelatedLinks([[...thematic.data.datasets].sort()[0]], thematic)
+      getDatasetRelatedLinks([[...thematic.data.datasets].sort()[0]])
     : [];
 
   // When there are no featured discoveries, stub with the latest one
@@ -124,16 +123,13 @@ function Home() {
     ? featuredDiscoveries
     : // When there is no discovery for this thematic area at all, just return an empty array
     thematic.data.discoveries.length
-    ? getDiscoveryRelatedLinks(
-        [
-          /* eslint-disable-next-line fp/no-mutating-methods */
-          [...thematic.data.discoveries].sort(
-            (a, b) =>
-              new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
-          )[0]
-        ],
-        thematic
-      )
+    ? getDiscoveryRelatedLinks([
+        /* eslint-disable-next-line fp/no-mutating-methods */
+        [...thematic.data.discoveries].sort(
+          (a, b) =>
+            new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
+        )[0]
+      ])
     : [];
 
   const mainDatasetCopy = featuredDatasets.length
@@ -203,7 +199,7 @@ function Home() {
             <FoldTitle>{mainDiscoveryCopy}</FoldTitle>
             <Button
               forwardedAs={Link}
-              to='discoveries'
+              to={DISCOVERIES_PATH}
               size='large'
               variation='primary-outline'
             >
@@ -220,7 +216,7 @@ function Home() {
             <FoldTitle>{mainDatasetCopy}</FoldTitle>
             <Button
               forwardedAs={Link}
-              to='datasets'
+              to={DATASETS_PATH}
               size='large'
               variation='primary-outline'
             >
