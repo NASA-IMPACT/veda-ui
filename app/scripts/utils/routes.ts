@@ -14,11 +14,11 @@ export const ANALYSIS_PATH = '/analysis';
 export const ANALYSIS_RESULTS_PATH = '/analysis/results';
 
 export const getDiscoveryPath = (d: DiscoveryData | string) =>
-  `${DISCOVERIES_PATH}/${(d as DiscoveryData).id || d}`;
+  `${DISCOVERIES_PATH}/${typeof d === 'string' ? d : d.id}`;
 export const getDatasetPath = (d: DatasetData | string) =>
-  `${DATASETS_PATH}/${(d as DatasetData).id || d}`;
+  `${DATASETS_PATH}/${typeof d === 'string' ? d : d.id}`;
 export const getDatasetExplorePath = (d: DatasetData | string) =>
-  `${DATASETS_PATH}/${(d as DatasetData).id || d}/explore`;
+  `${DATASETS_PATH}/${typeof d === 'string' ? d : d.id}/explore`;
 
 export const thematicRootPath = (thematic: ThematicOrString, path = '') => {
   const t = typeof thematic === 'string' ? thematic : thematic.data.id;
