@@ -56,7 +56,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
       try {
         onStatusChange?.({ status: S_LOADING, id });
         const data = await requestQuickCache({
-          url: `${process.env.API_DEV_STAC_ENDPOINT}/collections/${stacCol}`,
+          url: `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`,
           method: 'GET',
           controller
         });

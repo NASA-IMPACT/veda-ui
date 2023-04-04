@@ -33,13 +33,14 @@ const fetchLayerById = async (
 ): Promise<STACLayerData | Error> => {
   const { type, stacCol } = layer;
 
+  const { data } = await axios.get(
+    `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
+  );
+
   // TODO: Normalize API data structure
   // For the time being the vector and raster sources have different api
   // endpoints, and different properties to get data from.
   if (type === 'vector') {
-    const { data } = await axios.get(
-      `${process.env.API_DEV_STAC_ENDPOINT}/collections/${stacCol}`
-    );
     const featuresApiEndpoint = data.links.find((l) => l.rel === 'child').href;
     const { data: featuresApiData } = await axios.get(featuresApiEndpoint);
 
@@ -52,9 +53,6 @@ const fetchLayerById = async (
     };
   }
 
-  const { data } = await axios.get(
-    `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
-  );
   return {
     timeseries: {
       isPeriodic: data['dashboard:is_periodic'],
