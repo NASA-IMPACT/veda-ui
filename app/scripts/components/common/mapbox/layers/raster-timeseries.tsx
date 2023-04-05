@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import qs from 'qs';
 import mapboxgl, {
   AnyLayer,
@@ -18,12 +11,13 @@ import mapboxgl, {
 } from 'mapbox-gl';
 import { featureCollection, point } from '@turf/helpers';
 
-import { StylesContext } from './styles';
+import { useMapStyle } from './styles';
 import {
   checkFitBoundsFromLayer,
   getFilterPayload,
   getMergedBBox,
-  requestQuickCache
+  requestQuickCache,
+  useLayerInteraction
 } from './utils';
 import {
   ActionStatus,
@@ -77,7 +71,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     isHidden
   } = props;
 
-  const { updateStyle } = useContext(StylesContext);
+  const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
 
@@ -164,11 +158,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const responseData = await requestQuickCache(
-          `${process.env.API_STAC_ENDPOINT}/search`,
+        const responseData = await requestQuickCache({
+          url: `${process.env.API_STAC_ENDPOINT}/search`,
           payload,
           controller
-        );
+        });
 
         /* eslint-disable no-console */
         LOG &&
@@ -252,11 +246,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const responseData = await requestQuickCache(
-          `${process.env.API_RASTER_ENDPOINT}/mosaic/register`,
+        const responseData = await requestQuickCache({
+          url: `${process.env.API_RASTER_ENDPOINT}/mosaic/register`,
           payload,
           controller
-        );
+        });
 
         setMosaicUrl(responseData.links[1].href);
 
@@ -417,32 +411,33 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   );
 
   //
-  // Listen to mouse events on the markers layer
+  // Cleanup layers on unmount.
   //
   useEffect(() => {
-    const pointsSourceId = `${id}-points`;
-
-    const onPointsClick = (e) => {
-      if (!e.features.length) return;
-      const bounds = JSON.parse(e.features[0].properties.bounds);
-      mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
-    };
-    const onPointsEnter = () => {
-      mapInstance.getCanvas().style.cursor = 'pointer';
-    };
-    const onPointsLeave = () => {
-      mapInstance.getCanvas().style.cursor = '';
-    };
-    mapInstance.on('click', pointsSourceId, onPointsClick);
-    mapInstance.on('mouseenter', pointsSourceId, onPointsEnter);
-    mapInstance.on('mouseleave', pointsSourceId, onPointsLeave);
-
     return () => {
-      mapInstance.off('click', pointsSourceId, onPointsClick);
-      mapInstance.off('mouseenter', pointsSourceId, onPointsEnter);
-      mapInstance.off('mouseleave', pointsSourceId, onPointsLeave);
+      updateStyle({
+        generatorId: 'raster-timeseries',
+        sources: {},
+        layers: []
+      });
     };
-  }, [id, mapInstance]);
+  }, [updateStyle]);
+
+  //
+  // Listen to mouse events on the markers layer
+  //
+  const onPointsClick = useCallback(
+    (features) => {
+      const bounds = JSON.parse(features[0].properties.bounds);
+      mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
+    },
+    [mapInstance]
+  );
+  useLayerInteraction({
+    layerId: `${id}-points`,
+    mapInstance,
+    onClick: onPointsClick
+  });
 
   //
   // FitBounds when needed
