@@ -1,5 +1,11 @@
 import { AnyLayer, AnySourceImpl, Style } from 'mapbox-gl';
-import React, { createContext, useCallback, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
 
 export type ExtendedLayer = AnyLayer & {
   metadata?: {
@@ -16,7 +22,7 @@ export interface GeneratorParams {
 
 interface StylesContextType {
   updateStyle: (params: GeneratorParams) => void;
-  style?: Style
+  style?: Style;
 }
 
 export const StylesContext = createContext<StylesContextType>({
@@ -102,6 +108,7 @@ export function Styles({
   const [stylesData, setStylesData] = useState<Record<string, GeneratorParams>>(
     {}
   );
+
   const [style, setStyle] = useState<Style | undefined>();
   const updateStyle = useCallback(
     (params: GeneratorParams) => {
@@ -112,14 +119,21 @@ export function Styles({
     },
     [setStylesData]
   );
+
   useEffect(() => {
     const style = generateStyle(stylesData);
     onStyleUpdate?.(style as any);
     setStyle(style as any);
   }, [stylesData, onStyleUpdate]);
+
   return (
     <StylesContext.Provider value={{ updateStyle, style }}>
       {children}
     </StylesContext.Provider>
   );
 }
+
+export const useMapStyle = () => {
+  const { updateStyle, style } = useContext(StylesContext);
+  return { updateStyle, style };
+};

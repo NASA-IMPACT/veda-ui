@@ -1,0 +1,30 @@
+---
+id: fire
+name: 'EIS Fire'
+description: "EIS Fire."
+media:
+  src: ::file ./no2--dataset-cover.jpg
+  alt: Power plant shooting steam at the sky.
+  author:
+    name: Mick Truyts
+    url: https://unsplash.com/photos/x6WQeNYJC1w
+thematics:
+  - covid-19
+layers:
+  - id: eis_fire_fireline
+    stacCol: eis_fire_fireline
+    name: Fire
+    type: vector
+    description: eis_fire_fireline
+    zoomExtent:
+      - 5
+      - 20
+  - id: eis_fire_perimeter
+    stacCol: eis_fire_perimeter
+    name: Fire Perimeter
+    type: vector
+    description: eis_fire_perimeter
+    zoomExtent:
+      - 5
+      - 20
+---

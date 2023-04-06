@@ -104,7 +104,7 @@ export const allAvailableDatasetsLayers: DatasetLayer[] = uniqBy(
     .map((dataset) => (dataset as VedaDatum<DatasetData>).data.layers)
     .flat(),
   'stacCol'
-);
+).filter(d => d.type !== 'vector');
 
 export default function Analysis() {
 

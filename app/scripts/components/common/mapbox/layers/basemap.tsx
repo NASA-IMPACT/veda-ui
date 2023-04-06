@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { AnySourceImpl, Layer, Style } from 'mapbox-gl';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   BasemapId,
   BASEMAP_STYLES,
   getStyleUrl,
   GROUPS_BY_OPTION
 } from '../map-options/basemaps';
-import { ExtendedLayer, StylesContext } from './styles';
+import { ExtendedLayer, useMapStyle } from './styles';
 
 interface BasemapProps {
   basemapStyleId?: BasemapId;
@@ -15,8 +15,12 @@ interface BasemapProps {
   boundariesOption?: boolean;
 }
 
-export function Basemap({basemapStyleId = 'satellite', labelsOption = true, boundariesOption = true}: BasemapProps) {
-  const { updateStyle } = useContext(StylesContext);
+export function Basemap({
+  basemapStyleId = 'satellite',
+  labelsOption = true,
+  boundariesOption = true
+}: BasemapProps) {
+  const { updateStyle } = useMapStyle();
 
   const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
 

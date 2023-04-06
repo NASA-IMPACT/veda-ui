@@ -1,5 +1,8 @@
+import React, { useEffect } from 'react';
+import { Feature } from 'geojson';
+import mapboxgl from 'mapbox-gl';
 import { defaultsDeep } from 'lodash';
-import axios from 'axios';
+import axios, { Method } from 'axios';
 import {
   eachDayOfInterval,
   eachMonthOfInterval,
@@ -16,12 +19,10 @@ import {
   DatasetDatumReturnType,
   DatasetLayerCompareNormalized
 } from 'veda/thematics';
-import mapboxgl from 'mapbox-gl';
-import React from 'react';
 import { MapLayerRasterTimeseries, StacFeature } from './raster-timeseries';
-import { userTzDate2utcString } from '$utils/date';
+import { MapLayerVectorTimeseries } from './vector-timeseries';
 
-import { utcString2userTzDate } from '$utils/date';
+import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { HintedError } from '$utils/hinted-error';
@@ -32,6 +33,7 @@ export const getLayerComponent = (
 ): React.FunctionComponent<any> | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
+    if (layerType === 'vector') return MapLayerVectorTimeseries;
   }
 
   return null;
@@ -274,16 +276,26 @@ export function resolveLayerTemporalExtent(
 // switching can happen several times, we cache the api response using the
 // request params as key.
 const quickCache = new Map<string, any>();
-export async function requestQuickCache(
-  url: string,
+interface RequestQuickCacheParams {
+  url: string;
+  method?: Method;
+  payload?: any;
+  controller: AbortController;
+}
+export async function requestQuickCache({
+  url,
   payload,
-  controller: AbortController
-) {
-  const key = `${url}${JSON.stringify(payload)}`;
+  controller,
+  method = 'post'
+}: RequestQuickCacheParams) {
+  const key = `${method}:${url}${JSON.stringify(payload)}`;
 
   // No cache found, make request.
   if (!quickCache.has(key)) {
-    const response = await axios.post(url, payload, {
+    const response = await axios({
+      url,
+      method,
+      data: payload,
       signal: controller.signal
     });
     quickCache.set(key, response.data);
@@ -358,4 +370,40 @@ export function checkFitBoundsFromLayer(
   // only fitBounds if layer extent is smaller than viewport extent (ie zoom to area of interest),
   // or if layer extent does not overlap at all with viewport extent (ie pan to area of interest)
   return layerExtentSmaller || isOutside;
+}
+
+interface LayerInteractionHookOptions {
+  layerId: string;
+  mapInstance: mapboxgl.Map;
+  onClick: (features: Feature<any>[]) => void;
+}
+export function useLayerInteraction({
+  layerId,
+  mapInstance,
+  onClick
+}: LayerInteractionHookOptions) {
+  useEffect(() => {
+    const onPointsClick = (e) => {
+      if (!e.features.length) return;
+      onClick(e.features);
+    };
+
+    const onPointsEnter = () => {
+      mapInstance.getCanvas().style.cursor = 'pointer';
+    };
+
+    const onPointsLeave = () => {
+      mapInstance.getCanvas().style.cursor = '';
+    };
+
+    mapInstance.on('click', layerId, onPointsClick);
+    mapInstance.on('mouseenter', layerId, onPointsEnter);
+    mapInstance.on('mouseleave', layerId, onPointsLeave);
+
+    return () => {
+      mapInstance.off('click', layerId, onPointsClick);
+      mapInstance.off('mouseenter', layerId, onPointsEnter);
+      mapInstance.off('mouseleave', layerId, onPointsLeave);
+    };
+  }, [layerId, mapInstance, onClick]);
 }
