@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, MouseEvent, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  MouseEvent,
+  useRef
+} from 'react';
 import styled from 'styled-components';
 import { uniqBy } from 'lodash';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
@@ -15,18 +21,16 @@ import {
   CollecticonEllipsisVertical
 } from '@devseed-ui/collecticons';
 
-import { DatasetLayer } from 'veda/thematics';
+import { datasets, DatasetLayer, VedaDatum, DatasetData } from 'veda/thematics';
 import { useAnalysisParams } from '../results/use-analysis-params';
 import AoiSelector from './aoi-selector';
 import PageHeroActions from './page-hero-actions';
 import { useStacSearch } from './use-stac-search';
-import { useThematicArea } from '$utils/thematics';
 import { variableGlsp } from '$styles/variable-utils';
 
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
-import { resourceNotFound } from '$components/uhoh';
 import {
   Fold,
   FoldHeader,
@@ -45,7 +49,6 @@ import {
 } from '$utils/date';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { MapboxMapRef } from '$components/common/mapbox';
-
 
 const FormBlock = styled.div`
   display: flex;
@@ -96,15 +99,22 @@ export const Note = styled.div`
   }
 `;
 
+export const allAvailableDatasetsLayers: DatasetLayer[] = uniqBy(
+  Object.values(datasets)
+    .map((dataset) => (dataset as VedaDatum<DatasetData>).data.layers)
+    .flat(),
+  'stacCol'
+).filter(d => d.type !== 'vector');
+
 export default function Analysis() {
-  const thematic = useThematicArea();
-  if (!thematic) throw resourceNotFound();
 
   const { params, setAnalysisParam } = useAnalysisParams();
   const { start, end, datasetsLayers, aoi, errors } = params;
 
   const mapRef = useRef<MapboxMapRef>(null);
-  const { aoi: aoiDrawState, onAoiEvent } = useAoiControls(mapRef, { drawing: true });
+  const { aoi: aoiDrawState, onAoiEvent } = useAoiControls(mapRef, {
+    drawing: true
+  });
 
   // If there are errors in the url parameters it means that this should be
   // treated as a new analysis. If the parameters are all there and correct, the
@@ -143,16 +153,6 @@ export default function Analysis() {
     [setAnalysisParam]
   );
 
-  const allAvailableDatasetsLayers: DatasetLayer[] = useMemo(
-    () =>
-      uniqBy(
-        thematic.data.datasets.map((dataset) => dataset.layers).flat(),
-        'stacCol'
-      )
-      // TODO: Remove filter once vector datasets are supported in analysis.
-      .filter(d => d.type !== 'vector'),
-    [thematic.data.datasets]
-  );
   const selectedDatasetLayerIds = datasetsLayers?.map((layer) => layer.id);
 
   const onDatasetLayerChange = useCallback(
@@ -171,7 +171,7 @@ export default function Analysis() {
       }
       setAnalysisParam('datasetsLayers', newDatasetsLayers);
     },
-    [setAnalysisParam, allAvailableDatasetsLayers, datasetsLayers]
+    [setAnalysisParam, datasetsLayers]
   );
 
   const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
@@ -222,7 +222,6 @@ export default function Analysis() {
       <LayoutProps
         title='Analysis'
         description='Generate timeseries data for your area of interest.'
-        thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
         title={isNewAnalysis ? 'Start analysis' : 'Refine analysis'}

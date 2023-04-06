@@ -10,7 +10,6 @@ import {
   useParams
 } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
-import vedaThematics from 'veda/thematics';
 
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
@@ -32,10 +31,10 @@ const RootDiscoveries = lazy(() => import('$components/root-discoveries'));
 const DataCatalog = lazy(() => import('$components/data-catalog'));
 
 const Home = lazy(() => import('$components/home'));
-const DiscoveriesHub = lazy(() => import('$components/discoveries/hub'));
+// const DiscoveriesHub = lazy(() => import('$components/discoveries/hub'));
 const DiscoveriesSingle = lazy(() => import('$components/discoveries/single'));
 
-const DatasetsHub = lazy(() => import('$components/datasets/hub'));
+// const DatasetsHub = lazy(() => import('$components/datasets/hub'));
 const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
@@ -49,6 +48,13 @@ const DevseedUiThemeProvider = DsTp as any;
 
 // Contexts
 import { ReactQueryProvider } from '$context/react-query';
+import {
+  ABOUT_PATH,
+  ANALYSIS_PATH,
+  ANALYSIS_RESULTS_PATH,
+  DATASETS_PATH,
+  DISCOVERIES_PATH
+} from '$utils/routes';
 
 const composingComponents = [
   // Add contexts here.
@@ -56,8 +62,6 @@ const composingComponents = [
   ReactQueryProvider,
   LayoutRootContextProvider
 ];
-
-const hasSeveralThematicAreas = vedaThematics.length > 1;
 
 function ScrollTop() {
   const { pathname } = useLocation();
@@ -68,12 +72,22 @@ function ScrollTop() {
 }
 
 function ThematicAboutRedirect() {
-  const params = useParams();
-  return hasSeveralThematicAreas ? (
-    <Navigate replace to={`/${params.thematicId}`} />
-  ) : (
-    <RootAbout />
-  );
+  const { thematicId } = useParams();
+  return <Navigate replace to={`/${thematicId}`} />;
+}
+
+function ThematicDiscoveryRedirect() {
+  const { discoveryId } = useParams();
+  return <Navigate replace to={`/discoveries/${discoveryId}`} />;
+}
+
+function ThematicDatasetRedirect({ explore = false }: { explore?: boolean }) {
+  const { datasetId } = useParams();
+  let url = `/data-catalog/${datasetId}`;
+  if (explore) {
+    url += '/explore';
+  }
+  return <Navigate replace to={url} />;
 }
 
 // Root component.
@@ -96,43 +110,74 @@ function Root() {
           <Suspense fallback={<PageLoading />}>
             <Routes>
               <Route path='/' element={<LayoutRoot />}>
-                {hasSeveralThematicAreas && (
-                  <>
-                    <Route index element={<RootHome />} />
-                    <Route path='about' element={<RootAbout />} />
-                    <Route path='data-catalog' element={<DataCatalog />} />
-                    <Route path='discoveries' element={<RootDiscoveries />} />
-                    <Route path='development' element={<RootDevelopment />} />
-                  </>
-                )}
+                <Route index element={<RootHome />} />
+                <Route path={ABOUT_PATH} element={<RootAbout />} />
+                <Route path={DATASETS_PATH} element={<DataCatalog />} />
+                <Route
+                  path={`${DATASETS_PATH}/:datasetId`}
+                  element={<DatasetsOverview />}
+                />
+                <Route
+                  path={`${DATASETS_PATH}/:datasetId/explore`}
+                  element={<DatasetsExplore />}
+                />
+                <Route path={DISCOVERIES_PATH} element={<RootDiscoveries />} />
+                <Route
+                  path={`${DISCOVERIES_PATH}/:discoveryId`}
+                  element={<DiscoveriesSingle />}
+                />
+                <Route path={ANALYSIS_PATH} element={<Analysis />} />
+                <Route
+                  path={ANALYSIS_RESULTS_PATH}
+                  element={<AnalysisResults />}
+                />
+                <Route path='development' element={<RootDevelopment />} />
 
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />
                 )}
 
-                <Route path={hasSeveralThematicAreas ? ':thematicId' : '/'}>
+                {/* The following routes are redirect from the legacy thematic areas structure */}
+                <Route path=':thematicId'>
+                  {/* TODO : Redirect to discoveries with filters preset to thematic? */}
+                  {/* TODO : Enable redirection when we want to get rid of thematic area index pages */}
+                  {/* <Route index element={<Navigate replace to='/' />} /> */}
                   <Route index element={<Home />} />
-                  <Route path='discoveries' element={<DiscoveriesHub />} />{' '}
+
+                  {/* TODO : Redirect to discoveries with filters preset to thematic? */}
+                  <Route
+                    path='discoveries'
+                    element={<Navigate replace to={DISCOVERIES_PATH} />}
+                  />
                   <Route
                     path='discoveries/:discoveryId'
-                    element={<DiscoveriesSingle />}
+                    element={<ThematicDiscoveryRedirect />}
                   />
-                  <Route path='datasets' element={<DatasetsHub />} />
+
+                  {/* TODO : Redirect to data-catalog with filters preset to thematic? */}
+                  <Route
+                    path='datasets'
+                    element={<Navigate replace to='/data-catalog' />}
+                  />
                   <Route
                     path='datasets/:datasetId'
-                    element={<DatasetsOverview />}
+                    element={<ThematicDatasetRedirect />}
                   />
                   <Route
                     path='datasets/:datasetId/explore'
-                    element={<DatasetsExplore />}
+                    element={<ThematicDatasetRedirect explore />}
                   />
-                  <Route path='analysis' element={<Analysis />} />
+                  <Route
+                    path='analysis'
+                    element={<Navigate replace to='/analysis' />}
+                  />
                   <Route
                     path='analysis/results'
-                    element={<AnalysisResults />}
+                    element={<Navigate replace to='/analysis/results' />}
                   />
                   <Route path='about' element={<ThematicAboutRedirect />} />
                 </Route>
+
                 <Route path='*' element={<UhOh />} />
               </Route>
             </Routes>

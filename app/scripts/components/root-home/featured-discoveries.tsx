@@ -6,7 +6,7 @@ import { discoveries } from 'veda/thematics';
 import { Card } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle, FoldBody } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
-import { thematicDiscoveriesPath } from '$utils/routes';
+import { DISCOVERIES_PATH, getDiscoveryPath } from '$utils/routes';
 
 const FeaturedDiscoveryList = styled.ol`
   ${listReset()}
@@ -65,7 +65,6 @@ const featuredDiscoveries = Object.values(discoveries)
   .sort((a, b) => (new Date(a.pubDate) > new Date(b.pubDate) ? -1 : 1));
 
 function FeaturedDiscoveries() {
-
   return (
     <Fold>
       <FoldHeader>
@@ -75,18 +74,16 @@ function FeaturedDiscoveries() {
         {featuredDiscoveries.length ? (
           <FeaturedDiscoveryList>
             {featuredDiscoveries.map((d, i) => {
-              const discoveriesPath = thematicDiscoveriesPath(d.featuredOn![0]);
-
               return (
                 <li key={d.id}>
                   <Card
                     cardType='cover'
                     linkLabel='View more'
-                    linkTo={`${discoveriesPath}/${d.id}`}
+                    linkTo={getDiscoveryPath(d)}
                     title={d.name}
                     parentName='Discovery'
                     // Link to the first thematic area where it is featured.
-                    parentTo={discoveriesPath}
+                    parentTo={DISCOVERIES_PATH}
                     description={i === 0 ? d.description : undefined}
                     date={d.pubDate ? new Date(d.pubDate) : undefined}
                     imgSrc={d.media?.src}

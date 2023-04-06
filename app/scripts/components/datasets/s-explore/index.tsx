@@ -42,7 +42,7 @@ import {
 
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
 import { useMediaQuery } from '$utils/use-media-query';
-import { thematicDatasetsPath } from '$utils/routes';
+import { DATASETS_PATH } from '$utils/routes';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { useDatasetAsyncLayers } from '$context/layer-data';
@@ -472,12 +472,10 @@ function DatasetsExplore() {
         localNavProps={{
           parentName: 'Dataset',
           parentLabel: 'Datasets',
-          parentTo: thematicDatasetsPath(thematic),
+          parentTo: DATASETS_PATH,
           items: thematic.data.datasets,
           currentId: dataset.data.id,
-          localMenuCmp: (
-            <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
-          )
+          localMenuCmp: <DatasetsLocalMenu dataset={dataset} />
         }}
         hideFooter
       />

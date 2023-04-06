@@ -9,7 +9,7 @@ import { PageMainContent } from '$styles/page';
 import EmptyHub from '$components/common/empty-hub';
 
 import { useThematicArea } from '$utils/thematics';
-import { thematicDiscoveriesPath } from '$utils/routes';
+import { DISCOVERIES_PATH } from '$utils/routes';
 
 function DiscoveriesHub() {
   const thematic = useThematicArea();
@@ -39,7 +39,7 @@ function DiscoveriesHub() {
                   linkTo={t.id}
                   title={t.name}
                   parentName='Discovery'
-                  parentTo={thematicDiscoveriesPath(thematic)}
+                  parentTo={DISCOVERIES_PATH}
                   description={t.description}
                   date={t.pubDate ? new Date(t.pubDate) : undefined}
                   imgSrc={t.media.src}

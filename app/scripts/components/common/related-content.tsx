@@ -14,8 +14,10 @@ import {
 import { utcString2userTzDate } from '$utils/date';
 import {
   thematicRootPath,
-  thematicDatasetsPath,
-  thematicDiscoveriesPath
+  getDatasetPath,
+  getDiscoveryPath,
+  DISCOVERIES_PATH,
+  DATASETS_PATH
 } from '$utils/routes';
 import { Card, CardList } from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
@@ -65,13 +67,13 @@ function formatUrl(
       };
     case datasetString:
       return {
-        parentLink: thematicDatasetsPath(thematic),
-        link: `${thematicDatasetsPath(thematic)}/${id}`
+        parentLink: DATASETS_PATH,
+        link: getDatasetPath(id)
       };
     case discoveryString:
       return {
-        parentLink: thematicDiscoveriesPath(thematic),
-        link: `${thematicDiscoveriesPath(thematic)}/${id}`
+        parentLink: DISCOVERIES_PATH,
+        link: getDiscoveryPath(id)
       };
     default:
       throw Error('Something went wrong with parent data of related content.');

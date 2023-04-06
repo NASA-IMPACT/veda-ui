@@ -29,10 +29,11 @@ import UnscrollableBody from './unscrollable-body';
 import { variableGlsp } from '$styles/variable-utils';
 import { useThematicArea } from '$utils/thematics';
 import {
-  thematicAnalysisPath,
-  thematicDatasetsPath,
-  thematicDiscoveriesPath,
-  thematicRootPath
+  thematicRootPath,
+  DISCOVERIES_PATH,
+  DATASETS_PATH,
+  ANALYSIS_PATH,
+  ABOUT_PATH
 } from '$utils/routes';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
@@ -465,7 +466,7 @@ function PageHeader() {
                     </li>
                     <li>
                       <GlobalMenuLink
-                        to={thematicDiscoveriesPath(thematic)}
+                        to={DISCOVERIES_PATH}
                         onClick={closeNavOnClick}
                       >
                         Discoveries
@@ -473,7 +474,7 @@ function PageHeader() {
                     </li>
                     <li>
                       <GlobalMenuLink
-                        to={thematicDatasetsPath(thematic)}
+                        to={DATASETS_PATH}
                         onClick={closeNavOnClick}
                       >
                         Datasets
@@ -481,7 +482,7 @@ function PageHeader() {
                     </li>
                     <li>
                       <GlobalMenuLink
-                        to={thematicAnalysisPath(thematic)}
+                        to={ANALYSIS_PATH}
                         onClick={closeNavOnClick}
                       >
                         Analysis
@@ -500,7 +501,15 @@ function PageHeader() {
                     </li>
                     <li>
                       <GlobalMenuLink
-                        to='/data-catalog'
+                        to={DISCOVERIES_PATH}
+                        onClick={closeNavOnClick}
+                      >
+                        Discoveries
+                      </GlobalMenuLink>
+                    </li>
+                    <li>
+                      <GlobalMenuLink
+                        to={DATASETS_PATH}
                         onClick={closeNavOnClick}
                       >
                         Data Catalog
@@ -508,17 +517,17 @@ function PageHeader() {
                     </li>
                     <li>
                       <GlobalMenuLink
-                        to='/discoveries'
+                        to={ANALYSIS_PATH}
                         onClick={closeNavOnClick}
                       >
-                        Discoveries
+                        Analysis
                       </GlobalMenuLink>
                     </li>
                     <li>
                       <GoogleForm />
                     </li>
                     <li>
-                      <GlobalMenuLink to='/about' onClick={closeNavOnClick}>
+                      <GlobalMenuLink to={ABOUT_PATH} onClick={closeNavOnClick}>
                         About
                       </GlobalMenuLink>
                     </li>

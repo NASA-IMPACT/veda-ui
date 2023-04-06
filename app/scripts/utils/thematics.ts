@@ -21,11 +21,21 @@ export type ThematicItemFull = VedaDatum<VedaThematicListItem> | null;
  * @returns Object
  */
 export function useThematicArea(): ThematicItemFull {
-  const { thematicId } = useParams();
+  const { thematicId, discoveryId, datasetId } = useParams();
 
   // If there's only one thematic area, the app is setup with only one thematic
   // area, and therefore return the first one.
-  const tId = vedaThematics.length === 1 ? vedaThematics[0].id : thematicId;
+  let tId = vedaThematics.length === 1 ? vedaThematics[0].id : thematicId;
+
+  if (!tId) {
+    const discovery = discoveries[discoveryId ?? ''];
+    const dataset = datasets[datasetId ?? ''];
+    if (discovery) {
+      tId = discovery.data.thematics[0];
+    } else if (dataset) {
+      tId = dataset.data.thematics[0];
+    }
+  }
 
   return useMemo(() => {
     if (!tId) return null;

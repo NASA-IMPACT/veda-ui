@@ -42,7 +42,7 @@ import {
   getTimeDensityFormat
 } from '$components/common/chart/analysis/utils';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
-import { datasetOverviewPath } from '$utils/routes';
+import { getDatasetPath } from '$utils/routes';
 import { ThematicItemFull, useThematicArea } from '$utils/thematics';
 
 const InfoTipContent = styled.div`
@@ -105,7 +105,7 @@ const getDatasetOverviewPath = (
   );
 
   return dataset
-    ? datasetOverviewPath(thematic.data.id, dataset.id)
+    ? getDatasetPath(dataset)
     : '/';
 };
 

@@ -12,7 +12,7 @@ import RelatedContent from '$components/common/related-content';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
 
 import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
-import { datasetExplorePath, thematicDatasetsPath } from '$utils/routes';
+import { DATASETS_PATH, getDatasetExplorePath } from '$utils/routes';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
@@ -31,12 +31,10 @@ function DatasetsOverview() {
         localNavProps={{
           parentName: 'Dataset',
           parentLabel: 'Datasets',
-          parentTo: thematicDatasetsPath(thematic),
+          parentTo: DATASETS_PATH,
           items: thematic.data.datasets,
           currentId: dataset.data.id,
-          localMenuCmp: (
-            <DatasetsLocalMenu thematic={thematic} dataset={dataset} />
-          )
+          localMenuCmp: <DatasetsLocalMenu dataset={dataset} />
         }}
       />
 
@@ -49,7 +47,7 @@ function DatasetsOverview() {
               <PageActions>
                 <Button
                   forwardedAs={Link}
-                  to={datasetExplorePath(thematic, dataset)}
+                  to={getDatasetExplorePath(dataset.data)}
                   size='large'
                   variation='achromic-outline'
                 >

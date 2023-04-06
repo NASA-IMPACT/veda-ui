@@ -33,13 +33,11 @@ import {
   FoldBody
 } from '$components/common/fold';
 import PageHeroAnalysis from '$components/analysis/page-hero-analysis';
-import { resourceNotFound } from '$components/uhoh';
 import { PageMainContent } from '$styles/page';
-import { useThematicArea } from '$utils/thematics';
-import { thematicAnalysisPath } from '$utils/routes';
 import { formatDateRange } from '$utils/date';
 import { pluralize } from '$utils/pluralize';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
+import { ANALYSIS_PATH, ANALYSIS_RESULTS_PATH } from '$utils/routes';
 
 const ChartCardList = styled(CardList)`
   > li {
@@ -68,9 +66,6 @@ const AnalysisFoldHeader = styled(FoldHeader)`
 `;
 
 export default function AnalysisResults() {
-  const thematic = useThematicArea();
-  if (!thematic) throw resourceNotFound();
-
   const queryClient = useQueryClient();
   const [requestStatus, setRequestStatus] = useState<TimeseriesData[]>([]);
   const { params } = useAnalysisParams();
@@ -186,7 +181,7 @@ export default function AnalysisResults() {
   }, [availableDomain]);
 
   if (errors?.length) {
-    return <Navigate to={thematicAnalysisPath(thematic)} replace />;
+    return <Navigate to={ANALYSIS_PATH} replace />;
   }
 
   return (
@@ -194,7 +189,7 @@ export default function AnalysisResults() {
       <LayoutProps
         title='Analysis'
         description={descriptions.meta}
-        thumbnail={thematic.data.media?.src}
+        // thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
         title='Analysis'
@@ -205,7 +200,7 @@ export default function AnalysisResults() {
           <>
             <Button
               forwardedAs={Link}
-              to={`${thematicAnalysisPath(thematic)}${analysisParamsQs}`}
+              to={`${ANALYSIS_PATH}${analysisParamsQs}`}
               size={size}
               variation='achromic-outline'
             >
@@ -214,10 +209,7 @@ export default function AnalysisResults() {
 
             <VerticalDivider variation='light' />
 
-            <SavedAnalysisControl
-              size={size}
-              urlBase={`${thematicAnalysisPath(thematic)}/results`}
-            />
+            <SavedAnalysisControl size={size} urlBase={ANALYSIS_RESULTS_PATH} />
           </>
         )}
       />

@@ -18,8 +18,6 @@ import { Subtitle } from '@devseed-ui/typography';
 
 import useSavedSettings from './use-saved-settings';
 
-import { resourceNotFound } from '$components/uhoh';
-import { useThematicArea } from '$utils/thematics';
 import { VarHeading } from '$styles/variable-components';
 import { formatDateRange } from '$utils/date';
 import ItemTruncateCount from '$components/common/item-truncate-count';
@@ -86,12 +84,8 @@ export default function SavedAnalysisControl({
   size,
   urlBase
 }: SavedAnalysisControlProps) {
-  const thematic = useThematicArea();
-  if (!thematic) throw resourceNotFound();
 
-  const { thematicAreaSavedSettingsList } = useSavedSettings({
-    thematicAreaId: thematic.data.id
-  });
+  const { savedSettingsList } = useSavedSettings();
 
   return (
     <PastAnalysesDropdown
@@ -101,7 +95,7 @@ export default function SavedAnalysisControl({
           {...props}
           size={size}
           variation='achromic-outline'
-          disabled={!thematicAreaSavedSettingsList.length}
+          disabled={!savedSettingsList.length}
         >
           <CollecticonClockBack title='Show past analyses' meaningful />
         </ToolbarIconButton>
@@ -109,7 +103,7 @@ export default function SavedAnalysisControl({
     >
       <DropTitle>Past analyses</DropTitle>
       <PastAnalysesMenu as='ol'>
-        {thematicAreaSavedSettingsList.map((savedSettings) => {
+        {savedSettingsList.map((savedSettings) => {
           const { start, end, aoi, datasets } = savedSettings.params;
           return (
             <li key={savedSettings.url}>
