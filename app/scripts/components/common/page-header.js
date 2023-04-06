@@ -1,35 +1,20 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
-import {
-  glsp,
-  listReset,
-  media,
-  themeVal,
-  truncated
-} from '@devseed-ui/theme-provider';
+import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
-import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { Button } from '@devseed-ui/button';
-import {
-  CollecticonChevronDownSmall,
-  CollecticonChevronUpSmall,
-  CollecticonHamburgerMenu
-} from '@devseed-ui/collecticons';
-import vedaThematics from 'veda/thematics';
+import { CollecticonHamburgerMenu } from '@devseed-ui/collecticons';
 
 import NasaLogo from './nasa-logo';
 import GoogleForm from './google-form';
 import { Tip } from './tip';
-import DropdownScrollable from './dropdown-scrollable';
 
 import UnscrollableBody from './unscrollable-body';
 import { variableGlsp } from '$styles/variable-utils';
-import { useThematicArea } from '$utils/thematics';
 import {
-  thematicRootPath,
   DISCOVERIES_PATH,
   DATASETS_PATH,
   ANALYSIS_PATH,
@@ -282,17 +267,6 @@ const SectionsNavBlock = styled(NavBlock)`
   `}
 `;
 
-const ThemesNavBlock = styled(NavBlock)`
-  ${media.largeDown`
-    order: 2;
-  `}
-
-  ${media.xlargeUp`
-    padding-left: ${variableGlsp()};
-    box-shadow: -1px 0 0 0 ${themeVal('color.surface-200a')};
-  `}
-`;
-
 const GlobalNavBlockTitle = styled(Overline).attrs({
   as: 'span'
 })`
@@ -324,17 +298,7 @@ const GlobalMenuLink = styled(NavLink)`
   ${GlobalMenuLinkCSS}
 `;
 
-const ThemeToggle = styled(GlobalMenuLink)`
-  /* stylelint-disable-next-line no-descending-specificity */
-  > span {
-    ${truncated()}
-    max-width: 8rem;
-  }
-`;
-
 function PageHeader() {
-  const thematic = useThematicArea();
-
   const { isLargeDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
@@ -400,139 +364,48 @@ function PageHeader() {
           )}
           <GlobalNavBody as={isLargeDown ? undefined : 'div'}>
             <GlobalNavBodyInner>
-              {thematic && vedaThematics.length > 1 && (
-                <ThemesNavBlock>
-                  <GlobalNavBlockTitle>Area</GlobalNavBlockTitle>
-                  {isLargeDown ? (
-                    <GlobalMenu id='themes-nav-block'>
-                      {vedaThematics.map((t) => (
-                        <li key={t.id}>
-                          <GlobalMenuLink
-                            to={`/${t.id}`}
-                            aria-current={null}
-                            onClick={closeNavOnClick}
-                          >
-                            {t.name}
-                          </GlobalMenuLink>
-                        </li>
-                      ))}
-                    </GlobalMenu>
-                  ) : (
-                    <DropdownScrollable
-                      alignment='left'
-                      // eslint-disable-next-line no-unused-vars
-                      triggerElement={({ active, className, ...rest }) => (
-                        <ThemeToggle {...rest} as='button'>
-                          <span>{thematic.data.name}</span>{' '}
-                          {active ? (
-                            <CollecticonChevronUpSmall />
-                          ) : (
-                            <CollecticonChevronDownSmall />
-                          )}
-                        </ThemeToggle>
-                      )}
-                    >
-                      <DropMenu id='themes-nav-block'>
-                        {vedaThematics.map((t) => (
-                          <li key={t.id}>
-                            <DropMenuItem
-                              as={NavLink}
-                              to={`/${t.id}`}
-                              aria-current={null}
-                              active={t.id === thematic.data.id}
-                              data-dropdown='click.close'
-                            >
-                              {t.name}
-                            </DropMenuItem>
-                          </li>
-                        ))}
-                      </DropMenu>
-                    </DropdownScrollable>
-                  )}
-                </ThemesNavBlock>
-              )}
               <SectionsNavBlock>
                 <GlobalNavBlockTitle>Section</GlobalNavBlockTitle>
-                {thematic ? (
-                  <GlobalMenu>
-                    <li>
-                      <GlobalMenuLink
-                        to={thematicRootPath(thematic)}
-                        end
-                        onClick={closeNavOnClick}
-                      >
-                        Welcome
-                      </GlobalMenuLink>
-                    </li>
-                    <li>
-                      <GlobalMenuLink
-                        to={DISCOVERIES_PATH}
-                        onClick={closeNavOnClick}
-                      >
-                        Discoveries
-                      </GlobalMenuLink>
-                    </li>
-                    <li>
-                      <GlobalMenuLink
-                        to={DATASETS_PATH}
-                        onClick={closeNavOnClick}
-                      >
-                        Datasets
-                      </GlobalMenuLink>
-                    </li>
-                    <li>
-                      <GlobalMenuLink
-                        to={ANALYSIS_PATH}
-                        onClick={closeNavOnClick}
-                      >
-                        Analysis
-                      </GlobalMenuLink>
-                    </li>
-                    <li>
-                      <GoogleForm />
-                    </li>
-                  </GlobalMenu>
-                ) : (
-                  <GlobalMenu>
-                    <li>
-                      <GlobalMenuLink to='/' onClick={closeNavOnClick}>
-                        Welcome
-                      </GlobalMenuLink>
-                    </li>
-                    <li>
-                      <GlobalMenuLink
-                        to={DISCOVERIES_PATH}
-                        onClick={closeNavOnClick}
-                      >
-                        Discoveries
-                      </GlobalMenuLink>
-                    </li>
-                    <li>
-                      <GlobalMenuLink
-                        to={DATASETS_PATH}
-                        onClick={closeNavOnClick}
-                      >
-                        Data Catalog
-                      </GlobalMenuLink>
-                    </li>
-                    <li>
-                      <GlobalMenuLink
-                        to={ANALYSIS_PATH}
-                        onClick={closeNavOnClick}
-                      >
-                        Analysis
-                      </GlobalMenuLink>
-                    </li>
-                    <li>
-                      <GoogleForm />
-                    </li>
-                    <li>
-                      <GlobalMenuLink to={ABOUT_PATH} onClick={closeNavOnClick}>
-                        About
-                      </GlobalMenuLink>
-                    </li>
-                  </GlobalMenu>
-                )}
+
+                <GlobalMenu>
+                  <li>
+                    <GlobalMenuLink to='/' onClick={closeNavOnClick}>
+                      Welcome
+                    </GlobalMenuLink>
+                  </li>
+                  <li>
+                    <GlobalMenuLink
+                      to={DISCOVERIES_PATH}
+                      onClick={closeNavOnClick}
+                    >
+                      Discoveries
+                    </GlobalMenuLink>
+                  </li>
+                  <li>
+                    <GlobalMenuLink
+                      to={DATASETS_PATH}
+                      onClick={closeNavOnClick}
+                    >
+                      Data Catalog
+                    </GlobalMenuLink>
+                  </li>
+                  <li>
+                    <GlobalMenuLink
+                      to={ANALYSIS_PATH}
+                      onClick={closeNavOnClick}
+                    >
+                      Analysis
+                    </GlobalMenuLink>
+                  </li>
+                  <li>
+                    <GoogleForm />
+                  </li>
+                  <li>
+                    <GlobalMenuLink to={ABOUT_PATH} onClick={closeNavOnClick}>
+                      About
+                    </GlobalMenuLink>
+                  </li>
+                </GlobalMenu>
               </SectionsNavBlock>
             </GlobalNavBodyInner>
           </GlobalNavBody>

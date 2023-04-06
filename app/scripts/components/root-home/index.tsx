@@ -6,11 +6,8 @@ import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
 import { CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
 
-import vedaThematics from 'veda/thematics';
-
 import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
 
-import ThematicAreasList from './thematic-areas-list';
 import FeaturedDiscoveries from './featured-discoveries';
 import ValueProposition from './value-propostion';
 import Audience from './audience';
@@ -107,8 +104,8 @@ function RootHome() {
         renderBetaBlock={() => (
           <>
             <PageLead>
-              VEDA (Visualization, Exploration, and Data Analysis) is NASA&apos;s
-              open-source Earth Science platform in the cloud.
+              VEDA (Visualization, Exploration, and Data Analysis) is
+              NASA&apos;s open-source Earth Science platform in the cloud.
             </PageLead>
             <PageActions>
               <Button
@@ -134,22 +131,7 @@ function RootHome() {
 
       <ValueProposition />
 
-      <ThematicAreasList />
-
       <Connections>
-        <ConnectionsBlock>
-          <ConnectionsBlockTitle>Thematic areas</ConnectionsBlockTitle>
-          <ConnectionsList>
-            {vedaThematics.map((t) => (
-              <li key={t.id}>
-                <Link to={t.id}>
-                  <CollecticonChevronRightSmall /> {t.name}
-                </Link>
-              </li>
-            ))}
-          </ConnectionsList>
-        </ConnectionsBlock>
-
         <ConnectionsBlock>
           <ConnectionsBlockTitle>About</ConnectionsBlockTitle>
           <ConnectionsList>
