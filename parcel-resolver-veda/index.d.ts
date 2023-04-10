@@ -125,7 +125,7 @@ declare module 'veda' {
    * Data structure for the Datasets frontmatter.
    */
   export interface DatasetData {
-    featuredOn?: string[];
+    featured?: boolean;
     id: string;
     name: string;
     thematics: string[];
@@ -144,7 +144,7 @@ declare module 'veda' {
    * Data structure for the Discoveries frontmatter.
    */
   export interface DiscoveryData {
-    featuredOn?: string[];
+    featured?: boolean;
     id: string;
     name: string;
     description: string;
