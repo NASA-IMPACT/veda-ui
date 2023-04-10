@@ -71,6 +71,7 @@
     "gulp": "^4.0.2",
     "jest": "^28.1.3",
     "jest-css-modules-transform": "^4.3.0",
+    "dedent": "^0.7.0",
     "parcel": "^2.7.0",
     "parcel-resolver-veda": "link:./parcel-resolver-veda",
     "parcel-transformer-mdx": "link:./parcel-transformer-mdx",

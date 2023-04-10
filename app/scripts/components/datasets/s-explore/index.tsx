@@ -40,7 +40,7 @@ import {
   PANEL_REVEAL_DURATION
 } from '$styles/panel';
 
-import { useThematicArea, useThematicAreaDataset } from '$utils/veda-data';
+import { allDatasetsProps, useDataset } from '$utils/veda-data';
 import { useMediaQuery } from '$utils/use-media-query';
 import { DATASETS_PATH } from '$utils/routes';
 import { useEffectPrevious } from '$utils/use-effect-previous';
@@ -171,10 +171,9 @@ const useDatePickerValue = (
 
 function DatasetsExplore() {
   const mapboxRef = useRef<MapboxMapRef>(null);
-  const thematic = useThematicArea();
-  const dataset = useThematicAreaDataset();
+  const dataset = useDataset();
 
-  if (!thematic || !dataset) throw resourceNotFound();
+  if (!dataset) throw resourceNotFound();
 
   if (!dataset.data.layers.length) {
     throw new Error(
@@ -473,7 +472,7 @@ function DatasetsExplore() {
           parentName: 'Dataset',
           parentLabel: 'Datasets',
           parentTo: DATASETS_PATH,
-          items: thematic.data.datasets,
+          items: allDatasetsProps,
           currentId: dataset.data.id,
           localMenuCmp: <DatasetsLocalMenu dataset={dataset} />
         }}

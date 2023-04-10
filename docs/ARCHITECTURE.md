@@ -8,8 +8,7 @@ For development purposes, the ui repo can be run directly without the need to ha
 In this case the data is loaded from the `mock/` folder, which replicates the structure one would find in `veda-config`.
 
 ## Configuration
-The veda configuration consists in a series of `MDX` files, organized in 3 different content types:
-- thematic
+The veda configuration consists in a series of `MDX` files, organized in 2 different content types:
 - discoveries
 - datasets
 
@@ -30,44 +29,13 @@ Here's something about this site! on fire?
 <SomeComponent />
 ```
 
-The `thematic` files define the thematic areas of the app (one file per thematic area).  
-Each file in `discoveries` represent a discovery story which may belong to more than one thematic area. The relationship is established by adding the `id` of the thematic area under the `thematics` list.  
-Much like `discoveries` each entry in `datasets` can be paired with one or more thematic areas which is also done by adding the `id` of the thematic area under the `thematics` list.
-
 ## veda
 To be able to load all the configuration and content into Veda, it uses a custom parcel resolver which allows us to create a faux module (`veda`) which when imported will resolve to our configuration.
 
 ```js
-import vedaThematics, {
-  thematics,
-  datasets,
-  discoveries
-} from 'veda';
+import { datasets, discoveries } from 'veda';
 
-// vedaThematics -> Contains a list of all the thematic areas and the properties defined in their frontmatter.
-[
-  {
-    "id": "fire",
-    // ... Other properties present in the thematic frontmatter.
-    "datasets": [
-      // List of datasets related to this thematic area.
-      {
-        "id": "no2",
-        // ... Other properties present in the dataset frontmatter.
-      }
-    ],
-    "discoveries": [
-      // List of discoveries related to this thematic area.
-      {
-        "id": "history",
-        // ... Other properties present in the discovery frontmatter.
-      }
-    ]
-  },
-  // another thematic area.
-]
-
-// thematics, datasets, discoveries -> All have the same structure which is an object keyed by the content type id.
+// datasets, discoveries -> All have the same structure which is an object keyed by the content type id.
 {
   ["content-type-id"] : {
     "data": {
@@ -84,7 +52,7 @@ import vedaThematics, {
 [Custom resolver module](https://github.com/NASA-IMPACT/veda-ui/blob/main/parcel-resolver-veda/index.js) is used to create the faux module that outputs the structure above. It reads all the mdx files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
 The content part (the MDX) is not handled by this resolver, but left untouched and when trying to import a `MDX` file, the correct resolver will kick in.
 
-The faux module is virtual and is not loaded from a file, but for debug purposes the generated module code is output to `parcel-resolver-veda/veda-thematic.out.js` during runtime. This file is gitignored, so you'll have to run the project to see it.
+The faux module is virtual and is not loaded from a file, but for debug purposes the generated module code is output to `parcel-resolver-veda/veda.out.js` during runtime. This file is gitignored, so you'll have to run the project to see it.
 
 ### parcel-transformer-mdx-front
 

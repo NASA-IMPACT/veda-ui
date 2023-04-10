@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import {
@@ -115,7 +115,7 @@ interface RelatedContentProps {
   related: RelatedContentData[];
 }
 
-export default function RelatedContent(props: RelatedContentProps): ReactNode {
+export default function RelatedContent(props: RelatedContentProps) {
   const { related } = props;
   const relatedContents = formatContents(related);
 

@@ -82,7 +82,6 @@ function FeaturedDiscoveries() {
                     linkTo={getDiscoveryPath(d)}
                     title={d.name}
                     parentName='Discovery'
-                    // Link to the first thematic area where it is featured.
                     parentTo={DISCOVERIES_PATH}
                     description={i === 0 ? d.description : undefined}
                     date={d.pubDate ? new Date(d.pubDate) : undefined}
