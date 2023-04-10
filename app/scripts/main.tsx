@@ -20,15 +20,13 @@ import { PageLoading } from '$components/common/loading-skeleton';
 import UhOh from '$components/uhoh';
 import ErrorBoundary from '$components/uhoh/fatal-error';
 const RootHome = lazy(() => import('$components/root-home'));
-const RootAbout = lazy(() => import('$components/root-about'));
-const RootDevelopment = lazy(() => import('$components/root-development'));
-const RootDiscoveries = lazy(() => import('$components/root-discoveries'));
-const DataCatalog = lazy(() => import('$components/data-catalog'));
+const About = lazy(() => import('$components/about'));
+const Development = lazy(() => import('$components/development'));
 
-// const DiscoveriesHub = lazy(() => import('$components/discoveries/hub'));
+const DiscoveriesHub = lazy(() => import('$components/discoveries/hub'));
 const DiscoveriesSingle = lazy(() => import('$components/discoveries/single'));
 
-// const DatasetsHub = lazy(() => import('$components/datasets/hub'));
+const DataCatalog = lazy(() => import('$components/data-catalog'));
 const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
@@ -85,7 +83,7 @@ function Root() {
             <Routes>
               <Route path='/' element={<LayoutRoot />}>
                 <Route index element={<RootHome />} />
-                <Route path={ABOUT_PATH} element={<RootAbout />} />
+                <Route path={ABOUT_PATH} element={<About />} />
                 <Route path={DATASETS_PATH} element={<DataCatalog />} />
                 <Route
                   path={`${DATASETS_PATH}/:datasetId`}
@@ -95,7 +93,7 @@ function Root() {
                   path={`${DATASETS_PATH}/:datasetId/explore`}
                   element={<DatasetsExplore />}
                 />
-                <Route path={DISCOVERIES_PATH} element={<RootDiscoveries />} />
+                <Route path={DISCOVERIES_PATH} element={<DiscoveriesHub />} />
                 <Route
                   path={`${DISCOVERIES_PATH}/:discoveryId`}
                   element={<DiscoveriesSingle />}
@@ -105,7 +103,7 @@ function Root() {
                   path={ANALYSIS_RESULTS_PATH}
                   element={<AnalysisResults />}
                 />
-                <Route path='development' element={<RootDevelopment />} />
+                <Route path='development' element={<Development />} />
 
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />

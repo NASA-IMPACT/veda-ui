@@ -189,7 +189,6 @@ export default function AnalysisResults() {
       <LayoutProps
         title='Analysis'
         description={descriptions.meta}
-        // thumbnail={thematic.data.media?.src}
       />
       <PageHeroAnalysis
         title='Analysis'

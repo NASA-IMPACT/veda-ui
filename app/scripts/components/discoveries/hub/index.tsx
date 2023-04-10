@@ -1,26 +1,33 @@
 import React from 'react';
+import { discoveries } from 'veda';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
-import { resourceNotFound } from '$components/uhoh';
-import { PageMainContent } from '$styles/page';
 import EmptyHub from '$components/common/empty-hub';
 
-import { useThematicArea } from '$utils/veda-data';
-import { DISCOVERIES_PATH } from '$utils/routes';
+import { PageMainContent } from '$styles/page';
+import { DISCOVERIES_PATH, getDiscoveryPath } from '$utils/routes';
+
+/* eslint-disable-next-line fp/no-mutating-methods */
+const allDiscoveries = Object.values(discoveries)
+  .map((d) => d!.data)
+  .sort((a, b) => {
+    const getTime = (d: string) => {
+      const millis = new Date(d).getTime();
+      return isNaN(millis) ? -Infinity : millis;
+    };
+
+    return getTime(b.pubDate) - getTime(a.pubDate);
+  });
 
 function DiscoveriesHub() {
-  const thematic = useThematicArea();
-  if (!thematic) throw resourceNotFound();
-
   return (
     <PageMainContent>
       <LayoutProps
         title='Discoveries'
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
-        thumbnail={thematic.data.media?.src}
       />
       <PageHero
         title='Discoveries'
@@ -30,20 +37,20 @@ function DiscoveriesHub() {
         <FoldHeader>
           <FoldTitle>Browse</FoldTitle>
         </FoldHeader>
-        {thematic.data.discoveries.length ? (
+        {allDiscoveries.length ? (
           <CardList>
-            {thematic.data.discoveries.map((t) => (
+            {allDiscoveries.map((t) => (
               <li key={t.id}>
                 <Card
                   linkLabel='View more'
-                  linkTo={t.id}
+                  linkTo={getDiscoveryPath(t)}
                   title={t.name}
                   parentName='Discovery'
                   parentTo={DISCOVERIES_PATH}
                   description={t.description}
                   date={t.pubDate ? new Date(t.pubDate) : undefined}
-                  imgSrc={t.media.src}
-                  imgAlt={t.media.alt}
+                  imgSrc={t.media?.src}
+                  imgAlt={t.media?.alt}
                 />
               </li>
             ))}

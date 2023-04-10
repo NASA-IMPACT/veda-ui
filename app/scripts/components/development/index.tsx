@@ -18,7 +18,7 @@ const ContributeCta = styled.div`
   gap: ${variableGlsp()};
 `;
 
-function RootDevelopment() {
+function Development() {
   const { show: showFeedbackModal } = useFeedbackModal();
 
   return (
@@ -74,4 +74,4 @@ function RootDevelopment() {
   );
 }
 
-export default RootDevelopment;
+export default Development;

@@ -9,21 +9,20 @@ import { ContentOverride } from '$components/common/page-overrides';
 
 const aboutContent = getOverride('aboutContent');
 
-function RootAbout() {
+function About() {
   return (
     <PageMainContent>
-      <LayoutProps title='Thematic about' />
+      <LayoutProps title='About' />
       <PageHero
         title={aboutContent?.data.title || 'About the Dashboard'}
         description={
-          aboutContent?.data.description || 'Lorem ipsum dolor sit amet.'
+          aboutContent?.data.description || 'This is the default description'
         }
       />
       <ContentOverride with='aboutContent'>
         <FoldProse>
           <p>
-            This is the root about. Here you can find info about the whole app,
-            with its many thematic areas.
+            This is the app about page, where you can find information about the whole app. To customize this content use Content Overrides.
           </p>
         </FoldProse>
       </ContentOverride>
@@ -31,4 +30,4 @@ function RootAbout() {
   );
 }
 
-export default RootAbout;
+export default About;
