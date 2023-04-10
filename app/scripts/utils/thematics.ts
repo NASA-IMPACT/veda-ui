@@ -11,6 +11,8 @@ import vedaThematics, {
 import { MDXContent, MDXModule } from 'mdx/types';
 import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
 
+export const allDatasetsProps = Object.values(datasets).map((d) => d!.data);
+
 /**
  * Interface for the Thematic area data and the related discoveries and datasets
  */
@@ -105,13 +107,15 @@ export function useThematicAreaDataset() {
   return dataset;
 }
 
-type MdxPageLoadResult = {
-  status: typeof S_IDLE | typeof S_LOADING,
-  MdxContent: null
-} | {
-  status: typeof S_SUCCEEDED,
-  MdxContent: MDXContent
-}
+type MdxPageLoadResult =
+  | {
+      status: typeof S_IDLE | typeof S_LOADING;
+      MdxContent: null;
+    }
+  | {
+      status: typeof S_SUCCEEDED;
+      MdxContent: MDXContent;
+    };
 
 /**
  * Loads the MDX page returning an object with loading status and the component.
