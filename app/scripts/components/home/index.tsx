@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@devseed-ui/button';
 import { Overline } from '@devseed-ui/typography';
 
-import vedaThematics from 'veda/thematics';
+import vedaThematics from 'veda';
 
 import Carousel from './carousel';
 import { LayoutProps } from '$components/common/layout-root';
@@ -13,7 +13,7 @@ import { resourceNotFound } from '$components/uhoh';
 import PageHero, { PageHeroHGroup } from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
-import { useThematicArea } from '$utils/thematics';
+import { useThematicArea } from '$utils/veda-data';
 import Pluralize from '$utils/pluralize';
 import { zeroPad } from '$utils/format';
 import { VarHeading } from '$styles/variable-components';

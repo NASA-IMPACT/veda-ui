@@ -20,7 +20,7 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { DatasetDatumFnResolverBag, ProjectionOptions } from 'veda/thematics';
+import { DatasetDatumFnResolverBag, ProjectionOptions } from 'veda';
 
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';

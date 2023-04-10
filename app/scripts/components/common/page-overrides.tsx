@@ -1,8 +1,8 @@
 import React, { lazy } from 'react';
 import { MDXProvider } from '@mdx-js/react';
-import { getOverride, PageOverrides } from 'veda/thematics';
+import { getOverride, PageOverrides } from 'veda';
 
-import { useMdxPageLoader } from '$utils/thematics';
+import { useMdxPageLoader } from '$utils/veda-data';
 import { S_SUCCEEDED } from '$utils/status';
 
 const MdxContent = lazy(() => import('./mdx-content'));

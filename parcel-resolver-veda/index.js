@@ -131,7 +131,7 @@ async function loadPageOverridesConfig(pageOverrides, root, logger) {
 
 module.exports = new Resolver({
   async resolve({ specifier, logger }) {
-    if (specifier.startsWith('veda/thematics')) {
+    if (specifier.startsWith('veda')) {
       const { isDev, result, root, configPath } = loadVedaConfig();
 
       if (isDev) {
@@ -236,12 +236,12 @@ module.exports = new Resolver({
       // Store the generated code in a file for debug purposed.
       // The generated file will be gitignored.
       fs.writeFile(
-        path.join(__dirname, 'veda-thematic.out.js'),
+        path.join(__dirname, 'veda.out.js'),
         `/**
  *
  * WARNING!!!
  *
- * This file is the generated output of the veda/thematic resolver.
+ * This file is the generated output of the veda resolver.
  * It is meant only or debugging purposes and should not be loaded directly.
  *
 */
@@ -251,7 +251,7 @@ ${moduleCode}`
       const resolved = {
         // When resolving the mdx files, parcel looks at the parent file to know
         // where to resolve them from and this file has to exist.
-        filePath: path.join(__dirname, '/veda-thematic.out.js'),
+        filePath: path.join(__dirname, '/veda.out.js'),
         code: moduleCode,
         invalidateOnFileChange: [
           configPath,

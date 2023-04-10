@@ -8,7 +8,7 @@ import { resourceNotFound } from '$components/uhoh';
 import { PageMainContent } from '$styles/page';
 import EmptyHub from '$components/common/empty-hub';
 
-import { useThematicArea } from '$utils/thematics';
+import { useThematicArea } from '$utils/veda-data';
 import { DISCOVERIES_PATH } from '$utils/routes';
 
 function DiscoveriesHub() {

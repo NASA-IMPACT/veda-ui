@@ -72,7 +72,7 @@
     "jest": "^28.1.3",
     "jest-css-modules-transform": "^4.3.0",
     "parcel": "^2.7.0",
-    "parcel-resolver-thematics": "link:./parcel-resolver-thematics",
+    "parcel-resolver-veda": "link:./parcel-resolver-veda",
     "parcel-transformer-mdx": "link:./parcel-transformer-mdx",
     "parcel-transformer-mdx-frontmatter": "link:./parcel-transformer-mdx-frontmatter",
     "portscanner": "^2.2.0",

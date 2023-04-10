@@ -21,7 +21,7 @@ import {
   CollecticonEllipsisVertical
 } from '@devseed-ui/collecticons';
 
-import { datasets, DatasetLayer, VedaDatum, DatasetData } from 'veda/thematics';
+import { datasets, DatasetLayer, VedaDatum, DatasetData } from 'veda';
 import { useAnalysisParams } from '../results/use-analysis-params';
 import AoiSelector from './aoi-selector';
 import PageHeroActions from './page-hero-actions';

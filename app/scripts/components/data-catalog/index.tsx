@@ -1,5 +1,5 @@
 import React from 'react';
-import { datasets } from 'veda/thematics';
+import { datasets } from 'veda';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';

@@ -8,7 +8,7 @@ import {
   CollecticonCog
 } from '@devseed-ui/collecticons';
 import { Modal } from '@devseed-ui/modal';
-import { DatasetData, datasets, VedaDatum } from 'veda/thematics';
+import { DatasetData, datasets, VedaDatum } from 'veda';
 
 import { HintedError } from '$utils/hinted-error';
 import { variableGlsp } from '$styles/variable-utils';

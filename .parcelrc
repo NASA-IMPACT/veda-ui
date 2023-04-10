@@ -2,7 +2,7 @@
   "extends": ["@parcel/config-default"],
   "bundler": "@parcel/bundler-experimental",
   "reporters": ["...", "@parcel/reporter-bundle-analyzer"],
-  "resolvers": ["parcel-resolver-thematics", "@parcel/resolver-glob", "..."],
+  "resolvers": ["parcel-resolver-veda", "@parcel/resolver-glob", "..."],
   "transformers": {
     "raw:*": ["@parcel/transformer-raw"],
     "*.mdx": ["parcel-transformer-mdx-frontmatter", "parcel-transformer-mdx"]

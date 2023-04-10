@@ -6,7 +6,7 @@ import vedaThematics, {
   datasets,
   VedaDatum,
   VedaThematicListItem
-} from 'veda/thematics';
+} from 'veda';
 
 import { MDXContent, MDXModule } from 'mdx/types';
 import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';

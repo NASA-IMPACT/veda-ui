@@ -8,7 +8,7 @@ import { resourceNotFound } from '$components/uhoh';
 import EmptyHub from '$components/common/empty-hub';
 
 import { PageMainContent } from '$styles/page';
-import { useThematicArea } from '$utils/thematics';
+import { useThematicArea } from '$utils/veda-data';
 import { DATASETS_PATH } from '$utils/routes';
 
 function DatasetsHub() {

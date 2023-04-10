@@ -11,7 +11,7 @@ import PageHero from '$components/common/page-hero';
 import RelatedContent from '$components/common/related-content';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
 
-import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
+import { useThematicArea, useThematicAreaDataset } from '$utils/veda-data';
 import { DATASETS_PATH, getDatasetExplorePath } from '$utils/routes';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));

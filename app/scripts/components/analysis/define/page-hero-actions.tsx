@@ -8,7 +8,7 @@ import {
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
 import { VerticalDivider } from '@devseed-ui/toolbar';
-import { DatasetLayer } from 'veda/thematics';
+import { DatasetLayer } from 'veda';
 
 import { analysisParams2QueryString } from '../results/use-analysis-params';
 import useSavedSettings from '../use-saved-settings';

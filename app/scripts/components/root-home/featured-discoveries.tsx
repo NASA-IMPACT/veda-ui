@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { listReset, media } from '@devseed-ui/theme-provider';
-import { discoveries } from 'veda/thematics';
+import { discoveries } from 'veda';
 
 import { Card } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle, FoldBody } from '$components/common/fold';

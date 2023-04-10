@@ -1,5 +1,5 @@
 {
-  "name": "parcel-resolver-thematics",
+  "name": "parcel-resolver-veda",
   "version": "1.0.0",
   "description": "Parcel resolver for Veda data files",
   "main": "./index.js",

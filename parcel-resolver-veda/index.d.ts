@@ -1,4 +1,4 @@
-declare module 'veda/thematics' {
+declare module 'veda' {
   import * as dateFns from 'date-fns';
   import mapboxgl from 'mapbox-gl';
   import { MDXModule } from 'mdx/types';
@@ -188,7 +188,7 @@ declare module 'veda/thematics' {
   }
 
   /**
-   * Base structure for each of the data types in veda/thematics.
+   * Base structure for each of the data types in veda.
    */
   type VedaData<T> = Record<string, VedaDatum<T> | undefined>;
 

@@ -18,7 +18,7 @@ import {
   DatasetDatumFnResolverBag,
   DatasetDatumReturnType,
   DatasetLayerCompareNormalized
-} from 'veda/thematics';
+} from 'veda';
 import { MapLayerRasterTimeseries, StacFeature } from './raster-timeseries';
 import { MapLayerVectorTimeseries } from './vector-timeseries';
 

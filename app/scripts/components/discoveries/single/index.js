@@ -6,7 +6,7 @@ import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import RelatedContent from '$components/common/related-content';
 import { DISCOVERIES_PATH } from '$utils/routes';
-import { useThematicArea, useThematicAreaDiscovery } from '$utils/thematics';
+import { useThematicArea, useThematicAreaDiscovery } from '$utils/veda-data';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 

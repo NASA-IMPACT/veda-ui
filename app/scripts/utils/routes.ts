@@ -3,7 +3,7 @@ import vedaThematics, {
   VedaDatum,
   ThematicData,
   DiscoveryData
-} from 'veda/thematics';
+} from 'veda';
 
 type ThematicOrString = VedaDatum<ThematicData> | string;
 

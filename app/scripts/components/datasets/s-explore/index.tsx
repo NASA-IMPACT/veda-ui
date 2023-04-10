@@ -13,7 +13,7 @@ import {
   CollecticonExpandFromLeft,
   CollecticonShrinkToLeft
 } from '@devseed-ui/collecticons';
-import { ProjectionOptions } from 'veda/thematics';
+import { ProjectionOptions } from 'veda';
 import { FormSwitch } from '@devseed-ui/form';
 
 import DatasetLayers from './dataset-layers';
@@ -40,7 +40,7 @@ import {
   PANEL_REVEAL_DURATION
 } from '$styles/panel';
 
-import { useThematicArea, useThematicAreaDataset } from '$utils/thematics';
+import { useThematicArea, useThematicAreaDataset } from '$utils/veda-data';
 import { useMediaQuery } from '$utils/use-media-query';
 import { DATASETS_PATH } from '$utils/routes';
 import { useEffectPrevious } from '$utils/use-effect-previous';

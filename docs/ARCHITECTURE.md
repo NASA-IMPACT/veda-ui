@@ -34,15 +34,15 @@ The `thematic` files define the thematic areas of the app (one file per thematic
 Each file in `discoveries` represent a discovery story which may belong to more than one thematic area. The relationship is established by adding the `id` of the thematic area under the `thematics` list.  
 Much like `discoveries` each entry in `datasets` can be paired with one or more thematic areas which is also done by adding the `id` of the thematic area under the `thematics` list.
 
-## veda/thematics
-To be able to load all the configuration and content into Veda, it uses a custom parcel resolver which allows us to create a faux module (`veda/thematics`) which when imported will resolve to our configuration.
+## veda
+To be able to load all the configuration and content into Veda, it uses a custom parcel resolver which allows us to create a faux module (`veda`) which when imported will resolve to our configuration.
 
 ```js
 import vedaThematics, {
   thematics,
   datasets,
   discoveries
-} from 'veda/thematics';
+} from 'veda';
 
 // vedaThematics -> Contains a list of all the thematic areas and the properties defined in their frontmatter.
 [
@@ -79,12 +79,12 @@ import vedaThematics, {
 }
 ```
 
-### parcel-resolver-thematics
+### parcel-resolver-veda
 
-[Custom resolver module](https://github.com/NASA-IMPACT/veda-ui/blob/main/parcel-resolver-thematics/index.js) is used to create the faux module that outputs the structure above. It reads all the mdx files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
+[Custom resolver module](https://github.com/NASA-IMPACT/veda-ui/blob/main/parcel-resolver-veda/index.js) is used to create the faux module that outputs the structure above. It reads all the mdx files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
 The content part (the MDX) is not handled by this resolver, but left untouched and when trying to import a `MDX` file, the correct resolver will kick in.
 
-The faux module is virtual and is not loaded from a file, but for debug purposes the generated module code is output to `parcel-resolver-thematics/veda-thematic.out.js` during runtime. This file is gitignored, so you'll have to run the project to see it.
+The faux module is virtual and is not loaded from a file, but for debug purposes the generated module code is output to `parcel-resolver-veda/veda-thematic.out.js` during runtime. This file is gitignored, so you'll have to run the project to see it.
 
 ### parcel-transformer-mdx-front
 

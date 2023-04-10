@@ -7,7 +7,7 @@ import {
   Media,
   RelatedContentData,
   DiscoveryData
-} from 'veda/thematics';
+} from 'veda';
 import { utcString2userTzDate } from '$utils/date';
 import {
   getDatasetPath,
