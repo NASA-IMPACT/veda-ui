@@ -2,18 +2,14 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import {
-  thematics,
   discoveries,
   datasets,
   Media,
-  ThematicData,
   RelatedContentData,
-  DiscoveryData,
-  VedaDatum
+  DiscoveryData
 } from 'veda/thematics';
 import { utcString2userTzDate } from '$utils/date';
 import {
-  thematicRootPath,
   getDatasetPath,
   getDiscoveryPath,
   DISCOVERIES_PATH,
@@ -26,12 +22,10 @@ import { variableGlsp } from '$styles/variable-utils';
 import Block from '$components/common/blocks/';
 import ContentBlockFigure from '$components/common/blocks/figure';
 
-const thematicString = 'thematic';
 const datasetString = 'dataset';
 const discoveryString = 'discovery';
 
 const contentCategory = {
-  [thematicString]: thematics,
   [datasetString]: datasets,
   [discoveryString]: discoveries
 };
@@ -41,8 +35,6 @@ const TwoColumnCardList = styled(CardList)`
   margin-top: ${variableGlsp(1)};
 `;
 
-export type ParentType = 'thematic' | 'dataset' | 'discovery';
-
 interface FormatBlock {
   id: string;
   name: string;
@@ -51,20 +43,11 @@ interface FormatBlock {
   link: string;
   parentLink: string;
   media: Media;
-  parent: ParentType;
+  parent: RelatedContentData["type"];
 }
 
-function formatUrl(
-  id: string,
-  thematic: VedaDatum<ThematicData>,
-  parent: string
-) {
+function formatUrl(id: string, parent: string) {
   switch (parent) {
-    case thematicString:
-      return {
-        parentLink: thematicRootPath(thematic),
-        link: thematicRootPath(thematic)
-      };
     case datasetString:
       return {
         parentLink: DATASETS_PATH,
@@ -85,26 +68,23 @@ function formatBlock({
   name,
   description,
   date,
-  thematic,
   media,
-  parent
+  type
 }): FormatBlock {
   return {
     id,
     name,
     description,
     date,
-    ...formatUrl(id, thematic, parent),
     media,
-    parent
+    ...formatUrl(id, type),
+    parent: type
   };
 }
 
 function formatContents(relatedData: RelatedContentData[]) {
   const rData = relatedData.map((relatedContent) => {
-    const { type, id, thematic } = relatedContent;
-    // if related content is thematic, it won't have thematic as an attribute
-    const thematicId = !thematic ? id : thematic;
+    const { type, id } = relatedContent;
 
     // Even though type should be one of the defined values, this values comes
     // from user generated content and we can't be sure, so the checks are in
@@ -123,9 +103,8 @@ function formatContents(relatedData: RelatedContentData[]) {
       name,
       description,
       date: (matchingContent as DiscoveryData).pubDate,
-      thematic: contentCategory[thematicString][thematicId],
       media,
-      parent: type
+      type
     });
   });
 
