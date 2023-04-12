@@ -103,7 +103,14 @@ export function DateAxisParent(props: DateAxisParentProps) {
         .attr('class', 'date-parent-value')
         .attr('y', 30)
         .attr('dy', '1em')
-        .attr('text-anchor', 'middle')
+        .attr('text-anchor', d => {
+          const isLastElement = d.index === x.domain()[1];
+          return isLastElement ? 'end' : 'middle';
+        })
+        .attr('dx', d => {
+          const isLastElement = d.index === x.domain()[1];
+          return isLastElement ? '1em' : '';
+        })
         .text((d) => format(d.date, parentTimeFormat[timeDensity]));
     }
   }, [data, x, timeDensity]);

@@ -67,7 +67,10 @@ export default function TriggerRect(props: TriggerRectProps) {
     select(elRef.current)
       .call(zoomBehavior)
       .on('dblclick.zoom', null)
-      .on('wheel.zoom', null);
+      .on('wheel.zoom', (event) => {
+        event.preventDefault();
+        zoomBehavior.translateBy(select(event.target), event.wheelDelta, 0);
+      });
   }, [zoomBehavior, x]);
 
   useEffect(() => {
