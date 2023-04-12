@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { ScaleTime, select, Selection } from 'd3';
-import { startOfDay, startOfMonth, startOfYear } from 'date-fns';
+import { ScaleLinear, select, Selection } from 'd3';
 import { themeVal } from '@devseed-ui/theme-provider';
 
-import { DateSliderData, DateSliderTimeDensity } from './constants';
+import { findDate } from './utils';
+import { DateSliderDataItem, DateSliderTimeDensity } from './constants';
+
 import useReducedMotion from '$utils/use-prefers-reduced-motion';
 
 const StyledG = styled.g`
@@ -28,6 +29,11 @@ const StyledG = styled.g`
     stroke-width: 2px;
     stroke: ${themeVal('color.base')};
   }
+
+  .data-point-break {
+    fill: none;
+    stroke: ${themeVal('color.base-200')};
+  }
 `;
 
 const DataLineSelf = styled.line`
@@ -36,7 +42,7 @@ const DataLineSelf = styled.line`
 
 type HighlightCircle = Selection<
   SVGCircleElement,
-  Date,
+  DateSliderDataItem,
   SVGGElement | null,
   unknown
 >;
@@ -52,17 +58,11 @@ function animateHighlight(circle: HighlightCircle) {
     .on('end', () => animateHighlight(circle));
 }
 
-const startOfTimeDensity = {
-  year: startOfYear,
-  month: startOfMonth,
-  day: startOfDay
-};
-
 interface DataPointsProps {
-  data: DateSliderData;
+  data: DateSliderDataItem[];
   hoveringDataPoint: Date | null;
   value?: Date;
-  x: ScaleTime<number, number, never>;
+  x: ScaleLinear<number, number, never>;
   zoomXTranslation: number;
   timeDensity: DateSliderTimeDensity;
 }
@@ -78,7 +78,7 @@ export function DataPoints(props: DataPointsProps) {
     const rootG = select(container.current);
 
     const classAttr = (d, c) => {
-      return hoveringDataPoint === d.date ? `${c} over` : c;
+      return hoveringDataPoint === d.index ? `${c} over` : c;
     };
 
     rootG
@@ -86,7 +86,7 @@ export function DataPoints(props: DataPointsProps) {
       .data(data.filter((d) => d.hasData))
       .join('circle')
       .attr('class', (d) => classAttr(d, 'data-point'))
-      .attr('cx', (d) => x(d.date))
+      .attr('cx', (d) => x(d.index))
       .attr('cy', 12)
       .attr('r', 4);
 
@@ -95,29 +95,46 @@ export function DataPoints(props: DataPointsProps) {
       .data(data.filter((d) => d.hasData))
       .join('circle')
       .attr('class', (d) => classAttr(d, 'data-point-valid'))
-      .attr('cx', (d) => x(d.date))
+      .attr('cx', (d) => x(d.index))
       .attr('cy', 12)
       .attr('r', 2);
+
+    // Add a squiggly line to indicate there is a data break.
+    rootG
+      .selectAll('path.data-point-break')
+      .data(data.filter((d) => d.breakLength))
+      .join('path')
+      .attr('class', (d) => classAttr(d, 'data-point-break'))
+      .attr('d', (d) => {
+        // Center point on the horizontal line. We draw a bit left and right.
+        const h = x(d.index);
+        return `M${h - 12} 12
+          L${h - 9} 8
+          L${h - 3} 16
+          L${h + 3} 8
+          L${h + 9} 16
+          L${h + 12} 12`;
+      });
   }, [data, x, hoveringDataPoint]);
 
   useEffect(() => {
     const rootG = select(container.current);
 
-    const val = value ? startOfTimeDensity[timeDensity](value) : null;
+    const item = findDate(data, value, timeDensity);
 
-    if (val) {
+    if (item) {
       let circle = rootG.select('.select-highlight') as HighlightCircle;
 
       if (circle.empty()) {
         circle = rootG
           .append('circle')
           .lower()
-          .datum(val)
+          .datum(item)
           .attr('class', 'select-highlight')
           .attr('cy', 12);
       }
 
-      circle.attr('cx', (d) => x(d));
+      circle.attr('cx', (d) => x(d.index));
 
       // Animate or not.
       if (reduceMotion) {
@@ -128,11 +145,11 @@ export function DataPoints(props: DataPointsProps) {
     }
 
     return () => {
-      if (val) {
+      if (item) {
         rootG.select('.select-highlight').remove();
       }
     };
-  }, [value, timeDensity, x, reduceMotion]);
+  }, [data, value, timeDensity, x, reduceMotion]);
 
   return (
     <StyledG
@@ -144,7 +161,7 @@ export function DataPoints(props: DataPointsProps) {
 }
 
 interface DataLineProps {
-  x: ScaleTime<number, number, never>;
+  x: ScaleLinear<number, number, never>;
   zoomXTranslation: number;
 }
 

@@ -1,28 +1,28 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { ScaleTime, select, ZoomBehavior } from 'd3';
+import { ScaleLinear, select, ZoomBehavior } from 'd3';
 
-import { DateSliderData } from './constants';
+import { DateSliderDataItem } from './constants';
 
-type TriggerRectProps = {
+interface TriggerRectProps {
   onDataOverOut: (result: { hover: boolean; date: Date | null }) => void;
   onDataClick: (result: { date: Date }) => void;
-  data: DateSliderData;
-  x: ScaleTime<number, number, never>;
+  data: DateSliderDataItem[];
+  x: ScaleLinear<number, number, never>;
   zoomXTranslation: number;
   width: number;
   height: number;
   zoomBehavior: ZoomBehavior<SVGRectElement, unknown>;
-};
+}
 
-type Point = {
+interface Point {
   x: number;
   y: number;
-};
+}
 
-type HotZone = Point & {
+interface HotZone extends Point {
   date: Date;
   radius: number;
-};
+}
 
 function dist(p1: Point, p2: Point) {
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
@@ -57,7 +57,7 @@ export default function TriggerRect(props: TriggerRectProps) {
     const dataList = data.filter((d) => d.hasData);
     return dataList.map<HotZone>((d) => ({
       date: d.date,
-      x: x(d.date) + zoomXTranslation,
+      x: x(d.index) + zoomXTranslation,
       y: 12,
       radius: 8
     }));

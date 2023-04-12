@@ -1,7 +1,7 @@
-import { ScaleTime } from 'd3';
 import React from 'react';
-import { DateSliderData } from './constants';
+import { ScaleLinear } from 'd3';
 
+import { DateSliderData } from './constants';
 import { getZoomTranslateExtent } from './utils';
 
 export const MASK_ID = 'gradient-mask';
@@ -9,7 +9,7 @@ const FADE_ID = 'fade-gradient';
 
 interface FaderDefinitionProps {
   data: DateSliderData;
-  x: ScaleTime<number, number, never>;
+  x: ScaleLinear<number, number, never>;
   zoomXTranslation: number;
   width: number;
   height: number;

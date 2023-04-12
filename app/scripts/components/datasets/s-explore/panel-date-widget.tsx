@@ -25,7 +25,7 @@ import {
 import { TimeDensity } from '$context/layer-data';
 import { mod } from '$utils/utils';
 import DateSliderControl from '$components/common/dateslider';
-import { prepareDates } from '$components/common/dateslider/utils';
+import { prepareDateSliderData } from '$components/common/dateslider/utils';
 
 function getDatePickerView(timeDensity?: TimeDensity) {
   const view = {
@@ -82,7 +82,7 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
   const dateSliderDates = useMemo(
     () =>
       availableDates && timeDensity
-        ? prepareDates(availableDates, timeDensity)
+        ? prepareDateSliderData(availableDates, timeDensity)
         : null,
     [availableDates, timeDensity]
   );
