@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
-import { scaleLinear, select, zoom } from 'd3';
+import { interpolate, scaleLinear, select, zoom } from 'd3';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { findDate, getZoomTranslateExtent, useChartDimensions } from './utils';
@@ -58,6 +58,8 @@ export default function DateSliderControl(props: DateSliderControlProps) {
     () =>
       zoom<SVGRectElement, unknown>()
         .translateExtent(getZoomTranslateExtent(data, x))
+        // Remove the zoom interpolation so it doesn't zoom back and forth.
+        .interpolate(interpolate)
         .on('zoom', (event) => {
           setZoomXTranslation(event.transform.x);
         }),
@@ -161,11 +163,11 @@ function useRecenterSlider({ value, width, x, zoomBehavior, svgRef }) {
   recenterFnRef.current = () => {
     if (!value) return;
 
-    const triggerRect = select(svgRef.current)
+    select(svgRef.current)
       .select<SVGRectElement>('.trigger-rect')
       .transition()
-      .duration(500);
-    zoomBehavior.translateTo(triggerRect, x(value), 0);
+      .duration(500)
+      .call(zoomBehavior.translateTo, x(value), 0);
   };
 
   const debouncedRecenter = useMemo(
