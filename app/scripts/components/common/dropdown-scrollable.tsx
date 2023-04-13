@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { glsp } from '@devseed-ui/theme-provider';
 import {
   Dropdown,
+  DropdownProps,
   DropdownRef,
   DropMenu,
   DropTitle
@@ -31,7 +32,7 @@ const shadowScrollbarProps = {
   autoHeightMax: 320
 };
 
-interface DropdownScrollableProps {
+interface DropdownScrollableProps extends DropdownProps {
   children?: React.ReactNode;
 }
 
