@@ -19,7 +19,7 @@ import { PageLoading } from '$components/common/loading-skeleton';
 // Views
 import UhOh from '$components/uhoh';
 import ErrorBoundary from '$components/uhoh/fatal-error';
-const RootHome = lazy(() => import('$components/root-home'));
+const Home = lazy(() => import('$components/home'));
 const About = lazy(() => import('$components/about'));
 const Development = lazy(() => import('$components/development'));
 
@@ -62,6 +62,7 @@ function ScrollTop() {
   }, [pathname]);
   return null;
 }
+
 // Root component.
 function Root() {
   useScrollbarWidthAsCssVar();
@@ -82,7 +83,7 @@ function Root() {
           <Suspense fallback={<PageLoading />}>
             <Routes>
               <Route path='/' element={<LayoutRoot />}>
-                <Route index element={<RootHome />} />
+                <Route index element={<Home />} />
                 <Route path={ABOUT_PATH} element={<About />} />
                 <Route path={DATASETS_PATH} element={<DataCatalog />} />
                 <Route

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { Resolver } = require('@parcel/plugin');
-const { default: ThrowableDiagnostic } = require('@parcel/diagnostic');
 const path = require('path');
 const fs = require('fs-extra');
 const fg = require('fast-glob');
+const dedent = require('dedent');
+const { Resolver } = require('@parcel/plugin');
 
 const stringifyYmlWithFns = require('./stringify-yml-func');
 const { loadVedaConfig } = require('./config');
@@ -147,23 +147,6 @@ module.exports = new Resolver({
         });
       }
 
-      // Load thematics.
-      if (!result.thematics) {
-        throw new ThrowableDiagnostic({
-          diagnostic: {
-            message: 'Path for "thematics" not found.',
-            hints: ['Provide a path for "thematics" in your veda.config.js']
-          }
-        });
-      }
-
-      // Thematics is not optional, but the check is done above.
-      const thematicsData = await loadOptionalContent(
-        logger,
-        root,
-        result.thematics
-      );
-
       const datasetsData = await loadOptionalContent(
         logger,
         root,
@@ -178,19 +161,12 @@ module.exports = new Resolver({
         'discoveries'
       );
 
-      validateContentTypeId(thematicsData);
       validateContentTypeId(datasetsData);
       validateContentTypeId(discoveriesData);
 
       // Check the datasets for duplicate layer ids.
       validateDatasetLayerId(datasetsData);
 
-      // Prepare data to be used by generateMdxDataObject();
-      const thematicsImportData = thematicsData.data.map((o, i) => ({
-        key: o.id,
-        data: o,
-        filePath: thematicsData.filePaths[i]
-      }));
       const datasetsImportData = datasetsData.data.map((o, i) => ({
         key: o.id,
         data: o,
@@ -202,7 +178,7 @@ module.exports = new Resolver({
         filePath: discoveriesData.filePaths[i]
       }));
 
-      const moduleCode = `
+      const moduleCode = dedent`
         const config = {
           pageOverrides: ${await loadPageOverridesConfig(
             result.pageOverrides,
@@ -213,40 +189,26 @@ module.exports = new Resolver({
 
         export const getOverride = (key) => config.pageOverrides[key];
 
-        export const thematics = ${generateMdxDataObject(thematicsImportData)};
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
         export const discoveries = ${generateMdxDataObject(
           discoveriesImportData
         )};
-
-        // Create thematics list.
-        // Merge datasets and discoveries with respective thematics.
-        const toDataArray = (v) => Object.values(v).map(d => d.data);
-
-        export default toDataArray(thematics).map((t) => {
-          const filterFn = (d) => d.id && d.thematics?.includes(t.id);
-          return {
-            ...t,
-            datasets: toDataArray(datasets).filter(filterFn),
-            discoveries: toDataArray(discoveries).filter(filterFn)
-          };
-        });
       `;
 
       // Store the generated code in a file for debug purposed.
       // The generated file will be gitignored.
-      fs.writeFile(
-        path.join(__dirname, 'veda.out.js'),
-        `/**
- *
- * WARNING!!!
- *
- * This file is the generated output of the veda resolver.
- * It is meant only or debugging purposes and should not be loaded directly.
- *
-*/
-${moduleCode}`
-      );
+      const fileDebug = dedent`
+        /**
+        *
+        * WARNING!!!
+        *
+        * This file is the generated output of the veda resolver.
+        * It is meant only or debugging purposes and should not be loaded directly.
+        *
+        */
+        ${moduleCode}
+      `;
+      fs.writeFile(path.join(__dirname, 'veda.out.js'), fileDebug);
 
       const resolved = {
         // When resolving the mdx files, parcel looks at the parent file to know
@@ -255,14 +217,12 @@ ${moduleCode}`
         code: moduleCode,
         invalidateOnFileChange: [
           configPath,
-          ...thematicsData.filePaths,
           ...datasetsData.filePaths,
           ...discoveriesData.filePaths
         ],
         invalidateOnFileCreate: [
           { filePath: configPath },
           ...[
-            { glob: thematicsData.globPath },
             datasetsData.globPath ? { glob: datasetsData.globPath } : null,
             discoveriesData.globPath ? { glob: discoveriesData.globPath } : null
           ].filter(Boolean)

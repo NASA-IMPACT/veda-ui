@@ -212,7 +212,7 @@ export default function Analysis() {
       } else if (stacSearchStatus === S_FAILED) {
         return 'Error loading datasets.';
       } else if (!selectableDatasetLayers.length) {
-        return 'No datasets available in that thematic area for the currently selected dates and area.';
+        return 'No datasets available for the currently selected dates and area.';
       }
     }
   }, [readyToLoadDatasets, stacSearchStatus, selectableDatasetLayers.length]);

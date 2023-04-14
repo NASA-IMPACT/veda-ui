@@ -55,11 +55,10 @@ const FeaturedDiscoveryList = styled.ol`
   }
 `;
 
-// Get 5 discoveries. To be featured on the homepage they need only to be
-// featured somewhere.
+// Get 5 discoveries that have the featured flag
 /* eslint-disable-next-line fp/no-mutating-methods */
 const featuredDiscoveries = Object.values(discoveries)
-  .filter((d) => d && !!d.data.featuredOn?.length)
+  .filter((d) => d && !!d.data.featured)
   .slice(0, 5)
   .map((d) => d!.data)
   .sort((a, b) => (new Date(a.pubDate) > new Date(b.pubDate) ? -1 : 1));
@@ -82,7 +81,6 @@ function FeaturedDiscoveries() {
                     linkTo={getDiscoveryPath(d)}
                     title={d.name}
                     parentName='Discovery'
-                    // Link to the first thematic area where it is featured.
                     parentTo={DISCOVERIES_PATH}
                     description={i === 0 ? d.description : undefined}
                     date={d.pubDate ? new Date(d.pubDate) : undefined}

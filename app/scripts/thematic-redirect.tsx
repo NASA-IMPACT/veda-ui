@@ -1,9 +1,7 @@
-import React, { lazy } from 'react';
+import React from 'react';
 import { Navigate, Route, useParams } from 'react-router';
 
 import { DISCOVERIES_PATH } from '$utils/routes';
-
-const Home = lazy(() => import('$components/home'));
 
 function ThematicAboutRedirect() {
   const { thematicId } = useParams();
@@ -28,9 +26,7 @@ function ThematicDatasetRedirect({ explore = false }: { explore?: boolean }) {
 export const thematicRoutes = (
   <Route path=':thematicId'>
     {/* TODO : Redirect to discoveries with filters preset to thematic? */}
-    {/* TODO : Enable redirection when we want to get rid of thematic area index pages */}
-    {/* <Route index element={<Navigate replace to='/' />} /> */}
-    <Route index element={<Home />} />
+    <Route index element={<Navigate replace to='/' />} />
 
     {/* TODO : Redirect to discoveries with filters preset to thematic? */}
     <Route

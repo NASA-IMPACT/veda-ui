@@ -11,16 +11,15 @@ import PageHero from '$components/common/page-hero';
 import RelatedContent from '$components/common/related-content';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
 
-import { useThematicArea, useThematicAreaDataset } from '$utils/veda-data';
+import { allDatasetsProps, useDataset } from '$utils/veda-data';
 import { DATASETS_PATH, getDatasetExplorePath } from '$utils/routes';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
 function DatasetsOverview() {
-  const thematic = useThematicArea();
-  const dataset = useThematicAreaDataset();
+  const dataset = useDataset();
 
-  if (!thematic || !dataset) throw resourceNotFound();
+  if (!dataset) throw resourceNotFound();
 
   return (
     <>
@@ -32,7 +31,7 @@ function DatasetsOverview() {
           parentName: 'Dataset',
           parentLabel: 'Datasets',
           parentTo: DATASETS_PATH,
-          items: thematic.data.datasets,
+          items: allDatasetsProps,
           currentId: dataset.data.id,
           localMenuCmp: <DatasetsLocalMenu dataset={dataset} />
         }}
@@ -69,7 +68,7 @@ function DatasetsOverview() {
           attributionUrl={dataset.data.media?.author?.url}
         />
         <MdxContent loader={dataset?.content} />
-        {dataset.data.related?.length > 0 && (
+        {!!dataset.data.related?.length && (
           <RelatedContent related={dataset.data.related} />
         )}
       </PageMainContent>

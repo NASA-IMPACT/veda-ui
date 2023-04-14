@@ -25,10 +25,7 @@ function About() {
         title='Example about page'
       />
       <FoldProse>
-        <p>
-          This is the root about. Here you can find info about the whole app,
-          with its many thematic areas.
-        </p>
+        <p>This is the about. Here you can find info about the whole app.</p>
       </FoldProse>
     </Layout>
   );
@@ -64,10 +61,7 @@ The new `About` would look like:
        />
 +      <ContentOverride with='aboutContent'>
          <FoldProse>
-           <p>
-             This is the root about. Here you can find info about the whole app,
-             with its many thematic areas.
-           </p>
+           <p>This is the about. Here you can find info about the whole app.</p>
          </FoldProse>
 +      </ContentOverride>
      </Layout>
@@ -95,10 +89,7 @@ Now that we handled the content, we just need to include the frontmatter variabl
        />
        <ContentOverride with='aboutContent'>
          <FoldProse>
-           <p>
-             This is the root about. Here you can find info about the whole app,
-             with its many thematic areas.
-           </p>
+           <p>This is the about. Here you can find info about the whole app.</p>
          </FoldProse>
        </ContentOverride>
      </Layout>
