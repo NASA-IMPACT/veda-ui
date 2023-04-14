@@ -43,7 +43,7 @@ import {
 } from '$components/common/chart/analysis/utils';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { getDatasetPath } from '$utils/routes';
-import {  allDatasetsProps } from '$utils/veda-data';
+import { allDatasetsProps } from '$utils/veda-data';
 
 const InfoTipContent = styled.div`
   padding: ${glsp(0.25)};
