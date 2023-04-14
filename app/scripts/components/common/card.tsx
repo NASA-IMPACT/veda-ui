@@ -214,12 +214,12 @@ const CardFigure = styled(Figure)`
 `;
 
 interface CardComponentProps {
-  title: string;
+  title: React.ReactNode;
   linkLabel: string;
   linkTo: string;
   className?: string;
   cardType?: CardType;
-  description?: string;
+  description?: React.ReactNode;
   date?: Date;
   overline?: React.ReactNode;
   imgSrc?: string;
