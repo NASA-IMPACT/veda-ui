@@ -161,7 +161,7 @@ function useRecenterSlider({ value, width, x, zoomBehavior, svgRef }) {
 
   const recenterFnRef = useRef<() => void>();
   recenterFnRef.current = () => {
-    if (!value) return;
+    if (isNaN(value)) return;
 
     select(svgRef.current)
       .select<SVGRectElement>('.trigger-rect')
@@ -180,7 +180,7 @@ function useRecenterSlider({ value, width, x, zoomBehavior, svgRef }) {
 
   useEffectPrevious(
     (deps, mounted) => {
-      if (!value || !mounted) return;
+      if (isNaN(value) || !mounted) return;
 
       // No animation if reduce motion.
       if (reduceMotion) {
