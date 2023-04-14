@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useQueryClient } from '@tanstack/react-query';
-import { datasets } from 'veda/thematics';
+import { datasets } from 'veda';
 import { FormCheckable } from '@devseed-ui/form';
 import { Button } from '@devseed-ui/button';
 import { Toolbar } from '@devseed-ui/toolbar';

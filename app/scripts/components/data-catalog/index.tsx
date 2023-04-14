@@ -1,5 +1,5 @@
 import React from 'react';
-import { datasets } from 'veda/thematics';
+import { datasets } from 'veda';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -12,8 +12,7 @@ import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 
 /* eslint-disable-next-line fp/no-mutating-methods */
 const allDatasets = Object.values(datasets)
-  /* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */
-  .filter((d) => !!d?.data && !!d.data.thematics?.length)
+  .filter((d) => !!d?.data)
   .map((d) => d!.data)
   .sort((a, b) => a.name.localeCompare(b.name));
 

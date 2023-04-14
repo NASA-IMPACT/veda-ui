@@ -1,4 +1,4 @@
-import { MbProjectionOptions, ProjectionOptions } from 'veda/thematics';
+import { MbProjectionOptions, ProjectionOptions } from 'veda';
 import { BasemapId, Option } from './basemaps';
 
 export type MapOptionsProps = {

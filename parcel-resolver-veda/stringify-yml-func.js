@@ -2,8 +2,7 @@
 const path = require('path');
 
 /**
- * Stringify the given object so that it can be used in the veda/thematics
- * module.
+ * Stringify the given object so that it can be used in the veda module.
  *
  * We need to support functions in the yaml frontmatter so that some of the
  * values can be dynamically calculated. This would for example be:

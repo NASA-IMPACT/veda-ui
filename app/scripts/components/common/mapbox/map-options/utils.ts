@@ -1,4 +1,4 @@
-import { MbProjectionOptions, ProjectionOptions } from 'veda/thematics';
+import { MbProjectionOptions, ProjectionOptions } from 'veda';
 
 import { ProjectionListItem } from './types';
 import { validateRangeNum } from '$utils/utils';

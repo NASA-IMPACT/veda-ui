@@ -1,4 +1,4 @@
-declare module 'veda/thematics' {
+declare module 'veda' {
   import * as dateFns from 'date-fns';
   import mapboxgl from 'mapbox-gl';
   import { MDXModule } from 'mdx/types';
@@ -111,7 +111,7 @@ declare module 'veda/thematics' {
    * editors can curate contents per each category with their ids
    */
   export interface RelatedContentData {
-    type: 'dataset' | 'discovery' | 'thematic';
+    type: 'dataset' | 'discovery';
     id: string;
     thematic?: string;
   }
@@ -125,7 +125,7 @@ declare module 'veda/thematics' {
    * Data structure for the Datasets frontmatter.
    */
   export interface DatasetData {
-    featuredOn?: string[];
+    featured?: boolean;
     id: string;
     name: string;
     thematics: string[];
@@ -144,7 +144,7 @@ declare module 'veda/thematics' {
    * Data structure for the Discoveries frontmatter.
    */
   export interface DiscoveryData {
-    featuredOn?: string[];
+    featured?: boolean;
     id: string;
     name: string;
     description: string;
@@ -152,25 +152,6 @@ declare module 'veda/thematics' {
     media?: Media;
     thematics: string[];
     related?: RelatedContentData[];
-  }
-
-  // ///////////////////////////////////////////////////////////////////////////
-  //  Thematic areas                                                          //
-  // ///////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Data structure for the Thematics frontmatter.
-   */
-  export interface ThematicData {
-    id: string;
-    name: string;
-    description: string;
-    media?: Media;
-    related?: RelatedContentData[];
-    about?: {
-      title: string
-      description: string
-    }
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -188,7 +169,7 @@ declare module 'veda/thematics' {
   }
 
   /**
-   * Base structure for each of the data types in veda/thematics.
+   * Base structure for each of the data types in veda.
    */
   type VedaData<T> = Record<string, VedaDatum<T> | undefined>;
 
@@ -215,31 +196,6 @@ declare module 'veda/thematics' {
    * Object with all the veda discoveries keyed by the discovery id.
    */
   export const discoveries: VedaData<DiscoveryData>;
-
-  /**
-   * Named exports: thematics.
-   * Object with all the veda thematics keyed by the thematic id.
-   */
-  export const thematics: VedaData<ThematicData>;
-
-  export interface VedaThematicListItem extends ThematicData {
-    /**
-     * Datasets that are related to this thematic area.
-     */
-    datasets: DatasetData[];
-    /**
-     * Discoveries that are related to this thematic area.
-     */
-    discoveries: DiscoveryData[];
-  }
-
-  /**
-   * The default export is a list of all the thematic areas with their
-   * respective datasets and discoveries. It contains no MDX content, just the
-   * frontmatter data.
-   */
-  const _default: VedaThematicListItem[];
-  export default _default;
 
   export type PageOverrides = 'aboutContent' | 'sandbox-override';
   /**

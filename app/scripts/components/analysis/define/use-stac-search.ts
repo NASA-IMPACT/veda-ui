@@ -1,4 +1,4 @@
-import { DatasetLayer } from 'veda/thematics';
+import { DatasetLayer } from 'veda';
 import { FeatureCollection, Polygon } from 'geojson';
 import { useEffect, useState } from 'react';
 import { uniq } from 'lodash';

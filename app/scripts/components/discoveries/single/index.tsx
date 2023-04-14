@@ -6,15 +6,14 @@ import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import RelatedContent from '$components/common/related-content';
 import { DISCOVERIES_PATH } from '$utils/routes';
-import { useThematicArea, useThematicAreaDiscovery } from '$utils/thematics';
+import { useDiscovery, allDiscoveriesProps } from '$utils/veda-data';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
 function DiscoveriesSingle() {
-  const discovery = useThematicAreaDiscovery();
-  const thematic = useThematicArea();
+  const discovery = useDiscovery();
 
-  if (!thematic || !discovery) throw resourceNotFound();
+  if (!discovery) throw resourceNotFound();
 
   const { media, related } = discovery.data;
 
@@ -28,7 +27,7 @@ function DiscoveriesSingle() {
           parentName: 'Discovery',
           parentLabel: 'Discoveries',
           parentTo: DISCOVERIES_PATH,
-          items: thematic.data.discoveries,
+          items: allDiscoveriesProps,
           currentId: discovery.data.id
         }}
       />
@@ -44,8 +43,8 @@ function DiscoveriesSingle() {
             attributionAuthor={media?.author?.name}
             attributionUrl={media?.author?.url}
           />
-          <MdxContent loader={discovery?.content} />
-          {related?.length > 0 && <RelatedContent related={related} />}
+          <MdxContent loader={discovery.content} />
+          {!!related?.length && <RelatedContent related={related} />}
         </article>
       </PageMainContent>
     </>

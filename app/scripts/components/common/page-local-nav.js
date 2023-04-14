@@ -167,7 +167,6 @@ const SectionLink = styled(LocalMenuLink)`
   }
 `;
 
-// When there's only w thematic are, we don't use :thematicId.
 const pagePath = '/datasets/:dataId/:page';
 
 function PageLocalNav(props) {

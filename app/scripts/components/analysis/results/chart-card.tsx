@@ -43,7 +43,7 @@ import {
 } from '$components/common/chart/analysis/utils';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { getDatasetPath } from '$utils/routes';
-import { ThematicItemFull, useThematicArea } from '$utils/thematics';
+import { allDatasetsProps } from '$utils/veda-data';
 
 const InfoTipContent = styled.div`
   padding: ${glsp(0.25)};
@@ -87,20 +87,16 @@ const getNoDownloadReason = ({ status, data }: TimeseriesData) => {
  * Since each dataset layer is analyzed individually (relating to a STAC
  * dataset), there is no information on the layer data about the parent dataset.
  * To find the corresponding dataset we look through the layers of the datasets
- * of the thematic area and use the found match.
+ * use the found match.
  *
- * @param thematic Thematic area data
  * @param layerId Id of the dataset layer
  *
  * @returns Internal path for Link
  */
 const getDatasetOverviewPath = (
-  thematic: ThematicItemFull,
   layerId: string
 ) => {
-  if (!thematic) return '/';
-
-  const dataset = thematic.data.datasets.find((d) =>
+  const dataset = allDatasetsProps.find((d) =>
     d.layers.find((l) => l.id === layerId)
   );
 
@@ -119,8 +115,6 @@ export default function ChartCard(props: ChartCardProps) {
     onBrushRangeChange
   } = props;
   const { status, meta, data, error, name, id, layer } = chartData;
-
-  const thematic = useThematicArea();
 
   const chartRef = useRef<AnalysisChartRef>(null);
   const noDownloadReason = getNoDownloadReason(chartData);
@@ -220,7 +214,7 @@ export default function ChartCard(props: ChartCardProps) {
                   <p>{layer.description}</p>
                   <Button
                     forwardedAs={Link}
-                    to={getDatasetOverviewPath(thematic, layer.id)}
+                    to={getDatasetOverviewPath(layer.id)}
                     target='_blank'
                     variation='achromic-outline'
                     size='small'

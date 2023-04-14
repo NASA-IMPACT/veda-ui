@@ -9,7 +9,7 @@ There are essentially 2 types of possible overrides:
 - Content Overrides - Allows the instance to replace the content of a given page. They should allow the usage of all MDX Blocks, and can include frontmatter variables.
 - Component Overrides - Allows the instance to alter specific components of the app, by providing new javascript code for it. No MDX Blocks nor frontmatter available.
 
-🧑‍🎓  When new component or content overrides are added, do not forget to update the documentation in [veda-config](https://github.com/NASA-IMPACT/veda-config/) and add the override key to `veda/thematics` types (`parcel-resolver-thematics/index.d.ts`).
+🧑‍🎓  When new component or content overrides are added, do not forget to update the documentation in [veda-config](https://github.com/NASA-IMPACT/veda-config/) and add the override key to `veda` types (`parcel-resolver-veda/index.d.ts`).
 
 ## Content overrides
 A content override will show a content loading placeholder while the MDX data is being loaded, supports MDX Blocks and frontmatter variables.
@@ -25,10 +25,7 @@ function About() {
         title='Example about page'
       />
       <FoldProse>
-        <p>
-          This is the root about. Here you can find info about the whole app,
-          with its many thematic areas.
-        </p>
+        <p>This is the about. Here you can find info about the whole app.</p>
       </FoldProse>
     </Layout>
   );
@@ -64,10 +61,7 @@ The new `About` would look like:
        />
 +      <ContentOverride with='aboutContent'>
          <FoldProse>
-           <p>
-             This is the root about. Here you can find info about the whole app,
-             with its many thematic areas.
-           </p>
+           <p>This is the about. Here you can find info about the whole app.</p>
          </FoldProse>
 +      </ContentOverride>
      </Layout>
@@ -77,11 +71,11 @@ The new `About` would look like:
  export default About;
 ```
 
-Now that we handled the content, we just need to include the frontmatter variables. To achieve this we use the `getOverride` function from `veda/thematics`:
+Now that we handled the content, we just need to include the frontmatter variables. To achieve this we use the `getOverride` function from `veda`:
 
 ```diff
  // Some imports omitted for simplicity.
-+import { getOverride } from 'veda/thematics'; 
++import { getOverride } from 'veda'; 
  import { ContentOverride } from '$components/common/page-overrides';
 +
 +const aboutContent = getOverride('aboutContent');
@@ -95,10 +89,7 @@ Now that we handled the content, we just need to include the frontmatter variabl
        />
        <ContentOverride with='aboutContent'>
          <FoldProse>
-           <p>
-             This is the root about. Here you can find info about the whole app,
-             with its many thematic areas.
-           </p>
+           <p>This is the about. Here you can find info about the whole app.</p>
          </FoldProse>
        </ContentOverride>
      </Layout>

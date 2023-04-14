@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { QueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
-import { DatasetLayer } from 'veda/thematics';
+import { DatasetLayer } from 'veda';
 
 import { getFilterPayload, combineFeatureCollection } from '../utils';
 import EventEmitter from './mini-events';

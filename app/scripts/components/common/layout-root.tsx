@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useState
-} from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
@@ -13,7 +8,6 @@ import { reveal } from '@devseed-ui/animation';
 import MetaTags from './meta-tags';
 import PageFooter from './page-footer';
 
-import { useThematicArea } from '$utils/thematics';
 import { useGoogleTagManager } from '$utils/use-google-tag-manager';
 import { useSlidingStickyHeader } from '$utils/use-sliding-sticky-header';
 import NavWrapper from '$components/common/nav-wrapper';
@@ -44,17 +38,14 @@ function LayoutRoot(props: { children?: React.ReactNode }) {
   const { title, thumbnail, description, hideFooter, localNavProps } =
     useContext(LayoutRootContext);
 
-  const thematic = useThematicArea();
-
   const truncatedTitle =
     title?.length > 32 ? `${title.slice(0, 32)}...` : title;
 
   const fullTitle = truncatedTitle ? `${truncatedTitle} — ` : '';
-  const thematicTitle = thematic ? `: ${thematic.data.name}` : '';
   return (
     <Page>
       <MetaTags
-        title={`${fullTitle}${appTitle}${thematicTitle}`}
+        title={`${fullTitle}${appTitle}`}
         description={description || appDescription}
         thumbnail={thumbnail}
       />

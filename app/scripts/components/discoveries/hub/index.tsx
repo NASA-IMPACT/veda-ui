@@ -1,5 +1,5 @@
 import React from 'react';
-import { discoveries } from 'veda/thematics';
+import { discoveries } from 'veda';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -22,7 +22,7 @@ const allDiscoveries = Object.values(discoveries)
     return getTime(b.pubDate) - getTime(a.pubDate);
   });
 
-function Discoveries() {
+function DiscoveriesHub() {
   return (
     <PageMainContent>
       <LayoutProps
@@ -65,4 +65,4 @@ function Discoveries() {
   );
 }
 
-export default Discoveries;
+export default DiscoveriesHub;

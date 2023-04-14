@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import qs from 'qs';
 import { useLocation } from 'react-router';
 import { FeatureCollection, Polygon } from 'geojson';
-import { DatasetLayer, datasets as vedaDatasets } from 'veda/thematics';
+import { DatasetLayer, datasets as vedaDatasets } from 'veda';
 
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { polygonUrlDecode, polygonUrlEncode } from '$utils/polygon-url';
