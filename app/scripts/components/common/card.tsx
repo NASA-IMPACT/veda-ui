@@ -32,16 +32,27 @@ export const CardList = styled.ol`
   ${listReset()}
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
   gap: ${variableGlsp()};
 
-  ${media.mediumUp`
-    grid-template-columns: repeat(2, 1fr);
-  `}
+  ${({ flow }) => {
+    if (flow === 'row') {
+      return css`
+        grid-template-columns: 1fr;
+      `;
+    } else {
+      return css`
+        grid-template-columns: repeat(1, 1fr);
 
-  ${media.largeUp`
-    grid-template-columns: repeat(3, 1fr);
-  `}
+        ${media.mediumUp`
+          grid-template-columns: repeat(2, 1fr);
+        `}
+
+        ${media.largeUp`
+          grid-template-columns: repeat(3, 1fr);
+        `}
+      `;
+    }
+  }}
 `;
 
 function renderCardType({ cardType }: CardSelfProps) {
@@ -297,3 +308,72 @@ function CardComponent(props: CardComponentProps) {
 export const Card = styled(CardComponent)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
+
+const CardHorizontalSelf = styled.article`
+  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+
+  ${CardFigure} {
+    max-width: 15rem;
+    border-radius: ${multiply(themeVal('shape.rounded'), 2)};
+    overflow: hidden;
+  }
+`;
+
+export function CardHorizontal(props: CardComponentProps) {
+  const {
+    className,
+    title,
+    cardType,
+    description,
+    linkLabel,
+    linkTo,
+    date,
+    overline,
+    imgSrc,
+    imgAlt,
+    parentName,
+    parentTo,
+    onCardClickCapture
+  } = props;
+
+  return (
+    <CardHorizontalSelf>
+      <div>
+        <CardHeader>
+          <CardHeadline>
+            <CardTitle>{title}</CardTitle>
+            <CardOverline>
+              {parentName && parentTo && (
+                <CardLabel as={Link} to={parentTo}>
+                  {parentName}
+                </CardLabel>
+              )}
+              {date ? (
+                <>
+                  published on{' '}
+                  <time dateTime={format(date, 'yyyy-MM-dd')}>
+                    {format(date, 'MMM d, yyyy')}
+                  </time>
+                </>
+              ) : (
+                overline
+              )}
+            </CardOverline>
+          </CardHeadline>
+        </CardHeader>
+        {description && (
+          <CardBody>
+            <p>{description}</p>
+          </CardBody>
+        )}
+      </div>
+      {imgSrc && (
+        <CardFigure>
+          <img src={imgSrc} alt={imgAlt} loading='lazy' />
+        </CardFigure>
+      )}
+    </CardHorizontalSelf>
+  );
+}

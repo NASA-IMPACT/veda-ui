@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Subtitle } from '@devseed-ui/typography';
 import { FormGroupStructure, FormInput, FormSelect } from '@devseed-ui/form';
@@ -12,10 +12,19 @@ import {
 } from '@devseed-ui/collecticons';
 import { truncated } from '@devseed-ui/theme-provider';
 import { CollecticonChevronDownSmall } from '@devseed-ui/collecticons';
-import { DropMenu, DropMenuItem, DropTitle } from '@devseed-ui/dropdown';
+import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
+
+import {
+  Actions,
+  FilterOption,
+  sortDirOptions,
+  sortFieldsOptions,
+  useBrowserControls
+} from './use-browse-controls';
 
 import { variableGlsp } from '$styles/variable-utils';
 import DropdownScrollable from '$components/common/dropdown-scrollable';
+import DropMenuItemButton from '$styles/drop-menu-item-button';
 
 const DropButton = styled(Button)`
   width: 10rem;
@@ -91,40 +100,25 @@ const ControlGroupHeadline = styled.div`
   }
 `;
 
-const topicsOptions = [
-  {
-    id: 'all',
-    name: 'All Topics'
-  },
-  {
-    id: 'eis',
-    name: 'Earth Information Systems'
-  }
-];
+interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
+  topicsOptions: FilterOption[];
+  sourcesOptions: FilterOption[];
+}
 
-const sourcesOptions = [
-  {
-    id: 'all',
-    name: 'All sources'
-  },
-  {
-    id: 'eis',
-    name: 'Earth Information Systems'
-  }
-];
-const sortOptions = [
-  {
-    id: 'name',
-    name: 'Name'
-  },
-  {
-    id: 'date',
-    name: 'Date'
-  }
-];
+function BrowseControls(props: BrowseControlsProps) {
+  const {
+    viewMode,
+    topic,
+    source,
+    topicsOptions,
+    sourcesOptions,
+    search,
+    sortField,
+    sortDir,
+    onAction
+  } = props;
 
-function BrowseControls() {
-  const [viewMode, setViewMode] = useState('card');
+  const currentSortField = sortFieldsOptions.find((s) => s.id === sortField)!;
 
   return (
     <ControlsWrapper>
@@ -135,11 +129,13 @@ function BrowseControls() {
         <ControlGroupBody>
           <DropdownOptions
             items={topicsOptions}
-            currentItem={topicsOptions[1]}
+            currentId={topic}
+            onChange={(v) => onAction(Actions.TOPIC, v)}
           />
           <DropdownOptions
             items={sourcesOptions}
-            currentItem={sourcesOptions[0]}
+            currentId={source}
+            onChange={(v) => onAction(Actions.SOURCE, v)}
           />
           <FormGroupStructure hideHeader id='browse-search' label='Topics'>
             <FormInputIconified>
@@ -147,6 +143,8 @@ function BrowseControls() {
                 id='browse-search'
                 size='large'
                 placeholder='Title, description...'
+                value={search ?? ''}
+                onChange={(e) => onAction(Actions.SEARCH, e.target.value)}
               />
             </FormInputIconified>
           </FormGroupStructure>
@@ -157,7 +155,53 @@ function BrowseControls() {
           <Subtitle as='h3'>Sort</Subtitle>
         </ControlGroupHeadline>
         <ControlGroupBody>
-          <DropdownOptions items={sortOptions} currentItem={sortOptions[0]} />
+          <DropdownScrollable
+            alignment='left'
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            triggerElement={({ active, className, ...rest }) => (
+              <DropButton
+                variation='base-outline'
+                size='large'
+                active={active}
+                {...rest}
+              >
+                <span>{currentSortField.name}</span>{' '}
+                {active ? (
+                  <CollecticonChevronUpSmall />
+                ) : (
+                  <CollecticonChevronDownSmall />
+                )}
+              </DropButton>
+            )}
+          >
+            <DropTitle>Options</DropTitle>
+            <DropMenu>
+              {sortFieldsOptions.map((t) => (
+                <li key={t.id}>
+                  <DropMenuItemButton
+                    active={t.id === sortField}
+                    data-dropdown='click.close'
+                    onClick={() => onAction(Actions.SORT_FIELD, t.id)}
+                  >
+                    {t.name}
+                  </DropMenuItemButton>
+                </li>
+              ))}
+            </DropMenu>
+            <DropMenu>
+              {sortDirOptions.map((t) => (
+                <li key={t.id}>
+                  <DropMenuItemButton
+                    active={t.id === sortDir}
+                    data-dropdown='click.close'
+                    onClick={() => onAction(Actions.SORT_DIR, t.id)}
+                  >
+                    {t.name}
+                  </DropMenuItemButton>
+                </li>
+              ))}
+            </DropMenu>
+          </DropdownScrollable>
         </ControlGroupBody>
       </ControlGroup>
       <ControlGroup>
@@ -169,14 +213,14 @@ function BrowseControls() {
             <Button
               fitting='skinny'
               variation={viewMode === 'card' ? 'base-fill' : 'base-outline'}
-              onClick={() => setViewMode('card')}
+              onClick={() => onAction(Actions.VIEW, 'card')}
             >
               <CollecticonLayoutGrid2x2 title='Toggle card view' meaningful />
             </Button>
             <Button
               fitting='skinny'
               variation={viewMode === 'list' ? 'base-fill' : 'base-outline'}
-              onClick={() => setViewMode('list')}
+              onClick={() => onAction(Actions.VIEW, 'list')}
             >
               <CollecticonLayoutRow2x title='Toggle list view' meaningful />
             </Button>
@@ -189,18 +233,16 @@ function BrowseControls() {
 
 export default BrowseControls;
 
-interface DropdownOptionsItem {
-  id: string;
-  name: string;
-}
-
 interface DropdownOptionsProps {
-  items: DropdownOptionsItem[];
-  currentItem: DropdownOptionsItem;
+  items: FilterOption[];
+  currentId: string | null;
+  onChange: (value: FilterOption['id']) => void;
 }
 
 function DropdownOptions(props: DropdownOptionsProps) {
-  const { items, currentItem } = props;
+  const { items, currentId, onChange } = props;
+
+  const currentItem = items.find((d) => d.id === currentId);
 
   return (
     <DropdownScrollable
@@ -213,7 +255,7 @@ function DropdownOptions(props: DropdownOptionsProps) {
           active={active}
           {...rest}
         >
-          <span>{currentItem.name}</span>{' '}
+          <span>{currentItem?.name}</span>{' '}
           {active ? (
             <CollecticonChevronUpSmall />
           ) : (
@@ -226,12 +268,13 @@ function DropdownOptions(props: DropdownOptionsProps) {
       <DropMenu>
         {items.map((t) => (
           <li key={t.id}>
-            <DropMenuItem
-              active={t.id === currentItem.id}
+            <DropMenuItemButton
+              active={t.id === currentItem?.id}
               data-dropdown='click.close'
+              onClick={() => onChange(t.id)}
             >
               {t.name}
-            </DropMenuItem>
+            </DropMenuItemButton>
           </li>
         ))}
       </DropMenu>
