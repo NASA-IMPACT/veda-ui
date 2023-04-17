@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
 
 export enum Actions {
-  VIEW = 'view',
   SEARCH = 'search',
   SORT_FIELD = 'sfield',
   SORT_DIR = 'sdir',
@@ -56,15 +55,6 @@ export function useBrowserControls({
     commit: navigate
   });
 
-  const [viewMode, setViewMode] = useQsState.memo(
-    {
-      key: Actions.VIEW,
-      default: 'card',
-      validator: ['card', 'list']
-    },
-    []
-  );
-
   const [sortField, setSortField] = useQsState.memo(
     {
       key: Actions.SORT_FIELD,
@@ -112,9 +102,6 @@ export function useBrowserControls({
   const onAction = useCallback<BrowserControlsAction>(
     (what, value) => {
       switch (what) {
-        case Actions.VIEW:
-          setViewMode(value);
-          break;
         case Actions.SEARCH:
           setSearch(value);
           break;
@@ -132,11 +119,10 @@ export function useBrowserControls({
           break;
       }
     },
-    [setViewMode, setSortField, setSortDir, setTopic, setSource, setSearch]
+    [setSortField, setSortDir, setTopic, setSource, setSearch]
   );
 
   return {
-    viewMode,
     search,
     sortField,
     sortDir,

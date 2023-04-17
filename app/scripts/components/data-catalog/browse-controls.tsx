@@ -2,12 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Subtitle } from '@devseed-ui/typography';
 import { FormGroupStructure, FormInput, FormSelect } from '@devseed-ui/form';
-import { Button, ButtonGroup } from '@devseed-ui/button';
+import { Button } from '@devseed-ui/button';
 import {
   iconDataURI,
   CollecticonChevronUpSmall,
-  CollecticonLayoutGrid2x2,
-  CollecticonLayoutRow2x,
   CollecticonMagnifierRight
 } from '@devseed-ui/collecticons';
 import { truncated } from '@devseed-ui/theme-provider';
@@ -107,7 +105,6 @@ interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
 
 function BrowseControls(props: BrowseControlsProps) {
   const {
-    viewMode,
     topic,
     source,
     topicsOptions,
@@ -156,7 +153,7 @@ function BrowseControls(props: BrowseControlsProps) {
         </ControlGroupHeadline>
         <ControlGroupBody>
           <DropdownScrollable
-            alignment='left'
+            alignment='right'
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             triggerElement={({ active, className, ...rest }) => (
               <DropButton
@@ -202,29 +199,6 @@ function BrowseControls(props: BrowseControlsProps) {
               ))}
             </DropMenu>
           </DropdownScrollable>
-        </ControlGroupBody>
-      </ControlGroup>
-      <ControlGroup>
-        <ControlGroupHeadline>
-          <Subtitle as='h3'>View</Subtitle>
-        </ControlGroupHeadline>
-        <ControlGroupBody>
-          <ButtonGroup size='large'>
-            <Button
-              fitting='skinny'
-              variation={viewMode === 'card' ? 'base-fill' : 'base-outline'}
-              onClick={() => onAction(Actions.VIEW, 'card')}
-            >
-              <CollecticonLayoutGrid2x2 title='Toggle card view' meaningful />
-            </Button>
-            <Button
-              fitting='skinny'
-              variation={viewMode === 'list' ? 'base-fill' : 'base-outline'}
-              onClick={() => onAction(Actions.VIEW, 'list')}
-            >
-              <CollecticonLayoutRow2x title='Toggle list view' meaningful />
-            </Button>
-          </ButtonGroup>
         </ControlGroupBody>
       </ControlGroup>
     </ControlsWrapper>

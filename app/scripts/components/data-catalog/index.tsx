@@ -9,7 +9,7 @@ import { useBrowserControls } from './use-browse-controls';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
-import { Card, CardHorizontal, CardList } from '$components/common/card';
+import { Card, CardList } from '$components/common/card';
 import EmptyHub from '$components/common/empty-hub';
 import { PageMainContent } from '$styles/page';
 import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
@@ -94,7 +94,7 @@ function DataCatalog() {
     sourcesOptions
   });
 
-  const { topic, source, sortField, sortDir, viewMode } = controlVars;
+  const { topic, source, sortField, sortDir } = controlVars;
   const search = controlVars.search ?? '';
 
   const displayDatasets = prepareDatasets(allDatasets, {
@@ -137,71 +137,31 @@ function DataCatalog() {
         </DatasetCount>
 
         {displayDatasets.length ? (
-          viewMode === 'list' ? (
-            <CardList flow='row'>
-              {displayDatasets.map((t) => (
-                <li key={t.id}>
-                  <CardHorizontal
-                    cardType='cover'
-                    linkLabel='View more'
-                    linkTo={getDatasetPath(t)}
-                    title={
-                      <TextHighlight
-                        value={search}
-                        disabled={search.length < 3}
-                      >
-                        {t.name}
-                      </TextHighlight>
-                    }
-                    parentName='Dataset'
-                    parentTo={DATASETS_PATH}
-                    description={
-                      <TextHighlight
-                        value={search}
-                        disabled={search.length < 3}
-                      >
-                        {t.description}
-                      </TextHighlight>
-                    }
-                    imgSrc={t.media?.src}
-                    imgAlt={t.media?.alt}
-                  />
-                </li>
-              ))}
-            </CardList>
-          ) : (
-            <CardList>
-              {displayDatasets.map((t) => (
-                <li key={t.id}>
-                  <Card
-                    cardType='cover'
-                    linkLabel='View more'
-                    linkTo={getDatasetPath(t)}
-                    title={
-                      <TextHighlight
-                        value={search}
-                        disabled={search.length < 3}
-                      >
-                        {t.name}
-                      </TextHighlight>
-                    }
-                    parentName='Dataset'
-                    parentTo={DATASETS_PATH}
-                    description={
-                      <TextHighlight
-                        value={search}
-                        disabled={search.length < 3}
-                      >
-                        {t.description}
-                      </TextHighlight>
-                    }
-                    imgSrc={t.media?.src}
-                    imgAlt={t.media?.alt}
-                  />
-                </li>
-              ))}
-            </CardList>
-          )
+          <CardList>
+            {displayDatasets.map((t) => (
+              <li key={t.id}>
+                <Card
+                  cardType='cover'
+                  linkLabel='View more'
+                  linkTo={getDatasetPath(t)}
+                  title={
+                    <TextHighlight value={search} disabled={search.length < 3}>
+                      {t.name}
+                    </TextHighlight>
+                  }
+                  parentName='Dataset'
+                  parentTo={DATASETS_PATH}
+                  description={
+                    <TextHighlight value={search} disabled={search.length < 3}>
+                      {t.description}
+                    </TextHighlight>
+                  }
+                  imgSrc={t.media?.src}
+                  imgAlt={t.media?.alt}
+                />
+              </li>
+            ))}
+          </CardList>
         ) : (
           <EmptyHub>
             There are no datasets to show with the selected filters
