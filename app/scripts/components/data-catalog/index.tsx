@@ -5,16 +5,23 @@ import { Subtitle } from '@devseed-ui/typography';
 
 import BrowseControls from './browse-controls';
 import { useBrowserControls } from './use-browse-controls';
+import FeaturedDatasets from './featured-datasets';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import { Fold, FoldHeader, FoldHeadline, FoldTitle } from '$components/common/fold';
-import { Card, CardList } from '$components/common/card';
+import {
+  Fold,
+  FoldHeader,
+  FoldHeadline,
+  FoldTitle
+} from '$components/common/fold';
+import { Card, CardList, CardTopicsList } from '$components/common/card';
 import EmptyHub from '$components/common/empty-hub';
 import { PageMainContent } from '$styles/page';
 import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
+import { Pill } from '$styles/pill';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
@@ -115,6 +122,9 @@ function DataCatalog() {
         title='Data Catalog'
         description='This dashboard explores key indicators to track and compare changes over time.'
       />
+
+      <FeaturedDatasets />
+
       <Fold>
         <FoldHeader>
           <FoldHeadline>
