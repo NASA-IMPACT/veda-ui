@@ -6,8 +6,8 @@ export const Pill = styled.span`
   vertical-align: top;
   color: ${themeVal('color.surface')};
   border-radius: ${themeVal('shape.ellipsoid')};
-  padding: ${glsp(0.125, 0.5)};
-  background: ${themeVal('color.base-400a')};
+  padding: ${glsp(0.125, 0.75)};
+  background: ${themeVal('color.surface-100a')};
   pointer-events: auto;
   transition: all 0.24s ease 0s;
   font-size: 0.75rem;
