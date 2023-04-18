@@ -33,10 +33,14 @@ const FoldInner = styled(Constrainer)`
 export const FoldHeader = styled.div`
   grid-column: 1 / -1;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   gap: ${variableGlsp()};
-  justify-content: space-between;
-  align-items: flex-end;
+
+  ${media.largeUp`
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: flex-end;
+  `}
 
   > a {
     flex-shrink: 0;
@@ -52,6 +56,7 @@ export const FoldHeadActions = styled.div`
   flex-flow: row nowrap;
   align-items: center;
   gap: ${variableGlsp(0.5)};
+  overflow: scroll;
 `;
 
 export const FoldHGroup = styled.div`

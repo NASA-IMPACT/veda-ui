@@ -23,6 +23,7 @@ import {
 import { variableGlsp } from '$styles/variable-utils';
 import DropdownScrollable from '$components/common/dropdown-scrollable';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
+import { FoldHeadActions } from '$components/common/fold';
 
 const DropButton = styled(Button)`
   width: 10rem;
@@ -118,7 +119,7 @@ function BrowseControls(props: BrowseControlsProps) {
   const currentSortField = sortFieldsOptions.find((s) => s.id === sortField)!;
 
   return (
-    <ControlsWrapper>
+    <FoldHeadActions>
       <ControlGroup>
         <ControlGroupHeadline>
           <Subtitle as='h3'>Filter</Subtitle>
@@ -201,7 +202,7 @@ function BrowseControls(props: BrowseControlsProps) {
           </DropdownScrollable>
         </ControlGroupBody>
       </ControlGroup>
-    </ControlsWrapper>
+    </FoldHeadActions>
   );
 }
 

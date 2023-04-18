@@ -8,7 +8,7 @@ import { useBrowserControls } from './use-browse-controls';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
+import { Fold, FoldHeader, FoldHeadline, FoldTitle } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
 import EmptyHub from '$components/common/empty-hub';
 import { PageMainContent } from '$styles/page';
@@ -117,14 +117,15 @@ function DataCatalog() {
       />
       <Fold>
         <FoldHeader>
-          <FoldTitle>Browse</FoldTitle>
+          <FoldHeadline>
+            <FoldTitle>Browse</FoldTitle>
+          </FoldHeadline>
+          <BrowseControls
+            {...controlVars}
+            topicsOptions={topicsOptions}
+            sourcesOptions={sourcesOptions}
+          />
         </FoldHeader>
-
-        <BrowseControls
-          {...controlVars}
-          topicsOptions={topicsOptions}
-          sourcesOptions={sourcesOptions}
-        />
 
         <DatasetCount>
           Showing{' '}
