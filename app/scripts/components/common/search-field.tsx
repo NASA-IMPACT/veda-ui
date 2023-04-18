@@ -60,7 +60,7 @@ function SearchField(props: SearchFieldProps) {
   const [isFocused, setFocused] = useState(false);
 
   return (
-    <SearchFieldWrapper>
+    <SearchFieldWrapper className='search-field'>
       <Button
         size={size}
         fitting='skinny'
@@ -86,14 +86,14 @@ function SearchField(props: SearchFieldProps) {
           }}
         />
 
-        <Button size='large' fitting='skinny'>
-          <CollecticonXmarkSmall
-            meaningful
-            title='Clear search'
-            onClick={() => {
-              onChange('');
-            }}
-          />
+        <Button
+          size={size}
+          fitting='skinny'
+          onClick={() => {
+            onChange('');
+          }}
+        >
+          <CollecticonXmarkSmall meaningful title='Clear search' />
         </Button>
       </SearchFieldClearable>
     </SearchFieldWrapper>
