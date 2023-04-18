@@ -26,7 +26,7 @@ const DatasetCount = styled(Subtitle)`
 const topicsOptions = [
   {
     id: 'all',
-    name: 'All Topics'
+    name: 'All'
   },
   // TODO: human readable values for Taxonomies
   ...Array.from(new Set(allDatasets.flatMap((d) => d.thematics))).map((t) => ({
@@ -42,11 +42,11 @@ const topicsOptions = [
 const sourcesOptions = [
   {
     id: 'all',
-    name: 'All sources'
+    name: 'All'
   },
   {
     id: 'eis',
-    name: 'Earth Information Systems'
+    name: 'NASA Earth Information Systems'
   }
 ];
 
