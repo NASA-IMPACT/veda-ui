@@ -56,7 +56,6 @@ export const FoldHeadActions = styled.div`
   flex-flow: row nowrap;
   align-items: center;
   gap: ${variableGlsp(0.5)};
-  overflow: scroll;
 `;
 
 export const FoldHGroup = styled.div`

@@ -1,13 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Overline } from '@devseed-ui/typography';
-import { FormGroupStructure, FormInput } from '@devseed-ui/form';
+import { FormGroupStructure } from '@devseed-ui/form';
 import { Button } from '@devseed-ui/button';
 import {
-  iconDataURI,
   CollecticonChevronDownSmall,
-  CollecticonChevronUpSmall,
-  CollecticonMagnifierRight
+  CollecticonChevronUpSmall
 } from '@devseed-ui/collecticons';
 import { glsp, truncated } from '@devseed-ui/theme-provider';
 import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
@@ -23,6 +21,7 @@ import {
 import DropdownScrollable from '$components/common/dropdown-scrollable';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { FoldHeadActions } from '$components/common/fold';
+import SearchField from '$components/common/search-field';
 
 const DropButton = styled(Button)`
   max-width: 14rem;
@@ -39,33 +38,6 @@ const DropButton = styled(Button)`
 const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
   margin-right: ${glsp(0.25)};
   white-space: nowrap;
-`;
-
-const FormInputIconified = styled.div`
-  position: relative;
-
-  &::after {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translate(0, -50%);
-    display: block;
-    content: '';
-    background-image: ${({ theme }) => {
-      const uri = iconDataURI(CollecticonMagnifierRight, {
-        color: theme.color?.base
-      });
-      return `url('${uri}')`;
-    }};
-    background-repeat: no-repeat;
-    background-size: 1rem 1rem;
-    width: 1rem;
-    height: 1rem;
-  }
-
-  ${FormInput} {
-    padding-right: 2.5rem;
-  }
 `;
 
 interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
@@ -101,16 +73,15 @@ function BrowseControls(props: BrowseControlsProps) {
         currentId={source}
         onChange={(v) => onAction(Actions.SOURCE, v)}
       />
-      <FormGroupStructure hideHeader id='browse-search' label='Topics'>
-        <FormInputIconified>
-          <FormInput
-            id='browse-search'
-            size='large'
-            placeholder='Title, description...'
-            value={search ?? ''}
-            onChange={(e) => onAction(Actions.SEARCH, e.target.value)}
-          />
-        </FormInputIconified>
+      <FormGroupStructure hideHeader id='browse-search' label='Search'>
+        <SearchField
+          id='browse-search'
+          size='large'
+          placeholder='Title, description...'
+          // keepOpen
+          value={search ?? ''}
+          onChange={(v) => onAction(Actions.SEARCH, v)}
+        />
       </FormGroupStructure>
       <DropdownScrollable
         alignment='right'
@@ -189,9 +160,7 @@ function DropdownOptions(props: DropdownOptionsProps) {
           active={active}
           {...rest}
         >
-          <ButtonPrefix>
-            {prefix}
-          </ButtonPrefix>
+          <ButtonPrefix>{prefix}</ButtonPrefix>
           <span>{currentItem?.name}</span>{' '}
           {active ? (
             <CollecticonChevronUpSmall />
