@@ -159,6 +159,36 @@ function DataCatalog() {
                   }
                   imgSrc={t.media?.src}
                   imgAlt={t.media?.alt}
+                  footerContent={
+                    <CardTopicsList>
+                      <dt>Topics</dt>
+                      <dd>
+                        <Pill as='a' href='#'>
+                          Banana
+                        </Pill>
+                      </dd>
+                      <dd>
+                        <Pill as='a' href='#'>
+                          Maçã
+                        </Pill>
+                      </dd>
+                      <dd>
+                        <Pill as='a' href='#'>
+                          Batman
+                        </Pill>
+                      </dd>
+                      <dd>
+                        <Pill as='a' href='#'>
+                          Bruce Amadeus Wayne
+                        </Pill>
+                      </dd>
+                      <dd>
+                        <Pill as='a' href='#'>
+                          Shhhhh
+                        </Pill>
+                      </dd>
+                    </CardTopicsList>
+                  }
                 />
               </li>
             ))}

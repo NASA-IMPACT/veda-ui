@@ -202,6 +202,34 @@ export const CardBody = styled.div`
   }
 `;
 
+export const CardFooter = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${variableGlsp(0.5)};
+  padding: ${variableGlsp()};
+
+  &:not(:first-child) {
+    padding-top: 0;
+    margin-top: ${variableGlsp(-0.5)};
+  }
+`;
+
+export const CardTopicsList = styled.dl`
+  display: flex;
+  gap: ${variableGlsp(0.25)};
+  max-width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    black calc(100% - 3rem),
+    transparent 100%
+  );
+
+  > dt {
+    ${visuallyHidden()}
+  }
+`;
+
 const CardFigure = styled(Figure)`
   order: -1;
 
@@ -226,6 +254,7 @@ interface CardComponentProps {
   imgAlt?: string;
   parentName?: string;
   parentTo?: string;
+  footerContent?: React.ReactNode;
   onCardClickCapture?: React.MouseEventHandler;
 }
 
@@ -243,6 +272,7 @@ function CardComponent(props: CardComponentProps) {
     imgAlt,
     parentName,
     parentTo,
+    footerContent,
     onCardClickCapture
   } = props;
 
@@ -285,6 +315,7 @@ function CardComponent(props: CardComponentProps) {
           <p>{description}</p>
         </CardBody>
       )}
+      {footerContent && <CardFooter>{footerContent}</CardFooter>}
       {imgSrc && (
         <CardFigure>
           <img src={imgSrc} alt={imgAlt} loading='lazy' />
