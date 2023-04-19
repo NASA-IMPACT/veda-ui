@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasets } from 'veda';
+import { Link } from 'react-router-dom';
 import { Subtitle } from '@devseed-ui/typography';
 
 import BrowseControls from './browse-controls';
-import { useBrowserControls } from './use-browse-controls';
+import { Actions, useBrowserControls } from './use-browse-controls';
 import FeaturedDatasets from './featured-datasets';
 
 import { LayoutProps } from '$components/common/layout-root';
@@ -101,7 +102,7 @@ function DataCatalog() {
     sourcesOptions
   });
 
-  const { topic, source, sortField, sortDir } = controlVars;
+  const { topic, source, sortField, sortDir, onAction } = controlVars;
   const search = controlVars.search ?? '';
 
   const displayDatasets = prepareDatasets(allDatasets, {
@@ -149,55 +150,46 @@ function DataCatalog() {
 
         {displayDatasets.length ? (
           <CardList>
-            {displayDatasets.map((t) => (
-              <li key={t.id}>
+            {displayDatasets.map((d) => (
+              <li key={d.id}>
                 <Card
                   cardType='cover'
                   linkLabel='View more'
-                  linkTo={getDatasetPath(t)}
+                  linkTo={getDatasetPath(d)}
                   title={
                     <TextHighlight value={search} disabled={search.length < 3}>
-                      {t.name}
+                      {d.name}
                     </TextHighlight>
                   }
                   parentName='Dataset'
                   parentTo={DATASETS_PATH}
                   description={
                     <TextHighlight value={search} disabled={search.length < 3}>
-                      {t.description}
+                      {d.description}
                     </TextHighlight>
                   }
-                  imgSrc={t.media?.src}
-                  imgAlt={t.media?.alt}
+                  imgSrc={d.media?.src}
+                  imgAlt={d.media?.alt}
                   footerContent={
-                    <CardTopicsList>
-                      <dt>Topics</dt>
-                      <dd>
-                        <Pill as='a' href='#'>
-                          Banana
-                        </Pill>
-                      </dd>
-                      <dd>
-                        <Pill as='a' href='#'>
-                          Maçã
-                        </Pill>
-                      </dd>
-                      <dd>
-                        <Pill as='a' href='#'>
-                          Batman
-                        </Pill>
-                      </dd>
-                      <dd>
-                        <Pill as='a' href='#'>
-                          Bruce Amadeus Wayne
-                        </Pill>
-                      </dd>
-                      <dd>
-                        <Pill as='a' href='#'>
-                          Shhhhh
-                        </Pill>
-                      </dd>
-                    </CardTopicsList>
+                    d.thematics.length ? (
+                      <CardTopicsList>
+                        <dt>Topics</dt>
+                        {d.thematics.map((t) => (
+                          <dd key={t}>
+                            <Pill
+                              as={Link}
+                              to={`${DATASETS_PATH}?${Actions.TOPIC}=${t}`}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                onAction(Actions.TOPIC, t);
+                              }}
+                            >
+                              {t}
+                            </Pill>
+                          </dd>
+                        ))}
+                      </CardTopicsList>
+                    ) : null
                   }
                 />
               </li>

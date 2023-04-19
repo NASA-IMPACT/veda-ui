@@ -4,7 +4,7 @@ import { datasets } from 'veda';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
-import { Card } from '$components/common/card';
+import { Card, CardTopicsList } from '$components/common/card';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
 import {
   Continuum,
@@ -15,6 +15,7 @@ import {
 import { useReactIndianaScrollControl } from '$styles/continuum/use-react-indiana-scroll-controls';
 import { ContinuumScrollIndicator } from '$styles/continuum/continuum-scroll-indicator';
 import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
+import { Pill } from '$styles/pill';
 
 const FoldFeatured = styled(FoldGrid)`
   ${FoldHeader} {
@@ -50,8 +51,8 @@ function FeaturedDatasets() {
             startCol={continuumFoldStartCols}
             spanCols={continuumFoldSpanCols}
             render={(bag) => {
-              return allDatasets.map((t) => (
-                <ContinuumGridItem {...bag} key={t.id}>
+              return allDatasets.map((d) => (
+                <ContinuumGridItem {...bag} key={d.id}>
                   <Card
                     onCardClickCapture={(e) => {
                       // If the user was scrolling and let go of the mouse on top of a
@@ -63,13 +64,25 @@ function FeaturedDatasets() {
                     }}
                     cardType='featured'
                     linkLabel='View more'
-                    linkTo={getDatasetPath(t)}
-                    title={t.name}
+                    linkTo={getDatasetPath(d)}
+                    title={d.name}
                     parentName='Dataset'
                     parentTo={DATASETS_PATH}
-                    description={t.description}
-                    imgSrc={t.media?.src}
-                    imgAlt={t.media?.alt}
+                    description={d.description}
+                    imgSrc={d.media?.src}
+                    imgAlt={d.media?.alt}
+                    footerContent={
+                      d.thematics.length ? (
+                        <CardTopicsList>
+                          <dt>Topics</dt>
+                          {d.thematics.map((t) => (
+                            <dd key={t}>
+                              <Pill>{t}</Pill>
+                            </dd>
+                          ))}
+                        </CardTopicsList>
+                      ) : null
+                    }
                   />
                 </ContinuumGridItem>
               ));

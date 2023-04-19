@@ -222,6 +222,7 @@ export const CardTopicsList = styled.dl`
   display: flex;
   gap: ${variableGlsp(0.25)};
   max-width: 100%;
+  width: 100%;
   overflow: hidden;
   mask-image: linear-gradient(
     to right,
