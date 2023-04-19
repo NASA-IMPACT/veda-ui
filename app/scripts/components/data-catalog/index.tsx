@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasets } from 'veda';
 import { Link } from 'react-router-dom';
+import { VerticalDivider } from '@devseed-ui/toolbar';
 import { Subtitle } from '@devseed-ui/typography';
 
 import BrowseControls from './browse-controls';
@@ -16,7 +17,12 @@ import {
   FoldHeadline,
   FoldTitle
 } from '$components/common/fold';
-import { Card, CardList, CardTopicsList } from '$components/common/card';
+import {
+  Card,
+  CardList,
+  CardMeta,
+  CardTopicsList
+} from '$components/common/card';
 import EmptyHub from '$components/common/empty-hub';
 import { PageMainContent } from '$styles/page';
 import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
@@ -154,6 +160,30 @@ function DataCatalog() {
               <li key={d.id}>
                 <Card
                   cardType='cover'
+                  overline={
+                    <CardMeta>
+                      <Link
+                        to={`${DATASETS_PATH}?${Actions.SOURCE}=${'eis'}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onAction(Actions.SOURCE, 'eis');
+                        }}
+                      >
+                        By NASA EODIS
+                      </Link>
+                      <VerticalDivider variation='light' />
+                      <Link
+                        to={`${DATASETS_PATH}?${Actions.SORT_FIELD}=date`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onAction(Actions.SORT_FIELD, 'date');
+                        }}
+                      >
+                        Updated{' '}
+                        <time dateTime='2023-01-01'>X time ago</time>
+                      </Link>
+                    </CardMeta>
+                  }
                   linkLabel='View more'
                   linkTo={getDatasetPath(d)}
                   title={

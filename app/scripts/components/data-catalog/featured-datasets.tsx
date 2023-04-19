@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { datasets } from 'veda';
+import { VerticalDivider } from '@devseed-ui/toolbar';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
-import { Card, CardTopicsList } from '$components/common/card';
+import { Card, CardMeta, CardTopicsList } from '$components/common/card';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
 import {
   Continuum,
@@ -66,6 +67,15 @@ function FeaturedDatasets() {
                     linkLabel='View more'
                     linkTo={getDatasetPath(d)}
                     title={d.name}
+                    overline={
+                      <CardMeta>
+                        <span>By NASA EODIS</span>
+                        <VerticalDivider variation='light' />
+                        <span>
+                          Updated <time dateTime='2023-01-01'>X time ago</time>
+                        </span>
+                      </CardMeta>
+                    }
                     parentName='Dataset'
                     parentTo={DATASETS_PATH}
                     description={d.description}

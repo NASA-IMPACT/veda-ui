@@ -178,6 +178,26 @@ export const CardOverline = styled(Overline)`
   }
 `;
 
+export const CardMeta = styled.div`
+  display: flex;
+  gap: ${glsp(0.25)};
+
+  > a {
+    color: inherit;
+    pointer-events: all;
+
+    &,
+    &:visited {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    &:hover {
+      opacity: 0.64;
+    }
+  }
+`;
+
 const CardLabel = styled.span`
   position: absolute;
   z-index: 1;
