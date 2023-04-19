@@ -3,8 +3,8 @@ import styled, { css } from 'styled-components';
 import { FormInput, formSkinStylesProps } from '@devseed-ui/form';
 import { Button } from '@devseed-ui/button';
 import {
-  CollecticonMagnifierLeft,
-  CollecticonXmarkSmall
+  CollecticonDiscXmark,
+  CollecticonMagnifierLeft
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
 
@@ -87,13 +87,14 @@ function SearchField(props: SearchFieldProps) {
         />
 
         <Button
+          disabled={!value.length}
           size={size}
           fitting='skinny'
           onClick={() => {
             onChange('');
           }}
         >
-          <CollecticonXmarkSmall meaningful title='Clear search' />
+          <CollecticonDiscXmark meaningful title='Clear search' />
         </Button>
       </SearchFieldClearable>
     </SearchFieldWrapper>
