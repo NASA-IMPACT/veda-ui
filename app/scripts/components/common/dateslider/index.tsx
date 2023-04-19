@@ -80,16 +80,16 @@ export default function DateSliderControl(props: DateSliderControlProps) {
   // horizontal drag window into account.
   const minX = zoomXTranslation * -1;
   const maxX = width - zoomXTranslation;
-  // Using the scale, get the indexes of the data that would be rendered.
-  const indexes = [
+  // Using the scale, get the indices of the data that would be rendered.
+  const indices = [
     Math.max(Math.floor(x.invert(minX)), 0),
     // Add one to account for when there's a single data point.
     Math.ceil(x.invert(maxX)) + 1
   ];
 
   const dataToRender = useMemo(
-    () => data.slice(...indexes),
-    [data, ...indexes]
+    () => data.slice(...indices),
+    [data, ...indices]
   );
 
   // Recenter the slider to the selected date when data changes or when the
