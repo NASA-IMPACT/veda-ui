@@ -73,6 +73,11 @@ function renderCardType({ cardType }: CardSelfProps) {
         padding-top: ${variableGlsp()};
         color: ${themeVal('color.surface')};
         justify-content: flex-end;
+        min-height: 16rem;
+
+        ${media.mediumUp`
+          min-height: 28rem;
+        `}
 
         ${CardFigure} {
           position: absolute;
