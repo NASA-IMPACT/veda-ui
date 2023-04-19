@@ -20,9 +20,11 @@ import {
 
 import DropdownScrollable from '$components/common/dropdown-scrollable';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
+import { variableGlsp } from '$styles/variable-utils';
 import { FoldHeadActions } from '$components/common/fold';
 import SearchField from '$components/common/search-field';
 import { useMediaQuery } from '$utils/use-media-query';
+
 
 const BrowseControlsWrapper = styled(FoldHeadActions)`
   .search-field {
@@ -59,7 +61,9 @@ const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
 
 const ShadowScrollbarInner = styled.div`
   display: flex;
-  gap: ${glsp()};
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: ${variableGlsp(0.5)};
 
   > * {
     flex-shrink: 0;

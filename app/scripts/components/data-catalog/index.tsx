@@ -197,7 +197,7 @@ function DataCatalog() {
           </CardList>
         ) : (
           <EmptyHub>
-            There are no datasets to show with the selected filters
+            There are no datasets to show with the selected filters.
           </EmptyHub>
         )}
       </Fold>
