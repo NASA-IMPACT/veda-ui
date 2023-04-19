@@ -1,19 +1,21 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
-import { scaleTime, select, zoom } from 'd3';
+import { interpolate, scaleLinear, select, zoom } from 'd3';
 import { themeVal } from '@devseed-ui/theme-provider';
 
-import { getZoomTranslateExtent, useChartDimensions } from './utils';
+import { findDate, getZoomTranslateExtent, useChartDimensions } from './utils';
 import { DataPoints, DataLine } from './data-points';
 import TriggerRect from './trigger-rect';
 import { FaderDefinition, MASK_ID } from './faders';
 import { DateAxis, DateAxisParent } from './date-axis';
 import {
   DATA_POINT_WIDTH,
-  DateSliderData,
-  DateSliderTimeDensity
+  DateSliderDataItem,
+  DateSliderTimeDensity,
+  RANGE_PADDING
 } from './constants';
+
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import useReducedMotion from '$utils/use-prefers-reduced-motion';
 
@@ -23,13 +25,13 @@ const StyledSvg = styled.svg`
   font-family: ${themeVal('type.base.family')};
 `;
 
-type DateSliderControlProps = {
+interface DateSliderControlProps {
   id?: string;
-  data: DateSliderData;
+  data: DateSliderDataItem[];
   value?: Date;
   timeDensity: DateSliderTimeDensity;
   onChange: (value: { date: Date }) => void;
-};
+}
 
 export default function DateSliderControl(props: DateSliderControlProps) {
   const { id, data, value, timeDensity, onChange } = props;
@@ -41,14 +43,14 @@ export default function DateSliderControl(props: DateSliderControlProps) {
   // Unique id creator
   const getUID = useMemo(() => {
     const rand = `ts-${Math.random().toString(36).substring(2, 8)}`;
-    return (base) => `${id || rand}-${base}`;
+    return (base) => `${id ?? rand}-${base}`;
   }, [id]);
 
   const x = useMemo(() => {
     const dataWidth = data.length * DATA_POINT_WIDTH;
-    return scaleTime()
-      .domain([data[0].date, data.last.date])
-      .range([16, Math.max(dataWidth, width) - 16]);
+    return scaleLinear()
+      .domain([data[0].index, data.last.index])
+      .range([RANGE_PADDING, Math.max(dataWidth, width) - RANGE_PADDING]);
   }, [data, width]);
 
   const [zoomXTranslation, setZoomXTranslation] = useState(0);
@@ -56,6 +58,8 @@ export default function DateSliderControl(props: DateSliderControlProps) {
     () =>
       zoom<SVGRectElement, unknown>()
         .translateExtent(getZoomTranslateExtent(data, x))
+        // Remove the zoom interpolation so it doesn't zoom back and forth.
+        .interpolate(interpolate)
         .on('zoom', (event) => {
           setZoomXTranslation(event.transform.x);
         }),
@@ -70,9 +74,28 @@ export default function DateSliderControl(props: DateSliderControlProps) {
     }
   }, []);
 
+  // Limit the data that is rendered so that performance is not hindered by very
+  // large datasets.
+  // Lower and Upper pixel bounds of the data that should be rendered taking the
+  // horizontal drag window into account.
+  const minX = zoomXTranslation * -1;
+  const maxX = width - zoomXTranslation;
+  // Using the scale, get the indices of the data that would be rendered.
+  const indices = [
+    Math.max(Math.floor(x.invert(minX)), 0),
+    // Add one to account for when there's a single data point.
+    Math.ceil(x.invert(maxX)) + 1
+  ];
+
+  const dataToRender = useMemo(
+    () => data.slice(...indices),
+    [data, ...indices]
+  );
+
   // Recenter the slider to the selected date when data changes or when the
   // chart gets resized.
-  useRecenterSlider({ value, width, x, zoomBehavior, svgRef });
+  const item = findDate(data, value, timeDensity);
+  useRecenterSlider({ value: item?.index, width, x, zoomBehavior, svgRef });
 
   return (
     <div style={{ position: 'relative' }} ref={observe}>
@@ -91,7 +114,7 @@ export default function DateSliderControl(props: DateSliderControlProps) {
           <g mask={`url(#${getUID(MASK_ID)})`}>
             <DataLine x={x} zoomXTranslation={zoomXTranslation} />
             <DataPoints
-              data={data}
+              data={dataToRender}
               hoveringDataPoint={hoveringDataPoint}
               value={value}
               x={x}
@@ -99,14 +122,14 @@ export default function DateSliderControl(props: DateSliderControlProps) {
               timeDensity={timeDensity}
             />
             <DateAxis
-              data={data}
+              data={dataToRender}
               x={x}
               zoomXTranslation={zoomXTranslation}
               timeDensity={timeDensity}
             />
           </g>
           <DateAxisParent
-            data={data}
+            data={dataToRender}
             x={x}
             zoomXTranslation={zoomXTranslation}
             timeDensity={timeDensity}
@@ -138,13 +161,13 @@ function useRecenterSlider({ value, width, x, zoomBehavior, svgRef }) {
 
   const recenterFnRef = useRef<() => void>();
   recenterFnRef.current = () => {
-    if (!value) return;
+    if (isNaN(value)) return;
 
-    const triggerRect = select(svgRef.current)
+    select(svgRef.current)
       .select<SVGRectElement>('.trigger-rect')
       .transition()
-      .duration(500);
-    zoomBehavior.translateTo(triggerRect, x(value), 0);
+      .duration(500)
+      .call(zoomBehavior.translateTo, x(value), 0);
   };
 
   const debouncedRecenter = useMemo(
@@ -157,7 +180,7 @@ function useRecenterSlider({ value, width, x, zoomBehavior, svgRef }) {
 
   useEffectPrevious(
     (deps, mounted) => {
-      if (!value || !mounted) return;
+      if (isNaN(value) || !mounted) return;
 
       // No animation if reduce motion.
       if (reduceMotion) {
