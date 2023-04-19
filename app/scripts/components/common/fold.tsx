@@ -21,7 +21,8 @@ export const FoldGrid = styled(Hug)`
   padding-top: ${variableGlsp(2)};
   padding-bottom: ${variableGlsp(2)};
 
-  & + & {
+  & + &,
+  & + ${FoldBase} {
     padding-top: 0;
   }
 `;
