@@ -42,6 +42,10 @@ export const CardList = styled.ol`
   ${media.largeUp`
     grid-template-columns: repeat(3, 1fr);
   `}
+
+  > li {
+    min-width: 0;
+  }
 `;
 
 function renderCardType({ cardType }: CardSelfProps) {
