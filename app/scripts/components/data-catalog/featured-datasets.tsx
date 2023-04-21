@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { datasets } from 'veda';
-import { VerticalDivider } from '@devseed-ui/toolbar';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
@@ -69,11 +68,12 @@ function FeaturedDatasets() {
                     title={d.name}
                     overline={
                       <CardMeta>
-                        <span>By NASA EODIS</span>
-                        <VerticalDivider variation='light' />
+                        <span>By SOURCE</span>
+                        {/* TODO: Implement modified date: https://github.com/NASA-IMPACT/veda-ui/issues/514 */}
+                        {/* <VerticalDivider variation='light' />
                         <span>
                           Updated <time dateTime='2023-01-01'>X time ago</time>
-                        </span>
+                        </span> */}
                       </CardMeta>
                     }
                     parentName='Dataset'

@@ -321,7 +321,7 @@ function CardComponent(props: CardComponentProps) {
       <CardHeader>
         <CardHeadline>
           <CardTitle>{title}</CardTitle>
-          <CardOverline>
+          <CardOverline as='div'>
             {parentName && parentTo && (
               <CardLabel as={Link} to={parentTo}>
                 {parentName}

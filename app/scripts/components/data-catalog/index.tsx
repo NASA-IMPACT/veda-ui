@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasets } from 'veda';
 import { Link } from 'react-router-dom';
-import { VerticalDivider } from '@devseed-ui/toolbar';
 import { Subtitle } from '@devseed-ui/typography';
 
 import BrowseControls from './browse-controls';
@@ -46,21 +45,13 @@ const topicsOptions = [
   ...Array.from(new Set(allDatasets.flatMap((d) => d.thematics))).map((t) => ({
     id: t,
     name: t
-  })),
-  {
-    id: 'eis',
-    name: 'Earth Information Systems'
-  }
+  }))
 ];
 
 const sourcesOptions = [
   {
     id: 'all',
     name: 'All'
-  },
-  {
-    id: 'eis',
-    name: 'NASA Earth Information Systems'
   }
 ];
 
@@ -169,9 +160,10 @@ function DataCatalog() {
                           onAction(Actions.SOURCE, 'eis');
                         }}
                       >
-                        By NASA EODIS
+                        By SOURCE
                       </Link>
-                      <VerticalDivider variation='light' />
+                      {/* TODO: Implement modified date: https://github.com/NASA-IMPACT/veda-ui/issues/514 */}
+                      {/* <VerticalDivider variation='light' />
                       <Link
                         to={`${DATASETS_PATH}?${Actions.SORT_FIELD}=date`}
                         onClick={(e) => {
@@ -179,9 +171,8 @@ function DataCatalog() {
                           onAction(Actions.SORT_FIELD, 'date');
                         }}
                       >
-                        Updated{' '}
-                        <time dateTime='2023-01-01'>X time ago</time>
-                      </Link>
+                        Updated <time dateTime='2023-01-01'>X time ago</time>
+                      </Link> */}
                     </CardMeta>
                   }
                   linkLabel='View more'

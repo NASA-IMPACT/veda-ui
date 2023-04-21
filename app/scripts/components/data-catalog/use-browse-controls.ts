@@ -26,11 +26,12 @@ export const sortFieldsOptions: FilterOption[] = [
   {
     id: 'name',
     name: 'Name'
-  },
-  {
-    id: 'date',
-    name: 'Date (n/a)'
   }
+  // TODO: Implement date sorting: https://github.com/NASA-IMPACT/veda-ui/issues/514
+  // {
+  //   id: 'date',
+  //   name: 'Date (n/a)'
+  // }
 ];
 
 export const sortDirOptions: FilterOption[] = [
