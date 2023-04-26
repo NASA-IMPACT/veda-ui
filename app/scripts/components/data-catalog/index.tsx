@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasets } from 'veda';
 import { Link } from 'react-router-dom';
@@ -103,13 +103,17 @@ function DataCatalog() {
   const { topic, source, sortField, sortDir, onAction } = controlVars;
   const search = controlVars.search ?? '';
 
-  const displayDatasets = prepareDatasets(allDatasets, {
-    search,
-    topic,
-    source,
-    sortField,
-    sortDir
-  });
+  const displayDatasets = useMemo(
+    () =>
+      prepareDatasets(allDatasets, {
+        search,
+        topic,
+        source,
+        sortField,
+        sortDir
+      }),
+    [search, topic, source, sortField, sortDir]
+  );
 
   const isFiltering = !!(
     topic !== optionAll.id ||
