@@ -45,6 +45,11 @@ export const sortDirOptions: FilterOption[] = [
   }
 ];
 
+export const optionAll = {
+  id: 'all',
+  name: 'All'
+};
+
 export function useBrowserControls({
   topicsOptions,
   sourcesOptions

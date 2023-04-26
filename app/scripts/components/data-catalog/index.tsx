@@ -7,7 +7,7 @@ import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 
 import BrowseControls from './browse-controls';
-import { Actions, useBrowserControls } from './use-browse-controls';
+import { Actions, optionAll, useBrowserControls } from './use-browse-controls';
 import FeaturedDatasets from './featured-datasets';
 import DatasetMenu from './dataset-menu';
 
@@ -43,10 +43,7 @@ const DatasetCount = styled(Subtitle)`
 `;
 
 const topicsOptions = [
-  {
-    id: 'all',
-    name: 'All'
-  },
+  optionAll,
   // TODO: human readable values for Taxonomies
   ...Array.from(new Set(allDatasets.flatMap((d) => d.thematics || []))).map(
     (t) => ({
@@ -56,12 +53,7 @@ const topicsOptions = [
   )
 ];
 
-const sourcesOptions = [
-  {
-    id: 'all',
-    name: 'All'
-  }
-];
+const sourcesOptions = [optionAll];
 
 const prepareDatasets = (data: DatasetData[], options) => {
   const { sortField, sortDir, search, topic, source } = options;
@@ -79,11 +71,11 @@ const prepareDatasets = (data: DatasetData[], options) => {
     );
   }
 
-  if (topic !== 'all') {
+  if (topic !== optionAll.id) {
     filtered = filtered.filter((d) => d.thematics?.includes(topic));
   }
 
-  if (source !== 'all') {
+  if (source !== optionAll.id) {
     // TODO: Filter source
   }
 
@@ -119,7 +111,11 @@ function DataCatalog() {
     sortDir
   });
 
-  const isFiltering = !!(topic !== 'all' || source !== 'all' || search);
+  const isFiltering = !!(
+    topic !== optionAll.id ||
+    source !== optionAll.id ||
+    search
+  );
 
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
