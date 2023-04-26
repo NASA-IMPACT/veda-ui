@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { glsp, themeVal } from "@devseed-ui/theme-provider";
+import styled from 'styled-components';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 export const Pill = styled.span`
   display: inline-flex;
@@ -8,19 +8,22 @@ export const Pill = styled.span`
   border-radius: ${themeVal('shape.ellipsoid')};
   padding: ${glsp(0.125, 0.75)};
   background: ${themeVal('color.surface-100a')};
-  pointer-events: auto;
   transition: all 0.24s ease 0s;
   font-size: 0.75rem;
   line-height: 1.25rem;
   font-weight: ${themeVal('type.base.bold')};
   white-space: nowrap;
 
-  &,
-  &:visited {
-    text-decoration: none;
-  }
+  :is(a) {
+    pointer-events: auto;
 
-  &:hover {
-    opacity: 0.64;
+    &,
+    &:visited {
+      text-decoration: none;
+    }
+
+    &:hover {
+      opacity: 0.64;
+    }
   }
 `;
