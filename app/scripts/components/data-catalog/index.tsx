@@ -65,11 +65,12 @@ const prepareDatasets = (data: DatasetData[], options) => {
 
   // Does the free text search appear in specific fields?
   if (search.length >= 3) {
+    const searchLower = search.toLowerCase();
     filtered = filtered.filter(
       (d) =>
-        d.name.includes(search) ||
-        d.description.includes(search) ||
-        d.layers.some((l) => l.stacCol.includes(search))
+        d.name.toLowerCase().includes(searchLower) ||
+        d.description.toLowerCase().includes(searchLower) ||
+        d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower))
     );
   }
 
