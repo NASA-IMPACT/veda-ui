@@ -43,10 +43,12 @@ const topicsOptions = [
     name: 'All'
   },
   // TODO: human readable values for Taxonomies
-  ...Array.from(new Set(allDatasets.flatMap((d) => d.thematics))).map((t) => ({
-    id: t,
-    name: t
-  }))
+  ...Array.from(new Set(allDatasets.flatMap((d) => d.thematics || []))).map(
+    (t) => ({
+      id: t,
+      name: t
+    })
+  )
 ];
 
 const sourcesOptions = [
@@ -72,7 +74,7 @@ const prepareDatasets = (data: DatasetData[], options) => {
   }
 
   if (topic !== 'all') {
-    filtered = filtered.filter((d) => d.thematics.includes(topic));
+    filtered = filtered.filter((d) => d.thematics?.includes(topic));
   }
 
   if (source !== 'all') {
@@ -194,7 +196,7 @@ function DataCatalog() {
                   imgAlt={d.media?.alt}
                   footerContent={
                     <>
-                      {d.thematics.length ? (
+                      {d.thematics?.length ? (
                         <CardTopicsList>
                           <dt>Topics</dt>
                           {d.thematics.map((t) => (

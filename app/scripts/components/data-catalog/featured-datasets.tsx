@@ -85,7 +85,7 @@ function FeaturedDatasets() {
                     imgAlt={d.media?.alt}
                     footerContent={
                       <>
-                        {d.thematics.length ? (
+                        {d.thematics?.length ? (
                           <CardTopicsList>
                             <dt>Topics</dt>
                             {d.thematics.map((t) => (
