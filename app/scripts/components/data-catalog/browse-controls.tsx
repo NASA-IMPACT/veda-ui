@@ -25,7 +25,6 @@ import { FoldHeadActions } from '$components/common/fold';
 import SearchField from '$components/common/search-field';
 import { useMediaQuery } from '$utils/use-media-query';
 
-
 const BrowseControlsWrapper = styled(FoldHeadActions)`
   .search-field {
     order: -1;

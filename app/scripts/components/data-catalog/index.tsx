@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasets } from 'veda';
 import { Link } from 'react-router-dom';
@@ -6,13 +6,15 @@ import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 
-
 import BrowseControls from './browse-controls';
 import { Actions, useBrowserControls } from './use-browse-controls';
 import FeaturedDatasets from './featured-datasets';
 import DatasetMenu from './dataset-menu';
 
-import { LayoutProps } from '$components/common/layout-root';
+import {
+  LayoutProps,
+  useSlidingStickyHeaderProps
+} from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import {
   Fold,
@@ -32,6 +34,7 @@ import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
+
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
 const DatasetCount = styled(Subtitle)`
@@ -118,6 +121,9 @@ function DataCatalog() {
 
   const isFiltering = !!(topic !== 'all' || source !== 'all' || search);
 
+  const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
+  const { headerHeight } = useSlidingStickyHeaderProps();
+
   return (
     <PageMainContent>
       <LayoutProps
@@ -132,7 +138,12 @@ function DataCatalog() {
       <FeaturedDatasets />
 
       <Fold>
-        <FoldHeader>
+        <FoldHeader
+          ref={browseControlsHeaderRef}
+          style={{
+            scrollMarginTop: `${headerHeight + 16}px`
+          }}
+        >
           <FoldHeadline>
             <FoldTitle>Browse</FoldTitle>
           </FoldHeadline>
@@ -172,6 +183,7 @@ function DataCatalog() {
                         onClick={(e) => {
                           e.preventDefault();
                           onAction(Actions.SOURCE, 'eis');
+                          browseControlsHeaderRef.current?.scrollIntoView();
                         }}
                       >
                         By SOURCE
@@ -218,6 +230,7 @@ function DataCatalog() {
                                 onClick={(e) => {
                                   e.preventDefault();
                                   onAction(Actions.TOPIC, t);
+                                  browseControlsHeaderRef.current?.scrollIntoView();
                                 }}
                               >
                                 {t}
