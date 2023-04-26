@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { DatasetData, datasets } from 'veda';
 import { Link } from 'react-router-dom';
 import { Subtitle } from '@devseed-ui/typography';
+import { Button } from '@devseed-ui/button';
+import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
+
 
 import BrowseControls from './browse-controls';
 import { Actions, useBrowserControls } from './use-browse-controls';
@@ -29,7 +32,6 @@ import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
-
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
 const DatasetCount = styled(Subtitle)`
@@ -114,6 +116,8 @@ function DataCatalog() {
     sortDir
   });
 
+  const isFiltering = !!(topic !== 'all' || source !== 'all' || search);
+
   return (
     <PageMainContent>
       <LayoutProps
@@ -146,7 +150,13 @@ function DataCatalog() {
             plural='datasets'
             count={displayDatasets.length}
             showCount={true}
-          />
+          />{' '}
+          out of {allDatasets.length}.{' '}
+          {isFiltering && (
+            <Button forwardedAs={Link} to={DATASETS_PATH} size='small'>
+              Clear filters <CollecticonXmarkSmall />
+            </Button>
+          )}
         </DatasetCount>
 
         {displayDatasets.length ? (
