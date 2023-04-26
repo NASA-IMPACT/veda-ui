@@ -54,7 +54,7 @@ function DatasetsOverview() {
                   Explore data
                 </Button>
                 <NotebookConnectButton
-                  dataset={dataset}
+                  dataset={dataset.data}
                   size='large'
                   compact={false}
                   variation='achromic-outline'

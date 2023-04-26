@@ -4,6 +4,8 @@ import { datasets } from 'veda';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
+import DatasetMenu from './dataset-menu';
+
 import { Card, CardMeta, CardTopicsList } from '$components/common/card';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
 import {
@@ -82,16 +84,19 @@ function FeaturedDatasets() {
                     imgSrc={d.media?.src}
                     imgAlt={d.media?.alt}
                     footerContent={
-                      d.thematics.length ? (
-                        <CardTopicsList>
-                          <dt>Topics</dt>
-                          {d.thematics.map((t) => (
-                            <dd key={t}>
-                              <Pill>{t}</Pill>
-                            </dd>
-                          ))}
-                        </CardTopicsList>
-                      ) : null
+                      <>
+                        {d.thematics.length ? (
+                          <CardTopicsList>
+                            <dt>Topics</dt>
+                            {d.thematics.map((t) => (
+                              <dd key={t}>
+                                <Pill>{t}</Pill>
+                              </dd>
+                            ))}
+                          </CardTopicsList>
+                        ) : null}
+                        <DatasetMenu dataset={d} />
+                      </>
                     }
                   />
                 </ContinuumGridItem>

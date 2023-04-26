@@ -7,6 +7,7 @@ import { Subtitle } from '@devseed-ui/typography';
 import BrowseControls from './browse-controls';
 import { Actions, useBrowserControls } from './use-browse-controls';
 import FeaturedDatasets from './featured-datasets';
+import DatasetMenu from './dataset-menu';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -192,25 +193,28 @@ function DataCatalog() {
                   imgSrc={d.media?.src}
                   imgAlt={d.media?.alt}
                   footerContent={
-                    d.thematics.length ? (
-                      <CardTopicsList>
-                        <dt>Topics</dt>
-                        {d.thematics.map((t) => (
-                          <dd key={t}>
-                            <Pill
-                              as={Link}
-                              to={`${DATASETS_PATH}?${Actions.TOPIC}=${t}`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                onAction(Actions.TOPIC, t);
-                              }}
-                            >
-                              {t}
-                            </Pill>
-                          </dd>
-                        ))}
-                      </CardTopicsList>
-                    ) : null
+                    <>
+                      {d.thematics.length ? (
+                        <CardTopicsList>
+                          <dt>Topics</dt>
+                          {d.thematics.map((t) => (
+                            <dd key={t}>
+                              <Pill
+                                as={Link}
+                                to={`${DATASETS_PATH}?${Actions.TOPIC}=${t}`}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  onAction(Actions.TOPIC, t);
+                                }}
+                              >
+                                {t}
+                              </Pill>
+                            </dd>
+                          ))}
+                        </CardTopicsList>
+                      ) : null}
+                      <DatasetMenu dataset={d} />
+                    </>
                   }
                 />
               </li>

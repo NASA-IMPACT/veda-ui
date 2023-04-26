@@ -241,6 +241,10 @@ export const CardFooter = styled.div`
     padding-top: 0;
     margin-top: ${variableGlsp(-0.5)};
   }
+
+  button {
+    pointer-events: all;
+  }
 `;
 
 export const CardTopicsList = styled.dl`
