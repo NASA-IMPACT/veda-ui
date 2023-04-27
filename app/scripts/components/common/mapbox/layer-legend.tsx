@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import { AccordionFold, AccordionManager } from '@devseed-ui/accordion';
@@ -231,7 +231,7 @@ function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   return (
     <LegendList>
       {stops.map((stop) => (
-        <React.Fragment key={stop.color}>
+        <Fragment key={stop.color}>
           <dt>
             <Tip content={stop.label}>
               <LegendSwatch stops={stop.color} hasHelp>
@@ -250,7 +250,7 @@ function LayerCategoricalGraphic(props: LayerLegendCategorical) {
               <span>{stop.label}</span>
             </span>
           </dd>
-        </React.Fragment>
+        </Fragment>
       ))}
     </LegendList>
   );

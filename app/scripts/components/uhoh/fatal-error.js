@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import T from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import nl2br from 'react-nl2br';
@@ -16,7 +16,7 @@ import { makeAbsUrl } from '$utils/history';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { HintedError, HintedErrorDisplay } from '$utils/hinted-error';
 
-export default class ErrorBoundary extends React.Component {
+export default class ErrorBoundary extends Component {
   static getDerivedStateFromError(error) {
     return { error: error };
   }

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { ReactNode, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Button, ButtonProps } from '@devseed-ui/button';
@@ -202,7 +202,7 @@ export const NotebookConnectButton = styled(NotebookConnectButtonSelf)`
 `;
 
 interface NotebookConnectCalloutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   datasetId: string;
   className?: string;
 }

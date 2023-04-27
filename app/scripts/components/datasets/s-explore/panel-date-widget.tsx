@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { Fragment, ReactNode, useMemo } from 'react';
 import {
   CollecticonCalendar,
   CollecticonChevronLeftSmall,
@@ -42,13 +42,13 @@ function getDatePickerView(timeDensity?: TimeDensity) {
 }
 
 interface PanelDateWidgetProps {
-  title: React.ReactNode;
+  title: ReactNode;
   value: DropdownDatePickerProps['value'];
   onConfirm: DropdownDatePickerProps['onConfirm'];
   timeDensity?: TimeDensity;
   availableDates?: Date[];
   isClearable?: boolean;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const formatDate = (date: Date | null, view: string) => {
@@ -102,7 +102,7 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
             </WidgetItemHeadline>
             {!!availableDates && (
               <Toolbar size='small'>
-                <React.Fragment>
+                <Fragment>
                   <ToolbarIconButton
                     disabled={currIndex <= 0}
                     onClick={() => {
@@ -153,7 +153,7 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
                       );
                     }}
                   />
-                </React.Fragment>
+                </Fragment>
               </Toolbar>
             )}
           </WidgetItemHGroup>

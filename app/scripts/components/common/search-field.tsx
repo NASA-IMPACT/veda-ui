@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { InputHTMLAttributes, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import {
   FormHelperMessage,
@@ -80,7 +80,7 @@ const FormInputSearch = styled(FormInput)`
 
 interface SearchFieldProps
   extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
+    InputHTMLAttributes<HTMLInputElement>,
     'size' | 'onChange'
   > {
   size: formSkinStylesProps['size'];

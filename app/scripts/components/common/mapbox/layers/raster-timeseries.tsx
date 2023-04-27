@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import qs from 'qs';
-import mapboxgl, {
+import {
+  Map as MapboxMap,
   AnyLayer,
   AnySourceImpl,
   GeoJSONSourceRaw,
@@ -36,7 +37,7 @@ interface MapLayerRasterTimeseriesProps {
   id: string;
   stacCol: string;
   date?: Date;
-  mapInstance: mapboxgl.Map;
+  mapInstance: MapboxMap;
   sourceParams: object;
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import { Dropdown, DropTitle } from '@devseed-ui/dropdown';
@@ -145,7 +145,7 @@ export default function AnalysisHeadActions(props: AnalysisHeadActionsProps) {
           {dataMetrics.map((metric) => {
             const active = !!activeMetrics.find((m) => m.id === metric.id);
             return (
-              <React.Fragment key={metric.id}>
+              <Fragment key={metric.id}>
                 <LegendSwatch disabled={!active}>
                   <svg height='8' width='8'>
                     <title>{theme.color?.[metric.themeColor]}</title>
@@ -158,7 +158,7 @@ export default function AnalysisHeadActions(props: AnalysisHeadActionsProps) {
                   </svg>
                 </LegendSwatch>
                 <LegendLabel disabled={!active}>{metric.label}</LegendLabel>
-              </React.Fragment>
+              </Fragment>
             );
           })}
         </AnalysisLegendList>

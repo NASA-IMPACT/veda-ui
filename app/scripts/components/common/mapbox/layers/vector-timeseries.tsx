@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'styled-components';
 import qs from 'qs';
-import mapboxgl, {
+import {
+  Map as MapboxMap,
   AnyLayer,
   AnySourceImpl,
   LngLatLike,
@@ -21,7 +22,7 @@ interface MapLayerVectorTimeseriesProps {
   id: string;
   stacCol: string;
   date?: Date;
-  mapInstance: mapboxgl.Map;
+  mapInstance: MapboxMap;
   sourceParams: object;
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;

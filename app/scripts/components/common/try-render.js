@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { isValidElement } from 'react';
 
 /**
  * Tries to render the given function falling back to the children if it is not
@@ -16,14 +16,14 @@ export default function Try(props) {
 
   let value = children;
 
-  // Styled-components fail with React.isValidElement, so checking directly.
-  if (React.isValidElement(F) || F?.styledComponentId) {
+  // Styled-components fail with isValidElement, so checking directly.
+  if (isValidElement(F) || F?.styledComponentId) {
     value = <F {...props} />;
   } else if (typeof F === 'function') {
     value = F(rest);
   }
 
-  if (React.isValidElement(W) || W?.styledComponentId) {
+  if (isValidElement(W) || W?.styledComponentId) {
     return value ? <W>{value}</W> : null;
   }
 

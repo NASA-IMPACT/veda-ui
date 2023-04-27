@@ -1,5 +1,5 @@
+import React, { Fragment } from 'react';
 import { ScaleTime } from 'd3';
-import React from 'react';
 import { DateSliderData } from './constants';
 
 import { getZoomTranslateExtent } from './utils';
@@ -41,7 +41,7 @@ export function FaderDefinition(props: FaderDefinitionProps) {
   const rightOpc = Math.max(fadePx * xTranslation + b2, 0);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <linearGradient id={getUID(FADE_ID)}>
         <stop
           className='fade-stop-0'
@@ -77,6 +77,6 @@ export function FaderDefinition(props: FaderDefinitionProps) {
           fill={`url(#${getUID(FADE_ID)})`}
         />
       </mask>
-    </React.Fragment>
+    </Fragment>
   );
 }

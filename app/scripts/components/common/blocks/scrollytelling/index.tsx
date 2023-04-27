@@ -1,4 +1,7 @@
 import React, {
+  Children,
+  FunctionComponent,
+  ReactElement,
   useCallback,
   useEffect,
   useMemo,
@@ -11,8 +14,9 @@ import styled, { css } from 'styled-components';
 import * as dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
+import { Map as MapboxMap } from 'mapbox-gl';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
-import mapboxgl from 'mapbox-gl';
+
 import { BlockErrorBoundary } from '..';
 import {
   chapterDisplayName,
@@ -43,7 +47,7 @@ import { Basemap } from '$components/common/mapbox/layers/basemap';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
-  Component: React.FunctionComponent<any> | null;
+  Component: FunctionComponent<any> | null;
   runtimeData: { datetime?: Date; id: string };
 } | null;
 
@@ -79,7 +83,7 @@ const TheChapters = styled(Hug)`
  */
 function useChapterPropsFromChildren(children): ScrollyChapter[] {
   return useMemo(() => {
-    const chapters = React.Children.toArray(children) as React.ReactElement<
+    const chapters = Children.toArray(children) as ReactElement<
       ChapterProps,
       any
     >[];
@@ -264,7 +268,7 @@ function Scrollytelling(props) {
     useSlidingStickyHeaderProps();
 
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map>(null);
+  const mapRef = useRef<MapboxMap>(null);
   const [isMapLoaded, setMapLoaded] = useState(false);
 
   // Extract the props from the chapters.

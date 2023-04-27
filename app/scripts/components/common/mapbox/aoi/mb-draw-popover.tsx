@@ -1,4 +1,5 @@
 import React, { MutableRefObject, useMemo } from 'react';
+import { Map as MapboxMap } from 'mapbox-gl';
 import styled from 'styled-components';
 import centroid from '@turf/centroid';
 import { CollecticonTrashBin } from '@devseed-ui/collecticons';
@@ -13,7 +14,7 @@ const ActionPopoverInner = styled.div`
 `;
 
 interface MbDrawPopoverProps {
-  mapRef: MutableRefObject<mapboxgl.Map | null>;
+  mapRef: MutableRefObject<MapboxMap | null>;
   onChange?: AoiChangeListener;
   selectedContext: AoiState['selectedContext'];
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
@@ -45,7 +45,7 @@ export function ChartCardNoMetric() {
   );
 }
 
-export function ChartCardAlert(props: { message: React.ReactNode }) {
+export function ChartCardAlert(props: { message: ReactNode }) {
   return (
     <MessageWrapper isError>
       <CollecticonCircleXmark size='xlarge' />

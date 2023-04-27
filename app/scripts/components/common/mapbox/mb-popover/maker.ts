@@ -1,8 +1,8 @@
-import mapboxgl from 'mapbox-gl';
+import { Marker, MarkerOptions, Map as MapboxMap } from 'mapbox-gl';
 
 type MapboxMarkerClickableListener = (coords: [number, number]) => void;
 
-interface MapboxMarkerClickable extends mapboxgl.Marker {
+interface MapboxMarkerClickable extends Marker {
   onClick: (listener: MapboxMarkerClickableListener) => MapboxMarkerClickable;
 }
 
@@ -25,11 +25,8 @@ interface MapboxMarkerClickable extends mapboxgl.Marker {
  * @param {object} map Mapbox ma instance.
  * @param {object} opt Mapbox marker options as defined in the documentation.
  */
-export const createMbMarker = (
-  map: mapboxgl.Map,
-  opt?: mapboxgl.MarkerOptions
-) => {
-  const mk = new mapboxgl.Marker(opt);
+export const createMbMarker = (map: MapboxMap, opt?: MarkerOptions) => {
+  const mk = new Marker(opt);
   let onClickListener: MapboxMarkerClickableListener | undefined;
 
   const onMapClick = (e) => {

@@ -1,5 +1,6 @@
 import { AnyLayer, AnySourceImpl, Style } from 'mapbox-gl';
 import React, {
+  ReactNode,
   createContext,
   useCallback,
   useContext,
@@ -103,7 +104,7 @@ export function Styles({
   children
 }: {
   onStyleUpdate?: (style: Style) => void;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }) {
   const [stylesData, setStylesData] = useState<Record<string, GeneratorParams>>(
     {}

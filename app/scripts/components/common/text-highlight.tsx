@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentType, ReactNode } from 'react';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 
@@ -10,7 +10,7 @@ const SearchHighlight = styled.mark`
 interface TextHighlightProps {
   children: string;
   value?: string;
-  highlightEl?: React.ComponentType | keyof JSX.IntrinsicElements;
+  highlightEl?: ComponentType | keyof JSX.IntrinsicElements;
   disabled?: boolean;
 }
 
@@ -24,7 +24,7 @@ export default function TextHighlight(props: TextHighlightProps) {
   // searches into account.
   const regex = new RegExp(value, 'ig');
   /* eslint-disable-next-line prefer-const */
-  let highlighted: React.ReactNode[] = [];
+  let highlighted: ReactNode[] = [];
   let workingIdx = 0;
   let m;
   /* eslint-disable-next-line no-cond-assign */

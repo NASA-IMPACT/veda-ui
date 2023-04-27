@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -95,7 +95,7 @@ function CustomCursor(props) {
   return <Curve {...props} />;
 }
 
-export default React.forwardRef<ChartWrapperRef, RLineChartProps>(
+export default forwardRef<ChartWrapperRef, RLineChartProps>(
   function RLineChart(props, ref) {
     const {
       chartData,
