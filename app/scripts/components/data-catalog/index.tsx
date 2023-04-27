@@ -86,7 +86,8 @@ const prepareDatasets = (data: DatasetData[], options) => {
       (d) =>
         d.name.toLowerCase().includes(searchLower) ||
         d.description.toLowerCase().includes(searchLower) ||
-        d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower))
+        d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower)) ||
+        d.thematics?.some((t) => t.toLowerCase().includes(searchLower))
     );
   }
 
@@ -252,7 +253,12 @@ function DataCatalog() {
                                   browseControlsHeaderRef.current?.scrollIntoView();
                                 }}
                               >
-                                {t}
+                                <TextHighlight
+                                  value={search}
+                                  disabled={search.length < 3}
+                                >
+                                  {t}
+                                </TextHighlight>
                               </Pill>
                             </dd>
                           ))}
