@@ -1,6 +1,10 @@
 import React, { useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { FormInput, formSkinStylesProps } from '@devseed-ui/form';
+import {
+  FormHelperMessage,
+  FormInput,
+  formSkinStylesProps
+} from '@devseed-ui/form';
 import { Button } from '@devseed-ui/button';
 import {
   CollecticonDiscXmark,
@@ -9,6 +13,37 @@ import {
 import { themeVal } from '@devseed-ui/theme-provider';
 
 const SearchFieldWrapper = styled.div`
+  display: flex;
+  flex-flow: column;
+  align-items: flex-end;
+`;
+
+interface SearchFieldMessageProps {
+  isOpen: boolean;
+  isFocused: boolean;
+}
+
+const SearchFieldMessage = styled(FormHelperMessage)<SearchFieldMessageProps>`
+  line-height: 1.5rem;
+  transition: max-width 320ms ease-in-out, opacity 160ms ease-in-out 160ms;
+  white-space: nowrap;
+  max-width: 0;
+  opacity: 0;
+
+  ${({ isOpen }) =>
+    isOpen &&
+    css`
+      max-width: 15rem;
+    `}
+
+  ${({ isFocused }) =>
+    isFocused &&
+    css`
+      opacity: 1;
+    `}
+`;
+
+const SearchFieldContainer = styled.div`
   position: relative;
   display: flex;
 
@@ -60,45 +95,52 @@ function SearchField(props: SearchFieldProps) {
   const fieldRef = useRef<HTMLInputElement>(null);
   const [isFocused, setFocused] = useState(false);
 
+  const isOpen = isFocused || !!value.length || !!keepOpen;
+
   return (
     <SearchFieldWrapper className='search-field'>
-      <Button
-        size={size}
-        fitting='skinny'
-        onClick={() => {
-          fieldRef.current?.focus();
-          setFocused(true);
-        }}
-      >
-        <CollecticonMagnifierLeft meaningful title='Open search' />
-      </Button>
-      <SearchFieldClearable isOpen={isFocused || !!value.length || !!keepOpen}>
-        <FormInputSearch
-          ref={fieldRef}
-          {...rest}
+      <SearchFieldContainer>
+        <Button
           size={size}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => {
+          fitting='skinny'
+          onClick={() => {
+            fieldRef.current?.focus();
             setFocused(true);
           }}
-          onBlur={() => {
-            setFocused(false);
-          }}
-        />
-
-        {!!value.length && (
-          <Button
+        >
+          <CollecticonMagnifierLeft meaningful title='Open search' />
+        </Button>
+        <SearchFieldClearable isOpen={isOpen}>
+          <FormInputSearch
+            ref={fieldRef}
+            {...rest}
             size={size}
-            fitting='skinny'
-            onClick={() => {
-              onChange('');
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onFocus={() => {
+              setFocused(true);
             }}
-          >
-            <CollecticonDiscXmark meaningful title='Clear search' />
-          </Button>
-        )}
-      </SearchFieldClearable>
+            onBlur={() => {
+              setFocused(false);
+            }}
+          />
+
+          {!!value.length && (
+            <Button
+              size={size}
+              fitting='skinny'
+              onClick={() => {
+                onChange('');
+              }}
+            >
+              <CollecticonDiscXmark meaningful title='Clear search' />
+            </Button>
+          )}
+        </SearchFieldClearable>
+      </SearchFieldContainer>
+      <SearchFieldMessage isOpen={isOpen} isFocused={isFocused}>
+        Minimum 3 characters
+      </SearchFieldMessage>
     </SearchFieldWrapper>
   );
 }

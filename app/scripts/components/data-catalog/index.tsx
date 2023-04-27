@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasets } from 'veda';
 import { Link } from 'react-router-dom';
-import { glsp } from '@devseed-ui/theme-provider';
+import { glsp, media } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
@@ -47,6 +47,18 @@ const DatasetCount = styled(Subtitle)`
     text-transform: uppercase;
     line-height: 1.5rem;
   }
+`;
+
+const BrowseHeader = styled(FoldHeader)`
+  ${media.largeUp`
+    ${FoldHeadline} {
+      align-self: flex-start;
+    }
+
+    ${BrowseControls} {
+      padding-top: 1rem;
+    }
+  `}
 `;
 
 const topicsOptions = [
@@ -145,7 +157,7 @@ function DataCatalog() {
       <FeaturedDatasets />
 
       <Fold>
-        <FoldHeader
+        <BrowseHeader
           ref={browseControlsHeaderRef}
           style={{
             scrollMarginTop: `${headerHeight + 16}px`
@@ -159,7 +171,7 @@ function DataCatalog() {
             topicsOptions={topicsOptions}
             sourcesOptions={sourcesOptions}
           />
-        </FoldHeader>
+        </BrowseHeader>
 
         <DatasetCount>
           <span>

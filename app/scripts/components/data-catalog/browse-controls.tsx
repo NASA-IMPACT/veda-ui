@@ -61,7 +61,6 @@ const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
 const ShadowScrollbarInner = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
   gap: ${variableGlsp(0.5)};
 
   > * {
@@ -87,7 +86,8 @@ function BrowseControls(props: BrowseControlsProps) {
     search,
     sortField,
     sortDir,
-    onAction
+    onAction,
+    ...rest
   } = props;
 
   const currentSortField = sortFieldsOptions.find((s) => s.id === sortField)!;
@@ -95,7 +95,7 @@ function BrowseControls(props: BrowseControlsProps) {
   const { isLargeUp } = useMediaQuery();
 
   return (
-    <BrowseControlsWrapper>
+    <BrowseControlsWrapper {...rest}>
       <BrowseControlsShadowScrollbar
         scrollbarsProps={shadowScrollbarProps}
         bottomShadowVariation='none'
@@ -177,7 +177,9 @@ function BrowseControls(props: BrowseControlsProps) {
   );
 }
 
-export default BrowseControls;
+export default styled(BrowseControls)`
+/* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
+`;
 
 interface DropdownOptionsProps {
   size: ButtonProps['size'];
