@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import {
   FormInput,
   FormGroupStructure,
@@ -16,7 +16,7 @@ interface StressedFormGroupInputProps {
   inputSize?: formSkinStylesProps['size'];
   placeholder?: number | string;
   validate: (value: string) => boolean;
-  onChange: (draftValue: string, setDraftValue: React.Dispatch<string>) => void;
+  onChange: (draftValue: string, setDraftValue: Dispatch<string>) => void;
   helper?: JSX.Element | null;
   hideHeader: boolean;
 }

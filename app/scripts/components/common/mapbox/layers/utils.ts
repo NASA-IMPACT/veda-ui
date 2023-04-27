@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { FunctionComponent, useEffect } from 'react';
 import { Feature } from 'geojson';
 import mapboxgl from 'mapbox-gl';
 import { defaultsDeep } from 'lodash';
@@ -30,7 +30,7 @@ import { HintedError } from '$utils/hinted-error';
 export const getLayerComponent = (
   isTimeseries: boolean,
   layerType: 'raster' | 'vector'
-): React.FunctionComponent<any> | null => {
+): FunctionComponent<any> | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
     if (layerType === 'vector') return MapLayerVectorTimeseries;

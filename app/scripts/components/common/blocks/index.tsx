@@ -1,4 +1,10 @@
-import React from 'react';
+import React, {
+  Children,
+  Component,
+  ReactElement,
+  ReactNode,
+  createElement
+} from 'react';
 import styled from 'styled-components';
 import { media } from '@devseed-ui/theme-provider';
 
@@ -229,7 +235,7 @@ const matchingBlocks = {
 
 interface BlockComponentProps {
   type?: string;
-  children: React.ReactElement[];
+  children: ReactElement[];
 }
 
 function BlockComponent(props: BlockComponentProps) {
@@ -240,7 +246,7 @@ function BlockComponent(props: BlockComponentProps) {
   // to return matching block type
   // ex. <Block type='wide'><Figure /></Block> will result in 'wideFigure'
   const typeName = type ? type : 'default';
-  const childrenAsArray = React.Children.toArray(children);
+  const childrenAsArray = Children.toArray(children);
 
   const childrenComponents: string[] = childrenAsArray.map(
     // @ts-expect-error type may not exist depending on the node, but the error
@@ -321,20 +327,17 @@ function BlockComponent(props: BlockComponentProps) {
     throw new HintedError(contentTypeErrorMessage, hints);
   }
 
-  return React.createElement(
-    matchingBlocks[`${typeName}${childrenNames}`],
-    props
-  );
+  return createElement(matchingBlocks[`${typeName}${childrenNames}`], props);
 }
 
 interface BlockErrorBoundaryProps {
   childToRender: any;
   passErrorToChild?: boolean;
   className?: string;
-  children?: React.ReactNode
+  children?: ReactNode;
 }
 
-export class BlockErrorBoundary extends React.Component<
+export class BlockErrorBoundary extends Component<
   BlockErrorBoundaryProps,
   { error: any }
 > {
@@ -374,10 +377,10 @@ export class BlockErrorBoundary extends React.Component<
 }
 
 interface BlockWithErrorProps {
-  title?: React.ReactNode;
-  subtitle?: React.ReactNode;
+  title?: ReactNode;
+  subtitle?: ReactNode;
   className?: string;
-  children?: React.ReactNode
+  children?: ReactNode;
 }
 
 export default function BlockWithError(props: BlockWithErrorProps) {

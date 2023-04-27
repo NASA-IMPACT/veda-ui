@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { glsp, themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
 import { CollecticonChartLine } from '@devseed-ui/collecticons';
@@ -221,7 +221,7 @@ export const MapLoading = (props) => {
   );
 };
 
-export const ChartLoading = (props: { message: React.ReactNode }) => {
+export const ChartLoading = (props: { message: ReactNode }) => {
   return (
     <ChartLoadingWrapper>
       <CollecticonChartLine size='xlarge' />

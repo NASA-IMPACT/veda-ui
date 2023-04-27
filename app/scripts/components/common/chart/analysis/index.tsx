@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useImperativeHandle } from 'react';
+import React, { useRef, useMemo, useImperativeHandle, MutableRefObject, forwardRef } from 'react';
 import styled from 'styled-components';
 import FileSaver from 'file-saver';
 
@@ -18,13 +18,13 @@ interface AnalysisChartProps extends CommonLineChartProps {
 }
 
 export interface AnalysisChartRef {
-  instanceRef: React.MutableRefObject<ChartWrapperRef | null>;
+  instanceRef: MutableRefObject<ChartWrapperRef | null>;
   saveAsImage: (name?: string) => Promise<void>;
 }
 
 const syncId = 'analysis';
 
-export default React.forwardRef<AnalysisChartRef, AnalysisChartProps>(
+export default forwardRef<AnalysisChartRef, AnalysisChartProps>(
   function AnalysisChart(props, ref) {
     const { timeSeriesData, dates, uniqueKeys, dateFormat, altTitle } =
       props;

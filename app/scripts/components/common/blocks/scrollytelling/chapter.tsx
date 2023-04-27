@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { themeVal, media, multiply } from '@devseed-ui/theme-provider';
 import { ProjectionOptions } from 'veda';
@@ -20,7 +20,7 @@ export interface ChapterProps {
   projectionId?: ProjectionOptions['id'];
   projectionCenter?: ProjectionOptions['center'];
   projectionParallels?: ProjectionOptions['parallels'];
-  children: React.ReactNode;
+  children: ReactNode;
 }
 /* eslint-enable react/no-unused-prop-types */
 

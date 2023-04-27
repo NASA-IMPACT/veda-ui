@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEventHandler, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -276,20 +276,20 @@ const CardFigure = styled(Figure)`
 `;
 
 interface CardComponentProps {
-  title: React.ReactNode;
+  title: ReactNode;
   linkLabel: string;
   linkTo: string;
   className?: string;
   cardType?: CardType;
-  description?: React.ReactNode;
+  description?: ReactNode;
   date?: Date;
-  overline?: React.ReactNode;
+  overline?: ReactNode;
   imgSrc?: string;
   imgAlt?: string;
   parentName?: string;
   parentTo?: string;
-  footerContent?: React.ReactNode;
-  onCardClickCapture?: React.MouseEventHandler;
+  footerContent?: ReactNode;
+  onCardClickCapture?: MouseEventHandler;
 }
 
 function CardComponent(props: CardComponentProps) {

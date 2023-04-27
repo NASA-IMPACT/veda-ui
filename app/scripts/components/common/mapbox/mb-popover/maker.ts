@@ -1,4 +1,4 @@
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { Marker, MarkerOptions } from 'mapbox-gl';
 
 type MapboxMarkerClickableListener = (coords: [number, number]) => void;
 
@@ -27,9 +27,9 @@ interface MapboxMarkerClickable extends mapboxgl.Marker {
  */
 export const createMbMarker = (
   map: mapboxgl.Map,
-  opt?: mapboxgl.MarkerOptions
+  opt?: MarkerOptions
 ) => {
-  const mk = new mapboxgl.Marker(opt);
+  const mk = new Marker(opt);
   let onClickListener: MapboxMarkerClickableListener | undefined;
 
   const onMapClick = (e) => {

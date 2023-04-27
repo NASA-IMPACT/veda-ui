@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { RefObject, useCallback, useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 
 import { MapboxMapRef } from '../mapbox';
@@ -14,7 +14,7 @@ const DEFAULT_PARAMETERS = {
 };
 
 export function useAoiControls(
-  mapRef: React.RefObject<MapboxMapRef>,
+  mapRef: RefObject<MapboxMapRef>,
   initialState: Partial<AoiState> = {}
 ) {
   const [aoi, setAoi] = useState<AoiState>({

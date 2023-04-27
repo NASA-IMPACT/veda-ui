@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
 import useDimensions from 'react-cool-dimensions';
 import DragScroll from 'react-indiana-drag-scroll';
@@ -17,7 +17,7 @@ interface ContinuumRenderFunctionBag {
 
 interface ContinuumProps {
   className?: string;
-  render?: (bag: ContinuumRenderFunctionBag) => React.ReactNode;
+  render?: (bag: ContinuumRenderFunctionBag) => ReactNode;
   startCol: {
     largeUp: string;
     mediumUp: string;
@@ -28,7 +28,7 @@ interface ContinuumProps {
     mediumUp: number;
     smallUp: number;
   };
-  children?: React.ReactNode;
+  children?: ReactNode;
   listAs?: any;
 }
 

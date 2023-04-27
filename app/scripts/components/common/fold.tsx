@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentProps, ReactNode } from 'react';
 
 import styled from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
@@ -106,7 +106,7 @@ const Content = styled(VarProse)`
 `;
 
 function FoldComponent(
-  props: React.ComponentProps<typeof FoldBase> & { children: React.ReactNode }
+  props: ComponentProps<typeof FoldBase> & { children: ReactNode }
 ) {
   const { children, ...rest } = props;
 
@@ -121,7 +121,7 @@ export const Fold = styled(FoldComponent)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
 
-export function FoldProse(props: { children: React.ReactNode }) {
+export function FoldProse(props: { children: ReactNode }) {
   const { children } = props;
 
   return (

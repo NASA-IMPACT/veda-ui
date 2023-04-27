@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useMemo, MouseEvent } from 'react';
+import React, { useCallback, useRef, useMemo, MouseEvent, ReactNode } from 'react';
 import { reverse } from 'd3';
 import styled, { useTheme } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -57,7 +57,7 @@ const InfoTipContent = styled.div`
 `;
 
 interface ChartCardProps {
-  title: React.ReactNode;
+  title: ReactNode;
   chartData: TimeseriesData;
   activeMetrics: DataMetric[];
   availableDomain: [Date, Date];

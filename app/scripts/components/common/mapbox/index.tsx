@@ -1,4 +1,6 @@
 import React, {
+  ReactNode,
+  forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -7,7 +9,7 @@ import React, {
   useState
 } from 'react';
 import styled from 'styled-components';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { MapboxOptions } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -81,7 +83,7 @@ const MapsContainer = styled.div`
   }
 `;
 
-const mapOptions: Partial<mapboxgl.MapboxOptions> = {
+const mapOptions: Partial<MapboxOptions> = {
   style: DEFAULT_MAP_STYLE_URL,
   logoPosition: 'bottom-left',
   trackResize: true,
@@ -502,7 +504,7 @@ export interface MapboxMapProps {
     }
   ) => void;
   withGeocoder?: boolean;
-  children?: React.ReactNode;
+  children?: ReactNode;
   aoi?: AoiState;
   onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
@@ -515,7 +517,7 @@ export interface MapboxMapRef {
   compareInstance: mapboxgl.Map | null;
 }
 
-const MapboxMapComponentFwd = React.forwardRef<MapboxMapRef, MapboxMapProps>(
+const MapboxMapComponentFwd = forwardRef<MapboxMapRef, MapboxMapProps>(
   MapboxMapComponent
 );
 

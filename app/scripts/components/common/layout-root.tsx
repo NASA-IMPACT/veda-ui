@@ -1,4 +1,12 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useCallback,
+  useContext,
+  useState
+} from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
@@ -30,7 +38,7 @@ const PageBody = styled.div`
   overflow-anchor: auto;
 `;
 
-function LayoutRoot(props: { children?: React.ReactNode }) {
+function LayoutRoot(props: { children?: ReactNode }) {
   const { children } = props;
 
   useGoogleTagManager();
@@ -62,12 +70,12 @@ function LayoutRoot(props: { children?: React.ReactNode }) {
 export default LayoutRoot;
 
 interface LayoutRootContextProps extends Record<string, any> {
-  setLayoutProps: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+  setLayoutProps: Dispatch<SetStateAction<Record<string, any>>>;
   isHeaderHidden: boolean;
   headerHeight: number;
   wrapperHeight: number;
   feedbackModalRevealed: boolean;
-  setFeedbackModalRevealed: React.Dispatch<React.SetStateAction<boolean>>;
+  setFeedbackModalRevealed: Dispatch<SetStateAction<boolean>>;
 }
 
 // Context
@@ -76,7 +84,7 @@ export const LayoutRootContext = createContext({} as LayoutRootContextProps);
 export function LayoutRootContextProvider({
   children
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const [layoutProps, setLayoutProps] = useState<Record<string, any>>({});
   const [feedbackModalRevealed, setFeedbackModalRevealed] =

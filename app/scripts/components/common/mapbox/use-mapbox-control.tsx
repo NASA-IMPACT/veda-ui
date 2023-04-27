@@ -1,4 +1,4 @@
-import mapboxgl from 'mapbox-gl';
+import { IControl } from 'mapbox-gl';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { ThemeProvider, useTheme } from 'styled-components';
@@ -57,5 +57,5 @@ export function useMapboxControl(renderFn, deps:Array<any> = []) {
       }
     }),
     []
-  ) as mapboxgl.IControl;
+  ) as IControl;
 }

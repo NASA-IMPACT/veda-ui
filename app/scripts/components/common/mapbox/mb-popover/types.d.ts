@@ -1,4 +1,5 @@
 import mapboxgl from 'mapbox-gl';
+import { ReactNode } from 'react';
 
 export interface PopoverRenderFunctionBag {
   close: () => void;
@@ -6,7 +7,7 @@ export interface PopoverRenderFunctionBag {
 
 export type PopoverRenderFunction = (
   bag: PopoverRenderFunctionBag
-) => React.ReactNode;
+) => ReactNode;
 
 export interface MBPopoverProps {
   /**
@@ -40,7 +41,7 @@ export interface MBPopoverProps {
    * Title for the popover.
    * Required unless the header is being overridden.
    */
-  title?: React.ReactNode;
+  title?: ReactNode;
   /**
    * Heading level for the popover.
    * @default h2
@@ -49,21 +50,21 @@ export interface MBPopoverProps {
   /**
    * Subtitle for the popover. It is displayed below the title.
    */
-  subtitle?: React.ReactNode;
+  subtitle?: ReactNode;
   /**
    * Suptitle for the popover. It is displayed above the title. If both subtitle
    * and suptitle are present, the suptitle gets ignored.
    */
-  suptitle?: React.ReactNode;
+  suptitle?: ReactNode;
   /**
    * Popover body content, rendered inside `PopoverBody`. Required unless the
    * body is being overridden.
    */
-  content?: React.ReactNode;
+  content?: ReactNode;
   /**
    * Popover footer content, rendered inside `PopoverFooter`.
    */
-  footerContent?: React.ReactNode;
+  footerContent?: ReactNode;
   /**
    * Vertical offset for the popover. The array must have 2 values. The first
    * for the top offset the second for the bottom offset.

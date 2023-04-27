@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { GeoJSONSource, MapboxOptions } from 'mapbox-gl';
 import { FeatureCollection, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
 import { shade } from 'polished';
@@ -22,7 +22,7 @@ const WORLD_POLYGON = [
   [180, 90]
 ];
 
-const mapOptions: Partial<mapboxgl.MapboxOptions> = {
+const mapOptions: Partial<MapboxOptions> = {
   style: DEFAULT_MAP_STYLE_URL,
   logoPosition: 'bottom-right',
   interactive: false,
@@ -76,7 +76,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
     if (!shouldMount || !isMapLoaded || !mapRef.current) return;
 
     const aoiSource = mapRef.current.getSource('aoi') as
-      | mapboxgl.GeoJSONSource
+      | GeoJSONSource
       | undefined;
 
     // Convert to multipolygon to use the inverse shading trick.
@@ -121,10 +121,10 @@ function PageHeroMedia(props: PageHeroMediaProps) {
     } else {
       const aoiSource = mapRef.current.getSource(
         'aoi'
-      ) as mapboxgl.GeoJSONSource;
+      ) as GeoJSONSource;
       const aoiInverseSource = mapRef.current.getSource(
         'aoi-inverse'
-      ) as mapboxgl.GeoJSONSource;
+      ) as GeoJSONSource;
       aoiSource.setData(aoi);
       aoiInverseSource.setData(aoiInverse);
     }

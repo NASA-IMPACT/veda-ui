@@ -5,7 +5,7 @@ import React, {
   ReactElement
 } from 'react';
 import styled, { useTheme } from 'styled-components';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { AttributionControl, EventData, MapboxOptions, NavigationControl } from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ProjectionOptions } from 'veda';
@@ -37,10 +37,10 @@ interface SimpleMapProps {
   [key: string]: unknown;
   mapRef: MutableRefObject<mapboxgl.Map | null>;
   containerRef: RefObject<HTMLDivElement>;
-  onLoad?(e: mapboxgl.EventData): void;
-  onMoveEnd?(e: mapboxgl.EventData): void;
+  onLoad?(e: EventData): void;
+  onMoveEnd?(e: EventData): void;
   onUnmount?: () => void;
-  mapOptions: Partial<Omit<mapboxgl.MapboxOptions, 'container'>>;
+  mapOptions: Partial<Omit<MapboxOptions, 'container'>>;
   withGeocoder?: boolean;
   aoi?: AoiState;
   onAoiChange?: AoiChangeListenerOverload;
@@ -145,7 +145,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     // Add zoom controls without compass.
     if (mapOptions?.interactive !== false) {
       mbMap.addControl(
-        new mapboxgl.NavigationControl({ showCompass: false }),
+        new NavigationControl({ showCompass: false }),
         'top-left'
       );
     }
@@ -175,7 +175,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
   useEffect(() => {
     if (!mapRef.current || !attributionPosition) return;
 
-    const ctrl = new mapboxgl.AttributionControl();
+    const ctrl = new AttributionControl();
     mapRef.current.addControl(ctrl, attributionPosition);
     return () => {
       mapRef.current?.removeControl(ctrl);

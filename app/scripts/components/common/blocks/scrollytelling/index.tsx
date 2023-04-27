@@ -1,4 +1,7 @@
 import React, {
+  Children,
+  FunctionComponent,
+  ReactElement,
   useCallback,
   useEffect,
   useMemo,
@@ -43,7 +46,7 @@ import { Basemap } from '$components/common/mapbox/layers/basemap';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
-  Component: React.FunctionComponent<any> | null;
+  Component: FunctionComponent<any> | null;
   runtimeData: { datetime?: Date; id: string };
 } | null;
 
@@ -79,7 +82,7 @@ const TheChapters = styled(Hug)`
  */
 function useChapterPropsFromChildren(children): ScrollyChapter[] {
   return useMemo(() => {
-    const chapters = React.Children.toArray(children) as React.ReactElement<
+    const chapters = Children.toArray(children) as ReactElement<
       ChapterProps,
       any
     >[];
