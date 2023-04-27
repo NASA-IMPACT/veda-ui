@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { ScaleTime, select } from 'd3';
+import { ScaleLinear, select } from 'd3';
 import { format } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { createSubtitleStyles } from '@devseed-ui/typography';
 
-import { DateSliderData, DateSliderTimeDensity } from './constants';
+import { DateSliderDataItem, DateSliderTimeDensity } from './constants';
 
 const timeFormat = {
   day: 'dd',
@@ -34,8 +34,8 @@ const StyledG = styled.g`
 `;
 
 interface DateAxisProps {
-  data: DateSliderData;
-  x: ScaleTime<number, number, never>;
+  data: DateSliderDataItem[];
+  x: ScaleLinear<number, number, never>;
   zoomXTranslation: number;
   timeDensity: DateSliderTimeDensity;
 }
@@ -49,10 +49,10 @@ export function DateAxis(props: DateAxisProps) {
 
     dateG
       .selectAll('text.date-value')
-      .data(data)
+      .data(data.filter((d) => !d.breakLength))
       .join('text')
       .attr('class', 'date-value')
-      .attr('x', (d) => x(d.date))
+      .attr('x', (d) => x(d.index))
       .attr('y', 16)
       .attr('dy', '1em')
       .attr('text-anchor', 'middle')
@@ -69,8 +69,8 @@ export function DateAxis(props: DateAxisProps) {
 }
 
 interface DateAxisParentProps {
-  data: DateSliderData;
-  x: ScaleTime<number, number, never>;
+  data: DateSliderDataItem[];
+  x: ScaleLinear<number, number, never>;
   zoomXTranslation: number;
   timeDensity: DateSliderTimeDensity;
 }
@@ -85,15 +85,16 @@ export function DateAxisParent(props: DateAxisParentProps) {
     if (timeDensity === 'year') {
       parentG.selectAll('text.date-parent-value').remove();
     } else {
-      const uniqueParent = data.reduce((acc, { date }) => {
-        const exists = acc.find((d) => {
-          return (
-            format(d, parentSearchFormat[timeDensity]) ===
-            format(date, parentSearchFormat[timeDensity])
-          );
-        });
-        return exists ? acc : acc.concat(date);
-      }, [] as Date[]);
+      const uniqueParent = data.reduce<DateSliderDataItem[]>((acc, item) => {
+        const { date } = item;
+        const formatStr = parentSearchFormat[timeDensity];
+
+        const exists = acc.find(
+          (d) => format(d.date, formatStr) === format(date, formatStr)
+        );
+
+        return exists ? acc : acc.concat(item);
+      }, []);
 
       parentG
         .selectAll('text.date-parent-value')
@@ -102,20 +103,27 @@ export function DateAxisParent(props: DateAxisParentProps) {
         .attr('class', 'date-parent-value')
         .attr('y', 30)
         .attr('dy', '1em')
-        .attr('text-anchor', 'middle')
-        .text((d) => format(d, parentTimeFormat[timeDensity]));
+        .attr('text-anchor', d => {
+          const isLastElement = d.index === x.domain()[1];
+          return isLastElement ? 'end' : 'middle';
+        })
+        .attr('dx', d => {
+          const isLastElement = d.index === x.domain()[1];
+          return isLastElement ? '1em' : '';
+        })
+        .text((d) => format(d.date, parentTimeFormat[timeDensity]));
     }
   }, [data, x, timeDensity]);
 
   useEffect(() => {
     select(parentGref.current)
-      .selectAll<SVGTextElement, Date>('text.date-parent-value')
+      .selectAll<SVGTextElement, DateSliderDataItem>('text.date-parent-value')
       .each((d, i, n) => {
         // Expected position of this node.
-        const expectedPosition = x(d);
+        const expectedPosition = x(d.index);
         const expectedAfterTrans = expectedPosition + zoomXTranslation;
 
-        const nextNode = n[i + 1];
+        const nextNode = n[i + 1] as SVGTextElement | undefined;
 
         let maxPos = Infinity;
         // If there's a node after this one, that node will push on this one, so
@@ -124,9 +132,10 @@ export function DateAxisParent(props: DateAxisParentProps) {
           // Width of current node.
           const { width: nextNodeW } = nextNode.getBBox();
           // Position of the next item.
-          const nextItemPos =
-            x(select<SVGTextElement, Date>(nextNode).datum()) +
-            zoomXTranslation;
+          const nextItemData = select<SVGTextElement, DateSliderDataItem>(
+            nextNode
+          ).datum();
+          const nextItemPos = x(nextItemData.index) + zoomXTranslation;
 
           maxPos = nextItemPos - nextNodeW;
         }
@@ -135,7 +144,10 @@ export function DateAxisParent(props: DateAxisParentProps) {
         // because of text anchor middle. Add 4px for spacing.
         const leftPadding = n[i].getBBox().width / 2 + 4;
 
-        const xTrans = Math.min(Math.max(expectedAfterTrans, leftPadding), maxPos);
+        const xTrans = Math.min(
+          Math.max(expectedAfterTrans, leftPadding),
+          maxPos
+        );
         select(n[i]).attr('x', xTrans);
       });
   }, [zoomXTranslation, x]);

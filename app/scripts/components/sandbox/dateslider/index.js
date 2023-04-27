@@ -12,7 +12,7 @@ import Constrainer from '$styles/constrainer';
 import { mod } from '$utils/utils';
 import { PageMainContent } from '$styles/page';
 import DateSliderControl from '$components/common/dateslider';
-import { prepareDates } from '$components/common/dateslider/utils';
+import { prepareDateSliderData } from '$components/common/dateslider/utils';
 import { utcString2userTzDate } from '$utils/date';
 
 const Wrapper = styled.div`
@@ -40,9 +40,9 @@ const dates = [
   utcString2userTzDate('2022-12-01'),
   utcString2userTzDate('2023-05-01')
 ];
-const readyDatesD = prepareDates(dates, 'day');
-const readyDatesM = prepareDates(dates, 'month');
-const readyDatesY = prepareDates(dates, 'year');
+const readyDatesD = prepareDateSliderData(dates, 'day');
+const readyDatesM = prepareDateSliderData(dates, 'month');
+const readyDatesY = prepareDateSliderData(dates, 'year');
 
 function SandboxTimeseries() {
   const [activeDate, setActiveDate] = useState({
@@ -126,7 +126,7 @@ function SandboxTimeseries() {
               value={readyDatesY[0].date}
               timeDensity='year'
               onChange={() => {
-                /* no-op */
+                // no-op
               }}
             />
           </Box>
