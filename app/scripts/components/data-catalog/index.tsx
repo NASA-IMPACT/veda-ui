@@ -253,6 +253,7 @@ function DataCatalog() {
                           {d.thematics.map((t) => (
                             <dd key={t}>
                               <Pill
+                                variation='achromic'
                                 as={Link}
                                 to={`${DATASETS_PATH}?${Actions.TOPIC}=${t}`}
                                 onClick={(e) => {

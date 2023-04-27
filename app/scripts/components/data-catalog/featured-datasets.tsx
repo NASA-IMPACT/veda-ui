@@ -90,7 +90,7 @@ function FeaturedDatasets() {
                             <dt>Topics</dt>
                             {d.thematics.map((t) => (
                               <dd key={t}>
-                                <Pill>{t}</Pill>
+                                <Pill variation='achromic'>{t}</Pill>
                               </dd>
                             ))}
                           </CardTopicsList>
