@@ -2,6 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasets } from 'veda';
 import { Link } from 'react-router-dom';
+import { glsp } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
@@ -39,7 +40,13 @@ const allDatasets = Object.values(datasets).map((d) => d!.data);
 
 const DatasetCount = styled(Subtitle)`
   grid-column: 1 / -1;
-  text-transform: uppercase;
+  display: flex;
+  gap: ${glsp(0.5)};
+
+  span {
+    text-transform: uppercase;
+    line-height: 1.5rem;
+  }
 `;
 
 const topicsOptions = [
@@ -155,14 +162,16 @@ function DataCatalog() {
         </FoldHeader>
 
         <DatasetCount>
-          Showing{' '}
-          <Pluralize
-            singular='dataset'
-            plural='datasets'
-            count={displayDatasets.length}
-            showCount={true}
-          />{' '}
-          out of {allDatasets.length}.{' '}
+          <span>
+            Showing{' '}
+            <Pluralize
+              singular='dataset'
+              plural='datasets'
+              count={displayDatasets.length}
+              showCount={true}
+            />{' '}
+            out of {allDatasets.length}.
+          </span>
           {isFiltering && (
             <Button forwardedAs={Link} to={DATASETS_PATH} size='small'>
               Clear filters <CollecticonXmarkSmall />
