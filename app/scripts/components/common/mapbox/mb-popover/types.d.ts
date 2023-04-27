@@ -1,4 +1,4 @@
-import mapboxgl from 'mapbox-gl';
+import { Map as MapboxMap } from 'mapbox-gl';
 import { ReactNode } from 'react';
 
 export interface PopoverRenderFunctionBag {
@@ -13,7 +13,7 @@ export interface MBPopoverProps {
   /**
    * Mapbox map which the popover will use.
    */
-  mbMap: mapboxgl.Map;
+  mbMap: MapboxMap;
   /**
    * Coordinates the popover points to.
    */

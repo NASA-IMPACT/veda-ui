@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import mapboxgl, { GeoJSONSource, MapboxOptions } from 'mapbox-gl';
+import { GeoJSONSource, MapboxOptions, Map as MapboxMap } from 'mapbox-gl';
 import { FeatureCollection, Polygon } from 'geojson';
 import bbox from '@turf/bbox';
 import { shade } from 'polished';
@@ -38,7 +38,7 @@ interface PageHeroMediaProps {
 function PageHeroMedia(props: PageHeroMediaProps) {
   const { aoi, isHeaderStuck, ...rest } = props;
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map>(null);
+  const mapRef = useRef<MapboxMap>(null);
   const [isMapLoaded, setMapLoaded] = useState(false);
 
   const theme = useTheme();

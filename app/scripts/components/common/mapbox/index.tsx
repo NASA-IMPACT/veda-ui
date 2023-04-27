@@ -9,7 +9,7 @@ import React, {
   useState
 } from 'react';
 import styled from 'styled-components';
-import mapboxgl, { MapboxOptions } from 'mapbox-gl';
+import { Map as MapboxMap, MapboxOptions } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -129,10 +129,10 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
   /* eslint-enable react/prop-types */
 
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const mapRef = useRef<MapboxMap | null>(null);
 
   const mapCompareContainer = useRef<HTMLDivElement>(null);
-  const mapCompareRef = useRef<mapboxgl.Map>(null);
+  const mapCompareRef = useRef<MapboxMap>(null);
 
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
@@ -513,8 +513,8 @@ export interface MapboxMapProps {
 
 export interface MapboxMapRef {
   resize: () => void;
-  instance: mapboxgl.Map | null;
-  compareInstance: mapboxgl.Map | null;
+  instance: MapboxMap | null;
+  compareInstance: MapboxMap | null;
 }
 
 const MapboxMapComponentFwd = forwardRef<MapboxMapRef, MapboxMapProps>(

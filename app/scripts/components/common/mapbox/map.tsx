@@ -5,7 +5,13 @@ import React, {
   ReactElement
 } from 'react';
 import styled, { useTheme } from 'styled-components';
-import mapboxgl, { AttributionControl, EventData, MapboxOptions, NavigationControl } from 'mapbox-gl';
+import mapboxgl, {
+  Map as MapboxMap,
+  AttributionControl,
+  EventData,
+  MapboxOptions,
+  NavigationControl
+} from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ProjectionOptions } from 'veda';
@@ -35,7 +41,7 @@ const SingleMapContainer = styled.div`
 
 interface SimpleMapProps {
   [key: string]: unknown;
-  mapRef: MutableRefObject<mapboxgl.Map | null>;
+  mapRef: MutableRefObject<MapboxMap | null>;
   containerRef: RefObject<HTMLDivElement>;
   onLoad?(e: EventData): void;
   onMoveEnd?(e: EventData): void;
@@ -112,7 +118,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const mbMap = new mapboxgl.Map({
+    const mbMap = new MapboxMap({
       container: containerRef.current,
       attributionControl: false,
       projection: projection && convertProjectionToMapbox(projection),

@@ -14,8 +14,9 @@ import styled, { css } from 'styled-components';
 import * as dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
+import { Map as MapboxMap } from 'mapbox-gl';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
-import mapboxgl from 'mapbox-gl';
+
 import { BlockErrorBoundary } from '..';
 import {
   chapterDisplayName,
@@ -267,7 +268,7 @@ function Scrollytelling(props) {
     useSlidingStickyHeaderProps();
 
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map>(null);
+  const mapRef = useRef<MapboxMap>(null);
   const [isMapLoaded, setMapLoaded] = useState(false);
 
   // Extract the props from the chapters.

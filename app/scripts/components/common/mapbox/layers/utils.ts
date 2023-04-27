@@ -1,6 +1,6 @@
 import { FunctionComponent, useEffect } from 'react';
 import { Feature } from 'geojson';
-import mapboxgl from 'mapbox-gl';
+import { Map as MapboxMap } from 'mapbox-gl';
 import { defaultsDeep } from 'lodash';
 import axios, { Method } from 'axios';
 import {
@@ -350,7 +350,7 @@ export function getMergedBBox(features: StacFeature[]) {
 
 export function checkFitBoundsFromLayer(
   layerBounds?: [number, number, number, number],
-  mapInstance?: mapboxgl.Map
+  mapInstance?: MapboxMap
 ) {
   if (!layerBounds || !mapInstance) return false;
 
@@ -374,7 +374,7 @@ export function checkFitBoundsFromLayer(
 
 interface LayerInteractionHookOptions {
   layerId: string;
-  mapInstance: mapboxgl.Map;
+  mapInstance: MapboxMap;
   onClick: (features: Feature<any>[]) => void;
 }
 export function useLayerInteraction({
