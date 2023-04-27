@@ -2,8 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { datasets } from 'veda';
 
-const allDatasets = Object.values(datasets).map((d) => d!.data);
-
 import DatasetMenu from './dataset-menu';
 
 import { Card, CardMeta, CardTopicsList } from '$components/common/card';
@@ -18,6 +16,10 @@ import { useReactIndianaScrollControl } from '$styles/continuum/use-react-indian
 import { ContinuumScrollIndicator } from '$styles/continuum/continuum-scroll-indicator';
 import { getDatasetPath } from '$utils/routes';
 import { Pill } from '$styles/pill';
+
+const allFeaturedDatasets = Object.values(datasets)
+  .map((d) => d!.data)
+  .filter((d) => d.featured);
 
 const FoldFeatured = styled(FoldGrid)`
   ${FoldHeader} {
@@ -53,7 +55,7 @@ function FeaturedDatasets() {
             startCol={continuumFoldStartCols}
             spanCols={continuumFoldSpanCols}
             render={(bag) => {
-              return allDatasets.map((d) => (
+              return allFeaturedDatasets.map((d) => (
                 <ContinuumGridItem {...bag} key={d.id}>
                   <Card
                     onCardClickCapture={(e) => {
