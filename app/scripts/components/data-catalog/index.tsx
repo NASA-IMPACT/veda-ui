@@ -229,8 +229,6 @@ function DataCatalog() {
                       {d.name}
                     </TextHighlight>
                   }
-                  parentName='Dataset'
-                  parentTo={DATASETS_PATH}
                   description={
                     <TextHighlight value={search} disabled={search.length < 3}>
                       {d.description}

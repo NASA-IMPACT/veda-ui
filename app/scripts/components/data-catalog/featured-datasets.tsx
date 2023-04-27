@@ -16,7 +16,7 @@ import {
 } from '$styles/continuum';
 import { useReactIndianaScrollControl } from '$styles/continuum/use-react-indiana-scroll-controls';
 import { ContinuumScrollIndicator } from '$styles/continuum/continuum-scroll-indicator';
-import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
+import { getDatasetPath } from '$utils/routes';
 import { Pill } from '$styles/pill';
 
 const FoldFeatured = styled(FoldGrid)`
@@ -78,8 +78,6 @@ function FeaturedDatasets() {
                         </span> */}
                       </CardMeta>
                     }
-                    parentName='Dataset'
-                    parentTo={DATASETS_PATH}
                     description={d.description}
                     imgSrc={d.media?.src}
                     imgAlt={d.media?.alt}
