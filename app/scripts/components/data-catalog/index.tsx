@@ -7,11 +7,15 @@ import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 
-import BrowseControls from './browse-controls';
-import { Actions, optionAll, useBrowserControls } from './use-browse-controls';
 import FeaturedDatasets from './featured-datasets';
 import DatasetMenu from './dataset-menu';
 
+import BrowseControls from '$components/common/browse-controls';
+import {
+  Actions,
+  optionAll,
+  useBrowserControls
+} from '$components/common/browse-controls/use-browse-controls';
 import {
   LayoutProps,
   useSlidingStickyHeaderProps
@@ -74,6 +78,8 @@ const topicsOptions = [
 
 const sourcesOptions = [optionAll];
 
+const sortOptions = [{ id: 'name', name: 'Name' }];
+
 const prepareDatasets = (data: DatasetData[], options) => {
   const { sortField, sortDir, search, topic, source } = options;
 
@@ -117,7 +123,8 @@ const prepareDatasets = (data: DatasetData[], options) => {
 function DataCatalog() {
   const controlVars = useBrowserControls({
     topicsOptions,
-    sourcesOptions
+    sourcesOptions,
+    sortOptions
   });
 
   const { topic, source, sortField, sortDir, onAction } = controlVars;
@@ -171,6 +178,7 @@ function DataCatalog() {
             {...controlVars}
             topicsOptions={topicsOptions}
             sourcesOptions={sourcesOptions}
+            sortOptions={sortOptions}
           />
         </BrowseHeader>
 
