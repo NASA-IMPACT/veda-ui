@@ -32,7 +32,7 @@ const SearchFieldClearable = styled.div<{ isOpen: boolean }>`
   ${({ isOpen }) =>
     isOpen &&
     css`
-      max-width: 20rem;
+      max-width: 15rem;
     `}
 `;
 
@@ -40,6 +40,7 @@ const FormInputSearch = styled(FormInput)`
   border: 0;
   padding-left: 0;
   padding-right: 0;
+  width: 15rem;
 `;
 
 interface SearchFieldProps
@@ -86,16 +87,17 @@ function SearchField(props: SearchFieldProps) {
           }}
         />
 
-        <Button
-          disabled={!value.length}
-          size={size}
-          fitting='skinny'
-          onClick={() => {
-            onChange('');
-          }}
-        >
-          <CollecticonDiscXmark meaningful title='Clear search' />
-        </Button>
+        {!!value.length && (
+          <Button
+            size={size}
+            fitting='skinny'
+            onClick={() => {
+              onChange('');
+            }}
+          >
+            <CollecticonDiscXmark meaningful title='Clear search' />
+          </Button>
+        )}
       </SearchFieldClearable>
     </SearchFieldWrapper>
   );
