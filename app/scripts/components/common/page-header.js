@@ -382,14 +382,6 @@ function PageHeader() {
                   </li>
                   <li>
                     <GlobalMenuLink
-                      to={DISCOVERIES_PATH}
-                      onClick={closeNavOnClick}
-                    >
-                      Discoveries
-                    </GlobalMenuLink>
-                  </li>
-                  <li>
-                    <GlobalMenuLink
                       to={DATASETS_PATH}
                       onClick={closeNavOnClick}
                     >
@@ -402,6 +394,14 @@ function PageHeader() {
                       onClick={closeNavOnClick}
                     >
                       Analysis
+                    </GlobalMenuLink>
+                  </li>
+                  <li>
+                    <GlobalMenuLink
+                      to={DISCOVERIES_PATH}
+                      onClick={closeNavOnClick}
+                    >
+                      Discoveries
                     </GlobalMenuLink>
                   </li>
                 </GlobalMenu>
