@@ -108,12 +108,12 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       imgAlt={d.media?.alt}
                       footerContent={
                         <>
-                          {d.thematics?.length ? (
+                          {d.thematics.length ? (
                             <CardTopicsList>
                               <dt>Topics</dt>
                               {d.thematics.map((t) => (
-                                <dd key={t}>
-                                  <Pill variation='achromic'>{t}</Pill>
+                                <dd key={t.id}>
+                                  <Pill variation='achromic'>{t.name}</Pill>
                                 </dd>
                               ))}
                             </CardTopicsList>

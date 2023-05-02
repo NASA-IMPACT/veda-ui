@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
-import { DatasetData, datasets } from 'veda';
+import { DatasetData, datasets, taxonomies } from 'veda';
 import { Link } from 'react-router-dom';
 import { glsp, media } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
@@ -65,18 +65,9 @@ const BrowseHeader = styled(FoldHeader)`
   `}
 `;
 
-const topicsOptions = [
-  optionAll,
-  // TODO: human readable values for Taxonomies
-  ...Array.from(new Set(allDatasets.flatMap((d) => d.thematics || []))).map(
-    (t) => ({
-      id: t,
-      name: t
-    })
-  )
-];
+const topicsOptions = [optionAll, ...taxonomies.thematics];
 
-const sourcesOptions = [optionAll];
+const sourcesOptions = [optionAll, ...taxonomies.sources];
 
 const sortOptions = [{ id: 'name', name: 'Name' }];
 
@@ -93,12 +84,12 @@ const prepareDatasets = (data: DatasetData[], options) => {
         d.name.toLowerCase().includes(searchLower) ||
         d.description.toLowerCase().includes(searchLower) ||
         d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower)) ||
-        d.thematics?.some((t) => t.toLowerCase().includes(searchLower))
+        d.thematics.some((t) => t.name.toLowerCase().includes(searchLower))
     );
   }
 
   if (topic !== optionAll.id) {
-    filtered = filtered.filter((d) => d.thematics?.includes(topic));
+    filtered = filtered.filter((d) => d.thematics.find((t) => t.id === topic));
   }
 
   if (source !== optionAll.id) {
@@ -247,18 +238,18 @@ function DataCatalog() {
                   imgAlt={d.media?.alt}
                   footerContent={
                     <>
-                      {d.thematics?.length ? (
+                      {d.thematics.length ? (
                         <CardTopicsList>
                           <dt>Topics</dt>
                           {d.thematics.map((t) => (
-                            <dd key={t}>
+                            <dd key={t.id}>
                               <Pill
                                 variation='achromic'
                                 as={Link}
-                                to={`${DATASETS_PATH}?${Actions.TOPIC}=${t}`}
+                                to={`${DATASETS_PATH}?${Actions.TOPIC}=${t.id}`}
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  onAction(Actions.TOPIC, t);
+                                  onAction(Actions.TOPIC, t.id);
                                   browseControlsHeaderRef.current?.scrollIntoView();
                                 }}
                               >
@@ -266,7 +257,7 @@ function DataCatalog() {
                                   value={search}
                                   disabled={search.length < 3}
                                 >
-                                  {t}
+                                  {t.name}
                                 </TextHighlight>
                               </Pill>
                             </dd>

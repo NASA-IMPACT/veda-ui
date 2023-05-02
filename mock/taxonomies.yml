@@ -1,0 +1,15 @@
+thematics:
+  - id: water
+    name: Water Quality
+  - id: air
+    name: Air Quality
+  - id: env-justice
+    name: Environmental Justice
+  - id: covid-19
+    name: Covid 19
+  - id: agriculture
+    name: Agriculture
+
+sources:
+  - id: eis
+    name: EIS
