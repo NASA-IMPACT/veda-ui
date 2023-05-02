@@ -1,7 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
-import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
+import {
+  glsp,
+  listReset,
+  media,
+  themeVal,
+  visuallyHidden
+} from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
@@ -150,7 +156,7 @@ const GlobalNav = styled.nav`
       }
     `}
 
-  ${media.xlargeUp`
+  ${media.largeUp`
     position: static;
     flex: 1;
     margin: 0;
@@ -175,7 +181,7 @@ const GlobalNav = styled.nav`
     ${({ revealed }) =>
       revealed &&
       css`
-        ${media.largeDown`
+        ${media.mediumDown`
           background: ${themeVal('color.base-400a')};
           width: 200vw;
         `}
@@ -189,13 +195,13 @@ const GlobalNavInner = styled.div`
   flex: 1;
   background-color: ${themeVal('color.primary')};
 
-  ${media.largeDown`
+  ${media.mediumDown`
     box-shadow: ${themeVal('boxShadow.elevationD')};
   `}
 `;
 
 const GlobalNavHeader = styled.div`
-  padding: ${variableGlsp()};
+  padding: ${variableGlsp(1)};
   box-shadow: inset 0 -1px 0 0 ${themeVal('color.surface-200a')};
 `;
 
@@ -242,10 +248,13 @@ const GlobalNavBodyInner = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  gap: ${variableGlsp()};
+  padding: ${variableGlsp(1, 0)};
 
-  ${media.xlargeUp`
+  ${media.largeUp`
     flex-direction: row;
-    gap: ${variableGlsp()};
+    justify-content: space-between;
+    padding: 0;
   `}
 `;
 
@@ -254,7 +263,7 @@ const NavBlock = styled.div`
   flex-flow: column nowrap;
   gap: ${glsp(0.25)};
 
-  ${media.xlargeUp`
+  ${media.largeUp`
     flex-direction: row;
     align-items: center;
     gap: ${glsp(1.5)};
@@ -262,20 +271,19 @@ const NavBlock = styled.div`
 `;
 
 const SectionsNavBlock = styled(NavBlock)`
-  ${media.xlargeUp`
-    margin-left: auto;
-  `}
+  /* styled-component */
 `;
 
 const GlobalNavBlockTitle = styled(Overline).attrs({
   as: 'span'
 })`
+  ${visuallyHidden}
   display: block;
   padding: ${variableGlsp(1, 1, 0.25, 1)};
   color: currentColor;
   opacity: 0.64;
 
-  ${media.xlargeUp`
+  ${media.largeUp`
     padding: 0;
   `}
 `;
@@ -286,7 +294,7 @@ const GlobalMenu = styled.ul`
   flex-flow: column nowrap;
   gap: ${glsp(0.5)};
 
-  ${media.xlargeUp`
+  ${media.largeUp`
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
@@ -299,7 +307,7 @@ const GlobalMenuLink = styled(NavLink)`
 `;
 
 function PageHeader() {
-  const { isLargeDown } = useMediaQuery();
+  const { isMediumDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
 
@@ -314,14 +322,14 @@ function PageHeader() {
 
   useEffect(() => {
     // Close global nav when media query changes.
-    if (!isLargeDown) setGlobalNavRevealed(false);
-  }, [isLargeDown]);
+    if (!isMediumDown) setGlobalNavRevealed(false);
+  }, [isMediumDown]);
 
   const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
 
   return (
     <PageHeaderSelf id={HEADER_ID}>
-      {globalNavRevealed && isLargeDown && <UnscrollableBody />}
+      {globalNavRevealed && isMediumDown && <UnscrollableBody />}
       <Brand>
         <Link to='/'>
           <NasaLogo />
@@ -331,7 +339,7 @@ function PageHeader() {
           <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
         </Tip>
       </Brand>
-      {isLargeDown && (
+      {isMediumDown && (
         <GlobalNavActions>
           <GlobalNavToggle
             aria-label={
@@ -355,30 +363,21 @@ function PageHeader() {
         onClick={onGlobalNavClick}
       >
         <GlobalNavInner ref={globalNavBodyRef}>
-          {isLargeDown && (
+          {isMediumDown && (
             <>
               <GlobalNavHeader>
                 <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
               </GlobalNavHeader>
             </>
           )}
-          <GlobalNavBody as={isLargeDown ? undefined : 'div'}>
+          <GlobalNavBody as={isMediumDown ? undefined : 'div'}>
             <GlobalNavBodyInner>
               <SectionsNavBlock>
-                <GlobalNavBlockTitle>Section</GlobalNavBlockTitle>
-
+                <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
                 <GlobalMenu>
                   <li>
                     <GlobalMenuLink to='/' onClick={closeNavOnClick}>
                       Welcome
-                    </GlobalMenuLink>
-                  </li>
-                  <li>
-                    <GlobalMenuLink
-                      to={DISCOVERIES_PATH}
-                      onClick={closeNavOnClick}
-                    >
-                      Discoveries
                     </GlobalMenuLink>
                   </li>
                   <li>
@@ -398,12 +397,25 @@ function PageHeader() {
                     </GlobalMenuLink>
                   </li>
                   <li>
-                    <GoogleForm />
+                    <GlobalMenuLink
+                      to={DISCOVERIES_PATH}
+                      onClick={closeNavOnClick}
+                    >
+                      Discoveries
+                    </GlobalMenuLink>
                   </li>
+                </GlobalMenu>
+              </SectionsNavBlock>
+              <SectionsNavBlock>
+                <GlobalNavBlockTitle>Meta</GlobalNavBlockTitle>
+                <GlobalMenu>
                   <li>
                     <GlobalMenuLink to={ABOUT_PATH} onClick={closeNavOnClick}>
                       About
                     </GlobalMenuLink>
+                  </li>
+                  <li>
+                    <GoogleForm />
                   </li>
                 </GlobalMenu>
               </SectionsNavBlock>
