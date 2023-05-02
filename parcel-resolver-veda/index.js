@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const fg = require('fast-glob');
 const dedent = require('dedent');
+const _ = require('lodash');
 const { Resolver } = require('@parcel/plugin');
 
 const stringifyYmlWithFns = require('./stringify-yml-func');
@@ -12,6 +13,11 @@ const {
   validateContentTypeId,
   validateDatasetLayerId
 } = require('./validation');
+const {
+  loadTaxonomies,
+  attachTaxonomies,
+  generateTaxonomiesModuleOutput
+} = require('./taxonomies');
 
 async function loadOptionalContent(logger, root, globPath, type) {
   try {
@@ -147,25 +153,38 @@ module.exports = new Resolver({
         });
       }
 
-      const datasetsData = await loadOptionalContent(
+      const taxonomiesData = await loadTaxonomies(
         logger,
         root,
-        result.datasets,
-        'datasets'
+        result.taxonomiesIndex
       );
 
-      const discoveriesData = await loadOptionalContent(
-        logger,
-        root,
-        result.discoveries,
-        'discoveries'
-      );
+      const datasetsData = _.chain(
+        await loadOptionalContent(logger, root, result.datasets, 'datasets')
+      )
+        .tap((value) => {
+          // Data validation
+          validateContentTypeId(value);
+          // Check the datasets for duplicate layer ids.
+          validateDatasetLayerId(value);
+        })
+        .thru((value) => attachTaxonomies(taxonomiesData, value))
+        .value();
 
-      validateContentTypeId(datasetsData);
-      validateContentTypeId(discoveriesData);
-
-      // Check the datasets for duplicate layer ids.
-      validateDatasetLayerId(datasetsData);
+      const discoveriesData = _.chain(
+        await loadOptionalContent(
+          logger,
+          root,
+          result.discoveries,
+          'discoveries'
+        )
+      )
+        .tap((value) => {
+          // Data validation
+          validateContentTypeId(value);
+        })
+        .thru((value) => attachTaxonomies(taxonomiesData, value))
+        .value();
 
       const datasetsImportData = datasetsData.data.map((o, i) => ({
         key: o.id,
@@ -186,6 +205,10 @@ module.exports = new Resolver({
             logger
           )}
         };
+
+        export const taxonomies = ${generateTaxonomiesModuleOutput(
+          taxonomiesData
+        )}
 
         export const getOverride = (key) => config.pageOverrides[key];
 
@@ -218,15 +241,15 @@ module.exports = new Resolver({
         invalidateOnFileChange: [
           configPath,
           ...datasetsData.filePaths,
-          ...discoveriesData.filePaths
-        ],
+          ...discoveriesData.filePaths,
+          taxonomiesData.filePath
+        ].filter(Boolean),
         invalidateOnFileCreate: [
           { filePath: configPath },
-          ...[
-            datasetsData.globPath ? { glob: datasetsData.globPath } : null,
-            discoveriesData.globPath ? { glob: discoveriesData.globPath } : null
-          ].filter(Boolean)
-        ]
+          datasetsData.globPath ? { glob: datasetsData.globPath } : null,
+          discoveriesData.globPath ? { glob: discoveriesData.globPath } : null,
+          taxonomiesData.filePath ? { glob: taxonomiesData.filePath } : null
+        ].filter(Boolean)
       };
       // console.log('resolved', resolved);
       return resolved;
