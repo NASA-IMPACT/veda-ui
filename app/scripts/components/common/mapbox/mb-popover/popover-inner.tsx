@@ -1,4 +1,10 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+  ReactNode
+} from 'react';
 import ReactDOM from 'react-dom';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
@@ -24,7 +30,7 @@ import {
 const Try = (
   props: {
     fn?: PopoverRenderFunction;
-    children: React.ReactNode;
+    children: ReactNode;
   } & PopoverRenderFunctionBag
 ) => {
   const { fn, children, ...rest } = props;

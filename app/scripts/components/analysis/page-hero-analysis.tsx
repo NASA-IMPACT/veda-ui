@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import {
   glsp,
@@ -162,11 +162,11 @@ const PageHeroActions = styled.div`
 
 interface PageHeroAnalysisProps {
   title: string;
-  description: React.ReactNode;
+  description: ReactNode;
   isHidden?: boolean;
   isResults?: boolean;
   aoi?: FeatureCollection<Polygon>;
-  renderActions?: ({ size }: { size: ButtonProps['size'] }) => React.ReactNode;
+  renderActions?: ({ size }: { size: ButtonProps['size'] }) => ReactNode;
 }
 
 function PageHeroAnalysis(props: PageHeroAnalysisProps) {

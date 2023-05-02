@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEventHandler, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -32,8 +32,8 @@ export const CardList = styled.ol`
   ${listReset()}
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
   gap: ${variableGlsp()};
+  grid-template-columns: repeat(1, 1fr);
 
   ${media.mediumUp`
     grid-template-columns: repeat(2, 1fr);
@@ -42,6 +42,10 @@ export const CardList = styled.ol`
   ${media.largeUp`
     grid-template-columns: repeat(3, 1fr);
   `}
+
+  > li {
+    min-width: 0;
+  }
 `;
 
 function renderCardType({ cardType }: CardSelfProps) {
@@ -69,6 +73,11 @@ function renderCardType({ cardType }: CardSelfProps) {
         padding-top: ${variableGlsp()};
         color: ${themeVal('color.surface')};
         justify-content: flex-end;
+        min-height: 16rem;
+
+        ${media.mediumUp`
+          min-height: 28rem;
+        `}
 
         ${CardFigure} {
           position: absolute;
@@ -169,6 +178,26 @@ export const CardOverline = styled(Overline)`
   }
 `;
 
+export const CardMeta = styled.div`
+  display: flex;
+  gap: ${glsp(0.25)};
+
+  > a {
+    color: inherit;
+    pointer-events: all;
+
+    &,
+    &:visited {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    &:hover {
+      opacity: 0.64;
+    }
+  }
+`;
+
 const CardLabel = styled.span`
   position: absolute;
   z-index: 1;
@@ -202,6 +231,39 @@ export const CardBody = styled.div`
   }
 `;
 
+export const CardFooter = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${variableGlsp(0.5)};
+  padding: ${variableGlsp()};
+
+  &:not(:first-child) {
+    padding-top: 0;
+    margin-top: ${variableGlsp(-0.5)};
+  }
+
+  button {
+    pointer-events: all;
+  }
+`;
+
+export const CardTopicsList = styled.dl`
+  display: flex;
+  gap: ${variableGlsp(0.25)};
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    black calc(100% - 3rem),
+    transparent 100%
+  );
+
+  > dt {
+    ${visuallyHidden()}
+  }
+`;
+
 const CardFigure = styled(Figure)`
   order: -1;
 
@@ -214,19 +276,20 @@ const CardFigure = styled(Figure)`
 `;
 
 interface CardComponentProps {
-  title: string;
+  title: ReactNode;
   linkLabel: string;
   linkTo: string;
   className?: string;
   cardType?: CardType;
-  description?: string;
+  description?: ReactNode;
   date?: Date;
-  overline?: React.ReactNode;
+  overline?: ReactNode;
   imgSrc?: string;
   imgAlt?: string;
   parentName?: string;
   parentTo?: string;
-  onCardClickCapture?: React.MouseEventHandler;
+  footerContent?: ReactNode;
+  onCardClickCapture?: MouseEventHandler;
 }
 
 function CardComponent(props: CardComponentProps) {
@@ -243,6 +306,7 @@ function CardComponent(props: CardComponentProps) {
     imgAlt,
     parentName,
     parentTo,
+    footerContent,
     onCardClickCapture
   } = props;
 
@@ -261,7 +325,7 @@ function CardComponent(props: CardComponentProps) {
       <CardHeader>
         <CardHeadline>
           <CardTitle>{title}</CardTitle>
-          <CardOverline>
+          <CardOverline as='div'>
             {parentName && parentTo && (
               <CardLabel as={Link} to={parentTo}>
                 {parentName}
@@ -285,6 +349,7 @@ function CardComponent(props: CardComponentProps) {
           <p>{description}</p>
         </CardBody>
       )}
+      {footerContent && <CardFooter>{footerContent}</CardFooter>}
       {imgSrc && (
         <CardFigure>
           <img src={imgSrc} alt={imgAlt} loading='lazy' />

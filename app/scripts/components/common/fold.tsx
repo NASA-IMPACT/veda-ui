@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentProps, ReactNode } from 'react';
 
 import styled from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
@@ -21,7 +21,8 @@ export const FoldGrid = styled(Hug)`
   padding-top: ${variableGlsp(2)};
   padding-bottom: ${variableGlsp(2)};
 
-  & + & {
+  & + &,
+  & + ${FoldBase} {
     padding-top: 0;
   }
 `;
@@ -33,10 +34,14 @@ const FoldInner = styled(Constrainer)`
 export const FoldHeader = styled.div`
   grid-column: 1 / -1;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   gap: ${variableGlsp()};
-  justify-content: space-between;
-  align-items: flex-end;
+
+  ${media.largeUp`
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: flex-end;
+  `}
 
   > a {
     flex-shrink: 0;
@@ -101,7 +106,7 @@ const Content = styled(VarProse)`
 `;
 
 function FoldComponent(
-  props: React.ComponentProps<typeof FoldBase> & { children: React.ReactNode }
+  props: ComponentProps<typeof FoldBase> & { children: ReactNode }
 ) {
   const { children, ...rest } = props;
 
@@ -116,7 +121,7 @@ export const Fold = styled(FoldComponent)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
 
-export function FoldProse(props: { children: React.ReactNode }) {
+export function FoldProse(props: { children: ReactNode }) {
   const { children } = props;
 
   return (

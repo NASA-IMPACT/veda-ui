@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
@@ -61,7 +61,7 @@ const Message = styled.div<MessageProps>`
 interface MapMessageProps extends Pick<MessageProps, 'isInvalid' | 'position'> {
   id: string;
   active: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function MapMessage(props: MapMessageProps) {

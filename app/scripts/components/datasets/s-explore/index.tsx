@@ -558,7 +558,7 @@ function DatasetsExplore() {
             </PanelInner>
           </Panel>
           <Carto>
-            <NotebookConnectButton dataset={dataset} />
+            <NotebookConnectButton dataset={dataset.data} />
             <MapboxMap
               ref={mapboxRef}
               withGeocoder

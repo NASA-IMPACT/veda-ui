@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { ReactNode, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Button, ButtonProps } from '@devseed-ui/button';
@@ -8,7 +8,7 @@ import {
   CollecticonCog
 } from '@devseed-ui/collecticons';
 import { Modal } from '@devseed-ui/modal';
-import { DatasetData, datasets, VedaDatum } from 'veda';
+import { DatasetData, datasets } from 'veda';
 
 import { HintedError } from '$utils/hinted-error';
 import { variableGlsp } from '$styles/variable-utils';
@@ -17,7 +17,7 @@ interface NotebookConnectButtonProps {
   compact?: boolean;
   variation?: ButtonProps['variation'];
   size?: ButtonProps['size'];
-  dataset?: VedaDatum<DatasetData>;
+  dataset?: DatasetData;
   className?: string;
 }
 
@@ -86,19 +86,14 @@ const IconByType: Record<DatasetUsageType, any> = {
   unknown: <CollecticonCog />
 };
 
-function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
-  const {
-    className,
-    compact = true,
-    variation = 'primary-fill',
-    size = 'medium',
-    dataset
-  } = props;
+export function NotebookConnectModal(props: {
+  dataset?: DatasetData;
+  revealed: boolean;
+  onClose: () => void;
+}) {
+  const { dataset, revealed, onClose } = props;
 
-  const [revealed, setRevealed] = useState(false);
-  const close = useCallback(() => setRevealed(false), []);
-
-  const datasetUsages = dataset?.data.usage;
+  const datasetUsages = dataset?.usage;
 
   const datasetUsagesWithIcon = useMemo(() => {
     return datasetUsages?.map((d) => {
@@ -116,10 +111,69 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
     return null;
   }
 
-  const layerIdsSet = dataset.data.layers.reduce(
+  const layerIdsSet = dataset.layers.reduce(
     (acc, layer) => acc.add(layer.stacCol),
     new Set<string>()
   );
+
+  return (
+    <Modal
+      id='modal'
+      size='medium'
+      title='How to use this dataset'
+      revealed={revealed}
+      onCloseClick={onClose}
+      onOverlayClick={onClose}
+      closeButton
+      content={
+        <>
+          <DatasetUsages>
+            {datasetUsagesWithIcon.map((datasetUsage) => (
+              <li key={datasetUsage.url}>
+                <DatasetUsageLink href={datasetUsage.url}>
+                  {IconByType[datasetUsage.type]}
+                  <DatasetUsageLabel>
+                    <h4>{datasetUsage.title}</h4>
+                    <p>{datasetUsage.label}</p>
+                  </DatasetUsageLabel>
+                </DatasetUsageLink>
+              </li>
+            ))}
+          </DatasetUsages>
+          <p>
+            For reference, the following STAC collection ID&apos;s are
+            associated with this dataset:
+          </p>
+          <ul>
+            {Array.from(layerIdsSet).map((id) => (
+              <li key={id}>
+                <code>{id}</code>
+              </li>
+            ))}
+          </ul>
+        </>
+      }
+    />
+  );
+}
+
+function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
+  const {
+    className,
+    compact = true,
+    variation = 'primary-fill',
+    size = 'medium',
+    dataset
+  } = props;
+
+  const [revealed, setRevealed] = useState(false);
+  const close = useCallback(() => setRevealed(false), []);
+
+  const datasetUsages = dataset?.usage;
+
+  if (!datasetUsages) {
+    return null;
+  }
 
   return (
     <>
@@ -134,42 +188,10 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
         <CollecticonCode meaningful={compact} title='Open data usage options' />
         {compact ? '' : 'Analyze data (Python)'}
       </Button>
-      <Modal
-        id='modal'
-        size='medium'
-        title='How to use this dataset'
+      <NotebookConnectModal
+        dataset={dataset}
         revealed={revealed}
-        onCloseClick={close}
-        onOverlayClick={close}
-        closeButton
-        content={
-          <>
-            <DatasetUsages>
-              {datasetUsagesWithIcon.map((datasetUsage) => (
-                <li key={datasetUsage.url}>
-                  <DatasetUsageLink href={datasetUsage.url}>
-                    {IconByType[datasetUsage.type]}
-                    <DatasetUsageLabel>
-                      <h4>{datasetUsage.title}</h4>
-                      <p>{datasetUsage.label}</p>
-                    </DatasetUsageLabel>
-                  </DatasetUsageLink>
-                </li>
-              ))}
-            </DatasetUsages>
-            <p>
-              For reference, the following STAC collection ID&apos;s are
-              associated with this dataset:
-            </p>
-            <ul>
-              {Array.from(layerIdsSet).map((id) => (
-                <li key={id}>
-                  <code>{id}</code>
-                </li>
-              ))}
-            </ul>
-          </>
-        }
+        onClose={close}
       />
     </>
   );
@@ -180,7 +202,7 @@ export const NotebookConnectButton = styled(NotebookConnectButtonSelf)`
 `;
 
 interface NotebookConnectCalloutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   datasetId: string;
   className?: string;
 }
@@ -214,7 +236,7 @@ function NotebookConnectCalloutSelf(props: NotebookConnectCalloutProps) {
       <NotebookConnectButton
         // compact={false}
         variation='base-outline'
-        dataset={dataset}
+        dataset={dataset.data}
       />
     </div>
   );

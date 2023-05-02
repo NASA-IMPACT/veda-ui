@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
 import { glsp } from '@devseed-ui/theme-provider';
 import {
   Dropdown,
+  DropdownProps,
   DropdownRef,
   DropMenu,
   DropTitle
@@ -31,11 +32,11 @@ const shadowScrollbarProps = {
   autoHeightMax: 320
 };
 
-interface DropdownScrollableProps {
-  children?: React.ReactNode;
+interface DropdownScrollableProps extends DropdownProps {
+  children?: ReactNode;
 }
 
-export default React.forwardRef<DropdownRef, DropdownScrollableProps>(
+export default forwardRef<DropdownRef, DropdownScrollableProps>(
   function DropdownScrollable(props, ref) {
     const { children, ...rest } = props;
     return (

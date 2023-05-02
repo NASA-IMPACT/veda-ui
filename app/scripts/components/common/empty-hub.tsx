@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { CollecticonPage } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
@@ -17,7 +17,7 @@ const EmptyHubWrapper = styled.div`
   gap: ${variableGlsp(1)};
 `;
 
-export default function EmptyHub(props: { children: React.ReactNode }) {
+export default function EmptyHub(props: { children: ReactNode }) {
   const theme = useTheme();
 
   return (

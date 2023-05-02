@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 
-function BrowserFrameComponent(props: { children: React.ReactNode }) {
+function BrowserFrameComponent(props: { children: ReactNode }) {
   const { children, ...rest } = props;
   return (
     <div {...rest}>

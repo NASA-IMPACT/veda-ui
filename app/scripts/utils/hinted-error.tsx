@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Fragment, ReactNode } from 'react';
 import styled from 'styled-components';
 import { themeVal, glsp } from '@devseed-ui/theme-provider';
 
 export class HintedError extends Error {
-  hints?: React.ReactNode[];
+  hints?: ReactNode[];
 
-  constructor(message, hints: React.ReactNode[] = []) {
+  constructor(message, hints: ReactNode[] = []) {
     super(message);
     this.hints = hints;
   }
@@ -50,8 +50,8 @@ interface HintedErrorDisplayProps {
   title: string;
   message: string;
   className?: string;
-  hints?: React.ReactNode[];
-  subtitle?: React.ReactNode;
+  hints?: ReactNode[];
+  subtitle?: ReactNode;
 }
 
 export function HintedErrorDisplay(props: HintedErrorDisplayProps) {
@@ -75,7 +75,7 @@ export function HintedErrorDisplay(props: HintedErrorDisplayProps) {
                   <p key={i}>{e}</p>
                 ) : (
                   /* eslint-disable-next-line react/no-array-index-key */
-                  <React.Fragment key={i}>{e}</React.Fragment>
+                  <Fragment key={i}>{e}</Fragment>
                 )
               )}
             </ErrorHints>

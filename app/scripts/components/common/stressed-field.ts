@@ -1,22 +1,30 @@
-import { useCallback, useEffect, useRef } from 'react';
+import {
+  Dispatch,
+  FormEvent,
+  KeyboardEvent,
+  Ref,
+  useCallback,
+  useEffect,
+  useRef
+} from 'react';
 import T from 'prop-types';
 
 import { useSafeState } from '$utils/use-safe-state';
 
 interface StressedFieldProps {
   render: (renderProps: {
-    ref: React.Ref<HTMLInputElement>
+    ref: Ref<HTMLInputElement>;
     errored: boolean;
     value: string;
     handlers: {
-      onKeyPress: (e: React.KeyboardEvent) => void;
+      onKeyPress: (e: KeyboardEvent) => void;
       onBlur: () => void;
-      onChange: (e: React.FormEvent<HTMLInputElement>) => void;
+      onChange: (e: FormEvent<HTMLInputElement>) => void;
     };
   }) => JSX.Element;
   value: string;
   validate: (value: string) => boolean;
-  onChange: (draftValue: string, setDraftValue: React.Dispatch<string>) => void;
+  onChange: (draftValue: string, setDraftValue: Dispatch<string>) => void;
 }
 
 /**
@@ -67,13 +75,12 @@ export default function StressedField(props: StressedFieldProps) {
 
   // setDraftValue is a hook and wont change.
   const onChangeHandler = useCallback(
-    (e: React.FormEvent<HTMLInputElement>) =>
-      setDraftValue(e.currentTarget.value),
+    (e: FormEvent<HTMLInputElement>) => setDraftValue(e.currentTarget.value),
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     []
   );
 
-  const onKeypressHandler = (e: React.KeyboardEvent) => {
+  const onKeypressHandler = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       if (validate(draftValue)) {
         // If the field is valid blur which will trigger validation a store

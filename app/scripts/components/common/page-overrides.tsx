@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { lazy, ReactNode } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { getOverride, PageOverrides } from 'veda';
 
@@ -10,7 +10,7 @@ const MdxContent = lazy(() => import('./mdx-content'));
 interface ComponentOverrideProps {
   [key: string]: any;
   with: PageOverrides;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function ComponentOverride(props: ComponentOverrideProps) {
