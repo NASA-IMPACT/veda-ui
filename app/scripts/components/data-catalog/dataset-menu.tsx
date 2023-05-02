@@ -22,6 +22,10 @@ import { NotebookConnectModal } from '$components/common/notebook-connect';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { Tip } from '$components/common/tip';
 
+const TriggerButton = styled(Button)`
+  margin-left: auto;
+`;
+
 const DropMenuItemButtonDisable = styled(DropMenuItemButton)<{
   visuallyDisabled: boolean;
 }>`
@@ -52,7 +56,7 @@ function DatasetMenu(props: DatasetMenuProps) {
         direction='up'
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         triggerElement={({ className, ...rest }) => (
-          <Button
+          <TriggerButton
             // @ts-expect-error achromic-text exists. The problem is bad typing in the UI library.
             variation='achromic-text'
             fitting='skinny'
@@ -60,7 +64,7 @@ function DatasetMenu(props: DatasetMenuProps) {
             {...rest}
           >
             <CollecticonEllipsisVertical />
-          </Button>
+          </TriggerButton>
         )}
       >
         <DropTitle>Options</DropTitle>
