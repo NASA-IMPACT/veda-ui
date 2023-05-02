@@ -106,9 +106,10 @@ function attachTaxonomies(taxonomiesData, contentType) {
 }
 
 function generateTaxonomiesModuleOutput(taxonomiesData) {
-  const data =
-    taxonomiesData.data ||
-    expectedTaxonomiesTypes.reduce((acc, type) => ({ ...acc, [type]: [] }), {});
+  const data = expectedTaxonomiesTypes.reduce(
+    (acc, type) => ({ ...acc, [type]: taxonomiesData.data?.[type] || [] }),
+    {}
+  );
 
   return JSON.stringify(data);
 }
