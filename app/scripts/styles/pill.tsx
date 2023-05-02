@@ -32,6 +32,7 @@ export const Pill = styled.span<PillProps>`
   font-weight: ${themeVal('type.base.bold')};
   white-space: nowrap;
 
+  /* stylelint-disable-next-line selector-type-no-unknown */
   ${renderPillVariation}
 
   :is(a) {
