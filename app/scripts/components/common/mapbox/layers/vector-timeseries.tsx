@@ -14,6 +14,7 @@ import centroid from '@turf/centroid';
 
 import { requestQuickCache, useLayerInteraction } from './utils';
 import { useMapStyle } from './styles';
+import { useCustomMarker } from './custom-marker';
 
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
@@ -80,6 +81,9 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     };
   }, [mapInstance, id, stacCol, date, onStatusChange]);
 
+
+  const markerLayout = useCustomMarker(mapInstance);
+
   //
   // Generate Mapbox GL layers and sources for raster timeseries
   //
@@ -115,7 +119,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
           visibility: isHidden ? 'none' : 'visible'
         },
         paint: {
-          'line-color': theme.color?.['base-300'],
+          'line-color': theme.color?.['danger-300'],
           'line-width': [
             'interpolate',
             ['linear'],
@@ -141,7 +145,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
           visibility: isHidden ? 'none' : 'visible'
         },
         paint: {
-          'line-color': theme.color?.primary,
+          'line-color': theme.color?.infographicB,
           'line-width': [
             'interpolate',
             ['linear'],
@@ -167,7 +171,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
           visibility: isHidden ? 'none' : 'visible'
         },
         paint: {
-          'fill-color': theme.color?.primary,
+          'fill-color': theme.color?.infographicB,
           'fill-opacity': 0.8
         },
         filter: ['==', '$type', 'Polygon'],
@@ -183,9 +187,13 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
             source: id,
             'source-layer': 'default',
             layout: {
-              'icon-image': 'leaflet-marker',
+              ...(markerLayout as any),
               visibility: isHidden ? 'none' : 'visible',
-              'icon-offset': [0, -12]
+            },
+            paint: {
+              'icon-color': theme.color?.infographicB,
+              'icon-halo-color': theme.color?.base,
+              'icon-halo-width': 1
             },
             maxzoom: minZoom,
             metadata: {

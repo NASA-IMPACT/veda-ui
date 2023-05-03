@@ -10,6 +10,7 @@ import {
   RasterSource,
   SymbolLayer
 } from 'mapbox-gl';
+import { useTheme } from 'styled-components';
 import { featureCollection, point } from '@turf/helpers';
 
 import { useMapStyle } from './styles';
@@ -20,6 +21,8 @@ import {
   requestQuickCache,
   useLayerInteraction
 } from './utils';
+import { useCustomMarker } from './custom-marker';
+
 import {
   ActionStatus,
   S_FAILED,
@@ -72,6 +75,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     isHidden
   } = props;
 
+  const theme = useTheme();
   const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
@@ -309,6 +313,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     // an error.
   ]);
 
+  const markerLayout = useCustomMarker(mapInstance);
+
   //
   // Generate Mapbox GL layers and sources for raster timeseries
   //
@@ -376,10 +382,14 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           id: pointsSourceId,
           source: pointsSourceId,
           layout: {
-            'icon-image': 'leaflet-marker',
+            ...(markerLayout as any),
             visibility: isHidden ? 'none' : 'visible',
-            'icon-allow-overlap': true,
-            'icon-offset': [0, -12]
+            'icon-allow-overlap': true
+          },
+          paint: {
+            'icon-color': theme.color?.primary,
+            'icon-halo-color': theme.color?.base,
+            'icon-halo-width': 1
           },
           maxzoom: minZoom,
           metadata: {
