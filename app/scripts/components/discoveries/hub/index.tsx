@@ -96,7 +96,7 @@ const prepareDiscoveries = (data: DiscoveryData[], options) => {
   }
 
   if (source !== optionAll.id) {
-    // TODO: Filter source
+    filtered = filtered.filter((d) => d.sources.find((t) => t.id === source));
   }
 
   /* eslint-disable-next-line fp/no-mutating-methods */
