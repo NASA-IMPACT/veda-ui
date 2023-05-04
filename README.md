@@ -1,6 +1,6 @@
 # VEDA Dashboard
 
-![VEDA logo](./docs/media/veda_logo_blue_text_transparent.png)
+![VEDA logo](./docs/media/nasa-veda-logo-pos.svg)
 
 VEDA is a dashboard to explore data.
 
