@@ -198,11 +198,11 @@ export const CardMeta = styled.div`
     }
   }
 
-  > ${VerticalDivider}:last-child {
+  > ${/* sc-selector */VerticalDivider}:last-child {
     display: none;
   }
 
-  > ${VerticalDivider}:first-child {
+  > ${/* sc-selector */VerticalDivider}:first-child {
     display: none;
   }
 `;
