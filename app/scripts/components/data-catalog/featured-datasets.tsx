@@ -42,6 +42,8 @@ export const continuumFoldSpanCols = {
 function FeaturedDatasets() {
   const { isScrolling, scrollProps } = useReactIndianaScrollControl();
 
+  if (!allFeaturedDatasets.length) return null;
+
   return (
     <FoldFeatured>
       <FoldHeader>

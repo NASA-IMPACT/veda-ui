@@ -43,6 +43,8 @@ export const continuumFoldSpanCols = {
 function FeaturedDiscoveries() {
   const { isScrolling, scrollProps } = useReactIndianaScrollControl();
 
+  if (!allFeaturedDiscoveries.length) return null;
+
   return (
     <FoldFeatured>
       <FoldHeader>
