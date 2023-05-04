@@ -237,6 +237,7 @@ function DiscoveriesHub() {
                               onClick={(e) => {
                                 e.preventDefault();
                                 onAction(Actions.SORT_FIELD, 'pubDate');
+                                browseControlsHeaderRef.current?.scrollIntoView();
                               }}
                             >
                               <PublishedDate date={pubDate} />
