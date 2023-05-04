@@ -115,7 +115,13 @@ const prepareDiscoveries = (data: DiscoveryData[], options) => {
     return a[sortField]?.localeCompare(b[sortField]);
   });
 
-  if (sortDir === 'desc' || sortField === 'pubDate') {
+  // In the case of the date, ordering is reversed.
+  if (sortField === 'pubDate') {
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    filtered.reverse();
+  }
+
+  if (sortDir === 'desc') {
     /* eslint-disable-next-line fp/no-mutating-methods */
     filtered.reverse();
   }
