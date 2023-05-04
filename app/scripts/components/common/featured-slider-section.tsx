@@ -4,6 +4,7 @@ import { DatasetData, DiscoveryData, datasets, discoveries } from 'veda';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import PublishedDate from './pub-date';
+import { CardSourcesList } from './card-sources';
 
 import { Card, CardMeta, CardTopicsList } from '$components/common/card';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
@@ -93,13 +94,10 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       title={d.name}
                       overline={
                         <CardMeta>
-                          <span>By SOURCE</span>
-
+                          <CardSourcesList sources={d.sources} />
+                          <VerticalDivider variation='light' />
                           {!isNaN(date.getTime()) && (
-                            <>
-                              <VerticalDivider variation='light' />
-                              <PublishedDate date={date} />
-                            </>
+                            <PublishedDate date={date} />
                           )}
                         </CardMeta>
                       }

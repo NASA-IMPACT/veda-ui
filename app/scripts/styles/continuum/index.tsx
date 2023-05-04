@@ -45,7 +45,7 @@ const ContinuumList = styled.ul`
   width: max-content;
   ${calcMargin}
 
-  li {
+  > li {
     margin-right: ${variableGlsp()};
   }
 `;

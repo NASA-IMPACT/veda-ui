@@ -6,6 +6,7 @@ import { glsp, media } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
+import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import DatasetMenu from './dataset-menu';
 
@@ -39,6 +40,7 @@ import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
+import { CardSourcesList } from '$components/common/card-sources';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
@@ -199,18 +201,17 @@ function DataCatalog() {
                   cardType='cover'
                   overline={
                     <CardMeta>
-                      <Link
-                        to={`${DATASETS_PATH}?${Actions.SOURCE}=${'eis'}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onAction(Actions.SOURCE, 'eis');
+                      <CardSourcesList
+                        sources={d.sources}
+                        rootPath={DATASETS_PATH}
+                        onSourceClick={(id) => {
+                          onAction(Actions.SOURCE, id);
                           browseControlsHeaderRef.current?.scrollIntoView();
                         }}
-                      >
-                        By SOURCE
-                      </Link>
+                      />
+                      <VerticalDivider variation='light' />
                       {/* TODO: Implement modified date: https://github.com/NASA-IMPACT/veda-ui/issues/514 */}
-                      {/* <VerticalDivider variation='light' />
+                      {/* 
                       <Link
                         to={`${DATASETS_PATH}?${Actions.SORT_FIELD}=date`}
                         onClick={(e) => {
