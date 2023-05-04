@@ -8,9 +8,7 @@ import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
-import FeaturedDiscoveries from './featured-discoveries';
-import PublishedDate from './pub-date';
-
+import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
 import {
   Actions,
@@ -40,6 +38,7 @@ import { DISCOVERIES_PATH, getDiscoveryPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
+import { FeaturedDiscoveries } from '$components/common/featured-slider-section';
 
 const allDiscoveries = Object.values(discoveries).map((d) => d!.data);
 

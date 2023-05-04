@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { discoveries } from 'veda';
+import { DatasetData, DiscoveryData, datasets, discoveries } from 'veda';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import PublishedDate from './pub-date';
@@ -15,10 +15,15 @@ import {
 } from '$styles/continuum';
 import { useReactIndianaScrollControl } from '$styles/continuum/use-react-indiana-scroll-controls';
 import { ContinuumScrollIndicator } from '$styles/continuum/continuum-scroll-indicator';
-import { getDiscoveryPath } from '$utils/routes';
+import { getDatasetPath, getDiscoveryPath } from '$utils/routes';
 import { Pill } from '$styles/pill';
+import DatasetMenu from '$components/data-catalog/dataset-menu';
 
 const allFeaturedDiscoveries = Object.values(discoveries)
+  .map((d) => d!.data)
+  .filter((d) => d.featured);
+
+const allFeaturedDatasets = Object.values(datasets)
   .map((d) => d!.data)
   .filter((d) => d.featured);
 
@@ -40,15 +45,25 @@ export const continuumFoldSpanCols = {
   largeUp: 8
 };
 
-function FeaturedDiscoveries() {
+interface FeaturedSliderSectionProps {
+  featuring?: 'datasets' | 'discoveries';
+  featuredItems: DiscoveryData[] | DatasetData[];
+  title: string;
+  getItemPath: typeof getDiscoveryPath | typeof getDatasetPath;
+  dateProperty?: string;
+}
+
+function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
   const { isScrolling, scrollProps } = useReactIndianaScrollControl();
 
-  if (!allFeaturedDiscoveries.length) return null;
+  const { featuring, featuredItems, title, getItemPath, dateProperty } = props;
+
+  if (!featuredItems.length) return null;
 
   return (
     <FoldFeatured>
       <FoldHeader>
-        <FoldTitle>Featured Discoveries</FoldTitle>
+        <FoldTitle>{title}</FoldTitle>
       </FoldHeader>
       <ContinuumCardsDragScrollWrapper>
         <ContinuumScrollIndicator />
@@ -58,8 +73,9 @@ function FeaturedDiscoveries() {
             startCol={continuumFoldStartCols}
             spanCols={continuumFoldSpanCols}
             render={(bag) => {
-              return allFeaturedDiscoveries.map((d) => {
-                const pubDate = new Date(d.pubDate);
+              return featuredItems.map((d) => {
+                const date = new Date(d[dateProperty ?? '']);
+
                 return (
                   <ContinuumGridItem {...bag} key={d.id}>
                     <Card
@@ -73,16 +89,16 @@ function FeaturedDiscoveries() {
                       }}
                       cardType='featured'
                       linkLabel='View more'
-                      linkTo={getDiscoveryPath(d)}
+                      linkTo={getItemPath(d)}
                       title={d.name}
                       overline={
                         <CardMeta>
                           <span>By SOURCE</span>
 
-                          {!isNaN(pubDate.getTime()) && (
+                          {!isNaN(date.getTime()) && (
                             <>
                               <VerticalDivider variation='light' />
-                              <PublishedDate date={pubDate} />
+                              <PublishedDate date={date} />
                             </>
                           )}
                         </CardMeta>
@@ -102,6 +118,9 @@ function FeaturedDiscoveries() {
                               ))}
                             </CardTopicsList>
                           ) : null}
+                          {featuring === 'datasets' && (
+                            <DatasetMenu dataset={d} />
+                          )}
                         </>
                       }
                     />
@@ -116,4 +135,24 @@ function FeaturedDiscoveries() {
   );
 }
 
-export default FeaturedDiscoveries;
+export function FeaturedDiscoveries() {
+  return (
+    <FeaturedSliderSection
+      title='Featured Discoveries'
+      featuredItems={allFeaturedDiscoveries}
+      getItemPath={getDiscoveryPath}
+      dateProperty='pubDate'
+    />
+  );
+}
+
+export function FeaturedDatasets() {
+  return (
+    <FeaturedSliderSection
+      title='Featured Datasets'
+      featuredItems={allFeaturedDatasets}
+      getItemPath={getDatasetPath}
+      featuring='datasets'
+    />
+  );
+}

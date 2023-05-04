@@ -7,7 +7,6 @@ import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 
-import FeaturedDatasets from './featured-datasets';
 import DatasetMenu from './dataset-menu';
 
 import BrowseControls from '$components/common/browse-controls';
@@ -39,6 +38,7 @@ import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
+import { FeaturedDatasets } from '$components/common/featured-slider-section';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
