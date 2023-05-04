@@ -84,7 +84,7 @@ declare module 'veda' {
   }
 
   interface LayerLegendUnit {
-    label: string
+    label: string;
   }
 
   export interface LayerLegendGradient {
@@ -128,7 +128,8 @@ declare module 'veda' {
     featured?: boolean;
     id: string;
     name: string;
-    thematics: string[];
+    thematics: TaxonomyItem[];
+    sources: TaxonomyItem[];
     description: string;
     usage?: DatasetUsage[];
     media?: Media;
@@ -150,7 +151,8 @@ declare module 'veda' {
     description: string;
     pubDate: string;
     media?: Media;
-    thematics: string[];
+    thematics: TaxonomyItem[];
+    sources: TaxonomyItem[];
     related?: RelatedContentData[];
   }
 
@@ -185,6 +187,11 @@ declare module 'veda' {
     content: () => Promise<MDXModule>;
   }
 
+  interface TaxonomyItem {
+    id: string;
+    name: string;
+  }
+
   /**
    * Named exports: datasets.
    * Object with all the veda datasets keyed by the dataset id.
@@ -196,6 +203,15 @@ declare module 'veda' {
    * Object with all the veda discoveries keyed by the discovery id.
    */
   export const discoveries: VedaData<DiscoveryData>;
+
+  /**
+   * Named exports: taxonomies.
+   * Object with all the veda taxonomies keyed by the taxonomy id.
+   */
+  export const taxonomies: {
+    sources: TaxonomyItem[];
+    thematics: TaxonomyItem[];
+  };
 
   export type PageOverrides = 'aboutContent' | 'sandbox-override';
   /**
