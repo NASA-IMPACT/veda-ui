@@ -39,6 +39,7 @@ import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 import { FeaturedDiscoveries } from '$components/common/featured-slider-section';
+import { CardSourcesList } from '$components/common/card-sources';
 
 const allDiscoveries = Object.values(discoveries).map((d) => d!.data);
 
@@ -95,7 +96,7 @@ const prepareDiscoveries = (data: DiscoveryData[], options) => {
   }
 
   if (source !== optionAll.id) {
-    // TODO: Filter source
+    filtered = filtered.filter((d) => d.sources.find((t) => t.id === source));
   }
 
   /* eslint-disable-next-line fp/no-mutating-methods */
@@ -209,30 +210,26 @@ function DiscoveriesHub() {
                     cardType='classic'
                     overline={
                       <CardMeta>
-                        <Link
-                          to={`${DISCOVERIES_PATH}?${Actions.SOURCE}=${'eis'}`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            onAction(Actions.SOURCE, 'eis');
+                        <CardSourcesList
+                          sources={d.sources}
+                          rootPath={DISCOVERIES_PATH}
+                          onSourceClick={(id) => {
+                            onAction(Actions.SOURCE, id);
                             browseControlsHeaderRef.current?.scrollIntoView();
                           }}
-                        >
-                          By SOURCE
-                        </Link>
+                        />
+                        <VerticalDivider variation='dark' />
                         {!isNaN(pubDate.getTime()) && (
-                          <>
-                            <VerticalDivider variation='dark' />
-                            <Link
-                              to={`${DISCOVERIES_PATH}?${Actions.SORT_FIELD}=pubDate`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                onAction(Actions.SORT_FIELD, 'pubDate');
-                                browseControlsHeaderRef.current?.scrollIntoView();
-                              }}
-                            >
-                              <PublishedDate date={pubDate} />
-                            </Link>
-                          </>
+                          <Link
+                            to={`${DISCOVERIES_PATH}?${Actions.SORT_FIELD}=pubDate`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              onAction(Actions.SORT_FIELD, 'pubDate');
+                              browseControlsHeaderRef.current?.scrollIntoView();
+                            }}
+                          >
+                            <PublishedDate date={pubDate} />
+                          </Link>
                         )}
                       </CardMeta>
                     }

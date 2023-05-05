@@ -2,6 +2,7 @@ import React, { MouseEventHandler, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import {
   glsp,
@@ -182,7 +183,7 @@ export const CardMeta = styled.div`
   display: flex;
   gap: ${glsp(0.25)};
 
-  > a {
+  a {
     color: inherit;
     pointer-events: all;
 
@@ -195,6 +196,14 @@ export const CardMeta = styled.div`
     &:hover {
       opacity: 0.64;
     }
+  }
+
+  > ${/* sc-selector */VerticalDivider}:last-child {
+    display: none;
+  }
+
+  > ${/* sc-selector */VerticalDivider}:first-child {
+    display: none;
   }
 `;
 

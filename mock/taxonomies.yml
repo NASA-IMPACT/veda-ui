@@ -11,5 +11,7 @@ thematics:
     name: Agriculture
 
 sources:
-  - id: eis
-    name: EIS
+  - id: devseed
+    name: Development Seed
+  - id: mock
+    name: Fake data
