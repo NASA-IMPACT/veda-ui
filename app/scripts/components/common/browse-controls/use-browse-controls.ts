@@ -20,19 +20,8 @@ export interface FilterOption {
 interface BrowseControlsHookParams {
   topicsOptions: FilterOption[];
   sourcesOptions: FilterOption[];
+  sortOptions: FilterOption[];
 }
-
-export const sortFieldsOptions: FilterOption[] = [
-  {
-    id: 'name',
-    name: 'Name'
-  }
-  // TODO: Implement date sorting: https://github.com/NASA-IMPACT/veda-ui/issues/514
-  // {
-  //   id: 'date',
-  //   name: 'Date (n/a)'
-  // }
-];
 
 export const sortDirOptions: FilterOption[] = [
   {
@@ -52,7 +41,8 @@ export const optionAll = {
 
 export function useBrowserControls({
   topicsOptions,
-  sourcesOptions
+  sourcesOptions,
+  sortOptions
 }: BrowseControlsHookParams) {
   // Setup Qs State to store data in the url's query string
   // react-router function to get the navigation.
@@ -64,10 +54,10 @@ export function useBrowserControls({
   const [sortField, setSortField] = useQsState.memo(
     {
       key: Actions.SORT_FIELD,
-      default: sortFieldsOptions[0].id,
-      validator: sortFieldsOptions.map((d) => d.id)
+      default: sortOptions[0].id,
+      validator: sortOptions.map((d) => d.id)
     },
-    []
+    [sortOptions]
   );
 
   const [sortDir, setSortDir] = useQsState.memo(

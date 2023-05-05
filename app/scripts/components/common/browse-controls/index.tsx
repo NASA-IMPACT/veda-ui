@@ -14,7 +14,6 @@ import {
   Actions,
   FilterOption,
   sortDirOptions,
-  sortFieldsOptions,
   useBrowserControls
 } from './use-browse-controls';
 
@@ -71,6 +70,7 @@ const ShadowScrollbarInner = styled.div`
 interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
   topicsOptions: FilterOption[];
   sourcesOptions: FilterOption[];
+  sortOptions: FilterOption[];
 }
 
 const shadowScrollbarProps = {
@@ -83,6 +83,7 @@ function BrowseControls(props: BrowseControlsProps) {
     source,
     topicsOptions,
     sourcesOptions,
+    sortOptions,
     search,
     sortField,
     sortDir,
@@ -90,7 +91,7 @@ function BrowseControls(props: BrowseControlsProps) {
     ...rest
   } = props;
 
-  const currentSortField = sortFieldsOptions.find((s) => s.id === sortField)!;
+  const currentSortField = sortOptions.find((s) => s.id === sortField)!;
 
   const { isLargeUp } = useMediaQuery();
 
@@ -145,7 +146,7 @@ function BrowseControls(props: BrowseControlsProps) {
           >
             <DropTitle>Options</DropTitle>
             <DropMenu>
-              {sortFieldsOptions.map((t) => (
+              {sortOptions.map((t) => (
                 <li key={t.id}>
                   <DropMenuItemButton
                     active={t.id === sortField}

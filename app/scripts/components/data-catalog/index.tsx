@@ -1,17 +1,21 @@
 import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
-import { DatasetData, datasets } from 'veda';
+import { DatasetData, datasets, taxonomies } from 'veda';
 import { Link } from 'react-router-dom';
 import { glsp, media } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
+import { VerticalDivider } from '@devseed-ui/toolbar';
 
-import BrowseControls from './browse-controls';
-import { Actions, optionAll, useBrowserControls } from './use-browse-controls';
-import FeaturedDatasets from './featured-datasets';
 import DatasetMenu from './dataset-menu';
 
+import BrowseControls from '$components/common/browse-controls';
+import {
+  Actions,
+  optionAll,
+  useBrowserControls
+} from '$components/common/browse-controls/use-browse-controls';
 import {
   LayoutProps,
   useSlidingStickyHeaderProps
@@ -35,6 +39,8 @@ import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
+import { FeaturedDatasets } from '$components/common/featured-slider-section';
+import { CardSourcesList } from '$components/common/card-sources';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
@@ -61,18 +67,11 @@ const BrowseHeader = styled(FoldHeader)`
   `}
 `;
 
-const topicsOptions = [
-  optionAll,
-  // TODO: human readable values for Taxonomies
-  ...Array.from(new Set(allDatasets.flatMap((d) => d.thematics || []))).map(
-    (t) => ({
-      id: t,
-      name: t
-    })
-  )
-];
+const topicsOptions = [optionAll, ...taxonomies.thematics];
 
-const sourcesOptions = [optionAll];
+const sourcesOptions = [optionAll, ...taxonomies.sources];
+
+const sortOptions = [{ id: 'name', name: 'Name' }];
 
 const prepareDatasets = (data: DatasetData[], options) => {
   const { sortField, sortDir, search, topic, source } = options;
@@ -87,16 +86,16 @@ const prepareDatasets = (data: DatasetData[], options) => {
         d.name.toLowerCase().includes(searchLower) ||
         d.description.toLowerCase().includes(searchLower) ||
         d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower)) ||
-        d.thematics?.some((t) => t.toLowerCase().includes(searchLower))
+        d.thematics.some((t) => t.name.toLowerCase().includes(searchLower))
     );
   }
 
   if (topic !== optionAll.id) {
-    filtered = filtered.filter((d) => d.thematics?.includes(topic));
+    filtered = filtered.filter((d) => d.thematics.find((t) => t.id === topic));
   }
 
   if (source !== optionAll.id) {
-    // TODO: Filter source
+    filtered = filtered.filter((d) => d.sources.find((t) => t.id === source));
   }
 
   /* eslint-disable-next-line fp/no-mutating-methods */
@@ -117,7 +116,8 @@ const prepareDatasets = (data: DatasetData[], options) => {
 function DataCatalog() {
   const controlVars = useBrowserControls({
     topicsOptions,
-    sourcesOptions
+    sourcesOptions,
+    sortOptions
   });
 
   const { topic, source, sortField, sortDir, onAction } = controlVars;
@@ -171,6 +171,7 @@ function DataCatalog() {
             {...controlVars}
             topicsOptions={topicsOptions}
             sourcesOptions={sourcesOptions}
+            sortOptions={sortOptions}
           />
         </BrowseHeader>
 
@@ -200,18 +201,17 @@ function DataCatalog() {
                   cardType='cover'
                   overline={
                     <CardMeta>
-                      <Link
-                        to={`${DATASETS_PATH}?${Actions.SOURCE}=${'eis'}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onAction(Actions.SOURCE, 'eis');
+                      <CardSourcesList
+                        sources={d.sources}
+                        rootPath={DATASETS_PATH}
+                        onSourceClick={(id) => {
+                          onAction(Actions.SOURCE, id);
                           browseControlsHeaderRef.current?.scrollIntoView();
                         }}
-                      >
-                        By SOURCE
-                      </Link>
+                      />
+                      <VerticalDivider variation='light' />
                       {/* TODO: Implement modified date: https://github.com/NASA-IMPACT/veda-ui/issues/514 */}
-                      {/* <VerticalDivider variation='light' />
+                      {/* 
                       <Link
                         to={`${DATASETS_PATH}?${Actions.SORT_FIELD}=date`}
                         onClick={(e) => {
@@ -239,17 +239,18 @@ function DataCatalog() {
                   imgAlt={d.media?.alt}
                   footerContent={
                     <>
-                      {d.thematics?.length ? (
+                      {d.thematics.length ? (
                         <CardTopicsList>
                           <dt>Topics</dt>
                           {d.thematics.map((t) => (
-                            <dd key={t}>
+                            <dd key={t.id}>
                               <Pill
+                                variation='achromic'
                                 as={Link}
-                                to={`${DATASETS_PATH}?${Actions.TOPIC}=${t}`}
+                                to={`${DATASETS_PATH}?${Actions.TOPIC}=${t.id}`}
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  onAction(Actions.TOPIC, t);
+                                  onAction(Actions.TOPIC, t.id);
                                   browseControlsHeaderRef.current?.scrollIntoView();
                                 }}
                               >
@@ -257,7 +258,7 @@ function DataCatalog() {
                                   value={search}
                                   disabled={search.length < 3}
                                 >
-                                  {t}
+                                  {t.name}
                                 </TextHighlight>
                               </Pill>
                             </dd>

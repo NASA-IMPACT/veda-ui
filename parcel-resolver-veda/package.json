@@ -10,6 +10,7 @@
   "peerDependencies": {
     "fast-glob": "^3.2.7",
     "fs-extra": "^10.0.0",
-    "gray-matter": "^4.0.3"
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0"
   }
 }
