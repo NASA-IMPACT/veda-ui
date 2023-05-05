@@ -265,7 +265,7 @@ function DiscoveriesHub() {
                                   to={`${DISCOVERIES_PATH}?${Actions.TOPIC}=${t.id}`}
                                   onClick={(e) => {
                                     e.preventDefault();
-                                    onAction(Actions.TOPIC, t);
+                                    onAction(Actions.TOPIC, t.id);
                                     browseControlsHeaderRef.current?.scrollIntoView();
                                   }}
                                 >
