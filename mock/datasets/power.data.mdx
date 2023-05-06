@@ -1,0 +1,128 @@
+---
+id: power-meteorology
+name: 'POWER Meteorological Dataset'
+featured: true
+description: "Prediction of Worldwide Energy Resources (POWER)"
+media:
+  src: ::file ./no2--dataset-cover.jpg
+  alt: Power plant shooting steam at the sky.
+  author:
+    name: Mick Truyts
+    url: https://unsplash.com/photos/x6WQeNYJC1w
+thematics:
+  - air
+layers:
+  - id: power-meteorology-temperature
+    stacCol: power-meteorology
+    name: Earth Skin Temperature
+    type: zarr
+    description: The average temperature at the earth's surface.
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      url: s3://power-analysis-ready-datastore/power_901_monthly_meteorology_utc.zarr
+      resampling_method: bilinear
+      variable: TS
+      colormap_name: gnbu
+      rescale: 250,300
+    legend:
+      unit: 
+        label: 
+      type: gradient
+      min: "Less"
+      max: "More"
+      stops:
+        - "#99c5e0"
+        - "#f9eaa9"
+        - "#f7765d"
+        - "#c13b72"
+        - "#461070"
+        - "#050308"
+---
+
+<Block type='full'>
+  <Figure>
+    <CompareImage
+      leftImageSrc={new URL('./east_coast_mar_avg.jpg', import.meta.url).href}
+      leftImageAlt='NO2 over Northeast U.S. with wider area with higher NO2 level'
+      leftImageLabel='March 2015-2019 Avg.'
+      rightImageSrc={new URL('./east_coast_mar_20.jpg', import.meta.url).href}
+      rightImageAlt='NO2 over Northeast U.S. with smaller area with lower NO2 level'
+      rightImageLabel='March 2020'
+    />
+    <Caption 
+      attrAuthor='NASA Scientific Visualization Studio' 
+      attrUrl='https://svs.gsfc.nasa.gov/'
+    >
+      NO2 levels fell by as much as 30% over much of the Northeast U.S. 
+    </Caption> 
+  </Figure>
+<Prose>
+Nitrogen dioxide (NO2) is a common air pollutant primarily emitted from the burning of fossil fuels in cars and power plants. Lower to the ground, nitrogen dioxide can directly irritate the lungs and contributes to the production of particulate pollution and smog when it reacts with sunlight.
+
+During the COVID-19 pandemic, scientists have observed considerable decreases in nitrogen dioxide levels around the world. These decreases are predominantly associated with changing human behavior in response to the spread of COVID-19. As communities worldwide have implemented lockdown restrictions in an attempt to stem the spread of the virus, the reduction in human transportation activity has resulted in less NO2 being emitted into the atmosphere.
+
+These changes are particularly apparent over large urban areas and economic corridors, which typically have high levels of automobile traffic, airline flights, and other related activity.
+
+NASA has observed subsequent rebounds in nitrogen dioxide levels as the lockdown restrictions ease.
+</Prose>
+</Block>
+<Block type='wide'>
+<Prose>
+## Scientific research
+[Ongoing research](https://airquality.gsfc.nasa.gov/) by scientists in the Atmospheric Chemistry and Dynamics Laboratory at NASA’s Goddard Space Flight Center and [new research](https://science.nasa.gov/earth-science/rrnes-awards) funded by NASA's Rapid Response and Novel research in the Earth Sciences (RRNES) program element seek to better understand the atmospheric effects of the COVID-19 shutdowns.
+
+For nitrogen dioxide levels related to COVID-19, NASA uses data collected by the joint NASA-Royal Netherlands Meteorological Institute (KNMI) [Ozone Monitoring Instrument (OMI)](https://aura.gsfc.nasa.gov/omi.html) aboard the Aura satellite, as well as data collected by the Tropospheric Monitoring Instrument (TROPOMI) aboard the European Commission’s Copernicus Sentinel-5P satellite, built by the European Space Agency.
+
+OMI, which launched in 2004, preceded TROPOMI, which launched in 2017. While TROPOMI provides higher resolution information, the longer OMI data record provides context for the TROPOMI observations.
+
+Scientists will use these data to investigate how travel bans and lockdown orders related to the novel coronavirus are impacting regional air quality and chemistry, as well as why these restrictions may be having inconsistent effects on air quality around the world.
+</Prose>
+</Block>
+
+<Block>
+<Figure>
+  <Image
+  src={new URL('./no2-south-america.jpg', import.meta.url).href}
+  alt='NO2 levels over South America from the Ozone Monitoring Instrument'
+  />
+  <Caption 
+    attrAuthor='NASA' 
+    attrUrl='https://nasa.gov/'
+  >
+    NO2 levels over South America from the Ozone Monitoring Instrument. The dark green areas in the northwest indicate areas of no data, most likely associated with cloud cover or snow. 
+  </Caption> 
+</Figure>
+<Prose>
+## Interpreting the data
+Nitrogen dioxide has a relatively short lifespan in the atmosphere. Once it is emitted, it lasts only a few hours before it dissipates, so it does not travel far from its source.
+
+Because nitrogen dioxide is primarily emitted from burning fossil fuels, changes in its atmospheric concentration can be related to changes in human activity, if the data are properly processed and interpreted.
+
+Interpreting satellite NO2 data must be done carefully, as the quantity observed by satellite is not exactly the same as the abundance at ground level, and natural variations in weather (e.g., temperature, wind speed, solar intensity) influence the amount of NO2 in the atmosphere. In addition, the OMI and TROPOMI instruments cannot observe the NO2 abundance underneath clouds. For more information on processing and cautions related to interpreting this data, please click [here](https://airquality.gsfc.nasa.gov/caution-interpretation).
+</Prose>
+</Block>
+
+<Block>
+<Prose>
+## Additional resources
+### NASA Features
+* [Airborne Nitrogen Dioxide Plummets Over China](https://earthobservatory.nasa.gov/images/146362/airborne-nitrogen-dioxide-plummets-over-china)
+* [Airborne Nitrogen Dioxide Decreases Over Italy](https://earthobservatory.nasa.gov/blogs/earthmatters/2020/03/13/airborne-nitrogen-dioxide-decreases-over-italy/)
+* [NASA Satellite Data Show 30 Percent Drop In Air Pollution Over Northeast U.S.](https://www.nasa.gov/feature/goddard/2020/drop-in-air-pollution-over-northeast)
+* [Airborne Particle Levels Plummet in Northern India](https://earthobservatory.nasa.gov/images/146596/airborne-particle-levels-plummet-in-northern-india)
+* [NASA Satellite Data Show Air Pollution Decreases over Southwest U.S. Cities](https://www.nasa.gov/feature/goddard/2020/nasa-satellite-data-show-air-pollution-decreases-over-southwest-us-cities)
+* [Nitrogen Dioxide Levels Rebound in China](https://earthobservatory.nasa.gov/images/146741/nitrogen-dioxide-levels-rebound-in-china?utm_source=card_2&utm_campaign=home)
+
+### Explore the Data
+* [How to Find and Visualize Nitrogen Dioxide Satellite Data](https://earthdata.nasa.gov/learn/articles/feature-articles/health-and-air-quality-articles/find-no2-data)
+* [COVID-19 Data Pathfinder](https://earthdata.nasa.gov/learn/pathfinders/covid-19)
+* [Reductions in Nitrogen Dioxide Associated with Decreased Fossil Fuel Use Resulting from COVID-19 Mitigation](https://svs.gsfc.nasa.gov/4810)
+
+### Explore the Missions
+* [Ozone Monitoring Instrument (OMI)](https://aura.gsfc.nasa.gov/omi.html)
+* [Tropospheric Emissions: Monitoring of Pollution (TEMPO)](http://tempo.si.edu/outreach.html)
+* [Pandora Project](https://pandora.gsfc.nasa.gov/)
+</Prose>
+</Block>

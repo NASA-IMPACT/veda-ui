@@ -6,7 +6,7 @@ declare module 'veda' {
   // ///////////////////////////////////////////////////////////////////////////
   //  Datasets                                                                //
   // ///////////////////////////////////////////////////////////////////////////
-  type DatasetLayerType = 'raster' | 'vector';
+  type DatasetLayerType = 'raster' | 'vector' | 'zarr';
 
   //
   // Dataset Layers
@@ -54,6 +54,7 @@ declare module 'veda' {
     initialDatetime?: 'newest' | 'oldest' | string;
     projection?: ProjectionOptions;
     type: DatasetLayerType;
+    assetUrl?: string;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend?: LayerLegendCategorical | LayerLegendGradient;
   }

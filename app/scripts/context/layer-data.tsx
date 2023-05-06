@@ -14,6 +14,7 @@ import {
   DatasetLayerCompareNormalized,
   datasets
 } from 'veda';
+import staticStac from '$context/power-stac';
 
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
@@ -21,6 +22,7 @@ import { S_SUCCEEDED } from '$utils/status';
 export type TimeDensity = 'day' | 'month' | 'year' | null;
 
 interface STACLayerData {
+  assetUrl?: string[];
   timeseries: {
     isPeriodic: boolean;
     timeDensity: TimeDensity;
@@ -33,10 +35,17 @@ const fetchLayerById = async (
 ): Promise<STACLayerData | Error> => {
   const { type, stacCol } = layer;
 
-  const { data } = await axios.get(
-    `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
-  );
+  let data;
+  if (type === 'zarr') {
+    data = staticStac;
+  } else {
+    data = await axios.get(`${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`)
+  };
 
+  const commonTimeseriesParams = {
+    isPeriodic: data['dashboard:is_periodic'],
+    timeDensity: data['dashboard:time_density']
+  }
   // TODO: Normalize API data structure
   // For the time being the vector and raster sources have different api
   // endpoints, and different properties to get data from.
@@ -46,20 +55,27 @@ const fetchLayerById = async (
 
     return {
       timeseries: {
-        isPeriodic: data['dashboard:is_periodic'],
-        timeDensity: data['dashboard:time_density'],
+        ...commonTimeseriesParams,
         domain: featuresApiData.extent.temporal.interval[0]
       }
     };
   }
 
-  return {
+  const defaultData = {
     timeseries: {
-      isPeriodic: data['dashboard:is_periodic'],
-      timeDensity: data['dashboard:time_density'],
+      ...commonTimeseriesParams,
       domain: data.summaries.datetime
     }
   };
+
+  if (type === 'zarr') {
+    return {
+      ...defaultData,
+      assetUrl: data.assets.zarr.href
+    };
+  }
+
+  return defaultData;
 };
 
 // Create a query object for react query.

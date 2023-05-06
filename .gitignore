@@ -72,4 +72,6 @@ nbproject
 temp
 tmp
 .tmp
-dist
+distparcel-resolver-thematics/veda-thematic.out.js
+parcel-resolver-thematics/veda-thematic.out.js
+dist/

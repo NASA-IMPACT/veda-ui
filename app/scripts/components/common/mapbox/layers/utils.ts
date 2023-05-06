@@ -21,6 +21,7 @@ import {
 } from 'veda';
 import { MapLayerRasterTimeseries, StacFeature } from './raster-timeseries';
 import { MapLayerVectorTimeseries } from './vector-timeseries';
+import { MapLayerZarrTimeseries } from './zarr-timeseries';
 
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
@@ -29,11 +30,12 @@ import { HintedError } from '$utils/hinted-error';
 
 export const getLayerComponent = (
   isTimeseries: boolean,
-  layerType: 'raster' | 'vector'
+  layerType: 'raster' | 'vector' | 'zarr'
 ): FunctionComponent<any> | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
     if (layerType === 'vector') return MapLayerVectorTimeseries;
+    if (layerType === 'zarr') return MapLayerZarrTimeseries;
   }
 
   return null;
