@@ -55,6 +55,7 @@ declare module 'veda' {
     projection?: ProjectionOptions;
     type: DatasetLayerType;
     assetUrl?: string;
+    stacApiOverride?: string;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend?: LayerLegendCategorical | LayerLegendGradient;
   }

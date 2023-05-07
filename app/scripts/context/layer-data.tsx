@@ -14,7 +14,6 @@ import {
   DatasetLayerCompareNormalized,
   datasets
 } from 'veda';
-import staticStac from '$context/power-stac';
 
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
@@ -33,14 +32,9 @@ interface STACLayerData {
 const fetchLayerById = async (
   layer: DatasetLayer | DatasetLayerCompareNormalized
 ): Promise<STACLayerData | Error> => {
-  const { type, stacCol } = layer;
+  const { type, stacCol, stacApiOverride } = layer;
 
-  let data;
-  if (type === 'zarr') {
-    data = staticStac;
-  } else {
-    data = await axios.get(`${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`)
-  };
+  const data = await axios.get(stacApiOverride || `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`)
 
   const commonTimeseriesParams = {
     isPeriodic: data['dashboard:is_periodic'],
