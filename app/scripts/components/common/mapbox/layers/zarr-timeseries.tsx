@@ -150,68 +150,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   //
   // Tiles
   //
-  let [tilesUrl, setTilesUrl] = useState<string | null>(null);
-  useEffect(() => {
-    if (!id || !sourceParams['variable'] || !date) return;
-
-    const controller = new AbortController();
-
-    const load = async () => {
-      changeStatus({ status: S_LOADING, context: STATUS_KEY.Layer });
-      try {
-        const payload = {};
-
-        /* eslint-disable no-console */
-        LOG &&
-          console.groupCollapsed(
-            'MapLayerZarrTimeseries %cLoading Zarr',
-            'color: orange;',
-            id
-          );
-        LOG && console.log('Payload', payload);
-        LOG && console.groupEnd();
-        /* eslint-enable no-console */
-
-        // TODO(aimee: fetch CATALOG)
-
-        setTilesUrl('https://enjmncj3p2.execute-api.us-west-2.amazonaws.com/tilejson.json');
-
-        /* eslint-disable no-console */
-        LOG &&
-          console.groupCollapsed(
-            'MapLayerRasterTimeseries %cAdding Mosaic',
-            'color: green;',
-            id
-          );
-        // links[0] : metadata , links[1]: tile
-        // LOG && console.log('Url', responseData.links[1].href);
-        // LOG && console.log('STAC response', responseData);
-        LOG && console.groupEnd();
-        /* eslint-enable no-console */
-        changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          changeStatus({ status: S_FAILED, context: STATUS_KEY.Layer });
-        }
-        LOG &&
-          /* eslint-disable-next-line no-console */
-          console.log(
-            'MapLayerRasterTimeseries %cAborted Mosaic',
-            'color: red;',
-            id
-          );
-        return;
-      }
-    };
-
-    load();
-
-    return () => {
-      controller.abort();
-      changeStatus({ status: 'idle', context: STATUS_KEY.Layer });
-    };
-  }, []);
-
+  const tilesUrl = 'http://localhost:8002/tilejson.json';
   const markerLayout = useCustomMarker(mapInstance);
 
   //
@@ -230,6 +169,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
         let tileParams = qs.stringify(
           {
             url: assetUrl,
+            time_slice: date,
             ...sourceParams
           }
         );
