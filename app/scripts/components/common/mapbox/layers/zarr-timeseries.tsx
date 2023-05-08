@@ -250,6 +250,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
     [
       updateStyle,
       id,
+      date,
       tilesUrl,
       minZoom,
       points,
