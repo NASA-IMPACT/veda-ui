@@ -1,8 +1,8 @@
 ---
-id: power-meteorology
-name: 'POWER Meteorological Dataset'
+id: cmip6-historical-tas
+name: 'CMIP6 Historical Temperature'
 featured: true
-description: "Prediction of Worldwide Energy Resources (POWER)"
+description: "CMIP6 Historical Near-Surface Air Temperature"
 media:
   src: ::file ./no2--dataset-cover.jpg
   alt: Power plant shooting steam at the sky.
@@ -12,19 +12,19 @@ media:
 thematics:
   - air
 layers:
-  - id: power-meteorology-temperature
+  - id: cmip6-historical-tas
     stacApiOverride: https://raw.githubusercontent.com/nasa-impact/veda-ui/ab/zarr-layers/mock/datasets/power-stac.json
-    stacCol: power-meteorology
-    name: Earth Skin Temperature
+    stacCol: cmip6-historical-tas
+    name: CMIP6 Near-Surface Air Temperature
     type: zarr
-    description: The average temperature at the earth's surface.
+    description: CMIP6 Near-Surface Air Temperature
     zoomExtent:
       - 0
       - 20
     sourceParams:
-      url: s3://power-analysis-ready-datastore/power_901_monthly_meteorology_utc.zarr
+      url: s3://cmip6-pds/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r2i1p1f1/Amon/tas/gn/v20180827/
       resampling_method: bilinear
-      variable: TS
+      variable: tas
       colormap_name: jet
       rescale: 200,300
     legend:
