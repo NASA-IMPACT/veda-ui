@@ -1,9 +1,10 @@
 import { DatasetLayer } from 'veda';
 import { FeatureCollection, Polygon } from 'geojson';
 import { useEffect, useState } from 'react';
-import { uniq } from 'lodash';
 import axios from 'axios';
-import { getFilterPayload } from '../utils';
+import { endOfDay, startOfDay } from 'date-fns';
+
+import { combineFeatureCollection } from '../utils';
 import { allAvailableDatasetsLayers } from '.';
 import {
   ActionStatus,
@@ -13,6 +14,8 @@ import {
   S_SUCCEEDED
 } from '$utils/status';
 
+import { userTzDate2utcString } from '$utils/date';
+
 interface UseStacSearchProps {
   start?: Date;
   end?: Date;
@@ -21,7 +24,6 @@ interface UseStacSearchProps {
 
 export function useStacSearch({ start, end, aoi }: UseStacSearchProps) {
   const readyToLoadDatasets = !!(start && end && aoi);
-
 
   const [selectableDatasetLayers, setSelectableDatasetLayers] = useState<
     DatasetLayer[]
@@ -37,44 +39,20 @@ export function useStacSearch({ start, end, aoi }: UseStacSearchProps) {
     const load = async () => {
       setStacSearchStatus(S_LOADING);
       try {
-        const url = `${process.env.API_STAC_ENDPOINT}/search`;
+        const url = `${process.env.API_STAC_ENDPOINT}/collection-id-search`;
 
-        const allAvailableDatasetsLayersIds = allAvailableDatasetsLayers.map(
-          (layer) => layer.id
-        );
+        const dStart = userTzDate2utcString(startOfDay(start));
+        const dEnd = userTzDate2utcString(endOfDay(end));
         const payload = {
-          'filter-lang': 'cql2-json',
-          filter: getFilterPayload(
-            start,
-            end,
-            aoi,
-            allAvailableDatasetsLayersIds
-          ),
-          limit: 100,
-          fields: {
-            exclude: [
-              'links',
-              'assets',
-              'bbox',
-              'geometry',
-              'properties',
-              'stac_extensions',
-              'stac_version',
-              'type'
-            ]
-          }
+          intersects: combineFeatureCollection(aoi).geometry,
+          datetime: `${dStart}/${dEnd}`
         };
         const response = await axios.post(url, payload, {
           signal: controller.signal
         });
         setStacSearchStatus(S_SUCCEEDED);
-        const itemsParentCollections: string[] = uniq(
-          response.data.features.map((feature) => feature.collection)
-        );
         setSelectableDatasetLayers(
-          allAvailableDatasetsLayers.filter((l) =>
-            itemsParentCollections.includes(l.id)
-          )
+          allAvailableDatasetsLayers.filter((l) => response.data.includes(l.id))
         );
       } catch (error) {
         if (!controller.signal.aborted) {
