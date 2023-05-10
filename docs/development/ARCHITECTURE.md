@@ -1,5 +1,14 @@
 # Veda Dev Notes
 
+- [Veda Dev Notes](#veda-dev-notes)
+  - [Configuration](#configuration)
+  - [Veda modules](#veda-modules)
+    - [parcel-resolver-veda](#parcel-resolver-veda)
+    - [parcel-transformer-mdx-front](#parcel-transformer-mdx-front)
+    - [Troubleshooting](#troubleshooting)
+  - [Path aliases](#path-aliases)
+
+
 The base idea behind Veda architecture is the separation of concerns between ui code and configuration.  
 That is why the ui repo (`veda-ui`) is used as a submodule of `veda-config`.
 A user wishing to setup a new Veda instance, only has to fork `veda-config`, change the configuration variables and the content, and you are ready to launch your own instance.
@@ -29,7 +38,7 @@ Here's something about this site! on fire?
 <SomeComponent />
 ```
 
-## veda
+## Veda modules
 To be able to load all the configuration and content into Veda, it uses a custom parcel resolver which allows us to create a faux module (`veda`) which when imported will resolve to our configuration.
 
 ```js
@@ -49,7 +58,7 @@ import { datasets, discoveries } from 'veda';
 
 ### parcel-resolver-veda
 
-[Custom resolver module](https://github.com/NASA-IMPACT/veda-ui/blob/main/parcel-resolver-veda/index.js) is used to create the faux module that outputs the structure above. It reads all the mdx files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
+[Custom resolver module](../../parcel-resolver-veda/index.js) is used to create the faux module that outputs the structure above. It reads all the mdx files from disk, uses the values in the frontmatter to establish the correct relationships and outputs the correct module code.  
 The content part (the MDX) is not handled by this resolver, but left untouched and when trying to import a `MDX` file, the correct resolver will kick in.
 
 The faux module is virtual and is not loaded from a file, but for debug purposes the generated module code is output to `parcel-resolver-veda/veda.out.js` during runtime. This file is gitignored, so you'll have to run the project to see it.
@@ -62,7 +71,7 @@ Since having frontmatter code is not supported by `MDX` files, this custom resol
 
 If you run into errors after making changes to mdx files, it could be from [Parcel's cache issue](https://github.com/parcel-bundler/parcel/issues/7247). Try deleting Parcel cache by running `rm -rf .parcel-cache`. If this doesn't resolve your problem, try `yarn clean` to start from a clean slate and file an issue.
 
-## Module aliases
+## Path aliases
 
 To simplify file access we use aliases for the most common paths so that they can be imported more easily.  
 For example, to access file inside the `styles` folder you'd use `$styles/filename` instead of having to use a relative path. This get's very handy when we have several nested folders.
