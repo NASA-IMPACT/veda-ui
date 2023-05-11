@@ -2,6 +2,7 @@ declare module 'veda' {
   import * as dateFns from 'date-fns';
   import mapboxgl from 'mapbox-gl';
   import { MDXModule } from 'mdx/types';
+  import { DefaultTheme } from 'styled-components';
 
   // ///////////////////////////////////////////////////////////////////////////
   //  Datasets                                                                //
@@ -218,4 +219,6 @@ declare module 'veda' {
    * Configuration export for specific overrides.
    */
   export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
+
+  export const theme: DefaultTheme | null;
 }

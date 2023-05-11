@@ -1,5 +1,8 @@
-import { createUITheme, media, themeVal } from '@devseed-ui/theme-provider';
 import { createGlobalStyle } from 'styled-components';
+import { createUITheme, media, themeVal } from '@devseed-ui/theme-provider';
+import { defaultsDeep } from 'lodash';
+import { theme } from 'veda';
+
 import { reactTippyStyles } from '$components/common/tip';
 
 export const VEDA_OVERRIDE_THEME = {
@@ -54,7 +57,11 @@ export const VEDA_OVERRIDE_THEME = {
 };
 
 export default function themeOverrides() {
-  return createUITheme(VEDA_OVERRIDE_THEME);
+  if (theme) {
+    return createUITheme(defaultsDeep({}, theme, VEDA_OVERRIDE_THEME));
+  } else {
+    return createUITheme(VEDA_OVERRIDE_THEME);
+  }
 }
 
 /**
