@@ -13,11 +13,12 @@ thematics:
   - air
 layers:
   - id: cmip6-historical-tas
-    stacApiOverride: https://raw.githubusercontent.com/nasa-impact/veda-ui/ab/zarr-layers/mock/datasets/power-stac.json
+    stacApiOverride: https://raw.githubusercontent.com/nasa-impact/veda-ui/ab/zarr-layers/mock/datasets/cmip6-tas-stac.json
     stacCol: cmip6-historical-tas
     name: CMIP6 Near-Surface Air Temperature
     type: zarr
-    description: CMIP6 Near-Surface Air Temperature
+    description:
+      "CMIP6 Historical (1850-2014) Near-Surface Air Temperature from NASA-GISS: Goddard Institute for Space Studies. Zarr source is provided by the Pangeo / ESGF Cloud Data Working Group and the zarr store is accessed from it's S3 bucket location: s3://cmip6-pds/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r2i1p1f1/Amon/tas/gn/v20180827/."
     zoomExtent:
       - 0
       - 20

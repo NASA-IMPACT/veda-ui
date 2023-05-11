@@ -150,7 +150,8 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   //
   // Tiles
   //
-  const tilesUrl = 'http://localhost:8002/tilejson.json';
+  //const tilesUrl = 'http://localhost:8002/tilejson.json';
+  const tilesUrl = 'https://enjmncj3p2.execute-api.us-west-2.amazonaws.com/tilejson.json';
   const markerLayout = useCustomMarker(mapInstance);
 
   //

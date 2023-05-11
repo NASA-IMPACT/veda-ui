@@ -1,0 +1,44 @@
+---
+id: geos-fwi-hourly
+name: 'GEOS Hourly Fire Weather Index'
+featured: true
+description: "GEOS Hourly Fire Weather Index"
+media:
+  src: ::file ./no2--dataset-cover.jpg
+  alt: Power plant shooting steam at the sky.
+  author:
+    name: Mick Truyts
+    url: https://unsplash.com/photos/x6WQeNYJC1w
+thematics:
+  - air
+layers:
+  - id: geos-fwi-hourly
+    stacApiOverride: https://raw.githubusercontent.com/nasa-impact/veda-ui/ab/zarr-layers/mock/datasets/geos-fwi-hourly-stac.json
+    stacCol: geos-fwi-hourly
+    name: GEOS Hourly Fire Weather Index
+    type: zarr
+    description:
+      "Fire risk is determined by a combination of weather, climate and fuel conditions. One metric for determining fire risk is the Fire Weather Index (FWI), an index that is used in Alaska and internationally. FWI is a combination of many sub-metrics that look at different aspects of fire risk like fuel moisture, dryness, and wind. FWI helps scientists anticipate when fire will ignight or spread rapidly."
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      url: s3://veda-data-store-staging/EIS/zarr/FWI-GEOS-5-Hourly
+      resampling_method: bilinear
+      variable: GEOS-5_FWI
+      colormap_name: rdbu_r
+      rescale: 0,40
+    legend:
+      unit: 
+        label: 
+      type: gradient
+      min: 0
+      max: 40
+      stops:
+        - "#3A88BD"
+        - "#C9E0ED"
+        - "#E4EEF3"
+        - "#FDDCC9"
+        - "#DD7059"
+---
+

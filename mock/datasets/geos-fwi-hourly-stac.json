@@ -1,0 +1,114 @@
+{
+    "id": "geos-fwi-hourly",
+    "type": "Collection",
+    "links": [
+    ],
+    "title": "GEOS Hourly Fire Weather Index",
+    "assets": {
+        "zarr": {
+            "href": "s3://veda-data-store-staging/EIS/zarr/FWI-GEOS-5-Hourly",
+            "type": "application/vnd+zarr",
+            "roles": [
+                "data",
+                "zarr"
+            ],
+            "title": "geos-fwi-hourly Zarr root",
+            "description": "",
+            "xarray:open_kwargs": {
+                "chunks": {},
+                "engine": "zarr",
+                "consolidated": true
+            }
+        }
+    },
+    "extent": {
+        "spatial": {
+            "bbox": [
+                [
+                    -180,
+                    -90,
+                    180,
+                    90
+                ]
+            ]
+        },
+        "temporal": {
+            "interval": [
+                [
+                    "2020-01-01T00:00:00Z",
+                    "2023-01-24T23:00:00Z"
+                ]
+            ]
+        }
+    },
+    "license": "CC0-1.0",
+    "description": "",
+    "stac_version": "1.0.0",
+    "cube:variables": {
+        "GEOS-5_FWI": {
+            "type": "data",
+            "unit": "fire_weather_index",
+            "attrs": {
+                "units": "n/a",
+                "long_name": "ADD ME"
+            },
+            "shape": [
+                26880,
+                533,
+                1152
+            ],
+            "chunks": [
+                26880,
+                533,
+                1152
+            ],
+            "dimensions": [
+                "time",
+                "lat",
+                "lon"
+            ],
+            "description": "The average temperature at the earth's surface."
+        }
+    },
+    "cube:dimensions": {
+        "lat": {
+            "axis": "y",
+            "type": "spatial",
+            "extent": [
+                -58,
+                75
+            ],
+            "description": "latitude",
+            "reference_system": 4326
+        },
+        "lon": {
+            "axis": "x",
+            "type": "spatial",
+            "extent": [
+                -180,
+                179.7
+            ],
+            "description": "longitude",
+            "reference_system": 4326
+        },
+        "time": {
+            "type": "temporal",
+            "extent": [
+                "2020-01-01T00:00:00Z",
+                "2023-01-24T23:00:00Z"
+            ],
+            "description": "time"
+        }
+    },
+    "stac_extensions": [
+        "https://stac-extensions.github.io/datacube/v2.0.0/schema.json"
+    ],
+    "dashboard:is_periodic": true,
+    "dashboard:time_density": "hour",
+    "summaries": {
+        "datetime": [
+            "2020-01-01T00:00:00Z",
+            "2023-01-24T23:00:00Z"            
+        ]
+    }
+}
