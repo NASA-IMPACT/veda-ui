@@ -214,7 +214,7 @@ declare module 'veda' {
     thematics: TaxonomyItem[];
   };
 
-  export type PageOverrides = 'aboutContent' | 'sandbox-override';
+  export type PageOverrides = 'aboutContent' | 'sandbox-override' | 'pageFooter';
   /**
    * Configuration export for specific overrides.
    */
