@@ -216,6 +216,7 @@ declare module 'veda' {
 
   export type PageOverrides =
     | 'aboutContent'
+    | 'homeContent'
     | 'sandbox-override'
     | 'pageFooter'
     | 'headerBrand';

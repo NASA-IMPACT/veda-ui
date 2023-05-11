@@ -5,6 +5,7 @@ import { Button } from '@devseed-ui/button';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
 import { CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
+import { getOverride } from 'veda';
 
 import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
 
@@ -18,6 +19,9 @@ import { PageMainContent } from '$styles/page';
 import { variableGlsp } from '$styles/variable-utils';
 import { PageActions, PageLead } from '$styles/page';
 import Hug from '$styles/hug';
+import { ContentOverride } from '$components/common/page-overrides';
+
+const homeContent = getOverride('homeContent');
 
 const Connections = styled(Hug)`
   background: ${themeVal('color.base-50')};
@@ -93,6 +97,33 @@ const PageHeroHome = styled(PageHero)`
 
 const appTitle = process.env.APP_TITLE;
 
+const getCoverProps = () => {
+  const { src, alt, author } = homeContent?.data?.cover || {};
+
+  if (src && alt) {
+    const coverProps = {
+      coverSrc: src,
+      coverAlt: alt
+    };
+
+    return author
+      ? {
+          ...coverProps,
+          attributionAuthor: author.name,
+          attributionUrl: author.url
+        }
+      : coverProps;
+  } else {
+    return {
+      coverSrc: rootCoverImage,
+      coverAlt:
+        'Satellite imagery of Dasht-e Kevir, or Great Salt Desert, the largest desert in Iran.',
+      attributionAuthor: 'USGS',
+      attributionUrl: 'https://unsplash.com/photos/hSh_X3kJ4bI'
+    };
+  }
+};
+
 function RootHome() {
   const { show: showFeedbackModal } = useFeedbackModal();
 
@@ -100,13 +131,17 @@ function RootHome() {
     <PageMainContent>
       <LayoutProps title='Welcome' />
       <PageHeroHome
-        title={`Welcome to the ${appTitle}`}
+        title={homeContent?.data.title ?? `Welcome to the ${appTitle}`}
         renderBetaBlock={() => (
           <>
-            <PageLead>
-              VEDA (Visualization, Exploration, and Data Analysis) is
-              NASA&apos;s open-source Earth Science platform in the cloud.
-            </PageLead>
+            {homeContent?.data.description ? (
+              <PageLead>{homeContent.data.description}</PageLead>
+            ) : (
+              <PageLead>
+                VEDA (Visualization, Exploration, and Data Analysis) is
+                NASA&apos;s open-source Earth Science platform in the cloud.
+              </PageLead>
+            )}
             <PageActions>
               <Button
                 forwardedAs={Link}
@@ -119,17 +154,16 @@ function RootHome() {
             </PageActions>
           </>
         )}
-        coverSrc={rootCoverImage}
-        coverAlt='Satellite imagery of Dasht-e Kevir, or Great Salt Desert, the largest desert in Iran.'
-        attributionAuthor='USGS'
-        attributionUrl='https://unsplash.com/photos/hSh_X3kJ4bI'
+        {...getCoverProps()}
       />
 
-      <Audience />
+      <ContentOverride with='homeContent'>
+        <Audience />
 
-      <FeaturedDiscoveries />
+        <FeaturedDiscoveries />
 
-      <ValueProposition />
+        <ValueProposition />
+      </ContentOverride>
 
       <Connections>
         <ConnectionsBlock>
