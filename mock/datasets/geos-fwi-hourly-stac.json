@@ -104,7 +104,7 @@
         "https://stac-extensions.github.io/datacube/v2.0.0/schema.json"
     ],
     "dashboard:is_periodic": true,
-    "dashboard:time_density": "hour",
+    "dashboard:time_density": "day",
     "summaries": {
         "datetime": [
             "2020-01-01T00:00:00Z",
