@@ -21,7 +21,7 @@ import { S_SUCCEEDED } from '$utils/status';
 export type TimeDensity = 'day' | 'month' | 'year' | null;
 
 interface STACLayerData {
-  assetUrl?: string[];
+  assetUrl?: string;
   timeseries: {
     isPeriodic: boolean;
     timeDensity: TimeDensity;
@@ -58,7 +58,7 @@ const fetchLayerById = async (
   const defaultData = {
     timeseries: {
       ...commonTimeseriesParams,
-      domain: data.summaries.datetime
+      domain: data.summaries ? data.summaries.datetime : data.extent.temporal.interval[0]
     }
   };
 

@@ -24,6 +24,7 @@ interface MapLayerZarrTimeseriesProps {
 export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   const {
     id,
+    stacCol,
     date,
     sourceParams,
     zoomExtent,
@@ -34,7 +35,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
-  const tilesUrl = process.env.API_XARRAY_URL;
+  const tilesUrl = process.env.API_XARRAY_ENDPOINT;
   //
   // Generate Mapbox GL layers and sources for raster timeseries
   //

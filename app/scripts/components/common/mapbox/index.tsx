@@ -399,6 +399,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             <BaseLayerComponent
               id={`base-${baseLayerResolvedData.id}`}
               stacCol={baseLayerResolvedData.stacCol}
+              assetUrl={baseLayerResolvedData.assetUrl}
               mapInstance={mapRef.current}
               date={date}
               sourceParams={baseLayerResolvedData.sourceParams}

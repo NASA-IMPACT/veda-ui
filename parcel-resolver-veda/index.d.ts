@@ -68,6 +68,7 @@ declare module 'veda' {
     extends DatasetLayerCommonCompareProps {
     id: string;
     stacCol: string;
+    assetUrl?: string;
     type: DatasetLayerType;
   }
 

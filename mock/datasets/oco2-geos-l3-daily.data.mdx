@@ -1,8 +1,8 @@
 ---
-id: cmip6-historical-tas
-name: 'CMIP6 Historical Temperature'
+id: oco2-geos-l3-daily
+name: 'Gridded Daily OCO-2 Carbon Dioxide assimilated dataset'
 featured: true
-description: "CMIP6 Historical Near-Surface Air Temperature"
+description: "The OCO-2 mission provides the highest quality space-based XCO2 retrievals to date. However, the instrument data are characterized by large gaps in coverage due to OCO-2’s narrow 10-km ground track and an inability to see through clouds and thick aerosols. This global gridded dataset is produced using a data assimilation technique commonly referred to as state estimation within the geophysical literature. Data assimilation synthesizes simulations and observations, adjusting the state of atmospheric constituents like CO2 to reflect observed values, thus gap-filling observations when and where they are unavailable based on previous observations and short transport simulations by GEOS. Compared to other methods, data assimilation has the advantage that it makes estimates based on our collective scientific understanding, notably of the Earth’s carbon cycle and atmospheric transport. OCO-2 GEOS (Goddard Earth Observing System) Level 3 data are produced by ingesting OCO-2 L2 retrievals every 6 hours with GEOS CoDAS, a modeling and data assimilation system maintained by NASA’s Global Modeling and Assimilation Office (GMAO). GEOS CoDAS uses a high-performance computing implementation of the Gridpoint Statistical Interpolation approach for solving the state estimation problem. GSI finds the analyzed state that minimizes the three-dimensional variational (3D-Var) cost function formulation of the state estimation problem."
 media:
   src: ::file ./no2--dataset-cover.jpg
   alt: Power plant shooting steam at the sky.
@@ -12,34 +12,33 @@ media:
 thematics:
   - air
 layers:
-  - id: cmip6-historical-tas
-    stacApiOverride: https://raw.githubusercontent.com/nasa-impact/veda-ui/ab/zarr-layers/mock/datasets/cmip6-tas-stac.json
-    stacCol: cmip6-historical-tas
-    name: CMIP6 Near-Surface Air Temperature
+  - id: oco2-geos-l3-daily
+    stacCol: oco2-geos-l3-daily
+    name: Gridded Daily OCO-2 Carbon Dioxide assimilated dataset
     type: zarr
     description:
-      "CMIP6 Historical (1850-2014) Near-Surface Air Temperature from NASA-GISS: Goddard Institute for Space Studies. Zarr source is provided by the Pangeo / ESGF Cloud Data Working Group and the zarr store is accessed from it's S3 bucket location: s3://cmip6-pds/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r2i1p1f1/Amon/tas/gn/v20180827/."
+      "The OCO-2 mission provides the highest quality space-based XCO2 retrievals to date. However, the instrument data are characterized by large gaps in coverage due to OCO-2’s narrow 10-km ground track and an inability to see through clouds and thick aerosols. This global gridded dataset is produced using a data assimilation technique commonly referred to as state estimation within the geophysical literature. Data assimilation synthesizes simulations and observations, adjusting the state of atmospheric constituents like CO2 to reflect observed values, thus gap-filling observations when and where they are unavailable based on previous observations and short transport simulations by GEOS. Compared to other methods, data assimilation has the advantage that it makes estimates based on our collective scientific understanding, notably of the Earth’s carbon cycle and atmospheric transport. OCO-2 GEOS (Goddard Earth Observing System) Level 3 data are produced by ingesting OCO-2 L2 retrievals every 6 hours with GEOS CoDAS, a modeling and data assimilation system maintained by NASA’s Global Modeling and Assimilation Office (GMAO). GEOS CoDAS uses a high-performance computing implementation of the Gridpoint Statistical Interpolation approach for solving the state estimation problem. GSI finds the analyzed state that minimizes the three-dimensional variational (3D-Var) cost function formulation of the state estimation problem."
     zoomExtent:
       - 0
       - 20
     sourceParams:
-      url: s3://cmip6-pds/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r2i1p1f1/Amon/tas/gn/v20180827/
       resampling_method: bilinear
-      variable: tas
-      colormap_name: jet
-      rescale: 200,300
+      variable: XCO2
+      colormap_name: rdylbu_r
+      rescale: 0.00039394,0.00040339
     legend:
       unit: 
         label: 
       type: gradient
-      min: 200
-      max: 300
+      min: "< 394 ppm"
+      max: "> 403  ppm"
       stops:
-        - '#000080' 
-        - '#004cff' 
-        - '#29ffce'
-        - '#ceff29'
-        - '#ff6800'
-        - '#800000'
+        - "#4575b4"
+        - "#91bfdb"
+        - "#e0f3f8"
+        - "#ffffbf"
+        - "#fee090"
+        - "#fc8d59"
+        - "#d73027"
 ---
 
