@@ -32,9 +32,9 @@ interface STACLayerData {
 const fetchLayerById = async (
   layer: DatasetLayer | DatasetLayerCompareNormalized
 ): Promise<STACLayerData | Error> => {
-  const { type, stacCol, stacApiOverride } = layer;
+  const { type, stacCol } = layer;
 
-  const { data } = await axios.get(stacApiOverride || `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`)
+  const { data } = await axios.get(`${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`)
 
   const commonTimeseriesParams = {
     isPeriodic: data['dashboard:is_periodic'],
