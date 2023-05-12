@@ -1,6 +1,11 @@
 # Overrides
 
-💡 These notes cover the development part of the content overrides. For usage check [veda-config](https://github.com/NASA-IMPACT/veda-config/).
+- [Overrides](#overrides)
+  - [Content overrides](#content-overrides)
+  - [Component overrides](#component-overrides)
+  - [Manually testing the overrides](#manually-testing-the-overrides)
+
+💡 These notes cover the development part of the content overrides. For usage check [PAGE_OVERRIDES.md](../content/PAGE_OVERRIDES.md).
 
 The veda ui should be flexible enough to allow instances to be configured to fit that instance's needs.  
 Perhaps one instance needs a different footer or a different logo. It is not possible to provide configuration options for all use cases, so we want to allow for components to be replaced entirely via overrides.
