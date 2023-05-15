@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router';
+import { useEffectPrevious } from './use-effect-previous';
 
 export const HEADER_ID = 'page-header';
 export const HEADER_WRAPPER_ID = 'header-wrapper';
@@ -8,6 +10,20 @@ export function useSlidingStickyHeader() {
   const [isHidden, setHidden] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [wrapperHeight, setWrapperHeight] = useState(0);
+
+  const { pathname } = useLocation();
+
+  useEffectPrevious(
+    ([pathnamePrev]) => {
+      const pageChanged = pathnamePrev !== pathname;
+      if (pageChanged) {
+        setHidden(false);
+        setHeaderHeight(0);
+        setWrapperHeight(0);
+      }
+    },
+    [pathname]
+  );
 
   useEffect(() => {
     let ticking = false;
