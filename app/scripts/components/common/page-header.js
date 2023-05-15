@@ -417,9 +417,11 @@ function PageHeader() {
                       About
                     </GlobalMenuLink>
                   </li>
-                  <li>
-                    <GoogleForm />
-                  </li>
+                  {!!process.env.GOOGLE_FORM && (
+                    <li>
+                      <GoogleForm />
+                    </li>
+                  )}
                 </GlobalMenu>
               </SectionsNavBlock>
             </GlobalNavBodyInner>
