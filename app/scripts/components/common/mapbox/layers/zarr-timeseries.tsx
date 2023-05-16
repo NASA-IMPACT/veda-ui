@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import qs from 'qs';
 import {
-  Map as MapboxMap,
   AnyLayer,
   AnySourceImpl,
   RasterLayer,
