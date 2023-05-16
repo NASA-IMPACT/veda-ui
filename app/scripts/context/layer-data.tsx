@@ -34,12 +34,14 @@ const fetchLayerById = async (
 ): Promise<STACLayerData | Error> => {
   const { type, stacCol } = layer;
 
-  const { data } = await axios.get(`${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`)
+  const { data } = await axios.get(
+    `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
+  );
 
   const commonTimeseriesParams = {
     isPeriodic: data['dashboard:is_periodic'],
     timeDensity: data['dashboard:time_density']
-  }
+  };
   // TODO: Normalize API data structure
   // For the time being the vector and raster sources have different api
   // endpoints, and different properties to get data from.

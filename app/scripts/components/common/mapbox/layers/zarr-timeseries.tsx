@@ -8,13 +8,11 @@ import {
   RasterSource,
 } from 'mapbox-gl';
 
-import { useMapStyle } from './styles';;
+import { useMapStyle } from './styles';
 
 interface MapLayerZarrTimeseriesProps {
   id: string;
-  stacCol: string;
   date?: Date;
-  mapInstance: MapboxMap;
   sourceParams: object;
   zoomExtent?: [number, number];
   assetUrl?: string;
@@ -24,7 +22,6 @@ interface MapLayerZarrTimeseriesProps {
 export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   const {
     id,
-    stacCol,
     date,
     sourceParams,
     zoomExtent,
@@ -49,7 +46,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
       let sources: Record<string, AnySourceImpl> = {};
 
       if (tilesUrl) {
-        let tileParams = qs.stringify(
+        const tileParams = qs.stringify(
           {
             url: assetUrl,
             time_slice: date,
