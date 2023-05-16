@@ -84,3 +84,22 @@ Currently the following aliases exist:
 
 To add a new alias, add the respecting naming and path under `alias` in the `package.json`.  
 The test runner (Jest) also has to be made aware of the mapping, and this is done through some code in `jest.config.js` under `moduleNameMapper`. You shouldn't need to do anything there, but if things break it is a place to look at.
+
+
+## Meta files
+
+To allow for the override of meta files, they are places in the `static` folder which means that they'll be copied to the `dist` directory by the bundler.
+
+The files are then included in `index.html`. Example:
+```
+<link rel='icon' sizes='any' href='{{baseurl}}meta/favicon.ico' />
+```
+
+The issue with this approach is that `parcel` will try to process and load the file if the path doesn't contain the protocol (no `https`, effectively being `/meta/favicon.ico`) and it will fail because at the time of build the file won't be found.
+
+Parcel [doesn't have a native way around this](https://github.com/parcel-bundler/parcel/issues/1186), but through the use of [`parcel-resolver-ignore`](https://www.npmjs.com/package/parcel-resolver-ignore) we can achieve the desired outcome, albeit with needing to add the ignore condition to the `package.json`:
+```json
+"parcelIgnore": [
+  ".*/meta/"
+]
+```
