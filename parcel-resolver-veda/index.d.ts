@@ -54,8 +54,6 @@ declare module 'veda' {
     initialDatetime?: 'newest' | 'oldest' | string;
     projection?: ProjectionOptions;
     type: DatasetLayerType;
-    assetUrl?: string;
-    stacApiOverride?: string;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend?: LayerLegendCategorical | LayerLegendGradient;
   }
@@ -68,7 +66,6 @@ declare module 'veda' {
     extends DatasetLayerCommonCompareProps {
     id: string;
     stacCol: string;
-    assetUrl?: string;
     type: DatasetLayerType;
   }
 

@@ -19,9 +19,19 @@ import {
   DatasetDatumReturnType,
   DatasetLayerCompareNormalized
 } from 'veda';
-import { MapLayerRasterTimeseries, StacFeature } from './raster-timeseries';
-import { MapLayerVectorTimeseries } from './vector-timeseries';
-import { MapLayerZarrTimeseries } from './zarr-timeseries';
+import {
+  MapLayerRasterTimeseries,
+  MapLayerRasterTimeseriesProps,
+  StacFeature
+} from './raster-timeseries';
+import {
+  MapLayerVectorTimeseries,
+  MapLayerVectorTimeseriesProps
+} from './vector-timeseries';
+import {
+  MapLayerZarrTimeseries,
+  MapLayerZarrTimeseriesProps
+} from './zarr-timeseries';
 
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
@@ -31,7 +41,11 @@ import { HintedError } from '$utils/hinted-error';
 export const getLayerComponent = (
   isTimeseries: boolean,
   layerType: 'raster' | 'vector' | 'zarr'
-): FunctionComponent<any> | null => {
+): FunctionComponent<
+  | MapLayerRasterTimeseriesProps
+  | MapLayerVectorTimeseriesProps
+  | MapLayerZarrTimeseriesProps
+> | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
     if (layerType === 'vector') return MapLayerVectorTimeseries;
@@ -71,7 +85,6 @@ export const getCompareLayerData = (
       id: stacCol,
       stacCol,
       type: type || layerData.type,
-      assetUrl: layerData.assetUrl,
       zoomExtent: zoomExtent || layerData.zoomExtent,
       sourceParams: defaultsDeep({}, sourceParams, layerData.sourceParams),
       ...passThroughProps

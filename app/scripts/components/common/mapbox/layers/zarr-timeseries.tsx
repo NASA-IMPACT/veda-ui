@@ -1,37 +1,29 @@
 import { useEffect, useMemo } from 'react';
 import qs from 'qs';
-import {
-  AnyLayer,
-  AnySourceImpl,
-  RasterLayer,
-  RasterSource,
-} from 'mapbox-gl';
+import { AnyLayer, AnySourceImpl, RasterLayer, RasterSource } from 'mapbox-gl';
 
 import { useMapStyle } from './styles';
 
-interface MapLayerZarrTimeseriesProps {
+export interface MapLayerZarrTimeseriesProps {
   id: string;
   date?: Date;
-  sourceParams: object;
-  zoomExtent?: [number, number];
-  assetUrl?: string;
-  isHidden: boolean;
+  isHidden?: boolean;
+  layerData: {
+    sourceParams?: object;
+    zoomExtent?: number[];
+    assetUrl: string;
+  };
 }
 
 export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
-  const {
-    id,
-    date,
-    sourceParams,
-    zoomExtent,
-    assetUrl,
-    isHidden
-  } = props;
+  const { id, date, isHidden } = props;
+  const { sourceParams = {}, zoomExtent, assetUrl } = props.layerData;
 
   const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
-  const tilesUrl = process.env.API_XARRAY_ENDPOINT;
+  const tilerUrl = process.env.API_XARRAY_ENDPOINT;
+
   //
   // Generate Mapbox GL layers and sources for raster timeseries
   //
@@ -39,23 +31,22 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
     () => JSON.stringify(sourceParams),
     [sourceParams]
   );
+
   useEffect(
     () => {
       let layers: AnyLayer[] = [];
       let sources: Record<string, AnySourceImpl> = {};
 
-      if (tilesUrl) {
-        const tileParams = qs.stringify(
-          {
-            url: assetUrl,
-            time_slice: date,
-            ...sourceParams
-          }
-        );
+      if (tilerUrl) {
+        const tileParams = qs.stringify({
+          url: assetUrl,
+          time_slice: date,
+          ...sourceParams
+        });
 
         const zarrSource: RasterSource = {
           type: 'raster',
-          url: `${tilesUrl}?${tileParams}`
+          url: `${tilerUrl}?${tileParams}`
         };
 
         const zarrLayer: RasterLayer = {
@@ -78,10 +69,9 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
         };
 
         sources = {
-          ...sources,
           [id]: zarrSource
         };
-        layers = [...layers, zarrLayer];
+        layers = [zarrLayer];
       }
 
       updateStyle({
@@ -95,7 +85,8 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
       updateStyle,
       id,
       date,
-      tilesUrl,
+      assetUrl,
+      tilerUrl,
       minZoom,
       haveSourceParamsChanged,
       isHidden

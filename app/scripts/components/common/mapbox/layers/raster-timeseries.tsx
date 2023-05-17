@@ -36,15 +36,17 @@ const LOG = true;
 
 const FIT_BOUNDS_PADDING = 32;
 
-interface MapLayerRasterTimeseriesProps {
+export interface MapLayerRasterTimeseriesProps {
   id: string;
-  stacCol: string;
   date?: Date;
   mapInstance: MapboxMap;
-  sourceParams: object;
-  zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  isHidden: boolean;
+  isHidden?: boolean;
+  layerData: {
+    sourceParams?: object;
+    zoomExtent?: number[];
+    stacCol: string;
+  };
 }
 
 export interface StacFeature {
@@ -64,16 +66,8 @@ interface Statuses {
 }
 
 export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
-  const {
-    id,
-    stacCol,
-    date,
-    mapInstance,
-    sourceParams,
-    zoomExtent,
-    onStatusChange,
-    isHidden
-  } = props;
+  const { id, date, mapInstance, onStatusChange, isHidden } = props;
+  const { sourceParams, zoomExtent, stacCol } = props.layerData;
 
   const theme = useTheme();
   const { updateStyle } = useMapStyle();

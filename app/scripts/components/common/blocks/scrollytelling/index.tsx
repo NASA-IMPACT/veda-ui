@@ -378,16 +378,14 @@ function Scrollytelling(props) {
                 <LayerCmp
                   key={runtimeData.id}
                   id={runtimeData.id}
-                  mapInstance={mapRef.current}
-                  stacCol={layer.stacCol}
+                  mapInstance={mapRef.current!}
+                  layerData={layer}
                   date={runtimeData.datetime}
-                  sourceParams={layer.sourceParams}
-                  zoomExtent={layer.zoomExtent}
                   onStatusChange={onLayerLoadSuccess}
                   isHidden={
                     !activeChapterLayerId ||
                     activeChapterLayerId !== runtimeData.id ||
-                    activeChapter.showBaseMap
+                    !!activeChapter.showBaseMap
                   }
                 />
               );
@@ -468,16 +466,14 @@ function Scrollytelling(props) {
                 <LayerCmp
                   key={runtimeData.id}
                   id={runtimeData.id}
-                  mapInstance={mapRef.current}
-                  stacCol={layer.stacCol}
+                  mapInstance={mapRef.current!}
                   date={runtimeData.datetime}
-                  sourceParams={layer.sourceParams}
-                  zoomExtent={layer.zoomExtent}
+                  layerData={layer}
                   onStatusChange={onLayerLoadSuccess}
                   isHidden={
                     !activeChapterLayerId ||
                     activeChapterLayerId !== runtimeData.id ||
-                    activeChapter.showBaseMap
+                    !!activeChapter.showBaseMap
                   }
                 />
               );

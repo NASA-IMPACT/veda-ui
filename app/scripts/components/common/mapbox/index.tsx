@@ -398,12 +398,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
           {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
             <BaseLayerComponent
               id={`base-${baseLayerResolvedData.id}`}
-              stacCol={baseLayerResolvedData.stacCol}
-              assetUrl={baseLayerResolvedData.assetUrl}
-              mapInstance={mapRef.current}
+              layerData={baseLayerResolvedData}
+              mapInstance={mapRef.current!}
               date={date}
-              sourceParams={baseLayerResolvedData.sourceParams}
-              zoomExtent={baseLayerResolvedData.zoomExtent}
               onStatusChange={onBaseLayerStatusChange}
             />
           )}
@@ -448,11 +445,9 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
               CompareLayerComponent && (
                 <CompareLayerComponent
                   id={`compare-${compareLayerResolvedData.id}`}
-                  stacCol={compareLayerResolvedData.stacCol}
-                  mapInstance={mapCompareRef.current}
-                  date={compareToDate}
-                  sourceParams={compareLayerResolvedData.sourceParams}
-                  zoomExtent={compareLayerResolvedData.zoomExtent}
+                  layerData={compareLayerResolvedData}
+                  mapInstance={mapCompareRef.current!}
+                  date={compareToDate!}
                   onStatusChange={onCompareLayerStatusChange}
                 />
               )}

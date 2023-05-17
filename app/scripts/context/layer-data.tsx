@@ -42,9 +42,7 @@ const fetchLayerById = async (
     isPeriodic: data['dashboard:is_periodic'],
     timeDensity: data['dashboard:time_density']
   };
-  // TODO: Normalize API data structure
-  // For the time being the vector and raster sources have different api
-  // endpoints, and different properties to get data from.
+
   if (type === 'vector') {
     const featuresApiEndpoint = data.links.find((l) => l.rel === 'child').href;
     const { data: featuresApiData } = await axios.get(featuresApiEndpoint);
@@ -55,23 +53,23 @@ const fetchLayerById = async (
         domain: featuresApiData.extent.temporal.interval[0]
       }
     };
-  }
-
-  const defaultData = {
-    timeseries: {
-      ...commonTimeseriesParams,
-      domain: data.summaries ? data.summaries.datetime : data.extent.temporal.interval[0]
-    }
-  };
-
-  if (type === 'zarr') {
-    return {
-      ...defaultData,
-      assetUrl: data.assets.zarr.href
+  } else {
+    const defaultData = {
+      timeseries: {
+        ...commonTimeseriesParams,
+        domain: data.summaries ? data.summaries.datetime : data.extent.temporal.interval[0]
+      }
     };
+  
+    if (type === 'zarr') {
+      return {
+        ...defaultData,
+        assetUrl: data.assets.zarr.href
+      };
+    } else {
+      return defaultData;
+    }
   }
-
-  return defaultData;
 };
 
 // Create a query object for react query.
