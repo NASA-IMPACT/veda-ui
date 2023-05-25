@@ -45,6 +45,7 @@ interface MapLayerRasterTimeseriesProps {
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
+  suffix?: string
 }
 
 export interface StacFeature {
@@ -72,7 +73,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     sourceParams,
     zoomExtent,
     onStatusChange,
-    isHidden
+    isHidden,
+    suffix = ''
   } = props;
 
   const theme = useTheme();
@@ -404,7 +406,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       }
 
       updateStyle({
-        generatorId: 'raster-timeseries',
+        generatorId: 'raster-timeseries' + suffix,
         sources,
         layers
       });
@@ -417,7 +419,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       minZoom,
       points,
       haveSourceParamsChanged,
-      isHidden
+      isHidden,
+      suffix
     ]
   );
 
