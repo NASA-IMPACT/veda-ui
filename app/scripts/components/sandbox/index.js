@@ -17,6 +17,7 @@ import SandboxRequest from './request';
 import SandboxColors from './colors';
 import SandboxMDXEditor from './mdx-editor';
 import SandboxTable from './table';
+import SandboxTimeline from './timeline';
 import { resourceNotFound } from '$components/uhoh';
 import { Card, CardList } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
@@ -104,6 +105,12 @@ const pages = [
     id: 'sandboxtable',
     name: 'Table',
     component: SandboxTable
+  },
+  {
+    id: 'timeline',
+    name: 'Timeline',
+    component: SandboxTimeline,
+    noHero: true
   }
 ];
 
@@ -127,7 +134,7 @@ function SandboxLayout() {
       />
 
       <PageMainContent>
-        <PageHero title={page.name} />
+        {!page.noHero ? <PageHero title={page.name} /> : false}
         <page.component />
       </PageMainContent>
     </>
