@@ -430,7 +430,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   useEffect(() => {
     return () => {
       updateStyle({
-        generatorId: 'raster-timeseries',
+        generatorId: 'raster-timeseries' + suffix,
         sources: {},
         layers: []
       });
