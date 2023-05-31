@@ -435,7 +435,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         layers: []
       });
     };
-  }, [updateStyle]);
+  }, [updateStyle, suffix]);
 
   //
   // Listen to mouse events on the markers layer
