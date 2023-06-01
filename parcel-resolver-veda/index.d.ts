@@ -66,8 +66,8 @@ declare module 'veda' {
   export interface DatasetLayerCompareNormalized
     extends DatasetLayerCommonCompareProps {
     id: string;
-    name?: string;
-    description?: string;
+    name: string;
+    description: string;
     stacCol: string;
     type: DatasetLayerType;
     legend?: LayerLegendCategorical | LayerLegendGradient;

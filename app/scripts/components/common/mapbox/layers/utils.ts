@@ -114,9 +114,9 @@ export const getCompareLayerData = (
     return {
       id: otherLayer.id,
       type: otherLayer.type,
-      name: otherLayer?.name,
-      description: otherLayer?.description,
-      legend: otherLayer?.legend, 
+      name: otherLayer.name,
+      description: otherLayer.description,
+      legend: otherLayer.legend, 
       stacCol: otherLayer.stacCol,
       zoomExtent: zoomExtent ?? otherLayer.zoomExtent,
       sourceParams: defaultsDeep({}, sourceParams, otherLayer.sourceParams),
