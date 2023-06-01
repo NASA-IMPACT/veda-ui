@@ -179,7 +179,7 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   const resolvedLayers = useMemo(
     () =>
       asyncLayers.map(({ baseLayer }, index) => {
-        if (baseLayer?.status !== S_SUCCEEDED || !baseLayer.data) return null;
+        if (baseLayer.status !== S_SUCCEEDED || !baseLayer.data) return null;
 
         if (resolvedLayersCache.current[index]) {
           return resolvedLayersCache.current[index];
@@ -217,7 +217,7 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   );
 
   const resolvedStatus = useMemo(
-    () => asyncLayers.map(({ baseLayer }) => baseLayer?.status),
+    () => asyncLayers.map(({ baseLayer }) => baseLayer.status),
     [asyncLayers]
   );
 
@@ -383,8 +383,8 @@ function Scrollytelling(props) {
         >
           {activeChapterLayer?.runtimeData.datetime
             ? formatSingleDate(
-                activeChapterLayer?.runtimeData.datetime,
-                activeChapterLayer?.layer.timeseries.timeDensity
+                activeChapterLayer.runtimeData.datetime,
+                activeChapterLayer.layer.timeseries.timeDensity
               )
             : null}
         </MapMessage>
@@ -441,7 +441,7 @@ function Scrollytelling(props) {
                   sourceParams={layer.sourceParams}
                   zoomExtent={layer.zoomExtent}
                   onStatusChange={onLayerLoadSuccess}
-                  suffix={'scrolly-'+ lIdx}
+                  idSuffix={'scrolly-'+ lIdx}
                   isHidden={isHidden}
                 />
               );
