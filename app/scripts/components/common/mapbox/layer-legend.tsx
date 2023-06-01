@@ -23,16 +23,16 @@ import {
 } from '$styles/panel';
 
 
-type LayerLegendCommonProps = {
+interface LayerLegendCommonProps{
   id: string;
   title: string;
   description: string;
-};
+}
 
-type LegendSwatchProps = {
+interface LegendSwatchProps{
   hasHelp?: boolean;
   stops: string | string[];
-};
+}
 
 const makeGradient = (stops: string[]) => {
   if (stops.length === 1) return stops[0];
@@ -44,17 +44,26 @@ const makeGradient = (stops: string[]) => {
 const printLegendVal = (val: string | number) =>
   typeof val === 'number' ? formatThousands(val, { shorten: true }) : val;
 
-const LayerLegendSelf = styled.div`
+export const LegendContainer = styled.div`
   position: absolute;
   z-index: 8;
   bottom: ${variableGlsp()};
   right: ${variableGlsp()};
   display: flex;
   flex-flow: column nowrap;
+`;
+
+const LayerLegendSelf = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
   border-radius: ${themeVal('shape.rounded')};
   box-shadow: ${themeVal('boxShadow.elevationB')};
   background-color: ${themeVal('color.surface')};
   width: 16rem;
+
+  &:not(:last-child) {
+    margin-bottom: ${variableGlsp(0.25)};
+  }
 
   &.reveal-enter {
     opacity: 0;
