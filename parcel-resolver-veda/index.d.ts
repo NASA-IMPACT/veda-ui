@@ -63,15 +63,26 @@ declare module 'veda' {
   // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
   // difference with a "base" dataset layer is not having a name and
   // description.
-  export interface DatasetLayerCompareNormalized
+  export interface DatasetLayerCompareBase
     extends DatasetLayerCommonCompareProps {
     id: string;
-    name: string;
-    description: string;
     stacCol: string;
     type: DatasetLayerType;
-    legend?: LayerLegendCategorical | LayerLegendGradient;
   }
+
+  interface DatasetLayerCompareNoLegend extends DatasetLayerCompareBase {
+    legend?: never;
+    name?: never;
+    description?: never;
+  }
+      
+  interface DatasetLayerCompareWLegend extends DatasetLayerCompareBase {
+    legend: LayerLegendCategorical | LayerLegendGradient | undefined;
+    name: string;
+    description: string;
+  }
+
+  export type DatasetLayerCompareNormalized = DatasetLayerCompareNoLegend | DatasetLayerCompareWLegend
 
   // TODO: Complete once known
   export interface DatasetDatumFnResolverBag {
