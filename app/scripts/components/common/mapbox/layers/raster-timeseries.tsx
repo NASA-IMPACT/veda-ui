@@ -45,6 +45,7 @@ interface MapLayerRasterTimeseriesProps {
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
+  idSuffix?: string
 }
 
 export interface StacFeature {
@@ -72,13 +73,15 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     sourceParams,
     zoomExtent,
     onStatusChange,
-    isHidden
+    isHidden,
+    idSuffix = ''
   } = props;
 
   const theme = useTheme();
   const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
+  const generatorId = 'raster-timeseries' + idSuffix;
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
@@ -404,7 +407,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       }
 
       updateStyle({
-        generatorId: 'raster-timeseries',
+        generatorId,
         sources,
         layers
       });
@@ -417,7 +420,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       minZoom,
       points,
       haveSourceParamsChanged,
-      isHidden
+      isHidden,
+      generatorId
     ]
   );
 
@@ -427,12 +431,12 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   useEffect(() => {
     return () => {
       updateStyle({
-        generatorId: 'raster-timeseries',
+        generatorId,
         sources: {},
         layers: []
       });
     };
-  }, [updateStyle]);
+  }, [updateStyle, generatorId]);
 
   //
   // Listen to mouse events on the markers layer
