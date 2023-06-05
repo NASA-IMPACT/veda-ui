@@ -12,6 +12,7 @@ const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
 function DiscoveriesSingle() {
   const discovery = useDiscovery();
+  console.log(discovery.content)
 
   if (!discovery) throw resourceNotFound();
 

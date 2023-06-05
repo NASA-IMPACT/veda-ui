@@ -19,6 +19,7 @@ import {
 import { NotebookConnectCalloutBlock } from '$components/common/notebook-connect';
 
 function MdxContent(props) {
+  console.log(props.loader)
   const pageMdx = useMdxPageLoader(props.loader);
 
   if (pageMdx.status === S_LOADING) {
@@ -26,6 +27,7 @@ function MdxContent(props) {
   }
 
   if (pageMdx.status === S_SUCCEEDED) {
+    console.log(pageMdx.MdxContent())
     return (
       <MDXProvider
         components={{
