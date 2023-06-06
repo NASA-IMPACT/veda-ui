@@ -22,13 +22,13 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 
-interface LayerLegendCommonProps{
+interface LayerLegendCommonProps {
   id: string;
   title: string;
   description: string;
 }
 
-interface LegendSwatchProps{
+interface LegendSwatchProps {
   hasHelp?: boolean;
   stops: string | string[];
 }
@@ -57,13 +57,7 @@ export const LegendContainer = styled.div`
   box-shadow: ${themeVal('boxShadow.elevationB')};
   border-radius: ${themeVal('shape.rounded')};
   background-color: ${themeVal('color.surface')};
-`;
 
-const LayerLegendSelf = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  width: 16rem;
-  border-bottom: 1px solid ${themeVal('color.base-100')}; 
   &.reveal-enter {
     opacity: 0;
     bottom: 4rem;
@@ -84,6 +78,13 @@ const LayerLegendSelf = styled.div`
   &.reveal-exit-active {
     transition: bottom 240ms ease-in-out, opacity 240ms ease-in-out;
   }
+`;
+
+const LayerLegendSelf = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  width: 16rem;
+  border-bottom: 1px solid ${themeVal('color.base-100')};
 
   ${WidgetItemHeader} {
     padding: ${variableGlsp(0.25, 0.75)};
@@ -178,63 +179,60 @@ export function LayerLegend(
   const { id, type, title, description } = props;
 
   return (
-      <AccordionFold
-        id={id}
-        forwardedAs={LayerLegendSelf}
-        renderHeader={({ isExpanded, toggleExpanded }) => (
-          <WidgetItemHeader>
-            <WidgetItemHGroup>
-              <WidgetItemHeadline>
-                <LayerLegendTitle>{title}</LayerLegendTitle>
-                {/* <Subtitle as='p'>Subtitle</Subtitle> */}
-              </WidgetItemHeadline>
-              <Toolbar size='small'>
-                <ToolbarIconButton
-                  variation='base-text'
-                  active={isExpanded}
-                  onClick={toggleExpanded}
-                >
-                  <CollecticonCircleInformation
-                    title='Information about layer'
-                    meaningful
-                  />
-                </ToolbarIconButton>
-              </Toolbar>
-            </WidgetItemHGroup>
-            {type === 'categorical' && (
-              <LayerCategoricalGraphic type='categorical' stops={props.stops} />
-            )}
-            {type === 'gradient' && (
-              <LayerGradientGraphic
-                type='gradient'
-                stops={props.stops}
-                min={props.min}
-                max={props.max}
-              />
-            )}
-          </WidgetItemHeader>
-        )}
-        renderBody={() => (
-          <LegendBody>
-            <ShadowScrollbar
-              scrollbarsProps={{
-                autoHeight: true,
-                autoHeightMin: 32,
-                autoHeightMax: 240
-              }}
-            >
-              <div className='scroll-inner'>
-                {description || (
-                  <p>No info available for this layer.</p>
-                )}
-              </div>
-            </ShadowScrollbar>
-          </LegendBody>
-        )}
-      />
+    <AccordionFold
+      id={id}
+      forwardedAs={LayerLegendSelf}
+      renderHeader={({ isExpanded, toggleExpanded }) => (
+        <WidgetItemHeader>
+          <WidgetItemHGroup>
+            <WidgetItemHeadline>
+              <LayerLegendTitle>{title}</LayerLegendTitle>
+              {/* <Subtitle as='p'>Subtitle</Subtitle> */}
+            </WidgetItemHeadline>
+            <Toolbar size='small'>
+              <ToolbarIconButton
+                variation='base-text'
+                active={isExpanded}
+                onClick={toggleExpanded}
+              >
+                <CollecticonCircleInformation
+                  title='Information about layer'
+                  meaningful
+                />
+              </ToolbarIconButton>
+            </Toolbar>
+          </WidgetItemHGroup>
+          {type === 'categorical' && (
+            <LayerCategoricalGraphic type='categorical' stops={props.stops} />
+          )}
+          {type === 'gradient' && (
+            <LayerGradientGraphic
+              type='gradient'
+              stops={props.stops}
+              min={props.min}
+              max={props.max}
+            />
+          )}
+        </WidgetItemHeader>
+      )}
+      renderBody={() => (
+        <LegendBody>
+          <ShadowScrollbar
+            scrollbarsProps={{
+              autoHeight: true,
+              autoHeightMin: 32,
+              autoHeightMax: 240
+            }}
+          >
+            <div className='scroll-inner'>
+              {description || <p>No info available for this layer.</p>}
+            </div>
+          </ShadowScrollbar>
+        </LegendBody>
+      )}
+    />
   );
 }
-
 
 function LayerLegendContainer(props: LayerLegendContainerProps) {
   return (
@@ -248,7 +246,6 @@ function LayerLegendContainer(props: LayerLegendContainerProps) {
 }
 
 export default LayerLegendContainer;
-
 
 function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   const { stops } = props;
