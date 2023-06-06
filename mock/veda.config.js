@@ -6,6 +6,10 @@ module.exports = {
 
   pageOverrides: {
     aboutContent: './about.mdx',
-    'sandbox-override': './sandbox-override.mdx'
+    'sandbox-override': './sandbox-override.mdx',
+
+    '/disclaimer': './custom-pages/disclaimer.mdx',
+    '/partnership': './custom-pages/partnership.mdx',
+    '/aparam/:id': './custom-pages/aparam.mdx'
   }
 };

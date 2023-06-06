@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import T from 'prop-types';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
+import { userPages } from 'veda';
 
 import { thematicRoutes } from './thematic-redirect';
 
@@ -34,6 +35,8 @@ const Analysis = lazy(() => import('$components/analysis/define'));
 const AnalysisResults = lazy(() => import('$components/analysis/results'));
 
 const Sandbox = lazy(() => import('$components/sandbox'));
+
+const UserPagesComponent = lazy(() => import('$components/user-pages'));
 
 // Handle wrong types from devseed-ui.
 const DevseedUiThemeProvider = DsTp as any;
@@ -109,6 +112,14 @@ function Root() {
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />
                 )}
+
+                {userPages.map((p) => (
+                  <Route
+                    key={p}
+                    path={p}
+                    element={<UserPagesComponent id={p} />}
+                  />
+                ))}
 
                 {/* Legacy: Routes related to thematic areas redirect. */}
                 {thematicRoutes}
