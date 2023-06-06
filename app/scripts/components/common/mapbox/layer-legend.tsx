@@ -94,6 +94,7 @@ const LayerLegendSelf = styled.div`
     ${WidgetItemHeader} {
       padding: ${variableGlsp(0.5, 0.75)};
     }
+    border-bottom: 0;
   }
 `;
 
@@ -167,7 +168,6 @@ const LegendBody = styled(WidgetItemBodyInner)`
   .scroll-inner {
     padding: ${variableGlsp(0.5, 0.75)};
   }
-
   .shadow-bottom {
     border-radius: ${themeVal('shape.rounded')};
   }
@@ -221,7 +221,7 @@ export function LayerLegend(
             scrollbarsProps={{
               autoHeight: true,
               autoHeightMin: 32,
-              autoHeightMax: 240
+              autoHeightMax: 120
             }}
           >
             <div className='scroll-inner'>
