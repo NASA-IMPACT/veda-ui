@@ -34,7 +34,7 @@ import { S_FAILED, S_SUCCEEDED } from '$utils/status';
 
 import { SimpleMap } from '$components/common/mapbox/map';
 import Hug from '$styles/hug';
-import LayerLegend from '$components/common/mapbox/layer-legend';
+import LayerLegendContainer from '$components/common/mapbox/layer-legend';
 import MapMessage from '$components/common/mapbox/map-message';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
@@ -402,12 +402,14 @@ function Scrollytelling(props) {
               }}
               classNames='reveal'
             >
-              <LayerLegend
-                id={`base-${activeChapterLayer.layer.id}`}
-                description={activeChapterLayer.layer.description}
-                title={activeChapterLayer.layer.name}
-                {...activeChapterLayer.layer.legend}
-              />
+            <LayerLegendContainer
+              layers={[{
+                id:`base-${activeChapterLayer.layer.id}`,
+                description: activeChapterLayer.layer.description, 
+                title: activeChapterLayer.layer.name, 
+                ...activeChapterLayer.layer.legend}
+              ]}
+            />
             </CSSTransition>
           </SwitchTransition>
         )}

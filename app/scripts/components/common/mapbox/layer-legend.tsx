@@ -51,20 +51,16 @@ export const LegendContainer = styled.div`
   right: ${variableGlsp()};
   display: flex;
   flex-flow: column nowrap;
+  box-shadow: ${themeVal('boxShadow.elevationB')};
+  border-radius: ${themeVal('shape.rounded')};
+  background-color: ${themeVal('color.surface')};
 `;
 
 const LayerLegendSelf = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  border-radius: ${themeVal('shape.rounded')};
-  box-shadow: ${themeVal('boxShadow.elevationB')};
-  background-color: ${themeVal('color.surface')};
   width: 16rem;
-
-  &:not(:last-child) {
-    margin-bottom: ${variableGlsp(0.25)};
-  }
-
+  border-bottom: 1px solid ${themeVal('color.base-100')}; 
   &.reveal-enter {
     opacity: 0;
     bottom: 4rem;
@@ -87,7 +83,7 @@ const LayerLegendSelf = styled.div`
   }
 
   ${WidgetItemHeader} {
-    padding: ${variableGlsp(0.5, 0.75)};
+    padding: ${variableGlsp(0.25, 0.75)};
   }
 `;
 
@@ -173,7 +169,7 @@ function LayerLegend(
   const { id, type, title, description } = props;
 
   return (
-    <AccordionManager>
+
       <AccordionFold
         id={id}
         forwardedAs={LayerLegendSelf}
@@ -228,11 +224,22 @@ function LayerLegend(
           </LegendBody>
         )}
       />
-    </AccordionManager>
   );
 }
 
-export default LayerLegend;
+
+function LayerLegendContainer({ layers }) {
+  return (
+    <LegendContainer>
+      <AccordionManager>
+        {layers.map(e=> <LayerLegend key={e.id} {...e} />)}
+      </AccordionManager>
+    </LegendContainer>
+  );
+}
+
+export default LayerLegendContainer;
+
 
 function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   const { stops } = props;
