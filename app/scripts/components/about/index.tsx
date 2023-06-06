@@ -22,7 +22,8 @@ function About() {
       <ContentOverride with='aboutContent'>
         <FoldProse>
           <p>
-            This is the app about page, where you can find information about the whole app. To customize this content use Content Overrides.
+            This is the app about page, where you can find information about the
+            whole app. To customize this content use Content Overrides.
           </p>
         </FoldProse>
       </ContentOverride>

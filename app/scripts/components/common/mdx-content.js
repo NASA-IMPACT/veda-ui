@@ -44,7 +44,7 @@ function MdxContent(props) {
           Link: SmartLink
         }}
       >
-        <pageMdx.MdxContent />
+        <pageMdx.MdxContent {...(props.throughProps || {})} />
       </MDXProvider>
     );
   }
@@ -53,7 +53,8 @@ function MdxContent(props) {
 }
 
 MdxContent.propTypes = {
-  loader: T.func
+  loader: T.func,
+  throughProps: T.object
 };
 
 export default MdxContent;
