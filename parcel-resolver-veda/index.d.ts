@@ -39,6 +39,9 @@ declare module 'veda' {
     extends DatasetLayerCommonCompareProps {
     stacCol: string;
     type: DatasetLayerType;
+    name: string;
+    description: string;
+    legend?: LayerLegendCategorical | LayerLegendGradient;
   }
 
   export interface DatasetLayerCompareInternal
@@ -82,7 +85,18 @@ declare module 'veda' {
     description: string;
   }
 
-  export type DatasetLayerCompareNormalized = DatasetLayerCompareNoLegend | DatasetLayerCompareWLegend
+
+  export interface DatasetLayerCompareNormalized
+    extends DatasetLayerCommonCompareProps {
+    id: string;
+    name: string;
+    description: string;
+    stacCol: string;
+    type: DatasetLayerType;
+    legend?: LayerLegendCategorical | LayerLegendGradient;
+  }
+
+  // export type DatasetLayerCompareNormalized = DatasetLayerCompareNoLegend | DatasetLayerCompareWLegend
 
   // TODO: Complete once known
   export interface DatasetDatumFnResolverBag {
