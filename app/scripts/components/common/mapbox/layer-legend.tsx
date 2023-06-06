@@ -22,7 +22,6 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 
-
 interface LayerLegendCommonProps{
   id: string;
   title: string;
@@ -32,6 +31,10 @@ interface LayerLegendCommonProps{
 interface LegendSwatchProps{
   hasHelp?: boolean;
   stops: string | string[];
+}
+
+interface LayerLegendContainerProps {
+  layers: (LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical))[];
 }
 
 const makeGradient = (stops: string[]) => {
@@ -84,6 +87,12 @@ const LayerLegendSelf = styled.div`
 
   ${WidgetItemHeader} {
     padding: ${variableGlsp(0.25, 0.75)};
+  }
+
+  &:only-child {
+    ${WidgetItemHeader} {
+      padding: ${variableGlsp(0.5, 0.75)};
+    }
   }
 `;
 
@@ -228,11 +237,11 @@ function LayerLegend(
 }
 
 
-function LayerLegendContainer({ layers }) {
+function LayerLegendContainer(props: LayerLegendContainerProps) {
   return (
     <LegendContainer>
       <AccordionManager>
-        {layers.map(e=> <LayerLegend key={e.id} {...e} />)}
+        {props.layers.map(e=> <LayerLegend key={e.id} {...e} />)}
       </AccordionManager>
     </LegendContainer>
   );

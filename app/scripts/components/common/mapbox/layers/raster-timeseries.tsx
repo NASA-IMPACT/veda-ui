@@ -45,11 +45,7 @@ interface MapLayerRasterTimeseriesProps {
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
-<<<<<<< HEAD
-  idSuffix?: string
-=======
-  suffix?: string
->>>>>>> ddca7f1 (Wrap layers with a container)
+  idSuffix?: string;
 }
 
 export interface StacFeature {
@@ -78,11 +74,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     zoomExtent,
     onStatusChange,
     isHidden,
-<<<<<<< HEAD
     idSuffix = ''
-=======
-    suffix = ''
->>>>>>> ddca7f1 (Wrap layers with a container)
   } = props;
 
   const theme = useTheme();
@@ -415,7 +407,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       }
 
       updateStyle({
-        generatorId: 'raster-timeseries' + suffix,
+        generatorId,
         sources,
         layers
       });
@@ -429,11 +421,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       points,
       haveSourceParamsChanged,
       isHidden,
-<<<<<<< HEAD
       generatorId
-=======
-      suffix
->>>>>>> ddca7f1 (Wrap layers with a container)
     ]
   );
 
