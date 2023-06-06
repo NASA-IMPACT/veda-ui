@@ -28,7 +28,7 @@ import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
-import LayerLegendContainer from './layer-legend';
+import LayerLegendContainer, {LayerLegend} from './layer-legend';
 import { useBasemap } from './map-options/use-basemap';
 import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
 import { Styles } from './layers/styles';
@@ -365,20 +365,22 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
         Layer legend for the active layer.
       */}
       {baseLayerResolvedData?.legend && (
-        <LayerLegendContainer
-          layers={[{
-            id: `base-${baseLayerResolvedData.id}`,
-            title: baseLayerResolvedData.name,
-            description: baseLayerResolvedData.description,
-            ...baseLayerResolvedData.legend },
-            ...compareLayerResolvedData?.legend?[{
-              id:`compare-${compareLayerResolvedData.id}`,
-              title:compareLayerResolvedData.name,
-              description:compareLayerResolvedData.description,
-              ...compareLayerResolvedData.legend
-            }]: []
-          ]}
-        />)}
+        <LayerLegendContainer>
+          <LayerLegend
+            id={`base-${baseLayerResolvedData.id}`}
+            title={baseLayerResolvedData.name}
+            description={baseLayerResolvedData.description}
+            {...baseLayerResolvedData.legend}
+          /> 
+          {compareLayerResolvedData?.legend &&
+                    <LayerLegend
+                    id={`compare-${compareLayerResolvedData.id}`}
+                    title={compareLayerResolvedData.name}
+                    description={compareLayerResolvedData.description}
+                    {...compareLayerResolvedData.legend}
+                    />}
+        </LayerLegendContainer>
+          )}
       
 
 

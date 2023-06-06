@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { ReactNode, Fragment } from 'react';
 import styled from 'styled-components';
 import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import { AccordionFold, AccordionManager } from '@devseed-ui/accordion';
@@ -34,7 +34,7 @@ interface LegendSwatchProps{
 }
 
 interface LayerLegendContainerProps {
-  layers: (LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical))[];
+  children: ReactNode | ReactNode[];
 }
 
 const makeGradient = (stops: string[]) => {
@@ -172,13 +172,12 @@ const LegendBody = styled(WidgetItemBodyInner)`
   }
 `;
 
-function LayerLegend(
+export function LayerLegend(
   props: LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical)
 ) {
   const { id, type, title, description } = props;
 
   return (
-
       <AccordionFold
         id={id}
         forwardedAs={LayerLegendSelf}
@@ -241,7 +240,8 @@ function LayerLegendContainer(props: LayerLegendContainerProps) {
   return (
     <LegendContainer>
       <AccordionManager>
-        {props.layers.map(e=> <LayerLegend key={e.id} {...e} />)}
+        {props.children}
+        {/* {props.layers.map(e=> <LayerLegend key={e.id} {...e} />)} */}
       </AccordionManager>
     </LegendContainer>
   );
