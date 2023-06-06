@@ -373,6 +373,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             {...baseLayerResolvedData.legend}
           /> 
           {compareLayerResolvedData?.legend &&
+          (baseLayerResolvedData.id !== compareLayerResolvedData.id) && 
                     <LayerLegend
                     id={`compare-${compareLayerResolvedData.id}`}
                     title={compareLayerResolvedData.name}
