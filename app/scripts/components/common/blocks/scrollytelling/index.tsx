@@ -67,6 +67,9 @@ const TheMap = styled.div<{ topOffset: number }>`
     top: ${topOffset}px;
     height: calc(100vh - ${topOffset}px);
   `}
+  .mapboxgl-canvas {
+    height: 100%;
+  }
 `;
 
 const TheChapters = styled(Hug)`
@@ -465,7 +468,11 @@ function Scrollytelling(props) {
             className='root'
             mapRef={mapRef}
             containerRef={mapContainer}
-            onLoad={() => setMapLoaded(true)}
+            onLoad={() => {
+              setMapLoaded(true);
+              // Fit the map to the container once  loaded.
+              mapRef.current?.resize();
+            }}
             mapOptions={mapOptions}
           />
         </Styles>
