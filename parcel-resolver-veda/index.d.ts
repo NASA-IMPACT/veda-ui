@@ -72,20 +72,6 @@ declare module 'veda' {
     stacCol: string;
     type: DatasetLayerType;
   }
-
-  interface DatasetLayerCompareNoLegend extends DatasetLayerCompareBase {
-    legend?: never;
-    name?: never;
-    description?: never;
-  }
-      
-  interface DatasetLayerCompareWLegend extends DatasetLayerCompareBase {
-    legend: LayerLegendCategorical | LayerLegendGradient | undefined;
-    name: string;
-    description: string;
-  }
-
-
   export interface DatasetLayerCompareNormalized
     extends DatasetLayerCommonCompareProps {
     id: string;
