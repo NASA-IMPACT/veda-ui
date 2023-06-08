@@ -4,7 +4,21 @@ import { evaluate } from '@mdx-js/mdx';
 import { useMDXComponents, MDXProvider } from '@mdx-js/react';
 import remarkGfm from 'remark-gfm';
 import { MDXContent } from 'mdx/types';
+import CodeMirror from 'rodemirror';
+import { basicSetup } from 'codemirror';
+import { markdown as langMarkdown } from '@codemirror/lang-markdown';
+import { oneDark } from '@codemirror/theme-one-dark';
+import { Extension } from '@codemirror/state';
+import styled from 'styled-components';
+import Draggable from 'react-draggable';
 
+const DraggableEditor = styled.div`
+  position: absolute;
+  width: 800px;
+  max-height: 500px;
+  overflow: scroll;
+  z-index: 99;
+`;
 interface useMDXReturnProps {
   source: string;
   result: MDXContent | null;
@@ -12,11 +26,14 @@ interface useMDXReturnProps {
 }
 
 export function useMDX(source) {
-  const [state, setState] = useState<useMDXReturnProps>({ source, result: null, error: null });
+  const [state, setState] = useState<useMDXReturnProps>({
+    source,
+    result: null,
+    error: null
+  });
 
   async function setSource(source) {
     const remarkPlugins = [remarkGfm];
-    // const rehypePlugins = [rehypeSanitize];
 
     let result: MDXContent | null = null;
 
@@ -42,9 +59,8 @@ export function useMDX(source) {
 
   useMemo(() => setSource(source), [source]);
 
-  return {...state, setSource};
+  return { ...state, setSource };
 }
-
 
 interface MDXEditorProps {
   initialSource: string;
@@ -52,20 +68,35 @@ interface MDXEditorProps {
 }
 
 const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
-  const {source, result, error, setSource} = useMDX(initialSource);
-  const onUpdate = (v) => setSource(v.target.value);
+  const { result, error, setSource } = useMDX(initialSource);
+
+  const extensions = useMemo<Extension[]>(
+    () => [basicSetup, oneDark, langMarkdown()],
+    []
+  );
 
   return (
     <div>
-      <textarea value={source} onChange={onUpdate} rows={20} cols={50} />
+      <Draggable>
+        <DraggableEditor>
+          <CodeMirror
+            value={initialSource}
+            onUpdate={(v) => {
+              if (v.docChanged) {
+                setSource(v.state.doc.toString());
+              }
+            }}
+            extensions={extensions}
+          />
+          {error && (
+            <>
+              <h2>Error!</h2>
+              {JSON.stringify(error)}
+            </>
+          )}
+        </DraggableEditor>
+      </Draggable>
       <MDXRenderer result={result} components={components} />
-
-      {error && (
-        <>
-          <h2>Error!</h2>
-          {JSON.stringify(error)}
-        </>
-      )}
     </div>
   );
 };
