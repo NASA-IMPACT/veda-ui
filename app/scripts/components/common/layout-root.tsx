@@ -5,7 +5,8 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useState
+  useState,
+  StrictMode
 } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
