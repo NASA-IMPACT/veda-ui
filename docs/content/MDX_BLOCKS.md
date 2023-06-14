@@ -361,7 +361,8 @@ You can replace `attr` option with `<Caption>` component if your image is used i
   <td>
 
   ```jsx
-    <Figure type='full'>
+  <Block type="full>
+    <Figure>
       <Image
         src="http://via.placeholder.com/1200x800?text=figure" 
         alt='description for image'
@@ -373,6 +374,7 @@ You can replace `attr` option with `<Caption>` component if your image is used i
         This is an image. This is <a href="link">a link</a>.
       </Caption> 
     </Figure>
+  </Block>
   ```
   </td>
   <td> 
