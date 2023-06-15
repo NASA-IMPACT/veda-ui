@@ -87,12 +87,12 @@ const LayerLegendSelf = styled.div`
   border-bottom: 1px solid ${themeVal('color.base-100')};
 
   ${WidgetItemHeader} {
-    padding: ${variableGlsp(0.25, 0.75)};
+    padding: ${variableGlsp(0.25, 0.5)};
   }
 
   &:only-child {
     ${WidgetItemHeader} {
-      padding: ${variableGlsp(0.5, 0.75)};
+      padding: ${variableGlsp(0.5)};
     }
     border-bottom: 0;
   }
@@ -234,18 +234,15 @@ export function LayerLegend(
   );
 }
 
-function LayerLegendContainer(props: LayerLegendContainerProps) {
+export function LayerLegendContainer(props: LayerLegendContainerProps) {
   return (
     <LegendContainer>
       <AccordionManager>
         {props.children}
-        {/* {props.layers.map(e=> <LayerLegend key={e.id} {...e} />)} */}
       </AccordionManager>
     </LegendContainer>
   );
 }
-
-export default LayerLegendContainer;
 
 function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   const { stops } = props;

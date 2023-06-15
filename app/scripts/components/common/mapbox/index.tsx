@@ -28,7 +28,7 @@ import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { SimpleMap } from './map';
 import MapMessage from './map-message';
-import LayerLegendContainer, {LayerLegend} from './layer-legend';
+import { LayerLegendContainer, LayerLegend } from './layer-legend';
 import { useBasemap } from './map-options/use-basemap';
 import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
 import { Styles } from './layers/styles';
@@ -373,6 +373,7 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             {...baseLayerResolvedData.legend}
           /> 
           {compareLayerResolvedData?.legend &&
+          isComparing &&
           (baseLayerResolvedData.id !== compareLayerResolvedData.id) && 
                     <LayerLegend
                     id={`compare-${compareLayerResolvedData.id}`}

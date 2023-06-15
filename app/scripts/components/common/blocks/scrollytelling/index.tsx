@@ -34,7 +34,8 @@ import { S_FAILED, S_SUCCEEDED } from '$utils/status';
 
 import { SimpleMap } from '$components/common/mapbox/map';
 import Hug from '$styles/hug';
-import LayerLegendContainer, {
+import {
+  LayerLegendContainer,
   LayerLegend
 } from '$components/common/mapbox/layer-legend';
 import MapMessage from '$components/common/mapbox/map-message';
