@@ -19,13 +19,24 @@ const DraggableEditor = styled.div`
   overflow: scroll;
   z-index: 99;
 `;
+
+
+const TitleBar = styled.div`
+  background-color: #1e1e1e;
+  color: #fff;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+  cursor: move;
+`;
 interface useMDXReturnProps {
   source: string;
   result: MDXContent | null;
   error: any;
 }
 
-export function useMDX(source) {
+function useMDX(source) {
   const [state, setState] = useState<useMDXReturnProps>({
     source,
     result: null,
@@ -77,8 +88,9 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
 
   return (
     <div>
-      <Draggable>
+      <Draggable handle='.titleBar'>
         <DraggableEditor>
+          <TitleBar className='titleBar'>MDX Editor</TitleBar>
           <CodeMirror
             value={initialSource}
             onUpdate={(v) => {
