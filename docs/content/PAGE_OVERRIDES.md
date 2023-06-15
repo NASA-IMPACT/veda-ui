@@ -12,15 +12,20 @@ There are essentially 2 types of possible overrides:
 - `Content Overrides` - allow you to change the default content of a page. Like with the different content types (discoveries, datasets), you'll have access to all [MDX_BLOCK.md](./MDX_BLOCKS.md). Depending on the content override you'll also be able to provide some frontmatter variables. The name of the override config variable will follow the `<name>Content` scheme.
 - `Component Overrides` - allow you to alter a specific component of the app, by providing new javascript code for it (advanced usage). No Mdx Blocks are available.
 
+> 🍀 Although it is not an override, custom pages are also defined under the `pageOverrides` key. See [CUSTOM_PAGES.md](./CUSTOM_PAGES.md) form more information.
+
 The overrides are defined in the `veda.config.js` under `pageOverrides` by specifying the path to the mdx file to load.  
 These are the current available overrides:
 
 ```js
   pageOverrides: {
     // Type: Content override
-    aboutContent: '<file path>.mdx'
-
-    // There are currently no component overrides defined.
+    aboutContent: '<file path>.mdx',
+    homeContent: '<file path>.mdx',
+    
+    // Type: Component override
+    headerBrand: '<file path>.mdx',
+    pageFooter: '<file path>.mdx',
   }
 ```
 

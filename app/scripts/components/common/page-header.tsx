@@ -496,7 +496,7 @@ function UserPagesMenu(props: {
       <DropMenu>
         {userPages.map((id) => {
           const page = getOverride(id as any);
-          if (!page?.data.menu) return <>{false}</>;
+          if (!page?.data.menu) return false;
 
           return (
             <li key={id}>

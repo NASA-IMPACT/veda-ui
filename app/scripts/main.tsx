@@ -113,6 +113,9 @@ function Root() {
                   <Route path='/sandbox/*' element={<Sandbox />} />
                 )}
 
+                {/* Legacy: Routes related to thematic areas redirect. */}
+                {thematicRoutes}
+
                 {userPages.map((p) => (
                   <Route
                     key={p}
@@ -120,9 +123,6 @@ function Root() {
                     element={<UserPagesComponent id={p} />}
                   />
                 ))}
-
-                {/* Legacy: Routes related to thematic areas redirect. */}
-                {thematicRoutes}
 
                 <Route path='*' element={<UhOh />} />
               </Route>

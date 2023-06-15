@@ -9,7 +9,7 @@ module.exports = {
     'sandbox-override': './sandbox-override.mdx',
 
     '/disclaimer': './custom-pages/disclaimer.mdx',
-    '/partnership': './custom-pages/partnership.mdx',
+    '/custom-page': './custom-pages/custom.mdx',
     '/aparam/:id': './custom-pages/aparam.mdx'
   }
 };
