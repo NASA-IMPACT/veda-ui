@@ -2,6 +2,7 @@ declare module 'veda' {
   import * as dateFns from 'date-fns';
   import mapboxgl from 'mapbox-gl';
   import { MDXModule } from 'mdx/types';
+  import { DefaultTheme } from 'styled-components';
 
   // ///////////////////////////////////////////////////////////////////////////
   //  Datasets                                                                //
@@ -213,9 +214,16 @@ declare module 'veda' {
     thematics: TaxonomyItem[];
   };
 
-  export type PageOverrides = 'aboutContent' | 'sandbox-override';
+  export type PageOverrides =
+    | 'aboutContent'
+    | 'homeContent'
+    | 'sandbox-override'
+    | 'pageFooter'
+    | 'headerBrand';
   /**
    * Configuration export for specific overrides.
    */
   export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
+
+  export const theme: DefaultTheme | null;
 }

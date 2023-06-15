@@ -179,7 +179,7 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   const resolvedLayers = useMemo(
     () =>
       asyncLayers.map(({ baseLayer }, index) => {
-        if (baseLayer?.status !== S_SUCCEEDED || !baseLayer.data) return null;
+        if (baseLayer.status !== S_SUCCEEDED || !baseLayer.data) return null;
 
         if (resolvedLayersCache.current[index]) {
           return resolvedLayersCache.current[index];
@@ -217,7 +217,7 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   );
 
   const resolvedStatus = useMemo(
-    () => asyncLayers.map(({ baseLayer }) => baseLayer?.status),
+    () => asyncLayers.map(({ baseLayer }) => baseLayer.status),
     [asyncLayers]
   );
 
@@ -358,42 +358,6 @@ function Scrollytelling(props) {
   return (
     <ScrollyMapWrapper>
       <TheMap topOffset={topOffset}>
-        <Styles>
-          <Basemap />
-          {isMapLoaded &&
-            resolvedLayers.map((resolvedLayer) => {
-              if (!resolvedLayer) return null;
-
-              const { runtimeData, Component: LayerCmp, layer } = resolvedLayer;
-
-              if (!LayerCmp) return null;
-
-              // Each layer type is added to the map through a component. This
-              // component has all the logic needed to add/update/remove the
-              // layer. Which component to use will depend on the characteristics
-              // of the layer and dataset.
-              // The function getLayerComponent() should be used to get the
-              // correct component.
-              return (
-                <LayerCmp
-                  key={runtimeData.id}
-                  id={runtimeData.id}
-                  mapInstance={mapRef.current}
-                  stacCol={layer.stacCol}
-                  date={runtimeData.datetime}
-                  sourceParams={layer.sourceParams}
-                  zoomExtent={layer.zoomExtent}
-                  onStatusChange={onLayerLoadSuccess}
-                  isHidden={
-                    !activeChapterLayerId ||
-                    activeChapterLayerId !== runtimeData.id ||
-                    activeChapter.showBaseMap
-                  }
-                />
-              );
-            })}
-        </Styles>
-
         {areLayersLoading && <MapLoading />}
 
         {/*
@@ -419,8 +383,8 @@ function Scrollytelling(props) {
         >
           {activeChapterLayer?.runtimeData.datetime
             ? formatSingleDate(
-                activeChapterLayer?.runtimeData.datetime,
-                activeChapterLayer?.layer.timeseries.timeDensity
+                activeChapterLayer.runtimeData.datetime,
+                activeChapterLayer.layer.timeseries.timeDensity
               )
             : null}
         </MapMessage>
@@ -451,10 +415,13 @@ function Scrollytelling(props) {
         <Styles>
           <Basemap />
           {isMapLoaded &&
-            resolvedLayers.map((resolvedLayer) => {
+            resolvedLayers.map((resolvedLayer, lIdx) => {
               if (!resolvedLayer) return null;
 
               const { runtimeData, Component: LayerCmp, layer } = resolvedLayer;
+              const isHidden = (!activeChapterLayerId ||
+              activeChapterLayerId !== runtimeData.id ||
+              activeChapter.showBaseMap);
 
               if (!LayerCmp) return null;
 
@@ -474,11 +441,8 @@ function Scrollytelling(props) {
                   sourceParams={layer.sourceParams}
                   zoomExtent={layer.zoomExtent}
                   onStatusChange={onLayerLoadSuccess}
-                  isHidden={
-                    !activeChapterLayerId ||
-                    activeChapterLayerId !== runtimeData.id ||
-                    activeChapter.showBaseMap
-                  }
+                  idSuffix={'scrolly-'+ lIdx}
+                  isHidden={isHidden}
                 />
               );
             })}

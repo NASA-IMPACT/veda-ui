@@ -19,6 +19,7 @@ import { createSubtitleStyles } from '@devseed-ui/typography';
 
 import { variableGlsp } from '../../styles/variable-utils';
 import { Tip } from '$components/common/tip';
+import { ComponentOverride } from '$components/common/page-overrides';
 
 const PageFooterSelf = styled.footer`
   padding: ${variableGlsp(0.75, 1)};
@@ -32,6 +33,13 @@ const PageFooterSelf = styled.footer`
   ${media.smallUp`
     flex-flow: row nowrap;
   `}
+
+  a {
+    &,
+    &:visited {
+      color: inherit;
+    }
+  }
 `;
 
 const FooterCredits = styled.address`
@@ -54,13 +62,6 @@ const FooterCredits = styled.address`
     font-size: inherit;
     display: block;
     opacity: 0.64;
-  }
-
-  a {
-    &,
-    &:visited {
-      color: inherit;
-    }
   }
 `;
 
@@ -111,53 +112,59 @@ function PageFooter(props) {
 
   return (
     <PageFooterSelf isHidden={props.isHidden}>
-      <InfoList>
-        <dt>NASA official</dt>
-        <dd>
-          <Button
-            forwardedAs='a'
-            href='mailto:manil.maskey@nasa.gov'
-            variation='base-text'
-            size='small'
-            fitting='skinny'
-          >
-            <CollecticonEnvelope title='Get in touch' meaningful />
-            Manil Maskey
-          </Button>
-        </dd>
-        <dt>Open source code</dt>
-        <dd>
-          <Button
-            forwardedAs='a'
-            href='https://github.com/NASA-IMPACT/veda-config'
-            variation='base-text'
-            size='small'
-            fitting='skinny'
-          >
-            <CollecticonBrandGithub title='Explore the code' meaningful />
-            GitHub
-          </Button>
-        </dd>
-      </InfoList>
-      <FooterCredits>
-        <p>
-          <a href='https://earthdata.nasa.gov/'>
-            <span>By</span> NASA <strong>Earthdata</strong> <span>on</span>{' '}
-            <time dateTime={nowDate.getFullYear()}>
-              {nowDate.getFullYear()}
-            </time>
-          </a>
-          {' • '}
-          <Tip
-            content={`Released on ${format(
-              new Date(+process.env.APP_BUILD_TIME),
-              'PPPP'
-            )}`}
-          >
-            <span>v{process.env.APP_VERSION}</span>
-          </Tip>
-        </p>
-      </FooterCredits>
+      <ComponentOverride
+        with='pageFooter'
+        appVersion={process.env.APP_VERSION}
+        appBuildTime={process.env.APP_BUILD_TIME}
+      >
+        <InfoList>
+          <dt>NASA official</dt>
+          <dd>
+            <Button
+              forwardedAs='a'
+              href='mailto:manil.maskey@nasa.gov'
+              variation='base-text'
+              size='small'
+              fitting='skinny'
+            >
+              <CollecticonEnvelope title='Get in touch' meaningful />
+              Manil Maskey
+            </Button>
+          </dd>
+          <dt>Open source code</dt>
+          <dd>
+            <Button
+              forwardedAs='a'
+              href='https://github.com/NASA-IMPACT/veda-config'
+              variation='base-text'
+              size='small'
+              fitting='skinny'
+            >
+              <CollecticonBrandGithub title='Explore the code' meaningful />
+              GitHub
+            </Button>
+          </dd>
+        </InfoList>
+        <FooterCredits>
+          <p>
+            <a href='https://earthdata.nasa.gov/'>
+              <span>By</span> NASA <strong>Earthdata</strong> <span>on</span>{' '}
+              <time dateTime={nowDate.getFullYear()}>
+                {nowDate.getFullYear()}
+              </time>
+            </a>
+            {' • '}
+            <Tip
+              content={`Released on ${format(
+                new Date(+process.env.APP_BUILD_TIME),
+                'PPPP'
+              )}`}
+            >
+              <span>v{process.env.APP_VERSION}</span>
+            </Tip>
+          </p>
+        </FooterCredits>
+      </ComponentOverride>
     </PageFooterSelf>
   );
 }

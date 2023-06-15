@@ -206,6 +206,8 @@ module.exports = new Resolver({
           )}
         };
 
+        export const theme = ${JSON.stringify(result.theme) || null};
+
         export const taxonomies = ${generateTaxonomiesModuleOutput(
           taxonomiesData
         )}

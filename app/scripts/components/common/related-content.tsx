@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { media } from '@devseed-ui/theme-provider';
 
 import {
   discoveries,
@@ -18,9 +19,7 @@ import {
 import { Card, CardList } from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
-
-import Block from '$components/common/blocks/';
-import ContentBlockFigure from '$components/common/blocks/figure';
+import { ContentBlock } from '$styles/content-block';
 
 const datasetString = 'dataset';
 const discoveryString = 'discovery';
@@ -35,6 +34,14 @@ const TwoColumnCardList = styled(CardList)`
   margin-top: ${variableGlsp(1)};
 `;
 
+const RelatedContentInner = styled.div`
+  grid-column: content-start / content-end;
+
+  ${media.largeUp`
+  grid-column:  content-3 / content-11;
+`}
+`;
+
 interface FormatBlock {
   id: string;
   name: string;
@@ -43,7 +50,7 @@ interface FormatBlock {
   link: string;
   parentLink: string;
   media: Media;
-  parent: RelatedContentData["type"];
+  parent: RelatedContentData['type'];
 }
 
 function formatUrl(id: string, parent: string) {
@@ -123,8 +130,8 @@ export default function RelatedContent(props: RelatedContentProps) {
     throw Error('There is no related content defined.');
 
   return (
-    <Block>
-      <ContentBlockFigure>
+    <ContentBlock>
+      <RelatedContentInner>
         <FoldHeader>
           <FoldTitle>Related Content</FoldTitle>
         </FoldHeader>
@@ -150,7 +157,7 @@ export default function RelatedContent(props: RelatedContentProps) {
             </li>
           ))}
         </TwoColumnCardList>
-      </ContentBlockFigure>
-    </Block>
+      </RelatedContentInner>
+    </ContentBlock>
   );
 }

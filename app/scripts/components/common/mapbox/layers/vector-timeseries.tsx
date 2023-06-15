@@ -28,6 +28,7 @@ interface MapLayerVectorTimeseriesProps {
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
+  idSuffix?: string;
 }
 
 export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
@@ -39,7 +40,8 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     sourceParams,
     zoomExtent,
     onStatusChange,
-    isHidden
+    isHidden,
+    idSuffix = ''
   } = props;
 
   const theme = useTheme();
@@ -47,6 +49,8 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   const [featuresApiEndpoint, setFeaturesApiEndpoint] = useState('');
 
   const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
+
+  const generatorId = 'vector-timeseries' + idSuffix;
 
   //
   // Get the tiles url
@@ -204,7 +208,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     ].filter(Boolean) as AnyLayer[];
 
     updateStyle({
-      generatorId: 'vector-timeseries',
+      generatorId,
       sources,
       layers
     });
@@ -219,7 +223,8 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     minZoom,
     maxZoom,
     isHidden,
-    haveSourceParamsChanged
+    haveSourceParamsChanged,
+    generatorId
   ]);
 
   //
@@ -228,12 +233,12 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   useEffect(() => {
     return () => {
       updateStyle({
-        generatorId: 'vector-timeseries',
+        generatorId,
         sources: {},
         layers: []
       });
     };
-  }, [updateStyle]);
+  }, [updateStyle, generatorId]);
 
   //
   // Listen to mouse events on the markers layer

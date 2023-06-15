@@ -3,6 +3,7 @@
 - [Writing contents for Veda dashboard](#writing-contents-for-veda-dashboard)
   - [Background \& Prerequisites](#background--prerequisites)
   - [Block](#block)
+  - [Link](#link)
   - [Notebook Connect Callout](#notebook-connect-callout)
   - [Image](#image)
     - [Inline image \& Figure image](#inline-image--figure-image)
@@ -217,6 +218,26 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 </tr>
 </table>
 
+## Link
+
+To create a bridge between the different types of content in the VEDA dashboard it may be necessary to create a link from one to another. One example of this would be linking to a dataset page from a discovery.
+
+Since the dashboard may be made available under different domains at different times (for example staging environment and then production) it is a good idea to use relative links.  
+This is not possible with normal markdown links, but you can use the `Link` component for this purpose.
+
+Example:
+```diff
+- [My dataset](/data-catalog/my-dataset)
++ <Link to='/data-catalog/my-dataset'>My dataset</Link>
+```
+This will ensure that links work regardless of the environment the dashboard is in.
+
+You can also use the `Link` component for external links, but it is not required. The following approached produce the same result.
+
+```mdx
+[DevSeed](http://developmentseed.org)
+<Link to='http://developmentseed.org'>DevSeed</Link>
+```
 
 ## Notebook Connect Callout
 
@@ -340,7 +361,8 @@ You can replace `attr` option with `<Caption>` component if your image is used i
   <td>
 
   ```jsx
-    <Figure type='full'>
+  <Block type="full>
+    <Figure>
       <Image
         src="http://via.placeholder.com/1200x800?text=figure" 
         alt='description for image'
@@ -352,6 +374,7 @@ You can replace `attr` option with `<Caption>` component if your image is used i
         This is an image. This is <a href="link">a link</a>.
       </Caption> 
     </Figure>
+  </Block>
   ```
   </td>
   <td> 

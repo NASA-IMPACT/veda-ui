@@ -29,6 +29,7 @@ import {
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { HEADER_ID } from '$utils/use-sliding-sticky-header';
+import { ComponentOverride } from '$components/common/page-overrides';
 
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
@@ -330,15 +331,17 @@ function PageHeader() {
   return (
     <PageHeaderSelf id={HEADER_ID}>
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
-      <Brand>
-        <Link to='/'>
-          <NasaLogo />
-          <span>Earthdata</span> <span>{appTitle}</span>
-        </Link>
-        <Tip content={`v${appVersion}`}>
-          <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
-        </Tip>
-      </Brand>
+      <ComponentOverride with='headerBrand'>
+        <Brand>
+          <Link to='/'>
+            <NasaLogo />
+            <span>Earthdata</span> <span>{appTitle}</span>
+          </Link>
+          <Tip content={`v${appVersion}`}>
+            <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
+          </Tip>
+        </Brand>
+      </ComponentOverride>
       {isMediumDown && (
         <GlobalNavActions>
           <GlobalNavToggle
@@ -414,9 +417,11 @@ function PageHeader() {
                       About
                     </GlobalMenuLink>
                   </li>
-                  <li>
-                    <GoogleForm />
-                  </li>
+                  {!!process.env.GOOGLE_FORM && (
+                    <li>
+                      <GoogleForm />
+                    </li>
+                  )}
                 </GlobalMenu>
               </SectionsNavBlock>
             </GlobalNavBodyInner>
