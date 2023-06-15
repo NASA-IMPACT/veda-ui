@@ -45,7 +45,7 @@ interface MapLayerRasterTimeseriesProps {
   zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
-  idSuffix?: string
+  idSuffix?: string;
 }
 
 export interface StacFeature {

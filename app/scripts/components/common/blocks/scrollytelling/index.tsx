@@ -34,7 +34,10 @@ import { S_FAILED, S_SUCCEEDED } from '$utils/status';
 
 import { SimpleMap } from '$components/common/mapbox/map';
 import Hug from '$styles/hug';
-import LayerLegend from '$components/common/mapbox/layer-legend';
+import {
+  LayerLegendContainer,
+  LayerLegend
+} from '$components/common/mapbox/layer-legend';
 import MapMessage from '$components/common/mapbox/map-message';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
@@ -65,6 +68,9 @@ const TheMap = styled.div<{ topOffset: number }>`
     top: ${topOffset}px;
     height: calc(100vh - ${topOffset}px);
   `}
+  .mapboxgl-canvas {
+    height: 100%;
+  }
 `;
 
 const TheChapters = styled(Hug)`
@@ -392,25 +398,37 @@ function Scrollytelling(props) {
         {/*
           Map overlay element
           Layer legend for the active layer.
+
+          The SwitchTransition animated between 2 elements, so when there's no
+          legend we use an empty div to ensure that there's an out animation.
+          We also have to set the timeout to 1 because the empty div will not
+          have transitions defined for it. This causes the transitionend
+          listener to never fire leading to an infinite wait.
         */}
-        {activeChapterLayer?.layer.legend && (
-          <SwitchTransition>
-            <CSSTransition
-              key={activeChapterLayer.layer.name}
-              addEndListener={(node, done) => {
-                node.addEventListener('transitionend', done, false);
-              }}
-              classNames='reveal'
-            >
-              <LayerLegend
-                id={`base-${activeChapterLayer.layer.id}`}
-                description={activeChapterLayer.layer.description}
-                title={activeChapterLayer.layer.name}
-                {...activeChapterLayer.layer.legend}
-              />
-            </CSSTransition>
-          </SwitchTransition>
-        )}
+        <SwitchTransition>
+          <CSSTransition
+            key={activeChapterLayer?.layer.name}
+            timeout={!activeChapterLayer ? 1 : undefined}
+            addEndListener={(node, done) => {
+              if (!activeChapterLayer) return;
+              node?.addEventListener('transitionend', done, false);
+            }}
+            classNames='reveal'
+          >
+            {activeChapterLayer?.layer.legend ? (
+              <LayerLegendContainer>
+                <LayerLegend
+                  id={`base-${activeChapterLayer.layer.id}`}
+                  description={activeChapterLayer.layer.description}
+                  title={activeChapterLayer.layer.name}
+                  {...activeChapterLayer.layer.legend}
+                />
+              </LayerLegendContainer>
+            ) : (
+              <div />
+            )}
+          </CSSTransition>
+        </SwitchTransition>
 
         <Styles>
           <Basemap />
@@ -419,9 +437,10 @@ function Scrollytelling(props) {
               if (!resolvedLayer) return null;
 
               const { runtimeData, Component: LayerCmp, layer } = resolvedLayer;
-              const isHidden = (!activeChapterLayerId ||
-              activeChapterLayerId !== runtimeData.id ||
-              activeChapter.showBaseMap);
+              const isHidden =
+                !activeChapterLayerId ||
+                activeChapterLayerId !== runtimeData.id ||
+                activeChapter.showBaseMap;
 
               if (!LayerCmp) return null;
 
@@ -441,7 +460,7 @@ function Scrollytelling(props) {
                   sourceParams={layer.sourceParams}
                   zoomExtent={layer.zoomExtent}
                   onStatusChange={onLayerLoadSuccess}
-                  idSuffix={'scrolly-'+ lIdx}
+                  idSuffix={'scrolly-' + lIdx}
                   isHidden={isHidden}
                 />
               );
@@ -450,7 +469,11 @@ function Scrollytelling(props) {
             className='root'
             mapRef={mapRef}
             containerRef={mapContainer}
-            onLoad={() => setMapLoaded(true)}
+            onLoad={() => {
+              setMapLoaded(true);
+              // Fit the map to the container once  loaded.
+              mapRef.current?.resize();
+            }}
             mapOptions={mapOptions}
           />
         </Styles>
