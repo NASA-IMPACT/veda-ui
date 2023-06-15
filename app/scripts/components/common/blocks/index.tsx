@@ -368,6 +368,7 @@ export class BlockErrorBoundary extends Component<
           message={error.message}
           className={rest.className}
           hints={error.hints}
+          clearError={this.clearError}
         />
       );
     }
