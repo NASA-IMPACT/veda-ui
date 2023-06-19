@@ -118,6 +118,8 @@
     "@turf/union": "^6.5.0",
     "@types/geojson": "^7946.0.10",
     "@types/mdx": "^2.0.1",
+    "@types/react": "^18.2.12",
+    "@types/react-dom": "^18.2.5",
     "@types/styled-components": "^5.1.26",
     "axios": "^0.25.0",
     "d3": "^7.6.1",

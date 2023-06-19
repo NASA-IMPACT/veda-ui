@@ -1213,7 +1213,7 @@
 
 "@devseed-ui/accordion@4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2faccordion/-/accordion-4.1.0.tgz#622483e69e553a4f1e8d4a8c44f61ad4cfa1395b"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2faccordion/-/accordion-4.1.0.tgz#622483e69e553a4f1e8d4a8c44f61ad4cfa1395b"
   integrity sha512-ng9sIOxHJ5CVmFMSMXJ8MqwNBK68bLZtdfiISjQyOtEqJfUDIhODva7fJDYKpWQPWp+4YTdAodyH3rhFiwuMVg==
   dependencies:
     "@devseed-ui/collecticons" "^4.1.0"
@@ -1221,12 +1221,12 @@
 
 "@devseed-ui/animation@4.1.0", "@devseed-ui/animation@^4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2fanimation/-/animation-4.1.0.tgz#69d80b01d09aba3929e06ac2b7f7c88175ce6b3e"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2fanimation/-/animation-4.1.0.tgz#69d80b01d09aba3929e06ac2b7f7c88175ce6b3e"
   integrity sha512-YPvaFBATXPnmqTkZOMHEkn+V2GlEkJx25Xowcr2SSgTDZ9DOsd600m7iCGwZNEVNmr3d568C3inkmQySm3h2ZQ==
 
 "@devseed-ui/button@4.1.0", "@devseed-ui/button@^4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2fbutton/-/button-4.1.0.tgz#5640263219c70048e00bfce38359d25885ef08a4"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2fbutton/-/button-4.1.0.tgz#5640263219c70048e00bfce38359d25885ef08a4"
   integrity sha512-M7vTxioT/MK95P2pi1pVjKDktH2a9yoRP5geFHDwJhDqDQwoKD58+bZQn0+h6v78n/aCkyQoUPpCCzIeYeu+MA==
   dependencies:
     "@devseed-ui/collecticons" "^4.1.0"
@@ -1234,12 +1234,12 @@
 
 "@devseed-ui/collecticons@4.1.0", "@devseed-ui/collecticons@^4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2fcollecticons/-/collecticons-4.1.0.tgz#d0d5237f1c03ce59d0d3a44cfd019d613761aba6"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2fcollecticons/-/collecticons-4.1.0.tgz#d0d5237f1c03ce59d0d3a44cfd019d613761aba6"
   integrity sha512-hJWfflJZe6tjRtjgyk+zs/2UuLugGy+Kbs2nNULREAAjBp1Kt4stcrwKkAtbev/dbC+u0hGXPP8gCd5sG5c4Ag==
 
 "@devseed-ui/date-picker@4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2fdate-picker/-/date-picker-4.1.0.tgz#68a8856f3595dcc713c18ac533c4761bfd06c35b"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2fdate-picker/-/date-picker-4.1.0.tgz#68a8856f3595dcc713c18ac533c4761bfd06c35b"
   integrity sha512-VJy9i2zlO+Ml08cl53Rv+IO/vkn4+muMJInkZLLwa4IB8GXktK9QmTVD8Hz7C6yPhZhzlGEOsfSYFJi5QIzowA==
   dependencies:
     "@devseed-ui/button" "^4.1.0"
@@ -1253,7 +1253,7 @@
 
 "@devseed-ui/dropdown@4.1.0", "@devseed-ui/dropdown@^4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2fdropdown/-/dropdown-4.1.0.tgz#7d0efdaa8365a48f32343680e33d43efe6f77651"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2fdropdown/-/dropdown-4.1.0.tgz#7d0efdaa8365a48f32343680e33d43efe6f77651"
   integrity sha512-ewXLbvpgJ4Y21oLUBOfGTit9Ncd5725CsGumNnH8O+Q/DhE8pLy+ZgKGrzpC9Rmcm/MxgizJwqGAtvbxeAu91g==
   dependencies:
     "@devseed-ui/button" "^4.1.0"
@@ -1264,7 +1264,7 @@
 
 "@devseed-ui/form@4.1.0", "@devseed-ui/form@^4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2fform/-/form-4.1.0.tgz#59c19e78e5a96f4deae30e9a69723f0a398f0319"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2fform/-/form-4.1.0.tgz#59c19e78e5a96f4deae30e9a69723f0a398f0319"
   integrity sha512-Gq+i8QLzksuyWwVtXKymv0SFzvzwrFryNvQxHIFjxih1n8/JERgnMm/+HsOGl+eJBeMV4SlMZZgSeWsMDBolbA==
   dependencies:
     "@devseed-ui/animation" "^4.1.0"
@@ -1274,7 +1274,7 @@
 
 "@devseed-ui/global-loading@4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2fglobal-loading/-/global-loading-4.1.0.tgz#94bd2ad0752fc3a56cc9800ab703ada39e4cdd63"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2fglobal-loading/-/global-loading-4.1.0.tgz#94bd2ad0752fc3a56cc9800ab703ada39e4cdd63"
   integrity sha512-4jOl3CFMNLWslStzfu3RCOGQRJPc2V4fEvK4MovU4leDRfaon35SzrtotQD0+3y704DeojW7DCxh7Jyij25z5A==
   dependencies:
     "@devseed-ui/animation" "^4.1.0"
@@ -1284,7 +1284,7 @@
 
 "@devseed-ui/modal@^4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2fmodal/-/modal-4.1.0.tgz#48f4be828def169388e2e6e43a8547c84454e158"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2fmodal/-/modal-4.1.0.tgz#48f4be828def169388e2e6e43a8547c84454e158"
   integrity sha512-j40/PQ+HNkIDx7f1qTvHZo1VCCntGjyQroe/LD8CQBMcOvm5jNKsiT/KTgxrbi0dGcmjSGFoBr+imkY4KKzWuA==
   dependencies:
     "@devseed-ui/button" "^4.1.0"
@@ -1296,7 +1296,7 @@
 
 "@devseed-ui/shadow-scrollbar@4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2fshadow-scrollbar/-/shadow-scrollbar-4.1.0.tgz#f435fbd13bf861657b9b2ac04fa672102d4c9499"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2fshadow-scrollbar/-/shadow-scrollbar-4.1.0.tgz#f435fbd13bf861657b9b2ac04fa672102d4c9499"
   integrity sha512-1Yfz14r5gZnIlKs21XGSEdokKG4oORy3fsvsHlxToAIWL4VTnKtxvL3lkDiMsndhjl7MaPMkIyMFafuAqsEBuQ==
   dependencies:
     "@devseed-ui/theme-provider" "^4.1.0"
@@ -1305,7 +1305,7 @@
 
 "@devseed-ui/theme-provider@4.1.0", "@devseed-ui/theme-provider@^4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2ftheme-provider/-/theme-provider-4.1.0.tgz#8e2718d879cd6bc2c4c43be6e3857702b3f97d17"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2ftheme-provider/-/theme-provider-4.1.0.tgz#8e2718d879cd6bc2c4c43be6e3857702b3f97d17"
   integrity sha512-1wGlau/u2rsGdEVe18tKkyWlF61fMVFcQ/j6L08HwBGT/n1pPLm07Jxgv+tcap5zAmuOon4qobZCbOrgXwMfOw==
   dependencies:
     lodash.get "^4.4.2"
@@ -1313,7 +1313,7 @@
 
 "@devseed-ui/toolbar@4.1.0", "@devseed-ui/toolbar@^4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2ftoolbar/-/toolbar-4.1.0.tgz#b3aee028b2813bbc3f580ca316352b997c4c9be5"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2ftoolbar/-/toolbar-4.1.0.tgz#b3aee028b2813bbc3f580ca316352b997c4c9be5"
   integrity sha512-bYYEipLfTW0+zwj+AYAD4fO8kRrGFmK9s4kvycZlcgIy6qjxGPZQc1JsCYM1l4oqoTatlwtoOZqgfMs2GT3NBw==
   dependencies:
     "@devseed-ui/button" "^4.1.0"
@@ -1322,7 +1322,7 @@
 
 "@devseed-ui/typography@4.1.0", "@devseed-ui/typography@^4.1.0":
   version "4.1.0"
-  resolved "http://3.220.121.64:4873/@devseed-ui%2ftypography/-/typography-4.1.0.tgz#8f7cde3d345af82fe8886efebfdb4e0fccadd08b"
+  resolved "http://verdaccio.ds.io:4873/@devseed-ui%2ftypography/-/typography-4.1.0.tgz#8f7cde3d345af82fe8886efebfdb4e0fccadd08b"
   integrity sha512-Dif8lQGGnVhwF6EwmhQQJf3aXyUjTl8sE0w2V/GiED2c7W43xzqaMYCRFQmFn37TJ3nASfLT7vCLqr9uT9uwjQ==
   dependencies:
     "@devseed-ui/theme-provider" "^4.1.0"
@@ -3395,6 +3395,13 @@
   dependencies:
     "@types/react" "^17"
 
+"@types/react-dom@^18.2.5":
+  version "18.2.5"
+  resolved "http://verdaccio.ds.io:4873/@types%2freact-dom/-/react-dom-18.2.5.tgz#5c5f13548bda23cd98f50ca4a59107238bfe18f3"
+  integrity sha512-sRQsOS/sCLnpQhR4DSKGTtWFE3FZjpQa86KPVbhUqdYMRZ9FEFcfAytKhR/vUG2rH1oFbOOej6cuD7MFSobDRQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@>=16":
   version "18.0.15"
   resolved "http://verdaccio.ds.io:4873/@types%2freact/-/react-18.0.15.tgz#d355644c26832dc27f3e6cbf0c4f4603fc4ab7fe"
@@ -3408,6 +3415,15 @@
   version "17.0.47"
   resolved "http://verdaccio.ds.io:4873/@types%2freact/-/react-17.0.47.tgz#4ee71aaf4c5a9e290e03aa4d0d313c5d666b3b78"
   integrity sha512-mk0BL8zBinf2ozNr3qPnlu1oyVTYq+4V7WA76RgxUAtf0Em/Wbid38KN6n4abEkvO4xMTBWmnP1FtQzgkEiJoA==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^18.2.12":
+  version "18.2.12"
+  resolved "http://verdaccio.ds.io:4873/@types%2freact/-/react-18.2.12.tgz#95d584338610b78bb9ba0415e3180fb03debdf97"
+  integrity sha512-ndmBMLCgn38v3SntMeoJaIrO6tGHYKMEBohCUmw8HoLLQdRMOIGXfeYaBTLe2lsFaSB3MOK1VXscYFnmLtTSmw==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -9630,7 +9646,7 @@ papaparse@^5.3.2:
 
 parcel-resolver-ignore@^2.1.3:
   version "2.1.3"
-  resolved "http://3.220.121.64:4873/parcel-resolver-ignore/-/parcel-resolver-ignore-2.1.3.tgz#869673c40ccab1985af74020cd28b360b149155f"
+  resolved "http://verdaccio.ds.io:4873/parcel-resolver-ignore/-/parcel-resolver-ignore-2.1.3.tgz#869673c40ccab1985af74020cd28b360b149155f"
   integrity sha512-C8uLvR4o7SPRSsQ/Nylm1/PdsLwn/Z9bzCs66qT3XIebJC7ojaFFF3MDl/mie5audngjcFF8wzU0AoEQkZq2pA==
 
 "parcel-resolver-veda@link:./parcel-resolver-veda":
@@ -10257,7 +10273,7 @@ react-custom-scrollbars@^4.2.1:
 
 react-dom@^18.2.0:
   version "18.2.0"
-  resolved "http://3.220.121.64:4873/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
+  resolved "http://verdaccio.ds.io:4873/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
   integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
   dependencies:
     loose-envify "^1.1.0"
@@ -10397,7 +10413,7 @@ react-transition-group@^4.3.0, react-transition-group@^4.4.2:
 
 react@^18.2.0:
   version "18.2.0"
-  resolved "http://3.220.121.64:4873/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
+  resolved "http://verdaccio.ds.io:4873/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
   dependencies:
     loose-envify "^1.1.0"
@@ -10916,7 +10932,7 @@ saxes@^5.0.1:
 
 scheduler@^0.23.0:
   version "0.23.0"
-  resolved "http://3.220.121.64:4873/scheduler/-/scheduler-0.23.0.tgz#ba8041afc3d30eb206a487b6b384002e4e61fdfe"
+  resolved "http://verdaccio.ds.io:4873/scheduler/-/scheduler-0.23.0.tgz#ba8041afc3d30eb206a487b6b384002e4e61fdfe"
   integrity sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==
   dependencies:
     loose-envify "^1.1.0"
