@@ -239,5 +239,10 @@ declare module 'veda' {
    */
   export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
 
+  /**
+   * List of custom user defined pages.
+   */
+  export const userPages: string[];
+
   export const theme: DefaultTheme | null;
 }
