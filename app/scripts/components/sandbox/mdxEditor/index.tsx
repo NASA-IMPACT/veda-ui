@@ -1,5 +1,6 @@
 import React from 'react';
 
+import useLocalStorage from "use-local-storage";
 import MDXEditor, { MDXBlockWithError } from './MDX';
 import { PageMainContent } from '$styles/page';
 import ContentBlockFigure from '$components/common/blocks/figure';
@@ -28,7 +29,8 @@ const components = {
   Link: SmartLink
 };
 
-const md = `<Block>
+export const MDX_LOCAL_STORAGE_KEY = "MDX_EDITOR";
+export const MDX_SOURCE_DEFAULT = `<Block>
   <Prose>
     ### Your markdown header
 
@@ -68,10 +70,11 @@ const md = `<Block>
 `;
 
 export default function MDXEditorWrapper() {
+  const [mdxSource] = useLocalStorage(MDX_LOCAL_STORAGE_KEY, MDX_SOURCE_DEFAULT);
   return (
     <PageMainContent>
       <article>
-        <MDXEditor initialSource={md} components={components} />
+        <MDXEditor initialSource={mdxSource} components={components} />
       </article>
     </PageMainContent>
   );

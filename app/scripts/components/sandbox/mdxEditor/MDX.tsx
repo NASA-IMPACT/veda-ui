@@ -5,6 +5,7 @@ import { useMDXComponents, MDXProvider } from '@mdx-js/react';
 import remarkGfm from 'remark-gfm';
 import { MDXContent } from 'mdx/types';
 import { ErrorBoundary } from 'react-error-boundary';
+import useLocalStorage from "use-local-storage";
 import CodeMirror from 'rodemirror';
 import { basicSetup } from 'codemirror';
 import { markdown as langMarkdown } from '@codemirror/lang-markdown';
@@ -16,6 +17,7 @@ import { themeVal } from '@devseed-ui/theme-provider';
 import { generalErrorMessage } from '../../common/blocks/block-constant';
 import { BlockComponent } from '$components/common/blocks';
 import { HintedErrorDisplay, docsMessage } from '$utils/hinted-error';
+import { MDX_LOCAL_STORAGE_KEY, MDX_SOURCE_DEFAULT } from '.';
 
 const DraggableEditor = styled.div`
   position: absolute;
@@ -99,6 +101,7 @@ interface MDXEditorProps {
 
 const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
   const { result, error, setSource } = useMDX(initialSource);
+  const [, setmMdxSource] = useLocalStorage(MDX_LOCAL_STORAGE_KEY, MDX_SOURCE_DEFAULT);
 
   const extensions = useMemo<Extension[]>(
     () => [basicSetup, oneDark, langMarkdown()],
@@ -129,12 +132,12 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
                 onUpdate={(v) => {
                   if (v.docChanged) {
                     setSource(v.state.doc.toString());
+                    setmMdxSource(v.state.doc.toString());
                   }
                 }}
                 extensions={extensions}
               />
             </EditorWrapper>
-
           </DraggableEditor>
         </Draggable>
         <MDXRenderer result={result} components={components} />
@@ -155,6 +158,7 @@ export const MDXRenderer = ({ result, components }: MDXRendererProps) => {
     </MDXProvider>
   );
 };
+
 
 const MDXBlockError = ({ error }: any) => {
   return (
