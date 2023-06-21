@@ -5,7 +5,7 @@ import { useMDXComponents, MDXProvider } from '@mdx-js/react';
 import remarkGfm from 'remark-gfm';
 import { MDXContent } from 'mdx/types';
 import { ErrorBoundary } from 'react-error-boundary';
-import useLocalStorage from "use-local-storage";
+import useLocalStorage from 'use-local-storage';
 import CodeMirror from 'rodemirror';
 import { basicSetup } from 'codemirror';
 import { markdown as langMarkdown } from '@codemirror/lang-markdown';
@@ -15,9 +15,11 @@ import styled from 'styled-components';
 import Draggable from 'react-draggable';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { generalErrorMessage } from '../../common/blocks/block-constant';
+import { MDX_LOCAL_STORAGE_KEY, MDX_SOURCE_DEFAULT } from '.';
 import { BlockComponent } from '$components/common/blocks';
 import { HintedErrorDisplay, docsMessage } from '$utils/hinted-error';
-import { MDX_LOCAL_STORAGE_KEY, MDX_SOURCE_DEFAULT } from '.';
+
+const DEFAULT_CONTENT = '(your content here)';
 
 const DraggableEditor = styled.div`
   position: absolute;
@@ -36,16 +38,33 @@ const TitleBar = styled.div`
   cursor: move;
 `;
 
+const ResetButton = styled.button`
+  opacity: 0.5;
+  background-color: transparent;
+  text-decoration: underline;
+  color: #fff;
+  border: none;
+  font-size: 10px;
+  font-weight: normal;
+  cursor: pointer;
+`;
+
 const ErrorBar = styled.div`
   background-color: #fff;
   border: 3px solid ${themeVal('color.danger')};
-  color:  ${themeVal('color.danger')};
+  color: ${themeVal('color.danger')};
   padding: 4px;
 `;
 
 const EditorWrapper = styled.div`
   overflow: scroll;
   max-height: 500px;
+`;
+
+const GlobalErrorWrapper = styled.div`
+  border: 3px solid ${themeVal('color.danger')};
+  color: ${themeVal('color.danger')};
+  font-size: 14px;
 `;
 
 interface useMDXReturnProps {
@@ -101,7 +120,10 @@ interface MDXEditorProps {
 
 const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
   const { result, error, setSource } = useMDX(initialSource);
-  const [, setmMdxSource] = useLocalStorage(MDX_LOCAL_STORAGE_KEY, MDX_SOURCE_DEFAULT);
+  const [, setMdxSource] = useLocalStorage(
+    MDX_LOCAL_STORAGE_KEY,
+    MDX_SOURCE_DEFAULT
+  );
 
   const extensions = useMemo<Extension[]>(
     () => [basicSetup, oneDark, langMarkdown()],
@@ -111,28 +133,47 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
   const errorHumanReadable = useMemo(() => {
     if (!error) return null;
     const { line, message } = JSON.parse(JSON.stringify(error));
-    return `At line ${line  - 1}: ${message}`;
+    return `At line ${line - 1}: ${message}`;
   }, [error]);
-      
 
   return (
-    <div>
+    <ErrorBoundaryWithCRAReset FallbackComponent={GlobalError}>
       <MDXContext.Provider value={result}>
         <Draggable handle='.titleBar'>
           <DraggableEditor>
-            <TitleBar className='titleBar'>MDX Editor</TitleBar>
-            {error && (
-              <ErrorBar>
-                {errorHumanReadable}
-              </ErrorBar>
-              )}
+            <TitleBar className='titleBar'>
+              MDX Editor{' '}
+              <ResetButton
+                type='button'
+                onClick={() => {
+                  setMdxSource(MDX_SOURCE_DEFAULT);
+                }}
+              >
+                reset with default content
+              </ResetButton>
+              <ResetButton
+                type='button'
+                onClick={() => {
+                  setMdxSource(DEFAULT_CONTENT);
+                }}
+              >
+                clear
+              </ResetButton>
+            </TitleBar>
+            {error && <ErrorBar>{errorHumanReadable}</ErrorBar>}
             <EditorWrapper>
               <CodeMirror
                 value={initialSource}
                 onUpdate={(v) => {
                   if (v.docChanged) {
-                    setSource(v.state.doc.toString());
-                    setmMdxSource(v.state.doc.toString());
+                    let source = v.state.doc.toString();
+
+                    // This is a hack to prevent the editor from being cleared
+                    // when the user deletes all the text.
+                    // because when that happens, React throws an order of hooks error
+                    source = source ? source : DEFAULT_CONTENT;
+                    setSource(source);
+                    setMdxSource(source);
                   }
                 }}
                 extensions={extensions}
@@ -142,16 +183,23 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
         </Draggable>
         <MDXRenderer result={result} components={components} />
       </MDXContext.Provider>
-    </div>
+    </ErrorBoundaryWithCRAReset>
   );
 };
+
+class ErrorBoundaryWithCRAReset extends ErrorBoundary {
+  static getDerivedStateFromError(error: Error) {
+    (error as any).CRAOverlayIgnore = true;
+    return { didCatch: true, error };
+  }
+}
 
 interface MDXRendererProps {
   result: MDXContent | null;
   components: any;
 }
 
-export const MDXRenderer = ({ result, components }: MDXRendererProps) => {
+const MDXRenderer = ({ result, components }: MDXRendererProps) => {
   return (
     <MDXProvider components={components}>
       {result && result({ components })}
@@ -159,6 +207,36 @@ export const MDXRenderer = ({ result, components }: MDXRendererProps) => {
   );
 };
 
+const GlobalError = () => {
+  const [, setMdxSource] = useLocalStorage(
+    MDX_LOCAL_STORAGE_KEY,
+    MDX_SOURCE_DEFAULT
+  );
+  return (
+    <GlobalErrorWrapper>
+      An error occurred
+      <div>
+        <button
+          type='button'
+          onClick={() => {
+            window.location.reload();
+          }}
+        >
+          Try again with recovered content
+        </button>
+        <button
+          type='button'
+          onClick={() => {
+            setMdxSource(MDX_SOURCE_DEFAULT);
+            window.location.reload();
+          }}
+        >
+          Try again with content reset to defaults
+        </button>
+      </div>
+    </GlobalErrorWrapper>
+  );
+};
 
 const MDXBlockError = ({ error }: any) => {
   return (
@@ -170,13 +248,6 @@ const MDXBlockError = ({ error }: any) => {
     />
   );
 };
-
-class ErrorBoundaryWithCRAReset extends ErrorBoundary {
-  static getDerivedStateFromError(error: Error) {
-    (error as any).CRAOverlayIgnore = true;
-    return { didCatch: true, error };
-  }
-}
 
 export const MDXBlockWithError = (props) => {
   const result = useContext(MDXContext);
