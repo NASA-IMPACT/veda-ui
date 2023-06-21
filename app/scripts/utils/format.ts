@@ -66,7 +66,7 @@ interface FormatThousandsOptions {
  * formatThousands(1/2, { decimals: 5, forceDecimals: true})    0.50000
  *
  */
-export function formatThousands(num: number, options: FormatThousandsOptions) {
+export function formatThousands(num: number, options?: FormatThousandsOptions) {
   const opts = {
     decimals: 2,
     separator: ',',
@@ -86,7 +86,10 @@ export function formatThousands(num: number, options: FormatThousandsOptions) {
     return str;
   };
 
-  let [int, dec] = Number(round(num, opts.decimals)).toString().split('.');
+  const sign = num < 0 ? '-' : '';
+  const absNum = Math.abs(num);
+
+  let [int, dec] = Number(round(absNum, opts.decimals)).toString().split('.');
 
   let largeNumUnit = '';
   if (opts.shorten) {
@@ -105,8 +108,8 @@ export function formatThousands(num: number, options: FormatThousandsOptions) {
     : dec;
 
   return dec !== ''
-    ? `${int}.${dec} ${largeNumUnit}`
-    : `${int} ${largeNumUnit}`;
+    ? `${sign}${int}.${dec} ${largeNumUnit}`
+    : `${sign}${int} ${largeNumUnit}`;
 }
 
 /**
