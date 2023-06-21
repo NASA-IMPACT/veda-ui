@@ -12,6 +12,7 @@ import { oneDark } from '@codemirror/theme-one-dark';
 import { Extension } from '@codemirror/state';
 import styled from 'styled-components';
 import Draggable from 'react-draggable';
+import { themeVal } from '@devseed-ui/theme-provider';
 import { generalErrorMessage } from '../../common/blocks/block-constant';
 import { BlockComponent } from '$components/common/blocks';
 import { HintedErrorDisplay, docsMessage } from '$utils/hinted-error';
@@ -19,9 +20,8 @@ import { HintedErrorDisplay, docsMessage } from '$utils/hinted-error';
 const DraggableEditor = styled.div`
   position: absolute;
   width: 800px;
-  max-height: 500px;
-  overflow: scroll;
-  z-index: 99;
+  z-index: 999;
+  right: 10px;
 `;
 
 const TitleBar = styled.div`
@@ -33,6 +33,19 @@ const TitleBar = styled.div`
   border-bottom: 1px solid #000;
   cursor: move;
 `;
+
+const ErrorBar = styled.div`
+  background-color: #fff;
+  border: 3px solid ${themeVal('color.danger')};
+  color:  ${themeVal('color.danger')};
+  padding: 4px;
+`;
+
+const EditorWrapper = styled.div`
+  overflow: scroll;
+  max-height: 500px;
+`;
+
 interface useMDXReturnProps {
   source: string;
   result: MDXContent | null;
@@ -65,6 +78,7 @@ function useMDX(source) {
         return { ...oldState, source, result, error: null };
       });
     } catch (error) {
+      // console.log(error)
       setState((oldState) => {
         return { ...oldState, source, result: null, error };
       });
@@ -91,27 +105,36 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
     []
   );
 
+  const errorHumanReadable = useMemo(() => {
+    if (!error) return null;
+    const { line, message } = JSON.parse(JSON.stringify(error));
+    return `At line ${line  - 1}: ${message}`;
+  }, [error]);
+      
+
   return (
     <div>
       <MDXContext.Provider value={result}>
         <Draggable handle='.titleBar'>
           <DraggableEditor>
             <TitleBar className='titleBar'>MDX Editor</TitleBar>
-            <CodeMirror
-              value={initialSource}
-              onUpdate={(v) => {
-                if (v.docChanged) {
-                  setSource(v.state.doc.toString());
-                }
-              }}
-              extensions={extensions}
-            />
             {error && (
-              <>
-                <h2>Error!</h2>
-                {JSON.stringify(error)}
-              </>
-            )}
+              <ErrorBar>
+                {errorHumanReadable}
+              </ErrorBar>
+              )}
+            <EditorWrapper>
+              <CodeMirror
+                value={initialSource}
+                onUpdate={(v) => {
+                  if (v.docChanged) {
+                    setSource(v.state.doc.toString());
+                  }
+                }}
+                extensions={extensions}
+              />
+            </EditorWrapper>
+
           </DraggableEditor>
         </Draggable>
         <MDXRenderer result={result} components={components} />
@@ -154,7 +177,10 @@ class ErrorBoundaryWithCRAReset extends ErrorBoundary {
 export const MDXBlockWithError = (props) => {
   const result = useContext(MDXContext);
   return (
-    <ErrorBoundaryWithCRAReset FallbackComponent={MDXBlockError} resetKeys={[result]}>
+    <ErrorBoundaryWithCRAReset
+      FallbackComponent={MDXBlockError}
+      resetKeys={[result]}
+    >
       <BlockComponent {...props} />
     </ErrorBoundaryWithCRAReset>
   );

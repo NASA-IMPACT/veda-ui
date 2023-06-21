@@ -6,7 +6,10 @@ import ContentBlockFigure from '$components/common/blocks/figure';
 import { ContentBlockProse } from '$styles/content-block';
 import Image, { Caption } from '$components/common/blocks/images';
 import { Chapter } from '$components/common/blocks/scrollytelling/chapter';
-import { LazyMap } from '$components/common/blocks/lazy-components';
+import { NotebookConnectCalloutBlock } from '$components/common/notebook-connect';
+import { LazyMap, LazyScrollyTelling, LazyChart, LazyCompareImage} from '$components/common/blocks/lazy-components';
+import SmartLink from '$components/common/smart-link';
+
 
 const components = {
   h1: (props) => <h1 style={{ color: 'tomato' }} {...props} />,
@@ -17,16 +20,15 @@ const components = {
   Caption,
   Chapter,
   Image,
-  Map: LazyMap
-  // ScrollytellingBlock: LazyScrollyTelling,
-  // Chart: LazyChart,
-  // CompareImage: LazyCompareImage,
-  // NotebookConnectCallout: NotebookConnectCalloutBlock
+  Map: LazyMap,
+  ScrollytellingBlock: LazyScrollyTelling,
+  Chart: LazyChart,
+  CompareImage: LazyCompareImage,
+  NotebookConnectCallout: NotebookConnectCalloutBlock,
+  Link: SmartLink
 };
 
-const md = `
-
-<Block>
+const md = `<Block>
   <Prose>
     ### Your markdown header
 
@@ -43,12 +45,6 @@ const md = `
       dateTime='2020-02-01'
       compareDateTime='2022-02-01'
     />
-    <Caption 
-      attrAuthor='NASA' 
-      attrUrl='https://nasa.gov/'
-    >
-      Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
-    </Caption> 
     <Caption 
       attrAuthor='NASA' 
       attrUrl='https://nasa.gov/'

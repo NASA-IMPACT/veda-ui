@@ -52,11 +52,10 @@ interface HintedErrorDisplayProps {
   className?: string;
   hints?: ReactNode[];
   subtitle?: ReactNode;
-  clearError?: ()=> void;
 }
 
 export function HintedErrorDisplay(props: HintedErrorDisplayProps) {
-  const { className, hints, message, title, subtitle, clearError } = props;
+  const { className, hints, message, title, subtitle } = props;
 
   return (
     <ErrorBlock className={className}>
@@ -83,7 +82,6 @@ export function HintedErrorDisplay(props: HintedErrorDisplayProps) {
           )}
         </div>
       </ErrorBlockInner>
-      <button onClick={clearError} type='button'> Rerender </button>
     </ErrorBlock>
   );
 }
