@@ -1,4 +1,4 @@
-import React, { ReactNode, Fragment } from 'react';
+import React, { ReactNode, Fragment, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import { AccordionFold, AccordionManager } from '@devseed-ui/accordion';
@@ -11,9 +11,15 @@ import {
 import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
+import { followCursor } from 'tippy.js';
+import { scaleLinear } from 'd3';
 
 import { Tip } from '../tip';
-import { formatThousands } from '$utils/format';
+import {
+  formatAsScientificNotation,
+  formatThousands,
+  round
+} from '$utils/format';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import {
   WidgetItemBodyInner,
@@ -44,8 +50,27 @@ const makeGradient = (stops: string[]) => {
   return `linear-gradient(to right, ${steps.join(', ')})`;
 };
 
-const printLegendVal = (val: string | number) =>
-  typeof val === 'number' ? formatThousands(val, { shorten: true }) : val;
+const printLegendVal = (val: string | number) => {
+  const number = Number(val);
+  if (isNaN(number)) return val;
+
+  if (Math.abs(number) < 1000 && Math.abs(number) > 0.001) {
+    return formatThousands(number, { decimals: 3 });
+  } else {
+    return formatAsScientificNotation(number, 2);
+  }
+};
+
+const formatTooltipValue = (rawVal, unit) => {
+  let value;
+  if (Math.abs(rawVal) < 1000 && Math.abs(rawVal) > 0.001) {
+    value = round(rawVal, 3);
+  } else {
+    value = formatAsScientificNotation(rawVal, 2);
+  }
+
+  return unit?.label ? `${value} ${unit.label}` : value;
+};
 
 export const LegendContainer = styled.div`
   position: absolute;
@@ -146,6 +171,9 @@ const LegendList = styled.dl`
 `;
 
 const LegendSwatch = styled.span<LegendSwatchProps>`
+  /* position is needed to ensure that the layerX on the event is relative to
+    this element */
+  position: relative;
   display: block;
   font-size: 0;
   height: 0.5rem;
@@ -209,6 +237,7 @@ export function LayerLegend(
             <LayerGradientGraphic
               type='gradient'
               stops={props.stops}
+              unit={props.unit}
               min={props.min}
               max={props.max}
             />
@@ -237,9 +266,7 @@ export function LayerLegend(
 export function LayerLegendContainer(props: LayerLegendContainerProps) {
   return (
     <LegendContainer>
-      <AccordionManager>
-        {props.children}
-      </AccordionManager>
+      <AccordionManager>{props.children}</AccordionManager>
     </LegendContainer>
   );
 }
@@ -276,17 +303,40 @@ function LayerCategoricalGraphic(props: LayerLegendCategorical) {
 }
 
 function LayerGradientGraphic(props: LayerLegendGradient) {
-  const { stops, min, max } = props;
+  const { stops, min, max, unit } = props;
+
+  const [hoverVal, setHoverVal] = useState(0);
+
+  const moveListener = useCallback(
+    (e) => {
+      const width = e.nativeEvent.target.clientWidth;
+      const scale = scaleLinear()
+        .domain([0, width])
+        .range([Number(min), Number(max)]);
+      setHoverVal(scale(e.nativeEvent.layerX));
+    },
+    [min, max]
+  );
+
+  const hasNumericLegend = !isNaN(Number(min) + Number(max));
+  const tipText = formatTooltipValue(hoverVal, unit);
 
   return (
     <LegendList>
       <dt>
-        <LegendSwatch stops={stops}>
-          {stops[0]} to {stops[stops.length - 1]}
-        </LegendSwatch>
+        <Tip
+          disabled={!hasNumericLegend}
+          content={tipText}
+          followCursor='horizontal'
+          plugins={[followCursor]}
+        >
+          <LegendSwatch stops={stops} onMouseMove={moveListener}>
+            {stops[0]} to {stops[stops.length - 1]}
+          </LegendSwatch>
+        </Tip>
       </dt>
       <dd>
-        <span>{printLegendVal(min)}</span>
+        <span>{printLegendVal(min)} {unit?.label}</span>
         <i> – </i>
         <span>{printLegendVal(max)}</span>
       </dd>
