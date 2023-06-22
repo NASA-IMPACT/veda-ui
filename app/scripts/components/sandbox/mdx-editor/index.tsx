@@ -1,7 +1,7 @@
 import React from 'react';
 
 import useLocalStorage from "use-local-storage";
-import MDXEditor, { MDXBlockWithError } from './MDX';
+import MDXEditor, { MDXBlockWithError } from './mdx-editor';
 import { PageMainContent } from '$styles/page';
 import ContentBlockFigure from '$components/common/blocks/figure';
 import { ContentBlockProse } from '$styles/content-block';
