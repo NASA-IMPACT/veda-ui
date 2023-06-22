@@ -54,6 +54,8 @@ const printLegendVal = (val: string | number) => {
   const number = Number(val);
   if (isNaN(number)) return val;
 
+  if (number === 0) return 0;
+
   if (Math.abs(number) < 1000 && Math.abs(number) > 0.001) {
     return formatThousands(number, { decimals: 3 });
   } else {
@@ -62,7 +64,10 @@ const printLegendVal = (val: string | number) => {
 };
 
 const formatTooltipValue = (rawVal, unit) => {
+  if (rawVal === 0) return 0;
+
   let value;
+
   if (Math.abs(rawVal) < 1000 && Math.abs(rawVal) > 0.001) {
     value = round(rawVal, 3);
   } else {
