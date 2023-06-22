@@ -56,7 +56,7 @@ const printLegendVal = (val: string | number) => {
 
   if (number === 0) return 0;
 
-  if (Math.abs(number) < 1000 && Math.abs(number) > 0.001) {
+  if (Math.abs(number) < 9999 && Math.abs(number) > 0.0009) {
     return formatThousands(number, { decimals: 3 });
   } else {
     return formatAsScientificNotation(number, 2);
@@ -68,7 +68,7 @@ const formatTooltipValue = (rawVal, unit) => {
 
   let value;
 
-  if (Math.abs(rawVal) < 1000 && Math.abs(rawVal) > 0.001) {
+  if (Math.abs(rawVal) < 9999 && Math.abs(rawVal) > 0.0009) {
     value = round(rawVal, 3);
   } else {
     value = formatAsScientificNotation(rawVal, 2);
