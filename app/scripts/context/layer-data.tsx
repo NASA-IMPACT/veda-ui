@@ -9,11 +9,7 @@ import {
   UseQueryResult
 } from '@tanstack/react-query';
 import axios from 'axios';
-import {
-  DatasetLayer,
-  DatasetLayerCompareNormalized,
-  datasets
-} from 'veda';
+import { DatasetLayer, DatasetLayerCompareNormalized, datasets } from 'veda';
 
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
@@ -41,7 +37,9 @@ const fetchLayerById = async (
   // For the time being the vector and raster sources have different api
   // endpoints, and different properties to get data from.
   if (type === 'vector') {
-    const featuresApiEndpoint = data.links.find((l) => l.rel === 'child').href;
+    const featuresApiEndpoint = data.links.find(
+      (l) => l.rel === 'external'
+    ).href;
     const { data: featuresApiData } = await axios.get(featuresApiEndpoint);
 
     return {
