@@ -1,13 +1,19 @@
-import React, { useState, useMemo, createContext, useContext } from 'react';
+import React, {
+  useState,
+  useMemo,
+  createContext,
+  useContext,
+  useCallback,
+  useEffect
+} from 'react';
 import * as runtime from 'react/jsx-runtime';
 import { evaluate } from '@mdx-js/mdx';
 import { useMDXComponents, MDXProvider } from '@mdx-js/react';
 import remarkGfm from 'remark-gfm';
 import { MDXContent } from 'mdx/types';
 import { ErrorBoundary } from 'react-error-boundary';
-import useLocalStorage from 'use-local-storage';
 import CodeMirror from 'rodemirror';
-import { basicSetup } from 'codemirror';
+import { EditorView, basicSetup } from 'codemirror';
 import { markdown as langMarkdown } from '@codemirror/lang-markdown';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { Extension } from '@codemirror/state';
@@ -80,6 +86,10 @@ function useMDX(source) {
     error: null
   });
 
+  useEffect(() => {
+    localStorage.setItem(MDX_LOCAL_STORAGE_KEY, state.source);
+  }, [state.source]);
+
   async function setSource(source) {
     const remarkPlugins = [remarkGfm];
 
@@ -120,10 +130,6 @@ interface MDXEditorProps {
 
 const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
   const { result, error, setSource } = useMDX(initialSource);
-  const [, setMdxSource] = useLocalStorage(
-    MDX_LOCAL_STORAGE_KEY,
-    MDX_SOURCE_DEFAULT
-  );
 
   const extensions = useMemo<Extension[]>(
     () => [basicSetup, oneDark, langMarkdown()],
@@ -136,6 +142,22 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
     return `At line ${line - 1}: ${message}`;
   }, [error]);
 
+  const [editorView, setEditorView] = useState<EditorView | null>(null);
+
+  const writeToEditor = useCallback(
+    (source) => {
+      if (!editorView) return;
+      editorView.dispatch({
+        changes: {
+          from: 0,
+          to: editorView.state.doc.length,
+          insert: source
+        }
+      });
+    },
+    [editorView]
+  );
+
   return (
     <ErrorBoundaryWithCRAReset FallbackComponent={GlobalError}>
       <MDXContext.Provider value={result}>
@@ -146,7 +168,8 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
               <ResetButton
                 type='button'
                 onClick={() => {
-                  setMdxSource(MDX_SOURCE_DEFAULT);
+                  writeToEditor(MDX_SOURCE_DEFAULT);
+                  setSource(MDX_SOURCE_DEFAULT);
                 }}
               >
                 reset with default content
@@ -154,7 +177,8 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
               <ResetButton
                 type='button'
                 onClick={() => {
-                  setMdxSource(DEFAULT_CONTENT);
+                  writeToEditor(DEFAULT_CONTENT);
+                  setSource(DEFAULT_CONTENT);
                 }}
               >
                 clear
@@ -164,6 +188,7 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
             <EditorWrapper>
               <CodeMirror
                 value={initialSource}
+                onEditorViewChange={(editorView) => setEditorView(editorView)}
                 onUpdate={(v) => {
                   if (v.docChanged) {
                     let source = v.state.doc.toString();
@@ -173,7 +198,6 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
                     // because when that happens, React throws an order of hooks error
                     source = source ? source : DEFAULT_CONTENT;
                     setSource(source);
-                    setMdxSource(source);
                   }
                 }}
                 extensions={extensions}
@@ -208,10 +232,6 @@ const MDXRenderer = ({ result, components }: MDXRendererProps) => {
 };
 
 const GlobalError = () => {
-  const [, setMdxSource] = useLocalStorage(
-    MDX_LOCAL_STORAGE_KEY,
-    MDX_SOURCE_DEFAULT
-  );
   return (
     <GlobalErrorWrapper>
       An error occurred
@@ -227,7 +247,10 @@ const GlobalError = () => {
         <button
           type='button'
           onClick={() => {
-            setMdxSource(MDX_SOURCE_DEFAULT);
+            window.localStorage.setItem(
+              MDX_LOCAL_STORAGE_KEY,
+              MDX_SOURCE_DEFAULT
+            );
             window.location.reload();
           }}
         >

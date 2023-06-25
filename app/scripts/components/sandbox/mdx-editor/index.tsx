@@ -1,6 +1,5 @@
 import React from 'react';
 
-import useLocalStorage from "use-local-storage";
 import MDXEditor, { MDXBlockWithError } from './mdx-editor';
 import { PageMainContent } from '$styles/page';
 import ContentBlockFigure from '$components/common/blocks/figure';
@@ -69,12 +68,13 @@ export const MDX_SOURCE_DEFAULT = `<Block>
 
 `;
 
+const savedSource = localStorage.getItem(MDX_LOCAL_STORAGE_KEY);
+
 export default function MDXEditorWrapper() {
-  const [mdxSource] = useLocalStorage(MDX_LOCAL_STORAGE_KEY, MDX_SOURCE_DEFAULT);
   return (
     <PageMainContent>
       <article>
-        <MDXEditor initialSource={mdxSource} components={components} />
+        <MDXEditor initialSource={savedSource ?? MDX_SOURCE_DEFAULT} components={components} />
       </article>
     </PageMainContent>
   );
