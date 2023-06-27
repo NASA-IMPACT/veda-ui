@@ -118,6 +118,6 @@ export function useMbDraw({
   useEffect(() => {
     const mbDraw = mbDrawRef.current;
     if (!mbDraw) return;
-    return mbDraw.changeMode(drawing ? 'draw_polygon' : 'simple_select');
+    mbDraw.changeMode(drawing ? 'draw_polygon' : 'simple_select');
   }, [drawing]);
 }
