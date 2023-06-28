@@ -81,7 +81,7 @@ const FormInputSearch = styled(FormInput)`
 interface SearchFieldProps
   extends Omit<
     InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'onChange'
+    'size' | 'onChange' | 'dangerouslySetInnerHTML'
   > {
   size: formSkinStylesProps['size'];
   value: string;

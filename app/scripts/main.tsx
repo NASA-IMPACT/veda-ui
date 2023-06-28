@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect } from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import T from 'prop-types';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
@@ -134,7 +134,9 @@ function Root() {
   );
 }
 
-render(<Root />, document.getElementById('app-container'));
+const container = document.getElementById('app-container')!;
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(<Root />);
 
 /**
  * Composes components to to avoid deep nesting trees. Useful for contexts.
