@@ -231,7 +231,16 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   //
   const [mosaicUrl, setMosaicUrl] = useState<string | null>(null);
   useEffect(() => {
-    if (!id || !stacCol || !date || !stacCollection.length) return;
+    if (!id || !stacCol || !date) return;
+
+    // If the search returned no data, remove anything previously there so we
+    // don't run the risk that the selected date and data don't match, even
+    // though if a search returns no data, that date should not be available for
+    // the dataset - may be a case of bad configuration.
+    if (!stacCollection.length) {
+      setMosaicUrl(null);
+      return;
+    }
 
     const controller = new AbortController();
 
