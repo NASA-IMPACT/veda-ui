@@ -273,7 +273,12 @@ async function requestTimeseries({
                 combineFeatureCollection(aoi),
                 { signal }
               );
-              return { date, ...data.properties.statistics['1'] };
+              return {
+                date,
+                // Remove 1 when https://github.com/NASA-IMPACT/veda-ui/issues/572 is fixed.
+                ...(data.properties.statistics.b1 ||
+                  data.properties.statistics['1'])
+              };
             });
           },
           {
