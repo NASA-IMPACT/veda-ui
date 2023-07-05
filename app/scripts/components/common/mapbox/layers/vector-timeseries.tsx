@@ -19,10 +19,13 @@ import { useCustomMarker } from './custom-marker';
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
 
-export interface MapLayerVectorTimeseriesProps {
+interface MapLayerVectorTimeseriesProps {
   id: string;
+  stacCol: string;
   date?: Date;
   mapInstance: MapboxMap;
+  sourceParams: object;
+  zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden: boolean;
   idSuffix?: string;
@@ -81,6 +84,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
       controller.abort();
     };
   }, [mapInstance, id, stacCol, date, onStatusChange]);
+
 
   const markerLayout = useCustomMarker(mapInstance);
 
@@ -188,7 +192,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
             'source-layer': 'default',
             layout: {
               ...(markerLayout as any),
-              visibility: isHidden ? 'none' : 'visible'
+              visibility: isHidden ? 'none' : 'visible',
             },
             paint: {
               'icon-color': theme.color?.infographicB,
