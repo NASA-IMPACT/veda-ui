@@ -24,8 +24,8 @@ function DiscoveriesSingle() {
         description={discovery.data.description}
         thumbnail={media?.src}
         localNavProps={{
-          parentName: 'Discovery',
-          parentLabel: 'Discoveries',
+          parentName: 'Data Story',
+          parentLabel: 'Data Stories',
           parentTo: DISCOVERIES_PATH,
           items: allDiscoveriesProps,
           currentId: discovery.data.id

@@ -421,7 +421,7 @@ function PageHeader() {
                       to={DISCOVERIES_PATH}
                       onClick={closeNavOnClick}
                     >
-                      Discoveries
+                      Data Stories
                     </GlobalMenuLink>
                   </li>
                 </GlobalMenu>

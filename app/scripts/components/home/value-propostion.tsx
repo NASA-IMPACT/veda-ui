@@ -89,7 +89,7 @@ function ValueProposition() {
           <ContentBlockProseAlt>
             <h3>Science communication platform</h3>
             <p>
-              Share your discoveries with others through the VEDA Dashboard.
+              Share your data stories with others through the VEDA Dashboard.
               Submit a{' '}
               <a
                 href='#'

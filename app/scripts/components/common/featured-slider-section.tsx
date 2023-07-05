@@ -136,7 +136,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
 export function FeaturedDiscoveries() {
   return (
     <FeaturedSliderSection
-      title='Featured Discoveries'
+      title='Featured Data Stories'
       featuredItems={allFeaturedDiscoveries}
       getItemPath={getDiscoveryPath}
       dateProperty='pubDate'
