@@ -36,16 +36,14 @@ const LOG = true;
 
 const FIT_BOUNDS_PADDING = 32;
 
-export interface MapLayerRasterTimeseriesProps {
+interface MapLayerRasterTimeseriesProps {
   id: string;
+  stacCol: string;
   date?: Date;
   mapInstance: MapboxMap;
+  sourceParams: object;
+  zoomExtent?: [number, number];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  layerData: {
-    sourceParams?: object;
-    zoomExtent?: number[];
-    stacCol: string;
-  };
   isHidden: boolean;
   idSuffix?: string;
 }

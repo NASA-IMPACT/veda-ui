@@ -364,40 +364,6 @@ function Scrollytelling(props) {
   return (
     <ScrollyMapWrapper>
       <TheMap topOffset={topOffset}>
-        <Styles>
-          <Basemap />
-          {isMapLoaded &&
-            resolvedLayers.map((resolvedLayer) => {
-              if (!resolvedLayer) return null;
-
-              const { runtimeData, Component: LayerCmp, layer } = resolvedLayer;
-
-              if (!LayerCmp) return null;
-
-              // Each layer type is added to the map through a component. This
-              // component has all the logic needed to add/update/remove the
-              // layer. Which component to use will depend on the characteristics
-              // of the layer and dataset.
-              // The function getLayerComponent() should be used to get the
-              // correct component.
-              return (
-                <LayerCmp
-                  key={runtimeData.id}
-                  id={runtimeData.id}
-                  mapInstance={mapRef.current!}
-                  layerData={layer}
-                  date={runtimeData.datetime}
-                  onStatusChange={onLayerLoadSuccess}
-                  isHidden={
-                    !activeChapterLayerId ||
-                    activeChapterLayerId !== runtimeData.id ||
-                    !!activeChapter.showBaseMap
-                  }
-                />
-              );
-            })}
-        </Styles>
-
         {areLayersLoading && <MapLoading />}
 
         {/*
@@ -488,17 +454,14 @@ function Scrollytelling(props) {
                 <LayerCmp
                   key={runtimeData.id}
                   id={runtimeData.id}
-                  mapInstance={mapRef.current!}
+                  mapInstance={mapRef.current}
+                  stacCol={layer.stacCol}
                   date={runtimeData.datetime}
-                  layerData={layer}
+                  sourceParams={layer.sourceParams}
+                  zoomExtent={layer.zoomExtent}
                   onStatusChange={onLayerLoadSuccess}
                   idSuffix={'scrolly-' + lIdx}
-                  isHidden={
-                    !activeChapterLayerId ||
-                    activeChapterLayerId !== runtimeData.id ||
-                    !!activeChapter.showBaseMap
-                  }
-                  idSuffix={'scrolly-' + lIdx}
+                  isHidden={isHidden}
                 />
               );
             })}

@@ -6,18 +6,17 @@ import { useMapStyle } from './styles';
 
 export interface MapLayerZarrTimeseriesProps {
   id: string;
+  stacCol: string;
   date?: Date;
+  sourceParams?: object;
+  zoomExtent?: number[];
+  assetUrl: string;
   isHidden?: boolean;
-  layerData: {
-    sourceParams?: object;
-    zoomExtent?: number[];
-    assetUrl: string;
-  };
 }
 
 export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   const { id, date, isHidden } = props;
-  const { sourceParams = {}, zoomExtent, assetUrl } = props.layerData;
+  const { sourceParams = {}, zoomExtent, assetUrl } = props;
 
   const { updateStyle } = useMapStyle();
 
