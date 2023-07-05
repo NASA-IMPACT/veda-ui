@@ -85,7 +85,7 @@ export const getCompareLayerData = (
       id: stacCol,
       stacCol,
       type: type || layerData.type,
-      zoomExtent: zoomExtent || layerData.zoomExtent,
+      zoomExtent: zoomExtent ?? layerData.zoomExtent,
       sourceParams: defaultsDeep({}, sourceParams, layerData.sourceParams),
       ...passThroughProps
     };
@@ -108,11 +108,13 @@ export const getCompareLayerData = (
 
     const datasetData = datasets[datasetId]?.data;
     if (!datasetData) {
+      // eslint-disable-next-line fp/no-mutating-methods
       errorHints.push(`Dataset [${datasetId}] not found (compare.datasetId)`);
     }
 
-    const otherLayer = datasetData?.layers?.find((l) => l.id === layerId);
+    const otherLayer = datasetData?.layers.find((l) => l.id === layerId);
     if (!otherLayer) {
+      // eslint-disable-next-line fp/no-mutating-methods
       errorHints.push(
         `Layer [${layerId}] not found in dataset [${datasetId}] (compare.layerId)`
       );
@@ -128,8 +130,11 @@ export const getCompareLayerData = (
     return {
       id: otherLayer.id,
       type: otherLayer.type,
+      name: otherLayer.name,
+      description: otherLayer.description,
+      legend: otherLayer.legend, 
       stacCol: otherLayer.stacCol,
-      zoomExtent: zoomExtent || otherLayer.zoomExtent,
+      zoomExtent: zoomExtent ?? otherLayer.zoomExtent,
       sourceParams: defaultsDeep({}, sourceParams, otherLayer.sourceParams),
       ...passThroughProps
     };
@@ -149,7 +154,7 @@ type Res<T> = T extends Fn
     ? DatasetDatumReturnType
     : never
   : T extends any[]
-  ? Array<Res<T[number]>>
+  ? Res<T[number]>[]
   : T extends object
   ? ObjResMap<T>
   : T;
@@ -159,10 +164,10 @@ export function resolveConfigFunctions<T>(
   bag: DatasetDatumFnResolverBag
 ): Res<T>;
 /* eslint-disable-next-line no-redeclare */
-export function resolveConfigFunctions<T extends Array<any>>(
+export function resolveConfigFunctions<T extends any[]>(
   datum: T,
   bag: DatasetDatumFnResolverBag
-): Array<Res<T[number]>>;
+): Res<T[number]>[];
 /* eslint-disable-next-line no-redeclare */
 export function resolveConfigFunctions(
   datum: any,

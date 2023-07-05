@@ -17,6 +17,7 @@ import {
   LazyMap
 } from '$components/common/blocks/lazy-components';
 import { NotebookConnectCalloutBlock } from '$components/common/notebook-connect';
+import SmartLink from '$components/common/smart-link';
 
 function MdxContent(props) {
   const pageMdx = useMdxPageLoader(props.loader);
@@ -39,10 +40,11 @@ function MdxContent(props) {
           ScrollytellingBlock: LazyScrollyTelling,
           Chart: LazyChart,
           CompareImage: LazyCompareImage,
-          NotebookConnectCallout: NotebookConnectCalloutBlock
+          NotebookConnectCallout: NotebookConnectCalloutBlock,
+          Link: SmartLink
         }}
       >
-        <pageMdx.MdxContent />
+        <pageMdx.MdxContent {...(props.throughProps || {})} />
       </MDXProvider>
     );
   }
@@ -51,7 +53,8 @@ function MdxContent(props) {
 }
 
 MdxContent.propTypes = {
-  loader: T.func
+  loader: T.func,
+  throughProps: T.object
 };
 
 export default MdxContent;

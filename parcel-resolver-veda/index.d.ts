@@ -2,6 +2,7 @@ declare module 'veda' {
   import * as dateFns from 'date-fns';
   import mapboxgl from 'mapbox-gl';
   import { MDXModule } from 'mdx/types';
+  import { DefaultTheme } from 'styled-components';
 
   // ///////////////////////////////////////////////////////////////////////////
   //  Datasets                                                                //
@@ -38,6 +39,9 @@ declare module 'veda' {
     extends DatasetLayerCommonCompareProps {
     stacCol: string;
     type: DatasetLayerType;
+    name: string;
+    description: string;
+    legend?: LayerLegendCategorical | LayerLegendGradient;
   }
 
   export interface DatasetLayerCompareInternal
@@ -62,12 +66,23 @@ declare module 'veda' {
   // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
   // difference with a "base" dataset layer is not having a name and
   // description.
-  export interface DatasetLayerCompareNormalized
+  export interface DatasetLayerCompareBase
     extends DatasetLayerCommonCompareProps {
     id: string;
     stacCol: string;
     type: DatasetLayerType;
   }
+  export interface DatasetLayerCompareNormalized
+    extends DatasetLayerCommonCompareProps {
+    id: string;
+    name: string;
+    description: string;
+    stacCol: string;
+    type: DatasetLayerType;
+    legend?: LayerLegendCategorical | LayerLegendGradient;
+  }
+
+  // export type DatasetLayerCompareNormalized = DatasetLayerCompareNoLegend | DatasetLayerCompareWLegend
 
   // TODO: Complete once known
   export interface DatasetDatumFnResolverBag {
@@ -213,9 +228,21 @@ declare module 'veda' {
     thematics: TaxonomyItem[];
   };
 
-  export type PageOverrides = 'aboutContent' | 'sandbox-override';
+  export type PageOverrides =
+    | 'aboutContent'
+    | 'homeContent'
+    | 'sandbox-override'
+    | 'pageFooter'
+    | 'headerBrand';
   /**
    * Configuration export for specific overrides.
    */
   export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
+
+  /**
+   * List of custom user defined pages.
+   */
+  export const userPages: string[];
+
+  export const theme: DefaultTheme | null;
 }

@@ -39,8 +39,8 @@ export function useStacSearch({ start, end, aoi }: UseStacSearchProps) {
       try {
         const url = `${process.env.API_STAC_ENDPOINT}/search`;
 
-        const allAvailableDatasetsLayersIds = allAvailableDatasetsLayers.map(
-          (layer) => layer.id
+        const allAvailableDatasetsLayersSTACIds = allAvailableDatasetsLayers.map(
+          (layer) => layer.stacCol
         );
         const payload = {
           'filter-lang': 'cql2-json',
@@ -48,7 +48,7 @@ export function useStacSearch({ start, end, aoi }: UseStacSearchProps) {
             start,
             end,
             aoi,
-            allAvailableDatasetsLayersIds
+            allAvailableDatasetsLayersSTACIds
           ),
           limit: 100,
           fields: {
@@ -73,7 +73,7 @@ export function useStacSearch({ start, end, aoi }: UseStacSearchProps) {
         );
         setSelectableDatasetLayers(
           allAvailableDatasetsLayers.filter((l) =>
-            itemsParentCollections.includes(l.id)
+            itemsParentCollections.includes(l.stacCol)
           )
         );
       } catch (error) {

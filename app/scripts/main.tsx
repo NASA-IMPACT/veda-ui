@@ -1,8 +1,9 @@
 import React, { lazy, Suspense, useEffect } from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import T from 'prop-types';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
+import { userPages } from 'veda';
 
 import { thematicRoutes } from './thematic-redirect';
 
@@ -34,6 +35,8 @@ const Analysis = lazy(() => import('$components/analysis/define'));
 const AnalysisResults = lazy(() => import('$components/analysis/results'));
 
 const Sandbox = lazy(() => import('$components/sandbox'));
+
+const UserPagesComponent = lazy(() => import('$components/user-pages'));
 
 // Handle wrong types from devseed-ui.
 const DevseedUiThemeProvider = DsTp as any;
@@ -113,6 +116,14 @@ function Root() {
                 {/* Legacy: Routes related to thematic areas redirect. */}
                 {thematicRoutes}
 
+                {userPages.map((p) => (
+                  <Route
+                    key={p}
+                    path={p}
+                    element={<UserPagesComponent id={p} />}
+                  />
+                ))}
+
                 <Route path='*' element={<UhOh />} />
               </Route>
             </Routes>
@@ -123,7 +134,9 @@ function Root() {
   );
 }
 
-render(<Root />, document.getElementById('app-container'));
+const container = document.getElementById('app-container')!;
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(<Root />);
 
 /**
  * Composes components to to avoid deep nesting trees. Useful for contexts.

@@ -12,21 +12,26 @@ There are essentially 2 types of possible overrides:
 - `Content Overrides` - allow you to change the default content of a page. Like with the different content types (discoveries, datasets), you'll have access to all [MDX_BLOCK.md](./MDX_BLOCKS.md). Depending on the content override you'll also be able to provide some frontmatter variables. The name of the override config variable will follow the `<name>Content` scheme.
 - `Component Overrides` - allow you to alter a specific component of the app, by providing new javascript code for it (advanced usage). No Mdx Blocks are available.
 
+> 🍀 Although it is not an override, custom pages are also defined under the `pageOverrides` key. See [CUSTOM_PAGES.md](./CUSTOM_PAGES.md) form more information.
+
 The overrides are defined in the `veda.config.js` under `pageOverrides` by specifying the path to the mdx file to load.  
 These are the current available overrides:
 
 ```js
   pageOverrides: {
     // Type: Content override
-    aboutContent: '<file path>.mdx'
-
-    // There are currently no component overrides defined.
+    aboutContent: '<file path>.mdx',
+    homeContent: '<file path>.mdx',
+    
+    // Type: Component override
+    headerBrand: '<file path>.mdx',
+    pageFooter: '<file path>.mdx',
   }
 ```
 
 ## Override reference
 
-### aboutContent  
+### aboutContent
 `Content Override`
 
 The `aboutContent` allows you to specify new content for the about page (locally at http://localhost:9000/about).  
@@ -51,6 +56,56 @@ description: A brief description
   </Prose>
 </Block>
 ```
+
+### homeContent
+`Content Override`
+
+The `homeContent` allows you to specify new content for the home page.  
+Besides the new content, this page also uses frontmatter variables to modify the page title and description.  
+
+Example:
+```js
+// veda.config.js pageOverrides
+homeContent: './overrides/home.mdx'
+```
+```jsx
+---
+title: Welcome to VEDA
+description: A dashboard to explore and visualize earth data
+---
+
+import FeaturedDiscoveries from "$veda-ui-scripts/components/home/featured-discoveries";
+
+<Block>
+  <Prose>
+    ## Welcome
+
+    Welcome to VEDA, your one-stop destination for all things related to earth datasets! Our website offers a vast collection of datasets that are designed to help researchers, policymakers, and concerned citizens. Our team of experts has curated and compiled the most up-to-date and comprehensive data on from various sources.
+  </Prose>
+</Block>
+
+<FeaturedDiscoveries />
+```
+
+> 🧑‍🏫 You can import and use the `FeaturedDiscoveries` component to include a section listing the discoveries with the `featured` flag. It is important that this component is not inside a `Block`.
+
+### headerBrand
+`Component Override`  
+_⚠️ Note that on a component override the `<Block>` components are not available and should not be used._
+
+The `headerBrand` override can be used to replace the logo in the header.  
+It is likely that some styling is needed to ensure that it is displayed properly.
+
+### pageFooter
+`Component Override`  
+_⚠️ Note that on a component override the `<Block>` components are not available and should not be used._
+
+The `pageFooter` override can be used to replace the content of the footer.  
+The footer behavior will remain the same being hidden in some pages, like the exploration.  
+
+Props passed to this component:  
+- `appBuildTime` - Timestamp of when the app was build.
+- `appVersion` - Current app version from the instance's package.json
 
 ## Creating complex overrides
 

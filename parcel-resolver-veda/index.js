@@ -206,11 +206,15 @@ module.exports = new Resolver({
           )}
         };
 
+        export const theme = ${JSON.stringify(result.theme) || null};
+
         export const taxonomies = ${generateTaxonomiesModuleOutput(
           taxonomiesData
         )}
 
         export const getOverride = (key) => config.pageOverrides[key];
+        export const userPages = Object.keys(config.pageOverrides)
+          .filter((k) => k.startsWith('/'));
 
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
         export const discoveries = ${generateMdxDataObject(

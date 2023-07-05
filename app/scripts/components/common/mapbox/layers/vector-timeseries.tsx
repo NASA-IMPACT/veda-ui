@@ -24,23 +24,30 @@ export interface MapLayerVectorTimeseriesProps {
   date?: Date;
   mapInstance: MapboxMap;
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  isHidden?: boolean;
-  layerData: {
-    sourceParams?: object;
-    zoomExtent?: number[];
-    stacCol: string;
-  };
+  isHidden: boolean;
+  idSuffix?: string;
 }
 
 export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
-  const { id, date, mapInstance, onStatusChange, isHidden } = props;
-  const { sourceParams, zoomExtent, stacCol } = props.layerData;
+  const {
+    id,
+    stacCol,
+    date,
+    mapInstance,
+    sourceParams,
+    zoomExtent,
+    onStatusChange,
+    isHidden,
+    idSuffix = ''
+  } = props;
 
   const theme = useTheme();
   const { updateStyle } = useMapStyle();
   const [featuresApiEndpoint, setFeaturesApiEndpoint] = useState('');
 
   const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
+
+  const generatorId = 'vector-timeseries' + idSuffix;
 
   //
   // Get the tiles url
@@ -197,7 +204,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     ].filter(Boolean) as AnyLayer[];
 
     updateStyle({
-      generatorId: 'vector-timeseries',
+      generatorId,
       sources,
       layers
     });
@@ -212,7 +219,8 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     minZoom,
     maxZoom,
     isHidden,
-    haveSourceParamsChanged
+    haveSourceParamsChanged,
+    generatorId
   ]);
 
   //
@@ -221,12 +229,12 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   useEffect(() => {
     return () => {
       updateStyle({
-        generatorId: 'vector-timeseries',
+        generatorId,
         sources: {},
         layers: []
       });
     };
-  }, [updateStyle]);
+  }, [updateStyle, generatorId]);
 
   //
   // Listen to mouse events on the markers layer

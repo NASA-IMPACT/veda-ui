@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import T from 'prop-types';
 import { figureDisplayName, captionDisplayName } from './block-constant';
-import { BlockErrorBoundary } from '.';
 import { Figure } from '$components/common/figure';
 
 const ContentBlockFigure = (props) => {
@@ -22,11 +21,7 @@ ContentBlockFigure.propTypes = {
   children: T.node
 };
 
-const FigureWithError = (props) => (
-  <BlockErrorBoundary {...props} childToRender={ContentBlockFigure} />
-);
-
-const StyledContentBlockFigure = styled(FigureWithError)`
+const StyledContentBlockFigure = styled(ContentBlockFigure)`
   img {
     width: 100%;
   }

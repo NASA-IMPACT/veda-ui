@@ -19,7 +19,7 @@ export function ComponentOverride(props: ComponentOverrideProps) {
   const pageMdx = useMdxPageLoader(loader);
 
   if (!loader) {
-    return children;
+    return <>{children}</>;
   }
 
   if (pageMdx.status === S_SUCCEEDED) {
@@ -30,11 +30,16 @@ export function ComponentOverride(props: ComponentOverrideProps) {
     );
   }
 
-  return null;
+  return <>{false}</>;
 }
 
 export function ContentOverride(props: ComponentOverrideProps) {
-  const loader = getOverride(props.with)?.content;
+  const { with: _with, children, ...rest } = props;
+  const loader = getOverride(_with)?.content;
 
-  return loader ? <MdxContent loader={loader} /> : <>{props.children}</>;
+  return loader ? (
+    <MdxContent loader={loader} throughProps={rest} />
+  ) : (
+    <>{children}</>
+  );
 }

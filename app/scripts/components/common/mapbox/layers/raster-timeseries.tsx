@@ -41,12 +41,13 @@ export interface MapLayerRasterTimeseriesProps {
   date?: Date;
   mapInstance: MapboxMap;
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  isHidden?: boolean;
   layerData: {
     sourceParams?: object;
     zoomExtent?: number[];
     stacCol: string;
   };
+  isHidden: boolean;
+  idSuffix?: string;
 }
 
 export interface StacFeature {
@@ -66,13 +67,23 @@ interface Statuses {
 }
 
 export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
-  const { id, date, mapInstance, onStatusChange, isHidden } = props;
-  const { sourceParams, zoomExtent, stacCol } = props.layerData;
+  const {
+    id,
+    stacCol,
+    date,
+    mapInstance,
+    sourceParams,
+    zoomExtent,
+    onStatusChange,
+    isHidden,
+    idSuffix = ''
+  } = props;
 
   const theme = useTheme();
   const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
+  const generatorId = 'raster-timeseries' + idSuffix;
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
@@ -222,7 +233,16 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   //
   const [mosaicUrl, setMosaicUrl] = useState<string | null>(null);
   useEffect(() => {
-    if (!id || !stacCol || !date || !stacCollection.length) return;
+    if (!id || !stacCol || !date) return;
+
+    // If the search returned no data, remove anything previously there so we
+    // don't run the risk that the selected date and data don't match, even
+    // though if a search returns no data, that date should not be available for
+    // the dataset - may be a case of bad configuration.
+    if (!stacCollection.length) {
+      setMosaicUrl(null);
+      return;
+    }
 
     const controller = new AbortController();
 
@@ -398,7 +418,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       }
 
       updateStyle({
-        generatorId: 'raster-timeseries',
+        generatorId,
         sources,
         layers
       });
@@ -411,7 +431,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       minZoom,
       points,
       haveSourceParamsChanged,
-      isHidden
+      isHidden,
+      generatorId
     ]
   );
 
@@ -421,12 +442,12 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   useEffect(() => {
     return () => {
       updateStyle({
-        generatorId: 'raster-timeseries',
+        generatorId,
         sources: {},
         layers: []
       });
     };
-  }, [updateStyle]);
+  }, [updateStyle, generatorId]);
 
   //
   // Listen to mouse events on the markers layer

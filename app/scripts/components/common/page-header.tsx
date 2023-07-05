@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
+import { userPages, getOverride } from 'veda';
 import {
   glsp,
   listReset,
   media,
+  rgba,
   themeVal,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
@@ -12,7 +14,13 @@ import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { Button } from '@devseed-ui/button';
-import { CollecticonHamburgerMenu } from '@devseed-ui/collecticons';
+import {
+  CollecticonEllipsisVertical,
+  CollecticonHamburgerMenu
+} from '@devseed-ui/collecticons';
+import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
+
+import DropdownScrollable from './dropdown-scrollable';
 
 import NasaLogo from './nasa-logo';
 import GoogleForm from './google-form';
@@ -29,6 +37,9 @@ import {
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { HEADER_ID } from '$utils/use-sliding-sticky-header';
+import { ComponentOverride } from '$components/common/page-overrides';
+
+const rgbaFixed = rgba as any;
 
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
@@ -138,7 +149,7 @@ const PageTitleSecLink = styled(Link)`
   `}
 `;
 
-const GlobalNav = styled.nav`
+const GlobalNav = styled.nav<{ revealed: boolean }>`
   position: fixed;
   inset: 0 0 0 auto;
   z-index: 900;
@@ -306,12 +317,18 @@ const GlobalMenuLink = styled(NavLink)`
   ${GlobalMenuLinkCSS}
 `;
 
+const DropMenuNavItem = styled(DropMenuItem)`
+  &.active {
+    background-color: ${rgbaFixed(themeVal('color.link'), 0.08)};
+  }
+`;
+
 function PageHeader() {
   const { isMediumDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
 
-  const globalNavBodyRef = useRef(null);
+  const globalNavBodyRef = useRef<HTMLDivElement>(null);
   // Click listener for the whole global nav body so we can close it when clicking
   // the overlay on medium down media query.
   const onGlobalNavClick = useCallback((e) => {
@@ -330,15 +347,17 @@ function PageHeader() {
   return (
     <PageHeaderSelf id={HEADER_ID}>
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
-      <Brand>
-        <Link to='/'>
-          <NasaLogo />
-          <span>Earthdata</span> <span>{appTitle}</span>
-        </Link>
-        <Tip content={`v${appVersion}`}>
-          <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
-        </Tip>
-      </Brand>
+      <ComponentOverride with='headerBrand'>
+        <Brand>
+          <Link to='/'>
+            <NasaLogo />
+            <span>Earthdata</span> <span>{appTitle}</span>
+          </Link>
+          <Tip content={`v${appVersion}`}>
+            <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
+          </Tip>
+        </Brand>
+      </ComponentOverride>
       {isMediumDown && (
         <GlobalNavActions>
           <GlobalNavToggle
@@ -347,6 +366,7 @@ function PageHeader() {
                 ? 'Close Global Navigation'
                 : 'Open Global Navigation'
             }
+            // @ts-expect-error UI lib error. achromic-text does exit
             variation='achromic-text'
             fitting='skinny'
             onClick={() => setGlobalNavRevealed((v) => !v)}
@@ -414,9 +434,16 @@ function PageHeader() {
                       About
                     </GlobalMenuLink>
                   </li>
-                  <li>
-                    <GoogleForm />
-                  </li>
+                  {!!process.env.GOOGLE_FORM && (
+                    <li>
+                      <GoogleForm />
+                    </li>
+                  )}
+
+                  <UserPagesMenu
+                    onItemClick={closeNavOnClick}
+                    isMediumDown={isMediumDown}
+                  />
                 </GlobalMenu>
               </SectionsNavBlock>
             </GlobalNavBodyInner>
@@ -428,3 +455,58 @@ function PageHeader() {
 }
 
 export default PageHeader;
+
+function UserPagesMenu(props: {
+  isMediumDown: boolean;
+  onItemClick: () => void;
+}) {
+  const { isMediumDown, onItemClick } = props;
+
+  if (!userPages.length) return <>{false}</>;
+
+  if (isMediumDown) {
+    return (
+      <>
+        {userPages.map((id) => {
+          const page = getOverride(id as any);
+          if (!page?.data.menu) return false;
+
+          return (
+            <li key={id}>
+              <GlobalMenuLink to={id} onClick={onItemClick}>
+                {page.data.menu}
+              </GlobalMenuLink>
+            </li>
+          );
+        })}
+      </>
+    );
+  }
+
+  return (
+    <DropdownScrollable
+      alignment='right'
+      triggerElement={(props) => (
+        // @ts-expect-error UI lib error. achromic-text does exit
+        <Button {...props} variation='achromic-text' fitting='skinny'>
+          <CollecticonEllipsisVertical meaningful title='View pages menu' />
+        </Button>
+      )}
+    >
+      <DropMenu>
+        {userPages.map((id) => {
+          const page = getOverride(id as any);
+          if (!page?.data.menu) return false;
+
+          return (
+            <li key={id}>
+              <DropMenuNavItem as={NavLink} to={id} data-dropdown='click.close'>
+                {page.data.menu}
+              </DropMenuNavItem>
+            </li>
+          );
+        })}
+      </DropMenu>
+    </DropdownScrollable>
+  );
+}
