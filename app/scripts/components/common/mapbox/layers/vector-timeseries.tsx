@@ -19,7 +19,7 @@ import { useCustomMarker } from './custom-marker';
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
 
-interface MapLayerVectorTimeseriesProps {
+export interface MapLayerVectorTimeseriesProps {
   id: string;
   stacCol: string;
   date?: Date;

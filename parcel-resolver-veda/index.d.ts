@@ -79,6 +79,7 @@ declare module 'veda' {
     name: string;
     description: string;
     stacCol: string;
+    assetUrl?: string;
     type: DatasetLayerType;
     legend?: LayerLegendCategorical | LayerLegendGradient;
   }

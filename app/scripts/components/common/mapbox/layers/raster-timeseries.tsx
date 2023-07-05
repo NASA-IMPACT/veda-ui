@@ -36,7 +36,7 @@ const LOG = true;
 
 const FIT_BOUNDS_PADDING = 32;
 
-interface MapLayerRasterTimeseriesProps {
+export interface MapLayerRasterTimeseriesProps {
   id: string;
   stacCol: string;
   date?: Date;

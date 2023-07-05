@@ -6,7 +6,6 @@ import { useMapStyle } from './styles';
 
 export interface MapLayerZarrTimeseriesProps {
   id: string;
-  stacCol: string;
   date?: Date;
   sourceParams?: object;
   zoomExtent?: number[];
