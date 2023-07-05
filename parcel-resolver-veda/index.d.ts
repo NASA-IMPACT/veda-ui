@@ -57,6 +57,7 @@ declare module 'veda' {
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
     projection?: ProjectionOptions;
+    assetUrl?: string;
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend?: LayerLegendCategorical | LayerLegendGradient;

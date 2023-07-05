@@ -85,6 +85,7 @@ export const getCompareLayerData = (
       id: stacCol,
       stacCol,
       type: type || layerData.type,
+      assetUrl: layerData.assetUrl,
       zoomExtent: zoomExtent ?? layerData.zoomExtent,
       sourceParams: defaultsDeep({}, sourceParams, layerData.sourceParams),
       ...passThroughProps
