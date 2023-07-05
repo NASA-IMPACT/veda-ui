@@ -72,5 +72,4 @@ nbproject
 temp
 tmp
 .tmp
-dist/
-parcel-resolver-thematics/
+dist
