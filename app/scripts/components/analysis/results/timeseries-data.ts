@@ -135,20 +135,21 @@ export function requestStacDatasetsTimeseries({
 }
 
 interface DatasetAssetsRequestParams {
-  id: string;
+  stacCol: string;
+  assets: string;
   dateStart: Date;
   dateEnd: Date;
   aoi: FeatureCollection<Polygon>;
 }
 
 async function getDatasetAssets(
-  { dateStart, dateEnd, id, aoi }: DatasetAssetsRequestParams,
+  { dateStart, dateEnd, stacCol, assets, aoi }: DatasetAssetsRequestParams,
   opts: AxiosRequestConfig,
   concurrencyManager: ConcurrencyManagerInstance
 ) {
   const data = await concurrencyManager.queue(async () => {
     const collectionReqRes = await axios.get(
-      `${process.env.API_STAC_ENDPOINT}/collections/${id}`
+      `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
     );
 
     const searchReqRes = await axios.post(
@@ -158,13 +159,13 @@ async function getDatasetAssets(
         limit: 10000,
         fields: {
           include: [
-            'assets.cog_default.href',
+            `assets.${assets}.href`,
             'properties.start_datetime',
             'properties.datetime'
           ],
           exclude: ['collection', 'links']
         },
-        filter: getFilterPayload(dateStart, dateEnd, aoi, [id])
+        filter: getFilterPayload(dateStart, dateEnd, aoi, [stacCol])
       },
       opts
     );
@@ -175,7 +176,7 @@ async function getDatasetAssets(
       domain: collectionReqRes.data.summaries.datetime,
       assets: searchReqRes.data.features.map((o) => ({
         date: o.properties.start_datetime || o.properties.datetime,
-        url: o.assets.cog_default.href
+        url: o.assets[assets].href
       }))
     };
   });
@@ -235,7 +236,8 @@ async function requestTimeseries({
       ({ signal }) =>
         getDatasetAssets(
           {
-            id,
+            stacCol: layer.stacCol,
+            assets: layer.sourceParams?.assets || 'cog_default',
             aoi,
             dateStart: start,
             dateEnd: end
@@ -271,7 +273,12 @@ async function requestTimeseries({
                 combineFeatureCollection(aoi),
                 { signal }
               );
-              return { date, ...data.properties.statistics['1'] };
+              return {
+                date,
+                // Remove 1 when https://github.com/NASA-IMPACT/veda-ui/issues/572 is fixed.
+                ...(data.properties.statistics.b1 ||
+                  data.properties.statistics['1'])
+              };
             });
           },
           {

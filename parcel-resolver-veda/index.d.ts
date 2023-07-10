@@ -39,6 +39,9 @@ declare module 'veda' {
     extends DatasetLayerCommonCompareProps {
     stacCol: string;
     type: DatasetLayerType;
+    name: string;
+    description: string;
+    legend?: LayerLegendCategorical | LayerLegendGradient;
   }
 
   export interface DatasetLayerCompareInternal
@@ -63,12 +66,23 @@ declare module 'veda' {
   // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
   // difference with a "base" dataset layer is not having a name and
   // description.
-  export interface DatasetLayerCompareNormalized
+  export interface DatasetLayerCompareBase
     extends DatasetLayerCommonCompareProps {
     id: string;
     stacCol: string;
     type: DatasetLayerType;
   }
+  export interface DatasetLayerCompareNormalized
+    extends DatasetLayerCommonCompareProps {
+    id: string;
+    name: string;
+    description: string;
+    stacCol: string;
+    type: DatasetLayerType;
+    legend?: LayerLegendCategorical | LayerLegendGradient;
+  }
+
+  // export type DatasetLayerCompareNormalized = DatasetLayerCompareNoLegend | DatasetLayerCompareWLegend
 
   // TODO: Complete once known
   export interface DatasetDatumFnResolverBag {
@@ -224,6 +238,11 @@ declare module 'veda' {
    * Configuration export for specific overrides.
    */
   export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
+
+  /**
+   * List of custom user defined pages.
+   */
+  export const userPages: string[];
 
   export const theme: DefaultTheme | null;
 }

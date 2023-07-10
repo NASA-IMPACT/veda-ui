@@ -12,6 +12,10 @@ export function useSlidingStickyHeader() {
   const [wrapperHeight, setWrapperHeight] = useState(0);
 
   const { pathname } = useLocation();
+  
+  const navWrapperElement = document.querySelector<HTMLElement>(
+    `#${HEADER_WRAPPER_ID}`
+  );
 
   useEffectPrevious(
     ([pathnamePrev]) => {
@@ -24,18 +28,15 @@ export function useSlidingStickyHeader() {
     },
     [pathname]
   );
-
+  
   useEffect(() => {
     let ticking = false;
     let prevY = window.scrollY;
     let scrollUpDelta = 0;
 
-    const navWrapperElement = document.querySelector<HTMLElement>(
-      `#${HEADER_WRAPPER_ID}`
-    );
-    if (!navWrapperElement) {
-      throw new Error(`Element #${HEADER_WRAPPER_ID} was not found.`);
-    }
+    // navWrapperElement should be mounted before the hook
+    if (!navWrapperElement) return;
+
     // When the element mounts the <Suspense> element is still in the DOM and
     // the page has display: none. The result is that any measurement of the
     // header would be 0. By using an IntersectionObserver we are able to get
@@ -137,7 +138,7 @@ export function useSlidingStickyHeader() {
       window.removeEventListener('scroll', onViewportPositionChange);
       window.removeEventListener('resize', onViewportPositionChange);
     };
-  }, []);
+  }, [navWrapperElement]);
 
   return { isHeaderHidden: isHidden, headerHeight, wrapperHeight };
 }

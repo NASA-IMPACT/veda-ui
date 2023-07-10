@@ -99,6 +99,15 @@ const ContentBlockProse = styled(VarProse)`
       text-align: center;
     }
   }
+
+  .img-align-right {
+    margin-left: auto;
+  }
+
+  .img-align-center {
+    margin-left: auto;
+    margin-right: auto;
+  }
 `;
 
 // assign displayName that a block can tell

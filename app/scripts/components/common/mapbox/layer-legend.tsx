@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { ReactNode, Fragment, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import { AccordionFold, AccordionManager } from '@devseed-ui/accordion';
@@ -11,9 +11,15 @@ import {
 import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
+import { followCursor } from 'tippy.js';
+import { scaleLinear } from 'd3';
 
 import { Tip } from '../tip';
-import { formatThousands } from '$utils/format';
+import {
+  formatAsScientificNotation,
+  formatThousands,
+  round
+} from '$utils/format';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import {
   WidgetItemBodyInner,
@@ -22,17 +28,20 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 
-
-type LayerLegendCommonProps = {
+interface LayerLegendCommonProps {
   id: string;
   title: string;
   description: string;
-};
+}
 
-type LegendSwatchProps = {
+interface LegendSwatchProps {
   hasHelp?: boolean;
   stops: string | string[];
-};
+}
+
+interface LayerLegendContainerProps {
+  children: ReactNode | ReactNode[];
+}
 
 const makeGradient = (stops: string[]) => {
   if (stops.length === 1) return stops[0];
@@ -41,20 +50,43 @@ const makeGradient = (stops: string[]) => {
   return `linear-gradient(to right, ${steps.join(', ')})`;
 };
 
-const printLegendVal = (val: string | number) =>
-  typeof val === 'number' ? formatThousands(val, { shorten: true }) : val;
+const printLegendVal = (val: string | number) => {
+  const number = Number(val);
+  if (isNaN(number)) return val;
 
-const LayerLegendSelf = styled.div`
+  if (number === 0) return 0;
+
+  if (Math.abs(number) < 9999 && Math.abs(number) > 0.0009) {
+    return formatThousands(number, { decimals: 3 });
+  } else {
+    return formatAsScientificNotation(number, 2);
+  }
+};
+
+const formatTooltipValue = (rawVal, unit) => {
+  if (rawVal === 0) return 0;
+
+  let value;
+
+  if (Math.abs(rawVal) < 9999 && Math.abs(rawVal) > 0.0009) {
+    value = round(rawVal, 3);
+  } else {
+    value = formatAsScientificNotation(rawVal, 2);
+  }
+
+  return unit?.label ? `${value} ${unit.label}` : value;
+};
+
+export const LegendContainer = styled.div`
   position: absolute;
   z-index: 8;
   bottom: ${variableGlsp()};
   right: ${variableGlsp()};
   display: flex;
   flex-flow: column nowrap;
-  border-radius: ${themeVal('shape.rounded')};
   box-shadow: ${themeVal('boxShadow.elevationB')};
+  border-radius: ${themeVal('shape.rounded')};
   background-color: ${themeVal('color.surface')};
-  width: 16rem;
 
   &.reveal-enter {
     opacity: 0;
@@ -76,9 +108,23 @@ const LayerLegendSelf = styled.div`
   &.reveal-exit-active {
     transition: bottom 240ms ease-in-out, opacity 240ms ease-in-out;
   }
+`;
+
+const LayerLegendSelf = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  width: 16rem;
+  border-bottom: 1px solid ${themeVal('color.base-100')};
 
   ${WidgetItemHeader} {
-    padding: ${variableGlsp(0.5, 0.75)};
+    padding: ${variableGlsp(0.25, 0.5)};
+  }
+
+  &:only-child {
+    ${WidgetItemHeader} {
+      padding: ${variableGlsp(0.5)};
+    }
+    border-bottom: 0;
   }
 `;
 
@@ -130,6 +176,9 @@ const LegendList = styled.dl`
 `;
 
 const LegendSwatch = styled.span<LegendSwatchProps>`
+  /* position is needed to ensure that the layerX on the event is relative to
+    this element */
+  position: relative;
   display: block;
   font-size: 0;
   height: 0.5rem;
@@ -152,78 +201,80 @@ const LegendBody = styled(WidgetItemBodyInner)`
   .scroll-inner {
     padding: ${variableGlsp(0.5, 0.75)};
   }
-
   .shadow-bottom {
     border-radius: ${themeVal('shape.rounded')};
   }
 `;
 
-function LayerLegend(
+export function LayerLegend(
   props: LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical)
 ) {
   const { id, type, title, description } = props;
 
   return (
-    <AccordionManager>
-      <AccordionFold
-        id={id}
-        forwardedAs={LayerLegendSelf}
-        renderHeader={({ isExpanded, toggleExpanded }) => (
-          <WidgetItemHeader>
-            <WidgetItemHGroup>
-              <WidgetItemHeadline>
-                <LayerLegendTitle>{title}</LayerLegendTitle>
-                {/* <Subtitle as='p'>Subtitle</Subtitle> */}
-              </WidgetItemHeadline>
-              <Toolbar size='small'>
-                <ToolbarIconButton
-                  variation='base-text'
-                  active={isExpanded}
-                  onClick={toggleExpanded}
-                >
-                  <CollecticonCircleInformation
-                    title='Information about layer'
-                    meaningful
-                  />
-                </ToolbarIconButton>
-              </Toolbar>
-            </WidgetItemHGroup>
-            {type === 'categorical' && (
-              <LayerCategoricalGraphic type='categorical' stops={props.stops} />
-            )}
-            {type === 'gradient' && (
-              <LayerGradientGraphic
-                type='gradient'
-                stops={props.stops}
-                min={props.min}
-                max={props.max}
-              />
-            )}
-          </WidgetItemHeader>
-        )}
-        renderBody={() => (
-          <LegendBody>
-            <ShadowScrollbar
-              scrollbarsProps={{
-                autoHeight: true,
-                autoHeightMin: 32,
-                autoHeightMax: 240
-              }}
-            >
-              <div className='scroll-inner'>
-                {description || (
-                  <p>No info available for this layer.</p>
-                )}
-              </div>
-            </ShadowScrollbar>
-          </LegendBody>
-        )}
-      />
-    </AccordionManager>
+    <AccordionFold
+      id={id}
+      forwardedAs={LayerLegendSelf}
+      renderHeader={({ isExpanded, toggleExpanded }) => (
+        <WidgetItemHeader>
+          <WidgetItemHGroup>
+            <WidgetItemHeadline>
+              <LayerLegendTitle>{title}</LayerLegendTitle>
+              {/* <Subtitle as='p'>Subtitle</Subtitle> */}
+            </WidgetItemHeadline>
+            <Toolbar size='small'>
+              <ToolbarIconButton
+                variation='base-text'
+                active={isExpanded}
+                onClick={toggleExpanded}
+              >
+                <CollecticonCircleInformation
+                  title='Information about layer'
+                  meaningful
+                />
+              </ToolbarIconButton>
+            </Toolbar>
+          </WidgetItemHGroup>
+          {type === 'categorical' && (
+            <LayerCategoricalGraphic type='categorical' stops={props.stops} />
+          )}
+          {type === 'gradient' && (
+            <LayerGradientGraphic
+              type='gradient'
+              stops={props.stops}
+              unit={props.unit}
+              min={props.min}
+              max={props.max}
+            />
+          )}
+        </WidgetItemHeader>
+      )}
+      renderBody={() => (
+        <LegendBody>
+          <ShadowScrollbar
+            scrollbarsProps={{
+              autoHeight: true,
+              autoHeightMin: 32,
+              autoHeightMax: 120
+            }}
+          >
+            <div className='scroll-inner'>
+              {description || <p>No info available for this layer.</p>}
+            </div>
+          </ShadowScrollbar>
+        </LegendBody>
+      )}
+    />
   );
 }
 
-export default LayerLegend;
+export function LayerLegendContainer(props: LayerLegendContainerProps) {
+  return (
+    <LegendContainer>
+      <AccordionManager>{props.children}</AccordionManager>
+    </LegendContainer>
+  );
+}
 
 function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   const { stops } = props;
@@ -257,17 +308,40 @@ function LayerCategoricalGraphic(props: LayerLegendCategorical) {
 }
 
 function LayerGradientGraphic(props: LayerLegendGradient) {
-  const { stops, min, max } = props;
+  const { stops, min, max, unit } = props;
+
+  const [hoverVal, setHoverVal] = useState(0);
+
+  const moveListener = useCallback(
+    (e) => {
+      const width = e.nativeEvent.target.clientWidth;
+      const scale = scaleLinear()
+        .domain([0, width])
+        .range([Number(min), Number(max)]);
+      setHoverVal(scale(e.nativeEvent.layerX));
+    },
+    [min, max]
+  );
+
+  const hasNumericLegend = !isNaN(Number(min) + Number(max));
+  const tipText = formatTooltipValue(hoverVal, unit);
 
   return (
     <LegendList>
       <dt>
-        <LegendSwatch stops={stops}>
-          {stops[0]} to {stops[stops.length - 1]}
-        </LegendSwatch>
+        <Tip
+          disabled={!hasNumericLegend}
+          content={tipText}
+          followCursor='horizontal'
+          plugins={[followCursor]}
+        >
+          <LegendSwatch stops={stops} onMouseMove={moveListener}>
+            {stops[0]} to {stops[stops.length - 1]}
+          </LegendSwatch>
+        </Tip>
       </dt>
       <dd>
-        <span>{printLegendVal(min)}</span>
+        <span>{printLegendVal(min)} {unit?.label}</span>
         <i> – </i>
         <span>{printLegendVal(max)}</span>
       </dd>

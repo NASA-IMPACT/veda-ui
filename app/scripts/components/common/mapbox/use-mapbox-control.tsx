@@ -1,6 +1,6 @@
 import { IControl } from 'mapbox-gl';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
+import { Root, createRoot } from 'react-dom/client';
 import { ThemeProvider, useTheme } from 'styled-components';
 
 /**
@@ -21,18 +21,16 @@ import { ThemeProvider, useTheme } from 'styled-components';
  *  // Add the control to mapbox
  * }
  */
-export function useMapboxControl(renderFn, deps:Array<any> = []) {
-  const containerRef = useRef<Element>();
+export function useMapboxControl(renderFn, deps: any[] = []) {
+  const rootRef = useRef<Root>();
   const renderFnRef = useRef<() => void>(() => ({}));
   const theme = useTheme();
 
   // Use a ref so that we don't need to receive a memoized renderFn
   renderFnRef.current = () => {
-    if (!containerRef.current) return;
-
-    render(
-      <ThemeProvider theme={theme}>{renderFn()}</ThemeProvider>,
-      containerRef.current
+    if (!rootRef.current) return;
+    rootRef.current.render(
+      <ThemeProvider theme={theme}>{renderFn()}</ThemeProvider>
     );
   };
 
@@ -43,17 +41,28 @@ export function useMapboxControl(renderFn, deps:Array<any> = []) {
   return useMemo(
     () => ({
       onAdd() {
-        containerRef.current = document.createElement('div');
-        containerRef.current.className = 'mapboxgl-ctrl';
+        const el = document.createElement('div');
+        el.className = 'mapboxgl-ctrl';
+
+        rootRef.current = createRoot(el);
         renderFnRef.current();
-        return containerRef.current as HTMLDivElement;
+
+        return el as HTMLDivElement;
       },
       onRemove() {
-        if (!containerRef.current) return;
+        if (!rootRef.current) return;
 
-        unmountComponentAtNode(containerRef.current);
-        containerRef.current.parentNode?.removeChild(containerRef.current);
-        containerRef.current = undefined;
+        // Quicker way to access the node, instead of storing the created
+        // element in a ref.
+        // @ts-expect-error _internalRoot does not exist
+        const node = rootRef.current._internalRoot.containerInfo;
+
+        // Defer unmounting to next tick to avoid error:
+        // Attempted to synchronously unmount a root while React was already
+        // rendering.
+        setTimeout(() => rootRef.current?.unmount(), 1);
+
+        node.remove();
       }
     }),
     []
