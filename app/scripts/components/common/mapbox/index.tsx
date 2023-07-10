@@ -1,4 +1,5 @@
 import React, {
+  MutableRefObject,
   ReactNode,
   forwardRef,
   useCallback,
@@ -105,7 +106,10 @@ const getMapPositionOptions = (position) => {
   return opts;
 };
 
-function MapboxMapComponent(props: MapboxMapProps, ref) {
+function MapboxMapComponent(
+  props: MapboxMapProps,
+  ref: MutableRefObject<MapboxMapRef>
+) {
   /* eslint-disable react/prop-types */
   const {
     className,
@@ -371,21 +375,19 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             title={baseLayerResolvedData.name}
             description={baseLayerResolvedData.description}
             {...baseLayerResolvedData.legend}
-          /> 
+          />
           {compareLayerResolvedData?.legend &&
-          isComparing &&
-          (baseLayerResolvedData.id !== compareLayerResolvedData.id) && 
-                    <LayerLegend
-                    id={`compare-${compareLayerResolvedData.id}`}
-                    title={compareLayerResolvedData.name}
-                    description={compareLayerResolvedData.description}
-                    {...compareLayerResolvedData.legend}
-                    />}
+            isComparing &&
+            baseLayerResolvedData.id !== compareLayerResolvedData.id && (
+              <LayerLegend
+                id={`compare-${compareLayerResolvedData.id}`}
+                title={compareLayerResolvedData.name}
+                description={compareLayerResolvedData.description}
+                {...compareLayerResolvedData.legend}
+              />
+            )}
         </LayerLegendContainer>
-          )}
-      
-
-
+      )}
 
       {/*
         Maps container
@@ -409,18 +411,20 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
             labelsOption={labelsOption}
             boundariesOption={boundariesOption}
           />
-          {isMapLoaded && baseLayerResolvedData && BaseLayerComponent && (
-            <BaseLayerComponent
-              id={`base-${baseLayerResolvedData.id}`}
-              stacCol={baseLayerResolvedData.stacCol}
-              assetUrl={baseLayerResolvedData.assetUrl}
-              mapInstance={mapRef.current}
-              date={date}
-              sourceParams={baseLayerResolvedData.sourceParams}
-              zoomExtent={baseLayerResolvedData.zoomExtent}
-              onStatusChange={onBaseLayerStatusChange}
-            />
-          )}
+          {mapRef.current &&
+            isMapLoaded &&
+            baseLayerResolvedData &&
+            BaseLayerComponent && (
+              <BaseLayerComponent
+                id={`base-${baseLayerResolvedData.id}`}
+                stacCol={baseLayerResolvedData.stacCol}
+                mapInstance={mapRef.current}
+                date={date}
+                sourceParams={baseLayerResolvedData.sourceParams}
+                zoomExtent={baseLayerResolvedData.zoomExtent}
+                onStatusChange={onBaseLayerStatusChange}
+              />
+            )}
           <SimpleMap
             className='root'
             mapRef={mapRef}
@@ -456,14 +460,15 @@ function MapboxMapComponent(props: MapboxMapProps, ref) {
               labelsOption={labelsOption}
               boundariesOption={boundariesOption}
             />
-            {isMapCompareLoaded &&
+            {mapCompareRef.current &&
+              isMapCompareLoaded &&
               compareLayerResolvedData &&
               CompareLayerComponent && (
                 <CompareLayerComponent
                   id={`compare-${compareLayerResolvedData.id}`}
                   stacCol={compareLayerResolvedData.stacCol}
                   mapInstance={mapCompareRef.current}
-                  date={compareToDate}
+                  date={compareToDate ?? undefined}
                   sourceParams={compareLayerResolvedData.sourceParams}
                   zoomExtent={compareLayerResolvedData.zoomExtent}
                   onStatusChange={onCompareLayerStatusChange}

@@ -17,7 +17,8 @@ import {
   DatasetDatumFn,
   DatasetDatumFnResolverBag,
   DatasetDatumReturnType,
-  DatasetLayerCompareNormalized
+  DatasetLayerCompareNormalized,
+  DatasetLayerType
 } from 'veda';
 import {
   MapLayerRasterTimeseries,
@@ -40,7 +41,7 @@ import { HintedError } from '$utils/hinted-error';
 
 export const getLayerComponent = (
   isTimeseries: boolean,
-  layerType: 'raster' | 'vector' | 'zarr'
+  layerType: DatasetLayerType
 ): FunctionComponent<
   | MapLayerRasterTimeseriesProps
   | MapLayerVectorTimeseriesProps
@@ -85,7 +86,6 @@ export const getCompareLayerData = (
       id: stacCol,
       stacCol,
       type: type || layerData.type,
-      assetUrl: layerData.assetUrl,
       zoomExtent: zoomExtent ?? layerData.zoomExtent,
       sourceParams: defaultsDeep({}, sourceParams, layerData.sourceParams),
       ...passThroughProps

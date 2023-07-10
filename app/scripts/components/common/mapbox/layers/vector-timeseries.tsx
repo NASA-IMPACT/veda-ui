@@ -24,10 +24,10 @@ export interface MapLayerVectorTimeseriesProps {
   stacCol: string;
   date?: Date;
   mapInstance: MapboxMap;
-  sourceParams: object;
-  zoomExtent?: [number, number];
+  sourceParams?: Record<string, any>;
+  zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  isHidden: boolean;
+  isHidden?: boolean;
   idSuffix?: string;
 }
 

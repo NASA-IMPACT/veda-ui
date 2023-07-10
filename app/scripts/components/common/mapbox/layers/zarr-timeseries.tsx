@@ -1,26 +1,78 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import qs from 'qs';
-import { AnyLayer, AnySourceImpl, RasterLayer, RasterSource } from 'mapbox-gl';
+import { Map as MapboxMap, RasterSource, RasterLayer } from 'mapbox-gl';
 
+import { requestQuickCache } from './utils';
 import { useMapStyle } from './styles';
+
+import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
+
+const tilerUrl = process.env.API_XARRAY_ENDPOINT;
 
 export interface MapLayerZarrTimeseriesProps {
   id: string;
+  stacCol: string;
   date?: Date;
-  sourceParams?: object;
+  mapInstance: MapboxMap;
+  sourceParams?: Record<string, any>;
   zoomExtent?: number[];
-  assetUrl: string;
+  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
+  idSuffix?: string;
 }
 
 export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
-  const { id, date, isHidden } = props;
-  const { sourceParams = {}, zoomExtent, assetUrl } = props;
+  const {
+    id,
+    stacCol,
+    date,
+    mapInstance,
+    sourceParams,
+    zoomExtent,
+    onStatusChange,
+    isHidden,
+    idSuffix = ''
+  } = props;
 
   const { updateStyle } = useMapStyle();
+  const [assetUrl, setAssetUrl] = useState('');
 
-  const minZoom = zoomExtent?.[0] ?? 0;
-  const tilerUrl = process.env.API_XARRAY_ENDPOINT;
+  const [minZoom] = zoomExtent ?? [0, 20];
+
+  const generatorId = 'zarr-timeseries' + idSuffix;
+
+  //
+  // Get the asset url
+  //
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function load() {
+      try {
+        onStatusChange?.({ status: S_LOADING, id });
+        const data = await requestQuickCache({
+          url: `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`,
+          method: 'GET',
+          controller
+        });
+
+        setAssetUrl(data.assets.zarr.href);
+        onStatusChange?.({ status: S_SUCCEEDED, id });
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setAssetUrl('');
+          onStatusChange?.({ status: S_FAILED, id });
+        }
+        return;
+      }
+    }
+
+    load();
+
+    return () => {
+      controller.abort();
+    };
+  }, [mapInstance, id, stacCol, date, onStatusChange]);
 
   //
   // Generate Mapbox GL layers and sources for raster timeseries
@@ -32,48 +84,45 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
 
   useEffect(
     () => {
-      let layers: AnyLayer[] = [];
-      let sources: Record<string, AnySourceImpl> = {};
+      if (!tilerUrl) return;
 
-      if (tilerUrl) {
-        const tileParams = qs.stringify({
-          url: assetUrl,
-          time_slice: date,
-          ...sourceParams
-        });
+      const tileParams = qs.stringify({
+        url: assetUrl,
+        time_slice: date,
+        ...sourceParams
+      });
 
-        const zarrSource: RasterSource = {
-          type: 'raster',
-          url: `${tilerUrl}?${tileParams}`
-        };
+      const zarrSource: RasterSource = {
+        type: 'raster',
+        url: `${tilerUrl}?${tileParams}`
+      };
 
-        const zarrLayer: RasterLayer = {
-          id: id,
-          type: 'raster',
-          source: id,
-          layout: {
-            visibility: isHidden ? 'none' : 'visible'
-          },
-          paint: {
-            'raster-opacity': Number(!isHidden),
-            'raster-opacity-transition': {
-              duration: 320
-            }
-          },
-          minzoom: minZoom,
-          metadata: {
-            layerOrderPosition: 'raster'
+      const zarrLayer: RasterLayer = {
+        id: id,
+        type: 'raster',
+        source: id,
+        layout: {
+          visibility: isHidden ? 'none' : 'visible'
+        },
+        paint: {
+          'raster-opacity': Number(!isHidden),
+          'raster-opacity-transition': {
+            duration: 320
           }
-        };
+        },
+        minzoom: minZoom,
+        metadata: {
+          layerOrderPosition: 'raster'
+        }
+      };
 
-        sources = {
-          [id]: zarrSource
-        };
-        layers = [zarrLayer];
-      }
+      const sources = {
+        [id]: zarrSource
+      };
+      const layers = [zarrLayer];
 
       updateStyle({
-        generatorId: 'raster-timeseries',
+        generatorId,
         sources,
         layers
       });
@@ -84,10 +133,10 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
       id,
       date,
       assetUrl,
-      tilerUrl,
       minZoom,
       haveSourceParamsChanged,
-      isHidden
+      isHidden,
+      generatorId
     ]
   );
 
@@ -97,12 +146,12 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   useEffect(() => {
     return () => {
       updateStyle({
-        generatorId: 'raster-timeseries',
+        generatorId,
         sources: {},
         layers: []
       });
     };
-  }, [updateStyle]);
+  }, [updateStyle, generatorId]);
 
   return null;
 }

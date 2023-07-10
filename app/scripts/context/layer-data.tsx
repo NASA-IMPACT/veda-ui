@@ -17,7 +17,6 @@ import { S_SUCCEEDED } from '$utils/status';
 export type TimeDensity = 'day' | 'month' | 'year' | null;
 
 interface STACLayerData {
-  assetUrl?: string;
   timeseries: {
     isPeriodic: boolean;
     timeDensity: TimeDensity;
@@ -52,21 +51,16 @@ const fetchLayerById = async (
       }
     };
   } else {
-    const defaultData = {
+    const domain = data.summaries
+      ? data.summaries.datetime
+      : data.extent.temporal.interval[0];
+
+    return {
       timeseries: {
         ...commonTimeseriesParams,
-        domain: data.summaries ? data.summaries.datetime : data.extent.temporal.interval[0]
+        domain
       }
     };
-  
-    if (type === 'zarr') {
-      return {
-        ...defaultData,
-        assetUrl: data.assets.zarr.href
-      };
-    } else {
-      return defaultData;
-    }
   }
 };
 
