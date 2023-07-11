@@ -15,6 +15,7 @@ import SandboxChart from './mdx-chart';
 import SandboxAnalysisChart from './analysis-chart';
 import SandboxRequest from './request';
 import SandboxColors from './colors';
+import SandboxMDXEditor from './mdx-editor';
 import { resourceNotFound } from '$components/uhoh';
 import { Card, CardList } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
@@ -92,6 +93,11 @@ const pages = [
     id: 'colors',
     name: 'Colors',
     component: SandboxColors
+  },
+  {
+    id: 'mdxeditor',
+    name: 'Discovery Editor ⚠️EXPERIMENTAL',
+    component: SandboxMDXEditor
   }
 ];
 

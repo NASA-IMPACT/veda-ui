@@ -238,7 +238,7 @@ interface BlockComponentProps {
   children: ReactElement[];
 }
 
-function BlockComponent(props: BlockComponentProps) {
+export function BlockComponent(props: BlockComponentProps) {
   const { children, type } = props;
 
   // Concat block type name (default, wide, full)
