@@ -33,9 +33,11 @@ const fetchLayerById = async (
     `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
   );
 
-  // TODO: Normalize API data structure
-  // For the time being the vector and raster sources have different api
-  // endpoints, and different properties to get data from.
+  const commonTimeseriesParams = {
+    isPeriodic: data['dashboard:is_periodic'],
+    timeDensity: data['dashboard:time_density']
+  };
+
   if (type === 'vector') {
     const featuresApiEndpoint = data.links.find(
       (l) => l.rel === 'external'
@@ -44,20 +46,22 @@ const fetchLayerById = async (
 
     return {
       timeseries: {
-        isPeriodic: data['dashboard:is_periodic'],
-        timeDensity: data['dashboard:time_density'],
+        ...commonTimeseriesParams,
         domain: featuresApiData.extent.temporal.interval[0]
       }
     };
-  }
+  } else {
+    const domain = data.summaries
+      ? data.summaries.datetime
+      : data.extent.temporal.interval[0];
 
-  return {
-    timeseries: {
-      isPeriodic: data['dashboard:is_periodic'],
-      timeDensity: data['dashboard:time_density'],
-      domain: data.summaries.datetime
-    }
-  };
+    return {
+      timeseries: {
+        ...commonTimeseriesParams,
+        domain
+      }
+    };
+  }
 };
 
 // Create a query object for react query.

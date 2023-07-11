@@ -434,7 +434,7 @@ function Scrollytelling(props) {
           <Basemap />
           {isMapLoaded &&
             resolvedLayers.map((resolvedLayer, lIdx) => {
-              if (!resolvedLayer) return null;
+              if (!resolvedLayer || !mapRef.current) return null;
 
               const { runtimeData, Component: LayerCmp, layer } = resolvedLayer;
               const isHidden =

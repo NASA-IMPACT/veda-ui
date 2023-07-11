@@ -17,10 +17,22 @@ import {
   DatasetDatumFn,
   DatasetDatumFnResolverBag,
   DatasetDatumReturnType,
-  DatasetLayerCompareNormalized
+  DatasetLayerCompareNormalized,
+  DatasetLayerType
 } from 'veda';
-import { MapLayerRasterTimeseries, StacFeature } from './raster-timeseries';
-import { MapLayerVectorTimeseries } from './vector-timeseries';
+import {
+  MapLayerRasterTimeseries,
+  MapLayerRasterTimeseriesProps,
+  StacFeature
+} from './raster-timeseries';
+import {
+  MapLayerVectorTimeseries,
+  MapLayerVectorTimeseriesProps
+} from './vector-timeseries';
+import {
+  MapLayerZarrTimeseries,
+  MapLayerZarrTimeseriesProps
+} from './zarr-timeseries';
 
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
@@ -29,11 +41,16 @@ import { HintedError } from '$utils/hinted-error';
 
 export const getLayerComponent = (
   isTimeseries: boolean,
-  layerType: 'raster' | 'vector'
-): FunctionComponent<any> | null => {
+  layerType: DatasetLayerType
+): FunctionComponent<
+  | MapLayerRasterTimeseriesProps
+  | MapLayerVectorTimeseriesProps
+  | MapLayerZarrTimeseriesProps
+> | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
     if (layerType === 'vector') return MapLayerVectorTimeseries;
+    if (layerType === 'zarr') return MapLayerZarrTimeseries;
   }
 
   return null;

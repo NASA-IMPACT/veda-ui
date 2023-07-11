@@ -19,15 +19,15 @@ import { useCustomMarker } from './custom-marker';
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
 
-interface MapLayerVectorTimeseriesProps {
+export interface MapLayerVectorTimeseriesProps {
   id: string;
   stacCol: string;
   date?: Date;
   mapInstance: MapboxMap;
-  sourceParams: object;
-  zoomExtent?: [number, number];
+  sourceParams?: Record<string, any>;
+  zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  isHidden: boolean;
+  isHidden?: boolean;
   idSuffix?: string;
 }
 
