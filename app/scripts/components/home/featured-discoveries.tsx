@@ -67,7 +67,7 @@ function FeaturedDiscoveries() {
   return (
     <Fold>
       <FoldHeader>
-        <FoldTitle>Featured discoveries</FoldTitle>
+        <FoldTitle>Featured Data Stories</FoldTitle>
       </FoldHeader>
       <FoldBody>
         {featuredDiscoveries.length ? (
@@ -80,7 +80,7 @@ function FeaturedDiscoveries() {
                     linkLabel='View more'
                     linkTo={getDiscoveryPath(d)}
                     title={d.name}
-                    parentName='Discovery'
+                    parentName='Data Story'
                     parentTo={DISCOVERIES_PATH}
                     description={i === 0 ? d.description : undefined}
                     date={d.pubDate ? new Date(d.pubDate) : undefined}

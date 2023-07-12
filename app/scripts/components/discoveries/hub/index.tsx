@@ -154,11 +154,11 @@ function DiscoveriesHub() {
   return (
     <PageMainContent>
       <LayoutProps
-        title='Discoveries'
+        title='Data Stories'
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
       />
       <PageHero
-        title='Discoveries'
+        title='Data Stories'
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
       />
 
@@ -186,8 +186,8 @@ function DiscoveriesHub() {
           <span>
             Showing{' '}
             <Pluralize
-              singular='discovery'
-              plural='discoveries'
+              singular='data story'
+              plural='data stories'
               count={displayDiscoveries.length}
               showCount={true}
             />{' '}
