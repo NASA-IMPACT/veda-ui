@@ -1,20 +1,23 @@
 import React from 'react';
 
-import MDXEditor, { MDXBlockWithError } from './mdx-editor';
+import MDXEditor from './mdx-editor';
 import { PageMainContent } from '$styles/page';
 import ContentBlockFigure from '$components/common/blocks/figure';
 import { ContentBlockProse } from '$styles/content-block';
 import Image, { Caption } from '$components/common/blocks/images';
 import { Chapter } from '$components/common/blocks/scrollytelling/chapter';
 import { NotebookConnectCalloutBlock } from '$components/common/notebook-connect';
-import { LazyMap, LazyScrollyTelling, LazyChart, LazyCompareImage} from '$components/common/blocks/lazy-components';
+import {
+  LazyMap,
+  LazyScrollyTelling,
+  LazyChart,
+  LazyCompareImage
+} from '$components/common/blocks/lazy-components';
 import SmartLink from '$components/common/smart-link';
-
 
 const components = {
   h1: (props) => <h1 style={{ color: 'tomato' }} {...props} />,
   Test: () => <div>Test</div>,
-  Block: MDXBlockWithError,
   Prose: ContentBlockProse,
   Figure: ContentBlockFigure,
   Caption,
@@ -28,15 +31,25 @@ const components = {
   Link: SmartLink
 };
 
-export const MDX_LOCAL_STORAGE_KEY = "MDX_EDITOR";
-export const MDX_SOURCE_DEFAULT = `<Block>
+export const MDX_LOCAL_STORAGE_KEY = 'MDX_EDITOR';
+export const MDX_SOURCE_DEFAULT = [
+  `<Block>
   <Prose>
     ### Your markdown header
 
     Your markdown contents comes here.
   </Prose>
-</Block>
-<Block type='full'>
+</Block>`
+,
+`<Block>
+<Prose>
+  ### Hello
+
+  Your markdown contents comes here.
+</Prose>
+</Block>`
+,
+  `<Block type='full'>
   <Figure>
     <Map
       datasetId='no2'
@@ -65,8 +78,8 @@ export const MDX_SOURCE_DEFAULT = `<Block>
     [Explore How COVID-19 Is Affecting Earth's Climate](/covid19/discoveries/climate/climate-change-and-covid "Explore How COVID-19 Is Affecting Earth's Climate")
   </Prose>
 </Block>
-
-`;
+`
+];
 
 const savedSource = localStorage.getItem(MDX_LOCAL_STORAGE_KEY);
 
@@ -74,7 +87,11 @@ export default function MDXEditorWrapper() {
   return (
     <PageMainContent>
       <article>
-        <MDXEditor initialSource={savedSource ?? MDX_SOURCE_DEFAULT} components={components} />
+        <MDXEditor
+          // initialSource={savedSource ?? MDX_SOURCE_DEFAULT}
+          initialSource={MDX_SOURCE_DEFAULT}
+          components={components}
+        />
       </article>
     </PageMainContent>
   );

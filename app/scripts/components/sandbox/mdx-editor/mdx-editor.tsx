@@ -4,8 +4,10 @@ import React, {
   createContext,
   useContext,
   useCallback,
-  useEffect
+  useEffect,
+  useRef
 } from 'react';
+import { createPortal } from 'react-dom';
 import * as runtime from 'react/jsx-runtime';
 import { evaluate } from '@mdx-js/mdx';
 import { useMDXComponents, MDXProvider } from '@mdx-js/react';
@@ -74,30 +76,39 @@ const GlobalErrorWrapper = styled.div`
 `;
 
 interface useMDXReturnProps {
-  source: string;
+  source: string[];
   result: MDXContent | null;
   error: any;
 }
 
-function useMDX(source) {
+function useMDX(initialSource: string[]) {
+  const [currentEditingBlockIndex, setCurrentEditingBlockIndex] =
+    useState<number>(0);
   const [state, setState] = useState<useMDXReturnProps>({
-    source,
+    source: initialSource,
     result: null,
     error: null
   });
 
   useEffect(() => {
-    localStorage.setItem(MDX_LOCAL_STORAGE_KEY, state.source);
+    // localStorage.setItem(MDX_LOCAL_STORAGE_KEY, state.source);
   }, [state.source]);
 
-  async function setSource(source) {
+  async function setSource(source: string[]) {
     const remarkPlugins = [remarkGfm];
 
     let result: MDXContent | null = null;
 
+    // const mergedSource = source.join('\n<div id="test"> </div>\n');
+    const mergedSource = source.reduce((acc, curr, currentIndex) => {
+      return currentIndex === 0
+        ? curr
+        : acc + `\n<div id="block${currentIndex - 1}"> </div>\n` + curr;
+    }, '');
+
     try {
       result = (
-        await evaluate(source, {
+        await evaluate(mergedSource, {
           ...runtime,
           useMDXComponents,
           useDynamicImport: true,
@@ -116,20 +127,40 @@ function useMDX(source) {
     }
   }
 
-  useMemo(() => setSource(source), [source]);
+  useMemo(() => setSource(initialSource), [initialSource]);
 
-  return { ...state, setSource };
+  return {
+    ...state,
+    setSource,
+    currentEditingBlockIndex,
+    setCurrentEditingBlockIndex
+  };
 }
 
 const MDXContext = createContext<MDXContent | null>(null);
 
 interface MDXEditorProps {
-  initialSource: string;
+  initialSource: string[];
   components: any;
 }
 
 const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
-  const { result, error, setSource } = useMDX(initialSource);
+  const {
+    result,
+    error,
+    source,
+    setSource,
+    currentEditingBlockIndex,
+    setCurrentEditingBlockIndex
+  } = useMDX(initialSource);
+
+  const componentsWithBlock = useMemo(() => {
+    if (!components) return null;
+    return {
+      ...components,
+      Block: MDXBlockForEditor
+    };
+  }, [components]);
 
   const extensions = useMemo<Extension[]>(
     () => [basicSetup, oneDark, langMarkdown()],
@@ -158,56 +189,84 @@ const MDXEditor = ({ initialSource, components = null }: MDXEditorProps) => {
     [editorView]
   );
 
-  return (
-    <ErrorBoundaryWithCRAReset FallbackComponent={GlobalError}>
-      <MDXContext.Provider value={result}>
-        <Draggable handle='.titleBar'>
-          <DraggableEditor>
-            <TitleBar className='titleBar'>
-              MDX Editor{' '}
-              <ResetButton
-                type='button'
-                onClick={() => {
-                  writeToEditor(MDX_SOURCE_DEFAULT);
-                  setSource(MDX_SOURCE_DEFAULT);
-                }}
-              >
-                reset with default content
-              </ResetButton>
-              <ResetButton
-                type='button'
-                onClick={() => {
-                  writeToEditor(DEFAULT_CONTENT);
-                  setSource(DEFAULT_CONTENT);
-                }}
-              >
-                clear
-              </ResetButton>
-            </TitleBar>
-            {error && <ErrorBar>{errorHumanReadable}</ErrorBar>}
-            <EditorWrapper>
-              <CodeMirror
-                value={initialSource}
-                onEditorViewChange={(editorView) => setEditorView(editorView)}
-                onUpdate={(v) => {
-                  if (v.docChanged) {
-                    let source = v.state.doc.toString();
+  useEffect(() => {
+    if (!editorView) return;
+    writeToEditor(source[currentEditingBlockIndex]);
+  }, [editorView, currentEditingBlockIndex]);
 
-                    // This is a hack to prevent the editor from being cleared
-                    // when the user deletes all the text.
-                    // because when that happens, React throws an order of hooks error
-                    source = source ? source : DEFAULT_CONTENT;
-                    setSource(source);
-                  }
-                }}
-                extensions={extensions}
-              />
-            </EditorWrapper>
-          </DraggableEditor>
-        </Draggable>
-        <MDXRenderer result={result} components={components} />
-      </MDXContext.Provider>
-    </ErrorBoundaryWithCRAReset>
+  const currentEditingBlockIndexRef = useRef<number>();
+  currentEditingBlockIndexRef.current = currentEditingBlockIndex;
+
+  const onEditorUpdated = useCallback(
+    (v) => {
+      if (v.docChanged) {
+        let blockSource = v.state.doc.toString();
+        // This is a hack to prevent the editor from being cleared
+        // when the user deletes all the text.
+        // because when that happens, React throws an order of hooks error
+        blockSource = blockSource ? blockSource : DEFAULT_CONTENT;
+        const allSource = [
+          ...source.slice(0, currentEditingBlockIndexRef.current),
+          blockSource,
+          ...source.slice(currentEditingBlockIndexRef.current + 1)
+        ];
+        setSource(allSource);
+      }
+    },
+    [source, setSource]
+  );
+
+  return (
+    <>
+      {Array.from(Array(source.length)).map((_, i) => {
+        if (document.getElementById(`block${i}`)) {
+          return createPortal(
+            <p onClick={() => setCurrentEditingBlockIndex(i)}>edit {i}</p>,
+            document.getElementById(`block${i}`)!
+          );
+        }
+      })}
+
+      <ErrorBoundaryWithCRAReset FallbackComponent={GlobalError}>
+        <MDXContext.Provider value={result}>
+          <Draggable handle='.titleBar'>
+            <DraggableEditor>
+              <TitleBar className='titleBar'>
+                MDX Editor{' '}
+                {/* <ResetButton
+                  type='button'
+                  onClick={() => {
+                    writeToEditor(MDX_SOURCE_DEFAULT);
+                    setSource(MDX_SOURCE_DEFAULT);
+                  }}
+                >
+                  reset with default content
+                </ResetButton>
+                <ResetButton
+                  type='button'
+                  onClick={() => {
+                    writeToEditor(DEFAULT_CONTENT);
+                    setSource(DEFAULT_CONTENT);
+                  }}
+                >
+                  clear
+                </ResetButton> */}
+              </TitleBar>
+              {error && <ErrorBar>{errorHumanReadable}</ErrorBar>}
+              <EditorWrapper>
+                <CodeMirror
+                  // value={initialSource.join('\n')}
+                  onEditorViewChange={(editorView) => setEditorView(editorView)}
+                  onUpdate={onEditorUpdated}
+                  extensions={extensions}
+                />
+              </EditorWrapper>
+            </DraggableEditor>
+          </Draggable>
+          <MDXRenderer result={result} components={componentsWithBlock} />
+        </MDXContext.Provider>
+      </ErrorBoundaryWithCRAReset>
+    </>
   );
 };
 
@@ -272,8 +331,9 @@ const MDXBlockError = ({ error }: any) => {
   );
 };
 
-export const MDXBlockWithError = (props) => {
+const MDXBlockWithError = (props) => {
   const result = useContext(MDXContext);
+
   return (
     <ErrorBoundaryWithCRAReset
       FallbackComponent={MDXBlockError}
@@ -281,6 +341,19 @@ export const MDXBlockWithError = (props) => {
     >
       <BlockComponent {...props} />
     </ErrorBoundaryWithCRAReset>
+  );
+};
+
+const MDXBlockForEditorUI = styled.div`
+  border: 1px solid #f00;
+`;
+
+const MDXBlockForEditor = (props) => {
+  console.log(props)
+  return (
+    <MDXBlockForEditorUI>
+      <MDXBlockWithError {...props} />
+    </MDXBlockForEditorUI>
   );
 };
 
