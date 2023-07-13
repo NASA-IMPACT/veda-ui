@@ -350,7 +350,7 @@ export default function Analysis() {
                     textPlacement='right'
                     type='checkbox'
                     onChange={onDatasetLayerChange}
-                    checked={selectedDatasetLayerIds?.includes(datasetLayer.id)}
+                    checked={selectedDatasetLayerIds?.includes(datasetLayer.id) ?? false}
                   >
                     {datasetLayer.name}
                   </FormCheckableCustom>
