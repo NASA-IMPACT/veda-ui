@@ -6,7 +6,6 @@ import React, {
   useRef
 } from 'react';
 import styled from 'styled-components';
-import { uniqBy } from 'lodash';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarIconButton, ToolbarLabel } from '@devseed-ui/toolbar';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
@@ -99,12 +98,10 @@ export const Note = styled.div`
   }
 `;
 
-export const allAvailableDatasetsLayers: DatasetLayer[] = uniqBy(
-  Object.values(datasets)
+export const allAvailableDatasetsLayers: DatasetLayer[] = Object.values(datasets)
     .map((dataset) => (dataset as VedaDatum<DatasetData>).data.layers)
-    .flat(),
-  'stacCol'
-).filter(d => d.type !== 'vector');
+    .flat()
+    .filter(d => d.type !== 'vector');
 
 export default function Analysis() {
 
