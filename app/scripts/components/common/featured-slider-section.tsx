@@ -94,7 +94,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       title={d.name}
                       overline={
                         <CardMeta>
-                          <CardSourcesList sources={d.sources} />
+                          <CardSourcesList sources={d.taxonomy.Source} />
                           <VerticalDivider variation='light' />
                           {!isNaN(date.getTime()) && (
                             <PublishedDate date={date} />
@@ -106,10 +106,10 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       imgAlt={d.media?.alt}
                       footerContent={
                         <>
-                          {d.thematics.length ? (
+                          {d.taxonomy.Topics?.length ? (
                             <CardTopicsList>
                               <dt>Topics</dt>
-                              {d.thematics.map((t) => (
+                              {d.taxonomy.Topics.map((t) => (
                                 <dd key={t.id}>
                                   <Pill variation='achromic'>{t.name}</Pill>
                                 </dd>

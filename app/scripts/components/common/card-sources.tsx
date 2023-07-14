@@ -51,7 +51,9 @@ export function CardSourcesList(props: SourcesListProps) {
         {sources.map((source) => (
           <li key={source.id}>
             <Link
-              to={`${rootPath}?${Actions.SOURCE}=${source.id}`}
+              to={`${rootPath}?${Actions.TAXONOMY}=${JSON.stringify({
+                Source: source.id
+              })}`}
               onClick={(e) => {
                 e.preventDefault();
                 onSourceClick(source.id);

@@ -143,8 +143,7 @@ declare module 'veda' {
     featured?: boolean;
     id: string;
     name: string;
-    thematics: TaxonomyItem[];
-    sources: TaxonomyItem[];
+    taxonomy: Record<string, TaxonomyItem[] | undefined>
     description: string;
     usage?: DatasetUsage[];
     media?: Media;
@@ -166,8 +165,7 @@ declare module 'veda' {
     description: string;
     pubDate: string;
     media?: Media;
-    thematics: TaxonomyItem[];
-    sources: TaxonomyItem[];
+    taxonomy: Record<string, TaxonomyItem[] | undefined>
     related?: RelatedContentData[];
   }
 
@@ -220,13 +218,16 @@ declare module 'veda' {
   export const discoveries: VedaData<DiscoveryData>;
 
   /**
-   * Named exports: taxonomies.
-   * Object with all the veda taxonomies keyed by the taxonomy id.
+   * Named exports: datasetTaxonomies.
+   * Object with all the veda datasets taxonomies.
    */
-  export const taxonomies: {
-    sources: TaxonomyItem[];
-    thematics: TaxonomyItem[];
-  };
+  export const datasetTaxonomies: Record<string, TaxonomyItem[]>;
+
+  /**
+   * Named exports: discoveryTaxonomies.
+   * Object with all the veda discovery taxonomies.
+   */
+  export const discoveryTaxonomies: Record<string, TaxonomyItem[]>;
 
   export type PageOverrides =
     | 'aboutContent'

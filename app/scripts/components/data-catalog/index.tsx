@@ -1,8 +1,8 @@
 import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
-import { DatasetData, datasets, taxonomies } from 'veda';
+import { DatasetData, datasets, datasetTaxonomies } from 'veda';
 import { Link } from 'react-router-dom';
-import { glsp, media } from '@devseed-ui/theme-provider';
+import { glsp } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
@@ -55,26 +55,10 @@ const DatasetCount = styled(Subtitle)`
   }
 `;
 
-const BrowseHeader = styled(FoldHeader)`
-  ${media.largeUp`
-    ${FoldHeadline} {
-      align-self: flex-start;
-    }
-
-    ${BrowseControls} {
-      padding-top: 1rem;
-    }
-  `}
-`;
-
-const topicsOptions = [optionAll, ...taxonomies.thematics];
-
-const sourcesOptions = [optionAll, ...taxonomies.sources];
-
 const sortOptions = [{ id: 'name', name: 'Name' }];
 
 const prepareDatasets = (data: DatasetData[], options) => {
-  const { sortField, sortDir, search, topic, source } = options;
+  const { sortField, sortDir, search, taxonomies } = options;
 
   let filtered = [...data];
 
@@ -86,17 +70,20 @@ const prepareDatasets = (data: DatasetData[], options) => {
         d.name.toLowerCase().includes(searchLower) ||
         d.description.toLowerCase().includes(searchLower) ||
         d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower)) ||
-        d.thematics.some((t) => t.name.toLowerCase().includes(searchLower))
+        d.taxonomy.Topics?.some((t) =>
+          t.name.toLowerCase().includes(searchLower)
+        )
     );
   }
 
-  if (topic !== optionAll.id) {
-    filtered = filtered.filter((d) => d.thematics.find((t) => t.id === topic));
-  }
-
-  if (source !== optionAll.id) {
-    filtered = filtered.filter((d) => d.sources.find((t) => t.id === source));
-  }
+  Object.entries(taxonomies).forEach(([name, value]) => {
+    if (value !== optionAll.id) {
+      const txId = datasetTaxonomies[name].find((t) => t.id === value)?.id;
+      filtered = filtered.filter(
+        (d) => txId && d.taxonomy[name]?.find((t) => t.id === txId)
+      );
+    }
+  });
 
   /* eslint-disable-next-line fp/no-mutating-methods */
   filtered.sort((a, b) => {
@@ -115,29 +102,25 @@ const prepareDatasets = (data: DatasetData[], options) => {
 
 function DataCatalog() {
   const controlVars = useBrowserControls({
-    topicsOptions,
-    sourcesOptions,
     sortOptions
   });
 
-  const { topic, source, sortField, sortDir, onAction } = controlVars;
+  const { taxonomies, sortField, sortDir, onAction } = controlVars;
   const search = controlVars.search ?? '';
 
   const displayDatasets = useMemo(
     () =>
       prepareDatasets(allDatasets, {
         search,
-        topic,
-        source,
+        taxonomies,
         sortField,
         sortDir
       }),
-    [search, topic, source, sortField, sortDir]
+    [search, taxonomies, sortField, sortDir]
   );
 
   const isFiltering = !!(
-    topic !== optionAll.id ||
-    source !== optionAll.id ||
+    (taxonomies && Object.keys(taxonomies).length) ||
     search
   );
 
@@ -158,7 +141,7 @@ function DataCatalog() {
       <FeaturedDatasets />
 
       <Fold>
-        <BrowseHeader
+        <FoldHeader
           ref={browseControlsHeaderRef}
           style={{
             scrollMarginTop: `${headerHeight + 16}px`
@@ -169,11 +152,10 @@ function DataCatalog() {
           </FoldHeadline>
           <BrowseControls
             {...controlVars}
-            topicsOptions={topicsOptions}
-            sourcesOptions={sourcesOptions}
+            taxonomiesOptions={datasetTaxonomies}
             sortOptions={sortOptions}
           />
-        </BrowseHeader>
+        </FoldHeader>
 
         <DatasetCount>
           <span>
@@ -202,10 +184,10 @@ function DataCatalog() {
                   overline={
                     <CardMeta>
                       <CardSourcesList
-                        sources={d.sources}
+                        sources={d.taxonomy.Source}
                         rootPath={DATASETS_PATH}
                         onSourceClick={(id) => {
-                          onAction(Actions.SOURCE, id);
+                          onAction(Actions.TAXONOMY, { key: 'Source', id });
                           browseControlsHeaderRef.current?.scrollIntoView();
                         }}
                       />
@@ -239,18 +221,23 @@ function DataCatalog() {
                   imgAlt={d.media?.alt}
                   footerContent={
                     <>
-                      {d.thematics.length ? (
+                      {d.taxonomy.Topics?.length ? (
                         <CardTopicsList>
                           <dt>Topics</dt>
-                          {d.thematics.map((t) => (
+                          {d.taxonomy.Topics.map((t) => (
                             <dd key={t.id}>
                               <Pill
                                 variation='achromic'
                                 as={Link}
-                                to={`${DATASETS_PATH}?${Actions.TOPIC}=${t.id}`}
+                                to={`${DATASETS_PATH}?${
+                                  Actions.TAXONOMY
+                                }=${JSON.stringify({ Topics: t.id })}`}
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  onAction(Actions.TOPIC, t.id);
+                                  onAction(Actions.TAXONOMY, {
+                                    key: 'Topics',
+                                    value: t.id
+                                  });
                                   browseControlsHeaderRef.current?.scrollIntoView();
                                 }}
                               >

@@ -6,13 +6,13 @@ import {
   CollecticonChevronDownSmall,
   CollecticonChevronUpSmall
 } from '@devseed-ui/collecticons';
-import { glsp, media, truncated } from '@devseed-ui/theme-provider';
+import { glsp, truncated } from '@devseed-ui/theme-provider';
 import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
-import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
 import {
   Actions,
   FilterOption,
+  optionAll,
   sortDirOptions,
   useBrowserControls
 } from './use-browse-controls';
@@ -20,24 +20,28 @@ import {
 import DropdownScrollable from '$components/common/dropdown-scrollable';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { variableGlsp } from '$styles/variable-utils';
-import { FoldHeadActions } from '$components/common/fold';
 import SearchField from '$components/common/search-field';
 import { useMediaQuery } from '$utils/use-media-query';
 
-const BrowseControlsWrapper = styled(FoldHeadActions)`
-  .search-field {
-    order: -1;
-  }
-
-  ${media.largeUp`
-    .search-field {
-      order: initial;
-    }
-  `}
+const BrowseControlsWrapper = styled.div`
+  display: flex;
+  flex-flow: column;
+  gap: ${variableGlsp(0.5)};
 `;
 
-const BrowseControlsShadowScrollbar = styled(ShadowScrollbar)`
-  min-width: 0;
+const SearchWrapper = styled.div`
+  display: flex;
+  gap: ${variableGlsp(0.5)};
+`;
+
+const TaxonomyWrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  gap: ${variableGlsp(0.5)};
+
+  > * {
+    flex-shrink: 0;
+  }
 `;
 
 const DropButton = styled(Button)`
@@ -57,32 +61,15 @@ const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
   white-space: nowrap;
 `;
 
-const ShadowScrollbarInner = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  gap: ${variableGlsp(0.5)};
-
-  > * {
-    flex-shrink: 0;
-  }
-`;
-
 interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
-  topicsOptions: FilterOption[];
-  sourcesOptions: FilterOption[];
+  taxonomiesOptions: Record<string, FilterOption[]>;
   sortOptions: FilterOption[];
 }
 
-const shadowScrollbarProps = {
-  autoHeight: true
-};
-
 function BrowseControls(props: BrowseControlsProps) {
   const {
-    topic,
-    source,
-    topicsOptions,
-    sourcesOptions,
+    taxonomiesOptions,
+    taxonomies,
     sortOptions,
     search,
     sortField,
@@ -97,95 +84,89 @@ function BrowseControls(props: BrowseControlsProps) {
 
   return (
     <BrowseControlsWrapper {...rest}>
-      <BrowseControlsShadowScrollbar
-        scrollbarsProps={shadowScrollbarProps}
-        bottomShadowVariation='none'
-        topShadowVariation='none'
-      >
-        <ShadowScrollbarInner>
+      <SearchWrapper>
+        <SearchField
+          size={isLargeUp ? 'large' : 'medium'}
+          placeholder='Title, description...'
+          keepOpen={isLargeUp}
+          value={search ?? ''}
+          onChange={(v) => onAction(Actions.SEARCH, v)}
+        />
+        <DropdownScrollable
+          alignment='left'
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          triggerElement={({ active, className, ...rest }) => (
+            <DropButton
+              variation='base-outline'
+              size={isLargeUp ? 'large' : 'medium'}
+              active={active}
+              {...rest}
+            >
+              <ButtonPrefix>Sort by</ButtonPrefix>
+              <span>{currentSortField.name}</span>{' '}
+              {active ? (
+                <CollecticonChevronUpSmall />
+              ) : (
+                <CollecticonChevronDownSmall />
+              )}
+            </DropButton>
+          )}
+        >
+          <DropTitle>Options</DropTitle>
+          <DropMenu>
+            {sortOptions.map((t) => (
+              <li key={t.id}>
+                <DropMenuItemButton
+                  active={t.id === sortField}
+                  data-dropdown='click.close'
+                  onClick={() => onAction(Actions.SORT_FIELD, t.id)}
+                >
+                  {t.name}
+                </DropMenuItemButton>
+              </li>
+            ))}
+          </DropMenu>
+          <DropMenu>
+            {sortDirOptions.map((t) => (
+              <li key={t.id}>
+                <DropMenuItemButton
+                  active={t.id === sortDir}
+                  data-dropdown='click.close'
+                  onClick={() => onAction(Actions.SORT_DIR, t.id)}
+                >
+                  {t.name}
+                </DropMenuItemButton>
+              </li>
+            ))}
+          </DropMenu>
+        </DropdownScrollable>
+      </SearchWrapper>
+      <TaxonomyWrapper>
+        {Object.entries(taxonomiesOptions).map(([name, options]) => (
           <DropdownOptions
-            prefix='Topic'
-            items={topicsOptions}
-            currentId={topic}
+            key={name}
+            prefix={name}
+            items={[optionAll].concat(options)}
+            currentId={taxonomies?.[name] ?? 'all'}
+            onChange={(v) => {
+              onAction(Actions.TAXONOMY, { key: name, value: v });
+            }}
             size={isLargeUp ? 'large' : 'medium'}
-            onChange={(v) => onAction(Actions.TOPIC, v)}
           />
-          <DropdownOptions
-            prefix='Source'
-            items={sourcesOptions}
-            currentId={source}
-            size={isLargeUp ? 'large' : 'medium'}
-            onChange={(v) => onAction(Actions.SOURCE, v)}
-          />
-          <SearchField
-            size={isLargeUp ? 'large' : 'medium'}
-            placeholder='Title, description...'
-            keepOpen={isLargeUp}
-            value={search ?? ''}
-            onChange={(v) => onAction(Actions.SEARCH, v)}
-          />
-          <DropdownScrollable
-            alignment='right'
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            triggerElement={({ active, className, ...rest }) => (
-              <DropButton
-                variation='base-outline'
-                size={isLargeUp ? 'large' : 'medium'}
-                active={active}
-                {...rest}
-              >
-                <ButtonPrefix>Sort by</ButtonPrefix>
-                <span>{currentSortField.name}</span>{' '}
-                {active ? (
-                  <CollecticonChevronUpSmall />
-                ) : (
-                  <CollecticonChevronDownSmall />
-                )}
-              </DropButton>
-            )}
-          >
-            <DropTitle>Options</DropTitle>
-            <DropMenu>
-              {sortOptions.map((t) => (
-                <li key={t.id}>
-                  <DropMenuItemButton
-                    active={t.id === sortField}
-                    data-dropdown='click.close'
-                    onClick={() => onAction(Actions.SORT_FIELD, t.id)}
-                  >
-                    {t.name}
-                  </DropMenuItemButton>
-                </li>
-              ))}
-            </DropMenu>
-            <DropMenu>
-              {sortDirOptions.map((t) => (
-                <li key={t.id}>
-                  <DropMenuItemButton
-                    active={t.id === sortDir}
-                    data-dropdown='click.close'
-                    onClick={() => onAction(Actions.SORT_DIR, t.id)}
-                  >
-                    {t.name}
-                  </DropMenuItemButton>
-                </li>
-              ))}
-            </DropMenu>
-          </DropdownScrollable>
-        </ShadowScrollbarInner>
-      </BrowseControlsShadowScrollbar>
+        ))}
+      </TaxonomyWrapper>
     </BrowseControlsWrapper>
   );
 }
 
 export default styled(BrowseControls)`
-/* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
+  /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
 
 interface DropdownOptionsProps {
   size: ButtonProps['size'];
   items: FilterOption[];
-  currentId: string | null;
+  currentId?: string;
   onChange: (value: FilterOption['id']) => void;
   prefix: string;
 }

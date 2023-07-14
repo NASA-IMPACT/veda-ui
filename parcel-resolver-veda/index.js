@@ -14,8 +14,7 @@ const {
   validateDatasetLayerId
 } = require('./validation');
 const {
-  loadTaxonomies,
-  attachTaxonomies,
+  processTaxonomies,
   generateTaxonomiesModuleOutput
 } = require('./taxonomies');
 
@@ -153,12 +152,6 @@ module.exports = new Resolver({
         });
       }
 
-      const taxonomiesData = await loadTaxonomies(
-        logger,
-        root,
-        result.taxonomiesIndex
-      );
-
       const datasetsData = _.chain(
         await loadOptionalContent(logger, root, result.datasets, 'datasets')
       )
@@ -168,7 +161,7 @@ module.exports = new Resolver({
           // Check the datasets for duplicate layer ids.
           validateDatasetLayerId(value);
         })
-        .thru((value) => attachTaxonomies(taxonomiesData, value))
+        .thru((value) => processTaxonomies(value))
         .value();
 
       const discoveriesData = _.chain(
@@ -183,7 +176,7 @@ module.exports = new Resolver({
           // Data validation
           validateContentTypeId(value);
         })
-        .thru((value) => attachTaxonomies(taxonomiesData, value))
+        .thru((value) => processTaxonomies(value))
         .value();
 
       const datasetsImportData = datasetsData.data.map((o, i) => ({
@@ -208,8 +201,12 @@ module.exports = new Resolver({
 
         export const theme = ${JSON.stringify(result.theme) || null};
 
-        export const taxonomies = ${generateTaxonomiesModuleOutput(
-          taxonomiesData
+        export const datasetTaxonomies = ${generateTaxonomiesModuleOutput(
+          datasetsData.data
+        )}
+
+        export const discoveryTaxonomies = ${generateTaxonomiesModuleOutput(
+          discoveriesData.data
         )}
 
         export const getOverride = (key) => config.pageOverrides[key];
@@ -245,14 +242,12 @@ module.exports = new Resolver({
         invalidateOnFileChange: [
           configPath,
           ...datasetsData.filePaths,
-          ...discoveriesData.filePaths,
-          taxonomiesData.filePath
+          ...discoveriesData.filePaths
         ].filter(Boolean),
         invalidateOnFileCreate: [
           { filePath: configPath },
           datasetsData.globPath ? { glob: datasetsData.globPath } : null,
-          discoveriesData.globPath ? { glob: discoveriesData.globPath } : null,
-          taxonomiesData.filePath ? { glob: taxonomiesData.filePath } : null
+          discoveriesData.globPath ? { glob: discoveriesData.globPath } : null
         ].filter(Boolean)
       };
       // console.log('resolved', resolved);

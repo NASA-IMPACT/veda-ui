@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
+import { set, omit } from 'lodash';
 
 export enum Actions {
   SEARCH = 'search',
   SORT_FIELD = 'sfield',
   SORT_DIR = 'sdir',
-  TOPIC = 'topic',
-  SOURCE = 'source'
+  TAXONOMY = 'taxonomy'
 }
 
 export type BrowserControlsAction = (what: Actions, value: any) => void;
@@ -18,8 +18,6 @@ export interface FilterOption {
 }
 
 interface BrowseControlsHookParams {
-  topicsOptions: FilterOption[];
-  sourcesOptions: FilterOption[];
   sortOptions: FilterOption[];
 }
 
@@ -39,11 +37,7 @@ export const optionAll = {
   name: 'All'
 };
 
-export function useBrowserControls({
-  topicsOptions,
-  sourcesOptions,
-  sortOptions
-}: BrowseControlsHookParams) {
+export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
   // Setup Qs State to store data in the url's query string
   // react-router function to get the navigation.
   const navigate = useNavigate();
@@ -77,22 +71,14 @@ export function useBrowserControls({
     []
   );
 
-  const [topic, setTopic] = useQsState.memo(
+  const [taxonomies, setTaxonomies] = useQsState.memo<Record<string, string>>(
     {
-      key: Actions.TOPIC,
-      default: topicsOptions[0].id,
-      validator: topicsOptions.map((d) => d.id)
+      key: Actions.TAXONOMY,
+      default: {},
+      dehydrator: (v) => JSON.stringify(v),
+      hydrator: (v) => (v ? JSON.parse(v) : {})
     },
-    [topicsOptions]
-  );
-
-  const [source, setSource] = useQsState.memo(
-    {
-      key: Actions.SOURCE,
-      default: sourcesOptions[0].id,
-      validator: sourcesOptions.map((d) => d.id)
-    },
-    [sourcesOptions]
+    []
   );
 
   const onAction = useCallback<BrowserControlsAction>(
@@ -107,23 +93,26 @@ export function useBrowserControls({
         case Actions.SORT_DIR:
           setSortDir(value);
           break;
-        case Actions.TOPIC:
-          setTopic(value);
-          break;
-        case Actions.SOURCE:
-          setSource(value);
+        case Actions.TAXONOMY:
+          {
+            const { key, value: val } = value;
+            if (val === optionAll.id) {
+              setTaxonomies(omit(taxonomies, key));
+            } else {
+              setTaxonomies(set({...taxonomies}, key, val));
+            }
+          }
           break;
       }
     },
-    [setSortField, setSortDir, setTopic, setSource, setSearch]
+    [setSortField, setSortDir, taxonomies, setTaxonomies, setSearch]
   );
 
   return {
     search,
     sortField,
     sortDir,
-    topic,
-    source,
+    taxonomies,
     onAction
   };
 }
