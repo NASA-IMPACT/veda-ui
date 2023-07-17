@@ -1,37 +1,22 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import useDimensions from 'react-cool-dimensions';
-import { Reorder, useDragControls } from 'framer-motion';
-import {
-  ZoomTransform,
-  axisBottom,
-  drag,
-  extent,
-  scaleTime,
-  select,
-  zoom
-} from 'd3';
-import {
-  addDays,
-  clamp,
-  endOfDay,
-  endOfMonth,
-  endOfYear,
-  format,
-  isWithinInterval,
-  startOfDay,
-  startOfMonth,
-  startOfYear,
-  subDays
-} from 'date-fns';
+import { Reorder } from 'framer-motion';
+import { ZoomTransform, axisBottom, extent, scaleTime, select, zoom } from 'd3';
+import { add, format, isAfter, isBefore, startOfDay, sub } from 'date-fns';
 import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
-import {
-  CollecticonGripVertical,
-  CollecticonPlusSmall
-} from '@devseed-ui/collecticons';
+import { CollecticonPlusSmall } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
 
 import { extraDataset, datasets as srcDatasets } from './datasets';
+import { DatasetListItem } from './dataset-list-item';
+import {
+  TimelineHead,
+  TimelineHeadL,
+  TimelineHeadP,
+  TimelineHeadR,
+  TimelineRangeTrack
+} from './timeline-head';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -49,7 +34,7 @@ const InteractionRect = styled.div`
   position: absolute;
   inset: 0;
   left: 20rem;
-  background-color: rgba(255, 0, 0, 0.08);
+  /* background-color: rgba(255, 0, 0, 0.08); */
   z-index: 1000;
 `;
 
@@ -104,37 +89,7 @@ const TimelineContentInner = styled.div`
 const DatasetListSelf = styled.ul`
   ${listReset()}
   width: 100%;
-
-  li {
-    display: flex;
-    box-shadow: 0 1px 0 0 ${themeVal('color.base-200')};
-  }
 `;
-
-const DatasetInfo = styled.div`
-  width: 20rem;
-  flex-shrink: 0;
-  box-shadow: 1px 0 0 0 ${themeVal('color.base-200')};
-  padding: ${glsp(0.5)};
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  ${CollecticonGripVertical} {
-    cursor: grab;
-    color: ${themeVal('color.base-300')};
-
-    &:active {
-      cursor: grabbing;
-    }
-  }
-`;
-
-const DatasetData = styled.div`
-  padding: ${glsp(0.25, 0)};
-`;
-
-const DatasetSvg = styled.svg``;
 
 const GridSvg = styled.svg`
   position: absolute;
@@ -155,6 +110,14 @@ function Timeline() {
   const theme = useTheme();
 
   const [selectedDay, setSelectedDay] = useState<Date>();
+
+  const [selectedInterval, setSelectedInterval] = useState<{
+    start: Date;
+    end: Date;
+  }>({
+    start: new Date('2020-03-03'),
+    end: new Date('2020-08-03')
+  });
 
   const [zoomTransform, setZoomTransform] = useState({
     x: 0,
@@ -293,18 +256,6 @@ function Timeline() {
   return (
     <TimelineWrapper>
       <InteractionRect ref={interactionRef} />
-      {selectedDay ? (
-        <TimelineHead
-          domain={dataDomain}
-          xScaled={xScaled}
-          setSelectedDay={setSelectedDay}
-          selectedDay={selectedDay}
-          height={height}
-          width={width}
-        />
-      ) : (
-        false
-      )}
       <TimelineHeader>
         <TimelineDetails>
           <Headline>
@@ -333,6 +284,54 @@ function Timeline() {
         </TimelineControls>
       </TimelineHeader>
       <TimelineContent>
+        {selectedDay ? (
+          <TimelineHeadP
+            domain={dataDomain}
+            xScaled={xScaled}
+            setSelectedDay={setSelectedDay}
+            selectedDay={selectedDay}
+            width={width}
+          />
+        ) : (
+          false
+        )}
+        <TimelineHeadL
+          domain={dataDomain}
+          xScaled={xScaled}
+          setSelectedDay={(d) => {
+            setSelectedInterval((interval) => {
+              const prevDay = sub(interval.end, { days: 1 });
+              return {
+                ...interval,
+                start: isAfter(d, prevDay) ? prevDay : d
+              };
+            });
+          }}
+          selectedDay={selectedInterval.start}
+          width={width}
+        />
+        <TimelineHeadR
+          domain={dataDomain}
+          xScaled={xScaled}
+          setSelectedDay={(d) => {
+            setSelectedInterval((interval) => {
+              const nextDay = add(interval.start, { days: 1 });
+              return {
+                ...interval,
+                end: isBefore(d, nextDay) ? nextDay : d
+              };
+            });
+          }}
+          selectedDay={selectedInterval.end}
+          width={width}
+        />
+
+        <TimelineRangeTrack
+          range={selectedInterval}
+          xScaled={xScaled}
+          width={width}
+        />
+
         {xScaled ? (
           <GridSvg width={width}>
             {xScaled.ticks().map((tick) => (
@@ -385,136 +384,6 @@ function DatasetList(props: any) {
   );
 }
 
-function DatasetListItem(props: any) {
-  const { dataset, width, xScaled, selectedDay } = props;
-
-  const controls = useDragControls();
-
-  // Limit the items to render to increase performance.
-  const domainToRender = useMemo(() => {
-    const domain = xScaled.domain();
-    const start = subDays(domain[0], 1);
-    const end = addDays(domain[1], 1);
-    return dataset.domain.filter((d) => {
-      return isWithinInterval(d, { start, end });
-    });
-  }, [xScaled, dataset]);
-
-  return (
-    <Reorder.Item value={dataset} dragListener={false} dragControls={controls}>
-      <DatasetInfo>
-        <CollecticonGripVertical onPointerDown={(e) => controls.start(e)} />
-        {dataset.title}
-      </DatasetInfo>
-      <DatasetData>
-        <DatasetSvg width={width} height={16}>
-          {domainToRender.map((date) => {
-            const [start, end] = getBlockBoundaries(date, dataset.timeDensity);
-            const s = xScaled(start);
-            const e = xScaled(end);
-
-            const isSelected = selectedDay
-              ? isWithinInterval(selectedDay, { start, end })
-              : false;
-
-            const strokeWidth = 2;
-            return (
-              <React.Fragment key={date.getTime()}>
-                <rect
-                  fill={isSelected ? 'red' : 'teal'}
-                  y={0}
-                  height={16}
-                  x={s}
-                  width={e - s}
-                />
-                <rect
-                  fill={isSelected ? 'darkred' : 'cadetblue'}
-                  y={strokeWidth}
-                  height={16 - strokeWidth * 2}
-                  x={s + strokeWidth}
-                  width={e - s - strokeWidth * 2}
-                />
-              </React.Fragment>
-            );
-          })}
-        </DatasetSvg>
-      </DatasetData>
-    </Reorder.Item>
-  );
-}
-
-const TimelineHeadSVG = styled.svg`
-  position: absolute;
-  right: 0;
-  top: 2rem;
-  height: 100%;
-  pointer-events: none;
-  z-index: 2000;
-`;
-
-function TimelineHead(props: any) {
-  const { domain, xScaled, selectedDay, width, setSelectedDay } = props;
-
-  const rectRef = useRef<SVGRectElement>(null);
-
-  useEffect(() => {
-    if (!rectRef.current) return;
-
-    const dragger = drag()
-      .on('start', function dragstarted() {
-        document.body.style.cursor = 'grabbing';
-        select(this).attr('cursor', 'grabbing');
-      })
-      .on('drag', function dragged(event) {
-        if (event.x < 0 || event.x > width) {
-          return;
-        }
-
-        const dx = event.x - event.subject.x;
-        const currPos = xScaled(selectedDay);
-        const newPos = currPos + dx;
-
-        const dateFromPos = startOfDay(xScaled.invert(newPos));
-
-        const [start, end] = domain;
-        const interval = { start, end };
-
-        const newDate = clamp(dateFromPos, interval);
-
-        if (selectedDay.getTime() !== newDate.getTime()) {
-          setSelectedDay(newDate);
-        }
-      })
-      .on('end', function dragended() {
-        document.body.style.cursor = '';
-        select(this).attr('cursor', 'grab');
-      });
-
-    select(rectRef.current).call(dragger);
-  }, [width, domain, selectedDay, setSelectedDay, xScaled]);
-
-  return (
-    <TimelineHeadSVG width={width}>
-      <line
-        x1={xScaled(selectedDay)}
-        x2={xScaled(selectedDay)}
-        y1={0}
-        y2='100%'
-        stroke='black'
-      />
-      <rect
-        ref={rectRef}
-        fill='black'
-        style={{ pointerEvents: 'all', cursor: 'grab' }}
-        y={0}
-        height={16}
-        x={xScaled(selectedDay) - 8}
-        width={16}
-      />
-    </TimelineHeadSVG>
-  );
-}
-
 /**
  * Rescales the given scale according to the given factors.
  * @param scale Scale to rescale
@@ -537,15 +406,4 @@ function rescaleX(scale, x, k) {
 
 function isEqualTransform(t1, t2) {
   return t1.x === t2.x && t1.y === t2.y && t1.k === t2.k;
-}
-
-function getBlockBoundaries(date, timeDensity) {
-  switch (timeDensity) {
-    case 'month':
-      return [startOfMonth(date), endOfMonth(date)];
-    case 'year':
-      return [startOfYear(date), endOfYear(date)];
-  }
-
-  return [startOfDay(date), endOfDay(date)];
 }

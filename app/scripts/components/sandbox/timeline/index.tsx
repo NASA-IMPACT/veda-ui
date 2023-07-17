@@ -1,11 +1,8 @@
-import {
-  CollecticonArrowMove,
-  CollecticonEqual
-} from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
-import React, { useRef } from 'react';
+import React from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styled from 'styled-components';
+
 import Timeline from './timeline';
 
 const Container = styled.div`
@@ -27,9 +24,19 @@ const Container = styled.div`
     position: relative;
     outline: none;
     display: flex;
-    background: ${themeVal('color.base-100')};
+    background: #fff;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 -1px 0 0 ${themeVal('color.base-100')};
+
+    ::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      background: ${themeVal('color.base-200')};
+      height: 0.25rem;
+      border-radius: ${themeVal('shape.ellipsoid')};
+    }
   }
 `;
 
@@ -42,9 +49,7 @@ function SandboxTimeline() {
               Top
             </div>
         </Panel>
-        <PanelResizeHandle className='resize-handle'>
-          <CollecticonEqual />
-        </PanelResizeHandle>
+        <PanelResizeHandle className='resize-handle' />
         <Panel maxSize={75} className='panel'>
           <Timeline />
         </Panel>
