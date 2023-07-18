@@ -67,7 +67,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
           controller
         });
 
-        setFeaturesApiEndpoint(data.links.find((l) => l.rel === 'child').href);
+        setFeaturesApiEndpoint(data.links.find((l) => l.rel === 'external').href);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
