@@ -10,7 +10,7 @@ const TimelineHeadSVG = styled.svg`
   top: 0;
   height: 100%;
   pointer-events: none;
-  z-index: 2000;
+  z-index: 200;
 `;
 
 const dropShadowFilter =

@@ -19,15 +19,21 @@ const Container = styled.div`
     flex-direction: column;
   }
 
+  .panel-timeline {
+    box-shadow: 0 -1px 0 0 ${themeVal('color.base-100')};
+  }
+
   .resize-handle {
-    flex: 0 0 1.5em;
+    flex: 0;
     position: relative;
     outline: none;
     display: flex;
-    background: #fff;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 -1px 0 0 ${themeVal('color.base-100')};
+    width: 5rem;
+    margin: 0 auto -1.25rem auto;
+    padding: 0.25rem 0;
+    z-index: 5000;
 
     ::before {
       content: '';
@@ -50,7 +56,7 @@ function SandboxTimeline() {
             </div>
         </Panel>
         <PanelResizeHandle className='resize-handle' />
-        <Panel maxSize={75} className='panel'>
+        <Panel maxSize={75} className='panel panel-timeline'>
           <Timeline />
         </Panel>
       </PanelGroup>

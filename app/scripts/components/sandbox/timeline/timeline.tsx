@@ -5,13 +5,14 @@ import { Reorder } from 'framer-motion';
 import { ZoomTransform, axisBottom, extent, scaleTime, select, zoom } from 'd3';
 import { add, format, isAfter, isBefore, startOfDay, sub } from 'date-fns';
 import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonPlusSmall } from '@devseed-ui/collecticons';
+import { CollecticonChevronDownSmall, CollecticonPlusSmall } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
+import { Heading } from '@devseed-ui/typography';
+import { DatePicker } from '@devseed-ui/date-picker';
 
 import { extraDataset, datasets as srcDatasets } from './datasets';
 import { DatasetListItem } from './dataset-list-item';
 import {
-  TimelineHead,
   TimelineHeadL,
   TimelineHeadP,
   TimelineHeadR,
@@ -34,8 +35,9 @@ const InteractionRect = styled.div`
   position: absolute;
   inset: 0;
   left: 20rem;
+  top: 3.5rem;
   /* background-color: rgba(255, 0, 0, 0.08); */
-  z-index: 1000;
+  z-index: 100;
 `;
 
 const TimelineHeader = styled.header`
@@ -48,7 +50,7 @@ const TimelineDetails = styled.div`
   width: 20rem;
   flex-shrink: 0;
   box-shadow: 1px 0 0 0 ${themeVal('color.base-200')};
-  padding: ${glsp(0.5)};
+  padding: ${glsp(0.5, 0.5, 0.5, 2)};
 `;
 
 const Headline = styled.div`
@@ -65,6 +67,22 @@ const TimelineControls = styled.div`
 
   .date-axis {
     margin-top: auto;
+  }
+`;
+
+const ControlsToolbar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: ${glsp(1.5, 0.5, 0.5, 0.5)};
+`;
+
+const DatePickerButton = styled(Button)`
+  gap: ${glsp(0.5)};
+
+  .head-reference {
+    font-weight: ${themeVal('type.base.regular')};
+    color: ${themeVal('color.base-400')};
+    font-size: 0.875rem;
   }
 `;
 
@@ -109,7 +127,7 @@ function Timeline() {
 
   const theme = useTheme();
 
-  const [selectedDay, setSelectedDay] = useState<Date>();
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
 
   const [selectedInterval, setSelectedInterval] = useState<{
     start: Date;
@@ -259,7 +277,9 @@ function Timeline() {
       <TimelineHeader>
         <TimelineDetails>
           <Headline>
-            <h2>Datasets</h2>{' '}
+            <Heading as='h2' size='xsmall'>
+              Datasets
+            </Heading>
             <Button
               variation='base-text'
               size='small'
@@ -271,13 +291,48 @@ function Timeline() {
                 );
               }}
             >
-              <CollecticonPlusSmall /> Add
+              <CollecticonPlusSmall meaningful title='Add dataset' />
             </Button>
           </Headline>
           <p>X of Y</p>
         </TimelineDetails>
         <TimelineControls ref={observe}>
-          <div>{selectedDay ? format(selectedDay, 'yyyy-MM-dd') : null}</div>
+          <ControlsToolbar>
+            <DatePicker
+              id='date-picker-p'
+              value={{ start: selectedDay, end: selectedDay }}
+              onConfirm={(d) => {
+                setSelectedDay(d.start);
+              }}
+              renderTriggerElement={(props, label) => (
+                <DatePickerButton {...props} size='small'>
+                  <span className='head-reference'>P</span>
+                  <span>{label}</span>
+                  <CollecticonChevronDownSmall />
+                </DatePickerButton>
+              )}
+            />
+            <DatePicker
+              id='date-picker-lr'
+              value={selectedInterval}
+              onConfirm={(d) => {
+                setSelectedInterval(d);
+              }}
+              isClearable={false}
+              isRange
+              alignment='right'
+              renderTriggerElement={(props) => (
+                <DatePickerButton {...props} size='small'>
+                  <span className='head-reference'>L</span>
+                  <span>{format(selectedInterval.start, 'MMM do, yyyy')}</span>
+                  <span className='head-reference'>R</span>
+                  <span>{format(selectedInterval.end, 'MMM do, yyyy')}</span>
+                  <CollecticonChevronDownSmall />
+                </DatePickerButton>
+              )}
+            />
+          </ControlsToolbar>
+
           <svg className='date-axis' ref={axisSvgRef} width={width} height={32}>
             <g className='x axis' />
           </svg>
