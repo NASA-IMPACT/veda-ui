@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { drag, select } from 'd3';
+import { drag, ScaleTime, select } from 'd3';
 import { clamp, startOfDay } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 const TimelineHeadSVG = styled.svg`
   position: absolute;
   right: 0;
-  top: 0;
-  height: 100%;
+  top: -1rem;
+  height: calc(100% + 1rem);
   pointer-events: none;
   z-index: 200;
 `;
@@ -16,7 +16,16 @@ const TimelineHeadSVG = styled.svg`
 const dropShadowFilter =
   'drop-shadow(0px 2px 2px rgba(44, 62, 80, 0.08)) drop-shadow(0px 0px 4px rgba(44, 62, 80, 0.08))';
 
-export function TimelineHead(props: any) {
+interface TimelineHeadProps {
+  domain: [Date, Date];
+  xScaled: ScaleTime<number, number>;
+  selectedDay: Date;
+  width: number;
+  setSelectedDay: (date: Date) => void;
+  children: React.ReactNode;
+}
+
+export function TimelineHead(props: TimelineHeadProps) {
   const { domain, xScaled, selectedDay, width, setSelectedDay, children } =
     props;
 
@@ -68,15 +77,6 @@ export function TimelineHead(props: any) {
         y2='100%'
         stroke={theme.color?.base}
       />
-      {/* <rect
-        ref={rectRef}
-        fill='none'
-        style={{ pointerEvents: 'all', cursor: 'grab' }}
-        y={0}
-        height={16}
-        x={xScaled(selectedDay) - 8}
-        width={16}
-      /> */}
       <g transform={`translate(${xScaled(selectedDay)}, 0)`} ref={rectRef}>
         {children}
       </g>
@@ -84,13 +84,11 @@ export function TimelineHead(props: any) {
   );
 }
 
-export function TimelineHeadP(props: any) {
+export function TimelineHeadP(props: Omit<TimelineHeadProps, 'children'>) {
   const theme = useTheme();
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  const { children, ...rest } = props;
 
   return (
-    <TimelineHead {...rest}>
+    <TimelineHead {...props}>
       <path
         transform='translate(-14, -4)'
         d='M4 14.6459C4 15.4637 4.4979 16.1992 5.25722 16.5029L13.2572 19.7029C13.734 19.8936 14.266 19.8936 14.7428 19.7029L22.7428 16.5029C23.5021 16.1992 24 15.4637 24 14.6459L24 6C24 4.89543 23.1046 4 22 4L6 4C4.89543 4 4 4.89543 4 6L4 14.6459Z'
@@ -109,13 +107,11 @@ export function TimelineHeadP(props: any) {
   );
 }
 
-export function TimelineHeadL(props: any) {
+export function TimelineHeadL(props: Omit<TimelineHeadProps, 'children'>) {
   const theme = useTheme();
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  const { children, ...rest } = props;
 
   return (
-    <TimelineHead {...rest}>
+    <TimelineHead {...props}>
       <path
         transform='translate(-6, -4)'
         d='M4 6C4 4.89543 4.89543 4 6 4H15.1716C15.702 4 16.2107 4.21071 16.5858 4.58579L22.5858 10.5858C23.3668 11.3668 23.3668 12.6332 22.5858 13.4142L16.5858 19.4142C16.2107 19.7893 15.702 20 15.1716 20H6C4.89543 20 4 19.1046 4 18V6Z'
@@ -134,13 +130,10 @@ export function TimelineHeadL(props: any) {
   );
 }
 
-export function TimelineHeadR(props: any) {
+export function TimelineHeadR(props: Omit<TimelineHeadProps, 'children'>) {
   const theme = useTheme();
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  const { children, ...rest } = props;
-
   return (
-    <TimelineHead {...rest}>
+    <TimelineHead {...props}>
       <path
         transform='translate(-22, -4)'
         d='M24 6C24 4.89543 23.1046 4 22 4H12.8284C12.298 4 11.7893 4.21071 11.4142 4.58579L5.41421 10.5858C4.63316 11.3668 4.63317 12.6332 5.41421 13.4142L11.4142 19.4142C11.7893 19.7893 12.298 20 12.8284 20H22C23.1046 20 24 19.1046 24 18V6Z'
@@ -168,16 +161,24 @@ export function TimelineHeadR(props: any) {
 
 const TimelineRangeTrackSelf = styled.div`
   position: absolute;
+  top: -1rem;
   right: 0;
+  overflow: hidden;
 
   .shaded {
-    position: absolute;
-    background: ${themeVal('color.base-100')};
+    position: relative;
+    background: ${themeVal('color.base-100a')};
     height: 1rem;
   }
 `;
 
-export function TimelineRangeTrack(props: any) {
+interface TimelineRangeTrackProps {
+  range: { start: Date; end: Date };
+  xScaled: ScaleTime<number, number>;
+  width: number;
+}
+
+export function TimelineRangeTrack(props: TimelineRangeTrackProps) {
   const { range, xScaled, width } = props;
 
   const start = xScaled(range.start);

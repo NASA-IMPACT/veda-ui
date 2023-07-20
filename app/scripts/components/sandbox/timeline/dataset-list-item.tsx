@@ -195,17 +195,13 @@ function DatasetTrack(props: any) {
 }
 
 function DatasetTrackBlock(props: any) {
-  const { xScaled, date, dataset, selectedDay, isVisible } = props;
+  const { xScaled, date, dataset, isVisible } = props;
 
   const [start, end] = getBlockBoundaries(date, dataset.timeDensity);
   const s = xScaled(start);
   const e = xScaled(end);
 
-  const isSelected = selectedDay
-    ? isWithinInterval(selectedDay, { start, end })
-    : false;
-
-  const fill = useFillColors(isSelected, isVisible);
+  const fill = useFillColors(isVisible);
 
   return (
     <React.Fragment key={date.getTime()}>
@@ -221,18 +217,11 @@ function DatasetTrackBlock(props: any) {
   );
 }
 
-const useFillColors = (
-  isSelected: boolean,
-  isVisible: boolean
-): string | undefined => {
+const useFillColors = (isVisible: boolean): string | undefined => {
   const theme = useTheme();
 
   if (!isVisible) {
     return theme.color?.['base-200'];
-  }
-
-  if (isSelected) {
-    return theme.color?.primary;
   }
 
   return theme.color?.['base-400'];

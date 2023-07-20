@@ -5,7 +5,10 @@ import { Reorder } from 'framer-motion';
 import { ZoomTransform, axisBottom, extent, scaleTime, select, zoom } from 'd3';
 import { add, format, isAfter, isBefore, startOfDay, sub } from 'date-fns';
 import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonChevronDownSmall, CollecticonPlusSmall } from '@devseed-ui/collecticons';
+import {
+  CollecticonChevronDownSmall,
+  CollecticonPlusSmall
+} from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
 import { DatePicker } from '@devseed-ui/date-picker';
@@ -18,6 +21,7 @@ import {
   TimelineHeadR,
   TimelineRangeTrack
 } from './timeline-head';
+import { DateAxis, DateGrid } from './date-axis';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -33,9 +37,10 @@ const TimelineWrapper = styled.div`
 
 const InteractionRect = styled.div`
   position: absolute;
-  inset: 0;
   left: 20rem;
   top: 3.5rem;
+  bottom: 0;
+  right: 0;
   /* background-color: rgba(255, 0, 0, 0.08); */
   z-index: 100;
 `;
@@ -109,23 +114,13 @@ const DatasetListSelf = styled.ul`
   width: 100%;
 `;
 
-const GridSvg = styled.svg`
-  position: absolute;
-  right: 0;
-  height: 100%;
-  pointer-events: none;
-`;
-
 function Timeline() {
   const [datasets, setDatasets] = useState(srcDatasets);
 
   const { observe, width, height } = useDimensions();
 
   const interactionRef = useRef<HTMLDivElement>(null);
-  const axisSvgRef = useRef<SVGSVGElement>(null);
   const datasetsContainerRef = useRef<HTMLDivElement>(null);
-
-  const theme = useTheme();
 
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
 
@@ -160,10 +155,6 @@ function Timeline() {
   const xScaled = useMemo(() => {
     return rescaleX(xMain, zoomTransform.x, zoomTransform.k);
   }, [xMain, zoomTransform.x, zoomTransform.k]);
-
-  const xAxis = useMemo(() => {
-    return xScaled ? axisBottom(xScaled) : undefined;
-  }, [xScaled]);
 
   const zoomBehavior = useMemo(() => {
     return (
@@ -266,11 +257,6 @@ function Timeline() {
     }
   }, [zoomBehavior, zoomTransform]);
 
-  useEffect(() => {
-    if (!xAxis) return;
-    select(axisSvgRef.current).select<SVGGElement>('.x.axis').call(xAxis);
-  }, [xAxis]);
-
   return (
     <TimelineWrapper>
       <InteractionRect ref={interactionRef} />
@@ -333,9 +319,7 @@ function Timeline() {
             />
           </ControlsToolbar>
 
-          <svg className='date-axis' ref={axisSvgRef} width={width} height={32}>
-            <g className='x axis' />
-          </svg>
+          <DateAxis xScaled={xScaled} width={width} />
         </TimelineControls>
       </TimelineHeader>
       <TimelineContent>
@@ -387,20 +371,8 @@ function Timeline() {
           width={width}
         />
 
-        {xScaled ? (
-          <GridSvg width={width}>
-            {xScaled.ticks().map((tick) => (
-              <line
-                stroke={theme.color?.['base-200']}
-                key={tick.getTime()}
-                x1={xScaled(tick)}
-                y1='0%'
-                x2={xScaled(tick)}
-                y2='100%'
-              />
-            ))}
-          </GridSvg>
-        ) : null}
+        <DateGrid width={width} xScaled={xScaled} />
+
         <TimelineContentInner ref={datasetsContainerRef}>
           <DatasetList
             datasets={datasets}
