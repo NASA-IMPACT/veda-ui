@@ -196,7 +196,10 @@ function DiscoveriesHub() {
                           sources={d.taxonomy.Source}
                           rootPath={DISCOVERIES_PATH}
                           onSourceClick={(id) => {
-                            onAction(Actions.TAXONOMY, { key: 'Source', value: id });
+                            onAction(Actions.TAXONOMY, {
+                              key: 'Source',
+                              value: id
+                            });
                             browseControlsHeaderRef.current?.scrollIntoView();
                           }}
                         />
@@ -246,7 +249,9 @@ function DiscoveriesHub() {
                                   as={Link}
                                   to={`${DISCOVERIES_PATH}?${
                                     Actions.TAXONOMY
-                                  }=${JSON.stringify({ Topics: t.id })}`}
+                                  }=${encodeURIComponent(
+                                    JSON.stringify({ Topics: t.id })
+                                  )}`}
                                   onClick={() => {
                                     browseControlsHeaderRef.current?.scrollIntoView();
                                   }}

@@ -231,7 +231,9 @@ function DataCatalog() {
                                 as={Link}
                                 to={`${DATASETS_PATH}?${
                                   Actions.TAXONOMY
-                                }=${JSON.stringify({ Topics: t.id })}`}
+                                }=${encodeURIComponent(
+                                  JSON.stringify({ Topics: t.id })
+                                )}`}
                                 onClick={(e) => {
                                   e.preventDefault();
                                   onAction(Actions.TAXONOMY, {
