@@ -1,59 +1,34 @@
 # Content
 
 - [Content](#content)
-  - [Taxonomy Index file](#taxonomy-index-file)
-  - [Using a taxonomy in a content type](#using-a-taxonomy-in-a-content-type)
+  - [Adding taxonomies to content](#adding-taxonomies-to-content)
+  - [Specific taxonomies](#specific-taxonomies)
 
-Some of VEDA content types properties are taxonomies.  
-These are identified by their id and linked to the full taxonomy definition on the taxonomy index file.
+VEDA content types, like discoveries and datasets, have taxonomies that can be used to group and filter content.
 
-##  Taxonomy Index file
+##  Adding taxonomies to content
 
-The location of the taxonomy index file is defined through `veda.config.js` and can either be a `json` or `yml` file.  
+A content type can have an arbitrary number of taxonomies which are defined under the `taxonomies` key in the content's frontmatter.  
+The key used to define a taxonomy is the taxonomy's name, and the value is an array of strings that are the taxonomy's values. Because of this it is important the the taxonomy name is written in a human readable way, and that it is consistently used across all content. It is also recommended that taxonomy names are singular.
 
-The different taxonomies are defined as a id keyed list. Each taxonomy item must, at least, have an `id` and `name` properties.  
+For example, the following frontmatter defines two taxonomies, `Topics` and `Source`, with the values `Covid 19`, `Agriculture`, and `Development Seed`:
 
-Example:
-```yml
-# Key of the taxonomy is thematics.
-thematics:
-  - id: water
-    name: Water Quality
-  - id: air
-    name: Air Quality
-
-# Key of the taxonomy is sources.
-sources:
-  - id: devseed
-    name: Development Seed
-    url: https://developmentseed.org
-```
-
-## Using a taxonomy in a content type
-
-To link a content type to a taxonomy, you need to list the different item's `id` under the taxonomy key on your content type.
-
-Example adding `sources` to a dataset:  
 ```yaml
----
-id: my-data
-name: My example dataset
-description: A dataset with sources
-
-sources:
-  - devseed
-  - another-source
-
-layers: # ...
----
-
-<Block>
-  <Prose>
-    ## This is a Dataset
-
-    Once upon a time there was a content string
-  </Prose>
-</Block>
+name: Dataset Name
+taxonomy:
+  Topics:
+    - Covid 19
+    - Agriculture
+  Source:
+    - Development Seed
 ```
 
-If you want to use a taxonomy item that doesn't exist (e.g. a new source) you will need to add it to the taxonomy index file.
+Note how the values are used: starting with a capital letter, and using spaces instead of dashes or underscores. This is because the values are displayed to the user, and should be as readable as possible.
+
+![](./media/taxonomy-filters.png)
+
+## Specific taxonomies
+
+Some taxonomies are specific/reserved for a content type.  
+- Both discoveries and datasets must have a `Topics` taxonomy which will be displayed in a pill on the content card.
+- For discoveries, if the `Source` taxonomy is used, it will be displayed in on the content card.
