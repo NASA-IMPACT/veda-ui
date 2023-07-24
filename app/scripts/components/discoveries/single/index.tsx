@@ -7,6 +7,7 @@ import { PageMainContent } from '$styles/page';
 import RelatedContent from '$components/common/related-content';
 import { DISCOVERIES_PATH } from '$utils/routes';
 import { useDiscovery, allDiscoveriesProps } from '$utils/veda-data';
+import { ContentTaxonomy } from '$components/common/content-taxonomy';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
@@ -43,7 +44,11 @@ function DiscoveriesSingle() {
             attributionAuthor={media?.author?.name}
             attributionUrl={media?.author?.url}
           />
+          
+          <ContentTaxonomy taxonomy={discovery.data.taxonomy} />
+
           <MdxContent loader={discovery.content} />
+          
           {!!related?.length && <RelatedContent related={related} />}
         </article>
       </PageMainContent>
