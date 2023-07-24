@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { mapValues, kebabCase, uniqBy } = require('lodash');
+const { kebabCase, uniqBy } = require('lodash');
 
 /**
  * Converts the taxonomies to an array of objects
@@ -11,9 +11,16 @@ function processTaxonomies(contentType) {
     ...contentType,
     data: contentType.data.map((o) => ({
       ...o,
-      taxonomy: mapValues(o.taxonomy || {}, (val) =>
-        val.map((v) => ({ id: kebabCase(v), name: v }))
-      )
+      taxonomy: (o.taxonomy || [])
+        .map((tx) => {
+          if (!tx.name || !tx.values?.length) return null;
+
+          return {
+            name: tx.name,
+            values: tx.values.map((v) => ({ id: kebabCase(v), name: v }))
+          };
+        })
+        .filter(Boolean)
     }))
   };
 }
@@ -24,14 +31,17 @@ function generateTaxonomiesModuleOutput(data) {
   let taxonomyData = {};
   // for loops are faster than reduces.
   for (const { taxonomy } of data) {
-    for (const [key, value] of Object.entries(taxonomy || {})) {
-      taxonomyData[key] = concat(taxonomyData[key], value);
+    for (const { name, values } of taxonomy) {
+      if (!name || !values?.length) continue;
+
+      taxonomyData[name] = concat(taxonomyData[name], values);
     }
   }
 
-  const taxonomiesUnique = mapValues(taxonomyData, (val) =>
-    uniqBy(val, (t) => t.id)
-  );
+  const taxonomiesUnique = Object.entries(taxonomyData).map(([key, tx]) => ({
+    name: key,
+    values: uniqBy(tx, (t) => t.id)
+  }));
 
   return JSON.stringify(taxonomiesUnique);
 }

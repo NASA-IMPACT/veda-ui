@@ -40,6 +40,11 @@ import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 import { FeaturedDiscoveries } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
+import {
+  getTaxonomy,
+  TAXONOMY_SOURCE,
+  TAXONOMY_TOPICS
+} from '$utils/veda-data';
 
 const allDiscoveries = Object.values(discoveries).map((d) => d!.data);
 
@@ -59,39 +64,53 @@ const sortOptions = [
   { id: 'pubDate', name: 'Date' }
 ];
 
-const prepareDiscoveries = (data: DiscoveryData[], options) => {
+const prepareDiscoveries = (
+  data: DiscoveryData[],
+  options: {
+    search: string;
+    taxonomies: Record<string, string> | null;
+    sortField: string | null;
+    sortDir: string | null;
+  }
+) => {
   const { sortField, sortDir, search, taxonomies } = options;
 
   let filtered = [...data];
 
   // Does the free text search appear in specific fields?
   if (search.length >= 3) {
+    const topicsTaxonomy = discoveryTaxonomies.find(
+      (t) => t.name === TAXONOMY_TOPICS
+    );
     const searchLower = search.toLowerCase();
     filtered = filtered.filter(
       (d) =>
         d.name.toLowerCase().includes(searchLower) ||
         d.description.toLowerCase().includes(searchLower) ||
-        d.taxonomy.Topics?.some((t) =>
+        topicsTaxonomy?.values.some((t) =>
           t.name.toLowerCase().includes(searchLower)
         )
     );
   }
 
-  Object.entries(taxonomies).forEach(([name, value]) => {
-    if (value !== optionAll.id) {
-      const txId = discoveryTaxonomies[name].find((t) => t.id === value)?.id;
-      filtered = filtered.filter(
-        (d) => txId && d.taxonomy[name]?.find((t) => t.id === txId)
-      );
-    }
-  });
+  taxonomies &&
+    Object.entries(taxonomies).forEach(([name, value]) => {
+      if (value !== optionAll.id) {
+        filtered = filtered.filter((d) =>
+          d.taxonomy.some(
+            (t) => t.name === name && t.values.some((v) => v.id === value)
+          )
+        );
+      }
+    });
 
-  /* eslint-disable-next-line fp/no-mutating-methods */
-  filtered.sort((a, b) => {
-    if (!a[sortField]) return Infinity;
+  sortField &&
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    filtered.sort((a, b) => {
+      if (!a[sortField]) return Infinity;
 
-    return a[sortField]?.localeCompare(b[sortField]);
-  });
+      return a[sortField]?.localeCompare(b[sortField]);
+    });
 
   // In the case of the date, ordering is reversed.
   if (sortField === 'pubDate') {
@@ -186,6 +205,7 @@ function DiscoveriesHub() {
           <CardList>
             {displayDiscoveries.map((d) => {
               const pubDate = new Date(d.pubDate);
+              const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
               return (
                 <li key={d.id}>
                   <Card
@@ -193,11 +213,11 @@ function DiscoveriesHub() {
                     overline={
                       <CardMeta>
                         <CardSourcesList
-                          sources={d.taxonomy.Source}
+                          sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                           rootPath={DISCOVERIES_PATH}
                           onSourceClick={(id) => {
                             onAction(Actions.TAXONOMY, {
-                              key: 'Source',
+                              key: TAXONOMY_SOURCE,
                               value: id
                             });
                             browseControlsHeaderRef.current?.scrollIntoView();
@@ -240,10 +260,10 @@ function DiscoveriesHub() {
                     imgAlt={d.media?.alt}
                     footerContent={
                       <>
-                        {d.taxonomy.Topics?.length ? (
+                        {topics?.length ? (
                           <CardTopicsList>
                             <dt>Topics</dt>
-                            {d.taxonomy.Topics.map((t) => (
+                            {topics.map((t) => (
                               <dd key={t.id}>
                                 <Pill
                                   as={Link}

@@ -95,11 +95,13 @@ List of taxonomies and their values. See [taxonomy.md](./TAXONOMY.md).
 Example:
 ```yaml
 taxonomy:
-  Topics:
-    - Covid 19
-    - Agriculture
-  Source:
-    - Development Seed
+  - name: Topics
+    values:
+      - Covid 19
+      - Agriculture
+  - name: Source
+    values:
+      - Development Seed
 ```
 
 **featured**  
@@ -225,11 +227,13 @@ List of taxonomies and their values. See [taxonomy.md](./TAXONOMY.md).
 Example:
 ```yaml
 taxonomy:
-  Topics:
-    - Covid 19
-    - Agriculture
-  Source:
-    - Development Seed
+  - name: Topics
+    values:
+      - Covid 19
+      - Agriculture
+  - name: Source
+    values:
+      - Development Seed
 ```
 
 **featured**  

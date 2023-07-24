@@ -99,7 +99,7 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
             if (val === optionAll.id) {
               setTaxonomies(omit(taxonomies, key));
             } else {
-              setTaxonomies(set({...taxonomies}, key, val));
+              setTaxonomies(set({ ...taxonomies }, key, val));
             }
           }
           break;

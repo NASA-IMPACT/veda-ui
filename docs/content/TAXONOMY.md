@@ -9,18 +9,19 @@ VEDA content types, like discoveries and datasets, have taxonomies that can be u
 ##  Adding taxonomies to content
 
 A content type can have an arbitrary number of taxonomies which are defined under the `taxonomies` key in the content's frontmatter.  
-The key used to define a taxonomy is the taxonomy's name, and the value is an array of strings that are the taxonomy's values. Because of this it is important the the taxonomy name is written in a human readable way, and that it is consistently used across all content. It is also recommended that taxonomy names are singular.
+Each taxonomy is defined by a name, and a list of values. It is important that the taxonomy name and its values are written in a human readable way, and that they are consistently used across all content. It is also recommended that taxonomy names are singular.
 
 For example, the following frontmatter defines two taxonomies, `Topics` and `Source`, with the values `Covid 19`, `Agriculture`, and `Development Seed`:
 
 ```yaml
 name: Dataset Name
-taxonomy:
-  Topics:
-    - Covid 19
-    - Agriculture
-  Source:
-    - Development Seed
+  - name: Topics
+    values:
+      - Covid 19
+      - Agriculture
+  - name: Source
+    values:
+      - Development Seed
 ```
 
 Note how the values are used: starting with a capital letter, and using spaces instead of dashes or underscores. This is because the values are displayed to the user, and should be as readable as possible.

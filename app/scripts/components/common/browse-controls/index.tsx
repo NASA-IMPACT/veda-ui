@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Taxonomy } from 'veda';
 import { Overline } from '@devseed-ui/typography';
 import { Button, ButtonProps } from '@devseed-ui/button';
 import {
@@ -62,7 +63,7 @@ const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
 `;
 
 interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
-  taxonomiesOptions: Record<string, FilterOption[]>;
+  taxonomiesOptions: Taxonomy[];
   sortOptions: FilterOption[];
 }
 
@@ -142,11 +143,11 @@ function BrowseControls(props: BrowseControlsProps) {
         </DropdownScrollable>
       </SearchWrapper>
       <TaxonomyWrapper>
-        {Object.entries(taxonomiesOptions).map(([name, options]) => (
+        {taxonomiesOptions.map(({ name, values }) => (
           <DropdownOptions
             key={name}
             prefix={name}
-            items={[optionAll].concat(options)}
+            items={[optionAll].concat(values)}
             currentId={taxonomies?.[name] ?? 'all'}
             onChange={(v) => {
               onAction(Actions.TAXONOMY, { key: name, value: v });

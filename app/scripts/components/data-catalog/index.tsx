@@ -41,6 +41,11 @@ import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
+import {
+  getTaxonomy,
+  TAXONOMY_SOURCE,
+  TAXONOMY_TOPICS
+} from '$utils/veda-data';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
@@ -57,40 +62,54 @@ const DatasetCount = styled(Subtitle)`
 
 const sortOptions = [{ id: 'name', name: 'Name' }];
 
-const prepareDatasets = (data: DatasetData[], options) => {
+const prepareDatasets = (
+  data: DatasetData[],
+  options: {
+    search: string;
+    taxonomies: Record<string, string> | null;
+    sortField: string | null;
+    sortDir: string | null;
+  }
+) => {
   const { sortField, sortDir, search, taxonomies } = options;
 
   let filtered = [...data];
 
   // Does the free text search appear in specific fields?
   if (search.length >= 3) {
+    const topicsTaxonomy = datasetTaxonomies.find(
+      (t) => t.name === TAXONOMY_TOPICS
+    );
     const searchLower = search.toLowerCase();
     filtered = filtered.filter(
       (d) =>
         d.name.toLowerCase().includes(searchLower) ||
         d.description.toLowerCase().includes(searchLower) ||
         d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower)) ||
-        d.taxonomy.Topics?.some((t) =>
+        topicsTaxonomy?.values.some((t) =>
           t.name.toLowerCase().includes(searchLower)
         )
     );
   }
 
-  Object.entries(taxonomies).forEach(([name, value]) => {
-    if (value !== optionAll.id) {
-      const txId = datasetTaxonomies[name].find((t) => t.id === value)?.id;
-      filtered = filtered.filter(
-        (d) => txId && d.taxonomy[name]?.find((t) => t.id === txId)
-      );
-    }
-  });
+  taxonomies &&
+    Object.entries(taxonomies).forEach(([name, value]) => {
+      if (value !== optionAll.id) {
+        filtered = filtered.filter((d) =>
+          d.taxonomy.some(
+            (t) => t.name === name && t.values.some((v) => v.id === value)
+          )
+        );
+      }
+    });
 
-  /* eslint-disable-next-line fp/no-mutating-methods */
-  filtered.sort((a, b) => {
-    if (!a[sortField]) return Infinity;
+  sortField &&
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    filtered.sort((a, b) => {
+      if (!a[sortField]) return Infinity;
 
-    return a[sortField]?.localeCompare(b[sortField]);
-  });
+      return a[sortField]?.localeCompare(b[sortField]);
+    });
 
   if (sortDir === 'desc') {
     /* eslint-disable-next-line fp/no-mutating-methods */
@@ -177,23 +196,28 @@ function DataCatalog() {
 
         {displayDatasets.length ? (
           <CardList>
-            {displayDatasets.map((d) => (
-              <li key={d.id}>
-                <Card
-                  cardType='cover'
-                  overline={
-                    <CardMeta>
-                      <CardSourcesList
-                        sources={d.taxonomy.Source}
-                        rootPath={DATASETS_PATH}
-                        onSourceClick={(id) => {
-                          onAction(Actions.TAXONOMY, { key: 'Source', id });
-                          browseControlsHeaderRef.current?.scrollIntoView();
-                        }}
-                      />
-                      <VerticalDivider variation='light' />
-                      {/* TODO: Implement modified date: https://github.com/NASA-IMPACT/veda-ui/issues/514 */}
-                      {/* 
+            {displayDatasets.map((d) => {
+              const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
+              return (
+                <li key={d.id}>
+                  <Card
+                    cardType='cover'
+                    overline={
+                      <CardMeta>
+                        <CardSourcesList
+                          sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
+                          rootPath={DATASETS_PATH}
+                          onSourceClick={(id) => {
+                            onAction(Actions.TAXONOMY, {
+                              key: TAXONOMY_SOURCE,
+                              id
+                            });
+                            browseControlsHeaderRef.current?.scrollIntoView();
+                          }}
+                        />
+                        <VerticalDivider variation='light' />
+                        {/* TODO: Implement modified date: https://github.com/NASA-IMPACT/veda-ui/issues/514 */}
+                        {/* 
                       <Link
                         to={`${DATASETS_PATH}?${Actions.SORT_FIELD}=date`}
                         onClick={(e) => {
@@ -203,63 +227,70 @@ function DataCatalog() {
                       >
                         Updated <time dateTime='2023-01-01'>X time ago</time>
                       </Link> */}
-                    </CardMeta>
-                  }
-                  linkLabel='View more'
-                  linkTo={getDatasetPath(d)}
-                  title={
-                    <TextHighlight value={search} disabled={search.length < 3}>
-                      {d.name}
-                    </TextHighlight>
-                  }
-                  description={
-                    <TextHighlight value={search} disabled={search.length < 3}>
-                      {d.description}
-                    </TextHighlight>
-                  }
-                  imgSrc={d.media?.src}
-                  imgAlt={d.media?.alt}
-                  footerContent={
-                    <>
-                      {d.taxonomy.Topics?.length ? (
-                        <CardTopicsList>
-                          <dt>Topics</dt>
-                          {d.taxonomy.Topics.map((t) => (
-                            <dd key={t.id}>
-                              <Pill
-                                variation='achromic'
-                                as={Link}
-                                to={`${DATASETS_PATH}?${
-                                  Actions.TAXONOMY
-                                }=${encodeURIComponent(
-                                  JSON.stringify({ Topics: t.id })
-                                )}`}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  onAction(Actions.TAXONOMY, {
-                                    key: 'Topics',
-                                    value: t.id
-                                  });
-                                  browseControlsHeaderRef.current?.scrollIntoView();
-                                }}
-                              >
-                                <TextHighlight
-                                  value={search}
-                                  disabled={search.length < 3}
+                      </CardMeta>
+                    }
+                    linkLabel='View more'
+                    linkTo={getDatasetPath(d)}
+                    title={
+                      <TextHighlight
+                        value={search}
+                        disabled={search.length < 3}
+                      >
+                        {d.name}
+                      </TextHighlight>
+                    }
+                    description={
+                      <TextHighlight
+                        value={search}
+                        disabled={search.length < 3}
+                      >
+                        {d.description}
+                      </TextHighlight>
+                    }
+                    imgSrc={d.media?.src}
+                    imgAlt={d.media?.alt}
+                    footerContent={
+                      <>
+                        {topics?.length ? (
+                          <CardTopicsList>
+                            <dt>Topics</dt>
+                            {topics.map((t) => (
+                              <dd key={t.id}>
+                                <Pill
+                                  variation='achromic'
+                                  as={Link}
+                                  to={`${DATASETS_PATH}?${
+                                    Actions.TAXONOMY
+                                  }=${encodeURIComponent(
+                                    JSON.stringify({ Topics: t.id })
+                                  )}`}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    onAction(Actions.TAXONOMY, {
+                                      key: TAXONOMY_TOPICS,
+                                      value: t.id
+                                    });
+                                    browseControlsHeaderRef.current?.scrollIntoView();
+                                  }}
                                 >
-                                  {t.name}
-                                </TextHighlight>
-                              </Pill>
-                            </dd>
-                          ))}
-                        </CardTopicsList>
-                      ) : null}
-                      <DatasetMenu dataset={d} />
-                    </>
-                  }
-                />
-              </li>
-            ))}
+                                  <TextHighlight
+                                    value={search}
+                                    disabled={search.length < 3}
+                                  >
+                                    {t.name}
+                                  </TextHighlight>
+                                </Pill>
+                              </dd>
+                            ))}
+                          </CardTopicsList>
+                        ) : null}
+                        <DatasetMenu dataset={d} />
+                      </>
+                    }
+                  />
+                </li>
+              );
+            })}
           </CardList>
         ) : (
           <EmptyHub>

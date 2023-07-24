@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TaxonomyItem } from 'veda';
+import { Taxonomy } from 'veda';
 import { Link } from 'react-router-dom';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Heading, Overline } from '@devseed-ui/typography';
@@ -43,15 +43,13 @@ const TaxonomyList = styled.dl`
 `;
 
 interface ContentTaxonomyProps {
-  taxonomy: Record<string, TaxonomyItem[] | undefined>;
+  taxonomy: Taxonomy[];
 }
 
 export function ContentTaxonomy(props: ContentTaxonomyProps) {
   const { taxonomy } = props;
 
-  const taxonomies = Object.entries(taxonomy) as [string, TaxonomyItem[]][];
-
-  if (!taxonomies.length) return null;
+  if (!taxonomy.length) return null;
 
   return (
     <TaxonomySection>
@@ -60,10 +58,10 @@ export function ContentTaxonomy(props: ContentTaxonomyProps) {
           Taxonomy
         </Heading>
         <TaxonomyList>
-          {taxonomies.map(([key, values]) => (
-            <React.Fragment key={key}>
+          {taxonomy.map(({ name, values }) => (
+            <React.Fragment key={name}>
               <dt>
-                <Overline>{key}</Overline>
+                <Overline>{name}</Overline>
               </dt>
               <dd>
                 {values.map((t) => (
@@ -72,7 +70,7 @@ export function ContentTaxonomy(props: ContentTaxonomyProps) {
                     as={Link}
                     to={`${DATASETS_PATH}?${
                       Actions.TAXONOMY
-                    }=${encodeURIComponent(JSON.stringify({ [key]: t.id }))}`}
+                    }=${encodeURIComponent(JSON.stringify({ [name]: t.id }))}`}
                   >
                     {t.name}
                   </Pill>
