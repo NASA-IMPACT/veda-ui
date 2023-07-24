@@ -125,7 +125,7 @@ const PageHeroSelf = styled.div<PageHeroSelfProps>`
   }
 `;
 
-const PageHeroInner = styled(Constrainer)`
+const PageHeroInner = styled(Constrainer)<{ isStuck: boolean }>`
   align-items: end;
   transition: padding ${HEADER_TRANSITION_DURATION}ms ease-out;
 
