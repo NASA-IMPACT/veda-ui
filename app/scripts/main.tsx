@@ -38,6 +38,8 @@ const Sandbox = lazy(() => import('$components/sandbox'));
 
 const UserPagesComponent = lazy(() => import('$components/user-pages'));
 
+const PublicationTool = lazy(() => import('$components/publication-tool'));
+
 // Handle wrong types from devseed-ui.
 const DevseedUiThemeProvider = DsTp as any;
 
@@ -110,7 +112,10 @@ function Root() {
                 <Route path='development' element={<Development />} />
 
                 {process.env.NODE_ENV !== 'production' && (
-                  <Route path='/sandbox/*' element={<Sandbox />} />
+                  <>
+                    <Route path='/sandbox/*' element={<Sandbox />} />
+                    <Route path='/publication-tool/*' element={<PublicationTool />} />
+                  </>
                 )}
 
                 {/* Legacy: Routes related to thematic areas redirect. */}

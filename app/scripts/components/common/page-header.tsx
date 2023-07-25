@@ -424,6 +424,16 @@ function PageHeader() {
                       Data Stories
                     </GlobalMenuLink>
                   </li>
+                  {process.env.NODE_ENV !== 'production' && (
+                    <li>
+                      <GlobalMenuLink
+                        to='publication-tool'
+                        onClick={closeNavOnClick}
+                      >
+                        Publication Tool
+                      </GlobalMenuLink>
+                    </li>
+                  )}
                 </GlobalMenu>
               </SectionsNavBlock>
               <SectionsNavBlock>
