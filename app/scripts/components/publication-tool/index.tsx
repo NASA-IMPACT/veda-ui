@@ -8,6 +8,7 @@ import DataStoryEditor from './data-story-editor';
 import { LayoutProps } from '$components/common/layout-root';
 import { resourceNotFound } from '$components/uhoh';
 import PageHero from '$components/common/page-hero';
+import { LocalMenu } from '$components/common/page-local-nav';
 import {
   Fold,
   FoldHeader,
@@ -77,6 +78,7 @@ function DataStoryEditorLayout() {
       })),
     [dataStories]
   );
+  console.log('items', items);
 
   return (
     <>
@@ -87,7 +89,25 @@ function DataStoryEditorLayout() {
           parentLabel: 'Publication Tool',
           parentTo: '/publication-tool',
           items,
-          currentId: pId
+          currentId: pId,
+          localMenuCmp: (
+            <LocalMenu
+              options={[
+                {
+                  label: 'Editor',
+                  to: `/publication-tool/${page.frontmatter.id}`
+                },
+                {
+                  label: 'Metadata',
+                  to: `/publication-tool/${page.frontmatter.id}/metadata`
+                },
+                {
+                  label: 'Export',
+                  to: `/publication-tool/${page.frontmatter.id}/export`
+                }
+              ]}
+            />
+          )
         }}
       />
 

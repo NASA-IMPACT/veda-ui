@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 import { Link, NavLink, useMatch } from 'react-router-dom';
@@ -91,7 +91,7 @@ const NavBlock = styled(ShadowScrollbar)`
   }
 `;
 
-const LocalMenu = styled.ul`
+const LocalMenuWrapper = styled.ul`
   ${listReset()}
   display: flex;
   flex-flow: row nowrap;
@@ -172,7 +172,6 @@ const pagePath = '/datasets/:dataId/:page';
 function PageLocalNav(props) {
   const { localMenuCmp, parentName, parentLabel, parentTo, items, currentId } =
     props;
-
   // Keep the url structure on dataset pages
   const datasetPageMatch = useMatch(pagePath);
   const currentPage = datasetPageMatch ? datasetPageMatch.params.page : '';
@@ -247,24 +246,49 @@ PageLocalNav.propTypes = {
 export function DatasetsLocalMenu(props) {
   const { dataset } = props;
 
-  return (
-    <NavBlock>
-      <LocalMenu>
-        <li>
-          <LocalMenuLink to={getDatasetPath(dataset.data)} end>
-            Overview
-          </LocalMenuLink>
-        </li>
-        <li>
-          <LocalMenuLink to={getDatasetExplorePath(dataset.data)} end>
-            Exploration
-          </LocalMenuLink>
-        </li>
-      </LocalMenu>
-    </NavBlock>
-  );
+  const options = useMemo(() => {
+    const datasetPath = getDatasetPath(dataset.data);
+    const datasetExplorePath = getDatasetExplorePath(dataset.data);
+    return [
+      {
+        label: 'Overview',
+        to: datasetPath
+      },
+      {
+        label: 'Exploration',
+        to: datasetExplorePath
+      }
+    ];
+  }, [dataset]);
+
+  return <LocalMenu options={options} />;
 }
 
 DatasetsLocalMenu.propTypes = {
   dataset: T.object
+};
+
+export function LocalMenu({ options }) {
+  return (
+    <NavBlock>
+      <LocalMenuWrapper>
+        {options.map((option) => (
+          <li key={option.to}>
+            <LocalMenuLink to={option.to} end>
+              {option.label}
+            </LocalMenuLink>
+          </li>
+        ))}
+      </LocalMenuWrapper>
+    </NavBlock>
+  );
+}
+
+LocalMenu.propTypes = {
+  options: T.arrayOf(
+    T.shape({
+      label: T.string,
+      to: T.string
+    })
+  )
 };
