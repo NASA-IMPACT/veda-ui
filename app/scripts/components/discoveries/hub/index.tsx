@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { DiscoveryData, discoveries, discoveryTaxonomies } from 'veda';
+import { DiscoveryData, discoveries, discoveryTaxonomies, getString } from 'veda';
 import { glsp } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
@@ -155,11 +155,11 @@ function DiscoveriesHub() {
   return (
     <PageMainContent>
       <LayoutProps
-        title='Data Stories'
+        title={getString('stories').plural}
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
       />
       <PageHero
-        title='Data Stories'
+        title={getString('stories').plural}
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
       />
 
@@ -186,8 +186,8 @@ function DiscoveriesHub() {
           <span>
             Showing{' '}
             <Pluralize
-              singular='data story'
-              plural='data stories'
+              singular={getString('stories').singular}
+              plural={getString('stories').plural}
               count={displayDiscoveries.length}
               showCount={true}
             />{' '}

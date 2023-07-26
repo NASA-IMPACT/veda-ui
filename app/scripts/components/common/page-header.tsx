@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
-import { userPages, getOverride } from 'veda';
+import { userPages, getOverride, getString } from 'veda';
 import {
   glsp,
   listReset,
@@ -421,7 +421,7 @@ function PageHeader() {
                       to={DISCOVERIES_PATH}
                       onClick={closeNavOnClick}
                     >
-                      Data Stories
+                      {getString('stories').plural}
                     </GlobalMenuLink>
                   </li>
                 </GlobalMenu>

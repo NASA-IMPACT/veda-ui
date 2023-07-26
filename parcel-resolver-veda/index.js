@@ -196,7 +196,8 @@ module.exports = new Resolver({
             result.pageOverrides,
             root,
             logger
-          )}
+          )},
+          strings: ${JSON.stringify(result.strings) || null}
         };
 
         export const theme = ${JSON.stringify(result.theme) || null};
@@ -210,8 +211,11 @@ module.exports = new Resolver({
         )}
 
         export const getOverride = (key) => config.pageOverrides[key];
+
         export const userPages = Object.keys(config.pageOverrides)
           .filter((k) => k.startsWith('/'));
+
+        export const getString = (variable) => config.strings[variable];
 
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
         export const discoveries = ${generateMdxDataObject(

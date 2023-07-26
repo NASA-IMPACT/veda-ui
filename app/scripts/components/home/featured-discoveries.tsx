@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { listReset, media } from '@devseed-ui/theme-provider';
-import { discoveries } from 'veda';
+import { discoveries, getString } from 'veda';
 
 import { Card } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle, FoldBody } from '$components/common/fold';
@@ -67,7 +67,7 @@ function FeaturedDiscoveries() {
   return (
     <Fold>
       <FoldHeader>
-        <FoldTitle>Featured Data Stories</FoldTitle>
+        <FoldTitle>Featured {getString('stories').plural}</FoldTitle>
       </FoldHeader>
       <FoldBody>
         {featuredDiscoveries.length ? (
@@ -80,7 +80,7 @@ function FeaturedDiscoveries() {
                     linkLabel='View more'
                     linkTo={getDiscoveryPath(d)}
                     title={d.name}
-                    parentName='Data Story'
+                    parentName={getString('stories').singular}
                     parentTo={DISCOVERIES_PATH}
                     description={i === 0 ? d.description : undefined}
                     date={d.pubDate ? new Date(d.pubDate) : undefined}

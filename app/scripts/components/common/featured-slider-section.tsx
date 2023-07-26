@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DatasetData, DiscoveryData, datasets, discoveries } from 'veda';
+import { DatasetData, DiscoveryData, datasets, discoveries, getString } from 'veda';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import PublishedDate from './pub-date';
@@ -144,7 +144,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
 export function FeaturedDiscoveries() {
   return (
     <FeaturedSliderSection
-      title='Featured Data Stories'
+      title={`Featured ${getString('stories').plural}`}
       featuredItems={allFeaturedDiscoveries}
       getItemPath={getDiscoveryPath}
       dateProperty='pubDate'

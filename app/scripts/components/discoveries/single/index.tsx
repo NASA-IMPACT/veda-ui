@@ -1,4 +1,5 @@
 import React, { lazy } from 'react';
+import { getString } from 'veda';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
@@ -25,8 +26,8 @@ function DiscoveriesSingle() {
         description={discovery.data.description}
         thumbnail={media?.src}
         localNavProps={{
-          parentName: 'Data Story',
-          parentLabel: 'Data Stories',
+          parentName: getString('stories').singular,
+          parentLabel: getString('stories').plural,
           parentTo: DISCOVERIES_PATH,
           items: allDiscoveriesProps,
           currentId: discovery.data.id

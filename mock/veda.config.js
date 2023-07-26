@@ -9,5 +9,13 @@ module.exports = {
     '/disclaimer': './custom-pages/disclaimer.mdx',
     '/custom-page': './custom-pages/custom.mdx',
     '/aparam/:id': './custom-pages/aparam.mdx'
+  },
+
+  strings: {
+    stories: {
+      plural: 'Stories',
+      singular: 'Story',
+      zero: 'Stories'
+    }
   }
 };
