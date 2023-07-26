@@ -77,19 +77,18 @@ const prepareDatasets = (
 
   // Does the free text search appear in specific fields?
   if (search.length >= 3) {
-    const topicsTaxonomy = datasetTaxonomies.find(
-      (t) => t.name === TAXONOMY_TOPICS
-    );
     const searchLower = search.toLowerCase();
-    filtered = filtered.filter(
-      (d) =>
+    filtered = filtered.filter((d) => {
+      const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
+      return (
         d.name.toLowerCase().includes(searchLower) ||
         d.description.toLowerCase().includes(searchLower) ||
         d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower)) ||
         topicsTaxonomy?.values.some((t) =>
           t.name.toLowerCase().includes(searchLower)
         )
-    );
+      );
+    });
   }
 
   taxonomies &&
