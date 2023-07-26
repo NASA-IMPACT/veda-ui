@@ -1,31 +1,28 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useAtom } from 'jotai';
-import { useParams } from 'react-router';
 import EditorBlock from './editor-block';
-import { DataStoriesAtom } from '.';
+import { useCurrentDataStory } from './atoms';
+import Editor from './editor';
 import { PageMainContent } from '$styles/page';
 
 export default function DataStoryEditor() {
-  const { storyId } = useParams();
-  const [dataStories, setDataStories] = useAtom(DataStoriesAtom);
-  const story = dataStories.find((s) => s.frontmatter.id === storyId);
+  const currentDataStory = useCurrentDataStory();
   const [currentHighlightedBlockId, setCurrentHighlightedBlockId] =
     useState<string>();
 
   return (
     <>
-      {story?.currentBlockId &&
-        document.getElementById(`block${story?.currentBlockId}`) &&
+      {currentDataStory?.currentBlockId &&
+        document.getElementById(`block${currentDataStory?.currentBlockId}`) &&
         createPortal(
-          <div>Insert editor here</div>,
+          <Editor />,
           document.getElementById(
-            `block${story?.currentBlockId}`
+            `block${currentDataStory?.currentBlockId}`
           ) as HTMLElement
         )}
       <PageMainContent>
         <article>
-          {story?.blocks.map((block) => {
+          {currentDataStory?.blocks.map((block) => {
             return (
               <EditorBlock
                 key={block.id}

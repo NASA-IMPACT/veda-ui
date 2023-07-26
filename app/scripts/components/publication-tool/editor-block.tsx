@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSetAtom } from 'jotai';
+import React, { useEffect, useMemo, useState } from 'react';
 import { evaluate } from '@mdx-js/mdx';
 import { Button, ButtonGroup } from '@devseed-ui/button';
 import styled from 'styled-components';
@@ -9,8 +8,7 @@ import * as runtime from 'react/jsx-runtime';
 import { useMDXComponents } from '@mdx-js/react';
 import MDXRenderer from './mdx-renderer';
 import { MDXBlockWithError } from './block-with-error';
-import { DataStoriesAtom } from '.';
-import { useParams } from 'react-router';
+import { useSetCurrentBlock } from './atoms';
 
 interface useMDXReturnProps {
   source: string;
@@ -88,7 +86,6 @@ export default function EditorBlock({
   onHighlight: (id: string) => void;
   highlighted: boolean;
 }) {
-  const { storyId } = useParams();
   const { result, error } = useMDX(mdx);
   const errorHumanReadable = useMemo(() => {
     if (!error) return null;
@@ -96,17 +93,8 @@ export default function EditorBlock({
     return { message: `At line ${line - 1}: ${message}` };
   }, [error]);
 
-  const setDataStories = useSetAtom(DataStoriesAtom);
-  const onEditClick = useCallback(() => {
-    setDataStories((oldDataStories) => {
-      const newDataStories = [...oldDataStories];
-      const storyIndex = newDataStories.findIndex(
-        (s) => s.frontmatter.id === storyId
-      );
-      newDataStories[storyIndex].currentBlockId = id;
-      return newDataStories;
-    });
-  }, [id, setDataStories, storyId]);
+  const onEditClick = useSetCurrentBlock(id);
+
   return error ? (
     <MDXBlockWithError error={errorHumanReadable} />
   ) : (
@@ -118,7 +106,7 @@ export default function EditorBlock({
       {highlighted && (
         <MDXRendererActions>
           <ButtonGroup>
-            <Button onClick={onEditClick}>Edit</Button>
+            <Button onClick={onEditClick}>Edit MDX</Button>
             <Button>Remove</Button>
             <Button>Move up</Button>
             <Button>Move down</Button>

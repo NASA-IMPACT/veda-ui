@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
 import { Route, Routes, useParams } from 'react-router';
 import { useAtomValue } from 'jotai';
-import { atomWithStorage } from 'jotai/utils';
 import { Button, ButtonGroup } from '@devseed-ui/button';
-import { DataStory } from './types';
 import DataStoryEditor from './data-story';
+import { DataStoriesAtom } from './atoms';
 import { LayoutProps } from '$components/common/layout-root';
 import { resourceNotFound } from '$components/uhoh';
 import PageHero from '$components/common/page-hero';
@@ -16,80 +15,6 @@ import {
   FoldTitle
 } from '$components/common/fold';
 import { PageMainContent } from '$styles/page';
-
-export const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
-  {
-    frontmatter: {
-      id: 'example-data-story',
-      name: 'Example Data Story',
-      description: 'This is an example data story',
-      sources: [],
-      thematics: [],
-      pubDate: '2023-01-01'
-    },
-    currentBlockId: '1',
-    blocks: [
-      {
-        id: '1',
-        tag: 'Block',
-        mdx: `
-          <Prose>
-          ### Your markdown header
-      
-          Your markdown contents comes here.
-
-          <Map
-          datasetId='no2'
-          layerId='no2-monthly'
-          center={[120.11, 34.95]}
-          zoom={4.5}
-          dateTime='2020-02-01'
-          compareDateTime='2022-02-01'
-        />
-        <Caption 
-          attrAuthor='NASA' 
-          attrUrl='https://nasa.gov/'
-        >
-          Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
-        </Caption> 
-        </Prose>`
-      },
-      {
-        id: '2',
-        tag: 'Block',
-        mdx: `
-          <Prose>
-          ### Second header
-      
-          Let's tell a story of _data_.
-          
-        </Prose>`
-      }
-    ]
-  },
-  {
-    frontmatter: {
-      id: 'example-data-story-2',
-      name: 'Example Data Story 2',
-      description: 'This is an example data story',
-      sources: [],
-      thematics: [],
-      pubDate: '2023-01-01'
-    },
-    blocks: [
-      {
-        id: '1',
-        tag: 'Block',
-        mdx: `
-          <Prose>
-          ### Your markdown header
-      
-          Your markdown contents comes here.
-        </Prose>`
-      }
-    ]
-  }
-]);
 
 function DataStoryEditorLayout() {
   const { storyId } = useParams();
