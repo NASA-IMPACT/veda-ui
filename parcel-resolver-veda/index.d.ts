@@ -126,7 +126,7 @@ declare module 'veda' {
    * editors can curate contents per each category with their ids
    */
   export interface RelatedContentData {
-    type: 'dataset' | 'discovery';
+    type: 'dataset' | 'story';
     id: string;
     thematic?: string;
   }
@@ -152,13 +152,13 @@ declare module 'veda' {
   }
 
   // ///////////////////////////////////////////////////////////////////////////
-  //  Discoveries                                                             //
+  //  Stories                                                             //
   // ///////////////////////////////////////////////////////////////////////////
 
   /**
-   * Data structure for the Discoveries frontmatter.
+   * Data structure for the Stories frontmatter.
    */
-  export interface DiscoveryData {
+  export interface StoryData {
     featured?: boolean;
     id: string;
     name: string;
@@ -217,10 +217,10 @@ declare module 'veda' {
   export const datasets: VedaData<DatasetData>;
 
   /**
-   * Named exports: discoveries.
-   * Object with all the veda discoveries keyed by the discovery id.
+   * Named exports: stories.
+   * Object with all the veda stories keyed by the story id.
    */
-  export const discoveries: VedaData<DiscoveryData>;
+  export const stories: VedaData<StoryData>;
 
   /**
    * Named exports: datasetTaxonomies.
@@ -229,10 +229,10 @@ declare module 'veda' {
   export const datasetTaxonomies: Taxonomy[];
 
   /**
-   * Named exports: discoveryTaxonomies.
-   * Array with all the veda discovery taxonomies.
+   * Named exports: storyTaxonomies.
+   * Array with all the veda story taxonomies.
    */
-  export const discoveryTaxonomies: Taxonomy[];
+  export const storyTaxonomies: Taxonomy[];
 
   export type PageOverrides =
     | 'aboutContent'

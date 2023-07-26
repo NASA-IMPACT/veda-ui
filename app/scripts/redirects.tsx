@@ -1,11 +1,11 @@
 import React from 'react';
 import { Navigate, Route, useParams } from 'react-router';
 
-import { DISCOVERIES_PATH } from '$utils/routes';
+import { STORIES_PATH } from '$utils/routes';
 
-function ThematicDiscoveryRedirect() {
+function DiscoveryRedirect() {
   const { discoveryId } = useParams();
-  return <Navigate replace to={`/discoveries/${discoveryId}`} />;
+  return <Navigate replace to={`/${STORIES_PATH}/${discoveryId}`} />;
 }
 
 function ThematicDatasetRedirect({ explore = false }: { explore?: boolean }) {
@@ -24,12 +24,9 @@ export const thematicRoutes = (
 
     <Route
       path='discoveries'
-      element={<Navigate replace to={DISCOVERIES_PATH} />}
+      element={<Navigate replace to={STORIES_PATH} />}
     />
-    <Route
-      path='discoveries/:discoveryId'
-      element={<ThematicDiscoveryRedirect />}
-    />
+    <Route path='discoveries/:discoveryId' element={<DiscoveryRedirect />} />
 
     <Route path='datasets' element={<Navigate replace to='/data-catalog' />} />
     <Route path='datasets/:datasetId' element={<ThematicDatasetRedirect />} />
@@ -43,5 +40,15 @@ export const thematicRoutes = (
       element={<Navigate replace to='/analysis/results' />}
     />
     <Route path='*' element={<Navigate replace to='/' />} />
+  </Route>
+);
+
+export const discoveryRoutes = (
+  <Route path='/'>
+    <Route
+      path='discoveries'
+      element={<Navigate replace to={STORIES_PATH} />}
+    />
+    <Route path='discoveries/:discoveryId' element={<DiscoveryRedirect />} />
   </Route>
 );

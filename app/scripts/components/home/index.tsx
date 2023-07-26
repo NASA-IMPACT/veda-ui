@@ -9,7 +9,7 @@ import { getOverride } from 'veda';
 
 import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
 
-import FeaturedDiscoveries from './featured-discoveries';
+import FeaturedStories from './featured-stories';
 import ValueProposition from './value-propostion';
 import Audience from './audience';
 
@@ -160,7 +160,7 @@ function RootHome() {
       <ContentOverride with='homeContent'>
         <Audience />
 
-        <FeaturedDiscoveries />
+        <FeaturedStories />
 
         <ValueProposition />
       </ContentOverride>

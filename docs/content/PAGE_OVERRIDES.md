@@ -9,7 +9,7 @@
 To adapt the Veda dashboard to the individual needs of you instance, some content/component overrides are provided. These overrides allow you to alter certain parts of the application, or inject code without having to fork the UI part of veda.
 
 There are essentially 2 types of possible overrides:
-- `Content Overrides` - allow you to change the default content of a page. Like with the different content types (discoveries, datasets), you'll have access to all [MDX_BLOCK.md](./MDX_BLOCKS.md). Depending on the content override you'll also be able to provide some frontmatter variables. The name of the override config variable will follow the `<name>Content` scheme.
+- `Content Overrides` - allow you to change the default content of a page. Like with the different content types (stories, datasets), you'll have access to all [MDX_BLOCK.md](./MDX_BLOCKS.md). Depending on the content override you'll also be able to provide some frontmatter variables. The name of the override config variable will follow the `<name>Content` scheme.
 - `Component Overrides` - allow you to alter a specific component of the app, by providing new javascript code for it (advanced usage). No Mdx Blocks are available.
 
 > 🍀 Although it is not an override, custom pages are also defined under the `pageOverrides` key. See [CUSTOM_PAGES.md](./CUSTOM_PAGES.md) form more information.
@@ -74,7 +74,7 @@ title: Welcome to VEDA
 description: A dashboard to explore and visualize earth data
 ---
 
-import FeaturedDiscoveries from "$veda-ui-scripts/components/home/featured-discoveries";
+import FeaturedStories from "$veda-ui-scripts/components/home/featured-stories";
 
 <Block>
   <Prose>
@@ -84,10 +84,10 @@ import FeaturedDiscoveries from "$veda-ui-scripts/components/home/featured-disco
   </Prose>
 </Block>
 
-<FeaturedDiscoveries />
+<FeaturedStories />
 ```
 
-> 🧑‍🏫 You can import and use the `FeaturedDiscoveries` component to include a section listing the discoveries with the `featured` flag. It is important that this component is not inside a `Block`.
+> 🧑‍🏫 You can import and use the `FeaturedStories` component to include a section listing the stories with the `featured` flag. It is important that this component is not inside a `Block`.
 
 ### headerBrand
 `Component Override`  

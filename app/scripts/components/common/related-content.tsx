@@ -3,17 +3,17 @@ import styled from 'styled-components';
 import { media } from '@devseed-ui/theme-provider';
 
 import {
-  discoveries,
+  stories,
   datasets,
   Media,
   RelatedContentData,
-  DiscoveryData
+  StoryData
 } from 'veda';
 import { utcString2userTzDate } from '$utils/date';
 import {
   getDatasetPath,
-  getDiscoveryPath,
-  DISCOVERIES_PATH,
+  getStoryPath,
+  STORIES_PATH,
   DATASETS_PATH
 } from '$utils/routes';
 import { Card, CardList } from '$components/common/card';
@@ -22,11 +22,11 @@ import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlock } from '$styles/content-block';
 
 const datasetString = 'dataset';
-const discoveryString = 'discovery';
+const storyString = 'story';
 
 const contentCategory = {
   [datasetString]: datasets,
-  [discoveryString]: discoveries
+  [storyString]: stories
 };
 
 const TwoColumnCardList = styled(CardList)`
@@ -60,10 +60,10 @@ function formatUrl(id: string, parent: string) {
         parentLink: DATASETS_PATH,
         link: getDatasetPath(id)
       };
-    case discoveryString:
+    case storyString:
       return {
-        parentLink: DISCOVERIES_PATH,
-        link: getDiscoveryPath(id)
+        parentLink: STORIES_PATH,
+        link: getStoryPath(id)
       };
     default:
       throw Error('Something went wrong with parent data of related content.');
@@ -109,7 +109,7 @@ function formatContents(relatedData: RelatedContentData[]) {
       id,
       name,
       description,
-      date: (matchingContent as DiscoveryData).pubDate,
+      date: (matchingContent as StoryData).pubDate,
       media,
       type
     });
@@ -144,7 +144,7 @@ export default function RelatedContent(props: RelatedContentProps) {
                 linkTo={t.link}
                 title={t.name}
                 date={
-                  t.parent === discoveryString
+                  t.parent === storyString
                     ? utcString2userTzDate(t.date)
                     : undefined
                 }

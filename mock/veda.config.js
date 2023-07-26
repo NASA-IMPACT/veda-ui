@@ -1,6 +1,6 @@
 module.exports = {
   datasets: './datasets/*.data.mdx',
-  discoveries: './discoveries/*.discoveries.mdx',
+  stories: './stories/*.stories.mdx',
 
   pageOverrides: {
     aboutContent: './about.mdx',

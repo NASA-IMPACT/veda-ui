@@ -29,7 +29,7 @@ import { Tip } from './tip';
 import UnscrollableBody from './unscrollable-body';
 import { variableGlsp } from '$styles/variable-utils';
 import {
-  DISCOVERIES_PATH,
+  STORIES_PATH,
   DATASETS_PATH,
   ANALYSIS_PATH,
   ABOUT_PATH
@@ -418,7 +418,7 @@ function PageHeader() {
                   </li>
                   <li>
                     <GlobalMenuLink
-                      to={DISCOVERIES_PATH}
+                      to={STORIES_PATH}
                       onClick={closeNavOnClick}
                     >
                       {getString('stories').plural}
