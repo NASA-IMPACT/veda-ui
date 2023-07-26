@@ -27,11 +27,13 @@ export const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
       thematics: [],
       pubDate: '2023-01-01'
     },
+    currentBlockId: '1',
     blocks: [
       {
+        id: '1',
         tag: 'Block',
         mdx: `
-          <<Prose>
+          <Prose>
           ### Your markdown header
       
           Your markdown contents comes here.
@@ -53,9 +55,10 @@ export const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
         </Prose>`
       },
       {
+        id: '2',
         tag: 'Block',
         mdx: `
-          <Prose />
+          <Prose>
           ### Second header
       
           Let's tell a story of _data_.
@@ -75,6 +78,7 @@ export const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
     },
     blocks: [
       {
+        id: '1',
         tag: 'Block',
         mdx: `
           <Prose>
@@ -88,10 +92,10 @@ export const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
 ]);
 
 function DataStoryEditorLayout() {
-  const { pId } = useParams();
+  const { storyId } = useParams();
   const dataStories = useAtomValue(DataStoriesAtom);
 
-  const page = dataStories.find((p) => p.frontmatter.id === pId);
+  const page = dataStories.find((p) => p.frontmatter.id === storyId);
   if (!page) throw resourceNotFound();
 
   const items = useMemo(
@@ -113,7 +117,7 @@ function DataStoryEditorLayout() {
           parentLabel: 'Publication Tool',
           parentTo: '/publication-tool',
           items,
-          currentId: pId,
+          currentId: storyId,
           localMenuCmp: (
             <LocalMenu
               options={[
@@ -147,7 +151,7 @@ function PublicationTool() {
   const dataStories = useAtomValue(DataStoriesAtom);
   return (
     <Routes>
-      <Route path=':pId' element={<DataStoryEditorLayout />} />
+      <Route path=':storyId' element={<DataStoryEditorLayout />} />
       <Route
         index
         element={
