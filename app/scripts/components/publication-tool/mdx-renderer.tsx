@@ -30,7 +30,6 @@ const COMPONENTS = {
   Link: SmartLink
 };
 
-
 interface MDXRendererProps {
   result: MDXContent | null;
 }

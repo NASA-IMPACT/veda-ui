@@ -4,7 +4,7 @@ import { generalErrorMessage } from '../common/blocks/block-constant';
 import { HintedErrorDisplay, docsMessage } from '$utils/hinted-error';
 import { BlockComponent } from '$components/common/blocks';
 
-const MDXBlockError = ({ error }: any) => {
+export const MDXBlockError = ({ error }: any) => {
   return (
     <HintedErrorDisplay
       title={generalErrorMessage}

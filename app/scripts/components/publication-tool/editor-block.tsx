@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { evaluate } from '@mdx-js/mdx';
 import { MDXContent } from 'mdx/types';
 import remarkGfm from 'remark-gfm';
 import * as runtime from 'react/jsx-runtime';
 import { useMDXComponents } from '@mdx-js/react';
 import MDXRenderer from './mdx-renderer';
+import { MDXBlockWithError } from './block-with-error';
 
 
 interface useMDXReturnProps {
@@ -38,7 +39,6 @@ const useMDX = (source: string) => {
         return { ...oldState, source, result, error: null };
       });
     } catch (error) {
-      console.log(error);
       setState((oldState) => {
         return { ...oldState, source, result: null, error };
       });
@@ -54,9 +54,12 @@ const useMDX = (source: string) => {
 
 export default function EditorBlock({ mdx }: { mdx: string }) {
   const { result, error } = useMDX(mdx);
-  console.log(error)
-  return (
-    <MDXRenderer result={result} />
-  );
+  const errorHumanReadable = useMemo(() => {
+    if (!error) return null;
+    const { line, message } = JSON.parse(JSON.stringify(error));
+    return { message: `At line ${line - 1}: ${message}` };
+  }, [error]);
+
+  return error ? <MDXBlockWithError error={errorHumanReadable} /> : <MDXRenderer result={result} />;
 }
 

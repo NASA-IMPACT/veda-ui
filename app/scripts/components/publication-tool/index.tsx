@@ -31,19 +31,35 @@ export const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
       {
         tag: 'Block',
         mdx: `
-          <Prose>
+          <<Prose>
           ### Your markdown header
       
           Your markdown contents comes here.
+
+          <Map
+          datasetId='no2'
+          layerId='no2-monthly'
+          center={[120.11, 34.95]}
+          zoom={4.5}
+          dateTime='2020-02-01'
+          compareDateTime='2022-02-01'
+        />
+        <Caption 
+          attrAuthor='NASA' 
+          attrUrl='https://nasa.gov/'
+        >
+          Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
+        </Caption> 
         </Prose>`
       },
       {
         tag: 'Block',
         mdx: `
-          <Prose>
+          <Prose />
           ### Second header
       
           Let's tell a story of _data_.
+          
         </Prose>`
       }
     ]
