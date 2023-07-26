@@ -4,7 +4,7 @@ import { useAtomValue } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { Button, ButtonGroup } from '@devseed-ui/button';
 import { DataStory } from './types';
-import DataStoryEditor from './data-story-editor';
+import DataStoryEditor from './data-story';
 import { LayoutProps } from '$components/common/layout-root';
 import { resourceNotFound } from '$components/uhoh';
 import PageHero from '$components/common/page-hero';
@@ -17,7 +17,7 @@ import {
 } from '$components/common/fold';
 import { PageMainContent } from '$styles/page';
 
-const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
+export const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
   {
     frontmatter: {
       id: 'example-data-story',
@@ -35,6 +35,15 @@ const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
           ### Your markdown header
       
           Your markdown contents comes here.
+        </Prose>`
+      },
+      {
+        tag: 'Block',
+        mdx: `
+          <Prose>
+          ### Second header
+      
+          Let's tell a story of _data_.
         </Prose>`
       }
     ]
@@ -78,7 +87,6 @@ function DataStoryEditorLayout() {
       })),
     [dataStories]
   );
-  console.log('items', items);
 
   return (
     <>
