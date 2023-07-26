@@ -37,12 +37,6 @@ export const FoldHeader = styled.div`
   flex-flow: column nowrap;
   gap: ${variableGlsp()};
 
-  ${media.largeUp`
-    flex-flow: row nowrap;
-    justify-content: space-between;
-    align-items: flex-end;
-  `}
-
   > a {
     flex-shrink: 0;
   }

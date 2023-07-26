@@ -19,6 +19,11 @@ import { ContinuumScrollIndicator } from '$styles/continuum/continuum-scroll-ind
 import { getDatasetPath, getDiscoveryPath } from '$utils/routes';
 import { Pill } from '$styles/pill';
 import DatasetMenu from '$components/data-catalog/dataset-menu';
+import {
+  getTaxonomy,
+  TAXONOMY_SOURCE,
+  TAXONOMY_TOPICS
+} from '$utils/veda-data';
 
 const allFeaturedDiscoveries = Object.values(discoveries)
   .map((d) => d!.data)
@@ -76,6 +81,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
             render={(bag) => {
               return featuredItems.map((d) => {
                 const date = new Date(d[dateProperty ?? '']);
+                const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
 
                 return (
                   <ContinuumGridItem {...bag} key={d.id}>
@@ -94,7 +100,9 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       title={d.name}
                       overline={
                         <CardMeta>
-                          <CardSourcesList sources={d.sources} />
+                          <CardSourcesList
+                            sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
+                          />
                           <VerticalDivider variation='light' />
                           {!isNaN(date.getTime()) && (
                             <PublishedDate date={date} />
@@ -106,10 +114,10 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       imgAlt={d.media?.alt}
                       footerContent={
                         <>
-                          {d.thematics.length ? (
+                          {topics?.length ? (
                             <CardTopicsList>
                               <dt>Topics</dt>
-                              {d.thematics.map((t) => (
+                              {topics.map((t) => (
                                 <dd key={t.id}>
                                   <Pill variation='achromic'>{t.name}</Pill>
                                 </dd>

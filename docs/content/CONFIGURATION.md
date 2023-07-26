@@ -2,7 +2,6 @@
 
 - [Configuration](#configuration)
   - [veda.config.js](#vedaconfigjs)
-    - [Taxonomy Index file](#taxonomy-index-file)
     - [Page overrides](#page-overrides)
   - [Meta files](#meta-files)
 
@@ -21,15 +20,6 @@ The default configuration is:
 ```js
 datasets: './datasets/*.data.mdx'
 discoveries: './discoveries/*.discoveries.mdx'
-```
-
-### Taxonomy Index file
-
-Links to a `json` or `yml` file containing a list of [taxonomies](./TAXONOMY.md) to be used in the app.  
-
-The default configuration is:
-```js
-  taxonomiesIndex: './taxonomies.yml',
 ```
 
 ### Page overrides

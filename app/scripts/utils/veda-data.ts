@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { discoveries, datasets } from 'veda';
+import {
+  discoveries,
+  datasets,
+  DatasetData,
+  DiscoveryData,
+  Taxonomy
+} from 'veda';
 
 import { MDXContent, MDXModule } from 'mdx/types';
 import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
@@ -87,4 +93,18 @@ export function useMdxPageLoader(loader?: () => Promise<MDXModule>) {
   }, [loader]);
 
   return pageMdx;
+}
+
+// Taxonomies with special meaning as they're used in the app, like in the cards
+// for example.
+export const TAXONOMY_TOPICS = 'Topics';
+export const TAXONOMY_SOURCE = 'Source';
+
+export function getTaxonomy(
+  data: DatasetData | DiscoveryData | Taxonomy[],
+  taxonomyName: string
+) {
+  const list = Array.isArray(data) ? data : data.taxonomy;
+
+  return list.find((t) => t.name === taxonomyName);
 }

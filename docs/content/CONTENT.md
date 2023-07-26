@@ -89,25 +89,19 @@ Brief description of this dataset. This is displayed on cards and the header of 
 `Media`  
 Image to identify this resource. See [media.md](./frontmatter/media.md).
 
-**thematics**  
-`string[]`  
-List of thematic areas this dataset belongs to.  
-Must be a list of ids as defined in the [taxonomies index file](./TAXONOMY.md).
+**taxonomy**  
+`Taxonomy`  
+List of taxonomies and their values. See [taxonomy.md](./TAXONOMY.md).
 Example:
 ```yaml
-thematics:
-  - covid-19
-  - agriculture
-```
-
-**sources**  
-`string[]`  
-List of sources for this dataset.  
-Must be a list of ids as defined in the [taxonomies index file](./TAXONOMY.md).
-Example:
-```yaml
-sources:
-  - devseed
+taxonomy:
+  - name: Topics
+    values:
+      - Covid 19
+      - Agriculture
+  - name: Source
+    values:
+      - Development Seed
 ```
 
 **featured**  
@@ -227,25 +221,19 @@ Image to identify this resource. See [media.md](./frontmatter/media.md).
 `string`  
 Publication date for this discovery. Should be in YYYY-MM-DD format.
 
-**thematics**  
-`string[]`  
-List of thematic areas this discovery belongs to.
-Must be a list of ids as defined in the [taxonomies index file](./TAXONOMY.md).
+**taxonomy**  
+`Taxonomy`  
+List of taxonomies and their values. See [taxonomy.md](./TAXONOMY.md).
 Example:
 ```yaml
-thematics:
-  - covid-19
-  - agriculture
-```
-
-**sources**  
-`string[]`  
-List of sources for this discovery.  
-Must be a list of ids as defined in the [taxonomies index file](./TAXONOMY.md).
-Example:
-```yaml
-sources:
-  - devseed
+taxonomy:
+  - name: Topics
+    values:
+      - Covid 19
+      - Agriculture
+  - name: Source
+    values:
+      - Development Seed
 ```
 
 **featured**  
