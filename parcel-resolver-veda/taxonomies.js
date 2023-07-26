@@ -40,7 +40,8 @@ function generateTaxonomiesModuleOutput(data) {
 
   const taxonomiesUnique = Object.entries(taxonomyData).map(([key, tx]) => ({
     name: key,
-    values: uniqBy(tx, (t) => t.id)
+    // eslint-disable-next-line fp/no-mutating-methods
+    values: uniqBy(tx, (t) => t.id).sort((a, b) => a.name.localeCompare(b.name))
   }));
 
   return JSON.stringify(taxonomiesUnique);
