@@ -8,7 +8,7 @@ import * as runtime from 'react/jsx-runtime';
 import { useMDXComponents } from '@mdx-js/react';
 import MDXRenderer from './mdx-renderer';
 import { MDXBlockWithError } from './block-with-error';
-import { useSetCurrentBlock } from './atoms';
+import { useAddBlock, useRemoveBlock, useSetCurrentBlockId } from './atoms';
 
 interface useMDXReturnProps {
   source: string;
@@ -93,7 +93,9 @@ export default function EditorBlock({
     return { message: `At line ${line - 1}: ${message}` };
   }, [error]);
 
-  const onEditClick = useSetCurrentBlock(id);
+  const onEditClick = useSetCurrentBlockId(id);
+  const onRemoveClick = useRemoveBlock(id);
+  const onAddClick = useAddBlock(id);
 
   return error ? (
     <MDXBlockWithError error={errorHumanReadable} />
@@ -107,10 +109,10 @@ export default function EditorBlock({
         <MDXRendererActions>
           <ButtonGroup>
             <Button onClick={onEditClick}>Edit MDX</Button>
-            <Button>Remove</Button>
-            <Button>Move up</Button>
-            <Button>Move down</Button>
-            <Button>Add new...</Button>
+            <Button onClick={onRemoveClick}>Remove</Button>
+            <Button disabled>Move up</Button>
+            <Button disabled>Move down</Button>
+            <Button onClick={onAddClick}>Add new...</Button>
           </ButtonGroup>
         </MDXRendererActions>
       )}

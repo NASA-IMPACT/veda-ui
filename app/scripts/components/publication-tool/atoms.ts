@@ -94,39 +94,96 @@ export const useCurrentBlockId = () => {
   return currentBlockId;
 };
 
-export const useSetCurrentBlock = (blockId: string) => {
+export const useStoryIndex = () => {
   const { storyId } = useParams();
+  const dataStories = useAtomValue(DataStoriesAtom);
+  const storyIndex = useMemo(
+    () => dataStories.findIndex((p) => p.frontmatter.id === storyId),
+    [dataStories, storyId]
+  );
+  return storyIndex;
+};
+
+export const useBlockIndex = (blockId: string) => {
+  const currentDataStory = useCurrentDataStory();
+  const blockIndex = useMemo(() => {
+    const blockIndex = currentDataStory?.blocks.findIndex(
+      (b) => b.id === blockId
+    );
+    return blockIndex ?? -1;
+  }, [blockId, currentDataStory]);
+  return blockIndex;
+};
+
+const useCRUDUtils = (blockId: string) => {
   const setDataStories = useSetAtom(DataStoriesAtom);
+  const storyIndex = useStoryIndex();
+  const blockIndex = useBlockIndex(blockId);
+  return { setDataStories, storyIndex, blockIndex };
+};
+
+export const useSetCurrentBlockId = (blockId: string) => {
+  const { setDataStories, storyIndex } = useCRUDUtils(blockId);
   return useCallback(() => {
     setDataStories((oldDataStories) => {
       const newDataStories = [...oldDataStories];
-      const storyIndex = newDataStories.findIndex(
-        (s) => s.frontmatter.id === storyId
-      );
       newDataStories[storyIndex].currentBlockId = blockId;
       return newDataStories;
     });
-  }, [blockId, setDataStories, storyId]);
+  }, [blockId, setDataStories, storyIndex]);
 };
 
-export const useSetBlockMDX = (blockId?: string) => {
-  const { storyId } = useParams();
-  const setDataStories = useSetAtom(DataStoriesAtom);
+export const useRemoveBlock = (blockId: string) => {
+  const { setDataStories, storyIndex, blockIndex } = useCRUDUtils(blockId);
+  return useCallback(() => {
+    setDataStories((oldDataStories) => {
+      const newDataStories = [...oldDataStories];
+      newDataStories[storyIndex].blocks = [
+        ...newDataStories[storyIndex].blocks.slice(0, blockIndex),
+        ...newDataStories[storyIndex].blocks.slice(blockIndex + 1)
+      ];
+      return newDataStories;
+    });
+  }, [setDataStories, storyIndex, blockIndex]);
+};
+
+export const useAddBlock = (afterBlockId: string) => {
+  const { setDataStories, storyIndex, blockIndex } = useCRUDUtils(afterBlockId);
+  return useCallback(() => {
+    setDataStories((oldDataStories) => {
+      const newDataStories = [...oldDataStories];
+      const newBlockId = new Date().getTime().toString();
+      newDataStories[storyIndex].currentBlockId = newBlockId;
+      newDataStories[storyIndex].blocks = [
+        ...newDataStories[storyIndex].blocks.slice(0, blockIndex + 1),
+        {
+          id: newBlockId,
+          tag: 'Block',
+          mdx: `<Prose>
+### Hello, block!
+      
+Let's tell a story of _data_.
+          
+</Prose>`
+        },
+        ...newDataStories[storyIndex].blocks.slice(blockIndex + 1)
+      ];
+      return newDataStories;
+    });
+  }, [setDataStories, storyIndex, blockIndex]);
+};
+
+export const useSetBlockMDX = (blockId: string) => {
+  const { setDataStories, storyIndex, blockIndex } = useCRUDUtils(blockId);
   const callback = useCallback(
     (mdx: string) => {
       setDataStories((oldDataStories) => {
         const newDataStories = [...oldDataStories];
-        const storyIndex = newDataStories.findIndex(
-          (s) => s.frontmatter.id === storyId
-        );
-        const blockIndex = newDataStories[storyIndex].blocks.findIndex(
-          (b) => b.id === blockId
-        );
         newDataStories[storyIndex].blocks[blockIndex].mdx = mdx;
         return newDataStories;
       });
     },
-    [blockId, setDataStories, storyId]
+    [setDataStories, storyIndex, blockIndex]
   );
   return blockId ? callback : undefined;
 };
