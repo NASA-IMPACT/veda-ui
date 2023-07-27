@@ -4,6 +4,7 @@ import LazyLoad from 'react-lazyload';
 import Chart from '$components/common/chart/block';
 import { chartMaxHeight } from '$components/common/chart/constant';
 
+import Table from '$components/common/table';
 import CompareImage from '$components/common/blocks/images/compare';
 
 import Map, { mapHeight } from '$components/common/blocks/block-map';
@@ -56,6 +57,18 @@ export function LazyCompareImage(props) {
     // We don't know the height of image, passing an arbitrary number (200) for placeholder height
     <LazyLoad placeholder={<LoadingSkeleton height={200} />} offset={50} once>
       <CompareImage {...props} />
+    </LazyLoad>
+  );
+}
+
+export function LazyTable(props) {
+  return (
+    <LazyLoad
+      placeholder={<LoadingSkeleton height={`${chartMaxHeight}px`} />}
+      offset={50}
+      once
+    >
+      <Table />
     </LazyLoad>
   );
 }

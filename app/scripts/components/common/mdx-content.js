@@ -14,7 +14,8 @@ import {
   LazyChart,
   LazyCompareImage,
   LazyScrollyTelling,
-  LazyMap
+  LazyMap,
+  LazyTable
 } from '$components/common/blocks/lazy-components';
 import { NotebookConnectCalloutBlock } from '$components/common/notebook-connect';
 import SmartLink from '$components/common/smart-link';
@@ -41,7 +42,8 @@ function MdxContent(props) {
           Chart: LazyChart,
           CompareImage: LazyCompareImage,
           NotebookConnectCallout: NotebookConnectCalloutBlock,
-          Link: SmartLink
+          Link: SmartLink,
+          Table: LazyTable
         }}
       >
         <pageMdx.MdxContent {...(props.throughProps || {})} />
