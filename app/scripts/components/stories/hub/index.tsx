@@ -295,7 +295,7 @@ function StoriesHub() {
           </CardList>
         ) : (
           <EmptyHub>
-            There are no stories to show with the selected filters.
+            There are no {getString('stories').zero} to show with the selected filters.
           </EmptyHub>
         )}
       </Fold>
