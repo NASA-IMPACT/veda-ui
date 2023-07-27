@@ -26,8 +26,8 @@ function StoriesSingle() {
         description={story.data.description}
         thumbnail={media?.src}
         localNavProps={{
-          parentName: getString('stories').singular,
-          parentLabel: getString('stories').plural,
+          parentName: getString('stories').one,
+          parentLabel: getString('stories').other,
           parentTo: STORIES_PATH,
           items: allStoriesProps,
           currentId: story.data.id

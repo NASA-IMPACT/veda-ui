@@ -3,6 +3,7 @@
 - [Configuration](#configuration)
   - [veda.config.js](#vedaconfigjs)
     - [Page overrides](#page-overrides)
+    - [Strings](#strings)
   - [Meta files](#meta-files)
 
 The base properties used by Veda are set through the `.env` file.  
@@ -29,16 +30,22 @@ See [PAGE_OVERRIDES](./PAGE_OVERRIDES.md) for a full list of elements to customi
 
 ### Strings
 
-The `strings` object allows you to customize the nomenclature used in some parts of the application so that it better reflects your use case. Since these values will need to be used in different contexts, a plural, singular and zero form of each term is required.
+The `strings` object allows you to customize the nomenclature used in some parts of the application so that it better reflects your use case. Since these values will need to be used in different contexts, a one (singular) and other (plural) form of each term is required.
 
 The default values are:
 ```js
 strings: {
   stories: {
-    plural: 'Stories',
-    singular: 'Story',
-    zero: 'Stories'
+    one: 'Story',
+    other: 'Stories'
   }
+}
+```
+
+However if the value you want to use is the same for both forms, you can simply provide a string instead of an object:
+```js
+strings: {
+  sheep: 'Sheep'
 }
 ```
 

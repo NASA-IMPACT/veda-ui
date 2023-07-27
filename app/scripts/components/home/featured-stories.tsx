@@ -67,7 +67,7 @@ function FeaturedStories() {
   return (
     <Fold>
       <FoldHeader>
-        <FoldTitle>Featured {getString('stories').plural}</FoldTitle>
+        <FoldTitle>Featured {getString('stories').other}</FoldTitle>
       </FoldHeader>
       <FoldBody>
         {featuredStories.length ? (
@@ -80,7 +80,7 @@ function FeaturedStories() {
                     linkLabel='View more'
                     linkTo={getStoryPath(d)}
                     title={d.name}
-                    parentName={getString('stories').singular}
+                    parentName={getString('stories').one}
                     parentTo={STORIES_PATH}
                     description={i === 0 ? d.description : undefined}
                     date={d.pubDate ? new Date(d.pubDate) : undefined}

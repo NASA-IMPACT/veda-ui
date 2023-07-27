@@ -90,7 +90,7 @@ function ValueProposition() {
           <ContentBlockProseAlt>
             <h3>Science communication platform</h3>
             <p>
-              Share your {getString('stories').plural.toLocaleLowerCase()} with others through the VEDA Dashboard.
+              Share your {getString('stories').other.toLocaleLowerCase()} with others through the VEDA Dashboard.
               Submit a{' '}
               <a
                 href='#'

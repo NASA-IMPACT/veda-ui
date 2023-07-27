@@ -421,7 +421,7 @@ function PageHeader() {
                       to={STORIES_PATH}
                       onClick={closeNavOnClick}
                     >
-                      {getString('stories').plural}
+                      {getString('stories').other}
                     </GlobalMenuLink>
                   </li>
                 </GlobalMenu>

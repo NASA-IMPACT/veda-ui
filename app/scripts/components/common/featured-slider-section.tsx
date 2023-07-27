@@ -144,7 +144,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
 export function FeaturedStories() {
   return (
     <FeaturedSliderSection
-      title={`Featured ${getString('stories').plural}`}
+      title={`Featured ${getString('stories').other}`}
       featuredItems={allFeaturedStories}
       getItemPath={getStoryPath}
       dateProperty='pubDate'

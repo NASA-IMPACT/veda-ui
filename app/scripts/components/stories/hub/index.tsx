@@ -155,11 +155,11 @@ function StoriesHub() {
   return (
     <PageMainContent>
       <LayoutProps
-        title={getString('stories').plural}
+        title={getString('stories').other}
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
       />
       <PageHero
-        title={getString('stories').plural}
+        title={getString('stories').other}
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
       />
 
@@ -186,8 +186,8 @@ function StoriesHub() {
           <span>
             Showing{' '}
             <Pluralize
-              singular={getString('stories').singular}
-              plural={getString('stories').plural}
+              singular={getString('stories').one}
+              plural={getString('stories').other}
               count={displayStories.length}
               showCount={true}
             />{' '}
@@ -295,7 +295,8 @@ function StoriesHub() {
           </CardList>
         ) : (
           <EmptyHub>
-            There are no {getString('stories').zero} to show with the selected filters.
+            There are no {getString('stories').other.toLocaleLowerCase()} to
+            show with the selected filters.
           </EmptyHub>
         )}
       </Fold>

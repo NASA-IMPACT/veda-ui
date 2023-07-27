@@ -13,9 +13,8 @@ module.exports = {
 
   strings: {
     stories: {
-      plural: 'Stories',
-      singular: 'Story',
-      zero: 'Stories'
+      one: 'Story',
+      other: 'Stories'
     }
   }
 };

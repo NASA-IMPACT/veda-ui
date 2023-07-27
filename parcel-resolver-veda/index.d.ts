@@ -246,9 +246,8 @@ declare module 'veda' {
   export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
 
   export const getString: (variable: string) => {
-    singular: string;
-    plural: string;
-    zero: string;
+    one: string;
+    other: string;
   };
 
   /**
