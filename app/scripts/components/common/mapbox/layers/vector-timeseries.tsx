@@ -13,9 +13,8 @@ import { endOfDay, startOfDay } from 'date-fns';
 import centroid from '@turf/centroid';
 
 import {
-  checkFitBoundsFromLayer,
-  FIT_BOUNDS_PADDING,
   requestQuickCache,
+  useFitBbox,
   useLayerInteraction
 } from './utils';
 import { useMapStyle } from './styles';
@@ -54,6 +53,8 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   const theme = useTheme();
   const { updateStyle } = useMapStyle();
   const [featuresApiEndpoint, setFeaturesApiEndpoint] = useState('');
+  const [featuresBbox, setFeaturesBbox] =
+    useState<[number, number, number, number]>();
 
   const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
 
@@ -74,9 +75,19 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
           controller
         });
 
-        setFeaturesApiEndpoint(
-          data.links.find((l) => l.rel === 'external').href
-        );
+        const endpoint = data.links.find((l) => l.rel === 'external').href;
+        setFeaturesApiEndpoint(endpoint);
+
+        const featuresData = await requestQuickCache({
+          url: endpoint,
+          method: 'GET',
+          controller
+        });
+
+        if (featuresData.extent.spatial.bbox) {
+          setFeaturesBbox(featuresData.extent.spatial.bbox[0]);
+        }
+
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -277,15 +288,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   //
   // FitBounds when needed
   //
-  useEffect(() => {
-    if (bounds?.length !== 4) return;
-
-    const b = bounds as [number, number, number, number];
-
-    if (checkFitBoundsFromLayer(b, mapInstance)) {
-      mapInstance.fitBounds(b, { padding: FIT_BOUNDS_PADDING });
-    }
-  }, [mapInstance, bounds]);
+  useFitBbox(mapInstance, bounds, featuresBbox);
 
   return null;
 }

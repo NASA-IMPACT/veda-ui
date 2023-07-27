@@ -15,11 +15,11 @@ import { featureCollection, point } from '@turf/helpers';
 
 import { useMapStyle } from './styles';
 import {
-  checkFitBoundsFromLayer,
   FIT_BOUNDS_PADDING,
   getFilterPayload,
   getMergedBBox,
   requestQuickCache,
+  useFitBbox,
   useLayerInteraction
 } from './utils';
 import { useCustomMarker } from './custom-marker';
@@ -467,22 +467,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   //
   // FitBounds when needed
   //
-  useEffect(() => {
-    if (!stacCollection.length) return;
-    const layerBounds = getMergedBBox(stacCollection);
-
-    // Prefer layer defined bounds to STAC collection bounds.
-    const usableBounds = (bounds?.length === 4 ? bounds : layerBounds) as [
-      number,
-      number,
-      number,
-      number
-    ];
-
-    if (checkFitBoundsFromLayer(usableBounds, mapInstance)) {
-      mapInstance.fitBounds(usableBounds, { padding: FIT_BOUNDS_PADDING });
-    }
-  }, [mapInstance, stacCol, bounds, stacCollection]);
+  const layerBounds = useMemo(
+    () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
+    [stacCollection]
+  );
+  useFitBbox(mapInstance, bounds, layerBounds);
 
   return null;
 }
