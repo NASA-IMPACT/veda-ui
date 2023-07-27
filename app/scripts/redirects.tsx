@@ -5,7 +5,7 @@ import { STORIES_PATH } from '$utils/routes';
 
 function DiscoveryRedirect() {
   const { discoveryId } = useParams();
-  return <Navigate replace to={`/${STORIES_PATH}/${discoveryId}`} />;
+  return <Navigate replace to={`${STORIES_PATH}/${discoveryId}`} />;
 }
 
 function ThematicDatasetRedirect({ explore = false }: { explore?: boolean }) {
