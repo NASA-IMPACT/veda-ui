@@ -215,6 +215,7 @@ function DatasetsExplore() {
   useEffect(() => {
     setPanelRevealed(!isMediumDown);
   }, [isMediumDown]);
+
   // When the panel changes resize the map after a the animation finishes.
   useEffect(() => {
     const id = setTimeout(

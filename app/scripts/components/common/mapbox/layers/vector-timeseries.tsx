@@ -12,7 +12,12 @@ import { Feature } from 'geojson';
 import { endOfDay, startOfDay } from 'date-fns';
 import centroid from '@turf/centroid';
 
-import { requestQuickCache, useLayerInteraction } from './utils';
+import {
+  checkFitBoundsFromLayer,
+  FIT_BOUNDS_PADDING,
+  requestQuickCache,
+  useLayerInteraction
+} from './utils';
 import { useMapStyle } from './styles';
 import { useCustomMarker } from './custom-marker';
 
@@ -26,6 +31,7 @@ export interface MapLayerVectorTimeseriesProps {
   mapInstance: MapboxMap;
   sourceParams?: Record<string, any>;
   zoomExtent?: number[];
+  bounds?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
   idSuffix?: string;
@@ -39,6 +45,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     mapInstance,
     sourceParams,
     zoomExtent,
+    bounds,
     onStatusChange,
     isHidden,
     idSuffix = ''
@@ -67,7 +74,9 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
           controller
         });
 
-        setFeaturesApiEndpoint(data.links.find((l) => l.rel === 'external').href);
+        setFeaturesApiEndpoint(
+          data.links.find((l) => l.rel === 'external').href
+        );
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -84,7 +93,6 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
       controller.abort();
     };
   }, [mapInstance, id, stacCol, date, onStatusChange]);
-
 
   const markerLayout = useCustomMarker(mapInstance);
 
@@ -192,7 +200,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
             'source-layer': 'default',
             layout: {
               ...(markerLayout as any),
-              visibility: isHidden ? 'none' : 'visible',
+              visibility: isHidden ? 'none' : 'visible'
             },
             paint: {
               'icon-color': theme.color?.infographicB,
@@ -265,6 +273,19 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     mapInstance,
     onClick: onPointsClick
   });
+
+  //
+  // FitBounds when needed
+  //
+  useEffect(() => {
+    if (bounds?.length !== 4) return;
+
+    const b = bounds as [number, number, number, number];
+
+    if (checkFitBoundsFromLayer(b, mapInstance)) {
+      mapInstance.fitBounds(b, { padding: FIT_BOUNDS_PADDING });
+    }
+  }, [mapInstance, bounds]);
 
   return null;
 }

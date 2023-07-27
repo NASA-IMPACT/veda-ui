@@ -370,6 +370,8 @@ export function getMergedBBox(features: StacFeature[]) {
   ) as [number, number, number, number];
 }
 
+export const FIT_BOUNDS_PADDING = 32;
+
 export function checkFitBoundsFromLayer(
   layerBounds?: [number, number, number, number],
   mapInstance?: MapboxMap

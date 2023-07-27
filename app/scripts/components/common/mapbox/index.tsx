@@ -422,6 +422,7 @@ function MapboxMapComponent(
                 date={date}
                 sourceParams={baseLayerResolvedData.sourceParams}
                 zoomExtent={baseLayerResolvedData.zoomExtent}
+                bounds={baseLayerResolvedData.bounds}
                 onStatusChange={onBaseLayerStatusChange}
               />
             )}
@@ -471,6 +472,7 @@ function MapboxMapComponent(
                   date={compareToDate ?? undefined}
                   sourceParams={compareLayerResolvedData.sourceParams}
                   zoomExtent={compareLayerResolvedData.zoomExtent}
+                  bounds={compareLayerResolvedData.bounds}
                   onStatusChange={onCompareLayerStatusChange}
                 />
               )}

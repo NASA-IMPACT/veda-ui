@@ -16,6 +16,7 @@ import { featureCollection, point } from '@turf/helpers';
 import { useMapStyle } from './styles';
 import {
   checkFitBoundsFromLayer,
+  FIT_BOUNDS_PADDING,
   getFilterPayload,
   getMergedBBox,
   requestQuickCache,
@@ -34,8 +35,6 @@ import {
 // Whether or not to print the request logs.
 const LOG = true;
 
-const FIT_BOUNDS_PADDING = 32;
-
 export interface MapLayerRasterTimeseriesProps {
   id: string;
   stacCol: string;
@@ -43,6 +42,7 @@ export interface MapLayerRasterTimeseriesProps {
   mapInstance: MapboxMap;
   sourceParams?: Record<string, any>;
   zoomExtent?: number[];
+  bounds?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
   idSuffix?: string;
@@ -72,6 +72,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     mapInstance,
     sourceParams,
     zoomExtent,
+    bounds,
     onStatusChange,
     isHidden,
     idSuffix = ''
@@ -470,10 +471,18 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     if (!stacCollection.length) return;
     const layerBounds = getMergedBBox(stacCollection);
 
-    if (checkFitBoundsFromLayer(layerBounds, mapInstance)) {
-      mapInstance.fitBounds(layerBounds, { padding: FIT_BOUNDS_PADDING });
+    // Prefer layer defined bounds to STAC collection bounds.
+    const usableBounds = (bounds?.length === 4 ? bounds : layerBounds) as [
+      number,
+      number,
+      number,
+      number
+    ];
+
+    if (checkFitBoundsFromLayer(usableBounds, mapInstance)) {
+      mapInstance.fitBounds(usableBounds, { padding: FIT_BOUNDS_PADDING });
     }
-  }, [mapInstance, stacCol, stacCollection]);
+  }, [mapInstance, stacCol, bounds, stacCollection]);
 
   return null;
 }

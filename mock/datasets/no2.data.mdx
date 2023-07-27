@@ -37,8 +37,9 @@ taxonomy:
 layers:
   - id: no2-monthly
     stacCol: no2-monthly
-    name: No2
+    name: No2 PT
     type: raster
+    bounds: [-10, 36, -5, 42]
     description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
     zoomExtent:
       - 0
@@ -73,7 +74,8 @@ layers:
         - "#050308"
   - id: no2-monthly-2
     stacCol: no2-monthly
-    name: No2
+    name: No2 US
+    bounds: [-124, 29, -65, 49]
     type: raster
     description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
     zoomExtent:
