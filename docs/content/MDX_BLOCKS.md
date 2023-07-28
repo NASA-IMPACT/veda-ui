@@ -28,7 +28,7 @@ Understanding of MDX is not required to write contents for Veda dashboard, but y
 <tr>
 <td>
 
-![How blocks look on discovery page](./media/prose-figure.jpg)   
+![How blocks look on story page](./media/prose-figure.jpg)   
  </td>
  <td > 
  
@@ -220,7 +220,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 
 ## Link
 
-To create a bridge between the different types of content in the VEDA dashboard it may be necessary to create a link from one to another. One example of this would be linking to a dataset page from a discovery.
+To create a bridge between the different types of content in the VEDA dashboard it may be necessary to create a link from one to another. One example of this would be linking to a dataset page from a story.
 
 Since the dashboard may be made available under different domains at different times (for example staging environment and then production) it is a good idea to use relative links.  
 This is not possible with normal markdown links, but you can use the `Link` component for this purpose.

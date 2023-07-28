@@ -17,6 +17,7 @@ const {
   processTaxonomies,
   generateTaxonomiesModuleOutput
 } = require('./taxonomies');
+const { withDefaultStrings } = require('./defaults');
 
 async function loadOptionalContent(logger, root, globPath, type) {
   try {
@@ -148,7 +149,7 @@ module.exports = new Resolver({
             'Otherwise, create a veda.config.js file in your project config root.'
           ],
           documentationURL:
-            'https://github.com/NASA-IMPACT/veda-config/blob/develop/docs/CONFIGURATION.md'
+            'https://github.com/NASA-IMPACT/veda-ui/blob/develop/docs/content/CONFIGURATION.md'
         });
       }
 
@@ -164,13 +165,8 @@ module.exports = new Resolver({
         .thru((value) => processTaxonomies(value))
         .value();
 
-      const discoveriesData = _.chain(
-        await loadOptionalContent(
-          logger,
-          root,
-          result.discoveries,
-          'discoveries'
-        )
+      const storiesData = _.chain(
+        await loadOptionalContent(logger, root, result.stories, 'stories')
       )
         .tap((value) => {
           // Data validation
@@ -184,10 +180,10 @@ module.exports = new Resolver({
         data: o,
         filePath: datasetsData.filePaths[i]
       }));
-      const discoveriesImportData = discoveriesData.data.map((o, i) => ({
+      const storiesImportData = storiesData.data.map((o, i) => ({
         key: o.id,
         data: o,
-        filePath: discoveriesData.filePaths[i]
+        filePath: storiesData.filePaths[i]
       }));
 
       const moduleCode = dedent`
@@ -196,7 +192,8 @@ module.exports = new Resolver({
             result.pageOverrides,
             root,
             logger
-          )}
+          )},
+          strings: ${JSON.stringify(withDefaultStrings(result.strings))}
         };
 
         export const theme = ${JSON.stringify(result.theme) || null};
@@ -205,18 +202,19 @@ module.exports = new Resolver({
           datasetsData.data
         )}
 
-        export const discoveryTaxonomies = ${generateTaxonomiesModuleOutput(
-          discoveriesData.data
+        export const storyTaxonomies = ${generateTaxonomiesModuleOutput(
+          storiesData.data
         )}
 
         export const getOverride = (key) => config.pageOverrides[key];
+
         export const userPages = Object.keys(config.pageOverrides)
           .filter((k) => k.startsWith('/'));
 
+        export const getString = (variable) => config.strings[variable];
+
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
-        export const discoveries = ${generateMdxDataObject(
-          discoveriesImportData
-        )};
+        export const stories = ${generateMdxDataObject(storiesImportData)};
       `;
 
       // Store the generated code in a file for debug purposed.
@@ -242,12 +240,12 @@ module.exports = new Resolver({
         invalidateOnFileChange: [
           configPath,
           ...datasetsData.filePaths,
-          ...discoveriesData.filePaths
+          ...storiesData.filePaths
         ].filter(Boolean),
         invalidateOnFileCreate: [
           { filePath: configPath },
           datasetsData.globPath ? { glob: datasetsData.globPath } : null,
-          discoveriesData.globPath ? { glob: discoveriesData.globPath } : null
+          storiesData.globPath ? { glob: storiesData.globPath } : null
         ].filter(Boolean)
       };
       // console.log('resolved', resolved);

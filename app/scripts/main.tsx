@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
 import { userPages } from 'veda';
 
-import { thematicRoutes } from './thematic-redirect';
+import { discoveryRoutes, thematicRoutes } from './redirects';
 
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
@@ -24,8 +24,8 @@ const Home = lazy(() => import('$components/home'));
 const About = lazy(() => import('$components/about'));
 const Development = lazy(() => import('$components/development'));
 
-const DiscoveriesHub = lazy(() => import('$components/discoveries/hub'));
-const DiscoveriesSingle = lazy(() => import('$components/discoveries/single'));
+const StoriesHub = lazy(() => import('$components/stories/hub'));
+const StoriesSingle = lazy(() => import('$components/stories/single'));
 
 const DataCatalog = lazy(() => import('$components/data-catalog'));
 const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
@@ -48,7 +48,7 @@ import {
   ANALYSIS_PATH,
   ANALYSIS_RESULTS_PATH,
   DATASETS_PATH,
-  DISCOVERIES_PATH
+  STORIES_PATH
 } from '$utils/routes';
 
 const composingComponents = [
@@ -97,10 +97,10 @@ function Root() {
                   path={`${DATASETS_PATH}/:datasetId/explore`}
                   element={<DatasetsExplore />}
                 />
-                <Route path={DISCOVERIES_PATH} element={<DiscoveriesHub />} />
+                <Route path={STORIES_PATH} element={<StoriesHub />} />
                 <Route
-                  path={`${DISCOVERIES_PATH}/:discoveryId`}
-                  element={<DiscoveriesSingle />}
+                  path={`${STORIES_PATH}/:storyId`}
+                  element={<StoriesSingle />}
                 />
                 <Route path={ANALYSIS_PATH} element={<Analysis />} />
                 <Route
@@ -115,6 +115,8 @@ function Root() {
 
                 {/* Legacy: Routes related to thematic areas redirect. */}
                 {thematicRoutes}
+                {/* Legacy: Routes related to renaming /discoveries to /stories. */}
+                {discoveryRoutes}
 
                 {userPages.map((p) => (
                   <Route

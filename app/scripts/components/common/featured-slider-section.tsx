@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DatasetData, DiscoveryData, datasets, discoveries } from 'veda';
+import { DatasetData, StoryData, datasets, stories, getString } from 'veda';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import PublishedDate from './pub-date';
@@ -16,7 +16,7 @@ import {
 } from '$styles/continuum';
 import { useReactIndianaScrollControl } from '$styles/continuum/use-react-indiana-scroll-controls';
 import { ContinuumScrollIndicator } from '$styles/continuum/continuum-scroll-indicator';
-import { getDatasetPath, getDiscoveryPath } from '$utils/routes';
+import { getDatasetPath, getStoryPath } from '$utils/routes';
 import { Pill } from '$styles/pill';
 import DatasetMenu from '$components/data-catalog/dataset-menu';
 import {
@@ -25,7 +25,7 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 
-const allFeaturedDiscoveries = Object.values(discoveries)
+const allFeaturedStories = Object.values(stories)
   .map((d) => d!.data)
   .filter((d) => d.featured);
 
@@ -52,10 +52,10 @@ export const continuumFoldSpanCols = {
 };
 
 interface FeaturedSliderSectionProps {
-  featuring?: 'datasets' | 'discoveries';
-  featuredItems: DiscoveryData[] | DatasetData[];
+  featuring?: 'datasets' | 'stories';
+  featuredItems: StoryData[] | DatasetData[];
   title: string;
-  getItemPath: typeof getDiscoveryPath | typeof getDatasetPath;
+  getItemPath: typeof getStoryPath | typeof getDatasetPath;
   dateProperty?: string;
 }
 
@@ -141,12 +141,12 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
   );
 }
 
-export function FeaturedDiscoveries() {
+export function FeaturedStories() {
   return (
     <FeaturedSliderSection
-      title='Featured Data Stories'
-      featuredItems={allFeaturedDiscoveries}
-      getItemPath={getDiscoveryPath}
+      title={`Featured ${getString('stories').other}`}
+      featuredItems={allFeaturedStories}
+      getItemPath={getStoryPath}
       dateProperty='pubDate'
     />
   );

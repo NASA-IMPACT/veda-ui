@@ -96,7 +96,7 @@ const pages = [
   },
   {
     id: 'mdxeditor',
-    name: 'Discovery Editor ⚠️EXPERIMENTAL',
+    name: 'Story Editor ⚠️EXPERIMENTAL',
     component: SandboxMDXEditor
   }
 ];

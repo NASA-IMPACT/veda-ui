@@ -62,7 +62,7 @@ export const MDX_SOURCE_DEFAULT = `<Block>
     
     NASA scientists will continue to monitor nitrogen dioxide levels and long-term trends around the world. NASA is expected to launch its [Tropospheric Emissions: Monitoring of Pollution (TEMPO)](http://tempo.si.edu/overview.html "Explore the TEMPO instrument") instrument in 2022, which will provide hourly, high-resolution measurements of nitrogen dioxide, ozone, and other air pollutants across North America, improving future air quality forecasts.
     
-    [Explore How COVID-19 Is Affecting Earth's Climate](/covid19/discoveries/climate/climate-change-and-covid "Explore How COVID-19 Is Affecting Earth's Climate")
+    [Explore How COVID-19 Is Affecting Earth's Climate](/covid19/stories/climate/climate-change-and-covid "Explore How COVID-19 Is Affecting Earth's Climate")
   </Prose>
 </Block>
 

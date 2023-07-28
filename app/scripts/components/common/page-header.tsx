@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
-import { userPages, getOverride } from 'veda';
+import { userPages, getOverride, getString } from 'veda';
 import {
   glsp,
   listReset,
@@ -29,7 +29,7 @@ import { Tip } from './tip';
 import UnscrollableBody from './unscrollable-body';
 import { variableGlsp } from '$styles/variable-utils';
 import {
-  DISCOVERIES_PATH,
+  STORIES_PATH,
   DATASETS_PATH,
   ANALYSIS_PATH,
   ABOUT_PATH
@@ -418,10 +418,10 @@ function PageHeader() {
                   </li>
                   <li>
                     <GlobalMenuLink
-                      to={DISCOVERIES_PATH}
+                      to={STORIES_PATH}
                       onClick={closeNavOnClick}
                     >
-                      Data Stories
+                      {getString('stories').other}
                     </GlobalMenuLink>
                   </li>
                 </GlobalMenu>

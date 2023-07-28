@@ -1,13 +1,13 @@
-import { DatasetData, DiscoveryData } from 'veda';
+import { DatasetData, StoryData } from 'veda';
 
 export const ABOUT_PATH = '/about';
-export const DISCOVERIES_PATH = '/discoveries';
+export const STORIES_PATH = '/stories';
 export const DATASETS_PATH = '/data-catalog';
 export const ANALYSIS_PATH = '/analysis';
 export const ANALYSIS_RESULTS_PATH = '/analysis/results';
 
-export const getDiscoveryPath = (d: DiscoveryData | string) =>
-  `${DISCOVERIES_PATH}/${typeof d === 'string' ? d : d.id}`;
+export const getStoryPath = (d: StoryData | string) =>
+  `${STORIES_PATH}/${typeof d === 'string' ? d : d.id}`;
 
 export const getDatasetPath = (d: DatasetData | string) =>
   `${DATASETS_PATH}/${typeof d === 'string' ? d : d.id}`;

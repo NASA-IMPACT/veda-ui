@@ -4,7 +4,7 @@
   - [Adding taxonomies to content](#adding-taxonomies-to-content)
   - [Specific taxonomies](#specific-taxonomies)
 
-VEDA content types, like discoveries and datasets, have taxonomies that can be used to group and filter content.
+VEDA content types, like stories and datasets, have taxonomies that can be used to group and filter content.
 
 ##  Adding taxonomies to content
 
@@ -31,5 +31,5 @@ Note how the values are used: starting with a capital letter, and using spaces i
 ## Specific taxonomies
 
 Some taxonomies are specific/reserved for a content type.  
-- Both discoveries and datasets must have a `Topics` taxonomy which will be displayed in a pill on the content card.
-- For discoveries, if the `Source` taxonomy is used, it will be displayed in on the content card.
+- Both stories and datasets must have a `Topics` taxonomy which will be displayed in a pill on the content card.
+- For stories, if the `Source` taxonomy is used, it will be displayed in on the content card.

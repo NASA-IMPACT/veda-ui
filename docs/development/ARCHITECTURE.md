@@ -18,7 +18,7 @@ In this case the data is loaded from the `mock/` folder, which replicates the st
 
 ## Configuration
 The veda configuration consists in a series of `MDX` files, organized in 2 different content types:
-- discoveries
+- stories
 - datasets
 
 These `MDX` files are not pure MDX but tailored to Veda.  
@@ -42,9 +42,9 @@ Here's something about this site! on fire?
 To be able to load all the configuration and content into Veda, it uses a custom parcel resolver which allows us to create a faux module (`veda`) which when imported will resolve to our configuration.
 
 ```js
-import { datasets, discoveries } from 'veda';
+import { datasets, stories } from 'veda';
 
-// datasets, discoveries -> All have the same structure which is an object keyed by the content type id.
+// datasets, stories -> All have the same structure which is an object keyed by the content type id.
 {
   ["content-type-id"] : {
     "data": {

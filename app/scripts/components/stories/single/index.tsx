@@ -1,53 +1,54 @@
 import React, { lazy } from 'react';
+import { getString } from 'veda';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import RelatedContent from '$components/common/related-content';
-import { DISCOVERIES_PATH } from '$utils/routes';
-import { useDiscovery, allDiscoveriesProps } from '$utils/veda-data';
+import { STORIES_PATH } from '$utils/routes';
+import { useStory, allStoriesProps } from '$utils/veda-data';
 import { ContentTaxonomy } from '$components/common/content-taxonomy';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
-function DiscoveriesSingle() {
-  const discovery = useDiscovery();
+function StoriesSingle() {
+  const story = useStory();
 
-  if (!discovery) throw resourceNotFound();
+  if (!story) throw resourceNotFound();
 
-  const { media, related } = discovery.data;
+  const { media, related } = story.data;
 
   return (
     <>
       <LayoutProps
-        title={discovery.data.name}
-        description={discovery.data.description}
+        title={story.data.name}
+        description={story.data.description}
         thumbnail={media?.src}
         localNavProps={{
-          parentName: 'Data Story',
-          parentLabel: 'Data Stories',
-          parentTo: DISCOVERIES_PATH,
-          items: allDiscoveriesProps,
-          currentId: discovery.data.id
+          parentName: getString('stories').one,
+          parentLabel: getString('stories').other,
+          parentTo: STORIES_PATH,
+          items: allStoriesProps,
+          currentId: story.data.id
         }}
       />
 
       <PageMainContent>
         <article>
           <PageHero
-            title={discovery.data.name}
-            description={discovery.data.description}
-            publishedDate={discovery.data.pubDate}
+            title={story.data.name}
+            description={story.data.description}
+            publishedDate={story.data.pubDate}
             coverSrc={media?.src}
             coverAlt={media?.alt}
             attributionAuthor={media?.author?.name}
             attributionUrl={media?.author?.url}
           />
           
-          <ContentTaxonomy taxonomy={discovery.data.taxonomy} />
+          <ContentTaxonomy taxonomy={story.data.taxonomy} />
 
-          <MdxContent loader={discovery.content} />
+          <MdxContent loader={story.content} />
           
           {!!related?.length && <RelatedContent related={related} />}
         </article>
@@ -56,4 +57,4 @@ function DiscoveriesSingle() {
   );
 }
 
-export default DiscoveriesSingle;
+export default StoriesSingle;

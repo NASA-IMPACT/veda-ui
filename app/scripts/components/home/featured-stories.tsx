@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { listReset, media } from '@devseed-ui/theme-provider';
-import { discoveries } from 'veda';
+import { stories, getString } from 'veda';
 
 import { Card } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle, FoldBody } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
-import { DISCOVERIES_PATH, getDiscoveryPath } from '$utils/routes';
+import { STORIES_PATH, getStoryPath } from '$utils/routes';
 
-const FeaturedDiscoveryList = styled.ol`
+const FeaturedStoryList = styled.ol`
   ${listReset()}
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -55,33 +55,33 @@ const FeaturedDiscoveryList = styled.ol`
   }
 `;
 
-// Get 5 discoveries that have the featured flag
+// Get 5 stories that have the featured flag
 /* eslint-disable-next-line fp/no-mutating-methods */
-const featuredDiscoveries = Object.values(discoveries)
+const featuredStories = Object.values(stories)
   .filter((d) => d && !!d.data.featured)
   .slice(0, 5)
   .map((d) => d!.data)
   .sort((a, b) => (new Date(a.pubDate) > new Date(b.pubDate) ? -1 : 1));
 
-function FeaturedDiscoveries() {
+function FeaturedStories() {
   return (
     <Fold>
       <FoldHeader>
-        <FoldTitle>Featured Data Stories</FoldTitle>
+        <FoldTitle>Featured {getString('stories').other}</FoldTitle>
       </FoldHeader>
       <FoldBody>
-        {featuredDiscoveries.length ? (
-          <FeaturedDiscoveryList>
-            {featuredDiscoveries.map((d, i) => {
+        {featuredStories.length ? (
+          <FeaturedStoryList>
+            {featuredStories.map((d, i) => {
               return (
                 <li key={d.id}>
                   <Card
                     cardType='cover'
                     linkLabel='View more'
-                    linkTo={getDiscoveryPath(d)}
+                    linkTo={getStoryPath(d)}
                     title={d.name}
-                    parentName='Data Story'
-                    parentTo={DISCOVERIES_PATH}
+                    parentName={getString('stories').one}
+                    parentTo={STORIES_PATH}
                     description={i === 0 ? d.description : undefined}
                     date={d.pubDate ? new Date(d.pubDate) : undefined}
                     imgSrc={d.media?.src}
@@ -90,11 +90,11 @@ function FeaturedDiscoveries() {
                 </li>
               );
             })}
-          </FeaturedDiscoveryList>
+          </FeaturedStoryList>
         ) : null}
       </FoldBody>
     </Fold>
   );
 }
 
-export default FeaturedDiscoveries;
+export default FeaturedStories;
