@@ -60,6 +60,11 @@ const DatasetCount = styled(Subtitle)`
   }
 `;
 
+const BrowseFoldHeader = styled(FoldHeader)`
+  flex-flow: column nowrap;
+  align-items: flex-start;
+`;
+
 const sortOptions = [{ id: 'name', name: 'Name' }];
 
 const prepareDatasets = (
@@ -159,7 +164,7 @@ function DataCatalog() {
       <FeaturedDatasets />
 
       <Fold>
-        <FoldHeader
+        <BrowseFoldHeader
           ref={browseControlsHeaderRef}
           style={{
             scrollMarginTop: `${headerHeight + 16}px`
@@ -173,7 +178,7 @@ function DataCatalog() {
             taxonomiesOptions={datasetTaxonomies}
             sortOptions={sortOptions}
           />
-        </FoldHeader>
+        </BrowseFoldHeader>
 
         <DatasetCount>
           <span>

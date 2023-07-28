@@ -59,6 +59,11 @@ const StoryCount = styled(Subtitle)`
   }
 `;
 
+const BrowseFoldHeader = styled(FoldHeader)`
+  flex-flow: column nowrap;
+  align-items: flex-start;
+`;
+
 const sortOptions = [
   { id: 'name', name: 'Name' },
   { id: 'pubDate', name: 'Date' }
@@ -166,7 +171,7 @@ function StoriesHub() {
       <FeaturedStories />
 
       <Fold>
-        <FoldHeader
+        <BrowseFoldHeader
           ref={browseControlsHeaderRef}
           style={{
             scrollMarginTop: `${headerHeight + 16}px`
@@ -180,7 +185,7 @@ function StoriesHub() {
             taxonomiesOptions={storyTaxonomies}
             sortOptions={sortOptions}
           />
-        </FoldHeader>
+        </BrowseFoldHeader>
 
         <StoryCount>
           <span>
