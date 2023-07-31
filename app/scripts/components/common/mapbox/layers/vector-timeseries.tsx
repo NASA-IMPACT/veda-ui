@@ -12,11 +12,7 @@ import { Feature } from 'geojson';
 import { endOfDay, startOfDay } from 'date-fns';
 import centroid from '@turf/centroid';
 
-import {
-  requestQuickCache,
-  useFitBbox,
-  useLayerInteraction
-} from './utils';
+import { requestQuickCache, useFitBbox, useLayerInteraction } from './utils';
 import { useMapStyle } from './styles';
 import { useCustomMarker } from './custom-marker';
 
@@ -47,7 +43,8 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     bounds,
     onStatusChange,
     isHidden,
-    idSuffix = ''
+    idSuffix = '',
+    urlPosition
   } = props;
 
   const theme = useTheme();
@@ -288,7 +285,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   //
   // FitBounds when needed
   //
-  useFitBbox(mapInstance, bounds, featuresBbox);
+  useFitBbox(mapInstance, urlPosition, bounds, featuresBbox);
 
   return null;
 }

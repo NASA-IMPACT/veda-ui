@@ -419,6 +419,7 @@ function MapboxMapComponent(
                 id={`base-${baseLayerResolvedData.id}`}
                 stacCol={baseLayerResolvedData.stacCol}
                 mapInstance={mapRef.current}
+                urlPosition={initialPosition}
                 date={date}
                 sourceParams={baseLayerResolvedData.sourceParams}
                 zoomExtent={baseLayerResolvedData.zoomExtent}

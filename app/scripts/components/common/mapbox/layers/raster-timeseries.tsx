@@ -75,7 +75,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     bounds,
     onStatusChange,
     isHidden,
-    idSuffix = ''
+    idSuffix = '',
+    urlPosition
   } = props;
 
   const theme = useTheme();
@@ -471,7 +472,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
     [stacCollection]
   );
-  useFitBbox(mapInstance, bounds, layerBounds);
+  useFitBbox(mapInstance, urlPosition, bounds, layerBounds);
 
   return null;
 }

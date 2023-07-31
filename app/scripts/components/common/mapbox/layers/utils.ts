@@ -133,7 +133,7 @@ export const getCompareLayerData = (
       type: otherLayer.type,
       name: otherLayer.name,
       description: otherLayer.description,
-      legend: otherLayer.legend, 
+      legend: otherLayer.legend,
       stacCol: otherLayer.stacCol,
       zoomExtent: zoomExtent ?? otherLayer.zoomExtent,
       sourceParams: defaultsDeep({}, sourceParams, otherLayer.sourceParams),
@@ -432,7 +432,6 @@ export function useLayerInteraction({
   }, [layerId, mapInstance, onClick]);
 }
 
-
 type OptionalBbox = number[] | undefined | null;
 
 /**
@@ -445,10 +444,13 @@ type OptionalBbox = number[] | undefined | null;
  */
 export function useFitBbox(
   mapInstance: MapboxMap,
+  urlPosition: any,
   initialBbox: OptionalBbox,
   stacBbox: OptionalBbox
 ) {
   useEffect(() => {
+    if (urlPosition) return;
+
     // Prefer layer defined bounds to STAC collection bounds.
     const bounds = (initialBbox ?? stacBbox) as
       | [number, number, number, number]
@@ -457,5 +459,5 @@ export function useFitBbox(
     if (bounds?.length && checkFitBoundsFromLayer(bounds, mapInstance)) {
       mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
     }
-  }, [mapInstance, initialBbox, stacBbox]);
+  }, [mapInstance, urlPosition, initialBbox, stacBbox]);
 }

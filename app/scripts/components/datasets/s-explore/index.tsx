@@ -569,7 +569,11 @@ function DatasetsExplore() {
               compareDate={selectedCompareDatetime ?? undefined}
               isComparing={isComparing}
               initialPosition={mapPosition ?? undefined}
-              onPositionChange={setMapPosition}
+              onPositionChange={(v) => {
+                if (v.userInitiated) {
+                  setMapPosition(v);
+                }
+              }}
               projection={mapProjection ?? projectionDefault}
               onProjectionChange={setMapProjection}
             />
