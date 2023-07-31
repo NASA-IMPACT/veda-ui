@@ -110,7 +110,8 @@ const pages = [
     id: 'timeline',
     name: 'Timeline',
     component: SandboxTimeline,
-    noHero: true
+    noHero: true,
+    noFooter: true
   }
 ];
 
@@ -124,6 +125,7 @@ function SandboxLayout() {
     <>
       <LayoutProps
         title={`Sandbox - ${page.name}`}
+        hideFooter={page.noFooter}
         localNavProps={{
           parentName: 'Sandbox',
           parentLabel: 'Sandbox',

@@ -22,6 +22,8 @@ import {
   TimelineRangeTrack
 } from './timeline-head';
 import { DateAxis, DateGrid } from './date-axis';
+import { RIGHT_AXIS_SPACE } from './constants';
+import { useEffectPrevious } from '$utils/use-effect-previous';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -40,8 +42,9 @@ const InteractionRect = styled.div`
   left: 20rem;
   top: 3.5rem;
   bottom: 0;
-  right: 0;
+  right: ${RIGHT_AXIS_SPACE}px;
   /* background-color: rgba(255, 0, 0, 0.08); */
+  box-shadow: 1px 0 0 0 ${themeVal('color.base-200')};
   z-index: 100;
 `;
 
@@ -117,7 +120,8 @@ const DatasetListSelf = styled.ul`
 function Timeline() {
   const [datasets, setDatasets] = useState(srcDatasets);
 
-  const { observe, width, height } = useDimensions();
+  const { observe, width: w, height } = useDimensions();
+  const width = w - RIGHT_AXIS_SPACE;
 
   const interactionRef = useRef<HTMLDivElement>(null);
   const datasetsContainerRef = useRef<HTMLDivElement>(null);
@@ -137,6 +141,10 @@ function Timeline() {
     y: 0,
     k: 1
   });
+  console.log(
+    '🚀 ~ file: timeline.tsx:143 ~ Timeline ~ zoomTransform:',
+    zoomTransform
+  );
 
   const dataDomain = useMemo(
     () => extent(datasets.flatMap((d) => d.domain)) as [Date, Date],
@@ -159,8 +167,9 @@ function Timeline() {
   const zoomBehavior = useMemo(() => {
     return (
       zoom()
-        // Make the maximum zoom level as such as each day has maximum of 100px.
-        .scaleExtent([1, 100 / (width / domainDays)])
+        // Make the maximum zoom level as such as each day has maximum of 100px
+        // and a minimum o 2px.
+        .scaleExtent([2 / (width / domainDays), 100 / (width / domainDays)])
         .translateExtent([
           [0, 0],
           [width, height]
@@ -196,6 +205,31 @@ function Timeline() {
         })
     );
   }, [width, height, domainDays]);
+
+  // useEffectPrevious(
+  //   ([zb]) => {
+  //     if (zb && zb.scaleExtent()[1] > 0) {
+  //       const prevScaleMax = zb.scaleExtent()[1];
+  //       const currScaleMax = zoomBehavior.scaleExtent()[1];
+  //       const prevXMax = zb.translateExtent()[1][0];
+  //       const currXMax = zoomBehavior.translateExtent()[1][0];
+
+  //       console.log('zoomBehavior', zoomBehavior);
+
+  //       console.log('prevScaleMax, currScaleMax', prevScaleMax, currScaleMax);
+  //       console.log('prevXMax, currXMax', prevXMax, currXMax);
+
+  //       setZoomTransform((t) => {
+  //         return {
+  //           ...t,
+  //           x: (currXMax / prevXMax) * t.x,
+  //           k: (currScaleMax / prevScaleMax) * t.k
+  //         };
+  //       });
+  //     }
+  //   },
+  //   [zoomBehavior]
+  // );
 
   useEffect(() => {
     if (!interactionRef.current) return;

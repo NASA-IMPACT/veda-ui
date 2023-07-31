@@ -13,12 +13,12 @@ type EffectPreviousCb<T> = (
  * @param {array} deps Hook dependencies.
  */
 export function useEffectPrevious<T extends DependencyList>(
-  cb: EffectPreviousCb<T>,
+  cb: EffectPreviousCb<T | undefined[]>,
   deps: T
 ) {
-  const prev = useRef<DependencyList>([]);
+  const prev = useRef<DependencyList | undefined[]>([]);
   const mounted = useRef(false);
-  const unchangingCb = useRef<EffectPreviousCb<T>>(cb);
+  const unchangingCb = useRef<EffectPreviousCb<T | undefined[]>>(cb);
   unchangingCb.current = cb;
 
   useEffect(() => {

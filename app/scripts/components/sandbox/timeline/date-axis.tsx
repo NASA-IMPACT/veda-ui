@@ -10,6 +10,8 @@ import {
 } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 
+import { RIGHT_AXIS_SPACE, TimeDensity } from './constants';
+
 const GridLine = styled.line`
   stroke: ${themeVal('color.base-200')};
 `;
@@ -27,16 +29,10 @@ const DateAxisSVG = styled.svg`
 
 const GridSvg = styled.svg`
   position: absolute;
-  right: 0;
+  right: ${RIGHT_AXIS_SPACE}px;
   height: 100%;
   pointer-events: none;
 `;
-
-enum TimeDensity {
-  YEAR = 'year',
-  MONTH = 'month',
-  DAY = 'day'
-}
 
 function getTimeDensity(domain) {
   if (domain.every((d) => d.getTime() === startOfYear(d).getTime())) {

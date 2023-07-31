@@ -3,7 +3,6 @@ import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 import {
   addDays,
-  isWithinInterval,
   subDays,
   endOfDay,
   endOfMonth,
@@ -13,6 +12,7 @@ import {
   startOfYear,
   areIntervalsOverlapping
 } from 'date-fns';
+import { ScaleTime } from 'd3';
 import {
   CollecticonEye,
   CollecticonEyeDisabled,
@@ -21,13 +21,16 @@ import {
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
+
+import { HEADER_COLUMN_WIDTH, TimeDensity, TimelineDataset } from './constants';
+
 import { LayerGradientGraphic } from '$components/common/mapbox/layer-legend';
 
-function getBlockBoundaries(date, timeDensity) {
+function getBlockBoundaries(date: Date, timeDensity: TimeDensity) {
   switch (timeDensity) {
-    case 'month':
+    case TimeDensity.MONTH:
       return [startOfMonth(date), endOfMonth(date)];
-    case 'year':
+    case TimeDensity.YEAR:
       return [startOfYear(date), endOfYear(date)];
   }
 
@@ -59,7 +62,7 @@ const DatasetItem = styled.article`
 `;
 
 const DatasetHeader = styled.header`
-  width: 20rem;
+  width: ${HEADER_COLUMN_WIDTH}px;
   flex-shrink: 0;
   box-shadow: 1px 0 0 0 ${themeVal('color.base-200')};
   background: ${themeVal('color.surface')};
@@ -97,10 +100,14 @@ const DatasetData = styled.div`
   align-items: center;
 `;
 
-const DatasetSvg = styled.svg``;
+interface DatasetListItemProps {
+  dataset: TimelineDataset;
+  width: number;
+  xScaled: ScaleTime<number, number>;
+}
 
-export function DatasetListItem(props: any) {
-  const { dataset, width, xScaled, selectedDay } = props;
+export function DatasetListItem(props: DatasetListItemProps) {
+  const { dataset, width, xScaled } = props;
 
   const [isVisible, setVisible] = useState(true);
 
@@ -146,7 +153,6 @@ export function DatasetListItem(props: any) {
             width={width}
             xScaled={xScaled}
             dataset={dataset}
-            selectedDay={selectedDay}
             isVisible={isVisible}
           />
         </DatasetData>
@@ -155,9 +161,16 @@ export function DatasetListItem(props: any) {
   );
 }
 
+interface DatasetTrackProps {
+  width: number;
+  xScaled: ScaleTime<number, number>;
+  dataset: TimelineDataset;
+  isVisible: boolean;
+}
+
 const datasetTrackBlockHeight = 16;
-function DatasetTrack(props: any) {
-  const { width, xScaled, dataset, selectedDay, isVisible } = props;
+function DatasetTrack(props: DatasetTrackProps) {
+  const { width, xScaled, dataset, isVisible } = props;
 
   // Limit the items to render to increase performance.
   const domainToRender = useMemo(() => {
@@ -179,22 +192,28 @@ function DatasetTrack(props: any) {
   }, [xScaled, dataset]);
 
   return (
-    <DatasetSvg width={width} height={datasetTrackBlockHeight}>
+    <svg width={width} height={datasetTrackBlockHeight}>
       {domainToRender.map((date) => (
         <DatasetTrackBlock
-          key={date}
+          key={date.getTime()}
           xScaled={xScaled}
           date={date}
           dataset={dataset}
-          selectedDay={selectedDay}
           isVisible={isVisible}
         />
       ))}
-    </DatasetSvg>
+    </svg>
   );
 }
 
-function DatasetTrackBlock(props: any) {
+interface DatasetTrackBlockProps {
+  xScaled: ScaleTime<number, number>;
+  date: Date;
+  dataset: TimelineDataset;
+  isVisible: boolean;
+}
+
+function DatasetTrackBlock(props: DatasetTrackBlockProps) {
   const { xScaled, date, dataset, isVisible } = props;
 
   const [start, end] = getBlockBoundaries(date, dataset.timeDensity);

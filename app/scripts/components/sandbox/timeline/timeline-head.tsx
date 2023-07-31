@@ -4,9 +4,11 @@ import { drag, ScaleTime, select } from 'd3';
 import { clamp, startOfDay } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 
+import { RIGHT_AXIS_SPACE } from './constants';
+
 const TimelineHeadSVG = styled.svg`
   position: absolute;
-  right: 0;
+  right: ${RIGHT_AXIS_SPACE}px;
   top: -1rem;
   height: calc(100% + 1rem);
   pointer-events: none;
@@ -162,7 +164,7 @@ export function TimelineHeadR(props: Omit<TimelineHeadProps, 'children'>) {
 const TimelineRangeTrackSelf = styled.div`
   position: absolute;
   top: -1rem;
-  right: 0;
+  right: ${RIGHT_AXIS_SPACE}px;
   overflow: hidden;
 
   .shaded {
