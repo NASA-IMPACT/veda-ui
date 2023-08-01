@@ -68,7 +68,7 @@ export function LazyTable(props) {
       offset={50}
       once
     >
-      <Table />
+      <Table {...props} />
     </LazyLoad>
   );
 }

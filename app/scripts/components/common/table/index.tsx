@@ -1,37 +1,35 @@
-import React, { ReactNode, useState, useEffect, useRef } from 'react';
-import { read, utils } from "xlsx";
+import React, { useRef } from 'react';
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  ColumnDef
+  ColumnDef, 
+  Row,
 } from '@tanstack/react-table';
 import { useVirtual } from 'react-virtual';
+import { Sheet2JSONOpts } from 'xlsx';
+import { PlaceHolderWrapper, TableWrapper, StyledTable } from './markup';
+import { ChartLoading } from '$components/common/loading-skeleton';
+import useLoadFile from '$utils/use-load-file';
 
-import { TableWrapper, StyledTable } from './markup';
-
-const testExcelFile = '/public/2021_data_summary_spreadsheets/ghgp_data_by_year.xlsx';
 /* column pinning,  - no out of box style support, use position: sticky */
 const pinnedColumns = ['Facility Id'];
 
-export default function TableComponent() {
-  const [data, setData] = useState<unknown[]>([]);
+interface TablecomponentProps {
+  fileName: string;
+  excelOption?: Sheet2JSONOpts;
+}
+
+export default function TableComponent({ fileName, excelOption }:TablecomponentProps) {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   
-  useEffect(() => {
-    (async() => {
-    const f = await (await fetch(testExcelFile)).arrayBuffer();
-    const wb = read(f); // parse the array buffer
-    const ws = wb.Sheets[wb.SheetNames[0]]; // get the first sheet
-    const data = utils.sheet_to_json(ws,{ range: 3 }); // generate objects
-    setData(data);
-  })();},[]);
-
-  const columns: ColumnDef<unknown>[] = data.length? Object.keys(data[0]).map(key => {
+  const {data, dataLoading, dataError} = useLoadFile(fileName, excelOption);
+  const dataLoaded = !dataLoading && !dataError;
+  const typedData: object[] = data as object[];
+  const columns: ColumnDef<unknown>[] = typedData.length? (Object.keys(typedData[0])).map(key => {
     return  {
       accessorKey: key,
-      cell: info => info.getValue(),
-      header: () => (<React.Fragment><span>{key}</span></React.Fragment>),
+      cell: info => info.getValue()
     };
   }) : [];
 
@@ -56,8 +54,11 @@ export default function TableComponent() {
     virtualRows.length > 0
       ? totalSize - (virtualRows[virtualRows.length - 1]?.end || 0)
       : 0;
-  
   return (
+    <>
+    {dataLoading && <PlaceHolderWrapper><ChartLoading message='Loading' /></PlaceHolderWrapper>}
+    {dataError && <PlaceHolderWrapper> <p> Something went wrong while loading the data. Please try later. </p></PlaceHolderWrapper> }
+    {dataLoaded &&
     <TableWrapper ref={tableContainerRef}>
       <StyledTable>
         <thead>
@@ -80,7 +81,7 @@ export default function TableComponent() {
               </tr>
             )}
             {virtualRows.map(virtualRow => {
-              const row = rows[virtualRow.index] as Row<Person>;
+              const row = rows[virtualRow.index] as Row<unknown>;
               return (
                 <tr key={row.id}>
                   {row.getVisibleCells().map(cell => {
@@ -103,6 +104,7 @@ export default function TableComponent() {
             )}
       </tbody>
       </StyledTable>
-    </TableWrapper>);
+    </TableWrapper>}
+    </>);
 }
 

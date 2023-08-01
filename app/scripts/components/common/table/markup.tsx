@@ -3,6 +3,10 @@ import styled from "styled-components";
 import { themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
 
+export const PlaceHolderWrapper = styled.div`
+  height: 400px;
+`;
+
 export const TableWrapper = styled.div`
   display: flex;
   max-width: 100%;
