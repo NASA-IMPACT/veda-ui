@@ -4,41 +4,47 @@ import {
   getCoreRowModel,
   useReactTable,
   ColumnDef, 
+  getSortedRowModel,
+  SortingState,
   Row,
 } from '@tanstack/react-table';
 import { useVirtual } from 'react-virtual';
 import { Sheet2JSONOpts } from 'xlsx';
+import { CollecticonArrowLoop, CollecticonArrowDown, CollecticonArrowUp } from '@devseed-ui/collecticons';
+import { Button } from '@devseed-ui/button';
 import { PlaceHolderWrapper, TableWrapper, StyledTable } from './markup';
 import useLoadFile from '$utils/use-load-file';
-
-/* column pinning,  - no out of box style support, use position: sticky */
-const pinnedColumns = ['Facility Id'];
-
 interface TablecomponentProps {
-  fileName: string;
+  dataPath: string;
   excelOption?: Sheet2JSONOpts;
+  columnToSort?: string[];
 }
 
-export default function TableComponent({ fileName, excelOption }:TablecomponentProps) {
+export default function TableComponent({ dataPath, excelOption, columnToSort }:TablecomponentProps) {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   
-  const {data, dataLoading, dataError} = useLoadFile(fileName, excelOption);
+  const {data, dataLoading, dataError} = useLoadFile(dataPath, excelOption);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const dataLoaded = !dataLoading && !dataError;
   
   const columns: ColumnDef<object>[] = data.length? (Object.keys(data[0])).map(key => {
+
     return  {
       accessorKey: key,
-      cell: info => info.getValue()
+      enableSorting: (columnToSort?.includes(key))? true : false
     };
   }) : [];
 
-  const table = useReactTable({data, columns, getCoreRowModel: getCoreRowModel(), state: {
-    columnPinning: {
-      left: pinnedColumns,
-      right: []
+  const table = useReactTable({
+    data, 
+    columns, 
+    state: {
+      sorting,
     },
-    columnSizing: Object.keys(columns).reduce((acc, curr) => {acc[curr] = 300; return acc;}, {})
-  }});
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel()
+  });
   
   const { rows } = table.getRowModel();
   const rowVirtualizer = useVirtual({
@@ -53,6 +59,7 @@ export default function TableComponent({ fileName, excelOption }:TablecomponentP
     virtualRows.length > 0
       ? totalSize - (virtualRows[virtualRows.length - 1]?.end || 0)
       : 0;
+
   return (
     <>
     {dataLoading && <PlaceHolderWrapper><p>Loading Data...</p></PlaceHolderWrapper>}
@@ -64,10 +71,17 @@ export default function TableComponent({ fileName, excelOption }:TablecomponentP
               {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map(header => (
-                    <th key={header.id} colSpan={header.colSpan} className={header.column.getIsPinned()? 'fixed':''}>
+                    <th key={header.id} colSpan={header.colSpan}>
                         {flexRender(
                               header.column.columnDef.header,
                               header.getContext())}
+                        {header.column.getCanSort() && 
+                        <Button onClick={header.column.getToggleSortingHandler()} variation='base-text'> 
+                          
+                          {header.column.getIsSorted() as string == 'asc' && <CollecticonArrowUp />}
+                          {header.column.getIsSorted() as string == 'desc' && <CollecticonArrowDown />}
+                          {!header.column.getIsSorted() && <CollecticonArrowLoop />}
+                        </Button>}
                     </th>
                   ))}
                 </tr>
