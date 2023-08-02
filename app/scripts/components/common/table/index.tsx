@@ -77,10 +77,9 @@ export default function TableComponent({ dataPath, excelOption, columnToSort }:T
                               header.getContext())}
                         {header.column.getCanSort() && 
                         <Button onClick={header.column.getToggleSortingHandler()} variation='base-text'> 
-                          
-                          {header.column.getIsSorted() as string == 'asc' && <CollecticonArrowUp />}
-                          {header.column.getIsSorted() as string == 'desc' && <CollecticonArrowDown />}
-                          {!header.column.getIsSorted() && <CollecticonArrowLoop />}
+                          {header.column.getIsSorted() as string == 'asc' && <CollecticonArrowUp meaningful={true} title='Sorted in ascending order' />}
+                          {header.column.getIsSorted() as string == 'desc' && <CollecticonArrowDown meaningful={true} title='Sorted in descending order' />}
+                          {!header.column.getIsSorted() && <CollecticonArrowLoop meaningful={true} title={`Sort the rows with this column's value`} />}
                         </Button>}
                     </th>
                   ))}
