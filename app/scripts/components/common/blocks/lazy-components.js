@@ -5,6 +5,7 @@ import Chart from '$components/common/chart/block';
 import { chartMaxHeight } from '$components/common/chart/constant';
 
 import Table from '$components/common/table';
+import { tableHeight } from '$components/common/table/markup';
 import CompareImage from '$components/common/blocks/images/compare';
 
 import Map, { mapHeight } from '$components/common/blocks/block-map';
@@ -64,7 +65,7 @@ export function LazyCompareImage(props) {
 export function LazyTable(props) {
   return (
     <LazyLoad
-      placeholder={<LoadingSkeleton height={`${chartMaxHeight}px`} />}
+      placeholder={<LoadingSkeleton height={tableHeight} />}
       offset={50}
       once
     >

@@ -3,15 +3,22 @@ import styled from "styled-components";
 import { themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
 
+export const tableHeight = '400';
+
 export const PlaceHolderWrapper = styled.div`
-  height: 400px;
+  display: flex;
+  height: ${tableHeight}px;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+
 `;
 
 export const TableWrapper = styled.div`
   display: flex;
   max-width: 100%;
-  max-height: 400px;
-  overflow: scroll;
+  max-height: ${tableHeight}px;
+  overflow: auto;
 `;
 
 export const StyledTable = styled.table`
@@ -32,9 +39,6 @@ export const StyledTable = styled.table`
   }
 
   tbody tr {
-    // :nth-child(odd) {
-    //   background-color: ${themeVal('color.base-50')};
-    // }
     :hover {
       background-color: ${themeVal('color.primary-200')};
     }
@@ -43,4 +47,4 @@ export const StyledTable = styled.table`
   td {
     padding: ${variableGlsp(0.25, 0.5)};
   }
-}`;
+`;

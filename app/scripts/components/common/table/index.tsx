@@ -9,7 +9,6 @@ import {
 import { useVirtual } from 'react-virtual';
 import { Sheet2JSONOpts } from 'xlsx';
 import { PlaceHolderWrapper, TableWrapper, StyledTable } from './markup';
-import { ChartLoading } from '$components/common/loading-skeleton';
 import useLoadFile from '$utils/use-load-file';
 
 /* column pinning,  - no out of box style support, use position: sticky */
@@ -25,8 +24,8 @@ export default function TableComponent({ fileName, excelOption }:TablecomponentP
   
   const {data, dataLoading, dataError} = useLoadFile(fileName, excelOption);
   const dataLoaded = !dataLoading && !dataError;
-  const typedData: object[] = data as object[];
-  const columns: ColumnDef<unknown>[] = typedData.length? (Object.keys(typedData[0])).map(key => {
+  
+  const columns: ColumnDef<object>[] = data.length? (Object.keys(data[0])).map(key => {
     return  {
       accessorKey: key,
       cell: info => info.getValue()
@@ -56,7 +55,7 @@ export default function TableComponent({ fileName, excelOption }:TablecomponentP
       : 0;
   return (
     <>
-    {dataLoading && <PlaceHolderWrapper><ChartLoading message='Loading' /></PlaceHolderWrapper>}
+    {dataLoading && <PlaceHolderWrapper><p>Loading Data...</p></PlaceHolderWrapper>}
     {dataError && <PlaceHolderWrapper> <p> Something went wrong while loading the data. Please try later. </p></PlaceHolderWrapper> }
     {dataLoaded &&
     <TableWrapper ref={tableContainerRef}>
