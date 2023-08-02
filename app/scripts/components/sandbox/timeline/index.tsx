@@ -51,9 +51,7 @@ function SandboxTimeline() {
     <Container>
       <PanelGroup direction='vertical' className='panel-wrapper'>
         <Panel maxSize={75} className='panel'>
-            <div>
-              Top
-            </div>
+          <div>Top</div>
         </Panel>
         <PanelResizeHandle className='resize-handle' />
         <Panel maxSize={75} className='panel panel-timeline'>

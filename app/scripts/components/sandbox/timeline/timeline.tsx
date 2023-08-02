@@ -1,9 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import useDimensions from 'react-cool-dimensions';
 import { Reorder } from 'framer-motion';
-import { ZoomTransform, axisBottom, extent, scaleTime, select, zoom } from 'd3';
-import { add, format, isAfter, isBefore, startOfDay, sub } from 'date-fns';
+import { ZoomTransform, extent, scaleTime, select, zoom } from 'd3';
+import {
+  add,
+  differenceInCalendarDays,
+  format,
+  isAfter,
+  isBefore,
+  startOfDay,
+  sub
+} from 'date-fns';
 import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonChevronDownSmall,
@@ -23,7 +31,6 @@ import {
 } from './timeline-head';
 import { DateAxis, DateGrid } from './date-axis';
 import { RIGHT_AXIS_SPACE } from './constants';
-import { useEffectPrevious } from '$utils/use-effect-previous';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -120,13 +127,26 @@ const DatasetListSelf = styled.ul`
 function Timeline() {
   const [datasets, setDatasets] = useState(srcDatasets);
 
+  const dataDomain = useMemo(
+    () => extent(datasets.flatMap((d) => d.domain)) as [Date, Date],
+    [datasets]
+  );
+
   const { observe, width: w, height } = useDimensions();
-  const width = w - RIGHT_AXIS_SPACE;
+  const width = Math.max(1, w - RIGHT_AXIS_SPACE);
 
   const interactionRef = useRef<HTMLDivElement>(null);
   const datasetsContainerRef = useRef<HTMLDivElement>(null);
 
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+
+  const translateExtent = useMemo<[[number, number], [number, number]]>(
+    () => [
+      [0, 0],
+      [width, height]
+    ],
+    [width, height]
+  );
 
   const [selectedInterval, setSelectedInterval] = useState<{
     start: Date;
@@ -141,20 +161,18 @@ function Timeline() {
     y: 0,
     k: 1
   });
-  console.log(
-    '🚀 ~ file: timeline.tsx:143 ~ Timeline ~ zoomTransform:',
-    zoomTransform
-  );
 
-  const dataDomain = useMemo(
-    () => extent(datasets.flatMap((d) => d.domain)) as [Date, Date],
-    [datasets]
-  );
-
-  const domainDays = useMemo(
-    () => (dataDomain[1].getTime() - dataDomain[0].getTime()) / 86400000,
-    [dataDomain]
-  );
+  // Calculate min and max scale factors, such has each day has a minimum of 2px
+  // and a maximum of 100px.
+  const { k0, k1 } = useMemo(() => {
+    if (width <= 0) return { k0: 0, k1: 1 };
+    // Calculate how many days are in the domain.
+    const domainDays = differenceInCalendarDays(dataDomain[1], dataDomain[0]);
+    return {
+      k0: Math.max(1, 2 / (width / domainDays)),
+      k1: 100 / (width / domainDays)
+    };
+  }, [width, dataDomain]);
 
   const xMain = useMemo(() => {
     return scaleTime().domain(dataDomain).range([0, width]);
@@ -165,71 +183,36 @@ function Timeline() {
   }, [xMain, zoomTransform.x, zoomTransform.k]);
 
   const zoomBehavior = useMemo(() => {
-    return (
-      zoom()
-        // Make the maximum zoom level as such as each day has maximum of 100px
-        // and a minimum o 2px.
-        .scaleExtent([2 / (width / domainDays), 100 / (width / domainDays)])
-        .translateExtent([
-          [0, 0],
-          [width, height]
-        ])
-        .extent([
-          [0, 0],
-          [width, height]
-        ])
-        .filter((event) => {
-          if (event.type === 'wheel' && !event.altKey) {
-            // The zoom behavior traps the scroll event. Propagate to the data
-            // container to scroll it.
-            if (datasetsContainerRef.current) {
-              datasetsContainerRef.current.scrollBy(0, event.deltaY);
-            }
-            return false;
+    return zoom()
+      .scaleExtent([k0, k1])
+      .translateExtent(translateExtent)
+      .extent(translateExtent)
+      .filter((event) => {
+        if (event.type === 'wheel' && !event.altKey) {
+          // The zoom behavior traps the scroll event. Propagate to the data
+          // container to scroll it.
+          if (datasetsContainerRef.current) {
+            datasetsContainerRef.current.scrollBy(0, event.deltaY);
           }
-          return true;
-        })
-        .on('zoom', function (event) {
-          const { sourceEvent } = event;
+          return false;
+        }
+        return true;
+      })
+      .on('zoom', function (event) {
+        const { sourceEvent } = event;
 
-          if (sourceEvent?.type === 'wheel') {
-            // Alt key plus wheel makes the browser go back in history. Prevent.
-            if (sourceEvent.altKey) {
-              sourceEvent.preventDefault();
-            }
+        if (sourceEvent?.type === 'wheel') {
+          // Alt key plus wheel makes the browser go back in history. Prevent.
+          if (sourceEvent.altKey) {
+            sourceEvent.preventDefault();
           }
-          const { x, y, k } = event.transform;
-          setZoomTransform((t) =>
-            isEqualTransform(t, { x, y, k }) ? t : { x, y, k }
-          );
-        })
-    );
-  }, [width, height, domainDays]);
-
-  // useEffectPrevious(
-  //   ([zb]) => {
-  //     if (zb && zb.scaleExtent()[1] > 0) {
-  //       const prevScaleMax = zb.scaleExtent()[1];
-  //       const currScaleMax = zoomBehavior.scaleExtent()[1];
-  //       const prevXMax = zb.translateExtent()[1][0];
-  //       const currXMax = zoomBehavior.translateExtent()[1][0];
-
-  //       console.log('zoomBehavior', zoomBehavior);
-
-  //       console.log('prevScaleMax, currScaleMax', prevScaleMax, currScaleMax);
-  //       console.log('prevXMax, currXMax', prevXMax, currXMax);
-
-  //       setZoomTransform((t) => {
-  //         return {
-  //           ...t,
-  //           x: (currXMax / prevXMax) * t.x,
-  //           k: (currScaleMax / prevScaleMax) * t.k
-  //         };
-  //       });
-  //     }
-  //   },
-  //   [zoomBehavior]
-  // );
+        }
+        const { x, y, k } = event.transform;
+        setZoomTransform((t) =>
+          isEqualTransform(t, { x, y, k }) ? t : { x, y, k }
+        );
+      });
+  }, [translateExtent, k0, k1]);
 
   useEffect(() => {
     if (!interactionRef.current) return;
@@ -263,10 +246,7 @@ function Timeline() {
         // Constrain the transform according to the timeline bounds.
         const newTransform = constrainFn(
           updatedT,
-          [
-            [0, 0],
-            [width, height]
-          ],
+          translateExtent,
           zoomBehavior.translateExtent()
         );
 
@@ -274,7 +254,7 @@ function Timeline() {
         // a sourceEvent.
         zoomBehavior.transform(element, newTransform);
       });
-  }, [width, height, xScaled, zoomBehavior]);
+  }, [translateExtent, xScaled, zoomBehavior]);
 
   useEffect(() => {
     if (!interactionRef.current) return;
@@ -305,9 +285,9 @@ function Timeline() {
               size='small'
               onClick={() => {
                 setDatasets((list) =>
-                  list.length === srcDatasets.length
-                    ? list.concat(extraDataset)
-                    : list.slice(0, -1)
+                  list.find((d) => d.title === 'Daily infinity!')
+                    ? list.filter((d) => d.title !== 'Daily infinity!')
+                    : [...list, extraDataset]
                 );
               }}
             >
@@ -447,10 +427,11 @@ function DatasetList(props: any) {
 
 /**
  * Rescales the given scale according to the given factors.
+ *
  * @param scale Scale to rescale
  * @param x X factor
  * @param k Scale factor
- * @returns new scale
+ * @returns New scale
  */
 function rescaleX(scale, x, k) {
   const range = scale.range();
@@ -465,6 +446,19 @@ function rescaleX(scale, x, k) {
   );
 }
 
-function isEqualTransform(t1, t2) {
+interface Transform {
+  x: number;
+  y: number;
+  k: number;
+}
+
+/**
+ * Compares two transforms.
+ *
+ * @param t1 First transform
+ * @param t2 Second transform
+ * @returns Whether the transforms are equal.
+ */
+function isEqualTransform(t1: Transform, t2: Transform) {
   return t1.x === t2.x && t1.y === t2.y && t1.k === t2.k;
 }
