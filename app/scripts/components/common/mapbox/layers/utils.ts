@@ -435,21 +435,23 @@ export function useLayerInteraction({
 type OptionalBbox = number[] | undefined | null;
 
 /**
- * Centers on the given bounds if the current position is not within the bounds.
- * Gives preference to the layer defined bounds over the STAC collection bounds.
+ * Centers on the given bounds if the current position is not within the bounds,
+ * and there's no user defined position (via user initiated map movement). Gives
+ * preference to the layer defined bounds over the STAC collection bounds.
  *
  * @param mapInstance Mapbox instance
+ * @param isUserPositionSet Whether the user has set a position
  * @param initialBbox Bounding box from the layer
  * @param stacBbox Bounds from the STAC collection
  */
 export function useFitBbox(
   mapInstance: MapboxMap,
-  urlPosition: any,
+  isUserPositionSet: boolean,
   initialBbox: OptionalBbox,
   stacBbox: OptionalBbox
 ) {
   useEffect(() => {
-    if (urlPosition) return;
+    if (isUserPositionSet) return;
 
     // Prefer layer defined bounds to STAC collection bounds.
     const bounds = (initialBbox ?? stacBbox) as
@@ -459,5 +461,5 @@ export function useFitBbox(
     if (bounds?.length && checkFitBoundsFromLayer(bounds, mapInstance)) {
       mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
     }
-  }, [mapInstance, urlPosition, initialBbox, stacBbox]);
+  }, [mapInstance, isUserPositionSet, initialBbox, stacBbox]);
 }

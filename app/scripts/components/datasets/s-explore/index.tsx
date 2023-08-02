@@ -570,6 +570,8 @@ function DatasetsExplore() {
               isComparing={isComparing}
               initialPosition={mapPosition ?? undefined}
               onPositionChange={(v) => {
+                // Only store the map position if the change was initiated by
+                // the user.
                 if (v.userInitiated) {
                   setMapPosition(v);
                 }

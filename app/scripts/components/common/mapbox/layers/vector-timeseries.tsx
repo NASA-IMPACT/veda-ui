@@ -30,6 +30,7 @@ export interface MapLayerVectorTimeseriesProps {
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
   idSuffix?: string;
+  isPositionSet?: boolean;
 }
 
 export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
@@ -44,7 +45,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     onStatusChange,
     isHidden,
     idSuffix = '',
-    urlPosition
+    isPositionSet
   } = props;
 
   const theme = useTheme();
@@ -285,7 +286,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   //
   // FitBounds when needed
   //
-  useFitBbox(mapInstance, urlPosition, bounds, featuresBbox);
+  useFitBbox(mapInstance, !!isPositionSet, bounds, featuresBbox);
 
   return null;
 }

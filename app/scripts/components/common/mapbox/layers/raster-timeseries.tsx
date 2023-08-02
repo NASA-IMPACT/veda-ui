@@ -46,6 +46,7 @@ export interface MapLayerRasterTimeseriesProps {
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
   idSuffix?: string;
+  isPositionSet?: boolean;
 }
 
 export interface StacFeature {
@@ -76,7 +77,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     onStatusChange,
     isHidden,
     idSuffix = '',
-    urlPosition
+    isPositionSet
   } = props;
 
   const theme = useTheme();
@@ -472,7 +473,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
     [stacCollection]
   );
-  useFitBbox(mapInstance, urlPosition, bounds, layerBounds);
+  useFitBbox(mapInstance, !!isPositionSet, bounds, layerBounds);
 
   return null;
 }
