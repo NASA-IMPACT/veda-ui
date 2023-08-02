@@ -9,6 +9,7 @@
     - [Inline image \& Figure image](#inline-image--figure-image)
       - [How to use local image (assets)](#how-to-use-local-image-assets)
   - [Chart](#chart)
+  - [Table](#table)
   - [Map](#map)
   - [Scrollytelling](#scrollytelling)
     - [Chapter properties](#chapter-properties)
@@ -449,6 +450,27 @@ Syntax for Chart used in Wide Figure Block looks like this. Check how the data i
     /> 
   </Figure>
 </Block>
+```
+## Table
+
+
+| Option | Type | Default | Description|
+|---|---|---|---|
+| dataPath | string | `''` | Path for data. The data should be either in `csv`,`xlsx` (`xls`), or `json`. Use parcel's URL builder to use local file. (Refer to the example below.) |
+| excelJsonOption | object | `null` | Optional. Only when data format is `xlsx`. Info to convert Excel data to json. Please refer [this link](https://www.npmjs.com/package/xlsx#json) for details. |
+| columnsToSort | string array | `[]` | The name of columns that will enable sorting functionality. The columns will show up with the little icon indicating sorting ability. |
+
+
+```jsx
+<Block>
+  <Figure>
+    <Table dataPath="/public/2021_data_summary_spreadsheets/ghgp_data_by_year.xlsx" 
+    excelOption={{ range: 3 }} 
+    columnToSort={['Facility Id', 'Zip Code']}/>
+    <Caption> Table example</Caption>
+  </Figure>
+</Block>
+
 ```
 
 ## Map
