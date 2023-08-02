@@ -70,7 +70,7 @@ These values may vary greatly depending on the layer being added but some may be
 
 **bounds**  
 `[int, int, int, int] | fn(bag)`  
-Initial bounds for the map. This is useful for datasets that are not global, and for which the STAC bounds are not appropriate.
+Initial bounds for the map. This is useful for adjusting the initial view on datasets for which the STAC bounds are not appropriate.
 
 This property should be an array with 4 numbers, representing the minimum and maximum longitude and latitude values, in the following order: [minLongitude, minLatitude, maxLongitude, maxLatitude].
 Example (world bounds)
