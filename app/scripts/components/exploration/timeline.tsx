@@ -1,18 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useAtomValue, useSetAtom, useAtom } from 'jotai';
 import styled from 'styled-components';
 import useDimensions from 'react-cool-dimensions';
 import { Reorder } from 'framer-motion';
 import { ZoomTransform, select, zoom } from 'd3';
-import { add, format, isAfter, isBefore, startOfDay, sub } from 'date-fns';
+import { add, isAfter, isBefore, startOfDay, sub } from 'date-fns';
 import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
-import {
-  CollecticonChevronDownSmall,
-  CollecticonPlusSmall
-} from '@devseed-ui/collecticons';
+import { CollecticonPlusSmall } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
-import { DatePicker } from '@devseed-ui/date-picker';
 
 import {
   selectedDateAtom,
@@ -29,8 +25,9 @@ import {
   TimelineHeadR,
   TimelineRangeTrack
 } from './timeline-head';
-import { DateAxis, DateGrid } from './date-axis';
-import { emptyDateRange, RIGHT_AXIS_SPACE } from './constants';
+import { TimelineControls } from './timeline-controls';
+import { DateGrid } from './date-axis';
+import { RIGHT_AXIS_SPACE } from './constants';
 import { applyTransform, isEqualTransform, rescaleX } from './utils';
 import { useScaleFactors, useScales, useTimelineDatasetsDomain } from './hooks';
 
@@ -90,33 +87,6 @@ const Headline = styled.div`
   align-items: center;
 `;
 
-const TimelineControls = styled.div`
-  width: 100%;
-  display: flex;
-  flex-flow: column;
-  min-width: 0;
-
-  .date-axis {
-    margin-top: auto;
-  }
-`;
-
-const ControlsToolbar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: ${glsp(1.5, 0.5, 0.5, 0.5)};
-`;
-
-const DatePickerButton = styled(Button)`
-  gap: ${glsp(0.5)};
-
-  .head-reference {
-    font-weight: ${themeVal('type.base.regular')};
-    color: ${themeVal('color.base-400')};
-    font-size: 0.875rem;
-  }
-`;
-
 const TimelineContent = styled.div`
   height: 100%;
   min-height: 0;
@@ -140,7 +110,7 @@ const DatasetListSelf = styled.ul`
   width: 100%;
 `;
 
-function Timeline() {
+export default function Timeline() {
   // Refs for non react based interactions.
   // The interaction rect is used to capture the different d3 events for the
   // zoom.
@@ -149,7 +119,7 @@ function Timeline() {
   // container to propagate the needed events to it, like scroll.
   const datasetsContainerRef = useRef<HTMLDivElement>(null);
 
-  const datasets = useAtomValue(timelineDatasetsAtom);
+  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
 
   const dataDomain = useTimelineDatasetsDomain();
 
@@ -328,56 +298,14 @@ function Timeline() {
           </Headline>
           <p>X of Y</p>
         </TimelineDetails>
-        <TimelineControls>
-          <ControlsToolbar>
-            <DatePicker
-              id='date-picker-p'
-              value={{ start: selectedDay, end: selectedDay }}
-              onConfirm={(d) => {
-                setSelectedDay(d.start);
-              }}
-              renderTriggerElement={(props, label) => (
-                <DatePickerButton {...props} size='small'>
-                  <span className='head-reference'>P</span>
-                  <span>{label}</span>
-                  <CollecticonChevronDownSmall />
-                </DatePickerButton>
-              )}
-            />
-            <DatePicker
-              id='date-picker-lr'
-              value={selectedInterval ?? emptyDateRange}
-              onConfirm={(d) => {
-                setSelectedInterval({
-                  start: d.start!,
-                  end: d.end!
-                });
-              }}
-              isClearable={false}
-              isRange
-              alignment='right'
-              renderTriggerElement={(props) => (
-                <DatePickerButton {...props} size='small'>
-                  <span className='head-reference'>L</span>
-                  <span>
-                    {selectedInterval
-                      ? format(selectedInterval.start, 'MMM do, yyyy')
-                      : 'Date'}
-                  </span>
-                  <span className='head-reference'>R</span>
-                  <span>
-                    {selectedInterval
-                      ? format(selectedInterval.end, 'MMM do, yyyy')
-                      : 'Date'}
-                  </span>
-                  <CollecticonChevronDownSmall />
-                </DatePickerButton>
-              )}
-            />
-          </ControlsToolbar>
-
-          <DateAxis xScaled={xScaled} width={width} />
-        </TimelineControls>
+        <TimelineControls
+          selectedDay={selectedDay}
+          selectedInterval={selectedInterval}
+          xScaled={xScaled}
+          width={width}
+          onDayChange={setSelectedDay}
+          onIntervalChange={setSelectedInterval}
+        />
       </TimelineHeader>
       <TimelineContent>
         {selectedDay ? (
@@ -434,39 +362,23 @@ function Timeline() {
         <DateGrid width={width} xScaled={xScaled} />
 
         <TimelineContentInner ref={datasetsContainerRef}>
-          <DatasetList
-            datasets={datasets}
-            width={width}
-            xScaled={xScaled}
-            selectedDay={selectedDay}
-          />
+          <Reorder.Group
+            as={DatasetListSelf as any}
+            axis='y'
+            values={datasets}
+            onReorder={setDatasets}
+          >
+            {datasets.map((dataset) => (
+              <DatasetListItem
+                key={dataset.data.id}
+                datasetId={dataset.data.id}
+                width={width}
+                xScaled={xScaled}
+              />
+            ))}
+          </Reorder.Group>
         </TimelineContentInner>
       </TimelineContent>
     </TimelineWrapper>
-  );
-}
-
-export default Timeline;
-
-function DatasetList(props: any) {
-  const { datasets, ...rest } = props;
-
-  const [orderedDatasets, setOrderDatasets] = useState(datasets);
-
-  useEffect(() => {
-    setOrderDatasets(datasets);
-  }, [datasets]);
-
-  return (
-    <Reorder.Group
-      as={DatasetListSelf as any}
-      axis='y'
-      values={orderedDatasets}
-      onReorder={setOrderDatasets}
-    >
-      {orderedDatasets.map((dataset) => (
-        <DatasetListItem key={dataset.data.title} dataset={dataset} {...rest} />
-      ))}
-    </Reorder.Group>
   );
 }

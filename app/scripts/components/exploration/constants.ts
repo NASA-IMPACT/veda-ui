@@ -13,12 +13,20 @@ export enum TimeDensity {
   DAY = 'day'
 }
 
+export enum TimelineDatasetStatus {
+  IDLE = 'idle',
+  LOADING = 'loading',
+  SUCCEEDED = 'succeeded',
+  ERRORED = 'errored'
+}
+
 export interface TimelineDataset {
-  status: 'idle' | 'loading' | 'succeeded' | 'errored';
+  status: TimelineDatasetStatus;
   data: any;
   error: any;
   settings: {
     // user defined settings like visibility, opacity
+    isVisible?: boolean;
   };
 }
 

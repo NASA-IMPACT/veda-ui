@@ -5,9 +5,10 @@ import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
 
 import { timelineDatasetsAtom } from './atoms';
-import { TimelineDataset } from './constants';
+import { TimelineDataset, TimelineDatasetStatus } from './constants';
 
 const extraDataset = {
+  id: 'infinity',
   title: 'Daily infinity!',
   timeDensity: 'day',
   domain: eachDayOfInterval({
@@ -18,6 +19,7 @@ const extraDataset = {
 
 const datasets = [
   {
+    id: 'monthly',
     title: 'Monthly dataset',
     timeDensity: 'month',
     domain: [
@@ -29,6 +31,7 @@ const datasets = [
     ]
   },
   {
+    id: 'daily',
     title: 'Daily dataset',
     timeDensity: 'day',
     domain: [
@@ -96,6 +99,7 @@ const datasets = [
     ]
   },
   {
+    id: 'daily2',
     title: 'Daily 2',
     timeDensity: 'day',
     domain: [
@@ -107,6 +111,7 @@ const datasets = [
     ]
   },
   {
+    id: 'daily3',
     title: 'Daily 3',
     timeDensity: 'day',
     domain: eachDayOfInterval({
@@ -114,19 +119,38 @@ const datasets = [
       end: new Date('2021-01-01')
     })
   }
-].map(makeDataset);
+].map((d) => makeDataset(d));
 
-function makeDataset(data): TimelineDataset {
+function makeDataset(
+  data,
+  status = TimelineDatasetStatus.SUCCEEDED,
+  settings: Record<string, any> = {}
+): TimelineDataset {
   return {
-    status: 'succeeded',
+    status,
     data,
     error: null,
-    settings: {}
+    settings: {
+      ...settings,
+      isVisible: settings.isVisible === undefined ? true : settings.isVisible
+    }
+  };
+}
+
+function toggleDataset(dataset) {
+  return (d) => {
+    if (d.find((dd) => dd.data.id === dataset.data.id)) {
+      return d.filter((dd) => dd.data.id !== dataset.data.id);
+    }
+    return [...d, dataset];
   };
 }
 
 const MockPanel = styled.div`
+  display: flex;
+  flex-direction: row wrap;
   padding: 1rem;
+  gap: 1rem;
 `;
 
 export function MockControls() {
@@ -134,21 +158,55 @@ export function MockControls() {
 
   return (
     <MockPanel>
+      <Button onClick={() => set([])} variation='base-outline'>
+        Clear
+      </Button>
       <Button onClick={() => set(datasets)} variation='base-outline'>
         Base datasets
       </Button>
       <Button
         onClick={() => {
-          set((d) => {
-            if (d.find((dd) => dd.data.title === extraDataset.title)) {
-              return d.filter((dd) => dd.data.title !== extraDataset.title);
-            }
-            return [...d, makeDataset(extraDataset)];
-          });
+          set(toggleDataset(makeDataset(extraDataset)));
         }}
         variation='base-outline'
       >
         Toggle infinity dataset
+      </Button>
+      <Button
+        onClick={() => {
+          set(
+            toggleDataset(
+              makeDataset(
+                {
+                  id: 'loading',
+                  title: 'Loading dataset'
+                },
+                TimelineDatasetStatus.LOADING
+              )
+            )
+          );
+        }}
+        variation='base-outline'
+      >
+        Toggle Loading dataset
+      </Button>
+      <Button
+        onClick={() => {
+          set(
+            toggleDataset(
+              makeDataset(
+                {
+                  id: 'errored',
+                  title: 'Error dataset'
+                },
+                TimelineDatasetStatus.ERRORED
+              )
+            )
+          );
+        }}
+        variation='base-outline'
+      >
+        Toggle Error dataset
       </Button>
     </MockPanel>
   );

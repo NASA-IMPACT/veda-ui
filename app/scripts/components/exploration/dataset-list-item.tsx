@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 import {
@@ -14,6 +15,7 @@ import {
 } from 'date-fns';
 import { ScaleTime } from 'd3';
 import {
+  CollecticonArrowSpinCw,
   CollecticonEye,
   CollecticonEyeDisabled,
   CollecticonGripVertical
@@ -26,8 +28,14 @@ import {
   DATASET_TRACK_BLOCK_HEIGHT,
   HEADER_COLUMN_WIDTH,
   TimeDensity,
-  TimelineDataset
+  TimelineDataset,
+  TimelineDatasetStatus
 } from './constants';
+import { useTimelineDatasetAtom, useTimelineDatasetVisibility } from './hooks';
+import {
+  DatasetTrackError,
+  DatasetTrackLoading
+} from './dataset-list-item-status';
 
 import { LayerGradientGraphic } from '$components/common/mapbox/layer-legend';
 
@@ -103,20 +111,26 @@ const DatasetData = styled.div`
   padding: ${glsp(0.25, 0)};
   display: flex;
   align-items: center;
+  flex-grow: 1;
 `;
 
 interface DatasetListItemProps {
-  dataset: TimelineDataset;
+  datasetId: string;
   width: number;
   xScaled: ScaleTime<number, number>;
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
-  const { dataset, width, xScaled } = props;
+  const { datasetId, width, xScaled } = props;
 
-  const [isVisible, setVisible] = useState(true);
+  const datasetAtom = useTimelineDatasetAtom(datasetId);
+  const dataset = useAtomValue(datasetAtom);
+
+  const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
 
   const controls = useDragControls();
+
+  const isError = dataset.status === TimelineDatasetStatus.ERRORED;
 
   return (
     <Reorder.Item value={dataset} dragListener={false} dragControls={controls}>
@@ -125,23 +139,36 @@ export function DatasetListItem(props: DatasetListItemProps) {
           <CollecticonGripVertical onPointerDown={(e) => controls.start(e)} />
           <DatasetInfo>
             <DatasetHeadline>
-              <Heading as='h3' size='xsmall'>
+              <Heading
+                as='h3'
+                size='xsmall'
+                variation={isError ? 'danger' : undefined}
+              >
                 {dataset.data.title}
               </Heading>
               <Toolbar size='small'>
-                <ToolbarIconButton onClick={() => setVisible((v) => !v)}>
-                  {isVisible ? (
-                    <CollecticonEye
+                {!isError ? (
+                  <ToolbarIconButton onClick={() => setVisible((v) => !v)}>
+                    {isVisible ? (
+                      <CollecticonEye
+                        meaningful
+                        title='Toggle dataset visibility'
+                      />
+                    ) : (
+                      <CollecticonEyeDisabled
+                        meaningful
+                        title='Toggle dataset visibility'
+                      />
+                    )}
+                  </ToolbarIconButton>
+                ) : (
+                  <ToolbarIconButton variation='danger-text'>
+                    <CollecticonArrowSpinCw
                       meaningful
-                      title='Toggle dataset visibility'
+                      title='Retry dataset loading'
                     />
-                  ) : (
-                    <CollecticonEyeDisabled
-                      meaningful
-                      title='Toggle dataset visibility'
-                    />
-                  )}
-                </ToolbarIconButton>
+                  </ToolbarIconButton>
+                )}
               </Toolbar>
             </DatasetHeadline>
             <LayerGradientGraphic
@@ -154,12 +181,18 @@ export function DatasetListItem(props: DatasetListItemProps) {
           </DatasetInfo>
         </DatasetHeader>
         <DatasetData>
-          <DatasetTrack
-            width={width}
-            xScaled={xScaled}
-            dataset={dataset}
-            isVisible={isVisible}
-          />
+          {dataset.status === TimelineDatasetStatus.LOADING && (
+            <DatasetTrackLoading />
+          )}
+          {isError && <DatasetTrackError />}
+          {dataset.status === TimelineDatasetStatus.SUCCEEDED && (
+            <DatasetTrack
+              width={width}
+              xScaled={xScaled}
+              dataset={dataset}
+              isVisible={!!isVisible}
+            />
+          )}
         </DatasetData>
       </DatasetItem>
     </Reorder.Item>

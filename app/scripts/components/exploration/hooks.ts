@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { extent, scaleTime } from 'd3';
-import { useAtomValue } from 'jotai';
+import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
+import { focusAtom } from 'jotai-optics';
 import { differenceInCalendarDays } from 'date-fns';
 
 import {
@@ -9,6 +10,7 @@ import {
   zoomTransformAtom
 } from './atoms';
 import { rescaleX } from './utils';
+import { TimelineDataset } from './constants';
 
 /**
  * Calculates the date domain of the datasets, if any are selected.
@@ -76,4 +78,37 @@ export function useScales() {
 
   // In the first run the scaled and main scales are the same.
   return { main, scaled: scaled ?? main };
+}
+
+/**
+ * Creates a focus atom for a dataset with the given id.
+ *
+ * @param id The dataset id for which to create the atom.
+ * @returns Focus atom for the dataset with the given id.
+ */
+export function useTimelineDatasetAtom(id: string) {
+  const datasetAtom = useMemo(() => {
+    return focusAtom(timelineDatasetsAtom, (optic) =>
+      optic.find((d) => d.data.id === id)
+    );
+  }, [id]);
+
+  return datasetAtom as PrimitiveAtom<TimelineDataset>;
+}
+
+/**
+ * Hook to get/set the visibility of a dataset.
+ * @param datasetAtom Single dataset atom.
+ * @returns State getter/setter for the dataset visibility.
+ */
+export function useTimelineDatasetVisibility(
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+) {
+  const visibilityAtom = useMemo(() => {
+    return focusAtom(datasetAtom, (optic) =>
+      optic.prop('settings').prop('isVisible')
+    );
+  }, [datasetAtom]);
+
+  return useAtom(visibilityAtom);
 }
