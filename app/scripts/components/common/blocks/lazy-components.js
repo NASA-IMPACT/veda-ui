@@ -4,8 +4,7 @@ import LazyLoad from 'react-lazyload';
 import Chart from '$components/common/chart/block';
 import { chartMaxHeight } from '$components/common/chart/constant';
 
-import Table from '$components/common/table';
-import { tableHeight } from '$components/common/table/markup';
+import Table, { tableHeight } from '$components/common/table';
 import CompareImage from '$components/common/blocks/images/compare';
 
 import Map, { mapHeight } from '$components/common/blocks/block-map';
