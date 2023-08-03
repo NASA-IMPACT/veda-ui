@@ -8,7 +8,13 @@ import * as runtime from 'react/jsx-runtime';
 import { useMDXComponents } from '@mdx-js/react';
 import MDXRenderer from './mdx-renderer';
 import { MDXBlockWithError } from './block-with-error';
-import { useAddBlock, useRemoveBlock, useSetCurrentBlockId } from './atoms';
+import {
+  useAddBlock,
+  useCurrentDataStory,
+  useRemoveBlock,
+  useSetBlockOrder,
+  useSetCurrentBlockId
+} from './atoms';
 
 interface useMDXReturnProps {
   source: string;
@@ -96,6 +102,16 @@ export default function EditorBlock({
   const onEditClick = useSetCurrentBlockId(id);
   const onRemoveClick = useRemoveBlock(id);
   const onAddClick = useAddBlock(id);
+  const { isAvailable: canGoUp, setBlockOrder: onUpClick } = useSetBlockOrder(
+    id,
+    'up'
+  );
+  const { isAvailable: canGoDown, setBlockOrder: onDownClick } =
+    useSetBlockOrder(id, 'down');
+
+  const currentDataStory = useCurrentDataStory();
+
+  const editing = id === currentDataStory?.currentBlockId;
 
   return error ? (
     <MDXBlockWithError error={errorHumanReadable} />
@@ -108,10 +124,16 @@ export default function EditorBlock({
       {highlighted && (
         <MDXRendererActions>
           <ButtonGroup>
-            <Button onClick={onEditClick}>Edit MDX</Button>
+            <Button onClick={onEditClick} disabled={editing}>
+              {editing ? 'Editing' : 'Edit MDX'}
+            </Button>
             <Button onClick={onRemoveClick}>Remove</Button>
-            <Button disabled>Move up</Button>
-            <Button disabled>Move down</Button>
+            <Button onClick={onUpClick} disabled={!canGoUp}>
+              Move up
+            </Button>
+            <Button onClick={onDownClick} disabled={!canGoDown}>
+              Move down
+            </Button>
             <Button onClick={onAddClick}>Add new...</Button>
           </ButtonGroup>
         </MDXRendererActions>

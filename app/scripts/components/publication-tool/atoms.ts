@@ -136,14 +136,16 @@ export const useSetCurrentBlockId = (blockId: string) => {
 export const useRemoveBlock = (blockId: string) => {
   const { setDataStories, storyIndex, blockIndex } = useCRUDUtils(blockId);
   return useCallback(() => {
-    setDataStories((oldDataStories) => {
-      const newDataStories = [...oldDataStories];
-      newDataStories[storyIndex].blocks = [
-        ...newDataStories[storyIndex].blocks.slice(0, blockIndex),
-        ...newDataStories[storyIndex].blocks.slice(blockIndex + 1)
-      ];
-      return newDataStories;
-    });
+    if (window.confirm('Are you sure you want to delete this block?')) {
+      setDataStories((oldDataStories) => {
+        const newDataStories = [...oldDataStories];
+        newDataStories[storyIndex].blocks = [
+          ...newDataStories[storyIndex].blocks.slice(0, blockIndex),
+          ...newDataStories[storyIndex].blocks.slice(blockIndex + 1)
+        ];
+        return newDataStories;
+      });
+    }
   }, [setDataStories, storyIndex, blockIndex]);
 };
 
@@ -160,7 +162,7 @@ export const useAddBlock = (afterBlockId: string) => {
           id: newBlockId,
           tag: 'Block',
           mdx: `<Prose>
-### Hello, block!
+### Hello, new block!
       
 Let's tell a story of _data_.
           
@@ -186,4 +188,43 @@ export const useSetBlockMDX = (blockId: string) => {
     [setDataStories, storyIndex, blockIndex]
   );
   return blockId ? callback : undefined;
+};
+
+export const useSetBlockOrder = (blockId: string, direction: 'up' | 'down') => {
+  const { setDataStories, storyIndex, blockIndex } = useCRUDUtils(blockId);
+  const currentDataStory = useCurrentDataStory();
+
+  const isAvailable = useMemo(() => {
+    const canGoUp = blockIndex > 0;
+    const canGoDown = currentDataStory
+      ? blockIndex < currentDataStory.blocks.length - 1
+      : false;
+    return direction === 'up' ? canGoUp : canGoDown;
+  }, [blockIndex, currentDataStory, direction]);
+
+    
+  const setBlockOrder = useCallback(() => {
+    setDataStories((oldDataStories) => {
+      const newDataStories = [...oldDataStories];
+      const block = newDataStories[storyIndex].blocks[blockIndex];
+      // const newBlockIndex =
+      //   direction === 'up' ? blockIndex - 1 : blockIndex + 1;
+      // newDataStories[storyIndex].blocks = [
+      //   ...newDataStories[storyIndex].blocks.slice(0, blockIndex),
+      //   ...newDataStories[storyIndex].blocks.slice(blockIndex + 1)
+      // ];
+
+      if (direction === 'up') {
+        newDataStories[storyIndex].blocks[blockIndex] =
+          newDataStories[storyIndex].blocks[blockIndex - 1];
+        newDataStories[storyIndex].blocks[blockIndex - 1] = block;
+      } else {
+        newDataStories[storyIndex].blocks[blockIndex] =
+          newDataStories[storyIndex].blocks[blockIndex + 1];
+        newDataStories[storyIndex].blocks[blockIndex + 1] = block;
+      }
+      return newDataStories;
+    });
+  }, [setDataStories, storyIndex, blockIndex, direction]);
+  return { isAvailable, setBlockOrder };
 };
