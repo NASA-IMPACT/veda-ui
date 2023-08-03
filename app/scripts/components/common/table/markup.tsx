@@ -1,5 +1,4 @@
-
-import styled from "styled-components";
+import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
 
@@ -11,7 +10,6 @@ export const PlaceHolderWrapper = styled.div`
   align-items: center;
   justify-content: center;
   font-weight: bold;
-
 `;
 
 export const TableWrapper = styled.div`
