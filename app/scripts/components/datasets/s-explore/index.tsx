@@ -215,6 +215,7 @@ function DatasetsExplore() {
   useEffect(() => {
     setPanelRevealed(!isMediumDown);
   }, [isMediumDown]);
+
   // When the panel changes resize the map after a the animation finishes.
   useEffect(() => {
     const id = setTimeout(
@@ -568,7 +569,13 @@ function DatasetsExplore() {
               compareDate={selectedCompareDatetime ?? undefined}
               isComparing={isComparing}
               initialPosition={mapPosition ?? undefined}
-              onPositionChange={setMapPosition}
+              onPositionChange={(v) => {
+                // Only store the map position if the change was initiated by
+                // the user.
+                if (v.userInitiated) {
+                  setMapPosition(v);
+                }
+              }}
               projection={mapProjection ?? projectionDefault}
               onProjectionChange={setMapProjection}
             />

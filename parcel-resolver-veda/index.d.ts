@@ -26,6 +26,7 @@ declare module 'veda' {
 
   interface DatasetLayerCommonProps {
     zoomExtent?: number[];
+    bounds?: number[];
     sourceParams?: Record<string, any>;
   }
 

@@ -12,7 +12,7 @@ import { Feature } from 'geojson';
 import { endOfDay, startOfDay } from 'date-fns';
 import centroid from '@turf/centroid';
 
-import { requestQuickCache, useLayerInteraction } from './utils';
+import { requestQuickCache, useFitBbox, useLayerInteraction } from './utils';
 import { useMapStyle } from './styles';
 import { useCustomMarker } from './custom-marker';
 
@@ -26,9 +26,11 @@ export interface MapLayerVectorTimeseriesProps {
   mapInstance: MapboxMap;
   sourceParams?: Record<string, any>;
   zoomExtent?: number[];
+  bounds?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
   idSuffix?: string;
+  isPositionSet?: boolean;
 }
 
 export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
@@ -39,14 +41,18 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     mapInstance,
     sourceParams,
     zoomExtent,
+    bounds,
     onStatusChange,
     isHidden,
-    idSuffix = ''
+    idSuffix = '',
+    isPositionSet
   } = props;
 
   const theme = useTheme();
   const { updateStyle } = useMapStyle();
   const [featuresApiEndpoint, setFeaturesApiEndpoint] = useState('');
+  const [featuresBbox, setFeaturesBbox] =
+    useState<[number, number, number, number]>();
 
   const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
 
@@ -67,7 +73,19 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
           controller
         });
 
-        setFeaturesApiEndpoint(data.links.find((l) => l.rel === 'external').href);
+        const endpoint = data.links.find((l) => l.rel === 'external').href;
+        setFeaturesApiEndpoint(endpoint);
+
+        const featuresData = await requestQuickCache({
+          url: endpoint,
+          method: 'GET',
+          controller
+        });
+
+        if (featuresData.extent.spatial.bbox) {
+          setFeaturesBbox(featuresData.extent.spatial.bbox[0]);
+        }
+
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -84,7 +102,6 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
       controller.abort();
     };
   }, [mapInstance, id, stacCol, date, onStatusChange]);
-
 
   const markerLayout = useCustomMarker(mapInstance);
 
@@ -192,7 +209,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
             'source-layer': 'default',
             layout: {
               ...(markerLayout as any),
-              visibility: isHidden ? 'none' : 'visible',
+              visibility: isHidden ? 'none' : 'visible'
             },
             paint: {
               'icon-color': theme.color?.infographicB,
@@ -265,6 +282,11 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     mapInstance,
     onClick: onPointsClick
   });
+
+  //
+  // FitBounds when needed
+  //
+  useFitBbox(mapInstance, !!isPositionSet, bounds, featuresBbox);
 
   return null;
 }
