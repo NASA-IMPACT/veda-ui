@@ -117,11 +117,13 @@ const DatasetData = styled.div`
 interface DatasetListItemProps {
   datasetId: string;
   width: number;
-  xScaled: ScaleTime<number, number>;
+  xScaled?: ScaleTime<number, number>;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
-  const { datasetId, width, xScaled } = props;
+  const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
@@ -133,7 +135,17 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const isError = dataset.status === TimelineDatasetStatus.ERRORED;
 
   return (
-    <Reorder.Item value={dataset} dragListener={false} dragControls={controls}>
+    <Reorder.Item
+      value={dataset}
+      dragListener={false}
+      dragControls={controls}
+      onDragStart={() => {
+        onDragStart?.();
+      }}
+      onDragEnd={() => {
+        onDragEnd?.();
+      }}
+    >
       <DatasetItem>
         <DatasetHeader>
           <CollecticonGripVertical onPointerDown={(e) => controls.start(e)} />
@@ -188,7 +200,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
           {dataset.status === TimelineDatasetStatus.SUCCEEDED && (
             <DatasetTrack
               width={width}
-              xScaled={xScaled}
+              xScaled={xScaled!}
               dataset={dataset}
               isVisible={!!isVisible}
             />

@@ -2,10 +2,9 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { useAtomValue, useSetAtom, useAtom } from 'jotai';
 import styled from 'styled-components';
 import useDimensions from 'react-cool-dimensions';
-import { Reorder } from 'framer-motion';
-import { ZoomTransform, select, zoom } from 'd3';
+import { select, zoom } from 'd3';
 import { add, isAfter, isBefore, startOfDay, sub } from 'date-fns';
-import { glsp, listReset, themeVal } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { CollecticonPlusSmall } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
@@ -18,7 +17,7 @@ import {
   timelineWidthAtom,
   zoomTransformAtom
 } from './atoms';
-import { DatasetListItem } from './dataset-list-item';
+import { DatasetList } from './dataset-list';
 import {
   TimelineHeadL,
   TimelineHeadP,
@@ -27,11 +26,15 @@ import {
 } from './timeline-head';
 import { TimelineControls } from './timeline-controls';
 import { DateGrid } from './date-axis';
-import { RIGHT_AXIS_SPACE } from './constants';
+import {
+  RIGHT_AXIS_SPACE,
+  TimelineDatasetStatus,
+  ZoomTransformPlain
+} from './constants';
 import { applyTransform, isEqualTransform, rescaleX } from './utils';
 import { useScaleFactors, useScales, useTimelineDatasetsDomain } from './hooks';
 
-import { useEffectPrevious } from '$utils/use-effect-previous';
+import { useLayoutEffectPrevious } from '$utils/use-effect-previous';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -62,7 +65,8 @@ const InteractionRect = styled.div`
   bottom: 0;
   right: ${RIGHT_AXIS_SPACE}px;
   /* background-color: rgba(255, 0, 0, 0.08); */
-  box-shadow: 1px 0 0 0 ${themeVal('color.base-200')};
+  box-shadow: 1px 0 0 0 ${themeVal('color.base-200')},
+    inset 1px 0 0 0 ${themeVal('color.base-200')};
   z-index: 100;
 `;
 
@@ -105,11 +109,6 @@ const TimelineContentInner = styled.div`
   position: relative;
 `;
 
-const DatasetListSelf = styled.ul`
-  ${listReset()}
-  width: 100%;
-`;
-
 export default function Timeline() {
   // Refs for non react based interactions.
   // The interaction rect is used to capture the different d3 events for the
@@ -119,7 +118,7 @@ export default function Timeline() {
   // container to propagate the needed events to it, like scroll.
   const datasetsContainerRef = useRef<HTMLDivElement>(null);
 
-  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
+  const datasets = useAtomValue(timelineDatasetsAtom);
 
   const dataDomain = useTimelineDatasetsDomain();
 
@@ -220,57 +219,71 @@ export default function Timeline() {
   }, [setSelectedDay, xScaled, zoomBehavior]);
 
   // When a new dataset is added we need to recompute the transform to ensure
-  // the timeline view remains the same.
-  useEffectPrevious(
-    (prevProps) => {
-      const [zb, zt, xSc] = prevProps as [
-        typeof zoomBehavior | undefined,
-        ZoomTransform | undefined,
-        typeof xScaled | undefined
-      ];
-
-      // Only act when the zoom behavior changes.
-      // Everything else should be defined but let's prevent ts errors.
+  // the timeline view remains the same. Datasets being added cause the scale
+  // factors to change.
+  // Using useLayoutEffect to ensure the transform is calculate before new
+  // renders.
+  useLayoutEffectPrevious<
+    [number, ZoomTransformPlain, typeof xScaled, typeof xMain]
+  >(
+    ([_k1, _zoomTransform, _xScaled]) => {
       if (
         !interactionRef.current ||
-        !zb ||
-        !zt ||
-        !xSc ||
+        !_zoomTransform ||
+        !_k1 ||
+        !_xScaled ||
         !xMain ||
-        zb === zoomBehavior
+        _k1 === k1
       )
         return;
 
-      if (zb.scaleExtent()[1] > 0) {
-        const prevScaleMax = zb.scaleExtent()[1];
-        const currScaleMax = zoomBehavior.scaleExtent()[1];
-        // Calculate the new scale factor by using the ration between the old
-        // and new scale extents.
-        const k = (currScaleMax / prevScaleMax) * zt.k;
-        // Rescale the main scale to be able to calculate the new x position
-        const rescaled = rescaleX(xMain, 0, k);
-        // The date at the start of the timeline is the initial domain of the
-        // scale used to draw it - the scaled scale in this case.
-        const dateAtTimelineStart = xSc.domain()[0];
+      // Calculate the new scale factor by using the ration between the old
+      // and new scale extents.
+      const k = (k1 / _k1) * _zoomTransform.k;
+      // Rescale the main scale to be able to calculate the new x position
+      const rescaled = rescaleX(xMain, 0, k);
+      // The date at the start of the timeline is the initial domain of the
+      // scale used to draw it - the scaled scale in this case.
+      const dateAtTimelineStart = _xScaled.domain()[0];
 
-        // Applying the transform will cause the zoom event to be emitted
-        // without a sourceEvent. On the zoom event listener, the updated zoom
-        // transform is set on the state, so there's no need to do it here.
-        applyTransform(
-          zoomBehavior,
-          select(interactionRef.current),
-          rescaled(dateAtTimelineStart) * -1,
-          0,
-          k
-        );
-      }
+      // Applying the transform will cause the zoom event to be emitted
+      // without a sourceEvent. On the zoom event listener, the updated zoom
+      // transform is set on the state, so there's no need to do it here.
+      applyTransform(
+        zoomBehavior,
+        select(interactionRef.current),
+        rescaled(dateAtTimelineStart) * -1,
+        0,
+        k
+      );
     },
-    [zoomBehavior, zoomTransform, xScaled, xMain]
+    [k1, zoomTransform, xScaled, xMain]
   );
+
+  // When a loaded dataset is added from an empty state, compute the correct
+  // transform taking into account the min scale factor (k0).
+  const successDatasetsCount = datasets.filter(
+    (d) => d.status === TimelineDatasetStatus.SUCCEEDED
+  ).length;
+  useLayoutEffectPrevious<[number, number, typeof zoomBehavior]>(
+    ([_successDatasetsCount]) => {
+      if (
+        !interactionRef.current ||
+        _successDatasetsCount !== 0 ||
+        successDatasetsCount === 0
+      )
+        return;
+
+      applyTransform(zoomBehavior, select(interactionRef.current), 0, 0, k0);
+    },
+    [successDatasetsCount, k0, zoomBehavior]
+  );
+
+  const shouldRenderTimeline = xScaled && dataDomain;
 
   // Some of these values depend on each other, but we check all of them so
   // typescript doesn't complain.
-  if (datasets.length === 0 || !xScaled || !dataDomain) {
+  if (datasets.length === 0) {
     return (
       <TimelineWrapper ref={observe}>
         <NoData>
@@ -285,7 +298,10 @@ export default function Timeline() {
 
   return (
     <TimelineWrapper ref={observe}>
-      <InteractionRect ref={interactionRef} />
+      <InteractionRect
+        ref={interactionRef}
+        style={!shouldRenderTimeline ? { pointerEvents: 'none' } : undefined}
+      />
       <TimelineHeader>
         <TimelineDetails>
           <Headline>
@@ -298,17 +314,19 @@ export default function Timeline() {
           </Headline>
           <p>X of Y</p>
         </TimelineDetails>
-        <TimelineControls
-          selectedDay={selectedDay}
-          selectedInterval={selectedInterval}
-          xScaled={xScaled}
-          width={width}
-          onDayChange={setSelectedDay}
-          onIntervalChange={setSelectedInterval}
-        />
+        {shouldRenderTimeline && (
+          <TimelineControls
+            selectedDay={selectedDay}
+            selectedInterval={selectedInterval}
+            xScaled={xScaled}
+            width={width}
+            onDayChange={setSelectedDay}
+            onIntervalChange={setSelectedInterval}
+          />
+        )}
       </TimelineHeader>
       <TimelineContent>
-        {selectedDay ? (
+        {shouldRenderTimeline && selectedDay ? (
           <TimelineHeadP
             domain={dataDomain}
             xScaled={xScaled}
@@ -319,7 +337,7 @@ export default function Timeline() {
         ) : (
           false
         )}
-        {selectedInterval && (
+        {shouldRenderTimeline && selectedInterval && (
           <>
             <TimelineHeadL
               domain={dataDomain}
@@ -359,24 +377,10 @@ export default function Timeline() {
           </>
         )}
 
-        <DateGrid width={width} xScaled={xScaled} />
+        {shouldRenderTimeline && <DateGrid width={width} xScaled={xScaled} />}
 
         <TimelineContentInner ref={datasetsContainerRef}>
-          <Reorder.Group
-            as={DatasetListSelf as any}
-            axis='y'
-            values={datasets}
-            onReorder={setDatasets}
-          >
-            {datasets.map((dataset) => (
-              <DatasetListItem
-                key={dataset.data.id}
-                datasetId={dataset.data.id}
-                width={width}
-                xScaled={xScaled}
-              />
-            ))}
-          </Reorder.Group>
+          <DatasetList width={width} xScaled={xScaled} />
         </TimelineContentInner>
       </TimelineContent>
     </TimelineWrapper>

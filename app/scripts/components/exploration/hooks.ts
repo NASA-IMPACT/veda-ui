@@ -10,7 +10,7 @@ import {
   zoomTransformAtom
 } from './atoms';
 import { rescaleX } from './utils';
-import { TimelineDataset } from './constants';
+import { TimelineDataset, TimelineDatasetStatus } from './constants';
 
 /**
  * Calculates the date domain of the datasets, if any are selected.
@@ -20,12 +20,17 @@ export function useTimelineDatasetsDomain() {
   const datasets = useAtomValue(timelineDatasetsAtom);
 
   return useMemo(() => {
-    if (!datasets.length) return undefined;
+    const successDatasets = datasets.filter(
+      (d) => d.status === TimelineDatasetStatus.SUCCEEDED
+    );
+    if (!successDatasets.length) return undefined;
 
     // To speed up the calculation of the extent, we assume the dataset's domain
     // is ordered and only look at first and last dates.
     return extent(
-      datasets.flatMap((d) => [d.data.domain[0], d.data.domain.last])
+      successDatasets.flatMap((d) =>
+        d.data.domain ? [d.data.domain[0], d.data.domain.last] : []
+      )
     ) as [Date, Date];
   }, [datasets]);
 }
