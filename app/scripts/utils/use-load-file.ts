@@ -33,7 +33,10 @@ const useFileLoader = (fileName: string, excelOption?: ExcelOption) => {
             const wb = read(f); // parse the array buffer
             const sheetNumber = excelOption?.sheetNumber ?? 0;
             const ws = wb.Sheets[wb.SheetNames[sheetNumber]]; // get the first sheet by default
-            const data = utils.sheet_to_json(ws, excelOption?.parseOption) as object[]; // generate objects
+            const data = utils.sheet_to_json(
+              ws,
+              excelOption?.parseOption
+            ) as object[]; // generate objects
             setData(data);
             setLoading(false);
             break;

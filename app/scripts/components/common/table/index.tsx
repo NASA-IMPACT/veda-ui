@@ -6,7 +6,8 @@ import {
   ColumnDef,
   getSortedRowModel,
   SortingState,
-  Row
+  Row,
+  SortDirection
 } from '@tanstack/react-table';
 import { useVirtual } from 'react-virtual';
 import { Sheet2JSONOpts } from 'xlsx';
@@ -16,7 +17,6 @@ import {
   CollecticonSortNone
 } from '@devseed-ui/collecticons';
 import { Table } from '@devseed-ui/typography';
-import { Button } from '@devseed-ui/button';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 
@@ -52,15 +52,26 @@ const TableWrapper = styled.div`
 
 const StyledTable = styled(Table)`
   thead {
-    border-bottom: 2px solid ${themeVal('color.base-200')};
     position: sticky;
     top: 0;
     z-index: 1;
+    border-bottom: 2px solid ${themeVal('color.base-200')};
     background: ${themeVal('color.surface')};
     box-shadow: 0 0 0 1px ${themeVal('color.base-200a')};
+
+    th {
+      vertical-align: middle;
+    }
+
+    .th-inner {
+      display: flex;
+      min-width: 8rem;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
     button {
-      width: 100%;
-      font-weight: normal;
+      flex: 0 0 auto;
     }
   }
 `;
@@ -130,37 +141,16 @@ export default function TableComponent({
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th key={header.id} colSpan={header.colSpan}>
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {header.column.getCanSort() && (
-                        <Button
-                          onClick={header.column.getToggleSortingHandler()}
-                          variation='base-text'
-                          size='small'
-                        ><span>Sort</span>
-                          {(header.column.getIsSorted() as string) == 'asc' && (
-                            <CollecticonSortAsc
-                              meaningful={true}
-                              title='Sorted in ascending order'
-                            />
-                          )}
-                          {(header.column.getIsSorted() as string) ==
-                            'desc' && (
-                            <CollecticonSortDesc
-                              meaningful={true}
-                              title='Sorted in descending order'
-                            />
-                          )}
-                          {!header.column.getIsSorted() && (
-                            <CollecticonSortNone
-                              meaningful={true}
-                              title={`Sort the rows with this column's value`}
-                            />
-                          )}
-                        </Button>
-                      )}
+                      <SortableTh
+                        isSortable={header.column.getCanSort()}
+                        sortDirection={header.column.getIsSorted()}
+                        onSortClick={header.column.getToggleSortingHandler()}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </SortableTh>
                     </th>
                   ))}
                 </tr>
@@ -199,5 +189,73 @@ export default function TableComponent({
         </TableWrapper>
       )}
     </>
+  );
+}
+
+const SortableLink = styled.a`
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+  transition: opacity 0.16s ease-in-out;
+
+  &,
+  &:visited {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+`;
+
+interface SortableThProps {
+  children: React.ReactNode;
+  isSortable: boolean;
+  sortDirection: false | SortDirection;
+  onSortClick: ((event: unknown) => void) | undefined;
+}
+
+function SortableTh(props: SortableThProps) {
+  const { children, isSortable, sortDirection, onSortClick } = props;
+
+  return (
+    <div className='th-inner'>
+      {isSortable ? (
+        <SortableLink
+          href='#'
+          onClick={(e) => {
+            e.preventDefault();
+            onSortClick?.(e);
+          }}
+        >
+          <span>{children}</span>
+          {sortDirection === 'asc' && (
+            <CollecticonSortAsc
+              meaningful={true}
+              title='Sorted in ascending order'
+            />
+          )}
+          {sortDirection === 'desc' && (
+            <CollecticonSortDesc
+              meaningful={true}
+              title='Sorted in descending order'
+            />
+          )}
+          {!sortDirection && (
+            <CollecticonSortNone
+              meaningful={true}
+              title={`Sort the rows with this column's value`}
+            />
+          )}
+        </SortableLink>
+      ) : (
+        children
+      )}
+    </div>
   );
 }
