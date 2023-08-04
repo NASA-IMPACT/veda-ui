@@ -21,9 +21,15 @@ import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import useLoadFile from '$utils/use-load-file';
+
+export interface ExcelOption {
+  sheetNumber?: number;
+  parseOption?: Sheet2JSONOpts;
+}
+
 interface TablecomponentProps {
   dataPath: string;
-  excelOption?: Sheet2JSONOpts;
+  excelOption?: ExcelOption;
   columnToSort?: string[];
 }
 

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Sheet2JSONOpts } from 'xlsx';
 import axios from 'axios';
+import { ExcelOption } from '$components/common/table';
 
 type FileExtension = 'xlsx' | 'xls' | 'json' | 'csv';
 
-const useFileLoader = (fileName: string, excelOption?: Sheet2JSONOpts) => {
+const useFileLoader = (fileName: string, excelOption?: ExcelOption) => {
   const [data, setData] = useState<object[]>([]);
   const [dataLoading, setLoading] = useState<boolean>(false);
   const [dataError, setError] = useState<boolean>(false);
@@ -31,8 +31,9 @@ const useFileLoader = (fileName: string, excelOption?: Sheet2JSONOpts) => {
                 .then((response) => response.data)
             ).arrayBuffer();
             const wb = read(f); // parse the array buffer
-            const ws = wb.Sheets[wb.SheetNames[0]]; // get the first sheet by default
-            const data = utils.sheet_to_json(ws, excelOption) as object[]; // generate objects
+            const sheetNumber = excelOption?.sheetNumber ?? 0;
+            const ws = wb.Sheets[wb.SheetNames[sheetNumber]]; // get the first sheet by default
+            const data = utils.sheet_to_json(ws, excelOption?.parseOption) as object[]; // generate objects
             setData(data);
             setLoading(false);
             break;
@@ -62,6 +63,7 @@ const useFileLoader = (fileName: string, excelOption?: Sheet2JSONOpts) => {
         }
       } catch (error) {
         setData([]);
+
         setLoading(false);
         setError(true);
       }

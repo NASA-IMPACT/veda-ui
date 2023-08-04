@@ -1,23 +1,27 @@
 <Block>
   <Figure>
-    <Table dataPath="/public/2021_data_summary_spreadsheets/ghgp_data_by_year.xlsx" 
-    excelOption={{ range: 3 }} 
-    columnToSort={['Facility Id', 'Zip Code']}/>
+    <Table
+      dataPath='/public/2021_data_summary_spreadsheets/ghgp_data_by_year.xlsx'
+      excelOption={{ parseOption: { range: 3 } }}
+      columnToSort={['Facility Id', 'Zip Code']}
+    />
     <Caption> Table example</Caption>
   </Figure>
 </Block>
 
-
 <Block type='wide'>
   <Figure>
-    <Table dataPath="/public/2021_data_summary_spreadsheets/ghgp_data_by_year.xlsx" excelOption={{ range: 3 }} />
+    <Table
+      dataPath='/public/2021_data_summary_spreadsheets/ghgp_data_by_year.xlsx'
+      excelOption={{ sheetNumber: 0, parseOption: { range: 3 } }}
+    />
     <Caption> Wide block Table example</Caption>
   </Figure>
 </Block>
 
 <Block>
   <Figure>
-    <Table dataPath="/public/example.csv" columnToSort={['New Positives']} />
+    <Table dataPath='/public/example.csv' columnToSort={['New Positives']} />
     <Caption> Table example from csv</Caption>
   </Figure>
 </Block>

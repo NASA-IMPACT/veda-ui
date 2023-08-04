@@ -457,20 +457,24 @@ Syntax for Chart used in Wide Figure Block looks like this. Check how the data i
 | Option | Type | Default | Description|
 |---|---|---|---|
 | dataPath | string | `''` | Path for data. The data should be either in `csv`,`xlsx` (`xls`), or `json`. Use parcel's URL builder to use local file. (Refer to the example below.) |
-| excelJsonOption | object | `null` | Optional. Only when data format is `xlsx`. Info to convert Excel data to json. Please refer [this link](https://www.npmjs.com/package/xlsx#json) for details. |
 | columnsToSort | string array | `[]` | The name of columns that will enable sorting functionality. The columns will show up with the little icon indicating sorting ability. |
+| excelOption | object | `null` | Optional. Only when data format is `xlsx`. Please refer the attributes below for details.|
+| excelOption.sheetNumber | number | `0` | Optional. Sheet number to display. Only when data format is `xlsx`, the file is consist of multiple files and the sheet that needs to be displayed is not the first sheet(0). Please mind that the first sheet is 0, so if you want the third sheet to be displayed, `2` needs to be passed. |
+| excelOption.parseOption | object | `null` | Optional. Info to convert Excel data to json. Only when data format is `xlsx` and the additional info to parse the Excel file is needed. Please refer [this link](https://www.npmjs.com/package/xlsx#json) for details. |
+
 
 
 ```jsx
-<Block>
+
+<Block type='wide'>
   <Figure>
-    <Table dataPath="/public/2021_data_summary_spreadsheets/ghgp_data_by_year.xlsx" 
-    excelOption={{ range: 3 }} 
-    columnToSort={['Facility Id', 'Zip Code']}/>
-    <Caption> Table example</Caption>
+    <Table
+      dataPath='/public/2021_data_summary_spreadsheets/ghgp_data_by_year.xlsx'
+      excelOption={{ sheetNumber: 0, parseOption: { range: 3 } }}
+    />
+    <Caption> Wide block Table example</Caption>
   </Figure>
 </Block>
-
 ```
 
 ## Map
