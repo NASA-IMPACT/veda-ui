@@ -20,9 +20,13 @@ export function useTimelineDatasetsDomain() {
   const datasets = useAtomValue(timelineDatasetsAtom);
 
   return useMemo(() => {
-    return datasets.length === 0
-      ? undefined
-      : (extent(datasets.flatMap((d) => d.data.domain)) as [Date, Date]);
+    if (!datasets.length) return undefined;
+
+    // To speed up the calculation of the extent, we assume the dataset's domain
+    // is ordered and only look at first and last dates.
+    return extent(
+      datasets.flatMap((d) => [d.data.domain[0], d.data.domain.last])
+    ) as [Date, Date];
   }, [datasets]);
 }
 
