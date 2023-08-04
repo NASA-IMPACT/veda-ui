@@ -77,16 +77,9 @@ export function useScales() {
   const scaled = useMemo(() => {
     if (!main) return undefined;
     return rescaleX(main, zoomTransform.x, zoomTransform.k);
-    // We want to scale this scale only when the zoom transform changes.
-    // The zoom transform is what dictates the current timeline view so it is
-    // important that it drives the scale. Because the main changes before the
-    // zoom transform we can't include it in the deps, otherwise we'd have a
-    // weird midway render in the timeline when this scale had reacted to the
-    // main change but not to the zoom transform change.
-  }, [zoomTransform.x, zoomTransform.k]);
+  }, [main, zoomTransform.x, zoomTransform.k]);
 
-  // In the first run the scaled and main scales are the same.
-  return { main, scaled: scaled ?? main };
+  return { main, scaled };
 }
 
 /**

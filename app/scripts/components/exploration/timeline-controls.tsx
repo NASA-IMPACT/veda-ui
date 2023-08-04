@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { format } from 'date-fns';
-import { ScaleTime } from 'd3';
+import { endOfYear, format, startOfYear } from 'date-fns';
+import { scaleTime, ScaleTime } from 'd3';
 
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { CollecticonChevronDownSmall } from '@devseed-ui/collecticons';
@@ -41,7 +41,7 @@ const DatePickerButton = styled(Button)`
 interface TimelineControlsProps {
   selectedDay: Date | null;
   selectedInterval: DateRange | null;
-  xScaled: ScaleTime<number, number>;
+  xScaled?: ScaleTime<number, number>;
   width: number;
   onDayChange: (d: Date) => void;
   onIntervalChange: (d: DateRange) => void;
@@ -57,6 +57,14 @@ export function TimelineControls(props: TimelineControlsProps) {
     onIntervalChange
   } = props;
 
+  // Scale to use when there are no datasets with data (loading or error)
+  const initialScale = useMemo(() => {
+    const now = new Date();
+    return scaleTime()
+      .domain([startOfYear(now), endOfYear(now)])
+      .range([0, width]);
+  }, [width]);
+
   return (
     <TimelineControlsSelf>
       <ControlsToolbar>
@@ -67,7 +75,7 @@ export function TimelineControls(props: TimelineControlsProps) {
             onDayChange(d.start!);
           }}
           renderTriggerElement={(props, label) => (
-            <DatePickerButton {...props} size='small'>
+            <DatePickerButton {...props} size='small' disabled={!xScaled}>
               <span className='head-reference'>P</span>
               <span>{label}</span>
               <CollecticonChevronDownSmall />
@@ -87,7 +95,7 @@ export function TimelineControls(props: TimelineControlsProps) {
           isRange
           alignment='right'
           renderTriggerElement={(props) => (
-            <DatePickerButton {...props} size='small'>
+            <DatePickerButton {...props} size='small' disabled={!xScaled}>
               <span className='head-reference'>L</span>
               <span>
                 {selectedInterval
@@ -106,7 +114,7 @@ export function TimelineControls(props: TimelineControlsProps) {
         />
       </ControlsToolbar>
 
-      <DateAxis xScaled={xScaled} width={width} />
+      <DateAxis xScaled={xScaled ?? initialScale} width={width} />
     </TimelineControlsSelf>
   );
 }

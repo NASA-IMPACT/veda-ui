@@ -224,7 +224,7 @@ export default function Timeline() {
   // Using useLayoutEffect to ensure the transform is calculate before new
   // renders.
   useLayoutEffectPrevious<
-    [number, ZoomTransformPlain, typeof xScaled, typeof xMain]
+    [number, ZoomTransformPlain, typeof xScaled, typeof xMain, number]
   >(
     ([_k1, _zoomTransform, _xScaled]) => {
       if (
@@ -238,8 +238,8 @@ export default function Timeline() {
         return;
 
       // Calculate the new scale factor by using the ration between the old
-      // and new scale extents.
-      const k = (k1 / _k1) * _zoomTransform.k;
+      // and new scale extents. Can never be less than minimum scale factor (k0)
+      const k = Math.max(k0, (k1 / _k1) * _zoomTransform.k);
       // Rescale the main scale to be able to calculate the new x position
       const rescaled = rescaleX(xMain, 0, k);
       // The date at the start of the timeline is the initial domain of the
@@ -257,7 +257,7 @@ export default function Timeline() {
         k
       );
     },
-    [k1, zoomTransform, xScaled, xMain]
+    [k1, zoomTransform, xScaled, xMain, k0]
   );
 
   // When a loaded dataset is added from an empty state, compute the correct
@@ -288,9 +288,6 @@ export default function Timeline() {
       <TimelineWrapper ref={observe}>
         <NoData>
           <p>Select a dataset to start exploration</p>
-          <Button variation='primary-fill'>
-            <CollecticonPlusSmall /> Datasets
-          </Button>
         </NoData>
       </TimelineWrapper>
     );
@@ -312,18 +309,16 @@ export default function Timeline() {
               <CollecticonPlusSmall meaningful title='Add dataset' />
             </Button>
           </Headline>
-          <p>X of Y</p>
+          <p>{datasets.length} of Y</p>
         </TimelineDetails>
-        {shouldRenderTimeline && (
-          <TimelineControls
-            selectedDay={selectedDay}
-            selectedInterval={selectedInterval}
-            xScaled={xScaled}
-            width={width}
-            onDayChange={setSelectedDay}
-            onIntervalChange={setSelectedInterval}
-          />
-        )}
+        <TimelineControls
+          selectedDay={selectedDay}
+          selectedInterval={selectedInterval}
+          xScaled={xScaled}
+          width={width}
+          onDayChange={setSelectedDay}
+          onIntervalChange={setSelectedInterval}
+        />
       </TimelineHeader>
       <TimelineContent>
         {shouldRenderTimeline && selectedDay ? (
