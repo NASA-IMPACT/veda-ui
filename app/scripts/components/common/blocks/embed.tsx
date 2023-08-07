@@ -1,8 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import { HintedError } from '$utils/hinted-error';
+import BrowserFrame from '$styles/browser-frame';
 
-const IFrameWrapper = styled.iframe`
+const EmbedWrapper = styled.div`
+  width: 100%;
+  
+  > div {
+    width: 100%;
+  }
+`;
+
+const IframeWrapper = styled.iframe`
   width: 100%;
   border: 0;
   height: ${(props: { height: number }) => props.height}px;
@@ -10,7 +19,7 @@ const IFrameWrapper = styled.iframe`
 
 interface EmbedProps {
   src: string;
-  height: number
+  height: number;
 }
 
 export default function Embed({ src, height = 800 }: EmbedProps) {
@@ -19,6 +28,10 @@ export default function Embed({ src, height = 800 }: EmbedProps) {
   }
 
   return (
-      <IFrameWrapper src={src} height={height} />
+    <EmbedWrapper>
+      <BrowserFrame>
+        <IframeWrapper src={src} height={height} />
+      </BrowserFrame>
+    </EmbedWrapper>
   );
 }

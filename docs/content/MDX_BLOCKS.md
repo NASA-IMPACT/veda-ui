@@ -569,7 +569,11 @@ The scrollytelling is defined as a series os `Chapters` inside the `Scrollytelli
 It is possible to embed individual webpages within a Story, like an interactive notebook, like so:
 
 ```jsx
-<Embed height="1000" src="https://jsignell.github.io/voici/voici/render/fires.html">
+<Block type="wide">
+  <Figure>
+     <Embed height="1200" src="https://jsignell.github.io/voici/voici/render/fires.html" />
+  </Figure>
+</Block>
 ```
 
 ### Embed properties
