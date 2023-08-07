@@ -1,9 +1,12 @@
-import React, { useMemo } from 'react';
-import { Route, Routes, useParams } from 'react-router';
+import React, { useMemo, useState } from 'react';
+import { Route, Routes, useNavigate, useParams } from 'react-router';
 import { useAtomValue } from 'jotai';
 import { Button, ButtonGroup } from '@devseed-ui/button';
 import DataStoryEditor from './data-story';
-import { DataStoriesAtom } from './atoms';
+import {
+  DataStoriesAtom,
+  useCreateEditorDataStoryFromMDXDocument
+} from './atoms';
 import { LayoutProps } from '$components/common/layout-root';
 import { resourceNotFound } from '$components/uhoh';
 import PageHero from '$components/common/page-hero';
@@ -74,6 +77,17 @@ function DataStoryEditorLayout() {
 
 function PublicationTool() {
   const dataStories = useAtomValue(DataStoriesAtom);
+  const [newStory, setNewStory] = useState<string>('');
+  const createEditorDataStoryFromMDXDocument =
+    useCreateEditorDataStoryFromMDXDocument();
+  const navigate = useNavigate();
+
+  const onCreate = () => {
+    const { frontmatter } = createEditorDataStoryFromMDXDocument(newStory);
+    setNewStory('');
+    navigate(`/publication-tool/${frontmatter.id}`);
+  };
+
   return (
     <Routes>
       <Route path=':storyId' element={<DataStoryEditorLayout />} />
@@ -114,6 +128,23 @@ function PublicationTool() {
                     ))}
                   </tbody>
                 </table>
+                <hr />
+                <h2>Create new Story</h2>
+                <div>
+                  <p>From existing MDX document:</p>
+                  <textarea
+                    rows={20}
+                    onChange={(e) => setNewStory(e.currentTarget.value)}
+                    placeholder='Paste full MDX document here (including frontmatter)'
+                  />
+                </div>
+                <Button
+                  disabled={!newStory || newStory === ''}
+                  onClick={onCreate}
+                  variation='primary-fill'
+                >
+                  Create
+                </Button>
               </FoldProse>
             </Fold>
           </PageMainContent>

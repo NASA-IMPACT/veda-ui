@@ -1,14 +1,14 @@
-import { DiscoveryData } from "veda";
+import { StoryData } from "veda";
 
-export interface DataStoryBlock {
+export interface EditorStoryBlock {
   id: string;
   tag: 'Block' | 'ScrollyTellingBlock';
   blockType?: 'wide' | 'full'; 
   mdx: string;
 }
 
-export interface DataStory {
-  frontmatter: DiscoveryData;
-  blocks: DataStoryBlock[];
+export interface EditorStory {
+  frontmatter: StoryData;
+  blocks: EditorStoryBlock[];
   currentBlockId?: string;
 }

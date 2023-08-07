@@ -2,17 +2,17 @@ import { atomWithStorage } from 'jotai/utils';
 import { useParams } from 'react-router';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useCallback, useMemo } from 'react';
-import { DataStory } from './types';
+import { EditorDataStory } from './types';
+import { toEditorDataStory, toMDXDocument } from './utils';
 
-export const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
+export const DataStoriesAtom = atomWithStorage<EditorDataStory[]>('dataStories', [
   {
     frontmatter: {
       id: 'example-data-story',
       name: 'Example Data Story',
       description: 'This is an example data story',
-      sources: [],
-      thematics: [],
-      pubDate: '2023-01-01'
+      pubDate: '2023-01-01',
+      taxonomy: [],
     },
     currentBlockId: '1',
     blocks: [
@@ -59,8 +59,7 @@ export const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
       id: 'example-data-story-2',
       name: 'Example Data Story 2',
       description: 'This is an example data story',
-      sources: [],
-      thematics: [],
+      taxonomy: [],
       pubDate: '2023-01-01'
     },
     blocks: [
@@ -77,6 +76,18 @@ export const DataStoriesAtom = atomWithStorage<DataStory[]>('dataStories', [
     ]
   }
 ]);
+
+export const useCreateEditorDataStoryFromMDXDocument = () => {
+  const setDataStories = useSetAtom(DataStoriesAtom);
+  return useCallback((mdxDocument: string) => {
+    const editorDataStory = toEditorDataStory(mdxDocument);
+    setDataStories((oldDataStories) => {
+      const newDataStories = [...oldDataStories, editorDataStory];
+      return newDataStories;
+    });
+    return editorDataStory;
+  }, [setDataStories]);
+};
 
 export const useCurrentDataStory = () => {
   const { storyId } = useParams();
