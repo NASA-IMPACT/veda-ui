@@ -563,6 +563,21 @@ The scrollytelling is defined as a series os `Chapters` inside the `Scrollytelli
 - As with other properties, the user is not allowed to change the projection used in a chapter
 - Once a chapter with a set projection is reached, that projection will be used on subsequent chapters, until one specifies a different projection.
 
+
+## Embed
+
+It is possible to embed individual webpages within a Story, like an interactive notebook, like so:
+
+```jsx
+<Embed height="1000" src="https://jsignell.github.io/voici/voici/render/fires.html">
+```
+
+### Embed properties
+| Option | Type | Description |
+|---|---|---|
+| src | string | URL for the page that needs to be embedded |
+| height | number | Height needed for the embedded block within the story. Note that the width is automatically set to the full page witdh. |
+
 ## Some gotchas
 
 - Do not use h1(`# heading 1`) for your header. `h1` is reserved for page title.
