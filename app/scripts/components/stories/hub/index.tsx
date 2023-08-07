@@ -1,8 +1,8 @@
 import React, { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { DiscoveryData, discoveries, taxonomies } from 'veda';
-import { glsp, media } from '@devseed-ui/theme-provider';
+import { StoryData, stories, storyTaxonomies, getString } from 'veda';
+import { glsp } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
@@ -34,16 +34,21 @@ import {
 } from '$components/common/card';
 import EmptyHub from '$components/common/empty-hub';
 import { PageMainContent } from '$styles/page';
-import { DISCOVERIES_PATH, getDiscoveryPath } from '$utils/routes';
+import { STORIES_PATH, getStoryPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
-import { FeaturedDiscoveries } from '$components/common/featured-slider-section';
+import { FeaturedStories } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
+import {
+  getTaxonomy,
+  TAXONOMY_SOURCE,
+  TAXONOMY_TOPICS
+} from '$utils/veda-data';
 
-const allDiscoveries = Object.values(discoveries).map((d) => d!.data);
+const allStories = Object.values(stories).map((d) => d!.data);
 
-const DiscoveryCount = styled(Subtitle)`
+const StoryCount = styled(Subtitle)`
   grid-column: 1 / -1;
   display: flex;
   gap: ${glsp(0.5)};
@@ -54,57 +59,62 @@ const DiscoveryCount = styled(Subtitle)`
   }
 `;
 
-const BrowseHeader = styled(FoldHeader)`
-  ${media.largeUp`
-    ${FoldHeadline} {
-      align-self: flex-start;
-    }
-
-    ${BrowseControls} {
-      padding-top: 1rem;
-    }
-  `}
+const BrowseFoldHeader = styled(FoldHeader)`
+  flex-flow: column nowrap;
+  align-items: flex-start;
 `;
-
-const topicsOptions = [optionAll, ...taxonomies.thematics];
-
-const sourcesOptions = [optionAll, ...taxonomies.sources];
 
 const sortOptions = [
   { id: 'name', name: 'Name' },
   { id: 'pubDate', name: 'Date' }
 ];
 
-const prepareDiscoveries = (data: DiscoveryData[], options) => {
-  const { sortField, sortDir, search, topic, source } = options;
+const prepareStories = (
+  data: StoryData[],
+  options: {
+    search: string;
+    taxonomies: Record<string, string> | null;
+    sortField: string | null;
+    sortDir: string | null;
+  }
+) => {
+  const { sortField, sortDir, search, taxonomies } = options;
 
   let filtered = [...data];
 
   // Does the free text search appear in specific fields?
   if (search.length >= 3) {
     const searchLower = search.toLowerCase();
-    filtered = filtered.filter(
-      (d) =>
+    filtered = filtered.filter((d) => {
+      const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
+      return (
         d.name.toLowerCase().includes(searchLower) ||
         d.description.toLowerCase().includes(searchLower) ||
-        d.thematics.some((t) => t.name.toLowerCase().includes(searchLower))
-    );
+        topicsTaxonomy?.values.some((t) =>
+          t.name.toLowerCase().includes(searchLower)
+        )
+      );
+    });
   }
 
-  if (topic !== optionAll.id) {
-    filtered = filtered.filter((d) => d.thematics.find((t) => t.id === topic));
-  }
+  taxonomies &&
+    Object.entries(taxonomies).forEach(([name, value]) => {
+      if (value !== optionAll.id) {
+        filtered = filtered.filter((d) =>
+          d.taxonomy.some(
+            (t) => t.name === name && t.values.some((v) => v.id === value)
+          )
+        );
+      }
+    });
 
-  if (source !== optionAll.id) {
-    filtered = filtered.filter((d) => d.sources.find((t) => t.id === source));
-  }
+  sortField &&
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    filtered.sort((a, b) => {
+      if (!a[sortField]) return Infinity;
 
-  /* eslint-disable-next-line fp/no-mutating-methods */
-  filtered.sort((a, b) => {
-    if (!a[sortField]) return Infinity;
-
-    return a[sortField]?.localeCompare(b[sortField]);
-  });
+      return a[sortField]?.localeCompare(b[sortField]);
+    });
 
   // In the case of the date, ordering is reversed.
   if (sortField === 'pubDate') {
@@ -120,31 +130,27 @@ const prepareDiscoveries = (data: DiscoveryData[], options) => {
   return filtered;
 };
 
-function DiscoveriesHub() {
+function StoriesHub() {
   const controlVars = useBrowserControls({
-    topicsOptions,
-    sourcesOptions,
     sortOptions
   });
 
-  const { topic, source, sortField, sortDir, onAction } = controlVars;
+  const { taxonomies, sortField, sortDir, onAction } = controlVars;
   const search = controlVars.search ?? '';
 
-  const displayDiscoveries = useMemo(
+  const displayStories = useMemo(
     () =>
-      prepareDiscoveries(allDiscoveries, {
+      prepareStories(allStories, {
         search,
-        topic,
-        source,
+        taxonomies,
         sortField,
         sortDir
       }),
-    [search, topic, source, sortField, sortDir]
+    [search, taxonomies, sortField, sortDir]
   );
 
   const isFiltering = !!(
-    topic !== optionAll.id ||
-    source !== optionAll.id ||
+    (taxonomies && Object.keys(taxonomies).length) ||
     search
   );
 
@@ -154,18 +160,18 @@ function DiscoveriesHub() {
   return (
     <PageMainContent>
       <LayoutProps
-        title='Data Stories'
+        title={getString('stories').other}
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
       />
       <PageHero
-        title='Data Stories'
+        title={getString('stories').other}
         description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
       />
 
-      <FeaturedDiscoveries />
+      <FeaturedStories />
 
       <Fold>
-        <BrowseHeader
+        <BrowseFoldHeader
           ref={browseControlsHeaderRef}
           style={{
             scrollMarginTop: `${headerHeight + 16}px`
@@ -176,34 +182,34 @@ function DiscoveriesHub() {
           </FoldHeadline>
           <BrowseControls
             {...controlVars}
-            topicsOptions={topicsOptions}
-            sourcesOptions={sourcesOptions}
+            taxonomiesOptions={storyTaxonomies}
             sortOptions={sortOptions}
           />
-        </BrowseHeader>
+        </BrowseFoldHeader>
 
-        <DiscoveryCount>
+        <StoryCount>
           <span>
             Showing{' '}
             <Pluralize
-              singular='data story'
-              plural='data stories'
-              count={displayDiscoveries.length}
+              singular={getString('stories').one}
+              plural={getString('stories').other}
+              count={displayStories.length}
               showCount={true}
             />{' '}
-            out of {allDiscoveries.length}.
+            out of {allStories.length}.
           </span>
           {isFiltering && (
-            <Button forwardedAs={Link} to={DISCOVERIES_PATH} size='small'>
+            <Button forwardedAs={Link} to={STORIES_PATH} size='small'>
               Clear filters <CollecticonXmarkSmall />
             </Button>
           )}
-        </DiscoveryCount>
+        </StoryCount>
 
-        {displayDiscoveries.length ? (
+        {displayStories.length ? (
           <CardList>
-            {displayDiscoveries.map((d) => {
+            {displayStories.map((d) => {
               const pubDate = new Date(d.pubDate);
+              const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
               return (
                 <li key={d.id}>
                   <Card
@@ -211,17 +217,20 @@ function DiscoveriesHub() {
                     overline={
                       <CardMeta>
                         <CardSourcesList
-                          sources={d.sources}
-                          rootPath={DISCOVERIES_PATH}
+                          sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
+                          rootPath={STORIES_PATH}
                           onSourceClick={(id) => {
-                            onAction(Actions.SOURCE, id);
+                            onAction(Actions.TAXONOMY, {
+                              key: TAXONOMY_SOURCE,
+                              value: id
+                            });
                             browseControlsHeaderRef.current?.scrollIntoView();
                           }}
                         />
                         <VerticalDivider variation='dark' />
                         {!isNaN(pubDate.getTime()) && (
                           <Link
-                            to={`${DISCOVERIES_PATH}?${Actions.SORT_FIELD}=pubDate`}
+                            to={`${STORIES_PATH}?${Actions.SORT_FIELD}=pubDate`}
                             onClick={(e) => {
                               e.preventDefault();
                               onAction(Actions.SORT_FIELD, 'pubDate');
@@ -234,7 +243,7 @@ function DiscoveriesHub() {
                       </CardMeta>
                     }
                     linkLabel='View more'
-                    linkTo={getDiscoveryPath(d)}
+                    linkTo={getStoryPath(d)}
                     title={
                       <TextHighlight
                         value={search}
@@ -255,17 +264,19 @@ function DiscoveriesHub() {
                     imgAlt={d.media?.alt}
                     footerContent={
                       <>
-                        {d.thematics.length ? (
+                        {topics?.length ? (
                           <CardTopicsList>
                             <dt>Topics</dt>
-                            {d.thematics.map((t) => (
+                            {topics.map((t) => (
                               <dd key={t.id}>
                                 <Pill
                                   as={Link}
-                                  to={`${DISCOVERIES_PATH}?${Actions.TOPIC}=${t.id}`}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    onAction(Actions.TOPIC, t.id);
+                                  to={`${STORIES_PATH}?${
+                                    Actions.TAXONOMY
+                                  }=${encodeURIComponent(
+                                    JSON.stringify({ Topics: t.id })
+                                  )}`}
+                                  onClick={() => {
                                     browseControlsHeaderRef.current?.scrollIntoView();
                                   }}
                                 >
@@ -289,7 +300,8 @@ function DiscoveriesHub() {
           </CardList>
         ) : (
           <EmptyHub>
-            There are no discoveries to show with the selected filters.
+            There are no {getString('stories').other.toLocaleLowerCase()} to
+            show with the selected filters.
           </EmptyHub>
         )}
       </Fold>
@@ -297,4 +309,4 @@ function DiscoveriesHub() {
   );
 }
 
-export default DiscoveriesHub;
+export default StoriesHub;

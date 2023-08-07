@@ -15,10 +15,11 @@ import { featureCollection, point } from '@turf/helpers';
 
 import { useMapStyle } from './styles';
 import {
-  checkFitBoundsFromLayer,
+  FIT_BOUNDS_PADDING,
   getFilterPayload,
   getMergedBBox,
   requestQuickCache,
+  useFitBbox,
   useLayerInteraction
 } from './utils';
 import { useCustomMarker } from './custom-marker';
@@ -34,8 +35,6 @@ import {
 // Whether or not to print the request logs.
 const LOG = true;
 
-const FIT_BOUNDS_PADDING = 32;
-
 export interface MapLayerRasterTimeseriesProps {
   id: string;
   stacCol: string;
@@ -43,9 +42,11 @@ export interface MapLayerRasterTimeseriesProps {
   mapInstance: MapboxMap;
   sourceParams?: Record<string, any>;
   zoomExtent?: number[];
+  bounds?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
   idSuffix?: string;
+  isPositionSet?: boolean;
 }
 
 export interface StacFeature {
@@ -72,9 +73,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     mapInstance,
     sourceParams,
     zoomExtent,
+    bounds,
     onStatusChange,
     isHidden,
-    idSuffix = ''
+    idSuffix = '',
+    isPositionSet
   } = props;
 
   const theme = useTheme();
@@ -466,14 +469,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   //
   // FitBounds when needed
   //
-  useEffect(() => {
-    if (!stacCollection.length) return;
-    const layerBounds = getMergedBBox(stacCollection);
-
-    if (checkFitBoundsFromLayer(layerBounds, mapInstance)) {
-      mapInstance.fitBounds(layerBounds, { padding: FIT_BOUNDS_PADDING });
-    }
-  }, [mapInstance, stacCol, stacCollection]);
+  const layerBounds = useMemo(
+    () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
+    [stacCollection]
+  );
+  useFitBbox(mapInstance, !!isPositionSet, bounds, layerBounds);
 
   return null;
 }

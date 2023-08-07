@@ -38,7 +38,7 @@ export const BASEMAP_STYLES = [
   }
 ];
 
-// Default style used in discoveries and analysis, satellite no labels
+// Default style used in stories and analysis, satellite no labels
 export const DEFAULT_MAP_STYLE_URL =
   'mapbox://styles/covid-nasa/ckb01h6f10bn81iqg98ne0i2y';
 

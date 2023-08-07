@@ -133,7 +133,7 @@ export const getCompareLayerData = (
       type: otherLayer.type,
       name: otherLayer.name,
       description: otherLayer.description,
-      legend: otherLayer.legend, 
+      legend: otherLayer.legend,
       stacCol: otherLayer.stacCol,
       zoomExtent: zoomExtent ?? otherLayer.zoomExtent,
       sourceParams: defaultsDeep({}, sourceParams, otherLayer.sourceParams),
@@ -370,6 +370,8 @@ export function getMergedBBox(features: StacFeature[]) {
   ) as [number, number, number, number];
 }
 
+export const FIT_BOUNDS_PADDING = 32;
+
 export function checkFitBoundsFromLayer(
   layerBounds?: [number, number, number, number],
   mapInstance?: MapboxMap
@@ -428,4 +430,36 @@ export function useLayerInteraction({
       mapInstance.off('mouseleave', layerId, onPointsLeave);
     };
   }, [layerId, mapInstance, onClick]);
+}
+
+type OptionalBbox = number[] | undefined | null;
+
+/**
+ * Centers on the given bounds if the current position is not within the bounds,
+ * and there's no user defined position (via user initiated map movement). Gives
+ * preference to the layer defined bounds over the STAC collection bounds.
+ *
+ * @param mapInstance Mapbox instance
+ * @param isUserPositionSet Whether the user has set a position
+ * @param initialBbox Bounding box from the layer
+ * @param stacBbox Bounds from the STAC collection
+ */
+export function useFitBbox(
+  mapInstance: MapboxMap,
+  isUserPositionSet: boolean,
+  initialBbox: OptionalBbox,
+  stacBbox: OptionalBbox
+) {
+  useEffect(() => {
+    if (isUserPositionSet) return;
+
+    // Prefer layer defined bounds to STAC collection bounds.
+    const bounds = (initialBbox ?? stacBbox) as
+      | [number, number, number, number]
+      | undefined;
+
+    if (bounds?.length && checkFitBoundsFromLayer(bounds, mapInstance)) {
+      mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
+    }
+  }, [mapInstance, isUserPositionSet, initialBbox, stacBbox]);
 }

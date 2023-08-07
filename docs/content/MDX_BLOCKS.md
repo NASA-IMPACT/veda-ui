@@ -9,6 +9,7 @@
     - [Inline image \& Figure image](#inline-image--figure-image)
       - [How to use local image (assets)](#how-to-use-local-image-assets)
   - [Chart](#chart)
+  - [Table](#table)
   - [Map](#map)
   - [Scrollytelling](#scrollytelling)
     - [Chapter properties](#chapter-properties)
@@ -28,7 +29,7 @@ Understanding of MDX is not required to write contents for Veda dashboard, but y
 <tr>
 <td>
 
-![How blocks look on discovery page](./media/prose-figure.jpg)   
+![How blocks look on story page](./media/prose-figure.jpg)   
  </td>
  <td > 
  
@@ -220,7 +221,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 
 ## Link
 
-To create a bridge between the different types of content in the VEDA dashboard it may be necessary to create a link from one to another. One example of this would be linking to a dataset page from a discovery.
+To create a bridge between the different types of content in the VEDA dashboard it may be necessary to create a link from one to another. One example of this would be linking to a dataset page from a story.
 
 Since the dashboard may be made available under different domains at different times (for example staging environment and then production) it is a good idea to use relative links.  
 This is not possible with normal markdown links, but you can use the `Link` component for this purpose.
@@ -447,6 +448,31 @@ Syntax for Chart used in Wide Figure Block looks like this. Check how the data i
       attrAuthor='attribution for wide figure block, chart' 
       attrUrl='https://developmentseed.org'
     /> 
+  </Figure>
+</Block>
+```
+## Table
+
+
+| Option | Type | Default | Description|
+|---|---|---|---|
+| dataPath | string | `''` | Path for data. The data should be either in `csv`,`xlsx` (`xls`), or `json`. Use parcel's URL builder to use local file. (Refer to the example below.) |
+| columnsToSort | string array | `[]` | The name of columns that will enable sorting functionality. The columns will show up with the little icon indicating sorting ability. |
+| excelOption | object | `null` | Optional. Only when data format is `xlsx`. Please refer the attributes below for details.|
+| excelOption.sheetNumber | number | `0` | Optional. Sheet number to display. Only when data format is `xlsx`, the file is consist of multiple files and the sheet that needs to be displayed is not the first sheet(0). Please mind that the first sheet is 0, so if you want the third sheet to be displayed, `2` needs to be passed. |
+| excelOption.parseOption | object | `null` | Optional. Info to convert Excel data to json. Only when data format is `xlsx` and the additional info to parse the Excel file is needed. Please refer [this link](https://www.npmjs.com/package/xlsx#json) for details. |
+
+
+
+```jsx
+
+<Block type='wide'>
+  <Figure>
+    <Table
+      dataPath='/public/2021_data_summary_spreadsheets/ghgp_data_by_year.xlsx'
+      excelOption={{ sheetNumber: 0, parseOption: { range: 3 } }}
+    />
+    <Caption> Wide block Table example</Caption>
   </Figure>
 </Block>
 ```

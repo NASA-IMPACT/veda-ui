@@ -13,6 +13,7 @@ import { NotebookConnectButton } from '$components/common/notebook-connect';
 
 import { allDatasetsProps, useDataset } from '$utils/veda-data';
 import { DATASETS_PATH, getDatasetExplorePath } from '$utils/routes';
+import { ContentTaxonomy } from '$components/common/content-taxonomy';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
@@ -67,7 +68,11 @@ function DatasetsOverview() {
           attributionAuthor={dataset.data.media?.author?.name}
           attributionUrl={dataset.data.media?.author?.url}
         />
-        <MdxContent loader={dataset?.content} />
+
+        <ContentTaxonomy taxonomy={dataset.data.taxonomy} />
+
+        <MdxContent loader={dataset.content} />
+
         {!!dataset.data.related?.length && (
           <RelatedContent related={dataset.data.related} />
         )}

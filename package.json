@@ -1,7 +1,7 @@
 {
   "name": "veda-ui",
   "description": "Dashboard",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": {
     "name": "Development Seed",
     "url": "https://developmentseed.org/"
@@ -114,6 +114,7 @@
     "@parcel/transformer-raw": "~2.7.0",
     "@tanstack/react-query": "^4.3.9",
     "@tanstack/react-query-devtools": "^4.3.9",
+    "@tanstack/react-table": "^8.9.3",
     "@tippyjs/react": "^4.2.6",
     "@turf/area": "^6.5.0",
     "@turf/bbox": "^6.5.0",
@@ -160,12 +161,14 @@
     "react-router": "^6.0.0",
     "react-router-dom": "^6.0.0",
     "react-transition-group": "^4.4.2",
+    "react-virtual": "^2.10.4",
     "recharts": "2.1.12",
     "rodemirror": "^2.0.0",
     "scrollama": "^3.1.0",
     "shpjs": "^4.0.4",
     "styled-components": "^5.3.3",
-    "use-deep-compare": "^1.1.0"
+    "use-deep-compare": "^1.1.0",
+    "xlsx": "^0.18.5"
   },
   "parcelIgnore": [
     ".*/meta/"

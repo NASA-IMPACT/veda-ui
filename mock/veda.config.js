@@ -1,8 +1,6 @@
 module.exports = {
   datasets: './datasets/*.data.mdx',
-  discoveries: './discoveries/*.discoveries.mdx',
-
-  taxonomiesIndex: './taxonomies.yml',
+  stories: './stories/*.stories.mdx',
 
   pageOverrides: {
     aboutContent: './about.mdx',
@@ -11,5 +9,12 @@ module.exports = {
     '/disclaimer': './custom-pages/disclaimer.mdx',
     '/custom-page': './custom-pages/custom.mdx',
     '/aparam/:id': './custom-pages/aparam.mdx'
+  },
+
+  strings: {
+    stories: {
+      one: 'Story',
+      other: 'Stories'
+    }
   }
 };

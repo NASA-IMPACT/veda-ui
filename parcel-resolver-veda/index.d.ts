@@ -26,6 +26,7 @@ declare module 'veda' {
 
   interface DatasetLayerCommonProps {
     zoomExtent?: number[];
+    bounds?: number[];
     sourceParams?: Record<string, any>;
   }
 
@@ -126,7 +127,7 @@ declare module 'veda' {
    * editors can curate contents per each category with their ids
    */
   export interface RelatedContentData {
-    type: 'dataset' | 'discovery';
+    type: 'dataset' | 'story';
     id: string;
     thematic?: string;
   }
@@ -143,8 +144,7 @@ declare module 'veda' {
     featured?: boolean;
     id: string;
     name: string;
-    thematics: TaxonomyItem[];
-    sources: TaxonomyItem[];
+    taxonomy: Taxonomy[];
     description: string;
     usage?: DatasetUsage[];
     media?: Media;
@@ -153,21 +153,20 @@ declare module 'veda' {
   }
 
   // ///////////////////////////////////////////////////////////////////////////
-  //  Discoveries                                                             //
+  //  Stories                                                             //
   // ///////////////////////////////////////////////////////////////////////////
 
   /**
-   * Data structure for the Discoveries frontmatter.
+   * Data structure for the Stories frontmatter.
    */
-  export interface DiscoveryData {
+  export interface StoryData {
     featured?: boolean;
     id: string;
     name: string;
     description: string;
     pubDate: string;
     media?: Media;
-    thematics: TaxonomyItem[];
-    sources: TaxonomyItem[];
+    taxonomy: Taxonomy[];
     related?: RelatedContentData[];
   }
 
@@ -202,6 +201,11 @@ declare module 'veda' {
     content: () => Promise<MDXModule>;
   }
 
+  export interface Taxonomy {
+    name: string;
+    values: TaxonomyItem[];
+  }
+
   interface TaxonomyItem {
     id: string;
     name: string;
@@ -214,19 +218,22 @@ declare module 'veda' {
   export const datasets: VedaData<DatasetData>;
 
   /**
-   * Named exports: discoveries.
-   * Object with all the veda discoveries keyed by the discovery id.
+   * Named exports: stories.
+   * Object with all the veda stories keyed by the story id.
    */
-  export const discoveries: VedaData<DiscoveryData>;
+  export const stories: VedaData<StoryData>;
 
   /**
-   * Named exports: taxonomies.
-   * Object with all the veda taxonomies keyed by the taxonomy id.
+   * Named exports: datasetTaxonomies.
+   * Array with all the veda datasets taxonomies.
    */
-  export const taxonomies: {
-    sources: TaxonomyItem[];
-    thematics: TaxonomyItem[];
-  };
+  export const datasetTaxonomies: Taxonomy[];
+
+  /**
+   * Named exports: storyTaxonomies.
+   * Array with all the veda story taxonomies.
+   */
+  export const storyTaxonomies: Taxonomy[];
 
   export type PageOverrides =
     | 'aboutContent'
@@ -238,6 +245,11 @@ declare module 'veda' {
    * Configuration export for specific overrides.
    */
   export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
+
+  export const getString: (variable: string) => {
+    one: string;
+    other: string;
+  };
 
   /**
    * List of custom user defined pages.

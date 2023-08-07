@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { discoveries, datasets } from 'veda';
+import {
+  stories,
+  datasets,
+  DatasetData,
+  StoryData,
+  Taxonomy
+} from 'veda';
 
 import { MDXContent, MDXModule } from 'mdx/types';
 import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
@@ -11,24 +17,24 @@ import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
 export const allDatasetsProps = Object.values(datasets).map((d) => d!.data);
 
 /**
- * List with the meta information of all discoveries.
+ * List with the meta information of all stories.
  */
-export const allDiscoveriesProps = Object.values(discoveries).map(
+export const allStoriesProps = Object.values(stories).map(
   (d) => d!.data
 );
 
 /**
- * Returns the meta data for a discovery taking into account the url parameters.
- * If the discovery does not exist, null is returned.
+ * Returns the meta data for a story taking into account the url parameters.
+ * If the story does not exist, null is returned.
  * @returns Object
  */
-export function useDiscovery() {
-  const { discoveryId } = useParams();
+export function useStory() {
+  const { storyId } = useParams();
 
-  const discovery = discoveries[discoveryId ?? ''];
+  const story = stories[storyId ?? ''];
 
-  // Stop if the discovery doesn't exist.
-  return discovery ?? null;
+  // Stop if the story doesn't exist.
+  return story ?? null;
 }
 
 /**
@@ -87,4 +93,18 @@ export function useMdxPageLoader(loader?: () => Promise<MDXModule>) {
   }, [loader]);
 
   return pageMdx;
+}
+
+// Taxonomies with special meaning as they're used in the app, like in the cards
+// for example.
+export const TAXONOMY_TOPICS = 'Topics';
+export const TAXONOMY_SOURCE = 'Source';
+
+export function getTaxonomy(
+  data: DatasetData | StoryData | Taxonomy[],
+  taxonomyName: string
+) {
+  const list = Array.isArray(data) ? data : data.taxonomy;
+
+  return list.find((t) => t.name === taxonomyName);
 }

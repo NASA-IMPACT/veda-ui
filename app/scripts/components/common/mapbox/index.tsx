@@ -419,9 +419,11 @@ function MapboxMapComponent(
                 id={`base-${baseLayerResolvedData.id}`}
                 stacCol={baseLayerResolvedData.stacCol}
                 mapInstance={mapRef.current}
+                isPositionSet={!!initialPosition}
                 date={date}
                 sourceParams={baseLayerResolvedData.sourceParams}
                 zoomExtent={baseLayerResolvedData.zoomExtent}
+                bounds={baseLayerResolvedData.bounds}
                 onStatusChange={onBaseLayerStatusChange}
               />
             )}
@@ -471,6 +473,7 @@ function MapboxMapComponent(
                   date={compareToDate ?? undefined}
                   sourceParams={compareLayerResolvedData.sourceParams}
                   zoomExtent={compareLayerResolvedData.zoomExtent}
+                  bounds={compareLayerResolvedData.bounds}
                   onStatusChange={onCompareLayerStatusChange}
                 />
               )}

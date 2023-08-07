@@ -1,4 +1,5 @@
 import React from 'react';
+import { getString } from 'veda';
 
 import { Fold } from '$components/common/fold';
 import { Card, CardList } from '$components/common/card';
@@ -14,7 +15,7 @@ function SandboxCards() {
             title='Cities Experiencing Clearer Air During Lockdowns'
             description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce varius erat in vulputate.'
             date={new Date('2021-10-26')}
-            parentName='Data Story'
+            parentName={getString('stories').one}
             parentTo='/sandbox'
             imgSrc='https://picsum.photos/id/1002/2048/1024'
             imgAlt='Generic placeholder by lorem picsum'
