@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { extent, scaleTime } from 'd3';
 import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
 import { focusAtom } from 'jotai-optics';
-import { differenceInCalendarDays } from 'date-fns';
+import { add, differenceInCalendarDays, max } from 'date-fns';
 
 import {
   timelineDatasetsAtom,
@@ -10,7 +10,12 @@ import {
   zoomTransformAtom
 } from './atoms';
 import { rescaleX } from './utils';
-import { TimelineDataset, TimelineDatasetStatus } from './constants';
+import {
+  DAY_SIZE_MAX,
+  DAY_SIZE_MIN,
+  TimelineDataset,
+  TimelineDatasetStatus
+} from './constants';
 
 /**
  * Calculates the date domain of the datasets, if any are selected.
@@ -18,6 +23,9 @@ import { TimelineDataset, TimelineDatasetStatus } from './constants';
  */
 export function useTimelineDatasetsDomain() {
   const datasets = useAtomValue(timelineDatasetsAtom);
+  const { contentWidth } = useAtomValue(timelineSizesAtom);
+
+  const minDays = Math.ceil(contentWidth / DAY_SIZE_MAX);
 
   return useMemo(() => {
     const successDatasets = datasets.filter(
@@ -27,32 +35,35 @@ export function useTimelineDatasetsDomain() {
 
     // To speed up the calculation of the extent, we assume the dataset's domain
     // is ordered and only look at first and last dates.
-    return extent(
+    const [start, end] = extent(
       successDatasets.flatMap((d) =>
         d.data.domain ? [d.data.domain[0], d.data.domain.last] : []
       )
     ) as [Date, Date];
-  }, [datasets]);
+
+    return [start, max([end, add(start, { days: minDays })])] as [Date, Date];
+  }, [datasets, minDays]);
 }
 
 /**
- * Calculate min and max scale factors, such has each day has a minimum of 2px
- * and a maximum of 100px
+ * Calculate min and max scale factors, such has each day has a minimum of
+ * {DAY_SIZE_MIN}px and a maximum of {DAY_SIZE_MAX}px
  * @returns Minimum and maximum scale factors as k0 and k1.
  */
 export function useScaleFactors() {
   const dataDomain = useTimelineDatasetsDomain();
   const { contentWidth } = useAtomValue(timelineSizesAtom);
 
-  // Calculate min and max scale factors, such has each day has a minimum of 2px
-  // and a maximum of 100px.
+  // Calculate min and max scale factors, such has each day has a minimum of
+  // {DAY_SIZE_MIN}px and a maximum of {DAY_SIZE_MAX}px.
   return useMemo(() => {
     if (contentWidth <= 0 || !dataDomain) return { k0: 0, k1: 1 };
     // Calculate how many days are in the domain.
     const domainDays = differenceInCalendarDays(dataDomain[1], dataDomain[0]);
+
     return {
-      k0: Math.max(1, 2 / (contentWidth / domainDays)),
-      k1: 100 / (contentWidth / domainDays)
+      k0: Math.max(1, DAY_SIZE_MIN / (contentWidth / domainDays)),
+      k1: DAY_SIZE_MAX / (contentWidth / domainDays)
     };
   }, [contentWidth, dataDomain]);
 }

@@ -1,9 +1,16 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useAtomValue, useSetAtom, useAtom } from 'jotai';
 import styled from 'styled-components';
 import useDimensions from 'react-cool-dimensions';
 import { select, zoom } from 'd3';
-import { add, isAfter, isBefore, startOfDay, sub } from 'date-fns';
+import {
+  add,
+  isAfter,
+  isBefore,
+  isWithinInterval,
+  startOfDay,
+  sub
+} from 'date-fns';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { CollecticonPlusSmall } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
@@ -34,7 +41,10 @@ import {
 import { applyTransform, isEqualTransform, rescaleX } from './utils';
 import { useScaleFactors, useScales, useTimelineDatasetsDomain } from './hooks';
 
-import { useLayoutEffectPrevious } from '$utils/use-effect-previous';
+import {
+  useLayoutEffectPrevious,
+  usePreviousValue
+} from '$utils/use-effect-previous';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -260,24 +270,57 @@ export default function Timeline() {
     [k1, zoomTransform, xScaled, xMain, k0]
   );
 
+  const successDatasets = datasets.filter(
+    (d) => d.status === TimelineDatasetStatus.SUCCEEDED
+  );
+
   // When a loaded dataset is added from an empty state, compute the correct
   // transform taking into account the min scale factor (k0).
-  const successDatasetsCount = datasets.filter(
-    (d) => d.status === TimelineDatasetStatus.SUCCEEDED
-  ).length;
-  useLayoutEffectPrevious<[number, number, typeof zoomBehavior]>(
-    ([_successDatasetsCount]) => {
-      if (
-        !interactionRef.current ||
-        _successDatasetsCount !== 0 ||
-        successDatasetsCount === 0
-      )
-        return;
+  const successDatasetsCount = successDatasets.length;
+  const prevDatasetsCount = usePreviousValue(successDatasets.length);
+  useLayoutEffect(() => {
+    if (
+      !interactionRef.current ||
+      prevDatasetsCount !== 0 ||
+      successDatasetsCount === 0
+    )
+      return;
 
-      applyTransform(zoomBehavior, select(interactionRef.current), 0, 0, k0);
-    },
-    [successDatasetsCount, k0, zoomBehavior]
-  );
+    applyTransform(zoomBehavior, select(interactionRef.current), 0, 0, k0);
+  }, [prevDatasetsCount, successDatasetsCount, k0, zoomBehavior]);
+
+  // Set correct dates when the date domain changes.
+  const prevDataDomain = usePreviousValue(dataDomain);
+  useEffect(() => {
+    if (prevDataDomain === dataDomain) return;
+
+    // If all datasets are removed, reset the selected day/interval.
+    if (!dataDomain) {
+      setSelectedDay(null);
+      setSelectedInterval(null);
+      return;
+    }
+
+    const [start, end] = dataDomain;
+    // If the selected day is not within the new domain, set it to the start of
+    // the domain.
+    if (!selectedDay || !isWithinInterval(selectedDay, { start, end })) {
+      setSelectedDay(start);
+      // Set the interval to first day plus 2 months if able.
+      const endDate = add(start, { months: 2 });
+      setSelectedInterval({
+        start,
+        end: isBefore(endDate, end) ? endDate : end
+      });
+    }
+  }, [
+    prevDataDomain,
+    dataDomain,
+    setSelectedDay,
+    setSelectedInterval,
+    selectedDay,
+    selectedInterval
+  ]);
 
   const shouldRenderTimeline = xScaled && dataDomain;
 

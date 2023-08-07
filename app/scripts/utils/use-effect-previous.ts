@@ -42,3 +42,26 @@ export const useEffectPrevious = makePreviousHook(useEffect);
  * @param {array} deps Hook dependencies.
  */
 export const useLayoutEffectPrevious = makePreviousHook(useLayoutEffect);
+
+/**
+ * Hook to store the previous value of a variable.
+ *
+ * @param value The value to store
+ * @param isEqualFunc Fuction to compare the previous value with the current
+ * value.
+ * @returns The previous value
+ */
+export const usePreviousValue = <T>(
+  value: T,
+  isEqualFunc = (a: T | undefined, b: T) => a === b
+): T | undefined => {
+  const ref = useRef<T | undefined>(undefined);
+
+  const current = ref.current;
+
+  if (!isEqualFunc(current, value)) {
+    ref.current = value;
+  }
+
+  return current;
+};

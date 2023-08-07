@@ -17,6 +17,27 @@ const extraDataset = {
   })
 };
 
+const dataset2Months = {
+  id: 'two-dates',
+  title: 'Two Dates',
+  timeDensity: 'month',
+  domain: [new Date('2020-01-01'), new Date('2020-02-01')]
+};
+
+const dataset2Days = {
+  id: 'two-days',
+  title: 'Two Days',
+  timeDensity: 'day',
+  domain: [new Date('2020-01-05'), new Date('2020-01-06')]
+};
+
+const datasetSingle = {
+  id: 'single-dates',
+  title: 'Single Date',
+  timeDensity: 'day',
+  domain: [new Date('2020-01-01')]
+};
+
 const datasets = [
   {
     id: 'monthly',
@@ -148,7 +169,7 @@ function toggleDataset(dataset) {
 
 const MockPanel = styled.div`
   display: flex;
-  flex-direction: row wrap;
+  flex-flow: row wrap;
   padding: 1rem;
   gap: 1rem;
 `;
@@ -207,6 +228,30 @@ export function MockControls() {
         variation='base-outline'
       >
         Toggle Error dataset
+      </Button>
+      <Button
+        onClick={() => {
+          set(toggleDataset(makeDataset(dataset2Months)));
+        }}
+        variation='base-outline'
+      >
+        toggle 2 Months dataset
+      </Button>
+      <Button
+        onClick={() => {
+          set(toggleDataset(makeDataset(dataset2Days)));
+        }}
+        variation='base-outline'
+      >
+        toggle 2 Days dataset
+      </Button>
+      <Button
+        onClick={() => {
+          set(toggleDataset(makeDataset(datasetSingle)));
+        }}
+        variation='base-outline'
+      >
+        toggle Single dataset
       </Button>
     </MockPanel>
   );

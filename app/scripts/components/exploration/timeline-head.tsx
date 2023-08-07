@@ -6,9 +6,13 @@ import { themeVal } from '@devseed-ui/theme-provider';
 
 import { DateRange, RIGHT_AXIS_SPACE } from './constants';
 
+// Needs padding so that the timeline head is fully visible.
+// This value gets added to the width.
+const SVG_PADDING = 16;
+
 const TimelineHeadSVG = styled.svg`
   position: absolute;
-  right: ${RIGHT_AXIS_SPACE}px;
+  right: ${RIGHT_AXIS_SPACE - SVG_PADDING}px;
   top: -1rem;
   height: calc(100% + 1rem);
   pointer-events: none;
@@ -28,8 +32,7 @@ interface TimelineHeadProps {
 }
 
 export function TimelineHead(props: TimelineHeadProps) {
-  const { domain, xScaled, selectedDay, width, onDayChange, children } =
-    props;
+  const { domain, xScaled, selectedDay, width, onDayChange, children } = props;
 
   const theme = useTheme();
   const rectRef = useRef<SVGRectElement>(null);
@@ -39,7 +42,7 @@ export function TimelineHead(props: TimelineHeadProps) {
 
     const dragger = drag()
       .on('start', function dragstarted() {
-        document.body.style.cursor = 'grabbing';
+        // document.body.style.cursor = 'grabbing';
         select(this).attr('cursor', 'grabbing');
       })
       .on('drag', function dragged(event) {
@@ -63,24 +66,30 @@ export function TimelineHead(props: TimelineHeadProps) {
         }
       })
       .on('end', function dragended() {
-        document.body.style.cursor = '';
+        // document.body.style.cursor = '';
         select(this).attr('cursor', 'grab');
       });
 
     select(rectRef.current).call(dragger);
   }, [width, domain, selectedDay, onDayChange, xScaled]);
 
+  const xPos = xScaled(selectedDay);
+
+  if (xPos < 0 || xPos > width) return null;
+
   return (
-    <TimelineHeadSVG width={width}>
-      <line
-        x1={xScaled(selectedDay)}
-        x2={xScaled(selectedDay)}
-        y1={0}
-        y2='100%'
-        stroke={theme.color?.base}
-      />
-      <g transform={`translate(${xScaled(selectedDay)}, 0)`} ref={rectRef}>
-        {children}
+    <TimelineHeadSVG width={width + SVG_PADDING * 2}>
+      <g transform={`translate(${SVG_PADDING}, 0)`}>
+        <line
+          x1={xPos}
+          x2={xPos}
+          y1={0}
+          y2='100%'
+          stroke={theme.color?.base}
+        />
+        <g transform={`translate(${xPos}, 0)`} ref={rectRef}>
+          {children}
+        </g>
       </g>
     </TimelineHeadSVG>
   );
@@ -98,8 +107,7 @@ export function TimelineHeadP(props: Omit<TimelineHeadProps, 'children'>) {
         stroke={theme.color?.['base-200']}
         style={{
           filter: dropShadowFilter,
-          pointerEvents: 'all',
-          cursor: 'grab'
+          pointerEvents: 'all'
         }}
       />
       <text fill={theme.color?.base} fontSize='0.75rem' y='0' x='-4' dy='1em'>
@@ -121,8 +129,7 @@ export function TimelineHeadL(props: Omit<TimelineHeadProps, 'children'>) {
         stroke={theme.color?.['base-200']}
         style={{
           filter: dropShadowFilter,
-          pointerEvents: 'all',
-          cursor: 'grab'
+          pointerEvents: 'all'
         }}
       />
       <text fill={theme.color?.base} fontSize='0.75rem' y='0' x='2' dy='1em'>
@@ -143,8 +150,7 @@ export function TimelineHeadR(props: Omit<TimelineHeadProps, 'children'>) {
         stroke={theme.color?.['base-200']}
         style={{
           filter: dropShadowFilter,
-          pointerEvents: 'all',
-          cursor: 'grab'
+          pointerEvents: 'all'
         }}
       />
       <text
@@ -163,14 +169,14 @@ export function TimelineHeadR(props: Omit<TimelineHeadProps, 'children'>) {
 
 const TimelineRangeTrackSelf = styled.div`
   position: absolute;
-  top: -1rem;
+  top: -0.5rem;
   right: ${RIGHT_AXIS_SPACE}px;
   overflow: hidden;
 
   .shaded {
     position: relative;
     background: ${themeVal('color.base-100a')};
-    height: 1rem;
+    height: 0.5rem;
   }
 `;
 
