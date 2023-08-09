@@ -168,9 +168,9 @@ const LegendList = styled.dl`
       ${visuallyHidden()}
     }
 
-    i {
-      margin: 0 auto;
-      opacity: 0;
+    .unit {
+      width: 100%;
+      text-align: center;
     }
   }
 `;
@@ -341,8 +341,8 @@ function LayerGradientGraphic(props: LayerLegendGradient) {
         </Tip>
       </dt>
       <dd>
-        <span>{printLegendVal(min)} {unit?.label}</span>
-        <i> – </i>
+        <span>{printLegendVal(min)}</span>
+        {unit?.label && <span className='unit'>{unit.label}</span>}
         <span>{printLegendVal(max)}</span>
       </dd>
     </LegendList>
