@@ -19,6 +19,7 @@ import {
 } from '$components/common/blocks/lazy-components';
 import { NotebookConnectCalloutBlock } from '$components/common/notebook-connect';
 import SmartLink from '$components/common/smart-link';
+import Embed from '$components/common/blocks/embed';
 
 function MdxContent(props) {
   const pageMdx = useMdxPageLoader(props.loader);
@@ -43,7 +44,8 @@ function MdxContent(props) {
           CompareImage: LazyCompareImage,
           NotebookConnectCallout: NotebookConnectCalloutBlock,
           Link: SmartLink,
-          Table: LazyTable
+          Table: LazyTable,
+          Embed
         }}
       >
         <pageMdx.MdxContent {...(props.throughProps || {})} />
