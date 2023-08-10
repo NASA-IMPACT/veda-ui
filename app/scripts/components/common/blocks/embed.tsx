@@ -29,7 +29,7 @@ export default function Embed({ src, height = 800 }: EmbedProps) {
 
   return (
     <EmbedWrapper>
-      <BrowserFrame>
+      <BrowserFrame link={src}>
         <IframeWrapper src={src} height={height} />
       </BrowserFrame>
     </EmbedWrapper>
