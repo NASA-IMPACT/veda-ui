@@ -1,11 +1,210 @@
 import React from 'react';
-import { eachDayOfInterval } from 'date-fns';
+import { eachDayOfInterval, eachMonthOfInterval } from 'date-fns';
 import { useSetAtom } from 'jotai';
 import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
 
-import { timelineDatasetsAtom } from './atoms';
+import { isAnalysisAtom, isExpandedAtom, timelineDatasetsAtom } from './atoms';
 import { TimelineDataset, TimelineDatasetStatus } from './constants';
+
+const chartData = {
+  status: 'succeeded',
+  meta: {
+    total: 9,
+    loaded: 9
+  },
+  data: {
+    isPeriodic: true,
+    timeDensity: 'month',
+    timeseries: [
+      {
+        date: '2020-10-01T00:00:00',
+        min: -2086298214989824,
+        max: 12890265228410880,
+        mean: 798724301873588,
+        count: 82701,
+        sum: 66055298489247600000,
+        std: 714889121800240.6
+      },
+      {
+        date: '2020-09-01T00:00:00',
+        min: -243302179799040,
+        max: 6783829977071616,
+        mean: 826268261725556.4,
+        count: 83024,
+        sum: 68600096161502590000,
+        std: 525758341466615.44
+      },
+      {
+        date: '2020-08-01T00:00:00',
+        min: -141698134966272,
+        max: 3727485078339584,
+        mean: 725800731063289.5,
+        count: 83024,
+        sum: 60258879895798550000,
+        std: 353335499843328.06
+      },
+      {
+        date: '2020-07-01T00:00:00',
+        min: -147666428231680,
+        max: 3569522892079104,
+        mean: 786568136687148.8,
+        count: 83024,
+        sum: 65304032980313830000,
+        std: 366549997729682.4
+      },
+      {
+        date: '2020-06-01T00:00:00',
+        min: -255044100292608,
+        max: 3507326933794816,
+        mean: 771834013412698,
+        count: 83024,
+        sum: 64080747129575830000,
+        std: 379108800939232
+      },
+      {
+        date: '2020-05-01T00:00:00',
+        min: -274287718039552,
+        max: 5203029145944064,
+        mean: 800096907890949,
+        count: 83024,
+        sum: 66427245680738170000,
+        std: 396133006092423.75
+      },
+      {
+        date: '2020-04-01T00:00:00',
+        min: -1733678178762752,
+        max: 4642589600907264,
+        mean: 698716974847719.5,
+        count: 82956,
+        sum: 57962765365467415000,
+        std: 450048731150610.9
+      },
+      {
+        date: '2020-03-01T00:00:00',
+        min: -800272532111360,
+        max: 8905950232576000,
+        mean: 705833097884692.6,
+        count: 82988,
+        sum: 58575677127254870000,
+        std: 528843673285467.1
+      },
+      {
+        date: '2020-02-01T00:00:00',
+        min: -426854754287616,
+        max: 12515318878437376,
+        mean: 781040757444822.8,
+        count: 82978,
+        sum: 64809199971256500000,
+        std: 832389364703228.4
+      }
+    ]
+  }
+};
+
+const chartData2 = {
+  status: 'succeeded',
+  meta: {
+    total: 15,
+    loaded: 15
+  },
+  data: {
+    isPeriodic: true,
+    timeDensity: 'day',
+    timeseries: [
+      {
+        date: '2020-04-01T00:00:00',
+        min: -6,
+        max: 17,
+        mean: 8
+      },
+      {
+        date: '2020-04-02T00:00:00',
+        min: -9,
+        max: 15,
+        mean: 5
+      },
+      {
+        date: '2020-04-03T00:00:00',
+        min: -3,
+        max: 15,
+        mean: 10
+      },
+      {
+        date: '2020-04-04T00:00:00',
+        min: 2,
+        max: 18,
+        mean: 6
+      },
+      {
+        date: '2020-04-05T00:00:00',
+        min: 3,
+        max: 19,
+        mean: 15
+      },
+      {
+        date: '2020-04-06T00:00:00',
+        min: null,
+        max: null,
+        mean: null
+      },
+      {
+        date: '2020-04-07T00:00:00',
+        min: -8,
+        max: 17,
+        mean: 8
+      },
+      {
+        date: '2020-04-08T00:00:00',
+        min: -8,
+        max: 19,
+        mean: 9
+      },
+      {
+        date: '2020-04-09T00:00:00',
+        min: 2,
+        max: 15,
+        mean: 8
+      },
+      {
+        date: '2020-04-10T00:00:00',
+        min: null,
+        max: null,
+        mean: null
+      },
+      {
+        date: '2020-04-11T00:00:00',
+        min: 3,
+        max: 20,
+        mean: 8
+      },
+      {
+        date: '2020-04-12T00:00:00',
+        min: 0,
+        max: 20,
+        mean: 10
+      },
+      {
+        date: '2020-04-13T00:00:00',
+        min: -10,
+        max: 16,
+        mean: 11
+      },
+      {
+        date: '2020-04-14T00:00:00',
+        min: -9,
+        max: 16,
+        mean: 11
+      },
+      {
+        date: '2020-04-15T00:00:00',
+        min: 3,
+        max: 17,
+        mean: 9
+      }
+    ]
+  }
+};
 
 const extraDataset = {
   id: 'infinity',
@@ -15,6 +214,17 @@ const extraDataset = {
     start: new Date('2000-01-01'),
     end: new Date('2021-12-12')
   })
+};
+
+const dataset2020 = {
+  id: '2020',
+  title: '2020',
+  timeDensity: 'month',
+  domain: eachMonthOfInterval({
+    start: new Date('2020-01-01'),
+    end: new Date('2020-12-01')
+  }),
+  analysis: chartData
 };
 
 const dataset2Months = {
@@ -35,7 +245,8 @@ const datasetSingle = {
   id: 'single-dates',
   title: 'Single Date',
   timeDensity: 'day',
-  domain: [new Date('2020-01-01')]
+  domain: [new Date('2020-01-01')],
+  analysis: chartData2
 };
 
 const datasets = [
@@ -176,6 +387,8 @@ const MockPanel = styled.div`
 
 export function MockControls() {
   const set = useSetAtom(timelineDatasetsAtom);
+  const setIsExpanded = useSetAtom(isExpandedAtom);
+  const setIsAnalysis = useSetAtom(isAnalysisAtom);
 
   return (
     <MockPanel>
@@ -251,7 +464,31 @@ export function MockControls() {
         }}
         variation='base-outline'
       >
-        toggle Single dataset
+        toggle Single date
+      </Button>
+      <Button
+        onClick={() => {
+          set(toggleDataset(makeDataset(dataset2020)));
+        }}
+        variation='base-outline'
+      >
+        toggle dataset 2020
+      </Button>
+      <Button
+        onClick={() => {
+          setIsExpanded((v) => !v);
+        }}
+        variation='primary-outline'
+      >
+        Toggle expanded
+      </Button>
+      <Button
+        onClick={() => {
+          setIsAnalysis((v) => !v);
+        }}
+        variation='primary-outline'
+      >
+        Toggle analysis
       </Button>
     </MockPanel>
   );

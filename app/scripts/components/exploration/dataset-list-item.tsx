@@ -36,6 +36,8 @@ import {
   DatasetTrackError,
   DatasetTrackLoading
 } from './dataset-list-item-status';
+import { DatasetChart } from './dataset-chart';
+import { isAnalysisAtom } from './atoms';
 
 import { LayerGradientGraphic } from '$components/common/mapbox/layer-legend';
 
@@ -77,7 +79,11 @@ const DatasetItem = styled.article`
 const DatasetHeader = styled.header`
   width: ${HEADER_COLUMN_WIDTH}px;
   flex-shrink: 0;
-  box-shadow: 1px 0 0 0 ${themeVal('color.base-200')};
+  background: ${themeVal('color.base-100')};
+`;
+
+const DatasetHeaderInner = styled.div`
+  box-shadow: 1px 1px 0 0 ${themeVal('color.base-200')};
   background: ${themeVal('color.surface')};
   padding: ${glsp(0.5)};
   display: flex;
@@ -128,6 +134,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
 
+  const isAnalysis = useAtomValue(isAnalysisAtom);
+
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
 
   const controls = useDragControls();
@@ -148,63 +156,73 @@ export function DatasetListItem(props: DatasetListItemProps) {
     >
       <DatasetItem>
         <DatasetHeader>
-          <CollecticonGripVertical onPointerDown={(e) => controls.start(e)} />
-          <DatasetInfo>
-            <DatasetHeadline>
-              <Heading
-                as='h3'
-                size='xsmall'
-                variation={isError ? 'danger' : undefined}
-              >
-                {dataset.data.title}
-              </Heading>
-              <Toolbar size='small'>
-                {!isError ? (
-                  <ToolbarIconButton onClick={() => setVisible((v) => !v)}>
-                    {isVisible ? (
-                      <CollecticonEye
+          <DatasetHeaderInner>
+            <CollecticonGripVertical onPointerDown={(e) => controls.start(e)} />
+            <DatasetInfo>
+              <DatasetHeadline>
+                <Heading
+                  as='h3'
+                  size='xsmall'
+                  variation={isError ? 'danger' : undefined}
+                >
+                  {dataset.data.title}
+                </Heading>
+                <Toolbar size='small'>
+                  {!isError ? (
+                    <ToolbarIconButton onClick={() => setVisible((v) => !v)}>
+                      {isVisible ? (
+                        <CollecticonEye
+                          meaningful
+                          title='Toggle dataset visibility'
+                        />
+                      ) : (
+                        <CollecticonEyeDisabled
+                          meaningful
+                          title='Toggle dataset visibility'
+                        />
+                      )}
+                    </ToolbarIconButton>
+                  ) : (
+                    <ToolbarIconButton variation='danger-text'>
+                      <CollecticonArrowSpinCw
                         meaningful
-                        title='Toggle dataset visibility'
+                        title='Retry dataset loading'
                       />
-                    ) : (
-                      <CollecticonEyeDisabled
-                        meaningful
-                        title='Toggle dataset visibility'
-                      />
-                    )}
-                  </ToolbarIconButton>
-                ) : (
-                  <ToolbarIconButton variation='danger-text'>
-                    <CollecticonArrowSpinCw
-                      meaningful
-                      title='Retry dataset loading'
-                    />
-                  </ToolbarIconButton>
-                )}
-              </Toolbar>
-            </DatasetHeadline>
-            <LayerGradientGraphic
-              type='gradient'
-              stops={['#eb7d2e', '#35a145', '#3287d2']}
-              unit={{ label: 'bananas' }}
-              min={-3}
-              max={15}
-            />
-          </DatasetInfo>
+                    </ToolbarIconButton>
+                  )}
+                </Toolbar>
+              </DatasetHeadline>
+              <LayerGradientGraphic
+                type='gradient'
+                stops={['#eb7d2e', '#35a145', '#3287d2']}
+                unit={{ label: 'bananas' }}
+                min={-3}
+                max={15}
+              />
+            </DatasetInfo>
+          </DatasetHeaderInner>
         </DatasetHeader>
         <DatasetData>
           {dataset.status === TimelineDatasetStatus.LOADING && (
             <DatasetTrackLoading />
           )}
           {isError && <DatasetTrackError />}
-          {dataset.status === TimelineDatasetStatus.SUCCEEDED && (
-            <DatasetTrack
-              width={width}
-              xScaled={xScaled!}
-              dataset={dataset}
-              isVisible={!!isVisible}
-            />
-          )}
+          {dataset.status === TimelineDatasetStatus.SUCCEEDED &&
+            (isAnalysis ? (
+              <DatasetChart
+                xScaled={xScaled!}
+                width={width}
+                isVisible={!!isVisible}
+                data={dataset.data.analysis}
+              />
+            ) : (
+              <DatasetTrack
+                width={width}
+                xScaled={xScaled!}
+                dataset={dataset}
+                isVisible={!!isVisible}
+              />
+            ))}
         </DatasetData>
       </DatasetItem>
     </Reorder.Item>
@@ -268,11 +286,15 @@ interface DatasetTrackBlockProps {
 function DatasetTrackBlock(props: DatasetTrackBlockProps) {
   const { xScaled, date, dataset, isVisible } = props;
 
+  const theme = useTheme();
+
   const [start, end] = getBlockBoundaries(date, dataset.data.timeDensity);
   const s = xScaled(start);
   const e = xScaled(end);
 
-  const fill = useFillColors(isVisible);
+  const fill = isVisible
+    ? theme.color?.['base-400']
+    : theme.color?.['base-200'];
 
   return (
     <React.Fragment key={date.getTime()}>
@@ -287,13 +309,3 @@ function DatasetTrackBlock(props: DatasetTrackBlockProps) {
     </React.Fragment>
   );
 }
-
-const useFillColors = (isVisible: boolean): string | undefined => {
-  const theme = useTheme();
-
-  if (!isVisible) {
-    return theme.color?.['base-200'];
-  }
-
-  return theme.color?.['base-400'];
-};
