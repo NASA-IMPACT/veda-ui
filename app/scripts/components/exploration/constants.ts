@@ -30,6 +30,7 @@ export interface TimelineDataset {
   settings: {
     // user defined settings like visibility, opacity
     isVisible?: boolean;
+    opacity?: number;
   };
 }
 

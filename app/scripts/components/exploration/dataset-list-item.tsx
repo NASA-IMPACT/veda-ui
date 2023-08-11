@@ -38,6 +38,7 @@ import {
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
 import { activeAnalysisMetricsAtom, isAnalysisAtom } from './atoms';
+import DatasetOptions from './dataset-options';
 
 import { LayerGradientGraphic } from '$components/common/mapbox/layer-legend';
 
@@ -170,6 +171,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   {dataset.data.title}
                 </Heading>
                 <Toolbar size='small'>
+                  <DatasetOptions datasetAtom={datasetAtom} />
                   {!isError ? (
                     <ToolbarIconButton onClick={() => setVisible((v) => !v)}>
                       {isVisible ? (

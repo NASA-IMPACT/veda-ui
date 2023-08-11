@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { extent, scaleTime } from 'd3';
 import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
 import { focusAtom } from 'jotai-optics';
@@ -107,6 +107,58 @@ export function useTimelineDatasetAtom(id: string) {
   }, [id]);
 
   return datasetAtom as PrimitiveAtom<TimelineDataset>;
+}
+
+type TimelineDatasetSettingsReturn = [
+  (
+    prop: keyof TimelineDataset['settings']
+  ) => TimelineDataset['settings'][keyof TimelineDataset['settings']],
+  (
+    prop: keyof TimelineDataset['settings'],
+    value:
+      | TimelineDataset['settings'][keyof TimelineDataset['settings']]
+      | ((
+          prev: TimelineDataset['settings'][keyof TimelineDataset['settings']]
+        ) => TimelineDataset['settings'][keyof TimelineDataset['settings']])
+  ) => void
+];
+
+/**
+ * Hook to get/set the settings of a dataset.
+ *
+ * @param datasetAtom Single dataset atom.
+ * @returns State getter/setter for the dataset settings.
+ *
+ * @example
+ *   const [get, set] = useTimelineDatasetSettings(datasetAtom);
+ *   const isVisible = get('isVisible');
+ *   set('isVisible', !isVisible);
+ *   set('isVisible', (prev) => !prev);
+ *
+ */
+export function useTimelineDatasetSettings(
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+): TimelineDatasetSettingsReturn {
+  const settingsAtom = useMemo(() => {
+    return focusAtom(datasetAtom, (optic) => optic.prop('settings'));
+  }, [datasetAtom]);
+
+  const [value, set] = useAtom(settingsAtom);
+
+  const setter = useCallback(
+    (prop, value) => {
+      set((prev) => {
+        const currValue = prev[prop];
+        const newValue = typeof value === 'function' ? value(currValue) : value;
+        return { ...prev, [prop]: newValue };
+      });
+    },
+    [set]
+  );
+
+  const getter = useCallback((prop) => value[prop], [value]);
+
+  return [getter, setter];
 }
 
 /**

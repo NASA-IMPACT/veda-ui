@@ -4905,6 +4905,11 @@ core-js-compat@^3.21.0, core-js-compat@^3.22.1:
     browserslist "^4.21.1"
     semver "7.0.0"
 
+core-js@^3.22.4:
+  version "3.32.0"
+  resolved "http://verdaccio.ds.io:4873/core-js/-/core-js-3.32.0.tgz#7643d353d899747ab1f8b03d2803b0312a0fb3b6"
+  integrity sha512-rd4rYZNlF3WuoYuRIDEmbR/ga9CeuWX9U05umAvgrrZoHY4Z++cp/xwPQMvUpBB4Ag6J8KfD80G0zwCyaSxDww==
+
 core-util-is@~1.0.0:
   version "1.0.3"
   resolved "http://verdaccio.ds.io:4873/core-util-is/-/core-util-is-1.0.3.tgz#a6042d3634c2b27e9328f837b965fac83808db85"
@@ -10660,6 +10665,14 @@ react-nl2br@^1.0.2:
   version "1.0.4"
   resolved "http://verdaccio.ds.io:4873/react-nl2br/-/react-nl2br-1.0.4.tgz#20079e2660b9e9a5293b115466e3749abeed6d87"
   integrity sha512-KQ+uwmjYk3B04xDl0hus2OeGoqkR8qkoyDBtsIqVacOUMNeaP0W+r/+anded2ehii/FlgFqEuu0T72CJLWFp4A==
+
+react-range-slider-input@^3.0.7:
+  version "3.0.7"
+  resolved "http://verdaccio.ds.io:4873/react-range-slider-input/-/react-range-slider-input-3.0.7.tgz#88ceb118b33d7eb0550cec1f77fc3e60e0f880f9"
+  integrity sha512-yAJDDMUNkILOcZSCLCVbwgnoAM3v0AfdDysTCMXDwY/+ZRNRlv98TyHbVCwPFEd7qiI8Ca/stKb0GAy//NybYw==
+  dependencies:
+    clsx "^1.1.1"
+    core-js "^3.22.4"
 
 react-refresh@^0.9.0:
   version "0.9.0"

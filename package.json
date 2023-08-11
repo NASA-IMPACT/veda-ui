@@ -162,6 +162,7 @@
     "react-indiana-drag-scroll": "^2.2.0",
     "react-lazyload": "^3.2.0",
     "react-nl2br": "^1.0.2",
+    "react-range-slider-input": "^3.0.7",
     "react-resizable-panels": "^0.0.45",
     "react-router": "^6.0.0",
     "react-router-dom": "^6.0.0",
