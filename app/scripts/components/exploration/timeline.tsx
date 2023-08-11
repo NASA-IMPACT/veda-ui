@@ -354,14 +354,7 @@ export default function Timeline() {
           </Headline>
           <p>{datasets.length} of Y</p>
         </TimelineDetails>
-        <TimelineControls
-          selectedDay={selectedDay}
-          selectedInterval={selectedInterval}
-          xScaled={xScaled}
-          width={width}
-          onDayChange={setSelectedDay}
-          onIntervalChange={setSelectedInterval}
-        />
+        <TimelineControls xScaled={xScaled} width={width} />
       </TimelineHeader>
       <TimelineContent>
         {shouldRenderTimeline && selectedDay ? (

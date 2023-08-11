@@ -37,7 +37,7 @@ import {
   DatasetTrackLoading
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
-import { isAnalysisAtom } from './atoms';
+import { activeAnalysisMetricsAtom, isAnalysisAtom } from './atoms';
 
 import { LayerGradientGraphic } from '$components/common/mapbox/layer-legend';
 
@@ -114,6 +114,7 @@ const DatasetHeadline = styled.div`
 `;
 
 const DatasetData = styled.div`
+  position: relative;
   padding: ${glsp(0.25, 0)};
   display: flex;
   align-items: center;
@@ -133,6 +134,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
+  const activeMetrics = useAtomValue(activeAnalysisMetricsAtom);
 
   const isAnalysis = useAtomValue(isAnalysisAtom);
 
@@ -214,6 +216,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                 width={width}
                 isVisible={!!isVisible}
                 data={dataset.data.analysis}
+                activeMetrics={activeMetrics}
               />
             ) : (
               <DatasetTrack

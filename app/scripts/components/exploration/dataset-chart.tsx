@@ -6,6 +6,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { isExpandedAtom } from './atoms';
 import { RIGHT_AXIS_SPACE } from './constants';
+import { DataMetric } from './analysis-metrics-dropdown';
+import { DatasetTrackMessage } from './dataset-track-message';
+
 import { getNumForChart } from '$components/common/chart/utils';
 
 const CHART_MARGIN = 8;
@@ -15,30 +18,46 @@ interface DatasetChartProps {
   xScaled: ScaleTime<number, number>;
   isVisible: boolean;
   data: any;
+  activeMetrics: DataMetric[];
 }
 
 export function DatasetChart(props: DatasetChartProps) {
-  const { xScaled, width, isVisible, data } = props;
+  const { xScaled, width, isVisible, data, activeMetrics } = props;
+
+  const timeseries = data.data.timeseries;
+
+  const theme = useTheme();
 
   const isExpanded = useAtomValue(isExpandedAtom);
 
   const height = isExpanded ? 180 : 70;
 
-  const yExtent = extent(
-    data.data.timeseries.flatMap((d) => [d.min, d.max, d.mean])
+  const yExtent = useMemo(
+    () =>
+      extent(
+        // Extent of all active metrics.
+        timeseries.flatMap((d) => extent(activeMetrics.map((m) => d[m.id])))
+      ) as [undefined, undefined] | [number, number],
+    [timeseries, activeMetrics]
   );
 
   const y = useMemo(() => {
+    const [min = 0, max = 0] = yExtent;
     return (
       scaleLinear()
         // Add 5% buffer
-        .domain(yExtent.map((v) => v * 1.05))
+        .domain([min * 0.95, max * 1.05])
         .range([height - CHART_MARGIN * 2, 0])
     );
   }, [yExtent, height]);
 
   return (
     <div>
+      {!activeMetrics.length && (
+        <DatasetTrackMessage>
+          There are no active metrics to visualize.
+        </DatasetTrackMessage>
+      )}
       <svg width={width + RIGHT_AXIS_SPACE} height={height}>
         <clipPath id='data-clip'>
           <rect width={width} height={height} />
@@ -55,33 +74,21 @@ export function DatasetChart(props: DatasetChartProps) {
 
         <g clipPath='url(#data-clip)'>
           <g transform={`translate(0, ${CHART_MARGIN})`}>
-            <DataLine
-              x={xScaled}
-              y={y}
-              prop='min'
-              data={data.data.timeseries}
-              color='firebrick'
-              isVisible={isVisible}
-              isExpanded={isExpanded}
-            />
-            <DataLine
-              x={xScaled}
-              y={y}
-              prop='max'
-              data={data.data.timeseries}
-              color='teal'
-              isVisible={isVisible}
-              isExpanded={isExpanded}
-            />
-            <DataLine
-              x={xScaled}
-              y={y}
-              prop='mean'
-              data={data.data.timeseries}
-              color='gold'
-              isVisible={isVisible}
-              isExpanded={isExpanded}
-            />
+            {activeMetrics.map(
+              (metric) =>
+                timeseries.some((d) => !isNaN(d[metric.id])) && (
+                  <DataLine
+                    key={metric.id}
+                    x={xScaled}
+                    y={y}
+                    prop={metric.id}
+                    data={timeseries}
+                    color={theme.color?.[metric.themeColor]}
+                    isVisible={isVisible}
+                    isExpanded={isExpanded}
+                  />
+                )
+            )}
           </g>
         </g>
       </svg>
@@ -138,7 +145,9 @@ function DataLine(props: DateLineProps) {
             fill='white'
             stroke={color}
           />
-        ) : false
+        ) : (
+          false
+        )
       )}
     </g>
   );
