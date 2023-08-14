@@ -69,17 +69,18 @@ function DatasetsOverview() {
                   compact={false}
                   variation='achromic-outline'
                 />
-                { dataset.data.dataBucketPrefix && 
-                  <a href={getDatasetBrowserPath(dataset.data)} target="_blank">
-                    <Button
-                      size='large'
-                      variation='achromic-outline'
-                    >
+                {dataset.data.dataBucketPrefix && (
+                  <a
+                    href={getDatasetBrowserPath(dataset.data)}
+                    target='_blank'
+                    rel='noreferrer'
+                  >
+                    <Button size='large' variation='achromic-outline'>
                       <CollecticonArrowUpRight />
                       Download
                     </Button>
                   </a>
-                }
+                )}
               </PageActions>
           )}
           renderDetailsBlock={() => (

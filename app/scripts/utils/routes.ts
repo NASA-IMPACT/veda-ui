@@ -15,6 +15,5 @@ export const getDatasetPath = (d: DatasetData | string) =>
 export const getDatasetExplorePath = (d: DatasetData | string) =>
   `${DATASETS_PATH}/${typeof d === 'string' ? d : d.id}/explore`;
 
-export const getDatasetBrowserPath = (d: DatasetData | string) => {
-  return `${process.env.DATA_BROWSER_PATH}${typeof d === 'string' ? d : d.dataBucketPrefix}/`;
-}
+export const getDatasetBrowserPath = (d: DatasetData | string) =>
+  `${process.env.DATA_BROWSER_PATH}${typeof d === 'string' ? d : d.dataBucketPrefix}/`;
