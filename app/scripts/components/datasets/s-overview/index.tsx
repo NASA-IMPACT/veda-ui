@@ -1,7 +1,7 @@
 import React, { lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@devseed-ui/button';
-import { CollecticonCompass } from '@devseed-ui/collecticons';
+import { CollecticonCompass, CollecticonArrowUpRight } from '@devseed-ui/collecticons';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
@@ -17,7 +17,7 @@ import {
   TAXONOMY_UNCERTAINTY,
   useDataset
 } from '$utils/veda-data';
-import { DATASETS_PATH, getDatasetExplorePath } from '$utils/routes';
+import { DATASETS_PATH, getDatasetExplorePath, getDatasetBrowserPath } from '$utils/routes';
 import { ContentTaxonomy } from '$components/common/content-taxonomy';
 import { DatasetClassification } from '$components/common/dataset-classification';
 
@@ -69,6 +69,15 @@ function DatasetsOverview() {
                   compact={false}
                   variation='achromic-outline'
                 />
+                <a href={getDatasetBrowserPath(dataset.data)} target="_blank">
+                  <Button
+                    size='large'
+                    variation='achromic-outline'
+                  >
+                    <CollecticonArrowUpRight />
+                    Download
+                  </Button>
+                </a>
               </PageActions>
           )}
           renderDetailsBlock={() => (
