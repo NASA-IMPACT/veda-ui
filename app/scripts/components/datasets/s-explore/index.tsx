@@ -16,6 +16,7 @@ import {
 import { ProjectionOptions } from 'veda';
 import { FormSwitch } from '@devseed-ui/form';
 
+import LayerVisibilityToggleButton from './layer-visibility-toggle';
 import DatasetLayers from './dataset-layers';
 import { PanelDateWidget } from './panel-date-widget';
 import { resourceNotFound } from '$components/uhoh';
@@ -76,12 +77,17 @@ const Carto = styled.div`
       margin-top: calc(2rem + ${variableGlsp(0.5)});
     }
   }
-
   ${NotebookConnectButton} {
     position: absolute;
     z-index: 1;
     right: ${variableGlsp()};
     top: ${variableGlsp()};
+  }
+  ${LayerVisibilityToggleButton} {
+    position: absolute;
+    z-index: 1;
+    right: ${variableGlsp()};
+    top: ${variableGlsp(2.25)};
   }
 `;
 
@@ -311,6 +317,7 @@ function DatasetsExplore() {
     });
 
   const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
+  const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
 
   // END QsState setup
   /** *********************************************************************** */
@@ -560,6 +567,10 @@ function DatasetsExplore() {
           </Panel>
           <Carto>
             <NotebookConnectButton dataset={dataset.data} />
+            <LayerVisibilityToggleButton
+              isDatasetLayerHidden={isDatasetLayerHidden}
+              setIsDatasetLayerHidden={setIsDatasetLayerHidden}
+            />
             <MapboxMap
               ref={mapboxRef}
               withGeocoder
@@ -578,6 +589,7 @@ function DatasetsExplore() {
               }}
               projection={mapProjection ?? projectionDefault}
               onProjectionChange={setMapProjection}
+              isDatasetLayerHidden={isDatasetLayerHidden}
             />
           </Carto>
         </Explorer>
