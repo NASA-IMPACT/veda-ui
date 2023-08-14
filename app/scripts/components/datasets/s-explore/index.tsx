@@ -563,6 +563,7 @@ function DatasetsExplore() {
             <MapboxMap
               ref={mapboxRef}
               withGeocoder
+              withScale
               datasetId={dataset.data.id}
               layerId={activeLayer?.baseLayer.data?.id}
               date={selectedDatetime ?? undefined}

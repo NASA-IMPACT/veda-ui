@@ -125,6 +125,7 @@ function MapboxMapComponent(
     onPositionChange,
     initialPosition,
     withGeocoder,
+    withScale,
     aoi,
     onAoiChange,
     projection,
@@ -439,6 +440,7 @@ function MapboxMapComponent(
               cooperativeGestures
             }}
             withGeocoder={withGeocoder}
+            withScale={withScale}
             aoi={aoi}
             onAoiChange={onAoiChange}
             projection={projection}
@@ -526,6 +528,7 @@ export interface MapboxMapProps {
     }
   ) => void;
   withGeocoder?: boolean;
+  withScale?: boolean;
   children?: ReactNode;
   aoi?: AoiState;
   onAoiChange?: AoiChangeListenerOverload;
