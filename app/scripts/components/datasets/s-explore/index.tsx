@@ -77,17 +77,21 @@ const Carto = styled.div`
       margin-top: calc(2rem + ${variableGlsp(0.5)});
     }
   }
+`;
+
+const CustomControlWrapper = styled.div`
+  position: absolute;
+  right: 20px;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: ${variableGlsp()};
+  gap: ${variableGlsp(0.5)};
   ${NotebookConnectButton} {
-    position: absolute;
     z-index: 1;
-    right: ${variableGlsp()};
-    top: ${variableGlsp()};
   }
   ${LayerVisibilityToggleButton} {
-    position: absolute;
     z-index: 1;
-    right: ${variableGlsp()};
-    top: ${variableGlsp(2.25)};
   }
 `;
 
@@ -566,11 +570,13 @@ function DatasetsExplore() {
             </PanelInner>
           </Panel>
           <Carto>
-            <NotebookConnectButton dataset={dataset.data} />
-            <LayerVisibilityToggleButton
-              isDatasetLayerHidden={isDatasetLayerHidden}
-              setIsDatasetLayerHidden={setIsDatasetLayerHidden}
-            />
+            <CustomControlWrapper>
+              <NotebookConnectButton dataset={dataset.data} />
+              <LayerVisibilityToggleButton
+                isDatasetLayerHidden={isDatasetLayerHidden}
+                setIsDatasetLayerHidden={setIsDatasetLayerHidden}
+              />
+            </CustomControlWrapper>
             <MapboxMap
               ref={mapboxRef}
               withGeocoder
