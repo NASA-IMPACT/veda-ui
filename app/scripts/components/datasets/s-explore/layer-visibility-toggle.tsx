@@ -8,25 +8,32 @@ import {
 
 interface LayerVisibilityToggleButtonProps {
   isDatasetLayerHidden: boolean;
-  setIsDatasetLayerHidden: (a: boolean) => void;
+  onLayerVisibilityClick: (a: boolean) => void;
   className?: string;
 }
 
+function LayerVisibilityToggleButtonSelf(
+  props: LayerVisibilityToggleButtonProps
+) {
+  const { className, isDatasetLayerHidden, onLayerVisibilityClick } = props;
 
-function LayerVisibilityToggleButtonSelf(props:LayerVisibilityToggleButtonProps) {
-  const {className, isDatasetLayerHidden, setIsDatasetLayerHidden} = props;
   return (
     <Button
       type='button'
       className={className}
-      variation={isDatasetLayerHidden? 'danger-fill':'primary-fill'}
+      variation={isDatasetLayerHidden ? 'danger-fill' : 'primary-fill'}
       fitting='skinny'
-      onClick={() => setIsDatasetLayerHidden(!isDatasetLayerHidden)}
-      size='medium'
+      onClick={() => onLayerVisibilityClick(!isDatasetLayerHidden)}
     >
-      {!isDatasetLayerHidden && <CollecticonEye meaningful={true} title='Turn off data layer visibility' />}
-      {isDatasetLayerHidden && <CollecticonEyeDisabled meaningful={true} title='Turn on data layer visibility' />}
-      
+      {!isDatasetLayerHidden && (
+        <CollecticonEye meaningful title='Turn off data layer visibility' />
+      )}
+      {isDatasetLayerHidden && (
+        <CollecticonEyeDisabled
+          meaningful
+          title='Turn on data layer visibility'
+        />
+      )}
     </Button>
   );
 }

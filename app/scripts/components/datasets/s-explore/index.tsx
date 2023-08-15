@@ -81,18 +81,12 @@ const Carto = styled.div`
 
 const CustomControlWrapper = styled.div`
   position: absolute;
-  right: 20px;
-  top: 0;
+  right: ${variableGlsp()};
+  top: ${variableGlsp()};
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  padding-top: ${variableGlsp()};
   gap: ${variableGlsp(0.5)};
-  ${NotebookConnectButton} {
-    z-index: 1;
-  }
-  ${LayerVisibilityToggleButton} {
-    z-index: 1;
-  }
 `;
 
 const DatesWrapper = styled.div`
@@ -574,7 +568,7 @@ function DatasetsExplore() {
               <NotebookConnectButton dataset={dataset.data} />
               <LayerVisibilityToggleButton
                 isDatasetLayerHidden={isDatasetLayerHidden}
-                setIsDatasetLayerHidden={setIsDatasetLayerHidden}
+                onLayerVisibilityClick={setIsDatasetLayerHidden}
               />
             </CustomControlWrapper>
             <MapboxMap
