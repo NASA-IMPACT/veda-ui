@@ -13,9 +13,13 @@ const MapCoordsWrapper = styled.div`
   width: 100vw;
 
   ${Button} {
-    background: ${themeVal('color.base-300a')};
+    background: ${themeVal('color.base-400a')};
     font-weight: ${themeVal('type.base.regular')};
     font-size: 0.75rem;
+  }
+
+  && ${Button /* sc-selector */}:hover {
+    background: ${themeVal('color.base-500')};
   }
 `;
 
