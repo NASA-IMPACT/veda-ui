@@ -80,6 +80,7 @@ const MapboxStyleOverride = css`
   .mapboxgl-ctrl-bottom-left {
     flex-direction: row;
     align-items: flex-end;
+    align-items: center;
   }
 
   .mapboxgl-ctrl-group {
@@ -165,6 +166,12 @@ const MapboxStyleOverride = css`
 
   .mapboxgl-marker:hover {
     cursor: pointer;
+  }
+
+  .mapboxgl-ctrl-scale {
+    color: ${themeVal('color.surface')};
+    border-color: ${themeVal('color.surface')};
+    background-color: ${themeVal('color.base-400a')};
   }
 
   /* GEOCODER styles */
