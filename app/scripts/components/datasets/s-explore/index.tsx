@@ -16,6 +16,7 @@ import {
 import { ProjectionOptions } from 'veda';
 import { FormSwitch } from '@devseed-ui/form';
 
+import LayerVisibilityToggleButton from './layer-visibility-toggle';
 import DatasetLayers from './dataset-layers';
 import { PanelDateWidget } from './panel-date-widget';
 import { resourceNotFound } from '$components/uhoh';
@@ -76,13 +77,16 @@ const Carto = styled.div`
       margin-top: calc(2rem + ${variableGlsp(0.5)});
     }
   }
+`;
 
-  ${NotebookConnectButton} {
-    position: absolute;
-    z-index: 1;
-    right: ${variableGlsp()};
-    top: ${variableGlsp()};
-  }
+const CustomControlWrapper = styled.div`
+  position: absolute;
+  right: ${variableGlsp()};
+  top: ${variableGlsp()};
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: ${variableGlsp(0.5)};
 `;
 
 const DatesWrapper = styled.div`
@@ -311,6 +315,7 @@ function DatasetsExplore() {
     });
 
   const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
+  const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
 
   // END QsState setup
   /** *********************************************************************** */
@@ -559,7 +564,13 @@ function DatasetsExplore() {
             </PanelInner>
           </Panel>
           <Carto>
-            <NotebookConnectButton dataset={dataset.data} />
+            <CustomControlWrapper>
+              <NotebookConnectButton dataset={dataset.data} />
+              <LayerVisibilityToggleButton
+                isDatasetLayerHidden={isDatasetLayerHidden}
+                onLayerVisibilityClick={setIsDatasetLayerHidden}
+              />
+            </CustomControlWrapper>
             <MapboxMap
               ref={mapboxRef}
               withGeocoder
@@ -579,6 +590,7 @@ function DatasetsExplore() {
               }}
               projection={mapProjection ?? projectionDefault}
               onProjectionChange={setMapProjection}
+              isDatasetLayerHidden={isDatasetLayerHidden}
             />
           </Carto>
         </Explorer>

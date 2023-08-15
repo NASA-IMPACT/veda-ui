@@ -129,7 +129,8 @@ function MapboxMapComponent(
     aoi,
     onAoiChange,
     projection,
-    onProjectionChange
+    onProjectionChange,
+    isDatasetLayerHidden
   } = props;
   /* eslint-enable react/prop-types */
 
@@ -426,6 +427,7 @@ function MapboxMapComponent(
                 zoomExtent={baseLayerResolvedData.zoomExtent}
                 bounds={baseLayerResolvedData.bounds}
                 onStatusChange={onBaseLayerStatusChange}
+                isHidden={isDatasetLayerHidden}
               />
             )}
           <SimpleMap
@@ -535,6 +537,7 @@ export interface MapboxMapProps {
   onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
+  isDatasetLayerHidden?: boolean;
 }
 
 export interface MapboxMapRef {
