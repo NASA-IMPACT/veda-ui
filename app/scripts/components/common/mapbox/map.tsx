@@ -23,6 +23,7 @@ import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
 import MapOptions from './map-options';
 import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './map-options/utils';
+import MapCoords from './map-coords';
 
 import { useMapStyle } from './layers/styles';
 import { BasemapId, Option } from './map-options/basemaps';
@@ -113,6 +114,12 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     onOptionChange
   ]);
 
+  const mapCoordsControl = useMapboxControl(() => {
+    if (!mapRef.current) return null;
+
+    return <MapCoords mapInstance={mapRef.current} />;
+  }, []);
+
   const { style } = useMapStyle();
 
   useEffect(() => {
@@ -126,6 +133,8 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     });
 
     mapRef.current = mbMap;
+
+    mapRef.current.addControl(mapCoordsControl, 'bottom-left');
 
     if (onProjectionChange && projection) {
       mapRef.current.addControl(mapOptionsControl, 'top-left');
