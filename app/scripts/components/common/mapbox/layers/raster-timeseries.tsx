@@ -81,7 +81,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   } = props;
 
   const theme = useTheme();
-  const { updateStyle } = useMapStyle();
+  const { updateStyle, updateMetaData } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
   const generatorId = 'raster-timeseries' + idSuffix;
@@ -337,6 +337,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     () => JSON.stringify(sourceParams),
     [sourceParams]
   );
+
   useEffect(
     () => {
       let layers: AnyLayer[] = [];
@@ -381,6 +382,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           [id]: mosaicSource
         };
         layers = [...layers, mosaicLayer];
+
+        updateMetaData({
+          generatorId,
+          xyzTileUrl: `${mosaicUrl}?${tileParams}`
+        });
       }
 
       if (points && minZoom > 0) {

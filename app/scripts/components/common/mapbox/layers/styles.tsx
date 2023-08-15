@@ -24,6 +24,8 @@ export interface GeneratorParams {
 interface StylesContextType {
   updateStyle: (params: GeneratorParams) => void;
   style?: Style;
+  updateMetaData?: (params: unknown) => void;
+  metaData?: unknown;
 }
 
 export const StylesContext = createContext<StylesContextType>({
@@ -111,6 +113,8 @@ export function Styles({
   );
 
   const [style, setStyle] = useState<Style | undefined>();
+  const [metaData, setMetaData] = useState<object | undefined>();
+
   const updateStyle = useCallback(
     (params: GeneratorParams) => {
       setStylesData((prevStyle) => ({
@@ -120,6 +124,12 @@ export function Styles({
     },
     [setStylesData]
   );
+  const updateMetaData = useCallback((params) => {
+    setMetaData((prevData) => ({
+      ...prevData,
+      [params.generatorId]: params
+    }));
+  }, []);
 
   useEffect(() => {
     const style = generateStyle(stylesData);
@@ -128,13 +138,16 @@ export function Styles({
   }, [stylesData, onStyleUpdate]);
 
   return (
-    <StylesContext.Provider value={{ updateStyle, style }}>
+    <StylesContext.Provider
+      value={{ updateStyle, style, updateMetaData, metaData }}
+    >
       {children}
     </StylesContext.Provider>
   );
 }
 
 export const useMapStyle = () => {
-  const { updateStyle, style } = useContext(StylesContext);
-  return { updateStyle, style };
+  const { updateStyle, updateMetaData, metaData, style } =
+    useContext(StylesContext);
+  return { updateStyle, updateMetaData, metaData, style };
 };
