@@ -168,6 +168,7 @@ function MapBlock(props: MapBlockProps) {
         cooperativeGestures
         projection={projection}
         onProjectionChange={allowProjectionChange ? setProjection : undefined}
+        withScale
       />
     </Carto>
   );
