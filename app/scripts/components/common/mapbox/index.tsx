@@ -491,6 +491,7 @@ function MapboxMapComponent(
                 zoom: mapRef.current?.getZoom()
               }}
               withGeocoder={withGeocoder}
+              withScale={withScale}
               aoi={aoi}
               onAoiChange={onAoiChange}
               projection={projection}
