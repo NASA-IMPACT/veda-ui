@@ -49,6 +49,8 @@ const LAYER_ORDER: LayerOrderPosition[] = [
   'markers'
 ];
 
+export type ExtendedStyle = ReturnType<typeof generateStyle>;
+
 // Takes in a dictionary associating each generator id with a series of
 //  Mapbox layers and sources to be added to the final style. Outputs
 //  a style object directly usable by the map instance.
@@ -105,7 +107,7 @@ export function Styles({
   onStyleUpdate,
   children
 }: {
-  onStyleUpdate?: (style: Style) => void;
+  onStyleUpdate?: (style: ExtendedStyle) => void;
   children?: ReactNode;
 }) {
   const [stylesData, setStylesData] = useState<Record<string, GeneratorParams>>(
@@ -126,7 +128,7 @@ export function Styles({
 
   useEffect(() => {
     const style = generateStyle(stylesData);
-    onStyleUpdate?.(style as any);
+    onStyleUpdate?.(style);
     setStyle(style as any);
   }, [stylesData, onStyleUpdate]);
 

@@ -10,7 +10,7 @@ import React, {
   useState
 } from 'react';
 import styled from 'styled-components';
-import { Map as MapboxMap, MapboxOptions, Style } from 'mapbox-gl';
+import { Map as MapboxMap, MapboxOptions } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -32,7 +32,7 @@ import MapMessage from './map-message';
 import { LayerLegendContainer, LayerLegend } from './layer-legend';
 import { useBasemap } from './map-options/use-basemap';
 import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
-import { Styles } from './layers/styles';
+import { ExtendedStyle, Styles } from './layers/styles';
 import { Basemap } from './layers/basemap';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { MapLoading } from '$components/common/loading-skeleton';
@@ -539,7 +539,7 @@ export interface MapboxMapProps {
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
   isDatasetLayerHidden?: boolean;
-  onStyleChange?: (style: Style) => void;
+  onStyleChange?: (style: ExtendedStyle) => void;
 }
 
 export interface MapboxMapRef {

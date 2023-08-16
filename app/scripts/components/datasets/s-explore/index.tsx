@@ -56,6 +56,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { projectionDefault } from '$components/common/mapbox/map-options/utils';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
+import { ExtendedStyle } from '$components/common/mapbox/layers/styles';
 
 const Explorer = styled.div`
   position: relative;
@@ -315,16 +316,16 @@ function DatasetsExplore() {
       }
     });
 
-  const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
-  const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
-  const [layerStyle, setLayerStyle] = useState<Style | undefined>(undefined);
-
-  const currentLayerStyle = layerStyle?.layers.find((l) => {
-    return l.id == 'base-' + selectedLayerId;
-  });
-
   // END QsState setup
   /** *********************************************************************** */
+
+  const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
+  const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
+  const [layerStyle, setLayerStyle] = useState<ExtendedStyle | undefined>(undefined);
+
+  const currentLayerStyle = layerStyle?.layers.find((l) => {
+    return l.id === `base-${selectedLayerId}`;
+  });
 
   // Get the dataset's layers.
   // Since async data has to be loaded, each layer is in an async format which
