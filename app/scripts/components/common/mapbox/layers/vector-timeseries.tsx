@@ -154,7 +154,9 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
         // filter: ['==', '$type', 'LineString'],
         minzoom: minZoom,
         metadata: {
-          layerOrderPosition: 'raster'
+          id,
+          layerOrderPosition: 'raster',
+          xyzTileUrl: `${featuresApiEndpoint}/tiles/{z}/{x}/{y}?${tileParams}`
         }
       },
       {

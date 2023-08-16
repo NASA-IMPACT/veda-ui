@@ -393,6 +393,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             },
             minzoom: minZoom,
             metadata: {
+              id,
               layerOrderPosition: 'raster',
               xyzTileUrl: tileServerUrl,
               wmtsTileUrl: `${mosaicUrl}/WMTSCapabilities.xml?${tileParams}`

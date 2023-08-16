@@ -48,40 +48,46 @@ function TileModal(props: {
           {[
             { label: 'XYZ Tile Url', value: layerData?.metadata?.xyzTileUrl },
             { label: 'WMTS Tile Url', value: layerData?.metadata?.wmtsTileUrl }
-          ].map((tileUrl) => (
-            <FormGroupStructure
-              key={tileUrl.value}
-              id={tileUrl.label}
-              label={tileUrl.label}
-            >
-              <CopyField value={tileUrl.value}>
-                {({ ref, showCopiedMsg }) => {
-                  return (
-                    <FormInputSubmitWrapper>
-                      <FormInput
-                        type='text'
-                        readOnly
-                        value={showCopiedMsg ? 'Copied!' : tileUrl.value}
-                      />
-                      <Button ref={ref} size='medium' variation='primary-fill'>
-                        {showCopiedMsg ? (
-                          <CollecticonClipboardTick
-                            meaningful
-                            title={`${tileUrl.label} was copied`}
-                          />
-                        ) : (
-                          <CollecticonClipboard
-                            meaningful
-                            title={`Copy ${tileUrl.label}`}
-                          />
-                        )}
-                      </Button>
-                    </FormInputSubmitWrapper>
-                  );
-                }}
-              </CopyField>
-            </FormGroupStructure>
-          ))}
+          ].map((tileUrl) =>
+            tileUrl.value ? (
+              <FormGroupStructure
+                key={tileUrl.value}
+                id={tileUrl.label}
+                label={tileUrl.label}
+              >
+                <CopyField value={tileUrl.value}>
+                  {({ ref, showCopiedMsg }) => {
+                    return (
+                      <FormInputSubmitWrapper>
+                        <FormInput
+                          type='text'
+                          readOnly
+                          value={showCopiedMsg ? 'Copied!' : tileUrl.value}
+                        />
+                        <Button
+                          ref={ref}
+                          size='medium'
+                          variation='primary-fill'
+                        >
+                          {showCopiedMsg ? (
+                            <CollecticonClipboardTick
+                              meaningful
+                              title={`${tileUrl.label} was copied`}
+                            />
+                          ) : (
+                            <CollecticonClipboard
+                              meaningful
+                              title={`Copy ${tileUrl.label}`}
+                            />
+                          )}
+                        </Button>
+                      </FormInputSubmitWrapper>
+                    );
+                  }}
+                </CopyField>
+              </FormGroupStructure>
+            ) : null
+          )}
         </Form>
       }
     />

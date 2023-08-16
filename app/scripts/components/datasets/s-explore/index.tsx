@@ -324,7 +324,7 @@ function DatasetsExplore() {
   const [layerStyle, setLayerStyle] = useState<ExtendedStyle | undefined>(undefined);
 
   const currentLayerStyle = layerStyle?.layers.find((l) => {
-    return l.id === `base-${selectedLayerId}`;
+    return l.metadata.id === `base-${selectedLayerId}`;
   });
 
   // Get the dataset's layers.
