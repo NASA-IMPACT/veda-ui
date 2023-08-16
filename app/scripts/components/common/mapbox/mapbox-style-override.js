@@ -78,7 +78,7 @@ const MapboxStyleOverride = css`
   /* stylelint-enable no-descending-specificity */
 
   .mapboxgl-ctrl-bottom-left {
-    flex-direction: row;
+    flex-flow: row wrap;
     align-items: flex-end;
     align-items: center;
   }
