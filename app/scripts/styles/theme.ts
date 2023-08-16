@@ -16,7 +16,7 @@ export const VEDA_OVERRIDE_THEME = {
     popover: 1500,
     skipLink: 1600,
     toast: 1700,
-    tooltip: 1800
+    tooltip: 9999
   },
   color: {
     base: '#2c3e50',

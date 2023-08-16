@@ -123,8 +123,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     return <MapCoords mapInstance={mapRef.current} />;
   }, []);
 
-  const { style, metaData } = useMapStyle();
-  console.log(metaData);
+  const { style } = useMapStyle();
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -193,6 +192,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     if (!mapRef.current || !style) return;
     mapRef.current.setStyle(style);
     /* mapRef is a ref */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [style]);
 
   // Handle Attribution

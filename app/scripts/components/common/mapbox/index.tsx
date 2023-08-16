@@ -10,7 +10,7 @@ import React, {
   useState
 } from 'react';
 import styled from 'styled-components';
-import { Map as MapboxMap, MapboxOptions } from 'mapbox-gl';
+import { Map as MapboxMap, MapboxOptions, Style } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import CompareMbGL from 'mapbox-gl-compare';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -130,7 +130,8 @@ function MapboxMapComponent(
     onAoiChange,
     projection,
     onProjectionChange,
-    isDatasetLayerHidden
+    isDatasetLayerHidden,
+    onStyleChange
   } = props;
   /* eslint-enable react/prop-types */
 
@@ -399,7 +400,7 @@ function MapboxMapComponent(
         className={className}
         id={id ?? 'mapbox-container'}
       >
-        <Styles>
+        <Styles onStyleUpdate={onStyleChange}>
           {/*
         Each layer type is added to the map through a component. This component
         has all the logic needed to add/update/remove the layer.
@@ -456,7 +457,7 @@ function MapboxMapComponent(
         </Styles>
 
         {shouldRenderCompare && (
-          <Styles>
+          <Styles onStyleUpdate={onStyleChange}>
             {/*
         Adding a layer to the comparison map is also done through a component,
         which is this case targets a different map instance.
@@ -538,6 +539,7 @@ export interface MapboxMapProps {
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
   isDatasetLayerHidden?: boolean;
+  onStyleChange?: (style: Style) => void;
 }
 
 export interface MapboxMapRef {

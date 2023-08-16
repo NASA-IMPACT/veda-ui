@@ -17,6 +17,7 @@ import { ProjectionOptions } from 'veda';
 import { FormSwitch } from '@devseed-ui/form';
 
 import LayerVisibilityToggleButton from './layer-visibility-toggle';
+import TileLinkButton from './tile-link';
 import DatasetLayers from './dataset-layers';
 import { PanelDateWidget } from './panel-date-widget';
 import { resourceNotFound } from '$components/uhoh';
@@ -316,6 +317,11 @@ function DatasetsExplore() {
 
   const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
   const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
+  const [layerStyle, setLayerStyle] = useState<Style | undefined>(undefined);
+
+  const currentLayerStyle = layerStyle?.layers.find((l) => {
+    return l.id == 'base-' + selectedLayerId;
+  });
 
   // END QsState setup
   /** *********************************************************************** */
@@ -566,6 +572,10 @@ function DatasetsExplore() {
           <Carto>
             <CustomControlWrapper>
               <NotebookConnectButton dataset={dataset.data} />
+              <TileLinkButton
+                layerData={currentLayerStyle}
+                disabled={!currentLayerStyle?.metadata.xyzTileUrl}
+              />
               <LayerVisibilityToggleButton
                 isDatasetLayerHidden={isDatasetLayerHidden}
                 onLayerVisibilityClick={setIsDatasetLayerHidden}
@@ -591,6 +601,7 @@ function DatasetsExplore() {
               projection={mapProjection ?? projectionDefault}
               onProjectionChange={setMapProjection}
               isDatasetLayerHidden={isDatasetLayerHidden}
+              onStyleChange={setLayerStyle}
             />
           </Carto>
         </Explorer>

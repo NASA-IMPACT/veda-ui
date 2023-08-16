@@ -373,7 +373,9 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           },
           minzoom: minZoom,
           metadata: {
-            layerOrderPosition: 'raster'
+            layerOrderPosition: 'raster',
+            xyzTileUrl: `${mosaicUrl}?${tileParams}`,
+            wmtsTileUrl: `${mosaicUrl}/WMTSCapabilities.xml?${tileParams}`
           }
         };
 
@@ -382,11 +384,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           [id]: mosaicSource
         };
         layers = [...layers, mosaicLayer];
-
-        updateMetaData({
-          generatorId,
-          xyzTileUrl: `${mosaicUrl}?${tileParams}`
-        });
       }
 
       if (points && minZoom > 0) {
