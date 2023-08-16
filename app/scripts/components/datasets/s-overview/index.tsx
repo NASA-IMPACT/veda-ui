@@ -69,7 +69,7 @@ function DatasetsOverview() {
                   compact={false}
                   variation='achromic-outline'
                 />
-                {dataset.data.dataBucketPrefix && (
+                {dataset.data.dataPath && (
                   <a
                     href={getDatasetBrowserPath(dataset.data)}
                     target='_blank'

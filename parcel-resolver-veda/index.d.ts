@@ -147,7 +147,7 @@ declare module 'veda' {
     name: string;
     taxonomy: Taxonomy[];
     description: string;
-    dataBucketPrefix?: string;
+    dataPath?: string;
     usage?: DatasetUsage[];
     media?: Media;
     layers: DatasetLayer[];
