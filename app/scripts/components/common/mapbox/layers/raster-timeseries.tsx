@@ -373,6 +373,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             // Ignore errors.
           }
 
+          const wmtsBaseUrl = mosaicUrl.replace('tilejson.json', 'WMTSCapabilities.xml');
+
           const mosaicSource: RasterSource = {
             type: 'raster',
             url: tilejsonUrl
@@ -396,7 +398,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
               id,
               layerOrderPosition: 'raster',
               xyzTileUrl: tileServerUrl,
-              wmtsTileUrl: `${mosaicUrl}/WMTSCapabilities.xml?${tileParams}`
+              wmtsTileUrl: `${wmtsBaseUrl}?${tileParams}`
             }
           };
 
