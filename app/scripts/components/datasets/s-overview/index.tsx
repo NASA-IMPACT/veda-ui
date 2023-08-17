@@ -1,7 +1,7 @@
 import React, { lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@devseed-ui/button';
-import { CollecticonCompass, CollecticonArrowUpRight } from '@devseed-ui/collecticons';
+import { CollecticonCompass, CollecticonDownload } from '@devseed-ui/collecticons';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
@@ -76,7 +76,7 @@ function DatasetsOverview() {
                     rel='noreferrer'
                   >
                     <Button size='large' variation='achromic-outline'>
-                      <CollecticonArrowUpRight />
+                      <CollecticonDownload />
                       Download
                     </Button>
                   </a>
