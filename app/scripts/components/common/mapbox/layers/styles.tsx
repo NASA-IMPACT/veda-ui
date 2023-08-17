@@ -24,6 +24,8 @@ export interface GeneratorParams {
 interface StylesContextType {
   updateStyle: (params: GeneratorParams) => void;
   style?: Style;
+  updateMetaData?: (params: unknown) => void;
+  metaData?: unknown;
 }
 
 export const StylesContext = createContext<StylesContextType>({
@@ -46,6 +48,8 @@ const LAYER_ORDER: LayerOrderPosition[] = [
   'basemap-foreground',
   'markers'
 ];
+
+export type ExtendedStyle = ReturnType<typeof generateStyle>;
 
 // Takes in a dictionary associating each generator id with a series of
 //  Mapbox layers and sources to be added to the final style. Outputs
@@ -103,7 +107,7 @@ export function Styles({
   onStyleUpdate,
   children
 }: {
-  onStyleUpdate?: (style: Style) => void;
+  onStyleUpdate?: (style: ExtendedStyle) => void;
   children?: ReactNode;
 }) {
   const [stylesData, setStylesData] = useState<Record<string, GeneratorParams>>(
@@ -111,6 +115,7 @@ export function Styles({
   );
 
   const [style, setStyle] = useState<Style | undefined>();
+
   const updateStyle = useCallback(
     (params: GeneratorParams) => {
       setStylesData((prevStyle) => ({
@@ -123,7 +128,7 @@ export function Styles({
 
   useEffect(() => {
     const style = generateStyle(stylesData);
-    onStyleUpdate?.(style as any);
+    onStyleUpdate?.(style);
     setStyle(style as any);
   }, [stylesData, onStyleUpdate]);
 

@@ -192,6 +192,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     if (!mapRef.current || !style) return;
     mapRef.current.setStyle(style);
     /* mapRef is a ref */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [style]);
 
   // Handle Attribution

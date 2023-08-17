@@ -32,7 +32,7 @@ import MapMessage from './map-message';
 import { LayerLegendContainer, LayerLegend } from './layer-legend';
 import { useBasemap } from './map-options/use-basemap';
 import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
-import { Styles } from './layers/styles';
+import { ExtendedStyle, Styles } from './layers/styles';
 import { Basemap } from './layers/basemap';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { MapLoading } from '$components/common/loading-skeleton';
@@ -130,7 +130,8 @@ function MapboxMapComponent(
     onAoiChange,
     projection,
     onProjectionChange,
-    isDatasetLayerHidden
+    isDatasetLayerHidden,
+    onStyleChange
   } = props;
   /* eslint-enable react/prop-types */
 
@@ -399,7 +400,7 @@ function MapboxMapComponent(
         className={className}
         id={id ?? 'mapbox-container'}
       >
-        <Styles>
+        <Styles onStyleUpdate={onStyleChange}>
           {/*
         Each layer type is added to the map through a component. This component
         has all the logic needed to add/update/remove the layer.
@@ -456,7 +457,7 @@ function MapboxMapComponent(
         </Styles>
 
         {shouldRenderCompare && (
-          <Styles>
+          <Styles onStyleUpdate={onStyleChange}>
             {/*
         Adding a layer to the comparison map is also done through a component,
         which is this case targets a different map instance.
@@ -538,6 +539,7 @@ export interface MapboxMapProps {
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
   isDatasetLayerHidden?: boolean;
+  onStyleChange?: (style: ExtendedStyle) => void;
 }
 
 export interface MapboxMapRef {

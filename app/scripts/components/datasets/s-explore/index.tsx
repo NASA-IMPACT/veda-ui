@@ -17,6 +17,7 @@ import { ProjectionOptions } from 'veda';
 import { FormSwitch } from '@devseed-ui/form';
 
 import LayerVisibilityToggleButton from './layer-visibility-toggle';
+import TileLinkButton from './tile-link';
 import DatasetLayers from './dataset-layers';
 import { PanelDateWidget } from './panel-date-widget';
 import { resourceNotFound } from '$components/uhoh';
@@ -55,6 +56,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { projectionDefault } from '$components/common/mapbox/map-options/utils';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
+import { ExtendedStyle } from '$components/common/mapbox/layers/styles';
 
 const Explorer = styled.div`
   position: relative;
@@ -314,11 +316,16 @@ function DatasetsExplore() {
       }
     });
 
-  const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
-  const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
-
   // END QsState setup
   /** *********************************************************************** */
+
+  const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
+  const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
+  const [layerStyle, setLayerStyle] = useState<ExtendedStyle | undefined>(undefined);
+
+  const currentLayerStyle = layerStyle?.layers.find((l) => {
+    return l.metadata.id === `base-${selectedLayerId}`;
+  });
 
   // Get the dataset's layers.
   // Since async data has to be loaded, each layer is in an async format which
@@ -566,6 +573,10 @@ function DatasetsExplore() {
           <Carto>
             <CustomControlWrapper>
               <NotebookConnectButton dataset={dataset.data} />
+              <TileLinkButton
+                layerData={currentLayerStyle}
+                disabled={!currentLayerStyle?.metadata.xyzTileUrl}
+              />
               <LayerVisibilityToggleButton
                 isDatasetLayerHidden={isDatasetLayerHidden}
                 onLayerVisibilityClick={setIsDatasetLayerHidden}
@@ -591,6 +602,7 @@ function DatasetsExplore() {
               projection={mapProjection ?? projectionDefault}
               onProjectionChange={setMapProjection}
               isDatasetLayerHidden={isDatasetLayerHidden}
+              onStyleChange={setLayerStyle}
             />
           </Carto>
         </Explorer>

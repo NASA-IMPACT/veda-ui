@@ -337,92 +337,125 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     () => JSON.stringify(sourceParams),
     [sourceParams]
   );
+
   useEffect(
     () => {
-      let layers: AnyLayer[] = [];
-      let sources: Record<string, AnySourceImpl> = {};
+      const controller = new AbortController();
 
-      if (mosaicUrl) {
-        const tileParams = qs.stringify(
-          {
-            assets: 'cog_default',
-            ...sourceParams
-          },
-          // Temporary solution to pass different tile parameters for hls data
-          { arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma' }
-        );
+      async function run() {
+        let layers: AnyLayer[] = [];
+        let sources: Record<string, AnySourceImpl> = {};
 
-        const mosaicSource: RasterSource = {
-          type: 'raster',
-          url: `${mosaicUrl}?${tileParams}`
-        };
-
-        const mosaicLayer: RasterLayer = {
-          id: id,
-          type: 'raster',
-          source: id,
-          layout: {
-            visibility: isHidden ? 'none' : 'visible'
-          },
-          paint: {
-            'raster-opacity': Number(!isHidden),
-            'raster-opacity-transition': {
-              duration: 320
+        if (mosaicUrl) {
+          const tileParams = qs.stringify(
+            {
+              assets: 'cog_default',
+              ...sourceParams
+            },
+            // Temporary solution to pass different tile parameters for hls data
+            {
+              arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma'
             }
-          },
-          minzoom: minZoom,
-          metadata: {
-            layerOrderPosition: 'raster'
-          }
-        };
+          );
 
-        sources = {
-          ...sources,
-          [id]: mosaicSource
-        };
-        layers = [...layers, mosaicLayer];
+          const tilejsonUrl = `${mosaicUrl}?${tileParams}`;
+
+          let tileServerUrl: string | undefined = undefined;
+          try {
+            const tilejsonData = await requestQuickCache({
+              url: tilejsonUrl,
+              method: 'GET',
+              payload: null,
+              controller
+            });
+            tileServerUrl = tilejsonData.tiles[0];
+          } catch (error) {
+            // Ignore errors.
+          }
+
+          const wmtsBaseUrl = mosaicUrl.replace('tilejson.json', 'WMTSCapabilities.xml');
+
+          const mosaicSource: RasterSource = {
+            type: 'raster',
+            url: tilejsonUrl
+          };
+
+          const mosaicLayer: RasterLayer = {
+            id: id,
+            type: 'raster',
+            source: id,
+            layout: {
+              visibility: isHidden ? 'none' : 'visible'
+            },
+            paint: {
+              'raster-opacity': Number(!isHidden),
+              'raster-opacity-transition': {
+                duration: 320
+              }
+            },
+            minzoom: minZoom,
+            metadata: {
+              id,
+              layerOrderPosition: 'raster',
+              xyzTileUrl: tileServerUrl,
+              wmtsTileUrl: `${wmtsBaseUrl}?${tileParams}`
+            }
+          };
+
+          sources = {
+            ...sources,
+            [id]: mosaicSource
+          };
+          layers = [...layers, mosaicLayer];
+        }
+
+        if (points && minZoom > 0) {
+          const pointsSourceId = `${id}-points`;
+          const pointsSource: GeoJSONSourceRaw = {
+            type: 'geojson',
+            data: featureCollection(
+              points.map((p) => point(p.center, { bounds: p.bounds }))
+            )
+          };
+
+          const pointsLayer: SymbolLayer = {
+            type: 'symbol',
+            id: pointsSourceId,
+            source: pointsSourceId,
+            layout: {
+              ...(markerLayout as any),
+              visibility: isHidden ? 'none' : 'visible',
+              'icon-allow-overlap': true
+            },
+            paint: {
+              'icon-color': theme.color?.primary,
+              'icon-halo-color': theme.color?.base,
+              'icon-halo-width': 1
+            },
+            maxzoom: minZoom,
+            metadata: {
+              layerOrderPosition: 'markers'
+            }
+          };
+          sources = {
+            ...sources,
+            [pointsSourceId]: pointsSource as AnySourceImpl
+          };
+          layers = [...layers, pointsLayer];
+        }
+
+        updateStyle({
+          generatorId,
+          sources,
+          layers
+        });
       }
 
-      if (points && minZoom > 0) {
-        const pointsSourceId = `${id}-points`;
-        const pointsSource: GeoJSONSourceRaw = {
-          type: 'geojson',
-          data: featureCollection(
-            points.map((p) => point(p.center, { bounds: p.bounds }))
-          )
-        };
+      run();
 
-        const pointsLayer: SymbolLayer = {
-          type: 'symbol',
-          id: pointsSourceId,
-          source: pointsSourceId,
-          layout: {
-            ...(markerLayout as any),
-            visibility: isHidden ? 'none' : 'visible',
-            'icon-allow-overlap': true
-          },
-          paint: {
-            'icon-color': theme.color?.primary,
-            'icon-halo-color': theme.color?.base,
-            'icon-halo-width': 1
-          },
-          maxzoom: minZoom,
-          metadata: {
-            layerOrderPosition: 'markers'
-          }
-        };
-        sources = {
-          ...sources,
-          [pointsSourceId]: pointsSource as AnySourceImpl
-        };
-        layers = [...layers, pointsLayer];
-      }
-
-      updateStyle({
-        generatorId,
-        sources,
-        layers
-      });
+      return () => {
+        controller.abort();
+      };
     },
     // sourceParams not included, but using a stringified version of it to detect changes (haveSourceParamsChanged)
     [
