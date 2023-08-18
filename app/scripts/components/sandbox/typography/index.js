@@ -3,17 +3,20 @@ import styled from 'styled-components';
 
 import { add, glsp, media, themeVal } from '@devseed-ui/theme-provider';
 
-import Constrainer from '../../../styles/constrainer';
+import Constrainer from '$styles/constrainer';
 import {
   variableGlsp,
   variableBaseType,
   variableProseVSpace
-} from '../../../styles/variable-utils';
+} from '$styles/variable-utils';
+import { VarHeading, VarLead, VarProse } from '$styles/variable-components';
 import {
-  VarHeading,
-  VarLead,
-  VarProse
-} from '../../../styles/variable-components';
+  CollecticonProgressTickHigh,
+  CollecticonProgressTickMedium,
+  CollecticonProgressTickLow
+} from '$components/common/icons/progress-tick';
+import { CollecticonMedal } from '$components/common/icons/medal';
+import { CollecticonFlask } from '$components/common/icons/flask';
 
 const IntroFold = styled.div`
   position: relative;
@@ -190,6 +193,18 @@ function SandboxType() {
           <p>Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.</p>
           <VarHeading size='jumbo'>Heading jumbo</VarHeading>
           <p>Etiam risus tortor, dapibus sed porttitor eu, pharetra eu eros.</p>
+
+          <Wrapper>
+            <p>
+              <CollecticonProgressTickHigh /> Low <br />
+              <CollecticonProgressTickMedium /> Medium <br />
+              <CollecticonProgressTickLow /> High
+            </p>
+            <p>
+              <CollecticonMedal /> Agency standard/regulatory <br />
+              <CollecticonFlask /> Research
+            </p>
+          </Wrapper>
         </IntroFoldCopy>
       </IntroFoldInner>
     </IntroFold>

@@ -128,6 +128,7 @@ interface PageHeroProps {
   description?: string;
   renderAlphaBlock?: () => JSX.Element;
   renderBetaBlock?: () => JSX.Element;
+  renderDetailsBlock?: () => JSX.Element;
   publishedDate?: string | Date;
   coverSrc?: string;
   coverAlt?: string;
@@ -142,6 +143,7 @@ function PageHero(props: PageHeroProps) {
     description,
     renderAlphaBlock,
     renderBetaBlock,
+    renderDetailsBlock,
     publishedDate,
     coverSrc,
     coverAlt,
@@ -171,6 +173,7 @@ function PageHero(props: PageHeroProps) {
         <Try fn={renderBetaBlock} wrapWith={PageHeroBlockBeta}>
           {description && <PageLead>{description}</PageLead>}
         </Try>
+          {typeof renderDetailsBlock === 'function' && renderDetailsBlock()}
         {hasImage && (
           <PageHeroCover>
             <img src={coverSrc} alt={coverAlt} />

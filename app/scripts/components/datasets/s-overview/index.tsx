@@ -11,9 +11,15 @@ import PageHero from '$components/common/page-hero';
 import RelatedContent from '$components/common/related-content';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
 
-import { allDatasetsProps, useDataset } from '$utils/veda-data';
+import {
+  allDatasetsProps,
+  TAXONOMY_NATURE,
+  TAXONOMY_UNCERTAINTY,
+  useDataset
+} from '$utils/veda-data';
 import { DATASETS_PATH, getDatasetExplorePath } from '$utils/routes';
 import { ContentTaxonomy } from '$components/common/content-taxonomy';
+import { DatasetClassification } from '$components/common/dataset-classification';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
@@ -21,6 +27,10 @@ function DatasetsOverview() {
   const dataset = useDataset();
 
   if (!dataset) throw resourceNotFound();
+
+  const taxonomies = dataset.data.taxonomy.filter(
+    (t) => ![TAXONOMY_UNCERTAINTY, TAXONOMY_NATURE].includes(t.name)
+  );
 
   return (
     <>
@@ -63,13 +73,17 @@ function DatasetsOverview() {
               </PageActions>
             </>
           )}
+          renderDetailsBlock={() => (
+            <>
+              <ContentTaxonomy taxonomy={taxonomies} />
+              <DatasetClassification dataset={dataset.data} />
+            </>
+          )}
           coverSrc={dataset.data.media?.src}
           coverAlt={dataset.data.media?.alt}
           attributionAuthor={dataset.data.media?.author?.name}
           attributionUrl={dataset.data.media?.author?.url}
         />
-
-        <ContentTaxonomy taxonomy={dataset.data.taxonomy} />
 
         <MdxContent loader={dataset.content} />
 
