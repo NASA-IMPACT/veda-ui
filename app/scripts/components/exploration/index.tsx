@@ -38,7 +38,7 @@ const Container = styled.div`
     width: 5rem;
     margin: 0 auto -1.25rem auto;
     padding: 0.25rem 0;
-    z-index: 5000;
+    z-index: 1;
 
     ::before {
       content: '';

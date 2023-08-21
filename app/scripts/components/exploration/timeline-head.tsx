@@ -16,7 +16,7 @@ const TimelineHeadSVG = styled.svg`
   top: -1rem;
   height: calc(100% + 1rem);
   pointer-events: none;
-  z-index: 200;
+  z-index: ${themeVal('zIndices.overlay' as any)};
 `;
 
 const dropShadowFilter =

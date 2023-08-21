@@ -40,7 +40,11 @@ import { DatasetChart } from './dataset-chart';
 import { activeAnalysisMetricsAtom, isAnalysisAtom } from './atoms';
 import DatasetOptions from './dataset-options';
 import { useDatasetHover } from './use-dataset-hover';
+import {
+  DatasetPopover,
   getInteractionDataPoint,
+  usePopover
+} from './chart-popover';
 
 import { LayerGradientGraphic } from '$components/common/mapbox/layer-legend';
 
@@ -162,6 +166,17 @@ export function DatasetListItem(props: DatasetListItemProps) {
     layerX,
     data: dataset.analysis.data.timeseries
   });
+
+  const {
+    refs: popoverRefs,
+    floatingStyles,
+    isVisible: isPopoverVisible
+  } = usePopover({
+    x: clientX,
+    y: midY,
+    data: dataPoint
+  });
+
   const isError = dataset.status === TimelineDatasetStatus.ERRORED;
 
   return (
@@ -249,6 +264,15 @@ export function DatasetListItem(props: DatasetListItemProps) {
                 isVisible={!!isVisible}
               />
             ))}
+          {isVisible && isPopoverVisible && dataPoint && (
+            <DatasetPopover
+              ref={popoverRefs.setFloating}
+              style={floatingStyles}
+              timeDensity={dataset.data.timeDensity}
+              activeMetrics={activeMetrics}
+              data={dataPoint}
+            />
+          )}
         </DatasetData>
       </DatasetItem>
     </Reorder.Item>
