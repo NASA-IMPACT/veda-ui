@@ -39,6 +39,7 @@ import {
 import { DatasetChart } from './dataset-chart';
 import { activeAnalysisMetricsAtom, isAnalysisAtom } from './atoms';
 import DatasetOptions from './dataset-options';
+import { useDatasetHover } from './use-dataset-hover';
 
 import { LayerGradientGraphic } from '$components/common/mapbox/layer-legend';
 
@@ -143,10 +144,20 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const controls = useDragControls();
 
+  // Hook to handle the hover state of the dataset. Check the source file as to
+  // why this is needed.
+  const {
+    ref: datasetLiRef,
+    isHovering,
+    clientX,
+    layerX,
+    midY
+  } = useDatasetHover();
   const isError = dataset.status === TimelineDatasetStatus.ERRORED;
 
   return (
     <Reorder.Item
+      ref={datasetLiRef}
       value={dataset}
       dragListener={false}
       dragControls={controls}

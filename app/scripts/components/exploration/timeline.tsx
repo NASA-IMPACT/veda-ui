@@ -40,6 +40,7 @@ import {
 } from './constants';
 import { applyTransform, isEqualTransform, rescaleX } from './utils';
 import { useScaleFactors, useScales, useTimelineDatasetsDomain } from './hooks';
+import { useInteractionRectHover } from './use-dataset-hover';
 
 import {
   useLayoutEffectPrevious,
@@ -323,6 +324,10 @@ export default function Timeline() {
   ]);
 
   const shouldRenderTimeline = xScaled && dataDomain;
+
+  // Attach the needed event listeners to the interaction rectangle to capture
+  // the mouse position. See source file for more information.
+  useInteractionRectHover(interactionRef.current);
 
   // Some of these values depend on each other, but we check all of them so
   // typescript doesn't complain.
