@@ -19,10 +19,12 @@ interface DatasetChartProps {
   isVisible: boolean;
   data: any;
   activeMetrics: DataMetric[];
+  highlightDate?: Date;
 }
 
 export function DatasetChart(props: DatasetChartProps) {
-  const { xScaled, width, isVisible, data, activeMetrics } = props;
+  const { xScaled, width, isVisible, data, activeMetrics, highlightDate } =
+    props;
 
   const timeseries = data.data.timeseries;
 
@@ -86,6 +88,7 @@ export function DatasetChart(props: DatasetChartProps) {
                     color={theme.color?.[metric.themeColor]}
                     isVisible={isVisible}
                     isExpanded={isExpanded}
+                    highlightDate={highlightDate}
                   />
                 )
             )}
@@ -104,16 +107,18 @@ interface DateLineProps {
   color: string;
   isVisible: boolean;
   isExpanded: boolean;
+  highlightDate?: Date;
 }
 
 function DataLine(props: DateLineProps) {
-  const { x, y, prop, data, color, isVisible, isExpanded } = props;
+  const { x, y, prop, data, color, isVisible, isExpanded, highlightDate } =
+    props;
 
   const path = useMemo(
     () =>
-      line<Record<string, string | number | null>>()
+      line<Record<string, Date | number | null>>()
         .defined((d) => d[prop] !== null)
-        .x((d) => x(new Date(d.date ?? '')))
+        .x((d) => x(d.date ?? 0))
         .y((d) => y(d[prop] as number))(data),
     [x, y, prop, data]
   );
@@ -132,23 +137,26 @@ function DataLine(props: DateLineProps) {
         fill='none'
         stroke={color}
       />
-      {data.map((d) =>
-        d[prop] !== null ? (
+      {data.map((d) => {
+        if (typeof d[prop] !== 'number') return false;
+
+        const highlight =
+          isVisible && highlightDate?.getTime() === d.date.getTime();
+
+        return (
           <motion.circle
             initial={{ opacity: 0 }}
             animate={{ opacity: isExpanded ? maxOpacity : 0 }}
             transition={{ duration: 0.16 }}
             key={d.date}
-            cx={x(new Date(d.date))}
+            cx={x(d.date)}
             cy={y(d[prop])}
-            r={3}
-            fill='white'
+            r={highlight ? 4 : 3}
+            fill={highlight ? color : '#fff'}
             stroke={color}
           />
-        ) : (
-          false
-        )
-      )}
+        );
+      })}
     </g>
   );
 }

@@ -40,6 +40,7 @@ import { DatasetChart } from './dataset-chart';
 import { activeAnalysisMetricsAtom, isAnalysisAtom } from './atoms';
 import DatasetOptions from './dataset-options';
 import { useDatasetHover } from './use-dataset-hover';
+  getInteractionDataPoint,
 
 import { LayerGradientGraphic } from '$components/common/mapbox/layer-legend';
 
@@ -153,6 +154,14 @@ export function DatasetListItem(props: DatasetListItemProps) {
     layerX,
     midY
   } = useDatasetHover();
+
+  const dataPoint = getInteractionDataPoint({
+    isHovering,
+    xScaled,
+    containerWidth: width,
+    layerX,
+    data: dataset.analysis.data.timeseries
+  });
   const isError = dataset.status === TimelineDatasetStatus.ERRORED;
 
   return (
@@ -230,6 +239,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                 isVisible={!!isVisible}
                 data={dataset.data.analysis}
                 activeMetrics={activeMetrics}
+                highlightDate={dataPoint?.date}
               />
             ) : (
               <DatasetTrack
