@@ -33,9 +33,9 @@ Note how the values are used: starting with a capital letter, and using spaces i
 Some taxonomies are specific/reserved for a content type.  
 - Both stories and datasets must have a `Topics` taxonomy which will be displayed in a pill on the content card.
 - For stories, if the `Source` taxonomy is used, it will be displayed in on the content card.
-- Datasets should have a "Nature" and "Uncertainty" taxonomies which are displayed as icons.
+- Datasets should have a "Grade" and "Uncertainty" taxonomies which are displayed as icons.
   
-**Nature and Uncertainty**  
+**Grade and Uncertainty**  
 These are two special taxonomies related to datasets and are displayed as icons on the dataset card.  
 Although they are added to a dataset like any other, can only have ONE value each and are restricted to the values below.
 
@@ -43,7 +43,7 @@ Although they are added to a dataset like any other, can only have ONE value eac
   - High
   - Medium
   - Low
-- `Nature`: The nature of this dataset indicates the status of its data.
+- `Grade`: Indicates the use that a dataset is recommended or suitable for.
   - Research
   - Agency standard/regulatory
 

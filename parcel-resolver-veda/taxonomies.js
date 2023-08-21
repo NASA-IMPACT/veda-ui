@@ -15,9 +15,9 @@ function processTaxonomies(contentType) {
         .map((tx) => {
           if (!tx.name || !tx.values?.length) return null;
 
-          // Guard against multiple values for Nature and Uncertainty.
+          // Guard against multiple values for Grade and Uncertainty.
           if (
-            ['Nature', 'Uncertainty'].includes(tx.name) &&
+            ['Grade', 'Uncertainty'].includes(tx.name) &&
             tx.values.length > 1
           ) {
             throw new Error(

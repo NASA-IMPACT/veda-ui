@@ -15,7 +15,7 @@ import { CollecticonMedal } from './icons/medal';
 import { variableGlsp } from '$styles/variable-utils';
 import {
   getTaxonomy,
-  TAXONOMY_NATURE,
+  TAXONOMY_GRADE,
   TAXONOMY_UNCERTAINTY
 } from '$utils/veda-data';
 
@@ -25,7 +25,7 @@ const DATA_UNCERTAINTY = {
   Low: CollecticonProgressTickHigh
 };
 
-const DATA_NATURE = {
+const DATA_GRADE = {
   Research: CollecticonFlask,
   'Agency standard/regulatory': CollecticonMedal
 };
@@ -46,13 +46,13 @@ const DatasetClassificationWrapper = styled.div`
 export function DatasetClassification(props: { dataset: DatasetData }) {
   const { dataset } = props;
 
-  const nature = getTaxonomy(dataset, TAXONOMY_NATURE)?.values[0];
+  const grade = getTaxonomy(dataset, TAXONOMY_GRADE)?.values[0];
   const uncertainty = getTaxonomy(dataset, TAXONOMY_UNCERTAINTY)?.values[0];
 
   const IconUncertainty = DATA_UNCERTAINTY[uncertainty?.name ?? ''];
-  const IconNature = DATA_NATURE[nature?.name ?? ''];
+  const IconGrade = DATA_GRADE[grade?.name ?? ''];
 
-  if (!IconUncertainty && !IconNature) return null;
+  if (!IconUncertainty && !IconGrade) return null;
 
   return (
     <DatasetClassificationWrapper>
@@ -64,9 +64,9 @@ export function DatasetClassification(props: { dataset: DatasetData }) {
           />
         </Tip>
       )}
-      {IconNature && nature && (
-        <Tip content={`Nature: ${nature.name}`}>
-          <IconNature meaningful title={`Nature: ${nature.name}`} />
+      {IconGrade && grade && (
+        <Tip content={`Grade: ${grade.name}`}>
+          <IconGrade meaningful title={`Grade: ${grade.name}`} />
         </Tip>
       )}
     </DatasetClassificationWrapper>

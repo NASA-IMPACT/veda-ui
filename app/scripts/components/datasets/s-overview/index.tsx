@@ -13,7 +13,7 @@ import { NotebookConnectButton } from '$components/common/notebook-connect';
 
 import {
   allDatasetsProps,
-  TAXONOMY_NATURE,
+  TAXONOMY_GRADE,
   TAXONOMY_UNCERTAINTY,
   useDataset
 } from '$utils/veda-data';
@@ -29,7 +29,7 @@ function DatasetsOverview() {
   if (!dataset) throw resourceNotFound();
 
   const taxonomies = dataset.data.taxonomy.filter(
-    (t) => ![TAXONOMY_UNCERTAINTY, TAXONOMY_NATURE].includes(t.name)
+    (t) => ![TAXONOMY_UNCERTAINTY, TAXONOMY_GRADE].includes(t.name)
   );
 
   return (

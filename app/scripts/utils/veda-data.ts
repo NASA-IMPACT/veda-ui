@@ -99,7 +99,7 @@ export function useMdxPageLoader(loader?: () => Promise<MDXModule>) {
 // for example.
 export const TAXONOMY_TOPICS = 'Topics';
 export const TAXONOMY_SOURCE = 'Source';
-export const TAXONOMY_NATURE = 'Nature';
+export const TAXONOMY_GRADE = 'Grade';
 export const TAXONOMY_UNCERTAINTY = 'Uncertainty';
 
 export function getTaxonomy(
