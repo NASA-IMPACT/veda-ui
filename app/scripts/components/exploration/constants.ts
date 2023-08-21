@@ -23,6 +23,22 @@ export enum TimelineDatasetStatus {
   ERRORED = 'errored'
 }
 
+export type AnalysisTimeseriesEntry = Record<string, number | null> & {
+  date: Date;
+};
+
+export interface TimelineDatasetAnalysis {
+  status: TimelineDatasetStatus;
+  data: {
+    timeseries?: AnalysisTimeseriesEntry[];
+  };
+  error: any;
+  meta: {
+    loaded?: number;
+    total?: number;
+  };
+}
+
 export interface TimelineDataset {
   status: TimelineDatasetStatus;
   data: any;
@@ -32,6 +48,7 @@ export interface TimelineDataset {
     isVisible?: boolean;
     opacity?: number;
   };
+  analysis: TimelineDatasetAnalysis;
 }
 
 export interface DateRange {
