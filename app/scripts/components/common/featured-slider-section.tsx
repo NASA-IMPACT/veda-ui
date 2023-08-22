@@ -5,6 +5,7 @@ import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import PublishedDate from './pub-date';
 import { CardSourcesList } from './card-sources';
+import { DatasetClassification } from './dataset-classification';
 
 import { Card, CardMeta, CardTopicsList } from '$components/common/card';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
@@ -100,6 +101,9 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       title={d.name}
                       overline={
                         <CardMeta>
+                          {featuring === 'datasets' && (
+                            <DatasetClassification dataset={d} />
+                          )}
                           <CardSourcesList
                             sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                           />

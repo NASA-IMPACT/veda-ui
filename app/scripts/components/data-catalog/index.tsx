@@ -46,6 +46,7 @@ import {
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
+import { DatasetClassification } from '$components/common/dataset-classification';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
@@ -208,6 +209,7 @@ function DataCatalog() {
                     cardType='cover'
                     overline={
                       <CardMeta>
+                        <DatasetClassification dataset={d} />
                         <CardSourcesList
                           sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                           rootPath={DATASETS_PATH}
