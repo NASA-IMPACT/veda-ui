@@ -5,7 +5,7 @@ import { CollecticonCompass } from '@devseed-ui/collecticons';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
-import { PageActions, PageLead, PageMainContent } from '$styles/page';
+import { PageActions, PageMainContent } from '$styles/page';
 import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import PageHero from '$components/common/page-hero';
 import RelatedContent from '$components/common/related-content';
