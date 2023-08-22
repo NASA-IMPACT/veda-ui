@@ -67,6 +67,14 @@ const PageHeroInner = styled(Constrainer)`
   padding-top: ${variableGlsp(4)};
   padding-bottom: ${variableGlsp(2)};
   align-items: end;
+  
+  /** The constrainer's padding was going over the imagine attribution icon
+  * causing it not to work. We remove the pointer events from it and add them
+  * again to the descendants. */
+  pointer-events: none;
+  * {
+    pointer-events: auto;
+  }
 `;
 
 export const PageHeroHGroup = styled.div`
@@ -169,11 +177,10 @@ function PageHero(props: PageHeroProps) {
             <PageMainTitle>{title}</PageMainTitle>
             <PageOverlineDate date={date} />
           </PageHeroHGroup>
-        </Try>
-        <Try fn={renderBetaBlock} wrapWith={PageHeroBlockBeta}>
           {description && <PageLead>{description}</PageLead>}
         </Try>
-          {typeof renderDetailsBlock === 'function' && renderDetailsBlock()}
+        <Try fn={renderBetaBlock} wrapWith={PageHeroBlockBeta} />
+        {typeof renderDetailsBlock === 'function' && renderDetailsBlock()}
         {hasImage && (
           <PageHeroCover>
             <img src={coverSrc} alt={coverAlt} />
