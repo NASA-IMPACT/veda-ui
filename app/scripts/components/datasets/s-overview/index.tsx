@@ -51,9 +51,8 @@ function DatasetsOverview() {
       <PageMainContent>
         <PageHero
           title={`${dataset.data.name} Overview`}
+          description={dataset.data.description}
           renderBetaBlock={() => (
-            <>
-              <PageLead>{dataset.data.description}</PageLead>
               <PageActions>
                 <Button
                   forwardedAs={Link}
@@ -71,7 +70,6 @@ function DatasetsOverview() {
                   variation='achromic-outline'
                 />
               </PageActions>
-            </>
           )}
           renderDetailsBlock={() => (
             <>

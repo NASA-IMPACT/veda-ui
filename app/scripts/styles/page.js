@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Overline } from '@devseed-ui/typography';
+import { media } from '@devseed-ui/theme-provider';
 
 import { VarHeading, VarLead } from './variable-components';
 import { variableBaseType, variableGlsp } from './variable-utils';
@@ -38,4 +39,8 @@ export const PageActions = styled.div`
   display: flex;
   flex-direction: row nowrap;
   gap: ${variableGlsp(0.5)};
+
+  ${media.largeUp`
+    justify-content: end;
+  `}
 `;

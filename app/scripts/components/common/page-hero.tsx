@@ -177,11 +177,10 @@ function PageHero(props: PageHeroProps) {
             <PageMainTitle>{title}</PageMainTitle>
             <PageOverlineDate date={date} />
           </PageHeroHGroup>
-        </Try>
-        <Try fn={renderBetaBlock} wrapWith={PageHeroBlockBeta}>
           {description && <PageLead>{description}</PageLead>}
         </Try>
-          {typeof renderDetailsBlock === 'function' && renderDetailsBlock()}
+        <Try fn={renderBetaBlock} wrapWith={PageHeroBlockBeta} />
+        {typeof renderDetailsBlock === 'function' && renderDetailsBlock()}
         {hasImage && (
           <PageHeroCover>
             <img src={coverSrc} alt={coverAlt} />
