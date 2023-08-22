@@ -75,7 +75,7 @@ function DatasetsOverview() {
           )}
           renderDetailsBlock={() => (
             <>
-              <ContentTaxonomy taxonomy={taxonomies} />
+              <ContentTaxonomy taxonomy={taxonomies} linkBase={DATASETS_PATH} />
               <DatasetClassification dataset={dataset.data} />
             </>
           )}

@@ -45,7 +45,7 @@ function StoriesSingle() {
             attributionAuthor={media?.author?.name}
             attributionUrl={media?.author?.url}
             renderDetailsBlock={() => (
-              <ContentTaxonomy taxonomy={story.data.taxonomy} />
+              <ContentTaxonomy taxonomy={story.data.taxonomy} linkBase={STORIES_PATH} />
             )}
           />
 
