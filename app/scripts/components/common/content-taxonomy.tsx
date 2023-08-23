@@ -9,7 +9,6 @@ import { Actions } from './browse-controls/use-browse-controls';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { Pill } from '$styles/pill';
-import { DATASETS_PATH } from '$utils/routes';
 
 const TaxonomySection = styled.section`
   grid-column: 1 / -1;
@@ -36,10 +35,11 @@ const TaxonomyList = styled.dl`
 
 interface ContentTaxonomyProps {
   taxonomy: Taxonomy[];
+  linkBase: string;
 }
 
 export function ContentTaxonomy(props: ContentTaxonomyProps) {
-  const { taxonomy } = props;
+  const { taxonomy, linkBase } = props;
 
   if (!taxonomy.length) return null;
 
@@ -60,9 +60,9 @@ export function ContentTaxonomy(props: ContentTaxonomyProps) {
                   variation='achromic'
                   key={t.id}
                   as={Link}
-                  to={`${DATASETS_PATH}?${
-                    Actions.TAXONOMY
-                  }=${encodeURIComponent(JSON.stringify({ [name]: t.id }))}`}
+                  to={`${linkBase}?${Actions.TAXONOMY}=${encodeURIComponent(
+                    JSON.stringify({ [name]: t.id })
+                  )}`}
                 >
                   {t.name}
                 </Pill>
