@@ -10,7 +10,6 @@ import {
 } from '@devseed-ui/theme-provider';
 import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
-import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { followCursor } from 'tippy.js';
 import { scaleLinear } from 'd3';
 
@@ -27,6 +26,8 @@ import {
   WidgetItemHeadline,
   WidgetItemHGroup
 } from '$styles/panel';
+
+import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
 
 interface LayerLegendCommonProps {
   id: string;
