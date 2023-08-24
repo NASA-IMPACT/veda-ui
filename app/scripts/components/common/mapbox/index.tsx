@@ -31,7 +31,7 @@ import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import { LayerLegendContainer, LayerLegend } from './layer-legend';
 import { useBasemap } from './map-options/use-basemap';
-import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
+import { BasemapId, DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
 import { ExtendedStyle, Styles } from './layers/styles';
 import { Basemap } from './layers/basemap';
 import { formatCompareDate, formatSingleDate } from './utils';
@@ -130,6 +130,8 @@ function MapboxMapComponent(
     onAoiChange,
     projection,
     onProjectionChange,
+    basemapStyleId,
+    onBasemapStyleIdChange,
     isDatasetLayerHidden,
     onStyleChange
   } = props;
@@ -144,13 +146,7 @@ function MapboxMapComponent(
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
 
-  const {
-    basemapStyleId,
-    onBasemapStyleIdChange,
-    labelsOption,
-    boundariesOption,
-    onOptionChange
-  } = useBasemap();
+  const { labelsOption, boundariesOption, onOptionChange } = useBasemap();
 
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
@@ -499,6 +495,11 @@ function MapboxMapComponent(
               onAoiChange={onAoiChange}
               projection={projection}
               onProjectionChange={onProjectionChange}
+              basemapStyleId={basemapStyleId}
+              onBasemapStyleIdChange={onBasemapStyleIdChange}
+              labelsOption={labelsOption}
+              boundariesOption={boundariesOption}
+              onOptionChange={onOptionChange}
             />
           </Styles>
         )}
@@ -538,6 +539,8 @@ export interface MapboxMapProps {
   onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
+  basemapStyleId?: BasemapId;
+  onBasemapStyleIdChange?: (id: BasemapId) => void;
   isDatasetLayerHidden?: boolean;
   onStyleChange?: (style: ExtendedStyle) => void;
 }

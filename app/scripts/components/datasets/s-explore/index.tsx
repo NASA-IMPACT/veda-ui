@@ -57,6 +57,10 @@ import { S_SUCCEEDED } from '$utils/status';
 import { projectionDefault } from '$components/common/mapbox/map-options/utils';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
 import { ExtendedStyle } from '$components/common/mapbox/layers/styles';
+import {
+  BasemapId,
+  BASEMAP_ID_DEFAULT
+} from '$components/common/mapbox/map-options/basemaps';
 
 const Explorer = styled.div`
   position: relative;
@@ -285,6 +289,11 @@ function DatasetsExplore() {
     }
   });
 
+  const [mapBasemapId, setBasemapId] = useQsState.memo<BasemapId>({
+    key: 'basemapid',
+    default: BASEMAP_ID_DEFAULT
+  });
+
   const [selectedDatetime, setSelectedDatetime] = useQsState.memo<Date>({
     key: 'datetime',
     default: null,
@@ -321,7 +330,9 @@ function DatasetsExplore() {
 
   const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
   const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
-  const [layerStyle, setLayerStyle] = useState<ExtendedStyle | undefined>(undefined);
+  const [layerStyle, setLayerStyle] = useState<ExtendedStyle | undefined>(
+    undefined
+  );
 
   const currentLayerStyle = layerStyle?.layers.find((l) => {
     return l.metadata.id === `base-${selectedLayerId}`;
@@ -378,6 +389,33 @@ function DatasetsExplore() {
         setMapProjection(currActiveData.projection);
       } else {
         setMapProjection(projectionDefault);
+      }
+    },
+    [activeLayer]
+  );
+
+  // On layer change, reset the basemapId.
+  // When activating a layer always use the layer basemap (if defined),
+  // otherwise default to satellite. If this is the first layer loading (like
+  // when the user enters the page), then use the basemap in the url. This is
+  // needed in case the url was shared with a different basemap.
+  useEffectPrevious(
+    (prev) => {
+      const prevActiveData = prev[0]?.baseLayer.data;
+      const currActiveData = activeLayer?.baseLayer.data;
+
+      if (
+        !prevActiveData ||
+        !currActiveData ||
+        prevActiveData.id === currActiveData.id
+      ) {
+        return;
+      }
+
+      if (currActiveData.basemapId) {
+        setBasemapId(currActiveData.basemapId);
+      } else {
+        setBasemapId(BASEMAP_ID_DEFAULT);
       }
     },
     [activeLayer]
@@ -601,6 +639,8 @@ function DatasetsExplore() {
               }}
               projection={mapProjection ?? projectionDefault}
               onProjectionChange={setMapProjection}
+              basemapStyleId={mapBasemapId ?? BASEMAP_ID_DEFAULT}
+              onBasemapStyleIdChange={setBasemapId}
               isDatasetLayerHidden={isDatasetLayerHidden}
               onStyleChange={setLayerStyle}
             />
