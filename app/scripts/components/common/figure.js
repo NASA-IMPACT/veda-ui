@@ -1,6 +1,6 @@
 import React from 'react';
 import T from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { glsp, themeVal, truncated } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
@@ -45,10 +45,34 @@ export const FigcaptionInner = styled(Subtitle).attrs({
   }
 `;
 
+function renderAttributionPosition(props) {
+  const { position } = props;
+
+  switch (position) {
+    case 'top-left':
+      return css`
+      top: ${variableGlsp()};
+      left: ${variableGlsp()};`;
+    case 'bottom-left':
+      return css`
+      bottom: ${variableGlsp()};
+      left: ${variableGlsp()};`;
+    case 'bottom-right':
+      return css`
+        bottom: ${variableGlsp()};
+        right: ${variableGlsp()};
+      `;
+    // top-right
+    default:
+      return css`
+        top: ${variableGlsp()};
+        right: ${variableGlsp()};
+      `;
+  }
+}
+
 export const FigureAttributionSelf = styled.p`
   position: absolute;
-  top: ${variableGlsp()};
-  right: ${variableGlsp()};
   z-index: 40;
   max-width: calc(100% - ${glsp(2)}); /* stylelint-disable-line */
   height: 1.5rem;
@@ -59,6 +83,8 @@ export const FigureAttributionSelf = styled.p`
   font-size: 0.75rem;
   background: ${themeVal('color.base-400a')};
   overflow: hidden;
+
+  ${renderAttributionPosition}
 
   a,
   a:visited {
@@ -99,7 +125,7 @@ const FigureAttributionInner = styled.span`
 `;
 
 function FigureAttributionCmp(props) {
-  const { author, url, ...rest } = props;
+  const { author, url, position, ...rest } = props;
 
   if (!author) return null;
 
@@ -113,7 +139,7 @@ function FigureAttributionCmp(props) {
     : {};
 
   return (
-    <FigureAttributionSelf {...rest}>
+    <FigureAttributionSelf position={position} {...rest}>
       <FigureAttributionInner {...innerProps}>
         <CollecticonCircleInformation />
         <strong>Figure by {author}</strong>
@@ -128,5 +154,6 @@ export const FigureAttribution = styled(FigureAttributionCmp)`
 
 FigureAttributionCmp.propTypes = {
   author: T.string,
-  url: T.string
+  url: T.string,
+  position: T.oneOf(['top-left', 'top-right', 'bottom-left', 'bottom-right'])
 };
