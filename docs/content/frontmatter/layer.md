@@ -15,6 +15,7 @@ type: string
 initialDatetime: 'oldest' | 'newest' | Date(YYYY-MM-DD) = 'newest'
 description: string
 projection: Projection
+basemapId: 'dark' | 'light' | 'satellite' | 'topo'
 zoomExtent: [int, int] | null | fn(bag)
 bounds: [int, int, int, int] | null | fn(bag)
 sourceParams:
@@ -81,6 +82,12 @@ bounds: [-180, -90, 180, 90]
 Note on bounds and dataset layer switching:  
 The exploration map will always prioritize the position set in the url. This is so that the user can share a link to a specific location. However, upon load the map will check if the position set in the url is within or overlapping the bounds of the dataset layer. If it is not, the map will switch to the dataset layer bounds avoiding showing an empty map when the user shares a link to a location that is not within the dataset layer bounds.
 If there are no bounds set in the dataset configuration, the bbox from the STAC catalog will be used if available, otherwise it will default to the world bounds.
+
+**basemapId**  
+`'dark' | 'light' | 'satellite' | 'topo' | fn(bag)`  
+Initial basemap used when a dataset layer is enabled.
+
+![Basemap options](../media/basemaps.png)
 
 ### Projection
 

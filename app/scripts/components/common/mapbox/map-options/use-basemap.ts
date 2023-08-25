@@ -1,13 +1,7 @@
 import { useCallback, useState } from 'react';
-import { BasemapId, Option } from './basemaps';
+import { Option } from './basemaps';
 
 export function useBasemap() {
-  const [basemapStyleId, setBasemapStyleId] = useState<BasemapId>('satellite');
-
-  const onBasemapStyleIdChange = useCallback((basemapId) => {
-    setBasemapStyleId(basemapId);
-  }, []);
-
   const [labelsOption, setLabelsOption] = useState(true);
   const [boundariesOption, setBoundariesOption] = useState(true);
   const onOptionChange = useCallback(
@@ -22,8 +16,6 @@ export function useBasemap() {
   );
 
   return {
-    basemapStyleId,
-    onBasemapStyleIdChange,
     labelsOption,
     boundariesOption,
     onOptionChange

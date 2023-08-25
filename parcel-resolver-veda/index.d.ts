@@ -58,6 +58,7 @@ declare module 'veda' {
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
     projection?: ProjectionOptions;
+    basemapId?: 'dark' | 'light' | 'satellite' | 'topo';
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend?: LayerLegendCategorical | LayerLegendGradient;
