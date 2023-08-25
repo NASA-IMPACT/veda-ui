@@ -8,7 +8,8 @@ import {
   DropMenu,
   DropTitle
 } from '@devseed-ui/dropdown';
-import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
+
+import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
 
 /**
  * Override Dropdown styles to play well with the shadow scrollbar.
