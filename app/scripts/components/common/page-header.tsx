@@ -224,7 +224,7 @@ const GlobalNavTitle = styled(Heading).attrs({
 `;
 
 export const GlobalNavActions = styled.div`
-  /* styled-component */
+  align-self: start;
 `;
 
 export const GlobalNavToggle = styled(Button)`
@@ -395,11 +395,6 @@ function PageHeader() {
               <SectionsNavBlock>
                 <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
                 <GlobalMenu>
-                  <li>
-                    <GlobalMenuLink to='/' onClick={closeNavOnClick}>
-                      Welcome
-                    </GlobalMenuLink>
-                  </li>
                   <li>
                     <GlobalMenuLink
                       to={DATASETS_PATH}
