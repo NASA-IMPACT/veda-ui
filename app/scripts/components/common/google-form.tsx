@@ -6,6 +6,7 @@ import { Modal } from '@devseed-ui/modal';
 import { useFeedbackModal } from './layout-root';
 
 import GlobalMenuLinkCSS from '$styles/menu-link';
+import { themeVal } from '@devseed-ui/theme-provider';
 
 const StyledGoogleForm = styled.iframe`
   width: 100%;
@@ -13,7 +14,22 @@ const StyledGoogleForm = styled.iframe`
 
 // Global menu link style
 const ButtonAsNavLink = styled(Button)`
-  ${GlobalMenuLinkCSS}
+  background-color: ${themeVal('color.primary-700')};
+
+  &:hover {
+    background-color: ${themeVal('color.primary-800')};
+  }
+
+  /* Print & when prop is passed */
+  ${({ active }) => active && '&,'}
+  &:active,
+  &.active {
+    background-color: ${themeVal('color.primary-900')};
+  }
+
+  &:focus-visible {
+    background-color: ${themeVal('color.primary-200a')};
+  }
 `;
 
 function GoogleForm() {
@@ -23,8 +39,7 @@ function GoogleForm() {
     <>
       <ButtonAsNavLink
         type='button'
-        variation='base-text'
-        fitting='skinny'
+        size='large'
         onClick={show}
         style={{ color: 'white' }}
       >
