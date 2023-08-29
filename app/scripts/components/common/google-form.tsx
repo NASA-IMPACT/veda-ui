@@ -2,34 +2,44 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
 import { Modal } from '@devseed-ui/modal';
+import { media, themeVal } from '@devseed-ui/theme-provider';
 
 import { useFeedbackModal } from './layout-root';
 
 import GlobalMenuLinkCSS from '$styles/menu-link';
-import { themeVal } from '@devseed-ui/theme-provider';
 
 const StyledGoogleForm = styled.iframe`
   width: 100%;
 `;
 
+interface BtnMediaProps {
+  active?: boolean;
+}
+
 // Global menu link style
 const ButtonAsNavLink = styled(Button)`
-  background-color: ${themeVal('color.primary-700')};
+  ${media.mediumUp<BtnMediaProps>`
+    background-color: ${themeVal('color.primary-700')};
 
-  &:hover {
-    background-color: ${themeVal('color.primary-800')};
-  }
+    &:hover {
+      background-color: ${themeVal('color.primary-800')};
+    }
 
-  /* Print & when prop is passed */
-  ${({ active }) => active && '&,'}
-  &:active,
-  &.active {
-    background-color: ${themeVal('color.primary-900')};
-  }
+    /* Print & when prop is passed */
+    ${({ active }) => active && '&,'}
+    &:active,
+    &.active {
+      background-color: ${themeVal('color.primary-900')};
+    }
 
-  &:focus-visible {
-    background-color: ${themeVal('color.primary-200a')};
-  }
+    &:focus-visible {
+      background-color: ${themeVal('color.primary-200a')};
+    }
+  `}
+
+  ${media.mediumDown`
+    ${GlobalMenuLinkCSS}
+  `}
 `;
 
 function GoogleForm() {

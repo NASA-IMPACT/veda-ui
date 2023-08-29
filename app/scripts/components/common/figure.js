@@ -51,12 +51,14 @@ function renderAttributionPosition(props) {
   switch (position) {
     case 'top-left':
       return css`
-      top: ${variableGlsp()};
-      left: ${variableGlsp()};`;
+        top: ${variableGlsp()};
+        left: ${variableGlsp()};
+      `;
     case 'bottom-left':
       return css`
-      bottom: ${variableGlsp()};
-      left: ${variableGlsp()};`;
+        bottom: ${variableGlsp()};
+        left: ${variableGlsp()};
+      `;
     case 'bottom-right':
       return css`
         bottom: ${variableGlsp()};
