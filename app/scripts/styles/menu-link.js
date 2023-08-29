@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
 
-import { glsp, media } from '@devseed-ui/theme-provider';
+import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
 
 const GlobalMenuLinkCSS = css`
@@ -13,11 +13,12 @@ const GlobalMenuLinkCSS = css`
   background: none;
   cursor: pointer;
   color: currentColor;
-  font-weight: bold;
   text-decoration: none;
   text-align: left;
   padding: ${variableGlsp(0, 1)};
   transition: all 0.32s ease 0s;
+  text-transform: ${themeVal('button.type.case')};
+  font-weight: ${themeVal('button.type.weight')};
 
   ${media.largeUp`
     padding: ${glsp(0.5, 0)};
