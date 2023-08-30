@@ -15,7 +15,6 @@ import {
 } from 'date-fns';
 import { ScaleTime } from 'd3';
 import {
-  CollecticonArrowSpinCw,
   CollecticonEye,
   CollecticonEyeDisabled,
   CollecticonGripVertical
@@ -177,7 +176,16 @@ export function DatasetListItem(props: DatasetListItemProps) {
     data: dataPoint
   });
 
-  const isError = dataset.status === TimelineDatasetStatus.ERRORED;
+  const isDatasetError = dataset.status === TimelineDatasetStatus.ERRORED;
+  const isDatasetLoading = dataset.status === TimelineDatasetStatus.LOADING;
+  const isDatasetSucceeded = dataset.status === TimelineDatasetStatus.SUCCEEDED;
+
+  const isAnalysisAndError =
+    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.ERRORED;
+  const isAnalysisAndLoading =
+    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.LOADING;
+  const isAnalysisAndSucceeded =
+    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.SUCCEEDED;
 
   return (
     <Reorder.Item
@@ -198,37 +206,24 @@ export function DatasetListItem(props: DatasetListItemProps) {
             <CollecticonGripVertical onPointerDown={(e) => controls.start(e)} />
             <DatasetInfo>
               <DatasetHeadline>
-                <Heading
-                  as='h3'
-                  size='xsmall'
-                  variation={isError ? 'danger' : undefined}
-                >
+                <Heading as='h3' size='xsmall'>
                   {dataset.data.title}
                 </Heading>
                 <Toolbar size='small'>
                   <DatasetOptions datasetAtom={datasetAtom} />
-                  {!isError ? (
-                    <ToolbarIconButton onClick={() => setVisible((v) => !v)}>
-                      {isVisible ? (
-                        <CollecticonEye
-                          meaningful
-                          title='Toggle dataset visibility'
-                        />
-                      ) : (
-                        <CollecticonEyeDisabled
-                          meaningful
-                          title='Toggle dataset visibility'
-                        />
-                      )}
-                    </ToolbarIconButton>
-                  ) : (
-                    <ToolbarIconButton variation='danger-text'>
-                      <CollecticonArrowSpinCw
+                  <ToolbarIconButton onClick={() => setVisible((v) => !v)}>
+                    {isVisible ? (
+                      <CollecticonEye
                         meaningful
-                        title='Retry dataset loading'
+                        title='Toggle dataset visibility'
                       />
-                    </ToolbarIconButton>
-                  )}
+                    ) : (
+                      <CollecticonEyeDisabled
+                        meaningful
+                        title='Toggle dataset visibility'
+                      />
+                    )}
+                  </ToolbarIconButton>
                 </Toolbar>
               </DatasetHeadline>
               <LayerGradientGraphic
@@ -242,28 +237,56 @@ export function DatasetListItem(props: DatasetListItemProps) {
           </DatasetHeaderInner>
         </DatasetHeader>
         <DatasetData>
-          {dataset.status === TimelineDatasetStatus.LOADING && (
-            <DatasetTrackLoading />
+          {isDatasetLoading && <DatasetTrackLoading />}
+
+          {isDatasetError && (
+            <DatasetTrackError
+              message='Oh no, something went wrong'
+              onRetryClick={() => {
+                /* eslint-disable-next-line no-console */
+                console.log('Retry metadata loading');
+              }}
+            />
           )}
-          {isError && <DatasetTrackError />}
-          {dataset.status === TimelineDatasetStatus.SUCCEEDED &&
-            (isAnalysis ? (
-              <DatasetChart
-                xScaled={xScaled!}
-                width={width}
-                isVisible={!!isVisible}
-                data={dataset.data.analysis}
-                activeMetrics={activeMetrics}
-                highlightDate={dataPoint?.date}
-              />
-            ) : (
-              <DatasetTrack
-                width={width}
-                xScaled={xScaled!}
-                dataset={dataset}
-                isVisible={!!isVisible}
-              />
-            ))}
+
+          {isDatasetSucceeded && (
+            <>
+              {isAnalysisAndLoading && (
+                <DatasetTrackLoading
+                  message={`${dataset.analysis.meta.loaded} of ${dataset.analysis.meta.total} items loaded`}
+                />
+              )}
+              {isAnalysisAndError && (
+                <DatasetTrackError
+                  message='Oh no, something went wrong'
+                  onRetryClick={() => {
+                    /* eslint-disable-next-line no-console */
+                    console.log('Retry analysis loading');
+                  }}
+                />
+              )}
+              {isAnalysisAndSucceeded && (
+                <DatasetChart
+                  xScaled={xScaled!}
+                  width={width}
+                  isVisible={!!isVisible}
+                  data={dataset.data.analysis}
+                  activeMetrics={activeMetrics}
+                  highlightDate={dataPoint?.date}
+                />
+              )}
+            </>
+          )}
+
+          {isDatasetSucceeded && !isAnalysis && (
+            <DatasetTrack
+              width={width}
+              xScaled={xScaled!}
+              dataset={dataset}
+              isVisible={!!isVisible}
+            />
+          )}
+
           {isVisible && isPopoverVisible && dataPoint && (
             <DatasetPopover
               ref={popoverRefs.setFloating}

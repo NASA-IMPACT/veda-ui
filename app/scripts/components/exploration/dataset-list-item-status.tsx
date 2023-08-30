@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { themeVal } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { Button } from '@devseed-ui/button';
+import { CollecticonArrowLoop } from '@devseed-ui/collecticons';
 
 import { DATASET_TRACK_BLOCK_HEIGHT } from './constants';
 
@@ -32,6 +34,17 @@ const TrackBlock = styled.div`
   gap: 0.25rem;
 `;
 
+const TrackMessage = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: ${glsp(0.5, 1)};
+  background: ${themeVal('color.surface-300a')};
+  z-index: ${themeVal('zIndices.overlay')};
+  display: flex;
+  gap: 1rem;
+`;
+
 const TrackLoading = styled(Track)`
   ${pulsingAnimation}
 
@@ -46,34 +59,54 @@ const TrackError = styled(Track)`
   }
 `;
 
-export function DatasetTrackLoading() {
+export function DatasetTrackLoading(props: { message?: React.ReactNode }) {
+  const { message } = props;
   /* eslint-disable react/no-array-index-key */
   return (
-    <TrackLoading>
-      {loadingPattern.map((letter, i) => (
-        <TrackBlock key={i}>
-          {letter.map((s, i2) => (
-            <Item key={i2} code={s} />
-          ))}
-        </TrackBlock>
-      ))}
-    </TrackLoading>
+    <>
+      <TrackLoading>
+        {loadingPattern.map((letter, i) => (
+          <TrackBlock key={i}>
+            {letter.map((s, i2) => (
+              <Item key={i2} code={s} />
+            ))}
+          </TrackBlock>
+        ))}
+      </TrackLoading>
+      {message && <TrackMessage>{message}</TrackMessage>}
+    </>
   );
   /* eslint-enable react/no-array-index-key */
 }
 
-export function DatasetTrackError() {
+export function DatasetTrackError(props: {
+  message?: React.ReactNode;
+  onRetryClick?: () => void;
+}) {
+  const { message, onRetryClick } = props;
   /* eslint-disable react/no-array-index-key */
   return (
-    <TrackError>
-      {errorPattern.map((letter, i) => (
-        <TrackBlock key={i}>
-          {letter.map((s, i2) => (
-            <Item key={i2} code={s} />
-          ))}
-        </TrackBlock>
-      ))}
-    </TrackError>
+    <>
+      <TrackError>
+        {errorPattern.map((letter, i) => (
+          <TrackBlock key={i}>
+            {letter.map((s, i2) => (
+              <Item key={i2} code={s} />
+            ))}
+          </TrackBlock>
+        ))}
+      </TrackError>
+      {message && (
+        <TrackMessage>
+          <p>{message}</p>
+          {typeof onRetryClick === 'function' ? (
+            <Button variation='danger-fill' size='small'>
+              Retry <CollecticonArrowLoop size='small' />
+            </Button>
+          ) : null}
+        </TrackMessage>
+      )}
+    </>
   );
   /* eslint-enable react/no-array-index-key */
 }

@@ -517,6 +517,56 @@ export function MockControls() {
       </Button>
       <Button
         onClick={() => {
+          set(
+            toggleDataset(
+              makeDataset(
+                {
+                  ...dataset2020,
+                  id: 'analysis-loading',
+                  title: 'Analysis loading'
+                },
+                TimelineDatasetStatus.SUCCEEDED,
+                {},
+                makeAnalysis(
+                  {},
+                  { loaded: 34, total: 100 },
+                  TimelineDatasetStatus.LOADING
+                )
+              )
+            )
+          );
+        }}
+        variation='base-outline'
+      >
+        toggle Analysis loading
+      </Button>
+      <Button
+        onClick={() => {
+          set(
+            toggleDataset(
+              makeDataset(
+                {
+                  ...dataset2020,
+                  id: 'analysis-error',
+                  title: 'Analysis Error'
+                },
+                TimelineDatasetStatus.SUCCEEDED,
+                {},
+                makeAnalysis(
+                  {},
+                  { loaded: 34, total: 100 },
+                  TimelineDatasetStatus.ERRORED
+                )
+              )
+            )
+          );
+        }}
+        variation='base-outline'
+      >
+        toggle Analysis error
+      </Button>
+      <Button
+        onClick={() => {
           setIsExpanded((v) => !v);
         }}
         variation='primary-outline'
