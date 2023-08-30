@@ -412,13 +412,28 @@ function PageHeader() {
                     </GlobalMenuLink>
                   </li>
                   <li>
-                    <GlobalMenuLink
-                      to={STORIES_PATH}
-                      onClick={closeNavOnClick}
-                    >
+                    <GlobalMenuLink to={STORIES_PATH} onClick={closeNavOnClick}>
                       {getString('stories').other}
                     </GlobalMenuLink>
                   </li>
+
+                  {/*
+                    Temporarily add hub link through env variables.
+                    This does not scale for the different instances, but it's a
+                    quick fix for the GHG app.
+                  */}
+                  {!!process.env.HUB_URL && !!process.env.HUB_NAME && (
+                    <li>
+                      <GlobalMenuLink
+                        as='a'
+                        href={process.env.HUB_URL}
+                        onClick={closeNavOnClick}
+                      >
+                        {process.env.HUB_NAME}
+                      </GlobalMenuLink>
+                    </li>
+                  )}
+
                 </GlobalMenu>
               </SectionsNavBlock>
               <SectionsNavBlock>
