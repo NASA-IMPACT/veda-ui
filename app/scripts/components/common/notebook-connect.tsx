@@ -5,7 +5,8 @@ import { Button, ButtonProps } from '@devseed-ui/button';
 import {
   CollecticonBook,
   CollecticonCode,
-  CollecticonCog
+  CollecticonCog,
+  CollecticonDownload2
 } from '@devseed-ui/collecticons';
 import { Modal } from '@devseed-ui/modal';
 import { DatasetData, datasets } from 'veda';
@@ -78,11 +79,12 @@ const DatasetUsageLabel = styled.div`
   }
 `;
 
-type DatasetUsageType = 'jupyter' | 'github' | 'unknown';
+type DatasetUsageType = 'jupyter' | 'github' | 'download' | 'unknown';
 
 const IconByType: Record<DatasetUsageType, any> = {
   jupyter: <CollecticonCog />,
   github: <CollecticonBook />,
+  download: <CollecticonDownload2 />,
   unknown: <CollecticonCog />
 };
 
@@ -100,6 +102,8 @@ export function NotebookConnectModal(props: {
       let type = 'unknown';
       if (d.url.match('nasa-veda.2i2c.cloud')) type = 'jupyter';
       else if (d.url.match('github.com/NASA-IMPACT/veda-docs')) type = 'github';
+      // TO DO: browser UI url pattern check
+      else if (d.url.match('browseui')) type = 'download';
       return {
         ...d,
         type
@@ -186,7 +190,7 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
         size={size}
       >
         <CollecticonCode meaningful={compact} title='Open data usage options' />
-        {compact ? '' : 'Analyze data (Python)'}
+        {compact ? '' : 'Access Data'}
       </Button>
       <NotebookConnectModal
         dataset={dataset}
