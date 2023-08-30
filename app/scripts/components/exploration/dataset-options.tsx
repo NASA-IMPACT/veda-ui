@@ -1,5 +1,5 @@
 import React from 'react';
-import { PrimitiveAtom, useAtomValue, useSetAtom } from 'jotai';
+import { PrimitiveAtom, useAtomValue, useAtom } from 'jotai';
 import 'react-range-slider-input/dist/style.css';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
@@ -14,6 +14,10 @@ import { timelineDatasetsAtom } from './atoms';
 
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { SliderInput, SliderInputProps } from '$styles/range-slider';
+import { composeVisuallyDisabled } from '$utils/utils';
+import { Tip } from '$components/common/tip';
+
+const RemoveButton = composeVisuallyDisabled(DropMenuItemButton);
 
 interface DatasetOptionsProps {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
@@ -22,7 +26,7 @@ interface DatasetOptionsProps {
 export default function DatasetOptions(props: DatasetOptionsProps) {
   const { datasetAtom } = props;
 
-  const setDatasets = useSetAtom(timelineDatasetsAtom);
+  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
   const dataset = useAtomValue(datasetAtom);
   const [getSettings, setSetting] = useTimelineDatasetSettings(datasetAtom);
 
@@ -48,16 +52,22 @@ export default function DatasetOptions(props: DatasetOptionsProps) {
       </DropMenu>
       <DropMenu>
         <li>
-          <DropMenuItemButton
-            variation='danger'
-            onClick={() => {
-              setDatasets((datasets) =>
-                datasets.filter((d) => d.data.id !== dataset.data.id)
-              );
-            }}
+          <Tip
+            disabled={datasets.length > 1}
+            content="It's not possible to remove the last dataset. Add another before removing this one."
           >
-            <CollecticonTrashBin /> Remove dataset
-          </DropMenuItemButton>
+            <RemoveButton
+              variation='danger'
+              visuallyDisabled={datasets.length === 1}
+              onClick={() => {
+                setDatasets((datasets) =>
+                  datasets.filter((d) => d.data.id !== dataset.data.id)
+                );
+              }}
+            >
+              <CollecticonTrashBin /> Remove dataset
+            </RemoveButton>
+          </Tip>
         </li>
       </DropMenu>
     </Dropdown>

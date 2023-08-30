@@ -208,7 +208,7 @@ const chartData2 = {
 
 const extraDataset = {
   id: 'infinity',
-  title: 'Daily infinity!',
+  name: 'Daily infinity!',
   timeDensity: 'day',
   domain: eachDayOfInterval({
     start: new Date('2000-01-01'),
@@ -218,7 +218,7 @@ const extraDataset = {
 
 const dataset2020 = {
   id: '2020',
-  title: '2020',
+  name: '2020',
   timeDensity: 'month',
   domain: eachMonthOfInterval({
     start: new Date('2020-01-01'),
@@ -229,21 +229,21 @@ const dataset2020 = {
 
 const dataset2Months = {
   id: 'two-dates',
-  title: 'Two Dates',
+  name: 'Two Dates',
   timeDensity: 'month',
   domain: [new Date('2020-01-01'), new Date('2020-02-01')]
 };
 
 const dataset2Days = {
   id: 'two-days',
-  title: 'Two Days',
+  name: 'Two Days',
   timeDensity: 'day',
   domain: [new Date('2020-01-05'), new Date('2020-01-06')]
 };
 
 const datasetSingle = {
   id: 'single-dates',
-  title: 'Single Date',
+  name: 'Single Date',
   timeDensity: 'day',
   domain: [new Date('2020-01-01')],
   analysis: chartData2
@@ -252,7 +252,7 @@ const datasetSingle = {
 const datasets = [
   {
     id: 'monthly',
-    title: 'Monthly dataset',
+    name: 'Monthly dataset',
     timeDensity: 'month',
     domain: [
       new Date('2020-01-01'),
@@ -264,7 +264,7 @@ const datasets = [
   },
   {
     id: 'daily',
-    title: 'Daily dataset',
+    name: 'Daily dataset',
     timeDensity: 'day',
     domain: [
       new Date('2020-01-01'),
@@ -332,7 +332,7 @@ const datasets = [
   },
   {
     id: 'daily2',
-    title: 'Daily 2',
+    name: 'Daily 2',
     timeDensity: 'day',
     domain: [
       new Date('2020-01-01'),
@@ -344,7 +344,7 @@ const datasets = [
   },
   {
     id: 'daily3',
-    title: 'Daily 3',
+    name: 'Daily 3',
     timeDensity: 'day',
     domain: eachDayOfInterval({
       start: new Date('2020-01-01'),
@@ -428,7 +428,7 @@ export function MockControls() {
               makeDataset(
                 {
                   id: 'loading',
-                  title: 'Loading dataset'
+                  name: 'Loading dataset'
                 },
                 TimelineDatasetStatus.LOADING
               )
@@ -446,7 +446,7 @@ export function MockControls() {
               makeDataset(
                 {
                   id: 'errored',
-                  title: 'Error dataset'
+                  name: 'Error dataset'
                 },
                 TimelineDatasetStatus.ERRORED
               )
@@ -523,7 +523,7 @@ export function MockControls() {
                 {
                   ...dataset2020,
                   id: 'analysis-loading',
-                  title: 'Analysis loading'
+                  name: 'Analysis loading'
                 },
                 TimelineDatasetStatus.SUCCEEDED,
                 {},
@@ -548,7 +548,7 @@ export function MockControls() {
                 {
                   ...dataset2020,
                   id: 'analysis-error',
-                  title: 'Analysis Error'
+                  name: 'Analysis Error'
                 },
                 TimelineDatasetStatus.SUCCEEDED,
                 {},

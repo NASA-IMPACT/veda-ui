@@ -9,7 +9,7 @@ import {
   timelineSizesAtom,
   zoomTransformAtom
 } from './atoms';
-import { rescaleX } from './utils';
+import { rescaleX } from './timeline-utils';
 import {
   DAY_SIZE_MAX,
   DAY_SIZE_MIN,
