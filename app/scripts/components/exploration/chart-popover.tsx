@@ -125,7 +125,7 @@ export const DatasetPopover = styled(DatasetPopoverRef)`
   position: absolute;
   top: 0;
   left: 0;
-  background: ${themeVal('color.surface')}};
+  background: ${themeVal('color.surface')};
   padding: ${glsp()};
   border-radius: ${themeVal('shape.rounded')};
   box-shadow: ${themeVal('boxShadow.elevationD')};
