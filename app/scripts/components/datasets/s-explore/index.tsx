@@ -47,7 +47,7 @@ import { useMediaQuery } from '$utils/use-media-query';
 import { DATASETS_PATH } from '$utils/routes';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
-import { useDatasetAsyncLayers } from '$context/layer-data';
+import { AsyncDatasetLayer, useDatasetAsyncLayers } from '$context/layer-data';
 import {
   checkLayerLoadStatus,
   resolveLayerTemporalExtent
@@ -272,7 +272,7 @@ function DatasetsExplore() {
 
   const [mapProjection, setMapProjection] = useQsState.memo<ProjectionOptions>({
     key: 'projection',
-    default: projectionDefault,
+    default: null,
     hydrator: (v) => {
       if (!v) return null;
       const [id, rawCenter, rawParallels] = v.split('|');
@@ -291,7 +291,7 @@ function DatasetsExplore() {
 
   const [mapBasemapId, setBasemapId] = useQsState.memo<BasemapId>({
     key: 'basemapid',
-    default: BASEMAP_ID_DEFAULT
+    default: null
   });
 
   const [selectedDatetime, setSelectedDatetime] = useQsState.memo<Date>({
@@ -372,26 +372,39 @@ function DatasetsExplore() {
   // otherwise default to mercator. If this is the first layer loading (like
   // when the user enters the page), then use the projection in the url. This is
   // needed in case the url was shared with a different projection.
-  useEffectPrevious(
+  useEffectPrevious<[AsyncDatasetLayer | undefined, ProjectionOptions | null]>(
     (prev) => {
       const prevActiveData = prev[0]?.baseLayer.data;
       const currActiveData = activeLayer?.baseLayer.data;
 
-      if (
-        !prevActiveData ||
-        !currActiveData ||
-        prevActiveData.id === currActiveData.id
-      ) {
+      if (prevActiveData?.id === undefined && currActiveData) {
+        // First load.
+        if (mapProjection === null) {
+          // Nothing in the url. Set the layer default is able.
+          if (currActiveData.projection?.id) {
+            setMapProjection(currActiveData.projection);
+          } else {
+            setMapProjection(projectionDefault);
+          }
+        } else {
+          // Do nothing. The projection will be set by the url.
+          return;
+        }
+      }
+
+      if (!currActiveData || prevActiveData?.id === currActiveData.id) {
+        // Same layer. Do nothing.
         return;
       }
 
+      // Layer change. Set the projection.
       if (currActiveData.projection?.id) {
         setMapProjection(currActiveData.projection);
       } else {
         setMapProjection(projectionDefault);
       }
     },
-    [activeLayer]
+    [activeLayer, mapProjection]
   );
 
   // On layer change, reset the basemapId.
@@ -399,26 +412,39 @@ function DatasetsExplore() {
   // otherwise default to satellite. If this is the first layer loading (like
   // when the user enters the page), then use the basemap in the url. This is
   // needed in case the url was shared with a different basemap.
-  useEffectPrevious(
+  useEffectPrevious<[AsyncDatasetLayer | undefined, BasemapId | null]>(
     (prev) => {
       const prevActiveData = prev[0]?.baseLayer.data;
       const currActiveData = activeLayer?.baseLayer.data;
 
-      if (
-        !prevActiveData ||
-        !currActiveData ||
-        prevActiveData.id === currActiveData.id
-      ) {
+      if (prevActiveData?.id === undefined && currActiveData) {
+        // First load.
+        if (mapBasemapId === null) {
+          // Nothing in the url. Set the layer default is able.
+          if (currActiveData.basemapId) {
+            setBasemapId(currActiveData.basemapId);
+          } else {
+            setBasemapId(BASEMAP_ID_DEFAULT);
+          }
+        } else {
+          // Do nothing. The basemap will be set by the url.
+          return;
+        }
+      }
+
+      if (!currActiveData || prevActiveData?.id === currActiveData.id) {
+        // Same layer. Do nothing.
         return;
       }
 
+      // Layer change. Set the projection.
       if (currActiveData.basemapId) {
         setBasemapId(currActiveData.basemapId);
       } else {
         setBasemapId(BASEMAP_ID_DEFAULT);
       }
     },
-    [activeLayer]
+    [activeLayer, mapBasemapId]
   );
 
   // Available dates for the baseLayer of the currently active layer.
