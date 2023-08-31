@@ -17,6 +17,9 @@ const readPackage = () => JSON.parse(fs.readFileSync('package.json'));
 
 // Set the version in an env variable.
 process.env.APP_VERSION = readPackage().version;
+process.env.APP_UI_VERSION = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'package.json'))
+).version;
 process.env.APP_BUILD_TIME = Date.now();
 
 const parcelCli = path.join(__dirname, './node_modules/parcel/lib/cli.js');

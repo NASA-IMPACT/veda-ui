@@ -1,8 +1,13 @@
 # Overrides
 
 - [Overrides](#overrides)
-  - [Override reference](#override-reference)
-    - [aboutContent (`Content Override`)](#aboutcontent-content-override)
+  - [Content Override reference](#content-override-reference)
+    - [aboutContent](#aboutcontent)
+    - [homeContent](#homecontent)
+  - [Component Override reference](#component-override-reference)
+    - [headerBrand](#headerbrand)
+    - [pageFooter](#pagefooter)
+    - [homeHero](#homehero)
   - [Creating complex overrides](#creating-complex-overrides)
 
 
@@ -26,10 +31,11 @@ These are the current available overrides:
     // Type: Component override
     headerBrand: '<file path>.mdx',
     pageFooter: '<file path>.mdx',
+    homeHero: '<file path>.mdx',
   }
 ```
 
-## Override reference
+## Content Override reference
 
 ### aboutContent
 `Content Override`
@@ -89,6 +95,8 @@ import FeaturedStories from "$veda-ui-scripts/components/home/featured-stories";
 
 > 🧑‍🏫 You can import and use the `FeaturedStories` component to include a section listing the stories with the `featured` flag. It is important that this component is not inside a `Block`.
 
+## Component Override reference
+
 ### headerBrand
 `Component Override`  
 _⚠️ Note that on a component override the `<Block>` components are not available and should not be used._
@@ -106,6 +114,14 @@ The footer behavior will remain the same being hidden in some pages, like the ex
 Props passed to this component:  
 - `appBuildTime` - Timestamp of when the app was build.
 - `appVersion` - Current app version from the instance's package.json
+- `appUiVersion` - Current veda-ui version that the instance is using.
+
+### homeHero
+`Component Override`  
+_⚠️ Note that on a component override the `<Block>` components are not available and should not be used._
+
+The `homeHero` override can be used to replace the page hero section on the homepage.  
+It is likely that some styling is needed to ensure that it is displayed properly.
 
 ## Creating complex overrides
 

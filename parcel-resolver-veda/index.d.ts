@@ -241,7 +241,8 @@ declare module 'veda' {
     | 'homeContent'
     | 'sandbox-override'
     | 'pageFooter'
-    | 'headerBrand';
+    | 'headerBrand'
+    | 'homeHero';
   /**
    * Configuration export for specific overrides.
    */
