@@ -216,7 +216,7 @@ function DataCatalog() {
                           onSourceClick={(id) => {
                             onAction(Actions.TAXONOMY, {
                               key: TAXONOMY_SOURCE,
-                              id
+                              value: id
                             });
                             browseControlsHeaderRef.current?.scrollIntoView();
                           }}
