@@ -20,7 +20,7 @@ export function useTimelineDatasetsDomain() {
 
   return useMemo(() => {
     const successDatasets = datasets.filter(
-      (d) => d.status === TimelineDatasetStatus.SUCCEEDED
+      (d) => d.status === TimelineDatasetStatus.SUCCESS
     );
     if (!successDatasets.length) return undefined;
 

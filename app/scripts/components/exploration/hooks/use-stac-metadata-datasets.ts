@@ -45,7 +45,7 @@ function reconcileQueryDataWithDataset(
       error: queryData.error
     };
 
-    if (queryData.status === TimelineDatasetStatus.SUCCEEDED) {
+    if (queryData.status === TimelineDatasetStatus.SUCCESS) {
       const domain = resolveLayerTemporalExtent(base.data.id, queryData.data);
 
       base = {
@@ -67,7 +67,7 @@ function reconcileQueryDataWithDataset(
 
     return {
       ...dataset,
-      status: TimelineDatasetStatus.ERRORED,
+      status: TimelineDatasetStatus.ERROR,
       error: e
     };
   }

@@ -281,7 +281,7 @@ export default function Timeline(props: TimelineProps) {
   );
 
   const successDatasets = datasets.filter(
-    (d) => d.status === TimelineDatasetStatus.SUCCEEDED
+    (d) => d.status === TimelineDatasetStatus.SUCCESS
   );
 
   // When a loaded dataset is added from an empty state, compute the correct

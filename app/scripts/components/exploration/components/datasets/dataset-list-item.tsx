@@ -187,16 +187,16 @@ export function DatasetListItem(props: DatasetListItemProps) {
     data: dataPoint
   });
 
-  const isDatasetError = dataset.status === TimelineDatasetStatus.ERRORED;
+  const isDatasetError = dataset.status === TimelineDatasetStatus.ERROR;
   const isDatasetLoading = dataset.status === TimelineDatasetStatus.LOADING;
-  const isDatasetSucceeded = dataset.status === TimelineDatasetStatus.SUCCEEDED;
+  const isDatasetSuccess = dataset.status === TimelineDatasetStatus.SUCCESS;
 
   const isAnalysisAndError =
-    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.ERRORED;
+    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.ERROR;
   const isAnalysisAndLoading =
     isAnalysis && dataset.analysis.status === TimelineDatasetStatus.LOADING;
-  const isAnalysisAndSucceeded =
-    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.SUCCEEDED;
+  const isAnalysisAndSuccess =
+    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
 
   const datasetLegend = dataset.data.legend;
 
@@ -270,7 +270,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             />
           )}
 
-          {isDatasetSucceeded && (
+          {isDatasetSuccess && (
             <>
               {isAnalysisAndLoading && (
                 <DatasetTrackLoading
@@ -286,7 +286,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   }}
                 />
               )}
-              {isAnalysisAndSucceeded && (
+              {isAnalysisAndSuccess && (
                 <DatasetChart
                   xScaled={xScaled!}
                   width={width}
@@ -299,7 +299,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             </>
           )}
 
-          {isDatasetSucceeded && !isAnalysis && (
+          {isDatasetSuccess && !isAnalysis && (
             <DatasetTrack
               width={width}
               xScaled={xScaled!}
@@ -308,7 +308,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             />
           )}
 
-          {isDatasetSucceeded && isVisible && isPopoverVisible && dataPoint && (
+          {isDatasetSuccess && isVisible && isPopoverVisible && dataPoint && (
             <DatasetPopover
               ref={popoverRefs.setFloating}
               style={floatingStyles}

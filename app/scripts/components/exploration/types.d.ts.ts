@@ -9,8 +9,8 @@ export enum TimeDensity {
 export enum TimelineDatasetStatus {
   IDLE = 'idle',
   LOADING = 'loading',
-  SUCCEEDED = 'success',
-  ERRORED = 'error'
+  SUCCESS = 'success',
+  ERROR = 'error'
 }
 
 export interface StacDatasetData {

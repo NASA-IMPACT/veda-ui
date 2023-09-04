@@ -12,7 +12,7 @@ import {
 } from './types.d.ts';
 
 const chartData = {
-  status: 'succeeded',
+  status: 'success',
   meta: {
     total: 9,
     loaded: 9
@@ -105,7 +105,7 @@ const chartData = {
 };
 
 const chartData2 = {
-  status: 'succeeded',
+  status: 'success',
   meta: {
     total: 15,
     loaded: 15
@@ -368,7 +368,7 @@ function makeAnalysis(
 
 function makeDataset(
   data,
-  status = TimelineDatasetStatus.SUCCEEDED,
+  status = TimelineDatasetStatus.SUCCESS,
   settings: Record<string, any> = {},
   analysis = makeAnalysis({}, {})
 ): TimelineDataset {
@@ -445,10 +445,10 @@ export function MockControls() {
             toggleDataset(
               makeDataset(
                 {
-                  id: 'errored',
+                  id: 'error',
                   name: 'Error dataset'
                 },
-                TimelineDatasetStatus.ERRORED
+                TimelineDatasetStatus.ERROR
               )
             )
           );
@@ -479,12 +479,12 @@ export function MockControls() {
             toggleDataset(
               makeDataset(
                 datasetSingle,
-                TimelineDatasetStatus.SUCCEEDED,
+                TimelineDatasetStatus.SUCCESS,
                 {},
                 makeAnalysis(
                   chartData2.data,
                   chartData2.meta,
-                  TimelineDatasetStatus.SUCCEEDED
+                  TimelineDatasetStatus.SUCCESS
                 )
               )
             )
@@ -500,12 +500,12 @@ export function MockControls() {
             toggleDataset(
               makeDataset(
                 dataset2020,
-                TimelineDatasetStatus.SUCCEEDED,
+                TimelineDatasetStatus.SUCCESS,
                 {},
                 makeAnalysis(
                   chartData.data,
                   chartData.meta,
-                  TimelineDatasetStatus.SUCCEEDED
+                  TimelineDatasetStatus.SUCCESS
                 )
               )
             )
@@ -525,7 +525,7 @@ export function MockControls() {
                   id: 'analysis-loading',
                   name: 'Analysis loading'
                 },
-                TimelineDatasetStatus.SUCCEEDED,
+                TimelineDatasetStatus.SUCCESS,
                 {},
                 makeAnalysis(
                   {},
@@ -550,12 +550,12 @@ export function MockControls() {
                   id: 'analysis-error',
                   name: 'Analysis Error'
                 },
-                TimelineDatasetStatus.SUCCEEDED,
+                TimelineDatasetStatus.SUCCESS,
                 {},
                 makeAnalysis(
                   {},
                   { loaded: 34, total: 100 },
-                  TimelineDatasetStatus.ERRORED
+                  TimelineDatasetStatus.ERROR
                 )
               )
             )
