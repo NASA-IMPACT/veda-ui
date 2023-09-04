@@ -8,12 +8,8 @@ import { Form, FormCheckable } from '@devseed-ui/form';
 import { Overline } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 
-import { timelineDatasetsAtom } from './atoms';
-import {
-  datasetLayers,
-  findParentDataset,
-  reconcileDatasets
-} from './data-utils';
+import { timelineDatasetsAtom } from '../atoms/atoms';
+import { datasetLayers, findParentDataset, reconcileDatasets } from '../data-utils';
 
 import { variableGlsp } from '$styles/variable-utils';
 

@@ -4,12 +4,12 @@ import { useSetAtom } from 'jotai';
 import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
 
-import { isAnalysisAtom, isExpandedAtom, timelineDatasetsAtom } from './atoms';
+import { isAnalysisAtom, isExpandedAtom, timelineDatasetsAtom } from './atoms/atoms';
 import {
   TimelineDataset,
   TimelineDatasetAnalysis,
   TimelineDatasetStatus
-} from './constants';
+} from './types.d.ts';
 
 const chartData = {
   status: 'succeeded',

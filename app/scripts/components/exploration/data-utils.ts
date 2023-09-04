@@ -1,5 +1,5 @@
 import { DatasetLayer, datasets } from 'veda';
-import { TimelineDataset, TimelineDatasetStatus } from './constants';
+import { TimelineDataset, TimelineDatasetStatus } from './types.d.ts';
 
 export const findParentDataset = (layerId: string) => {
   const parentDataset = Object.values(datasets).find((dataset) =>

@@ -8,14 +8,13 @@ import { Button } from '@devseed-ui/button';
 import { CollecticonCog, CollecticonTrashBin } from '@devseed-ui/collecticons';
 import { Overline } from '@devseed-ui/typography';
 
-import { useTimelineDatasetSettings } from './hooks';
-import { TimelineDataset } from './constants';
-import { timelineDatasetsAtom } from './atoms';
-
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { SliderInput, SliderInputProps } from '$styles/range-slider';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { Tip } from '$components/common/tip';
+import { TimelineDataset } from '$components/exploration/types.d.ts';
+import { timelineDatasetsAtom } from '$components/exploration/atoms/atoms';
+import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
 
 const RemoveButton = composeVisuallyDisabled(DropMenuItemButton);
 

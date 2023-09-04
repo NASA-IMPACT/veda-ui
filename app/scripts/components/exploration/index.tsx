@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { MockControls } from './datasets-mock';
-import Timeline from './timeline';
-import { DatasetSelectorModal } from './dataset-selector-modal';
+import Timeline from './components/timeline/timeline';
+import { DatasetSelectorModal } from './components/dataset-selector-modal';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';

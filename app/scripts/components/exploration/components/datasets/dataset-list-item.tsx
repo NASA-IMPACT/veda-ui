@@ -24,31 +24,39 @@ import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 
 import {
-  DATASET_TRACK_BLOCK_HEIGHT,
-  HEADER_COLUMN_WIDTH,
-  TimeDensity,
-  TimelineDataset,
-  TimelineDatasetStatus
-} from './constants';
-import { useTimelineDatasetAtom, useTimelineDatasetVisibility } from './hooks';
+  DatasetPopover,
+  getInteractionDataPoint,
+  usePopover
+} from '../chart-popover';
 import {
   DatasetTrackError,
   DatasetTrackLoading
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
-import { activeAnalysisMetricsAtom, isAnalysisAtom } from './atoms';
 import DatasetOptions from './dataset-options';
-import { useDatasetHover } from './use-dataset-hover';
-import {
-  DatasetPopover,
-  getInteractionDataPoint,
-  usePopover
-} from './chart-popover';
 
 import {
   LayerCategoricalGraphic,
   LayerGradientGraphic
 } from '$components/common/mapbox/layer-legend';
+import {
+  TimeDensity,
+  TimelineDataset,
+  TimelineDatasetStatus
+} from '$components/exploration/types.d.ts';
+import {
+  DATASET_TRACK_BLOCK_HEIGHT,
+  HEADER_COLUMN_WIDTH
+} from '$components/exploration/constants';
+import { useDatasetHover } from '$components/exploration/hooks/use-dataset-hover';
+import {
+  useTimelineDatasetAtom,
+  useTimelineDatasetVisibility
+} from '$components/exploration/atoms/hooks';
+import {
+  activeAnalysisMetricsAtom,
+  isAnalysisAtom
+} from '$components/exploration/atoms/atoms';
 
 function getBlockBoundaries(date: Date, timeDensity: TimeDensity) {
   switch (timeDensity) {
