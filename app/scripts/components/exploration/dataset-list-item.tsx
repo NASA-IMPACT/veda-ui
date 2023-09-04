@@ -45,7 +45,10 @@ import {
   usePopover
 } from './chart-popover';
 
-import { LayerGradientGraphic } from '$components/common/mapbox/layer-legend';
+import {
+  LayerCategoricalGraphic,
+  LayerGradientGraphic
+} from '$components/common/mapbox/layer-legend';
 
 function getBlockBoundaries(date: Date, timeDensity: TimeDensity) {
   switch (timeDensity) {
@@ -187,6 +190,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const isAnalysisAndSucceeded =
     isAnalysis && dataset.analysis.status === TimelineDatasetStatus.SUCCEEDED;
 
+  const datasetLegend = dataset.data.legend;
+
   return (
     <Reorder.Item
       ref={datasetLiRef}
@@ -226,13 +231,21 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   </ToolbarIconButton>
                 </Toolbar>
               </DatasetHeadline>
-              <LayerGradientGraphic
-                type='gradient'
-                stops={['#eb7d2e', '#35a145', '#3287d2']}
-                unit={{ label: 'bananas' }}
-                min={-3}
-                max={15}
-              />
+              {datasetLegend?.type === 'categorical' && (
+                <LayerCategoricalGraphic
+                  type='categorical'
+                  stops={datasetLegend.stops}
+                />
+              )}
+              {datasetLegend?.type === 'gradient' && (
+                <LayerGradientGraphic
+                  type='gradient'
+                  stops={datasetLegend.stops}
+                  unit={datasetLegend.unit}
+                  min={datasetLegend.min}
+                  max={datasetLegend.max}
+                />
+              )}
             </DatasetInfo>
           </DatasetHeaderInner>
         </DatasetHeader>
@@ -270,7 +283,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   xScaled={xScaled!}
                   width={width}
                   isVisible={!!isVisible}
-                  data={dataset.data.analysis}
+                  data={dataset.analysis}
                   activeMetrics={activeMetrics}
                   highlightDate={dataPoint?.date}
                 />
