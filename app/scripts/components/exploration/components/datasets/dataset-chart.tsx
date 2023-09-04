@@ -4,9 +4,9 @@ import { extent, scaleLinear, ScaleTime, line, ScaleLinear } from 'd3';
 import { useAtomValue } from 'jotai';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { isExpandedAtom } from './atoms';
-import { RIGHT_AXIS_SPACE } from './constants';
-import { DataMetric } from './analysis-metrics-dropdown';
+import { isExpandedAtom } from '../../atoms/atoms';
+import { RIGHT_AXIS_SPACE } from '../../constants';
+import { DataMetric } from '../analysis-metrics-dropdown';
 import { DatasetTrackMessage } from './dataset-track-message';
 
 import { getNumForChart } from '$components/common/chart/utils';

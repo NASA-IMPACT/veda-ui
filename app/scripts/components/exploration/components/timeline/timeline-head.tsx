@@ -4,7 +4,8 @@ import { drag, ScaleTime, select } from 'd3';
 import { clamp, startOfDay } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 
-import { DateRange, RIGHT_AXIS_SPACE } from './constants';
+import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
+import { DateRange } from '$components/exploration/types.d.ts';
 
 // Needs padding so that the timeline head is fully visible.
 // This value gets added to the width.

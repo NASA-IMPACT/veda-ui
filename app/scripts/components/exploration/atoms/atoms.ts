@@ -1,12 +1,11 @@
 import { atom } from 'jotai';
-import { DataMetric, dataMetrics } from './analysis-metrics-dropdown';
 import {
-  DateRange,
-  HEADER_COLUMN_WIDTH,
-  RIGHT_AXIS_SPACE,
-  TimelineDataset,
-  ZoomTransformPlain
-} from './constants';
+  DataMetric,
+  dataMetrics
+} from '../components/analysis-metrics-dropdown';
+
+import { HEADER_COLUMN_WIDTH, RIGHT_AXIS_SPACE } from '../constants';
+import { DateRange, TimelineDataset, ZoomTransformPlain } from '../types.d.ts';
 
 // Datasets to show on the timeline and their settings
 export const timelineDatasetsAtom = atom<TimelineDataset[]>([]);

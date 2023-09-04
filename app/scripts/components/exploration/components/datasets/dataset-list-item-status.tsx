@@ -4,9 +4,8 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { CollecticonArrowLoop } from '@devseed-ui/collecticons';
 
-import { DATASET_TRACK_BLOCK_HEIGHT } from './constants';
-
 import { pulsingAnimation } from '$components/common/loading-skeleton';
+import { DATASET_TRACK_BLOCK_HEIGHT } from '$components/exploration/constants';
 
 const loadingPattern = '.-.. --- .- -.. .. -. --.'
   .split(' ')

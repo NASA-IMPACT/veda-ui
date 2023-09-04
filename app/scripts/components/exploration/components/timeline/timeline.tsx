@@ -1,7 +1,7 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
-import { useAtomValue, useSetAtom, useAtom } from 'jotai';
-import styled from 'styled-components';
-import useDimensions from 'react-cool-dimensions';
+import { Button } from '@devseed-ui/button';
+import { CollecticonPlusSmall } from '@devseed-ui/collecticons';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { Heading } from '@devseed-ui/typography';
 import { select, zoom } from 'd3';
 import {
   add,
@@ -11,10 +11,22 @@ import {
   startOfDay,
   sub
 } from 'date-fns';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonPlusSmall } from '@devseed-ui/collecticons';
-import { Button } from '@devseed-ui/button';
-import { Heading } from '@devseed-ui/typography';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import useDimensions from 'react-cool-dimensions';
+import styled from 'styled-components';
+
+import { DatasetList } from '../datasets/dataset-list';
+
+import { applyTransform, isEqualTransform, rescaleX } from './timeline-utils';
+import { TimelineControls } from './timeline-controls';
+import {
+  TimelineHeadL,
+  TimelineHeadP,
+  TimelineHeadR,
+  TimelineRangeTrack
+} from './timeline-head';
+import { DateGrid } from './date-axis';
 
 import {
   selectedDateAtom,
@@ -23,30 +35,20 @@ import {
   timelineSizesAtom,
   timelineWidthAtom,
   zoomTransformAtom
-} from './atoms';
-import { DatasetList } from './dataset-list';
-import {
-  TimelineHeadL,
-  TimelineHeadP,
-  TimelineHeadR,
-  TimelineRangeTrack
-} from './timeline-head';
-import { TimelineControls } from './timeline-controls';
-import { DateGrid } from './date-axis';
-import {
-  RIGHT_AXIS_SPACE,
-  TimelineDatasetStatus,
-  ZoomTransformPlain
-} from './constants';
-import { applyTransform, isEqualTransform, rescaleX } from './timeline-utils';
-import { useScaleFactors, useScales, useTimelineDatasetsDomain } from './hooks';
-import { useInteractionRectHover } from './use-dataset-hover';
-import { datasetLayers } from './data-utils';
-
+} from '$components/exploration/atoms/atoms';
+import { useTimelineDatasetsDomain } from '$components/exploration/atoms/hooks';
+import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
 import {
   useLayoutEffectPrevious,
   usePreviousValue
 } from '$utils/use-effect-previous';
+import {
+  useScaleFactors,
+  useScales
+} from '$components/exploration/hooks/scales-hooks';
+import { TimelineDatasetStatus, ZoomTransformPlain } from '$components/exploration/types.d.ts';
+import { useInteractionRectHover } from '$components/exploration/hooks/use-dataset-hover';
+import { datasetLayers } from '$components/exploration/data-utils';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -360,11 +362,17 @@ export default function Timeline(props: TimelineProps) {
             <Heading as='h2' size='xsmall'>
               Datasets
             </Heading>
-            <Button variation='base-text' size='small' onClick={onDatasetAddClick}>
+            <Button
+              variation='base-text'
+              size='small'
+              onClick={onDatasetAddClick}
+            >
               <CollecticonPlusSmall meaningful title='Add dataset' />
             </Button>
           </Headline>
-          <p>{datasets.length} of {datasetLayers.length}</p>
+          <p>
+            {datasets.length} of {datasetLayers.length}
+          </p>
         </TimelineDetails>
         <TimelineControls xScaled={xScaled} width={width} />
       </TimelineHeader>
