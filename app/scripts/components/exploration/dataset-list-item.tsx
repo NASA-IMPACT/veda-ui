@@ -207,7 +207,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             <DatasetInfo>
               <DatasetHeadline>
                 <Heading as='h3' size='xsmall'>
-                  {dataset.data.title}
+                  {dataset.data.name}
                 </Heading>
                 <Toolbar size='small'>
                   <DatasetOptions datasetAtom={datasetAtom} />

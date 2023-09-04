@@ -38,9 +38,10 @@ import {
   TimelineDatasetStatus,
   ZoomTransformPlain
 } from './constants';
-import { applyTransform, isEqualTransform, rescaleX } from './utils';
+import { applyTransform, isEqualTransform, rescaleX } from './timeline-utils';
 import { useScaleFactors, useScales, useTimelineDatasetsDomain } from './hooks';
 import { useInteractionRectHover } from './use-dataset-hover';
+import { datasetLayers } from './data-utils';
 
 import {
   useLayoutEffectPrevious,
@@ -120,7 +121,13 @@ const TimelineContentInner = styled.div`
   position: relative;
 `;
 
-export default function Timeline() {
+interface TimelineProps {
+  onDatasetAddClick: () => void;
+}
+
+export default function Timeline(props: TimelineProps) {
+  const { onDatasetAddClick } = props;
+
   // Refs for non react based interactions.
   // The interaction rect is used to capture the different d3 events for the
   // zoom.
@@ -353,11 +360,11 @@ export default function Timeline() {
             <Heading as='h2' size='xsmall'>
               Datasets
             </Heading>
-            <Button variation='base-text' size='small'>
+            <Button variation='base-text' size='small' onClick={onDatasetAddClick}>
               <CollecticonPlusSmall meaningful title='Add dataset' />
             </Button>
           </Headline>
-          <p>{datasets.length} of Y</p>
+          <p>{datasets.length} of {datasetLayers.length}</p>
         </TimelineDetails>
         <TimelineControls xScaled={xScaled} width={width} />
       </TimelineHeader>

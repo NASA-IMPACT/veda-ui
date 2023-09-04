@@ -44,7 +44,7 @@ const TimelineControlsSelf = styled.div`
 const ControlsToolbar = styled.div`
   padding: ${glsp(1.5, 1, 0.5, 1)};
 
-  ${ToolbarGroup}:last-child {
+  ${ToolbarGroup /* sc-selector */}:last-child {
     margin-left: auto;
   }
 `;
