@@ -1,5 +1,17 @@
+import {
+  eachDayOfInterval,
+  eachMonthOfInterval,
+  eachYearOfInterval
+} from 'date-fns';
 import { DatasetLayer, datasets } from 'veda';
-import { TimelineDataset, TimelineDatasetStatus } from './types.d.ts';
+import {
+  StacDatasetData,
+  TimeDensity,
+  TimelineDataset,
+  TimelineDatasetStatus
+} from './types.d.ts';
+
+import { utcString2userTzDate } from '$utils/date';
 
 export const findParentDataset = (layerId: string) => {
   const parentDataset = Object.values(datasets).find((dataset) =>
@@ -24,7 +36,7 @@ export function reconcileDatasets(
   ids: string[],
   datasetsList: DatasetLayer[],
   reconciledDatasets: TimelineDataset[]
-) {
+): TimelineDataset[] {
   return ids.map((id) => {
     const alreadyReconciled = reconciledDatasets.find((d) => d.data.id === id);
 
@@ -33,6 +45,10 @@ export function reconcileDatasets(
     }
 
     const dataset = datasetsList.find((d) => d.id === id);
+
+    if (!dataset) {
+      throw new Error(`Dataset [${id}] not found`);
+    }
 
     return {
       status: TimelineDatasetStatus.IDLE,
@@ -50,4 +66,38 @@ export function reconcileDatasets(
       }
     };
   });
+}
+
+export function resolveLayerTemporalExtent(
+  datasetId: string,
+  datasetData: StacDatasetData
+): Date[] {
+  const { domain, isPeriodic, timeDensity } = datasetData;
+
+  if (!domain || domain.length === 0) {
+    throw new Error(`Invalid domain on dataset [${datasetId}]`);
+  }
+
+  if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
+
+  if (timeDensity === TimeDensity.YEAR) {
+    return eachYearOfInterval({
+      start: utcString2userTzDate(domain[0]),
+      end: utcString2userTzDate(domain.last)
+    });
+  } else if (timeDensity === TimeDensity.MONTH) {
+    return eachMonthOfInterval({
+      start: utcString2userTzDate(domain[0]),
+      end: utcString2userTzDate(domain.last)
+    });
+  } else if (timeDensity === TimeDensity.DAY) {
+    return eachDayOfInterval({
+      start: utcString2userTzDate(domain[0]),
+      end: utcString2userTzDate(domain.last)
+    });
+  }
+
+  throw new Error(
+    `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
+  );
 }

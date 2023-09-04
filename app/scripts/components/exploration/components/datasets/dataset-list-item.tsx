@@ -308,7 +308,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             />
           )}
 
-          {isVisible && isPopoverVisible && dataPoint && (
+          {isDatasetSucceeded && isVisible && isPopoverVisible && dataPoint && (
             <DatasetPopover
               ref={popoverRefs.setFloating}
               style={floatingStyles}

@@ -6,6 +6,7 @@ import { themeVal } from '@devseed-ui/theme-provider';
 import { MockControls } from './datasets-mock';
 import Timeline from './components/timeline/timeline';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
+import { useStacMetadataOnDatasets } from './hooks/use-stac-metadata-datasets';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -57,6 +58,8 @@ function Exploration() {
 
   const openModal = useCallback(() => setDatasetModalRevealed(true), []);
   const closeModal = useCallback(() => setDatasetModalRevealed(false), []);
+
+  useStacMetadataOnDatasets();
 
   return (
     <>

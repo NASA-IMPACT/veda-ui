@@ -1,3 +1,5 @@
+import { DatasetLayer } from "veda";
+
 export enum TimeDensity {
   YEAR = 'year',
   MONTH = 'month',
@@ -7,12 +9,18 @@ export enum TimeDensity {
 export enum TimelineDatasetStatus {
   IDLE = 'idle',
   LOADING = 'loading',
-  SUCCEEDED = 'succeeded',
-  ERRORED = 'errored'
+  SUCCEEDED = 'success',
+  ERRORED = 'error'
+}
+
+export interface StacDatasetData {
+  isPeriodic: boolean;
+  timeDensity: TimeDensity;
+  domain: string[];
 }
 
 export type AnalysisTimeseriesEntry = Record<string, number | null> & {
-  date: Date;
+  date: Date; 
 };
 
 export interface TimelineDatasetAnalysis {
@@ -27,9 +35,15 @@ export interface TimelineDatasetAnalysis {
   };
 }
 
+export interface TimelineDatasetData extends DatasetLayer {
+  isPeriodic: boolean;
+  timeDensity: TimeDensity;
+  domain: Date[];
+}
+
 export interface TimelineDataset {
   status: TimelineDatasetStatus;
-  data: any;
+  data: TimelineDatasetData;
   error: any;
   settings: {
     // user defined settings like visibility, opacity
