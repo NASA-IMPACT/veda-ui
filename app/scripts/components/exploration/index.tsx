@@ -9,6 +9,7 @@ import Timeline from './timeline';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
+import Map from '$components/common/map';
 
 const Container = styled.div`
   display: flex;
@@ -22,6 +23,7 @@ const Container = styled.div`
   .panel {
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   .panel-timeline {
@@ -65,7 +67,7 @@ function Exploration() {
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>
-              <div>Top</div>
+              <Map />
               <MockControls />
             </Panel>
             <PanelResizeHandle className='resize-handle' />
