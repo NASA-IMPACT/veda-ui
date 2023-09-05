@@ -19,19 +19,19 @@ import { Styles } from './styles';
 import { MapId } from './types';
 
 const MapContainer = styled.div`
-  {
+  && {
     position: absolute;
     inset: 0;
     width: 100%;
-    top: 0,
-    bottom: 0,
-    left: 0
+    top: 0;
+    bottom: 0;
+    left: 0;
   }
   ${MapboxStyleOverride}
 `;
 
 export function Compare({ children }: { children: ReactNode }) {
-  return children;
+  return <>{children}</>;
 }
 
 function CompareHandler() {

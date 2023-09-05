@@ -24,7 +24,7 @@ const Container = styled.div`
   }
 
   .panel {
-    // display: flex;
+    display: flex;
     flex-direction: column;
     position: relative;
   }
