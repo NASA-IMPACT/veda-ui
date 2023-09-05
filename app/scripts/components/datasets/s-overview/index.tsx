@@ -54,15 +54,17 @@ function DatasetsOverview() {
           description={dataset.data.description}
           renderBetaBlock={() => (
               <PageActions>
-                <Button
-                  forwardedAs={Link}
-                  to={getDatasetExplorePath(dataset.data)}
-                  size='large'
-                  variation='achromic-outline'
-                >
-                  <CollecticonCompass />
-                  Explore data
-                </Button>
+                { dataset.data.layers && 
+                  <Button
+                    forwardedAs={Link}
+                    to={getDatasetExplorePath(dataset.data)}
+                    size='large'
+                    variation='achromic-outline'
+                  >
+                    <CollecticonCompass />
+                    Explore data
+                  </Button>
+                }
                 <NotebookConnectButton
                   dataset={dataset.data}
                   size='large'
