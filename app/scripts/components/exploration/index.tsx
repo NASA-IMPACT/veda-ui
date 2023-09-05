@@ -9,7 +9,8 @@ import Timeline from './timeline';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
-import Map, { Basemap, Compare } from '$components/common/map';
+import Map, {  Compare } from '$components/common/map';
+import { Basemap } from '$components/common/map/styleGenerators/basemap';
 
 const Container = styled.div`
   display: flex;
@@ -76,10 +77,10 @@ function Exploration() {
                 compare mode: {compare ? 'true' : 'false'}
               </button>
               <Map>
-                <Basemap />
+                <Basemap basemapStyleId='satellite' />
                 {compare && (
                   <Compare>
-                    <Basemap />
+                    <Basemap basemapStyleId='dark' />
                   </Compare>
                 )}
               </Map>

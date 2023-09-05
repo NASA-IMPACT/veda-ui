@@ -19,3 +19,5 @@ export type LayerOrderPosition =
   | 'markers'
   | 'vector'
   | 'basemap-foreground';
+
+export type MapId = 'main' | 'compared'

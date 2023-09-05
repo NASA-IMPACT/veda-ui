@@ -5,15 +5,18 @@ import React, {
   useMemo,
   useEffect,
   ReactElement,
-  JSXElementConstructor
+  JSXElementConstructor,
+  useState
 } from 'react';
 import styled from 'styled-components';
-import Map, { MapProvider, useMap } from 'react-map-gl';
+import ReactMapGlMap, { MapProvider, useMap } from 'react-map-gl';
+import { Style } from 'mapbox-gl';
 import MapboxCompare from 'mapbox-gl-compare';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import MapboxStyleOverride from './mapbox-style-override';
 import { Styles } from './styles';
+import { MapId } from './types';
 
 const MapContainer = styled.div`
   {
@@ -26,6 +29,10 @@ const MapContainer = styled.div`
   }
   ${MapboxStyleOverride}
 `;
+
+export function Compare({ children }: { children: ReactNode }) {
+  return children;
+}
 
 function CompareHandler() {
   const { main, compared } = useMap();
@@ -48,44 +55,25 @@ function CompareHandler() {
   return <div>sdsd</div>;
 }
 
-export default function MapWrapper({ children }: { children: ReactNode }) {
+function Map({
+  id,
+  controls,
+  generators
+}: {
+  id: MapId;
+  controls: ReactElement[];
+  generators: ReactElement[];
+}) {
+  const [style, setStyle] = useState<Style | undefined>();
   const onStyleUpdate = useCallback((style) => {
-    console.log('style', style);
+    setStyle(style);
   }, []);
 
-  const { layers, compareLayers, controls } = useMemo(() => {
-    const childrenArr = Children.toArray(children) as ReactElement[];
-
-    // Split children into layers and controls
-    let layers: ReactElement[] = [];
-    let controls: ReactElement[] = [];
-    let compareLayers: ReactElement[] = [];
-
-    childrenArr.forEach((child) => {
-      const componentName = (child.type as JSXElementConstructor<any>).name;
-      if (componentName === 'Compare') {
-        compareLayers = Children.toArray(
-          child.props.children
-        ) as ReactElement[];
-      } else if (['Basemap', 'RasterTimeseries'].includes(componentName)) {
-        layers = [...layers, child];
-      } else {
-        controls = [...controls, child];
-      }
-    });
-    return {
-      layers,
-      controls,
-      compareLayers
-    };
-  }, [children]);
-
   return (
-    <MapContainer id='comparison-container'>
-      <MapProvider>
-        <CompareHandler />
-        <Map
-          id='main'
+    <Styles onStyleUpdate={onStyleUpdate}>
+      {style && (
+        <ReactMapGlMap
+          id={id}
           mapboxAccessToken={process.env.MAPBOX_TOKEN}
           initialViewState={{
             longitude: 0,
@@ -93,36 +81,57 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
             zoom: 1
           }}
           style={{ position: 'absolute', top: 0, bottom: 0, left: 0 }}
-          mapStyle='mapbox://styles/mapbox/streets-v9'
+          mapStyle={style as any}
         >
           {controls}
-          <Styles onStyleUpdate={onStyleUpdate}>{layers}</Styles>
-        </Map>
-        {compareLayers.length && (
+          {generators}
+        </ReactMapGlMap>
+      )}
+    </Styles>
+  );
+}
+
+export default function MapWrapper({ children }: { children: ReactNode }) {
+  const { generators, compareGenerators, controls } = useMemo(() => {
+    const childrenArr = Children.toArray(children) as ReactElement[];
+
+    // Split children into layers and controls
+    let generators: ReactElement[] = [];
+    let controls: ReactElement[] = [];
+    let compareGenerators: ReactElement[] = [];
+
+    childrenArr.forEach((child) => {
+      const componentName = (child.type as JSXElementConstructor<any>).name;
+      if (componentName === 'Compare') {
+        compareGenerators = Children.toArray(
+          child.props.children
+        ) as ReactElement[];
+      } else if (['Basemap', 'RasterTimeseries'].includes(componentName)) {
+        generators = [...generators, child];
+      } else {
+        controls = [...controls, child];
+      }
+    });
+    return {
+      generators,
+      controls,
+      compareGenerators
+    };
+  }, [children]);
+
+  return (
+    <MapContainer id='comparison-container'>
+      <MapProvider>
+        <CompareHandler />
+        <Map id='main' generators={generators} controls={controls} />
+        {compareGenerators.length && (
           <Map
             id='compared'
-            mapboxAccessToken={process.env.MAPBOX_TOKEN}
-            initialViewState={{
-              longitude: 1,
-              latitude: 1,
-              zoom: 1
-            }}
-            style={{ position: 'absolute', top: 0, bottom: 0, left: 0 }}
-            mapStyle='mapbox://styles/mapbox/light-v10'
-          >
-            {/* {controls} */}
-            {/* <Styles onStyleUpdate={onStyleUpdate}>{layers}</Styles> */}
-          </Map>
+            generators={compareGenerators}
+            controls={controls}
+          />
         )}
       </MapProvider>
     </MapContainer>
   );
-}
-
-export function Compare({ children }: { children: ReactNode }) {
-  return children;
-}
-
-export function Basemap() {
-  return null;
 }
