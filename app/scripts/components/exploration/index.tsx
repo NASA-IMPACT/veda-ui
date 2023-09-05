@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
@@ -9,7 +9,7 @@ import Timeline from './timeline';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
-import Map from '$components/common/map';
+import Map, { Basemap, Compare } from '$components/common/map';
 
 const Container = styled.div`
   display: flex;
@@ -21,7 +21,7 @@ const Container = styled.div`
   }
 
   .panel {
-    display: flex;
+    // display: flex;
     flex-direction: column;
     position: relative;
   }
@@ -54,6 +54,7 @@ const Container = styled.div`
 `;
 
 function Exploration() {
+  const [compare, setCompare] = useState(false);
   return (
     <>
       <LayoutProps
@@ -67,7 +68,21 @@ function Exploration() {
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>
-              <Map />
+              <button
+                style={{ position: 'relative', zIndex: 99 }}
+                onClick={() => setCompare(!compare)}
+                type='button'
+              >
+                compare mode: {compare ? 'true' : 'false'}
+              </button>
+              <Map>
+                <Basemap />
+                {compare && (
+                  <Compare>
+                    <Basemap />
+                  </Compare>
+                )}
+              </Map>
               <MockControls />
             </Panel>
             <PanelResizeHandle className='resize-handle' />
