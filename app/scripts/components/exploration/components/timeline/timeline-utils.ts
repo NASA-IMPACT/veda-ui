@@ -8,7 +8,11 @@ import { ScaleTime, Selection, ZoomBehavior, ZoomTransform } from 'd3';
  * @param k Scale factor
  * @returns New scale
  */
-export function rescaleX(scale: ScaleTime<number, number>, x: number, k: number) {
+export function rescaleX(
+  scale: ScaleTime<number, number>,
+  x: number,
+  k: number
+) {
   const range = scale.range();
   return scale.copy().domain(
     range.map((v) => {

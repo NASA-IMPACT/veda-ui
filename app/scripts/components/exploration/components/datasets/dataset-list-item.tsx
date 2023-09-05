@@ -24,28 +24,39 @@ import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 
 import {
-  DATASET_TRACK_BLOCK_HEIGHT,
-  HEADER_COLUMN_WIDTH,
-  TimeDensity,
-  TimelineDataset,
-  TimelineDatasetStatus
-} from './constants';
-import { useTimelineDatasetAtom, useTimelineDatasetVisibility } from './hooks';
+  DatasetPopover,
+  getInteractionDataPoint,
+  usePopover
+} from '../chart-popover';
 import {
   DatasetTrackError,
   DatasetTrackLoading
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
-import { activeAnalysisMetricsAtom, isAnalysisAtom } from './atoms';
 import DatasetOptions from './dataset-options';
-import { useDatasetHover } from './use-dataset-hover';
-import {
-  DatasetPopover,
-  getInteractionDataPoint,
-  usePopover
-} from './chart-popover';
 
-import { LayerGradientGraphic } from '$components/common/mapbox/layer-legend';
+import {
+  LayerCategoricalGraphic,
+  LayerGradientGraphic
+} from '$components/common/mapbox/layer-legend';
+import {
+  TimeDensity,
+  TimelineDataset,
+  TimelineDatasetStatus
+} from '$components/exploration/types.d.ts';
+import {
+  DATASET_TRACK_BLOCK_HEIGHT,
+  HEADER_COLUMN_WIDTH
+} from '$components/exploration/constants';
+import { useDatasetHover } from '$components/exploration/hooks/use-dataset-hover';
+import {
+  useTimelineDatasetAtom,
+  useTimelineDatasetVisibility
+} from '$components/exploration/atoms/hooks';
+import {
+  activeAnalysisMetricsAtom,
+  isAnalysisAtom
+} from '$components/exploration/atoms/atoms';
 
 function getBlockBoundaries(date: Date, timeDensity: TimeDensity) {
   switch (timeDensity) {
@@ -187,6 +198,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const isAnalysisAndSucceeded =
     isAnalysis && dataset.analysis.status === TimelineDatasetStatus.SUCCEEDED;
 
+  const datasetLegend = dataset.data.legend;
+
   return (
     <Reorder.Item
       ref={datasetLiRef}
@@ -207,7 +220,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             <DatasetInfo>
               <DatasetHeadline>
                 <Heading as='h3' size='xsmall'>
-                  {dataset.data.title}
+                  {dataset.data.name}
                 </Heading>
                 <Toolbar size='small'>
                   <DatasetOptions datasetAtom={datasetAtom} />
@@ -226,13 +239,21 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   </ToolbarIconButton>
                 </Toolbar>
               </DatasetHeadline>
-              <LayerGradientGraphic
-                type='gradient'
-                stops={['#eb7d2e', '#35a145', '#3287d2']}
-                unit={{ label: 'bananas' }}
-                min={-3}
-                max={15}
-              />
+              {datasetLegend?.type === 'categorical' && (
+                <LayerCategoricalGraphic
+                  type='categorical'
+                  stops={datasetLegend.stops}
+                />
+              )}
+              {datasetLegend?.type === 'gradient' && (
+                <LayerGradientGraphic
+                  type='gradient'
+                  stops={datasetLegend.stops}
+                  unit={datasetLegend.unit}
+                  min={datasetLegend.min}
+                  max={datasetLegend.max}
+                />
+              )}
             </DatasetInfo>
           </DatasetHeaderInner>
         </DatasetHeader>
@@ -270,7 +291,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   xScaled={xScaled!}
                   width={width}
                   isVisible={!!isVisible}
-                  data={dataset.data.analysis}
+                  data={dataset.analysis}
                   activeMetrics={activeMetrics}
                   highlightDate={dataPoint?.date}
                 />

@@ -18,9 +18,9 @@ import { useAtomValue } from 'jotai';
 import { format } from 'date-fns';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
+import { AnalysisTimeseriesEntry, TimeDensity } from '../types.d.ts';
+import { isExpandedAtom } from '../atoms/atoms';
 import { DataMetric } from './analysis-metrics-dropdown';
-import { AnalysisTimeseriesEntry, TimeDensity } from './constants';
-import { isExpandedAtom } from './atoms';
 
 import { getNumForChart } from '$components/common/chart/utils';
 
@@ -125,7 +125,7 @@ export const DatasetPopover = styled(DatasetPopoverRef)`
   position: absolute;
   top: 0;
   left: 0;
-  background: ${themeVal('color.surface')}};
+  background: ${themeVal('color.surface')};
   padding: ${glsp()};
   border-radius: ${themeVal('shape.rounded')};
   box-shadow: ${themeVal('boxShadow.elevationD')};

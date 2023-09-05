@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { MockControls } from './datasets-mock';
-import Timeline from './timeline';
+import Timeline from './components/timeline/timeline';
+import { DatasetSelectorModal } from './components/dataset-selector-modal';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -57,6 +58,11 @@ const Container = styled.div`
 
 function Exploration() {
   const [compare, setCompare] = useState(false);
+  const [datasetModalRevealed, setDatasetModalRevealed] = useState(true);
+
+  const openModal = useCallback(() => setDatasetModalRevealed(true), []);
+  const closeModal = useCallback(() => setDatasetModalRevealed(false), []);
+
   return (
     <>
       <LayoutProps
@@ -90,13 +96,16 @@ function Exploration() {
             </Panel>
             <PanelResizeHandle className='resize-handle' />
             <Panel maxSize={75} className='panel panel-timeline'>
-              <Timeline />
+              <Timeline onDatasetAddClick={openModal} />
             </Panel>
           </PanelGroup>
         </Container>
+        <DatasetSelectorModal
+          revealed={datasetModalRevealed}
+          close={closeModal}
+        />
       </PageMainContent>
     </>
   );
 }
-
 export default Exploration;

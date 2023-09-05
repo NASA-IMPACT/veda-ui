@@ -5,8 +5,8 @@ import { ScaleTime } from 'd3';
 import styled from 'styled-components';
 import { listReset } from '@devseed-ui/theme-provider';
 
-import { timelineDatasetsAtom } from './atoms';
 import { DatasetListItem } from './dataset-list-item';
+import { timelineDatasetsAtom } from '$components/exploration/atoms/atoms';
 
 const DatasetListSelf = styled.ul`
   ${listReset()}

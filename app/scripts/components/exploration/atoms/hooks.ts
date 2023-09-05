@@ -1,21 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import { extent, scaleTime } from 'd3';
+import { extent } from 'd3';
 import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
 import { focusAtom } from 'jotai-optics';
-import { add, differenceInCalendarDays, max } from 'date-fns';
+import { add, max } from 'date-fns';
 
-import {
-  timelineDatasetsAtom,
-  timelineSizesAtom,
-  zoomTransformAtom
-} from './atoms';
-import { rescaleX } from './utils';
-import {
-  DAY_SIZE_MAX,
-  DAY_SIZE_MIN,
-  TimelineDataset,
-  TimelineDatasetStatus
-} from './constants';
+import { DAY_SIZE_MAX } from '../constants';
+import { TimelineDataset, TimelineDatasetStatus } from '../types.d.ts';
+import { timelineDatasetsAtom, timelineSizesAtom } from './atoms';
 
 /**
  * Calculates the date domain of the datasets, if any are selected.
@@ -43,54 +34,6 @@ export function useTimelineDatasetsDomain() {
 
     return [start, max([end, add(start, { days: minDays })])] as [Date, Date];
   }, [datasets, minDays]);
-}
-
-/**
- * Calculate min and max scale factors, such has each day has a minimum of
- * {DAY_SIZE_MIN}px and a maximum of {DAY_SIZE_MAX}px
- * @returns Minimum and maximum scale factors as k0 and k1.
- */
-export function useScaleFactors() {
-  const dataDomain = useTimelineDatasetsDomain();
-  const { contentWidth } = useAtomValue(timelineSizesAtom);
-
-  // Calculate min and max scale factors, such has each day has a minimum of
-  // {DAY_SIZE_MIN}px and a maximum of {DAY_SIZE_MAX}px.
-  return useMemo(() => {
-    if (contentWidth <= 0 || !dataDomain) return { k0: 0, k1: 1 };
-    // Calculate how many days are in the domain.
-    const domainDays = differenceInCalendarDays(dataDomain[1], dataDomain[0]);
-
-    return {
-      k0: Math.max(1, DAY_SIZE_MIN / (contentWidth / domainDays)),
-      k1: DAY_SIZE_MAX / (contentWidth / domainDays)
-    };
-  }, [contentWidth, dataDomain]);
-}
-
-/**
- * Creates the scales for the timeline.
- * The main scale takes into account the whole data domain.
- * The scaled scale is the main scale rescaled according to the zoom transform.
- * @param width
- * @returns
- */
-export function useScales() {
-  const dataDomain = useTimelineDatasetsDomain();
-  const zoomTransform = useAtomValue(zoomTransformAtom);
-  const { contentWidth } = useAtomValue(timelineSizesAtom);
-
-  const main = useMemo(() => {
-    if (!dataDomain) return undefined;
-    return scaleTime().domain(dataDomain).range([0, contentWidth]);
-  }, [dataDomain, contentWidth]);
-
-  const scaled = useMemo(() => {
-    if (!main) return undefined;
-    return rescaleX(main, zoomTransform.x, zoomTransform.k);
-  }, [main, zoomTransform.x, zoomTransform.k]);
-
-  return { main, scaled };
 }
 
 /**

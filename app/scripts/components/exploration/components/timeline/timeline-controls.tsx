@@ -19,16 +19,17 @@ import {
   VerticalDivider
 } from '@devseed-ui/toolbar';
 
+import AnalysisMetricsDropdown from '../analysis-metrics-dropdown';
 import { DateAxis } from './date-axis';
-import { emptyDateRange } from './constants';
-import AnalysisMetricsDropdown from './analysis-metrics-dropdown';
+
 import {
   activeAnalysisMetricsAtom,
   isAnalysisAtom,
   isExpandedAtom,
   selectedDateAtom,
   selectedIntervalAtom
-} from './atoms';
+} from '$components/exploration/atoms/atoms';
+import { emptyDateRange } from '$components/exploration/constants';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -44,7 +45,7 @@ const TimelineControlsSelf = styled.div`
 const ControlsToolbar = styled.div`
   padding: ${glsp(1.5, 1, 0.5, 1)};
 
-  ${ToolbarGroup}:last-child {
+  ${ToolbarGroup /* sc-selector */}:last-child {
     margin-left: auto;
   }
 `;

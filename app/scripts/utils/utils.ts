@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 import { visuallyDisabled } from '@devseed-ui/theme-provider';
 
 /**
@@ -53,9 +53,13 @@ export function isEqualObj(a, b) {
  * disables the component (through css) and prevents a click.
  *
  * @param Comp React Component to enhance
+ * @param additionalStyles Additional styles to apply when visually disabled.
  * @returns Enhanced styled component.
  */
-export function composeVisuallyDisabled(Comp) {
+export function composeVisuallyDisabled(
+  Comp,
+  additionalStyles?: FlattenSimpleInterpolation
+) {
   return styled(Comp).attrs((props) => {
     const onClickOriginal = props.onClick;
     return {
@@ -72,6 +76,13 @@ export function composeVisuallyDisabled(Comp) {
       vd &&
       css`
         ${visuallyDisabled()}
+
+        &&&:hover {
+          ${visuallyDisabled()}
+          background: inherit;
+        }
+
+        ${additionalStyles}
       `}
   `;
 }

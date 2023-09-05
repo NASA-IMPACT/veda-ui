@@ -10,7 +10,8 @@ import {
 } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 
-import { RIGHT_AXIS_SPACE, TimeDensity } from './constants';
+import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
+import { TimeDensity } from '$components/exploration/types.d.ts';
 
 const GridLine = styled.line`
   stroke: ${themeVal('color.base-200')};
