@@ -237,6 +237,7 @@ declare module 'veda' {
   export const storyTaxonomies: Taxonomy[];
 
   export type PageOverrides =
+    | 'developmentContent'
     | 'aboutContent'
     | 'homeContent'
     | 'sandbox-override'

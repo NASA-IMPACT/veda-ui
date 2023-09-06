@@ -95,6 +95,32 @@ import FeaturedStories from "$veda-ui-scripts/components/home/featured-stories";
 
 > 🧑‍🏫 You can import and use the `FeaturedStories` component to include a section listing the stories with the `featured` flag. It is important that this component is not inside a `Block`.
 
+### developmentContent
+`Content Override`
+
+The `developmentContent` allows you to specify new content for the development page (locally at http://localhost:9000/development).  
+Besides the new content, this page also uses frontmatter variables to modify the page title and description.  
+
+Example:
+```js
+// veda.config.js pageOverrides
+developmentContent: './overrides/development.mdx'
+```
+```jsx
+---
+title: The development page
+description: A brief description
+---
+
+<Block>
+  <Prose>
+    <p>
+      This is my new development page.
+    </p>
+  </Prose>
+</Block>
+```
+
 ## Component Override reference
 
 ### headerBrand
