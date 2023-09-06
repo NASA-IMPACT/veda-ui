@@ -6,19 +6,19 @@ import React, {
   JSXElementConstructor,
   useState,
   createContext,
+  useContext
 } from 'react';
 import styled from 'styled-components';
 import useDimensions from 'react-cool-dimensions';
-import { useMap } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import MapboxStyleOverride from './mapbox-style-override';
 import { Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
+import { useMaps } from './hooks/use-maps';
 
-
-const MapWrapperContainer = styled.div`
+const MapsContainer = styled.div`
   && {
     inset: 0;
     height: 100%;
@@ -34,7 +34,7 @@ const MapWrapperContainer = styled.div`
   ${MapboxStyleOverride}
 `;
 
-export default function MapWrapper({ children }: { children: ReactNode }) {
+function Maps({ children }: { children: ReactNode }) {
   // Instanciate MGL Compare, if compare is enabled
   useMapCompare();
 
@@ -66,6 +66,46 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
     return sortedChildren;
   }, [children]);
 
+  const maps = useMaps();
+
+  const { observe } = useDimensions({
+    onResize: () => {
+      setTimeout(() => {
+        maps.main?.resize();
+        maps.compared?.resize();
+      }, 0);
+    }
+  });
+
+  const { containerId } = useContext(MapsContext);
+
+  return (
+    <MapsContainer id={containerId} ref={observe}>
+      <Styles>
+        {generators}
+        <MapComponent controls={controls} />
+      </Styles>
+      {compareGenerators.length && (
+        <Styles>
+          {compareGenerators}
+          <MapComponent controls={[]} isCompared />
+        </Styles>
+      )}
+    </MapsContainer>
+  );
+}
+
+export interface MapsProps {
+  children: ReactNode;
+  id: string;
+}
+
+export default function MapsContextWrapper(props: MapsProps) {
+  const { id } = props;
+  const mainId = `main-map-${id}`;
+  const comparedId = `compared-map-${id}`;
+  const containerId = `comparison-container-${id}`;
+
   // Holds the initial view state for the main map, used by compare map at mount
   const [initialViewState, setInitialViewState] = useState({
     latitude: 0,
@@ -73,44 +113,33 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
     zoom: 1
   });
 
-  const { main, compared } = useMap();
-  
-  const { observe } = useDimensions({
-    onResize: () => {
-      setTimeout(() => {
-        main?.resize();
-        compared?.resize();
-      }, 0);
-    }
-  });
-
   return (
-    <MapWrapperContext.Provider
-      value={{ initialViewState, setInitialViewState }}
+    <MapsContext.Provider
+      value={{
+        initialViewState,
+        setInitialViewState,
+        mainId,
+        comparedId,
+        containerId
+      }}
     >
-      <MapWrapperContainer id='comparison-container' ref={observe}>
-        <Styles>
-          {generators}
-          <MapComponent id='main' controls={controls} />
-        </Styles>
-        {compareGenerators.length && (
-          <Styles>
-            {compareGenerators}
-            <MapComponent id='compared' controls={[]} />
-          </Styles>
-        )}
-      </MapWrapperContainer>
-    </MapWrapperContext.Provider>
+      <Maps {...props}>{props.children}</Maps>
+    </MapsContext.Provider>
   );
 }
 
-
-interface MapWrapperContextType {
+interface MapsContextType {
   initialViewState: any;
   setInitialViewState: (viewState: any) => void;
+  mainId: string;
+  comparedId: string;
+  containerId: string;
 }
 
-export const MapWrapperContext = createContext<MapWrapperContextType>({
+export const MapsContext = createContext<MapsContextType>({
   initialViewState: {},
-  setInitialViewState: () => undefined
+  setInitialViewState: () => undefined,
+  mainId: '',
+  comparedId: '',
+  containerId: ''
 });

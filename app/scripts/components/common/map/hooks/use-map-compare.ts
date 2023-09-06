@@ -1,17 +1,19 @@
-import { useEffect } from "react";
-import { useMap } from "react-map-gl";
+import { useContext, useEffect } from "react";
 import MapboxCompare from 'mapbox-gl-compare';
+import { MapsContext } from "../maps";
+import { useMaps } from "./use-maps";
 
 export default function useMapCompare() {
-  const { main, compared } = useMap();
+  const maps = useMaps();
+  const { containerId } = useContext(MapsContext);
   useEffect(() => {
-    if (!main) return;
+    if (!maps.main) return;
 
-    if (compared) {
+    if (maps.compared) {
       const compare = new MapboxCompare(
-        main,
-        compared,
-        '#comparison-container',
+        maps.main,
+        maps.compared,
+        `#${containerId}`,
         {
           mousemove: false,
           orientation: 'vertical'
@@ -22,5 +24,5 @@ export default function useMapCompare() {
         compare.remove();
       };
     }
-  }, [main, compared]);
+  }, [maps, containerId]);
 }

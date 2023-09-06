@@ -83,7 +83,7 @@ function Exploration() {
               >
                 compare mode: {compare ? 'true' : 'false'}
               </button>
-              <Map>
+              <Map id='exploration'>
                 <Basemap basemapStyleId='satellite' />
                 <GeocoderControl />
                 {compare && (
