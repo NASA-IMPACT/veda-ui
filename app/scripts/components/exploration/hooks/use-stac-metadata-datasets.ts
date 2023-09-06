@@ -17,8 +17,8 @@ import { resolveLayerTemporalExtent } from '../data-utils';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 
 function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
-  const currKey = `${curr.errorUpdatedAt}-${curr.dataUpdatedAt}`;
-  const prevKey = `${prev?.errorUpdatedAt}-${prev?.dataUpdatedAt}`;
+  const currKey = `${curr.errorUpdatedAt}-${curr.dataUpdatedAt}-${curr.failureCount}`;
+  const prevKey = `${prev?.errorUpdatedAt}-${prev?.dataUpdatedAt}-${prev?.failureCount}`;
 
   return prevKey !== currKey;
 }

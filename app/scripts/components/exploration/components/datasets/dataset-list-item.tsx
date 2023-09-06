@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
@@ -13,6 +13,7 @@ import {
   startOfYear,
   areIntervalsOverlapping
 } from 'date-fns';
+import { useQueryClient } from '@tanstack/react-query';
 import { ScaleTime } from 'd3';
 import {
   CollecticonEye,
@@ -157,6 +158,18 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
 
+  const queryClient = useQueryClient();
+
+  const retryDatasetMetadata = useCallback(() => {
+    queryClient.invalidateQueries(
+      {
+        queryKey: ['dataset', datasetId],
+        exact: true
+      },
+      { throwOnError: false }
+    );
+  }, [queryClient, datasetId]);
+
   const controls = useDragControls();
 
   // Hook to handle the hover state of the dataset. Check the source file as to
@@ -264,8 +277,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             <DatasetTrackError
               message='Oh no, something went wrong'
               onRetryClick={() => {
-                /* eslint-disable-next-line no-console */
-                console.log('Retry metadata loading');
+                retryDatasetMetadata();
               }}
             />
           )}
