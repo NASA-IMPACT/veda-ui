@@ -14,7 +14,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import MapboxStyleOverride from './mapbox-style-override';
 import { Styles } from './styles';
-import useMapCompare from './hooks/useMapCompare';
+import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
 
 

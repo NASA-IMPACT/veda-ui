@@ -11,7 +11,7 @@ import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import Map, {  Compare } from '$components/common/map';
-import { Basemap } from '$components/common/map/styleGenerators/basemap';
+import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/map-options/geocoder';
 
 const Container = styled.div`
