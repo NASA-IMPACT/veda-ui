@@ -12,12 +12,11 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import ReactMapGlMap, { MapProvider, useMap } from 'react-map-gl';
-import { Style } from 'mapbox-gl';
 import MapboxCompare from 'mapbox-gl-compare';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import MapboxStyleOverride from './mapbox-style-override';
-import { Styles } from './styles';
+import { Styles, StylesContext } from './styles';
 import { MapId } from './types';
 
 const MapContainer = styled.div`
@@ -60,17 +59,10 @@ function CompareHandler() {
 function Map({
   id,
   controls,
-  generators
 }: {
   id: MapId;
   controls: ReactElement[];
-  generators: ReactElement[];
 }) {
-  const [style, setStyle] = useState<Style | undefined>();
-  const onStyleUpdate = useCallback((style) => {
-    setStyle(style);
-  }, []);
-
   const { initialViewState, setInitialViewState } =
     useContext(MapContainerContext);
 
@@ -83,22 +75,21 @@ function Map({
     [id, setInitialViewState]
   );
 
+  const { style } = useContext(StylesContext);
+
+  if (!style) return null;
+
   return (
-    <Styles onStyleUpdate={onStyleUpdate}>
-      {style && (
-        <ReactMapGlMap
-          id={id}
-          mapboxAccessToken={process.env.MAPBOX_TOKEN}
-          initialViewState={initialViewState}
-          style={{ position: 'absolute', top: 0, bottom: 0, left: 0 }}
-          mapStyle={style as any}
-          onMove={onMove}
-        >
-          {controls}
-          {generators}
-        </ReactMapGlMap>
-      )}
-    </Styles>
+    <ReactMapGlMap
+      id={id}
+      mapboxAccessToken={process.env.MAPBOX_TOKEN}
+      initialViewState={initialViewState}
+      style={{ position: 'absolute', top: 0, bottom: 0, left: 0 }}
+      mapStyle={style as any}
+      onMove={onMove}
+    >
+      {controls}
+    </ReactMapGlMap>
   );
 }
 
@@ -145,13 +136,15 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
       <MapContainer id='comparison-container'>
         <MapProvider>
           <CompareHandler />
-          <Map id='main' generators={generators} controls={controls} />
+          <Styles>
+            {generators}
+            <Map id='main' controls={controls} />
+          </Styles>
           {compareGenerators.length && (
-            <Map
-              id='compared'
-              generators={compareGenerators}
-              controls={controls}
-            />
+            <Styles>
+              {compareGenerators}
+              <Map id='compared' controls={[]} />
+            </Styles>
           )}
         </MapProvider>
       </MapContainer>
