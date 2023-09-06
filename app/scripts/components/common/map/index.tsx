@@ -3,7 +3,6 @@ import React, {
   ReactNode,
   Children,
   useMemo,
-  useEffect,
   ReactElement,
   JSXElementConstructor,
   useState,
@@ -11,13 +10,13 @@ import React, {
   useContext
 } from 'react';
 import styled from 'styled-components';
-import ReactMapGlMap, { MapProvider, useMap } from 'react-map-gl';
-import MapboxCompare from 'mapbox-gl-compare';
+import ReactMapGlMap, { MapProvider } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import MapboxStyleOverride from './mapbox-style-override';
 import { Styles, StylesContext } from './styles';
 import { MapId } from './types';
+import useMapCompare from './hooks/useMapCompare';
 
 const MapContainer = styled.div`
   && {
@@ -25,7 +24,6 @@ const MapContainer = styled.div`
   }
 
   & > * {
-    border: 1px solid red;
     position: absolute !important;
     top: 0;
     bottom: 0;
@@ -37,31 +35,6 @@ const MapContainer = styled.div`
 
 export function Compare({ children }: { children: ReactNode }) {
   return <>{children}</>;
-}
-
-function CompareHandler() {
-  const { main, compared } = useMap();
-  useEffect(() => {
-    if (!main) return;
-
-    if (compared) {
-      const compare = new MapboxCompare(
-        main,
-        compared,
-        '#comparison-container',
-        {
-          mousemove: false,
-          orientation: 'vertical'
-        }
-      );
-
-      return () => {
-        compare.remove();
-      };
-    }
-  }, [main, compared]);
-
-  return null;
 }
 
 function MapComponent({
@@ -100,11 +73,12 @@ function MapComponent({
   );
 }
 
-export default function MapWrapper({ children }: { children: ReactNode }) {
+function MapWrapper({ children }: { children: ReactNode }) {
+  useMapCompare();
   const { generators, compareGenerators, controls } = useMemo(() => {
     const childrenArr = Children.toArray(children) as ReactElement[];
 
-    // Split children into layers and controls
+    // Split children into layers and controls, using all children provided
     const sortedChildren = childrenArr.reduce(
       (acc, child) => {
         const componentName = (child.type as JSXElementConstructor<any>).name;
@@ -129,6 +103,7 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
     return sortedChildren;
   }, [children]);
 
+  // Hols the initial view state for the main map, used by compare map at mount
   const [initialViewState, setInitialViewState] = useState({
     latitude: 0,
     longitude: 0,
@@ -140,21 +115,30 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
       value={{ initialViewState, setInitialViewState }}
     >
       <MapContainer id='comparison-container'>
-        <MapProvider>
-          <CompareHandler />
+        <Styles>
+          {generators}
+          <MapComponent id='main' controls={controls} />
+        </Styles>
+        {compareGenerators.length && (
           <Styles>
-            {generators}
-            <MapComponent id='main' controls={controls} />
+            {compareGenerators}
+            <MapComponent id='compared' controls={[]} />
           </Styles>
-          {compareGenerators.length && (
-            <Styles>
-              {compareGenerators}
-              <MapComponent id='compared' controls={[]} />
-            </Styles>
-          )}
-        </MapProvider>
+        )}
       </MapContainer>
     </MapContainerContext.Provider>
+  );
+}
+
+export default function MapProviderWrapper({
+  children
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <MapProvider>
+      <MapWrapper>{children}</MapWrapper>
+    </MapProvider>
   );
 }
 
@@ -165,5 +149,5 @@ interface MapContainerContextType {
 
 const MapContainerContext = createContext<MapContainerContextType>({
   initialViewState: {},
-  setInitialViewState: () => undefined,
+  setInitialViewState: () => undefined
 });
