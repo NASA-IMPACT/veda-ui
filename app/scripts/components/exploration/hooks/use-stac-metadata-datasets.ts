@@ -1,4 +1,3 @@
-
 import {
   useQueries,
   UseQueryOptions,
@@ -11,13 +10,11 @@ import { timelineDatasetsAtom } from '../atoms/atoms';
 import {
   StacDatasetData,
   TimelineDataset,
-  TimelineDatasetData,
   TimelineDatasetStatus
 } from '../types.d.ts';
 import { resolveLayerTemporalExtent } from '../data-utils';
 
 import { useEffectPrevious } from '$utils/use-effect-previous';
-
 
 function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
   const currKey = `${curr.errorUpdatedAt}-${curr.dataUpdatedAt}`;
@@ -39,7 +36,7 @@ function reconcileQueryDataWithDataset(
   dataset: TimelineDataset
 ): TimelineDataset {
   try {
-    let base: TimelineDataset = {
+    let base = {
       ...dataset,
       status: queryData.status as TimelineDatasetStatus,
       error: queryData.error
@@ -58,8 +55,7 @@ function reconcileQueryDataWithDataset(
       };
     }
 
-
-    return base;
+    return base as TimelineDataset;
   } catch (error) {
     const e = new Error('Error reconciling query data with dataset');
     // @ts-expect-error detail is not a property of Error
@@ -69,14 +65,14 @@ function reconcileQueryDataWithDataset(
       ...dataset,
       status: TimelineDatasetStatus.ERROR,
       error: e
-    };
+    } as TimelineDataset;
   }
 }
 
 async function fetchStacDatasetById(
-  dataset: TimelineDatasetData
+  dataset: TimelineDataset
 ): Promise<StacDatasetData> {
-  const { type, stacCol } = dataset;
+  const { type, stacCol } = dataset.data;
 
   const { data } = await axios.get(
     `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
@@ -115,7 +111,7 @@ function makeQueryObject(
 ): UseQueryOptions<unknown, unknown, StacDatasetData> {
   return {
     queryKey: ['dataset', dataset.data.id],
-    queryFn: () => fetchStacDatasetById(dataset.data),
+    queryFn: () => fetchStacDatasetById(dataset),
     // This data will not be updated in the context of a browser session, so it is
     // safe to set the staleTime to Infinity. As specified by react-query's
     // "Important Defaults", cached data is considered stale which means that
@@ -131,7 +127,7 @@ function makeQueryObject(
 }
 
 /**
- * Extends local dataset state with STAC metadata.  
+ * Extends local dataset state with STAC metadata.
  * Whenever a dataset is added to the timeline, this hook will fetch the STAC
  * metadata for that dataset and add it to the dataset state atom.
  */
@@ -142,9 +138,7 @@ export function useStacMetadataOnDatasets() {
     queries: datasets.map((dataset) => makeQueryObject(dataset))
   });
 
-  useEffectPrevious<
-    [typeof datasetsQueryData, TimelineDataset[]]
-  >(
+  useEffectPrevious<[typeof datasetsQueryData, TimelineDataset[]]>(
     (prev) => {
       const prevQueryData = prev[0];
       if (!prevQueryData) return;

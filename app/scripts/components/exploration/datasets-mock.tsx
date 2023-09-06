@@ -367,21 +367,21 @@ function makeAnalysis(
 }
 
 function makeDataset(
-  data,
+  data: any,
   status = TimelineDatasetStatus.SUCCESS,
   settings: Record<string, any> = {},
   analysis = makeAnalysis({}, {})
-): TimelineDataset {
+) {
   return {
     status,
     data,
-    error: null,
+    error: status === TimelineDatasetStatus.ERROR ? new Error('Mock error') : null,
     settings: {
       ...settings,
       isVisible: settings.isVisible === undefined ? true : settings.isVisible
     },
     analysis
-  };
+  } as TimelineDataset;
 }
 
 function toggleDataset(dataset) {

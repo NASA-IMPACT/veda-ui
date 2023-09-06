@@ -60,7 +60,7 @@ export function reconcileDatasets(
       },
       analysis: {
         status: TimelineDatasetStatus.IDLE,
-        data: {},
+        data: null,
         error: null,
         meta: {}
       }
@@ -80,24 +80,25 @@ export function resolveLayerTemporalExtent(
 
   if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
 
-  if (timeDensity === TimeDensity.YEAR) {
-    return eachYearOfInterval({
-      start: utcString2userTzDate(domain[0]),
-      end: utcString2userTzDate(domain.last)
-    });
-  } else if (timeDensity === TimeDensity.MONTH) {
-    return eachMonthOfInterval({
-      start: utcString2userTzDate(domain[0]),
-      end: utcString2userTzDate(domain.last)
-    });
-  } else if (timeDensity === TimeDensity.DAY) {
-    return eachDayOfInterval({
-      start: utcString2userTzDate(domain[0]),
-      end: utcString2userTzDate(domain.last)
-    });
+  switch (timeDensity) {
+    case TimeDensity.YEAR:
+      return eachYearOfInterval({
+        start: utcString2userTzDate(domain[0]),
+        end: utcString2userTzDate(domain.last)
+      });
+    case TimeDensity.MONTH:
+      return eachMonthOfInterval({
+        start: utcString2userTzDate(domain[0]),
+        end: utcString2userTzDate(domain.last)
+      });
+    case TimeDensity.DAY:
+      return eachDayOfInterval({
+        start: utcString2userTzDate(domain[0]),
+        end: utcString2userTzDate(domain.last)
+      });
+    default:
+      throw new Error(
+        `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
+      );
   }
-
-  throw new Error(
-    `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
-  );
 }

@@ -5,7 +5,11 @@ import { focusAtom } from 'jotai-optics';
 import { add, max } from 'date-fns';
 
 import { DAY_SIZE_MAX } from '../constants';
-import { TimelineDataset, TimelineDatasetStatus } from '../types.d.ts';
+import {
+  TimelineDataset,
+  TimelineDatasetStatus,
+  TimelineDatasetSuccess
+} from '../types.d.ts';
 import { timelineDatasetsAtom, timelineSizesAtom } from './atoms';
 
 /**
@@ -20,7 +24,8 @@ export function useTimelineDatasetsDomain() {
 
   return useMemo(() => {
     const successDatasets = datasets.filter(
-      (d) => d.status === TimelineDatasetStatus.SUCCESS
+      (d): d is TimelineDatasetSuccess =>
+        d.status === TimelineDatasetStatus.SUCCESS
     );
     if (!successDatasets.length) return undefined;
 
@@ -28,7 +33,7 @@ export function useTimelineDatasetsDomain() {
     // is ordered and only look at first and last dates.
     const [start, end] = extent(
       successDatasets.flatMap((d) =>
-        d.data.domain ? [d.data.domain[0], d.data.domain.last] : []
+        d.data.domain.length ? [d.data.domain[0], d.data.domain.last] : []
       )
     ) as [Date, Date];
 

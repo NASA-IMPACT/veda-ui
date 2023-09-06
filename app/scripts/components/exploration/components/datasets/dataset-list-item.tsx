@@ -41,8 +41,8 @@ import {
 } from '$components/common/mapbox/layer-legend';
 import {
   TimeDensity,
-  TimelineDataset,
-  TimelineDatasetStatus
+  TimelineDatasetStatus,
+  TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
 import {
   DATASET_TRACK_BLOCK_HEIGHT,
@@ -174,7 +174,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
     xScaled,
     containerWidth: width,
     layerX,
-    data: dataset.analysis.data.timeseries
+    data: dataset.analysis.data?.timeseries
   });
 
   const {
@@ -326,7 +326,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
 interface DatasetTrackProps {
   width: number;
   xScaled: ScaleTime<number, number>;
-  dataset: TimelineDataset;
+  dataset: TimelineDatasetSuccess;
   isVisible: boolean;
 }
 
@@ -373,7 +373,7 @@ function DatasetTrack(props: DatasetTrackProps) {
 interface DatasetTrackBlockProps {
   xScaled: ScaleTime<number, number>;
   date: Date;
-  dataset: TimelineDataset;
+  dataset: TimelineDatasetSuccess;
   isVisible: boolean;
 }
 

@@ -1,4 +1,4 @@
-import { DatasetLayer } from "veda";
+import { DatasetLayer } from 'veda';
 
 export enum TimeDensity {
   YEAR = 'year',
@@ -20,20 +20,53 @@ export interface StacDatasetData {
 }
 
 export type AnalysisTimeseriesEntry = Record<string, number | null> & {
-  date: Date; 
+  date: Date;
 };
 
-export interface TimelineDatasetAnalysis {
-  status: TimelineDatasetStatus;
-  data: {
-    timeseries?: AnalysisTimeseriesEntry[];
-  };
-  error: any;
+// TimelineDatasetAnalysis type discriminants
+export interface TimelineDatasetAnalysisIdle {
+  status: TimelineDatasetStatus.IDLE;
+  data: null;
+  error: null;
+  meta: Record<string, never>;
+}
+export interface TimelineDatasetAnalysisLoading {
+  status: TimelineDatasetStatus.LOADING;
+  data: null;
+  error: null;
   meta: {
     loaded?: number;
     total?: number;
   };
 }
+export interface TimelineDatasetAnalysisError {
+  status: TimelineDatasetStatus.ERROR;
+  data: null;
+  error: unknown;
+  meta: {
+    loaded?: number;
+    total?: number;
+  };
+}
+export interface TimelineDatasetAnalysisSuccess {
+  status: TimelineDatasetStatus.SUCCESS;
+  data: {
+    timeseries: AnalysisTimeseriesEntry[];
+  };
+  error: null;
+  meta: {
+    loaded: number;
+    total: number;
+  };
+}
+
+export type TimelineDatasetAnalysis =
+  | TimelineDatasetAnalysisIdle
+  | TimelineDatasetAnalysisLoading
+  | TimelineDatasetAnalysisError
+  | TimelineDatasetAnalysisSuccess;
+
+// END TimelineDatasetAnalysis type discriminants
 
 export interface TimelineDatasetData extends DatasetLayer {
   isPeriodic: boolean;
@@ -41,10 +74,44 @@ export interface TimelineDatasetData extends DatasetLayer {
   domain: Date[];
 }
 
-export interface TimelineDataset {
-  status: TimelineDatasetStatus;
+// TimelineDataset type discriminants
+export interface TimelineDatasetIdle {
+  status: TimelineDatasetStatus.IDLE;
+  data: DatasetLayer;
+  error: null;
+  settings: {
+    // user defined settings like visibility, opacity
+    isVisible?: boolean;
+    opacity?: number;
+  };
+  analysis: TimelineDatasetAnalysisIdle;
+}
+export interface TimelineDatasetLoading {
+  status: TimelineDatasetStatus.LOADING;
+  data: DatasetLayer;
+  error: null;
+  settings: {
+    // user defined settings like visibility, opacity
+    isVisible?: boolean;
+    opacity?: number;
+  };
+  analysis: TimelineDatasetAnalysisIdle;
+}
+export interface TimelineDatasetError {
+  status: TimelineDatasetStatus.ERROR;
+  data: DatasetLayer;
+  error: unknown;
+  settings: {
+    // user defined settings like visibility, opacity
+    isVisible?: boolean;
+    opacity?: number;
+  };
+  analysis: TimelineDatasetAnalysisIdle;
+}
+export interface TimelineDatasetSuccess {
+  status: TimelineDatasetStatus.SUCCESS;
   data: TimelineDatasetData;
-  error: any;
+  error: null;
   settings: {
     // user defined settings like visibility, opacity
     isVisible?: boolean;
@@ -52,6 +119,14 @@ export interface TimelineDataset {
   };
   analysis: TimelineDatasetAnalysis;
 }
+
+export type TimelineDataset =
+  | TimelineDatasetIdle
+  | TimelineDatasetLoading
+  | TimelineDatasetError
+  | TimelineDatasetSuccess;
+
+// END TimelineDataset type discriminants
 
 export interface DateRange {
   start: Date;
