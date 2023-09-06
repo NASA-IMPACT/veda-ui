@@ -6,7 +6,9 @@ import React, {
   useEffect,
   ReactElement,
   JSXElementConstructor,
-  useState
+  useState,
+  createContext,
+  useContext
 } from 'react';
 import styled from 'styled-components';
 import ReactMapGlMap, { MapProvider, useMap } from 'react-map-gl';
@@ -69,19 +71,28 @@ function Map({
     setStyle(style);
   }, []);
 
+  const { initialViewState, setInitialViewState } =
+    useContext(MapContainerContext);
+
+  const onMove = useCallback(
+    (evt) => {
+      if (id === 'main') {
+        setInitialViewState(evt.viewState);
+      }
+    },
+    [id, setInitialViewState]
+  );
+
   return (
     <Styles onStyleUpdate={onStyleUpdate}>
       {style && (
         <ReactMapGlMap
           id={id}
           mapboxAccessToken={process.env.MAPBOX_TOKEN}
-          initialViewState={{
-            longitude: 0,
-            latitude: 0,
-            zoom: 1
-          }}
+          initialViewState={initialViewState}
           style={{ position: 'absolute', top: 0, bottom: 0, left: 0 }}
           mapStyle={style as any}
+          onMove={onMove}
         >
           {controls}
           {generators}
@@ -119,19 +130,45 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
     };
   }, [children]);
 
+  const [initialViewState, setInitialViewState] = useState({
+    latitude: 0,
+    longitude: 0,
+    zoom: 1
+  });
+
+  const [activeMap, setActiveMap] = useState<MapId>('main');
+
   return (
-    <MapContainer id='comparison-container'>
-      <MapProvider>
-        <CompareHandler />
-        <Map id='main' generators={generators} controls={controls} />
-        {compareGenerators.length && (
-          <Map
-            id='compared'
-            generators={compareGenerators}
-            controls={controls}
-          />
-        )}
-      </MapProvider>
-    </MapContainer>
+    <MapContainerContext.Provider
+      value={{ initialViewState, setInitialViewState, activeMap, setActiveMap }}
+    >
+      <MapContainer id='comparison-container'>
+        <MapProvider>
+          <CompareHandler />
+          <Map id='main' generators={generators} controls={controls} />
+          {compareGenerators.length && (
+            <Map
+              id='compared'
+              generators={compareGenerators}
+              controls={controls}
+            />
+          )}
+        </MapProvider>
+      </MapContainer>
+    </MapContainerContext.Provider>
   );
 }
+
+interface MapContainerContextType {
+  initialViewState: any;
+  setInitialViewState: (viewState: any) => void;
+  activeMap: MapId;
+  setActiveMap: (mapId: MapId) => void;
+}
+
+const MapContainerContext = createContext<MapContainerContextType>({
+  initialViewState: {},
+  setInitialViewState: () => undefined,
+  activeMap: 'main',
+  setActiveMap: () => undefined
+});
