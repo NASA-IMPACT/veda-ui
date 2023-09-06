@@ -8,6 +8,8 @@ import React, {
   createContext,
 } from 'react';
 import styled from 'styled-components';
+import useDimensions from 'react-cool-dimensions';
+import { useMap } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import MapboxStyleOverride from './mapbox-style-override';
@@ -15,9 +17,11 @@ import { Styles } from './styles';
 import useMapCompare from './hooks/useMapCompare';
 import MapComponent from './map-component';
 
+
 const MapWrapperContainer = styled.div`
   && {
     inset: 0;
+    height: 100%;
   }
 
   & > * {
@@ -31,11 +35,13 @@ const MapWrapperContainer = styled.div`
 `;
 
 export default function MapWrapper({ children }: { children: ReactNode }) {
+  // Instanciate MGL Compare, if compare is enabled
   useMapCompare();
+
+  // Split children into layers and controls, using all children provided
   const { generators, compareGenerators, controls } = useMemo(() => {
     const childrenArr = Children.toArray(children) as ReactElement[];
 
-    // Split children into layers and controls, using all children provided
     const sortedChildren = childrenArr.reduce(
       (acc, child) => {
         const componentName = (child.type as JSXElementConstructor<any>).name;
@@ -60,18 +66,29 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
     return sortedChildren;
   }, [children]);
 
-  // Hols the initial view state for the main map, used by compare map at mount
+  // Holds the initial view state for the main map, used by compare map at mount
   const [initialViewState, setInitialViewState] = useState({
     latitude: 0,
     longitude: 0,
     zoom: 1
   });
 
+  const { main, compared } = useMap();
+  
+  const { observe } = useDimensions({
+    onResize: () => {
+      setTimeout(() => {
+        main?.resize();
+        compared?.resize();
+      }, 0);
+    }
+  });
+
   return (
     <MapWrapperContext.Provider
       value={{ initialViewState, setInitialViewState }}
     >
-      <MapWrapperContainer id='comparison-container'>
+      <MapWrapperContainer id='comparison-container' ref={observe}>
         <Styles>
           {generators}
           <MapComponent id='main' controls={controls} />

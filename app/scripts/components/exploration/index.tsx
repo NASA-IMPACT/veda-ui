@@ -42,7 +42,7 @@ const Container = styled.div`
     justify-content: center;
     width: 5rem;
     margin: 0 auto -1.25rem auto;
-    padding: 0.25rem 0;
+    padding: 0.8rem 0 0.25rem;
     z-index: 1;
 
     ::before {
