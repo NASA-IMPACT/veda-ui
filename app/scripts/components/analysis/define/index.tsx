@@ -114,7 +114,7 @@ export const allAvailableDatasetsLayers: DatasetLayer[] = Object.values(
 )
   .map((dataset) => (dataset as VedaDatum<DatasetData>).data.layers)
   .flat()
-  .filter((d) => d.type !== 'vector');
+  .filter((d) =>  !!d && (d.type !== 'vector'));
 
 export default function Analysis() {
   const { params, setAnalysisParam } = useAnalysisParams();
