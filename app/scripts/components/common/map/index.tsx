@@ -21,13 +21,17 @@ import { MapId } from './types';
 
 const MapContainer = styled.div`
   && {
-    position: absolute;
     inset: 0;
-    width: 100%;
+  }
+
+  & > * {
+    border: 1px solid red;
+    position: absolute !important;
     top: 0;
     bottom: 0;
     left: 0;
   }
+
   ${MapboxStyleOverride}
 `;
 
@@ -40,25 +44,29 @@ function CompareHandler() {
   useEffect(() => {
     if (!main) return;
 
-    let compare;
     if (compared) {
-      compare = new MapboxCompare(main, compared, '#comparison-container', {
-        mousemove: false,
-        orientation: 'vertical'
-      });
-    }
+      const compare = new MapboxCompare(
+        main,
+        compared,
+        '#comparison-container',
+        {
+          mousemove: false,
+          orientation: 'vertical'
+        }
+      );
 
-    return () => {
-      if (compare) compare.remove();
-    };
+      return () => {
+        compare.remove();
+      };
+    }
   }, [main, compared]);
 
-  return <div>sdsd</div>;
+  return null;
 }
 
-function Map({
+function MapComponent({
   id,
-  controls,
+  controls
 }: {
   id: MapId;
   controls: ReactElement[];
@@ -84,7 +92,6 @@ function Map({
       id={id}
       mapboxAccessToken={process.env.MAPBOX_TOKEN}
       initialViewState={initialViewState}
-      style={{ position: 'absolute', top: 0, bottom: 0, left: 0 }}
       mapStyle={style as any}
       onMove={onMove}
     >
@@ -98,27 +105,28 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
     const childrenArr = Children.toArray(children) as ReactElement[];
 
     // Split children into layers and controls
-    let generators: ReactElement[] = [];
-    let controls: ReactElement[] = [];
-    let compareGenerators: ReactElement[] = [];
-
-    childrenArr.forEach((child) => {
-      const componentName = (child.type as JSXElementConstructor<any>).name;
-      if (componentName === 'Compare') {
-        compareGenerators = Children.toArray(
-          child.props.children
-        ) as ReactElement[];
-      } else if (['Basemap', 'RasterTimeseries'].includes(componentName)) {
-        generators = [...generators, child];
-      } else {
-        controls = [...controls, child];
+    const sortedChildren = childrenArr.reduce(
+      (acc, child) => {
+        const componentName = (child.type as JSXElementConstructor<any>).name;
+        if (componentName === 'Compare') {
+          acc.compareGenerators = Children.toArray(
+            child.props.children
+          ) as ReactElement[];
+        } else if (['Basemap', 'RasterTimeseries'].includes(componentName)) {
+          acc.generators = [...acc.generators, child];
+        } else {
+          acc.controls = [...acc.controls, child];
+        }
+        return acc;
+      },
+      {
+        generators: [] as ReactElement[],
+        controls: [] as ReactElement[],
+        compareGenerators: [] as ReactElement[]
       }
-    });
-    return {
-      generators,
-      controls,
-      compareGenerators
-    };
+    );
+
+    return sortedChildren;
   }, [children]);
 
   const [initialViewState, setInitialViewState] = useState({
@@ -127,23 +135,21 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
     zoom: 1
   });
 
-  const [activeMap, setActiveMap] = useState<MapId>('main');
-
   return (
     <MapContainerContext.Provider
-      value={{ initialViewState, setInitialViewState, activeMap, setActiveMap }}
+      value={{ initialViewState, setInitialViewState }}
     >
       <MapContainer id='comparison-container'>
         <MapProvider>
           <CompareHandler />
           <Styles>
             {generators}
-            <Map id='main' controls={controls} />
+            <MapComponent id='main' controls={controls} />
           </Styles>
           {compareGenerators.length && (
             <Styles>
               {compareGenerators}
-              <Map id='compared' controls={[]} />
+              <MapComponent id='compared' controls={[]} />
             </Styles>
           )}
         </MapProvider>
@@ -155,13 +161,9 @@ export default function MapWrapper({ children }: { children: ReactNode }) {
 interface MapContainerContextType {
   initialViewState: any;
   setInitialViewState: (viewState: any) => void;
-  activeMap: MapId;
-  setActiveMap: (mapId: MapId) => void;
 }
 
 const MapContainerContext = createContext<MapContainerContextType>({
   initialViewState: {},
   setInitialViewState: () => undefined,
-  activeMap: 'main',
-  setActiveMap: () => undefined
 });
