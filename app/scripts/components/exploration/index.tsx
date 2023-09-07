@@ -10,7 +10,7 @@ import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
-import Map, {  Compare } from '$components/common/map';
+import Map, { Compare } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/map-options/geocoder';
 
@@ -76,13 +76,6 @@ function Exploration() {
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>
-              <button
-                style={{ position: 'relative', zIndex: 99 }}
-                onClick={() => setCompare(!compare)}
-                type='button'
-              >
-                compare mode: {compare ? 'true' : 'false'}
-              </button>
               <Map id='exploration'>
                 <Basemap basemapStyleId='satellite' />
                 <GeocoderControl />
@@ -92,7 +85,10 @@ function Exploration() {
                   </Compare>
                 )}
               </Map>
-              <MockControls />
+              <MockControls
+                comparing={compare}
+                onCompareClick={() => setCompare((v) => !v)}
+              />
             </Panel>
             <PanelResizeHandle className='resize-handle' />
             <Panel maxSize={75} className='panel panel-timeline'>

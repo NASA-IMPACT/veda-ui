@@ -19,19 +19,9 @@ import MapComponent from './map-component';
 import { useMaps } from './hooks/use-maps';
 
 const MapsContainer = styled.div`
-  && {
-    inset: 0;
-    height: 100%;
-  }
-
-  & > * {
-    position: absolute !important;
-    top: 0;
-    bottom: 0;
-    left: 0;
-  }
-
   ${MapboxStyleOverride}
+
+  height: 100%;
 `;
 
 function Maps({ children }: { children: ReactNode }) {
