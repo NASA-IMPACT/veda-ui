@@ -421,7 +421,7 @@ export function MockControls({ onCompareClick, comparing }: any) {
 
   useEffect(() => {
     const listener = (e) => {
-      if (e.altKey && e.shiftKey && e.keyCode === 181) {
+      if (e.altKey && e.shiftKey && e.code === 'KeyM') {
         setMockRevealed((v) => !v);
       }
     };
