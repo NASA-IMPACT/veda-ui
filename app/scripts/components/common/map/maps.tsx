@@ -9,6 +9,12 @@ import React, {
   useContext
 } from 'react';
 import styled from 'styled-components';
+import {
+  CollecticonChevronLeftSmall,
+  CollecticonChevronRightSmall,
+  iconDataURI
+} from '@devseed-ui/collecticons';
+import { themeVal } from '@devseed-ui/theme-provider';
 import useDimensions from 'react-cool-dimensions';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -18,10 +24,48 @@ import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
 import { useMaps } from './hooks/use-maps';
 
+const chevronRightURI = () =>
+  iconDataURI(CollecticonChevronRightSmall, {
+    color: 'white'
+  });
+
+const chevronLeftURI = () =>
+  iconDataURI(CollecticonChevronLeftSmall, {
+    color: 'white'
+  });
+
 const MapsContainer = styled.div`
   ${MapboxStyleOverride}
-
   height: 100%;
+
+  .mapboxgl-map {
+    position: absolute !important;
+    inset: 0;
+  }
+
+  .mapboxgl-compare .compare-swiper-vertical {
+    background: ${themeVal('color.primary')};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::before,
+    &::after {
+      display: inline-block;
+      content: '';
+      background-repeat: no-repeat;
+      background-size: 1rem 1rem;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    &::before {
+      background-image: url('${chevronLeftURI()}');
+    }
+    &::after {
+      background-image: url('${chevronRightURI()}');
+    }
+  }
 `;
 
 function Maps({ children }: { children: ReactNode }) {
