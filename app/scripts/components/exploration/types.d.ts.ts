@@ -23,6 +23,11 @@ export type AnalysisTimeseriesEntry = Record<string, number | null> & {
   date: Date;
 };
 
+interface AnalysisMeta {
+  loaded: number;
+  total: number;
+}
+
 // TimelineDatasetAnalysis type discriminants
 export interface TimelineDatasetAnalysisIdle {
   status: TimelineDatasetStatus.IDLE;
@@ -34,19 +39,13 @@ export interface TimelineDatasetAnalysisLoading {
   status: TimelineDatasetStatus.LOADING;
   data: null;
   error: null;
-  meta: {
-    loaded?: number;
-    total?: number;
-  };
+  meta: Partial<AnalysisMeta>
 }
 export interface TimelineDatasetAnalysisError {
   status: TimelineDatasetStatus.ERROR;
   data: null;
   error: unknown;
-  meta: {
-    loaded?: number;
-    total?: number;
-  };
+  meta: Partial<AnalysisMeta>
 }
 export interface TimelineDatasetAnalysisSuccess {
   status: TimelineDatasetStatus.SUCCESS;
@@ -54,10 +53,7 @@ export interface TimelineDatasetAnalysisSuccess {
     timeseries: AnalysisTimeseriesEntry[];
   };
   error: null;
-  meta: {
-    loaded: number;
-    total: number;
-  };
+  meta: AnalysisMeta;
 }
 
 export type TimelineDatasetAnalysis =
@@ -74,49 +70,44 @@ export interface TimelineDatasetData extends DatasetLayer {
   domain: Date[];
 }
 
+export interface TimelineDatasetSettings {
+  // Whether or not the layer should be shown on the map.
+  isVisible?: boolean;
+  // Opacity of the layer on the map.
+  opacity?: number;
+}
+
 // TimelineDataset type discriminants
 export interface TimelineDatasetIdle {
   status: TimelineDatasetStatus.IDLE;
   data: DatasetLayer;
   error: null;
-  settings: {
-    // user defined settings like visibility, opacity
-    isVisible?: boolean;
-    opacity?: number;
-  };
+  // User controlled settings like visibility, opacity.
+  settings: TimelineDatasetSettings;
   analysis: TimelineDatasetAnalysisIdle;
 }
 export interface TimelineDatasetLoading {
   status: TimelineDatasetStatus.LOADING;
   data: DatasetLayer;
   error: null;
-  settings: {
-    // user defined settings like visibility, opacity
-    isVisible?: boolean;
-    opacity?: number;
-  };
+  // User controlled settings like visibility, opacity.
+  settings: TimelineDatasetSettings;
   analysis: TimelineDatasetAnalysisIdle;
 }
 export interface TimelineDatasetError {
   status: TimelineDatasetStatus.ERROR;
   data: DatasetLayer;
   error: unknown;
-  settings: {
-    // user defined settings like visibility, opacity
-    isVisible?: boolean;
-    opacity?: number;
-  };
+  // User controlled settings like visibility, opacity.
+  settings: TimelineDatasetSettings;
   analysis: TimelineDatasetAnalysisIdle;
 }
 export interface TimelineDatasetSuccess {
   status: TimelineDatasetStatus.SUCCESS;
   data: TimelineDatasetData;
   error: null;
-  settings: {
-    // user defined settings like visibility, opacity
-    isVisible?: boolean;
-    opacity?: number;
-  };
+  // User controlled settings like visibility, opacity.
+  settings: TimelineDatasetSettings;
   analysis: TimelineDatasetAnalysis;
 }
 
