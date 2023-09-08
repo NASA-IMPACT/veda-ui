@@ -6,6 +6,7 @@ import { useMaps } from "./use-maps";
 export default function useMapCompare() {
   const maps = useMaps();
   const { containerId } = useContext(MapsContext);
+  const hasMapCompare = !!maps.compared;
   useEffect(() => {
     if (!maps.main) return;
 
@@ -24,5 +25,5 @@ export default function useMapCompare() {
         compare.remove();
       };
     }
-  }, [maps, containerId]);
+  }, [containerId, hasMapCompare]);
 }
