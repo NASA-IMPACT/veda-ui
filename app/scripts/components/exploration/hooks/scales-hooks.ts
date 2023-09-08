@@ -25,7 +25,8 @@ export function useScaleFactors() {
     const domainDays = differenceInCalendarDays(dataDomain[1], dataDomain[0]);
 
     return {
-      k0: Math.max(1, DAY_SIZE_MIN / (contentWidth / domainDays)),
+      // k0: Math.max(1, DAY_SIZE_MIN / (contentWidth / domainDays)),
+      k0: 1,
       k1: DAY_SIZE_MAX / (contentWidth / domainDays)
     };
   }, [contentWidth, dataDomain]);

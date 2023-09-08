@@ -135,7 +135,9 @@ export function useStacMetadataOnDatasets() {
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
 
   const datasetsQueryData = useQueries({
-    queries: datasets.map((dataset) => makeQueryObject(dataset))
+    queries: datasets
+      .filter((d) => !(d as any).mocked)
+      .map((dataset) => makeQueryObject(dataset))
   });
 
   useEffectPrevious<[typeof datasetsQueryData, TimelineDataset[]]>(
@@ -143,28 +145,33 @@ export function useStacMetadataOnDatasets() {
       const prevQueryData = prev[0];
       if (!prevQueryData) return;
 
-      const { changed, data: updatedDatasets } = datasets.reduce<{
-        changed: boolean;
-        data: TimelineDataset[];
-      }>(
-        (acc, dataset, idx) => {
-          const curr = datasetsQueryData[idx];
+      const { changed, data: updatedDatasets } = datasets
+        .filter((d) => !(d as any).mocked)
+        .reduce<{
+          changed: boolean;
+          data: TimelineDataset[];
+        }>(
+          (acc, dataset, idx) => {
+            const curr = datasetsQueryData[idx];
 
-          if (didDataChange(curr, prevQueryData[idx])) {
-            // Changed
-            return {
-              changed: true,
-              data: [...acc.data, reconcileQueryDataWithDataset(curr, dataset)]
-            };
-          } else {
-            return {
-              ...acc,
-              data: [...acc.data, dataset]
-            };
-          }
-        },
-        { changed: false, data: [] }
-      );
+            if (didDataChange(curr, prevQueryData[idx])) {
+              // Changed
+              return {
+                changed: true,
+                data: [
+                  ...acc.data,
+                  reconcileQueryDataWithDataset(curr, dataset)
+                ]
+              };
+            } else {
+              return {
+                ...acc,
+                data: [...acc.data, dataset]
+              };
+            }
+          },
+          { changed: false, data: [] }
+        );
 
       if (changed as boolean) {
         setDatasets(updatedDatasets);

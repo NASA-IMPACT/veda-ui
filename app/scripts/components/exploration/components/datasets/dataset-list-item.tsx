@@ -2,17 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
-import {
-  addDays,
-  subDays,
-  endOfDay,
-  endOfMonth,
-  endOfYear,
-  startOfDay,
-  startOfMonth,
-  startOfYear,
-  areIntervalsOverlapping
-} from 'date-fns';
+import { addDays, subDays, areIntervalsOverlapping } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { ScaleTime } from 'd3';
 import {
@@ -35,13 +25,13 @@ import {
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
 import DatasetOptions from './dataset-options';
+import { getBlockBoundaries, lumpBlocks } from './block-utils';
 
 import {
   LayerCategoricalGraphic,
   LayerGradientGraphic
 } from '$components/common/mapbox/layer-legend';
 import {
-  TimeDensity,
   TimelineDatasetStatus,
   TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
@@ -58,17 +48,6 @@ import {
   activeAnalysisMetricsAtom,
   isAnalysisAtom
 } from '$components/exploration/atoms/atoms';
-
-function getBlockBoundaries(date: Date, timeDensity: TimeDensity) {
-  switch (timeDensity) {
-    case TimeDensity.MONTH:
-      return [startOfMonth(date), endOfMonth(date)];
-    case TimeDensity.YEAR:
-      return [startOfYear(date), endOfYear(date)];
-  }
-
-  return [startOfDay(date), endOfDay(date)];
-}
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -137,6 +116,11 @@ const DatasetData = styled.div`
   display: flex;
   align-items: center;
   flex-grow: 1;
+`;
+
+const DatasetGLabel = styled.text`
+  font-weight: ${themeVal('type.base.bold')};
+  font-size: 0.75rem;
 `;
 
 interface DatasetListItemProps {
@@ -367,16 +351,32 @@ function DatasetTrack(props: DatasetTrackProps) {
     });
   }, [xScaled, dataset]);
 
+  const { blocks, wasLumped } = lumpBlocks({
+    domain: domainToRender,
+    xScaled,
+    timeDensity: dataset.data.timeDensity
+  });
+
   return (
     <svg width={width} height={DATASET_TRACK_BLOCK_HEIGHT}>
-      {domainToRender.map((date) => (
-        <DatasetTrackBlock
-          key={date.getTime()}
-          xScaled={xScaled}
-          date={date}
-          dataset={dataset}
-          isVisible={isVisible}
-        />
+      {blocks.map(([blockStart, blockEnd]) => (
+        <g key={blockStart.getTime()}>
+          <DatasetTrackBlock
+            xScaled={xScaled}
+            startDate={blockStart}
+            endDate={blockEnd}
+            isVisible={isVisible}
+          />
+          {wasLumped && (
+            <DatasetGLabel
+              fill='white'
+              x={Math.max(xScaled(blockStart), 2) + 2}
+              y={12}
+            >
+              G
+            </DatasetGLabel>
+          )}
+        </g>
       ))}
     </svg>
   );
@@ -384,34 +384,31 @@ function DatasetTrack(props: DatasetTrackProps) {
 
 interface DatasetTrackBlockProps {
   xScaled: ScaleTime<number, number>;
-  date: Date;
-  dataset: TimelineDatasetSuccess;
+  startDate: Date;
+  endDate: Date;
   isVisible: boolean;
 }
 
 function DatasetTrackBlock(props: DatasetTrackBlockProps) {
-  const { xScaled, date, dataset, isVisible } = props;
+  const { xScaled, startDate, endDate, isVisible } = props;
 
   const theme = useTheme();
 
-  const [start, end] = getBlockBoundaries(date, dataset.data.timeDensity);
-  const s = xScaled(start);
-  const e = xScaled(end);
+  const s = xScaled(startDate);
+  const e = xScaled(endDate);
 
   const fill = isVisible
     ? theme.color?.['base-400']
     : theme.color?.['base-200'];
 
   return (
-    <React.Fragment key={date.getTime()}>
-      <rect
-        fill={fill}
-        y={0}
-        height={DATASET_TRACK_BLOCK_HEIGHT}
-        x={s}
-        width={e - s}
-        rx={4}
-      />
-    </React.Fragment>
+    <rect
+      fill={fill}
+      y={0}
+      height={DATASET_TRACK_BLOCK_HEIGHT}
+      x={s}
+      width={e - s}
+      rx={4}
+    />
   );
 }
