@@ -41,5 +41,9 @@ export const isExpandedAtom = atom<boolean>(false);
 // What analysis metrics are enabled
 export const activeAnalysisMetricsAtom = atom<DataMetric[]>(dataMetrics);
 
-// 🛑 Whether or not an analysis is being performed. Temporary!!!
-export const isAnalysisAtom = atom<boolean>(false);
+// Analysis controller. Stores high level state about the analysis process.
+export const analysisControllerAtom = atom({
+  isAnalyzing: false,
+  runId: 0,
+  isObsolete: false
+});

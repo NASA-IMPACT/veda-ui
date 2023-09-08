@@ -6,7 +6,6 @@ import { themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 
 import {
-  isAnalysisAtom,
   isExpandedAtom,
   timelineDatasetsAtom
 } from './atoms/atoms';
@@ -15,6 +14,7 @@ import {
   TimelineDatasetAnalysis,
   TimelineDatasetStatus
 } from './types.d.ts';
+import { useAnalysisController } from './hooks/use-analysis-data-request';
 
 const chartData = {
   status: 'success',
@@ -381,7 +381,8 @@ function makeDataset(
     mocked: true,
     status,
     data,
-    error: status === TimelineDatasetStatus.ERROR ? new Error('Mock error') : null,
+    error:
+      status === TimelineDatasetStatus.ERROR ? new Error('Mock error') : null,
     settings: {
       ...settings,
       isVisible: settings.isVisible === undefined ? true : settings.isVisible
@@ -418,7 +419,9 @@ export function MockControls({ onCompareClick, comparing }: any) {
 
   const set = useSetAtom(timelineDatasetsAtom);
   const setIsExpanded = useSetAtom(isExpandedAtom);
-  const setIsAnalysis = useSetAtom(isAnalysisAtom);
+
+  const { isObsolete, runAnalysis, cancelAnalysis, isAnalyzing } =
+    useAnalysisController();
 
   useEffect(() => {
     const listener = (e) => {
@@ -600,17 +603,44 @@ export function MockControls({ onCompareClick, comparing }: any) {
       >
         Toggle expanded
       </Button>
-      <Button
-        onClick={() => {
-          setIsAnalysis((v) => !v);
-        }}
-        variation='primary-outline'
-      >
-        Toggle analysis
-      </Button>
       <Button onClick={onCompareClick} variation='primary-outline'>
         Toggle compare ({comparing.toString()})
       </Button>
+      <div style={{ border: '1px solid teal'}}>
+        {isAnalyzing ? (
+          <>
+            In Analysis (obsolete: {isObsolete.toString()})
+            <Button
+              onClick={() => {
+                runAnalysis();
+              }}
+              variation='secondary-outline'
+            >
+              Refresh
+            </Button>
+            <Button
+              onClick={() => {
+                cancelAnalysis();
+              }}
+              variation='secondary-outline'
+            >
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <>
+            NOT Analysis (obsolete: {isObsolete.toString()})
+            <Button
+              onClick={() => {
+                runAnalysis();
+              }}
+              variation='secondary-outline'
+            >
+              Analyze
+            </Button>
+          </>
+        )}
+      </div>
     </MockPanel>
   );
 }
