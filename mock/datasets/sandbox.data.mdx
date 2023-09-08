@@ -161,6 +161,32 @@ layers:
           label: "Out of season"
         - color: "#804115"
           label: "No data"
+  - id: facebook_population_density
+    stacCol: facebook_population_density
+    name: 'Facebook Population Density'
+    type: raster
+    description: 'Facebook high-resolution population density with a 30m² resolution'
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      resampling: bilinear
+      bidx: 1
+      colormap_name: ylorrd
+      rescale:
+        - 0
+        - 69
+    legend:
+      type: gradient
+      min: "0"
+      max: "69"
+      stops:
+      - "#ffffcc"
+      - "#fee187"
+      - "#feab49"
+      - "#fc5b2e"
+      - "#d41020"
+      - "#800026"
 related:
   - type: dataset
     id: no2
