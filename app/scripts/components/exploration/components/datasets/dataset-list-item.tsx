@@ -46,8 +46,9 @@ import {
 } from '$components/exploration/atoms/hooks';
 import {
   activeAnalysisMetricsAtom,
-  isAnalysisAtom
+  analysisControllerAtom
 } from '$components/exploration/atoms/atoms';
+import { useAnalysisDataRequest } from '$components/exploration/hooks/use-analysis-data-request';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -133,7 +134,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const dataset = useAtomValue(datasetAtom);
   const activeMetrics = useAtomValue(activeAnalysisMetricsAtom);
 
-  const isAnalysis = useAtomValue(isAnalysisAtom);
+  const { isAnalyzing } = useAtomValue(analysisControllerAtom);
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
 
@@ -179,16 +180,18 @@ export function DatasetListItem(props: DatasetListItemProps) {
     data: dataPoint
   });
 
+  useAnalysisDataRequest({ datasetAtom });
+
   const isDatasetError = dataset.status === TimelineDatasetStatus.ERROR;
   const isDatasetLoading = dataset.status === TimelineDatasetStatus.LOADING;
   const isDatasetSuccess = dataset.status === TimelineDatasetStatus.SUCCESS;
 
   const isAnalysisAndError =
-    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.ERROR;
+    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.ERROR;
   const isAnalysisAndLoading =
-    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.LOADING;
+    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.LOADING;
   const isAnalysisAndSuccess =
-    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
+    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
 
   const datasetLegend = dataset.data.legend;
 
@@ -265,7 +268,11 @@ export function DatasetListItem(props: DatasetListItemProps) {
             <>
               {isAnalysisAndLoading && (
                 <DatasetTrackLoading
-                  message={`${dataset.analysis.meta.loaded} of ${dataset.analysis.meta.total} items loaded`}
+                  message={
+                    dataset.analysis.meta.total === undefined
+                      ? 'Fetching item information'
+                      : `${dataset.analysis.meta.loaded} of ${dataset.analysis.meta.total} items loaded`
+                  }
                 />
               )}
               {isAnalysisAndError && (
@@ -290,7 +297,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             </>
           )}
 
-          {isDatasetSuccess && !isAnalysis && (
+          {isDatasetSuccess && !isAnalyzing && (
             <DatasetTrack
               width={width}
               xScaled={xScaled!}
