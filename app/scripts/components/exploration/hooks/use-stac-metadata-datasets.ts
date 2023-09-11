@@ -9,6 +9,7 @@ import { useAtom } from 'jotai';
 import { timelineDatasetsAtom } from '../atoms/atoms';
 import {
   StacDatasetData,
+  TimeDensity,
   TimelineDataset,
   TimelineDatasetStatus
 } from '../types.d.ts';
@@ -79,8 +80,8 @@ async function fetchStacDatasetById(
   );
 
   const commonTimeseriesParams = {
-    isPeriodic: data['dashboard:is_periodic'],
-    timeDensity: data['dashboard:time_density']
+    isPeriodic: !!data['dashboard:is_periodic'],
+    timeDensity: data['dashboard:time_density'] || TimeDensity.DAY
   };
 
   if (type === 'vector') {
