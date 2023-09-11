@@ -426,6 +426,7 @@ function PageHeader() {
                     <li>
                       <GlobalMenuLink
                         as='a'
+                        target='_blank'
                         href={process.env.HUB_URL}
                         onClick={closeNavOnClick}
                       >
