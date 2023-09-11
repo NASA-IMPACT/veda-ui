@@ -12,7 +12,8 @@ import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import Map, { Compare } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
-import GeocoderControl from '$components/common/map/controls/map-options/geocoder';
+import GeocoderControl from '$components/common/map/controls/geocoder';
+import { NavigationControl, ScaleControl } from '$components/common/map/controls';
 
 const Container = styled.div`
   display: flex;
@@ -79,6 +80,8 @@ function Exploration() {
               <Map id='exploration'>
                 <Basemap basemapStyleId='satellite' />
                 <GeocoderControl />
+                <NavigationControl />
+                <ScaleControl />
                 {compare && (
                   <Compare>
                     <Basemap basemapStyleId='dark' />
