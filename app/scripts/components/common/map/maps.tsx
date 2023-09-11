@@ -22,7 +22,7 @@ import MapboxStyleOverride from './mapbox-style-override';
 import { Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
-import { useMaps } from './hooks/use-maps';
+import useMaps from './hooks/use-maps';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {

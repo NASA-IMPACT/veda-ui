@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useMap } from 'react-map-gl';
 import { MapsContext } from '../maps';
 
-export function useMaps() {
+export default function useMaps() {
   const { mainId, comparedId } = useContext(MapsContext);
   const maps = useMap();
 

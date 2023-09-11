@@ -1,29 +1,25 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect } from 'react';
 import MapboxCompare from 'mapbox-gl-compare';
-import { MapsContext } from "../maps";
-import { useMaps } from "./use-maps";
+import { MapsContext } from '../maps';
+import useMaps from './use-maps';
 
 export default function useMapCompare() {
-  const maps = useMaps();
+  const { main, compared } = useMaps();
   const { containerId } = useContext(MapsContext);
-  const hasMapCompare = !!maps.compared;
+  const hasMapCompare = !!compared;
   useEffect(() => {
-    if (!maps.main) return;
+    if (!main) return;
 
-    if (maps.compared) {
-      const compare = new MapboxCompare(
-        maps.main,
-        maps.compared,
-        `#${containerId}`,
-        {
-          mousemove: false,
-          orientation: 'vertical'
-        }
-      );
+    if (compared) {
+      const compare = new MapboxCompare(main, compared, `#${containerId}`, {
+        mousemove: false,
+        orientation: 'vertical'
+      });
 
       return () => {
         compare.remove();
       };
     }
+    // main should be stable, while we are only interested here in the absence or presence of compared
   }, [containerId, hasMapCompare]);
 }

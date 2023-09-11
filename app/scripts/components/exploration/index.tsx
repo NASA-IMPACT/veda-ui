@@ -14,6 +14,7 @@ import Map, { Compare } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/geocoder';
 import { NavigationControl, ScaleControl } from '$components/common/map/controls';
+import Coords from '$components/common/map/controls/coords';
 
 const Container = styled.div`
   display: flex;
@@ -58,7 +59,7 @@ const Container = styled.div`
 `;
 
 function Exploration() {
-  const [compare, setCompare] = useState(false);
+  const [compare, setCompare] = useState(true);
   const [datasetModalRevealed, setDatasetModalRevealed] = useState(true);
 
   const openModal = useCallback(() => setDatasetModalRevealed(true), []);
@@ -82,6 +83,7 @@ function Exploration() {
                 <GeocoderControl />
                 <NavigationControl />
                 <ScaleControl />
+                <Coords />
                 {compare && (
                   <Compare>
                     <Basemap basemapStyleId='dark' />
