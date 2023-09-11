@@ -122,7 +122,7 @@ function Maps({ children }: { children: ReactNode }) {
       {!!compareGenerators.length && (
         <Styles>
           {compareGenerators}
-          <MapComponent controls={[]} isCompared />
+          <MapComponent controls={controls} isCompared />
         </Styles>
       )}
     </MapsContainer>
