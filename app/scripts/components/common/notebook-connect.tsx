@@ -134,7 +134,7 @@ export function NotebookConnectModal(props: {
           <DatasetUsages>
             {datasetUsagesWithIcon.map((datasetUsage) => (
               <li key={datasetUsage.url}>
-                <DatasetUsageLink href={datasetUsage.url}>
+                <DatasetUsageLink href={datasetUsage.url} target='_blank'>
                   {IconByType[datasetUsage.type]}
                   <DatasetUsageLabel>
                     <h4>{datasetUsage.title}</h4>
