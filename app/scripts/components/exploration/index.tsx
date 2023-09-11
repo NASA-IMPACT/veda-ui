@@ -10,6 +10,9 @@ import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
+import Map, { Compare } from '$components/common/map';
+import { Basemap } from '$components/common/map/style-generators/basemap';
+import GeocoderControl from '$components/common/map/controls/map-options/geocoder';
 
 const Container = styled.div`
   display: flex;
@@ -23,6 +26,7 @@ const Container = styled.div`
   .panel {
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   .panel-timeline {
@@ -38,7 +42,7 @@ const Container = styled.div`
     justify-content: center;
     width: 5rem;
     margin: 0 auto -1.25rem auto;
-    padding: 0.25rem 0;
+    padding: 0.8rem 0 0.25rem;
     z-index: 1;
 
     ::before {
@@ -53,6 +57,7 @@ const Container = styled.div`
 `;
 
 function Exploration() {
+  const [compare, setCompare] = useState(false);
   const [datasetModalRevealed, setDatasetModalRevealed] = useState(true);
 
   const openModal = useCallback(() => setDatasetModalRevealed(true), []);
@@ -71,8 +76,19 @@ function Exploration() {
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>
-              <div>Top</div>
-              <MockControls />
+              <Map id='exploration'>
+                <Basemap basemapStyleId='satellite' />
+                <GeocoderControl />
+                {compare && (
+                  <Compare>
+                    <Basemap basemapStyleId='dark' />
+                  </Compare>
+                )}
+              </Map>
+              <MockControls
+                comparing={compare}
+                onCompareClick={() => setCompare((v) => !v)}
+              />
             </Panel>
             <PanelResizeHandle className='resize-handle' />
             <Panel maxSize={75} className='panel panel-timeline'>

@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { eachDayOfInterval, eachMonthOfInterval } from 'date-fns';
 import { useSetAtom } from 'jotai';
 import styled from 'styled-components';
+import { themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 
-import { isAnalysisAtom, isExpandedAtom, timelineDatasetsAtom } from './atoms/atoms';
+import {
+  isAnalysisAtom,
+  isExpandedAtom,
+  timelineDatasetsAtom
+} from './atoms/atoms';
 import {
   TimelineDataset,
   TimelineDatasetAnalysis,
@@ -398,12 +403,33 @@ const MockPanel = styled.div`
   flex-flow: row wrap;
   padding: 1rem;
   gap: 1rem;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  background: ${themeVal('color.surface')};
+  box-shadow: ${themeVal('boxShadow.elevationC')};
 `;
 
-export function MockControls() {
+export function MockControls({ onCompareClick, comparing }: any) {
+  const [mockRevealed, setMockRevealed] = useState(false);
+
   const set = useSetAtom(timelineDatasetsAtom);
   const setIsExpanded = useSetAtom(isExpandedAtom);
   const setIsAnalysis = useSetAtom(isAnalysisAtom);
+
+  useEffect(() => {
+    const listener = (e) => {
+      if (e.altKey && e.shiftKey && e.code === 'KeyM') {
+        setMockRevealed((v) => !v);
+      }
+    };
+    document.addEventListener('keypress', listener);
+    return () => document.removeEventListener('keypress', listener);
+  }, []);
+
+  if (!mockRevealed) return null;
 
   return (
     <MockPanel>
@@ -580,6 +606,9 @@ export function MockControls() {
         variation='primary-outline'
       >
         Toggle analysis
+      </Button>
+      <Button onClick={onCompareClick} variation='primary-outline'>
+        Toggle compare ({comparing.toString()})
       </Button>
     </MockPanel>
   );
