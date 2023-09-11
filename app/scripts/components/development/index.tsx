@@ -34,6 +34,10 @@ function Development() {
           developmentContent?.data.description ||
           'Visualization, Exploration, and Data Analysis (VEDA): Scalable and Interactive System for Science Data.'
         }
+        coverSrc={developmentContent?.data.media?.src}
+        coverAlt={developmentContent?.data.media?.alt}
+        attributionAuthor={developmentContent?.data.media?.author?.name}
+        attributionUrl={developmentContent?.data.media?.author?.url}
       />
 
       <ContentOverride with='developmentContent'>
