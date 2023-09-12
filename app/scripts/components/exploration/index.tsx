@@ -13,8 +13,14 @@ import { PageMainContent } from '$styles/page';
 import Map, { Compare } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/geocoder';
-import { NavigationControl, ScaleControl } from '$components/common/map/controls';
-import Coords from '$components/common/map/controls/coords';
+import {
+  NavigationControl,
+  ScaleControl
+} from '$components/common/map/controls';
+import MapCoordsControl from '$components/common/map/controls/coords';
+import MapOptionsControl from '$components/common/map/controls/options';
+import { projectionDefault } from '$components/common/map/controls/map-options/projections';
+import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 
 const Container = styled.div`
   display: flex;
@@ -65,6 +71,16 @@ function Exploration() {
   const openModal = useCallback(() => setDatasetModalRevealed(true), []);
   const closeModal = useCallback(() => setDatasetModalRevealed(false), []);
 
+  const [projection, setProjection] = useState(projectionDefault);
+
+  const {
+    mapBasemapId,
+    setBasemapId,
+    labelsOption,
+    boundariesOption,
+    onOptionChange
+  } = useBasemap();
+
   return (
     <>
       <LayoutProps
@@ -78,13 +94,29 @@ function Exploration() {
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>
-              <Map id='exploration'>
-                <Basemap basemapStyleId='satellite' />
+              <Map id='exploration' projection={projection}>
+                {/* Map layers */}
+                <Basemap
+                  basemapStyleId={mapBasemapId}
+                  labelsOption={labelsOption}
+                  boundariesOption={boundariesOption}
+                />
+                {/* Map controls */}
                 <GeocoderControl />
                 <NavigationControl />
                 <ScaleControl />
-                <Coords />
+                <MapCoordsControl />
+                <MapOptionsControl
+                  projection={projection}
+                  onProjectionChange={setProjection}
+                  basemapStyleId={mapBasemapId}
+                  onBasemapStyleIdChange={setBasemapId}
+                  labelsOption={labelsOption}
+                  boundariesOption={boundariesOption}
+                  onOptionChange={onOptionChange}
+                />
                 {compare && (
+                  // Compare map layers
                   <Compare>
                     <Basemap basemapStyleId='dark' />
                   </Compare>

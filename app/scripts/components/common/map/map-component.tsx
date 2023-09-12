@@ -1,16 +1,20 @@
-import React, { useCallback, ReactElement, useContext } from 'react';
+import React, { useCallback, ReactElement, useContext, useMemo } from 'react';
 import ReactMapGlMap from 'react-map-gl';
+import { ProjectionOptions } from 'veda';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
+import { convertProjectionToMapbox } from '../mapbox/map-options/utils';
 import { StylesContext } from './styles';
 import { MapsContext } from './maps';
 
 export default function MapComponent({
   controls,
-  isCompared
+  isCompared,
+  projection
 }: {
   controls: ReactElement[];
   isCompared?: boolean;
+  projection?: ProjectionOptions;
 }) {
   const { initialViewState, setInitialViewState, mainId, comparedId } =
     useContext(MapsContext);
@@ -26,6 +30,12 @@ export default function MapComponent({
     [isCompared, setInitialViewState]
   );
 
+    // Get MGL projection from Veda projection
+    const mapboxProjection = useMemo(() => {
+      if (!projection) return undefined;
+      return convertProjectionToMapbox(projection);
+    }, [projection]);
+
   const { style } = useContext(StylesContext);
 
   if (!style) return null;
@@ -37,6 +47,7 @@ export default function MapComponent({
       initialViewState={initialViewState}
       mapStyle={style as any}
       onMove={onMove}
+      projection={mapboxProjection}
     >
       {controls}
     </ReactMapGlMap>
