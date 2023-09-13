@@ -53,7 +53,7 @@ function GoogleForm() {
         onClick={show}
         style={{ color: 'white' }}
       >
-        Feedback
+        Contact Us
       </ButtonAsNavLink>
       <Modal
         id='modal'

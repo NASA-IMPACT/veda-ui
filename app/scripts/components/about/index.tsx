@@ -18,6 +18,10 @@ function About() {
         description={
           aboutContent?.data.description || 'This is the default description'
         }
+        coverSrc={aboutContent?.data.media?.src}
+        coverAlt={aboutContent?.data.media?.alt}
+        attributionAuthor={aboutContent?.data.media?.author?.name}
+        attributionUrl={aboutContent?.data.media?.author?.url}
       />
       <ContentOverride with='aboutContent'>
         <FoldProse>

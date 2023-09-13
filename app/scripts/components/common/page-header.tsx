@@ -408,7 +408,7 @@ function PageHeader() {
                       to={ANALYSIS_PATH}
                       onClick={closeNavOnClick}
                     >
-                      Analysis
+                      Data Analysis
                     </GlobalMenuLink>
                   </li>
                   <li>
@@ -426,6 +426,8 @@ function PageHeader() {
                     <li>
                       <GlobalMenuLink
                         as='a'
+                        target='_blank'
+                        rel='noopener'
                         href={process.env.HUB_URL}
                         onClick={closeNavOnClick}
                       >
@@ -433,7 +435,6 @@ function PageHeader() {
                       </GlobalMenuLink>
                     </li>
                   )}
-
                 </GlobalMenu>
               </SectionsNavBlock>
               <SectionsNavBlock>
