@@ -408,7 +408,7 @@ function PageHeader() {
                       to={ANALYSIS_PATH}
                       onClick={closeNavOnClick}
                     >
-                      Analysis
+                      Data Analysis
                     </GlobalMenuLink>
                   </li>
                   <li>
