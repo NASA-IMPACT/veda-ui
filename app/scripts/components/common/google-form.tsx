@@ -58,7 +58,7 @@ function GoogleForm() {
       <Modal
         id='modal'
         size='large'
-        title='Give us feedback'
+        title='Contact Us'
         revealed={isRevealed}
         onCloseClick={hide}
         onOverlayClick={hide}
