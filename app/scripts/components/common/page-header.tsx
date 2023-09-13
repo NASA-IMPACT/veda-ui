@@ -427,7 +427,7 @@ function PageHeader() {
                       <GlobalMenuLink
                         as='a'
                         target='_blank'
-                         rel='noopener'
+                        rel='noopener'
                         href={process.env.HUB_URL}
                         onClick={closeNavOnClick}
                       >
@@ -435,7 +435,6 @@ function PageHeader() {
                       </GlobalMenuLink>
                     </li>
                   )}
-
                 </GlobalMenu>
               </SectionsNavBlock>
               <SectionsNavBlock>
