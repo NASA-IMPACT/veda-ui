@@ -118,7 +118,7 @@ function Exploration() {
                 {compare && (
                   // Compare map layers
                   <Compare>
-                    <Basemap basemapStyleId='dark' />
+                    <Basemap basemapStyleId={mapBasemapId} />
                   </Compare>
                 )}
               </Map>
