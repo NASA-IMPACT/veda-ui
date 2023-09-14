@@ -44,6 +44,10 @@ export default function MapComponent({
     <ReactMapGlMap
       id={id}
       mapboxAccessToken={process.env.MAPBOX_TOKEN}
+      dragRotate={false}
+      touchPitch={false}
+      pitchWithRotate={false}
+      maxPitch={0}
       initialViewState={initialViewState}
       mapStyle={style as any}
       onMove={onMove}
