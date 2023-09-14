@@ -5,8 +5,23 @@ import { focusAtom } from 'jotai-optics';
 import { add, max } from 'date-fns';
 
 import { DAY_SIZE_MAX } from '../constants';
-import { TimelineDataset, TimelineDatasetStatus } from '../types.d.ts';
+import {
+  TimeDensity,
+  TimelineDataset,
+  TimelineDatasetStatus,
+  TimelineDatasetSuccess
+} from '../types.d.ts';
 import { timelineDatasetsAtom, timelineSizesAtom } from './atoms';
+
+function addDurationToDate(date, timeDensity: TimeDensity) {
+  const duration = {
+    [TimeDensity.YEAR]: { years: 1 },
+    [TimeDensity.MONTH]: { months: 1 },
+    [TimeDensity.DAY]: { days: 1 }
+  }[timeDensity];
+
+  return add(date, duration);
+}
 
 /**
  * Calculates the date domain of the datasets, if any are selected.
@@ -20,7 +35,8 @@ export function useTimelineDatasetsDomain() {
 
   return useMemo(() => {
     const successDatasets = datasets.filter(
-      (d) => d.status === TimelineDatasetStatus.SUCCEEDED
+      (d): d is TimelineDatasetSuccess =>
+        d.status === TimelineDatasetStatus.SUCCESS
     );
     if (!successDatasets.length) return undefined;
 
@@ -28,7 +44,12 @@ export function useTimelineDatasetsDomain() {
     // is ordered and only look at first and last dates.
     const [start, end] = extent(
       successDatasets.flatMap((d) =>
-        d.data.domain ? [d.data.domain[0], d.data.domain.last] : []
+        d.data.domain.length
+          ? [
+              d.data.domain[0],
+              addDurationToDate(d.data.domain.last, d.data.timeDensity)
+            ]
+          : []
       )
     ) as [Date, Date];
 
