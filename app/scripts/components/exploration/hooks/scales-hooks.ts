@@ -4,7 +4,7 @@ import { useAtomValue } from 'jotai';
 import { differenceInCalendarDays } from 'date-fns';
 
 import { timelineSizesAtom, zoomTransformAtom } from '../atoms/atoms';
-import { DAY_SIZE_MAX, DAY_SIZE_MIN } from '../constants';
+import { DAY_SIZE_MAX } from '../constants';
 import { useTimelineDatasetsDomain } from '../atoms/hooks';
 import { rescaleX } from '../components/timeline/timeline-utils';
 
