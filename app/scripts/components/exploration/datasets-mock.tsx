@@ -17,7 +17,7 @@ import {
 } from './types.d.ts';
 
 const chartData = {
-  status: 'succeeded',
+  status: 'success',
   meta: {
     total: 9,
     loaded: 9
@@ -110,7 +110,7 @@ const chartData = {
 };
 
 const chartData2 = {
-  status: 'succeeded',
+  status: 'success',
   meta: {
     total: 15,
     loaded: 15
@@ -372,21 +372,21 @@ function makeAnalysis(
 }
 
 function makeDataset(
-  data,
-  status = TimelineDatasetStatus.SUCCEEDED,
+  data: any,
+  status = TimelineDatasetStatus.SUCCESS,
   settings: Record<string, any> = {},
   analysis = makeAnalysis({}, {})
-): TimelineDataset {
+) {
   return {
     status,
     data,
-    error: null,
+    error: status === TimelineDatasetStatus.ERROR ? new Error('Mock error') : null,
     settings: {
       ...settings,
       isVisible: settings.isVisible === undefined ? true : settings.isVisible
     },
     analysis
-  };
+  } as TimelineDataset;
 }
 
 function toggleDataset(dataset) {
@@ -471,10 +471,10 @@ export function MockControls({ onCompareClick, comparing }: any) {
             toggleDataset(
               makeDataset(
                 {
-                  id: 'errored',
+                  id: 'error',
                   name: 'Error dataset'
                 },
-                TimelineDatasetStatus.ERRORED
+                TimelineDatasetStatus.ERROR
               )
             )
           );
@@ -505,12 +505,12 @@ export function MockControls({ onCompareClick, comparing }: any) {
             toggleDataset(
               makeDataset(
                 datasetSingle,
-                TimelineDatasetStatus.SUCCEEDED,
+                TimelineDatasetStatus.SUCCESS,
                 {},
                 makeAnalysis(
                   chartData2.data,
                   chartData2.meta,
-                  TimelineDatasetStatus.SUCCEEDED
+                  TimelineDatasetStatus.SUCCESS
                 )
               )
             )
@@ -526,12 +526,12 @@ export function MockControls({ onCompareClick, comparing }: any) {
             toggleDataset(
               makeDataset(
                 dataset2020,
-                TimelineDatasetStatus.SUCCEEDED,
+                TimelineDatasetStatus.SUCCESS,
                 {},
                 makeAnalysis(
                   chartData.data,
                   chartData.meta,
-                  TimelineDatasetStatus.SUCCEEDED
+                  TimelineDatasetStatus.SUCCESS
                 )
               )
             )
@@ -551,7 +551,7 @@ export function MockControls({ onCompareClick, comparing }: any) {
                   id: 'analysis-loading',
                   name: 'Analysis loading'
                 },
-                TimelineDatasetStatus.SUCCEEDED,
+                TimelineDatasetStatus.SUCCESS,
                 {},
                 makeAnalysis(
                   {},
@@ -576,12 +576,12 @@ export function MockControls({ onCompareClick, comparing }: any) {
                   id: 'analysis-error',
                   name: 'Analysis Error'
                 },
-                TimelineDatasetStatus.SUCCEEDED,
+                TimelineDatasetStatus.SUCCESS,
                 {},
                 makeAnalysis(
                   {},
                   { loaded: 34, total: 100 },
-                  TimelineDatasetStatus.ERRORED
+                  TimelineDatasetStatus.ERROR
                 )
               )
             )

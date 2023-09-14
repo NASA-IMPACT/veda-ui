@@ -99,7 +99,7 @@ export function DatasetTrackError(props: {
         <TrackMessage>
           <p>{message}</p>
           {typeof onRetryClick === 'function' ? (
-            <Button variation='danger-fill' size='small'>
+            <Button variation='danger-fill' size='small' onClick={onRetryClick}>
               Retry <CollecticonArrowLoop size='small' />
             </Button>
           ) : null}

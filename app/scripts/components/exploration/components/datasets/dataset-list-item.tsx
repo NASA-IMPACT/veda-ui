@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
@@ -13,6 +13,7 @@ import {
   startOfYear,
   areIntervalsOverlapping
 } from 'date-fns';
+import { useQueryClient } from '@tanstack/react-query';
 import { ScaleTime } from 'd3';
 import {
   CollecticonEye,
@@ -41,8 +42,8 @@ import {
 } from '$components/common/mapbox/layer-legend';
 import {
   TimeDensity,
-  TimelineDataset,
-  TimelineDatasetStatus
+  TimelineDatasetStatus,
+  TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
 import {
   DATASET_TRACK_BLOCK_HEIGHT,
@@ -157,6 +158,18 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
 
+  const queryClient = useQueryClient();
+
+  const retryDatasetMetadata = useCallback(() => {
+    queryClient.invalidateQueries(
+      {
+        queryKey: ['dataset', datasetId],
+        exact: true
+      },
+      { throwOnError: false }
+    );
+  }, [queryClient, datasetId]);
+
   const controls = useDragControls();
 
   // Hook to handle the hover state of the dataset. Check the source file as to
@@ -174,7 +187,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
     xScaled,
     containerWidth: width,
     layerX,
-    data: dataset.analysis.data.timeseries
+    data: dataset.analysis.data?.timeseries
   });
 
   const {
@@ -187,16 +200,16 @@ export function DatasetListItem(props: DatasetListItemProps) {
     data: dataPoint
   });
 
-  const isDatasetError = dataset.status === TimelineDatasetStatus.ERRORED;
+  const isDatasetError = dataset.status === TimelineDatasetStatus.ERROR;
   const isDatasetLoading = dataset.status === TimelineDatasetStatus.LOADING;
-  const isDatasetSucceeded = dataset.status === TimelineDatasetStatus.SUCCEEDED;
+  const isDatasetSuccess = dataset.status === TimelineDatasetStatus.SUCCESS;
 
   const isAnalysisAndError =
-    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.ERRORED;
+    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.ERROR;
   const isAnalysisAndLoading =
     isAnalysis && dataset.analysis.status === TimelineDatasetStatus.LOADING;
-  const isAnalysisAndSucceeded =
-    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.SUCCEEDED;
+  const isAnalysisAndSuccess =
+    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
 
   const datasetLegend = dataset.data.legend;
 
@@ -264,13 +277,12 @@ export function DatasetListItem(props: DatasetListItemProps) {
             <DatasetTrackError
               message='Oh no, something went wrong'
               onRetryClick={() => {
-                /* eslint-disable-next-line no-console */
-                console.log('Retry metadata loading');
+                retryDatasetMetadata();
               }}
             />
           )}
 
-          {isDatasetSucceeded && (
+          {isDatasetSuccess && (
             <>
               {isAnalysisAndLoading && (
                 <DatasetTrackLoading
@@ -286,7 +298,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   }}
                 />
               )}
-              {isAnalysisAndSucceeded && (
+              {isAnalysisAndSuccess && (
                 <DatasetChart
                   xScaled={xScaled!}
                   width={width}
@@ -299,7 +311,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             </>
           )}
 
-          {isDatasetSucceeded && !isAnalysis && (
+          {isDatasetSuccess && !isAnalysis && (
             <DatasetTrack
               width={width}
               xScaled={xScaled!}
@@ -308,7 +320,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             />
           )}
 
-          {isVisible && isPopoverVisible && dataPoint && (
+          {isDatasetSuccess && isVisible && isPopoverVisible && dataPoint && (
             <DatasetPopover
               ref={popoverRefs.setFloating}
               style={floatingStyles}
@@ -326,7 +338,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
 interface DatasetTrackProps {
   width: number;
   xScaled: ScaleTime<number, number>;
-  dataset: TimelineDataset;
+  dataset: TimelineDatasetSuccess;
   isVisible: boolean;
 }
 
@@ -373,7 +385,7 @@ function DatasetTrack(props: DatasetTrackProps) {
 interface DatasetTrackBlockProps {
   xScaled: ScaleTime<number, number>;
   date: Date;
-  dataset: TimelineDataset;
+  dataset: TimelineDatasetSuccess;
   isVisible: boolean;
 }
 
