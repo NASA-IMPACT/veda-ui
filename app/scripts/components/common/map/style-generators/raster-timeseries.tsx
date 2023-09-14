@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import qs from 'qs';
 import {
-  Map as MapboxMap,
   AnyLayer,
   AnySourceImpl,
   GeoJSONSourceRaw,
@@ -12,17 +11,18 @@ import {
 } from 'mapbox-gl';
 import { useTheme } from 'styled-components';
 import { featureCollection, point } from '@turf/helpers';
-
-import { useMapStyle } from './styles';
+import { StacFeature } from '../types';
+import { useMapStyle } from '../styles';
 import {
   FIT_BOUNDS_PADDING,
   getFilterPayload,
   getMergedBBox,
   requestQuickCache,
-  useFitBbox,
-  useLayerInteraction
-} from './utils';
-import { useCustomMarker } from './custom-marker';
+} from '../utils';
+import useFitBbox from '../hooks/use-fit-bbox';
+import useLayerInteraction from '../hooks/use-layer-interaction';
+import useCustomMarker from '../hooks/use-custom-marker';
+import useMaps from '../hooks/use-maps';
 
 import {
   ActionStatus,
@@ -32,14 +32,14 @@ import {
   S_SUCCEEDED
 } from '$utils/status';
 
+
 // Whether or not to print the request logs.
 const LOG = true;
 
-export interface MapLayerRasterTimeseriesProps {
+export interface RasterTimeseriesProps {
   id: string;
   stacCol: string;
-  date?: Date;
-  mapInstance: MapboxMap;
+  date: Date;
   sourceParams?: Record<string, any>;
   zoomExtent?: number[];
   bounds?: number[];
@@ -47,10 +47,6 @@ export interface MapLayerRasterTimeseriesProps {
   isHidden?: boolean;
   idSuffix?: string;
   isPositionSet?: boolean;
-}
-
-export interface StacFeature {
-  bbox: [number, number, number, number];
 }
 
 enum STATUS_KEY {
@@ -65,12 +61,11 @@ interface Statuses {
   [STATUS_KEY.StacSearch]: ActionStatus;
 }
 
-export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
+export function RasterTimeseries(props: RasterTimeseriesProps) {
   const {
     id,
     stacCol,
     date,
-    mapInstance,
     sourceParams,
     zoomExtent,
     bounds,
@@ -80,7 +75,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     isPositionSet
   } = props;
 
-  console.log(props)
+  
+  const { main: mapInstance } = useMaps();
 
   const theme = useTheme();
   const { updateStyle } = useMapStyle();
@@ -163,7 +159,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-disable no-console */
         LOG &&
           console.groupCollapsed(
-            'MapLayerRasterTimeseries %cLoading STAC features',
+            'RasterTimeseries %cLoading STAC features',
             'color: orange;',
             id
           );
@@ -180,7 +176,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-disable no-console */
         LOG &&
           console.groupCollapsed(
-            'MapLayerRasterTimeseries %cAdding STAC features',
+            'RasterTimeseries %cAdding STAC features',
             'color: green;',
             id
           );
@@ -198,7 +194,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG &&
           /* eslint-disable-next-line no-console */
           console.log(
-            'MapLayerRasterTimeseries %cAborted STAC features',
+            'RasterTimeseries %cAborted STAC features',
             'color: red;',
             id
           );
@@ -236,7 +232,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   //
   const [mosaicUrl, setMosaicUrl] = useState<string | null>(null);
   useEffect(() => {
-    if (!id || !stacCol || !date) return;
+    if (!id || !stacCol) return;
 
     // If the search returned no data, remove anything previously there so we
     // don't run the risk that the selected date and data don't match, even
@@ -260,7 +256,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-disable no-console */
         LOG &&
           console.groupCollapsed(
-            'MapLayerRasterTimeseries %cLoading Mosaic',
+            'RasterTimeseries %cLoading Mosaic',
             'color: orange;',
             id
           );
@@ -279,7 +275,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-disable no-console */
         LOG &&
           console.groupCollapsed(
-            'MapLayerRasterTimeseries %cAdding Mosaic',
+            'RasterTimeseries %cAdding Mosaic',
             'color: green;',
             id
           );
@@ -296,7 +292,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG &&
           /* eslint-disable-next-line no-console */
           console.log(
-            'MapLayerRasterTimeseries %cAborted Mosaic',
+            'RasterTimeseries %cAborted Mosaic',
             'color: red;',
             id
           );
@@ -375,7 +371,10 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             // Ignore errors.
           }
 
-          const wmtsBaseUrl = mosaicUrl.replace('tilejson.json', 'WMTSCapabilities.xml');
+          const wmtsBaseUrl = mosaicUrl.replace(
+            'tilejson.json',
+            'WMTSCapabilities.xml'
+          );
 
           const mosaicSource: RasterSource = {
             type: 'raster',
@@ -491,7 +490,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   const onPointsClick = useCallback(
     (features) => {
       const bounds = JSON.parse(features[0].properties.bounds);
-      mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
+      mapInstance?.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
     },
     [mapInstance]
   );
@@ -508,7 +507,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
     [stacCollection]
   );
-  useFitBbox(mapInstance, !!isPositionSet, bounds, layerBounds);
+  useFitBbox(mapInstance as any, !!isPositionSet, bounds, layerBounds);
 
   return null;
 }

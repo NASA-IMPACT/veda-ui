@@ -21,6 +21,10 @@ import MapCoordsControl from '$components/common/map/controls/coords';
 import MapOptionsControl from '$components/common/map/controls/options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
+import {
+  MapLayerRasterTimeseries,
+  RasterTimeseries
+} from '$components/common/map/style-generators/raster-timeseries';
 
 const Container = styled.div`
   display: flex;
@@ -101,6 +105,17 @@ function Exploration() {
                   labelsOption={labelsOption}
                   boundariesOption={boundariesOption}
                 />
+                <RasterTimeseries
+                  id='test'
+                  stacCol='nightlights-hd-monthly'
+                  date={new Date('2019-01-01')}
+                  zoomExtent={[4, 16]}
+                  sourceParams={{
+                    bidx: 1,
+                    colormap_name: 'inferno',
+                    rescale: [0, 255]
+                  }}
+                />
                 {/* Map controls */}
                 <GeocoderControl />
                 <NavigationControl />
@@ -119,6 +134,17 @@ function Exploration() {
                   // Compare map layers
                   <Compare>
                     <Basemap basemapStyleId={mapBasemapId} />
+                    <RasterTimeseries
+                      id='test2'
+                      stacCol='nightlights-hd-monthly'
+                      date={new Date('2020-04-01')}
+                      zoomExtent={[4, 16]}
+                      sourceParams={{
+                        bidx: 1,
+                        colormap_name: 'inferno',
+                        rescale: [0, 255]
+                      }}
+                    />
                   </Compare>
                 )}
               </Map>

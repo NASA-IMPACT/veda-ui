@@ -21,3 +21,9 @@ export type LayerOrderPosition =
   | 'basemap-foreground';
 
 export type MapId = 'main' | 'compared'
+
+export interface StacFeature {
+  bbox: [number, number, number, number];
+}
+
+export type OptionalBbox = number[] | undefined | null;
