@@ -73,7 +73,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   } = props;
 
   
-  const { main: mapInstance } = useMaps();
+  const { current: mapInstance } = useMaps();
 
   const theme = useTheme();
   const { updateStyle } = useMapStyle();

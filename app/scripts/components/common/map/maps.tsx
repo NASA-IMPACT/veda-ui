@@ -125,7 +125,7 @@ function Maps({ children, projection }: MapsProps) {
         <MapComponent controls={controls} projection={projection} />
       </Styles>
       {!!compareGenerators.length && (
-        <Styles>
+        <Styles isCompared>
           {compareGenerators}
           <MapComponent
             isCompared

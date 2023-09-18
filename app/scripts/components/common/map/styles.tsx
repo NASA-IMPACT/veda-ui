@@ -15,12 +15,14 @@ interface StylesContextType {
   style?: Style;
   updateMetaData?: (params: unknown) => void;
   metaData?: unknown;
+  isCompared?: boolean;
 }
 
 export const StylesContext = createContext<StylesContextType>({
   updateStyle: (params: GeneratorStyleParams) => {
     return params;
-  }
+  },
+  isCompared: false
 });
 
 
@@ -95,10 +97,12 @@ const generateStyle = (stylesData: Record<string, GeneratorStyleParams>) => {
 
 export function Styles({
   onStyleUpdate,
-  children
+  children,
+  isCompared,
 }: {
   onStyleUpdate?: (style: ExtendedStyle) => void;
   children?: ReactNode;
+  isCompared?: boolean;
 }) {
   const [stylesData, setStylesData] = useState<Record<string, GeneratorStyleParams>>(
     {}
@@ -123,7 +127,7 @@ export function Styles({
   }, [stylesData, onStyleUpdate]);
 
   return (
-    <StylesContext.Provider value={{ updateStyle, style }}>
+    <StylesContext.Provider value={{ updateStyle, style, isCompared }}>
       {children}
     </StylesContext.Provider>
   );
