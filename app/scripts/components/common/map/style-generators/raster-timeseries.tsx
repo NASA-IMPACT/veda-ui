@@ -11,7 +11,7 @@ import {
 } from 'mapbox-gl';
 import { useTheme } from 'styled-components';
 import { featureCollection, point } from '@turf/helpers';
-import { StacFeature } from '../types';
+import { BaseGeneratorParams, StacFeature } from '../types';
 import { useMapStyle } from '../styles';
 import {
   FIT_BOUNDS_PADDING,
@@ -36,7 +36,7 @@ import {
 // Whether or not to print the request logs.
 const LOG = true;
 
-export interface RasterTimeseriesProps {
+export interface RasterTimeseriesProps extends BaseGeneratorParams {
   id: string;
   stacCol: string;
   date: Date;
@@ -44,7 +44,6 @@ export interface RasterTimeseriesProps {
   zoomExtent?: number[];
   bounds?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  isHidden?: boolean;
   isPositionSet?: boolean;
 }
 
@@ -69,8 +68,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     zoomExtent,
     bounds,
     onStatusChange,
-    isHidden,
-    isPositionSet
+    isPositionSet,
+    hidden,
   } = props;
 
   
@@ -383,11 +382,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             id: id,
             type: 'raster',
             source: id,
-            layout: {
-              visibility: isHidden ? 'none' : 'visible'
-            },
             paint: {
-              'raster-opacity': Number(!isHidden),
+              'raster-opacity': Number(!hidden),
               'raster-opacity-transition': {
                 duration: 320
               }
@@ -423,7 +419,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             source: pointsSourceId,
             layout: {
               ...(markerLayout as any),
-              visibility: isHidden ? 'none' : 'visible',
               'icon-allow-overlap': true
             },
             paint: {
@@ -446,7 +441,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         updateStyle({
           generatorId,
           sources,
-          layers
+          layers,
+          params: props as BaseGeneratorParams
         });
       }
 
@@ -464,7 +460,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       minZoom,
       points,
       haveSourceParamsChanged,
-      isHidden,
+      hidden,
       generatorId
     ]
   );
