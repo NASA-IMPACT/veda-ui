@@ -118,11 +118,6 @@ const DatasetData = styled.div`
   flex-grow: 1;
 `;
 
-const DatasetGLabel = styled.text`
-  font-weight: ${themeVal('type.base.bold')};
-  font-size: 0.75rem;
-`;
-
 interface DatasetListItemProps {
   datasetId: string;
   width: number;
@@ -358,25 +353,16 @@ function DatasetTrack(props: DatasetTrackProps) {
   });
 
   return (
-    <svg width={width} height={DATASET_TRACK_BLOCK_HEIGHT}>
+    <svg width={width} height={DATASET_TRACK_BLOCK_HEIGHT + 2}>
       {blocks.map(([blockStart, blockEnd]) => (
-        <g key={blockStart.getTime()}>
-          <DatasetTrackBlock
-            xScaled={xScaled}
-            startDate={blockStart}
-            endDate={blockEnd}
-            isVisible={isVisible}
-          />
-          {wasLumped && (
-            <DatasetGLabel
-              fill='white'
-              x={Math.max(xScaled(blockStart), 2) + 2}
-              y={12}
-            >
-              G
-            </DatasetGLabel>
-          )}
-        </g>
+        <DatasetTrackBlock
+          key={blockStart.getTime()}
+          xScaled={xScaled}
+          startDate={blockStart}
+          endDate={blockEnd}
+          isVisible={isVisible}
+          isGroup={wasLumped}
+        />
       ))}
     </svg>
   );
@@ -387,28 +373,44 @@ interface DatasetTrackBlockProps {
   startDate: Date;
   endDate: Date;
   isVisible: boolean;
+  isGroup: boolean;
 }
 
 function DatasetTrackBlock(props: DatasetTrackBlockProps) {
-  const { xScaled, startDate, endDate, isVisible } = props;
+  const { xScaled, startDate, endDate, isVisible, isGroup } = props;
 
   const theme = useTheme();
 
-  const s = xScaled(startDate);
-  const e = xScaled(endDate);
+  const xStart = xScaled(startDate);
+  const xEnd = xScaled(endDate);
 
   const fill = isVisible
     ? theme.color?.['base-400']
     : theme.color?.['base-200'];
 
   return (
-    <rect
-      fill={fill}
-      y={0}
-      height={DATASET_TRACK_BLOCK_HEIGHT}
-      x={s}
-      width={e - s}
-      rx={4}
-    />
+    <g>
+      {isGroup && (
+        <rect
+          fill={fill}
+          y={0}
+          height={DATASET_TRACK_BLOCK_HEIGHT}
+          x={xStart}
+          width={xEnd - xStart}
+          rx={4}
+          transform='translate(2, 2)'
+        />
+      )}
+      <rect
+        fill={fill}
+        y={0}
+        height={DATASET_TRACK_BLOCK_HEIGHT}
+        x={xStart}
+        width={xEnd - xStart}
+        rx={4}
+        stroke='#fff'
+        strokeWidth={isGroup ? 1 : 0}
+      />
+    </g>
   );
 }
