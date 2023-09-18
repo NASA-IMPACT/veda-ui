@@ -45,7 +45,6 @@ export interface RasterTimeseriesProps {
   bounds?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
-  idSuffix?: string;
   isPositionSet?: boolean;
 }
 
@@ -71,7 +70,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     bounds,
     onStatusChange,
     isHidden,
-    idSuffix = '',
     isPositionSet
   } = props;
 
@@ -82,7 +80,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
-  const generatorId = 'raster-timeseries' + idSuffix;
+  const generatorId = 'raster-timeseries' + id;
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
