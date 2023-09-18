@@ -15,6 +15,7 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
+import { ProjectionOptions } from 'veda';
 import useDimensions from 'react-cool-dimensions';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -22,7 +23,7 @@ import MapboxStyleOverride from './mapbox-style-override';
 import { Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
-import { useMaps } from './hooks/use-maps';
+import useMaps from './hooks/use-maps';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -68,8 +69,12 @@ const MapsContainer = styled.div`
   }
 `;
 
-function Maps({ children }: { children: ReactNode }) {
-  // Instanciate MGL Compare, if compare is enabled
+type MapsProps = Pick<MapsContextWrapperProps, 'projection'> & {
+  children: ReactNode;
+};
+
+function Maps({ children, projection }: MapsProps) {
+  // Instantiate MGL Compare, if compare is enabled
   useMapCompare();
 
   // Split children into layers and controls, using all children provided
@@ -117,24 +122,29 @@ function Maps({ children }: { children: ReactNode }) {
     <MapsContainer id={containerId} ref={observe}>
       <Styles>
         {generators}
-        <MapComponent controls={controls} />
+        <MapComponent controls={controls} projection={projection} />
       </Styles>
       {!!compareGenerators.length && (
         <Styles>
           {compareGenerators}
-          <MapComponent controls={[]} isCompared />
+          <MapComponent
+            isCompared
+            controls={controls}
+            projection={projection}
+          />
         </Styles>
       )}
     </MapsContainer>
   );
 }
 
-export interface MapsProps {
+export interface MapsContextWrapperProps {
   children: ReactNode;
   id: string;
+  projection?: ProjectionOptions;
 }
 
-export default function MapsContextWrapper(props: MapsProps) {
+export default function MapsContextWrapper(props: MapsContextWrapperProps) {
   const { id } = props;
   const mainId = `main-map-${id}`;
   const comparedId = `compared-map-${id}`;
