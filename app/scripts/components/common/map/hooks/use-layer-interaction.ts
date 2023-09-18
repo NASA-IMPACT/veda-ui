@@ -1,18 +1,17 @@
 
 import { Feature } from 'geojson';
-import { Map as MapboxMap } from 'mapbox-gl';
 import { useEffect } from 'react';
+import useMaps from './use-maps';
 
 interface LayerInteractionHookOptions {
   layerId: string;
-  mapInstance: MapboxMap;
   onClick: (features: Feature<any>[]) => void;
 }
 export default function useLayerInteraction({
   layerId,
-  mapInstance,
   onClick
 }: LayerInteractionHookOptions) {
+  const { current: mapInstance } = useMaps();
   useEffect(() => {
     if (!mapInstance) return;
     const onPointsClick = (e) => {

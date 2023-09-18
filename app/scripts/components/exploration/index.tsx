@@ -141,7 +141,7 @@ function Exploration() {
                         colormap_name: 'inferno',
                         rescale: [0, 255]
                       }}
-                      hidden={true}
+                      // hidden={true}
                     />
                   </Compare>
                 )}

@@ -488,7 +488,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   );
   useLayerInteraction({
     layerId: `${id}-points`,
-    mapInstance,
     onClick: onPointsClick
   });
 
@@ -499,7 +498,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
     [stacCollection]
   );
-  useFitBbox(mapInstance as any, !!isPositionSet, bounds, layerBounds);
+  useFitBbox(!!isPositionSet, bounds, layerBounds);
 
   return null;
 }
