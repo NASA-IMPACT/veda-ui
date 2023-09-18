@@ -4,7 +4,7 @@ import { ProjectionOptions } from 'veda';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import { convertProjectionToMapbox } from '../mapbox/map-options/utils';
-import { StylesContext } from './styles';
+import { useMapStyle } from './styles';
 import { MapsContext } from './maps';
 
 export default function MapComponent({
@@ -36,7 +36,7 @@ export default function MapComponent({
       return convertProjectionToMapbox(projection);
     }, [projection]);
 
-  const { style } = useContext(StylesContext);
+  const { style } = useMapStyle();
 
   if (!style) return null;
 

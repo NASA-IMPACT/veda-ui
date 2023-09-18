@@ -59,9 +59,10 @@ export function Basemap({
     setBaseStyle(styleJson as Style);
   }, [styleJson]);
 
-  // Apply labels and boundaries options, by setting visibility on related layers
-  // For simplicity's sake, the Mapbox layer group (as set in Mapbox Studio) is used
-  // to determine wehether a layer is a labels layer or boundaries or none of those.
+  // Apply labels and boundaries options, by setting visibility on related
+  // layers For simplicity's sake, the Mapbox layer group (as set in Mapbox
+  // Studio) is used to determine whether a layer is a labels layer or
+  // boundaries or none of those.
   useEffect(() => {
     if (!baseStyle) return;
 
