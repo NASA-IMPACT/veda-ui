@@ -74,7 +74,7 @@ type MapsProps = Pick<MapsContextWrapperProps, 'projection'> & {
 };
 
 function Maps({ children, projection }: MapsProps) {
-  // Instanciate MGL Compare, if compare is enabled
+  // Instantiate MGL Compare, if compare is enabled
   useMapCompare();
 
   // Split children into layers and controls, using all children provided

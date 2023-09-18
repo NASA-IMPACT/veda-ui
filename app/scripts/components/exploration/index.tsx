@@ -121,7 +121,11 @@ function Exploration() {
                 {compare && (
                   // Compare map layers
                   <Compare>
-                    <Basemap basemapStyleId={mapBasemapId} />
+                    <Basemap
+                      basemapStyleId={mapBasemapId}
+                      labelsOption={labelsOption}
+                      boundariesOption={boundariesOption}
+                    />
                   </Compare>
                 )}
               </Map>
