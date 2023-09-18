@@ -1,4 +1,4 @@
-import { AnyLayer, AnySourceImpl, Layer, Style } from 'mapbox-gl';
+import { AnySourceImpl, Layer, Style } from 'mapbox-gl';
 import React, {
   ReactNode,
   createContext,
@@ -8,6 +8,8 @@ import React, {
   useState
 } from 'react';
 import { ExtendedLayer, GeneratorStyleParams, LayerOrderPosition } from './types';
+import useCustomMarker from './hooks/use-custom-marker';
+import useMaps from './hooks/use-maps';
 
 
 interface StylesContextType {
@@ -135,5 +137,8 @@ export function Styles({
 
 export const useMapStyle = () => {
   const { updateStyle, style } = useContext(StylesContext);
+  const { current } = useMaps();
+  useCustomMarker(current);
+
   return { updateStyle, style };
 };

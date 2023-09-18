@@ -21,10 +21,7 @@ import MapCoordsControl from '$components/common/map/controls/coords';
 import MapOptionsControl from '$components/common/map/controls/options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
-import {
-  MapLayerRasterTimeseries,
-  RasterTimeseries
-} from '$components/common/map/style-generators/raster-timeseries';
+import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
 
 const Container = styled.div`
   display: flex;

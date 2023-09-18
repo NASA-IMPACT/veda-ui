@@ -21,7 +21,7 @@ import {
 } from '../utils';
 import useFitBbox from '../hooks/use-fit-bbox';
 import useLayerInteraction from '../hooks/use-layer-interaction';
-import useCustomMarker from '../hooks/use-custom-marker';
+import { MARKER_LAYOUT } from '../hooks/use-custom-marker';
 import useMaps from '../hooks/use-maps';
 
 import {
@@ -323,8 +323,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     // an error.
   ]);
 
-  const markerLayout = useCustomMarker(mapInstance);
-
   //
   // Generate Mapbox GL layers and sources for raster timeseries
   //
@@ -418,7 +416,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             id: pointsSourceId,
             source: pointsSourceId,
             layout: {
-              ...(markerLayout as any),
+              ...MARKER_LAYOUT as any,
               'icon-allow-overlap': true
             },
             paint: {

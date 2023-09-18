@@ -4,7 +4,7 @@ import markerSdfUrl from '../style/marker-sdf.png';
 
 const CUSTOM_MARKER_ID = 'marker-sdf';
 
-const markerLayout = {
+export const MARKER_LAYOUT = {
   'icon-image': CUSTOM_MARKER_ID,
   'icon-size': 0.25,
   'icon-anchor': 'bottom'
@@ -23,6 +23,4 @@ export default function useCustomMarker(mapInstance) {
       mapInstance.addImage(CUSTOM_MARKER_ID, image, { sdf: true });
     });
   }, [mapInstance]);
-
-  return markerLayout;
 }
