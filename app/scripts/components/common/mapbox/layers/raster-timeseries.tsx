@@ -80,8 +80,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     isPositionSet
   } = props;
 
-  console.log(props)
-
   const theme = useTheme();
   const { updateStyle } = useMapStyle();
 
