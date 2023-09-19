@@ -4,7 +4,7 @@ import { useAtomValue } from 'jotai';
 import { differenceInCalendarDays } from 'date-fns';
 
 import { timelineSizesAtom, zoomTransformAtom } from '../atoms/atoms';
-import { DAY_SIZE_MAX, DAY_SIZE_MIN } from '../constants';
+import { DAY_SIZE_MAX } from '../constants';
 import { useTimelineDatasetsDomain } from '../atoms/hooks';
 import { rescaleX } from '../components/timeline/timeline-utils';
 
@@ -25,7 +25,8 @@ export function useScaleFactors() {
     const domainDays = differenceInCalendarDays(dataDomain[1], dataDomain[0]);
 
     return {
-      k0: Math.max(1, DAY_SIZE_MIN / (contentWidth / domainDays)),
+      // k0: Math.max(1, DAY_SIZE_MIN / (contentWidth / domainDays)),
+      k0: 1,
       k1: DAY_SIZE_MAX / (contentWidth / domainDays)
     };
   }, [contentWidth, dataDomain]);

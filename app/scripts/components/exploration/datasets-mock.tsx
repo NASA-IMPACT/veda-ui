@@ -378,6 +378,7 @@ function makeDataset(
   analysis = makeAnalysis({}, {})
 ) {
   return {
+    mocked: true,
     status,
     data,
     error: status === TimelineDatasetStatus.ERROR ? new Error('Mock error') : null,
