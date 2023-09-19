@@ -435,6 +435,17 @@ export function useLayerInteraction({
 type OptionalBbox = number[] | undefined | null;
 
 /**
+ * MapboxGL requires maxX value to be 180, minX -180, maxY 90, minY -90
+ * @param bounds Bounding box to fit layer
+ * @returns Boolean
+ */
+
+function isBboxToFitValid(bounds) {
+  const [minX, minY, maxX, maxY] = bounds;
+  return minX >= -180 && maxX <= 180 && minY >= -90 && maxY <= 90;
+}
+
+/**
  * Centers on the given bounds if the current position is not within the bounds,
  * and there's no user defined position (via user initiated map movement). Gives
  * preference to the layer defined bounds over the STAC collection bounds.
@@ -458,7 +469,7 @@ export function useFitBbox(
       | [number, number, number, number]
       | undefined;
 
-    if (bounds?.length && checkFitBoundsFromLayer(bounds, mapInstance)) {
+    if (bounds?.length && isBboxToFitValid(bounds)) {
       mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
     }
   }, [mapInstance, isUserPositionSet, initialBbox, stacBbox]);
