@@ -372,30 +372,6 @@ export function getMergedBBox(features: StacFeature[]) {
 
 export const FIT_BOUNDS_PADDING = 32;
 
-export function checkFitBoundsFromLayer(
-  layerBounds?: [number, number, number, number],
-  mapInstance?: MapboxMap
-) {
-  if (!layerBounds || !mapInstance) return false;
-
-  const [minXLayer, minYLayer, maxXLayer, maxYLayer] = layerBounds;
-  const [[minXMap, minYMap], [maxXMap, maxYMap]] = mapInstance
-    .getBounds()
-    .toArray();
-  const isOutside =
-    maxXLayer < minXMap ||
-    minXLayer > maxXMap ||
-    maxYLayer < minYMap ||
-    minYLayer > maxYMap;
-  const layerExtentSmaller =
-    maxXLayer - minXLayer < maxXMap - minXMap &&
-    maxYLayer - minYLayer < maxYMap - minYMap;
-
-  // only fitBounds if layer extent is smaller than viewport extent (ie zoom to area of interest),
-  // or if layer extent does not overlap at all with viewport extent (ie pan to area of interest)
-  return layerExtentSmaller || isOutside;
-}
-
 interface LayerInteractionHookOptions {
   layerId: string;
   mapInstance: MapboxMap;
