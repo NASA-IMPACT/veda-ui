@@ -161,11 +161,11 @@ function StoriesHub() {
     <PageMainContent>
       <LayoutProps
         title={getString('stories').other}
-        description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
+        description={getString('storiesBanner')?.other || 'Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'}
       />
       <PageHero
         title={getString('stories').other}
-        description='Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
+        description={getString('storiesBanner')?.other || 'Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'}
       />
 
       <FeaturedStories />
