@@ -44,7 +44,10 @@ function DatasetsOverview() {
           parentTo: DATASETS_PATH,
           items: allDatasetsProps,
           currentId: dataset.data.id,
-          localMenuCmp: <DatasetsLocalMenu dataset={dataset} />
+          localMenuCmp:
+            dataset?.data.disableExplore !== true ? (
+              <DatasetsLocalMenu dataset={dataset} />
+            ) : null
         }}
       />
 
@@ -53,7 +56,8 @@ function DatasetsOverview() {
           title={`${dataset.data.name} Overview`}
           description={dataset.data.description}
           renderBetaBlock={() => (
-              <PageActions>
+            <PageActions>
+              {dataset?.data.disableExplore !== true && (
                 <Button
                   forwardedAs={Link}
                   to={getDatasetExplorePath(dataset.data)}
@@ -63,13 +67,14 @@ function DatasetsOverview() {
                   <CollecticonCompass />
                   Explore data
                 </Button>
-                <NotebookConnectButton
-                  dataset={dataset.data}
-                  size='large'
-                  compact={false}
-                  variation='achromic-outline'
-                />
-              </PageActions>
+              )}
+              <NotebookConnectButton
+                dataset={dataset.data}
+                size='large'
+                compact={false}
+                variation='achromic-outline'
+              />
+            </PageActions>
           )}
           renderDetailsBlock={() => (
             <>

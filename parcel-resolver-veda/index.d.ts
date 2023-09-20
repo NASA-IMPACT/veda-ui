@@ -151,6 +151,7 @@ declare module 'veda' {
     media?: Media;
     layers: DatasetLayer[];
     related?: RelatedContentData[];
+    disableExplore?: boolean;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
