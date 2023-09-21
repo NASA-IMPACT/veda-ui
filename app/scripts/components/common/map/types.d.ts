@@ -6,11 +6,16 @@ export type ExtendedLayer = AnyLayer & {
     [key: string]: any;
   };
 };
-export interface GeneratorParams {
+
+export interface BaseGeneratorParams {
+  hidden?: boolean;
+}
+export interface GeneratorStyleParams {
   generatorId: string;
   layers: ExtendedLayer[];
   sources: Record<string, AnySourceImpl>;
   metadata?: Record<string, unknown>;
+  params?: BaseGeneratorParams;
 }
 
 export type LayerOrderPosition =
@@ -21,3 +26,9 @@ export type LayerOrderPosition =
   | 'basemap-foreground';
 
 export type MapId = 'main' | 'compared'
+
+export interface StacFeature {
+  bbox: [number, number, number, number];
+}
+
+export type OptionalBbox = number[] | undefined | null;

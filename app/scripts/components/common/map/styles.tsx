@@ -1,28 +1,31 @@
-import { AnySourceImpl, Style } from 'mapbox-gl';
+import { AnySourceImpl, Layer, Style } from 'mapbox-gl';
 import React, {
   ReactNode,
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useState
 } from 'react';
-import { ExtendedLayer, GeneratorParams, LayerOrderPosition } from './types';
-
+import {
+  ExtendedLayer,
+  GeneratorStyleParams,
+  LayerOrderPosition
+} from './types';
 
 interface StylesContextType {
-  updateStyle: (params: GeneratorParams) => void;
+  updateStyle: (params: GeneratorStyleParams) => void;
   style?: Style;
   updateMetaData?: (params: unknown) => void;
   metaData?: unknown;
+  isCompared?: boolean;
 }
 
 export const StylesContext = createContext<StylesContextType>({
-  updateStyle: (params: GeneratorParams) => {
+  updateStyle: (params: GeneratorStyleParams) => {
     return params;
-  }
+  },
+  isCompared: false
 });
-
 
 const LAYER_ORDER: LayerOrderPosition[] = [
   'basemap-background',
@@ -37,7 +40,7 @@ export type ExtendedStyle = ReturnType<typeof generateStyle>;
 // Takes in a dictionary associating each generator id with a series of
 //  Mapbox layers and sources to be added to the final style. Outputs
 //  a style object directly usable by the map instance.
-const generateStyle = (stylesData: Record<string, GeneratorParams>) => {
+const generateStyle = (stylesData: Record<string, GeneratorStyleParams>) => {
   let sources: Record<string, AnySourceImpl> = {};
   let layers: ExtendedLayer[] = [];
 
@@ -48,15 +51,22 @@ const generateStyle = (stylesData: Record<string, GeneratorParams>) => {
       ...generatorParams.sources
     };
 
-    const layersWithMeta = [
-      ...generatorParams.layers.map((layer) => {
-        const metadata = layer.metadata ?? {};
-        metadata.generatorId = generatorId;
-        return { ...layer, metadata };
-      })
-    ];
+    const generatorLayers = generatorParams.layers.map((generatorLayer) => {
+      const metadata = generatorLayer.metadata ?? {};
+      metadata.generatorId = generatorId;
 
-    layers = [...layers, ...layersWithMeta];
+      const mapLayer = { ...generatorLayer, metadata } as Layer;
+
+      if (generatorParams.params?.hidden) {
+        mapLayer.layout = {
+          ...mapLayer.layout,
+          visibility: 'none'
+        };
+      }
+      return mapLayer as ExtendedLayer;
+    });
+
+    layers = [...layers, ...generatorLayers];
   });
 
   // Allow sort as it uses a copy of the array so mutating is ok
@@ -88,19 +98,21 @@ const generateStyle = (stylesData: Record<string, GeneratorParams>) => {
 
 export function Styles({
   onStyleUpdate,
-  children
+  children,
+  isCompared
 }: {
   onStyleUpdate?: (style: ExtendedStyle) => void;
   children?: ReactNode;
+  isCompared?: boolean;
 }) {
-  const [stylesData, setStylesData] = useState<Record<string, GeneratorParams>>(
-    {}
-  );
+  const [stylesData, setStylesData] = useState<
+    Record<string, GeneratorStyleParams>
+  >({});
 
   const [style, setStyle] = useState<Style | undefined>();
 
   const updateStyle = useCallback(
-    (params: GeneratorParams) => {
+    (params: GeneratorStyleParams) => {
       setStylesData((prevStyle) => ({
         ...prevStyle,
         [params.generatorId]: params
@@ -116,13 +128,8 @@ export function Styles({
   }, [stylesData, onStyleUpdate]);
 
   return (
-    <StylesContext.Provider value={{ updateStyle, style }}>
+    <StylesContext.Provider value={{ updateStyle, style, isCompared }}>
       {children}
     </StylesContext.Provider>
   );
 }
-
-export const useMapStyle = () => {
-  const { updateStyle, style } = useContext(StylesContext);
-  return { updateStyle, style };
-};
