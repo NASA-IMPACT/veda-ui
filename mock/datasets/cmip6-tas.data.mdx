@@ -2,7 +2,7 @@
 id: combined_CMIP6_daily_GISS-E2-1-G_tas_kerchunk_TEST
 name: 'CMIP6 Daily GISS-E2-1-G Near-Surface Air Temperature'
 featured: true
-description: "The NEX-GDDP-CMIP6 dataset is comprised of global downscaled climate scenarios derived from the General Circulation Model (GCM) runs conducted under the Coupled Model Intercomparison Project Phase 6 (CMIP6) and across two of the four 'Tier 1' greenhouse gas emissions scenarios known as Shared Socioeconomic Pathways (SSPs). The CMIP6 GCM runs were developed in support of the Sixth Assessment Report of the Intergovernmental Panel on Climate Change (IPCC AR6). This dataset includes downscaled projections from ScenarioMIP model runs for which daily scenarios were produced and distributed through the Earth System Grid Federation. The purpose of this dataset is to provide a set of global, high resolution, bias-corrected climate change projections that can be used to evaluate climate change impacts on processes that are sensitive to finer-scale climate gradients and the effects of local topography on climate conditions."
+description: "The NEX-GDDP-CMIP6 dataset is comprised of global downscaled climate scenarios derived from the General Circulation Model (GCM) runs conducted under the Coupled Model Intercomparison Project Phase 6 (CMIP6). See https://registry.opendata.aws/nex-gddp-cmip6/ and https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6 to learn more."
 media:
   src: ::file ./no2--dataset-cover.jpg
   alt: Power plant shooting steam at the sky.
@@ -19,7 +19,7 @@ layers:
     name: CMIP6 Daily GISS-E2-1-G Near-Surface Air Temperature
     type: zarr
     description:
-      "The NEX-GDDP-CMIP6 dataset is comprised of global downscaled climate scenarios derived from the General Circulation Model (GCM) runs conducted under the Coupled Model Intercomparison Project Phase 6 (CMIP6) and across two of the four 'Tier 1' greenhouse gas emissions scenarios known as Shared Socioeconomic Pathways (SSPs). The CMIP6 GCM runs were developed in support of the Sixth Assessment Report of the Intergovernmental Panel on Climate Change (IPCC AR6). This dataset includes downscaled projections from ScenarioMIP model runs for which daily scenarios were produced and distributed through the Earth System Grid Federation. The purpose of this dataset is to provide a set of global, high resolution, bias-corrected climate change projections that can be used to evaluate climate change impacts on processes that are sensitive to finer-scale climate gradients and the effects of local topography on climate conditions."
+      "Historical (1950-2014) daily-mean near-surface (usually, 2 meter) air temperature in Kelvin."
     zoomExtent:
       - 0
       - 20
@@ -28,13 +28,13 @@ layers:
       resampling_method: bilinear
       variable: tas
       colormap_name: jet
-      rescale: 224,312
+      rescale: 200,325
     legend:
       unit: 
         label: 
       type: gradient
-      min: "224"
-      max: "312"
+      min: "200"
+      max: "325"
       stops:
         - '#000080' 
         - '#004cff' 
