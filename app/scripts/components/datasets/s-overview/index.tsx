@@ -59,7 +59,7 @@ function DatasetsOverview() {
             <PageActions>
               {dataset?.data.disableExplore !== true && (
                 <Button
-                  forwardedAs={Link}
+                  forwardedAs={Link as any}
                   to={getDatasetExplorePath(dataset.data)}
                   size='large'
                   variation='achromic-outline'
