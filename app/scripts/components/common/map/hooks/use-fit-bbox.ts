@@ -26,7 +26,7 @@ export default function useFitBbox(
       | [number, number, number, number]
       | undefined;
 
-    if (bounds?.length && checkFitBoundsFromLayer(bounds, mapInstance as any)) {
+    if (bounds?.length && checkFitBoundsFromLayer(bounds, mapInstance)) {
       mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
     }
   }, [mapInstance, isUserPositionSet, initialBbox, stacBbox]);

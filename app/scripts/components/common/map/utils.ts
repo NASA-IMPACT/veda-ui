@@ -1,5 +1,6 @@
 import axios, { Method } from 'axios';
 import { Map as MapboxMap } from 'mapbox-gl';
+import { MapRef } from 'react-map-gl';
 import { endOfDay, startOfDay } from "date-fns";
 import { StacFeature } from "./types";
 import { userTzDate2utcString } from "$utils/date";
@@ -35,7 +36,7 @@ export function getMergedBBox(features: StacFeature[]) {
 
 export function checkFitBoundsFromLayer(
   layerBounds?: [number, number, number, number],
-  mapInstance?: MapboxMap
+  mapInstance?: MapboxMap | MapRef
 ) {
   if (!layerBounds || !mapInstance) return false;
 
