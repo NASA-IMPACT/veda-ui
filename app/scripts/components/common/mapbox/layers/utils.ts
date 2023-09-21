@@ -1,7 +1,7 @@
 import { FunctionComponent, useEffect } from 'react';
 import { Feature } from 'geojson';
 import { Map as MapboxMap } from 'mapbox-gl';
-import { defaultsDeep } from 'lodash';
+import { defaultsDeep, clamp } from 'lodash';
 import axios, { Method } from 'axios';
 import {
   eachDayOfInterval,
@@ -412,13 +412,21 @@ type OptionalBbox = number[] | undefined | null;
 
 /**
  * MapboxGL requires maxX value to be 180, minX -180, maxY 90, minY -90
+ * While some of the datasets having bbox going above it.
  * @param bounds Bounding box to fit layer
  * @returns Boolean
  */
 
-function isBboxToFitValid(bounds) {
+function clampBbox(
+  bounds: [number, number, number, number]
+): [number, number, number, number] {
   const [minX, minY, maxX, maxY] = bounds;
-  return minX >= -180 && maxX <= 180 && minY >= -90 && maxY <= 90;
+  return [
+    clamp(minX, -180, 180),
+    clamp(minY, -90, 90),
+    clamp(maxX, -180, 180),
+    clamp(maxY, -90, 90)
+  ];
 }
 
 /**
@@ -445,8 +453,9 @@ export function useFitBbox(
       | [number, number, number, number]
       | undefined;
 
-    if (bounds?.length && isBboxToFitValid(bounds)) {
-      mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
+    if (bounds?.length) {
+      const clampedBbox = clampBbox(bounds);
+      mapInstance.fitBounds(clampedBbox, { padding: FIT_BOUNDS_PADDING });
     }
   }, [mapInstance, isUserPositionSet, initialBbox, stacBbox]);
 }
