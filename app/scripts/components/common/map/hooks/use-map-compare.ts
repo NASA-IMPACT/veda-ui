@@ -1,11 +1,10 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import MapboxCompare from 'mapbox-gl-compare';
-import { MapsContext } from '../maps';
-import useMaps from './use-maps';
+import useMaps, { useMapsContext } from './use-maps';
 
 export default function useMapCompare() {
   const { main, compared } = useMaps();
-  const { containerId } = useContext(MapsContext);
+  const { containerId } = useMapsContext();
   const hasMapCompare = !!compared;
   useEffect(() => {
     if (!main) return;

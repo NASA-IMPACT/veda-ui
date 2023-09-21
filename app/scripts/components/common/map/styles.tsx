@@ -3,14 +3,14 @@ import React, {
   ReactNode,
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useState
 } from 'react';
-import { ExtendedLayer, GeneratorStyleParams, LayerOrderPosition } from './types';
-import useCustomMarker from './hooks/use-custom-marker';
-import useMaps from './hooks/use-maps';
-
+import {
+  ExtendedLayer,
+  GeneratorStyleParams,
+  LayerOrderPosition
+} from './types';
 
 interface StylesContextType {
   updateStyle: (params: GeneratorStyleParams) => void;
@@ -26,7 +26,6 @@ export const StylesContext = createContext<StylesContextType>({
   },
   isCompared: false
 });
-
 
 const LAYER_ORDER: LayerOrderPosition[] = [
   'basemap-background',
@@ -100,15 +99,15 @@ const generateStyle = (stylesData: Record<string, GeneratorStyleParams>) => {
 export function Styles({
   onStyleUpdate,
   children,
-  isCompared,
+  isCompared
 }: {
   onStyleUpdate?: (style: ExtendedStyle) => void;
   children?: ReactNode;
   isCompared?: boolean;
 }) {
-  const [stylesData, setStylesData] = useState<Record<string, GeneratorStyleParams>>(
-    {}
-  );
+  const [stylesData, setStylesData] = useState<
+    Record<string, GeneratorStyleParams>
+  >({});
 
   const [style, setStyle] = useState<Style | undefined>();
 
@@ -134,11 +133,3 @@ export function Styles({
     </StylesContext.Provider>
   );
 }
-
-export const useMapStyle = () => {
-  const { updateStyle, style } = useContext(StylesContext);
-  const { current } = useMaps();
-  useCustomMarker(current);
-
-  return { updateStyle, style };
-};

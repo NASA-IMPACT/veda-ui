@@ -7,8 +7,8 @@ import {
   getStyleUrl,
   GROUPS_BY_OPTION
 } from '../controls/map-options/basemap';
-import { useMapStyle } from '../styles';
 import { ExtendedLayer } from '../types';
+import useMapStyle from '../hooks/use-map-style';
 
 interface BasemapProps {
   basemapStyleId?: BasemapId;

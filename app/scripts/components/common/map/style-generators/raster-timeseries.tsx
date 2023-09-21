@@ -12,7 +12,7 @@ import {
 import { useTheme } from 'styled-components';
 import { featureCollection, point } from '@turf/helpers';
 import { BaseGeneratorParams, StacFeature } from '../types';
-import { useMapStyle } from '../styles';
+import useMapStyle from '../hooks/use-map-style';
 import {
   FIT_BOUNDS_PADDING,
   getFilterPayload,

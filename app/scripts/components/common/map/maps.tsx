@@ -5,8 +5,7 @@ import React, {
   ReactElement,
   JSXElementConstructor,
   useState,
-  createContext,
-  useContext
+  createContext
 } from 'react';
 import styled from 'styled-components';
 import {
@@ -23,7 +22,7 @@ import MapboxStyleOverride from './mapbox-style-override';
 import { Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
-import useMaps from './hooks/use-maps';
+import useMaps, { useMapsContext } from './hooks/use-maps';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -116,7 +115,7 @@ function Maps({ children, projection }: MapsProps) {
     }
   });
 
-  const { containerId } = useContext(MapsContext);
+  const { containerId } = useMapsContext();
 
   return (
     <MapsContainer id={containerId} ref={observe}>
