@@ -45,6 +45,7 @@ export interface RasterTimeseriesProps extends BaseGeneratorParams {
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isPositionSet?: boolean;
   layerOrder: number;
+  opacity?: number;
 }
 
 enum STATUS_KEY {
@@ -70,6 +71,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     onStatusChange,
     isPositionSet,
     hidden,
+    opacity,
     layerOrder
   } = props;
 
@@ -372,12 +374,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             url: tilejsonUrl
           };
 
+          const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
+
           const mosaicLayer: RasterLayer = {
             id: id,
             type: 'raster',
             source: id,
             paint: {
-              'raster-opacity': Number(!hidden),
+              'raster-opacity': hidden ? 0 : rasterOpacity,
               'raster-opacity-transition': {
                 duration: 320
               }
@@ -456,6 +460,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       points,
       haveSourceParamsChanged,
       hidden,
+      opacity,
       generatorId
     ]
   );
