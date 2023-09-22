@@ -73,17 +73,13 @@ export function useTimelineDatasetAtom(id: string) {
   return datasetAtom as PrimitiveAtom<TimelineDataset>;
 }
 
+type Settings = TimelineDataset['settings'];
+
 type TimelineDatasetSettingsReturn = [
-  (
-    prop: keyof TimelineDataset['settings']
-  ) => TimelineDataset['settings'][keyof TimelineDataset['settings']],
-  (
-    prop: keyof TimelineDataset['settings'],
-    value:
-      | TimelineDataset['settings'][keyof TimelineDataset['settings']]
-      | ((
-          prev: TimelineDataset['settings'][keyof TimelineDataset['settings']]
-        ) => TimelineDataset['settings'][keyof TimelineDataset['settings']])
+  <T extends keyof Settings>(prop: T) => Settings[T],
+  <T extends keyof Settings>(
+    prop: T,
+    value: Settings[T] | ((prev: Settings[T]) => Settings[T])
   ) => void
 ];
 
