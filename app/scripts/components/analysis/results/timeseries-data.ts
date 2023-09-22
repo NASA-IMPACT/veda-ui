@@ -85,6 +85,8 @@ interface StacDatasetsTimeseriesEvented {
   off: (event: 'data') => void;
 }
 
+const MAX_QUERY_NUM = 300;
+
 export function requestStacDatasetsTimeseries({
   start,
   end,
@@ -251,6 +253,11 @@ async function requestTimeseries({
     );
 
     const { assets, ...otherCollectionProps } = layerInfoFromSTAC;
+
+    if (assets.length > MAX_QUERY_NUM)
+      throw Error(
+        `Too many requests. We currently only allow requests up to ${MAX_QUERY_NUM} and this analysis requires ${assets.length} requests.`
+      );
 
     onData({
       ...layersBase,
