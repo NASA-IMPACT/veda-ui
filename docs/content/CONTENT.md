@@ -50,6 +50,7 @@ media: Media
 thematics: string[]
 sources: string[]
 featured: boolean
+disableExplore: boolean
 
 layers: Layer[]
 related: Related[]
@@ -108,6 +109,11 @@ taxonomy:
 `boolean`  
 Whether this dataset is featured
 ![](./media/fm-featured-dataset.png)
+
+**disableExplore**  
+`boolean`  
+When set to true, the 'explore data' section won't be available for this dataset.
+
 
 **layers**  
 `Layer[]`  
