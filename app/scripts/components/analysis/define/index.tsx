@@ -25,7 +25,7 @@ import { datasets, DatasetLayer, VedaDatum, DatasetData } from 'veda';
 import { useAnalysisParams } from '../results/use-analysis-params';
 import AoiSelector from './aoi-selector';
 import PageHeroActions from './page-hero-actions';
-import { useStacSearch } from './use-stac-search';
+import { useStacCollectionSearch } from './use-stac-collection-search';
 import { variableGlsp } from '$styles/variable-utils';
 
 import { PageMainContent } from '$styles/page';
@@ -184,7 +184,11 @@ export default function Analysis() {
   );
 
   const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
-    useStacSearch({ start, end, aoi: aoiDrawState.featureCollection });
+    useStacCollectionSearch({
+      start,
+      end,
+      aoi: aoiDrawState.featureCollection
+    });
 
   // Update datasetsLayers when stac search is refreshed in case some
   // datasetsLayers are not available anymore
@@ -367,7 +371,9 @@ export default function Analysis() {
                       false
                     }
                   >
-                    <Overline>From: {findParentDataset(datasetLayer.id)?.name}</Overline>
+                    <Overline>
+                      From: {findParentDataset(datasetLayer.id)?.name}
+                    </Overline>
                     {datasetLayer.name}
                   </FormCheckableCustom>
                 ))}
