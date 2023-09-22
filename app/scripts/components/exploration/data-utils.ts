@@ -1,7 +1,10 @@
 import {
   eachDayOfInterval,
   eachMonthOfInterval,
-  eachYearOfInterval
+  eachYearOfInterval,
+  startOfDay,
+  startOfMonth,
+  startOfYear
 } from 'date-fns';
 import { DatasetLayer, datasets } from 'veda';
 import {
@@ -101,4 +104,15 @@ export function resolveLayerTemporalExtent(
         `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
       );
   }
+}
+
+export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
+  switch (timeDensity) {
+    case TimeDensity.MONTH:
+      return startOfMonth(date);
+    case TimeDensity.YEAR:
+      return startOfYear(date);
+  }
+
+  return startOfDay(date);
 }
