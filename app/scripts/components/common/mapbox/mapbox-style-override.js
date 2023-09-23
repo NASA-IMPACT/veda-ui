@@ -27,7 +27,14 @@ const MapboxStyleOverride = css`
       gap: ${variableGlsp(0.5)};
       align-items: flex-start;
       float: none;
-      pointer-events: auto;
+    }
+
+    .mapboxgl-ctrl {
+      pointer-events: none;
+
+      > * {
+        pointer-events: auto;
+      }
     }
 
     .mapboxgl-ctrl {
