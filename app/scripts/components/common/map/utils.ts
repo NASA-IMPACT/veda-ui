@@ -142,12 +142,10 @@ export function resolveConfigFunctions<T>(
   datum: T,
   bag: DatasetDatumFnResolverBag
 ): Res<T>;
-/* eslint-disable-next-line no-redeclare */
 export function resolveConfigFunctions<T extends any[]>(
   datum: T,
   bag: DatasetDatumFnResolverBag
 ): Res<T[number]>[];
-/* eslint-disable-next-line no-redeclare */
 export function resolveConfigFunctions(
   datum: any,
   bag: DatasetDatumFnResolverBag

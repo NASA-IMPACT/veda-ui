@@ -1,36 +1,16 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styled from 'styled-components';
-import { useAtomValue } from 'jotai';
 import { themeVal } from '@devseed-ui/theme-provider';
-// Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
-import * as dateFns from 'date-fns';
 
 import { MockControls } from './datasets-mock';
 import Timeline from './components/timeline/timeline';
+import { ExplorationMap } from './components/map';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
-import { useStacMetadataOnDatasets } from './hooks/use-stac-metadata-datasets';
-import { selectedDateAtom, timelineDatasetsAtom } from './atoms/atoms';
-import { TimelineDatasetStatus, TimelineDatasetSuccess } from './types.d.ts';
-import { getTimeDensityStartDate } from './data-utils';
-import { useTimelineDatasetAtom, useTimelineDatasetSettings } from './atoms/hooks';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
-import Map, { Compare } from '$components/common/map';
-import { Basemap } from '$components/common/map/style-generators/basemap';
-import GeocoderControl from '$components/common/map/controls/geocoder';
-import {
-  NavigationControl,
-  ScaleControl
-} from '$components/common/map/controls';
-import MapCoordsControl from '$components/common/map/controls/coords';
-import MapOptionsControl from '$components/common/map/controls/options';
-import { projectionDefault } from '$components/common/map/controls/map-options/projections';
-import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
-import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
-import { resolveConfigFunctions } from '$components/common/map/utils';
 
 const Container = styled.div`
   display: flex;
@@ -81,26 +61,6 @@ function Exploration() {
   const openModal = useCallback(() => setDatasetModalRevealed(true), []);
   const closeModal = useCallback(() => setDatasetModalRevealed(false), []);
 
-  const [projection, setProjection] = useState(projectionDefault);
-
-  const {
-    mapBasemapId,
-    setBasemapId,
-    labelsOption,
-    boundariesOption,
-    onOptionChange
-  } = useBasemap();
-
-  useStacMetadataOnDatasets();
-
-  const datasets = useAtomValue(timelineDatasetsAtom);
-  const selectedDay = useAtomValue(selectedDateAtom);
-
-  const loadedDatasets = datasets.filter(
-    (d): d is TimelineDatasetSuccess =>
-      d.status === TimelineDatasetStatus.SUCCESS
-  );
-
   return (
     <>
       <LayoutProps
@@ -114,59 +74,7 @@ function Exploration() {
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>
-              <Map id='exploration' projection={projection}>
-                {/* Map layers */}
-                <Basemap
-                  basemapStyleId={mapBasemapId}
-                  labelsOption={labelsOption}
-                  boundariesOption={boundariesOption}
-                />
-                {selectedDay &&
-                  loadedDatasets.map((dataset, idx) => (
-                    <Layer
-                      key={dataset.data.id}
-                      dataset={dataset}
-                      selectedDay={selectedDay}
-                      order={idx}
-                    />
-                  ))}
-                {/* Map controls */}
-                <GeocoderControl />
-                <NavigationControl />
-                <ScaleControl />
-                <MapCoordsControl />
-                <MapOptionsControl
-                  projection={projection}
-                  onProjectionChange={setProjection}
-                  basemapStyleId={mapBasemapId}
-                  onBasemapStyleIdChange={setBasemapId}
-                  labelsOption={labelsOption}
-                  boundariesOption={boundariesOption}
-                  onOptionChange={onOptionChange}
-                />
-                {compare && (
-                  // Compare map layers
-                  <Compare>
-                    <Basemap
-                      basemapStyleId={mapBasemapId}
-                      labelsOption={labelsOption}
-                      boundariesOption={boundariesOption}
-                    />
-                    <RasterTimeseries
-                      id='test2'
-                      stacCol='nightlights-hd-monthly'
-                      date={new Date('2020-04-01')}
-                      zoomExtent={[4, 16]}
-                      sourceParams={{
-                        bidx: 1,
-                        colormap_name: 'inferno',
-                        rescale: [0, 255]
-                      }}
-                      // hidden={true}
-                    />
-                  </Compare>
-                )}
-              </Map>
+              <ExplorationMap comparing={compare} />
               <MockControls
                 comparing={compare}
                 onCompareClick={() => setCompare((v) => !v)}
@@ -187,49 +95,3 @@ function Exploration() {
   );
 }
 export default Exploration;
-
-interface LayerProps {
-  dataset: TimelineDatasetSuccess;
-  order: number;
-  selectedDay: Date;
-}
-
-function Layer(props: LayerProps) {
-  const { dataset, order, selectedDay } = props;
-
-  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
-  const [getSettings] = useTimelineDatasetSettings(datasetAtom);
-
-  const isVisible = getSettings('isVisible');
-  const opacity = getSettings('opacity');
-
-  // The date needs to match the dataset's time density.
-  const relevantDate = useMemo(
-    () => getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
-    [selectedDay, dataset.data.timeDensity]
-  );
-
-  // Resolve config functions.
-  const params = useMemo(() => {
-    const bag = {
-      date: relevantDate,
-      compareDatetime: relevantDate,
-      dateFns,
-      raw: dataset.data
-    };
-    return resolveConfigFunctions(dataset.data, bag);
-  }, [dataset, relevantDate]);
-
-  return (
-    <RasterTimeseries
-      id={dataset.data.id}
-      stacCol={dataset.data.stacCol}
-      date={relevantDate}
-      zoomExtent={params.zoomExtent}
-      sourceParams={params.sourceParams}
-      layerOrder={order}
-      hidden={!isVisible}
-      opacity={opacity}
-    />
-  );
-}
