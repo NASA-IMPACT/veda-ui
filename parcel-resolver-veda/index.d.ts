@@ -64,6 +64,7 @@ declare module 'veda' {
     legend?: LayerLegendCategorical | LayerLegendGradient;
     analysis?: {
       metrics: string[];
+      exclude: boolean;
     }
   }
 

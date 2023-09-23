@@ -213,6 +213,7 @@ Configuration options for the analysis of the dataset layer.
 
 ```yaml
 metrics: string[]
+exclude: boolean
 ```
 
 **analysis.metrics**  
@@ -224,6 +225,10 @@ Available metrics:
 - max (Max)
 - std (Standard Deviation)
 - median (Median)
+- 
+**analysis.exclude**  
+`boolean`  
+Controls whether this layer should be excluded from the analysis page. If set to `true` the layer will not be available for analysis.
 
 ### Compare
 
