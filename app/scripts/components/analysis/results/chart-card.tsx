@@ -1,4 +1,13 @@
-import React, { useCallback, useRef, useMemo, MouseEvent, ReactNode } from 'react';
+import React, {
+  useCallback,
+  useRef,
+  useMemo,
+  MouseEvent,
+  ReactNode,
+  useState
+} from 'react';
+import { DatasetLayer } from 'veda';
+import { get } from 'lodash';
 import { reverse } from 'd3';
 import styled, { useTheme } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -23,7 +32,11 @@ import {
   ChartCardNoData,
   ChartCardNoMetric
 } from './chart-card-message';
-import { DataMetric } from './analysis-head-actions';
+import AnalysisMetricsDropdown, {
+  DataMetric,
+  DATA_METRICS
+} from './analysis-metrics-dropdown';
+
 import {
   CardSelf,
   CardHeader,
@@ -56,10 +69,25 @@ const InfoTipContent = styled.div`
   }
 `;
 
+function getInitialMetrics(data: DatasetLayer): DataMetric[] {
+  const metricsIds = get(data, 'analysis.metrics', []);
+
+  const foundMetrics = metricsIds
+    .map((metric: string) => {
+      return DATA_METRICS.find((m) => m.id === metric);
+    })
+    .filter(Boolean);
+
+  if (!foundMetrics.length) {
+    return DATA_METRICS;
+  }
+
+  return foundMetrics;
+}
+
 interface ChartCardProps {
   title: ReactNode;
   chartData: TimeseriesData;
-  activeMetrics: DataMetric[];
   availableDomain: [Date, Date];
   brushRange: [Date, Date];
   onBrushRangeChange: (range: [Date, Date]) => void;
@@ -93,28 +121,22 @@ const getNoDownloadReason = ({ status, data }: TimeseriesData) => {
  *
  * @returns Internal path for Link
  */
-const getDatasetOverviewPath = (
-  layerId: string
-) => {
+const getDatasetOverviewPath = (layerId: string) => {
   const dataset = allDatasetsProps.find((d) =>
     d.layers.find((l) => l.id === layerId)
   );
 
-  return dataset
-    ? getDatasetPath(dataset)
-    : '/';
+  return dataset ? getDatasetPath(dataset) : '/';
 };
 
 export default function ChartCard(props: ChartCardProps) {
-  const {
-    title,
-    chartData,
-    activeMetrics,
-    availableDomain,
-    brushRange,
-    onBrushRangeChange
-  } = props;
+  const { title, chartData, availableDomain, brushRange, onBrushRangeChange } =
+    props;
   const { status, meta, data, error, name, id, layer } = chartData;
+
+  const [activeMetrics, setActiveMetrics] = useState<DataMetric[]>(
+    getInitialMetrics(layer)
+  );
 
   const chartRef = useRef<AnalysisChartRef>(null);
   const noDownloadReason = getNoDownloadReason(chartData);
@@ -132,7 +154,10 @@ export default function ChartCard(props: ChartCardProps) {
       // The indexes expect the data to be ascending, so we have to reverse the
       // data.
       const data = reverse(chartData.data.timeseries);
-      const filename = `chart.${id}.${getDateRangeFormatted(startDate, endDate)}`;
+      const filename = `chart.${id}.${getDateRangeFormatted(
+        startDate,
+        endDate
+      )}`;
 
       if (type === 'image') {
         chartRef.current?.saveAsImage(filename);
@@ -206,7 +231,11 @@ export default function ChartCard(props: ChartCardProps) {
                 </li>
               </DropMenu>
             </Dropdown>
-
+            <AnalysisMetricsDropdown
+              isDisabled={status !== 'succeeded'}
+              activeMetrics={activeMetrics}
+              onMetricsChange={setActiveMetrics}
+            />
             <VerticalDivider variation='dark' />
             <Tip
               content={

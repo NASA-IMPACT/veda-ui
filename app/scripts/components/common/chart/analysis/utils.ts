@@ -5,7 +5,7 @@ import {
   chartAspectRatio
 } from '$components/common/chart/constant';
 import { TimeseriesDataUnit } from '$components/analysis/results/timeseries-data';
-import { DataMetric } from '$components/analysis/results/analysis-head-actions';
+import { DataMetric } from '$components/analysis/results/analysis-head';
 import { TimeDensity } from '$context/layer-data';
 
 const URL = window.URL;
