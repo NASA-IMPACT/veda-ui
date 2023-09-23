@@ -30,15 +30,12 @@ const MapboxStyleOverride = css`
     }
 
     .mapboxgl-ctrl {
+      margin: 0;
       pointer-events: none;
 
       > * {
         pointer-events: auto;
       }
-    }
-
-    .mapboxgl-ctrl {
-      margin: 0;
     }
 
     .mapboxgl-ctrl-attrib {
