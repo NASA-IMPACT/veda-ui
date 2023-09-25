@@ -3,6 +3,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
 import { DatasetLayer } from 'veda';
 
+import { MAX_QUERY_NUM } from '../constants';
 import { getFilterPayload, combineFeatureCollection } from '../utils';
 import EventEmitter from './mini-events';
 import { ConcurrencyManager, ConcurrencyManagerInstance } from './concurrency';
@@ -84,8 +85,6 @@ interface StacDatasetsTimeseriesEvented {
   ) => void;
   off: (event: 'data') => void;
 }
-
-const MAX_QUERY_NUM = 300;
 
 export function requestStacDatasetsTimeseries({
   start,

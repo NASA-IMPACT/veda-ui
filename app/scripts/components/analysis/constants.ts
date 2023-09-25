@@ -27,3 +27,5 @@ export const FeatureByRegionPreset: Record<
     }
   ])
 };
+
+export const MAX_QUERY_NUM = 300;

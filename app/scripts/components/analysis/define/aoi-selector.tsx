@@ -25,7 +25,7 @@ import {
   CollecticonPencil,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
-import { FeatureByRegionPreset, RegionPreset } from './constants';
+import { FeatureByRegionPreset, RegionPreset } from '../constants';
 import AoIUploadModal from './aoi-upload-modal';
 import {
   Fold,

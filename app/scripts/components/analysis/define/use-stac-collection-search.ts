@@ -4,7 +4,13 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import booleanIntersects from '@turf/boolean-intersects';
 import bboxPolygon from '@turf/bbox-polygon';
-import { areIntervalsOverlapping, eachDayOfInterval, eachMonthOfInterval, eachYearOfInterval } from 'date-fns';
+import {
+  areIntervalsOverlapping,
+  eachDayOfInterval,
+  eachMonthOfInterval,
+  eachYearOfInterval
+} from 'date-fns';
+import { DatasetLayer } from 'veda';
 
 import { TimeseriesDataResult } from '../results/timeseries-data';
 import { allAvailableDatasetsLayers } from '.';
@@ -16,6 +22,8 @@ interface UseStacSearchProps {
   end?: Date;
   aoi?: FeatureCollection<Polygon> | null;
 }
+
+export type DatasetWithTimeseriesData = TimeseriesDataResult & DatasetLayer & { numberOfItems?: number };
 
 const DATE_INTERVAL_FN = {
   day: eachDayOfInterval,
@@ -54,13 +62,9 @@ export function useStacCollectionSearch({
     }
   }, [result.data, aoi, start, end]);
 
-  const selectableDatasetLayersWithNumberOfItems = selectableDatasetLayers.map(
+  const selectableDatasetLayersWithNumberOfItems: DatasetWithTimeseriesData[] = selectableDatasetLayers.map(
     (l) => {
-      const numberOfItems = getNumberOfItemsWithinTimeRange(
-        start,
-        end,
-        l
-      );
+      const numberOfItems = getNumberOfItemsWithinTimeRange(start, end, l);
       return { ...l, numberOfItems };
     }
   );
@@ -72,16 +76,26 @@ export function useStacCollectionSearch({
   };
 }
 
-function getNumberOfItemsWithinTimeRange(start, end, collection) {
-  const {isPeriodic, timeDensity, domain, timeseries} = collection;
+/**
+ * For each collection, get the number of items within the time range,
+ * taking into account the time density.
+ */
+function getNumberOfItemsWithinTimeRange(userStart, userEnd, collection) {
+  const { isPeriodic, timeDensity, domain, timeseries } = collection;
   if (!isPeriodic) {
     return timeseries.length; // Check in with back-end team
   }
   const eachOf = DATE_INTERVAL_FN[timeDensity];
-  const statStart = +(new Date(domain[0])) > +(new Date(start))? new Date(domain[0]): new Date(start);
-  const statEnd = +(new Date(domain[1])) < +(new Date(end))? new Date(domain[1]): new Date(end);
+  const start =
+    +new Date(domain[0]) > +new Date(userStart)
+      ? new Date(domain[0])
+      : new Date(userStart);
+  const end =
+    +new Date(domain[1]) < +new Date(userEnd)
+      ? new Date(domain[1])
+      : new Date(userEnd);
 
-  return eachOf({start: statStart, end: statEnd}).length;
+  return eachOf({ start, end }).length;
 }
 
 function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
@@ -129,7 +143,7 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
     matchingCollectionIds.includes(l.stacCol)
   );
 
-  const filteredDatasetsWithCollections: TimeseriesDataResult[] =
+  const filteredDatasetsWithCollections =
     filteredDatasets.map((l) => {
       const collection = collectionData.find((c) => c.id === l.stacCol);
       return {
