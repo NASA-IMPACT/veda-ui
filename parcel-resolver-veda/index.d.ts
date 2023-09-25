@@ -62,6 +62,10 @@ declare module 'veda' {
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend?: LayerLegendCategorical | LayerLegendGradient;
+    analysis?: {
+      metrics: string[];
+      exclude: boolean;
+    }
   }
 
   // A normalized compare layer is the result after the compare definition is
