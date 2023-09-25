@@ -19,10 +19,7 @@ import {
   TimeseriesData
 } from './timeseries-data';
 import ChartCard from './chart-card';
-import AnalysisHeadActions, {
-  DataMetric,
-  dataMetrics
-} from './analysis-head-actions';
+import AnalysisHead from './analysis-head';
 import { LayoutProps } from '$components/common/layout-root';
 import { CardList } from '$components/common/card';
 import {
@@ -70,8 +67,6 @@ export default function AnalysisResults() {
   const [requestStatus, setRequestStatus] = useState<TimeseriesData[]>([]);
   const { params } = useAnalysisParams();
   const { start, end, datasetsLayers, aoi, errors } = params;
-
-  const [activeMetrics, setActiveMetrics] = useState<DataMetric[]>(dataMetrics);
 
   useEffect(() => {
     if (!start || !end || !datasetsLayers || !aoi) return;
@@ -186,10 +181,7 @@ export default function AnalysisResults() {
 
   return (
     <PageMainContent>
-      <LayoutProps
-        title='Analysis'
-        description={descriptions.meta}
-      />
+      <LayoutProps title='Analysis' description={descriptions.meta} />
       <PageHeroAnalysis
         title='Analysis'
         description={descriptions.page}
@@ -217,10 +209,7 @@ export default function AnalysisResults() {
           <FoldHeadline>
             <FoldTitle>Results</FoldTitle>
           </FoldHeadline>
-          <AnalysisHeadActions
-            activeMetrics={activeMetrics}
-            onMetricsChange={setActiveMetrics}
-          />
+          <AnalysisHead />
         </AnalysisFoldHeader>
         <FoldBody>
           {!!requestStatus.length && availableDomain && brushRange && (
@@ -230,7 +219,6 @@ export default function AnalysisResults() {
                   <ChartCard
                     title={l.name}
                     chartData={l}
-                    activeMetrics={activeMetrics}
                     availableDomain={availableDomain}
                     brushRange={brushRange}
                     onBrushRangeChange={(range) => setBrushRange(range)}
