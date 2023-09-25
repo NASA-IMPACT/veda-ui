@@ -11,8 +11,10 @@ import { round } from '$utils/format';
 const MapCoordsWrapper = styled.div`
   /* Large width so parent will wrap */
   width: 100vw;
+  pointer-events: none !important;
 
   ${Button} {
+    pointer-events: auto;
     background: ${themeVal('color.base-400a')};
     font-weight: ${themeVal('type.base.regular')};
     font-size: 0.75rem;

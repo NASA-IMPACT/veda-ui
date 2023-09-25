@@ -137,8 +137,6 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
 
     mapRef.current = mbMap;
 
-    mapRef.current.addControl(mapCoordsControl, 'bottom-left');
-
     if (onProjectionChange && projection) {
       mapRef.current.addControl(mapOptionsControl, 'top-left');
     }
@@ -162,6 +160,8 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
 
     // Add zoom controls without compass.
     if (mapOptions.interactive !== false) {
+      mapRef.current.addControl(mapCoordsControl, 'bottom-left');
+
       mbMap.addControl(
         new NavigationControl({ showCompass: false }),
         'top-left'
