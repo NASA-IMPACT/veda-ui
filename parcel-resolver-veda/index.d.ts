@@ -62,6 +62,10 @@ declare module 'veda' {
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
     legend?: LayerLegendCategorical | LayerLegendGradient;
+    analysis?: {
+      metrics: string[];
+      exclude: boolean;
+    }
   }
 
   // A normalized compare layer is the result after the compare definition is
@@ -151,6 +155,7 @@ declare module 'veda' {
     media?: Media;
     layers: DatasetLayer[];
     related?: RelatedContentData[];
+    disableExplore?: boolean;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -237,11 +242,13 @@ declare module 'veda' {
   export const storyTaxonomies: Taxonomy[];
 
   export type PageOverrides =
+    | 'developmentContent'
     | 'aboutContent'
     | 'homeContent'
     | 'sandbox-override'
     | 'pageFooter'
-    | 'headerBrand';
+    | 'headerBrand'
+    | 'homeHero';
   /**
    * Configuration export for specific overrides.
    */

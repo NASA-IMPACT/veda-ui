@@ -1,7 +1,7 @@
 {
   "name": "veda-ui",
   "description": "Dashboard",
-  "version": "2.2.0",
+  "version": "2.3.1",
   "author": {
     "name": "Development Seed",
     "url": "https://developmentseed.org/"
@@ -119,6 +119,8 @@
     "@tippyjs/react": "^4.2.6",
     "@turf/area": "^6.5.0",
     "@turf/bbox": "^6.5.0",
+    "@turf/bbox-polygon": "^6.5.0",
+    "@turf/boolean-intersects": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "@turf/simplify": "^6.5.0",
     "@turf/union": "^6.5.0",

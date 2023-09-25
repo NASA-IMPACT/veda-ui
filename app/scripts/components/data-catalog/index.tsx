@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
-import { DatasetData, datasets, datasetTaxonomies } from 'veda';
+import { DatasetData, datasets, datasetTaxonomies, getString } from 'veda';
 import { Link } from 'react-router-dom';
 import { glsp } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
@@ -155,11 +155,17 @@ function DataCatalog() {
     <PageMainContent>
       <LayoutProps
         title='Data Catalog'
-        description='This dashboard explores key indicators to track and compare changes over time.'
+        description={
+          getString('dataCatalogBanner')?.other ||
+          'This dashboard explores key indicators to track and compare changes over time.'
+        }
       />
       <PageHero
         title='Data Catalog'
-        description='This dashboard explores key indicators to track and compare changes over time.'
+        description={
+          getString('dataCatalogBanner')?.other ||
+          'This dashboard explores key indicators to track and compare changes over time.'
+        }
       />
 
       <FeaturedDatasets />
@@ -216,7 +222,7 @@ function DataCatalog() {
                           onSourceClick={(id) => {
                             onAction(Actions.TAXONOMY, {
                               key: TAXONOMY_SOURCE,
-                              id
+                              value: id
                             });
                             browseControlsHeaderRef.current?.scrollIntoView();
                           }}

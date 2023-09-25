@@ -224,7 +224,7 @@ const GlobalNavTitle = styled(Heading).attrs({
 `;
 
 export const GlobalNavActions = styled.div`
-  /* styled-component */
+  align-self: start;
 `;
 
 export const GlobalNavToggle = styled(Button)`
@@ -396,11 +396,6 @@ function PageHeader() {
                 <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
                 <GlobalMenu>
                   <li>
-                    <GlobalMenuLink to='/' onClick={closeNavOnClick}>
-                      Welcome
-                    </GlobalMenuLink>
-                  </li>
-                  <li>
                     <GlobalMenuLink
                       to={DATASETS_PATH}
                       onClick={closeNavOnClick}
@@ -413,17 +408,33 @@ function PageHeader() {
                       to={ANALYSIS_PATH}
                       onClick={closeNavOnClick}
                     >
-                      Analysis
+                      Data Analysis
                     </GlobalMenuLink>
                   </li>
                   <li>
-                    <GlobalMenuLink
-                      to={STORIES_PATH}
-                      onClick={closeNavOnClick}
-                    >
+                    <GlobalMenuLink to={STORIES_PATH} onClick={closeNavOnClick}>
                       {getString('stories').other}
                     </GlobalMenuLink>
                   </li>
+
+                  {/*
+                    Temporarily add hub link through env variables.
+                    This does not scale for the different instances, but it's a
+                    quick fix for the GHG app.
+                  */}
+                  {!!process.env.HUB_URL && !!process.env.HUB_NAME && (
+                    <li>
+                      <GlobalMenuLink
+                        as='a'
+                        target='_blank'
+                        rel='noopener'
+                        href={process.env.HUB_URL}
+                        onClick={closeNavOnClick}
+                      >
+                        {process.env.HUB_NAME}
+                      </GlobalMenuLink>
+                    </li>
+                  )}
                 </GlobalMenu>
               </SectionsNavBlock>
               <SectionsNavBlock>
