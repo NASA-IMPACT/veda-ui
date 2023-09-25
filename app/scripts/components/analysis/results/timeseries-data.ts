@@ -30,7 +30,7 @@ export interface TimeseriesDataUnit {
   percentile_98: number;
 }
 
-interface TimeseriesDataResult {
+export interface TimeseriesDataResult {
   isPeriodic: boolean;
   timeDensity: TimeDensity;
   domain: string[];
