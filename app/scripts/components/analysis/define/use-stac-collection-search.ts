@@ -23,7 +23,8 @@ interface UseStacSearchProps {
   aoi?: FeatureCollection<Polygon> | null;
 }
 
-export type DatasetWithTimeseriesData = TimeseriesDataResult & DatasetLayer & { numberOfItems?: number };
+export type DatasetWithTimeseriesData = TimeseriesDataResult &
+  DatasetLayer & { numberOfItems?: number };
 
 const DATE_INTERVAL_FN = {
   day: eachDayOfInterval,
@@ -62,12 +63,13 @@ export function useStacCollectionSearch({
     }
   }, [result.data, aoi, start, end]);
 
-  const selectableDatasetLayersWithNumberOfItems: DatasetWithTimeseriesData[] = selectableDatasetLayers.map(
-    (l) => {
-      const numberOfItems = getNumberOfItemsWithinTimeRange(start, end, l);
-      return { ...l, numberOfItems };
-    }
-  );
+  const selectableDatasetLayersWithNumberOfItems: DatasetWithTimeseriesData[] =
+    useMemo(() => {
+      return selectableDatasetLayers.map((l) => {
+        const numberOfItems = getNumberOfItemsWithinTimeRange(start, end, l);
+        return { ...l, numberOfItems };
+      });
+    }, [selectableDatasetLayers, start, end]);
 
   return {
     selectableDatasetLayers: selectableDatasetLayersWithNumberOfItems,
@@ -143,17 +145,16 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
     matchingCollectionIds.includes(l.stacCol)
   );
 
-  const filteredDatasetsWithCollections =
-    filteredDatasets.map((l) => {
-      const collection = collectionData.find((c) => c.id === l.stacCol);
-      return {
-        ...l,
-        isPeriodic: collection['dashboard:is_periodic'],
-        timeDensity: collection['dashboard:time_density'],
-        domain: collection.extent.temporal.interval[0],
-        timeseries: collection.summaries.datetime
-      };
-    });
+  const filteredDatasetsWithCollections = filteredDatasets.map((l) => {
+    const collection = collectionData.find((c) => c.id === l.stacCol);
+    return {
+      ...l,
+      isPeriodic: collection['dashboard:is_periodic'],
+      timeDensity: collection['dashboard:time_density'],
+      domain: collection.extent.temporal.interval[0],
+      timeseries: collection.summaries.datetime
+    };
+  });
 
   return filteredDatasetsWithCollections;
 }
