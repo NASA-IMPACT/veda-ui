@@ -7,7 +7,6 @@ import React, {
   useState
 } from 'react';
 import { DatasetLayer } from 'veda';
-import { get } from 'lodash';
 import { reverse } from 'd3';
 import styled, { useTheme } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -70,11 +69,11 @@ const InfoTipContent = styled.div`
 `;
 
 function getInitialMetrics(data: DatasetLayer): DataMetric[] {
-  const metricsIds = get(data, 'analysis.metrics', []);
+  const metricsIds = data.analysis?.metrics ?? [];
 
   const foundMetrics = metricsIds
     .map((metric: string) => {
-      return DATA_METRICS.find((m) => m.id === metric);
+      return DATA_METRICS.find((m) => m.id === metric)!;
     })
     .filter(Boolean);
 
