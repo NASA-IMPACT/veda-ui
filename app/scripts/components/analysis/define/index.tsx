@@ -451,7 +451,7 @@ export default function Analysis() {
                     ))}
                   </CheckableGroup>
                 </Form>
-                {unselectableDatasetLayers.length && (
+                {!!unselectableDatasetLayers.length && (
                   <>
                     <UnselectableInfo>
                       <CollecticonSignDanger />

@@ -99,7 +99,15 @@ export function useStacCollectionSearch({
 function getNumberOfItemsWithinTimeRange(userStart, userEnd, collection) {
   const { isPeriodic, timeDensity, domain, timeseries } = collection;
   if (!isPeriodic) {
-    return timeseries.length; // Check in with back-end team
+    const numberOfItems = timeseries.reduce((acc, t) => {
+      const date = new Date(t);
+      if (date >= userStart && date <= userEnd) {
+        return acc + 1;
+      } else {
+        return acc;
+      }
+    }, 0);
+    return numberOfItems; // Check in with back-end team
   }
   const eachOf = DATE_INTERVAL_FN[timeDensity];
   const start =
