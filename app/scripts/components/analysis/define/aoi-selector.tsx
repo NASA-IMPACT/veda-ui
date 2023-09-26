@@ -19,7 +19,7 @@ import {
 import { Button, ButtonGroup } from '@devseed-ui/button';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
-  CollecticonArrowLoop,
+  CollecticonTrashBin,
   CollecticonHandPan,
   CollecticonMarker,
   CollecticonPencil,
@@ -137,11 +137,11 @@ export default function AoiSelector({
         <AoiHeadActions>
           <Toolbar>
             <ToolbarIconButton
-              variation='primary-fill'
+              variation='danger-fill'
               onClick={() => onAoiEvent('aoi.clear')}
               disabled={!featureCollection?.features.length}
             >
-              <CollecticonArrowLoop title='Clear map' meaningful />
+              <CollecticonTrashBin title='Clear map' meaningful />
             </ToolbarIconButton>
             <VerticalDivider variation='dark' />
             <ButtonGroup variation='primary-fill'>
