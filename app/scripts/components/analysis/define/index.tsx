@@ -21,9 +21,12 @@ import {
 import { Overline } from '@devseed-ui/typography';
 
 import { datasets, DatasetLayer, VedaDatum, DatasetData } from 'veda';
+import { Button, ButtonGroup } from '@devseed-ui/button';
 import { useAnalysisParams } from '../results/use-analysis-params';
+import SavedAnalysisControl from '../saved-analysis-control';
 import AoiSelector from './aoi-selector';
 import { useStacCollectionSearch } from './use-stac-collection-search';
+import PageFooterActions from './page-footer.actions';
 import { variableGlsp } from '$styles/variable-utils';
 
 import { PageMainContent } from '$styles/page';
@@ -45,12 +48,9 @@ import {
   getRangeFromPreset,
   inputFormatToDate
 } from '$utils/date';
-import DropMenuItemButton from '$styles/drop-menu-item-button';
+
 import { MapboxMapRef } from '$components/common/mapbox';
-import PageFooterActions from './page-footer.actions';
-import SavedAnalysisControl from '../saved-analysis-control';
 import { ANALYSIS_PATH } from '$utils/routes';
-import { Button, ButtonGroup } from '@devseed-ui/button';
 
 const FormBlock = styled.div`
   display: flex;
@@ -151,9 +151,54 @@ const FloatingFooter = styled.div<{ isSticky: boolean }>`
     `}
 `;
 
+const FoldWithBullet = styled(Fold)<{number: string}>`
+  ${media.largeUp`
+  padding-left: ${variableGlsp(1)};
+  > div {
+    padding-left: ${variableGlsp(2)};
+    position: relative;
+    // bullet
+    &::after {
+      position: absolute;
+      top: 0;
+      left: -20px;
+      width: 40px;
+      height: 40px;
+      background-color: #1565EF;
+      color: ${themeVal('color.surface')};
+      border-radius: ${themeVal('shape.ellipsoid')};
+      font-size: 1.75rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 600;
+      ${(props) => `content: "${props.number}";`}
+    }
+  }
+`}
+`;
+export const FoldWOBottomPadding = styled(FoldWithBullet)`
+  ${media.largeUp`
+    padding-bottom: 0;
+    > div {
+      border-left : 3px solid ${themeVal('color.base-200a')};
+      padding-bottom:  ${variableGlsp(2)};
+    }
+  `}
+`;
+
+export const FoldTitleWOAccent = styled(FoldTitle)`
+  ${media.largeUp`
+    &::before {
+      content: none;
+    }
+  `}
+`;
+
+
 const findParentDataset = (layerId: string) => {
   const parentDataset = Object.values(datasets).find((dataset) =>
-    (dataset as VedaDatum<DatasetData>).data.layers.find(
+    (dataset!).data.layers.find(
       (l) => l.id === layerId
     )
   );
@@ -163,7 +208,7 @@ const findParentDataset = (layerId: string) => {
 export const allAvailableDatasetsLayers: DatasetLayer[] = Object.values(
   datasets
 )
-  .map((dataset) => (dataset as VedaDatum<DatasetData>).data.layers)
+  .map((dataset) => (dataset!).data.layers)
   .flat()
   .filter((d) => d.type !== 'vector' && !d.analysis?.exclude);
 
@@ -252,7 +297,7 @@ export default function Analysis() {
     const selectableDatasetLayersIds = selectableDatasetLayers.map(
       (layer) => layer.id
     );
-    const cleanedDatasetsLayers = datasetsLayers?.filter((l) =>
+    const cleanedDatasetsLayers = datasetsLayers.filter((l) =>
       selectableDatasetLayersIds.includes(l.id)
     );
 
@@ -307,13 +352,12 @@ export default function Analysis() {
           description='Generate timeseries data for your area of interest.'
         />
         <PageHeroAnalysis
-          title={'Data analysis'}
+          title='Data analysis'
           description='Generate timeseries data for your area of interest.'
           renderActions={({ size }) => (
             <SavedAnalysisControl size={size} urlBase={ANALYSIS_PATH} />
           )}
         />
-
         <AoiSelector
           mapRef={mapRef}
           // Use aoi initially decode from qs
@@ -322,10 +366,10 @@ export default function Analysis() {
           onAoiEvent={onAoiEvent}
         />
 
-        <Fold>
+        <FoldWOBottomPadding number='2'>
           <FoldHeader>
             <FoldHeadline>
-              <FoldTitle>Pick a date period</FoldTitle>
+              <FoldTitleWOAccent>Pick a date period</FoldTitleWOAccent>
               <p>
                 Select start and end date of time series, or choose a pre-set
                 date range.
@@ -338,7 +382,7 @@ export default function Analysis() {
                   variation='base-outline'
                   radius='square'
                 >
-                  <Button onClick={(e) => onDatePresetClick(e, 'last10Years')} >
+                  <Button onClick={(e) => onDatePresetClick(e, 'last10Years')}>
                     Last 10 years
                   </Button>
                   <Button onClick={(e) => onDatePresetClick(e, '2018-2022')}>
@@ -379,12 +423,12 @@ export default function Analysis() {
               </FormBlock>
             </Form>
           </FoldBody>
-        </Fold>
+        </FoldWOBottomPadding>
 
-        <Fold>
+        <FoldWithBullet number='3'>
           <FoldHeader>
             <FoldHeadline>
-              <FoldTitle>Select datasets</FoldTitle>
+              <FoldTitleWOAccent>Select datasets</FoldTitleWOAccent>
               <p>
                 Select from available dataset layers for the area and date range
                 selected.
@@ -464,7 +508,7 @@ export default function Analysis() {
               </Note>
             )}
           </FoldBody>
-        </Fold>
+        </FoldWithBullet>
       </PageMainContent>
       <FloatingFooter ref={footerRef} isSticky={isFooterSticky}>
         <PageFooterActions

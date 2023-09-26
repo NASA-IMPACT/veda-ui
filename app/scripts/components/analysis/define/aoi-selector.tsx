@@ -27,6 +27,7 @@ import {
 } from '@devseed-ui/collecticons';
 import { FeatureByRegionPreset, RegionPreset } from '../constants';
 import AoIUploadModal from './aoi-upload-modal';
+import {FoldWOBottomPadding, FoldTitleWOAccent} from '.';
 import {
   Fold,
   FoldHeader,
@@ -120,7 +121,7 @@ export default function AoiSelector({
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
 
   return (
-    <Fold>
+    <FoldWOBottomPadding number={1}>
       <AoIUploadModal
         setFeatureCollection={setFeatureCollection}
         revealed={aoiModalRevealed}
@@ -128,7 +129,7 @@ export default function AoiSelector({
       />
       <FoldHeader>
         <FoldHeadline>
-          <FoldTitle>Select area of interest</FoldTitle>
+          <FoldTitleWOAccent>Select area of interest</FoldTitleWOAccent>
           <p>
             Use the pencil tool to draw a shape on the map or upload your own
             shapefile.
@@ -205,6 +206,6 @@ export default function AoiSelector({
           />
         </MapContainer>
       </FoldBody>
-    </Fold>
+    </FoldWOBottomPadding>
   );
 }
