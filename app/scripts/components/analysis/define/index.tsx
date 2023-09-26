@@ -160,10 +160,10 @@ const FoldWithBullet = styled(Fold)<{number: string}>`
     // bullet
     &::after {
       position: absolute;
-      top: 0;
-      left: -20px;
-      width: 40px;
-      height: 40px;
+      top: ${variableGlsp(-0.25)};
+      left: ${variableGlsp(-1)};
+      width: ${variableGlsp(2)};
+      height: ${variableGlsp(2)};
       background-color: #1565EF;
       color: ${themeVal('color.surface')};
       border-radius: ${themeVal('shape.ellipsoid')};
@@ -177,6 +177,7 @@ const FoldWithBullet = styled(Fold)<{number: string}>`
   }
 `}
 `;
+
 export const FoldWOBottomPadding = styled(FoldWithBullet)`
   ${media.largeUp`
     padding-bottom: 0;
@@ -185,6 +186,10 @@ export const FoldWOBottomPadding = styled(FoldWithBullet)`
       padding-bottom:  ${variableGlsp(2)};
     }
   `}
+`;
+
+const FoldWOPadding = styled(Fold)`
+  padding: 0;
 `;
 
 export const FoldTitleWOAccent = styled(FoldTitle)`
@@ -511,14 +516,18 @@ export default function Analysis() {
         </FoldWithBullet>
       </PageMainContent>
       <FloatingFooter ref={footerRef} isSticky={isFooterSticky}>
-        <PageFooterActions
-          isNewAnalysis={isNewAnalysis}
-          start={start}
-          end={end}
-          datasetsLayers={datasetsLayers}
-          aoi={aoiDrawState.featureCollection}
-          disabled={notReady}
-        />
+        <FoldWOPadding>
+          <FoldBody>
+            <PageFooterActions
+              isNewAnalysis={isNewAnalysis}
+              start={start}
+              end={end}
+              datasetsLayers={datasetsLayers}
+              aoi={aoiDrawState.featureCollection}
+              disabled={notReady}
+            />
+          </FoldBody>
+        </FoldWOPadding>
       </FloatingFooter>
     </>
   );
