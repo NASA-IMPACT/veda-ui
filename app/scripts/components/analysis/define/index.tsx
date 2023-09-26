@@ -17,14 +17,14 @@ import {
 } from '@devseed-ui/form';
 import {
   CollecticonCircleInformation,
-  CollecticonEllipsisVertical
+  CollecticonEllipsisVertical,
+  CollecticonSignDanger
 } from '@devseed-ui/collecticons';
 import { Overline } from '@devseed-ui/typography';
 
 import { datasets, DatasetLayer, VedaDatum, DatasetData } from 'veda';
 import { useAnalysisParams } from '../results/use-analysis-params';
 import AoiSelector from './aoi-selector';
-import PageHeroActions from './page-hero-actions';
 import { useStacCollectionSearch } from './use-stac-collection-search';
 import { variableGlsp } from '$styles/variable-utils';
 
@@ -100,6 +100,38 @@ export const Note = styled.div`
 
   [class*='Collecticon'] {
     opacity: 0.32;
+  }
+`;
+
+const UnselectableInfo = styled.div`
+  font-size: 0.825rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: ${variableGlsp(0.5)};
+
+  & path {
+    fill: ${themeVal('color.danger')};
+  }
+`;
+
+const FormCheckableUnselectable = styled(FormCheckableCustom)`
+  pointer-events: none;
+  background: #f0f0f5;
+`;
+
+const DataPointsWarning = styled.div`
+  display: flex;
+  align-items: center;
+  background: ${themeVal('color.danger-100')};
+  border-radius: 99px;
+  font-size: 0.825rem;
+  font-weight: bold;
+  margin-top: ${variableGlsp(0.5)};
+  paddding: 4px;
+
+  & path {
+    fill: ${themeVal('color.danger')};
   }
 `;
 
@@ -203,12 +235,16 @@ export default function Analysis() {
     [setAnalysisParam, datasetsLayers]
   );
 
-  const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
-    useStacCollectionSearch({
-      start,
-      end,
-      aoi: aoiDrawState.featureCollection
-    });
+  const {
+    selectableDatasetLayers,
+    unselectableDatasetLayers,
+    stacSearchStatus,
+    readyToLoadDatasets
+  } = useStacCollectionSearch({
+    start,
+    end,
+    aoi: aoiDrawState.featureCollection
+  });
 
   // Update datasetsLayers when stac search is refreshed in case some
   // datasetsLayers are not available anymore
@@ -390,30 +426,70 @@ export default function Analysis() {
           </FoldHeader>
           <FoldBody>
             {!infoboxMessage ? (
-              <Form>
-                <CheckableGroup>
-                  {selectableDatasetLayers.map((datasetLayer) => (
-                    <FormCheckableCustom
-                      key={datasetLayer.id}
-                      id={datasetLayer.id}
-                      name={datasetLayer.id}
-                      value={datasetLayer.id}
-                      textPlacement='right'
-                      type='checkbox'
-                      onChange={onDatasetLayerChange}
-                      checked={
-                        selectedDatasetLayerIds?.includes(datasetLayer.id) ??
-                        false
-                      }
-                    >
-                      <Overline>
-                        From: {findParentDataset(datasetLayer.id)?.name}
-                      </Overline>
-                      {datasetLayer.name}
-                    </FormCheckableCustom>
-                  ))}
-                </CheckableGroup>
-              </Form>
+              <>
+                <Form>
+                  <CheckableGroup>
+                    {selectableDatasetLayers.map((datasetLayer) => (
+                      <FormCheckableCustom
+                        key={datasetLayer.id}
+                        id={datasetLayer.id}
+                        name={datasetLayer.id}
+                        value={datasetLayer.id}
+                        textPlacement='right'
+                        type='checkbox'
+                        onChange={onDatasetLayerChange}
+                        checked={
+                          selectedDatasetLayerIds?.includes(datasetLayer.id) ??
+                          false
+                        }
+                      >
+                        <Overline>
+                          From: {findParentDataset(datasetLayer.id)?.name}
+                        </Overline>
+                        {datasetLayer.name}
+                      </FormCheckableCustom>
+                    ))}
+                  </CheckableGroup>
+                </Form>
+                {unselectableDatasetLayers.length && (
+                  <>
+                    <UnselectableInfo>
+                      <CollecticonSignDanger />
+                      The current area and date selection has returned (
+                      {unselectableDatasetLayers.length}) datasets with a very
+                      large number of data points. To make them available,
+                      please define a smaller area or a select a shorter date
+                      period.
+                    </UnselectableInfo>
+
+                    <Form>
+                      <CheckableGroup>
+                        {unselectableDatasetLayers.map((datasetLayer) => (
+                          <FormCheckableUnselectable
+                            key={datasetLayer.id}
+                            id={datasetLayer.id}
+                            name={datasetLayer.id}
+                            value={datasetLayer.id}
+                            textPlacement='right'
+                            type='checkbox'
+                            onChange={onDatasetLayerChange}
+                            checked={false}
+                          >
+                            <Overline>
+                              From: {findParentDataset(datasetLayer.id)?.name}
+                            </Overline>
+                            {datasetLayer.name}
+                            <DataPointsWarning>
+                              <CollecticonSignDanger />~
+                              {datasetLayer.numberOfItems} data points
+                            </DataPointsWarning>
+                          </FormCheckableUnselectable>
+                        ))}
+                      </CheckableGroup>
+                    </Form>
+                  </>
+                )}
+              </>
             ) : (
               <Note>
                 <CollecticonCircleInformation size='large' />

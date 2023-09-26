@@ -16,6 +16,7 @@ import { TimeseriesDataResult } from '../results/timeseries-data';
 import { allAvailableDatasetsLayers } from '.';
 
 import { utcString2userTzDate } from '$utils/date';
+import { MAX_QUERY_NUM } from '../constants';
 
 interface UseStacSearchProps {
   start?: Date;
@@ -24,7 +25,7 @@ interface UseStacSearchProps {
 }
 
 export type DatasetWithTimeseriesData = TimeseriesDataResult &
-  DatasetLayer & { numberOfItems?: number };
+  DatasetLayer & { numberOfItems: number };
 
 const DATE_INTERVAL_FN = {
   day: eachDayOfInterval,
@@ -52,7 +53,7 @@ export function useStacCollectionSearch({
     enabled: readyToLoadDatasets
   });
 
-  const selectableDatasetLayers = useMemo(() => {
+  const datasetLayersInRange = useMemo(() => {
     try {
       return getInTemporalAndSpatialExtent(result.data, aoi, {
         start,
@@ -63,16 +64,29 @@ export function useStacCollectionSearch({
     }
   }, [result.data, aoi, start, end]);
 
-  const selectableDatasetLayersWithNumberOfItems: DatasetWithTimeseriesData[] =
+  const datasetLayersInRangeWithNumberOfItems: DatasetWithTimeseriesData[] =
     useMemo(() => {
-      return selectableDatasetLayers.map((l) => {
+      return datasetLayersInRange.map((l) => {
         const numberOfItems = getNumberOfItemsWithinTimeRange(start, end, l);
         return { ...l, numberOfItems };
       });
-    }, [selectableDatasetLayers, start, end]);
+    }, [datasetLayersInRange, start, end]);
+
+  const selectableDatasetLayers = useMemo(() => {
+    return datasetLayersInRangeWithNumberOfItems.filter(
+      (l) => l.numberOfItems <= MAX_QUERY_NUM
+    );
+  }, [datasetLayersInRangeWithNumberOfItems]);
+
+  const unselectableDatasetLayers = useMemo(() => {
+    return datasetLayersInRangeWithNumberOfItems.filter(
+      (l) => l.numberOfItems > MAX_QUERY_NUM
+    );
+  }, [datasetLayersInRangeWithNumberOfItems]);
 
   return {
-    selectableDatasetLayers: selectableDatasetLayersWithNumberOfItems,
+    selectableDatasetLayers,
+    unselectableDatasetLayers,
     stacSearchStatus: result.status,
     readyToLoadDatasets
   };
