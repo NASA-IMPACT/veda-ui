@@ -7,8 +7,7 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
-import { Toolbar, ToolbarIconButton, ToolbarLabel } from '@devseed-ui/toolbar';
-import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
+import { Toolbar, ToolbarLabel } from '@devseed-ui/toolbar';
 import {
   Form,
   FormCheckable,
@@ -17,7 +16,6 @@ import {
 } from '@devseed-ui/form';
 import {
   CollecticonCircleInformation,
-  CollecticonEllipsisVertical,
   CollecticonSignDanger
 } from '@devseed-ui/collecticons';
 import { Overline } from '@devseed-ui/typography';
@@ -52,6 +50,7 @@ import { MapboxMapRef } from '$components/common/mapbox';
 import PageFooterActions from './page-footer.actions';
 import SavedAnalysisControl from '../saved-analysis-control';
 import { ANALYSIS_PATH } from '$utils/routes';
+import { Button, ButtonGroup } from '@devseed-ui/button';
 
 const FormBlock = styled.div`
   display: flex;
@@ -334,57 +333,25 @@ export default function Analysis() {
             </FoldHeadline>
             <FoldHeadActions>
               <Toolbar size='small'>
-                <ToolbarLabel>Actions</ToolbarLabel>
-                <Dropdown
-                  alignment='right'
-                  triggerElement={(props) => (
-                    <ToolbarIconButton variation='base-text' {...props}>
-                      <CollecticonEllipsisVertical
-                        title='More options'
-                        meaningful
-                      />
-                    </ToolbarIconButton>
-                  )}
+                <ToolbarLabel>Presets</ToolbarLabel>
+                <ButtonGroup
+                  variation='base-outline'
+                  radius='square'
                 >
-                  <DropTitle>Select a date preset</DropTitle>
-                  <DropMenu>
-                    <li>
-                      <DropMenuItemButton
-                        onClick={(e) => onDatePresetClick(e, 'yearToDate')}
-                      >
-                        This year
-                      </DropMenuItemButton>
-                    </li>
-                    <li>
-                      <DropMenuItemButton
-                        onClick={(e) => onDatePresetClick(e, 'last30Days')}
-                      >
-                        Last 30 days
-                      </DropMenuItemButton>
-                    </li>
-                    <li>
-                      <DropMenuItemButton
-                        onClick={(e) => onDatePresetClick(e, 'lastYear')}
-                      >
-                        Last year
-                      </DropMenuItemButton>
-                    </li>
-                    <li>
-                      <DropMenuItemButton
-                        onClick={(e) => onDatePresetClick(e, 'last10Years')}
-                      >
-                        Last 10 years
-                      </DropMenuItemButton>
-                    </li>
-                  </DropMenu>
-                </Dropdown>
+                  <Button onClick={(e) => onDatePresetClick(e, 'last10Years')} >
+                    Last 10 years
+                  </Button>
+                  <Button onClick={(e) => onDatePresetClick(e, '2018-2022')}>
+                    2018 - 2022
+                  </Button>
+                </ButtonGroup>
               </Toolbar>
             </FoldHeadActions>
           </FoldHeader>
           <FoldBody>
             <Form>
               <FormBlock>
-                <FormGroupStructure label='Start' id='start-date' required>
+                <FormGroupStructure label='From' id='start-date' required>
                   <FormInput
                     type='date'
                     size='large'
@@ -397,7 +364,7 @@ export default function Analysis() {
                   />
                 </FormGroupStructure>
 
-                <FormGroupStructure label='End' id='end-date' required>
+                <FormGroupStructure label='To' id='end-date' required>
                   <FormInput
                     type='date'
                     size='large'
