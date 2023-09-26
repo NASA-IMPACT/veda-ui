@@ -128,7 +128,11 @@ export default function AoiSelector({
       />
       <FoldHeader>
         <FoldHeadline>
-          <FoldTitle>Area</FoldTitle>
+          <FoldTitle>Select area of interest</FoldTitle>
+          <p>
+            Use the pencil tool to draw a shape on the map or upload your own
+            shapefile.
+          </p>
         </FoldHeadline>
         <AoiHeadActions>
           <Toolbar>

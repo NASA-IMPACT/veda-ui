@@ -237,7 +237,7 @@ export default function Analysis() {
         description='Generate timeseries data for your area of interest.'
       />
       <PageHeroAnalysis
-        title={isNewAnalysis ? 'Start analysis' : 'Refine analysis'}
+        title={'Data analysis'}
         description='Generate timeseries data for your area of interest.'
         renderActions={({ size }) => (
           <PageHeroActions
@@ -263,7 +263,11 @@ export default function Analysis() {
       <Fold>
         <FoldHeader>
           <FoldHeadline>
-            <FoldTitle>Date</FoldTitle>
+            <FoldTitle>Pick a date period</FoldTitle>
+            <p>
+              Select start and end date of time series, or choose a pre-set date
+              range.
+            </p>
           </FoldHeadline>
           <FoldHeadActions>
             <Toolbar size='small'>
@@ -350,7 +354,11 @@ export default function Analysis() {
       <Fold>
         <FoldHeader>
           <FoldHeadline>
-            <FoldTitle>Datasets</FoldTitle>
+            <FoldTitle>Select datasets</FoldTitle>
+            <p>
+              Select from available dataset layers for the area and date range
+              selected.
+            </p>
           </FoldHeadline>
         </FoldHeader>
         <FoldBody>
