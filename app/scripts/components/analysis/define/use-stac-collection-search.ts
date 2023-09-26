@@ -5,18 +5,16 @@ import { useQuery } from '@tanstack/react-query';
 import booleanIntersects from '@turf/boolean-intersects';
 import bboxPolygon from '@turf/bbox-polygon';
 import {
-  areIntervalsOverlapping,
-  eachDayOfInterval,
-  eachMonthOfInterval,
-  eachYearOfInterval
+  areIntervalsOverlapping
 } from 'date-fns';
 import { DatasetLayer } from 'veda';
 
+import { MAX_QUERY_NUM } from '../constants';
 import { TimeseriesDataResult } from '../results/timeseries-data';
+import { getNumberOfItemsWithinTimeRange } from './utils';
 import { allAvailableDatasetsLayers } from '.';
 
 import { utcString2userTzDate } from '$utils/date';
-import { MAX_QUERY_NUM } from '../constants';
 
 interface UseStacSearchProps {
   start?: Date;
@@ -26,12 +24,6 @@ interface UseStacSearchProps {
 
 export type DatasetWithTimeseriesData = TimeseriesDataResult &
   DatasetLayer & { numberOfItems: number };
-
-const DATE_INTERVAL_FN = {
-  day: eachDayOfInterval,
-  month: eachMonthOfInterval,
-  year: eachYearOfInterval
-};
 
 const collectionUrl = `${process.env.API_STAC_ENDPOINT}/collections`;
 
@@ -90,36 +82,6 @@ export function useStacCollectionSearch({
     stacSearchStatus: result.status,
     readyToLoadDatasets
   };
-}
-
-/**
- * For each collection, get the number of items within the time range,
- * taking into account the time density.
- */
-function getNumberOfItemsWithinTimeRange(userStart, userEnd, collection) {
-  const { isPeriodic, timeDensity, domain, timeseries } = collection;
-  if (!isPeriodic) {
-    const numberOfItems = timeseries.reduce((acc, t) => {
-      const date = new Date(t);
-      if (date >= userStart && date <= userEnd) {
-        return acc + 1;
-      } else {
-        return acc;
-      }
-    }, 0);
-    return numberOfItems; // Check in with back-end team
-  }
-  const eachOf = DATE_INTERVAL_FN[timeDensity];
-  const start =
-    +new Date(domain[0]) > +new Date(userStart)
-      ? new Date(domain[0])
-      : new Date(userStart);
-  const end =
-    +new Date(domain[1]) < +new Date(userEnd)
-      ? new Date(domain[1])
-      : new Date(userEnd);
-
-  return eachOf({ start, end }).length;
 }
 
 function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
