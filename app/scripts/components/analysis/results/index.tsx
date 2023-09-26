@@ -193,6 +193,7 @@ export default function AnalysisResults() {
               forwardedAs={Link}
               to={`${ANALYSIS_PATH}${analysisParamsQs}`}
               size={size}
+              radius='square'
               variation='achromic-outline'
             >
               <CollecticonPencil /> Refine

@@ -49,6 +49,9 @@ import {
 } from '$utils/date';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { MapboxMapRef } from '$components/common/mapbox';
+import PageFooterActions from './page-footer.actions';
+import SavedAnalysisControl from '../saved-analysis-control';
+import { ANALYSIS_PATH } from '$utils/routes';
 
 const FormBlock = styled.div`
   display: flex;
@@ -98,6 +101,23 @@ export const Note = styled.div`
   [class*='Collecticon'] {
     opacity: 0.32;
   }
+`;
+
+const FloatingFooter = styled.div<{ isSticky: boolean }>`
+  position: sticky;
+  left: 0;
+  right: 0;
+  // trick to get the IntersectionObserver to fire
+  bottom: -1px;
+  padding: ${variableGlsp(0.5)};
+  background: ${themeVal('color.surface')};
+  z-index: 99;
+  margin-bottom: ${variableGlsp(1)};
+  ${(props) =>
+    props.isSticky &&
+    `
+      box-shadow: 0 0 10px 0 #0003;
+    `}
 `;
 
 const findParentDataset = (layerId: string) => {
@@ -206,7 +226,7 @@ export default function Analysis() {
     // read/set state loop
   }, [selectableDatasetLayers, setAnalysisParam]);
 
-  const showTip = !readyToLoadDatasets || !datasetsLayers?.length;
+  const notReady = !readyToLoadDatasets || !datasetsLayers?.length;
 
   const infoboxMessage = useMemo(() => {
     if (
@@ -230,171 +250,189 @@ export default function Analysis() {
     }
   }, [readyToLoadDatasets, stacSearchStatus, selectableDatasetLayers.length]);
 
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [isFooterSticky, setIsFooterSticky] = React.useState(false);
+  useEffect(() => {
+    if (!footerRef.current) return;
+    const observer = new IntersectionObserver(
+      ([e]) => {
+        setIsFooterSticky(e.intersectionRatio < 1);
+      },
+      { threshold: [1] }
+    );
+    observer.observe(footerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <PageMainContent>
-      <LayoutProps
-        title='Analysis'
-        description='Generate timeseries data for your area of interest.'
-      />
-      <PageHeroAnalysis
-        title={'Data analysis'}
-        description='Generate timeseries data for your area of interest.'
-        renderActions={({ size }) => (
-          <PageHeroActions
-            size={size}
-            isNewAnalysis={isNewAnalysis}
-            showTip={showTip}
-            start={start}
-            end={end}
-            datasetsLayers={datasetsLayers}
-            aoi={aoiDrawState.featureCollection}
-          />
-        )}
-      />
-
-      <AoiSelector
-        mapRef={mapRef}
-        // Use aoi initially decode from qs
-        qsAoi={aoi}
-        aoiDrawState={aoiDrawState}
-        onAoiEvent={onAoiEvent}
-      />
-
-      <Fold>
-        <FoldHeader>
-          <FoldHeadline>
-            <FoldTitle>Pick a date period</FoldTitle>
-            <p>
-              Select start and end date of time series, or choose a pre-set date
-              range.
-            </p>
-          </FoldHeadline>
-          <FoldHeadActions>
-            <Toolbar size='small'>
-              <ToolbarLabel>Actions</ToolbarLabel>
-              <Dropdown
-                alignment='right'
-                triggerElement={(props) => (
-                  <ToolbarIconButton variation='base-text' {...props}>
-                    <CollecticonEllipsisVertical
-                      title='More options'
-                      meaningful
-                    />
-                  </ToolbarIconButton>
-                )}
-              >
-                <DropTitle>Select a date preset</DropTitle>
-                <DropMenu>
-                  <li>
-                    <DropMenuItemButton
-                      onClick={(e) => onDatePresetClick(e, 'yearToDate')}
-                    >
-                      This year
-                    </DropMenuItemButton>
-                  </li>
-                  <li>
-                    <DropMenuItemButton
-                      onClick={(e) => onDatePresetClick(e, 'last30Days')}
-                    >
-                      Last 30 days
-                    </DropMenuItemButton>
-                  </li>
-                  <li>
-                    <DropMenuItemButton
-                      onClick={(e) => onDatePresetClick(e, 'lastYear')}
-                    >
-                      Last year
-                    </DropMenuItemButton>
-                  </li>
-                  <li>
-                    <DropMenuItemButton
-                      onClick={(e) => onDatePresetClick(e, 'last10Years')}
-                    >
-                      Last 10 years
-                    </DropMenuItemButton>
-                  </li>
-                </DropMenu>
-              </Dropdown>
-            </Toolbar>
-          </FoldHeadActions>
-        </FoldHeader>
-        <FoldBody>
-          <Form>
-            <FormBlock>
-              <FormGroupStructure label='Start' id='start-date' required>
-                <FormInput
-                  type='date'
-                  size='large'
-                  id='start-date'
-                  name='start-date'
-                  value={start ? dateToInputFormat(start) : ''}
-                  onChange={onStartDateChange}
-                  min='1900-01-01'
-                  max={dateToInputFormat(end)}
-                />
-              </FormGroupStructure>
-
-              <FormGroupStructure label='End' id='end-date' required>
-                <FormInput
-                  type='date'
-                  size='large'
-                  id='end-date'
-                  name='end-date'
-                  value={end ? dateToInputFormat(end) : ''}
-                  onChange={onEndDateChange}
-                  min={dateToInputFormat(start)}
-                  max={new Date().toISOString().split('T')[0]}
-                />
-              </FormGroupStructure>
-            </FormBlock>
-          </Form>
-        </FoldBody>
-      </Fold>
-
-      <Fold>
-        <FoldHeader>
-          <FoldHeadline>
-            <FoldTitle>Select datasets</FoldTitle>
-            <p>
-              Select from available dataset layers for the area and date range
-              selected.
-            </p>
-          </FoldHeadline>
-        </FoldHeader>
-        <FoldBody>
-          {!infoboxMessage ? (
-            <Form>
-              <CheckableGroup>
-                {selectableDatasetLayers.map((datasetLayer) => (
-                  <FormCheckableCustom
-                    key={datasetLayer.id}
-                    id={datasetLayer.id}
-                    name={datasetLayer.id}
-                    value={datasetLayer.id}
-                    textPlacement='right'
-                    type='checkbox'
-                    onChange={onDatasetLayerChange}
-                    checked={
-                      selectedDatasetLayerIds?.includes(datasetLayer.id) ??
-                      false
-                    }
-                  >
-                    <Overline>
-                      From: {findParentDataset(datasetLayer.id)?.name}
-                    </Overline>
-                    {datasetLayer.name}
-                  </FormCheckableCustom>
-                ))}
-              </CheckableGroup>
-            </Form>
-          ) : (
-            <Note>
-              <CollecticonCircleInformation size='large' />
-              <p>{infoboxMessage}</p>
-            </Note>
+    <>
+      <PageMainContent>
+        <LayoutProps
+          title='Analysis'
+          description='Generate timeseries data for your area of interest.'
+        />
+        <PageHeroAnalysis
+          title={'Data analysis'}
+          description='Generate timeseries data for your area of interest.'
+          renderActions={({ size }) => (
+            <SavedAnalysisControl size={size} urlBase={ANALYSIS_PATH} />
           )}
-        </FoldBody>
-      </Fold>
-    </PageMainContent>
+        />
+
+        <AoiSelector
+          mapRef={mapRef}
+          // Use aoi initially decode from qs
+          qsAoi={aoi}
+          aoiDrawState={aoiDrawState}
+          onAoiEvent={onAoiEvent}
+        />
+
+        <Fold>
+          <FoldHeader>
+            <FoldHeadline>
+              <FoldTitle>Pick a date period</FoldTitle>
+              <p>
+                Select start and end date of time series, or choose a pre-set
+                date range.
+              </p>
+            </FoldHeadline>
+            <FoldHeadActions>
+              <Toolbar size='small'>
+                <ToolbarLabel>Actions</ToolbarLabel>
+                <Dropdown
+                  alignment='right'
+                  triggerElement={(props) => (
+                    <ToolbarIconButton variation='base-text' {...props}>
+                      <CollecticonEllipsisVertical
+                        title='More options'
+                        meaningful
+                      />
+                    </ToolbarIconButton>
+                  )}
+                >
+                  <DropTitle>Select a date preset</DropTitle>
+                  <DropMenu>
+                    <li>
+                      <DropMenuItemButton
+                        onClick={(e) => onDatePresetClick(e, 'yearToDate')}
+                      >
+                        This year
+                      </DropMenuItemButton>
+                    </li>
+                    <li>
+                      <DropMenuItemButton
+                        onClick={(e) => onDatePresetClick(e, 'last30Days')}
+                      >
+                        Last 30 days
+                      </DropMenuItemButton>
+                    </li>
+                    <li>
+                      <DropMenuItemButton
+                        onClick={(e) => onDatePresetClick(e, 'lastYear')}
+                      >
+                        Last year
+                      </DropMenuItemButton>
+                    </li>
+                    <li>
+                      <DropMenuItemButton
+                        onClick={(e) => onDatePresetClick(e, 'last10Years')}
+                      >
+                        Last 10 years
+                      </DropMenuItemButton>
+                    </li>
+                  </DropMenu>
+                </Dropdown>
+              </Toolbar>
+            </FoldHeadActions>
+          </FoldHeader>
+          <FoldBody>
+            <Form>
+              <FormBlock>
+                <FormGroupStructure label='Start' id='start-date' required>
+                  <FormInput
+                    type='date'
+                    size='large'
+                    id='start-date'
+                    name='start-date'
+                    value={start ? dateToInputFormat(start) : ''}
+                    onChange={onStartDateChange}
+                    min='1900-01-01'
+                    max={dateToInputFormat(end)}
+                  />
+                </FormGroupStructure>
+
+                <FormGroupStructure label='End' id='end-date' required>
+                  <FormInput
+                    type='date'
+                    size='large'
+                    id='end-date'
+                    name='end-date'
+                    value={end ? dateToInputFormat(end) : ''}
+                    onChange={onEndDateChange}
+                    min={dateToInputFormat(start)}
+                    max={new Date().toISOString().split('T')[0]}
+                  />
+                </FormGroupStructure>
+              </FormBlock>
+            </Form>
+          </FoldBody>
+        </Fold>
+
+        <Fold>
+          <FoldHeader>
+            <FoldHeadline>
+              <FoldTitle>Select datasets</FoldTitle>
+              <p>
+                Select from available dataset layers for the area and date range
+                selected.
+              </p>
+            </FoldHeadline>
+          </FoldHeader>
+          <FoldBody>
+            {!infoboxMessage ? (
+              <Form>
+                <CheckableGroup>
+                  {selectableDatasetLayers.map((datasetLayer) => (
+                    <FormCheckableCustom
+                      key={datasetLayer.id}
+                      id={datasetLayer.id}
+                      name={datasetLayer.id}
+                      value={datasetLayer.id}
+                      textPlacement='right'
+                      type='checkbox'
+                      onChange={onDatasetLayerChange}
+                      checked={
+                        selectedDatasetLayerIds?.includes(datasetLayer.id) ??
+                        false
+                      }
+                    >
+                      <Overline>
+                        From: {findParentDataset(datasetLayer.id)?.name}
+                      </Overline>
+                      {datasetLayer.name}
+                    </FormCheckableCustom>
+                  ))}
+                </CheckableGroup>
+              </Form>
+            ) : (
+              <Note>
+                <CollecticonCircleInformation size='large' />
+                <p>{infoboxMessage}</p>
+              </Note>
+            )}
+          </FoldBody>
+        </Fold>
+      </PageMainContent>
+      <FloatingFooter ref={footerRef} isSticky={isFooterSticky}>
+        <PageFooterActions
+          isNewAnalysis={isNewAnalysis}
+          start={start}
+          end={end}
+          datasetsLayers={datasetsLayers}
+          aoi={aoiDrawState.featureCollection}
+          disabled={notReady}
+        />
+      </FloatingFooter>
+    </>
   );
 }
