@@ -183,6 +183,13 @@ export default function AoiSelector({
                     World
                   </DropMenuItemButton>
                 </li>
+                <li>
+                  <DropMenuItemButton
+                    onClick={() => onRegionPresetClick('north-america')}
+                  >
+                    North America
+                  </DropMenuItemButton>
+                </li>
               </DropMenu>
             </Dropdown>
           </Toolbar>

@@ -75,7 +75,7 @@ export default function PageFooterActions({
   });
 
   const analysisDescription = useMemo(() => {
-    if (!start || !end || !datasetsLayers || !aoi) return '';
+    if (!start || !end || !datasetsLayers || !aoi || !datasetsLayers.length) return '';
     const dataset =
       datasetsLayers.length === 1
         ? datasetsLayers[0].name

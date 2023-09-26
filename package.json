@@ -123,6 +123,7 @@
     "@turf/centroid": "^6.5.0",
     "@turf/simplify": "^6.5.0",
     "@turf/union": "^6.5.0",
+    "@turf/helpers": "^6.5.0",
     "@types/geojson": "^7946.0.10",
     "@types/mdx": "^2.0.1",
     "@types/react": "^18.2.12",
