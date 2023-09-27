@@ -60,11 +60,6 @@ const PageHeaderSelf = styled.header`
   }
 `;
 
-const force_reload = (current_path) => {
-
-  window.location.replace(current_path)
-}; 
-
 const Brand = styled.div`
   display: flex;
   flex-shrink: 0;
@@ -348,18 +343,8 @@ function PageHeader() {
   }, [isMediumDown]);
 
   const closeNavOnClick = useCallback((e) => {
-
-    
     setGlobalNavRevealed(false);
-
-    // Need a time out for the event to register the current path
-    setTimeout(() => {
-      let current_path = e.target.baseURI;
-      force_reload(current_path)
-      
-    }, 120);
-     
-    }, []);
+  }, []);
 
   return (
     <PageHeaderSelf id={HEADER_ID}>
@@ -414,7 +399,8 @@ function PageHeader() {
                 <GlobalMenu>
                   <li>
                     <GlobalMenuLink
-                      to={DATASETS_PATH}
+                      as='a'
+                      href={DATASETS_PATH}
                       onClick={closeNavOnClick}
                     >
                       Data Catalog
@@ -422,14 +408,19 @@ function PageHeader() {
                   </li>
                   <li>
                     <GlobalMenuLink
-                      to={ANALYSIS_PATH}
+                      as='a'
+                      href={ANALYSIS_PATH}
                       onClick={closeNavOnClick}
                     >
                       Data Analysis
                     </GlobalMenuLink>
                   </li>
                   <li>
-                    <GlobalMenuLink to={STORIES_PATH} onClick={closeNavOnClick}>
+                    <GlobalMenuLink
+                      as='a'
+                      href={STORIES_PATH}
+                      onClick={closeNavOnClick}
+                    >
                       {getString('stories').other}
                     </GlobalMenuLink>
                   </li>
