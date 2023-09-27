@@ -13,9 +13,11 @@ import {
   LegendSwatch,
   LegendLabel
 } from '$styles/infographics';
+import { variableGlsp } from '$styles/variable-utils';
 
 const AnalysisFoldHeadActions = styled(FoldHeadActions)`
   width: 100%;
+  margin-top: ${variableGlsp(2)};
 
   ${media.mediumUp`
     width: auto;
