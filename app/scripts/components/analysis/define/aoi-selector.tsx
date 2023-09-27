@@ -19,20 +19,19 @@ import {
 import { Button, ButtonGroup } from '@devseed-ui/button';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
-  CollecticonArrowLoop,
+  CollecticonTrashBin,
   CollecticonHandPan,
   CollecticonMarker,
   CollecticonPencil,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
-import { FeatureByRegionPreset, RegionPreset } from './constants';
+import { FeatureByRegionPreset, RegionPreset } from '../constants';
 import AoIUploadModal from './aoi-upload-modal';
+import { FoldWGuideLine, FoldTitleWOAccent } from '.';
 import {
-  Fold,
   FoldHeader,
   FoldHeadline,
   FoldHeadActions,
-  FoldTitle,
   FoldBody
 } from '$components/common/fold';
 import MapboxMap, { MapboxMapRef } from '$components/common/mapbox';
@@ -120,7 +119,7 @@ export default function AoiSelector({
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
 
   return (
-    <Fold>
+    <FoldWGuideLine number={1}>
       <AoIUploadModal
         setFeatureCollection={setFeatureCollection}
         revealed={aoiModalRevealed}
@@ -128,16 +127,20 @@ export default function AoiSelector({
       />
       <FoldHeader>
         <FoldHeadline>
-          <FoldTitle>Area</FoldTitle>
+          <FoldTitleWOAccent>Select area of interest</FoldTitleWOAccent>
+          <p>
+            Use the pencil tool to draw a shape on the map or upload your own
+            shapefile.
+          </p>
         </FoldHeadline>
         <AoiHeadActions>
           <Toolbar>
             <ToolbarIconButton
-              variation='primary-fill'
+              variation='danger-fill'
               onClick={() => onAoiEvent('aoi.clear')}
               disabled={!featureCollection?.features.length}
             >
-              <CollecticonArrowLoop title='Clear map' meaningful />
+              <CollecticonTrashBin title='Clear map' meaningful />
             </ToolbarIconButton>
             <VerticalDivider variation='dark' />
             <ButtonGroup variation='primary-fill'>
@@ -179,6 +182,13 @@ export default function AoiSelector({
                     World
                   </DropMenuItemButton>
                 </li>
+                <li>
+                  <DropMenuItemButton
+                    onClick={() => onRegionPresetClick('north-america')}
+                  >
+                    North America
+                  </DropMenuItemButton>
+                </li>
               </DropMenu>
             </Dropdown>
           </Toolbar>
@@ -194,6 +204,6 @@ export default function AoiSelector({
           />
         </MapContainer>
       </FoldBody>
-    </Fold>
+    </FoldWGuideLine>
   );
 }

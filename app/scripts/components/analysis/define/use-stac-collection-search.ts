@@ -4,8 +4,14 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import booleanIntersects from '@turf/boolean-intersects';
 import bboxPolygon from '@turf/bbox-polygon';
-import { areIntervalsOverlapping } from 'date-fns';
+import {
+  areIntervalsOverlapping
+} from 'date-fns';
+import { DatasetLayer } from 'veda';
 
+import { MAX_QUERY_NUM } from '../constants';
+import { TimeseriesDataResult } from '../results/timeseries-data';
+import { getNumberOfItemsWithinTimeRange } from './utils';
 import { allAvailableDatasetsLayers } from '.';
 
 import { utcString2userTzDate } from '$utils/date';
@@ -15,6 +21,9 @@ interface UseStacSearchProps {
   end?: Date;
   aoi?: FeatureCollection<Polygon> | null;
 }
+
+export type DatasetWithTimeseriesData = TimeseriesDataResult &
+  DatasetLayer & { numberOfItems: number };
 
 const collectionUrl = `${process.env.API_STAC_ENDPOINT}/collections`;
 
@@ -36,7 +45,7 @@ export function useStacCollectionSearch({
     enabled: readyToLoadDatasets
   });
 
-  const selectableDatasetLayers = useMemo(() => {
+  const datasetLayersInRange = useMemo(() => {
     try {
       return getInTemporalAndSpatialExtent(result.data, aoi, {
         start,
@@ -47,8 +56,29 @@ export function useStacCollectionSearch({
     }
   }, [result.data, aoi, start, end]);
 
+  const datasetLayersInRangeWithNumberOfItems: DatasetWithTimeseriesData[] =
+    useMemo(() => {
+      return datasetLayersInRange.map((l) => {
+        const numberOfItems = getNumberOfItemsWithinTimeRange(start, end, l);
+        return { ...l, numberOfItems };
+      });
+    }, [datasetLayersInRange, start, end]);
+
+  const selectableDatasetLayers = useMemo(() => {
+    return datasetLayersInRangeWithNumberOfItems.filter(
+      (l) => l.numberOfItems <= MAX_QUERY_NUM
+    );
+  }, [datasetLayersInRangeWithNumberOfItems]);
+
+  const unselectableDatasetLayers = useMemo(() => {
+    return datasetLayersInRangeWithNumberOfItems.filter(
+      (l) => l.numberOfItems > MAX_QUERY_NUM
+    );
+  }, [datasetLayersInRangeWithNumberOfItems]);
+
   return {
-    selectableDatasetLayers: selectableDatasetLayers,
+    selectableDatasetLayers,
+    unselectableDatasetLayers,
     stacSearchStatus: result.status,
     readyToLoadDatasets
   };
@@ -95,7 +125,20 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
     }
   }, []);
 
-  return allAvailableDatasetsLayers.filter((l) =>
+  const filteredDatasets = allAvailableDatasetsLayers.filter((l) =>
     matchingCollectionIds.includes(l.stacCol)
   );
+
+  const filteredDatasetsWithCollections = filteredDatasets.map((l) => {
+    const collection = collectionData.find((c) => c.id === l.stacCol);
+    return {
+      ...l,
+      isPeriodic: collection['dashboard:is_periodic'],
+      timeDensity: collection['dashboard:time_density'],
+      domain: collection.extent.temporal.interval[0],
+      timeseries: collection.summaries.datetime
+    };
+  });
+
+  return filteredDatasetsWithCollections;
 }

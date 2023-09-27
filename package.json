@@ -121,6 +121,7 @@
     "@turf/bbox-polygon": "^6.5.0",
     "@turf/boolean-intersects": "^6.5.0",
     "@turf/centroid": "^6.5.0",
+    "@turf/helpers": "^6.5.0",
     "@turf/simplify": "^6.5.0",
     "@turf/union": "^6.5.0",
     "@types/geojson": "^7946.0.10",

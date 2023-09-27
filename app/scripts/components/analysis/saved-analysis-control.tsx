@@ -4,10 +4,9 @@ import { FeatureCollection, Polygon } from 'geojson';
 import styled, { useTheme } from 'styled-components';
 import bbox from '@turf/bbox';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { ButtonProps } from '@devseed-ui/button';
+import { Button, ButtonProps } from '@devseed-ui/button';
 import { CollecticonClockBack } from '@devseed-ui/collecticons';
 
-import { ToolbarIconButton } from '@devseed-ui/toolbar';
 import {
   Dropdown,
   DropMenu,
@@ -91,14 +90,15 @@ export default function SavedAnalysisControl({
     <PastAnalysesDropdown
       alignment='right'
       triggerElement={(props) => (
-        <ToolbarIconButton
+        <Button
           {...props}
           size={size}
           variation='achromic-outline'
+          radius='square'
           disabled={!savedSettingsList.length}
         >
-          <CollecticonClockBack title='Show past analyses' meaningful />
-        </ToolbarIconButton>
+          <CollecticonClockBack title='Show past analyses' meaningful /> Past analyses
+        </Button>
       )}
     >
       <DropTitle>Past analyses</DropTitle>

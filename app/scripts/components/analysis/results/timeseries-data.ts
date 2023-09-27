@@ -3,6 +3,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
 import { DatasetLayer } from 'veda';
 
+import { MAX_QUERY_NUM } from '../constants';
 import { getFilterPayload, combineFeatureCollection } from '../utils';
 import EventEmitter from './mini-events';
 import { ConcurrencyManager, ConcurrencyManagerInstance } from './concurrency';
@@ -30,7 +31,7 @@ export interface TimeseriesDataUnit {
   percentile_98: number;
 }
 
-interface TimeseriesDataResult {
+export interface TimeseriesDataResult {
   isPeriodic: boolean;
   timeDensity: TimeDensity;
   domain: string[];
@@ -251,6 +252,11 @@ async function requestTimeseries({
     );
 
     const { assets, ...otherCollectionProps } = layerInfoFromSTAC;
+
+    if (assets.length > MAX_QUERY_NUM)
+      throw Error(
+        `Too many requests. We currently only allow requests up to ${MAX_QUERY_NUM} and this analysis requires ${assets.length} requests.`
+      );
 
     onData({
       ...layersBase,
