@@ -60,6 +60,11 @@ const PageHeaderSelf = styled.header`
   }
 `;
 
+const force_reload = (current_path) => {
+
+  window.location.replace(current_path)
+}; 
+
 const Brand = styled.div`
   display: flex;
   flex-shrink: 0;
@@ -342,7 +347,19 @@ function PageHeader() {
     if (!isMediumDown) setGlobalNavRevealed(false);
   }, [isMediumDown]);
 
-  const closeNavOnClick = useCallback(() => setGlobalNavRevealed(false), []);
+  const closeNavOnClick = useCallback((e) => {
+
+    
+    setGlobalNavRevealed(false);
+
+    // Need a time out for the event to register the current path
+    setTimeout(() => {
+      let current_path = e.target.baseURI;
+      force_reload(current_path)
+      
+    }, 120);
+     
+    }, []);
 
   return (
     <PageHeaderSelf id={HEADER_ID}>
