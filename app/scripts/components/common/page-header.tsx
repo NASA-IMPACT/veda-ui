@@ -342,7 +342,7 @@ function PageHeader() {
     if (!isMediumDown) setGlobalNavRevealed(false);
   }, [isMediumDown]);
 
-  const closeNavOnClick = useCallback((e) => {
+  const closeNavOnClick = useCallback(() => {
     setGlobalNavRevealed(false);
   }, []);
 
