@@ -32,6 +32,7 @@ const initialState: AnalysisParamsNull = {
   errors: null
 };
 
+const LOG = process.env.NODE_ENV !== 'production';
 export class ValidationError extends Error {
   hints: any[];
 
@@ -125,7 +126,7 @@ export function useAnalysisParams(): {
     } catch (error) {
       if (error instanceof ValidationError) {
         /* eslint-disable no-console */
-        error.hints.forEach((s) => console.log(s));
+        if (LOG) error.hints.forEach((s) => console.log(s));
         /* eslint-enable no-console */
         setParams({
           ...initialState,
