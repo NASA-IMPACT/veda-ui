@@ -115,18 +115,19 @@ const UnselectableInfo = styled.div`
 
 const FormCheckableUnselectable = styled(FormCheckableCustom)`
   pointer-events: none;
-  background: #f0f0f5;
+  background: #F0F0F5;
 `;
 
 const DataPointsWarning = styled.div`
   display: flex;
   align-items: center;
-  background: ${themeVal('color.danger-100')};
+  background: #FC3D2119;
   border-radius: 99px;
   font-size: 0.825rem;
   font-weight: bold;
   margin-top: ${variableGlsp(0.5)};
-  paddding: 4px;
+  padding: 2px 0 2px 6px;
+  color: ${themeVal('color.danger')};
 
   & path {
     fill: ${themeVal('color.danger')};
@@ -159,10 +160,8 @@ const FoldWithBullet = styled(Fold)<{ number: string }>`
     // bullet
     &::after {
       position: absolute;
-      top: ${variableGlsp(-0.25)};
-      left: ${variableGlsp(-1)};
-      width: ${variableGlsp(2)};
-      height: ${variableGlsp(2)};
+      width: ${variableGlsp(1.5)};
+      height: ${variableGlsp(1.5)};
       background-color: #1565EF;
       color: ${themeVal('color.surface')};
       border-radius: ${themeVal('shape.ellipsoid')};
@@ -181,8 +180,14 @@ export const FoldWGuideLine = styled(FoldWithBullet)`
   ${media.largeUp`
     padding-bottom: 0;
     > div {
-      border-left : 3px solid ${themeVal('color.base-200a')};
       padding-bottom:  ${variableGlsp(2)};
+      &::before {
+        position: absolute;
+        content: '';
+        height: 100%;
+        left: ${variableGlsp(0.7)};
+        border-left : 3px solid ${themeVal('color.base-200a')};
+      }
     }
   `}
 `;
@@ -204,6 +209,10 @@ const FormGroupStructureCustom = styled(FormGroupStructure)`
     display: inline-flex;
     align-items: center;
   `}
+`;
+
+const ToolbarLabelWithSpace = styled(ToolbarLabel)`
+  margin-right: ${variableGlsp(0.5)};
 `;
 
 const FoldBodyCustom = styled(FoldBody)`
@@ -424,7 +433,7 @@ export default function Analysis() {
               </FormBlock>
             </Form>
             <Toolbar size='small'>
-              <ToolbarLabel>Presets</ToolbarLabel>
+              <ToolbarLabelWithSpace>Presets</ToolbarLabelWithSpace>
               <ButtonGroup variation='base-outline' radius='square'>
                 <Button onClick={(e) => onDatePresetClick(e, 'last10Years')}>
                   Last 10 years
