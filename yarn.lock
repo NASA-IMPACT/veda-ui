@@ -2902,6 +2902,70 @@
   resolved "http://verdaccio.ds.io:4873/@reach%2fobserve-rect/-/observe-rect-1.2.0.tgz#d7a6013b8aafcc64c778a0ccb83355a11204d3b2"
   integrity sha512-Ba7HmkFgfQxZqqaeIWWkNK0rEhpxVQHIoVyW1YDSkGsGIXzcaW4deC8B0pZrNSSyLTdIk7y+5olKt5+g0GmFIQ==
 
+"@sentry-internal/tracing@7.72.0":
+  version "7.72.0"
+  resolved "http://verdaccio.ds.io:4873/@sentry-internal%2ftracing/-/tracing-7.72.0.tgz#6293a08b8b3dff80499207a4b4994ae70aafc34c"
+  integrity sha512-DToryaRSHk9R5RLgN4ktYEXZjQdqncOAWPqyyIurji8lIobXFRfmLtGL1wjoCK6sQNgWsjhSM9kXxwGnva1DNw==
+  dependencies:
+    "@sentry/core" "7.72.0"
+    "@sentry/types" "7.72.0"
+    "@sentry/utils" "7.72.0"
+    tslib "^2.4.1 || ^1.9.3"
+
+"@sentry/browser@7.72.0":
+  version "7.72.0"
+  resolved "http://verdaccio.ds.io:4873/@sentry%2fbrowser/-/browser-7.72.0.tgz#8920d32920031de7ef70140ac13de267e773e5c7"
+  integrity sha512-fcFDTzqhPd3VZAmmYW3KvBTBaEfrKjPmRhlAsfhkGWYLCHqVkNtzsFER4cmUNRGNxjyt9tcG3WlTTqgLRucycQ==
+  dependencies:
+    "@sentry-internal/tracing" "7.72.0"
+    "@sentry/core" "7.72.0"
+    "@sentry/replay" "7.72.0"
+    "@sentry/types" "7.72.0"
+    "@sentry/utils" "7.72.0"
+    tslib "^2.4.1 || ^1.9.3"
+
+"@sentry/core@7.72.0":
+  version "7.72.0"
+  resolved "http://verdaccio.ds.io:4873/@sentry%2fcore/-/core-7.72.0.tgz#df19f9dc1c2cfc5993a73c0c36283c35f9c52f94"
+  integrity sha512-G03JdQ5ZsFNRjcNNi+QvCjqOuBvYqU92Gs1T2iK3GE8dSBTu2khThydMpG4xrKZQLIpHOyiIhlFZiuPtZ66W8w==
+  dependencies:
+    "@sentry/types" "7.72.0"
+    "@sentry/utils" "7.72.0"
+    tslib "^2.4.1 || ^1.9.3"
+
+"@sentry/react@^7.72.0":
+  version "7.72.0"
+  resolved "http://verdaccio.ds.io:4873/@sentry%2freact/-/react-7.72.0.tgz#badb4b5e28d27c892917210a6816cb6a2af2c2a5"
+  integrity sha512-BYFO3uyB9FfdUq05NtsS+OfU636HMZ7avbSEALo24x+OPuaD+fCByTdgxYVpDRYrBPa7lALYzCge0PDcGnGiig==
+  dependencies:
+    "@sentry/browser" "7.72.0"
+    "@sentry/types" "7.72.0"
+    "@sentry/utils" "7.72.0"
+    hoist-non-react-statics "^3.3.2"
+    tslib "^2.4.1 || ^1.9.3"
+
+"@sentry/replay@7.72.0":
+  version "7.72.0"
+  resolved "http://verdaccio.ds.io:4873/@sentry%2freplay/-/replay-7.72.0.tgz#39da5d971045a6d9bf5d3bd16ccc1f5c0c42c4c8"
+  integrity sha512-dHH/mYCFBwJ/kYmL9L5KihjwQKcefiuvcH0otHSwKSpbbeEoM/BV+SHQoYGd6OMSYnL9fq1dHfF7Zo26p5Yu0Q==
+  dependencies:
+    "@sentry/core" "7.72.0"
+    "@sentry/types" "7.72.0"
+    "@sentry/utils" "7.72.0"
+
+"@sentry/types@7.72.0":
+  version "7.72.0"
+  resolved "http://verdaccio.ds.io:4873/@sentry%2ftypes/-/types-7.72.0.tgz#b474d3821338a545fb2db109715d9aad502bc810"
+  integrity sha512-g6u0mk62yGshx02rfFADIfyR/S9VXcf3RG2qQPuvykrWtOfN/BOTrZypF7I+MiqKwRW76r3Pcu2C/AB+6z9XQA==
+
+"@sentry/utils@7.72.0":
+  version "7.72.0"
+  resolved "http://verdaccio.ds.io:4873/@sentry%2futils/-/utils-7.72.0.tgz#798c764ac61bb658e2117792010ccd20ad8c7b02"
+  integrity sha512-o/MtqI7WJXuswidH0bSgBP40KN2lrnyQEIx5uoyJUJi/QEaboIsqbxU62vaFJpde8SYrbA+rTnP3J3ujF2gUag==
+  dependencies:
+    "@sentry/types" "7.72.0"
+    tslib "^2.4.1 || ^1.9.3"
+
 "@sinclair/typebox@^0.24.1":
   version "0.24.20"
   resolved "http://verdaccio.ds.io:4873/@sinclair%2ftypebox/-/typebox-0.24.20.tgz#11a657875de6008622d53f56e063a6347c51a6dd"
@@ -7138,7 +7202,7 @@ history@^5.1.0, history@^5.2.0:
   dependencies:
     "@babel/runtime" "^7.7.6"
 
-hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.3.0:
+hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
   resolved "http://verdaccio.ds.io:4873/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
@@ -12246,6 +12310,11 @@ tslib@^2.4.0:
   version "2.4.0"
   resolved "http://verdaccio.ds.io:4873/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
+
+"tslib@^2.4.1 || ^1.9.3":
+  version "2.6.2"
+  resolved "http://verdaccio.ds.io:4873/tslib/-/tslib-2.6.2.tgz#703ac29425e7b37cd6fd456e92404d46d1f3e4ae"
+  integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
 
 tsutils@^3.21.0:
   version "3.21.0"
