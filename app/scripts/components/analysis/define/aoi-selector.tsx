@@ -3,7 +3,6 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState
 } from 'react';
 import styled from 'styled-components';
@@ -43,7 +42,6 @@ import {
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { makeFeatureCollection } from '$components/common/aoi/utils';
 import { variableGlsp } from '$styles/variable-utils';
-import { useEffectPrevious } from '$utils/use-effect-previous';
 
 const MapContainer = styled.div`
   position: relative;
@@ -76,19 +74,6 @@ export default function AoiSelector({
   aoiDrawState
 }: AoiSelectorProps) {
   const { drawing, featureCollection } = aoiDrawState;
-
-  // TODO revise this. This is not a great hack aimed at initializing the AoI with North America when 
-  // no qs AoI is set. Ideally this would be set in use-analysis-params initialState.
-  const timeOutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    if (!qsAoi) {
-      timeOutRef.current = setTimeout(() => {
-        setFeatureCollection(FeatureByRegionPreset['north-america']);
-      }, 100);
-    } else {
-      if (timeOutRef.current) clearTimeout(timeOutRef.current);
-    }
-  }, [qsAoi]);
 
   // For the drawing tool, the features need an id.
   const qsFc: FeatureCollection<Polygon> | null = useMemo(() => {
@@ -188,7 +173,7 @@ export default function AoiSelector({
                 </ToolbarIconButton>
               )}
             >
-              <DropTitle>Select a region</DropTitle>
+              <DropTitle>Select a region (BETA)</DropTitle>
               <DropMenu>
                 <li>
                   <DropMenuItemButton
