@@ -170,7 +170,7 @@ const FoldWithBullet = styled(Fold)<{ number: string }>`
       justify-content: center;
       align-items: center;
       font-weight: 600;
-      ${(props) => `content: "${props.number}";`}
+      ${(props: { number: string }) => `content: "${props.number}";`}
     }
   }
 `}
@@ -400,7 +400,7 @@ export default function Analysis() {
                 date range.
               </p>
             </FoldHeadline>
-            <FoldHeadActions></FoldHeadActions>
+            <FoldHeadActions />
           </FoldHeader>
           <FoldBodyCustom>
             <Form>

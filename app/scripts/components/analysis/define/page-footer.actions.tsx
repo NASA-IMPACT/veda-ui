@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Button, ButtonProps } from '@devseed-ui/button';
+import { Button } from '@devseed-ui/button';
 import { CollecticonTickSmall } from '@devseed-ui/collecticons';
 
 import { DatasetLayer } from 'veda';

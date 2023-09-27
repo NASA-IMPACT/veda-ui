@@ -58,7 +58,6 @@ export const VEDA_OVERRIDE_THEME = {
 };
 
 export default function themeOverrides() {
-  console.log(defaultsDeep({}, theme, VEDA_OVERRIDE_THEME))
   if (theme) {
     return createUITheme(defaultsDeep({}, theme, VEDA_OVERRIDE_THEME));
   } else {
