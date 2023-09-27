@@ -20,7 +20,7 @@ import {
 } from '@devseed-ui/collecticons';
 import { Overline } from '@devseed-ui/typography';
 
-import { datasets, DatasetLayer, VedaDatum, DatasetData } from 'veda';
+import { datasets, DatasetLayer } from 'veda';
 import { Button, ButtonGroup } from '@devseed-ui/button';
 import { useAnalysisParams } from '../results/use-analysis-params';
 import SavedAnalysisControl from '../saved-analysis-control';
@@ -56,7 +56,6 @@ const FormBlock = styled.div`
   display: flex;
   flex-flow: row nowrap;
   gap: ${variableGlsp(0.5)};
-
   > * {
     width: 50%;
   }
@@ -151,7 +150,7 @@ const FloatingFooter = styled.div<{ isSticky: boolean }>`
     `}
 `;
 
-const FoldWithBullet = styled(Fold)<{number: string}>`
+const FoldWithBullet = styled(Fold)<{ number: string }>`
   ${media.largeUp`
   padding-left: ${variableGlsp(1)};
   > div {
@@ -178,7 +177,7 @@ const FoldWithBullet = styled(Fold)<{number: string}>`
 `}
 `;
 
-export const FoldWOBottomPadding = styled(FoldWithBullet)`
+export const FoldWGuideLine = styled(FoldWithBullet)`
   ${media.largeUp`
     padding-bottom: 0;
     > div {
@@ -200,12 +199,24 @@ export const FoldTitleWOAccent = styled(FoldTitle)`
   `}
 `;
 
+const FormGroupStructureCustom = styled(FormGroupStructure)`
+  ${media.largeUp`
+    display: inline-flex;
+    align-items: center;
+  `}
+`;
+
+const FoldBodyCustom = styled(FoldBody)`
+  ${media.largeUp`
+    flex-flow: row;
+    flex-grow: 3;
+    justify-content: space-between;
+  `}
+`;
 
 const findParentDataset = (layerId: string) => {
   const parentDataset = Object.values(datasets).find((dataset) =>
-    (dataset!).data.layers.find(
-      (l) => l.id === layerId
-    )
+    dataset!.data.layers.find((l) => l.id === layerId)
   );
   return parentDataset?.data;
 };
@@ -213,7 +224,7 @@ const findParentDataset = (layerId: string) => {
 export const allAvailableDatasetsLayers: DatasetLayer[] = Object.values(
   datasets
 )
-  .map((dataset) => (dataset!).data.layers)
+  .map((dataset) => dataset!.data.layers)
   .flat()
   .filter((d) => d.type !== 'vector' && !d.analysis?.exclude);
 
@@ -371,7 +382,7 @@ export default function Analysis() {
           onAoiEvent={onAoiEvent}
         />
 
-        <FoldWOBottomPadding number='2'>
+        <FoldWGuideLine number='2'>
           <FoldHeader>
             <FoldHeadline>
               <FoldTitleWOAccent>Pick a date period</FoldTitleWOAccent>
@@ -380,27 +391,12 @@ export default function Analysis() {
                 date range.
               </p>
             </FoldHeadline>
-            <FoldHeadActions>
-              <Toolbar size='small'>
-                <ToolbarLabel>Presets</ToolbarLabel>
-                <ButtonGroup
-                  variation='base-outline'
-                  radius='square'
-                >
-                  <Button onClick={(e) => onDatePresetClick(e, 'last10Years')}>
-                    Last 10 years
-                  </Button>
-                  <Button onClick={(e) => onDatePresetClick(e, '2018-2022')}>
-                    2018 - 2022
-                  </Button>
-                </ButtonGroup>
-              </Toolbar>
-            </FoldHeadActions>
+            <FoldHeadActions></FoldHeadActions>
           </FoldHeader>
-          <FoldBody>
+          <FoldBodyCustom>
             <Form>
               <FormBlock>
-                <FormGroupStructure label='From' id='start-date' required>
+                <FormGroupStructureCustom label='From' id='start-date' required>
                   <FormInput
                     type='date'
                     size='large'
@@ -411,9 +407,9 @@ export default function Analysis() {
                     min='1900-01-01'
                     max={dateToInputFormat(end)}
                   />
-                </FormGroupStructure>
+                </FormGroupStructureCustom>
 
-                <FormGroupStructure label='To' id='end-date' required>
+                <FormGroupStructureCustom label='To' id='end-date' required>
                   <FormInput
                     type='date'
                     size='large'
@@ -424,11 +420,22 @@ export default function Analysis() {
                     min={dateToInputFormat(start)}
                     max={new Date().toISOString().split('T')[0]}
                   />
-                </FormGroupStructure>
+                </FormGroupStructureCustom>
               </FormBlock>
             </Form>
-          </FoldBody>
-        </FoldWOBottomPadding>
+            <Toolbar size='small'>
+              <ToolbarLabel>Presets</ToolbarLabel>
+              <ButtonGroup variation='base-outline' radius='square'>
+                <Button onClick={(e) => onDatePresetClick(e, 'last10Years')}>
+                  Last 10 years
+                </Button>
+                <Button onClick={(e) => onDatePresetClick(e, '2018-2022')}>
+                  2018 - 2022
+                </Button>
+              </ButtonGroup>
+            </Toolbar>
+          </FoldBodyCustom>
+        </FoldWGuideLine>
 
         <FoldWithBullet number='3'>
           <FoldHeader>

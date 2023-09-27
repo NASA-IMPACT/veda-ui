@@ -27,13 +27,11 @@ import {
 } from '@devseed-ui/collecticons';
 import { FeatureByRegionPreset, RegionPreset } from '../constants';
 import AoIUploadModal from './aoi-upload-modal';
-import {FoldWOBottomPadding, FoldTitleWOAccent} from '.';
+import { FoldWGuideLine, FoldTitleWOAccent } from '.';
 import {
-  Fold,
   FoldHeader,
   FoldHeadline,
   FoldHeadActions,
-  FoldTitle,
   FoldBody
 } from '$components/common/fold';
 import MapboxMap, { MapboxMapRef } from '$components/common/mapbox';
@@ -121,7 +119,7 @@ export default function AoiSelector({
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
 
   return (
-    <FoldWOBottomPadding number={1}>
+    <FoldWGuideLine number={1}>
       <AoIUploadModal
         setFeatureCollection={setFeatureCollection}
         revealed={aoiModalRevealed}
@@ -206,6 +204,6 @@ export default function AoiSelector({
           />
         </MapContainer>
       </FoldBody>
-    </FoldWOBottomPadding>
+    </FoldWGuideLine>
   );
 }

@@ -4,14 +4,14 @@ import { format } from 'date-fns';
 import { Button, ButtonProps } from '@devseed-ui/button';
 import { CollecticonTickSmall } from '@devseed-ui/collecticons';
 
+import { DatasetLayer } from 'veda';
+import { FeatureCollection, Polygon } from 'geojson';
+import styled from 'styled-components';
 import { analysisParams2QueryString } from '../results/use-analysis-params';
 import useSavedSettings from '../use-saved-settings';
 
 import { composeVisuallyDisabled } from '$utils/utils';
 import { ANALYSIS_RESULTS_PATH } from '$utils/routes';
-import { DatasetLayer } from 'veda';
-import { FeatureCollection, Polygon } from 'geojson';
-import styled from 'styled-components';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
 
 const SaveButton = composeVisuallyDisabled(Button);
@@ -43,7 +43,7 @@ const FooterRight = styled.div`
 const AnalysisDescription = styled.div`
   font-size: 0.875rem;
   opacity: 0.5;
-`
+`;
 
 export default function PageFooterActions({
   // size,
@@ -75,13 +75,17 @@ export default function PageFooterActions({
   });
 
   const analysisDescription = useMemo(() => {
-    if (!start || !end || !datasetsLayers || !aoi || !datasetsLayers.length) return '';
+    if (!start || !end || !datasetsLayers || !aoi || !datasetsLayers.length)
+      return '';
     const dataset =
       datasetsLayers.length === 1
         ? datasetsLayers[0].name
         : `${datasetsLayers.length} datasets`;
-    const area = `over a ${calcFeatCollArea(aoi)} km² area`
-    const dates = `from ${format(start, 'MMM d, yyyy')} to ${format(end, 'MMM d, yyyy')}`
+    const area = `over a ${calcFeatCollArea(aoi)} km² area`;
+    const dates = `from ${format(start, 'MMM d, yyyy')} to ${format(
+      end,
+      'MMM d, yyyy'
+    )}`;
     return [dataset, area, dates].join(' ');
   }, [start, end, datasetsLayers, aoi]);
 
