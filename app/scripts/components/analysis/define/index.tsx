@@ -404,7 +404,7 @@ export default function Analysis() {
                     name='start-date'
                     value={start ? dateToInputFormat(start) : ''}
                     onChange={onStartDateChange}
-                    min='1900-01-01'
+                    min='1980-01-01'
                     max={dateToInputFormat(end)}
                   />
                 </FormGroupStructureCustom>
@@ -418,7 +418,7 @@ export default function Analysis() {
                     value={end ? dateToInputFormat(end) : ''}
                     onChange={onEndDateChange}
                     min={dateToInputFormat(start)}
-                    max={new Date().toISOString().split('T')[0]}
+                    max='2022-12-31'
                   />
                 </FormGroupStructureCustom>
               </FormBlock>
