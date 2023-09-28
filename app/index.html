@@ -134,10 +134,9 @@
     }
 
     document.addEventListener('click', function (event) {
-        event.preventDefault();
         if (event.target.tagName == 'A' && event.target.href) {
-          window.history.pushState({}, '', window.location.toString());
-          window.location.replace(event.target.href);
+          event.preventDefault();
+          window.location.href = event.target.href;
         }
       });
   </script>
