@@ -5,8 +5,6 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
 import { userPages } from 'veda';
 
-import { discoveryRoutes, thematicRoutes } from './redirects';
-
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
 import LayoutRoot, {
@@ -112,12 +110,6 @@ function Root() {
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />
                 )}
-
-                {/* Legacy: Routes related to thematic areas redirect. */}
-                {/* Removing for ghgc */}
-                {/* {thematicRoutes} */}
-                {/* Legacy: Routes related to renaming /discoveries to /stories. */}
-                {/* {discoveryRoutes} */}
 
                 {userPages.map((p) => (
                   <Route

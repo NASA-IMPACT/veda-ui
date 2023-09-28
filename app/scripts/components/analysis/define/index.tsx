@@ -138,7 +138,6 @@ const FloatingFooter = styled.div<{ isSticky: boolean }>`
   position: sticky;
   left: 0;
   right: 0;
-  // trick to get the IntersectionObserver to fire
   bottom: -1px;
   padding: ${variableGlsp(0.5)};
   background: ${themeVal('color.surface')};
