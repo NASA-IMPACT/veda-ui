@@ -399,7 +399,8 @@ function PageHeader() {
                 <GlobalMenu>
                   <li>
                     <GlobalMenuLink
-                      to={DATASETS_PATH}
+                      as='a'
+                      href={DATASETS_PATH}
                       onClick={closeNavOnClick}
                     >
                       Data Catalog
@@ -407,14 +408,19 @@ function PageHeader() {
                   </li>
                   <li>
                     <GlobalMenuLink
-                      to={ANALYSIS_PATH}
+                      as='a'
+                      href={ANALYSIS_PATH}
                       onClick={closeNavOnClick}
                     >
                       Data Analysis
                     </GlobalMenuLink>
                   </li>
                   <li>
-                    <GlobalMenuLink to={STORIES_PATH} onClick={closeNavOnClick}>
+                    <GlobalMenuLink
+                      as='a'
+                      href={STORIES_PATH}
+                      onClick={closeNavOnClick}
+                    >
                       {getString('stories').other}
                     </GlobalMenuLink>
                   </li>
