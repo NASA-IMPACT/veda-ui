@@ -2,9 +2,6 @@ import React from 'react';
 import { Navigate, Route, useParams } from 'react-router';
 
 import { STORIES_PATH } from '$utils/routes';
-import { useDataset } from '$utils/veda-data';
-import DatasetsOverview from '$components/datasets/s-overview';
-import DatasetsExplore from '$components/datasets/s-explore';
 
 function DiscoveryRedirect() {
   const { discoveryId } = useParams();
@@ -55,8 +52,3 @@ export const discoveryRoutes = (
     <Route path='discoveries/:discoveryId' element={<DiscoveryRedirect />} />
   </Route>
 );
-
-export function DatasetExploreRedirect() {
-  const dataset = useDataset();
-  return dataset?.data.disableExplore ? <DatasetsOverview /> : <DatasetsExplore />;
-}
