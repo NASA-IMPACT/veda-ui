@@ -351,12 +351,12 @@ function PageHeader() {
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
       <ComponentOverride with='headerBrand'>
         <Brand>
-          <Link to='/'>
+          <GlobalMenuLink as='a' href='/' onClick={closeNavOnClick}>
             <NasaLogo />
             <span>Earthdata</span> <span>{appTitle}</span>
-          </Link>
+          </GlobalMenuLink>
           <Tip content={`v${appVersion}`}>
-            <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
+            <PageTitleSecLink as='a' href='/development'>Beta</PageTitleSecLink>
           </Tip>
         </Brand>
       </ComponentOverride>
@@ -449,7 +449,7 @@ function PageHeader() {
                 <GlobalNavBlockTitle>Meta</GlobalNavBlockTitle>
                 <GlobalMenu>
                   <li>
-                    <GlobalMenuLink to={ABOUT_PATH} onClick={closeNavOnClick}>
+                    <GlobalMenuLink as='a' href={ABOUT_PATH} onClick={closeNavOnClick}>
                       About
                     </GlobalMenuLink>
                   </li>
