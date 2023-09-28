@@ -114,9 +114,10 @@ function Root() {
                 )}
 
                 {/* Legacy: Routes related to thematic areas redirect. */}
-                {thematicRoutes}
+                {/* Removing for ghgc */}
+                {/* {thematicRoutes} */}
                 {/* Legacy: Routes related to renaming /discoveries to /stories. */}
-                {discoveryRoutes}
+                {/* {discoveryRoutes} */}
 
                 {userPages.map((p) => (
                   <Route
