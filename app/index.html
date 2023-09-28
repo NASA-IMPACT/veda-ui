@@ -134,10 +134,12 @@
     }
 
     document.addEventListener('click', function (event) {
-      if (event.target.tagName == 'A') {
-        window.location.replace(event.target.href)
-      }
-    });
+        event.preventDefault();
+        if (event.target.tagName == 'A' && event.target.href) {
+          window.history.pushState({}, '', window.location.toString());
+          window.location.replace(event.target.href);
+        }
+      });
   </script>
 
   <script type='module' src='./scripts/main.tsx'></script>
