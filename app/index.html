@@ -132,6 +132,12 @@
       document.body.innerHTML =
         'Unfortunately, your browser is not currently supported.<br />Recommended browsers: Edge, Firefox, Safari, Chrome';
     }
+
+    document.addEventListener('click', function (event) {
+      if (event.target.tagName == 'A') {
+        window.location.replace(event.target.href)
+      }
+    });
   </script>
 
   <script type='module' src='./scripts/main.tsx'></script>
