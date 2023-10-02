@@ -38,10 +38,16 @@ export function ExplorationMap(props: { comparing: boolean }) {
   const datasets = useAtomValue(timelineDatasetsAtom);
   const selectedDay = useAtomValue(selectedDateAtom);
 
-  const loadedDatasets = datasets.filter(
-    (d): d is TimelineDatasetSuccess =>
-      d.status === TimelineDatasetStatus.SUCCESS
-  );
+  // Reverse the datasets order to have the "top" layer, list-wise, at the "top" layer, z-order wise
+  // Disabled eslint rule as slice() creates a shallow copy
+  // eslint-disable-next-line fp/no-mutating-methods
+  const loadedDatasets = datasets
+    .filter(
+      (d): d is TimelineDatasetSuccess =>
+        d.status === TimelineDatasetStatus.SUCCESS
+    )
+    .slice()
+    .reverse();
 
   return (
     <Map id='exploration' projection={projection}>
