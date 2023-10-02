@@ -23,6 +23,7 @@ import useFitBbox from '../hooks/use-fit-bbox';
 import useLayerInteraction from '../hooks/use-layer-interaction';
 import { MARKER_LAYOUT } from '../hooks/use-custom-marker';
 import useMaps from '../hooks/use-maps';
+import useGeneratorParams from '../hooks/use-generator-params';
 
 import {
   ActionStatus,
@@ -44,8 +45,6 @@ export interface RasterTimeseriesProps extends BaseGeneratorParams {
   bounds?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isPositionSet?: boolean;
-  layerOrder: number;
-  opacity?: number;
 }
 
 enum STATUS_KEY {
@@ -71,8 +70,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     onStatusChange,
     isPositionSet,
     hidden,
-    opacity,
-    layerOrder
+    opacity
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -81,7 +79,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
-  const generatorId = `#${layerOrder}-raster-timeseries-${id}`;
+  const generatorId = `raster-timeseries-${id}`;
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
@@ -329,6 +327,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     [sourceParams]
   );
 
+  const generatorParams = useGeneratorParams(props);
+
   useEffect(
     () => {
       const controller = new AbortController();
@@ -440,7 +440,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           generatorId,
           sources,
           layers,
-          params: props as BaseGeneratorParams
+          params: generatorParams
         });
       }
 
@@ -459,9 +459,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       minZoom,
       points,
       haveSourceParamsChanged,
-      hidden,
-      opacity,
-      generatorId
+      generatorParams
     ]
   );
 

@@ -52,7 +52,7 @@ export function Layer(props: LayerProps) {
       date={relevantDate}
       zoomExtent={params.zoomExtent}
       sourceParams={params.sourceParams}
-      layerOrder={order}
+      generatorOrder={order}
       hidden={!isVisible}
       opacity={opacity}
     />
