@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import {
   ExtendedLayer,
+  ExtendedMetadata,
   GeneratorStyleParams,
   LayerOrderPosition
 } from './types';
@@ -52,7 +53,7 @@ const generateStyle = (stylesData: Record<string, GeneratorStyleParams>) => {
     };
 
     const generatorLayers = generatorParams.layers.map((generatorLayer) => {
-      const metadata = generatorLayer.metadata ?? {};
+      const metadata: ExtendedMetadata = generatorLayer.metadata ?? {};
       metadata.generatorId = generatorId;
 
       const mapLayer = { ...generatorLayer, metadata } as Layer;
@@ -76,13 +77,17 @@ const generateStyle = (stylesData: Record<string, GeneratorStyleParams>) => {
     const layerBOrder = layerB.metadata?.layerOrderPosition;
     const layerAIndex = LAYER_ORDER.indexOf(layerAOrder);
     const layerBIndex = LAYER_ORDER.indexOf(layerBOrder);
-    const sortDeltaOrder = layerAIndex - layerBIndex;
-    const sortDeltaGeneratorId = layerA.metadata?.generatorId.localeCompare(
-      layerB.metadata?.generatorId
-    );
+    const layerOrder = layerAIndex - layerBIndex;
+    const generatorA = stylesData[layerA.metadata?.generatorId];
+    const generatorB = stylesData[layerB.metadata?.generatorId];
+    const generatorOrder =
+      generatorA.params?.generatorOrder !== undefined &&
+      generatorB.params?.generatorOrder !== undefined
+        ? generatorA.params.generatorOrder - generatorB.params.generatorOrder
+        : 0;
     // If compared layers have different layer orders, sort by layer order, otherwise
     // fallback on generatorId to ensure layer stacks from the same generator stay contiguous
-    return sortDeltaOrder !== 0 ? sortDeltaOrder : sortDeltaGeneratorId;
+    return layerOrder !== 0 ? layerOrder : generatorOrder;
   });
 
   return {

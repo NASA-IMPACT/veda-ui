@@ -5,24 +5,12 @@ import { themeVal } from '@devseed-ui/theme-provider';
 
 import { MockControls } from './datasets-mock';
 import Timeline from './components/timeline/timeline';
+import { ExplorationMap } from './components/map';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
-import { useStacMetadataOnDatasets } from './hooks/use-stac-metadata-datasets';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
-import Map, { Compare } from '$components/common/map';
-import { Basemap } from '$components/common/map/style-generators/basemap';
-import GeocoderControl from '$components/common/map/controls/geocoder';
-import {
-  NavigationControl,
-  ScaleControl
-} from '$components/common/map/controls';
-import MapCoordsControl from '$components/common/map/controls/coords';
-import MapOptionsControl from '$components/common/map/controls/options';
-import { projectionDefault } from '$components/common/map/controls/map-options/projections';
-import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
-import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
 
 const Container = styled.div`
   display: flex;
@@ -67,23 +55,11 @@ const Container = styled.div`
 `;
 
 function Exploration() {
-  const [compare, setCompare] = useState(true);
+  const [compare, setCompare] = useState(false);
   const [datasetModalRevealed, setDatasetModalRevealed] = useState(true);
 
   const openModal = useCallback(() => setDatasetModalRevealed(true), []);
   const closeModal = useCallback(() => setDatasetModalRevealed(false), []);
-
-  const [projection, setProjection] = useState(projectionDefault);
-
-  const {
-    mapBasemapId,
-    setBasemapId,
-    labelsOption,
-    boundariesOption,
-    onOptionChange
-  } = useBasemap();
-
-  useStacMetadataOnDatasets();
 
   return (
     <>
@@ -98,61 +74,7 @@ function Exploration() {
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>
-              <Map id='exploration' projection={projection}>
-                {/* Map layers */}
-                <Basemap
-                  basemapStyleId={mapBasemapId}
-                  labelsOption={labelsOption}
-                  boundariesOption={boundariesOption}
-                />
-                <RasterTimeseries
-                  id='test'
-                  stacCol='nightlights-hd-monthly'
-                  date={new Date('2019-01-01')}
-                  zoomExtent={[4, 16]}
-                  sourceParams={{
-                    bidx: 1,
-                    colormap_name: 'inferno',
-                    rescale: [0, 255]
-                  }}
-                />
-                {/* Map controls */}
-                <GeocoderControl />
-                <NavigationControl />
-                <ScaleControl />
-                <MapCoordsControl />
-                <MapOptionsControl
-                  projection={projection}
-                  onProjectionChange={setProjection}
-                  basemapStyleId={mapBasemapId}
-                  onBasemapStyleIdChange={setBasemapId}
-                  labelsOption={labelsOption}
-                  boundariesOption={boundariesOption}
-                  onOptionChange={onOptionChange}
-                />
-                {compare && (
-                  // Compare map layers
-                  <Compare>
-                    <Basemap
-                      basemapStyleId={mapBasemapId}
-                      labelsOption={labelsOption}
-                      boundariesOption={boundariesOption}
-                    />
-                    <RasterTimeseries
-                      id='test2'
-                      stacCol='nightlights-hd-monthly'
-                      date={new Date('2020-04-01')}
-                      zoomExtent={[4, 16]}
-                      sourceParams={{
-                        bidx: 1,
-                        colormap_name: 'inferno',
-                        rescale: [0, 255]
-                      }}
-                      // hidden={true}
-                    />
-                  </Compare>
-                )}
-              </Map>
+              <ExplorationMap comparing={compare} />
               <MockControls
                 comparing={compare}
                 onCompareClick={() => setCompare((v) => !v)}

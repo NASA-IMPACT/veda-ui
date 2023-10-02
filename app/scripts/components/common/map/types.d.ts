@@ -1,14 +1,18 @@
 import { AnyLayer, AnySourceImpl } from "mapbox-gl";
 
+export interface ExtendedMetadata {
+  layerOrderPosition?: LayerOrderPosition;
+  [key: string]: any;
+}
+
 export type ExtendedLayer = AnyLayer & {
-  metadata?: {
-    layerOrderPosition?: LayerOrderPosition;
-    [key: string]: any;
-  };
+  metadata?: ExtendedMetadata;
 };
 
 export interface BaseGeneratorParams {
   hidden?: boolean;
+  generatorOrder?: number;
+  opacity?: number;
 }
 export interface GeneratorStyleParams {
   generatorId: string;

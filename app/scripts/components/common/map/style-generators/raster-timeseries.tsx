@@ -17,12 +17,13 @@ import {
   FIT_BOUNDS_PADDING,
   getFilterPayload,
   getMergedBBox,
-  requestQuickCache,
+  requestQuickCache
 } from '../utils';
 import useFitBbox from '../hooks/use-fit-bbox';
 import useLayerInteraction from '../hooks/use-layer-interaction';
 import { MARKER_LAYOUT } from '../hooks/use-custom-marker';
 import useMaps from '../hooks/use-maps';
+import useGeneratorParams from '../hooks/use-generator-params';
 
 import {
   ActionStatus,
@@ -31,7 +32,6 @@ import {
   S_LOADING,
   S_SUCCEEDED
 } from '$utils/status';
-
 
 // Whether or not to print the request logs.
 const LOG = true;
@@ -70,16 +70,16 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     onStatusChange,
     isPositionSet,
     hidden,
+    opacity
   } = props;
 
-  
   const { current: mapInstance } = useMaps();
 
   const theme = useTheme();
   const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
-  const generatorId = 'raster-timeseries' + id;
+  const generatorId = `raster-timeseries-${id}`;
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
@@ -288,11 +288,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         }
         LOG &&
           /* eslint-disable-next-line no-console */
-          console.log(
-            'RasterTimeseries %cAborted Mosaic',
-            'color: red;',
-            id
-          );
+          console.log('RasterTimeseries %cAborted Mosaic', 'color: red;', id);
         return;
       }
     };
@@ -331,6 +327,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     [sourceParams]
   );
 
+  const generatorParams = useGeneratorParams(props);
+
   useEffect(
     () => {
       const controller = new AbortController();
@@ -343,7 +341,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           const tileParams = qs.stringify(
             {
               assets: 'cog_default',
-              ...sourceParams
+              ...(sourceParams ?? {})
             },
             // Temporary solution to pass different tile parameters for hls data
             {
@@ -376,12 +374,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             url: tilejsonUrl
           };
 
+          const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
+
           const mosaicLayer: RasterLayer = {
             id: id,
             type: 'raster',
             source: id,
             paint: {
-              'raster-opacity': Number(!hidden),
+              'raster-opacity': hidden ? 0 : rasterOpacity,
               'raster-opacity-transition': {
                 duration: 320
               }
@@ -416,7 +416,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             id: pointsSourceId,
             source: pointsSourceId,
             layout: {
-              ...MARKER_LAYOUT as any,
+              ...(MARKER_LAYOUT as any),
               'icon-allow-overlap': true
             },
             paint: {
@@ -440,7 +440,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           generatorId,
           sources,
           layers,
-          params: props as BaseGeneratorParams
+          params: generatorParams
         });
       }
 
@@ -450,7 +450,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         controller.abort();
       };
     },
-    // sourceParams not included, but using a stringified version of it to detect changes (haveSourceParamsChanged)
+    // sourceParams not included, but using a stringified version of it to
+    // detect changes (haveSourceParamsChanged)
     [
       updateStyle,
       id,
@@ -458,8 +459,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       minZoom,
       points,
       haveSourceParamsChanged,
-      hidden,
-      generatorId
+      generatorParams
     ]
   );
 
