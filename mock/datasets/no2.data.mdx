@@ -86,6 +86,12 @@ layers:
         - "#c13b72"
         - "#461070"
         - "#050308"
+    analysis:
+      metrics:
+        - min
+        - max
+        # dummy value to make sure non existent values are sagfely discarded
+        - non-existent
   - id: no2-monthly-2
     stacCol: no2-monthly
     name: No2 US
@@ -117,6 +123,8 @@ layers:
         - "#c13b72"
         - "#461070"
         - "#050308"
+    analysis:
+      exclude: true
   - id: no2-monthly-diff
     stacCol: no2-monthly-diff
     name: No2 (Diff) - let's make this title reaaaaaaly long
