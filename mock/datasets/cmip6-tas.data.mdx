@@ -2,7 +2,7 @@
 id: combined_CMIP6_daily_GISS-E2-1-G_tas_kerchunk_TEST
 name: 'CMIP6 Daily GISS-E2-1-G Near-Surface Air Temperature'
 featured: true
-description: "The NEX-GDDP-CMIP6 dataset is comprised of global downscaled climate scenarios derived from the General Circulation Model (GCM) runs conducted under the Coupled Model Intercomparison Project Phase 6 (CMIP6). See https://registry.opendata.aws/nex-gddp-cmip6/ and https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6 to learn more."
+description: "Daily near-surface air temperature from the NASA Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6) Project."
 media:
   src: ::file ./no2--dataset-cover.jpg
   alt: Power plant shooting steam at the sky.
@@ -18,8 +18,7 @@ layers:
     stacCol: combined_CMIP6_daily_GISS-E2-1-G_tas_kerchunk_TEST
     name: CMIP6 Daily GISS-E2-1-G Near-Surface Air Temperature
     type: zarr
-    description:
-      "Historical (1950-2014) daily-mean near-surface (usually, 2 meter) air temperature in Kelvin."
+    description: "Historical (1950-2014) daily-mean near-surface (usually, 2 meter) air temperature in Kelvin."
     zoomExtent:
       - 0
       - 20
@@ -34,8 +33,8 @@ layers:
       unit: 
         label: 
       type: gradient
-      min: "232"
-      max: "312"
+      min: "232 K"
+      max: "312 K"
       stops:
       - '#3b4cc0'
       - '#7b9ff9'
@@ -45,3 +44,33 @@ layers:
       - '#b40426'
 ---
 
+<Block>
+<Prose>
+# NASA Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6)
+
+The NEX-GDDP-CMIP6 dataset is comprised of global downscaled climate scenarios derived from the General Circulation Model (GCM) runs conducted under the Coupled Model Intercomparison Project Phase 6 (CMIP6) and across all four “Tier 1” greenhouse gas emissions scenarios known as Shared Socioeconomic Pathways (SSPs). The CMIP6 GCM runs were developed in support of the Sixth Assessment Report of the Intergovernmental Panel on Climate Change (IPCC AR6). This dataset includes downscaled projections from ScenarioMIP model runs for which daily scenarios were produced and distributed through the Earth System Grid Federation. The purpose of this dataset is to provide a set of global, high resolution, bias-corrected climate change projections that can be used to evaluate climate change impacts on processes that are sensitive to finer-scale climate gradients and the effects of local topography on climate conditions.
+
+### Summary
+
+* Format: [kerchunk (metadata)](https://fsspec.github.io/kerchunk/) for netCDF4
+* Spatial Coverage: 180° W to 180° E, 60° S to 90° N
+* Temporal: 1950-01-01 to 1951-12-31
+  * _As noted below, this dataset is a subset all available data. The full dataset includes data from 1950 to 2100._
+* Data Resolution:
+  * Latitude Resolution: 0.25 degrees (25 km)
+  * Longitude Resolution: 0.25 degrees (25 km)
+  * Temporal Resolution: daily
+
+Source: [https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6](https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6)
+
+## AWS Public Dataset
+
+There are 2 datasets listed on the AWS Registry of Open Data for [NEX-GDDP-CMIP6](https://registry.opendata.aws/nex-gddp-cmip6/). First, there is an archive of NetCDF files from about 35 different climate models, each supplying historical and predicted values for up to 9 environment variables, daily, from 1950 to 2100. Second, there is an archive of COGs generated from the corresponding NetCDFs to support visualization via dynamic tiling using COGs. COGs are only available for 2 models. The COG archive also includes monthly aggregatations across those models.
+
+## About this dataset
+This dataset represents a subset of the NEX-GDDP-CMIP6 data. This dataset was constructed to demonstrate a method for visualizing the data without creating any data copies just for visualization.
+
+This demonstration of uses the [kerchunk](https://fsspec.github.io/kerchunk/) python library to create a file - often called a reference file - which is an index of the chunks of the data stored in the original [NetCDF](https://www.unidata.ucar.edu/software/netcdf/) files. This reference file is used by a dynamic tiling library ([titiler-xarray](https://github.com/developmentseed/titiler-xarray)) to create image tiles from the underlying data. The indexes were generated for the near-surface air temperature variable (TAS) for years 1950-2014, the historical extent of the NEX-GDDP-CMIP6 project.
+
+</Prose>
+</Block>
