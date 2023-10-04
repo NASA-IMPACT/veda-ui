@@ -27,8 +27,6 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 
-import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
-
 interface LayerLegendCommonProps {
   id: string;
   title: string;
@@ -198,7 +196,8 @@ const LayerLegendTitle = styled.h3`
 
 const LegendBody = styled(WidgetItemBodyInner)`
   padding: 0;
-
+  min-height: 32px;
+  max-height: 120px;
   .scroll-inner {
     padding: ${variableGlsp(0.5, 0.75)};
   }

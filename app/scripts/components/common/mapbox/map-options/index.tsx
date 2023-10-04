@@ -28,6 +28,8 @@ const DropHeader = styled.div`
 
 const DropBody = styled.div`
   padding: ${glsp(0, 0, 1, 0)};
+  max-height: 320px;
+  overflow-y: auto;
 `;
 
 /**
