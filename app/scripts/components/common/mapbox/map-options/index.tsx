@@ -62,11 +62,6 @@ const SelectorButton = styled(Button)`
   }
 `;
 
-const shadowScrollbarProps = {
-  autoHeight: true,
-  autoHeightMax: 320
-};
-
 const ContentGroup = styled.div`
   display: flex;
   flex-flow: column nowrap;

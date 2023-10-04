@@ -11,8 +11,6 @@ import { Button } from '@devseed-ui/button';
 import { variableGlsp } from './variable-utils';
 import { VarProse } from './variable-components';
 
-import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
-
 const panelWidth = {
   xsmall: '20rem',
   small: '22rem',
