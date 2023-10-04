@@ -252,17 +252,11 @@ export function LayerLegend(
       )}
       renderBody={() => (
         <LegendBody>
-          <ShadowScrollbar
-            scrollbarsProps={{
-              autoHeight: true,
-              autoHeightMin: 32,
-              autoHeightMax: 120
-            }}
-          >
+
             <div className='scroll-inner'>
               {description || <p>No info available for this layer.</p>}
             </div>
-          </ShadowScrollbar>
+          
         </LegendBody>
       )}
     />

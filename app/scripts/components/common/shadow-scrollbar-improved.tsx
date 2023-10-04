@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
+// Moving away from this component because of the issue
+// https://github.com/NASA-IMPACT/veda-ui/issues/682#issuecomment-1747334303
 export const ShadowScrollbarImproved = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof ShadowScrollbar>
@@ -29,7 +31,6 @@ export const ShadowScrollbarImproved = React.forwardRef<
     ...(scrollbarsProps ?? {}),
     autoHide
   };
-
   return (
     <ShadowScrollbar
       ref={ref}

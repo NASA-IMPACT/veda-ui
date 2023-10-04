@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode } from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 import { glsp } from '@devseed-ui/theme-provider';
 import {
@@ -9,14 +9,14 @@ import {
   DropTitle
 } from '@devseed-ui/dropdown';
 
-import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
-
 /**
  * Override Dropdown styles to play well with the shadow scrollbar.
  */
 const DropdownWithScroll = styled(Dropdown)`
   padding: 0;
   overflow: hidden;
+  max-height: 320px;
+  overflow-y: auto;
 
   ${DropTitle} {
     margin: 0;
@@ -28,23 +28,12 @@ const DropdownWithScroll = styled(Dropdown)`
   }
 `;
 
-const shadowScrollbarProps = {
-  autoHeight: true,
-  autoHeightMax: 320
-};
-
-interface DropdownScrollableProps extends DropdownProps {
-  children?: ReactNode;
-}
-
-export default forwardRef<DropdownRef, DropdownScrollableProps>(
+export default forwardRef<DropdownRef, DropdownProps>(
   function DropdownScrollable(props, ref) {
     const { children, ...rest } = props;
     return (
       <DropdownWithScroll ref={ref} {...rest}>
-        <ShadowScrollbar scrollbarsProps={shadowScrollbarProps}>
-          {children}
-        </ShadowScrollbar>
+        {children}  
       </DropdownWithScroll>
     );
   }

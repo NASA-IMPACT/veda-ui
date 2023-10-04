@@ -103,7 +103,7 @@ export const PanelToggle = styled(Button)`
   left: calc(100% + ${variableGlsp()});
 `;
 
-export const PanelBody = styled(ShadowScrollbar)`
+export const PanelBody = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
