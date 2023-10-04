@@ -69,7 +69,7 @@ Source: [https://www.nccs.nasa.gov/services/data-collections/land-based-products
 
 There are 2 datasets listed on the AWS Registry of Open Data for [NEX-GDDP-CMIP6](https://registry.opendata.aws/nex-gddp-cmip6/). First, there is an archive of NetCDF files from about 35 different climate models, each supplying historical and predicted values for up to 9 environment variables, daily, from 1950 to 2100. Second, there is an archive of COGs generated from the corresponding NetCDFs to support visualization via dynamic tiling using COGs. COGs are only available for 2 models. The COG archive also includes monthly aggregatations across those models.
 
-## About this dataset
+## This is a demo subset of NEX-GDDP-CMIP6
 VEDA hosts a subset of the NEX-GDDP-CMIP6 data, primarily for demo purposes. With this dataset, we demonstrate a method for visualizing the data without creating any data copies just for visualization.
 
 To prepare this dataset, we used the [kerchunk](https://fsspec.github.io/kerchunk/) python library to create a file - often called a reference file - which is an index of the chunks of the data stored in the original [NetCDF](https://www.unidata.ucar.edu/software/netcdf/) files. This reference file is used by a dynamic tiling library ([titiler-xarray](https://github.com/developmentseed/titiler-xarray)) to create image tiles from the underlying data. The indexes were generated for the near-surface air temperature variable (TAS) for years 1950-2014, the historical extent of the NEX-GDDP-CMIP6 project.
