@@ -180,3 +180,7 @@ export function resolveConfigFunctions(
 
   return datum;
 }
+
+export function toAoIid(drawId: string) {
+  return drawId.slice(-6);
+}

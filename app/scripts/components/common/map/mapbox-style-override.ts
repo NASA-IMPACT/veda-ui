@@ -8,7 +8,9 @@ import {
   CollecticonPlusSmall,
   CollecticonMinusSmall,
   CollecticonMagnifierLeft,
-  CollecticonXmarkSmall
+  CollecticonXmarkSmall,
+  CollecticonPencil,
+  CollecticonTrashBin
 } from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
@@ -177,6 +179,32 @@ const MapboxStyleOverride = css`
     border-color: ${themeVal('color.surface')};
     background-color: ${themeVal('color.base-400a')};
   }
+
+  .mapbox-gl-draw_ctrl-draw-btn {
+    ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
+  }
+
+  .mapbox-gl-draw_ctrl-draw-btn.active {
+    background-color: ${themeVal('color.base-400a')};
+  }
+
+  .mapbox-gl-draw_polygon.mapbox-gl-draw_polygon::before {
+    background-image: url(${({ theme }) =>
+      iconDataURI(CollecticonPencil, {
+        color: theme.color?.surface
+      })});
+    }
+  }
+  .mapbox-gl-draw_trash.mapbox-gl-draw_trash::before {
+    background-image: url(${({ theme }) =>
+      iconDataURI(CollecticonTrashBin, {
+        color: theme.color?.surface
+      })});
+    }
+  }
+
+
+  // mapbox-gl-draw_polygon"
 
   /* GEOCODER styles */
   .mapboxgl-ctrl.mapboxgl-ctrl-geocoder {

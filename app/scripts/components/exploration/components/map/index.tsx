@@ -21,6 +21,8 @@ import MapCoordsControl from '$components/common/map/controls/coords';
 import MapOptionsControl from '$components/common/map/controls/options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
+import DrawControl from '$components/common/map/controls/aoi';
+import useAois from '$components/common/map/controls/hooks/use-aois';
 
 export function ExplorationMap(props: { comparing: boolean }) {
   const [projection, setProjection] = useState(projectionDefault);
@@ -48,6 +50,9 @@ export function ExplorationMap(props: { comparing: boolean }) {
     )
     .slice()
     .reverse();
+
+  const { onUpdate, onDelete, onSelectionChange, features } = useAois();
+  console.log(features);
 
   return (
     <Map id='exploration' projection={projection}>
@@ -80,6 +85,18 @@ export function ExplorationMap(props: { comparing: boolean }) {
         labelsOption={labelsOption}
         boundariesOption={boundariesOption}
         onOptionChange={onOptionChange}
+      />
+      <DrawControl
+        displayControlsDefault={false}
+        controls={{
+          polygon: true,
+          trash: true
+        }}
+        defaultMode='draw_polygon'
+        onCreate={onUpdate}
+        onUpdate={onUpdate}
+        onDelete={onDelete}
+        onSelectionChange={onSelectionChange}
       />
       {props.comparing && (
         // Compare map layers
