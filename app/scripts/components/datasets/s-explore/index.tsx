@@ -8,6 +8,7 @@ import React, {
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
+import { isSameDay } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonExpandFromLeft,
@@ -113,9 +114,10 @@ const isSelectedDateValid = (dateList, selectedDate) => {
     // Since the available dates changes, check if the currently selected
     // one is valid.
     const validDate = !!dateList.find(
-      (d) => d.getTime() === selectedDate?.getTime()
+      // Only check if the date of the selected date is in the range.
+      // Because Dashboard can only provide daily level selection.
+      (d) => isSameDay(new Date(d), new Date(selectedDate))
     );
-
     return !!validDate;
   }
   return true;
@@ -175,7 +177,6 @@ const useDatePickerValue = (
     }),
     [value]
   );
-
   return [val, onConfirm] as [typeof val, typeof onConfirm];
 };
 
@@ -518,6 +519,7 @@ function DatasetsExplore() {
     selectedDatetime,
     setSelectedDatetime
   );
+
   const [datePickerCompareValue, datePickerCompareConfirm] = useDatePickerValue(
     selectedCompareDatetime,
     setSelectedCompareDatetime
