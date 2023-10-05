@@ -105,7 +105,6 @@
     "@devseed-ui/form": "4.1.0",
     "@devseed-ui/global-loading": "4.1.0",
     "@devseed-ui/modal": "^4.1.0",
-    "@devseed-ui/shadow-scrollbar": "4.1.0",
     "@devseed-ui/theme-provider": "4.1.0",
     "@devseed-ui/toolbar": "4.1.0",
     "@devseed-ui/typography": "4.1.0",

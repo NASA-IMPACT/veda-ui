@@ -12,7 +12,6 @@ import {
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
-import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { Button } from '@devseed-ui/button';
 import {
   CollecticonEllipsisVertical,
@@ -214,6 +213,9 @@ const GlobalNavInner = styled.div`
 const GlobalNavHeader = styled.div`
   padding: ${variableGlsp(1)};
   box-shadow: inset 0 -1px 0 0 ${themeVal('color.surface-200a')};
+  ${media.largeUp`
+    display: none;
+  `}
 `;
 
 const GlobalNavTitle = styled(Heading).attrs({
@@ -225,16 +227,16 @@ const GlobalNavTitle = styled(Heading).attrs({
 
 export const GlobalNavActions = styled.div`
   align-self: start;
+  ${media.largeUp`
+    display: none;
+  `}
 `;
 
 export const GlobalNavToggle = styled(Button)`
   z-index: 2000;
 `;
 
-const GlobalNavBody = styled(ShadowScrollbar).attrs({
-  topShadowVariation: 'dark',
-  bottomShadowVariation: 'dark'
-})`
+const GlobalNavBody = styled.div`
   display: flex;
   flex: 1;
 
@@ -339,6 +341,10 @@ function PageHeader() {
 
   useEffect(() => {
     // Close global nav when media query changes.
+    // NOTE: isMediumDown is returning document.body's width, not the whole window width
+    // which conflicts with how mediaquery decides the width. 
+    // JSX element susing isMediumDown is also protected with css logic because of this.
+    // ex. Look at GlobalNavActions 
     if (!isMediumDown) setGlobalNavRevealed(false);
   }, [isMediumDown]);
 

@@ -11,8 +11,6 @@ import { Button } from '@devseed-ui/button';
 import { variableGlsp } from './variable-utils';
 import { VarProse } from './variable-components';
 
-import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
-
 const panelWidth = {
   xsmall: '20rem',
   small: '22rem',
@@ -103,7 +101,7 @@ export const PanelToggle = styled(Button)`
   left: calc(100% + ${variableGlsp()});
 `;
 
-export const PanelBody = styled(ShadowScrollbar)`
+export const PanelBody = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
