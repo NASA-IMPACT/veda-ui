@@ -198,6 +198,7 @@ const LegendBody = styled(WidgetItemBodyInner)`
   padding: 0;
   min-height: 32px;
   max-height: 120px;
+  overflow-y: auto;
   .scroll-inner {
     padding: ${variableGlsp(0.5, 0.75)};
   }
