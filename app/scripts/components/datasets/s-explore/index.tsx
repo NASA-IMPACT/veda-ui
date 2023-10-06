@@ -133,7 +133,7 @@ const ScrollArea = styled.div`
 const ScrollAreaInner = styled.div`
   position: absolute;
   inset: 0px;
-  overflow: scroll;
+  overflow-y: auto;
 `;
 
 const isSelectedDateValid = (dateList, selectedDate) => {
