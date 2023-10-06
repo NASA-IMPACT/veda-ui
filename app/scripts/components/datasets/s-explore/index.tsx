@@ -108,7 +108,7 @@ const DatesWrapper = styled.div`
   }
 `;
 
-const PositionPlaceHoderForScroll = styled.div`
+const PositionPlaceHolderForScroll = styled.div`
   position: absolute;
   pointer-events: none;
   z-index: 1000;
@@ -584,7 +584,7 @@ function DatasetsExplore() {
         }}
         hideFooter
       />
-      <PageMainContent id='page-main-content'>
+      <PageMainContent>
         <PageHero title={`${dataset.data.name} Exploration`} isHidden />
         <Explorer>
           <Panel revealed={panelRevealed} onClick={onPanelClick}>
@@ -614,7 +614,7 @@ function DatasetsExplore() {
                 </PanelActions>
               </PanelHeader>
               <PanelBody>
-                <PositionPlaceHoderForScroll />
+                <PositionPlaceHolderForScroll />
                 <ScrollArea>
                   <ScrollAreaInner>
                     <DatesWrapper>
