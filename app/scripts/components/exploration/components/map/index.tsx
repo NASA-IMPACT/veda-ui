@@ -51,8 +51,8 @@ export function ExplorationMap(props: { comparing: boolean }) {
     .slice()
     .reverse();
 
-  const { onUpdate, onDelete, onSelectionChange, features } = useAois();
-  console.log(features);
+  const { onUpdate, onDelete, onSelectionChange } = useAois();
+  // console.log(features);
 
   return (
     <Map id='exploration' projection={projection}>
@@ -91,7 +91,7 @@ export function ExplorationMap(props: { comparing: boolean }) {
         controls={{
           polygon: true,
           trash: true
-        }}
+        } as any}
         defaultMode='draw_polygon'
         onCreate={onUpdate}
         onUpdate={onUpdate}

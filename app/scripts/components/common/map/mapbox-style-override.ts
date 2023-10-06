@@ -195,6 +195,7 @@ const MapboxStyleOverride = css`
       })});
     }
   }
+
   .mapbox-gl-draw_trash.mapbox-gl-draw_trash::before {
     background-image: url(${({ theme }) =>
       iconDataURI(CollecticonTrashBin, {
