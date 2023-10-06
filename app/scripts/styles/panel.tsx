@@ -105,6 +105,7 @@ export const PanelBody = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  position:relative;
 
   > div > div:nth-child(2),
   > div > div:nth-child(3) {
