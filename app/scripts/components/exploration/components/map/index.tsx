@@ -92,7 +92,6 @@ export function ExplorationMap(props: { comparing: boolean }) {
           polygon: true,
           trash: true
         } as any}
-        defaultMode='draw_polygon'
         onCreate={onUpdate}
         onUpdate={onUpdate}
         onDelete={onDelete}

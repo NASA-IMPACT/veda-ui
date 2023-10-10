@@ -16,7 +16,7 @@ export default function MapComponent({
   isCompared?: boolean;
   projection?: ProjectionOptions;
 }) {
-  const { initialViewState, setInitialViewState, mainId, comparedId } =
+  const { initialViewState, setInitialViewState, mainId, comparedId, cursor } =
     useMapsContext();
 
   const id = isCompared ? comparedId : mainId;
@@ -52,6 +52,7 @@ export default function MapComponent({
       mapStyle={style as any}
       onMove={onMove}
       projection={mapboxProjection}
+      // cursor={cursor}
     >
       {controls}
     </ReactMapGlMap>

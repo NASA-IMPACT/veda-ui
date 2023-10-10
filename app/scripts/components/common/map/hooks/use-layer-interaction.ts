@@ -1,7 +1,7 @@
 
 import { Feature } from 'geojson';
 import { useEffect } from 'react';
-import useMaps from './use-maps';
+import useMaps, { useMapsContext } from './use-maps';
 
 interface LayerInteractionHookOptions {
   layerId: string;
@@ -12,6 +12,7 @@ export default function useLayerInteraction({
   onClick
 }: LayerInteractionHookOptions) {
   const { current: mapInstance } = useMaps();
+  const { setCursor } = useMapsContext();
   useEffect(() => {
     if (!mapInstance) return;
     const onPointsClick = (e) => {
@@ -20,11 +21,11 @@ export default function useLayerInteraction({
     };
 
     const onPointsEnter = () => {
-      mapInstance.getCanvas().style.cursor = 'pointer';
+      setCursor('pointer');
     };
 
     const onPointsLeave = () => {
-      mapInstance.getCanvas().style.cursor = '';
+      setCursor('grab');
     };
 
     mapInstance.on('click', layerId, onPointsClick);
@@ -36,5 +37,5 @@ export default function useLayerInteraction({
       mapInstance.off('mouseenter', layerId, onPointsEnter);
       mapInstance.off('mouseleave', layerId, onPointsLeave);
     };
-  }, [layerId, mapInstance, onClick]);
+  }, [layerId, mapInstance, onClick, setCursor]);
 }
