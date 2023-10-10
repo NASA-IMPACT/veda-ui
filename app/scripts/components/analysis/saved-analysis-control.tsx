@@ -94,7 +94,6 @@ export default function SavedAnalysisControl({
           {...props}
           size={size}
           variation='achromic-outline'
-          radius='square'
           disabled={!savedSettingsList.length}
         >
           <CollecticonClockBack title='Show past analyses' meaningful /> Past analyses

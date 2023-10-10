@@ -5,7 +5,7 @@ import React, {
   MouseEvent,
   useRef
 } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarLabel } from '@devseed-ui/toolbar';
 import {
@@ -115,13 +115,13 @@ const UnselectableInfo = styled.div`
 
 const FormCheckableUnselectable = styled(FormCheckableCustom)`
   pointer-events: none;
-  background: #F0F0F5;
+  background: #f0f0f5;
 `;
 
 const DataPointsWarning = styled.div`
   display: flex;
   align-items: center;
-  background: #FC3D2119;
+  background: #fc3d2119;
   border-radius: 99px;
   font-size: 0.825rem;
   font-weight: bold;
@@ -145,23 +145,25 @@ const FloatingFooter = styled.div<{ isSticky: boolean }>`
   margin-bottom: ${variableGlsp(1)};
   ${(props) =>
     props.isSticky &&
-    `
-      box-shadow: 0 0 10px 0 #0003;
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationD')};
     `}
 `;
 
 const FoldWithBullet = styled(Fold)<{ number: string }>`
   ${media.largeUp`
   padding-left: ${variableGlsp(1)};
+
   > div {
     padding-left: ${variableGlsp(2)};
     position: relative;
-    // bullet
+
+    /* bullet */
     &::after {
       position: absolute;
       width: ${variableGlsp(1.5)};
       height: ${variableGlsp(1.5)};
-      background-color: #1565EF;
+      background-color: ${themeVal('color.primary')};
       color: ${themeVal('color.surface')};
       border-radius: ${themeVal('shape.ellipsoid')};
       font-size: 1.75rem;
@@ -169,7 +171,10 @@ const FoldWithBullet = styled(Fold)<{ number: string }>`
       justify-content: center;
       align-items: center;
       font-weight: 600;
-      ${(props: { number: string }) => `content: "${props.number}";`}
+      ${(props: { number: string }) =>
+        css`
+          content: '${props.number}';
+        `}
     }
   }
 `}
@@ -433,7 +438,7 @@ export default function Analysis() {
             </Form>
             <Toolbar size='small'>
               <ToolbarLabelWithSpace>Presets</ToolbarLabelWithSpace>
-              <ButtonGroup variation='base-outline' radius='square'>
+              <ButtonGroup variation='base-outline'>
                 <Button onClick={(e) => onDatePresetClick(e, 'last10Years')}>
                   Last 10 years
                 </Button>

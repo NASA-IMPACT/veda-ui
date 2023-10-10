@@ -15,9 +15,11 @@ const DATE_INTERVAL_FN = {
  * taking into account the time density.
  * Separated the function from use-stac-collection-search for easy unit test
  */
-
-export function getNumberOfItemsWithinTimeRange(userStart, userEnd, collection) {
-  
+export function getNumberOfItemsWithinTimeRange(
+  userStart,
+  userEnd,
+  collection
+) {
   const { isPeriodic, timeDensity, domain, timeseries } = collection;
   if (!isPeriodic) {
     const numberOfItems = timeseries.reduce((acc, t) => {

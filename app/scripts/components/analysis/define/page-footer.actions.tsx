@@ -98,7 +98,6 @@ export default function PageFooterActions({
             to={`${ANALYSIS_RESULTS_PATH}${location.search}`}
             type='button'
             size='xlarge'
-            radius='square'
             variation='primary-outline'
           >
             Cancel
@@ -112,7 +111,6 @@ export default function PageFooterActions({
           <SaveButton
             type='button'
             size='xlarge'
-            radius='square'
             variation='primary-fill'
             visuallyDisabled={true}
           >
@@ -121,7 +119,6 @@ export default function PageFooterActions({
         ) : (
           <Button
             forwardedAs={Link}
-            radius='square'
             variation='primary-fill'
             size='xlarge'
             to={`${ANALYSIS_RESULTS_PATH}${analysisParamsQs}`}

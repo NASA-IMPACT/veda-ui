@@ -166,6 +166,7 @@ export type DateRangePreset =
   | 'lastYear'
   | 'last10Years'
   | '2018-2022';
+
 export function getRangeFromPreset(preset: DateRangePreset): {
   start: Date;
   end: Date;
