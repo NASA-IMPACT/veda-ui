@@ -18,7 +18,7 @@ import {
   ScaleControl
 } from '$components/common/map/controls';
 import MapCoordsControl from '$components/common/map/controls/coords';
-import MapOptionsControl from '$components/common/map/controls/options';
+import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';

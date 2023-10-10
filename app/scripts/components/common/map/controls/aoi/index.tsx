@@ -2,7 +2,7 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { useAtomValue } from 'jotai';
 import { useRef } from 'react';
 import { useControl } from 'react-map-gl';
-import { aoisFeaturesAtom } from '$components/exploration/atoms/atoms';
+import { aoisFeaturesAtom } from './atoms';
 
 type DrawControlProps = {
   onCreate?: (evt: { features: object[] }) => void;
