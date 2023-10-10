@@ -1,5 +1,6 @@
 import { Feature, FeatureCollection, Polygon } from 'geojson';
 import gjv from 'geojson-validation';
+import { chunk } from 'lodash';
 import { decode, encode } from 'google-polyline';
 import { AoIFeature } from '$components/common/map/types';
 import { toAoIid } from '$components/common/map/utils';
@@ -75,17 +76,10 @@ export function encodeAois(aois: AoIFeature[]): string {
 
 export function decodeAois(aois: string): AoIFeature[] {
   const decoded = JSON.parse(aois) as string[];
-  const features = decoded.reduce<AoIFeature[]>((acc, current, i) => {
-    if (i % 3 === 0) {
-      const decodedFeature = decodeFeature(current) as AoIFeature;
-      return [...acc, decodedFeature];
-    } else {
-      const lastFeature = acc[acc.length - 1];
-      const prop = i % 3 === 1 ? 'id' : 'selected';
-      const newFeature = { ...lastFeature, [prop]: current };
-      acc[acc.length - 1] = newFeature;
-      return acc;
-    }
-  }, []);
+  const features: AoIFeature[] = chunk(decoded, 3).map((data) => {
+    const [polygon, id, selected] = data;
+    const decodedFeature = decodeFeature(polygon) as AoIFeature;
+    return { ...decodedFeature, id, selected };
+  });
   return features!;
 }
