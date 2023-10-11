@@ -9,6 +9,7 @@ import {
   TimelineDatasetSuccess
 } from '../../types.d.ts';
 import { Layer } from './layer';
+import { AnalysisMessage } from './analysis-message';
 
 import Map, { Compare } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
@@ -49,10 +50,11 @@ export function ExplorationMap(props: { comparing: boolean }) {
     .reverse();
 
   const { onUpdate, onDelete, onSelectionChange } = useAois();
-  // console.log(features);
 
   return (
     <Map id='exploration' projection={projection}>
+      <AnalysisMessage />
+
       {/* Map layers */}
       <Basemap
         basemapStyleId={mapBasemapId}
