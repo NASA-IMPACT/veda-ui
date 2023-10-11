@@ -136,7 +136,7 @@ export async function requestDatasetTimeseriesData({
     const layerStatistics = await Promise.all(
       assets.map(async ({ date, url }) => {
         const statistics = await queryClient.fetchQuery(
-          ['analysis', 'asset', url],
+          ['analysis', 'asset', url, aoi],
           async ({ signal }) => {
             return concurrencyManager.queue(async () => {
               const { data } = await axios.post(
