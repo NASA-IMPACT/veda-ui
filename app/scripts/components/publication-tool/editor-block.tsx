@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { evaluate } from '@mdx-js/mdx';
+import { themeVal } from '@devseed-ui/theme-provider';
 import { Button, ButtonGroup } from '@devseed-ui/button';
 import styled from 'styled-components';
 import { MDXContent } from 'mdx/types';
@@ -59,9 +60,9 @@ const useMDX = (source: string) => {
   return state;
 };
 
-const MDXRendererControls = styled.div<{ highlighted: boolean }>`
+const MDXRendererControls = styled.div<{ highlighted: boolean, editing: boolean }>`
   background: ${(props) =>
-    props.highlighted
+    props.editing
       ? `repeating-linear-gradient(
     45deg,
     transparent,
@@ -71,6 +72,9 @@ const MDXRendererControls = styled.div<{ highlighted: boolean }>`
   )`
       : 'transparent'};
   position: relative;
+  border-color: ${(props) => (props.highlighted ? themeVal('color.base') : 'transparent')};
+  border-width: 2px;
+  border-style: solid;
 `;
 
 const MDXRendererActions = styled.div`
@@ -118,6 +122,7 @@ export default function EditorBlock({
   ) : (
     <MDXRendererControls
       highlighted={highlighted}
+      editing={editing}
       onMouseOver={() => onHighlight(id)}
     >
       <MDXRenderer result={result} />
