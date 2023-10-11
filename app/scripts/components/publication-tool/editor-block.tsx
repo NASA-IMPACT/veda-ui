@@ -104,7 +104,7 @@ export default function EditorBlock({
   }, [error]);
 
   const onEditClick = useSetCurrentBlockId(id);
-  const onRemoveClick = useRemoveBlock(id);
+  const { remove: onRemoveClick, isAvailable : isRemoveAvailable  } = useRemoveBlock(id);
   const onAddClick = useAddBlock(id);
   const { isAvailable: canGoUp, setBlockOrder: onUpClick } = useSetBlockOrder(
     id,
@@ -130,9 +130,9 @@ export default function EditorBlock({
         <MDXRendererActions>
           <ButtonGroup>
             <Button onClick={onEditClick} disabled={editing}>
-              {editing ? 'Editing' : 'Edit MDX'}
+              {editing ? 'Editing ▼' : 'Edit MDX'}
             </Button>
-            <Button onClick={onRemoveClick}>Remove</Button>
+            <Button onClick={onRemoveClick} disabled={!isRemoveAvailable}>Remove</Button>
             <Button onClick={onUpClick} disabled={!canGoUp}>
               Move up
             </Button>

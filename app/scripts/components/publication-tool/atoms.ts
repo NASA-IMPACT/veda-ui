@@ -2,24 +2,26 @@ import { atomWithStorage } from 'jotai/utils';
 import { useParams } from 'react-router';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useCallback, useMemo } from 'react';
-import { EditorDataStory } from './types';
-import { toEditorDataStory, toMDXDocument } from './utils';
+import {  EditorStory } from './types';
+import { toEditorDataStory } from './utils';
 
-export const DataStoriesAtom = atomWithStorage<EditorDataStory[]>('dataStories', [
-  {
-    frontmatter: {
-      id: 'example-data-story',
-      name: 'Example Data Story',
-      description: 'This is an example data story',
-      pubDate: '2023-01-01',
-      taxonomy: [],
-    },
-    currentBlockId: '1',
-    blocks: [
-      {
-        id: '1',
-        tag: 'Block',
-        mdx: `
+export const DataStoriesAtom = atomWithStorage<EditorStory[]>(
+  'dataStories',
+  [
+    {
+      frontmatter: {
+        id: 'example-data-story',
+        name: 'Example Data Story',
+        description: 'This is an example data story',
+        pubDate: '2023-01-01',
+        taxonomy: []
+      },
+      currentBlockId: '1',
+      blocks: [
+        {
+          id: '1',
+          tag: 'Block',
+          mdx: `
           <Prose>
           ### Your markdown header
       
@@ -40,53 +42,57 @@ export const DataStoriesAtom = atomWithStorage<EditorDataStory[]>('dataStories',
           Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
         </Caption> 
         </Prose>`
-      },
-      {
-        id: '2',
-        tag: 'Block',
-        mdx: `
+        },
+        {
+          id: '2',
+          tag: 'Block',
+          mdx: `
           <Prose>
           ### Second header
       
           Let's tell a story of _data_.
           
         </Prose>`
-      }
-    ]
-  },
-  {
-    frontmatter: {
-      id: 'example-data-story-2',
-      name: 'Example Data Story 2',
-      description: 'This is an example data story',
-      taxonomy: [],
-      pubDate: '2023-01-01'
+        }
+      ]
     },
-    blocks: [
-      {
-        id: '1',
-        tag: 'Block',
-        mdx: `
+    {
+      frontmatter: {
+        id: 'example-data-story-2',
+        name: 'Example Data Story 2',
+        description: 'This is an example data story',
+        taxonomy: [],
+        pubDate: '2023-01-01'
+      },
+      blocks: [
+        {
+          id: '1',
+          tag: 'Block',
+          mdx: `
           <Prose>
           ### Your markdown header
       
           Your markdown contents comes here.
         </Prose>`
-      }
-    ]
-  }
-]);
+        }
+      ]
+    }
+  ]
+);
 
 export const useCreateEditorDataStoryFromMDXDocument = () => {
   const setDataStories = useSetAtom(DataStoriesAtom);
-  return useCallback((mdxDocument: string) => {
-    const editorDataStory = toEditorDataStory(mdxDocument);
-    setDataStories((oldDataStories) => {
-      const newDataStories = [...oldDataStories, editorDataStory];
-      return newDataStories;
-    });
-    return editorDataStory;
-  }, [setDataStories]);
+  return useCallback(
+    (mdxDocument: string) => {
+      const editorDataStory = toEditorDataStory(mdxDocument);
+      setDataStories((oldDataStories) => {
+        const newDataStories = [...oldDataStories, editorDataStory];
+        return newDataStories;
+      });
+      return editorDataStory;
+    },
+    [setDataStories]
+  );
 };
 
 export const useCurrentDataStory = () => {
@@ -117,20 +123,18 @@ export const useStoryIndex = () => {
 
 export const useBlockIndex = (blockId: string) => {
   const currentDataStory = useCurrentDataStory();
-  const blockIndex = useMemo(() => {
-    const blockIndex = currentDataStory?.blocks.findIndex(
-      (b) => b.id === blockId
-    );
-    return blockIndex ?? -1;
-  }, [blockId, currentDataStory]);
-  return blockIndex;
+  const blockIndex = currentDataStory?.blocks.findIndex(
+    (b) => b.id === blockId
+  );
+  return blockIndex ?? -1;
 };
 
 const useCRUDUtils = (blockId: string) => {
   const setDataStories = useSetAtom(DataStoriesAtom);
   const storyIndex = useStoryIndex();
   const blockIndex = useBlockIndex(blockId);
-  return { setDataStories, storyIndex, blockIndex };
+  const currentStory = useCurrentDataStory();
+  return { setDataStories, storyIndex, currentStory, blockIndex };
 };
 
 export const useSetCurrentBlockId = (blockId: string) => {
@@ -145,8 +149,9 @@ export const useSetCurrentBlockId = (blockId: string) => {
 };
 
 export const useRemoveBlock = (blockId: string) => {
-  const { setDataStories, storyIndex, blockIndex } = useCRUDUtils(blockId);
-  return useCallback(() => {
+  const { setDataStories, storyIndex, blockIndex, currentStory } = useCRUDUtils(blockId);
+  const isAvailable = useMemo(() => currentStory?.blocks && currentStory.blocks.length > 1, [currentStory?.blocks]);
+  const remove = useCallback(() => {
     if (window.confirm('Are you sure you want to delete this block?')) {
       setDataStories((oldDataStories) => {
         const newDataStories = [...oldDataStories];
@@ -158,6 +163,7 @@ export const useRemoveBlock = (blockId: string) => {
       });
     }
   }, [setDataStories, storyIndex, blockIndex]);
+  return { isAvailable, remove };
 };
 
 export const useAddBlock = (afterBlockId: string) => {
@@ -204,7 +210,6 @@ export const useSetBlockMDX = (blockId: string) => {
 export const useSetBlockOrder = (blockId: string, direction: 'up' | 'down') => {
   const { setDataStories, storyIndex, blockIndex } = useCRUDUtils(blockId);
   const currentDataStory = useCurrentDataStory();
-
   const isAvailable = useMemo(() => {
     const canGoUp = blockIndex > 0;
     const canGoDown = currentDataStory
@@ -213,17 +218,10 @@ export const useSetBlockOrder = (blockId: string, direction: 'up' | 'down') => {
     return direction === 'up' ? canGoUp : canGoDown;
   }, [blockIndex, currentDataStory, direction]);
 
-    
   const setBlockOrder = useCallback(() => {
     setDataStories((oldDataStories) => {
       const newDataStories = [...oldDataStories];
       const block = newDataStories[storyIndex].blocks[blockIndex];
-      // const newBlockIndex =
-      //   direction === 'up' ? blockIndex - 1 : blockIndex + 1;
-      // newDataStories[storyIndex].blocks = [
-      //   ...newDataStories[storyIndex].blocks.slice(0, blockIndex),
-      //   ...newDataStories[storyIndex].blocks.slice(blockIndex + 1)
-      // ];
 
       if (direction === 'up') {
         newDataStories[storyIndex].blocks[blockIndex] =
