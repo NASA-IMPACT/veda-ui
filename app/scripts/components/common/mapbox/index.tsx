@@ -31,8 +31,8 @@ import { SimpleMap } from './map';
 import MapMessage from './map-message';
 import { LayerLegendContainer, LayerLegend } from './layer-legend';
 import { useBasemap } from './map-options/use-basemap';
-import { DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
-import { Styles } from './layers/styles';
+import { BasemapId, DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
+import { ExtendedStyle, Styles } from './layers/styles';
 import { Basemap } from './layers/basemap';
 import { formatCompareDate, formatSingleDate } from './utils';
 import { MapLoading } from '$components/common/loading-skeleton';
@@ -125,10 +125,15 @@ function MapboxMapComponent(
     onPositionChange,
     initialPosition,
     withGeocoder,
+    withScale,
     aoi,
     onAoiChange,
     projection,
-    onProjectionChange
+    onProjectionChange,
+    basemapStyleId,
+    onBasemapStyleIdChange,
+    isDatasetLayerHidden,
+    onStyleChange
   } = props;
   /* eslint-enable react/prop-types */
 
@@ -141,13 +146,7 @@ function MapboxMapComponent(
   const [isMapLoaded, setMapLoaded] = useState(false);
   const [isMapCompareLoaded, setMapCompareLoaded] = useState(false);
 
-  const {
-    basemapStyleId,
-    onBasemapStyleIdChange,
-    labelsOption,
-    boundariesOption,
-    onOptionChange
-  } = useBasemap();
+  const { labelsOption, boundariesOption, onOptionChange } = useBasemap();
 
   // This baseLayerStatus is for BaseLayerComponent
   // ex. RasterTimeSeries uses this variable to track the status of
@@ -397,7 +396,7 @@ function MapboxMapComponent(
         className={className}
         id={id ?? 'mapbox-container'}
       >
-        <Styles>
+        <Styles onStyleUpdate={onStyleChange}>
           {/*
         Each layer type is added to the map through a component. This component
         has all the logic needed to add/update/remove the layer.
@@ -425,6 +424,7 @@ function MapboxMapComponent(
                 zoomExtent={baseLayerResolvedData.zoomExtent}
                 bounds={baseLayerResolvedData.bounds}
                 onStatusChange={onBaseLayerStatusChange}
+                isHidden={isDatasetLayerHidden}
               />
             )}
           <SimpleMap
@@ -439,6 +439,7 @@ function MapboxMapComponent(
               cooperativeGestures
             }}
             withGeocoder={withGeocoder}
+            withScale={withScale}
             aoi={aoi}
             onAoiChange={onAoiChange}
             projection={projection}
@@ -452,7 +453,7 @@ function MapboxMapComponent(
         </Styles>
 
         {shouldRenderCompare && (
-          <Styles>
+          <Styles onStyleUpdate={onStyleChange}>
             {/*
         Adding a layer to the comparison map is also done through a component,
         which is this case targets a different map instance.
@@ -489,10 +490,16 @@ function MapboxMapComponent(
                 zoom: mapRef.current?.getZoom()
               }}
               withGeocoder={withGeocoder}
+              withScale={withScale}
               aoi={aoi}
               onAoiChange={onAoiChange}
               projection={projection}
               onProjectionChange={onProjectionChange}
+              basemapStyleId={basemapStyleId}
+              onBasemapStyleIdChange={onBasemapStyleIdChange}
+              labelsOption={labelsOption}
+              boundariesOption={boundariesOption}
+              onOptionChange={onOptionChange}
             />
           </Styles>
         )}
@@ -526,11 +533,16 @@ export interface MapboxMapProps {
     }
   ) => void;
   withGeocoder?: boolean;
+  withScale?: boolean;
   children?: ReactNode;
   aoi?: AoiState;
   onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
   onProjectionChange?: (projection: ProjectionOptions) => void;
+  basemapStyleId?: BasemapId;
+  onBasemapStyleIdChange?: (id: BasemapId) => void;
+  isDatasetLayerHidden?: boolean;
+  onStyleChange?: (style: ExtendedStyle) => void;
 }
 
 export interface MapboxMapRef {

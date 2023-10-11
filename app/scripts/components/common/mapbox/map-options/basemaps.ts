@@ -2,14 +2,15 @@
  * Basemap style requirements (followed by standaard Mapbox Studio styles)
  * - have a layer named "admin-0-boundary-bg". Data will be added below
  *   this layer to ensure country oulines and labels are visible.
- * - for label and boundaries layers to be toggled on and off, they must 
- *   belong to a group specifically named - see GROUPS_BY_OPTION for the 
+ * - for label and boundaries layers to be toggled on and off, they must
+ *   belong to a group specifically named - see GROUPS_BY_OPTION for the
  *   list of accepted group names
  */
 
 export const BASE_STYLE_PATH = 'https://api.mapbox.com/styles/v1/covid-nasa';
 
-export const getStyleUrl = (mapboxId: string) => `${BASE_STYLE_PATH}/${mapboxId}?access_token=${process.env.MAPBOX_TOKEN}`;
+export const getStyleUrl = (mapboxId: string) =>
+  `${BASE_STYLE_PATH}/${mapboxId}?access_token=${process.env.MAPBOX_TOKEN}`;
 
 export const BASEMAP_STYLES = [
   {
@@ -36,7 +37,9 @@ export const BASEMAP_STYLES = [
     mapboxId: 'cldu1yayu00au01qqrbdahb3m',
     thumbnailUrl: `https://api.mapbox.com/styles/v1/covid-nasa/cldu1yayu00au01qqrbdahb3m/static/-9.14,38.7,10.5,0/480x320?access_token=${process.env.MAPBOX_TOKEN}`
   }
-];
+] as const;
+
+export const BASEMAP_ID_DEFAULT = 'satellite';
 
 // Default style used in stories and analysis, satellite no labels
 export const DEFAULT_MAP_STYLE_URL =
@@ -50,10 +53,13 @@ export const GROUPS_BY_OPTION: Record<Option, string[]> = {
     'Road network, road-labels',
     'Transit, transit-labels'
   ],
-  boundaries: ['Administrative boundaries, admin']
+  boundaries: [
+    'Country Borders, country-borders',
+    'Administrative boundaries, admin'
+  ]
 };
 
-export type Basemap = typeof BASEMAP_STYLES;
+export type Basemap = typeof BASEMAP_STYLES[number];
 
 export type BasemapId = typeof BASEMAP_STYLES[number]['id'];
 

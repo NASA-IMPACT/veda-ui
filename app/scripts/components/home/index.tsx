@@ -19,7 +19,10 @@ import { PageMainContent } from '$styles/page';
 import { variableGlsp } from '$styles/variable-utils';
 import { PageActions, PageLead } from '$styles/page';
 import Hug from '$styles/hug';
-import { ContentOverride } from '$components/common/page-overrides';
+import {
+  ComponentOverride,
+  ContentOverride
+} from '$components/common/page-overrides';
 
 const homeContent = getOverride('homeContent');
 
@@ -130,32 +133,35 @@ function RootHome() {
   return (
     <PageMainContent>
       <LayoutProps title='Welcome' />
-      <PageHeroHome
-        title={homeContent?.data.title ?? `Welcome to the ${appTitle}`}
-        renderBetaBlock={() => (
-          <>
-            {homeContent?.data.description ? (
-              <PageLead>{homeContent.data.description}</PageLead>
-            ) : (
-              <PageLead>
-                VEDA (Visualization, Exploration, and Data Analysis) is
-                NASA&apos;s open-source Earth Science platform in the cloud.
-              </PageLead>
-            )}
-            <PageActions>
-              <Button
-                forwardedAs={Link}
-                to='/about'
-                size='large'
-                variation='achromic-outline'
-              >
-                Learn more
-              </Button>
-            </PageActions>
-          </>
-        )}
-        {...getCoverProps()}
-      />
+
+      <ComponentOverride with='homeHero'>
+        <PageHeroHome
+          title={homeContent?.data.title ?? `Welcome to the ${appTitle}`}
+          renderBetaBlock={() => (
+            <>
+              {homeContent?.data.description ? (
+                <PageLead>{homeContent.data.description}</PageLead>
+              ) : (
+                <PageLead>
+                  VEDA (Visualization, Exploration, and Data Analysis) is
+                  NASA&apos;s open-source Earth Science platform in the cloud.
+                </PageLead>
+              )}
+              <PageActions>
+                <Button
+                  forwardedAs={Link}
+                  to='/about'
+                  size='large'
+                  variation='achromic-outline'
+                >
+                  Learn more
+                </Button>
+              </PageActions>
+            </>
+          )}
+          {...getCoverProps()}
+        />
+      </ComponentOverride>
 
       <ContentOverride with='homeContent'>
         <Audience />
@@ -163,31 +169,31 @@ function RootHome() {
         <FeaturedStories />
 
         <ValueProposition />
-      </ContentOverride>
 
-      <Connections>
-        <ConnectionsBlock>
-          <ConnectionsBlockTitle>About</ConnectionsBlockTitle>
-          <ConnectionsList>
-            <li>
-              <Link to='/about'>
-                <CollecticonChevronRightSmall /> Learn more
-              </Link>
-            </li>
-            <li>
-              <a
-                href='#'
-                onClick={(e) => {
-                  e.preventDefault();
-                  showFeedbackModal();
-                }}
-              >
-                <CollecticonChevronRightSmall /> Give feedback
-              </a>
-            </li>
-          </ConnectionsList>
-        </ConnectionsBlock>
-      </Connections>
+        <Connections>
+          <ConnectionsBlock>
+            <ConnectionsBlockTitle>About</ConnectionsBlockTitle>
+            <ConnectionsList>
+              <li>
+                <Link to='/about'>
+                  <CollecticonChevronRightSmall /> Learn more
+                </Link>
+              </li>
+              <li>
+                <a
+                  href='#'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    showFeedbackModal();
+                  }}
+                >
+                  <CollecticonChevronRightSmall /> Give feedback
+                </a>
+              </li>
+            </ConnectionsList>
+          </ConnectionsBlock>
+        </Connections>
+      </ContentOverride>
     </PageMainContent>
   );
 }

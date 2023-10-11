@@ -16,6 +16,8 @@ import {
 import { ProjectionOptions } from 'veda';
 import { FormSwitch } from '@devseed-ui/form';
 
+import LayerVisibilityToggleButton from './layer-visibility-toggle';
+import TileLinkButton from './tile-link';
 import DatasetLayers from './dataset-layers';
 import { PanelDateWidget } from './panel-date-widget';
 import { resourceNotFound } from '$components/uhoh';
@@ -45,7 +47,7 @@ import { useMediaQuery } from '$utils/use-media-query';
 import { DATASETS_PATH } from '$utils/routes';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
-import { useDatasetAsyncLayers } from '$context/layer-data';
+import { AsyncDatasetLayer, useDatasetAsyncLayers } from '$context/layer-data';
 import {
   checkLayerLoadStatus,
   resolveLayerTemporalExtent
@@ -54,6 +56,11 @@ import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { projectionDefault } from '$components/common/mapbox/map-options/utils';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
+import { ExtendedStyle } from '$components/common/mapbox/layers/styles';
+import {
+  BasemapId,
+  BASEMAP_ID_DEFAULT
+} from '$components/common/mapbox/map-options/basemaps';
 
 const Explorer = styled.div`
   position: relative;
@@ -76,13 +83,16 @@ const Carto = styled.div`
       margin-top: calc(2rem + ${variableGlsp(0.5)});
     }
   }
+`;
 
-  ${NotebookConnectButton} {
-    position: absolute;
-    z-index: 1;
-    right: ${variableGlsp()};
-    top: ${variableGlsp()};
-  }
+const CustomControlWrapper = styled.div`
+  position: absolute;
+  right: ${variableGlsp()};
+  top: ${variableGlsp()};
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: ${variableGlsp(0.5)};
 `;
 
 const DatesWrapper = styled.div`
@@ -262,7 +272,7 @@ function DatasetsExplore() {
 
   const [mapProjection, setMapProjection] = useQsState.memo<ProjectionOptions>({
     key: 'projection',
-    default: projectionDefault,
+    default: null,
     hydrator: (v) => {
       if (!v) return null;
       const [id, rawCenter, rawParallels] = v.split('|');
@@ -277,6 +287,11 @@ function DatasetsExplore() {
       const { id, center, parallels } = v;
       return `${id}|${center?.join(',') ?? ''}|${parallels?.join(',') ?? ''}`;
     }
+  });
+
+  const [mapBasemapId, setBasemapId] = useQsState.memo<BasemapId>({
+    key: 'basemapid',
+    default: null
   });
 
   const [selectedDatetime, setSelectedDatetime] = useQsState.memo<Date>({
@@ -310,10 +325,18 @@ function DatasetsExplore() {
       }
     });
 
-  const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
-
   // END QsState setup
   /** *********************************************************************** */
+
+  const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
+  const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
+  const [layerStyle, setLayerStyle] = useState<ExtendedStyle | undefined>(
+    undefined
+  );
+
+  const currentLayerStyle = layerStyle?.layers.find((l) => {
+    return l.metadata.id === `base-${selectedLayerId}`;
+  });
 
   // Get the dataset's layers.
   // Since async data has to be loaded, each layer is in an async format which
@@ -349,26 +372,79 @@ function DatasetsExplore() {
   // otherwise default to mercator. If this is the first layer loading (like
   // when the user enters the page), then use the projection in the url. This is
   // needed in case the url was shared with a different projection.
-  useEffectPrevious(
+  useEffectPrevious<[AsyncDatasetLayer | undefined, ProjectionOptions | null]>(
     (prev) => {
       const prevActiveData = prev[0]?.baseLayer.data;
       const currActiveData = activeLayer?.baseLayer.data;
 
-      if (
-        !prevActiveData ||
-        !currActiveData ||
-        prevActiveData.id === currActiveData.id
-      ) {
+      if (prevActiveData?.id === undefined && currActiveData) {
+        // First load.
+        if (mapProjection === null) {
+          // Nothing in the url. Set the layer default is able.
+          if (currActiveData.projection?.id) {
+            setMapProjection(currActiveData.projection);
+          } else {
+            setMapProjection(projectionDefault);
+          }
+        } else {
+          // Do nothing. The projection will be set by the url.
+          return;
+        }
+      }
+
+      if (!currActiveData || prevActiveData?.id === currActiveData.id) {
+        // Same layer. Do nothing.
         return;
       }
 
+      // Layer change. Set the projection.
       if (currActiveData.projection?.id) {
         setMapProjection(currActiveData.projection);
       } else {
         setMapProjection(projectionDefault);
       }
     },
-    [activeLayer]
+    [activeLayer, mapProjection]
+  );
+
+  // On layer change, reset the basemapId.
+  // When activating a layer always use the layer basemap (if defined),
+  // otherwise default to satellite. If this is the first layer loading (like
+  // when the user enters the page), then use the basemap in the url. This is
+  // needed in case the url was shared with a different basemap.
+  useEffectPrevious<[AsyncDatasetLayer | undefined, BasemapId | null]>(
+    (prev) => {
+      const prevActiveData = prev[0]?.baseLayer.data;
+      const currActiveData = activeLayer?.baseLayer.data;
+
+      if (prevActiveData?.id === undefined && currActiveData) {
+        // First load.
+        if (mapBasemapId === null) {
+          // Nothing in the url. Set the layer default is able.
+          if (currActiveData.basemapId) {
+            setBasemapId(currActiveData.basemapId);
+          } else {
+            setBasemapId(BASEMAP_ID_DEFAULT);
+          }
+        } else {
+          // Do nothing. The basemap will be set by the url.
+          return;
+        }
+      }
+
+      if (!currActiveData || prevActiveData?.id === currActiveData.id) {
+        // Same layer. Do nothing.
+        return;
+      }
+
+      // Layer change. Set the projection.
+      if (currActiveData.basemapId) {
+        setBasemapId(currActiveData.basemapId);
+      } else {
+        setBasemapId(BASEMAP_ID_DEFAULT);
+      }
+    },
+    [activeLayer, mapBasemapId]
   );
 
   // Available dates for the baseLayer of the currently active layer.
@@ -559,10 +635,21 @@ function DatasetsExplore() {
             </PanelInner>
           </Panel>
           <Carto>
-            <NotebookConnectButton dataset={dataset.data} />
+            <CustomControlWrapper>
+              <NotebookConnectButton dataset={dataset.data} />
+              <TileLinkButton
+                layerData={currentLayerStyle}
+                disabled={!currentLayerStyle?.metadata.xyzTileUrl}
+              />
+              <LayerVisibilityToggleButton
+                isDatasetLayerHidden={isDatasetLayerHidden}
+                onLayerVisibilityClick={setIsDatasetLayerHidden}
+              />
+            </CustomControlWrapper>
             <MapboxMap
               ref={mapboxRef}
               withGeocoder
+              withScale
               datasetId={dataset.data.id}
               layerId={activeLayer?.baseLayer.data?.id}
               date={selectedDatetime ?? undefined}
@@ -578,6 +665,10 @@ function DatasetsExplore() {
               }}
               projection={mapProjection ?? projectionDefault}
               onProjectionChange={setMapProjection}
+              basemapStyleId={mapBasemapId ?? BASEMAP_ID_DEFAULT}
+              onBasemapStyleIdChange={setBasemapId}
+              isDatasetLayerHidden={isDatasetLayerHidden}
+              onStyleChange={setLayerStyle}
             />
           </Carto>
         </Explorer>

@@ -21,8 +21,12 @@ import { ThemeProvider, useTheme } from 'styled-components';
  *  // Add the control to mapbox
  * }
  */
-export function useMapboxControl(renderFn, deps: any[] = []) {
+export function useMapboxControl(
+  renderFn: (el: HTMLDivElement) => React.ReactNode,
+  deps: any[] = []
+) {
   const rootRef = useRef<Root>();
+  const elementRef = useRef<HTMLDivElement>();
   const renderFnRef = useRef<() => void>(() => ({}));
   const theme = useTheme();
 
@@ -30,7 +34,7 @@ export function useMapboxControl(renderFn, deps: any[] = []) {
   renderFnRef.current = () => {
     if (!rootRef.current) return;
     rootRef.current.render(
-      <ThemeProvider theme={theme}>{renderFn()}</ThemeProvider>
+      <ThemeProvider theme={theme}>{renderFn(elementRef.current!)}</ThemeProvider>
     );
   };
 
@@ -43,6 +47,7 @@ export function useMapboxControl(renderFn, deps: any[] = []) {
       onAdd() {
         const el = document.createElement('div');
         el.className = 'mapboxgl-ctrl';
+        elementRef.current = el;
 
         rootRef.current = createRoot(el);
         renderFnRef.current();

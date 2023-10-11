@@ -10,7 +10,8 @@ import mapboxgl, {
   AttributionControl,
   EventData,
   MapboxOptions,
-  NavigationControl
+  NavigationControl,
+  ScaleControl
 } from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -23,6 +24,7 @@ import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
 import MapOptions from './map-options';
 import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './map-options/utils';
+import MapCoords from './map-coords';
 
 import { useMapStyle } from './layers/styles';
 import { BasemapId, Option } from './map-options/basemaps';
@@ -48,6 +50,7 @@ interface SimpleMapProps {
   onUnmount?: () => void;
   mapOptions: Partial<Omit<MapboxOptions, 'container'>>;
   withGeocoder?: boolean;
+  withScale?: boolean;
   aoi?: AoiState;
   onAoiChange?: AoiChangeListenerOverload;
   projection?: ProjectionOptions;
@@ -74,6 +77,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     onUnmount,
     mapOptions,
     withGeocoder,
+    withScale,
     aoi,
     onAoiChange,
     projection,
@@ -113,6 +117,12 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     onOptionChange
   ]);
 
+  const mapCoordsControl = useMapboxControl(() => {
+    if (!mapRef.current) return null;
+
+    return <MapCoords mapInstance={mapRef.current} />;
+  }, []);
+
   const { style } = useMapStyle();
 
   useEffect(() => {
@@ -149,11 +159,18 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     }
 
     // Add zoom controls without compass.
-    if (mapOptions?.interactive !== false) {
+    if (mapOptions.interactive !== false) {
+      mapRef.current.addControl(mapCoordsControl, 'bottom-left');
+
       mbMap.addControl(
         new NavigationControl({ showCompass: false }),
         'top-left'
       );
+    }
+
+    if (withScale) {
+      const scalecontrol = new ScaleControl();
+      mbMap.addControl(scalecontrol, 'bottom-left');
     }
 
     onLoad && mbMap.once('load', onLoad);
@@ -175,6 +192,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
     if (!mapRef.current || !style) return;
     mapRef.current.setStyle(style);
     /* mapRef is a ref */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [style]);
 
   // Handle Attribution

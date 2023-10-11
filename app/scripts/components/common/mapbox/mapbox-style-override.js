@@ -27,11 +27,15 @@ const MapboxStyleOverride = css`
       gap: ${variableGlsp(0.5)};
       align-items: flex-start;
       float: none;
-      pointer-events: auto;
     }
 
     .mapboxgl-ctrl {
       margin: 0;
+      pointer-events: none;
+
+      > * {
+        pointer-events: auto;
+      }
     }
 
     .mapboxgl-ctrl-attrib {
@@ -78,8 +82,9 @@ const MapboxStyleOverride = css`
   /* stylelint-enable no-descending-specificity */
 
   .mapboxgl-ctrl-bottom-left {
-    flex-direction: row;
+    flex-flow: row wrap;
     align-items: flex-end;
+    align-items: center;
   }
 
   .mapboxgl-ctrl-group {
@@ -165,6 +170,12 @@ const MapboxStyleOverride = css`
 
   .mapboxgl-marker:hover {
     cursor: pointer;
+  }
+
+  .mapboxgl-ctrl-scale {
+    color: ${themeVal('color.surface')};
+    border-color: ${themeVal('color.surface')};
+    background-color: ${themeVal('color.base-400a')};
   }
 
   /* GEOCODER styles */

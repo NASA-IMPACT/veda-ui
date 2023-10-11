@@ -10,7 +10,6 @@ import {
 } from '@devseed-ui/theme-provider';
 import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
-import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { followCursor } from 'tippy.js';
 import { scaleLinear } from 'd3';
 
@@ -27,6 +26,8 @@ import {
   WidgetItemHeadline,
   WidgetItemHGroup
 } from '$styles/panel';
+
+import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
 
 interface LayerLegendCommonProps {
   id: string;
@@ -168,9 +169,9 @@ const LegendList = styled.dl`
       ${visuallyHidden()}
     }
 
-    i {
-      margin: 0 auto;
-      opacity: 0;
+    .unit {
+      width: 100%;
+      text-align: center;
     }
   }
 `;
@@ -341,8 +342,8 @@ function LayerGradientGraphic(props: LayerLegendGradient) {
         </Tip>
       </dt>
       <dd>
-        <span>{printLegendVal(min)} {unit?.label}</span>
-        <i> – </i>
+        <span>{printLegendVal(min)}</span>
+        {unit?.label && <span className='unit'>{unit.label}</span>}
         <span>{printLegendVal(max)}</span>
       </dd>
     </LegendList>

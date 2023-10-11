@@ -89,7 +89,7 @@ export function useAnalysisParams(): {
         // When accessing the object values with Object.values, they'll always
         // be defined.
         (d) => d!.data.layers
-      );
+      ).filter((l) => !l.analysis?.exclude);
       const layers = datasetsLayers.split('|').map((id) =>
         // Find the one we're looking for.
         allDatasetLayers.find((l) => l.id === id)

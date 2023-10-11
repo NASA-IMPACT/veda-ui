@@ -7,10 +7,11 @@ import {
 } from '@devseed-ui/theme-provider';
 import { Overline } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
-import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
 import { variableGlsp } from './variable-utils';
 import { VarProse } from './variable-components';
+
+import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
 
 const panelWidth = {
   xsmall: '20rem',

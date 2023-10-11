@@ -44,12 +44,13 @@ function StoriesSingle() {
             coverAlt={media?.alt}
             attributionAuthor={media?.author?.name}
             attributionUrl={media?.author?.url}
+            renderDetailsBlock={() => (
+              <ContentTaxonomy taxonomy={story.data.taxonomy} linkBase={STORIES_PATH} />
+            )}
           />
-          
-          <ContentTaxonomy taxonomy={story.data.taxonomy} />
 
           <MdxContent loader={story.content} />
-          
+
           {!!related?.length && <RelatedContent related={related} />}
         </article>
       </PageMainContent>

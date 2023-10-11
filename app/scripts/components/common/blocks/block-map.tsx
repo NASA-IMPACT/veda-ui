@@ -7,6 +7,8 @@ import {
   projectionDefault,
   validateProjectionBlockProps
 } from '../mapbox/map-options/utils';
+import { BasemapId } from '../mapbox/map-options/basemaps';
+
 import { utcString2userTzDate } from '$utils/date';
 import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
 import { validateRangeNum } from '$utils/utils';
@@ -98,6 +100,7 @@ interface MapBlockProps extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
   projectionCenter?: ProjectionOptions['center'];
   projectionParallels?: ProjectionOptions['parallels'];
   allowProjectionChange?: boolean;
+  basemapId?: BasemapId
 }
 
 function MapBlock(props: MapBlockProps) {
@@ -114,7 +117,8 @@ function MapBlock(props: MapBlockProps) {
     projectionId,
     projectionCenter,
     projectionParallels,
-    allowProjectionChange
+    allowProjectionChange,
+    basemapId
   } = props;
 
   const errors = validateBlockProps(props);
@@ -130,29 +134,37 @@ function MapBlock(props: MapBlockProps) {
     ? utcString2userTzDate(compareDateTime)
     : undefined;
 
-  const projectionStart = useMemo(() => {
-    if (projectionId) {
-      // Ensure that the default center and parallels are used if none are
-      // provided.
-      const projection = convertProjectionToMapbox({
-        id: projectionId,
-        center: projectionCenter,
-        parallels: projectionParallels
-      });
-      return {
-        ...projection,
-        id: projectionId
-      };
-    } else {
-      return projectionDefault;
-    }
-  }, [projectionId, projectionCenter, projectionParallels]);
+    const projectionStart = useMemo(() => {
+      if (projectionId) {
+        // Ensure that the default center and parallels are used if none are
+        // provided.
+        const projection = convertProjectionToMapbox({
+          id: projectionId,
+          center: projectionCenter,
+          parallels: projectionParallels
+        });
+        return {
+          ...projection,
+          id: projectionId
+        };
+      } else {
+        return projectionDefault;
+      }
+    }, [projectionId, projectionCenter, projectionParallels]);
+  
+    const [projection, setProjection] = useState(projectionStart);
+  
+    useEffect(() => {
+      setProjection(projectionStart);
+    }, [projectionStart]);
 
-  const [projection, setProjection] = useState(projectionStart);
+    const [mapBasemapId, setMapBasemapId] = useState(basemapId);
+  
+    useEffect(() => {
+      if (!basemapId) return;
 
-  useEffect(() => {
-    setProjection(projectionStart);
-  }, [projectionStart]);
+      setMapBasemapId(basemapId);
+    }, [basemapId]);
 
   return (
     <Carto>
@@ -168,6 +180,9 @@ function MapBlock(props: MapBlockProps) {
         cooperativeGestures
         projection={projection}
         onProjectionChange={allowProjectionChange ? setProjection : undefined}
+        basemapStyleId={mapBasemapId}
+        onBasemapStyleIdChange={setMapBasemapId}
+        withScale
       />
     </Carto>
   );

@@ -19,12 +19,13 @@ import {
   CollecticonCircleInformation,
   CollecticonEllipsisVertical
 } from '@devseed-ui/collecticons';
+import { Overline } from '@devseed-ui/typography';
 
 import { datasets, DatasetLayer, VedaDatum, DatasetData } from 'veda';
 import { useAnalysisParams } from '../results/use-analysis-params';
 import AoiSelector from './aoi-selector';
 import PageHeroActions from './page-hero-actions';
-import { useStacSearch } from './use-stac-search';
+import { useStacCollectionSearch } from './use-stac-collection-search';
 import { variableGlsp } from '$styles/variable-utils';
 
 import { PageMainContent } from '$styles/page';
@@ -79,6 +80,7 @@ const FormCheckableCustom = styled(FormCheckable)`
   background: ${themeVal('color.surface')};
   box-shadow: 0 0 0 1px ${themeVal('color.base-100a')};
   border-radius: ${themeVal('shape.rounded')};
+  align-items: center;
 `;
 
 export const Note = styled.div`
@@ -98,13 +100,23 @@ export const Note = styled.div`
   }
 `;
 
-export const allAvailableDatasetsLayers: DatasetLayer[] = Object.values(datasets)
-    .map((dataset) => (dataset as VedaDatum<DatasetData>).data.layers)
-    .flat()
-    .filter(d => d.type !== 'vector');
+const findParentDataset = (layerId: string) => {
+  const parentDataset = Object.values(datasets).find((dataset) =>
+    (dataset as VedaDatum<DatasetData>).data.layers.find(
+      (l) => l.id === layerId
+    )
+  );
+  return parentDataset?.data;
+};
+
+export const allAvailableDatasetsLayers: DatasetLayer[] = Object.values(
+  datasets
+)
+  .map((dataset) => (dataset as VedaDatum<DatasetData>).data.layers)
+  .flat()
+  .filter((d) => d.type !== 'vector' && !d.analysis?.exclude);
 
 export default function Analysis() {
-
   const { params, setAnalysisParam } = useAnalysisParams();
   const { start, end, datasetsLayers, aoi, errors } = params;
 
@@ -172,7 +184,11 @@ export default function Analysis() {
   );
 
   const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
-    useStacSearch({ start, end, aoi: aoiDrawState.featureCollection });
+    useStacCollectionSearch({
+      start,
+      end,
+      aoi: aoiDrawState.featureCollection
+    });
 
   // Update datasetsLayers when stac search is refreshed in case some
   // datasetsLayers are not available anymore
@@ -350,8 +366,14 @@ export default function Analysis() {
                     textPlacement='right'
                     type='checkbox'
                     onChange={onDatasetLayerChange}
-                    checked={selectedDatasetLayerIds?.includes(datasetLayer.id) ?? false}
+                    checked={
+                      selectedDatasetLayerIds?.includes(datasetLayer.id) ??
+                      false
+                    }
                   >
+                    <Overline>
+                      From: {findParentDataset(datasetLayer.id)?.name}
+                    </Overline>
                     {datasetLayer.name}
                   </FormCheckableCustom>
                 ))}

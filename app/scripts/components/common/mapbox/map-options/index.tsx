@@ -10,7 +10,6 @@ import {
 } from '@devseed-ui/dropdown';
 import { Button, createButtonStyles } from '@devseed-ui/button';
 import { FormSwitch } from '@devseed-ui/form';
-import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 import { Subtitle } from '@devseed-ui/typography';
 
 import {
@@ -21,6 +20,8 @@ import {
 import { MapOptionsProps } from './types';
 import { projectionsList } from './utils';
 import { BASEMAP_STYLES } from './basemaps';
+
+import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
 
 const DropHeader = styled.div`
   padding: ${glsp()};

@@ -15,6 +15,16 @@ function processTaxonomies(contentType) {
         .map((tx) => {
           if (!tx.name || !tx.values?.length) return null;
 
+          // Guard against multiple values for Grade and Uncertainty.
+          if (
+            ['Grade', 'Uncertainty'].includes(tx.name) &&
+            tx.values.length > 1
+          ) {
+            throw new Error(
+              `Taxonomy ${tx.name} can only have one value. Check dataset ${o.id}`
+            );
+          }
+
           return {
             name: tx.name,
             values: tx.values.map((v) => ({ id: kebabCase(v), name: v }))

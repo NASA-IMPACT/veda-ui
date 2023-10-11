@@ -5,15 +5,21 @@ import { CollecticonCompass } from '@devseed-ui/collecticons';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
-import { PageActions, PageLead, PageMainContent } from '$styles/page';
+import { PageActions, PageMainContent } from '$styles/page';
 import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import PageHero from '$components/common/page-hero';
 import RelatedContent from '$components/common/related-content';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
 
-import { allDatasetsProps, useDataset } from '$utils/veda-data';
+import {
+  allDatasetsProps,
+  TAXONOMY_GRADE,
+  TAXONOMY_UNCERTAINTY,
+  useDataset
+} from '$utils/veda-data';
 import { DATASETS_PATH, getDatasetExplorePath } from '$utils/routes';
 import { ContentTaxonomy } from '$components/common/content-taxonomy';
+import { DatasetClassification } from '$components/common/dataset-classification';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
@@ -21,6 +27,10 @@ function DatasetsOverview() {
   const dataset = useDataset();
 
   if (!dataset) throw resourceNotFound();
+
+  const taxonomies = dataset.data.taxonomy.filter(
+    (t) => ![TAXONOMY_UNCERTAINTY, TAXONOMY_GRADE].includes(t.name)
+  );
 
   return (
     <>
@@ -34,19 +44,22 @@ function DatasetsOverview() {
           parentTo: DATASETS_PATH,
           items: allDatasetsProps,
           currentId: dataset.data.id,
-          localMenuCmp: <DatasetsLocalMenu dataset={dataset} />
+          localMenuCmp:
+            dataset?.data.disableExplore !== true ? (
+              <DatasetsLocalMenu dataset={dataset} />
+            ) : null
         }}
       />
 
       <PageMainContent>
         <PageHero
           title={`${dataset.data.name} Overview`}
+          description={dataset.data.description}
           renderBetaBlock={() => (
-            <>
-              <PageLead>{dataset.data.description}</PageLead>
-              <PageActions>
+            <PageActions>
+              {dataset?.data.disableExplore !== true && (
                 <Button
-                  forwardedAs={Link}
+                  forwardedAs={Link as any}
                   to={getDatasetExplorePath(dataset.data)}
                   size='large'
                   variation='achromic-outline'
@@ -54,13 +67,19 @@ function DatasetsOverview() {
                   <CollecticonCompass />
                   Explore data
                 </Button>
-                <NotebookConnectButton
-                  dataset={dataset.data}
-                  size='large'
-                  compact={false}
-                  variation='achromic-outline'
-                />
-              </PageActions>
+              )}
+              <NotebookConnectButton
+                dataset={dataset.data}
+                size='large'
+                compact={false}
+                variation='achromic-outline'
+              />
+            </PageActions>
+          )}
+          renderDetailsBlock={() => (
+            <>
+              <ContentTaxonomy taxonomy={taxonomies} linkBase={DATASETS_PATH} />
+              <DatasetClassification dataset={dataset.data} />
             </>
           )}
           coverSrc={dataset.data.media?.src}
@@ -68,8 +87,6 @@ function DatasetsOverview() {
           attributionAuthor={dataset.data.media?.author?.name}
           attributionUrl={dataset.data.media?.author?.url}
         />
-
-        <ContentTaxonomy taxonomy={dataset.data.taxonomy} />
 
         <MdxContent loader={dataset.content} />
 

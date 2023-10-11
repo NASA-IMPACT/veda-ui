@@ -115,6 +115,7 @@ function PageFooter(props) {
       <ComponentOverride
         with='pageFooter'
         appVersion={process.env.APP_VERSION}
+        appUiVersion={process.env.APP_UI_VERSION}
         appBuildTime={process.env.APP_BUILD_TIME}
       >
         <InfoList>
@@ -158,7 +159,7 @@ function PageFooter(props) {
               content={`Released on ${format(
                 new Date(+process.env.APP_BUILD_TIME),
                 'PPPP'
-              )}`}
+              )} (veda-ui v${process.env.APP_VERSION}))`}
             >
               <span>v{process.env.APP_VERSION}</span>
             </Tip>

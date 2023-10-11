@@ -13,6 +13,9 @@ usage:
   - url: 'https://github.com/NASA-IMPACT/veda-docs'
     label: All the docs for the site
     title: 'Documentaion repo'
+  - url: https://d36s2ep3ahcq5b.cloudfront.net/browseui/index.html#ch4_inverse_flux
+    label: Data Browser
+    title: Download data
 media:
   src: ::file ./no2--dataset-cover.jpg
   alt: Power plant shooting steam at the sky.
@@ -20,6 +23,12 @@ media:
     name: Mick Truyts
     url: https://unsplash.com/photos/x6WQeNYJC1w
 taxonomy:
+  - name: Grade
+    values: 
+      - Research
+  - name: Uncertainty
+    values: 
+      - Low
   - name: Topics
     values:
       - Covid 19
@@ -34,11 +43,16 @@ taxonomy:
   - name: Gas Emission
     values:
       - DOS
+  - name: Source
+    values:
+      - Mock
 layers:
   - id: no2-monthly
     stacCol: no2-monthly
     name: No2 PT
     type: raster
+    projection:
+      id: polarNorth
     bounds: [-10, 36, -5, 42]
     description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
     zoomExtent:
@@ -72,12 +86,19 @@ layers:
         - "#c13b72"
         - "#461070"
         - "#050308"
+    analysis:
+      metrics:
+        - min
+        - max
+        # dummy value to make sure non existent values are sagfely discarded
+        - non-existent
   - id: no2-monthly-2
     stacCol: no2-monthly
     name: No2 US
     bounds: [-124, 29, -65, 49]
     type: raster
     description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
+    basemapId: 'dark'
     zoomExtent:
       - 0
       - 20
@@ -102,9 +123,11 @@ layers:
         - "#c13b72"
         - "#461070"
         - "#050308"
+    analysis:
+      exclude: true
   - id: no2-monthly-diff
     stacCol: no2-monthly-diff
-    name: No2 (Diff)
+    name: No2 (Diff) - let's make this title reaaaaaaly long
     type: raster
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sodales semper risus, suscipit varius diam facilisis non.'
     zoomExtent:

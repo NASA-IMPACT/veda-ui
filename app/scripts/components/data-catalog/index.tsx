@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
-import { DatasetData, datasets, datasetTaxonomies } from 'veda';
+import { DatasetData, datasets, datasetTaxonomies, getString } from 'veda';
 import { Link } from 'react-router-dom';
 import { glsp } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
@@ -46,6 +46,7 @@ import {
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
+import { DatasetClassification } from '$components/common/dataset-classification';
 
 const allDatasets = Object.values(datasets).map((d) => d!.data);
 
@@ -154,11 +155,17 @@ function DataCatalog() {
     <PageMainContent>
       <LayoutProps
         title='Data Catalog'
-        description='This dashboard explores key indicators to track and compare changes over time.'
+        description={
+          getString('dataCatalogBanner')?.other ||
+          'This dashboard explores key indicators to track and compare changes over time.'
+        }
       />
       <PageHero
         title='Data Catalog'
-        description='This dashboard explores key indicators to track and compare changes over time.'
+        description={
+          getString('dataCatalogBanner')?.other ||
+          'This dashboard explores key indicators to track and compare changes over time.'
+        }
       />
 
       <FeaturedDatasets />
@@ -208,13 +215,14 @@ function DataCatalog() {
                     cardType='cover'
                     overline={
                       <CardMeta>
+                        <DatasetClassification dataset={d} />
                         <CardSourcesList
                           sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                           rootPath={DATASETS_PATH}
                           onSourceClick={(id) => {
                             onAction(Actions.TAXONOMY, {
                               key: TAXONOMY_SOURCE,
-                              id
+                              value: id
                             });
                             browseControlsHeaderRef.current?.scrollIntoView();
                           }}
