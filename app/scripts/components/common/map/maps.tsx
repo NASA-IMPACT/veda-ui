@@ -42,6 +42,16 @@ const MapsContainer = styled.div`
   .mapboxgl-map {
     position: absolute !important;
     inset: 0;
+
+    &.mouse-add .mapboxgl-canvas-container {
+      cursor: crosshair;
+    }
+    &.mouse-pointer .mapboxgl-canvas-container {
+      cursor: pointer;
+    }
+    &.mouse-move .mapboxgl-canvas-container {
+      cursor: move;
+    }
   }
 
   .mapboxgl-compare .compare-swiper-vertical {
