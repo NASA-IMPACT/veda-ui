@@ -188,6 +188,10 @@ const MapboxStyleOverride = css`
     background-color: ${themeVal('color.base-400a')};
   }
 
+  .mapbox-gl-draw_ctrl-draw-btn:not(:disabled):hover {
+    background-color: ${themeVal('color.base-400a')};
+  }
+
   .mapbox-gl-draw_polygon.mapbox-gl-draw_polygon::before {
     background-image: url(${({ theme }) =>
       iconDataURI(CollecticonPencil, {
@@ -203,9 +207,6 @@ const MapboxStyleOverride = css`
       })});
     }
   }
-
-
-  // mapbox-gl-draw_polygon"
 
   /* GEOCODER styles */
   .mapboxgl-ctrl.mapboxgl-ctrl-geocoder {

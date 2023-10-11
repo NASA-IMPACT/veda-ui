@@ -1,4 +1,6 @@
+import React from 'react';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import { createGlobalStyle } from 'styled-components';
 import { useAtomValue } from 'jotai';
 import { useRef } from 'react';
 import { useControl } from 'react-map-gl';
@@ -10,6 +12,13 @@ type DrawControlProps = {
   onDelete?: (evt: { features: object[] }) => void;
   onSelectionChange?: (evt: { selectedFeatures: object[] }) => void;
 } & MapboxDraw.DrawOptions;
+
+const Css = createGlobalStyle`
+.mapbox-gl-draw_trash {
+  opacity: .5;
+  pointer-events: none !important;
+}
+`;
 
 export default function DrawControl(props: DrawControlProps) {
   const control = useRef<MapboxDraw>();
@@ -43,5 +52,5 @@ export default function DrawControl(props: DrawControlProps) {
     }
   );
 
-  return null;
+  return aoisFeatures.length ? null : <Css />;
 }
