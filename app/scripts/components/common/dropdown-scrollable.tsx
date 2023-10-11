@@ -19,19 +19,6 @@ const DropdownWithScroll = styled(Dropdown)`
   overscroll-behavior: none;
   overflow-y: scroll;
 
-  /* Scroll style firefox */
-  scrollbar-color: ${themeVal('color.base-100')} transparent;
-  
-  /* Scroll style for webkit - chrome, safari */
-  &::-webkit-scrollbar {
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${themeVal('color.base-100')};
-    border-radius: ${themeVal('shape.rounded')}
-  }
-
   ${DropTitle} {
     margin: 0;
     padding: ${glsp(1, 1, 0, 1)};
