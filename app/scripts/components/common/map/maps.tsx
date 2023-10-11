@@ -23,7 +23,6 @@ import { Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
 import useMaps, { useMapsContext } from './hooks/use-maps';
-import { Cursor } from './types';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -167,8 +166,6 @@ export default function MapsContextWrapper(props: MapsContextWrapperProps) {
     zoom: 1
   });
 
-  const [cursor, setCursor] = useState<Cursor>('grab');
-
   return (
     <MapsContext.Provider
       value={{
@@ -176,9 +173,7 @@ export default function MapsContextWrapper(props: MapsContextWrapperProps) {
         setInitialViewState,
         mainId,
         comparedId,
-        containerId,
-        cursor,
-        setCursor
+        containerId
       }}
     >
       <Maps {...props}>{props.children}</Maps>
@@ -192,8 +187,6 @@ interface MapsContextType {
   mainId: string;
   comparedId: string;
   containerId: string;
-  cursor: Cursor;
-  setCursor: (cursor: Cursor) => void;
 }
 
 export const MapsContext = createContext<MapsContextType>({
@@ -201,7 +194,5 @@ export const MapsContext = createContext<MapsContextType>({
   setInitialViewState: () => undefined,
   mainId: '',
   comparedId: '',
-  containerId: '',
-  cursor: 'grab',
-  setCursor: () => undefined
+  containerId: ''
 });

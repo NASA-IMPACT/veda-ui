@@ -42,5 +42,3 @@ export type AoIFeature = Feature<Polygon> & {
   selected: boolean;
   id: string;
 };
-
-export type Cursor = 'auto' | 'default' | 'pointer' | 'grab' | ' move';
