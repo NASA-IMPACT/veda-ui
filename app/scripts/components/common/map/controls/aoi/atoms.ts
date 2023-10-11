@@ -1,15 +1,26 @@
 import { atom } from "jotai";
-import { atomWithHash } from "jotai-location";
+import { atomWithLocation } from "jotai-location";
 import { Polygon } from "geojson";
 import { AoIFeature } from "../../types";
 import { decodeAois, encodeAois } from "$utils/polygon-url";
 
 // This is the atom acting as a single source of truth for the AOIs.
-export const aoisHashAtom = atomWithHash('aois', '');
+export const aoisAtom = atomWithLocation();
+
+const aoisSerialized = atom(
+  (get) => get(aoisAtom).searchParams?.get("aois"),
+  (get, set, aois) => {
+    set(aoisAtom, (prev) => ({
+      ...prev,
+      searchParams: new URLSearchParams([["aois", aois as string]])
+    }));
+  }
+);
+
 
 // Getter atom to get AoiS as GeoJSON features from the hash.
 export const aoisFeaturesAtom = atom<AoIFeature[]>((get) => {
-  const hash = get(aoisHashAtom);
+  const hash = get(aoisSerialized);
   if (!hash) return [];
   return decodeAois(hash);
 });
@@ -34,7 +45,7 @@ export const aoisUpdateGeometryAtom = atom(
         newFeatures = [...newFeatures, newFeature];
       }
     });
-    set(aoisHashAtom, encodeAois(newFeatures));
+    set(aoisSerialized, encodeAois(newFeatures));
   }
 );
 
@@ -44,7 +55,7 @@ export const aoisSetSelectedAtom = atom(null, (get, set, ids: string[]) => {
   const newFeatures = features.map((feature) => {
     return { ...feature, selected: ids.includes(feature.id as string) };
   });
-  set(aoisHashAtom, encodeAois(newFeatures));
+  set(aoisSerialized, encodeAois(newFeatures));
 });
 
 // Setter atom to delete AOIs, writing directly to the hash atom.
@@ -53,5 +64,5 @@ export const aoisDeleteAtom = atom(null, (get, set, ids: string[]) => {
   const newFeatures = features.filter(
     (feature) => !ids.includes(feature.id as string)
   );
-  set(aoisHashAtom, encodeAois(newFeatures));
+  set(aoisSerialized, encodeAois(newFeatures));
 });
