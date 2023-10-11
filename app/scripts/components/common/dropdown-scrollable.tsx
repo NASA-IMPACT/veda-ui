@@ -17,6 +17,7 @@ const DropdownWithScroll = styled(Dropdown)`
   overflow: hidden;
   max-height: 320px;
   overflow-y: auto;
+  overscroll-behavior: none;
 
   ${DropTitle} {
     margin: 0;
