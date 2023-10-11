@@ -1,35 +1,14 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
 import { useCallback, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { FeatureCollection, Polygon } from 'geojson';
+import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
+
 import { requestDatasetTimeseriesData } from '../analysis-data';
 import { analysisControllerAtom, selectedIntervalAtom } from '../atoms/atoms';
 import { useTimelineDatasetAnalysis } from '../atoms/hooks';
 import { analysisConcurrencyManager } from '../concurrency';
 import { TimelineDataset, TimelineDatasetStatus } from '../types.d.ts';
-
-// 🛑 Temporary!!! Use map data
-const aoi: any = {
-  type: 'FeatureCollection',
-  features: [
-    {
-      type: 'Feature',
-      id: 'world',
-      properties: {},
-      geometry: {
-        coordinates: [
-          [
-            [-180, -89],
-            [180, -89],
-            [180, 89],
-            [-180, 89],
-            [-180, -89]
-          ]
-        ],
-        type: 'Polygon'
-      }
-    }
-  ]
-};
+import useAois from '$components/common/map/controls/hooks/use-aois';
 
 export function useAnalysisController() {
   const [controller, setController] = useAtom(analysisControllerAtom);
@@ -73,6 +52,9 @@ export function useAnalysisDataRequest({
   const queryClient = useQueryClient();
 
   const selectedInterval = useAtomValue(selectedIntervalAtom);
+  const { features } = useAois();
+  const selectedFeatures = features.filter((f) => f.selected);
+
   const { analysisRun } = useAnalysisController();
 
   const dataset = useAtomValue(datasetAtom);
@@ -81,9 +63,18 @@ export function useAnalysisDataRequest({
   const [, setAnalysis] = useTimelineDatasetAnalysis(datasetAtom);
 
   useEffect(() => {
-    if (datasetStatus !== TimelineDatasetStatus.SUCCESS || !selectedInterval) {
+    if (
+      datasetStatus !== TimelineDatasetStatus.SUCCESS ||
+      !selectedInterval ||
+      !selectedFeatures.length
+    ) {
       return;
     }
+
+    const aoi: FeatureCollection<Polygon> = {
+      type: 'FeatureCollection',
+      features: selectedFeatures
+    };
 
     const { start, end } = selectedInterval;
 
