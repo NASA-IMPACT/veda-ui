@@ -8,7 +8,8 @@ import DataStoryEditor from './data-story';
 import {
   DEFAULT_STORY_STRING,
   DataStoriesAtom,
-  useCreateEditorDataStoryFromMDXDocument
+  useCreateEditorDataStoryFromMDXDocument,
+  useDeleteDataStory
 } from './atoms';
 import { LayoutProps } from '$components/common/layout-root';
 import { resourceNotFound } from '$components/uhoh';
@@ -101,6 +102,8 @@ function PublicationTool() {
     navigate(`/publication-tool/${id}`);
   }, [createEditorDataStoryFromMDXDocument, newStory, navigate]);
 
+  const deleteStory = useDeleteDataStory();
+
   return (
     <Routes>
       <Route path=':storyId' element={<DataStoryEditorLayout />} />
@@ -134,7 +137,7 @@ function PublicationTool() {
                             >
                               Edit
                             </Button>
-                            <Button>Delete</Button>
+                            <Button onClick={() => deleteStory(dataStory.frontmatter.id)}>Delete</Button>
                           </ButtonGroup>
                         </td>
                       </tr>

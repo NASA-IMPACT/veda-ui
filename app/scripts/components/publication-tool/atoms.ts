@@ -122,6 +122,22 @@ export const useCurrentDataStory = () => {
   return currentDataStory;
 };
 
+export const useDeleteDataStory = () => {
+  const [dataStories, setDataStories] = useAtom(DataStoriesAtom);
+  return useCallback((storyId: string) => {
+    if (window.confirm('Are you sure you want to delete this story?')) {
+      const storyIndex = dataStories.findIndex((p) => p.frontmatter.id === storyId);
+      setDataStories((oldDataStories) => {
+        const newDataStories = [
+          ...oldDataStories.slice(0, storyIndex),
+          ...oldDataStories.slice(storyIndex + 1)
+        ];
+        return newDataStories;
+      });
+    }
+  }, [dataStories, setDataStories]);
+};
+
 export const useCurrentBlockId = () => {
   const currentDataStory = useCurrentDataStory();
   const currentBlockId = currentDataStory?.currentBlockId;
