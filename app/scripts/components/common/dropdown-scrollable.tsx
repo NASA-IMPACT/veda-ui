@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { glsp } from '@devseed-ui/theme-provider';
 import {
   Dropdown,
   DropdownProps,
