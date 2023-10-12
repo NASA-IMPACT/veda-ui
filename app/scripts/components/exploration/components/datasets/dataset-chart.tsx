@@ -6,8 +6,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { isExpandedAtom } from '../../atoms/atoms';
 import { RIGHT_AXIS_SPACE } from '../../constants';
-import { DataMetric } from '../analysis-metrics-dropdown';
 import { DatasetTrackMessage } from './dataset-track-message';
+import { DataMetric } from './analysis-metrics';
 
 import { getNumForChart } from '$components/common/chart/utils';
 

@@ -1,4 +1,5 @@
 import { DatasetLayer } from 'veda';
+import { DataMetric } from './components/datasets/analysis-metrics';
 
 export enum TimeDensity {
   YEAR = 'year',
@@ -91,6 +92,8 @@ export interface TimelineDatasetSettings {
   isVisible?: boolean;
   // Opacity of the layer on the map.
   opacity?: number;
+  // Active metrics for the analysis chart.
+  analysisMetrics?: DataMetric[];
 }
 
 // TimelineDataset type discriminants

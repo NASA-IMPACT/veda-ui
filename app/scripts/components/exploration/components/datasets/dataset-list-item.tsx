@@ -44,10 +44,7 @@ import {
   useTimelineDatasetAtom,
   useTimelineDatasetVisibility
 } from '$components/exploration/atoms/hooks';
-import {
-  activeAnalysisMetricsAtom,
-  analysisControllerAtom
-} from '$components/exploration/atoms/atoms';
+import { analysisControllerAtom } from '$components/exploration/atoms/atoms';
 import { useAnalysisDataRequest } from '$components/exploration/hooks/use-analysis-data-request';
 
 const DatasetItem = styled.article`
@@ -132,8 +129,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
-  const activeMetrics = useAtomValue(activeAnalysisMetricsAtom);
-
   const { isAnalyzing } = useAtomValue(analysisControllerAtom);
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
@@ -194,6 +189,11 @@ export function DatasetListItem(props: DatasetListItemProps) {
     isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
 
   const datasetLegend = dataset.data.legend;
+
+  const analysisMetrics = useMemo(
+    () => dataset.settings.analysisMetrics ?? [],
+    [dataset]
+  );
 
   return (
     <Reorder.Item
@@ -290,7 +290,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   width={width}
                   isVisible={!!isVisible}
                   data={dataset.analysis}
-                  activeMetrics={activeMetrics}
+                  activeMetrics={analysisMetrics}
                   highlightDate={dataPoint?.date}
                 />
               )}
@@ -311,7 +311,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
               ref={popoverRefs.setFloating}
               style={floatingStyles}
               timeDensity={dataset.data.timeDensity}
-              activeMetrics={activeMetrics}
+              activeMetrics={analysisMetrics}
               data={dataPoint}
             />
           )}
