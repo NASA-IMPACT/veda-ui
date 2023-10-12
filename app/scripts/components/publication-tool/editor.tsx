@@ -53,7 +53,7 @@ export default function Editor() {
   }, [editorView, currentDataStory?.currentBlockId]);
 
   const currentBlockId = useCurrentBlockId();
-  const setMDX = useSetBlockMDX(currentBlockId);
+  const setMDX = useSetBlockMDX(currentBlockId!);
   const onEditorUpdated = useCallback(
     (v) => {
       if (v.docChanged) {
