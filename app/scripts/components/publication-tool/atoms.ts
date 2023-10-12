@@ -1,61 +1,65 @@
 import { atomWithStorage } from 'jotai/utils';
 import { useParams } from 'react-router';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback, useMemo } from 'react';
 import {  EditorStory } from './types';
-import { toEditorDataStory } from './utils';
+import { toEditorDataStory, toMDXDocument } from './utils';
+
+const DEFAULT_STORY: EditorStory = {
+  frontmatter: {
+    id: 'example-data-story',
+    name: 'Example Data Story',
+    description: 'This is an example data story',
+    pubDate: '2023-01-01',
+    taxonomy: []
+  },
+  currentBlockId: '1',
+  blocks: [
+    {
+      id: '1',
+      tag: 'Block',
+      mdx: `
+      <Prose>
+      ### Your markdown header
+  
+      Your markdown contents comes here.
+
+      <Map
+      datasetId='no2'
+      layerId='no2-monthly'
+      center={[120.11, 34.95]}
+      zoom={4.5}
+      dateTime='2020-02-01'
+      compareDateTime='2022-02-01'
+    />
+    <Caption 
+      attrAuthor='NASA' 
+      attrUrl='https://nasa.gov/'
+    >
+      Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
+    </Caption> 
+    </Prose>`
+    },
+    {
+      id: '2',
+      tag: 'Block',
+      mdx: `
+      <Prose>
+      ### Second header
+  
+      Let's tell a story of _data_.
+      
+    </Prose>`
+    }
+  ]
+};
+
+export const DEFAULT_STORY_STRING = toMDXDocument(DEFAULT_STORY);
 
 export const DataStoriesAtom = atomWithStorage<EditorStory[]>(
   'dataStories',
   [
-    {
-      frontmatter: {
-        id: 'example-data-story',
-        name: 'Example Data Story',
-        description: 'This is an example data story',
-        pubDate: '2023-01-01',
-        taxonomy: []
-      },
-      currentBlockId: '1',
-      blocks: [
-        {
-          id: '1',
-          tag: 'Block',
-          mdx: `
-          <Prose>
-          ### Your markdown header
-      
-          Your markdown contents comes here.
-
-          <Map
-          datasetId='no2'
-          layerId='no2-monthly'
-          center={[120.11, 34.95]}
-          zoom={4.5}
-          dateTime='2020-02-01'
-          compareDateTime='2022-02-01'
-        />
-        <Caption 
-          attrAuthor='NASA' 
-          attrUrl='https://nasa.gov/'
-        >
-          Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
-        </Caption> 
-        </Prose>`
-        },
-        {
-          id: '2',
-          tag: 'Block',
-          mdx: `
-          <Prose>
-          ### Second header
-      
-          Let's tell a story of _data_.
-          
-        </Prose>`
-        }
-      ]
-    },
+    DEFAULT_STORY,
     {
       frontmatter: {
         id: 'example-data-story-2',
@@ -81,17 +85,30 @@ export const DataStoriesAtom = atomWithStorage<EditorStory[]>(
 );
 
 export const useCreateEditorDataStoryFromMDXDocument = () => {
-  const setDataStories = useSetAtom(DataStoriesAtom);
+  const [dataStories, setDataStories] = useAtom(DataStoriesAtom);
   return useCallback(
     (mdxDocument: string) => {
-      const editorDataStory = toEditorDataStory(mdxDocument);
+      let editorDataStory;
+      try {
+        editorDataStory = toEditorDataStory(mdxDocument);
+        const { frontmatter } = editorDataStory;
+        if (!frontmatter.id) {
+          throw new Error('id is required');
+        }
+        if (dataStories.map((p) => p.frontmatter.id).includes(frontmatter.id)) {
+          throw new Error(`id ${frontmatter.id} already exists`);
+        }
+      } catch (error) {
+        return { id: null, error };
+      }
+
       setDataStories((oldDataStories) => {
         const newDataStories = [...oldDataStories, editorDataStory];
         return newDataStories;
       });
-      return editorDataStory;
+      return { id: editorDataStory.frontmatter.id, error: null };
     },
-    [setDataStories]
+    [setDataStories, dataStories]
   );
 };
 

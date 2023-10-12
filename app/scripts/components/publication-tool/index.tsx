@@ -1,9 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router';
 import { useAtomValue } from 'jotai';
 import { Button, ButtonGroup } from '@devseed-ui/button';
+import styled from 'styled-components';
+import { themeVal } from '@devseed-ui/theme-provider';
 import DataStoryEditor from './data-story';
 import {
+  DEFAULT_STORY_STRING,
   DataStoriesAtom,
   useCreateEditorDataStoryFromMDXDocument
 } from './atoms';
@@ -75,18 +78,29 @@ function DataStoryEditorLayout() {
   );
 }
 
+const Error = styled.div`
+  color: ${themeVal('color.danger')};
+`;
+
 function PublicationTool() {
   const dataStories = useAtomValue(DataStoriesAtom);
-  const [newStory, setNewStory] = useState<string>('');
+  const [newStory, setNewStory] = useState<string>(DEFAULT_STORY_STRING);
+  const [error, setError] = useState<string>('');
   const createEditorDataStoryFromMDXDocument =
     useCreateEditorDataStoryFromMDXDocument();
   const navigate = useNavigate();
 
-  const onCreate = () => {
-    const { frontmatter } = createEditorDataStoryFromMDXDocument(newStory);
+  const onCreate = useCallback(() => {
+    const { id, error } = createEditorDataStoryFromMDXDocument(newStory);
+    if (error) {
+      console.log(error.message);
+      setError(error.message);
+      return;
+    }
     setNewStory('');
-    navigate(`/publication-tool/${frontmatter.id}`);
-  };
+    setError('');
+    navigate(`/publication-tool/${id}`);
+  }, [createEditorDataStoryFromMDXDocument, newStory, navigate]);
 
   return (
     <Routes>
@@ -136,6 +150,7 @@ function PublicationTool() {
                     rows={20}
                     onChange={(e) => setNewStory(e.currentTarget.value)}
                     placeholder='Paste full MDX document here (including frontmatter)'
+                    value={newStory}
                   />
                 </div>
                 <Button
@@ -145,6 +160,7 @@ function PublicationTool() {
                 >
                   Create
                 </Button>
+                {error && <Error>Error: {error}</Error>}
               </FoldProse>
             </Fold>
           </PageMainContent>
