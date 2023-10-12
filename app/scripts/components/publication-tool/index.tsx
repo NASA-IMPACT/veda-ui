@@ -93,7 +93,6 @@ function PublicationTool() {
   const onCreate = useCallback(() => {
     const { id, error } = createEditorDataStoryFromMDXDocument(newStory);
     if (error) {
-      console.log(error.message);
       setError(error.message);
       return;
     }

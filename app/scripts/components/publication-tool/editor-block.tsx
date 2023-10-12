@@ -60,7 +60,10 @@ const useMDX = (source: string) => {
   return state;
 };
 
-const MDXRendererControls = styled.div<{ highlighted: boolean, editing: boolean }>`
+const MDXRendererControls = styled.div<{
+  highlighted: boolean;
+  editing: boolean;
+}>`
   background: ${(props) =>
     props.editing
       ? `repeating-linear-gradient(
@@ -72,7 +75,8 @@ const MDXRendererControls = styled.div<{ highlighted: boolean, editing: boolean 
   )`
       : 'transparent'};
   position: relative;
-  border-color: ${(props) => (props.highlighted ? themeVal('color.base') : 'transparent')};
+  border-color: ${(props) =>
+    props.highlighted ? themeVal('color.base') : 'transparent'};
   border-width: 2px;
   border-style: solid;
 `;
@@ -104,7 +108,8 @@ export default function EditorBlock({
   }, [error]);
 
   const onEditClick = useSetCurrentBlockId(id);
-  const { remove: onRemoveClick, isAvailable : isRemoveAvailable  } = useRemoveBlock(id);
+  const { remove: onRemoveClick, isAvailable: isRemoveAvailable } =
+    useRemoveBlock(id);
   const onAddClick = useAddBlock(id);
   const { isAvailable: canGoUp, setBlockOrder: onUpClick } = useSetBlockOrder(
     id,
@@ -117,22 +122,26 @@ export default function EditorBlock({
 
   const editing = id === currentDataStory?.currentBlockId;
 
-  return error ? (
-    <MDXBlockWithError error={errorHumanReadable} />
-  ) : (
+  return (
     <MDXRendererControls
       highlighted={highlighted}
       editing={editing}
       onMouseOver={() => onHighlight(id)}
     >
-      <MDXRenderer result={result} />
+      {error ? (
+        <MDXBlockWithError error={errorHumanReadable} />
+      ) : (
+        <MDXRenderer result={result} />
+      )}
       {highlighted && (
         <MDXRendererActions>
           <ButtonGroup>
             <Button onClick={onEditClick} disabled={editing}>
               {editing ? 'Editing ▼' : 'Edit MDX'}
             </Button>
-            <Button onClick={onRemoveClick} disabled={!isRemoveAvailable}>Remove</Button>
+            <Button onClick={onRemoveClick} disabled={!isRemoveAvailable}>
+              Remove
+            </Button>
             <Button onClick={onUpClick} disabled={!canGoUp}>
               Move up
             </Button>
