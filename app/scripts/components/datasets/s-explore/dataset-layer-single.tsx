@@ -109,7 +109,6 @@ export function Layer(props: LayerProps) {
             onToggleClick();
           }
         }}
-        on
       >
         <AccordionFold
           id={`layer-${id}`}

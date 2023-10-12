@@ -55,11 +55,7 @@ const AnalysisFold = styled(Fold)`
 `;
 
 const AnalysisFoldHeader = styled(FoldHeader)`
-  flex-flow: row wrap;
-
-  ${media.mediumUp`
-    flex-flow: row nowrap;
-  `}
+  display: block;
 `;
 
 export default function AnalysisResults() {
@@ -208,6 +204,13 @@ export default function AnalysisResults() {
         <AnalysisFoldHeader>
           <FoldHeadline>
             <FoldTitle>Results</FoldTitle>
+            <p>
+              Please note: The statistics shown here can be biased towards
+              some regions (usually higher latitudes) due to an inaccuracy in
+              our methods. Please use the statistics only to get an indication
+              of tendencies and over smaller regions and contact us for
+              assistance in making accurate calculations.
+            </p>
           </FoldHeadline>
           <AnalysisHead />
         </AnalysisFoldHeader>

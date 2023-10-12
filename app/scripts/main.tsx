@@ -5,8 +5,6 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
 import { userPages } from 'veda';
 
-import { DatasetExploreRedirect, discoveryRoutes, thematicRoutes } from './redirects';
-
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
 import LayoutRoot, {
@@ -28,6 +26,7 @@ const StoriesHub = lazy(() => import('$components/stories/hub'));
 const StoriesSingle = lazy(() => import('$components/stories/single'));
 
 const DataCatalog = lazy(() => import('$components/data-catalog'));
+const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
 const Analysis = lazy(() => import('$components/analysis/define'));
@@ -94,7 +93,7 @@ function Root() {
                 />
                 <Route
                   path={`${DATASETS_PATH}/:datasetId/explore`}
-                  element={<DatasetExploreRedirect />}
+                  element={<DatasetsExplore />}
                 />
                 <Route path={STORIES_PATH} element={<StoriesHub />} />
                 <Route
@@ -111,12 +110,6 @@ function Root() {
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />
                 )}
-
-                {/* Legacy: Routes related to thematic areas redirect. */}
-                {thematicRoutes}
-                {/* Legacy: Routes related to renaming /discoveries to /stories. */}
-                {discoveryRoutes}
-
                 {userPages.map((p) => (
                   <Route
                     key={p}
