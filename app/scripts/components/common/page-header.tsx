@@ -416,16 +416,6 @@ function PageHeader() {
                       {getString('stories').other}
                     </GlobalMenuLink>
                   </li>
-                  {process.env.NODE_ENV !== 'production' && (
-                    <li>
-                      <GlobalMenuLink
-                        to='publication-tool'
-                        onClick={closeNavOnClick}
-                      >
-                        Publication Tool
-                      </GlobalMenuLink>
-                    </li>
-                  )}
                   {/*
                     Temporarily add hub link through env variables.
                     This does not scale for the different instances, but it's a

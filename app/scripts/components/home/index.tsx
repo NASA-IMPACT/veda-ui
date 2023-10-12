@@ -192,6 +192,18 @@ function RootHome() {
               </li>
             </ConnectionsList>
           </ConnectionsBlock>
+          {process.env.NODE_ENV !== 'production' && (
+            <ConnectionsBlock>
+              <ConnectionsBlockTitle>Authoring tools</ConnectionsBlockTitle>
+              <ConnectionsList>
+                <li>
+                  <Link to='/publication-tool'>
+                    <CollecticonChevronRightSmall /> Story editor
+                  </Link>
+                </li>
+              </ConnectionsList>
+            </ConnectionsBlock>
+          )}
         </Connections>
       </ContentOverride>
     </PageMainContent>
