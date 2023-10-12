@@ -1,4 +1,5 @@
-import { AnyLayer, AnySourceImpl } from "mapbox-gl";
+import { Feature, Polygon } from 'geojson';
+import { AnyLayer, AnySourceImpl } from 'mapbox-gl';
 
 export interface ExtendedMetadata {
   layerOrderPosition?: LayerOrderPosition;
@@ -29,10 +30,15 @@ export type LayerOrderPosition =
   | 'vector'
   | 'basemap-foreground';
 
-export type MapId = 'main' | 'compared'
+export type MapId = 'main' | 'compared';
 
 export interface StacFeature {
   bbox: [number, number, number, number];
 }
 
 export type OptionalBbox = number[] | undefined | null;
+
+export type AoIFeature = Feature<Polygon> & {
+  selected: boolean;
+  id: string;
+};

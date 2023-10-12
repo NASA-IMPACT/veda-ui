@@ -12,15 +12,15 @@ import { Button, createButtonStyles } from '@devseed-ui/button';
 import { FormSwitch } from '@devseed-ui/form';
 import { Subtitle } from '@devseed-ui/typography';
 
+import useThemedControl from '../hooks/use-themed-control';
 import {
   ProjectionItemConic,
   ProjectionItemCustom,
   ProjectionItemSimple
-} from './map-options/projection-items';
-import { MapOptionsProps } from './map-options/types';
-import { projectionsList } from './map-options/projections';
-import { BASEMAP_STYLES } from './map-options/basemap';
-import useThemedControl from './hooks/use-themed-control';
+} from './projection-items';
+import { MapOptionsProps } from './types';
+import { projectionsList } from './projections';
+import { BASEMAP_STYLES } from './basemap';
 import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
 
 const DropHeader = styled.div`
