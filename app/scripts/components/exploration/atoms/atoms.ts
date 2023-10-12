@@ -1,8 +1,4 @@
 import { atom } from 'jotai';
-import {
-  DataMetric,
-  dataMetrics
-} from '../components/analysis-metrics-dropdown';
 
 import { HEADER_COLUMN_WIDTH, RIGHT_AXIS_SPACE } from '../constants';
 import { DateRange, TimelineDataset, ZoomTransformPlain } from '../types.d.ts';
@@ -37,9 +33,6 @@ export const timelineSizesAtom = atom((get) => {
 });
 // Whether or not the dataset rows are expanded.
 export const isExpandedAtom = atom<boolean>(false);
-
-// What analysis metrics are enabled
-export const activeAnalysisMetricsAtom = atom<DataMetric[]>(dataMetrics);
 
 // Analysis controller. Stores high level state about the analysis process.
 export const analysisControllerAtom = atom({

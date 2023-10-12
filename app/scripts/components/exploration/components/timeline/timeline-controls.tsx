@@ -19,11 +19,9 @@ import {
   VerticalDivider
 } from '@devseed-ui/toolbar';
 
-import AnalysisMetricsDropdown from '../analysis-metrics-dropdown';
 import { DateAxis } from './date-axis';
 
 import {
-  activeAnalysisMetricsAtom,
   analysisControllerAtom,
   isExpandedAtom,
   selectedDateAtom,
@@ -70,7 +68,6 @@ export function TimelineControls(props: TimelineControlsProps) {
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
-  const [activeMetrics, setActiveMetrics] = useAtom(activeAnalysisMetricsAtom);
   const { isAnalyzing } = useAtomValue(analysisControllerAtom);
   const [isExpanded, setExpanded] = useAtom(isExpandedAtom);
 
@@ -146,12 +143,6 @@ export function TimelineControls(props: TimelineControlsProps) {
                 <CollecticonResizeOut meaningful title='Expand dataset rows' />
               )}
             </ToolbarIconButton>
-
-            <AnalysisMetricsDropdown
-              activeMetrics={activeMetrics}
-              onMetricsChange={setActiveMetrics}
-              isDisabled={!isAnalyzing}
-            />
           </ToolbarGroup>
         </Toolbar>
       </ControlsToolbar>
