@@ -23,6 +23,8 @@ import {
 } from '$components/common/fold';
 import { PageMainContent } from '$styles/page';
 
+export const PUBLICATION_EDITOR_SLUG = '/story-editor';
+
 function DataStoryEditorLayout() {
   const { storyId } = useParams();
   const dataStories = useAtomValue(DataStoriesAtom);
@@ -35,7 +37,7 @@ function DataStoryEditorLayout() {
       dataStories.map((dataStory) => ({
         id: dataStory.frontmatter.id,
         name: dataStory.frontmatter.name,
-        to: `/publication-tool/${dataStory.frontmatter.id}`
+        to: `${PUBLICATION_EDITOR_SLUG}/${dataStory.frontmatter.id}`
       })),
     [dataStories]
   );
@@ -45,9 +47,9 @@ function DataStoryEditorLayout() {
       <LayoutProps
         title={`Editing: ${page.frontmatter.name}`}
         localNavProps={{
-          parentName: 'Publication Tool',
-          parentLabel: 'Publication Tool',
-          parentTo: '/publication-tool',
+          parentName: 'Story Editor',
+          parentLabel: 'Story Editor',
+          parentTo: PUBLICATION_EDITOR_SLUG,
           items,
           currentId: storyId,
           localMenuCmp: (
@@ -55,15 +57,15 @@ function DataStoryEditorLayout() {
               options={[
                 {
                   label: 'Editor',
-                  to: `/publication-tool/${page.frontmatter.id}`
+                  to: `${PUBLICATION_EDITOR_SLUG}/${page.frontmatter.id}`
                 },
                 {
                   label: 'Metadata',
-                  to: `/publication-tool/${page.frontmatter.id}/metadata`
+                  to: `${PUBLICATION_EDITOR_SLUG}/${page.frontmatter.id}/metadata`
                 },
                 {
                   label: 'Export',
-                  to: `/publication-tool/${page.frontmatter.id}/export`
+                  to: `${PUBLICATION_EDITOR_SLUG}/${page.frontmatter.id}/export`
                 }
               ]}
             />
@@ -99,7 +101,7 @@ function PublicationTool() {
     }
     setNewStory('');
     setError('');
-    navigate(`/publication-tool/${id}`);
+    navigate(`${PUBLICATION_EDITOR_SLUG}/${id}`);
   }, [createEditorDataStoryFromMDXDocument, newStory, navigate]);
 
   const deleteStory = useDeleteDataStory();
@@ -111,8 +113,8 @@ function PublicationTool() {
         index
         element={
           <PageMainContent>
-            <LayoutProps title='Publication Tool' />
-            <PageHero title='Publication Tool' />
+            <LayoutProps title='Story Editor' />
+            <PageHero title='Story Editor' />
             <Fold>
               <FoldHeader>
                 <FoldTitle>Data Stories</FoldTitle>
@@ -133,7 +135,7 @@ function PublicationTool() {
                           <ButtonGroup>
                             <Button
                               forwardedAs='a'
-                              href={`/publication-tool/${dataStory.frontmatter.id}`}
+                              href={`${PUBLICATION_EDITOR_SLUG}/${dataStory.frontmatter.id}`}
                             >
                               Edit
                             </Button>

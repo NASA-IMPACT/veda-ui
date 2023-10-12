@@ -5,7 +5,11 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
 import { userPages } from 'veda';
 
-import { DatasetExploreRedirect, discoveryRoutes, thematicRoutes } from './redirects';
+import {
+  DatasetExploreRedirect,
+  discoveryRoutes,
+  thematicRoutes
+} from './redirects';
 
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
@@ -51,6 +55,7 @@ import {
   DATASETS_PATH,
   STORIES_PATH
 } from '$utils/routes';
+import { PUBLICATION_EDITOR_SLUG } from '$components/publication-tool';
 
 const composingComponents = [
   // Add contexts here.
@@ -113,7 +118,10 @@ function Root() {
                 {process.env.NODE_ENV !== 'production' && (
                   <>
                     <Route path='/sandbox/*' element={<Sandbox />} />
-                    <Route path='/publication-tool/*' element={<PublicationTool />} />
+                    <Route
+                      path={`${PUBLICATION_EDITOR_SLUG}*`}
+                      element={<PublicationTool />}
+                    />
                   </>
                 )}
 
