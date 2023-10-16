@@ -5,7 +5,20 @@ import { themeVal } from '@devseed-ui/theme-provider';
 
 import { variableGlsp } from '$styles/variable-utils';
 
-const EmptyHubWrapper = styled.div`
+function EmptyHub(props: { children: ReactNode }) {
+  const theme = useTheme();
+
+  const { children, ...rest } = props;
+
+  return (
+    <div {...rest}>
+      <CollecticonPage size='xxlarge' color={theme.color!['base-400']} />
+      {children}
+    </div>
+  );
+}
+
+export default styled(EmptyHub)`
   max-width: 100%;
   grid-column: 1/-1;
   display: flex;
@@ -16,14 +29,3 @@ const EmptyHubWrapper = styled.div`
   border: 1px dashed ${themeVal('color.base-300')};
   gap: ${variableGlsp(1)};
 `;
-
-export default function EmptyHub(props: { children: ReactNode }) {
-  const theme = useTheme();
-
-  return (
-    <EmptyHubWrapper>
-      <CollecticonPage size='xxlarge' color={theme.color!['base-400']} />
-      {props.children}
-    </EmptyHubWrapper>
-  );
-}
