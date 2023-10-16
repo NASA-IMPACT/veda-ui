@@ -4,13 +4,14 @@ import useQsStateCreator from 'qs-state-hook';
 import { set, omit } from 'lodash';
 
 export enum Actions {
+  CLEAR = 'clear',
   SEARCH = 'search',
   SORT_FIELD = 'sfield',
   SORT_DIR = 'sdir',
   TAXONOMY = 'taxonomy'
 }
 
-export type BrowserControlsAction = (what: Actions, value: any) => void;
+export type BrowserControlsAction = (what: Actions, value?: any) => void;
 
 export interface FilterOption {
   id: string;
@@ -84,6 +85,10 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
   const onAction = useCallback<BrowserControlsAction>(
     (what, value) => {
       switch (what) {
+        case Actions.CLEAR:
+          setSearch('');
+          setTaxonomies({});
+          break;
         case Actions.SEARCH:
           setSearch(value);
           break;
