@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useTheme } from 'styled-components';
 import useDimensions from 'react-cool-dimensions';
 import { DevseedUIThemeMediaRanges } from '@devseed-ui/theme-provider';
+import { getScrollbarWidth } from './use-scrollbar-width-css';
 
 interface MediaBreakpointStatus {
   current: keyof DevseedUIThemeMediaRanges;
@@ -82,11 +83,15 @@ export function useMediaQuery() {
     observe(document.body);
   }, [observe]);
 
+  // Account for the scrollbar width because the css media queries will.
+  const scrollbarWidth = getScrollbarWidth();
+
   // On first mount react-cool-dimension will return a width of 0, which breaks
   // the media queries styles because there's a mismatch between the css media
   // queries and the js.
   const width =
-    calculatedWidth || (typeof window !== 'undefined' ? window.innerWidth : 0);
+    calculatedWidth + scrollbarWidth ||
+    (typeof window !== 'undefined' ? window.innerWidth + scrollbarWidth : 0);
 
   const rangeBooleans = useMemo(
     () =>

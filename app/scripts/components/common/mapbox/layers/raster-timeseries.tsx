@@ -33,7 +33,7 @@ import {
 } from '$utils/status';
 
 // Whether or not to print the request logs.
-const LOG = true;
+const LOG = process.env.NODE_ENV !== 'production';
 
 export interface MapLayerRasterTimeseriesProps {
   id: string;

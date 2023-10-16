@@ -32,6 +32,7 @@ const StoriesHub = lazy(() => import('$components/stories/hub'));
 const StoriesSingle = lazy(() => import('$components/stories/single'));
 
 const DataCatalog = lazy(() => import('$components/data-catalog'));
+const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
 const Analysis = lazy(() => import('$components/analysis/define'));
@@ -101,7 +102,7 @@ function Root() {
                 />
                 <Route
                   path={`${DATASETS_PATH}/:datasetId/explore`}
-                  element={<DatasetExploreRedirect />}
+                  element={<DatasetsExplore />}
                 />
                 <Route path={STORIES_PATH} element={<StoriesHub />} />
                 <Route
@@ -124,12 +125,6 @@ function Root() {
                     />
                   </>
                 )}
-
-                {/* Legacy: Routes related to thematic areas redirect. */}
-                {thematicRoutes}
-                {/* Legacy: Routes related to renaming /discoveries to /stories. */}
-                {discoveryRoutes}
-
                 {userPages.map((p) => (
                   <Route
                     key={p}

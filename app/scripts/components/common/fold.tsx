@@ -49,7 +49,9 @@ export const FoldHeader = styled.div`
 `;
 
 export const FoldHeadline = styled.div`
-  /* styled-component */
+  p {
+    margin: 1rem 0 0 0;
+  }
 `;
 
 export const FoldHeadActions = styled.div`

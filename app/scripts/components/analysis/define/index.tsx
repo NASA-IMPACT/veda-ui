@@ -5,10 +5,9 @@ import React, {
   MouseEvent,
   useRef
 } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
-import { Toolbar, ToolbarIconButton, ToolbarLabel } from '@devseed-ui/toolbar';
-import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
+import { Toolbar, ToolbarLabel } from '@devseed-ui/toolbar';
 import {
   Form,
   FormCheckable,
@@ -17,15 +16,17 @@ import {
 } from '@devseed-ui/form';
 import {
   CollecticonCircleInformation,
-  CollecticonEllipsisVertical
+  CollecticonSignDanger
 } from '@devseed-ui/collecticons';
 import { Overline } from '@devseed-ui/typography';
 
-import { datasets, DatasetLayer, VedaDatum, DatasetData } from 'veda';
+import { datasets, DatasetLayer } from 'veda';
+import { Button, ButtonGroup } from '@devseed-ui/button';
 import { useAnalysisParams } from '../results/use-analysis-params';
+import SavedAnalysisControl from '../saved-analysis-control';
 import AoiSelector from './aoi-selector';
-import PageHeroActions from './page-hero-actions';
 import { useStacCollectionSearch } from './use-stac-collection-search';
+import PageFooterActions from './page-footer.actions';
 import { variableGlsp } from '$styles/variable-utils';
 
 import { PageMainContent } from '$styles/page';
@@ -47,14 +48,14 @@ import {
   getRangeFromPreset,
   inputFormatToDate
 } from '$utils/date';
-import DropMenuItemButton from '$styles/drop-menu-item-button';
+
 import { MapboxMapRef } from '$components/common/mapbox';
+import { ANALYSIS_PATH } from '$utils/routes';
 
 const FormBlock = styled.div`
   display: flex;
   flex-flow: row nowrap;
   gap: ${variableGlsp(0.5)};
-
   > * {
     width: 50%;
   }
@@ -100,11 +101,135 @@ export const Note = styled.div`
   }
 `;
 
+const UnselectableInfo = styled.div`
+  font-size: 0.825rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: ${variableGlsp(0.5)};
+
+  & path {
+    fill: ${themeVal('color.danger')};
+  }
+`;
+
+const FormCheckableUnselectable = styled(FormCheckableCustom)`
+  pointer-events: none;
+  background: #f0f0f5;
+`;
+
+const DataPointsWarning = styled.div`
+  display: flex;
+  align-items: center;
+  background: #fc3d2119;
+  border-radius: 99px;
+  font-size: 0.825rem;
+  font-weight: bold;
+  margin-top: ${variableGlsp(0.5)};
+  padding: 2px 0 2px 6px;
+  color: ${themeVal('color.danger')};
+
+  & path {
+    fill: ${themeVal('color.danger')};
+  }
+`;
+
+const FloatingFooter = styled.div<{ isSticky: boolean }>`
+  position: sticky;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  padding: ${variableGlsp(0.5)};
+  background: ${themeVal('color.surface')};
+  z-index: 99;
+  margin-bottom: ${variableGlsp(1)};
+  ${(props) =>
+    props.isSticky &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationD')};
+    `}
+`;
+
+const FoldWithBullet = styled(Fold)<{ number: string }>`
+  ${media.largeUp`
+  padding-left: ${variableGlsp(1)};
+
+  > div {
+    padding-left: ${variableGlsp(2)};
+    position: relative;
+
+    /* bullet */
+    &::after {
+      position: absolute;
+      width: ${variableGlsp(1.5)};
+      height: ${variableGlsp(1.5)};
+      background-color: ${themeVal('color.primary')};
+      color: ${themeVal('color.surface')};
+      border-radius: ${themeVal('shape.ellipsoid')};
+      font-size: 1.75rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 600;
+      ${(props: { number: string }) =>
+        css`
+          content: '${props.number}';
+        `}
+    }
+  }
+`}
+`;
+
+export const FoldWGuideLine = styled(FoldWithBullet)`
+  ${media.largeUp`
+    padding-bottom: 0;
+    > div {
+      padding-bottom:  ${variableGlsp(2)};
+      &::before {
+        position: absolute;
+        content: '';
+        height: 100%;
+        left: ${variableGlsp(0.7)};
+        border-left : 3px solid ${themeVal('color.base-200a')};
+      }
+    }
+  `}
+`;
+
+const FoldWOPadding = styled(Fold)`
+  padding: 0;
+`;
+
+export const FoldTitleWOAccent = styled(FoldTitle)`
+  ${media.largeUp`
+    &::before {
+      content: none;
+    }
+  `}
+`;
+
+const FormGroupStructureCustom = styled(FormGroupStructure)`
+  ${media.largeUp`
+    display: inline-flex;
+    align-items: center;
+  `}
+`;
+
+const ToolbarLabelWithSpace = styled(ToolbarLabel)`
+  margin-right: ${variableGlsp(0.5)};
+`;
+
+const FoldBodyCustom = styled(FoldBody)`
+  ${media.largeUp`
+    flex-flow: row;
+    flex-grow: 3;
+    justify-content: space-between;
+  `}
+`;
+
 const findParentDataset = (layerId: string) => {
   const parentDataset = Object.values(datasets).find((dataset) =>
-    (dataset as VedaDatum<DatasetData>).data.layers.find(
-      (l) => l.id === layerId
-    )
+    dataset!.data.layers.find((l) => l.id === layerId)
   );
   return parentDataset?.data;
 };
@@ -112,7 +237,7 @@ const findParentDataset = (layerId: string) => {
 export const allAvailableDatasetsLayers: DatasetLayer[] = Object.values(
   datasets
 )
-  .map((dataset) => (dataset as VedaDatum<DatasetData>).data.layers)
+  .map((dataset) => dataset!.data.layers)
   .flat()
   .filter((d) => d.type !== 'vector' && !d.analysis?.exclude);
 
@@ -183,12 +308,16 @@ export default function Analysis() {
     [setAnalysisParam, datasetsLayers]
   );
 
-  const { selectableDatasetLayers, stacSearchStatus, readyToLoadDatasets } =
-    useStacCollectionSearch({
-      start,
-      end,
-      aoi: aoiDrawState.featureCollection
-    });
+  const {
+    selectableDatasetLayers,
+    unselectableDatasetLayers,
+    stacSearchStatus,
+    readyToLoadDatasets
+  } = useStacCollectionSearch({
+    start,
+    end,
+    aoi: aoiDrawState.featureCollection
+  });
 
   // Update datasetsLayers when stac search is refreshed in case some
   // datasetsLayers are not available anymore
@@ -197,7 +326,7 @@ export default function Analysis() {
     const selectableDatasetLayersIds = selectableDatasetLayers.map(
       (layer) => layer.id
     );
-    const cleanedDatasetsLayers = datasetsLayers?.filter((l) =>
+    const cleanedDatasetsLayers = datasetsLayers.filter((l) =>
       selectableDatasetLayersIds.includes(l.id)
     );
 
@@ -206,7 +335,7 @@ export default function Analysis() {
     // read/set state loop
   }, [selectableDatasetLayers, setAnalysisParam]);
 
-  const showTip = !readyToLoadDatasets || !datasetsLayers?.length;
+  const notReady = !readyToLoadDatasets || !datasetsLayers?.length;
 
   const infoboxMessage = useMemo(() => {
     if (
@@ -230,163 +359,196 @@ export default function Analysis() {
     }
   }, [readyToLoadDatasets, stacSearchStatus, selectableDatasetLayers.length]);
 
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [isFooterSticky, setIsFooterSticky] = React.useState(false);
+  useEffect(() => {
+    if (!footerRef.current) return;
+    const observer = new IntersectionObserver(
+      ([e]) => {
+        setIsFooterSticky(e.intersectionRatio < 1);
+      },
+      { threshold: [1] }
+    );
+    observer.observe(footerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <PageMainContent>
-      <LayoutProps
-        title='Analysis'
-        description='Generate timeseries data for your area of interest.'
-      />
-      <PageHeroAnalysis
-        title={isNewAnalysis ? 'Start analysis' : 'Refine analysis'}
-        description='Generate timeseries data for your area of interest.'
-        renderActions={({ size }) => (
-          <PageHeroActions
-            size={size}
-            isNewAnalysis={isNewAnalysis}
-            showTip={showTip}
-            start={start}
-            end={end}
-            datasetsLayers={datasetsLayers}
-            aoi={aoiDrawState.featureCollection}
-          />
-        )}
-      />
-
-      <AoiSelector
-        mapRef={mapRef}
-        // Use aoi initially decode from qs
-        qsAoi={aoi}
-        aoiDrawState={aoiDrawState}
-        onAoiEvent={onAoiEvent}
-      />
-
-      <Fold>
-        <FoldHeader>
-          <FoldHeadline>
-            <FoldTitle>Date</FoldTitle>
-          </FoldHeadline>
-          <FoldHeadActions>
-            <Toolbar size='small'>
-              <ToolbarLabel>Actions</ToolbarLabel>
-              <Dropdown
-                alignment='right'
-                triggerElement={(props) => (
-                  <ToolbarIconButton variation='base-text' {...props}>
-                    <CollecticonEllipsisVertical
-                      title='More options'
-                      meaningful
-                    />
-                  </ToolbarIconButton>
-                )}
-              >
-                <DropTitle>Select a date preset</DropTitle>
-                <DropMenu>
-                  <li>
-                    <DropMenuItemButton
-                      onClick={(e) => onDatePresetClick(e, 'yearToDate')}
-                    >
-                      This year
-                    </DropMenuItemButton>
-                  </li>
-                  <li>
-                    <DropMenuItemButton
-                      onClick={(e) => onDatePresetClick(e, 'last30Days')}
-                    >
-                      Last 30 days
-                    </DropMenuItemButton>
-                  </li>
-                  <li>
-                    <DropMenuItemButton
-                      onClick={(e) => onDatePresetClick(e, 'lastYear')}
-                    >
-                      Last year
-                    </DropMenuItemButton>
-                  </li>
-                  <li>
-                    <DropMenuItemButton
-                      onClick={(e) => onDatePresetClick(e, 'last10Years')}
-                    >
-                      Last 10 years
-                    </DropMenuItemButton>
-                  </li>
-                </DropMenu>
-              </Dropdown>
-            </Toolbar>
-          </FoldHeadActions>
-        </FoldHeader>
-        <FoldBody>
-          <Form>
-            <FormBlock>
-              <FormGroupStructure label='Start' id='start-date' required>
-                <FormInput
-                  type='date'
-                  size='large'
-                  id='start-date'
-                  name='start-date'
-                  value={start ? dateToInputFormat(start) : ''}
-                  onChange={onStartDateChange}
-                  min='1900-01-01'
-                  max={dateToInputFormat(end)}
-                />
-              </FormGroupStructure>
-
-              <FormGroupStructure label='End' id='end-date' required>
-                <FormInput
-                  type='date'
-                  size='large'
-                  id='end-date'
-                  name='end-date'
-                  value={end ? dateToInputFormat(end) : ''}
-                  onChange={onEndDateChange}
-                  min={dateToInputFormat(start)}
-                  max={new Date().toISOString().split('T')[0]}
-                />
-              </FormGroupStructure>
-            </FormBlock>
-          </Form>
-        </FoldBody>
-      </Fold>
-
-      <Fold>
-        <FoldHeader>
-          <FoldHeadline>
-            <FoldTitle>Datasets</FoldTitle>
-          </FoldHeadline>
-        </FoldHeader>
-        <FoldBody>
-          {!infoboxMessage ? (
-            <Form>
-              <CheckableGroup>
-                {selectableDatasetLayers.map((datasetLayer) => (
-                  <FormCheckableCustom
-                    key={datasetLayer.id}
-                    id={datasetLayer.id}
-                    name={datasetLayer.id}
-                    value={datasetLayer.id}
-                    textPlacement='right'
-                    type='checkbox'
-                    onChange={onDatasetLayerChange}
-                    checked={
-                      selectedDatasetLayerIds?.includes(datasetLayer.id) ??
-                      false
-                    }
-                  >
-                    <Overline>
-                      From: {findParentDataset(datasetLayer.id)?.name}
-                    </Overline>
-                    {datasetLayer.name}
-                  </FormCheckableCustom>
-                ))}
-              </CheckableGroup>
-            </Form>
-          ) : (
-            <Note>
-              <CollecticonCircleInformation size='large' />
-              <p>{infoboxMessage}</p>
-            </Note>
+    <>
+      <PageMainContent>
+        <LayoutProps
+          title='Analysis'
+          description='Generate timeseries data for your area of interest.'
+        />
+        <PageHeroAnalysis
+          title='Data analysis'
+          description='Generate timeseries data for your area of interest.'
+          renderActions={({ size }) => (
+            <SavedAnalysisControl size={size} urlBase={ANALYSIS_PATH} />
           )}
-        </FoldBody>
-      </Fold>
-    </PageMainContent>
+        />
+        <AoiSelector
+          mapRef={mapRef}
+          // Use aoi initially decode from qs
+          qsAoi={aoi}
+          aoiDrawState={aoiDrawState}
+          onAoiEvent={onAoiEvent}
+        />
+
+        <FoldWGuideLine number='2'>
+          <FoldHeader>
+            <FoldHeadline>
+              <FoldTitleWOAccent>Pick a date period</FoldTitleWOAccent>
+              <p>
+                Select start and end date of time series, or choose a pre-set
+                date range.
+              </p>
+            </FoldHeadline>
+            <FoldHeadActions />
+          </FoldHeader>
+          <FoldBodyCustom>
+            <Form>
+              <FormBlock>
+                <FormGroupStructureCustom label='From' id='start-date' required>
+                  <FormInput
+                    type='date'
+                    size='large'
+                    id='start-date'
+                    name='start-date'
+                    value={start ? dateToInputFormat(start) : ''}
+                    onChange={onStartDateChange}
+                    min='1980-01-01'
+                    max={dateToInputFormat(end)}
+                  />
+                </FormGroupStructureCustom>
+
+                <FormGroupStructureCustom label='To' id='end-date' required>
+                  <FormInput
+                    type='date'
+                    size='large'
+                    id='end-date'
+                    name='end-date'
+                    value={end ? dateToInputFormat(end) : ''}
+                    onChange={onEndDateChange}
+                    min={dateToInputFormat(start)}
+                    max='2022-12-31'
+                  />
+                </FormGroupStructureCustom>
+              </FormBlock>
+            </Form>
+            <Toolbar size='small'>
+              <ToolbarLabelWithSpace>Presets</ToolbarLabelWithSpace>
+              <ButtonGroup variation='base-outline'>
+                <Button onClick={(e) => onDatePresetClick(e, 'last10Years')}>
+                  Last 10 years
+                </Button>
+                <Button onClick={(e) => onDatePresetClick(e, '2018-2022')}>
+                  2018 - 2022
+                </Button>
+              </ButtonGroup>
+            </Toolbar>
+          </FoldBodyCustom>
+        </FoldWGuideLine>
+
+        <FoldWithBullet number='3'>
+          <FoldHeader>
+            <FoldHeadline>
+              <FoldTitleWOAccent>Select datasets</FoldTitleWOAccent>
+              <p>
+                Select from available dataset layers for the area and date range
+                selected.
+              </p>
+            </FoldHeadline>
+          </FoldHeader>
+          <FoldBody>
+            {!infoboxMessage ? (
+              <>
+                <Form>
+                  <CheckableGroup>
+                    {selectableDatasetLayers.map((datasetLayer) => (
+                      <FormCheckableCustom
+                        key={datasetLayer.id}
+                        id={datasetLayer.id}
+                        name={datasetLayer.id}
+                        value={datasetLayer.id}
+                        textPlacement='right'
+                        type='checkbox'
+                        onChange={onDatasetLayerChange}
+                        checked={
+                          selectedDatasetLayerIds?.includes(datasetLayer.id) ??
+                          false
+                        }
+                      >
+                        <Overline>
+                          From: {findParentDataset(datasetLayer.id)?.name}
+                        </Overline>
+                        {datasetLayer.name}
+                      </FormCheckableCustom>
+                    ))}
+                  </CheckableGroup>
+                </Form>
+                {!!unselectableDatasetLayers.length && (
+                  <>
+                    <UnselectableInfo>
+                      <CollecticonSignDanger />
+                      The current area and date selection has returned (
+                      {unselectableDatasetLayers.length}) datasets with a very
+                      large number of data points. To make them available,
+                      please define a smaller area or a select a shorter date
+                      period.
+                    </UnselectableInfo>
+
+                    <Form>
+                      <CheckableGroup>
+                        {unselectableDatasetLayers.map((datasetLayer) => (
+                          <FormCheckableUnselectable
+                            key={datasetLayer.id}
+                            id={datasetLayer.id}
+                            name={datasetLayer.id}
+                            value={datasetLayer.id}
+                            textPlacement='right'
+                            type='checkbox'
+                            onChange={onDatasetLayerChange}
+                            checked={false}
+                          >
+                            <Overline>
+                              From: {findParentDataset(datasetLayer.id)?.name}
+                            </Overline>
+                            {datasetLayer.name}
+                            <DataPointsWarning>
+                              <CollecticonSignDanger />~
+                              {datasetLayer.numberOfItems} data points
+                            </DataPointsWarning>
+                          </FormCheckableUnselectable>
+                        ))}
+                      </CheckableGroup>
+                    </Form>
+                  </>
+                )}
+              </>
+            ) : (
+              <Note>
+                <CollecticonCircleInformation size='large' />
+                <p>{infoboxMessage}</p>
+              </Note>
+            )}
+          </FoldBody>
+        </FoldWithBullet>
+      </PageMainContent>
+      <FloatingFooter ref={footerRef} isSticky={isFooterSticky}>
+        <FoldWOPadding>
+          <FoldBody>
+            <PageFooterActions
+              isNewAnalysis={isNewAnalysis}
+              start={start}
+              end={end}
+              datasetsLayers={datasetsLayers}
+              aoi={aoiDrawState.featureCollection}
+              disabled={notReady}
+            />
+          </FoldBody>
+        </FoldWOPadding>
+      </FloatingFooter>
+    </>
   );
 }

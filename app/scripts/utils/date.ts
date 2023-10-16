@@ -164,12 +164,14 @@ export type DateRangePreset =
   | 'yearToDate'
   | 'last30Days'
   | 'lastYear'
-  | 'last10Years';
+  | 'last10Years'
+  | '2018-2022';
+
 export function getRangeFromPreset(preset: DateRangePreset): {
   start: Date;
   end: Date;
 } {
-  const end = new Date();
+  let end = new Date();
   let start = startOfYear(new Date());
   if (preset === 'last30Days') {
     start = sub(end, { days: 30 });
@@ -177,6 +179,9 @@ export function getRangeFromPreset(preset: DateRangePreset): {
     start = sub(end, { years: 1 });
   } else if (preset === 'last10Years') {
     start = sub(end, { years: 10 });
+  } else if (preset === '2018-2022') {
+    start = new Date(2018, 0, 1);
+    end = new Date(2022, 11, 31);
   }
   return {
     start,

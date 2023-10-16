@@ -100,7 +100,7 @@ interface MapBlockProps extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
   projectionCenter?: ProjectionOptions['center'];
   projectionParallels?: ProjectionOptions['parallels'];
   allowProjectionChange?: boolean;
-  basemapId?: BasemapId
+  basemapId?: BasemapId;
 }
 
 function MapBlock(props: MapBlockProps) {
@@ -134,37 +134,37 @@ function MapBlock(props: MapBlockProps) {
     ? utcString2userTzDate(compareDateTime)
     : undefined;
 
-    const projectionStart = useMemo(() => {
-      if (projectionId) {
-        // Ensure that the default center and parallels are used if none are
-        // provided.
-        const projection = convertProjectionToMapbox({
-          id: projectionId,
-          center: projectionCenter,
-          parallels: projectionParallels
-        });
-        return {
-          ...projection,
-          id: projectionId
-        };
-      } else {
-        return projectionDefault;
-      }
-    }, [projectionId, projectionCenter, projectionParallels]);
-  
-    const [projection, setProjection] = useState(projectionStart);
-  
-    useEffect(() => {
-      setProjection(projectionStart);
-    }, [projectionStart]);
+  const projectionStart = useMemo(() => {
+    if (projectionId) {
+      // Ensure that the default center and parallels are used if none are
+      // provided.
+      const projection = convertProjectionToMapbox({
+        id: projectionId,
+        center: projectionCenter,
+        parallels: projectionParallels
+      });
+      return {
+        ...projection,
+        id: projectionId
+      };
+    } else {
+      return projectionDefault;
+    }
+  }, [projectionId, projectionCenter, projectionParallels]);
 
-    const [mapBasemapId, setMapBasemapId] = useState(basemapId);
-  
-    useEffect(() => {
-      if (!basemapId) return;
+  const [projection, setProjection] = useState(projectionStart);
 
-      setMapBasemapId(basemapId);
-    }, [basemapId]);
+  useEffect(() => {
+    setProjection(projectionStart);
+  }, [projectionStart]);
+
+  const [mapBasemapId, setMapBasemapId] = useState(basemapId);
+
+  useEffect(() => {
+    if (!basemapId) return;
+
+    setMapBasemapId(basemapId);
+  }, [basemapId]);
 
   return (
     <Carto>
@@ -176,7 +176,9 @@ function MapBlock(props: MapBlockProps) {
         isComparing={!!selectedCompareDatetime}
         compareDate={selectedCompareDatetime}
         compareLabel={compareLabel}
-        initialPosition={{ lng: center?.[0], lat: center?.[1], zoom }}
+        initialPosition={
+          center ? { lng: center[0], lat: center[1], zoom } : undefined
+        }
         cooperativeGestures
         projection={projection}
         onProjectionChange={allowProjectionChange ? setProjection : undefined}
