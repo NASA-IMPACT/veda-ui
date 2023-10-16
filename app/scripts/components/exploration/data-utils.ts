@@ -24,6 +24,8 @@ export const findParentDataset = (layerId: string) => {
   return parentDataset?.data;
 };
 
+export const allDatasets = Object.values(datasets).map((d) => d!.data);
+
 export const datasetLayers = Object.values(datasets).flatMap(
   (dataset) => dataset!.data.layers
 );
