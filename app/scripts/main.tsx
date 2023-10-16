@@ -4,13 +4,6 @@ import T from 'prop-types';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
 import { userPages } from 'veda';
-
-import {
-  DatasetExploreRedirect,
-  discoveryRoutes,
-  thematicRoutes
-} from './redirects';
-
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
 import LayoutRoot, {
