@@ -35,7 +35,6 @@ export function useAnalysisController() {
       () =>
         setController((v) => ({
           ...v,
-          runId: 0,
           isAnalyzing: false,
           isObsolete: false
         })),
@@ -55,12 +54,22 @@ export function useAnalysisDataRequest({
   const { features } = useAois();
   const selectedFeatures = features.filter((f) => f.selected);
 
-  const { analysisRun } = useAnalysisController();
+  const { analysisRun, isAnalyzing } = useAnalysisController();
 
   const dataset = useAtomValue(datasetAtom);
   const datasetStatus = dataset.status;
 
   const [, setAnalysis] = useTimelineDatasetAnalysis(datasetAtom);
+
+  useEffect(() => {
+    if (!isAnalyzing) {
+      queryClient.cancelQueries({
+        queryKey: ['analysis'],
+        fetchStatus: 'fetching'
+      });
+      analysisConcurrencyManager.clear();
+    }
+  }, [isAnalyzing]);
 
   useEffect(() => {
     if (
