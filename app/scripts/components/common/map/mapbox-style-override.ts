@@ -9,7 +9,7 @@ import {
   CollecticonMinusSmall,
   CollecticonMagnifierLeft,
   CollecticonXmarkSmall,
-  CollecticonPencil,
+  CollecticonArea,
   CollecticonTrashBin
 } from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
@@ -194,7 +194,7 @@ const MapboxStyleOverride = css`
 
   .mapbox-gl-draw_polygon.mapbox-gl-draw_polygon::before {
     background-image: url(${({ theme }) =>
-      iconDataURI(CollecticonPencil, {
+      iconDataURI(CollecticonArea, {
         color: theme.color?.surface
       })});
     }

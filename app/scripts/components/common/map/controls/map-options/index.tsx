@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonGlobe } from '@devseed-ui/collecticons';
+import { CollecticonMap } from '@devseed-ui/collecticons';
 import {
   Dropdown,
   DropMenu,
@@ -133,7 +133,7 @@ function MapOptions(props: MapOptionsProps) {
     <MapOptionsDropdown
       triggerElement={(bag) => (
         <SelectorButton {...bag}>
-          <CollecticonGlobe meaningful title='Configure map options' />
+          <CollecticonMap meaningful title='Configure map options' />
         </SelectorButton>
       )}
       direction='down'
