@@ -90,7 +90,7 @@ const MapboxStyleOverride = css`
   }
 
   .mapboxgl-ctrl-group {
-    ${createButtonGroupStyles({ orientation: 'vertical' } as any)}
+    ${createButtonGroupStyles({ orientation: 'horizontal' } as any)}
     background: none;
 
     &,
@@ -113,15 +113,11 @@ const MapboxStyleOverride = css`
       }
     }
 
-    > button + button {
-      margin-top: -${themeVal('button.shape.border')};
-    }
-
     > button:first-child:not(:last-child) {
       &,
       &::after {
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 0.25rem;
       }
 
       &::after {
@@ -132,7 +128,8 @@ const MapboxStyleOverride = css`
       &,
       &::after {
         border-top-left-radius: 0;
-        border-top-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 0.25rem;
       }
 
       &::after {
