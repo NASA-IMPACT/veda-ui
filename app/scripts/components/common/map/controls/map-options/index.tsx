@@ -61,6 +61,13 @@ const MapOptionsDropdown = styled(Dropdown)`
 const SelectorButton = styled(Button)`
   &&& {
     ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
+    background-color: ${themeVal('color.surface')};
+    &:hover {
+      background-color: ${themeVal('color.surface')};
+    }
+    & path {
+      fill: ${themeVal('color.base')};
+    }
   }
 `;
 
