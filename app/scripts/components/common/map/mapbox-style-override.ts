@@ -9,7 +9,7 @@ import {
   CollecticonMinusSmall,
   CollecticonMagnifierLeft,
   CollecticonXmarkSmall,
-  CollecticonPencil,
+  CollecticonArea,
   CollecticonTrashBin
 } from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
@@ -25,7 +25,7 @@ const MapboxStyleOverride = css`
 
     > * {
       display: flex;
-      flex-flow: column nowrap;
+      flex-flow: row nowrap;
       gap: ${variableGlsp(0.5)};
       align-items: flex-start;
       float: none;
@@ -90,7 +90,7 @@ const MapboxStyleOverride = css`
   }
 
   .mapboxgl-ctrl-group {
-    ${createButtonGroupStyles({ orientation: 'vertical' } as any)}
+    ${createButtonGroupStyles({ orientation: 'horizontal' } as any)}
     background: none;
 
     &,
@@ -113,15 +113,11 @@ const MapboxStyleOverride = css`
       }
     }
 
-    > button + button {
-      margin-top: -${themeVal('button.shape.border')};
-    }
-
     > button:first-child:not(:last-child) {
       &,
       &::after {
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 0.25rem;
       }
 
       &::after {
@@ -132,7 +128,8 @@ const MapboxStyleOverride = css`
       &,
       &::after {
         border-top-left-radius: 0;
-        border-top-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 0.25rem;
       }
 
       &::after {
@@ -154,19 +151,21 @@ const MapboxStyleOverride = css`
   .mapboxgl-ctrl-zoom-in.mapboxgl-ctrl-zoom-in,
   .mapboxgl-ctrl-zoom-out.mapboxgl-ctrl-zoom-out {
     ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
+    background-color: ${themeVal('color.surface')};
+    color: ${themeVal('color.primary')};
   }
 
   .mapboxgl-ctrl-zoom-in.mapboxgl-ctrl-zoom-in::before {
     background-image: url(${({ theme }) =>
       iconDataURI(CollecticonPlusSmall, {
-        color: theme.color?.surface
+        color: theme.color?.base
       })});
   }
 
   .mapboxgl-ctrl-zoom-out.mapboxgl-ctrl-zoom-out::before {
     background-image: url(${({ theme }) =>
       iconDataURI(CollecticonMinusSmall, {
-        color: theme.color?.surface
+        color: theme.color?.base
       })});
   }
 
@@ -182,20 +181,21 @@ const MapboxStyleOverride = css`
 
   .mapbox-gl-draw_ctrl-draw-btn {
     ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
+    background-color: ${themeVal('color.surface')};
   }
 
   .mapbox-gl-draw_ctrl-draw-btn.active {
-    background-color: ${themeVal('color.base-400a')};
+    background-color: ${themeVal('color.surface')};
   }
 
   .mapbox-gl-draw_ctrl-draw-btn:not(:disabled):hover {
-    background-color: ${themeVal('color.base-400a')};
+    background-color: ${themeVal('color.surface')};
   }
 
   .mapbox-gl-draw_polygon.mapbox-gl-draw_polygon::before {
     background-image: url(${({ theme }) =>
-      iconDataURI(CollecticonPencil, {
-        color: theme.color?.surface
+      iconDataURI(CollecticonArea, {
+        color: theme.color?.base
       })});
     }
   }
@@ -203,7 +203,7 @@ const MapboxStyleOverride = css`
   .mapbox-gl-draw_trash.mapbox-gl-draw_trash::before {
     background-image: url(${({ theme }) =>
       iconDataURI(CollecticonTrashBin, {
-        color: theme.color?.surface
+        color: theme.color?.base
       })});
     }
   }
@@ -214,7 +214,8 @@ const MapboxStyleOverride = css`
     color: ${themeVal('type.base.color')};
     font: ${themeVal('type.base.style')} ${themeVal('type.base.weight')}
       0.875rem/1.25rem ${themeVal('type.base.family')};
-    transition: all 0.24s ease 0s;
+    transition: none;
+    overflow: hidden;
 
     &::before {
       position: absolute;
@@ -225,7 +226,7 @@ const MapboxStyleOverride = css`
       height: 1rem;
       background-image: url(${({ theme }) =>
         iconDataURI(CollecticonMagnifierLeft, {
-          color: theme.color?.primary
+          color: theme.color?.base
         })});
       background-repeat: no-repeat;
     }
@@ -233,12 +234,13 @@ const MapboxStyleOverride = css`
     &.mapboxgl-ctrl-geocoder--collapsed {
       width: 2rem;
       min-width: 2rem;
-      background-color: ${themeVal('color.primary')};
+      background-color: ${themeVal('color.surface')};
+      transition: none;
 
       &::before {
         background-image: url(${({ theme }) =>
           iconDataURI(CollecticonMagnifierLeft, {
-            color: theme.color?.surface
+            color: theme.color?.base
           })});
       }
     }
@@ -259,7 +261,7 @@ const MapboxStyleOverride = css`
       right: 0;
       background: none;
       border-radius: ${themeVal('shape.rounded')};
-      transition: all 0.24s ease 0s;
+      transition: none;
       color: inherit;
 
       &:hover {

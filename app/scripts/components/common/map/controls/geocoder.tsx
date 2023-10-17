@@ -12,7 +12,7 @@ export default function GeocoderControl() {
       });
     },
     {
-      position: 'top-left'
+      position: 'top-right'
     }
   );
 

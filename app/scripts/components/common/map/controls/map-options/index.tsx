@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonGlobe } from '@devseed-ui/collecticons';
+import { CollecticonMap } from '@devseed-ui/collecticons';
 import {
   Dropdown,
   DropMenu,
@@ -61,6 +61,13 @@ const MapOptionsDropdown = styled(Dropdown)`
 const SelectorButton = styled(Button)`
   &&& {
     ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
+    background-color: ${themeVal('color.surface')};
+    &:hover {
+      background-color: ${themeVal('color.surface')};
+    }
+    & path {
+      fill: ${themeVal('color.base')};
+    }
   }
 `;
 
@@ -133,11 +140,11 @@ function MapOptions(props: MapOptionsProps) {
     <MapOptionsDropdown
       triggerElement={(bag) => (
         <SelectorButton {...bag}>
-          <CollecticonGlobe meaningful title='Configure map options' />
+          <CollecticonMap meaningful title='Configure map options' />
         </SelectorButton>
       )}
       direction='down'
-      alignment='left'
+      alignment='right'
     >
       <DropHeader>
         <DropTitle>Map options</DropTitle>
@@ -266,7 +273,7 @@ function MapOptions(props: MapOptionsProps) {
 
 export default function MapOptionsControl(props: MapOptionsProps) {
   useThemedControl(() => <MapOptions {...props} />, {
-    position: 'top-left'
+    position: 'top-right'
   });
   return null;
 }

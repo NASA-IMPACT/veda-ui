@@ -13,10 +13,7 @@ import { Layer } from './layer';
 import Map, { Compare } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/geocoder';
-import {
-  NavigationControl,
-  ScaleControl
-} from '$components/common/map/controls';
+import { ScaleControl } from '$components/common/map/controls';
 import MapCoordsControl from '$components/common/map/controls/coords';
 import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
@@ -73,10 +70,20 @@ export function ExplorationMap(props: { comparing: boolean }) {
           />
         ))}
       {/* Map controls */}
+      <DrawControl
+        displayControlsDefault={false}
+        controls={
+          {
+            polygon: true,
+            trash: true
+          } as any
+        }
+        onCreate={onUpdate}
+        onUpdate={onUpdate}
+        onDelete={onDelete}
+        onSelectionChange={onSelectionChange}
+      />
       <GeocoderControl />
-      <NavigationControl />
-      <ScaleControl />
-      <MapCoordsControl />
       <MapOptionsControl
         projection={projection}
         onProjectionChange={setProjection}
@@ -86,17 +93,9 @@ export function ExplorationMap(props: { comparing: boolean }) {
         boundariesOption={boundariesOption}
         onOptionChange={onOptionChange}
       />
-      <DrawControl
-        displayControlsDefault={false}
-        controls={{
-          polygon: true,
-          trash: true
-        } as any}
-        onCreate={onUpdate}
-        onUpdate={onUpdate}
-        onDelete={onDelete}
-        onSelectionChange={onSelectionChange}
-      />
+
+      <ScaleControl />
+      <MapCoordsControl />
       {props.comparing && (
         // Compare map layers
         <Compare>
