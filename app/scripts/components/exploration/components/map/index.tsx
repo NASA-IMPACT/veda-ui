@@ -13,10 +13,7 @@ import { Layer } from './layer';
 import Map, { Compare } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/geocoder';
-import {
-  NavigationControl,
-  ScaleControl
-} from '$components/common/map/controls';
+import { ScaleControl } from '$components/common/map/controls';
 import MapCoordsControl from '$components/common/map/controls/coords';
 import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
