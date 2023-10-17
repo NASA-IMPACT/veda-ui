@@ -20,6 +20,8 @@ import { projectionDefault } from '$components/common/map/controls/map-options/p
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';
 import useAois from '$components/common/map/controls/hooks/use-aois';
+import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
+import { Feature, Polygon } from 'geojson';
 
 export function ExplorationMap(props: { comparing: boolean }) {
   const [projection, setProjection] = useState(projectionDefault);
@@ -48,8 +50,11 @@ export function ExplorationMap(props: { comparing: boolean }) {
     .slice()
     .reverse();
 
-  const { onUpdate, onDelete, onSelectionChange } = useAois();
-  // console.log(features);
+  const { update, onUpdate, onDelete, onSelectionChange } = useAois();
+
+  const onCustomAoIConfirm = (features: Feature<Polygon>[]) => {
+    update(features);
+  };
 
   return (
     <Map id='exploration' projection={projection}>
@@ -83,6 +88,7 @@ export function ExplorationMap(props: { comparing: boolean }) {
         onDelete={onDelete}
         onSelectionChange={onSelectionChange}
       />
+      <CustomAoIControl onConfirm={onCustomAoIConfirm} />
       <GeocoderControl />
       <MapOptionsControl
         projection={projection}

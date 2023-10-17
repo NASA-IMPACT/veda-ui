@@ -2,6 +2,7 @@ import axios, { Method } from 'axios';
 import { Map as MapboxMap } from 'mapbox-gl';
 import { MapRef } from 'react-map-gl';
 import { endOfDay, startOfDay } from 'date-fns';
+import { Feature, MultiPolygon, Polygon } from 'geojson';
 import {
   DatasetDatumFn,
   DatasetDatumFnResolverBag,
@@ -183,4 +184,30 @@ export function resolveConfigFunctions(
 
 export function toAoIid(drawId: string) {
   return drawId.slice(-6);
+}
+
+
+/**
+ * Converts a MultiPolygon to a Feature Collection of polygons.
+ *
+ * @param feature MultiPolygon feature
+ * 
+ * @see combineFeatureCollection() for opposite
+ * 
+ * @returns Feature Collection of Polygons
+ */
+export function multiPolygonToPolygons(feature: Feature<MultiPolygon>) {
+  const polygons = feature.geometry.coordinates.map(
+    (coordinates) =>
+      ({
+        type: 'Feature',
+        properties: { ...feature.properties },
+        geometry: {
+          type: 'Polygon',
+          coordinates: coordinates
+        }
+      } as Feature<Polygon>)
+  );
+
+  return polygons;
 }
