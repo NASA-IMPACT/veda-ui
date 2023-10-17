@@ -7,7 +7,7 @@ import {
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
 
-import { selectedIntervalAtom } from '../../atoms/atoms';
+import { selectedIntervalAtom, timelineDatasetsAtom } from '../../atoms/atoms';
 
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
@@ -25,6 +25,9 @@ const AnalysisMessageWrapper = styled.div`
 export function AnalysisMessage() {
   const { isObsolete, setObsolete, runAnalysis, cancelAnalysis, isAnalyzing } =
     useAnalysisController();
+
+  const datasets = useAtomValue(timelineDatasetsAtom);
+  const datasetIds = datasets.map((d) => d.data.id);
 
   const { features } = useAois();
   const selectedInterval = useAtomValue(selectedIntervalAtom);
@@ -66,7 +69,7 @@ export function AnalysisMessage() {
           variation='base-text'
           size='small'
           onClick={() => {
-            runAnalysis();
+            runAnalysis(datasetIds);
           }}
         >
           <CollecticonChartLine /> Analyze
@@ -79,7 +82,7 @@ export function AnalysisMessage() {
             variation='base-text'
             size='small'
             onClick={() => {
-              runAnalysis();
+              runAnalysis(datasetIds);
             }}
           >
             <CollecticonChartLine /> Update

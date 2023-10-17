@@ -1,18 +1,19 @@
 export interface ConcurrencyManagerInstance {
   clear: () => void;
-  queue: <T>(taskFn: () => Promise<T>) => Promise<T>;
+  queue: <T>(key: string, askFn: () => Promise<T>) => Promise<T>;
+  dequeue: (key: string) => void;
 }
 
 export function ConcurrencyManager(
   concurrentRequests = 15
 ): ConcurrencyManagerInstance {
-  let queue: (() => Promise<void>)[] = [];
+  let queue: [string, () => Promise<void>][] = [];
   let running = 0;
 
   const run = async () => {
     if (!queue.length || running > concurrentRequests) return;
-
-    const task = queue.shift();
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    const [, task] = queue.shift() ?? [];
     if (!task) return;
     running++;
     await task();
@@ -24,7 +25,7 @@ export function ConcurrencyManager(
     clear: () => {
       queue = [];
     },
-    queue: <T>(taskFn: () => Promise<T>): Promise<T> => {
+    queue: <T>(key: string, taskFn: () => Promise<T>): Promise<T> => {
       let resolve;
       let reject;
       const promise = new Promise<T>((_resolve, _reject) => {
@@ -32,18 +33,25 @@ export function ConcurrencyManager(
         reject = _reject;
       });
 
-      queue.push(async () => {
-        try {
-          const result = await taskFn();
-          resolve(result);
-        } catch (error) {
-          reject(error);
+      /* eslint-disable-next-line fp/no-mutating-methods */
+      queue.push([
+        key,
+        async () => {
+          try {
+            const result = await taskFn();
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
         }
-      });
+      ]);
 
       run();
 
       return promise;
+    },
+    dequeue: (key: string) => {
+      queue = queue.filter(([k]) => k !== key);
     }
   };
 }

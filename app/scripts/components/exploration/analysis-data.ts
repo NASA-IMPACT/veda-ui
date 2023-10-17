@@ -26,42 +26,36 @@ interface DatasetAssetsRequestParams {
  *
  * @param params Dataset search request parameters
  * @param opts Options for the request (see Axios)
- * @param concurrencyManager The concurrency manager instance
  * @returns Promise with the asset urls
  */
 async function getDatasetAssets(
   { dateStart, dateEnd, stacCol, assets, aoi }: DatasetAssetsRequestParams,
-  opts: AxiosRequestConfig,
-  concurrencyManager: ConcurrencyManagerInstance
+  opts: AxiosRequestConfig
 ): Promise<{ assets: { date: Date; url: string }[] }> {
-  const data = await concurrencyManager.queue(async () => {
-    const searchReqRes = await axios.post(
-      `${process.env.API_STAC_ENDPOINT}/search`,
-      {
-        'filter-lang': 'cql2-json',
-        limit: 10000,
-        fields: {
-          include: [
-            `assets.${assets}.href`,
-            'properties.start_datetime',
-            'properties.datetime'
-          ],
-          exclude: ['collection', 'links']
-        },
-        filter: getFilterPayload(dateStart, dateEnd, aoi, [stacCol])
+  const searchReqRes = await axios.post(
+    `${process.env.API_STAC_ENDPOINT}/search`,
+    {
+      'filter-lang': 'cql2-json',
+      limit: 10000,
+      fields: {
+        include: [
+          `assets.${assets}.href`,
+          'properties.start_datetime',
+          'properties.datetime'
+        ],
+        exclude: ['collection', 'links']
       },
-      opts
-    );
+      filter: getFilterPayload(dateStart, dateEnd, aoi, [stacCol])
+    },
+    opts
+  );
 
-    return {
-      assets: searchReqRes.data.features.map((o) => ({
-        date: new Date(o.properties.start_datetime || o.properties.datetime),
-        url: o.assets[assets].href
-      }))
-    };
-  });
-
-  return data;
+  return {
+    assets: searchReqRes.data.features.map((o) => ({
+      date: new Date(o.properties.start_datetime || o.properties.datetime),
+      url: o.assets[assets].href
+    }))
+  };
 }
 
 interface TimeseriesRequesterParams {
@@ -100,22 +94,26 @@ export async function requestDatasetTimeseriesData({
   });
 
   try {
-    const layerInfoFromSTAC = await queryClient.fetchQuery(
-      ['analysis', 'dataset', id, aoi, start, end],
-      ({ signal }) =>
-        getDatasetAssets(
+    const layerInfoFromSTAC = await concurrencyManager.queue(
+      `${id}-analysis`,
+      () => {
+        return queryClient.fetchQuery(
+          ['analysis', 'dataset', id, aoi, start, end],
+          ({ signal }) =>
+            getDatasetAssets(
+              {
+                stacCol: datasetData.stacCol,
+                assets: datasetData.sourceParams?.assets || 'cog_default',
+                aoi,
+                dateStart: start,
+                dateEnd: end
+              },
+              { signal }
+            ),
           {
-            stacCol: datasetData.stacCol,
-            assets: datasetData.sourceParams?.assets || 'cog_default',
-            aoi,
-            dateStart: start,
-            dateEnd: end
-          },
-          { signal },
-          concurrencyManager
-        ),
-      {
-        staleTime: Infinity
+            staleTime: Infinity
+          }
+        );
       }
     );
 
@@ -135,24 +133,27 @@ export async function requestDatasetTimeseriesData({
 
     const layerStatistics = await Promise.all(
       assets.map(async ({ date, url }) => {
-        const statistics = await queryClient.fetchQuery(
-          ['analysis', 'asset', url, aoi],
-          async ({ signal }) => {
-            return concurrencyManager.queue(async () => {
-              const { data } = await axios.post(
-                `${process.env.API_RASTER_ENDPOINT}/cog/statistics?url=${url}`,
-                // Making a request with a FC causes a 500 (as of 2023/01/20)
-                combineFeatureCollection(aoi),
-                { signal }
-              );
-              return {
-                date,
-                ...data.properties.statistics.b1
-              };
-            });
-          },
-          {
-            staleTime: Infinity
+        const statistics = await concurrencyManager.queue(
+          `${id}-analysis-asset`,
+          () => {
+            return queryClient.fetchQuery(
+              ['analysis', id, 'asset', url, aoi],
+              async ({ signal }) => {
+                const { data } = await axios.post(
+                  `${process.env.API_RASTER_ENDPOINT}/cog/statistics?url=${url}`,
+                  // Making a request with a FC causes a 500 (as of 2023/01/20)
+                  combineFeatureCollection(aoi),
+                  { signal }
+                );
+                return {
+                  date,
+                  ...data.properties.statistics.b1
+                };
+              },
+              {
+                staleTime: Infinity
+              }
+            );
           }
         );
 
@@ -184,6 +185,11 @@ export async function requestDatasetTimeseriesData({
   } catch (error) {
     // Discard abort related errors.
     if (error.revert) return;
+
+    // Cancel any inflight queries.
+    queryClient.cancelQueries({ queryKey: ['analysis', id] });
+    // Remove other requests from the queue.
+    concurrencyManager.dequeue(`${id}-analysis-asset`);
 
     onProgress({
       ...datasetAnalysis,

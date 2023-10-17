@@ -14,7 +14,6 @@ export function useAnalysisController() {
   const [controller, setController] = useAtom(analysisControllerAtom);
 
   return {
-    analysisRun: controller.runId,
     isAnalyzing: controller.isAnalyzing,
     isObsolete: controller.isObsolete,
     setObsolete: useCallback(
@@ -22,13 +21,19 @@ export function useAnalysisController() {
       [] // eslint-disable-line react-hooks/exhaustive-deps -- setController is stable
     ),
     runAnalysis: useCallback(
-      () =>
+      (datasetsIds) => {
+        const ids = Array.isArray(datasetsIds) ? datasetsIds : [datasetsIds];
         setController((v) => ({
           ...v,
-          runId: v.runId + 1,
+          // Increment each id count by 1
+          runIds: ids.reduce(
+            (acc, id) => ({ ...acc, [id]: (acc[id] ?? 0) + 1 }),
+            v.runIds
+          ),
           isAnalyzing: true,
           isObsolete: false
-        })),
+        }));
+      },
       [] // eslint-disable-line react-hooks/exhaustive-deps -- setController is stable
     ),
     cancelAnalysis: useCallback(
@@ -39,7 +44,8 @@ export function useAnalysisController() {
           isObsolete: false
         })),
       [] // eslint-disable-line react-hooks/exhaustive-deps -- setController is stable
-    )
+    ),
+    getRunId: (id: string) => controller.runIds[id] ?? 0,
   };
 }
 
@@ -54,12 +60,14 @@ export function useAnalysisDataRequest({
   const { features } = useAois();
   const selectedFeatures = features.filter((f) => f.selected);
 
-  const { analysisRun, isAnalyzing } = useAnalysisController();
+  const { getRunId, isAnalyzing } = useAnalysisController();
 
   const dataset = useAtomValue(datasetAtom);
   const datasetStatus = dataset.status;
 
   const [, setAnalysis] = useTimelineDatasetAnalysis(datasetAtom);
+
+  const analysisRunId = getRunId(dataset.data.id);
 
   useEffect(() => {
     if (!isAnalyzing) {
@@ -103,5 +111,5 @@ export function useAnalysisDataRequest({
     // when they enter the analysis. It is certain that when this effect runs
     // the other values will be up to date. Adding all dependencies would cause
     // the hook to continuously run.
-  }, [analysisRun, datasetStatus]);
+  }, [analysisRunId, datasetStatus]);
 }

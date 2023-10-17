@@ -37,6 +37,6 @@ export const isExpandedAtom = atom<boolean>(false);
 // Analysis controller. Stores high level state about the analysis process.
 export const analysisControllerAtom = atom({
   isAnalyzing: false,
-  runId: 0,
+  runIds: {} as Record<string, number | undefined>,
   isObsolete: false
 });

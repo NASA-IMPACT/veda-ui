@@ -45,7 +45,10 @@ import {
   useTimelineDatasetVisibility
 } from '$components/exploration/atoms/hooks';
 import { analysisControllerAtom } from '$components/exploration/atoms/atoms';
-import { useAnalysisDataRequest } from '$components/exploration/hooks/use-analysis-data-request';
+import {
+  useAnalysisController,
+  useAnalysisDataRequest
+} from '$components/exploration/hooks/use-analysis-data-request';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -176,6 +179,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
   });
 
   useAnalysisDataRequest({ datasetAtom });
+  const { runAnalysis } = useAnalysisController();
 
   const isDatasetError = dataset.status === TimelineDatasetStatus.ERROR;
   const isDatasetLoading = dataset.status === TimelineDatasetStatus.LOADING;
@@ -281,6 +285,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   onRetryClick={() => {
                     /* eslint-disable-next-line no-console */
                     console.log('Retry analysis loading');
+                    runAnalysis(dataset.data.id);
                   }}
                 />
               )}
