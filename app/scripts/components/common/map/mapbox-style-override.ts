@@ -25,7 +25,7 @@ const MapboxStyleOverride = css`
 
     > * {
       display: flex;
-      flex-flow: column nowrap;
+      flex-flow: row nowrap;
       gap: ${variableGlsp(0.5)};
       align-items: flex-start;
       float: none;
@@ -214,7 +214,8 @@ const MapboxStyleOverride = css`
     color: ${themeVal('type.base.color')};
     font: ${themeVal('type.base.style')} ${themeVal('type.base.weight')}
       0.875rem/1.25rem ${themeVal('type.base.family')};
-    transition: all 0.24s ease 0s;
+    transition: none;
+    overflow: hidden;
 
     &::before {
       position: absolute;
@@ -234,6 +235,7 @@ const MapboxStyleOverride = css`
       width: 2rem;
       min-width: 2rem;
       background-color: ${themeVal('color.primary')};
+      transition: none;
 
       &::before {
         background-image: url(${({ theme }) =>
@@ -259,7 +261,7 @@ const MapboxStyleOverride = css`
       right: 0;
       background: none;
       border-radius: ${themeVal('shape.rounded')};
-      transition: all 0.24s ease 0s;
+      transition: none;
       color: inherit;
 
       &:hover {

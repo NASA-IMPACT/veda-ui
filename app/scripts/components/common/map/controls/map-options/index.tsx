@@ -137,7 +137,7 @@ function MapOptions(props: MapOptionsProps) {
         </SelectorButton>
       )}
       direction='down'
-      alignment='left'
+      alignment='right'
     >
       <DropHeader>
         <DropTitle>Map options</DropTitle>
@@ -266,7 +266,7 @@ function MapOptions(props: MapOptionsProps) {
 
 export default function MapOptionsControl(props: MapOptionsProps) {
   useThemedControl(() => <MapOptions {...props} />, {
-    position: 'top-left'
+    position: 'top-right'
   });
   return null;
 }

@@ -73,10 +73,20 @@ export function ExplorationMap(props: { comparing: boolean }) {
           />
         ))}
       {/* Map controls */}
+      <DrawControl
+        displayControlsDefault={false}
+        controls={
+          {
+            polygon: true,
+            trash: true
+          } as any
+        }
+        onCreate={onUpdate}
+        onUpdate={onUpdate}
+        onDelete={onDelete}
+        onSelectionChange={onSelectionChange}
+      />
       <GeocoderControl />
-      <NavigationControl />
-      <ScaleControl />
-      <MapCoordsControl />
       <MapOptionsControl
         projection={projection}
         onProjectionChange={setProjection}
@@ -86,17 +96,9 @@ export function ExplorationMap(props: { comparing: boolean }) {
         boundariesOption={boundariesOption}
         onOptionChange={onOptionChange}
       />
-      <DrawControl
-        displayControlsDefault={false}
-        controls={{
-          polygon: true,
-          trash: true
-        } as any}
-        onCreate={onUpdate}
-        onUpdate={onUpdate}
-        onDelete={onDelete}
-        onSelectionChange={onSelectionChange}
-      />
+
+      <ScaleControl />
+      <MapCoordsControl />
       {props.comparing && (
         // Compare map layers
         <Compare>
