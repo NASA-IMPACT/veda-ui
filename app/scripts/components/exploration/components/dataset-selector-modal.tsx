@@ -3,10 +3,16 @@ import styled, { css } from 'styled-components';
 import { useAtom } from 'jotai';
 
 import { DatasetData, DatasetLayer, datasetTaxonomies } from 'veda';
-import { Modal, ModalBody, ModalFooter } from '@devseed-ui/modal';
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalHeadline
+} from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
-import { Subtitle } from '@devseed-ui/typography';
+import { Heading, Subtitle } from '@devseed-ui/typography';
 import {
   CollecticonTickSmall,
   CollecticonXmarkSmall,
@@ -51,9 +57,16 @@ const DatasetModal = styled(Modal)`
 
   /* Override ModalContents */
   > div {
-    height: calc(100vh - ${glsp(4)});
     display: flex;
     flex-flow: column;
+  }
+
+  ${ModalHeader} {
+    position: sticky;
+    top: ${glsp(-2)};
+    z-index: 100;
+    box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')};
+    margin-bottom: ${glsp(2)};
   }
 
   ${ModalBody} {
@@ -68,6 +81,10 @@ const DatasetModal = styled(Modal)`
     display: flex;
     gap: ${glsp(1)};
     align-items: center;
+    position: sticky;
+    bottom: ${glsp(-2)};
+    z-index: 100;
+    box-shadow: 0 -1px 0 0 ${themeVal('color.base-100a')};
 
     > .selection-info {
       margin-right: auto;
@@ -75,9 +92,7 @@ const DatasetModal = styled(Modal)`
   }
 `;
 
-const ModalIntro = styled.div`
-  margin-bottom: ${glsp(2)};
-`;
+const ModalIntro = styled.div``;
 
 const DatasetCount = styled(Subtitle)`
   display: flex;
@@ -93,13 +108,10 @@ const DatasetContainer = styled.div`
   height: 100%;
   min-height: 0;
   display: flex;
-  margin: ${glsp(0, -2)};
-  box-shadow: 0 -1px 0 0 ${themeVal('color.base-100a')},
-    inset 0 -1px 0 0 ${themeVal('color.base-100a')};
+  margin-bottom: ${glsp(2)};
 
   ${CardList} {
-    overflow-y: auto;
-    padding: ${glsp(2)};
+    width: 100%;
   }
 
   ${EmptyHub} {
@@ -236,8 +248,9 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       revealed={revealed}
       closeButton={!isFirstSelection}
       onCloseClick={close}
-      content={
-        <>
+      renderHeadline={() => (
+        <ModalHeadline>
+          <Heading size='small'>Select datasets</Heading>
           <ModalIntro>
             {isFirstSelection ? (
               <p>Select datasets to start the exploration.</p>
@@ -245,6 +258,10 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
               <p>Add or remove datasets to the exploration.</p>
             )}
           </ModalIntro>
+        </ModalHeadline>
+      )}
+      content={
+        <>
           <BrowseControls
             {...controlVars}
             taxonomiesOptions={datasetTaxonomies}
@@ -342,7 +359,6 @@ function DatasetLayerCard(props: DatasetLayerProps) {
           <CardSourcesList
             sources={getTaxonomy(parent, TAXONOMY_SOURCE)?.values}
           />
-          {/* <VerticalDivider variation='light' /> */}
         </CardMeta>
       }
       linkTo={getDatasetPath(parent)}
