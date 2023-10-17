@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { addMonths } from 'date-fns';
+import { Feature, Polygon } from 'geojson';
 
 import { useStacMetadataOnDatasets } from '../../hooks/use-stac-metadata-datasets';
 import { selectedDateAtom, timelineDatasetsAtom } from '../../atoms/atoms';
@@ -9,7 +10,6 @@ import {
   TimelineDatasetSuccess
 } from '../../types.d.ts';
 import { Layer } from './layer';
-
 import Map, { Compare } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/geocoder';
@@ -21,7 +21,6 @@ import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
-import { Feature, Polygon } from 'geojson';
 
 export function ExplorationMap(props: { comparing: boolean }) {
   const [projection, setProjection] = useState(projectionDefault);
@@ -50,10 +49,14 @@ export function ExplorationMap(props: { comparing: boolean }) {
     .slice()
     .reverse();
 
-  const { update, onUpdate, onDelete, onSelectionChange } = useAois();
+  const { update } = useAois();
 
+  const [customAoIFeatures, setCustomAoIFeatures] = useState<
+    Feature<Polygon>[]
+  >([]);
   const onCustomAoIConfirm = (features: Feature<Polygon>[]) => {
     update(features);
+    setCustomAoIFeatures(features);
   };
 
   return (
@@ -83,10 +86,7 @@ export function ExplorationMap(props: { comparing: boolean }) {
             trash: true
           } as any
         }
-        onCreate={onUpdate}
-        onUpdate={onUpdate}
-        onDelete={onDelete}
-        onSelectionChange={onSelectionChange}
+        customFeatures={customAoIFeatures}
       />
       <CustomAoIControl onConfirm={onCustomAoIConfirm} />
       <GeocoderControl />

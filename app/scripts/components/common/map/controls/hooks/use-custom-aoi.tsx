@@ -1,4 +1,4 @@
-import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import shp from 'shpjs';
 import simplify from '@turf/simplify';
@@ -26,8 +26,7 @@ function useCustomAoI() {
   const [uploadFileError, setUploadFileError] = useState<string | null>(null);
   const [uploadFileWarnings, setUploadFileWarnings] = useState<string[]>([]);
   const reader = useRef<FileReader>();
-  const [features, setFeatures] =
-    useState<Feature<Polygon>[] | null>(null);
+  const [features, setFeatures] = useState<Feature<Polygon>[] | null>(null);
 
   useEffect(() => {
     reader.current = new FileReader();
@@ -158,7 +157,7 @@ function useCustomAoI() {
       setUploadFileError(null);
       setFeatures(
         simplifiedFeatures.map((feat, i) => ({
-          id: `aoi-${i}`,
+          id: `${new Date().getTime().toString().slice(-4)}${i}`,
           ...feat
         }))
       );

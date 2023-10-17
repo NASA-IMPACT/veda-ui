@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { Feature, FeatureCollection, Polygon } from 'geojson';
+import { Feature, Polygon } from 'geojson';
 import { Modal, ModalHeadline, ModalFooter } from '@devseed-ui/modal';
 import { Heading, Subtitle } from '@devseed-ui/typography';
 
@@ -117,7 +117,6 @@ export default function CustomAoIModal({
     fileInfo,
     reset
   } = useCustomAoI();
-  console.log(features)
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const onUploadClick = useCallback(() => {
