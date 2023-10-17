@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { eachDayOfInterval, eachMonthOfInterval } from 'date-fns';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
@@ -417,11 +417,13 @@ const MockPanel = styled.div`
 export function MockControls({ onCompareClick, comparing }: any) {
   const [mockRevealed, setMockRevealed] = useState(false);
 
-  const set = useSetAtom(timelineDatasetsAtom);
+  const [timelineDatasets, set] = useAtom(timelineDatasetsAtom);
   const setIsExpanded = useSetAtom(isExpandedAtom);
 
   const { isObsolete, runAnalysis, cancelAnalysis, isAnalyzing } =
     useAnalysisController();
+
+  const datasetIds = timelineDatasets.map((d) => d.data.id);
 
   useEffect(() => {
     const listener = (e) => {
@@ -612,7 +614,7 @@ export function MockControls({ onCompareClick, comparing }: any) {
             In Analysis (obsolete: {isObsolete.toString()})
             <Button
               onClick={() => {
-                runAnalysis();
+                runAnalysis(datasetIds);
               }}
               variation='secondary-outline'
             >
@@ -632,7 +634,7 @@ export function MockControls({ onCompareClick, comparing }: any) {
             NOT Analysis (obsolete: {isObsolete.toString()})
             <Button
               onClick={() => {
-                runAnalysis();
+                runAnalysis(datasetIds);
               }}
               variation='secondary-outline'
             >
