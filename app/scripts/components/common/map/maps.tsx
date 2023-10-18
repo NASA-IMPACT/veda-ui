@@ -97,10 +97,10 @@ function Maps({ children, projection }: MapsProps) {
           acc.compareGenerators = Children.toArray(
             child.props.children
           ) as ReactElement[];
-        } else if (['Basemap', 'RasterTimeseries'].includes(componentName)) {
-          acc.generators = [...acc.generators, child];
-        } else {
+        } else if (componentName.endsWith('Control')) {
           acc.controls = [...acc.controls, child];
+        } else {
+          acc.generators = [...acc.generators, child];
         }
         return acc;
       },
