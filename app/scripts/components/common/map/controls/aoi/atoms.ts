@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { atomWithLocation } from "jotai-location";
-import { Polygon } from "geojson";
+import { Feature, Polygon } from "geojson";
 import { AoIFeature } from "../../types";
 import { decodeAois, encodeAois } from "$utils/polygon-url";
 
@@ -28,7 +28,7 @@ export const aoisFeaturesAtom = atom<AoIFeature[]>((get) => {
 // Setter atom to update AOIs geoometries, writing directly to the hash atom.
 export const aoisUpdateGeometryAtom = atom(
   null,
-  (get, set, updates: { id: string; geometry: Polygon }[]) => {
+  (get, set, updates: Feature<Polygon>[]) => {
     let newFeatures = [...get(aoisFeaturesAtom)];
     updates.forEach(({ id, geometry }) => {
       const existingFeature = newFeatures.find((feature) => feature.id === id);
@@ -37,7 +37,7 @@ export const aoisUpdateGeometryAtom = atom(
       } else {
         const newFeature: AoIFeature = {
           type: 'Feature',
-          id,
+          id: id as string,
           geometry,
           selected: true,
           properties: {}

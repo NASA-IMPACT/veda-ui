@@ -1,22 +1,33 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
-import { Polygon } from 'geojson';
+import { Feature, Polygon } from 'geojson';
 import { toAoIid } from '../../utils';
-import { aoisDeleteAtom, aoisFeaturesAtom, aoisSetSelectedAtom, aoisUpdateGeometryAtom } from '../aoi/atoms';
+import {
+  aoisDeleteAtom,
+  aoisFeaturesAtom,
+  aoisSetSelectedAtom,
+  aoisUpdateGeometryAtom
+} from '../aoi/atoms';
 
 export default function useAois() {
   const features = useAtomValue(aoisFeaturesAtom);
 
   const aoisUpdateGeometry = useSetAtom(aoisUpdateGeometryAtom);
+  const update = useCallback(
+    (features: Feature<Polygon>[]) => {
+      aoisUpdateGeometry(features);
+    },
+    [aoisUpdateGeometry]
+  );
   const onUpdate = useCallback(
     (e) => {
       const updates = e.features.map((f) => ({
         id: toAoIid(f.id),
         geometry: f.geometry as Polygon
       }));
-      aoisUpdateGeometry(updates);
+      update(updates);
     },
-    [aoisUpdateGeometry]
+    [update]
   );
 
   const aoiDelete = useSetAtom(aoisDeleteAtom);
@@ -36,5 +47,6 @@ export default function useAois() {
     },
     [aoiSetSelected]
   );
-  return { features, onUpdate, onDelete, onSelectionChange };
+
+  return { features, update, onUpdate, onDelete, onSelectionChange };
 }
