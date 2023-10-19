@@ -9,7 +9,7 @@ import {
   TimelineDatasetSuccess
 } from '../../types.d.ts';
 import { Layer } from './layer';
-import { AnalysisMessage } from './analysis-message';
+import { AnalysisMessageControl } from './analysis-message-control';
 
 import Map, { Compare } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
@@ -53,8 +53,6 @@ export function ExplorationMap(props: { comparing: boolean }) {
 
   return (
     <Map id='exploration' projection={projection}>
-      <AnalysisMessage />
-
       {/* Map layers */}
       <Basemap
         basemapStyleId={mapBasemapId}
@@ -85,6 +83,7 @@ export function ExplorationMap(props: { comparing: boolean }) {
         onDelete={onDelete}
         onSelectionChange={onSelectionChange}
       />
+      <AnalysisMessageControl />
       <GeocoderControl />
       <MapOptionsControl
         projection={projection}
