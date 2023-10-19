@@ -28,12 +28,8 @@ function CustomAoI({ onConfirm }: CustomAoIProps) {
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
   return (
     <>
-      <SelectorButton>
-        <CollecticonUpload2
-          title='Upload geoJSON'
-          meaningful
-          onClick={() => setAoIModalRevealed(true)}
-        />
+      <SelectorButton onClick={() => setAoIModalRevealed(true)}>
+        <CollecticonUpload2 title='Upload geoJSON' meaningful />
       </SelectorButton>
       <CustomAoIModal
         revealed={aoiModalRevealed}

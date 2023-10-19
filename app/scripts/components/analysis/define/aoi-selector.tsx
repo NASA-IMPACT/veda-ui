@@ -120,7 +120,7 @@ export default function AoiSelector({
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
 
   return (
-    <Fold> 
+    <Fold>
       <AoIUploadModal
         setFeatureCollection={setFeatureCollection}
         revealed={aoiModalRevealed}
