@@ -5,7 +5,7 @@ import { Button, createButtonStyles } from '@devseed-ui/button';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import useThemedControl from '../hooks/use-themed-control';
-import CustomAoIModal from '../custom-aoi-modal';
+import CustomAoIModal from './custom-aoi-modal';
 
 const SelectorButton = styled(Button)`
   &&& {

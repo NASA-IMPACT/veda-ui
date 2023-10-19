@@ -19,7 +19,7 @@ import {
   CollecticonCircleTick,
   CollecticonCircleInformation
 } from '@devseed-ui/collecticons';
-import useCustomAoI, { acceptExtensions } from './hooks/use-custom-aoi';
+import useCustomAoI, { acceptExtensions } from '../hooks/use-custom-aoi';
 import { variableGlsp, variableProseVSpace } from '$styles/variable-utils';
 
 const UploadFileModalFooter = styled(ModalFooter)`
