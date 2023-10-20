@@ -19,15 +19,12 @@ const SelectorButton = styled(Button)`
   }
 `;
 
-function ResetAoI() {
-  // This doesn't work as this Context is not reachable frome here :()
-  const { main } = useMaps();
-
+function ResetAoI({ map }: { map: any }) {
   const onReset = useCallback(() => {
-    const mbDraw = (main as any)?.instance?._drawControl;
+    const mbDraw = map?.instance?._drawControl;
     if (!mbDraw) return;
     mbDraw.trash();
-  }, [main]);
+  }, [map]);
 
   return (
     <>
@@ -39,9 +36,10 @@ function ResetAoI() {
 }
 
 export default function ResetAoIControl() {
+  const { main } = useMaps();
   useThemedControl(
     () => {
-      return <ResetAoI />;
+      return <ResetAoI map={main} />;
     },
     {
       position: 'top-left'
