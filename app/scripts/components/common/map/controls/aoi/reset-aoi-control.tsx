@@ -2,9 +2,11 @@ import React, { useCallback } from 'react';
 import { CollecticonArrowLoop } from '@devseed-ui/collecticons';
 import { Button, createButtonStyles } from '@devseed-ui/button';
 import styled from 'styled-components';
+import { useSetAtom } from 'jotai';
 import { themeVal } from '@devseed-ui/theme-provider';
 import useThemedControl from '../hooks/use-themed-control';
 import useMaps from '../../hooks/use-maps';
+import { aoiDeleteAllAtom } from './atoms';
 
 const SelectorButton = styled(Button)`
   &&& {
@@ -20,11 +22,13 @@ const SelectorButton = styled(Button)`
 `;
 
 function ResetAoI({ map }: { map: any }) {
+  const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom)
   const onReset = useCallback(() => {
-    const mbDraw = map?.instance?._drawControl;
+    const mbDraw = map?._drawControl;
     if (!mbDraw) return;
-    mbDraw.trash();
-  }, [map]);
+    mbDraw.deleteAll();
+    aoiDeleteAll();
+  }, [map, aoiDeleteAll]);
 
   return (
     <>

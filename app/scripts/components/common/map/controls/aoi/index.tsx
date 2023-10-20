@@ -43,6 +43,7 @@ export default function DrawControl(props: DrawControlProps) {
       return control.current;
     },
     ({ map }: { map: any }) => {
+      map._drawControl = control.current;
       map.on('draw.create', onUpdate);
       map.on('draw.update', onUpdate);
       map.on('draw.delete', onDelete);
