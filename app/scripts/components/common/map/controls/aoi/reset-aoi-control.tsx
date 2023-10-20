@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { CollecticonArrowLoop } from '@devseed-ui/collecticons';
 import { Button, createButtonStyles } from '@devseed-ui/button';
 import styled from 'styled-components';
