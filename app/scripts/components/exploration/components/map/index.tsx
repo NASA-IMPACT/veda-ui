@@ -22,6 +22,7 @@ import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
+import ResetAoIControl from '$components/common/map/controls/aoi/reset-aoi-control';
 
 export function ExplorationMap() {
   const [projection, setProjection] = useState(projectionDefault);
@@ -93,6 +94,7 @@ export function ExplorationMap() {
         customFeatures={customAoIFeatures}
       />
       <CustomAoIControl onConfirm={onCustomAoIConfirm} />
+      <ResetAoIControl />
       <AnalysisMessageControl />
       <GeocoderControl />
       <MapOptionsControl
