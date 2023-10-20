@@ -137,3 +137,18 @@ export function useTimelineDatasetVisibility(
 
   return useAtom(visibilityAtom);
 }
+
+/**
+ * Hook to get/set the dataset analysis
+ * @param datasetAtom Single dataset atom.
+ * @returns State getter/setter for the dataset analysis.
+ */
+export function useTimelineDatasetAnalysis(
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+) {
+  const analysisAtom = useMemo(() => {
+    return focusAtom(datasetAtom, (optic) => optic.prop('analysis'));
+  }, [datasetAtom]);
+
+  return useAtom(analysisAtom);
+}

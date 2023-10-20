@@ -8,6 +8,8 @@ import { Button } from '@devseed-ui/button';
 import { CollecticonCog, CollecticonTrashBin } from '@devseed-ui/collecticons';
 import { Overline } from '@devseed-ui/typography';
 
+import AnalysisMetrics from './analysis-metrics';
+
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { SliderInput, SliderInputProps } from '$styles/range-slider';
 import { composeVisuallyDisabled } from '$utils/utils';
@@ -15,7 +17,6 @@ import { Tip } from '$components/common/tip';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/atoms';
 import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
-
 const RemoveButton = composeVisuallyDisabled(DropMenuItemButton);
 
 interface DatasetOptionsProps {
@@ -31,6 +32,8 @@ export default function DatasetOptions(props: DatasetOptionsProps) {
 
   const opacity = (getSettings('opacity') ?? 100) as number;
 
+  const activeMetrics = (getSettings('analysisMetrics') ?? []);
+
   return (
     <Dropdown
       alignment='right'
@@ -40,7 +43,7 @@ export default function DatasetOptions(props: DatasetOptionsProps) {
         </Button>
       )}
     >
-      <DropTitle>View options</DropTitle>
+      <DropTitle>Display options</DropTitle>
       <DropMenu>
         <li>
           <OpacityControl
@@ -49,6 +52,10 @@ export default function DatasetOptions(props: DatasetOptionsProps) {
           />
         </li>
       </DropMenu>
+      <AnalysisMetrics
+        activeMetrics={activeMetrics}
+        onMetricsChange={(m) => setSetting('analysisMetrics', m)}
+      />
       <DropMenu>
         <li>
           <Tip
@@ -99,7 +106,7 @@ function OpacityControl(props: SliderInputProps) {
 
   return (
     <OpacityControlWrapper>
-      <Overline>Opacity</Overline>
+      <Overline>Map Opacity</Overline>
       <OpacityControlElements>
         <SliderInput value={value} onInput={onInput} />
         <OpacityValue>{value}</OpacityValue>

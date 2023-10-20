@@ -299,6 +299,7 @@ interface CardComponentProps {
   parentTo?: string;
   footerContent?: ReactNode;
   onCardClickCapture?: MouseEventHandler;
+  onLinkClick?: MouseEventHandler;
 }
 
 function CardComponent(props: CardComponentProps) {
@@ -316,7 +317,8 @@ function CardComponent(props: CardComponentProps) {
     parentName,
     parentTo,
     footerContent,
-    onCardClickCapture
+    onCardClickCapture,
+    onLinkClick
   } = props;
 
   return (
@@ -327,7 +329,8 @@ function CardComponent(props: CardComponentProps) {
       linkLabel={linkLabel || 'View more'}
       linkProps={{
         as: Link,
-        to: linkTo
+        to: linkTo,
+        onClick: onLinkClick
       }}
       onClickCapture={onCardClickCapture}
     >

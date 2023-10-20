@@ -46,9 +46,13 @@ import {
   useScaleFactors,
   useScales
 } from '$components/exploration/hooks/scales-hooks';
-import { TimelineDatasetStatus, ZoomTransformPlain } from '$components/exploration/types.d.ts';
+import {
+  TimelineDatasetStatus,
+  ZoomTransformPlain
+} from '$components/exploration/types.d.ts';
 import { useInteractionRectHover } from '$components/exploration/hooks/use-dataset-hover';
 import { datasetLayers } from '$components/exploration/data-utils';
+import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -156,6 +160,13 @@ export default function Timeline(props: TimelineProps) {
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
 
+  const { setObsolete } = useAnalysisController();
+
+  useEffect(() => {
+    // Set the analysis as obsolete when the selected interval changes.
+    setObsolete();
+  }, [setObsolete, selectedInterval]);
+
   const translateExtent = useMemo<[[number, number], [number, number]]>(
     () => [
       [0, 0],
@@ -212,7 +223,22 @@ export default function Timeline(props: TimelineProps) {
       .on('dblclick.zoom', null)
       .on('click', (event) => {
         const d = xScaled?.invert(event.layerX);
-        d && setSelectedDay(startOfDay(d));
+        if (!d) return;
+
+        // TODO: Key click has to be improved! Fixes needed:
+        // - Preventing setting start day after end day and vice versa.
+        // - Handling when there's no selected interval.
+        if (event.shiftKey) {
+          setSelectedInterval((interval) =>
+            interval ? { ...interval, start: d } : null
+          );
+        } else if (event.altKey) {
+          setSelectedInterval((interval) =>
+            interval ? { ...interval, end: d } : null
+          );
+        } else {
+          setSelectedDay(startOfDay(d));
+        }
       })
       .on('wheel', function (event) {
         // Wheel is triggered when an horizontal wheel is used or when shift

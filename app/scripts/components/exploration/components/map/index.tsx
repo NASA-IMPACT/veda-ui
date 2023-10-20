@@ -10,6 +10,8 @@ import {
   TimelineDatasetSuccess
 } from '../../types.d.ts';
 import { Layer } from './layer';
+import { AnalysisMessageControl } from './analysis-message-control';
+
 import Map, { Compare } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/geocoder';
@@ -89,6 +91,7 @@ export function ExplorationMap(props: { comparing: boolean }) {
         customFeatures={customAoIFeatures}
       />
       <CustomAoIControl onConfirm={onCustomAoIConfirm} />
+      <AnalysisMessageControl />
       <GeocoderControl />
       <MapOptionsControl
         projection={projection}

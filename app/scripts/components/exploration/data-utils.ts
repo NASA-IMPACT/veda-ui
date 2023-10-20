@@ -13,6 +13,7 @@ import {
   TimelineDataset,
   TimelineDatasetStatus
 } from './types.d.ts';
+import { DataMetric, DATA_METRICS } from './components/datasets/analysis-metrics';
 
 import { utcString2userTzDate } from '$utils/date';
 
@@ -23,9 +24,36 @@ export const findParentDataset = (layerId: string) => {
   return parentDataset?.data;
 };
 
+export const allDatasets = Object.values(datasets).map((d) => d!.data);
+
 export const datasetLayers = Object.values(datasets).flatMap(
   (dataset) => dataset!.data.layers
 );
+
+
+/**
+ * Returns an array of metrics based on the given Dataset Layer configuration.
+ * If the layer has metrics defined, it returns only the metrics that match the
+ * ids. Otherwise, it returns all available metrics.
+ *
+ * @param data - The Datase tLayer object to get metrics for.
+ * @returns An array of metrics objects.
+ */
+function getInitialMetrics(data: DatasetLayer): DataMetric[] {
+  const metricsIds = data.analysis?.metrics ?? [];
+
+  const foundMetrics = metricsIds
+    .map((metric: string) => {
+      return DATA_METRICS.find((m) => m.id === metric)!;
+    })
+    .filter(Boolean);
+
+  if (!foundMetrics.length) {
+    return DATA_METRICS;
+  }
+
+  return foundMetrics;
+}
 
 /**
  * Converts the datasets to a format that can be used by the timeline, skipping
@@ -59,7 +87,8 @@ export function reconcileDatasets(
       error: null,
       settings: {
         isVisible: true,
-        opacity: 100
+        opacity: 100,
+        analysisMetrics: getInitialMetrics(dataset)
       },
       analysis: {
         status: TimelineDatasetStatus.IDLE,

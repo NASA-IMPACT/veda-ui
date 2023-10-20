@@ -44,10 +44,11 @@ import {
   useTimelineDatasetAtom,
   useTimelineDatasetVisibility
 } from '$components/exploration/atoms/hooks';
+import { analysisControllerAtom } from '$components/exploration/atoms/atoms';
 import {
-  activeAnalysisMetricsAtom,
-  isAnalysisAtom
-} from '$components/exploration/atoms/atoms';
+  useAnalysisController,
+  useAnalysisDataRequest
+} from '$components/exploration/hooks/use-analysis-data-request';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -131,9 +132,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
-  const activeMetrics = useAtomValue(activeAnalysisMetricsAtom);
-
-  const isAnalysis = useAtomValue(isAnalysisAtom);
+  const { isAnalyzing } = useAtomValue(analysisControllerAtom);
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
 
@@ -179,18 +178,26 @@ export function DatasetListItem(props: DatasetListItemProps) {
     data: dataPoint
   });
 
+  useAnalysisDataRequest({ datasetAtom });
+  const { runAnalysis } = useAnalysisController();
+
   const isDatasetError = dataset.status === TimelineDatasetStatus.ERROR;
   const isDatasetLoading = dataset.status === TimelineDatasetStatus.LOADING;
   const isDatasetSuccess = dataset.status === TimelineDatasetStatus.SUCCESS;
 
   const isAnalysisAndError =
-    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.ERROR;
+    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.ERROR;
   const isAnalysisAndLoading =
-    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.LOADING;
+    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.LOADING;
   const isAnalysisAndSuccess =
-    isAnalysis && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
+    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
 
   const datasetLegend = dataset.data.legend;
+
+  const analysisMetrics = useMemo(
+    () => dataset.settings.analysisMetrics ?? [],
+    [dataset]
+  );
 
   return (
     <Reorder.Item
@@ -265,7 +272,11 @@ export function DatasetListItem(props: DatasetListItemProps) {
             <>
               {isAnalysisAndLoading && (
                 <DatasetTrackLoading
-                  message={`${dataset.analysis.meta.loaded} of ${dataset.analysis.meta.total} items loaded`}
+                  message={
+                    dataset.analysis.meta.total === undefined
+                      ? 'Fetching item information'
+                      : `${dataset.analysis.meta.loaded} of ${dataset.analysis.meta.total} items loaded`
+                  }
                 />
               )}
               {isAnalysisAndError && (
@@ -274,6 +285,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   onRetryClick={() => {
                     /* eslint-disable-next-line no-console */
                     console.log('Retry analysis loading');
+                    runAnalysis(dataset.data.id);
                   }}
                 />
               )}
@@ -283,14 +295,14 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   width={width}
                   isVisible={!!isVisible}
                   data={dataset.analysis}
-                  activeMetrics={activeMetrics}
+                  activeMetrics={analysisMetrics}
                   highlightDate={dataPoint?.date}
                 />
               )}
             </>
           )}
 
-          {isDatasetSuccess && !isAnalysis && (
+          {isDatasetSuccess && !isAnalyzing && (
             <DatasetTrack
               width={width}
               xScaled={xScaled!}
@@ -304,7 +316,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
               ref={popoverRefs.setFloating}
               style={floatingStyles}
               timeDensity={dataset.data.timeDensity}
-              activeMetrics={activeMetrics}
+              activeMetrics={analysisMetrics}
               data={dataPoint}
             />
           )}

@@ -1,4 +1,5 @@
 import { DatasetLayer } from 'veda';
+import { DataMetric } from './components/datasets/analysis-metrics';
 
 export enum TimeDensity {
   YEAR = 'year',
@@ -19,9 +20,25 @@ export interface StacDatasetData {
   domain: string[];
 }
 
-export type AnalysisTimeseriesEntry = Record<string, number | null> & {
+export interface AnalysisTimeseriesEntry {
   date: Date;
-};
+  min: number;
+  max: number;
+  mean: number;
+  count: number;
+  sum: number;
+  std: number;
+  median: number;
+  majority: number;
+  minority: number;
+  unique: number;
+  histogram: [number[], number[]];
+  valid_percent: number;
+  masked_pixels: number;
+  valid_pixels: number;
+  percentile_2: number;
+  percentile_98: number;
+}
 
 interface AnalysisMeta {
   loaded: number;
@@ -75,6 +92,8 @@ export interface TimelineDatasetSettings {
   isVisible?: boolean;
   // Opacity of the layer on the map.
   opacity?: number;
+  // Active metrics for the analysis chart.
+  analysisMetrics?: DataMetric[];
 }
 
 // TimelineDataset type discriminants
