@@ -19,6 +19,7 @@ const Css = createGlobalStyle`
 export default function DrawControl(props: DrawControlProps) {
   const control = useRef<MapboxDraw>();
   const aoisFeatures = useAtomValue(aoisFeaturesAtom);
+  const areSelectedFeatures = aoisFeatures.some((f) => f.selected);
 
   const { onUpdate, onDelete, onSelectionChange } = useAois();
 
@@ -51,5 +52,5 @@ export default function DrawControl(props: DrawControlProps) {
     }
   );
 
-  return aoisFeatures.length ? null : <Css />;
+  return areSelectedFeatures ? null : <Css />;
 }
