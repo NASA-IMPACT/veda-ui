@@ -144,7 +144,7 @@ export function useStacMetadataOnDatasets() {
   useEffectPrevious<[typeof datasetsQueryData, TimelineDataset[]]>(
     (prev) => {
       const prevQueryData = prev[0];
-      if (!prevQueryData) return;
+      const hasPrev = !!prevQueryData;
 
       const { changed, data: updatedDatasets } = datasets
         .filter((d) => !(d as any).mocked)
@@ -155,7 +155,9 @@ export function useStacMetadataOnDatasets() {
           (acc, dataset, idx) => {
             const curr = datasetsQueryData[idx];
 
-            if (didDataChange(curr, prevQueryData[idx])) {
+            // We want to reconcile the data event if it is the first time.
+            // In practice data will have changes, since prev is undefined.
+            if (!hasPrev || didDataChange(curr, prevQueryData[idx])) {
               // Changed
               return {
                 changed: true,

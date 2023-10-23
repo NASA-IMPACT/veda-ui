@@ -1,12 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styled from 'styled-components';
+import { useAtomValue } from 'jotai';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { MockControls } from './datasets-mock';
 import Timeline from './components/timeline/timeline';
 import { ExplorationMap } from './components/map';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
+import { timelineDatasetsAtom } from './atoms/atoms';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -55,7 +57,10 @@ const Container = styled.div`
 `;
 
 function Exploration() {
-  const [datasetModalRevealed, setDatasetModalRevealed] = useState(true);
+  const datasets = useAtomValue(timelineDatasetsAtom);
+  const [datasetModalRevealed, setDatasetModalRevealed] = useState(
+    !datasets.length
+  );
 
   const openModal = useCallback(() => setDatasetModalRevealed(true), []);
   const closeModal = useCallback(() => setDatasetModalRevealed(false), []);
