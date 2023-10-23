@@ -21,14 +21,15 @@ import { DatasetList } from '../datasets/dataset-list';
 import { applyTransform, isEqualTransform, rescaleX } from './timeline-utils';
 import { TimelineControls } from './timeline-controls';
 import {
-  TimelineHeadL,
-  TimelineHeadP,
-  TimelineHeadR,
+  TimelineHeadIn,
+  TimelineHeadPoint,
+  TimelineHeadOut,
   TimelineRangeTrack
 } from './timeline-head';
 import { DateGrid } from './date-axis';
 
 import {
+  selectedCompareDateAtom,
   selectedDateAtom,
   selectedIntervalAtom,
   timelineDatasetsAtom,
@@ -158,6 +159,9 @@ export default function Timeline(props: TimelineProps) {
   const { contentWidth: width } = useAtomValue(timelineSizesAtom);
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
+  const [selectedCompareDay, setSelectedCompareDay] = useAtom(
+    selectedCompareDateAtom
+  );
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
 
   const { setObsolete } = useAnalysisController();
@@ -403,58 +407,71 @@ export default function Timeline(props: TimelineProps) {
         <TimelineControls xScaled={xScaled} width={width} />
       </TimelineHeader>
       <TimelineContent>
-        {shouldRenderTimeline && selectedDay ? (
-          <TimelineHeadP
-            domain={dataDomain}
-            xScaled={xScaled}
-            onDayChange={setSelectedDay}
-            selectedDay={selectedDay}
-            width={width}
-          />
-        ) : (
-          false
-        )}
-        {shouldRenderTimeline && selectedInterval && (
+        {shouldRenderTimeline && (
           <>
-            <TimelineHeadL
-              domain={dataDomain}
-              xScaled={xScaled}
-              onDayChange={(d) => {
-                setSelectedInterval((interval) => {
-                  const prevDay = sub(interval!.end, { days: 1 });
-                  return {
-                    end: interval!.end,
-                    start: isAfter(d, prevDay) ? prevDay : d
-                  };
-                });
-              }}
-              selectedDay={selectedInterval.start}
-              width={width}
-            />
-            <TimelineHeadR
-              domain={dataDomain}
-              xScaled={xScaled}
-              onDayChange={(d) => {
-                setSelectedInterval((interval) => {
-                  const nextDay = add(interval!.start, { days: 1 });
-                  return {
-                    start: interval!.start,
-                    end: isBefore(d, nextDay) ? nextDay : d
-                  };
-                });
-              }}
-              selectedDay={selectedInterval.end}
-              width={width}
-            />
-            <TimelineRangeTrack
-              range={selectedInterval}
-              xScaled={xScaled}
-              width={width}
-            />
+            {selectedDay && (
+              <TimelineHeadPoint
+                label='A'
+                domain={dataDomain}
+                xScaled={xScaled}
+                onDayChange={setSelectedDay}
+                selectedDay={selectedDay}
+                width={width}
+              />
+            )}
+            {selectedCompareDay && (
+              <TimelineHeadPoint
+                label='B'
+                domain={dataDomain}
+                xScaled={xScaled}
+                onDayChange={setSelectedCompareDay}
+                selectedDay={selectedCompareDay}
+                width={width}
+              />
+            )}
+            {selectedInterval && (
+              <>
+                <TimelineHeadIn
+                  domain={dataDomain}
+                  xScaled={xScaled}
+                  onDayChange={(d) => {
+                    setSelectedInterval((interval) => {
+                      const prevDay = sub(interval!.end, { days: 1 });
+                      return {
+                        end: interval!.end,
+                        start: isAfter(d, prevDay) ? prevDay : d
+                      };
+                    });
+                  }}
+                  selectedDay={selectedInterval.start}
+                  width={width}
+                />
+                <TimelineHeadOut
+                  domain={dataDomain}
+                  xScaled={xScaled}
+                  onDayChange={(d) => {
+                    setSelectedInterval((interval) => {
+                      const nextDay = add(interval!.start, { days: 1 });
+                      return {
+                        start: interval!.start,
+                        end: isBefore(d, nextDay) ? nextDay : d
+                      };
+                    });
+                  }}
+                  selectedDay={selectedInterval.end}
+                  width={width}
+                />
+                <TimelineRangeTrack
+                  range={selectedInterval}
+                  xScaled={xScaled}
+                  width={width}
+                />
+              </>
+            )}
+
+            <DateGrid width={width} xScaled={xScaled} />
           </>
         )}
-
-        {shouldRenderTimeline && <DateGrid width={width} xScaled={xScaled} />}
 
         <TimelineContentInner ref={datasetsContainerRef}>
           <DatasetList width={width} xScaled={xScaled} />

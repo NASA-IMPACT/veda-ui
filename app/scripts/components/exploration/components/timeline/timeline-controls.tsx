@@ -7,8 +7,10 @@ import { scaleTime, ScaleTime } from 'd3';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonChevronDownSmall,
+  CollecticonPlusSmall,
   CollecticonResizeIn,
-  CollecticonResizeOut
+  CollecticonResizeOut,
+  CollecticonTrashBin
 } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
 import { DatePicker } from '@devseed-ui/date-picker';
@@ -24,6 +26,7 @@ import { DateAxis } from './date-axis';
 import {
   analysisControllerAtom,
   isExpandedAtom,
+  selectedCompareDateAtom,
   selectedDateAtom,
   selectedIntervalAtom
 } from '$components/exploration/atoms/atoms';
@@ -67,6 +70,9 @@ export function TimelineControls(props: TimelineControlsProps) {
   const { xScaled, width } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
+  const [selectedCompareDay, setSelectedCompareDay] = useAtom(
+    selectedCompareDateAtom
+  );
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
   const { isAnalyzing } = useAtomValue(analysisControllerAtom);
   const [isExpanded, setExpanded] = useAtom(isExpandedAtom);
@@ -83,20 +89,65 @@ export function TimelineControls(props: TimelineControlsProps) {
     <TimelineControlsSelf>
       <ControlsToolbar>
         <Toolbar>
-          <DatePicker
-            id='date-picker-p'
-            value={{ start: selectedDay, end: selectedDay }}
-            onConfirm={(d) => {
-              setSelectedDay(d.start!);
-            }}
-            renderTriggerElement={(props, label) => (
-              <DatePickerButton {...props} size='small' disabled={!xScaled}>
-                <span className='head-reference'>P</span>
-                <span>{label}</span>
-                <CollecticonChevronDownSmall />
-              </DatePickerButton>
+          <ToolbarGroup>
+            <DatePicker
+              id='date-picker-a'
+              value={{ start: selectedDay, end: selectedDay }}
+              onConfirm={(d) => {
+                setSelectedDay(d.start!);
+              }}
+              renderTriggerElement={(props, label) => (
+                <DatePickerButton {...props} size='small' disabled={!xScaled}>
+                  <span className='head-reference'>A</span>
+                  <span>{label}</span>
+                  <CollecticonChevronDownSmall />
+                </DatePickerButton>
+              )}
+            />
+            <VerticalDivider />
+            {selectedCompareDay ? (
+              <>
+                <DatePicker
+                  id='date-picker-b'
+                  value={{ start: selectedCompareDay, end: selectedCompareDay }}
+                  onConfirm={(d) => {
+                    setSelectedCompareDay(d.start!);
+                  }}
+                  renderTriggerElement={(props, label) => (
+                    <DatePickerButton
+                      {...props}
+                      size='small'
+                      disabled={!xScaled}
+                    >
+                      <span className='head-reference'>B</span>
+                      <span>{label}</span>
+                      <CollecticonChevronDownSmall />
+                    </DatePickerButton>
+                  )}
+                />
+                <ToolbarIconButton
+                  size='small'
+                  onClick={() => {
+                    setSelectedCompareDay(null);
+                  }}
+                >
+                  <CollecticonTrashBin
+                    meaningful
+                    title='Stop comparing dates'
+                  />
+                </ToolbarIconButton>
+              </>
+            ) : (
+              <ToolbarIconButton
+                size='small'
+                onClick={() => {
+                  setSelectedCompareDay(selectedDay);
+                }}
+              >
+                <CollecticonPlusSmall meaningful title='Add comparison date' />
+              </ToolbarIconButton>
             )}
-          />
+          </ToolbarGroup>
           <ToolbarGroup>
             <DatePicker
               id='date-picker-lr'

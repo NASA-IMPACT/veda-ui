@@ -34,7 +34,7 @@ const getCoords = (mapInstance?: MapRef) => {
   };
 };
 
-export default function MapCoords() {
+export default function MapCoordsControl() {
   const { main } = useMaps();
 
   const [position, setPosition] = useState(getCoords(main));

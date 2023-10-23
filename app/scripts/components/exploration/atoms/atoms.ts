@@ -5,8 +5,10 @@ import { DateRange, TimelineDataset, ZoomTransformPlain } from '../types.d.ts';
 
 // Datasets to show on the timeline and their settings
 export const timelineDatasetsAtom = atom<TimelineDataset[]>([]);
-// Main timeline date. This date defines the datasets shown on the map.
+// Main timeline date. This is the date for the datasets shown on the map.
 export const selectedDateAtom = atom<Date | null>(null);
+// Compare date. This is the compare date for the datasets shown on the map.
+export const selectedCompareDateAtom = atom<Date | null>(null);
 // Date range for L&R playheads.
 export const selectedIntervalAtom = atom<DateRange | null>(null);
 // Zoom transform for the timeline. Values as object instead of d3.ZoomTransform

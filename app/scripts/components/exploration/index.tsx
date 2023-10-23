@@ -55,7 +55,6 @@ const Container = styled.div`
 `;
 
 function Exploration() {
-  const [compare, setCompare] = useState(false);
   const [datasetModalRevealed, setDatasetModalRevealed] = useState(true);
 
   const openModal = useCallback(() => setDatasetModalRevealed(true), []);
@@ -74,10 +73,12 @@ function Exploration() {
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>
-              <ExplorationMap comparing={compare} />
+              <ExplorationMap />
               <MockControls
-                comparing={compare}
-                onCompareClick={() => setCompare((v) => !v)}
+                comparing={false}
+                onCompareClick={() => {
+                  /* noop */
+                }}
               />
             </Panel>
             <PanelResizeHandle className='resize-handle' />

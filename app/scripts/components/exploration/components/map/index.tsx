@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useAtomValue } from 'jotai';
-import { addMonths } from 'date-fns';
 import { Feature, Polygon } from 'geojson';
 
 import { useStacMetadataOnDatasets } from '../../hooks/use-stac-metadata-datasets';
-import { selectedDateAtom, timelineDatasetsAtom } from '../../atoms/atoms';
+import { selectedCompareDateAtom, selectedDateAtom, timelineDatasetsAtom } from '../../atoms/atoms';
 import {
   TimelineDatasetStatus,
   TimelineDatasetSuccess
@@ -24,7 +23,7 @@ import DrawControl from '$components/common/map/controls/aoi';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 
-export function ExplorationMap(props: { comparing: boolean }) {
+export function ExplorationMap() {
   const [projection, setProjection] = useState(projectionDefault);
 
   const {
@@ -39,6 +38,9 @@ export function ExplorationMap(props: { comparing: boolean }) {
 
   const datasets = useAtomValue(timelineDatasetsAtom);
   const selectedDay = useAtomValue(selectedDateAtom);
+  const selectedCompareDay = useAtomValue(selectedCompareDateAtom);
+
+  const comparing = !!selectedCompareDay;
 
   // Reverse the datasets order to have the "top" layer, list-wise, at the "top" layer, z-order wise
   // Disabled eslint rule as slice() creates a shallow copy
@@ -105,7 +107,7 @@ export function ExplorationMap(props: { comparing: boolean }) {
 
       <ScaleControl />
       <MapCoordsControl />
-      {props.comparing && (
+      {comparing && (
         // Compare map layers
         <Compare>
           <Basemap
@@ -119,7 +121,7 @@ export function ExplorationMap(props: { comparing: boolean }) {
                 key={dataset.data.id}
                 id={`${dataset.data.id}-compare`}
                 dataset={dataset}
-                selectedDay={addMonths(selectedDay, 1)}
+                selectedDay={selectedCompareDay}
                 order={idx}
               />
             ))}
