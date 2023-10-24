@@ -77,3 +77,5 @@ export default function MapCoordsControl() {
 
   return null;
 }
+
+MapCoordsControl.displayName = 'MapCoordsControl';

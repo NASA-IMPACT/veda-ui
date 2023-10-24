@@ -6,6 +6,8 @@ export function Compare({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+Compare.displayName = 'Compare';
+
 export default function MapProviderWrapper(props: MapsContextWrapperProps) {
   return (
     <MapProvider>

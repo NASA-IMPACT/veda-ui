@@ -277,3 +277,5 @@ export default function MapOptionsControl(props: MapOptionsProps) {
   });
   return null;
 }
+
+MapOptionsControl.displayName = 'MapOptionsControl';

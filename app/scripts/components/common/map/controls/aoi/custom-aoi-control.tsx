@@ -46,3 +46,5 @@ export default function CustomAoIControl(props: CustomAoIProps) {
   });
   return null;
 }
+
+CustomAoIControl.displayName = 'CustomAoIControl';

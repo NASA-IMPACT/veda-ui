@@ -67,3 +67,5 @@ export default function DrawControl(props: DrawControlProps) {
 
   return aoisFeatures.length ? null : <Css />;
 }
+
+DrawControl.displayName = 'DrawControl';

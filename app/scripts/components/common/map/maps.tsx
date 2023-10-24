@@ -3,7 +3,6 @@ import React, {
   Children,
   useMemo,
   ReactElement,
-  JSXElementConstructor,
   useState,
   createContext
 } from 'react';
@@ -92,7 +91,11 @@ function Maps({ children, projection }: MapsProps) {
 
     const sortedChildren = childrenArr.reduce(
       (acc, child) => {
-        const componentName = (child.type as JSXElementConstructor<any>).name;
+        // This is added so that we can use the component name in production
+        // where the function names are minified
+        // @ts-expect-error displayName is not in the type
+        const componentName = child.type.displayName ?? '';
+
         if (componentName === 'Compare') {
           acc.compareGenerators = Children.toArray(
             child.props.children

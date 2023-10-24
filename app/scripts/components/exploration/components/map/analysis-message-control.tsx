@@ -178,3 +178,5 @@ export function AnalysisMessageControl() {
 
   return null;
 }
+
+AnalysisMessageControl.displayName = 'AnalysisMessageControl';

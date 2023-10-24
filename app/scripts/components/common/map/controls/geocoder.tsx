@@ -18,3 +18,5 @@ export default function GeocoderControl() {
 
   return null;
 }
+
+GeocoderControl.displayName = 'GeocoderControl';
