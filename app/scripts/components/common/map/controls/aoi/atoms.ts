@@ -66,3 +66,7 @@ export const aoisDeleteAtom = atom(null, (get, set, ids: string[]) => {
   );
   set(aoisSerialized, encodeAois(newFeatures));
 });
+
+export const aoiDeleteAllAtom = atom(null, (get, set) => {
+  set(aoisSerialized, encodeAois([]));
+});

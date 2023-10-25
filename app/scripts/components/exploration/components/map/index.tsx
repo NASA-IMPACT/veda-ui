@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useAtomValue } from 'jotai';
-import { Feature, Polygon } from 'geojson';
 
 import { useStacMetadataOnDatasets } from '../../hooks/use-stac-metadata-datasets';
 import { selectedCompareDateAtom, selectedDateAtom, timelineDatasetsAtom } from '../../atoms/atoms';
@@ -20,8 +19,8 @@ import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';
-import useAois from '$components/common/map/controls/hooks/use-aois';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
+import ResetAoIControl from '$components/common/map/controls/aoi/reset-aoi-control';
 
 export function ExplorationMap() {
   const [projection, setProjection] = useState(projectionDefault);
@@ -53,16 +52,6 @@ export function ExplorationMap() {
     .slice()
     .reverse();
 
-  const { update } = useAois();
-
-  const [customAoIFeatures, setCustomAoIFeatures] = useState<
-    Feature<Polygon>[]
-  >([]);
-  const onCustomAoIConfirm = (features: Feature<Polygon>[]) => {
-    update(features);
-    setCustomAoIFeatures(features);
-  };
-
   return (
     <Map id='exploration' projection={projection}>
       {/* Map layers */}
@@ -90,9 +79,9 @@ export function ExplorationMap() {
             trash: true
           } as any
         }
-        customFeatures={customAoIFeatures}
       />
-      <CustomAoIControl onConfirm={onCustomAoIConfirm} />
+      <CustomAoIControl />
+      <ResetAoIControl />
       <AnalysisMessageControl />
       <GeocoderControl />
       <MapOptionsControl

@@ -4,8 +4,9 @@ import { CollecticonUpload2 } from '@devseed-ui/collecticons';
 import { Button, createButtonStyles } from '@devseed-ui/button';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
+import useMaps from '../../hooks/use-maps';
 import useThemedControl from '../hooks/use-themed-control';
-import CustomAoIModal from '../custom-aoi-modal';
+import CustomAoIModal from './custom-aoi-modal';
 
 const SelectorButton = styled(Button)`
   &&& {
@@ -20,12 +21,18 @@ const SelectorButton = styled(Button)`
   }
 `;
 
-interface CustomAoIProps {
-  onConfirm: (features: Feature<Polygon>[]) => void;
-}
-
-function CustomAoI({ onConfirm }: CustomAoIProps) {
+function CustomAoI({ map }: { map: any }) {
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
+
+  const onConfirm = (features: Feature<Polygon>[]) => {
+    const mbDraw = map?._drawControl;
+    setAoIModalRevealed(false);
+    if (!mbDraw) return;
+    mbDraw.add({
+      type: 'FeatureCollection',
+      features
+    });
+  };
   return (
     <>
       <SelectorButton onClick={() => setAoIModalRevealed(true)}>
@@ -40,8 +47,9 @@ function CustomAoI({ onConfirm }: CustomAoIProps) {
   );
 }
 
-export default function CustomAoIControl(props: CustomAoIProps) {
-  useThemedControl(() => <CustomAoI {...props} />, {
+export default function CustomAoIControl() {
+  const { main } = useMaps();
+  useThemedControl(() => <CustomAoI map={main} />, {
     position: 'top-left'
   });
   return null;

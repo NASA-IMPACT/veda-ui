@@ -1,17 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { createGlobalStyle } from 'styled-components';
 import { useAtomValue } from 'jotai';
 import { useRef } from 'react';
 import { useControl } from 'react-map-gl';
-import { Feature, Polygon } from 'geojson';
 import useAois from '../hooks/use-aois';
 import { aoisFeaturesAtom } from './atoms';
-import { encodeAois } from '$utils/polygon-url';
 
-type DrawControlProps = {
-  customFeatures: Feature<Polygon>[];
-} & MapboxDraw.DrawOptions;
+type DrawControlProps = MapboxDraw.DrawOptions;
 
 const Css = createGlobalStyle`
 .mapbox-gl-draw_trash {
@@ -23,19 +19,9 @@ const Css = createGlobalStyle`
 export default function DrawControl(props: DrawControlProps) {
   const control = useRef<MapboxDraw>();
   const aoisFeatures = useAtomValue(aoisFeaturesAtom);
-  const { customFeatures } = props;
+  const areSelectedFeatures = aoisFeatures.some((f) => f.selected);
 
   const { onUpdate, onDelete, onSelectionChange } = useAois();
-
-  const serializedCustomFeatures = encodeAois(customFeatures);
-  useEffect(() => {
-    if (!customFeatures.length) return;
-    control.current?.add({
-      type: 'FeatureCollection',
-      features: customFeatures
-    });
-    // Look at serialized version to only update when the features change
-  }, [serializedCustomFeatures]);
 
   useControl<MapboxDraw>(
     () => {
@@ -43,6 +29,7 @@ export default function DrawControl(props: DrawControlProps) {
       return control.current;
     },
     ({ map }: { map: any }) => {
+      map._drawControl = control.current;
       map.on('draw.create', onUpdate);
       map.on('draw.update', onUpdate);
       map.on('draw.delete', onDelete);
@@ -65,5 +52,5 @@ export default function DrawControl(props: DrawControlProps) {
     }
   );
 
-  return aoisFeatures.length ? null : <Css />;
+  return areSelectedFeatures ? null : <Css />;
 }

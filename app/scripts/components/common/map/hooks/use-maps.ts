@@ -18,6 +18,6 @@ export default function useMaps() {
   return {
     main,
     compared,
-    current
+    current,
   };
 }
