@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { useAtomValue } from 'jotai';
 
 import { useStacMetadataOnDatasets } from '../../hooks/use-stac-metadata-datasets';
-import { selectedCompareDateAtom, selectedDateAtom, timelineDatasetsAtom } from '../../atoms/atoms';
+import {
+  selectedCompareDateAtom,
+  selectedDateAtom,
+  timelineDatasetsAtom
+} from '../../atoms/atoms';
 import {
   TimelineDatasetStatus,
   TimelineDatasetSuccess
@@ -10,7 +14,7 @@ import {
 import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
 
-import Map, { Compare } from '$components/common/map';
+import Map, { Compare, MapControls } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/geocoder';
 import { ScaleControl } from '$components/common/map/controls';
@@ -71,31 +75,33 @@ export function ExplorationMap() {
           />
         ))}
       {/* Map controls */}
-      <DrawControl
-        displayControlsDefault={false}
-        controls={
-          {
-            polygon: true,
-            trash: true
-          } as any
-        }
-      />
-      <CustomAoIControl />
-      <ResetAoIControl />
-      <AnalysisMessageControl />
-      <GeocoderControl />
-      <MapOptionsControl
-        projection={projection}
-        onProjectionChange={setProjection}
-        basemapStyleId={mapBasemapId}
-        onBasemapStyleIdChange={setBasemapId}
-        labelsOption={labelsOption}
-        boundariesOption={boundariesOption}
-        onOptionChange={onOptionChange}
-      />
+      <MapControls>
+        <DrawControl
+          displayControlsDefault={false}
+          controls={
+            {
+              polygon: true,
+              trash: true
+            } as any
+          }
+        />
+        <CustomAoIControl />
+        <ResetAoIControl />
+        <AnalysisMessageControl />
+        <GeocoderControl />
+        <MapOptionsControl
+          projection={projection}
+          onProjectionChange={setProjection}
+          basemapStyleId={mapBasemapId}
+          onBasemapStyleIdChange={setBasemapId}
+          labelsOption={labelsOption}
+          boundariesOption={boundariesOption}
+          onOptionChange={onOptionChange}
+        />
 
-      <ScaleControl />
-      <MapCoordsControl />
+        <ScaleControl />
+        <MapCoordsControl />
+      </MapControls>
       {comparing && (
         // Compare map layers
         <Compare>

@@ -3,7 +3,6 @@ import React, {
   Children,
   useMemo,
   ReactElement,
-  JSXElementConstructor,
   useState,
   createContext
 } from 'react';
@@ -23,6 +22,7 @@ import { Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
 import useMaps, { useMapsContext } from './hooks/use-maps';
+import { COMPARE_CONTAINER_NAME, CONTROLS_CONTAINER_NAME } from '.';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -92,13 +92,19 @@ function Maps({ children, projection }: MapsProps) {
 
     const sortedChildren = childrenArr.reduce(
       (acc, child) => {
-        const componentName = (child.type as JSXElementConstructor<any>).name;
-        if (componentName === 'Compare') {
+        // This is added so that we can use the component name in production
+        // where the function names are minified
+        // @ts-expect-error displayName is not in the type
+        const componentName = child.type.displayName ?? '';
+
+        if (componentName === COMPARE_CONTAINER_NAME) {
           acc.compareGenerators = Children.toArray(
             child.props.children
           ) as ReactElement[];
-        } else if (componentName.endsWith('Control')) {
-          acc.controls = [...acc.controls, child];
+        } else if (componentName == CONTROLS_CONTAINER_NAME) {
+          acc.controls = Children.toArray(
+            child.props.children
+          ) as ReactElement[];
         } else {
           acc.generators = [...acc.generators, child];
         }
