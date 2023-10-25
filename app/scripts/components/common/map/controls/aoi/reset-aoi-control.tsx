@@ -22,7 +22,7 @@ const SelectorButton = styled(Button)`
 `;
 
 function ResetAoI({ map }: { map: any }) {
-  const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom)
+  const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
   const onReset = useCallback(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
