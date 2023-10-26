@@ -18,6 +18,23 @@ import {
 // This is the atom acting as a single source of truth for the AOIs.
 const locAtom = atomWithLocation();
 
+const setUrlParam = (name: string, value: string) => (prev) => {
+  const searchParams = prev.searchParams ?? new URLSearchParams();
+  searchParams.set(name, value);
+
+  return { ...prev, searchParams };
+};
+
+const getValidDateOrNull = (value: any) => {
+  if (!value) {
+    return null;
+  }
+  const date = new Date(value);
+  return isNaN(date.getTime()) ? null : date;
+};
+
+type ValueUpdater<T> = T | ((prev: T) => T);
+
 // Dataset data that is serialized to the url. Only the data needed to
 // reconstruct the dataset (and user interaction data like settings) is stored
 // in the url, otherwise it would be too long.
@@ -33,10 +50,7 @@ const datasetsUrlConfig = atom(
   (get, set, datasets: TimelineDataset[]) => {
     // Extract need properties from the datasets and encode them.
     const encoded = urlDatasetsDehydrate(datasets);
-    set(locAtom, (prev) => ({
-      ...prev,
-      searchParams: new URLSearchParams([['datasets', encoded]])
-    }));
+    set(locAtom, setUrlParam('datasets', encoded));
   }
 );
 
@@ -67,11 +81,7 @@ export const timelineDatasetsAtom = atom(
       return reconciled;
     });
   },
-  (
-    get,
-    set,
-    updates: TimelineDataset[] | (<T extends TimelineDataset>(prev: T[]) => T[])
-  ) => {
+  (get, set, updates: ValueUpdater<TimelineDataset[]>) => {
     const newData =
       typeof updates === 'function'
         ? updates(get(timelineDatasetsStorageAtom))
@@ -81,21 +91,77 @@ export const timelineDatasetsAtom = atom(
     set(timelineDatasetsStorageAtom, newData);
   }
 );
+
 // Main timeline date. This date defines the datasets shown on the map.
-export const selectedDateAtom = atom<Date | null>(null);
+export const selectedDateAtom = atom(
+  (get) => {
+    const txtDate = get(locAtom).searchParams?.get('date');
+    return getValidDateOrNull(txtDate);
+  },
+  (get, set, updates: ValueUpdater<Date | null>) => {
+    const newData =
+      typeof updates === 'function'
+        ? updates(get(selectedCompareDateAtom))
+        : updates;
+
+    set(locAtom, setUrlParam('date', newData?.toISOString() ?? ''));
+  }
+);
+
 // Compare date. This is the compare date for the datasets shown on the map.
-export const selectedCompareDateAtom = atom<Date | null>(null);
+export const selectedCompareDateAtom = atom(
+  (get) => {
+    const txtDate = get(locAtom).searchParams?.get('dateCompare');
+    return getValidDateOrNull(txtDate);
+  },
+  (get, set, updates: ValueUpdater<Date | null>) => {
+    const newData =
+      typeof updates === 'function'
+        ? updates(get(selectedCompareDateAtom))
+        : updates;
+
+    set(locAtom, setUrlParam('dateCompare', newData?.toISOString() ?? ''));
+  }
+);
+
 // Date range for L&R playheads.
-export const selectedIntervalAtom = atom<DateRange | null>(null);
+export const selectedIntervalAtom = atom(
+  (get) => {
+    const txtDate = get(locAtom).searchParams?.get('dateRange');
+    const [start, end] = txtDate?.split('|') ?? [];
+
+    const dateStart = getValidDateOrNull(start);
+    const dateEnd = getValidDateOrNull(end);
+
+    if (!dateStart || !dateEnd) return null;
+
+    return { start: dateStart, end: dateEnd };
+  },
+  (get, set, updates: ValueUpdater<DateRange | null>) => {
+    const newData =
+      typeof updates === 'function'
+        ? updates(get(selectedIntervalAtom))
+        : updates;
+
+    const value = newData
+      ? `${newData.start.toISOString()}|${newData.end.toISOString()}`
+      : '';
+
+    set(locAtom, setUrlParam('dateRange', value));
+  }
+);
+
 // Zoom transform for the timeline. Values as object instead of d3.ZoomTransform
 export const zoomTransformAtom = atom<ZoomTransformPlain>({
   x: 0,
   y: 0,
   k: 1
 });
+
 // Width of the whole timeline item. Set via a size observer and then used to
 // compute the different element sizes.
 export const timelineWidthAtom = atom<number | undefined>(undefined);
+
 // Derived atom with the different sizes of the timeline elements.
 export const timelineSizesAtom = atom((get) => {
   const totalWidth = get(timelineWidthAtom);
@@ -109,6 +175,7 @@ export const timelineSizesAtom = atom((get) => {
     )
   };
 });
+
 // Whether or not the dataset rows are expanded.
 export const isExpandedAtom = atom<boolean>(false);
 
