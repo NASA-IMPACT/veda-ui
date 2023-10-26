@@ -138,6 +138,11 @@ export type TimelineDataset =
 
 // END TimelineDataset type discriminants
 
+export interface TimelineDatasetForUrl {
+  id: string;
+  settings?: TimelineDatasetSettings;
+}
+
 export interface DateRange {
   start: Date;
   end: Date;

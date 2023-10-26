@@ -11,9 +11,13 @@ import {
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
+  TimelineDatasetForUrl,
   TimelineDatasetStatus
 } from './types.d.ts';
-import { DataMetric, DATA_METRICS } from './components/datasets/analysis-metrics';
+import {
+  DataMetric,
+  DATA_METRICS
+} from './components/datasets/analysis-metrics';
 
 import { utcString2userTzDate } from '$utils/date';
 
@@ -29,7 +33,6 @@ export const allDatasets = Object.values(datasets).map((d) => d!.data);
 export const datasetLayers = Object.values(datasets).flatMap(
   (dataset) => dataset!.data.layers
 );
-
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
@@ -144,4 +147,21 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
   }
 
   return startOfDay(date);
+}
+
+export function urlDatasetsDehydrate(datasets: TimelineDataset[]) {
+  return JSON.stringify(
+    datasets.map((d) => ({
+      id: d.data.id,
+      settings: d.settings
+    }))
+  );
+}
+
+export function urlDatasetsHydrate(
+  encoded: string | null | undefined
+): TimelineDatasetForUrl[] {
+  if (!encoded) return [];
+  const parsed = JSON.parse(encoded);
+  return parsed;
 }
