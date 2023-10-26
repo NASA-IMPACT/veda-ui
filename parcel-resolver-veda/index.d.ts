@@ -54,6 +54,7 @@ declare module 'veda' {
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
+    stacApiEndpoint?: string;
     name: string;
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;

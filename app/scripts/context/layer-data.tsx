@@ -28,14 +28,14 @@ const fetchLayerById = async (
   layer: DatasetLayer | DatasetLayerCompareNormalized
 ): Promise<STACLayerData | Error> => {
   const { type, stacCol } = layer;
-
+  const stacApiEndpoint = layer.stacApiEndpoint || process.env.API_STAC_ENDPOINT;
   const { data } = await axios.get(
-    `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
+    `${stacApiEndpoint}/collections/${stacCol}`
   );
 
   const commonTimeseriesParams = {
-    isPeriodic: data['dashboard:is_periodic'],
-    timeDensity: data['dashboard:time_density']
+    isPeriodic: data['dashboard:is_periodic'] || true,
+    timeDensity: data['dashboard:time_density'] || 'day'
   };
 
   if (type === 'vector') {
@@ -51,9 +51,13 @@ const fetchLayerById = async (
       }
     };
   } else {
-    const domain = data.summaries
+    let domain = data.summaries
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
+    const lastDatetime = domain[domain.length - 1]
+    if (lastDatetime == null) {
+      domain[domain.length - 1] = new Date().toISOString()
+    }
 
     return {
       timeseries: {

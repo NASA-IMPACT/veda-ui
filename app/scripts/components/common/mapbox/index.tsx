@@ -417,6 +417,7 @@ function MapboxMapComponent(
               <BaseLayerComponent
                 id={`base-${baseLayerResolvedData.id}`}
                 stacCol={baseLayerResolvedData.stacCol}
+                stacApiEndpoint={baseLayerResolvedData.stacApiEndpoint}
                 mapInstance={mapRef.current}
                 isPositionSet={!!initialPosition}
                 date={date}

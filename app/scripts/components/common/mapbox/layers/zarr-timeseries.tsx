@@ -12,6 +12,7 @@ const tilerUrl = process.env.API_XARRAY_ENDPOINT;
 export interface MapLayerZarrTimeseriesProps {
   id: string;
   stacCol: string;
+  stacApiEndpoint?: string;
   date?: Date;
   mapInstance: MapboxMap;
   sourceParams?: Record<string, any>;
@@ -25,6 +26,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   const {
     id,
     stacCol,
+    stacApiEndpoint,
     date,
     mapInstance,
     sourceParams,
@@ -50,13 +52,15 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
     async function load() {
       try {
         onStatusChange?.({ status: S_LOADING, id });
+        const stacApiEndpointToUse = stacApiEndpoint || process.env.STAC_API_ENDPOINT;
         const data = await requestQuickCache({
-          url: `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`,
+          url: `${stacApiEndpointToUse}/search?collections=${stacCol}&datetime=${date?.toISOString()}`,
           method: 'GET',
           controller
         });
 
-        setAssetUrl(data.assets.zarr.href);
+        const dataUrl = data.features[0].assets.data.href.replace('https://data.gesdisc.earthdata.nasa.gov/data', 's3://gesdisc-cumulus-prod-protected')
+        setAssetUrl(dataUrl);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
