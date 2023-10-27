@@ -49,7 +49,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   useEffect(() => {
     const controller = new AbortController();
 
-    async function load() {
+    const load = async () => {
       try {
         onStatusChange?.({ status: S_LOADING, id });
 
@@ -60,7 +60,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
           stacApiEndpointToUse = `${stacApiEndpoint}/search?collections=${stacCol}&datetime=${date?.toISOString()}`
         }
         const data = await requestQuickCache({
-          url: `${stacApiEndpointToUse}/search?collections=${stacCol}&datetime=${date?.toISOString()}`,
+          url: stacApiEndpointToUse,
           method: 'GET',
           controller
         });
@@ -91,7 +91,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
     () => JSON.stringify(sourceParams),
     [sourceParams]
   );
-
+  
   useEffect(
     () => {
       if (!tilerUrl) return;
@@ -141,7 +141,6 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
     [
       updateStyle,
       id,
-      date,
       assetUrl,
       minZoom,
       haveSourceParamsChanged,
