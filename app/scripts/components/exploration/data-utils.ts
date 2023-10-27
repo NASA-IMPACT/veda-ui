@@ -28,11 +28,13 @@ export const findParentDataset = (layerId: string) => {
   return parentDataset?.data;
 };
 
-export const allDatasets = Object.values(datasets).map((d) => d!.data);
+export const allDatasets = Object.values(datasets)
+  .map((d) => d!.data)
+  .filter((d) => !d.disableExplore);
 
-export const datasetLayers = Object.values(datasets).flatMap(
-  (dataset) => dataset!.data.layers
-);
+export const datasetLayers = Object.values(datasets)
+  .flatMap((dataset) => dataset!.data.layers)
+  .filter((d) => d.type !== 'vector' && !d.analysis?.exclude);
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.

@@ -224,12 +224,15 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   // dataset layers since those are shown on the map.
   const displayDatasetLayers = useMemo(
     () =>
+      // TODO: Move function from data-catalog once that page is removed.
       prepareDatasets(allDatasets, {
         search,
         taxonomies,
         sortField,
         sortDir
-      }).flatMap((dataset) => dataset.layers),
+      })
+        .flatMap((dataset) => dataset.layers)
+        .filter((d) => d.type !== 'vector' && !d.analysis?.exclude),
     [search, taxonomies, sortField, sortDir]
   );
 
