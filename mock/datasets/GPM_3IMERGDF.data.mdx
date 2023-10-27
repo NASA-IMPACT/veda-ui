@@ -1,0 +1,58 @@
+---
+id: GPM_3IMERGHHL.v06
+name: 'GPM IMERG Half Hourly Precipitation'
+description: "GPM IMERG Late Precipitation L3 Half Hourly 0.1 degree x 0.1 degree V06 (GPM_3IMERGHHL) at GES DISC"
+media:
+  src: ::file ./cmip6-tas.png
+  alt: CMIP6 Near-Surface Air Temperature Screenshot
+  author:
+    name: NASA
+    url:   
+taxonomy:
+  - name: Topics
+    values:
+      - Climate
+layers:
+  - id: GPM_3IMERGHHL.v06
+    stacApiEndpoint: 'https://cmr.earthdata.nasa.gov/cloudstac/GES_DISC'
+    stacCol: GPM_3IMERGHHL.v06
+    name: GPM IMERG Late Precipitation L3 Half Hourly 0.1 degree x 0.1 degree V06 (GPM_3IMERGHHL) at GES DISC
+    type: zarr
+    description: "GPM Level 3 IMERG Final Daily 10 x 10 km (GPM_3IMERGDF) accumulated precipitation"
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      resampling_method: bilinear
+      variable: precipitationCal
+      colormap_name: gist_stern
+      group: /Grid
+      rescale: 0,32
+      maxzoom: 12
+    legend:
+      unit: 
+        label: 
+      type: gradient
+      min: "0 mm/hr"
+      max: "55 mm/hr"
+      stops: ['#000000', '#120102', '#250204', '#370306', '#490408', '#5b050a', '#6e060c', '#80070e', '#920810', '#a50912', '#b70a14', '#c90b16']
+---
+
+<Block>
+<Prose>
+# GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V06 (GPM_3IMERGDF)
+
+## Dataset Description
+
+The Integrated Multi-satellitE Retrievals for GPM (IMERG) is the unified U.S. algorithm that provides the multi-satellite precipitation product for the U.S. GPM team.
+
+The precipitation estimates from the various precipitation-relevant satellite passive microwave (PMW) sensors comprising the GPM constellation are computed using the 2017 version of the Goddard Profiling Algorithm (GPROF2017), then gridded, intercalibrated to the GPM Combined Ku Radar-Radiometer Algorithm (CORRA) product, and merged into half-hourly 0.1°x0.1° (roughly 10x10 km) fields. Note that CORRA is adjusted to the monthly Global Precipitation Climatology Project (GPCP) Satellite-Gauge (SG) product over high-latitude ocean and tropical land to correct known biases.
+
+Source: [https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGHHL_06/summary](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGHHL_06/summary)
+
+## Data Source
+
+The files represented are NetCDF files in GES DISC's Earthdata Cloud bucket and discovered from the CMR STAC entries for this collection: https://cmr.earthdata.nasa.gov/cloudstac/GES_DISC/collections/GPM_3IMERGHHL.v06. The daily product is not yet available in CMR's CLOUD STAC.
+
+</Prose>
+</Block>

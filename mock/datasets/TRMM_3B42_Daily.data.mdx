@@ -1,7 +1,7 @@
 ---
 id: TRMM_3B42_Daily
-name: 'TRMM_3B42_Daily'
-description: "This daily accumulated precipitation product is generated from the research-quality 3-hourly TRMM Multi-Satellite Precipitation Analysis TMPA (3B42)"
+name: 'Daily accumulated precipitation from the TRMM Multi-Satellite'
+description: "Daily accumulated precipitation product generated from the research-quality 3-hourly TRMM Multi-Satellite Precipitation Analysis TMPA (3B42)"
 media:
   src: ::file ./cmip6-tas.png
   alt: CMIP6 Near-Surface Air Temperature Screenshot
@@ -18,61 +18,38 @@ layers:
     stacCol: TRMM_3B42_Daily.v7
     name: TRMM_3B42_Daily
     type: zarr
-    description: "This daily accumulated precipitation product is generated from the research-quality 3-hourly TRMM Multi-Satellite Precipitation Analysis TMPA (3B42)"
+    description: "Daily accumulated precipitation product generated from the research-quality 3-hourly TRMM Multi-Satellite Precipitation Analysis TMPA (3B42)"
     zoomExtent:
       - 0
       - 20
     sourceParams:
       resampling_method: bilinear
       variable: precipitation
-      colormap_name: gist_earth
-      rescale: 0,46
+      colormap_name: gist_stern
+      rescale: 0,55
       maxzoom: 12
     legend:
       unit: 
         label: 
       type: gradient
-      min: "232 K"
-      max: "312 K"
-      stops:
-      - '#3b4cc0'
-      - '#7b9ff9'
-      - '#c0d4f5'
-      - '#f2cbb7'
-      - '#ee8468'
-      - '#b40426'
+      min: "0"
+      max: "46"
+      stops: ['#000000', '#120102', '#250204', '#370306', '#490408', '#5b050a', '#6e060c', '#80070e', '#920810', '#a50912', '#b70a14', '#c90b16']
 ---
 
 <Block>
 <Prose>
-# NASA Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6)
+# TRMM (TMPA) Precipitation L3 1 day 0.25 degree x 0.25 degree V7 (TRMM_3B42_Daily)
 
-The NEX-GDDP-CMIP6 dataset provide a set of global, high resolution, bias-corrected climate change projections that can be used to evaluate climate change impacts on processes that are sensitive to finer-scale climate gradients and the effects of local topography on climate conditions.
+## Dataset Description
 
-NEX-GDDP-CMIP6 is comprised of global downscaled climate scenarios derived from the General Circulation Model (GCM) runs conducted under the Coupled Model Intercomparison Project Phase 6 (CMIP6) and across all four “Tier 1” greenhouse gas emissions scenarios known as Shared Socioeconomic Pathways (SSPs). The CMIP6 GCM runs were developed in support of the Sixth Assessment Report of the Intergovernmental Panel on Climate Change (IPCC AR6). This dataset includes downscaled projections from ScenarioMIP model runs for which daily scenarios were produced and distributed through the Earth System Grid Federation. 
+This daily accumulated precipitation product is generated from the research-quality 3-hourly TRMM Multi-Satellite Precipitation Analysis TMPA (3B42). It is produced at the NASA GES DISC, as a value added product. Simple summation of valid retrievals in a grid cell is applied for the data day. The result is given in (mm). The beginning and ending time for every daily granule are listed in the file global attributes, and are taken correspondingly from the first and the last 3-hourly granules participating in the aggregation. Thus the time period covered by one daily granule amounts to 24 hours, which can be inspected in the file global attributes. 
 
-### Summary
+Source: [https://disc.gsfc.nasa.gov/datasets/TRMM_3B42_Daily_7/summary](https://disc.gsfc.nasa.gov/datasets/TRMM_3B42_Daily_7/summary)
 
-* Format: [kerchunk (metadata)](https://fsspec.github.io/kerchunk/) for netCDF4
-* Spatial Coverage: 180° W to 180° E, 60° S to 90° N
-* Temporal: 1950-01-01 to 1951-12-31
-  * _As noted below, this dataset is a subset all available data. The full dataset includes data from 1950 to 2100._
-* Data Resolution:
-  * Latitude Resolution: 0.25 degrees (25 km)
-  * Longitude Resolution: 0.25 degrees (25 km)
-  * Temporal Resolution: daily
+## Data Source
 
-Source: [https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6](https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6)
-
-## AWS Public Dataset
-
-There are 2 datasets listed on the AWS Registry of Open Data for [NEX-GDDP-CMIP6](https://registry.opendata.aws/nex-gddp-cmip6/). First, there is an archive of NetCDF files from about 35 different climate models, each supplying historical and predicted values for up to 9 environment variables, daily, from 1950 to 2100. Second, there is an archive of COGs generated from the corresponding NetCDFs to support visualization via dynamic tiling using COGs. COGs are only available for 2 models. The COG archive also includes monthly aggregatations across those models.
-
-## This is a demo subset of NEX-GDDP-CMIP6
-
-VEDA hosts a reference file which includes references to a subset of the NEX-GDDP-CMIP6 data, primarily for demo purposes. With this dataset, we demonstrate a method for visualizing the data without creating any data copies just for visualization.
-
-To prepare this dataset, we used the [kerchunk](https://fsspec.github.io/kerchunk/) python library to create a file - often called a reference file - which is an index of the chunks of the data stored in the original [NetCDF](https://www.unidata.ucar.edu/software/netcdf/) files. This reference file is used by a dynamic tiling library ([titiler-xarray](https://github.com/developmentseed/titiler-xarray)) to create image tiles from the underlying data. The indexes were generated for the near-surface air temperature variable (TAS) for years 1950-2014, the historical extent of the NEX-GDDP-CMIP6 project.
+The files represented are NetCDF files in GES DISC's Earthdata Cloud bucket and discovered from the CMR STAC entry for this dataset: https://cmr.earthdata.nasa.gov/cloudstac/GES_DISC/collections/TRMM_3B42_Daily.v7. 
 
 </Prose>
 </Block>

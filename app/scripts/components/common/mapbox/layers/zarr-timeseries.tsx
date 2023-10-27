@@ -52,6 +52,9 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
     async function load() {
       try {
         onStatusChange?.({ status: S_LOADING, id });
+        // TODO: This should be configurable
+        // Zarr collections in VEDA should have a single entrypoint (zarr or virtual zarr / reference)
+        // CMR endpoints will be using individual items' assets
         const stacApiEndpointToUse = stacApiEndpoint || process.env.STAC_API_ENDPOINT;
         const data = await requestQuickCache({
           url: `${stacApiEndpointToUse}/search?collections=${stacCol}&datetime=${date?.toISOString()}`,
