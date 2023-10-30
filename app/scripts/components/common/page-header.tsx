@@ -427,7 +427,6 @@ function PageHeader() {
                       {getString('stories').other}
                     </GlobalMenuLink>
                   </li>
-
                   {/*
                     Temporarily add hub link through env variables.
                     This does not scale for the different instances, but it's a

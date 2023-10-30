@@ -4,7 +4,6 @@ import T from 'prop-types';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
 import { userPages } from 'veda';
-
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
 import LayoutRoot, {
@@ -36,6 +35,8 @@ const Sandbox = lazy(() => import('$components/sandbox'));
 
 const UserPagesComponent = lazy(() => import('$components/user-pages'));
 
+const PublicationTool = lazy(() => import('$components/publication-tool'));
+
 // Handle wrong types from devseed-ui.
 const DevseedUiThemeProvider = DsTp as any;
 
@@ -48,6 +49,7 @@ import {
   DATASETS_PATH,
   STORIES_PATH
 } from '$utils/routes';
+import { PUBLICATION_EDITOR_SLUG } from '$components/publication-tool';
 
 const composingComponents = [
   // Add contexts here.
@@ -108,7 +110,13 @@ function Root() {
                 <Route path='development' element={<Development />} />
 
                 {process.env.NODE_ENV !== 'production' && (
-                  <Route path='/sandbox/*' element={<Sandbox />} />
+                  <>
+                    <Route path='/sandbox/*' element={<Sandbox />} />
+                    <Route
+                      path={`${PUBLICATION_EDITOR_SLUG}*`}
+                      element={<PublicationTool />}
+                    />
+                  </>
                 )}
                 {userPages.map((p) => (
                   <Route

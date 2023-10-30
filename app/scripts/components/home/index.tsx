@@ -23,6 +23,7 @@ import {
   ComponentOverride,
   ContentOverride
 } from '$components/common/page-overrides';
+import { PUBLICATION_EDITOR_SLUG } from '$components/publication-tool';
 
 const homeContent = getOverride('homeContent');
 
@@ -192,6 +193,18 @@ function RootHome() {
               </li>
             </ConnectionsList>
           </ConnectionsBlock>
+          {process.env.NODE_ENV !== 'production' && (
+            <ConnectionsBlock>
+              <ConnectionsBlockTitle>Authoring tools</ConnectionsBlockTitle>
+              <ConnectionsList>
+                <li>
+                  <Link to={PUBLICATION_EDITOR_SLUG}>
+                    <CollecticonChevronRightSmall /> Story editor
+                  </Link>
+                </li>
+              </ConnectionsList>
+            </ConnectionsBlock>
+          )}
         </Connections>
       </ContentOverride>
     </PageMainContent>
