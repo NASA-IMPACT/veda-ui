@@ -1,4 +1,4 @@
-export const RIGHT_AXIS_SPACE = 80;
+export const RIGHT_AXIS_SPACE = 96;
 export const HEADER_COLUMN_WIDTH = 320;
 export const DATASET_TRACK_BLOCK_HEIGHT = 16;
 
