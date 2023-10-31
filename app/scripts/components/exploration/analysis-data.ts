@@ -7,6 +7,7 @@ import {
   TimelineDatasetAnalysis,
   TimelineDatasetStatus
 } from './types.d.ts';
+import { ExtendedError } from './data-utils';
 import {
   combineFeatureCollection,
   getFilterPayload
@@ -59,6 +60,7 @@ async function getDatasetAssets(
 }
 
 interface TimeseriesRequesterParams {
+  maxItems: number;
   start: Date;
   end: Date;
   aoi: FeatureCollection<Polygon>;
@@ -73,6 +75,7 @@ interface TimeseriesRequesterParams {
  * area of interest.
  */
 export async function requestDatasetTimeseriesData({
+  maxItems,
   start,
   end,
   aoi,
@@ -128,6 +131,24 @@ export async function requestDatasetTimeseriesData({
         loaded: 0
       }
     });
+
+    if (assets.length > maxItems) {
+      const e = new ExtendedError(
+        'Too many assets to analyze',
+        'TOO_MANY_ASSETS'
+      );
+      e.details = {
+        assetCount: assets.length
+      };
+
+      onProgress({
+        ...datasetAnalysis,
+        status: TimelineDatasetStatus.ERROR,
+        error: e,
+        data: null
+      });
+      return;
+    }
 
     let loaded = 0;
 

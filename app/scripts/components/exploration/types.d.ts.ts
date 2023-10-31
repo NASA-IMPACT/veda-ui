@@ -61,7 +61,7 @@ export interface TimelineDatasetAnalysisLoading {
 export interface TimelineDatasetAnalysisError {
   status: TimelineDatasetStatus.ERROR;
   data: null;
-  error: unknown;
+  error: any;
   meta: Partial<AnalysisMeta>
 }
 export interface TimelineDatasetAnalysisSuccess {

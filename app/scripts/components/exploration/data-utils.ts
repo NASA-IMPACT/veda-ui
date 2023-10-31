@@ -167,3 +167,13 @@ export function urlDatasetsHydrate(
   const parsed = JSON.parse(encoded);
   return parsed;
 }
+
+export class ExtendedError extends Error {
+  code: string;
+  details?: any;
+
+  constructor(message: string, code: string) {
+    super(message);
+    this.code = code;
+  }
+}

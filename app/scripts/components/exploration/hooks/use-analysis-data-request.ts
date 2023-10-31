@@ -8,6 +8,7 @@ import { analysisControllerAtom, selectedIntervalAtom } from '../atoms/atoms';
 import { useTimelineDatasetAnalysis } from '../atoms/hooks';
 import { analysisConcurrencyManager } from '../concurrency';
 import { TimelineDataset, TimelineDatasetStatus } from '../types.d.ts';
+import { MAX_QUERY_NUM } from '../constants';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 
 export function useAnalysisController() {
@@ -96,6 +97,7 @@ export function useAnalysisDataRequest({
     const { start, end } = selectedInterval;
 
     requestDatasetTimeseriesData({
+      maxItems: MAX_QUERY_NUM,
       start,
       end,
       aoi,

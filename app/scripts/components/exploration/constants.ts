@@ -9,3 +9,5 @@ export const emptyDateRange = {
   start: null,
   end: null
 };
+
+export const MAX_QUERY_NUM = 300;
