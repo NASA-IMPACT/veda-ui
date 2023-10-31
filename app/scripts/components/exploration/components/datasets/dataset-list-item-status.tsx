@@ -117,10 +117,8 @@ export function DatasetTrackError(props: {
         {patternContent}
         <TrackMessage isError>
           <p>
-            Too many data points to analyze ({error.details?.assetCount} / max.{' '}
-            {MAX_QUERY_NUM}).
-            <br />
-            Select a shorter time range.
+            Analysis is limited to {MAX_QUERY_NUM} data points. Your selection
+            includes {error.details?.assetCount} points. Please select a shorter time range.
           </p>
         </TrackMessage>
       </>
