@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 import { atomWithLocation } from 'jotai-location';
+import { debounce } from 'lodash';
 
 import { HEADER_COLUMN_WIDTH, RIGHT_AXIS_SPACE } from '../constants';
 import {
@@ -15,8 +16,40 @@ import {
   ZoomTransformPlain
 } from '../types.d.ts';
 
-// This is the atom acting as a single source of truth for the AOIs.
+interface JotaiLocation {
+  pathname?: string;
+  searchParams?: URLSearchParams;
+}
+
+// The locAtom is used to store the data in the url. However it can't be used as
+// the source of truth because there is a limit to how many url changes can be
+// made in a specific amount of time. (This is a browser restriction).
+// The solution is to have a local location storage atom (locStorageAtom) that
+// can have all the updates we want.
 const locAtom = atomWithLocation();
+const locStorageAtom = atom<JotaiLocation | null>(null);
+// The locAtomDebounced is the read/write atom that then updates the other two.
+// It updates the locStorageAtom immediately and the locAtom after a debounce.
+// In summary:
+//   The data is set in locAtomDebounced which updates locStorageAtom and after 
+//   a debounce it updates locAtom.
+let setDebounced;
+const locAtomDebounced = atom(
+  (get): JotaiLocation => {
+    return get(locStorageAtom) ?? get(locAtom);
+  },
+  (get, set, updates) => {
+    const newData =
+      typeof updates === 'function' ? updates(get(locAtomDebounced)) : updates;
+
+    if (!setDebounced) {
+      setDebounced = debounce(set, 320);
+    }
+
+    setDebounced(locAtom, newData);
+    set(locStorageAtom, newData);
+  }
+);
 
 const setUrlParam = (name: string, value: string) => (prev) => {
   const searchParams = prev.searchParams ?? new URLSearchParams();
@@ -41,7 +74,8 @@ type ValueUpdater<T> = T | ((prev: T) => T);
 const datasetsUrlConfig = atom(
   (get): TimelineDatasetForUrl[] => {
     try {
-      const serialized = get(locAtom).searchParams?.get('datasets') ?? '[]';
+      const serialized =
+        get(locAtomDebounced).searchParams?.get('datasets') ?? '[]';
       return urlDatasetsHydrate(serialized);
     } catch (error) {
       return [];
@@ -50,7 +84,7 @@ const datasetsUrlConfig = atom(
   (get, set, datasets: TimelineDataset[]) => {
     // Extract need properties from the datasets and encode them.
     const encoded = urlDatasetsDehydrate(datasets);
-    set(locAtom, setUrlParam('datasets', encoded));
+    set(locAtomDebounced, setUrlParam('datasets', encoded));
   }
 );
 
@@ -95,7 +129,7 @@ export const timelineDatasetsAtom = atom(
 // Main timeline date. This date defines the datasets shown on the map.
 export const selectedDateAtom = atom(
   (get) => {
-    const txtDate = get(locAtom).searchParams?.get('date');
+    const txtDate = get(locAtomDebounced).searchParams?.get('date');
     return getValidDateOrNull(txtDate);
   },
   (get, set, updates: ValueUpdater<Date | null>) => {
@@ -104,14 +138,14 @@ export const selectedDateAtom = atom(
         ? updates(get(selectedCompareDateAtom))
         : updates;
 
-    set(locAtom, setUrlParam('date', newData?.toISOString() ?? ''));
+    set(locAtomDebounced, setUrlParam('date', newData?.toISOString() ?? ''));
   }
 );
 
 // Compare date. This is the compare date for the datasets shown on the map.
 export const selectedCompareDateAtom = atom(
   (get) => {
-    const txtDate = get(locAtom).searchParams?.get('dateCompare');
+    const txtDate = get(locAtomDebounced).searchParams?.get('dateCompare');
     return getValidDateOrNull(txtDate);
   },
   (get, set, updates: ValueUpdater<Date | null>) => {
@@ -120,14 +154,17 @@ export const selectedCompareDateAtom = atom(
         ? updates(get(selectedCompareDateAtom))
         : updates;
 
-    set(locAtom, setUrlParam('dateCompare', newData?.toISOString() ?? ''));
+    set(
+      locAtomDebounced,
+      setUrlParam('dateCompare', newData?.toISOString() ?? '')
+    );
   }
 );
 
 // Date range for L&R playheads.
 export const selectedIntervalAtom = atom(
   (get) => {
-    const txtDate = get(locAtom).searchParams?.get('dateRange');
+    const txtDate = get(locAtomDebounced).searchParams?.get('dateRange');
     const [start, end] = txtDate?.split('|') ?? [];
 
     const dateStart = getValidDateOrNull(start);
@@ -147,7 +184,7 @@ export const selectedIntervalAtom = atom(
       ? `${newData.start.toISOString()}|${newData.end.toISOString()}`
       : '';
 
-    set(locAtom, setUrlParam('dateRange', value));
+    set(locAtomDebounced, setUrlParam('dateRange', value));
   }
 );
 
