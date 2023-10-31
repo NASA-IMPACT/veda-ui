@@ -1,22 +1,23 @@
-import { atom } from "jotai";
-import { atomWithLocation } from "jotai-location";
-import { Feature, Polygon } from "geojson";
-import { AoIFeature } from "../../types";
-import { decodeAois, encodeAois } from "$utils/polygon-url";
+import { atom } from 'jotai';
+import { atomWithLocation } from 'jotai-location';
+import { Feature, Polygon } from 'geojson';
+import { AoIFeature } from '../../types';
+import { decodeAois, encodeAois } from '$utils/polygon-url';
 
 // This is the atom acting as a single source of truth for the AOIs.
 export const aoisAtom = atomWithLocation();
 
 const aoisSerialized = atom(
-  (get) => get(aoisAtom).searchParams?.get("aois"),
+  (get) => get(aoisAtom).searchParams?.get('aois'),
   (get, set, aois) => {
-    set(aoisAtom, (prev) => ({
-      ...prev,
-      searchParams: new URLSearchParams([["aois", aois as string]])
-    }));
+    set(aoisAtom, (prev) => {
+      const searchParams = prev.searchParams ?? new URLSearchParams();
+      searchParams.set('aois', aois as string);
+
+      return { ...prev, searchParams };
+    });
   }
 );
-
 
 // Getter atom to get AoiS as GeoJSON features from the hash.
 export const aoisFeaturesAtom = atom<AoIFeature[]>((get) => {
