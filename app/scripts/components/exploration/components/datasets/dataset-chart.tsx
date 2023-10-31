@@ -10,6 +10,10 @@ import { DatasetTrackMessage } from './dataset-track-message';
 import { DataMetric } from './analysis-metrics';
 
 import { getNumForChart } from '$components/common/chart/utils';
+import {
+  TimelineDatasetAnalysisSuccess,
+  TimelineDatasetSuccess
+} from '$components/exploration/types.d.ts';
 
 const CHART_MARGIN = 8;
 
@@ -17,16 +21,17 @@ interface DatasetChartProps {
   width: number;
   xScaled: ScaleTime<number, number>;
   isVisible: boolean;
-  data: any;
+  dataset: TimelineDatasetSuccess;
   activeMetrics: DataMetric[];
   highlightDate?: Date;
 }
 
 export function DatasetChart(props: DatasetChartProps) {
-  const { xScaled, width, isVisible, data, activeMetrics, highlightDate } =
+  const { xScaled, width, isVisible, dataset, activeMetrics, highlightDate } =
     props;
 
-  const timeseries = data.data.timeseries;
+  const analysisData = dataset.analysis as TimelineDatasetAnalysisSuccess;
+  const timeseries = analysisData.data.timeseries;
 
   const theme = useTheme();
 
@@ -67,8 +72,10 @@ export function DatasetChart(props: DatasetChartProps) {
 
         <g transform={`translate(0, ${CHART_MARGIN})`}>
           <AxisGrid
+            yLabel={dataset.data.legend?.unit?.label}
             y={y}
             width={width}
+            height={height}
             isVisible={isVisible}
             isExpanded={isExpanded}
           />
@@ -164,12 +171,14 @@ function DataLine(props: DateLineProps) {
 interface AxisGridProps {
   y: ScaleLinear<number, number>;
   width: number;
+  height: number;
+  yLabel?: string;
   isVisible: boolean;
   isExpanded: boolean;
 }
 
 function AxisGrid(props: AxisGridProps) {
-  const { y, width, isVisible, isExpanded } = props;
+  const { y, width, height, isVisible, isExpanded, yLabel } = props;
 
   const theme = useTheme();
 
@@ -184,6 +193,18 @@ function AxisGrid(props: AxisGridProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.16 }}
         >
+          {yLabel && (
+            <text
+              y={width + RIGHT_AXIS_SPACE - 20}
+              x={-height / 2}
+              transform='rotate(-90)'
+              textAnchor='middle'
+              fontSize='0.75rem'
+              fill={theme.color?.base}
+            >
+              {yLabel}
+            </text>
+          )}
           {ticks.map((tick) => (
             <React.Fragment key={tick}>
               <line
@@ -196,7 +217,7 @@ function AxisGrid(props: AxisGridProps) {
                 strokeOpacity={isVisible ? 1 : 0.5}
               />
               <text
-                x={width + 10}
+                x={width + 8}
                 y={y(tick)}
                 fontSize='0.75rem'
                 dy='0.25em'

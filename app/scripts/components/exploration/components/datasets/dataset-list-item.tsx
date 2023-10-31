@@ -294,7 +294,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   xScaled={xScaled!}
                   width={width}
                   isVisible={!!isVisible}
-                  data={dataset.analysis}
+                  dataset={dataset}
                   activeMetrics={analysisMetrics}
                   highlightDate={dataPoint?.date}
                 />
