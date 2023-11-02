@@ -19,7 +19,7 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 
-import { timelineDatasetsAtom } from '../atoms/atoms';
+import { timelineDatasetsAtom } from '../atoms/datasets';
 import {
   allDatasets,
   datasetLayers,

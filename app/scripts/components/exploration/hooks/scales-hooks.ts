@@ -3,7 +3,7 @@ import { scaleTime } from 'd3';
 import { useAtomValue } from 'jotai';
 import { differenceInCalendarDays } from 'date-fns';
 
-import { timelineSizesAtom, zoomTransformAtom } from '../atoms/atoms';
+import { timelineSizesAtom, zoomTransformAtom } from '../atoms/timeline';
 import { DAY_SIZE_MAX } from '../constants';
 import { useTimelineDatasetsDomain } from '../atoms/hooks';
 import { rescaleX } from '../components/timeline/timeline-utils';

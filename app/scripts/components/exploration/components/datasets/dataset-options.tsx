@@ -15,7 +15,7 @@ import { SliderInput, SliderInputProps } from '$styles/range-slider';
 import { composeVisuallyDisabled } from '$utils/utils';
 import { Tip } from '$components/common/tip';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
-import { timelineDatasetsAtom } from '$components/exploration/atoms/atoms';
+import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
 const RemoveButton = composeVisuallyDisabled(DropMenuItemButton);
 

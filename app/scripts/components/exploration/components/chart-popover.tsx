@@ -19,7 +19,7 @@ import { format } from 'date-fns';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { AnalysisTimeseriesEntry, TimeDensity } from '../types.d.ts';
-import { isExpandedAtom } from '../atoms/atoms';
+import { isExpandedAtom } from '../atoms/timeline';
 import { DataMetric } from './datasets/analysis-metrics';
 
 import { getNumForChart } from '$components/common/chart/utils';

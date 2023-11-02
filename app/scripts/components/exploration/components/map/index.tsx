@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import { useAtomValue } from 'jotai';
 
 import { useStacMetadataOnDatasets } from '../../hooks/use-stac-metadata-datasets';
-import {
-  selectedCompareDateAtom,
-  selectedDateAtom,
-  timelineDatasetsAtom
-} from '../../atoms/atoms';
+import { selectedCompareDateAtom, selectedDateAtom } from '../../atoms/dates';
+import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
   TimelineDatasetStatus,
   TimelineDatasetSuccess
