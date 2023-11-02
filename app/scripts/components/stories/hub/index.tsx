@@ -161,11 +161,11 @@ function StoriesHub() {
     <PageMainContent>
       <LayoutProps
         title={getString('stories').other}
-        description={getString('storiesBanner')?.other || 'Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'}
+        description={getString('storiesBanner').other}
       />
       <PageHero
         title={getString('stories').other}
-        description={getString('storiesBanner')?.other || 'Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'}
+        description={getString('storiesBanner').other}
       />
 
       <FeaturedStories />
@@ -191,8 +191,8 @@ function StoriesHub() {
           <span>
             Showing{' '}
             <Pluralize
-              singular={getString('stories').one}
-              plural={getString('stories').other}
+              singular={getString('stories').one?? 'story'}
+              plural={getString('stories').other?? 'stories'}
               count={displayStories.length}
               showCount={true}
             />{' '}
@@ -243,6 +243,7 @@ function StoriesHub() {
                       </CardMeta>
                     }
                     linkLabel='View more'
+                    href={d.external?.url}
                     linkTo={getStoryPath(d)}
                     title={
                       <TextHighlight

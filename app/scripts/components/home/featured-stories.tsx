@@ -79,6 +79,7 @@ function FeaturedStories() {
                     cardType='cover'
                     linkLabel='View more'
                     linkTo={getStoryPath(d)}
+                    href={d.external?.url}
                     title={d.name}
                     parentName={getString('stories').one}
                     parentTo={STORIES_PATH}

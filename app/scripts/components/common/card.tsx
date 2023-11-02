@@ -288,6 +288,7 @@ interface CardComponentProps {
   title: ReactNode;
   linkLabel: string;
   linkTo: string;
+  href: string;
   className?: string;
   cardType?: CardType;
   description?: ReactNode;
@@ -309,6 +310,7 @@ function CardComponent(props: CardComponentProps) {
     description,
     linkLabel,
     linkTo,
+    href,
     date,
     overline,
     imgSrc,
@@ -319,16 +321,17 @@ function CardComponent(props: CardComponentProps) {
     onCardClickCapture
   } = props;
 
+  const linkProps = href? { href } : {
+    as: Link,
+    to: linkTo
+  };
   return (
     <ElementInteractive
       as={CardSelf}
       cardType={cardType}
       className={className}
       linkLabel={linkLabel || 'View more'}
-      linkProps={{
-        as: Link,
-        to: linkTo
-      }}
+      linkProps={linkProps}
       onClickCapture={onCardClickCapture}
     >
       <CardHeader>
