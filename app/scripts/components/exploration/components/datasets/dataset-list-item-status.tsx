@@ -1,11 +1,15 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { CollecticonArrowLoop } from '@devseed-ui/collecticons';
 
 import { pulsingAnimation } from '$components/common/loading-skeleton';
-import { DATASET_TRACK_BLOCK_HEIGHT } from '$components/exploration/constants';
+import {
+  DATASET_TRACK_BLOCK_HEIGHT,
+  MAX_QUERY_NUM
+} from '$components/exploration/constants';
+import { ExtendedError } from '$components/exploration/data-utils';
 
 const loadingPattern = '.-.. --- .- -.. .. -. --.'
   .split(' ')
@@ -33,7 +37,7 @@ const TrackBlock = styled.div`
   gap: 0.25rem;
 `;
 
-const TrackMessage = styled.div`
+const TrackMessage = styled.div<{ isError?: boolean }>`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -42,6 +46,15 @@ const TrackMessage = styled.div`
   z-index: ${themeVal('zIndices.overlay')};
   display: flex;
   gap: 1rem;
+  font-weight: ${themeVal('type.base.bold')};
+  font-size: 0.875rem;
+  text-align: center;
+
+  ${({ isError }) =>
+    isError &&
+    css`
+      color: ${themeVal('color.danger')};
+    `}
 `;
 
 const TrackLoading = styled(Track)`
@@ -79,24 +92,44 @@ export function DatasetTrackLoading(props: { message?: React.ReactNode }) {
 }
 
 export function DatasetTrackError(props: {
+  error?: any;
   message?: React.ReactNode;
   onRetryClick?: () => void;
 }) {
-  const { message, onRetryClick } = props;
+  const { message, onRetryClick, error } = props;
+
   /* eslint-disable react/no-array-index-key */
+  const patternContent = (
+    <TrackError>
+      {errorPattern.map((letter, i) => (
+        <TrackBlock key={i}>
+          {letter.map((s, i2) => (
+            <Item key={i2} code={s} />
+          ))}
+        </TrackBlock>
+      ))}
+    </TrackError>
+  );
+
+  if (error instanceof ExtendedError && error.code === 'TOO_MANY_ASSETS') {
+    return (
+      <>
+        {patternContent}
+        <TrackMessage isError>
+          <p>
+            Analysis is limited to {MAX_QUERY_NUM} data points. Your selection
+            includes {error.details?.assetCount} points. Please select a shorter time range.
+          </p>
+        </TrackMessage>
+      </>
+    );
+  }
+
   return (
     <>
-      <TrackError>
-        {errorPattern.map((letter, i) => (
-          <TrackBlock key={i}>
-            {letter.map((s, i2) => (
-              <Item key={i2} code={s} />
-            ))}
-          </TrackBlock>
-        ))}
-      </TrackError>
+      {patternContent}
       {message && (
-        <TrackMessage>
+        <TrackMessage isError>
           <p>{message}</p>
           {typeof onRetryClick === 'function' ? (
             <Button variation='danger-fill' size='small' onClick={onRetryClick}>

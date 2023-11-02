@@ -281,6 +281,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
               )}
               {isAnalysisAndError && (
                 <DatasetTrackError
+                  error={dataset.analysis.error}
                   message='Oh no, something went wrong'
                   onRetryClick={() => {
                     /* eslint-disable-next-line no-console */
