@@ -411,7 +411,7 @@ export default function Timeline(props: TimelineProps) {
           <>
             {selectedDay && (
               <TimelineHeadPoint
-                label='A'
+                label={selectedCompareDay ? 'A' : undefined}
                 domain={dataDomain}
                 xScaled={xScaled}
                 onDayChange={setSelectedDay}

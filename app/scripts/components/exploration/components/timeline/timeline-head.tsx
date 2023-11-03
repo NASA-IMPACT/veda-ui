@@ -111,7 +111,7 @@ export function TimelineHeadPoint(props: TimelineHeadProps) {
         }}
       />
       <text fill={theme.color?.base} fontSize='0.75rem' y='0' x='-4' dy='1em'>
-        {label ?? 'P'}
+        {label}
       </text>
     </TimelineHeadBase>
   );
