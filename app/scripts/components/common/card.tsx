@@ -288,7 +288,7 @@ interface CardComponentProps {
   title: ReactNode;
   linkLabel: string;
   linkTo: string;
-  href: string;
+  href?: string;
   className?: string;
   cardType?: CardType;
   description?: ReactNode;

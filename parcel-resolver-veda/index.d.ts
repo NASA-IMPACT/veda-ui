@@ -136,6 +136,14 @@ declare module 'veda' {
     id: string;
     thematic?: string;
   }
+  /**
+   * External  Content
+   * When the story is a link out to the external content
+   */
+
+  export interface ExternalConentData {
+    url: string;
+  }
 
   export interface DatasetUsage {
     url: string;
@@ -174,6 +182,7 @@ declare module 'veda' {
     media?: Media;
     taxonomy: Taxonomy[];
     related?: RelatedContentData[];
+    external?: ExternalConentData;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -255,7 +264,7 @@ declare module 'veda' {
   export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
 
   export const getString: (variable: string) => {
-    one: string;
+    one: string | undefined;
     other: string;
   };
 
