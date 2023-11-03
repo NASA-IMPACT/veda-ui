@@ -54,6 +54,7 @@ import {
 import { useInteractionRectHover } from '$components/exploration/hooks/use-dataset-hover';
 import { datasetLayers } from '$components/exploration/data-utils';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
+import useAois from '$components/common/map/controls/hooks/use-aois';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -165,6 +166,8 @@ export default function Timeline(props: TimelineProps) {
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
 
   const { setObsolete } = useAnalysisController();
+
+  const { features } = useAois();
 
   useEffect(() => {
     // Set the analysis as obsolete when the selected interval changes.
@@ -360,6 +363,38 @@ export default function Timeline(props: TimelineProps) {
     setSelectedInterval,
     selectedDay,
     selectedInterval
+  ]);
+
+  // Set a date range selection when the user creates a new AOI.
+  const prevFeaturesCount = usePreviousValue(features.length);
+  useEffect(() => {
+    // If no feature change, no selected day, or no domain, skip.
+    if (prevFeaturesCount === features.length || !selectedDay || !dataDomain)
+      return;
+
+    if (!features.length) {
+      // All features were removed. Reset the selected day/interval.
+      setSelectedInterval(null);
+    }
+
+    if (prevFeaturesCount === 0 && features.length > 0) {
+      // We went from 0 features to some features.
+      const startDate = sub(selectedDay, { months: 2 });
+      const endDate = add(selectedDay, { months: 2 });
+
+      // Set start and end days from the selected day, if able.
+      const [start, end] = dataDomain;
+      setSelectedInterval({
+        start: isAfter(startDate, start) ? startDate : selectedDay,
+        end: isBefore(endDate, end) ? endDate : end
+      });
+    }
+  }, [
+    features.length,
+    prevFeaturesCount,
+    selectedDay,
+    dataDomain,
+    setSelectedInterval
   ]);
 
   const shouldRenderTimeline = xScaled && dataDomain;

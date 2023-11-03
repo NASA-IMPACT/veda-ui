@@ -30,7 +30,6 @@ import {
   selectedDateAtom,
   selectedIntervalAtom
 } from '$components/exploration/atoms/atoms';
-import { emptyDateRange } from '$components/exploration/constants';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -149,36 +148,34 @@ export function TimelineControls(props: TimelineControlsProps) {
             )}
           </ToolbarGroup>
           <ToolbarGroup>
-            <DatePicker
-              id='date-picker-lr'
-              value={selectedInterval ?? emptyDateRange}
-              onConfirm={(d) => {
-                setSelectedInterval({
-                  start: d.start!,
-                  end: d.end!
-                });
-              }}
-              isClearable={false}
-              isRange
-              alignment='right'
-              renderTriggerElement={(props) => (
-                <DatePickerButton {...props} size='small' disabled={!xScaled}>
-                  <span className='head-reference'>L</span>
-                  <span>
-                    {selectedInterval
-                      ? format(selectedInterval.start, 'MMM do, yyyy')
-                      : 'Date'}
-                  </span>
-                  <span className='head-reference'>R</span>
-                  <span>
-                    {selectedInterval
-                      ? format(selectedInterval.end, 'MMM do, yyyy')
-                      : 'Date'}
-                  </span>
-                  <CollecticonChevronDownSmall />
-                </DatePickerButton>
-              )}
-            />
+            {selectedInterval && (
+              <DatePicker
+                id='date-picker-lr'
+                value={selectedInterval}
+                onConfirm={(d) => {
+                  setSelectedInterval({
+                    start: d.start!,
+                    end: d.end!
+                  });
+                }}
+                isClearable={false}
+                isRange
+                alignment='right'
+                renderTriggerElement={(props) => (
+                  <DatePickerButton {...props} size='small' disabled={!xScaled}>
+                    <span className='head-reference'>From</span>
+                    <span>
+                        {format(selectedInterval.start, 'MMM do, yyyy')}
+                    </span>
+                    <span className='head-reference'>to</span>
+                    <span>
+                        {format(selectedInterval.end, 'MMM do, yyyy')}
+                    </span>
+                    <CollecticonChevronDownSmall />
+                  </DatePickerButton>
+                )}
+              />
+            )}
             <VerticalDivider />
 
             <ToolbarIconButton
