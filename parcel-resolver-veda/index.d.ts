@@ -65,7 +65,7 @@ declare module 'veda' {
     analysis?: {
       metrics: string[];
       exclude: boolean;
-    }
+    };
   }
 
   // A normalized compare layer is the result after the compare definition is
@@ -245,6 +245,7 @@ declare module 'veda' {
     | 'developmentContent'
     | 'aboutContent'
     | 'homeContent'
+    | 'storiesHubContent'
     | 'sandbox-override'
     | 'pageFooter'
     | 'headerBrand'
