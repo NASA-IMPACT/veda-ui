@@ -3184,10 +3184,28 @@
   dependencies:
     "@turf/helpers" "^6.5.0"
 
+"@turf/difference@^6.5.0":
+  version "6.5.0"
+  resolved "http://verdaccio.ds.io:4873/@turf%2fdifference/-/difference-6.5.0.tgz#677b0d5641a93bba2e82f2c683f0d880105b3197"
+  integrity sha512-l8iR5uJqvI+5Fs6leNbhPY5t/a3vipUF/3AeVLpwPQcgmedNXyheYuy07PcMGH5Jdpi5gItOiTqwiU/bUH4b3A==
+  dependencies:
+    "@turf/helpers" "^6.5.0"
+    "@turf/invariant" "^6.5.0"
+    polygon-clipping "^0.15.3"
+
 "@turf/helpers@6.x", "@turf/helpers@^6.5.0":
   version "6.5.0"
   resolved "http://verdaccio.ds.io:4873/@turf%2fhelpers/-/helpers-6.5.0.tgz#f79af094bd6b8ce7ed2bd3e089a8493ee6cae82e"
   integrity sha512-VbI1dV5bLFzohYYdgqwikdMVpe7pJ9X3E+dlr425wa2/sMJqYDhTO++ec38/pcPvPE6oD9WEEeU3Xu3gza+VPw==
+
+"@turf/intersect@^6.5.0":
+  version "6.5.0"
+  resolved "http://verdaccio.ds.io:4873/@turf%2fintersect/-/intersect-6.5.0.tgz#a14e161ddd0264d0f07ac4e325553c70c421f9e6"
+  integrity sha512-2legGJeKrfFkzntcd4GouPugoqPUjexPZnOvfez+3SfIMrHvulw8qV8u7pfVyn2Yqs53yoVCEjS5sEpvQ5YRQg==
+  dependencies:
+    "@turf/helpers" "^6.5.0"
+    "@turf/invariant" "^6.5.0"
+    polygon-clipping "^0.15.3"
 
 "@turf/invariant@^6.5.0":
   version "6.5.0"
