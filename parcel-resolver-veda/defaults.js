@@ -8,6 +8,10 @@ const defaultStrings = {
   storiesBanner: {
     other:
       'Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'
+  },
+  dataCatalogBanner: {
+    other:
+      'This dashboard explores key indicators to track and compare changes over time.'
   }
 };
 
