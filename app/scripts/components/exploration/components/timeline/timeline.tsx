@@ -349,12 +349,6 @@ export default function Timeline(props: TimelineProps) {
     // the domain.
     if (!selectedDay || !isWithinInterval(selectedDay, { start, end })) {
       setSelectedDay(end);
-      // Set the interval to last day minus 2 months if able.
-      const startDate = sub(end, { months: 2 });
-      setSelectedInterval({
-        start: isAfter(startDate, start) ? startDate : start,
-        end
-      });
     }
   }, [
     prevDataDomain,
