@@ -8,6 +8,7 @@ import {
   isAfter,
   isBefore,
   isWithinInterval,
+  max,
   startOfDay,
   sub
 } from 'date-fns';
@@ -49,6 +50,7 @@ import {
 } from '$components/exploration/hooks/scales-hooks';
 import {
   TimelineDatasetStatus,
+  TimelineDatasetSuccess,
   ZoomTransformPlain
 } from '$components/exploration/types.d.ts';
 import { useInteractionRectHover } from '$components/exploration/hooks/use-dataset-hover';
@@ -314,7 +316,7 @@ export default function Timeline(props: TimelineProps) {
   );
 
   const successDatasets = datasets.filter(
-    (d) => d.status === TimelineDatasetStatus.SUCCESS
+    (d): d is TimelineDatasetSuccess => d.status === TimelineDatasetStatus.SUCCESS
   );
 
   // When a loaded dataset is added from an empty state, compute the correct
@@ -345,10 +347,13 @@ export default function Timeline(props: TimelineProps) {
     }
 
     const [start, end] = dataDomain;
-    // If the selected day is not within the new domain, set it to the end of
-    // the domain.
+    // If the selected day is not within the new domain, set it to the last
+    // available dataset date. We can't use the date domain, because the end of
+    // the domain is the max date + a duration so that all dataset dates fit in
+    // the timeline.
     if (!selectedDay || !isWithinInterval(selectedDay, { start, end })) {
-      setSelectedDay(end);
+      const maxDate = max(successDatasets.map(d => d.data.domain.last));
+      setSelectedDay(maxDate);
     }
   }, [
     prevDataDomain,
@@ -356,7 +361,8 @@ export default function Timeline(props: TimelineProps) {
     setSelectedDay,
     setSelectedInterval,
     selectedDay,
-    selectedInterval
+    selectedInterval,
+    successDatasets
   ]);
 
   // Set a date range selection when the user creates a new AOI.
