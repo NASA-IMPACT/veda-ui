@@ -1,7 +1,7 @@
-import { DatasetData, StoryData } from 'veda';
+import { DatasetData, StoryData, getString } from 'veda';
 
 export const ABOUT_PATH = '/about';
-export const STORIES_PATH = '/stories';
+export const STORIES_PATH = `/${getString('stories').other}`;
 export const DATASETS_PATH = '/data-catalog';
 export const ANALYSIS_PATH = '/analysis';
 export const ANALYSIS_RESULTS_PATH = '/analysis/results';
