@@ -30,6 +30,7 @@ import {
   selectedDateAtom,
   selectedIntervalAtom
 } from '$components/exploration/atoms/atoms';
+import { DAY_SIZE_MAX } from '$components/exploration/constants';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -140,7 +141,23 @@ export function TimelineControls(props: TimelineControlsProps) {
               <ToolbarIconButton
                 size='small'
                 onClick={() => {
-                  setSelectedCompareDay(selectedDay);
+                  if (!xScaled || !selectedDay) return;
+                  const [, max] = xScaled.range();
+
+                  // If we select a day using a fixed distance (like 2 days) the
+                  // selected day will be close or far away depending on
+                  // timeline zoom. Select using a pixel distance instead
+                  const currentX = xScaled(selectedDay);
+                  // We use DAY_SIZE_MAX as the pixel distance, so that at max
+                  // zoom, we ensure that we do not select a date with less than
+                  // 1 day of difference.
+                  const nextX = currentX + DAY_SIZE_MAX;
+                  // If date is outside the range, select the previous one.
+                  const newDate = xScaled.invert(
+                    nextX > max ? currentX - DAY_SIZE_MAX : nextX
+                  );
+
+                  setSelectedCompareDay(newDate);
                 }}
               >
                 <CollecticonPlusSmall meaningful title='Add comparison date' />
