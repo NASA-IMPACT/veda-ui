@@ -177,7 +177,7 @@ export const timelineSizesAtom = atom((get) => {
 });
 
 // Whether or not the dataset rows are expanded.
-export const isExpandedAtom = atom<boolean>(false);
+export const isExpandedAtom = atom<boolean>(true);
 
 // Analysis controller. Stores high level state about the analysis process.
 export const analysisControllerAtom = atom({
