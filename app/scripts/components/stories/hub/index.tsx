@@ -8,7 +8,6 @@ import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
-import { getOverride } from 'veda';
 import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
 import {
@@ -166,10 +165,12 @@ function StoriesHub() {
         title={getString('stories').other}
         description={getString('storiesBanner').other}
       />
-      <PageHero
-        title={getString('stories').other}
-        description={getString('storiesBanner').other}
-      />
+      <ContentOverride with='storiesHubHero'>
+        <PageHero
+          title={getString('stories').other}
+          description={getString('storiesBanner').other}
+        />
+      </ContentOverride>
       <FeaturedStories />
 
       <ContentOverride with='storiesHubContent'>
