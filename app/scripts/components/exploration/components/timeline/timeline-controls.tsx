@@ -46,7 +46,7 @@ const TimelineControlsSelf = styled.div`
 const ControlsToolbar = styled.div`
   padding: ${glsp(1.5, 1, 0.5, 1)};
 
-  ${ToolbarGroup /* sc-selector */}:last-child {
+  ${ToolbarGroup /* sc-selector */}:last-child:not(:first-child) {
     margin-left: auto;
   }
 `;
@@ -164,8 +164,8 @@ export function TimelineControls(props: TimelineControlsProps) {
               </ToolbarIconButton>
             )}
           </ToolbarGroup>
-          <ToolbarGroup>
-            {selectedInterval && (
+          {selectedInterval && (
+            <ToolbarGroup>
               <DatePicker
                 id='date-picker-lr'
                 value={selectedInterval}
@@ -182,33 +182,37 @@ export function TimelineControls(props: TimelineControlsProps) {
                   <DatePickerButton {...props} size='small' disabled={!xScaled}>
                     <span className='head-reference'>From</span>
                     <span>
-                        {format(selectedInterval.start, 'MMM do, yyyy')}
+                      {format(selectedInterval.start, 'MMM do, yyyy')}
                     </span>
                     <span className='head-reference'>to</span>
-                    <span>
-                        {format(selectedInterval.end, 'MMM do, yyyy')}
-                    </span>
+                    <span>{format(selectedInterval.end, 'MMM do, yyyy')}</span>
                     <CollecticonChevronDownSmall />
                   </DatePickerButton>
                 )}
               />
-            )}
-            <VerticalDivider />
+              <VerticalDivider />
 
-            <ToolbarIconButton
-              disabled={!isAnalyzing}
-              size='small'
-              onClick={() => {
-                setExpanded((v) => !v);
-              }}
-            >
-              {isExpanded ? (
-                <CollecticonResizeIn meaningful title='Contract dataset rows' />
-              ) : (
-                <CollecticonResizeOut meaningful title='Expand dataset rows' />
-              )}
-            </ToolbarIconButton>
-          </ToolbarGroup>
+              <ToolbarIconButton
+                disabled={!isAnalyzing}
+                size='small'
+                onClick={() => {
+                  setExpanded((v) => !v);
+                }}
+              >
+                {isExpanded ? (
+                  <CollecticonResizeIn
+                    meaningful
+                    title='Contract dataset rows'
+                  />
+                ) : (
+                  <CollecticonResizeOut
+                    meaningful
+                    title='Expand dataset rows'
+                  />
+                )}
+              </ToolbarIconButton>
+            </ToolbarGroup>
+          )}
         </Toolbar>
       </ControlsToolbar>
 
