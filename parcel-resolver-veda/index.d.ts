@@ -171,7 +171,6 @@ declare module 'veda' {
     name: string;
     description: string;
     pubDate: string;
-    useLocalNav?: boolean;
     media?: Media;
     taxonomy: Taxonomy[];
     related?: RelatedContentData[];
