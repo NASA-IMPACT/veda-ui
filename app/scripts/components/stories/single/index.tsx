@@ -25,13 +25,19 @@ function StoriesSingle() {
         title={story.data.name}
         description={story.data.description}
         thumbnail={media?.src}
-        localNavProps={{
+        /*
+          The inclusion of useLocalNav was a late addition, 
+          primarily driven by EIC's specific requirements. 
+          useLocalNav attribute is not present in stories from other instances, 
+          which is why it is explicitly set to false in this context.
+        */
+        localNavProps={(story.data.useLocalNav !== false)? {
           parentName: getString('stories').one,
           parentLabel: getString('stories').other,
           parentTo: STORIES_PATH,
-          items: allStoriesProps,
+          items: allStoriesProps.filter(s => (s.useLocalNav !== false)),
           currentId: story.data.id
-        }}
+        }: null}
       />
 
       <PageMainContent>
