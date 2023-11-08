@@ -65,9 +65,83 @@ const MessageControls = styled.div`
   gap: ${glsp(0.5)};
 `;
 
+function StatusIconObsolete() {
+  return (
+    <MessageStatusIndicator status='obsolete'>
+      <CollecticonSignDanger />
+    </MessageStatusIndicator>
+  );
+}
+
+function StatusIconAnalyzing() {
+  return (
+    <MessageStatusIndicator status='analyzing'>
+      <CollecticonChartLine />
+    </MessageStatusIndicator>
+  );
+}
+
+function StatusIconInfo() {
+  return (
+    <MessageStatusIndicator status='info'>
+      <CollecticonCircleInformation />
+    </MessageStatusIndicator>
+  );
+}
+
+function ButtonObsolete(props: { datasetIds: string[] }) {
+  const { datasetIds } = props;
+  const { runAnalysis } = useAnalysisController();
+
+  return (
+    <Button
+      variation={'achromic-text' as any}
+      size='small'
+      fitting='skinny'
+      onClick={() => {
+        runAnalysis(datasetIds);
+      }}
+    >
+      <CollecticonArrowLoop meaningful title='Update analysis' />
+    </Button>
+  );
+}
+
+function ButtonCancel() {
+  const { cancelAnalysis } = useAnalysisController();
+  return (
+    <Button
+      variation={'achromic-text' as any}
+      size='small'
+      fitting='skinny'
+      onClick={() => {
+        cancelAnalysis();
+      }}
+    >
+      <CollecticonXmarkSmall meaningful title='Cancel analysis' />
+    </Button>
+  );
+}
+
+function ButtonAnalyze(props: { datasetIds: string[] }) {
+  const { datasetIds } = props;
+  const { runAnalysis } = useAnalysisController();
+
+  return (
+    <Button
+      variation={'achromic-text' as any}
+      size='small'
+      onClick={() => {
+        runAnalysis(datasetIds);
+      }}
+    >
+      <CollecticonChartLine /> Analyze
+    </Button>
+  );
+}
+
 export function AnalysisMessage() {
-  const { isObsolete, setObsolete, runAnalysis, cancelAnalysis, isAnalyzing } =
-    useAnalysisController();
+  const { isObsolete, setObsolete, isAnalyzing } = useAnalysisController();
 
   const datasets = useAtomValue(timelineDatasetsAtom);
   const datasetIds = datasets.map((d) => d.data.id);
@@ -81,96 +155,118 @@ export function AnalysisMessage() {
   const selectedFeatures = features.filter((f) => f.selected);
   const selectedFeatureIds = selectedFeatures.map((f) => f.id).join(',');
 
-  useEffect(() => {
-    // Set the analysis as obsolete when the selected features change.
-    setObsolete();
-  }, [setObsolete, selectedFeatureIds]);
-
-  if (!selectedFeatures.length) return null;
-
   const area = calcFeatCollArea({
     type: 'FeatureCollection',
     features: selectedFeatures
   });
 
-  return (
-    <AnalysisMessageWrapper>
-      {isAnalyzing ? (
-        isObsolete ? (
-          <MessageStatusIndicator status='obsolete'>
-            <CollecticonSignDanger />
-          </MessageStatusIndicator>
-        ) : (
-          <MessageStatusIndicator status='analyzing'>
-            <CollecticonChartLine />
-          </MessageStatusIndicator>
-        )
-      ) : (
-        <MessageStatusIndicator status='info'>
-          <CollecticonCircleInformation />
-        </MessageStatusIndicator>
-      )}
-      <MessageContent>
-        {isAnalyzing ? (
-          isObsolete ? (
-            <>
+  useEffect(() => {
+    // Set the analysis as obsolete when the selected features change.
+    setObsolete();
+  }, [setObsolete, selectedFeatureIds]);
+
+  if (isAnalyzing) {
+    if (isObsolete) {
+      // Analyzing, and obsolete.
+
+      if (selectedFeatures.length) {
+        // Features are selected.
+        // Prompt for a refresh.
+        return (
+          <AnalysisMessageWrapper>
+            <StatusIconObsolete />
+            <MessageContent>
               Outdated! Refresh to analyze an area covering {area} km
               <sup>2</sup> {dateLabel && ` from ${dateLabel}.`}
-            </>
-          ) : (
-            <>
-              Analyzing an area covering {area} km<sup>2</sup>{' '}
-              {dateLabel && ` from ${dateLabel}`}.
-            </>
-          )
-        ) : (
-          <>
+            </MessageContent>
+            <VerticalDivider variation='light' />
+            <MessageControls>
+              <ButtonObsolete datasetIds={datasetIds} />
+              <ButtonCancel />
+            </MessageControls>
+          </AnalysisMessageWrapper>
+        );
+      } else {
+        return (
+          <AnalysisMessageWrapper>
+            <StatusIconObsolete />
+            <MessageContent>
+              {features.length ? (
+                // Prompt to select features.
+                <>
+                  Outdated! Select an area to analyze{' '}
+                  {dateLabel && ` from ${dateLabel}.`}
+                </>
+              ) : (
+                // Prompt to draw or upload features.
+                <>
+                  Outdated! Draw or upload an area to analyze{' '}
+                  {dateLabel && ` from ${dateLabel}.`}
+                </>
+              )}
+            </MessageContent>
+            <VerticalDivider variation='light' />
+            <MessageControls>
+              <ButtonCancel />
+            </MessageControls>
+          </AnalysisMessageWrapper>
+        );
+      }
+    } else {
+      // Analyzing and not obsolete.
+      return (
+        <AnalysisMessageWrapper>
+          <StatusIconAnalyzing />
+          <MessageContent>
+            Analyzing an area covering {area} km<sup>2</sup>{' '}
+            {dateLabel && ` from ${dateLabel}`}.
+          </MessageContent>
+          <VerticalDivider variation='light' />
+          <MessageControls>
+            <ButtonCancel />
+          </MessageControls>
+        </AnalysisMessageWrapper>
+      );
+    }
+  } else {
+    if (selectedFeatures.length) {
+      // Not analyzing, but there are selected features.
+      // Can start analysis
+      const area = calcFeatCollArea({
+        type: 'FeatureCollection',
+        features: selectedFeatures
+      });
+
+      return (
+        <AnalysisMessageWrapper>
+          <StatusIconInfo />
+          <MessageContent>
             An area of {area} km<sup>2</sup> {dateLabel && ` from ${dateLabel}`}{' '}
             is selected.
-          </>
-        )}
-      </MessageContent>
-      <VerticalDivider variation='light' />
-      <MessageControls>
-        {isAnalyzing ? (
-          <>
-            {isObsolete && (
-              <Button
-                variation={'achromic-text' as any}
-                size='small'
-                fitting='skinny'
-                onClick={() => {
-                  runAnalysis(datasetIds);
-                }}
-              >
-                <CollecticonArrowLoop meaningful title='Update analysis' />
-              </Button>
-            )}
-            <Button
-              variation={'achromic-text' as any}
-              size='small'
-              fitting='skinny'
-              onClick={() => {
-                cancelAnalysis();
-              }}
-            >
-              <CollecticonXmarkSmall meaningful title='Cancel analysis' />
-            </Button>
-          </>
-        ) : (
-          <Button
-            variation={'achromic-text' as any}
-            size='small'
-            onClick={() => {
-              runAnalysis(datasetIds);
-            }}
-          >
-            <CollecticonChartLine /> Analyze
-          </Button>
-        )}
-      </MessageControls>
-    </AnalysisMessageWrapper>
-  );
+          </MessageContent>
+          <VerticalDivider variation='light' />
+          <MessageControls>
+            <ButtonAnalyze datasetIds={datasetIds} />
+          </MessageControls>
+        </AnalysisMessageWrapper>
+      );
+    } else if (features.length) {
+      // Not analyzing, nothing selected, but there are features.
+      // Prompt to select features.
+      return (
+        <AnalysisMessageWrapper>
+          <StatusIconInfo />
+          <MessageContent>
+            Select one or more of the areas (using shift key) to start analysis.
+          </MessageContent>
+        </AnalysisMessageWrapper>
+      );
+    } else {
+      // Not analyzing, nothing selected, no features.
+      // Do not display anything.
+      return null;
+    }
+  }
 }
 
 export function AnalysisMessageControl() {
