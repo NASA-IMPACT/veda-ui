@@ -46,13 +46,13 @@ const tourSteps = [
     title: 'Welcome to Exploration',
     selector: "[data-tour='dataset-list-item']",
     content:
-      "Each timeline entry represents a dataset, and each of the gray segments represents a data unit in the dataset. This data unit can be a day, month or year, depending on the dataset's time density."
+      "Each row represents a dataset, and each of the boxes on the timeline represents a data unit in the dataset. This data unit can be a day, month or year, depending on the dataset's time density."
   },
   {
     title: 'Playhead',
     selector: "[data-tour='timeline-head-a']",
     content:
-      'This is the main timeline playhead which can be used to select the date to view on the map. You can drag it around to change the date.'
+      'Move this playhead to select a date to view on the map. You can drag it around or click on the timeline to place it.'
   },
   {
     title: 'Date picker',
@@ -64,10 +64,8 @@ const tourSteps = [
     selector: "[data-tour='timeline-interaction-rect']",
     content: () => (
       <>
-        To navigate the timeline you can zoom in by pressing the alt key (or
-        option) + the scroll wheel, and click and drag to pan the timeline.
-        <br />
-        Clicking on the timeline will also move the playhead to that date.
+        You can zoom in on the timeline by scrolling while pressing the alt key (or
+        option) and click and drag to pan.
         <br />
         Go ahead and try it out!
       </>
@@ -78,8 +76,8 @@ const tourSteps = [
     selector: '.mapboxgl-ctrl-top-left',
     content: () => (
       <>
-        These tools allow you to draw or upload an AOI to run an analysis on the
-        selected datasets.
+        You can calculate a time series (zonal statistics) for your area of interest (AOI). 
+        Start that process here by drawing or uploading an AOI.
       </>
     ),
     stepInteraction: false
