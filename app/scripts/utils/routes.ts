@@ -1,4 +1,4 @@
-import { DatasetData, StoryData, getString } from 'veda';
+import { DatasetData, StoryData } from 'veda';
 
 export const ABOUT_PATH = '/about';
 export const STORIES_PATH = `/stories`;

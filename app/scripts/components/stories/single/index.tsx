@@ -1,5 +1,4 @@
 import React, { lazy } from 'react';
-import { getString } from 'veda';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
@@ -7,7 +6,7 @@ import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import RelatedContent from '$components/common/related-content';
 import { STORIES_PATH } from '$utils/routes';
-import { useStory, allStoriesProps } from '$utils/veda-data';
+import { useStory } from '$utils/veda-data';
 import { ContentTaxonomy } from '$components/common/content-taxonomy';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
