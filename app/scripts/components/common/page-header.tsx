@@ -325,6 +325,12 @@ const DropMenuNavItem = styled(DropMenuItem)`
   }
 `;
 
+interface MenuLink {
+  title: string;
+  path: string;
+  onClick: () => void;
+}
+
 function PageHeader() {
   const { isMediumDown } = useMediaQuery();
 
@@ -339,6 +345,65 @@ function PageHeader() {
     }
   }, []);
 
+  const closeNavOnClick = useCallback(() => {
+    setGlobalNavRevealed(false);
+  }, []);
+
+  const defaultMenuLinks: MenuLink[] = [
+    {
+      title: 'Data Catalog',
+      path: DATASETS_PATH,
+      onClick: closeNavOnClick
+    },
+    {
+      title: 'Data Analysis',
+      path: ANALYSIS_PATH,
+      onClick: closeNavOnClick
+    },
+    {
+      title: getString('stories').other,
+      path: STORIES_PATH,
+      onClick: closeNavOnClick
+    },
+  ]
+
+  function MenuLinks ({menuConfig}: {menuConfig: MenuLink[]}) {
+    return (
+      <GlobalMenu>
+        {
+          menuConfig.map((item) => (
+            <li>
+              <GlobalMenuLink
+                to={item.path}
+                onClick={item.onClick}
+              >
+                {item.title}
+              </GlobalMenuLink>
+            </li>
+          ))
+        }
+        {/*
+          Temporarily add hub link through env variables.
+          This does not scale for the different instances, but it's a
+          quick fix for the GHG app.
+        */}
+        {!!process.env.HUB_URL && !!process.env.HUB_NAME && (
+          <li>
+            <GlobalMenuLink
+              as='a'
+              target='_blank'
+              rel='noopener'
+              href={process.env.HUB_URL}
+              onClick={closeNavOnClick}
+            >
+              {process.env.HUB_NAME}
+            </GlobalMenuLink>
+          </li>
+        )}
+      </GlobalMenu>
+    )
+  }
+
   useEffect(() => {
     // Close global nav when media query changes.
     // NOTE: isMediumDown is returning document.body's width, not the whole window width
@@ -347,10 +412,6 @@ function PageHeader() {
     // ex. Look at GlobalNavActions 
     if (!isMediumDown) setGlobalNavRevealed(false);
   }, [isMediumDown]);
-
-  const closeNavOnClick = useCallback(() => {
-    setGlobalNavRevealed(false);
-  }, []);
 
   return (
     <PageHeaderSelf id={HEADER_ID}>
@@ -402,51 +463,7 @@ function PageHeader() {
             <GlobalNavBodyInner>
               <SectionsNavBlock>
                 <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
-                <GlobalMenu>
-                  <li>
-                    <GlobalMenuLink
-                      to={DATASETS_PATH}
-                      onClick={closeNavOnClick}
-                    >
-                      Data Catalog
-                    </GlobalMenuLink>
-                  </li>
-                  <li>
-                    <GlobalMenuLink
-                      to={ANALYSIS_PATH}
-                      onClick={closeNavOnClick}
-                    >
-                      Data Analysis
-                    </GlobalMenuLink>
-                  </li>
-                  <li>
-                    <GlobalMenuLink
-                      to={STORIES_PATH}
-                      onClick={closeNavOnClick}
-                    >
-                      {getString('stories').other}
-                    </GlobalMenuLink>
-                  </li>
-
-                  {/*
-                    Temporarily add hub link through env variables.
-                    This does not scale for the different instances, but it's a
-                    quick fix for the GHG app.
-                  */}
-                  {!!process.env.HUB_URL && !!process.env.HUB_NAME && (
-                    <li>
-                      <GlobalMenuLink
-                        as='a'
-                        target='_blank'
-                        rel='noopener'
-                        href={process.env.HUB_URL}
-                        onClick={closeNavOnClick}
-                      >
-                        {process.env.HUB_NAME}
-                      </GlobalMenuLink>
-                    </li>
-                  )}
-                </GlobalMenu>
+                <MenuLinks menuConfig={defaultMenuLinks}/> 
               </SectionsNavBlock>
               <SectionsNavBlock>
                 <GlobalNavBlockTitle>Meta</GlobalNavBlockTitle>
