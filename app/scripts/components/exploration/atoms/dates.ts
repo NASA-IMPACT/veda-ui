@@ -1,9 +1,5 @@
-import { atom } from 'jotai';
-
 import { DateRange } from '../types.d.ts';
-import { getStableValue } from './cache';
-import { AtomValueUpdater } from './types';
-import { setUrlParam, urlAtom } from './url';
+import { atomWithUrlValueStability } from './atom-with-url-value-stability';
 
 const getValidDateOrNull = (value: any) => {
   if (!value) {
@@ -14,63 +10,49 @@ const getValidDateOrNull = (value: any) => {
 };
 
 // Main timeline date. This date defines the datasets shown on the map.
-export const selectedDateAtom = atom(
-  (get) => {
-    const txtDate = get(urlAtom).searchParams?.get('date');
-    const date = getValidDateOrNull(txtDate);
-    return getStableValue('selectedDate', date);
+export const selectedDateAtom = atomWithUrlValueStability<Date | null>({
+  initialValue: null,
+  urlParam: 'date',
+  hydrate: (serialized) => {
+    return getValidDateOrNull(serialized);
   },
-  (get, set, updates: AtomValueUpdater<Date | null>) => {
-    const newData =
-      typeof updates === 'function'
-        ? updates(get(selectedCompareDateAtom))
-        : updates;
-
-    set(urlAtom, setUrlParam('date', newData?.toISOString() ?? ''));
+  dehydrate: (date) => {
+    return date?.toISOString() ?? '';
   }
-);
+});
 
 // Compare date. This is the compare date for the datasets shown on the map.
-export const selectedCompareDateAtom = atom(
-  (get) => {
-    const txtDate = get(urlAtom).searchParams?.get('dateCompare');
-    const date = getValidDateOrNull(txtDate);
-    return getStableValue('selectedCompareDate', date);
+export const selectedCompareDateAtom = atomWithUrlValueStability<Date | null>({
+  initialValue: null,
+  urlParam: 'dateCompare',
+  hydrate: (serialized) => {
+    return getValidDateOrNull(serialized);
   },
-  (get, set, updates: AtomValueUpdater<Date | null>) => {
-    const newData =
-      typeof updates === 'function'
-        ? updates(get(selectedCompareDateAtom))
-        : updates;
-
-    set(urlAtom, setUrlParam('dateCompare', newData?.toISOString() ?? ''));
+  dehydrate: (date) => {
+    return date?.toISOString() ?? '';
   }
-);
+});
 
 // Date range for L&R playheads.
-export const selectedIntervalAtom = atom(
-  (get) => {
-    const txtDate = get(urlAtom).searchParams?.get('dateRange');
-    const [start, end] = txtDate?.split('|') ?? [];
+export const selectedIntervalAtom = atomWithUrlValueStability<DateRange | null>(
+  {
+    initialValue: null,
+    urlParam: 'dateRange',
+    hydrate: (serialized) => {
+      const [start, end] = serialized?.split('|') ?? [];
 
-    const dateStart = getValidDateOrNull(start);
-    const dateEnd = getValidDateOrNull(end);
+      const dateStart = getValidDateOrNull(start);
+      const dateEnd = getValidDateOrNull(end);
 
-    if (!dateStart || !dateEnd) return null;
+      if (!dateStart || !dateEnd) return null;
 
-    const range = { start: dateStart, end: dateEnd };
-    return getStableValue('selectedInterval', range);
-  },
-  (get, set, updates: AtomValueUpdater<DateRange | null>) => {
-    const newData =
-      typeof updates === 'function'
-        ? updates(get(selectedIntervalAtom))
-        : updates;
-
-    const value = newData
-      ? `${newData.start.toISOString()}|${newData.end.toISOString()}`
-      : '';
-
-    set(urlAtom, setUrlParam('dateRange', value));
+      const range: DateRange = { start: dateStart, end: dateEnd };
+      return range;
+    },
+    dehydrate: (range) => {
+      return range
+        ? `${range.start.toISOString()}|${range.end.toISOString()}`
+        : '';
+    }
   }
 );

@@ -46,20 +46,37 @@ const valueAtom = atom(
 The result is that these values cannot be used dependencies for hooks because they will always change.
 For example, the selectedDate is converted to a ISO string when it goes to the url, and when we create a Date from the string it will be different.
 
-The solution used here was to create an external cache that is checked before returning the value from the atom. This way we can return the same object if it is already in the cache.
+The solution used here was to create an atom that ensures url value stability at the same time that interfaces with with the url atom.
+The code for the atom can be found in [./atom-with-url-value-stability.ts](./atom-with-url-value-stability.ts).
 
-The previous example would become
+This atom is still a little complex because it needs to do a number of things:
+- To get the value:
+  - Get the value from the url
+  - Convert the value from string to the desired type (hydrate step)
+  - Reconcile the value from the url with the internal stored value. This is important for cases where the atom value is so complex that the information that goes to the url needs to be simplified, as with datasets (reconcile step)
+  - Check if the stored atom and the reconciled value are the same. (areEqual step)
+- To store the value:
+  - Convert the value to string (dehydrate step)
+  - Update the url with the new value by writing to the url atom
+  - Update the internal stored value using the atom compare that only updates if the value is different (areEqual step)
+
+An example code to instantiate such atom would be:
 ```ts
-const valueAtom = atom(
-  (get) => {
-    const value = get(urlAtom).searchParams?.get('value');
-    const parsedValue = value ? JSON.parse(value) : null;
-    return getStableValue('value-key', parsedValue);
+const atom = atomWithUrlValueStability({
+  initialValue: { a: 0 },
+  urlParam: 'someKey',
+  hydrate: (serialized) => {
+    return JSON.parse(serialized);
   },
-  (get, set, updates) => {
-    set(urlAtom, JSON.stringify(updates));
-  }
-);
-```
+  dehydrate: (value) => {
+    return JSON.stringify(value);
+  },
+  reconcile: (urlValue, storageValue) => {
+    return someReconcileFunction(urlValue, storageValue);
+  },
+  areEqual: (a, b) => {
+    return a.a === b.a;
+  },
+});
 
-The cache is pretty simple and it is in [./cache.ts](./cache.ts).
+```
