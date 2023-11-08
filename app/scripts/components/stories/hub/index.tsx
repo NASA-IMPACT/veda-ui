@@ -46,7 +46,7 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 
-import { ContentOverride } from '$components/common/page-overrides';
+import { ComponentOverride } from '$components/common/page-overrides';
 
 const allStories = Object.values(stories).map((d) => d!.data);
 
@@ -165,15 +165,15 @@ function StoriesHub() {
         title={getString('stories').other}
         description={getString('storiesBanner').other}
       />
-      <ContentOverride with='storiesHubHero'>
+      <ComponentOverride with='storiesHubHero'>
         <PageHero
           title={getString('stories').other}
           description={getString('storiesBanner').other}
         />
-      </ContentOverride>
+      </ComponentOverride>
       <FeaturedStories />
 
-      <ContentOverride with='storiesHubContent'>
+      <ComponentOverride with='storiesHubContent'>
         <Fold>
           <BrowseFoldHeader
             ref={browseControlsHeaderRef}
@@ -309,7 +309,7 @@ function StoriesHub() {
             </EmptyHub>
           )}
         </Fold>
-      </ContentOverride>
+      </ComponentOverride>
     </PageMainContent>
   );
 }
