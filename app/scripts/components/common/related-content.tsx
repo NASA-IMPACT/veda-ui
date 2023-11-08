@@ -17,10 +17,7 @@ import {
   STORIES_PATH,
   DATASETS_PATH
 } from '$utils/routes';
-import {
-  Card,
-  CardList
-} from '$components/common/card';
+import { Card, CardList } from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlock } from '$styles/content-block';
@@ -144,29 +141,26 @@ export default function RelatedContent(props: RelatedContentProps) {
           <FoldTitle>Related Content</FoldTitle>
         </FoldHeader>
         <TwoColumnCardList>
-          {relatedContents.map((t) => {
-            
-            return (
-              <li key={t.id}>
-                <Card
-                  cardType='cover'
-                  linkLabel={`View ${t.parent} ${t.name}`}
-                  linkTo={t.asLink?.url ?? t.link}
-                  title={t.name}
-                  date={
-                    t.parent === storyString
-                      ? utcString2userTzDate(t.date)
-                      : undefined
-                  }
-                  description={t.description}
-                  parentName={t.parent}
-                  parentTo={t.parentLink}
-                  imgSrc={t.media.src}
-                  imgAlt={t.media.alt}
-                />
-              </li>
-            );
-          })}
+          {relatedContents.map((t) => (
+            <li key={t.id}>
+              <Card
+                cardType='cover'
+                linkLabel={`View ${t.parent} ${t.name}`}
+                linkTo={t.asLink?.url ?? t.link}
+                title={t.name}
+                date={
+                  t.parent === storyString
+                    ? utcString2userTzDate(t.date)
+                    : undefined
+                }
+                description={t.description}
+                parentName={t.parent}
+                parentTo={t.parentLink}
+                imgSrc={t.media.src}
+                imgAlt={t.media.alt}
+              />
+            </li>
+          ))}
         </TwoColumnCardList>
       </RelatedContentInner>
     </ContentBlock>
