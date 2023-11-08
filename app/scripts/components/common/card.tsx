@@ -308,7 +308,6 @@ interface CardComponentProps {
   title: ReactNode;
   linkLabel: string;
   linkTo: string;
-  isExternalLink?: boolean;
   className?: string;
   cardType?: CardType;
   description?: ReactNode;
@@ -330,7 +329,6 @@ function CardComponent(props: CardComponentProps) {
     description,
     linkLabel,
     linkTo,
-    isExternalLink,
     date,
     overline,
     imgSrc,
@@ -341,6 +339,7 @@ function CardComponent(props: CardComponentProps) {
     onCardClickCapture
   } = props;
 
+  const isExternalLink = linkTo.match(/^https?:\/\//);
   const linkProps = isExternalLink
     ? { href: linkTo }
     : { as: Link, to: linkTo };

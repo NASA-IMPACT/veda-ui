@@ -145,15 +145,13 @@ export default function RelatedContent(props: RelatedContentProps) {
         </FoldHeader>
         <TwoColumnCardList>
           {relatedContents.map((t) => {
-            const linkToUse = t.asLink?.url ?? t.link;
-            const isExternalLink = !!linkToUse.match(/^https?:\/\//);
+            
             return (
               <li key={t.id}>
                 <Card
                   cardType='cover'
                   linkLabel={`View ${t.parent} ${t.name}`}
-                  linkTo={linkToUse}
-                  isExternalLink={isExternalLink}
+                  linkTo={t.asLink?.url ?? t.link}
                   title={t.name}
                   date={
                     t.parent === storyString
