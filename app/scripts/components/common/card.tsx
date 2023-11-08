@@ -298,7 +298,7 @@ const ExternalLinkMark = styled.div`
   border-radius: calc(
     ${multiply(themeVal('shape.rounded'), 2)} - ${variableGlsp(0.125)}
   );
-  z-index: 100000;
+  z-index: 1;
 `;
 
 const FlagText = styled.div`
