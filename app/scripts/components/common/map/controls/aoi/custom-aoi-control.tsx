@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Feature, Polygon } from 'geojson';
+import styled from 'styled-components';
+import bbox from '@turf/bbox';
 import { CollecticonUpload2 } from '@devseed-ui/collecticons';
 import { Button, createButtonStyles } from '@devseed-ui/button';
-import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import useMaps from '../../hooks/use-maps';
@@ -33,10 +34,12 @@ function CustomAoI({ map }: { map: any }) {
     setAoIModalRevealed(false);
     if (!mbDraw) return;
     onUpdate({ features });
-    mbDraw.add({
+    const fc = {
       type: 'FeatureCollection',
       features
-    });
+    };
+    map.fitBounds(bbox(fc), { padding: 20 });
+    mbDraw.add(fc);
   };
   return (
     <>
