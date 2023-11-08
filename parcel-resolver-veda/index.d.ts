@@ -65,7 +65,7 @@ declare module 'veda' {
     analysis?: {
       metrics: string[];
       exclude: boolean;
-    }
+    };
   }
 
   // A normalized compare layer is the result after the compare definition is
@@ -137,11 +137,11 @@ declare module 'veda' {
     thematic?: string;
   }
   /**
-   * External  Content
-   * When the story is a link out to the external content
+   * Link  Content
+   * When the story is a link out to the external/internal content
    */
 
-  export interface ExternalConentData {
+  export interface LinkContentData {
     url: string;
   }
 
@@ -182,7 +182,7 @@ declare module 'veda' {
     media?: Media;
     taxonomy: Taxonomy[];
     related?: RelatedContentData[];
-    external?: ExternalConentData;
+    asLink?: LinkContentData;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -264,10 +264,9 @@ declare module 'veda' {
   export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
 
   export const getString: (variable: string) => {
-    one: string | undefined;
+    one: string;
     other: string;
   };
-
   /**
    * List of custom user defined pages.
    */

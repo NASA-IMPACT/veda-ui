@@ -2,6 +2,7 @@ import React, { MouseEventHandler, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import {
@@ -198,11 +199,11 @@ export const CardMeta = styled.div`
     }
   }
 
-  > ${/* sc-selector */VerticalDivider}:last-child {
+  > ${/* sc-selector */ VerticalDivider}:last-child {
     display: none;
   }
 
-  > ${/* sc-selector */VerticalDivider}:first-child {
+  > ${/* sc-selector */ VerticalDivider}:first-child {
     display: none;
   }
 `;
@@ -284,11 +285,30 @@ const CardFigure = styled(Figure)`
   }
 `;
 
+const ExternalLinkMark = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: ${variableGlsp(0.25)};
+  background-color: ${themeVal('color.primary')};
+  color: ${themeVal('color.surface')};
+  z-index: 100000;
+`;
+
+export function ExternalLinkFlag() {
+  return (
+    <ExternalLinkMark>
+      <div>External Link</div>
+      <CollecticonExpandTopRight />
+    </ExternalLinkMark>
+  );
+}
+
 interface CardComponentProps {
   title: ReactNode;
   linkLabel: string;
   linkTo: string;
-  href?: string | undefined;
+  isExternalLink?: boolean;
   className?: string;
   cardType?: CardType;
   description?: ReactNode;
@@ -310,7 +330,7 @@ function CardComponent(props: CardComponentProps) {
     description,
     linkLabel,
     linkTo,
-    href,
+    isExternalLink,
     date,
     overline,
     imgSrc,
@@ -321,10 +341,10 @@ function CardComponent(props: CardComponentProps) {
     onCardClickCapture
   } = props;
 
-  const linkProps = href? { href } : {
-    as: Link,
-    to: linkTo
-  };
+  const linkProps = isExternalLink
+    ? { href: linkTo }
+    : { as: Link, to: linkTo };
+
   return (
     <ElementInteractive
       as={CardSelf}
@@ -338,7 +358,8 @@ function CardComponent(props: CardComponentProps) {
         <CardHeadline>
           <CardTitle>{title}</CardTitle>
           <CardOverline as='div'>
-            {parentName && parentTo && (
+            {isExternalLink && <ExternalLinkFlag />}
+            {!isExternalLink && parentName && parentTo && (
               <CardLabel as={Link} to={parentTo}>
                 {parentName}
               </CardLabel>

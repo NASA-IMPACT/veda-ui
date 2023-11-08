@@ -161,11 +161,11 @@ function StoriesHub() {
     <PageMainContent>
       <LayoutProps
         title={getString('stories').other}
-        description={getString('storiesBanner').other}
+        description={getString('storiesBanner')}
       />
       <PageHero
         title={getString('stories').other}
-        description={getString('storiesBanner').other}
+        description={getString('storiesBanner')}
       />
 
       <FeaturedStories />
@@ -191,8 +191,8 @@ function StoriesHub() {
           <span>
             Showing{' '}
             <Pluralize
-              singular={getString('stories').one?? 'story'}
-              plural={getString('stories').other?? 'stories'}
+              singular={getString('stories').one}
+              plural={getString('stories').other}
               count={displayStories.length}
               showCount={true}
             />{' '}
@@ -210,6 +210,8 @@ function StoriesHub() {
             {displayStories.map((d) => {
               const pubDate = new Date(d.pubDate);
               const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
+              const linkToUse = d.asLink?.url ?? getStoryPath(d);
+              const isExternalLink = linkToUse.match(/^https?:\/\//);
               return (
                 <li key={d.id}>
                   <Card
@@ -243,8 +245,8 @@ function StoriesHub() {
                       </CardMeta>
                     }
                     linkLabel='View more'
-                    href={d.external?.url}
-                    linkTo={getStoryPath(d)}
+                    linkTo={linkToUse}
+                    isExternalLink={isExternalLink}
                     title={
                       <TextHighlight
                         value={search}

@@ -7,7 +7,7 @@ import {
   datasets,
   Media,
   RelatedContentData,
-  ExternalConentData,
+  LinkContentData,
   StoryData
 } from 'veda';
 import { utcString2userTzDate } from '$utils/date';
@@ -17,7 +17,10 @@ import {
   STORIES_PATH,
   DATASETS_PATH
 } from '$utils/routes';
-import { Card, CardList } from '$components/common/card';
+import {
+  Card,
+  CardList
+} from '$components/common/card';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlock } from '$styles/content-block';
@@ -49,7 +52,7 @@ interface FormatBlock {
   description: string;
   date: string;
   link: string;
-  external?: ExternalConentData;
+  asLink?: LinkContentData;
   parentLink: string;
   media: Media;
   parent: RelatedContentData['type'];
@@ -78,7 +81,7 @@ function formatBlock({
   description,
   date,
   media,
-  external,
+  asLink,
   type
 }): FormatBlock {
   return {
@@ -87,7 +90,7 @@ function formatBlock({
     description,
     date,
     media,
-    external,
+    asLink,
     ...formatUrl(id, type),
     parent: type
   };
@@ -113,7 +116,7 @@ function formatContents(relatedData: RelatedContentData[]) {
       id,
       name,
       description,
-      external: (matchingContent as StoryData).external,
+      asLink: (matchingContent as StoryData).asLink,
       date: (matchingContent as StoryData).pubDate,
       media,
       type
@@ -141,27 +144,31 @@ export default function RelatedContent(props: RelatedContentProps) {
           <FoldTitle>Related Content</FoldTitle>
         </FoldHeader>
         <TwoColumnCardList>
-          {relatedContents.map((t) => (
-            <li key={t.id}>
-              <Card
-                cardType='cover'
-                linkLabel={`View ${t.parent} ${t.name}`}
-                linkTo={t.link}
-                href={t.external?.url}
-                title={t.name}
-                date={
-                  t.parent === storyString
-                    ? utcString2userTzDate(t.date)
-                    : undefined
-                }
-                description={t.description}
-                parentName={t.parent}
-                parentTo={t.parentLink}
-                imgSrc={t.media.src}
-                imgAlt={t.media.alt}
-              />
-            </li>
-          ))}
+          {relatedContents.map((t) => {
+            const linkToUse = t.asLink?.url ?? t.link;
+            const isExternalLink = !!linkToUse.match(/^https?:\/\//);
+            return (
+              <li key={t.id}>
+                <Card
+                  cardType='cover'
+                  linkLabel={`View ${t.parent} ${t.name}`}
+                  linkTo={linkToUse}
+                  isExternalLink={isExternalLink}
+                  title={t.name}
+                  date={
+                    t.parent === storyString
+                      ? utcString2userTzDate(t.date)
+                      : undefined
+                  }
+                  description={t.description}
+                  parentName={t.parent}
+                  parentTo={t.parentLink}
+                  imgSrc={t.media.src}
+                  imgAlt={t.media.alt}
+                />
+              </li>
+            );
+          })}
         </TwoColumnCardList>
       </RelatedContentInner>
     </ContentBlock>

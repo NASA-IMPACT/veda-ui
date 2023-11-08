@@ -83,7 +83,8 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
               return featuredItems.map((d) => {
                 const date = new Date(d[dateProperty ?? '']);
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
-
+                const linkToUse = d.asLink?.url ?? getItemPath(d);
+                const isExternalLink = linkToUse.match(/^https?:\/\//);
                 return (
                   <ContinuumGridItem {...bag} key={d.id}>
                     <Card
@@ -97,8 +98,8 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       }}
                       cardType='featured'
                       linkLabel='View more'
-                      linkTo={getItemPath(d)}
-                      href={d.external?.url}
+                      linkTo={linkToUse}
+                      isExternalLink={isExternalLink}
                       title={d.name}
                       overline={
                         <CardMeta>

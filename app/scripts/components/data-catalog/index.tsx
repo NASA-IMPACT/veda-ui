@@ -156,13 +156,13 @@ function DataCatalog() {
       <LayoutProps
         title='Data Catalog'
         description={
-          getString('dataCatalogBanner').other 
+          getString('dataCatalogBanner') 
         }
       />
       <PageHero
         title='Data Catalog'
         description={
-          getString('dataCatalogBanner').other
+          getString('dataCatalogBanner')
         }
       />
 
