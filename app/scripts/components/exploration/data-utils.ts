@@ -11,7 +11,6 @@ import {
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
-  TimelineDatasetForUrl,
   TimelineDatasetStatus
 } from './types.d.ts';
 import {
@@ -149,23 +148,6 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
   }
 
   return startOfDay(date);
-}
-
-export function urlDatasetsDehydrate(datasets: TimelineDataset[]) {
-  return JSON.stringify(
-    datasets.map((d) => ({
-      id: d.data.id,
-      settings: d.settings
-    }))
-  );
-}
-
-export function urlDatasetsHydrate(
-  encoded: string | null | undefined
-): TimelineDatasetForUrl[] {
-  if (!encoded) return [];
-  const parsed = JSON.parse(encoded);
-  return parsed;
 }
 
 export class ExtendedError extends Error {

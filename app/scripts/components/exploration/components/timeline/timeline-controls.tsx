@@ -22,14 +22,13 @@ import {
 } from '@devseed-ui/toolbar';
 
 import { DateAxis } from './date-axis';
-
+import { analysisControllerAtom } from '$components/exploration/atoms/analysis';
+import { isExpandedAtom } from '$components/exploration/atoms/timeline';
 import {
-  analysisControllerAtom,
-  isExpandedAtom,
   selectedCompareDateAtom,
   selectedDateAtom,
   selectedIntervalAtom
-} from '$components/exploration/atoms/atoms';
+} from '$components/exploration/atoms/dates';
 import { DAY_SIZE_MAX } from '$components/exploration/constants';
 
 const TimelineControlsSelf = styled.div`

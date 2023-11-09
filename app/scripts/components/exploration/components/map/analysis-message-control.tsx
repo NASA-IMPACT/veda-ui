@@ -12,7 +12,8 @@ import {
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
 
-import { selectedIntervalAtom, timelineDatasetsAtom } from '../../atoms/atoms';
+import { timelineDatasetsAtom } from '../../atoms/datasets';
+import { selectedIntervalAtom } from '../../atoms/dates';
 
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { calcFeatCollArea } from '$components/common/aoi/utils';

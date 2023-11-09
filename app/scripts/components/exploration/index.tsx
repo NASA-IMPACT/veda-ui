@@ -8,7 +8,7 @@ import { MockControls } from './datasets-mock';
 import Timeline from './components/timeline/timeline';
 import { ExplorationMap } from './components/map';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
-import { timelineDatasetsAtom } from './atoms/atoms';
+import { timelineDatasetsAtom } from './atoms/datasets';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';

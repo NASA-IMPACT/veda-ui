@@ -44,7 +44,7 @@ import {
   useTimelineDatasetAtom,
   useTimelineDatasetVisibility
 } from '$components/exploration/atoms/hooks';
-import { analysisControllerAtom } from '$components/exploration/atoms/atoms';
+import { analysisControllerAtom } from '$components/exploration/atoms/analysis';
 import {
   useAnalysisController,
   useAnalysisDataRequest

@@ -32,12 +32,14 @@ import { DateGrid } from './date-axis';
 import {
   selectedCompareDateAtom,
   selectedDateAtom,
-  selectedIntervalAtom,
-  timelineDatasetsAtom,
+  selectedIntervalAtom
+} from '$components/exploration/atoms/dates';
+import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
+import {
   timelineSizesAtom,
   timelineWidthAtom,
   zoomTransformAtom
-} from '$components/exploration/atoms/atoms';
+} from '$components/exploration/atoms/timeline';
 import { useTimelineDatasetsDomain } from '$components/exploration/atoms/hooks';
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
 import {
