@@ -1,4 +1,5 @@
 import React from 'react';
+import T from 'prop-types';
 import LazyLoad from 'react-lazyload';
 
 import Chart from '$components/common/chart/block';
@@ -8,7 +9,7 @@ import Table, { tableHeight } from '$components/common/table';
 import CompareImage from '$components/common/blocks/images/compare';
 
 import Map, { mapHeight } from '$components/common/blocks/block-map';
-
+import Embed from '$components/common/blocks/embed';
 import {
   ScrollytellingBlock,
   scrollyMapHeight
@@ -72,3 +73,21 @@ export function LazyTable(props) {
     </LazyLoad>
   );
 }
+
+export function LazyEmbed(props) {
+  return (
+    <LazyLoad
+      // eslint-disable-next-line react/prop-types
+      placeholder={<LoadingSkeleton height={props.height} />}
+      offset={50}
+      once
+    >
+      <Embed {...props} />
+    </LazyLoad>
+  );
+}
+
+LazyEmbed.propTypes = {
+  src: T.string,
+  height: T.number
+};
