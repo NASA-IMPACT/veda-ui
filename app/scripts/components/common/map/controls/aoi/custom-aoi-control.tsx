@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Feature, Polygon } from 'geojson';
+import styled from 'styled-components';
+import bbox from '@turf/bbox';
 import { CollecticonUpload2 } from '@devseed-ui/collecticons';
 import { Button, createButtonStyles } from '@devseed-ui/button';
-import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
+
 import useMaps from '../../hooks/use-maps';
+import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
 
@@ -24,14 +27,19 @@ const SelectorButton = styled(Button)`
 function CustomAoI({ map }: { map: any }) {
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
 
+  const { onUpdate } = useAois();
+
   const onConfirm = (features: Feature<Polygon>[]) => {
     const mbDraw = map?._drawControl;
     setAoIModalRevealed(false);
     if (!mbDraw) return;
-    mbDraw.add({
+    onUpdate({ features });
+    const fc = {
       type: 'FeatureCollection',
       features
-    });
+    };
+    map.fitBounds(bbox(fc), { padding: 20 });
+    mbDraw.add(fc);
   };
   return (
     <>

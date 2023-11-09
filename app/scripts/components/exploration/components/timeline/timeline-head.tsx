@@ -111,7 +111,7 @@ export function TimelineHeadPoint(props: TimelineHeadProps) {
         }}
       />
       <text fill={theme.color?.base} fontSize='0.75rem' y='0' x='-4' dy='1em'>
-        {label ?? 'P'}
+        {label}
       </text>
     </TimelineHeadBase>
   );
@@ -134,7 +134,7 @@ export function TimelineHeadIn(props: TimelineHeadProps) {
         }}
       />
       <text fill={theme.color?.base} fontSize='0.75rem' y='0' x='2' dy='1em'>
-        {label ?? 'L'}
+        {label}
       </text>
     </TimelineHeadBase>
   );
@@ -164,7 +164,7 @@ export function TimelineHeadOut(props: TimelineHeadProps) {
         dy='1em'
         textAnchor='end'
       >
-        {label ?? 'R'}
+        {label}
       </text>
     </TimelineHeadBase>
   );

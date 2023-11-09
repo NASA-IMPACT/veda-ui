@@ -8,6 +8,7 @@ import {
   isAfter,
   isBefore,
   isWithinInterval,
+  max,
   startOfDay,
   sub
 } from 'date-fns';
@@ -51,11 +52,13 @@ import {
 } from '$components/exploration/hooks/scales-hooks';
 import {
   TimelineDatasetStatus,
+  TimelineDatasetSuccess,
   ZoomTransformPlain
 } from '$components/exploration/types.d.ts';
 import { useInteractionRectHover } from '$components/exploration/hooks/use-dataset-hover';
 import { datasetLayers } from '$components/exploration/data-utils';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
+import useAois from '$components/common/map/controls/hooks/use-aois';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -167,6 +170,8 @@ export default function Timeline(props: TimelineProps) {
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
 
   const { setObsolete } = useAnalysisController();
+
+  const { features } = useAois();
 
   useEffect(() => {
     // Set the analysis as obsolete when the selected interval changes.
@@ -313,7 +318,7 @@ export default function Timeline(props: TimelineProps) {
   );
 
   const successDatasets = datasets.filter(
-    (d) => d.status === TimelineDatasetStatus.SUCCESS
+    (d): d is TimelineDatasetSuccess => d.status === TimelineDatasetStatus.SUCCESS
   );
 
   // When a loaded dataset is added from an empty state, compute the correct
@@ -344,16 +349,13 @@ export default function Timeline(props: TimelineProps) {
     }
 
     const [start, end] = dataDomain;
-    // If the selected day is not within the new domain, set it to the start of
-    // the domain.
+    // If the selected day is not within the new domain, set it to the last
+    // available dataset date. We can't use the date domain, because the end of
+    // the domain is the max date + a duration so that all dataset dates fit in
+    // the timeline.
     if (!selectedDay || !isWithinInterval(selectedDay, { start, end })) {
-      setSelectedDay(start);
-      // Set the interval to first day plus 2 months if able.
-      const endDate = add(start, { months: 2 });
-      setSelectedInterval({
-        start,
-        end: isBefore(endDate, end) ? endDate : end
-      });
+      const maxDate = max(successDatasets.map(d => d.data.domain.last));
+      setSelectedDay(maxDate);
     }
   }, [
     prevDataDomain,
@@ -361,7 +363,40 @@ export default function Timeline(props: TimelineProps) {
     setSelectedDay,
     setSelectedInterval,
     selectedDay,
-    selectedInterval
+    selectedInterval,
+    successDatasets
+  ]);
+
+  // Set a date range selection when the user creates a new AOI.
+  const prevFeaturesCount = usePreviousValue(features.length);
+  useEffect(() => {
+    // If no feature change, no selected day, or no domain, skip.
+    if (prevFeaturesCount === features.length || !selectedDay || !dataDomain)
+      return;
+
+    if (!features.length) {
+      // All features were removed. Reset the selected day/interval.
+      setSelectedInterval(null);
+    }
+
+    if (prevFeaturesCount === 0 && features.length > 0) {
+      // We went from 0 features to some features.
+      const startDate = sub(selectedDay, { months: 2 });
+      const endDate = add(selectedDay, { months: 2 });
+
+      // Set start and end days from the selected day, if able.
+      const [start, end] = dataDomain;
+      setSelectedInterval({
+        start: isAfter(startDate, start) ? startDate : selectedDay,
+        end: isBefore(endDate, end) ? endDate : end
+      });
+    }
+  }, [
+    features.length,
+    prevFeaturesCount,
+    selectedDay,
+    dataDomain,
+    setSelectedInterval
   ]);
 
   const shouldRenderTimeline = xScaled && dataDomain;
@@ -413,7 +448,7 @@ export default function Timeline(props: TimelineProps) {
           <>
             {selectedDay && (
               <TimelineHeadPoint
-                label='A'
+                label={selectedCompareDay ? 'A' : undefined}
                 domain={dataDomain}
                 xScaled={xScaled}
                 onDayChange={setSelectedDay}

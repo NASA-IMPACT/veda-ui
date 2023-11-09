@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { CollecticonArrowLoop } from '@devseed-ui/collecticons';
+import { CollecticonArrowSemiSpinCcw } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
 import styled from 'styled-components';
 import { useAtomValue, useSetAtom } from 'jotai';
@@ -37,7 +37,11 @@ function ResetAoI({ map }: { map: any }) {
         onClick={onReset}
         disabled={!aoisFeatures.length}
       >
-        <CollecticonArrowLoop color='base' title='Upload geoJSON' meaningful />
+        <CollecticonArrowSemiSpinCcw
+          color='base'
+          title='Remove all AOIs'
+          meaningful
+        />
       </SelectorButton>
     </>
   );

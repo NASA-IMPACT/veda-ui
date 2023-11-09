@@ -29,7 +29,7 @@ import {
   selectedDateAtom,
   selectedIntervalAtom
 } from '$components/exploration/atoms/dates';
-import { emptyDateRange } from '$components/exploration/constants';
+import { DAY_SIZE_MAX } from '$components/exploration/constants';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -45,7 +45,7 @@ const TimelineControlsSelf = styled.div`
 const ControlsToolbar = styled.div`
   padding: ${glsp(1.5, 1, 0.5, 1)};
 
-  ${ToolbarGroup /* sc-selector */}:last-child {
+  ${ToolbarGroup /* sc-selector */}:last-child:not(:first-child) {
     margin-left: auto;
   }
 `;
@@ -140,60 +140,78 @@ export function TimelineControls(props: TimelineControlsProps) {
               <ToolbarIconButton
                 size='small'
                 onClick={() => {
-                  setSelectedCompareDay(selectedDay);
+                  if (!xScaled || !selectedDay) return;
+                  const [, max] = xScaled.range();
+
+                  // If we select a day using a fixed distance (like 2 days) the
+                  // selected day will be close or far away depending on
+                  // timeline zoom. Select using a pixel distance instead
+                  const currentX = xScaled(selectedDay);
+                  // We use DAY_SIZE_MAX as the pixel distance, so that at max
+                  // zoom, we ensure that we do not select a date with less than
+                  // 1 day of difference.
+                  const nextX = currentX + DAY_SIZE_MAX;
+                  // If date is outside the range, select the previous one.
+                  const newDate = xScaled.invert(
+                    nextX > max ? currentX - DAY_SIZE_MAX : nextX
+                  );
+
+                  setSelectedCompareDay(newDate);
                 }}
               >
                 <CollecticonPlusSmall meaningful title='Add comparison date' />
               </ToolbarIconButton>
             )}
           </ToolbarGroup>
-          <ToolbarGroup>
-            <DatePicker
-              id='date-picker-lr'
-              value={selectedInterval ?? emptyDateRange}
-              onConfirm={(d) => {
-                setSelectedInterval({
-                  start: d.start!,
-                  end: d.end!
-                });
-              }}
-              isClearable={false}
-              isRange
-              alignment='right'
-              renderTriggerElement={(props) => (
-                <DatePickerButton {...props} size='small' disabled={!xScaled}>
-                  <span className='head-reference'>L</span>
-                  <span>
-                    {selectedInterval
-                      ? format(selectedInterval.start, 'MMM do, yyyy')
-                      : 'Date'}
-                  </span>
-                  <span className='head-reference'>R</span>
-                  <span>
-                    {selectedInterval
-                      ? format(selectedInterval.end, 'MMM do, yyyy')
-                      : 'Date'}
-                  </span>
-                  <CollecticonChevronDownSmall />
-                </DatePickerButton>
-              )}
-            />
-            <VerticalDivider />
+          {selectedInterval && (
+            <ToolbarGroup>
+              <DatePicker
+                id='date-picker-lr'
+                value={selectedInterval}
+                onConfirm={(d) => {
+                  setSelectedInterval({
+                    start: d.start!,
+                    end: d.end!
+                  });
+                }}
+                isClearable={false}
+                isRange
+                alignment='right'
+                renderTriggerElement={(props) => (
+                  <DatePickerButton {...props} size='small' disabled={!xScaled}>
+                    <span className='head-reference'>From</span>
+                    <span>
+                      {format(selectedInterval.start, 'MMM do, yyyy')}
+                    </span>
+                    <span className='head-reference'>to</span>
+                    <span>{format(selectedInterval.end, 'MMM do, yyyy')}</span>
+                    <CollecticonChevronDownSmall />
+                  </DatePickerButton>
+                )}
+              />
+              <VerticalDivider />
 
-            <ToolbarIconButton
-              disabled={!isAnalyzing}
-              size='small'
-              onClick={() => {
-                setExpanded((v) => !v);
-              }}
-            >
-              {isExpanded ? (
-                <CollecticonResizeIn meaningful title='Contract dataset rows' />
-              ) : (
-                <CollecticonResizeOut meaningful title='Expand dataset rows' />
-              )}
-            </ToolbarIconButton>
-          </ToolbarGroup>
+              <ToolbarIconButton
+                disabled={!isAnalyzing}
+                size='small'
+                onClick={() => {
+                  setExpanded((v) => !v);
+                }}
+              >
+                {isExpanded ? (
+                  <CollecticonResizeIn
+                    meaningful
+                    title='Contract dataset rows'
+                  />
+                ) : (
+                  <CollecticonResizeOut
+                    meaningful
+                    title='Expand dataset rows'
+                  />
+                )}
+              </ToolbarIconButton>
+            </ToolbarGroup>
+          )}
         </Toolbar>
       </ControlsToolbar>
 

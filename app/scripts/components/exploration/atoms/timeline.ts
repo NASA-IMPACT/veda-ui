@@ -31,4 +31,4 @@ export const timelineSizesAtom = atom((get) => {
 });
 
 // Whether or not the dataset rows are expanded.
-export const isExpandedAtom = atom<boolean>(false);
+export const isExpandedAtom = atom<boolean>(true);
