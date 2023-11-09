@@ -15,7 +15,7 @@ const MdxContent = lazy(() => import('$components/common/mdx-content'));
 function StoriesSingle() {
   const story = useStory();
 
-  if (!story) throw resourceNotFound();
+  if (!story || story.data.asLink) throw resourceNotFound();
 
   const { media, related } = story.data;
 
