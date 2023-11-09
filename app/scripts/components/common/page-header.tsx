@@ -365,14 +365,14 @@ function PageHeader() {
       path: STORIES_PATH,
       onClick: closeNavOnClick
     },
-  ]
+  ];
 
   function MenuLinks ({menuConfig}: {menuConfig: MenuLink[]}) {
     return (
       <GlobalMenu>
         {
-          menuConfig.map((item) => (
-            <li>
+          menuConfig.map((item, i) => (
+            <li key={`menu-item-${i}`}>
               <GlobalMenuLink
                 to={item.path}
                 onClick={item.onClick}
@@ -401,7 +401,7 @@ function PageHeader() {
           </li>
         )}
       </GlobalMenu>
-    )
+    );
   }
 
   useEffect(() => {
@@ -463,7 +463,7 @@ function PageHeader() {
             <GlobalNavBodyInner>
               <SectionsNavBlock>
                 <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
-                <MenuLinks menuConfig={defaultMenuLinks}/> 
+                <MenuLinks menuConfig={defaultMenuLinks} /> 
               </SectionsNavBlock>
               <SectionsNavBlock>
                 <GlobalNavBlockTitle>Meta</GlobalNavBlockTitle>
