@@ -144,17 +144,18 @@ interface DatasetAssetsRequestParams {
 }
 
 async function getDatasetAssets(
-  { dateStart, dateEnd, stacCol, assets, aoi }: DatasetAssetsRequestParams,
+  { dateStart, dateEnd, stacApiEndpoint, stacCol, assets, aoi }: DatasetAssetsRequestParams,
   opts: AxiosRequestConfig,
   concurrencyManager: ConcurrencyManagerInstance
 ) {
+  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
   const data = await concurrencyManager.queue(async () => {
     const collectionReqRes = await axios.get(
-      `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
+      `${stacApiEndpointToUse}/collections/${stacCol}`
     );
 
     const searchReqRes = await axios.post(
-      `${process.env.API_STAC_ENDPOINT}/search`,
+      `${stacApiEndpointToUse}/search`,
       {
         'filter-lang': 'cql2-json',
         limit: 10000,

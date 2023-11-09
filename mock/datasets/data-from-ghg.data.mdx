@@ -1,0 +1,310 @@
+---
+id: casagfed-carbonflux-monthgrid-v3
+name: CASA-GFED3 Land Carbon Flux
+description: Global, monthly 0.5 degree resolution carbon fluxes from Net Primary Production (NPP), heterotrophic respiration (Rh), wildfire emissions (FIRE), and fuel wood burning emissions (FUEL) derived from the CASA-GFED model, version 3
+usage:
+  - url: 'https://us-ghg-center.github.io/ghgc-docs/cog_transformation/casagfed-carbonflux-monthgrid-v3.html'
+    label: Notebook showing data transformation to COG for ingest to the US GHG Center
+    title: 'Data Transformation Notebook'
+  - url: 'https://us-ghg-center.github.io/ghgc-docs/user_data_notebooks/casagfed-carbonflux-monthgrid-v3_User_Notebook.html'
+    label: Notebook to read, visualize, and explore data statistics
+    title: 'Sample Data Notebook'
+  - url: 'https://hub.ghg.center/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FUS-GHG-Center%2Fghgc-docs&urlpath=tree%2Fghgc-docs%2Fuser_data_notebooks%2Fcasagfed-carbonflux-monthgrid-v3_User_Notebook.ipynb&branch=main'
+    label: Run example notebook
+    title: Interactive Session in the US GHG Center JupyterHub (requires account) 
+  - url: https://dljsq618eotzp.cloudfront.net/browseui/index.html#casagfed-carbonflux-monthgrid-v3/
+    label: Browse and download the data
+    title: Data Browser
+media:
+  src: ::file ./east_coast_mar_20.jpg
+  alt: wildfire
+  author:
+    name: Marcus Kauffman
+taxonomy:
+  - name: Topics
+    values:
+      - Natural Emissions and Sinks
+  - name: Source
+    values:
+      - NASA
+  - name: Gas
+    values:
+      - CO₂
+  - name: Product Type
+    values:
+      - Model Output
+layers:
+  - id: casa-gfed-co2-flux
+    stacApiEndpoint: https://ghg.center/api/stac
+    tileApiEndpoint: https://ghg.center/api/raster
+    stacCol: casagfed-carbonflux-monthgrid-v3
+    name: Net Primary Production (NPP)
+    type: raster
+    description: Model-estimated net primary production (NPP), which is the amount of carbon available from plants
+    initialDatetime: newest
+    projection:
+      id: 'equirectangular'
+    basemapId: 'light'
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      assets: npp
+      colormap_name: purd
+      rescale:
+        - 0
+        - 0.3
+    compare:
+      datasetId: casagfed-carbonflux-monthgrid-v3
+      layerId: casa-gfed-co2-flux
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          if (dateFns && datetime && compareDatetime) return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    legend:
+      unit:
+        label: kg Carbon/m²/mon
+      type: gradient
+      min: 0
+      max: 0.3
+      stops:
+        - '#F7F4F9'
+        - '#E9E3F0'
+        - '#D9C3DF'
+        - '#CDA0CD'
+        - '#D57ABA'
+        - '#E34A9F'
+        - '#DF2179'
+        - '#C10E51'
+        - '#92003F'
+        - '#67001F'
+  - id: casa-gfed-co2-flux-hr
+    stacApiEndpoint: https://ghg.center/api/stac
+    tileApiEndpoint: https://ghg.center/api/raster
+    stacCol: casagfed-carbonflux-monthgrid-v3
+    name: Heterotrophic Respiration (Rh)
+    type: raster
+    description: Model-estimated heterotrophic respiration (Rh), which is the flux of carbon from the soil to the atmosphere
+    initialDatetime: newest
+    projection:
+      id: 'equirectangular'
+    basemapId: 'light' 
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      assets: rh
+      colormap_name: purd
+      rescale:
+        - 0
+        - 0.3
+    compare:
+      datasetId: casagfed-carbonflux-monthgrid-v3
+      layerId: casa-gfed-co2-flux-hr
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          if (dateFns && datetime && compareDatetime) return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    legend:
+      unit:
+        label: kg Carbon/m²/mon
+      type: gradient
+      min: 0
+      max: 0.3
+      stops:
+        - '#F7F4F9'
+        - '#E9E3F0'
+        - '#D9C3DF'
+        - '#CDA0CD'
+        - '#D57ABA'
+        - '#E34A9F'
+        - '#DF2179'
+        - '#C10E51'
+        - '#92003F'
+        - '#67001F'
+  - id: casa-gfed-co2-flux-nee
+    stacApiEndpoint: https://ghg.center/api/stac
+    tileApiEndpoint: https://ghg.center/api/raster
+    stacCol: casagfed-carbonflux-monthgrid-v3
+    name: Net Ecosystem Exchange (NEE)
+    type: raster
+    description:  Model-estimated net ecosystem exchange (NEE), which is the net carbon flux to the atmosphere
+    initialDatetime: newest
+    projection:
+      id: 'equirectangular'
+    basemapId: 'light'
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      assets: nee
+      colormap_name: coolwarm
+      rescale:
+        - -0.1
+        - 0.1
+    compare:
+      datasetId: casagfed-carbonflux-monthgrid-v3
+      layerId: casa-gfed-co2-flux-nee
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          if (dateFns && datetime && compareDatetime) return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    legend:
+      unit:
+        label: kg Carbon/m²/mon
+      type: gradient
+      min: -0.1
+      max: 0.1
+      stops:
+        - '#3B4CC0'
+        - '#6788EE'
+        - '#9ABBFF'
+        - '#C9D7F0'
+        - '#EDD1C2'
+        - '#F7A889'
+        - '#E26952'
+        - '#B40426'
+  - id: casa-gfed-co2-flux-fe
+    stacApiEndpoint: https://ghg.center/api/stac
+    tileApiEndpoint: https://ghg.center/api/raster
+    stacCol: casagfed-carbonflux-monthgrid-v3
+    name: Fire Emissions (FIRE)
+    type: raster
+    description: Model-estimated flux of carbon to the atmosphere from wildfires
+    initialDatetime: newest
+    projection:
+      id: 'equirectangular'
+    basemapId: 'light' 
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      assets: fire
+      colormap_name: purd
+      rescale:
+        - 0
+        - 0.3
+    compare:
+      datasetId: casagfed-carbonflux-monthgrid-v3
+      layerId: casa-gfed-co2-flux-fe
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          if (dateFns && datetime && compareDatetime) return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    legend:
+      unit:
+        label: kg Carbon/m²/mon
+      type: gradient
+      min: 0
+      max: 0.3
+      stops:
+        - '#F7F4F9'
+        - '#E9E3F0'
+        - '#D9C3DF'
+        - '#CDA0CD'
+        - '#D57ABA'
+        - '#E34A9F'
+        - '#DF2179'
+        - '#C10E51'
+        - '#92003F'
+        - '#67001F'
+  - id: casa-gfed-co2-flux-fuel
+    stacApiEndpoint: https://ghg.center/api/stac
+    tileApiEndpoint: https://ghg.center/api/raster
+    stacCol: casagfed-carbonflux-monthgrid-v3
+    name: Wood Fuel Emissions (FUEL)
+    type: raster
+    description: Model-estimated flux of carbon to the atmosphere from wood burned for fuel
+    initialDatetime: newest
+    projection:
+      id: 'equirectangular'
+    basemapId: 'light'
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      assets: fuel
+      colormap_name: bupu
+      rescale:
+        - 0
+        - 0.03
+    compare:
+      datasetId: casagfed-carbonflux-monthgrid-v3
+      layerId: casa-gfed-co2-flux-fuel
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          if (dateFns && datetime && compareDatetime) return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    legend:
+      unit:
+        label: kg Carbon/m²/mon
+      type: gradient
+      min: 0
+      max: 0.03
+      stops:
+        - '#F7FCFD'
+        - '#DCE9F2'
+        - '#B5CCE3'
+        - '#96ACD2'
+        - '#8C7DBA'
+        - '#894DA3'
+        - '#821580'
+        - '#4D004B'
+---
+
+<Block type='wide'>
+  <Prose>
+    This dataset presents a variety of carbon flux parameters derived from the Carnegie-Ames-Stanford-Approach – Global Fire Emissions Database version 3 (CASA-GFED3) model. The model’s input data includes air temperature, precipitation, incident solar radiation, a soil classification map, and a number of satellite derived products. All model calculations are driven by analyzed meteorological data from NASA’s Modern-Era Retrospective analysis for Research and Application, Version 2 (MERRA-2). The resulting product provides monthly, global data at 0.5 degree resolution from January 2003 through December 2017. It includes the following carbon flux variables expressed in units of kilograms of carbon per square meter per month (kg Carbon/m²/mon) from the following sources: net primary production (NPP), net ecosystem exchange (NEE), heterotrophic respiration (Rh), wildfire emissions (FIRE), and fuel wood burning emissions (FUEL). This product and earlier versions of MERRA-driven CASA-GFED carbon fluxes have been used in a number of atmospheric carbon dioxide (CO₂) transport studies, and through the support of NASA’s Carbon Monitoring System (CMS), it helps characterize, quantify, understand and predict the evolution of global carbon sources and sinks.
+
+    - **Temporal Extent:** January 2003 - December 2017
+    - **Temporal Resolution:** Monthly
+    - **Spatial Extent:** Global
+    - **Spatial Resolution:** 0.5° x 0.5°
+    - **Data Units:**  Kilograms of carbon per square meter per month (kg Carbon/m²/mon)
+    - **Data Type:** Research
+    - **Data Latency:** Periodically updated when CASA-GFED model revised
+
+    **Scientific Details:** Satellite derived products used as inputs for the CASA-GFED3 model include Moderate Resolution Imaging Spectroradiometer (MODIS) MOD12Q1 vegetation classification, MOD44B vegetation continuous fields, MOD09GA/MYD09GA based burned area, and Advanced Very High Resolution Radiometer (AVHRR) normalized difference vegetation index (NDVI). The fractional absorption of solar radiation by the vegetation canopy (FPAR), used for calculating NPP, was derived from Global Inventory Modeling and Mapping Studies (GIMMS) NDVI, produced from NOAA AVHRR data. This CASA-GFED3 dataset is a Version 3 data product that includes updates to the GIMMS NDVI input ([Pinzon & Tucker, 2014](https://doi.org/10.3390/rs6086929)) and uses the MODIS Collection 6 burned area mapping algorithm ([Giglio et al., 2018](https://doi.org/10.1016/j.rse.2018.08.005)). Also, additional flux variables that can be derived using this monthly product are listed below:
+    - NEP: monthly net ecosystem productivity, NEP = NPP - Rh
+    - NBP: monthly net biome productivity, net flux to the ecosystem, NBP = NPP - Rh - FIRE - FUEL
+
+  </Prose>
+</Block>
+<Block>
+  <Prose>
+    ## Source Data Product Citation
+    Lesley Ott (2020), GEOS-Carb CASA-GFED Monthly Fire Fuel NPP Rh NEE Fluxes 0.5 degree x 0.5 degree V3, Greenbelt, MD, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), Accessed: [Data Access Date], [10.5067/03147VMJE8J9](https://doi.org/10.5067/03147VMJE8J9)
+
+    ## Disclaimer
+    All data provided in the US GHG Center has been transformed from the original format (NetCDF) into Cloud Optimized GeoTIFF ([COG](https://www.cogeo.org/)). Careful quality checks are used to ensure data transformation has been performed correctly.
+
+    The full title of this dataset, GEOS-Carb CASA-GFED Monthly Fire Fuel NPP Rh NEE Fluxes 0.5 degree x 0.5 degree V3, has been shortened for display on the US GHG Center website. The short name of the source dataset is GEOS_CASAGFED_M_FLUX, but it is referred to as casagfed-carbonflux-monthgrid-v3 within the Center system. The source dataset in NetCDF format is available from the [Goddard Earth Science Data and Information Services Center (GES DISC)](https://doi.org/10.5067/03147VMJE8J9). A user guide is available at [https://acdisc.gesdisc.eosdis.nasa.gov/data/CMS/GEOS_CASAGFED_M_FLUX.3/doc/README.CASA_GFED.pdf](https://acdisc.gesdisc.eosdis.nasa.gov/data/CMS/GEOS_CASAGFED_M_FLUX.3/doc/README.CASA_GFED.pdf)
+
+    ## Key Publications
+    Ott, L., Collatz, J., & Kawa, R. (2020). *Description of GEOS-Carb CASA-GFED3 Land Carbon Flux Products*. GES DISC. [https://acdisc.gesdisc.eosdis.nasa.gov/data/CMS/GEOS_CASAGFED_M_FLUX.3/doc/README.CASA_GFED.pdf](https://acdisc.gesdisc.eosdis.nasa.gov/data/CMS/GEOS_CASAGFED_M_FLUX.3/doc/README.CASA_GFED.pdf)
+
+    van der Werf, G. R., Randerson, J. T., Giglio, L., Collatz, G. J., Mu, M., Kasibhatla, P. S., Morton, D. C., DeFries, R. S., Jin, Y., & van Leeuwen, T. T. (2010). Global fire emissions and the contribution of deforestation, savanna, forest, agricultural, and peat fires (1997–2009). *Atmospheric Chemistry and Physics, 10*, 11707–11735. [https://doi.org/10.5194/acp-10-11707-2010](https://doi.org/10.5194/acp-10-11707-2010)
+
+    ## Other Relevant Publications
+    Gelaro, R., McCarty, W., Suárez, M. J., Todling, R., Molod, A., Takacs, L., Randles, C. A., Darmenov, A., Bosilovich, M. G., Reichle, R., Wargan, K., Coy, L., Cullather, R., Draper, C., Akella, S., Buchard, V., Conaty, A., da Silva, A. M., Gu, W., … Zhao, B. (2017). The Modern-Era Retrospective Analysis for Research and Applications, Version 2 (MERRA-2). *Journal of Climate*, 30(14), 5419–5454. [https://doi.org/10.1175/jcli-d-16-0758.1](https://doi.org/10.1175/jcli-d-16-0758.1)
+
+    Giglio, L., Boschetti, L., Roy, D. P., Humber, M. L., & Justice, C. O. (2018). The Collection 6 MODIS burned area mapping algorithm and product. *Remote Sensing of Environment*, 217, 72–85. [https://doi.org/10.1016/j.rse.2018.08.005](https://doi.org/10.1016/j.rse.2018.08.005)
+
+    Ott, L. E., Pawson, S., Collatz, G. J., Gregg, W. W., Menemenlis, D., Brix, H., Rousseaux, C. S., Bowman, K. W., Liu, J., Eldering, A., Gunson, M. R., & Kawa, S. R. (2015). Assessing the magnitude of CO₂ flux uncertainty in atmospheric CO₂ records using products from NASA’s Carbon Monitoring Flux Pilot Project. *Journal of Geophysical Research: Atmospheres*, 120(2), 734–765. [https://doi.org/10.1002/2014jd022411](https://doi.org/10.1002/2014jd022411)
+
+    Pinzon, J., & Tucker, C. (2014). A Non-Stationary 1981–2012 AVHRR NDVI3g Time Series. *Remote Sensing*, 6(8), 6929–6960. [https://doi.org/10.3390/rs6086929](https://doi.org/10.3390/rs6086929)
+
+    van der Werf, G. R., Randerson, J. T., Giglio, L., van Leeuwen, T. T., Chen, Y., Rogers, B. M., Mu, M., van Marle, M. J. E., Morton, D. C., Collatz, G. J., Yokelson, R. J., & Kasibhatla, P. S. (2017). Global fire emissions estimates during 1997–2016. *Earth System Science Data*, 9, 697–720. [https://doi.org/10.5194/essd-9-697-2017](https://doi.org/10.5194/essd-9-697-2017)
+
+    ## Acknowledgment
+    This dataset was produced as part of the [GEOS-Carb project](https://cce-datasharing.gsfc.nasa.gov/cmsprojects/list/h/0/) supported by NASA’s [Carbon Monitoring System (CMS) Program](https://carbon.nasa.gov/cms/).
+
+    ## License
+    [Creative Commons Zero v1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/legalcode) (CC0 1.0)
+
+    ## Data Stewardship
+    - [Data Workflow](https://us-ghg-center.github.io/ghgc-docs/data_workflow/casagfed-carbonflux-monthgrid-v3_Data_Flow.html)
+    - [Data Transformation Code](https://us-ghg-center.github.io/ghgc-docs/cog_transformation/casagfed-carbonflux-monthgrid-v3.html)
+    - [US GHG Center Data Intake Processing and Verification Report](https://us-ghg-center.github.io/ghgc-docs/processing_and_verification_reports/casagfed-carbonflux-monthgrid-v3_Processing%20and%20Verification%20Report.html)
+  </Prose>
+</Block>

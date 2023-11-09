@@ -68,6 +68,8 @@ interface Statuses {
 export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   const {
     id,
+    stacApiEndpoint,
+    tileApiEndpoint,
     stacCol,
     date,
     mapInstance,
@@ -85,6 +87,10 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
 
   const minZoom = zoomExtent?.[0] ?? 0;
   const generatorId = 'raster-timeseries' + idSuffix;
+
+  const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
+  const tileApiEndpointToUse =
+    tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT;
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
@@ -170,7 +176,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-enable no-console */
 
         const responseData = await requestQuickCache({
-          url: `${process.env.API_STAC_ENDPOINT}/search`,
+          url: `${stacApiEndpointToUse}/search`,
           payload,
           controller
         });
@@ -208,7 +214,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
       controller.abort();
       changeStatus({ status: 'idle', context: STATUS_KEY.StacSearch });
     };
-  }, [id, changeStatus, stacCol, date]);
+  }, [id, changeStatus, stacApiEndpointToUse, stacCol, date]);
 
   //
   // Markers
@@ -267,7 +273,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-enable no-console */
 
         const responseData = await requestQuickCache({
-          url: `${process.env.API_RASTER_ENDPOINT}/mosaic/register`,
+          url: `${tileApiEndpointToUse}/mosaic/register`,
           payload,
           controller
         });
@@ -321,6 +327,8 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
     // - changeStatus
     // - stacCol
     // - date
+    // - tileApiEndpointToUse
+    // - sacApiEndpointToUse
     // Keeping then in would cause multiple requests because for example when
     // `date` changes the hook runs, then the STAC request in the hook above
     // fires and `stacCollection` changes, causing this hook to run again. This
@@ -373,7 +381,10 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
             // Ignore errors.
           }
 
-          const wmtsBaseUrl = mosaicUrl.replace('tilejson.json', 'WMTSCapabilities.xml');
+          const wmtsBaseUrl = mosaicUrl.replace(
+            'tilejson.json',
+            'WMTSCapabilities.xml'
+          );
 
           const mosaicSource: RasterSource = {
             type: 'raster',

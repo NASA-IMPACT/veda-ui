@@ -25,6 +25,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   const {
     id,
     stacCol,
+    stacApiEndpoint, 
     date,
     mapInstance,
     sourceParams,
@@ -39,6 +40,8 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
 
   const [minZoom] = zoomExtent ?? [0, 20];
 
+  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
+
   const generatorId = 'zarr-timeseries' + idSuffix;
 
   //
@@ -51,7 +54,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
       try {
         onStatusChange?.({ status: S_LOADING, id });
         const data = await requestQuickCache({
-          url: `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`,
+          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
           method: 'GET',
           controller
         });
@@ -72,7 +75,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
     return () => {
       controller.abort();
     };
-  }, [mapInstance, id, stacCol, date, onStatusChange]);
+  }, [mapInstance, id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
 
   //
   // Generate Mapbox GL layers and sources for raster timeseries

@@ -27,10 +27,11 @@ interface STACLayerData {
 const fetchLayerById = async (
   layer: DatasetLayer | DatasetLayerCompareNormalized
 ): Promise<STACLayerData | Error> => {
-  const { type, stacCol } = layer;
+  const { type, stacApiEndpoint, stacCol } = layer;
+  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
 
   const { data } = await axios.get(
-    `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
+    `${stacApiEndpointToUse}/collections/${stacCol}`
   );
 
   const commonTimeseriesParams = {

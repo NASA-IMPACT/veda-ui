@@ -416,6 +416,8 @@ function MapboxMapComponent(
             BaseLayerComponent && (
               <BaseLayerComponent
                 id={`base-${baseLayerResolvedData.id}`}
+                stacApiEndpoint={baseLayerResolvedData.stacApiEndpoint}
+                tileApiEndpoint={baseLayerResolvedData.tileApiEndpoint}
                 stacCol={baseLayerResolvedData.stacCol}
                 mapInstance={mapRef.current}
                 isPositionSet={!!initialPosition}
@@ -469,7 +471,8 @@ function MapboxMapComponent(
               CompareLayerComponent && (
                 <CompareLayerComponent
                   id={`compare-${compareLayerResolvedData.id}`}
-                  stacCol={compareLayerResolvedData.stacCol}
+                  stacApiEndpoint={baseLayerResolvedData.stacApiEndpoint}
+                  tileApiEndpoint={baseLayerResolvedData.tileApiEndpoint}
                   mapInstance={mapCompareRef.current}
                   date={compareToDate ?? undefined}
                   sourceParams={compareLayerResolvedData.sourceParams}
