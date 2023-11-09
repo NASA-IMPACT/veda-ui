@@ -22,6 +22,7 @@ import { userTzDate2utcString } from '$utils/date';
 export interface MapLayerVectorTimeseriesProps {
   id: string;
   stacCol: string;
+  stacApiEndpoint?: string;
   date?: Date;
   mapInstance: MapboxMap;
   sourceParams?: Record<string, any>;

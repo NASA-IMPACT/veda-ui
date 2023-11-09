@@ -228,7 +228,7 @@ function MapboxMapComponent(
 
     return [data, getLayerComponent(!!data.timeseries, data.type)];
   }, [compareLayer, resolverBag]);
-
+  
   // Get the compare to date.
   // The compare date is specified by the user.
   // If no date is specified anywhere we just use the same.
@@ -471,14 +471,16 @@ function MapboxMapComponent(
               CompareLayerComponent && (
                 <CompareLayerComponent
                   id={`compare-${compareLayerResolvedData.id}`}
-                  stacApiEndpoint={baseLayerResolvedData.stacApiEndpoint}
-                  tileApiEndpoint={baseLayerResolvedData.tileApiEndpoint}
+                  stacCol={compareLayerResolvedData.stacCol}
+                  stacApiEndpoint={compareLayerResolvedData.stacApiEndpoint}
+                  tileApiEndpoint={compareLayerResolvedData.tileApiEndpoint}
                   mapInstance={mapCompareRef.current}
                   date={compareToDate ?? undefined}
                   sourceParams={compareLayerResolvedData.sourceParams}
                   zoomExtent={compareLayerResolvedData.zoomExtent}
                   bounds={compareLayerResolvedData.bounds}
                   onStatusChange={onCompareLayerStatusChange}
+                  idSuffix='compare-suffix'
                 />
               )}
             <SimpleMap

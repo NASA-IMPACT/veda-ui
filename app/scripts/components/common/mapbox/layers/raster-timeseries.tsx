@@ -38,6 +38,8 @@ const LOG = process.env.NODE_ENV !== 'production';
 export interface MapLayerRasterTimeseriesProps {
   id: string;
   stacCol: string;
+  stacApiEndpoint?: string;
+  tileApiEndpoint?: string;
   date?: Date;
   mapInstance: MapboxMap;
   sourceParams?: Record<string, any>;
@@ -83,7 +85,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   } = props;
 
   const theme = useTheme();
-  const { updateStyle } = useMapStyle();
+  const { updateStyle } = useMapStyle(); 
 
   const minZoom = zoomExtent?.[0] ?? 0;
   const generatorId = 'raster-timeseries' + idSuffix;
@@ -148,7 +150,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
   useEffect(() => {
     if (!id || !stacCol || !date) return;
-
     const controller = new AbortController();
 
     const load = async () => {
@@ -180,6 +181,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           payload,
           controller
         });
+        console.log(responseData);
 
         /* eslint-disable no-console */
         LOG &&
@@ -349,11 +351,14 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   useEffect(
     () => {
       const controller = new AbortController();
-
+      console.log('id');
+      console.log(id);
       async function run() {
+        console.log('id');
+        console.log(id);
         let layers: AnyLayer[] = [];
         let sources: Record<string, AnySourceImpl> = {};
-
+        console.log(mosaicUrl);
         if (mosaicUrl) {
           const tileParams = qs.stringify(
             {
@@ -454,7 +459,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           };
           layers = [...layers, pointsLayer];
         }
-
+        
         updateStyle({
           generatorId,
           sources,

@@ -7,14 +7,14 @@ import { useMapStyle } from './styles';
 
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
-const tilerUrl = process.env.API_XARRAY_ENDPOINT;
-
 export interface MapLayerZarrTimeseriesProps {
   id: string;
   stacCol: string;
   date?: Date;
   mapInstance: MapboxMap;
   sourceParams?: Record<string, any>;
+  stacApiEndpoint?: string;
+  tileApiEndpoint?: string;
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
@@ -25,7 +25,8 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   const {
     id,
     stacCol,
-    stacApiEndpoint, 
+    stacApiEndpoint,
+    tileApiEndpoint,
     date,
     mapInstance,
     sourceParams,
@@ -87,7 +88,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
 
   useEffect(
     () => {
-      if (!tilerUrl) return;
+      if (!tileApiEndpoint) return;
 
       const tileParams = qs.stringify({
         url: assetUrl,
@@ -97,7 +98,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
 
       const zarrSource: RasterSource = {
         type: 'raster',
-        url: `${tilerUrl}?${tileParams}`
+        url: `${tileApiEndpoint}?${tileParams}`
       };
 
       const zarrLayer: RasterLayer = {

@@ -137,6 +137,7 @@ export function requestStacDatasetsTimeseries({
 
 interface DatasetAssetsRequestParams {
   stacCol: string;
+  stacApiEndpoint?: string;
   assets: string;
   dateStart: Date;
   dateEnd: Date;
