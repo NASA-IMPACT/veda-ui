@@ -20,6 +20,7 @@ import { calcFeatCollArea } from '$components/common/aoi/utils';
 import { formatDateRange } from '$utils/date';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
+import { AoIFeature } from '$components/common/map/types';
 
 const AnalysisMessageWrapper = styled.div`
   background-color: ${themeVal('color.base-400a')};
@@ -66,6 +67,179 @@ const MessageControls = styled.div`
   gap: ${glsp(0.5)};
 `;
 
+export function AnalysisMessage() {
+  const { isObsolete, setObsolete, isAnalyzing } = useAnalysisController();
+
+  const datasets = useAtomValue(timelineDatasetsAtom);
+  const datasetIds = datasets.map((d) => d.data.id);
+
+  const { features } = useAois();
+  const selectedInterval = useAtomValue(selectedIntervalAtom);
+  const dateLabel =
+    selectedInterval &&
+    formatDateRange(selectedInterval.start, selectedInterval.end);
+
+  const selectedFeatures = features.filter((f) => f.selected);
+  const selectedFeatureIds = selectedFeatures.map((f) => f.id).join(',');
+
+  useEffect(() => {
+    // Set the analysis as obsolete when the selected features change.
+    setObsolete();
+  }, [setObsolete, selectedFeatureIds]);
+
+  if (isAnalyzing) {
+    return (
+      <MessagesWhileAnalyzing
+        isObsolete={isObsolete}
+        features={features}
+        selectedFeatures={selectedFeatures}
+        datasetIds={datasetIds}
+        dateLabel={dateLabel}
+      />
+    );
+  } else {
+    return (
+      <MessagesWhileNotAnalyzing
+        features={features}
+        selectedFeatures={selectedFeatures}
+        datasetIds={datasetIds}
+        dateLabel={dateLabel}
+      />
+    );
+  }
+}
+
+export function AnalysisMessageControl() {
+  useThemedControl(() => <AnalysisMessage />, { position: 'top-left' });
+
+  return null;
+}
+
+// / / / / / /      Analysis messages for different states        / / / / / / //
+interface MessagesProps {
+  features: AoIFeature[];
+  selectedFeatures: AoIFeature[];
+  datasetIds: string[];
+  dateLabel: string | null;
+}
+
+function MessagesWhileAnalyzing(
+  props: MessagesProps & { isObsolete: boolean }
+) {
+  const { isObsolete, features, selectedFeatures, datasetIds, dateLabel } =
+    props;
+
+  const area = calcFeatCollArea({
+    type: 'FeatureCollection',
+    features: selectedFeatures
+  });
+
+  if (!isObsolete) {
+    // Analyzing and not obsolete.
+    return (
+      <AnalysisMessageWrapper>
+        <StatusIconAnalyzing />
+        <MessageContent>
+          Analyzing an area covering {area} km<sup>2</sup>{' '}
+          {dateLabel && ` from ${dateLabel}`}.
+        </MessageContent>
+        <VerticalDivider variation='light' />
+        <MessageControls>
+          <ButtonCancel />
+        </MessageControls>
+      </AnalysisMessageWrapper>
+    );
+  }
+
+  // Analyzing, and obsolete.
+  if (selectedFeatures.length) {
+    // Features are selected.
+    // Prompt for a refresh.
+    return (
+      <AnalysisMessageWrapper>
+        <StatusIconObsolete />
+        <MessageContent>
+          Outdated! Refresh to analyze an area covering {area} km
+          <sup>2</sup> {dateLabel && ` from ${dateLabel}.`}
+        </MessageContent>
+        <VerticalDivider variation='light' />
+        <MessageControls>
+          <ButtonObsolete datasetIds={datasetIds} />
+          <ButtonCancel />
+        </MessageControls>
+      </AnalysisMessageWrapper>
+    );
+  } else {
+    return (
+      <AnalysisMessageWrapper>
+        <StatusIconObsolete />
+        <MessageContent>
+          {features.length ? (
+            // Prompt to select features.
+            <>
+              Outdated! Select an area to analyze{' '}
+              {dateLabel && ` from ${dateLabel}.`}
+            </>
+          ) : (
+            // Prompt to draw or upload features.
+            <>
+              Outdated! Draw or upload an area to analyze{' '}
+              {dateLabel && ` from ${dateLabel}.`}
+            </>
+          )}
+        </MessageContent>
+        <VerticalDivider variation='light' />
+        <MessageControls>
+          <ButtonCancel />
+        </MessageControls>
+      </AnalysisMessageWrapper>
+    );
+  }
+}
+
+function MessagesWhileNotAnalyzing(props: MessagesProps) {
+  const { features, selectedFeatures, datasetIds, dateLabel } = props;
+
+  if (selectedFeatures.length) {
+    // Not analyzing, but there are selected features.
+    // Can start analysis
+    const area = calcFeatCollArea({
+      type: 'FeatureCollection',
+      features: selectedFeatures
+    });
+
+    return (
+      <AnalysisMessageWrapper>
+        <StatusIconInfo />
+        <MessageContent>
+          An area of {area} km<sup>2</sup> {dateLabel && ` from ${dateLabel}`}{' '}
+          is selected.
+        </MessageContent>
+        <VerticalDivider variation='light' />
+        <MessageControls>
+          <ButtonAnalyze datasetIds={datasetIds} />
+        </MessageControls>
+      </AnalysisMessageWrapper>
+    );
+  } else if (features.length) {
+    // Not analyzing, nothing selected, but there are features.
+    // Prompt to select features.
+    return (
+      <AnalysisMessageWrapper>
+        <StatusIconInfo />
+        <MessageContent>
+          Select one or more of the areas (using shift key) to start analysis.
+        </MessageContent>
+      </AnalysisMessageWrapper>
+    );
+  } else {
+    // Not analyzing, nothing selected, no features.
+    // Do not display anything.
+    return null;
+  }
+}
+
+// / / / / / /   Components to construct the analysis messages    / / / / / / //
 function StatusIconObsolete() {
   return (
     <MessageStatusIndicator status='obsolete'>
@@ -139,139 +313,4 @@ function ButtonAnalyze(props: { datasetIds: string[] }) {
       <CollecticonChartLine /> Analyze
     </Button>
   );
-}
-
-export function AnalysisMessage() {
-  const { isObsolete, setObsolete, isAnalyzing } = useAnalysisController();
-
-  const datasets = useAtomValue(timelineDatasetsAtom);
-  const datasetIds = datasets.map((d) => d.data.id);
-
-  const { features } = useAois();
-  const selectedInterval = useAtomValue(selectedIntervalAtom);
-  const dateLabel =
-    selectedInterval &&
-    formatDateRange(selectedInterval.start, selectedInterval.end);
-
-  const selectedFeatures = features.filter((f) => f.selected);
-  const selectedFeatureIds = selectedFeatures.map((f) => f.id).join(',');
-
-  const area = calcFeatCollArea({
-    type: 'FeatureCollection',
-    features: selectedFeatures
-  });
-
-  useEffect(() => {
-    // Set the analysis as obsolete when the selected features change.
-    setObsolete();
-  }, [setObsolete, selectedFeatureIds]);
-
-  if (isAnalyzing) {
-    if (isObsolete) {
-      // Analyzing, and obsolete.
-
-      if (selectedFeatures.length) {
-        // Features are selected.
-        // Prompt for a refresh.
-        return (
-          <AnalysisMessageWrapper>
-            <StatusIconObsolete />
-            <MessageContent>
-              Outdated! Refresh to analyze an area covering {area} km
-              <sup>2</sup> {dateLabel && ` from ${dateLabel}.`}
-            </MessageContent>
-            <VerticalDivider variation='light' />
-            <MessageControls>
-              <ButtonObsolete datasetIds={datasetIds} />
-              <ButtonCancel />
-            </MessageControls>
-          </AnalysisMessageWrapper>
-        );
-      } else {
-        return (
-          <AnalysisMessageWrapper>
-            <StatusIconObsolete />
-            <MessageContent>
-              {features.length ? (
-                // Prompt to select features.
-                <>
-                  Outdated! Select an area to analyze{' '}
-                  {dateLabel && ` from ${dateLabel}.`}
-                </>
-              ) : (
-                // Prompt to draw or upload features.
-                <>
-                  Outdated! Draw or upload an area to analyze{' '}
-                  {dateLabel && ` from ${dateLabel}.`}
-                </>
-              )}
-            </MessageContent>
-            <VerticalDivider variation='light' />
-            <MessageControls>
-              <ButtonCancel />
-            </MessageControls>
-          </AnalysisMessageWrapper>
-        );
-      }
-    } else {
-      // Analyzing and not obsolete.
-      return (
-        <AnalysisMessageWrapper>
-          <StatusIconAnalyzing />
-          <MessageContent>
-            Analyzing an area covering {area} km<sup>2</sup>{' '}
-            {dateLabel && ` from ${dateLabel}`}.
-          </MessageContent>
-          <VerticalDivider variation='light' />
-          <MessageControls>
-            <ButtonCancel />
-          </MessageControls>
-        </AnalysisMessageWrapper>
-      );
-    }
-  } else {
-    if (selectedFeatures.length) {
-      // Not analyzing, but there are selected features.
-      // Can start analysis
-      const area = calcFeatCollArea({
-        type: 'FeatureCollection',
-        features: selectedFeatures
-      });
-
-      return (
-        <AnalysisMessageWrapper>
-          <StatusIconInfo />
-          <MessageContent>
-            An area of {area} km<sup>2</sup> {dateLabel && ` from ${dateLabel}`}{' '}
-            is selected.
-          </MessageContent>
-          <VerticalDivider variation='light' />
-          <MessageControls>
-            <ButtonAnalyze datasetIds={datasetIds} />
-          </MessageControls>
-        </AnalysisMessageWrapper>
-      );
-    } else if (features.length) {
-      // Not analyzing, nothing selected, but there are features.
-      // Prompt to select features.
-      return (
-        <AnalysisMessageWrapper>
-          <StatusIconInfo />
-          <MessageContent>
-            Select one or more of the areas (using shift key) to start analysis.
-          </MessageContent>
-        </AnalysisMessageWrapper>
-      );
-    } else {
-      // Not analyzing, nothing selected, no features.
-      // Do not display anything.
-      return null;
-    }
-  }
-}
-
-export function AnalysisMessageControl() {
-  useThemedControl(() => <AnalysisMessage />, { position: 'top-left' });
-
-  return null;
 }
