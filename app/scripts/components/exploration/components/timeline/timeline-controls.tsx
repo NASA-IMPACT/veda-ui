@@ -96,7 +96,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                 setSelectedDay(d.start!);
               }}
               renderTriggerElement={(props, label) => (
-                <DatePickerButton {...props} size='small' disabled={!xScaled}>
+                <DatePickerButton {...props} size='small' disabled={!xScaled} data-tour='date-picker-a'>
                   <span className='head-reference'>A</span>
                   <span>{label}</span>
                   <CollecticonChevronDownSmall />

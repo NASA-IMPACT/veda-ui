@@ -422,6 +422,7 @@ export default function Timeline(props: TimelineProps) {
       <InteractionRect
         ref={interactionRef}
         style={!shouldRenderTimeline ? { pointerEvents: 'none' } : undefined}
+        data-tour='timeline-interaction-rect'
       />
       <TimelineHeader>
         <TimelineDetails>
@@ -448,6 +449,7 @@ export default function Timeline(props: TimelineProps) {
           <>
             {selectedDay && (
               <TimelineHeadPoint
+                data-tour='timeline-head-a'
                 label={selectedCompareDay ? 'A' : undefined}
                 domain={dataDomain}
                 xScaled={xScaled}
