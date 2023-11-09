@@ -9,7 +9,7 @@ import {
 } from './types.d.ts';
 import { ExtendedError } from './data-utils';
 import {
-  combineFeatureCollection,
+  fixAoiFcForStacSearch,
   getFilterPayload
 } from '$components/analysis/utils';
 
@@ -163,7 +163,7 @@ export async function requestDatasetTimeseriesData({
                 const { data } = await axios.post(
                   `${process.env.API_RASTER_ENDPOINT}/cog/statistics?url=${url}`,
                   // Making a request with a FC causes a 500 (as of 2023/01/20)
-                  combineFeatureCollection(aoi),
+                  fixAoiFcForStacSearch(aoi),
                   { signal }
                 );
                 return {

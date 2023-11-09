@@ -1,11 +1,16 @@
 import React, { useCallback, ReactElement, useMemo } from 'react';
-import ReactMapGlMap from 'react-map-gl';
+import ReactMapGlMap, { LngLatBoundsLike } from 'react-map-gl';
 import { ProjectionOptions } from 'veda';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import { convertProjectionToMapbox } from '../mapbox/map-options/utils';
 import useMapStyle from './hooks/use-map-style';
 import { useMapsContext } from './hooks/use-maps';
+
+const maxMapBounds: LngLatBoundsLike = [
+  [-540, -90], // SW
+  [540, 90] // NE
+];
 
 export default function MapComponent({
   controls,
@@ -52,6 +57,7 @@ export default function MapComponent({
       mapStyle={style as any}
       onMove={onMove}
       projection={mapboxProjection}
+      maxBounds={maxMapBounds}
     >
       {controls}
     </ReactMapGlMap>
