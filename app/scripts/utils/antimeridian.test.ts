@@ -2,7 +2,7 @@ import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { fixAntimeridian } from './antimeridian';
 
 describe('Antimeridian', () => {
-  it('Feature in 1st earth east', () => {
+  it('Should move a feature in the first map east (180/540) to the -180/180 range', () => {
     const feature: Feature<Polygon> = {
       type: 'Feature',
       properties: {},
@@ -43,7 +43,7 @@ describe('Antimeridian', () => {
     expect(result).toEqual(expected);
   });
 
-  it('Feature crossing 540 antimeridian earth east', () => {
+  it('Should split a feature crossing the 540 antimeridian into 2 that fall within the -180/180 range', () => {
     const feature: Feature<Polygon> = {
       type: 'Feature',
       properties: {},
@@ -93,7 +93,7 @@ describe('Antimeridian', () => {
     expect(result).toEqual(expected);
   });
 
-  it('Feature spanning several maps', () => {
+  it('Should calculate the resulting feature in the -180/180 range when the input spans several maps', () => {
     const feature: Feature<Polygon> = {
       type: 'Feature',
       properties: {},
@@ -134,7 +134,7 @@ describe('Antimeridian', () => {
     expect(result).toEqual(expected);
   });
 
-  it('Multiple features', () => {
+  it('Should be able to process multipolygons, correctly resolving each polygon to the -180/180 range', () => {
     const feature: Feature<MultiPolygon> = {
       type: 'Feature',
       properties: {},
