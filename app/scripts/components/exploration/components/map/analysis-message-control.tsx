@@ -22,7 +22,9 @@ import { useAnalysisController } from '$components/exploration/hooks/use-analysi
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
 import { AoIFeature } from '$components/common/map/types';
 
-const AnalysisMessageWrapper = styled.div`
+const AnalysisMessageWrapper = styled.div.attrs({
+  'data-tour': 'analysis-message'
+})`
   background-color: ${themeVal('color.base-400a')};
   color: ${themeVal('color.surface')};
   border-radius: ${themeVal('shape.rounded')};

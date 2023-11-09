@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTour, PopoverContentProps, StepType } from '@reactour/tour';
 import { useAtomValue } from 'jotai';
 import styled from 'styled-components';
@@ -14,6 +14,7 @@ import {
 import { timelineDatasetsAtom } from './atoms/datasets';
 
 import { usePreviousValue } from '$utils/use-effect-previous';
+import useAois from '$components/common/map/controls/hooks/use-aois';
 
 const Popover = styled.div`
   position: relative;
@@ -41,10 +42,11 @@ const PopoverFooter = styled.div`
   font-weight: ${themeVal('type.base.bold')};
 `;
 
-const tourSteps = [
+const introTourSteps = [
   {
     title: 'Welcome to Exploration',
     selector: "[data-tour='dataset-list-item']",
+    mutationObservables: ["[data-tour='dataset-list-item']"],
     content:
       "Each row represents a dataset, and each of the boxes on the timeline represents a data unit in the dataset. This data unit can be a day, month or year, depending on the dataset's time density."
   },
@@ -64,8 +66,8 @@ const tourSteps = [
     selector: "[data-tour='timeline-interaction-rect']",
     content: () => (
       <>
-        You can zoom in on the timeline by scrolling while pressing the alt key (or
-        option) and click and drag to pan.
+        You can zoom in on the timeline by scrolling while pressing the alt key
+        (or option) and click and drag to pan.
         <br />
         Go ahead and try it out!
       </>
@@ -76,29 +78,100 @@ const tourSteps = [
     selector: '.mapboxgl-ctrl-top-left',
     content: () => (
       <>
-        You can calculate a time series (zonal statistics) for your area of interest (AOI). 
-        Start that process here by drawing or uploading an AOI.
+        You can calculate a time series (zonal statistics) for your area of
+        interest (AOI). Start that process here by drawing or uploading an AOI.
       </>
     ),
     stepInteraction: false
   }
 ];
 
-export function TourManager() {
-  const { setIsOpen, setSteps } = useTour();
-  const datasets = useAtomValue(timelineDatasetsAtom);
+const analysisTourSteps = [
+  {
+    title: 'Analysis',
+    selector: "[data-tour='analysis-message']",
+    content: () => (
+      <>
+        Now that you have an AOI, you can calculate a time series (zonal
+        statistics) for it.
+      </>
+    ),
+    stepInteraction: false
+  },
+  {
+    title: 'Date Range',
+    selector: "[data-tour='analysis-toolbar']",
+    content: () => (
+      <>
+        Through the date picker (or the new handles in the timeline) you can
+        select a date range to analyze.
+        <br />
+        A date range is preselected for you, but you can change it if you want.
+        <br />
+        Once you&apos;re happy press the analyze button.
+      </>
+    ),
+    stepInteraction: false
+  }
+];
 
+/**
+ * Helper function to add an action after the last step of a tour.
+ * @param steps The steps to add the action to
+ * @param action The action to add to the last step
+ * @returns steps with the action added to the last step
+ */
+function addActionAfterLastStep(steps: StepType[], action: () => void) {
+  const lastStep = steps[steps.length - 1];
+  const lastStepWithAction = {
+    ...lastStep,
+    actionAfter: action
+  };
+  return [...steps.slice(0, -1), lastStepWithAction];
+}
+
+export function TourManager() {
+  const { setIsOpen, setSteps, setCurrentStep } = useTour();
+
+  const startTour = useCallback(
+    (steps) => {
+      setCurrentStep(0);
+      setSteps?.(steps);
+      setIsOpen(true);
+    },
+    [setIsOpen, setSteps, setCurrentStep]
+  );
+
+  // Control states for the different tours.
+  const [introTourShown, setIntroTourShown] = useState(false);
+  const [analysisTourShown, setAnalysisTourShown] = useState(false);
+
+  // Variables that cause tour 1 to start.
+  const datasets = useAtomValue(timelineDatasetsAtom);
   const datasetCount = datasets.length;
   const prevDatasetCount = usePreviousValue(datasetCount);
-
   useEffect(() => {
-    if (!prevDatasetCount && datasetCount > 0) {
-      setSteps?.(tourSteps);
-      setTimeout(() => {
-        setIsOpen(true);
-      }, 1000);
+    if (!introTourShown && !prevDatasetCount && datasetCount > 0) {
+      // Make the last step of the intro tour mark it as shown.
+      const steps = addActionAfterLastStep(introTourSteps, () => {
+        setIntroTourShown(true);
+      });
+      startTour(steps);
     }
-  }, [prevDatasetCount, datasetCount, setIsOpen]);
+  }, [introTourShown, prevDatasetCount, datasetCount, startTour]);
+
+  // Variables that cause tour 2 to start.
+  const { features } = useAois();
+  const featuresCount = features.length;
+  useEffect(() => {
+    if (introTourShown && !analysisTourShown && featuresCount > 0) {
+      // Make the last step of the intro tour mark it as shown.
+      const steps = addActionAfterLastStep(analysisTourSteps, () => {
+        setAnalysisTourShown(true);
+      });
+      startTour(steps);
+    }
+  }, [introTourShown, analysisTourShown, featuresCount, startTour]);
 
   return null;
 }
@@ -158,7 +231,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
           <CollecticonChevronRightSmall meaningful title='Next step' />
         </Button>
       </PopoverFooter>
-      {(currentStep === 0 || isLastStep) && (
+      {/* {(currentStep === 0 || isLastStep) && (
         <a
           href='#'
           onClick={(e) => {
@@ -168,7 +241,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
         >
           Dismiss and do not show again
         </a>
-      )}
+      )} */}
     </Popover>
   );
 }

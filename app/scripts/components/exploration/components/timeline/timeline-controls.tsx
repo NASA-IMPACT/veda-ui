@@ -164,7 +164,7 @@ export function TimelineControls(props: TimelineControlsProps) {
             )}
           </ToolbarGroup>
           {selectedInterval && (
-            <ToolbarGroup>
+            <ToolbarGroup data-tour='analysis-toolbar'>
               <DatePicker
                 id='date-picker-lr'
                 value={selectedInterval}
