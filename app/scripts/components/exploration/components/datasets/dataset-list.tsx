@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { listReset } from '@devseed-ui/theme-provider';
 
 import { DatasetListItem } from './dataset-list-item';
-import { timelineDatasetsAtom } from '$components/exploration/atoms/atoms';
+import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 
 const DatasetListSelf = styled.ul`
   ${listReset()}

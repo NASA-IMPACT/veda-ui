@@ -4,7 +4,7 @@ import { extent, scaleLinear, ScaleTime, line, ScaleLinear } from 'd3';
 import { useAtomValue } from 'jotai';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { isExpandedAtom } from '../../atoms/atoms';
+import { isExpandedAtom } from '../../atoms/timeline';
 import { RIGHT_AXIS_SPACE } from '../../constants';
 import { DatasetTrackMessage } from './dataset-track-message';
 import { DataMetric } from './analysis-metrics';

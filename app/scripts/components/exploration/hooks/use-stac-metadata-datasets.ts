@@ -6,7 +6,7 @@ import {
 import axios from 'axios';
 import { useAtom } from 'jotai';
 
-import { timelineDatasetsAtom } from '../atoms/atoms';
+import { timelineDatasetsAtom } from '../atoms/datasets';
 import {
   StacDatasetData,
   TimeDensity,

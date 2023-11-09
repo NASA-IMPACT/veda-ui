@@ -4,7 +4,8 @@ import { FeatureCollection, Polygon } from 'geojson';
 import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
 
 import { requestDatasetTimeseriesData } from '../analysis-data';
-import { analysisControllerAtom, selectedIntervalAtom } from '../atoms/atoms';
+import { analysisControllerAtom } from '../atoms/analysis';
+import { selectedIntervalAtom } from '../atoms/dates';
 import { useTimelineDatasetAnalysis } from '../atoms/hooks';
 import { analysisConcurrencyManager } from '../concurrency';
 import { TimelineDataset, TimelineDatasetStatus } from '../types.d.ts';
@@ -46,7 +47,7 @@ export function useAnalysisController() {
         })),
       [] // eslint-disable-line react-hooks/exhaustive-deps -- setController is stable
     ),
-    getRunId: (id: string) => controller.runIds[id] ?? 0,
+    getRunId: (id: string) => controller.runIds[id] ?? 0
   };
 }
 
@@ -84,7 +85,8 @@ export function useAnalysisDataRequest({
     if (
       datasetStatus !== TimelineDatasetStatus.SUCCESS ||
       !selectedInterval ||
-      !selectedFeatures.length
+      !selectedFeatures.length ||
+      analysisRunId === 0 // Avoid running the analysis on the first render
     ) {
       return;
     }

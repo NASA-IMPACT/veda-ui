@@ -11,7 +11,8 @@ import {
   TimelineDatasetStatus,
   TimelineDatasetSuccess
 } from '../types.d.ts';
-import { timelineDatasetsAtom, timelineSizesAtom } from './atoms';
+import { timelineSizesAtom } from './timeline';
+import { timelineDatasetsAtom } from './datasets';
 
 function addDurationToDate(date, timeDensity: TimeDensity) {
   const duration = {

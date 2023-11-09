@@ -5,10 +5,8 @@ import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 
-import {
-  isExpandedAtom,
-  timelineDatasetsAtom
-} from './atoms/atoms';
+import { isExpandedAtom } from './atoms/timeline';
+import { timelineDatasetsAtom } from './atoms/datasets';
 import {
   TimelineDataset,
   TimelineDatasetAnalysis,
@@ -608,7 +606,7 @@ export function MockControls({ onCompareClick, comparing }: any) {
       <Button onClick={onCompareClick} variation='primary-outline'>
         Toggle compare ({comparing.toString()})
       </Button>
-      <div style={{ border: '1px solid teal'}}>
+      <div style={{ border: '1px solid teal' }}>
         {isAnalyzing ? (
           <>
             In Analysis (obsolete: {isObsolete.toString()})
