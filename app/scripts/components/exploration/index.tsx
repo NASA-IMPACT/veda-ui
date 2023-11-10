@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styled from 'styled-components';
 import { useAtomValue } from 'jotai';
+import { TourProvider } from '@reactour/tour';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { MockControls } from './datasets-mock';
@@ -9,6 +10,7 @@ import Timeline from './components/timeline/timeline';
 import { ExplorationMap } from './components/map';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { timelineDatasetsAtom } from './atoms/datasets';
+import { PopoverTourComponent, TourManager } from './tour-manager';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -56,6 +58,14 @@ const Container = styled.div`
   }
 `;
 
+const tourProviderStyles = {
+  popover: (base) => ({
+    ...base,
+    padding: '0',
+    background: 'none',
+  })
+};
+
 function Exploration() {
   const datasets = useAtomValue(timelineDatasetsAtom);
   const [datasetModalRevealed, setDatasetModalRevealed] = useState(
@@ -66,12 +76,17 @@ function Exploration() {
   const closeModal = useCallback(() => setDatasetModalRevealed(false), []);
 
   return (
-    <>
+    <TourProvider
+      steps={[]}
+      styles={tourProviderStyles}
+      ContentComponent={PopoverTourComponent}
+    >
       <LayoutProps
         title='Exploration'
         description='Explore and analyze datasets'
         hideFooter
       />
+      <TourManager />
       <PageMainContent>
         <PageHero title='Exploration' isHidden />
 
@@ -97,7 +112,7 @@ function Exploration() {
           close={closeModal}
         />
       </PageMainContent>
-    </>
+    </TourProvider>
   );
 }
 export default Exploration;

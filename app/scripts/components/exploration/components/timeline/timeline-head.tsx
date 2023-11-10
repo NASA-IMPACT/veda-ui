@@ -30,6 +30,7 @@ interface TimelineHeadBaseProps {
   width: number;
   onDayChange: (date: Date) => void;
   children: React.ReactNode;
+  'data-tour'?: string;
 }
 
 type TimelineHeadProps = Omit<TimelineHeadBaseProps, 'children'> & {
@@ -84,7 +85,10 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
 
   return (
     <TimelineHeadSVG width={width + SVG_PADDING * 2}>
-      <g transform={`translate(${SVG_PADDING}, 0)`}>
+      <g
+        transform={`translate(${SVG_PADDING}, 0)`}
+        data-tour={props['data-tour']}
+      >
         <line x1={xPos} x2={xPos} y1={0} y2='100%' stroke={theme.color?.base} />
         <g transform={`translate(${xPos}, 0)`} ref={rectRef}>
           {children}

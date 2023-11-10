@@ -211,6 +211,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
       onDragEnd={() => {
         onDragEnd?.();
       }}
+      data-tour='dataset-list-item'
     >
       <DatasetItem>
         <DatasetHeader>
