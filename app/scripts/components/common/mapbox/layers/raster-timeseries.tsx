@@ -181,7 +181,6 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           payload,
           controller
         });
-        console.log(responseData);
 
         /* eslint-disable no-console */
         LOG &&
@@ -351,14 +350,9 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   useEffect(
     () => {
       const controller = new AbortController();
-      console.log('id');
-      console.log(id);
       async function run() {
-        console.log('id');
-        console.log(id);
         let layers: AnyLayer[] = [];
         let sources: Record<string, AnySourceImpl> = {};
-        console.log(mosaicUrl);
         if (mosaicUrl) {
           const tileParams = qs.stringify(
             {

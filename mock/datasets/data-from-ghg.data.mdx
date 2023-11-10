@@ -55,8 +55,8 @@ layers:
         - 0
         - 0.3
     compare:
-      datasetId: casagfed-carbonflux-monthgrid-v3
-      layerId: casa-gfed-co2-flux
+      datasetId: nighttime-lights
+      layerId: nightlights-hd-monthly
       mapLabel: |
         ::js ({ dateFns, datetime, compareDatetime }) => {
           if (dateFns && datetime && compareDatetime) return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
