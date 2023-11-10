@@ -28,7 +28,7 @@ const fetchLayerById = async (
   layer: DatasetLayer | DatasetLayerCompareNormalized
 ): Promise<STACLayerData | Error> => {
   const { type, stacApiEndpoint, stacCol } = layer;
-  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
+  const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
 
   const { data } = await axios.get(
     `${stacApiEndpointToUse}/collections/${stacCol}`
@@ -69,7 +69,7 @@ const fetchLayerById = async (
 const makeQueryObject = (
   layer: DatasetLayer | DatasetLayerCompareNormalized
 ): UseQueryOptions => ({
-  queryKey: ['layer', layer.stacCol],
+  queryKey: ['layer', layer.stacApiEndpoint, layer.stacCol],
   queryFn: () => fetchLayerById(layer),
   // This data will not be updated in the context of a browser session, so it is
   // safe to set the staleTime to Infinity. As specified by react-query's
@@ -148,6 +148,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
       /* eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style */
       const dataSTAC = queryClient.getQueryState([
         'layer',
+        baseData.stacApiEndpoint,
         baseData.stacCol
       ]) as QueryState<STACLayerData>;
 
@@ -180,10 +181,13 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
         baseLayer: mergeSTACData(layerProps),
         compareLayer: compareLayer && mergeSTACData(compareLayer),
         reFetch: () =>
-          queryClient.refetchQueries(['layer', layer.stacCol], {
-            type: 'active',
-            exact: true
-          })
+          queryClient.refetchQueries(
+            ['layer', layer.stacApiEndpoint, layer.stacCol],
+            {
+              type: 'active',
+              exact: true
+            }
+          )
       };
     });
   }, [layers, queryClient, layerQueries]);

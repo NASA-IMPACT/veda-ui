@@ -145,11 +145,18 @@ interface DatasetAssetsRequestParams {
 }
 
 async function getDatasetAssets(
-  { dateStart, dateEnd, stacApiEndpoint, stacCol, assets, aoi }: DatasetAssetsRequestParams,
+  {
+    dateStart,
+    dateEnd,
+    stacApiEndpoint,
+    stacCol,
+    assets,
+    aoi
+  }: DatasetAssetsRequestParams,
   opts: AxiosRequestConfig,
   concurrencyManager: ConcurrencyManagerInstance
 ) {
-  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
+  const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
   const data = await concurrencyManager.queue(async () => {
     const collectionReqRes = await axios.get(
       `${stacApiEndpointToUse}/collections/${stacCol}`
@@ -240,6 +247,7 @@ async function requestTimeseries({
         getDatasetAssets(
           {
             stacCol: layer.stacCol,
+            stacApiEndpoint: layer.stacApiEndpoint,
             assets: layer.sourceParams?.assets || 'cog_default',
             aoi,
             dateStart: start,
