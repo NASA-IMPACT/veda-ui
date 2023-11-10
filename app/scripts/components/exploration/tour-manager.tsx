@@ -44,11 +44,11 @@ const PopoverFooter = styled.div`
 
 const introTourSteps = [
   {
-    title: 'Welcome to Exploration',
+    title: 'Map layer selection',
     selector: "[data-tour='dataset-list-item']",
     mutationObservables: ["[data-tour='dataset-list-item']"],
     content:
-      "Each row represents a dataset, and each of the boxes on the timeline represents a data unit in the dataset. This data unit can be a day, month or year, depending on the dataset's time density."
+      "Each row represents a dataset, and each of the boxes on the timeline represents a data unit: day, month or year, depending on the dataset's time density."
   },
   {
     title: 'Playhead',
@@ -78,7 +78,7 @@ const introTourSteps = [
     selector: '.mapboxgl-ctrl-top-left',
     content: () => (
       <>
-        You can calculate a time series (zonal statistics) for your area of
+        You can calculate a time series of zonal statistics for your area of
         interest (AOI). Start that process here by drawing or uploading an AOI.
       </>
     ),
@@ -92,8 +92,8 @@ const analysisTourSteps = [
     selector: "[data-tour='analysis-message']",
     content: () => (
       <>
-        Now that you have an AOI, you can calculate a time series (zonal
-        statistics) for it.
+        You can now calculate a time series of zonal
+        statistics for your area of interest.
       </>
     ),
     stepInteraction: false
@@ -103,12 +103,10 @@ const analysisTourSteps = [
     selector: "[data-tour='analysis-toolbar']",
     content: () => (
       <>
-        Through the date picker (or the new handles in the timeline) you can
-        select a date range to analyze.
+        Refine the date range to analyze with the data pickers 
+        or handles on the timeline.
         <br />
-        A date range is preselected for you, but you can change it if you want.
-        <br />
-        Once you&apos;re happy press the analyze button.
+        Once you&apos;re happy, press the analyze button to start the calculation.
       </>
     ),
     stepInteraction: false
