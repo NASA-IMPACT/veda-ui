@@ -14,7 +14,7 @@ const MdxContent = lazy(() => import('$components/common/mdx-content'));
 function StoriesSingle() {
   const story = useStory();
 
-  if (!story) throw resourceNotFound();
+  if (!story || story.data.asLink) throw resourceNotFound();
 
   const { media, related } = story.data;
 
@@ -37,7 +37,10 @@ function StoriesSingle() {
             attributionAuthor={media?.author?.name}
             attributionUrl={media?.author?.url}
             renderDetailsBlock={() => (
-              <ContentTaxonomy taxonomy={story.data.taxonomy} linkBase={STORIES_PATH} />
+              <ContentTaxonomy
+                taxonomy={story.data.taxonomy}
+                linkBase={STORIES_PATH}
+              />
             )}
           />
 

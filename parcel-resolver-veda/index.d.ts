@@ -136,6 +136,14 @@ declare module 'veda' {
     id: string;
     thematic?: string;
   }
+  /**
+   * Link  Content
+   * When the story is a link out to the external/internal content
+   */
+
+  export interface LinkContentData {
+    url: string;
+  }
 
   export interface DatasetUsage {
     url: string;
@@ -174,6 +182,7 @@ declare module 'veda' {
     media?: Media;
     taxonomy: Taxonomy[];
     related?: RelatedContentData[];
+    asLink?: LinkContentData;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -260,7 +269,6 @@ declare module 'veda' {
     one: string;
     other: string;
   };
-
   /**
    * List of custom user defined pages.
    */

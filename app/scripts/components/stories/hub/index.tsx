@@ -45,8 +45,10 @@ import {
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
-
-import { ComponentOverride, ContentOverride } from '$components/common/page-overrides';
+import {
+  ComponentOverride,
+  ContentOverride
+} from '$components/common/page-overrides';
 
 const allStories = Object.values(stories).map((d) => d!.data);
 
@@ -172,7 +174,6 @@ function StoriesHub() {
         />
       </ComponentOverride>
       <FeaturedStories />
-
       <ContentOverride with='storiesHubContent'>
         <Fold>
           <BrowseFoldHeader
@@ -247,7 +248,7 @@ function StoriesHub() {
                         </CardMeta>
                       }
                       linkLabel='View more'
-                      linkTo={getStoryPath(d)}
+                      linkTo={d.asLink?.url ?? getStoryPath(d)}
                       title={
                         <TextHighlight
                           value={search}

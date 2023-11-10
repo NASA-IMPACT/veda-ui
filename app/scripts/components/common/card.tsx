@@ -2,6 +2,7 @@ import React, { MouseEventHandler, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import {
@@ -198,11 +199,11 @@ export const CardMeta = styled.div`
     }
   }
 
-  > ${/* sc-selector */VerticalDivider}:last-child {
+  > ${/* sc-selector */ VerticalDivider}:last-child {
     display: none;
   }
 
-  > ${/* sc-selector */VerticalDivider}:first-child {
+  > ${/* sc-selector */ VerticalDivider}:first-child {
     display: none;
   }
 `;
@@ -284,6 +285,38 @@ const CardFigure = styled(Figure)`
   }
 `;
 
+const ExternalLinkMark = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: ${variableGlsp(0.25)};
+  right: ${variableGlsp(0.25)};
+  padding: ${variableGlsp(0.125)} ${variableGlsp(0.25)};
+  background-color: ${themeVal('color.primary')};
+  color: ${themeVal('color.surface')};
+  text-transform: none;
+  border-radius: calc(
+    ${multiply(themeVal('shape.rounded'), 2)} - ${variableGlsp(0.125)}
+  );
+  z-index: 1;
+`;
+
+const FlagText = styled.div`
+  display: inline;
+  font-weight: bold;
+  font-size: 0.825rem;
+  margin-right: ${variableGlsp(0.25)};
+`;
+
+export function ExternalLinkFlag() {
+  return (
+    <ExternalLinkMark>
+      <FlagText>External Link</FlagText>
+      <CollecticonExpandTopRight size='small' meaningful={false} />
+    </ExternalLinkMark>
+  );
+}
+
 interface CardComponentProps {
   title: ReactNode;
   linkLabel: string;
@@ -319,23 +352,26 @@ function CardComponent(props: CardComponentProps) {
     onCardClickCapture
   } = props;
 
+  const isExternalLink = linkTo.match(/^https?:\/\//);
+  const linkProps = isExternalLink
+    ? { href: linkTo }
+    : { as: Link, to: linkTo };
+
   return (
     <ElementInteractive
       as={CardSelf}
       cardType={cardType}
       className={className}
       linkLabel={linkLabel || 'View more'}
-      linkProps={{
-        as: Link,
-        to: linkTo
-      }}
+      linkProps={linkProps}
       onClickCapture={onCardClickCapture}
     >
       <CardHeader>
         <CardHeadline>
           <CardTitle>{title}</CardTitle>
           <CardOverline as='div'>
-            {parentName && parentTo && (
+            {isExternalLink && <ExternalLinkFlag />}
+            {!isExternalLink && parentName && parentTo && (
               <CardLabel as={Link} to={parentTo}>
                 {parentName}
               </CardLabel>

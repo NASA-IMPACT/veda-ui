@@ -78,7 +78,7 @@ function FeaturedStories() {
                   <Card
                     cardType='cover'
                     linkLabel='View more'
-                    linkTo={getStoryPath(d)}
+                    linkTo={d.asLink?.url ?? getStoryPath(d)}
                     title={d.name}
                     parentName={getString('stories').one}
                     parentTo={STORIES_PATH}
