@@ -17,7 +17,6 @@ import {
 import { reveal } from '@devseed-ui/animation';
 import { Overline } from '@devseed-ui/typography';
 import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
-import { ShadowScrollbar } from '@devseed-ui/shadow-scrollbar';
 
 import DropdownScrollable from './dropdown-scrollable';
 
@@ -57,7 +56,7 @@ const LocalBreadcrumb = styled.ol`
   }
 `;
 
-const NavBlock = styled(ShadowScrollbar)`
+const NavBlock = styled.div`
   display: flex;
   align-items: center;
   flex-flow: row nowrap;

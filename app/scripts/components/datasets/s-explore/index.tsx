@@ -8,6 +8,7 @@ import React, {
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
+import { isSameDay } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonExpandFromLeft,
@@ -99,7 +100,6 @@ const DatesWrapper = styled.div`
   position: relative;
   z-index: 10;
   box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')};
-
   > ${PanelWidget} {
     width: 100%;
     position: relative;
@@ -108,14 +108,43 @@ const DatesWrapper = styled.div`
   }
 `;
 
+const PositionPlaceHolderForScroll = styled.div`
+  position: absolute;
+  pointer-events: none;
+  z-index: 1000;
+  top: 0px;
+  left: 0px;
+  width: 1.5rem;
+  height: 100%;
+  background: linear-gradient(
+    to left,
+    rgba(255, 255, 255, 0) 0%,
+    rgb(255, 255, 255) 100%
+  );
+`;
+
+const ScrollArea = styled.div`
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+`;
+
+const ScrollAreaInner = styled.div`
+  position: absolute;
+  inset: 0px;
+  overflow-y: auto;
+`;
+
 const isSelectedDateValid = (dateList, selectedDate) => {
   if (dateList) {
     // Since the available dates changes, check if the currently selected
     // one is valid.
     const validDate = !!dateList.find(
-      (d) => d.getTime() === selectedDate?.getTime()
+      // Only check if the date of the selected date is in the range.
+      // Because Dashboard can only provide daily level selection.
+      (d) => isSameDay(new Date(d), new Date(selectedDate))
     );
-
     return !!validDate;
   }
   return true;
@@ -175,7 +204,6 @@ const useDatePickerValue = (
     }),
     [value]
   );
-
   return [val, onConfirm] as [typeof val, typeof onConfirm];
 };
 
@@ -518,6 +546,7 @@ function DatasetsExplore() {
     selectedDatetime,
     setSelectedDatetime
   );
+
   const [datePickerCompareValue, datePickerCompareConfirm] = useDatePickerValue(
     selectedCompareDatetime,
     setSelectedCompareDatetime
@@ -585,52 +614,57 @@ function DatasetsExplore() {
                 </PanelActions>
               </PanelHeader>
               <PanelBody>
-                <DatesWrapper>
-                  {activeLayerTimeseries && (
-                    <PanelDateWidget
-                      title='Date'
-                      value={datePickerValue}
-                      onConfirm={datePickerConfirm}
-                      timeDensity={activeLayerTimeseries.timeDensity}
-                      availableDates={availableActiveLayerDates}
-                    >
-                      {activeLayerCompareTimeseries && (
-                        <FormSwitch
-                          id='compare-date-toggle'
-                          name='compare-date-toggle'
-                          value='compare-date-toggle'
-                          checked={isComparing}
-                          textPlacement='right'
-                          onChange={() => setIsComparing((v) => !v)}
+                <PositionPlaceHolderForScroll />
+                <ScrollArea>
+                  <ScrollAreaInner>
+                    <DatesWrapper>
+                      {activeLayerTimeseries && (
+                        <PanelDateWidget
+                          title='Date'
+                          value={datePickerValue}
+                          onConfirm={datePickerConfirm}
+                          timeDensity={activeLayerTimeseries.timeDensity}
+                          availableDates={availableActiveLayerDates}
                         >
-                          Toggle date comparison
-                        </FormSwitch>
+                          {activeLayerCompareTimeseries && (
+                            <FormSwitch
+                              id='compare-date-toggle'
+                              name='compare-date-toggle'
+                              value='compare-date-toggle'
+                              checked={isComparing}
+                              textPlacement='right'
+                              onChange={() => setIsComparing((v) => !v)}
+                            >
+                              Toggle date comparison
+                            </FormSwitch>
+                          )}
+                        </PanelDateWidget>
                       )}
-                    </PanelDateWidget>
-                  )}
-                  {isComparing && activeLayerCompareTimeseries && (
-                    <PanelDateWidget
-                      title='Date comparison'
-                      value={datePickerCompareValue}
-                      onConfirm={datePickerCompareConfirm}
-                      timeDensity={activeLayerCompareTimeseries.timeDensity}
-                      availableDates={availableActiveLayerCompareDates}
-                    />
-                  )}
-                </DatesWrapper>
-                <PanelWidget>
-                  <PanelWidgetHeader>
-                    <PanelWidgetTitle>Layers</PanelWidgetTitle>
-                  </PanelWidgetHeader>
-                  <PanelWidgetBody>
-                    <DatasetLayers
-                      datasetId={dataset.data.id}
-                      asyncLayers={asyncLayers}
-                      selectedLayerId={selectedLayerId ?? undefined}
-                      onAction={onLayerAction}
-                    />
-                  </PanelWidgetBody>
-                </PanelWidget>
+                      {isComparing && activeLayerCompareTimeseries && (
+                        <PanelDateWidget
+                          title='Date comparison'
+                          value={datePickerCompareValue}
+                          onConfirm={datePickerCompareConfirm}
+                          timeDensity={activeLayerCompareTimeseries.timeDensity}
+                          availableDates={availableActiveLayerCompareDates}
+                        />
+                      )}
+                    </DatesWrapper>
+                    <PanelWidget id='panel-widget'>
+                      <PanelWidgetHeader>
+                        <PanelWidgetTitle>Layers</PanelWidgetTitle>
+                      </PanelWidgetHeader>
+                      <PanelWidgetBody>
+                        <DatasetLayers
+                          datasetId={dataset.data.id}
+                          asyncLayers={asyncLayers}
+                          selectedLayerId={selectedLayerId ?? undefined}
+                          onAction={onLayerAction}
+                        />
+                      </PanelWidgetBody>
+                    </PanelWidget>
+                  </ScrollAreaInner>
+                </ScrollArea>
               </PanelBody>
             </PanelInner>
           </Panel>

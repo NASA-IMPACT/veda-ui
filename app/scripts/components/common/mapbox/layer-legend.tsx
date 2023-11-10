@@ -27,8 +27,6 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 
-import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
-
 interface LayerLegendCommonProps {
   id: string;
   title: string;
@@ -198,7 +196,10 @@ const LayerLegendTitle = styled.h3`
 
 const LegendBody = styled(WidgetItemBodyInner)`
   padding: 0;
-
+  min-height: 32px;
+  max-height: 120px;
+  overflow-y: auto;
+  overscroll-behavior: none;
   .scroll-inner {
     padding: ${variableGlsp(0.5, 0.75)};
   }
@@ -252,17 +253,11 @@ export function LayerLegend(
       )}
       renderBody={() => (
         <LegendBody>
-          <ShadowScrollbar
-            scrollbarsProps={{
-              autoHeight: true,
-              autoHeightMin: 32,
-              autoHeightMax: 120
-            }}
-          >
+
             <div className='scroll-inner'>
               {description || <p>No info available for this layer.</p>}
             </div>
-          </ShadowScrollbar>
+          
         </LegendBody>
       )}
     />

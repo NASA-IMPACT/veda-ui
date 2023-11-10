@@ -21,8 +21,6 @@ import { MapOptionsProps } from './types';
 import { projectionsList } from './utils';
 import { BASEMAP_STYLES } from './basemaps';
 
-import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
-
 const DropHeader = styled.div`
   padding: ${glsp()};
   box-shadow: inset 0 -1px 0 0 ${themeVal('color.base-100a')};
@@ -30,6 +28,8 @@ const DropHeader = styled.div`
 
 const DropBody = styled.div`
   padding: ${glsp(0, 0, 1, 0)};
+  max-height: 320px;
+  overflow-y: auto;
 `;
 
 /**
@@ -63,11 +63,6 @@ const SelectorButton = styled(Button)`
     ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
   }
 `;
-
-const shadowScrollbarProps = {
-  autoHeight: true,
-  autoHeightMax: 320
-};
 
 const ContentGroup = styled.div`
   display: flex;
@@ -143,7 +138,7 @@ function MapOptions(props: MapOptionsProps) {
         <DropTitle>Map options</DropTitle>
       </DropHeader>
       <DropBody>
-        <ShadowScrollbar scrollbarsProps={shadowScrollbarProps}>
+        
           <ContentGroup>
             <ContentGroupHeader>
               <ContentGroupTitle>Style</ContentGroupTitle>
@@ -258,7 +253,7 @@ function MapOptions(props: MapOptionsProps) {
               </DropMenu>
             </ContentGroupBody>
           </ContentGroup>
-        </ShadowScrollbar>
+        
       </DropBody>
     </MapOptionsDropdown>
   );

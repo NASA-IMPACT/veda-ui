@@ -49,7 +49,8 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
   const [sortField, setSortField] = useQsState.memo(
     {
       key: Actions.SORT_FIELD,
-      default: sortOptions[0].id,
+      // If pubDate exists, default sorting to this
+      default: sortOptions.find((o) => o.id === 'pubDate')?.id || sortOptions[0]?.id,
       validator: sortOptions.map((d) => d.id)
     },
     [sortOptions]
