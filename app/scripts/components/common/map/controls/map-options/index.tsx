@@ -21,7 +21,6 @@ import {
 import { MapOptionsProps } from './types';
 import { projectionsList } from './projections';
 import { BASEMAP_STYLES } from './basemap';
-import { ShadowScrollbarImproved as ShadowScrollbar } from '$components/common/shadow-scrollbar-improved';
 
 const DropHeader = styled.div`
   padding: ${glsp()};
@@ -30,6 +29,8 @@ const DropHeader = styled.div`
 
 const DropBody = styled.div`
   padding: ${glsp(0, 0, 1, 0)};
+  max-height: 18rem;
+  overflow-y: scroll;
 `;
 
 /**
@@ -70,11 +71,6 @@ const SelectorButton = styled(Button)`
     }
   }
 `;
-
-const shadowScrollbarProps = {
-  autoHeight: true,
-  autoHeightMax: 320
-};
 
 const ContentGroup = styled.div`
   display: flex;
@@ -150,122 +146,120 @@ function MapOptions(props: MapOptionsProps) {
         <DropTitle>Map options</DropTitle>
       </DropHeader>
       <DropBody>
-        <ShadowScrollbar scrollbarsProps={shadowScrollbarProps}>
-          <ContentGroup>
-            <ContentGroupHeader>
-              <ContentGroupTitle>Style</ContentGroupTitle>
-            </ContentGroupHeader>
-            <ContentGroupBody>
-              <DropMenu as='ol'>
-                {BASEMAP_STYLES.map((basemap) => (
-                  <li key={basemap.id}>
-                    <DropMenuItem
-                      href='#'
-                      active={basemapStyleId === basemap.id}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onBasemapStyleIdChange?.(basemap.id);
-                      }}
-                    >
-                      <span>{basemap.label}</span>
-                      <OptionMedia>
-                        <img
-                          src={basemap.thumbnailUrl}
-                          alt='Map style thumbnail'
-                        />
-                      </OptionMedia>
-                    </DropMenuItem>
-                  </li>
-                ))}
-              </DropMenu>
-            </ContentGroupBody>
-          </ContentGroup>
-
-          <ContentGroup>
-            <ContentGroupHeader>
-              <ContentGroupTitle>Details</ContentGroupTitle>
-            </ContentGroupHeader>
-            <ContentGroupBody>
-              <DropMenu>
-                <li>
-                  <DropMenuItem as='span'>
-                    <OptionSwitch
-                      name='labels'
-                      id='labels'
-                      value='labels'
-                      checked={labelsOption}
-                      onChange={(e) => {
-                        onOptionChange?.('labels', e.target.checked);
-                      }}
-                    >
-                      Labels
-                    </OptionSwitch>
+        <ContentGroup>
+          <ContentGroupHeader>
+            <ContentGroupTitle>Style</ContentGroupTitle>
+          </ContentGroupHeader>
+          <ContentGroupBody>
+            <DropMenu as='ol'>
+              {BASEMAP_STYLES.map((basemap) => (
+                <li key={basemap.id}>
+                  <DropMenuItem
+                    href='#'
+                    active={basemapStyleId === basemap.id}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onBasemapStyleIdChange?.(basemap.id);
+                    }}
+                  >
+                    <span>{basemap.label}</span>
+                    <OptionMedia>
+                      <img
+                        src={basemap.thumbnailUrl}
+                        alt='Map style thumbnail'
+                      />
+                    </OptionMedia>
                   </DropMenuItem>
                 </li>
-                <li>
-                  <DropMenuItem as='span'>
-                    <OptionSwitch
-                      name='boundaries'
-                      id='boundaries'
-                      value='boundaries'
-                      checked={boundariesOption}
-                      onChange={(e) => {
-                        onOptionChange?.('boundaries', e.target.checked);
-                      }}
-                    >
-                      Boundaries
-                    </OptionSwitch>
-                  </DropMenuItem>
-                </li>
-              </DropMenu>
-            </ContentGroupBody>
-          </ContentGroup>
+              ))}
+            </DropMenu>
+          </ContentGroupBody>
+        </ContentGroup>
 
-          <ContentGroup>
-            <ContentGroupHeader>
-              <ContentGroupTitle>Projection</ContentGroupTitle>
-            </ContentGroupHeader>
-            <ContentGroupBody>
-              <DropMenu as='ol'>
-                {projectionsList.map((proj) => {
-                  if (proj.isCustom && proj.conicValues) {
-                    return (
-                      <ProjectionItemCustom
-                        key={proj.id}
-                        onChange={onProjectionChange}
-                        id={proj.id}
-                        label={proj.label}
-                        defaultConicValues={proj.conicValues}
-                        activeProjection={projection}
-                      />
-                    );
-                  } else if (proj.conicValues) {
-                    return (
-                      <ProjectionItemConic
-                        key={proj.id}
-                        onChange={onProjectionChange}
-                        id={proj.id}
-                        label={proj.label}
-                        defaultConicValues={proj.conicValues}
-                        activeProjection={projection}
-                      />
-                    );
-                  } else {
-                    return (
-                      <ProjectionItemSimple
-                        key={proj.id}
-                        onChange={onProjectionChange}
-                        id={proj.id}
-                        label={proj.label}
-                        activeProjection={projection}
-                      />
-                    );
-                  }
-                })}
-              </DropMenu>
-            </ContentGroupBody>
-          </ContentGroup>
-        </ShadowScrollbar>
+        <ContentGroup>
+          <ContentGroupHeader>
+            <ContentGroupTitle>Details</ContentGroupTitle>
+          </ContentGroupHeader>
+          <ContentGroupBody>
+            <DropMenu>
+              <li>
+                <DropMenuItem as='span'>
+                  <OptionSwitch
+                    name='labels'
+                    id='labels'
+                    value='labels'
+                    checked={labelsOption}
+                    onChange={(e) => {
+                      onOptionChange?.('labels', e.target.checked);
+                    }}
+                  >
+                    Labels
+                  </OptionSwitch>
+                </DropMenuItem>
+              </li>
+              <li>
+                <DropMenuItem as='span'>
+                  <OptionSwitch
+                    name='boundaries'
+                    id='boundaries'
+                    value='boundaries'
+                    checked={boundariesOption}
+                    onChange={(e) => {
+                      onOptionChange?.('boundaries', e.target.checked);
+                    }}
+                  >
+                    Boundaries
+                  </OptionSwitch>
+                </DropMenuItem>
+              </li>
+            </DropMenu>
+          </ContentGroupBody>
+        </ContentGroup>
+
+        <ContentGroup>
+          <ContentGroupHeader>
+            <ContentGroupTitle>Projection</ContentGroupTitle>
+          </ContentGroupHeader>
+          <ContentGroupBody>
+            <DropMenu as='ol'>
+              {projectionsList.map((proj) => {
+                if (proj.isCustom && proj.conicValues) {
+                  return (
+                    <ProjectionItemCustom
+                      key={proj.id}
+                      onChange={onProjectionChange}
+                      id={proj.id}
+                      label={proj.label}
+                      defaultConicValues={proj.conicValues}
+                      activeProjection={projection}
+                    />
+                  );
+                } else if (proj.conicValues) {
+                  return (
+                    <ProjectionItemConic
+                      key={proj.id}
+                      onChange={onProjectionChange}
+                      id={proj.id}
+                      label={proj.label}
+                      defaultConicValues={proj.conicValues}
+                      activeProjection={projection}
+                    />
+                  );
+                } else {
+                  return (
+                    <ProjectionItemSimple
+                      key={proj.id}
+                      onChange={onProjectionChange}
+                      id={proj.id}
+                      label={proj.label}
+                      activeProjection={projection}
+                    />
+                  );
+                }
+              })}
+            </DropMenu>
+          </ContentGroupBody>
+        </ContentGroup>
       </DropBody>
     </MapOptionsDropdown>
   );
