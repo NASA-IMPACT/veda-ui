@@ -249,6 +249,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       size='xlarge'
       title='Select datasets'
       revealed={revealed}
+      disableKeyboardClose={isFirstSelection}
       closeButton={!isFirstSelection}
       onCloseClick={close}
       renderHeadline={() => (
