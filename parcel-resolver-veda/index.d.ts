@@ -254,6 +254,8 @@ declare module 'veda' {
     | 'developmentContent'
     | 'aboutContent'
     | 'homeContent'
+    | 'storiesHubContent'
+    | 'storiesHubHero'
     | 'sandbox-override'
     | 'pageFooter'
     | 'headerBrand'

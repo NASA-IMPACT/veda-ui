@@ -115,16 +115,7 @@ function SandboxLayout() {
 
   return (
     <>
-      <LayoutProps
-        title={`Sandbox - ${page.name}`}
-        localNavProps={{
-          parentName: 'Sandbox',
-          parentLabel: 'Sandbox',
-          parentTo: '/sandbox',
-          items: pages,
-          currentId: pId
-        }}
-      />
+      <LayoutProps title={`Sandbox - ${page.name}`} />
 
       <PageMainContent>
         <PageHero title={page.name} />
