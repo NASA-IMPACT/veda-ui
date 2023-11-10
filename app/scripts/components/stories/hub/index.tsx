@@ -161,11 +161,11 @@ function StoriesHub() {
     <PageMainContent>
       <LayoutProps
         title={getString('stories').other}
-        description={getString('storiesBanner')?.other || 'Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'}
+        description={getString('storiesBanner').other}
       />
       <PageHero
         title={getString('stories').other}
-        description={getString('storiesBanner')?.other || 'Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'}
+        description={getString('storiesBanner').other}
       />
 
       <FeaturedStories />
@@ -243,7 +243,7 @@ function StoriesHub() {
                       </CardMeta>
                     }
                     linkLabel='View more'
-                    linkTo={getStoryPath(d)}
+                    linkTo={d.asLink?.url ?? getStoryPath(d)}
                     title={
                       <TextHighlight
                         value={search}
