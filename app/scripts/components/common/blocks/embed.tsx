@@ -5,7 +5,7 @@ import BrowserFrame from '$styles/browser-frame';
 
 const EmbedWrapper = styled.div`
   width: 100%;
-  
+
   > div {
     width: 100%;
   }
@@ -30,7 +30,7 @@ export default function Embed({ src, height = 800 }: EmbedProps) {
   return (
     <EmbedWrapper>
       <BrowserFrame link={src}>
-        <IframeWrapper src={src} height={height} />
+        <IframeWrapper loading='lazy' src={src} height={height} />
       </BrowserFrame>
     </EmbedWrapper>
   );
