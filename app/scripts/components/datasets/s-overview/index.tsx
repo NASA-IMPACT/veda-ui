@@ -53,7 +53,7 @@ function DatasetsOverview() {
 
       <PageMainContent>
         <PageHero
-          title={`${dataset.data.name} Overview`}
+          title={dataset.data.name}
           description={dataset.data.description}
           renderBetaBlock={() => (
             <PageActions>
