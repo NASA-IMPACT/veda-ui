@@ -22,7 +22,7 @@ interface EmbedProps {
   height: number;
 }
 
-export default function Embed({ src, height = 800 }: EmbedProps) {
+export default function Embed({ src, height = 800, ...props}: EmbedProps) {
   if (!src) {
     throw new HintedError('Embed block requires a URL');
   }
@@ -30,7 +30,7 @@ export default function Embed({ src, height = 800 }: EmbedProps) {
   return (
     <EmbedWrapper>
       <BrowserFrame link={src}>
-        <IframeWrapper loading='lazy' src={src} height={height} />
+        <IframeWrapper loading='lazy' src={src} height={height} {...props} />
       </BrowserFrame>
     </EmbedWrapper>
   );
