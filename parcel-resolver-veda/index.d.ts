@@ -54,6 +54,8 @@ declare module 'veda' {
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
+    stacApiEndpoint?: string;
+    tileApiEndpoint?: string;
     name: string;
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
@@ -83,6 +85,8 @@ declare module 'veda' {
     id: string;
     name: string;
     description: string;
+    stacApiEndpoint?: string;
+    tileApiEndpoint?: string;
     stacCol: string;
     type: DatasetLayerType;
     legend?: LayerLegendCategorical | LayerLegendGradient;
