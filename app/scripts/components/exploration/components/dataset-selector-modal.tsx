@@ -214,8 +214,13 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const search = controlVars.search ?? '';
 
   // Clear filters when the modal is revealed.
+  const firstRevealRef = React.useRef(true);
   useEffect(() => {
     if (revealed) {
+      if (firstRevealRef.current) {
+        firstRevealRef.current = false;
+        return;
+      }
       onAction(Actions.CLEAR);
     }
   }, [revealed]);
