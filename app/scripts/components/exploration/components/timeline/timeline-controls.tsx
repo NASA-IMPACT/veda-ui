@@ -96,7 +96,12 @@ export function TimelineControls(props: TimelineControlsProps) {
                 setSelectedDay(d.start!);
               }}
               renderTriggerElement={(props, label) => (
-                <DatePickerButton {...props} size='small' disabled={!xScaled} data-tour='date-picker-a'>
+                <DatePickerButton
+                  {...props}
+                  size='small'
+                  disabled={!xScaled}
+                  data-tour='date-picker-a'
+                >
                   <span className='head-reference'>A</span>
                   <span>{label}</span>
                   <CollecticonChevronDownSmall />
@@ -139,6 +144,7 @@ export function TimelineControls(props: TimelineControlsProps) {
             ) : (
               <ToolbarIconButton
                 size='small'
+                data-tour='compare-date'
                 onClick={() => {
                   if (!xScaled || !selectedDay) return;
                   const [, max] = xScaled.range();
