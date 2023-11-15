@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
@@ -6,6 +7,7 @@ import { addDays, subDays, areIntervalsOverlapping } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { ScaleTime } from 'd3';
 import {
+  CollecticonCircleInformation,
   CollecticonEye,
   CollecticonEyeDisabled,
   CollecticonGripVertical
@@ -13,6 +15,7 @@ import {
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
+import { Button } from '@devseed-ui/button';
 
 import {
   DatasetPopover,
@@ -49,6 +52,8 @@ import {
   useAnalysisController,
   useAnalysisDataRequest
 } from '$components/exploration/hooks/use-analysis-data-request';
+import { getDatasetPath } from '$utils/routes';
+import { findParentDataset } from '$components/exploration/data-utils';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -223,6 +228,17 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   {dataset.data.name}
                 </Heading>
                 <Toolbar size='small'>
+                  <Button
+                    forwardedAs={Link}
+                    fitting='skinny'
+                    size='small'
+                    to={getDatasetPath(findParentDataset(datasetId)!)}
+                  >
+                    <CollecticonCircleInformation
+                      meaningful
+                      title='View dataset page'
+                    />
+                  </Button>
                   <DatasetOptions datasetAtom={datasetAtom} />
                   <ToolbarIconButton onClick={() => setVisible((v) => !v)}>
                     {isVisible ? (
