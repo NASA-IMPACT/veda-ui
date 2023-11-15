@@ -35,17 +35,16 @@ export function useStacCollectionSearch({
   const result = useQuery({
     queryKey: ['stacCollection'],
     queryFn: async ({ signal }) => {
+   
       const collectionUrlsFromDataSets = allAvailableDatasetsLayers
-        .filter((dataset) => dataset.stacApiEndpoint)
-        .map(
-          (dataset) => `${dataset.stacApiEndpoint}${collectionEndpointSuffix}`
-        )
-        .filter((value, index, array) => array.indexOf(value) === index);
-
-      const collectionUrls = [
-        ...collectionUrlsFromDataSets,
-        `${process.env.API_STAC_ENDPOINT}${collectionEndpointSuffix}`
-      ];
+            .filter((dataset) => dataset.stacApiEndpoint)
+            .map(
+              (dataset) =>
+                `${dataset.stacApiEndpoint}${collectionEndpointSuffix}`
+            );
+      // Get unique values of stac api endpoints from layer data, concat with api_stac_endpoiint from env var
+      const collectionUrls = Array.from(new Set(collectionUrlsFromDataSets))
+        .concat(`${process.env.API_STAC_ENDPOINT}${collectionEndpointSuffix}`);
 
       const collectionRequests = collectionUrls.map((url: string) =>
         axios.get(url, { signal }).then((response) => {
@@ -56,11 +55,8 @@ export function useStacCollectionSearch({
         })
       );
       return axios.all(collectionRequests).then(
-        axios.spread((...responses) => {
-          // Merge all responses into one array
-          const mergedData = [].concat(...responses);
-          return mergedData;
-        })
+        // Merge all responses into one array
+        axios.spread((...responses) => [].concat(...responses))
       );
     },
     enabled: readyToLoadDatasets
