@@ -22,6 +22,7 @@ import { userTzDate2utcString } from '$utils/date';
 export interface MapLayerVectorTimeseriesProps {
   id: string;
   stacCol: string;
+  stacApiEndpoint?: string;
   date?: Date;
   mapInstance: MapboxMap;
   sourceParams?: Record<string, any>;
@@ -37,6 +38,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   const {
     id,
     stacCol,
+    stacApiEndpoint,
     date,
     mapInstance,
     sourceParams,
@@ -56,6 +58,8 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
 
   const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
 
+  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
+
   const generatorId = 'vector-timeseries' + idSuffix;
 
   //
@@ -68,7 +72,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
       try {
         onStatusChange?.({ status: S_LOADING, id });
         const data = await requestQuickCache({
-          url: `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`,
+          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
           method: 'GET',
           controller
         });
@@ -101,7 +105,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     return () => {
       controller.abort();
     };
-  }, [mapInstance, id, stacCol, date, onStatusChange]);
+  }, [mapInstance, id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
 
   const markerLayout = useCustomMarker(mapInstance);
 
