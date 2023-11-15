@@ -137,6 +137,18 @@ interface TimelineProps {
   onDatasetAddClick: () => void;
 }
 
+const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
+  const startDate = sub(selectedDay, { months: 2 });
+  const endDate = add(selectedDay, { months: 2 });
+
+  // Set start and end days from the selected day, if able.
+  const [start, end] = dataDomain;
+  return {
+    start: isAfter(startDate, start) ? startDate : selectedDay,
+    end: isBefore(endDate, end) ? endDate : end
+  };
+};
+
 export default function Timeline(props: TimelineProps) {
   const { onDatasetAddClick } = props;
 
@@ -318,7 +330,8 @@ export default function Timeline(props: TimelineProps) {
   );
 
   const successDatasets = datasets.filter(
-    (d): d is TimelineDatasetSuccess => d.status === TimelineDatasetStatus.SUCCESS
+    (d): d is TimelineDatasetSuccess =>
+      d.status === TimelineDatasetStatus.SUCCESS
   );
 
   // When a loaded dataset is added from an empty state, compute the correct
@@ -353,9 +366,23 @@ export default function Timeline(props: TimelineProps) {
     // available dataset date. We can't use the date domain, because the end of
     // the domain is the max date + a duration so that all dataset dates fit in
     // the timeline.
+    let newSelectedDay; // needed for the interval
     if (!selectedDay || !isWithinInterval(selectedDay, { start, end })) {
-      const maxDate = max(successDatasets.map(d => d.data.domain.last));
+      const maxDate = max(successDatasets.map((d) => d.data.domain.last));
       setSelectedDay(maxDate);
+      newSelectedDay = maxDate;
+    } else {
+      newSelectedDay = selectedDay;
+    }
+
+    // If there is a selected interval and  is not within the new domain,
+    // calculate a new one.
+    if (
+      selectedInterval &&
+      (!isWithinInterval(selectedInterval.start, { start, end }) ||
+        !isWithinInterval(selectedInterval.end, { start, end }))
+    ) {
+      setSelectedInterval(getIntervalFromDate(newSelectedDay, dataDomain));
     }
   }, [
     prevDataDomain,
@@ -381,15 +408,7 @@ export default function Timeline(props: TimelineProps) {
 
     if (prevFeaturesCount === 0 && features.length > 0) {
       // We went from 0 features to some features.
-      const startDate = sub(selectedDay, { months: 2 });
-      const endDate = add(selectedDay, { months: 2 });
-
-      // Set start and end days from the selected day, if able.
-      const [start, end] = dataDomain;
-      setSelectedInterval({
-        start: isAfter(startDate, start) ? startDate : selectedDay,
-        end: isBefore(endDate, end) ? endDate : end
-      });
+      setSelectedInterval(getIntervalFromDate(selectedDay, dataDomain));
     }
   }, [
     features.length,
