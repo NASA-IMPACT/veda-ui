@@ -35,16 +35,18 @@ export function useStacCollectionSearch({
   const result = useQuery({
     queryKey: ['stacCollection'],
     queryFn: async ({ signal }) => {
-   
-      const collectionUrlsFromDataSets = allAvailableDatasetsLayers
-            .filter((dataset) => dataset.stacApiEndpoint)
-            .map(
-              (dataset) =>
-                `${dataset.stacApiEndpoint}${collectionEndpointSuffix}`
-            );
+      const collectionUrlsFromDataSets = allAvailableDatasetsLayers.reduce(
+        (filtered, { stacApiEndpoint }) => {
+          return stacApiEndpoint
+            ? [...filtered, `${stacApiEndpoint}/collections`]
+            : filtered;
+        },
+        []
+      );
       // Get unique values of stac api endpoints from layer data, concat with api_stac_endpoiint from env var
-      const collectionUrls = Array.from(new Set(collectionUrlsFromDataSets))
-        .concat(`${process.env.API_STAC_ENDPOINT}${collectionEndpointSuffix}`);
+      const collectionUrls = Array.from(
+        new Set(collectionUrlsFromDataSets)
+      ).concat(`${process.env.API_STAC_ENDPOINT}${collectionEndpointSuffix}`);
 
       const collectionRequests = collectionUrls.map((url: string) =>
         axios.get(url, { signal }).then((response) => {
