@@ -49,6 +49,8 @@ export function Layer(props: LayerProps) {
     <RasterTimeseries
       id={layerId}
       stacCol={dataset.data.stacCol}
+      stacApiEndpoint={dataset.data.stacApiEndpoint}
+      tileApiEndpoint={dataset.data.tileApiEndpoint}
       date={relevantDate}
       zoomExtent={params.zoomExtent}
       sourceParams={params.sourceParams}

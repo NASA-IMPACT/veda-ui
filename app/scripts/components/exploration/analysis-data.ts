@@ -16,6 +16,7 @@ import {
 interface DatasetAssetsRequestParams {
   stacCol: string;
   assets: string;
+  stacEndpoint: string;
   dateStart: Date;
   dateEnd: Date;
   aoi: FeatureCollection<Polygon>;
@@ -30,11 +31,18 @@ interface DatasetAssetsRequestParams {
  * @returns Promise with the asset urls
  */
 async function getDatasetAssets(
-  { dateStart, dateEnd, stacCol, assets, aoi }: DatasetAssetsRequestParams,
+  {
+    dateStart,
+    dateEnd,
+    stacCol,
+    assets,
+    aoi,
+    stacEndpoint
+  }: DatasetAssetsRequestParams,
   opts: AxiosRequestConfig
 ): Promise<{ assets: { date: Date; url: string }[] }> {
   const searchReqRes = await axios.post(
-    `${process.env.API_STAC_ENDPOINT}/search`,
+    `${stacEndpoint}/search`,
     {
       'filter-lang': 'cql2-json',
       limit: 10000,
@@ -96,6 +104,9 @@ export async function requestDatasetTimeseriesData({
     meta: {}
   });
 
+  const stacApiEndpointToUse =
+    datasetData.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
+
   try {
     const layerInfoFromSTAC = await concurrencyManager.queue(
       `${id}-analysis`,
@@ -105,6 +116,7 @@ export async function requestDatasetTimeseriesData({
           ({ signal }) =>
             getDatasetAssets(
               {
+                stacEndpoint: stacApiEndpointToUse,
                 stacCol: datasetData.stacCol,
                 assets: datasetData.sourceParams?.assets || 'cog_default',
                 aoi,
@@ -152,6 +164,9 @@ export async function requestDatasetTimeseriesData({
 
     let loaded = 0;
 
+    const tileEndpointToUse =
+      datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
+
     const layerStatistics = await Promise.all(
       assets.map(async ({ date, url }) => {
         const statistics = await concurrencyManager.queue(
@@ -161,7 +176,7 @@ export async function requestDatasetTimeseriesData({
               ['analysis', id, 'asset', url, aoi],
               async ({ signal }) => {
                 const { data } = await axios.post(
-                  `${process.env.API_RASTER_ENDPOINT}/cog/statistics?url=${url}`,
+                  `${tileEndpointToUse}/cog/statistics?url=${url}`,
                   // Making a request with a FC causes a 500 (as of 2023/01/20)
                   fixAoiFcForStacSearch(aoi),
                   { signal }

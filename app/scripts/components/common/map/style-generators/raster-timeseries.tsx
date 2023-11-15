@@ -45,6 +45,8 @@ export interface RasterTimeseriesProps extends BaseGeneratorParams {
   bounds?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isPositionSet?: boolean;
+  stacApiEndpoint?: string;
+  tileApiEndpoint?: string;
 }
 
 enum STATUS_KEY {
@@ -70,7 +72,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     onStatusChange,
     isPositionSet,
     hidden,
-    opacity
+    opacity,
+    stacApiEndpoint,
+    tileApiEndpoint
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -80,6 +84,11 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
 
   const minZoom = zoomExtent?.[0] ?? 0;
   const generatorId = `raster-timeseries-${id}`;
+
+  const stacApiEndpointToUse =
+    stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
+  const tileApiEndpointToUse =
+    tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
@@ -165,7 +174,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         /* eslint-enable no-console */
 
         const responseData = await requestQuickCache({
-          url: `${process.env.API_STAC_ENDPOINT}/search`,
+          url: `${stacApiEndpointToUse}/search`,
           payload,
           controller
         });
@@ -262,7 +271,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         /* eslint-enable no-console */
 
         const responseData = await requestQuickCache({
-          url: `${process.env.API_RASTER_ENDPOINT}/mosaic/register`,
+          url: `${tileApiEndpointToUse}/mosaic/register`,
           payload,
           controller
         });
