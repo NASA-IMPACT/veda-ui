@@ -35,7 +35,7 @@ function DatasetsOverview() {
   return (
     <>
       <LayoutProps
-        title={dataset.data.name}
+        title={`${dataset.data.name} Overview`}
         description={dataset.data.description}
         thumbnail={dataset.data.media?.src}
         localNavProps={{
