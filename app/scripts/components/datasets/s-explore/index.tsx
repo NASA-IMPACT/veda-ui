@@ -585,7 +585,7 @@ function DatasetsExplore() {
         hideFooter
       />
       <PageMainContent>
-        <PageHero title={dataset.data.name} />
+        <PageHero title={dataset.data.name} isHidden />
         <Explorer>
           <Panel revealed={panelRevealed} onClick={onPanelClick}>
             <PanelInner ref={panelBodyRef}>
