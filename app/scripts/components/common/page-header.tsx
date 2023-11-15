@@ -354,12 +354,12 @@ function PageHeader() {
 
   const userPagesMainNavItem = userPages.map((id) => {
     const page = getOverride(id as any);
-    if (!page?.data.navMainItem) return false;
+    if (!(page?.data.mainNavItem && page.data.mainNavItem.navTitle)) return false;
 
     return (
       <li key={id}>
         <GlobalMenuLink to={id} onClick={closeNavOnClick}>
-          {page.data.navTitle}
+          {page.data.mainNavItem.navTitle }
         </GlobalMenuLink>
       </li>
     );
@@ -511,7 +511,7 @@ function UserPagesDotMenu(props: {
     return menuItems;
   }, []);
 
-  if (!dotMenuItems.length) return <>{false}</>;
+  if (!dotMenuItems.length) return false;
 
   if (isMediumDown) {
     return (
