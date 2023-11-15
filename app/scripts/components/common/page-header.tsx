@@ -511,7 +511,7 @@ function UserPagesDotMenu(props: {
     return menuItems;
   }, []);
 
-  if (!dotMenuItems.length) return false;
+  if (!dotMenuItems.length) return <>{false}</>;
 
   if (isMediumDown) {
     return (
