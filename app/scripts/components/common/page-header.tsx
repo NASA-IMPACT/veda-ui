@@ -342,15 +342,28 @@ function PageHeader() {
   useEffect(() => {
     // Close global nav when media query changes.
     // NOTE: isMediumDown is returning document.body's width, not the whole window width
-    // which conflicts with how mediaquery decides the width. 
+    // which conflicts with how mediaquery decides the width.
     // JSX element susing isMediumDown is also protected with css logic because of this.
-    // ex. Look at GlobalNavActions 
+    // ex. Look at GlobalNavActions
     if (!isMediumDown) setGlobalNavRevealed(false);
   }, [isMediumDown]);
 
   const closeNavOnClick = useCallback(() => {
     setGlobalNavRevealed(false);
   }, []);
+
+  const userPagesMainNavItem = userPages.map((id) => {
+    const page = getOverride(id as any);
+    if (!(page?.data.mainNavItem && page.data.mainNavItem.navTitle)) return false;
+
+    return (
+      <li key={id}>
+        <GlobalMenuLink to={id} onClick={closeNavOnClick}>
+          {page.data.mainNavItem.navTitle }
+        </GlobalMenuLink>
+      </li>
+    );
+  });
 
   return (
     <PageHeaderSelf id={HEADER_ID}>
@@ -420,10 +433,7 @@ function PageHeader() {
                     </GlobalMenuLink>
                   </li>
                   <li>
-                    <GlobalMenuLink
-                      to={STORIES_PATH}
-                      onClick={closeNavOnClick}
-                    >
+                    <GlobalMenuLink to={STORIES_PATH} onClick={closeNavOnClick}>
                       {getString('stories').other}
                     </GlobalMenuLink>
                   </li>
@@ -451,6 +461,7 @@ function PageHeader() {
               <SectionsNavBlock>
                 <GlobalNavBlockTitle>Meta</GlobalNavBlockTitle>
                 <GlobalMenu>
+                  {userPagesMainNavItem}
                   <li>
                     <GlobalMenuLink to={ABOUT_PATH} onClick={closeNavOnClick}>
                       About
@@ -462,7 +473,7 @@ function PageHeader() {
                     </li>
                   )}
 
-                  <UserPagesMenu
+                  <UserPagesDotMenu
                     onItemClick={closeNavOnClick}
                     isMediumDown={isMediumDown}
                   />
@@ -478,25 +489,41 @@ function PageHeader() {
 
 export default PageHeader;
 
-function UserPagesMenu(props: {
+interface DotMenuItem {
+  id: any;
+  menu: string;
+}
+
+function UserPagesDotMenu(props: {
   isMediumDown: boolean;
   onItemClick: () => void;
 }) {
   const { isMediumDown, onItemClick } = props;
 
-  if (!userPages.length) return <>{false}</>;
+  const dotMenuItems = userPages.reduce((menuItems: DotMenuItem[], id: any) => {
+    const page = getOverride(id as any);
+    if (page?.data.menu)
+      // eslint-disable-next-line fp/no-mutating-methods
+      return menuItems.concat({
+        id,
+        menu: page.data.menu
+      });
+    return menuItems;
+  }, []);
+
+  if (!dotMenuItems.length) return <>{false}</>;
 
   if (isMediumDown) {
     return (
       <>
-        {userPages.map((id) => {
-          const page = getOverride(id as any);
+        {dotMenuItems.map((menuItem) => {
+          const page = getOverride(menuItem.id as any);
           if (!page?.data.menu) return false;
 
           return (
-            <li key={id}>
-              <GlobalMenuLink to={id} onClick={onItemClick}>
-                {page.data.menu}
+            <li key={menuItem.id}>
+              <GlobalMenuLink to={menuItem.id} onClick={onItemClick}>
+                {menuItem.menu}
               </GlobalMenuLink>
             </li>
           );

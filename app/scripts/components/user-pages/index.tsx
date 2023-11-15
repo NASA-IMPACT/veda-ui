@@ -18,7 +18,7 @@ function UserPages(props: { id: any }) {
 
   return (
     <PageMainContent>
-      <LayoutProps title='UserPages' />
+      <LayoutProps title={page.data.title} />
       <PageHero
         title={page.data.title || 'Page title is missing'}
         description={page.data.description}
