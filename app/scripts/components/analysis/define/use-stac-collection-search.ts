@@ -23,6 +23,8 @@ interface UseStacSearchProps {
 export type DatasetWithTimeseriesData = TimeseriesDataResult &
   DatasetLayer & { numberOfItems: number };
 
+const collectionEndpointSuffix = '/collections';
+
 export function useStacCollectionSearch({
   start,
   end,
@@ -35,23 +37,25 @@ export function useStacCollectionSearch({
     queryFn: async ({ signal }) => {
       const collectionUrlsFromDataSets = allAvailableDatasetsLayers
         .filter((dataset) => dataset.stacApiEndpoint)
-        .map((dataset) => `${dataset.stacApiEndpoint}/collections`)
+        .map(
+          (dataset) => `${dataset.stacApiEndpoint}${collectionEndpointSuffix}`
+        )
         .filter((value, index, array) => array.indexOf(value) === index);
 
       const collectionUrls = [
         ...collectionUrlsFromDataSets,
-        `${process.env.API_STAC_ENDPOINT}/collections`
+        `${process.env.API_STAC_ENDPOINT}${collectionEndpointSuffix}`
       ];
 
-      const colloectionRequests = collectionUrls.map((url: string) =>
+      const collectionRequests = collectionUrls.map((url: string) =>
         axios.get(url, { signal }).then((response) => {
           return response.data.collections.map((col) => ({
             ...col,
-            stacApiEndpoint: url.replace(/\/collections$/, '')
+            stacApiEndpoint: url.replace(collectionEndpointSuffix, '')
           }));
         })
       );
-      return axios.all(colloectionRequests).then(
+      return axios.all(collectionRequests).then(
         axios.spread((...responses) => {
           // Merge all responses into one array
           const mergedData = [].concat(...responses);
@@ -103,14 +107,14 @@ export function useStacCollectionSearch({
 
 function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
   const matchingCollectionIds = collectionData.reduce((acc, col) => {
-    const { id, stacEndpoint } = col;
+    const { id, stacApiEndpoint } = col;
 
     // Is is a dataset defined in the app?
     // If not, skip other calculations.
     const isAppDataset = allAvailableDatasetsLayers.some((l) => {
       const stacApiEndpointUsed =
         l.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
-      return l.stacCol === id && stacApiEndpointUsed === stacEndpoint;
+      return l.stacCol === id && stacApiEndpointUsed === stacApiEndpoint;
     });
 
     if (
