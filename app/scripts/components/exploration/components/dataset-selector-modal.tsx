@@ -238,7 +238,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
         sortDir
       })
         .flatMap((dataset) => dataset.layers)
-        .filter((d) => d.type !== 'vector' && !d.analysis?.exclude),
+        .filter((d) => !d.analysis?.exclude),
     [search, taxonomies, sortField, sortDir]
   );
 
