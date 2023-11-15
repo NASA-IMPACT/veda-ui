@@ -7,6 +7,8 @@ interface JotaiLocation {
   searchParams?: URLSearchParams;
 }
 
+export const CLEAR_LOCATION = Symbol('CLEAR_LOCATION');
+
 function atomWithDebouncedLocation() {
   // The locAtom is used to store the data in the url. However it can't be used as
   // the source of truth because there is a limit to how many url changes can be
@@ -26,6 +28,12 @@ function atomWithDebouncedLocation() {
       return get(locStorageAtom) ?? get(locAtom);
     },
     (get, set, updates) => {
+      // Escape hatch to clear the location, when we move off the page.
+      if (updates === CLEAR_LOCATION) {
+        set(locStorageAtom, null);
+        return;
+      }
+
       const newData =
         typeof updates === 'function' ? updates(get(urlAtom)) : updates;
 
@@ -41,7 +49,6 @@ function atomWithDebouncedLocation() {
   return urlAtom;
 }
 
-
 export const urlAtom = atomWithDebouncedLocation();
 
 /**
@@ -55,7 +62,7 @@ export const urlAtom = atomWithDebouncedLocation();
  *   const setter = useSetAtom(locAtom);
  *   setter(setUrlParam('page', '2'));
  * ```
- * 
+ *
  * @param name Name of the url parameter
  * @param value Value for the parameter
  */

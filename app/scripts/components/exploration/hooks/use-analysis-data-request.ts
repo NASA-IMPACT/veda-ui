@@ -47,7 +47,16 @@ export function useAnalysisController() {
         })),
       [] // eslint-disable-line react-hooks/exhaustive-deps -- setController is stable
     ),
-    getRunId: (id: string) => controller.runIds[id] ?? 0
+    getRunId: (id: string) => controller.runIds[id] ?? 0,
+    reset: useCallback(
+      () =>
+        setController(() => ({
+          isAnalyzing: false,
+          runIds: {},
+          isObsolete: false
+        })),
+      [] // eslint-disable-line react-hooks/exhaustive-deps -- setController is stable
+    ),
   };
 }
 
