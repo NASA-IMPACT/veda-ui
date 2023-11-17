@@ -115,7 +115,7 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
     return () => {
       controller.abort();
     };
-  }, [mapInstance, id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
+  }, [id, stacCol, stacApiEndpointToUse, onStatusChange]);
 
 
   //
