@@ -18,6 +18,8 @@ layers:
     stacCol: oco2-geos-l3-daily
     name: Gridded Daily OCO-2 Carbon Dioxide assimilated dataset
     type: zarr
+    analysis:
+      exclude: true
     description:
       "The OCO-2 mission provides the highest quality space-based XCO2 retrievals to date. However, the instrument data are characterized by large gaps in coverage due to OCO-2’s narrow 10-km ground track and an inability to see through clouds and thick aerosols. This global gridded dataset is produced using a data assimilation technique commonly referred to as state estimation within the geophysical literature. Data assimilation synthesizes simulations and observations, adjusting the state of atmospheric constituents like CO2 to reflect observed values, thus gap-filling observations when and where they are unavailable based on previous observations and short transport simulations by GEOS. Compared to other methods, data assimilation has the advantage that it makes estimates based on our collective scientific understanding, notably of the Earth’s carbon cycle and atmospheric transport. OCO-2 GEOS (Goddard Earth Observing System) Level 3 data are produced by ingesting OCO-2 L2 retrievals every 6 hours with GEOS CoDAS, a modeling and data assimilation system maintained by NASA’s Global Modeling and Assimilation Office (GMAO). GEOS CoDAS uses a high-performance computing implementation of the Gridpoint Statistical Interpolation approach for solving the state estimation problem. GSI finds the analyzed state that minimizes the three-dimensional variational (3D-Var) cost function formulation of the state estimation problem."
     zoomExtent:
