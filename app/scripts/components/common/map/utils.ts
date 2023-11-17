@@ -102,25 +102,47 @@ interface RequestQuickCacheParams {
   payload?: any;
   controller: AbortController;
 }
-export async function requestQuickCache({
+export function requestQuickCache<T>({
   url,
   payload,
   controller,
   method = 'post'
-}: RequestQuickCacheParams) {
-  const key = `${method}:${url}${JSON.stringify(payload)}`;
-
-  // No cache found, make request.
-  if (!quickCache.has(key)) {
-    const response = await axios({
-      url,
-      method,
-      data: payload,
-      signal: controller.signal
-    });
-    quickCache.set(key, response.data);
+}: RequestQuickCacheParams): Promise<T> {
+  if (controller.signal.aborted) {
+    return Promise.reject(controller.signal.reason);
   }
-  return quickCache.get(key);
+
+  // Using a complicated promise structure to be able to abort the request even
+  // for a synchronous cache hit.
+  return new Promise((resolve, reject) => {
+    const abortHandler = () => {
+      reject(controller.signal.reason);
+    };
+
+    const key = `${method}:${url}${JSON.stringify(payload)}`;
+    // Operation that will return the data.
+    const dataPromise = !quickCache.has(key)
+      ? axios({
+          url,
+          method,
+          data: payload,
+          signal: controller.signal
+        }).then((response) => response.data)
+      : Promise.resolve(quickCache.get(key));
+
+    // Run the promise.
+    dataPromise
+      .then((data) => {
+        quickCache.set(key, data);
+        resolve(data);
+      })
+      .catch((error) => reject(error))
+      .finally(() => {
+        controller.signal.removeEventListener('abort', abortHandler);
+      });
+
+    controller.signal.addEventListener('abort', abortHandler);
+  });
 }
 
 type Fn = (...args: any[]) => any;
@@ -186,14 +208,13 @@ export function toAoIid(drawId: string) {
   return drawId.slice(-6);
 }
 
-
 /**
  * Converts a MultiPolygon to a Feature Collection of polygons.
  *
  * @param feature MultiPolygon feature
- * 
+ *
  * @see combineFeatureCollection() for opposite
- * 
+ *
  * @returns Feature Collection of Polygons
  */
 export function multiPolygonToPolygons(feature: Feature<MultiPolygon>) {

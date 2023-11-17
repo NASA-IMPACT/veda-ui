@@ -52,7 +52,7 @@ export function ZarrTimeseries(props: ZarrTimeseriesProps) {
     async function load() {
       try {
         onStatusChange?.({ status: S_LOADING, id });
-        const data = await requestQuickCache({
+        const data = await requestQuickCache<any>({
           url: `${stacApiEndpointToUse}/collections/${stacCol}`,
           method: 'GET',
           controller

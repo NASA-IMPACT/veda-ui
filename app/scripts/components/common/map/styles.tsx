@@ -116,15 +116,12 @@ export function Styles({
 
   const [style, setStyle] = useState<Style | undefined>();
 
-  const updateStyle = useCallback(
-    (params: GeneratorStyleParams) => {
-      setStylesData((prevStyle) => ({
-        ...prevStyle,
-        [params.generatorId]: params
-      }));
-    },
-    [setStylesData]
-  );
+  const updateStyle = useCallback((params: GeneratorStyleParams) => {
+    setStylesData((prevStyle) => ({
+      ...prevStyle,
+      [params.generatorId]: params
+    }));
+  }, []);
 
   useEffect(() => {
     const style = generateStyle(stylesData);

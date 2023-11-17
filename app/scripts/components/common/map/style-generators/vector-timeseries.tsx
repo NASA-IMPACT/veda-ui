@@ -81,7 +81,7 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
     async function load() {
       try {
         onStatusChange?.({ status: S_LOADING, id });
-        const data = await requestQuickCache({
+        const data = await requestQuickCache<any>({
           url: `${stacApiEndpointToUse}/collections/${stacCol}`,
           method: 'GET',
           controller
@@ -90,7 +90,7 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
         const endpoint = data.links.find((l) => l.rel === 'external').href;
         setFeaturesApiEndpoint(endpoint);
 
-        const featuresData = await requestQuickCache({
+        const featuresData = await requestQuickCache<any>({
           url: endpoint,
           method: 'GET',
           controller
