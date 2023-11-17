@@ -95,6 +95,13 @@ export async function requestDatasetTimeseriesData({
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
 
+  if (datasetData.type !== 'raster') {
+    throw new ExtendedError(
+      'Analysis is only supported for raster datasets',
+      'ANALYSIS_NOT_SUPPORTED'
+    );
+  }
+
   const id = datasetData.id;
 
   onProgress({

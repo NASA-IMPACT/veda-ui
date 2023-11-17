@@ -118,8 +118,22 @@ export function DatasetTrackError(props: {
         <TrackMessage isError>
           <p>
             Analysis is limited to {MAX_QUERY_NUM} data points. Your selection
-            includes {error.details?.assetCount} points. Please select a shorter time range.
+            includes {error.details?.assetCount} points. Please select a shorter
+            time range.
           </p>
+        </TrackMessage>
+      </>
+    );
+  }
+  if (
+    error instanceof ExtendedError &&
+    error.code === 'ANALYSIS_NOT_SUPPORTED'
+  ) {
+    return (
+      <>
+        {patternContent}
+        <TrackMessage isError>
+          <p>Analysis is not supported for this dataset.</p>
         </TrackMessage>
       </>
     );
