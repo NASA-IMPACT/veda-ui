@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useAtomValue } from 'jotai';
+import React, { useCallback, useState } from 'react';
+import { useAtom, useAtomValue } from 'jotai';
 
 import { useStacMetadataOnDatasets } from '../../hooks/use-stac-metadata-datasets';
 import { selectedCompareDateAtom, selectedDateAtom } from '../../atoms/dates';
@@ -36,7 +36,7 @@ export function ExplorationMap() {
 
   useStacMetadataOnDatasets();
 
-  const datasets = useAtomValue(timelineDatasetsAtom);
+  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
   const selectedDay = useAtomValue(selectedDateAtom);
   const selectedCompareDay = useAtomValue(selectedCompareDateAtom);
 
@@ -53,8 +53,41 @@ export function ExplorationMap() {
     .slice()
     .reverse();
 
+  const onStyleUpdate = useCallback(
+    (style) => {
+      const updatedDatasets = datasets.map((dataset) => {
+        // Skip non loaded datasets
+        if (dataset.status !== TimelineDatasetStatus.SUCCESS) return dataset;
+
+        // Check if there's layer information for this dataset.
+        const layerMetadata = style.layers.find(
+          (l) => l.metadata?.id === dataset.data.id
+        );
+
+        // Skip if no metadata.
+        if (!layerMetadata) return dataset;
+
+        const currentMeta = dataset.meta ?? {};
+
+        return {
+          ...dataset,
+          meta: {
+            ...currentMeta,
+            tileUrls: {
+              wmtsTileUrl: layerMetadata.metadata.wmtsTileUrl,
+              xyzTileUrl: layerMetadata.metadata.xyzTileUrl
+            }
+          }
+        };
+      });
+
+      setDatasets(updatedDatasets);
+    },
+    [datasets, setDatasets]
+  );
+
   return (
-    <Map id='exploration' projection={projection}>
+    <Map id='exploration' projection={projection} onStyleUpdate={onStyleUpdate}>
       {/* Map layers */}
       <Basemap
         basemapStyleId={mapBasemapId}

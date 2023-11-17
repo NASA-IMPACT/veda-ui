@@ -96,6 +96,10 @@ export interface TimelineDatasetSettings {
   analysisMetrics?: DataMetric[];
 }
 
+// Any sort of meta information the dataset like:
+// Tile endpoints for the layer given the current map view.
+type TimelineDatasetMeta = Record<string, any>;
+
 // TimelineDataset type discriminants
 export interface TimelineDatasetIdle {
   status: TimelineDatasetStatus.IDLE;
@@ -104,6 +108,7 @@ export interface TimelineDatasetIdle {
   // User controlled settings like visibility, opacity.
   settings: TimelineDatasetSettings;
   analysis: TimelineDatasetAnalysisIdle;
+  meta?: TimelineDatasetMeta;
 }
 export interface TimelineDatasetLoading {
   status: TimelineDatasetStatus.LOADING;
@@ -112,6 +117,7 @@ export interface TimelineDatasetLoading {
   // User controlled settings like visibility, opacity.
   settings: TimelineDatasetSettings;
   analysis: TimelineDatasetAnalysisIdle;
+  meta?: TimelineDatasetMeta;
 }
 export interface TimelineDatasetError {
   status: TimelineDatasetStatus.ERROR;
@@ -120,6 +126,7 @@ export interface TimelineDatasetError {
   // User controlled settings like visibility, opacity.
   settings: TimelineDatasetSettings;
   analysis: TimelineDatasetAnalysisIdle;
+  meta?: TimelineDatasetMeta;
 }
 export interface TimelineDatasetSuccess {
   status: TimelineDatasetStatus.SUCCESS;
@@ -128,6 +135,7 @@ export interface TimelineDatasetSuccess {
   // User controlled settings like visibility, opacity.
   settings: TimelineDatasetSettings;
   analysis: TimelineDatasetAnalysis;
+  meta?: TimelineDatasetMeta;
 }
 
 export type TimelineDataset =

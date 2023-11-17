@@ -18,7 +18,7 @@ import useDimensions from 'react-cool-dimensions';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import MapboxStyleOverride from './mapbox-style-override';
-import { Styles } from './styles';
+import { ExtendedStyle, Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
 import useMaps, { useMapsContext } from './hooks/use-maps';
@@ -78,11 +78,14 @@ const MapsContainer = styled.div`
   }
 `;
 
-type MapsProps = Pick<MapsContextWrapperProps, 'projection'> & {
+type MapsProps = Pick<
+  MapsContextWrapperProps,
+  'projection' | 'onStyleUpdate'
+> & {
   children: ReactNode;
 };
 
-function Maps({ children, projection }: MapsProps) {
+function Maps({ children, projection, onStyleUpdate }: MapsProps) {
   // Instantiate MGL Compare, if compare is enabled
   useMapCompare();
 
@@ -135,7 +138,7 @@ function Maps({ children, projection }: MapsProps) {
 
   return (
     <MapsContainer id={containerId} ref={observe}>
-      <Styles>
+      <Styles onStyleUpdate={onStyleUpdate}>
         {generators}
         <MapComponent controls={controls} projection={projection} />
       </Styles>
@@ -157,6 +160,7 @@ export interface MapsContextWrapperProps {
   children: ReactNode;
   id: string;
   projection?: ProjectionOptions;
+  onStyleUpdate?: (style: ExtendedStyle) => void;
 }
 
 export default function MapsContextWrapper(props: MapsContextWrapperProps) {
