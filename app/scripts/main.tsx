@@ -117,9 +117,9 @@ function Root() {
 
                 <Route path='development' element={<Development />} />
 
-                {useNewExploration && (
+                {/* {useNewExploration && ( */}
                   <Route path='exploration' element={<Exploration />} />
-                )}
+                {/* )} */}
 
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />
