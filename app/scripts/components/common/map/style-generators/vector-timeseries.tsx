@@ -1,54 +1,64 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTheme } from 'styled-components';
 import qs from 'qs';
 import {
-  Map as MapboxMap,
   AnyLayer,
   AnySourceImpl,
-  LngLatLike,
   VectorSourceImpl
 } from 'mapbox-gl';
-import { Feature } from 'geojson';
+import { useTheme } from 'styled-components';
 import { endOfDay, startOfDay } from 'date-fns';
 import centroid from '@turf/centroid';
+import { LngLatLike } from 'react-map-gl';
+import { Feature } from 'geojson';
 
-import { requestQuickCache, useFitBbox, useLayerInteraction } from './utils';
-import { useMapStyle } from './styles';
-import { useCustomMarker } from './custom-marker';
+import { BaseGeneratorParams } from '../types';
+import useMapStyle from '../hooks/use-map-style';
+import {
+  requestQuickCache
+} from '../utils';
+import useFitBbox from '../hooks/use-fit-bbox';
+import useLayerInteraction from '../hooks/use-layer-interaction';
+import { MARKER_LAYOUT } from '../hooks/use-custom-marker';
+import useMaps from '../hooks/use-maps';
+import useGeneratorParams from '../hooks/use-generator-params';
 
-import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
+import {
+  ActionStatus,
+  S_FAILED,
+  S_LOADING,
+  S_SUCCEEDED
+} from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
 
-export interface MapLayerVectorTimeseriesProps {
+export interface VectorTimeseriesProps extends BaseGeneratorParams {
   id: string;
   stacCol: string;
-  stacApiEndpoint?: string;
-  date?: Date;
-  mapInstance: MapboxMap;
+  date: Date;
   sourceParams?: Record<string, any>;
   zoomExtent?: number[];
   bounds?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  isHidden?: boolean;
-  idSuffix?: string;
   isPositionSet?: boolean;
+  stacApiEndpoint?: string;
 }
 
-export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
+
+export function VectorTimeseries(props: VectorTimeseriesProps) {
   const {
     id,
     stacCol,
-    stacApiEndpoint,
     date,
-    mapInstance,
     sourceParams,
     zoomExtent,
     bounds,
     onStatusChange,
-    isHidden,
-    idSuffix = '',
-    isPositionSet
+    isPositionSet,
+    hidden,
+    opacity,
+    stacApiEndpoint
   } = props;
+
+  const { current: mapInstance } = useMaps();
 
   const theme = useTheme();
   const { updateStyle } = useMapStyle();
@@ -56,11 +66,11 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   const [featuresBbox, setFeaturesBbox] =
     useState<[number, number, number, number]>();
 
-  const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
+    const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
+  const generatorId = `vector-timeseries-${id}`;
 
-  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-
-  const generatorId = 'vector-timeseries' + idSuffix;
+  const stacApiEndpointToUse =
+    stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
 
   //
   // Get the tiles url
@@ -107,15 +117,17 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     };
   }, [mapInstance, id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
 
-  const markerLayout = useCustomMarker(mapInstance);
 
   //
-  // Generate Mapbox GL layers and sources for raster timeseries
+  // Generate Mapbox GL layers and sources for vector timeseries
   //
   const haveSourceParamsChanged = useMemo(
     () => JSON.stringify(sourceParams),
     [sourceParams]
   );
+
+  const generatorParams = useGeneratorParams(props);
+
   useEffect(() => {
     if (!date || !featuresApiEndpoint) return;
 
@@ -126,6 +138,8 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
       ...sourceParams,
       datetime: `${start}/${end}`
     });
+
+    const vectorOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
     const sources: Record<string, AnySourceImpl> = {
       [id]: {
@@ -140,10 +154,11 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
         type: 'line',
         source: id,
         'source-layer': 'default',
-        layout: {
-          visibility: isHidden ? 'none' : 'visible'
-        },
         paint: {
+          'line-opacity':  hidden ? 0 : vectorOpacity,
+          'line-opacity-transition': {
+            duration: 320
+          },
           'line-color': theme.color?.['danger-300'],
           'line-width': [
             'interpolate',
@@ -168,10 +183,11 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
         type: 'line',
         source: id,
         'source-layer': 'default',
-        layout: {
-          visibility: isHidden ? 'none' : 'visible'
-        },
         paint: {
+          'line-opacity':  hidden ? 0 : vectorOpacity,
+          'line-opacity-transition': {
+            duration: 320
+          },
           'line-color': theme.color?.infographicB,
           'line-width': [
             'interpolate',
@@ -194,12 +210,12 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
         type: 'fill',
         source: id,
         'source-layer': 'default',
-        layout: {
-          visibility: isHidden ? 'none' : 'visible'
-        },
         paint: {
+          'fill-opacity':  hidden ? 0 : Math.min(vectorOpacity, 0.8),
+          'fill-opacity-transition': {
+            duration: 320
+          },
           'fill-color': theme.color?.infographicB,
-          'fill-opacity': 0.8
         },
         filter: ['==', '$type', 'Polygon'],
         minzoom: minZoom,
@@ -214,8 +230,8 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
             source: id,
             'source-layer': 'default',
             layout: {
-              ...(markerLayout as any),
-              visibility: isHidden ? 'none' : 'visible'
+              ...(MARKER_LAYOUT as any),
+              visibility: hidden ? 'none' : 'visible'
             },
             paint: {
               'icon-color': theme.color?.infographicB,
@@ -233,7 +249,8 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     updateStyle({
       generatorId,
       sources,
-      layers
+      layers,
+      params: generatorParams
     });
     // sourceParams not included, but using a stringified version of it to
     // detect changes (haveSourceParamsChanged)
@@ -245,7 +262,9 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
     featuresApiEndpoint,
     minZoom,
     maxZoom,
-    isHidden,
+    hidden,
+    opacity,
+    generatorParams,
     haveSourceParamsChanged,
     generatorId
   ]);
@@ -276,7 +295,7 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
       const center = centroid(extractedFeat).geometry.coordinates as LngLatLike;
 
       // Zoom past the min zoom centering on the clicked feature.
-      mapInstance.flyTo({
+      mapInstance?.flyTo({
         zoom: minZoom,
         center
       });
@@ -285,14 +304,13 @@ export function MapLayerVectorTimeseries(props: MapLayerVectorTimeseriesProps) {
   );
   useLayerInteraction({
     layerId: `${id}-points`,
-    mapInstance,
     onClick: onPointsClick
   });
 
   //
   // FitBounds when needed
   //
-  useFitBbox(mapInstance, !!isPositionSet, bounds, featuresBbox);
+  useFitBbox(!!isPositionSet, bounds, featuresBbox);
 
   return null;
 }

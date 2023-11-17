@@ -33,7 +33,7 @@ export const allDatasets = Object.values(datasets)
 
 export const datasetLayers = Object.values(datasets)
   .flatMap((dataset) => dataset!.data.layers)
-  .filter((d) => d.type !== 'vector' && !d.analysis?.exclude);
+  .filter((d) => !d.analysis?.exclude);
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.

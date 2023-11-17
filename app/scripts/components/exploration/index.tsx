@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styled from 'styled-components';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { TourProvider } from '@reactour/tour';
 import { themeVal } from '@devseed-ui/theme-provider';
 
@@ -11,6 +11,8 @@ import { ExplorationMap } from './components/map';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { timelineDatasetsAtom } from './atoms/datasets';
 import { PopoverTourComponent, TourManager } from './tour-manager';
+import { useAnalysisController } from './hooks/use-analysis-data-request';
+import { CLEAR_LOCATION, urlAtom } from './atoms/url';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -62,7 +64,7 @@ const tourProviderStyles = {
   popover: (base) => ({
     ...base,
     padding: '0',
-    background: 'none',
+    background: 'none'
   })
 };
 
@@ -74,6 +76,16 @@ function Exploration() {
 
   const openModal = useCallback(() => setDatasetModalRevealed(true), []);
   const closeModal = useCallback(() => setDatasetModalRevealed(false), []);
+
+  const setUrl = useSetAtom(urlAtom);
+  const { reset: resetAnalysisController } = useAnalysisController();
+  // Reset atoms when entering the page.
+  useEffect(() => {
+    return () => {
+      resetAnalysisController();
+      setUrl(CLEAR_LOCATION);
+    };
+  }, []);
 
   return (
     <TourProvider

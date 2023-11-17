@@ -62,6 +62,17 @@ const introTourSteps = [
     content: 'Alternatively you can also select a date through the date picker.'
   },
   {
+    title: 'Compare dates',
+    selector: "[data-tour='compare-date']",
+    content: () => (
+      <>
+        You can also select a second date to compare with the first one.
+        <br />
+        The map will show a slider allowing you to view the differences.
+      </>
+    )
+  },
+  {
     title: 'Timeline',
     selector: "[data-tour='timeline-interaction-rect']",
     content: () => (
@@ -92,8 +103,8 @@ const analysisTourSteps = [
     selector: "[data-tour='analysis-message']",
     content: () => (
       <>
-        You can now calculate a time series of zonal
-        statistics for your area of interest.
+        You can now calculate a time series of zonal statistics for your area of
+        interest.
       </>
     ),
     stepInteraction: false
@@ -103,10 +114,11 @@ const analysisTourSteps = [
     selector: "[data-tour='analysis-toolbar']",
     content: () => (
       <>
-        Refine the date range to analyze with the data pickers 
-        or handles on the timeline.
+        Refine the date range to analyze with the data pickers or handles on the
+        timeline.
         <br />
-        Once you&apos;re happy, press the analyze button to start the calculation.
+        Once you&apos;re happy, press the analyze button to start the
+        calculation.
       </>
     ),
     stepInteraction: false

@@ -73,10 +73,12 @@ function reconcileQueryDataWithDataset(
 async function fetchStacDatasetById(
   dataset: TimelineDataset
 ): Promise<StacDatasetData> {
-  const { type, stacCol } = dataset.data;
+  const { type, stacCol, stacApiEndpoint } = dataset.data;
+
+  const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
 
   const { data } = await axios.get(
-    `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`
+    `${stacApiEndpointToUse}/collections/${stacCol}`
   );
 
   const commonTimeseriesParams = {

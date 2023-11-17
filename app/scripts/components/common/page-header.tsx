@@ -30,8 +30,8 @@ import { variableGlsp } from '$styles/variable-utils';
 import {
   STORIES_PATH,
   DATASETS_PATH,
-  ANALYSIS_PATH,
-  ABOUT_PATH
+  ABOUT_PATH,
+  EXPLORATION_PATH
 } from '$utils/routes';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
@@ -413,10 +413,10 @@ function PageHeader() {
                   </li>
                   <li>
                     <GlobalMenuLink
-                      to={ANALYSIS_PATH}
+                      to={EXPLORATION_PATH}
                       onClick={closeNavOnClick}
                     >
-                      Data Analysis
+                      Exploration
                     </GlobalMenuLink>
                   </li>
                   <li>

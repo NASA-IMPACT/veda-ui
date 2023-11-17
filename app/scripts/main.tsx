@@ -26,11 +26,7 @@ const StoriesHub = lazy(() => import('$components/stories/hub'));
 const StoriesSingle = lazy(() => import('$components/stories/single'));
 
 const DataCatalog = lazy(() => import('$components/data-catalog'));
-const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
-
-const Analysis = lazy(() => import('$components/analysis/define'));
-const AnalysisResults = lazy(() => import('$components/analysis/results'));
 
 const Exploration = lazy(() => import('$components/exploration'));
 
@@ -45,8 +41,6 @@ const DevseedUiThemeProvider = DsTp as any;
 import { ReactQueryProvider } from '$context/react-query';
 import {
   ABOUT_PATH,
-  ANALYSIS_PATH,
-  ANALYSIS_RESULTS_PATH,
   DATASETS_PATH,
   STORIES_PATH
 } from '$utils/routes';
@@ -93,19 +87,10 @@ function Root() {
                   path={`${DATASETS_PATH}/:datasetId`}
                   element={<DatasetsOverview />}
                 />
-                <Route
-                  path={`${DATASETS_PATH}/:datasetId/explore`}
-                  element={<DatasetsExplore />}
-                />
                 <Route path={STORIES_PATH} element={<StoriesHub />} />
                 <Route
                   path={`${STORIES_PATH}/:storyId`}
                   element={<StoriesSingle />}
-                />
-                <Route path={ANALYSIS_PATH} element={<Analysis />} />
-                <Route
-                  path={ANALYSIS_RESULTS_PATH}
-                  element={<AnalysisResults />}
                 />
                 <Route path='development' element={<Development />} />
 

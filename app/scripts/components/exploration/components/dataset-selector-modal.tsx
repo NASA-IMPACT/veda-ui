@@ -51,6 +51,7 @@ import {
 } from '$components/common/browse-controls/use-browse-controls';
 import { prepareDatasets, sortOptions } from '$components/data-catalog';
 import Pluralize from '$utils/pluralize';
+import TextHighlight from '$components/common/text-highlight';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -214,8 +215,13 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const search = controlVars.search ?? '';
 
   // Clear filters when the modal is revealed.
+  const firstRevealRef = React.useRef(true);
   useEffect(() => {
     if (revealed) {
+      if (firstRevealRef.current) {
+        firstRevealRef.current = false;
+        return;
+      }
       onAction(Actions.CLEAR);
     }
   }, [revealed]);
@@ -232,7 +238,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
         sortDir
       })
         .flatMap((dataset) => dataset.layers)
-        .filter((d) => d.type !== 'vector' && !d.analysis?.exclude),
+        .filter((d) => !d.analysis?.exclude),
     [search, taxonomies, sortField, sortDir]
   );
 
@@ -299,6 +305,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
                   return (
                     <li key={datasetLayer.id}>
                       <DatasetLayerCard
+                        searchTerm={search}
                         layer={datasetLayer}
                         parent={parent}
                         selected={selectedIds.includes(datasetLayer.id)}
@@ -344,12 +351,13 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
 interface DatasetLayerProps {
   parent: DatasetData;
   layer: DatasetLayer;
+  searchTerm: string;
   selected: boolean;
   onDatasetClick: () => void;
 }
 
 function DatasetLayerCard(props: DatasetLayerProps) {
-  const { parent, layer, onDatasetClick, selected } = props;
+  const { parent, layer, onDatasetClick, selected, searchTerm } = props;
 
   const topics = getTaxonomy(parent, TAXONOMY_TOPICS)?.values;
 
@@ -371,8 +379,19 @@ function DatasetLayerCard(props: DatasetLayerProps) {
         e.preventDefault();
         onDatasetClick();
       }}
-      title={layer.name}
-      description={`From: ${parent.name}`}
+      title={
+        <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
+          {layer.name}
+        </TextHighlight>
+      }
+      description={
+        <>
+          From:{' '}
+          <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
+            {parent.name}
+          </TextHighlight>
+        </>
+      }
       imgSrc={parent.media?.src}
       imgAlt={parent.media?.alt}
       footerContent={
@@ -382,7 +401,14 @@ function DatasetLayerCard(props: DatasetLayerProps) {
               <dt>Topics</dt>
               {topics.map((t) => (
                 <dd key={t.id}>
-                  <Pill variation='achromic'>{t.name}</Pill>
+                  <Pill variation='achromic'>
+                    <TextHighlight
+                      value={searchTerm}
+                      disabled={searchTerm.length < 3}
+                    >
+                      {t.name}
+                    </TextHighlight>
+                  </Pill>
                 </dd>
               ))}
             </CardTopicsList>
