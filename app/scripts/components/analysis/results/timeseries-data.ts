@@ -267,6 +267,8 @@ async function requestTimeseries({
       }
     });
 
+    const analysisParams = layersBase.layer.analysis?.params;
+
     const layerStatistics = await Promise.all(
       assets.map(async ({ date, url }) => {
         const statistics = await queryClient.fetchQuery(
@@ -274,10 +276,10 @@ async function requestTimeseries({
           async ({ signal }) => {
             return concurrencyManager.queue(async () => {
               const { data } = await axios.post(
-                `${process.env.API_RASTER_ENDPOINT}/cog/statistics?url=${url}`,
+                `${process.env.API_RASTER_ENDPOINT}/cog/statistics`,
                 // Making a request with a FC causes a 500 (as of 2023/01/20)
                 combineFeatureCollection(aoi),
-                { signal }
+                { params: { ...analysisParams, url }, signal }
               );
               return {
                 date,
