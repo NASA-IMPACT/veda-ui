@@ -468,7 +468,15 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       minZoom,
       points,
       haveSourceParamsChanged,
-      generatorParams
+      generatorParams,
+      // generatorParams includes hidden and opacity
+      // hidden,
+      // opacity,
+      // generatorId, // - dependent on id
+      // sourceParams, // tracked by haveSourceParamsChanged
+      // Theme is stable
+      // theme.color?.base,
+      // theme.color?.primary
     ]
   );
 

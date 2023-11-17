@@ -12,6 +12,7 @@ import {
 import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
 import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
+import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 
 interface LayerProps {
   id: string;
@@ -46,34 +47,52 @@ export function Layer(props: LayerProps) {
     return resolveConfigFunctions(dataset.data, bag);
   }, [dataset, relevantDate]);
 
-  if (dataset.data.type === 'vector') {
-    return (
-      <VectorTimeseries
-        id={layerId}
-        stacCol={dataset.data.stacCol}
-        stacApiEndpoint={dataset.data.stacApiEndpoint}
-        date={relevantDate}
-        zoomExtent={params.zoomExtent}
-        sourceParams={params.sourceParams}
-        generatorOrder={order}
-        hidden={!isVisible}
-        opacity={opacity}
-      />
-    );
-  } else {
-    return (
-      <RasterTimeseries
-        id={layerId}
-        stacCol={dataset.data.stacCol}
-        stacApiEndpoint={dataset.data.stacApiEndpoint}
-        tileApiEndpoint={dataset.data.tileApiEndpoint}
-        date={relevantDate}
-        zoomExtent={params.zoomExtent}
-        sourceParams={params.sourceParams}
-        generatorOrder={order}
-        hidden={!isVisible}
-        opacity={opacity}
-      />
-    );
+  switch (dataset.data.type) {
+    case 'vector':
+      return (
+        <VectorTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          date={relevantDate}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          hidden={!isVisible}
+          opacity={opacity}
+        />
+      );
+    case 'zarr':
+      return (
+        <ZarrTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          tileApiEndpoint={dataset.data.tileApiEndpoint}
+          date={relevantDate}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          hidden={!isVisible}
+          opacity={opacity}
+        />
+      );
+    case 'raster':
+      return (
+        <RasterTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          tileApiEndpoint={dataset.data.tileApiEndpoint}
+          date={relevantDate}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          hidden={!isVisible}
+          opacity={opacity}
+        />
+      );
+    default:
+      throw new Error(`No layer generator for type: ${dataset.data.type}`);
   }
 }
