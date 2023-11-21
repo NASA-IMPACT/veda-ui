@@ -65,7 +65,7 @@ declare module 'veda' {
     analysis?: {
       metrics: string[];
       exclude: boolean;
-      params?: Record<string, any>;
+      sourceParams?: Record<string, any>;
     };
   }
 

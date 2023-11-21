@@ -267,7 +267,7 @@ async function requestTimeseries({
       }
     });
 
-    const analysisParams = layersBase.layer.analysis?.params;
+    const analysisParams = layersBase.layer.analysis?.sourceParams;
 
     const layerStatistics = await Promise.all(
       assets.map(async ({ date, url }) => {
