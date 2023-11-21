@@ -49,8 +49,8 @@ export function TileUrlModal(props: {
       content={
         <Form>
           {[
-            { label: 'XYZ Tile Url', value: tileUrls?.xyzTileUrl },
-            { label: 'WMTS Tile Url', value: tileUrls?.wmtsTileUrl }
+            { label: 'XYZ Tile URL', value: tileUrls?.xyzTileUrl },
+            { label: 'WMTS Tile URL', value: tileUrls?.wmtsTileUrl }
           ].map((tileUrl) =>
             tileUrl.value ? (
               <FormGroupStructure

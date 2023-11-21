@@ -76,7 +76,7 @@ export default function DatasetOptions(props: DatasetOptionsProps) {
           <li>
             <Tip
               disabled={!!dataset.meta?.tileUrls}
-              content='Current dataset does not offer tile urls'
+              content='This dataset does not offer tile URLs'
               placement='left'
             >
               <TileModalButton
@@ -84,7 +84,7 @@ export default function DatasetOptions(props: DatasetOptionsProps) {
                 type='button'
                 onClick={() => setTileModalRevealed(true)}
               >
-                <CollecticonMap title='Open tile url options' /> View tile urls
+                <CollecticonMap title='Open tile URL options' /> Load into GIS
               </TileModalButton>
             </Tip>
           </li>
