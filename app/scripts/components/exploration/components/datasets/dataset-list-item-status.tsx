@@ -111,7 +111,10 @@ export function DatasetTrackError(props: {
     </TrackError>
   );
 
-  if (error instanceof ExtendedError && error.code === 'TOO_MANY_ASSETS') {
+  if (
+    error instanceof ExtendedError &&
+    error.code === 'ANALYSIS_TOO_MANY_ASSETS'
+  ) {
     return (
       <>
         {patternContent}
@@ -125,6 +128,7 @@ export function DatasetTrackError(props: {
       </>
     );
   }
+
   if (
     error instanceof ExtendedError &&
     error.code === 'ANALYSIS_NOT_SUPPORTED'
@@ -132,8 +136,19 @@ export function DatasetTrackError(props: {
     return (
       <>
         {patternContent}
-        <TrackMessage isError>
+        <TrackMessage>
           <p>Analysis is not supported for this dataset.</p>
+        </TrackMessage>
+      </>
+    );
+  }
+
+  if (error instanceof ExtendedError && error.code === 'ANALYSIS_NO_DATA') {
+    return (
+      <>
+        {patternContent}
+        <TrackMessage>
+          <p>No data for the selected time range and area of interest.</p>
         </TrackMessage>
       </>
     );
