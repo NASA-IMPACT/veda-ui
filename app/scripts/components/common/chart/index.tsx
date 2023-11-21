@@ -233,7 +233,7 @@ export default forwardRef<ChartWrapperRef, RLineChartProps>(
                 className='label-y'
                 value={yAxisLabel}
                 angle={-90}
-                position='left'
+                position='insideLeft'
               />
             </YAxis>
             {renderHighlight && (
