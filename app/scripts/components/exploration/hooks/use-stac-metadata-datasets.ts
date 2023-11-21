@@ -97,7 +97,7 @@ async function fetchStacDatasetById(
       domain: featuresApiData.extent.temporal.interval[0]
     };
   } else {
-    const domain = data.summaries
+    const domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
