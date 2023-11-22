@@ -30,10 +30,15 @@ export default function useThemedControl(
     }
 
     onRemove() {
-      // Cleanup if necessary
-      if (elementRef.current) {
-        rootRef.current?.unmount();
-      }
+      // Cleanup if necessary.
+      // Defer to next tick.
+      setTimeout(() => {
+        if (elementRef.current) {
+          rootRef.current?.unmount();
+          rootRef.current = null;
+        }
+
+      }, 1);
     }
   }
 
@@ -45,6 +50,8 @@ export default function useThemedControl(
       );
     }
   }, [renderFn, theme]);
+
   useControl(() => new ThemedControl(), opts);
+
   return null;
 }
