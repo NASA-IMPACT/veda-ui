@@ -24,6 +24,10 @@ export const selectedDateAtom = atomWithUrlValueStability<Date | null>({
   initialValue: hydrateDate(initialParams.get('date')),
   urlParam: 'date',
   hydrate: hydrateDate,
+  areEqual(prev, next) {
+    if (!prev || !next) return prev === next;
+    return prev.getTime() === next.getTime();
+  },
   dehydrate: (date) => {
     return date?.toISOString() ?? '';
   }
@@ -34,6 +38,10 @@ export const selectedCompareDateAtom = atomWithUrlValueStability<Date | null>({
   initialValue: hydrateDate(initialParams.get('dateCompare')),
   urlParam: 'dateCompare',
   hydrate: hydrateDate,
+  areEqual(prev, next) {
+    if (!prev || !next) return prev === next;
+    return prev.getTime() === next.getTime();
+  },
   dehydrate: (date) => {
     return date?.toISOString() ?? '';
   }
@@ -57,6 +65,12 @@ export const selectedIntervalAtom = atomWithUrlValueStability<DateRange | null>(
     initialValue: hydrateRange(initialParams.get('dateRange')),
     urlParam: 'dateRange',
     hydrate: hydrateRange,
+    areEqual(prev, next) {
+      if (!prev || !next) return prev === next;
+
+      return prev.start.getTime() === next.start.getTime() &&
+        prev.end.getTime() === next.end.getTime();
+    },
     dehydrate: (range) => {
       return range
         ? `${range.start.toISOString()}|${range.end.toISOString()}`
