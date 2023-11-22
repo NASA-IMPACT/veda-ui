@@ -213,6 +213,8 @@ Configuration options for the analysis of the dataset layer.
 
 ```yaml
 metrics: string[]
+sourceParams:
+  [key]: value
 exclude: boolean
 ```
 
@@ -225,7 +227,11 @@ Available metrics:
 - max (Max)
 - std (Standard Deviation)
 - median (Median)
-- 
+
+**analysis.sourceParams** 
+`object`
+Parameters to be appended to the `/statistics` endpoint as query parameters. Check [Titler documentations's /statistics POST request section](https://developmentseed.org/titiler/endpoints/cog/#statistics) to see which parameter is available. 
+
 **analysis.exclude**  
 `boolean`  
 Controls whether this layer should be excluded from the analysis page. If set to `true` the layer will not be available for analysis.
