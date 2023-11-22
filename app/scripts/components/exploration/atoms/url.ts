@@ -68,7 +68,14 @@ export const urlAtom = atomWithDebouncedLocation();
  */
 export function setUrlParam(name: string, value: string) {
   return (prev) => {
-    const searchParams = prev.searchParams ?? new URLSearchParams();
+    // Start from what's on the url because another atom might have updated it.
+    const searchParams = new URLSearchParams(window.location.search);
+    const prevSearchParams = prev.searchParams ?? new URLSearchParams();
+
+    prevSearchParams.forEach((value, name) => {
+      searchParams.set(name, value);
+    });
+
     searchParams.set(name, value);
 
     return { ...prev, searchParams };

@@ -11,7 +11,14 @@ const aoisSerialized = atom(
   (get) => get(aoisAtom).searchParams?.get('aois'),
   (get, set, aois) => {
     set(aoisAtom, (prev) => {
-      const searchParams = prev.searchParams ?? new URLSearchParams();
+      // Start from what's on the url because another atom might have updated it.
+      const searchParams = new URLSearchParams(window.location.search);
+      const prevSearchParams = prev.searchParams ?? new URLSearchParams();
+  
+      prevSearchParams.forEach((value, name) => {
+        searchParams.set(name, value);
+      });
+  
       searchParams.set('aois', aois as string);
 
       return { ...prev, searchParams };
