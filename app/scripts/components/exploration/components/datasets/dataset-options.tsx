@@ -48,6 +48,7 @@ export default function DatasetOptions(props: DatasetOptionsProps) {
     <>
       <Dropdown
         alignment='right'
+        direction='up'
         triggerElement={(props) => (
           <Button
             variation='base-text'

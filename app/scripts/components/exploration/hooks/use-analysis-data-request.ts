@@ -56,7 +56,7 @@ export function useAnalysisController() {
           isObsolete: false
         })),
       [] // eslint-disable-line react-hooks/exhaustive-deps -- setController is stable
-    ),
+    )
   };
 }
 
@@ -92,6 +92,7 @@ export function useAnalysisDataRequest({
 
   useEffect(() => {
     if (
+      !isAnalyzing ||
       datasetStatus !== TimelineDatasetStatus.SUCCESS ||
       !selectedInterval ||
       !selectedFeatures.length ||
@@ -124,5 +125,5 @@ export function useAnalysisDataRequest({
     // when they enter the analysis. It is certain that when this effect runs
     // the other values will be up to date. Adding all dependencies would cause
     // the hook to continuously run.
-  }, [analysisRunId, datasetStatus]);
+  }, [analysisRunId, datasetStatus, isAnalyzing]);
 }

@@ -181,7 +181,7 @@ export default function Timeline(props: TimelineProps) {
   );
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
 
-  const { setObsolete } = useAnalysisController();
+  const { setObsolete, runAnalysis, isAnalyzing } = useAnalysisController();
 
   const { features } = useAois();
 
@@ -329,9 +329,13 @@ export default function Timeline(props: TimelineProps) {
     [k1, zoomTransform, xScaled, xMain, k0]
   );
 
-  const successDatasets = datasets.filter(
-    (d): d is TimelineDatasetSuccess =>
-      d.status === TimelineDatasetStatus.SUCCESS
+  const successDatasets = useMemo(
+    () =>
+      datasets.filter(
+        (d): d is TimelineDatasetSuccess =>
+          d.status === TimelineDatasetStatus.SUCCESS
+      ),
+    [datasets]
   );
 
   // When a loaded dataset is added from an empty state, compute the correct
@@ -392,6 +396,30 @@ export default function Timeline(props: TimelineProps) {
     selectedDay,
     selectedInterval,
     successDatasets
+  ]);
+
+  // When new datasets are added, if we're in analysis mode, run the analysis
+  // for them
+  const currentSuccessDatasetsIds = useMemo(
+    () => successDatasets.map((d) => d.data.id),
+    [successDatasets]
+  );
+  const prevSuccessDatasetsIds = usePreviousValue(currentSuccessDatasetsIds);
+  useEffect(() => {
+    if (!isAnalyzing) return;
+    // Get the ids of the datasets that were added.
+    const addedDatasets = currentSuccessDatasetsIds.filter(
+      (id) => !prevSuccessDatasetsIds?.includes(id)
+    );
+
+    if (addedDatasets.length) {
+      runAnalysis(addedDatasets);
+    }
+  }, [
+    prevSuccessDatasetsIds,
+    currentSuccessDatasetsIds,
+    isAnalyzing,
+    runAnalysis
   ]);
 
   // Set a date range selection when the user creates a new AOI.
