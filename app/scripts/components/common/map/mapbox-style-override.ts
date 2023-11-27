@@ -25,7 +25,7 @@ const MapboxStyleOverride = css`
 
     > * {
       display: flex;
-      flex-flow: row nowrap;
+      flex-flow: column nowrap;
       gap: ${variableGlsp(0.5)};
       align-items: flex-start;
       float: none;
@@ -85,12 +85,15 @@ const MapboxStyleOverride = css`
 
   .mapboxgl-ctrl-bottom-left {
     flex-flow: row wrap;
-    align-items: flex-end;
     align-items: center;
   }
 
+  .mapboxgl-ctrl-top-right {
+    align-items: end;
+  }
+
   .mapboxgl-ctrl-group {
-    ${createButtonGroupStyles({ orientation: 'horizontal' } as any)}
+    ${createButtonGroupStyles({ orientation: 'vertical' } as any)}
     background: none;
 
     &,
@@ -113,11 +116,15 @@ const MapboxStyleOverride = css`
       }
     }
 
+    > button + button {
+      margin-top: -${themeVal('button.shape.border')};
+    }
+
     > button:first-child:not(:last-child) {
       &,
       &::after {
-        border-top-right-radius: 0;
-        border-bottom-left-radius: 0.25rem;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
       }
 
       &::after {
@@ -128,8 +135,7 @@ const MapboxStyleOverride = css`
       &,
       &::after {
         border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border-top-right-radius: 0.25rem;
+        border-top-right-radius: 0;
       }
 
       &::after {
@@ -150,9 +156,10 @@ const MapboxStyleOverride = css`
 
   .mapboxgl-ctrl-zoom-in.mapboxgl-ctrl-zoom-in,
   .mapboxgl-ctrl-zoom-out.mapboxgl-ctrl-zoom-out {
-    ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
-    background-color: ${themeVal('color.surface')};
-    color: ${themeVal('color.primary')};
+    ${createButtonStyles({
+      variation: 'surface-fill',
+      fitting: 'skinny'
+    } as any)}
   }
 
   .mapboxgl-ctrl-zoom-in.mapboxgl-ctrl-zoom-in::before {
@@ -179,43 +186,13 @@ const MapboxStyleOverride = css`
     background-color: ${themeVal('color.base-400a')};
   }
 
-  .mapbox-gl-draw_ctrl-draw-btn {
-    ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
-    background-color: ${themeVal('color.surface')};
-  }
-
-  .mapbox-gl-draw_ctrl-draw-btn.active {
-    background-color: ${themeVal('color.surface')};
-  }
-
-  .mapbox-gl-draw_ctrl-draw-btn:not(:disabled):hover {
-    background-color: ${themeVal('color.surface')};
-  }
-
-  .mapbox-gl-draw_polygon.mapbox-gl-draw_polygon::before {
-    background-image: url(${({ theme }) =>
-      iconDataURI(CollecticonArea, {
-        color: theme.color?.base
-      })});
-    }
-  }
-
-  .mapbox-gl-draw_trash.mapbox-gl-draw_trash::before {
-    background-image: url(${({ theme }) =>
-      iconDataURI(CollecticonTrashBin, {
-        color: theme.color?.base
-      })});
-    }
-  }
-
   /* GEOCODER styles */
   .mapboxgl-ctrl.mapboxgl-ctrl-geocoder {
     background-color: ${themeVal('color.surface')};
     color: ${themeVal('type.base.color')};
     font: ${themeVal('type.base.style')} ${themeVal('type.base.weight')}
       0.875rem/1.25rem ${themeVal('type.base.family')};
-    transition: none;
-    overflow: hidden;
+    transition: all 0.24s ease 0s;
 
     &::before {
       position: absolute;
@@ -235,7 +212,6 @@ const MapboxStyleOverride = css`
       width: 2rem;
       min-width: 2rem;
       background-color: ${themeVal('color.surface')};
-      transition: none;
 
       &::before {
         background-image: url(${({ theme }) =>
@@ -261,7 +237,7 @@ const MapboxStyleOverride = css`
       right: 0;
       background: none;
       border-radius: ${themeVal('shape.rounded')};
-      transition: none;
+      transition: all 0.24s ease 0s;
       color: inherit;
 
       &:hover {
@@ -287,7 +263,9 @@ const MapboxStyleOverride = css`
       width: 100%;
       outline: none;
       font: ${themeVal('type.base.style')} ${themeVal('type.base.weight')}
-        0.875rem / ${themeVal('type.base.line')} ${themeVal('type.base.family')};
+        0.875rem / ${themeVal('type.base.line')} ${themeVal(
+  'type.base.family'
+)};
       padding: 0.25rem 2rem;
       color: inherit;
 
@@ -347,6 +325,46 @@ const MapboxStyleOverride = css`
           }
         }
       }
+    }
+  }
+
+
+  .mapboxgl-marker:hover {
+    cursor: pointer;
+  }
+
+  .mapboxgl-ctrl-scale {
+    color: ${themeVal('color.surface')};
+    border-color: ${themeVal('color.surface')};
+    background-color: ${themeVal('color.base-400a')};
+  }
+
+  .mapbox-gl-draw_ctrl-draw-btn {
+    ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
+    background-color: ${themeVal('color.surface')};
+  }
+
+  .mapbox-gl-draw_ctrl-draw-btn.active {
+    background-color: ${themeVal('color.surface')};
+  }
+
+  .mapbox-gl-draw_ctrl-draw-btn:not(:disabled):hover {
+    background-color: ${themeVal('color.surface')};
+  }
+
+  .mapbox-gl-draw_polygon.mapbox-gl-draw_polygon::before {
+    background-image: url(${({ theme }) =>
+      iconDataURI(CollecticonArea, {
+        color: theme.color?.base
+      })});
+    }
+  }
+
+  .mapbox-gl-draw_trash.mapbox-gl-draw_trash::before {
+    background-image: url(${({ theme }) =>
+      iconDataURI(CollecticonTrashBin, {
+        color: theme.color?.base
+      })});
     }
   }
 `;
