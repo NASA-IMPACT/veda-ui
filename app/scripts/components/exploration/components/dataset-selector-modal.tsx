@@ -14,6 +14,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { Heading, Subtitle } from '@devseed-ui/typography';
 import {
+  CollecticonPlus,
   CollecticonTickSmall,
   CollecticonXmarkSmall,
   iconDataURI
@@ -128,49 +129,54 @@ const LayerCard = styled(Card)<{ checked: boolean }>`
       outline-color: ${themeVal('color.primary')};
     `}
 
-  &:hover {
-    &::before,
-    &::after {
-      opacity: 1;
-    }
-  }
-
-  &::before,
-  &::after {
-    display: block;
+  &::before {
     content: '';
     position: absolute;
-    transition: opacity 320ms ease-in-out;
-    opacity: 0.32;
-  }
-
-  &::before {
-    top: 0;
-    right: 0;
-    width: 4rem;
-    height: 4rem;
-    clip-path: polygon(0 0, 100% 0, 100% 100%);
+    top: 50%;
+    left: 50%;
+    height: 3rem;
+    min-width: 3rem;
+    transform: translate(-50%, -50%);
+    padding: ${glsp(0.5, 1, 0.5, 1)};
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: ${themeVal('color.primary')};
-  }
-
-  &::after {
-    top: 0.25rem;
-    right: 0.25rem;
-    width: 1.5rem;
-    height: 1.5rem;
+    border-radius: ${themeVal('shape.ellipsoid')};
+    font-weight: ${themeVal('type.base.bold')};
+    line-height: 1rem;
     background-image: url(${({ theme }) =>
-      iconDataURI(CollecticonTickSmall, {
+      iconDataURI(CollecticonPlus, {
         color: theme.color?.surface,
         size: 'large'
       })});
+    background-repeat: no-repeat;
+    background-position: 0.75rem center;
+    pointer-events: none;
+    transition: all 0.16s ease-in-out;
+    opacity: 0;
+  }
+
+  &:hover ::before {
+    opacity: 1;
   }
 
   ${({ checked }) =>
     checked &&
     css`
-      &::before,
-      &::after {
+      &:before {
         opacity: 1;
+        content: 'Selected';
+        padding-left: 2.75rem;
+        background-image: url(${({ theme }) =>
+          iconDataURI(CollecticonTickSmall, {
+            color: theme.color?.surface,
+            size: 'large'
+          })});
+        background-color: ${themeVal('color.base')};
+      }
+      &:hover ::before {
+        background-color: ${themeVal('color.primary')};
       }
     `}
 `;
