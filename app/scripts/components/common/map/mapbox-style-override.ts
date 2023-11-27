@@ -8,9 +8,7 @@ import {
   CollecticonPlusSmall,
   CollecticonMinusSmall,
   CollecticonMagnifierLeft,
-  CollecticonXmarkSmall,
-  CollecticonArea,
-  CollecticonTrashBin
+  CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
@@ -37,6 +35,10 @@ const MapboxStyleOverride = css`
 
       > * {
         pointer-events: auto;
+      }
+
+      &:empty {
+        display: none;
       }
     }
 
@@ -90,6 +92,11 @@ const MapboxStyleOverride = css`
 
   .mapboxgl-ctrl-top-right {
     align-items: end;
+  }
+
+  .mapboxgl-ctrl-top-left {
+    flex-flow: row wrap;
+    align-items: center;
   }
 
   .mapboxgl-ctrl-group {
@@ -337,35 +344,6 @@ const MapboxStyleOverride = css`
     color: ${themeVal('color.surface')};
     border-color: ${themeVal('color.surface')};
     background-color: ${themeVal('color.base-400a')};
-  }
-
-  .mapbox-gl-draw_ctrl-draw-btn {
-    ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
-    background-color: ${themeVal('color.surface')};
-  }
-
-  .mapbox-gl-draw_ctrl-draw-btn.active {
-    background-color: ${themeVal('color.surface')};
-  }
-
-  .mapbox-gl-draw_ctrl-draw-btn:not(:disabled):hover {
-    background-color: ${themeVal('color.surface')};
-  }
-
-  .mapbox-gl-draw_polygon.mapbox-gl-draw_polygon::before {
-    background-image: url(${({ theme }) =>
-      iconDataURI(CollecticonArea, {
-        color: theme.color?.base
-      })});
-    }
-  }
-
-  .mapbox-gl-draw_trash.mapbox-gl-draw_trash::before {
-    background-image: url(${({ theme }) =>
-      iconDataURI(CollecticonTrashBin, {
-        color: theme.color?.base
-      })});
-    }
   }
 `;
 

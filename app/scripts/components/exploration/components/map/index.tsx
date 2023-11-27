@@ -21,7 +21,6 @@ import { projectionDefault } from '$components/common/map/controls/map-options/p
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
-import ResetAoIControl from '$components/common/map/controls/aoi/reset-aoi-control';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
 export function ExplorationMap() {
@@ -135,17 +134,8 @@ export function ExplorationMap() {
         ))}
       {/* Map controls */}
       <MapControls>
-        <DrawControl
-          displayControlsDefault={false}
-          controls={
-            {
-              polygon: true,
-              trash: true
-            } as any
-          }
-        />
+        <DrawControl />
         <CustomAoIControl />
-        <ResetAoIControl />
         <AnalysisMessageControl />
         <GeocoderControl />
         <MapOptionsControl

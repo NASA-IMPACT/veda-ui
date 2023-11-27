@@ -346,7 +346,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
             disabled={!selectedIds.length}
             onClick={onConfirm}
           >
-            Confirm
+            Add to map
           </Button>
         </>
       }

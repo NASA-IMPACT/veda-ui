@@ -8,7 +8,7 @@ import {
   DropMenuItem,
   DropTitle
 } from '@devseed-ui/dropdown';
-import { Button, createButtonStyles } from '@devseed-ui/button';
+import { createButtonStyles } from '@devseed-ui/button';
 import { FormSwitch } from '@devseed-ui/form';
 import { Subtitle } from '@devseed-ui/typography';
 
@@ -21,6 +21,8 @@ import {
 import { MapOptionsProps } from './types';
 import { projectionsList } from './projections';
 import { BASEMAP_STYLES } from './basemap';
+
+import { TipButton } from '$components/common/tip-button';
 
 const DropHeader = styled.div`
   padding: ${glsp()};
@@ -59,9 +61,9 @@ const MapOptionsDropdown = styled(Dropdown)`
 // .mapboxgl-ctrl button:not(:disabled):hover {
 //   background-color: rgba(0, 0, 0, 0.05);
 // }
-const SelectorButton = styled(Button)`
+const SelectorButton = styled(TipButton)`
   &&& {
-    ${createButtonStyles({ variation: 'primary-fill', fitting: 'skinny' })}
+    ${createButtonStyles({ variation: 'surface-fill', fitting: 'skinny' } as any)}
     background-color: ${themeVal('color.surface')};
     &:hover {
       background-color: ${themeVal('color.surface')};
@@ -135,7 +137,11 @@ function MapOptions(props: MapOptionsProps) {
   return (
     <MapOptionsDropdown
       triggerElement={(bag) => (
-        <SelectorButton {...bag}>
+        <SelectorButton
+          {...bag}
+          tipContent='Map options'
+          tipProps={{ placement: 'left' }}
+        >
           <CollecticonMap meaningful title='Configure map options' />
         </SelectorButton>
       )}
