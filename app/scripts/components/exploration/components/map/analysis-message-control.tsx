@@ -82,12 +82,11 @@ export function AnalysisMessage() {
     formatDateRange(selectedInterval.start, selectedInterval.end);
 
   const selectedFeatures = features.filter((f) => f.selected);
-  const selectedFeatureIds = selectedFeatures.map((f) => f.id).join(',');
 
   useEffect(() => {
     // Set the analysis as obsolete when the selected features change.
     setObsolete();
-  }, [setObsolete, selectedFeatureIds]);
+  }, [setObsolete, features]);
 
   if (isAnalyzing) {
     return (

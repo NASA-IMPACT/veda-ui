@@ -145,7 +145,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   //
   const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
   useEffect(() => {
-    if (!id || !stacCol || !date) return;
+    if (!id || !stacCol) return;
 
     const controller = new AbortController();
 
@@ -173,7 +173,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const responseData = await requestQuickCache({
+        const responseData = await requestQuickCache<any>({
           url: `${stacApiEndpointToUse}/search`,
           payload,
           controller
@@ -212,7 +212,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       controller.abort();
       changeStatus({ status: 'idle', context: STATUS_KEY.StacSearch });
     };
-  }, [id, changeStatus, stacCol, date]);
+  }, [id, changeStatus, stacCol, date, stacApiEndpointToUse]);
 
   //
   // Markers
@@ -270,7 +270,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const responseData = await requestQuickCache({
+        const responseData = await requestQuickCache<any>({
           url: `${tileApiEndpointToUse}/mosaic/register`,
           payload,
           controller
@@ -309,9 +309,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       changeStatus({ status: 'idle', context: STATUS_KEY.Layer });
     };
   }, [
-    // The `showMarkers` and `isHidden` dep are left out on purpose, as visibility
-    // is controlled below, but we need the value to initialize the layer
-    // visibility.
     stacCollection
     // This hook depends on a series of properties, but whenever they change the
     // `stacCollection` is guaranteed to change because a new STAC request is
@@ -338,40 +335,36 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
 
   const generatorParams = useGeneratorParams(props);
 
-  useEffect(
-    () => {
-      const controller = new AbortController();
+  useEffect(() => {
+    const controller = new AbortController();
 
-      async function run() {
-        let layers: AnyLayer[] = [];
-        let sources: Record<string, AnySourceImpl> = {};
+    async function run() {
+      let layers: AnyLayer[] = [];
+      let sources: Record<string, AnySourceImpl> = {};
 
-        if (mosaicUrl) {
-          const tileParams = qs.stringify(
-            {
-              assets: 'cog_default',
-              ...(sourceParams ?? {})
-            },
-            // Temporary solution to pass different tile parameters for hls data
-            {
-              arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma'
-            }
-          );
-
-          const tilejsonUrl = `${mosaicUrl}?${tileParams}`;
-
-          let tileServerUrl: string | undefined = undefined;
-          try {
-            const tilejsonData = await requestQuickCache({
-              url: tilejsonUrl,
-              method: 'GET',
-              payload: null,
-              controller
-            });
-            tileServerUrl = tilejsonData.tiles[0];
-          } catch (error) {
-            // Ignore errors.
+      if (mosaicUrl) {
+        const tileParams = qs.stringify(
+          {
+            assets: 'cog_default',
+            ...(sourceParams ?? {})
+          },
+          // Temporary solution to pass different tile parameters for hls data
+          {
+            arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma'
           }
+        );
+
+        const tilejsonUrl = `${mosaicUrl}?${tileParams}`;
+
+        try {
+          const tilejsonData = await requestQuickCache<any>({
+            url: tilejsonUrl,
+            method: 'GET',
+            payload: null,
+            controller
+          });
+
+          const tileServerUrl = tilejsonData.tiles[0];
 
           const wmtsBaseUrl = mosaicUrl.replace(
             'tilejson.json',
@@ -409,68 +402,97 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             [id]: mosaicSource
           };
           layers = [...layers, mosaicLayer];
+        } catch (error) {
+          if (!controller.signal.aborted) {
+            sources = {};
+            layers = [];
+            changeStatus({
+              status: S_FAILED,
+              context: STATUS_KEY.StacSearch
+            });
+          }
+          LOG &&
+            /* eslint-disable-next-line no-console */
+            console.log(
+              'MapLayerRasterTimeseries %cAborted Mosaic',
+              'color: red;',
+              id
+            );
+          // Continue to the style is updated to empty.
         }
-
-        if (points && minZoom > 0) {
-          const pointsSourceId = `${id}-points`;
-          const pointsSource: GeoJSONSourceRaw = {
-            type: 'geojson',
-            data: featureCollection(
-              points.map((p) => point(p.center, { bounds: p.bounds }))
-            )
-          };
-
-          const pointsLayer: SymbolLayer = {
-            type: 'symbol',
-            id: pointsSourceId,
-            source: pointsSourceId,
-            layout: {
-              ...(MARKER_LAYOUT as any),
-              'icon-allow-overlap': true
-            },
-            paint: {
-              'icon-color': theme.color?.primary,
-              'icon-halo-color': theme.color?.base,
-              'icon-halo-width': 1
-            },
-            maxzoom: minZoom,
-            metadata: {
-              layerOrderPosition: 'markers'
-            }
-          };
-          sources = {
-            ...sources,
-            [pointsSourceId]: pointsSource as AnySourceImpl
-          };
-          layers = [...layers, pointsLayer];
-        }
-
-        updateStyle({
-          generatorId,
-          sources,
-          layers,
-          params: generatorParams
-        });
       }
 
-      run();
+      if (points && minZoom > 0) {
+        const pointsSourceId = `${id}-points`;
+        const pointsSource: GeoJSONSourceRaw = {
+          type: 'geojson',
+          data: featureCollection(
+            points.map((p) => point(p.center, { bounds: p.bounds }))
+          )
+        };
 
-      return () => {
-        controller.abort();
-      };
-    },
-    // sourceParams not included, but using a stringified version of it to
-    // detect changes (haveSourceParamsChanged)
-    [
-      updateStyle,
-      id,
-      mosaicUrl,
-      minZoom,
-      points,
-      haveSourceParamsChanged,
-      generatorParams
-    ]
-  );
+        const pointsLayer: SymbolLayer = {
+          type: 'symbol',
+          id: pointsSourceId,
+          source: pointsSourceId,
+          layout: {
+            ...(MARKER_LAYOUT as any),
+            'icon-allow-overlap': true
+          },
+          paint: {
+            'icon-color': theme.color?.primary,
+            'icon-halo-color': theme.color?.base,
+            'icon-halo-width': 1
+          },
+          maxzoom: minZoom,
+          metadata: {
+            layerOrderPosition: 'markers'
+          }
+        };
+        sources = {
+          ...sources,
+          [pointsSourceId]: pointsSource as AnySourceImpl
+        };
+        layers = [...layers, pointsLayer];
+      }
+
+      updateStyle({
+        generatorId,
+        sources,
+        layers,
+        params: generatorParams
+      });
+    }
+
+    run();
+
+    return () => {
+      controller.abort();
+    };
+  }, [
+    mosaicUrl,
+    points,
+    minZoom,
+    haveSourceParamsChanged,
+    generatorParams
+    // This hook depends on a series of properties, but whenever they change the
+    // `mosaicUrl` is guaranteed to change because a new STAC request is
+    // needed to show the data. The following properties are therefore removed
+    // from the dependency array:
+    // - id
+    // - changeStatus
+    // - stacCol
+    // - date
+    // Keeping then in would cause multiple requests because for example when
+    // `date` changes the hook runs, then the request in the hook above
+    // fires and `mosaicUrl` changes, causing this hook to run again. This
+    // resulted in a race condition when adding the source to the map leading to
+    // an error.
+    // Other:
+    // -- generatorParams includes hidden and opacity
+    // -- sourceParams is tracked by haveSourceParamsChanged
+    // -- theme and updateStyle are stable
+  ]);
 
   //
   // Cleanup layers on unmount.

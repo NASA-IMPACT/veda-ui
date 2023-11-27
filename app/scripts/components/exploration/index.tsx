@@ -79,7 +79,7 @@ function Exploration() {
 
   const setUrl = useSetAtom(urlAtom);
   const { reset: resetAnalysisController } = useAnalysisController();
-  // Reset atoms when entering the page.
+  // Reset atoms when leaving the page.
   useEffect(() => {
     return () => {
       resetAnalysisController();

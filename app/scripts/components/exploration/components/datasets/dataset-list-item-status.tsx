@@ -111,15 +111,44 @@ export function DatasetTrackError(props: {
     </TrackError>
   );
 
-  if (error instanceof ExtendedError && error.code === 'TOO_MANY_ASSETS') {
+  if (
+    error instanceof ExtendedError &&
+    error.code === 'ANALYSIS_TOO_MANY_ASSETS'
+  ) {
     return (
       <>
         {patternContent}
         <TrackMessage isError>
           <p>
             Analysis is limited to {MAX_QUERY_NUM} data points. Your selection
-            includes {error.details?.assetCount} points. Please select a shorter time range.
+            includes {error.details?.assetCount} points. Please select a shorter
+            time range.
           </p>
+        </TrackMessage>
+      </>
+    );
+  }
+
+  if (
+    error instanceof ExtendedError &&
+    error.code === 'ANALYSIS_NOT_SUPPORTED'
+  ) {
+    return (
+      <>
+        {patternContent}
+        <TrackMessage>
+          <p>Analysis is not supported for this dataset.</p>
+        </TrackMessage>
+      </>
+    );
+  }
+
+  if (error instanceof ExtendedError && error.code === 'ANALYSIS_NO_DATA') {
+    return (
+      <>
+        {patternContent}
+        <TrackMessage>
+          <p>No data for the selected time range and area of interest.</p>
         </TrackMessage>
       </>
     );

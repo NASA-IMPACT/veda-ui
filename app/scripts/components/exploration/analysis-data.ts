@@ -95,6 +95,19 @@ export async function requestDatasetTimeseriesData({
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
 
+  if (datasetData.type !== 'raster') {
+    onProgress({
+      status: TimelineDatasetStatus.ERROR,
+      meta: {},
+      error: new ExtendedError(
+        'Analysis is only supported for raster datasets',
+        'ANALYSIS_NOT_SUPPORTED'
+      ),
+      data: null
+    });
+    return;
+  }
+
   const id = datasetData.id;
 
   onProgress({
@@ -147,7 +160,7 @@ export async function requestDatasetTimeseriesData({
     if (assets.length > maxItems) {
       const e = new ExtendedError(
         'Too many assets to analyze',
-        'TOO_MANY_ASSETS'
+        'ANALYSIS_TOO_MANY_ASSETS'
       );
       e.details = {
         assetCount: assets.length
@@ -157,6 +170,19 @@ export async function requestDatasetTimeseriesData({
         ...datasetAnalysis,
         status: TimelineDatasetStatus.ERROR,
         error: e,
+        data: null
+      });
+      return;
+    }
+
+    if (!assets.length) {
+      onProgress({
+        ...datasetAnalysis,
+        status: TimelineDatasetStatus.ERROR,
+        error: new ExtendedError(
+          'No data in the given time range and area of interest',
+          'ANALYSIS_NO_DATA'
+        ),
         data: null
       });
       return;

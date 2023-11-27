@@ -26,7 +26,11 @@ const StoriesHub = lazy(() => import('$components/stories/hub'));
 const StoriesSingle = lazy(() => import('$components/stories/single'));
 
 const DataCatalog = lazy(() => import('$components/data-catalog'));
+const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
+
+const Analysis = lazy(() => import('$components/analysis/define'));
+const AnalysisResults = lazy(() => import('$components/analysis/results'));
 
 const Exploration = lazy(() => import('$components/exploration'));
 
@@ -41,6 +45,8 @@ const DevseedUiThemeProvider = DsTp as any;
 import { ReactQueryProvider } from '$context/react-query';
 import {
   ABOUT_PATH,
+  ANALYSIS_PATH,
+  ANALYSIS_RESULTS_PATH,
   DATASETS_PATH,
   STORIES_PATH
 } from '$utils/routes';
@@ -51,6 +57,8 @@ const composingComponents = [
   ReactQueryProvider,
   LayoutRootContextProvider
 ];
+
+const useNewExploration = !!process.env.FEATURE_NEW_EXPLORATION;
 
 function ScrollTop() {
   const { pathname } = useLocation();
@@ -92,9 +100,26 @@ function Root() {
                   path={`${STORIES_PATH}/:storyId`}
                   element={<StoriesSingle />}
                 />
+
+                {!useNewExploration && (
+                  <>
+                    <Route
+                      path={`${DATASETS_PATH}/:datasetId/explore`}
+                      element={<DatasetsExplore />}
+                    />
+                    <Route path={ANALYSIS_PATH} element={<Analysis />} />
+                    <Route
+                      path={ANALYSIS_RESULTS_PATH}
+                      element={<AnalysisResults />}
+                    />
+                  </>
+                )}
+
                 <Route path='development' element={<Development />} />
 
-                <Route path='exploration' element={<Exploration />} />
+                {/* {useNewExploration && ( */}
+                  <Route path='exploration' element={<Exploration />} />
+                {/* )} */}
 
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />

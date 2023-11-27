@@ -30,6 +30,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import {
   STORIES_PATH,
   DATASETS_PATH,
+  ANALYSIS_PATH,
   ABOUT_PATH,
   EXPLORATION_PATH
 } from '$utils/routes';
@@ -342,9 +343,9 @@ function PageHeader() {
   useEffect(() => {
     // Close global nav when media query changes.
     // NOTE: isMediumDown is returning document.body's width, not the whole window width
-    // which conflicts with how mediaquery decides the width. 
+    // which conflicts with how mediaquery decides the width.
     // JSX element susing isMediumDown is also protected with css logic because of this.
-    // ex. Look at GlobalNavActions 
+    // ex. Look at GlobalNavActions
     if (!isMediumDown) setGlobalNavRevealed(false);
   }, [isMediumDown]);
 
@@ -412,18 +413,24 @@ function PageHeader() {
                     </GlobalMenuLink>
                   </li>
                   <li>
-                    <GlobalMenuLink
-                      to={EXPLORATION_PATH}
-                      onClick={closeNavOnClick}
-                    >
-                      Exploration
-                    </GlobalMenuLink>
+                    {process.env.FEATURE_NEW_EXPLORATION ? (
+                      <GlobalMenuLink
+                        to={EXPLORATION_PATH}
+                        onClick={closeNavOnClick}
+                      >
+                        Exploration
+                      </GlobalMenuLink>
+                    ) : (
+                      <GlobalMenuLink
+                        to={ANALYSIS_PATH}
+                        onClick={closeNavOnClick}
+                      >
+                        Data Analysis
+                      </GlobalMenuLink>
+                    )}
                   </li>
                   <li>
-                    <GlobalMenuLink
-                      to={STORIES_PATH}
-                      onClick={closeNavOnClick}
-                    >
+                    <GlobalMenuLink to={STORIES_PATH} onClick={closeNavOnClick}>
                       {getString('stories').other}
                     </GlobalMenuLink>
                   </li>

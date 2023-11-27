@@ -14,6 +14,10 @@ export const getDatasetPath = (d: DatasetData | string) =>
   `${DATASETS_PATH}/${typeof d === 'string' ? d : d.id}`;
 
 export const getDatasetExplorePath = (d: DatasetData | string) => {
+  if (!process.env.FEATURE_NEW_EXPLORATION) {
+    return `${DATASETS_PATH}/${typeof d === 'string' ? d : d.id}/explore`;
+  }
+
   const id = typeof d === 'string' ? d : d.id;
   return `${EXPLORATION_PATH}?search=${id}`;
 };
