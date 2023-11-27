@@ -1,6 +1,6 @@
 import { datasetLayers, reconcileDatasets } from '../data-utils';
 import { TimelineDataset, TimelineDatasetForUrl } from '../types.d.ts';
-import { atomWithUrlValueStability } from './atom-with-url-value-stability';
+import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 
 function urlDatasetsDehydrate(datasets: TimelineDataset[]) {
   // Only keep what we need to reconstruct the dataset, which is the id and

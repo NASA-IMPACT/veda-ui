@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atom, SetStateAction } from 'jotai';
 import { atomWithLocation } from 'jotai-location';
 import { debounce } from 'lodash';
 
@@ -27,15 +27,19 @@ function atomWithDebouncedLocation() {
     (get): JotaiLocation => {
       return get(locStorageAtom) ?? get(locAtom);
     },
-    (get, set, updates) => {
+    (
+      get,
+      set,
+      updates: SetStateAction<JotaiLocation | typeof CLEAR_LOCATION>
+    ) => {
+      const newData =
+        typeof updates === 'function' ? updates(get(urlAtom)) : updates;
+
       // Escape hatch to clear the location, when we move off the page.
-      if (updates === CLEAR_LOCATION) {
+      if (newData === CLEAR_LOCATION) {
         set(locStorageAtom, null);
         return;
       }
-
-      const newData =
-        typeof updates === 'function' ? updates(get(urlAtom)) : updates;
 
       if (!setDebounced) {
         setDebounced = debounce(set, 320);

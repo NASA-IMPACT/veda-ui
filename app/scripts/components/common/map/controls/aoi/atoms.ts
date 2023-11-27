@@ -1,30 +1,16 @@
 import { atom } from 'jotai';
-import { atomWithLocation } from 'jotai-location';
 import { Feature, Polygon } from 'geojson';
 import { AoIFeature } from '../../types';
 import { decodeAois, encodeAois } from '$utils/polygon-url';
+import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 
 // This is the atom acting as a single source of truth for the AOIs.
-export const aoisAtom = atomWithLocation();
-
-const aoisSerialized = atom(
-  (get) => get(aoisAtom).searchParams?.get('aois'),
-  (get, set, aois) => {
-    set(aoisAtom, (prev) => {
-      // Start from what's on the url because another atom might have updated it.
-      const searchParams = new URLSearchParams(window.location.search);
-      const prevSearchParams = prev.searchParams ?? new URLSearchParams();
-  
-      prevSearchParams.forEach((value, name) => {
-        searchParams.set(name, value);
-      });
-  
-      searchParams.set('aois', aois as string);
-
-      return { ...prev, searchParams };
-    });
-  }
-);
+export const aoisSerialized = atomWithUrlValueStability<string>({
+  initialValue: new URLSearchParams(window.location.search).get('aois') ?? '',
+  urlParam: 'aois',
+  hydrate: (v) => v ?? '',
+  dehydrate: (v) => v,
+});
 
 // Getter atom to get AoiS as GeoJSON features from the hash.
 export const aoisFeaturesAtom = atom<AoIFeature[]>((get) => {
@@ -33,7 +19,7 @@ export const aoisFeaturesAtom = atom<AoIFeature[]>((get) => {
   return decodeAois(hash);
 });
 
-// Setter atom to update AOIs geoometries, writing directly to the hash atom.
+// Setter atom to update AOIs geometries, writing directly to the hash atom.
 export const aoisUpdateGeometryAtom = atom(
   null,
   (get, set, updates: Feature<Polygon>[]) => {
@@ -78,3 +64,5 @@ export const aoisDeleteAtom = atom(null, (get, set, ids: string[]) => {
 export const aoiDeleteAllAtom = atom(null, (get, set) => {
   set(aoisSerialized, encodeAois([]));
 });
+
+export const isDrawingAtom = atom(false);
