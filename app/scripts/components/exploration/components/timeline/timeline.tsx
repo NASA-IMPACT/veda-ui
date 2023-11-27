@@ -482,7 +482,7 @@ export default function Timeline(props: TimelineProps) {
               size='small'
               onClick={onDatasetAddClick}
             >
-              <CollecticonPlusSmall meaningful title='Add dataset' />
+              <CollecticonPlusSmall title='Add layer' /> Add layer
             </Button>
           </Headline>
           <p>
