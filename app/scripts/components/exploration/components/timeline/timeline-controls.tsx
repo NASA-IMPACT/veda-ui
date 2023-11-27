@@ -7,10 +7,8 @@ import { scaleTime, ScaleTime } from 'd3';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonChevronDownSmall,
-  CollecticonPlusSmall,
   CollecticonResizeIn,
-  CollecticonResizeOut,
-  CollecticonTrashBin
+  CollecticonResizeOut
 } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
 import { DatePicker } from '@devseed-ui/date-picker';
@@ -30,6 +28,8 @@ import {
   selectedIntervalAtom
 } from '$components/exploration/atoms/dates';
 import { DAY_SIZE_MAX } from '$components/exploration/constants';
+import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minus';
+import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -135,7 +135,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                     setSelectedCompareDay(null);
                   }}
                 >
-                  <CollecticonTrashBin
+                  <CollecticonCalendarMinus
                     meaningful
                     title='Stop comparing dates'
                   />
@@ -165,7 +165,10 @@ export function TimelineControls(props: TimelineControlsProps) {
                   setSelectedCompareDay(newDate);
                 }}
               >
-                <CollecticonPlusSmall meaningful title='Add comparison date' />
+                <CollecticonCalendarPlus
+                  meaningful
+                  title='Add comparison date'
+                />
               </ToolbarIconButton>
             )}
           </ToolbarGroup>
