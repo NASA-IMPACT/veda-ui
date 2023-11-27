@@ -38,7 +38,7 @@ export function useStacCollectionSearch({
       const collectionUrlsFromDataSets = allAvailableDatasetsLayers.reduce(
         (filtered, { stacApiEndpoint }) => {
           return stacApiEndpoint
-            ? [...filtered, `${stacApiEndpoint}/collections`]
+            ? [...filtered, `${stacApiEndpoint}${collectionEndpointSuffix}`]
             : filtered;
         },
         []
@@ -127,7 +127,7 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
     const start = utcString2userTzDate(col.extent.temporal.interval[0][0]);
     const end = utcString2userTzDate(col.extent.temporal.interval[0][1]);
 
-    const isInAOI = aoi.features?.some((feature) =>
+    const isInAOI = aoi.features.some((feature) =>
       booleanIntersects(feature, bboxPolygon(bbox))
     );
 
