@@ -30,6 +30,7 @@ import {
 import { DAY_SIZE_MAX } from '$components/exploration/constants';
 import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minus';
 import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
+import { TipToolbarIconButton } from '$components/common/tip-button';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -129,7 +130,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                     </DatePickerButton>
                   )}
                 />
-                <ToolbarIconButton
+                <TipToolbarIconButton
+                  tipContent='Stop comparing dates'
                   size='small'
                   onClick={() => {
                     setSelectedCompareDay(null);
@@ -139,10 +141,11 @@ export function TimelineControls(props: TimelineControlsProps) {
                     meaningful
                     title='Stop comparing dates'
                   />
-                </ToolbarIconButton>
+                </TipToolbarIconButton>
               </>
             ) : (
-              <ToolbarIconButton
+              <TipToolbarIconButton
+                tipContent='Add date to compare'
                 size='small'
                 data-tour='compare-date'
                 onClick={() => {
@@ -169,7 +172,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                   meaningful
                   title='Add comparison date'
                 />
-              </ToolbarIconButton>
+              </TipToolbarIconButton>
             )}
           </ToolbarGroup>
           {selectedInterval && (
