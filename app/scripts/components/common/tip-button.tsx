@@ -2,13 +2,20 @@ import { Button, ButtonProps } from '@devseed-ui/button';
 import { ToolbarIconButton } from '@devseed-ui/toolbar';
 import { TippyProps } from '@tippyjs/react';
 import React from 'react';
+
 import { Tip } from './tip';
+
+import { composeVisuallyDisabled } from '$utils/utils';
+
+const VdButton = composeVisuallyDisabled(Button);
+const VdToolbarIconButton = composeVisuallyDisabled(ToolbarIconButton);
 
 type TipButtonProps = Omit<
   JSX.IntrinsicElements['button'] &
     ButtonProps & {
       tipContent: React.ReactNode;
       tipProps?: TippyProps;
+      visuallyDisabled?: boolean;
     },
   'ref'
 >;
@@ -18,7 +25,7 @@ export const TipButton = React.forwardRef<HTMLButtonElement, TipButtonProps>(
     const { tipContent, tipProps = {}, ...rest } = props;
     return (
       <Tip content={tipContent} {...tipProps}>
-        <Button ref={ref} {...rest} />
+        <VdButton ref={ref} {...rest} />
       </Tip>
     );
   }
@@ -31,7 +38,7 @@ export const TipToolbarIconButton = React.forwardRef<
   const { tipContent, tipProps = {}, ...rest } = props;
   return (
     <Tip content={tipContent} {...tipProps}>
-      <ToolbarIconButton ref={ref} {...rest} />
+      <VdToolbarIconButton ref={ref} {...rest} />
     </Tip>
   );
 });

@@ -20,6 +20,7 @@ import {
 } from '@devseed-ui/toolbar';
 
 import { DateAxis } from './date-axis';
+import { TimelineZoomControls } from './timeline-zoom-controls';
 import { analysisControllerAtom } from '$components/exploration/atoms/analysis';
 import { isExpandedAtom } from '$components/exploration/atoms/timeline';
 import {
@@ -64,10 +65,11 @@ const DatePickerButton = styled(Button)`
 interface TimelineControlsProps {
   xScaled?: ScaleTime<number, number>;
   width: number;
+  onZoom: (zoom: number) => void;
 }
 
 export function TimelineControls(props: TimelineControlsProps) {
-  const { xScaled, width } = props;
+  const { xScaled, width, onZoom } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
@@ -201,6 +203,10 @@ export function TimelineControls(props: TimelineControlsProps) {
                   </DatePickerButton>
                 )}
               />
+              <VerticalDivider />
+
+              <TimelineZoomControls onZoom={onZoom} />
+
               <VerticalDivider />
 
               <ToolbarIconButton

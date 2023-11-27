@@ -13,7 +13,13 @@ import {
   sub
 } from 'date-fns';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef
+} from 'react';
 import useDimensions from 'react-cool-dimensions';
 import styled from 'styled-components';
 
@@ -353,6 +359,26 @@ export default function Timeline(props: TimelineProps) {
     applyTransform(zoomBehavior, select(interactionRef.current), 0, 0, k0);
   }, [prevDatasetsCount, successDatasetsCount, k0, zoomBehavior]);
 
+  const onControlsZoom = useCallback(
+    (zoomV) => {
+      if (!interactionRef.current || !xMain || !xScaled || !selectedDay) return;
+
+      // Position in the timeline so it maintains the same position.
+      const currPlayheadX = xScaled(selectedDay);
+      // Rescale the main scale to be able to calculate the new x position
+      const rescaled = rescaleX(xMain, 0, zoomV);
+
+      applyTransform(
+        zoomBehavior,
+        select(interactionRef.current),
+        rescaled(selectedDay) * -1 + currPlayheadX,
+        0,
+        zoomV
+      );
+    },
+    [xScaled, xMain, selectedDay, zoomBehavior]
+  );
+
   // Set correct dates when the date domain changes.
   const prevDataDomain = usePreviousValue(dataDomain);
   useEffect(() => {
@@ -489,7 +515,11 @@ export default function Timeline(props: TimelineProps) {
             {datasets.length} of {datasetLayers.length}
           </p>
         </TimelineDetails>
-        <TimelineControls xScaled={xScaled} width={width} />
+        <TimelineControls
+          xScaled={xScaled}
+          width={width}
+          onZoom={onControlsZoom}
+        />
       </TimelineHeader>
       <TimelineContent>
         {shouldRenderTimeline && (
