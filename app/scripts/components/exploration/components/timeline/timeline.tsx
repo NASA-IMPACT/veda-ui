@@ -484,7 +484,7 @@ export default function Timeline(props: TimelineProps) {
     return (
       <TimelineWrapper ref={observe}>
         <NoData>
-          <p>Select a dataset to start exploration</p>
+          <p>Select a data layer to start exploration</p>
         </NoData>
       </TimelineWrapper>
     );
@@ -501,7 +501,7 @@ export default function Timeline(props: TimelineProps) {
         <TimelineDetails>
           <Headline>
             <Heading as='h2' size='xsmall'>
-              Datasets
+              Data layers
             </Heading>
             <Button
               variation='base-text'
