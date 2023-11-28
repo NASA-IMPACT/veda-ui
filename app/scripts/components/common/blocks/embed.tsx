@@ -18,17 +18,23 @@ const IframeWrapper = styled.iframe`
 `;
 
 interface EmbedProps {
+  className?: string;
   src: string;
   height: number;
 }
 
-export default function Embed({ src, height = 800, ...props}: EmbedProps) {
+export default function Embed({
+  className,
+  src,
+  height = 800,
+  ...props
+}: EmbedProps) {
   if (!src) {
     throw new HintedError('Embed block requires a URL');
   }
 
   return (
-    <EmbedWrapper>
+    <EmbedWrapper className={className}>
       <BrowserFrame link={src}>
         <IframeWrapper loading='lazy' src={src} height={height} {...props} />
       </BrowserFrame>
