@@ -62,9 +62,9 @@ import {
   ZoomTransformPlain
 } from '$components/exploration/types.d.ts';
 import { useInteractionRectHover } from '$components/exploration/hooks/use-dataset-hover';
-import { datasetLayers } from '$components/exploration/data-utils';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useAois from '$components/common/map/controls/hooks/use-aois';
+import Pluralize from '$utils/pluralize';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -512,7 +512,12 @@ export default function Timeline(props: TimelineProps) {
             </Button>
           </Headline>
           <p>
-            {datasets.length} of {datasetLayers.length}
+            <Pluralize
+              count={datasets.length}
+              singular='layer'
+              plural='layers'
+            />{' '}
+            added
           </p>
         </TimelineDetails>
         <TimelineControls
