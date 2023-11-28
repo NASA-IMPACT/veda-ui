@@ -10,14 +10,8 @@ import {
   CollecticonResizeIn,
   CollecticonResizeOut
 } from '@devseed-ui/collecticons';
-import { Button } from '@devseed-ui/button';
 import { DatePicker } from '@devseed-ui/date-picker';
-import {
-  Toolbar,
-  ToolbarGroup,
-  ToolbarIconButton,
-  VerticalDivider
-} from '@devseed-ui/toolbar';
+import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
@@ -31,7 +25,7 @@ import {
 import { DAY_SIZE_MAX } from '$components/exploration/constants';
 import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minus';
 import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
-import { TipToolbarIconButton } from '$components/common/tip-button';
+import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -52,7 +46,7 @@ const ControlsToolbar = styled.div`
   }
 `;
 
-const DatePickerButton = styled(Button)`
+const DatePickerButton = styled(TipButton)`
   gap: ${glsp(0.5)};
 
   .head-reference {
@@ -104,6 +98,11 @@ export function TimelineControls(props: TimelineControlsProps) {
                   size='small'
                   disabled={!xScaled}
                   data-tour='date-picker-a'
+                  tipContent={
+                    selectedCompareDay
+                      ? 'Date shown on left map '
+                      : 'Date shown on map'
+                  }
                 >
                   <span className='head-reference'>A</span>
                   <span>{label}</span>
@@ -125,6 +124,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                       {...props}
                       size='small'
                       disabled={!xScaled}
+                      tipContent='Date shown on right map'
                     >
                       <span className='head-reference'>B</span>
                       <span>{label}</span>
@@ -198,6 +198,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                       size='small'
                       disabled={!xScaled}
                       data-tour='analysis-toolbar'
+                      tipContent='Date range for analysis'
                     >
                       <span className='head-reference'>From</span>
                       <span>
@@ -217,8 +218,11 @@ export function TimelineControls(props: TimelineControlsProps) {
 
                 <VerticalDivider />
 
-                <ToolbarIconButton
-                  disabled={!isAnalyzing}
+                <TipToolbarIconButton
+                  tipContent={
+                    isExpanded ? 'Hide chart y-axis' : 'Show chart y-axis'
+                  }
+                  visuallyDisabled={!isAnalyzing}
                   size='small'
                   onClick={() => {
                     setExpanded((v) => !v);
@@ -235,7 +239,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                       title='Expand dataset rows'
                     />
                   )}
-                </ToolbarIconButton>
+                </TipToolbarIconButton>
               </>
             ) : (
               <TimelineZoomControls onZoom={onZoom} />
