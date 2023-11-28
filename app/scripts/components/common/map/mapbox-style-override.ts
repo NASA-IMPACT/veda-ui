@@ -334,17 +334,6 @@ const MapboxStyleOverride = css`
       }
     }
   }
-
-
-  .mapboxgl-marker:hover {
-    cursor: pointer;
-  }
-
-  .mapboxgl-ctrl-scale {
-    color: ${themeVal('color.surface')};
-    border-color: ${themeVal('color.surface')};
-    background-color: ${themeVal('color.base-400a')};
-  }
 `;
 
 export default MapboxStyleOverride;
