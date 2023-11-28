@@ -2,6 +2,7 @@ import React from 'react';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import styled from 'styled-components';
 import { useAtomValue } from 'jotai';
+import { scaleLinear } from 'd3';
 
 import { clamp } from './timeline-utils';
 
@@ -9,7 +10,10 @@ import { CollecticonMagnifierMinus } from '$components/common/icons/magnifier-mi
 import { CollecticonMagnifierPlus } from '$components/common/icons/magnifier-plus';
 import { TipButton } from '$components/common/tip-button';
 import { SliderInput } from '$styles/range-slider';
-import { zoomTransformAtom } from '$components/exploration/atoms/timeline';
+import {
+  timelineSizesAtom,
+  zoomTransformAtom
+} from '$components/exploration/atoms/timeline';
 import { useScaleFactors } from '$components/exploration/hooks/scales-hooks';
 
 const TimelineControlsSelf = styled.div`
@@ -38,21 +42,26 @@ export function TimelineZoomControls(props: TimelineZoomControlsProps) {
   const { onZoom } = props;
   const { k } = useAtomValue(zoomTransformAtom);
   const { k0, k1 } = useScaleFactors();
+  const { contentWidth } = useAtomValue(timelineSizesAtom);
 
-  const currentZoom = Math.round((k / (k1 - k0)) * 100);
+  const currentZoom = scaleLinear().domain([k0, k1]).range([0, 100])(k);
 
   const handleZoomIn = () => {
-    // Buttons increase/decrease zoom by 5%.
-    const newPercentage = clamp(currentZoom + 5, 0, 100);
-    const zoom = (k1 - k0) * (newPercentage / 100) + k0;
-    onZoom(zoom);
+    const unscaledWidth = contentWidth * k;
+    // On each zoom halve the domain.
+    const scalar = contentWidth / 2;
+
+    const newRatio = unscaledWidth / scalar;
+    onZoom(clamp(newRatio, k0, k1));
   };
 
   const handleZoomOut = () => {
-    // Buttons increase/decrease zoom by 5%.
-    const newPercentage = clamp(currentZoom - 5, 0, 100);
-    const zoom = (k1 - k0) * (newPercentage / 100) + k0;
-    onZoom(zoom);
+    const unscaledWidth = Math.max(contentWidth, contentWidth * k);
+    // On each zoom duplicate the domain.
+    const scalar = contentWidth * 2;
+
+    const newRatio = unscaledWidth / scalar;
+    onZoom(clamp(newRatio, k0, k1));
   };
 
   const handleZoom = (value) => {
