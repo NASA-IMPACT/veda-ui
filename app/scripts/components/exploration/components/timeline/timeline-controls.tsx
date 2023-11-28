@@ -177,59 +177,70 @@ export function TimelineControls(props: TimelineControlsProps) {
               </TipToolbarIconButton>
             )}
           </ToolbarGroup>
-          {selectedInterval && (
-            <ToolbarGroup data-tour='analysis-toolbar'>
-              <DatePicker
-                id='date-picker-lr'
-                value={selectedInterval}
-                onConfirm={(d) => {
-                  setSelectedInterval({
-                    start: d.start!,
-                    end: d.end!
-                  });
-                }}
-                isClearable={false}
-                isRange
-                alignment='right'
-                renderTriggerElement={(props) => (
-                  <DatePickerButton {...props} size='small' disabled={!xScaled}>
-                    <span className='head-reference'>From</span>
-                    <span>
-                      {format(selectedInterval.start, 'MMM do, yyyy')}
-                    </span>
-                    <span className='head-reference'>to</span>
-                    <span>{format(selectedInterval.end, 'MMM do, yyyy')}</span>
-                    <CollecticonChevronDownSmall />
-                  </DatePickerButton>
-                )}
-              />
-              <VerticalDivider />
+          <ToolbarGroup>
+            {selectedInterval ? (
+              <>
+                <DatePicker
+                  id='date-picker-lr'
+                  value={selectedInterval}
+                  onConfirm={(d) => {
+                    setSelectedInterval({
+                      start: d.start!,
+                      end: d.end!
+                    });
+                  }}
+                  isClearable={false}
+                  isRange
+                  alignment='right'
+                  renderTriggerElement={(props) => (
+                    <DatePickerButton
+                      {...props}
+                      size='small'
+                      disabled={!xScaled}
+                      data-tour='analysis-toolbar'
+                    >
+                      <span className='head-reference'>From</span>
+                      <span>
+                        {format(selectedInterval.start, 'MMM do, yyyy')}
+                      </span>
+                      <span className='head-reference'>to</span>
+                      <span>
+                        {format(selectedInterval.end, 'MMM do, yyyy')}
+                      </span>
+                      <CollecticonChevronDownSmall />
+                    </DatePickerButton>
+                  )}
+                />
+                <VerticalDivider />
 
+                <TimelineZoomControls onZoom={onZoom} />
+
+                <VerticalDivider />
+
+                <ToolbarIconButton
+                  disabled={!isAnalyzing}
+                  size='small'
+                  onClick={() => {
+                    setExpanded((v) => !v);
+                  }}
+                >
+                  {isExpanded ? (
+                    <CollecticonResizeIn
+                      meaningful
+                      title='Contract dataset rows'
+                    />
+                  ) : (
+                    <CollecticonResizeOut
+                      meaningful
+                      title='Expand dataset rows'
+                    />
+                  )}
+                </ToolbarIconButton>
+              </>
+            ) : (
               <TimelineZoomControls onZoom={onZoom} />
-
-              <VerticalDivider />
-
-              <ToolbarIconButton
-                disabled={!isAnalyzing}
-                size='small'
-                onClick={() => {
-                  setExpanded((v) => !v);
-                }}
-              >
-                {isExpanded ? (
-                  <CollecticonResizeIn
-                    meaningful
-                    title='Contract dataset rows'
-                  />
-                ) : (
-                  <CollecticonResizeOut
-                    meaningful
-                    title='Expand dataset rows'
-                  />
-                )}
-              </ToolbarIconButton>
-            </ToolbarGroup>
-          )}
+            )}
+          </ToolbarGroup>
         </Toolbar>
       </ControlsToolbar>
 
