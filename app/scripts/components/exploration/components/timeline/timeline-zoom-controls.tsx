@@ -2,7 +2,7 @@ import React from 'react';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import styled from 'styled-components';
 import { useAtomValue } from 'jotai';
-import { scaleLinear } from 'd3';
+import { scaleLog } from 'd3';
 
 import { clamp } from './timeline-utils';
 
@@ -44,7 +44,8 @@ export function TimelineZoomControls(props: TimelineZoomControlsProps) {
   const { k0, k1 } = useScaleFactors();
   const { contentWidth } = useAtomValue(timelineSizesAtom);
 
-  const currentZoom = scaleLinear().domain([k0, k1]).range([0, 100])(k);
+  const zoomScale = scaleLog().base(2).domain([k0, k1]).range([0, 100]);
+  const currentZoom = zoomScale(k);
 
   const handleZoomIn = () => {
     const unscaledWidth = contentWidth * k;
@@ -65,7 +66,7 @@ export function TimelineZoomControls(props: TimelineZoomControlsProps) {
   };
 
   const handleZoom = (value) => {
-    const zoom = (k1 - k0) * (value / 100) + k0;
+    const zoom = zoomScale.invert(value);
     onZoom(zoom);
   };
 
@@ -90,7 +91,7 @@ export function TimelineZoomControls(props: TimelineZoomControlsProps) {
         max={100}
         step={1}
         onInput={handleZoom}
-        value={currentZoom}
+        value={isNaN(currentZoom) ? 0 : currentZoom}
       />
       <TipButton
         tipContent={
