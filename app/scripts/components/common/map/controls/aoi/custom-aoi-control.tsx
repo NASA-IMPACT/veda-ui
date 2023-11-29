@@ -126,7 +126,14 @@ export default function CustomAoIControl() {
     // Property was added to access draw control.
     const mbDraw = main?._drawControl;
     if (!mbDraw) return;
-    mbDraw.changeMode(isDrawing ? 'draw_polygon' : 'simple_select');
+
+    if (isDrawing) {
+      mbDraw.changeMode('draw_polygon');
+    } else {
+      mbDraw.changeMode('simple_select', {
+        featureIds: mbDraw.getSelectedIds()
+      });
+    }
   }, [main, isDrawing]);
 
   useThemedControl(() => <CustomAoI map={main} />, {
