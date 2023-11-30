@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import { endOfYear, format, startOfYear } from 'date-fns';
 import { scaleTime, ScaleTime } from 'd3';
 
@@ -15,7 +15,6 @@ import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
-import { analysisControllerAtom } from '$components/exploration/atoms/analysis';
 import { isExpandedAtom } from '$components/exploration/atoms/timeline';
 import {
   selectedCompareDateAtom,
@@ -26,6 +25,8 @@ import { DAY_SIZE_MAX } from '$components/exploration/constants';
 import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minus';
 import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
 import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
+import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
+import useAois from '$components/common/map/controls/hooks/use-aois';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -70,8 +71,9 @@ export function TimelineControls(props: TimelineControlsProps) {
     selectedCompareDateAtom
   );
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
-  const { isAnalyzing } = useAtomValue(analysisControllerAtom);
+  const { isAnalyzing } = useAnalysisController();
   const [isExpanded, setExpanded] = useAtom(isExpandedAtom);
+  const { features } = useAois();
 
   // Scale to use when there are no datasets with data (loading or error)
   const initialScale = useMemo(() => {
@@ -147,7 +149,12 @@ export function TimelineControls(props: TimelineControlsProps) {
               </>
             ) : (
               <TipToolbarIconButton
-                tipContent='Add date to compare'
+                visuallyDisabled={!!features.length}
+                tipContent={
+                  features.length
+                    ? 'Compare is not possible when there are areas of interest on the map'
+                    : 'Add date to compare'
+                }
                 size='small'
                 data-tour='compare-date'
                 onClick={() => {

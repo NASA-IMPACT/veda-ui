@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Feature, Polygon } from 'geojson';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useSetAtom } from 'jotai';
 import bbox from '@turf/bbox';
 import {
@@ -9,7 +9,7 @@ import {
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarLabel, VerticalDivider } from '@devseed-ui/toolbar';
-import { themeVal, glsp } from '@devseed-ui/theme-provider';
+import { themeVal, glsp, disabled } from '@devseed-ui/theme-provider';
 
 import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
@@ -18,15 +18,31 @@ import CustomAoIModal from './custom-aoi-modal';
 import { aoiDeleteAllAtom } from './atoms';
 
 import { TipToolbarIconButton } from '$components/common/tip-button';
+import { Tip } from '$components/common/tip';
 
-const AnalysisToolbar = styled(Toolbar)`
+const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
   border-radius: ${themeVal('shape.rounded')};
   padding: ${glsp(0, 0.5)};
   box-shadow: ${themeVal('boxShadow.elevationC')};
+
+  ${({ visuallyDisabled }) =>
+    visuallyDisabled &&
+    css`
+      > * {
+        ${disabled()}
+        pointer-events: none;
+      }
+    `}
 `;
 
-function CustomAoI({ map }: { map: any }) {
+function CustomAoI({
+  map,
+  disableReason
+}: {
+  map: any;
+  disableReason?: React.ReactNode;
+}) {
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
 
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
@@ -80,32 +96,36 @@ function CustomAoI({ map }: { map: any }) {
 
   return (
     <>
-      <AnalysisToolbar>
-        <ToolbarLabel>Analysis tools</ToolbarLabel>
-        <TipToolbarIconButton
-          tipContent='Draw an area of interest'
-          tipProps={{ placement: 'bottom' }}
-          active={isDrawing}
-          onClick={() => setIsDrawing(!isDrawing)}
-        >
-          <CollecticonPencil meaningful title='Draw AOI' />
-        </TipToolbarIconButton>
-        <TipToolbarIconButton
-          tipContent='Upload area of interest'
-          tipProps={{ placement: 'bottom' }}
-          onClick={() => setAoIModalRevealed(true)}
-        >
-          <CollecticonUpload2 title='Upload geoJSON' meaningful />
-        </TipToolbarIconButton>
-        <VerticalDivider />
-        <TipToolbarIconButton
-          tipContent='Delete selected / all areas of interest'
-          tipProps={{ placement: 'bottom' }}
-          onClick={onTrashClick}
-        >
-          <CollecticonTrashBin meaningful title='Delete selected' />
-        </TipToolbarIconButton>
-      </AnalysisToolbar>
+      <Tip disabled={!disableReason} content={disableReason} placement='bottom'>
+        <div>
+          <AnalysisToolbar visuallyDisabled={!!disableReason}>
+            <ToolbarLabel>Analysis tools</ToolbarLabel>
+            <TipToolbarIconButton
+              tipContent='Draw an area of interest'
+              tipProps={{ placement: 'bottom' }}
+              active={isDrawing}
+              onClick={() => setIsDrawing(!isDrawing)}
+            >
+              <CollecticonPencil meaningful title='Draw AOI' />
+            </TipToolbarIconButton>
+            <TipToolbarIconButton
+              tipContent='Upload area of interest'
+              tipProps={{ placement: 'bottom' }}
+              onClick={() => setAoIModalRevealed(true)}
+            >
+              <CollecticonUpload2 title='Upload geoJSON' meaningful />
+            </TipToolbarIconButton>
+            <VerticalDivider />
+            <TipToolbarIconButton
+              tipContent='Delete selected / all areas of interest'
+              tipProps={{ placement: 'bottom' }}
+              onClick={onTrashClick}
+            >
+              <CollecticonTrashBin meaningful title='Delete selected' />
+            </TipToolbarIconButton>
+          </AnalysisToolbar>
+        </div>
+      </Tip>
       <CustomAoIModal
         revealed={aoiModalRevealed}
         onConfirm={onConfirm}
@@ -115,7 +135,11 @@ function CustomAoI({ map }: { map: any }) {
   );
 }
 
-export default function CustomAoIControl() {
+export default function CustomAoIControl({
+  disableReason
+}: {
+  disableReason?: React.ReactNode;
+}) {
   const { main } = useMaps();
 
   const { isDrawing } = useAois();
@@ -136,8 +160,11 @@ export default function CustomAoIControl() {
     }
   }, [main, isDrawing]);
 
-  useThemedControl(() => <CustomAoI map={main} />, {
-    position: 'top-left'
-  });
+  useThemedControl(
+    () => <CustomAoI map={main} disableReason={disableReason} />,
+    {
+      position: 'top-left'
+    }
+  );
   return null;
 }

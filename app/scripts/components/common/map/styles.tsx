@@ -104,7 +104,7 @@ const generateStyle = (
   const nonGeneratorLayers =
     currentMapStyle?.layers.filter((layer) => !layer.metadata?.generatorId) ??
     [];
-  const noneGeneratorSources = nonGeneratorLayers.reduce((acc, layer) => {
+  const nonGeneratorSources = nonGeneratorLayers.reduce((acc, layer) => {
     const sourceId = layer.source;
     return !sourceId || acc[sourceId]
       ? acc
@@ -115,7 +115,7 @@ const generateStyle = (
   }, {});
 
   layers = [...layers, ...nonGeneratorLayers];
-  sources = { ...sources, ...noneGeneratorSources };
+  sources = { ...sources, ...nonGeneratorSources };
 
   return {
     version: 8,
