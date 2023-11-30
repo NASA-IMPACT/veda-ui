@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useState
 } from 'react';
+import useMaps from './hooks/use-maps';
 import {
   ExtendedLayer,
   ExtendedMetadata,
@@ -41,7 +42,10 @@ export type ExtendedStyle = ReturnType<typeof generateStyle>;
 // Takes in a dictionary associating each generator id with a series of
 //  Mapbox layers and sources to be added to the final style. Outputs
 //  a style object directly usable by the map instance.
-const generateStyle = (stylesData: Record<string, GeneratorStyleParams>) => {
+const generateStyle = (
+  stylesData: Record<string, GeneratorStyleParams>,
+  currentMapStyle
+) => {
   let sources: Record<string, AnySourceImpl> = {};
   let layers: ExtendedLayer[] = [];
 
@@ -90,6 +94,29 @@ const generateStyle = (stylesData: Record<string, GeneratorStyleParams>) => {
     return layerOrder !== 0 ? layerOrder : generatorOrder;
   });
 
+  // Include existent layers/sources not created by the generators.
+  // This is needed to avoid a flickering effect of the aoi drawing layer which
+  // was very visible while the analysis was loading. This would happen because
+  // the dataset layers update, causing the style to be generated again. This
+  // would cause the aoi layers to be removed and then re-added by the plugin
+  // causing a flickering effect. Bu keeping any layer we did not generate, we
+  // avoid this issue.
+  const nonGeneratorLayers =
+    currentMapStyle?.layers.filter((layer) => !layer.metadata?.generatorId) ??
+    [];
+  const noneGeneratorSources = nonGeneratorLayers.reduce((acc, layer) => {
+    const sourceId = layer.source;
+    return !sourceId || acc[sourceId]
+      ? acc
+      : {
+          ...acc,
+          [sourceId]: currentMapStyle.sources[sourceId]
+        };
+  }, {});
+
+  layers = [...layers, ...nonGeneratorLayers];
+  sources = { ...sources, ...noneGeneratorSources };
+
   return {
     version: 8,
     glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
@@ -123,8 +150,10 @@ export function Styles({
     }));
   }, []);
 
+  const { main } = useMaps();
+
   useEffect(() => {
-    const style = generateStyle(stylesData);
+    const style = generateStyle(stylesData, main?.getStyle());
     onStyleUpdate?.(style);
     setStyle(style as any);
   }, [stylesData, onStyleUpdate]);
