@@ -44,28 +44,28 @@ const PopoverFooter = styled.div`
 
 const introTourSteps = [
   {
-    title: 'Compare dates',
-    selector: "[data-tour='compare-date']",
-    content: () => (
-      <>
-        Compare dates side-by-side for your layers.
-        <br />
-        [image/illustration of a comparison]
-      </>
-    )
-  },
-  {
-    title: 'Calculate time series',
+    title: 'Time series analysis',
     selector: '.mapboxgl-ctrl-top-left',
     content: () => (
       <>
-        Calculate a time series of zonal statistics for
-        an area you draw or upload.
+        To calculate a time series of zonal statistics for
+        your layers, start here by drawing or uploading your area of interest.
         <br />
         [image/illustration of a time series, maybe plus AOI]
       </>
     ),
     stepInteraction: false
+  },
+  {
+    title: 'Comparison',
+    selector: "[data-tour='compare-date']",
+    content: () => (
+      <>
+        Here you can compare two dates side-by-side.
+        <br />
+        [image/illustration of a comparison]
+      </>
+    )
   }
 ];
 
