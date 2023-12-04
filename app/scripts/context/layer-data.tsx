@@ -55,6 +55,10 @@ const fetchLayerById = async (
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
+    if (domain.some((d) => !d)) {
+      throw new Error('Invalid datetime domain');
+    }
+
     return {
       timeseries: {
         ...commonTimeseriesParams,
