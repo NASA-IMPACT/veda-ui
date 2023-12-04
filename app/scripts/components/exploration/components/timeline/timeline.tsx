@@ -13,7 +13,13 @@ import {
   sub
 } from 'date-fns';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef
+} from 'react';
 import useDimensions from 'react-cool-dimensions';
 import styled from 'styled-components';
 
@@ -56,9 +62,9 @@ import {
   ZoomTransformPlain
 } from '$components/exploration/types.d.ts';
 import { useInteractionRectHover } from '$components/exploration/hooks/use-dataset-hover';
-import { datasetLayers } from '$components/exploration/data-utils';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useAois from '$components/common/map/controls/hooks/use-aois';
+import Pluralize from '$utils/pluralize';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -353,6 +359,26 @@ export default function Timeline(props: TimelineProps) {
     applyTransform(zoomBehavior, select(interactionRef.current), 0, 0, k0);
   }, [prevDatasetsCount, successDatasetsCount, k0, zoomBehavior]);
 
+  const onControlsZoom = useCallback(
+    (zoomV) => {
+      if (!interactionRef.current || !xMain || !xScaled || !selectedDay) return;
+
+      // Position in the timeline so it maintains the same position.
+      const currPlayheadX = xScaled(selectedDay);
+      // Rescale the main scale to be able to calculate the new x position
+      const rescaled = rescaleX(xMain, 0, zoomV);
+
+      applyTransform(
+        zoomBehavior,
+        select(interactionRef.current),
+        rescaled(selectedDay) * -1 + currPlayheadX,
+        0,
+        zoomV
+      );
+    },
+    [xScaled, xMain, selectedDay, zoomBehavior]
+  );
+
   // Set correct dates when the date domain changes.
   const prevDataDomain = usePreviousValue(dataDomain);
   useEffect(() => {
@@ -458,7 +484,7 @@ export default function Timeline(props: TimelineProps) {
     return (
       <TimelineWrapper ref={observe}>
         <NoData>
-          <p>Select a dataset to start exploration</p>
+          <p>Select a data layer to start exploration</p>
         </NoData>
       </TimelineWrapper>
     );
@@ -475,21 +501,30 @@ export default function Timeline(props: TimelineProps) {
         <TimelineDetails>
           <Headline>
             <Heading as='h2' size='xsmall'>
-              Datasets
+              Data layers
             </Heading>
             <Button
               variation='base-text'
               size='small'
               onClick={onDatasetAddClick}
             >
-              <CollecticonPlusSmall meaningful title='Add dataset' />
+              <CollecticonPlusSmall title='Add layer' /> Add layer
             </Button>
           </Headline>
           <p>
-            {datasets.length} of {datasetLayers.length}
+            <Pluralize
+              count={datasets.length}
+              singular='layer'
+              plural='layers'
+            />{' '}
+            added
           </p>
         </TimelineDetails>
-        <TimelineControls xScaled={xScaled} width={width} />
+        <TimelineControls
+          xScaled={xScaled}
+          width={width}
+          onZoom={onControlsZoom}
+        />
       </TimelineHeader>
       <TimelineContent>
         {shouldRenderTimeline && (

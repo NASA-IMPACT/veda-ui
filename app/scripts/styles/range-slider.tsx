@@ -38,6 +38,7 @@ export const RangeSliderInput = styled(RangeSlider)<RangeSliderInputProps>`
       transition: background 160ms ease-in-out;
       background: ${themeVal('color.surface')};
       box-shadow: ${themeVal('boxShadow.elevationD')};
+      border: 1px solid ${themeVal('color.primary')};
       width: 1.25rem;
       height: 1.25rem;
 
@@ -47,6 +48,7 @@ export const RangeSliderInput = styled(RangeSlider)<RangeSliderInputProps>`
     }
 
     .range-slider__thumb[data-lower] {
+      display: none;
       width: 0;
     }
   }

@@ -4,7 +4,6 @@ import 'react-range-slider-input/dist/style.css';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
-import { Button } from '@devseed-ui/button';
 import {
   CollecticonCog,
   CollecticonMap,
@@ -22,6 +21,7 @@ import { Tip } from '$components/common/tip';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
+import { TipButton } from '$components/common/tip-button';
 
 const RemoveButton = composeVisuallyDisabled(DropMenuItemButton);
 const TileModalButton = composeVisuallyDisabled(DropMenuItemButton);
@@ -50,14 +50,15 @@ export default function DatasetOptions(props: DatasetOptionsProps) {
         alignment='right'
         direction='up'
         triggerElement={(props) => (
-          <Button
+          <TipButton
+            tipContent='Layer control options'
             variation='base-text'
             size='small'
             fitting='skinny'
             {...props}
           >
-            <CollecticonCog meaningful title='View dataset options' />
-          </Button>
+            <CollecticonCog meaningful title='View layer options' />
+          </TipButton>
         )}
       >
         <DropTitle>Display options</DropTitle>

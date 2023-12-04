@@ -13,9 +13,8 @@ import {
   CollecticonGripVertical
 } from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
+import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
-import { Button } from '@devseed-ui/button';
 
 import {
   DatasetPopover,
@@ -54,6 +53,7 @@ import {
 } from '$components/exploration/hooks/use-analysis-data-request';
 import { getDatasetPath } from '$utils/routes';
 import { findParentDataset } from '$components/exploration/data-utils';
+import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -228,19 +228,25 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   {dataset.data.name}
                 </Heading>
                 <Toolbar size='small'>
-                  <Button
+                  <TipButton
                     forwardedAs={Link}
-                    fitting='skinny'
+                    tipContent='Go to dataset information page'
+                    // Using a button instead of a toolbar button because the
+                    // latter doesn't support the `forwardedAs` prop.
                     size='small'
+                    fitting='skinny'
                     to={getDatasetPath(findParentDataset(datasetId)!)}
                   >
                     <CollecticonCircleInformation
                       meaningful
                       title='View dataset page'
                     />
-                  </Button>
+                  </TipButton>
                   <DatasetOptions datasetAtom={datasetAtom} />
-                  <ToolbarIconButton onClick={() => setVisible((v) => !v)}>
+                  <TipToolbarIconButton
+                    tipContent={isVisible ? 'Hide layer' : 'Show layer'}
+                    onClick={() => setVisible((v) => !v)}
+                  >
                     {isVisible ? (
                       <CollecticonEye
                         meaningful
@@ -252,7 +258,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                         title='Toggle dataset visibility'
                       />
                     )}
-                  </ToolbarIconButton>
+                  </TipToolbarIconButton>
                 </Toolbar>
               </DatasetHeadline>
               {datasetLegend?.type === 'categorical' && (

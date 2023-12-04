@@ -1,6 +1,18 @@
 import { ScaleTime, Selection, ZoomBehavior, ZoomTransform } from 'd3';
 
 /**
+ * Clamps the given value to the given range.
+ *
+ * @param value Value to clamp
+ * @param min Minimum value
+ * @param max Maximum value
+ * @returns Clamped value
+ */
+export function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(value, max));
+}
+
+/**
  * Rescales the given scale according to the given factors.
  *
  * @param scale Scale to rescale
@@ -19,7 +31,7 @@ export function rescaleX(
       // New value after scaling
       const value = (v - x) / k;
       // Clamp value to the range
-      const valueClamped = Math.max(range[0], Math.min(value, range[1]));
+      const valueClamped = clamp(value, range[0], range[1]);
       return scale.invert(valueClamped);
     })
   );

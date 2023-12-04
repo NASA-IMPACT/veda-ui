@@ -1,6 +1,6 @@
 import { atom, SetStateAction } from 'jotai';
 import { atomWithReducer } from 'jotai/utils';
-import { setUrlParam, urlAtom } from './url';
+import { setUrlParam, urlAtom } from '$utils/params-location-atom/url';
 
 export function atomWithCompare<Value>(
   initialValue: Value,

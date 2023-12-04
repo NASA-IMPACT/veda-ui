@@ -14,14 +14,16 @@ import { AnalysisMessageControl } from './analysis-message-control';
 import Map, { Compare, MapControls } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/geocoder';
-import { ScaleControl } from '$components/common/map/controls';
+import {
+  NavigationControl,
+  ScaleControl
+} from '$components/common/map/controls';
 import MapCoordsControl from '$components/common/map/controls/coords';
 import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
-import ResetAoIControl from '$components/common/map/controls/aoi/reset-aoi-control';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
 export function ExplorationMap() {
@@ -135,17 +137,12 @@ export function ExplorationMap() {
         ))}
       {/* Map controls */}
       <MapControls>
-        <DrawControl
-          displayControlsDefault={false}
-          controls={
-            {
-              polygon: true,
-              trash: true
-            } as any
+        <DrawControl />
+        <CustomAoIControl
+          disableReason={
+            comparing && 'Analysis is not possible when comparing dates'
           }
         />
-        <CustomAoIControl />
-        <ResetAoIControl />
         <AnalysisMessageControl />
         <GeocoderControl />
         <MapOptionsControl
@@ -160,6 +157,7 @@ export function ExplorationMap() {
 
         <ScaleControl />
         <MapCoordsControl />
+        <NavigationControl />
       </MapControls>
       {comparing && (
         // Compare map layers

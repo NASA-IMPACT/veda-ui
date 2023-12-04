@@ -1,28 +1,20 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import { endOfYear, format, startOfYear } from 'date-fns';
 import { scaleTime, ScaleTime } from 'd3';
 
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonChevronDownSmall,
-  CollecticonPlusSmall,
   CollecticonResizeIn,
-  CollecticonResizeOut,
-  CollecticonTrashBin
+  CollecticonResizeOut
 } from '@devseed-ui/collecticons';
-import { Button } from '@devseed-ui/button';
 import { DatePicker } from '@devseed-ui/date-picker';
-import {
-  Toolbar,
-  ToolbarGroup,
-  ToolbarIconButton,
-  VerticalDivider
-} from '@devseed-ui/toolbar';
+import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
 import { DateAxis } from './date-axis';
-import { analysisControllerAtom } from '$components/exploration/atoms/analysis';
+import { TimelineZoomControls } from './timeline-zoom-controls';
 import { isExpandedAtom } from '$components/exploration/atoms/timeline';
 import {
   selectedCompareDateAtom,
@@ -30,6 +22,11 @@ import {
   selectedIntervalAtom
 } from '$components/exploration/atoms/dates';
 import { DAY_SIZE_MAX } from '$components/exploration/constants';
+import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minus';
+import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
+import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
+import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
+import useAois from '$components/common/map/controls/hooks/use-aois';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -50,7 +47,7 @@ const ControlsToolbar = styled.div`
   }
 `;
 
-const DatePickerButton = styled(Button)`
+const DatePickerButton = styled(TipButton)`
   gap: ${glsp(0.5)};
 
   .head-reference {
@@ -63,18 +60,20 @@ const DatePickerButton = styled(Button)`
 interface TimelineControlsProps {
   xScaled?: ScaleTime<number, number>;
   width: number;
+  onZoom: (zoom: number) => void;
 }
 
 export function TimelineControls(props: TimelineControlsProps) {
-  const { xScaled, width } = props;
+  const { xScaled, width, onZoom } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
     selectedCompareDateAtom
   );
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
-  const { isAnalyzing } = useAtomValue(analysisControllerAtom);
+  const { isAnalyzing } = useAnalysisController();
   const [isExpanded, setExpanded] = useAtom(isExpandedAtom);
+  const { features } = useAois();
 
   // Scale to use when there are no datasets with data (loading or error)
   const initialScale = useMemo(() => {
@@ -101,6 +100,11 @@ export function TimelineControls(props: TimelineControlsProps) {
                   size='small'
                   disabled={!xScaled}
                   data-tour='date-picker-a'
+                  tipContent={
+                    selectedCompareDay
+                      ? 'Date shown on left map '
+                      : 'Date shown on map'
+                  }
                 >
                   <span className='head-reference'>A</span>
                   <span>{label}</span>
@@ -122,6 +126,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                       {...props}
                       size='small'
                       disabled={!xScaled}
+                      tipContent='Date shown on right map'
                     >
                       <span className='head-reference'>B</span>
                       <span>{label}</span>
@@ -129,20 +134,27 @@ export function TimelineControls(props: TimelineControlsProps) {
                     </DatePickerButton>
                   )}
                 />
-                <ToolbarIconButton
+                <TipToolbarIconButton
+                  tipContent='Stop comparing dates'
                   size='small'
                   onClick={() => {
                     setSelectedCompareDay(null);
                   }}
                 >
-                  <CollecticonTrashBin
+                  <CollecticonCalendarMinus
                     meaningful
                     title='Stop comparing dates'
                   />
-                </ToolbarIconButton>
+                </TipToolbarIconButton>
               </>
             ) : (
-              <ToolbarIconButton
+              <TipToolbarIconButton
+                visuallyDisabled={!!features.length}
+                tipContent={
+                  features.length
+                    ? 'Compare is not possible when there are areas of interest on the map'
+                    : 'Add date to compare'
+                }
                 size='small'
                 data-tour='compare-date'
                 onClick={() => {
@@ -165,59 +177,81 @@ export function TimelineControls(props: TimelineControlsProps) {
                   setSelectedCompareDay(newDate);
                 }}
               >
-                <CollecticonPlusSmall meaningful title='Add comparison date' />
-              </ToolbarIconButton>
+                <CollecticonCalendarPlus
+                  meaningful
+                  title='Add comparison date'
+                />
+              </TipToolbarIconButton>
             )}
           </ToolbarGroup>
-          {selectedInterval && (
-            <ToolbarGroup data-tour='analysis-toolbar'>
-              <DatePicker
-                id='date-picker-lr'
-                value={selectedInterval}
-                onConfirm={(d) => {
-                  setSelectedInterval({
-                    start: d.start!,
-                    end: d.end!
-                  });
-                }}
-                isClearable={false}
-                isRange
-                alignment='right'
-                renderTriggerElement={(props) => (
-                  <DatePickerButton {...props} size='small' disabled={!xScaled}>
-                    <span className='head-reference'>From</span>
-                    <span>
-                      {format(selectedInterval.start, 'MMM do, yyyy')}
-                    </span>
-                    <span className='head-reference'>to</span>
-                    <span>{format(selectedInterval.end, 'MMM do, yyyy')}</span>
-                    <CollecticonChevronDownSmall />
-                  </DatePickerButton>
-                )}
-              />
-              <VerticalDivider />
+          <ToolbarGroup>
+            {selectedInterval ? (
+              <>
+                <DatePicker
+                  id='date-picker-lr'
+                  value={selectedInterval}
+                  onConfirm={(d) => {
+                    setSelectedInterval({
+                      start: d.start!,
+                      end: d.end!
+                    });
+                  }}
+                  isClearable={false}
+                  isRange
+                  alignment='right'
+                  renderTriggerElement={(props) => (
+                    <DatePickerButton
+                      {...props}
+                      size='small'
+                      disabled={!xScaled}
+                      data-tour='analysis-toolbar'
+                      tipContent='Date range for analysis'
+                    >
+                      <span className='head-reference'>From</span>
+                      <span>
+                        {format(selectedInterval.start, 'MMM do, yyyy')}
+                      </span>
+                      <span className='head-reference'>to</span>
+                      <span>
+                        {format(selectedInterval.end, 'MMM do, yyyy')}
+                      </span>
+                      <CollecticonChevronDownSmall />
+                    </DatePickerButton>
+                  )}
+                />
+                <VerticalDivider />
 
-              <ToolbarIconButton
-                disabled={!isAnalyzing}
-                size='small'
-                onClick={() => {
-                  setExpanded((v) => !v);
-                }}
-              >
-                {isExpanded ? (
-                  <CollecticonResizeIn
-                    meaningful
-                    title='Contract dataset rows'
-                  />
-                ) : (
-                  <CollecticonResizeOut
-                    meaningful
-                    title='Expand dataset rows'
-                  />
-                )}
-              </ToolbarIconButton>
-            </ToolbarGroup>
-          )}
+                <TimelineZoomControls onZoom={onZoom} />
+
+                <VerticalDivider />
+
+                <TipToolbarIconButton
+                  tipContent={
+                    isExpanded ? 'Hide chart y-axis' : 'Show chart y-axis'
+                  }
+                  visuallyDisabled={!isAnalyzing}
+                  size='small'
+                  onClick={() => {
+                    setExpanded((v) => !v);
+                  }}
+                >
+                  {isExpanded ? (
+                    <CollecticonResizeIn
+                      meaningful
+                      title='Contract dataset rows'
+                    />
+                  ) : (
+                    <CollecticonResizeOut
+                      meaningful
+                      title='Expand dataset rows'
+                    />
+                  )}
+                </TipToolbarIconButton>
+              </>
+            ) : (
+              <TimelineZoomControls onZoom={onZoom} />
+            )}
+          </ToolbarGroup>
         </Toolbar>
       </ControlsToolbar>
 

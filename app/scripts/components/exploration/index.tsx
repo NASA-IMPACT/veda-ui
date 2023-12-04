@@ -12,7 +12,7 @@ import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { timelineDatasetsAtom } from './atoms/datasets';
 import { PopoverTourComponent, TourManager } from './tour-manager';
 import { useAnalysisController } from './hooks/use-analysis-data-request';
-import { CLEAR_LOCATION, urlAtom } from './atoms/url';
+import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';

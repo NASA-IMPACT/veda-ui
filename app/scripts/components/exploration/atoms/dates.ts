@@ -1,5 +1,5 @@
 import { DateRange } from '../types.d.ts';
-import { atomWithUrlValueStability } from './atom-with-url-value-stability';
+import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 
 // We cannot start a date with null.
 // We need to load the params at the start, otherwise when the
@@ -68,8 +68,10 @@ export const selectedIntervalAtom = atomWithUrlValueStability<DateRange | null>(
     areEqual(prev, next) {
       if (!prev || !next) return prev === next;
 
-      return prev.start.getTime() === next.start.getTime() &&
-        prev.end.getTime() === next.end.getTime();
+      return (
+        prev.start.getTime() === next.start.getTime() &&
+        prev.end.getTime() === next.end.getTime()
+      );
     },
     dehydrate: (range) => {
       return range

@@ -5,7 +5,7 @@ import {
 } from 'react-map-gl';
 
 export function NavigationControl() {
-  return <MapboxGLNavigationControl position='top-left' showCompass={false} />;
+  return <MapboxGLNavigationControl position='top-right' showCompass={false} />;
 }
 
 export function ScaleControl() {
