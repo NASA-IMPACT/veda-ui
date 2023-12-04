@@ -101,6 +101,10 @@ async function fetchStacDatasetById(
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
+    if (!domain?.length || domain.some((d) => !d)) {
+      throw new Error('Invalid datetime domain');
+    }
+
     return {
       ...commonTimeseriesParams,
       domain
