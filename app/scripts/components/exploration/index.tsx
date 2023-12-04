@@ -5,7 +5,6 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { TourProvider } from '@reactour/tour';
 import { themeVal } from '@devseed-ui/theme-provider';
 
-import { MockControls } from './datasets-mock';
 import Timeline from './components/timeline/timeline';
 import { ExplorationMap } from './components/map';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
@@ -106,12 +105,6 @@ function Exploration() {
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>
               <ExplorationMap />
-              <MockControls
-                comparing={false}
-                onCompareClick={() => {
-                  /* noop */
-                }}
-              />
             </Panel>
             <PanelResizeHandle className='resize-handle' />
             <Panel maxSize={75} className='panel panel-timeline'>
