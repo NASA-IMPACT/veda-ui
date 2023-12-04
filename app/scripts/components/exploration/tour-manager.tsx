@@ -44,53 +44,25 @@ const PopoverFooter = styled.div`
 
 const introTourSteps = [
   {
-    title: 'Map layer selection',
-    selector: "[data-tour='dataset-list-item']",
-    mutationObservables: ["[data-tour='dataset-list-item']"],
-    content:
-      "Each row represents a dataset, and each of the boxes on the timeline represents a data unit: day, month or year, depending on the dataset's time density."
-  },
-  {
-    title: 'Playhead',
-    selector: "[data-tour='timeline-head-a']",
-    content:
-      'Move this playhead to select a date to view on the map. You can drag it around or click on the timeline to place it.'
-  },
-  {
-    title: 'Date picker',
-    selector: "[data-tour='date-picker-a']",
-    content: 'Alternatively you can also select a date through the date picker.'
-  },
-  {
     title: 'Compare dates',
     selector: "[data-tour='compare-date']",
     content: () => (
       <>
-        You can also select a second date to compare with the first one.
+        Compare dates side-by-side for your layers.
         <br />
-        The map will show a slider allowing you to view the differences.
+        [image/illustration of a comparison]
       </>
     )
   },
   {
-    title: 'Timeline',
-    selector: "[data-tour='timeline-interaction-rect']",
-    content: () => (
-      <>
-        You can zoom in on the timeline by scrolling while pressing the alt key
-        (or option) and click and drag to pan.
-        <br />
-        Go ahead and try it out!
-      </>
-    )
-  },
-  {
-    title: 'AOI tools',
+    title: 'Calculate time series',
     selector: '.mapboxgl-ctrl-top-left',
     content: () => (
       <>
-        You can calculate a time series of zonal statistics for your area of
-        interest (AOI). Start that process here by drawing or uploading an AOI.
+        Calculate a time series of zonal statistics for
+        an area you draw or upload.
+        <br />
+        [image/illustration of a time series, maybe plus AOI]
       </>
     ),
     stepInteraction: false
@@ -98,31 +70,6 @@ const introTourSteps = [
 ];
 
 const analysisTourSteps = [
-  {
-    title: 'Analysis',
-    selector: "[data-tour='analysis-message']",
-    content: () => (
-      <>
-        You can now calculate a time series of zonal statistics for your area of
-        interest.
-      </>
-    ),
-    stepInteraction: false
-  },
-  {
-    title: 'Date Range',
-    selector: "[data-tour='analysis-toolbar']",
-    content: () => (
-      <>
-        Refine the date range to analyze with the data pickers or handles on the
-        timeline.
-        <br />
-        Once you&apos;re happy, press the analyze button to start the
-        calculation.
-      </>
-    ),
-    stepInteraction: false
-  }
 ];
 
 /**
@@ -203,7 +150,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
         fitting='skinny'
         onClick={() => setIsOpen(false)}
       >
-        <CollecticonXmark size='small' meaningful title='Close tour' />
+        <CollecticonXmark size='small' meaningful title='Close feature tour' />
       </CloseButton>
       <Heading as='strong' size='xsmall'>
         {title}
@@ -224,7 +171,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
             setCurrentStep((s) => s - 1);
           }}
         >
-          <CollecticonChevronLeftSmall meaningful title='Previous step' />
+          <CollecticonChevronLeftSmall meaningful title='Previous feature' />
         </Button>
         <small>
           {currentStep + 1} / {steps.length}
@@ -238,7 +185,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
             setCurrentStep((s) => s + 1);
           }}
         >
-          <CollecticonChevronRightSmall meaningful title='Next step' />
+          <CollecticonChevronRightSmall meaningful title='Next feature' />
         </Button>
       </PopoverFooter>
       {/* {(currentStep === 0 || isLastStep) && (
