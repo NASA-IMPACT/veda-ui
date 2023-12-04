@@ -571,7 +571,7 @@ function DatasetsExplore() {
   return (
     <>
       <LayoutProps
-        title={`${dataset.data.name} Exploration`}
+        title={`${dataset.data.name} - Exploration`}
         description={dataset.data.description}
         thumbnail={dataset.data.media?.src}
         localNavProps={{
@@ -585,7 +585,7 @@ function DatasetsExplore() {
         hideFooter
       />
       <PageMainContent>
-        <PageHero title={`${dataset.data.name} Exploration`} isHidden />
+        <PageHero title={dataset.data.name} isHidden />
         <Explorer>
           <Panel revealed={panelRevealed} onClick={onPanelClick}>
             <PanelInner ref={panelBodyRef}>

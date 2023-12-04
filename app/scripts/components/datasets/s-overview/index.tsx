@@ -35,7 +35,7 @@ function DatasetsOverview() {
   return (
     <>
       <LayoutProps
-        title={`${dataset.data.name} Overview`}
+        title={`${dataset.data.name} - Overview`}
         description={dataset.data.description}
         thumbnail={dataset.data.media?.src}
         localNavProps={{
@@ -53,7 +53,7 @@ function DatasetsOverview() {
 
       <PageMainContent>
         <PageHero
-          title={`${dataset.data.name} Overview`}
+          title={dataset.data.name}
           description={dataset.data.description}
           renderBetaBlock={() => (
             <PageActions>

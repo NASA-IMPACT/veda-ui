@@ -280,6 +280,8 @@ async function requestTimeseries({
     const tileEndpointToUse =
       layer.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT;
 
+    const analysisParams = layersBase.layer.analysis?.sourceParams ?? {};
+
     const layerStatistics = await Promise.all(
       assets.map(async ({ date, url }) => {
         const statistics = await queryClient.fetchQuery(
@@ -290,7 +292,7 @@ async function requestTimeseries({
                 `${tileEndpointToUse}/cog/statistics?url=${url}`,
                 // Making a request with a FC causes a 500 (as of 2023/01/20)
                 combineFeatureCollection(aoi),
-                { signal }
+                { params: { ...analysisParams, url }, signal }
               );
               return {
                 date,

@@ -67,7 +67,8 @@ declare module 'veda' {
     analysis?: {
       metrics: string[];
       exclude: boolean;
-    }
+      sourceParams?: Record<string, any>;
+    };
   }
 
   // A normalized compare layer is the result after the compare definition is
