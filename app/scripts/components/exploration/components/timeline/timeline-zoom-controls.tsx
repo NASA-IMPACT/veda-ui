@@ -1,5 +1,5 @@
 import React from 'react';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { glsp } from '@devseed-ui/theme-provider';
 import styled from 'styled-components';
 import { useAtomValue } from 'jotai';
 import { scaleLog } from 'd3';
@@ -15,6 +15,7 @@ import {
   zoomTransformAtom
 } from '$components/exploration/atoms/timeline';
 import { useScaleFactors } from '$components/exploration/hooks/scales-hooks';
+import { ShortcutCode } from '$styles/shortcut-code';
 
 const TimelineControlsSelf = styled.div`
   display: flex;
@@ -25,13 +26,6 @@ const TimelineControlsSelf = styled.div`
 
 const TipContent = styled.div`
   text-align: center;
-`;
-
-const ShortcutCode = styled.code`
-  background: ${themeVal('color.surface-200a')};
-  font-size: 0.75rem;
-  padding: 0 0.25rem;
-  border-radius: ${themeVal('shape.rounded')};
 `;
 
 interface TimelineZoomControlsProps {
