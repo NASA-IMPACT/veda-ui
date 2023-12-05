@@ -1,11 +1,9 @@
 import React from 'react';
-import T from 'prop-types';
 import styled, { css } from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import PageHeader from './page-header';
 import { useSlidingStickyHeaderProps } from './layout-root';
-import PageLocalNav from '$components/common/page-local-nav';
 
 import {
   HEADER_WRAPPER_ID,
@@ -29,9 +27,7 @@ const NavWrapper = styled.div`
     `}
 `;
 
-function PageNavWrapper({ localNavProps }) {
-  const renderLocalNav = !!localNavProps;
-
+function PageNavWrapper() {
   const { isHeaderHidden, headerHeight } = useSlidingStickyHeaderProps();
 
   return (
@@ -41,13 +37,8 @@ function PageNavWrapper({ localNavProps }) {
       headerHeight={headerHeight}
     >
       <PageHeader />
-      {renderLocalNav && <PageLocalNav {...localNavProps} />}
     </NavWrapper>
   );
 }
-
-PageNavWrapper.propTypes = {
-  localNavProps: T.object
-};
 
 export default PageNavWrapper;

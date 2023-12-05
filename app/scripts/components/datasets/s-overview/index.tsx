@@ -6,13 +6,11 @@ import { CollecticonCompass } from '@devseed-ui/collecticons';
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
 import { PageActions, PageMainContent } from '$styles/page';
-import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import PageHero from '$components/common/page-hero';
 import RelatedContent from '$components/common/related-content';
 import { NotebookConnectButton } from '$components/common/notebook-connect';
 
 import {
-  allDatasetsProps,
   TAXONOMY_GRADE,
   TAXONOMY_UNCERTAINTY,
   useDataset
@@ -38,17 +36,6 @@ function DatasetsOverview() {
         title={`${dataset.data.name} - Overview`}
         description={dataset.data.description}
         thumbnail={dataset.data.media?.src}
-        localNavProps={{
-          parentName: 'Dataset',
-          parentLabel: 'Datasets',
-          parentTo: DATASETS_PATH,
-          items: allDatasetsProps,
-          currentId: dataset.data.id,
-          localMenuCmp:
-            dataset?.data.disableExplore !== true ? (
-              <DatasetsLocalMenu dataset={dataset} />
-            ) : null
-        }}
       />
 
       <PageMainContent>
@@ -57,7 +44,7 @@ function DatasetsOverview() {
           description={dataset.data.description}
           renderBetaBlock={() => (
             <PageActions>
-              {dataset?.data.disableExplore !== true && (
+              {dataset.data.disableExplore !== true && (
                 <Button
                   forwardedAs={Link}
                   to={getDatasetExplorePath(dataset.data)}

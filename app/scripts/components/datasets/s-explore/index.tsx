@@ -22,7 +22,6 @@ import TileLinkButton from './tile-link';
 import DatasetLayers from './dataset-layers';
 import { PanelDateWidget } from './panel-date-widget';
 import { resourceNotFound } from '$components/uhoh';
-import { DatasetsLocalMenu } from '$components/common/page-local-nav';
 import { LayoutProps } from '$components/common/layout-root';
 import MapboxMap, { MapboxMapRef } from '$components/common/mapbox';
 import PageHero from '$components/common/page-hero';
@@ -43,9 +42,8 @@ import {
   PANEL_REVEAL_DURATION
 } from '$styles/panel';
 
-import { allDatasetsProps, useDataset } from '$utils/veda-data';
+import { useDataset } from '$utils/veda-data';
 import { useMediaQuery } from '$utils/use-media-query';
-import { DATASETS_PATH } from '$utils/routes';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer, useDatasetAsyncLayers } from '$context/layer-data';
@@ -574,14 +572,6 @@ function DatasetsExplore() {
         title={`${dataset.data.name} - Exploration`}
         description={dataset.data.description}
         thumbnail={dataset.data.media?.src}
-        localNavProps={{
-          parentName: 'Dataset',
-          parentLabel: 'Datasets',
-          parentTo: DATASETS_PATH,
-          items: allDatasetsProps,
-          currentId: dataset.data.id,
-          localMenuCmp: <DatasetsLocalMenu dataset={dataset} />
-        }}
         hideFooter
       />
       <PageMainContent>

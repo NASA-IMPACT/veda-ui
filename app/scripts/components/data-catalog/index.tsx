@@ -155,17 +155,11 @@ function DataCatalog() {
     <PageMainContent>
       <LayoutProps
         title='Data Catalog'
-        description={
-          getString('dataCatalogBanner')?.other ||
-          'This dashboard explores key indicators to track and compare changes over time.'
-        }
+        description={getString('dataCatalogBanner').other}
       />
       <PageHero
         title='Data Catalog'
-        description={
-          getString('dataCatalogBanner')?.other ||
-          'This dashboard explores key indicators to track and compare changes over time.'
-        }
+        description={getString('dataCatalogBanner').other}
       />
 
       <FeaturedDatasets />

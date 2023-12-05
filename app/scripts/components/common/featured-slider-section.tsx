@@ -97,7 +97,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       }}
                       cardType='featured'
                       linkLabel='View more'
-                      linkTo={getItemPath(d)}
+                      linkTo={d.asLink?.url ?? getItemPath(d)}
                       title={d.name}
                       overline={
                         <CardMeta>

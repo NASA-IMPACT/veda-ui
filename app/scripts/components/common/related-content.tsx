@@ -7,6 +7,7 @@ import {
   datasets,
   Media,
   RelatedContentData,
+  LinkContentData,
   StoryData
 } from 'veda';
 import { utcString2userTzDate } from '$utils/date';
@@ -48,6 +49,7 @@ interface FormatBlock {
   description: string;
   date: string;
   link: string;
+  asLink?: LinkContentData;
   parentLink: string;
   media: Media;
   parent: RelatedContentData['type'];
@@ -76,6 +78,7 @@ function formatBlock({
   description,
   date,
   media,
+  asLink,
   type
 }): FormatBlock {
   return {
@@ -84,6 +87,7 @@ function formatBlock({
     description,
     date,
     media,
+    asLink,
     ...formatUrl(id, type),
     parent: type
   };
@@ -109,6 +113,7 @@ function formatContents(relatedData: RelatedContentData[]) {
       id,
       name,
       description,
+      asLink: (matchingContent as StoryData).asLink,
       date: (matchingContent as StoryData).pubDate,
       media,
       type
@@ -141,7 +146,7 @@ export default function RelatedContent(props: RelatedContentProps) {
               <Card
                 cardType='cover'
                 linkLabel={`View ${t.parent} ${t.name}`}
-                linkTo={t.link}
+                linkTo={t.asLink?.url ?? t.link}
                 title={t.name}
                 date={
                   t.parent === storyString

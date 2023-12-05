@@ -54,6 +54,8 @@ declare module 'veda' {
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
+    stacApiEndpoint?: string;
+    tileApiEndpoint?: string;
     name: string;
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
@@ -84,6 +86,8 @@ declare module 'veda' {
     id: string;
     name: string;
     description: string;
+    stacApiEndpoint?: string;
+    tileApiEndpoint?: string;
     stacCol: string;
     type: DatasetLayerType;
     legend?: LayerLegendCategorical | LayerLegendGradient;
@@ -137,6 +141,14 @@ declare module 'veda' {
     id: string;
     thematic?: string;
   }
+  /**
+   * Link  Content
+   * When the story is a link out to the external/internal content
+   */
+
+  export interface LinkContentData {
+    url: string;
+  }
 
   export interface DatasetUsage {
     url: string;
@@ -175,6 +187,7 @@ declare module 'veda' {
     media?: Media;
     taxonomy: Taxonomy[];
     related?: RelatedContentData[];
+    asLink?: LinkContentData;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -246,6 +259,8 @@ declare module 'veda' {
     | 'developmentContent'
     | 'aboutContent'
     | 'homeContent'
+    | 'storiesHubContent'
+    | 'storiesHubHero'
     | 'sandbox-override'
     | 'pageFooter'
     | 'headerBrand'
@@ -259,7 +274,6 @@ declare module 'veda' {
     one: string;
     other: string;
   };
-
   /**
    * List of custom user defined pages.
    */

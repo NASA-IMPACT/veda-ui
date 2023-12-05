@@ -4,9 +4,7 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import booleanIntersects from '@turf/boolean-intersects';
 import bboxPolygon from '@turf/bbox-polygon';
-import {
-  areIntervalsOverlapping
-} from 'date-fns';
+import { areIntervalsOverlapping } from 'date-fns';
 import { DatasetLayer } from 'veda';
 
 import { MAX_QUERY_NUM } from '../constants';
@@ -25,7 +23,7 @@ interface UseStacSearchProps {
 export type DatasetWithTimeseriesData = TimeseriesDataResult &
   DatasetLayer & { numberOfItems: number };
 
-const collectionUrl = `${process.env.API_STAC_ENDPOINT}/collections`;
+const collectionEndpointSuffix = '/collections';
 
 export function useStacCollectionSearch({
   start,
@@ -37,10 +35,31 @@ export function useStacCollectionSearch({
   const result = useQuery({
     queryKey: ['stacCollection'],
     queryFn: async ({ signal }) => {
-      const collectionResponse = await axios.get(collectionUrl, {
-        signal
-      });
-      return collectionResponse.data.collections;
+      const collectionUrlsFromDataSets = allAvailableDatasetsLayers.reduce(
+        (filtered, { stacApiEndpoint }) => {
+          return stacApiEndpoint
+            ? [...filtered, `${stacApiEndpoint}${collectionEndpointSuffix}`]
+            : filtered;
+        },
+        []
+      );
+      // Get unique values of stac api endpoints from layer data, concat with api_stac_endpoiint from env var
+      const collectionUrls = Array.from(
+        new Set(collectionUrlsFromDataSets)
+      ).concat(`${process.env.API_STAC_ENDPOINT}${collectionEndpointSuffix}`);
+
+      const collectionRequests = collectionUrls.map((url: string) =>
+        axios.get(url, { signal }).then((response) => {
+          return response.data.collections.map((col) => ({
+            ...col,
+            stacApiEndpoint: url.replace(collectionEndpointSuffix, '')
+          }));
+        })
+      );
+      return axios.all(collectionRequests).then(
+        // Merge all responses into one array
+        axios.spread((...responses) => [].concat(...responses))
+      );
     },
     enabled: readyToLoadDatasets
   });
@@ -86,13 +105,15 @@ export function useStacCollectionSearch({
 
 function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
   const matchingCollectionIds = collectionData.reduce((acc, col) => {
-    const id = col.id;
+    const { id, stacApiEndpoint } = col;
 
     // Is is a dataset defined in the app?
     // If not, skip other calculations.
-    const isAppDataset = allAvailableDatasetsLayers.some(
-      (l) => l.stacCol === id
-    );
+    const isAppDataset = allAvailableDatasetsLayers.some((l) => {
+      const stacApiEndpointUsed =
+        l.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
+      return l.stacCol === id && stacApiEndpointUsed === stacApiEndpoint;
+    });
 
     if (
       !isAppDataset ||
@@ -130,7 +151,11 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
   );
 
   const filteredDatasetsWithCollections = filteredDatasets.map((l) => {
-    const collection = collectionData.find((c) => c.id === l.stacCol);
+    const stacApiEndpointUsed =
+      l.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
+    const collection = collectionData.find(
+      (c) => c.id === l.stacCol && stacApiEndpointUsed === c.stacApiEndpoint
+    );
     return {
       ...l,
       isPeriodic: collection['dashboard:is_periodic'],
