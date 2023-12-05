@@ -4,10 +4,13 @@
   - [Content Override reference](#content-override-reference)
     - [aboutContent](#aboutcontent)
     - [homeContent](#homecontent)
+    - [developmentContent](#developmentcontent)
+    - [storeisHubContent](#storiesHubcontent)
   - [Component Override reference](#component-override-reference)
     - [headerBrand](#headerbrand)
     - [pageFooter](#pagefooter)
     - [homeHero](#homehero)
+    - [storiesHubHero](#storiesHubHero)
   - [Creating complex overrides](#creating-complex-overrides)
 
 
@@ -121,6 +124,10 @@ description: A brief description
 </Block>
 ```
 
+### storiesHubContent
+storiesHubContent allows you to write your own custom page for StoriesHub. You can find the example of 
+this override from [veda-config-eic repo](https://github.com/NASA-IMPACT/veda-config-eic/blob/c02477b5ff5d4db53ed31117bb845728c1f418c4/overrides/theme/content/index.mdx).
+
 ## Component Override reference
 
 ### headerBrand
@@ -148,6 +155,13 @@ _⚠️ Note that on a component override the `<Block>` components are not avail
 
 The `homeHero` override can be used to replace the page hero section on the homepage.  
 It is likely that some styling is needed to ensure that it is displayed properly.
+
+### storiesHubHero
+`Component Override` 
+_⚠️ Note that on a component override the `<Block>` components are not available and should not be used._
+
+The `storiesHubHero` can be used to replace the Stories Hub page. With the combinatino of `storiesHubContent`, 
+storiesHub page can be totally customized.
 
 ## Creating complex overrides
 

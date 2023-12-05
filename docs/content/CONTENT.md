@@ -194,6 +194,9 @@ related: Related[]
   - type: string
     id: string
     thematic: string
+
+asLink:
+  url: string;
 ---
 
 <Block>
@@ -262,4 +265,14 @@ Each content should be formatted like below
     id: dataset-id
   - type: story
     id: story-id
+```
+
+**asLink**
+
+If the story doesn't hold any contents but the link to outside, use `asLink` property to indicate it. Note that `id` 
+of the story that has `asLink` won't generate the url for the story.
+
+```
+asLink:
+  url: https://developmentseed.org
 ```

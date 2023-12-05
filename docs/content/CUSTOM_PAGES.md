@@ -22,6 +22,14 @@ Each custom page has the following properties:
 `string`  
 The menu label for this page.
 
+**mainNavItem**
+_⚠️ VEDA UI cannot prevent the style bugs from the customized mainNavItem._
+
+Use this property when this page needs to be displayed as an item in the main nav.
+
+**mainNavItem.navTitle**
+title to display on the main nav for the custom page.
+
 **title**  
 `string`  
 Title for this page shown on the header.
