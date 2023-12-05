@@ -14,7 +14,6 @@ import {
 import { timelineDatasetsAtom } from './atoms/datasets';
 
 import { usePreviousValue } from '$utils/use-effect-previous';
-import useAois from '$components/common/map/controls/hooks/use-aois';
 
 const Popover = styled.div`
   position: relative;
@@ -45,7 +44,7 @@ const PopoverFooter = styled.div`
 const introTourSteps = [
   {
     title: 'Time series analysis',
-    selector: '.mapboxgl-ctrl-top-left',
+    selector: "[data-tour='analysis-tour']",
     content: () => (
       <>
         To calculate a time series of zonal statistics for
@@ -67,9 +66,6 @@ const introTourSteps = [
       </>
     )
   }
-];
-
-const analysisTourSteps = [
 ];
 
 /**
@@ -101,7 +97,6 @@ export function TourManager() {
 
   // Control states for the different tours.
   const [introTourShown, setIntroTourShown] = useState(false);
-  const [analysisTourShown, setAnalysisTourShown] = useState(false);
 
   // Variables that cause tour 1 to start.
   const datasets = useAtomValue(timelineDatasetsAtom);
@@ -116,19 +111,6 @@ export function TourManager() {
       startTour(steps);
     }
   }, [introTourShown, prevDatasetCount, datasetCount, startTour]);
-
-  // Variables that cause tour 2 to start.
-  const { features } = useAois();
-  const featuresCount = features.length;
-  useEffect(() => {
-    if (introTourShown && !analysisTourShown && featuresCount > 0) {
-      // Make the last step of the intro tour mark it as shown.
-      const steps = addActionAfterLastStep(analysisTourSteps, () => {
-        setAnalysisTourShown(true);
-      });
-      startTour(steps);
-    }
-  }, [introTourShown, analysisTourShown, featuresCount, startTour]);
 
   return null;
 }

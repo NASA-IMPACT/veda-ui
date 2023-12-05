@@ -129,7 +129,11 @@ function CustomAoI({
     <>
       <Tip disabled={!disableReason} content={disableReason} placement='bottom'>
         <div>
-          <AnalysisToolbar visuallyDisabled={!!disableReason} size='small'>
+          <AnalysisToolbar
+            visuallyDisabled={!!disableReason}
+            size='small'
+            data-tour='analysis-tour'
+          >
             <ToolbarLabel>Analysis</ToolbarLabel>
             <VerticalDivider />
             <TipToolbarIconButton
