@@ -68,7 +68,10 @@ const MessageStatusIndicator = styled.div<MessageStatusIndicatorProps>`
     }
   }}
 `;
-const MessageContent = styled.div``;
+const MessageContent = styled.div`
+  line-height: 1.5rem;
+  max-height: 1.5rem;
+`;
 const MessageControls = styled.div`
   display: flex;
   gap: ${glsp(0.5)};
@@ -194,14 +197,25 @@ function MessagesWhileAnalyzing(
             {features.length ? (
               // Prompt to select features.
               <>
-                Outdated! Select an area to analyze{' '}
-                {dateLabel && ` from ${dateLabel}.`}
+                <strong>Selection changed:</strong> select an area to analyze{' '}
+                {dateLabel && (
+                  <>
+                    {' '}
+                    from <strong>{dateLabel}</strong>{' '}
+                  </>
+                )}
               </>
             ) : (
               // Prompt to draw or upload features.
               <>
-                Outdated! Draw or upload an area to analyze{' '}
-                {dateLabel && ` from ${dateLabel}.`}
+                <strong>Selection changed:</strong> draw or upload an area to
+                analyze{' '}
+                {dateLabel && (
+                  <>
+                    {' '}
+                    from <strong>{dateLabel}</strong>{' '}
+                  </>
+                )}
               </>
             )}
           </MessageContent>
@@ -257,7 +271,8 @@ function MessagesWhileNotAnalyzing(props: MessagesProps) {
           <StatusIconInfo />
           <MessageContent>
             <ShortcutCode>click</ShortcutCode> Select an area to start analysis.
-            To select multiple areas use <ShortcutCode>shift+click</ShortcutCode>.
+            To select multiple areas use{' '}
+            <ShortcutCode>shift+click</ShortcutCode>.
           </MessageContent>
         </AnalysisMessageInner>
       </AnalysisMessageWrapper>

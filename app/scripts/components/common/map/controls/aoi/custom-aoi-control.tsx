@@ -9,7 +9,7 @@ import {
   CollecticonTrashBin,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
-import { Toolbar, ToolbarLabel } from '@devseed-ui/toolbar';
+import { Toolbar, ToolbarLabel, VerticalDivider } from '@devseed-ui/toolbar';
 import { Button } from '@devseed-ui/button';
 import { themeVal, glsp, disabled } from '@devseed-ui/theme-provider';
 
@@ -37,6 +37,10 @@ const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
         pointer-events: none;
       }
     `}
+
+  ${ToolbarLabel} {
+    text-transform: none;
+  }
 `;
 
 const FloatingBarSelf = styled.div`
@@ -127,6 +131,7 @@ function CustomAoI({
         <div>
           <AnalysisToolbar visuallyDisabled={!!disableReason} size='small'>
             <ToolbarLabel>Analysis</ToolbarLabel>
+            <VerticalDivider />
             <TipToolbarIconButton
               tipContent='Draw an area of interest'
               tipProps={{ placement: 'bottom' }}
