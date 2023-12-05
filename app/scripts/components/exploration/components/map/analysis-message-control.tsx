@@ -71,6 +71,10 @@ const MessageStatusIndicator = styled.div<MessageStatusIndicatorProps>`
 const MessageContent = styled.div`
   line-height: 1.5rem;
   max-height: 1.5rem;
+
+  sup {
+    vertical-align: top;
+  }
 `;
 const MessageControls = styled.div`
   display: flex;

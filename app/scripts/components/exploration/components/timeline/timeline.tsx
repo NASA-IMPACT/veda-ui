@@ -111,7 +111,7 @@ const TimelineDetails = styled.div`
   flex-shrink: 0;
   box-shadow: 1px 0 0 0 ${themeVal('color.base-200')},
     0 1px 0 0 ${themeVal('color.base-200')};
-  padding: ${glsp(0.5, 0.5, 0.5, 2)};
+  padding: ${glsp(1.75, 0.5, 0.5, 2)};
   z-index: 1;
 `;
 
@@ -511,14 +511,14 @@ export default function Timeline(props: TimelineProps) {
               <CollecticonPlusSmall title='Add layer' /> Add layer
             </Button>
           </Headline>
-          <p>
+          <small>
             <Pluralize
               count={datasets.length}
               singular='layer'
               plural='layers'
             />{' '}
             added
-          </p>
+          </small>
         </TimelineDetails>
         <TimelineControls
           xScaled={xScaled}
