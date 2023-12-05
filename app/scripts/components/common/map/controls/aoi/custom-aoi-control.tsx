@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
 import { useSetAtom } from 'jotai';
@@ -9,6 +10,7 @@ import {
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarLabel, VerticalDivider } from '@devseed-ui/toolbar';
+import { Button } from '@devseed-ui/button';
 import { themeVal, glsp, disabled } from '@devseed-ui/theme-provider';
 
 import useMaps from '../../hooks/use-maps';
@@ -19,6 +21,7 @@ import { aoiDeleteAllAtom } from './atoms';
 
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
+import { ShortcutCode } from '$styles/shortcut-code';
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
@@ -34,6 +37,18 @@ const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
         pointer-events: none;
       }
     `}
+
+  ${ToolbarLabel} {
+    text-transform: none;
+  }
+`;
+
+const FloatingBarSelf = styled.div`
+  position: absolute;
+  bottom: ${glsp()};
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
 `;
 
 function CustomAoI({
@@ -47,6 +62,17 @@ function CustomAoI({
 
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
+
+  // Needed so that this component re-renders to when the draw selection changes
+  // from feature to point.
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    const onSelChange = () => forceUpdate(Date.now());
+    map.on('draw.selectionchange', onSelChange);
+    return () => {
+      map.off('draw.selectionchange', onSelChange);
+    };
+  }, []);
 
   const onConfirm = (features: Feature<Polygon>[]) => {
     const mbDraw = map?._drawControl;
@@ -94,12 +120,18 @@ function CustomAoI({
     mbDraw.trash();
   }, [features, aoiDeleteAll, map]);
 
+  const isAreaSelected = !!map?._drawControl.getSelected().features.length;
+  const isPointSelected =
+    !!map?._drawControl.getSelectedPoints().features.length;
+  const hasFeatures = !!features.length;
+
   return (
     <>
       <Tip disabled={!disableReason} content={disableReason} placement='bottom'>
         <div>
-          <AnalysisToolbar visuallyDisabled={!!disableReason}>
-            <ToolbarLabel>Analysis tools</ToolbarLabel>
+          <AnalysisToolbar visuallyDisabled={!!disableReason} size='small'>
+            <ToolbarLabel>Analysis</ToolbarLabel>
+            <VerticalDivider />
             <TipToolbarIconButton
               tipContent='Draw an area of interest'
               tipProps={{ placement: 'bottom' }}
@@ -115,17 +147,27 @@ function CustomAoI({
             >
               <CollecticonUpload2 title='Upload geoJSON' meaningful />
             </TipToolbarIconButton>
-            <VerticalDivider />
-            <TipToolbarIconButton
-              tipContent='Delete selected / all areas of interest'
-              tipProps={{ placement: 'bottom' }}
-              onClick={onTrashClick}
-            >
-              <CollecticonTrashBin meaningful title='Delete selected' />
-            </TipToolbarIconButton>
           </AnalysisToolbar>
         </div>
       </Tip>
+      <FloatingBar container={map.getContainer()}>
+        {hasFeatures && (
+          <Button size='small' variation='base-fill' onClick={onTrashClick}>
+            <CollecticonTrashBin title='Delete selected' />{' '}
+            {isPointSelected ? (
+              <>
+                Delete point <ShortcutCode>del</ShortcutCode>
+              </>
+            ) : isAreaSelected ? (
+              <>
+                Delete area <ShortcutCode>del</ShortcutCode>
+              </>
+            ) : (
+              <>Delete all areas</>
+            )}
+          </Button>
+        )}
+      </FloatingBar>
       <CustomAoIModal
         revealed={aoiModalRevealed}
         onConfirm={onConfirm}
@@ -133,6 +175,16 @@ function CustomAoI({
       />
     </>
   );
+}
+
+interface FloatingBarProps {
+  children: React.ReactNode;
+  container: HTMLElement;
+}
+
+function FloatingBar(props: FloatingBarProps) {
+  const { container, children } = props;
+  return createPortal(<FloatingBarSelf>{children}</FloatingBarSelf>, container);
 }
 
 export default function CustomAoIControl({

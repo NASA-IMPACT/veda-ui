@@ -2,14 +2,10 @@ import React, { useEffect } from 'react';
 import { useAtomValue } from 'jotai';
 import styled, { css } from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Button } from '@devseed-ui/button';
-import { VerticalDivider } from '@devseed-ui/toolbar';
+import { Button, createButtonStyles } from '@devseed-ui/button';
 import {
-  CollecticonArrowLoop,
   CollecticonChartLine,
-  CollecticonCircleInformation,
-  CollecticonSignDanger,
-  CollecticonXmarkSmall
+  CollecticonCircleInformation
 } from '@devseed-ui/collecticons';
 
 import { timelineDatasetsAtom } from '../../atoms/datasets';
@@ -21,17 +17,25 @@ import { formatDateRange } from '$utils/date';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
 import { AoIFeature } from '$components/common/map/types';
+import { ShortcutCode } from '$styles/shortcut-code';
 
 const AnalysisMessageWrapper = styled.div.attrs({
   'data-tour': 'analysis-message'
 })`
-  background-color: ${themeVal('color.base-400a')};
-  color: ${themeVal('color.surface')};
-  border-radius: ${themeVal('shape.rounded')};
-  overflow: hidden;
   display: flex;
   align-items: center;
   min-height: 2rem;
+  gap: ${glsp(0.5)};
+`;
+
+const AnalysisMessageInner = styled.div`
+  background-color: ${themeVal('color.base-400a')};
+  border-radius: ${themeVal('shape.rounded')};
+  color: ${themeVal('color.surface')};
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: 1.5rem;
   gap: ${glsp(0.5)};
   padding: ${glsp(0, 0.5)};
 `;
@@ -39,6 +43,7 @@ const AnalysisMessageWrapper = styled.div.attrs({
 interface MessageStatusIndicatorProps {
   status: 'info' | 'analyzing' | 'obsolete';
 }
+
 const MessageStatusIndicator = styled.div<MessageStatusIndicatorProps>`
   display: flex;
   align-items: center;
@@ -63,7 +68,14 @@ const MessageStatusIndicator = styled.div<MessageStatusIndicatorProps>`
     }
   }}
 `;
-const MessageContent = styled.div``;
+const MessageContent = styled.div`
+  line-height: 1.5rem;
+  max-height: 1.5rem;
+
+  sup {
+    vertical-align: top;
+  }
+`;
 const MessageControls = styled.div`
   display: flex;
   gap: ${glsp(0.5)};
@@ -139,14 +151,15 @@ function MessagesWhileAnalyzing(
     // Analyzing and not obsolete.
     return (
       <AnalysisMessageWrapper>
-        <StatusIconAnalyzing />
-        <MessageContent>
-          Analyzing an area covering {area} km<sup>2</sup>{' '}
-          {dateLabel && ` from ${dateLabel}`}.
-        </MessageContent>
-        <VerticalDivider variation='light' />
+        <AnalysisMessageInner>
+          <StatusIconAnalyzing />
+          <MessageContent>
+            Analyzing an area covering {area} km<sup>2</sup>{' '}
+            {dateLabel && ` from ${dateLabel}`}.
+          </MessageContent>
+        </AnalysisMessageInner>
         <MessageControls>
-          <ButtonCancel />
+          <ButtonExit />
         </MessageControls>
       </AnalysisMessageWrapper>
     );
@@ -158,40 +171,61 @@ function MessagesWhileAnalyzing(
     // Prompt for a refresh.
     return (
       <AnalysisMessageWrapper>
-        <StatusIconObsolete />
-        <MessageContent>
-          Outdated! Refresh to analyze an area covering {area} km
-          <sup>2</sup> {dateLabel && ` from ${dateLabel}.`}
-        </MessageContent>
-        <VerticalDivider variation='light' />
+        <AnalysisMessageInner>
+          <StatusIconObsolete />
+          <MessageContent>
+            <strong>Selection changed:</strong> area covering{' '}
+            <strong>
+              {area} km<sup>2</sup>
+            </strong>{' '}
+            {dateLabel && (
+              <>
+                {' '}
+                from <strong>{dateLabel}</strong>{' '}
+              </>
+            )}
+          </MessageContent>
+        </AnalysisMessageInner>
         <MessageControls>
           <ButtonObsolete datasetIds={datasetIds} />
-          <ButtonCancel />
+          <ButtonExit />
         </MessageControls>
       </AnalysisMessageWrapper>
     );
   } else {
     return (
       <AnalysisMessageWrapper>
-        <StatusIconObsolete />
-        <MessageContent>
-          {features.length ? (
-            // Prompt to select features.
-            <>
-              Outdated! Select an area to analyze{' '}
-              {dateLabel && ` from ${dateLabel}.`}
-            </>
-          ) : (
-            // Prompt to draw or upload features.
-            <>
-              Outdated! Draw or upload an area to analyze{' '}
-              {dateLabel && ` from ${dateLabel}.`}
-            </>
-          )}
-        </MessageContent>
-        <VerticalDivider variation='light' />
+        <AnalysisMessageInner>
+          <StatusIconObsolete />
+          <MessageContent>
+            {features.length ? (
+              // Prompt to select features.
+              <>
+                <strong>Selection changed:</strong> select an area to analyze{' '}
+                {dateLabel && (
+                  <>
+                    {' '}
+                    from <strong>{dateLabel}</strong>{' '}
+                  </>
+                )}
+              </>
+            ) : (
+              // Prompt to draw or upload features.
+              <>
+                <strong>Selection changed:</strong> draw or upload an area to
+                analyze{' '}
+                {dateLabel && (
+                  <>
+                    {' '}
+                    from <strong>{dateLabel}</strong>{' '}
+                  </>
+                )}
+              </>
+            )}
+          </MessageContent>
+        </AnalysisMessageInner>
         <MessageControls>
-          <ButtonCancel />
+          <ButtonExit />
         </MessageControls>
       </AnalysisMessageWrapper>
     );
@@ -211,12 +245,22 @@ function MessagesWhileNotAnalyzing(props: MessagesProps) {
 
     return (
       <AnalysisMessageWrapper>
-        <StatusIconInfo />
-        <MessageContent>
-          An area of {area} km<sup>2</sup> {dateLabel && ` from ${dateLabel}`}{' '}
-          is selected.
-        </MessageContent>
-        <VerticalDivider variation='light' />
+        <AnalysisMessageInner>
+          <StatusIconPreAnalyzing />
+          <MessageContent>
+            An area of{' '}
+            <strong>
+              {area} km<sup>2</sup>
+            </strong>{' '}
+            {dateLabel && (
+              <>
+                {' '}
+                from <strong>{dateLabel}</strong>{' '}
+              </>
+            )}
+            is selected.
+          </MessageContent>
+        </AnalysisMessageInner>
         <MessageControls>
           <ButtonAnalyze datasetIds={datasetIds} />
         </MessageControls>
@@ -227,10 +271,14 @@ function MessagesWhileNotAnalyzing(props: MessagesProps) {
     // Prompt to select features.
     return (
       <AnalysisMessageWrapper>
-        <StatusIconInfo />
-        <MessageContent>
-          Select one or more of the areas (using shift key) to start analysis.
-        </MessageContent>
+        <AnalysisMessageInner>
+          <StatusIconInfo />
+          <MessageContent>
+            <ShortcutCode>click</ShortcutCode> Select an area to start analysis.
+            To select multiple areas use{' '}
+            <ShortcutCode>shift+click</ShortcutCode>.
+          </MessageContent>
+        </AnalysisMessageInner>
       </AnalysisMessageWrapper>
     );
   } else {
@@ -244,7 +292,7 @@ function MessagesWhileNotAnalyzing(props: MessagesProps) {
 function StatusIconObsolete() {
   return (
     <MessageStatusIndicator status='obsolete'>
-      <CollecticonSignDanger />
+      <CollecticonChartLine />
     </MessageStatusIndicator>
   );
 }
@@ -252,6 +300,14 @@ function StatusIconObsolete() {
 function StatusIconAnalyzing() {
   return (
     <MessageStatusIndicator status='analyzing'>
+      <CollecticonChartLine />
+    </MessageStatusIndicator>
+  );
+}
+
+function StatusIconPreAnalyzing() {
+  return (
+    <MessageStatusIndicator status='info'>
       <CollecticonChartLine />
     </MessageStatusIndicator>
   );
@@ -265,37 +321,41 @@ function StatusIconInfo() {
   );
 }
 
+const Btn = styled(Button)`
+  &&& {
+    ${({ variation, size }) => createButtonStyles({ variation, size })}
+  }
+`;
+
 function ButtonObsolete(props: { datasetIds: string[] }) {
   const { datasetIds } = props;
   const { runAnalysis } = useAnalysisController();
 
   return (
-    <Button
-      variation={'achromic-text' as any}
+    <Btn
+      variation='primary-fill'
       size='small'
-      fitting='skinny'
       onClick={() => {
         runAnalysis(datasetIds);
       }}
     >
-      <CollecticonArrowLoop meaningful title='Update analysis' />
-    </Button>
+      Apply changes
+    </Btn>
   );
 }
 
-function ButtonCancel() {
+function ButtonExit() {
   const { cancelAnalysis } = useAnalysisController();
   return (
-    <Button
-      variation={'achromic-text' as any}
+    <Btn
+      variation='base-fill'
       size='small'
-      fitting='skinny'
       onClick={() => {
         cancelAnalysis();
       }}
     >
-      <CollecticonXmarkSmall meaningful title='Cancel analysis' />
-    </Button>
+      Exit analysis
+    </Btn>
   );
 }
 
@@ -304,14 +364,14 @@ function ButtonAnalyze(props: { datasetIds: string[] }) {
   const { runAnalysis } = useAnalysisController();
 
   return (
-    <Button
-      variation={'achromic-text' as any}
+    <Btn
+      variation='primary-fill'
       size='small'
       onClick={() => {
         runAnalysis(datasetIds);
       }}
     >
-      <CollecticonChartLine /> Analyze
-    </Button>
+      Run analysis
+    </Btn>
   );
 }
