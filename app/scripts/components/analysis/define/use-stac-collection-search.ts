@@ -35,16 +35,18 @@ export function useStacCollectionSearch({
   const result = useQuery({
     queryKey: ['stacCollection'],
     queryFn: async ({ signal }) => {
-   
-      const collectionUrlsFromDataSets = allAvailableDatasetsLayers
-            .filter((dataset) => dataset.stacApiEndpoint)
-            .map(
-              (dataset) =>
-                `${dataset.stacApiEndpoint}${collectionEndpointSuffix}`
-            );
+      const collectionUrlsFromDataSets = allAvailableDatasetsLayers.reduce(
+        (filtered, { stacApiEndpoint }) => {
+          return stacApiEndpoint
+            ? [...filtered, `${stacApiEndpoint}${collectionEndpointSuffix}`]
+            : filtered;
+        },
+        []
+      );
       // Get unique values of stac api endpoints from layer data, concat with api_stac_endpoiint from env var
-      const collectionUrls = Array.from(new Set(collectionUrlsFromDataSets))
-        .concat(`${process.env.API_STAC_ENDPOINT}${collectionEndpointSuffix}`);
+      const collectionUrls = Array.from(
+        new Set(collectionUrlsFromDataSets)
+      ).concat(`${process.env.API_STAC_ENDPOINT}${collectionEndpointSuffix}`);
 
       const collectionRequests = collectionUrls.map((url: string) =>
         axios.get(url, { signal }).then((response) => {
@@ -125,7 +127,7 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
     const start = utcString2userTzDate(col.extent.temporal.interval[0][0]);
     const end = utcString2userTzDate(col.extent.temporal.interval[0][1]);
 
-    const isInAOI = aoi.features?.some((feature) =>
+    const isInAOI = aoi.features.some((feature) =>
       booleanIntersects(feature, bboxPolygon(bbox))
     );
 

@@ -118,13 +118,6 @@ function SandboxLayout() {
       <LayoutProps
         title={`Sandbox - ${page.name}`}
         hideFooter={page.noFooter}
-        localNavProps={{
-          parentName: 'Sandbox',
-          parentLabel: 'Sandbox',
-          parentTo: '/sandbox',
-          items: pages,
-          currentId: pId
-        }}
       />
 
       <PageMainContent>

@@ -43,7 +43,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
 
   useGoogleTagManager();
 
-  const { title, thumbnail, description, hideFooter, localNavProps } =
+  const { title, thumbnail, description, hideFooter } =
     useContext(LayoutRootContext);
 
   const truncatedTitle =
@@ -57,7 +57,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
-      <NavWrapper localNavProps={localNavProps} />
+      <NavWrapper />
       <PageBody>
         <Outlet />
         {children}

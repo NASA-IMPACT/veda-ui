@@ -52,9 +52,13 @@ const fetchLayerById = async (
       }
     };
   } else {
-    const domain = data.summaries
+    const domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
+
+    if (domain.some((d) => !d)) {
+      throw new Error('Invalid datetime domain');
+    }
 
     return {
       timeseries: {

@@ -45,6 +45,10 @@ import {
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
+import {
+  ComponentOverride,
+  ContentOverride
+} from '$components/common/page-overrides';
 
 const allStories = Object.values(stories).map((d) => d!.data);
 
@@ -161,150 +165,152 @@ function StoriesHub() {
     <PageMainContent>
       <LayoutProps
         title={getString('stories').other}
-        description={getString('storiesBanner')?.other || 'Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'}
+        description={getString('storiesBanner').other}
       />
-      <PageHero
-        title={getString('stories').other}
-        description={getString('storiesBanner')?.other || 'Explore the guided narratives below to discover how NASA satellites and other Earth observing resources reveal a changing planet.'}
-      />
-
+      <ComponentOverride with='storiesHubHero'>
+        <PageHero
+          title={getString('stories').other}
+          description={getString('storiesBanner').other}
+        />
+      </ComponentOverride>
       <FeaturedStories />
+      <ContentOverride with='storiesHubContent'>
+        <Fold>
+          <BrowseFoldHeader
+            ref={browseControlsHeaderRef}
+            style={{
+              scrollMarginTop: `${headerHeight + 16}px`
+            }}
+          >
+            <FoldHeadline>
+              <FoldTitle>Browse</FoldTitle>
+            </FoldHeadline>
+            <BrowseControls
+              {...controlVars}
+              taxonomiesOptions={storyTaxonomies}
+              sortOptions={sortOptions}
+            />
+          </BrowseFoldHeader>
 
-      <Fold>
-        <BrowseFoldHeader
-          ref={browseControlsHeaderRef}
-          style={{
-            scrollMarginTop: `${headerHeight + 16}px`
-          }}
-        >
-          <FoldHeadline>
-            <FoldTitle>Browse</FoldTitle>
-          </FoldHeadline>
-          <BrowseControls
-            {...controlVars}
-            taxonomiesOptions={storyTaxonomies}
-            sortOptions={sortOptions}
-          />
-        </BrowseFoldHeader>
+          <StoryCount>
+            <span>
+              Showing{' '}
+              <Pluralize
+                singular={getString('stories').one}
+                plural={getString('stories').other}
+                count={displayStories.length}
+                showCount={true}
+              />{' '}
+              out of {allStories.length}.
+            </span>
+            {isFiltering && (
+              <Button forwardedAs={Link} to={STORIES_PATH} size='small'>
+                Clear filters <CollecticonXmarkSmall />
+              </Button>
+            )}
+          </StoryCount>
 
-        <StoryCount>
-          <span>
-            Showing{' '}
-            <Pluralize
-              singular={getString('stories').one}
-              plural={getString('stories').other}
-              count={displayStories.length}
-              showCount={true}
-            />{' '}
-            out of {allStories.length}.
-          </span>
-          {isFiltering && (
-            <Button forwardedAs={Link} to={STORIES_PATH} size='small'>
-              Clear filters <CollecticonXmarkSmall />
-            </Button>
-          )}
-        </StoryCount>
-
-        {displayStories.length ? (
-          <CardList>
-            {displayStories.map((d) => {
-              const pubDate = new Date(d.pubDate);
-              const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
-              return (
-                <li key={d.id}>
-                  <Card
-                    cardType='classic'
-                    overline={
-                      <CardMeta>
-                        <CardSourcesList
-                          sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
-                          rootPath={STORIES_PATH}
-                          onSourceClick={(id) => {
-                            onAction(Actions.TAXONOMY, {
-                              key: TAXONOMY_SOURCE,
-                              value: id
-                            });
-                            browseControlsHeaderRef.current?.scrollIntoView();
-                          }}
-                        />
-                        <VerticalDivider variation='dark' />
-                        {!isNaN(pubDate.getTime()) && (
-                          <Link
-                            to={`${STORIES_PATH}?${Actions.SORT_FIELD}=pubDate`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              onAction(Actions.SORT_FIELD, 'pubDate');
+          {displayStories.length ? (
+            <CardList>
+              {displayStories.map((d) => {
+                const pubDate = new Date(d.pubDate);
+                const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
+                return (
+                  <li key={d.id}>
+                    <Card
+                      cardType='classic'
+                      overline={
+                        <CardMeta>
+                          <CardSourcesList
+                            sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
+                            rootPath={STORIES_PATH}
+                            onSourceClick={(id) => {
+                              onAction(Actions.TAXONOMY, {
+                                key: TAXONOMY_SOURCE,
+                                value: id
+                              });
                               browseControlsHeaderRef.current?.scrollIntoView();
                             }}
-                          >
-                            <PublishedDate date={pubDate} />
-                          </Link>
-                        )}
-                      </CardMeta>
-                    }
-                    linkLabel='View more'
-                    linkTo={getStoryPath(d)}
-                    title={
-                      <TextHighlight
-                        value={search}
-                        disabled={search.length < 3}
-                      >
-                        {d.name}
-                      </TextHighlight>
-                    }
-                    description={
-                      <TextHighlight
-                        value={search}
-                        disabled={search.length < 3}
-                      >
-                        {d.description}
-                      </TextHighlight>
-                    }
-                    imgSrc={d.media?.src}
-                    imgAlt={d.media?.alt}
-                    footerContent={
-                      <>
-                        {topics?.length ? (
-                          <CardTopicsList>
-                            <dt>Topics</dt>
-                            {topics.map((t) => (
-                              <dd key={t.id}>
-                                <Pill
-                                  as={Link}
-                                  to={`${STORIES_PATH}?${
-                                    Actions.TAXONOMY
-                                  }=${encodeURIComponent(
-                                    JSON.stringify({ Topics: t.id })
-                                  )}`}
-                                  onClick={() => {
-                                    browseControlsHeaderRef.current?.scrollIntoView();
-                                  }}
-                                >
-                                  <TextHighlight
-                                    value={search}
-                                    disabled={search.length < 3}
+                          />
+                          <VerticalDivider variation='dark' />
+                          {!isNaN(pubDate.getTime()) && (
+                            <Link
+                              to={`${STORIES_PATH}?${Actions.SORT_FIELD}=pubDate`}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                onAction(Actions.SORT_FIELD, 'pubDate');
+                                browseControlsHeaderRef.current?.scrollIntoView();
+                              }}
+                            >
+                              <PublishedDate date={pubDate} />
+                            </Link>
+                          )}
+                        </CardMeta>
+                      }
+                      linkLabel='View more'
+                      linkTo={d.asLink?.url ?? getStoryPath(d)}
+                      title={
+                        <TextHighlight
+                          value={search}
+                          disabled={search.length < 3}
+                        >
+                          {d.name}
+                        </TextHighlight>
+                      }
+                      description={
+                        <TextHighlight
+                          value={search}
+                          disabled={search.length < 3}
+                        >
+                          {d.description}
+                        </TextHighlight>
+                      }
+                      imgSrc={d.media?.src}
+                      imgAlt={d.media?.alt}
+                      footerContent={
+                        <>
+                          {topics?.length ? (
+                            <CardTopicsList>
+                              <dt>Topics</dt>
+                              {topics.map((t) => (
+                                <dd key={t.id}>
+                                  <Pill
+                                    as={Link}
+                                    to={`${STORIES_PATH}?${
+                                      Actions.TAXONOMY
+                                    }=${encodeURIComponent(
+                                      JSON.stringify({ Topics: t.id })
+                                    )}`}
+                                    onClick={() => {
+                                      browseControlsHeaderRef.current?.scrollIntoView();
+                                    }}
                                   >
-                                    {t.name}
-                                  </TextHighlight>
-                                </Pill>
-                              </dd>
-                            ))}
-                          </CardTopicsList>
-                        ) : null}
-                      </>
-                    }
-                  />
-                </li>
-              );
-            })}
-          </CardList>
-        ) : (
-          <EmptyHub>
-            There are no {getString('stories').other.toLocaleLowerCase()} to
-            show with the selected filters.
-          </EmptyHub>
-        )}
-      </Fold>
+                                    <TextHighlight
+                                      value={search}
+                                      disabled={search.length < 3}
+                                    >
+                                      {t.name}
+                                    </TextHighlight>
+                                  </Pill>
+                                </dd>
+                              ))}
+                            </CardTopicsList>
+                          ) : null}
+                        </>
+                      }
+                    />
+                  </li>
+                );
+              })}
+            </CardList>
+          ) : (
+            <EmptyHub>
+              There are no {getString('stories').other.toLocaleLowerCase()} to
+              show with the selected filters.
+            </EmptyHub>
+          )}
+        </Fold>
+      </ContentOverride>
     </PageMainContent>
   );
 }
