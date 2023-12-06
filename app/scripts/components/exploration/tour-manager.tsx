@@ -11,8 +11,10 @@ import {
   CollecticonXmark
 } from '@devseed-ui/collecticons';
 
-import { timelineDatasetsAtom } from './atoms/datasets';
+import tourComparisonUrl from '../../../graphics/content/tour-comparison.gif';
+import tourAnalysisUrl from '../../../graphics/content/tour-analysis.gif';
 
+import { timelineDatasetsAtom } from './atoms/datasets';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
 const Popover = styled.div`
@@ -31,7 +33,11 @@ const CloseButton = styled(Button)`
   top: ${glsp(0.5)};
 `;
 
-const PopoverBody = styled.div``;
+const PopoverBody = styled.div`
+  display: flex;
+  flex-flow: column;
+  gap: ${glsp()};
+`;
 
 const PopoverFooter = styled.div`
   display: flex;
@@ -47,10 +53,15 @@ const introTourSteps = [
     selector: "[data-tour='analysis-tour']",
     content: () => (
       <>
-        To calculate a time series of zonal statistics for
-        your layers, start here by drawing or uploading your area of interest.
-        <br />
-        [image/illustration of a time series, maybe plus AOI]
+        <img
+          src={tourAnalysisUrl}
+          alt='Animation showing an AOI being drawn through a mouse click'
+        />
+
+        <p>
+          To calculate a time series of zonal statistics for your layers, start
+          here by drawing or uploading your area of interest.
+        </p>
       </>
     ),
     stepInteraction: false
@@ -60,9 +71,14 @@ const introTourSteps = [
     selector: "[data-tour='compare-date']",
     content: () => (
       <>
-        Here you can compare two dates side-by-side.
-        <br />
-        [image/illustration of a comparison]
+        <img
+          src={tourComparisonUrl}
+          alt='Animation showing a comparison by dragging a slider across the map'
+        />
+
+        <p>
+          Here you can compare two dates side-by-side.
+        </p>
       </>
     )
   }
