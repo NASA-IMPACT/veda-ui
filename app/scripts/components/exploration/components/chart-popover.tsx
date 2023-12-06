@@ -212,6 +212,7 @@ interface PopoverHookOptions {
   x?: number;
   y?: number;
   data?: AnalysisTimeseriesEntry;
+  enabled?: boolean;
 }
 
 /**
@@ -221,7 +222,7 @@ interface PopoverHookOptions {
  * @returns 
  */
 export function usePopover(options: PopoverHookOptions) {
-  const { x, y, data } = options;
+  const { x, y, data, enabled } = options;
 
   const inView = !!data;
 
@@ -229,7 +230,8 @@ export function usePopover(options: PopoverHookOptions) {
   // (besides the isHovering) because we need to have the virtual element set
   // before the popover is visible, otherwise the popover will appear positioned
   // incorrectly or a split second after the hover.
-  const [isVisible, setVisible] = useState(inView);
+  const [_isVisible, setVisible] = useState(inView);
+  const isVisible = enabled && _isVisible;
 
   const floating = useFloating({
     placement: 'left',

@@ -46,7 +46,6 @@ import {
   useTimelineDatasetAtom,
   useTimelineDatasetVisibility
 } from '$components/exploration/atoms/hooks';
-import { analysisControllerAtom } from '$components/exploration/atoms/analysis';
 import {
   useAnalysisController,
   useAnalysisDataRequest
@@ -137,7 +136,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
-  const { isAnalyzing } = useAtomValue(analysisControllerAtom);
+
+  const { isAnalyzing, runAnalysis } = useAnalysisController();
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
 
@@ -178,13 +178,13 @@ export function DatasetListItem(props: DatasetListItemProps) {
     floatingStyles,
     isVisible: isPopoverVisible
   } = usePopover({
+    enabled: isAnalyzing,
     x: clientX,
     y: midY,
     data: dataPoint
   });
 
   useAnalysisDataRequest({ datasetAtom });
-  const { runAnalysis } = useAnalysisController();
 
   const isDatasetError = dataset.status === TimelineDatasetStatus.ERROR;
   const isDatasetLoading = dataset.status === TimelineDatasetStatus.LOADING;
