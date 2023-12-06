@@ -11,10 +11,11 @@ import {
   CollecticonXmark
 } from '@devseed-ui/collecticons';
 
-import { timelineDatasetsAtom } from './atoms/datasets';
+import tourComparisonUrl from '../../../graphics/content/tour-comparison.gif';
+import tourAnalysisUrl from '../../../graphics/content/tour-analysis.gif';
 
+import { timelineDatasetsAtom } from './atoms/datasets';
 import { usePreviousValue } from '$utils/use-effect-previous';
-import useAois from '$components/common/map/controls/hooks/use-aois';
 
 const Popover = styled.div`
   position: relative;
@@ -32,7 +33,11 @@ const CloseButton = styled(Button)`
   top: ${glsp(0.5)};
 `;
 
-const PopoverBody = styled.div``;
+const PopoverBody = styled.div`
+  display: flex;
+  flex-flow: column;
+  gap: ${glsp()};
+`;
 
 const PopoverFooter = styled.div`
   display: flex;
@@ -44,84 +49,38 @@ const PopoverFooter = styled.div`
 
 const introTourSteps = [
   {
-    title: 'Map layer selection',
-    selector: "[data-tour='dataset-list-item']",
-    mutationObservables: ["[data-tour='dataset-list-item']"],
-    content:
-      "Each row represents a dataset, and each of the boxes on the timeline represents a data unit: day, month or year, depending on the dataset's time density."
+    title: 'Time series analysis',
+    selector: "[data-tour='analysis-tour']",
+    content: () => (
+      <>
+        <img
+          src={tourAnalysisUrl}
+          alt='Animation showing an AOI being drawn through a mouse click'
+        />
+
+        <p>
+          To calculate a time series of zonal statistics for your layers, start
+          here by drawing or uploading your area of interest.
+        </p>
+      </>
+    ),
+    stepInteraction: false
   },
   {
-    title: 'Playhead',
-    selector: "[data-tour='timeline-head-a']",
-    content:
-      'Move this playhead to select a date to view on the map. You can drag it around or click on the timeline to place it.'
-  },
-  {
-    title: 'Date picker',
-    selector: "[data-tour='date-picker-a']",
-    content: 'Alternatively you can also select a date through the date picker.'
-  },
-  {
-    title: 'Compare dates',
+    title: 'Comparison',
     selector: "[data-tour='compare-date']",
     content: () => (
       <>
-        You can also select a second date to compare with the first one.
-        <br />
-        The map will show a slider allowing you to view the differences.
-      </>
-    )
-  },
-  {
-    title: 'Timeline',
-    selector: "[data-tour='timeline-interaction-rect']",
-    content: () => (
-      <>
-        You can zoom in on the timeline by scrolling while pressing the alt key
-        (or option) and click and drag to pan.
-        <br />
-        Go ahead and try it out!
-      </>
-    )
-  },
-  {
-    title: 'AOI tools',
-    selector: '.mapboxgl-ctrl-top-left',
-    content: () => (
-      <>
-        You can calculate a time series of zonal statistics for your area of
-        interest (AOI). Start that process here by drawing or uploading an AOI.
-      </>
-    ),
-    stepInteraction: false
-  }
-];
+        <img
+          src={tourComparisonUrl}
+          alt='Animation showing a comparison by dragging a slider across the map'
+        />
 
-const analysisTourSteps = [
-  {
-    title: 'Analysis',
-    selector: "[data-tour='analysis-message']",
-    content: () => (
-      <>
-        You can now calculate a time series of zonal statistics for your area of
-        interest.
+        <p>
+          Here you can compare two dates side-by-side.
+        </p>
       </>
-    ),
-    stepInteraction: false
-  },
-  {
-    title: 'Date Range',
-    selector: "[data-tour='analysis-toolbar']",
-    content: () => (
-      <>
-        Refine the date range to analyze with the data pickers or handles on the
-        timeline.
-        <br />
-        Once you&apos;re happy, press the analyze button to start the
-        calculation.
-      </>
-    ),
-    stepInteraction: false
+    )
   }
 ];
 
@@ -154,7 +113,6 @@ export function TourManager() {
 
   // Control states for the different tours.
   const [introTourShown, setIntroTourShown] = useState(false);
-  const [analysisTourShown, setAnalysisTourShown] = useState(false);
 
   // Variables that cause tour 1 to start.
   const datasets = useAtomValue(timelineDatasetsAtom);
@@ -169,19 +127,6 @@ export function TourManager() {
       startTour(steps);
     }
   }, [introTourShown, prevDatasetCount, datasetCount, startTour]);
-
-  // Variables that cause tour 2 to start.
-  const { features } = useAois();
-  const featuresCount = features.length;
-  useEffect(() => {
-    if (introTourShown && !analysisTourShown && featuresCount > 0) {
-      // Make the last step of the intro tour mark it as shown.
-      const steps = addActionAfterLastStep(analysisTourSteps, () => {
-        setAnalysisTourShown(true);
-      });
-      startTour(steps);
-    }
-  }, [introTourShown, analysisTourShown, featuresCount, startTour]);
 
   return null;
 }
@@ -203,7 +148,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
         fitting='skinny'
         onClick={() => setIsOpen(false)}
       >
-        <CollecticonXmark size='small' meaningful title='Close tour' />
+        <CollecticonXmark size='small' meaningful title='Close feature tour' />
       </CloseButton>
       <Heading as='strong' size='xsmall'>
         {title}
@@ -224,7 +169,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
             setCurrentStep((s) => s - 1);
           }}
         >
-          <CollecticonChevronLeftSmall meaningful title='Previous step' />
+          <CollecticonChevronLeftSmall meaningful title='Previous feature' />
         </Button>
         <small>
           {currentStep + 1} / {steps.length}
@@ -238,7 +183,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
             setCurrentStep((s) => s + 1);
           }}
         >
-          <CollecticonChevronRightSmall meaningful title='Next step' />
+          <CollecticonChevronRightSmall meaningful title='Next feature' />
         </Button>
       </PopoverFooter>
       {/* {(currentStep === 0 || isLastStep) && (
