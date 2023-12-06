@@ -259,19 +259,19 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     <DatasetModal
       id='modal'
       size='xlarge'
-      title='Select datasets'
+      title='Select data layers'
       revealed={revealed}
       disableKeyboardClose={isFirstSelection}
       closeButton={!isFirstSelection}
       onCloseClick={close}
       renderHeadline={() => (
         <ModalHeadline>
-          <Heading size='small'>Select datasets</Heading>
+          <Heading size='small'>Select data layers</Heading>
           <ModalIntro>
             {isFirstSelection ? (
-              <p>Select datasets to start the exploration.</p>
+              <p>Select data layers to start the exploration.</p>
             ) : (
-              <p>Add or remove datasets to the exploration.</p>
+              <p>Add or remove data layers to the exploration.</p>
             )}
           </ModalIntro>
         </ModalHeadline>
@@ -287,8 +287,8 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
             <span>
               Showing{' '}
               <Pluralize
-                singular='dataset'
-                plural='datasets'
+                singular='data layer'
+                plural='data layers'
                 count={displayDatasetLayers.length}
                 showCount={true}
               />{' '}
@@ -333,8 +333,8 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
         <>
           <p className='selection-info'>
             {selectedIds.length
-              ? `${selectedIds.length} out of ${datasetLayers.length} datasets selected.`
-              : 'No datasets selected.'}
+              ? `${selectedIds.length} out of ${datasetLayers.length} data layers selected.`
+              : 'No data layers selected.'}
           </p>
           {!isFirstSelection && (
             <Button variation='base-text' onClick={close}>
