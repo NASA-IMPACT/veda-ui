@@ -347,17 +347,17 @@ export default function Timeline(props: TimelineProps) {
   // When a loaded dataset is added from an empty state, compute the correct
   // transform taking into account the min scale factor (k0).
   const successDatasetsCount = successDatasets.length;
-  const prevDatasetsCount = usePreviousValue(successDatasets.length);
+  const prevSuccessDatasetsCount = usePreviousValue(successDatasets.length);
   useLayoutEffect(() => {
     if (
       !interactionRef.current ||
-      prevDatasetsCount !== 0 ||
+      prevSuccessDatasetsCount !== 0 ||
       successDatasetsCount === 0
     )
       return;
 
     applyTransform(zoomBehavior, select(interactionRef.current), 0, 0, k0);
-  }, [prevDatasetsCount, successDatasetsCount, k0, zoomBehavior]);
+  }, [prevSuccessDatasetsCount, successDatasetsCount, k0, zoomBehavior]);
 
   const onControlsZoom = useCallback(
     (zoomV) => {
@@ -468,6 +468,28 @@ export default function Timeline(props: TimelineProps) {
     features.length,
     prevFeaturesCount,
     selectedDay,
+    dataDomain,
+    setSelectedInterval
+  ]);
+
+  // Catches the situation where the user drawn an aoi before the dataset has
+  // time to finish loading.
+  const prevSelectedDay = usePreviousValue(selectedDay);
+  useEffect(() => {
+    if (
+      selectedDay &&
+      !prevSelectedDay &&
+      features.length &&
+      dataDomain &&
+      !selectedInterval
+    ) {
+      setSelectedInterval(getIntervalFromDate(selectedDay, dataDomain));
+    }
+  }, [
+    selectedDay,
+    prevSelectedDay,
+    features.length,
+    selectedInterval,
     dataDomain,
     setSelectedInterval
   ]);
