@@ -86,6 +86,7 @@ export const prepareDatasets = (
     filtered = filtered.filter((d) => {
       const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
       return (
+        d.id.toLowerCase().includes(searchLower) ||
         d.name.toLowerCase().includes(searchLower) ||
         d.description.toLowerCase().includes(searchLower) ||
         d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower)) ||
