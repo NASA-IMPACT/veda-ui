@@ -85,6 +85,20 @@ function BrowseControls(props: BrowseControlsProps) {
 
   return (
     <BrowseControlsWrapper {...rest}>
+      <TaxonomyWrapper>
+        {taxonomiesOptions.map(({ name, values }) => (
+          <DropdownOptions
+            key={name}
+            prefix={name}
+            items={[optionAll].concat(values)}
+            currentId={taxonomies?.[name] ?? 'all'}
+            onChange={(v) => {
+              onAction(Actions.TAXONOMY, { key: name, value: v });
+            }}
+            size={isLargeUp ? 'large' : 'medium'}
+          />
+        ))}
+      </TaxonomyWrapper>
       <SearchWrapper>
         <SearchField
           size={isLargeUp ? 'large' : 'medium'}
@@ -142,20 +156,6 @@ function BrowseControls(props: BrowseControlsProps) {
           </DropMenu>
         </DropdownScrollable>
       </SearchWrapper>
-      <TaxonomyWrapper>
-        {taxonomiesOptions.map(({ name, values }) => (
-          <DropdownOptions
-            key={name}
-            prefix={name}
-            items={[optionAll].concat(values)}
-            currentId={taxonomies?.[name] ?? 'all'}
-            onChange={(v) => {
-              onAction(Actions.TAXONOMY, { key: name, value: v });
-            }}
-            size={isLargeUp ? 'large' : 'medium'}
-          />
-        ))}
-      </TaxonomyWrapper>
     </BrowseControlsWrapper>
   );
 }

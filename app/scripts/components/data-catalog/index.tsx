@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
-import { DatasetData, datasets, datasetTaxonomies, getString } from 'veda';
+import { DatasetData, datasetTaxonomies, getString } from 'veda';
 import { Link } from 'react-router-dom';
 import { glsp } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
@@ -47,8 +47,7 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { DatasetClassification } from '$components/common/dataset-classification';
-
-const allDatasets = Object.values(datasets).map((d) => d!.data);
+import { allDatasets } from '$components/exploration/data-utils';
 
 const DatasetCount = styled(Subtitle)`
   grid-column: 1 / -1;
@@ -66,9 +65,9 @@ const BrowseFoldHeader = styled(FoldHeader)`
   align-items: flex-start;
 `;
 
-const sortOptions = [{ id: 'name', name: 'Name' }];
+export const sortOptions = [{ id: 'name', name: 'Name' }];
 
-const prepareDatasets = (
+export const prepareDatasets = (
   data: DatasetData[],
   options: {
     search: string;
@@ -87,9 +86,11 @@ const prepareDatasets = (
     filtered = filtered.filter((d) => {
       const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
       return (
+        d.id.toLowerCase().includes(searchLower) ||
         d.name.toLowerCase().includes(searchLower) ||
         d.description.toLowerCase().includes(searchLower) ||
         d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower)) ||
+        d.layers.some((l) => l.name.toLowerCase().includes(searchLower)) ||
         topicsTaxonomy?.values.some((t) =>
           t.name.toLowerCase().includes(searchLower)
         )

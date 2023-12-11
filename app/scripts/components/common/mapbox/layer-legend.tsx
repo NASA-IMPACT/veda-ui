@@ -272,7 +272,7 @@ export function LayerLegendContainer(props: LayerLegendContainerProps) {
   );
 }
 
-function LayerCategoricalGraphic(props: LayerLegendCategorical) {
+export function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   const { stops } = props;
 
   return (
@@ -303,7 +303,7 @@ function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   );
 }
 
-function LayerGradientGraphic(props: LayerLegendGradient) {
+export function LayerGradientGraphic(props: LayerLegendGradient) {
   const { stops, min, max, unit } = props;
 
   const [hoverVal, setHoverVal] = useState(0);

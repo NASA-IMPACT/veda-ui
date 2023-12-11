@@ -12,6 +12,7 @@ import LayoutRoot, {
   LayoutRootContextProvider
 } from '$components/common/layout-root';
 import { useScrollbarWidthAsCssVar } from '$utils/use-scrollbar-width-css';
+import { checkEnvFlag } from '$utils/utils';
 
 // Page loading
 import { PageLoading } from '$components/common/loading-skeleton';
@@ -31,6 +32,8 @@ const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
 const Analysis = lazy(() => import('$components/analysis/define'));
 const AnalysisResults = lazy(() => import('$components/analysis/results'));
+
+const Exploration = lazy(() => import('$components/exploration'));
 
 const Sandbox = lazy(() => import('$components/sandbox'));
 
@@ -55,6 +58,8 @@ const composingComponents = [
   ReactQueryProvider,
   LayoutRootContextProvider
 ];
+
+const useNewExploration = checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION);
 
 function ScrollTop() {
   const { pathname } = useLocation();
@@ -91,21 +96,31 @@ function Root() {
                   path={`${DATASETS_PATH}/:datasetId`}
                   element={<DatasetsOverview />}
                 />
-                <Route
-                  path={`${DATASETS_PATH}/:datasetId/explore`}
-                  element={<DatasetsExplore />}
-                />
                 <Route path={STORIES_PATH} element={<StoriesHub />} />
                 <Route
                   path={`${STORIES_PATH}/:storyId`}
                   element={<StoriesSingle />}
                 />
-                <Route path={ANALYSIS_PATH} element={<Analysis />} />
-                <Route
-                  path={ANALYSIS_RESULTS_PATH}
-                  element={<AnalysisResults />}
-                />
+
+                {!useNewExploration && (
+                  <>
+                    <Route
+                      path={`${DATASETS_PATH}/:datasetId/explore`}
+                      element={<DatasetsExplore />}
+                    />
+                    <Route path={ANALYSIS_PATH} element={<Analysis />} />
+                    <Route
+                      path={ANALYSIS_RESULTS_PATH}
+                      element={<AnalysisResults />}
+                    />
+                  </>
+                )}
+
                 <Route path='development' element={<Development />} />
+
+                {/* {useNewExploration && ( */}
+                  <Route path='exploration' element={<Exploration />} />
+                {/* )} */}
 
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />

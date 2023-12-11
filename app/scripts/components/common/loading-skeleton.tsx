@@ -15,7 +15,7 @@ const pulse = keyframes`
   }
 `;
 
-const pulsingAnimation = css`
+export const pulsingAnimation = css`
   animation: ${pulse} 0.8s ease 0s infinite alternate;
 `;
 

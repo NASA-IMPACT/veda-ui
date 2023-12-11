@@ -115,10 +115,13 @@ function SandboxLayout() {
 
   return (
     <>
-      <LayoutProps title={`Sandbox - ${page.name}`} />
+      <LayoutProps
+        title={`Sandbox - ${page.name}`}
+        hideFooter={page.noFooter}
+      />
 
       <PageMainContent>
-        <PageHero title={page.name} />
+        {!page.noHero ? <PageHero title={page.name} /> : false}
         <page.component />
       </PageMainContent>
     </>

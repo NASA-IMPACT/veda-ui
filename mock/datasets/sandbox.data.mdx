@@ -18,6 +18,35 @@ taxonomy:
       - Experimental
       - Untested
 layers:
+  - id: combined_CMIP6_daily_GISS-E2-1-G_tas_kerchunk_DEMO
+    stacCol: combined_CMIP6_daily_GISS-E2-1-G_tas_kerchunk_DEMO
+    name: CMIP6 Daily GISS-E2-1-G Near-Surface Air Temperature (demo subset)
+    type: zarr
+    tileApiEndpoint: https://dev-titiler-xarray.delta-backend.com/tilejson.json
+    description: "Historical (1950-2014) daily-mean near-surface (usually, 2 meter) air temperature in Kelvin."
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      reference: "true"
+      resampling_method: bilinear
+      variable: tas
+      colormap_name: coolwarm
+      rescale: 232,312
+      maxzoom: 12
+    legend:
+      unit: 
+        label: K
+      type: gradient
+      min: 232
+      max: 312
+      stops:
+      - '#3b4cc0'
+      - '#7b9ff9'
+      - '#c0d4f5'
+      - '#f2cbb7'
+      - '#ee8468'
+      - '#b40426'
   - id: blue-tarp-planetscope
     stacCol: blue-tarp-planetscope
     name: Blue tarp test
@@ -129,6 +158,64 @@ layers:
     stacCol: dev-fail
     name: Failing layer
     type: raster
+  - id: geoglam
+    stacCol: geoglam
+    name: GEOGLAM Crop Conditions
+    type: raster
+    description: Combined crop conditions across both the Crop Monitor for AMIS and Crop Monitor for Early Warning
+    zoomExtent:
+      - 0
+      - 16
+    sourceParams:
+      colormap: '{"1": [120, 120, 120], "2": [130, 65, 0], "3": [66, 207, 56], "4": [245, 239, 0], "5": [241, 89, 32], "6": [168, 0, 0], "7": [0, 143, 201]}'
+      bidx: 1
+      unscale: false
+      resampling: nearest
+      max_size: 1024
+      return_mask: true
+    legend:
+      type: categorical
+      stops:
+        - color: "#3A8DC6"
+          label: "Exceptional"
+        - color: "#62D246"
+          label: "Favourable"
+        - color: "#FFFF00"
+          label: "Watch"
+        - color: "#EC5830"
+          label: "Poor"
+        - color: "#891911"
+          label: "Failure"
+        - color: "#787878"
+          label: "Out of season"
+        - color: "#804115"
+          label: "No data"
+  - id: facebook_population_density
+    stacCol: facebook_population_density
+    name: 'Facebook Population Density'
+    type: raster
+    description: 'Facebook high-resolution population density with a 30m² resolution'
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      resampling: bilinear
+      bidx: 1
+      colormap_name: ylorrd
+      rescale:
+        - 0
+        - 69
+    legend:
+      type: gradient
+      min: "0"
+      max: "69"
+      stops:
+      - "#ffffcc"
+      - "#fee187"
+      - "#feab49"
+      - "#fc5b2e"
+      - "#d41020"
+      - "#800026"
 related:
   - type: dataset
     id: no2

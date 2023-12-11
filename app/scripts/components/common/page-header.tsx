@@ -20,18 +20,19 @@ import {
 import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from './dropdown-scrollable';
-
 import NasaLogo from './nasa-logo';
 import GoogleForm from './google-form';
 import { Tip } from './tip';
-
 import UnscrollableBody from './unscrollable-body';
+
+import { checkEnvFlag } from '$utils/utils';
 import { variableGlsp } from '$styles/variable-utils';
 import {
   STORIES_PATH,
   DATASETS_PATH,
   ANALYSIS_PATH,
-  ABOUT_PATH
+  ABOUT_PATH,
+  EXPLORATION_PATH
 } from '$utils/routes';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
@@ -425,12 +426,21 @@ function PageHeader() {
                     </GlobalMenuLink>
                   </li>
                   <li>
-                    <GlobalMenuLink
-                      to={ANALYSIS_PATH}
-                      onClick={closeNavOnClick}
-                    >
-                      Data Analysis
-                    </GlobalMenuLink>
+                    {checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION) ? (
+                      <GlobalMenuLink
+                        to={EXPLORATION_PATH}
+                        onClick={closeNavOnClick}
+                      >
+                        Exploration
+                      </GlobalMenuLink>
+                    ) : (
+                      <GlobalMenuLink
+                        to={ANALYSIS_PATH}
+                        onClick={closeNavOnClick}
+                      >
+                        Data Analysis
+                      </GlobalMenuLink>
+                    )}
                   </li>
                   <li>
                     <GlobalMenuLink to={STORIES_PATH} onClick={closeNavOnClick}>

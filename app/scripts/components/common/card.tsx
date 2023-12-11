@@ -332,6 +332,7 @@ interface CardComponentProps {
   parentTo?: string;
   footerContent?: ReactNode;
   onCardClickCapture?: MouseEventHandler;
+  onLinkClick?: MouseEventHandler;
 }
 
 function CardComponent(props: CardComponentProps) {
@@ -349,13 +350,14 @@ function CardComponent(props: CardComponentProps) {
     parentName,
     parentTo,
     footerContent,
-    onCardClickCapture
+    onCardClickCapture,
+    onLinkClick
   } = props;
 
   const isExternalLink = linkTo.match(/^https?:\/\//);
   const linkProps = isExternalLink
-    ? { href: linkTo }
-    : { as: Link, to: linkTo };
+    ? { href: linkTo, onClick: onLinkClick }
+    : { as: Link, to: linkTo, onClick: onLinkClick };
 
   return (
     <ElementInteractive

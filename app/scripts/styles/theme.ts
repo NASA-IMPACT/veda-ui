@@ -10,7 +10,7 @@ export const VEDA_OVERRIDE_THEME = {
     hide: -1,
     docked: 10,
     sticky: 900,
-    dropdown: 1000,
+    dropdown: 1550,
     overlay: 1300,
     modal: 1400,
     popover: 1500,
