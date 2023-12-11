@@ -12,6 +12,7 @@ import LayoutRoot, {
   LayoutRootContextProvider
 } from '$components/common/layout-root';
 import { useScrollbarWidthAsCssVar } from '$utils/use-scrollbar-width-css';
+import { checkEnvFlag } from '$utils/utils';
 
 // Page loading
 import { PageLoading } from '$components/common/loading-skeleton';
@@ -58,7 +59,7 @@ const composingComponents = [
   LayoutRootContextProvider
 ];
 
-const useNewExploration = !!process.env.FEATURE_NEW_EXPLORATION;
+const useNewExploration = checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION);
 
 function ScrollTop() {
   const { pathname } = useLocation();

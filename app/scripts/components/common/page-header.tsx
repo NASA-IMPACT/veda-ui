@@ -20,12 +20,12 @@ import {
 import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from './dropdown-scrollable';
-
 import NasaLogo from './nasa-logo';
 import GoogleForm from './google-form';
 import { Tip } from './tip';
-
 import UnscrollableBody from './unscrollable-body';
+
+import { checkEnvFlag } from '$utils/utils';
 import { variableGlsp } from '$styles/variable-utils';
 import {
   STORIES_PATH,
@@ -426,7 +426,7 @@ function PageHeader() {
                     </GlobalMenuLink>
                   </li>
                   <li>
-                    {process.env.FEATURE_NEW_EXPLORATION ? (
+                    {checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION) ? (
                       <GlobalMenuLink
                         to={EXPLORATION_PATH}
                         onClick={closeNavOnClick}
