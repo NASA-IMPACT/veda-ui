@@ -193,6 +193,8 @@ export async function requestDatasetTimeseriesData({
     const tileEndpointToUse =
       datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
 
+    const analysisParams = datasetData.analysis?.sourceParams ?? {};
+
     const layerStatistics = await Promise.all(
       assets.map(async ({ date, url }) => {
         const statistics = await concurrencyManager.queue(
@@ -202,10 +204,10 @@ export async function requestDatasetTimeseriesData({
               ['analysis', id, 'asset', url, aoi],
               async ({ signal }) => {
                 const { data } = await axios.post(
-                  `${tileEndpointToUse}/cog/statistics?url=${url}`,
+                  `${tileEndpointToUse}/cog/statistics`,
                   // Making a request with a FC causes a 500 (as of 2023/01/20)
                   fixAoiFcForStacSearch(aoi),
-                  { signal }
+                  { params: { url, ...analysisParams }, signal }
                 );
                 return {
                   date,
