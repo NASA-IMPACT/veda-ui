@@ -166,12 +166,17 @@ const LegendList = styled.dl`
     &:not(:first-of-type):not(:last-of-type) {
       ${visuallyHidden()}
     }
+  }
 
-    .unit {
+  .unit {
+    grid-row: 3;
       width: 100%;
       text-align: center;
+      font-size: 0.75rem;
+      line-height: 1rem;
     }
-  }
+
+
 `;
 
 const LegendSwatch = styled.span<LegendSwatchProps>`
@@ -338,9 +343,9 @@ export function LayerGradientGraphic(props: LayerLegendGradient) {
       </dt>
       <dd>
         <span>{printLegendVal(min)}</span>
-        {unit?.label && <span className='unit'>{unit.label}</span>}
         <span>{printLegendVal(max)}</span>
       </dd>
+      {unit?.label && <span className='unit'>{unit.label}</span>}
     </LegendList>
   );
 }
