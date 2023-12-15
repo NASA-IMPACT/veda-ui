@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import useQsStateCreator from 'qs-state-hook';
 import { isSameDay } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
@@ -64,12 +65,12 @@ import {
   BASEMAP_ID_DEFAULT
 } from '$components/common/mapbox/map-options/basemaps';
 
-const BackLink = styled.a`
+const BackLink = styled(Link)`
   display: flex;
   padding: ${variableGlsp(0.5)};
   font-size: 1rem;
   font-weight: ${themeVal('type.base.bold')};
-  color: ${themeVal('color.primary')};
+  color: ${themeVal('color.link')};
   background-color: ${themeVal('color.surface')};
   cursor: pointer;
 
@@ -630,7 +631,7 @@ function DatasetsExplore() {
                 <ScrollArea>
                   <ScrollAreaInner>
                     <BackLink
-                      href={`${DATASETS_PATH}/${dataset.data.id}`}
+                      to={`${DATASETS_PATH}/${dataset.data.id}`}
                     >
                       <CollecticonArrowLeft /> Back to dataset overview
                     </BackLink>
