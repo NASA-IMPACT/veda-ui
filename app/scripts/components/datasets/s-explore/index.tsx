@@ -7,12 +7,14 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import useQsStateCreator from 'qs-state-hook';
 import { isSameDay } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonExpandFromLeft,
-  CollecticonShrinkToLeft
+  CollecticonShrinkToLeft,
+  CollecticonArrowLeft,
 } from '@devseed-ui/collecticons';
 import { ProjectionOptions } from 'veda';
 import { FormSwitch } from '@devseed-ui/form';
@@ -21,6 +23,7 @@ import LayerVisibilityToggleButton from './layer-visibility-toggle';
 import TileLinkButton from './tile-link';
 import DatasetLayers from './dataset-layers';
 import { PanelDateWidget } from './panel-date-widget';
+import { DATASETS_PATH } from '$utils/routes';
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
 import MapboxMap, { MapboxMapRef } from '$components/common/mapbox';
@@ -42,6 +45,7 @@ import {
   PANEL_REVEAL_DURATION
 } from '$styles/panel';
 
+
 import { useDataset } from '$utils/veda-data';
 import { useMediaQuery } from '$utils/use-media-query';
 import { useEffectPrevious } from '$utils/use-effect-previous';
@@ -60,6 +64,25 @@ import {
   BasemapId,
   BASEMAP_ID_DEFAULT
 } from '$components/common/mapbox/map-options/basemaps';
+
+const BackLink = styled(Link)`
+  display: flex;
+  padding: ${variableGlsp(0.5)};
+  font-size: 1rem;
+  font-weight: ${themeVal('type.base.bold')};
+  color: ${themeVal('color.link')};
+  background-color: ${themeVal('color.surface')};
+  cursor: pointer;
+
+  & > svg {
+    flex: 0 0 auto;
+    margin: 0.25rem 0.5rem 0 0;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
 
 const Explorer = styled.div`
   position: relative;
@@ -607,6 +630,11 @@ function DatasetsExplore() {
                 <PositionPlaceHolderForScroll />
                 <ScrollArea>
                   <ScrollAreaInner>
+                    <BackLink
+                      to={`${DATASETS_PATH}/${dataset.data.id}`}
+                    >
+                      <CollecticonArrowLeft /> Back to dataset overview
+                    </BackLink>
                     <DatesWrapper>
                       {activeLayerTimeseries && (
                         <PanelDateWidget
