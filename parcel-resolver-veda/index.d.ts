@@ -56,6 +56,7 @@ declare module 'veda' {
     stacCol: string;
     stacApiEndpoint?: string;
     tileApiEndpoint?: string;
+    time_density?: 'day' | 'month' | 'year';
     name: string;
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
@@ -88,6 +89,7 @@ declare module 'veda' {
     description: string;
     stacApiEndpoint?: string;
     tileApiEndpoint?: string;
+    time_density?: 'day' | 'month' | 'year';
     stacCol: string;
     type: DatasetLayerType;
     legend?: LayerLegendCategorical | LayerLegendGradient;
