@@ -45,22 +45,42 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
 
   const generatorId = 'zarr-timeseries' + idSuffix;
 
+  const replaceDaacUrls = (url: string) => {
+    const daacUrlBucketMap = {
+      'https://data.gesdisc.earthdata.nasa.gov/data': 's3://gesdisc-cumulus-prod-protected'
+    }
+    for (const [key, value] of Object.entries(daacUrlBucketMap)) {
+      if (url.startsWith(key)) {
+        return url.replace(key, value)
+      }
+    }
+  }
   //
   // Get the asset url
   //
   useEffect(() => {
     const controller = new AbortController();
 
-    async function load() {
+    const load = async () => {
       try {
         onStatusChange?.({ status: S_LOADING, id });
+
+        // Zarr collections in _VEDA_ should have a single entrypoint (zarr or virtual zarr / reference)
+        // CMR endpoints will be using individual items' assets, so we query for the asset url
+        var stacApiEndpointToUse = `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`;
+        // TODO: need a better way to configure this to search for items OR return a collections
+        if (stacApiEndpoint) {
+          stacApiEndpointToUse = `${stacApiEndpoint}/search?collections=${stacCol}&datetime=${date?.toISOString()}`
+        }
+
         const data = await requestQuickCache({
-          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
+          url: stacApiEndpointToUse,
           method: 'GET',
           controller
         });
 
-        setAssetUrl(data.assets.zarr.href);
+        const assetUrl = (data.hasOwnProperty('assets') && data.assets.hasOwnProperty('zarr')) ? data.assets.zarr.href : replaceDaacUrls(data.features[0].assets.data.href);
+        setAssetUrl(assetUrl);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
