@@ -158,25 +158,19 @@ const LegendList = styled.dl`
       }
     }
 
-    &:last-of-type:not(:first-of-type) {
-      justify-content: flex-end;
-      text-align: right;
-    }
-
     &:not(:first-of-type):not(:last-of-type) {
       ${visuallyHidden()}
     }
   }
 
   .unit {
-    grid-row: 3;
+      grid-row: 3;
       width: 100%;
       text-align: center;
       font-size: 0.75rem;
       line-height: 1rem;
+      justify-content: center;
     }
-
-
 `;
 
 const LegendSwatch = styled.span<LegendSwatchProps>`
@@ -345,7 +339,7 @@ export function LayerGradientGraphic(props: LayerLegendGradient) {
         <span>{printLegendVal(min)}</span>
         <span>{printLegendVal(max)}</span>
       </dd>
-      {unit?.label && <span className='unit'>{unit.label}</span>}
+      {unit?.label && <dd className='unit'>{unit.label}</dd>}
     </LegendList>
   );
 }
