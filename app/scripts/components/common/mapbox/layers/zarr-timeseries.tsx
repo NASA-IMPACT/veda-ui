@@ -8,8 +8,6 @@ import { hasNestedKey } from '$utils/utils';
 
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
-type ReplacementTuples = [string, string];
-
 export interface MapLayerZarrTimeseriesProps {
   id: string;
   stacCol: string;
@@ -18,7 +16,7 @@ export interface MapLayerZarrTimeseriesProps {
   sourceParams?: Record<string, any>;
   stacApiEndpoint?: string;
   tileApiEndpoint?: string;
-  assetUrlReplacements?: ReplacementTuples[];
+  assetUrlReplacements?: [string, string][];
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
@@ -31,7 +29,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
     stacCol,
     stacApiEndpoint,
     tileApiEndpoint,
-    assetUrlReplacements = [],
+    assetUrlReplacements,
     date,
     mapInstance,
     sourceParams,
