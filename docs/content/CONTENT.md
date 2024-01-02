@@ -269,7 +269,7 @@ Each content should be formatted like below
 
 **asLink**
 
-If the story doesn't hold any contents but the link to outside, use `asLink` property to indicate it. Note that `id` 
+If the story doesn't hold any contents but links externally. Use `asLink` property to indicate it. Note that `id` 
 of the story that has `asLink` won't generate the url for the story.
 
 ```
