@@ -11,6 +11,8 @@
 ```yaml
 id: string
 stacCol: string
+stacApiEndpoint: string
+tileApiEndpoint: string
 name: string
 type: string
 initialDatetime: 'oldest' | 'newest' | Date(YYYY-MM-DD) = 'newest'
@@ -38,6 +40,14 @@ Must be unique in a dataset.
 **stacCol**  
 `string`  
 The stac collection that this layer should load.
+
+**stacApiEndpoint**  
+`string`  
+The stac api endpoint that has the collection. If not defined, environment variable `API_STAC_ENDPOINT` is used.
+
+**tileApiEndpoint**  
+`string`  
+The tile endpoint to use. If not defined, environment variable `API_RASTER_ENDPOINT` is used.
 
 **name**  
 `string`  
