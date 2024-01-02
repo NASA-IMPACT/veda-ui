@@ -69,6 +69,7 @@ export function Layer(props: LayerProps) {
           stacCol={dataset.data.stacCol}
           stacApiEndpoint={dataset.data.stacApiEndpoint}
           tileApiEndpoint={dataset.data.tileApiEndpoint}
+          assetUrlReplacements={dataset.data.assetUrlReplacements}
           date={relevantDate}
           zoomExtent={params.zoomExtent}
           sourceParams={params.sourceParams}

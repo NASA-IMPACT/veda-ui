@@ -96,3 +96,10 @@ export function composeVisuallyDisabled(
 export function checkEnvFlag(value?: string) {
   return (value ?? '').toLowerCase() === 'true';
 }
+
+export function hasNestedKey(obj, parentKey, nestedKey) {
+  if (obj && typeof obj[parentKey] === 'object' && obj[parentKey] !== null) {
+      return nestedKey in obj[parentKey];
+  }
+  return false;
+}
