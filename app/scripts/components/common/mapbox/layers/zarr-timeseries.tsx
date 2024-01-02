@@ -4,8 +4,11 @@ import { Map as MapboxMap, RasterSource, RasterLayer } from 'mapbox-gl';
 
 import { requestQuickCache } from './utils';
 import { useMapStyle } from './styles';
+import { hasNestedKey } from '$utils/utils';
 
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
+
+type ReplacementTuples = [string, string];
 
 export interface MapLayerZarrTimeseriesProps {
   id: string;
@@ -15,6 +18,7 @@ export interface MapLayerZarrTimeseriesProps {
   sourceParams?: Record<string, any>;
   stacApiEndpoint?: string;
   tileApiEndpoint?: string;
+  assetUrlReplacements?: ReplacementTuples[];
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
@@ -27,6 +31,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
     stacCol,
     stacApiEndpoint,
     tileApiEndpoint,
+    assetUrlReplacements = [],
     date,
     mapInstance,
     sourceParams,
@@ -45,16 +50,14 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
 
   const generatorId = 'zarr-timeseries' + idSuffix;
 
-  const replaceDaacUrls = (url: string) => {
-    const daacUrlBucketMap = {
-      'https://data.gesdisc.earthdata.nasa.gov/data': 's3://gesdisc-cumulus-prod-protected'
+  const replaceInAssetUrl = (url: string, replacements: ReplacementTuples[]) => {
+    for (const replacement of replacements) {
+      const [toReplace, replaceWith] = replacement;
+      url = url.replace(toReplace, replaceWith);
     }
-    for (const [key, value] of Object.entries(daacUrlBucketMap)) {
-      if (url.startsWith(key)) {
-        return url.replace(key, value)
-      }
-    }
-  }
+    return url;
+  };
+
   //
   // Get the asset url
   //
@@ -67,10 +70,10 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
 
         // Zarr collections in _VEDA_ should have a single entrypoint (zarr or virtual zarr / reference)
         // CMR endpoints will be using individual items' assets, so we query for the asset url
-        var stacApiEndpointToUse = `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`;
+        let stacApiEndpointToUse = `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`;
         // TODO: need a better way to configure this to search for items OR return a collections
         if (stacApiEndpoint) {
-          stacApiEndpointToUse = `${stacApiEndpoint}/search?collections=${stacCol}&datetime=${date?.toISOString()}`
+          stacApiEndpointToUse = `${stacApiEndpoint}/search?collections=${stacCol}&datetime=${date?.toISOString()}`;
         }
 
         const data = await requestQuickCache({
@@ -79,7 +82,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
           controller
         });
 
-        const assetUrl = (data.hasOwnProperty('assets') && data.assets.hasOwnProperty('zarr')) ? data.assets.zarr.href : replaceDaacUrls(data.features[0].assets.data.href);
+        const assetUrl = hasNestedKey(data, 'assets', 'zarr') ? data.assets.zarr.href : replaceInAssetUrl(data.features[0].assets.data.href, assetUrlReplacements);
         setAssetUrl(assetUrl);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
@@ -89,7 +92,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
         }
         return;
       }
-    }
+    };
 
     load();
 

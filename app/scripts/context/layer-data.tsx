@@ -52,14 +52,14 @@ const fetchLayerById = async (
       }
     };
   } else {
-    let domain = data.summaries?.datetime?.[0]
+    const domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
     // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
-    const lastDatetime = domain[domain.length - 1]
+    const lastDatetime = domain[domain.length - 1];
     if (lastDatetime == null) {
-      domain[domain.length - 1] = new Date().toISOString()
+      domain[domain.length - 1] = new Date().toISOString();
     }
     if (domain.some((d) => !d)) {
       throw new Error('Invalid datetime domain');

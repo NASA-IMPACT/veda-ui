@@ -20,6 +20,8 @@ layers:
     name: TRMM_3B42_Daily
     type: zarr
     time_density: day
+    assetUrlReplacements:
+      - [https://data.gesdisc.earthdata.nasa.gov/data, s3://gesdisc-cumulus-prod-protected]
     description: "Daily accumulated precipitation product generated from the research-quality 3-hourly TRMM Multi-Satellite Precipitation Analysis TMPA (3B42)"
     zoomExtent:
       - 0
