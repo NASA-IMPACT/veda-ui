@@ -16,6 +16,7 @@ export interface ZarrTimeseriesProps extends BaseGeneratorParams {
   sourceParams?: Record<string, any>;
   stacApiEndpoint?: string;
   tileApiEndpoint?: string;
+  assetUrlReplacements?: [string, string][];
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }

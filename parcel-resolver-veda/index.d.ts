@@ -51,13 +51,13 @@ declare module 'veda' {
     layerId: string;
   }
 
-  type ReplacementTuple = [string, string];
+
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
     stacApiEndpoint?: string;
     tileApiEndpoint?: string;
-    assetUrlReplacements?: ReplacementTuple[];
+    assetUrlReplacements?: [string, string][];
     time_density?: 'day' | 'month' | 'year';
     name: string;
     description: string;
