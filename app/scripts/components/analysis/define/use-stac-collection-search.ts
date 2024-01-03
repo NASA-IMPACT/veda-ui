@@ -103,7 +103,7 @@ export function useStacCollectionSearch({
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
   
-  if (invalidDatasets) unselectableDatasetLayers = unselectableDatasetLayers.concat(invalidDatasets);
+  if (invalidDatasets.length) unselectableDatasetLayers = unselectableDatasetLayers.concat(invalidDatasets);
 
   return {
     selectableDatasetLayers,
@@ -189,5 +189,5 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
     d.timeseries ? result[0].push(d) : result[1].push(d);
     return result;
   },[[], []]);
-  return [collectionsWithSummaries, collectionsWithoutSummaries]
+  return [collectionsWithSummaries, collectionsWithoutSummaries];
 }
