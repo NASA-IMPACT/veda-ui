@@ -20,6 +20,13 @@ interface UseStacSearchProps {
   aoi?: FeatureCollection<Polygon> | null;
 }
 
+interface DatasetWithCollections extends DatasetLayer {
+  isPeriodic: boolean,
+  timeDensity: string,
+  domain: string[],
+  timeseries?: string[];
+}
+
 export type DatasetWithTimeseriesData = TimeseriesDataResult &
   DatasetLayer & { numberOfItems: number };
 
@@ -64,14 +71,15 @@ export function useStacCollectionSearch({
     enabled: readyToLoadDatasets
   });
 
-  const datasetLayersInRange = useMemo(() => {
+  const [datasetLayersInRange, invalidDatasets] = useMemo(() => {
     try {
-      return getInTemporalAndSpatialExtent(result.data, aoi, {
+      const [datasetWithSummaries, datasetWithoutSummaries] = getInTemporalAndSpatialExtent(result.data, aoi, {
         start,
         end
       });
+      return [datasetWithSummaries, datasetWithoutSummaries];
     } catch (e) {
-      return [];
+      return [[], []];
     }
   }, [result.data, aoi, start, end]);
 
@@ -89,11 +97,13 @@ export function useStacCollectionSearch({
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
 
-  const unselectableDatasetLayers = useMemo(() => {
+  let unselectableDatasetLayers: DatasetWithTimeseriesData[] | DatasetWithCollections[] = useMemo(() => {
     return datasetLayersInRangeWithNumberOfItems.filter(
       (l) => l.numberOfItems > MAX_QUERY_NUM
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
+  
+  if (invalidDatasets) unselectableDatasetLayers = unselectableDatasetLayers.concat(invalidDatasets);
 
   return {
     selectableDatasetLayers,
@@ -157,20 +167,27 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
       (c) => c.id === l.stacCol && stacApiEndpointUsed === c.stacApiEndpoint
     );
 
-    if(!collection.summaries) {
-      // TODO: We should also add it to "unselectableDatasetLayers"
-      return null;
-    }
-
-    return {
+    const datapoint: DatasetWithCollections = {
       ...l,
       isPeriodic: collection['dashboard:is_periodic'],
       timeDensity: collection['dashboard:time_density'],
       domain: collection.extent.temporal.interval[0],
+    };
+
+    if(!collection.summaries) {
+      // NOTE: Invalid data because collection does not include summaries
+      return datapoint;
+    }
+
+    return {
+      ...datapoint,
       timeseries: collection.summaries.datetime
     };
   });
   
-  const filteredDatasetsWithCollectionsAndSummaries = filteredDatasetsWithCollections.filter(d => d);
-  return filteredDatasetsWithCollectionsAndSummaries;
+  const [collectionsWithSummaries, collectionsWithoutSummaries] = filteredDatasetsWithCollections.reduce((result, d) => {
+    d.timeseries ? result[0].push(d) : result[1].push(d);
+    return result;
+  },[[], []]);
+  return [collectionsWithSummaries, collectionsWithoutSummaries]
 }
