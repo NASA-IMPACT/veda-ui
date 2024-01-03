@@ -174,7 +174,7 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
       domain: collection.extent.temporal.interval[0],
     };
 
-    if(!collection.summaries) {
+    if(!collection.summaries || !!collection.summaries.length) {
       // NOTE: Invalid data because collection does not include summaries
       return datapoint;
     }
