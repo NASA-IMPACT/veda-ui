@@ -156,6 +156,12 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
     const collection = collectionData.find(
       (c) => c.id === l.stacCol && stacApiEndpointUsed === c.stacApiEndpoint
     );
+
+    if(!collection.summaries) {
+      // TODO: We should also add it to "unselectableDatasetLayers"
+      return null;
+    }
+
     return {
       ...l,
       isPeriodic: collection['dashboard:is_periodic'],
@@ -164,6 +170,7 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
       timeseries: collection.summaries.datetime
     };
   });
-
-  return filteredDatasetsWithCollections;
+  
+  const filteredDatasetsWithCollectionsAndSummaries = filteredDatasetsWithCollections.filter(d => d);
+  return filteredDatasetsWithCollectionsAndSummaries;
 }
