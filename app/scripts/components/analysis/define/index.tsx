@@ -517,7 +517,7 @@ export default function Analysis() {
                             {datasetLayer.name}
                             <DataPointsWarning>
                               <CollecticonSignDanger />~
-                              {datasetLayer.numberOfItems} data points
+                              {datasetLayer.numberOfItems ? `${datasetLayer.numberOfItems} data points`: "Data temporarily unavailable"}
                             </DataPointsWarning>
                           </FormCheckableUnselectable>
                         ))}

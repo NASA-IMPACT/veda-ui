@@ -20,15 +20,9 @@ interface UseStacSearchProps {
   aoi?: FeatureCollection<Polygon> | null;
 }
 
-interface DatasetWithCollections extends DatasetLayer {
-  isPeriodic: boolean,
-  timeDensity: string,
-  domain: string[],
-  timeseries?: string[];
-}
+export type DatasetWithCollections = TimeseriesDataResult & DatasetLayer;
 
-export type DatasetWithTimeseriesData = TimeseriesDataResult &
-  DatasetLayer & { numberOfItems: number };
+export type DatasetWithTimeseriesData = DatasetWithCollections & { numberOfItems: number };
 
 const collectionEndpointSuffix = '/collections';
 
@@ -185,7 +179,7 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
     };
   });
   
-  const [collectionsWithSummaries, collectionsWithoutSummaries] = filteredDatasetsWithCollections.reduce((result, d) => {
+  const [collectionsWithSummaries, collectionsWithoutSummaries]: [DatasetWithCollections[], DatasetWithCollections[]] = filteredDatasetsWithCollections.reduce((result: [DatasetWithCollections[], DatasetWithCollections[]], d) => {
     d.timeseries ? result[0].push(d) : result[1].push(d);
     return result;
   },[[], []]);
