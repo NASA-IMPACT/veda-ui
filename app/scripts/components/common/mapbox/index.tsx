@@ -264,7 +264,6 @@ function MapboxMapComponent(
     baseTimeDensity,
     compareTimeDensity
   ]);
-
   return (
     <>
       {/*
@@ -475,6 +474,7 @@ function MapboxMapComponent(
                   stacApiEndpoint={compareLayerResolvedData.stacApiEndpoint}
                   tileApiEndpoint={compareLayerResolvedData.tileApiEndpoint}
                   mapInstance={mapCompareRef.current}
+                  isPositionSet={!!initialPosition}
                   date={compareToDate ?? undefined}
                   sourceParams={compareLayerResolvedData.sourceParams}
                   zoomExtent={compareLayerResolvedData.zoomExtent}
