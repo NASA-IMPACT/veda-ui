@@ -97,7 +97,7 @@ export function useStacCollectionSearch({
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
   
-  unselectableDatasetLayers = [...unselectableDatasetLayers, ...(invalidDatasets as unknown) as DatasetWithTimeseriesData[]]
+  unselectableDatasetLayers = [...unselectableDatasetLayers, ...(invalidDatasets as unknown) as DatasetWithTimeseriesData[]];
 
   return {
     selectableDatasetLayers,

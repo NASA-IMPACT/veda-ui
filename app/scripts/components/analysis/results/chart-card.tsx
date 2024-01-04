@@ -279,7 +279,7 @@ export default function ChartCard(props: ChartCardProps) {
             ) : (
               <Chart
                 ref={chartRef}
-                timeSeriesData={data.timeseries ||[]}
+                timeSeriesData={data.timeseries}
                 uniqueKeys={uniqueKeys}
                 colors={colors}
                 dates={chartDates}
