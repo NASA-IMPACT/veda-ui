@@ -91,13 +91,13 @@ export function useStacCollectionSearch({
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
 
-  let unselectableDatasetLayers: DatasetWithTimeseriesData[] | DatasetWithCollections[] = useMemo(() => {
+  let unselectableDatasetLayers: DatasetWithTimeseriesData[] = useMemo(() => {
     return datasetLayersInRangeWithNumberOfItems.filter(
       (l) => l.numberOfItems > MAX_QUERY_NUM
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
   
-  if (invalidDatasets.length) unselectableDatasetLayers = unselectableDatasetLayers.concat(invalidDatasets);
+  if (invalidDatasets.length) unselectableDatasetLayers = unselectableDatasetLayers.concat((invalidDatasets as unknown) as DatasetWithTimeseriesData[]);
 
   return {
     selectableDatasetLayers,
@@ -180,6 +180,7 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
   });
   
   const [collectionsWithSummaries, collectionsWithoutSummaries]: [DatasetWithCollections[], DatasetWithCollections[]] = filteredDatasetsWithCollections.reduce((result: [DatasetWithCollections[], DatasetWithCollections[]], d) => {
+    /* eslint-disable-next-line fp/no-mutating-methods */
     d.timeseries ? result[0].push(d) : result[1].push(d);
     return result;
   },[[], []]);
