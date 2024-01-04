@@ -97,7 +97,7 @@ export function useStacCollectionSearch({
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
   
-  if (invalidDatasets.length) unselectableDatasetLayers = unselectableDatasetLayers.concat((invalidDatasets as unknown) as DatasetWithTimeseriesData[]);
+  unselectableDatasetLayers = [...unselectableDatasetLayers, ...(invalidDatasets as unknown) as DatasetWithTimeseriesData[]]
 
   return {
     selectableDatasetLayers,
@@ -107,7 +107,7 @@ export function useStacCollectionSearch({
   };
 }
 
-function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
+function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange): [DatasetWithCollections[], DatasetLayer[]] {
   const matchingCollectionIds = collectionData.reduce((acc, col) => {
     const { id, stacApiEndpoint } = col;
 
@@ -161,25 +161,21 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
       (c) => c.id === l.stacCol && stacApiEndpointUsed === c.stacApiEndpoint
     );
 
-    const datapoint: DatasetWithCollections = {
+    if(!collection.summaries || !!collection.summaries.length) {
+      // NOTE: Invalid data because collection does not include summaries
+      return l;
+    }
+
+    return {
       ...l,
       isPeriodic: collection['dashboard:is_periodic'],
       timeDensity: collection['dashboard:time_density'],
       domain: collection.extent.temporal.interval[0],
-    };
-
-    if(!collection.summaries || !!collection.summaries.length) {
-      // NOTE: Invalid data because collection does not include summaries
-      return datapoint;
-    }
-
-    return {
-      ...datapoint,
-      timeseries: collection.summaries.datetime
+      timeseries: collection.summaries.datetime,
     };
   });
   
-  const [collectionsWithSummaries, collectionsWithoutSummaries]: [DatasetWithCollections[], DatasetWithCollections[]] = filteredDatasetsWithCollections.reduce((result: [DatasetWithCollections[], DatasetWithCollections[]], d) => {
+  const [collectionsWithSummaries, collectionsWithoutSummaries]: [DatasetWithCollections[], DatasetLayer[]] = filteredDatasetsWithCollections.reduce((result: [DatasetWithCollections[], DatasetLayer[]], d: DatasetWithCollections) => {
     /* eslint-disable-next-line fp/no-mutating-methods */
     d.timeseries ? result[0].push(d) : result[1].push(d);
     return result;

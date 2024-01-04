@@ -101,7 +101,7 @@ const getNoDownloadReason = ({ status, data }: TimeseriesData) => {
   if (status === 'loading') {
     return 'Download will be available once the data finishes loading.';
   }
-  if (!data.timeseries?.length) {
+  if (!data.timeseries.length) {
     return 'There is no data to download.';
   }
   return '';
@@ -145,7 +145,7 @@ export default function ChartCard(props: ChartCardProps) {
   const onExportClick = useCallback(
     (e: MouseEvent, type: 'image' | 'text') => {
       e.preventDefault();
-      if (!chartData.data?.timeseries?.length) {
+      if (!chartData.data?.timeseries.length) {
         return;
       }
 
@@ -182,7 +182,7 @@ export default function ChartCard(props: ChartCardProps) {
 
   const chartDates = useMemo(
     () =>
-      data?.timeseries?.map((e) =>
+      data?.timeseries.map((e) =>
         dateFormatter(new Date(e.date), timeDensityFormat)
       ) ?? [],
     [data?.timeseries, timeDensityFormat]
@@ -273,7 +273,7 @@ export default function ChartCard(props: ChartCardProps) {
         ) : null}
 
         {status === 'succeeded' ? (
-          data.timeseries?.length ? (
+          data.timeseries.length ? (
             !activeMetrics.length ? (
               <ChartCardNoMetric />
             ) : (
