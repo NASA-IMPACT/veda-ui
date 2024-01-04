@@ -130,7 +130,7 @@ export default function AnalysisResults() {
   const availableDomain: [Date, Date] | null = useMemo(() => {
     if (!start || !end) return null;
     const onlySingleValues = requestStatus.every(
-      (rs) => rs.data?.timeseries.length === 1
+      (rs) => rs.data?.timeseries?.length === 1
     );
 
     const { minDate, maxDate } = requestStatus.reduce(
