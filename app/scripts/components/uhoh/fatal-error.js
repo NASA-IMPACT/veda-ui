@@ -119,6 +119,12 @@ function Child(props) {
                 <p>{nl2br(error.stack)}</p>
               </details>
             )}
+
+            <p>
+              <a href={makeAbsUrl('/')} title='Visit homepage'>
+                Go back to homepage
+              </a>
+            </p>
           </FoldProse>
         </PageMainContent>
       </LayoutRoot>
