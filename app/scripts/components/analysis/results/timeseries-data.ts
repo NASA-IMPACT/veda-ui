@@ -35,7 +35,7 @@ export interface TimeseriesDataResult {
   isPeriodic: boolean;
   timeDensity: TimeDensity;
   domain: string[];
-  timeseries: TimeseriesDataUnit[]; // NOTE: Summaries on collections will not always be available
+  timeseries: TimeseriesDataUnit[];
 }
 
 // Different options based on status.

@@ -65,25 +65,30 @@ export function useStacCollectionSearch({
     enabled: readyToLoadDatasets
   });
 
-  const [datasetLayersInRange, invalidDatasets] = useMemo(() => {
+  const datasetLayersInRange = useMemo(() => {
     try {
-      const [datasetWithSummaries, datasetWithoutSummaries] = getInTemporalAndSpatialExtent(result.data, aoi, {
+      return getInTemporalAndSpatialExtent(result.data, aoi, {
         start,
         end
       });
-      return [datasetWithSummaries, datasetWithoutSummaries];
     } catch (e) {
-      return [[], []];
+      return [];
     }
   }, [result.data, aoi, start, end]);
 
+  const [datasetsWithSummaries, invalidDatasets]: [DatasetWithCollections[], DatasetLayer[]] = datasetLayersInRange.reduce((result: [DatasetWithCollections[], DatasetLayer[]], d: DatasetWithCollections) => {
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    d.timeseries ? result[0].push(d) : result[1].push(d);
+    return result;
+  },[[], []]);
+  
   const datasetLayersInRangeWithNumberOfItems: DatasetWithTimeseriesData[] =
     useMemo(() => {
-      return datasetLayersInRange.map((l) => {
+      return datasetsWithSummaries.map((l) => {
         const numberOfItems = getNumberOfItemsWithinTimeRange(start, end, l);
         return { ...l, numberOfItems };
       });
-    }, [datasetLayersInRange, start, end]);
+    }, [datasetsWithSummaries, start, end]);
 
   const selectableDatasetLayers = useMemo(() => {
     return datasetLayersInRangeWithNumberOfItems.filter(
@@ -94,7 +99,7 @@ export function useStacCollectionSearch({
   let unselectableDatasetLayers: DatasetWithTimeseriesData[] = useMemo(() => {
     return datasetLayersInRangeWithNumberOfItems.filter(
       (l) => l.numberOfItems > MAX_QUERY_NUM
-    );
+    )
   }, [datasetLayersInRangeWithNumberOfItems]);
   
   unselectableDatasetLayers = [...unselectableDatasetLayers, ...(invalidDatasets as unknown) as DatasetWithTimeseriesData[]];
@@ -107,7 +112,7 @@ export function useStacCollectionSearch({
   };
 }
 
-function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange): [DatasetWithCollections[], DatasetLayer[]] {
+function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
   const matchingCollectionIds = collectionData.reduce((acc, col) => {
     const { id, stacApiEndpoint } = col;
 
@@ -161,24 +166,14 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange): [Dataset
       (c) => c.id === l.stacCol && stacApiEndpointUsed === c.stacApiEndpoint
     );
 
-    if(!collection.summaries || !!collection.summaries.length) {
-      // NOTE: Invalid data because collection does not include summaries
-      return l;
-    }
-
     return {
       ...l,
       isPeriodic: collection['dashboard:is_periodic'],
       timeDensity: collection['dashboard:time_density'],
       domain: collection.extent.temporal.interval[0],
-      timeseries: collection.summaries.datetime,
+      timeseries: collection.summaries?.datetime,
     };
   });
   
-  const [collectionsWithSummaries, collectionsWithoutSummaries]: [DatasetWithCollections[], DatasetLayer[]] = filteredDatasetsWithCollections.reduce((result: [DatasetWithCollections[], DatasetLayer[]], d: DatasetWithCollections) => {
-    /* eslint-disable-next-line fp/no-mutating-methods */
-    d.timeseries ? result[0].push(d) : result[1].push(d);
-    return result;
-  },[[], []]);
-  return [collectionsWithSummaries, collectionsWithoutSummaries];
-}
+  return filteredDatasetsWithCollections;
+};
