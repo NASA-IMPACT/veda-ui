@@ -99,7 +99,7 @@ export function useStacCollectionSearch({
   let unselectableDatasetLayers: DatasetWithTimeseriesData[] = useMemo(() => {
     return datasetLayersInRangeWithNumberOfItems.filter(
       (l) => l.numberOfItems > MAX_QUERY_NUM
-    )
+    );
   }, [datasetLayersInRangeWithNumberOfItems]);
   
   unselectableDatasetLayers = [...unselectableDatasetLayers, ...(invalidDatasets as unknown) as DatasetWithTimeseriesData[]];
@@ -176,4 +176,4 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
   });
   
   return filteredDatasetsWithCollections;
-};
+}
