@@ -8,7 +8,7 @@ import { areIntervalsOverlapping } from 'date-fns';
 import { DatasetLayer } from 'veda';
 
 import { MAX_QUERY_NUM } from '../constants';
-import { TimeseriesDataResult } from '../results/timeseries-data';
+import { TimeseriesMissingSummaries, TimeseriesDataResult } from '../results/timeseries-data';
 import { getNumberOfItemsWithinTimeRange } from './utils';
 import { allAvailableDatasetsLayers } from '.';
 
@@ -21,8 +21,9 @@ interface UseStacSearchProps {
 }
 
 export type DatasetWithCollections = TimeseriesDataResult & DatasetLayer;
-
+type DatasetMissingSummaries = TimeseriesMissingSummaries & DatasetLayer;
 export type DatasetWithTimeseriesData = DatasetWithCollections & { numberOfItems: number };
+export type InvalidDatasets = DatasetMissingSummaries | DatasetWithTimeseriesData;
 
 const collectionEndpointSuffix = '/collections';
 
@@ -76,9 +77,9 @@ export function useStacCollectionSearch({
     }
   }, [result.data, aoi, start, end]);
 
-  const [datasetsWithSummaries, invalidDatasets]: [DatasetWithCollections[], DatasetLayer[]] = datasetLayersInRange.reduce((result: [DatasetWithCollections[], DatasetLayer[]], d: DatasetWithCollections) => {
+  const [datasetsWithSummaries, invalidDatasets]: [DatasetWithCollections[], DatasetMissingSummaries[]] = datasetLayersInRange.reduce((result: [DatasetWithCollections[], DatasetMissingSummaries[]], d) => {
     /* eslint-disable-next-line fp/no-mutating-methods */
-    d.timeseries ? result[0].push(d) : result[1].push(d);
+    d.timeseries ? result[0].push(d as DatasetWithCollections) : result[1].push(d as DatasetMissingSummaries);
     return result;
   },[[], []]);
   
@@ -96,13 +97,13 @@ export function useStacCollectionSearch({
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
 
-  let unselectableDatasetLayers: DatasetWithTimeseriesData[] = useMemo(() => {
+  const datasetsWithTooManyRequests: DatasetWithTimeseriesData[] = useMemo(() => {
     return datasetLayersInRangeWithNumberOfItems.filter(
       (l) => l.numberOfItems > MAX_QUERY_NUM
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
   
-  unselectableDatasetLayers = [...unselectableDatasetLayers, ...(invalidDatasets as unknown) as DatasetWithTimeseriesData[]];
+  const unselectableDatasetLayers:InvalidDatasets[] = [...datasetsWithTooManyRequests, ...invalidDatasets];
 
   return {
     selectableDatasetLayers,
