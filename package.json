@@ -6,6 +6,7 @@
     "name": "Development Seed",
     "url": "https://developmentseed.org/"
   },
+  "main": "app/scripts/export-components.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/NASA-IMPACT/veda-ui.git"
