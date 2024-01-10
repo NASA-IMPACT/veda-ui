@@ -38,6 +38,13 @@ export interface TimeseriesDataResult {
   timeseries: TimeseriesDataUnit[];
 }
 
+export interface TimeseriesMissingSummaries {
+  isPeriodic: boolean;
+  timeDensity: TimeDensity;
+  domain: string[];
+  timeseries?: unknown;
+}
+
 // Different options based on status.
 export type TimeseriesData =
   | {
