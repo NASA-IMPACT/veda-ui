@@ -1,3 +1,3 @@
-import Chart from './scripts/components/common/chart/';
+import Chart from './components/common/chart/';
 
 export { Chart };
