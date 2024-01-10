@@ -8,7 +8,7 @@ import { areIntervalsOverlapping } from 'date-fns';
 import { DatasetLayer } from 'veda';
 
 import { MAX_QUERY_NUM } from '../constants';
-import { TimeseriesDataResult } from '../results/timeseries-data';
+import { TimeseriesMissingSummaries, TimeseriesDataResult } from '../results/timeseries-data';
 import { getNumberOfItemsWithinTimeRange } from './utils';
 import { allAvailableDatasetsLayers } from '.';
 
@@ -20,8 +20,10 @@ interface UseStacSearchProps {
   aoi?: FeatureCollection<Polygon> | null;
 }
 
-export type DatasetWithTimeseriesData = TimeseriesDataResult &
-  DatasetLayer & { numberOfItems: number };
+export type DatasetWithCollections = TimeseriesDataResult & DatasetLayer;
+type DatasetMissingSummaries = TimeseriesMissingSummaries & DatasetLayer;
+export type DatasetWithTimeseriesData = DatasetWithCollections & { numberOfItems: number };
+export type InvalidDatasets = DatasetMissingSummaries | DatasetWithTimeseriesData;
 
 const collectionEndpointSuffix = '/collections';
 
@@ -75,13 +77,19 @@ export function useStacCollectionSearch({
     }
   }, [result.data, aoi, start, end]);
 
+  const [datasetsWithSummaries, invalidDatasets]: [DatasetWithCollections[], DatasetMissingSummaries[]] = datasetLayersInRange.reduce((result: [DatasetWithCollections[], DatasetMissingSummaries[]], d) => {
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    d.timeseries ? result[0].push(d as DatasetWithCollections) : result[1].push(d as DatasetMissingSummaries);
+    return result;
+  },[[], []]);
+  
   const datasetLayersInRangeWithNumberOfItems: DatasetWithTimeseriesData[] =
     useMemo(() => {
-      return datasetLayersInRange.map((l) => {
+      return datasetsWithSummaries.map((l) => {
         const numberOfItems = getNumberOfItemsWithinTimeRange(start, end, l);
         return { ...l, numberOfItems };
       });
-    }, [datasetLayersInRange, start, end]);
+    }, [datasetsWithSummaries, start, end]);
 
   const selectableDatasetLayers = useMemo(() => {
     return datasetLayersInRangeWithNumberOfItems.filter(
@@ -89,11 +97,13 @@ export function useStacCollectionSearch({
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
 
-  const unselectableDatasetLayers = useMemo(() => {
+  const datasetsWithTooManyRequests: DatasetWithTimeseriesData[] = useMemo(() => {
     return datasetLayersInRangeWithNumberOfItems.filter(
       (l) => l.numberOfItems > MAX_QUERY_NUM
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
+  
+  const unselectableDatasetLayers:InvalidDatasets[] = [...datasetsWithTooManyRequests, ...invalidDatasets];
 
   return {
     selectableDatasetLayers,
@@ -156,14 +166,15 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
     const collection = collectionData.find(
       (c) => c.id === l.stacCol && stacApiEndpointUsed === c.stacApiEndpoint
     );
+
     return {
       ...l,
       isPeriodic: collection['dashboard:is_periodic'],
       timeDensity: collection['dashboard:time_density'],
       domain: collection.extent.temporal.interval[0],
-      timeseries: collection.summaries.datetime
+      timeseries: collection.summaries?.datetime,
     };
   });
-
+  
   return filteredDatasetsWithCollections;
 }
