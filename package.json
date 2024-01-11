@@ -199,8 +199,9 @@
   },
   "lint-staged": {
     "*.(js|ts|tsx|jsx)": [
-      "lint",
-      "ts-check"
+      "yarn eslint",
+      "yarn stylelint",
+      "yarn ts-check"
     ]
   }
 }
