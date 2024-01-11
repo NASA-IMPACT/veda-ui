@@ -1,10 +1,10 @@
 var $4xljF$reactjsxruntime = require("react/jsx-runtime");
 var $4xljF$react = require("react");
-var $4xljF$styledcomponents = require("styled-components");
-var $4xljF$recharts = require("recharts");
-var $4xljF$devseeduithemeprovider = require("@devseed-ui/theme-provider");
 var $4xljF$d3 = require("d3");
 var $4xljF$d3scalechromatic = require("d3-scale-chromatic");
+var $4xljF$styledcomponents = require("styled-components");
+var $4xljF$devseeduithemeprovider = require("@devseed-ui/theme-provider");
+var $4xljF$recharts = require("recharts");
 var $4xljF$reactcooldimensions = require("react-cool-dimensions");
 
 function $parcel$export(e, n, v, s) {
@@ -14,12 +14,7 @@ function $parcel$interopDefault(a) {
   return a && a.__esModule ? a.default : a;
 }
 
-$parcel$export(module.exports, "Chart", function () { return $5f7e20cca7ff1f78$export$2e2bcd8739ae039; });
-
-
-
-
-
+$parcel$export(module.exports, "BlockChart", function () { return $9bcf144ec7818985$export$2e2bcd8739ae039; });
 
 
 
@@ -286,6 +281,41 @@ function $555a761aa876ed68$export$104b63ca24cf6df9(x) {
 }
 
 
+const $7b9d438d36f20548$export$e975f927c24cf4a8 = 200;
+const $7b9d438d36f20548$export$40697364cff166fb = 500;
+const $7b9d438d36f20548$export$a9c4ee88674b7001 = 1.77; // 16:9
+const $7b9d438d36f20548$export$6728fea658cfb92e = {
+    top: 20,
+    right: 30,
+    left: 20,
+    bottom: 20
+};
+const $7b9d438d36f20548$export$563283a51474d23c = "color.info-300a";
+const $7b9d438d36f20548$export$7b93c9150739f7ee = "rgba(46, 134, 171, 0.32)";
+const $7b9d438d36f20548$export$56d5855bc94e5e87 = /(?:\.([^.]+))?$/;
+const $7b9d438d36f20548$export$9521120b43092a8d = 700;
+const $7b9d438d36f20548$export$b4f2afed5884b447 = 50;
+const $7b9d438d36f20548$export$c38fa016fa5e23fe = {
+    with: {
+        xAxisHeight: 50,
+        labelOffset: -16
+    },
+    without: {
+        xAxisHeight: 30,
+        labelOffset: -5
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
 const $ff15672b36855f32$var$TooltipWrapper = (0, ($parcel$interopDefault($4xljF$styledcomponents))).div.withConfig({
     displayName: "tooltip__TooltipWrapper",
     componentId: "sc-yu7bps-0"
@@ -365,31 +395,6 @@ function $38e8fc58c3b6579f$export$2e2bcd8739ae039(props) {
 
 
 
-
-const $7b9d438d36f20548$export$e975f927c24cf4a8 = 200;
-const $7b9d438d36f20548$export$40697364cff166fb = 500;
-const $7b9d438d36f20548$export$a9c4ee88674b7001 = 1.77; // 16:9
-const $7b9d438d36f20548$export$6728fea658cfb92e = {
-    top: 20,
-    right: 30,
-    left: 20,
-    bottom: 20
-};
-const $7b9d438d36f20548$export$563283a51474d23c = "color.info-300a";
-const $7b9d438d36f20548$export$7b93c9150739f7ee = "rgba(46, 134, 171, 0.32)";
-const $7b9d438d36f20548$export$56d5855bc94e5e87 = /(?:\.([^.]+))?$/;
-const $7b9d438d36f20548$export$9521120b43092a8d = 700;
-const $7b9d438d36f20548$export$b4f2afed5884b447 = 50;
-const $7b9d438d36f20548$export$c38fa016fa5e23fe = {
-    with: {
-        xAxisHeight: 50,
-        labelOffset: -16
-    },
-    without: {
-        xAxisHeight: 30,
-        labelOffset: -5
-    }
-};
 
 
 const $96acddacc9e95800$export$d2e34c56e9db10e3 = (0, ($parcel$interopDefault($4xljF$styledcomponents))).ul.withConfig({
@@ -1028,6 +1033,82 @@ var $5f7e20cca7ff1f78$export$2e2bcd8739ae039 = /*#__PURE__*/ (0, $4xljF$react.fo
         ]
     });
 });
+
+
+
+// BlockErrorBoundary doesn't catch async errors. To catch async errors we use
+// this workaround - it works if an error is thrown in useState hook. More in
+// this thread: https://github.com/facebook/react/issues/14981
+const $c6b51e033825bb17$var$useAsyncError = ()=>{
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, setError] = (0, $4xljF$react.useState)();
+    return (0, $4xljF$react.useCallback)((e)=>{
+        setError(()=>{
+            throw e;
+        });
+    }, [
+        setError
+    ]);
+};
+var $c6b51e033825bb17$export$2e2bcd8739ae039 = $c6b51e033825bb17$var$useAsyncError;
+
+
+const $9bcf144ec7818985$var$subIdKey = "subIdeKey";
+function $9bcf144ec7818985$var$BlockChart(props) {
+    const { dataPath: dataPath , idKey: idKey , xKey: xKey , yKey: yKey , dateFormat: dateFormat  } = props;
+    const [chartData, setChartData] = (0, $4xljF$react.useState)([]);
+    const [uniqueKeys, setUniqueKeys] = (0, $4xljF$react.useState)([]);
+    const newDataPath = dataPath.split("?")[0];
+    const extension = (0, $7b9d438d36f20548$export$56d5855bc94e5e87).exec(newDataPath)[1];
+    const throwAsyncError = (0, $c6b51e033825bb17$export$2e2bcd8739ae039)();
+    (0, $4xljF$react.useEffect)(()=>{
+        const getData = async ()=>{
+            try {
+                const data = extension === "csv" ? await (0, $4xljF$d3.csv)(dataPath) : await (0, $4xljF$d3.json)(dataPath).then((d)=>[
+                        d
+                    ].flat()); // if no idKey is provided (when there are only two columns in the data), sub it with empty data
+                const dataToUse = idKey ? data : data.map((e)=>({
+                        ...e,
+                        [$9bcf144ec7818985$var$subIdKey]: ""
+                    }));
+                const { fData: fData , uniqueKeys: uniqueKeys  } = (0, $555a761aa876ed68$export$776836780a938436)({
+                    data: dataToUse,
+                    idKey: idKey ? idKey : $9bcf144ec7818985$var$subIdKey,
+                    xKey: xKey,
+                    yKey: yKey,
+                    dateFormat: dateFormat
+                });
+                const formattedUniqueKeys = uniqueKeys.map((e)=>({
+                        label: e,
+                        value: e,
+                        active: true
+                    }));
+                setChartData(fData);
+                setUniqueKeys(formattedUniqueKeys);
+            } catch (e) {
+                throwAsyncError(e);
+            }
+        };
+        getData();
+    }, [
+        setChartData,
+        setUniqueKeys,
+        throwAsyncError,
+        extension,
+        idKey,
+        xKey,
+        yKey,
+        dataPath,
+        dateFormat
+    ]);
+    return /*#__PURE__*/ (0, $4xljF$reactjsxruntime.jsx)((0, $5f7e20cca7ff1f78$export$2e2bcd8739ae039), {
+        ...props,
+        chartData: chartData,
+        uniqueKeys: uniqueKeys,
+        renderLegend: true
+    });
+}
+var $9bcf144ec7818985$export$2e2bcd8739ae039 = $9bcf144ec7818985$var$BlockChart;
 
 
 

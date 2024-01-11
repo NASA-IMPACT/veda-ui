@@ -1,3 +1,3 @@
-import Chart from './components/common/chart/';
+import BlockChart from './components/common/chart/block';
 
-export { Chart };
+export { BlockChart };
