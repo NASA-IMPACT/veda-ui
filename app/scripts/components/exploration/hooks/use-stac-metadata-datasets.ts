@@ -23,7 +23,26 @@ function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
 
   return prevKey !== currKey;
 }
+function fillSecondInterval(temporalType, array) {
+  const currentDate = new Date('2000-06-01T00:00:00.000Z');
+  
+  switch (temporalType) {
+    case 'day':
+      currentDate.setDate(currentDate.getDate() + 1);
+      break;
+    case 'week':
+      currentDate.setDate(currentDate.getDate() + 7);
+      break;
+    case 'month':
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      break;
+    default:
+      console.error('Invalid temporal type');
+      return;
+  }
 
+  return currentDate.toISOString();
+}
 /**
  * Merges STAC metadata with local dataset, computing the domain.
  *
@@ -33,7 +52,7 @@ function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
  * @returns Reconciled dataset with STAC data.
  */
 function reconcileQueryDataWithDataset(
-  queryData: UseQueryResult<StacDatasetData, unknown>,
+  queryData: UseQueryResult<StacDatasetData>,
   dataset: TimelineDataset
 ): TimelineDataset {
   try {
@@ -73,7 +92,7 @@ function reconcileQueryDataWithDataset(
 async function fetchStacDatasetById(
   dataset: TimelineDataset
 ): Promise<StacDatasetData> {
-  const { type, stacCol, stacApiEndpoint } = dataset.data;
+  const { type, stacCol, stacApiEndpoint, time_density } = dataset.data;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
 
@@ -97,11 +116,17 @@ async function fetchStacDatasetById(
       domain: featuresApiData.extent.temporal.interval[0]
     };
   } else {
-    const domain = data.summaries?.datetime?.[0]
+    console.log('data from stac');
+    console.log(data);
+    let domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
-
-    if (!domain?.length || domain.some((d) => !d)) {
+    console.log(domain); // CMR data, interval[1] is null 
+    if (domain[0] && !domain[1]) {
+      const secondInterval = fillSecondInterval(time_density, domain);
+      domain = [domain[0], secondInterval];
+    }
+    if (!domain?.length) {
       throw new Error('Invalid datetime domain');
     }
 

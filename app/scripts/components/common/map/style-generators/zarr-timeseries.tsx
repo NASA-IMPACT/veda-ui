@@ -6,7 +6,7 @@ import { requestQuickCache } from '../utils';
 import useMapStyle from '../hooks/use-map-style';
 import useGeneratorParams from '../hooks/use-generator-params';
 import { BaseGeneratorParams } from '../types';
-
+import { hasNestedKey } from '$utils/utils';
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
 export interface ZarrTimeseriesProps extends BaseGeneratorParams {
@@ -20,6 +20,15 @@ export interface ZarrTimeseriesProps extends BaseGeneratorParams {
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
+const replaceInAssetUrl = (url: string, replacements: ReplacementTuples[]) => {
+  for (const replacement of replacements) {
+    const [toReplace, replaceWith] = replacement;
+    url = url.replace(toReplace, replaceWith);
+  }
+  return url;
+};
+
+
 
 export function ZarrTimeseries(props: ZarrTimeseriesProps) {
   const {
@@ -27,6 +36,7 @@ export function ZarrTimeseries(props: ZarrTimeseriesProps) {
     stacCol,
     stacApiEndpoint,
     tileApiEndpoint,
+    assetUrlReplacements,
     date,
     sourceParams,
     zoomExtent,
@@ -53,20 +63,31 @@ export function ZarrTimeseries(props: ZarrTimeseriesProps) {
     async function load() {
       try {
         onStatusChange?.({ status: S_LOADING, id });
-        const data = await requestQuickCache<any>({
-          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
+
+        // Zarr collections in _VEDA_ should have a single entrypoint (zarr or virtual zarr / reference)
+        // CMR endpoints will be using individual items' assets, so we query for the asset url
+        let stacApiEndpointToUse = `${process.env.API_STAC_ENDPOINT}/collections/${stacCol}`;
+        // TODO: need a better way to configure this to search for items OR return a collections
+        if (stacApiEndpoint) {
+          stacApiEndpointToUse = `${stacApiEndpoint}/search?collections=${stacCol}&datetime=${date?.toISOString()}`;
+        }
+
+        const data = await requestQuickCache({
+          url: stacApiEndpointToUse,
           method: 'GET',
           controller
         });
 
-        setAssetUrl(data.assets.zarr.href);
+
+        const assetUrl = hasNestedKey(data, 'assets', 'zarr') ? data.assets.zarr.href : replaceInAssetUrl(data.features[0].assets.data.href, assetUrlReplacements);
+        console.log(assetUrl)
+        setAssetUrl(assetUrl);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
           setAssetUrl('');
           onStatusChange?.({ status: S_FAILED, id });
         }
-        return;
       }
     }
 

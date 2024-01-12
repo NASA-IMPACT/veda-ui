@@ -23,6 +23,8 @@ export interface MapLayerZarrTimeseriesProps {
   idSuffix?: string;
 }
 
+type ReplacementTuples = [string,string];
+
 export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
   const {
     id,
@@ -79,6 +81,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
           method: 'GET',
           controller
         });
+
 
         const assetUrl = hasNestedKey(data, 'assets', 'zarr') ? data.assets.zarr.href : replaceInAssetUrl(data.features[0].assets.data.href, assetUrlReplacements);
         setAssetUrl(assetUrl);
