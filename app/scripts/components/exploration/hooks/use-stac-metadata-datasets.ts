@@ -23,26 +23,7 @@ function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
 
   return prevKey !== currKey;
 }
-function fillSecondInterval(temporalType, array) {
-  const currentDate = new Date('2000-06-01T00:00:00.000Z');
-  
-  switch (temporalType) {
-    case 'day':
-      currentDate.setDate(currentDate.getDate() + 1);
-      break;
-    case 'week':
-      currentDate.setDate(currentDate.getDate() + 7);
-      break;
-    case 'month':
-      currentDate.setMonth(currentDate.getMonth() + 1);
-      break;
-    default:
-      console.error('Invalid temporal type');
-      return;
-  }
 
-  return currentDate.toISOString();
-}
 /**
  * Merges STAC metadata with local dataset, computing the domain.
  *
@@ -116,13 +97,17 @@ async function fetchStacDatasetById(
       domain: featuresApiData.extent.temporal.interval[0]
     };
   } else if (type === 'cmr') {
-    const domainStart = data.summaries?.datetime?.[0];
-    // CMR data does not have the second domain to indicate that the data is being actively updated
-    const domainEnd = data.summaries?.datetime?.[1] || fillSecondInterval(time_density, domainStart);
-    const domain = [domainStart, domainEnd];
+    const domain = data.summaries?.datetime?.[0]
+    ? data.summaries.datetime
+    : data.extent.temporal.interval[0];
+  const domainStart = domain[0];
+  
+  // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
+  const lastDatetime = domain[domain.length - 1] ||  new Date().toISOString();
+  
     return {
       ...commonTimeseriesParams,
-      domain
+      domain: [domainStart, lastDatetime]
     };
   } else {
     const domain = data.summaries?.datetime?.[0]

@@ -115,45 +115,51 @@ export function useStacCollectionSearch({
 
 function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
   const matchingCollectionIds = collectionData.reduce((acc, col) => {
-    const { id, stacApiEndpoint } = col;
+    try {
+      const { id, stacApiEndpoint } = col;
 
-    // Is is a dataset defined in the app?
-    // If not, skip other calculations.
-    const isAppDataset = allAvailableDatasetsLayers.some((l) => {
-      const stacApiEndpointUsed =
-        l.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
-      return l.stacCol === id && stacApiEndpointUsed === stacApiEndpoint;
-    });
-
-    if (
-      !isAppDataset ||
-      !col.extent.spatial.bbox ||
-      !col.extent.temporal.interval
-    ) {
-      return acc;
-    }
-
-    const bbox = col.extent.spatial.bbox[0];
-    const start = utcString2userTzDate(col.extent.temporal.interval[0][0]);
-    const end = utcString2userTzDate(col.extent.temporal.interval[0][1]);
-
-    const isInAOI = aoi.features.some((feature) =>
-      booleanIntersects(feature, bboxPolygon(bbox))
-    );
-
-    const isInTOI = areIntervalsOverlapping(
-      { start: new Date(timeRange.start), end: new Date(timeRange.end) },
-      {
-        start: new Date(start),
-        end: new Date(end)
+      // Is is a dataset defined in the app?
+      // If not, skip other calculations.
+      const isAppDataset = allAvailableDatasetsLayers.some((l) => {
+        const stacApiEndpointUsed =
+          l.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
+        return l.stacCol === id && stacApiEndpointUsed === stacApiEndpoint;
+      });
+  
+      if (
+        !isAppDataset ||
+        !col.extent.spatial.bbox ||
+        !col.extent.temporal.interval
+      ) {
+        return acc;
       }
-    );
-
-    if (isInAOI && isInTOI) {
-      return [...acc, id];
-    } else {
+  
+      const bbox = col.extent.spatial.bbox[0];
+      const start = utcString2userTzDate(col.extent.temporal.interval[0][0]);
+      const end = utcString2userTzDate(col.extent.temporal.interval[0][1]);
+  
+      const isInAOI = aoi.features.some((feature) =>
+        booleanIntersects(feature, bboxPolygon(bbox))
+      );
+  
+      const isInTOI = areIntervalsOverlapping(
+        { start: new Date(timeRange.start), end: new Date(timeRange.end) },
+        {
+          start: new Date(start),
+          end: new Date(end)
+        }
+      );
+  
+      if (isInAOI && isInTOI) {
+        return [...acc, id];
+      } else {
+        return acc;
+      }
+    } catch (e) {
+      // If somehow the data is not in the shape we want, just skip it
       return acc;
     }
+
   }, []);
 
   const filteredDatasets = allAvailableDatasetsLayers.filter((l) =>

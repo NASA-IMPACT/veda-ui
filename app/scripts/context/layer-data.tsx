@@ -34,9 +34,10 @@ const fetchLayerById = async (
     `${stacApiEndpointToUse}/collections/${stacCol}`
   );
 
+  // CMR Layer needs to get time_density from MDX file
   const commonTimeseriesParams = {
-    isPeriodic: time_density != null || data['dashboard:is_periodic'],
-    timeDensity: time_density || data['dashboard:time_density']
+    isPeriodic: !!time_density || data['dashboard:is_periodic'],
+    timeDensity: time_density ?? data['dashboard:time_density']
   };
 
   if (type === 'vector') {
@@ -51,16 +52,26 @@ const fetchLayerById = async (
         domain: featuresApiData.extent.temporal.interval[0]
       }
     };
+  } else if (type === 'cmr') {
+    const domain = data.summaries?.datetime?.[0]
+      ? data.summaries.datetime
+      : data.extent.temporal.interval[0];
+    const domainStart = domain[0];
+    
+    // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
+    const lastDatetime = domain[domain.length - 1] ||  new Date().toISOString();
+    
+    return {
+      timeseries: {
+        ...commonTimeseriesParams,
+        domain: [domainStart, lastDatetime]
+      }
+    };
   } else {
     const domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
-    // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
-    const lastDatetime = domain[domain.length - 1];
-    if (lastDatetime == null) {
-      domain[domain.length - 1] = new Date().toISOString();
-    }
     if (domain.some((d) => !d)) {
       throw new Error('Invalid datetime domain');
     }
