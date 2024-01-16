@@ -115,18 +115,21 @@ async function fetchStacDatasetById(
       ...commonTimeseriesParams,
       domain: featuresApiData.extent.temporal.interval[0]
     };
+  } else if (type === 'cmr') {
+    const domainStart = data.summaries?.datetime?.[0];
+    // CMR data does not have the second domain to indicate that the data is being actively updated
+    const domainEnd = data.summaries?.datetime?.[1] || fillSecondInterval(time_density, domainStart);
+    const domain = [domainStart, domainEnd];
+    return {
+      ...commonTimeseriesParams,
+      domain
+    };
   } else {
-    console.log('data from stac');
-    console.log(data);
-    let domain = data.summaries?.datetime?.[0]
+    const domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
-    console.log(domain); // CMR data, interval[1] is null 
-    if (domain[0] && !domain[1]) {
-      const secondInterval = fillSecondInterval(time_density, domain);
-      domain = [domain[0], secondInterval];
-    }
-    if (!domain?.length) {
+
+    if (!domain?.length || domain.some((d) => !d)) {
       throw new Error('Invalid datetime domain');
     }
 

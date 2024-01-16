@@ -7,7 +7,7 @@ declare module 'veda' {
   // ///////////////////////////////////////////////////////////////////////////
   //  Datasets                                                                //
   // ///////////////////////////////////////////////////////////////////////////
-  type DatasetLayerType = 'raster' | 'vector' | 'zarr';
+  type DatasetLayerType = 'raster' | 'vector' | 'zarr'| 'cmr';
 
   //
   // Dataset Layers
@@ -57,8 +57,6 @@ declare module 'veda' {
     stacCol: string;
     stacApiEndpoint?: string;
     tileApiEndpoint?: string;
-    assetUrlReplacements?: [string, string][];
-    time_density?: 'day' | 'month' | 'year';
     name: string;
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
@@ -72,8 +70,12 @@ declare module 'veda' {
       exclude: boolean;
       sourceParams?: Record<string, any>;
     };
+    assetUrlReplacements?: {
+      from: string;
+      to: string;
+    },
+    time_density?: 'day' | 'month' | 'year';
   }
-
   // A normalized compare layer is the result after the compare definition is
   // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
   // difference with a "base" dataset layer is not having a name and

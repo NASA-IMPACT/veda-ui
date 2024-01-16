@@ -7,7 +7,12 @@ import { useMapStyle } from './styles';
 
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
-export interface MapLayerZarrTimeseriesProps {
+interface AssetUrlReplacement {
+  from: string;
+  to: string;
+}
+
+export interface MapLayerCMRTimeseriesProps {
   id: string;
   stacCol: string;
   date?: Date;
@@ -15,18 +20,20 @@ export interface MapLayerZarrTimeseriesProps {
   sourceParams?: Record<string, any>;
   stacApiEndpoint?: string;
   tileApiEndpoint?: string;
+  assetUrlReplacements?: AssetUrlReplacement;
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isHidden?: boolean;
   idSuffix?: string;
 }
 
-export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
+export function MapLayerCMRTimeseries(props: MapLayerCMRTimeseriesProps) {
   const {
     id,
     stacCol,
     stacApiEndpoint,
     tileApiEndpoint,
+    assetUrlReplacements,
     date,
     mapInstance,
     sourceParams,
@@ -43,24 +50,36 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
 
-  const generatorId = 'zarr-timeseries' + idSuffix;
+  const generatorId = 'cmr-timeseries' + idSuffix;
 
-  //
-  // Get the asset url
-  //
+  const replaceInAssetUrl = (url: string, replacement: AssetUrlReplacement) => {
+    const {from, to } = replacement;
+    const cmrAssetUrl = url.replace(from, to);
+    return cmrAssetUrl;
+  };
+
+
   useEffect(() => {
+
     const controller = new AbortController();
 
-    async function load() {
+    const load = async () => {
       try {
         onStatusChange?.({ status: S_LOADING, id });
+        if (!assetUrlReplacements) throw (new Error('CMR  layer requires asset url remplacement attributes'));
+
+        // Zarr collections in _VEDA_ should have a single entrypoint (zarr or virtual zarr / reference)
+        // CMR endpoints will be using individual items' assets, so we query for the asset url
+        const stacApiEndpointToUse = `${stacApiEndpoint}/search?collections=${stacCol}&datetime=${date?.toISOString()}`;
+
         const data = await requestQuickCache({
-          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
+          url: stacApiEndpointToUse,
           method: 'GET',
           controller
         });
 
-        setAssetUrl(data.assets.zarr.href);
+        const assetUrl = replaceInAssetUrl(data.features[0].assets.data.href, assetUrlReplacements);
+        setAssetUrl(assetUrl);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -69,7 +88,7 @@ export function MapLayerZarrTimeseries(props: MapLayerZarrTimeseriesProps) {
         }
         return;
       }
-    }
+    };
 
     load();
 

@@ -18,10 +18,11 @@ layers:
     tileApiEndpoint: 'https://prod-titiler-xarray.delta-backend.com/tilejson.json'
     stacCol: TRMM_3B42_Daily.v7
     name: TRMM_3B42_Daily
-    type: zarr
+    type: cmr
     time_density: day
     assetUrlReplacements:
-      - [https://data.gesdisc.earthdata.nasa.gov/data, s3://gesdisc-cumulus-prod-protected]
+      from: https://data.gesdisc.earthdata.nasa.gov/data
+      to: s3://gesdisc-cumulus-prod-protected
     description: "Daily accumulated precipitation product generated from the research-quality 3-hourly TRMM Multi-Satellite Precipitation Analysis TMPA (3B42)"
     zoomExtent:
       - 0
@@ -32,6 +33,8 @@ layers:
       colormap_name: gnbu
       rescale: 0,46
       maxzoom: 12
+    analysis:
+      exclude: true
     legend:
       unit: 
         label: 
