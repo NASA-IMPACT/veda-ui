@@ -20,6 +20,7 @@ Install Node modules:
 ```
 yarn install
 ```
+This command  will install all the dependencies and devtools needed for local development. 
 
 ## Usage
 
@@ -46,9 +47,20 @@ Compiles the sass files, javascript, and launches the server making the site ava
 The system will watch files and execute tasks whenever one of them changes.
 The site will automatically refresh since it is bundled with livereload.
 
-## Development documentation
+## Development
+
+### Documentation
+
 - Refer to [ARCHITECTURE](./ARCHITECTURE.md) docs to read about architecture.
 - Refer to [PAGE_OVERRIDES](./PAGE_OVERRIDES.md) for information about the component/content overriding feature.
+
+### Lint & TS-Check
+
+#### GitHub Action
+VEDA-UI includes a GitHub action for checking TypeScript and lint errors. If your changes trigger any of these errors, your pull request (PR) will be marked as 'Some checks were not successful.'
+
+#### Pre-commit Hook
+Additionally, there's a pre-commit hook that performs the same error checks. This helps developers identify and address issues at an earlier stage. If you need to bypass the check (to make a local temporary commit etc.), include the `--no-verify`` flag in your commit command.
 
 ## Deployment
 To prepare the app for deployment run:
