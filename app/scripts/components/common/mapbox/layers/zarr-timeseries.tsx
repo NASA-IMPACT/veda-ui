@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import qs from 'qs';
-import { Map as MapboxMap, RasterSource, RasterLayer } from 'mapbox-gl';
+import { RasterSource, RasterLayer } from 'mapbox-gl';
 
-import { requestQuickCache } from './utils';
 import { useMapStyle } from './styles';
 
-import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
+import { ActionStatus } from '$utils/status';
+import { useZarr } from '$components/common/map/style-generators/hooks';
 
 export interface MapLayerZarrTimeseriesProps {
   id: string;
@@ -31,45 +31,6 @@ interface ZarrPaintLayerProps {
   assetUrl: string;
 }
 
-
-function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChange }){
-  const [assetUrl, setAssetUrl] = useState('');
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function load() {
-      try {
-        onStatusChange?.({ status: S_LOADING, id });
-        const data = await requestQuickCache({
-          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
-          method: 'GET',
-          controller
-        });
-
-        setAssetUrl(data.assets.zarr.href);
-        onStatusChange?.({ status: S_SUCCEEDED, id });
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          setAssetUrl('');
-          onStatusChange?.({ status: S_FAILED, id });
-        }
-        return;
-      }
-    }
-
-    load();
-
-    return () => {
-      controller.abort();
-    };
-  }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
-
-  return assetUrl;
-
-} 
-
-
 export function ZarrPaintLayer(props: ZarrPaintLayerProps) {
   const {
     id,
@@ -86,12 +47,8 @@ export function ZarrPaintLayer(props: ZarrPaintLayerProps) {
 
   const [minZoom] = zoomExtent ?? [0, 20];
 
-  // const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-
   const generatorId = 'zarr-timeseries' + idSuffix;
-  // const assetUrl = useZarr({id, stacCol, stacApiEndpointToUse, date, onStatusChange});
 
-  //
   // Generate Mapbox GL layers and sources for raster timeseries
   //
   const haveSourceParamsChanged = useMemo(
