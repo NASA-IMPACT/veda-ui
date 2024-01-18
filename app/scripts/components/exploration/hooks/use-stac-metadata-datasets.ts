@@ -104,9 +104,10 @@ async function fetchStacDatasetById(
   
   // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
   const lastDatetime = domain[domain.length - 1] ||  new Date().toISOString();
-  
+    // CMR STAC misses the dashboard specific attributes, shim these values
     return {
-      ...commonTimeseriesParams,
+      isPeriodic: true,
+      timeDensity: time_density ?? TimeDensity.DAY,
       domain: [domainStart, lastDatetime]
     };
   } else {

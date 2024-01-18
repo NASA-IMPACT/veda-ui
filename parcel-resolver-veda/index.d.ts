@@ -51,7 +51,11 @@ declare module 'veda' {
     layerId: string;
   }
 
-
+  export enum TimeDensity {
+    YEAR = 'year',
+    MONTH = 'month',
+    DAY = 'day'
+  }
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
@@ -74,7 +78,7 @@ declare module 'veda' {
       from: string;
       to: string;
     },
-    time_density?: 'day' | 'month' | 'year';
+    time_density?: TimeDensity;
   }
   // A normalized compare layer is the result after the compare definition is
   // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
