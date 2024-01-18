@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import qs from 'qs';
-import { Map as MapboxMap, RasterSource, RasterLayer } from 'mapbox-gl';
+import React, { useEffect, useState } from 'react';
+import { Map as MapboxMap } from 'mapbox-gl';
 
 import { requestQuickCache } from './utils';
-import { useMapStyle } from './styles';
 
+import { ZarrPaintLayer } from './zarr-timeseries';
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
 interface AssetUrlReplacement {
@@ -27,31 +26,10 @@ export interface MapLayerCMRTimeseriesProps {
   idSuffix?: string;
 }
 
-export function MapLayerCMRTimeseries(props: MapLayerCMRTimeseriesProps) {
-  const {
-    id,
-    stacCol,
-    stacApiEndpoint,
-    tileApiEndpoint,
-    assetUrlReplacements,
-    date,
-    mapInstance,
-    sourceParams,
-    zoomExtent,
-    onStatusChange,
-    isHidden,
-    idSuffix = ''
-  } = props;
 
-  const { updateStyle } = useMapStyle();
+function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange }){
   const [assetUrl, setAssetUrl] = useState('');
-
-  const [minZoom] = zoomExtent ?? [0, 20];
-
-  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-
-  const generatorId = 'cmr-timeseries' + idSuffix;
-
+  
   const replaceInAssetUrl = (url: string, replacement: AssetUrlReplacement) => {
     const {from, to } = replacement;
     const cmrAssetUrl = url.replace(from, to);
@@ -60,10 +38,9 @@ export function MapLayerCMRTimeseries(props: MapLayerCMRTimeseriesProps) {
 
 
   useEffect(() => {
-
     const controller = new AbortController();
 
-    const load = async () => {
+    async function load() {
       try {
         onStatusChange?.({ status: S_LOADING, id });
         if (!assetUrlReplacements) throw (new Error('CMR  layer requires asset url remplacement attributes'));
@@ -88,93 +65,30 @@ export function MapLayerCMRTimeseries(props: MapLayerCMRTimeseriesProps) {
         }
         return;
       }
-    };
+    }
 
     load();
 
     return () => {
       controller.abort();
     };
-  }, [mapInstance, id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
+  }, [id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange]);
 
-  //
-  // Generate Mapbox GL layers and sources for raster timeseries
-  //
-  const haveSourceParamsChanged = useMemo(
-    () => JSON.stringify(sourceParams),
-    [sourceParams]
-  );
+  return assetUrl;
 
-  useEffect(
-    () => {
-      if (!tileApiEndpoint) return;
+} 
 
-      const tileParams = qs.stringify({
-        url: assetUrl,
-        time_slice: date,
-        ...sourceParams
-      });
+export function MapLayerCMRTimeseries(props:MapLayerCMRTimeseriesProps) {
+  const {
+    id,
+    stacCol,
+    stacApiEndpoint,
+    date,
+    assetUrlReplacements,
+    onStatusChange,
+  } = props;
 
-      const zarrSource: RasterSource = {
-        type: 'raster',
-        url: `${tileApiEndpoint}?${tileParams}`
-      };
-
-      const zarrLayer: RasterLayer = {
-        id: id,
-        type: 'raster',
-        source: id,
-        layout: {
-          visibility: isHidden ? 'none' : 'visible'
-        },
-        paint: {
-          'raster-opacity': Number(!isHidden),
-          'raster-opacity-transition': {
-            duration: 320
-          }
-        },
-        minzoom: minZoom,
-        metadata: {
-          layerOrderPosition: 'raster'
-        }
-      };
-
-      const sources = {
-        [id]: zarrSource
-      };
-      const layers = [zarrLayer];
-
-      updateStyle({
-        generatorId,
-        sources,
-        layers
-      });
-    },
-    // sourceParams not included, but using a stringified version of it to detect changes (haveSourceParamsChanged)
-    [
-      updateStyle,
-      id,
-      date,
-      assetUrl,
-      minZoom,
-      haveSourceParamsChanged,
-      isHidden,
-      generatorId
-    ]
-  );
-
-  //
-  // Cleanup layers on unmount.
-  //
-  useEffect(() => {
-    return () => {
-      updateStyle({
-        generatorId,
-        sources: {},
-        layers: []
-      });
-    };
-  }, [updateStyle, generatorId]);
-
-  return null;
+  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
+  const assetUrl = useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange });
+  return <ZarrPaintLayer {...props} assetUrl={assetUrl} />;
 }
