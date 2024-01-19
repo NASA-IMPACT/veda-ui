@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import T from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import nl2br from 'react-nl2br';
+import { CollecticonArrowRight } from '@devseed-ui/collecticons';
 
 import UhOh from '.';
 import LayoutRoot, {
@@ -121,9 +122,12 @@ function Child(props) {
             )}
 
             <p>
-              <a href={makeAbsUrl('/')} title='Visit homepage'>
-                Go back to homepage
-              </a>
+              <strong>
+                <a href={makeAbsUrl('/')} title='Go back to homepage'>
+                  <CollecticonArrowRight size='small' />
+                  <span>&nbsp;Go back to homepage</span>
+                </a>
+              </strong>
             </p>
           </FoldProse>
         </PageMainContent>
