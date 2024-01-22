@@ -34,6 +34,7 @@ import {
   ABOUT_PATH,
   EXPLORATION_PATH
 } from '$utils/routes';
+import { PAGE_BODY_ID } from '$components/common/layout-root';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { HEADER_ID } from '$utils/use-sliding-sticky-header';
@@ -384,7 +385,7 @@ function PageHeader() {
     // so we are preventing the default behaviour of a link here
     e.preventDefault();
     // Then find a next focusable element in pagebody,focus it.
-    const pageBody = document.getElementById('pagebody');
+    const pageBody = document.getElementById(PAGE_BODY_ID);
     if (pageBody) {
       const keyboardfocusableElements = Array.from(pageBody.querySelectorAll(
           'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])'
