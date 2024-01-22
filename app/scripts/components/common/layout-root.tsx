@@ -58,7 +58,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         thumbnail={thumbnail}
       />
       <NavWrapper />
-      <PageBody>
+      <PageBody id='pagebody'>
         <Outlet />
         {children}
       </PageBody>

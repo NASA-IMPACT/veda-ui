@@ -284,6 +284,19 @@ const NavBlock = styled.div`
   `}
 `;
 
+const SROnly = styled.a`
+  height: 1px;
+  left: -10000px;
+  overflow: hidden;
+  position: absolute;
+  top: auto;
+  width: 1px;
+  &:focus {
+    overflow: visible;
+    position: static;
+  }
+`;
+
 const SectionsNavBlock = styled(NavBlock)`
   /* styled-component */
 `;
@@ -366,8 +379,26 @@ function PageHeader() {
     );
   });
 
+  function skipNav(e) {
+    // a tag won't appear for keyboard focus without href
+    // so we are preventing the default behaviour of a link here
+    e.preventDefault();
+    // Then find a next focusable element in pagebody,focus it.
+    const pageBody = document.getElementById('pagebody');
+    if (pageBody) {
+      const keyboardfocusableElements = Array.from(pageBody.querySelectorAll(
+          'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter(el => !el.hasAttribute('disabled') && !el.getAttribute('aria-hidden'));
+      (keyboardfocusableElements[0] as HTMLElement).focus();
+    }
+  }
+
   return (
+    <>
+    <SROnly href='#' onClick={skipNav}>Skip to main content</SROnly>
     <PageHeaderSelf id={HEADER_ID}>
+      
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
       <ComponentOverride with='headerBrand'>
         <Brand>
@@ -494,6 +525,7 @@ function PageHeader() {
         </GlobalNavInner>
       </GlobalNav>
     </PageHeaderSelf>
+    </>
   );
 }
 
