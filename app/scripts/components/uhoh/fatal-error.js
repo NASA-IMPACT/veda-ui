@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import T from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import nl2br from 'react-nl2br';
+import { CollecticonArrowRight } from '@devseed-ui/collecticons';
 
 import UhOh from '.';
 import LayoutRoot, {
@@ -77,33 +78,20 @@ function Child(props) {
   return (
     <LayoutRootContextProvider>
       <LayoutRoot>
-        <LayoutProps title='Critical Error' />
+        <LayoutProps title='Something went wrong' />
         <PageMainContent>
           <PageHero
-            title='Critical Error'
-            description={`That's a fatal error.`}
+            title='Something went wrong'
+            description={`We couldn&apos;t to load your content.`}
           />
           <FoldProse>
             <p>
-              Something went wrong and we were not able to fulfill your request.
-              This is on our side and we&apos;ll fix it!
-            </p>
-            <p>
-              In the meantime you can try again by refreshing the page or visit
-              the{' '}
+              This is on our side and we&apos;ll fix it! In the meantime you can
+              try again by refreshing the page or visit the{' '}
               <a href={makeAbsUrl('/')} title='Visit homepage'>
                 homepage
               </a>
               .
-            </p>
-            <p>
-              If this error keeps on happening you can reach us via{' '}
-              <a
-                href={`mailto:${process.env.APP_CONTACT_EMAIL}`}
-                title='Send us an email'
-              >
-                {process.env.APP_CONTACT_EMAIL}
-              </a>
             </p>
 
             {error instanceof HintedError ? (
@@ -119,6 +107,15 @@ function Child(props) {
                 <p>{nl2br(error.stack)}</p>
               </details>
             )}
+
+            <p>
+              <strong>
+                <a href={makeAbsUrl('/')} title='Go back to homepage'>
+                  <CollecticonArrowRight size='small' />
+                  <span>&nbsp;Go back to homepage</span>
+                </a>
+              </strong>
+            </p>
           </FoldProse>
         </PageMainContent>
       </LayoutRoot>
