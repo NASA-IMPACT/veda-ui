@@ -22,7 +22,7 @@ import NavWrapper from '$components/common/nav-wrapper';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
-export const PAGE_BODY_ID = 'pagebody'
+export const PAGE_BODY_ID = 'pagebody';
 const Page = styled.div`
   display: flex;
   flex-direction: column;

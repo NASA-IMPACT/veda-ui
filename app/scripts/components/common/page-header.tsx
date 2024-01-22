@@ -292,9 +292,14 @@ const SROnly = styled.a`
   position: absolute;
   top: auto;
   width: 1px;
+  color: ${themeVal('color.link')};
   &:focus {
-    overflow: visible;
-    position: static;
+    top: 0;
+    left: 0;
+    background-color: ${themeVal('color.surface')};
+    padding: ${glsp(0.25)};
+    height: auto;
+    width: auto;
   }
 `;
 
