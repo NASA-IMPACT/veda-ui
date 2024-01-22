@@ -196,12 +196,5 @@
     "$utils": "~/app/scripts/utils",
     "$context": "~/app/scripts/context",
     "$test": "~/test"
-  },
-  "lint-staged": {
-    "*.(js|ts|tsx|jsx)": [
-      "yarn eslint",
-      "yarn stylelint",
-      "yarn ts-check"
-    ]
   }
 }
