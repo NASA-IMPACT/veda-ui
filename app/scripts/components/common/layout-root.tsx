@@ -58,7 +58,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         thumbnail={thumbnail}
       />
       <NavWrapper />
-      <PageBody id={PAGE_BODY_ID}>
+      <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
       </PageBody>

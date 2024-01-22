@@ -392,11 +392,7 @@ function PageHeader() {
     // Then find a next focusable element in pagebody,focus it.
     const pageBody = document.getElementById(PAGE_BODY_ID);
     if (pageBody) {
-      const keyboardfocusableElements = Array.from(pageBody.querySelectorAll(
-          'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])'
-        )
-      ).filter(el => !el.hasAttribute('disabled') && !el.getAttribute('aria-hidden'));
-      (keyboardfocusableElements[0] as HTMLElement).focus();
+        pageBody.focus();
     }
   }
 
