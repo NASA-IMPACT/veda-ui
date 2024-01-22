@@ -86,21 +86,12 @@ function Child(props) {
           />
           <FoldProse>
             <p>
-              This is on our side and we&apos;ll fix it! In the meantime you 
-              can try again by refreshing the page or visit the{' '}
+              This is on our side and we&apos;ll fix it! In the meantime you can
+              try again by refreshing the page or visit the{' '}
               <a href={makeAbsUrl('/')} title='Visit homepage'>
                 homepage
               </a>
               .
-            </p>
-            <p>
-              If this error keeps on happening you can reach us via{' '}
-              <a
-                href={`mailto:${process.env.APP_CONTACT_EMAIL}`}
-                title='Send us an email'
-              >
-                {process.env.APP_CONTACT_EMAIL}
-              </a>
             </p>
 
             {error instanceof HintedError ? (
