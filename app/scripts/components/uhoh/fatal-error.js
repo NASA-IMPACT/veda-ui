@@ -78,20 +78,16 @@ function Child(props) {
   return (
     <LayoutRootContextProvider>
       <LayoutRoot>
-        <LayoutProps title='Critical Error' />
+        <LayoutProps title='Something went wrong' />
         <PageMainContent>
           <PageHero
-            title='Critical Error'
-            description={`That's a fatal error.`}
+            title='Something went wrong'
+            description={`We couldn&apos;t to load your content.`}
           />
           <FoldProse>
             <p>
-              Something went wrong and we were not able to fulfill your request.
-              This is on our side and we&apos;ll fix it!
-            </p>
-            <p>
-              In the meantime you can try again by refreshing the page or visit
-              the{' '}
+              This is on our side and we&apos;ll fix it! In the meantime you 
+              can try again by refreshing the page or visit the{' '}
               <a href={makeAbsUrl('/')} title='Visit homepage'>
                 homepage
               </a>
