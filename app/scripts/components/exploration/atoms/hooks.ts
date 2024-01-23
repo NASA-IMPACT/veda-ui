@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { extent } from 'd3';
-import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
+import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+
 import { focusAtom } from 'jotai-optics';
 import { add, max } from 'date-fns';
 
@@ -139,17 +140,13 @@ export function useTimelineDatasetVisibility(
   return useAtom(visibilityAtom);
 }
 
-/**
- * Hook to get/set the dataset analysis
- * @param datasetAtom Single dataset atom.
- * @returns State getter/setter for the dataset analysis.
- */
-export function useTimelineDatasetAnalysis(
-  datasetAtom: PrimitiveAtom<TimelineDataset>
-) {
-  const analysisAtom = useMemo(() => {
-    return focusAtom(datasetAtom, (optic) => optic.prop('analysis'));
-  }, [datasetAtom]);
-
-  return useAtom(analysisAtom);
-}
+export const useTimelineDatasetAnalysis = (datasetAtom: PrimitiveAtom<TimelineDataset>) => {
+  return useSetAtom(
+    focusAtom(
+      datasetAtom,
+      // (Use OpticsFor type from optics-ts)
+      // @ts-expect-error:  For now until making sure this is the solution 
+      useCallback((optic) => optic.prop("analysis"), [])
+    )
+  );
+};
