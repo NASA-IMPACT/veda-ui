@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { TourProvider } from '@reactour/tour';
 import { themeVal } from '@devseed-ui/theme-provider';
+import { DevTools } from 'jotai-devtools';
 
 import Timeline from './components/timeline/timeline';
 import { ExplorationMap } from './components/map';
@@ -92,6 +93,7 @@ function Exploration() {
       styles={tourProviderStyles}
       ContentComponent={PopoverTourComponent}
     >
+      <DevTools />
       <LayoutProps
         title='Exploration'
         description='Explore and analyze datasets'

@@ -76,7 +76,7 @@ export function useAnalysisDataRequest({
   const dataset = useAtomValue(datasetAtom);
   const datasetStatus = dataset.status;
 
-  const [, setAnalysis] = useTimelineDatasetAnalysis(datasetAtom);
+  const setAnalysis = useTimelineDatasetAnalysis(datasetAtom);
 
   const analysisRunId = getRunId(dataset.data.id);
 
