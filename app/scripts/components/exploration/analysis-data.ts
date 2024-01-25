@@ -188,7 +188,7 @@ export async function requestDatasetTimeseriesData({
       return;
     }
 
-    let loaded = 0;
+    let loaded = 0//new Array(assets.length).fill(0);
 
     const tileEndpointToUse =
       datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
@@ -196,7 +196,8 @@ export async function requestDatasetTimeseriesData({
     const analysisParams = datasetData.analysis?.sourceParams ?? {};
 
     const layerStatistics = await Promise.all(
-      assets.map(async ({ date, url }) => {
+      assets.map(
+        async ({ date, url }) => {
         const statistics = await concurrencyManager.queue(
           `${id}-analysis-asset`,
           () => {
@@ -211,6 +212,7 @@ export async function requestDatasetTimeseriesData({
                 );
                 return {
                   date,
+                  
                   ...data.properties.statistics.b1
                 };
               },
@@ -219,22 +221,27 @@ export async function requestDatasetTimeseriesData({
               }
             );
           }
-        );
-
-        onProgress({
-          status: TimelineDatasetStatus.LOADING,
-          error: null,
-          data: null,
-          meta: {
-            total: assets.length,
-            loaded: ++loaded
-          }
-        });
+            );
+        if (loaded%10 == 0) {
+          onProgress({
+            status: TimelineDatasetStatus.LOADING,
+            error: null,
+            data: null,
+            meta: {
+              total: assets.length,
+              loaded: ++loaded
+            }
+          });
+          
+        }
+        ++loaded;
 
         return statistics;
-      })
+      }
+      )
     );
-
+      console.log('success call');
+      console.log(loaded);
     onProgress({
       status: TimelineDatasetStatus.SUCCESS,
       meta: {
@@ -246,6 +253,17 @@ export async function requestDatasetTimeseriesData({
         timeseries: layerStatistics
       }
     });
+    return {
+      status: TimelineDatasetStatus.SUCCESS,
+      meta: {
+        total: assets.length,
+        loaded: assets.length
+      },
+      error: null,
+      data: {
+        timeseries: layerStatistics
+      }
+    };
   } catch (error) {
     // Discard abort related errors.
     if (error.revert) return;
@@ -261,5 +279,12 @@ export async function requestDatasetTimeseriesData({
       error,
       data: null
     });
+
+    return {
+      ...datasetAnalysis,
+      status: TimelineDatasetStatus.ERROR,
+      error,
+      data: null
+    }
   }
 }
