@@ -8,7 +8,7 @@ import { analysisControllerAtom } from '../atoms/analysis';
 import { selectedIntervalAtom } from '../atoms/dates';
 import { useTimelineDatasetAnalysis } from '../atoms/hooks';
 import { analysisConcurrencyManager } from '../concurrency';
-import { TimelineDataset, TimelineDatasetStatus } from '../types.d.ts';
+import { TimelineDataset, TimelineDatasetAnalysis, TimelineDatasetStatus } from '../types.d.ts';
 import { MAX_QUERY_NUM } from '../constants';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 
@@ -80,6 +80,13 @@ export function useAnalysisDataRequest({
 
   const analysisRunId = getRunId(dataset.data.id);
 
+  const [analysisResult, setAnalysisResult] = useState<TimelineDatasetAnalysis>({
+    status: TimelineDatasetStatus.IDLE,
+    error: null,
+    data: null,
+    meta: {}
+  });
+
   useEffect(() => {
     if (!isAnalyzing) {
       queryClient.cancelQueries({
@@ -89,20 +96,6 @@ export function useAnalysisDataRequest({
       analysisConcurrencyManager.clear();
     }
   }, [isAnalyzing]);
-
-  const [test, setTest] = useState({
-    status: TimelineDatasetStatus.LOADING,
-    error: null,
-    data: null,
-    meta: {}
-  });
-  // function onProgress(data) {
-  //   setTest(data)
-  // }
-
-  useEffect(() => {
-    setAnalysis(test);
-  },[test, setAnalysis]);
 
   useEffect(() => {
     if (
@@ -122,7 +115,7 @@ export function useAnalysisDataRequest({
 
     const { start, end } = selectedInterval;
     async function makeCall(){
-      const stat = requestDatasetTimeseriesData({
+      const stat = await requestDatasetTimeseriesData({
         maxItems: MAX_QUERY_NUM,
         start,
         end,
@@ -131,10 +124,10 @@ export function useAnalysisDataRequest({
         queryClient,
         concurrencyManager: analysisConcurrencyManager,
         onProgress: (data) => {
-          setTest(data);
+          setAnalysis(data);
         }
       });
-      setTest(stat);
+      setAnalysisResult(stat);
     }
     makeCall();
     // We want great control when this effect run which is done by incrementing
@@ -146,9 +139,14 @@ export function useAnalysisDataRequest({
 
 
   useEffect(() => {
-    if (test.status !== TimelineDatasetStatus.SUCCESS) return;
-    else {
-      setAnalysis(test);
-    }
-  },[test, setAnalysis]);
+    // setAnalysis sets Jotai Atom value for analysis result
+    // It should sequentially set the analysis progress as 
+    // idle => loading (increasing number of loaded items) => success
+    // However, it is not setting the value sequentially, 
+    // ended up loading status as a result even when the request is successful
+    // This just overwrites the analysis result with the final result of analysis, 
+    // so Jotai value gets 'corrected' in case it is wrong
+    setAnalysis(analysisResult);
+  },[setAnalysis, analysisResult]);
+
 }

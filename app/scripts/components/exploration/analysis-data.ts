@@ -91,7 +91,8 @@ export async function requestDatasetTimeseriesData({
   queryClient,
   concurrencyManager,
   onProgress
-}: TimeseriesRequesterParams) {
+}: TimeseriesRequesterParams)
+:  Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
 
@@ -105,7 +106,15 @@ export async function requestDatasetTimeseriesData({
       ),
       data: null
     });
-    return;
+    return {
+      status: TimelineDatasetStatus.ERROR,
+      meta: {},
+      error: new ExtendedError(
+        'Analysis is only supported for raster datasets',
+        'ANALYSIS_NOT_SUPPORTED'
+      ),
+      data: null
+    };
   }
 
   const id = datasetData.id;
@@ -172,7 +181,12 @@ export async function requestDatasetTimeseriesData({
         error: e,
         data: null
       });
-      return;
+      return {
+        ...datasetAnalysis,
+        status: TimelineDatasetStatus.ERROR,
+        error: e,
+        data: null
+      };
     }
 
     if (!assets.length) {
@@ -188,7 +202,7 @@ export async function requestDatasetTimeseriesData({
       return;
     }
 
-    let loaded = 0//new Array(assets.length).fill(0);
+    let loaded = 0;//new Array(assets.length).fill(0);
 
     const tileEndpointToUse =
       datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
@@ -222,7 +236,6 @@ export async function requestDatasetTimeseriesData({
             );
           }
             );
-        if (loaded%10 == 0) {
           onProgress({
             status: TimelineDatasetStatus.LOADING,
             error: null,
@@ -232,16 +245,12 @@ export async function requestDatasetTimeseriesData({
               loaded: ++loaded
             }
           });
-          
-        }
-        ++loaded;
 
         return statistics;
       }
       )
     );
-      console.log('success call');
-      console.log(loaded);
+
     onProgress({
       status: TimelineDatasetStatus.SUCCESS,
       meta: {
@@ -266,7 +275,14 @@ export async function requestDatasetTimeseriesData({
     };
   } catch (error) {
     // Discard abort related errors.
-    if (error.revert) return;
+    if (error.revert) {
+      return {
+        status: TimelineDatasetStatus.LOADING,
+        error: null,
+        data: null,
+        meta: {}
+      };
+    }
 
     // Cancel any inflight queries.
     queryClient.cancelQueries({ queryKey: ['analysis', id] });
@@ -285,6 +301,6 @@ export async function requestDatasetTimeseriesData({
       status: TimelineDatasetStatus.ERROR,
       error,
       data: null
-    }
+    };
   }
 }
