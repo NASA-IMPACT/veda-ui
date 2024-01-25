@@ -34,6 +34,7 @@ import {
   ABOUT_PATH,
   EXPLORATION_PATH
 } from '$utils/routes';
+import { PAGE_BODY_ID } from '$components/common/layout-root';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { HEADER_ID } from '$utils/use-sliding-sticky-header';
@@ -284,6 +285,24 @@ const NavBlock = styled.div`
   `}
 `;
 
+const SROnly = styled.a`
+  height: 1px;
+  left: -10000px;
+  overflow: hidden;
+  position: absolute;
+  top: auto;
+  width: 1px;
+  color: ${themeVal('color.link')};
+  &:focus {
+    top: 0;
+    left: 0;
+    background-color: ${themeVal('color.surface')};
+    padding: ${glsp(0.25)};
+    height: auto;
+    width: auto;
+  }
+`;
+
 const SectionsNavBlock = styled(NavBlock)`
   /* styled-component */
 `;
@@ -366,8 +385,22 @@ function PageHeader() {
     );
   });
 
+  function skipNav(e) {
+    // a tag won't appear for keyboard focus without href
+    // so we are preventing the default behaviour of a link here
+    e.preventDefault();
+    // Then find a next focusable element in pagebody,focus it.
+    const pageBody = document.getElementById(PAGE_BODY_ID);
+    if (pageBody) {
+        pageBody.focus();
+    }
+  }
+
   return (
+    <>
+    <SROnly href='#' onClick={skipNav}>Skip to main content</SROnly>
     <PageHeaderSelf id={HEADER_ID}>
+      
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
       <ComponentOverride with='headerBrand'>
         <Brand>
@@ -494,6 +527,7 @@ function PageHeader() {
         </GlobalNavInner>
       </GlobalNav>
     </PageHeaderSelf>
+    </>
   );
 }
 
