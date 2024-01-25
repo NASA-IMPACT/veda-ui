@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import qs from 'qs';
 import { RasterSource, RasterLayer } from 'mapbox-gl';
 
-import { requestQuickCache } from '../utils';
 import useMapStyle from '../hooks/use-map-style';
 import useGeneratorParams from '../hooks/use-generator-params';
 import { BaseGeneratorParams } from '../types';
 
-import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
+import { useZarr } from './hooks';
+import { ActionStatus } from '$utils/status';
 
 export interface ZarrTimeseriesProps extends BaseGeneratorParams {
   id: string;
@@ -20,61 +20,30 @@ export interface ZarrTimeseriesProps extends BaseGeneratorParams {
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
 
-export function ZarrTimeseries(props: ZarrTimeseriesProps) {
+interface ZarrPaintLayerProps extends BaseGeneratorParams {
+  id: string;
+  date?: Date;
+  sourceParams?: Record<string, any>;
+  tileApiEndpoint?: string;
+  zoomExtent?: number[];
+  assetUrl: string;
+}
+
+export function ZarrPaintLayer(props: ZarrPaintLayerProps) {
   const {
     id,
-    stacCol,
-    stacApiEndpoint,
     tileApiEndpoint,
     date,
     sourceParams,
     zoomExtent,
-    onStatusChange,
+    assetUrl,
     hidden,
     opacity
   } = props;
 
   const { updateStyle } = useMapStyle();
-  const [assetUrl, setAssetUrl] = useState('');
-
   const [minZoom] = zoomExtent ?? [0, 20];
-
-  const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
-
   const generatorId = `zarr-timeseries-${id}`;
-
-  //
-  // Get the asset url
-  //
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function load() {
-      try {
-        onStatusChange?.({ status: S_LOADING, id });
-        const data = await requestQuickCache<any>({
-          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
-          method: 'GET',
-          controller
-        });
-
-        setAssetUrl(data.assets.zarr.href);
-        onStatusChange?.({ status: S_SUCCEEDED, id });
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          setAssetUrl('');
-          onStatusChange?.({ status: S_FAILED, id });
-        }
-        return;
-      }
-    }
-
-    load();
-
-    return () => {
-      controller.abort();
-    };
-  }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
 
   //
   // Generate Mapbox GL layers and sources for raster timeseries
@@ -88,7 +57,7 @@ export function ZarrTimeseries(props: ZarrTimeseriesProps) {
 
   useEffect(
     () => {
-      if (!tileApiEndpoint) return;
+      if (!assetUrl) return;
 
       const tileParams = qs.stringify({
         url: assetUrl,
@@ -164,4 +133,18 @@ export function ZarrTimeseries(props: ZarrTimeseriesProps) {
   }, [updateStyle, generatorId]);
 
   return null;
+}
+
+export function ZarrTimeseries(props:ZarrTimeseriesProps) {
+  const {
+    id,
+    stacCol,
+    stacApiEndpoint,
+    date,
+    onStatusChange,
+  } = props;
+
+  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
+  const assetUrl = useZarr({id, stacCol, stacApiEndpointToUse, date, onStatusChange});
+  return <ZarrPaintLayer {...props} assetUrl={assetUrl} />;
 }

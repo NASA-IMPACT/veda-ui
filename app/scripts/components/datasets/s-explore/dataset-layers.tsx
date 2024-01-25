@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { listReset, themeVal } from '@devseed-ui/theme-provider';
 import { AccordionManager } from '@devseed-ui/accordion';
 
-import { datasets } from 'veda';
+import { datasets } from 'veda'; // virtual module - parsed mdx files
 import { Layer } from './dataset-layer-single';
 import LayerAlert from './layer-alert';
 import { InlineLayerLoadingSkeleton } from './layer-loading';

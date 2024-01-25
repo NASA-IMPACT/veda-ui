@@ -13,6 +13,7 @@ import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
 import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
+import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
 
 interface LayerProps {
   id: string;
@@ -69,6 +70,22 @@ export function Layer(props: LayerProps) {
           stacCol={dataset.data.stacCol}
           stacApiEndpoint={dataset.data.stacApiEndpoint}
           tileApiEndpoint={dataset.data.tileApiEndpoint}
+          date={relevantDate}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          hidden={!isVisible}
+          opacity={opacity}
+        />
+      );
+    case 'cmr':
+      return (
+        <CMRTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          tileApiEndpoint={dataset.data.tileApiEndpoint}
+          assetUrlReplacements={dataset.data.assetUrlReplacements}
           date={relevantDate}
           zoomExtent={params.zoomExtent}
           sourceParams={params.sourceParams}

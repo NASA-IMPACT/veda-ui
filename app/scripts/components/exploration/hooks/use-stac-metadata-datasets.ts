@@ -33,7 +33,7 @@ function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
  * @returns Reconciled dataset with STAC data.
  */
 function reconcileQueryDataWithDataset(
-  queryData: UseQueryResult<StacDatasetData, unknown>,
+  queryData: UseQueryResult<StacDatasetData>,
   dataset: TimelineDataset
 ): TimelineDataset {
   try {
@@ -73,7 +73,7 @@ function reconcileQueryDataWithDataset(
 async function fetchStacDatasetById(
   dataset: TimelineDataset
 ): Promise<StacDatasetData> {
-  const { type, stacCol, stacApiEndpoint } = dataset.data;
+  const { type, stacCol, stacApiEndpoint, time_density } = dataset.data;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
 
@@ -95,6 +95,20 @@ async function fetchStacDatasetById(
     return {
       ...commonTimeseriesParams,
       domain: featuresApiData.extent.temporal.interval[0]
+    };
+  } else if (type === 'cmr') {
+    const domain = data.summaries?.datetime?.[0]
+    ? data.summaries.datetime
+    : data.extent.temporal.interval[0];
+  const domainStart = domain[0];
+  
+  // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
+  const lastDatetime = domain[domain.length - 1] ||  new Date().toISOString();
+    // CMR STAC misses the dashboard specific attributes, shim these values
+    return {
+      isPeriodic: true,
+      timeDensity: time_density ?? TimeDensity.DAY,
+      domain: [domainStart, lastDatetime]
     };
   } else {
     const domain = data.summaries?.datetime?.[0]

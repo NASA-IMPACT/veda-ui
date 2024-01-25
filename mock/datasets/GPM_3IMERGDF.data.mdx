@@ -1,0 +1,60 @@
+---
+id: GPM_3IMERGDF.v07
+name: 'GPM IMERG Daily Precipitation'
+description: "GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree"
+media:
+  src: ::file ./gpmimergdaily.png
+  alt: CMIP6 Near-Surface Air Temperature Screenshot
+  author:
+    name: NASA
+    url:   
+taxonomy:
+  - name: Topics
+    values:
+      - Climate
+layers:
+  - id: GPM_3IMERGDF.v07
+    type: cmr
+    stacApiEndpoint: 'https://cmr.earthdata.nasa.gov/cloudstac/GES_DISC'
+    tileApiEndpoint: 'https://prod-titiler-xarray.delta-backend.com/tilejson.json'
+    stacCol: GPM_3IMERGDF.v07
+    assetUrlReplacements:
+      from: https://data.gesdisc.earthdata.nasa.gov/data
+      to: s3://gesdisc-cumulus-prod-protected
+    name: GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree
+    description: "GPM Level 3 IMERG Final Daily 10 x 10 km (GPM_3IMERGDF) accumulated precipitation"
+    time_density: day
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      resampling_method: bilinear
+      variable: precipitation
+      colormap_name: gnbu
+      rescale: 0,46
+      maxzoom: 12
+    legend:
+      unit: 
+        label: 
+      type: gradient
+      min: "0 mm/hr"
+      max: "46 mm/hr"
+      stops: ['#f7fcf0', '#e6f5e1', '#d7efd1', '#c5e8c2', '#abdeb6', '#8bd2bf', '#6bc3c9', '#4bafd1', '#3193c2', '#1878b4', '#085da0', '#084081']
+---
+
+<Block>
+<Prose>
+# GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V06 (GPM_3IMERGDF)
+
+## Dataset Description
+
+This dataset is the GPM Level 3 IMERG *Final* Daily 10 x 10 km (GPM_3IMERGDF) derived from the half-hourly GPM_3IMERGHH. The derived result represents the Final estimate of the daily mean precipitation rate in mm/day. The dataset is produced by first computing the mean precipitation rate in (mm/hour) in every grid cell, and then multiplying the result by 24.
+
+Source: [https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGDF_07/summary](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGDF_07/summary)
+
+## Data Source
+
+The files represented are NetCDF files in GES DISC's Earthdata Cloud bucket and discovered from the CMR STAC entries for this collection: https://cmr.earthdata.nasa.gov/cloudstac/GES_DISC/collections/GPM_3IMERGDF.v07. The daily product is not yet available in CMR's CLOUD STAC.
+
+</Prose>
+</Block>
