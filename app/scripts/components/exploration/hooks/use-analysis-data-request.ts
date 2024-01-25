@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
 import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
@@ -90,6 +90,20 @@ export function useAnalysisDataRequest({
     }
   }, [isAnalyzing]);
 
+  const [test, setTest] = useState({
+    status: TimelineDatasetStatus.LOADING,
+    error: null,
+    data: null,
+    meta: {}
+  });
+  // function onProgress(data) {
+  //   setTest(data)
+  // }
+
+  useEffect(() => {
+    setAnalysis(test);
+  },[test, setAnalysis]);
+
   useEffect(() => {
     if (
       !isAnalyzing ||
@@ -107,23 +121,34 @@ export function useAnalysisDataRequest({
     };
 
     const { start, end } = selectedInterval;
-
-    requestDatasetTimeseriesData({
-      maxItems: MAX_QUERY_NUM,
-      start,
-      end,
-      aoi,
-      dataset,
-      queryClient,
-      concurrencyManager: analysisConcurrencyManager,
-      onProgress: (data) => {
-        setAnalysis(data);
-      }
-    });
+    async function makeCall(){
+      const stat = requestDatasetTimeseriesData({
+        maxItems: MAX_QUERY_NUM,
+        start,
+        end,
+        aoi,
+        dataset,
+        queryClient,
+        concurrencyManager: analysisConcurrencyManager,
+        onProgress: (data) => {
+          setTest(data);
+        }
+      });
+      setTest(stat);
+    }
+    makeCall();
     // We want great control when this effect run which is done by incrementing
     // the analysisRun. This is done when the user refreshes the analysis or
     // when they enter the analysis. It is certain that when this effect runs
     // the other values will be up to date. Adding all dependencies would cause
     // the hook to continuously run.
   }, [analysisRunId, datasetStatus, isAnalyzing]);
+
+
+  useEffect(() => {
+    if (test.status !== TimelineDatasetStatus.SUCCESS) return;
+    else {
+      setAnalysis(test);
+    }
+  },[test, setAnalysis]);
 }
