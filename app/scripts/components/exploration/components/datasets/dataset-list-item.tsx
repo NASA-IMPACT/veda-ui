@@ -43,6 +43,7 @@ import {
 } from '$components/exploration/constants';
 import { useDatasetHover } from '$components/exploration/hooks/use-dataset-hover';
 import {
+  useTimelineDatasetAnalysis,
   useTimelineDatasetAtom,
   useTimelineDatasetVisibility
 } from '$components/exploration/atoms/hooks';
@@ -136,6 +137,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
+  console.log(`datasetAtom: `, dataset)
 
   const { isAnalyzing, runAnalysis } = useAnalysisController();
 
@@ -164,7 +166,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
     layerX,
     midY
   } = useDatasetHover();
-
   const dataPoint = getInteractionDataPoint({
     isHovering,
     xScaled,
@@ -172,7 +173,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
     layerX,
     data: dataset.analysis.data?.timeseries
   });
-
   const {
     refs: popoverRefs,
     floatingStyles,
@@ -196,7 +196,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
     isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.LOADING;
   const isAnalysisAndSuccess =
     isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
-
+  console.log(`isAnalyzing: `, isAnalyzing, `dataset.analysis.status: `, dataset.analysis.status)
   const datasetLegend = dataset.data.legend;
 
   const analysisMetrics = useMemo(
@@ -204,6 +204,9 @@ export function DatasetListItem(props: DatasetListItemProps) {
     [dataset]
   );
 
+  console.log(`isAnalysisAndLoading: `, isAnalysisAndLoading)
+  console.log(`isAnalysisAndSuccess: `, isAnalysisAndSuccess)
+  console.log(`isAnalysisAndError: `, isAnalysisAndError)
   return (
     <Reorder.Item
       ref={datasetLiRef}

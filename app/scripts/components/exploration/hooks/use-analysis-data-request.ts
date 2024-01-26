@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
-import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
+import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 import { requestDatasetTimeseriesData } from '../analysis-data';
 import { analysisControllerAtom } from '../atoms/analysis';
@@ -78,6 +78,8 @@ export function useAnalysisDataRequest({
 
   const [, setAnalysis] = useTimelineDatasetAnalysis(datasetAtom);
 
+  const [done, setDone] = useState(false);
+
   const analysisRunId = getRunId(dataset.data.id);
 
   useEffect(() => {
@@ -91,13 +93,16 @@ export function useAnalysisDataRequest({
   }, [isAnalyzing]);
 
   useEffect(() => {
+    console.log(`datasetStatus: `, datasetStatus)
     if (
+      done ||
       !isAnalyzing ||
       datasetStatus !== TimelineDatasetStatus.SUCCESS ||
       !selectedInterval ||
       !selectedFeatures.length ||
       analysisRunId === 0 // Avoid running the analysis on the first render
     ) {
+      console.log(`done: `, done)
       return;
     }
 
@@ -118,6 +123,9 @@ export function useAnalysisDataRequest({
       concurrencyManager: analysisConcurrencyManager,
       onProgress: (data) => {
         setAnalysis(data);
+        console.log(`setAnalysis with data: `, data)
+        if (data.status == 'success') setDone(true) // Exit useEffect when 'success' detected
+        console.log(`set data status now: `, data.status)
       }
     });
     // We want great control when this effect run which is done by incrementing
@@ -125,5 +133,5 @@ export function useAnalysisDataRequest({
     // when they enter the analysis. It is certain that when this effect runs
     // the other values will be up to date. Adding all dependencies would cause
     // the hook to continuously run.
-  }, [analysisRunId, datasetStatus, isAnalyzing]);
+  }, [analysisRunId, datasetStatus, isAnalyzing, done]);
 }

@@ -5,7 +5,8 @@ export interface ConcurrencyManagerInstance {
 }
 
 export function ConcurrencyManager(
-  concurrentRequests = 15
+  // concurrentRequests = 15
+  concurrentRequests = 50
 ): ConcurrencyManagerInstance {
   let queue: [string, () => Promise<void>][] = [];
   let running = 0;
