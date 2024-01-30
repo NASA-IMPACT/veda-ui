@@ -82,11 +82,11 @@ function Child(props) {
         <PageMainContent>
           <PageHero
             title='Something went wrong'
-            description={`We couldn&apos;t to load your content.`}
+            description={`We couldn't to load your content.`}
           />
           <FoldProse>
             <p>
-              This is on our side and we&apos;ll fix it! In the meantime you can
+              This is on our side and we will fix it! In the meantime you can
               try again by refreshing the page or visit the{' '}
               <a href={makeAbsUrl('/')} title='Visit homepage'>
                 homepage
