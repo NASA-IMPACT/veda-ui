@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
 import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
@@ -8,7 +8,7 @@ import { analysisControllerAtom } from '../atoms/analysis';
 import { selectedIntervalAtom } from '../atoms/dates';
 import { useTimelineDatasetAnalysis } from '../atoms/hooks';
 import { analysisConcurrencyManager } from '../concurrency';
-import { TimelineDataset, TimelineDatasetAnalysis, TimelineDatasetStatus } from '../types.d.ts';
+import { TimelineDataset, TimelineDatasetStatus } from '../types.d.ts';
 import { MAX_QUERY_NUM } from '../constants';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 
@@ -80,13 +80,6 @@ export function useAnalysisDataRequest({
 
   const analysisRunId = getRunId(dataset.data.id);
 
-  const [analysisResult, setAnalysisResult] = useState<TimelineDatasetAnalysis>({
-    status: TimelineDatasetStatus.IDLE,
-    error: null,
-    data: null,
-    meta: {}
-  });
-
   useEffect(() => {
     if (!isAnalyzing) {
       queryClient.cancelQueries({
@@ -115,7 +108,7 @@ export function useAnalysisDataRequest({
 
     const { start, end } = selectedInterval;
     async function makeCall(){
-      const stat = await requestDatasetTimeseriesData({
+      await requestDatasetTimeseriesData({
         maxItems: MAX_QUERY_NUM,
         start,
         end,
@@ -127,7 +120,6 @@ export function useAnalysisDataRequest({
           setAnalysis(data);
         }
       });
-      setAnalysisResult(stat);
     }
     makeCall();
     // We want great control when this effect run which is done by incrementing
@@ -138,15 +130,5 @@ export function useAnalysisDataRequest({
   }, [analysisRunId, datasetStatus, isAnalyzing]);
 
 
-  useEffect(() => {
-    // setAnalysis sets Jotai Atom value for analysis result
-    // It should sequentially set the analysis progress as 
-    // idle => loading (increasing number of loaded items) => success
-    // However, it is not setting the value sequentially, 
-    // ended up loading status as a result even when the request is successful
-    // This just overwrites the analysis result with the final result of analysis, 
-    // so Jotai value gets 'corrected' in case it is wrong
-    setAnalysis(analysisResult);
-  },[setAnalysis, analysisResult]);
 
 }

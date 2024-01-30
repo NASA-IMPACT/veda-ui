@@ -5,7 +5,7 @@ export interface ConcurrencyManagerInstance {
 }
 
 export function ConcurrencyManager(
-  concurrentRequests = 15
+  concurrentRequests = 2
 ): ConcurrencyManagerInstance {
   let queue: [string, () => Promise<void>][] = [];
   let running = 0;
@@ -32,7 +32,6 @@ export function ConcurrencyManager(
         resolve = _resolve;
         reject = _reject;
       });
-
       /* eslint-disable-next-line fp/no-mutating-methods */
       queue.push([
         key,

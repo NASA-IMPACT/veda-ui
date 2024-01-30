@@ -5,7 +5,8 @@ import { ConcurrencyManagerInstance } from './concurrency';
 import {
   TimelineDataset,
   TimelineDatasetAnalysis,
-  TimelineDatasetStatus
+  TimelineDatasetStatus,
+  AnalysisTimeseriesEntry
 } from './types.d.ts';
 import { ExtendedError } from './data-utils';
 import {
@@ -21,6 +22,16 @@ interface DatasetAssetsRequestParams {
   dateEnd: Date;
   aoi: FeatureCollection<Polygon>;
 }
+
+  // Helper function to convert generator to promise
+  const toAsync = (generator) => async () => {
+    const g = generator();
+    let values: AnalysisTimeseriesEntry[] = []; 
+    for await (const val of g) {
+      values = [...values, ...val];
+    }
+    return values;
+  };
 
 /**
  * Gets the asset urls for all datasets in the results of a STAC search given by
@@ -91,8 +102,7 @@ export async function requestDatasetTimeseriesData({
   queryClient,
   concurrencyManager,
   onProgress
-}: TimeseriesRequesterParams)
-:  Promise<TimelineDatasetAnalysis> {
+}: TimeseriesRequesterParams) {
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
 
@@ -106,15 +116,7 @@ export async function requestDatasetTimeseriesData({
       ),
       data: null
     });
-    return {
-      status: TimelineDatasetStatus.ERROR,
-      meta: {},
-      error: new ExtendedError(
-        'Analysis is only supported for raster datasets',
-        'ANALYSIS_NOT_SUPPORTED'
-      ),
-      data: null
-    };
+    return;
   }
 
   const id = datasetData.id;
@@ -181,12 +183,6 @@ export async function requestDatasetTimeseriesData({
         error: e,
         data: null
       });
-      return {
-        ...datasetAnalysis,
-        status: TimelineDatasetStatus.ERROR,
-        error: e,
-        data: null
-      };
     }
 
     if (!assets.length) {
@@ -199,57 +195,62 @@ export async function requestDatasetTimeseriesData({
         ),
         data: null
       });
-      return;
     }
-
-    let loaded = 0;//new Array(assets.length).fill(0);
 
     const tileEndpointToUse =
       datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
 
     const analysisParams = datasetData.analysis?.sourceParams ?? {};
 
-    const layerStatistics = await Promise.all(
-      assets.map(
-        async ({ date, url }) => {
-        const statistics = await concurrencyManager.queue(
-          `${id}-analysis-asset`,
-          () => {
-            return queryClient.fetchQuery(
-              ['analysis', id, 'asset', url, aoi],
-              async ({ signal }) => {
-                const { data } = await axios.post(
-                  `${tileEndpointToUse}/cog/statistics`,
-                  // Making a request with a FC causes a 500 (as of 2023/01/20)
-                  fixAoiFcForStacSearch(aoi),
-                  { params: { url, ...analysisParams }, signal }
-                );
-                return {
-                  date,
-                  
-                  ...data.properties.statistics.b1
-                };
-              },
-              {
-                staleTime: Infinity
-              }
-            );
+    const getStatistics = async (date, url) => {
+      const statistics = await queryClient.fetchQuery(
+        ['analysis', id, 'asset', url, aoi],
+        async ({ signal }) => {
+          const { data } = await axios.post(
+            `${tileEndpointToUse}/cog/statistics`,
+            // Making a request with a FC causes a 500 (as of 2023/01/20)
+            fixAoiFcForStacSearch(aoi),
+            { params: { url, ...analysisParams }, signal }
+          );
+          return {
+            date,
+            ...data.properties.statistics.b1
+          };
+        },
+        {
+          staleTime: Infinity
+        }
+      );
+  
+      return statistics;
+    };
+    
+    const batchLayers = async function* () {
+      const batchLimit = 5;
+      for(let i = 0; i < assets.length; i += batchLimit) {
+        // Grab assets for current iteration
+        const batch = assets.slice(i, i + batchLimit);
+        const batchResults = await Promise.all(
+          batch.map(async (asset) => {
+            const stats = await getStatistics(asset.date, asset.url);
+            return {asset, ...stats};
+          })
+        );
+        // Give Feedback only after one batch is done (The counter will increase only by batchLimit)
+        onProgress({
+          status: TimelineDatasetStatus.LOADING,
+          error: null,
+          data: null,
+          meta: {
+            total: assets.length,
+            loaded: i
           }
-            );
-          onProgress({
-            status: TimelineDatasetStatus.LOADING,
-            error: null,
-            data: null,
-            meta: {
-              total: assets.length,
-              loaded: ++loaded
-            }
-          });
-
-        return statistics;
+        });
+        yield batchResults;
       }
-      )
-    );
+    };
+
+    const layerStatistics = await concurrencyManager.queue(`${id}-analysis-asset-requests`, toAsync(batchLayers));
 
     onProgress({
       status: TimelineDatasetStatus.SUCCESS,
@@ -262,26 +263,15 @@ export async function requestDatasetTimeseriesData({
         timeseries: layerStatistics
       }
     });
-    return {
-      status: TimelineDatasetStatus.SUCCESS,
-      meta: {
-        total: assets.length,
-        loaded: assets.length
-      },
-      error: null,
-      data: {
-        timeseries: layerStatistics
-      }
-    };
   } catch (error) {
     // Discard abort related errors.
     if (error.revert) {
-      return {
+      onProgress({
         status: TimelineDatasetStatus.LOADING,
         error: null,
         data: null,
         meta: {}
-      };
+      });
     }
 
     // Cancel any inflight queries.
@@ -295,12 +285,5 @@ export async function requestDatasetTimeseriesData({
       error,
       data: null
     });
-
-    return {
-      ...datasetAnalysis,
-      status: TimelineDatasetStatus.ERROR,
-      error,
-      data: null
-    };
   }
 }

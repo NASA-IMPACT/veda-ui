@@ -76,6 +76,7 @@ export function encodeAois(aois: AoIFeature[]): string {
 
 export function decodeAois(aois: string): AoIFeature[] {
   const decoded = JSON.parse(aois) as string[];
+  // @ts-expect-error : TO DO 
   const features: AoIFeature[] = chunk(decoded, 3).map((data) => {
     const [polygon, id, selected] = data;
     const decodedFeature = decodeFeature(polygon) as AoIFeature;
