@@ -507,7 +507,23 @@ export default function Timeline(props: TimelineProps) {
   // Attach the needed event listeners to the interaction rectangle to capture
   // the mouse position. See source file for more information.
   useInteractionRectHover(interactionRef.current);
-  // Scale for no data
+  const CommonTimelineHeadline = () => {
+    return (
+      <Headline>
+        <Heading as='h2' size='xsmall'>
+          Data layers
+        </Heading>
+        <Button
+          variation='base-text'
+          size='small'
+          onClick={onDatasetAddClick}
+        >
+          <CollecticonPlusSmall title='Add layer' /> Add layer
+        </Button>
+      </Headline>);
+  };
+
+  // Stub scale for no data
   const mockedScale = useInitialScale(width);
   // Some of these values depend on each other, but we check all of them so
   // typescript doesn't complain.
@@ -516,18 +532,7 @@ export default function Timeline(props: TimelineProps) {
       <TimelineWrapper ref={observe}>
       <TimelineHeader>
         <TimelineDetails>
-          <Headline>
-            <Heading as='h2' size='xsmall'>
-              Data layers
-            </Heading>
-            <Button
-              variation='base-text'
-              size='small'
-              onClick={onDatasetAddClick}
-            >
-              <CollecticonPlusSmall title='Add layer' /> Add layer
-            </Button>
-          </Headline>
+          {CommonTimelineHeadline()}
         </TimelineDetails>
         <TimelineDateAxis
           xScaled={mockedScale}
@@ -560,18 +565,7 @@ export default function Timeline(props: TimelineProps) {
       />
       <TimelineHeader>
         <TimelineDetails>
-          <Headline>
-            <Heading as='h2' size='xsmall'>
-              Data layers
-            </Heading>
-            <Button
-              variation='base-text'
-              size='small'
-              onClick={onDatasetAddClick}
-            >
-              <CollecticonPlusSmall title='Add layer' /> Add layer
-            </Button>
-          </Headline>
+        {CommonTimelineHeadline()}
           <small>
             <Pluralize
               count={datasets.length}
