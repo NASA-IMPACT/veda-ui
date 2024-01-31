@@ -1,5 +1,5 @@
 import { Button } from '@devseed-ui/button';
-import { CollecticonPlusSmall } from '@devseed-ui/collecticons';
+import { CollecticonIsoStack, CollecticonPlusSmall } from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
 import { select, zoom } from 'd3';
@@ -26,7 +26,7 @@ import styled from 'styled-components';
 import { DatasetList } from '../datasets/dataset-list';
 
 import { applyTransform, isEqualTransform, rescaleX } from './timeline-utils';
-import { TimelineControls } from './timeline-controls';
+import { TimelineControls, useInitialScale, TimelineDateAxis } from './timeline-controls';
 import {
   TimelineHeadIn,
   TimelineHeadPoint,
@@ -78,16 +78,6 @@ const TimelineWrapper = styled.div`
   }
 `;
 
-const NoData = styled.div`
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  max-width: 20rem;
-  margin: auto;
-  padding: 2rem;
-  gap: 1rem;
-`;
-
 const InteractionRect = styled.div`
   position: absolute;
   left: 20rem;
@@ -129,14 +119,32 @@ const TimelineContent = styled.div`
   position: relative;
 `;
 
-const TimelineContentInner = styled.div`
+const EmptyTimelineContentInner = styled.div`
   height: 100%;
   min-height: 0;
   display: flex;
-  overflow-y: scroll;
   overflow-x: hidden;
   width: 100%;
   position: relative;
+`;
+
+const TimelineContentInner = styled(EmptyTimelineContentInner)`
+  overflow-y: scroll;
+`;
+
+const LayerActionBox = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  svg {
+    fill: ${themeVal('color.base-300')}
+  }
 `;
 
 interface TimelineProps {
@@ -499,15 +507,46 @@ export default function Timeline(props: TimelineProps) {
   // Attach the needed event listeners to the interaction rectangle to capture
   // the mouse position. See source file for more information.
   useInteractionRectHover(interactionRef.current);
-
+  // Scale for no data
+  const mockedScale = useInitialScale(width);
   // Some of these values depend on each other, but we check all of them so
   // typescript doesn't complain.
   if (datasets.length === 0) {
     return (
       <TimelineWrapper ref={observe}>
-        <NoData>
-          <p>Select a data layer to start exploration</p>
-        </NoData>
+      <TimelineHeader>
+        <TimelineDetails>
+          <Headline>
+            <Heading as='h2' size='xsmall'>
+              Data layers
+            </Heading>
+            <Button
+              variation='base-text'
+              size='small'
+              onClick={onDatasetAddClick}
+            >
+              <CollecticonPlusSmall title='Add layer' /> Add layer
+            </Button>
+          </Headline>
+        </TimelineDetails>
+        <TimelineDateAxis
+          xScaled={mockedScale}
+          width={width}
+        />
+      </TimelineHeader>
+        <TimelineContent>
+        <TimelineDetails />
+        <EmptyTimelineContentInner>
+          <DateGrid width={width} xScaled={mockedScale} />
+          <LayerActionBox>
+            <div>
+              <CollecticonIsoStack size='xxlarge' />
+              <p>No data layer added to the map!</p> 
+              <Button variation='base-text' size='small' onClick={onDatasetAddClick}>Add a Layer here</Button>
+            </div>
+          </LayerActionBox>
+        </EmptyTimelineContentInner>
+        </TimelineContent>
       </TimelineWrapper>
     );
   }

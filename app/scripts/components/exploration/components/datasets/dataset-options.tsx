@@ -94,12 +94,12 @@ export default function DatasetOptions(props: DatasetOptionsProps) {
         <DropMenu>
           <li>
             <Tip
-              disabled={datasets.length > 1}
+              disabled={datasets.length > 0}
               content="It's not possible to remove the last dataset. Add another before removing this one."
             >
               <RemoveButton
                 variation='danger'
-                visuallyDisabled={datasets.length === 1}
+                // visuallyDisabled={datasets.length === 1}
                 onClick={() => {
                   setDatasets((datasets) =>
                     datasets.filter((d) => d.data.id !== dataset.data.id)

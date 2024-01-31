@@ -57,10 +57,36 @@ const DatePickerButton = styled(TipButton)`
   }
 `;
 
+const EmptyDateAxisWrapper = styled.div`
+  padding-top: ${glsp(3)};
+`;
+
 interface TimelineControlsProps {
   xScaled?: ScaleTime<number, number>;
   width: number;
   onZoom: (zoom: number) => void;
+}
+
+
+export function useInitialScale(width) {
+  return useMemo(() => {
+    const now = new Date();
+    return scaleTime()
+      .domain([startOfYear(now), endOfYear(now)])
+      .range([0, width]);
+  }, [width]);
+}
+
+export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom">) {
+  const { xScaled, width } = props;
+  const initialScale = useInitialScale(width);
+  return (
+    <TimelineControlsSelf>
+      <EmptyDateAxisWrapper>
+        <DateAxis xScaled={xScaled ?? initialScale} width={width} />
+      </EmptyDateAxisWrapper>
+    </TimelineControlsSelf>
+  );
 }
 
 export function TimelineControls(props: TimelineControlsProps) {
@@ -76,12 +102,7 @@ export function TimelineControls(props: TimelineControlsProps) {
   const { features } = useAois();
 
   // Scale to use when there are no datasets with data (loading or error)
-  const initialScale = useMemo(() => {
-    const now = new Date();
-    return scaleTime()
-      .domain([startOfYear(now), endOfYear(now)])
-      .range([0, width]);
-  }, [width]);
+  const initialScale = useInitialScale(width);
 
   return (
     <TimelineControlsSelf>

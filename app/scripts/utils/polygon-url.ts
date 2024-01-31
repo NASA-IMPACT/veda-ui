@@ -79,7 +79,7 @@ export function decodeAois(aois: string): AoIFeature[] {
   const features: AoIFeature[] = chunk(decoded, 3).map((data) => {
     const [polygon, id, selected] = data;
     const decodedFeature = decodeFeature(polygon) as AoIFeature;
-    return { ...decodedFeature, id, selected };
+    return { ...decodedFeature, id, selected: selected as unknown as boolean };
   });
   return features!;
 }
