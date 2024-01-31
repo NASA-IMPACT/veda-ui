@@ -23,15 +23,15 @@ interface DatasetAssetsRequestParams {
   aoi: FeatureCollection<Polygon>;
 }
 
-  // Helper function to convert generator to promise
-  const toAsync = (generator) => async () => {
-    const g = generator();
-    let values: AnalysisTimeseriesEntry[] = []; 
-    for await (const val of g) {
-      values = [...values, ...val];
-    }
-    return values;
-  };
+// Helper function to convert generator to promise
+const toAsync =  (generator: () => AsyncGenerator<AnalysisTimeseriesEntry[]>) => async (): Promise<AnalysisTimeseriesEntry[]> => {
+  const g = generator();
+  let values: AnalysisTimeseriesEntry[] = []; 
+  for await (const val of g) {
+    values = [...values, ...val];
+  }
+  return values;
+};
 
 /**
  * Gets the asset urls for all datasets in the results of a STAC search given by
@@ -102,12 +102,12 @@ export async function requestDatasetTimeseriesData({
   queryClient,
   concurrencyManager,
   onProgress
-}: TimeseriesRequesterParams) {
+}: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
 
   if (datasetData.type !== 'raster') {
-    onProgress({
+    return {
       status: TimelineDatasetStatus.ERROR,
       meta: {},
       error: new ExtendedError(
@@ -115,8 +115,7 @@ export async function requestDatasetTimeseriesData({
         'ANALYSIS_NOT_SUPPORTED'
       ),
       data: null
-    });
-    return;
+    };
   }
 
   const id = datasetData.id;
@@ -127,7 +126,6 @@ export async function requestDatasetTimeseriesData({
     data: null,
     meta: {}
   });
-
   const stacApiEndpointToUse =
     datasetData.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
 
@@ -177,16 +175,16 @@ export async function requestDatasetTimeseriesData({
         assetCount: assets.length
       };
 
-      onProgress({
+      return {
         ...datasetAnalysis,
         status: TimelineDatasetStatus.ERROR,
         error: e,
         data: null
-      });
+      };
     }
 
     if (!assets.length) {
-      onProgress({
+      return {
         ...datasetAnalysis,
         status: TimelineDatasetStatus.ERROR,
         error: new ExtendedError(
@@ -194,7 +192,7 @@ export async function requestDatasetTimeseriesData({
           'ANALYSIS_NO_DATA'
         ),
         data: null
-      });
+      };
     }
 
     const tileEndpointToUse =
@@ -203,6 +201,7 @@ export async function requestDatasetTimeseriesData({
     const analysisParams = datasetData.analysis?.sourceParams ?? {};
 
     const getStatistics = async (date, url) => {
+      
       const statistics = await queryClient.fetchQuery(
         ['analysis', id, 'asset', url, aoi],
         async ({ signal }) => {
@@ -224,9 +223,9 @@ export async function requestDatasetTimeseriesData({
   
       return statistics;
     };
-    
+
+    const batchLimit = 15;
     const batchLayers = async function* () {
-      const batchLimit = 5;
       for(let i = 0; i < assets.length; i += batchLimit) {
         // Grab assets for current iteration
         const batch = assets.slice(i, i + batchLimit);
@@ -251,8 +250,8 @@ export async function requestDatasetTimeseriesData({
     };
 
     const layerStatistics = await concurrencyManager.queue(`${id}-analysis-asset-requests`, toAsync(batchLayers));
-
-    onProgress({
+    // Return the status
+    return {
       status: TimelineDatasetStatus.SUCCESS,
       meta: {
         total: assets.length,
@@ -262,28 +261,30 @@ export async function requestDatasetTimeseriesData({
       data: {
         timeseries: layerStatistics
       }
-    });
+    };
+
   } catch (error) {
     // Discard abort related errors.
     if (error.revert) {
-      onProgress({
+      return {
         status: TimelineDatasetStatus.LOADING,
         error: null,
         data: null,
         meta: {}
-      });
+      };
     }
 
     // Cancel any inflight queries.
     queryClient.cancelQueries({ queryKey: ['analysis', id] });
     // Remove other requests from the queue.
     concurrencyManager.dequeue(`${id}-analysis-asset`);
+    concurrencyManager.dequeue(`${id}-analysis-asset-requests`);
 
-    onProgress({
+    return {
       ...datasetAnalysis,
       status: TimelineDatasetStatus.ERROR,
       error,
       data: null
-    });
+    };
   }
 }
