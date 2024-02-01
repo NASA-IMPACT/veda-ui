@@ -547,7 +547,7 @@ export default function Timeline(props: TimelineProps) {
             <div>
               <CollecticonIsoStack size='xxlarge' />
               <p>No data layer added to the map!</p> 
-              <Button variation='base-text' size='small' onClick={onDatasetAddClick}>Add a Layer here</Button>
+              <Button variation='base-text' size='small' onClick={onDatasetAddClick}>Add a layer here</Button>
             </div>
           </LayerActionBox>
         </EmptyTimelineContentInner>
