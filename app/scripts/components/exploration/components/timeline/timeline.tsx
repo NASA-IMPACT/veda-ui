@@ -26,7 +26,7 @@ import styled from 'styled-components';
 import { DatasetList } from '../datasets/dataset-list';
 
 import { applyTransform, isEqualTransform, rescaleX } from './timeline-utils';
-import { TimelineControls, useInitialScale, TimelineDateAxis } from './timeline-controls';
+import { TimelineControls, getInitialScale, TimelineDateAxis } from './timeline-controls';
 import {
   TimelineHeadIn,
   TimelineHeadPoint,
@@ -522,9 +522,11 @@ export default function Timeline(props: TimelineProps) {
         </Button>
       </Headline>);
   };
+  // Stub scale for when there is no layers
+  const initialScale = useMemo(() => {
+    return getInitialScale(width);
+  }, [width]);
 
-  // Stub scale for no data
-  const mockedScale = useInitialScale(width);
   // Some of these values depend on each other, but we check all of them so
   // typescript doesn't complain.
   if (datasets.length === 0) {
@@ -535,14 +537,14 @@ export default function Timeline(props: TimelineProps) {
           {CommonTimelineHeadline()}
         </TimelineDetails>
         <TimelineDateAxis
-          xScaled={mockedScale}
+          xScaled={initialScale}
           width={width}
         />
       </TimelineHeader>
         <TimelineContent>
         <TimelineDetails />
         <EmptyTimelineContentInner>
-          <DateGrid width={width} xScaled={mockedScale} />
+          <DateGrid width={width} xScaled={initialScale} />
           <LayerActionBox>
             <div>
               <CollecticonIsoStack size='xxlarge' />

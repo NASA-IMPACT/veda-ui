@@ -68,18 +68,20 @@ interface TimelineControlsProps {
 }
 
 
-export function useInitialScale(width) {
-  return useMemo(() => {
-    const now = new Date();
-    return scaleTime()
-      .domain([startOfYear(now), endOfYear(now)])
-      .range([0, width]);
-  }, [width]);
+export function getInitialScale(width) {
+  const now = new Date();
+  return scaleTime()
+    .domain([startOfYear(now), endOfYear(now)])
+    .range([0, width]);
 }
 
 export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom">) {
   const { xScaled, width } = props;
-  const initialScale = useInitialScale(width);
+
+  const initialScale = useMemo(() => {
+    return getInitialScale(width);
+  }, [width]);
+  
   return (
     <TimelineControlsSelf>
       <EmptyDateAxisWrapper>
@@ -102,7 +104,9 @@ export function TimelineControls(props: TimelineControlsProps) {
   const { features } = useAois();
 
   // Scale to use when there are no datasets with data (loading or error)
-  const initialScale = useInitialScale(width);
+  const initialScale = useMemo(() => {
+    return getInitialScale(width);
+  },[width]);
 
   return (
     <TimelineControlsSelf>
