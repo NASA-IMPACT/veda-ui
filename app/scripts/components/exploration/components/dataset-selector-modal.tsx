@@ -261,8 +261,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       size='xlarge'
       title='Select data layers'
       revealed={revealed}
-      disableKeyboardClose={isFirstSelection}
-      closeButton={!isFirstSelection}
       onCloseClick={close}
       renderHeadline={() => (
         <ModalHeadline>

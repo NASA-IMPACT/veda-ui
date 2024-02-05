@@ -33,7 +33,7 @@ interface DatasetOptionsProps {
 export default function DatasetOptions(props: DatasetOptionsProps) {
   const { datasetAtom } = props;
 
-  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
+  const [, setDatasets] = useAtom(timelineDatasetsAtom);
   const dataset = useAtomValue(datasetAtom);
   const [getSettings, setSetting] = useTimelineDatasetSettings(datasetAtom);
 
@@ -93,22 +93,16 @@ export default function DatasetOptions(props: DatasetOptionsProps) {
         </DropMenu>
         <DropMenu>
           <li>
-            <Tip
-              disabled={datasets.length > 1}
-              content="It's not possible to remove the last dataset. Add another before removing this one."
+            <RemoveButton
+              variation='danger'
+              onClick={() => {
+                setDatasets((datasets) =>
+                  datasets.filter((d) => d.data.id !== dataset.data.id)
+                );
+              }}
             >
-              <RemoveButton
-                variation='danger'
-                visuallyDisabled={datasets.length === 1}
-                onClick={() => {
-                  setDatasets((datasets) =>
-                    datasets.filter((d) => d.data.id !== dataset.data.id)
-                  );
-                }}
-              >
-                <CollecticonTrashBin /> Remove dataset
-              </RemoveButton>
-            </Tip>
+              <CollecticonTrashBin /> Remove dataset
+            </RemoveButton>
           </li>
         </DropMenu>
       </Dropdown>
