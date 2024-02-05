@@ -104,9 +104,7 @@ export function TimelineControls(props: TimelineControlsProps) {
   const { features } = useAois();
 
   // Scale to use when there are no datasets with data (loading or error)
-  const initialScale = useMemo(() => {
-    return getInitialScale(width);
-  },[width]);
+  const initialScale = useMemo(() => getInitialScale(width) ,[width]);
 
   return (
     <TimelineControlsSelf>

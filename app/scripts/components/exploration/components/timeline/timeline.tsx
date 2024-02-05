@@ -523,9 +523,7 @@ export default function Timeline(props: TimelineProps) {
       </Headline>);
   };
   // Stub scale for when there is no layers
-  const initialScale = useMemo(() => {
-    return getInitialScale(width);
-  }, [width]);
+  const initialScale = useMemo(() => getInitialScale(width) ,[width]);
 
   // Some of these values depend on each other, but we check all of them so
   // typescript doesn't complain.
