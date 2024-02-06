@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
+import { useTour } from '@reactour/tour';
 
 import { useStacMetadataOnDatasets } from '../../hooks/use-stac-metadata-datasets';
 import { selectedCompareDateAtom, selectedDateAtom } from '../../atoms/dates';
@@ -25,9 +26,12 @@ import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 import { usePreviousValue } from '$utils/use-effect-previous';
+import { TourManagerInvokingButton } from '$components/exploration/tour-manager';
 
 export function ExplorationMap() {
   const [projection, setProjection] = useState(projectionDefault);
+
+  const { setIsOpen } = useTour();
 
   const {
     mapBasemapId,
@@ -155,9 +159,16 @@ export function ExplorationMap() {
           onOptionChange={onOptionChange}
         />
 
+        <TourManagerInvokingButton 
+          id='yaho' 
+          onClick={() => {console.log('yaho'); setIsOpen(true);}}
+        >
+          Invoke
+        </TourManagerInvokingButton>
         <ScaleControl />
         <MapCoordsControl />
         <NavigationControl />
+        
       </MapControls>
       {comparing && (
         // Compare map layers

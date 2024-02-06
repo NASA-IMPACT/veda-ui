@@ -2,8 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTour, PopoverContentProps, StepType } from '@reactour/tour';
 import { useAtomValue } from 'jotai';
 import styled from 'styled-components';
+
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
+import { createButtonStyles } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
 import {
   CollecticonChevronLeftSmall,
@@ -16,6 +18,40 @@ import tourAnalysisUrl from '../../../graphics/content/tour-analysis.gif';
 
 import { timelineDatasetsAtom } from './atoms/datasets';
 import { usePreviousValue } from '$utils/use-effect-previous';
+
+import { TipButton } from '$components/common/tip-button';
+
+// Why you ask? Very well:
+// Mapbox's css has an instruction that sets the hover color for buttons to
+// near black. The only way to override it is to increase the specificity and
+// we need the button functions to get the correct color.
+// The infamous instruction:
+// .mapboxgl-ctrl button:not(:disabled):hover {
+//   background-color: rgba(0, 0, 0, 0.05);
+// }
+const SelectorButton = styled(TipButton)`
+  &&& {
+    ${createButtonStyles({ variation: 'surface-fill', fitting: 'skinny' } as any)}
+    background-color: ${themeVal('color.surface')};
+    &:hover {
+      background-color: ${themeVal('color.surface')};
+    }
+    & path {
+      fill: ${themeVal('color.base')};
+    }
+  }
+`;
+
+export function TourManagerInvokingButton({ onClick }) {
+  return (
+  <SelectorButton
+    tipContent='Open guided tour'
+    tipProps={{ placement: 'left' }}
+    onClick={onClick}
+  >
+      Invoke
+  </SelectorButton>);
+}
 
 const Popover = styled.div`
   position: relative;
@@ -99,9 +135,10 @@ function addActionAfterLastStep(steps: StepType[], action: () => void) {
   return [...steps.slice(0, -1), lastStepWithAction];
 }
 
-export function TourManager() {
-  const { setIsOpen, setSteps, setCurrentStep } = useTour();
+const HIDE_TOUR_KEY = 'HIDE_TOUR';
 
+export function TourManager() {
+  const { setIsOpen, isOpen, setSteps, setCurrentStep } = useTour();
   const startTour = useCallback(
     (steps) => {
       setCurrentStep(0);
@@ -112,22 +149,28 @@ export function TourManager() {
   );
 
   // Control states for the different tours.
+  const hideTour = window.localStorage.getItem(HIDE_TOUR_KEY) === 'true';
   const [introTourShown, setIntroTourShown] = useState(false);
-
+  
   // Variables that cause tour 1 to start.
   const datasets = useAtomValue(timelineDatasetsAtom);
   const datasetCount = datasets.length;
   const prevDatasetCount = usePreviousValue(datasetCount);
   useEffect(() => {
-    if (!introTourShown && !prevDatasetCount && datasetCount > 0) {
+    // First time landing
+    if (!hideTour && !introTourShown && !prevDatasetCount && datasetCount > 0) {
       // Make the last step of the intro tour mark it as shown.
       const steps = addActionAfterLastStep(introTourSteps, () => {
         setIntroTourShown(true);
+        window.localStorage.setItem(HIDE_TOUR_KEY, 'true');
       });
       startTour(steps);
+    // Invoked by a button
+    } else if (datasetCount > 0) {
+      setSteps?.(introTourSteps);
+      setCurrentStep(0);
     }
-  }, [introTourShown, prevDatasetCount, datasetCount, startTour]);
-
+  }, [introTourShown, prevDatasetCount, datasetCount, startTour, setCurrentStep, setSteps, hideTour]);
   return null;
 }
 
@@ -140,13 +183,19 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
 
   const isLastStep = currentStep === steps.length - 1;
   const { content, title } = steps[currentStep];
+
+  const closeTour = useCallback(() => {
+    setIsOpen(false);
+    window.localStorage.setItem(HIDE_TOUR_KEY, 'true');
+  },[setIsOpen]);
+
   return (
     <Popover>
       <CloseButton
         variation='base-text'
         size='small'
         fitting='skinny'
-        onClick={() => setIsOpen(false)}
+        onClick={closeTour}
       >
         <CollecticonXmark size='small' meaningful title='Close feature tour' />
       </CloseButton>
