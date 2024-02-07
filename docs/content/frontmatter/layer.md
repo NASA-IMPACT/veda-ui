@@ -68,7 +68,8 @@ Define the initial date that is shown when enabling a timeseries layer. This val
 
 **zoomExtent**  
 `[int, int] | fn(bag)`  
-Minimum and maximum zoom values for the layer. Below the minimum zoom level the layer will not be shown, but markers will be displayed to indicate where data is available.
+Minimum and maximum zoom values for the layer. Below the minimum zoom level the layer will not be shown, but markers will be displayed to indicate where data is available. 
+For raster and zarr layer, only minimum zoom will be respected and the maximum zoom will be automatically fetched from STAC endpoint.
 
 **sourceParams**  
 `object`  
@@ -80,6 +81,11 @@ These values may vary greatly depending on the layer being added but some may be
 - **colormap_name**  
   `string`  
   The colormap to use for the layer. One of https://cogeotiff.github.io/rio-tiler/colormap/#default-rio-tilers-colormaps
+- **minzoom**
+The minimum zoom of the layer. Map tiles below the minzoom will not be loaded/shown.
+- **maxzoom**
+The maximum zoom of the layer. Map tiles over the maxzoom will not be loaded/shown.
+
 
 **bounds**  
 `[int, int, int, int] | fn(bag)`  
