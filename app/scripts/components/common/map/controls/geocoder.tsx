@@ -22,6 +22,7 @@ function getZoomFromBbox(bbox: [number, number, number, number]): number {
 export default function GeocoderControl() {
 
   const handleGeocoderResult = useCallback((map) => ({ result }) => {
+    // Pass arbiturary number for zoom if there is no bbox
     const zoom = result.bbox? getZoomFromBbox(result.bbox): 14;
     map.flyTo({
       center: result.center,
@@ -35,6 +36,8 @@ export default function GeocoderControl() {
         accessToken: process.env.MAPBOX_TOKEN,
         marker: false,
         collapsed: true,
+        // Because of Mapbox issue: https://github.com/mapbox/mapbox-gl-js/issues/12565
+        // We are doing manual centering for now
         flyTo: false
       });
       geocoder.on('result', handleGeocoderResult(map));
