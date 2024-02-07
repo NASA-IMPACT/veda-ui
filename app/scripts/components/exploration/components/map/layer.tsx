@@ -25,11 +25,20 @@ interface LayerProps {
 export function Layer(props: LayerProps) {
   const { id: layerId, dataset, order, selectedDay } = props;
 
-  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
-  const [getSettings] = useTimelineDatasetSettings(datasetAtom);
+  // const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
+  // console.log(`datasetAtom: `, datasetAtom)
+  // console.log(`datasetinlayer: `, dataset)
+  // const [getSettings] = useTimelineDatasetSettings(datasetAtom);
+  
+  // const isVisible = getSettings('isVisible');
+  // const opacity = getSettings('opacity');
+  let isVisible: boolean | undefined = true;
+  let opacity: number | undefined = 1;
+  // if (getSettings) {
+  //   const isVisible = getSettings('isVisible');
+  //   const opacity = getSettings('opacity');
+  // }
 
-  const isVisible = getSettings('isVisible');
-  const opacity = getSettings('opacity');
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(
@@ -47,6 +56,13 @@ export function Layer(props: LayerProps) {
     };
     return resolveConfigFunctions(dataset.data, bag);
   }, [dataset, relevantDate]);
+
+  // @TODO-SANDRA: This needs to be revisited, just trying to make work for now
+  const transformData = () => {
+    if(dataset.data.layers.length == 1) {
+
+    }
+  }
 
   switch (dataset.data.type) {
     case 'vector':
