@@ -82,9 +82,9 @@ These values may vary greatly depending on the layer being added but some may be
   `string`  
   The colormap to use for the layer. One of https://cogeotiff.github.io/rio-tiler/colormap/#default-rio-tilers-colormaps
 - **minzoom**
-The minimum zoom of the layer. The tiles below the minzoom won't be fetched from titiler.
+The minimum zoom of the layer. Map tiles below the minzoom will not be loaded/shown.
 - **maxzoom**
-The maximum zoom of the layer. The tiles over the maxzoom won't be fetched from titiler.
+The maximum zoom of the layer. Map tiles over the maxzoom will not be loaded/shown.
 
 
 **bounds**  
