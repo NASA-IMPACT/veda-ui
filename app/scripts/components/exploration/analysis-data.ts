@@ -97,15 +97,6 @@ export async function requestDatasetTimeseriesData({
   const datasetAnalysis = dataset.analysis;
 
   if (datasetData.type !== 'raster') {
-    onProgress({
-      status: TimelineDatasetStatus.ERROR,
-      meta: {},
-      error: new ExtendedError(
-        'Analysis is only supported for raster datasets',
-        'ANALYSIS_NOT_SUPPORTED'
-      ),
-      data: null
-    });
     return {
       status: TimelineDatasetStatus.ERROR,
       meta: {},
@@ -175,12 +166,6 @@ export async function requestDatasetTimeseriesData({
         assetCount: assets.length
       };
 
-      onProgress({
-        ...datasetAnalysis,
-        status: TimelineDatasetStatus.ERROR,
-        error: e,
-        data: null
-      });
       return {
         ...datasetAnalysis,
         status: TimelineDatasetStatus.ERROR,
@@ -190,7 +175,7 @@ export async function requestDatasetTimeseriesData({
     }
 
     if (!assets.length) {
-      onProgress({
+      return {
         ...datasetAnalysis,
         status: TimelineDatasetStatus.ERROR,
         error: new ExtendedError(
@@ -198,8 +183,7 @@ export async function requestDatasetTimeseriesData({
           'ANALYSIS_NO_DATA'
         ),
         data: null
-      });
-      return;
+      };
     }
 
     let loaded = 0;//new Array(assets.length).fill(0);
@@ -288,14 +272,6 @@ export async function requestDatasetTimeseriesData({
     queryClient.cancelQueries({ queryKey: ['analysis', id] });
     // Remove other requests from the queue.
     concurrencyManager.dequeue(`${id}-analysis-asset`);
-
-    onProgress({
-      ...datasetAnalysis,
-      status: TimelineDatasetStatus.ERROR,
-      error,
-      data: null
-    });
-
     return {
       ...datasetAnalysis,
       status: TimelineDatasetStatus.ERROR,
