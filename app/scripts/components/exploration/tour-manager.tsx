@@ -5,8 +5,8 @@ import styled from 'styled-components';
 
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
-import { createButtonStyles } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
+import { CollecticonCircleQuestion } from '@devseed-ui/collecticons';
 import {
   CollecticonChevronLeftSmall,
   CollecticonChevronRightSmall,
@@ -18,40 +18,8 @@ import tourAnalysisUrl from '../../../graphics/content/tour-analysis.gif';
 
 import { timelineDatasetsAtom } from './atoms/datasets';
 import { usePreviousValue } from '$utils/use-effect-previous';
-
-import { TipButton } from '$components/common/tip-button';
-
-// Why you ask? Very well:
-// Mapbox's css has an instruction that sets the hover color for buttons to
-// near black. The only way to override it is to increase the specificity and
-// we need the button functions to get the correct color.
-// The infamous instruction:
-// .mapboxgl-ctrl button:not(:disabled):hover {
-//   background-color: rgba(0, 0, 0, 0.05);
-// }
-const SelectorButton = styled(TipButton)`
-  &&& {
-    ${createButtonStyles({ variation: 'surface-fill', fitting: 'skinny' } as any)}
-    background-color: ${themeVal('color.surface')};
-    &:hover {
-      background-color: ${themeVal('color.surface')};
-    }
-    & path {
-      fill: ${themeVal('color.base')};
-    }
-  }
-`;
-
-export function TourManagerInvokingButton({ onClick }) {
-  return (
-  <SelectorButton
-    tipContent='Open guided tour'
-    tipProps={{ placement: 'left' }}
-    onClick={onClick}
-  >
-      Invoke
-  </SelectorButton>);
-}
+import { SelectorButton } from '$components/common/map/style/button';
+import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
 
 const Popover = styled.div`
   position: relative;
@@ -138,7 +106,8 @@ function addActionAfterLastStep(steps: StepType[], action: () => void) {
 const HIDE_TOUR_KEY = 'HIDE_TOUR';
 
 export function TourManager() {
-  const { setIsOpen, isOpen, setSteps, setCurrentStep } = useTour();
+  const { setIsOpen, setSteps, setCurrentStep } = useTour();
+
   const startTour = useCallback(
     (steps) => {
       setCurrentStep(0);
@@ -162,13 +131,8 @@ export function TourManager() {
       // Make the last step of the intro tour mark it as shown.
       const steps = addActionAfterLastStep(introTourSteps, () => {
         setIntroTourShown(true);
-        window.localStorage.setItem(HIDE_TOUR_KEY, 'true');
       });
       startTour(steps);
-    // Invoked by a button
-    } else if (datasetCount > 0) {
-      setSteps?.(introTourSteps);
-      setCurrentStep(0);
     }
   }, [introTourShown, prevDatasetCount, datasetCount, startTour, setCurrentStep, setSteps, hideTour]);
   return null;
@@ -248,4 +212,38 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
       )} */}
     </Popover>
   );
+}
+
+
+// Tour invoking button is not strictly a map control (It does nothing re: map) 
+// but it needs to be styled as one of map control
+// This is why these componets stay in this file, not where all other map control lives
+export function TourButtonComponent({onClick}: {
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}) {
+  const datasets = useAtomValue(timelineDatasetsAtom);
+  const datasetCount = datasets.length;
+  return (
+  <SelectorButton
+    tipContent='Open guided tour'
+    tipProps={{ placement: 'left' }}
+    disabled={datasetCount === 0}
+    onClick={onClick}
+  >
+    <CollecticonCircleQuestion />
+  </SelectorButton>);
+}
+
+export function TourManagerInvokingButton(props) {
+  const { setIsOpen, setCurrentStep, setSteps } = useTour();
+  const reopenTour = useCallback(() => {
+    setCurrentStep(0);
+    setSteps?.(introTourSteps);
+    setIsOpen(true);
+  },[setIsOpen]);
+
+  useThemedControl(() => <TourButtonComponent {...props} onClick={reopenTour} />, {
+    position: 'top-right'
+  });
+  return null;
 }

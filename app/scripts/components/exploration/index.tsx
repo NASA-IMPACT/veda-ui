@@ -100,7 +100,6 @@ function Exploration() {
       <TourManager />
       <PageMainContent>
         <PageHero title='Exploration' isHidden />
-
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>

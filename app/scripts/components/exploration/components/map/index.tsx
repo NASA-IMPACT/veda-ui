@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
-import { useTour } from '@reactour/tour';
 
 import { useStacMetadataOnDatasets } from '../../hooks/use-stac-metadata-datasets';
 import { selectedCompareDateAtom, selectedDateAtom } from '../../atoms/dates';
@@ -30,8 +29,6 @@ import { TourManagerInvokingButton } from '$components/exploration/tour-manager'
 
 export function ExplorationMap() {
   const [projection, setProjection] = useState(projectionDefault);
-
-  const { setIsOpen } = useTour();
 
   const {
     mapBasemapId,
@@ -158,14 +155,8 @@ export function ExplorationMap() {
           boundariesOption={boundariesOption}
           onOptionChange={onOptionChange}
         />
-
-        <TourManagerInvokingButton 
-          id='yaho' 
-          onClick={() => {console.log('yaho'); setIsOpen(true);}}
-        >
-          Invoke
-        </TourManagerInvokingButton>
         <ScaleControl />
+        <TourManagerInvokingButton />
         <MapCoordsControl />
         <NavigationControl />
         
