@@ -3,8 +3,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 import { useControl } from 'react-map-gl';
 
-
-function getZoomFromBbox(bbox: [number, number, number, number]): number {
+export function getZoomFromBbox(bbox: [number, number, number, number]): number {
   const latMax = Math.max(bbox[3], bbox[1]);
   const lngMax = Math.max(bbox[2], bbox[0]);
   const latMin = Math.min(bbox[3], bbox[1]);
@@ -21,7 +20,9 @@ function getZoomFromBbox(bbox: [number, number, number, number]): number {
 
 export default function GeocoderControl() {
 
-  const handleGeocoderResult = useCallback((map) => ({ result }) => {
+  const handleGeocoderResult = useCallback((map, geocoder) => ({ result }) => {
+    geocoder.clear();
+    geocoder._inputEl.blur();
     // Pass arbiturary number for zoom if there is no bbox
     const zoom = result.bbox? getZoomFromBbox(result.bbox): 14;
     map.flyTo({
@@ -29,7 +30,7 @@ export default function GeocoderControl() {
       zoom
     });
   }, []);
-  
+
   useControl(
     ({ map }) => {
       const geocoder = new MapboxGeocoder({
@@ -40,7 +41,7 @@ export default function GeocoderControl() {
         // We are doing manual centering for now
         flyTo: false
       });
-      geocoder.on('result', handleGeocoderResult(map));
+      geocoder.on('result', handleGeocoderResult(map, geocoder));
       return geocoder;
     },
     {
