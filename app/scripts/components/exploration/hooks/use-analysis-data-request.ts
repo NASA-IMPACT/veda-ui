@@ -114,8 +114,8 @@ export function useAnalysisDataRequest({
     };
 
     const { start, end } = selectedInterval;
-    async function makeCall(){
-      const stat = await requestDatasetTimeseriesData({
+      (async () => {
+        const stat = await requestDatasetTimeseriesData({
         maxItems: MAX_QUERY_NUM,
         start,
         end,
@@ -128,8 +128,7 @@ export function useAnalysisDataRequest({
         }
       });
       setAnalysisResult(stat);
-    }
-    makeCall();
+    })();
     // We want great control when this effect run which is done by incrementing
     // the analysisRun. This is done when the user refreshes the analysis or
     // when they enter the analysis. It is certain that when this effect runs
@@ -139,6 +138,7 @@ export function useAnalysisDataRequest({
 
 
   useEffect(() => {
+    // TECH DEBT
     // setAnalysis sets Jotai Atom value for analysis result
     // It should sequentially set the analysis progress as 
     // idle => loading (increasing number of loaded items) => success
