@@ -67,6 +67,11 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
  * @param datasetsList The list of datasets layers from VEDA
  * @param reconciledDatasets The datasets that were already reconciled.
  */
+
+// @TODO: Assuming that all the datasets are added only through this method
+// We can find a dataset that a layer belongs to in this method
+// Include it as a part of returned value 
+
 export function reconcileDatasets(
   ids: string[],
   datasetsList: DatasetLayer[],

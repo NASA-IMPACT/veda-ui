@@ -7,6 +7,7 @@ import { addDays, subDays, areIntervalsOverlapping } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { ScaleTime } from 'd3';
 import {
+  CollecticonChevronRightSmall,
   CollecticonCircleInformation,
   CollecticonEye,
   CollecticonEyeDisabled,
@@ -131,6 +132,96 @@ interface DatasetListItemProps {
   onDragEnd?: () => void;
 }
 
+// @TODO: Fix types
+interface CardProps {
+  dataset: any;
+  datasetAtom: any;
+  isVisible: any;
+  datasetId: any;
+  setVisible: any;
+  datasetLegend: any;
+}
+
+function DataCard(props: CardProps) {
+  const {dataset, datasetAtom, isVisible, datasetId, setVisible, datasetLegend} = props;
+
+  // @TODO: Replace icon
+  const Header = styled.header`
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+
+    a {
+      display: flex;
+      width: 100%;
+      gap: 0.5rem;
+    }
+  `;
+
+  return (
+    <DatasetInfo>
+      <Header>
+        <Link to='/about'>
+          <CollecticonChevronRightSmall /> To be replaced
+        </Link>
+      </Header>
+      <DatasetHeadline>
+        <Heading as='h3' size='xsmall'>
+          {dataset.data.name}
+        </Heading>
+        <Toolbar size='small'>
+          <TipButton
+            forwardedAs={Link}
+            tipContent='Go to dataset information page'
+            // Using a button instead of a toolbar button because the
+            // latter doesn't support the `forwardedAs` prop.
+            size='small'
+            fitting='skinny'
+            to={getDatasetPath(findParentDataset(datasetId)!)}
+          >
+            <CollecticonCircleInformation
+              meaningful
+              title='View dataset page'
+            />
+          </TipButton>
+          <DatasetOptions datasetAtom={datasetAtom} />
+          <TipToolbarIconButton
+            tipContent={isVisible ? 'Hide layer' : 'Show layer'}
+            onClick={() => setVisible((v) => !v)}
+          >
+            {isVisible ? (
+              <CollecticonEye
+                meaningful
+                title='Toggle dataset visibility'
+              />
+            ) : (
+              <CollecticonEyeDisabled
+                meaningful
+                title='Toggle dataset visibility'
+              />
+            )}
+          </TipToolbarIconButton>
+        </Toolbar>
+      </DatasetHeadline>
+      {datasetLegend?.type === 'categorical' && (
+        <LayerCategoricalGraphic
+          type='categorical'
+          stops={datasetLegend.stops}
+        />
+      )}
+      {datasetLegend?.type === 'gradient' && (
+        <LayerGradientGraphic
+          type='gradient'
+          stops={datasetLegend.stops}
+          unit={datasetLegend.unit}
+          min={datasetLegend.min}
+          max={datasetLegend.max}
+        />
+      )}
+    </DatasetInfo>
+  )
+}
+
 export function DatasetListItem(props: DatasetListItemProps) {
   const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
 
@@ -203,6 +294,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
   );
+  console.log(dataset)
 
   return (
     <Reorder.Item
@@ -222,61 +314,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <CollecticonGripVertical onPointerDown={(e) => controls.start(e)} />
-            <DatasetInfo>
-              <DatasetHeadline>
-                <Heading as='h3' size='xsmall'>
-                  {dataset.data.name}
-                </Heading>
-                <Toolbar size='small'>
-                  <TipButton
-                    forwardedAs={Link}
-                    tipContent='Go to dataset information page'
-                    // Using a button instead of a toolbar button because the
-                    // latter doesn't support the `forwardedAs` prop.
-                    size='small'
-                    fitting='skinny'
-                    to={getDatasetPath(findParentDataset(datasetId)!)}
-                  >
-                    <CollecticonCircleInformation
-                      meaningful
-                      title='View dataset page'
-                    />
-                  </TipButton>
-                  <DatasetOptions datasetAtom={datasetAtom} />
-                  <TipToolbarIconButton
-                    tipContent={isVisible ? 'Hide layer' : 'Show layer'}
-                    onClick={() => setVisible((v) => !v)}
-                  >
-                    {isVisible ? (
-                      <CollecticonEye
-                        meaningful
-                        title='Toggle dataset visibility'
-                      />
-                    ) : (
-                      <CollecticonEyeDisabled
-                        meaningful
-                        title='Toggle dataset visibility'
-                      />
-                    )}
-                  </TipToolbarIconButton>
-                </Toolbar>
-              </DatasetHeadline>
-              {datasetLegend?.type === 'categorical' && (
-                <LayerCategoricalGraphic
-                  type='categorical'
-                  stops={datasetLegend.stops}
-                />
-              )}
-              {datasetLegend?.type === 'gradient' && (
-                <LayerGradientGraphic
-                  type='gradient'
-                  stops={datasetLegend.stops}
-                  unit={datasetLegend.unit}
-                  min={datasetLegend.min}
-                  max={datasetLegend.max}
-                />
-              )}
-            </DatasetInfo>
+            <DataCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} datasetId={datasetId} setVisible={setVisible} datasetLegend={datasetLegend} />
           </DatasetHeaderInner>
         </DatasetHeader>
         <DatasetData>
