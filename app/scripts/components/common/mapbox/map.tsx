@@ -28,6 +28,7 @@ import MapCoords from './map-coords';
 
 import { useMapStyle } from './layers/styles';
 import { BasemapId, Option } from './map-options/basemaps';
+import { getZoomFromBbox } from '$components/common/map/controls/geocoder';
 import { round } from '$utils/format';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN ?? '';
@@ -146,13 +147,21 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
       const geocoderControl = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         marker: false,
-        collapsed: true
+        collapsed: true, 
+        // Because of Mapbox issue: https://github.com/mapbox/mapbox-gl-js/issues/12565
+        // We are doing manual centering for now
+        flyTo: false
       }) as MapboxGeocoder & { _inputEl: HTMLInputElement };
 
       // Close the geocoder when the result is selected.
-      geocoderControl.on('result', () => {
+      geocoderControl.on('result', ({ result }) => {
         geocoderControl.clear();
         geocoderControl._inputEl.blur();
+        const zoom = result.bbox? getZoomFromBbox(result.bbox): 14;
+        mapRef.current?.flyTo({
+          center: result.center,
+          zoom
+        });
       });
 
       mbMap.addControl(geocoderControl, 'top-left');
