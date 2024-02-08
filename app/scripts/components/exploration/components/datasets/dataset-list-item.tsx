@@ -179,6 +179,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
   );
+  console.log(dataset)
 
   const onDragging = (e) => {
     controls.start(e);
