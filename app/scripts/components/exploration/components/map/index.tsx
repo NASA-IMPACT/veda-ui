@@ -10,7 +10,7 @@ import {
 } from '../../types.d.ts';
 import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
-import { TourDashboardControl } from './tour-control';
+import { ShowTourControl } from './tour-control';
 
 import Map, { Compare, MapControls } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
@@ -156,7 +156,7 @@ export function ExplorationMap() {
           onOptionChange={onOptionChange}
         />
         <ScaleControl />
-        <TourDashboardControl />
+        <ShowTourControl />
         <MapCoordsControl />
         <NavigationControl />
         
