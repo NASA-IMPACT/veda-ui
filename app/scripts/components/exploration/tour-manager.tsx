@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
-import { CollecticonCircleQuestion } from '@devseed-ui/collecticons';
+
 import {
   CollecticonChevronLeftSmall,
   CollecticonChevronRightSmall,
@@ -18,8 +18,6 @@ import tourAnalysisUrl from '../../../graphics/content/tour-analysis.gif';
 
 import { timelineDatasetsAtom } from './atoms/datasets';
 import { usePreviousValue } from '$utils/use-effect-previous';
-import { SelectorButton } from '$components/common/map/style/button';
-import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
 
 const Popover = styled.div`
   position: relative;
@@ -51,7 +49,7 @@ const PopoverFooter = styled.div`
   font-weight: ${themeVal('type.base.bold')};
 `;
 
-const introTourSteps = [
+export const introTourSteps = [
   {
     title: 'Time series analysis',
     selector: "[data-tour='analysis-tour']",
@@ -212,38 +210,4 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
       )} */}
     </Popover>
   );
-}
-
-
-// Tour invoking button is not strictly a map control (It does nothing re: map) 
-// but it needs to be styled as one of map control
-// This is why these componets stay in this file, not where all other map control lives
-export function TourButtonComponent({onClick}: {
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-}) {
-  const datasets = useAtomValue(timelineDatasetsAtom);
-  const datasetCount = datasets.length;
-  return (
-  <SelectorButton
-    tipContent='Open guided tour'
-    tipProps={{ placement: 'left' }}
-    disabled={datasetCount === 0}
-    onClick={onClick}
-  >
-    <CollecticonCircleQuestion />
-  </SelectorButton>);
-}
-
-export function TourManagerInvokingButton(props) {
-  const { setIsOpen, setCurrentStep, setSteps } = useTour();
-  const reopenTour = useCallback(() => {
-    setCurrentStep(0);
-    setSteps?.(introTourSteps);
-    setIsOpen(true);
-  },[setIsOpen]);
-
-  useThemedControl(() => <TourButtonComponent {...props} onClick={reopenTour} />, {
-    position: 'top-right'
-  });
-  return null;
 }

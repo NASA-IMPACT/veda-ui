@@ -10,6 +10,7 @@ import {
 } from '../../types.d.ts';
 import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
+import { TourDashboardControl } from './tour-control';
 
 import Map, { Compare, MapControls } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
@@ -25,7 +26,6 @@ import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 import { usePreviousValue } from '$utils/use-effect-previous';
-import { TourManagerInvokingButton } from '$components/exploration/tour-manager';
 
 export function ExplorationMap() {
   const [projection, setProjection] = useState(projectionDefault);
@@ -156,7 +156,7 @@ export function ExplorationMap() {
           onOptionChange={onOptionChange}
         />
         <ScaleControl />
-        <TourManagerInvokingButton />
+        <TourDashboardControl />
         <MapCoordsControl />
         <NavigationControl />
         

@@ -4,15 +4,9 @@ import { themeVal } from '@devseed-ui/theme-provider';
 
 import { TipButton } from '$components/common/tip-button';
 
-// Why you ask? Very well:
-// Mapbox's css has an instruction that sets the hover color for buttons to
-// near black. The only way to override it is to increase the specificity and
-// we need the button functions to get the correct color.
-// The infamous instruction:
-// .mapboxgl-ctrl button:not(:disabled):hover {
-//   background-color: rgba(0, 0, 0, 0.05);
-// }
-
+// &&&: To increase the specificity of css class
+// https://styled-components.com/docs/faqs#how-can-i-override-styles-with-higher-specificity
+// so we can override the derived selectors from Mapbox .mapboxgl-ctrl button
 export const SelectorButton = styled(TipButton)`
   &&& {
     ${createButtonStyles({ variation: 'surface-fill', fitting: 'skinny' } as any)}
