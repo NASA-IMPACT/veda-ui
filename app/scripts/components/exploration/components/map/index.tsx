@@ -10,6 +10,7 @@ import {
 } from '../../types.d.ts';
 import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
+import { ShowTourControl } from './tour-control';
 
 import Map, { Compare, MapControls } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
@@ -154,10 +155,11 @@ export function ExplorationMap() {
           boundariesOption={boundariesOption}
           onOptionChange={onOptionChange}
         />
-
         <ScaleControl />
+        <ShowTourControl />
         <MapCoordsControl />
         <NavigationControl />
+        
       </MapControls>
       {comparing && (
         // Compare map layers

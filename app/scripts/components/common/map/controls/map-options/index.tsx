@@ -8,7 +8,7 @@ import {
   DropMenuItem,
   DropTitle
 } from '@devseed-ui/dropdown';
-import { createButtonStyles } from '@devseed-ui/button';
+
 import { FormSwitch } from '@devseed-ui/form';
 import { Subtitle } from '@devseed-ui/typography';
 
@@ -22,7 +22,7 @@ import { MapOptionsProps } from './types';
 import { projectionsList } from './projections';
 import { BASEMAP_STYLES } from './basemap';
 
-import { TipButton } from '$components/common/tip-button';
+import { SelectorButton } from '$components/common/map/style/button';
 
 const DropHeader = styled.div`
   padding: ${glsp()};
@@ -50,27 +50,6 @@ const MapOptionsDropdown = styled(Dropdown)`
     margin: 0;
     padding-top: 0;
     padding-bottom: 0;
-  }
-`;
-
-// Why you ask? Very well:
-// Mapbox's css has an instruction that sets the hover color for buttons to
-// near black. The only way to override it is to increase the specificity and
-// we need the button functions to get the correct color.
-// The infamous instruction:
-// .mapboxgl-ctrl button:not(:disabled):hover {
-//   background-color: rgba(0, 0, 0, 0.05);
-// }
-const SelectorButton = styled(TipButton)`
-  &&& {
-    ${createButtonStyles({ variation: 'surface-fill', fitting: 'skinny' } as any)}
-    background-color: ${themeVal('color.surface')};
-    &:hover {
-      background-color: ${themeVal('color.surface')};
-    }
-    & path {
-      fill: ${themeVal('color.base')};
-    }
   }
 `;
 

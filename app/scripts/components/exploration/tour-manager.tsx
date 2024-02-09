@@ -2,9 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTour, PopoverContentProps, StepType } from '@reactour/tour';
 import { useAtomValue } from 'jotai';
 import styled from 'styled-components';
+
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
+
 import {
   CollecticonChevronLeftSmall,
   CollecticonChevronRightSmall,
@@ -47,7 +49,7 @@ const PopoverFooter = styled.div`
   font-weight: ${themeVal('type.base.bold')};
 `;
 
-const introTourSteps = [
+export const introTourSteps = [
   {
     title: 'Time series analysis',
     selector: "[data-tour='analysis-tour']",
@@ -99,6 +101,8 @@ function addActionAfterLastStep(steps: StepType[], action: () => void) {
   return [...steps.slice(0, -1), lastStepWithAction];
 }
 
+const HIDE_TOUR_KEY = 'HIDE_TOUR';
+
 export function TourManager() {
   const { setIsOpen, setSteps, setCurrentStep } = useTour();
 
@@ -112,22 +116,23 @@ export function TourManager() {
   );
 
   // Control states for the different tours.
+  const hideTour = window.localStorage.getItem(HIDE_TOUR_KEY) === 'true';
   const [introTourShown, setIntroTourShown] = useState(false);
-
+  
   // Variables that cause tour 1 to start.
   const datasets = useAtomValue(timelineDatasetsAtom);
   const datasetCount = datasets.length;
   const prevDatasetCount = usePreviousValue(datasetCount);
   useEffect(() => {
-    if (!introTourShown && !prevDatasetCount && datasetCount > 0) {
+    // First time landing
+    if (!hideTour && !introTourShown && !prevDatasetCount && datasetCount > 0) {
       // Make the last step of the intro tour mark it as shown.
       const steps = addActionAfterLastStep(introTourSteps, () => {
         setIntroTourShown(true);
       });
       startTour(steps);
     }
-  }, [introTourShown, prevDatasetCount, datasetCount, startTour]);
-
+  }, [introTourShown, prevDatasetCount, datasetCount, startTour, setCurrentStep, setSteps, hideTour]);
   return null;
 }
 
@@ -140,13 +145,19 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
 
   const isLastStep = currentStep === steps.length - 1;
   const { content, title } = steps[currentStep];
+
+  const closeTour = useCallback(() => {
+    setIsOpen(false);
+    window.localStorage.setItem(HIDE_TOUR_KEY, 'true');
+  },[setIsOpen]);
+
   return (
     <Popover>
       <CloseButton
         variation='base-text'
         size='small'
         fitting='skinny'
-        onClick={() => setIsOpen(false)}
+        onClick={closeTour}
       >
         <CollecticonXmark size='small' meaningful title='Close feature tour' />
       </CloseButton>
