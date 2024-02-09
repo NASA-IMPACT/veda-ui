@@ -94,6 +94,7 @@ const TimelineHeader = styled.header`
   display: flex;
   flex-shrink: 0;
   box-shadow: 0 1px 0 0 ${themeVal('color.base-200')};
+  background-color: ${themeVal('color.base-50')};
 `;
 
 const TimelineDetails = styled.div`

@@ -7,16 +7,17 @@ import { addDays, subDays, areIntervalsOverlapping } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { ScaleTime } from 'd3';
 import {
-  CollecticonChevronRightSmall,
   CollecticonCircleInformation,
   CollecticonEye,
   CollecticonEyeDisabled,
   CollecticonGripVertical
 } from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { Button } from '@devseed-ui/button';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 
+import { CollecticonDatasetLayers } from '$components/common/icons/dastaset-layers'
 import {
   DatasetPopover,
   getInteractionDataPoint,
@@ -54,12 +55,12 @@ import {
 import { getDatasetPath } from '$utils/routes';
 import { findParentDataset } from '$components/exploration/data-utils';
 import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
+import LayerMenuOptions from './layer-options-menu';
 
 const DatasetItem = styled.article`
   width: 100%;
   display: flex;
   position: relative;
-
   ::before,
   ::after {
     position: absolute;
@@ -87,7 +88,7 @@ const DatasetHeader = styled.header`
 
 const DatasetHeaderInner = styled.div`
   box-shadow: 1px 1px 0 0 ${themeVal('color.base-200')};
-  background: ${themeVal('color.surface')};
+  background-color: ${themeVal('color.base-50')};
   padding: ${glsp(0.5)};
   display: flex;
   align-items: center;
@@ -108,6 +109,10 @@ const DatasetInfo = styled.div`
   display: flex;
   flex-flow: column;
   gap: 0.5rem;
+  background-color: ${themeVal('color.surface')};
+  padding: ${glsp(0.5)};
+  border-radius: ${themeVal('shape.rounded')};
+  border: 1px solid ${themeVal('color.base-200')};
 `;
 
 const DatasetHeadline = styled.div`
@@ -124,6 +129,26 @@ const DatasetData = styled.div`
   flex-grow: 1;
 `;
 
+const ParentDatasetButton = styled(Button)`
+  color: ${themeVal('color.link')};
+  text-align: left;
+  text-transform: none;
+  font-size: 0.75rem;
+  line-height: 0.75rem;
+  > svg {
+    fill: ${themeVal('color.link')};
+  }
+`;
+
+const DatasetMetricInfo = styled.div`
+  font-size: 0.75rem;
+  font-color: ${themeVal('color.base-500')}
+`;
+const DatasetTitle = styled(Heading)`
+  font-weight: 600;
+  font-size: 14px;
+
+`
 interface DatasetListItemProps {
   datasetId: string;
   width: number;
@@ -158,17 +183,19 @@ function DataCard(props: CardProps) {
     }
   `;
 
+  const parent = findParentDataset(datasetId);
+
   return (
-    <DatasetInfo>
+    <DatasetInfo className="dataset-info">
       <Header>
-        <Link to='/about'>
-          <CollecticonChevronRightSmall /> To be replaced
-        </Link>
+        <ParentDatasetButton variation="base-text" size="small" fitting="skinny">
+          <CollecticonDatasetLayers /> {parent?.name}
+        </ParentDatasetButton>
       </Header>
       <DatasetHeadline>
-        <Heading as='h3' size='xsmall'>
+        <DatasetTitle as='h3' size='xxsmall'>
           {dataset.data.name}
-        </Heading>
+        </DatasetTitle>
         <Toolbar size='small'>
           <TipButton
             forwardedAs={Link}
@@ -177,32 +204,21 @@ function DataCard(props: CardProps) {
             // latter doesn't support the `forwardedAs` prop.
             size='small'
             fitting='skinny'
-            to={getDatasetPath(findParentDataset(datasetId)!)}
+            // @TODO: findout what ! does.
+            to={getDatasetPath(parent!)}
           >
             <CollecticonCircleInformation
               meaningful
               title='View dataset page'
             />
           </TipButton>
-          <DatasetOptions datasetAtom={datasetAtom} />
-          <TipToolbarIconButton
-            tipContent={isVisible ? 'Hide layer' : 'Show layer'}
-            onClick={() => setVisible((v) => !v)}
-          >
-            {isVisible ? (
-              <CollecticonEye
-                meaningful
-                title='Toggle dataset visibility'
-              />
-            ) : (
-              <CollecticonEyeDisabled
-                meaningful
-                title='Toggle dataset visibility'
-              />
-            )}
-          </TipToolbarIconButton>
+          {/* <DatasetOptions datasetAtom={datasetAtom} /> */}
+          <LayerMenuOptions datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} />
         </Toolbar>
       </DatasetHeadline>
+      <DatasetMetricInfo>
+          <span>Harcoded : Metric info</span>
+        </DatasetMetricInfo>
       {datasetLegend?.type === 'categorical' && (
         <LayerCategoricalGraphic
           type='categorical'
@@ -218,6 +234,7 @@ function DataCard(props: CardProps) {
           max={datasetLegend.max}
         />
       )}
+
     </DatasetInfo>
   )
 }
@@ -294,7 +311,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
   );
-  console.log(dataset)
 
   return (
     <Reorder.Item
