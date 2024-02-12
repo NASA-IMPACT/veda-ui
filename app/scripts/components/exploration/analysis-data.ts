@@ -91,7 +91,8 @@ export async function requestDatasetTimeseriesData({
   queryClient,
   concurrencyManager,
   onProgress
-}: TimeseriesRequesterParams) {
+}: TimeseriesRequesterParams)
+:  Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
 
@@ -146,37 +147,6 @@ export async function requestDatasetTimeseriesData({
 
     const { assets } = layerInfoFromSTAC;
 
-    if (assets.length > maxItems) {
-      const e = new ExtendedError(
-        'Too many assets to analyze',
-        'ANALYSIS_TOO_MANY_ASSETS'
-      );
-      e.details = {
-        assetCount: assets.length
-      };
-
-      onProgress({
-        ...datasetAnalysis,
-        status: TimelineDatasetStatus.ERROR,
-        error: e,
-        data: null
-      });
-      return;
-    }
-
-    if (!assets.length) {
-      onProgress({
-        ...datasetAnalysis,
-        status: TimelineDatasetStatus.ERROR,
-        error: new ExtendedError(
-          'No data in the given time range and area of interest',
-          'ANALYSIS_NO_DATA'
-        ),
-        data: null
-      });
-      return;
-    }
-
     onProgress({
       status: TimelineDatasetStatus.LOADING,
       error: null,
@@ -186,6 +156,36 @@ export async function requestDatasetTimeseriesData({
         loaded: 0
       }
     });
+
+    if (assets.length > maxItems) {
+      const e = new ExtendedError(
+        'Too many assets to analyze',
+        'ANALYSIS_TOO_MANY_ASSETS'
+      );
+      e.details = {
+        assetCount: assets.length
+      };
+
+      return {
+        ...datasetAnalysis,
+        status: TimelineDatasetStatus.ERROR,
+        error: e,
+        data: null
+      };
+    }
+
+    if (!assets.length) {
+      return {
+        ...datasetAnalysis,
+        status: TimelineDatasetStatus.ERROR,
+        error: new ExtendedError(
+          'No data in the given time range and area of interest',
+          'ANALYSIS_NO_DATA'
+        ),
+        data: null
+      };
+    }
+
     let loaded = 0;//new Array(assets.length).fill(0);
 
     const tileEndpointToUse =
@@ -218,17 +218,17 @@ export async function requestDatasetTimeseriesData({
                 staleTime: Infinity
               }
             );
+          }
+            );
+          onProgress({
+            status: TimelineDatasetStatus.LOADING,
+            error: null,
+            data: null,
+            meta: {
+              total: assets.length,
+              loaded: ++loaded
+            }
           });
-
-            onProgress({
-              status: TimelineDatasetStatus.LOADING,
-              error: null,
-              data: null,
-              meta: {
-                total: assets.length,
-                loaded: ++loaded
-              }
-            });
 
         return statistics;
       }
@@ -246,28 +246,37 @@ export async function requestDatasetTimeseriesData({
         timeseries: layerStatistics
       }
     });
-    return;
+    return {
+      status: TimelineDatasetStatus.SUCCESS,
+      meta: {
+        total: assets.length,
+        loaded: assets.length
+      },
+      error: null,
+      data: {
+        timeseries: layerStatistics
+      }
+    };
   } catch (error) {
     // Discard abort related errors.
     if (error.revert) {
-      onProgress({
+      return {
         status: TimelineDatasetStatus.LOADING,
         error: null,
         data: null,
         meta: {}
-      });
+      };
     }
 
     // Cancel any inflight queries.
     queryClient.cancelQueries({ queryKey: ['analysis', id] });
     // Remove other requests from the queue.
     concurrencyManager.dequeue(`${id}-analysis-asset`);
-    onProgress({
+    return {
       ...datasetAnalysis,
       status: TimelineDatasetStatus.ERROR,
       error,
       data: null
-    });
-    return;
+    };
   }
 }

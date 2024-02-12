@@ -1,5 +1,4 @@
-import { useCallback, useEffect } from 'react';
-import { flushSync } from 'react-dom';
+import { useState, useCallback, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
 import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
@@ -9,7 +8,7 @@ import { analysisControllerAtom } from '../atoms/analysis';
 import { selectedIntervalAtom } from '../atoms/dates';
 import { useTimelineDatasetAnalysis } from '../atoms/hooks';
 import { analysisConcurrencyManager } from '../concurrency';
-import { TimelineDataset, TimelineDatasetStatus } from '../types.d.ts';
+import { TimelineDataset, TimelineDatasetAnalysis, TimelineDatasetStatus } from '../types.d.ts';
 import { MAX_QUERY_NUM } from '../constants';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 
@@ -80,6 +79,14 @@ export function useAnalysisDataRequest({
   const setAnalysis = useTimelineDatasetAnalysis(datasetAtom);
 
   const analysisRunId = getRunId(dataset.data.id);
+  
+  const [analysisResult, setAnalysisResult] = useState<TimelineDatasetAnalysis>({
+    status: TimelineDatasetStatus.IDLE,
+    error: null,
+    data: null,
+    meta: {}
+  });
+
 
   useEffect(() => {
     if (!isAnalyzing) {
@@ -108,7 +115,7 @@ export function useAnalysisDataRequest({
     };
     const { start, end } = selectedInterval;
       (async () => {
-        await requestDatasetTimeseriesData({
+        const stat = await requestDatasetTimeseriesData({
         maxItems: MAX_QUERY_NUM,
         start,
         end,
@@ -117,14 +124,10 @@ export function useAnalysisDataRequest({
         queryClient,
         concurrencyManager: analysisConcurrencyManager,
         onProgress: (data) => {
-          queueMicrotask(() => {
-            flushSync(() => {
-              setAnalysis(data);
-            });
-          });
+          setAnalysis(data);
         }
       });
-      // setAnalysis(stat);
+      setAnalysisResult(stat);
     })();
     // We want great control when this effect run which is done by incrementing
     // the analysisRun. This is done when the user refreshes the analysis or
@@ -134,16 +137,11 @@ export function useAnalysisDataRequest({
   }, [analysisRunId, datasetStatus, isAnalyzing]);
 
 
-  // useEffect(() => {
-  //   // TECH DEBT
-  //   // setAnalysis sets Jotai Atom value for analysis result
-  //   // It should sequentially set the analysis progress as 
-  //   // idle => loading (increasing number of loaded items) => success
-  //   // However, it is not setting the value sequentially, 
-  //   // ended up loading status as a result even when the request is successful
-  //   // This just overwrites the analysis result with the final result of analysis, 
-  //   // so Jotai value gets 'corrected' in case it is wrong
-  //   setAnalysis(analysisResult);
-  // },[setAnalysis, analysisResult]);
+  useEffect(() => {
+    // @TECH-DEBT
+    // The `setAnalysis` function is designed to update the Jotai Atom's state to reflect the progress of an analysis operation, ideally moving through 'idle', 'loading', and finally 'success' states. However, the function fails to accurately transition between these states. Specifically, it bypasses the expected incremental 'loading' updates and may incorrectly remain in a 'loading' state even after the analysis has successfully completed. This behavior leads to a discrepancy between the actual analysis status and the state represented in the UI, potentially confusing users and undermining the UI's reliability. 
+    // The function currently attempts to rectify this by overwriting the Atom's value with the final result, ensuring the state accurately reflects the analysis outcome. This workaround does not address the root cause of the flawed state transitions. A revision of the state management logic is needed to ensure the Atom's state progresses correctly and reflects the actual status of the analysis process.
+    setAnalysis(analysisResult);
+  },[setAnalysis, analysisResult]);
 
 }
