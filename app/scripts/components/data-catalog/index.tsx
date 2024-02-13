@@ -7,6 +7,7 @@ import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 import { VerticalDivider } from '@devseed-ui/toolbar';
+import { datasets } from 'veda';
 
 import DatasetMenu from './dataset-menu';
 
@@ -47,7 +48,8 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { DatasetClassification } from '$components/common/dataset-classification';
-import { allDatasets } from '$components/exploration/data-utils';
+
+const allDatasets = Object.values(datasets).map((d) => d!.data);
 
 const DatasetCount = styled(Subtitle)`
   grid-column: 1 / -1;
