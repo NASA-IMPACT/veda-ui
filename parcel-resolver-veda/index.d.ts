@@ -56,12 +56,12 @@ declare module 'veda' {
     MONTH = 'month',
     DAY = 'day'
   }
-export interface LayerInfo {
-  source: string;
-  spatialExtent: string;
-  latency: string;
-  unit: string;
-}
+  export interface LayerInfo {
+    source: string;
+    spatialExtent: string;
+    latency: string;
+    unit: string;
+  }
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
