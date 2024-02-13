@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const marked = require('marked');
 
 /**
  * Stringify the given object so that it can be used in the veda module.
@@ -40,6 +41,16 @@ function stringifyYmlWithFns(data, filePath) {
     if (typeof v === 'string') {
       if (v.match(/^(\r|\n\s)*::js/gim)) {
         return `${v} ::js`;
+      }
+
+      // Handle markdown string
+      if (v.startsWith('::markdown')) {
+        // Detach the prefix
+        const p = v.replace(/^::markdown ?/, '');
+        // Conver the string to HTML
+        const parsedVal = marked.parse(p);
+        // Get rid of any empty line
+        return parsedVal.replace(/(\r\n|\n|\r)/gm, '');
       }
 
       // Handle file requires
