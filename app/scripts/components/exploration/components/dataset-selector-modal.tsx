@@ -396,8 +396,8 @@ function DatasetLayerCard(props: DatasetLayerProps) {
           </TextHighlight>
         </>
       }
-      imgSrc={parent.media?.src}
-      imgAlt={parent.media?.alt}
+      imgSrc={layer.media?.src ?? parent.media?.src}
+      imgAlt={layer.media?.alt ?? parent.media?.alt}
       footerContent={
         <>
           {topics?.length ? (

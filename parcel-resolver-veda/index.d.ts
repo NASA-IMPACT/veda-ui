@@ -59,6 +59,7 @@ declare module 'veda' {
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
+    media?: Media;
     stacApiEndpoint?: string;
     tileApiEndpoint?: string;
     name: string;
