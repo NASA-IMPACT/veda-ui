@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PrimitiveAtom, useAtomValue, useAtom } from 'jotai';
 import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
+import { Button } from '@devseed-ui/button';
 import { TipButton } from '$components/common/tip-button';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
@@ -14,6 +15,7 @@ import {
   CollecticonArrowDown,
   CollecticonArrowUp,
   CollecticonUpload,
+  CollecticonShare,
 } from '@devseed-ui/collecticons';
 import { TileUrlModal } from './tile-link-modal';
 import { SliderInput, SliderInputProps } from '$styles/range-slider';
@@ -26,6 +28,26 @@ interface LayerMenuOptionsProps {
   isVisible: boolean;
   setVisible: (v: any) => void;
 }
+
+const StyledDropdown = styled(Dropdown)`
+  padding: ${glsp(1.5)};
+
+  li {
+    padding: ${glsp(0.5)};
+    border-bottom: 1px solid ${themeVal('color.base-200')};
+  }
+
+  li:last-child {
+    border-bottom: 0;
+  }
+  li:first-child {
+    padding-top: 0;
+  }
+`;
+
+const LayerMenuButton = styled(Button)`
+  justify-content: flex-start;
+`;
 
 export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
   const { datasetAtom, isVisible, setVisible } = props;
@@ -46,10 +68,10 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
   const handleLoadIntoGIS = () => {
     setTileModalRevealed(true);
   };
-
+  
   return (
     <>
-      <Dropdown
+      <StyledDropdown
         alignment='right'
         direction='up'
         triggerElement={(props) => (
@@ -74,7 +96,11 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
             />
           </li>
           <li>
-            <button onClick={() => setVisible((v) => !v)}>
+            <LayerMenuButton 
+              variation="base-text"
+              size="small"
+              fitting="baggy"
+              onClick={() => setVisible((v) => !v)}>
               {isVisible ? (
                 <CollecticonEye
                   meaningful
@@ -87,32 +113,57 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
                 />
               )}
               {isVisible ? 'Hide layer' : 'Show layer'}
-            </button>
+            </LayerMenuButton>
           </li>
           <li>
             {/* // @TODO: Implement moving up action */}
-              <CollecticonArrowUp/>
-              Move up
+              <LayerMenuButton
+                variation="base-text"
+                size="small"
+                fitting="baggy"
+                onClick={() => true}
+              >
+                <CollecticonArrowUp/>
+                Move up
+              </LayerMenuButton>
           </li>
           <li>
             {/* // @TODO: Implement moving down action */}
+            <LayerMenuButton
+              variation="base-text"
+              size="small"
+              fitting="baggy"
+              onClick={() => true}
+            >
               <CollecticonArrowDown/>
-              Move down
+                Move down
+            </LayerMenuButton>
+
           </li>
           <li>
-            <button onClick={handleLoadIntoGIS}>
-              <CollecticonUpload/>
+            <LayerMenuButton
+              variation="base-text"
+              size="small"
+              fitting="baggy"
+              onClick={handleLoadIntoGIS}
+            >
+              <CollecticonShare/>
               Load into GIS
-            </button>
+            </LayerMenuButton>
           </li>
           <li>
-            <button onClick={handleRemove}>
+            <LayerMenuButton
+              variation="base-text"
+              size="small"
+              fitting="baggy"
+              onClick={handleRemove}
+            >
               <CollecticonXmarkSmall/>
               Remove layer
-            </button>
+            </LayerMenuButton>
           </li>
         </DropMenu>
-      </Dropdown>
+      </StyledDropdown>
       <TileUrlModal
         datasetName={dataset.data.name}
         revealed={tileModalRevealed}

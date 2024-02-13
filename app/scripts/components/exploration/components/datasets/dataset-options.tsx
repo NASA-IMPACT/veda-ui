@@ -24,6 +24,7 @@ import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks'
 import { TipButton } from '$components/common/tip-button';
 
 // @DEPRECATED: This is soon to be replaced with `layer-options-menu`
+// @DELETE: May just delete once layer-options-menu has been merged
 const RemoveButton = composeVisuallyDisabled(DropMenuItemButton);
 const TileModalButton = composeVisuallyDisabled(DropMenuItemButton);
 

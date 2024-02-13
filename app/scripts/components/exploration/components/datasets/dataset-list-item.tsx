@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
@@ -7,17 +6,10 @@ import { addDays, subDays, areIntervalsOverlapping } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { ScaleTime } from 'd3';
 import {
-  CollecticonCircleInformation,
-  CollecticonEye,
-  CollecticonEyeDisabled,
-  CollecticonGripVertical
+  CollecticonGripVertical,
 } from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
-import { Toolbar } from '@devseed-ui/toolbar';
-import { Heading } from '@devseed-ui/typography';
-
-import { CollecticonDatasetLayers } from '$components/common/icons/dastaset-layers'
 import {
   DatasetPopover,
   getInteractionDataPoint,
@@ -28,13 +20,7 @@ import {
   DatasetTrackLoading
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
-import DatasetOptions from './dataset-options';
 import { getBlockBoundaries, lumpBlocks } from './block-utils';
-
-import {
-  LayerCategoricalGraphic,
-  LayerGradientGraphic
-} from '$components/common/mapbox/layer-legend';
 import {
   TimelineDatasetStatus,
   TimelineDatasetSuccess
@@ -52,10 +38,8 @@ import {
   useAnalysisController,
   useAnalysisDataRequest
 } from '$components/exploration/hooks/use-analysis-data-request';
-import { getDatasetPath } from '$utils/routes';
 import { findParentDataset } from '$components/exploration/data-utils';
-import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
-import LayerMenuOptions from './layer-options-menu';
+import DataLayerCard from './data-layer-card';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -104,23 +88,6 @@ const DatasetHeaderInner = styled.div`
   }
 `;
 
-const DatasetInfo = styled.div`
-  width: 100%;
-  display: flex;
-  flex-flow: column;
-  gap: 0.5rem;
-  background-color: ${themeVal('color.surface')};
-  padding: ${glsp(0.5)};
-  border-radius: ${themeVal('shape.rounded')};
-  border: 1px solid ${themeVal('color.base-200')};
-`;
-
-const DatasetHeadline = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: ${glsp()};
-`;
-
 const DatasetData = styled.div`
   position: relative;
   padding: ${glsp(0.25, 0)};
@@ -129,114 +96,12 @@ const DatasetData = styled.div`
   flex-grow: 1;
 `;
 
-const ParentDatasetButton = styled(Button)`
-  color: ${themeVal('color.link')};
-  text-align: left;
-  text-transform: none;
-  font-size: 0.75rem;
-  line-height: 0.75rem;
-  > svg {
-    fill: ${themeVal('color.link')};
-  }
-`;
-
-const DatasetMetricInfo = styled.div`
-  font-size: 0.75rem;
-  font-color: ${themeVal('color.base-500')}
-`;
-const DatasetTitle = styled(Heading)`
-  font-weight: 600;
-  font-size: 14px;
-
-`
 interface DatasetListItemProps {
   datasetId: string;
   width: number;
   xScaled?: ScaleTime<number, number>;
   onDragStart?: () => void;
   onDragEnd?: () => void;
-}
-
-// @TODO: Fix types
-interface CardProps {
-  dataset: any;
-  datasetAtom: any;
-  isVisible: any;
-  datasetId: any;
-  setVisible: any;
-  datasetLegend: any;
-}
-
-function DataCard(props: CardProps) {
-  const {dataset, datasetAtom, isVisible, datasetId, setVisible, datasetLegend} = props;
-
-  // @TODO: Replace icon
-  const Header = styled.header`
-    width: 100%;
-    display: flex;
-    flex-flow: row;
-
-    a {
-      display: flex;
-      width: 100%;
-      gap: 0.5rem;
-    }
-  `;
-
-  const parent = findParentDataset(datasetId);
-
-  return (
-    <DatasetInfo className="dataset-info">
-      <Header>
-        <ParentDatasetButton variation="base-text" size="small" fitting="skinny">
-          <CollecticonDatasetLayers /> {parent?.name}
-        </ParentDatasetButton>
-      </Header>
-      <DatasetHeadline>
-        <DatasetTitle as='h3' size='xxsmall'>
-          {dataset.data.name}
-        </DatasetTitle>
-        <Toolbar size='small'>
-          <TipButton
-            forwardedAs={Link}
-            tipContent='Go to dataset information page'
-            // Using a button instead of a toolbar button because the
-            // latter doesn't support the `forwardedAs` prop.
-            size='small'
-            fitting='skinny'
-            // @TODO: findout what ! does.
-            to={getDatasetPath(parent!)}
-          >
-            <CollecticonCircleInformation
-              meaningful
-              title='View dataset page'
-            />
-          </TipButton>
-          {/* <DatasetOptions datasetAtom={datasetAtom} /> */}
-          <LayerMenuOptions datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} />
-        </Toolbar>
-      </DatasetHeadline>
-      <DatasetMetricInfo>
-          <span>Harcoded : Metric info</span>
-        </DatasetMetricInfo>
-      {datasetLegend?.type === 'categorical' && (
-        <LayerCategoricalGraphic
-          type='categorical'
-          stops={datasetLegend.stops}
-        />
-      )}
-      {datasetLegend?.type === 'gradient' && (
-        <LayerGradientGraphic
-          type='gradient'
-          stops={datasetLegend.stops}
-          unit={datasetLegend.unit}
-          min={datasetLegend.min}
-          max={datasetLegend.max}
-        />
-      )}
-
-    </DatasetInfo>
-  )
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
@@ -307,6 +172,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const datasetLegend = dataset.data.legend;
 
+  const parent = findParentDataset(datasetId);
+
   const analysisMetrics = useMemo(
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
@@ -330,7 +197,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <CollecticonGripVertical onPointerDown={(e) => controls.start(e)} />
-            <DataCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} datasetId={datasetId} setVisible={setVisible} datasetLegend={datasetLegend} />
+            <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} datasetId={datasetId} setVisible={setVisible} datasetLegend={datasetLegend} parent={parent} />
           </DatasetHeaderInner>
         </DatasetHeader>
         <DatasetData>
