@@ -48,6 +48,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ env.NODE }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE }}
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
+
+      - name: Install
+        run: yarn install
+
       - name: Playwright tests
         env:
           MAPBOX_TOKEN: ${{secrets.MAPBOX_TOKEN}}
