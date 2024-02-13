@@ -56,11 +56,23 @@ declare module 'veda' {
     MONTH = 'month',
     DAY = 'day'
   }
+  export interface LayerFrontmatterInfo {
+    info: {
+      description: string;
+      table: {
+        source: string;
+        spatialExtent: string;
+        latency: string;
+        unit: string;
+      };
+    };
+  }
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
     stacApiEndpoint?: string;
     tileApiEndpoint?: string;
+    info?: LayerFrontmatterInfo;
     name: string;
     description: string;
     initialDatetime?: 'newest' | 'oldest' | string;
