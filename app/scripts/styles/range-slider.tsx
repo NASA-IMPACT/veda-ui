@@ -14,10 +14,6 @@ export interface RangeSliderInputProps {
   defaultValue?: [number, number];
   value: [number, number];
   onInput: (v: [number, number]) => void;
-  // onThumbDragStart;
-  // onThumbDragEnd;
-  // onRangeDragStart;
-  // onRangeDragEnd;
   disabled?: boolean;
   rangeSlideDisabled?: boolean;
   thumbsDisabled?: [boolean, boolean];

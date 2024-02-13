@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { CollecticonDatasetLayers } from '$components/common/icons/dastaset-layers'
 import { Toolbar } from '@devseed-ui/toolbar';
-import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
+import { TipButton } from '$components/common/tip-button';
 import {
   CollecticonCircleInformation,
 } from '@devseed-ui/collecticons';
@@ -22,7 +22,6 @@ interface CardProps {
   dataset: any;
   datasetAtom: any;
   isVisible: any;
-  datasetId: any;
   setVisible: any;
   datasetLegend: any;
   parent: any;
@@ -81,7 +80,7 @@ const DatasetMetricInfo = styled.div`
 
 
 export default function DataLayerCard(props: CardProps) {
-  const {dataset, datasetAtom, isVisible, datasetId, setVisible, datasetLegend, parent} = props;
+  const {dataset, datasetAtom, isVisible, setVisible, datasetLegend, parent} = props;
 
   return (
     <DatasetInfo className="dataset-info">
@@ -97,7 +96,7 @@ export default function DataLayerCard(props: CardProps) {
         <Toolbar size='small'>
           <TipButton
             forwardedAs={Link}
-            tipContent='Go to dataset information page'
+            tipContent='Layer info'
             // Using a button instead of a toolbar button because the
             // latter doesn't support the `forwardedAs` prop.
             size='small'
@@ -110,13 +109,13 @@ export default function DataLayerCard(props: CardProps) {
               title='View dataset page'
             />
           </TipButton>
-          {/* <DatasetOptions datasetAtom={datasetAtom} /> */}
           <LayerMenuOptions datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} />
         </Toolbar>
       </DatasetHeadline>
       <DatasetMetricInfo>
-          <span>Harcoded : Metric info</span>
-        </DatasetMetricInfo>
+        {/* { @TODO: This needs to be replaced but we need to figure out the data structure we would like to show here} */}
+        <span>Hardcoded: TO BE REPLACED</span>
+      </DatasetMetricInfo>
       {datasetLegend?.type === 'categorical' && (
         <LayerCategoricalGraphic
           type='categorical'
@@ -127,7 +126,6 @@ export default function DataLayerCard(props: CardProps) {
         <LayerGradientGraphic
           type='gradient'
           stops={datasetLegend.stops}
-          unit={datasetLegend.unit}
           min={datasetLegend.min}
           max={datasetLegend.max}
         />

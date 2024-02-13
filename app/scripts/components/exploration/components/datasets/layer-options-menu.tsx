@@ -29,6 +29,9 @@ interface LayerMenuOptionsProps {
   setVisible: (v: any) => void;
 }
 
+// @NOTE: Class Name prefix is named after file name
+const classNamePrefix = "layer-options-menu";
+
 const StyledDropdown = styled(Dropdown)`
   padding: ${glsp(1.5)};
 
@@ -42,6 +45,26 @@ const StyledDropdown = styled(Dropdown)`
   }
   li:first-child {
     padding-top: 0;
+  }
+  
+  & .${classNamePrefix}-opacity {
+    min-width: 1.5rem;
+    font-size: 0.875rem;
+    padding: 0 0.5rem;
+
+    // @NOTE: This replicates the ui-library-seed's button components styling so this menu item stays consistent with the buttons
+    & .${classNamePrefix}-opacity-title {
+      padding: 0 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+  }
+
+  & .${classNamePrefix}-remove-layer {
+    button {
+      color: #CF3F02 !important;
+    }
   }
 `;
 
@@ -87,9 +110,11 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
         )}
       >
         <DropMenu>
-          <li>
-            <CollecticonDrop/>
-            Layer opacity
+          <li className={`${classNamePrefix}-opacity`}>
+            <div className={`${classNamePrefix}-opacity-title`}>
+              <CollecticonDrop/>
+              Layer opacity
+            </div>
             <OpacityControl
               value={opacity}
               onInput={(v) => setSetting('opacity', v)}
@@ -151,7 +176,7 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
               Load into GIS
             </LayerMenuButton>
           </li>
-          <li>
+          <li className={`${classNamePrefix}-remove-layer`}>
             <LayerMenuButton
               variation="base-text"
               size="small"
@@ -200,7 +225,6 @@ function OpacityControl(props: SliderInputProps) {
 
   return (
     <OpacityControlWrapper>
-      <Overline>Map Opacity</Overline>
       <OpacityControlElements>
         <SliderInput value={value} onInput={onInput} />
         <OpacityValue>{value}</OpacityValue>

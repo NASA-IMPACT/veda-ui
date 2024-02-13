@@ -5,11 +5,7 @@ import styled, { useTheme } from 'styled-components';
 import { addDays, subDays, areIntervalsOverlapping } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { ScaleTime } from 'd3';
-import {
-  CollecticonGripVertical,
-} from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Button } from '@devseed-ui/button';
 import {
   DatasetPopover,
   getInteractionDataPoint,
@@ -77,15 +73,6 @@ const DatasetHeaderInner = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-
-  ${CollecticonGripVertical} {
-    cursor: grab;
-    color: ${themeVal('color.base-300')};
-
-    &:active {
-      cursor: grabbing;
-    }
-  }
 `;
 
 const DatasetData = styled.div`
@@ -196,8 +183,9 @@ export function DatasetListItem(props: DatasetListItemProps) {
       <DatasetItem>
         <DatasetHeader>
           <DatasetHeaderInner>
-            <CollecticonGripVertical onPointerDown={(e) => controls.start(e)} />
-            <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} datasetId={datasetId} setVisible={setVisible} datasetLegend={datasetLegend} parent={parent} />
+            <div onPointerDown={(e) => controls.start(e)}>
+              <DataLayerCard  dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} parent={parent} />
+            </div>
           </DatasetHeaderInner>
         </DatasetHeader>
         <DatasetData>
