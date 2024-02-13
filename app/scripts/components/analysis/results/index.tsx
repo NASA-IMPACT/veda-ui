@@ -216,7 +216,7 @@ export default function AnalysisResults() {
         </AnalysisFoldHeader>
         <FoldBody>
           {!!requestStatus.length && availableDomain && brushRange && (
-            <ChartCardList>
+            <ChartCardList data-testid='analysisCards'>
               {requestStatus.map((l) => (
                 <li key={l.id}>
                   <ChartCard

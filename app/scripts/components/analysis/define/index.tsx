@@ -463,7 +463,7 @@ export default function Analysis() {
           <FoldBody>
             {!infoboxMessage ? (
               <>
-                <Form>
+                <Form data-testid='datasetOptions'>
                   <CheckableGroup>
                     {selectableDatasetLayers.map((datasetLayer) => (
                       <FormCheckableCustom

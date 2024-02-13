@@ -73,3 +73,8 @@ temp
 tmp
 .tmp
 dist
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/e2e/playwrightTestData.json

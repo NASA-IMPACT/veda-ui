@@ -3138,6 +3138,13 @@
     chrome-trace-event "^1.0.2"
     nullthrows "^1.1.1"
 
+"@playwright/test@^1.41.2":
+  version "1.41.2"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.41.2.tgz#bd9db40177f8fd442e16e14e0389d23751cdfc54"
+  integrity sha512-qQB9h7KbibJzrDpkXkYvsmiDJK14FULCCZgEcoe2AvFAS64oCirWTwzTlAYEbKaRxWs5TFesE1Na6izMv3HfGg==
+  dependencies:
+    playwright "1.41.2"
+
 "@popperjs/core@^2.9.0":
   version "2.11.5"
   resolved "http://verdaccio.ds.io:4873/@popperjs%2fcore/-/core-2.11.5.tgz#db5a11bf66bdab39569719555b0f76e138d7bd64"
@@ -4027,6 +4034,13 @@
   version "18.0.4"
   resolved "http://verdaccio.ds.io:4873/@types%2fnode/-/node-18.0.4.tgz#48aedbf35efb3af1248e4cd4d792c730290cd5d6"
   integrity sha512-M0+G6V0Y4YV8cqzHssZpaNCqvYwlCiulmm0PwpNLF55r/+cT8Ol42CHRU1SEaYFH2rTwiiE1aYg/2g2rrtGdPA==
+
+"@types/node@^20.11.17":
+  version "20.11.17"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.17.tgz#cdd642d0e62ef3a861f88ddbc2b61e32578a9292"
+  integrity sha512-QmgQZGWu1Yw9TDyAP9ZzpFJKynYNeOvwMJmaxABfieQoVoiVOS6MN1WSpqpRcbeA5+RW82kraAVxCCJg+780Qw==
+  dependencies:
+    undici-types "~5.26.4"
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -6560,6 +6574,13 @@ eslint-plugin-jest@^26.1.1:
   dependencies:
     "@typescript-eslint/utils" "^5.10.0"
 
+eslint-plugin-playwright@^1.0.1:
+  version "1.0.1"
+  resolved "http://verdaccio.ds.io:4873/eslint-plugin-playwright/-/eslint-plugin-playwright-1.0.1.tgz#0c010ec380cc89a53228e728dc3e502b4afffed0"
+  integrity sha512-fq3oIZSE7/aHry2gaZRXGYwSkKDkoV+PKyQfyKmtMg4Gt4vQ41dZc4qBPd6VrdXLAflbL1i5KEl3bF9x1UFbVw==
+  dependencies:
+    globals "^13.23.0"
+
 eslint-plugin-prettier@^4.0.0:
   version "4.2.1"
   resolved "http://verdaccio.ds.io:4873/eslint-plugin-prettier/-/eslint-plugin-prettier-4.2.1.tgz#651cbb88b1dab98bfd42f017a12fa6b2d993f94b"
@@ -6902,10 +6923,21 @@ fast-equals@^2.0.0:
   resolved "http://verdaccio.ds.io:4873/fast-equals/-/fast-equals-2.0.4.tgz#3add9410585e2d7364c2deeb6a707beadb24b927"
   integrity sha512-caj/ZmjHljPrZtbzJ3kfH5ia/k4mTJe/qSiXAGzxZWRZgsgDV0cvNaQULqUX8t0/JVlzzEdYOwCN5DmzTxoD4w==
 
-fast-glob@^3.2.5, fast-glob@^3.2.7, fast-glob@^3.2.9:
+fast-glob@^3.2.5, fast-glob@^3.2.9:
   version "3.2.11"
   resolved "http://verdaccio.ds.io:4873/fast-glob/-/fast-glob-3.2.11.tgz#a1172ad95ceb8a16e20caa5c5e56480e5129c1d9"
   integrity sha512-xrO3+1bxSo3ZVHAnqzyuewYT6aMFHRAd4Kcs92MAonjwQZLsK9d0SF1IyQ3k5PoirxTW0Oe/RqFgMQ6TcNE5Ew==
+  dependencies:
+    "@nodelib/fs.stat" "^2.0.2"
+    "@nodelib/fs.walk" "^1.2.3"
+    glob-parent "^5.1.2"
+    merge2 "^1.3.0"
+    micromatch "^4.0.4"
+
+fast-glob@^3.3.2:
+  version "3.3.2"
+  resolved "http://verdaccio.ds.io:4873/fast-glob/-/fast-glob-3.3.2.tgz#a904501e57cfdd2ffcded45e99a54fef55e46129"
+  integrity sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==
   dependencies:
     "@nodelib/fs.stat" "^2.0.2"
     "@nodelib/fs.walk" "^1.2.3"
@@ -7142,6 +7174,11 @@ fs.realpath@^1.0.0:
   resolved "http://verdaccio.ds.io:4873/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
   integrity sha1-FQStJSMVjKpA20onh8sBQRmU6k8=
 
+fsevents@2.3.2, fsevents@^2.3.2:
+  version "2.3.2"
+  resolved "http://verdaccio.ds.io:4873/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
+  integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
+
 fsevents@^1.2.7:
   version "1.2.13"
   resolved "http://verdaccio.ds.io:4873/fsevents/-/fsevents-1.2.13.tgz#f325cb0455592428bcf11b383370ef70e3bfcc38"
@@ -7149,11 +7186,6 @@ fsevents@^1.2.7:
   dependencies:
     bindings "^1.5.0"
     nan "^2.12.1"
-
-fsevents@^2.3.2:
-  version "2.3.2"
-  resolved "http://verdaccio.ds.io:4873/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
-  integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
 
 function-bind@^1.1.1:
   version "1.1.1"
@@ -7405,6 +7437,13 @@ globals@^13.15.0, globals@^13.2.0:
   version "13.16.0"
   resolved "http://verdaccio.ds.io:4873/globals/-/globals-13.16.0.tgz#9be4aca28f311aaeb974ea54978ebbb5e35ce46a"
   integrity sha512-A1lrQfpNF+McdPOnnFqY3kSN0AFTy485bTi1bkLk4mVPODIUEcSfhHgRqA+QdXPksrSTTztYXx37NFV+GpGk3Q==
+  dependencies:
+    type-fest "^0.20.2"
+
+globals@^13.23.0:
+  version "13.24.0"
+  resolved "http://verdaccio.ds.io:4873/globals/-/globals-13.24.0.tgz#8432a19d78ce0c1e833949c36adb345400bb1171"
+  integrity sha512-AhO5QUcj8llrbG09iWhPU2B204J1xnPeL8kQmVorSsy+Sjj1sk8gIyh6cUocGmH4L0UuhAJy+hJMRA4mgA4mFQ==
   dependencies:
     type-fest "^0.20.2"
 
@@ -10996,6 +11035,20 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
+playwright-core@1.41.2:
+  version "1.41.2"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.41.2.tgz#db22372c708926c697acc261f0ef8406606802d9"
+  integrity sha512-VaTvwCA4Y8kxEe+kfm2+uUUw5Lubf38RxF7FpBxLPmGe5sdNkSg5e3ChEigaGrX7qdqT3pt2m/98LiyvU2x6CA==
+
+playwright@1.41.2:
+  version "1.41.2"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.41.2.tgz#4e760b1c79f33d9129a8c65cc27953be6dd35042"
+  integrity sha512-v0bOa6H2GJChDL8pAeLa/LZC4feoAMbSQm1/jF/ySsWWoaNItvrMP7GEkvEEFyCTUYKMxjQKaTSg5up7nR6/8A==
+  dependencies:
+    playwright-core "1.41.2"
+  optionalDependencies:
+    fsevents "2.3.2"
+
 polished@^3.4.2:
   version "3.7.2"
   resolved "http://verdaccio.ds.io:4873/polished/-/polished-3.7.2.tgz#ec5ddc17a7d322a574d5e10ddd2a6f01d3e767d1"
@@ -13313,6 +13366,11 @@ undertaker@^1.2.1:
     object.defaults "^1.0.0"
     object.reduce "^1.0.0"
     undertaker-registry "^1.0.0"
+
+undici-types@~5.26.4:
+  version "5.26.5"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-5.26.5.tgz#bcd539893d00b56e964fd2657a4866b221a65617"
+  integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
 
 unherit@^1.0.4:
   version "1.1.3"

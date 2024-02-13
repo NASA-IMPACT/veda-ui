@@ -39,6 +39,7 @@
     "ecmaVersion": 2018, // Allows for the parsing of modern ECMAScript features
     "sourceType": "module" // Allows for the use of imports
   },
+  "ignorePatterns": ["/e2e"],
   "rules": {
     "prettier/prettier": [
       2,
@@ -112,6 +113,28 @@
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
         "project": ["./tsconfig.json"]
+      }
+    },
+    {
+      "files": ["e2e/**/*.ts", "e2e/**/*.tsx"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:playwright/playwright-test"
+      ],
+      "rules": {
+        "prettier/prettier": [
+          2,
+          {
+            "semi": true,
+            "singleQuote": true,
+            "jsxSingleQuote": true,
+            "parser": "flow"
+          }
+        ],
+        "import-order": 2,
+        "semi": [2, "always"],
+        "no-extra-semi": 2,
+        "semi-spacing": [2, { "before": false, "after": true }]
       }
     }
   ]
