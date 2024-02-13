@@ -49,7 +49,7 @@ import {
 } from '$utils/veda-data';
 import { DatasetClassification } from '$components/common/dataset-classification';
 
-const allDatasets = Object.values(datasets).map((d) => d!.data);
+const allDatasetsForCatalog = Object.values(datasets).map((d) => d!.data);
 
 const DatasetCount = styled(Subtitle)`
   grid-column: 1 / -1;
@@ -137,7 +137,7 @@ function DataCatalog() {
 
   const displayDatasets = useMemo(
     () =>
-      prepareDatasets(allDatasets, {
+      prepareDatasets(allDatasetsForCatalog, {
         search,
         taxonomies,
         sortField,
@@ -193,7 +193,7 @@ function DataCatalog() {
               count={displayDatasets.length}
               showCount={true}
             />{' '}
-            out of {allDatasets.length}.
+            out of {allDatasetsForCatalog.length}.
           </span>
           {isFiltering && (
             <Button forwardedAs={Link} to={DATASETS_PATH} size='small'>
