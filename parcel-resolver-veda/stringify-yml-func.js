@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const markdownit = require('markdown-it');
-const md = markdownit();
+const md = markdownit({
+  html: true
+});
 
 /**
  * Stringify the given object so that it can be used in the veda module.
