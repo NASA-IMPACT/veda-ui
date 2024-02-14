@@ -27,13 +27,15 @@ import { useMediaQuery } from '$utils/use-media-query';
 const BrowseControlsWrapper = styled.div`
   display: flex;
   flex-flow: column;
-  gap: ${variableGlsp(0.5)};
+  gap: ${variableGlsp(0.25)};
   padding-top: ${variableGlsp(0.5)};
 `;
 
 const SearchWrapper = styled.div`
   display: flex;
   gap: ${variableGlsp(0.5)};
+  width: 100%;
+  max-width: 70rem;
 `;
 
 const TaxonomyWrapper = styled.div`
@@ -58,10 +60,12 @@ const DropButton = styled(Button)`
 `;
 const MainDropButton = styled(DropButton)`
   width: 15rem;
+  max-width: 15rem;
 `;
 
 const ShowMorebutton = styled(Button)`
   width: 10rem;
+  max-width: 10rem;
 `;
 
 const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`

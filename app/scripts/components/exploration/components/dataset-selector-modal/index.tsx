@@ -21,13 +21,13 @@ import {
 
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
-  allDatasets,
-  datasetLayers,
+  allDatasets as rawAllDatasets,
   findParentDataset,
   reconcileDatasets
 } from '../../data-utils';
 
 import RenderModalHeader from './header';
+import ModalContentRender from './content';
 
 import EmptyHub from '$components/common/empty-hub';
 import {
@@ -53,6 +53,7 @@ import {
 import { prepareDatasets, sortOptions } from '$components/data-catalog';
 import Pluralize from '$utils/pluralize';
 import TextHighlight from '$components/common/text-highlight';
+import { select } from 'd3';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -185,9 +186,31 @@ interface DatasetSelectorModalProps {
   close: () => void;
 }
 
+const allDatasets = rawAllDatasets.map(currentDataset => {
+  return {
+    ...currentDataset,
+    layers: currentDataset.layers.map(l => ({
+      ...l,
+      parentDataset: {
+        id: currentDataset.id,
+        name: currentDataset.name
+      }
+    }))
+  };
+});
 
+const datasetLayers = allDatasets
+  .flatMap((dataset) => dataset.layers)
+  .filter((d) => !d.analysis?.exclude);
 
-
+function countOverlap(arr1, arr2) {
+  // Filter elements in arr1 that are also included in arr2
+  const commonElements = arr1.filter(element => arr2.includes(element));
+  console.log(commonElements)
+  // The length of commonElements array represents the number of overlapping elements
+  return commonElements.length;
+}
+  
 
 export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const { revealed, close } = props;
@@ -237,7 +260,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
 
   // Filters are applies to the veda datasets, but then we want to display the
   // dataset layers since those are shown on the map.
-  const displayDatasetLayers = useMemo(
+  const displayDatasets = useMemo(
     () =>
       // TODO: Move function from data-catalog once that page is removed.
       prepareDatasets(allDatasets, {
@@ -246,11 +269,15 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
         sortField,
         sortDir
       })
-        .flatMap((dataset) => dataset.layers)
-        .filter((d) => !d.analysis?.exclude),
-    [search, taxonomies, sortField, sortDir]
+      .map(dataset => ({
+        ...dataset,
+        countSelectedLayers: countOverlap(dataset.layers.map(l => l.id), selectedIds)
+      })),
+    [search, taxonomies, sortField, sortDir, selectedIds]
   );
-
+  console.log(selectedIds)
+  
+  console.log(displayDatasets);
   const isFiltering = !!(
     (taxonomies && Object.keys(taxonomies).length) ||
     search
@@ -268,54 +295,59 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       renderHeadline={() => (
         <RenderModalHeader />
       )}
-      content={
-        <>
-          <DatasetCount>
-            <span>
-              Showing{' '}
-              <Pluralize
-                singular='data layer'
-                plural='data layers'
-                count={displayDatasetLayers.length}
-                showCount={true}
-              />{' '}
-              out of {datasetLayers.length}.
-            </span>
-            {isFiltering && (
-              <Button size='small' onClick={() => onAction(Actions.CLEAR)}>
-                Clear filters <CollecticonXmarkSmall />
-              </Button>
-            )}
-          </DatasetCount>
+      content={<ModalContentRender 
+        search={search} 
+        selectedIds={selectedIds} 
+        displayDatasets={displayDatasets} 
+        onCheck={onCheck}
+               />}
+        
+          // <DatasetCount>
+          //   <span>
+          //     Showing{' '}
+          //     <Pluralize
+          //       singular='data layer'
+          //       plural='data layers'
+          //       count={displayDatasets.length}
+          //       showCount={true}
+          //     />{' '}
+          //     out of {datasetLayers.length}.
+          //   </span>
+          //   {isFiltering && (
+          //     <Button size='small' onClick={() => onAction(Actions.CLEAR)}>
+          //       Clear filters <CollecticonXmarkSmall />
+          //     </Button>
+          //   )}
+          // </DatasetCount> 
 
-          <DatasetContainer>
-            {displayDatasetLayers.length ? (
-              <CardList>
-                {displayDatasetLayers.map((datasetLayer) => {
-                  const parent = findParentDataset(datasetLayer.id);
-                  if (!parent) return null;
+          // <DatasetContainer>
+          //   {displayDatasets.length ? (
+          //     <CardList>
+          //       {displayDatasetLayers.map((datasetLayer) => {
+          //         const parent = findParentDataset(datasetLayer.id);
+          //         if (!parent) return null;
 
-                  return (
-                    <li key={datasetLayer.id}>
-                      <DatasetLayerCard
-                        searchTerm={search}
-                        layer={datasetLayer}
-                        parent={parent}
-                        selected={selectedIds.includes(datasetLayer.id)}
-                        onDatasetClick={() => onCheck(datasetLayer.id)}
-                      />
-                    </li>
-                  );
-                })}
-              </CardList>
-            ) : (
-              <EmptyHub>
-                There are no datasets to show with the selected filters.
-              </EmptyHub>
-            )}
-          </DatasetContainer>
-        </>
-      }
+          //         return (
+          //           <li key={datasetLayer.id}>
+          //             <DatasetLayerCard
+          //               searchTerm={search}
+          //               layer={datasetLayer}
+          //               parent={parent}
+          //               selected={selectedIds.includes(datasetLayer.id)}
+          //               onDatasetClick={() => onCheck(datasetLayer.id)}
+          //             />
+          //           </li>
+          //         );
+          //       })}
+          //     </CardList>
+          //   ) : (
+          //     <EmptyHub>
+          //       There are no datasets to show with the selected filters.
+          //     </EmptyHub>
+          //   )}
+          // </DatasetContainer> 
+        
+      
       footerContent={
         <>
           <p className='selection-info'>
@@ -349,66 +381,4 @@ interface DatasetLayerProps {
   onDatasetClick: () => void;
 }
 
-function DatasetLayerCard(props: DatasetLayerProps) {
-  const { parent, layer, onDatasetClick, selected, searchTerm } = props;
 
-  const topics = getTaxonomy(parent, TAXONOMY_TOPICS)?.values;
-
-  return (
-    <LayerCard
-      cardType='cover'
-      checked={selected}
-      overline={
-        <CardMeta>
-          <DatasetClassification dataset={parent} />
-          <CardSourcesList
-            sources={getTaxonomy(parent, TAXONOMY_SOURCE)?.values}
-          />
-        </CardMeta>
-      }
-      linkTo={getDatasetPath(parent)}
-      linkLabel='View dataset'
-      onLinkClick={(e) => {
-        e.preventDefault();
-        onDatasetClick();
-      }}
-      title={
-        <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
-          {layer.name}
-        </TextHighlight>
-      }
-      description={
-        <>
-          From:{' '}
-          <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
-            {parent.name}
-          </TextHighlight>
-        </>
-      }
-      imgSrc={layer.media?.src ?? parent.media?.src}
-      imgAlt={layer.media?.alt ?? parent.media?.alt}
-      footerContent={
-        <>
-          {topics?.length ? (
-            <CardTopicsList>
-              <dt>Topics</dt>
-              {topics.map((t) => (
-                <dd key={t.id}>
-                  <Pill variation='achromic'>
-                    <TextHighlight
-                      value={searchTerm}
-                      disabled={searchTerm.length < 3}
-                    >
-                      {t.name}
-                    </TextHighlight>
-                  </Pill>
-                </dd>
-              ))}
-            </CardTopicsList>
-          ) : null}
-          <DatasetMenu dataset={parent} />
-        </>
-      }
-    />
-  );
-}
