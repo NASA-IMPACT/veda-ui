@@ -45,6 +45,9 @@ function stringifyYmlWithFns(data, filePath) {
       }
 
       // Handle markdown string
+      // @NOTE: MDX render that VEDA uses to render stories, dataset overview expects a loader to render the contents
+      // (not straightforward to implement in frontmatter)
+      // Therefore, we convert markdown to HTML so it can be rendered without the MDX renderer
       if (v.startsWith('::markdown')) {
         // Detach the prefix
         const p = v.replace(/^::markdown ?/, '');
