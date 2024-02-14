@@ -2,17 +2,16 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useAtom } from 'jotai';
 
-import { DatasetData, DatasetLayer, datasetTaxonomies } from 'veda';
+import { DatasetData, DatasetLayer } from 'veda';
 import {
   Modal,
   ModalBody,
   ModalFooter,
-  ModalHeader,
-  ModalHeadline
+  ModalHeader
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
-import { Heading, Subtitle } from '@devseed-ui/typography';
+import { Subtitle } from '@devseed-ui/typography';
 import {
   CollecticonPlus,
   CollecticonTickSmall,
@@ -20,13 +19,15 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 
-import { timelineDatasetsAtom } from '../atoms/datasets';
+import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
   allDatasets,
   datasetLayers,
   findParentDataset,
   reconcileDatasets
-} from '../data-utils';
+} from '../../data-utils';
+
+import RenderModalHeader from './header';
 
 import EmptyHub from '$components/common/empty-hub';
 import {
@@ -45,7 +46,6 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { Pill } from '$styles/pill';
-import BrowseControls from '$components/common/browse-controls';
 import {
   Actions,
   useBrowserControls
@@ -67,8 +67,9 @@ const DatasetModal = styled(Modal)`
     position: sticky;
     top: ${glsp(-2)};
     z-index: 100;
-    box-shadow: 0 1px 0 0 ${themeVal('color.base-100a')};
     margin-bottom: ${glsp(2)};
+    background-color: ${themeVal('color.base-50')};
+    align-items: start;
   }
 
   ${ModalBody} {
@@ -93,8 +94,6 @@ const DatasetModal = styled(Modal)`
     }
   }
 `;
-
-const ModalIntro = styled.div``;
 
 const DatasetCount = styled(Subtitle)`
   display: flex;
@@ -186,6 +185,10 @@ interface DatasetSelectorModalProps {
   close: () => void;
 }
 
+
+
+
+
 export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const { revealed, close } = props;
 
@@ -263,24 +266,10 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       revealed={revealed}
       onCloseClick={close}
       renderHeadline={() => (
-        <ModalHeadline>
-          <Heading size='small'>Select data layers</Heading>
-          <ModalIntro>
-            {isFirstSelection ? (
-              <p>Select data layers to start the exploration.</p>
-            ) : (
-              <p>Add or remove data layers to the exploration.</p>
-            )}
-          </ModalIntro>
-        </ModalHeadline>
+        <RenderModalHeader />
       )}
       content={
         <>
-          <BrowseControls
-            {...controlVars}
-            taxonomiesOptions={datasetTaxonomies}
-            sortOptions={sortOptions}
-          />
           <DatasetCount>
             <span>
               Showing{' '}

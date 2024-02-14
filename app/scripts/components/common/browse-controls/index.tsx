@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Taxonomy } from 'veda';
 import { Overline } from '@devseed-ui/typography';
@@ -28,6 +28,7 @@ const BrowseControlsWrapper = styled.div`
   display: flex;
   flex-flow: column;
   gap: ${variableGlsp(0.5)};
+  padding-top: ${variableGlsp(0.5)};
 `;
 
 const SearchWrapper = styled.div`
@@ -46,8 +47,7 @@ const TaxonomyWrapper = styled.div`
 `;
 
 const DropButton = styled(Button)`
-  max-width: 14rem;
-
+  max-width: 12rem;
   > span {
     ${truncated()}
   }
@@ -55,6 +55,13 @@ const DropButton = styled(Button)`
   > svg {
     flex-shrink: 0;
   }
+`;
+const MainDropButton = styled(DropButton)`
+  width: 15rem;
+`;
+
+const ShowMorebutton = styled(Button)`
+  width: 10rem;
 `;
 
 const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
@@ -68,6 +75,7 @@ interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
 }
 
 function BrowseControls(props: BrowseControlsProps) {
+  const [ showMoreFilters, setShowMoreFilters ] = useState(false);
   const {
     taxonomiesOptions,
     taxonomies,
@@ -85,20 +93,6 @@ function BrowseControls(props: BrowseControlsProps) {
 
   return (
     <BrowseControlsWrapper {...rest}>
-      <TaxonomyWrapper>
-        {taxonomiesOptions.map(({ name, values }) => (
-          <DropdownOptions
-            key={name}
-            prefix={name}
-            items={[optionAll].concat(values)}
-            currentId={taxonomies?.[name] ?? 'all'}
-            onChange={(v) => {
-              onAction(Actions.TAXONOMY, { key: name, value: v });
-            }}
-            size={isLargeUp ? 'large' : 'medium'}
-          />
-        ))}
-      </TaxonomyWrapper>
       <SearchWrapper>
         <SearchField
           size={isLargeUp ? 'large' : 'medium'}
@@ -111,7 +105,7 @@ function BrowseControls(props: BrowseControlsProps) {
           alignment='left'
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           triggerElement={({ active, className, ...rest }) => (
-            <DropButton
+            <MainDropButton
               variation='base-outline'
               size={isLargeUp ? 'large' : 'medium'}
               active={active}
@@ -124,7 +118,7 @@ function BrowseControls(props: BrowseControlsProps) {
               ) : (
                 <CollecticonChevronDownSmall />
               )}
-            </DropButton>
+            </MainDropButton>
           )}
         >
           <DropTitle>Options</DropTitle>
@@ -155,7 +149,30 @@ function BrowseControls(props: BrowseControlsProps) {
             ))}
           </DropMenu>
         </DropdownScrollable>
+        <ShowMorebutton
+          variation='base-text'
+          size={isLargeUp ? 'large' : 'medium'}
+          fitting='skinny'
+          onClick={() => {setShowMoreFilters(value => !value);}}
+        >
+          {showMoreFilters? 'Show less' : 'Show more'}
+        </ShowMorebutton>
       </SearchWrapper>
+      {showMoreFilters && 
+        <TaxonomyWrapper>
+          {taxonomiesOptions.map(({ name, values }) => (
+            <DropdownOptions
+              key={name}
+              prefix={name}
+              items={[optionAll].concat(values)}
+              currentId={taxonomies?.[name] ?? 'all'}
+              onChange={(v) => {
+                onAction(Actions.TAXONOMY, { key: name, value: v });
+              }}
+              size={isLargeUp ? 'large' : 'medium'}
+            />
+          ))}
+        </TaxonomyWrapper>}
     </BrowseControlsWrapper>
   );
 }

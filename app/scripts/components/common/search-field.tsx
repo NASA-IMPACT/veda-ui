@@ -16,6 +16,7 @@ const SearchFieldWrapper = styled.div`
   display: flex;
   flex-flow: column;
   align-items: flex-end;
+  width: 100%;
 `;
 
 interface SearchFieldMessageProps {
@@ -33,7 +34,8 @@ const SearchFieldMessage = styled(FormHelperMessage)<SearchFieldMessageProps>`
   ${({ isOpen }) =>
     isOpen &&
     css`
-      max-width: 15rem;
+      width: 100%;
+      max-width: 100%;
     `}
 
   ${({ isFocused }) =>
@@ -46,7 +48,8 @@ const SearchFieldMessage = styled(FormHelperMessage)<SearchFieldMessageProps>`
 const SearchFieldContainer = styled.div`
   position: relative;
   display: flex;
-
+  width: 100%;
+  background-color: ${themeVal('color.surface')};
   ::before {
     position: absolute;
     inset: 0;
@@ -63,11 +66,11 @@ const SearchFieldClearable = styled.div<{ isOpen: boolean }>`
   overflow: hidden;
   transition: max-width 320ms ease-in-out;
   max-width: 0;
-
   ${({ isOpen }) =>
     isOpen &&
     css`
-      max-width: 15rem;
+      width: 100%;
+      max-width: 100%;
     `}
 `;
 
@@ -75,7 +78,7 @@ const FormInputSearch = styled(FormInput)`
   border: 0;
   padding-left: 0;
   padding-right: 0;
-  width: 15rem;
+  width: 100%;
 `;
 
 interface SearchFieldProps
