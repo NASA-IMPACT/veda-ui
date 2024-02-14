@@ -4,13 +4,16 @@ import LayerInfoModal from '$components/exploration/components/layer-info-modal'
 import Block from '$components/common/blocks';
 import { ContentBlockProse } from '$styles/content-block';
 
+const selectedDatasetId = 'no2';
+
 export default function SandboxMDXPage() {
   const [revealed, setRevealed] = useState(false);
 
   const openModal = useCallback(() => setRevealed(true), []);
   const closeModal = useCallback(() => setRevealed(false), []);
 
-  const layer = datasets['no2'].data.layers[0];
+  const layer = datasets[selectedDatasetId]?.data.layers[0];
+
   return layer && layer.info ? (
     <>
       <Block>
@@ -42,6 +45,6 @@ export default function SandboxMDXPage() {
       </Block>
     </>
   ) : (
-    <div> Cannot find layer info fron dataset no2</div>
+    <div> Cannot find layer info from dataset {selectedDatasetId}</div>
   );
 }
