@@ -9,7 +9,7 @@ import {
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { createButtonStyles } from '@devseed-ui/button';
-import { Heading, Subtitle } from '@devseed-ui/typography';
+import { Heading } from '@devseed-ui/typography';
 
 import { DatasetLayer } from 'veda';
 import { findParentDataset } from '../data-utils';
@@ -19,7 +19,6 @@ import { getDatasetPath } from '$utils/routes';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
-
   /* Override ModalContents */
   > div {
     display: flex;
@@ -70,19 +69,17 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
       renderHeadline={() => {
         return (
           <ModalHeadline>
-            <Heading size='small'>{datasetLayer.name}</Heading>
-            <Subtitle dangerouslySetInnerHTML={{__html: datasetLayer.info?.modal.subtitle?? '' }} />
+            <Heading size='medium'>{datasetLayer.name}</Heading>
+            <p dangerouslySetInnerHTML={{__html: datasetLayer.info?.modal.subtitle?? '' }} />
           </ModalHeadline>);
       }}
       content={
-        <div dangerouslySetInnerHTML={{__html: datasetLayer.info?.modal.contents?? 'Layer Information unvailable' }} />
+        <div dangerouslySetInnerHTML={{__html: datasetLayer.info?.modal.contents?? 'Layer Information unvailable.' }} />
       }
       footerContent={
-        <>
-          <ButtonStyleLink to={dataCatalogPage} variation='primary-fill' size='medium'>
-            Learn more
-          </ButtonStyleLink>
-        </>
+        <ButtonStyleLink to={dataCatalogPage} variation='primary-fill' size='medium'>
+          Learn more
+        </ButtonStyleLink>
       }
     />
   );
