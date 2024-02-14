@@ -56,19 +56,24 @@ layers:
     bounds: [-10, 36, -5, 42]
     description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
     info:
-      description: |
-        ::markdown 
-        ### Title
-
-        - list item 1
-        - lis item 2
-
-        [A tag test](https://developmentseed.org)
-      table:
+      modal:
+        subtitle: |
+          ::markdown
+          Global, monthly 1 km resolution dataset of fossil fuel carbon dioxide emissions, version 2022
+        contents: |
+          ::markdown
+          - Temporal Extent: January 2000 - December 2021
+          - Temporal Resolution: Monthly
+          - Spatial Extent: Global
+          - Spatial Resolution: 1 km x 1 km
+          - Data Units: Tons of carbon per 1 km x 1 km cell (monthly total)
+          - Data Type: Research
+          - Data Latency: Updated annually, following the release of an updated [BP Statistical Review of World Energy report](https://www.bp.com/en/global/corporate/energy-economics.html)
+      template:
         source: NASA
         spatialExtent: Global
         latency: Monthly
-        unit: unit
+        unit: 10¹⁵ molecules cm⁻²
     zoomExtent:
       - 0
       - 20

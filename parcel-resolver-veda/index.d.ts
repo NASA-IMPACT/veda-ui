@@ -57,14 +57,15 @@ declare module 'veda' {
     DAY = 'day'
   }
   export interface LayerFrontmatterInfo {
-    info: {
-      description: string;
-      table: {
-        source: string;
-        spatialExtent: string;
-        latency: string;
-        unit: string;
-      };
+    modal: {
+      subtitle: string;
+      contents: string;
+    },
+    template: {
+      source: string;
+      spatialExtent: string;
+      latency: string;
+      unit: string;
     };
   }
   export interface DatasetLayer extends DatasetLayerCommonProps {

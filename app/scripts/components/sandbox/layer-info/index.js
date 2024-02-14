@@ -1,30 +1,46 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { datasets } from 'veda';
+import LayerInfoModal from '$components/exploration/components/layer-info-modal';
 import Block from '$components/common/blocks';
-
 import { ContentBlockProse } from '$styles/content-block';
 
 export default function SandboxMDXPage() {
-  const data = datasets['no2'].data.layers[0];
-  const layerInfoMdxContent = data.info?.description;
-  const layerInfoTable = data.info.table;
+  const [revealed, setRevealed] = useState(false);
 
-  return layerInfoMdxContent ? (
-    <Block>
-      <ContentBlockProse>
-        <h2>{data.name} Layer Info</h2>
-        <div dangerouslySetInnerHTML={{ __html: layerInfoMdxContent }} />
-        <ul>
-          {Object.keys(layerInfoTable).map((key) => {
-            return (
-              <li key={key}>
-                <b>{key} : </b> <span>{layerInfoTable[key]}</span>
-              </li>
+  const openModal = useCallback(() => setRevealed(true), []);
+  const closeModal = useCallback(() => setRevealed(false), []);
+
+  const layer = datasets['no2'].data.layers[0];
+  return layer && layer.info ? (
+    <>
+      <Block>
+        <ContentBlockProse>
+          <button type='button' onClick={openModal}>
+            Open {layer.name} Layer Information Modal
+          </button>
+          {revealed && (
+            <LayerInfoModal
+              revealed={revealed}
+              close={closeModal}
+              datasetLayer={layer}
+            />
+          )}
+        </ContentBlockProse>
+      </Block>
+      <Block>
+        <ContentBlockProse>
+          <h4> Templated layer info</h4>
+          {Object.keys(layer.info.template).map((key, idx, arr) => {
+            const currentValue = layer.info.template[key];
+            return idx !== arr.length - 1 ? (
+              <span>{currentValue} · </span>
+            ) : (
+              <span>{currentValue} </span>
             );
           })}
-        </ul>
-      </ContentBlockProse>
-    </Block>
+        </ContentBlockProse>
+      </Block>
+    </>
   ) : (
     <div> Cannot find layer info fron dataset no2</div>
   );
