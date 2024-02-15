@@ -13,7 +13,7 @@ export default function ModalFooterRender (props:ModalFooterComponentProps) {
   const { selectedIds, onConfirm, isFirstSelection } = props;
   return (
     <>
-      <p className='selection-info'>
+      <p aria-live='polite' className='selection-info'>
         {selectedIds.length
           ? `${selectedIds.length} ${pluralize({ singular: 'layer', plural: 'layers', count: selectedIds.length})} selected`
           : 'No data layers selected'}

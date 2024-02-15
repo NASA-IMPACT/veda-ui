@@ -51,7 +51,7 @@ const DatasetSelectedLayer = styled.div`
   background-color: ${themeVal('color.primary')};
   border-radius: 40px;
   padding: 0 ${glsp(0.5)};
-  color: ${themeVal('color.surface')}
+  color: ${themeVal('color.surface')};
 `;
 
 const DatasetHeadline = styled.div`

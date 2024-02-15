@@ -87,9 +87,8 @@ const allDatasets = rawAllDatasets.map(currentDataset => {
       ...l,
       parentDataset: {
         id: currentDataset.id,
-        name: currentDataset.name,
-        taxonomy: currentDataset.taxonomy,
-        infoDescription: currentDataset.infoDescription,
+        name: currentDataset.name
+        // infoDescription: currentDataset.infoDescription,
       }
     }))
   };
@@ -142,6 +141,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
 
   // Clear filters when the modal is revealed.
   const firstRevealRef = React.useRef(true);
+
   useEffect(() => {
     if (revealed) {
       if (firstRevealRef.current) {
