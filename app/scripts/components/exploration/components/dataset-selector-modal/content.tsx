@@ -49,7 +49,7 @@ const SingleDataset = styled.div`
 
 const DatasetSelectedLayer = styled.div`
   background-color: ${themeVal('color.primary')};
-  border-radius: 40px;
+  border-radius: ${themeVal('shape.ellipsoid')};
   padding: 0 ${glsp(0.5)};
   color: ${themeVal('color.surface')};
 `;
