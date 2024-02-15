@@ -12,20 +12,30 @@ export default function SandboxMDXPage() {
   const openModal = useCallback(() => setRevealed(true), []);
   const closeModal = useCallback(() => setRevealed(false), []);
 
-  const layer = datasets[selectedDatasetId]?.data.layers[0];
+  const datasetData = datasets[selectedDatasetId]?.data;
+  const layerData = datasetData.layers[0];
 
-  return layer && layer.info ? (
+  const modalData = {
+    name: layerData.name,
+    info: layerData.info,
+    parentData: {
+      id: datasetData.id,
+      infoDescription: datasetData.infoDescription
+    }
+  };
+
+  return datasetData && datasetData.infoDescription && layerData.info ? (
     <>
       <Block>
         <ContentBlockProse>
           <button type='button' onClick={openModal}>
-            Open {layer.name} Layer Information Modal
+            Open {datasetData.name} Layer Information Modal
           </button>
           {revealed && (
             <LayerInfoModal
               revealed={revealed}
               close={closeModal}
-              datasetLayer={layer}
+              layerData={modalData}
             />
           )}
         </ContentBlockProse>
@@ -33,8 +43,8 @@ export default function SandboxMDXPage() {
       <Block>
         <ContentBlockProse>
           <h4> Templated layer info</h4>
-          {Object.keys(layer.info.template).map((key, idx, arr) => {
-            const currentValue = layer.info.template[key];
+          {Object.keys(layerData.info).map((key, idx, arr) => {
+            const currentValue = layerData.info[key];
             return idx !== arr.length - 1 ? (
               <span>{currentValue} · </span>
             ) : (
@@ -45,6 +55,6 @@ export default function SandboxMDXPage() {
       </Block>
     </>
   ) : (
-    <div> Cannot find layer info from dataset {selectedDatasetId}</div>
+    <div> Cannot find dataset info from {selectedDatasetId}</div>
   );
 }

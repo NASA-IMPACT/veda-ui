@@ -11,8 +11,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { createButtonStyles } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
 
-import { DatasetLayer } from 'veda';
-import { findParentDataset } from '../data-utils';
+import { LayerInfo } from 'veda';
 
 import SmartLink from '$components/common/smart-link';
 import { getDatasetPath } from '$utils/routes';
@@ -53,13 +52,21 @@ const ButtonStyleLink = styled(SmartLink)<any>`
 interface LayerInfoModalProps {
   revealed: boolean;
   close: () => void;
-  datasetLayer: DatasetLayer;
+  layerData: {
+    name: string;
+    info: LayerInfo;
+    parentData: {
+      id: string;
+      infoDescription?: string;
+    }
+  }
 }
 
 export default function LayerInfoModal(props: LayerInfoModalProps) {
-  const { revealed, close, datasetLayer } = props;
-  const parent = findParentDataset(datasetLayer.id);
-  const dataCatalogPage = parent? getDatasetPath(parent) : '/';
+  const { revealed, close, layerData } = props;
+  const { parentData } = layerData;
+  const dataCatalogPage = getDatasetPath(parentData.id);
+
   return (
     <DatasetModal
       id='modal'
@@ -69,15 +76,24 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
       renderHeadline={() => {
         return (
           <ModalHeadline>
-            <Heading size='medium'>{datasetLayer.name}</Heading>
-            <p dangerouslySetInnerHTML={{__html: datasetLayer.info?.modal.subtitle?? '' }} />
+            <Heading size='medium'>{layerData.name}</Heading>
+            <p>
+              {Object.keys(layerData.info).map((key, idx, arr) => {
+                const currentValue = layerData.info[key];
+                return idx !== arr.length - 1 ? (
+                  <span>{currentValue} · </span>
+                ) : (
+                  <span>{currentValue} </span>
+                );
+              })}
+            </p>
           </ModalHeadline>);
       }}
       content={
-        <div dangerouslySetInnerHTML={{__html: datasetLayer.info?.modal.contents?? 'Layer Information unvailable.' }} />
+        <div dangerouslySetInnerHTML={{__html: parentData.infoDescription?? 'Layer Information unvailable.' }} />
       }
       footerContent={
-        <ButtonStyleLink to={dataCatalogPage} variation='primary-fill' size='medium'>
+        <ButtonStyleLink to={dataCatalogPage} onClick={close} variation='primary-fill' size='medium'>
           Learn more
         </ButtonStyleLink>
       }
