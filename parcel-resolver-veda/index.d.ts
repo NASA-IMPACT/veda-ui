@@ -56,6 +56,12 @@ declare module 'veda' {
     MONTH = 'month',
     DAY = 'day'
   }
+export interface LayerInfo {
+  source: string;
+  spatialExtent: string;
+  latency: string;
+  unit: string;
+}
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
@@ -80,6 +86,7 @@ declare module 'veda' {
       to: string;
     },
     time_density?: TimeDensity;
+    info?: LayerInfo;
   }
   // A normalized compare layer is the result after the compare definition is
   // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
@@ -173,6 +180,7 @@ declare module 'veda' {
     featured?: boolean;
     id: string;
     name: string;
+    infoDescription?: string;
     taxonomy: Taxonomy[];
     description: string;
     usage?: DatasetUsage[];

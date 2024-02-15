@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const markdownit = require('markdown-it');
+const md = markdownit();
 
 /**
  * Stringify the given object so that it can be used in the veda module.
@@ -40,6 +42,19 @@ function stringifyYmlWithFns(data, filePath) {
     if (typeof v === 'string') {
       if (v.match(/^(\r|\n\s)*::js/gim)) {
         return `${v} ::js`;
+      }
+
+      // Handle markdown string
+      // @NOTE: MDX render that VEDA uses to render stories, dataset overview expects a loader to render the contents
+      // (not straightforward to implement in frontmatter)
+      // Therefore, we convert markdown to HTML so it can be rendered without the MDX renderer
+      if (v.startsWith('::markdown')) {
+        // Detach the prefix
+        const p = v.replace(/^::markdown ?/, '');
+        // Conver the string to HTML
+        const parsedVal = md.render(p);
+        // Get rid of any empty line
+        return parsedVal.replace(/(\r\n|\n|\r)/gm, '');
       }
 
       // Handle file requires

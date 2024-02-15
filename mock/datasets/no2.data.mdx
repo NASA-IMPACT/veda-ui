@@ -46,6 +46,15 @@ taxonomy:
   - name: Source
     values:
       - Mock
+infoDescription: |
+  ::markdown
+    - Temporal Extent: January 2000 - December 2021
+    - Temporal Resolution: Monthly
+    - Spatial Extent: Global
+    - Spatial Resolution: 1 km x 1 km
+    - Data Units: Tons of carbon per 1 km x 1 km cell (monthly total)
+    - Data Type: Research
+    - Data Latency: Updated annually, following the release of an updated [BP Statistical Review of World Energy report](https://www.bp.com/en/global/corporate/energy-economics.html)
 layers:
   - id: no2-monthly
     stacCol: no2-monthly
@@ -95,6 +104,11 @@ layers:
         - max
         # dummy value to make sure non existent values are sagfely discarded
         - non-existent
+    info:
+      source: NASA
+      spatialExtent: Global
+      latency: Monthly
+      unit: 10¹⁵ molecules cm⁻²
   - id: no2-monthly-2
     stacCol: no2-monthly
     name: No2 US
