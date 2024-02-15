@@ -1,33 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { PrimitiveAtom } from 'jotai';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonDatasetLayers } from '$components/common/icons/dastaset-layers'
-import { Toolbar } from '@devseed-ui/toolbar';
-import { TipButton } from '$components/common/tip-button';
+import { DatasetData, LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import {
   CollecticonCircleInformation,
 } from '@devseed-ui/collecticons';
+import { Toolbar } from '@devseed-ui/toolbar';
+import { Button } from '@devseed-ui/button';
+import { Heading } from '@devseed-ui/typography';
 import LayerMenuOptions from './layer-options-menu';
+import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
+import { TipButton } from '$components/common/tip-button';
 import { getDatasetPath } from '$utils/routes';
 import {
   LayerCategoricalGraphic,
   LayerGradientGraphic
 } from '$components/common/mapbox/layer-legend';
-import { Button } from '@devseed-ui/button';
-import { Heading } from '@devseed-ui/typography';
-import { Link } from 'react-router-dom';
+import { TimelineDataset } from '$components/exploration/types.d.ts';
 
-// @TODO: Fix types
 interface CardProps {
-  dataset: any;
-  datasetAtom: any;
-  isVisible: any;
+  dataset: TimelineDataset;
+  datasetAtom: PrimitiveAtom<TimelineDataset>;
+  isVisible: boolean | undefined;
   setVisible: any;
-  datasetLegend: any;
-  parent: any;
+  datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
+  parent: DatasetData | undefined;
 }
 
-// @TODO: Replace icon
 const Header = styled.header`
   width: 100%;
   display: flex;
@@ -49,6 +50,17 @@ const DatasetInfo = styled.div`
   padding: ${glsp(0.5)};
   border-radius: ${themeVal('shape.rounded')};
   border: 1px solid ${themeVal('color.base-200')};
+
+  &:hover {
+    outline: 2px solid ${themeVal('color.primary-500')};
+    cursor: grab;
+  }
+  &:active {
+    outline: none;
+    cursor: grabbing;
+    transform: rotate(2deg);
+    filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
+  }
 `;
 
 const ParentDatasetButton = styled(Button)`
@@ -75,7 +87,7 @@ const DatasetTitle = styled(Heading)`
 
 const DatasetMetricInfo = styled.div`
   font-size: 0.75rem;
-  font-color: ${themeVal('color.base-500')}
+  color: ${themeVal('color.base-500')}
 `;
 
 
@@ -83,9 +95,9 @@ export default function DataLayerCard(props: CardProps) {
   const {dataset, datasetAtom, isVisible, setVisible, datasetLegend, parent} = props;
 
   return (
-    <DatasetInfo className="dataset-info">
+    <DatasetInfo className='dataset-info'>
       <Header>
-        <ParentDatasetButton variation="base-text" size="small" fitting="skinny">
+        <ParentDatasetButton variation='base-text' size='small' fitting='skinny'>
           <CollecticonDatasetLayers /> {parent?.name}
         </ParentDatasetButton>
       </Header>
@@ -101,7 +113,6 @@ export default function DataLayerCard(props: CardProps) {
             // latter doesn't support the `forwardedAs` prop.
             size='small'
             fitting='skinny'
-            // @TODO: findout what ! does.
             to={getDatasetPath(parent!)}
           >
             <CollecticonCircleInformation
@@ -109,7 +120,7 @@ export default function DataLayerCard(props: CardProps) {
               title='View dataset page'
             />
           </TipButton>
-          <LayerMenuOptions datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} />
+          <LayerMenuOptions datasetAtom={datasetAtom} isVisible={!!isVisible} setVisible={setVisible} />
         </Toolbar>
       </DatasetHeadline>
       <DatasetMetricInfo>
@@ -132,5 +143,5 @@ export default function DataLayerCard(props: CardProps) {
       )}
 
     </DatasetInfo>
-  )
-};
+  );
+}

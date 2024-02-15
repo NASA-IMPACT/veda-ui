@@ -17,6 +17,7 @@ import {
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
 import { getBlockBoundaries, lumpBlocks } from './block-utils';
+import DataLayerCard from './data-layer-card';
 import {
   TimelineDatasetStatus,
   TimelineDatasetSuccess
@@ -35,7 +36,6 @@ import {
   useAnalysisDataRequest
 } from '$components/exploration/hooks/use-analysis-data-request';
 import { findParentDataset } from '$components/exploration/data-utils';
-import DataLayerCard from './data-layer-card';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -184,7 +184,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <div onPointerDown={(e) => controls.start(e)}>
-              <DataLayerCard  dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} parent={parent} />
+              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} parent={parent} />
             </div>
           </DatasetHeaderInner>
         </DatasetHeader>

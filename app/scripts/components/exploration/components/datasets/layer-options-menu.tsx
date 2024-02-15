@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { PrimitiveAtom, useAtomValue, useAtom } from 'jotai';
-import { Dropdown, DropMenu, DropTitle } from '@devseed-ui/dropdown';
-import { TimelineDataset } from '$components/exploration/types.d.ts';
+import styled from 'styled-components';
+import { Dropdown, DropMenu } from '@devseed-ui/dropdown';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
-import { TipButton } from '$components/common/tip-button';
-import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
-import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
 import {
   CollecticonEllipsisVertical,
   CollecticonDrop,
@@ -14,14 +12,14 @@ import {
   CollecticonEye,
   CollecticonArrowDown,
   CollecticonArrowUp,
-  CollecticonUpload,
   CollecticonShare,
 } from '@devseed-ui/collecticons';
 import { TileUrlModal } from './tile-link-modal';
+import { TipButton } from '$components/common/tip-button';
+import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
+import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
 import { SliderInput, SliderInputProps } from '$styles/range-slider';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Overline } from '@devseed-ui/typography';
-import styled from 'styled-components';
+import { TimelineDataset } from '$components/exploration/types.d.ts';
 
 interface LayerMenuOptionsProps {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
@@ -30,7 +28,7 @@ interface LayerMenuOptionsProps {
 }
 
 // @NOTE: Class Name prefix is named after file name
-const classNamePrefix = "layer-options-menu";
+const classNamePrefix = 'layer-options-menu';
 
 const StyledDropdown = styled(Dropdown)`
   padding: ${glsp(1.5)};
@@ -52,7 +50,6 @@ const StyledDropdown = styled(Dropdown)`
     font-size: 0.875rem;
     padding: 0 0.5rem;
 
-    // @NOTE: This replicates the ui-library-seed's button components styling so this menu item stays consistent with the buttons
     & .${classNamePrefix}-opacity-title {
       padding: 0 0.5rem;
       display: inline-flex;
@@ -112,7 +109,7 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
         <DropMenu>
           <li className={`${classNamePrefix}-opacity`}>
             <div className={`${classNamePrefix}-opacity-title`}>
-              <CollecticonDrop/>
+              <CollecticonDrop />
               Layer opacity
             </div>
             <OpacityControl
@@ -122,17 +119,18 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
           </li>
           <li>
             <LayerMenuButton 
-              variation="base-text"
-              size="small"
-              fitting="baggy"
-              onClick={() => setVisible((v) => !v)}>
+              variation='base-text'
+              size='small'
+              fitting='baggy'
+              onClick={() => setVisible((v) => !v)}
+            >
               {isVisible ? (
-                <CollecticonEye
+                <CollecticonEyeDisabled
                   meaningful
                   title='Toggle dataset visibility'
                 />
               ) : (
-                <CollecticonEyeDisabled
+                <CollecticonEye
                   meaningful
                   title='Toggle dataset visibility'
                 />
@@ -143,47 +141,47 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
           <li>
             {/* // @TODO: Implement moving up action */}
               <LayerMenuButton
-                variation="base-text"
-                size="small"
-                fitting="baggy"
+                variation='base-text'
+                size='small'
+                fitting='baggy'
                 onClick={() => true}
               >
-                <CollecticonArrowUp/>
+                <CollecticonArrowUp />
                 Move up
               </LayerMenuButton>
           </li>
           <li>
             {/* // @TODO: Implement moving down action */}
             <LayerMenuButton
-              variation="base-text"
-              size="small"
-              fitting="baggy"
+              variation='base-text'
+              size='small'
+              fitting='baggy'
               onClick={() => true}
             >
-              <CollecticonArrowDown/>
+              <CollecticonArrowDown />
                 Move down
             </LayerMenuButton>
 
           </li>
           <li>
             <LayerMenuButton
-              variation="base-text"
-              size="small"
-              fitting="baggy"
+              variation='base-text'
+              size='small'
+              fitting='baggy'
               onClick={handleLoadIntoGIS}
             >
-              <CollecticonShare/>
+              <CollecticonShare />
               Load into GIS
             </LayerMenuButton>
           </li>
           <li className={`${classNamePrefix}-remove-layer`}>
             <LayerMenuButton
-              variation="base-text"
-              size="small"
-              fitting="baggy"
+              variation='base-text'
+              size='small'
+              fitting='baggy'
               onClick={handleRemove}
             >
-              <CollecticonXmarkSmall/>
+              <CollecticonXmarkSmall />
               Remove layer
             </LayerMenuButton>
           </li>
