@@ -2,7 +2,7 @@
 id: no2
 name: 'Nitrogen Dioxide'
 featured: true
-description: "Since the outbreak of the novel coronavirus, atmospheric concentrations of nitrogen dioxide have changed by as much as 60% in some regions."
+description: 'Since the outbreak of the novel coronavirus, atmospheric concentrations of nitrogen dioxide have changed by as much as 60% in some regions.'
 usage:
   - url: 'https://nasa-impact.github.io/veda-documentation/timeseries-stac-api.html'
     label: Static notebook
@@ -24,10 +24,10 @@ media:
     url: https://unsplash.com/photos/x6WQeNYJC1w
 taxonomy:
   - name: Grade
-    values: 
+    values:
       - Research
   - name: Uncertainty
-    values: 
+    values:
       - Low
   - name: Topics
     values:
@@ -67,20 +67,6 @@ layers:
       id: polarNorth
     bounds: [-10, 36, -5, 42]
     description: Levels in 10¹⁵ molecules cm⁻². Darker colors indicate higher nitrogen dioxide (NO₂) levels associated and more activity. Lighter colors indicate lower levels of NO₂ and less activity.
-    info:
-      description: |
-        ::markdown 
-        ### Title
-
-        - list item 1
-        - lis item 2
-
-        [A tag test](https://developmentseed.org)
-      table:
-        source: NASA
-        spatialExtent: Global
-        latency: Monthly
-        unit: unit
     zoomExtent:
       - 0
       - 20
@@ -100,18 +86,18 @@ layers:
           return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
         }
     legend:
-      unit: 
+      unit:
         label: Molecules cm3
       type: gradient
-      min: "Less"
-      max: "More"
+      min: 'Less'
+      max: 'More'
       stops:
-        - "#99c5e0"
-        - "#f9eaa9"
-        - "#f7765d"
-        - "#c13b72"
-        - "#461070"
-        - "#050308"
+        - '#99c5e0'
+        - '#f9eaa9'
+        - '#f7765d'
+        - '#c13b72'
+        - '#461070'
+        - '#050308'
     analysis:
       metrics:
         - min
@@ -142,18 +128,18 @@ layers:
         - 0
         - 1.5e16
     legend:
-      unit: 
+      unit:
         label: Molecules cm3
       type: gradient
-      min: "Less"
-      max: "More"
+      min: 'Less'
+      max: 'More'
       stops:
-        - "#99c5e0"
-        - "#f9eaa9"
-        - "#f7765d"
-        - "#c13b72"
-        - "#461070"
-        - "#050308"
+        - '#99c5e0'
+        - '#f9eaa9'
+        - '#f7765d'
+        - '#c13b72'
+        - '#461070'
+        - '#050308'
     analysis:
       exclude: true
   - id: no2-monthly-diff
@@ -179,17 +165,17 @@ layers:
           return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
         }
     legend:
-      unit: 
+      unit:
         label: molecules/cm3
       type: gradient
-      min: "-3934857984753"
-      max: "3348573489573"
+      min: '-3934857984753'
+      max: '3348573489573'
       stops:
-        - "#3A88BD"
-        - "#C9E0ED"
-        - "#E4EEF3"
-        - "#FDDCC9"
-        - "#DD7059"
+        - '#3A88BD'
+        - '#C9E0ED'
+        - '#E4EEF3'
+        - '#FDDCC9'
+        - '#DD7059'
 ---
 
 <Block type='full'>
@@ -217,6 +203,7 @@ During the COVID-19 pandemic, scientists have observed considerable decreases in
 These changes are particularly apparent over large urban areas and economic corridors, which typically have high levels of automobile traffic, airline flights, and other related activity.
 
 NASA has observed subsequent rebounds in nitrogen dioxide levels as the lockdown restrictions ease.
+
 </Prose>
 </Block>
 <Block type='wide'>
@@ -229,6 +216,7 @@ For nitrogen dioxide levels related to COVID-19, NASA uses data collected by the
 OMI, which launched in 2004, preceded TROPOMI, which launched in 2017. While TROPOMI provides higher resolution information, the longer OMI data record provides context for the TROPOMI observations.
 
 Scientists will use these data to investigate how travel bans and lockdown orders related to the novel coronavirus are impacting regional air quality and chemistry, as well as why these restrictions may be having inconsistent effects on air quality around the world.
+
 </Prose>
 </Block>
 
@@ -252,6 +240,7 @@ Nitrogen dioxide has a relatively short lifespan in the atmosphere. Once it is e
 Because nitrogen dioxide is primarily emitted from burning fossil fuels, changes in its atmospheric concentration can be related to changes in human activity, if the data are properly processed and interpreted.
 
 Interpreting satellite NO2 data must be done carefully, as the quantity observed by satellite is not exactly the same as the abundance at ground level, and natural variations in weather (e.g., temperature, wind speed, solar intensity) influence the amount of NO2 in the atmosphere. In addition, the OMI and TROPOMI instruments cannot observe the NO2 abundance underneath clouds. For more information on processing and cautions related to interpreting this data, please click [here](https://airquality.gsfc.nasa.gov/caution-interpretation).
+
 </Prose>
 </Block>
 
@@ -267,13 +256,15 @@ Interpreting satellite NO2 data must be done carefully, as the quantity observed
 * [Nitrogen Dioxide Levels Rebound in China](https://earthobservatory.nasa.gov/images/146741/nitrogen-dioxide-levels-rebound-in-china?utm_source=card_2&utm_campaign=home)
 
 ### Explore the Data
-* [How to Find and Visualize Nitrogen Dioxide Satellite Data](https://earthdata.nasa.gov/learn/articles/feature-articles/health-and-air-quality-articles/find-no2-data)
-* [COVID-19 Data Pathfinder](https://earthdata.nasa.gov/learn/pathfinders/covid-19)
-* [Reductions in Nitrogen Dioxide Associated with Decreased Fossil Fuel Use Resulting from COVID-19 Mitigation](https://svs.gsfc.nasa.gov/4810)
+
+- [How to Find and Visualize Nitrogen Dioxide Satellite Data](https://earthdata.nasa.gov/learn/articles/feature-articles/health-and-air-quality-articles/find-no2-data)
+- [COVID-19 Data Pathfinder](https://earthdata.nasa.gov/learn/pathfinders/covid-19)
+- [Reductions in Nitrogen Dioxide Associated with Decreased Fossil Fuel Use Resulting from COVID-19 Mitigation](https://svs.gsfc.nasa.gov/4810)
 
 ### Explore the Missions
-* [Ozone Monitoring Instrument (OMI)](https://aura.gsfc.nasa.gov/omi.html)
-* [Tropospheric Emissions: Monitoring of Pollution (TEMPO)](http://tempo.si.edu/outreach.html)
-* [Pandora Project](https://pandora.gsfc.nasa.gov/)
-</Prose>
+
+- [Ozone Monitoring Instrument (OMI)](https://aura.gsfc.nasa.gov/omi.html)
+- [Tropospheric Emissions: Monitoring of Pollution (TEMPO)](http://tempo.si.edu/outreach.html)
+- [Pandora Project](https://pandora.gsfc.nasa.gov/)
+  </Prose>
 </Block>
