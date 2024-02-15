@@ -59,6 +59,12 @@ const SearchFieldContainer = styled.div`
     border-radius: ${themeVal('shape.rounded')};
     box-shadow: inset 0 0 0 1px ${themeVal('color.base')};
   }
+  &:focus-within {
+    border-radius: ${themeVal('shape.rounded')};
+    outline-width: 0.25rem;
+    outline-color: ${themeVal('color.primary-200a')};
+    outline-style: solid;
+  }
 `;
 
 const SearchFieldClearable = styled.div<{ isOpen: boolean }>`
