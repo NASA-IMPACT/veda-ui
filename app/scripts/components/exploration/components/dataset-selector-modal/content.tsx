@@ -1,34 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
-import { useAtom } from 'jotai';
-
-import { DatasetData, DatasetLayer } from 'veda';
-import {
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader
-} from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Button } from '@devseed-ui/button';
-import { Subtitle } from '@devseed-ui/typography';
 import {
   CollecticonPlus,
   CollecticonTickSmall,
-  CollecticonXmarkSmall,
   iconDataURI
 } from '@devseed-ui/collecticons';
+import { DatasetLayerCardProps } from './';
 
-import { timelineDatasetsAtom } from '../../atoms/datasets';
-import {
-  allDatasets,
-  datasetLayers,
-  findParentDataset,
-  reconcileDatasets
-} from '../../data-utils';
-
-import RenderModalHeader from './header';
-
+import { DatasetClassification } from '$components/common/dataset-classification';
 import EmptyHub from '$components/common/empty-hub';
 import {
   Card,
@@ -36,9 +16,8 @@ import {
   CardMeta,
   CardTopicsList
 } from '$components/common/card';
-import { DatasetClassification } from '$components/common/dataset-classification';
+import TextHighlight from '$components/common/text-highlight';
 import { CardSourcesList } from '$components/common/card-sources';
-import DatasetMenu from '$components/data-catalog/dataset-menu';
 import { getDatasetPath } from '$utils/routes';
 import {
   getTaxonomy,
@@ -46,17 +25,9 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { Pill } from '$styles/pill';
-import {
-  Actions,
-  useBrowserControls
-} from '$components/common/browse-controls/use-browse-controls';
-import { prepareDatasets, sortOptions } from '$components/data-catalog';
-import Pluralize from '$utils/pluralize';
-import TextHighlight from '$components/common/text-highlight';
 
 const DatasetContainer = styled.div`
-  height: 100%;
-  min-height: 0;
+  height: auto;
   display: flex;
   margin-bottom: ${glsp(2)};
 
@@ -69,6 +40,79 @@ const DatasetContainer = styled.div`
   }
 `;
 
+const SingleDataset = styled.div`
+  padding-bottom : ${glsp(2)};
+  &:not(:last-child) {
+    border-bottom : 1px solid ${themeVal('color.base-200')};
+  }
+`;
+
+const DatasetSelectedLayer = styled.div`
+  background-color: ${themeVal('color.primary')};
+  border-radius: 40px;
+  padding: 0 ${glsp(0.5)};
+  color: ${themeVal('color.surface')}
+`;
+
+const DatasetHeadline = styled.div`
+  display: flex;
+  gap: ${glsp(1)};
+  margin-bottom: ${glsp(1)};
+`;
+const DatasetIntro = styled.div`
+  padding: ${glsp(1)} 0;
+`;
+
+interface ModalContentComponentProps {
+  search: string;
+  selectedIds: string[];
+  displayDatasets: any[];
+  onCheck:  (id:any) => void;
+}
+
+export default function ModalContentComponent(props:ModalContentComponentProps) {
+  const { search, selectedIds, displayDatasets, onCheck } = props;
+  return(<>
+  <DatasetContainer>
+    {displayDatasets.length ? (
+      <div>
+      {displayDatasets.map(currentDataset => (
+        <SingleDataset key={currentDataset.id}>
+          <DatasetIntro>
+            <DatasetHeadline>
+            <h4>{currentDataset.name}</h4>
+            {/* <Subtitle><LayerInfoLiner info={currentDataset.subtitle}/></Subtitle> */}
+            {currentDataset.countSelectedLayers > 0 && <DatasetSelectedLayer><span>{currentDataset.countSelectedLayers} selected </span> </DatasetSelectedLayer>}
+            </DatasetHeadline>
+            <p>{currentDataset.description}</p>
+          </DatasetIntro>
+        <CardList key={currentDataset.id}>
+        {currentDataset.layers.map((datasetLayer) => {
+          return (
+            <li key={datasetLayer.id}>
+              <DatasetLayerCard
+                searchTerm={search}
+                layer={datasetLayer}
+                parent={currentDataset}
+                selected={selectedIds.includes(datasetLayer.id)}
+                onDatasetClick={() => onCheck(datasetLayer.id)}
+              />
+            </li>
+          );
+        })}
+        </CardList>
+        </SingleDataset>
+      ))}
+      </div>
+    ) : (
+      <EmptyHub>
+        There are no datasets to show with the selected filters.
+      </EmptyHub>
+    )}
+  </DatasetContainer>
+         </>);
+}
+
 const LayerCard = styled(Card)<{ checked: boolean }>`
   outline: 4px solid transparent;
   ${({ checked }) =>
@@ -80,7 +124,7 @@ const LayerCard = styled(Card)<{ checked: boolean }>`
   &::before {
     content: '';
     position: absolute;
-    top: 50%;
+    top: 22%;
     left: 50%;
     height: 3rem;
     min-width: 3rem;
@@ -115,6 +159,7 @@ const LayerCard = styled(Card)<{ checked: boolean }>`
       &:before {
         opacity: 1;
         content: 'Selected';
+        color: ${themeVal('color.surface')};
         padding-left: 2.75rem;
         background-image: url(${({ theme }) =>
           iconDataURI(CollecticonTickSmall, {
@@ -129,14 +174,13 @@ const LayerCard = styled(Card)<{ checked: boolean }>`
     `}
 `;
 
-function DatasetLayerCard(props: DatasetLayerProps) {
+function DatasetLayerCard(props: DatasetLayerCardProps) {
   const { parent, layer, onDatasetClick, selected, searchTerm } = props;
 
   const topics = getTaxonomy(parent, TAXONOMY_TOPICS)?.values;
-
   return (
     <LayerCard
-      cardType='cover'
+      cardType='classic'
       checked={selected}
       overline={
         <CardMeta>
@@ -157,14 +201,7 @@ function DatasetLayerCard(props: DatasetLayerProps) {
           {layer.name}
         </TextHighlight>
       }
-      description={
-        <>
-          From:{' '}
-          <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
-            {parent.name}
-          </TextHighlight>
-        </>
-      }
+      description={layer.description}
       imgSrc={layer.media?.src ?? parent.media?.src}
       imgAlt={layer.media?.alt ?? parent.media?.alt}
       footerContent={
@@ -174,7 +211,7 @@ function DatasetLayerCard(props: DatasetLayerProps) {
               <dt>Topics</dt>
               {topics.map((t) => (
                 <dd key={t.id}>
-                  <Pill variation='achromic'>
+                  <Pill variation='primary'>
                     <TextHighlight
                       value={searchTerm}
                       disabled={searchTerm.length < 3}
@@ -186,47 +223,9 @@ function DatasetLayerCard(props: DatasetLayerProps) {
               ))}
             </CardTopicsList>
           ) : null}
-          <DatasetMenu dataset={parent} />
+          {/* <DatasetMenu dataset={parent} /> */}
         </>
       }
     />
   );
-}
-
-export default function ModalContentRender(props) {
-  const { search, selectedIds, displayDatasets, onCheck } = props;
-  return(<>
-  <DatasetContainer>
-    {displayDatasets.length ? (
-      <div>
-      {displayDatasets.map(currentDataset => (
-        <>
-        <h4>{currentDataset.name}</h4>
-        <span>{currentDataset.countSelectedLayers}</span>
-        <p>{currentDataset.description}</p>
-        <CardList key={currentDataset.id}>
-        {currentDataset.layers.map((datasetLayer) => {
-          return (
-            <li key={datasetLayer.id}>
-              <DatasetLayerCard
-                searchTerm={search}
-                layer={datasetLayer}
-                parent={currentDataset}
-                selected={selectedIds.includes(datasetLayer.id)}
-                onDatasetClick={() => onCheck(datasetLayer.id)}
-              />
-            </li>
-          );
-        })}
-        </CardList>
-        </>
-      ))}
-      </div>
-    ) : (
-      <EmptyHub>
-        There are no datasets to show with the selected filters.
-      </EmptyHub>
-    )}
-  </DatasetContainer>
-         </>);
 }

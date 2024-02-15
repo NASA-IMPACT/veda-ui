@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { datasetTaxonomies } from 'veda';
 import {
   ModalHeadline
 } from '@devseed-ui/modal';
 import { Heading } from '@devseed-ui/typography';
 
-import SmartLink from '$components/common/smart-link';
 import BrowseControls from '$components/common/browse-controls';
 import {
   useBrowserControls
@@ -25,7 +25,10 @@ export default function RenderModalHeader () {
     <StyledModalHeadline>
       <Heading size='small'>Data layers</Heading>
       <ModalIntro>
-          <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <SmartLink to={DATASETS_PATH}>Data Catalog</SmartLink>.</p>
+          <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the 
+            <Link to={DATASETS_PATH}>Data Catalog</Link>
+          .
+          </p>
       </ModalIntro>
       <BrowseControls
           {...controlVars}
