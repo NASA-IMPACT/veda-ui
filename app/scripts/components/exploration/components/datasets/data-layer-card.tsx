@@ -90,7 +90,6 @@ const DatasetMetricInfo = styled.div`
   color: ${themeVal('color.base-500')}
 `;
 
-
 export default function DataLayerCard(props: CardProps) {
   const {dataset, datasetAtom, isVisible, setVisible, datasetLegend, parent} = props;
 
