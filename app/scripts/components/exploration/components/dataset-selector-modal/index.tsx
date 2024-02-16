@@ -159,7 +159,8 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
         search,
         taxonomies,
         sortField,
-        sortDir
+        sortDir,
+        filterLayers: true
       })
       .map(dataset => ({
         ...dataset,

@@ -87,7 +87,6 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
           <DatasetIntro>
             <DatasetHeadline>
             <h4>{currentDataset.name}</h4>
-            {/* <Subtitle><LayerInfoLiner info={currentDataset.subtitle}/></Subtitle> */}
             {currentDataset.countSelectedLayers > 0 && <DatasetSelectedLayer><span>{currentDataset.countSelectedLayers} selected </span> </DatasetSelectedLayer>}
             </DatasetHeadline>
             <DatasetDescription>
