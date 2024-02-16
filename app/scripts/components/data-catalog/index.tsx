@@ -93,6 +93,7 @@ export const prepareDatasets = (
         d.description.toLowerCase().includes(searchLower) ||
         d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower)) ||
         d.layers.some((l) => l.name.toLowerCase().includes(searchLower)) ||
+        d.layers.some((l) => l.description.toLowerCase().includes(searchLower)) ||
         topicsTaxonomy?.values.some((t) =>
           t.name.toLowerCase().includes(searchLower)
         )

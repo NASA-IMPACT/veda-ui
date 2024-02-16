@@ -90,7 +90,14 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
             {/* <Subtitle><LayerInfoLiner info={currentDataset.subtitle}/></Subtitle> */}
             {currentDataset.countSelectedLayers > 0 && <DatasetSelectedLayer><span>{currentDataset.countSelectedLayers} selected </span> </DatasetSelectedLayer>}
             </DatasetHeadline>
-            <DatasetDescription>{currentDataset.description}</DatasetDescription>
+            <DatasetDescription>
+              <TextHighlight
+                value={search}
+                disabled={search.length < 3}
+              >
+                {currentDataset.description}
+              </TextHighlight>
+            </DatasetDescription>
           </DatasetIntro>
         <CardList key={currentDataset.id}>
         {currentDataset.layers.map((datasetLayer) => {
@@ -208,7 +215,7 @@ function DatasetLayerCard(props: DatasetLayerCardProps) {
           {layer.name}
         </TextHighlight>
       }
-      description={layer.description}
+      description={<TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>{layer.description}</TextHighlight>}
       imgSrc={layer.media?.src ?? parent.media?.src}
       imgAlt={layer.media?.alt ?? parent.media?.alt}
       footerContent={

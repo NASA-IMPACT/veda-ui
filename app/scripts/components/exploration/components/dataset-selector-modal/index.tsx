@@ -172,7 +172,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   //   (taxonomies && Object.keys(taxonomies).length) ||
   //   search
   // );
-  // console.log(selectedIds);
+
   const isFirstSelection = timelineDatasets.length === 0;
 
   return (
