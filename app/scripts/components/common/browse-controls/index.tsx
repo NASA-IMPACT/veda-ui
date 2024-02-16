@@ -159,7 +159,7 @@ function BrowseControls(props: BrowseControlsProps) {
           fitting='skinny'
           onClick={() => {setShowMoreFilters(value => !value);}}
         >
-          {showMoreFilters? 'Show less' : 'Show more'}
+          {showMoreFilters? 'Hide filters' : 'Show filters'}
         </ShowMorebutton>
       </SearchWrapper>
       {showMoreFilters && 
