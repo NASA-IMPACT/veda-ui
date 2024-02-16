@@ -14,7 +14,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
-  allDatasets as rawAllDatasets,
+  allDatasetsWithEnhancedLayers as allDatasets,
   reconcileDatasets
 } from '../../data-utils';
 import RenderModalHeader from './header';
@@ -77,20 +77,6 @@ interface DatasetSelectorModalProps {
   revealed: boolean;
   close: () => void;
 }
-
-const allDatasets = rawAllDatasets.map(currentDataset => {
-  return {
-    ...currentDataset,
-    layers: currentDataset.layers.map(l => ({
-      ...l,
-      parentDataset: {
-        id: currentDataset.id,
-        name: currentDataset.name
-        // infoDescription: currentDataset.infoDescription,
-      }
-    }))
-  };
-});
 
 const datasetLayers = allDatasets
   .flatMap((dataset) => dataset.layers)
