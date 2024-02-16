@@ -47,7 +47,7 @@ function MetaTags({ title, description, thumbnail, children }) {
 
       {/* Additional javascript */}
       {process.env.CUSTOM_SCRIPT_SRC ? (
-      <script async type='text/javascript' src={process.env.CUSTOM_SCRIPT_SRC} id={process.env.CUSTOM_SCRIPT_ID ? process.env.CUSTOM_SCRIPT_ID: 'custom_script_id'} \>
+      <script async type='text/javascript' src={process.env.CUSTOM_SCRIPT_SRC} id={process.env.CUSTOM_SCRIPT_ID ? process.env.CUSTOM_SCRIPT_ID: 'custom_script_id'} ></script>
       ) : null}
     </Helmet>
   );
