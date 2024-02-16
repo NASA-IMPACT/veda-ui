@@ -9,8 +9,6 @@ const baseUrl = window.location.origin;
 
 const defaultMetaImage = `${process.env.PUBLIC_URL ?? '/'}/meta/meta-image.png`;
 
-const includeGSAScript = process.env.includeGSAScript;
-
 function MetaTags({ title, description, thumbnail, children }) {
   const theme = useTheme();
   const location = useLocation();
@@ -46,9 +44,10 @@ function MetaTags({ title, description, thumbnail, children }) {
       {/* Additional children */}
       {children}
 
+
       {/* Additional javascript */}
       {process.env.CUSTOM_SCRIPT_SRC ? (
-       <script async type="text/javascript" src={process.env.CUSTOM_SCRIPT_SRC} id={process.env.CUSTOM_SCRIPT_ID ? process.env.CUSTOM_SCRIPT_ID: "custom_script_id" } ></script>
+      <script async type='text/javascript' src={process.env.CUSTOM_SCRIPT_SRC} id={process.env.CUSTOM_SCRIPT_ID ? process.env.CUSTOM_SCRIPT_ID: 'custom_script_id'} \>
       ) : null}
     </Helmet>
   );
