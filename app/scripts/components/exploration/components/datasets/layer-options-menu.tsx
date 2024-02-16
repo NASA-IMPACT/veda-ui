@@ -21,6 +21,7 @@ import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks'
 import { SliderInput, SliderInputProps } from '$styles/range-slider';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 
+
 interface LayerMenuOptionsProps {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
   isVisible: boolean;
@@ -72,17 +73,39 @@ const LayerMenuButton = styled(Button)`
 export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
   const { datasetAtom, isVisible, setVisible } = props;
 
-  const [, setDatasets] = useAtom(timelineDatasetsAtom);
+  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
   const dataset = useAtomValue(datasetAtom);
   const [getSettings, setSetting] = useTimelineDatasetSettings(datasetAtom);
   const opacity = (getSettings('opacity') ?? 100) as number;
 
   const [tileModalRevealed, setTileModalRevealed] = useState(false);
 
+  const currentIndex = datasets.findIndex(d => d.data.id === dataset.data.id);
+
   const handleRemove = () => {
-      setDatasets((datasets) =>
-      datasets.filter((d) => d.data.id !== dataset.data.id)
+      setDatasets((prevDatasets) =>
+      prevDatasets.filter((d) => d.data.id !== dataset.data.id)
     );
+  };
+
+  const moveUp = () => {
+    if (currentIndex > 0 ) {
+      setDatasets((prevDatasets) => {
+        const arr = [...prevDatasets];
+        [arr[currentIndex], arr[currentIndex - 1]] = [arr[currentIndex - 1], arr[currentIndex]];
+        return arr;
+      });
+    }
+  };
+
+  const moveDown = () => {
+    if (currentIndex < datasets.length - 1) {
+      setDatasets((prevDatasets) => {
+        const arr = [...prevDatasets];
+        [arr[currentIndex], arr[currentIndex + 1]] = [arr[currentIndex + 1], arr[currentIndex]];
+        return arr;
+      });
+    }
   };
 
   const handleLoadIntoGIS = () => {
@@ -144,7 +167,7 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
                 variation='base-text'
                 size='small'
                 fitting='baggy'
-                onClick={() => true}
+                onClick={moveUp}
               >
                 <CollecticonArrowUp />
                 Move up
@@ -156,7 +179,7 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
               variation='base-text'
               size='small'
               fitting='baggy'
-              onClick={() => true}
+              onClick={moveDown}
             >
               <CollecticonArrowDown />
                 Move down
