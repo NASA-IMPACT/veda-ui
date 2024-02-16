@@ -49,8 +49,8 @@ const DatasetModal = styled(Modal)`
   }
 
   ${ModalBody} {
-    max-height: 100%;
-    height: 400px;
+    height: 100%;
+    min-height: 0;
     overflow-y: auto;
     display: flex;
     flex-flow: column;
@@ -65,8 +65,6 @@ const DatasetModal = styled(Modal)`
     position: sticky;
     bottom: ${glsp(-2)};
     z-index: 100;
-    padding-top: ${glsp(1)};
-    padding-bottom: ${glsp(1)};
     background-color: ${themeVal('color.base-50')};
     box-shadow: 0 -1px 0 0 ${themeVal('color.base-200a')};
     > .selection-info {

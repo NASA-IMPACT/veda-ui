@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { glsp, themeVal, media } from '@devseed-ui/theme-provider';
 import {
   CollecticonPlus,
   CollecticonTickSmall,
@@ -59,8 +59,14 @@ const DatasetHeadline = styled.div`
   gap: ${glsp(1)};
   margin-bottom: ${glsp(1)};
 `;
+const DatasetDescription = styled.p``;
 const DatasetIntro = styled.div`
   padding: ${glsp(1)} 0;
+  ${DatasetDescription} {
+    ${media.largeUp`
+      width: 66%;
+    `}
+  }
 `;
 
 interface ModalContentComponentProps {
@@ -84,7 +90,7 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
             {/* <Subtitle><LayerInfoLiner info={currentDataset.subtitle}/></Subtitle> */}
             {currentDataset.countSelectedLayers > 0 && <DatasetSelectedLayer><span>{currentDataset.countSelectedLayers} selected </span> </DatasetSelectedLayer>}
             </DatasetHeadline>
-            <p>{currentDataset.description}</p>
+            <DatasetDescription>{currentDataset.description}</DatasetDescription>
           </DatasetIntro>
         <CardList key={currentDataset.id}>
         {currentDataset.layers.map((datasetLayer) => {
@@ -158,6 +164,7 @@ const LayerCard = styled(Card)<{ checked: boolean }>`
     css`
       &:before {
         opacity: 1;
+        z-index: 10;
         content: 'Selected';
         color: ${themeVal('color.surface')};
         padding-left: 2.75rem;
