@@ -27,6 +27,10 @@ export const findParentDataset = (layerId: string) => {
   return parentDataset?.data;
 };
 
+export const findParentDatasetAttribute = ({ datasetId, attr }) => {
+  return datasets[datasetId]?.data[attr];
+};
+
 export const allDatasets = Object.values(datasets)
   .map((d) => d!.data)
   .filter((d) => !d.disableExplore);
