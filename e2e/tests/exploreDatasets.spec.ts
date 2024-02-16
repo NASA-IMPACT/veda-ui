@@ -5,7 +5,7 @@ const datasetIds = JSON.parse(fs.readFileSync('e2e/playwrightTestData.json', 'ut
 
 test.describe('catalog card routing', () => {
  for (const dataset of datasetIds) {
-  test.only(`${dataset} routes to dataset details page`, async({
+  test(`${dataset} routes to dataset details page`, async({
     page,
     explorePage,
   }) => {
