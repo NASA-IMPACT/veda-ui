@@ -6,6 +6,7 @@ const fg = require('fast-glob');
 const catalogPaths = fg.globSync('mock/datasets/*.mdx');
 const storyPaths = fg.globSync('mock/stories/*.mdx');
 const catalogNames = [];
+const datasetIds = [];
 const storyNames = [];
 
 const linkTestStories = ['Internal Link Test', 'External Link Test'];
@@ -13,6 +14,7 @@ const linkTestStories = ['Internal Link Test', 'External Link Test'];
 for (const catalog of catalogPaths) {
   const catalogData = matter.read(catalog).data;
   catalogNames.push(catalogData['name']);
+  datasetIds.push(catalogData['id']);
 }
 
 for (const story of storyPaths) {
@@ -24,6 +26,7 @@ for (const story of storyPaths) {
 
 const testDataJson = {
   catalogs: catalogNames,
+  datasetIds: datasetIds,
   stories: storyNames
 };
 

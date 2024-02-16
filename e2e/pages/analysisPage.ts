@@ -8,6 +8,8 @@ export default class AnalysisPage {
   readonly generateAnalysisButton: Locator;
   readonly datasetOptions: Locator;
   readonly datasetCheckbox: Locator;
+  readonly moreOptionsButton: Locator;
+  readonly northAmericaOption: Locator;
 
 
   constructor(page: Page) {
@@ -18,6 +20,8 @@ export default class AnalysisPage {
     this.generateAnalysisButton = this.page.getByRole('link', { name: /Generate analysis/i });
     this.datasetOptions = this.page.getByTestId('datasetOptions');
     this.datasetCheckbox = this.datasetOptions.getByRole('checkbox');
+    this.moreOptionsButton = this.page.getByRole('button', {name: /more options/i });
+    this.northAmericaOption = this.page.getByRole('button', {name: /north america/i });
   }
 
   async drawPolygon (polygonCorners: number[][]) {

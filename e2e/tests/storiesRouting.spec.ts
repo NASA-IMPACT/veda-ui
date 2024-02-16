@@ -24,6 +24,9 @@ test.describe('stories card routing', () => {
     await storyCard.scrollIntoViewIfNeeded();
     await storyCard.click({force: true});
     await expect(datasetPage.header.filter({ hasText: item}), `${item} page should load`).toBeVisible();
+
+    // scroll page to bottom
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     expect(pageErrorCalled, 'no javascript exceptions thrown on page').toBe(false);
   });
  }

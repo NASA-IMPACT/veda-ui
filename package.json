@@ -24,9 +24,7 @@
     "ts-check": "yarn tsc --noEmit --skipLibCheck",
     "test": "jest",
     "pretest:e2e": "node e2e/generateMockTestData.js",
-    "test:e2e": "yarn playwright test",
-    "pretest:config": "node e2e/generateTestData.js",
-    "test:config": "yarn playwright test"
+    "test:e2e": "yarn playwright test"
   },
   "engines": {
     "node": "16.x"
