@@ -59,14 +59,14 @@ const DatasetHeadline = styled.div`
   gap: ${glsp(1)};
   margin-bottom: ${glsp(1)};
 `;
-const DatasetDescription = styled.p``;
+const DatasetDescription = styled.p`
+  ${media.largeUp`
+    width: 66%;
+  `}
+`;
+
 const DatasetIntro = styled.div`
   padding: ${glsp(1)} 0;
-  ${DatasetDescription} {
-    ${media.largeUp`
-      width: 66%;
-    `}
-  }
 `;
 
 interface ModalContentComponentProps {
@@ -78,7 +78,7 @@ interface ModalContentComponentProps {
 
 export default function ModalContentComponent(props:ModalContentComponentProps) {
   const { search, selectedIds, displayDatasets, onCheck } = props;
-  return(<>
+  return(
   <DatasetContainer>
     {displayDatasets.length ? (
       <div>
@@ -87,7 +87,7 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
           <DatasetIntro>
             <DatasetHeadline>
             <h4>{currentDataset.name}</h4>
-            {currentDataset.countSelectedLayers > 0 && <DatasetSelectedLayer><span>{currentDataset.countSelectedLayers} selected </span> </DatasetSelectedLayer>}
+            {currentDataset.countSelectedLayers && <DatasetSelectedLayer><span>{currentDataset.countSelectedLayers} selected </span> </DatasetSelectedLayer>}
             </DatasetHeadline>
             <DatasetDescription>
               <TextHighlight
@@ -122,7 +122,7 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
       </EmptyHub>
     )}
   </DatasetContainer>
-         </>);
+        );
 }
 
 const LayerCard = styled(Card)<{ checked: boolean }>`

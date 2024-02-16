@@ -7,9 +7,9 @@ import { Button } from '@devseed-ui/button';
 import { pluralize } from '$utils/pluralize';
 
 interface ModalFooterComponentProps {
-  selectedIds: string[]; 
-  onConfirm: () => void; 
-  isFirstSelection: boolean;
+  selectedIds: string[];
+  onConfirm: () => void;
+  close: () => void;
 }
 const LayerNumberHighlight = styled.div`
   border-radius: 100%;
@@ -29,7 +29,7 @@ const LayerResult = styled.div`
 `;
 
 export default function ModalFooterRender (props:ModalFooterComponentProps) {
-  const { selectedIds, onConfirm, isFirstSelection } = props;
+  const { selectedIds, close, onConfirm } = props;
   return (
     <>
       <LayerResult aria-live='polite' className='selection-info'>
@@ -37,11 +37,9 @@ export default function ModalFooterRender (props:ModalFooterComponentProps) {
           ? <><LayerNumberHighlight>{selectedIds.length} </LayerNumberHighlight> <div>{pluralize({ singular: 'layer', plural: 'layers', count: selectedIds.length})} selected</div></>
           : 'No data layers selected'}
       </LayerResult>
-      {!isFirstSelection && (
         <Button variation='base-text' onClick={close}>
           Cancel
         </Button>
-      )}
       <Button
         variation='primary-fill'
         disabled={!selectedIds.length}

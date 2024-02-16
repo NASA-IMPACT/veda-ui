@@ -50,7 +50,7 @@ const DatasetModal = styled(Modal)`
 
   ${ModalBody} {
     height: 100%;
-    min-height: 0;
+    min-height: 100%;
     overflow-y: auto;
     display: flex;
     flex-flow: column;
@@ -150,9 +150,8 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     }
   }, [revealed]);
 
-  // Filters are applies to the veda datasets, but then we want to display the
-  // dataset layers since those are shown on the map.
-  const displayDatasets = useMemo(
+  // Filtered datasets for modal display
+  const displayDatasets = useMemo<(DatasetData & {countSelectedLayers: number})[]>(
     () =>
       // TODO: Move function from data-catalog once that page is removed.
       prepareDatasets(allDatasets, {
@@ -168,13 +167,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       })),
     [search, taxonomies, sortField, sortDir, selectedIds]
   );
-
-  // const isFiltering = !!(
-  //   (taxonomies && Object.keys(taxonomies).length) ||
-  //   search
-  // );
-
-  const isFirstSelection = timelineDatasets.length === 0;
 
   return (
     <DatasetModal
@@ -198,7 +190,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       footerContent={
         <ModalFooterRender 
           selectedIds={selectedIds} 
-          isFirstSelection={isFirstSelection} 
+          close={close}
           onConfirm={onConfirm} 
         />
       }
