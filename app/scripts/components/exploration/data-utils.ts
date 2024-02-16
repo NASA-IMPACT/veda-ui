@@ -27,7 +27,7 @@ export const findParentDataset = (layerId: string) => {
   return parentDataset?.data;
 };
 
-export const findParentDatasetAttribute = ({ datasetId, attr }) => {
+export const findDatasetAttribute = ({ datasetId, attr }: {datasetId: string, attr: string}) => {
   return datasets[datasetId]?.data[attr];
 };
 
