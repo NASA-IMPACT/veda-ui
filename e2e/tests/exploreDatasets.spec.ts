@@ -7,8 +7,7 @@ test.describe('catalog card routing', () => {
  for (const dataset of datasetIds) {
   test.only(`${dataset} routes to dataset details page`, async({
     page,
-    catalogPage,
-    datasetPage,
+    explorePage,
   }) => {
     let pageErrorCalled = false;
   // Log all uncaught errors to the terminal to be visible in trace
@@ -23,7 +22,7 @@ test.describe('catalog card routing', () => {
     );
 
     await page.goto(`data-catalog/${dataset}/explore`);
-    await expect(page.getByText('Layers')).toBeVisible();
+    await expect(explorePage.layersHeading).toBeVisible();
 
     const mosaicResponse = await collectionsResponsePromise;
     expect(mosaicResponse.ok(), 'mapbox request should be successful').toBeTruthy();
