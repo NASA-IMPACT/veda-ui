@@ -66,6 +66,7 @@ const MainDropButton = styled(DropButton)`
 const ShowMorebutton = styled(Button)`
   width: 10rem;
   max-width: 10rem;
+  text-decoration: underline;
 `;
 
 const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
@@ -79,7 +80,7 @@ interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
 }
 
 function BrowseControls(props: BrowseControlsProps) {
-  const [ showMoreFilters, setShowMoreFilters ] = useState(false);
+  const [ showFilters, setShowFilters ] = useState(false);
   const {
     taxonomiesOptions,
     taxonomies,
@@ -157,12 +158,12 @@ function BrowseControls(props: BrowseControlsProps) {
           variation='base-text'
           size={isLargeUp ? 'large' : 'medium'}
           fitting='skinny'
-          onClick={() => {setShowMoreFilters(value => !value);}}
+          onClick={() => {setShowFilters(value => !value);}}
         >
-          {showMoreFilters? 'Hide filters' : 'Show filters'}
+          {showFilters? 'Hide filters' : 'Show filters'}
         </ShowMorebutton>
       </SearchWrapper>
-      {showMoreFilters && 
+      {showFilters && 
         <TaxonomyWrapper>
           {taxonomiesOptions.map(({ name, values }) => (
             <DropdownOptions
