@@ -43,6 +43,21 @@ function MetaTags({ title, description, thumbnail, children }) {
 
       {/* Additional children */}
       {children}
+
+      {/* Additional javascript */}
+      {/* @NOTE https://github.com/NASA-IMPACT/veda-ui/pull/846 */}
+      {process.env.CUSTOM_SCRIPT_SRC ? (
+        <script
+          async
+          type='text/javascript'
+          src={process.env.CUSTOM_SCRIPT_SRC}
+          id={
+            process.env.CUSTOM_SCRIPT_ID
+              ? process.env.CUSTOM_SCRIPT_ID
+              : 'custom_script_id'
+          }
+        />
+      ) : null}
     </Helmet>
   );
 }
