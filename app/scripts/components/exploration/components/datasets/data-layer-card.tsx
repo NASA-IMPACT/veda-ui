@@ -58,7 +58,6 @@ const DatasetInfo = styled.div`
   &:active {
     outline: none;
     cursor: grabbing;
-    transform: rotate(2deg);
     filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
   }
 `;
@@ -123,8 +122,7 @@ export default function DataLayerCard(props: CardProps) {
         </Toolbar>
       </DatasetHeadline>
       <DatasetMetricInfo>
-        {/* { @TODO: This needs to be replaced but we need to figure out the data structure we would like to show here} */}
-        <span>Hardcoded: TO BE REPLACED</span>
+        {/* { @TODO: This needs to be replaced with layer information */}
       </DatasetMetricInfo>
       {datasetLegend?.type === 'categorical' && (
         <LayerCategoricalGraphic
