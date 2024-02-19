@@ -3,9 +3,9 @@ import { test, expect } from '../pages/basePage';
 
 const datasetIds = JSON.parse(fs.readFileSync('e2e/playwrightTestData.json', 'utf8')).datasetIds;
 
-test.describe('catalog card routing', () => {
+test.describe('explore dataset', () => {
  for (const dataset of datasetIds) {
-  test(`${dataset} routes to dataset details page`, async({
+  test(`${dataset} explore page functions`, async({
     page,
     explorePage,
   }) => {
