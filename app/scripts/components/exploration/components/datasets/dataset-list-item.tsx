@@ -183,7 +183,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
       <DatasetItem>
         <DatasetHeader>
           <DatasetHeaderInner>
-            <div onPointerDown={(e) => controls.start(e)}>
+            <div style={{width: '100%'}} onPointerDown={(e) => controls.start(e)}>
               <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} parent={parent} />
             </div>
           </DatasetHeaderInner>

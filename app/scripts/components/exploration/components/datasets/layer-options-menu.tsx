@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { PrimitiveAtom, useAtomValue, useAtom } from 'jotai';
 import styled from 'styled-components';
-import { Dropdown, DropMenu } from '@devseed-ui/dropdown';
+import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Button } from '@devseed-ui/button';
 import {
   CollecticonEllipsisVertical,
   CollecticonDrop,
@@ -18,8 +17,9 @@ import { TileUrlModal } from './tile-link-modal';
 import { TipButton } from '$components/common/tip-button';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
-import { SliderInput, SliderInputProps } from '$styles/range-slider';
+import { NativeSliderInput, SliderInputProps } from '$styles/range-slider';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
+
 
 interface LayerMenuOptionsProps {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
@@ -34,12 +34,16 @@ const StyledDropdown = styled(Dropdown)`
   padding: ${glsp(1.5)};
 
   li {
-    padding: ${glsp(0.5)};
+    padding: ${glsp(0.25)};
     border-bottom: 1px solid ${themeVal('color.base-200')};
+    ${DropMenuItem} {
+      cursor:pointer;
+    }
   }
 
   li:last-child {
     border-bottom: 0;
+    padding-bottom: 0;
   }
   li:first-child {
     padding-top: 0;
@@ -57,32 +61,44 @@ const StyledDropdown = styled(Dropdown)`
       gap: 0.25rem;
     }
   }
-
-  & .${classNamePrefix}-remove-layer {
-    button {
-      color: #CF3F02 !important;
-    }
-  }
-`;
-
-const LayerMenuButton = styled(Button)`
-  justify-content: flex-start;
 `;
 
 export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
   const { datasetAtom, isVisible, setVisible } = props;
 
-  const [, setDatasets] = useAtom(timelineDatasetsAtom);
+  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
   const dataset = useAtomValue(datasetAtom);
   const [getSettings, setSetting] = useTimelineDatasetSettings(datasetAtom);
   const opacity = (getSettings('opacity') ?? 100) as number;
 
   const [tileModalRevealed, setTileModalRevealed] = useState(false);
 
+  const currentIndex = datasets.findIndex(d => d.data.id === dataset.data.id);
+
   const handleRemove = () => {
-      setDatasets((datasets) =>
-      datasets.filter((d) => d.data.id !== dataset.data.id)
+      setDatasets((prevDatasets) =>
+      prevDatasets.filter((d) => d.data.id !== dataset.data.id)
     );
+  };
+
+  const moveUp = () => {
+    if (currentIndex > 0 ) {
+      setDatasets((prevDatasets) => {
+        const arr = [...prevDatasets];
+        [arr[currentIndex], arr[currentIndex - 1]] = [arr[currentIndex - 1], arr[currentIndex]];
+        return arr;
+      });
+    }
+  };
+
+  const moveDown = () => {
+    if (currentIndex < datasets.length - 1) {
+      setDatasets((prevDatasets) => {
+        const arr = [...prevDatasets];
+        [arr[currentIndex], arr[currentIndex + 1]] = [arr[currentIndex + 1], arr[currentIndex]];
+        return arr;
+      });
+    }
   };
 
   const handleLoadIntoGIS = () => {
@@ -118,10 +134,7 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
             />
           </li>
           <li>
-            <LayerMenuButton 
-              variation='base-text'
-              size='small'
-              fitting='baggy'
+            <DropMenuItem 
               onClick={() => setVisible((v) => !v)}
             >
               {isVisible ? (
@@ -136,54 +149,45 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
                 />
               )}
               {isVisible ? 'Hide layer' : 'Show layer'}
-            </LayerMenuButton>
+            </DropMenuItem>
           </li>
           <li>
-            {/* // @TODO: Implement moving up action */}
-              <LayerMenuButton
-                variation='base-text'
-                size='small'
-                fitting='baggy'
-                onClick={() => true}
-              >
-                <CollecticonArrowUp />
-                Move up
-              </LayerMenuButton>
+            <DropMenuItem
+              disabled={currentIndex === 0}
+              aria-disabled={currentIndex === 0}
+              onClick={moveUp}
+              data-dropdown='click.close'
+            >
+              <CollecticonArrowUp />
+              Move up
+            </DropMenuItem>
           </li>
           <li>
-            {/* // @TODO: Implement moving down action */}
-            <LayerMenuButton
-              variation='base-text'
-              size='small'
-              fitting='baggy'
-              onClick={() => true}
+            <DropMenuItem
+              disabled={currentIndex === datasets.length -1}
+              aria-disabled={currentIndex === 0}
+              onClick={moveDown}
+              data-dropdown='click.close'
             >
               <CollecticonArrowDown />
                 Move down
-            </LayerMenuButton>
-
+            </DropMenuItem>
           </li>
           <li>
-            <LayerMenuButton
-              variation='base-text'
-              size='small'
-              fitting='baggy'
+            <DropMenuItem
               onClick={handleLoadIntoGIS}
             >
               <CollecticonShare />
               Load into GIS
-            </LayerMenuButton>
+            </DropMenuItem>
           </li>
           <li className={`${classNamePrefix}-remove-layer`}>
-            <LayerMenuButton
-              variation='base-text'
-              size='small'
-              fitting='baggy'
+            <DropMenuItem
               onClick={handleRemove}
             >
               <CollecticonXmarkSmall />
               Remove layer
-            </LayerMenuButton>
+            </DropMenuItem>
           </li>
         </DropMenu>
       </StyledDropdown>
@@ -224,7 +228,7 @@ function OpacityControl(props: SliderInputProps) {
   return (
     <OpacityControlWrapper>
       <OpacityControlElements>
-        <SliderInput value={value} onInput={onInput} />
+        <NativeSliderInput value={value} onInput={onInput} />
         <OpacityValue>{value}</OpacityValue>
       </OpacityControlElements>
     </OpacityControlWrapper>

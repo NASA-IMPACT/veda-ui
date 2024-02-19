@@ -515,7 +515,7 @@ export default function Timeline(props: TimelineProps) {
           Data layers
         </Heading>
         <Button
-          variation='base-text'
+          variation='primary-fill'
           size='small'
           onClick={onDatasetAddClick}
         >
