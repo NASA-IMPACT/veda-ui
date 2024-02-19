@@ -15,7 +15,8 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
   allDatasetsWithEnhancedLayers as allDatasets,
-  reconcileDatasets
+  reconcileDatasets,
+  datasetLayers
 } from '../../data-utils';
 import RenderModalHeader from './header';
 import ModalContentRender from './content';
@@ -78,11 +79,7 @@ interface DatasetSelectorModalProps {
   close: () => void;
 }
 
-const datasetLayers = allDatasets
-  .flatMap((dataset) => dataset.layers)
-  .filter((d) => !d.analysis?.exclude);
-
-  // Filter elements in arr1 that are also included in arr2
+// Filter elements in arr1 that are also included in arr2
 function countOverlap(arr1, arr2) {
   const commonElements = arr1.filter(element => arr2.includes(element));
   return commonElements.length;

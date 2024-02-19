@@ -8,6 +8,7 @@ import {
 } from 'date-fns';
 import { DatasetLayer, datasets } from 'veda';
 import {
+  EnhancedDatasetLayer,
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
@@ -49,8 +50,15 @@ export const allDatasetsWithEnhancedLayers = allDatasets.map(currentDataset => {
 });
 
 export const datasetLayers = Object.values(datasets)
-  .flatMap((dataset) => dataset!.data.layers)
-  .filter((d) => !d.analysis?.exclude);
+  .flatMap((dataset) => {
+    return dataset!.data.layers.map(l => ({
+      ...l,
+      parentDataset: {
+        id: dataset!.data.id,
+        name: dataset!.data.name
+      }
+    }));
+  });
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
@@ -86,7 +94,7 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
  */
 export function reconcileDatasets(
   ids: string[],
-  datasetsList: DatasetLayer[],
+  datasetsList: EnhancedDatasetLayer[],
   reconciledDatasets: TimelineDataset[]
 ): TimelineDataset[] {
   return ids.map((id) => {

@@ -80,8 +80,14 @@ export type TimelineDatasetAnalysis =
   | TimelineDatasetAnalysisSuccess;
 
 // END TimelineDatasetAnalysis type discriminants
+export interface EnhancedDatasetLayer extends DatasetLayer {
+  parentDataset: {
+    id: string;
+    name: string;
+  }
+}
 
-export interface TimelineDatasetData extends DatasetLayer {
+export interface TimelineDatasetData extends EnhancedDatasetLayer {
   isPeriodic: boolean;
   timeDensity: TimeDensity;
   domain: Date[];
@@ -103,7 +109,7 @@ type TimelineDatasetMeta = Record<string, any>;
 // TimelineDataset type discriminants
 export interface TimelineDatasetIdle {
   status: TimelineDatasetStatus.IDLE;
-  data: DatasetLayer;
+  data: EnhancedDatasetLayer;
   error: null;
   // User controlled settings like visibility, opacity.
   settings: TimelineDatasetSettings;
@@ -112,7 +118,7 @@ export interface TimelineDatasetIdle {
 }
 export interface TimelineDatasetLoading {
   status: TimelineDatasetStatus.LOADING;
-  data: DatasetLayer;
+  data: EnhancedDatasetLayer;
   error: null;
   // User controlled settings like visibility, opacity.
   settings: TimelineDatasetSettings;
@@ -121,7 +127,7 @@ export interface TimelineDatasetLoading {
 }
 export interface TimelineDatasetError {
   status: TimelineDatasetStatus.ERROR;
-  data: DatasetLayer;
+  data: EnhancedDatasetLayer;
   error: unknown;
   // User controlled settings like visibility, opacity.
   settings: TimelineDatasetSettings;
