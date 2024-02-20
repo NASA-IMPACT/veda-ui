@@ -6,6 +6,7 @@ import {
   CollecticonTickSmall,
   iconDataURI
 } from '@devseed-ui/collecticons';
+import { DatasetData } from 'veda';
 import { DatasetLayerCardProps } from './';
 
 import { DatasetClassification } from '$components/common/dataset-classification';
@@ -25,7 +26,6 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { Pill } from '$styles/pill';
-
 const DatasetContainer = styled.div`
   height: auto;
   display: flex;
@@ -72,8 +72,10 @@ const DatasetIntro = styled.div`
 interface ModalContentComponentProps {
   search: string;
   selectedIds: string[];
-  displayDatasets: any[];
-  onCheck:  (id:any) => void;
+  displayDatasets: (DatasetData & {
+    countSelectedLayers: number;
+  })[];
+  onCheck: (id: string) => void;
 }
 
 export default function ModalContentComponent(props:ModalContentComponentProps) {
@@ -236,7 +238,6 @@ function DatasetLayerCard(props: DatasetLayerCardProps) {
               ))}
             </CardTopicsList>
           ) : null}
-          {/* <DatasetMenu dataset={parent} /> */}
         </>
       }
     />

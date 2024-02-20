@@ -100,7 +100,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     setSelectedIds(timelineDatasets.map((dataset) => dataset.data.id));
   }, [timelineDatasets]);
 
-  const onCheck = useCallback((id) => {
+  const onCheck = useCallback((id: string) => {
     setSelectedIds((ids) =>
       ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id]
     );
