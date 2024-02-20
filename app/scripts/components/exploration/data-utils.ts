@@ -8,6 +8,7 @@ import {
 } from 'date-fns';
 import { DatasetLayer, datasets } from 'veda';
 import {
+  EnhancedDatasetLayer,
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
@@ -27,13 +28,37 @@ export const findParentDataset = (layerId: string) => {
   return parentDataset?.data;
 };
 
+export const findDatasetAttribute = ({ datasetId, attr }: {datasetId: string, attr: string}) => {
+  return datasets[datasetId]?.data[attr];
+};
+
 export const allDatasets = Object.values(datasets)
   .map((d) => d!.data)
   .filter((d) => !d.disableExplore);
 
+export const allDatasetsWithEnhancedLayers = allDatasets.map(currentDataset => {
+  return {
+    ...currentDataset,
+    layers: currentDataset.layers.map(l => ({
+      ...l,
+      parentDataset: {
+        id: currentDataset.id,
+        name: currentDataset.name
+      }
+    }))
+  };
+});
+
 export const datasetLayers = Object.values(datasets)
-  .flatMap((dataset) => dataset!.data.layers)
-  .filter((d) => !d.analysis?.exclude);
+  .flatMap((dataset) => {
+    return dataset!.data.layers.map(l => ({
+      ...l,
+      parentDataset: {
+        id: dataset!.data.id,
+        name: dataset!.data.name
+      }
+    }));
+  });
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
@@ -69,7 +94,7 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
  */
 export function reconcileDatasets(
   ids: string[],
-  datasetsList: DatasetLayer[],
+  datasetsList: EnhancedDatasetLayer[],
   reconciledDatasets: TimelineDataset[]
 ): TimelineDataset[] {
   return ids.map((id) => {

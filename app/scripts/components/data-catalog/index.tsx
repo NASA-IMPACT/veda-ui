@@ -76,29 +76,49 @@ export const prepareDatasets = (
     taxonomies: Record<string, string> | null;
     sortField: string | null;
     sortDir: string | null;
+    filterLayers: boolean | null;
   }
 ) => {
-  const { sortField, sortDir, search, taxonomies } = options;
+  const { sortField, sortDir, search, taxonomies, filterLayers } = options;
 
   let filtered = [...data];
 
   // Does the free text search appear in specific fields?
   if (search.length >= 3) {
     const searchLower = search.toLowerCase();
-    filtered = filtered.filter((d) => {
-      const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
-      return (
-        d.id.toLowerCase().includes(searchLower) ||
-        d.name.toLowerCase().includes(searchLower) ||
-        d.description.toLowerCase().includes(searchLower) ||
-        d.layers.some((l) => l.stacCol.toLowerCase().includes(searchLower)) ||
-        d.layers.some((l) => l.name.toLowerCase().includes(searchLower)) ||
-        topicsTaxonomy?.values.some((t) =>
-          t.name.toLowerCase().includes(searchLower)
-        )
-      );
-    });
+    // Function to check if searchLower is included in any of the string fields
+    const includesSearchLower = (str) => str.toLowerCase().includes(searchLower);
+    // Function to determine if a layer matches the search criteria
+    const layerMatchesSearch = (layer) => 
+      includesSearchLower(layer.stacCol) ||
+      includesSearchLower(layer.name) ||
+      includesSearchLower(layer.description);
+
+    filtered = filtered
+      .filter((d) => {
+        // Pre-calculate lowercased versions to use in comparisons
+        const idLower = d.id.toLowerCase();
+        const nameLower = d.name.toLowerCase();
+        const descriptionLower = d.description.toLowerCase();
+        const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
+
+        // Check if any of the conditions for including the item are met
+        return (
+          idLower.includes(searchLower) ||
+          nameLower.includes(searchLower) ||
+          descriptionLower.includes(searchLower) ||
+          d.layers.some(layerMatchesSearch) ||
+          topicsTaxonomy?.values.some((t) => includesSearchLower(t.name))
+        );
+      });
+
+      if (filterLayers)
+        filtered = filtered.map((d) => ({
+          ...d,
+          layers: d.layers.filter(layerMatchesSearch),
+        }));
   }
+
 
   taxonomies &&
     Object.entries(taxonomies).forEach(([name, value]) => {
@@ -141,7 +161,8 @@ function DataCatalog() {
         search,
         taxonomies,
         sortField,
-        sortDir
+        sortDir,
+        filterLayers: false
       }),
     [search, taxonomies, sortField, sortDir]
   );

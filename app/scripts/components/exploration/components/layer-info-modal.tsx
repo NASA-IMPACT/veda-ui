@@ -62,6 +62,22 @@ interface LayerInfoModalProps {
   }
 }
 
+export function LayerInfoLiner(props: { info: LayerInfo }) {
+  const { info } = props;
+  return (
+    <span>
+    {Object.keys(info).map((key, idx, arr) => {
+      const currentValue = info[key];
+      return idx !== arr.length - 1 ? (
+        <span>{currentValue} · </span>
+      ) : (
+        <span>{currentValue} </span>
+      );
+    })}
+    </span>
+  );
+}
+
 export default function LayerInfoModal(props: LayerInfoModalProps) {
   const { revealed, close, layerData } = props;
   const { parentData } = layerData;
@@ -78,14 +94,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
           <ModalHeadline>
             <Heading size='medium'>{layerData.name}</Heading>
             <p>
-              {Object.keys(layerData.info).map((key, idx, arr) => {
-                const currentValue = layerData.info[key];
-                return idx !== arr.length - 1 ? (
-                  <span>{currentValue} · </span>
-                ) : (
-                  <span>{currentValue} </span>
-                );
-              })}
+            <LayerInfoLiner info={layerData.info} />
             </p>
           </ModalHeadline>);
       }}
