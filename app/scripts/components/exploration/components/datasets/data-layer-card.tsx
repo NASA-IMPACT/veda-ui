@@ -41,13 +41,19 @@ const Header = styled.header`
   }
 `;
 
+const DatasetCardInfo = styled.div`
+  padding-bottom: 0.5rem;
+  gap: 0rem;
+`;
+
+
 const DatasetInfo = styled.div`
   width: 100%;
   display: flex;
   flex-flow: column;
   gap: 0.5rem;
   background-color: ${themeVal('color.surface')};
-  padding: ${glsp(0.5)};
+  padding: ${glsp(0.5)} ${glsp(1)};
   border-radius: ${themeVal('shape.rounded')};
   border: 1px solid ${themeVal('color.base-200')};
 
@@ -60,6 +66,9 @@ const DatasetInfo = styled.div`
     cursor: grabbing;
     filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
   }
+  ${DatasetCardInfo} {
+    gap: 0rem;
+  }
 `;
 
 const ParentDatasetButton = styled(Button)`
@@ -68,6 +77,7 @@ const ParentDatasetButton = styled(Button)`
   text-transform: none;
   font-size: 0.75rem;
   line-height: 0.75rem;
+  font-weight: normal;
   > svg {
     fill: ${themeVal('color.link')};
   }
@@ -76,12 +86,12 @@ const ParentDatasetButton = styled(Button)`
 const DatasetHeadline = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: ${glsp()};
+  align-items: center;
 `;
 
 const DatasetTitle = styled(Heading)`
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: bold;
+  font-size: 0.875rem;
 `;
 
 const DatasetMetricInfo = styled.div`
@@ -94,36 +104,41 @@ export default function DataLayerCard(props: CardProps) {
 
   return (
     <DatasetInfo className='dataset-info'>
-      <Header>
-        <ParentDatasetButton variation='base-text' size='small' fitting='skinny'>
-          <CollecticonDatasetLayers /> {parent?.name}
-        </ParentDatasetButton>
-      </Header>
-      <DatasetHeadline>
-        <DatasetTitle as='h3' size='xxsmall'>
-          {dataset.data.name}
-        </DatasetTitle>
-        <Toolbar size='small'>
-          <TipButton
-            forwardedAs={Link}
-            tipContent='Layer info'
-            // Using a button instead of a toolbar button because the
-            // latter doesn't support the `forwardedAs` prop.
-            size='small'
-            fitting='skinny'
-            to={getDatasetPath(parent!)}
-          >
-            <CollecticonCircleInformation
-              meaningful
-              title='View dataset page'
-            />
-          </TipButton>
-          <LayerMenuOptions datasetAtom={datasetAtom} isVisible={!!isVisible} setVisible={setVisible} />
-        </Toolbar>
-      </DatasetHeadline>
-      <DatasetMetricInfo>
-        {/* { @TODO: This needs to be replaced with layer information */}
-      </DatasetMetricInfo>
+      <DatasetCardInfo>
+        <Header>
+          <ParentDatasetButton variation='base-text' size='small' fitting='skinny'>
+            <CollecticonDatasetLayers /> {parent?.name}
+          </ParentDatasetButton>
+        </Header>
+        <DatasetHeadline>
+          <DatasetTitle as='h3' size='xxsmall'>
+            {dataset.data.name}
+          </DatasetTitle>
+          <Toolbar size='small'>
+            <TipButton
+              forwardedAs={Link}
+              tipContent='Layer info'
+              // Using a button instead of a toolbar button because the
+              // latter doesn't support the `forwardedAs` prop.
+              size='small'
+              fitting='skinny'
+              to={getDatasetPath(parent!)}
+            >
+              <CollecticonCircleInformation
+                meaningful
+                title='View dataset page'
+              />
+            </TipButton>
+            <LayerMenuOptions datasetAtom={datasetAtom} isVisible={!!isVisible} setVisible={setVisible} />
+          </Toolbar>
+        </DatasetHeadline>
+        
+        <DatasetMetricInfo>
+          {/* { @TODO: This needs to be replaced with layer information */} 
+          {/* { @TODO: This needs to be replaced but we need to figure out the data structure we would like to show here} */}
+          <span>Hardcoded: TO BE REPLACED</span>
+        </DatasetMetricInfo>
+      </DatasetCardInfo>
       {datasetLegend?.type === 'categorical' && (
         <LayerCategoricalGraphic
           type='categorical'

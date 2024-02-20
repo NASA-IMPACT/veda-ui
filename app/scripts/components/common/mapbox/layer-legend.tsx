@@ -142,6 +142,7 @@ const LegendList = styled.dl`
     line-height: 1rem;
     grid-row: 2;
     display: flex;
+    justify-content: space-between;
 
     /* stylelint-disable-next-line no-descending-specificity */
     > * {
