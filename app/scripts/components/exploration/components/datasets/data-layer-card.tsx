@@ -10,7 +10,6 @@ import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
-import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,
@@ -18,8 +17,8 @@ import {
 } from '$components/common/mapbox/layer-legend';
 
 import { findDatasetAttribute } from '$components/exploration/data-utils';
-import { ParentDatset, TimelineDataset } from '$components/exploration/types.d.ts';
-
+import { TimelineDataset } from '$components/exploration/types.d.ts';
+import ParentDatasetLink from '$components/exploration/components/parent-dataset-link';
 interface CardProps {
   dataset: TimelineDataset;
   datasetAtom: PrimitiveAtom<TimelineDataset>;
@@ -64,23 +63,6 @@ const DatasetInfo = styled.div`
   }
 `;
 
-const ParentDatasetLink = styled(Link)<{size: string}>`
-  color: ${themeVal('color.link')};
-  text-align: left;
-  text-transform: none;
-  font-size: ${(props => props.size=='small'? '0.75rem': '1rem')};
-  line-height: 0.75rem;
-  font-weight: normal;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  gap: 0.1rem;
-  > svg {
-    fill: ${themeVal('color.link')};
-  }
-`;
-
 const DatasetHeadline = styled.div`
   display: flex;
   justify-content: space-between;
@@ -98,7 +80,7 @@ const DatasetMetricInfo = styled.div`
 `;
 
 export default function DataLayerCard(props: CardProps) {
-  const {dataset, datasetAtom, isVisible, setVisible, datasetLegend, parent} = props;
+  const { dataset, datasetAtom, isVisible, setVisible, datasetLegend } = props;
   const [revealInfo, setRevealInfo] = React.useState<LayerInfoModalData>();
 
   const onClickLayerInfo = () => {
@@ -107,24 +89,19 @@ export default function DataLayerCard(props: CardProps) {
       name: dataset.data.name,
       info: dataset.data.info,
       parentData: {
-        id: dataset.data.parentDataset.id,
+        ...dataset.data.parentDataset,
         infoDescription: parentInfoDesc
       }
     };
     setRevealInfo(data);
   };
 
-export default function DataLayerCard(props: CardProps) {
-  const {dataset, datasetAtom, isVisible, setVisible, datasetLegend} = props;
-  const { data } = dataset;
   return (
     <>
       <DatasetInfo className='dataset-info'>
         <DatasetCardInfo>
           <Header>
-            <ParentDatasetButton variation='base-text' size='small' fitting='skinny'>
-              <CollecticonDatasetLayers /> {parent?.name}
-            </ParentDatasetButton>
+          <ParentDatasetLink parentDataset={dataset.data.parentDataset} size='small' />
           </Header>
           <DatasetHeadline>
             <DatasetTitle as='h3' size='xxsmall'>

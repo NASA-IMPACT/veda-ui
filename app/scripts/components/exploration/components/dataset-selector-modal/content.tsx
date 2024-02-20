@@ -17,7 +17,7 @@ import {
   CardMeta,
   CardTopicsList
 } from '$components/common/card';
-import { DatasetButton } from '$components/exploration/components/datasets/data-layer-card';
+import ParentDatasetLink from '$components/exploration/components/parent-dataset-link';
 import TextHighlight from '$components/common/text-highlight';
 import { CardSourcesList } from '$components/common/card-sources';
 import { getDatasetPath } from '$utils/routes';
@@ -58,6 +58,7 @@ const DatasetSelectedLayer = styled.div`
 const DatasetHeadline = styled.div`
   display: flex;
   gap: ${glsp(1)};
+  height: 1.5rem;
   margin-bottom: ${glsp(1)};
 `;
 const DatasetDescription = styled.p`
@@ -89,7 +90,7 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
         <SingleDataset key={currentDataset.id}>
           <DatasetIntro>
             <DatasetHeadline>
-            <DatasetButton parentDataset={currentDataset} size='medium' />
+            <ParentDatasetLink parentDataset={currentDataset} size='medium' />
             {currentDataset.countSelectedLayers > 0 && <DatasetSelectedLayer><span>{currentDataset.countSelectedLayers} selected </span> </DatasetSelectedLayer>}
             </DatasetHeadline>
             <DatasetDescription>

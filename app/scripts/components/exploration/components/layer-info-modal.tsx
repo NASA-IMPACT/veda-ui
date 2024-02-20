@@ -9,10 +9,10 @@ import {
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { createButtonStyles } from '@devseed-ui/button';
-import { Heading } from '@devseed-ui/typography';
 
 import { LayerInfo } from 'veda';
 
+import ParentDatasetLink from './parent-dataset-link';
 import SmartLink from '$components/common/smart-link';
 import { getDatasetPath } from '$utils/routes';
 
@@ -54,6 +54,7 @@ export interface LayerInfoModalData {
   info?: LayerInfo;
   parentData: {
     id: string;
+    name: string;
     infoDescription?: string;
   }
 }
@@ -94,7 +95,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
       renderHeadline={() => {
         return (
           <ModalHeadline>
-            <Heading size='medium'>{layerData.name}</Heading>
+            <ParentDatasetLink parentDataset={layerData.parentData} size='medium' />
             <p>
               {
                 layerData.info && (
