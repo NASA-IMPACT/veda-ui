@@ -2,12 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { PrimitiveAtom } from 'jotai';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { DatasetData, LayerLegendCategorical, LayerLegendGradient } from 'veda';
+import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import {
   CollecticonCircleInformation,
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
-import { Button } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
 import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
@@ -17,8 +16,9 @@ import {
   LayerCategoricalGraphic,
   LayerGradientGraphic
 } from '$components/common/mapbox/layer-legend';
-import { TimelineDataset } from '$components/exploration/types.d.ts';
+
 import { findDatasetAttribute } from '$components/exploration/data-utils';
+import { ParentDatset, TimelineDataset } from '$components/exploration/types.d.ts';
 
 interface CardProps {
   dataset: TimelineDataset;
@@ -26,19 +26,12 @@ interface CardProps {
   isVisible: boolean | undefined;
   setVisible: any;
   datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
-  parent: DatasetData | undefined;
 }
 
 const Header = styled.header`
   width: 100%;
   display: flex;
   flex-flow: row;
-
-  a {
-    display: flex;
-    width: 100%;
-    gap: 0.5rem;
-  }
 `;
 
 const DatasetCardInfo = styled.div`
@@ -71,13 +64,18 @@ const DatasetInfo = styled.div`
   }
 `;
 
-const ParentDatasetButton = styled(Button)`
+const ParentDatasetLink = styled(Link)<{size: string}>`
   color: ${themeVal('color.link')};
   text-align: left;
   text-transform: none;
-  font-size: 0.75rem;
+  font-size: ${(props => props.size=='small'? '0.75rem': '1rem')};
   line-height: 0.75rem;
   font-weight: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  gap: 0.1rem;
   > svg {
     fill: ${themeVal('color.link')};
   }
@@ -116,6 +114,9 @@ export default function DataLayerCard(props: CardProps) {
     setRevealInfo(data);
   };
 
+export default function DataLayerCard(props: CardProps) {
+  const {dataset, datasetAtom, isVisible, setVisible, datasetLegend} = props;
+  const { data } = dataset;
   return (
     <>
       <DatasetInfo className='dataset-info'>

@@ -35,7 +35,6 @@ import {
   useAnalysisController,
   useAnalysisDataRequest
 } from '$components/exploration/hooks/use-analysis-data-request';
-import { findParentDataset } from '$components/exploration/data-utils';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -158,9 +157,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
     isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
 
   const datasetLegend = dataset.data.legend;
-
-  const parent = findParentDataset(datasetId);
-
   const analysisMetrics = useMemo(
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
@@ -188,7 +184,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <div style={{width: '100%'}} onPointerDown={onDragging}>
-              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} parent={parent} />
+              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} />
             </div>
           </DatasetHeaderInner>
         </DatasetHeader>
