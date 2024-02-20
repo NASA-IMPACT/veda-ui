@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import { PrimitiveAtom } from 'jotai';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { DatasetData, LayerLegendCategorical, LayerLegendGradient } from 'veda';
@@ -10,15 +9,16 @@ import {
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Button } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
+import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { TipButton } from '$components/common/tip-button';
-import { getDatasetPath } from '$utils/routes';
 import {
   LayerCategoricalGraphic,
   LayerGradientGraphic
 } from '$components/common/mapbox/layer-legend';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
+import { findDatasetAttribute } from '$components/exploration/data-utils';
 
 interface CardProps {
   dataset: TimelineDataset;
@@ -101,59 +101,80 @@ const DatasetMetricInfo = styled.div`
 
 export default function DataLayerCard(props: CardProps) {
   const {dataset, datasetAtom, isVisible, setVisible, datasetLegend, parent} = props;
+  const [revealInfo, setRevealInfo] = React.useState<LayerInfoModalData>();
+
+  const onClickLayerInfo = () => {
+    const parentInfoDesc = findDatasetAttribute({datasetId: dataset.data.parentDataset.id, attr: 'infoDescription'});
+    const data: LayerInfoModalData = {
+      name: dataset.data.name,
+      info: dataset.data.info,
+      parentData: {
+        id: dataset.data.parentDataset.id,
+        infoDescription: parentInfoDesc
+      }
+    };
+    setRevealInfo(data);
+  };
 
   return (
-    <DatasetInfo className='dataset-info'>
-      <DatasetCardInfo>
-        <Header>
-          <ParentDatasetButton variation='base-text' size='small' fitting='skinny'>
-            <CollecticonDatasetLayers /> {parent?.name}
-          </ParentDatasetButton>
-        </Header>
-        <DatasetHeadline>
-          <DatasetTitle as='h3' size='xxsmall'>
-            {dataset.data.name}
-          </DatasetTitle>
-          <Toolbar size='small'>
-            <TipButton
-              forwardedAs={Link}
-              tipContent='Layer info'
-              // Using a button instead of a toolbar button because the
-              // latter doesn't support the `forwardedAs` prop.
-              size='small'
-              fitting='skinny'
-              to={getDatasetPath(parent!)}
-            >
-              <CollecticonCircleInformation
-                meaningful
-                title='View dataset page'
-              />
-            </TipButton>
-            <LayerMenuOptions datasetAtom={datasetAtom} isVisible={!!isVisible} setVisible={setVisible} />
-          </Toolbar>
-        </DatasetHeadline>
-        
-        <DatasetMetricInfo>
-          {/* { @TODO: This needs to be replaced with layer information */} 
-          {/* { @TODO: This needs to be replaced but we need to figure out the data structure we would like to show here} */}
-          <span>Hardcoded: TO BE REPLACED</span>
-        </DatasetMetricInfo>
-      </DatasetCardInfo>
-      {datasetLegend?.type === 'categorical' && (
-        <LayerCategoricalGraphic
-          type='categorical'
-          stops={datasetLegend.stops}
+    <>
+      <DatasetInfo className='dataset-info'>
+        <DatasetCardInfo>
+          <Header>
+            <ParentDatasetButton variation='base-text' size='small' fitting='skinny'>
+              <CollecticonDatasetLayers /> {parent?.name}
+            </ParentDatasetButton>
+          </Header>
+          <DatasetHeadline>
+            <DatasetTitle as='h3' size='xxsmall'>
+              {dataset.data.name}
+            </DatasetTitle>
+            <Toolbar size='small'>
+              <TipButton
+                tipContent='Layer info'
+                // Using a button instead of a toolbar button because the
+                // latter doesn't support the `forwardedAs` prop.
+                size='small'
+                fitting='skinny'
+                onClick={onClickLayerInfo}
+              >
+                <CollecticonCircleInformation
+                  meaningful
+                  title='View dataset page'
+                />
+              </TipButton>
+              <LayerMenuOptions datasetAtom={datasetAtom} isVisible={!!isVisible} setVisible={setVisible} />
+            </Toolbar>
+          </DatasetHeadline>
+          
+          <DatasetMetricInfo>
+            {/* { @TODO: This needs to be replaced with layer information */} 
+            {/* { @TODO: This needs to be replaced but we need to figure out the data structure we would like to show here} */}
+            <span>Hardcoded: TO BE REPLACED</span>
+          </DatasetMetricInfo>
+        </DatasetCardInfo>
+        {datasetLegend?.type === 'categorical' && (
+          <LayerCategoricalGraphic
+            type='categorical'
+            stops={datasetLegend.stops}
+          />
+        )}
+        {datasetLegend?.type === 'gradient' && (
+          <LayerGradientGraphic
+            type='gradient'
+            stops={datasetLegend.stops}
+            min={datasetLegend.min}
+            max={datasetLegend.max}
+          />
+        )}
+      </DatasetInfo>
+      {revealInfo && (
+        <LayerInfoModal
+          revealed={!!revealInfo}
+          close={() => setRevealInfo(undefined)}
+          layerData={revealInfo}
         />
       )}
-      {datasetLegend?.type === 'gradient' && (
-        <LayerGradientGraphic
-          type='gradient'
-          stops={datasetLegend.stops}
-          min={datasetLegend.min}
-          max={datasetLegend.max}
-        />
-      )}
-
-    </DatasetInfo>
+    </>
   );
 }
