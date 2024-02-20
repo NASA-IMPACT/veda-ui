@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { media } from '@devseed-ui/theme-provider';
 import { datasetTaxonomies } from 'veda';
 import {
   ModalHeadline
@@ -15,7 +16,11 @@ import { sortOptions } from '$components/data-catalog';
 import { DATASETS_PATH } from '$utils/routes';
 
 const StyledModalHeadline = styled(ModalHeadline)``;
-const ModalIntro = styled.div``;
+const ModalIntro = styled.div`
+  ${media.largeUp`
+    width: 66%;
+  `}
+`;
 
 export default function RenderModalHeader () {
   const controlVars = useBrowserControls({

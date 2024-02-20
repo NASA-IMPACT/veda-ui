@@ -166,7 +166,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
           search={search} 
           selectedIds={selectedIds} 
           displayDatasets={displayDatasets} 
-          // isFiltering={isFiltering}
           onCheck={onCheck}
         /> 
       }
