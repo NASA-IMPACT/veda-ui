@@ -49,17 +49,19 @@ const ButtonStyleLink = styled(SmartLink)<any>`
   }
 `;
 
+export interface LayerInfoModalData {
+  name: string;
+  info?: LayerInfo;
+  parentData: {
+    id: string;
+    infoDescription?: string;
+  }
+}
+
 interface LayerInfoModalProps {
   revealed: boolean;
   close: () => void;
-  layerData: {
-    name: string;
-    info: LayerInfo;
-    parentData: {
-      id: string;
-      infoDescription?: string;
-    }
-  }
+  layerData: LayerInfoModalData
 }
 
 export function LayerInfoLiner(props: { info: LayerInfo }) {
@@ -94,12 +96,16 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
           <ModalHeadline>
             <Heading size='medium'>{layerData.name}</Heading>
             <p>
-            <LayerInfoLiner info={layerData.info} />
+              {
+                layerData.info && (
+                  <LayerInfoLiner info={layerData.info} />
+                )
+              }
             </p>
           </ModalHeadline>);
       }}
       content={
-        <div dangerouslySetInnerHTML={{__html: parentData.infoDescription?? 'Layer Information unvailable.' }} />
+        <div dangerouslySetInnerHTML={{__html: parentData.infoDescription?? 'Currently, we are unable to display the layer information, but you can find it in the data catalog.' }} />
       }
       footerContent={
         <ButtonStyleLink to={dataCatalogPage} onClick={close} variation='primary-fill' size='medium'>

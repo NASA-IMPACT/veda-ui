@@ -171,6 +171,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
   };
 
   return (
+    <>
     <Reorder.Item
       ref={datasetLiRef}
       value={dataset}
@@ -260,6 +261,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
         </DatasetData>
       </DatasetItem>
     </Reorder.Item>
+    </>
   );
 }
 
