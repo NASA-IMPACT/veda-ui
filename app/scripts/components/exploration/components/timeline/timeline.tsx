@@ -94,6 +94,7 @@ const TimelineHeader = styled.header`
   display: flex;
   flex-shrink: 0;
   box-shadow: 0 1px 0 0 ${themeVal('color.base-200')};
+  background-color: ${themeVal('color.base-50')};
 `;
 
 const TimelineDetails = styled.div`
@@ -101,7 +102,7 @@ const TimelineDetails = styled.div`
   flex-shrink: 0;
   box-shadow: 1px 0 0 0 ${themeVal('color.base-200')},
     0 1px 0 0 ${themeVal('color.base-200')};
-  padding: ${glsp(1.75, 0.5, 0.5, 2)};
+  padding: ${glsp(1.75, 1, 0, 2)};
   z-index: 1;
 `;
 
@@ -145,6 +146,9 @@ const LayerActionBox = styled.div`
   svg {
     fill: ${themeVal('color.base-300')}
   }
+`;
+const TimelineHeading = styled(Heading)`
+ font-size: 0.875rem;
 `;
 
 interface TimelineProps {
@@ -510,11 +514,11 @@ export default function Timeline(props: TimelineProps) {
   const CommonTimelineHeadline = () => {
     return (
       <Headline>
-        <Heading as='h2' size='xsmall'>
+        <TimelineHeading as='h2'>
           Data layers
-        </Heading>
+        </TimelineHeading>
         <Button
-          variation='base-text'
+          variation='primary-fill'
           size='small'
           onClick={onDatasetAddClick}
         >

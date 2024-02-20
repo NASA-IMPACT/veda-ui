@@ -14,10 +14,6 @@ export interface RangeSliderInputProps {
   defaultValue?: [number, number];
   value: [number, number];
   onInput: (v: [number, number]) => void;
-  // onThumbDragStart;
-  // onThumbDragEnd;
-  // onRangeDragStart;
-  // onRangeDragEnd;
   disabled?: boolean;
   rangeSlideDisabled?: boolean;
   thumbsDisabled?: [boolean, boolean];
@@ -72,4 +68,21 @@ export function SliderInput(props: SliderInputProps) {
       rangeSlideDisabled
     />
   );
+}
+
+
+// @TECH-DEBT: We need to pass 'onPointerDownCapture' to HTML element to prevent dragging event from propagating.
+// But existing input element uses Third party library, which makes it impossible to pass this even to HTML element level
+// This element was created to provide a fast solution for this problem. In the future, we have to deprecate the one from the top
+export function NativeSliderInput(props: SliderInputProps) {
+  const { value, onInput, ...rest } = props;
+  return (
+    <input 
+      type='range'
+      {...rest}
+      value={value}
+      onPointerDownCapture={e => e.stopPropagation()}
+      onChange={e => onInput(parseInt(e.target.value))}
+      defaultValue={100}
+    />);
 }

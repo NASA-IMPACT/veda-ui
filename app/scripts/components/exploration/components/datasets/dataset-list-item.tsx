@@ -1,21 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 import { addDays, subDays, areIntervalsOverlapping } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { ScaleTime } from 'd3';
-import {
-  CollecticonCircleInformation,
-  CollecticonEye,
-  CollecticonEyeDisabled,
-  CollecticonGripVertical
-} from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Toolbar } from '@devseed-ui/toolbar';
-import { Heading } from '@devseed-ui/typography';
-
 import {
   DatasetPopover,
   getInteractionDataPoint,
@@ -26,13 +16,8 @@ import {
   DatasetTrackLoading
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
-import DatasetOptions from './dataset-options';
 import { getBlockBoundaries, lumpBlocks } from './block-utils';
-
-import {
-  LayerCategoricalGraphic,
-  LayerGradientGraphic
-} from '$components/common/mapbox/layer-legend';
+import DataLayerCard from './data-layer-card';
 import {
   TimelineDatasetStatus,
   TimelineDatasetSuccess
@@ -50,15 +35,12 @@ import {
   useAnalysisController,
   useAnalysisDataRequest
 } from '$components/exploration/hooks/use-analysis-data-request';
-import { getDatasetPath } from '$utils/routes';
 import { findParentDataset } from '$components/exploration/data-utils';
-import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
 
 const DatasetItem = styled.article`
   width: 100%;
   display: flex;
   position: relative;
-
   ::before,
   ::after {
     position: absolute;
@@ -86,33 +68,11 @@ const DatasetHeader = styled.header`
 
 const DatasetHeaderInner = styled.div`
   box-shadow: 1px 1px 0 0 ${themeVal('color.base-200')};
-  background: ${themeVal('color.surface')};
+  background-color: ${themeVal('color.base-50')};
   padding: ${glsp(0.5)};
   display: flex;
   align-items: center;
   gap: 0.5rem;
-
-  ${CollecticonGripVertical} {
-    cursor: grab;
-    color: ${themeVal('color.base-300')};
-
-    &:active {
-      cursor: grabbing;
-    }
-  }
-`;
-
-const DatasetInfo = styled.div`
-  width: 100%;
-  display: flex;
-  flex-flow: column;
-  gap: 0.5rem;
-`;
-
-const DatasetHeadline = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: ${glsp()};
 `;
 
 const DatasetData = styled.div`
@@ -199,10 +159,16 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const datasetLegend = dataset.data.legend;
 
+  const parent = findParentDataset(datasetId);
+
   const analysisMetrics = useMemo(
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
   );
+
+  const onDragging = (e) => {
+    controls.start(e);
+  };
 
   return (
     <Reorder.Item
@@ -221,62 +187,9 @@ export function DatasetListItem(props: DatasetListItemProps) {
       <DatasetItem>
         <DatasetHeader>
           <DatasetHeaderInner>
-            <CollecticonGripVertical onPointerDown={(e) => controls.start(e)} />
-            <DatasetInfo>
-              <DatasetHeadline>
-                <Heading as='h3' size='xsmall'>
-                  {dataset.data.name}
-                </Heading>
-                <Toolbar size='small'>
-                  <TipButton
-                    forwardedAs={Link}
-                    tipContent='Go to dataset information page'
-                    // Using a button instead of a toolbar button because the
-                    // latter doesn't support the `forwardedAs` prop.
-                    size='small'
-                    fitting='skinny'
-                    to={getDatasetPath(findParentDataset(datasetId)!)}
-                  >
-                    <CollecticonCircleInformation
-                      meaningful
-                      title='View dataset page'
-                    />
-                  </TipButton>
-                  <DatasetOptions datasetAtom={datasetAtom} />
-                  <TipToolbarIconButton
-                    tipContent={isVisible ? 'Hide layer' : 'Show layer'}
-                    onClick={() => setVisible((v) => !v)}
-                  >
-                    {isVisible ? (
-                      <CollecticonEye
-                        meaningful
-                        title='Toggle dataset visibility'
-                      />
-                    ) : (
-                      <CollecticonEyeDisabled
-                        meaningful
-                        title='Toggle dataset visibility'
-                      />
-                    )}
-                  </TipToolbarIconButton>
-                </Toolbar>
-              </DatasetHeadline>
-              {datasetLegend?.type === 'categorical' && (
-                <LayerCategoricalGraphic
-                  type='categorical'
-                  stops={datasetLegend.stops}
-                />
-              )}
-              {datasetLegend?.type === 'gradient' && (
-                <LayerGradientGraphic
-                  type='gradient'
-                  stops={datasetLegend.stops}
-                  unit={datasetLegend.unit}
-                  min={datasetLegend.min}
-                  max={datasetLegend.max}
-                />
-              )}
-            </DatasetInfo>
+            <div style={{width: '100%'}} onPointerDown={onDragging}>
+              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} parent={parent} />
+            </div>
           </DatasetHeaderInner>
         </DatasetHeader>
         <DatasetData>
