@@ -8,7 +8,7 @@ import {
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
-
+import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { TipButton } from '$components/common/tip-button';
 import {
@@ -81,6 +81,7 @@ const DatasetMetricInfo = styled.div`
 
 export default function DataLayerCard(props: CardProps) {
   const { dataset, datasetAtom, isVisible, setVisible, datasetLegend, onClickLayerInfo } = props;
+  const layerInfo = dataset.data.info;
 
   return (
     <>
@@ -113,9 +114,11 @@ export default function DataLayerCard(props: CardProps) {
           </DatasetHeadline>
           
           <DatasetMetricInfo>
-            {/* { @TODO: This needs to be replaced with layer information */} 
-            {/* { @TODO: This needs to be replaced but we need to figure out the data structure we would like to show here} */}
-            <span>Hardcoded: TO BE REPLACED</span>
+            {
+              layerInfo && (
+                <LayerInfoLiner info={layerInfo} /> 
+              )
+            }
           </DatasetMetricInfo>
         </DatasetCardInfo>
         {datasetLegend?.type === 'categorical' && (
