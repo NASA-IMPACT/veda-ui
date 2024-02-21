@@ -3,16 +3,16 @@ import styled from 'styled-components';
 
 import {
   Modal,
+  ModalHeader,
   ModalBody,
   ModalFooter,
   ModalHeadline
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { createButtonStyles } from '@devseed-ui/button';
-import { Heading } from '@devseed-ui/typography';
-
 import { LayerInfo } from 'veda';
 
+import ParentDatasetLink from './parent-dataset-link';
 import SmartLink from '$components/common/smart-link';
 import { getDatasetPath } from '$utils/routes';
 
@@ -22,6 +22,13 @@ const DatasetModal = styled(Modal)`
   > div {
     display: flex;
     flex-flow: column;
+  }
+  ${ModalHeader} {
+    align-items: start;
+  }
+  ${ModalHeadline} {
+    align-items: flex-start;
+    justify-content: flex-start;
   }
 
   ${ModalBody} {
@@ -41,7 +48,9 @@ const DatasetModal = styled(Modal)`
     z-index: 100;
   }
 `;
-
+const ParentDatasetHeading = styled.h2`
+  padding: ${glsp(0.5)} 0;
+`;
 
 const ButtonStyleLink = styled(SmartLink)<any>`
   &&& {
@@ -54,6 +63,7 @@ export interface LayerInfoModalData {
   info?: LayerInfo;
   parentData: {
     id: string;
+    name: string;
     infoDescription?: string;
   }
 }
@@ -94,7 +104,8 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
       renderHeadline={() => {
         return (
           <ModalHeadline>
-            <Heading size='medium'>{layerData.name}</Heading>
+            <ParentDatasetLink parentDataset={layerData.parentData} size='small' />
+            <ParentDatasetHeading> {layerData.name} </ParentDatasetHeading>
             <p>
               {
                 layerData.info && (

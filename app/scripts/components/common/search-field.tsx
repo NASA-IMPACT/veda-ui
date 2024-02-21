@@ -71,7 +71,7 @@ const SearchFieldClearable = styled.div<{ isOpen: boolean }>`
   display: flex;
   overflow: hidden;
   transition: max-width 320ms ease-in-out;
-  max-width: 0;
+  max-width: 100%;
   ${({ isOpen }) =>
     isOpen &&
     css`

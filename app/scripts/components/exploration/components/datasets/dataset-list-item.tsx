@@ -11,6 +11,7 @@ import {
   getInteractionDataPoint,
   usePopover
 } from '../chart-popover';
+import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
 import {
   DatasetTrackError,
   DatasetTrackLoading
@@ -18,6 +19,7 @@ import {
 import { DatasetChart } from './dataset-chart';
 import { getBlockBoundaries, lumpBlocks } from './block-utils';
 import DataLayerCard from './data-layer-card';
+import { findDatasetAttribute } from '$components/exploration/data-utils';
 import {
   TimelineDatasetStatus,
   TimelineDatasetSuccess
@@ -35,7 +37,6 @@ import {
   useAnalysisController,
   useAnalysisDataRequest
 } from '$components/exploration/hooks/use-analysis-data-request';
-import { findParentDataset } from '$components/exploration/data-utils';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -100,7 +101,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const { isAnalyzing, runAnalysis } = useAnalysisController();
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
-
+  const [modalLayerInfo, setModalLayerInfo] = React.useState<LayerInfoModalData>();
   const queryClient = useQueryClient();
 
   const retryDatasetMetadata = useCallback(() => {
@@ -112,6 +113,19 @@ export function DatasetListItem(props: DatasetListItemProps) {
       { throwOnError: false }
     );
   }, [queryClient, datasetId]);
+
+  const onClickLayerInfo = useCallback(() => {
+    const parentInfoDesc = findDatasetAttribute({datasetId: dataset.data.parentDataset.id, attr: 'infoDescription'});
+    const data: LayerInfoModalData = {
+      name: dataset.data.name,
+      info: dataset.data.info,
+      parentData: {
+        ...dataset.data.parentDataset,
+        infoDescription: parentInfoDesc
+      }
+    };
+    setModalLayerInfo(data);
+  }, [dataset]);
 
   const controls = useDragControls();
 
@@ -158,9 +172,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
     isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
 
   const datasetLegend = dataset.data.legend;
-
-  const parent = findParentDataset(datasetId);
-
   const analysisMetrics = useMemo(
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
@@ -188,8 +199,15 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <div style={{width: '100%'}} onPointerDown={onDragging}>
-              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} parent={parent} />
+              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} onClickLayerInfo={onClickLayerInfo} />
             </div>
+            {modalLayerInfo && (
+              <LayerInfoModal
+                revealed={!!modalLayerInfo}
+                close={() => setModalLayerInfo(undefined)}
+                layerData={modalLayerInfo}
+              />
+            )}
           </DatasetHeaderInner>
         </DatasetHeader>
         <DatasetData>

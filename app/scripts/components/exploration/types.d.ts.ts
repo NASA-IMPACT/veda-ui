@@ -80,11 +80,12 @@ export type TimelineDatasetAnalysis =
   | TimelineDatasetAnalysisSuccess;
 
 // END TimelineDatasetAnalysis type discriminants
+export interface ParentDatset {
+  id: string;
+  name: string;
+}
 export interface EnhancedDatasetLayer extends DatasetLayer {
-  parentDataset: {
-    id: string;
-    name: string;
-  }
+  parentDataset: ParentDatset;
 }
 
 export interface TimelineDatasetData extends EnhancedDatasetLayer {
