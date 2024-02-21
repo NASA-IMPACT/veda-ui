@@ -8,7 +8,7 @@ import {
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
-import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
+
 import LayerMenuOptions from './layer-options-menu';
 import { TipButton } from '$components/common/tip-button';
 import {
@@ -16,7 +16,6 @@ import {
   LayerGradientGraphic
 } from '$components/common/mapbox/layer-legend';
 
-import { findDatasetAttribute } from '$components/exploration/data-utils';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import ParentDatasetLink from '$components/exploration/components/parent-dataset-link';
 interface CardProps {
@@ -24,6 +23,7 @@ interface CardProps {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
   isVisible: boolean | undefined;
   setVisible: any;
+  onClickLayerInfo: () => void;
   datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
 }
 
@@ -80,21 +80,7 @@ const DatasetMetricInfo = styled.div`
 `;
 
 export default function DataLayerCard(props: CardProps) {
-  const { dataset, datasetAtom, isVisible, setVisible, datasetLegend } = props;
-  const [revealInfo, setRevealInfo] = React.useState<LayerInfoModalData>();
-
-  const onClickLayerInfo = () => {
-    const parentInfoDesc = findDatasetAttribute({datasetId: dataset.data.parentDataset.id, attr: 'infoDescription'});
-    const data: LayerInfoModalData = {
-      name: dataset.data.name,
-      info: dataset.data.info,
-      parentData: {
-        ...dataset.data.parentDataset,
-        infoDescription: parentInfoDesc
-      }
-    };
-    setRevealInfo(data);
-  };
+  const { dataset, datasetAtom, isVisible, setVisible, datasetLegend, onClickLayerInfo } = props;
 
   return (
     <>
@@ -114,6 +100,7 @@ export default function DataLayerCard(props: CardProps) {
                 // latter doesn't support the `forwardedAs` prop.
                 size='small'
                 fitting='skinny'
+                onPointerDownCapture={e => e.stopPropagation()}
                 onClick={onClickLayerInfo}
               >
                 <CollecticonCircleInformation
@@ -146,13 +133,6 @@ export default function DataLayerCard(props: CardProps) {
           />
         )}
       </DatasetInfo>
-      {revealInfo && (
-        <LayerInfoModal
-          revealed={!!revealInfo}
-          close={() => setRevealInfo(undefined)}
-          layerData={revealInfo}
-        />
-      )}
     </>
   );
 }
