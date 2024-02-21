@@ -11,7 +11,7 @@ usage:
     title: 'Sample Data Notebook'
   - url: 'https://hub.ghg.center/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FUS-GHG-Center%2Fghgc-docs&urlpath=tree%2Fghgc-docs%2Fuser_data_notebooks%2Fcasagfed-carbonflux-monthgrid-v3_User_Notebook.ipynb&branch=main'
     label: Run example notebook
-    title: Interactive Session in the US GHG Center JupyterHub (requires account) 
+    title: Interactive Session in the US GHG Center JupyterHub (requires account)
   - url: https://dljsq618eotzp.cloudfront.net/browseui/index.html#casagfed-carbonflux-monthgrid-v3/
     label: Browse and download the data
     title: Data Browser
@@ -33,6 +33,15 @@ taxonomy:
   - name: Product Type
     values:
       - Model Output
+infoDescription: |
+  ::markdown
+    - Temporal Extent: January 2000 - December 2021
+    - Temporal Resolution: Monthly
+    - Spatial Extent: Global
+    - Spatial Resolution: 1 km x 1 km
+    - Data Units: Tons of carbon per 1 km x 1 km cell (monthly total)
+    - Data Type: Research
+    - Data Latency: Updated annually, following the release of an updated [BP Statistical Review of World Energy report]
 layers:
   - id: casa-gfed-co2-flux
     stacApiEndpoint: https://ghg.center/api/stac
@@ -78,6 +87,11 @@ layers:
         - '#C10E51'
         - '#92003F'
         - '#67001F'
+    info:
+      source: NASA
+      spatialExtent: Global
+      latency: Monthly
+      unit: 10¹⁵ molecules cm⁻²
   - id: casa-gfed-co2-flux-hr
     stacApiEndpoint: https://ghg.center/api/stac
     tileApiEndpoint: https://ghg.center/api/raster
@@ -88,7 +102,7 @@ layers:
     initialDatetime: newest
     projection:
       id: 'equirectangular'
-    basemapId: 'light' 
+    basemapId: 'light'
     zoomExtent:
       - 0
       - 20
@@ -128,7 +142,7 @@ layers:
     stacCol: casagfed-carbonflux-monthgrid-v3
     name: Net Ecosystem Exchange (NEE)
     type: raster
-    description:  Model-estimated net ecosystem exchange (NEE), which is the net carbon flux to the atmosphere
+    description: Model-estimated net ecosystem exchange (NEE), which is the net carbon flux to the atmosphere
     initialDatetime: newest
     projection:
       id: 'equirectangular'
@@ -174,7 +188,7 @@ layers:
     initialDatetime: newest
     projection:
       id: 'equirectangular'
-    basemapId: 'light' 
+    basemapId: 'light'
     zoomExtent:
       - 0
       - 20
@@ -306,5 +320,6 @@ layers:
     - [Data Workflow](https://us-ghg-center.github.io/ghgc-docs/data_workflow/casagfed-carbonflux-monthgrid-v3_Data_Flow.html)
     - [Data Transformation Code](https://us-ghg-center.github.io/ghgc-docs/cog_transformation/casagfed-carbonflux-monthgrid-v3.html)
     - [US GHG Center Data Intake Processing and Verification Report](https://us-ghg-center.github.io/ghgc-docs/processing_and_verification_reports/casagfed-carbonflux-monthgrid-v3_Processing%20and%20Verification%20Report.html)
+
   </Prose>
 </Block>
