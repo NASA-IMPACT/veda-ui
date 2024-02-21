@@ -61,6 +61,7 @@ usage: Usage[]
   - url: string
     label: string
     title: string
+infoDescription: markdown 
 ---
 
 <Block>
@@ -172,7 +173,22 @@ usage:
     label: Run example notebook
     title: 'Interactive session in VEDA 2i2c JupyterHub (requires account)'
 ```
+**infoDescription**
 
+The infoDescription attribute provides detailed metadata about a dataset in Markdown format. Prefix `::markdown` is required.
+
+Example: 
+```yaml
+infoDescription: |
+  ::markdown
+    - Temporal Extent: January 2000 - December 2021
+    - Temporal Resolution: Monthly
+    - Spatial Extent: Global
+    - Spatial Resolution: 1 km x 1 km
+    - Data Units: Tons of carbon per 1 km x 1 km cell (monthly total)
+    - Data Type: Research
+    - Data Latency: Updated annually, following the release of an updated [BP Statistical Review of World Energy report](https://www.bp.com/en/global/corporate/energy-economics.html)
+```
 ---
 
 ## Stories

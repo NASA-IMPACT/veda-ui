@@ -26,6 +26,8 @@ sourceParams:
 compare: Compare
 legend: Legend
 analysis: Analysis
+media: Media
+info: Info
 ```
 
 ## Properties
@@ -251,6 +253,42 @@ Parameters to be appended to the `/statistics` endpoint as query parameters. Che
 **analysis.exclude**  
 `boolean`  
 Controls whether this layer should be excluded from the analysis page. If set to `true` the layer will not be available for analysis.
+
+**media**  
+`Media`  
+Image to identify this layer. If not defined, the layer will use dataset level Medida. See [media.md](./frontmatter/media.md) for details.
+
+### Info
+
+**info**
+List of key-value pair to describe layer level information. 
+
+Example: 
+```yaml
+info:
+  source: NASA
+  spatialExtent: Global
+  latency: Monthly
+  unit: 10¹⁵ molecules cm⁻²
+```
+
+**info.source**
+`string`
+This key indicates the origin or the provider of the data. 
+
+**info.spatialExtent**
+`string`
+This key describes s the geographic coverage of the data.
+
+**info.latency**
+`string`
+This key refers to the frequency with which the data is updated or made available. 
+
+**info.unit**
+`string`
+The unit key specifies the measurement unit in which the data values are expressed. 
+
+
 
 ### Compare
 
