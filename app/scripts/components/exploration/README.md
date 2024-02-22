@@ -2,8 +2,8 @@
 
 #### How to activate A&E page
 
-Add a line below in your `.env` file to activate the A&E page. The A&E page will replace Data Catalog, and Data Analysis page.
-Mind that the A&E page requires veda-ui version to be at least v4.0.
+Add a line below in your config instance's `.env` file to activate the A&E page. The A&E page will replace Data Catalog, and Data Analysis page.
+This will require that the A&E page have veda-ui version to be at least v4.0.
 
 ```
 FEATURE_NEW_EXPLORATION = 'TRUE'
