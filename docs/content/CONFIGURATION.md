@@ -24,7 +24,7 @@ stories: './stories/*.stories.mdx'
 ```
 
 ### Page overrides
-To adapt the Veda dashboard to the individual needs of you instance, some content/component overrides are provided. These overrides allow you to alter certain parts of the application, or inject code without having to fork the UI part of veda.
+To adapt the Veda dashboard to the individual needs of your instance, some content/component overrides are provided. These overrides allow you to alter certain parts of the application, or inject code without having to fork the UI part of veda.
 
 See [PAGE_OVERRIDES](./PAGE_OVERRIDES.md) for a full list of elements to customize.
 
