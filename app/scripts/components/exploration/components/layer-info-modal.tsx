@@ -120,7 +120,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
       }
       footerContent={
         <ButtonStyleLink to={dataCatalogPage} onClick={close} variation='primary-fill' size='medium'>
-          Learn more
+          Open in Data Catalog
         </ButtonStyleLink>
       }
     />
