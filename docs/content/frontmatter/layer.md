@@ -256,7 +256,7 @@ Controls whether this layer should be excluded from the analysis page. If set to
 
 **media**  
 `Media`  
-Image to identify this layer. If not defined, the layer will use dataset level Medida. See [media.md](./frontmatter/media.md) for details.
+Image to identify this layer. If not defined, the layer will use dataset level Media. See [media.md](./frontmatter/media.md) for details.
 
 ### Info
 
