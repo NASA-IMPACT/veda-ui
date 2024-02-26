@@ -96,7 +96,7 @@ function BrowseControls(props: BrowseControlsProps) {
 
   const { isLargeUp } = useMediaQuery();
 
-  return (
+  return (  
     <BrowseControlsWrapper {...rest}>
       <SearchWrapper>
         <SearchField
@@ -128,7 +128,8 @@ function BrowseControls(props: BrowseControlsProps) {
         >
           <DropTitle>Options</DropTitle>
           <DropMenu>
-            {sortOptions.map((t) => (
+            {/* { @NOTE: Display the sort option labels only when there is more than one otherwise it already defaults to the button title} */}
+            {sortOptions.length > 1 && sortOptions.map((t) => (
               <li key={t.id}>
                 <DropMenuItemButton
                   active={t.id === sortField}
