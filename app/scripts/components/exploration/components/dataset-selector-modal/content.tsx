@@ -72,10 +72,10 @@ const DatasetIntro = styled.div`
   padding: ${glsp(1)} 0;
 `;
 
-const ParentDatasetTitle = styled.h2`
+export const ParentDatasetTitle = styled.h2<{size?: string}>`
   color: ${themeVal('color.base-500')};
   text-align: left;
-  font-size: 1rem;
+  font-size: ${(props => props.size=='small'? '0.75rem': '1rem')};
   line-height: 0.75rem;
   font-weight: normal;
   display: flex;

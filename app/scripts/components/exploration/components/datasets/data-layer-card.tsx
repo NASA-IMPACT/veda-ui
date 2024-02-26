@@ -9,6 +9,7 @@ import {
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 import { LayerInfoLiner } from '../layer-info-modal';
+import { ParentDatasetTitle } from '../dataset-selector-modal/content';
 import LayerMenuOptions from './layer-options-menu';
 import { TipButton } from '$components/common/tip-button';
 import {
@@ -17,7 +18,8 @@ import {
 } from '$components/common/mapbox/layer-legend';
 
 import { TimelineDataset } from '$components/exploration/types.d.ts';
-import ParentDatasetLink from '$components/exploration/components/parent-dataset-link';
+import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
+
 interface CardProps {
   dataset: TimelineDataset;
   datasetAtom: PrimitiveAtom<TimelineDataset>;
@@ -88,7 +90,9 @@ export default function DataLayerCard(props: CardProps) {
       <DatasetInfo className='dataset-info'>
         <DatasetCardInfo>
           <Header>
-          <ParentDatasetLink parentDataset={dataset.data.parentDataset} size='small' />
+          <ParentDatasetTitle size='small'>
+            <CollecticonDatasetLayers /> {dataset.data.parentDataset.name}
+          </ParentDatasetTitle>
           </Header>
           <DatasetHeadline>
             <DatasetTitle as='h3' size='xxsmall'>
