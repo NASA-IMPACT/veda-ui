@@ -73,7 +73,7 @@ const DatasetIntro = styled.div`
 `;
 
 export const ParentDatasetTitle = styled.h2<{size?: string}>`
-  color: ${themeVal('color.base-500')};
+  color: ${themeVal('color.primary')};
   text-align: left;
   font-size: ${(props => props.size=='small'? '0.75rem': '1rem')};
   line-height: 0.75rem;
@@ -83,7 +83,7 @@ export const ParentDatasetTitle = styled.h2<{size?: string}>`
   justify-content: center;
   gap: 0.1rem;
   > svg {
-    fill: ${themeVal('color.base-500')};
+    fill: ${themeVal('color.primary')};
   }
 `;
 
