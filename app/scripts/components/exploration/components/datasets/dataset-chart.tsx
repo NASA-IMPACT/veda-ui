@@ -3,12 +3,15 @@ import { useTheme } from 'styled-components';
 import { extent, scaleLinear, ScaleTime, line, ScaleLinear } from 'd3';
 import { useAtomValue } from 'jotai';
 import { AnimatePresence, motion } from 'framer-motion';
-
+import styled from 'styled-components';
+import {
+  CollecticonCog,
+} from '@devseed-ui/collecticons';
 import { isExpandedAtom } from '../../atoms/timeline';
 import { RIGHT_AXIS_SPACE } from '../../constants';
 import { DatasetTrackMessage } from './dataset-track-message';
 import { DataMetric } from './analysis-metrics';
-
+import LayerChartAnalysisMenu from './layer-chart-analysis-menu';
 import { getNumForChart } from '$components/common/chart/utils';
 import {
   TimelineDatasetAnalysisSuccess,
@@ -24,10 +27,20 @@ interface DatasetChartProps {
   dataset: TimelineDatasetSuccess;
   activeMetrics: DataMetric[];
   highlightDate?: Date;
+  onUpdateSettings: (type: string, m: DataMetric[]) => void;
 }
 
+const ChartAnalysisMenu = styled.div`
+  width: inherit;
+  position: sticky;
+  display: flex;
+  justify-content: end;
+  margin-right: 0.8rem;
+`;
+
+
 export function DatasetChart(props: DatasetChartProps) {
-  const { xScaled, width, isVisible, dataset, activeMetrics, highlightDate } =
+  const { xScaled, width, isVisible, dataset, activeMetrics, highlightDate, onUpdateSettings } =
     props;
 
   const analysisData = dataset.analysis as TimelineDatasetAnalysisSuccess;
@@ -58,6 +71,8 @@ export function DatasetChart(props: DatasetChartProps) {
     );
   }, [yExtent, height]);
 
+  const chartAnalysisIconTrigger: JSX.Element = <CollecticonCog meaningful title='View layer options' />;
+
   return (
     <div>
       {!activeMetrics.length && (
@@ -65,6 +80,9 @@ export function DatasetChart(props: DatasetChartProps) {
           There are no active metrics to visualize.
         </DatasetTrackMessage>
       )}
+      <ChartAnalysisMenu>
+        <LayerChartAnalysisMenu activeMetrics={activeMetrics} onChange={onUpdateSettings} triggerIcon={chartAnalysisIconTrigger} />
+      </ChartAnalysisMenu>
       <svg width={width + RIGHT_AXIS_SPACE} height={height}>
         <clipPath id='data-clip'>
           <rect width={width} height={height} />
