@@ -12,9 +12,10 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { createButtonStyles } from '@devseed-ui/button';
 import { LayerInfo } from 'veda';
 
-import ParentDatasetLink from './parent-dataset-link';
+import { ParentDatasetTitle } from './dataset-selector-modal/content';
 import SmartLink from '$components/common/smart-link';
 import { getDatasetPath } from '$utils/routes';
+import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -105,7 +106,9 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
       renderHeadline={() => {
         return (
           <ModalHeadline>
-            <ParentDatasetLink parentDataset={layerData.parentData} size='small' />
+            <ParentDatasetTitle>
+              <CollecticonDatasetLayers /> {layerData.parentData.name}
+            </ParentDatasetTitle>
             <ParentDatasetHeading> {layerData.name} </ParentDatasetHeading>
             <p>
               {
