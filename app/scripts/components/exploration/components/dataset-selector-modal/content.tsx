@@ -17,9 +17,9 @@ import {
   CardMeta,
   CardTopicsList
 } from '$components/common/card';
-import ParentDatasetLink from '$components/exploration/components/parent-dataset-link';
 import TextHighlight from '$components/common/text-highlight';
 import { CardSourcesList } from '$components/common/card-sources';
+import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { getDatasetPath } from '$utils/routes';
 import {
   getTaxonomy,
@@ -27,6 +27,7 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { Pill } from '$styles/pill';
+
 const DatasetContainer = styled.div`
   height: auto;
   display: flex;
@@ -71,6 +72,21 @@ const DatasetIntro = styled.div`
   padding: ${glsp(1)} 0;
 `;
 
+export const ParentDatasetTitle = styled.h2<{size?: string}>`
+  color: ${themeVal('color.primary')};
+  text-align: left;
+  font-size: ${(props => props.size=='small'? '0.75rem': '1rem')};
+  line-height: 0.75rem;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  > svg {
+    fill: ${themeVal('color.primary')};
+  }
+`;
+
 interface ModalContentComponentProps {
   search: string;
   selectedIds: string[];
@@ -90,7 +106,9 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
         <SingleDataset key={currentDataset.id}>
           <DatasetIntro>
             <DatasetHeadline>
-            <ParentDatasetLink parentDataset={currentDataset} size='medium' />
+            <ParentDatasetTitle>
+              <CollecticonDatasetLayers /> {currentDataset.name}
+            </ParentDatasetTitle>
             {currentDataset.countSelectedLayers > 0 && <DatasetSelectedLayer><span>{currentDataset.countSelectedLayers} selected </span> </DatasetSelectedLayer>}
             </DatasetHeadline>
             <DatasetDescription>

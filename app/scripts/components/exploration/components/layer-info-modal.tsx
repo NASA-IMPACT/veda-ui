@@ -12,9 +12,10 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { createButtonStyles } from '@devseed-ui/button';
 import { LayerInfo } from 'veda';
 
-import ParentDatasetLink from './parent-dataset-link';
+import { ParentDatasetTitle } from './dataset-selector-modal/content';
 import SmartLink from '$components/common/smart-link';
 import { getDatasetPath } from '$utils/routes';
+import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -48,6 +49,7 @@ const DatasetModal = styled(Modal)`
     z-index: 100;
   }
 `;
+
 const ParentDatasetHeading = styled.h2`
   padding: ${glsp(0.5)} 0;
 `;
@@ -104,7 +106,9 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
       renderHeadline={() => {
         return (
           <ModalHeadline>
-            <ParentDatasetLink parentDataset={layerData.parentData} size='small' />
+            <ParentDatasetTitle>
+              <CollecticonDatasetLayers /> {layerData.parentData.name}
+            </ParentDatasetTitle>
             <ParentDatasetHeading> {layerData.name} </ParentDatasetHeading>
             <p>
               {
@@ -120,7 +124,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
       }
       footerContent={
         <ButtonStyleLink to={dataCatalogPage} onClick={close} variation='primary-fill' size='medium'>
-          Learn more
+          Open in Data Catalog
         </ButtonStyleLink>
       }
     />
