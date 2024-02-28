@@ -37,6 +37,7 @@ export default function RenderModalHeader () {
           {...controlVars}
           taxonomiesOptions={datasetTaxonomies}
           sortOptions={sortOptions}
+          showMoreButtonOpt={true}
       />
     </StyledModalHeadline>
   );

@@ -77,6 +77,7 @@ const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
 interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
   taxonomiesOptions: Taxonomy[];
   sortOptions: FilterOption[];
+  showMoreButtonOpt?: boolean;
 }
 
 function BrowseControls(props: BrowseControlsProps) {
@@ -86,6 +87,7 @@ function BrowseControls(props: BrowseControlsProps) {
     taxonomies,
     sortOptions,
     search,
+    showMoreButtonOpt,
     sortField,
     sortDir,
     onAction,
@@ -155,14 +157,18 @@ function BrowseControls(props: BrowseControlsProps) {
             ))}
           </DropMenu>
         </DropdownScrollable>
-        <ShowMorebutton
-          variation='base-text'
-          size={isLargeUp ? 'large' : 'medium'}
-          fitting='skinny'
-          onClick={() => {setShowFilters(value => !value);}}
-        >
-          {showFilters? 'Hide filters' : 'Show filters'}
-        </ShowMorebutton>
+        {
+          showMoreButtonOpt && (
+            <ShowMorebutton
+              variation='base-text'
+              size={isLargeUp ? 'large' : 'medium'}
+              fitting='skinny'
+              onClick={() => {setShowFilters(value => !value);}}
+            >
+              {showFilters? 'Hide filters' : 'Show filters'}
+            </ShowMorebutton>
+          )
+        }
       </SearchWrapper>
       {showFilters && 
         <TaxonomyWrapper>
