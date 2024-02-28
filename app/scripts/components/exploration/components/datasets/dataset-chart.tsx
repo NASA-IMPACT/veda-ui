@@ -32,12 +32,11 @@ interface DatasetChartProps {
 
 const ChartAnalysisMenu = styled.div`
   width: inherit;
-  position: sticky;
+  position: relative;
   display: flex;
   justify-content: end;
-  margin-right: 0.8rem;
+  margin-right: 2.3rem;
 `;
-
 
 export function DatasetChart(props: DatasetChartProps) {
   const { xScaled, width, isVisible, dataset, activeMetrics, highlightDate, onUpdateSettings } =
@@ -213,12 +212,13 @@ function AxisGrid(props: AxisGridProps) {
         >
           {yLabel && (
             <text
-              y={width + RIGHT_AXIS_SPACE - 20}
+              y={width + RIGHT_AXIS_SPACE - 45}
               x={-height / 2}
               transform='rotate(-90)'
               textAnchor='middle'
               fontSize='0.75rem'
               fill={theme.color?.base}
+              margin-right='2rem'
             >
               {yLabel}
             </text>
