@@ -81,7 +81,6 @@ interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
 }
 
 function BrowseControls(props: BrowseControlsProps) {
-  const [ showFilters, setShowFilters ] = useState(false);
   const {
     taxonomiesOptions,
     taxonomies,
@@ -93,6 +92,8 @@ function BrowseControls(props: BrowseControlsProps) {
     onAction,
     ...rest
   } = props;
+
+  const [ showFilters, setShowFilters ] = useState(showMoreButtonOpt ? false : true);
 
   const currentSortField = sortOptions.find((s) => s.id === sortField)!;
 
@@ -165,7 +166,7 @@ function BrowseControls(props: BrowseControlsProps) {
               fitting='skinny'
               onClick={() => {setShowFilters(value => !value);}}
             >
-              {showFilters? 'Hide filters' : 'Show filters'}
+              {showFilters ? 'Hide filters' : 'Show filters'}
             </ShowMorebutton>
           )
         }
