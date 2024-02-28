@@ -30,7 +30,7 @@ export default function RenderModalHeader () {
     <StyledModalHeadline>
       <Heading size='small'>Data layers</Heading>
       <ModalIntro>
-          <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <Link to={DATASETS_PATH}>Data Catalog</Link>.
+          <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <Link to={DATASETS_PATH} target='_blank'>Data Catalog</Link>.
           </p>
       </ModalIntro>
       <BrowseControls
