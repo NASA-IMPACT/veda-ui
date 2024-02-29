@@ -3,11 +3,14 @@ import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 
-function BrowserFrameComponent(props: { children: ReactNode; link?: string }) {
-  const { children, link, ...rest } = props;
+function BrowserFrameComponent(props: { children: ReactNode; link?: string, hideBrowserFrame?: boolean }) {
+  const { children, link, hideBrowserFrame, ...rest } = props;
+
+  const styleControls = hideBrowserFrame ? {display: 'none'}: undefined;
+  const stylePadding = hideBrowserFrame ? {padding: 0}: undefined;
   return (
-    <div {...rest}>
-      <div className='controls'>
+    <div {...rest} style={stylePadding}>
+      <div className='controls' style={styleControls}>
         <div className='buttons'>
           <span />
           <span />
