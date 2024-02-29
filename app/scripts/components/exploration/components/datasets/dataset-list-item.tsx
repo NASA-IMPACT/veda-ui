@@ -31,6 +31,7 @@ import {
 import { useDatasetHover } from '$components/exploration/hooks/use-dataset-hover';
 import {
   useTimelineDatasetAtom,
+  useTimelineDatasetSettings,
   useTimelineDatasetVisibility
 } from '$components/exploration/atoms/hooks';
 import {
@@ -102,6 +103,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
   const [modalLayerInfo, setModalLayerInfo] = React.useState<LayerInfoModalData>();
+  const [, setSetting] = useTimelineDatasetSettings(datasetAtom);
+
   const queryClient = useQueryClient();
 
   const retryDatasetMetadata = useCallback(() => {
@@ -252,6 +255,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   dataset={dataset}
                   activeMetrics={analysisMetrics}
                   highlightDate={dataPoint?.date}
+                  onUpdateSettings={setSetting}
                 />
               )}
             </>
