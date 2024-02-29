@@ -123,7 +123,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
         <div dangerouslySetInnerHTML={{__html: parentData.infoDescription?? 'Currently, we are unable to display the layer information, but you can find it in the data catalog.' }} />
       }
       footerContent={
-        <ButtonStyleLink to={dataCatalogPage} onClick={close} variation='primary-fill' size='medium'>
+        <ButtonStyleLink to={dataCatalogPage} onClick={close} variation='primary-fill' size='medium' target='_blank'>
           Open in Data Catalog
         </ButtonStyleLink>
       }
