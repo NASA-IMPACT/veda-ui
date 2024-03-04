@@ -65,6 +65,9 @@ const DatasetInfo = styled.div`
   ${DatasetCardInfo} {
     gap: 0rem;
   }
+  &.layerHidden {
+    opacity: 0.5;
+  }
 `;
 
 const DatasetHeadline = styled.div`
@@ -89,7 +92,7 @@ export default function DataLayerCard(props: CardProps) {
 
   return (
     <>
-      <DatasetInfo className='dataset-info'>
+      <DatasetInfo className={isVisible ? 'layerShown' : 'layerHidden'}>
         <DatasetCardInfo>
           <Header>
           <ParentDatasetTitle size='small'>
@@ -125,12 +128,12 @@ export default function DataLayerCard(props: CardProps) {
                 onClick={() => setVisible((v) => !v)}
               >
               {isVisible ? (
-                <CollecticonEyeDisabled
+                <CollecticonEye
                   meaningful
                   title='Toggle dataset visibility'
                 />
               ) : (
-                <CollecticonEye
+                <CollecticonEyeDisabled
                   meaningful
                   title='Toggle dataset visibility'
                 />
