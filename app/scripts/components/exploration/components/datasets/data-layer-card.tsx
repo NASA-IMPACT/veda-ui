@@ -5,6 +5,8 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import {
   CollecticonCircleInformation,
+  CollecticonEyeDisabled,
+  CollecticonEye,
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
@@ -113,7 +115,28 @@ export default function DataLayerCard(props: CardProps) {
                   title='View dataset page'
                 />
               </TipButton>
-              <LayerMenuOptions datasetAtom={datasetAtom} isVisible={!!isVisible} setVisible={setVisible} />
+              <TipButton
+                tipContent={isVisible ? 'Hide layer' : 'Show layer'}
+                // Using a button instead of a toolbar button because the
+                // latter doesn't support the `forwardedAs` prop.
+                size='small'
+                fitting='skinny'
+                onPointerDownCapture={e => e.stopPropagation()}
+                onClick={() => setVisible((v) => !v)}
+              >
+              {isVisible ? (
+                <CollecticonEyeDisabled
+                  meaningful
+                  title='Toggle dataset visibility'
+                />
+              ) : (
+                <CollecticonEye
+                  meaningful
+                  title='Toggle dataset visibility'
+                />
+              )}
+              </TipButton>
+              <LayerMenuOptions datasetAtom={datasetAtom} />
             </Toolbar>
           </DatasetHeadline>
           
