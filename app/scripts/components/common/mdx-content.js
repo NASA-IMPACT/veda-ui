@@ -8,7 +8,7 @@ import { ContentLoading } from '$components/common/loading-skeleton';
 import Block from '$components/common/blocks';
 import ContentBlockFigure from '$components/common/blocks/figure';
 import { ContentBlockProse } from '$styles/content-block';
-import Image, { Caption } from '$components/common/blocks/images';
+import Image, { Caption, FullMapLinkButton } from '$components/common/blocks/images';
 import { Chapter } from '$components/common/blocks/scrollytelling/chapter';
 import {
   LazyChart,
@@ -36,6 +36,7 @@ function MdxContent(props) {
           Prose: ContentBlockProse,
           Figure: ContentBlockFigure,
           Caption,
+          FullMapLinkButton,
           Chapter,
           Image,
           Map: LazyMap,

@@ -6,6 +6,7 @@ import {
   FigcaptionInner,
   FigureAttribution
 } from '$components/common/figure';
+import { LinkAttribution } from '$components/common/link-full-map';
 
 import { captionDisplayName } from '$components/common/blocks/block-constant';
 
@@ -15,6 +16,12 @@ export function Caption({ children, attrAuthor, attrUrl }) {
       {children && <FigcaptionInner>{children}</FigcaptionInner>}
       <FigureAttribution author={attrAuthor} url={attrUrl} forwardedAs='span' />
     </Figcaption>
+  );
+}
+
+export function FullMapLinkButton({ datasetId,layerId,dateTime,compareDateTime,zoom,center }) {
+  return (
+      <LinkAttribution datasetId={datasetId} layerId={layerId} dateTime={dateTime} compareDateTime={compareDateTime} zoom={zoom} center={center} />
   );
 }
 
