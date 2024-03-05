@@ -7,8 +7,6 @@ import {
   CollecticonEllipsisVertical,
   CollecticonDrop,
   CollecticonXmarkSmall,
-  CollecticonEyeDisabled,
-  CollecticonEye,
   CollecticonArrowDown,
   CollecticonArrowUp,
   CollecticonShare,
@@ -23,8 +21,6 @@ import { TimelineDataset } from '$components/exploration/types.d.ts';
 
 interface LayerMenuOptionsProps {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
-  isVisible: boolean;
-  setVisible: (v: any) => void;
 }
 
 // @NOTE: Class Name prefix is named after file name
@@ -64,7 +60,7 @@ const StyledDropdown = styled(Dropdown)`
 `;
 
 export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
-  const { datasetAtom, isVisible, setVisible } = props;
+  const { datasetAtom } = props;
 
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
   const dataset = useAtomValue(datasetAtom);
@@ -132,24 +128,6 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
               value={opacity}
               onInput={(v) => setSetting('opacity', v)}
             />
-          </li>
-          <li>
-            <DropMenuItem 
-              onClick={() => setVisible((v) => !v)}
-            >
-              {isVisible ? (
-                <CollecticonEyeDisabled
-                  meaningful
-                  title='Toggle dataset visibility'
-                />
-              ) : (
-                <CollecticonEye
-                  meaningful
-                  title='Toggle dataset visibility'
-                />
-              )}
-              {isVisible ? 'Hide layer' : 'Show layer'}
-            </DropMenuItem>
           </li>
           <li>
             <DropMenuItem

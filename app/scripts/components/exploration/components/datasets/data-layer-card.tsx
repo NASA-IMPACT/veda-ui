@@ -5,6 +5,8 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import {
   CollecticonCircleInformation,
+  CollecticonEyeDisabled,
+  CollecticonEye,
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
@@ -63,6 +65,9 @@ const DatasetInfo = styled.div`
   ${DatasetCardInfo} {
     gap: 0rem;
   }
+  &.layerHidden {
+    opacity: 0.5;
+  }
 `;
 
 const DatasetHeadline = styled.div`
@@ -87,7 +92,7 @@ export default function DataLayerCard(props: CardProps) {
 
   return (
     <>
-      <DatasetInfo className='dataset-info'>
+      <DatasetInfo className={isVisible ? 'layerShown' : 'layerHidden'}>
         <DatasetCardInfo>
           <Header>
           <ParentDatasetTitle size='small'>
@@ -113,7 +118,28 @@ export default function DataLayerCard(props: CardProps) {
                   title='View dataset page'
                 />
               </TipButton>
-              <LayerMenuOptions datasetAtom={datasetAtom} isVisible={!!isVisible} setVisible={setVisible} />
+              <TipButton
+                tipContent={isVisible ? 'Hide layer' : 'Show layer'}
+                // Using a button instead of a toolbar button because the
+                // latter doesn't support the `forwardedAs` prop.
+                size='small'
+                fitting='skinny'
+                onPointerDownCapture={e => e.stopPropagation()}
+                onClick={() => setVisible((v) => !v)}
+              >
+              {isVisible ? (
+                <CollecticonEye
+                  meaningful
+                  title='Toggle dataset visibility'
+                />
+              ) : (
+                <CollecticonEyeDisabled
+                  meaningful
+                  title='Toggle dataset visibility'
+                />
+              )}
+              </TipButton>
+              <LayerMenuOptions datasetAtom={datasetAtom} />
             </Toolbar>
           </DatasetHeadline>
           
