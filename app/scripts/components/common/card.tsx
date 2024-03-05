@@ -356,7 +356,7 @@ function CardComponent(props: CardComponentProps) {
 
   const isExternalLink = linkTo.match(/^https?:\/\//);
   const linkProps = isExternalLink
-    ? { href: linkTo, onClick: onLinkClick }
+    ? { href: linkTo, target: "_blank", rel: "noopener noreferrer", onClick: onLinkClick }
     : { as: Link, to: linkTo, onClick: onLinkClick };
 
   return (
