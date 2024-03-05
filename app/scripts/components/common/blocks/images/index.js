@@ -21,7 +21,12 @@ export function Caption({ children, attrAuthor, attrUrl }) {
 
 export function FullMapLinkButton({ datasetId, layerId, date, compareDate}) {
   return (
-      <LinkAttribution datasetId={datasetId} layerId={layerId} date={date} compareDate={compareDate} />
+      <LinkAttribution
+      datasetId={datasetId}
+      layerId={layerId}
+      date={date}
+      compareDate={compareDate}
+    />
   );
 }
 
