@@ -18,7 +18,6 @@ function urlDatasetsHydrate(
 ): TimelineDatasetForUrl[] {
   if (!encoded) return [];
   const parsed = JSON.parse(encoded);
-  console.log("DSFsdf", parsed);
   return parsed;
 }
 
