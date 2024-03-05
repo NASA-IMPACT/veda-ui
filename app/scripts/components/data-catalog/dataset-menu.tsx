@@ -97,7 +97,7 @@ function DatasetMenu(props: DatasetMenuProps) {
                 visuallyDisabled={!hasUsage}
               >
                 <CollecticonCode />
-                Analyze data (Python)
+                Access data
               </DropMenuItemButtonDisable>
             </Tip>
           </li>
