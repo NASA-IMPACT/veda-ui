@@ -19,19 +19,17 @@ export function Caption({ children, attrAuthor, attrUrl }) {
   );
 }
 
-export function FullMapLinkButton({ datasetId, layerId, date, compareDate }) {
+export function FullMapLinkButton({ layerId, date, compareDate }) {
   return (
-      <LinkAttribution
-        datasetId={datasetId}
-        layerId={layerId}
-        date={date}
-        compareDate={compareDate}
-      />
+    <LinkAttribution
+      layerId={layerId}
+      date={date}
+      compareDate={compareDate}
+    />
   );
 }
 
 FullMapLinkButton.propTypes = {
-  datasetId: T.string,
   layerId: T.string,
   date: T.string,
   compareDate: T.string

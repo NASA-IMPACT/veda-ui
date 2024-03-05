@@ -188,7 +188,6 @@ function MapBlock(props: MapBlockProps) {
         withScale
       />
     <FullMapLinkButton
-      datasetId={datasetId}
       layerId={layerId}
       date={selectedDatetime}
       compareDate={selectedCompareDatetime}
