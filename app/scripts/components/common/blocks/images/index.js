@@ -26,9 +26,16 @@ export function FullMapLinkButton({ datasetId, layerId, date, compareDate}) {
       layerId={layerId}
       date={date}
       compareDate={compareDate}
-    />
+      />
   );
 }
+
+FullMapLinkButton.propTypes = {
+  datasetId: T.string,
+  layerId: T.string,
+  date: T.string,
+  compareDate: T.string
+};
 
 Caption.displayName = captionDisplayName;
 
