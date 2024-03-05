@@ -12,7 +12,7 @@ export default function SmartLink(props: SmartLinkProps) {
   const { to, ...rest } = props;
 
   return /^https?:\/\//.test(to) ? (
-    <a target='_blank' rel="noopener noreferrer" href={to} {...rest} />
+    <a target='_blank' rel='noopener noreferrer' href={to} {...rest} />
   ) : (
     <Link to={to} {...rest} />
   );
@@ -29,7 +29,7 @@ export function CustomLink(props: CustomLinkProps) {
   const { href, ...rest } = props;
 
   return /^https?:\/\//.test(href) ? (
-    <a target='_blank' rel="noopener noreferrer" href={href} {...rest} />
+    <a target='_blank' rel='noopener noreferrer' href={href} {...rest} />
   ) : (
     <Link to={href} {...rest} />
   );
