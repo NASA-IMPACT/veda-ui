@@ -191,9 +191,7 @@ function MapBlock(props: MapBlockProps) {
       datasetId={datasetId}
       layerId={layerId}
       date={selectedDatetime}
-      isComparing={!!selectedCompareDatetime}
       compareDate={selectedCompareDatetime}
-      compareLabel={compareLabel}
     />
     </Carto>
   );
