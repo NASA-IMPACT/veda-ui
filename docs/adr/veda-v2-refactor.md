@@ -1,4 +1,4 @@
-# Dashboard V1 (Catalog exploration) architecture
+# VEDA V2 Refactor ADR
 
 * Status: **In Review**, In Progress, Done
 * Authors: @j08lue, @sandrahoang686, @faustoperez
@@ -76,7 +76,7 @@ b. The preliminary systems we are considering are:
 
 c. Any option we choose will have to be extended for data visualization components (charts, maps, widgets, etc.) and themed for the 3 current VEDA instances: VEDA Dashboard, U.S. GHG Center, Earth.gov.
 
-*Architectural Diagram of the Refactor*
+**Architectural Diagram of the Refactor**
 ![Architectural Diagram](./diagrams/veda-v2-refactor-adr-dataprovider-diagram.png)
 
 *[Miro Board Link](https://miro.com/app/board/uXjVN6lkBnc=/?share_link_id=85040810316) which documents team's brainstorming discussions, options considered, technical trade-offs, and final proposed solution in detail*
