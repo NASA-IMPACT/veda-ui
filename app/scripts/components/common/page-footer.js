@@ -140,6 +140,8 @@ function PageFooter(props) {
               variation='base-text'
               size='small'
               fitting='skinny'
+              target='_blank'
+              rel='noopener noreferrer' 
             >
               <CollecticonBrandGithub title='Explore the code' meaningful />
               GitHub
@@ -148,7 +150,7 @@ function PageFooter(props) {
         </InfoList>
         <FooterCredits>
           <p>
-            <a href='https://earthdata.nasa.gov/'>
+            <a href='https://earthdata.nasa.gov/' target='_blank' rel='noopener noreferrer' >
               <span>By</span> NASA <strong>Earthdata</strong> <span>on</span>{' '}
               <time dateTime={nowDate.getFullYear()}>
                 {nowDate.getFullYear()}
