@@ -54,76 +54,45 @@ We also need to take into account that the evolution of the application with new
 
 Move more control to the instance level, modularize the core ui library to expose core feature components and smaller reusable components, and create a data layer as part of the core ui library that is ideally also consumed at the instance level that manages data fetching and MDX parsing so that components are data agnostic. Introduce a new design system that is well-maintained and community-backed to create standardization across styles and accessibility patterns.
 
-### 1. Move Routing from the core ui library to the instance level
+#### 1. Move Routing from the core ui library to the instance level
 Routing and what pages exist should be determined at the instance level. Currently, routing is handled at the core UI library level so supporting additional/removal of pages requires override logic. Moving this to the instance level allows developers/stakeholders to independently manage their routes and pages.
-### 2. Feature components in the core ui library composed at the instance level
+#### 2. Feature components in the core ui library composed at the instance level
 Currently, the core UI library handles the composition of each page because of its control over routing. However, pages and what they render should shift to the instance level so developers/stakeholders can control what is rendered within each page view. The core UI library should expose feature components (containers) that deliver a core feature in the VEDA dashboard such as the A&E feature. 
-### 3. Modularize and create smaller reusable components
+#### 3. Modularize and create smaller reusable components
 The core UI library should also expose smaller reusable components like date pickers, form elements, analysis tools, etc… (“presentational/dumb” components). This way developers/stakeholders for example can compose a page view with the A&E feature from the core UI library and consume other reusable components to construct their page view. This also now allows developers to build their own custom components on the instance side and directly incorporate them. 
-### 4. Create a data layer that manages all data fetching
+#### 4. Create a Data layer that manages all data fetching
 The proposed data layer is designed to handle all data fetching, including STAC calls, and MDX parsing. Think of it as a versatile data utilities library. Introducing this layer would enable components in the core UI library to remain data-agnostic. In the event of scaling to additional or different data sources, expansion can be easily accomplished by integrating them into this centralized layer. Smart components (larger and stateful) would then efficiently consume this data layer.
 > **Integrating with [stac-react](https://github.com/developmentseed/stac-react/tree/main)**: Because these React hooks manage data fetching to the STAC API using the Context API provider pattern, this could just be used directly as it is already its own data layer. We would have to decide where we wrap the Provider though. Ideally, at the instance level, we would wrap the provider at the highest level in the tree either around the router or specific view containers and then consume these hooks down the hierarchy on the instance side. The components in the core ui library would be prop driven so this way they can be truly data agnostic and accept whatever data passed in.
+#### 5. Introduce a new Design System
+a. Replace the existing custom design system with a well-maintained, widely adopted community-supported design system. This ensures built-in accessibility standards and eliminates the need for designers and developers to invest time in ongoing maintenance.
+
+
+
+b. The preliminary systems we are considering are:
+* Chakra UI. Built on React, it has a large component library, built-in accessibility and theming options. It is designed with responsive and mobile-first principles and has a strong community and documentation.
+* The U.S. Web Design System (USWDS) is tailored for government projects. It's designed to meet the specific needs of U.S. federal websites, offering components that are accessible, secure, and in line with U.S. digital standards.
+
+
+
+c. Any option we choose will have to be extended for data visualization components (charts, maps, widgets, etc.) and themed for the 3 current VEDA instances: VEDA Dashboard, U.S. GHG Center, Earth.gov.
 
 *Architectural Diagram of the Refactor*
 ![Architectural Diagram](./diagrams/veda-v2-refactor-adr-dataprovider-diagram.png)
 
-TODO-LEFT-OFF-FROM-HERE-SANDRA
-### Positive Consequences
+*[Miro Board Link](https://miro.com/app/board/uXjVN6lkBnc=/?share_link_id=85040810316) which documents team's brainstorming discussions, options considered, technical trade-offs, and final proposed solution in detail*
 
-- Minimal changes
-- Quick implementation cycle
+### Value
+#### Product POV
+This refactor will enhance efficiency of delivering new instances and modifying page views without directly impacting the core UI logic library. It will also facilitate seamless support for a wider range of data integrations. 
+#### Developer POV
+This refactor will allow developers to move faster by removing specific domain knowledge on very custom dependencies. It will also ideally be easier to make customizations without limitations around overriding pages and components. Spinning up a new instance and making modifications to page views would now be easier with routing and composability moving to the instance level. This will also allow different data integrations to be easily added without having to touch core components. 
 
-### Negative Consequences
+### Consequences
+* While the new architecture may demand deeper coding knowledge to set up a new instance, this complexity is offset by the fact that making overrides in the current architecture is equally developer-intensive. Additionally, we plan to establish a template instance that is easily cloneable for a quick start when spinning up new instances.
+* There may be unforeseen blockers during the refactoring which have not been outlined. This may add to the complexity and spur more discussions on how to handle these blockers.
 
-- Problems pertaining to the implementation of content authoring flows and WYSIWYG elements will remain as they currently are. [^1]
-
-## Pros and Cons of the Options
-
-### [1] Maintain current architecture
-
-Extract a search index from MDX files' frontmatter at build time. Through the use of custom plugins create all the needed content relationships
-
-- 💚 Keep the existing architecture
-- 💚 Minimal changes needed
-- 💚 Maintain instance replicability [^2]
-- 🚩 Search is limited by the (potentially exponential) size of the index. This issue forces us to limit search capabilities to some properties of the frontmatter (title, description, etc)
-- 🚩 Can be tricky to build a plugin to extract content relationships from the MDX content.
-- 🚩 Limits future possibilities of building a content authoring system [^1]
-
-### [2] CMS
-
-Move all the content to a headless CMS. Rearchitecture the frontend to fetch content from the CMS' endpoint.
-
-- 💚 Simplify content relationships.
-- 💚 Powerful search
-- 💚 Ground work for any CMS type features (authoring workflows, WYSIWYG elements)
-- 🚩 Huge undertaking as it would require a complete new system and content migration.
-- 🚩 Dedicated team for the backend.
-- 🚩 Given the very custom nature of the project the different WYSIWYG elements would likely need to be custom built.
-- 🚩 Harder instance replicability [^2]
-
-### [3] Hybrid
-
-Sync all MDX data with a 3rd party service as a CI step (E.g. Elastic Search), then use said service search capabilities endpoint. This basically build on top of _Maintain current architecture_ solution
-
-- 💚 Keep the existing architecture.
-- 💚 Very powerful search.
-- 💚 Would support [faceted search](https://github.com/NASA-IMPACT/veda-architecture/issues/162#issuecomment-1387647740)
-- 🚩 Can be tricky to build a plugin to extract content relationships from the MDX content.
-- 🚩 Limits future possibilities of building a content authoring system [^1]
-- 🚩 Harder instance replicability [^2]
-
-### [4] Veda Datastore
-
-Use the VEDA datastore as the source-of-truth for search rather than the MDX content.
-
-- 🚩 Needs to rearchitecure the frontend.
-- 🚩 Since the data in the datastore and the data in veda-config have pretty different structures, this would lead to information mismatch and potentially the need to update multiple content configurations at the same time.
-- 🚩 Harder instance replicability [^2]
-
-_Could be revisited in the future if all the data is moved to the datastore, resolving the duplication issue_
-
-[^1]: A content authoring could still be custom built to output the content into files, instead of a database. An inspiration for this could be the Netlify CMS, currently being used as a prototype. _A complete editor to power this content system should be considered almost a separate project._
-
-[^2]: The current architecture was setup to allow new instances of VEDA to be created easily. The architecture relies on 2 repos: `veda-config` and `veda-ui`. The config repo holds all the content and needed settings, while the ui repo holds the app code. Users need only to fork the config repo and add their own content/change the settings, being able to update the underlying ui module when new features are released.
-_Recent research tells us that this functionality may not be as needed as it was originaly thought, but it is something to take into consideration._
+## Resources
+* [Github Issue to gather strategic questions related to future of VEDA UI](https://github.com/NASA-IMPACT/veda-ui/issues/766)
+*  [Refactoring vs Rewrite article](https://methodpoet.com/refactoring-vs-rewrite/)
+* [Team Brainstorming session for VEDA V2 Refactor Miro Board](https://miro.com/app/board/uXjVN6lkBnc=/?share_link_id=238172590342)
+* [Stac-react Repo](https://github.com/developmentseed/stac-react)
