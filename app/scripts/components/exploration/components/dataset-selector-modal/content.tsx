@@ -77,13 +77,20 @@ export const ParentDatasetTitle = styled.h2<{size?: string}>`
   text-align: left;
   font-size: ${(props => props.size=='small'? '0.75rem': '1rem')};
   line-height: 0.75rem;
-  font-weight: normal;
+  font-weight: normal; ${(props => props.size=='small'? '400': 'normal')};
   display: flex;
+  min-width: 0;
   align-items: center;
   justify-content: center;
   gap: 0.1rem;
+  p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   > svg {
     fill: ${themeVal('color.primary')};
+    min-width: ${(props => props.size=='small' ? '1rem': 'auto')};
   }
 `;
 
