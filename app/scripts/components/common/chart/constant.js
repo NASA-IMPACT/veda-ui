@@ -26,3 +26,6 @@ export const brushRelatedConfigs = {
     labelOffset: -5
   }
 };
+
+export const chartYAxisWidth = 80;
+export const chartLabelOffset = 8;

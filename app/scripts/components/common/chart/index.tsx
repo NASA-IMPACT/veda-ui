@@ -32,7 +32,9 @@ import {
   highlightColor,
   legendWidth,
   brushRelatedConfigs,
-  brushHeight
+  brushHeight,
+  chartYAxisWidth,
+  chartLabelOffset
 } from './constant';
 import { ChartWrapperRef } from './analysis/utils';
 import BrushCustom from './analysis/brush';
@@ -228,12 +230,13 @@ export default forwardRef<ChartWrapperRef, RLineChartProps>(
                 position='bottom'
               />
             </XAxis>
-            <YAxis axisLine={false} domain={['auto', 'auto']} tickFormatter={(t) => getNumForChart(t)}>
+            <YAxis axisLine={false} width={chartYAxisWidth} domain={['auto', 'auto']} tickFormatter={(t) => getNumForChart(t)}>
               <Label
                 className='label-y'
                 value={yAxisLabel}
                 angle={-90}
                 position='insideLeft'
+                offset={chartLabelOffset}
               />
             </YAxis>
             {renderHighlight && (
