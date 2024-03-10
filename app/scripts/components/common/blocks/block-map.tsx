@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { ProjectionOptions } from 'veda';
+import { DatasetDatumFnResolverBag, ProjectionOptions } from 'veda';
 
 import {
   convertProjectionToMapbox,
@@ -24,7 +24,6 @@ import {
   ScaleControl
 } from '$components/common/map/controls';
 import { Layer } from '$components/exploration/components/map/layer';
-import { TimelineDatasetAnalysisSuccess } from '$components/exploration/types.ts';
 import { useDatasetAsyncLayer } from '$context/layer-data';
 import { TimelineDatasetSuccess } from '$components/exploration/types.ts';
 import MapOptionsControl from '../map/controls/map-options';
@@ -33,6 +32,11 @@ import { LayerLegend, LayerLegendContainer } from '../mapbox/layer-legend';
 import MapCoordsControl from '../map/controls/coords';
 import MapMessage from '../mapbox/map-message';
 import { formatCompareDate } from '../mapbox/utils';
+import * as dateFns from 'date-fns';
+import {
+  S_SUCCEEDED
+} from '$utils/status';
+import { resolveConfigFunctions } from '../mapbox/layers/utils';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -181,127 +185,48 @@ function MapBlock(props: MapBlockProps) {
   const [projection, setProjection] = useState(projectionStart);
 
   const dataset = datasetId ? datasets[datasetId] : null;
-  console.log(`datasetfromid: `, dataset)
 
   const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
-  console.log(`baselayer: `, datasetId, layerId, baseLayer)
-  console.log(`compareLayer: `, datasetId, layerId, compareLayer)
+
+  const resolverBag = useMemo<DatasetDatumFnResolverBag>(
+    () => ({ datetime: selectedDatetime, compareDatetime: selectedCompareDatetime, dateFns }),
+    [selectedDatetime, selectedCompareDatetime]
+  );
+
+  // Resolve data needed for the base layer once the layer is loaded
+  const [baseLayerResolvedData] = useMemo(() => {
+    if (baseLayer?.status !== S_SUCCEEDED || !baseLayer.data)
+      return [null, null];
+
+    // Include access to raw data.
+    const bag = { ...resolverBag, raw: baseLayer.data };
+    const data = resolveConfigFunctions(baseLayer.data, bag);
+
+    return [data];
+  }, [baseLayer, resolverBag]);
+
+  // Resolve data needed for the compare layer once it is loaded.
+  const [compareLayerResolvedData] = useMemo(() => {
+    if (compareLayer?.status !== S_SUCCEEDED || !compareLayer.data)
+      return [null, null];
+
+    // Include access to raw data.
+    const bag = { ...resolverBag, raw: compareLayer.data };
+    const data = resolveConfigFunctions(compareLayer.data, bag);
+
+    return [data];
+  }, [compareLayer, resolverBag]);
 
   // @TODO-SANDRA: Temp for now, will revisit, need to get working for now
-  const transformDataLayer: TimelineDatasetSuccess = (base: boolean = true) => {
+  const transformDataLayer: TimelineDatasetSuccess = (data) => {
     let transformedData = {};
-    if (!dataset) return;
-    if(dataset.data.layers.length === 1) {
-      transformedData['data'] = dataset.data.layers[0];
-      transformedData['settings'] = {
-        isVisible: false,
-        opacity: 0
-      };
-      transformedData['data']['timeseries'] = base ? baseLayer?.data?.timeseries : compareLayer?.data?.timeseries;
-    }
+
+    transformedData['data'] = data;
     return transformedData;
   }
-  const baseDataLayer = transformDataLayer(true);
-  const compareDataLayer = transformDataLayer(false);
-  console.log(`baseDataLayer: `, baseDataLayer)
-//   {
-//     "data": {
-//         "id": "campfire-nlcd",
-//         "name": "NLCD Land Cover identification 2016 vs 2019",
-//         "description": "Land Use-Land Cover (LULC) is a product derived from Landsat NLCD (national Land Cover Database) data, who’s most recent iteration is from 2019 satellite imagery.",
-//         "media": {
-//             "src": "http://localhost:9000/camp-fire-background.35a69605.jpg?1707321096051",
-//             "alt": "Engulfed hillside in California, 2021.",
-//             "author": {
-//                 "name": "Mike Newbry",
-//                 "url": "https://unsplash.com/photos/DwtX9mMHBJ0"
-//             }
-//         },
-//         "taxonomy": [
-//             {
-//                 "name": "Topics",
-//                 "values": [
-//                     {
-//                         "id": "eis",
-//                         "name": "EIS"
-//                     }
-//                 ]
-//             }
-//         ],
-//         "layers": [
-//             {
-//                 "id": "campfire-nlcd",
-//                 "stacCol": "campfire-nlcd",
-//                 "name": "NLCD Land Use - Land Cover Classification",
-//                 "type": "raster",
-//                 "description": "30 meter LULC classification provided by the NLCD.",
-//                 "initialDatetime": "newest",
-//                 "zoomExtent": [
-//                     0,
-//                     20
-//                 ],
-//                 "sourceParams": {
-//                     "colormap": "{\"11\":\"#486DA2\", \"12\":\"#E7EFFC\", \"21\": \"#E1CDCE\", \"22\": \"#DC9881\", \"23\": \"#F10100\", \"24\": \"#AB0101\", \"31\":\"#B3AFA4\", \"41\":\"#6BA966\", \"42\": \"#1D6533\", \"43\": \"#BDCC93\", \"51\": \"#B29C46\", \"52\": \"#D1BB82\", \"71\":\"#EDECCD\", \"72\":\"#D0D181\", \"73\": \"#A4CC51\", \"74\": \"#82BA9D\", \"81\": \"#DDD83E\", \"82\": \"#AE7229\", \"90\":\"#BBD7ED\", \"95\":\"#71A4C1\",\"0\":\"#00BFFF\"}",
-//                     "nodata": 0,
-//                     "rescale": [
-//                         0,
-//                         255
-//                     ]
-//                 },
-//                 "legend": {
-//                     "type": "categorical",
-//                     "min": "0",
-//                     "max": "255",
-//                     "stops": [
-//                         {
-//                             "color": "#E1CDCE",
-//                             "label": "Urban"
-//                         },
-//                         {
-//                             "color": "#DC9881"
-//                         },
-//                         {
-//                             "color": "#F10100"
-//                         },
-//                         {
-//                             "color": "#AB0101"
-//                         },
-//                         {
-//                             "color": "#6BA966",
-//                             "label": "Vegetation"
-//                         },
-//                         {
-//                             "color": "#1D6533"
-//                         },
-//                         {
-//                             "color": "#BDCC93"
-//                         },
-//                         {
-//                             "color": "#D1BB82"
-//                         },
-//                         {
-//                             "color": "#EDECCD"
-//                         },
-//                         {
-//                             "color": "#D0D181"
-//                         },
-//                         {
-//                             "color": "#A4CC51"
-//                         },
-//                         {
-//                             "color": "#AE7229",
-//                             "label": "Agriculture"
-//                         }
-//                     ]
-//                 },
-//                 "compare": {
-//                     "datasetId": "campfire-nlcd",
-//                     "layerId": "campfire-nlcd"
-//                 }
-//             }
-//         ]
-//     }
-// }
+
+  const baseDataLayer = transformDataLayer(baseLayerResolvedData);
+  const compareDataLayer = transformDataLayer(compareLayerResolvedData);
 
   useEffect(() => {
     setProjection(projectionStart);
@@ -382,9 +307,9 @@ function MapBlock(props: MapBlockProps) {
             baseLayer?.data &&
             (
               <Layer
-                key={dataset.data.id}
-                id={dataset.data.id}
-                dataset={(baseDataLayer as unknown) as TimelineDatasetSuccess}
+                key={baseDataLayer.data.id}
+                id={`base-${baseDataLayer.data.id}`}
+                dataset={(baseDataLayer as unknown) as TimelineDatasetSuccess || dataset}
                 selectedDay={selectedDatetime}
                 order={0}
               />
@@ -448,11 +373,10 @@ function MapBlock(props: MapBlockProps) {
             compareLayer?.data &&
             (
               <Layer
-                key={dataset.data.id}
-                id={`${dataset.data.id}-compare`}
+                key={compareDataLayer.data.id}
+                id={`compare-${compareDataLayer.data.id}`}
                 dataset={(compareDataLayer as unknown) as TimelineDatasetSuccess}
                 selectedDay={selectedCompareDatetime}
-                order={0}
               />
             )
           }

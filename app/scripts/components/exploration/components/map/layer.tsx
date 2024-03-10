@@ -18,7 +18,7 @@ import { CMRTimeseries } from '$components/common/map/style-generators/cmr-times
 interface LayerProps {
   id: string;
   dataset: TimelineDatasetSuccess;
-  order: number;
+  order?: number;
   selectedDay: Date;
 }
 
@@ -33,17 +33,17 @@ export function Layer(props: LayerProps) {
   // const isVisible = getSettings('isVisible');
   // const opacity = getSettings('opacity');
   let isVisible: boolean | undefined = true;
-  let opacity: number | undefined = 1;
-  // if (getSettings) {
-  //   const isVisible = getSettings('isVisible');
-  //   const opacity = getSettings('opacity');
-  // }
+  let opacity: number | undefined = undefined;
+  // // if (getSettings) {
+  // //   const isVisible = getSettings('isVisible');
+  // //   const opacity = getSettings('opacity');
+  // // }
 
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(
-    () => getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
-    [selectedDay, dataset.data.timeDensity]
+    () => getTimeDensityStartDate(selectedDay, dataset.data?.timeDensity),
+    [selectedDay, dataset.data?.timeDensity]
   );
 
   // Resolve config functions.
@@ -57,12 +57,12 @@ export function Layer(props: LayerProps) {
     return resolveConfigFunctions(dataset.data, bag);
   }, [dataset, relevantDate]);
 
-  // @TODO-SANDRA: This needs to be revisited, just trying to make work for now
-  const transformData = () => {
-    if(dataset.data.layers.length == 1) {
+  // // @TODO-SANDRA: This needs to be revisited, just trying to make work for now
+  // const transformData = () => {
+  //   if(dataset.data.layers.length == 1) {
 
-    }
-  }
+  //   }
+  // }
 
   switch (dataset.data.type) {
     case 'vector':
