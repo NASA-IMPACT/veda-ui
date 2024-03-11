@@ -1,44 +1,39 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { DatasetDatumFnResolverBag, ProjectionOptions } from 'veda';
-
+import { DatasetDatumFnResolverBag, ProjectionOptions, datasets } from 'veda';
+import { MapboxOptions } from 'mapbox-gl';
+import * as dateFns from 'date-fns';
 import {
   convertProjectionToMapbox,
   projectionDefault,
   validateProjectionBlockProps
 } from '../mapbox/map-options/utils';
 import { BasemapId } from '../mapbox/map-options/basemaps';
-
-import { utcString2userTzDate } from '$utils/date';
-import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
-
-import Map, { Compare, MapControls } from '$components/common/map';
-
-import { validateRangeNum } from '$utils/utils';
-import { HintedError } from '$utils/hinted-error';
 import { Basemap } from '../map/style-generators/basemap';
-
-import { datasets } from 'veda';
-
-import {
-  ScaleControl
-} from '$components/common/map/controls';
-import { Layer } from '$components/exploration/components/map/layer';
-import { useDatasetAsyncLayer } from '$context/layer-data';
-import { TimelineDatasetSuccess } from '$components/exploration/types.ts';
 import MapOptionsControl from '../map/controls/map-options';
-import { useBasemap } from '../map/controls/hooks/use-basemap';
 import { LayerLegend, LayerLegendContainer } from '../mapbox/layer-legend';
 import MapCoordsControl from '../map/controls/coords';
 import MapMessage from '../mapbox/map-message';
 import { formatCompareDate } from '../mapbox/utils';
-import * as dateFns from 'date-fns';
+import { resolveConfigFunctions } from '../mapbox/layers/utils';
+import { useBasemap } from '../map/controls/hooks/use-basemap';
+import { DEFAULT_MAP_STYLE_URL } from '../map/controls/map-options/basemap';
+import { utcString2userTzDate } from '$utils/date';
+import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
+import Map, { Compare, MapControls } from '$components/common/map';
+import { validateRangeNum } from '$utils/utils';
+import { HintedError } from '$utils/hinted-error';
+import {
+  AttributionControl,
+  NavigationControl,
+  ScaleControl
+} from '$components/common/map/controls';
+import { Layer } from '$components/exploration/components/map/layer';
+import { useDatasetAsyncLayer } from '$context/layer-data';
 import {
   S_SUCCEEDED
 } from '$utils/status';
-import { resolveConfigFunctions } from '../mapbox/layers/utils';
-import { MapboxOptions } from 'mapbox-gl';
-import { DEFAULT_MAP_STYLE_URL } from '../map/controls/map-options/basemap';
+import { TimelineDatasetSuccess } from '$components/exploration/types.d.ts';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -188,6 +183,7 @@ function MapBlock(props: MapBlockProps) {
 
   const dataset = datasetId ? datasets[datasetId] : null;
 
+  const author = dataset?.data?.media?.author?.name;
   const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
 
   const resolverBag = useMemo<DatasetDatumFnResolverBag>(
@@ -219,16 +215,8 @@ function MapBlock(props: MapBlockProps) {
     return [data];
   }, [compareLayer, resolverBag]);
 
-  // @TODO-SANDRA: Temp for now, will revisit, need to get working for now
-  const transformDataLayer: TimelineDatasetSuccess = (data) => {
-    let transformedData = {};
-
-    transformedData['data'] = data;
-    return transformedData;
-  }
-
-  const baseDataLayer = transformDataLayer(baseLayerResolvedData);
-  const compareDataLayer = transformDataLayer(compareLayerResolvedData);
+  const baseDataLayer = {data: baseLayerResolvedData};
+  const compareDataLayer = {data: compareLayerResolvedData};
 
   const mapOptions: Partial<MapboxOptions> = {
     style: DEFAULT_MAP_STYLE_URL,
@@ -297,6 +285,8 @@ function MapBlock(props: MapBlockProps) {
     compareTimeDensity
   ]);
 
+  const initialPosition = useMemo(() => center ? { lng: center[0], lat: center[1], zoom } : undefined , [center, zoom]);
+
   return (
     <>
       <Carto>
@@ -320,7 +310,7 @@ function MapBlock(props: MapBlockProps) {
         />
       </Carto>
       <Carto>
-        <Map id={generatedId} mapOptions={{...mapOptions, ...getMapPositionOptions(center ? { lng: center[0], lat: center[1], zoom } : undefined)}}>
+        <Map id={generatedId} mapOptions={{...mapOptions, ...getMapPositionOptions(initialPosition)}} enableDefaultAttribution={false}>
           <Basemap
             basemapStyleId={mapBasemapId}
           />
@@ -328,22 +318,20 @@ function MapBlock(props: MapBlockProps) {
             dataset &&
             selectedDatetime &&
             layerId &&
-            baseLayer?.data &&
+            baseDataLayer?.data &&
             (
               <Layer
                 key={baseDataLayer.data.id}
                 id={`base-${baseDataLayer.data.id}`}
-                dataset={(baseDataLayer as unknown) as TimelineDatasetSuccess || dataset}
+                dataset={(baseDataLayer as unknown) as TimelineDatasetSuccess}
                 selectedDay={selectedDatetime}
-                isPositionSet={!!center}
-                order={0}
               />
             )
           }
           {baseLayer?.data?.legend && (
             // Map overlay element
             // Layer legend for the active layer.
-            //TODO-SANDRA: This is in the old mapbox directory, may want to move this over to new directory as well
+            // @NOTE: LayerLegendContainer is in old mapbox directory, may want to move this over to /map directory once old directory is deprecated
             <LayerLegendContainer>
               <LayerLegend
                 id={`base-${baseLayer.data.id}`}
@@ -375,7 +363,11 @@ function MapBlock(props: MapBlockProps) {
             >
               {computedCompareLabel}
             </MapMessage>
-            <ScaleControl/>
+            {
+              author && <AttributionControl message={`Figure by ${author}`} />
+            }
+            <ScaleControl />
+            <NavigationControl />
             <MapCoordsControl />
             <MapOptionsControl
               projection={projection}
@@ -395,7 +387,7 @@ function MapBlock(props: MapBlockProps) {
             dataset &&
             selectedCompareDatetime &&
             layerId &&
-            compareLayer?.data &&
+            compareDataLayer?.data &&
             (
               <Layer
                 key={compareDataLayer.data.id}
