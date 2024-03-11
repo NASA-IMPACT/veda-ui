@@ -264,7 +264,7 @@ function MapBlock(props: MapBlockProps) {
 
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.
-    const providedLabel = compareLabel ?? compareLayer?.data?.mapLabel;
+    const providedLabel = compareLabel ?? compareDataLayer?.data?.mapLabel;
     if (providedLabel) return providedLabel as string;
 
     // Default to date comparison.
@@ -278,7 +278,7 @@ function MapBlock(props: MapBlockProps) {
       : null;
   }, [
     compareLabel,
-    compareLayer?.data?.mapLabel,
+    compareDataLayer?.data?.mapLabel,
     selectedDatetime,
     compareToDate,
     baseTimeDensity,
