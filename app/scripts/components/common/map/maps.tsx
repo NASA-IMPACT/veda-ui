@@ -23,6 +23,7 @@ import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
 import useMaps, { useMapsContext } from './hooks/use-maps';
 import { COMPARE_CONTAINER_NAME, CONTROLS_CONTAINER_NAME } from '.';
+import { MapboxOptions } from 'mapbox-gl';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -161,19 +162,20 @@ export interface MapsContextWrapperProps {
   id: string;
   projection?: ProjectionOptions;
   onStyleUpdate?: (style: ExtendedStyle) => void;
+  mapOptions?: Partial<Omit<MapboxOptions, 'container'>>;
 }
 
 export default function MapsContextWrapper(props: MapsContextWrapperProps) {
-  const { id } = props;
+  const { id, mapOptions } = props;
   const mainId = `main-map-${id}`;
   const comparedId = `compared-map-${id}`;
   const containerId = `comparison-container-${id}`;
 
   // Holds the initial view state for the main map, used by compare map at mount
   const [initialViewState, setInitialViewState] = useState({
-    latitude: 0,
-    longitude: 0,
-    zoom: 1
+    latitude: mapOptions?.center?.[1] ?? 0,
+    longitude: mapOptions?.center?.[0] ?? 0,
+    zoom: mapOptions?.zoom ?? 1
   });
 
   return (
