@@ -37,6 +37,8 @@ import {
   S_SUCCEEDED
 } from '$utils/status';
 import { resolveConfigFunctions } from '../mapbox/layers/utils';
+import { MapboxOptions } from 'mapbox-gl';
+import { DEFAULT_MAP_STYLE_URL } from '../map/controls/map-options/basemap';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -228,6 +230,28 @@ function MapBlock(props: MapBlockProps) {
   const baseDataLayer = transformDataLayer(baseLayerResolvedData);
   const compareDataLayer = transformDataLayer(compareLayerResolvedData);
 
+  const mapOptions: Partial<MapboxOptions> = {
+    style: DEFAULT_MAP_STYLE_URL,
+    logoPosition: 'bottom-left',
+    trackResize: true,
+    pitchWithRotate: false,
+    dragRotate: false,
+    zoom: 1
+  };
+  
+  const getMapPositionOptions = (position) => {
+    const opts = {} as Pick<typeof mapOptions, 'center' | 'zoom'>;
+    if (position?.lng !== undefined && position?.lat !== undefined) {
+      opts.center = [position.lng, position.lat];
+    }
+  
+    if (position?.zoom) {
+      opts.zoom = position.zoom;
+    }
+  
+    return opts;
+  };
+
   useEffect(() => {
     setProjection(projectionStart);
   }, [projectionStart]);
@@ -296,7 +320,7 @@ function MapBlock(props: MapBlockProps) {
         />
       </Carto>
       <Carto>
-        <Map id={generatedId}>
+        <Map id={generatedId} mapOptions={{...mapOptions, ...getMapPositionOptions(center ? { lng: center[0], lat: center[1], zoom } : undefined)}}>
           <Basemap
             basemapStyleId={mapBasemapId}
           />
@@ -311,6 +335,7 @@ function MapBlock(props: MapBlockProps) {
                 id={`base-${baseDataLayer.data.id}`}
                 dataset={(baseDataLayer as unknown) as TimelineDatasetSuccess || dataset}
                 selectedDay={selectedDatetime}
+                isPositionSet={!!center}
                 order={0}
               />
             )
