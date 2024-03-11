@@ -7,6 +7,7 @@ import React, {
   createContext
 } from 'react';
 import styled from 'styled-components';
+import { MapboxOptions } from 'mapbox-gl';
 import {
   CollecticonChevronLeftSmall,
   CollecticonChevronRightSmall,
@@ -23,7 +24,6 @@ import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
 import useMaps, { useMapsContext } from './hooks/use-maps';
 import { COMPARE_CONTAINER_NAME, CONTROLS_CONTAINER_NAME } from '.';
-import { MapboxOptions } from 'mapbox-gl';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -81,12 +81,12 @@ const MapsContainer = styled.div`
 
 type MapsProps = Pick<
   MapsContextWrapperProps,
-  'projection' | 'onStyleUpdate'
+  'projection' | 'onStyleUpdate' | 'enableDefaultAttribution'
 > & {
   children: ReactNode;
 };
 
-function Maps({ children, projection, onStyleUpdate }: MapsProps) {
+function Maps({ children, projection, onStyleUpdate, enableDefaultAttribution }: MapsProps) {
   // Instantiate MGL Compare, if compare is enabled
   useMapCompare();
 
@@ -141,7 +141,7 @@ function Maps({ children, projection, onStyleUpdate }: MapsProps) {
     <MapsContainer id={containerId} ref={observe}>
       <Styles onStyleUpdate={onStyleUpdate}>
         {generators}
-        <MapComponent controls={controls} projection={projection} />
+        <MapComponent controls={controls} projection={projection} enableDefaultAttribution={enableDefaultAttribution} />
       </Styles>
       {!!compareGenerators.length && (
         <Styles isCompared>
@@ -150,6 +150,7 @@ function Maps({ children, projection, onStyleUpdate }: MapsProps) {
             isCompared
             controls={controls}
             projection={projection}
+            enableDefaultAttribution={enableDefaultAttribution}
           />
         </Styles>
       )}
@@ -163,6 +164,7 @@ export interface MapsContextWrapperProps {
   projection?: ProjectionOptions;
   onStyleUpdate?: (style: ExtendedStyle) => void;
   mapOptions?: Partial<Omit<MapboxOptions, 'container'>>;
+  enableDefaultAttribution?: boolean;
 }
 
 export default function MapsContextWrapper(props: MapsContextWrapperProps) {
