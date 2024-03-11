@@ -252,8 +252,8 @@ function MapBlock(props: MapBlockProps) {
     setMapBasemapId(basemapId);
   }, [basemapId]);
 
-  const baseTimeDensity = baseLayer?.data?.timeseries.timeDensity;
-  const compareTimeDensity = compareLayer?.data?.timeseries.timeDensity;
+  const baseTimeDensity = baseDataLayer?.data?.timeseries.timeDensity;
+  const compareTimeDensity = compareDataLayer?.data?.timeseries.timeDensity;
 
   const compareToDate = useMemo(() => {
     const theDate = selectedCompareDatetime ?? selectedDatetime;
