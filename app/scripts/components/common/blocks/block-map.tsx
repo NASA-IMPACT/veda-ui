@@ -138,7 +138,6 @@ function MapBlock(props: MapBlockProps) {
     projectionId,
     projectionCenter,
     projectionParallels,
-    allowProjectionChange,
     basemapId
   } = props;
 
@@ -288,119 +287,97 @@ function MapBlock(props: MapBlockProps) {
   const initialPosition = useMemo(() => center ? { lng: center[0], lat: center[1], zoom } : undefined , [center, zoom]);
 
   return (
-    <>
-      <Carto>
-        <MapboxMap
-          id={generatedId}
-          datasetId={datasetId}
-          layerId={layerId}
-          date={selectedDatetime}
-          isComparing={!!selectedCompareDatetime}
-          compareDate={selectedCompareDatetime}
-          compareLabel={compareLabel}
-          initialPosition={
-            center ? { lng: center[0], lat: center[1], zoom } : undefined
-          }
-          cooperativeGestures
-          projection={projection}
-          onProjectionChange={allowProjectionChange ? setProjection : undefined}
+    <Carto>
+      <Map id={generatedId} mapOptions={{...mapOptions, ...getMapPositionOptions(initialPosition)}} enableDefaultAttribution={false}>
+        <Basemap
           basemapStyleId={mapBasemapId}
-          onBasemapStyleIdChange={setMapBasemapId}
-          withScale
         />
-      </Carto>
-      <Carto>
-        <Map id={generatedId} mapOptions={{...mapOptions, ...getMapPositionOptions(initialPosition)}} enableDefaultAttribution={false}>
+        {
+          dataset &&
+          selectedDatetime &&
+          layerId &&
+          baseDataLayer?.data &&
+          (
+            <Layer
+              key={baseDataLayer.data.id}
+              id={`base-${baseDataLayer.data.id}`}
+              dataset={(baseDataLayer as unknown) as TimelineDatasetSuccess}
+              selectedDay={selectedDatetime}
+            />
+          )
+        }
+        {baseLayer?.data?.legend && (
+          // Map overlay element
+          // Layer legend for the active layer.
+          // @NOTE: LayerLegendContainer is in old mapbox directory, may want to move this over to /map directory once old directory is deprecated
+          <LayerLegendContainer>
+            <LayerLegend
+              id={`base-${baseLayer.data.id}`}
+              title={baseLayer.data.name}
+              description={baseLayer.data.description}
+              {...baseLayer.data.legend}
+            />
+            {compareLayer?.data?.legend &&
+              !!selectedCompareDatetime &&
+              baseLayer.data.id !== compareLayer.data.id && (
+                <LayerLegend
+                  id={`compare-${compareLayer.data.id}`}
+                  title={compareLayer.data.name}
+                  description={compareLayer.data.description}
+                  {...compareLayer.data.legend}
+                />
+              )}
+          </LayerLegendContainer>
+        )}
+        <MapControls>
+          <MapMessage
+            id='compare-message'
+            active={
+              !!(
+                selectedCompareDatetime &&
+                compareLayer?.data
+              )
+            }
+          >
+            {computedCompareLabel}
+          </MapMessage>
+          {
+            author && <AttributionControl message={`Figure by ${author}`} />
+          }
+          <ScaleControl />
+          <NavigationControl />
+          <MapCoordsControl />
+          <MapOptionsControl
+            projection={projection}
+            onProjectionChange={setProjection}
+            basemapStyleId={mapBasemapId}
+            onBasemapStyleIdChange={setMapBasemapId}
+            labelsOption={labelsOption}
+            boundariesOption={boundariesOption}
+            onOptionChange={onOptionChange}
+          />
+        </MapControls>
+        <Compare>
           <Basemap
             basemapStyleId={mapBasemapId}
           />
-          {
-            dataset &&
-            selectedDatetime &&
-            layerId &&
-            baseDataLayer?.data &&
-            (
-              <Layer
-                key={baseDataLayer.data.id}
-                id={`base-${baseDataLayer.data.id}`}
-                dataset={(baseDataLayer as unknown) as TimelineDatasetSuccess}
-                selectedDay={selectedDatetime}
-              />
-            )
-          }
-          {baseLayer?.data?.legend && (
-            // Map overlay element
-            // Layer legend for the active layer.
-            // @NOTE: LayerLegendContainer is in old mapbox directory, may want to move this over to /map directory once old directory is deprecated
-            <LayerLegendContainer>
-              <LayerLegend
-                id={`base-${baseLayer.data.id}`}
-                title={baseLayer.data.name}
-                description={baseLayer.data.description}
-                {...baseLayer.data.legend}
-              />
-              {compareLayer?.data?.legend &&
-                !!selectedCompareDatetime &&
-                baseLayer.data.id !== compareLayer.data.id && (
-                  <LayerLegend
-                    id={`compare-${compareLayer.data.id}`}
-                    title={compareLayer.data.name}
-                    description={compareLayer.data.description}
-                    {...compareLayer.data.legend}
-                  />
-                )}
-            </LayerLegendContainer>
-          )}
-          <MapControls>
-            <MapMessage
-              id='compare-message'
-              active={
-                !!(
-                  selectedCompareDatetime &&
-                  compareLayer?.data
-                )
-              }
-            >
-              {computedCompareLabel}
-            </MapMessage>
-            {
-              author && <AttributionControl message={`Figure by ${author}`} />
-            }
-            <ScaleControl />
-            <NavigationControl />
-            <MapCoordsControl />
-            <MapOptionsControl
-              projection={projection}
-              onProjectionChange={setProjection}
-              basemapStyleId={mapBasemapId}
-              onBasemapStyleIdChange={setMapBasemapId}
-              labelsOption={labelsOption}
-              boundariesOption={boundariesOption}
-              onOptionChange={onOptionChange}
+        {
+          dataset &&
+          selectedCompareDatetime &&
+          layerId &&
+          compareDataLayer?.data &&
+          (
+            <Layer
+              key={compareDataLayer.data.id}
+              id={`compare-${compareDataLayer.data.id}`}
+              dataset={(compareDataLayer as unknown) as TimelineDatasetSuccess}
+              selectedDay={selectedCompareDatetime}
             />
-          </MapControls>
-          <Compare>
-            <Basemap
-              basemapStyleId={mapBasemapId}
-            />
-          {
-            dataset &&
-            selectedCompareDatetime &&
-            layerId &&
-            compareDataLayer?.data &&
-            (
-              <Layer
-                key={compareDataLayer.data.id}
-                id={`compare-${compareDataLayer.data.id}`}
-                dataset={(compareDataLayer as unknown) as TimelineDatasetSuccess}
-                selectedDay={selectedCompareDatetime}
-              />
-            )
-          }
-          </Compare>
-        </Map>
-      </Carto>
-    </>
+          )
+        }
+        </Compare>
+      </Map>
+    </Carto>
   );
 }
 
