@@ -1,4 +1,4 @@
-# VEDA V2 Refactor ADR
+# Application Architecture for Configurability
 
 * Status: **In Review**, In Progress, Done
 * Authors: @j08lue, @sandrahoang686, @faustoperez
@@ -7,7 +7,7 @@
 
 ## Context and Problem Statement
 
-VEDA UI 1.0 was built as a reusable white-label application - easy for independent science data and information projects to stand up and configure their own instance with their content. The assumption was that projects would reuse the entire application and change mostly the styling and scalable content items such as datasets and stories, and would only need to change a few other elements. The application (pages, functional components; VEDA UI) is separate from content (VEDA config) and pages and elements can be changed via component overrides.
+VEDA UI 1.0 was built as a reusable white-label application for independent science data and information projects. These projects should be able to stand up and configure their own instance with their content. The assumption was that projects would reuse the entire application and change mostly the styling and scalable content items such as datasets and stories, and would only need to change a few other elements. The application (pages, functional components; VEDA UI) is separate from content (VEDA config) and pages and elements can be changed via component overrides.
 
 In 2023, our team supported two new projects to integrate VEDA UI for their needs: the U.S. Greenhouse Gas Center (earth.gov/ghgcenter) and the Earth Information Center (EIC; earth.gov). These projects had much wider needs for customization or adaptation, mostly related to the context of the project:
 1. Different thematic categorization of content with hierarchies or tags
@@ -37,7 +37,7 @@ We also need to take into account that the evolution of the application with new
 
 - Investment payoff
 - Compatibility with continued support for instances with feature evolution
-- Developer velocity
+- Improve developer velocity
 - Ease of support for required customizations
 
 
@@ -45,34 +45,34 @@ We also need to take into account that the evolution of the application with new
 
 - [1] Continue with current application architecture + design system
 - [2] Continue with current application architecture + replace design system
-- [3] Refactor component library + replace design system + Rearchitect 
-- [4] Rewrite component library + replace design system + Rearchitect
+- [3] Refactor component library + replace design system + rearchitect 
+- [4] Rewrite component library + replace design system + rearchitect
 
 ## Decision Outcome
 
-- ✔️[3] Refactor component library + replace design system + Rearchitect 
+- ✔️[3] Refactor component library + replace design system + rearchitect 
 
 Move more control to the instance level, modularize the core ui library to expose core feature components and smaller reusable components, and create a data layer as part of the core ui library that is ideally also consumed at the instance level that manages data fetching and MDX parsing so that components are data agnostic. Introduce a new design system that is well-maintained and community-backed to create standardization across styles and accessibility patterns.
 
 #### 1. Move Routing from the core ui library to the instance level
 Routing and what pages exist should be determined at the instance level. Currently, routing is handled at the core UI library level so supporting additional/removal of pages requires override logic. Moving this to the instance level allows developers/stakeholders to independently manage their routes and pages.
+
 #### 2. Feature components in the core ui library composed at the instance level
 Currently, the core UI library handles the composition of each page because of its control over routing. However, pages and what they render should shift to the instance level so developers/stakeholders can control what is rendered within each page view. The core UI library should expose feature components (containers) that deliver a core feature in the VEDA dashboard such as the A&E feature. 
+
 #### 3. Modularize and create smaller reusable components
 The core UI library should also expose smaller reusable components like date pickers, form elements, analysis tools, etc… (“presentational/dumb” components). This way developers/stakeholders for example can compose a page view with the A&E feature from the core UI library and consume other reusable components to construct their page view. This also now allows developers to build their own custom components on the instance side and directly incorporate them. 
+
 #### 4. Create a Data layer that manages all data fetching
 The proposed data layer is designed to handle all data fetching, including STAC calls, and MDX parsing. Think of it as a versatile data utilities library. Introducing this layer would enable components in the core UI library to remain data-agnostic. In the event of scaling to additional or different data sources, expansion can be easily accomplished by integrating them into this centralized layer. Smart components (larger and stateful) would then efficiently consume this data layer.
 > **Integrating with [stac-react](https://github.com/developmentseed/stac-react/tree/main)**: Because these React hooks manage data fetching to the STAC API using the Context API provider pattern, this could just be used directly as it is already its own data layer. We would have to decide where we wrap the Provider though. Ideally, at the instance level, we would wrap the provider at the highest level in the tree either around the router or specific view containers and then consume these hooks down the hierarchy on the instance side. The components in the core ui library would be prop driven so this way they can be truly data agnostic and accept whatever data passed in.
+
 #### 5. Introduce a new Design System
 a. Replace the existing custom design system with a well-maintained, widely adopted community-supported design system. This ensures built-in accessibility standards and eliminates the need for designers and developers to invest time in ongoing maintenance.
 
-
-
 b. The preliminary systems we are considering are:
-* Chakra UI. Built on React, it has a large component library, built-in accessibility and theming options. It is designed with responsive and mobile-first principles and has a strong community and documentation.
-* The U.S. Web Design System (USWDS) is tailored for government projects. It's designed to meet the specific needs of U.S. federal websites, offering components that are accessible, secure, and in line with U.S. digital standards.
-
-
+  * Chakra UI. Built on React, it has a large component library, built-in accessibility and theming options. It is designed with responsive and mobile-first principles and has a strong community and documentation.
+  * The U.S. Web Design System (USWDS) is tailored for government projects. It's designed to meet the specific needs of U.S. federal websites, offering components that are accessible, secure, and in line with U.S. digital standards.
 
 c. Any option we choose will have to be extended for data visualization components (charts, maps, widgets, etc.) and themed for the 3 current VEDA instances: VEDA Dashboard, U.S. GHG Center, Earth.gov.
 
@@ -81,15 +81,34 @@ c. Any option we choose will have to be extended for data visualization componen
 
 *[Miro Board Link](https://miro.com/app/board/uXjVN6lkBnc=/?share_link_id=85040810316) which documents team's brainstorming discussions, options considered, technical trade-offs, and final proposed solution in detail*
 
-### Value
-#### Product POV
-This refactor will enhance efficiency of delivering new instances and modifying page views without directly impacting the core UI logic library. It will also facilitate seamless support for a wider range of data integrations. 
-#### Developer POV
-This refactor will allow developers to move faster by removing specific domain knowledge on very custom dependencies. It will also ideally be easier to make customizations without limitations around overriding pages and components. Spinning up a new instance and making modifications to page views would now be easier with routing and composability moving to the instance level. This will also allow different data integrations to be easily added without having to touch core components. 
+## Pros and Cons of the Options
 
-### Consequences
-* While the new architecture may demand deeper coding knowledge to set up a new instance, this complexity is offset by the fact that making overrides in the current architecture is equally developer-intensive. Additionally, we plan to establish a template instance that is easily cloneable for a quick start when spinning up new instances.
-* There may be unforeseen blockers during the refactoring which have not been outlined. This may add to the complexity and spur more discussions on how to handle these blockers.
+### [1] Continue with current application architecture + design system
+- 💚 No up-front cost
+- 🚩 Fulfilling the customization requirements means making the app more customizable through overrides, options, and flags/branches in code, increasing complexity, which has a cost in terms of developer velocity and onboarding
+- 🚩 We have to maintain the legacy design system and augment it e.g. with new components and accessibility features like active state
+
+### [2] Continue with current application architecture + replace design system
+- 💚 Small investment
+- 💚 We can use standard components from the new design system
+- 💚 We get accessibility-optimized components out of the box, backed by community
+- 🚩 No improvement in terms of customization experience
+
+### [3] Refactor component library + replace design system + Rearchitect
+- 💚 A component library allows for more straightforward composition into applications with the customization (pages, layout, navigation, routing, data providers) that is required
+- 💚 More efficient delivery of new instances with modified page views, without directly impacting the core UI logic library. Seamless support for a wider range of data integrations.
+- 💚 Faster development without requiring specific domain knowledge on very custom dependencies.
+- 💚 As we refactor, we can see the new patterns emerge and hopefully implement feature improvements together with architecture improvements. However, rebuilding the instances with the components will basically mean a rewrite.
+- 🚩 Refactoring is a complex process - risk of delay / failure.
+- 🚩 The new architecture may demand deeper coding knowledge to set up a new instance. However this complexity is offset by the fact that making overrides in the current architecture is equally developer-intensive. We plan to establish a template instance that is easily cloneable for a quick start when spinning up new instances.
+
+### [4] Rewrite component library + replace design system + Rearchitect
+- 💚 A component library allows for more straightforward composition into applications with the customization (pages, layout, navigation, routing, data providers) that is required
+- 💚 More efficient delivery of new instances with modified page views, without directly impacting the core UI logic library. Seamless support for a wider range of data integrations. 
+- 💚 Faster development without requiring specific domain knowledge on very custom dependencies.
+- 🚩 Since we also need to continue supporting the current instances, we would need to invest into the rewrite while we also keep developing the current application. This offsets any returns on investment and increases the risk of failure.
+- 🚩 The new architecture may demand deeper coding knowledge to set up a new instance. However this complexity is offset by the fact that making overrides in the current architecture is equally developer-intensive. We plan to establish a template instance that is easily cloneable for a quick start when spinning up new instances.
+
 
 ## Resources
 * [Github Issue to gather strategic questions related to future of VEDA UI](https://github.com/NASA-IMPACT/veda-ui/issues/766)
