@@ -16,12 +16,10 @@ export default function MapComponent({
   controls,
   isCompared,
   projection,
-  enableDefaultAttribution = true
 }: {
   controls: ReactElement[];
   isCompared?: boolean;
   projection?: ProjectionOptions;
-  enableDefaultAttribution?: boolean;
 }) {
   const { initialViewState, setInitialViewState, mainId, comparedId } =
     useMapsContext();
@@ -60,7 +58,6 @@ export default function MapComponent({
       onMove={onMove}
       projection={mapboxProjection}
       maxBounds={maxMapBounds}
-      attributionControl={enableDefaultAttribution}
     >
       {controls}
     </ReactMapGlMap>

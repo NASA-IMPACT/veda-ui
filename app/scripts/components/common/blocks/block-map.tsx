@@ -10,13 +10,11 @@ import {
 } from '../mapbox/map-options/utils';
 import { BasemapId } from '../mapbox/map-options/basemaps';
 import { Basemap } from '../map/style-generators/basemap';
-import MapOptionsControl from '../map/controls/map-options';
 import { LayerLegend, LayerLegendContainer } from '../mapbox/layer-legend';
 import MapCoordsControl from '../map/controls/coords';
 import MapMessage from '../mapbox/map-message';
-import { formatCompareDate } from '../mapbox/utils';
+import { formatCompareDate, formatSingleDate } from '../mapbox/utils';
 import { resolveConfigFunctions } from '../mapbox/layers/utils';
-import { useBasemap } from '../map/controls/hooks/use-basemap';
 import { DEFAULT_MAP_STYLE_URL } from '../map/controls/map-options/basemap';
 import { utcString2userTzDate } from '$utils/date';
 import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
@@ -143,12 +141,6 @@ function MapBlock(props: MapBlockProps) {
 
   const errors = validateBlockProps(props);
 
-  const {
-    labelsOption,
-    boundariesOption,
-    onOptionChange
-  } = useBasemap();
-
   if (errors.length) {
     throw new HintedError('Malformed Map Block', errors);
   }
@@ -159,7 +151,7 @@ function MapBlock(props: MapBlockProps) {
   const selectedCompareDatetime = compareDateTime
     ? utcString2userTzDate(compareDateTime)
     : undefined;
-
+  
   const projectionStart = useMemo(() => {
     if (projectionId) {
       // Ensure that the default center and parallels are used if none are
@@ -178,7 +170,7 @@ function MapBlock(props: MapBlockProps) {
     }
   }, [projectionId, projectionCenter, projectionParallels]);
 
-  const [projection, setProjection] = useState(projectionStart);
+  const [, setProjection] = useState(projectionStart);
 
   const dataset = datasetId ? datasets[datasetId] : null;
 
@@ -288,7 +280,7 @@ function MapBlock(props: MapBlockProps) {
 
   return (
     <Carto>
-      <Map id={generatedId} mapOptions={{...mapOptions, ...getMapPositionOptions(initialPosition)}} enableDefaultAttribution={false}>
+      <Map id={generatedId} mapOptions={{...mapOptions, ...getMapPositionOptions(initialPosition)}}>
         <Basemap
           basemapStyleId={mapBasemapId}
         />
@@ -330,52 +322,60 @@ function MapBlock(props: MapBlockProps) {
           </LayerLegendContainer>
         )}
         <MapControls>
-          <MapMessage
-            id='compare-message'
-            active={
-              !!(
-                selectedCompareDatetime &&
-                compareLayer?.data
+          {
+            (selectedDatetime && selectedCompareDatetime) ? 
+              (
+                <MapMessage
+                  id='compare-message'
+                  active={
+                    !!(
+                      selectedCompareDatetime &&
+                      compareLayer?.data
+                    )
+                  }
+                >
+                  {computedCompareLabel}
+                </MapMessage>
+              ) : 
+              (
+                <MapMessage
+                  id='single-map-message'
+                  active={!!(selectedDatetime && baseLayerResolvedData)}
+                >
+                  {selectedDatetime && formatSingleDate(selectedDatetime, baseLayerResolvedData?.timeseries.timeDensity)}
+                </MapMessage>
               )
-            }
-          >
-            {computedCompareLabel}
-          </MapMessage>
+          }
           {
             author && <AttributionControl message={`Figure by ${author}`} />
           }
           <ScaleControl />
-          <NavigationControl />
+          <NavigationControl position='top-left' />
           <MapCoordsControl />
-          <MapOptionsControl
-            projection={projection}
-            onProjectionChange={setProjection}
-            basemapStyleId={mapBasemapId}
-            onBasemapStyleIdChange={setMapBasemapId}
-            labelsOption={labelsOption}
-            boundariesOption={boundariesOption}
-            onOptionChange={onOptionChange}
-          />
         </MapControls>
-        <Compare>
-          <Basemap
-            basemapStyleId={mapBasemapId}
-          />
         {
-          dataset &&
-          selectedCompareDatetime &&
-          layerId &&
-          compareDataLayer?.data &&
-          (
-            <Layer
-              key={compareDataLayer.data.id}
-              id={`compare-${compareDataLayer.data.id}`}
-              dataset={(compareDataLayer as unknown) as TimelineDatasetSuccess}
-              selectedDay={selectedCompareDatetime}
-            />
+          selectedCompareDatetime && (
+            <Compare>
+              <Basemap
+                basemapStyleId={mapBasemapId}
+              />
+              {
+                dataset &&
+                selectedCompareDatetime &&
+                layerId &&
+                compareDataLayer?.data &&
+                (
+                  <Layer
+                    key={compareDataLayer.data.id}
+                    id={`compare-${compareDataLayer.data.id}`}
+                    dataset={(compareDataLayer as unknown) as TimelineDatasetSuccess}
+                    selectedDay={selectedCompareDatetime}
+                  />
+                )
+              }
+            </Compare>  
           )
         }
-        </Compare>
       </Map>
     </Carto>
   );

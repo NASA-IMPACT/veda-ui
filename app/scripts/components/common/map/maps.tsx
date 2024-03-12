@@ -81,12 +81,12 @@ const MapsContainer = styled.div`
 
 type MapsProps = Pick<
   MapsContextWrapperProps,
-  'projection' | 'onStyleUpdate' | 'enableDefaultAttribution'
+  'projection' | 'onStyleUpdate'
 > & {
   children: ReactNode;
 };
 
-function Maps({ children, projection, onStyleUpdate, enableDefaultAttribution }: MapsProps) {
+function Maps({ children, projection, onStyleUpdate }: MapsProps) {
   // Instantiate MGL Compare, if compare is enabled
   useMapCompare();
 
@@ -141,7 +141,7 @@ function Maps({ children, projection, onStyleUpdate, enableDefaultAttribution }:
     <MapsContainer id={containerId} ref={observe}>
       <Styles onStyleUpdate={onStyleUpdate}>
         {generators}
-        <MapComponent controls={controls} projection={projection} enableDefaultAttribution={enableDefaultAttribution} />
+        <MapComponent controls={controls} projection={projection} />
       </Styles>
       {!!compareGenerators.length && (
         <Styles isCompared>
@@ -150,7 +150,6 @@ function Maps({ children, projection, onStyleUpdate, enableDefaultAttribution }:
             isCompared
             controls={controls}
             projection={projection}
-            enableDefaultAttribution={enableDefaultAttribution}
           />
         </Styles>
       )}
@@ -164,7 +163,6 @@ export interface MapsContextWrapperProps {
   projection?: ProjectionOptions;
   onStyleUpdate?: (style: ExtendedStyle) => void;
   mapOptions?: Partial<Omit<MapboxOptions, 'container'>>;
-  enableDefaultAttribution?: boolean;
 }
 
 export default function MapsContextWrapper(props: MapsContextWrapperProps) {
