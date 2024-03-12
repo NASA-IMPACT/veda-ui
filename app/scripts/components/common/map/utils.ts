@@ -1,4 +1,5 @@
 import axios, { Method } from 'axios';
+import { format } from 'date-fns';
 import { Map as MapboxMap } from 'mapbox-gl';
 import { MapRef } from 'react-map-gl';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -10,7 +11,7 @@ import {
 } from 'veda';
 
 import { StacFeature } from './types';
-
+import { TimeDensity } from '$context/layer-data';
 import { userTzDate2utcString } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
 
@@ -231,4 +232,26 @@ export function multiPolygonToPolygons(feature: Feature<MultiPolygon>) {
   );
 
   return polygons;
+}
+
+const dateFormats = {
+  year: 'yyyy',
+  month: 'LLL yyyy',
+  day: 'LLL do, yyyy'
+};
+
+export function formatSingleDate(date: Date, timeDensity?: TimeDensity) {
+  return format(date, dateFormats[timeDensity || 'day']);
+}
+
+export function formatCompareDate(
+  dateA: Date,
+  dateB: Date,
+  timeDensityA?: TimeDensity,
+  timeDensityB?: TimeDensity
+) {
+  return `${formatSingleDate(dateA, timeDensityA)} VS ${formatSingleDate(
+    dateB,
+    timeDensityB
+  )}`;
 }
