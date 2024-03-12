@@ -46,6 +46,8 @@ import {
 } from '$utils/status';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
 
+// @DEPRECATED: This file is to be DELETED as we are moving to use the map components under "/common/map"
+
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
     color: 'white'

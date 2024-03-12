@@ -3,6 +3,9 @@ import { MbProjectionOptions, ProjectionOptions } from 'veda';
 import { ProjectionListItem } from './types';
 import { validateRangeNum } from '$utils/utils';
 
+// @DEPRECATED: File to be DELETED once components referencing these methods have been removed.
+// These have moved to "/common/map/controls/map-options/projections"
+
 // The id is internal to the app.
 // The mbId is the projection name to use with mapbox. This is needed because
 // multiple projections can be made from the same mapbox Id just by tweaking the

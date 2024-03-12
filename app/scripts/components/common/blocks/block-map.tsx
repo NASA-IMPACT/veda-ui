@@ -7,17 +7,14 @@ import {
   convertProjectionToMapbox,
   projectionDefault,
   validateProjectionBlockProps
-} from '../mapbox/map-options/utils';
-import { BasemapId } from '../mapbox/map-options/basemaps';
+} from '../map/controls/map-options/projections';
 import { Basemap } from '../map/style-generators/basemap';
 import { LayerLegend, LayerLegendContainer } from '../mapbox/layer-legend';
 import MapCoordsControl from '../map/controls/coords';
 import MapMessage from '../mapbox/map-message';
-import { formatCompareDate, formatSingleDate } from '../mapbox/utils';
-import { resolveConfigFunctions } from '../mapbox/layers/utils';
-import { DEFAULT_MAP_STYLE_URL } from '../map/controls/map-options/basemap';
+import { formatCompareDate, formatSingleDate, resolveConfigFunctions } from '../map/utils';
+import { BasemapId, DEFAULT_MAP_STYLE_URL } from '../map/controls/map-options/basemap';
 import { utcString2userTzDate } from '$utils/date';
-import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
 import Map, { Compare, MapControls } from '$components/common/map';
 import { validateRangeNum } from '$utils/utils';
 import { HintedError } from '$utils/hinted-error';
@@ -38,11 +35,6 @@ const Carto = styled.div`
   position: relative;
   flex-grow: 1;
   height: ${mapHeight};
-
-  ${MapboxMap} {
-    position: absolute;
-    inset: 0;
-  }
 `;
 
 // This global variable is used to give unique ID to mapbox container
@@ -109,7 +101,7 @@ function validateBlockProps(props: MapBlockProps) {
   ].filter(Boolean) as string[];
 }
 
-interface MapBlockProps extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
+interface MapBlockProps {
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
@@ -120,6 +112,8 @@ interface MapBlockProps extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
   projectionParallels?: ProjectionOptions['parallels'];
   allowProjectionChange?: boolean;
   basemapId?: BasemapId;
+  datasetId?: string;
+  layerId?: string;
 }
 
 function MapBlock(props: MapBlockProps) {
