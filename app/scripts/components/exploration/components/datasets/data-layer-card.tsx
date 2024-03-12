@@ -49,7 +49,7 @@ const DatasetInfo = styled.div`
   flex-flow: column;
   gap: 0.5rem;
   background-color: ${themeVal('color.surface')};
-  padding: ${glsp(0.5)} ${glsp(1)};
+  padding: ${glsp(1)} ${glsp(1)};
   border-radius: ${themeVal('shape.rounded')};
   border: 1px solid ${themeVal('color.base-200')};
 
@@ -73,7 +73,11 @@ const DatasetInfo = styled.div`
 const DatasetHeadline = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  padding-top: 4px;
+`;
+
+const DatasetToolbar = styled(Toolbar)`
+  align-items: flex-start;
 `;
 
 const DatasetTitle = styled(Heading)`
@@ -96,14 +100,14 @@ export default function DataLayerCard(props: CardProps) {
         <DatasetCardInfo>
           <Header>
           <ParentDatasetTitle size='small'>
-            <CollecticonDatasetLayers /> {dataset.data.parentDataset.name}
+            <CollecticonDatasetLayers /> <p>{dataset.data.parentDataset.name}</p>
           </ParentDatasetTitle>
           </Header>
           <DatasetHeadline>
             <DatasetTitle as='h3' size='xxsmall'>
               {dataset.data.name}
             </DatasetTitle>
-            <Toolbar size='small'>
+            <DatasetToolbar size='small'>
               <TipButton
                 tipContent='Layer info'
                 // Using a button instead of a toolbar button because the
@@ -140,7 +144,7 @@ export default function DataLayerCard(props: CardProps) {
               )}
               </TipButton>
               <LayerMenuOptions datasetAtom={datasetAtom} />
-            </Toolbar>
+            </DatasetToolbar>
           </DatasetHeadline>
           
           <DatasetMetricInfo>
