@@ -45,8 +45,8 @@ We also need to take into account that the evolution of the application with new
 
 - [1] Continue with current application architecture + design system
 - [2] Continue with current application architecture + replace design system
-- [3] Refactor component library + replace design system + rearchitect 
-- [4] Rewrite component library + replace design system + rearchitect
+- [3] Refactor component library + replace design system + rewrite instances
+- [4] Rewrite component library + replace design system + rewrite instances
 
 ## Decision Outcome
 
