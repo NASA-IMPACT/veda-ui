@@ -50,7 +50,7 @@ We also need to take into account that the evolution of the application with new
 
 ## Decision Outcome
 
-- ✔️[3] Refactor component library + replace design system + rearchitect 
+- ✔️[3] Refactor component library + replace design system + rewrite instances
 
 Move more control to the instance level, modularize the core ui library to expose core feature components and smaller reusable components, and create a data layer as part of the core ui library that is ideally also consumed at the instance level that manages data fetching and MDX parsing so that components are data agnostic. Introduce a new design system that is well-maintained and community-backed to create standardization across styles and accessibility patterns.
 
