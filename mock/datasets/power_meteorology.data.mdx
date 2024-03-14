@@ -27,6 +27,13 @@ layers:
       - 20
     sourceParams:
       layers: CDD10
+    compare:
+      datasetId: power_901_annual_meterology_utc
+      layerId: power_901_annual_meterology_utc_DISPH
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
     legend:
       unit: 
         label: degree-day
@@ -57,6 +64,13 @@ layers:
     sourceParams:
       layers: CDD18_3
     # TODO: get this from `/legend` endpoint? ex - https://arcgis.asdc.larc.nasa.gov/server/rest/services/POWER/power_901_annual_meterology_utc/ImageServer/legend
+    compare:
+      datasetId: power_901_annual_meterology_utc
+      layerId: cdd10
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
     legend:
       unit: 
         label: degree-day
@@ -86,6 +100,13 @@ layers:
       - 20
     sourceParams:
       layers: DISPH
+    compare:
+      datasetId: power_901_annual_meterology_utc
+      layerId: power_901_annual_meterology_utc_DISPH
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
     legend:
       unit: 
         label: m
