@@ -21,7 +21,7 @@ We are expecting new instances to start using VEDA in 2024.
 ### Challenge 1: Cumbersome customization to the degree required
 Implementing these additional customizations proved to be cumbersome with the current application structure, because they require page overrides and new customization options across the application, which grew fast in complexity.
 
-### Challenge 2: Dependency injection
+### Challenge 2: Unconventional combination mechanism for instance configuration and UI components (via Git)
 The separation of application and content is currently done via Git submodules: the VEDA UI library source tree is injected into a Configuration project and then they are built together. This works and is lightweight, but is not a very common pattern which is an obstacle for new contributors to the project and new instances. 
 
 ### Challenge 3: Unmaintained design system
