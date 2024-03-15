@@ -19,7 +19,6 @@ import Map, { Compare, MapControls } from '$components/common/map';
 import { validateRangeNum } from '$utils/utils';
 import { HintedError } from '$utils/hinted-error';
 import {
-  AttributionControl,
   NavigationControl,
   ScaleControl
 } from '$components/common/map/controls';
@@ -168,7 +167,6 @@ function MapBlock(props: MapBlockProps) {
 
   const dataset = datasetId ? datasets[datasetId] : null;
 
-  const author = dataset?.data?.media?.author?.name;
   const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
 
   const resolverBag = useMemo<DatasetDatumFnResolverBag>(
@@ -339,9 +337,6 @@ function MapBlock(props: MapBlockProps) {
                   {selectedDatetime && formatSingleDate(selectedDatetime, baseLayerResolvedData?.timeseries.timeDensity)}
                 </MapMessage>
               )
-          }
-          {
-            author && <AttributionControl message={`Figure by ${author}`} />
           }
           <ScaleControl />
           <NavigationControl position='top-left' />
