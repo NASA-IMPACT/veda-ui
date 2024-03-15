@@ -1,8 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { DatasetDatumFnResolverBag, ProjectionOptions, datasets } from 'veda';
+import { ProjectionOptions, datasets } from 'veda';
 import { MapboxOptions } from 'mapbox-gl';
-import * as dateFns from 'date-fns';
 import {
   convertProjectionToMapbox,
   projectionDefault,
@@ -12,7 +11,7 @@ import { Basemap } from '../map/style-generators/basemap';
 import { LayerLegend, LayerLegendContainer } from '../mapbox/layer-legend';
 import MapCoordsControl from '../map/controls/coords';
 import MapMessage from '../mapbox/map-message';
-import { formatCompareDate, formatSingleDate, resolveConfigFunctions } from '../map/utils';
+import { formatCompareDate, formatSingleDate } from '../map/utils';
 import { BasemapId, DEFAULT_MAP_STYLE_URL } from '../map/controls/map-options/basemap';
 import { utcString2userTzDate } from '$utils/date';
 import Map, { Compare, MapControls } from '$components/common/map';
@@ -24,9 +23,6 @@ import {
 } from '$components/common/map/controls';
 import { Layer } from '$components/exploration/components/map/layer';
 import { useDatasetAsyncLayer } from '$context/layer-data';
-import {
-  S_SUCCEEDED
-} from '$utils/status';
 import { TimelineDatasetSuccess } from '$components/exploration/types.d.ts';
 
 export const mapHeight = '32rem';
@@ -169,38 +165,6 @@ function MapBlock(props: MapBlockProps) {
 
   const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
 
-  const resolverBag = useMemo<DatasetDatumFnResolverBag>(
-    () => ({ datetime: selectedDatetime, compareDatetime: selectedCompareDatetime, dateFns }),
-    [selectedDatetime, selectedCompareDatetime]
-  );
-
-  // Resolve data needed for the base layer once the layer is loaded
-  const [baseLayerResolvedData] = useMemo(() => {
-    if (baseLayer?.status !== S_SUCCEEDED || !baseLayer.data)
-      return [null, null];
-
-    // Include access to raw data.
-    const bag = { ...resolverBag, raw: baseLayer.data };
-    const data = resolveConfigFunctions(baseLayer.data, bag);
-
-    return [data];
-  }, [baseLayer, resolverBag]);
-
-  // Resolve data needed for the compare layer once it is loaded.
-  const [compareLayerResolvedData] = useMemo(() => {
-    if (compareLayer?.status !== S_SUCCEEDED || !compareLayer.data)
-      return [null, null];
-
-    // Include access to raw data.
-    const bag = { ...resolverBag, raw: compareLayer.data };
-    const data = resolveConfigFunctions(compareLayer.data, bag);
-
-    return [data];
-  }, [compareLayer, resolverBag]);
-
-  const baseDataLayer = {data: baseLayerResolvedData};
-  const compareDataLayer = {data: compareLayerResolvedData};
-
   const mapOptions: Partial<MapboxOptions> = {
     style: DEFAULT_MAP_STYLE_URL,
     logoPosition: 'bottom-left',
@@ -235,8 +199,8 @@ function MapBlock(props: MapBlockProps) {
     setMapBasemapId(basemapId);
   }, [basemapId]);
 
-  const baseTimeDensity = baseDataLayer?.data?.timeseries.timeDensity;
-  const compareTimeDensity = compareDataLayer?.data?.timeseries.timeDensity;
+  const baseTimeDensity = baseLayer?.data?.timeseries.timeDensity;
+  const compareTimeDensity = compareLayer?.data?.timeseries.timeDensity;
 
   const compareToDate = useMemo(() => {
     const theDate = selectedCompareDatetime ?? selectedDatetime;
@@ -247,7 +211,7 @@ function MapBlock(props: MapBlockProps) {
 
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.
-    const providedLabel = compareLabel ?? compareDataLayer?.data?.mapLabel;
+    const providedLabel = compareLabel ?? compareLayer?.data?.mapLabel;
     if (providedLabel) return providedLabel as string;
 
     // Default to date comparison.
@@ -261,7 +225,7 @@ function MapBlock(props: MapBlockProps) {
       : null;
   }, [
     compareLabel,
-    compareDataLayer?.data?.mapLabel,
+    compareLayer?.data?.mapLabel,
     selectedDatetime,
     compareToDate,
     baseTimeDensity,
@@ -280,12 +244,12 @@ function MapBlock(props: MapBlockProps) {
           dataset &&
           selectedDatetime &&
           layerId &&
-          baseDataLayer?.data &&
+          baseLayer?.data &&
           (
             <Layer
-              key={baseDataLayer.data.id}
-              id={`base-${baseDataLayer.data.id}`}
-              dataset={(baseDataLayer as unknown) as TimelineDatasetSuccess}
+              key={baseLayer.data.id}
+              id={`base-${baseLayer.data.id}`}
+              dataset={(baseLayer as unknown) as TimelineDatasetSuccess}
               selectedDay={selectedDatetime}
             />
           )
@@ -332,9 +296,9 @@ function MapBlock(props: MapBlockProps) {
               (
                 <MapMessage
                   id='single-map-message'
-                  active={!!(selectedDatetime && baseLayerResolvedData)}
+                  active={!!(selectedDatetime && baseLayer)}
                 >
-                  {selectedDatetime && formatSingleDate(selectedDatetime, baseLayerResolvedData?.timeseries.timeDensity)}
+                  {selectedDatetime && formatSingleDate(selectedDatetime, baseLayer?.data?.timeseries?.timeDensity)}
                 </MapMessage>
               )
           }
@@ -352,12 +316,12 @@ function MapBlock(props: MapBlockProps) {
                 dataset &&
                 selectedCompareDatetime &&
                 layerId &&
-                compareDataLayer?.data &&
+                compareLayer?.data &&
                 (
                   <Layer
-                    key={compareDataLayer.data.id}
-                    id={`compare-${compareDataLayer.data.id}`}
-                    dataset={(compareDataLayer as unknown) as TimelineDatasetSuccess}
+                    key={compareLayer.data.id}
+                    id={`compare-${compareLayer.data.id}`}
+                    dataset={(compareLayer as unknown) as TimelineDatasetSuccess}
                     selectedDay={selectedCompareDatetime}
                   />
                 )
