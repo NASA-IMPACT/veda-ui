@@ -24,9 +24,6 @@ Implementing these additional customizations proved to be cumbersome with the cu
 ### Challenge 2: Unconventional combination mechanism for instance configuration and UI components (via Git)
 The separation of application and content is currently done via Git submodules: the VEDA UI library source tree is injected into a Configuration project and then they are built together. This works and is lightweight, but is not a very common pattern which is an obstacle for new contributors to the project and new instances. 
 
-### Challenge 3: Unmaintained design system
-VEDA UI currently uses a design system developed by DevSeed, which is not well maintained anymore. While being a great choice to get the application started, it now shows its shortcomings: It is not optimized for accessibility, which has become a more central requirement, and it misses many standard UI components that larger community design systems include.
-
 ### Need for a decision: continue to modify, refactor, or rewrite?
 The challenges mentioned above have perceivably slowed down our development of new features and made addressing integration project needs cumbersome in recent quarters. We expect the number of instances of VEDA UI to grow, which is great, but makes the need to make a decision whether to make fundamental changes to the application architecture more pressing.
 
@@ -43,16 +40,16 @@ We also need to take into account that the evolution of the application with new
 
 ## Considered Options
 
-- [1] Continue with current application architecture + design system
-- [2] Continue with current application architecture + replace design system
-- [3] Refactor component library + replace design system + rewrite instances
-- [4] Rewrite component library + replace design system + rewrite instances
+- [1] Continue with current application architecture
+- [2] Refactor component library + rewrite instances
+- [3] Rewrite component library + rewrite instances
+
 
 ## Decision Outcome
 
-- ✔️[3] Refactor component library + replace design system + rewrite instances
+✔️ [2] Refactor component library + rewrite instances
 
-Move more control to the instance level, modularize the core ui library to expose core feature components and smaller reusable components, and create a data layer as part of the core ui library that is ideally also consumed at the instance level that manages data fetching and MDX parsing so that components are data agnostic. Introduce a new design system that is well-maintained and community-backed to create standardization across styles and accessibility patterns.
+Move more control to the instance level, modularize the core ui library to expose core feature components and smaller reusable components, and create a data layer as part of the core ui library that is ideally also consumed at the instance level that manages data fetching and MDX parsing so that components are data agnostic.
 
 #### 1. Move Routing from the core ui library to the instance level
 Routing and what pages exist should be determined at the instance level. Currently, routing is handled at the core UI library level so supporting additional/removal of pages requires override logic. Moving this to the instance level allows developers/stakeholders to independently manage their routes and pages.
@@ -67,42 +64,28 @@ The core UI library should also expose smaller reusable components like date pic
 The proposed data layer is designed to handle all data fetching, including STAC calls, and MDX parsing. Think of it as a versatile data utilities library. Introducing this layer would enable components in the core UI library to remain data-agnostic. In the event of scaling to additional or different data sources, expansion can be easily accomplished by integrating them into this centralized layer. Smart components (larger and stateful) would then efficiently consume this data layer.
 > **Integrating with [stac-react](https://github.com/developmentseed/stac-react/tree/main)**: Because these React hooks manage data fetching to the STAC API using the Context API provider pattern, this could just be used directly as it is already its own data layer. We would have to decide where we wrap the Provider though. Ideally, at the instance level, we would wrap the provider at the highest level in the tree either around the router or specific view containers and then consume these hooks down the hierarchy on the instance side. The components in the core ui library would be prop driven so this way they can be truly data agnostic and accept whatever data passed in.
 
-#### 5. Introduce a new Design System
-a. Replace the existing custom design system with a well-maintained, widely adopted community-supported design system. This ensures built-in accessibility standards and eliminates the need for designers and developers to invest time in ongoing maintenance.
-
-b. The preliminary systems we are considering are:
-  * Chakra UI. Built on React, it has a large component library, built-in accessibility and theming options. It is designed with responsive and mobile-first principles and has a strong community and documentation.
-  * The U.S. Web Design System (USWDS) is tailored for government projects. It's designed to meet the specific needs of U.S. federal websites, offering components that are accessible, secure, and in line with U.S. digital standards.
-
-c. Any option we choose will have to be extended for data visualization components (charts, maps, widgets, etc.) and themed for the 3 current VEDA instances: VEDA Dashboard, U.S. GHG Center, Earth.gov.
-
 **Architectural Diagram of the Refactor**
 ![Architectural Diagram](./diagrams/veda-v2-refactor-adr-dataprovider-diagram.png)
 
 *[Miro Board Link](https://miro.com/app/board/uXjVN6lkBnc=/?share_link_id=85040810316) which documents team's brainstorming discussions, options considered, technical trade-offs, and final proposed solution in detail*
 
+
 ## Pros and Cons of the Options
 
-### [1] Continue with current application architecture + design system
+### [1] Continue with current application architecture
 - 💚 No up-front cost
 - 🚩 Fulfilling the customization requirements means making the app more customizable through overrides, options, and flags/branches in code, increasing complexity, which has a cost in terms of developer velocity and onboarding
-- 🚩 We have to maintain the legacy design system and augment it e.g. with new components and accessibility features like active state
 
-### [2] Continue with current application architecture + replace design system
-- 💚 Small investment
-- 💚 We can use standard components from the new design system
-- 💚 We get accessibility-optimized components out of the box, backed by community
-- 🚩 No improvement in terms of customization experience
 
-### [3] Refactor component library + replace design system + Rearchitect
+### [2] Refactor component library + rewrite instances
 - 💚 A component library allows for more straightforward composition into applications with the customization (pages, layout, navigation, routing, data providers) that is required
 - 💚 More efficient delivery of new instances with modified page views, without directly impacting the core UI logic library. Seamless support for a wider range of data integrations.
-- 💚 Faster development without requiring specific domain knowledge on very custom dependencies.
 - 💚 As we refactor, we can see the new patterns emerge and hopefully implement feature improvements together with architecture improvements. However, rebuilding the instances with the components will basically mean a rewrite.
 - 🚩 Refactoring is a complex process - risk of delay / failure.
 - 🚩 The new architecture may demand deeper coding knowledge to set up a new instance. However this complexity is offset by the fact that making overrides in the current architecture is equally developer-intensive. We plan to establish a template instance that is easily cloneable for a quick start when spinning up new instances.
 
-### [4] Rewrite component library + replace design system + Rearchitect
+
+### [3] Rewrite component library + rewrite instances
 - 💚 A component library allows for more straightforward composition into applications with the customization (pages, layout, navigation, routing, data providers) that is required
 - 💚 More efficient delivery of new instances with modified page views, without directly impacting the core UI logic library. Seamless support for a wider range of data integrations. 
 - 💚 Faster development without requiring specific domain knowledge on very custom dependencies.
