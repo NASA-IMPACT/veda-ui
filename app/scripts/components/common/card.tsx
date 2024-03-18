@@ -21,6 +21,8 @@ import { ElementInteractive } from '$components/common/element-interactive';
 import { VarHeading } from '$styles/variable-components';
 import { Figure } from '$components/common/figure';
 
+import { getBoolean } from 'veda';
+
 type CardType = 'classic' | 'cover' | 'featured';
 
 interface CardSelfProps {
@@ -354,10 +356,18 @@ function CardComponent(props: CardComponentProps) {
     onLinkClick
   } = props;
 
+  const externalLinksInNewTab = getBoolean('externalLinksInNewTab');
   const isExternalLink = linkTo.match(/^https?:\/\//);
   const linkProps = isExternalLink
-    ? { href: linkTo, target: "_blank", rel: "noopener noreferrer", onClick: onLinkClick }
-    : { as: Link, to: linkTo, onClick: onLinkClick };
+  ? {
+      href: linkTo,
+      ...(externalLinksInNewTab
+        ? {target: '_blank', rel: 'noopener noreferrer'}
+        : {}),
+      onClick: onLinkClick
+    }
+  : { as: Link, to: linkTo, onClick: onLinkClick };
+
 
   return (
     <ElementInteractive

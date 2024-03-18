@@ -21,6 +21,8 @@ import { variableGlsp } from '../../styles/variable-utils';
 import { Tip } from '$components/common/tip';
 import { ComponentOverride } from '$components/common/page-overrides';
 
+import SmartLink from '$components/common/smart-link';
+
 const PageFooterSelf = styled.footer`
   padding: ${variableGlsp(0.75, 1)};
   background: ${themeVal('color.base-50')};
@@ -150,12 +152,12 @@ function PageFooter(props) {
         </InfoList>
         <FooterCredits>
           <p>
-            <a href='https://earthdata.nasa.gov/' target='_blank' rel='noopener noreferrer' >
+            <SmartLink to='https://earthdata.nasa.gov/'>
               <span>By</span> NASA <strong>Earthdata</strong> <span>on</span>{' '}
               <time dateTime={nowDate.getFullYear()}>
                 {nowDate.getFullYear()}
               </time>
-            </a>
+            </SmartLink>
             {' • '}
             <Tip
               content={`Released on ${format(

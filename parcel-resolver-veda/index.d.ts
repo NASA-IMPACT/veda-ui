@@ -293,6 +293,9 @@ export interface LayerInfo {
     one: string;
     other: string;
   };
+
+  export const getBoolean: (variable: string) => boolean;
+
   /**
    * List of custom user defined pages.
    */
