@@ -37,7 +37,7 @@ const LinkButton = styled.button`
   > a > svg {
     margin-left: ${glsp(0.25)};
   }
-   
+
 
 `;
 function LinkAttributionCmp(props) {
@@ -47,7 +47,8 @@ function LinkAttributionCmp(props) {
   return (
     <LinkButton>
       <Link to={url} target='_blank' rel='noopener noreferrer'>
-        Open in Full Map<CollecticonExpandTopRight />
+        Open in Full Map
+        <CollecticonExpandTopRight />
       </Link>
     </LinkButton>
   );
