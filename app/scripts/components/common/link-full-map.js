@@ -4,12 +4,11 @@ import T from 'prop-types';
 import styled from 'styled-components';
 
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonArrowUpRight } from '@devseed-ui/collecticons';
+import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 
 import { variableGlsp } from '$styles/variable-utils';
 
 const LinkButton = styled.button`
-  /* Add button styles here */
   cursor: pointer;
   margin-right: ${glsp(0.25)};
   padding: 20rem;
@@ -35,6 +34,11 @@ const LinkButton = styled.button`
     color: inherit;
     text-decoration: none;
   }
+  > a > svg {
+    margin-left: ${glsp(0.25)};
+  }
+   
+
 `;
 function LinkAttributionCmp(props) {
   const { layerId, date, compareDate } = props;
@@ -43,7 +47,7 @@ function LinkAttributionCmp(props) {
   return (
     <LinkButton>
       <Link to={url} target='_blank' rel='noopener noreferrer'>
-        Open in Full Map <CollecticonArrowUpRight />
+        Open in Full Map<CollecticonExpandTopRight />
       </Link>
     </LinkButton>
   );
