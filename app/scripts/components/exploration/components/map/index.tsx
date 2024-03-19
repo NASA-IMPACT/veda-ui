@@ -38,9 +38,10 @@ export function ExplorationMap() {
     onOptionChange
   } = useBasemap();
 
-  useStacMetadataOnDatasets();
-
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
+
+  useStacMetadataOnDatasets(datasets, setDatasets);
+
   const selectedDay = useAtomValue(selectedDateAtom);
   const selectedCompareDay = useAtomValue(selectedCompareDateAtom);
 
