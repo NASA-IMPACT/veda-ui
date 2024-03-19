@@ -1,10 +1,12 @@
 import {
+  useQuery,
   useQueries,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAtom } from 'jotai';
+import { useMemo } from 'react';
 
 import { timelineDatasetsAtom } from '../atoms/datasets';
 import {
@@ -151,8 +153,7 @@ function makeQueryObject(
  * Whenever a dataset is added to the timeline, this hook will fetch the STAC
  * metadata for that dataset and add it to the dataset state atom.
  */
-export function useStacMetadataOnDatasets() {
-  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
+export function useStacMetadataOnDatasets(datasets, setDatasets, single) {
 
   const datasetsQueryData = useQueries({
     queries: datasets
@@ -173,10 +174,10 @@ export function useStacMetadataOnDatasets() {
         }>(
           (acc, dataset, idx) => {
             const curr = datasetsQueryData[idx];
-
             // We want to reconcile the data event if it is the first time.
             // In practice data will have changes, since prev is undefined.
-            if (!hasPrev || didDataChange(curr, prevQueryData[idx])) {
+            if (!hasPrev || didDataChange(curr, prevQueryData[idx])|| (curr.status == 'success' && prevQueryData[idx].status !== 'success' )) {
+              console.log(reconcileQueryDataWithDataset(curr, dataset));
               // Changed
               return {
                 changed: true,
@@ -194,10 +195,16 @@ export function useStacMetadataOnDatasets() {
           },
           { changed: false, data: [] }
         );
-
       if (changed as boolean) {
+        // single == true means that the call came from block map
+        // @TODO: make blockmap to accept array of layers
+        if (single) {
+          setDatasets(updatedDatasets[0]);
+          return;
+        }
         setDatasets(updatedDatasets);
       }
+
     },
     [datasetsQueryData, datasets]
   );
