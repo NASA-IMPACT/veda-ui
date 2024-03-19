@@ -1,8 +1,8 @@
 # Application Architecture for Configurability
 
-* Status: **In Review**, In Progress, Done
-* Authors: @j08lue, @sandrahoang686, @faustoperez
-* Deciders: @j08lue, @faustoperez, @hanbyul-here
+* Status: In Review, In Progress, **Done**
+* Authors: @sandrahoang686, @faustoperez, @j08lue
+* Deciders: @hanbyul-here, @faustoperez, @j08lue
 * As of: 2024/03
 
 ## Context and Problem Statement
