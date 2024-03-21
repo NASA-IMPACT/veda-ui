@@ -268,7 +268,7 @@ Example:
 info:
   source: NASA
   spatialExtent: Global
-  latency: Monthly
+  temporalResolution: Monthly
   unit: 10¹⁵ molecules cm⁻²
 ```
 
@@ -280,9 +280,9 @@ This key indicates the origin or the provider of the data.
 `string`
 This key describes s the geographic coverage of the data.
 
-**info.latency**
+**info.temporalResolution**
 `string`
-This key refers to the frequency with which the data is updated or made available. 
+This key describes the periodicity of the data. 
 
 **info.unit**
 `string`

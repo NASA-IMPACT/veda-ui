@@ -59,7 +59,7 @@ declare module 'veda' {
 export interface LayerInfo {
   source: string;
   spatialExtent: string;
-  latency: string;
+  temporalResolution: string;
   unit: string;
 }
   export interface DatasetLayer extends DatasetLayerCommonProps {
