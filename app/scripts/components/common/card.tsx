@@ -20,8 +20,7 @@ import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { VarHeading } from '$styles/variable-components';
 import { Figure } from '$components/common/figure';
-
-import { getBoolean } from 'veda';
+import { getLinkProps } from '$utils/url';
 
 type CardType = 'classic' | 'cover' | 'featured';
 
@@ -356,17 +355,8 @@ function CardComponent(props: CardComponentProps) {
     onLinkClick
   } = props;
 
-  const externalLinksInNewTab = getBoolean('externalLinksInNewTab');
-  const isExternalLink = linkTo.match(/^https?:\/\//);
-  const linkProps = isExternalLink
-  ? {
-      href: linkTo,
-      ...(externalLinksInNewTab
-        ? {target: '_blank', rel: 'noopener noreferrer'}
-        : {}),
-      onClick: onLinkClick
-    }
-  : { as: Link, to: linkTo, onClick: onLinkClick };
+  const isExternalLink = /^https?:\/\//.test(linkTo);
+  const linkProps = getLinkProps(isExternalLink, linkTo, Link, onLinkClick);
 
 
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { getBoolean } from 'veda';
+import { getLinkProps } from '$utils/url'
 
 interface SmartLinkProps {
   to: string;
@@ -12,18 +12,15 @@ interface SmartLinkProps {
  */
 export default function SmartLink(props: SmartLinkProps) {
   const { to, ...rest } = props;
-  const externalLinksInNewTab = getBoolean('externalLinksInNewTab');
   const isExternalLink = /^https?:\/\//.test(to);
+  const linkProps = getLinkProps(isExternalLink, to);
   return isExternalLink ? (
-    externalLinksInNewTab ? (
-      <a target='_blank' rel='noopener noreferrer' href={to} {...rest} />
-    ) : (
-      <a href={to} {...rest} />
-    )
+      <a {...linkProps} {...rest} />
   ) : (
-    <Link to={to} {...rest} />
+    <Link {...linkProps} {...rest} />
   );
 }
+
 
 interface CustomLinkProps {
   href: string;
@@ -34,15 +31,11 @@ interface CustomLinkProps {
  */
 export function CustomLink(props: CustomLinkProps) {
   const { href, ...rest } = props;
-  const externalLinksInNewTab = getBoolean('externalLinksInNewTab');
   const isExternalLink = /^https?:\/\//.test(href);
+  const linkProps = getLinkProps(isExternalLink, href);
   return isExternalLink ? (
-    externalLinksInNewTab ? (
-      <a target='_blank' rel='noopener noreferrer' href={href} {...rest} />
-    ) : (
-      <a href={href} {...rest} />
-    )
+      <a {...linkProps} {...rest} />
   ) : (
-    <Link to={href} {...rest} />
+    <Link {...linkProps} {...rest} />
   );
 }
