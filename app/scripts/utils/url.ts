@@ -1,13 +1,13 @@
 import { getBoolean } from 'veda';
-import { Link, LinkProps } from 'react-router-dom';
+import { LinkProps } from 'react-router-dom';
 
 export const getLinkProps = (
-    isExternalLink: string[] | boolean,
     linkTo: string,
     as?: React.ForwardRefExoticComponent<LinkProps & React.RefAttributes<HTMLAnchorElement>>,
-    onClick?: () => void
+    onClick?: () => React.MouseEventHandler<Element> | React.MouseEventHandler<HTMLAnchorElement>
   ) => {
     const externalLinksInNewTab = getBoolean('externalLinksInNewTab');
+    const isExternalLink = /^https?:\/\//.test(linkTo);
     return isExternalLink
     ? {
         href: linkTo,
@@ -21,4 +21,4 @@ export const getLinkProps = (
         to: linkTo,
         ...(onClick ? {onClick: onClick} : {})
       };
-  }
+  };

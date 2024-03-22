@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { getLinkProps } from '$utils/url'
+import { getLinkProps } from '$utils/url';
 
 interface SmartLinkProps {
   to: string;
@@ -13,7 +13,7 @@ interface SmartLinkProps {
 export default function SmartLink(props: SmartLinkProps) {
   const { to, ...rest } = props;
   const isExternalLink = /^https?:\/\//.test(to);
-  const linkProps = getLinkProps(isExternalLink, to);
+  const linkProps = getLinkProps(to);
   return isExternalLink ? (
       <a {...linkProps} {...rest} />
   ) : (
@@ -32,7 +32,7 @@ interface CustomLinkProps {
 export function CustomLink(props: CustomLinkProps) {
   const { href, ...rest } = props;
   const isExternalLink = /^https?:\/\//.test(href);
-  const linkProps = getLinkProps(isExternalLink, href);
+  const linkProps = getLinkProps(href);
   return isExternalLink ? (
       <a {...linkProps} {...rest} />
   ) : (

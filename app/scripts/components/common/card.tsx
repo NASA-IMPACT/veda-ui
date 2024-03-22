@@ -356,7 +356,7 @@ function CardComponent(props: CardComponentProps) {
   } = props;
 
   const isExternalLink = /^https?:\/\//.test(linkTo);
-  const linkProps = getLinkProps(isExternalLink, linkTo, Link, onLinkClick);
+  const linkProps = getLinkProps(linkTo, Link, onLinkClick);
 
 
   return (
