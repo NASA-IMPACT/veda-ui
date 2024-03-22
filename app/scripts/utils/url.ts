@@ -1,10 +1,12 @@
+import React, { MouseEventHandler } from 'react';
 import { getBoolean } from 'veda';
 import { LinkProps } from 'react-router-dom';
+
 
 export const getLinkProps = (
     linkTo: string,
     as?: React.ForwardRefExoticComponent<LinkProps & React.RefAttributes<HTMLAnchorElement>>,
-    onClick?: () => React.MouseEventHandler<Element> | React.MouseEventHandler<HTMLAnchorElement>
+    onClick?: MouseEventHandler
   ) => {
     const externalLinksInNewTab = getBoolean('externalLinksInNewTab');
     const isExternalLink = /^https?:\/\//.test(linkTo);
