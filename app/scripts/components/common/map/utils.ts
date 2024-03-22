@@ -148,7 +148,7 @@ export function requestQuickCache<T>({
 
 type Fn = (...args: any[]) => any;
 
-type ObjResMap<T> = {
+export type ObjResMap<T> = {
   [K in keyof T]: Res<T[K]>;
 };
 

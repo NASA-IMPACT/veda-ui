@@ -4,6 +4,7 @@ import {
   UseQueryResult
 } from '@tanstack/react-query';
 import axios from 'axios';
+import { SetStateAction } from 'react';
 import {
   StacDatasetData,
   TimeDensity,
@@ -13,6 +14,8 @@ import {
 import { resolveLayerTemporalExtent } from '../data-utils';
 
 import { useEffectPrevious } from '$utils/use-effect-previous';
+
+export type SetAtom<Args extends any[], Result> = (...args: Args) => Result;
 
 function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
   const currKey = `${curr.errorUpdatedAt}-${curr.dataUpdatedAt}-${curr.failureCount}`;
@@ -127,7 +130,7 @@ function makeQueryObject(
   dataset: TimelineDataset
 ): UseQueryOptions<unknown, unknown, StacDatasetData> {
   return {
-    queryKey: ['dataset', dataset.data.id],
+    queryKey: ['dataset', dataset?.data?.id],
     queryFn: () => fetchStacDatasetById(dataset),
     // This data will not be updated in the context of a browser session, so it is
     // safe to set the staleTime to Infinity. As specified by react-query's
@@ -148,20 +151,29 @@ function makeQueryObject(
  * Whenever a dataset is added to the timeline, this hook will fetch the STAC
  * metadata for that dataset and add it to the dataset state atom.
  */
-export function useStacMetadataOnDatasets(datasets, setDatasets) {
+export function useStacMetadataOnDatasets(
+  datasets: TimelineDataset[],
+  setDatasets: SetAtom<[updates: SetStateAction<TimelineDataset[]>], void> | React.Dispatch<React.SetStateAction<undefined | TimelineDataset[]>>
+) {
+  // @NOTE: datasets should not be undefined but in the case it is (datasets can be possibly undefined for compare layers), this is choosing to be defensive to guard against it
+  // since we cannot conditionally execute hooks from the tree up and in here
+
+  // @TODO-SANDRA: Revisit this condition of hooks... not happy with this solution... I think it can be better, try a layer up
+  const datasetsToQuery = (datasets.length === 1 && datasets[0] === undefined) ? [] : datasets.filter((d) => !(d as any)?.mocked).map((dataset) => makeQueryObject(dataset));
+
   const datasetsQueryData = useQueries({
-    queries: datasets
-      .filter((d) => !(d as any).mocked)
-      .map((dataset) => makeQueryObject(dataset))
+    queries: datasetsToQuery
   });
 
   useEffectPrevious<[typeof datasetsQueryData, TimelineDataset[]]>(
     (prev) => {
+      if (datasets.length === 1 && datasets[0] === undefined) return;
+
       const prevQueryData = prev[0];
       const hasPrev = !!prevQueryData;
 
       const { changed, data: updatedDatasets } = datasets
-        .filter((d) => !(d as any).mocked)
+        .filter((d) => !(d as any)?.mocked)
         .reduce<{
           changed: boolean;
           data: TimelineDataset[];
