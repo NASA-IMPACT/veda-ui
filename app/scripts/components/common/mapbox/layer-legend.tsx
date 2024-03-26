@@ -27,6 +27,8 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 
+// @NOTE: File should be moved under "/common/map" as we are working to deprecate "/common/mapbox" dir
+
 interface LayerLegendCommonProps {
   id: string;
   title: string;

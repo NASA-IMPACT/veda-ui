@@ -4,9 +4,7 @@ import {
   UseQueryResult
 } from '@tanstack/react-query';
 import axios from 'axios';
-import { useAtom } from 'jotai';
-
-import { timelineDatasetsAtom } from '../atoms/datasets';
+import { SetStateAction } from 'react';
 import {
   StacDatasetData,
   TimeDensity,
@@ -16,6 +14,8 @@ import {
 import { resolveLayerTemporalExtent } from '../data-utils';
 
 import { useEffectPrevious } from '$utils/use-effect-previous';
+
+export type SetAtom<Args extends any[], Result> = (...args: Args) => Result;
 
 function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
   const currKey = `${curr.errorUpdatedAt}-${curr.dataUpdatedAt}-${curr.failureCount}`;
@@ -130,7 +130,7 @@ function makeQueryObject(
   dataset: TimelineDataset
 ): UseQueryOptions<unknown, unknown, StacDatasetData> {
   return {
-    queryKey: ['dataset', dataset.data.id],
+    queryKey: ['dataset', dataset?.data?.id],
     queryFn: () => fetchStacDatasetById(dataset),
     // This data will not be updated in the context of a browser session, so it is
     // safe to set the staleTime to Infinity. As specified by react-query's
@@ -151,35 +151,35 @@ function makeQueryObject(
  * Whenever a dataset is added to the timeline, this hook will fetch the STAC
  * metadata for that dataset and add it to the dataset state atom.
  */
-export function useStacMetadataOnDatasets() {
-  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
+export function useReconcileWithStacMetadata(
+  datasets: TimelineDataset[],
+  handleUpdate: SetAtom<[updates: SetStateAction<TimelineDataset[]>], void> | React.Dispatch<React.SetStateAction<undefined | TimelineDataset[]>>
+) {
+  const noDatasetsToQuery: boolean = !datasets || (datasets.length === 1 && datasets[0] === undefined);
 
   const datasetsQueryData = useQueries({
-    queries: datasets
-      .filter((d) => !(d as any).mocked)
-      .map((dataset) => makeQueryObject(dataset))
+    queries: noDatasetsToQuery ? [] : datasets.filter((d) => !(d as any)?.mocked).map((dataset) => makeQueryObject(dataset))
   });
 
   useEffectPrevious<[typeof datasetsQueryData, TimelineDataset[]]>(
     (prev) => {
+      if (noDatasetsToQuery) return;
+
       const prevQueryData = prev[0];
       const hasPrev = !!prevQueryData;
-
-      const { changed, data: updatedDatasets } = datasets
-        .filter((d) => !(d as any).mocked)
+      const { updated, data: updatedDatasets } = datasets
+        .filter((d) => !(d as any)?.mocked)
         .reduce<{
-          changed: boolean;
+          updated: boolean;
           data: TimelineDataset[];
         }>(
           (acc, dataset, idx) => {
             const curr = datasetsQueryData[idx];
-
             // We want to reconcile the data event if it is the first time.
             // In practice data will have changes, since prev is undefined.
             if (!hasPrev || didDataChange(curr, prevQueryData[idx])) {
-              // Changed
               return {
-                changed: true,
+                updated: true,
                 data: [
                   ...acc.data,
                   reconcileQueryDataWithDataset(curr, dataset)
@@ -192,13 +192,16 @@ export function useStacMetadataOnDatasets() {
               };
             }
           },
-          { changed: false, data: [] }
+          { updated: false, data: [] }
         );
-
-      if (changed as boolean) {
-        setDatasets(updatedDatasets);
+      if (updated) {
+        handleUpdate(updatedDatasets);
       }
+
     },
     [datasetsQueryData, datasets]
   );
 }
+
+
+

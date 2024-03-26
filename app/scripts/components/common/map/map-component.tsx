@@ -15,7 +15,7 @@ const maxMapBounds: LngLatBoundsLike = [
 export default function MapComponent({
   controls,
   isCompared,
-  projection
+  projection,
 }: {
   controls: ReactElement[];
   isCompared?: boolean;
