@@ -22,11 +22,11 @@ export const VEDA_OVERRIDE_THEME = {
     base: '#2c3e50',
     primary: '#2276ac',
     danger: '#FC3D21',
-    infographicA: '#fcab10',
-    infographicB: '#f4442e',
-    infographicC: '#b62b6e',
-    infographicD: '#2ca58d',
-    infographicE: '#2276ac'
+    infographicA: '#83868A', // Min
+    infographicB: '#6138BE', // Ave
+    infographicC: '#83868A', // Max
+    infographicD: '#F2F2F2', // STD
+    infographicE: '#3094E3' // Median
   },
   type: {
     base: {

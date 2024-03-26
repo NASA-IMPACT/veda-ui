@@ -14,6 +14,7 @@ export interface DataMetric {
     | 'infographicC'
     | 'infographicD'
     | 'infographicE';
+  style?: Record<string, string>
 }
 
 export const DATA_METRICS: DataMetric[] = [
@@ -21,7 +22,8 @@ export const DATA_METRICS: DataMetric[] = [
     id: 'min',
     label: 'Min',
     chartLabel: 'Min',
-    themeColor: 'infographicA'
+    themeColor: 'infographicA',
+    style: { "strokeDasharray": "2 2"}
   },
   {
     id: 'mean',
@@ -33,7 +35,8 @@ export const DATA_METRICS: DataMetric[] = [
     id: 'max',
     label: 'Max',
     chartLabel: 'Max',
-    themeColor: 'infographicC'
+    themeColor: 'infographicC',
+    style: { "strokeDasharray": "2 2"}
   },
   {
     id: 'std',
@@ -48,6 +51,8 @@ export const DATA_METRICS: DataMetric[] = [
     themeColor: 'infographicE'
   }
 ];
+
+export const DEFAULT_DATA_METRICS: DataMetric[] = DATA_METRICS.filter(metric => metric.id ==='mean' || metric.id==='std');
 
 const MetricList = styled(DropMenu)`
   display: flex;

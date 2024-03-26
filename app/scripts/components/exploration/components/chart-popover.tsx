@@ -5,7 +5,7 @@ import React, {
   useState
 } from 'react';
 import { createPortal } from 'react-dom';
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import {
   useFloating,
   autoUpdate,
@@ -14,12 +14,10 @@ import {
   shift
 } from '@floating-ui/react';
 import { bisector, ScaleTime, sort } from 'd3';
-import { useAtomValue } from 'jotai';
 import { format } from 'date-fns';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
-import { AnalysisTimeseriesEntry, TimeDensity } from '../types.d.ts';
-import { isExpandedAtom } from '../atoms/timeline';
+import { AnalysisTimeseriesEntry, TimeDensity, TimelineDatasetSuccess } from '../types.d.ts';
 import { DataMetric } from './datasets/analysis-metrics';
 
 import { getNumForChart } from '$components/common/chart/utils';
@@ -48,11 +46,15 @@ const MetricList = styled.ul`
   list-style: none;
   margin: 0 -${glsp()};
   padding: 0;
+  padding-top: ${glsp(0.25)};
   gap: ${glsp(0.25)};
-
   > li {
     padding: ${glsp(0, 1)};
   }
+`;
+const MetricLi = styled.li`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const MetricItem = styled.p<{ metricThemeColor: string }>`
@@ -71,46 +73,74 @@ const MetricItem = styled.p<{ metricThemeColor: string }>`
   }
 `;
 
-type DivProps = JSX.IntrinsicElements['div'];
+const fadedtext = css`
+  color: #83868A;
+`;
 
+const TitleBox = styled.div`
+  background-color: #FAFAFA;
+  ${fadedtext};
+  padding: ${glsp(0.5)};
+  font-size: 0.75rem;
+`;
+
+const ContentBox = styled.div`
+  padding: ${glsp(0.5)};
+  font-size: 0.75rem;
+`;
+const MetaBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${glsp(1)};
+`;
+
+const UnitBox = styled.div`
+  ${fadedtext};
+`;
+
+type DivProps = JSX.IntrinsicElements['div'];
 interface DatasetPopoverProps extends DivProps {
   data: AnalysisTimeseriesEntry;
   activeMetrics: DataMetric[];
   timeDensity: TimeDensity;
+  dataset: TimelineDatasetSuccess;
 }
 
 function DatasetPopoverComponent(
   props: DatasetPopoverProps,
   ref: MutableRefObject<HTMLDivElement>
 ) {
-  const { data, activeMetrics, timeDensity, ...rest } = props;
-
-  const isExpanded = useAtomValue(isExpandedAtom);
-
+  const { data, dataset, activeMetrics, timeDensity, style, ...rest } = props;
+  
   // Check if there is no data to show
   const hasData = activeMetrics.some(
     (metric) => typeof data[metric.id] === 'number'
   );
 
-  if (!isExpanded || !hasData) return null;
+  if (!hasData) return null;
 
   return createPortal(
-    <div ref={ref} {...rest}>
-      <strong>{timeDensityFormat(data.date, timeDensity)}</strong>
-      <MetricList>
-        {activeMetrics.map((metric) => {
-          const dataPoint = data[metric.id];
-
-          return typeof dataPoint !== 'number' ? null : (
-            <li key={metric.id}>
-              <MetricItem metricThemeColor={metric.themeColor}>
-                <strong>{metric.chartLabel}:</strong>
-                {getNumForChart(dataPoint)}
-              </MetricItem>
-            </li>
-          );
-        })}
-      </MetricList>
+    <div ref={ref} style={{...style, padding: 0, gap: 0}} {...rest}>
+      <TitleBox>{dataset.data.name}</TitleBox>
+      <ContentBox>
+        <MetaBox style={{display: 'flex'}}>
+          <strong>{timeDensityFormat(data.date, timeDensity)}</strong>
+          <UnitBox>{dataset.data.info?.unit}</UnitBox>
+        </MetaBox>
+        <MetricList>
+          {activeMetrics.map((metric) => {
+            const dataPoint = data[metric.id];
+            return typeof dataPoint !== 'number' ? null : (
+              <MetricLi key={metric.id}>
+                <MetricItem metricThemeColor={metric.themeColor}>
+                  {metric.chartLabel}
+                </MetricItem>
+                <strong>{getNumForChart(dataPoint)}</strong>
+              </MetricLi>
+            );
+          })}
+        </MetricList>
+      </ContentBox>
     </div>,
     document.body
   );

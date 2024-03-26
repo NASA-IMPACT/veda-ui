@@ -16,7 +16,8 @@ import {
 } from './types.d.ts';
 import {
   DataMetric,
-  DATA_METRICS
+  DATA_METRICS,
+  DEFAULT_DATA_METRICS
 } from './components/datasets/analysis-metrics';
 
 import { utcString2userTzDate } from '$utils/date';
@@ -71,16 +72,16 @@ export const datasetLayers = Object.values(datasets)
  */
 function getInitialMetrics(data: DatasetLayer): DataMetric[] {
   const metricsIds = data.analysis?.metrics ?? [];
-
+  
+  if (!metricsIds.length) {
+    return DEFAULT_DATA_METRICS;
+  }
+  
   const foundMetrics = metricsIds
     .map((metric: string) => {
       return DATA_METRICS.find((m) => m.id === metric)!;
     })
     .filter(Boolean);
-
-  if (!foundMetrics.length) {
-    return DATA_METRICS;
-  }
 
   return foundMetrics;
 }

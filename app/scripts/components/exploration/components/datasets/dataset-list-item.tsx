@@ -150,6 +150,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
     data: dataset.analysis.data?.timeseries
   });
 
+
   const {
     refs: popoverRefs,
     floatingStyles,
@@ -179,6 +180,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
   );
+
 
   const onDragging = (e) => {
     controls.start(e);
@@ -274,6 +276,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             <DatasetPopover
               ref={popoverRefs.setFloating}
               style={floatingStyles}
+              dataset={dataset}
               timeDensity={dataset.data.timeDensity}
               activeMetrics={analysisMetrics}
               data={dataPoint}

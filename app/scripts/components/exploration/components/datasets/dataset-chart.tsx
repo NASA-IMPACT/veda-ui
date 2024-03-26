@@ -1,13 +1,11 @@
 import React, { useMemo } from 'react';
 import { useTheme } from 'styled-components';
-import { extent, scaleLinear, ScaleTime, line, ScaleLinear } from 'd3';
-import { useAtomValue } from 'jotai';
+import { extent, scaleLinear, ScaleTime, line, area, ScaleLinear } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 import {
-  CollecticonCog,
+  CollecticonChartLine,
 } from '@devseed-ui/collecticons';
-import { isExpandedAtom } from '../../atoms/timeline';
 import { RIGHT_AXIS_SPACE } from '../../constants';
 import { DatasetTrackMessage } from './dataset-track-message';
 import { DataMetric } from './analysis-metrics';
@@ -30,48 +28,63 @@ interface DatasetChartProps {
   onUpdateSettings: (type: string, m: DataMetric[]) => void;
 }
 
-const ChartAnalysisMenu = styled.div`
+const ChartAnalysisMenu = styled.div<{axisWidth: number}>`
   width: inherit;
   position: relative;
   display: flex;
   justify-content: end;
-  margin-right: 2.3rem;
+  margin-right: calc(${props=> props.axisWidth}px + 0.5rem);
+  z-index: 3000;
+`;
+const AxisBackground = styled.div<{axisWidth: number}>`
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: ${props=> props.axisWidth}px;
+  height: 100%;
+  background-color: #F0F0F0;
+  z-index: -1;
 `;
 
 export function DatasetChart(props: DatasetChartProps) {
-  const { xScaled, width, isVisible, dataset, activeMetrics, highlightDate, onUpdateSettings } =
-    props;
-
+  const { xScaled, width, isVisible, dataset, activeMetrics, highlightDate, onUpdateSettings } = props;
   const analysisData = dataset.analysis as TimelineDatasetAnalysisSuccess;
   const timeseries = analysisData.data.timeseries;
-
   const theme = useTheme();
+  const areaDataKey = 'stdArea';
+  const height = 180;
 
-  const isExpanded = useAtomValue(isExpandedAtom);
+  // Simplifying the enhancedTimeseries mapping
+  const enhancedTimeseries = timeseries.map(e => ({
+    ...e,
+    [areaDataKey]: [e.mean - e.std, e.mean + e.std],
+  }));
 
-  const height = isExpanded ? 180 : 70;
+  // Filter line and area metrics once, avoiding separate filter calls
+  const { lineMetrics, areaMetrics } = activeMetrics.reduce<{lineMetrics: DataMetric[], areaMetrics: DataMetric[]}>((acc, metric:DataMetric) => {
+    metric.id === 'std' ? acc.areaMetrics.push(metric) : acc.lineMetrics.push(metric);
+    return acc;
+  }, { lineMetrics: [], areaMetrics: [] });
 
-  const yExtent = useMemo(
-    () =>
-      extent(
-        // Extent of all active metrics.
-        timeseries.flatMap((d) => extent(activeMetrics.map((m) => d[m.id])))
-      ) as [undefined, undefined] | [number, number],
-    [timeseries, activeMetrics]
-  );
+
+  const yExtent = useMemo(() => {
+    const extents = [
+      ...enhancedTimeseries.flatMap(d => extent(lineMetrics.map(m => d[m.id]))),
+      ...(areaMetrics.length ? enhancedTimeseries.flatMap(d => extent([d[areaDataKey]].flat())) : [])
+    ].filter(Boolean); // Filter out falsey values 
+    return extent(extents.flat()) as [undefined, undefined] | [number, number];
+  }, [enhancedTimeseries, lineMetrics, areaMetrics]);
 
   const y = useMemo(() => {
     const [min = 0, max = 0] = yExtent;
-    return (
-      scaleLinear()
-        // Add 5% buffer
-        .domain([min * 0.95, max * 1.05])
-        .range([height - CHART_MARGIN * 2, 0])
-    );
+    return scaleLinear()
+      .domain([(min * 0.95 > 0) ? 0 : min * 0.95, max * 1.05])
+      .range([height - CHART_MARGIN * 2, 0]);
   }, [yExtent, height]);
 
-  const chartAnalysisIconTrigger: JSX.Element = <CollecticonCog meaningful title='View layer options' />;
 
+  const chartAnalysisIconTrigger: JSX.Element = <CollecticonChartLine meaningful title='View layer options' />;
+  
   return (
     <div>
       {!activeMetrics.length && (
@@ -79,9 +92,10 @@ export function DatasetChart(props: DatasetChartProps) {
           There are no active metrics to visualize.
         </DatasetTrackMessage>
       )}
-      <ChartAnalysisMenu>
+      <ChartAnalysisMenu axisWidth={RIGHT_AXIS_SPACE}>
         <LayerChartAnalysisMenu activeMetrics={activeMetrics} onChange={onUpdateSettings} triggerIcon={chartAnalysisIconTrigger} />
       </ChartAnalysisMenu>
+      <AxisBackground axisWidth={RIGHT_AXIS_SPACE} />
       <svg width={width + RIGHT_AXIS_SPACE} height={height}>
         <clipPath id='data-clip'>
           <rect width={width} height={height} />
@@ -94,24 +108,37 @@ export function DatasetChart(props: DatasetChartProps) {
             width={width}
             height={height}
             isVisible={isVisible}
-            isExpanded={isExpanded}
           />
         </g>
-
+        {/* This is where the line is drawn */}
         <g clipPath='url(#data-clip)'>
           <g transform={`translate(0, ${CHART_MARGIN})`}>
-            {activeMetrics.map(
+          {areaMetrics.map(
               (metric) =>
-                timeseries.some((d) => !isNaN(d[metric.id])) && (
+              enhancedTimeseries.some((d) => !isNaN(d[metric.id])) && (
+                  <DataArea
+                    key={metric.id}
+                    x={xScaled}
+                    y={y}
+                    prop={areaDataKey}
+                    data={enhancedTimeseries}
+                    color={theme.color?.[metric.themeColor]}
+                    isVisible={isVisible}
+                  />
+                )
+            )}
+            {lineMetrics.map(
+              (metric) =>
+              enhancedTimeseries.some((d) => !isNaN(d[metric.id])) && (
                   <DataLine
                     key={metric.id}
                     x={xScaled}
                     y={y}
                     prop={metric.id}
                     data={timeseries}
+                    style={metric.style}
                     color={theme.color?.[metric.themeColor]}
                     isVisible={isVisible}
-                    isExpanded={isExpanded}
                     highlightDate={highlightDate}
                   />
                 )
@@ -123,19 +150,59 @@ export function DatasetChart(props: DatasetChartProps) {
   );
 }
 
-interface DateLineProps {
+
+interface DataAreaProps {
   x: ScaleTime<number, number>;
   y: ScaleLinear<number, number>;
   prop: string;
   data: any[];
   color: string;
   isVisible: boolean;
-  isExpanded: boolean;
+}
+interface DateLineProps extends DataAreaProps {
   highlightDate?: Date;
+  style?: any;
+}
+
+interface DataItem {
+  date: Date;
+  [key: string]: [number, number] | Date;
+}
+
+function DataArea(props: DataAreaProps) {
+  const { x, y, prop, data, color, isVisible } = props;
+  
+  const path = useMemo(() => {
+    const areaGenerator = area<DataItem>()
+    .defined((d) => d[prop] !== null)
+    .x((d) => x(d.date ?? 0)) 
+    .y0((d) => y(d[prop] ? d[prop][0] : 0)) 
+    .y1((d) => y(d[prop] ? d[prop][1] : 0));
+
+    return areaGenerator(data);
+  }, [x, y, data]);  // Ensure all variables used are listed in the dependencies
+
+  const maxOpacity = isVisible ? 1 : 0.25;
+
+  if (!path) return null;
+
+  return (
+    <g>
+      <motion.path
+        initial={{ opacity: 0 }}
+        animate={{ opacity: maxOpacity }}
+        transition={{ duration: 0.16 }}
+        d={path}
+        fill={color}
+        fillOpacity={0.5}
+        stroke={color}
+      />
+    </g>
+  );
 }
 
 function DataLine(props: DateLineProps) {
-  const { x, y, prop, data, color, isVisible, isExpanded, highlightDate } =
+  const { x, y, prop, data, color, style, isVisible, highlightDate } =
     props;
 
   const path = useMemo(
@@ -154,12 +221,14 @@ function DataLine(props: DateLineProps) {
   return (
     <g>
       <motion.path
+        id={prop}
         initial={{ opacity: 0 }}
         animate={{ opacity: maxOpacity }}
         transition={{ duration: 0.16 }}
         d={path}
         fill='none'
         stroke={color}
+        {...style}
       />
       {data.map((d) => {
         if (typeof d[prop] !== 'number') return false;
@@ -167,19 +236,19 @@ function DataLine(props: DateLineProps) {
         const highlight =
           isVisible && highlightDate?.getTime() === d.date.getTime();
 
-        return (
+        return highlight? (
           <motion.circle
             initial={{ opacity: 0 }}
-            animate={{ opacity: isExpanded ? maxOpacity : 0 }}
+            animate={{ opacity: maxOpacity }}
             transition={{ duration: 0.16 }}
             key={d.date}
             cx={x(d.date)}
             cy={y(d[prop])}
-            r={highlight ? 4 : 3}
-            fill={highlight ? color : '#fff'}
-            stroke={color}
+            r={2}
+            fill={color}
+            stroke='#fff'
           />
-        );
+        ): false;
       })}
     </g>
   );
@@ -191,28 +260,24 @@ interface AxisGridProps {
   height: number;
   yLabel?: string;
   isVisible: boolean;
-  isExpanded: boolean;
 }
 
 function AxisGrid(props: AxisGridProps) {
-  const { y, width, height, isVisible, isExpanded, yLabel } = props;
+  const { y, width, height, isVisible, yLabel } = props;
 
   const theme = useTheme();
-
   const ticks = y.ticks(5);
-
   return (
     <AnimatePresence>
-      {isExpanded && (
-        <motion.g
+      <motion.g
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.16 }}
-        >
+      >
           {yLabel && (
             <text
-              y={width + RIGHT_AXIS_SPACE - 45}
+              y={width + RIGHT_AXIS_SPACE - 20}
               x={-height / 2}
               transform='rotate(-90)'
               textAnchor='middle'
@@ -246,8 +311,7 @@ function AxisGrid(props: AxisGridProps) {
               </text>
             </React.Fragment>
           ))}
-        </motion.g>
-      )}
+      </motion.g>
     </AnimatePresence>
   );
 }
