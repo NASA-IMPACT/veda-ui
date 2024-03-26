@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 
-import { useStacMetadataOnDatasets } from '../../hooks/use-stac-metadata-datasets';
+import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
 import { selectedCompareDateAtom, selectedDateAtom } from '../../atoms/dates';
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
@@ -40,7 +40,7 @@ export function ExplorationMap() {
 
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
 
-  useStacMetadataOnDatasets(datasets, setDatasets);
+  useReconcileWithStacMetadata(datasets, setDatasets);
 
   const selectedDay = useAtomValue(selectedDateAtom);
   const selectedCompareDay = useAtomValue(selectedCompareDateAtom);

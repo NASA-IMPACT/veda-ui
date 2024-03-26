@@ -30,7 +30,7 @@ import { TimelineDataset, TimelineDatasetSuccess } from '$components/exploration
 
 import { reconcileDatasets } from '$components/exploration/data-utils';
 import { datasetLayers } from '$components/exploration/data-utils';
-import { useStacMetadataOnDatasets } from '$components/exploration/hooks/use-stac-metadata-datasets';
+import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -144,11 +144,17 @@ function MapBlock(props: MapBlockProps) {
   const [ compareLayers, setCompareLayers] = useState<TimelineDataset[] | undefined>();
 
   const [ baseMapStaticData ] = reconcileDatasets([layerId], datasetLayers, []);
-  const compareLayerId = baseMapStaticData.data.compare?.layerId;
+  const baseMapStaticCompareData = baseMapStaticData.data.compare;
+
+  let compareLayerId: undefined | string;
+  if (baseMapStaticCompareData && ('layerId' in baseMapStaticCompareData)) {
+    compareLayerId = baseMapStaticCompareData.layerId;
+  }
+
   const [ compareMapStaticData ] = reconcileDatasets(compareLayerId ? [compareLayerId] : [], datasetLayers, []);
 
-  useStacMetadataOnDatasets([baseMapStaticData], setBaseLayers);
-  useStacMetadataOnDatasets([compareMapStaticData], setCompareLayers);
+  useReconcileWithStacMetadata([baseMapStaticData], setBaseLayers);
+  useReconcileWithStacMetadata([compareMapStaticData], setCompareLayers);
 
   const selectedDatetime = dateTime
     ? utcString2userTzDate(dateTime)
@@ -213,7 +219,6 @@ function MapBlock(props: MapBlockProps) {
   const compareDataLayer: TimelineDataset | null = ({data: compareLayerResolvedData} as unknown) as TimelineDataset;
   const compareTimeDensity = compareLayerResolvedData?.timeDensity;
 
-
   const mapOptions: Partial<MapboxOptions> = {
     style: DEFAULT_MAP_STYLE_URL,
     logoPosition: 'bottom-left',
@@ -257,8 +262,10 @@ function MapBlock(props: MapBlockProps) {
 
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.
-    const providedLabel = (compareLabel && compareDataLayer) ?? compareDataLayer?.data?.mapLabel;
-    if (providedLabel) return providedLabel as string;
+    if (compareLabel && compareLayerResolvedData) {
+      const providedLabel = compareLayerResolvedData?.mapLabel as string;
+      return providedLabel;
+    }
 
     // Default to date comparison.
     return selectedDatetime && compareToDate
@@ -271,7 +278,7 @@ function MapBlock(props: MapBlockProps) {
       : null;
   }, [
     compareLabel,
-    compareDataLayer?.data?.mapLabel,
+    compareLayerResolvedData,
     selectedDatetime,
     compareToDate,
     baseTimeDensity,
@@ -317,7 +324,7 @@ function MapBlock(props: MapBlockProps) {
                   id={`compare-${compareLayerResolvedData.id}`}
                   title={compareLayerResolvedData.name}
                   description={compareLayerResolvedData.description}
-                  {...compareDataLayer.data.legend}
+                  {...compareLayerResolvedData.legend}
                 />
               )}
           </LayerLegendContainer>
@@ -341,9 +348,9 @@ function MapBlock(props: MapBlockProps) {
               (
                 <MapMessage
                   id='single-map-message'
-                  active={!!(selectedDatetime && baseDataLayer.data)}
+                  active={!!(selectedDatetime && baseLayerResolvedData)}
                 >
-                  {selectedDatetime && formatSingleDate(selectedDatetime, baseDataLayer.data?.timeDensity)}
+                  {selectedDatetime && formatSingleDate(selectedDatetime, baseLayerResolvedData?.timeDensity)}
                 </MapMessage>
               )
           }
