@@ -19,6 +19,7 @@ import { PageLoading } from '$components/common/loading-skeleton';
 // Views
 import UhOh from '$components/uhoh';
 import ErrorBoundary from '$components/uhoh/fatal-error';
+
 const Home = lazy(() => import('$components/home'));
 const About = lazy(() => import('$components/about'));
 const Development = lazy(() => import('$components/development'));
@@ -26,7 +27,7 @@ const Development = lazy(() => import('$components/development'));
 const StoriesHub = lazy(() => import('$components/stories/hub'));
 const StoriesSingle = lazy(() => import('$components/stories/single'));
 
-const DataCatalog = lazy(() => import('$components/data-catalog'));
+const DataCatalog = lazy(() => import('$components/data-catalog/container'));
 const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
