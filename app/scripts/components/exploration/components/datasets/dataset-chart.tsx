@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import {
   CollecticonChartLine,
 } from '@devseed-ui/collecticons';
-import { RIGHT_AXIS_SPACE } from '../../constants';
+import { RIGHT_AXIS_SPACE, AXIS_BG_COLOR } from '../../constants';
 import { DatasetTrackMessage } from './dataset-track-message';
 import { DataMetric } from './analysis-metrics';
 import LayerChartAnalysisMenu from './layer-chart-analysis-menu';
@@ -42,7 +42,7 @@ const AxisBackground = styled.div<{axisWidth: number}>`
   top: 0;
   width: ${props=> props.axisWidth}px;
   height: 100%;
-  background-color: #F0F0F0;
+  background-color: ${AXIS_BG_COLOR};
   z-index: -1;
 `;
 
