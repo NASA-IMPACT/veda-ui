@@ -24,7 +24,11 @@ declare module 'veda' {
     id: MbProjectionOptions['name'] | 'polarNorth' | 'polarSouth';
   };
 
-  interface DatasetLayerCommonProps {
+  interface DatasetLayerCommonCompareProps {
+    mapLabel?: string | DatasetDatumFn<DatasetDatumReturnType>;
+  }
+
+  interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps{
     zoomExtent?: number[];
     bounds?: number[];
     sourceParams?: Record<string, any>;
@@ -32,12 +36,9 @@ declare module 'veda' {
 
   export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
   export type DatasetDatumReturnType = Primitives | Date;
-  interface DatasetLayerCommonCompareProps extends DatasetLayerCommonProps {
-    mapLabel?: string | DatasetDatumFn<DatasetDatumReturnType>;
-  }
-
+  
   export interface DatasetLayerCompareSTAC
-    extends DatasetLayerCommonCompareProps {
+    extends DatasetLayerCommonProps {
     stacCol: string;
     type: DatasetLayerType;
     name: string;
@@ -46,7 +47,7 @@ declare module 'veda' {
   }
 
   export interface DatasetLayerCompareInternal
-    extends DatasetLayerCommonCompareProps {
+    extends DatasetLayerCommonProps {
     datasetId: string;
     layerId: string;
   }
@@ -93,13 +94,13 @@ declare module 'veda' {
   // difference with a "base" dataset layer is not having a name and
   // description.
   export interface DatasetLayerCompareBase
-    extends DatasetLayerCommonCompareProps {
+    extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
     type: DatasetLayerType;
   }
   export interface DatasetLayerCompareNormalized
-    extends DatasetLayerCommonCompareProps {
+    extends DatasetLayerCommonProps {
     id: string;
     name: string;
     description: string;

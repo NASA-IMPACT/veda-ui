@@ -151,31 +151,26 @@ function makeQueryObject(
  * Whenever a dataset is added to the timeline, this hook will fetch the STAC
  * metadata for that dataset and add it to the dataset state atom.
  */
-export function useStacMetadataOnDatasets(
+export function useReconcileWithStacMetadata(
   datasets: TimelineDataset[],
-  setDatasets: SetAtom<[updates: SetStateAction<TimelineDataset[]>], void> | React.Dispatch<React.SetStateAction<undefined | TimelineDataset[]>>
+  handleUpdate: SetAtom<[updates: SetStateAction<TimelineDataset[]>], void> | React.Dispatch<React.SetStateAction<undefined | TimelineDataset[]>>
 ) {
-  // @NOTE: datasets should not be undefined but in the case it is (datasets can be possibly undefined for compare layers), this is choosing to be defensive to guard against it
-  // since we cannot conditionally execute hooks from the tree up and in here
-
-  // @TODO-SANDRA: Revisit this condition of hooks... not happy with this solution... I think it can be better, try a layer up
-  const datasetsToQuery = (datasets.length === 1 && datasets[0] === undefined) ? [] : datasets.filter((d) => !(d as any)?.mocked).map((dataset) => makeQueryObject(dataset));
+  const noDatasetsToQuery: boolean = !datasets || (datasets.length === 1 && datasets[0] === undefined);
 
   const datasetsQueryData = useQueries({
-    queries: datasetsToQuery
+    queries: noDatasetsToQuery ? [] : datasets.filter((d) => !(d as any)?.mocked).map((dataset) => makeQueryObject(dataset))
   });
 
   useEffectPrevious<[typeof datasetsQueryData, TimelineDataset[]]>(
     (prev) => {
-      if (datasets.length === 1 && datasets[0] === undefined) return;
+      if (noDatasetsToQuery) return;
 
       const prevQueryData = prev[0];
       const hasPrev = !!prevQueryData;
-
-      const { changed, data: updatedDatasets } = datasets
+      const { updated, data: updatedDatasets } = datasets
         .filter((d) => !(d as any)?.mocked)
         .reduce<{
-          changed: boolean;
+          updated: boolean;
           data: TimelineDataset[];
         }>(
           (acc, dataset, idx) => {
@@ -183,9 +178,8 @@ export function useStacMetadataOnDatasets(
             // We want to reconcile the data event if it is the first time.
             // In practice data will have changes, since prev is undefined.
             if (!hasPrev || didDataChange(curr, prevQueryData[idx])) {
-              // Changed
               return {
-                changed: true,
+                updated: true,
                 data: [
                   ...acc.data,
                   reconcileQueryDataWithDataset(curr, dataset)
@@ -198,13 +192,16 @@ export function useStacMetadataOnDatasets(
               };
             }
           },
-          { changed: false, data: [] }
+          { updated: false, data: [] }
         );
-      if (changed as boolean) {
-        setDatasets(updatedDatasets);
+      if (updated) {
+        handleUpdate(updatedDatasets);
       }
 
     },
     [datasetsQueryData, datasets]
   );
 }
+
+
+
