@@ -6,6 +6,7 @@ import {
   FigcaptionInner,
   FigureAttribution
 } from '$components/common/figure';
+import { LinkAttribution } from '$components/common/link-full-map';
 
 import { captionDisplayName } from '$components/common/blocks/block-constant';
 
@@ -17,6 +18,18 @@ export function Caption({ children, attrAuthor, attrUrl }) {
     </Figcaption>
   );
 }
+
+export function FullMapLinkButton({ layerId, date, compareDate }) {
+  return (
+    <LinkAttribution layerId={layerId} date={date} compareDate={compareDate} />
+  );
+}
+
+FullMapLinkButton.propTypes = {
+  layerId: T.string,
+  date: T.string,
+  compareDate: T.string
+};
 
 Caption.displayName = captionDisplayName;
 
