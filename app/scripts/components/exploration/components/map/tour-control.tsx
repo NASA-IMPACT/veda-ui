@@ -27,7 +27,6 @@ export function ShowTourControl() {
   const { setIsOpen, setCurrentStep, setSteps } = useTour();
   const datasets = useAtomValue(timelineDatasetsAtom);
   const disabled = datasets.length === 0;
-
   const reopenTour = useCallback(() => {
     setCurrentStep(0);
     setSteps?.(introTourSteps);
