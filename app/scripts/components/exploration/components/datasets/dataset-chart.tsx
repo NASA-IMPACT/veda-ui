@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import {
   CollecticonChartLine,
 } from '@devseed-ui/collecticons';
+import { themeVal } from '@devseed-ui/theme-provider';
 import { RIGHT_AXIS_SPACE, AXIS_BG_COLOR } from '../../constants';
 import { DatasetTrackMessage } from './dataset-track-message';
 import { DataMetric } from './analysis-metrics';
@@ -34,7 +35,7 @@ const ChartAnalysisMenu = styled.div<{axisWidth: number}>`
   display: flex;
   justify-content: end;
   margin-right: calc(${props=> props.axisWidth}px + 0.5rem);
-  z-index: 3000;
+  z-index: ${themeVal('zIndices.overlay' as any)};
 `;
 const AxisBackground = styled.div<{axisWidth: number}>`
   position: absolute;
