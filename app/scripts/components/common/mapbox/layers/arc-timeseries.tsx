@@ -5,6 +5,7 @@ import { RasterSource, RasterLayer } from 'mapbox-gl';
 import { useMapStyle } from './styles';
 import { useArc } from '$components/common/map/style-generators/hooks';
 
+import { userTzDate2utcString } from '$utils/date';
 import { ActionStatus } from '$utils/status';
 
 export interface MapLayerArcTimeseriesProps {
@@ -61,10 +62,8 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
       if (!wmsUrl) return;
       //https://arcgis.asdc.larc.nasa.gov/server/services/POWER/power_901_annual_meterology_utc/ImageServer/WMSServer
       // ?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&LAYERS=PS&DIM_StdTime=1981-12-31T00:00:00Z"
-
+      
       // TODO: investigate For some reason the request being made is 6 hours ahead? Something to do with UTC <-> local conversion?
-      date?.setHours(date.getHours() - 6)
-
       const tileParams = qs.stringify({
         format: 'image/png',
         service: "WMS",
@@ -74,7 +73,7 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
         transparent: "true", // TODO: get from sourceparams maybe
         width: "256",
         height: "256",
-        DIM_StdTime: `${date?.toISOString().slice(0, -5)}Z`, // TODO: better date conversion
+        DIM_StdTime: userTzDate2utcString(date), // TODO: better date conversion
         ...sourceParams
       });
 
