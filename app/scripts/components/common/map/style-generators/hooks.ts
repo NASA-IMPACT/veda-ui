@@ -13,6 +13,17 @@ interface ZarrResponseData {
     }
   }
 }
+interface Link {
+  href: string,
+  rel: string,
+  type: string,
+  title: string,
+  "wms:layers": Array<string>,
+  "wms:styles": Array<string>
+}
+interface ArcResponseData {
+  links: Array<Link>
+}
 interface CMRResponseData {
   features: {
     assets: {
@@ -110,4 +121,40 @@ export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplac
 
   return assetUrl;
 
+} 
+
+export function useArc({ id, stacCol, stacApiEndpointToUse, date, onStatusChange }){
+  const [wmsUrl, setWmsUrl] = useState('');
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function load() {
+      try {
+        onStatusChange?.({ status: S_LOADING, id });
+        const data:ArcResponseData = await requestQuickCache({
+          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
+          method: 'GET',
+          controller
+        });
+
+        setWmsUrl(data.links[0].href);
+        onStatusChange?.({ status: S_SUCCEEDED, id });
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setWmsUrl('');
+          onStatusChange?.({ status: S_FAILED, id });
+        }
+        return;
+      }
+    }
+
+    load();
+
+    return () => {
+      controller.abort();
+    };
+  }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
+
+  return wmsUrl;
 } 
