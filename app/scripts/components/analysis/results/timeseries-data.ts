@@ -277,8 +277,6 @@ async function requestTimeseries({
         }
       );
 
-      console.log(statistics)
-      
       onData({
         ...layersBase,
         status: 'succeeded',
@@ -292,7 +290,7 @@ async function requestTimeseries({
           isPeriodic: false,
           timeDensity: "year",
           domain: ['1983-01-01T00:00:00Z', '2022-12-31T23:59:59Z'],
-          timeseries: statistics.slice(0, 4) // TODO: FIX: For some reason the UI freezes for more than 4 timestamps
+          timeseries: statistics // TODO: FIX: For some reason the UI freezes for more than 4 timestamps
         }
       });
     } else {
