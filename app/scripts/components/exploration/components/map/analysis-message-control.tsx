@@ -29,8 +29,8 @@ export function getZoomFromBbox(bbox: [number, number, number, number]): number 
     return 21;
 } else {
     const zoomLevel = Math.floor(-1*( (Math.log(maxDiff)/Math.log(2)) - (Math.log(360)/Math.log(2))));
-    if (zoomLevel < 1) return 1;
-    else return zoomLevel;
+    if (zoomLevel < 2) return 1;
+    else return zoomLevel - 1; // give buffer
   }
 }
 
