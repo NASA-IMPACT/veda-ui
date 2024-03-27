@@ -1,23 +1,39 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useAtomValue } from 'jotai';
 import styled, { css } from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button, createButtonStyles } from '@devseed-ui/button';
+import bbox from '@turf/bbox';
 import {
   CollecticonChartLine,
   CollecticonCircleInformation
 } from '@devseed-ui/collecticons';
-
+import useMaps from '$components/common/map/hooks/use-maps';
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import { selectedIntervalAtom } from '../../atoms/dates';
 
 import useAois from '$components/common/map/controls/hooks/use-aois';
-import { calcFeatCollArea } from '$components/common/aoi/utils';
+import { calcFeatCollArea, boundsFromFeature } from '$components/common/aoi/utils';
 import { formatDateRange } from '$utils/date';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
 import { AoIFeature } from '$components/common/map/types';
 import { ShortcutCode } from '$styles/shortcut-code';
+export function getZoomFromBbox(bbox: [number, number, number, number]): number {
+  const latMax = Math.max(bbox[3], bbox[1]);
+  const lngMax = Math.max(bbox[2], bbox[0]);
+  const latMin = Math.min(bbox[3], bbox[1]);
+  const lngMin = Math.min(bbox[2], bbox[0]);
+  const maxDiff = Math.max(latMax - latMin, lngMax - lngMin);
+  if (maxDiff < 360 / Math.pow(2, 20)) {
+    return 21;
+} else {
+    const zoomLevel = Math.floor(-1*( (Math.log(maxDiff)/Math.log(2)) - (Math.log(360)/Math.log(2))));
+    if (zoomLevel < 1) return 1;
+    else return zoomLevel;
+  }
+}
+
 
 const AnalysisMessageWrapper = styled.div.attrs({
   'data-tour': 'analysis-message'
@@ -81,7 +97,7 @@ const MessageControls = styled.div`
   gap: ${glsp(0.5)};
 `;
 
-export function AnalysisMessage() {
+export function AnalysisMessage({ maps }) {
   const { isObsolete, setObsolete, isAnalyzing } = useAnalysisController();
 
   const datasets = useAtomValue(timelineDatasetsAtom);
@@ -94,7 +110,6 @@ export function AnalysisMessage() {
     formatDateRange(selectedInterval.start, selectedInterval.end);
 
   const selectedFeatures = features.filter((f) => f.selected);
-
   useEffect(() => {
     // Set the analysis as obsolete when the selected features change.
     setObsolete();
@@ -105,6 +120,7 @@ export function AnalysisMessage() {
       <MessagesWhileAnalyzing
         isObsolete={isObsolete}
         features={features}
+        mapInstance={maps?.main}
         selectedFeatures={selectedFeatures}
         datasetIds={datasetIds}
         dateLabel={dateLabel}
@@ -115,6 +131,7 @@ export function AnalysisMessage() {
       <MessagesWhileNotAnalyzing
         features={features}
         selectedFeatures={selectedFeatures}
+        mapInstance={maps?.main}
         datasetIds={datasetIds}
         dateLabel={dateLabel}
       />
@@ -123,7 +140,8 @@ export function AnalysisMessage() {
 }
 
 export function AnalysisMessageControl() {
-  useThemedControl(() => <AnalysisMessage />, { position: 'top-left' });
+  const maps = useMaps()
+  useThemedControl(() => <AnalysisMessage maps={maps} />, { position: 'top-left' });
 
   return null;
 }
@@ -139,7 +157,7 @@ interface MessagesProps {
 function MessagesWhileAnalyzing(
   props: MessagesProps & { isObsolete: boolean }
 ) {
-  const { isObsolete, features, selectedFeatures, datasetIds, dateLabel } =
+  const { isObsolete, features, selectedFeatures, datasetIds, dateLabel, mapInstance } =
     props;
 
   const area = calcFeatCollArea({
@@ -187,7 +205,7 @@ function MessagesWhileAnalyzing(
           </MessageContent>
         </AnalysisMessageInner>
         <MessageControls>
-          <ButtonObsolete datasetIds={datasetIds} />
+          <ButtonObsolete datasetIds={datasetIds} features={selectedFeatures} mapInstance={mapInstance} />
           <ButtonExit />
         </MessageControls>
       </AnalysisMessageWrapper>
@@ -233,7 +251,7 @@ function MessagesWhileAnalyzing(
 }
 
 function MessagesWhileNotAnalyzing(props: MessagesProps) {
-  const { features, selectedFeatures, datasetIds, dateLabel } = props;
+  const { features, selectedFeatures, datasetIds, dateLabel, mapInstance } = props;
 
   if (selectedFeatures.length) {
     // Not analyzing, but there are selected features.
@@ -262,7 +280,7 @@ function MessagesWhileNotAnalyzing(props: MessagesProps) {
           </MessageContent>
         </AnalysisMessageInner>
         <MessageControls>
-          <ButtonAnalyze datasetIds={datasetIds} />
+          <ButtonAnalyze mapInstance={mapInstance} features={selectedFeatures} datasetIds={datasetIds} />
         </MessageControls>
       </AnalysisMessageWrapper>
     );
@@ -328,16 +346,28 @@ const Btn = styled(Button)`
 `;
 
 function ButtonObsolete(props: { datasetIds: string[] }) {
-  const { datasetIds } = props;
+  const { datasetIds, features, mapInstance } = props;
   const { runAnalysis } = useAnalysisController();
+
+  const handleClick = useCallback(() => {
+    runAnalysis(datasetIds);
+    const bboxToFit = bbox({
+      type: 'FeatureCollection',
+      features
+    })
+
+    const zoom = bboxToFit? getZoomFromBbox(bboxToFit): 14;
+    mapInstance?.flyTo({
+      center:[ (bboxToFit[2] + bboxToFit[0])/2, (bboxToFit[3] + bboxToFit[1])/2],
+      zoom
+    });
+  },[datasetIds, mapInstance, features])
 
   return (
     <Btn
       variation='primary-fill'
       size='small'
-      onClick={() => {
-        runAnalysis(datasetIds);
-      }}
+      onClick={handleClick}
     >
       Apply changes
     </Btn>
@@ -360,16 +390,28 @@ function ButtonExit() {
 }
 
 function ButtonAnalyze(props: { datasetIds: string[] }) {
-  const { datasetIds } = props;
+  const { datasetIds, mapInstance, features } = props;
   const { runAnalysis } = useAnalysisController();
+
+  const handleClick = useCallback(() => {
+    runAnalysis(datasetIds);
+    const bboxToFit = bbox({
+      type: 'FeatureCollection',
+      features
+    })
+
+    const zoom = bboxToFit? getZoomFromBbox(bboxToFit): 14;
+    mapInstance?.flyTo({
+      center:[ (bboxToFit[2] + bboxToFit[0])/2, (bboxToFit[3] + bboxToFit[1])/2],
+      zoom
+    });
+  },[datasetIds, mapInstance, features])
 
   return (
     <Btn
       variation='primary-fill'
       size='small'
-      onClick={() => {
-        runAnalysis(datasetIds);
-      }}
+      onClick={handleClick}
     >
       Run analysis
     </Btn>
