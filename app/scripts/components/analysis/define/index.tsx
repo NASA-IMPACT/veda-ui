@@ -431,7 +431,7 @@ export default function Analysis() {
                     value={end ? dateToInputFormat(end) : ''}
                     onChange={onEndDateChange}
                     min={dateToInputFormat(start)}
-                    max='2023-12-31'
+                    max='2022-12-31'
                   />
                 </FormGroupStructureCustom>
               </FormBlock>
