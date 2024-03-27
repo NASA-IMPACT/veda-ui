@@ -142,14 +142,15 @@ export function DatasetListItem(props: DatasetListItemProps) {
     midY
   } = useDatasetHover();
 
+  const timeSeriesData = dataset.analysis.data?.timeseries;
+
   const dataPoint = getInteractionDataPoint({
     isHovering,
     xScaled,
     containerWidth: width,
     layerX,
-    data: dataset.analysis.data?.timeseries
+    data: timeSeriesData
   });
-
 
   const {
     refs: popoverRefs,
@@ -159,7 +160,9 @@ export function DatasetListItem(props: DatasetListItemProps) {
     enabled: isAnalyzing,
     x: clientX,
     y: midY,
-    data: dataPoint
+    xScaled,
+    data: dataPoint,
+    dataset: timeSeriesData
   });
 
   useAnalysisDataRequest({ datasetAtom });

@@ -2,7 +2,8 @@ import React, {
   MutableRefObject,
   forwardRef,
   useEffect,
-  useState
+  useState,
+  useMemo
 } from 'react';
 import { createPortal } from 'react-dom';
 import styled, {css} from 'styled-components';
@@ -18,7 +19,7 @@ import { format } from 'date-fns';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { AnalysisTimeseriesEntry, TimeDensity, TimelineDatasetSuccess } from '../types.d.ts';
-import { FADED_TEXT_COLOR, TEXT_TITME_BG_COLOR } from '../constants';
+import { FADED_TEXT_COLOR, TEXT_TITME_BG_COLOR, HEADER_COLUMN_WIDTH } from '../constants';
 import { DataMetric } from './datasets/analysis-metrics';
 
 import { getNumForChart } from '$components/common/chart/utils';
@@ -171,6 +172,7 @@ function getClosestDataPoint(
   data?: AnalysisTimeseriesEntry[],
   positionDate?: Date
 ) {
+
   if (!positionDate || !data) return;
 
   const dataSorted = sort(data, (a, b) => a.date.getTime() - b.date.getTime());
@@ -209,7 +211,6 @@ interface InteractionDataPointOptions {
  */
 export function getInteractionDataPoint(options: InteractionDataPointOptions) {
   const { isHovering, xScaled, containerWidth, layerX, data } = options;
-
   if (
     !isHovering ||
     !xScaled ||
@@ -228,13 +229,10 @@ export function getInteractionDataPoint(options: InteractionDataPointOptions) {
   const closestDataPointPosition = closestDataPoint
     ? xScaled(closestDataPoint.date)
     : Infinity;
-
-  const delta = Math.abs(layerX - closestDataPointPosition);
-
+  
   const inView =
     closestDataPointPosition >= 0 &&
-    closestDataPointPosition <= containerWidth &&
-    delta <= 80;
+    closestDataPointPosition <= containerWidth;
 
   return inView ? closestDataPoint : undefined;
 }
@@ -243,7 +241,9 @@ interface PopoverHookOptions {
   x?: number;
   y?: number;
   data?: AnalysisTimeseriesEntry;
+  dataset?: AnalysisTimeseriesEntry[];
   enabled?: boolean;
+  xScaled?: ScaleTime<number, number>;
 }
 
 /**
@@ -253,7 +253,7 @@ interface PopoverHookOptions {
  * @returns 
  */
 export function usePopover(options: PopoverHookOptions) {
-  const { x, y, data, enabled } = options;
+  const { x, y, data, xScaled, dataset, enabled } = options;
 
   const inView = !!data;
 
@@ -264,8 +264,39 @@ export function usePopover(options: PopoverHookOptions) {
   const [_isVisible, setVisible] = useState(inView);
   const isVisible = enabled && _isVisible;
 
+  // Do not make tooltip to follow the cursor.
+  // Instead, show tooltip at the edge of the timeline 
+  // even if the cursor is off from the data timeline.
+  const datasetMinX = useMemo(() => {
+    if (!xScaled || !dataset) return;
+    return (xScaled(dataset[dataset.length-1]?.date) + HEADER_COLUMN_WIDTH);
+  }, [xScaled, dataset]);
+
+  const datasetMaxX = useMemo(() => {
+    if (!xScaled || !dataset) return;
+    return (xScaled(dataset[0]?.date) + HEADER_COLUMN_WIDTH);
+  }, [xScaled, dataset]);
+
+  const finalClientX = useMemo(() => {
+    if (!datasetMinX || !datasetMaxX || !x) return;
+    return x < datasetMinX ? datasetMinX : x > datasetMaxX? datasetMaxX: x;
+  },[datasetMaxX, datasetMinX, x]);
+
+  // Determine which direction that popover needs to be displayed
+  const midpointX = useMemo(() => {
+    if (!xScaled || !dataset) return;
+    const start = xScaled(dataset[0]?.date) + HEADER_COLUMN_WIDTH;
+    const end = xScaled(dataset[dataset.length - 1]?.date) + HEADER_COLUMN_WIDTH;
+    return (start + end) / 2;
+  }, [xScaled, dataset]);
+  
+  const popoverLeft = useMemo(() => {
+    if (finalClientX === undefined || midpointX === undefined) return true; // Default to true or decide based on your UI needs
+    return finalClientX < midpointX;
+  }, [finalClientX, midpointX]);
+  
   const floating = useFloating({
-    placement: 'left',
+    placement: popoverLeft ? 'left' : 'right',
     open: isVisible,
     onOpenChange: setVisible,
     middleware: [offset(10), flip(), shift({ padding: 16 })],
@@ -273,7 +304,6 @@ export function usePopover(options: PopoverHookOptions) {
   });
 
   const { refs, floatingStyles } = floating;
-
   // Use a virtual element for the position reference.
   // https://floating-ui.com/docs/virtual-elements
   useEffect(() => {
@@ -287,17 +317,17 @@ export function usePopover(options: PopoverHookOptions) {
         return {
           width: 0,
           height: 0,
-          x: x ?? 0,
+          x: finalClientX ?? 0,
           y: y ?? 0,
           top: y ?? 0,
-          left: x ?? 0,
-          right: x ?? 0,
+          left: finalClientX ?? 0,
+          right: finalClientX ?? 0,
           bottom: y ?? 0
         };
       }
     });
     setVisible(true);
-  }, [refs, inView, x, y]);
+  }, [refs, inView, finalClientX, y]);
 
   return {
     refs,
