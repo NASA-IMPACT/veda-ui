@@ -143,7 +143,7 @@ function PageFooter(props) {
               size='small'
               fitting='skinny'
               target='_blank'
-              rel='noopener noreferrer' 
+              rel='noopener noreferrer'
             >
               <CollecticonBrandGithub title='Explore the code' meaningful />
               GitHub

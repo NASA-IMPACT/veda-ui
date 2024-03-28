@@ -6,13 +6,14 @@ import { LinkProps } from 'react-router-dom';
 export const getLinkProps = (
     linkTo: string,
     as?: React.ForwardRefExoticComponent<LinkProps & React.RefAttributes<HTMLAnchorElement>>,
-    onClick?: MouseEventHandler
+    onClick?: (() => void) | MouseEventHandler
   ) => {
     const externalLinksInNewTab = getBoolean('externalLinksInNewTab');
     const isExternalLink = /^https?:\/\//.test(linkTo);
     return isExternalLink
     ? {
         href: linkTo,
+        to: linkTo,
         ...(externalLinksInNewTab
           ? {target: '_blank', rel: 'noopener noreferrer'}
           : {}),
