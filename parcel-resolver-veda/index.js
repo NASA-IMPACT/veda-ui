@@ -196,6 +196,8 @@ module.exports = new Resolver({
           strings: ${JSON.stringify(withDefaultStrings(result.strings))}
         };
 
+        export const customScripts = ${JSON.stringify(result.customScripts) || null};
+
         export const theme = ${JSON.stringify(result.theme) || null};
 
         export const datasetTaxonomies = ${generateTaxonomiesModuleOutput(

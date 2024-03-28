@@ -299,4 +299,6 @@ export interface LayerInfo {
   export const userPages: string[];
 
   export const theme: DefaultTheme | null;
+
+  export const customScripts: Object;
 }

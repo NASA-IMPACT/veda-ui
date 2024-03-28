@@ -4,6 +4,8 @@ import { Helmet } from 'react-helmet';
 import { useTheme } from 'styled-components';
 import { useLocation } from 'react-router-dom';
 
+import { customScripts } from 'veda';
+
 const appTitle = process.env.APP_TITLE;
 const baseUrl = window.location.origin;
 
@@ -46,7 +48,7 @@ function MetaTags({ title, description, thumbnail, children }) {
 
       {/* Additional javascript */}
       {/* @NOTE https://github.com/NASA-IMPACT/veda-ui/pull/846 */}
-      {process.env.CUSTOM_SCRIPT_SRC ? (
+      {/* {process.env.CUSTOM_SCRIPT_SRC ? (
         <script
           async
           type='text/javascript'
@@ -57,7 +59,16 @@ function MetaTags({ title, description, thumbnail, children }) {
               : 'custom_script_id'
           }
         />
-      ) : null}
+      ) : null} */}
+      { customScripts.length ?  (
+        customScripts.map(scriptInfo =>{
+          const { inlineScript, ...attrs } = scriptInfo;
+          return <script key={attrs.id} {...attrs}>{`${inlineScript || ""}`}</script>
+        }
+        ) 
+      )
+      : null
+      }
     </Helmet>
   );
 }
