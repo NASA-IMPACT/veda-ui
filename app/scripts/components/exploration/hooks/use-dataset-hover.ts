@@ -98,7 +98,7 @@ export function useDatasetHover(): DatasetHoverHookReturn {
     return { ref: elRef, isHovering: false };
   }
 
-  const isHovering =
+  const isHovering = 
     clientX >= rect.left &&
     clientX <= rect.right &&
     clientY >= rect.top &&

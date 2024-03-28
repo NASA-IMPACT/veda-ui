@@ -6,16 +6,13 @@ import { scaleTime, ScaleTime } from 'd3';
 
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
-  CollecticonChevronDownSmall,
-  CollecticonResizeIn,
-  CollecticonResizeOut
+  CollecticonChevronDownSmall
 } from '@devseed-ui/collecticons';
 import { DatePicker } from '@devseed-ui/date-picker';
 import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
-import { isExpandedAtom } from '$components/exploration/atoms/timeline';
 import {
   selectedCompareDateAtom,
   selectedDateAtom,
@@ -25,7 +22,6 @@ import { DAY_SIZE_MAX } from '$components/exploration/constants';
 import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minus';
 import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
 import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
-import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 
 const TimelineControlsSelf = styled.div`
@@ -99,8 +95,6 @@ export function TimelineControls(props: TimelineControlsProps) {
     selectedCompareDateAtom
   );
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
-  const { isAnalyzing } = useAnalysisController();
-  const [isExpanded, setExpanded] = useAtom(isExpandedAtom);
   const { features } = useAois();
 
   // Scale to use when there are no datasets with data (loading or error)
@@ -243,33 +237,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                   )}
                 />
                 <VerticalDivider />
-
                 <TimelineZoomControls onZoom={onZoom} />
-
-                <VerticalDivider />
-
-                <TipToolbarIconButton
-                  tipContent={
-                    isExpanded ? 'Hide chart y-axis' : 'Show chart y-axis'
-                  }
-                  visuallyDisabled={!isAnalyzing}
-                  size='small'
-                  onClick={() => {
-                    setExpanded((v) => !v);
-                  }}
-                >
-                  {isExpanded ? (
-                    <CollecticonResizeIn
-                      meaningful
-                      title='Contract dataset rows'
-                    />
-                  ) : (
-                    <CollecticonResizeOut
-                      meaningful
-                      title='Expand dataset rows'
-                    />
-                  )}
-                </TipToolbarIconButton>
               </>
             ) : (
               <TimelineZoomControls onZoom={onZoom} />
