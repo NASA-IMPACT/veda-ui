@@ -193,7 +193,8 @@ module.exports = new Resolver({
             root,
             logger
           )},
-          strings: ${JSON.stringify(withDefaultStrings(result.strings))}
+          strings: ${JSON.stringify(withDefaultStrings(result.strings))},
+          booleans: ${JSON.stringify(withDefaultStrings(result.booleans))}
         };
 
         export const theme = ${JSON.stringify(result.theme) || null};
@@ -212,6 +213,7 @@ module.exports = new Resolver({
           .filter((k) => k.startsWith('/'));
 
         export const getString = (variable) => config.strings[variable];
+        export const getBoolean = (variable) => config.booleans[variable];
 
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
         export const stories = ${generateMdxDataObject(storiesImportData)};
