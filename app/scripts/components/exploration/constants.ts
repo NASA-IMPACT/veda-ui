@@ -15,5 +15,6 @@ export const MAX_QUERY_NUM = 300;
 // @TECH-DEBT As we do not have a new design system that can accommodate the needs for colors
 // We put colors here for now
 export const AXIS_BG_COLOR = '#F0F0F0';
+export const HIGHLIGHT_LINE_COLOR = '#CCCCCC';
 export const FADED_TEXT_COLOR = '#83868A';
 export const TEXT_TITME_BG_COLOR = '#FAFAFA';

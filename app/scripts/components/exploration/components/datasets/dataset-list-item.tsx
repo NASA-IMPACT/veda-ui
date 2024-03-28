@@ -79,7 +79,6 @@ const DatasetHeaderInner = styled.div`
 
 const DatasetData = styled.div`
   position: relative;
-  padding: ${glsp(0.25, 0)};
   display: flex;
   align-items: center;
   flex-grow: 1;

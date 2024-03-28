@@ -7,7 +7,7 @@ import {
   CollecticonChartLine,
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { RIGHT_AXIS_SPACE, AXIS_BG_COLOR } from '../../constants';
+import { RIGHT_AXIS_SPACE, AXIS_BG_COLOR, HIGHLIGHT_LINE_COLOR } from '../../constants';
 import { DatasetTrackMessage } from './dataset-track-message';
 import { DataMetric } from './analysis-metrics';
 import LayerChartAnalysisMenu from './layer-chart-analysis-menu';
@@ -31,10 +31,10 @@ interface DatasetChartProps {
 
 const ChartAnalysisMenu = styled.div<{axisWidth: number}>`
   width: inherit;
-  position: relative;
+  position: absolute;
   display: flex;
   justify-content: end;
-  margin-right: calc(${props=> props.axisWidth}px + 0.5rem);
+  right: calc(${props=> props.axisWidth}px + 0.5rem);
   z-index: ${themeVal('zIndices.overlay' as any)};
 `;
 const AxisBackground = styled.div<{axisWidth: number}>`
@@ -85,7 +85,6 @@ export function DatasetChart(props: DatasetChartProps) {
 
 
   const chartAnalysisIconTrigger: JSX.Element = <CollecticonChartLine meaningful title='View layer options' />;
-  
   return (
     <div>
       {!activeMetrics.length && (
@@ -97,11 +96,22 @@ export function DatasetChart(props: DatasetChartProps) {
         <LayerChartAnalysisMenu activeMetrics={activeMetrics} onChange={onUpdateSettings} triggerIcon={chartAnalysisIconTrigger} />
       </ChartAnalysisMenu>
       <AxisBackground axisWidth={RIGHT_AXIS_SPACE} />
+
       <svg width={width + RIGHT_AXIS_SPACE} height={height}>
         <clipPath id='data-clip'>
           <rect width={width} height={height} />
         </clipPath>
-
+        <g transform='translate(0, 0)'>
+          {activeMetrics.length && highlightDate && (
+              <line
+                x1={xScaled(highlightDate)}
+                x2={xScaled(highlightDate)}
+                y1={0}
+                y2='100%'
+                stroke={HIGHLIGHT_LINE_COLOR}
+              />
+            )}
+        </g>
         <g transform={`translate(0, ${CHART_MARGIN})`}>
           <AxisGrid
             yLabel={dataset.data.legend?.unit?.label}
@@ -111,7 +121,6 @@ export function DatasetChart(props: DatasetChartProps) {
             isVisible={isVisible}
           />
         </g>
-        {/* This is where the line is drawn */}
         <g clipPath='url(#data-clip)'>
           <g transform={`translate(0, ${CHART_MARGIN})`}>
           {areaMetrics.map(
@@ -124,6 +133,7 @@ export function DatasetChart(props: DatasetChartProps) {
                     prop={areaDataKey}
                     data={enhancedTimeseries}
                     color={theme.color?.[metric.themeColor]}
+                    highlightDate={highlightDate}
                     isVisible={isVisible}
                   />
                 )
@@ -159,29 +169,30 @@ interface DataAreaProps {
   data: any[];
   color: string;
   isVisible: boolean;
+  highlightDate?: Date;
 }
 interface DateLineProps extends DataAreaProps {
-  highlightDate?: Date;
   style?: any;
 }
 
-interface DataItem {
+type AreaDataItem = {
   date: Date;
-  [key: string]: [number, number] | Date;
-}
+} & {
+  [K in string]: K extends 'date' ? Date : [number, number];
+};
 
 function DataArea(props: DataAreaProps) {
-  const { x, y, prop, data, color, isVisible } = props;
+  const { x, y, prop, data, color, highlightDate, isVisible } = props;
   
   const path = useMemo(() => {
-    const areaGenerator = area<DataItem>()
-    .defined((d) => d[prop] !== null)
-    .x((d) => x(d.date ?? 0)) 
-    .y0((d) => y(d[prop] ? d[prop][0] : 0)) 
-    .y1((d) => y(d[prop] ? d[prop][1] : 0));
+    const areaGenerator = area<AreaDataItem>()
+    .defined((d) => !!d[prop])
+    .x((d) => x(d.date)) 
+    .y0((d) => y(d[prop][0])) 
+    .y1((d) => y(d[prop][1]));
 
     return areaGenerator(data);
-  }, [x, y, data]);  // Ensure all variables used are listed in the dependencies
+  }, [x, y, data, prop]);  // Ensure all variables used are listed in the dependencies
 
   const maxOpacity = isVisible ? 1 : 0.25;
 
@@ -198,6 +209,39 @@ function DataArea(props: DataAreaProps) {
         fillOpacity={0.5}
         stroke={color}
       />
+      {data.map((d) => {
+        if (typeof d[prop][0] !== 'number' || typeof d[prop][1] !== 'number' ) return false;
+
+        const highlight =
+          isVisible && highlightDate?.getTime() === d.date.getTime();
+
+        return highlight? (
+          <>
+            <motion.circle
+              initial={{ opacity: 0 }}
+              animate={{ opacity: maxOpacity }}
+              transition={{ duration: 0.16 }}
+              key={`${d.date}-ub-circle-${prop}`}
+              cx={x(d.date)}
+              cy={y(d[prop][0])}
+              r={2}
+              fill={color}
+              stroke='#fff'
+            />
+            <motion.circle
+              initial={{ opacity: 0 }}
+              animate={{ opacity: maxOpacity }}
+              transition={{ duration: 0.16 }}
+              key={`${d.date}-lb-circle-${prop}`}
+              cx={x(d.date)}
+              cy={y(d[prop][1])}
+              r={2}
+              fill={color}
+              stroke='#fff'
+            />
+          </>
+        ): false;
+      })}
     </g>
   );
 }
