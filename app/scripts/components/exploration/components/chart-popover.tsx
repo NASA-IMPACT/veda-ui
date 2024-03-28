@@ -19,7 +19,7 @@ import { format } from 'date-fns';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { AnalysisTimeseriesEntry, TimeDensity, TimelineDatasetSuccess } from '../types.d.ts';
-import { FADED_TEXT_COLOR, TEXT_TITME_BG_COLOR, HEADER_COLUMN_WIDTH } from '../constants';
+import { FADED_TEXT_COLOR, TEXT_TITLE_BG_COLOR, HEADER_COLUMN_WIDTH } from '../constants';
 import { DataMetric } from './datasets/analysis-metrics';
 
 import { getNumForChart } from '$components/common/chart/utils';
@@ -80,7 +80,7 @@ const fadedtext = css`
 `;
 
 const TitleBox = styled.div`
-  background-color: ${TEXT_TITME_BG_COLOR};
+  background-color: ${TEXT_TITLE_BG_COLOR};
   ${fadedtext};
   padding: ${glsp(0.5)};
   font-size: 0.75rem;

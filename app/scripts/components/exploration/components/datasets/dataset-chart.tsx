@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTheme } from 'styled-components';
 import { extent, scaleLinear, ScaleTime, line, area, ScaleLinear } from 'd3';
-import { AnimatePresence, motion } from 'framer-motion';
+import { SVGMotionProps, AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 import {
   CollecticonChartLine,
@@ -172,7 +172,7 @@ interface DataAreaProps {
   highlightDate?: Date;
 }
 interface DateLineProps extends DataAreaProps {
-  style?: any;
+  style?: SVGMotionProps<SVGPathElement>;
 }
 
 type AreaDataItem = {

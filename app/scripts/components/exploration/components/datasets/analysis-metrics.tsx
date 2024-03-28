@@ -28,7 +28,7 @@ export const DATA_METRICS: DataMetric[] = [
   {
     id: 'mean',
     label: 'Average',
-    chartLabel: 'Avg',
+    chartLabel: 'Average',
     themeColor: 'infographicB'
   },
   {
@@ -41,7 +41,7 @@ export const DATA_METRICS: DataMetric[] = [
   {
     id: 'std',
     label: 'St Deviation',
-    chartLabel: 'STD',
+    chartLabel: 'St Deviation',
     themeColor: 'infographicD'
   },
   {
