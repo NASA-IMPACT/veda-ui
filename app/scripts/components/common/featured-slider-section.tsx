@@ -67,6 +67,15 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
 
   if (!featuredItems.length) return null;
 
+  // sorting featuredItems based on dateProperty in descending order
+  if (dateProperty) {
+    featuredItems.sort((itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
+      const pubDateOfItemA = new Date(itemA[dateProperty]);
+      const pubDateOfItemB = new Date(itemB[dateProperty]);
+      return pubDateOfItemB.getTime() - pubDateOfItemA.getTime();
+    });
+  }
+
   return (
     <FoldFeatured>
       <FoldHeader>
