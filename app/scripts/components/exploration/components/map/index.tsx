@@ -27,7 +27,8 @@ import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
-export function ExplorationMap() {
+export function ExplorationMap(props) {
+  const { zoomTOI } = props;
   const [projection, setProjection] = useState(projectionDefault);
 
   const {
@@ -144,7 +145,7 @@ export function ExplorationMap() {
             comparing && 'Analysis is not possible when comparing dates'
           }
         />
-        <AnalysisMessageControl />
+        <AnalysisMessageControl zoomTOI={zoomTOI} />
         <GeocoderControl />
         <MapOptionsControl
           projection={projection}

@@ -12,6 +12,10 @@ export const zoomTransformAtom = atom<ZoomTransformPlain>({
   k: 1
 });
 
+//. TOI test
+export const zoomBehaviorAtom = atom<any>(undefined);
+
+
 // Width of the whole timeline item. Set via a size observer and then used to
 // compute the different element sizes.
 export const timelineWidthAtom = atom<number | undefined>(undefined);

@@ -44,7 +44,8 @@ import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import {
   timelineSizesAtom,
   timelineWidthAtom,
-  zoomTransformAtom
+  zoomTransformAtom,
+  zoomBehaviorAtom
 } from '$components/exploration/atoms/timeline';
 import { useTimelineDatasetsDomain } from '$components/exploration/atoms/hooks';
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
@@ -168,7 +169,7 @@ const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
 };
 
 export default function Timeline(props: TimelineProps) {
-  const { onDatasetAddClick } = props;
+  const { onDatasetAddClick, setZoomTOIFunc } = props;
 
   // Refs for non react based interactions.
   // The interaction rect is used to capture the different d3 events for the
@@ -200,7 +201,7 @@ export default function Timeline(props: TimelineProps) {
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
 
   const { setObsolete, runAnalysis, isAnalyzing } = useAnalysisController();
-
+  const [zoomTransform, setZoomTransform] = useAtom(zoomTransformAtom);
   const { features } = useAois();
 
   useEffect(() => {
@@ -216,13 +217,15 @@ export default function Timeline(props: TimelineProps) {
     [width]
   );
 
-  const [zoomTransform, setZoomTransform] = useAtom(zoomTransformAtom);
-
   // Calculate min and max scale factors, such has each day has a minimum of 2px
   // and a maximum of 100px.
   const { k0, k1 } = useScaleFactors();
   const { scaled: xScaled, main: xMain } = useScales();
 
+  // const zoomBehavior = useZoomBehavior({k0, k1, translateExtent, datasetsContainerRef})
+  // console.log(zoomBehavior)
+  // console.log(typeof zoomBehavior)
+  // setZoomBehaviorAtom(zoomBehavior(datasetsContainerRef));
   // Create the zoom behavior needed for the timeline interactions.
   const zoomBehavior = useMemo(() => {
     return zoom()
@@ -371,7 +374,24 @@ export default function Timeline(props: TimelineProps) {
     applyTransform(zoomBehavior, select(interactionRef.current), 0, 0, k0);
   }, [prevSuccessDatasetsCount, successDatasetsCount, k0, zoomBehavior]);
 
-  const onControlsZoom = useCallback(
+  const onTOIZoom = useCallback(()=> (newX, newK) => {
+    if (!newX || ! newK) return;
+    applyTransform(
+      zoomBehavior,
+      select(interactionRef.current),
+      newX,
+      0,
+      newK
+    );
+  },[interactionRef.current, zoomBehavior])
+
+// Pass onTOIZoom up to the parent component when it's defined or changed
+  useEffect(() => {
+    if (!onTOIZoom) return
+    setZoomTOIFunc(onTOIZoom);
+  }, [onTOIZoom, setZoomTOIFunc]);
+
+    const onControlsZoom = useCallback(
     (zoomV) => {
       if (!interactionRef.current || !xMain || !xScaled || !selectedDay) return;
 

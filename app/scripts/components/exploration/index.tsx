@@ -79,6 +79,8 @@ function Exploration() {
 
   const setUrl = useSetAtom(urlAtom);
   const { reset: resetAnalysisController } = useAnalysisController();
+
+  const [zoomTOIFunc, setZoomTOIFunc] = useState(() => {});
   // Reset atoms when leaving the page.
   useEffect(() => {
     return () => {
@@ -105,11 +107,11 @@ function Exploration() {
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
             <Panel maxSize={75} className='panel'>
-              <ExplorationMap />
+              <ExplorationMap zoomTOI={zoomTOIFunc} />
             </Panel>
             <PanelResizeHandle className='resize-handle' />
             <Panel maxSize={75} className='panel panel-timeline'>
-              <Timeline onDatasetAddClick={openModal} />
+              <Timeline onDatasetAddClick={openModal} setZoomTOIFunc={setZoomTOIFunc}/>
             </Panel>
           </PanelGroup>
         </Container>
