@@ -132,8 +132,8 @@ export function AnalysisMessage({ mainMap, zoomTOI }: { mainMap: MapRef | undefi
 
     // Fit TOI
     if (!main || !timelineWidth || !zoomTOI ) return
-    const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE) * 0.6
-    const startPoint = (timelineWidth - RIGHT_AXIS_SPACE)  * 0.1
+    const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE) * 0.8
+    const startPoint = (timelineWidth - RIGHT_AXIS_SPACE)  * 0.05
     const new_k = widthToFit/(main(selectedInterval.end) - main(selectedInterval.start));
     const new_x = startPoint - new_k * main(selectedInterval.start);
 
