@@ -222,10 +222,6 @@ export default function Timeline(props: TimelineProps) {
   const { k0, k1 } = useScaleFactors();
   const { scaled: xScaled, main: xMain } = useScales();
 
-  // const zoomBehavior = useZoomBehavior({k0, k1, translateExtent, datasetsContainerRef})
-  // console.log(zoomBehavior)
-  // console.log(typeof zoomBehavior)
-  // setZoomBehaviorAtom(zoomBehavior(datasetsContainerRef));
   // Create the zoom behavior needed for the timeline interactions.
   const zoomBehavior = useMemo(() => {
     return zoom()
