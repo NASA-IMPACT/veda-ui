@@ -12,9 +12,10 @@ export const zoomTransformAtom = atom<ZoomTransformPlain>({
   k: 1
 });
 
-//. TOI test
-export const zoomBehaviorAtom = atom<any>(undefined);
 
+// Atom to zoom TOI when analysis is run
+type ZoomTOIFunction = (newX: number, newK: number) => void;
+export const onTOIZoomAtom = atom<ZoomTOIFunction | null>(null);
 
 // Width of the whole timeline item. Set via a size observer and then used to
 // compute the different element sizes.

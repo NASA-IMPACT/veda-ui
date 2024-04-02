@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { useAtomValue, useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import styled, { css } from 'styled-components';
 import { MapRef } from 'react-map-gl';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
@@ -11,15 +11,13 @@ import {
 } from '@devseed-ui/collecticons';
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import { selectedIntervalAtom } from '../../atoms/dates';
-// import { applyTransform, isEqualTransform, rescaleX } from './timeline-utils';
-import { rescaleX } from '$components/exploration/components/timeline/timeline-utils';
-import useMaps from '$components/common/map/hooks/use-maps';
-import {
-  timelineSizesAtom,
-  timelineWidthAtom,
-  zoomTransformAtom
-} from '$components/exploration/atoms/timeline';
+
 import { useScales } from '../../hooks/scales-hooks';
+import useMaps from '$components/common/map/hooks/use-maps';
+import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
+import {
+  timelineWidthAtom
+} from '$components/exploration/atoms/timeline';
 
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
@@ -29,7 +27,7 @@ import useThemedControl from '$components/common/map/controls/hooks/use-themed-c
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { AoIFeature } from '$components/common/map/types';
 import { ShortcutCode } from '$styles/shortcut-code';
-import { RIGHT_AXIS_SPACE } from '$components/exploration/constants'
+import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
 
 const AnalysisMessageWrapper = styled.div.attrs({
   'data-tour': 'analysis-message'
@@ -93,15 +91,15 @@ const MessageControls = styled.div`
   gap: ${glsp(0.5)};
 `;
 
-export function AnalysisMessage({ mainMap, zoomTOI }: { mainMap: MapRef | undefined }) {
+export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
   const { isObsolete, setObsolete, isAnalyzing } = useAnalysisController();
 
   const datasets = useAtomValue(timelineDatasetsAtom);
   const datasetIds = datasets.map((d) => d.data.id);
 
   const timelineWidth = useAtomValue(timelineWidthAtom);
-  const { main, scaled} = useScales();
-  const [zoomTransform, setZoomTransform] = useAtom(zoomTransformAtom);
+  const { main } = useScales();
+  const { onTOIZoom } = useOnTOIZoom();
 
   const { features } = useAois();
   const selectedInterval = useAtomValue(selectedIntervalAtom);
@@ -131,16 +129,15 @@ export function AnalysisMessage({ mainMap, zoomTOI }: { mainMap: MapRef | undefi
     });
 
     // Fit TOI
-    if (!main || !timelineWidth || !zoomTOI ) return
-    const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE) * 0.8
-    const startPoint = (timelineWidth - RIGHT_AXIS_SPACE)  * 0.05
+    if (!main || !timelineWidth || !selectedInterval?.start ) return;
+    const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE) * 0.8;
+    const startPoint = (timelineWidth - RIGHT_AXIS_SPACE)  * 0.05;
     const new_k = widthToFit/(main(selectedInterval.end) - main(selectedInterval.start));
     const new_x = startPoint - new_k * main(selectedInterval.start);
 
-    
-    zoomTOI(new_x, new_k);
+    onTOIZoom(new_x, new_k);
 
-  }, [selectedFeatures, mainMap, main, timelineWidth, zoomTOI, selectedInterval]);
+  }, [selectedFeatures, mainMap, main, timelineWidth, onTOIZoom, selectedInterval]);
 
   if (isAnalyzing) {
     return (
@@ -166,10 +163,9 @@ export function AnalysisMessage({ mainMap, zoomTOI }: { mainMap: MapRef | undefi
   }
 }
 
-export function AnalysisMessageControl(props) {
+export function AnalysisMessageControl() {
   const { main } = useMaps();
-  const { zoomTOI } = props;
-  useThemedControl(() => <AnalysisMessage mainMap={main} zoomTOI={zoomTOI} />, { position: 'top-left' });
+  useThemedControl(() => <AnalysisMessage mainMap={main} />, { position: 'top-left' });
 
   return null;
 }

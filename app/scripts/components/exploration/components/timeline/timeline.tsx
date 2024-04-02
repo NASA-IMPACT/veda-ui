@@ -44,8 +44,7 @@ import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import {
   timelineSizesAtom,
   timelineWidthAtom,
-  zoomTransformAtom,
-  zoomBehaviorAtom
+  zoomTransformAtom
 } from '$components/exploration/atoms/timeline';
 import { useTimelineDatasetsDomain } from '$components/exploration/atoms/hooks';
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
@@ -57,6 +56,7 @@ import {
   useScaleFactors,
   useScales
 } from '$components/exploration/hooks/scales-hooks';
+import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
 import {
   TimelineDatasetStatus,
   TimelineDatasetSuccess,
@@ -169,7 +169,7 @@ const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
 };
 
 export default function Timeline(props: TimelineProps) {
-  const { onDatasetAddClick, setZoomTOIFunc } = props;
+  const { onDatasetAddClick } = props;
 
   // Refs for non react based interactions.
   // The interaction rect is used to capture the different d3 events for the
@@ -374,22 +374,15 @@ export default function Timeline(props: TimelineProps) {
     applyTransform(zoomBehavior, select(interactionRef.current), 0, 0, k0);
   }, [prevSuccessDatasetsCount, successDatasetsCount, k0, zoomBehavior]);
 
-  const onTOIZoom = useCallback(()=> (newX, newK) => {
-    if (!newX || ! newK) return;
-    applyTransform(
-      zoomBehavior,
-      select(interactionRef.current),
-      newX,
-      0,
-      newK
-    );
-  },[interactionRef.current, zoomBehavior])
+  const { initializeTOIZoom } = useOnTOIZoom();
 
-// Pass onTOIZoom up to the parent component when it's defined or changed
   useEffect(() => {
-    if (!onTOIZoom) return
-    setZoomTOIFunc(onTOIZoom);
-  }, [onTOIZoom, setZoomTOIFunc]);
+    // Set TOIZoom functionality in atom so it can be used in analysis component
+    // Ensure zoomBehavior and interactionRef are defined before initializing
+    if (zoomBehavior && interactionRef.current) {
+      initializeTOIZoom(zoomBehavior, interactionRef);
+    }
+  }, [initializeTOIZoom, zoomBehavior, interactionRef]);
 
     const onControlsZoom = useCallback(
     (zoomV) => {
