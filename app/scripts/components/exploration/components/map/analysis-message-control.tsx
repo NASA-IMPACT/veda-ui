@@ -27,7 +27,7 @@ import useThemedControl from '$components/common/map/controls/hooks/use-themed-c
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { AoIFeature } from '$components/common/map/types';
 import { ShortcutCode } from '$styles/shortcut-code';
-import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
+import { RIGHT_AXIS_SPACE, HEADER_COLUMN_WIDTH } from '$components/exploration/constants';
 
 const AnalysisMessageWrapper = styled.div.attrs({
   'data-tour': 'analysis-message'
@@ -130,8 +130,9 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
 
     // Fit TOI
     if (!main || !timelineWidth || !selectedInterval?.start ) return;
-    const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE) * 0.8;
-    const startPoint = (timelineWidth - RIGHT_AXIS_SPACE)  * 0.05;
+    
+    const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) * 0.9;
+    const startPoint = 0;
     const new_k = widthToFit/(main(selectedInterval.end) - main(selectedInterval.start));
     const new_x = startPoint - new_k * main(selectedInterval.start);
 
