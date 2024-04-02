@@ -131,6 +131,11 @@ const EmptyTimelineContentInner = styled.div`
 
 const TimelineContentInner = styled(EmptyTimelineContentInner)`
   overflow-y: scroll;
+  /* @TECH-DEBT: A hack to target only Safari
+     Safari needs a specific height to make the contents  scrollable */
+  @supports (font: -apple-system-body) and (-webkit-appearance: none) {
+    height: 250px; 
+  }
 `;
 
 const LayerActionBox = styled.div`
