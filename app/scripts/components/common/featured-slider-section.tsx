@@ -67,14 +67,14 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
 
   if (!featuredItems.length) return null;
 
-  // sorting featuredItems based on dateProperty in descending order
-  if (dateProperty) {
-    featuredItems.sort((itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
-      const pubDateOfItemA = new Date(itemA[dateProperty]);
-      const pubDateOfItemB = new Date(itemB[dateProperty]);
-      return pubDateOfItemB.getTime() - pubDateOfItemA.getTime();
-    });
-  }
+  // Disable no-mutating rule since the copy of the array is being mutated
+  // eslint-disable-next-line fp/no-mutating-methods 
+  const sortedFeaturedItems = dateProperty? [...featuredItems].sort((itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
+    const pubDateOfItemA = new Date(itemA[dateProperty]);
+    const pubDateOfItemB = new Date(itemB[dateProperty]);
+    return pubDateOfItemB.getTime() - pubDateOfItemA.getTime();
+  }) : featuredItems;
+  
 
   return (
     <FoldFeatured>
@@ -89,7 +89,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
             startCol={continuumFoldStartCols}
             spanCols={continuumFoldSpanCols}
             render={(bag) => {
-              return featuredItems.map((d) => {
+              return sortedFeaturedItems.map((d) => {
                 const date = new Date(d[dateProperty ?? '']);
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
 
