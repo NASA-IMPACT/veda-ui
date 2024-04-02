@@ -79,7 +79,6 @@ const DatasetHeaderInner = styled.div`
 
 const DatasetData = styled.div`
   position: relative;
-  padding: ${glsp(0.25, 0)};
   display: flex;
   align-items: center;
   flex-grow: 1;
@@ -142,12 +141,14 @@ export function DatasetListItem(props: DatasetListItemProps) {
     midY
   } = useDatasetHover();
 
+  const timeSeriesData = dataset.analysis.data?.timeseries;
+
   const dataPoint = getInteractionDataPoint({
     isHovering,
     xScaled,
     containerWidth: width,
     layerX,
-    data: dataset.analysis.data?.timeseries
+    data: timeSeriesData
   });
 
   const {
@@ -158,7 +159,9 @@ export function DatasetListItem(props: DatasetListItemProps) {
     enabled: isAnalyzing,
     x: clientX,
     y: midY,
-    data: dataPoint
+    xScaled,
+    data: dataPoint,
+    dataset: timeSeriesData
   });
 
   useAnalysisDataRequest({ datasetAtom });
@@ -179,6 +182,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
   );
+
 
   const onDragging = (e) => {
     controls.start(e);
@@ -274,6 +278,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
             <DatasetPopover
               ref={popoverRefs.setFloating}
               style={floatingStyles}
+              dataset={dataset}
               timeDensity={dataset.data.timeDensity}
               activeMetrics={analysisMetrics}
               data={dataPoint}
