@@ -11,7 +11,13 @@ import {
 } from '@devseed-ui/collecticons';
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import { selectedIntervalAtom } from '../../atoms/dates';
+
+import { useScales } from '../../hooks/scales-hooks';
 import useMaps from '$components/common/map/hooks/use-maps';
+import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
+import {
+  timelineWidthAtom
+} from '$components/exploration/atoms/timeline';
 
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
@@ -21,6 +27,7 @@ import useThemedControl from '$components/common/map/controls/hooks/use-themed-c
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { AoIFeature } from '$components/common/map/types';
 import { ShortcutCode } from '$styles/shortcut-code';
+import { RIGHT_AXIS_SPACE, HEADER_COLUMN_WIDTH } from '$components/exploration/constants';
 
 const AnalysisMessageWrapper = styled.div.attrs({
   'data-tour': 'analysis-message'
@@ -90,8 +97,13 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
   const datasets = useAtomValue(timelineDatasetsAtom);
   const datasetIds = datasets.map((d) => d.data.id);
 
+  const timelineWidth = useAtomValue(timelineWidthAtom);
+  const { main } = useScales();
+  const { onTOIZoom } = useOnTOIZoom();
+
   const { features } = useAois();
   const selectedInterval = useAtomValue(selectedIntervalAtom);
+
   const dateLabel =
     selectedInterval &&
     formatDateRange(selectedInterval.start, selectedInterval.end);
@@ -102,7 +114,10 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
     setObsolete();
   }, [setObsolete, features]);
 
+
+
   const analysisCallback = useCallback(() => {
+    // Fit AOI
     const bboxToFit = bbox({
       type: 'FeatureCollection',
       features: selectedFeatures
@@ -112,7 +127,18 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
       center:[ (bboxToFit[2] + bboxToFit[0])/2, (bboxToFit[3] + bboxToFit[1])/2],
       zoom
     });
-  }, [selectedFeatures, mainMap]);
+
+    // Fit TOI
+    if (!main || !timelineWidth || !selectedInterval?.start ) return;
+    
+    const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) * 0.9;
+    const startPoint = 0;
+    const new_k = widthToFit/(main(selectedInterval.end) - main(selectedInterval.start));
+    const new_x = startPoint - new_k * main(selectedInterval.start);
+
+    onTOIZoom(new_x, new_k);
+
+  }, [selectedFeatures, mainMap, main, timelineWidth, onTOIZoom, selectedInterval]);
 
   if (isAnalyzing) {
     return (
