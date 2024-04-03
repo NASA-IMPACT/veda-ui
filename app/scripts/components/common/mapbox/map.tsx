@@ -28,7 +28,7 @@ import MapCoords from './map-coords';
 
 import { useMapStyle } from './layers/styles';
 import { BasemapId, Option } from './map-options/basemaps';
-import { getZoomFromBbox } from '$components/common/map/controls/geocoder';
+import { getZoomFromBbox } from '$components/common/map/utils';
 import { round } from '$utils/format';
 
 mapboxgl.accessToken = process.env.MAPBOX_TOKEN ?? '';
