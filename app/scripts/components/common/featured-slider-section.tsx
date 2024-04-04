@@ -69,11 +69,11 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
 
   // Disable no-mutating rule since the copy of the array is being mutated
   // eslint-disable-next-line fp/no-mutating-methods 
-  const sortedFeaturedItems = dateProperty? [...featuredItems].sort((itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
+  const sortedFeaturedItems  = dateProperty? [...featuredItems].sort((itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
     const pubDateOfItemA = new Date(itemA[dateProperty]);
     const pubDateOfItemB = new Date(itemB[dateProperty]);
     return pubDateOfItemB.getTime() - pubDateOfItemA.getTime();
-  }) : featuredItems;
+  }) as StoryData[] | DatasetData[]: featuredItems;
   
 
   return (
