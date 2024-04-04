@@ -6,7 +6,7 @@ import {
   CollecticonTickSmall,
   iconDataURI
 } from '@devseed-ui/collecticons';
-import { DatasetData } from 'veda';
+import { DatasetData, DatasetLayer, TaxonomyItem } from 'veda';
 import { DatasetLayerCardProps } from './';
 
 import { DatasetClassification } from '$components/common/dataset-classification';
@@ -97,17 +97,18 @@ export const ParentDatasetTitle = styled.h2<{size?: string}>`
 interface ModalContentComponentProps {
   search: string;
   selectedIds: string[];
-  displayDatasets: (DatasetData & {
+  displayDatasets?: (DatasetData & {
     countSelectedLayers: number;
   })[];
-  onCheck: (id: string) => void;
+  // onCheck: (id: string, sources?: TaxonomyItem[], currentDataset?: any) => void;
+  onCheck: (id: string, currentDataset?: DatasetData & {countSelectedLayers: number}) => void;
 }
 
 export default function ModalContentComponent(props:ModalContentComponentProps) {
   const { search, selectedIds, displayDatasets, onCheck } = props;
   return(
   <DatasetContainer>
-    {displayDatasets.length ? (
+    {displayDatasets?.length ? (
       <div>
       {displayDatasets.map(currentDataset => (
         <SingleDataset key={currentDataset.id}>
@@ -136,7 +137,8 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
                 layer={datasetLayer}
                 parent={currentDataset}
                 selected={selectedIds.includes(datasetLayer.id)}
-                onDatasetClick={() => onCheck(datasetLayer.id)}
+                // onDatasetClick={() => onCheck(datasetLayer.id, getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values, currentDataset)}
+                onDatasetClick={() => onCheck(datasetLayer.id, currentDataset)}
               />
             </li>
           );
@@ -220,6 +222,7 @@ function DatasetLayerCard(props: DatasetLayerCardProps) {
   const { parent, layer, onDatasetClick, selected, searchTerm } = props;
 
   const topics = getTaxonomy(parent, TAXONOMY_TOPICS)?.values;
+  const sources = getTaxonomy(parent, TAXONOMY_SOURCE)?.values;
   return (
     <LayerCard
       cardType='classic'
@@ -228,7 +231,7 @@ function DatasetLayerCard(props: DatasetLayerCardProps) {
         <CardMeta>
           <DatasetClassification dataset={parent} />
           <CardSourcesList
-            sources={getTaxonomy(parent, TAXONOMY_SOURCE)?.values}
+            sources={sources}
           />
         </CardMeta>
       }

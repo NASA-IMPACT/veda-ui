@@ -30,6 +30,7 @@ const LayerResult = styled.div`
 
 export default function ModalFooterRender (props:ModalFooterComponentProps) {
   const { selectedIds, close, onConfirm } = props;
+  console.log(`footer_selectedIds: `, selectedIds)
   return (
     <>
       <LayerResult aria-live='polite' className='selection-info'>

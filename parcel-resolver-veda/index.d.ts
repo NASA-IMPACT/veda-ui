@@ -178,6 +178,7 @@ export interface LayerInfo {
    */
   export interface DatasetData {
     featured?: boolean;
+    sourceExclusive?: string;
     id: string;
     name: string;
     infoDescription?: string;

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Taxonomy } from 'veda';
+import { Taxonomy, TaxonomyItem } from 'veda';
 import { Overline } from '@devseed-ui/typography';
 import { Button, ButtonProps } from '@devseed-ui/button';
 import {
@@ -13,6 +13,7 @@ import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
   Actions,
   FilterOption,
+  TaxonomyFilterOption,
   optionAll,
   sortDirOptions,
   useBrowserControls
@@ -78,6 +79,7 @@ interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
   taxonomiesOptions: Taxonomy[];
   sortOptions: FilterOption[];
   showMoreButtonOpt?: boolean;
+  defaultSelect?: TaxonomyFilterOption;
 }
 
 function BrowseControls(props: BrowseControlsProps) {
@@ -90,6 +92,7 @@ function BrowseControls(props: BrowseControlsProps) {
     sortField,
     sortDir,
     onAction,
+    defaultSelect,
     ...rest
   } = props;
 

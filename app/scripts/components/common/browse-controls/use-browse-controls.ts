@@ -18,6 +18,12 @@ export interface FilterOption {
   name: string;
 }
 
+export interface TaxonomyFilterOption {
+  taxonomyType: string;
+  value: string;
+  exclusion?: string;
+}
+
 interface BrowseControlsHookParams {
   sortOptions: FilterOption[];
 }
