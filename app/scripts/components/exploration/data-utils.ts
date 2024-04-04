@@ -6,7 +6,7 @@ import {
   startOfMonth,
   startOfYear
 } from 'date-fns';
-import { DatasetLayer, datasets } from 'veda';
+import { DatasetLayer, DatasetData, datasets } from 'veda';
 import {
   EnhancedDatasetLayer,
   StacDatasetData,
@@ -38,7 +38,11 @@ export const allDatasets = Object.values(datasets)
   .map((d) => d!.data)
   .filter((d) => !d.disableExplore);
 
-export const allDatasetsWithEnhancedLayers = allDatasets.map(currentDataset => {
+export interface DatasetDataWithEnhancedLayers extends DatasetData {
+  layers: EnhancedDatasetLayer[];
+}
+
+export const allDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[]  = allDatasets.map(currentDataset => {
   return {
     ...currentDataset,
     layers: currentDataset.layers.map(l => ({

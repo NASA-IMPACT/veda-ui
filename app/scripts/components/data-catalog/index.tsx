@@ -7,7 +7,6 @@ import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 import { VerticalDivider } from '@devseed-ui/toolbar';
-import { datasets } from 'veda';
 
 import DatasetMenu from './dataset-menu';
 
@@ -42,14 +41,13 @@ import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
+import { allDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { DatasetClassification } from '$components/common/dataset-classification';
-
-const allDatasetsForCatalog = Object.values(datasets).map((d) => d!.data);
 
 const DatasetCount = styled(Subtitle)`
   grid-column: 1 / -1;
@@ -92,6 +90,8 @@ export const prepareDatasets = (
     const layerMatchesSearch = (layer) => 
       includesSearchLower(layer.stacCol) ||
       includesSearchLower(layer.name) ||
+      includesSearchLower(layer.parentDataset.name) ||
+      includesSearchLower(layer.parentDataset.id) ||
       includesSearchLower(layer.description);
 
     filtered = filtered
@@ -101,7 +101,6 @@ export const prepareDatasets = (
         const nameLower = d.name.toLowerCase();
         const descriptionLower = d.description.toLowerCase();
         const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
-
         // Check if any of the conditions for including the item are met
         return (
           idLower.includes(searchLower) ||
@@ -157,7 +156,7 @@ function DataCatalog() {
 
   const displayDatasets = useMemo(
     () =>
-      prepareDatasets(allDatasetsForCatalog, {
+      prepareDatasets(allDatasetsWithEnhancedLayers, {
         search,
         taxonomies,
         sortField,
@@ -214,7 +213,7 @@ function DataCatalog() {
               count={displayDatasets.length}
               showCount={true}
             />{' '}
-            out of {allDatasetsForCatalog.length}.
+            out of {allDatasetsWithEnhancedLayers.length}.
           </span>
           {isFiltering && (
             <Button forwardedAs={Link} to={DATASETS_PATH} size='small'>
