@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAtom } from 'jotai';
 
-import { DatasetData, DatasetLayer, Taxonomy, TaxonomyItem } from 'veda';
+import { DatasetData, DatasetLayer } from 'veda';
 import {
   Modal,
   ModalBody,
@@ -106,8 +106,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
 
   const prevSelectedIds = usePreviousValue(selectedIds);
 
-  const [relevantIds, setReleventIds] = useState<string[] | undefined>();
-
   const [exclusionSelected, setExclusionSelected] = useState<boolean>(false);
   
   useEffect(() => {
@@ -115,7 +113,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   }, [timelineDatasets]);
 
   const onCheck = useCallback((id: string, currentDataset?: DatasetData & {countSelectedLayers: number}) => {
-    console.log(`checked_currentDataset: `, currentDataset)
     if (currentDataset) {
       // This layer is part of a dataset that is exclusive
       const exclusiveSource = currentDataset.sourceExclusive;
@@ -123,17 +120,12 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       const sourceIds = sources?.map(source => source.id);
       console.log(`sourceIds: `, sourceIds)
     
-      // if (sourceIds?.includes('epa')) {
+
       if (exclusiveSource && sourceIds?.includes(exclusiveSource.toLowerCase())) {
-        console.log(`epa source chosen, remove all others, `, sources)
-        // setDefaultSelectFilter({taxonomyType: TAXONOMY_SOURCE, value: 'epa'});
         setDefaultSelectFilter({taxonomyType: TAXONOMY_SOURCE, value: exclusiveSource.toLowerCase()});
         setExclusionSelected(true);
-        // setSelectedIds([]);
       }
-      // if (exclusiveSource && !sourceIds?.includes(exclusiveSource.toLowerCase())) {
-        if (!exclusiveSource) {
-        console.log(`non epa source chosen, remove epa choices`)
+      if (!exclusiveSource) {
         setDefaultSelectFilter(undefined);
         setExclusionSelected(false);
       }
@@ -181,8 +173,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
         relevantIds = selectedIdsWithParentData.filter((x) => !x.values?.includes(x.sourceExclusive)).map((x) => x.id)
       }
 
-      console.log(`relevantIds: `, relevantIds)
-
       setSelectedIds((ids) =>
         ids.filter((id) => relevantIds?.includes(id))
       );
@@ -200,24 +190,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       onAction(Actions.CLEAR);
     }
   }, [revealed]);
-
-  // // Filtered datasets for modal display
-  // const displayDatasets = useMemo<(DatasetData & {countSelectedLayers: number})[]>(
-  //   () =>
-  //     // @TODO: Move function from data-catalog once that page is removed.
-  //     prepareDatasets(allDatasets, {
-  //       search,
-  //       taxonomies,
-  //       sortField,
-  //       sortDir,
-  //       filterLayers: true
-  //     })
-  //     .map(dataset => ({
-  //       ...dataset,
-  //       countSelectedLayers: countOverlap(dataset.layers.map(l => l.id), selectedIds)
-  //     })),
-  //   [search, taxonomies, sortField, sortDir, selectedIds]
-  // );
 
   useEffect(() => {
     const datasets = prepareDatasets(allDatasets, {
@@ -249,7 +221,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
         <ModalContentRender 
           search={search} 
           selectedIds={selectedIds} 
-          // displayDatasets={displayDatasets}
           displayDatasets={datasetsToDisplay} 
           onCheck={onCheck}
         /> 

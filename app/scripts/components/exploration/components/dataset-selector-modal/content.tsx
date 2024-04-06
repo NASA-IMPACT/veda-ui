@@ -6,7 +6,7 @@ import {
   CollecticonTickSmall,
   iconDataURI
 } from '@devseed-ui/collecticons';
-import { DatasetData, DatasetLayer, TaxonomyItem } from 'veda';
+import { DatasetData } from 'veda';
 import { DatasetLayerCardProps } from './';
 
 import { DatasetClassification } from '$components/common/dataset-classification';
@@ -20,13 +20,14 @@ import {
 import TextHighlight from '$components/common/text-highlight';
 import { CardSourcesList } from '$components/common/card-sources';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
-import { getDatasetPath } from '$utils/routes';
+import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { Pill } from '$styles/pill';
+import { Link } from 'react-router-dom';
 
 const DatasetContainer = styled.div`
   height: auto;
@@ -72,6 +73,11 @@ const DatasetIntro = styled.div`
   padding: ${glsp(1)} 0;
 `;
 
+const EmptyInfoDiv = styled.div`
+  width: 70%;
+  text-align: center;
+`;
+
 export const ParentDatasetTitle = styled.h2<{size?: string}>`
   color: ${themeVal('color.primary')};
   text-align: left;
@@ -94,18 +100,23 @@ export const ParentDatasetTitle = styled.h2<{size?: string}>`
   }
 `;
 
+const WarningPill = styled(Pill)`
+  margin-left: 8px;
+`
+
 interface ModalContentComponentProps {
   search: string;
   selectedIds: string[];
   displayDatasets?: (DatasetData & {
     countSelectedLayers: number;
   })[];
-  // onCheck: (id: string, sources?: TaxonomyItem[], currentDataset?: any) => void;
   onCheck: (id: string, currentDataset?: DatasetData & {countSelectedLayers: number}) => void;
 }
 
 export default function ModalContentComponent(props:ModalContentComponentProps) {
   const { search, selectedIds, displayDatasets, onCheck } = props;
+  const exclusiveSourceWarning = "Can only be analyzed with layers from the same source";
+
   return(
   <DatasetContainer>
     {displayDatasets?.length ? (
@@ -116,6 +127,13 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
             <DatasetHeadline>
             <ParentDatasetTitle>
               <CollecticonDatasetLayers /> {currentDataset.name}
+              {
+                currentDataset.sourceExclusive && (
+                  <WarningPill variation='warning'>
+                    {exclusiveSourceWarning}
+                  </WarningPill>
+                )
+              }
             </ParentDatasetTitle>
             {currentDataset.countSelectedLayers > 0 && <DatasetSelectedLayer><span>{currentDataset.countSelectedLayers} selected </span> </DatasetSelectedLayer>}
             </DatasetHeadline>
@@ -137,7 +155,6 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
                 layer={datasetLayer}
                 parent={currentDataset}
                 selected={selectedIds.includes(datasetLayer.id)}
-                // onDatasetClick={() => onCheck(datasetLayer.id, getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values, currentDataset)}
                 onDatasetClick={() => onCheck(datasetLayer.id, currentDataset)}
               />
             </li>
@@ -149,7 +166,10 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
       </div>
     ) : (
       <EmptyHub>
-        There are no datasets to show with the selected filters.
+        <EmptyInfoDiv>
+          <p>There are no datasets to show with the selected filters.</p><br/>
+          <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <Link to={DATASETS_PATH} target='_blank'>Data Catalog</Link>.</p>
+        </EmptyInfoDiv>
       </EmptyHub>
     )}
   </DatasetContainer>
