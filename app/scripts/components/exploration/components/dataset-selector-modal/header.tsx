@@ -26,7 +26,6 @@ export default function RenderModalHeader ({defaultSelect}: {defaultSelect?: Tax
   React.useEffect(() => {
     if(defaultSelect) {
       controlVars.onAction(Actions.TAXONOMY, { key: defaultSelect.taxonomyType, value: defaultSelect.value });
-      console.log(`only ${defaultSelect.taxonomyType} ${defaultSelect.value} should be available now`)
     }
   }, [defaultSelect])
 

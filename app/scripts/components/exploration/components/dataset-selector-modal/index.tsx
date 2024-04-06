@@ -118,8 +118,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       const exclusiveSource = currentDataset.sourceExclusive;
       const sources = getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values;
       const sourceIds = sources?.map(source => source.id);
-      console.log(`sourceIds: `, sourceIds)
-    
 
       if (exclusiveSource && sourceIds?.includes(exclusiveSource.toLowerCase())) {
         setDefaultSelectFilter({taxonomyType: TAXONOMY_SOURCE, value: exclusiveSource.toLowerCase()});
