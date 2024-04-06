@@ -73,6 +73,8 @@ function Exploration() {
   const [datasetModalRevealed, setDatasetModalRevealed] = useState(
     !datasets.length
   );
+  // @TECH-DEBT: panelHeight  needs to be passed to work around Safari CSS 
+  const [panelHeight, setPanelHeight] = useState(0);
 
   const openModal = useCallback(() => setDatasetModalRevealed(true), []);
   const closeModal = useCallback(() => setDatasetModalRevealed(false), []);
@@ -104,12 +106,16 @@ function Exploration() {
         <PageHero title='Exploration' isHidden />
         <Container>
           <PanelGroup direction='vertical' className='panel-wrapper'>
-            <Panel maxSize={75} className='panel'>
+            <Panel
+            maxSize={75}
+            className='panel'
+            onResize={(size:number)=> {setPanelHeight(size);}}
+            >
               <ExplorationMap />
             </Panel>
             <PanelResizeHandle className='resize-handle' />
             <Panel maxSize={75} className='panel panel-timeline'>
-              <Timeline onDatasetAddClick={openModal} />
+              <Timeline onDatasetAddClick={openModal} panelHeight={panelHeight} />
             </Panel>
           </PanelGroup>
         </Container>
