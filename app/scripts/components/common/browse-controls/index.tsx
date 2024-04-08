@@ -13,7 +13,6 @@ import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
 import {
   Actions,
   FilterOption,
-  TaxonomyFilterOption,
   optionAll,
   useBrowserControls
 } from './use-browse-controls';
