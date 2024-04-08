@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { glsp, themeVal, media } from '@devseed-ui/theme-provider';
 import {
@@ -27,7 +28,6 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { Pill } from '$styles/pill';
-import { Link } from 'react-router-dom';
 
 const DatasetContainer = styled.div`
   height: auto;
@@ -102,7 +102,7 @@ export const ParentDatasetTitle = styled.h2<{size?: string}>`
 
 const WarningPill = styled(Pill)`
   margin-left: 8px;
-`
+`;
 
 interface ModalContentComponentProps {
   search: string;
@@ -167,7 +167,7 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
     ) : (
       <EmptyHub>
         <EmptyInfoDiv>
-          <p>There are no datasets to show with the selected filters.</p><br/>
+          <p>There are no datasets to show with the selected filters.</p><br />
           <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <Link to={DATASETS_PATH} target='_blank'>Data Catalog</Link>.</p>
         </EmptyInfoDiv>
       </EmptyHub>

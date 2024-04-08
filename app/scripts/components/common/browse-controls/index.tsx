@@ -43,7 +43,7 @@ const FilterOptionsWrapper = styled.div`
   > * {
     flex-shrink: 0;
   }
-`
+`;
 
 const DropButton = styled(Button)`
   max-width: 12rem;
@@ -69,20 +69,14 @@ const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
 
 interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
   taxonomiesOptions: Taxonomy[];
-  sortOptions: FilterOption[];
-  defaultSelect?: TaxonomyFilterOption;
 }
 
 function BrowseControls(props: BrowseControlsProps) {
   const {
     taxonomiesOptions,
     taxonomies,
-    sortOptions,
     search,
-    sortField,
-    sortDir,
     onAction,
-    defaultSelect,
     ...rest
   } = props;
 

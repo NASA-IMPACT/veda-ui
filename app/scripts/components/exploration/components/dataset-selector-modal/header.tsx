@@ -27,7 +27,7 @@ export default function RenderModalHeader ({defaultSelect}: {defaultSelect?: Tax
     if(defaultSelect) {
       controlVars.onAction(Actions.TAXONOMY, { key: defaultSelect.taxonomyType, value: defaultSelect.value });
     }
-  }, [defaultSelect])
+  }, [defaultSelect]);
 
   return(
     <StyledModalHeadline>
@@ -35,8 +35,6 @@ export default function RenderModalHeader ({defaultSelect}: {defaultSelect?: Tax
       <BrowseControls
           {...controlVars}
           taxonomiesOptions={datasetTaxonomies}
-          sortOptions={sortOptions}
-          defaultSelect={defaultSelect}
       />
     </StyledModalHeadline>
   );

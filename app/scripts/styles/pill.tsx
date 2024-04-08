@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 const renderPillVariation = ({ variation }: PillProps) => {
-  console.log(`variation: `, variation)
   switch (variation) {
     case 'achromic':
       return css`

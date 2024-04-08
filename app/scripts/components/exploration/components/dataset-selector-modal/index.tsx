@@ -115,15 +115,14 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const onCheck = useCallback((id: string, currentDataset?: DatasetData & {countSelectedLayers: number}) => {
     if (currentDataset) {
       // This layer is part of a dataset that is exclusive
-      const exclusiveSource = currentDataset.sourceExclusive;
+      const exclusiveSource = currentDataset.sourceExclusive?.toLowerCase();
       const sources = getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values;
       const sourceIds = sources?.map(source => source.id);
 
-      if (exclusiveSource && sourceIds?.includes(exclusiveSource.toLowerCase())) {
-        setDefaultSelectFilter({taxonomyType: TAXONOMY_SOURCE, value: exclusiveSource.toLowerCase()});
+      if (exclusiveSource && sourceIds?.includes(exclusiveSource)) {
+        setDefaultSelectFilter({taxonomyType: TAXONOMY_SOURCE, value: exclusiveSource});
         setExclusionSelected(true);
-      }
-      if (!exclusiveSource) {
+      } else {
         setDefaultSelectFilter(undefined);
         setExclusionSelected(false);
       }
@@ -159,15 +158,12 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
         const parentData = findParentDataset(selectedId);
         const exclusiveSource = parentData?.sourceExclusive;
         const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')?.[0]?.values?.map((value) => value.id);
-        return {id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() || ''}
+        return {id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() || ''};
       });
       
-      if(exclusionSelected) {
-        // Dataset with exclusions selected
+      if (exclusionSelected) {
         relevantIds = selectedIdsWithParentData.filter((x) => x.values?.includes(x.sourceExclusive)).map((x) => x.id)
-      } 
-      if(!exclusionSelected) {
-        // Dataset with no exclusions selected
+      } else {
         relevantIds = selectedIdsWithParentData.filter((x) => !x.values?.includes(x.sourceExclusive)).map((x) => x.id)
       }
 
@@ -213,7 +209,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       revealed={revealed}
       onCloseClick={close}
       renderHeadline={() => (
-        <RenderModalHeader defaultSelect={defaultSelectFilter}/>
+        <RenderModalHeader defaultSelect={defaultSelectFilter} />
       )}
       content={
         <ModalContentRender 
