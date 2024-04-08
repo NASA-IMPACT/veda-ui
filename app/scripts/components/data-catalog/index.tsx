@@ -201,7 +201,6 @@ function DataCatalog() {
           <BrowseControls
             {...controlVars}
             taxonomiesOptions={datasetTaxonomies}
-            sortOptions={sortOptions}
           />
         </BrowseFoldHeader>
 

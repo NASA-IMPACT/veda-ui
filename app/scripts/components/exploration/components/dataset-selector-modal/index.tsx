@@ -162,18 +162,16 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       });
       
       if (exclusionSelected) {
-        relevantIds = selectedIdsWithParentData.filter((x) => x.values?.includes(x.sourceExclusive)).map((x) => x.id)
+        relevantIds = selectedIdsWithParentData.filter((x) => x.values?.includes(x.sourceExclusive)).map((x) => x.id);
       } else {
-        relevantIds = selectedIdsWithParentData.filter((x) => !x.values?.includes(x.sourceExclusive)).map((x) => x.id)
+        relevantIds = selectedIdsWithParentData.filter((x) => !x.values?.includes(x.sourceExclusive)).map((x) => x.id);
       }
 
       setSelectedIds((ids) =>
         ids.filter((id) => relevantIds?.includes(id))
       );
     }
-    
-
-  }, [exclusionSelected])
+  }, [exclusionSelected]);
 
   useEffect(() => {
     if (revealed) {
@@ -196,10 +194,10 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     .map(dataset => ({
       ...dataset,
       countSelectedLayers: countOverlap(dataset.layers.map(l => l.id), selectedIds)
-    }))
+    }));
 
     setDatasetsToDisplay(datasets);
-  }, [search, taxonomies, sortField, sortDir, selectedIds])
+  }, [search, taxonomies, sortField, sortDir, selectedIds]);
   
   return (
     <DatasetModal

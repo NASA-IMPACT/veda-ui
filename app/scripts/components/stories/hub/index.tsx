@@ -188,7 +188,6 @@ function StoriesHub() {
             <BrowseControls
               {...controlVars}
               taxonomiesOptions={storyTaxonomies}
-              sortOptions={sortOptions}
             />
           </BrowseFoldHeader>
 
