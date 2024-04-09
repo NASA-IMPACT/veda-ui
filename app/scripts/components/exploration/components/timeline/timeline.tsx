@@ -130,8 +130,13 @@ const EmptyTimelineContentInner = styled.div`
   position: relative;
 `;
 
-const TimelineContentInner = styled(EmptyTimelineContentInner)`
+const TimelineContentInner = styled(EmptyTimelineContentInner)<{panelHeight: number}>`
   overflow-y: scroll;
+  /* @TECH-DEBT: A hack to target only Safari
+     Safari needs a specific height to make the contents  scrollable */
+  @supports (font: -apple-system-body) and (-webkit-appearance: none) {
+    height: calc(${(props)=> 100 - props.panelHeight}vh - 130px);
+  }
 `;
 
 const LayerActionBox = styled.div`
@@ -154,6 +159,7 @@ const TimelineHeading = styled(Heading)`
 
 interface TimelineProps {
   onDatasetAddClick: () => void;
+  panelHeight: number;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -169,7 +175,7 @@ const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
 };
 
 export default function Timeline(props: TimelineProps) {
-  const { onDatasetAddClick } = props;
+  const { onDatasetAddClick, panelHeight } = props;
 
   // Refs for non react based interactions.
   // The interaction rect is used to capture the different d3 events for the
@@ -662,7 +668,7 @@ export default function Timeline(props: TimelineProps) {
           </>
         )}
 
-        <TimelineContentInner ref={datasetsContainerRef}>
+        <TimelineContentInner ref={datasetsContainerRef} panelHeight={panelHeight}>
           <DatasetList width={width} xScaled={xScaled} />
         </TimelineContentInner>
       </TimelineContent>

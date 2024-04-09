@@ -51,7 +51,7 @@ export const RangeSliderInput = styled(RangeSlider)<RangeSliderInputProps>`
 `;
 
 export interface SliderInputProps
-  extends Omit<RangeSliderInputProps, 'value' | 'onInput'> {
+  extends Omit<RangeSliderInputProps, 'value' | 'onInput' | 'defaultValue'> {
   value: number;
   onInput: (v: number) => void;
 }
@@ -83,6 +83,5 @@ export function NativeSliderInput(props: SliderInputProps) {
       value={value}
       onPointerDownCapture={e => e.stopPropagation()}
       onChange={e => onInput(parseInt(e.target.value))}
-      defaultValue={100}
     />);
 }
