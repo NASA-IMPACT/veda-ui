@@ -8,7 +8,11 @@ const renderPillVariation = ({ variation }: PillProps) => {
         color: ${themeVal('color.surface')};
         background: ${themeVal('color.surface-100a')};
       `;
-
+    case 'warning':
+      return css`
+        color: ${themeVal('color.danger-500')};
+        background: ${themeVal('color.danger-200a')};
+      `;
     case 'primary':
     default:
       return css`
@@ -19,7 +23,7 @@ const renderPillVariation = ({ variation }: PillProps) => {
 };
 
 interface PillProps {
-  variation?: 'primary' | 'achromic';
+  variation?: 'primary' | 'achromic' | 'warning';
 }
 export const Pill = styled.span<PillProps>`
   display: inline-flex;
