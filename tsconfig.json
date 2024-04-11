@@ -9,7 +9,7 @@
       "$styles/*": ["app/scripts/styles/*"],
       "$utils/*": ["app/scripts/utils/*"],
       "$context/*": ["app/scripts/context/*"],
-      "$data-layer/*": ["data-layer/*"]
+      "$data-layer/*": ["app/scripts/data-layer/*"]
     }
   },
   "exclude": [
