@@ -8,7 +8,8 @@
       "$components/*": ["app/scripts/components/*"],
       "$styles/*": ["app/scripts/styles/*"],
       "$utils/*": ["app/scripts/utils/*"],
-      "$context/*": ["app/scripts/context/*"]
+      "$context/*": ["app/scripts/context/*"],
+      "$data-layer/*": ["data-layer/*"]
     }
   },
   "exclude": [

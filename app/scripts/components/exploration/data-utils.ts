@@ -6,7 +6,7 @@ import {
   startOfMonth,
   startOfYear
 } from 'date-fns';
-import { DatasetLayer, DatasetData, datasets } from 'veda';
+import { DatasetLayer, DatasetData } from 'veda';
 import {
   EnhancedDatasetLayer,
   StacDatasetData,
@@ -19,22 +19,25 @@ import {
   DATA_METRICS,
   DEFAULT_DATA_METRICS
 } from './components/datasets/analysis-metrics';
+import { veda_datasets } from "$data-layer/datasets";
 
 import { utcString2userTzDate } from '$utils/date';
 
+// @TODO: These should be updated to take in datasets as a param instead of using veda_datasets directly
+
 export const findParentDataset = (layerId: string) => {
-  const parentDataset = Object.values(datasets).find((dataset) =>
+  const parentDataset = Object.values(veda_datasets).find((dataset) =>
     dataset!.data.layers.find((l) => l.id === layerId)
   );
   return parentDataset?.data;
 };
 
 export const findDatasetAttribute = ({ datasetId, attr }: {datasetId: string, attr: string}) => {
-  return datasets[datasetId]?.data[attr];
+  return veda_datasets[datasetId]?.data[attr];
 };
 
 
-export const allDatasets = Object.values(datasets)
+export const allDatasets = Object.values(veda_datasets)
   .map((d) => d!.data)
   .filter((d) => !d.disableExplore);
 
@@ -55,7 +58,7 @@ export const allDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[]  = a
   };
 });
 
-export const datasetLayers = Object.values(datasets)
+export const datasetLayers = Object.values(veda_datasets)
   .flatMap((dataset) => {
     return dataset!.data.layers.map(l => ({
       ...l,

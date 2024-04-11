@@ -41,13 +41,13 @@ import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
-import { allDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { DatasetClassification } from '$components/common/dataset-classification';
+import { DatasetDataWithEnhancedLayers } from '$components/exploration/data-utils';
 
 const DatasetCount = styled(Subtitle)`
   grid-column: 1 / -1;
@@ -146,7 +146,11 @@ export const prepareDatasets = (
   return filtered;
 };
 
-function DataCatalog() {
+export interface DataCatalogProps {
+  datasets: DatasetDataWithEnhancedLayers[]
+}
+
+function DataCatalog({ datasets }: DataCatalogProps) {
   const controlVars = useBrowserControls({
     sortOptions
   });
@@ -156,7 +160,7 @@ function DataCatalog() {
 
   const displayDatasets = useMemo(
     () =>
-      prepareDatasets(allDatasetsWithEnhancedLayers, {
+      prepareDatasets(datasets, {
         search,
         taxonomies,
         sortField,
@@ -175,158 +179,164 @@ function DataCatalog() {
   const { headerHeight } = useSlidingStickyHeaderProps();
 
   return (
-    <PageMainContent>
-      <LayoutProps
-        title='Data Catalog'
-        description={getString('dataCatalogBanner').other}
-      />
-      <PageHero
-        title='Data Catalog'
-        description={getString('dataCatalogBanner').other}
-      />
-
-      <FeaturedDatasets />
-
-      <Fold>
-        <BrowseFoldHeader
-          ref={browseControlsHeaderRef}
-          style={{
-            scrollMarginTop: `${headerHeight + 16}px`
-          }}
-        >
-          <FoldHeadline>
-            <FoldTitle>Browse</FoldTitle>
-          </FoldHeadline>
-          <BrowseControls
-            {...controlVars}
-            taxonomiesOptions={datasetTaxonomies}
-          />
-        </BrowseFoldHeader>
-
-        <DatasetCount>
-          <span>
-            Showing{' '}
-            <Pluralize
-              singular='dataset'
-              plural='datasets'
-              count={displayDatasets.length}
-              showCount={true}
-            />{' '}
-            out of {allDatasetsWithEnhancedLayers.length}.
-          </span>
-          {isFiltering && (
-            <Button forwardedAs={Link} to={DATASETS_PATH} size='small'>
-              Clear filters <CollecticonXmarkSmall />
-            </Button>
-          )}
-        </DatasetCount>
-
-        {displayDatasets.length ? (
-          <CardList>
-            {displayDatasets.map((d) => {
-              const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
-              return (
-                <li key={d.id}>
-                  <Card
-                    cardType='cover'
-                    overline={
-                      <CardMeta>
-                        <DatasetClassification dataset={d} />
-                        <CardSourcesList
-                          sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
-                          rootPath={DATASETS_PATH}
-                          onSourceClick={(id) => {
-                            onAction(Actions.TAXONOMY, {
-                              key: TAXONOMY_SOURCE,
-                              value: id
-                            });
-                            browseControlsHeaderRef.current?.scrollIntoView();
-                          }}
+    <>
+      {
+        datasets && (
+          <PageMainContent>
+            <LayoutProps
+              title='Data Catalog'
+              description={getString('dataCatalogBanner').other}
+            />
+            <PageHero
+              title='Data Catalog'
+              description={getString('dataCatalogBanner').other}
+            />
+      
+            <FeaturedDatasets />
+      
+            <Fold>
+              <BrowseFoldHeader
+                ref={browseControlsHeaderRef}
+                style={{
+                  scrollMarginTop: `${headerHeight + 16}px`
+                }}
+              >
+                <FoldHeadline>
+                  <FoldTitle>Browse</FoldTitle>
+                </FoldHeadline>
+                <BrowseControls
+                  {...controlVars}
+                  taxonomiesOptions={datasetTaxonomies}
+                />
+              </BrowseFoldHeader>
+      
+              <DatasetCount>
+                <span>
+                  Showing{' '}
+                  <Pluralize
+                    singular='dataset'
+                    plural='datasets'
+                    count={displayDatasets.length}
+                    showCount={true}
+                  />{' '}
+                  out of {datasets.length}.
+                </span>
+                {isFiltering && (
+                  <Button forwardedAs={Link} to={DATASETS_PATH} size='small'>
+                    Clear filters <CollecticonXmarkSmall />
+                  </Button>
+                )}
+              </DatasetCount>
+      
+              {displayDatasets.length ? (
+                <CardList>
+                  {displayDatasets.map((d) => {
+                    const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
+                    return (
+                      <li key={d.id}>
+                        <Card
+                          cardType='cover'
+                          overline={
+                            <CardMeta>
+                              <DatasetClassification dataset={d} />
+                              <CardSourcesList
+                                sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
+                                rootPath={DATASETS_PATH}
+                                onSourceClick={(id) => {
+                                  onAction(Actions.TAXONOMY, {
+                                    key: TAXONOMY_SOURCE,
+                                    value: id
+                                  });
+                                  browseControlsHeaderRef.current?.scrollIntoView();
+                                }}
+                              />
+                              <VerticalDivider variation='light' />
+                              {/* TODO: Implement modified date: https://github.com/NASA-IMPACT/veda-ui/issues/514 */}
+                              {/* 
+                            <Link
+                              to={`${DATASETS_PATH}?${Actions.SORT_FIELD}=date`}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                onAction(Actions.SORT_FIELD, 'date');
+                              }}
+                            >
+                              Updated <time dateTime='2023-01-01'>X time ago</time>
+                            </Link> */}
+                            </CardMeta>
+                          }
+                          linkLabel='View more'
+                          linkTo={getDatasetPath(d)}
+                          title={
+                            <TextHighlight
+                              value={search}
+                              disabled={search.length < 3}
+                            >
+                              {d.name}
+                            </TextHighlight>
+                          }
+                          description={
+                            <TextHighlight
+                              value={search}
+                              disabled={search.length < 3}
+                            >
+                              {d.description}
+                            </TextHighlight>
+                          }
+                          imgSrc={d.media?.src}
+                          imgAlt={d.media?.alt}
+                          footerContent={
+                            <>
+                              {topics?.length ? (
+                                <CardTopicsList>
+                                  <dt>Topics</dt>
+                                  {topics.map((t) => (
+                                    <dd key={t.id}>
+                                      <Pill
+                                        variation='achromic'
+                                        as={Link}
+                                        to={`${DATASETS_PATH}?${
+                                          Actions.TAXONOMY
+                                        }=${encodeURIComponent(
+                                          JSON.stringify({ Topics: t.id })
+                                        )}`}
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          onAction(Actions.TAXONOMY, {
+                                            key: TAXONOMY_TOPICS,
+                                            value: t.id
+                                          });
+                                          browseControlsHeaderRef.current?.scrollIntoView();
+                                        }}
+                                      >
+                                        <TextHighlight
+                                          value={search}
+                                          disabled={search.length < 3}
+                                        >
+                                          {t.name}
+                                        </TextHighlight>
+                                      </Pill>
+                                    </dd>
+                                  ))}
+                                </CardTopicsList>
+                              ) : null}
+                              <DatasetMenu dataset={d} />
+                            </>
+                          }
                         />
-                        <VerticalDivider variation='light' />
-                        {/* TODO: Implement modified date: https://github.com/NASA-IMPACT/veda-ui/issues/514 */}
-                        {/* 
-                      <Link
-                        to={`${DATASETS_PATH}?${Actions.SORT_FIELD}=date`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onAction(Actions.SORT_FIELD, 'date');
-                        }}
-                      >
-                        Updated <time dateTime='2023-01-01'>X time ago</time>
-                      </Link> */}
-                      </CardMeta>
-                    }
-                    linkLabel='View more'
-                    linkTo={getDatasetPath(d)}
-                    title={
-                      <TextHighlight
-                        value={search}
-                        disabled={search.length < 3}
-                      >
-                        {d.name}
-                      </TextHighlight>
-                    }
-                    description={
-                      <TextHighlight
-                        value={search}
-                        disabled={search.length < 3}
-                      >
-                        {d.description}
-                      </TextHighlight>
-                    }
-                    imgSrc={d.media?.src}
-                    imgAlt={d.media?.alt}
-                    footerContent={
-                      <>
-                        {topics?.length ? (
-                          <CardTopicsList>
-                            <dt>Topics</dt>
-                            {topics.map((t) => (
-                              <dd key={t.id}>
-                                <Pill
-                                  variation='achromic'
-                                  as={Link}
-                                  to={`${DATASETS_PATH}?${
-                                    Actions.TAXONOMY
-                                  }=${encodeURIComponent(
-                                    JSON.stringify({ Topics: t.id })
-                                  )}`}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    onAction(Actions.TAXONOMY, {
-                                      key: TAXONOMY_TOPICS,
-                                      value: t.id
-                                    });
-                                    browseControlsHeaderRef.current?.scrollIntoView();
-                                  }}
-                                >
-                                  <TextHighlight
-                                    value={search}
-                                    disabled={search.length < 3}
-                                  >
-                                    {t.name}
-                                  </TextHighlight>
-                                </Pill>
-                              </dd>
-                            ))}
-                          </CardTopicsList>
-                        ) : null}
-                        <DatasetMenu dataset={d} />
-                      </>
-                    }
-                  />
-                </li>
-              );
-            })}
-          </CardList>
-        ) : (
-          <EmptyHub>
-            There are no datasets to show with the selected filters.
-          </EmptyHub>
-        )}
-      </Fold>
-    </PageMainContent>
+                      </li>
+                    );
+                  })}
+                </CardList>
+              ) : (
+                <EmptyHub>
+                  There are no datasets to show with the selected filters.
+                </EmptyHub>
+              )}
+            </Fold>
+          </PageMainContent>
+        )
+      }
+    </>
   );
 }
 

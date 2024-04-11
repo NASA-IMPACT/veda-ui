@@ -197,6 +197,7 @@
     "$styles": "~/app/scripts/styles",
     "$utils": "~/app/scripts/utils",
     "$context": "~/app/scripts/context",
-    "$test": "~/test"
+    "$test": "~/test",
+    "$data-layer": "~/data-layer"
   }
 }
