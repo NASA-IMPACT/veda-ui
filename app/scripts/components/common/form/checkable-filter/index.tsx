@@ -3,18 +3,9 @@ import styled from 'styled-components';
 import { FormGroupStructure, FormCheckableGroup,  FormCheckable} from '@devseed-ui/form';
 import { CollecticonChevronDown, CollecticonChevronUp } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
-import { variableGlsp } from '$styles/variable-utils';
 import { themeVal } from '@devseed-ui/theme-provider';
+import { variableGlsp } from '$styles/variable-utils';
 
-interface CheckableFiltersProps {
-  title: string;
-  items: OptionItem[];
-}
-
-interface OptionItem {
-  id: string;
-  name: string;
-}
 
 const FilterMenu = styled.div`
   border: 2px solid ${themeVal('color.base-200')};
@@ -56,36 +47,60 @@ const ToggleIconButton = styled(ToolbarIconButton)`
   background-color: inherit;
 `;
 
+interface CheckableFiltersProps {
+  title: string;
+  items: OptionItem[];
+  onChanges: (items: OptionItem) => void;
+  globallySelected?: OptionItem[]; // selected values across all filters
+}
+
+export interface OptionItem {
+  id: string;
+  name: string;
+}
+
 export default function CheckableFilters(props: CheckableFiltersProps) {
-  const {items, title} = props;
+  const {items, title, onChanges, globallySelected} = props;
   const [show, setShow] = React.useState<boolean>(true);
   const [count, setCount] = React.useState<number>(0);
   const [selected, setSelected] = React.useState<OptionItem[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(`event: `, e.target.name, e.target.id, e.target)
     const optionItem = {
       name: e.target.name,
       id: e.target.id
     };
     if(e.target.checked) {
       setCount((prevValue) => prevValue + 1);
-      setSelected([...selected, optionItem]);
+      setSelected([...selected, optionItem]); // Local
+      onChanges(optionItem); // Global to filters-control
     }
     else {
       setCount((prevValue) => prevValue - 1);
       setSelected(selected.filter((item) => item.id !== e.target.id));
+      onChanges(optionItem);
     }
   };
 
-  const isChecked = (item: OptionItem) => selected.map(item => item.id).includes(item.id)
+  const isChecked = (item: OptionItem) => selected.map(item => item.id).includes(item.id);
+
+  React.useEffect(() => {
+    if(!globallySelected || globallySelected.length === 0) {
+      setCount(0);
+      setSelected([]);
+    }
+  }, [globallySelected]);
 
   return (
     <FilterMenu>
       <FilterTitle>
         <div id='title-selected'>
           <h3>{title}</h3>
-          <span>{count} selected</span>
+          {
+            count > 0 && (
+              <span>{count} selected</span> 
+            )
+          }
         </div>
         <Toggle size='small'>
           <ToggleIconButton
@@ -109,7 +124,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
                 items.map((item) => {
                   const checked = isChecked(item);
                   return (
-                    <div className={checked ? 'checked' : 'unchecked'}>
+                    <div className={checked ? 'checked' : 'unchecked'} key={item.id}>
                       <FormCheckable
                         key={item.id}
                         value={item.name}

@@ -10,7 +10,6 @@ import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import DatasetMenu from './dataset-menu';
 
-import BrowseControls from '$components/common/browse-controls';
 import {
   Actions,
   optionAll,
@@ -63,8 +62,7 @@ const DatasetCount = styled(Subtitle)`
 `;
 
 const BrowseFoldHeader = styled(FoldHeader)`
-  flex-flow: column nowrap;
-  align-items: flex-start;
+  margin-bottom: 4rem;
 `;
 
 const Content = styled.div`
@@ -214,7 +212,7 @@ function DataCatalog() {
           }}
         >
           <FoldHeadline>
-            <FoldTitle>Browse</FoldTitle>
+            <FoldTitle>Search datasets</FoldTitle>
           </FoldHeadline>
         </BrowseFoldHeader>
         <Content>
