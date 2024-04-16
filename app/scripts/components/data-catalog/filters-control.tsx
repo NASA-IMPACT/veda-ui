@@ -1,18 +1,18 @@
-import React from 'react';
+import React, {useState, useCallback} from 'react';
 import styled from 'styled-components';
 import { Taxonomy } from 'veda';
-import FilterTag from './filter-tag';
 import { themeVal } from '@devseed-ui/theme-provider';
+import FilterTag from './filter-tag';
 import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
-import { BrowserControlsAction } from '$components/common/browse-controls/use-browse-controls';
+import { Actions, BrowserControlsAction } from '$components/common/browse-controls/use-browse-controls';
 
 
 
 interface FiltersMenuProps {
   handleSearch: BrowserControlsAction;
-  width?: number;
   taxonomiesOptions: Taxonomy[];
+  search: string | null;
 }
 
 const ControlsWrapper = styled.div`
@@ -40,13 +40,14 @@ const PlainTextButton = styled.button`
 export default function FiltersControl(props: FiltersMenuProps) {
   const {
     handleSearch,
-    width,
-    taxonomiesOptions
+    taxonomiesOptions,
+    search,
   } = props;
 
-  const [selectedFilters, setSelectedFilters] = React.useState<OptionItem[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<OptionItem[]>([]);
+  const [tagItem, setTagItem] = useState<OptionItem>();
 
-  const handleFilterChanges = (item: OptionItem) => {
+  const handleFilterChanges = useCallback((item: OptionItem) => {
     const selectedFilterIds = selectedFilters.map((f) => f.id);
     if(selectedFilterIds.includes(item.id)) {
       setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
@@ -54,23 +55,28 @@ export default function FiltersControl(props: FiltersMenuProps) {
     else {
       setSelectedFilters([...selectedFilters, item]);
     }
-  };
+  }, [selectedFilters]);
+
+  const handleClearTag = useCallback((item: OptionItem) => {
+    setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
+    setTagItem(item);
+  }, [selectedFilters]);
 
   const handleClearTags = () => setSelectedFilters([]);
 
   return (
     <ControlsWrapper>
       <SearchField
-        size='medium'
+        size='large'
         placeholder='Search by title, description'
-        value='' // @TODO-SANDRA: Hook-up
-        onChange={props.handleSearch}
+        value={search ?? ''}
+        onChange={(v) => handleSearch(Actions.SEARCH, v)}
       />
       {
         selectedFilters.length > 0 && (
           <Tags>
             {
-              selectedFilters.map((filter) => <FilterTag key={filter.id} title={filter.name} />)
+              selectedFilters.map((filter) => <FilterTag key={filter.id} item={filter} onClick={handleClearTag} />)
             }
             <PlainTextButton onClick={handleClearTags}>Clear all</PlainTextButton>
           </Tags>
@@ -85,6 +91,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
             title={taxonomy.name}
             onChanges={handleFilterChanges}
             globallySelected={selectedFilters}
+            tagItemCleared={{item: tagItem, callback: setTagItem}}
           />
         ))
       }

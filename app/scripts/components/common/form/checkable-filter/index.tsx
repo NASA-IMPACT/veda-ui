@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import styled from 'styled-components';
 import { FormGroupStructure, FormCheckableGroup,  FormCheckable} from '@devseed-ui/form';
 import { CollecticonChevronDown, CollecticonChevronUp } from '@devseed-ui/collecticons';
@@ -51,7 +51,11 @@ interface CheckableFiltersProps {
   title: string;
   items: OptionItem[];
   onChanges: (items: OptionItem) => void;
-  globallySelected?: OptionItem[]; // selected values across all filters
+  globallySelected: OptionItem[]; // Selected values across all filters
+  tagItemCleared?: { // An option item that was removed globally
+    item?: OptionItem;
+    callback: React.Dispatch<React.SetStateAction<any>>;
+  }
 }
 
 export interface OptionItem {
@@ -60,12 +64,12 @@ export interface OptionItem {
 }
 
 export default function CheckableFilters(props: CheckableFiltersProps) {
-  const {items, title, onChanges, globallySelected} = props;
-  const [show, setShow] = React.useState<boolean>(true);
-  const [count, setCount] = React.useState<number>(0);
-  const [selected, setSelected] = React.useState<OptionItem[]>([]);
+  const {items, title, onChanges, globallySelected, tagItemCleared} = props;
+  const [show, setShow] = useState<boolean>(true);
+  const [count, setCount] = useState<number>(0);
+  const [selected, setSelected] = useState<OptionItem[]>([]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const optionItem = {
       name: e.target.name,
       id: e.target.id
@@ -80,16 +84,24 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
       setSelected(selected.filter((item) => item.id !== e.target.id));
       onChanges(optionItem);
     }
-  };
+  }, [selected]);
 
   const isChecked = (item: OptionItem) => selected.map(item => item.id).includes(item.id);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if(!globallySelected || globallySelected.length === 0) {
       setCount(0);
       setSelected([]);
     }
   }, [globallySelected]);
+
+  useEffect(() => {
+    if(tagItemCleared && globallySelected.length !== 0) {
+      setCount((prevValue) => prevValue - 1);
+      setSelected(selected.filter((item) => item.id !== tagItemCleared.item?.id));
+      tagItemCleared.callback(undefined);
+    }
+  }, [tagItemCleared, globallySelected]);
 
   return (
     <FilterMenu>

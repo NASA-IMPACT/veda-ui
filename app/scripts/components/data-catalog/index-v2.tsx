@@ -9,7 +9,7 @@ import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import DatasetMenu from './dataset-menu';
-
+import FiltersControl from './filters-control';
 import {
   Actions,
   optionAll,
@@ -21,7 +21,6 @@ import {
 } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import {
-  Fold,
   FoldHeader,
   FoldHeadline,
   FoldTitle
@@ -47,7 +46,6 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { DatasetClassification } from '$components/common/dataset-classification';
-import FiltersControl from './filters-control';
 import { variableGlsp } from '$styles/variable-utils';
 
 const DatasetCount = styled(Subtitle)`
@@ -202,8 +200,6 @@ function DataCatalog() {
       />
 
       <FeaturedDatasets />
-
-      {/* <Fold> */}
       <BrowseSection>
         <BrowseFoldHeader
           ref={browseControlsHeaderRef}
@@ -219,6 +215,7 @@ function DataCatalog() {
           <FiltersControl
             handleSearch={onAction}
             taxonomiesOptions={datasetTaxonomies}
+            search={search}
           />
           <CatalogWrapper>
             <DatasetCount>
@@ -346,7 +343,6 @@ function DataCatalog() {
           </CatalogWrapper>
         </Content>
       </BrowseSection>
-      {/* </Fold> */}
     </PageMainContent>
   );
 }

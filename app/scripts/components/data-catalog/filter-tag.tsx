@@ -4,32 +4,45 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
+import { OptionItem } from '$components/common/form/checkable-filter';
 
 interface FilterTagProps {
-  title: string;
+  item: OptionItem;
+  onClick: (item: OptionItem) => void;
 }
 
 const Tag = styled.span`
   display: flex;
   width: fit-content;
   justify-content: center;
-  background-color: ${themeVal('color.base-100')};
+  background-color: ${themeVal('color.base-50')};
   margin: ${glsp(0.25)};
+  padding: 6px 0 6px 6px;
+  outline-width: 1px;
+  outline-color: ${themeVal('color.base-200')};
+  outline-style: solid;
 
   button {
     background: none;
     border: none;
     outline: none;
     box-shadow: none;
+    display: flex;
+    align-items: center;
   }
 `;
 
 export default function FilterTag(props: FilterTagProps) {
-  const {title} = props;
+  const {item, onClick} = props;
+
+  const handleClick = () => {
+    onClick(item);
+  };
+  
   return (
     <Tag>
-      {title}
-      <button type="button">
+      {item.name}
+      <button type='button' onClick={handleClick}>
         <CollecticonXmarkSmall />
       </button>
     </Tag>
