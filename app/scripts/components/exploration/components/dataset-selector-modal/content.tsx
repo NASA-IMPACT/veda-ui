@@ -12,12 +12,8 @@ import { DatasetLayerCardProps } from './';
 
 import { DatasetClassification } from '$components/common/dataset-classification';
 import EmptyHub from '$components/common/empty-hub';
-import {
-  Card,
-  CardList,
-  CardMeta,
-  CardTopicsList
-} from '$components/common/card';
+import { Card } from '$components/common/card';
+import { CardList, CardMeta, CardTopicsList } from '$components/common/card/styles';
 import TextHighlight from '$components/common/text-highlight';
 import { CardSourcesList } from '$components/common/card-sources';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';

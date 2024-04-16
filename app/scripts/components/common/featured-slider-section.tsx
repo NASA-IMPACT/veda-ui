@@ -7,7 +7,8 @@ import PublishedDate from './pub-date';
 import { CardSourcesList } from './card-sources';
 import { DatasetClassification } from './dataset-classification';
 
-import { Card, CardMeta, CardTopicsList } from '$components/common/card';
+import { Card } from '$components/common/card';
+import { CardMeta, CardTopicsList } from '$components/common/card/styles';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
 import {
   Continuum,

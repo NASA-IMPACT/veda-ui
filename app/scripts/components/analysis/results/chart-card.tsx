@@ -37,13 +37,9 @@ import AnalysisMetricsDropdown, {
 } from './analysis-metrics-dropdown';
 
 import {
-  CardSelf,
-  CardHeader,
-  CardHeadline,
-  CardTitle,
-  CardActions,
-  CardBody
+  CardItem
 } from '$components/common/card';
+import { CardHeader, CardHeadline, CardActions, CardTitle, CardBody } from '$components/common/card/styles';
 import Chart, { AnalysisChartRef } from '$components/common/chart/analysis';
 import { ChartLoading } from '$components/common/loading-skeleton';
 import { dateFormatter } from '$components/common/chart/utils';
@@ -189,7 +185,7 @@ export default function ChartCard(props: ChartCardProps) {
   );
 
   return (
-    <CardSelf>
+    <CardItem>
       <CardHeader>
         <CardHeadline>
           <CardTitle>{title}</CardTitle>
@@ -298,6 +294,6 @@ export default function ChartCard(props: ChartCardProps) {
           )
         ) : null}
       </CardBody>
-    </CardSelf>
+    </CardItem>
   );
 }

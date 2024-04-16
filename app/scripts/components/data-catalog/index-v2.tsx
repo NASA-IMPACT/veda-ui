@@ -25,12 +25,8 @@ import {
   FoldHeadline,
   FoldTitle
 } from '$components/common/fold';
-import {
-  Card,
-  CardList,
-  CardMeta,
-  CardTopicsList
-} from '$components/common/card';
+import { Card } from '$components/common/card';
+import { CardList, CardMeta, CardTopicsList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { PageMainContent } from '$styles/page';
 import { DATASETS_PATH, getDatasetPath } from '$utils/routes';

@@ -21,7 +21,7 @@ import {
 import ChartCard from './chart-card';
 import AnalysisHead from './analysis-head';
 import { LayoutProps } from '$components/common/layout-root';
-import { CardList } from '$components/common/card';
+import { CardList } from '$components/common/card/styles';
 import {
   Fold,
   FoldHeader,

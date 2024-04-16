@@ -17,7 +17,8 @@ import {
   STORIES_PATH,
   DATASETS_PATH
 } from '$utils/routes';
-import { Card, CardList } from '$components/common/card';
+import { Card } from '$components/common/card';
+import { CardList } from '$components/common/card/styles';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlock } from '$styles/content-block';

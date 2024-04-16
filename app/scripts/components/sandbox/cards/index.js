@@ -2,7 +2,8 @@ import React from 'react';
 import { getString } from 'veda';
 
 import { Fold } from '$components/common/fold';
-import { Card, CardList } from '$components/common/card';
+import { Card } from '$components/common/card';
+import { CardList } from '$components/common/card/styles';
 
 function SandboxCards() {
   return (

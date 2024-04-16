@@ -2,56 +2,32 @@ import React, { MouseEventHandler, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { CardBody, CardBlank, CardFooter, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
-import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import {
   glsp,
-  listReset,
   media,
   multiply,
   themeVal,
-  visuallyHidden
 } from '@devseed-ui/theme-provider';
-import { Overline } from '@devseed-ui/typography';
 
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 import { ElementInteractive } from '$components/common/element-interactive';
-import { VarHeading } from '$styles/variable-components';
 import { Figure } from '$components/common/figure';
 import { getLinkProps } from '$utils/url';
 
 type CardType = 'classic' | 'cover' | 'featured';
 
-interface CardSelfProps {
+interface CardItemProps {
   isStateFocus?: boolean;
   isStateOver?: boolean;
   isStateActive?: boolean;
   cardType?: CardType;
 }
 
-export const CardList = styled.ol`
-  ${listReset()}
-  grid-column: 1 / -1;
-  display: grid;
-  gap: ${variableGlsp()};
-  grid-template-columns: repeat(1, 1fr);
-
-  ${media.mediumUp`
-    grid-template-columns: repeat(2, 1fr);
-  `}
-
-  ${media.largeUp`
-    grid-template-columns: repeat(3, 1fr);
-  `}
-
-  > li {
-    min-width: 0;
-  }
-`;
-
-function renderCardType({ cardType }: CardSelfProps) {
+function renderCardType({ cardType }: CardItemProps) {
   switch (cardType) {
     case 'cover':
       return css`
@@ -110,16 +86,7 @@ function renderCardType({ cardType }: CardSelfProps) {
   }
 }
 
-export const CardSelf = styled.article<CardSelfProps>`
-  position: relative;
-  display: flex;
-  flex-flow: column nowrap;
-  border-radius: ${multiply(themeVal('shape.rounded'), 2)};
-  box-shadow: ${themeVal('boxShadow.elevationD')};
-  height: 100%;
-  overflow: hidden;
-  transition: all 0.24s ease-in-out 0s;
-
+export const CardItem = styled(CardBlank)<CardItemProps>`
   ${renderCardType}
 
   ${({ isStateFocus }) =>
@@ -140,73 +107,6 @@ export const CardSelf = styled.article<CardSelfProps>`
       box-shadow: ${themeVal('boxShadow.elevationB')};
       transform: translate(0, 0.125rem);
     `}
-`;
-
-export const CardHeader = styled.header`
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: ${variableGlsp()};
-  gap: ${variableGlsp()};
-`;
-
-export const CardHeadline = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  gap: ${glsp(0.25)};
-`;
-
-export const CardActions = styled.div`
-  /* styled-component */
-`;
-
-export const CardTitle = styled(VarHeading).attrs({
-  as: 'h3',
-  size: 'small'
-})`
-  /* styled-component */
-`;
-
-export const CardOverline = styled(Overline)`
-  order: -1;
-  color: ${themeVal('color.base-400a')};
-
-  > * {
-    line-height: inherit;
-  }
-
-  i {
-    ${visuallyHidden()}
-  }
-`;
-
-export const CardMeta = styled.div`
-  display: flex;
-  gap: ${glsp(0.25)};
-
-  a {
-    color: inherit;
-    pointer-events: all;
-
-    &,
-    &:visited {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    &:hover {
-      opacity: 0.64;
-    }
-  }
-
-  > ${/* sc-selector */ VerticalDivider}:last-child {
-    display: none;
-  }
-
-  > ${/* sc-selector */ VerticalDivider}:first-child {
-    display: none;
-  }
 `;
 
 const CardLabel = styled.span`
@@ -233,47 +133,6 @@ const CardLabel = styled.span`
   }
 `;
 
-export const CardBody = styled.div`
-  padding: ${variableGlsp()};
-
-  &:not(:first-child) {
-    padding-top: 0;
-    margin-top: ${variableGlsp(-0.5)};
-  }
-`;
-
-export const CardFooter = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  gap: ${variableGlsp(0.5)};
-  padding: ${variableGlsp()};
-
-  &:not(:first-child) {
-    padding-top: 0;
-    margin-top: ${variableGlsp(-0.5)};
-  }
-
-  button {
-    pointer-events: all;
-  }
-`;
-
-export const CardTopicsList = styled.dl`
-  display: flex;
-  gap: ${variableGlsp(0.25)};
-  max-width: 100%;
-  width: 100%;
-  overflow: hidden;
-  mask-image: linear-gradient(
-    to right,
-    black calc(100% - 3rem),
-    transparent 100%
-  );
-
-  > dt {
-    ${visuallyHidden()}
-  }
-`;
 
 const CardFigure = styled(Figure)`
   order: -1;
@@ -361,7 +220,7 @@ function CardComponent(props: CardComponentProps) {
 
   return (
     <ElementInteractive
-      as={CardSelf}
+      as={CardItem}
       cardType={cardType}
       className={className}
       linkLabel={linkLabel || 'View more'}
