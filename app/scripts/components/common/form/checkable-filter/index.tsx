@@ -59,6 +59,7 @@ interface CheckableFiltersProps {
 }
 
 export interface OptionItem {
+  taxonomy: string;
   id: string;
   name: string;
 }
@@ -71,6 +72,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const optionItem = {
+      taxonomy: title.split(' ')[0],
       name: e.target.name,
       id: e.target.id
     };

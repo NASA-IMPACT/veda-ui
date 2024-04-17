@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasetTaxonomies, getString } from 'veda';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
@@ -161,6 +161,8 @@ function DataCatalog() {
     sortOptions
   });
 
+  const navigate = useNavigate();
+
   const { taxonomies, sortField, sortDir, onAction } = controlVars;
   const search = controlVars.search ?? '';
 
@@ -209,9 +211,11 @@ function DataCatalog() {
         </BrowseFoldHeader>
         <Content>
           <FiltersControl
-            handleSearch={onAction}
+            {...controlVars}
             taxonomiesOptions={datasetTaxonomies}
-            search={search}
+            redirect={() => {
+              navigate(DATASETS_PATH);
+            }}
           />
           <CatalogWrapper>
             <DatasetCount>

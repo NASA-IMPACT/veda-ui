@@ -2,7 +2,6 @@ import React, { MouseEventHandler, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { CardBody, CardBlank, CardFooter, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 
 import {
@@ -11,7 +10,7 @@ import {
   multiply,
   themeVal,
 } from '@devseed-ui/theme-provider';
-
+import { CardBody, CardBlank, CardFooter, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 import { ElementInteractive } from '$components/common/element-interactive';

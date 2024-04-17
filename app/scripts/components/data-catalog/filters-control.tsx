@@ -1,18 +1,17 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
 import styled from 'styled-components';
 import { Taxonomy } from 'veda';
 import { themeVal } from '@devseed-ui/theme-provider';
 import FilterTag from './filter-tag';
 import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
-import { Actions, BrowserControlsAction } from '$components/common/browse-controls/use-browse-controls';
+import { Actions, optionAll, useBrowserControls } from '$components/common/browse-controls/use-browse-controls';
 
 
 
-interface FiltersMenuProps {
-  handleSearch: BrowserControlsAction;
+interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
   taxonomiesOptions: Taxonomy[];
-  search: string | null;
+  redirect?: () => void; // redirect to a specific view
 }
 
 const ControlsWrapper = styled.div`
@@ -37,15 +36,27 @@ const PlainTextButton = styled.button`
   }
 `;
 
+// @TODO-SANDRA: Will need to move somewhere else
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value; //assign the value of ref to the argument
+  },[value]); //this code will run when the value of 'value' changes
+  return ref.current; //in the end, return the current ref value.
+}
+
 export default function FiltersControl(props: FiltersMenuProps) {
   const {
-    handleSearch,
+    onAction,
     taxonomiesOptions,
     search,
+    redirect,
   } = props;
 
   const [selectedFilters, setSelectedFilters] = useState<OptionItem[]>([]);
-  const [tagItem, setTagItem] = useState<OptionItem>();
+  const [clearedTagItem, setClearedTagItem] = useState<OptionItem>();
+
+  const prevSelectedFilters = usePrevious(selectedFilters) || [];
 
   const handleFilterChanges = useCallback((item: OptionItem) => {
     const selectedFilterIds = selectedFilters.map((f) => f.id);
@@ -54,15 +65,27 @@ export default function FiltersControl(props: FiltersMenuProps) {
     }
     else {
       setSelectedFilters([...selectedFilters, item]);
+      onAction(Actions.TAXONOMY, { key: item.taxonomy, value: item.id });
     }
   }, [selectedFilters]);
 
   const handleClearTag = useCallback((item: OptionItem) => {
     setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
-    setTagItem(item);
+    setClearedTagItem(item);
   }, [selectedFilters]);
 
-  const handleClearTags = () => setSelectedFilters([]);
+  const handleClearTags = () => {
+    onAction(Actions.CLEAR);
+    setSelectedFilters([]);
+    redirect?.();
+  };
+
+  useEffect(() => {
+    if (clearedTagItem && (selectedFilters.length == prevSelectedFilters.length-1)) {
+      // @TODO-SANDRA: Revisit... this removes all from the taxonomy in url but we need to remove just a single value from the taxonomy, must look at use-browse-controls
+      onAction(Actions.TAXONOMY, { key: clearedTagItem.taxonomy, value: optionAll.id }); 
+    }
+  }, [selectedFilters, clearedTagItem]);
 
   return (
     <ControlsWrapper>
@@ -70,7 +93,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
         size='large'
         placeholder='Search by title, description'
         value={search ?? ''}
-        onChange={(v) => handleSearch(Actions.SEARCH, v)}
+        onChange={(v) => onAction(Actions.SEARCH, v)}
       />
       {
         selectedFilters.length > 0 && (
@@ -84,16 +107,19 @@ export default function FiltersControl(props: FiltersMenuProps) {
         )
       }
       {
-        taxonomiesOptions.map((taxonomy) => (
-          <CheckableFilters 
-            key={taxonomy.name}
-            items={taxonomy.values}
-            title={taxonomy.name}
-            onChanges={handleFilterChanges}
-            globallySelected={selectedFilters}
-            tagItemCleared={{item: tagItem, callback: setTagItem}}
-          />
-        ))
+        taxonomiesOptions.map((taxonomy) => {
+          const items = taxonomy.values.map((t) => ({...t, taxonomy: taxonomy.name.split(' ')[0]}));
+          return (
+            <CheckableFilters 
+              key={taxonomy.name}
+              items={items}
+              title={taxonomy.name}
+              onChanges={handleFilterChanges}
+              globallySelected={selectedFilters}
+              tagItemCleared={{item: clearedTagItem, callback: setClearedTagItem}}
+            />
+          );
+        })
       }
     </ControlsWrapper>
   );

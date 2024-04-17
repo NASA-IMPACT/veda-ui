@@ -114,6 +114,29 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
               setTaxonomies(set({ ...taxonomies }, key, val));
             }
           }
+        // case Actions.TAXONOMY:
+        //   {
+        //     const { key, value: val, action } = value;
+        //     if (val === optionAll.id && !action) {
+        //       setTaxonomies(omit(taxonomies, key));
+        //     } else if (action == 'add') {
+        //       console.log(`taxonomies_in_add: `, taxonomies, key, val)
+        //       const values = taxonomies?.[key];
+        //       if (!values?.length) {
+        //         const v = new Array();
+        //         v.push(val)
+        //         setTaxonomies(set({ ...taxonomies }, key, v));
+        //       } else {
+        //         values.push(val)
+        //       }
+        //     } else if (action == 'remove') {
+        //       console.log(`taxonomies_in_remove: `, taxonomies, key, val)
+        //       setTaxonomies(omit(taxonomies, key));
+        //     }
+        //     else {
+        //       setTaxonomies(set({ ...taxonomies }, key, [val]));
+        //     }
+        //   }
           break;
       }
     },
