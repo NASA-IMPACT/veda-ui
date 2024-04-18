@@ -7,14 +7,6 @@ import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
 import { Actions, optionAll, useBrowserControls } from '$components/common/browse-controls/use-browse-controls';
 
-
-
-interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
-  taxonomiesOptions: Taxonomy[];
-  redirect?: () => void; // redirect to a specific view
-  width?: string;
-}
-
 const ControlsWrapper = styled.div<{ width?: string; }>`
   min-width: 20rem;
   width: ${props => props.width || '3rem'};
@@ -46,6 +38,13 @@ function usePrevious(value) {
   return ref.current; //in the end, return the current ref value.
 }
 
+interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
+  taxonomiesOptions: Taxonomy[];
+  redirect?: () => void; // redirect to a specific view
+  width?: string;
+  onChangeToFilters?: (item: OptionItem, action: 'add' | 'remove') => void;
+}
+
 export default function FiltersControl(props: FiltersMenuProps) {
   const {
     onAction,
@@ -53,6 +52,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
     search,
     redirect,
     width,
+    onChangeToFilters
   } = props;
 
   const [selectedFilters, setSelectedFilters] = useState<OptionItem[]>([]);
@@ -64,9 +64,11 @@ export default function FiltersControl(props: FiltersMenuProps) {
     const selectedFilterIds = selectedFilters.map((f) => f.id);
     if(selectedFilterIds.includes(item.id)) {
       setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
+      if(onChangeToFilters) onChangeToFilters(item, 'remove');
     }
     else {
       setSelectedFilters([...selectedFilters, item]);
+      if(onChangeToFilters) onChangeToFilters(item, 'add');
       onAction(Actions.TAXONOMY, { key: item.taxonomy, value: item.id });
     }
   }, [selectedFilters]);

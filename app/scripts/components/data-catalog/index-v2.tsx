@@ -44,6 +44,9 @@ import {
 } from '$utils/veda-data';
 import { DatasetClassification } from '$components/common/dataset-classification';
 import { variableGlsp } from '$styles/variable-utils';
+import { OptionItem } from '$components/common/form/checkable-filter';
+import { truncate } from 'lodash';
+import FilterTag from './filter-tag';
 
 const DatasetCount = styled(Subtitle)`
   padding-left: 1rem;
@@ -76,6 +79,23 @@ const BrowseSection = styled.div`
 
 const Cards = styled(CardList)`
   padding: 2rem 0 0 2rem;
+`;
+
+const Tags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const PlainTextButton = styled.button`
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: ${themeVal('color.primary-400')};
+  text-decoration: underline;
+  &:hover {
+    color: ${themeVal('color.primary-800')};
+  }
 `;
 
 export const sortOptions = [{ id: 'name', name: 'Name' }];
@@ -181,6 +201,18 @@ function DataCatalog() {
     [search, taxonomies, sortField, sortDir]
   );
 
+  ///////////
+  const [allSelectedFilters, setAllSelectedFilters] = React.useState<OptionItem[]>([]);
+
+  const handleChangeAllSelectedFilters = (item: OptionItem, action: 'add' | 'remove') => {
+    if(action == 'add') {
+      setAllSelectedFilters([...allSelectedFilters, item]);
+    } else if(action == 'remove') {
+      setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
+    }
+  }
+  ///////////
+
   const isFiltering = !!(
     (taxonomies && Object.keys(taxonomies).length) ||
     search
@@ -219,25 +251,20 @@ function DataCatalog() {
             redirect={() => {
               navigate(DATASETS_PATH);
             }}
+            onChangeToFilters={handleChangeAllSelectedFilters}
           />
           <CatalogWrapper>
-            <DatasetCount>
-              <span>
-                Showing{' '}
-                <Pluralize
-                  singular='dataset'
-                  plural='datasets'
-                  count={displayDatasets.length}
-                  showCount={true}
-                />{' '}
-                out of {allDatasetsWithEnhancedLayers.length}
-              </span>
-              {isFiltering && (
-                <Button forwardedAs={Link} to={DATASETS_PATH} size='small'>
-                  Clear filters <CollecticonXmarkSmall />
-                </Button>
-              )}
-            </DatasetCount>
+            {
+              allSelectedFilters.length > 0 && (
+                <Tags>
+                  {
+                    allSelectedFilters.map((filter) => <FilterTag key={filter.id} item={filter} onClick={() => true} />)
+                  }
+                  <PlainTextButton onClick={() => true}>Clear all</PlainTextButton>
+                </Tags>
+
+              )
+            }
 
             {displayDatasets.length ? (
               <Cards>
