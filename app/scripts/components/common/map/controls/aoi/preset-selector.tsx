@@ -61,14 +61,18 @@ const analysisStatesPreset = ["Pennsylvania",
 ].map(e => ({label: e, value: e}));
 
 
-
 export default function PresetSelector({ onConfirm }: {onConfirm:  (features: Feature<Polygon>[]) => void}) {
   const [selectedState, setSeletcedState] = useState('');
   const { features } = usePresetAOI(selectedState);
 
   useEffect(() => {
     if (features?.length) onConfirm(features);
-  },[features, onConfirm]);
+  
+  // Excluding onConfirm from the dependencies array to prevent an infinite loop:
+  // onConfirm depends on the Map instance, and invoking it modifies the Map, 
+  // which can re-trigger this effect if included as a dependency.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[features]);
 
   return (
     <select style={{maxWidth: '300px'}} onChange={(e) => setSeletcedState(e.target.value)} name='presetSelector' id='preset-selector'>

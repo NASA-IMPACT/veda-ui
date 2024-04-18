@@ -4,6 +4,7 @@ import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
 import { useSetAtom } from 'jotai';
 import bbox from '@turf/bbox';
+import centroid from '@turf/centroid';
 import {
   CollecticonPencil,
   CollecticonTrashBin,
@@ -13,6 +14,7 @@ import { Toolbar, ToolbarLabel, VerticalDivider } from '@devseed-ui/toolbar';
 import { Button } from '@devseed-ui/button';
 import { themeVal, glsp, disabled } from '@devseed-ui/theme-provider';
 
+import { AllGeoJSON } from '@turf/helpers';
 import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
@@ -22,6 +24,7 @@ import { aoiDeleteAllAtom } from './atoms';
 import PresetSelector from './preset-selector';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
+import { getZoomFromBbox } from '$components/common/map/utils';
 import { ShortcutCode } from '$styles/shortcut-code';
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
@@ -75,7 +78,7 @@ function CustomAoI({
     };
   }, []);
 
-  const onConfirm = (features: Feature<Polygon>[]) => {
+  const onConfirm = useCallback((features: Feature<Polygon>[]) => {
     const mbDraw = map?._drawControl;
     setAoIModalRevealed(false);
     if (!mbDraw) return;
@@ -84,9 +87,14 @@ function CustomAoI({
       type: 'FeatureCollection',
       features
     };
-    map.fitBounds(bbox(fc), { padding: 20 });
+    const bounds = bbox(fc);
+    const center = centroid(fc as AllGeoJSON).geometry.coordinates;
+    map.flyTo({
+      center,
+      zoom: getZoomFromBbox(bounds)
+    });
     mbDraw.add(fc);
-  };
+  },[map, onUpdate]);
 
   const onTrashClick = useCallback(() => {
     // We need to programmatically access the mapbox draw trash method which
