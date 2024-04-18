@@ -54,7 +54,7 @@ interface CheckableFiltersProps {
   globallySelected: OptionItem[]; // Selected values across all filters
   tagItemCleared?: { // An option item that was removed globally
     item?: OptionItem;
-    callback: React.Dispatch<React.SetStateAction<any>>;
+    callback?: React.Dispatch<React.SetStateAction<any>>;
   }
 }
 
@@ -101,7 +101,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
     if(tagItemCleared && globallySelected.length !== 0) {
       setCount((prevValue) => prevValue - 1);
       setSelected(selected.filter((item) => item.id !== tagItemCleared.item?.id));
-      tagItemCleared.callback(undefined);
+      tagItemCleared?.callback?.(undefined);
     }
   }, [tagItemCleared, globallySelected]);
 

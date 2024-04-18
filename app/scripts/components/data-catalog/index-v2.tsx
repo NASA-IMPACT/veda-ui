@@ -3,13 +3,11 @@ import styled from 'styled-components';
 import { DatasetData, datasetTaxonomies, getString } from 'veda';
 import { Link, useNavigate } from 'react-router-dom';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { Subtitle } from '@devseed-ui/typography';
-import { Button } from '@devseed-ui/button';
-import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import DatasetMenu from './dataset-menu';
 import FiltersControl from './filters-control';
+import FilterTag from './filter-tag';
 import {
   Actions,
   optionAll,
@@ -31,7 +29,6 @@ import EmptyHub from '$components/common/empty-hub';
 import { PageMainContent } from '$styles/page';
 import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
-import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
@@ -45,16 +42,6 @@ import {
 import { DatasetClassification } from '$components/common/dataset-classification';
 import { variableGlsp } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
-import { truncate } from 'lodash';
-import FilterTag from './filter-tag';
-
-const DatasetCount = styled(Subtitle)`
-  padding-left: 1rem;
-
-  span {
-    line-height: 1.5rem;
-  }
-`;
 
 const BrowseFoldHeader = styled(FoldHeader)`
   margin-bottom: 4rem;
@@ -179,6 +166,15 @@ export const prepareDatasets = (
   return filtered;
 };
 
+// @TODO-SANDRA: Will need to move somewhere else
+function usePrevious(value) {
+  const ref = useRef();
+  React.useEffect(() => {
+    ref.current = value; //assign the value of ref to the argument
+  },[value]); //this code will run when the value of 'value' changes
+  return ref.current; //in the end, return the current ref value.
+}
+
 function DataCatalog() {
   const controlVars = useBrowserControls({
     sortOptions
@@ -203,20 +199,38 @@ function DataCatalog() {
 
   ///////////
   const [allSelectedFilters, setAllSelectedFilters] = React.useState<OptionItem[]>([]);
+  const [clearedTagItem, setClearedTagItem] = React.useState<OptionItem>();
+
+  const prevSelectedFilters = usePrevious(allSelectedFilters) || [];
 
   const handleChangeAllSelectedFilters = (item: OptionItem, action: 'add' | 'remove') => {
     if(action == 'add') {
       setAllSelectedFilters([...allSelectedFilters, item]);
+      onAction(Actions.TAXONOMY, { key: item.taxonomy, value: item.id }); // @TODO-SANDRA: Revisit this... we need an AND inclusivity here
     } else if(action == 'remove') {
       setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
     }
-  }
-  ///////////
+  };
 
-  const isFiltering = !!(
-    (taxonomies && Object.keys(taxonomies).length) ||
-    search
-  );
+  const handleClearTag = React.useCallback((item: OptionItem) => {
+    setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
+    setClearedTagItem(item);
+  }, [allSelectedFilters]);
+
+  const handleClearTags = () => {
+    setAllSelectedFilters([]);
+    onAction(Actions.CLEAR);
+    navigate(DATASETS_PATH);
+  };
+
+  React.useEffect(() => {
+    if (clearedTagItem && (allSelectedFilters.length == prevSelectedFilters.length-1)) {
+      // @TODO-SANDRA: Revisit... this removes all from the taxonomy in url but we need to remove just a single value from the taxonomy, must look at use-browse-controls
+      onAction(Actions.TAXONOMY, { key: clearedTagItem.taxonomy, value: optionAll.id }); 
+    }
+  }, [allSelectedFilters, clearedTagItem]);
+
+  ///////////
 
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
@@ -248,19 +262,19 @@ function DataCatalog() {
           <FiltersControl
             {...controlVars}
             taxonomiesOptions={datasetTaxonomies}
-            redirect={() => {
-              navigate(DATASETS_PATH);
-            }}
             onChangeToFilters={handleChangeAllSelectedFilters}
+            clearedTagItem={clearedTagItem}
+            setClearedTagItem={setClearedTagItem}
+            allSelected={allSelectedFilters}
           />
           <CatalogWrapper>
             {
               allSelectedFilters.length > 0 && (
                 <Tags>
                   {
-                    allSelectedFilters.map((filter) => <FilterTag key={filter.id} item={filter} onClick={() => true} />)
+                    allSelectedFilters.map((filter) => <FilterTag key={filter.id} item={filter} onClick={handleClearTag} />)
                   }
-                  <PlainTextButton onClick={() => true}>Clear all</PlainTextButton>
+                  <PlainTextButton onClick={handleClearTags}>Clear all</PlainTextButton>
                 </Tags>
 
               )

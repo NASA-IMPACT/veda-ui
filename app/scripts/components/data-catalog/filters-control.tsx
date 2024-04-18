@@ -1,95 +1,45 @@
-import React, {useState, useCallback, useEffect, useRef} from 'react';
+import React, {useCallback } from 'react';
 import styled from 'styled-components';
 import { Taxonomy } from 'veda';
-import { themeVal } from '@devseed-ui/theme-provider';
-import FilterTag from './filter-tag';
 import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
-import { Actions, optionAll, useBrowserControls } from '$components/common/browse-controls/use-browse-controls';
+import { Actions, useBrowserControls } from '$components/common/browse-controls/use-browse-controls';
 
 const ControlsWrapper = styled.div<{ width?: string; }>`
   min-width: 20rem;
   width: ${props => props.width || '3rem'};
 `;
 
-const Tags = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
-const PlainTextButton = styled.button`
-  background: none;
-  border: none;
-  outline: none;
-  box-shadow: none;
-  color: ${themeVal('color.primary-400')};
-  text-decoration: underline;
-  &:hover {
-    color: ${themeVal('color.primary-800')};
-  }
-`;
-
-// @TODO-SANDRA: Will need to move somewhere else
-function usePrevious(value) {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value; //assign the value of ref to the argument
-  },[value]); //this code will run when the value of 'value' changes
-  return ref.current; //in the end, return the current ref value.
-}
-
 interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
   taxonomiesOptions: Taxonomy[];
-  redirect?: () => void; // redirect to a specific view
+  allSelected: OptionItem[];
+  clearedTagItem?: OptionItem;
+  setClearedTagItem?: React.Dispatch<React.SetStateAction<OptionItem | undefined>>;
   width?: string;
   onChangeToFilters?: (item: OptionItem, action: 'add' | 'remove') => void;
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
   const {
+    allSelected,
     onAction,
     taxonomiesOptions,
     search,
-    redirect,
     width,
-    onChangeToFilters
+    onChangeToFilters,
+    clearedTagItem,
+    setClearedTagItem,
   } = props;
 
-  const [selectedFilters, setSelectedFilters] = useState<OptionItem[]>([]);
-  const [clearedTagItem, setClearedTagItem] = useState<OptionItem>();
-
-  const prevSelectedFilters = usePrevious(selectedFilters) || [];
-
-  const handleFilterChanges = useCallback((item: OptionItem) => {
-    const selectedFilterIds = selectedFilters.map((f) => f.id);
-    if(selectedFilterIds.includes(item.id)) {
-      setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
+  const handleChanges = useCallback((item: OptionItem) => {
+    const selectedIds = allSelected.map((f) => f.id);
+    if(selectedIds.includes(item.id)) {
       if(onChangeToFilters) onChangeToFilters(item, 'remove');
     }
     else {
-      setSelectedFilters([...selectedFilters, item]);
       if(onChangeToFilters) onChangeToFilters(item, 'add');
-      onAction(Actions.TAXONOMY, { key: item.taxonomy, value: item.id });
     }
-  }, [selectedFilters]);
-
-  const handleClearTag = useCallback((item: OptionItem) => {
-    setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
-    setClearedTagItem(item);
-  }, [selectedFilters]);
-
-  const handleClearTags = () => {
-    onAction(Actions.CLEAR);
-    setSelectedFilters([]);
-    redirect?.();
-  };
-
-  useEffect(() => {
-    if (clearedTagItem && (selectedFilters.length == prevSelectedFilters.length-1)) {
-      // @TODO-SANDRA: Revisit... this removes all from the taxonomy in url but we need to remove just a single value from the taxonomy, must look at use-browse-controls
-      onAction(Actions.TAXONOMY, { key: clearedTagItem.taxonomy, value: optionAll.id }); 
-    }
-  }, [selectedFilters, clearedTagItem]);
+  }, [allSelected]);
 
   return (
     <ControlsWrapper width={width}>
@@ -100,17 +50,6 @@ export default function FiltersControl(props: FiltersMenuProps) {
         onChange={(v) => onAction(Actions.SEARCH, v)}
       />
       {
-        selectedFilters.length > 0 && (
-          <Tags>
-            {
-              selectedFilters.map((filter) => <FilterTag key={filter.id} item={filter} onClick={handleClearTag} />)
-            }
-            <PlainTextButton onClick={handleClearTags}>Clear all</PlainTextButton>
-          </Tags>
-
-        )
-      }
-      {
         taxonomiesOptions.map((taxonomy) => {
           const items = taxonomy.values.map((t) => ({...t, taxonomy: taxonomy.name.split(' ')[0]}));
           return (
@@ -118,8 +57,8 @@ export default function FiltersControl(props: FiltersMenuProps) {
               key={taxonomy.name}
               items={items}
               title={taxonomy.name}
-              onChanges={handleFilterChanges}
-              globallySelected={selectedFilters}
+              onChanges={handleChanges}
+              globallySelected={allSelected}
               tagItemCleared={{item: clearedTagItem, callback: setClearedTagItem}}
             />
           );
