@@ -3,12 +3,12 @@ import { getString } from 'veda';
 
 import { Fold } from '$components/common/fold';
 import { Card } from '$components/common/card';
-import { CardList } from '$components/common/card/styles';
+import { CardListGrid } from '$components/common/card/styles';
 
 function SandboxCards() {
   return (
     <Fold>
-      <CardList>
+      <CardListGrid>
         <li>
           <Card
             linkLabel='View more'
@@ -36,7 +36,7 @@ function SandboxCards() {
             imgAlt='Generic placeholder by lorem picsum'
           />
         </li>
-      </CardList>
+      </CardListGrid>
     </Fold>
   );
 }

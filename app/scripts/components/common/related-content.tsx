@@ -18,7 +18,7 @@ import {
   DATASETS_PATH
 } from '$utils/routes';
 import { Card } from '$components/common/card';
-import { CardList } from '$components/common/card/styles';
+import { CardListGrid } from '$components/common/card/styles';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlock } from '$styles/content-block';
@@ -31,7 +31,7 @@ const contentCategory = {
   [storyString]: stories
 };
 
-const TwoColumnCardList = styled(CardList)`
+const TwoColumnCardList = styled(CardListGrid)`
   grid-template-columns: repeat(2, 1fr);
   margin-top: ${variableGlsp(1)};
 `;

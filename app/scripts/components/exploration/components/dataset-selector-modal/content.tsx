@@ -13,7 +13,7 @@ import { DatasetLayerCardProps } from './';
 import { DatasetClassification } from '$components/common/dataset-classification';
 import EmptyHub from '$components/common/empty-hub';
 import { Card } from '$components/common/card';
-import { CardList, CardMeta, CardTopicsList } from '$components/common/card/styles';
+import { CardListGrid, CardMeta, CardTopicsList } from '$components/common/card/styles';
 import TextHighlight from '$components/common/text-highlight';
 import { CardSourcesList } from '$components/common/card-sources';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
@@ -30,7 +30,7 @@ const DatasetContainer = styled.div`
   display: flex;
   margin-bottom: ${glsp(2)};
 
-  ${CardList} {
+  ${CardListGrid} {
     width: 100%;
   }
 
@@ -142,7 +142,7 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
               </TextHighlight>
             </DatasetDescription>
           </DatasetIntro>
-        <CardList key={currentDataset.id}>
+        <CardListGrid key={currentDataset.id}>
         {currentDataset.layers.map((datasetLayer) => {
           return (
             <li key={datasetLayer.id}>
@@ -156,7 +156,7 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
             </li>
           );
         })}
-        </CardList>
+        </CardListGrid>
         </SingleDataset>
       ))}
       </div>

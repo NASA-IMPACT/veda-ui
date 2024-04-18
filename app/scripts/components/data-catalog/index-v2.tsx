@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasetTaxonomies, getString } from 'veda';
 import { Link, useNavigate } from 'react-router-dom';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { themeVal } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
@@ -45,12 +45,9 @@ import { DatasetClassification } from '$components/common/dataset-classification
 import { variableGlsp } from '$styles/variable-utils';
 
 const DatasetCount = styled(Subtitle)`
-  grid-column: 1 / -1;
-  display: flex;
-  gap: ${glsp(0.5)};
+  padding-left: 1rem;
 
   span {
-    text-transform: uppercase;
     line-height: 1.5rem;
   }
 `;
@@ -64,6 +61,7 @@ const Content = styled.div`
 `;
 
 const CatalogWrapper = styled.div`
+  width: 100%;
 `;
 
 const BrowseSection = styled.div`
@@ -73,6 +71,10 @@ const BrowseSection = styled.div`
   padding-left: ${variableGlsp()};
   padding-right: ${variableGlsp()};
   gap: ${variableGlsp()};
+`;
+
+const Cards = styled(CardList)`
+  padding: 2rem 0 0 2rem;
 `;
 
 export const sortOptions = [{ id: 'name', name: 'Name' }];
@@ -227,7 +229,7 @@ function DataCatalog() {
                   count={displayDatasets.length}
                   showCount={true}
                 />{' '}
-                out of {allDatasetsWithEnhancedLayers.length}.
+                out of {allDatasetsWithEnhancedLayers.length}
               </span>
               {isFiltering && (
                 <Button forwardedAs={Link} to={DATASETS_PATH} size='small'>
@@ -237,13 +239,14 @@ function DataCatalog() {
             </DatasetCount>
 
             {displayDatasets.length ? (
-              <CardList>
+              <Cards>
                 {displayDatasets.map((d) => {
                   const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
                   return (
                     <li key={d.id}>
                       <Card
-                        cardType='cover'
+                        // cardType='cover'
+                        cardType='horizontal-info'
                         overline={
                           <CardMeta>
                             <DatasetClassification dataset={d} />
@@ -334,7 +337,7 @@ function DataCatalog() {
                     </li>
                   );
                 })}
-              </CardList>
+              </Cards>
             ) : (
               <EmptyHub>
                 There are no datasets to show with the selected filters.

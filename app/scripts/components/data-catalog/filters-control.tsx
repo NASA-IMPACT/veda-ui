@@ -12,11 +12,12 @@ import { Actions, optionAll, useBrowserControls } from '$components/common/brows
 interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
   taxonomiesOptions: Taxonomy[];
   redirect?: () => void; // redirect to a specific view
+  width?: string;
 }
 
-const ControlsWrapper = styled.div`
-  width: 100%;
+const ControlsWrapper = styled.div<{ width?: string; }>`
   min-width: 20rem;
+  width: ${props => props.width || '3rem'};
 `;
 
 const Tags = styled.div`
@@ -51,6 +52,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
     taxonomiesOptions,
     search,
     redirect,
+    width,
   } = props;
 
   const [selectedFilters, setSelectedFilters] = useState<OptionItem[]>([]);
@@ -88,7 +90,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
   }, [selectedFilters, clearedTagItem]);
 
   return (
-    <ControlsWrapper>
+    <ControlsWrapper width={width}>
       <SearchField
         size='large'
         placeholder='Search by title, description'

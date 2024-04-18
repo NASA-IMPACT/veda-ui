@@ -27,7 +27,7 @@ import {
   FoldTitle
 } from '$components/common/fold';
 import { Card } from '$components/common/card';
-import { CardList, CardMeta, CardTopicsList } from '$components/common/card/styles';
+import { CardListGrid, CardMeta, CardTopicsList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { PageMainContent } from '$styles/page';
 import { STORIES_PATH, getStoryPath } from '$utils/routes';
@@ -206,7 +206,7 @@ function StoriesHub() {
           </StoryCount>
 
           {displayStories.length ? (
-            <CardList>
+            <CardListGrid>
               {displayStories.map((d) => {
                 const pubDate = new Date(d.pubDate);
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
@@ -297,7 +297,7 @@ function StoriesHub() {
                   </li>
                 );
               })}
-            </CardList>
+            </CardListGrid>
           ) : (
             <EmptyHub>
               There are no {getString('stories').other.toLocaleLowerCase()} to

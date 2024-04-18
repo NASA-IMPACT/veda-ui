@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import {
   glsp,
   listReset,
@@ -7,10 +7,10 @@ import {
   themeVal,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
-import { variableBaseType, variableGlsp } from '$styles/variable-utils';
-import { VarHeading } from '$styles/variable-components';
 import { Overline } from '@devseed-ui/typography';
 import { VerticalDivider } from '@devseed-ui/toolbar';
+import { variableGlsp } from '$styles/variable-utils';
+import { VarHeading } from '$styles/variable-components';
 
 export const CardBlank = styled.article`
   position: relative;
@@ -24,6 +24,14 @@ export const CardBlank = styled.article`
 `;
 
 export const CardList = styled.ol`
+  ${listReset()}
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: ${variableGlsp(0.5)};
+`;
+
+export const CardListGrid = styled.ol`
   ${listReset()}
   grid-column: 1 / -1;
   display: grid;
