@@ -16,7 +16,7 @@ function SandboxCards() {
             title='Cities Experiencing Clearer Air During Lockdowns'
             description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce varius erat in vulputate.'
             date={new Date('2021-10-26')}
-            parentName={getString('stories').one}
+            tagLabels={[getString('stories').one]}
             parentTo='/sandbox'
             imgSrc='https://picsum.photos/id/1002/2048/1024'
             imgAlt='Generic placeholder by lorem picsum'
@@ -30,7 +30,7 @@ function SandboxCards() {
             linkTo='/'
             title='Nitrogen Dioxide (NO₂)'
             description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce varius erat in vulputate.'
-            parentName='Dataset'
+            tagLabels={['Dataset']}
             parentTo='/sandbox'
             imgSrc='https://picsum.photos/id/1002/2048/1024'
             imgAlt='Generic placeholder by lorem picsum'

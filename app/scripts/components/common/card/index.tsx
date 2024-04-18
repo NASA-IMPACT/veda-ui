@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, ReactNode } from 'react';
+import React, { MouseEventHandler } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -97,6 +97,11 @@ function renderCardType({ cardType }: CardItemProps) {
           -webkit-line-clamp: 2; /* number of lines to show */
                   line-clamp: 2;
           -webkit-box-orient: vertical;
+        }
+
+        #tags {
+          display: flex;
+          gap: ${glsp(0.5)};
         }
 
         ${CardLabel} {
@@ -226,18 +231,18 @@ export function ExternalLinkFlag() {
 }
 
 interface CardComponentProps {
-  title: JSX.Element;
+  title: JSX.Element | string;
   linkLabel: string;
   linkTo: string;
   className?: string;
   cardType?: CardType;
-  description?: JSX.Element;
+  description?: JSX.Element | string;
   date?: Date;
-  overline?: ReactNode;
+  overline?: JSX.Element;
   imgSrc?: string;
   imgAlt?: string;
-  parentName?: string;
   parentTo?: string;
+  tagLabels?: string[];
   footerContent?: JSX.Element;
   onCardClickCapture?: MouseEventHandler;
   onLinkClick?: MouseEventHandler;
@@ -255,7 +260,7 @@ function CardComponent(props: CardComponentProps) {
     overline,
     imgSrc,
     imgAlt,
-    parentName,
+    tagLabels,
     parentTo,
     footerContent,
     onCardClickCapture,
@@ -283,10 +288,12 @@ function CardComponent(props: CardComponentProps) {
                 <CardTitle>{title}</CardTitle>
                 <CardOverline as='div'>
                   {isExternalLink && <ExternalLinkFlag />}
-                  {!isExternalLink && parentName && parentTo && (
-                    <CardLabel as={Link} to={parentTo}>
-                      {parentName}
-                    </CardLabel>
+                  {!isExternalLink && tagLabels && parentTo && (
+                    tagLabels.map((label) => (
+                      <CardLabel as={Link} to={parentTo} key={label}>
+                        {label}
+                      </CardLabel>
+                    ))
                   )}
                   {date ? (
                     <>
@@ -326,9 +333,17 @@ function CardComponent(props: CardComponentProps) {
               <div id='body'>
                 <p>{description}</p>
               </div>
-              <CardLabel>
-                test
-              </CardLabel>
+              <div id='tags'>
+                {
+                  tagLabels && (
+                    tagLabels.map((label) => (
+                      <CardLabel key={label}>
+                        {label}
+                      </CardLabel>
+                    ))
+                  )
+                }
+              </div>
             </CardContent>
           </HorizontalCard>
         )

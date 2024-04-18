@@ -155,7 +155,7 @@ export default function RelatedContent(props: RelatedContentProps) {
                     : undefined
                 }
                 description={t.description}
-                parentName={t.parent}
+                tagLabels={[t.parent]}
                 parentTo={t.parentLink}
                 imgSrc={t.media.src}
                 imgAlt={t.media.alt}

@@ -37,6 +37,7 @@ import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
 import { allDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import {
+  getAllTaxonomyValues,
   getTaxonomy,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
@@ -242,11 +243,12 @@ function DataCatalog() {
               <Cards>
                 {displayDatasets.map((d) => {
                   const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
+                  const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
                   return (
                     <li key={d.id}>
                       <Card
-                        // cardType='cover'
                         cardType='horizontal-info'
+                        tagLabels={allTaxonomyValues}
                         overline={
                           <CardMeta>
                             <DatasetClassification dataset={d} />

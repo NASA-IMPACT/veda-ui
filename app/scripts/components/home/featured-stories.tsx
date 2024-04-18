@@ -80,7 +80,7 @@ function FeaturedStories() {
                     linkLabel='View more'
                     linkTo={d.asLink?.url ?? getStoryPath(d)}
                     title={d.name}
-                    parentName={getString('stories').one}
+                    tagLabels={[getString('stories').one]}
                     parentTo={STORIES_PATH}
                     description={i === 0 ? d.description : undefined}
                     date={d.pubDate ? new Date(d.pubDate) : undefined}

@@ -110,3 +110,12 @@ export function getTaxonomy(
 
   return list.find((t) => t.name === taxonomyName);
 }
+
+export function getAllTaxonomyValues(
+  data: DatasetData | StoryData | Taxonomy[]
+) {
+  const list = Array.isArray(data) ? data : data.taxonomy;
+  const allValues = list.map((l) => l.values).flat();
+  return allValues;
+}
+
