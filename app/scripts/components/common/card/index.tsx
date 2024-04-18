@@ -16,6 +16,7 @@ import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
 import { getLinkProps } from '$utils/url';
+import { Pill } from '$styles/pill';
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -87,10 +88,10 @@ function renderCardType({ cardType }: CardItemProps) {
           font-size: ${variableBaseType('0.7rem')};
         }
         
-        #body {
+        #description {
           font-size: ${variableBaseType('0.6rem')};
-          height: 4rem;
-          padding: 1rem 0;
+          height: 3rem;
+          margin: 0.5rem 0;
           overflow: hidden;
           text-overflow: ellipsis;
           display: -webkit-box; /* @TODO-SANDRA: Fix this, this is causing an issue */
@@ -103,12 +104,6 @@ function renderCardType({ cardType }: CardItemProps) {
           display: flex;
           gap: ${glsp(0.5)};
         }
-
-        ${CardLabel} {
-          position: static;
-          width: fit-content;
-        }
-
       `;
     default:
       return css`
@@ -330,16 +325,16 @@ function CardComponent(props: CardComponentProps) {
             </CardImage>
             <CardContent>
               <CardTitle>{title}</CardTitle>
-              <div id='body'>
+              <div id='description'>
                 <p>{description}</p>
               </div>
               <div id='tags'>
                 {
                   tagLabels && (
                     tagLabels.map((label) => (
-                      <CardLabel key={label}>
+                      <Pill variation='primary' key={label}>
                         {label}
-                      </CardLabel>
+                      </Pill>
                     ))
                   )
                 }

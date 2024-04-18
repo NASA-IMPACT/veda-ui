@@ -102,6 +102,7 @@ export const TAXONOMY_SOURCE = 'Source';
 export const TAXONOMY_GRADE = 'Grade';
 export const TAXONOMY_UNCERTAINTY = 'Uncertainty';
 
+// @TODO-SANDRA: Move these to a commun utils for just taxonomies
 export function getTaxonomy(
   data: DatasetData | StoryData | Taxonomy[],
   taxonomyName: string
@@ -119,3 +120,8 @@ export function getAllTaxonomyValues(
   return allValues;
 }
 
+export function getTaxonomyById(group: string, id: string, taxonomies: Taxonomy[]) {
+  const groupValues = taxonomies.find((t) => t.name == group)?.values;
+  const taxonomy = groupValues?.filter((value) => value.id == id)[0];
+  return {...taxonomy, ...{taxonomy: group}};
+}

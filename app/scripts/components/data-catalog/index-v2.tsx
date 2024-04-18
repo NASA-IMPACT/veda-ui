@@ -36,6 +36,7 @@ import { allDatasetsWithEnhancedLayers } from '$components/exploration/data-util
 import {
   getAllTaxonomyValues,
   getTaxonomy,
+  getTaxonomyById,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
@@ -65,12 +66,13 @@ const BrowseSection = styled.div`
 `;
 
 const Cards = styled(CardList)`
-  padding: 2rem 0 0 2rem;
+  padding: 0 0 0 2rem;
 `;
 
 const Tags = styled.div`
   display: flex;
   flex-wrap: wrap;
+  padding: 0 0 2.4rem 2rem;
 `;
 
 const PlainTextButton = styled.button`
@@ -83,6 +85,10 @@ const PlainTextButton = styled.button`
   &:hover {
     color: ${themeVal('color.primary-800')};
   }
+`;
+
+const EmptyState = styled(EmptyHub)`
+  margin-left: 2rem;
 `;
 
 export const sortOptions = [{ id: 'name', name: 'Name' }];
@@ -184,6 +190,11 @@ function DataCatalog() {
 
   const { taxonomies, sortField, sortDir, onAction } = controlVars;
   const search = controlVars.search ?? '';
+  let urlTaxonomyItems: any[] = [];
+  
+  if (taxonomies) {
+    urlTaxonomyItems = Object.entries(taxonomies).map(([key, val]) => getTaxonomyById(key, val, datasetTaxonomies)) || [];
+  }
 
   const displayDatasets = useMemo(
     () =>
@@ -235,6 +246,24 @@ function DataCatalog() {
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
 
+  const renderTags = () => {
+    if(allSelectedFilters.length > 0 || urlTaxonomyItems.length > 0) {
+      return (
+        <Tags>
+          {
+            (allSelectedFilters.length > 0) ? (
+              allSelectedFilters.map((filter) => <FilterTag key={filter.id} item={filter} onClick={handleClearTag} />)
+            ) : (
+              urlTaxonomyItems.map((filter) => <FilterTag key={filter.id} item={filter} onClick={handleClearTag} />)
+            )
+          }
+          <PlainTextButton onClick={handleClearTags}>Clear all</PlainTextButton>
+        </Tags>
+      );
+    }
+    return null;
+  };
+
   return (
     <PageMainContent>
       <LayoutProps
@@ -268,18 +297,7 @@ function DataCatalog() {
             allSelected={allSelectedFilters}
           />
           <CatalogWrapper>
-            {
-              allSelectedFilters.length > 0 && (
-                <Tags>
-                  {
-                    allSelectedFilters.map((filter) => <FilterTag key={filter.id} item={filter} onClick={handleClearTag} />)
-                  }
-                  <PlainTextButton onClick={handleClearTags}>Clear all</PlainTextButton>
-                </Tags>
-
-              )
-            }
-
+            {renderTags()}
             {displayDatasets.length ? (
               <Cards>
                 {displayDatasets.map((d) => {
@@ -382,9 +400,9 @@ function DataCatalog() {
                 })}
               </Cards>
             ) : (
-              <EmptyHub>
+              <EmptyState>
                 There are no datasets to show with the selected filters.
-              </EmptyHub>
+              </EmptyState>
             )}
           </CatalogWrapper>
         </Content>

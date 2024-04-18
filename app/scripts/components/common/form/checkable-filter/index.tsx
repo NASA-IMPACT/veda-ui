@@ -18,8 +18,15 @@ const FilterTitle = styled.div`
   display: flex;
   justify-content: space-between;
 
-  .title-selected {
-    gap: ${variableGlsp()};
+  #title-selected {
+    display: flex;
+    flex-direction: column;
+    gap: ${variableGlsp(0.1)};
+  }
+
+  span {
+    font-size: 1rem;
+    color: ${themeVal('color.base-500')};
   }
 `;
 
@@ -66,7 +73,7 @@ export interface OptionItem {
 
 export default function CheckableFilters(props: CheckableFiltersProps) {
   const {items, title, onChanges, globallySelected, tagItemCleared} = props;
-  const [show, setShow] = useState<boolean>(true);
+  const [show, setShow] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
   const [selected, setSelected] = useState<OptionItem[]>([]);
 
@@ -76,6 +83,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
       name: e.target.name,
       id: e.target.id
     };
+
     if(e.target.checked) {
       setCount((prevValue) => prevValue + 1);
       setSelected([...selected, optionItem]); // Local
@@ -98,7 +106,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
   }, [globallySelected]);
 
   useEffect(() => {
-    if(tagItemCleared && globallySelected.length !== 0) {
+    if(tagItemCleared?.item && globallySelected.length !== 0) {
       setCount((prevValue) => prevValue - 1);
       setSelected(selected.filter((item) => item.id !== tagItemCleared.item?.id));
       tagItemCleared?.callback?.(undefined);
