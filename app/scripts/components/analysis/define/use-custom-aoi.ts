@@ -22,6 +22,97 @@ function getNumPoints(feature: Feature<Polygon>): number {
   }, 0);
 }
 
+export function getAoiAppropriateFeatures(geojson) {
+
+  let warnings: string[] = [];
+
+  if (
+    geojson.features.some(
+      (feature) =>
+        !['MultiPolygon', 'Polygon'].includes(feature.geometry.type)
+    )
+  ) {
+    throw new Error(
+      'Wrong geometry type. Only polygons or multi polygons are accepted.'
+    );
+  }
+
+  const features: Feature<Polygon>[] = geojson.features.reduce(
+    (acc, feature: Feature<Polygon | MultiPolygon>) => {
+      if (feature.geometry.type === 'MultiPolygon') {
+        return acc.concat(
+          multiPolygonToPolygons(feature as Feature<MultiPolygon>)
+        );
+      }
+
+      return acc.concat(feature);
+    },
+    []
+  );
+
+  if (features.length > 200) {
+    throw new Error('Only files with up to 200 polygons are accepted.');
+  }
+
+  // Simplify features;
+  const originalTotalFeaturePoints = features.reduce(
+    (acc, f) => acc + getNumPoints(f),
+    0
+  );
+  let numPoints = originalTotalFeaturePoints;
+  let tolerance = 0.001;
+
+  // Remove holes from polygons as they're not supported.
+  let polygonHasRings = false;
+  let simplifiedFeatures = features.map<Feature<Polygon>>((feature) => {
+    if (feature.geometry.coordinates.length > 1) {
+      polygonHasRings = true;
+      return {
+        ...feature,
+        geometry: {
+          type: 'Polygon',
+          coordinates: [feature.geometry.coordinates[0]]
+        }
+      };
+    }
+
+    return feature;
+  });
+
+  if (polygonHasRings) {
+    warnings = [
+      ...warnings,
+      'Polygons with rings are not supported and were simplified to remove them'
+    ];
+  }
+
+  // If we allow up to 200 polygons and each polygon needs 4 points, we need
+  // at least 800, give an additional buffer and we get 1000.
+  while (numPoints > 1000 && tolerance < 5) {
+    simplifiedFeatures = simplifiedFeatures.map((feature) =>
+      simplify(feature, { tolerance })
+    );
+    numPoints = simplifiedFeatures.reduce(
+      (acc, f) => acc + getNumPoints(f),
+      0
+    );
+    tolerance = Math.min(tolerance * 1.8, 5);
+  }
+
+  if (originalTotalFeaturePoints !== numPoints) {
+    warnings = [
+      ...warnings,
+      `The geometry has been simplified (${round(
+        (1 - numPoints / originalTotalFeaturePoints) * 100
+      )} % less).`
+    ];
+  }
+  return {
+    simplifiedFeatures,
+    warnings
+  };
+}
+
 function useCustomAoI() {
   const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
   const [uploadFileError, setUploadFileError] = useState<string | null>(null);
@@ -68,103 +159,22 @@ function useCustomAoI() {
         setError('Error uploading file: Invalid GeoJSON');
         return;
       }
+      try {
+        const { simplifiedFeatures, warnings } = getAoiAppropriateFeatures(geojson);
 
-      let warnings: string[] = [];
-
-      if (
-        geojson.features.some(
-          (feature) =>
-            !['MultiPolygon', 'Polygon'].includes(feature.geometry.type)
-        )
-      ) {
-        setError(
-          'Wrong geometry type. Only polygons or multi polygons are accepted.'
+        setUploadFileWarnings(warnings);
+        setUploadFileError(null);
+        setFeatureCollection(
+          makeFeatureCollection(
+            simplifiedFeatures.map((feat, i) => ({
+              id: `aoi-upload-${i}`,
+              ...feat
+            }))
+          )
         );
-        return;
+      } catch (e) {
+        setError(e);
       }
-
-      const features: Feature<Polygon>[] = geojson.features.reduce(
-        (acc, feature: Feature<Polygon | MultiPolygon>) => {
-          if (feature.geometry.type === 'MultiPolygon') {
-            return acc.concat(
-              multiPolygonToPolygons(feature as Feature<MultiPolygon>)
-            );
-          }
-
-          return acc.concat(feature);
-        },
-        []
-      );
-
-      if (features.length > 200) {
-        setError('Only files with up to 200 polygons are accepted.');
-        return;
-      }
-
-      // Simplify features;
-      const originalTotalFeaturePoints = features.reduce(
-        (acc, f) => acc + getNumPoints(f),
-        0
-      );
-      let numPoints = originalTotalFeaturePoints;
-      let tolerance = 0.001;
-
-      // Remove holes from polygons as they're not supported.
-      let polygonHasRings = false;
-      let simplifiedFeatures = features.map<Feature<Polygon>>((feature) => {
-        if (feature.geometry.coordinates.length > 1) {
-          polygonHasRings = true;
-          return {
-            ...feature,
-            geometry: {
-              type: 'Polygon',
-              coordinates: [feature.geometry.coordinates[0]]
-            }
-          };
-        }
-
-        return feature;
-      });
-
-      if (polygonHasRings) {
-        warnings = [
-          ...warnings,
-          'Polygons with rings are not supported and were simplified to remove them'
-        ];
-      }
-
-      // If we allow up to 200 polygons and each polygon needs 4 points, we need
-      // at least 800, give an additional buffer and we get 1000.
-      while (numPoints > 1000 && tolerance < 5) {
-        simplifiedFeatures = simplifiedFeatures.map((feature) =>
-          simplify(feature, { tolerance })
-        );
-        numPoints = simplifiedFeatures.reduce(
-          (acc, f) => acc + getNumPoints(f),
-          0
-        );
-        tolerance = Math.min(tolerance * 1.8, 5);
-      }
-
-      if (originalTotalFeaturePoints !== numPoints) {
-        warnings = [
-          ...warnings,
-          `The geometry has been simplified (${round(
-            (1 - numPoints / originalTotalFeaturePoints) * 100
-          )} % less).`
-        ];
-      }
-
-      setUploadFileWarnings(warnings);
-      setUploadFileError(null);
-      setFeatureCollection(
-        makeFeatureCollection(
-          simplifiedFeatures.map((feat, i) => ({
-            id: `aoi-upload-${i}`,
-            ...feat
-          }))
-        )
-      );
     };
 
     const onError = () => {

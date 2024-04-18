@@ -19,6 +19,7 @@ import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
 import { aoiDeleteAllAtom } from './atoms';
 
+import PresetSelector from './preset-selector';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
 import { ShortcutCode } from '$styles/shortcut-code';
@@ -134,7 +135,7 @@ function CustomAoI({
             size='small'
             data-tour='analysis-tour'
           >
-            <ToolbarLabel>Analysis</ToolbarLabel>
+            <PresetSelector onConfirm={onConfirm} />
             <VerticalDivider />
             <TipToolbarIconButton
               tipContent='Draw an area of interest'
