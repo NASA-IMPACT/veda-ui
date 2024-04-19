@@ -96,6 +96,39 @@ function CustomAoI({
     mbDraw.add(fc);
   },[map, onUpdate]);
 
+  const [presetId, setSelectedPresetId] = useState([]);
+  const onPresetConfirm = useCallback((features: Feature<Polygon>[]) => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    mbDraw.deleteAll();
+    aoiDeleteAll();
+    onUpdate({ features });
+    const fc = {
+      type: 'FeatureCollection',
+      features
+    };
+    const bounds = bbox(fc);
+    const center = centroid(fc as AllGeoJSON).geometry.coordinates;
+    map.flyTo({
+      center,
+      zoom: getZoomFromBbox(bounds)
+    });
+    const pids = mbDraw.add(fc);
+    setSelectedPresetId(pids);
+  },[map, onUpdate, aoiDeleteAll]);
+
+  const startDrawing = useCallback(() => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    if (presetId.length) {
+      mbDraw.changeMode('simple_select', {
+        featureIds: presetId
+      });
+      mbDraw.trash();
+    }
+    setIsDrawing(!isDrawing);
+  }, [map, presetId, isDrawing, setIsDrawing]);
+
   const onTrashClick = useCallback(() => {
     // We need to programmatically access the mapbox draw trash method which
     // will do different things depending on the selected mode.
@@ -143,13 +176,13 @@ function CustomAoI({
             size='small'
             data-tour='analysis-tour'
           >
-            <PresetSelector onConfirm={onConfirm} />
+            <PresetSelector onConfirm={onPresetConfirm} />
             <VerticalDivider />
             <TipToolbarIconButton
               tipContent='Draw an area of interest'
               tipProps={{ placement: 'bottom' }}
               active={isDrawing}
-              onClick={() => setIsDrawing(!isDrawing)}
+              onClick={startDrawing}
             >
               <CollecticonPencil meaningful title='Draw AOI' />
             </TipToolbarIconButton>
