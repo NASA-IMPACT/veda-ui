@@ -63,6 +63,8 @@ function CustomAoI({
   disableReason?: React.ReactNode;
 }) {
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
+  const [selectedState, setSelectedState] = useState('');
+  const [presetId, setSelectedPresetId] = useState([]);
 
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
@@ -96,7 +98,6 @@ function CustomAoI({
     mbDraw.add(fc);
   },[map, onUpdate]);
 
-  const [presetId, setSelectedPresetId] = useState([]);
   const onPresetConfirm = useCallback((features: Feature<Polygon>[]) => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
@@ -115,6 +116,9 @@ function CustomAoI({
     });
     const pids = mbDraw.add(fc);
     setSelectedPresetId(pids);
+    mbDraw.changeMode('simple_select', {
+      featureIds: pids
+    });
   },[map, onUpdate, aoiDeleteAll]);
 
   const startDrawing = useCallback(() => {
@@ -126,6 +130,7 @@ function CustomAoI({
       });
       mbDraw.trash();
     }
+    setSelectedState(''); // Reset preset
     setIsDrawing(!isDrawing);
   }, [map, presetId, isDrawing, setIsDrawing]);
 
@@ -134,12 +139,15 @@ function CustomAoI({
     // will do different things depending on the selected mode.
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
+    setSelectedState('');
+
 
     // This is a peculiar situation:
     // If we are in direct select (to select/add vertices) but not vertex is
     // selected, the trash method doesn't do anything. So, in this case, we
     // trigger the delete for the whole feature.
     const selectedFeatures = mbDraw.getSelected().features;
+
     if (
       mbDraw.getMode() === 'direct_select' &&
       selectedFeatures.length &&
@@ -152,7 +160,7 @@ function CustomAoI({
     }
 
     // If nothing selected, delete all.
-    if (features.every((f) => !f.selected)) {
+    if (features.find((f) => !f.selected)) { // When added through preset, selected is true
       mbDraw.deleteAll();
       // The delete all method does not trigger the delete event, so we need to
       // manually delete all the feature from the atom.
@@ -176,7 +184,11 @@ function CustomAoI({
             size='small'
             data-tour='analysis-tour'
           >
-            <PresetSelector onConfirm={onPresetConfirm} />
+            <PresetSelector 
+              selectedState={selectedState}
+              setSelectedState={setSelectedState}
+              onConfirm={onPresetConfirm}
+            />
             <VerticalDivider />
             <TipToolbarIconButton
               tipContent='Draw an area of interest'

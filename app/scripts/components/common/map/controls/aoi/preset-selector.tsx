@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Feature, Polygon } from 'geojson';
 import usePresetAOI from '../hooks/use-preset-aoi';
 
@@ -61,8 +61,11 @@ const analysisStatesPreset = ["Pennsylvania",
 ].map(e => ({label: e, value: e}));
 
 
-export default function PresetSelector({ onConfirm }: {onConfirm:  (features: Feature<Polygon>[]) => void}) {
-  const [selectedState, setSeletcedState] = useState('');
+export default function PresetSelector({ selectedState, setSelectedState, onConfirm }: {
+  selectedState: string,
+  setSelectedState: (state: string) => void,
+  onConfirm: (features: Feature<Polygon>[]) => void
+}) {
   const { features } = usePresetAOI(selectedState);
 
   useEffect(() => {
@@ -75,7 +78,13 @@ export default function PresetSelector({ onConfirm }: {onConfirm:  (features: Fe
   },[features]);
 
   return (
-    <select style={{maxWidth: '300px'}} onChange={(e) => setSeletcedState(e.target.value)} name='presetSelector' id='preset-selector'>
+    <select
+      id='preset-selector'
+      name='presetSelector'
+      style={{maxWidth: '200px'}} 
+      value={selectedState}
+      onChange={(e) => setSelectedState(e.target.value)}
+    >
       <option> Select area to analyze</option>
       <optgroup label='Country' />
         <option value='United States'> United States</option>
