@@ -50,6 +50,7 @@ const BrowseFoldHeader = styled(FoldHeader)`
 
 const Content = styled.div`
   display: flex;
+  margin-bottom: 8rem;
 `;
 
 const CatalogWrapper = styled.div`
@@ -209,7 +210,7 @@ function DataCatalog() {
   );
 
   ///////////
-  const [allSelectedFilters, setAllSelectedFilters] = React.useState<OptionItem[]>([]);
+  const [allSelectedFilters, setAllSelectedFilters] = React.useState<OptionItem[]>(urlTaxonomyItems);
   const [clearedTagItem, setClearedTagItem] = React.useState<OptionItem>();
 
   const prevSelectedFilters = usePrevious(allSelectedFilters) || [];

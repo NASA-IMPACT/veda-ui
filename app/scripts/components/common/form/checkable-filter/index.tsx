@@ -73,7 +73,8 @@ export interface OptionItem {
 
 export default function CheckableFilters(props: CheckableFiltersProps) {
   const {items, title, onChanges, globallySelected, tagItemCleared} = props;
-  const [show, setShow] = useState<boolean>(false);
+  // const [show, setShow] = useState<boolean>(false);
+  const [show, setShow] = useState<boolean>(true); // @TODO-SANDRA: Keep open for fast testing purposes for now
   const [count, setCount] = useState<number>(0);
   const [selected, setSelected] = useState<OptionItem[]>([]);
 
@@ -96,22 +97,30 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
     }
   }, [selected]);
 
-  const isChecked = (item: OptionItem) => selected.map(item => item.id).includes(item.id);
-
+  const isChecked = (item: OptionItem) => globallySelected.map(item => item.id).includes(item.id);
+  
   useEffect(() => {
     if(!globallySelected || globallySelected.length === 0) {
       setCount(0);
-      setSelected([]);
     }
   }, [globallySelected]);
 
   useEffect(() => {
-    if(tagItemCleared?.item && globallySelected.length !== 0) {
+    if(tagItemCleared?.item && globallySelected.length > 0) {
       setCount((prevValue) => prevValue - 1);
       setSelected(selected.filter((item) => item.id !== tagItemCleared.item?.id));
       tagItemCleared?.callback?.(undefined);
     }
   }, [tagItemCleared, globallySelected]);
+
+  // @NOTE-SANDRA: Idk why this is needed for the tags to persist... still a mystery to me
+  useEffect(() => {
+    if(globallySelected.length > 0) {
+      setSelected(selected.filter((item) => item.id));
+    } else {
+      setSelected([]);
+    }
+  }, [globallySelected]);
 
   return (
     <FilterMenu>
