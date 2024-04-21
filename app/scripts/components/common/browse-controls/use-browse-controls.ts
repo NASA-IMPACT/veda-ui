@@ -79,12 +79,12 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
     []
   );
 
-  const [taxonomies, setTaxonomies] = useQsState.memo<Record<string, string>>(
+  const [taxonomies, setTaxonomies] = useQsState.memo<Record<string, string | string[]>>(
     {
       key: Actions.TAXONOMY,
       default: {},
-      dehydrator: (v) => JSON.stringify(v),
-      hydrator: (v) => (v ? JSON.parse(v) : {})
+      dehydrator: (v) => JSON.stringify(v), // dehydrator defines how a value is stored in the url
+      hydrator: (v) => (v ? JSON.parse(v) : {}) // hydrator defines how a value is read from the url
     },
     []
   );
@@ -108,35 +108,23 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
         case Actions.TAXONOMY:
           {
             const { key, value: val } = value;
-            if (val === optionAll.id) {
-              setTaxonomies(omit(taxonomies, key));
+            if (!(val instanceof Array)) {
+              if (val === optionAll.id) {
+                setTaxonomies(omit(taxonomies, key));
+              } else {
+                setTaxonomies(set({ ...taxonomies }, key, val));
+              }
             } else {
-              setTaxonomies(set({ ...taxonomies }, key, val));
+              if(taxonomies && (key in taxonomies)) {
+                if(taxonomies[key] instanceof Array) {
+                  (taxonomies[key] as string[]).push(val[0]);
+                  setTaxonomies(set({ ...taxonomies }, key, taxonomies[key]));
+                }
+              } else {
+                setTaxonomies(set({ ...taxonomies }, key, val));
+              }
             }
           }
-        // case Actions.TAXONOMY:
-        //   {
-        //     const { key, value: val, action } = value;
-        //     if (val === optionAll.id && !action) {
-        //       setTaxonomies(omit(taxonomies, key));
-        //     } else if (action == 'add') {
-        //       console.log(`taxonomies_in_add: `, taxonomies, key, val)
-        //       const values = taxonomies?.[key];
-        //       if (!values?.length) {
-        //         const v = new Array();
-        //         v.push(val)
-        //         setTaxonomies(set({ ...taxonomies }, key, v));
-        //       } else {
-        //         values.push(val)
-        //       }
-        //     } else if (action == 'remove') {
-        //       console.log(`taxonomies_in_remove: `, taxonomies, key, val)
-        //       setTaxonomies(omit(taxonomies, key));
-        //     }
-        //     else {
-        //       setTaxonomies(set({ ...taxonomies }, key, [val]));
-        //     }
-        //   }
           break;
       }
     },

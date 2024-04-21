@@ -98,14 +98,13 @@ export const prepareDatasets = (
   data: DatasetData[],
   options: {
     search: string;
-    taxonomies: Record<string, string> | null;
+    taxonomies: Record<string, string | string[]> | null;
     sortField: string | null;
     sortDir: string | null;
     filterLayers: boolean | null;
   }
 ) => {
   const { sortField, sortDir, search, taxonomies, filterLayers } = options;
-
   let filtered = [...data];
 
   // Does the free text search appear in specific fields?
@@ -145,13 +144,24 @@ export const prepareDatasets = (
         }));
   }
 
-
+  // taxonomies &&
+  //   Object.entries(taxonomies).forEach(([name, value]) => {
+  //     if (value !== optionAll.id) {
+  //       filtered = filtered.filter((d) =>
+  //         d.taxonomy.some(
+  //           (t) => t.name === name && t.values.some((v) => v.id === value)
+  //         )
+  //       );
+  //     }
+  //   });
+  
+  // @NOTE-SANDRA: This works for arrays
   taxonomies &&
     Object.entries(taxonomies).forEach(([name, value]) => {
-      if (value !== optionAll.id) {
+      if (!value.includes(optionAll.id)) {
         filtered = filtered.filter((d) =>
           d.taxonomy.some(
-            (t) => t.name === name && t.values.some((v) => v.id === value)
+            (t) => t.name === name && t.values.some((v) => value.includes(v.id))
           )
         );
       }
@@ -192,7 +202,7 @@ function DataCatalog() {
   const { taxonomies, sortField, sortDir, onAction } = controlVars;
   const search = controlVars.search ?? '';
   let urlTaxonomyItems: any[] = [];
-  
+
   if (taxonomies) {
     urlTaxonomyItems = Object.entries(taxonomies).map(([key, val]) => getTaxonomyById(key, val, datasetTaxonomies)) || [];
   }
@@ -218,7 +228,7 @@ function DataCatalog() {
   const handleChangeAllSelectedFilters = (item: OptionItem, action: 'add' | 'remove') => {
     if(action == 'add') {
       setAllSelectedFilters([...allSelectedFilters, item]);
-      onAction(Actions.TAXONOMY, { key: item.taxonomy, value: item.id }); // @TODO-SANDRA: Revisit this... we need an AND inclusivity here
+      onAction(Actions.TAXONOMY, { key: item.taxonomy, value: [item.id] });
     } else if(action == 'remove') {
       setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
     }
