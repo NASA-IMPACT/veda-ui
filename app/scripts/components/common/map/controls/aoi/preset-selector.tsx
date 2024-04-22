@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import { Feature, Polygon } from 'geojson';
+import { Button } from '@devseed-ui/button';
+import {
+  CollecticonDiscXmark
+} from '@devseed-ui/collecticons';
 import usePresetAOI from '../hooks/use-preset-aoi';
-
 const analysisStatesPreset = ["Pennsylvania",
 "New Mexico",
 "Illinois",
@@ -61,10 +64,11 @@ const analysisStatesPreset = ["Pennsylvania",
 ].map(e => ({label: e, value: e}));
 
 
-export default function PresetSelector({ selectedState, setSelectedState, onConfirm }: {
+export default function PresetSelector({ selectedState, setSelectedState, onConfirm, resetPreset }: {
   selectedState: string,
   setSelectedState: (state: string) => void,
-  onConfirm: (features: Feature<Polygon>[]) => void
+  onConfirm: (features: Feature<Polygon>[]) => void,
+  resetPreset: () => void
 }) {
   const { features } = usePresetAOI(selectedState);
 
@@ -78,21 +82,34 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
   },[features]);
 
   return (
-    <select
-      id='preset-selector'
-      name='presetSelector'
-      style={{maxWidth: '200px'}} 
-      value={selectedState}
-      onChange={(e) => setSelectedState(e.target.value)}
-    >
-      <option> Select area to analyze</option>
-      <optgroup label='Country' />
-        <option value='United States'> United States</option>
-      <optgroup label='State' />
-      {analysisStatesPreset.map(e => {
-        return (<option key={`${e.value}-option-analysis`} value={e.value}>{e.label}</option>);
-      })}
-    </select>
+    <div style={{position: 'relative'}}>
+      <select
+        id='preset-selector'
+        name='presetSelector'
+        style={{maxWidth: '200px', height: '25px'}} 
+        value={selectedState}
+        onChange={(e) => setSelectedState(e.target.value)}
+      >
+        <option> Select an area to analyze</option>
+        <optgroup label='Country' />
+          <option value='United States'> United States</option>
+        <optgroup label='State' />
+        {analysisStatesPreset.map(e => {
+          return (<option key={`${e.value}-option-analysis`} value={e.value}>{e.label}</option>);
+        })}
+      </select>
+      {selectedState &&
+      
+      <Button
+      style={{position: 'absolute', right: '10px', height: '25px'}}
+      fitting='skinny'
+      onClick={() => {
+        resetPreset();
+      }}
+      >
+        <CollecticonDiscXmark meaningful width='12px' height='12px' title='Clear preset' />
+      </Button>}
+    </div>
   );
 
 

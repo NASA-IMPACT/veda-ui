@@ -13,25 +13,39 @@ function usePresetAOI(selectedState) {
 
   useEffect(() => {
     if (!selectedState) return;
+    const abortController = new AbortController();  // Create an instance of AbortController
 
     async function loadData() {
-      const res = await axios.get(`${presetFilePath}${selectedState}${presetSuffix}`);
-      const geojson = res.data;
-      if (!geojson?.features?.length) {
-        setError('Error uploading file: Invalid GeoJSON');
-        return;
-      }
-
-      const { simplifiedFeatures } = getAoiAppropriateFeatures(geojson);
-  
-      setFeatures(
-        simplifiedFeatures.map((feat, i) => ({
+      try {
+        const res = await axios.get(`${presetFilePath}${selectedState}${presetSuffix}`, {
+          signal: abortController.signal  // Pass the abort signal to Axios
+        });
+        const geojson = res.data;
+        if (!geojson?.features?.length) {
+          setError('Error: Invalid GeoJSON');
+          return;
+        }
+        const { simplifiedFeatures } = getAoiAppropriateFeatures(geojson);
+    
+        setFeatures(simplifiedFeatures.map((feat, i) => ({
           id: `${new Date().getTime().toString().slice(-4)}${i}`,
           ...feat
-        }))
-      );
+        })));
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          // Request canceled
+          setError(error.message);
+        } else {
+          setError('Error: Unable to load data');
+        }
+      }
     }
+
     loadData();
+
+    return () => {
+      abortController.abort();
+    };
   }, [selectedState]);
 
   const reset = useCallback(() => {

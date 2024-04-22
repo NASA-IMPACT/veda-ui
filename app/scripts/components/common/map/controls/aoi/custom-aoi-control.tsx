@@ -30,7 +30,7 @@ import { ShortcutCode } from '$styles/shortcut-code';
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
   border-radius: ${themeVal('shape.rounded')};
-  padding: ${glsp(0, 0.5)};
+  padding: ${glsp(0.25)};
   box-shadow: ${themeVal('boxShadow.elevationC')};
 
   ${({ visuallyDisabled }) =>
@@ -64,7 +64,8 @@ function CustomAoI({
 }) {
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
   const [selectedState, setSelectedState] = useState('');
-  const [presetId, setSelectedPresetId] = useState([]);
+  const [presetIds, setPresetIds] = useState([]);
+  const [fileUploadedIds, setFileUplaodedIds] = useState([]);
 
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
@@ -84,6 +85,7 @@ function CustomAoI({
     const mbDraw = map?._drawControl;
     setAoIModalRevealed(false);
     if (!mbDraw) return;
+    resetAll();
     onUpdate({ features });
     const fc = {
       type: 'FeatureCollection',
@@ -95,14 +97,53 @@ function CustomAoI({
       center,
       zoom: getZoomFromBbox(bounds)
     });
-    mbDraw.add(fc);
+    const addedAoisId = mbDraw.add(fc);
+    mbDraw.changeMode('simple_select', {
+      featureIds: addedAoisId
+    });
+    setFileUplaodedIds(addedAoisId);
   },[map, onUpdate]);
+
+  const resetPreset = useCallback(() => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    if (presetIds.length) {
+      mbDraw.changeMode('simple_select', {
+        featureIds: presetIds
+      });
+      mbDraw.trash();
+    }
+    setSelectedState('');
+    setPresetIds([]);
+  },[presetIds]);
+
+  const resetFileUploaded = useCallback(()=> {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    
+    if (fileUploadedIds.length) {
+      mbDraw.changeMode('simple_select', {
+        featureIds: fileUploadedIds
+      });
+      mbDraw.trash();
+    }
+    setFileUplaodedIds([]);
+  },[fileUploadedIds]);
+
+  const resetAll = useCallback(() =>  {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    // Reset preset
+    resetPreset();
+    resetFileUploaded();
+    mbDraw.deleteAll();
+    aoiDeleteAll();
+  },[aoiDeleteAll, resetPreset, resetFileUploaded]);
 
   const onPresetConfirm = useCallback((features: Feature<Polygon>[]) => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
-    mbDraw.deleteAll();
-    aoiDeleteAll();
+    resetAll();
     onUpdate({ features });
     const fc = {
       type: 'FeatureCollection',
@@ -115,39 +156,32 @@ function CustomAoI({
       zoom: getZoomFromBbox(bounds)
     });
     const pids = mbDraw.add(fc);
-    setSelectedPresetId(pids);
+    setPresetIds(pids);
     mbDraw.changeMode('simple_select', {
       featureIds: pids
     });
-  },[map, onUpdate, aoiDeleteAll]);
 
-  const startDrawing = useCallback(() => {
+  },[map, onUpdate, resetAll]);
+
+  const toggleDrawing = useCallback(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
-    if (presetId.length) {
-      mbDraw.changeMode('simple_select', {
-        featureIds: presetId
-      });
-      mbDraw.trash();
-    }
-    setSelectedState(''); // Reset preset
+    resetPreset();
+    resetFileUploaded();
     setIsDrawing(!isDrawing);
-  }, [map, presetId, isDrawing, setIsDrawing]);
+  }, [map, isDrawing, setIsDrawing, resetPreset, resetFileUploaded]);
 
   const onTrashClick = useCallback(() => {
     // We need to programmatically access the mapbox draw trash method which
     // will do different things depending on the selected mode.
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
-    setSelectedState('');
-
 
     // This is a peculiar situation:
     // If we are in direct select (to select/add vertices) but not vertex is
     // selected, the trash method doesn't do anything. So, in this case, we
     // trigger the delete for the whole feature.
-    const selectedFeatures = mbDraw.getSelected().features;
-
+    const selectedFeatures = mbDraw.getSelected()?.features;
     if (
       mbDraw.getMode() === 'direct_select' &&
       selectedFeatures.length &&
@@ -158,9 +192,8 @@ function CustomAoI({
         featureIds: selectedFeatures.map((f) => f.id)
       });
     }
-
     // If nothing selected, delete all.
-    if (features.find((f) => !f.selected)) { // When added through preset, selected is true
+    if (features.every((f) => !f.selected)) {
       mbDraw.deleteAll();
       // The delete all method does not trigger the delete event, so we need to
       // manually delete all the feature from the atom.
@@ -188,13 +221,14 @@ function CustomAoI({
               selectedState={selectedState}
               setSelectedState={setSelectedState}
               onConfirm={onPresetConfirm}
+              resetPreset={resetPreset}
             />
             <VerticalDivider />
             <TipToolbarIconButton
               tipContent='Draw an area of interest'
               tipProps={{ placement: 'bottom' }}
               active={isDrawing}
-              onClick={startDrawing}
+              onClick={toggleDrawing}
             >
               <CollecticonPencil meaningful title='Draw AOI' />
             </TipToolbarIconButton>
