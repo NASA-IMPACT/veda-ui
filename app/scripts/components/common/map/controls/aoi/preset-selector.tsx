@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
+import styled from 'styled-components';
 import { Feature, Polygon } from 'geojson';
 import { Button } from '@devseed-ui/button';
 import {
   CollecticonDiscXmark
 } from '@devseed-ui/collecticons';
 import usePresetAOI from '../hooks/use-preset-aoi';
+
 const analysisStatesPreset = ["Pennsylvania",
 "New Mexico",
 "Illinois",
@@ -63,6 +65,22 @@ const analysisStatesPreset = ["Pennsylvania",
 "Georgia"
 ].map(e => ({label: e, value: e}));
 
+const selectorHeight = '25px';
+
+const SelectorWrapper = styled.div`
+  position: relative;
+`;
+
+const PresetSelect = styled.select`
+  max-width: 200px;
+  height: ${selectorHeight};
+`;
+
+const CancelButton = styled(Button)`
+  position: absolute;
+  right: 10px;
+  height: ${selectorHeight};
+`;
 
 export default function PresetSelector({ selectedState, setSelectedState, onConfirm, resetPreset }: {
   selectedState: string,
@@ -82,11 +100,10 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
   },[features]);
 
   return (
-    <div style={{position: 'relative'}}>
-      <select
+    <SelectorWrapper>
+      <PresetSelect
         id='preset-selector'
         name='presetSelector'
-        style={{maxWidth: '200px', height: '25px'}} 
         value={selectedState}
         onChange={(e) => setSelectedState(e.target.value)}
       >
@@ -97,19 +114,18 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
         {analysisStatesPreset.map(e => {
           return (<option key={`${e.value}-option-analysis`} value={e.value}>{e.label}</option>);
         })}
-      </select>
+      </PresetSelect>
       {selectedState &&
       
-      <Button
-      style={{position: 'absolute', right: '10px', height: '25px'}}
+      <CancelButton
       fitting='skinny'
       onClick={() => {
         resetPreset();
       }}
       >
         <CollecticonDiscXmark meaningful width='12px' height='12px' title='Clear preset' />
-      </Button>}
-    </div>
+      </CancelButton>}
+    </SelectorWrapper>
   );
 
 
