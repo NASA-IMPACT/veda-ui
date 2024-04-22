@@ -7,6 +7,7 @@ import { multiPolygonToPolygons } from '../../utils';
 import { round } from '$utils/format';
 
 const extensions = ['geojson', 'json', 'zip'];
+const eachFeatureMaxPointNum = 50;
 export const acceptExtensions = extensions.map((ext) => `.${ext}`).join(', ');
 
 export interface FileInfo {
@@ -89,8 +90,35 @@ export function getAoiAppropriateFeatures(geojson: PolygonGeojson) {
     ];
   }
 
-  // If we allow up to 200 polygons and each polygon needs 4 points, we need
-  // at least 800, give an additional buffer and we get 1000.
+  // Simplify each feature if needed to reduce point count to less than 30 points per feature
+  simplifiedFeatures = features.map((feature) => {
+    const numPoints = getNumPoints(feature);
+    if (numPoints > 30) {
+      let tolerance = 0.001;
+      let simplifiedFeature = feature;
+      // Continuously simplify the feature until it has less than or equal to 30 points
+      while (getNumPoints(simplifiedFeature) > eachFeatureMaxPointNum && tolerance < 5) {
+        simplifiedFeature = simplify(simplifiedFeature, { tolerance });
+        tolerance *= 2; // Increase tolerance to simplify more aggressively if needed
+      }
+      return simplifiedFeature;
+    }
+    return feature;
+  });
+
+  // Add a warning if any feature has been simplified to less than 30 points
+  const numberOfSimplifedFeatures = simplifiedFeatures.filter((feature, index) => {
+    return getNumPoints(feature) < getNumPoints(features[index]);
+  }).length;
+
+  if (numberOfSimplifedFeatures > 0) {
+    const featureWPrefix = numberOfSimplifedFeatures === 1? 'feature was': 'features were';
+    // eslint-disable-next-line fp/no-mutating-methods
+    warnings= [...warnings, `${numberOfSimplifedFeatures} ${featureWPrefix} simplified to have less than ${eachFeatureMaxPointNum} points.`];
+  }
+
+  // Further Simplify features in case there are a lot of features 
+  // so the sum of the points doesn't exceed 1000
   while (numPoints > 1000 && tolerance < 5) {
     simplifiedFeatures = simplifiedFeatures.map((feature) =>
       simplify(feature, { tolerance })

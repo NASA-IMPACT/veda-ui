@@ -117,13 +117,15 @@ function CustomAoI({
       mbDraw.trash();
     }
 
-    if(presetIds.length) {
+    if (presetIds.length) {
       mbDraw.changeMode('simple_select', {
         featureIds: presetIds
       });
       mbDraw.trash();
     }
-
+    setFileUplaodedIds([]);
+    setPresetIds([]);
+    setSelectedState('');
   },[presetIds, fileUploadedIds]);
 
   const onConfirm = useCallback((features: Feature<Polygon>[]) => {
@@ -185,6 +187,9 @@ function CustomAoI({
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
 
+    setSelectedState('');
+    setPresetIds([]);
+    setFileUplaodedIds([]);
     // This is a peculiar situation:
     // If we are in direct select (to select/add vertices) but not vertex is
     // selected, the trash method doesn't do anything. So, in this case, we
