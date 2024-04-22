@@ -65,6 +65,12 @@ const analysisStatesPreset = ["Pennsylvania",
 "Georgia"
 ].map(e => ({label: e, value: e}));
 
+// Disabling no mutating rule since we are mutating the copy
+// eslint-disable-next-line fp/no-mutating-methods
+const sortedPresets = [...analysisStatesPreset].sort((a,b) => {
+  return a.label.localeCompare(b.label);
+});
+
 const selectorHeight = '25px';
 
 const SelectorWrapper = styled.div`
@@ -111,7 +117,7 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
         <optgroup label='Country' />
           <option value='United States'> United States</option>
         <optgroup label='State' />
-        {analysisStatesPreset.map(e => {
+        {sortedPresets.map(e => {
           return (<option key={`${e.value}-option-analysis`} value={e.value}>{e.label}</option>);
         })}
       </PresetSelect>
