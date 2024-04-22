@@ -90,7 +90,7 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
         value={selectedState}
         onChange={(e) => setSelectedState(e.target.value)}
       >
-        <option> Select an area to analyze</option>
+        <option> Analyze an area </option>
         <optgroup label='Country' />
           <option value='United States'> United States</option>
         <optgroup label='State' />

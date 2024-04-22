@@ -81,11 +81,56 @@ function CustomAoI({
     };
   }, []);
 
+  const resetAoisOnMap = useCallback(() => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    mbDraw.deleteAll();
+    aoiDeleteAll();
+  }, [aoiDeleteAll]);
+
+  const resetForPresetSelect = useCallback(() => {
+    resetAoisOnMap();
+    setFileUplaodedIds([]);
+  },[resetAoisOnMap]);
+
+  const resetForFileUploaded = useCallback(()=> {
+    resetAoisOnMap();
+    setSelectedState('');
+    setPresetIds([]);
+  },[resetAoisOnMap]);
+
+  const resetForEmptyState = useCallback(()=> {
+    resetAoisOnMap();
+    setSelectedState('');
+    setPresetIds([]);
+    setFileUplaodedIds([]);
+  },[resetAoisOnMap]);
+
+  const resetForDrawingAoi = useCallback(() =>  {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    
+    if (fileUploadedIds.length) {
+      mbDraw.changeMode('simple_select', {
+        featureIds: fileUploadedIds
+      });
+      mbDraw.trash();
+    }
+
+    if(presetIds.length) {
+      mbDraw.changeMode('simple_select', {
+        featureIds: presetIds
+      });
+      mbDraw.trash();
+    }
+
+  },[presetIds, fileUploadedIds]);
+
   const onConfirm = useCallback((features: Feature<Polygon>[]) => {
     const mbDraw = map?._drawControl;
     setAoIModalRevealed(false);
     if (!mbDraw) return;
-    resetAll();
+    resetForFileUploaded();
     onUpdate({ features });
     const fc = {
       type: 'FeatureCollection',
@@ -102,48 +147,12 @@ function CustomAoI({
       featureIds: addedAoisId
     });
     setFileUplaodedIds(addedAoisId);
-  },[map, onUpdate]);
-
-  const resetPreset = useCallback(() => {
-    const mbDraw = map?._drawControl;
-    if (!mbDraw) return;
-    if (presetIds.length) {
-      mbDraw.changeMode('simple_select', {
-        featureIds: presetIds
-      });
-      mbDraw.trash();
-    }
-    setSelectedState('');
-    setPresetIds([]);
-  },[presetIds]);
-
-  const resetFileUploaded = useCallback(()=> {
-    const mbDraw = map?._drawControl;
-    if (!mbDraw) return;
-    
-    if (fileUploadedIds.length) {
-      mbDraw.changeMode('simple_select', {
-        featureIds: fileUploadedIds
-      });
-      mbDraw.trash();
-    }
-    setFileUplaodedIds([]);
-  },[fileUploadedIds]);
-
-  const resetAll = useCallback(() =>  {
-    const mbDraw = map?._drawControl;
-    if (!mbDraw) return;
-    // Reset preset
-    resetPreset();
-    resetFileUploaded();
-    mbDraw.deleteAll();
-    aoiDeleteAll();
-  },[aoiDeleteAll, resetPreset, resetFileUploaded]);
+  },[map, onUpdate, resetForFileUploaded]);
 
   const onPresetConfirm = useCallback((features: Feature<Polygon>[]) => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
-    resetAll();
+    resetForPresetSelect();
     onUpdate({ features });
     const fc = {
       type: 'FeatureCollection',
@@ -161,15 +170,14 @@ function CustomAoI({
       featureIds: pids
     });
 
-  },[map, onUpdate, resetAll]);
+  },[map, onUpdate, resetForPresetSelect]);
 
   const toggleDrawing = useCallback(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
-    resetPreset();
-    resetFileUploaded();
+    resetForDrawingAoi();
     setIsDrawing(!isDrawing);
-  }, [map, isDrawing, setIsDrawing, resetPreset, resetFileUploaded]);
+  }, [map, isDrawing, setIsDrawing, resetForDrawingAoi]);
 
   const onTrashClick = useCallback(() => {
     // We need to programmatically access the mapbox draw trash method which
@@ -203,7 +211,7 @@ function CustomAoI({
     mbDraw.trash();
   }, [features, aoiDeleteAll, map]);
 
-  const isAreaSelected = !!map?._drawControl.getSelected().features.length;
+  const isAreaSelected = !!map?._drawControl?.getSelected().features.length;
   const isPointSelected =
     !!map?._drawControl.getSelectedPoints().features.length;
   const hasFeatures = !!features.length;
@@ -221,7 +229,7 @@ function CustomAoI({
               selectedState={selectedState}
               setSelectedState={setSelectedState}
               onConfirm={onPresetConfirm}
-              resetPreset={resetPreset}
+              resetPreset={resetForEmptyState}
             />
             <VerticalDivider />
             <TipToolbarIconButton
