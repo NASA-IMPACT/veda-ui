@@ -235,6 +235,18 @@ export async function requestDatasetTimeseriesData({
       )
     );
 
+    if (layerStatistics.filter(e => e.mean).length === 0) {
+      return {
+        ...datasetAnalysis,
+        status: TimelineDatasetStatus.ERROR,
+        error: new ExtendedError(
+          'No valid statistics in the given time range and area of interest',
+          'ANALYSIS_NO_DATA'
+        ),
+        data: null
+      };
+    }
+
     onProgress({
       status: TimelineDatasetStatus.SUCCESS,
       meta: {
