@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { Feature, Polygon } from 'geojson';
 import { Button } from '@devseed-ui/button';
 import {
-  CollecticonDiscXmark
+  CollecticonDiscXmark,
+  CollecticonArrowSpinCcw,
 } from '@devseed-ui/collecticons';
 import usePresetAOI from '../hooks/use-preset-aoi';
 
@@ -82,10 +83,35 @@ const PresetSelect = styled.select`
   height: ${selectorHeight};
 `;
 
-const CancelButton = styled(Button)`
+const SelectorSubAction = css`
   position: absolute;
+  top: 0;
   right: 10px;
   height: ${selectorHeight};
+`;
+
+const spinAnimation = keyframes`
+  from {
+      transform:rotate(360deg);
+  }
+  to {
+      transform:rotate(0deg);
+  }
+`;
+
+const CancelButton = styled(Button)`
+  ${SelectorSubAction}
+`;
+
+const LoadingWrapper = styled.div`
+  ${SelectorSubAction}
+  display: flex;
+  align-items: center;
+  right: 18px;
+`;
+
+const AnimatingCollecticonArrowSpinCcw = styled(CollecticonArrowSpinCcw)`
+  animation: ${spinAnimation} 1s infinite linear;
 `;
 
 export default function PresetSelector({ selectedState, setSelectedState, onConfirm, resetPreset }: {
@@ -94,7 +120,7 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
   onConfirm: (features: Feature<Polygon>[]) => void,
   resetPreset: () => void
 }) {
-  const { features } = usePresetAOI(selectedState);
+  const { features, isLoading } = usePresetAOI(selectedState);
 
   useEffect(() => {
     if (features?.length) onConfirm(features);
@@ -121,16 +147,19 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
           return (<option key={`${e.value}-option-analysis`} value={e.value}>{e.label}</option>);
         })}
       </PresetSelect>
-      {selectedState &&
-      
-      <CancelButton
-      fitting='skinny'
-      onClick={() => {
-        resetPreset();
-      }}
-      >
-        <CollecticonDiscXmark meaningful width='12px' height='12px' title='Clear preset' />
-      </CancelButton>}
+      {(selectedState && !isLoading) && 
+        <CancelButton
+        fitting='skinny'
+        onClick={() => {
+          resetPreset();
+        }}
+        >
+          <CollecticonDiscXmark meaningful width='12px' height='12px' title='Clear preset' />
+        </CancelButton>}
+      {isLoading &&
+        <LoadingWrapper>
+          <AnimatingCollecticonArrowSpinCcw meaningful width='12px' height='12px' title='Loading' />
+        </LoadingWrapper>}
     </SelectorWrapper>
   );
 

@@ -90,21 +90,21 @@ export function getAoiAppropriateFeatures(geojson: PolygonGeojson) {
     ];
   }
 
-  // Simplify each feature if needed to reduce point count to less than 30 points per feature
-  simplifiedFeatures = features.map((feature) => {
-    const numPoints = getNumPoints(feature);
-    if (numPoints > 30) {
-      let tolerance = 0.001;
-      let simplifiedFeature = feature;
-      // Continuously simplify the feature until it has less than or equal to 30 points
-      while (getNumPoints(simplifiedFeature) > eachFeatureMaxPointNum && tolerance < 5) {
-        simplifiedFeature = simplify(simplifiedFeature, { tolerance });
-        tolerance *= 2; // Increase tolerance to simplify more aggressively if needed
-      }
-      return simplifiedFeature;
-    }
-    return feature;
-  });
+  // Simplify each feature if needed to reduce point count to less than 50 points per feature
+  // simplifiedFeatures = features.map((feature) => {
+  //   const numPoints = getNumPoints(feature);
+  //   if (numPoints > 30) {
+  //     let tolerance = 0.001;
+  //     let simplifiedFeature = feature;
+  //     // Continuously simplify the feature until it has less than or equal to 30 points
+  //     while (getNumPoints(simplifiedFeature) > eachFeatureMaxPointNum && tolerance < 5) {
+  //       simplifiedFeature = simplify(simplifiedFeature, { tolerance });
+  //       tolerance *= 2; // Increase tolerance to simplify more aggressively if needed
+  //     }
+  //     return simplifiedFeature;
+  //   }
+  //   return feature;
+  // });
 
   // Add a warning if any feature has been simplified to less than 30 points
   const numberOfSimplifedFeatures = simplifiedFeatures.filter((feature, index) => {

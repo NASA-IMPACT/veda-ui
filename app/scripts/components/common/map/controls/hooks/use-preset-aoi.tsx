@@ -9,6 +9,7 @@ const presetSuffix = `.geojson`;
 
 function usePresetAOI(selectedState) {
   const [error, setError] = useState<string|null>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [features, setFeatures] = useState<Feature<Polygon>[] | null>(null);
 
   useEffect(() => {
@@ -16,10 +17,12 @@ function usePresetAOI(selectedState) {
     const abortController = new AbortController();  // Create an instance of AbortController
 
     async function loadData() {
+      setIsLoading(true);
       try {
         const res = await axios.get(`${presetFilePath}${selectedState}${presetSuffix}`, {
           signal: abortController.signal  // Pass the abort signal to Axios
         });
+        setIsLoading(false);
         const geojson = res.data;
         if (!geojson?.features?.length) {
           setError('Error: Invalid GeoJSON');
@@ -33,6 +36,7 @@ function usePresetAOI(selectedState) {
         })));
       } catch (error) {
         if (axios.isCancel(error)) {
+          setIsLoading(false);
           // Request canceled
           setError(error.message);
         } else {
@@ -55,6 +59,7 @@ function usePresetAOI(selectedState) {
 
   return {
     features,
+    isLoading,
     error,
     reset
   };
