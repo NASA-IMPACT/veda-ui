@@ -142,13 +142,23 @@ export function DatasetTrackError(props: {
       </>
     );
   }
-
+  
   if (error instanceof ExtendedError && error.code === 'ANALYSIS_NO_DATA') {
     return (
       <>
         {patternContent}
         <TrackMessage>
           <p>No data for the selected time range and area of interest.</p>
+        </TrackMessage>
+      </>
+    );
+  }
+  if (error instanceof ExtendedError && error.code === 'ANALYSIS_NO_VALID_DATA') {
+    return (
+      <>
+        {patternContent}
+        <TrackMessage>
+          <p>{error.message}</p>
         </TrackMessage>
       </>
     );
