@@ -46,7 +46,7 @@ export const HorizontalCardStyles = css`
     text-overflow: ellipsis;
 
     /* stylelint-disable-next-line value-no-vendor-prefix */
-    display: -webkit-box; /* @TODO-SANDRA: Fix this, this is causing an issue */
+    display: -webkit-box;
     -webkit-line-clamp: 2; /* number of lines to show */
             line-clamp: 2;
   

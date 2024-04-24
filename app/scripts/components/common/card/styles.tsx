@@ -28,7 +28,7 @@ export const CardList = styled.ol`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: ${variableGlsp(0.5)};
+  gap: 1.5rem;
 `;
 
 export const CardListGrid = styled.ol`

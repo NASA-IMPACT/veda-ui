@@ -43,6 +43,7 @@ import {
 import { DatasetClassification } from '$components/common/dataset-classification';
 import { variableGlsp } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
+import { usePreviousValue } from '$utils/use-effect-previous';
 
 const BrowseFoldHeader = styled(FoldHeader)`
   margin-bottom: 4rem;
@@ -171,15 +172,6 @@ export const prepareDatasets = (
   return filtered;
 };
 
-// @TODO-SANDRA: Will need to move somewhere else
-function usePrevious(value) {
-  const ref = useRef();
-  React.useEffect(() => {
-    ref.current = value; //assign the value of ref to the argument
-  },[value]); //this code will run when the value of 'value' changes
-  return ref.current; //in the end, return the current ref value.
-}
-
 export interface DataCatalogProps {
   datasets: DatasetDataWithEnhancedLayers[]
 }
@@ -211,7 +203,7 @@ function DataCatalog({ datasets }: DataCatalogProps) {
   const [allSelectedFilters, setAllSelectedFilters] = React.useState<OptionItem[]>(urlTaxonomyItems);
   const [clearedTagItem, setClearedTagItem] = React.useState<OptionItem>();
 
-  const prevSelectedFilters = usePrevious(allSelectedFilters) || [];
+  const prevSelectedFilters = usePreviousValue(allSelectedFilters) || [];
 
   const handleChangeAllSelectedFilters = (item: OptionItem, action: 'add' | 'remove') => {
     if(action == 'add') {

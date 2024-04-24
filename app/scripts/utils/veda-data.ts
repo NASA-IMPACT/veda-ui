@@ -102,7 +102,6 @@ export const TAXONOMY_SOURCE = 'Source';
 export const TAXONOMY_GRADE = 'Grade';
 export const TAXONOMY_UNCERTAINTY = 'Uncertainty';
 
-// @TODO-SANDRA: Move these to a commun utils for just taxonomies
 export function getTaxonomy(
   data: DatasetData | StoryData | Taxonomy[],
   taxonomyName: string

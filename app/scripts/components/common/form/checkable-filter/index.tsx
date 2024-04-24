@@ -4,14 +4,15 @@ import { FormGroupStructure, FormCheckableGroup,  FormCheckable} from '@devseed-
 import { CollecticonChevronDown, CollecticonChevronUp } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { variableGlsp } from '$styles/variable-utils';
+import { variableBaseType, variableGlsp } from '$styles/variable-utils';
+import { CardTitle } from '$components/common/card/styles';
 
 
 const FilterMenu = styled.div`
   border: 2px solid ${themeVal('color.base-200')};
   border-radius: 4px;
   padding: 12px;
-  margin: 18px 0;
+  margin-bottom: 1.5rem;
 `;
 
 const FilterTitle = styled.div`
@@ -22,6 +23,10 @@ const FilterTitle = styled.div`
     display: flex;
     flex-direction: column;
     gap: ${variableGlsp(0.1)};
+
+    ${CardTitle} {
+      font-size: ${variableBaseType('0.7rem')};
+    }
   }
 
   span {
@@ -44,6 +49,12 @@ const Options = styled(FormCheckableGroup)`
     outline-color: ${themeVal('color.primary-300')};
     outline-style: solid;
   }
+`;
+
+const Option = styled(FormCheckable)`
+  font-size: ${variableBaseType('0.6rem')};
+  display: flex;
+  align-items: center;
 `;
 
 const Toggle = styled(Toolbar)`
@@ -73,8 +84,7 @@ export interface OptionItem {
 
 export default function CheckableFilters(props: CheckableFiltersProps) {
   const {items, title, onChanges, globallySelected, tagItemCleared} = props;
-  // const [show, setShow] = useState<boolean>(false);
-  const [show, setShow] = useState<boolean>(true); // @TODO-SANDRA: Keep open for fast testing purposes for now
+  const [show, setShow] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
   const [selected, setSelected] = useState<OptionItem[]>([]);
 
@@ -117,7 +127,6 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
     }
   }, [tagItemCleared, globallySelected]);
 
-  // @NOTE-SANDRA: Idk why this is needed for the tags to persist... still a mystery to me
   useEffect(() => {
     if(globallySelected.length > 0) {
       setSelected(selected.filter((item) => item.id));
@@ -130,7 +139,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
     <FilterMenu>
       <FilterTitle>
         <div id='title-selected'>
-          <h3>{title}</h3>
+          <CardTitle>{title}</CardTitle>
           {
             count > 0 && (
               <span>{count} selected</span> 
@@ -160,7 +169,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
                   const checked = isChecked(item);
                   return (
                     <div className={checked ? 'checked' : 'unchecked'} key={item.id}>
-                      <FormCheckable
+                      <Option
                         key={item.id}
                         value={item.name}
                         onChange={(e) => handleChange(e)}
@@ -170,7 +179,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
                         id={`${item.taxonomy}&&${item.id}`}
                       >
                         {item.name}
-                      </FormCheckable>
+                      </Option>
                     </div>
                   );
                 })
