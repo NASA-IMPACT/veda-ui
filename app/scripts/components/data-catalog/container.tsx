@@ -1,6 +1,6 @@
 import React from 'react';
 import { allDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
-import DataCatalog from '$components/data-catalog/index-v2';
+import DataCatalog from '$components/data-catalog';
 
 // @VEDA2-REFACTOR-WORK
 

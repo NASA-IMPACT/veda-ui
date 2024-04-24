@@ -2,6 +2,10 @@ import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasetTaxonomies, getString } from 'veda';
 import { Link } from 'react-router-dom';
+import { glsp } from '@devseed-ui/theme-provider';
+import { Subtitle } from '@devseed-ui/typography';
+import { Button } from '@devseed-ui/button';
+import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import DatasetMenu from './dataset-menu';
@@ -29,10 +33,11 @@ import EmptyHub from '$components/common/empty-hub';
 import { PageMainContent } from '$styles/page';
 import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
+import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
-import { DatasetDataWithEnhancedLayers } from '$components/exploration/data-utils';
+import { allDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,
@@ -40,6 +45,16 @@ import {
 } from '$utils/veda-data';
 import { DatasetClassification } from '$components/common/dataset-classification';
 
+const DatasetCount = styled(Subtitle)`
+  grid-column: 1 / -1;
+  display: flex;
+  gap: ${glsp(0.5)};
+
+  span {
+    text-transform: uppercase;
+    line-height: 1.5rem;
+  }
+`;
 
 const BrowseFoldHeader = styled(FoldHeader)`
   flex-flow: column nowrap;
@@ -127,11 +142,7 @@ export const prepareDatasets = (
   return filtered;
 };
 
-export interface DataCatalogProps {
-  datasets: DatasetDataWithEnhancedLayers[]
-}
-
-function DataCatalog({ datasets }: DataCatalogProps) {
+function DataCatalog() {
   const controlVars = useBrowserControls({
     sortOptions
   });
@@ -141,7 +152,7 @@ function DataCatalog({ datasets }: DataCatalogProps) {
 
   const displayDatasets = useMemo(
     () =>
-      prepareDatasets(datasets, {
+      prepareDatasets(allDatasetsWithEnhancedLayers, {
         search,
         taxonomies,
         sortField,
@@ -149,6 +160,11 @@ function DataCatalog({ datasets }: DataCatalogProps) {
         filterLayers: false
       }),
     [search, taxonomies, sortField, sortDir]
+  );
+
+  const isFiltering = !!(
+    (taxonomies && Object.keys(taxonomies).length) ||
+    search
   );
 
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
@@ -182,6 +198,25 @@ function DataCatalog({ datasets }: DataCatalogProps) {
             taxonomiesOptions={datasetTaxonomies}
           />
         </BrowseFoldHeader>
+
+        <DatasetCount>
+          <span>
+            Showing{' '}
+            <Pluralize
+              singular='dataset'
+              plural='datasets'
+              count={displayDatasets.length}
+              showCount={true}
+            />{' '}
+            out of {allDatasetsWithEnhancedLayers.length}.
+          </span>
+          {isFiltering && (
+            <Button forwardedAs={Link} to={DATASETS_PATH} size='small'>
+              Clear filters <CollecticonXmarkSmall />
+            </Button>
+          )}
+        </DatasetCount>
+
         {displayDatasets.length ? (
           <CardListGrid>
             {displayDatasets.map((d) => {
