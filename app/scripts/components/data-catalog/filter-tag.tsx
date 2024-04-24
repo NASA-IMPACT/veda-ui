@@ -4,6 +4,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
+import { variableBaseType } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
 
 interface FilterTagProps {
@@ -21,6 +22,8 @@ const Tag = styled.span`
   outline-width: 1px;
   outline-color: ${themeVal('color.base-200')};
   outline-style: solid;
+  border-radius: 2px;
+  font-size: ${variableBaseType('0.6rem')};
 
   button {
     background: none;

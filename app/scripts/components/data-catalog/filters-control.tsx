@@ -7,7 +7,7 @@ import { Actions, useBrowserControls } from '$components/common/browse-controls/
 
 const ControlsWrapper = styled.div<{ width?: string; }>`
   min-width: 20rem;
-  width: ${props => props.width || '3rem'};
+  width: ${props => props.width ?? '3rem'};
 `;
 
 interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {

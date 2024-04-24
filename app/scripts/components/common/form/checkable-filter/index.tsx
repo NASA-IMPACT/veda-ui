@@ -117,6 +117,12 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
     if(!globallySelected || globallySelected.length === 0) {
       setCount(0);
     }
+    
+    if(globallySelected.length > 0) {
+      setSelected(selected.filter((item) => item.id));
+    } else {
+      setSelected([]);
+    }
   }, [globallySelected]);
 
   useEffect(() => {
@@ -126,14 +132,6 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
       tagItemCleared?.callback?.(undefined);
     }
   }, [tagItemCleared, globallySelected]);
-
-  useEffect(() => {
-    if(globallySelected.length > 0) {
-      setSelected(selected.filter((item) => item.id));
-    } else {
-      setSelected([]);
-    }
-  }, [globallySelected]);
 
   return (
     <FilterMenu>

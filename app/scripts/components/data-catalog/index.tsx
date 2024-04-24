@@ -41,7 +41,7 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
 import { DatasetClassification } from '$components/common/dataset-classification';
-import { variableGlsp } from '$styles/variable-utils';
+import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
@@ -84,6 +84,7 @@ const PlainTextButton = styled.button`
   box-shadow: none;
   color: ${themeVal('color.primary-400')};
   text-decoration: underline;
+  font-size: ${variableBaseType('0.6rem')};
   &:hover {
     color: ${themeVal('color.primary-800')};
   }
@@ -205,14 +206,16 @@ function DataCatalog({ datasets }: DataCatalogProps) {
 
   const prevSelectedFilters = usePreviousValue(allSelectedFilters) || [];
 
-  const handleChangeAllSelectedFilters = (item: OptionItem, action: 'add' | 'remove') => {
+  const handleChangeAllSelectedFilters = React.useCallback((item: OptionItem, action: 'add' | 'remove') => {
     if(action == 'add') {
       setAllSelectedFilters([...allSelectedFilters, item]);
-    } else if (action == 'remove') {
+    } 
+    
+    if (action == 'remove') {
       setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
     }
     onAction(Actions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
-  };
+  }, [setAllSelectedFilters, allSelectedFilters, onAction]);
 
   const handleClearTag = React.useCallback((item: OptionItem) => {
     setAllSelectedFilters(allSelectedFilters.filter((selected) => selected !== item));
@@ -220,9 +223,9 @@ function DataCatalog({ datasets }: DataCatalogProps) {
 
   }, [allSelectedFilters]);
 
-  const handleClearTags = () => {
+  const handleClearTags = React.useCallback(() => {
     setAllSelectedFilters([]);
-  };
+  }, [setAllSelectedFilters]);
 
   React.useEffect(() => {
     if (clearedTagItem && (allSelectedFilters.length == prevSelectedFilters.length-1)) {
@@ -252,7 +255,7 @@ function DataCatalog({ datasets }: DataCatalogProps) {
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
 
-  const renderTags = () => {
+  const renderTags = React.useMemo(() => {
     if(allSelectedFilters.length > 0 || urlTaxonomyItems.length > 0) {
       return (
         <Tags>
@@ -268,7 +271,7 @@ function DataCatalog({ datasets }: DataCatalogProps) {
       );
     }
     return null;
-  };
+  }, [allSelectedFilters, handleClearTag, handleClearTags, urlTaxonomyItems]);
 
   return (
     <PageMainContent>
@@ -303,7 +306,7 @@ function DataCatalog({ datasets }: DataCatalogProps) {
             allSelected={allSelectedFilters}
           />
           <CatalogWrapper>
-            {renderTags()}
+            {renderTags}
             {datasetsToDisplay.length ? (
               <Cards>
                 {datasetsToDisplay.map((d) => {
