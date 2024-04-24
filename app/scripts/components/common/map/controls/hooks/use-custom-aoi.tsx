@@ -7,7 +7,7 @@ import { multiPolygonToPolygons } from '../../utils';
 import { round } from '$utils/format';
 
 const extensions = ['geojson', 'json', 'zip'];
-const eachFeatureMaxPointNum = 50;
+const eachFeatureMaxPointNum = 100;
 export const acceptExtensions = extensions.map((ext) => `.${ext}`).join(', ');
 
 export interface FileInfo {
