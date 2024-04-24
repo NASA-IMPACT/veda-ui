@@ -51,7 +51,8 @@ const BrowseFoldHeader = styled(FoldHeader)`
 
 const Content = styled.div`
   display: flex;
-  margin-bottom: 8rem;
+  // margin-bottom: 8rem;
+  margin-bottom: 50rem; // @TODO-SANDRA: Just to test, but need to remove
 `;
 
 const CatalogWrapper = styled.div`

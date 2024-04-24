@@ -52,7 +52,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
       />
       {
         taxonomiesOptions.map((taxonomy) => {
-          const items = taxonomy.values.map((t) => ({...t, taxonomy: taxonomy.name.split(' ')[0]}));
+          const items = taxonomy.values.map((t) => ({...t, taxonomy: taxonomy.name}));
           return (
             <CheckableFilters 
               key={taxonomy.name}

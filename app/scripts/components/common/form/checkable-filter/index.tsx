@@ -79,12 +79,14 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
   const [selected, setSelected] = useState<OptionItem[]>([]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const taxonomy = e.target.id.split('&')[0];
-    const id = e.target.id.split('&')[1];
+    const idInfo = e.target.id.split('&&');
+    const taxonomy = idInfo[0];
+    const id = idInfo[1];
+
     const optionItem = {
       taxonomy: taxonomy,
       name: e.target.name,
-      id: id
+      id: id,
     };
 
     if(e.target.checked) {
@@ -165,7 +167,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
                         checked={checked}
                         type='checkbox'
                         name={item.name}
-                        id={`${item.taxonomy}&${item.id}`}
+                        id={`${item.taxonomy}&&${item.id}`}
                       >
                         {item.name}
                       </FormCheckable>
