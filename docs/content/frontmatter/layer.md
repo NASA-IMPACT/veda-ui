@@ -245,6 +245,7 @@ Available metrics:
 - max (Max)
 - std (Standard Deviation)
 - median (Median)
+- sum (Sum)
 
 **analysis.sourceParams** 
 `object`
