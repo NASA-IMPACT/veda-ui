@@ -4,6 +4,7 @@ import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
 import { useSetAtom } from 'jotai';
 import bbox from '@turf/bbox';
+import centroid from '@turf/centroid';
 import {
   CollecticonPencil,
   CollecticonTrashBin,
@@ -13,20 +14,23 @@ import { Toolbar, ToolbarLabel, VerticalDivider } from '@devseed-ui/toolbar';
 import { Button } from '@devseed-ui/button';
 import { themeVal, glsp, disabled } from '@devseed-ui/theme-provider';
 
+import { AllGeoJSON } from '@turf/helpers';
 import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
 import { aoiDeleteAllAtom } from './atoms';
 
+import PresetSelector from './preset-selector';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
+import { getZoomFromBbox } from '$components/common/map/utils';
 import { ShortcutCode } from '$styles/shortcut-code';
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
   border-radius: ${themeVal('shape.rounded')};
-  padding: ${glsp(0, 0.5)};
+  padding: ${glsp(0.25)};
   box-shadow: ${themeVal('boxShadow.elevationC')};
 
   ${({ visuallyDisabled }) =>
@@ -59,6 +63,9 @@ function CustomAoI({
   disableReason?: React.ReactNode;
 }) {
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
+  const [selectedState, setSelectedState] = useState('');
+  const [presetIds, setPresetIds] = useState([]);
+  const [fileUploadedIds, setFileUplaodedIds] = useState([]);
 
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
@@ -74,18 +81,105 @@ function CustomAoI({
     };
   }, []);
 
-  const onConfirm = (features: Feature<Polygon>[]) => {
+  const resetAoisOnMap = useCallback(() => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    mbDraw.deleteAll();
+    aoiDeleteAll();
+  }, [aoiDeleteAll]);
+
+  const resetForPresetSelect = useCallback(() => {
+    resetAoisOnMap();
+    setFileUplaodedIds([]);
+  },[resetAoisOnMap]);
+
+  const resetForFileUploaded = useCallback(()=> {
+    resetAoisOnMap();
+    setSelectedState('');
+    setPresetIds([]);
+  },[resetAoisOnMap]);
+
+  const resetForEmptyState = useCallback(()=> {
+    resetAoisOnMap();
+    setSelectedState('');
+    setPresetIds([]);
+    setFileUplaodedIds([]);
+  },[resetAoisOnMap]);
+
+  const resetForDrawingAoi = useCallback(() =>  {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    
+    if (fileUploadedIds.length) {
+      mbDraw.changeMode('simple_select', {
+        featureIds: fileUploadedIds
+      });
+      mbDraw.trash();
+    }
+
+    if (presetIds.length) {
+      mbDraw.changeMode('simple_select', {
+        featureIds: presetIds
+      });
+      mbDraw.trash();
+    }
+    setFileUplaodedIds([]);
+    setPresetIds([]);
+    setSelectedState('');
+  },[presetIds, fileUploadedIds]);
+
+  const onConfirm = useCallback((features: Feature<Polygon>[]) => {
     const mbDraw = map?._drawControl;
     setAoIModalRevealed(false);
     if (!mbDraw) return;
+    resetForFileUploaded();
     onUpdate({ features });
     const fc = {
       type: 'FeatureCollection',
       features
     };
-    map.fitBounds(bbox(fc), { padding: 20 });
-    mbDraw.add(fc);
-  };
+    const bounds = bbox(fc);
+    const center = centroid(fc as AllGeoJSON).geometry.coordinates;
+    map.flyTo({
+      center,
+      zoom: getZoomFromBbox(bounds)
+    });
+    const addedAoisId = mbDraw.add(fc);
+    mbDraw.changeMode('simple_select', {
+      featureIds: addedAoisId
+    });
+    setFileUplaodedIds(addedAoisId);
+  },[map, onUpdate, resetForFileUploaded]);
+
+  const onPresetConfirm = useCallback((features: Feature<Polygon>[]) => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    resetForPresetSelect();
+    onUpdate({ features });
+    const fc = {
+      type: 'FeatureCollection',
+      features
+    };
+    const bounds = bbox(fc);
+    const center = centroid(fc as AllGeoJSON).geometry.coordinates;
+    map.flyTo({
+      center,
+      zoom: getZoomFromBbox(bounds)
+    });
+    const pids = mbDraw.add(fc);
+    setPresetIds(pids);
+    mbDraw.changeMode('simple_select', {
+      featureIds: pids
+    });
+
+  },[map, onUpdate, resetForPresetSelect]);
+
+  const toggleDrawing = useCallback(() => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    resetForDrawingAoi();
+    setIsDrawing(!isDrawing);
+  }, [map, isDrawing, setIsDrawing, resetForDrawingAoi]);
 
   const onTrashClick = useCallback(() => {
     // We need to programmatically access the mapbox draw trash method which
@@ -93,11 +187,14 @@ function CustomAoI({
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
 
+    setSelectedState('');
+    setPresetIds([]);
+    setFileUplaodedIds([]);
     // This is a peculiar situation:
     // If we are in direct select (to select/add vertices) but not vertex is
     // selected, the trash method doesn't do anything. So, in this case, we
     // trigger the delete for the whole feature.
-    const selectedFeatures = mbDraw.getSelected().features;
+    const selectedFeatures = mbDraw.getSelected()?.features;
     if (
       mbDraw.getMode() === 'direct_select' &&
       selectedFeatures.length &&
@@ -108,7 +205,6 @@ function CustomAoI({
         featureIds: selectedFeatures.map((f) => f.id)
       });
     }
-
     // If nothing selected, delete all.
     if (features.every((f) => !f.selected)) {
       mbDraw.deleteAll();
@@ -120,7 +216,7 @@ function CustomAoI({
     mbDraw.trash();
   }, [features, aoiDeleteAll, map]);
 
-  const isAreaSelected = !!map?._drawControl.getSelected().features.length;
+  const isAreaSelected = !!map?._drawControl?.getSelected().features.length;
   const isPointSelected =
     !!map?._drawControl.getSelectedPoints().features.length;
   const hasFeatures = !!features.length;
@@ -134,13 +230,18 @@ function CustomAoI({
             size='small'
             data-tour='analysis-tour'
           >
-            <ToolbarLabel>Analysis</ToolbarLabel>
+            <PresetSelector 
+              selectedState={selectedState}
+              setSelectedState={setSelectedState}
+              onConfirm={onPresetConfirm}
+              resetPreset={resetForEmptyState}
+            />
             <VerticalDivider />
             <TipToolbarIconButton
               tipContent='Draw an area of interest'
               tipProps={{ placement: 'bottom' }}
               active={isDrawing}
-              onClick={() => setIsDrawing(!isDrawing)}
+              onClick={toggleDrawing}
             >
               <CollecticonPencil meaningful title='Draw AOI' />
             </TipToolbarIconButton>

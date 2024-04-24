@@ -241,7 +241,7 @@ export async function requestDatasetTimeseriesData({
         status: TimelineDatasetStatus.ERROR,
         error: new ExtendedError(
           'The selected time and area of interest contains no valid data. Please adjust your selection.',
-          'ANALYSIS_NO_DATA'
+          'ANALYSIS_NO_VALID_DATA'
         ),
         data: null
       };

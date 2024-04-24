@@ -1,5 +1,6 @@
 import { endOfDay, startOfDay, format } from 'date-fns';
 import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+import combine from '@turf/combine';
 import { userTzDate2utcString } from '$utils/date';
 import { fixAntimeridian } from '$utils/antimeridian';
 
@@ -84,15 +85,11 @@ export function multiPolygonToPolygons(feature: Feature<MultiPolygon>) {
 export function combineFeatureCollection(
   featureCollection: FeatureCollection<Polygon>
 ): Feature<MultiPolygon> {
+  const combined = combine(featureCollection);
   return {
     type: 'Feature',
     properties: {},
-    geometry: {
-      type: 'MultiPolygon',
-      coordinates: [
-        featureCollection.features.map((f) => f.geometry.coordinates[0])
-      ]
-    }
+    geometry: combined.features[0].geometry as MultiPolygon
   };
 }
 
