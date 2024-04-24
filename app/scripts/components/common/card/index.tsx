@@ -11,12 +11,12 @@ import {
   themeVal,
 } from '@devseed-ui/theme-provider';
 import { CardBody, CardBlank, CardFooter, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
+import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
 import { getLinkProps } from '$utils/url';
-import { Pill } from '$styles/pill';
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -80,31 +80,7 @@ function renderCardType({ cardType }: CardItemProps) {
         }
       `;
     case 'horizontal-info':
-      return css`
-        height: 10rem;
-        color: ${themeVal('color.base-800')};
-
-        ${CardTitle} {
-          font-size: ${variableBaseType('0.7rem')};
-        }
-        
-        #description {
-          font-size: ${variableBaseType('0.6rem')};
-          height: 3rem;
-          margin: 0.5rem 0;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          display: -webkit-box; /* @TODO-SANDRA: Fix this, this is causing an issue */
-          -webkit-line-clamp: 2; /* number of lines to show */
-                  line-clamp: 2;
-          -webkit-box-orient: vertical;
-        }
-
-        #tags {
-          display: flex;
-          gap: ${glsp(0.5)};
-        }
-      `;
+      return HorizontalCardStyles;
     default:
       return css`
         background: transparent;
@@ -171,28 +147,6 @@ const CardFigure = styled(Figure)`
   }
 `;
 
-const HorizontalCard = styled.div`
-  display: flex;
-  height: inherit;
-`;
-
-const CardImage = styled.div`
-  min-width: 10rem;
-  width: 10rem;
-  height: 100%;
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
-
-const CardContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem 1rem;
-`;
-
 const ExternalLinkMark = styled.div`
   display: flex;
   align-items: center;
@@ -225,7 +179,7 @@ export function ExternalLinkFlag() {
   );
 }
 
-interface CardComponentProps {
+export interface CardComponentProps {
   title: JSX.Element | string;
   linkLabel: string;
   linkTo: string;
@@ -319,28 +273,13 @@ function CardComponent(props: CardComponentProps) {
       } 
       {
         cardType === 'horizontal-info' && (
-          <HorizontalCard>
-            <CardImage>
-              <img src={imgSrc} alt={imgAlt} loading='lazy' />
-            </CardImage>
-            <CardContent>
-              <CardTitle>{title}</CardTitle>
-              <div id='description'>
-                <p>{description}</p>
-              </div>
-              <div id='tags'>
-                {
-                  tagLabels && (
-                    tagLabels.map((label) => (
-                      <Pill variation='primary' key={label}>
-                        {label}
-                      </Pill>
-                    ))
-                  )
-                }
-              </div>
-            </CardContent>
-          </HorizontalCard>
+          <HorizontalInfoCard 
+            title={title}
+            description={description}
+            imgSrc={imgSrc}
+            imgAlt={imgAlt}
+            tagLabels={tagLabels}
+          />
         )
       }
     </ElementInteractive>

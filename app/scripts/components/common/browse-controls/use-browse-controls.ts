@@ -120,11 +120,13 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
           {
             const { key, value: val } = value;
             if (taxonomies && (key in taxonomies)) { // If taxonomy group currently present
-              if ((taxonomies[key] as string[]).includes(val)) { // if val exists, then remove
-                const updatedValues = (taxonomies[key] as string[]).filter((x) => x !== val);
+              const taxonomyGroupValues = taxonomies[key] instanceof Array ? (taxonomies[key] as string[]) : [taxonomies[key]];
+
+              if (taxonomyGroupValues.includes(val)) { // If val exists, then remove
+                const updatedValues = taxonomyGroupValues.filter((x) => x !== val);
                 updatedValues.length ? setTaxonomies(set({ ...taxonomies }, key, updatedValues)) : setTaxonomies(omit(taxonomies, key));
               } else { // else add
-                (taxonomies[key] as string[]).push(val);
+                taxonomyGroupValues.push(val);
                 setTaxonomies(taxonomies);
               }
             } else { // Taxonomy group currently not present

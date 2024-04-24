@@ -329,7 +329,7 @@ function DataCatalog({ datasets }: DataCatalogProps) {
                               sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                               rootPath={DATASETS_PATH}
                               onSourceClick={(id) => {
-                                onAction(Actions.TAXONOMY, {
+                                onAction(Actions.TAXONOMY_MULTISELECT, {
                                   key: TAXONOMY_SOURCE,
                                   value: id
                                 });
@@ -375,34 +375,37 @@ function DataCatalog({ datasets }: DataCatalogProps) {
                             {topics?.length ? (
                               <CardTopicsList>
                                 <dt>Topics</dt>
-                                {topics.map((t) => (
-                                  <dd key={t.id}>
-                                    <Pill
-                                      variation='achromic'
-                                      as={Link}
-                                      to={`${DATASETS_PATH}?${
-                                        Actions.TAXONOMY
-                                      }=${encodeURIComponent(
-                                        JSON.stringify({ Topics: t.id })
-                                      )}`}
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        onAction(Actions.TAXONOMY, {
-                                          key: TAXONOMY_TOPICS,
-                                          value: t.id
-                                        });
-                                        browseControlsHeaderRef.current?.scrollIntoView();
-                                      }}
-                                    >
-                                      <TextHighlight
-                                        value={search}
-                                        disabled={search.length < 3}
+                                {topics.map((t) => {
+                                  const path = `${DATASETS_PATH}?${
+                                    Actions.TAXONOMY
+                                  }=${encodeURIComponent(
+                                    JSON.stringify({ Topics: [t.id] })
+                                  )}`;
+                                  return (
+                                    <dd key={t.id}>
+                                      <Pill
+                                        variation='achromic'
+                                        as={Link}
+                                        to={path}
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          onAction(Actions.TAXONOMY_MULTISELECT, {
+                                            key: TAXONOMY_TOPICS,
+                                            value: t.id
+                                          });
+                                          browseControlsHeaderRef.current?.scrollIntoView();
+                                        }}
                                       >
-                                        {t.name}
-                                      </TextHighlight>
-                                    </Pill>
-                                  </dd>
-                                ))}
+                                        <TextHighlight
+                                          value={search}
+                                          disabled={search.length < 3}
+                                        >
+                                          {t.name}
+                                        </TextHighlight>
+                                      </Pill>
+                                    </dd>
+                                  );
+                                })}
                               </CardTopicsList>
                             ) : null}
                             <DatasetMenu dataset={d} />
