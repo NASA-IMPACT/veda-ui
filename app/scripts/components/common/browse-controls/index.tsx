@@ -89,7 +89,7 @@ function BrowseControls(props: BrowseControlsProps) {
         key={name}
         prefix={name}
         items={[optionAll].concat(values)}
-        currentId={taxonomies?.[name] ?? 'all'}
+        currentId={(taxonomies?.[name] as string) || 'all'}
         onChange={(v) => {
           onAction(Actions.TAXONOMY, { key: name, value: v });
         }}

@@ -73,7 +73,7 @@ const prepareStories = (
   data: StoryData[],
   options: {
     search: string;
-    taxonomies: Record<string, string> | null;
+    taxonomies: Record<string, string | string[]> | null;
     sortField: string | null;
     sortDir: string | null;
   }

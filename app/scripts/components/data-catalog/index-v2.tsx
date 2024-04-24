@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { DatasetData, datasetTaxonomies, getString } from 'veda';
 import { Link, useNavigate } from 'react-router-dom';
@@ -36,7 +36,6 @@ import { allDatasetsWithEnhancedLayers } from '$components/exploration/data-util
 import {
   getAllTaxonomyValues,
   getTaxonomy,
-  getTaxonomyById,
   getTaxonomyByIds,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
@@ -51,8 +50,7 @@ const BrowseFoldHeader = styled(FoldHeader)`
 
 const Content = styled.div`
   display: flex;
-  // margin-bottom: 8rem;
-  margin-bottom: 50rem; // @TODO-SANDRA: Just to test, but need to remove
+  margin-bottom: 8rem;
 `;
 
 const CatalogWrapper = styled.div`
@@ -217,11 +215,11 @@ function DataCatalog() {
     } else if (action == 'remove') {
       setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
     }
-    onAction(Actions.TAXONOMY, { key: item.taxonomy, value: [item.id] });
+    onAction(Actions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
   };
 
   const handleClearTag = React.useCallback((item: OptionItem) => {
-    setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
+    setAllSelectedFilters(allSelectedFilters.filter((selected) => selected !== item));
     setClearedTagItem(item);
 
   }, [allSelectedFilters]);
@@ -232,7 +230,7 @@ function DataCatalog() {
 
   React.useEffect(() => {
     if (clearedTagItem && (allSelectedFilters.length == prevSelectedFilters.length-1)) {
-      onAction(Actions.TAXONOMY, { key: clearedTagItem.taxonomy, value: [clearedTagItem.id]}); 
+      onAction(Actions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id}); 
       setClearedTagItem(undefined);
     }
   }, [allSelectedFilters, clearedTagItem]);
@@ -264,9 +262,9 @@ function DataCatalog() {
         <Tags>
           {
             (allSelectedFilters.length > 0) ? (
-              allSelectedFilters.map((filter) => <FilterTag key={filter.id} item={filter} onClick={handleClearTag} />)
+              allSelectedFilters.map((filter) => <FilterTag key={`${filter.taxonomy}-${filter.id}`} item={filter} onClick={handleClearTag} />)
             ) : (
-              urlTaxonomyItems.map((filter) => <FilterTag key={filter.id} item={filter} onClick={handleClearTag} />)
+              urlTaxonomyItems.map((filter) => <FilterTag key={`${filter.taxonomy}-${filter.id}`} item={filter} onClick={handleClearTag} />)
             )
           }
           <PlainTextButton onClick={handleClearTags}>Clear all</PlainTextButton>

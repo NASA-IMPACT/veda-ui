@@ -67,7 +67,7 @@ export const prepareDatasets = (
   data: DatasetData[],
   options: {
     search: string;
-    taxonomies: Record<string, string> | null;
+    taxonomies: Record<string, string | string[]> | null;
     sortField: string | null;
     sortDir: string | null;
     filterLayers: boolean | null;
