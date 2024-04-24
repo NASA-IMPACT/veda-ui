@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
 import { set, omit } from 'lodash';
+import { ContinuumDragScrollWrapper } from '$styles/continuum';
 
 export enum Actions {
   CLEAR = 'clear',
@@ -160,12 +161,24 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
                 setTaxonomies(set({ ...taxonomies }, key, val));
               }
             } else {
+              // If group currently present
               if(taxonomies && (key in taxonomies)) {
                 if(taxonomies[key] instanceof Array) {
-                  (taxonomies[key] as string[]).push(val[0]);
-                  setTaxonomies(set({ ...taxonomies }, key, taxonomies[key]));
+                  // if value exists, remove
+                  if ((taxonomies[key] as string[]).includes(val[0])) {
+                    const updatedValues = (taxonomies[key] as string[]).filter((x) => x !== val[0]);
+                    console.log(`setTaxonomies3: `, val[0], updatedValues,  taxonomies);
+                    (updatedValues.length) ? setTaxonomies(set({ ...taxonomies }, key, updatedValues)) : setTaxonomies(omit(taxonomies, key));
+                  } else {// else add
+                    (taxonomies[key] as string[]).push(val[0]);
+                    console.log(`setTaxonomies4: `, taxonomies);
+                    // setTaxonomies(set({ ...taxonomies }, key, taxonomies[key]));
+                    setTaxonomies(taxonomies);
+                  }
+                  
                 }
-              } else {
+              } else { // Group currently not present
+                console.log(`setTaxonomies5`);
                 setTaxonomies(set({ ...taxonomies }, key, val));
               }
             }

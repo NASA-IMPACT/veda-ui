@@ -145,18 +145,6 @@ export const prepareDatasets = (
         }));
   }
 
-  // taxonomies &&
-  //   Object.entries(taxonomies).forEach(([name, value]) => {
-  //     if (value !== optionAll.id) {
-  //       filtered = filtered.filter((d) =>
-  //         d.taxonomy.some(
-  //           (t) => t.name === name && t.values.some((v) => v.id === value)
-  //         )
-  //       );
-  //     }
-  //   });
-  
-  // @NOTE-SANDRA: This works for arrays
   taxonomies &&
     Object.entries(taxonomies).forEach(([name, value]) => {
       if (!value.includes(optionAll.id)) {
@@ -208,26 +196,21 @@ function DataCatalog() {
     urlTaxonomyItems = Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() || [];
   }
 
-  const displayDatasets = useMemo(
-    () =>
-      prepareDatasets(allDatasetsWithEnhancedLayers, {
-        search,
-        taxonomies,
-        sortField,
-        sortDir,
-        filterLayers: false
-      }),
-    [search, taxonomies, sortField, sortDir]
-  );
+  const [datasetsToDisplay, setDatasetsToDisplay] = React.useState<DatasetData[]>(
+    prepareDatasets(allDatasetsWithEnhancedLayers, {
+    search,
+    taxonomies,
+    sortField,
+    sortDir,
+    filterLayers: false
+  }));
 
-  ///////////
   const [allSelectedFilters, setAllSelectedFilters] = React.useState<OptionItem[]>(urlTaxonomyItems);
   const [clearedTagItem, setClearedTagItem] = React.useState<OptionItem>();
 
   const prevSelectedFilters = usePrevious(allSelectedFilters) || [];
 
   const handleChangeAllSelectedFilters = (item: OptionItem, action: 'add' | 'remove') => {
-    console.log(`clearedTagItemInHandle: `, clearedTagItem);
     if(action == 'add') {
       setAllSelectedFilters([...allSelectedFilters, item]);
     } else if (action == 'remove') {
@@ -237,7 +220,6 @@ function DataCatalog() {
   };
 
   const handleClearTag = React.useCallback((item: OptionItem) => {
-    console.log(`handleClearTag_allSelectedFilters.filter: `, allSelectedFilters.filter((selected) => selected.id !== item.id));
     setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
     setClearedTagItem(item);
 
@@ -249,9 +231,7 @@ function DataCatalog() {
 
   React.useEffect(() => {
     if (clearedTagItem && (allSelectedFilters.length == prevSelectedFilters.length-1)) {
-      console.log(`im triggering clearedTagItem sent`)
-      onAction(Actions.TAXONOMY, { key: clearedTagItem.taxonomy, value: optionAll.id}); 
-      // onAction(Actions.TAXONOMY, { key: clearedTagItem.taxonomy, value: [clearedTagItem.id]}); 
+      onAction(Actions.TAXONOMY, { key: clearedTagItem.taxonomy, value: [clearedTagItem.id]}); 
       setClearedTagItem(undefined);
     }
   }, [allSelectedFilters, clearedTagItem]);
@@ -263,7 +243,16 @@ function DataCatalog() {
     }
   }, [allSelectedFilters]);
 
-  ///////////
+  React.useEffect(() => {
+    const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
+      search,
+      taxonomies,
+      sortField,
+      sortDir,
+      filterLayers: false
+    });
+    setDatasetsToDisplay(updated);
+  }, [allSelectedFilters, taxonomies, search]);
 
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
@@ -320,9 +309,9 @@ function DataCatalog() {
           />
           <CatalogWrapper>
             {renderTags()}
-            {displayDatasets.length ? (
+            {datasetsToDisplay.length ? (
               <Cards>
-                {displayDatasets.map((d) => {
+                {datasetsToDisplay.map((d) => {
                   const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
                   const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
                   return (
