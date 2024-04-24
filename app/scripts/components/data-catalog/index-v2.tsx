@@ -37,6 +37,7 @@ import {
   getAllTaxonomyValues,
   getTaxonomy,
   getTaxonomyById,
+  getTaxonomyByIds,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
@@ -201,10 +202,10 @@ function DataCatalog() {
 
   const { taxonomies, sortField, sortDir, onAction } = controlVars;
   const search = controlVars.search ?? '';
-  let urlTaxonomyItems: any[] = [];
+  let urlTaxonomyItems: OptionItem[] = [];
 
   if (taxonomies) {
-    urlTaxonomyItems = Object.entries(taxonomies).map(([key, val]) => getTaxonomyById(key, val, datasetTaxonomies)) || [];
+    urlTaxonomyItems = Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() || [];
   }
 
   const displayDatasets = useMemo(
@@ -226,31 +227,41 @@ function DataCatalog() {
   const prevSelectedFilters = usePrevious(allSelectedFilters) || [];
 
   const handleChangeAllSelectedFilters = (item: OptionItem, action: 'add' | 'remove') => {
+    console.log(`clearedTagItemInHandle: `, clearedTagItem);
     if(action == 'add') {
       setAllSelectedFilters([...allSelectedFilters, item]);
-      onAction(Actions.TAXONOMY, { key: item.taxonomy, value: [item.id] });
-    } else if(action == 'remove') {
+    } else if (action == 'remove') {
       setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
     }
+    onAction(Actions.TAXONOMY, { key: item.taxonomy, value: [item.id] });
   };
 
   const handleClearTag = React.useCallback((item: OptionItem) => {
+    console.log(`handleClearTag_allSelectedFilters.filter: `, allSelectedFilters.filter((selected) => selected.id !== item.id));
     setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
     setClearedTagItem(item);
+
   }, [allSelectedFilters]);
 
   const handleClearTags = () => {
     setAllSelectedFilters([]);
-    onAction(Actions.CLEAR);
-    navigate(DATASETS_PATH);
   };
 
   React.useEffect(() => {
     if (clearedTagItem && (allSelectedFilters.length == prevSelectedFilters.length-1)) {
-      // @TODO-SANDRA: Revisit... this removes all from the taxonomy in url but we need to remove just a single value from the taxonomy, must look at use-browse-controls
-      onAction(Actions.TAXONOMY, { key: clearedTagItem.taxonomy, value: optionAll.id }); 
+      console.log(`im triggering clearedTagItem sent`)
+      onAction(Actions.TAXONOMY, { key: clearedTagItem.taxonomy, value: optionAll.id}); 
+      // onAction(Actions.TAXONOMY, { key: clearedTagItem.taxonomy, value: [clearedTagItem.id]}); 
+      setClearedTagItem(undefined);
     }
   }, [allSelectedFilters, clearedTagItem]);
+
+  React.useEffect(() => {
+    if(!allSelectedFilters.length) {
+      onAction(Actions.CLEAR);
+      navigate(DATASETS_PATH);
+    }
+  }, [allSelectedFilters]);
 
   ///////////
 

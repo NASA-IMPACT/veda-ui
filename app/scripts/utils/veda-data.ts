@@ -120,8 +120,18 @@ export function getAllTaxonomyValues(
   return allValues;
 }
 
-export function getTaxonomyById(group: string, id: string, taxonomies: Taxonomy[]) {
+export function getTaxonomyByIds(group: string, ids: string | string[], taxonomies: Taxonomy[]) {
   const groupValues = taxonomies.find((t) => t.name == group)?.values;
-  const taxonomy = groupValues?.filter((value) => value.id == id)[0];
-  return {...taxonomy, ...{taxonomy: group}};
+  
+  let taxonomyItems: any[] = [];
+
+  if (ids instanceof Array) {
+    const items = ids.map((id) => groupValues?.filter((value) => value.id == id)[0]);
+    taxonomyItems = items.map((item) => ({...item, ...{taxonomy: group}}));
+  } else {
+    const taxonomy = groupValues?.filter((value) => value.id == ids)[0];
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    if(taxonomy) taxonomyItems.push({...taxonomy, ...{taxonomy: group}});
+  }
+  return taxonomyItems;
 }

@@ -32,14 +32,15 @@ export default function FiltersControl(props: FiltersMenuProps) {
   } = props;
 
   const handleChanges = useCallback((item: OptionItem) => {
-    const selectedIds = allSelected.map((f) => f.id);
-    if(selectedIds.includes(item.id)) {
+    if(allSelected.some((selected) => selected.id == item.id && selected.taxonomy == item.taxonomy)) {
+      setClearedTagItem?.(undefined);
       if(onChangeToFilters) onChangeToFilters(item, 'remove');
     }
     else {
+      setClearedTagItem?.(undefined);
       if(onChangeToFilters) onChangeToFilters(item, 'add');
     }
-  }, [allSelected]);
+  }, [allSelected, setClearedTagItem, onChangeToFilters]);
 
   return (
     <ControlsWrapper width={width}>

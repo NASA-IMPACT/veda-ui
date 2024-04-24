@@ -94,6 +94,8 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
       switch (what) {
         case Actions.CLEAR:
           setSearch('');
+          console.log(`setTaxonomies0`);
+          console.log(`Actions.CLEAR: ,`, taxonomies);
           setTaxonomies({});
           break;
         case Actions.SEARCH:
@@ -105,6 +107,49 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
         case Actions.SORT_DIR:
           setSortDir(value);
           break;
+        // case Actions.TAXONOMY:
+        //   { 
+        //     console.log(`Actions.TAXONOMY: ,`, taxonomies);
+        //     const { key, value: val } = value; // key is taxonomy group and val is the option id
+        //     if (!(val instanceof Array)) {
+        //       if (val === optionAll.id) {
+        //         console.log(`setTaxonomies1 - optionAll`);
+        //         setTaxonomies(omit(taxonomies, key));
+        //       } else {
+        //         console.log(`setTaxonomies2`);
+        //         setTaxonomies(set({ ...taxonomies }, key, val));
+        //       }
+        //     } else {
+        //       console.log(`top_level_tax: `, taxonomies);
+        //       if(taxonomies && (key in taxonomies)) {
+        //         const values = taxonomies[key];
+        //         console.log(`values: `, values);
+        //         if(values instanceof Array) {
+        //           // if value doesn't exist, then add
+        //           if (!values.includes(val[0])) {
+        //             (values as string[]).push(val[0]);
+        //             console.log(`setTaxonomies3 - `, taxonomies);
+        //             setTaxonomies(taxonomies);
+        //           }
+        //           // if value does exist, then remove
+        //           else if (values.includes(val[0])) {
+        //             const updatedValues = values.filter((x) => x!== val[0]);
+        //             if (updatedValues.length > 0) {
+        //               console.log(`setTaxonomies4 - `, taxonomies, key, updatedValues);
+        //               setTaxonomies(set({ ...taxonomies }, key, updatedValues));
+        //             } else {
+        //               console.log(`setTaxonomies5 - `, omit(taxonomies, key));
+        //               setTaxonomies(omit(taxonomies, key));
+        //             }
+        //           }
+        //         }
+        //       } else {
+        //         console.log(`setTaxonomies6 - `);
+        //         setTaxonomies(set({ ...taxonomies }, key, val));
+        //       }
+        //     }
+        //   }
+        //   break;
         case Actions.TAXONOMY:
           {
             const { key, value: val } = value;
