@@ -9,8 +9,9 @@ import {
   media,
   multiply,
   themeVal,
+  listReset,
 } from '@devseed-ui/theme-provider';
-import { CardBody, CardBlank, CardFooter, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
+import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
@@ -26,6 +27,35 @@ interface CardItemProps {
   isStateActive?: boolean;
   cardType?: CardType;
 }
+
+/**
+@NOTE: CardList & CardFooter have been moved over to /common/card/styles but will remain here because of 
+dependency from other instances, once those instances have been updated to the new catalog view and imports have been
+updated to look at new location, we can remove these
+*/
+export const CardList = styled.ol`
+  ${listReset()}
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+`;
+
+export const CardFooter = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${variableGlsp(0.5)};
+  padding: ${variableGlsp()};
+
+  &:not(:first-child) {
+    padding-top: 0;
+    margin-top: ${variableGlsp(-0.5)};
+  }
+
+  button {
+    pointer-events: all;
+  }
+`;
 
 function renderCardType({ cardType }: CardItemProps) {
   switch (cardType) {
