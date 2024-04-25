@@ -64,6 +64,10 @@ const BrowseFoldHeader = styled(FoldHeader)`
   align-items: flex-start;
 `;
 
+const FoldWithTopMargin = styled(Fold)`
+  margin-top: ${glsp()};
+`;
+
 const sortOptions = [
   { id: 'name', name: 'Name' },
   { id: 'pubDate', name: 'Date' }
@@ -171,7 +175,7 @@ function StoriesHub() {
       </ComponentOverride>
       <FeaturedStories />
       <ContentOverride with='storiesHubContent'>
-        <Fold>
+        <FoldWithTopMargin>
           <BrowseFoldHeader
             ref={browseControlsHeaderRef}
             style={{
@@ -304,7 +308,7 @@ function StoriesHub() {
               show with the selected filters.
             </EmptyHub>
           )}
-        </Fold>
+        </FoldWithTopMargin>
       </ContentOverride>
     </PageMainContent>
   );

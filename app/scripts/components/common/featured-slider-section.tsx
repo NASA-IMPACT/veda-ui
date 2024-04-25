@@ -39,6 +39,7 @@ const FoldFeatured = styled(FoldGrid)`
   ${FoldHeader} {
     grid-column: content-start / content-end;
   }
+  padding-bottom: 0;
 `;
 
 export const continuumFoldStartCols = {

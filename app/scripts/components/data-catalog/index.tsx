@@ -62,6 +62,7 @@ const BrowseSection = styled.div`
   width: 100%;
   max-width: ${themeVal('layout.max')};
   margin: 0 auto;
+  margin-top: ${variableGlsp(2)};
   padding-left: ${variableGlsp()};
   padding-right: ${variableGlsp()};
   gap: ${variableGlsp()};
