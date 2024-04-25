@@ -14,7 +14,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
-  allDatasetsWithEnhancedLayers as allDatasets,
+  allExploreDatasetsWithEnhancedLayers as allDatasets,
   reconcileDatasets,
   datasetLayers,
   findParentDataset
@@ -157,7 +157,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       const selectedIdsWithParentData = selectedIds.map((selectedId) => {
         const parentData = findParentDataset(selectedId);
         const exclusiveSource = parentData?.sourceExclusive;
-        const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')?.[0]?.values?.map((value) => value.id);
+        const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')?.[0]?.values.map((value) => value.id);
         return {id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() || ''};
       });
       
