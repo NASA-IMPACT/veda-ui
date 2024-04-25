@@ -27,7 +27,7 @@ export const VEDA_OVERRIDE_THEME = {
     infographicC: '#83868A', // Max
     infographicD: '#F2F2F2', // STD
     infographicE: '#3094E3', // Median
-    infographicF: '#6138BE' // Sum
+    infographicF: '#1D5C5D' // Sum
   },
   type: {
     base: {
