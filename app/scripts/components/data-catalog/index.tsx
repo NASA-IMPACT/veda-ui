@@ -297,7 +297,7 @@ function DataCatalog({ datasets }: DataCatalogProps) {
             <FoldTitle>Search datasets</FoldTitle>
           </FoldHeadline>
         </BrowseFoldHeader>
-        <Content>
+        <Content style={{position: 'relative'}}>
           <FiltersControl
             {...controlVars}
             taxonomiesOptions={datasetTaxonomies}

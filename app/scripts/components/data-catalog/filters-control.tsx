@@ -43,7 +43,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
   }, [allSelected, setClearedTagItem, onChangeToFilters]);
 
   return (
-    <ControlsWrapper width={width}>
+    <ControlsWrapper width={width} style={{position: 'sticky', top: '0', height: '100vh'}}>
       <SearchField
         size='large'
         placeholder='Search by title, description'
