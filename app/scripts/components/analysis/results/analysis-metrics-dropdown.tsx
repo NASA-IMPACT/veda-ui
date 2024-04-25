@@ -15,7 +15,8 @@ export interface DataMetric {
     | 'infographicB'
     | 'infographicC'
     | 'infographicD'
-    | 'infographicE';
+    | 'infographicE'
+    | 'infographicF';
 }
 
 export const DATA_METRICS: DataMetric[] = [
