@@ -36,8 +36,11 @@ export const findDatasetAttribute = ({ datasetId, attr }: {datasetId: string, at
   return veda_datasets[datasetId]?.data[attr];
 };
 
-
 export const allDatasets = Object.values(veda_datasets)
+  .map((d) => d!.data);
+
+
+export const allExploreDatasets = Object.values(veda_datasets)
   .map((d) => d!.data)
   .filter((d) => !d.disableExplore);
 
@@ -45,18 +48,22 @@ export interface DatasetDataWithEnhancedLayers extends DatasetData {
   layers: EnhancedDatasetLayer[];
 }
 
-export const allDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[]  = allDatasets.map(currentDataset => {
+function enhanceDatasetLayers(dataset) {
   return {
-    ...currentDataset,
-    layers: currentDataset.layers.map(l => ({
-      ...l,
-      parentDataset: {
-        id: currentDataset.id,
-        name: currentDataset.name
-      }
-    }))
+      ...dataset,
+      layers: dataset.layers.map(layer => ({
+          ...layer,
+          parentDataset: {
+              id: dataset.id,
+              name: dataset.name
+          }
+      }))
   };
-});
+}
+
+export const allExploreDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[] = allExploreDatasets.map(enhanceDatasetLayers);
+
+export const allDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[] = allDatasets.map(enhanceDatasetLayers);
 
 export const datasetLayers = Object.values(veda_datasets)
   .flatMap((dataset) => {
