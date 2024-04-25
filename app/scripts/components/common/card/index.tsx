@@ -29,16 +29,28 @@ interface CardItemProps {
 }
 
 /**
-@NOTE: CardList & CardFooter have been moved over to /common/card/styles but will remain here because of 
-dependency from other instances, once those instances have been updated to the new catalog view and imports have been
-updated to look at new location, we can remove these
+  @NOTE: CardList & CardFooter have been moved over to /common/card/styles and has modified styles 
+  These styles are used in GHG instance, so we leave these for now. We should move these styles to GHG instances
+  since these styles are not used by UI instance anymore.
 */
 export const CardList = styled.ol`
   ${listReset()}
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  grid-column: 1 / -1;
+  display: grid;
+  gap: ${variableGlsp()};
+  grid-template-columns: repeat(1, 1fr);
+
+  ${media.mediumUp`
+    grid-template-columns: repeat(2, 1fr);
+  `}
+
+  ${media.largeUp`
+    grid-template-columns: repeat(3, 1fr);
+  `}
+
+  > li {
+    min-width: 0;
+  }
 `;
 
 export const CardFooter = styled.div`
