@@ -137,7 +137,6 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
       >
         <option> Analyze an area </option>
         <optgroup label='Country' />
-          <option value='United States'> United States</option>
           <option value='United States (Contiguous)'> Contiguous United States (CONUS)</option>
         <optgroup label='State' />
         {sortedPresets.map(e => {
