@@ -199,10 +199,6 @@ module.exports = new Resolver({
 
         export const theme = ${JSON.stringify(result.theme) || null};
 
-        export const datasetTaxonomies = ${generateTaxonomiesModuleOutput(
-          datasetsData.data
-        )}
-
         export const storyTaxonomies = ${generateTaxonomiesModuleOutput(
           storiesData.data
         )}

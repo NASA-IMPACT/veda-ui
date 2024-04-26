@@ -264,14 +264,10 @@ export interface LayerInfo {
   export const stories: VedaData<StoryData>;
 
   /**
-   * Named exports: datasetTaxonomies.
-   * Array with all the veda datasets taxonomies.
-   */
-  export const datasetTaxonomies: Taxonomy[];
-
-  /**
    * Named exports: storyTaxonomies.
-   * Array with all the veda story taxonomies.
+   * Contains a static array of Veda story taxonomies.
+   * Unlike DatasetTaxonomies which are generated dynamically,
+   * story taxonomies are predefined as dynamic filters are not anticipated.
    */
   export const storyTaxonomies: Taxonomy[];
 

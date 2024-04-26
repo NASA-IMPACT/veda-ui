@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { DatasetData, datasetTaxonomies, getString } from 'veda';
+import { DatasetData, getString } from 'veda';
 import { Link, useNavigate } from 'react-router-dom';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { VerticalDivider } from '@devseed-ui/toolbar';
@@ -32,11 +32,12 @@ import TextHighlight from '$components/common/text-highlight';
 import { Pill } from '$styles/pill';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
-import { DatasetDataWithEnhancedLayers } from '$components/exploration/data-utils';
+import { DatasetDataWithEnhancedLayers, allDatasets } from '$components/exploration/data-utils';
 import {
   getAllTaxonomyValues,
   getTaxonomy,
   getTaxonomyByIds,
+  generateTaxonomies,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
@@ -188,6 +189,8 @@ function DataCatalog({ datasets }: DataCatalogProps) {
   const { taxonomies, sortField, sortDir, onAction } = controlVars;
   const search = controlVars.search ?? '';
   let urlTaxonomyItems: OptionItem[] = [];
+
+  const datasetTaxonomies = generateTaxonomies(allDatasets);
 
   if (taxonomies) {
     urlTaxonomyItems = Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() || [];
