@@ -7,7 +7,7 @@ import {
   CollecticonDiscXmark,
   CollecticonArrowSpinCcw,
 } from '@devseed-ui/collecticons';
-import { glsp } from '@devseed-ui/theme-provider';
+import { glsp, truncated } from '@devseed-ui/theme-provider';
 import usePresetAOI from '../hooks/use-preset-aoi';
 
 const analysisStatesPreset = ["Alabama",
@@ -110,9 +110,7 @@ const OptionValueDisplay = styled.div`
   pointer-events: none;
   span {
     width: 85%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    ${truncated()}
   }
 `;
 
