@@ -67,6 +67,11 @@ const analysisStatesPreset = ["Alabama",
 const analysisCountryPreset = [
   {
     group: 'country',
+    label: 'United States',
+    value: 'United States'
+  },
+  {
+    group: 'country',
     label: 'Contiguous United States (CONUS)',
     value: 'United States (Contiguous)'
   }
@@ -93,7 +98,7 @@ const PresetSelect = styled.select`
   height: ${selectorHeight};
   color: transparent;
   background: none;
-  option { 
+  option {
     color: black;
   }
 `;
@@ -155,9 +160,9 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
 
   useEffect(() => {
     if (features?.length) onConfirm(features);
-  
+
   // Excluding onConfirm from the dependencies array to prevent an infinite loop:
-  // onConfirm depends on the Map instance, and invoking it modifies the Map, 
+  // onConfirm depends on the Map instance, and invoking it modifies the Map,
   // which can re-trigger this effect if included as a dependency.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[features]);
@@ -167,7 +172,7 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
   return (
     <SelectorWrapper>
       <OptionValueDisplay><span>{currentlySelected? currentlySelected.label: 'Analyze an area'} </span><CollecticonChevronDownSmall /></OptionValueDisplay>
-      
+
       <PresetSelect
         id='preset-selector'
         name='presetSelector'
@@ -186,7 +191,7 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
           return (<option key={`${e.value}-option-analysis`} value={e.value}>{e.label}</option>);
         })}
       </PresetSelect>
-      {(selectedState && !isLoading) && 
+      {(selectedState && !isLoading) &&
         <CancelButton
         fitting='skinny'
         onClick={() => {
