@@ -12,6 +12,7 @@ import {
 
 import { MDXContent, MDXModule } from 'mdx/types';
 import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
+import { DatasetDataWithEnhancedLayers } from '$components/exploration/data-utils';
 
 /**
  * List with the meta information of all datasets.
@@ -97,7 +98,7 @@ export function useMdxPageLoader(loader?: () => Promise<MDXModule>) {
   return pageMdx;
 }
 
-export function generateTaxonomies(data): Taxonomy[] {
+export function generateTaxonomies(data: DatasetDataWithEnhancedLayers[] | DatasetData[]): Taxonomy[] {
   const concat = (arr, v) => (arr || []).concat(v);
 
   const taxonomyData = {};

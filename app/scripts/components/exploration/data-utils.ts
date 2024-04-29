@@ -63,7 +63,7 @@ function enhanceDatasetLayers(dataset) {
 
 export const allExploreDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[] = allExploreDatasets.map(enhanceDatasetLayers);
 
-export const allDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[] = allDatasets.map(enhanceDatasetLayers);
+export const getAllDatasetsWithEnhancedLayers = (dataset): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
 
 export const datasetLayers = Object.values(veda_datasets)
   .flatMap((dataset) => {
