@@ -47,6 +47,7 @@ const FilterOptionsWrapper = styled.div`
 const DropButton = styled(Button)`
   max-width: 12rem;
   > span {
+    max-width: 5rem;
     ${truncated()}
   }
 

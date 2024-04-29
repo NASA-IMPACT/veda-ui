@@ -1,5 +1,5 @@
 import React from 'react';
-import { allDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
+import { allDatasets } from '$components/exploration/data-utils';
 import DataCatalog from '$components/data-catalog';
 
 // @VEDA2-REFACTOR-WORK
@@ -10,7 +10,7 @@ import DataCatalog from '$components/data-catalog';
 export default function DataCatalogContainer() {
   return (
     <>
-      <DataCatalog datasets={allDatasetsWithEnhancedLayers} />
+      <DataCatalog datasets={allDatasets} />
     </>
   );
 }

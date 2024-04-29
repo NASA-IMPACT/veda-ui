@@ -3,9 +3,11 @@ import styled, { css, keyframes } from 'styled-components';
 import { Feature, Polygon } from 'geojson';
 import { Button } from '@devseed-ui/button';
 import {
+  CollecticonChevronDownSmall,
   CollecticonDiscXmark,
   CollecticonArrowSpinCcw,
 } from '@devseed-ui/collecticons';
+import { glsp, truncated } from '@devseed-ui/theme-provider';
 import usePresetAOI from '../hooks/use-preset-aoi';
 
 const analysisStatesPreset = ["Alabama",
@@ -60,7 +62,19 @@ const analysisStatesPreset = ["Alabama",
 "West Virginia",
 "Wisconsin",
 "Wyoming"
-].map(e => ({label: e, value: e}));
+].map(e => ({group: 'state', label: e, value: e}));
+
+const analysisCountryPreset = [
+  {
+    group: 'country',
+    label: 'Contiguous United States (CONUS)',
+    value: 'United States (Contiguous)'
+  }
+];
+const analysisPresets = [
+  ...analysisStatesPreset,
+  ...analysisCountryPreset
+];
 
 // Disabling no mutating rule since we are mutating the copy
 // eslint-disable-next-line fp/no-mutating-methods
@@ -77,6 +91,27 @@ const SelectorWrapper = styled.div`
 const PresetSelect = styled.select`
   max-width: 200px;
   height: ${selectorHeight};
+  color: transparent;
+  background: none;
+  option { 
+    color: black;
+  }
+`;
+// This div is just to display the value with trucnated texts
+const OptionValueDisplay = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  padding: ${glsp(0.125)};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  span {
+    width: 85%;
+    ${truncated()}
+  }
 `;
 
 const SelectorSubAction = css`
@@ -127,8 +162,12 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[features]);
 
+  const currentlySelected = analysisPresets.find(e => e.value === selectedState);
+
   return (
     <SelectorWrapper>
+      <OptionValueDisplay><span>{currentlySelected? currentlySelected.label: 'Analyze an area'} </span><CollecticonChevronDownSmall /></OptionValueDisplay>
+      
       <PresetSelect
         id='preset-selector'
         name='presetSelector'
@@ -137,8 +176,11 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
       >
         <option> Analyze an area </option>
         <optgroup label='Country' />
-          <option value='United States'> United States</option>
-          <option value='United States (Contiguous)'> Contiguous United States (CONUS)</option>
+        {
+          analysisCountryPreset.map(e => {
+            return (<option key={`${e.value}-option-analysis`} value={e.value}>{e.label}</option>);
+          })
+        }
         <optgroup label='State' />
         {sortedPresets.map(e => {
           return (<option key={`${e.value}-option-analysis`} value={e.value}>{e.label}</option>);

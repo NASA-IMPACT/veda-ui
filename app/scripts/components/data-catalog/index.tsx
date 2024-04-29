@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { DatasetData, datasetTaxonomies, getString } from 'veda';
+import { DatasetData, getString } from 'veda';
 import { Link, useNavigate } from 'react-router-dom';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { VerticalDivider } from '@devseed-ui/toolbar';
@@ -32,11 +32,11 @@ import TextHighlight from '$components/common/text-highlight';
 import { Pill } from '$styles/pill';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
-import { DatasetDataWithEnhancedLayers } from '$components/exploration/data-utils';
 import {
   getAllTaxonomyValues,
   getTaxonomy,
   getTaxonomyByIds,
+  generateTaxonomies,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
@@ -44,6 +44,7 @@ import { DatasetClassification } from '$components/common/dataset-classification
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { usePreviousValue } from '$utils/use-effect-previous';
+import { getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 
 const BrowseFoldHeader = styled(FoldHeader)`
   margin-bottom: 4rem;
@@ -175,7 +176,7 @@ export const prepareDatasets = (
 };
 
 export interface DataCatalogProps {
-  datasets: DatasetDataWithEnhancedLayers[]
+  datasets: DatasetData[];
 }
 
 function DataCatalog({ datasets }: DataCatalogProps) {
@@ -189,12 +190,16 @@ function DataCatalog({ datasets }: DataCatalogProps) {
   const search = controlVars.search ?? '';
   let urlTaxonomyItems: OptionItem[] = [];
 
+  const datasetTaxonomies = generateTaxonomies(datasets);
+
   if (taxonomies) {
     urlTaxonomyItems = Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() || [];
   }
 
+  const allDatasetsWithEnhancedLayers = React.useMemo(() => getAllDatasetsWithEnhancedLayers(datasets), [datasets]);
+
   const [datasetsToDisplay, setDatasetsToDisplay] = React.useState<DatasetData[]>(
-    prepareDatasets(datasets, {
+    prepareDatasets(allDatasetsWithEnhancedLayers, {
     search,
     taxonomies,
     sortField,
@@ -243,7 +248,7 @@ function DataCatalog({ datasets }: DataCatalogProps) {
   }, [allSelectedFilters]);
 
   React.useEffect(() => {
-    const updated = prepareDatasets(datasets, {
+    const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
       search,
       taxonomies,
       sortField,

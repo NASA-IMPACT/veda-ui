@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { datasetTaxonomies } from 'veda';
 import {
   ModalHeadline
 } from '@devseed-ui/modal';
@@ -12,6 +11,10 @@ import {
   TaxonomyFilterOption,
   useBrowserControls
 } from '$components/common/browse-controls/use-browse-controls';
+import {
+  allExploreDatasetsWithEnhancedLayers as allDatasets
+} from '$components/exploration/data-utils';
+import { generateTaxonomies } from '$utils/veda-data';
 import { sortOptions } from '$components/data-catalog';
 
 const StyledModalHeadline = styled(ModalHeadline)`
@@ -22,9 +25,9 @@ export default function RenderModalHeader ({defaultSelect}: {defaultSelect?: Tax
   const controlVars = useBrowserControls({
     sortOptions
   });
-
-  React.useEffect(() => {
-    if(defaultSelect) {
+  const datasetTaxonomies = generateTaxonomies(allDatasets);
+  useEffect(() => {
+    if (defaultSelect) {
       controlVars.onAction(Actions.TAXONOMY, { key: defaultSelect.taxonomyType, value: defaultSelect.value });
     }
   }, [defaultSelect]);

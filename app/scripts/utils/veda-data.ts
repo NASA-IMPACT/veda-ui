@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { uniqBy } from 'lodash';
 import {
   stories,
   datasets,
   DatasetData,
   StoryData,
-  Taxonomy
+  Taxonomy,
+  TaxonomyItem
 } from 'veda';
 
 import { MDXContent, MDXModule } from 'mdx/types';
 import { S_IDLE, S_LOADING, S_SUCCEEDED } from './status';
+import { DatasetDataWithEnhancedLayers } from '$components/exploration/data-utils';
 
 /**
  * List with the meta information of all datasets.
@@ -94,6 +97,27 @@ export function useMdxPageLoader(loader?: () => Promise<MDXModule>) {
 
   return pageMdx;
 }
+
+export function generateTaxonomies(data: DatasetDataWithEnhancedLayers[] | DatasetData[]): Taxonomy[] {
+  const concat = (arr, v) => (arr || []).concat(v);
+
+  const taxonomyData = {};
+  // for loops are faster than reduces.
+  for (const { taxonomy } of data) {
+    for (const { name, values } of taxonomy) {
+      if (!name || !values?.length) continue;
+      taxonomyData[name] = concat(taxonomyData[name], values);
+    }
+  }
+
+  const taxonomiesUnique = Object.entries(taxonomyData).map(([key, tx]): Taxonomy => ({
+    name: key,
+    // eslint-disable-next-line fp/no-mutating-methods
+    values: uniqBy(tx as TaxonomyItem[], (t) => t.id).sort((a, b) => a.name.localeCompare(b.name)) as TaxonomyItem[]
+  }));
+  return taxonomiesUnique;
+}
+
 
 // Taxonomies with special meaning as they're used in the app, like in the cards
 // for example.
