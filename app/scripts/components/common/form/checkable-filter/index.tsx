@@ -10,7 +10,7 @@ import { CardTitle } from '$components/common/card/styles';
 
 const FilterMenu = styled.div`
   border: 2px solid ${themeVal('color.base-200')};
-  border-radius: 4px;
+  border-radius: ${themeVal('shape.rounded')};
   padding: 12px;
   margin-bottom: 1.5rem;
 `;
@@ -74,6 +74,7 @@ interface CheckableFiltersProps {
     item?: OptionItem;
     callback?: React.Dispatch<React.SetStateAction<any>>;
   }
+  showFiltersOpened?: boolean;
 }
 
 export interface OptionItem {
@@ -84,7 +85,7 @@ export interface OptionItem {
 
 export default function CheckableFilters(props: CheckableFiltersProps) {
   const {items, title, onChanges, globallySelected, tagItemCleared} = props;
-  const [show, setShow] = useState<boolean>(false);
+  const [show, setShow] = useState<boolean>(props.showFiltersOpened ?? true);
   const [count, setCount] = useState<number>(0);
   const [selected, setSelected] = useState<OptionItem[]>([]);
 
