@@ -67,8 +67,8 @@ export default function FiltersControl(props: FiltersMenuProps) {
     if (areaHeight && (controlsHeight >= areaHeight)) {
       setHeightStyle('100%');
     } else if (areaHeight) {
-      const diff = areaHeight - controlsHeight;
-      setHeightStyle(`${diff}`);
+      const total = (areaHeight - controlsHeight) / 3;
+      setHeightStyle(`${total}`);
     }
   }, [controlsHeight, areaHeight]);
 
