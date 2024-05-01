@@ -74,7 +74,7 @@ interface CheckableFiltersProps {
     item?: OptionItem;
     callback?: React.Dispatch<React.SetStateAction<any>>;
   }
-  showFiltersOpened?: boolean;
+  calculateHeightCallback?: (height: number) => void;
 }
 
 export interface OptionItem {
@@ -84,10 +84,18 @@ export interface OptionItem {
 }
 
 export default function CheckableFilters(props: CheckableFiltersProps) {
-  const {items, title, onChanges, globallySelected, tagItemCleared} = props;
-  const [show, setShow] = useState<boolean>(props.showFiltersOpened ?? true);
+  const {
+    items,
+    title,
+    onChanges,
+    globallySelected,
+    tagItemCleared,
+    calculateHeightCallback
+  } = props;
+  const [show, setShow] = useState<boolean>(true);
   const [count, setCount] = useState<number>(0);
   const [selected, setSelected] = useState<OptionItem[]>([]);
+  const targetRef = React.useRef<HTMLDivElement>(null);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const idInfo = e.target.id.split('&&');
@@ -115,6 +123,13 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
   const isChecked = (item: OptionItem) => globallySelected.some((selected) => selected.id == item.id && selected.taxonomy == item.taxonomy);
   
   useEffect(() => {
+    if(targetRef.current && calculateHeightCallback) {
+      const height = targetRef.current.offsetHeight;
+      calculateHeightCallback(height);
+    }
+  }, [targetRef]);
+
+  useEffect(() => {
     if(!globallySelected || globallySelected.length === 0) {
       setCount(0);
     }
@@ -135,7 +150,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
   }, [tagItemCleared, globallySelected]);
 
   return (
-    <FilterMenu>
+    <FilterMenu ref={targetRef}>
       <FilterTitle>
         <div id='title-selected'>
           <CardTitle>{title}</CardTitle>

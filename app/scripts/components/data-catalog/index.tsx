@@ -55,7 +55,7 @@ const BrowseFoldHeader = styled(FoldHeader)`
 const Content = styled.div`
   display: flex;
   margin-bottom: 8rem;
-  position: sticky;
+  position: relative;
 `;
 
 const CatalogWrapper = styled.div`
@@ -71,10 +71,6 @@ const BrowseSection = styled.div`
   padding-right: ${variableGlsp()};
   gap: ${variableGlsp()};
 `;
-
-// const FilterWrapper = styled.div`
-//   display: block;
-// `;
 
 const Cards = styled(CardList)`
   padding: 0 0 0 2rem;
@@ -142,8 +138,8 @@ function DataCatalog({ datasets }: DataCatalogProps) {
 
   const prevSelectedFilters = usePreviousValue(allSelectedFilters) || [];
 
-  // const targetRef = React.useRef<HTMLDivElement>(null);
-  // const [targetHeight, setTargetHeight] = React.useState<number>(0);
+  const targetRef = React.useRef<HTMLOListElement>(null);
+  const [targetHeight, setTargetHeight] = React.useState<number>(0);
 
   // Handlers
   const handleChangeAllSelectedFilters = React.useCallback((item: OptionItem, action: 'add' | 'remove') => {
@@ -167,12 +163,12 @@ function DataCatalog({ datasets }: DataCatalogProps) {
     setAllSelectedFilters([]);
   }, [setAllSelectedFilters]);
 
-  // React.useEffect(() => {
-  //   if(targetRef.current) {
-  //     const height = targetRef.current.offsetHeight;
-  //     console.log(`height: `, height);
-  //   }
-  // }, [targetRef]);
+  React.useEffect(() => {
+    if(targetRef.current) {
+      const height = targetRef.current.offsetHeight;
+      setTargetHeight(height);
+    }
+  }, [targetRef]);
 
   React.useEffect(() => {
     if (clearedTagItem && (allSelectedFilters.length == prevSelectedFilters.length-1)) {
@@ -233,20 +229,19 @@ function DataCatalog({ datasets }: DataCatalogProps) {
         </FoldHeadline>
       </BrowseFoldHeader>
       <Content>
-        {/* <FilterWrapper ref={targetRef}> */}
-          <FiltersControl
-            {...controlVars}
-            taxonomiesOptions={datasetTaxonomies}
-            onChangeToFilters={handleChangeAllSelectedFilters}
-            clearedTagItem={clearedTagItem}
-            setClearedTagItem={setClearedTagItem}
-            allSelected={allSelectedFilters}
-          />
-        {/* </FilterWrapper> */}
+        <FiltersControl
+          {...controlVars}
+          taxonomiesOptions={datasetTaxonomies}
+          onChangeToFilters={handleChangeAllSelectedFilters}
+          clearedTagItem={clearedTagItem}
+          setClearedTagItem={setClearedTagItem}
+          allSelected={allSelectedFilters}
+          areaHeight={targetHeight}
+        />
         <CatalogWrapper>
           {renderTags}
           {datasetsToDisplay.length ? (
-            <Cards>
+            <Cards ref={targetRef}>
               {datasetsToDisplay.map((d) => {
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
                 const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);

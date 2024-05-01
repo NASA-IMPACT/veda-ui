@@ -5,12 +5,12 @@ import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
 import { Actions, useBrowserControls } from '$components/common/browse-controls/use-browse-controls';
 
-const ControlsWrapper = styled.div<{ width?: string; }>`
+const ControlsWrapper = styled.div<{ width?: string; height?: string }>`
   min-width: 20rem;
   width: ${props => props.width ?? '20rem'};
   position: sticky;
   top: 0;
-  height: 100vh;
+  ${props => props.height == '100%' ? `height: props.height` : `height: calc(100vh + ${props.height}px)` };
 `;
 
 interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
@@ -20,6 +20,7 @@ interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
   setClearedTagItem?: React.Dispatch<React.SetStateAction<OptionItem | undefined>>;
   width?: string;
   onChangeToFilters?: (item: OptionItem, action: 'add' | 'remove') => void;
+  areaHeight?: number;
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
@@ -32,7 +33,12 @@ export default function FiltersControl(props: FiltersMenuProps) {
     onChangeToFilters,
     clearedTagItem,
     setClearedTagItem,
+    areaHeight,
   } = props;
+
+  const searchRef = React.useRef<HTMLDivElement>(null);
+  const [controlsHeight, setControlsHeight] =  React.useState<number>(0);
+  const [heightStyle, setHeightStyle] = React.useState<string>();
 
   const handleChanges = useCallback((item: OptionItem) => {
     if(allSelected.some((selected) => selected.id == item.id && selected.taxonomy == item.taxonomy)) {
@@ -45,31 +51,50 @@ export default function FiltersControl(props: FiltersMenuProps) {
     }
   }, [allSelected, setClearedTagItem, onChangeToFilters]);
 
+  const calculateHeightOfAllFilters = (height: number) => {
+    setControlsHeight(prev => prev + height);
+  };
 
-  const displayFiltersOpened = React.useMemo(() => taxonomiesOptions.length > 4 ? false : true, [taxonomiesOptions]);
 
+  React.useEffect(() => {
+    if(searchRef.current) {
+      const height = searchRef.current.offsetHeight;
+      setControlsHeight(prev => prev + height);
+    }
+  }, [searchRef]);
+
+  React.useEffect(() => {
+    if (areaHeight && (controlsHeight >= areaHeight)) {
+      setHeightStyle('100%');
+    } else if (areaHeight) {
+      const diff = areaHeight - controlsHeight;
+      setHeightStyle(`${diff}`);
+    }
+  }, [controlsHeight, areaHeight]);
 
   return (
-    <ControlsWrapper width={width}>
-      <SearchField
-        size='large'
-        placeholder='Search by title, description'
-        value={search ?? ''}
-        onChange={(v) => onAction(Actions.SEARCH, v)}
-      />
+    <ControlsWrapper width={width} height={heightStyle}>
+      <div ref={searchRef}>
+        <SearchField
+          size='large'
+          placeholder='Search by title, description'
+          value={search ?? ''}
+          onChange={(v) => onAction(Actions.SEARCH, v)}
+        />
+      </div>
       {
         taxonomiesOptions.map((taxonomy) => {
           const items = taxonomy.values.map((t) => ({...t, taxonomy: taxonomy.name}));
           return (
-            <CheckableFilters 
-              key={taxonomy.name}
-              items={items}
-              title={taxonomy.name}
-              onChanges={handleChanges}
-              globallySelected={allSelected}
-              tagItemCleared={{item: clearedTagItem, callback: setClearedTagItem}}
-              showFiltersOpened={displayFiltersOpened}
-            />
+              <CheckableFilters 
+                key={taxonomy.name}
+                items={items}
+                title={taxonomy.name}
+                onChanges={handleChanges}
+                globallySelected={allSelected}
+                tagItemCleared={{item: clearedTagItem, callback: setClearedTagItem}}
+                calculateHeightCallback={calculateHeightOfAllFilters}
+              />
           );
         })
       }
