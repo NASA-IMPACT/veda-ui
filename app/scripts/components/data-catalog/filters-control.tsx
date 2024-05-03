@@ -10,7 +10,7 @@ const ControlsWrapper = styled.div<{ width?: string; height?: string }>`
   width: ${props => props.width ?? '20rem'};
   position: sticky;
   top: 0;
-  ${props => props.height == '100%' ? `height: props.height` : `height: calc(100vh + ${props.height}px)` };
+  height: ${props => props.height == '100%' ? `${props.height}` : `calc(100vh + ${props.height}px)`};
 `;
 
 interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
