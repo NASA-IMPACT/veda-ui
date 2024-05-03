@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { DatasetData } from 'veda';
 import { Link, useNavigate } from 'react-router-dom';
@@ -114,17 +114,15 @@ function DataCatalog({ datasets }: DataCatalogProps) {
 
   const { taxonomies, sortField, sortDir, onAction } = controlVars;
   const search = controlVars.search ?? '';
-  let urlTaxonomyItems: OptionItem[] = [];
 
   const datasetTaxonomies = generateTaxonomies(datasets);
 
-  if (taxonomies) {
-    urlTaxonomyItems = Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() || [];
-  }
+  
+  const urlTaxonomyItems = taxonomies? Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat(): [];
+  
+  const allDatasetsWithEnhancedLayers = useMemo(() => getAllDatasetsWithEnhancedLayers(datasets), [datasets]);
 
-  const allDatasetsWithEnhancedLayers = React.useMemo(() => getAllDatasetsWithEnhancedLayers(datasets), [datasets]);
-
-  const [datasetsToDisplay, setDatasetsToDisplay] = React.useState<DatasetData[]>(
+  const [datasetsToDisplay, setDatasetsToDisplay] = useState<DatasetData[]>(
     prepareDatasets(allDatasetsWithEnhancedLayers, {
     search,
     taxonomies,
@@ -133,16 +131,13 @@ function DataCatalog({ datasets }: DataCatalogProps) {
     filterLayers: false
   }));
 
-  const [allSelectedFilters, setAllSelectedFilters] = React.useState<OptionItem[]>(urlTaxonomyItems);
-  const [clearedTagItem, setClearedTagItem] = React.useState<OptionItem>();
+  const [allSelectedFilters, setAllSelectedFilters] = useState<OptionItem[]>(urlTaxonomyItems);
+  const [clearedTagItem, setClearedTagItem] = useState<OptionItem>();
 
   const prevSelectedFilters = usePreviousValue(allSelectedFilters) || [];
 
-  const targetRef = React.useRef<HTMLOListElement>(null);
-  const [targetHeight, setTargetHeight] = React.useState<number>(0);
-
   // Handlers
-  const handleChangeAllSelectedFilters = React.useCallback((item: OptionItem, action: 'add' | 'remove') => {
+  const handleChangeAllSelectedFilters = useCallback((item: OptionItem, action: 'add' | 'remove') => {
     if(action == 'add') {
       setAllSelectedFilters([...allSelectedFilters, item]);
     } 
@@ -153,38 +148,31 @@ function DataCatalog({ datasets }: DataCatalogProps) {
     onAction(Actions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
   }, [setAllSelectedFilters, allSelectedFilters, onAction]);
 
-  const handleClearTag = React.useCallback((item: OptionItem) => {
+  const handleClearTag = useCallback((item: OptionItem) => {
     setAllSelectedFilters(allSelectedFilters.filter((selected) => selected !== item));
     setClearedTagItem(item);
 
   }, [allSelectedFilters]);
 
-  const handleClearTags = React.useCallback(() => {
+  const handleClearTags = useCallback(() => {
     setAllSelectedFilters([]);
   }, [setAllSelectedFilters]);
 
-  React.useEffect(() => {
-    if(targetRef.current) {
-      const height = targetRef.current.offsetHeight;
-      setTargetHeight(height);
-    }
-  }, [targetRef]);
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (clearedTagItem && (allSelectedFilters.length == prevSelectedFilters.length-1)) {
       onAction(Actions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id}); 
       setClearedTagItem(undefined);
     }
   }, [allSelectedFilters, clearedTagItem]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if(!allSelectedFilters.length) {
       onAction(Actions.CLEAR);
       navigate(DATASETS_PATH);
     }
   }, [allSelectedFilters]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
       search,
       taxonomies,
@@ -198,8 +186,8 @@ function DataCatalog({ datasets }: DataCatalogProps) {
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
 
-  const renderTags = React.useMemo(() => {
-    if(allSelectedFilters.length > 0 || urlTaxonomyItems.length > 0) {
+  const renderTags = useMemo(() => {
+    if (allSelectedFilters.length > 0 || urlTaxonomyItems.length > 0) {
       return (
         <Tags>
           {
@@ -236,12 +224,11 @@ function DataCatalog({ datasets }: DataCatalogProps) {
           clearedTagItem={clearedTagItem}
           setClearedTagItem={setClearedTagItem}
           allSelected={allSelectedFilters}
-          areaHeight={targetHeight}
         />
         <CatalogWrapper>
           {renderTags}
           {datasetsToDisplay.length ? (
-            <Cards ref={targetRef}>
+            <Cards>
               {datasetsToDisplay.map((d) => {
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
                 const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
