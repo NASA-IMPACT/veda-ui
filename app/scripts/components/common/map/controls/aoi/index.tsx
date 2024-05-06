@@ -15,12 +15,12 @@ type DrawControlProps = MapboxDraw.DrawOptions;
 // accidentally dragging the selected or hand-drawn AOIs 
 const customSimpleSelect = {
   ...MapboxDraw.modes.simple_select,
-  dragMove() {}
+  dragMove() { return; }
 };
 
 const customDirectSelect = {
   ...MapboxDraw.modes.direct_select,
-  dragFeature() {},
+  dragFeature() { return; },
 };
 
 export default function DrawControl(props: DrawControlProps) {
