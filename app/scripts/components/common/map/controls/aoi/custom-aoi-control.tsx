@@ -145,7 +145,7 @@ function CustomAoI({
       zoom: getZoomFromBbox(bounds)
     });
     const addedAoisId = mbDraw.add(fc);
-    mbDraw.changeMode('simple_static', {
+    mbDraw.changeMode('simple_select', {
       featureIds: addedAoisId
     });
     setFileUplaodedIds(addedAoisId);
