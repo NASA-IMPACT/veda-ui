@@ -10,7 +10,7 @@ import { CardTitle } from '$components/common/card/styles';
 
 const FilterMenu = styled.div`
   border: 2px solid ${themeVal('color.base-200')};
-  border-radius: 4px;
+  border-radius: ${themeVal('shape.rounded')};
   padding: 12px;
   margin-bottom: 1.5rem;
 `;
@@ -83,8 +83,14 @@ export interface OptionItem {
 }
 
 export default function CheckableFilters(props: CheckableFiltersProps) {
-  const {items, title, onChanges, globallySelected, tagItemCleared} = props;
-  const [show, setShow] = useState<boolean>(false);
+  const {
+    items,
+    title,
+    onChanges,
+    globallySelected,
+    tagItemCleared
+  } = props;
+  const [show, setShow] = useState<boolean>(true);
   const [count, setCount] = useState<number>(0);
   const [selected, setSelected] = useState<OptionItem[]>([]);
 
@@ -112,7 +118,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
   }, [selected]);
 
   const isChecked = (item: OptionItem) => globallySelected.some((selected) => selected.id == item.id && selected.taxonomy == item.taxonomy);
-  
+
   useEffect(() => {
     if(!globallySelected || globallySelected.length === 0) {
       setCount(0);
