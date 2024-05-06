@@ -36,9 +36,10 @@ export default function FiltersControl(props: FiltersMenuProps) {
     setClearedTagItem
   } = props;
 
-  const controlRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<HTMLDivElement>(null);
   const [controlsHeight, setControlsHeight] =  useState<number>(0);
   const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader();
+
 
   const handleChanges = useCallback((item: OptionItem) => {
     if(allSelected.some((selected) => selected.id == item.id && selected.taxonomy == item.taxonomy)) {
@@ -52,9 +53,9 @@ export default function FiltersControl(props: FiltersMenuProps) {
   }, [allSelected, setClearedTagItem, onChangeToFilters]);
 
   useEffect(() => {
-    if (!controlRef.current) return;
+    if (!controlsRef.current) return;
     
-    const height = controlRef.current.offsetHeight;
+    const height = controlsRef.current.offsetHeight;
     setControlsHeight(height);
     // Observe the height change of controls (from accordion folding)
     const resizeObserver = new ResizeObserver(([entry]) => {
@@ -64,14 +65,14 @@ export default function FiltersControl(props: FiltersMenuProps) {
         setControlsHeight(borderBoxSize.blockSize);
       }
     });
-    resizeObserver.observe(controlRef.current);
+    resizeObserver.observe(controlsRef.current);
     return () => resizeObserver.disconnect(); // clean up 
-  }, [controlRef]);
+  }, [controlsRef]);
 
 
   return (
     <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden? '0px': `${wrapperHeight}px`}>
-      <div ref={controlRef}>
+      <div ref={controlsRef}>
         <SearchField
           size='large'
           placeholder='Search by title, description'
