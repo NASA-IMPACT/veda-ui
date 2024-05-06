@@ -168,7 +168,7 @@ function CustomAoI({
     });
     const pids = mbDraw.add(fc);
     setPresetIds(pids);
-    mbDraw.changeMode('simple_static', {
+    mbDraw.changeMode('simple_select', {
       featureIds: pids
     });
 
