@@ -1,11 +1,8 @@
-import React, { useRef, useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { DatasetData } from 'veda';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { VerticalDivider } from '@devseed-ui/toolbar';
-
-import DatasetMenu from './dataset-menu';
 import FiltersControl from './filters-control';
 import FilterTag from './filter-tag';
 import prepareDatasets from './prepare-datasets';
@@ -23,21 +20,15 @@ import {
   FoldTitle
 } from '$components/common/fold';
 import { Card } from '$components/common/card';
-import { CardList, CardMeta, CardTopicsList } from '$components/common/card/styles';
+import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
-import { Pill } from '$styles/pill';
-import { CardSourcesList } from '$components/common/card-sources';
 import {
   getAllTaxonomyValues,
-  getTaxonomy,
   getTaxonomyByIds,
   generateTaxonomies,
-  TAXONOMY_SOURCE,
-  TAXONOMY_TOPICS
 } from '$utils/veda-data';
-import { DatasetClassification } from '$components/common/dataset-classification';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { usePreviousValue } from '$utils/use-effect-previous';
@@ -48,7 +39,17 @@ import { getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-u
  * Allows you to browse through datasets using the filters sidebar control
  */
 
-const BrowseFoldHeader = styled(FoldHeader)`
+const DataCatalogWrapper = styled.div`
+  width: 100%;
+  max-width: ${themeVal('layout.max')};
+  margin: 0 auto;
+  margin-top: ${variableGlsp(2)};
+  padding-left: ${variableGlsp()};
+  padding-right: ${variableGlsp()};
+  gap: ${variableGlsp()};
+`;
+
+const CatalogFoldHeader = styled(FoldHeader)`
   margin-bottom: 4rem;
 `;
 
@@ -60,16 +61,6 @@ const Content = styled.div`
 
 const CatalogWrapper = styled.div`
   width: 100%;
-`;
-
-const BrowseSection = styled.div`
-  width: 100%;
-  max-width: ${themeVal('layout.max')};
-  margin: 0 auto;
-  margin-top: ${variableGlsp(2)};
-  padding-left: ${variableGlsp()};
-  padding-right: ${variableGlsp()};
-  gap: ${variableGlsp()};
 `;
 
 const Cards = styled(CardList)`
@@ -105,7 +96,9 @@ export interface DataCatalogProps {
   datasets: DatasetData[];
 }
 
-function DataCatalog({ datasets }: DataCatalogProps) {
+function DataCatalog({ 
+  datasets,
+}: DataCatalogProps) {
   const controlVars = useBrowserControls({
     sortOptions
   });
@@ -117,7 +110,6 @@ function DataCatalog({ datasets }: DataCatalogProps) {
 
   const datasetTaxonomies = generateTaxonomies(datasets);
 
-  
   const urlTaxonomyItems = taxonomies? Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat(): [];
   
   const allDatasetsWithEnhancedLayers = useMemo(() => getAllDatasetsWithEnhancedLayers(datasets), [datasets]);
@@ -183,7 +175,6 @@ function DataCatalog({ datasets }: DataCatalogProps) {
     setDatasetsToDisplay(updated);
   }, [allSelectedFilters, taxonomies, search]);
 
-  const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
 
   const renderTags = useMemo(() => {
@@ -205,9 +196,8 @@ function DataCatalog({ datasets }: DataCatalogProps) {
   }, [allSelectedFilters, handleClearTag, handleClearTags, urlTaxonomyItems]);
 
   return (
-    <BrowseSection>
-      <BrowseFoldHeader
-        ref={browseControlsHeaderRef}
+    <DataCatalogWrapper>
+      <CatalogFoldHeader
         style={{
           scrollMarginTop: `${headerHeight + 16}px`
         }}
@@ -215,7 +205,7 @@ function DataCatalog({ datasets }: DataCatalogProps) {
         <FoldHeadline>
           <FoldTitle>Search datasets</FoldTitle>
         </FoldHeadline>
-      </BrowseFoldHeader>
+      </CatalogFoldHeader>
       <Content>
         <FiltersControl
           {...controlVars}
@@ -229,107 +219,38 @@ function DataCatalog({ datasets }: DataCatalogProps) {
           {renderTags}
           {datasetsToDisplay.length ? (
             <Cards>
-              {datasetsToDisplay.map((d) => {
-                const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
-                const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
-                return (
-                  <li key={d.id}>
-                    <Card
-                      cardType='horizontal-info'
-                      tagLabels={allTaxonomyValues}
-                      overline={
-                        <CardMeta>
-                          <DatasetClassification dataset={d} />
-                          <CardSourcesList
-                            sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
-                            rootPath={DATASETS_PATH}
-                            onSourceClick={(id) => {
-                              onAction(Actions.TAXONOMY_MULTISELECT, {
-                                key: TAXONOMY_SOURCE,
-                                value: id
-                              });
-                              browseControlsHeaderRef.current?.scrollIntoView();
-                            }}
-                          />
-                          <VerticalDivider variation='light' />
-                          {/* TODO: Implement modified date: https://github.com/NASA-IMPACT/veda-ui/issues/514 */}
-                          {/* 
-                        <Link
-                          to={`${DATASETS_PATH}?${Actions.SORT_FIELD}=date`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            onAction(Actions.SORT_FIELD, 'date');
-                          }}
-                        >
-                          Updated <time dateTime='2023-01-01'>X time ago</time>
-                        </Link> */}
-                        </CardMeta>
-                      }
-                      linkLabel='View more'
-                      linkTo={getDatasetPath(d)}
-                      title={
-                        <TextHighlight
-                          value={search}
-                          disabled={search.length < 3}
-                        >
-                          {d.name}
-                        </TextHighlight>
-                      }
-                      description={
-                        <TextHighlight
-                          value={search}
-                          disabled={search.length < 3}
-                        >
-                          {d.description}
-                        </TextHighlight>
-                      }
-                      imgSrc={d.media?.src}
-                      imgAlt={d.media?.alt}
-                      footerContent={
-                        <>
-                          {topics?.length ? (
-                            <CardTopicsList>
-                              <dt>Topics</dt>
-                              {topics.map((t) => {
-                                const path = `${DATASETS_PATH}?${
-                                  Actions.TAXONOMY
-                                }=${encodeURIComponent(
-                                  JSON.stringify({ Topics: [t.id] })
-                                )}`;
-                                return (
-                                  <dd key={t.id}>
-                                    <Pill
-                                      variation='achromic'
-                                      as={Link}
-                                      to={path}
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        onAction(Actions.TAXONOMY_MULTISELECT, {
-                                          key: TAXONOMY_TOPICS,
-                                          value: t.id
-                                        });
-                                        browseControlsHeaderRef.current?.scrollIntoView();
-                                      }}
-                                    >
-                                      <TextHighlight
-                                        value={search}
-                                        disabled={search.length < 3}
-                                      >
-                                        {t.name}
-                                      </TextHighlight>
-                                    </Pill>
-                                  </dd>
-                                );
-                              })}
-                            </CardTopicsList>
-                          ) : null}
-                          <DatasetMenu dataset={d} />
-                        </>
-                      }
-                    />
-                  </li>
-                );
-              })}
+              {
+                datasetsToDisplay.map((d) => {
+                  const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
+                  return (
+                    <li key={d.id}>
+                      <Card
+                        cardType='horizontal-info'
+                        tagLabels={allTaxonomyValues}
+                        linkTo={getDatasetPath(d)}
+                        title={
+                          <TextHighlight
+                            value={search}
+                            disabled={search.length < 3}
+                          >
+                            {d.name}
+                          </TextHighlight>
+                        }
+                        description={
+                          <TextHighlight
+                            value={search}
+                            disabled={search.length < 3}
+                          >
+                            {d.description}
+                          </TextHighlight>
+                        }
+                        imgSrc={d.media?.src}
+                        imgAlt={d.media?.alt}
+                      />
+                    </li>
+                  );
+                })
+              }
             </Cards>
           ) : (
             <EmptyState>
@@ -338,7 +259,7 @@ function DataCatalog({ datasets }: DataCatalogProps) {
           )}
         </CatalogWrapper>
       </Content>
-    </BrowseSection>
+    </DataCatalogWrapper>
   );
 }
 

@@ -26,7 +26,9 @@ export default function DataCatalogContainer() {
         description={getString('dataCatalogBanner').other}
       />
       <FeaturedDatasets />
-      <DataCatalog datasets={allDatasets} />
+      <DataCatalog
+        datasets={allDatasets}
+      />
     </PageMainContent>
   );
 }

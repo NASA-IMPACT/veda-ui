@@ -223,8 +223,8 @@ export function ExternalLinkFlag() {
 
 export interface CardComponentProps {
   title: JSX.Element | string;
-  linkLabel: string;
   linkTo: string;
+  linkLabel?: string;
   className?: string;
   cardType?: CardType;
   description?: JSX.Element | string;
@@ -267,7 +267,7 @@ function CardComponent(props: CardComponentProps) {
       as={CardItem}
       cardType={cardType}
       className={className}
-      linkLabel={linkLabel || 'View more'}
+      linkLabel={linkLabel ?? 'View more'}
       linkProps={linkProps}
       onClickCapture={onCardClickCapture}
     >
