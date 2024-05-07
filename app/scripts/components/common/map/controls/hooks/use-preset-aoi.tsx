@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { getAoiAppropriateFeatures } from './use-custom-aoi';
 
-const presetFilePath = `/public/geo-data/states/`;
+const presetFilePath = `${process.env.PUBLIC_URL ?? ''}/public/geo-data/states/`;
 const presetSuffix = `.geojson`;
 
 function usePresetAOI(selectedState) {
