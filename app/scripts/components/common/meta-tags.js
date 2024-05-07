@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 const appTitle = process.env.APP_TITLE;
 const baseUrl = window.location.origin;
 
-const defaultMetaImage = `${process.env.PUBLIC_URL ?? '/'}/meta/meta-image.png`;
+const defaultMetaImage = `${process.env.PUBLIC_URL ?? ''}/meta/meta-image.png`;
 
 function MetaTags({ title, description, thumbnail, children }) {
   const theme = useTheme();
