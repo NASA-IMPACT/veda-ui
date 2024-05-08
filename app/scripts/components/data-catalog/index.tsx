@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, ComponentType } from 'react';
 import styled from 'styled-components';
 import { DatasetData } from 'veda';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ import {
   FoldHeadline,
   FoldTitle
 } from '$components/common/fold';
-import { Card } from '$components/common/card';
+import { Card, CardComponentProps } from '$components/common/card';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
@@ -94,10 +94,15 @@ export const sortOptions = [{ id: 'name', name: 'Name' }];
 
 export interface DataCatalogProps {
   datasets: DatasetData[];
+  cardComponentOverride?: { // Allow user to override with a different cardType with optional props
+    CardComponent: ComponentType<CardComponentProps>;
+    props: Partial<CardComponentProps>;
+  } 
 }
 
 function DataCatalog({ 
   datasets,
+  cardComponentOverride, 
 }: DataCatalogProps) {
   const controlVars = useBrowserControls({
     sortOptions
@@ -195,6 +200,36 @@ function DataCatalog({
     return null;
   }, [allSelectedFilters, handleClearTag, handleClearTags, urlTaxonomyItems]);
 
+  const renderCard = (dataset: DatasetData) => {
+    const CardComponent = cardComponentOverride?.CardComponent ?? Card;
+    const allTaxonomyValues = getAllTaxonomyValues(dataset).map((v) => v.name);
+    return (
+      <CardComponent
+        {...(cardComponentOverride ? {...cardComponentOverride.props} : {cardType: 'horizontal-info'})}
+        tagLabels={allTaxonomyValues}
+        linkTo={getDatasetPath(dataset)}
+        title={
+          <TextHighlight
+            value={search}
+            disabled={search.length < 3}
+          >
+            {dataset.name}
+          </TextHighlight>
+        }
+        description={
+          <TextHighlight
+            value={search}
+            disabled={search.length < 3}
+          >
+            {dataset.description}
+          </TextHighlight>
+        }
+        imgSrc={dataset.media?.src}
+        imgAlt={dataset.media?.alt}
+      />
+    );
+  };
+
   return (
     <DataCatalogWrapper>
       <CatalogFoldHeader
@@ -221,32 +256,9 @@ function DataCatalog({
             <Cards>
               {
                 datasetsToDisplay.map((d) => {
-                  const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
                   return (
                     <li key={d.id}>
-                      <Card
-                        cardType='horizontal-info'
-                        tagLabels={allTaxonomyValues}
-                        linkTo={getDatasetPath(d)}
-                        title={
-                          <TextHighlight
-                            value={search}
-                            disabled={search.length < 3}
-                          >
-                            {d.name}
-                          </TextHighlight>
-                        }
-                        description={
-                          <TextHighlight
-                            value={search}
-                            disabled={search.length < 3}
-                          >
-                            {d.description}
-                          </TextHighlight>
-                        }
-                        imgSrc={d.media?.src}
-                        imgAlt={d.media?.alt}
-                      />
+                      {renderCard(d)}
                     </li>
                   );
                 })
