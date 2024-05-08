@@ -22,9 +22,9 @@ export const aoisFeaturesAtom = atom<AoIFeature[]>((get) => {
 // Setter atom to update AOIs geometries, writing directly to the hash atom.
 export const aoisUpdateGeometryAtom = atom(
   null,
-  (get, set, updates: Feature<Polygon>[]) => {
+  (get, set, updatedGeometryData: { updates: Feature<Polygon>[], selected: boolean }) => {
     let newFeatures = [...get(aoisFeaturesAtom)];
-    updates.forEach(({ id, geometry }) => {
+    updatedGeometryData.updates.forEach(({ id, geometry }) => {
       const existingFeature = newFeatures.find((feature) => feature.id === id);
       if (existingFeature) {
         existingFeature.geometry = geometry;
@@ -33,7 +33,7 @@ export const aoisUpdateGeometryAtom = atom(
           type: 'Feature',
           id: id as string,
           geometry,
-          selected: true,
+          selected: updatedGeometryData.selected ?? true,
           properties: {}
         };
         newFeatures = [...newFeatures, newFeature];

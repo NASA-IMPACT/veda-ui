@@ -155,7 +155,7 @@ function CustomAoI({
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
     resetForPresetSelect();
-    onUpdate({ features });
+    onUpdate({ features, selected: false });
     const fc = {
       type: 'FeatureCollection',
       features
@@ -168,7 +168,7 @@ function CustomAoI({
     });
     const pids = mbDraw.add(fc);
     setPresetIds(pids);
-    mbDraw.changeMode('simple_static', {
+    mbDraw.changeMode('static_mode', {
       featureIds: pids
     });
 

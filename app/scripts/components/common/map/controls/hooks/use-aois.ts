@@ -17,18 +17,25 @@ export default function useAois() {
 
   const aoisUpdateGeometry = useSetAtom(aoisUpdateGeometryAtom);
   const update = useCallback(
-    (features: Feature<Polygon>[]) => {
-      aoisUpdateGeometry(features);
+    ({ updates, selected }: { updates: Feature<Polygon>[], selected: boolean}) => {
+      aoisUpdateGeometry({
+        updates,
+        selected
+      });
     },
     [aoisUpdateGeometry]
   );
+  
   const onUpdate = useCallback(
     (e) => {
       const updates = e.features.map((f) => ({
         id: toAoIid(f.id),
         geometry: f.geometry as Polygon
       }));
-      update(updates);
+      update({
+        updates,
+        selected: e.selected ?? true
+      });
     },
     [update]
   );

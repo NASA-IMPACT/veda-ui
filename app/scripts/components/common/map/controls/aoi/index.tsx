@@ -36,7 +36,7 @@ export default function DrawControl(props: DrawControlProps) {
         styles: computeDrawStyles(theme),
         modes: {
           ...MapboxDraw.modes,
-          simple_static: StaticMode,
+          static_mode: StaticMode,
           simple_select: customSimpleSelect,
           direct_select: customDirectSelect
         },
