@@ -20,13 +20,22 @@ import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
 import { aoiDeleteAllAtom } from './atoms';
-
 import PresetSelector from './preset-selector';
+import { STATIC_MODE } from './';
+
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { ShortcutCode } from '$styles/shortcut-code';
 import { selectedForEditingAtom } from '$components/exploration/atoms/selectedFor';
+
+// 'moving' feature is disabled, match the cursor style accoringly
+export const aoiCustomCursorStyle = css`
+  &.mode-${STATIC_MODE} .mapboxgl-canvas-container,
+  &.mouse-move .mapboxgl-canvas-container {
+    cursor: default;
+  }
+`;
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
