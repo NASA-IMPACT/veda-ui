@@ -17,18 +17,10 @@ import { FeaturedDatasets } from '$components/common/featured-slider-section';
 export default function DataCatalogContainer() {
   return (
     <PageMainContent>
-      <LayoutProps
-        title='Data Catalog'
-        description={getString('dataCatalogBanner').other}
-      />
-      <PageHero
-        title='Data Catalog'
-        description={getString('dataCatalogBanner').other}
-      />
+      <LayoutProps title='Data Catalog' description={getString('dataCatalogBanner').other} />
+      <PageHero title='Data Catalog' description={getString('dataCatalogBanner').other} />
       <FeaturedDatasets />
-      <DataCatalog
-        datasets={allDatasets}
-      />
+      <DataCatalog datasets={allDatasets} />
     </PageMainContent>
   );
 }
