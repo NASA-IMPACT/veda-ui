@@ -1,6 +1,6 @@
 import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 
-const hydrateSelectedForEditing = (value) => value === 'true';
+const hydrateSelectedForEditing = (value) => value !== 'false';
 
 const dehydrateSelectedForEditing = (value) => value ? 'true' : 'false';
 

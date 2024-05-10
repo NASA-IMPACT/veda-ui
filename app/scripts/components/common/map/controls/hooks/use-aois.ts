@@ -9,6 +9,7 @@ import {
   aoisUpdateGeometryAtom,
   isDrawingAtom
 } from '../aoi/atoms';
+import { SIMPLE_SELECT } from '../aoi';
 
 export default function useAois() {
   const features = useAtomValue(aoisFeaturesAtom);
@@ -52,7 +53,7 @@ export default function useAois() {
   );
 
   const onDrawModeChange = useCallback((e) => {
-    if (e.mode === 'simple_select') {
+    if (e.mode === SIMPLE_SELECT) {
       setIsDrawing(false);
     }
   }, [setIsDrawing]);

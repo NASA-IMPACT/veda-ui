@@ -21,17 +21,18 @@ import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
 import { aoiDeleteAllAtom } from './atoms';
 import PresetSelector from './preset-selector';
-import { STATIC_MODE } from './';
+import { DIRECT_SELECT, DRAW_POLYGON, SIMPLE_SELECT, STATIC_MODE } from './';
 
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { ShortcutCode } from '$styles/shortcut-code';
-import { selectedForEditingAtom } from '$components/exploration/atoms/selectedFor';
+import { selectedForEditingAtom } from '$components/exploration/atoms/selectedForEditing';
 
 // 'moving' feature is disabled, match the cursor style accoringly
 export const aoiCustomCursorStyle = css`
   &.mode-${STATIC_MODE} .mapboxgl-canvas-container,
+  &.feature-feature.mouse-drag .mapboxgl-canvas-container,
   &.mouse-move .mapboxgl-canvas-container {
     cursor: default;
   }
@@ -88,7 +89,7 @@ function CustomAoI({
   useEffect(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
-    const aoiSelectedFor = selectedForEditing ? 'simple_select' : 'static_mode';
+    const aoiSelectedFor = selectedForEditing ? SIMPLE_SELECT : STATIC_MODE;
     mbDraw.changeMode(aoiSelectedFor);
     const onSelChange = () => forceUpdate(Date.now());
     map.on('draw.selectionchange', onSelChange);
@@ -127,14 +128,14 @@ function CustomAoI({
     if (!mbDraw) return;
     
     if (fileUploadedIds.length) {
-      mbDraw.changeMode('simple_select', {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: fileUploadedIds
       });
       mbDraw.trash();
     }
 
     if (presetIds.length) {
-      mbDraw.changeMode('simple_select', {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: presetIds
       });
       mbDraw.trash();
@@ -161,7 +162,7 @@ function CustomAoI({
       zoom: getZoomFromBbox(bounds)
     });
     const addedAoisId = mbDraw.add(fc);
-    mbDraw.changeMode('static_mode', {
+    mbDraw.changeMode(STATIC_MODE, {
       featureIds: addedAoisId
     });
     setFileUplaodedIds(addedAoisId);
@@ -185,7 +186,7 @@ function CustomAoI({
     });
     const pids = mbDraw.add(fc);
     setPresetIds(pids);
-    mbDraw.changeMode('static_mode', {
+    mbDraw.changeMode(STATIC_MODE, {
       featureIds: pids
     });
     setSelectedForEditing(false);
@@ -214,19 +215,19 @@ function CustomAoI({
     // trigger the delete for the whole feature.
     const selectedFeatures = mbDraw.getSelected()?.features;
     if (
-      mbDraw.getMode() === 'direct_select' &&
+      mbDraw.getMode() === DIRECT_SELECT &&
       selectedFeatures.length &&
       !mbDraw.getSelectedPoints().features.length
     ) {
       // Change mode so that the trash action works.
-      mbDraw.changeMode('simple_select', {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: selectedFeatures.map((f) => f.id)
       });
     }
     // If we are in static mode, we need to change to simple_select to be able
     // to delete those features
-    if (mbDraw.getMode() === 'static_mode') {
-      mbDraw.changeMode('simple_select', {
+    if (mbDraw.getMode() === STATIC_MODE) {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: features.map((f) => f.id)
       });
     }
@@ -334,9 +335,9 @@ export default function CustomAoIControl({
     if (!mbDraw) return;
 
     if (isDrawing) {
-      mbDraw.changeMode('draw_polygon');
+      mbDraw.changeMode(DRAW_POLYGON);
     } else {
-      mbDraw.changeMode('simple_select', {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: mbDraw.getSelectedIds()
       });
     }

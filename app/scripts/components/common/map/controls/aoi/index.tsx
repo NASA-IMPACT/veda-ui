@@ -11,6 +11,9 @@ import { computeDrawStyles } from './style';
 type DrawControlProps = MapboxDraw.DrawOptions;
 
 export const STATIC_MODE = 'static_mode';
+export const SIMPLE_SELECT = 'simple_select';
+export const DIRECT_SELECT = 'direct_select';
+export const DRAW_POLYGON = 'draw_polygon';
 
 // Overriding the dragMove and dragFeature methods of the 
 // 'simple_select' and the 'direct_select' modes to avoid
@@ -39,8 +42,8 @@ export default function DrawControl(props: DrawControlProps) {
         modes: {
           ...MapboxDraw.modes,
           [STATIC_MODE]: StaticMode,
-          simple_select: customSimpleSelect,
-          direct_select: customDirectSelect
+          [SIMPLE_SELECT]: customSimpleSelect,
+          [DIRECT_SELECT]: customDirectSelect
         },
         ...props
       });
