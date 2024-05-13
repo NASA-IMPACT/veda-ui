@@ -28,11 +28,13 @@ export default function MapComponent({
 
   const onMove = useCallback(
     (evt) => {
-      if (!isCompared) {
+      if (!isCompared && (
+        evt.viewState.longitude !== initialViewState.longitude ||
+        evt.viewState.latitude !== initialViewState.latitude)) {
         setInitialViewState(evt.viewState);
       }
     },
-    [isCompared, setInitialViewState]
+    [isCompared, initialViewState.longitude, initialViewState.latitude, setInitialViewState]
   );
 
   // Get MGL projection from Veda projection
