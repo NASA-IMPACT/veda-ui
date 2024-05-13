@@ -65,4 +65,12 @@ export const aoiDeleteAllAtom = atom(null, (get, set) => {
   set(aoisSerialized, encodeAois([]));
 });
 
+// Atom that tracks whether an AOI can be edited or not.
+export const selectedForEditingAtom = atomWithUrlValueStability({
+  initialValue: (new URLSearchParams(window.location.search).get('selectedForEditing') !== 'false'),
+  urlParam: 'selectedForEditing',
+  hydrate: (value) => value !== 'false',
+  dehydrate: (value) => value ? 'true' : 'false'
+});
+
 export const isDrawingAtom = atom(false);

@@ -19,7 +19,7 @@ import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
-import { aoiDeleteAllAtom } from './atoms';
+import { aoiDeleteAllAtom, selectedForEditingAtom } from './atoms';
 import PresetSelector from './preset-selector';
 import { DIRECT_SELECT, DRAW_POLYGON, SIMPLE_SELECT, STATIC_MODE } from './';
 
@@ -27,7 +27,6 @@ import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { ShortcutCode } from '$styles/shortcut-code';
-import { selectedForEditingAtom } from '$components/exploration/atoms/selectedForEditing';
 
 // 'moving' feature is disabled, match the cursor style accoringly
 export const aoiCustomCursorStyle = css`
