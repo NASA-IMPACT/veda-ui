@@ -179,6 +179,7 @@ export interface LayerInfo {
    */
   export interface DatasetData {
     featured?: boolean;
+    sourceExclusive?: string;
     id: string;
     name: string;
     infoDescription?: string;
@@ -264,14 +265,10 @@ export interface LayerInfo {
   export const stories: VedaData<StoryData>;
 
   /**
-   * Named exports: datasetTaxonomies.
-   * Array with all the veda datasets taxonomies.
-   */
-  export const datasetTaxonomies: Taxonomy[];
-
-  /**
    * Named exports: storyTaxonomies.
-   * Array with all the veda story taxonomies.
+   * Contains a static array of Veda story taxonomies.
+   * Unlike DatasetTaxonomies which are generated dynamically,
+   * story taxonomies are predefined as dynamic filters are not anticipated.
    */
   export const storyTaxonomies: Taxonomy[];
 
@@ -294,6 +291,9 @@ export interface LayerInfo {
     one: string;
     other: string;
   };
+
+  export const getBoolean: (variable: string) => boolean;
+
   /**
    * List of custom user defined pages.
    */

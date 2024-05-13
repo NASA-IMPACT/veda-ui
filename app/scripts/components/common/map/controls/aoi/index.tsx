@@ -1,4 +1,5 @@
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import { useTheme } from 'styled-components';
 import { useAtomValue } from 'jotai';
 import { useRef } from 'react';
@@ -9,11 +10,28 @@ import { computeDrawStyles } from './style';
 
 type DrawControlProps = MapboxDraw.DrawOptions;
 
+export const STATIC_MODE = 'static_mode';
+export const SIMPLE_SELECT = 'simple_select';
+export const DIRECT_SELECT = 'direct_select';
+export const DRAW_POLYGON = 'draw_polygon';
+
+// Overriding the dragMove and dragFeature methods of the 
+// 'simple_select' and the 'direct_select' modes to avoid
+// accidentally dragging the selected or hand-drawn AOIs 
+const customSimpleSelect = {
+  ...MapboxDraw.modes.simple_select,
+  dragMove() { return; }
+};
+
+const customDirectSelect = {
+  ...MapboxDraw.modes.direct_select,
+  dragFeature() { return; },
+};
+
 export default function DrawControl(props: DrawControlProps) {
   const theme = useTheme();
   const control = useRef<MapboxDraw>();
   const aoisFeatures = useAtomValue(aoisFeaturesAtom);
-
   const { onUpdate, onDelete, onSelectionChange, onDrawModeChange } = useAois();
 
   useControl<MapboxDraw>(
@@ -21,6 +39,12 @@ export default function DrawControl(props: DrawControlProps) {
       control.current = new MapboxDraw({
         displayControlsDefault: false,
         styles: computeDrawStyles(theme),
+        modes: {
+          ...MapboxDraw.modes,
+          [STATIC_MODE]: StaticMode,
+          [SIMPLE_SELECT]: customSimpleSelect,
+          [DIRECT_SELECT]: customDirectSelect
+        },
         ...props
       });
       return control.current;

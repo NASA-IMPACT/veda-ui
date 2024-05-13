@@ -4,6 +4,7 @@ import { Map as MapboxMap } from 'mapbox-gl';
 import { MapRef } from 'react-map-gl';
 import { endOfDay, startOfDay } from 'date-fns';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
+import { BBox } from "@turf/helpers";
 import {
   DatasetDatumFn,
   DatasetDatumFnResolverBag,
@@ -254,4 +255,19 @@ export function formatCompareDate(
     dateB,
     timeDensityB
   )}`;
+}
+
+export function getZoomFromBbox(bbox: BBox): number {
+  const latMax = Math.max(bbox[3], bbox[1]);
+  const lngMax = Math.max(bbox[2], bbox[0]);
+  const latMin = Math.min(bbox[3], bbox[1]);
+  const lngMin = Math.min(bbox[2], bbox[0]);
+  const maxDiff = Math.max(latMax - latMin, lngMax - lngMin);
+  if (maxDiff < 360 / Math.pow(2, 20)) {
+    return 21;
+} else {
+    const zoomLevel = Math.floor(-1*( (Math.log(maxDiff)/Math.log(2)) - (Math.log(360)/Math.log(2))));
+    if (zoomLevel < 1) return 1;
+    else return zoomLevel;
+  }
 }

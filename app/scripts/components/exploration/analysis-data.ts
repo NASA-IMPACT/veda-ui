@@ -235,6 +235,18 @@ export async function requestDatasetTimeseriesData({
       )
     );
 
+    if (layerStatistics.filter(e => e.mean).length === 0) {
+      return {
+        ...datasetAnalysis,
+        status: TimelineDatasetStatus.ERROR,
+        error: new ExtendedError(
+          'The selected time and area of interest contains no valid data. Please adjust your selection.',
+          'ANALYSIS_NO_VALID_DATA'
+        ),
+        data: null
+      };
+    }
+
     onProgress({
       status: TimelineDatasetStatus.SUCCESS,
       meta: {

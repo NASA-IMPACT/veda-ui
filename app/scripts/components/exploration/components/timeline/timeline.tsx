@@ -56,6 +56,7 @@ import {
   useScaleFactors,
   useScales
 } from '$components/exploration/hooks/scales-hooks';
+import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
 import {
   TimelineDatasetStatus,
   TimelineDatasetSuccess,
@@ -129,8 +130,13 @@ const EmptyTimelineContentInner = styled.div`
   position: relative;
 `;
 
-const TimelineContentInner = styled(EmptyTimelineContentInner)`
+const TimelineContentInner = styled(EmptyTimelineContentInner)<{panelHeight: number}>`
   overflow-y: scroll;
+  /* @TECH-DEBT: A hack to target only Safari
+     Safari needs a specific height to make the contents  scrollable */
+  @supports (font: -apple-system-body) and (-webkit-appearance: none) {
+    height: calc(${(props)=> 100 - props.panelHeight}vh - 130px);
+  }
 `;
 
 const LayerActionBox = styled.div`
@@ -153,6 +159,7 @@ const TimelineHeading = styled(Heading)`
 
 interface TimelineProps {
   onDatasetAddClick: () => void;
+  panelHeight: number;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -168,7 +175,7 @@ const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
 };
 
 export default function Timeline(props: TimelineProps) {
-  const { onDatasetAddClick } = props;
+  const { onDatasetAddClick, panelHeight } = props;
 
   // Refs for non react based interactions.
   // The interaction rect is used to capture the different d3 events for the
@@ -200,7 +207,7 @@ export default function Timeline(props: TimelineProps) {
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
 
   const { setObsolete, runAnalysis, isAnalyzing } = useAnalysisController();
-
+  const [zoomTransform, setZoomTransform] = useAtom(zoomTransformAtom);
   const { features } = useAois();
 
   useEffect(() => {
@@ -215,8 +222,6 @@ export default function Timeline(props: TimelineProps) {
     ],
     [width]
   );
-
-  const [zoomTransform, setZoomTransform] = useAtom(zoomTransformAtom);
 
   // Calculate min and max scale factors, such has each day has a minimum of 2px
   // and a maximum of 100px.
@@ -371,7 +376,17 @@ export default function Timeline(props: TimelineProps) {
     applyTransform(zoomBehavior, select(interactionRef.current), 0, 0, k0);
   }, [prevSuccessDatasetsCount, successDatasetsCount, k0, zoomBehavior]);
 
-  const onControlsZoom = useCallback(
+  const { initializeTOIZoom } = useOnTOIZoom();
+
+  useEffect(() => {
+    // Set TOIZoom functionality in atom so it can be used in analysis component
+    // Ensure zoomBehavior and interactionRef are defined before initializing
+    if (zoomBehavior && interactionRef.current) {
+      initializeTOIZoom(zoomBehavior, interactionRef);
+    }
+  }, [initializeTOIZoom, zoomBehavior, interactionRef]);
+
+    const onControlsZoom = useCallback(
     (zoomV) => {
       if (!interactionRef.current || !xMain || !xScaled || !selectedDay) return;
 
@@ -653,7 +668,7 @@ export default function Timeline(props: TimelineProps) {
           </>
         )}
 
-        <TimelineContentInner ref={datasetsContainerRef}>
+        <TimelineContentInner ref={datasetsContainerRef} panelHeight={panelHeight}>
           <DatasetList width={width} xScaled={xScaled} />
         </TimelineContentInner>
       </TimelineContent>

@@ -7,7 +7,8 @@ import PublishedDate from './pub-date';
 import { CardSourcesList } from './card-sources';
 import { DatasetClassification } from './dataset-classification';
 
-import { Card, CardMeta, CardTopicsList } from '$components/common/card';
+import { Card } from '$components/common/card';
+import { CardMeta, CardTopicsList } from '$components/common/card/styles';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
 import {
   Continuum,
@@ -38,6 +39,7 @@ const FoldFeatured = styled(FoldGrid)`
   ${FoldHeader} {
     grid-column: content-start / content-end;
   }
+  padding-bottom: 0;
 `;
 
 export const continuumFoldStartCols = {
@@ -67,6 +69,15 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
 
   if (!featuredItems.length) return null;
 
+  // Disable no-mutating rule since the copy of the array is being mutated
+  // eslint-disable-next-line fp/no-mutating-methods 
+  const sortedFeaturedItems  = dateProperty? [...featuredItems].sort((itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
+    const pubDateOfItemA = new Date(itemA[dateProperty]);
+    const pubDateOfItemB = new Date(itemB[dateProperty]);
+    return pubDateOfItemB.getTime() - pubDateOfItemA.getTime();
+  }) as StoryData[] | DatasetData[]: featuredItems;
+  
+
   return (
     <FoldFeatured>
       <FoldHeader>
@@ -80,7 +91,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
             startCol={continuumFoldStartCols}
             spanCols={continuumFoldSpanCols}
             render={(bag) => {
-              return featuredItems.map((d) => {
+              return sortedFeaturedItems.map((d) => {
                 const date = new Date(d[dateProperty ?? '']);
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
 

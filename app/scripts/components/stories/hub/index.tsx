@@ -26,12 +26,8 @@ import {
   FoldHeadline,
   FoldTitle
 } from '$components/common/fold';
-import {
-  Card,
-  CardList,
-  CardMeta,
-  CardTopicsList
-} from '$components/common/card';
+import { Card } from '$components/common/card';
+import { CardListGrid, CardMeta, CardTopicsList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { PageMainContent } from '$styles/page';
 import { STORIES_PATH, getStoryPath } from '$utils/routes';
@@ -68,6 +64,10 @@ const BrowseFoldHeader = styled(FoldHeader)`
   align-items: flex-start;
 `;
 
+const FoldWithTopMargin = styled(Fold)`
+  margin-top: ${glsp()};
+`;
+
 const sortOptions = [
   { id: 'name', name: 'Name' },
   { id: 'pubDate', name: 'Date' }
@@ -77,7 +77,7 @@ const prepareStories = (
   data: StoryData[],
   options: {
     search: string;
-    taxonomies: Record<string, string> | null;
+    taxonomies: Record<string, string | string[]> | null;
     sortField: string | null;
     sortDir: string | null;
   }
@@ -175,7 +175,7 @@ function StoriesHub() {
       </ComponentOverride>
       <FeaturedStories />
       <ContentOverride with='storiesHubContent'>
-        <Fold>
+        <FoldWithTopMargin>
           <BrowseFoldHeader
             ref={browseControlsHeaderRef}
             style={{
@@ -188,7 +188,6 @@ function StoriesHub() {
             <BrowseControls
               {...controlVars}
               taxonomiesOptions={storyTaxonomies}
-              sortOptions={sortOptions}
             />
           </BrowseFoldHeader>
 
@@ -211,7 +210,7 @@ function StoriesHub() {
           </StoryCount>
 
           {displayStories.length ? (
-            <CardList>
+            <CardListGrid>
               {displayStories.map((d) => {
                 const pubDate = new Date(d.pubDate);
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
@@ -302,14 +301,14 @@ function StoriesHub() {
                   </li>
                 );
               })}
-            </CardList>
+            </CardListGrid>
           ) : (
             <EmptyHub>
               There are no {getString('stories').other.toLocaleLowerCase()} to
               show with the selected filters.
             </EmptyHub>
           )}
-        </Fold>
+        </FoldWithTopMargin>
       </ContentOverride>
     </PageMainContent>
   );

@@ -8,7 +8,8 @@ export enum Actions {
   SEARCH = 'search',
   SORT_FIELD = 'sfield',
   SORT_DIR = 'sdir',
-  TAXONOMY = 'taxonomy'
+  TAXONOMY = 'taxonomy',
+  TAXONOMY_MULTISELECT = 'taxonomy_multiselect',
 }
 
 export type BrowserControlsAction = (what: Actions, value?: any) => void;
@@ -16,6 +17,12 @@ export type BrowserControlsAction = (what: Actions, value?: any) => void;
 export interface FilterOption {
   id: string;
   name: string;
+}
+
+export interface TaxonomyFilterOption {
+  taxonomyType: string;
+  value: string;
+  exclusion?: string;
 }
 
 interface BrowseControlsHookParams {
@@ -73,12 +80,12 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
     []
   );
 
-  const [taxonomies, setTaxonomies] = useQsState.memo<Record<string, string>>(
+  const [taxonomies, setTaxonomies] = useQsState.memo<Record<string, string | string[]>>(
     {
       key: Actions.TAXONOMY,
       default: {},
-      dehydrator: (v) => JSON.stringify(v),
-      hydrator: (v) => (v ? JSON.parse(v) : {})
+      dehydrator: (v) => JSON.stringify(v), // dehydrator defines how a value is stored in the url
+      hydrator: (v) => (v ? JSON.parse(v) : {}) // hydrator defines how a value is read from the url
     },
     []
   );
@@ -109,7 +116,26 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
             }
           }
           break;
+        case Actions.TAXONOMY_MULTISELECT:
+          {
+            const { key, value: val } = value;
+            if (taxonomies && (key in taxonomies)) { // If taxonomy group currently present
+              const taxonomyGroupValues = taxonomies[key] instanceof Array ? (taxonomies[key] as string[]) : [taxonomies[key]];
+
+              if (taxonomyGroupValues.includes(val)) { // If val exists, then remove
+                const updatedValues = taxonomyGroupValues.filter((x) => x !== val);
+                updatedValues.length ? setTaxonomies(set({ ...taxonomies }, key, updatedValues)) : setTaxonomies(omit(taxonomies, key));
+              } else { // else add
+                taxonomyGroupValues.push(val);
+                setTaxonomies(taxonomies);
+              }
+            } else { // Taxonomy group currently not present
+              setTaxonomies(set({ ...taxonomies }, key, [val]));
+            }
+          }
+          break;
       }
+      
     },
     [setSortField, setSortDir, taxonomies, setTaxonomies, setSearch]
   );

@@ -1,35 +1,38 @@
-import React, { MouseEventHandler, ReactNode } from 'react';
+import React, { MouseEventHandler } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
-import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import {
   glsp,
-  listReset,
   media,
   multiply,
   themeVal,
-  visuallyHidden
+  listReset,
 } from '@devseed-ui/theme-provider';
-import { Overline } from '@devseed-ui/typography';
-
+import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
+import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 import { ElementInteractive } from '$components/common/element-interactive';
-import { VarHeading } from '$styles/variable-components';
 import { Figure } from '$components/common/figure';
+import { getLinkProps } from '$utils/url';
 
-type CardType = 'classic' | 'cover' | 'featured';
+type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
-interface CardSelfProps {
+interface CardItemProps {
   isStateFocus?: boolean;
   isStateOver?: boolean;
   isStateActive?: boolean;
   cardType?: CardType;
 }
 
+/**
+  @NOTE: CardList & CardFooter have been moved over to /common/card/styles and has modified styles 
+  These styles are used in GHG instance, so we leave these for now. We should move these styles to GHG instances
+  since these styles are not used by UI instance anymore.
+*/
 export const CardList = styled.ol`
   ${listReset()}
   grid-column: 1 / -1;
@@ -50,7 +53,23 @@ export const CardList = styled.ol`
   }
 `;
 
-function renderCardType({ cardType }: CardSelfProps) {
+export const CardFooter = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${variableGlsp(0.5)};
+  padding: ${variableGlsp()};
+
+  &:not(:first-child) {
+    padding-top: 0;
+    margin-top: ${variableGlsp(-0.5)};
+  }
+
+  button {
+    pointer-events: all;
+  }
+`;
+
+function renderCardType({ cardType }: CardItemProps) {
   switch (cardType) {
     case 'cover':
       return css`
@@ -102,6 +121,8 @@ function renderCardType({ cardType }: CardSelfProps) {
           max-width: 52rem;
         }
       `;
+    case 'horizontal-info':
+      return HorizontalCardStyles;
     default:
       return css`
         background: transparent;
@@ -109,16 +130,7 @@ function renderCardType({ cardType }: CardSelfProps) {
   }
 }
 
-export const CardSelf = styled.article<CardSelfProps>`
-  position: relative;
-  display: flex;
-  flex-flow: column nowrap;
-  border-radius: ${multiply(themeVal('shape.rounded'), 2)};
-  box-shadow: ${themeVal('boxShadow.elevationD')};
-  height: 100%;
-  overflow: hidden;
-  transition: all 0.24s ease-in-out 0s;
-
+export const CardItem = styled(CardBlank)<CardItemProps>`
   ${renderCardType}
 
   ${({ isStateFocus }) =>
@@ -139,73 +151,6 @@ export const CardSelf = styled.article<CardSelfProps>`
       box-shadow: ${themeVal('boxShadow.elevationB')};
       transform: translate(0, 0.125rem);
     `}
-`;
-
-export const CardHeader = styled.header`
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: ${variableGlsp()};
-  gap: ${variableGlsp()};
-`;
-
-export const CardHeadline = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  gap: ${glsp(0.25)};
-`;
-
-export const CardActions = styled.div`
-  /* styled-component */
-`;
-
-export const CardTitle = styled(VarHeading).attrs({
-  as: 'h3',
-  size: 'small'
-})`
-  /* styled-component */
-`;
-
-export const CardOverline = styled(Overline)`
-  order: -1;
-  color: ${themeVal('color.base-400a')};
-
-  > * {
-    line-height: inherit;
-  }
-
-  i {
-    ${visuallyHidden()}
-  }
-`;
-
-export const CardMeta = styled.div`
-  display: flex;
-  gap: ${glsp(0.25)};
-
-  a {
-    color: inherit;
-    pointer-events: all;
-
-    &,
-    &:visited {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    &:hover {
-      opacity: 0.64;
-    }
-  }
-
-  > ${/* sc-selector */ VerticalDivider}:last-child {
-    display: none;
-  }
-
-  > ${/* sc-selector */ VerticalDivider}:first-child {
-    display: none;
-  }
 `;
 
 const CardLabel = styled.span`
@@ -232,47 +177,6 @@ const CardLabel = styled.span`
   }
 `;
 
-export const CardBody = styled.div`
-  padding: ${variableGlsp()};
-
-  &:not(:first-child) {
-    padding-top: 0;
-    margin-top: ${variableGlsp(-0.5)};
-  }
-`;
-
-export const CardFooter = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  gap: ${variableGlsp(0.5)};
-  padding: ${variableGlsp()};
-
-  &:not(:first-child) {
-    padding-top: 0;
-    margin-top: ${variableGlsp(-0.5)};
-  }
-
-  button {
-    pointer-events: all;
-  }
-`;
-
-export const CardTopicsList = styled.dl`
-  display: flex;
-  gap: ${variableGlsp(0.25)};
-  max-width: 100%;
-  width: 100%;
-  overflow: hidden;
-  mask-image: linear-gradient(
-    to right,
-    black calc(100% - 3rem),
-    transparent 100%
-  );
-
-  > dt {
-    ${visuallyHidden()}
-  }
-`;
 
 const CardFigure = styled(Figure)`
   order: -1;
@@ -317,20 +221,20 @@ export function ExternalLinkFlag() {
   );
 }
 
-interface CardComponentProps {
-  title: ReactNode;
+export interface CardComponentProps {
+  title: JSX.Element | string;
   linkLabel: string;
   linkTo: string;
   className?: string;
   cardType?: CardType;
-  description?: ReactNode;
+  description?: JSX.Element | string;
   date?: Date;
-  overline?: ReactNode;
+  overline?: JSX.Element;
   imgSrc?: string;
   imgAlt?: string;
-  parentName?: string;
   parentTo?: string;
-  footerContent?: ReactNode;
+  tagLabels?: string[];
+  footerContent?: JSX.Element;
   onCardClickCapture?: MouseEventHandler;
   onLinkClick?: MouseEventHandler;
 }
@@ -347,61 +251,79 @@ function CardComponent(props: CardComponentProps) {
     overline,
     imgSrc,
     imgAlt,
-    parentName,
+    tagLabels,
     parentTo,
     footerContent,
     onCardClickCapture,
     onLinkClick
   } = props;
 
-  const isExternalLink = linkTo.match(/^https?:\/\//);
-  const linkProps = isExternalLink
-    ? { href: linkTo, onClick: onLinkClick }
-    : { as: Link, to: linkTo, onClick: onLinkClick };
+  const isExternalLink = /^https?:\/\//.test(linkTo);
+  const linkProps = getLinkProps(linkTo, Link, onLinkClick);
+
 
   return (
     <ElementInteractive
-      as={CardSelf}
+      as={CardItem}
       cardType={cardType}
       className={className}
       linkLabel={linkLabel || 'View more'}
       linkProps={linkProps}
       onClickCapture={onCardClickCapture}
     >
-      <CardHeader>
-        <CardHeadline>
-          <CardTitle>{title}</CardTitle>
-          <CardOverline as='div'>
-            {isExternalLink && <ExternalLinkFlag />}
-            {!isExternalLink && parentName && parentTo && (
-              <CardLabel as={Link} to={parentTo}>
-                {parentName}
-              </CardLabel>
+      {
+        cardType !== 'horizontal-info' && (
+          <>
+            <CardHeader>
+              <CardHeadline>
+                <CardTitle>{title}</CardTitle>
+                <CardOverline as='div'>
+                  {isExternalLink && <ExternalLinkFlag />}
+                  {!isExternalLink && tagLabels && parentTo && (
+                    tagLabels.map((label) => (
+                      <CardLabel as={Link} to={parentTo} key={label}>
+                        {label}
+                      </CardLabel>
+                    ))
+                  )}
+                  {date ? (
+                    <>
+                      published on{' '}
+                      <time dateTime={format(date, 'yyyy-MM-dd')}>
+                        {format(date, 'MMM d, yyyy')}
+                      </time>
+                    </>
+                  ) : (
+                    overline
+                  )}
+                </CardOverline>
+              </CardHeadline>
+            </CardHeader>
+            {description && (
+              <CardBody>
+                <p>{description}</p>
+              </CardBody>
             )}
-            {date ? (
-              <>
-                published on{' '}
-                <time dateTime={format(date, 'yyyy-MM-dd')}>
-                  {format(date, 'MMM d, yyyy')}
-                </time>
-              </>
-            ) : (
-              overline
+            {footerContent && <CardFooter>{footerContent}</CardFooter>}
+            {imgSrc && (
+              <CardFigure>
+                <img src={imgSrc} alt={imgAlt} loading='lazy' />
+              </CardFigure>
             )}
-          </CardOverline>
-        </CardHeadline>
-      </CardHeader>
-      {description && (
-        <CardBody>
-          <p>{description}</p>
-        </CardBody>
-      )}
-      {footerContent && <CardFooter>{footerContent}</CardFooter>}
-      {imgSrc && (
-        <CardFigure>
-          <img src={imgSrc} alt={imgAlt} loading='lazy' />
-        </CardFigure>
-      )}
+          </>
+        )
+      } 
+      {
+        cardType === 'horizontal-info' && (
+          <HorizontalInfoCard 
+            title={title}
+            description={description}
+            imgSrc={imgSrc}
+            imgAlt={imgAlt}
+            tagLabels={tagLabels}
+          />
+        )
+      }
     </ElementInteractive>
   );
 }

@@ -2,8 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import bbox from '@turf/bbox';
+import centroid from '@turf/centroid';
 import {
   CollecticonPencil,
   CollecticonTrashBin,
@@ -13,20 +14,33 @@ import { Toolbar, ToolbarLabel, VerticalDivider } from '@devseed-ui/toolbar';
 import { Button } from '@devseed-ui/button';
 import { themeVal, glsp, disabled } from '@devseed-ui/theme-provider';
 
+import { AllGeoJSON } from '@turf/helpers';
 import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
-import { aoiDeleteAllAtom } from './atoms';
+import { aoiDeleteAllAtom, selectedForEditingAtom } from './atoms';
+import PresetSelector from './preset-selector';
+import { DIRECT_SELECT, DRAW_POLYGON, SIMPLE_SELECT, STATIC_MODE } from './';
 
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
+import { getZoomFromBbox } from '$components/common/map/utils';
 import { ShortcutCode } from '$styles/shortcut-code';
+
+// 'moving' feature is disabled, match the cursor style accoringly
+export const aoiCustomCursorStyle = css`
+  &.mode-${STATIC_MODE} .mapboxgl-canvas-container,
+  &.feature-feature.mouse-drag .mapboxgl-canvas-container,
+  &.mouse-move .mapboxgl-canvas-container {
+    cursor: default;
+  }
+`;
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
   border-radius: ${themeVal('shape.rounded')};
-  padding: ${glsp(0, 0.5)};
+  padding: ${glsp(0.25)};
   box-shadow: ${themeVal('boxShadow.elevationC')};
 
   ${({ visuallyDisabled }) =>
@@ -59,6 +73,11 @@ function CustomAoI({
   disableReason?: React.ReactNode;
 }) {
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
+  const [selectedState, setSelectedState] = useState('');
+  const [presetIds, setPresetIds] = useState([]);
+  const [fileUploadedIds, setFileUplaodedIds] = useState([]);
+
+  const [selectedForEditing, setSelectedForEditing] = useAtom(selectedForEditingAtom);
 
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
@@ -67,25 +86,118 @@ function CustomAoI({
   // from feature to point.
   const [, forceUpdate] = useState(0);
   useEffect(() => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    const aoiSelectedFor = selectedForEditing ? SIMPLE_SELECT : STATIC_MODE;
+    mbDraw.changeMode(aoiSelectedFor);
     const onSelChange = () => forceUpdate(Date.now());
     map.on('draw.selectionchange', onSelChange);
     return () => {
       map.off('draw.selectionchange', onSelChange);
     };
-  }, []);
+  }, [map, selectedForEditing]);
 
-  const onConfirm = (features: Feature<Polygon>[]) => {
+  const resetAoisOnMap = useCallback(() => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    mbDraw.deleteAll();
+    aoiDeleteAll();
+  }, [aoiDeleteAll]);
+
+  const resetForPresetSelect = useCallback(() => {
+    resetAoisOnMap();
+    setFileUplaodedIds([]);
+  },[resetAoisOnMap]);
+
+  const resetForFileUploaded = useCallback(()=> {
+    resetAoisOnMap();
+    setSelectedState('');
+    setPresetIds([]);
+  },[resetAoisOnMap]);
+
+  const resetForEmptyState = useCallback(()=> {
+    resetAoisOnMap();
+    setSelectedState('');
+    setPresetIds([]);
+    setFileUplaodedIds([]);
+  },[resetAoisOnMap]);
+
+  const resetForDrawingAoi = useCallback(() =>  {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    
+    if (fileUploadedIds.length) {
+      mbDraw.changeMode(SIMPLE_SELECT, {
+        featureIds: fileUploadedIds
+      });
+      mbDraw.trash();
+    }
+
+    if (presetIds.length) {
+      mbDraw.changeMode(SIMPLE_SELECT, {
+        featureIds: presetIds
+      });
+      mbDraw.trash();
+    }
+    setFileUplaodedIds([]);
+    setPresetIds([]);
+    setSelectedState('');
+  },[presetIds, fileUploadedIds]);
+
+  const onConfirm = useCallback((features: Feature<Polygon>[]) => {
     const mbDraw = map?._drawControl;
     setAoIModalRevealed(false);
     if (!mbDraw) return;
+    resetForFileUploaded();
     onUpdate({ features });
     const fc = {
       type: 'FeatureCollection',
       features
     };
-    map.fitBounds(bbox(fc), { padding: 20 });
-    mbDraw.add(fc);
-  };
+    const bounds = bbox(fc);
+    const center = centroid(fc as AllGeoJSON).geometry.coordinates;
+    map.flyTo({
+      center,
+      zoom: getZoomFromBbox(bounds)
+    });
+    const addedAoisId = mbDraw.add(fc);
+    mbDraw.changeMode(STATIC_MODE, {
+      featureIds: addedAoisId
+    });
+    setFileUplaodedIds(addedAoisId);
+    setSelectedForEditing(false);
+  },[map, onUpdate, resetForFileUploaded, setSelectedForEditing]);
+
+  const onPresetConfirm = useCallback((features: Feature<Polygon>[]) => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    resetForPresetSelect();
+    onUpdate({ features });
+    const fc = {
+      type: 'FeatureCollection',
+      features
+    };
+    const bounds = bbox(fc);
+    const center = centroid(fc as AllGeoJSON).geometry.coordinates;
+    map.flyTo({
+      center,
+      zoom: getZoomFromBbox(bounds)
+    });
+    const pids = mbDraw.add(fc);
+    setPresetIds(pids);
+    mbDraw.changeMode(STATIC_MODE, {
+      featureIds: pids
+    });
+    setSelectedForEditing(false);
+  },[map, onUpdate, resetForPresetSelect, setSelectedForEditing]);
+
+  const toggleDrawing = useCallback(() => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    resetForDrawingAoi();
+    setIsDrawing(!isDrawing);
+    setSelectedForEditing(true);
+  }, [map, isDrawing, setIsDrawing, resetForDrawingAoi]);
 
   const onTrashClick = useCallback(() => {
     // We need to programmatically access the mapbox draw trash method which
@@ -93,22 +205,31 @@ function CustomAoI({
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
 
+    setSelectedState('');
+    setPresetIds([]);
+    setFileUplaodedIds([]);
     // This is a peculiar situation:
     // If we are in direct select (to select/add vertices) but not vertex is
     // selected, the trash method doesn't do anything. So, in this case, we
     // trigger the delete for the whole feature.
-    const selectedFeatures = mbDraw.getSelected().features;
+    const selectedFeatures = mbDraw.getSelected()?.features;
     if (
-      mbDraw.getMode() === 'direct_select' &&
+      mbDraw.getMode() === DIRECT_SELECT &&
       selectedFeatures.length &&
       !mbDraw.getSelectedPoints().features.length
     ) {
       // Change mode so that the trash action works.
-      mbDraw.changeMode('simple_select', {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: selectedFeatures.map((f) => f.id)
       });
     }
-
+    // If we are in static mode, we need to change to simple_select to be able
+    // to delete those features
+    if (mbDraw.getMode() === STATIC_MODE) {
+      mbDraw.changeMode(SIMPLE_SELECT, {
+        featureIds: features.map((f) => f.id)
+      });
+    }
     // If nothing selected, delete all.
     if (features.every((f) => !f.selected)) {
       mbDraw.deleteAll();
@@ -120,7 +241,7 @@ function CustomAoI({
     mbDraw.trash();
   }, [features, aoiDeleteAll, map]);
 
-  const isAreaSelected = !!map?._drawControl.getSelected().features.length;
+  const isAreaSelected = !!map?._drawControl?.getSelected().features.length;
   const isPointSelected =
     !!map?._drawControl.getSelectedPoints().features.length;
   const hasFeatures = !!features.length;
@@ -134,13 +255,18 @@ function CustomAoI({
             size='small'
             data-tour='analysis-tour'
           >
-            <ToolbarLabel>Analysis</ToolbarLabel>
+            <PresetSelector 
+              selectedState={selectedState}
+              setSelectedState={setSelectedState}
+              onConfirm={onPresetConfirm}
+              resetPreset={resetForEmptyState}
+            />
             <VerticalDivider />
             <TipToolbarIconButton
               tipContent='Draw an area of interest'
               tipProps={{ placement: 'bottom' }}
               active={isDrawing}
-              onClick={() => setIsDrawing(!isDrawing)}
+              onClick={toggleDrawing}
             >
               <CollecticonPencil meaningful title='Draw AOI' />
             </TipToolbarIconButton>
@@ -208,9 +334,9 @@ export default function CustomAoIControl({
     if (!mbDraw) return;
 
     if (isDrawing) {
-      mbDraw.changeMode('draw_polygon');
+      mbDraw.changeMode(DRAW_POLYGON);
     } else {
-      mbDraw.changeMode('simple_select', {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: mbDraw.getSelectedIds()
       });
     }

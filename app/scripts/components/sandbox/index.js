@@ -19,7 +19,8 @@ import SandboxMDXEditor from './mdx-editor';
 import SandboxTable from './table';
 import SandboxLayerInfo from './layer-info';
 import { resourceNotFound } from '$components/uhoh';
-import { Card, CardList } from '$components/common/card';
+import { Card } from '$components/common/card';
+import { CardListGrid } from '$components/common/card/styles';
 import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import PageHero from '$components/common/page-hero';
 import { LayoutProps } from '$components/common/layout-root';
@@ -148,13 +149,13 @@ function Sandbox() {
               <FoldHeader>
                 <FoldTitle>Browse</FoldTitle>
               </FoldHeader>
-              <CardList>
+              <CardListGrid>
                 {pages.map((p) => (
                   <li key={p.id}>
                     <Card linkLabel='View more' linkTo={p.id} title={p.name} />
                   </li>
                 ))}
-              </CardList>
+              </CardListGrid>
             </Fold>
           </PageMainContent>
         }

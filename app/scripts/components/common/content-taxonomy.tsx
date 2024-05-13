@@ -61,7 +61,7 @@ export function ContentTaxonomy(props: ContentTaxonomyProps) {
                   key={t.id}
                   as={Link}
                   to={`${linkBase}?${Actions.TAXONOMY}=${encodeURIComponent(
-                    JSON.stringify({ [name]: t.id })
+                    JSON.stringify({ [name]: [t.id] })
                   )}`}
                 >
                   {t.name}

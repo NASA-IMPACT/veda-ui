@@ -21,7 +21,7 @@ import {
 import ChartCard from './chart-card';
 import AnalysisHead from './analysis-head';
 import { LayoutProps } from '$components/common/layout-root';
-import { CardList } from '$components/common/card';
+import { CardListGrid } from '$components/common/card/styles';
 import {
   Fold,
   FoldHeader,
@@ -36,7 +36,7 @@ import { pluralize } from '$utils/pluralize';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
 import { ANALYSIS_PATH, ANALYSIS_RESULTS_PATH } from '$utils/routes';
 
-const ChartCardList = styled(CardList)`
+const ChartCardList = styled(CardListGrid)`
   > li {
     min-width: 0;
   }

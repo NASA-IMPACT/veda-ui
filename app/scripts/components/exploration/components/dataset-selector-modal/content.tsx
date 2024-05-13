@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { glsp, themeVal, media } from '@devseed-ui/theme-provider';
 import {
@@ -11,16 +12,12 @@ import { DatasetLayerCardProps } from './';
 
 import { DatasetClassification } from '$components/common/dataset-classification';
 import EmptyHub from '$components/common/empty-hub';
-import {
-  Card,
-  CardList,
-  CardMeta,
-  CardTopicsList
-} from '$components/common/card';
+import { Card } from '$components/common/card';
+import { CardListGrid, CardMeta, CardTopicsList } from '$components/common/card/styles';
 import TextHighlight from '$components/common/text-highlight';
 import { CardSourcesList } from '$components/common/card-sources';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
-import { getDatasetPath } from '$utils/routes';
+import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,
@@ -33,7 +30,7 @@ const DatasetContainer = styled.div`
   display: flex;
   margin-bottom: ${glsp(2)};
 
-  ${CardList} {
+  ${CardListGrid} {
     width: 100%;
   }
 
@@ -72,6 +69,11 @@ const DatasetIntro = styled.div`
   padding: ${glsp(1)} 0;
 `;
 
+const EmptyInfoDiv = styled.div`
+  width: 70%;
+  text-align: center;
+`;
+
 export const ParentDatasetTitle = styled.h2<{size?: string}>`
   color: ${themeVal('color.primary')};
   text-align: left;
@@ -94,20 +96,26 @@ export const ParentDatasetTitle = styled.h2<{size?: string}>`
   }
 `;
 
+const WarningPill = styled(Pill)`
+  margin-left: 8px;
+`;
+
 interface ModalContentComponentProps {
   search: string;
   selectedIds: string[];
-  displayDatasets: (DatasetData & {
+  displayDatasets?: (DatasetData & {
     countSelectedLayers: number;
   })[];
-  onCheck: (id: string) => void;
+  onCheck: (id: string, currentDataset?: DatasetData & {countSelectedLayers: number}) => void;
 }
 
 export default function ModalContentComponent(props:ModalContentComponentProps) {
   const { search, selectedIds, displayDatasets, onCheck } = props;
+  const exclusiveSourceWarning = "Can only be analyzed with layers from the same source";
+
   return(
   <DatasetContainer>
-    {displayDatasets.length ? (
+    {displayDatasets?.length ? (
       <div>
       {displayDatasets.map(currentDataset => (
         <SingleDataset key={currentDataset.id}>
@@ -115,6 +123,13 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
             <DatasetHeadline>
             <ParentDatasetTitle>
               <CollecticonDatasetLayers /> {currentDataset.name}
+              {
+                currentDataset.sourceExclusive && (
+                  <WarningPill variation='warning'>
+                    {exclusiveSourceWarning}
+                  </WarningPill>
+                )
+              }
             </ParentDatasetTitle>
             {currentDataset.countSelectedLayers > 0 && <DatasetSelectedLayer><span>{currentDataset.countSelectedLayers} selected </span> </DatasetSelectedLayer>}
             </DatasetHeadline>
@@ -127,7 +142,7 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
               </TextHighlight>
             </DatasetDescription>
           </DatasetIntro>
-        <CardList key={currentDataset.id}>
+        <CardListGrid key={currentDataset.id}>
         {currentDataset.layers.map((datasetLayer) => {
           return (
             <li key={datasetLayer.id}>
@@ -136,18 +151,21 @@ export default function ModalContentComponent(props:ModalContentComponentProps) 
                 layer={datasetLayer}
                 parent={currentDataset}
                 selected={selectedIds.includes(datasetLayer.id)}
-                onDatasetClick={() => onCheck(datasetLayer.id)}
+                onDatasetClick={() => onCheck(datasetLayer.id, currentDataset)}
               />
             </li>
           );
         })}
-        </CardList>
+        </CardListGrid>
         </SingleDataset>
       ))}
       </div>
     ) : (
       <EmptyHub>
-        There are no datasets to show with the selected filters.
+        <EmptyInfoDiv>
+          <p>There are no datasets to show with the selected filters.</p><br />
+          <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <Link to={DATASETS_PATH} target='_blank'>Data Catalog</Link>.</p>
+        </EmptyInfoDiv>
       </EmptyHub>
     )}
   </DatasetContainer>
@@ -220,6 +238,7 @@ function DatasetLayerCard(props: DatasetLayerCardProps) {
   const { parent, layer, onDatasetClick, selected, searchTerm } = props;
 
   const topics = getTaxonomy(parent, TAXONOMY_TOPICS)?.values;
+  const sources = getTaxonomy(parent, TAXONOMY_SOURCE)?.values;
   return (
     <LayerCard
       cardType='classic'
@@ -228,7 +247,7 @@ function DatasetLayerCard(props: DatasetLayerCardProps) {
         <CardMeta>
           <DatasetClassification dataset={parent} />
           <CardSourcesList
-            sources={getTaxonomy(parent, TAXONOMY_SOURCE)?.values}
+            sources={sources}
           />
         </CardMeta>
       }

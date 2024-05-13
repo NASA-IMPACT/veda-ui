@@ -12,6 +12,11 @@ export const zoomTransformAtom = atom<ZoomTransformPlain>({
   k: 1
 });
 
+
+// Atom to zoom TOI when analysis is run
+type ZoomTOIFunction = (newX: number, newK: number) => void;
+export const onTOIZoomAtom = atom<ZoomTOIFunction | null>(null);
+
 // Width of the whole timeline item. Set via a size observer and then used to
 // compute the different element sizes.
 export const timelineWidthAtom = atom<number | undefined>(undefined);
@@ -30,5 +35,3 @@ export const timelineSizesAtom = atom((get) => {
   };
 });
 
-// Whether or not the dataset rows are expanded.
-export const isExpandedAtom = atom<boolean>(true);

@@ -15,7 +15,8 @@ export interface DataMetric {
     | 'infographicB'
     | 'infographicC'
     | 'infographicD'
-    | 'infographicE';
+    | 'infographicE'
+    | 'infographicF';
 }
 
 export const DATA_METRICS: DataMetric[] = [
@@ -48,6 +49,12 @@ export const DATA_METRICS: DataMetric[] = [
     label: 'Median',
     chartLabel: 'Median',
     themeColor: 'infographicE'
+  },
+  {
+    id: 'sum',
+    label: 'Sum',
+    chartLabel: 'Sum',
+    themeColor: 'infographicF'
   }
 ];
 

@@ -23,6 +23,7 @@ import { ExtendedStyle, Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
 import useMaps, { useMapsContext } from './hooks/use-maps';
+import { aoiCustomCursorStyle } from './controls/aoi/custom-aoi-control';
 import { COMPARE_CONTAINER_NAME, CONTROLS_CONTAINER_NAME } from '.';
 
 const chevronRightURI = () =>
@@ -38,7 +39,7 @@ const chevronLeftURI = () =>
 const MapsContainer = styled.div`
   ${MapboxStyleOverride}
   height: 100%;
-
+  flex: 1; /* Necessary for Safari */
   .mapboxgl-map {
     position: absolute !important;
     inset: 0;
@@ -52,6 +53,7 @@ const MapsContainer = styled.div`
     &.mouse-move .mapboxgl-canvas-container {
       cursor: move;
     }
+    ${aoiCustomCursorStyle}
   }
 
   .mapboxgl-compare .compare-swiper-vertical {
@@ -136,7 +138,6 @@ function Maps({ children, projection, onStyleUpdate }: MapsProps) {
   });
 
   const { containerId } = useMapsContext();
-
   return (
     <MapsContainer id={containerId} ref={observe}>
       <Styles onStyleUpdate={onStyleUpdate}>

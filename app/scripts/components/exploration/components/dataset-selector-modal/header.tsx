@@ -1,8 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { media } from '@devseed-ui/theme-provider';
-import { datasetTaxonomies } from 'veda';
 import {
   ModalHeadline
 } from '@devseed-ui/modal';
@@ -10,34 +7,37 @@ import { Heading } from '@devseed-ui/typography';
 
 import BrowseControls from '$components/common/browse-controls';
 import {
+  Actions,
+  TaxonomyFilterOption,
   useBrowserControls
 } from '$components/common/browse-controls/use-browse-controls';
+import {
+  allExploreDatasetsWithEnhancedLayers as allDatasets
+} from '$components/exploration/data-utils';
+import { generateTaxonomies } from '$utils/veda-data';
 import { sortOptions } from '$components/data-catalog';
-import { DATASETS_PATH } from '$utils/routes';
 
-const StyledModalHeadline = styled(ModalHeadline)``;
-const ModalIntro = styled.div`
-  ${media.largeUp`
-    width: 66%;
-  `}
+const StyledModalHeadline = styled(ModalHeadline)`
+  width: 100%;
 `;
 
-export default function RenderModalHeader () {
+export default function RenderModalHeader ({defaultSelect}: {defaultSelect?: TaxonomyFilterOption}) {
   const controlVars = useBrowserControls({
     sortOptions
   });
+  const datasetTaxonomies = generateTaxonomies(allDatasets);
+  useEffect(() => {
+    if (defaultSelect) {
+      controlVars.onAction(Actions.TAXONOMY, { key: defaultSelect.taxonomyType, value: defaultSelect.value });
+    }
+  }, [defaultSelect]);
+
   return(
     <StyledModalHeadline>
       <Heading size='small'>Data layers</Heading>
-      <ModalIntro>
-          <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <Link to={DATASETS_PATH} target='_blank'>Data Catalog</Link>.
-          </p>
-      </ModalIntro>
       <BrowseControls
           {...controlVars}
           taxonomiesOptions={datasetTaxonomies}
-          sortOptions={sortOptions}
-          showMoreButtonOpt={true}
       />
     </StyledModalHeadline>
   );

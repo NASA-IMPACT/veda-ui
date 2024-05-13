@@ -51,6 +51,7 @@ thematics: string[]
 sources: string[]
 featured: boolean
 disableExplore: boolean
+sourceExclusive: string
 
 layers: Layer[]
 related: Related[]
@@ -114,6 +115,10 @@ Whether this dataset is featured
 **disableExplore**  
 `boolean`  
 When set to true, the 'explore data' section won't be available for this dataset.
+
+**sourceExclusive**  
+`string`  
+When a source value is provided, this marks the dataset layers as can only be analyzed with layers from the same source
 
 
 **layers**  

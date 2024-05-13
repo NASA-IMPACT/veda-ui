@@ -17,7 +17,8 @@ import {
   STORIES_PATH,
   DATASETS_PATH
 } from '$utils/routes';
-import { Card, CardList } from '$components/common/card';
+import { Card } from '$components/common/card';
+import { CardListGrid } from '$components/common/card/styles';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlock } from '$styles/content-block';
@@ -30,7 +31,7 @@ const contentCategory = {
   [storyString]: stories
 };
 
-const TwoColumnCardList = styled(CardList)`
+const TwoColumnCardList = styled(CardListGrid)`
   grid-template-columns: repeat(2, 1fr);
   margin-top: ${variableGlsp(1)};
 `;
@@ -154,7 +155,7 @@ export default function RelatedContent(props: RelatedContentProps) {
                     : undefined
                 }
                 description={t.description}
-                parentName={t.parent}
+                tagLabels={[t.parent]}
                 parentTo={t.parentLink}
                 imgSrc={t.media.src}
                 imgAlt={t.media.alt}

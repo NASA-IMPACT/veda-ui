@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAtom } from 'jotai';
 
@@ -14,9 +14,10 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
-  allDatasetsWithEnhancedLayers as allDatasets,
+  allExploreDatasetsWithEnhancedLayers as allDatasets,
   reconcileDatasets,
-  datasetLayers
+  datasetLayers,
+  findParentDataset
 } from '../../data-utils';
 import RenderModalHeader from './header';
 import ModalContentRender from './content';
@@ -24,9 +25,13 @@ import ModalFooterRender from './footer';
 
 import {
   Actions,
+  TaxonomyFilterOption,
   useBrowserControls
 } from '$components/common/browse-controls/use-browse-controls';
-import { prepareDatasets, sortOptions } from '$components/data-catalog';
+import { sortOptions } from '$components/data-catalog';
+import prepareDatasets from '$components/data-catalog/prepare-datasets';
+import { TAXONOMY_SOURCE, getTaxonomy } from '$utils/veda-data';
+import { usePreviousValue } from '$utils/use-effect-previous';
 
 
 const DatasetModal = styled(Modal)`
@@ -90,17 +95,40 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const { revealed, close } = props;
 
   const [timelineDatasets, setTimelineDatasets] = useAtom(timelineDatasetsAtom);
+  const [datasetsToDisplay, setDatasetsToDisplay] = useState<(DatasetData & {
+    countSelectedLayers: number;
+  })[] | undefined>();
+  const [defaultSelectFilter, setDefaultSelectFilter] = useState<TaxonomyFilterOption>();
 
   // Store a list of selected datasets and only confirm on save.
   const [selectedIds, setSelectedIds] = useState<string[]>(
     timelineDatasets.map((dataset) => dataset.data.id)
   );
 
+  const prevSelectedIds = usePreviousValue(selectedIds);
+
+  const [exclusionSelected, setExclusionSelected] = useState<boolean>(false);
+  
   useEffect(() => {
     setSelectedIds(timelineDatasets.map((dataset) => dataset.data.id));
   }, [timelineDatasets]);
 
-  const onCheck = useCallback((id: string) => {
+  const onCheck = useCallback((id: string, currentDataset?: DatasetData & {countSelectedLayers: number}) => {
+    if (currentDataset) {
+      // This layer is part of a dataset that is exclusive
+      const exclusiveSource = currentDataset.sourceExclusive?.toLowerCase();
+      const sources = getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values;
+      const sourceIds = sources?.map(source => source.id);
+
+      if (exclusiveSource && sourceIds?.includes(exclusiveSource)) {
+        setDefaultSelectFilter({taxonomyType: TAXONOMY_SOURCE, value: exclusiveSource});
+        setExclusionSelected(true);
+      } else {
+        setDefaultSelectFilter(undefined);
+        setExclusionSelected(false);
+      }
+    } 
+    
     setSelectedIds((ids) =>
       ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id]
     );
@@ -124,6 +152,29 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const firstRevealRef = React.useRef(true);
 
   useEffect(() => {
+    if(selectedIds && selectedIds !== prevSelectedIds) {
+      let relevantIds: string[] | undefined = undefined;
+
+      const selectedIdsWithParentData = selectedIds.map((selectedId) => {
+        const parentData = findParentDataset(selectedId);
+        const exclusiveSource = parentData?.sourceExclusive;
+        const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')?.[0]?.values.map((value) => value.id);
+        return {id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() || ''};
+      });
+      
+      if (exclusionSelected) {
+        relevantIds = selectedIdsWithParentData.filter((x) => x.values?.includes(x.sourceExclusive)).map((x) => x.id);
+      } else {
+        relevantIds = selectedIdsWithParentData.filter((x) => !x.values?.includes(x.sourceExclusive)).map((x) => x.id);
+      }
+
+      setSelectedIds((ids) =>
+        ids.filter((id) => relevantIds?.includes(id))
+      );
+    }
+  }, [exclusionSelected]);
+
+  useEffect(() => {
     if (revealed) {
       if (firstRevealRef.current) {
         firstRevealRef.current = false;
@@ -133,24 +184,22 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     }
   }, [revealed]);
 
-  // Filtered datasets for modal display
-  const displayDatasets = useMemo<(DatasetData & {countSelectedLayers: number})[]>(
-    () =>
-      // TODO: Move function from data-catalog once that page is removed.
-      prepareDatasets(allDatasets, {
-        search,
-        taxonomies,
-        sortField,
-        sortDir,
-        filterLayers: true
-      })
-      .map(dataset => ({
-        ...dataset,
-        countSelectedLayers: countOverlap(dataset.layers.map(l => l.id), selectedIds)
-      })),
-    [search, taxonomies, sortField, sortDir, selectedIds]
-  );
+  useEffect(() => {
+    const datasets = prepareDatasets(allDatasets, {
+      search,
+      taxonomies,
+      sortField,
+      sortDir,
+      filterLayers: true
+    })
+    .map(dataset => ({
+      ...dataset,
+      countSelectedLayers: countOverlap(dataset.layers.map(l => l.id), selectedIds)
+    }));
 
+    setDatasetsToDisplay(datasets);
+  }, [search, taxonomies, sortField, sortDir, selectedIds]);
+  
   return (
     <DatasetModal
       id='modal'
@@ -159,13 +208,13 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       revealed={revealed}
       onCloseClick={close}
       renderHeadline={() => (
-        <RenderModalHeader />
+        <RenderModalHeader defaultSelect={defaultSelectFilter} />
       )}
       content={
         <ModalContentRender 
           search={search} 
           selectedIds={selectedIds} 
-          displayDatasets={displayDatasets} 
+          displayDatasets={datasetsToDisplay} 
           onCheck={onCheck}
         /> 
       }

@@ -6,7 +6,7 @@ import {
   startOfMonth,
   startOfYear
 } from 'date-fns';
-import { DatasetLayer, datasets } from 'veda';
+import { DatasetLayer, DatasetData } from 'veda';
 import {
   EnhancedDatasetLayer,
   StacDatasetData,
@@ -16,41 +16,56 @@ import {
 } from './types.d.ts';
 import {
   DataMetric,
-  DATA_METRICS
+  DATA_METRICS,
+  DEFAULT_DATA_METRICS
 } from './components/datasets/analysis-metrics';
+import { veda_datasets } from "$data-layer/datasets";
 
 import { utcString2userTzDate } from '$utils/date';
 
+// @TODO: These should be updated to take in datasets as a param instead of using veda_datasets directly
+
 export const findParentDataset = (layerId: string) => {
-  const parentDataset = Object.values(datasets).find((dataset) =>
+  const parentDataset = Object.values(veda_datasets).find((dataset) =>
     dataset!.data.layers.find((l) => l.id === layerId)
   );
   return parentDataset?.data;
 };
 
 export const findDatasetAttribute = ({ datasetId, attr }: {datasetId: string, attr: string}) => {
-  return datasets[datasetId]?.data[attr];
+  return veda_datasets[datasetId]?.data[attr];
 };
 
+export const allDatasets = Object.values(veda_datasets)
+  .map((d) => d!.data);
 
-export const allDatasets = Object.values(datasets)
+
+export const allExploreDatasets = Object.values(veda_datasets)
   .map((d) => d!.data)
   .filter((d) => !d.disableExplore);
 
-export const allDatasetsWithEnhancedLayers = allDatasets.map(currentDataset => {
-  return {
-    ...currentDataset,
-    layers: currentDataset.layers.map(l => ({
-      ...l,
-      parentDataset: {
-        id: currentDataset.id,
-        name: currentDataset.name
-      }
-    }))
-  };
-});
+export interface DatasetDataWithEnhancedLayers extends DatasetData {
+  layers: EnhancedDatasetLayer[];
+}
 
-export const datasetLayers = Object.values(datasets)
+function enhanceDatasetLayers(dataset) {
+  return {
+      ...dataset,
+      layers: dataset.layers.map(layer => ({
+          ...layer,
+          parentDataset: {
+              id: dataset.id,
+              name: dataset.name
+          }
+      }))
+  };
+}
+
+export const allExploreDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[] = allExploreDatasets.map(enhanceDatasetLayers);
+
+export const getAllDatasetsWithEnhancedLayers = (dataset): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
+
+export const datasetLayers = Object.values(veda_datasets)
   .flatMap((dataset) => {
     return dataset!.data.layers.map(l => ({
       ...l,
@@ -71,16 +86,16 @@ export const datasetLayers = Object.values(datasets)
  */
 function getInitialMetrics(data: DatasetLayer): DataMetric[] {
   const metricsIds = data.analysis?.metrics ?? [];
-
+  
+  if (!metricsIds.length) {
+    return DEFAULT_DATA_METRICS;
+  }
+  
   const foundMetrics = metricsIds
     .map((metric: string) => {
       return DATA_METRICS.find((m) => m.id === metric)!;
     })
     .filter(Boolean);
-
-  if (!foundMetrics.length) {
-    return DATA_METRICS;
-  }
 
   return foundMetrics;
 }
