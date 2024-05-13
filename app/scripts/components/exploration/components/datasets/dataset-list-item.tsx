@@ -120,6 +120,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
     const parentInfoDesc = findDatasetAttribute({datasetId: dataset.data.parentDataset.id, attr: 'infoDescription'});
     const data: LayerInfoModalData = {
       name: dataset.data.name,
+      description: dataset.data.description,
       info: dataset.data.info,
       parentData: {
         ...dataset.data.parentDataset,

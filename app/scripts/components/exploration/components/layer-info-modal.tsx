@@ -63,6 +63,7 @@ const ButtonStyleLink = styled(SmartLink)<any>`
 export interface LayerInfoModalData {
   name: string;
   info?: LayerInfo;
+  description: string;
   parentData: {
     id: string;
     name: string;
@@ -117,6 +118,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
                 )
               }
             </p>
+            <p>{layerData.description}</p>
           </ModalHeadline>);
       }}
       content={
