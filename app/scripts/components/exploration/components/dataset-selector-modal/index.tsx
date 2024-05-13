@@ -28,7 +28,7 @@ import {
   TaxonomyFilterOption,
   useBrowserControls
 } from '$components/common/browse-controls/use-browse-controls';
-import { sortOptions } from '$components/data-catalog';
+import { sortOptions } from '$components/content-views/catalog-view';
 import prepareDatasets from '$components/data-catalog/prepare-datasets';
 import { TAXONOMY_SOURCE, getTaxonomy } from '$utils/veda-data';
 import { usePreviousValue } from '$utils/use-effect-previous';

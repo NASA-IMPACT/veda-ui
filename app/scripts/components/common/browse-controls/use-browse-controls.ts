@@ -45,6 +45,8 @@ export const optionAll = {
   name: 'All'
 };
 
+export const minSearchLength = 3;
+
 export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
   // Setup Qs State to store data in the url's query string
   // react-router function to get the navigation.

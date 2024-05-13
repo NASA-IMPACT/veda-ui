@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { DatasetData } from 'veda';
 import { useNavigate } from 'react-router-dom';
 import { themeVal } from '@devseed-ui/theme-provider';
+import prepareDatasets from '../../data-catalog/prepare-datasets';
 import FiltersControl from './filters-control';
 import FilterTag from './filter-tag';
-import prepareDatasets from './prepare-datasets';
 import {
   Actions,
+  minSearchLength,
   useBrowserControls
 } from '$components/common/browse-controls/use-browse-controls';
 import {
@@ -39,7 +40,7 @@ import { getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-u
  * Allows you to browse through datasets using the filters sidebar control
  */
 
-const DataCatalogWrapper = styled.div`
+const CatalogWrapper = styled.div`
   width: 100%;
   max-width: ${themeVal('layout.max')};
   margin: 0 auto;
@@ -59,7 +60,7 @@ const Content = styled.div`
   position: relative;
 `;
 
-const CatalogWrapper = styled.div`
+const Catalog = styled.div`
   width: 100%;
 `;
 
@@ -92,7 +93,7 @@ const EmptyState = styled(EmptyHub)`
 
 export const sortOptions = [{ id: 'name', name: 'Name' }];
 
-export interface DataCatalogProps {
+export interface CatalogViewProps {
   datasets: DatasetData[];
   cardComponentOverride?: { // Allow user to override with a different cardType with optional props
     CardComponent: ComponentType<CardComponentProps>;
@@ -100,10 +101,10 @@ export interface DataCatalogProps {
   } 
 }
 
-function DataCatalog({ 
+function CatalogView({ 
   datasets,
   cardComponentOverride, 
-}: DataCatalogProps) {
+}: CatalogViewProps) {
   const controlVars = useBrowserControls({
     sortOptions
   });
@@ -211,7 +212,7 @@ function DataCatalog({
         title={
           <TextHighlight
             value={search}
-            disabled={search.length < 3}
+            disabled={search.length < minSearchLength}
           >
             {dataset.name}
           </TextHighlight>
@@ -219,7 +220,7 @@ function DataCatalog({
         description={
           <TextHighlight
             value={search}
-            disabled={search.length < 3}
+            disabled={search.length < minSearchLength}
           >
             {dataset.description}
           </TextHighlight>
@@ -231,7 +232,7 @@ function DataCatalog({
   };
 
   return (
-    <DataCatalogWrapper>
+    <CatalogWrapper>
       <CatalogFoldHeader
         style={{
           scrollMarginTop: `${headerHeight + 16}px`
@@ -250,7 +251,7 @@ function DataCatalog({
           setClearedTagItem={setClearedTagItem}
           allSelected={allSelectedFilters}
         />
-        <CatalogWrapper>
+        <Catalog>
           {renderTags}
           {datasetsToDisplay.length ? (
             <Cards>
@@ -269,10 +270,10 @@ function DataCatalog({
               There are no datasets to show with the selected filters.
             </EmptyState>
           )}
-        </CatalogWrapper>
+        </Catalog>
       </Content>
-    </DataCatalogWrapper>
+    </CatalogWrapper>
   );
 }
 
-export default DataCatalog;
+export default CatalogView;
