@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import bbox from '@turf/bbox';
 import centroid from '@turf/centroid';
 import {
@@ -19,13 +19,23 @@ import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
-import { aoiDeleteAllAtom } from './atoms';
-
+import { aoiDeleteAllAtom, selectedForEditingAtom } from './atoms';
 import PresetSelector from './preset-selector';
+import { DIRECT_SELECT, DRAW_POLYGON, SIMPLE_SELECT, STATIC_MODE } from './';
+
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { ShortcutCode } from '$styles/shortcut-code';
+
+// 'moving' feature is disabled, match the cursor style accoringly
+export const aoiCustomCursorStyle = css`
+  &.mode-${STATIC_MODE} .mapboxgl-canvas-container,
+  &.feature-feature.mouse-drag .mapboxgl-canvas-container,
+  &.mouse-move .mapboxgl-canvas-container {
+    cursor: default;
+  }
+`;
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
@@ -67,6 +77,8 @@ function CustomAoI({
   const [presetIds, setPresetIds] = useState([]);
   const [fileUploadedIds, setFileUplaodedIds] = useState([]);
 
+  const [selectedForEditing, setSelectedForEditing] = useAtom(selectedForEditingAtom);
+
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
 
@@ -74,12 +86,16 @@ function CustomAoI({
   // from feature to point.
   const [, forceUpdate] = useState(0);
   useEffect(() => {
+    const mbDraw = map?._drawControl;
+    if (!mbDraw) return;
+    const aoiSelectedFor = selectedForEditing ? SIMPLE_SELECT : STATIC_MODE;
+    mbDraw.changeMode(aoiSelectedFor);
     const onSelChange = () => forceUpdate(Date.now());
     map.on('draw.selectionchange', onSelChange);
     return () => {
       map.off('draw.selectionchange', onSelChange);
     };
-  }, []);
+  }, [map, selectedForEditing]);
 
   const resetAoisOnMap = useCallback(() => {
     const mbDraw = map?._drawControl;
@@ -111,14 +127,14 @@ function CustomAoI({
     if (!mbDraw) return;
     
     if (fileUploadedIds.length) {
-      mbDraw.changeMode('simple_select', {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: fileUploadedIds
       });
       mbDraw.trash();
     }
 
     if (presetIds.length) {
-      mbDraw.changeMode('simple_select', {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: presetIds
       });
       mbDraw.trash();
@@ -145,11 +161,12 @@ function CustomAoI({
       zoom: getZoomFromBbox(bounds)
     });
     const addedAoisId = mbDraw.add(fc);
-    mbDraw.changeMode('simple_select', {
+    mbDraw.changeMode(STATIC_MODE, {
       featureIds: addedAoisId
     });
     setFileUplaodedIds(addedAoisId);
-  },[map, onUpdate, resetForFileUploaded]);
+    setSelectedForEditing(false);
+  },[map, onUpdate, resetForFileUploaded, setSelectedForEditing]);
 
   const onPresetConfirm = useCallback((features: Feature<Polygon>[]) => {
     const mbDraw = map?._drawControl;
@@ -168,17 +185,18 @@ function CustomAoI({
     });
     const pids = mbDraw.add(fc);
     setPresetIds(pids);
-    mbDraw.changeMode('simple_static', {
+    mbDraw.changeMode(STATIC_MODE, {
       featureIds: pids
     });
-
-  },[map, onUpdate, resetForPresetSelect]);
+    setSelectedForEditing(false);
+  },[map, onUpdate, resetForPresetSelect, setSelectedForEditing]);
 
   const toggleDrawing = useCallback(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
     resetForDrawingAoi();
     setIsDrawing(!isDrawing);
+    setSelectedForEditing(true);
   }, [map, isDrawing, setIsDrawing, resetForDrawingAoi]);
 
   const onTrashClick = useCallback(() => {
@@ -196,13 +214,20 @@ function CustomAoI({
     // trigger the delete for the whole feature.
     const selectedFeatures = mbDraw.getSelected()?.features;
     if (
-      mbDraw.getMode() === 'direct_select' &&
+      mbDraw.getMode() === DIRECT_SELECT &&
       selectedFeatures.length &&
       !mbDraw.getSelectedPoints().features.length
     ) {
       // Change mode so that the trash action works.
-      mbDraw.changeMode('simple_select', {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: selectedFeatures.map((f) => f.id)
+      });
+    }
+    // If we are in static mode, we need to change to simple_select to be able
+    // to delete those features
+    if (mbDraw.getMode() === STATIC_MODE) {
+      mbDraw.changeMode(SIMPLE_SELECT, {
+        featureIds: features.map((f) => f.id)
       });
     }
     // If nothing selected, delete all.
@@ -309,9 +334,9 @@ export default function CustomAoIControl({
     if (!mbDraw) return;
 
     if (isDrawing) {
-      mbDraw.changeMode('draw_polygon');
+      mbDraw.changeMode(DRAW_POLYGON);
     } else {
-      mbDraw.changeMode('simple_select', {
+      mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: mbDraw.getSelectedIds()
       });
     }

@@ -114,8 +114,6 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
     setObsolete();
   }, [setObsolete, features]);
 
-
-
   const analysisCallback = useCallback(() => {
     // Fit AOI
     const bboxToFit = bbox({

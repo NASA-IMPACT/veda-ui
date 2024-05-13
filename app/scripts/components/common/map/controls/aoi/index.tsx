@@ -10,6 +10,11 @@ import { computeDrawStyles } from './style';
 
 type DrawControlProps = MapboxDraw.DrawOptions;
 
+export const STATIC_MODE = 'static_mode';
+export const SIMPLE_SELECT = 'simple_select';
+export const DIRECT_SELECT = 'direct_select';
+export const DRAW_POLYGON = 'draw_polygon';
+
 // Overriding the dragMove and dragFeature methods of the 
 // 'simple_select' and the 'direct_select' modes to avoid
 // accidentally dragging the selected or hand-drawn AOIs 
@@ -36,9 +41,9 @@ export default function DrawControl(props: DrawControlProps) {
         styles: computeDrawStyles(theme),
         modes: {
           ...MapboxDraw.modes,
-          simple_static: StaticMode,
-          simple_select: customSimpleSelect,
-          direct_select: customDirectSelect
+          [STATIC_MODE]: StaticMode,
+          [SIMPLE_SELECT]: customSimpleSelect,
+          [DIRECT_SELECT]: customDirectSelect
         },
         ...props
       });
