@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback, ComponentType } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { DatasetData } from 'veda';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +20,7 @@ import {
   FoldHeadline,
   FoldTitle
 } from '$components/common/fold';
-import { Card, CardComponentProps } from '$components/common/card';
+import { Card } from '$components/common/card';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
@@ -95,15 +95,10 @@ export const sortOptions = [{ id: 'name', name: 'Name' }];
 
 export interface CatalogViewProps {
   datasets: DatasetData[];
-  cardComponentOverride?: { // Allow user to override with a different cardType with optional props
-    CardComponent: ComponentType<CardComponentProps>;
-    props: Partial<CardComponentProps>;
-  } 
 }
 
 function CatalogView({ 
   datasets,
-  cardComponentOverride, 
 }: CatalogViewProps) {
   const controlVars = useBrowserControls({
     sortOptions
@@ -202,11 +197,10 @@ function CatalogView({
   }, [allSelectedFilters, handleClearTag, handleClearTags, urlTaxonomyItems]);
 
   const renderCard = (dataset: DatasetData) => {
-    const CardComponent = cardComponentOverride?.CardComponent ?? Card;
     const allTaxonomyValues = getAllTaxonomyValues(dataset).map((v) => v.name);
     return (
-      <CardComponent
-        {...(cardComponentOverride ? {...cardComponentOverride.props} : {cardType: 'horizontal-info'})}
+      <Card
+        cardType='horizontal-info'
         tagLabels={allTaxonomyValues}
         linkTo={getDatasetPath(dataset)}
         title={
