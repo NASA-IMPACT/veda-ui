@@ -27,7 +27,7 @@
     "build-lib": "npx parcel build 'app/scripts/export-components.js' --dist-dir='test'"
   },
   "engines": {
-    "node": "18.x"
+    "node":  ">=18.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
