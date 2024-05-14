@@ -1,7 +1,7 @@
 import React from 'react';
 import { getString } from 'veda';
 import { allDatasets } from '$components/exploration/data-utils';
-import CatalogView from '$components/content-views/catalog-view';
+import CatalogView from '$components/common/catalog';
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
