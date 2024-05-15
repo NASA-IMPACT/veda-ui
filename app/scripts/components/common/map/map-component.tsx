@@ -6,6 +6,7 @@ import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import useMapStyle from './hooks/use-map-style';
 import { useMapsContext } from './hooks/use-maps';
 import { convertProjectionToMapbox } from './controls/map-options/projections';
+import { debounce } from 'lodash';
 
 const maxMapBounds: LngLatBoundsLike = [
   [-540, -90], // SW
@@ -27,6 +28,13 @@ export default function MapComponent({
 
   const id = isCompared ? comparedId : mainId;
 
+  const debouncedSetInitialViewState = useCallback(
+    debounce((viewState) => {
+      setInitialViewState(viewState);
+    }, 100),
+    [setInitialViewState]
+  );
+
   const onMove = useCallback(
     (evt) => {
       if (
@@ -34,14 +42,14 @@ export default function MapComponent({
         (evt.viewState.longitude !== initialViewState.longitude ||
           evt.viewState.latitude !== initialViewState.latitude)
       ) {
-        setInitialViewState(evt.viewState);
+        debouncedSetInitialViewState(evt.viewState);
       }
     },
     [
       isCompared,
+      debouncedSetInitialViewState,
       initialViewState.longitude,
-      initialViewState.latitude,
-      setInitialViewState
+      initialViewState.latitude
     ]
   );
 
