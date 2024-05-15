@@ -22,6 +22,13 @@ interface StylesContextType {
   isCompared?: boolean;
 }
 
+// This is the glyphs source used in the default satellite basemap (mapbox://fonts/mapbox/{fontstack}/{range}.pbf)
+const DEFAULT_GLYPHS_SOURCE = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf';
+// This is the spritesheet used in the default satellite basemap (cldu1cb8f00ds01p6gi583w1m)
+const DEFAULT_SPRITE_SOURCE =
+  'mapbox://sprites/covid-nasa/cldu1cb8f00ds01p6gi583w1m/e3w0e56evrnnyy9tj4v36mbo4';
+const DEFAULT_MAPBOX_STYLE_VERSION = 8;
+
 export const StylesContext = createContext<StylesContextType>({
   updateStyle: (params: GeneratorStyleParams) => {
     return params;
@@ -40,8 +47,8 @@ const LAYER_ORDER: LayerOrderPosition[] = [
 export type ExtendedStyle = ReturnType<typeof generateStyle>;
 
 // Takes in a dictionary associating each generator id with a series of
-//  Mapbox layers and sources to be added to the final style. Outputs
-//  a style object directly usable by the map instance.
+// Mapbox layers and sources to be added to the final style. Outputs
+// a style object directly usable by the map instance.
 const generateStyle = (
   stylesData: Record<string, GeneratorStyleParams>,
   currentMapStyle
@@ -99,7 +106,7 @@ const generateStyle = (
   // was very visible while the analysis was loading. This would happen because
   // the dataset layers update, causing the style to be generated again. This
   // would cause the aoi layers to be removed and then re-added by the plugin
-  // causing a flickering effect. Bu keeping any layer we did not generate, we
+  // causing a flickering effect. By keeping any layer we did not generate, we
   // avoid this issue.
   const nonGeneratorLayers =
     currentMapStyle?.layers.filter((layer) => !layer.metadata?.generatorId) ??
@@ -118,11 +125,9 @@ const generateStyle = (
   sources = { ...sources, ...nonGeneratorSources };
 
   return {
-    version: 8,
-    glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
-    // This is the spritesheet used in the default satellite basemap (cldu1cb8f00ds01p6gi583w1m)
-    sprite:
-      'mapbox://sprites/covid-nasa/cldu1cb8f00ds01p6gi583w1m/e3w0e56evrnnyy9tj4v36mbo4',
+    version: DEFAULT_MAPBOX_STYLE_VERSION,
+    glyphs: DEFAULT_GLYPHS_SOURCE,
+    sprite: DEFAULT_SPRITE_SOURCE,
     layers,
     sources
   };
@@ -141,7 +146,13 @@ export function Styles({
     Record<string, GeneratorStyleParams>
   >({});
 
-  const [style, setStyle] = useState<Style | undefined>();
+  const [style, setStyle] = useState<Style>({
+    version: DEFAULT_MAPBOX_STYLE_VERSION,
+    glyphs: DEFAULT_GLYPHS_SOURCE,
+    sprite: DEFAULT_SPRITE_SOURCE,
+    layers: [],
+    sources: {}
+  });
 
   const updateStyle = useCallback((params: GeneratorStyleParams) => {
     setStylesData((prevStyle) => ({
@@ -153,9 +164,14 @@ export function Styles({
   const { main } = useMaps();
 
   useEffect(() => {
-    const style = generateStyle(stylesData, main?.getStyle());
-    onStyleUpdate?.(style);
-    setStyle(style as any);
+    const mapStyle = generateStyle(
+      stylesData,
+      // Check if the map style is fully loaded; if true, use the
+      // current style, otherwise use the previously set or default style
+      main?.isStyleLoaded() ? main.getStyle() : style
+    );
+    onStyleUpdate?.(mapStyle);
+    setStyle(mapStyle as any);
   }, [stylesData, onStyleUpdate]);
 
   return (
