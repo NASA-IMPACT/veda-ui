@@ -15,7 +15,7 @@ import {
   allExploreDatasetsWithEnhancedLayers as allDatasets
 } from '$components/exploration/data-utils';
 import { generateTaxonomies } from '$utils/veda-data';
-import { sortOptions } from '$components/data-catalog';
+import { sortOptions } from '$components/common/catalog';
 
 const StyledModalHeadline = styled(ModalHeadline)`
   width: 100%;

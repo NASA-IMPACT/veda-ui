@@ -1,7 +1,7 @@
 import React from 'react';
 import { getString } from 'veda';
 import { allDatasets } from '$components/exploration/data-utils';
-import DataCatalog from '$components/data-catalog';
+import CatalogView from '$components/common/catalog';
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
@@ -17,16 +17,10 @@ import { FeaturedDatasets } from '$components/common/featured-slider-section';
 export default function DataCatalogContainer() {
   return (
     <PageMainContent>
-      <LayoutProps
-        title='Data Catalog'
-        description={getString('dataCatalogBanner').other}
-      />
-      <PageHero
-        title='Data Catalog'
-        description={getString('dataCatalogBanner').other}
-      />
+      <LayoutProps title='Data Catalog' description={getString('dataCatalogBanner').other} />
+      <PageHero title='Data Catalog' description={getString('dataCatalogBanner').other} />
       <FeaturedDatasets />
-      <DataCatalog datasets={allDatasets} />
+      <CatalogView datasets={allDatasets} />
     </PageMainContent>
   );
 }
