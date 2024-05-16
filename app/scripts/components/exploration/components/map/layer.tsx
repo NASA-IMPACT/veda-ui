@@ -18,23 +18,35 @@ import { CMRTimeseries } from '$components/common/map/style-generators/cmr-times
 interface LayerProps {
   id: string;
   dataset: TimelineDatasetSuccess;
-  order: number;
+  order?: number;
   selectedDay: Date;
 }
 
 export function Layer(props: LayerProps) {
   const { id: layerId, dataset, order, selectedDay } = props;
 
-  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
-  const [getSettings] = useTimelineDatasetSettings(datasetAtom);
+  let isVisible: boolean | undefined;
+  let opacity: number | undefined;
 
-  const isVisible = getSettings('isVisible');
-  const opacity = getSettings('opacity');
+  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
+  
+  try {
+    // @TECH-DEBT: Wrapping this logic with a try/catch because jotai errors because it is unable to find
+    // 'settings' on undefined value even when dataset has 'settings' key. This is a workaround for now but
+    // should be revisited. Ideally type should be fine with 'Partial<TimelineDataset>'
+    const [getSettings] = useTimelineDatasetSettings(datasetAtom);
+  
+    isVisible = getSettings('isVisible');
+    opacity = getSettings('opacity');
+  } catch {
+    isVisible = true;
+    opacity = undefined;
+  }
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(
-    () => getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
-    [selectedDay, dataset.data.timeDensity]
+    () => getTimeDensityStartDate(selectedDay, dataset.data?.timeDensity),
+    [selectedDay, dataset.data?.timeDensity]
   );
 
   // Resolve config functions.

@@ -5,6 +5,8 @@ import { Transition, TransitionGroup } from 'react-transition-group';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
 
+// @NOTE: File should be moved under "/common/map" as we are working to deprecate "/common/mapbox" dir
+
 const fadeDuration = 240;
 
 interface MessageProps {

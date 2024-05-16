@@ -1,29 +1,42 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { ProjectionOptions } from 'veda';
-
+import { DatasetDatumFnResolverBag, ProjectionOptions, datasets } from 'veda';
+import { MapboxOptions } from 'mapbox-gl';
+import * as dateFns from 'date-fns';
 import {
   convertProjectionToMapbox,
   projectionDefault,
   validateProjectionBlockProps
-} from '../mapbox/map-options/utils';
-import { BasemapId } from '../mapbox/map-options/basemaps';
-
+} from '../map/controls/map-options/projections';
+import { Basemap } from '../map/style-generators/basemap';
+import { LayerLegend, LayerLegendContainer } from '../mapbox/layer-legend';
+import MapCoordsControl from '../map/controls/coords';
+import MapMessage from '../mapbox/map-message';
+import { formatCompareDate, formatSingleDate, resolveConfigFunctions } from '../map/utils';
+import { BasemapId, DEFAULT_MAP_STYLE_URL } from '../map/controls/map-options/basemap';
 import { utcString2userTzDate } from '$utils/date';
-import MapboxMap, { MapboxMapProps } from '$components/common/mapbox';
+import Map, { Compare, MapControls } from '$components/common/map';
 import { validateRangeNum } from '$utils/utils';
 import { HintedError } from '$utils/hinted-error';
+import {
+  NavigationControl,
+  ScaleControl
+} from '$components/common/map/controls';
+import { Layer } from '$components/exploration/components/map/layer';
+import {
+  S_SUCCEEDED
+} from '$utils/status';
+import { TimelineDataset, TimelineDatasetSuccess } from '$components/exploration/types.d.ts';
+
+import { reconcileDatasets } from '$components/exploration/data-utils';
+import { datasetLayers } from '$components/exploration/data-utils';
+import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
   position: relative;
   flex-grow: 1;
   height: ${mapHeight};
-
-  ${MapboxMap} {
-    position: absolute;
-    inset: 0;
-  }
 `;
 
 // This global variable is used to give unique ID to mapbox container
@@ -90,7 +103,7 @@ function validateBlockProps(props: MapBlockProps) {
   ].filter(Boolean) as string[];
 }
 
-interface MapBlockProps extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
+interface MapBlockProps {
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
@@ -101,6 +114,8 @@ interface MapBlockProps extends Pick<MapboxMapProps, 'datasetId' | 'layerId'> {
   projectionParallels?: ProjectionOptions['parallels'];
   allowProjectionChange?: boolean;
   basemapId?: BasemapId;
+  datasetId?: string;
+  layerId: string;
 }
 
 function MapBlock(props: MapBlockProps) {
@@ -117,15 +132,29 @@ function MapBlock(props: MapBlockProps) {
     projectionId,
     projectionCenter,
     projectionParallels,
-    allowProjectionChange,
     basemapId
   } = props;
-
+  
   const errors = validateBlockProps(props);
-
   if (errors.length) {
     throw new HintedError('Malformed Map Block', errors);
   }
+
+  const [ baseLayers, setBaseLayers] = useState<TimelineDataset[] | undefined>();
+  const [ compareLayers, setCompareLayers] = useState<TimelineDataset[] | undefined>();
+
+  const [ baseMapStaticData ] = reconcileDatasets([layerId], datasetLayers, []);
+  const baseMapStaticCompareData = baseMapStaticData.data.compare;
+
+  let compareLayerId: undefined | string;
+  if (baseMapStaticCompareData && ('layerId' in baseMapStaticCompareData)) {
+    compareLayerId = baseMapStaticCompareData.layerId;
+  }
+
+  const [ compareMapStaticData ] = reconcileDatasets(compareLayerId ? [compareLayerId] : [], datasetLayers, []);
+
+  useReconcileWithStacMetadata([baseMapStaticData], setBaseLayers);
+  useReconcileWithStacMetadata([compareMapStaticData], setCompareLayers);
 
   const selectedDatetime = dateTime
     ? utcString2userTzDate(dateTime)
@@ -133,7 +162,7 @@ function MapBlock(props: MapBlockProps) {
   const selectedCompareDatetime = compareDateTime
     ? utcString2userTzDate(compareDateTime)
     : undefined;
-
+  
   const projectionStart = useMemo(() => {
     if (projectionId) {
       // Ensure that the default center and parallels are used if none are
@@ -152,7 +181,65 @@ function MapBlock(props: MapBlockProps) {
     }
   }, [projectionId, projectionCenter, projectionParallels]);
 
-  const [projection, setProjection] = useState(projectionStart);
+  const [, setProjection] = useState(projectionStart);
+
+  const dataset = datasetId ? datasets[datasetId] : null;
+  
+  const resolverBag = useMemo<DatasetDatumFnResolverBag>(
+    () => ({ datetime: selectedDatetime, compareDatetime: selectedCompareDatetime, dateFns }),
+    [selectedDatetime, selectedCompareDatetime]
+  );
+
+  const [baseLayerResolvedData] = useMemo(() => {
+    if (!baseLayers || baseLayers.length !== 1) return [null, null];
+    const baseLayer = baseLayers[0];
+
+    if (baseLayer.status !== S_SUCCEEDED ) return [null, null];
+
+    const bag = { ...resolverBag, raw: baseLayer.data };
+    const data = resolveConfigFunctions(baseLayer.data, bag);
+    return [data];
+  }, [baseLayers, resolverBag]);
+
+  const baseDataLayer: TimelineDataset | null = ({data: baseLayerResolvedData} as unknown) as TimelineDataset;
+  const baseTimeDensity = baseLayerResolvedData?.timeDensity;
+  
+  // Resolve data needed for the compare layer once it is loaded.
+  const [compareLayerResolvedData] = useMemo(() => {
+    if (!compareLayers || compareLayers.length !== 1) return [null, null];
+    const compareLayer = compareLayers[0];
+
+    if (compareLayer.status !== S_SUCCEEDED) return [null, null];
+    // Include access to raw data.
+    const bag = { ...resolverBag, raw: compareLayer.data };
+    const data = resolveConfigFunctions(compareLayer.data, bag);
+    return [data];
+  }, [compareLayers, resolverBag]);
+
+  const compareDataLayer: TimelineDataset | null = ({data: compareLayerResolvedData} as unknown) as TimelineDataset;
+  const compareTimeDensity = compareLayerResolvedData?.timeDensity;
+
+  const mapOptions: Partial<MapboxOptions> = {
+    style: DEFAULT_MAP_STYLE_URL,
+    logoPosition: 'bottom-left',
+    trackResize: true,
+    pitchWithRotate: false,
+    dragRotate: false,
+    zoom: 1
+  };
+  
+  const getMapPositionOptions = (position) => {
+    const opts = {} as Pick<typeof mapOptions, 'center' | 'zoom'>;
+    if (position?.lng !== undefined && position?.lat !== undefined) {
+      opts.center = [position.lng, position.lat];
+    }
+  
+    if (position?.zoom) {
+      opts.zoom = position.zoom;
+    }
+  
+    return opts;
+  };
 
   useEffect(() => {
     setProjection(projectionStart);
@@ -166,26 +253,135 @@ function MapBlock(props: MapBlockProps) {
     setMapBasemapId(basemapId);
   }, [basemapId]);
 
+  const compareToDate = useMemo(() => {
+    const theDate = selectedCompareDatetime ?? selectedDatetime;
+    return theDate instanceof Date && !isNaN(theDate.getTime())
+      ? theDate
+      : null;
+  }, [selectedCompareDatetime, selectedDatetime]);
+
+  const computedCompareLabel = useMemo(() => {
+    // Use a provided label if it exist.
+    if (compareLabel && compareLayerResolvedData) {
+      const providedLabel = compareLayerResolvedData?.mapLabel as string;
+      return providedLabel;
+    }
+
+    // Default to date comparison.
+    return selectedDatetime && compareToDate
+      ? formatCompareDate(
+          selectedDatetime,
+          compareToDate,
+          baseTimeDensity,
+          compareTimeDensity
+        )
+      : null;
+  }, [
+    compareLabel,
+    compareLayerResolvedData,
+    selectedDatetime,
+    compareToDate,
+    baseTimeDensity,
+    compareTimeDensity
+  ]);
+
+  const initialPosition = useMemo(() => center ? { lng: center[0], lat: center[1], zoom } : undefined , [center, zoom]);
   return (
     <Carto>
-      <MapboxMap
-        id={generatedId}
-        datasetId={datasetId}
-        layerId={layerId}
-        date={selectedDatetime}
-        isComparing={!!selectedCompareDatetime}
-        compareDate={selectedCompareDatetime}
-        compareLabel={compareLabel}
-        initialPosition={
-          center ? { lng: center[0], lat: center[1], zoom } : undefined
+      <Map id={generatedId} mapOptions={{...mapOptions, ...getMapPositionOptions(initialPosition)}}>
+        <Basemap
+          basemapStyleId={mapBasemapId}
+        />
+        {
+          dataset &&
+          selectedDatetime &&
+          layerId &&
+          baseLayerResolvedData &&
+          (
+            <Layer
+              key={baseLayerResolvedData?.id}
+              id={`base-${baseLayerResolvedData?.id}`}
+              dataset={(baseDataLayer as unknown) as TimelineDatasetSuccess}
+              selectedDay={selectedDatetime}
+            />
+          )
         }
-        cooperativeGestures
-        projection={projection}
-        onProjectionChange={allowProjectionChange ? setProjection : undefined}
-        basemapStyleId={mapBasemapId}
-        onBasemapStyleIdChange={setMapBasemapId}
-        withScale
-      />
+        {baseLayerResolvedData?.legend && (
+          // Map overlay element
+          // Layer legend for the active layer.
+          // @NOTE: LayerLegendContainer is in old mapbox directory, may want to move this over to /map directory once old directory is deprecated
+          <LayerLegendContainer>
+            <LayerLegend
+              id={`base-${baseLayerResolvedData.id}`}
+              title={baseLayerResolvedData.name}
+              description={baseLayerResolvedData.description}
+              {...baseLayerResolvedData.legend}
+            />
+            {compareLayerResolvedData?.legend &&
+              !!selectedCompareDatetime &&
+              baseLayerResolvedData.id !== compareLayerResolvedData.id && (
+                <LayerLegend
+                  id={`compare-${compareLayerResolvedData.id}`}
+                  title={compareLayerResolvedData.name}
+                  description={compareLayerResolvedData.description}
+                  {...compareLayerResolvedData.legend}
+                />
+              )}
+          </LayerLegendContainer>
+        )}
+        <MapControls>
+          {
+            (selectedDatetime && selectedCompareDatetime) ? 
+              (
+                <MapMessage
+                  id='compare-message'
+                  active={
+                    !!(
+                      selectedCompareDatetime &&
+                      compareLayerResolvedData
+                    )
+                  }
+                >
+                  {computedCompareLabel}
+                </MapMessage>
+              ) : 
+              (
+                <MapMessage
+                  id='single-map-message'
+                  active={!!(selectedDatetime && baseLayerResolvedData)}
+                >
+                  {selectedDatetime && formatSingleDate(selectedDatetime, baseLayerResolvedData?.timeDensity)}
+                </MapMessage>
+              )
+          }
+          <ScaleControl />
+          <NavigationControl position='top-left' />
+          <MapCoordsControl />
+        </MapControls>
+        {
+          selectedCompareDatetime && (
+            <Compare>
+              <Basemap
+                basemapStyleId={mapBasemapId}
+              />
+              {
+                dataset &&
+                selectedCompareDatetime &&
+                layerId &&
+                compareLayerResolvedData &&
+                (
+                  <Layer
+                    key={compareLayerResolvedData.id}
+                    id={`compare-${compareLayerResolvedData.id}`}
+                    dataset={(compareDataLayer as unknown) as TimelineDatasetSuccess}
+                    selectedDay={selectedCompareDatetime}
+                  />
+                )
+              }
+            </Compare>  
+          )
+        }
+      </Map>
     </Carto>
   );
 }

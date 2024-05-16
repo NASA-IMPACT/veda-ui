@@ -1,4 +1,5 @@
 import axios, { Method } from 'axios';
+import { format } from 'date-fns';
 import { Map as MapboxMap } from 'mapbox-gl';
 import { MapRef } from 'react-map-gl';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -11,7 +12,7 @@ import {
 } from 'veda';
 
 import { StacFeature } from './types';
-
+import { TimeDensity } from '$context/layer-data';
 import { userTzDate2utcString } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
 
@@ -148,7 +149,7 @@ export function requestQuickCache<T>({
 
 type Fn = (...args: any[]) => any;
 
-type ObjResMap<T> = {
+export type ObjResMap<T> = {
   [K in keyof T]: Res<T[K]>;
 };
 
@@ -234,6 +235,28 @@ export function multiPolygonToPolygons(feature: Feature<MultiPolygon>) {
   return polygons;
 }
 
+const dateFormats = {
+  year: 'yyyy',
+  month: 'LLL yyyy',
+  day: 'LLL do, yyyy'
+};
+
+export function formatSingleDate(date: Date, timeDensity?: TimeDensity) {
+  return format(date, dateFormats[timeDensity || 'day']);
+}
+
+export function formatCompareDate(
+  dateA: Date,
+  dateB: Date,
+  timeDensityA?: TimeDensity,
+  timeDensityB?: TimeDensity
+) {
+  return `${formatSingleDate(dateA, timeDensityA)} VS ${formatSingleDate(
+    dateB,
+    timeDensityB
+  )}`;
+}
+
 export function getZoomFromBbox(bbox: BBox): number {
   const latMax = Math.max(bbox[3], bbox[1]);
   const lngMax = Math.max(bbox[2], bbox[0]);
@@ -248,4 +271,3 @@ export function getZoomFromBbox(bbox: BBox): number {
     else return zoomLevel;
   }
 }
-

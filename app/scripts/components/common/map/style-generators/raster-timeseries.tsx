@@ -382,6 +382,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             id: id,
             type: 'raster',
             source: id,
+            layout: {
+              visibility: hidden ? 'none' : 'visible'
+            },
             paint: {
               'raster-opacity': hidden ? 0 : rasterOpacity,
               'raster-opacity-transition': {

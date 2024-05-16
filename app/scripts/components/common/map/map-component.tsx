@@ -1,11 +1,12 @@
 import React, { useCallback, ReactElement, useMemo } from 'react';
 import ReactMapGlMap, { LngLatBoundsLike } from 'react-map-gl';
+import { debounce } from 'lodash';
 import { ProjectionOptions } from 'veda';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
-import { convertProjectionToMapbox } from '../mapbox/map-options/utils';
 import useMapStyle from './hooks/use-map-style';
 import { useMapsContext } from './hooks/use-maps';
+import { convertProjectionToMapbox } from './controls/map-options/projections';
 
 const maxMapBounds: LngLatBoundsLike = [
   [-540, -90], // SW
@@ -23,16 +24,33 @@ export default function MapComponent({
 }) {
   const { initialViewState, setInitialViewState, mainId, comparedId } =
     useMapsContext();
+  const { style } = useMapStyle();
 
   const id = isCompared ? comparedId : mainId;
 
+  const debouncedSetInitialViewState = useCallback(
+    debounce((viewState) => {
+      setInitialViewState(viewState);
+    }, 100),
+    [setInitialViewState]
+  );
+
   const onMove = useCallback(
     (evt) => {
-      if (!isCompared) {
-        setInitialViewState(evt.viewState);
+      if (
+        !isCompared &&
+        (evt.viewState.longitude !== initialViewState.longitude ||
+          evt.viewState.latitude !== initialViewState.latitude)
+      ) {
+        debouncedSetInitialViewState(evt.viewState);
       }
     },
-    [isCompared, setInitialViewState]
+    [
+      isCompared,
+      debouncedSetInitialViewState,
+      initialViewState.longitude,
+      initialViewState.latitude
+    ]
   );
 
   // Get MGL projection from Veda projection
@@ -40,10 +58,6 @@ export default function MapComponent({
     if (!projection) return undefined;
     return convertProjectionToMapbox(projection);
   }, [projection]);
-
-  const { style } = useMapStyle();
-
-  if (!style) return null;
 
   return (
     <ReactMapGlMap
