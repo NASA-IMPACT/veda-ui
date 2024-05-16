@@ -2797,6 +2797,13 @@
     "@parcel/utils" "2.7.0"
     posthtml "^0.16.4"
 
+"@parcel/packager-ts@2.7.0":
+  version "2.7.0"
+  resolved "http://verdaccio.ds.io:4873/@parcel%2fpackager-ts/-/packager-ts-2.7.0.tgz#631c3918fe475a1f69fc82628bebe99d73bae921"
+  integrity sha512-XT46njOHQCYmubQRbtjQOLT9RbXgxQ8aTxCOeO9jEay6snDnY6k+HdMXHAD6qZNyVgm85HJzjmDFDUeJQt9LKw==
+  dependencies:
+    "@parcel/plugin" "2.7.0"
+
 "@parcel/plugin@2.6.2":
   version "2.6.2"
   resolved "http://verdaccio.ds.io:4873/@parcel%2fplugin/-/plugin-2.6.2.tgz#d4c8cc558e962e4dfb7154a7f0a023f6abad07ac"
@@ -3049,6 +3056,18 @@
     posthtml-render "^3.0.0"
     semver "^5.7.1"
 
+"@parcel/transformer-typescript-types@2.7.0":
+  version "2.7.0"
+  resolved "http://verdaccio.ds.io:4873/@parcel%2ftransformer-typescript-types/-/transformer-typescript-types-2.7.0.tgz#a3e35c1f5030ce772d82d6ae18311dfab36d96b4"
+  integrity sha512-7eZFJH+0ZOZoh+4ZUKVnP79LI8h45hGAAqCI1UG8l7ZEf6q9yy8lwF9cREu4dUih70TDUHnHkxoNHfZWOjkDSg==
+  dependencies:
+    "@parcel/diagnostic" "2.7.0"
+    "@parcel/plugin" "2.7.0"
+    "@parcel/source-map" "^2.0.0"
+    "@parcel/ts-utils" "2.7.0"
+    "@parcel/utils" "2.7.0"
+    nullthrows "^1.1.1"
+
 "@parcel/transformer-webmanifest@2.7.0":
   version "2.7.0"
   resolved "http://verdaccio.ds.io:4873/@parcel%2ftransformer-webmanifest/-/transformer-webmanifest-2.7.0.tgz#276cc26ea8078b118d68df6d4ac109e8e19f5806"
@@ -3058,6 +3077,13 @@
     "@parcel/diagnostic" "2.7.0"
     "@parcel/plugin" "2.7.0"
     "@parcel/utils" "2.7.0"
+
+"@parcel/ts-utils@2.7.0":
+  version "2.7.0"
+  resolved "http://verdaccio.ds.io:4873/@parcel%2fts-utils/-/ts-utils-2.7.0.tgz#b5abe7eb5f977c238e11178bbf9a481481d60d1e"
+  integrity sha512-hxgWu9p9+zo9OvllYy12DRrAEyAGGLQysI6PyNvYvsZSmb7sQg9YQ7spD1QmWIQUC1H6BkyzQsowpK0hvPK1xg==
+  dependencies:
+    nullthrows "^1.1.1"
 
 "@parcel/types@2.6.2":
   version "2.6.2"

@@ -11,11 +11,15 @@
     "url": "https://github.com/NASA-IMPACT/veda-ui.git"
   },
   "license": "Apache-2.0",
-  "source": "./app/index.html",
+  "source": "./app/scripts/index.ts",
+  "main": "lib/main.js",
+  "module": "lib/module.js",
+  "types": "lib/types.d.ts",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "serve": "NODE_ENV=development gulp serve",
     "build": "NODE_ENV=production gulp",
+    "build-lib": "parcel build 'app/scripts/index.ts' --dist-dir='lib'",
     "stage": "NODE_ENV=staging gulp",
     "clean": "gulp clean",
     "lint": "yarn lint:scripts && yarn lint:css",
@@ -23,6 +27,12 @@
     "lint:css": "stylelint 'app/styles/**/**' 'app/scripts/**/*.(js|ts|tsx|jsx)'",
     "ts-check": "yarn tsc --noEmit --skipLibCheck",
     "test": "jest"
+  },
+  "targets": {
+    "veda-app": {
+      "source": "./app/index.html",
+      "context": "browser"
+    }
   },
   "engines": {
     "node": ">=18.0.0"
@@ -38,10 +48,12 @@
     "@mdx-js/react": "^2.0.0",
     "@parcel/bundler-experimental": "^2.7.0",
     "@parcel/packager-raw-url": "2.7.0",
+    "@parcel/packager-ts": "2.7.0",
     "@parcel/reporter-bundle-analyzer": "^2.0.0",
     "@parcel/reporter-bundle-buddy": "^2.0.0",
     "@parcel/resolver-glob": "^2.0.1",
     "@parcel/transformer-mdx": "^2.0.1",
+    "@parcel/transformer-typescript-types": "2.7.0",
     "@parcel/transformer-webmanifest": "2.7.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
