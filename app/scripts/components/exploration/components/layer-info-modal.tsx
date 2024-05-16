@@ -93,11 +93,16 @@ export function LayerInfoLiner(props: { info: LayerInfo }) {
   );
 }
 
+const LayerInfoLinerModal = styled.div`
+  color: ${themeVal('color.base-500')};
+  font-size: 0.875rem;
+  margin-bottom: ${glsp(0.5)};
+`;
+
 export default function LayerInfoModal(props: LayerInfoModalProps) {
   const { revealed, close, layerData } = props;
   const { parentData } = layerData;
   const dataCatalogPage = getDatasetPath(parentData.id);
-
   return (
     <DatasetModal
       id='modal'
@@ -114,7 +119,9 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
             <p>
               {
                 layerData.info && (
-                  <LayerInfoLiner info={layerData.info} />
+                  <LayerInfoLinerModal>
+                    <LayerInfoLiner info={layerData.info} />
+                  </LayerInfoLinerModal>
                 )
               }
             </p>
