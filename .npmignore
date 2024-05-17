@@ -4,6 +4,7 @@ __mocks__
 .parcel-cache
 content-tests
 dist
+docs
 mock
 node_modules
 parcel-bundle-reports

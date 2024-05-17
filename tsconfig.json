@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "es2019",
     "esModuleInterop": true,
     "strictNullChecks": true,
     "baseUrl": "./",
