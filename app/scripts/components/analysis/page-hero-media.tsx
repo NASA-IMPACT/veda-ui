@@ -119,9 +119,7 @@ function PageHeroMedia(props: PageHeroMediaProps) {
         }
       });
     } else {
-      const aoiSource = mapRef.current.getSource(
-        'aoi'
-      ) as GeoJSONSource;
+      const aoiSource = mapRef.current.getSource('aoi') as GeoJSONSource;
       const aoiInverseSource = mapRef.current.getSource(
         'aoi-inverse'
       ) as GeoJSONSource;
