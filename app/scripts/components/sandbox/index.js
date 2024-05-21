@@ -4,6 +4,8 @@ import { Route, Routes, useParams } from 'react-router-dom';
 import SandboxTypography from './typography';
 import SandboxHug from './hug';
 import SandboxMap from './map';
+import SandboxExplorationMap from './exploration-map';
+import SandboxMapBlock from './map-block';
 import SandboxContentBlocks from './content-blocks';
 import SandboxCards from './cards';
 import SandboxMDXPage from './mdx-page';
@@ -41,6 +43,16 @@ const pages = [
     id: 'map',
     name: 'Mapbox map',
     component: SandboxMap
+  },
+  {
+    id: 'exploration-map',
+    name: 'Exploration map',
+    component: SandboxExplorationMap
+  },
+  {
+    id: 'map-block',
+    name: 'Map block',
+    component: SandboxMapBlock
   },
   {
     id: 'content-blocks',

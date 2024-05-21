@@ -26,10 +26,10 @@ import { themeVal } from '@devseed-ui/theme-provider';
 import { DatasetDatumFnResolverBag, ProjectionOptions } from 'veda';
 
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
+import MapMessage from '../map/map-message';
+import { LayerLegendContainer, LayerLegend } from '../map/layer-legend';
 import { getLayerComponent, resolveConfigFunctions } from './layers/utils';
 import { SimpleMap } from './map';
-import MapMessage from './map-message';
-import { LayerLegendContainer, LayerLegend } from './layer-legend';
 import { useBasemap } from './map-options/use-basemap';
 import { BasemapId, DEFAULT_MAP_STYLE_URL } from './map-options/basemaps';
 import { ExtendedStyle, Styles } from './layers/styles';
@@ -230,7 +230,7 @@ function MapboxMapComponent(
 
     return [data, getLayerComponent(!!data.timeseries, data.type)];
   }, [compareLayer, resolverBag]);
-  
+
   // Get the compare to date.
   // The compare date is specified by the user.
   // If no date is specified anywhere we just use the same.
@@ -419,7 +419,9 @@ function MapboxMapComponent(
                 id={`base-${baseLayerResolvedData.id}`}
                 stacApiEndpoint={baseLayerResolvedData.stacApiEndpoint}
                 tileApiEndpoint={baseLayerResolvedData.tileApiEndpoint}
-                assetUrlReplacements={baseLayerResolvedData.assetUrlReplacements}
+                assetUrlReplacements={
+                  baseLayerResolvedData.assetUrlReplacements
+                }
                 stacCol={baseLayerResolvedData.stacCol}
                 mapInstance={mapRef.current}
                 isPositionSet={!!initialPosition}

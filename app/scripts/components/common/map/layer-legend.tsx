@@ -27,8 +27,6 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 
-// @NOTE: File should be moved under "/common/map" as we are working to deprecate "/common/mapbox" dir
-
 interface LayerLegendCommonProps {
   id: string;
   title: string;
@@ -167,13 +165,13 @@ const LegendList = styled.dl`
   }
 
   .unit {
-      grid-row: 3;
-      width: 100%;
-      text-align: center;
-      font-size: 0.75rem;
-      line-height: 1rem;
-      justify-content: center;
-    }
+    grid-row: 3;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    justify-content: center;
+  }
 `;
 
 const LegendSwatch = styled.span<LegendSwatchProps>`
@@ -255,11 +253,9 @@ export function LayerLegend(
       )}
       renderBody={() => (
         <LegendBody>
-
-            <div className='scroll-inner'>
-              {description || <p>No info available for this layer.</p>}
-            </div>
-          
+          <div className='scroll-inner'>
+            {description || <p>No info available for this layer.</p>}
+          </div>
         </LegendBody>
       )}
     />

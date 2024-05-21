@@ -5,9 +5,7 @@ import { Transition, TransitionGroup } from 'react-transition-group';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { variableGlsp } from '$styles/variable-utils';
 
-// @NOTE: File should be moved under "/common/map" as we are working to deprecate "/common/mapbox" dir
-
-const fadeDuration = 240;
+const FADE_DURATION = 240;
 
 interface MessageProps {
   show: boolean;
@@ -45,7 +43,7 @@ const Message = styled.div<MessageProps>`
           background: #fff;
         `}
 
-  transition: all ${fadeDuration}ms ease-in-out;
+  transition: all ${FADE_DURATION}ms ease-in-out;
   ${({ show }) =>
     show
       ? css`
@@ -72,7 +70,7 @@ export default function MapMessage(props: MapMessageProps) {
   return (
     <TransitionGroup component={null}>
       {active && (
-        <Transition key={id} timeout={fadeDuration}>
+        <Transition key={id} timeout={FADE_DURATION}>
           {(state) => {
             return (
               <Message
