@@ -25,7 +25,7 @@
     "test": "jest"
   },
   "engines": {
-    "node": "16.x"
+    "node": "20.x.x"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
