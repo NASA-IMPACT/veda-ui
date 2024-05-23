@@ -7,7 +7,8 @@ import {
   DatasetData,
   StoryData,
   Taxonomy,
-  TaxonomyItem
+  TaxonomyItem,
+  VedaDatum
 } from 'veda';
 
 import { MDXContent, MDXModule } from 'mdx/types';
@@ -17,13 +18,13 @@ import { DatasetDataWithEnhancedLayers } from '$components/exploration/data-util
 /**
  * List with the meta information of all datasets.
  */
-export const allDatasetsProps = Object.values(datasets).map((d) => d!.data);
+export const allDatasetsProps = Object.values(datasets).map((d: VedaDatum<DatasetData>) => d!.data);
 
 /**
  * List with the meta information of all stories.
  */
 export const allStoriesProps = Object.values(stories).map(
-  (d) => d!.data
+  (d: VedaDatum<StoryData>) => d!.data
 );
 
 /**
