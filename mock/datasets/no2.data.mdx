@@ -178,7 +178,11 @@ layers:
         - "#FDDCC9"
         - "#DD7059"
 ---
+import { fauxStories } from './test'
+import { datasets}  from 'veda'
 
+{JSON.stringify(fauxStories)}
+{JSON.stringify(datasets)}
 <Block type='full'>
   <Figure>
     <CompareImage
@@ -192,6 +196,7 @@ layers:
     <Caption 
       attrAuthor='NASA Scientific Visualization Studio' 
       attrUrl='https://svs.gsfc.nasa.gov/'
+      test={fauxStories}
     >
       NO2 levels fell by as much as 30% over much of the Northeast U.S. 
     </Caption> 

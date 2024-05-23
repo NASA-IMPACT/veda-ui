@@ -1,5 +1,6 @@
 import React from 'react';
 import T from 'prop-types';
+import { useContentContext } from '../../mdx-content';
 import {
   Figure,
   Figcaption,
@@ -9,7 +10,11 @@ import {
 
 import { captionDisplayName } from '$components/common/blocks/block-constant';
 
-export function Caption({ children, attrAuthor, attrUrl }) {
+export function Caption({ children, attrAuthor, attrUrl, test }) {
+  const something = useContentContext();
+  console.log('dastset from context');
+  console.log(something);
+  console.log(test);
   return (
     <Figcaption>
       {children && <FigcaptionInner>{children}</FigcaptionInner>}
