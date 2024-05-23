@@ -183,13 +183,13 @@ export function ExplorationMap(props: ExplorationMapProps) {
   );
 }
 
-interface ExplorationMapsLayerProps {
+interface ExplorationMapLayersProps {
   datasets: TimelineDatasetSuccess[];
   selectedDay: Date;
   idSuffix?: string;
 }
 
-export function ExplorationMapLayers(props: ExplorationMapsLayerProps) {
+export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
   const { datasets, selectedDay, idSuffix = '' } = props;
 
   return (
