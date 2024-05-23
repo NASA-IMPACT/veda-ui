@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+
 import { ProjectionOptions } from 'veda';
+import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
 import {
   TimelineDataset,
   TimelineDatasetStatus,
@@ -18,37 +20,66 @@ import {
 } from '$components/common/map/controls';
 import MapCoordsControl from '$components/common/map/controls/coords';
 import MapOptionsControl from '$components/common/map/controls/map-options';
+import { projectionDefault } from '$components/common/map/controls/map-options/projections';
+import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
-import { BasemapId } from '$components/common/map/controls/map-options/basemap.js';
+import { usePreviousValue } from '$utils/use-effect-previous';
+import { ExtendedStyle } from '$components/common/map/styles';
 
 interface ExplorationMapProps {
   datasets: TimelineDataset[];
+  setDatasets: (datasets: TimelineDataset[]) => void;
   selectedDay: Date | null;
   selectedCompareDay: Date | null;
-  mapBasemapId: BasemapId;
-  setBasemapId: (id: BasemapId) => void;
-  labelsOption: boolean;
-  boundariesOption: boolean;
-  onOptionChange: (option: string, value: boolean) => void;
-  onStyleUpdate: (style: any) => void;
-  projection: ProjectionOptions;
-  setProjection: (projection: ProjectionOptions) => void;
 }
 
-export function ExplorationMap({
-  datasets,
-  selectedDay,
-  selectedCompareDay,
-  mapBasemapId,
-  setBasemapId,
-  labelsOption,
-  boundariesOption,
-  onOptionChange,
-  onStyleUpdate,
-  projection,
-  setProjection
-}: ExplorationMapProps) {
+export function ExplorationMap(props: ExplorationMapProps) {
+  const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
+
+  const [projection, setProjection] =
+    useState<ProjectionOptions>(projectionDefault);
+
+  const {
+    mapBasemapId,
+    setBasemapId,
+    labelsOption,
+    boundariesOption,
+    onOptionChange
+  } = useBasemap();
+
+  useReconcileWithStacMetadata(datasets, setDatasets);
+
+  // Different datasets may have a different default projection.
+  // When datasets are selected the first time, we set the map projection to the
+  // first dataset's projection.
+  const prevDatasetCount = usePreviousValue(datasets.length);
+  useEffect(() => {
+    if (!prevDatasetCount && datasets.length > 0) {
+      setProjection(datasets[0].data.projection ?? projectionDefault);
+    }
+  }, [datasets, prevDatasetCount]);
+
+  // If all the datasets are changed through the modal, we also want to update
+  // the map projection, since it is as if the datasets were selected for the
+  // first time.
+  // The only case where we don't want to update the projection is when not all
+  // datasets are changed, because it is not possible to know which projection
+  // to use.
+  const prevDatasetsIds = usePreviousValue(datasets.map((d) => d.data.id));
+  useEffect(() => {
+    if (!prevDatasetsIds) return;
+
+    const newDatasetsIds = datasets.map((d) => d.data.id);
+    const hasSameId = newDatasetsIds.some((id) => prevDatasetsIds.includes(id));
+
+    if (!hasSameId && datasets.length > 0) {
+      setProjection(datasets[0].data.projection ?? projectionDefault);
+    }
+  }, [prevDatasetsIds, datasets]);
+
+  const comparing = !!selectedCompareDay;
+
   // Reverse the datasets order to have the "top" layer, list-wise, at the "top" layer, z-order wise
   // Disabled eslint rule as slice() creates a shallow copy
   // eslint-disable-next-line fp/no-mutating-methods
@@ -60,25 +91,54 @@ export function ExplorationMap({
     .slice()
     .reverse();
 
-  const comparing = !!selectedCompareDay;
+  const onStyleUpdate = useCallback(
+    (style: ExtendedStyle) => {
+      const updatedDatasets = datasets.map((dataset) => {
+        // Skip non loaded datasets
+        if (dataset.status !== TimelineDatasetStatus.SUCCESS) return dataset;
+
+        // Check if there's layer information for this dataset.
+        const layerMetadata = style.layers.find(
+          (l) => l.metadata?.id === dataset.data.id
+        );
+
+        // Skip if no metadata.
+        if (!layerMetadata) return dataset;
+
+        const currentMeta = dataset.meta ?? {};
+
+        return {
+          ...dataset,
+          meta: {
+            ...currentMeta,
+            tileUrls: {
+              wmtsTileUrl: layerMetadata.metadata.wmtsTileUrl,
+              xyzTileUrl: layerMetadata.metadata.xyzTileUrl
+            }
+          }
+        };
+      });
+
+      setDatasets(updatedDatasets);
+    },
+    [datasets, setDatasets]
+  );
 
   return (
     <Map id='exploration' projection={projection} onStyleUpdate={onStyleUpdate}>
+      {/* Map layers */}
       <Basemap
         basemapStyleId={mapBasemapId}
         labelsOption={labelsOption}
         boundariesOption={boundariesOption}
       />
-      {selectedDay &&
-        loadedDatasets.map((dataset, idx) => (
-          <Layer
-            key={dataset.data.id}
-            id={dataset.data.id}
-            dataset={dataset}
-            selectedDay={selectedDay}
-            order={idx}
-          />
-        ))}
+      {selectedDay && (
+        <ExplorationMapLayers
+          datasets={loadedDatasets}
+          selectedDay={selectedDay}
+        />
+      )}
+      {/* Map controls */}
       <MapControls>
         <DrawControl />
         <CustomAoIControl
@@ -103,24 +163,46 @@ export function ExplorationMap({
         <NavigationControl />
       </MapControls>
       {comparing && (
+        // Compare map layers
         <Compare>
           <Basemap
             basemapStyleId={mapBasemapId}
             labelsOption={labelsOption}
             boundariesOption={boundariesOption}
           />
-          {selectedDay &&
-            loadedDatasets.map((dataset, idx) => (
-              <Layer
-                key={dataset.data.id}
-                id={`${dataset.data.id}-compare`}
-                dataset={dataset}
-                selectedDay={selectedCompareDay}
-                order={idx}
-              />
-            ))}
+          {selectedDay && (
+            <ExplorationMapLayers
+              datasets={loadedDatasets}
+              selectedDay={selectedDay}
+              idSuffix='-compare'
+            />
+          )}
         </Compare>
       )}
     </Map>
+  );
+}
+
+interface ExplorationMapsLayerProps {
+  datasets: TimelineDatasetSuccess[];
+  selectedDay: Date;
+  idSuffix?: string;
+}
+
+export function ExplorationMapLayers(props: ExplorationMapsLayerProps) {
+  const { datasets, selectedDay, idSuffix = '' } = props;
+
+  return (
+    <>
+      {datasets.map((dataset, idx) => (
+        <Layer
+          key={dataset.data.id}
+          id={`${dataset.data.id}${idSuffix}`}
+          dataset={dataset}
+          selectedDay={selectedDay}
+          order={idx}
+        />
+      ))}
+    </>
   );
 }

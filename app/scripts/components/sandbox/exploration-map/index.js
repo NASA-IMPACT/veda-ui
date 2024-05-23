@@ -4,7 +4,7 @@ import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 import { ExplorationMap } from '$components/exploration/components/map';
 
-const DemoMap = styled(ExplorationMap)`
+const DemoExplorationMap = styled(ExplorationMap)`
   height: 40rem;
 `;
 
@@ -90,35 +90,20 @@ const mockDatasets = [
   }
 ];
 
-const mockSelectedDay = new Date('2017-11-30T23:00:00.000Z');
+const mockSelectedDay = new Date('2024-05-20T13:00:00.000Z');
 const mockSelectedCompareDay = null;
-const mockMapBasemapId = 'satellite';
-const mockLabelsOption = true;
-const mockBoundariesOption = true;
-const mockProjection = { id: 'equirectangular' };
-
-const mockOnOptionChange = () => {};
-const mockOnStyleUpdate = () => {};
-const mockSetProjection = () => {};
-const mockSetBasemapId = () => {};
+const mockSetDatasets = () => {};
 
 function SandboxExplorationMap() {
   return (
     <PageMainContent>
       <Constrainer>
         <Wrapper>
-          <DemoMap
+          <DemoExplorationMap
             datasets={mockDatasets}
+            setDatasets={mockSetDatasets}
             selectedDay={mockSelectedDay}
             selectedCompareDay={mockSelectedCompareDay}
-            mapBasemapId={mockMapBasemapId}
-            setBasemapId={mockSetBasemapId}
-            labelsOption={mockLabelsOption}
-            boundariesOption={mockBoundariesOption}
-            onOptionChange={mockOnOptionChange}
-            onStyleUpdate={mockOnStyleUpdate}
-            projection={mockProjection}
-            setProjection={mockSetProjection}
           />
         </Wrapper>
       </Constrainer>
