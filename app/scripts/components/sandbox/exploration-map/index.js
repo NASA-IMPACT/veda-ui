@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 
 const mockDatasets = [
   {
-    status: 'loading',
+    status: 'success',
     data: {
       id: 'casa-gfed-co2-flux-hr',
       stacApiEndpoint: 'https://ghg.center/api/stac',
@@ -27,7 +27,9 @@ const mockDatasets = [
       description:
         'Model-estimated heterotrophic respiration (Rh), which is the flux of carbon from the soil to the atmosphere',
       initialDatetime: 'newest',
-      projection: { id: 'equirectangular' },
+      projection: {
+        id: 'equirectangular'
+      },
       basemapId: 'light',
       zoomExtent: [0, 20],
       sourceParams: {
@@ -40,7 +42,9 @@ const mockDatasets = [
         layerId: 'casa-gfed-co2-flux-hr'
       },
       legend: {
-        unit: { label: 'kg Carbon/m²/mon' },
+        unit: {
+          label: 'kg Carbon/m²/mon'
+        },
         type: 'gradient',
         min: 0,
         max: 0.3,
@@ -60,7 +64,14 @@ const mockDatasets = [
       parentDataset: {
         id: 'casagfed-carbonflux-monthgrid-v3',
         name: 'CASA-GFED3 Land Carbon Flux'
-      }
+      },
+      isPeriodic: true,
+      timeDensity: 'month',
+      domain: [
+        '2017-09-30T22:00:00.000Z',
+        '2017-10-31T23:00:00.000Z',
+        '2017-11-30T23:00:00.000Z'
+      ]
     },
     error: null,
     settings: {
@@ -83,14 +94,14 @@ const mockDatasets = [
     },
     analysis: {
       status: 'idle',
-      data: null,
       error: null,
+      data: null,
       meta: {}
     }
   }
 ];
 
-const mockSelectedDay = new Date('2024-05-20T13:00:00.000Z');
+const mockSelectedDay = new Date('2017-12-01T00:00:00.000Z');
 const mockSelectedCompareDay = null;
 const mockSetDatasets = () => {};
 
