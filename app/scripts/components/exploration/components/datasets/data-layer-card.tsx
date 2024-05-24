@@ -6,7 +6,7 @@ import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import {
   CollecticonCircleInformation,
   CollecticonEyeDisabled,
-  CollecticonEye,
+  CollecticonEye
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
@@ -17,7 +17,7 @@ import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,
   LayerGradientGraphic
-} from '$components/common/mapbox/layer-legend';
+} from '$components/common/map/layer-legend';
 
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
@@ -41,7 +41,6 @@ const DatasetCardInfo = styled.div`
   padding-bottom: 0.5rem;
   gap: 0rem;
 `;
-
 
 const DatasetInfo = styled.div`
   width: 100%;
@@ -87,11 +86,18 @@ const DatasetTitle = styled(Heading)`
 
 const DatasetMetricInfo = styled.div`
   font-size: 0.75rem;
-  color: ${themeVal('color.base-500')}
+  color: ${themeVal('color.base-500')};
 `;
 
 export default function DataLayerCard(props: CardProps) {
-  const { dataset, datasetAtom, isVisible, setVisible, datasetLegend, onClickLayerInfo } = props;
+  const {
+    dataset,
+    datasetAtom,
+    isVisible,
+    setVisible,
+    datasetLegend,
+    onClickLayerInfo
+  } = props;
   const layerInfo = dataset.data.info;
 
   return (
@@ -99,9 +105,10 @@ export default function DataLayerCard(props: CardProps) {
       <DatasetInfo className={isVisible ? 'layerShown' : 'layerHidden'}>
         <DatasetCardInfo>
           <Header>
-          <ParentDatasetTitle size='small'>
-            <CollecticonDatasetLayers /> <p>{dataset.data.parentDataset.name}</p>
-          </ParentDatasetTitle>
+            <ParentDatasetTitle size='small'>
+              <CollecticonDatasetLayers />{' '}
+              <p>{dataset.data.parentDataset.name}</p>
+            </ParentDatasetTitle>
           </Header>
           <DatasetHeadline>
             <DatasetTitle as='h3' size='xxsmall'>
@@ -114,7 +121,7 @@ export default function DataLayerCard(props: CardProps) {
                 // latter doesn't support the `forwardedAs` prop.
                 size='small'
                 fitting='skinny'
-                onPointerDownCapture={e => e.stopPropagation()}
+                onPointerDownCapture={(e) => e.stopPropagation()}
                 onClick={onClickLayerInfo}
               >
                 <CollecticonCircleInformation
@@ -128,31 +135,27 @@ export default function DataLayerCard(props: CardProps) {
                 // latter doesn't support the `forwardedAs` prop.
                 size='small'
                 fitting='skinny'
-                onPointerDownCapture={e => e.stopPropagation()}
+                onPointerDownCapture={(e) => e.stopPropagation()}
                 onClick={() => setVisible((v) => !v)}
               >
-              {isVisible ? (
-                <CollecticonEye
-                  meaningful
-                  title='Toggle dataset visibility'
-                />
-              ) : (
-                <CollecticonEyeDisabled
-                  meaningful
-                  title='Toggle dataset visibility'
-                />
-              )}
+                {isVisible ? (
+                  <CollecticonEye
+                    meaningful
+                    title='Toggle dataset visibility'
+                  />
+                ) : (
+                  <CollecticonEyeDisabled
+                    meaningful
+                    title='Toggle dataset visibility'
+                  />
+                )}
               </TipButton>
               <LayerMenuOptions datasetAtom={datasetAtom} />
             </DatasetToolbar>
           </DatasetHeadline>
-          
+
           <DatasetMetricInfo>
-            {
-              layerInfo && (
-                <LayerInfoLiner info={layerInfo} /> 
-              )
-            }
+            {layerInfo && <LayerInfoLiner info={layerInfo} />}
           </DatasetMetricInfo>
         </DatasetCardInfo>
         {datasetLegend?.type === 'categorical' && (

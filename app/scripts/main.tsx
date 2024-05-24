@@ -34,7 +34,9 @@ const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 const Analysis = lazy(() => import('$components/analysis/define'));
 const AnalysisResults = lazy(() => import('$components/analysis/results'));
 
-const Exploration = lazy(() => import('$components/exploration'));
+const ExplorationAndAnalysis = lazy(
+  () => import('$components/exploration/container')
+);
 
 const Sandbox = lazy(() => import('$components/sandbox'));
 
@@ -120,7 +122,10 @@ function Root() {
                 <Route path='development' element={<Development />} />
 
                 {/* {useNewExploration && ( */}
-                  <Route path='exploration' element={<Exploration />} />
+                <Route
+                  path='exploration'
+                  element={<ExplorationAndAnalysis />}
+                />
                 {/* )} */}
 
                 {process.env.NODE_ENV !== 'production' && (

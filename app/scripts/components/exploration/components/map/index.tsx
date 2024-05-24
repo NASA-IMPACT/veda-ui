@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAtom, useAtomValue } from 'jotai';
 
+import { ProjectionOptions } from 'veda';
 import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
-import { selectedCompareDateAtom, selectedDateAtom } from '../../atoms/dates';
-import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
+  TimelineDataset,
   TimelineDatasetStatus,
   TimelineDatasetSuccess
 } from '../../types.d.ts';
@@ -26,9 +25,20 @@ import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 import { usePreviousValue } from '$utils/use-effect-previous';
+import { ExtendedStyle } from '$components/common/map/styles';
 
-export function ExplorationMap() {
-  const [projection, setProjection] = useState(projectionDefault);
+interface ExplorationMapProps {
+  datasets: TimelineDataset[];
+  setDatasets: (datasets: TimelineDataset[]) => void;
+  selectedDay: Date | null;
+  selectedCompareDay: Date | null;
+}
+
+export function ExplorationMap(props: ExplorationMapProps) {
+  const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
+
+  const [projection, setProjection] =
+    useState<ProjectionOptions>(projectionDefault);
 
   const {
     mapBasemapId,
@@ -38,12 +48,7 @@ export function ExplorationMap() {
     onOptionChange
   } = useBasemap();
 
-  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
-
   useReconcileWithStacMetadata(datasets, setDatasets);
-
-  const selectedDay = useAtomValue(selectedDateAtom);
-  const selectedCompareDay = useAtomValue(selectedCompareDateAtom);
 
   // Different datasets may have a different default projection.
   // When datasets are selected the first time, we set the map projection to the
@@ -87,7 +92,7 @@ export function ExplorationMap() {
     .reverse();
 
   const onStyleUpdate = useCallback(
-    (style) => {
+    (style: ExtendedStyle) => {
       const updatedDatasets = datasets.map((dataset) => {
         // Skip non loaded datasets
         if (dataset.status !== TimelineDatasetStatus.SUCCESS) return dataset;
@@ -127,16 +132,12 @@ export function ExplorationMap() {
         labelsOption={labelsOption}
         boundariesOption={boundariesOption}
       />
-      {selectedDay &&
-        loadedDatasets.map((dataset, idx) => (
-          <Layer
-            key={dataset.data.id}
-            id={dataset.data.id}
-            dataset={dataset}
-            selectedDay={selectedDay}
-            order={idx}
-          />
-        ))}
+      {selectedDay && (
+        <ExplorationMapLayers
+          datasets={loadedDatasets}
+          selectedDay={selectedDay}
+        />
+      )}
       {/* Map controls */}
       <MapControls>
         <DrawControl />
@@ -160,7 +161,6 @@ export function ExplorationMap() {
         <ShowTourControl />
         <MapCoordsControl />
         <NavigationControl />
-        
       </MapControls>
       {comparing && (
         // Compare map layers
@@ -170,18 +170,39 @@ export function ExplorationMap() {
             labelsOption={labelsOption}
             boundariesOption={boundariesOption}
           />
-          {selectedDay &&
-            loadedDatasets.map((dataset, idx) => (
-              <Layer
-                key={dataset.data.id}
-                id={`${dataset.data.id}-compare`}
-                dataset={dataset}
-                selectedDay={selectedCompareDay}
-                order={idx}
-              />
-            ))}
+          {selectedDay && (
+            <ExplorationMapLayers
+              datasets={loadedDatasets}
+              selectedDay={selectedDay}
+              idSuffix='-compare'
+            />
+          )}
         </Compare>
       )}
     </Map>
+  );
+}
+
+interface ExplorationMapLayersProps {
+  datasets: TimelineDatasetSuccess[];
+  selectedDay: Date;
+  idSuffix?: string;
+}
+
+export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
+  const { datasets, selectedDay, idSuffix = '' } = props;
+
+  return (
+    <>
+      {datasets.map((dataset, idx) => (
+        <Layer
+          key={dataset.data.id}
+          id={`${dataset.data.id}${idSuffix}`}
+          dataset={dataset}
+          selectedDay={selectedDay}
+          order={idx}
+        />
+      ))}
+    </>
   );
 }

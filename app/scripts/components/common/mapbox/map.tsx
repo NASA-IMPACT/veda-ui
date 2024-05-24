@@ -18,13 +18,13 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { ProjectionOptions } from 'veda';
 
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
+import MapCoords from '../map/map-coords';
 import MapboxStyleOverride from './mapbox-style-override';
 import MbDrawPopover from './aoi/mb-draw-popover';
 import { aoiCursorStyles, useMbDraw } from './aoi/mb-aoi-draw';
 import MapOptions from './map-options';
 import { useMapboxControl } from './use-mapbox-control';
 import { convertProjectionToMapbox } from './map-options/utils';
-import MapCoords from './map-coords';
 
 import { useMapStyle } from './layers/styles';
 import { BasemapId, Option } from './map-options/basemaps';
@@ -147,7 +147,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
       const geocoderControl = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         marker: false,
-        collapsed: true, 
+        collapsed: true,
         // Because of Mapbox issue: https://github.com/mapbox/mapbox-gl-js/issues/12565
         // We are doing manual centering for now
         flyTo: false
@@ -157,7 +157,7 @@ export function SimpleMap(props: SimpleMapProps): ReactElement {
       geocoderControl.on('result', ({ result }) => {
         geocoderControl.clear();
         geocoderControl._inputEl.blur();
-        const zoom = result.bbox? getZoomFromBbox(result.bbox): 14;
+        const zoom = result.bbox ? getZoomFromBbox(result.bbox) : 14;
         mapRef.current?.flyTo({
           center: result.center,
           zoom

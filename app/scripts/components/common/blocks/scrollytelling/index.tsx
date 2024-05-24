@@ -37,8 +37,8 @@ import Hug from '$styles/hug';
 import {
   LayerLegendContainer,
   LayerLegend
-} from '$components/common/mapbox/layer-legend';
-import MapMessage from '$components/common/mapbox/map-message';
+} from '$components/common/map/layer-legend';
+import MapMessage from '$components/common/map/map-message';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
 import { formatSingleDate } from '$components/common/mapbox/utils';

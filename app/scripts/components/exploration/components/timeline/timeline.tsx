@@ -1,5 +1,8 @@
 import { Button } from '@devseed-ui/button';
-import { CollecticonIsoStack, CollecticonPlusSmall } from '@devseed-ui/collecticons';
+import {
+  CollecticonIsoStack,
+  CollecticonPlusSmall
+} from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
 import { select, zoom } from 'd3';
@@ -26,7 +29,11 @@ import styled from 'styled-components';
 import { DatasetList } from '../datasets/dataset-list';
 
 import { applyTransform, isEqualTransform, rescaleX } from './timeline-utils';
-import { TimelineControls, getInitialScale, TimelineDateAxis } from './timeline-controls';
+import {
+  TimelineControls,
+  getInitialScale,
+  TimelineDateAxis
+} from './timeline-controls';
 import {
   TimelineHeadIn,
   TimelineHeadPoint,
@@ -35,12 +42,7 @@ import {
 } from './timeline-head';
 import { DateGrid } from './date-axis';
 
-import {
-  selectedCompareDateAtom,
-  selectedDateAtom,
-  selectedIntervalAtom
-} from '$components/exploration/atoms/dates';
-import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
+import { selectedIntervalAtom } from '$components/exploration/atoms/dates';
 import {
   timelineSizesAtom,
   timelineWidthAtom,
@@ -58,6 +60,7 @@ import {
 } from '$components/exploration/hooks/scales-hooks';
 import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
 import {
+  TimelineDataset,
   TimelineDatasetStatus,
   TimelineDatasetSuccess,
   ZoomTransformPlain
@@ -130,12 +133,14 @@ const EmptyTimelineContentInner = styled.div`
   position: relative;
 `;
 
-const TimelineContentInner = styled(EmptyTimelineContentInner)<{panelHeight: number}>`
+const TimelineContentInner = styled(EmptyTimelineContentInner)<{
+  panelHeight: number;
+}>`
   overflow-y: scroll;
   /* @TECH-DEBT: A hack to target only Safari
      Safari needs a specific height to make the contents  scrollable */
   @supports (font: -apple-system-body) and (-webkit-appearance: none) {
-    height: calc(${(props)=> 100 - props.panelHeight}vh - 130px);
+    height: calc(${(props) => 100 - props.panelHeight}vh - 130px);
   }
 `;
 
@@ -150,14 +155,19 @@ const LayerActionBox = styled.div`
     align-items: center;
   }
   svg {
-    fill: ${themeVal('color.base-300')}
+    fill: ${themeVal('color.base-300')};
   }
 `;
 const TimelineHeading = styled(Heading)`
- font-size: 0.875rem;
+  font-size: 0.875rem;
 `;
 
 interface TimelineProps {
+  datasets: TimelineDataset[];
+  selectedDay: Date | null;
+  setSelectedDay: (d: Date | null) => void;
+  selectedCompareDay: Date | null;
+  setSelectedCompareDay: (d: Date | null) => void;
   onDatasetAddClick: () => void;
   panelHeight: number;
 }
@@ -175,7 +185,15 @@ const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
 };
 
 export default function Timeline(props: TimelineProps) {
-  const { onDatasetAddClick, panelHeight } = props;
+  const {
+    datasets,
+    selectedDay,
+    setSelectedDay,
+    selectedCompareDay,
+    setSelectedCompareDay,
+    onDatasetAddClick,
+    panelHeight
+  } = props;
 
   // Refs for non react based interactions.
   // The interaction rect is used to capture the different d3 events for the
@@ -184,8 +202,6 @@ export default function Timeline(props: TimelineProps) {
   // Because the interaction rect traps the events, we need a ref to the
   // container to propagate the needed events to it, like scroll.
   const datasetsContainerRef = useRef<HTMLDivElement>(null);
-
-  const datasets = useAtomValue(timelineDatasetsAtom);
 
   const dataDomain = useTimelineDatasetsDomain();
 
@@ -200,10 +216,6 @@ export default function Timeline(props: TimelineProps) {
 
   const { contentWidth: width } = useAtomValue(timelineSizesAtom);
 
-  const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
-  const [selectedCompareDay, setSelectedCompareDay] = useAtom(
-    selectedCompareDateAtom
-  );
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
 
   const { setObsolete, runAnalysis, isAnalyzing } = useAnalysisController();
@@ -386,7 +398,7 @@ export default function Timeline(props: TimelineProps) {
     }
   }, [initializeTOIZoom, zoomBehavior, interactionRef]);
 
-    const onControlsZoom = useCallback(
+  const onControlsZoom = useCallback(
     (zoomV) => {
       if (!interactionRef.current || !xMain || !xScaled || !selectedDay) return;
 
@@ -529,9 +541,7 @@ export default function Timeline(props: TimelineProps) {
   const CommonTimelineHeadline = () => {
     return (
       <Headline>
-        <TimelineHeading as='h2'>
-          Data layers
-        </TimelineHeading>
+        <TimelineHeading as='h2'>Data layers</TimelineHeading>
         <Button
           variation='primary-fill'
           size='small'
@@ -539,37 +549,39 @@ export default function Timeline(props: TimelineProps) {
         >
           <CollecticonPlusSmall title='Add layer' /> Add layer
         </Button>
-      </Headline>);
+      </Headline>
+    );
   };
   // Stub scale for when there is no layers
-  const initialScale = useMemo(() => getInitialScale(width) ,[width]);
+  const initialScale = useMemo(() => getInitialScale(width), [width]);
 
   // Some of these values depend on each other, but we check all of them so
   // typescript doesn't complain.
   if (datasets.length === 0) {
     return (
       <TimelineWrapper ref={observe}>
-      <TimelineHeader>
-        <TimelineDetails>
-          {CommonTimelineHeadline()}
-        </TimelineDetails>
-        <TimelineDateAxis
-          xScaled={initialScale}
-          width={width}
-        />
-      </TimelineHeader>
+        <TimelineHeader>
+          <TimelineDetails>{CommonTimelineHeadline()}</TimelineDetails>
+          <TimelineDateAxis xScaled={initialScale} width={width} />
+        </TimelineHeader>
         <TimelineContent>
-        <TimelineDetails />
-        <EmptyTimelineContentInner>
-          <DateGrid width={width} xScaled={initialScale} />
-          <LayerActionBox>
-            <div>
-              <CollecticonIsoStack size='xxlarge' />
-              <p>No data layer added to the map!</p> 
-              <Button variation='base-text' size='small' onClick={onDatasetAddClick}>Add a layer here</Button>
-            </div>
-          </LayerActionBox>
-        </EmptyTimelineContentInner>
+          <TimelineDetails />
+          <EmptyTimelineContentInner>
+            <DateGrid width={width} xScaled={initialScale} />
+            <LayerActionBox>
+              <div>
+                <CollecticonIsoStack size='xxlarge' />
+                <p>No data layer added to the map!</p>
+                <Button
+                  variation='base-text'
+                  size='small'
+                  onClick={onDatasetAddClick}
+                >
+                  Add a layer here
+                </Button>
+              </div>
+            </LayerActionBox>
+          </EmptyTimelineContentInner>
         </TimelineContent>
       </TimelineWrapper>
     );
@@ -584,7 +596,7 @@ export default function Timeline(props: TimelineProps) {
       />
       <TimelineHeader>
         <TimelineDetails>
-        {CommonTimelineHeadline()}
+          {CommonTimelineHeadline()}
           <small>
             <Pluralize
               count={datasets.length}
@@ -668,7 +680,10 @@ export default function Timeline(props: TimelineProps) {
           </>
         )}
 
-        <TimelineContentInner ref={datasetsContainerRef} panelHeight={panelHeight}>
+        <TimelineContentInner
+          ref={datasetsContainerRef}
+          panelHeight={panelHeight}
+        >
           <DatasetList width={width} xScaled={xScaled} />
         </TimelineContentInner>
       </TimelineContent>
