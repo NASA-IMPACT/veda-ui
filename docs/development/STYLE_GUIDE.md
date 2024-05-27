@@ -51,9 +51,10 @@ The project uses `ESLint` and `Prettier` for code formatting and linting which c
 ```
 {
     ...
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": "explicit"
     },
     "eslint.validate": [
         "javascript",
@@ -62,6 +63,5 @@ The project uses `ESLint` and `Prettier` for code formatting and linting which c
         "typescriptreact"
     ],
     "prettier.requireConfig": true,
-    "prettier.useEditorConfig": false
 }
 ```
