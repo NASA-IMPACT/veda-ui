@@ -20,7 +20,6 @@
     "serve": "NODE_ENV=development gulp serve",
     "build": "NODE_ENV=production gulp",
     "buildlib": "gulp clean && parcel build 'app/scripts/index.ts' --dist-dir='lib'",
-    "postbuildlib": "ls -d -1 \"$PWD/lib\"**/* | grep -vE 'main.js|module.js' | xargs rm -r",
     "stage": "NODE_ENV=staging gulp",
     "clean": "gulp clean",
     "lint": "yarn lint:scripts && yarn lint:css",

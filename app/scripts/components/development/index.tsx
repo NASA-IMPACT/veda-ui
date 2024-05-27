@@ -7,7 +7,8 @@ import {
   CollecticonBrandGithub
 } from '@devseed-ui/collecticons';
 
-import { LayoutProps, useFeedbackModal } from '$components/common/layout-root';
+import { LayoutProps } from '$components/common/layout-root';
+import { useFeedbackModal } from '$components/common/layout-root/useFeedbackModal';
 import { PageMainContent } from '$styles/page';
 
 import PageHero from '$components/common/page-hero';

@@ -20,7 +20,7 @@ import {
 import ContentBlockFigure from '$components/common/blocks/figure';
 import { ContentBlockProse } from '$styles/content-block';
 import BrowserFrame from '$styles/browser-frame';
-import { useFeedbackModal } from '$components/common/layout-root';
+import { useFeedbackModal } from '$components/common/layout-root/useFeedbackModal';
 
 const ContentBlockProseAlt = styled(ContentBlockProse)`
   h1,

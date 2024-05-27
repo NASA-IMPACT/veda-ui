@@ -8,9 +8,8 @@ import { userPages } from 'veda';
 import { discoveryRoutes } from './redirects';
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
-import LayoutRoot, {
-  LayoutRootContextProvider
-} from '$components/common/layout-root';
+import LayoutRoot from '$components/common/layout-root';
+import { LayoutRootContextProvider } from '$components/common/layout-root/context';
 import { useScrollbarWidthAsCssVar } from '$utils/use-scrollbar-width-css';
 import { checkEnvFlag } from '$utils/utils';
 

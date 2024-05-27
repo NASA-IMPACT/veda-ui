@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DatasetData } from 'veda';
+import { DatasetData } from '$types/veda';
 import { themeVal } from '@devseed-ui/theme-provider';
 import CatalogContent from './catalog-content';
 import { useFiltersWithQS } from './controls/hooks/use-filters-with-query';
 import {
   useSlidingStickyHeaderProps
-} from '$components/common/layout-root';
+} from '$components/common/layout-root/useSlidingStickyHeaderProps';
 
 import {
   FoldHeader,
