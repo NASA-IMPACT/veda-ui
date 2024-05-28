@@ -40,28 +40,11 @@ This style guide is an evolving document and will be updated as the VEDA UI proj
 
 - Follow the patterns currently used throughout the project
 
-### ESLint Configuration for VSCode
+### Recommended VS Code Settings
 
-The project uses `ESLint` and `Prettier` for code formatting and linting which can be configured to ensure consistency:
+To maintain consistent code formatting and linting across all contributors, follow these steps to configure your VS Code settings according to the project's guidelines:
 
-1. Install the `ESLint` and `Prettier` extensions in VSCode
-2. Open the VSCode settings (`settings.json`)
-3. Add the following configuration to your VSCode `settings.json`:
-
-```
-{
-    ...
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "explicit"
-    },
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        "typescript",
-        "typescriptreact"
-    ],
-    "prettier.requireConfig": true,
-}
-```
+1. Navigate to the `.vscode` directory at the root of the project. If it doesn't exist, create it
+2. Copy the `settings.json.sample` file from the veda-ui repository
+3. Rename the copied file to `settings.json`
+4. Customize the `settings.json` file with your personal preferences as needed

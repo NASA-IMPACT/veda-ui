@@ -73,3 +73,5 @@ temp
 tmp
 .tmp
 dist
+.vscode/*
+!.vscode/settings.json.sample
