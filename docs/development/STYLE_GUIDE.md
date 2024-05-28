@@ -44,7 +44,7 @@ This style guide is an evolving document and will be updated as the VEDA UI proj
 
 To maintain consistent code formatting and linting across all contributors, follow these steps to configure your VS Code settings according to the project's guidelines:
 
-1. Navigate to the `.vscode` directory at the root of the project. If it doesn't exist, create it
+1. Navigate to the `.vscode` directory at the root of the project
 2. Copy the `settings.json.sample` file from the veda-ui repository
 3. Rename the copied file to `settings.json`
 4. Customize the `settings.json` file with your personal preferences as needed
