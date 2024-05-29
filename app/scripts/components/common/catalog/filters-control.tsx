@@ -4,7 +4,7 @@ import { Taxonomy } from 'veda';
 import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
 import { Actions, useBrowserControls } from '$components/common/browse-controls/use-browse-controls';
-import { useSlidingStickyHeader, HEADER_TRANSITION_DURATION }  from '$utils/use-sliding-sticky-header';
+import { useSlidingStickyHeader, HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
 
 const ControlsWrapper = styled.div<{ widthValue?: string; heightValue?: string; topValue: string }>`
   min-width: 20rem;
@@ -40,7 +40,6 @@ export default function FiltersControl(props: FiltersMenuProps) {
   const [controlsHeight, setControlsHeight] =  useState<number>(0);
   const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader();
 
-
   const handleChanges = useCallback((item: OptionItem) => {
     if(allSelected.some((selected) => selected.id == item.id && selected.taxonomy == item.taxonomy)) {
       setClearedTagItem?.(undefined);
@@ -54,7 +53,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
 
   useEffect(() => {
     if (!controlsRef.current) return;
-    
+
     const height = controlsRef.current.offsetHeight;
     setControlsHeight(height);
     // Observe the height change of controls (from accordion folding)
@@ -66,7 +65,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
       }
     });
     resizeObserver.observe(controlsRef.current);
-    return () => resizeObserver.disconnect(); // clean up 
+    return () => resizeObserver.disconnect(); // clean up
   }, [controlsRef]);
 
 
@@ -83,7 +82,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
           taxonomiesOptions.map((taxonomy) => {
             const items = taxonomy.values.map((t) => ({...t, taxonomy: taxonomy.name}));
             return (
-              <CheckableFilters 
+              <CheckableFilters
                 key={taxonomy.name}
                 items={items}
                 title={taxonomy.name}

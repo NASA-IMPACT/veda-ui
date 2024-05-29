@@ -86,11 +86,11 @@ export const datasetLayers = Object.values(veda_datasets)
  */
 function getInitialMetrics(data: DatasetLayer): DataMetric[] {
   const metricsIds = data.analysis?.metrics ?? [];
-  
+
   if (!metricsIds.length) {
     return DEFAULT_DATA_METRICS;
   }
-  
+
   const foundMetrics = metricsIds
     .map((metric: string) => {
       return DATA_METRICS.find((m) => m.id === metric)!;
@@ -111,7 +111,7 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
 
 // @TODO: Assuming that all the datasets are added only through this method
 // We can find a dataset that a layer belongs to in this method
-// Include it as a part of returned value 
+// Include it as a part of returned value
 
 export function reconcileDatasets(
   ids: string[],

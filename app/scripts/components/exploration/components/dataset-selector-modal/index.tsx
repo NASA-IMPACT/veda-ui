@@ -16,23 +16,12 @@ import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
   allExploreDatasetsWithEnhancedLayers as allDatasets,
   reconcileDatasets,
-  datasetLayers,
-  findParentDataset
+  datasetLayers
 } from '../../data-utils';
 import RenderModalHeader from './header';
-import ModalContentRender from './content';
 import ModalFooterRender from './footer';
 
-import {
-  Actions,
-  TaxonomyFilterOption,
-  useBrowserControls
-} from '$components/common/browse-controls/use-browse-controls';
-import { sortOptions } from '$components/common/catalog';
-import prepareDatasets from '$components/data-catalog/prepare-datasets';
-import { TAXONOMY_SOURCE, getTaxonomy } from '$utils/veda-data';
-import { usePreviousValue } from '$utils/use-effect-previous';
-
+import CatalogContent from '$components/common/catalog/catalog-content';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -55,9 +44,6 @@ const DatasetModal = styled(Modal)`
   }
 
   ${ModalBody} {
-    height: 100%;
-    min-height: 100%;
-    overflow-y: auto;
     display: flex;
     flex-flow: column;
     padding-top: ${glsp(2)};
@@ -84,55 +70,17 @@ interface DatasetSelectorModalProps {
   close: () => void;
 }
 
-// Filter elements in arr1 that are also included in arr2
-function countOverlap(arr1, arr2) {
-  const commonElements = arr1.filter(element => arr2.includes(element));
-  return commonElements.length;
-}
-  
-
 export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const { revealed, close } = props;
 
   const [timelineDatasets, setTimelineDatasets] = useAtom(timelineDatasetsAtom);
-  const [datasetsToDisplay, setDatasetsToDisplay] = useState<(DatasetData & {
-    countSelectedLayers: number;
-  })[] | undefined>();
-  const [defaultSelectFilter, setDefaultSelectFilter] = useState<TaxonomyFilterOption>();
 
   // Store a list of selected datasets and only confirm on save.
-  const [selectedIds, setSelectedIds] = useState<string[]>(
-    timelineDatasets.map((dataset) => dataset.data.id)
-  );
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const prevSelectedIds = usePreviousValue(selectedIds);
-
-  const [exclusionSelected, setExclusionSelected] = useState<boolean>(false);
-  
   useEffect(() => {
     setSelectedIds(timelineDatasets.map((dataset) => dataset.data.id));
   }, [timelineDatasets]);
-
-  const onCheck = useCallback((id: string, currentDataset?: DatasetData & {countSelectedLayers: number}) => {
-    if (currentDataset) {
-      // This layer is part of a dataset that is exclusive
-      const exclusiveSource = currentDataset.sourceExclusive?.toLowerCase();
-      const sources = getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values;
-      const sourceIds = sources?.map(source => source.id);
-
-      if (exclusiveSource && sourceIds?.includes(exclusiveSource)) {
-        setDefaultSelectFilter({taxonomyType: TAXONOMY_SOURCE, value: exclusiveSource});
-        setExclusionSelected(true);
-      } else {
-        setDefaultSelectFilter(undefined);
-        setExclusionSelected(false);
-      }
-    } 
-    
-    setSelectedIds((ids) =>
-      ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id]
-    );
-  }, []);
 
   const onConfirm = useCallback(() => {
     // Reconcile selectedIds with datasets.
@@ -142,37 +90,8 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     close();
   }, [close, selectedIds, timelineDatasets, setTimelineDatasets]);
 
-  const controlVars = useBrowserControls({
-    sortOptions
-  });
-  const { taxonomies, sortField, sortDir, onAction } = controlVars;
-  const search = controlVars.search ?? '';
-
   // Clear filters when the modal is revealed.
   const firstRevealRef = React.useRef(true);
-
-  useEffect(() => {
-    if(selectedIds && selectedIds !== prevSelectedIds) {
-      let relevantIds: string[] | undefined = undefined;
-
-      const selectedIdsWithParentData = selectedIds.map((selectedId) => {
-        const parentData = findParentDataset(selectedId);
-        const exclusiveSource = parentData?.sourceExclusive;
-        const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')?.[0]?.values.map((value) => value.id);
-        return {id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() || ''};
-      });
-      
-      if (exclusionSelected) {
-        relevantIds = selectedIdsWithParentData.filter((x) => x.values?.includes(x.sourceExclusive)).map((x) => x.id);
-      } else {
-        relevantIds = selectedIdsWithParentData.filter((x) => !x.values?.includes(x.sourceExclusive)).map((x) => x.id);
-      }
-
-      setSelectedIds((ids) =>
-        ids.filter((id) => relevantIds?.includes(id))
-      );
-    }
-  }, [exclusionSelected]);
 
   useEffect(() => {
     if (revealed) {
@@ -180,26 +99,9 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
         firstRevealRef.current = false;
         return;
       }
-      onAction(Actions.CLEAR);
     }
   }, [revealed]);
 
-  useEffect(() => {
-    const datasets = prepareDatasets(allDatasets, {
-      search,
-      taxonomies,
-      sortField,
-      sortDir,
-      filterLayers: true
-    })
-    .map(dataset => ({
-      ...dataset,
-      countSelectedLayers: countOverlap(dataset.layers.map(l => l.id), selectedIds)
-    }));
-
-    setDatasetsToDisplay(datasets);
-  }, [search, taxonomies, sortField, sortDir, selectedIds]);
-  
   return (
     <DatasetModal
       id='modal'
@@ -208,21 +110,27 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       revealed={revealed}
       onCloseClick={close}
       renderHeadline={() => (
-        <RenderModalHeader defaultSelect={defaultSelectFilter} />
+        <RenderModalHeader />
       )}
       content={
-        <ModalContentRender 
-          search={search} 
-          selectedIds={selectedIds} 
-          displayDatasets={datasetsToDisplay} 
-          onCheck={onCheck}
-        /> 
+        // <ModalContentRender
+        //   search={search}
+        //   selectedIds={selectedIds}
+        //   displayDatasets={datasetsToDisplay}
+        //   onCheck={onCheck}
+        // />
+        <CatalogContent
+          datasets={allDatasets}
+          isSelectable={true}
+          filterLayers={true}
+          onSelectedCardsChange={(selectedIds: string[]) => setSelectedIds(selectedIds)}
+        />
       }
       footerContent={
-        <ModalFooterRender 
-          selectedIds={selectedIds} 
+        <ModalFooterRender
+          selectedIds={selectedIds}
           close={close}
-          onConfirm={onConfirm} 
+          onConfirm={onConfirm}
         />
       }
     />

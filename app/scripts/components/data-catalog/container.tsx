@@ -9,8 +9,8 @@ import { FeaturedDatasets } from '$components/common/featured-slider-section';
 
 /**
  * @VEDA2-REFACTOR-WORK
- * 
- * @NOTE: This container component serves as a wrapper for the purpose of data management, this is ONLY to support current instances. 
+ *
+ * @NOTE: This container component serves as a wrapper for the purpose of data management, this is ONLY to support current instances.
  * veda2 instances can just use the direct component, 'DataCatalog', and manage data directly in their page views
  */
 
