@@ -243,14 +243,9 @@ function CatalogContent({
           ) : (
             <Cards>
               {datasetsToDisplay.map((d) => (
-                <><li key={d.id}>
+                <li key={d.id}>
                   <CatalogCard dataset={d} search={search} />
-                  </li><li key={d.id}>
-                    <CatalogCard dataset={d} search={search} />
-                       </li><li key={d.id}>
-                    <CatalogCard dataset={d} search={search} />
-                            </li>
-                </>
+                </li>
               ))}
             </Cards>
           )
