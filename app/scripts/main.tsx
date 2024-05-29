@@ -2,8 +2,8 @@ import React, { lazy, Suspense, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import T from 'prop-types';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
-import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
 import { userPages } from 'veda';
+import DevseedUiThemeProvider from './theme-provider';
 
 import { discoveryRoutes } from './redirects';
 import theme, { GlobalStyles } from '$styles/theme';
@@ -41,8 +41,6 @@ const Sandbox = lazy(() => import('$components/sandbox'));
 
 const UserPagesComponent = lazy(() => import('$components/user-pages'));
 
-// Handle wrong types from devseed-ui.
-const DevseedUiThemeProvider = DsTp as any;
 
 // Contexts
 import { ReactQueryProvider } from '$context/react-query';
