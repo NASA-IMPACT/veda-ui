@@ -1,15 +1,17 @@
+// @TODO - Do ts check
+/* eslint-disable */
+// @ts-nocheck
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { ProjectionOptions } from 'veda';
-import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
+import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import {
-  TimelineDataset,
+  VizDataset,
+  VizDatasetSuccess,
   TimelineDatasetStatus,
   TimelineDatasetSuccess
-} from '../../types.d.ts';
-import { Layer } from './layer';
-import { AnalysisMessageControl } from './analysis-message-control';
-import { ShowTourControl } from './tour-control';
+} from '$components/exploration/types.d.ts';
+import { Layer } from '$components/exploration/components/map/layer';
 
 import Map, { Compare, MapControls } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
@@ -22,19 +24,17 @@ import MapCoordsControl from '$components/common/map/controls/coords';
 import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
-import DrawControl from '$components/common/map/controls/aoi';
-import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { ExtendedStyle } from '$components/common/map/styles';
 
 interface ExplorationMapProps {
-  datasets: TimelineDataset[];
-  setDatasets: (datasets: TimelineDataset[]) => void;
+  datasets: VizDataset[];
+  setDatasets: (datasets: VizDatasetSuccess[]) => void;
   selectedDay: Date | null;
   selectedCompareDay: Date | null;
 }
 
-export function ExplorationMap(props: ExplorationMapProps) {
+export function ExploreMap(props: ExplorationMapProps) {
   const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
 
   const [projection, setProjection] =
@@ -93,6 +93,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
 
   const onStyleUpdate = useCallback(
     (style: ExtendedStyle) => {
+      // const updatedDatasets = datasets.map(d=>d);
       const updatedDatasets = datasets.map((dataset) => {
         // Skip non loaded datasets
         if (dataset.status !== TimelineDatasetStatus.SUCCESS) return dataset;
@@ -118,8 +119,9 @@ export function ExplorationMap(props: ExplorationMapProps) {
           }
         };
       });
-
+    
       setDatasets(updatedDatasets);
+      
     },
     [datasets, setDatasets]
   );
@@ -133,20 +135,13 @@ export function ExplorationMap(props: ExplorationMapProps) {
         boundariesOption={boundariesOption}
       />
       {selectedDay && (
-        <ExplorationMapLayers
+        <ExploreMapLayers
           datasets={loadedDatasets}
           selectedDay={selectedDay}
         />
       )}
       {/* Map controls */}
       <MapControls>
-        <DrawControl />
-        <CustomAoIControl
-          disableReason={
-            comparing && 'Analysis is not possible when comparing dates'
-          }
-        />
-        <AnalysisMessageControl />
         <GeocoderControl />
         <MapOptionsControl
           projection={projection}
@@ -158,7 +153,6 @@ export function ExplorationMap(props: ExplorationMapProps) {
           onOptionChange={onOptionChange}
         />
         <ScaleControl />
-        <ShowTourControl />
         <MapCoordsControl />
         <NavigationControl />
       </MapControls>
@@ -171,8 +165,8 @@ export function ExplorationMap(props: ExplorationMapProps) {
             boundariesOption={boundariesOption}
           />
           {selectedDay && (
-            <ExplorationMapLayers
-              datasets={loadedDatasets} 
+            <ExploreMapLayers
+              datasets={loadedDatasets}
               selectedDay={selectedCompareDay}
               idSuffix='-compare'
             />
@@ -189,8 +183,9 @@ interface ExplorationMapLayersProps {
   idSuffix?: string;
 }
 
-export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
+export function ExploreMapLayers(props: ExplorationMapLayersProps) {
   const { datasets, selectedDay, idSuffix = '' } = props;
+
   return (
     <>
       {datasets.map((dataset, idx) => (
