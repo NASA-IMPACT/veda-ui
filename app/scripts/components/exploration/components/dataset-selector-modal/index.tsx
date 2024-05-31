@@ -76,8 +76,9 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const [timelineDatasets, setTimelineDatasets] = useAtom(timelineDatasetsAtom);
 
   // Store a list of selected datasets and only confirm on save.
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
+  const [selectedIds, setSelectedIds] = useState<string[]>(
+    timelineDatasets.map((dataset) => dataset.data.id)
+  );
   useEffect(() => {
     setSelectedIds(timelineDatasets.map((dataset) => dataset.data.id));
   }, [timelineDatasets]);
@@ -113,14 +114,9 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
         <RenderModalHeader />
       )}
       content={
-        // <ModalContentRender
-        //   search={search}
-        //   selectedIds={selectedIds}
-        //   displayDatasets={datasetsToDisplay}
-        //   onCheck={onCheck}
-        // />
         <CatalogContent
           datasets={allDatasets}
+          preselectedIds={selectedIds}
           isSelectable={true}
           filterLayers={true}
           onSelectedCardsChange={(selectedIds: string[]) => setSelectedIds(selectedIds)}

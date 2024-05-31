@@ -36,18 +36,18 @@ export interface CatalogContentProps {
   isSelectable?: boolean;
   onSelectedCardsChange?: (selectedIds: string[]) => void;
   filterLayers?: boolean;
+  preselectedIds?: string[];
 }
 
 function CatalogContent({
   datasets,
   isSelectable = false,
+  preselectedIds = [],
   onSelectedCardsChange,
   filterLayers
 }: CatalogContentProps) {
   const [exclusionSelected, setExclusionSelected] = useState<boolean>(false);
-  const [selectedIds, setSelectedIds] = useState<string[]>(
-    datasets.map((dataset) => dataset.id)
-  );
+  const [selectedIds, setSelectedIds] = useState<string[]>([...preselectedIds]);
 
   const controlVars = useBrowserControls({
     sortOptions
@@ -130,14 +130,14 @@ function CatalogContent({
       }
     }
 
-    setSelectedIds((ids) =>
-      ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id]
-    );
-
-    if (onSelectedCardsChange) {
-      onSelectedCardsChange(selectedIds);
-    }
-  }, []);
+    setSelectedIds((ids) => {
+        const newSelectedIds = ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id];
+        if (onSelectedCardsChange) {
+            onSelectedCardsChange(newSelectedIds);
+        }
+        return newSelectedIds;
+    });
+  }, [onSelectedCardsChange]);
 
   useEffect(() => {
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
@@ -325,4 +325,5 @@ const SelectedCard = styled.div`
   border-radius: ${themeVal('shape.ellipsoid')};
   padding: 0 ${glsp(0.5)};
   color: ${themeVal('color.surface')};
+  margin-left: ${glsp(0.5)};
 `;
