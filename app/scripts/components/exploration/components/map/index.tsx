@@ -173,7 +173,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
           {selectedDay && (
             <ExplorationMapLayers
               datasets={loadedDatasets}
-              selectedDay={selectedDay}
+              selectedDay={selectedCompareDay}
               idSuffix='-compare'
             />
           )}
