@@ -45,12 +45,10 @@ export default function FiltersControl(props: FiltersMenuProps) {
   const handleChanges = useCallback((item: OptionItem, action: 'add' | 'remove') => {
     if (allSelected.some((selected) => selected.id === item.id && selected.taxonomy === item.taxonomy)) {
       if (action === 'remove') {
-        setClearedTagItem?.(undefined);
         onChangeToFilters?.(item, 'remove');
       }
     } else {
       if (action === 'add') {
-        setClearedTagItem?.(undefined);
         onChangeToFilters?.(item, 'add');
       }
     }
@@ -72,6 +70,20 @@ export default function FiltersControl(props: FiltersMenuProps) {
     resizeObserver.observe(controlsRef.current);
     return () => resizeObserver.disconnect();
   }, [controlsRef]);
+
+  useEffect(() => {
+    // Pre-select the exclusive source if a card with it is selected
+    if (exclusiveSourceSelected) {
+      taxonomiesOptions.forEach((taxonomy) => {
+        taxonomy.values.forEach((t) => {
+          if (t.id === exclusiveSourceSelected) {
+            handleChanges({ ...t, taxonomy: taxonomy.name }, 'add');
+          }
+        });
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exclusiveSourceSelected]);
 
   return (
     <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden? '0px': `${wrapperHeight}px`}>
