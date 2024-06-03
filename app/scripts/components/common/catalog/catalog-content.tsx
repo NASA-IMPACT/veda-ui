@@ -314,7 +314,6 @@ const Catalog = styled.div`
 `;
 
 const Cards = styled(CardList)`
-  // padding: 0 0 0 2rem;
   padding: ${glsp(1)} 0;
 `;
 
