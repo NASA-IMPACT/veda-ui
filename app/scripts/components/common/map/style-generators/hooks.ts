@@ -18,11 +18,11 @@ interface Link {
   rel: string,
   type: string,
   title: string,
-  "wms:layers": Array<string>,
-  "wms:styles": Array<string>
+  "wms:layers": string[],
+  "wms:styles": string[]
 }
 interface ArcResponseData {
-  links: Array<Link>
+  links: Link[]
 }
 interface CMRResponseData {
   features: {
@@ -137,8 +137,9 @@ export function useArc({ id, stacCol, stacApiEndpointToUse, date, onStatusChange
           method: 'GET',
           controller
         });
-
-        setWmsUrl(data.links[0].href);
+        const wms = data.links.find(l => l.rel==='wms');
+        if (wms) setWmsUrl(wms.href);
+        else throw new Error('no wms link');
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {

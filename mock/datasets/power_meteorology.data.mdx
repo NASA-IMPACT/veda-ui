@@ -15,18 +15,16 @@ taxonomy:
       - Air Quality
 layers:
   - id: cdd10
-    stacApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
-    tileApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
-    stacCol: POWER/power_901_annual_meterology_utc
-    name: Cooling Degree Days Above 10 C
-    type: arc
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    tileApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: ESI_4WK
+    name: Experimental
+    type: arc 
     description:
       "Test"
     zoomExtent:
       - 0
       - 20
-    sourceParams:
-      layers: CDD10
     compare:
       datasetId: power_901_annual_meterology_utc
       layerId: power_901_annual_meterology_utc_DISPH

@@ -5,7 +5,6 @@ import { RasterSource, RasterLayer } from 'mapbox-gl';
 import { useMapStyle } from './styles';
 import { useArc } from '$components/common/map/style-generators/hooks';
 
-import { userTzDate2utcString } from '$utils/date';
 import { ActionStatus } from '$utils/status';
 
 export interface MapLayerArcTimeseriesProps {
@@ -60,26 +59,25 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
   useEffect(
     () => {
       if (!wmsUrl) return;
-      //https://arcgis.asdc.larc.nasa.gov/server/services/POWER/power_901_annual_meterology_utc/ImageServer/WMSServer
-      // ?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&LAYERS=PS&DIM_StdTime=1981-12-31T00:00:00Z"
-      
-      // TODO: investigate For some reason the request being made is 6 hours ahead? Something to do with UTC <-> local conversion?
+
       const tileParams = qs.stringify({
         format: 'image/png',
         service: "WMS",
-        version: "1.1.1",
+        version: "1.3.0",
         request: "GetMap",
-        srs: "EPSG:3857",
-        transparent: "true", // TODO: get from sourceparams maybe
+        crs: "EPSG:3857",
+        transparent: "true",
         width: "256",
         height: "256",
-        DIM_StdTime: userTzDate2utcString(date), // TODO: better date conversion
+        layers: 1,
+        styles: '',
         ...sourceParams
       });
-
+      
       const arcSource: RasterSource = {
         type: 'raster',
-        tiles: [`${wmsUrl}?${tileParams}&bbox={bbox-epsg-3857}`]
+        tiles: [`${wmsUrl}?${tileParams}&bbox={bbox-epsg-3857}`],
+        tileSize: 256,
       };
 
       const arcLayer: RasterLayer = {
@@ -153,5 +151,6 @@ export function MapLayerArcTimeseries(props:MapLayerArcTimeseriesProps) {
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
   const wmsUrl = useArc({id, stacCol, stacApiEndpointToUse, date, onStatusChange});
+
   return <ArcPaintLayer {...props} wmsUrl={wmsUrl} />;
 }
