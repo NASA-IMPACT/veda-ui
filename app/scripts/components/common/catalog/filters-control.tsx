@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Taxonomy } from 'veda';
 import SearchField from '$components/common/search-field';
@@ -21,7 +21,7 @@ interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
   clearedTagItem?: OptionItem;
   setClearedTagItem?: React.Dispatch<React.SetStateAction<OptionItem | undefined>>;
   width?: string;
-  onChangeToFilters?: (item: OptionItem, action: 'add' | 'remove') => void;
+  onFilterChange?: (item: OptionItem, action: 'add' | 'remove') => void;
   exclusiveSourceSelected?: string | null;
 }
 
@@ -32,7 +32,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
     taxonomiesOptions,
     search,
     width,
-    onChangeToFilters,
+    onFilterChange,
     clearedTagItem,
     setClearedTagItem,
     exclusiveSourceSelected
@@ -43,16 +43,11 @@ export default function FiltersControl(props: FiltersMenuProps) {
   const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader();
 
   const handleChanges = useCallback((item: OptionItem, action: 'add' | 'remove') => {
-    if (allSelected.some((selected) => selected.id === item.id && selected.taxonomy === item.taxonomy)) {
-      if (action === 'remove') {
-        onChangeToFilters?.(item, 'remove');
-      }
-    } else {
-      if (action === 'add') {
-        onChangeToFilters?.(item, 'add');
-      }
+    const isSelected = allSelected.some(selected => selected.id === item.id && selected.taxonomy === item.taxonomy);
+    if ((action === 'remove' && isSelected) || (action === 'add' && !isSelected)) {
+      onFilterChange?.(item, action);
     }
-  }, [allSelected, setClearedTagItem, onChangeToFilters]);
+  }, [allSelected, onFilterChange]);
 
   useEffect(() => {
     if (!controlsRef.current) return;
@@ -70,6 +65,11 @@ export default function FiltersControl(props: FiltersMenuProps) {
     resizeObserver.observe(controlsRef.current);
     return () => resizeObserver.disconnect();
   }, [controlsRef]);
+
+  const taxonomiesItems = useMemo(() => taxonomiesOptions.map(taxonomy => ({
+    title: taxonomy.name,
+    items: taxonomy.values.map(value => ({ ...value, taxonomy: taxonomy.name }))
+  })), [taxonomiesOptions]);
 
   useEffect(() => {
     // Pre-select the exclusive source if a card with it is selected
@@ -94,21 +94,16 @@ export default function FiltersControl(props: FiltersMenuProps) {
           value={search ?? ''}
           onChange={(v) => onAction(Actions.SEARCH, v)}
         />
-        {
-          taxonomiesOptions.map((taxonomy) => {
-            const items = taxonomy.values.map((t) => ({...t, taxonomy: taxonomy.name}));
-            return (
-              <CheckableFilters
-                key={taxonomy.name}
-                items={items}
-                title={taxonomy.name}
-                onChanges={(item) => handleChanges(item, allSelected.some((selected) => selected.id === item.id) ? 'remove' : 'add')}
-                globallySelected={allSelected}
-                tagItemCleared={{item: clearedTagItem, callback: setClearedTagItem}}
-              />
-            );
-          })
-        }
+        {taxonomiesItems.map(({ title, items }) => (
+          <CheckableFilters
+            key={title}
+            items={items}
+            title={title}
+            onChanges={item => handleChanges(item, allSelected.some(selected => selected.id === item.id) ? 'remove' : 'add')}
+            globallySelected={allSelected}
+            tagItemCleared={{ item: clearedTagItem, callback: setClearedTagItem }}
+          />
+        ))}
       </div>
     </ControlsWrapper>
   );

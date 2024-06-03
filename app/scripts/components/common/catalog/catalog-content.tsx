@@ -12,7 +12,6 @@ import CatalogTagsContainer from './catalog-tags';
 import {
   Actions, useBrowserControls
 } from '$components/common/browse-controls/use-browse-controls';
-import { usePreviousValue } from '$utils/use-effect-previous';
 
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
@@ -26,6 +25,7 @@ import {
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { findParentDataset, getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import { Pill } from '$styles/pill';
+import { usePreviousValue } from '$utils/use-effect-previous';
 
 const SORT_OPTIONS = [{ id: 'name', name: 'Name' }];
 
@@ -59,7 +59,6 @@ function CatalogContent({
   const search = controlVars.search ?? '';
 
   const datasetTaxonomies = generateTaxonomies(datasets);
-
   const urlTaxonomyItems = taxonomies ? Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() : [];
 
   const allDatasetsWithEnhancedLayers = useMemo(() => getAllDatasetsWithEnhancedLayers(datasets), [datasets]);
@@ -73,44 +72,45 @@ function CatalogContent({
     filterLayers: filterLayers ?? false
   }));
 
-  const [allSelectedFilters, setAllSelectedFilters] = useState<OptionItem[]>(urlTaxonomyItems);
+  const [selectedFilters, setSelectedFilters] = useState<OptionItem[]>(urlTaxonomyItems);
   const [clearedTagItem, setClearedTagItem] = useState<OptionItem>();
 
-  const prevSelectedFilters = usePreviousValue(allSelectedFilters) ?? [];
+  const prevSelectedFilters = usePreviousValue(selectedFilters) ?? [];
 
   // Handlers
-  const handleChangeAllSelectedFilters = useCallback((item: OptionItem, action: 'add' | 'remove') => {
+  const updateSelectedFilters = useCallback((item: OptionItem, action: 'add' | 'remove') => {
     if (action == 'add') {
-      setAllSelectedFilters([...allSelectedFilters, item]);
+      setSelectedFilters([...selectedFilters, item]);
     }
 
     if (action == 'remove') {
-      setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
+      setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
     }
 
     onAction(Actions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
-  }, [setAllSelectedFilters, allSelectedFilters, onAction]);
+  }, [setSelectedFilters, selectedFilters, onAction]);
 
   const handleClearTag = useCallback((item: OptionItem) => {
-    setAllSelectedFilters(allSelectedFilters.filter((selected) => selected !== item));
+    setSelectedFilters(selectedFilters.filter((selected) => selected !== item));
     setClearedTagItem(item);
-  }, [allSelectedFilters]);
+  }, [selectedFilters]);
 
   const handleClearTags = useCallback(() => {
-    setAllSelectedFilters([]);
+    setSelectedFilters([]);
     setExclusiveSourceSelected(null);
-  }, [setAllSelectedFilters]);
+    onAction(Actions.CLEAR);
+  }, [onAction]);
 
   useEffect(() => {
-    if (clearedTagItem && (allSelectedFilters.length == prevSelectedFilters.length - 1)) {
+    if (clearedTagItem && (selectedFilters.length == prevSelectedFilters.length - 1)) {
       onAction(Actions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id});
       setClearedTagItem(undefined);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allSelectedFilters, clearedTagItem]);
+  }, [selectedFilters, clearedTagItem]);
 
   useEffect(() => {
-    if (!allSelectedFilters.length) {
+    if (!selectedFilters.length) {
       onAction(Actions.CLEAR);
 
       if (!isSelectable) {
@@ -120,7 +120,7 @@ function CatalogContent({
 
     setExclusiveSourceSelected(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allSelectedFilters]);
+  }, [selectedFilters]);
 
   const getSelectedIdsWithParentData = (selectedIds) => {
     return selectedIds.map((selectedId: string) => {
@@ -139,7 +139,7 @@ function CatalogContent({
     }
   };
 
-  const onCheck = useCallback((id: string, currentDataset: DatasetData) => {
+  const onCardSelect = useCallback((id: string, currentDataset: DatasetData) => {
     if (!setSelectedIds || selectedIds === undefined) return;
 
     const exclusiveSource = currentDataset.sourceExclusive?.toLowerCase();
@@ -171,7 +171,7 @@ function CatalogContent({
     });
     setDatasetsToDisplay(updated);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allSelectedFilters, taxonomies, search, sortDir]);
+  }, [selectedFilters, taxonomies, search, sortDir]);
 
   const getSelectedLayerCount = (dataset) => {
     return dataset.layers.filter((layer) => selectedIds?.includes(layer.id)).length;
@@ -182,15 +182,15 @@ function CatalogContent({
       <FiltersControl
         {...controlVars}
         taxonomiesOptions={datasetTaxonomies}
-        onChangeToFilters={handleChangeAllSelectedFilters}
+        onFilterChange={updateSelectedFilters}
         clearedTagItem={clearedTagItem}
-        setClearedTagItem={setClearedTagItem}
-        allSelected={allSelectedFilters}
+        setClearedTagItem={handleClearTag}
+        allSelected={selectedFilters}
         exclusiveSourceSelected={exclusiveSourceSelected}
       />
       <Catalog>
         <CatalogTagsContainer
-          allSelectedFilters={allSelectedFilters}
+          allSelectedFilters={selectedFilters}
           urlTaxonomyItems={urlTaxonomyItems}
           handleClearTag={handleClearTag}
           handleClearTags={handleClearTags}
@@ -234,7 +234,7 @@ function CatalogContent({
                           dataset={currentDataset}
                           selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
-                          onDatasetClick={() => onCheck(datasetLayer.id, currentDataset)}
+                          onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
                         />
                       </li>
                     ))}
