@@ -9,7 +9,6 @@ import prepareDatasets from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
-import { CatalogCardSelectable } from './catalog-card-selectable';
 import {
   Actions, useBrowserControls
 } from '$components/common/browse-controls/use-browse-controls';
@@ -229,10 +228,11 @@ function CatalogContent({
                   <Cards>
                     {currentDataset.layers.map((datasetLayer) => (
                       <li key={datasetLayer.id}>
-                        <CatalogCardSelectable
+                        <CatalogCard
                           searchTerm={search}
                           layer={datasetLayer}
-                          parent={currentDataset}
+                          dataset={currentDataset}
+                          selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
                           onDatasetClick={() => onCheck(datasetLayer.id, currentDataset)}
                         />
@@ -246,7 +246,7 @@ function CatalogContent({
             <Cards>
               {datasetsToDisplay.map((d) => (
                 <li key={d.id}>
-                  <CatalogCard dataset={d} search={search} />
+                  <CatalogCard dataset={d} searchTerm={search} />
                 </li>
               ))}
             </Cards>
