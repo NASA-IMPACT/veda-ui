@@ -28,29 +28,30 @@ import { OptionItem } from '$components/common/form/checkable-filter';
 import { findParentDataset, getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import { Pill } from '$styles/pill';
 
-export const sortOptions = [{ id: 'name', name: 'Name' }];
-const exclusiveSourceWarning = "Can only be analyzed with layers from the same source";
+const SORT_OPTIONS = [{ id: 'name', name: 'Name' }];
+
+const EXCLUSIVE_SOURCE_WARNING = "Can only be analyzed with layers from the same source";
 
 export interface CatalogContentProps {
   datasets: DatasetData[];
-  isSelectable?: boolean;
-  onSelectedCardsChange?: (selectedIds: string[]) => void;
+  selectedIds?: string[];
+  setSelectedIds?: (selectedIds: string[]) => void;
   filterLayers?: boolean;
-  preselectedIds?: string[];
+  emptyStateContent?: React.ReactNode;
 }
 
 function CatalogContent({
   datasets,
-  isSelectable = false,
-  preselectedIds = [],
-  onSelectedCardsChange,
-  filterLayers
+  selectedIds,
+  setSelectedIds,
+  filterLayers,
+  emptyStateContent
 }: CatalogContentProps) {
-  const [exclusionSelected, setExclusionSelected] = useState<boolean>(false);
-  const [selectedIds, setSelectedIds] = useState<string[]>([...preselectedIds]);
+  const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
+  const isSelectable = selectedIds !== undefined;
 
   const controlVars = useBrowserControls({
-    sortOptions
+    sortOptions: SORT_OPTIONS
   });
 
   const navigate = useNavigate();
@@ -64,15 +65,13 @@ function CatalogContent({
 
   const allDatasetsWithEnhancedLayers = useMemo(() => getAllDatasetsWithEnhancedLayers(datasets), [datasets]);
 
-  const prevSelectedIds = usePreviousValue(selectedIds);
-
   const [datasetsToDisplay, setDatasetsToDisplay] = useState<DatasetData[]>(
     prepareDatasets(allDatasetsWithEnhancedLayers, {
     search,
     taxonomies,
     sortField,
     sortDir,
-    filterLayers: false
+    filterLayers: filterLayers ?? false
   }));
 
   const [allSelectedFilters, setAllSelectedFilters] = useState<OptionItem[]>(urlTaxonomyItems);
@@ -82,62 +81,86 @@ function CatalogContent({
 
   // Handlers
   const handleChangeAllSelectedFilters = useCallback((item: OptionItem, action: 'add' | 'remove') => {
-    setAllSelectedFilters((prevFilters) =>
-      action === 'add'
-        ? [...prevFilters, item]
-        : prevFilters.filter((selected) => selected.id !== item.id)
-    );
+    if (action == 'add') {
+      setAllSelectedFilters([...allSelectedFilters, item]);
+    }
+
+    if (action == 'remove') {
+      setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
+    }
+
     onAction(Actions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
-  }, [onAction]);
+  }, [setAllSelectedFilters, allSelectedFilters, onAction]);
 
   const handleClearTag = useCallback((item: OptionItem) => {
-    setAllSelectedFilters((prevFilters) => prevFilters.filter((selected) => selected !== item));
+    setAllSelectedFilters(allSelectedFilters.filter((selected) => selected !== item));
     setClearedTagItem(item);
-  }, []);
+  }, [allSelectedFilters]);
 
   const handleClearTags = useCallback(() => {
     setAllSelectedFilters([]);
-  }, []);
+    setExclusiveSourceSelected(null);
+  }, [setAllSelectedFilters]);
 
   useEffect(() => {
     if (clearedTagItem && (allSelectedFilters.length == prevSelectedFilters.length - 1)) {
       onAction(Actions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id});
       setClearedTagItem(undefined);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSelectedFilters, clearedTagItem]);
 
   useEffect(() => {
-    if(!allSelectedFilters.length) {
+    if (!allSelectedFilters.length) {
       onAction(Actions.CLEAR);
 
       if (!isSelectable) {
         navigate(DATASETS_PATH);
       }
     }
+
+    setExclusiveSourceSelected(null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSelectedFilters]);
 
-  const onCheck = useCallback((id: string, currentDataset?: DatasetData) => {
-    if (currentDataset) {
-      // This layer is part of a dataset that is exclusive
-      const exclusiveSource = currentDataset.sourceExclusive?.toLowerCase();
-      const sources = getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values;
-      const sourceIds = sources?.map(source => source.id);
+  const getSelectedIdsWithParentData = (selectedIds) => {
+    return selectedIds.map((selectedId: string) => {
+      const parentData = findParentDataset(selectedId);
+      const exclusiveSource = parentData?.sourceExclusive;
+      const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')[0]?.values.map((value) => value.id);
+      return { id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() ?? '' };
+    });
+  };
 
-      if (exclusiveSource && sourceIds?.includes(exclusiveSource)) {
-        setExclusionSelected(true);
-      } else {
-        setExclusionSelected(false);
-      }
+  const filterRelevantIdsBasedOnExclusion = (selectedIdsWithParentData, exclusionSelected) => {
+    if (exclusionSelected) {
+      return selectedIdsWithParentData.filter((x) => x.values?.includes(x.sourceExclusive)).map((x) => x.id);
+    } else {
+      return selectedIdsWithParentData.filter((x) => !x.values?.includes(x.sourceExclusive)).map((x) => x.id);
+    }
+  };
+
+  const onCheck = useCallback((id: string, currentDataset: DatasetData) => {
+    if (!setSelectedIds || selectedIds === undefined) return;
+
+    const exclusiveSource = currentDataset.sourceExclusive?.toLowerCase();
+    const sources = getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values;
+    const sourceIds = sources?.map(source => source.id);
+
+    const newSelectedIds = selectedIds.includes(id) ? selectedIds.filter((i) => i !== id) : [...selectedIds, id];
+
+    const selectedIdsWithParentData = getSelectedIdsWithParentData(newSelectedIds);
+
+    if (exclusiveSource && sourceIds?.includes(exclusiveSource)) {
+      setExclusiveSourceSelected(exclusiveSource);
+    } else {
+      setExclusiveSourceSelected(null);
     }
 
-    setSelectedIds((ids) => {
-        const newSelectedIds = ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id];
-        if (onSelectedCardsChange) {
-            onSelectedCardsChange(newSelectedIds);
-        }
-        return newSelectedIds;
-    });
-  }, [onSelectedCardsChange]);
+    const relevantIdsBasedOnExclusion = filterRelevantIdsBasedOnExclusion(selectedIdsWithParentData, exclusiveSource && sourceIds?.includes(exclusiveSource));
+
+    setSelectedIds(newSelectedIds.filter((id) => relevantIdsBasedOnExclusion.includes(id)));
+  }, [selectedIds, setSelectedIds]);
 
   useEffect(() => {
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
@@ -148,33 +171,11 @@ function CatalogContent({
       filterLayers: filterLayers ?? false
     });
     setDatasetsToDisplay(updated);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSelectedFilters, taxonomies, search, sortDir]);
 
-  useEffect(() => {
-    if (selectedIds !== prevSelectedIds) {
-      let relevantIds: string[] | undefined = undefined;
-
-      const selectedIdsWithParentData = selectedIds.map((selectedId) => {
-        const parentData = findParentDataset(selectedId);
-        const exclusiveSource = parentData?.sourceExclusive;
-        const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')?.[0]?.values.map((value) => value.id);
-        return {id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() || ''};
-      });
-
-      if (exclusionSelected) {
-        relevantIds = selectedIdsWithParentData.filter((x) => x.values?.includes(x.sourceExclusive)).map((x) => x.id);
-      } else {
-        relevantIds = selectedIdsWithParentData.filter((x) => !x.values?.includes(x.sourceExclusive)).map((x) => x.id);
-      }
-
-      setSelectedIds((ids) =>
-        ids.filter((id) => relevantIds?.includes(id))
-      );
-    }
-  }, [exclusionSelected]);
-
   const getSelectedLayerCount = (dataset) => {
-    return dataset.layers.filter((layer) => selectedIds.includes(layer.id)).length;
+    return dataset.layers.filter((layer) => selectedIds?.includes(layer.id)).length;
   };
 
   return (
@@ -186,6 +187,7 @@ function CatalogContent({
         clearedTagItem={clearedTagItem}
         setClearedTagItem={setClearedTagItem}
         allSelected={allSelectedFilters}
+        exclusiveSourceSelected={exclusiveSourceSelected}
       />
       <Catalog>
         <CatalogTagsContainer
@@ -199,7 +201,7 @@ function CatalogContent({
             <Cards>
               {datasetsToDisplay.map((currentDataset) => (
                 <div key={currentDataset.id}>
-                  <Intro>
+                  <div>
                     <Headline>
                       <ParentDatasetTitle>
                         <CollecticonDatasetLayers /> {currentDataset.name}
@@ -211,7 +213,7 @@ function CatalogContent({
                       </ParentDatasetTitle>
                       {currentDataset.sourceExclusive && (
                         <WarningPill variation='warning'>
-                          {exclusiveSourceWarning}
+                          {EXCLUSIVE_SOURCE_WARNING}
                         </WarningPill>
                       )}
                     </Headline>
@@ -223,7 +225,7 @@ function CatalogContent({
                         {currentDataset.description}
                       </TextHighlight>
                     </p>
-                  </Intro>
+                  </div>
                   <Cards>
                     {currentDataset.layers.map((datasetLayer) => (
                       <li key={datasetLayer.id}>
@@ -251,7 +253,9 @@ function CatalogContent({
           )
         ) : (
           <EmptyState>
-            There are no datasets to show with the selected filters.
+            {emptyStateContent ?? (
+              <p>There are no datasets to show with the selected filters.</p>
+            )}
           </EmptyState>
         )}
       </Catalog>
@@ -298,14 +302,11 @@ const Headline = styled.div`
   margin-bottom: ${glsp(1)};
 `;
 
-const Intro = styled.div`
-  padding: ${glsp(1)} 0;
-`;
-
 const Content = styled.div`
   display: flex;
   margin-bottom: 8rem;
   position: relative;
+  gap: 24px;
 `;
 
 const Catalog = styled.div`
@@ -313,11 +314,13 @@ const Catalog = styled.div`
 `;
 
 const Cards = styled(CardList)`
-  padding: 0 0 0 2rem;
+  // padding: 0 0 0 2rem;
+  padding: ${glsp(1)} 0;
 `;
 
 const EmptyState = styled(EmptyHub)`
-  margin-left: 2rem;
+  border: none;
+  text-align: center;
 `;
 
 const SelectedCard = styled.div`

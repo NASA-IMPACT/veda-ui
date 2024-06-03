@@ -22,6 +22,7 @@ interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
   setClearedTagItem?: React.Dispatch<React.SetStateAction<OptionItem | undefined>>;
   width?: string;
   onChangeToFilters?: (item: OptionItem, action: 'add' | 'remove') => void;
+  exclusiveSourceSelected?: string | null;
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
@@ -33,21 +34,25 @@ export default function FiltersControl(props: FiltersMenuProps) {
     width,
     onChangeToFilters,
     clearedTagItem,
-    setClearedTagItem
+    setClearedTagItem,
+    exclusiveSourceSelected
   } = props;
 
   const controlsRef = useRef<HTMLDivElement>(null);
   const [controlsHeight, setControlsHeight] =  useState<number>(0);
   const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader();
 
-  const handleChanges = useCallback((item: OptionItem) => {
-    if(allSelected.some((selected) => selected.id == item.id && selected.taxonomy == item.taxonomy)) {
-      setClearedTagItem?.(undefined);
-      if(onChangeToFilters) onChangeToFilters(item, 'remove');
-    }
-    else {
-      setClearedTagItem?.(undefined);
-      if(onChangeToFilters) onChangeToFilters(item, 'add');
+  const handleChanges = useCallback((item: OptionItem, action: 'add' | 'remove') => {
+    if (allSelected.some((selected) => selected.id === item.id && selected.taxonomy === item.taxonomy)) {
+      if (action === 'remove') {
+        setClearedTagItem?.(undefined);
+        onChangeToFilters?.(item, 'remove');
+      }
+    } else {
+      if (action === 'add') {
+        setClearedTagItem?.(undefined);
+        onChangeToFilters?.(item, 'add');
+      }
     }
   }, [allSelected, setClearedTagItem, onChangeToFilters]);
 
@@ -65,9 +70,8 @@ export default function FiltersControl(props: FiltersMenuProps) {
       }
     });
     resizeObserver.observe(controlsRef.current);
-    return () => resizeObserver.disconnect(); // clean up
+    return () => resizeObserver.disconnect();
   }, [controlsRef]);
-
 
   return (
     <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden? '0px': `${wrapperHeight}px`}>
@@ -86,7 +90,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
                 key={taxonomy.name}
                 items={items}
                 title={taxonomy.name}
-                onChanges={handleChanges}
+                onChanges={(item) => handleChanges(item, allSelected.some((selected) => selected.id === item.id) ? 'remove' : 'add')}
                 globallySelected={allSelected}
                 tagItemCleared={{item: clearedTagItem, callback: setClearedTagItem}}
               />

@@ -137,7 +137,7 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
           }
           break;
       }
-      
+
     },
     [setSortField, setSortDir, taxonomies, setTaxonomies, setSearch]
   );

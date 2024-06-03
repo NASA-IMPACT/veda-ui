@@ -12,16 +12,18 @@ import {
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 
+import { Link } from 'react-router-dom';
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
-  allExploreDatasetsWithEnhancedLayers as allDatasets,
   reconcileDatasets,
-  datasetLayers
+  datasetLayers,
+  allDatasets
 } from '../../data-utils';
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
 
 import CatalogContent from '$components/common/catalog/catalog-content';
+import { DATASETS_PATH } from '$utils/routes';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -79,12 +81,12 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>(
     timelineDatasets.map((dataset) => dataset.data.id)
   );
+
   useEffect(() => {
     setSelectedIds(timelineDatasets.map((dataset) => dataset.data.id));
   }, [timelineDatasets]);
 
   const onConfirm = useCallback(() => {
-    // Reconcile selectedIds with datasets.
     setTimelineDatasets(
       reconcileDatasets(selectedIds, datasetLayers, timelineDatasets)
     );
@@ -116,15 +118,20 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       content={
         <CatalogContent
           datasets={allDatasets}
-          preselectedIds={selectedIds}
-          isSelectable={true}
+          selectedIds={selectedIds}
+          setSelectedIds={setSelectedIds}
           filterLayers={true}
-          onSelectedCardsChange={(selectedIds: string[]) => setSelectedIds(selectedIds)}
+          emptyStateContent={
+            <>
+              <p>There are no datasets to show with the selected filters.</p>
+              <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <Link to={DATASETS_PATH} target='_blank'>Data Catalog</Link>.</p>
+            </>
+          }
         />
       }
       footerContent={
         <ModalFooterRender
-          selectedIds={selectedIds}
+          selectedDatasetsCount={selectedIds.length}
           close={close}
           onConfirm={onConfirm}
         />

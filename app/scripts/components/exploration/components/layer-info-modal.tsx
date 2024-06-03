@@ -84,9 +84,9 @@ export function LayerInfoLiner(props: { info: LayerInfo }) {
     {Object.keys(info).map((key, idx, arr) => {
       const currentValue = info[key];
       return idx !== arr.length - 1 ? (
-        <span>{currentValue} · </span>
-      ) : (
-        <span>{currentValue} </span>
+        <span key={key}>{currentValue} · </span>
+        ) : (
+        <span key={key}>{currentValue} </span>
       );
     })}
     </span>

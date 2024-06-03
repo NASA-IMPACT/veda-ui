@@ -8,7 +8,6 @@ import { variableBaseType } from '$styles/variable-utils';
 const Tags = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding: 0 0 2.4rem 2rem;
 `;
 
 const PlainTextButton = styled.button`

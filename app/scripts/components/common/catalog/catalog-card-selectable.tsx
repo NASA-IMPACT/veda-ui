@@ -9,7 +9,7 @@ import { DatasetClassification } from "../dataset-classification";
 import { CardSourcesList } from "../card-sources";
 import TextHighlight from "../text-highlight";
 import { getDatasetPath } from "$utils/routes";
-import { TAXONOMY_SOURCE, TAXONOMY_TOPICS, getTaxonomy } from "$utils/veda-data";
+import { TAXONOMY_SOURCE, TAXONOMY_TOPICS, getAllTaxonomyValues, getTaxonomy } from "$utils/veda-data";
 import { Pill } from "$styles/pill";
 
 interface CatalogCardSelectableProps {
@@ -87,11 +87,13 @@ export function CatalogCardSelectable(props: CatalogCardSelectableProps) {
 
   const topics = getTaxonomy(parent, TAXONOMY_TOPICS)?.values;
   const sources = getTaxonomy(parent, TAXONOMY_SOURCE)?.values;
+  const allTaxonomyValues = getAllTaxonomyValues(parent).map((v) => v.name);
 
   return (
     <CardSelectable
       cardType='horizontal-info'
       checked={selected}
+      tagLabels={allTaxonomyValues}
       overline={
         <CardMeta>
           <DatasetClassification dataset={parent} />
