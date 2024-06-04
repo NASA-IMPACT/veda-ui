@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Taxonomy } from 'veda';
+import { CatalogActions } from './controls/hooks/use-catalog-view';
 import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
-import { Actions, useBrowserControls } from '$components/common/browse-controls/use-browse-controls';
 import { useSlidingStickyHeader, HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
 
 const ControlsWrapper = styled.div<{ widthValue?: string; heightValue?: string; topValue: string }>`
@@ -15,7 +15,9 @@ const ControlsWrapper = styled.div<{ widthValue?: string; heightValue?: string; 
   transition: top ${HEADER_TRANSITION_DURATION}ms ease-out;
 `;
 
-interface FiltersMenuProps extends ReturnType<typeof useBrowserControls> {
+interface FiltersMenuProps {
+  onAction: (what: CatalogActions, value: any) => void;
+  search?: string;
   taxonomiesOptions: Taxonomy[];
   allSelected: OptionItem[];
   clearedTagItem?: OptionItem;
@@ -92,7 +94,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
           size='large'
           placeholder='Search by title, description'
           value={search ?? ''}
-          onChange={(v) => onAction(Actions.SEARCH, v)}
+          onChange={(v) => onAction(CatalogActions.SEARCH, v)}
         />
         {taxonomiesItems.map(({ title, items }) => (
           <CheckableFilters

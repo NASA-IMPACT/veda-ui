@@ -9,9 +9,7 @@ import prepareDatasets from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
-import {
-  Actions, useBrowserControls
-} from '$components/common/browse-controls/use-browse-controls';
+import { CatalogActions, useCatalogView } from './controls/hooks/use-catalog-view';
 
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
@@ -27,8 +25,6 @@ import { findParentDataset, getAllDatasetsWithEnhancedLayers } from '$components
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
-const SORT_OPTIONS = [{ id: 'name', name: 'Name' }];
-
 const EXCLUSIVE_SOURCE_WARNING = "Can only be analyzed with layers from the same source";
 
 export interface CatalogContentProps {
@@ -38,6 +34,8 @@ export interface CatalogContentProps {
   filterLayers?: boolean;
   emptyStateContent?: React.ReactNode;
 }
+
+const DEFAULT_SORT_OPTION = 'asc';
 
 function CatalogContent({
   datasets,
@@ -49,14 +47,9 @@ function CatalogContent({
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
   const isSelectable = selectedIds !== undefined;
 
-  const controlVars = useBrowserControls({
-    sortOptions: SORT_OPTIONS
-  });
-
   const navigate = useNavigate();
 
-  const { taxonomies, sortField, sortDir, onAction } = controlVars;
-  const search = controlVars.search ?? '';
+  const { search, taxonomies, onAction } = useCatalogView();
 
   const datasetTaxonomies = generateTaxonomies(datasets);
   const urlTaxonomyItems = taxonomies ? Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() : [];
@@ -67,8 +60,8 @@ function CatalogContent({
     prepareDatasets(allDatasetsWithEnhancedLayers, {
     search,
     taxonomies,
-    sortField,
-    sortDir,
+    sortField: DEFAULT_SORT_OPTION,
+    sortDir: DEFAULT_SORT_OPTION,
     filterLayers: filterLayers ?? false
   }));
 
@@ -87,7 +80,7 @@ function CatalogContent({
       setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
     }
 
-    onAction(Actions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
+    onAction(CatalogActions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
   }, [setSelectedFilters, selectedFilters, onAction]);
 
   const handleClearTag = useCallback((item: OptionItem) => {
@@ -98,12 +91,12 @@ function CatalogContent({
   const handleClearTags = useCallback(() => {
     setSelectedFilters([]);
     setExclusiveSourceSelected(null);
-    onAction(Actions.CLEAR);
+    onAction(CatalogActions.CLEAR);
   }, [onAction]);
 
   useEffect(() => {
     if (clearedTagItem && (selectedFilters.length == prevSelectedFilters.length - 1)) {
-      onAction(Actions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id});
+      onAction(CatalogActions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id});
       setClearedTagItem(undefined);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,7 +104,7 @@ function CatalogContent({
 
   useEffect(() => {
     if (!selectedFilters.length) {
-      onAction(Actions.CLEAR);
+      onAction(CatalogActions.CLEAR);
 
       if (!isSelectable) {
         navigate(DATASETS_PATH);
@@ -165,13 +158,13 @@ function CatalogContent({
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
       search,
       taxonomies,
-      sortField,
-      sortDir,
+      sortField: DEFAULT_SORT_OPTION,
+      sortDir: DEFAULT_SORT_OPTION,
       filterLayers: filterLayers ?? false
     });
     setDatasetsToDisplay(updated);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFilters, taxonomies, search, sortDir]);
+  }, [selectedFilters, taxonomies, search]);
 
   const getSelectedLayerCount = (dataset) => {
     return dataset.layers.filter((layer) => selectedIds?.includes(layer.id)).length;
@@ -180,7 +173,8 @@ function CatalogContent({
   return (
     <Content>
       <FiltersControl
-        {...controlVars}
+        search={search}
+        onAction={onAction}
         taxonomiesOptions={datasetTaxonomies}
         onFilterChange={updateSelectedFilters}
         clearedTagItem={clearedTagItem}

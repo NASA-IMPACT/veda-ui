@@ -9,7 +9,6 @@ export enum Actions {
   SORT_FIELD = 'sfield',
   SORT_DIR = 'sdir',
   TAXONOMY = 'taxonomy',
-  TAXONOMY_MULTISELECT = 'taxonomy_multiselect',
 }
 
 export type BrowserControlsAction = (what: Actions, value?: any) => void;
@@ -115,24 +114,6 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
               setTaxonomies(omit(taxonomies, key));
             } else {
               setTaxonomies(set({ ...taxonomies }, key, val));
-            }
-          }
-          break;
-        case Actions.TAXONOMY_MULTISELECT:
-          {
-            const { key, value: val } = value;
-            if (taxonomies && (key in taxonomies)) { // If taxonomy group currently present
-              const taxonomyGroupValues = taxonomies[key] instanceof Array ? (taxonomies[key] as string[]) : [taxonomies[key]];
-
-              if (taxonomyGroupValues.includes(val)) { // If val exists, then remove
-                const updatedValues = taxonomyGroupValues.filter((x) => x !== val);
-                updatedValues.length ? setTaxonomies(set({ ...taxonomies }, key, updatedValues)) : setTaxonomies(omit(taxonomies, key));
-              } else { // else add
-                taxonomyGroupValues.push(val);
-                setTaxonomies(taxonomies);
-              }
-            } else { // Taxonomy group currently not present
-              setTaxonomies(set({ ...taxonomies }, key, [val]));
             }
           }
           break;
