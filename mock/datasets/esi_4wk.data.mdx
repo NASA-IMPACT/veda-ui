@@ -1,0 +1,55 @@
+---
+id: esi_4wk
+name: Global ESI_4WK
+featured: true
+description: The new global dataset, called the Evaporative Stress Index (ESI), available online and produced weekly at 5-kilometer resolution for the entire globe, reveals regions of drought where vegetation is stressed due to lack of water, enabling agriculture ministries to provide farmers with actionable advice about irrigation.
+media:
+  src: ::file ./no2--dataset-cover.jpg
+  alt: Power plant shooting steam at the sky.
+  author:
+    name: Mick Truyts
+    url: https://unsplash.com/photos/x6WQeNYJC1w
+infoDescription: |
+  ::markdown
+    The ESI can capture early signals of “flash drought,” a condition brought on by extended periods of hot, dry, and windy conditions leading to rapid soil moisture depletion. Reduced rates of water loss can be observed through the use of land surface temperature before it can be observed through decreases in vegetation health or “greenness.” The ESI describes soil moisture across the landscape without using observed rainfall data. This is critical in developing regions and other parts of the world lacking sufficient ground-based observations of rainfall. The ESI is based on satellite observations of land surface temperature, which are used to estimate water loss due to evapotranspiration (ET), the loss of water via evaporation from soil and plant surfaces and via transpiration through plant leaves. Generally, healthy green vegetation with access to an adequate supply of water warms at a much slower rate than does dry and/or stressed vegetation. Based on variations in land surface temperature, the ESI indicates how the current rate of ET compares to normal conditions. Negative ESI values show below normal ET rates, indicating vegetation that stressed due to inadequate soil moisture. (Plants’ first response when stressed from lack of water is to reduce their transpiration to conserve water within the plant.)
+layers:
+  - id: esi_4wk_layer
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    tileApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: ESI_4WK
+    name: Evaporative Stress Index (ESI)
+    type: arc 
+    description: The new global dataset, called the Evaporative Stress Index (ESI), available online and produced weekly at 5-kilometer resolution for the entire globe, reveals regions of drought where vegetation is stressed due to lack of water, enabling agriculture ministries to provide farmers with actionable advice about irrigation.
+    sourceParams:
+      layers: 1
+    zoomExtent:
+      - 0
+      - 20
+    compare:
+      datasetId: power_901_annual_meterology_utc
+      layerId: power_901_annual_meterology_utc_DISPH
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+---
+<Block>
+<Prose>
+The new global dataset, called the Evaporative Stress Index (ESI), available online and produced weekly at 5-kilometer resolution for the entire globe, reveals regions of drought where vegetation is stressed due to lack of water, enabling agriculture ministries to provide farmers with actionable advice about irrigation. The ESI can capture early signals of “flash drought,” a condition brought on by extended periods of hot, dry, and windy conditions leading to rapid soil moisture depletion. Reduced rates of water loss can be observed through the use of land surface temperature before it can be observed through decreases in vegetation health or “greenness.” The ESI describes soil moisture across the landscape without using observed rainfall data. This is critical in developing regions and other parts of the world lacking sufficient ground-based observations of rainfall. The ESI is based on satellite observations of land surface temperature, which are used to estimate water loss due to evapotranspiration (ET), the loss of water via evaporation from soil and plant surfaces and via transpiration through plant leaves. Generally, healthy green vegetation with access to an adequate supply of water warms at a much slower rate than does dry and/or stressed vegetation. Based on variations in land surface temperature, the ESI indicates how the current rate of ET compares to normal conditions. Negative ESI values show below normal ET rates, indicating vegetation that stressed due to inadequate soil moisture. (Plants’ first response when stressed from lack of water is to reduce their transpiration to conserve water within the plant.)
+
+
+</Prose>
+</Block>

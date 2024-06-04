@@ -62,14 +62,13 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
 
       const tileParams = qs.stringify({
         format: 'image/png',
-        service: "WMS",
-        version: "1.3.0",
-        request: "GetMap",
-        crs: "EPSG:3857",
-        transparent: "true",
-        width: "256",
-        height: "256",
-        layers: 1,
+        service: 'WMS',
+        version: '1.3.0',
+        request: 'GetMap',
+        crs: 'EPSG:3857',
+        transparent: 'true',
+        width: '256',
+        height: '256',
         styles: '',
         ...sourceParams
       });
