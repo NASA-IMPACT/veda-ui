@@ -1,6 +1,6 @@
 import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 
-export const taxonomyAtom = atomWithUrlValueStability<Record<string, string | string[]>, Record<string, string | string[]>>({
+export const taxonomyAtom = atomWithUrlValueStability<Record<string, string[]>, Record<string, string[]>>({
   initialValue: {},
   urlParam: 'taxonomy',
   hydrate: (serialized) => {

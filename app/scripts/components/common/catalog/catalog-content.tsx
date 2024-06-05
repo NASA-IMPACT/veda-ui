@@ -9,8 +9,8 @@ import prepareDatasets from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
-import { CatalogActions, useCatalogView } from './controls/hooks/use-catalog-view';
 
+import { CatalogActions } from './utils';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { DATASETS_PATH } from '$utils/routes';
@@ -33,6 +33,9 @@ export interface CatalogContentProps {
   setSelectedIds?: (selectedIds: string[]) => void;
   filterLayers?: boolean;
   emptyStateContent?: React.ReactNode;
+  search: string;
+  taxonomies: Record<string, string[]>;
+  onAction: (action: CatalogActions, value?: any) => void;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -42,14 +45,15 @@ function CatalogContent({
   selectedIds,
   setSelectedIds,
   filterLayers,
-  emptyStateContent
+  emptyStateContent,
+  search,
+  taxonomies,
+  onAction,
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
   const isSelectable = selectedIds !== undefined;
 
   const navigate = useNavigate();
-
-  const { search, taxonomies, onAction } = useCatalogView();
 
   const datasetTaxonomies = generateTaxonomies(datasets);
   const urlTaxonomyItems = taxonomies ? Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() : [];

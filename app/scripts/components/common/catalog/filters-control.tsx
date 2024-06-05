@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Taxonomy } from 'veda';
-import { CatalogActions } from './controls/hooks/use-catalog-view';
+import { CatalogActions } from './utils';
 import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
 import { useSlidingStickyHeader, HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
@@ -16,7 +16,7 @@ const ControlsWrapper = styled.div<{ widthValue?: string; heightValue?: string; 
 `;
 
 interface FiltersMenuProps {
-  onAction: (what: CatalogActions, value: any) => void;
+  onAction: (action: CatalogActions, value: any) => void;
   search?: string;
   taxonomiesOptions: Taxonomy[];
   allSelected: OptionItem[];

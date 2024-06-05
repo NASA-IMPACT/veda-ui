@@ -24,6 +24,7 @@ import ModalFooterRender from './footer';
 
 import CatalogContent from '$components/common/catalog/catalog-content';
 import { DATASETS_PATH } from '$utils/routes';
+import { CatalogViewAction, onCatalogAction } from '$components/common/catalog/utils';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -77,6 +78,8 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
 
   const [timelineDatasets, setTimelineDatasets] = useAtom(timelineDatasetsAtom);
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [taxonomies, setTaxonomies] = useState({});
   // Store a list of selected datasets and only confirm on save.
   const [selectedIds, setSelectedIds] = useState<string[]>(
     timelineDatasets.map((dataset) => dataset.data.id)
@@ -93,6 +96,11 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     close();
   }, [close, selectedIds, timelineDatasets, setTimelineDatasets]);
 
+  const onAction = useCallback<CatalogViewAction>(
+    (action, value) => onCatalogAction(action, value, taxonomies, setSearchTerm, setTaxonomies),
+    [setTaxonomies, taxonomies]
+  );
+
   return (
     <DatasetModal
       id='modal'
@@ -106,8 +114,11 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       content={
         <CatalogContent
           datasets={allDatasets}
+          search={searchTerm}
+          taxonomies={taxonomies}
           selectedIds={selectedIds}
           setSelectedIds={setSelectedIds}
+          onAction={onAction}
           filterLayers={true}
           emptyStateContent={
             <>

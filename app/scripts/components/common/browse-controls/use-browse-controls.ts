@@ -8,10 +8,10 @@ export enum Actions {
   SEARCH = 'search',
   SORT_FIELD = 'sfield',
   SORT_DIR = 'sdir',
-  TAXONOMY = 'taxonomy',
+  TAXONOMY = 'taxonomy'
 }
 
-export type BrowserControlsAction = (what: Actions, value?: any) => void;
+export type BrowserControlsAction = (action: Actions, value?: any) => void;
 
 export interface FilterOption {
   id: string;
@@ -58,7 +58,8 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
     {
       key: Actions.SORT_FIELD,
       // If pubDate exists, default sorting to this
-      default: sortOptions.find((o) => o.id === 'pubDate')?.id || sortOptions[0]?.id,
+      default:
+        sortOptions.find((o) => o.id === 'pubDate')?.id || sortOptions[0]?.id,
       validator: sortOptions.map((d) => d.id)
     },
     [sortOptions]
@@ -81,7 +82,9 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
     []
   );
 
-  const [taxonomies, setTaxonomies] = useQsState.memo<Record<string, string | string[]>>(
+  const [taxonomies, setTaxonomies] = useQsState.memo<
+    Record<string, string | string[]>
+  >(
     {
       key: Actions.TAXONOMY,
       default: {},
@@ -92,8 +95,8 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
   );
 
   const onAction = useCallback<BrowserControlsAction>(
-    (what, value) => {
-      switch (what) {
+    (action, value) => {
+      switch (action) {
         case Actions.CLEAR:
           setSearch('');
           setTaxonomies({});
@@ -118,7 +121,6 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
           }
           break;
       }
-
     },
     [setSortField, setSortDir, taxonomies, setTaxonomies, setSearch]
   );

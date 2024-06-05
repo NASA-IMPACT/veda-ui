@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { DatasetData } from 'veda';
 import { themeVal } from '@devseed-ui/theme-provider';
 import CatalogContent from './catalog-content';
+import { useCatalogView } from './controls/hooks/use-catalog-view';
 import {
   useSlidingStickyHeaderProps
 } from '$components/common/layout-root';
@@ -45,6 +46,8 @@ function CatalogView({
 
   const { headerHeight } = useSlidingStickyHeaderProps();
 
+  const { search, taxonomies, onAction } = useCatalogView();
+
   return (
     <CatalogWrapper>
       <CatalogFoldHeader
@@ -56,7 +59,12 @@ function CatalogView({
           <FoldTitle>Search datasets</FoldTitle>
         </FoldHeadline>
       </CatalogFoldHeader>
-      <CatalogContent datasets={datasets} />
+      <CatalogContent
+        datasets={datasets}
+        search={search}
+        taxonomies={taxonomies}
+        onAction={onAction}
+      />
     </CatalogWrapper>
   );
 }
