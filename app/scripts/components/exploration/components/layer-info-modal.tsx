@@ -12,10 +12,10 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { createButtonStyles } from '@devseed-ui/button';
 import { LayerInfo } from 'veda';
 
-import { ParentDatasetTitle } from './dataset-selector-modal/content';
 import SmartLink from '$components/common/smart-link';
 import { getDatasetPath } from '$utils/routes';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
+import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};

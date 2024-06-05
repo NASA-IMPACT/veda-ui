@@ -268,7 +268,7 @@ const WarningPill = styled(Pill)`
   margin-left: 8px;
 `;
 
-const ParentDatasetTitle = styled.h2<{size?: string}>`
+export const ParentDatasetTitle = styled.h2<{size?: string}>`
   color: ${themeVal('color.primary')};
   text-align: left;
   font-size: ${(props => props.size=='small'? '0.75rem': '1rem')};
