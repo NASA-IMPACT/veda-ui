@@ -8,30 +8,27 @@ import { getFilterPayload, combineFeatureCollection } from '../utils';
 import EventEmitter from './mini-events';
 import { ConcurrencyManager, ConcurrencyManagerInstance } from './concurrency';
 import { TimeDensity } from '$context/layer-data';
-import { userTzDate2utcString } from '$utils/date';
-
 
 export const TIMESERIES_DATA_BASE_ID = 'analysis';
 
-// ArcGIS ImageServer doesn't give back all these values
 export interface TimeseriesDataUnit {
   date: string;
-  min?: number;
-  max?: number;
+  min: number;
+  max: number;
   mean: number;
-  count?: number;
-  sum?: number;
-  std?: number;
-  median?: number;
-  majority?: number;
-  minority?: number;
-  unique?: number;
-  histogram?: [number[], number[]];
-  valid_percent?: number;
-  masked_pixels?: number;
-  valid_pixels?: number;
-  percentile_2?: number;
-  percentile_98?: number;
+  count: number;
+  sum: number;
+  std: number;
+  median: number;
+  majority: number;
+  minority: number;
+  unique: number;
+  histogram: [number[], number[]];
+  valid_percent: number;
+  masked_pixels: number;
+  valid_pixels: number;
+  percentile_2: number;
+  percentile_98: number;
 }
 
 export interface TimeseriesDataResult {
@@ -250,139 +247,97 @@ async function requestTimeseries({
   // attached yet.
   setTimeout(() => onData(layersBase), 0);
 
-  // TODO: Maybe there's a better way than an if else conditional?
   try {
-
-    if (layer.type === "arc") {
-      const params = {
-        collection_id: layer.stacCol,
-        variable: layer.sourceParams?.layers,
-        datetime_range: `${`${userTzDate2utcString(start).slice(0, -5)}Z`},${`${userTzDate2utcString(end).slice(0, -5)}Z`}`,
-        aoi: aoi
+    const layerInfoFromSTAC = await queryClient.fetchQuery(
+      [TIMESERIES_DATA_BASE_ID, 'dataset', id, aoi, start, end],
+      ({ signal }) =>
+        getDatasetAssets(
+          {
+            stacCol: layer.stacCol,
+            stacApiEndpoint: layer.stacApiEndpoint,
+            assets: layer.sourceParams?.assets || 'cog_default',
+            aoi,
+            dateStart: start,
+            dateEnd: end
+          },
+          { signal },
+          concurrencyManager
+        ),
+      {
+        staleTime: Infinity
       }
-      const statistics = await queryClient.fetchQuery(
-        [TIMESERIES_DATA_BASE_ID, 'dataset', id],
-        async ({ signal }) => {
-          return concurrencyManager.queue(async () => {
-            const { data } = await axios.post(
-              `${layer.tileApiEndpoint}/statistics`,
-              params,
-              { signal }
-            );
-            return data;
-          });
-        },
-        {
-          staleTime: Infinity
-        }
+    );
+
+    const { assets, ...otherCollectionProps } = layerInfoFromSTAC;
+
+    if (assets.length > MAX_QUERY_NUM)
+      throw Error(
+        `Too many requests. We currently only allow requests up to ${MAX_QUERY_NUM} and this analysis requires ${assets.length} requests.`
       );
 
-      onData({
-        ...layersBase,
-        status: 'succeeded',
-        meta: {
-          total: statistics.length,
-          loaded: statistics.length
-        },
-        data: {
-          // ...otherCollectionProps,
-          // TODO: Get these from the API instead
-          isPeriodic: false,
-          timeDensity: "year",
-          domain: ['1983-01-01T00:00:00Z', '2022-12-31T23:59:59Z'],
-          timeseries: statistics // TODO: FIX: For some reason the UI freezes for more than 4 timestamps
-        }
-      });
-    } else {
-      const layerInfoFromSTAC = await queryClient.fetchQuery(
-        [TIMESERIES_DATA_BASE_ID, 'dataset', id, aoi, start, end],
-        ({ signal }) =>
-          getDatasetAssets(
-            {
-              stacCol: layer.stacCol,
-              stacApiEndpoint: layer.stacApiEndpoint,
-              assets: layer.sourceParams?.assets || 'cog_default',
-              aoi,
-              dateStart: start,
-              dateEnd: end
-            },
-            { signal },
-            concurrencyManager
-          ),
-        {
-          staleTime: Infinity
-        }
-      );
-      const { assets, ...otherCollectionProps } = layerInfoFromSTAC;
-  
-      if (assets.length > MAX_QUERY_NUM)
-        throw Error(
-          `Too many requests. We currently only allow requests up to ${MAX_QUERY_NUM} and this analysis requires ${assets.length} requests.`
+    onData({
+      ...layersBase,
+      status: 'loading',
+      meta: {
+        total: assets.length,
+        loaded: 0
+      }
+    });
+
+    const tileEndpointToUse =
+      layer.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT;
+
+    const analysisParams = layersBase.layer.analysis?.sourceParams ?? {};
+
+    const layerStatistics = await Promise.all(
+      assets.map(async ({ date, url }) => {
+        const statistics = await queryClient.fetchQuery(
+          [TIMESERIES_DATA_BASE_ID, 'asset', url],
+          async ({ signal }) => {
+            return concurrencyManager.queue(async () => {
+              const { data } = await axios.post(
+                `${tileEndpointToUse}/cog/statistics?url=${url}`,
+                // Making a request with a FC causes a 500 (as of 2023/01/20)
+                combineFeatureCollection(aoi),
+                { params: { ...analysisParams, url }, signal }
+              );
+              return {
+                date,
+                // Remove 1 when https://github.com/NASA-IMPACT/veda-ui/issues/572 is fixed.
+                ...(data.properties.statistics.b1 ||
+                  data.properties.statistics['1'])
+              };
+            });
+          },
+          {
+            staleTime: Infinity
+          }
         );
-  
-      onData({
-        ...layersBase,
-        status: 'loading',
-        meta: {
-          total: assets.length,
-          loaded: 0
-        }
-      });
-  
-      const tileEndpointToUse =
-        layer.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT;
-  
-      const analysisParams = layersBase.layer.analysis?.sourceParams ?? {};
-  
-      const layerStatistics = await Promise.all(
-        assets.map(async ({ date, url }) => {
-          const statistics = await queryClient.fetchQuery(
-            [TIMESERIES_DATA_BASE_ID, 'asset', url],
-            async ({ signal }) => {
-              return concurrencyManager.queue(async () => {
-                const { data } = await axios.post(
-                  `${tileEndpointToUse}/cog/statistics?url=${url}`,
-                  // Making a request with a FC causes a 500 (as of 2023/01/20)
-                  combineFeatureCollection(aoi),
-                  { params: { ...analysisParams, url }, signal }
-                );
-                return {
-                  date,
-                  // Remove 1 when https://github.com/NASA-IMPACT/veda-ui/issues/572 is fixed.
-                  ...(data.properties.statistics.b1 ||
-                    data.properties.statistics['1'])
-                };
-              });
-            },
-            {
-              staleTime: Infinity
-            }
-          );
-  
-          onData({
-            ...layersBase,
-            meta: {
-              total: assets.length,
-              loaded: (layersBase.meta.loaded ?? 0) + 1
-            }
-          });
-  
-          return statistics;
-        })
-      );
-      onData({
-        ...layersBase,
-        status: 'succeeded',
-        meta: {
-          total: assets.length,
-          loaded: assets.length
-        },
-        data: {
-          ...otherCollectionProps,
-          timeseries: layerStatistics
-        }
-      });
-    }
+
+        onData({
+          ...layersBase,
+          meta: {
+            total: assets.length,
+            loaded: (layersBase.meta.loaded ?? 0) + 1
+          }
+        });
+
+        return statistics;
+      })
+    );
+
+    onData({
+      ...layersBase,
+      status: 'succeeded',
+      meta: {
+        total: assets.length,
+        loaded: assets.length
+      },
+      data: {
+        ...otherCollectionProps,
+        timeseries: layerStatistics
+      }
+    });
   } catch (error) {
     // Discard abort related errors.
     if (error.revert) return;
