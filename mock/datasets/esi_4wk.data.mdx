@@ -15,7 +15,6 @@ infoDescription: |
 layers:
   - id: esi_4wk_layer
     stacApiEndpoint: https://dev.openveda.cloud/api/stac
-    tileApiEndpoint: https://dev.openveda.cloud/api/stac
     stacCol: ESI_4WK
     name: Evaporative Stress Index (ESI)
     type: arc 
@@ -25,13 +24,8 @@ layers:
     zoomExtent:
       - 0
       - 20
-    compare:
-      datasetId: power_901_annual_meterology_utc
-      layerId: power_901_annual_meterology_utc_DISPH
-      mapLabel: |
-        ::js ({ dateFns, datetime, compareDatetime }) => {
-          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
-        }
+    analysis:
+      exclude: true
     legend:
       type: gradient
       min: -3.0

@@ -123,7 +123,7 @@ export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplac
 
 } 
 
-export function useArc({ id, stacCol, stacApiEndpointToUse, date, onStatusChange }){
+export function useArc({ id, stacCol, stacApiEndpointToUse, onStatusChange }){
   const [wmsUrl, setWmsUrl] = useState('');
 
   useEffect(() => {
@@ -155,7 +155,7 @@ export function useArc({ id, stacCol, stacApiEndpointToUse, date, onStatusChange
     return () => {
       controller.abort();
     };
-  }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
+  }, [id, stacCol, stacApiEndpointToUse, onStatusChange]);
 
   return wmsUrl;
 } 
