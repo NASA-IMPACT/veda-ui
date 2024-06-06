@@ -185,6 +185,7 @@ function CatalogContent({
         setClearedTagItem={handleClearTag}
         allSelected={selectedFilters}
         exclusiveSourceSelected={exclusiveSourceSelected}
+        customTopOffset={isSelectable ? 50 : 0}
       />
       <Catalog>
         <CatalogTagsContainer
@@ -214,14 +215,14 @@ function CatalogContent({
                         </WarningPill>
                       )}
                     </Headline>
-                    <p>
+                    <Paragraph>
                       <TextHighlight
                         value={search}
                         disabled={search.length < 3}
                       >
                         {currentDataset.description}
                       </TextHighlight>
-                    </p>
+                    </Paragraph>
                   </div>
                   <Cards>
                     {currentDataset.layers.map((datasetLayer) => (
@@ -313,6 +314,14 @@ const Catalog = styled.div`
 
 const Cards = styled(CardList)`
   padding: ${glsp(1)} 0;
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+`;
+
+const Paragraph = styled.p`
+  margin-bottom: ${glsp(1)};
 `;
 
 const EmptyState = styled(EmptyHub)`

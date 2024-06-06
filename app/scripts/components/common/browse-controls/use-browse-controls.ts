@@ -46,6 +46,8 @@ export const optionAll = {
 
 export const minSearchLength = 3;
 
+// This hook is only used for the Stories Hub to manage browsing controls
+// such as search, sort, and taxonomy filters.
 export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
   // Setup Qs State to store data in the url's query string
   // react-router function to get the navigation.

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { themeVal } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import FilterTag from './filter-tag';
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { variableBaseType } from '$styles/variable-utils';
@@ -8,6 +8,7 @@ import { variableBaseType } from '$styles/variable-utils';
 const Tags = styled.div`
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: ${glsp(1)};
 `;
 
 const PlainTextButton = styled.button`

@@ -25,6 +25,7 @@ interface FiltersMenuProps {
   width?: string;
   onFilterChange?: (item: OptionItem, action: 'add' | 'remove') => void;
   exclusiveSourceSelected?: string | null;
+  customTopOffset?: number;
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
@@ -37,7 +38,13 @@ export default function FiltersControl(props: FiltersMenuProps) {
     onFilterChange,
     clearedTagItem,
     setClearedTagItem,
-    exclusiveSourceSelected
+    exclusiveSourceSelected,
+    // Custom top offset to customize the top position of the controls.
+    // This is a specific case for the Catalog view when it's embedded in the modal which
+    // has a different header reference as opposed to what the useSlidingStickyHeader hook
+    // uses as a reference (the main page header). To avoid changing the reference IDs in the
+    // main logic of the sliding sticky header hook, we provide this custom top offset for more control.
+    customTopOffset = 0
   } = props;
 
   const controlsRef = useRef<HTMLDivElement>(null);
@@ -88,7 +95,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
   }, [exclusiveSourceSelected]);
 
   return (
-    <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden? '0px': `${wrapperHeight}px`}>
+    <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden ? '0px': `${wrapperHeight - customTopOffset}px`}>
       <div ref={controlsRef}>
         <SearchField
           size='large'

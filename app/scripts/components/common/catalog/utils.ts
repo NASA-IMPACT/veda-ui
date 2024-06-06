@@ -40,8 +40,8 @@ export function onCatalogAction(
             ? setTaxonomies(set({ ...taxonomies }, key, updatedValues))
             : setTaxonomies(omit(taxonomies, key));
         } else {
-          taxonomyGroupValues.push(val);
-          setTaxonomies(taxonomies);
+          const updatedValues = [...taxonomyGroupValues, val];
+          setTaxonomies(set({ ...taxonomies }, key, updatedValues));
         }
       } else {
         setTaxonomies(set({ ...taxonomies }, key, [val]));
