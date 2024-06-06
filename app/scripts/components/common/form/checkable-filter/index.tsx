@@ -123,16 +123,12 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
   const isChecked = (item: OptionItem) => globallySelected.some((selected) => selected.id == item.id && selected.taxonomy == item.taxonomy);
 
   useEffect(() => {
-    const initialSelectedCount = items.filter(item => isChecked(item)).length;
-    setCount(initialSelectedCount);
-  }, []);
-
-  useEffect(() => {
     if(!globallySelected || globallySelected.length === 0) {
       setCount(0);
     }
 
     if(globallySelected.length > 0) {
+      setCount(globallySelected.filter(item => items.some(i => i.id === item.id)).length);
       setSelected(selected.filter((item) => item.id));
     } else {
       setSelected([]);
