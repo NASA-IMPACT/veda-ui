@@ -68,8 +68,7 @@ export const getLayerComponent = (
     if (layerType === 'vector') return MapLayerVectorTimeseries;
     if (layerType === 'zarr') return MapLayerZarrTimeseries;
     if (layerType === 'cmr') return MapLayerCMRTimeseries;
-    if (layerType === 'arc') return MapLayerArc;
-    if (layerType === 'arc-imageserver') return MapLayerArcImageServer;
+    if (layerType === 'arc') return MapLayerArcImageServer;
   }
 
   return null;

@@ -3,6 +3,7 @@ import qs from 'qs';
 import { RasterSource, RasterLayer } from 'mapbox-gl';
 
 import { useMapStyle } from './styles';
+import { ArcImageServerPaintLayer } from './arc-imageserver';
 import { useArc } from '$components/common/map/style-generators/hooks';
 
 import { ActionStatus } from '$utils/status';
@@ -146,5 +147,5 @@ export function MapLayerArc(props:MapLayerArcProps) {
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
   const wmsUrl = useArc({id, stacCol, stacApiEndpointToUse, onStatusChange});
 
-  return <ArcPaintLayer {...props} wmsUrl={wmsUrl} />;
+  return <ArcImageServerPaintLayer {...props} wmsUrl={wmsUrl} />;
 }

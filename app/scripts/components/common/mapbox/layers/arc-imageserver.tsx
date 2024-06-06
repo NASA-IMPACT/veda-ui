@@ -32,7 +32,7 @@ interface ArcPaintLayerProps {
   wmsUrl: string;
 }
 
-export function ArcPaintLayer(props: ArcPaintLayerProps) {
+export function ArcImageServerPaintLayer(props: ArcPaintLayerProps) {
   const {
     id,
     tileApiEndpoint,
@@ -62,18 +62,16 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
       if (!wmsUrl) return;
       //https://arcgis.asdc.larc.nasa.gov/server/services/POWER/power_901_annual_meterology_utc/ImageServer/WMSServer
       // ?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&LAYERS=PS&DIM_StdTime=1981-12-31T00:00:00Z"
-      
+
       // TODO: investigate For some reason the request being made is 6 hours ahead? Something to do with UTC <-> local conversion?
       const tileParams = qs.stringify({
         format: 'image/png',
         service: "WMS",
-        version: "1.1.1",
         request: "GetMap",
-        srs: "EPSG:3857",
         transparent: "true", // TODO: get from sourceparams maybe
         width: "256",
         height: "256",
-        DIM_StdTime: userTzDate2utcString(date), // TODO: better date conversion
+        // DIM_StdTime: userTzDate2utcString(date), // TODO: better date conversion
         ...sourceParams
       });
 
@@ -152,5 +150,5 @@ export function MapLayerArcImageServer(props:MapLayerArcImageServerProps) {
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
   const wmsUrl = useArc({id, stacCol, stacApiEndpointToUse, onStatusChange});
-  return <ArcPaintLayer {...props} wmsUrl={wmsUrl} />;
+  return <ArcImageServerPaintLayer {...props} wmsUrl={wmsUrl} />;
 }
