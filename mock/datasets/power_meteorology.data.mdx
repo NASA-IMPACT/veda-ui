@@ -1,0 +1,126 @@
+---
+id: power_901_annual_meterology_utc
+name: 'POWER meteorology'
+featured: true
+description: "Meteorology"
+media:
+  src: ::file ./no2--dataset-cover.jpg
+  alt: Power plant shooting steam at the sky.
+  author:
+    name: Mick Truyts
+    url: https://unsplash.com/photos/x6WQeNYJC1w
+taxonomy:
+  - name: Topics
+    values:
+      - Air Quality
+layers:
+  - id: cdd10
+    stacApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
+    tileApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
+    stacCol: POWER/power_901_annual_meterology_utc
+    name: Cooling Degree Days Above 10 C
+    type: arc-imageserver
+    description:
+      "Test"
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      layers: CDD10
+    compare:
+      datasetId: power_901_annual_meterology_utc
+      layerId: power_901_annual_meterology_utc_DISPH
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    legend:
+      unit: 
+        label: degree-day
+      type: gradient
+      min: 0
+      max: 8972.0625
+      stops:
+        - "#4575b4"
+        - "#91bfdb"
+        - "#e0f3f8"
+        - "#ffffbf"
+        - "#fee090"
+        - "#fc8d59"
+        - "#d73027"
+    # analysis:
+    #   exclude: true
+  - id: cdd18_3
+    stacApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
+    tileApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
+    stacCol: POWER/power_901_annual_meterology_utc
+    name: Cooling Degree Days Above 18.3 C
+    type: arc
+    description:
+      "Lorem Ipsum"
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      layers: CDD18_3
+    # TODO: get this from `/legend` endpoint? ex - https://arcgis.asdc.larc.nasa.gov/server/rest/services/POWER/power_901_annual_meterology_utc/ImageServer/legend
+    compare:
+      datasetId: power_901_annual_meterology_utc
+      layerId: cdd10
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    legend:
+      unit: 
+        label: degree-day
+      type: gradient
+      min: 0
+      max: 8972.0625
+      stops:
+        - "#4575b4"
+        - "#91bfdb"
+        - "#e0f3f8"
+        - "#ffffbf"
+        - "#fee090"
+        - "#fc8d59"
+        - "#d73027"
+    # analysis:
+    #   exclude: true
+  - id: power_901_annual_meterology_utc_DISPH
+    stacApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
+    tileApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
+    stacCol: POWER/power_901_annual_meterology_utc
+    name: Zero Plane Displacement Height
+    type: arc
+    description:
+      "Lorem Ipsum"
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      layers: DISPH
+    compare:
+      datasetId: power_901_annual_meterology_utc
+      layerId: power_901_annual_meterology_utc_DISPH
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    legend:
+      unit: 
+        label: m
+      type: gradient
+      min: 0
+      max: 8972.0625
+      stops:
+        - "#4575b4"
+        - "#91bfdb"
+        - "#e0f3f8"
+        - "#ffffbf"
+        - "#fee090"
+        - "#fc8d59"
+        - "#d73027"
+    # analysis:
+    #   exclude: true
+---
