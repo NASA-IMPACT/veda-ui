@@ -74,7 +74,8 @@ interface CheckableFiltersProps {
   tagItemCleared?: { // An option item that was removed globally
     item?: OptionItem;
     callback?: React.Dispatch<React.SetStateAction<any>>;
-  }
+  },
+  openByDefault?: boolean;
 }
 
 export interface OptionItem {
@@ -89,9 +90,10 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
     title,
     onChanges,
     globallySelected,
-    tagItemCleared
+    tagItemCleared,
+    openByDefault = true
   } = props;
-  const [show, setShow] = useState<boolean>(false);
+  const [show, setShow] = useState<boolean>(openByDefault);
   const [count, setCount] = useState<number>(0);
   const [selected, setSelected] = useState<OptionItem[]>([]);
 

@@ -26,6 +26,7 @@ interface FiltersMenuProps {
   onFilterChange?: (item: OptionItem, action: 'add' | 'remove') => void;
   exclusiveSourceSelected?: string | null;
   customTopOffset?: number;
+  openByDefault?: boolean;
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
@@ -39,6 +40,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
     clearedTagItem,
     setClearedTagItem,
     exclusiveSourceSelected,
+    openByDefault,
     // Custom top offset to customize the top position of the controls.
     // This is a specific case for the Catalog view when it's embedded in the modal which
     // has a different header reference as opposed to what the useSlidingStickyHeader hook
@@ -111,6 +113,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
             onChanges={item => handleChanges(item, allSelected.some(selected => selected.id === item.id) ? 'remove' : 'add')}
             globallySelected={allSelected}
             tagItemCleared={{ item: clearedTagItem, callback: setClearedTagItem }}
+            openByDefault={openByDefault}
           />
         ))}
       </div>

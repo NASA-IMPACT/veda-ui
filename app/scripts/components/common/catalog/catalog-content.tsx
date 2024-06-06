@@ -186,6 +186,7 @@ function CatalogContent({
         allSelected={selectedFilters}
         exclusiveSourceSelected={exclusiveSourceSelected}
         customTopOffset={isSelectable ? 50 : 0}
+        openByDefault={isSelectable ? false : true}
       />
       <Catalog>
         <CatalogTagsContainer
