@@ -458,6 +458,7 @@ function Scrollytelling(props) {
                   }}
                   selectedDay={runtimeData.datetime ?? new Date()}
                   order={lIdx}
+                  // @TODO: Get/set the visibility as part of the dataset settings
                   hidden={isHidden}
                   onStatusChange={onLayerLoadSuccess}
                 />

@@ -21,6 +21,7 @@ interface LayerProps {
   dataset: TimelineDatasetSuccess;
   order?: number;
   selectedDay: Date;
+  // @TODO: Get this from the dataset settings
   hidden?: boolean;
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
