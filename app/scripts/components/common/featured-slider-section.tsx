@@ -20,12 +20,12 @@ import { useReactIndianaScrollControl } from '$styles/continuum/use-react-indian
 import { ContinuumScrollIndicator } from '$styles/continuum/continuum-scroll-indicator';
 import { getDatasetPath, getStoryPath } from '$utils/routes';
 import { Pill } from '$styles/pill';
-import DatasetMenu from '$components/data-catalog/dataset-menu';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data';
+import DatasetMenu from '$components/data-catalog/dataset-menu';
 
 const allFeaturedStories = Object.values(stories)
   .map((d) => d!.data)
@@ -70,13 +70,13 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
   if (!featuredItems.length) return null;
 
   // Disable no-mutating rule since the copy of the array is being mutated
-  // eslint-disable-next-line fp/no-mutating-methods 
+  // eslint-disable-next-line fp/no-mutating-methods
   const sortedFeaturedItems  = dateProperty? [...featuredItems].sort((itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
     const pubDateOfItemA = new Date(itemA[dateProperty]);
     const pubDateOfItemB = new Date(itemB[dateProperty]);
     return pubDateOfItemB.getTime() - pubDateOfItemA.getTime();
   }) as StoryData[] | DatasetData[]: featuredItems;
-  
+
 
   return (
     <FoldFeatured>

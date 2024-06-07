@@ -8,11 +8,10 @@ export enum Actions {
   SEARCH = 'search',
   SORT_FIELD = 'sfield',
   SORT_DIR = 'sdir',
-  TAXONOMY = 'taxonomy',
-  TAXONOMY_MULTISELECT = 'taxonomy_multiselect',
+  TAXONOMY = 'taxonomy'
 }
 
-export type BrowserControlsAction = (what: Actions, value?: any) => void;
+export type BrowserControlsAction = (action: Actions, value?: any) => void;
 
 export interface FilterOption {
   id: string;
@@ -47,6 +46,8 @@ export const optionAll = {
 
 export const minSearchLength = 3;
 
+// This hook is only used for the Stories Hub to manage browsing controls
+// such as search, sort, and taxonomy filters.
 export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
   // Setup Qs State to store data in the url's query string
   // react-router function to get the navigation.
@@ -59,7 +60,8 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
     {
       key: Actions.SORT_FIELD,
       // If pubDate exists, default sorting to this
-      default: sortOptions.find((o) => o.id === 'pubDate')?.id || sortOptions[0]?.id,
+      default:
+        sortOptions.find((o) => o.id === 'pubDate')?.id || sortOptions[0]?.id,
       validator: sortOptions.map((d) => d.id)
     },
     [sortOptions]
@@ -82,7 +84,9 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
     []
   );
 
-  const [taxonomies, setTaxonomies] = useQsState.memo<Record<string, string | string[]>>(
+  const [taxonomies, setTaxonomies] = useQsState.memo<
+    Record<string, string | string[]>
+  >(
     {
       key: Actions.TAXONOMY,
       default: {},
@@ -93,8 +97,8 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
   );
 
   const onAction = useCallback<BrowserControlsAction>(
-    (what, value) => {
-      switch (what) {
+    (action, value) => {
+      switch (action) {
         case Actions.CLEAR:
           setSearch('');
           setTaxonomies({});
@@ -118,26 +122,7 @@ export function useBrowserControls({ sortOptions }: BrowseControlsHookParams) {
             }
           }
           break;
-        case Actions.TAXONOMY_MULTISELECT:
-          {
-            const { key, value: val } = value;
-            if (taxonomies && (key in taxonomies)) { // If taxonomy group currently present
-              const taxonomyGroupValues = taxonomies[key] instanceof Array ? (taxonomies[key] as string[]) : [taxonomies[key]];
-
-              if (taxonomyGroupValues.includes(val)) { // If val exists, then remove
-                const updatedValues = taxonomyGroupValues.filter((x) => x !== val);
-                updatedValues.length ? setTaxonomies(set({ ...taxonomies }, key, updatedValues)) : setTaxonomies(omit(taxonomies, key));
-              } else { // else add
-                taxonomyGroupValues.push(val);
-                setTaxonomies(taxonomies);
-              }
-            } else { // Taxonomy group currently not present
-              setTaxonomies(set({ ...taxonomies }, key, [val]));
-            }
-          }
-          break;
       }
-      
     },
     [setSortField, setSortDir, taxonomies, setTaxonomies, setSearch]
   );

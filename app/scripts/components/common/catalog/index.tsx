@@ -1,16 +1,9 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { DatasetData } from 'veda';
-import { useNavigate } from 'react-router-dom';
 import { themeVal } from '@devseed-ui/theme-provider';
-import prepareDatasets from '../../data-catalog/prepare-datasets';
-import FiltersControl from './filters-control';
-import FilterTag from './filter-tag';
-import {
-  Actions,
-  minSearchLength,
-  useBrowserControls
-} from '$components/common/browse-controls/use-browse-controls';
+import CatalogContent from './catalog-content';
+import { useCatalogView } from './controls/hooks/use-catalog-view';
 import {
   useSlidingStickyHeaderProps
 } from '$components/common/layout-root';
@@ -20,24 +13,11 @@ import {
   FoldHeadline,
   FoldTitle
 } from '$components/common/fold';
-import { Card } from '$components/common/card';
-import { CardList } from '$components/common/card/styles';
-import EmptyHub from '$components/common/empty-hub';
-import { DATASETS_PATH, getDatasetPath } from '$utils/routes';
-import TextHighlight from '$components/common/text-highlight';
-import {
-  getAllTaxonomyValues,
-  getTaxonomyByIds,
-  generateTaxonomies,
-} from '$utils/veda-data';
-import { variableBaseType, variableGlsp } from '$styles/variable-utils';
-import { OptionItem } from '$components/common/form/checkable-filter';
-import { usePreviousValue } from '$utils/use-effect-previous';
-import { getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
+import { variableGlsp } from '$styles/variable-utils';
 
 /**
- * DATA CATALOG Feature component 
- * Allows you to browse through datasets using the filters sidebar control
+ * CATALOG Feature component
+ * Allows you to browse through datasets and layers using the filters sidebar control
  */
 
 const CatalogWrapper = styled.div`
@@ -54,176 +34,19 @@ const CatalogFoldHeader = styled(FoldHeader)`
   margin-bottom: 4rem;
 `;
 
-const Content = styled.div`
-  display: flex;
-  margin-bottom: 8rem;
-  position: relative;
-`;
-
-const Catalog = styled.div`
-  width: 100%;
-`;
-
-const Cards = styled(CardList)`
-  padding: 0 0 0 2rem;
-`;
-
-const Tags = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0 0 2.4rem 2rem;
-`;
-
-const PlainTextButton = styled.button`
-  background: none;
-  border: none;
-  outline: none;
-  box-shadow: none;
-  color: ${themeVal('color.primary-400')};
-  text-decoration: underline;
-  font-size: ${variableBaseType('0.6rem')};
-  &:hover {
-    color: ${themeVal('color.primary-800')};
-  }
-`;
-
-const EmptyState = styled(EmptyHub)`
-  margin-left: 2rem;
-`;
-
 export const sortOptions = [{ id: 'name', name: 'Name' }];
 
 export interface CatalogViewProps {
   datasets: DatasetData[];
 }
 
-function CatalogView({ 
+function CatalogView({
   datasets,
 }: CatalogViewProps) {
-  const controlVars = useBrowserControls({
-    sortOptions
-  });
-
-  const navigate = useNavigate();
-
-  const { taxonomies, sortField, sortDir, onAction } = controlVars;
-  const search = controlVars.search ?? '';
-
-  const datasetTaxonomies = generateTaxonomies(datasets);
-
-  const urlTaxonomyItems = taxonomies? Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat(): [];
-  
-  const allDatasetsWithEnhancedLayers = useMemo(() => getAllDatasetsWithEnhancedLayers(datasets), [datasets]);
-
-  const [datasetsToDisplay, setDatasetsToDisplay] = useState<DatasetData[]>(
-    prepareDatasets(allDatasetsWithEnhancedLayers, {
-    search,
-    taxonomies,
-    sortField,
-    sortDir,
-    filterLayers: false
-  }));
-
-  const [allSelectedFilters, setAllSelectedFilters] = useState<OptionItem[]>(urlTaxonomyItems);
-  const [clearedTagItem, setClearedTagItem] = useState<OptionItem>();
-
-  const prevSelectedFilters = usePreviousValue(allSelectedFilters) || [];
-
-  // Handlers
-  const handleChangeAllSelectedFilters = useCallback((item: OptionItem, action: 'add' | 'remove') => {
-    if(action == 'add') {
-      setAllSelectedFilters([...allSelectedFilters, item]);
-    } 
-    
-    if (action == 'remove') {
-      setAllSelectedFilters(allSelectedFilters.filter((selected) => selected.id !== item.id));
-    }
-    onAction(Actions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
-  }, [setAllSelectedFilters, allSelectedFilters, onAction]);
-
-  const handleClearTag = useCallback((item: OptionItem) => {
-    setAllSelectedFilters(allSelectedFilters.filter((selected) => selected !== item));
-    setClearedTagItem(item);
-
-  }, [allSelectedFilters]);
-
-  const handleClearTags = useCallback(() => {
-    setAllSelectedFilters([]);
-  }, [setAllSelectedFilters]);
-
-  useEffect(() => {
-    if (clearedTagItem && (allSelectedFilters.length == prevSelectedFilters.length-1)) {
-      onAction(Actions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id}); 
-      setClearedTagItem(undefined);
-    }
-  }, [allSelectedFilters, clearedTagItem]);
-
-  useEffect(() => {
-    if(!allSelectedFilters.length) {
-      onAction(Actions.CLEAR);
-      navigate(DATASETS_PATH);
-    }
-  }, [allSelectedFilters]);
-
-  useEffect(() => {
-    const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
-      search,
-      taxonomies,
-      sortField,
-      sortDir,
-      filterLayers: false
-    });
-    setDatasetsToDisplay(updated);
-  }, [allSelectedFilters, taxonomies, search]);
 
   const { headerHeight } = useSlidingStickyHeaderProps();
 
-  const renderTags = useMemo(() => {
-    if (allSelectedFilters.length > 0 || urlTaxonomyItems.length > 0) {
-      return (
-        <Tags>
-          {
-            (allSelectedFilters.length > 0) ? (
-              allSelectedFilters.map((filter) => <FilterTag key={`${filter.taxonomy}-${filter.id}`} item={filter} onClick={handleClearTag} />)
-            ) : (
-              urlTaxonomyItems.map((filter) => <FilterTag key={`${filter.taxonomy}-${filter.id}`} item={filter} onClick={handleClearTag} />)
-            )
-          }
-          <PlainTextButton onClick={handleClearTags}>Clear all</PlainTextButton>
-        </Tags>
-      );
-    }
-    return null;
-  }, [allSelectedFilters, handleClearTag, handleClearTags, urlTaxonomyItems]);
-
-  const renderCard = (dataset: DatasetData) => {
-    const allTaxonomyValues = getAllTaxonomyValues(dataset).map((v) => v.name);
-    return (
-      <Card
-        cardType='horizontal-info'
-        tagLabels={allTaxonomyValues}
-        linkTo={getDatasetPath(dataset)}
-        title={
-          <TextHighlight
-            value={search}
-            disabled={search.length < minSearchLength}
-          >
-            {dataset.name}
-          </TextHighlight>
-        }
-        description={
-          <TextHighlight
-            value={search}
-            disabled={search.length < minSearchLength}
-          >
-            {dataset.description}
-          </TextHighlight>
-        }
-        imgSrc={dataset.media?.src}
-        imgAlt={dataset.media?.alt}
-      />
-    );
-  };
+  const { search, taxonomies, onAction } = useCatalogView();
 
   return (
     <CatalogWrapper>
@@ -236,36 +59,12 @@ function CatalogView({
           <FoldTitle>Search datasets</FoldTitle>
         </FoldHeadline>
       </CatalogFoldHeader>
-      <Content>
-        <FiltersControl
-          {...controlVars}
-          taxonomiesOptions={datasetTaxonomies}
-          onChangeToFilters={handleChangeAllSelectedFilters}
-          clearedTagItem={clearedTagItem}
-          setClearedTagItem={setClearedTagItem}
-          allSelected={allSelectedFilters}
-        />
-        <Catalog>
-          {renderTags}
-          {datasetsToDisplay.length ? (
-            <Cards>
-              {
-                datasetsToDisplay.map((d) => {
-                  return (
-                    <li key={d.id}>
-                      {renderCard(d)}
-                    </li>
-                  );
-                })
-              }
-            </Cards>
-          ) : (
-            <EmptyState>
-              There are no datasets to show with the selected filters.
-            </EmptyState>
-          )}
-        </Catalog>
-      </Content>
+      <CatalogContent
+        datasets={datasets}
+        search={search}
+        taxonomies={taxonomies}
+        onAction={onAction}
+      />
     </CatalogWrapper>
   );
 }
