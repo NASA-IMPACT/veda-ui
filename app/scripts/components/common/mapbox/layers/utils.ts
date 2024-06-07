@@ -21,27 +21,21 @@ import {
   DatasetLayerType
 } from 'veda';
 import {
-  MapLayerRasterTimeseries,
   MapLayerRasterTimeseriesProps,
   StacFeature
 } from './raster-timeseries';
-import {
-  MapLayerVectorTimeseries,
-  MapLayerVectorTimeseriesProps
-} from './vector-timeseries';
-import {
-  MapLayerZarrTimeseries,
-  MapLayerZarrTimeseriesProps
-} from './zarr-timeseries';
-import {
-  MapLayerCMRTimeseries,
-  MapLayerCMRTimeseriesProps
-} from './cmr-timeseries';
+import { MapLayerVectorTimeseriesProps } from './vector-timeseries';
+import { MapLayerZarrTimeseriesProps } from './zarr-timeseries';
+import { MapLayerCMRTimeseriesProps } from './cmr-timeseries';
 
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { HintedError } from '$utils/hinted-error';
+import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
+import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
+import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
+import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
 
 export const getLayerComponent = (
   isTimeseries: boolean,
@@ -53,10 +47,10 @@ export const getLayerComponent = (
   | MapLayerCMRTimeseriesProps
 > | null => {
   if (isTimeseries) {
-    if (layerType === 'raster') return MapLayerRasterTimeseries;
-    if (layerType === 'vector') return MapLayerVectorTimeseries;
-    if (layerType === 'zarr') return MapLayerZarrTimeseries;
-    if (layerType === 'cmr') return MapLayerCMRTimeseries;
+    if (layerType === 'raster') return RasterTimeseries;
+    if (layerType === 'vector') return VectorTimeseries;
+    if (layerType === 'zarr') return ZarrTimeseries;
+    if (layerType === 'cmr') return CMRTimeseries;
   }
 
   return null;

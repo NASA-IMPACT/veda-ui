@@ -14,28 +14,31 @@ import { RasterTimeseries } from '$components/common/map/style-generators/raster
 import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
+import { ActionStatus } from '$utils/status';
 
 interface LayerProps {
   id: string;
   dataset: TimelineDatasetSuccess;
   order?: number;
   selectedDay: Date;
+  hidden?: boolean;
+  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
 
 export function Layer(props: LayerProps) {
-  const { id: layerId, dataset, order, selectedDay } = props;
+  const { id: layerId, dataset, order, selectedDay, onStatusChange, hidden } = props;
 
   let isVisible: boolean | undefined;
   let opacity: number | undefined;
 
   const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
-  
+
   try {
     // @TECH-DEBT: Wrapping this logic with a try/catch because jotai errors because it is unable to find
     // 'settings' on undefined value even when dataset has 'settings' key. This is a workaround for now but
     // should be revisited. Ideally type should be fine with 'Partial<TimelineDataset>'
     const [getSettings] = useTimelineDatasetSettings(datasetAtom);
-  
+
     isVisible = getSettings('isVisible');
     opacity = getSettings('opacity');
   } catch {
@@ -45,8 +48,8 @@ export function Layer(props: LayerProps) {
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(
-    () => getTimeDensityStartDate(selectedDay, dataset.data?.timeDensity),
-    [selectedDay, dataset.data?.timeDensity]
+    () => getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
+    [selectedDay, dataset.data.timeDensity]
   );
 
   // Resolve config functions.
@@ -71,8 +74,9 @@ export function Layer(props: LayerProps) {
           zoomExtent={params.zoomExtent}
           sourceParams={params.sourceParams}
           generatorOrder={order}
-          hidden={!isVisible}
+          hidden={!isVisible || hidden}
           opacity={opacity}
+          onStatusChange={onStatusChange}
         />
       );
     case 'zarr':
@@ -86,8 +90,9 @@ export function Layer(props: LayerProps) {
           zoomExtent={params.zoomExtent}
           sourceParams={params.sourceParams}
           generatorOrder={order}
-          hidden={!isVisible}
+          hidden={!isVisible || hidden}
           opacity={opacity}
+          onStatusChange={onStatusChange}
         />
       );
     case 'cmr':
@@ -102,8 +107,9 @@ export function Layer(props: LayerProps) {
           zoomExtent={params.zoomExtent}
           sourceParams={params.sourceParams}
           generatorOrder={order}
-          hidden={!isVisible}
+          hidden={!isVisible || hidden}
           opacity={opacity}
+          onStatusChange={onStatusChange}
         />
       );
     case 'raster':
@@ -117,8 +123,9 @@ export function Layer(props: LayerProps) {
           zoomExtent={params.zoomExtent}
           sourceParams={params.sourceParams}
           generatorOrder={order}
-          hidden={!isVisible}
+          hidden={!isVisible || hidden}
           opacity={opacity}
+          onStatusChange={onStatusChange}
         />
       );
     default:

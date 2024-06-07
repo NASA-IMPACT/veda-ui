@@ -1,7 +1,5 @@
 import React, {
-  Children,
-  FunctionComponent,
-  ReactElement,
+  Children, ReactElement,
   useCallback,
   useEffect,
   useMemo,
@@ -14,9 +12,9 @@ import styled, { css } from 'styled-components';
 import * as dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
-import { Map as MapboxMap } from 'mapbox-gl';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
+import { MapRef } from 'react-map-gl';
 import { BlockErrorBoundary } from '..';
 import {
   chapterDisplayName,
@@ -24,42 +22,32 @@ import {
   ScrollyChapter,
   validateChapter
 } from './chapter';
-import {
-  getLayerComponent,
-  resolveConfigFunctions
-} from '$components/common/mapbox/layers/utils';
 import { AsyncDatasetLayer, useAsyncLayers } from '$context/layer-data';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { S_FAILED, S_SUCCEEDED } from '$utils/status';
 
-import { SimpleMap } from '$components/common/mapbox/map';
 import Hug from '$styles/hug';
-import {
-  LayerLegendContainer,
-  LayerLegend
-} from '$components/common/map/layer-legend';
 import MapMessage from '$components/common/map/map-message';
-import { MapLoading } from '$components/common/loading-skeleton';
 import { HintedError } from '$utils/hinted-error';
-import { formatSingleDate } from '$components/common/mapbox/utils';
-import { convertProjectionToMapbox } from '$components/common/mapbox/map-options/utils';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root';
 import { HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
-import { Styles } from '$components/common/mapbox/layers/styles';
-import { Basemap } from '$components/common/mapbox/layers/basemap';
+import { Basemap } from '$components/common/map/style-generators/basemap';
+import Map from '$components/common/map';
+import { LayerLegend, LayerLegendContainer } from '$components/common/map/layer-legend';
+import { Layer } from '$components/exploration/components/map/layer';
+import { MapLoading } from '$components/common/loading-skeleton';
+import { formatSingleDate, resolveConfigFunctions } from '$components/common/map/utils';
+import { convertProjectionToMapbox } from '$components/common/map/controls/map-options/projections';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
-  Component: FunctionComponent<any> | null;
   runtimeData: { datetime?: Date; id: string };
 } | null;
 
-export const scrollyMapHeight = 'calc(100vh - 3rem)';
+export const SCROLLY_MAP_HEIGHT = 'calc(100vh - 3rem)';
 
-const ScrollyMapWrapper = styled.div``;
-
-const TheMap = styled.div<{ topOffset: number }>`
-  height: ${scrollyMapHeight};
+const ScrollyMapContainer = styled.div<{ topOffset: number }>`
+  height: ${SCROLLY_MAP_HEIGHT};
   position: sticky;
   transition: top ${HEADER_TRANSITION_DURATION}ms ease-out,
     height ${HEADER_TRANSITION_DURATION}ms ease-out;
@@ -142,11 +130,14 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   const uniqueChapterLayers = useMemo(() => {
     const unique = chList
       .filter(({ showBaseMap }) => !showBaseMap)
-      .reduce(
-        (acc, ch) => acc.set(getChapterLayerKey(ch), ch),
-        new Map<string, ScrollyChapter>()
-      );
-    return Array.from(unique.values());
+      .reduce<Record<string, ScrollyChapter>>((acc, ch) => {
+        const key = getChapterLayerKey(ch);
+        acc[key] = ch;
+        return acc;
+      }, {});
+
+    return Object.values(unique);
+
   }, [chList]);
 
   // Create an array of datasetId & layerId to pass useAsyncLayers so that the
@@ -175,7 +166,6 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
 
   // Each resolved layer will be an object with:
   // layer: The resolved layerData
-  // Component: The component to render the layer
   // runtimeData: The runtime data for the layer
   //
   // The difference between runtimeData and layer is that the layer has the
@@ -204,7 +194,6 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
 
         const resolved = {
           layer: data,
-          Component: getLayerComponent(!!data.timeseries, data.type),
           runtimeData: {
             datetime,
             id: getChapterLayerKey(uniqueChapterLayers[index])
@@ -264,17 +253,13 @@ const mapOptions = {
   zoom: 1
 };
 
-//
-// Scrollytelling Block React Component
-//
 function Scrollytelling(props) {
   const { children } = props;
 
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();
 
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<MapboxMap>(null);
+  const mapRef = useRef<MapRef>(null);
   const [isMapLoaded, setMapLoaded] = useState(false);
 
   // Extract the props from the chapters.
@@ -282,6 +267,7 @@ function Scrollytelling(props) {
 
   const [resolvedLayers, resolvedStatus] =
     useMapLayersFromChapters(chapterProps);
+
   const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(
     null
   );
@@ -296,21 +282,21 @@ function Scrollytelling(props) {
   useEffect(() => {
     if (!areAllLayersLoaded) return;
 
-    // Setup initial map state which will be the values on the first chapter.
-    const initialCh = chapterProps[0];
-    mapRef.current?.setZoom(initialCh.zoom);
-    mapRef.current?.setCenter(initialCh.center);
-
-    setActiveChapter(initialCh);
-
     const scroller = scrollama();
+
+    // Setup initial map state which will be the values on the first chapter.
+    const initialChapter = chapterProps[0];
+
+    mapRef.current?.setZoom(initialChapter.zoom);
+    mapRef.current?.setCenter(initialChapter.center);
+
+    setActiveChapter(initialChapter);
 
     // setup the instance, pass callback functions
     scroller
       .setup({
         step: '[data-step]',
         offset: 0.8
-        // ,debug: true
       })
       .onStepEnter((response) => {
         const { index } = response;
@@ -362,8 +348,8 @@ function Scrollytelling(props) {
       wrapperHeight;
 
   return (
-    <ScrollyMapWrapper>
-      <TheMap topOffset={topOffset}>
+    <>
+      <ScrollyMapContainer topOffset={topOffset}>
         {areLayersLoading && <MapLoading />}
 
         {/*
@@ -380,9 +366,9 @@ function Scrollytelling(props) {
         </MapMessage>
 
         {/*
-        Map overlay element
-        Message shown with the current date.
-      */}
+          Map overlay element
+          Message shown with the current date.
+        */}
         <MapMessage
           id='scrolly-map-date-message'
           active={!!activeChapterLayer?.runtimeData.datetime}
@@ -430,58 +416,57 @@ function Scrollytelling(props) {
           </CSSTransition>
         </SwitchTransition>
 
-        <Styles>
-          <Basemap />
+        <Map
+          id='scrollymap-map'
+          mapOptions={mapOptions}
+          mapRef={mapRef}
+          onMapLoad={() => {
+            setMapLoaded(true);
+            mapRef.current?.resize();
+          }}
+          onStyleUpdate={() => {
+            mapRef.current?.resize();
+          }}
+        >
           {isMapLoaded &&
             resolvedLayers.map((resolvedLayer, lIdx) => {
               if (!resolvedLayer || !mapRef.current) return null;
 
-              const { runtimeData, Component: LayerCmp, layer } = resolvedLayer;
+              const { runtimeData, layer } = resolvedLayer;
               const isHidden =
                 !activeChapterLayerId ||
                 activeChapterLayerId !== runtimeData.id ||
                 activeChapter.showBaseMap;
 
-              if (!LayerCmp) return null;
-
-              // Each layer type is added to the map through a component. This
-              // component has all the logic needed to add/update/remove the
-              // layer. Which component to use will depend on the characteristics
-              // of the layer and dataset.
-              // The function getLayerComponent() should be used to get the
-              // correct component.
               return (
-                <LayerCmp
+                <Layer
                   key={runtimeData.id}
-                  id={runtimeData.id}
-                  mapInstance={mapRef.current}
-                  stacApiEndpoint={layer.stacApiEndpoint}
-                  tileApiEndpoint={layer.tileApiEndpoint}
-                  stacCol={layer.stacCol}
-                  date={runtimeData.datetime}
-                  sourceParams={layer.sourceParams}
-                  zoomExtent={layer.zoomExtent}
+                  id={`scrolly-${runtimeData.id}`}
+                  dataset={{
+                    // @TODO: Handle type here
+                    data: layer,
+                    id: layer.id,
+                    timeDensity: layer.timeseries.timeDensity,
+                    stacCol: layer.stacCol,
+                    stacApiEndpoint: layer.stacApiEndpoint,
+                    tileApiEndpoint: layer.tileApiEndpoint,
+                    type: layer.type,
+                    assetUrlReplacements: layer.assetUrlReplacements,
+                    sourceParams: layer.sourceParams,
+                    zoomExtent: layer.zoomExtent
+                  }}
+                  selectedDay={runtimeData.datetime ?? new Date()}
+                  order={lIdx}
+                  hidden={isHidden}
                   onStatusChange={onLayerLoadSuccess}
-                  idSuffix={'scrolly-' + lIdx}
-                  isHidden={isHidden}
                 />
               );
             })}
-          <SimpleMap
-            className='root'
-            mapRef={mapRef}
-            containerRef={mapContainer}
-            onLoad={() => {
-              setMapLoaded(true);
-              // Fit the map to the container once  loaded.
-              mapRef.current?.resize();
-            }}
-            mapOptions={mapOptions}
-          />
-        </Styles>
-      </TheMap>
+          <Basemap />
+        </Map>
+      </ScrollyMapContainer>
       <TheChapters>{children}</TheChapters>
-    </ScrollyMapWrapper>
+    </>
   );
 }
 
