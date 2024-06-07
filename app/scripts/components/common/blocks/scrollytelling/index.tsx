@@ -446,15 +446,7 @@ function Scrollytelling(props) {
                     // @TODO: Handle type here
                     // @ts-expect-error type is missing on type
                     data: layer,
-                    id: layer.id,
-                    timeDensity: layer.timeseries.timeDensity,
-                    stacCol: layer.stacCol,
-                    stacApiEndpoint: layer.stacApiEndpoint,
-                    tileApiEndpoint: layer.tileApiEndpoint,
-                    type: layer.type,
-                    assetUrlReplacements: layer.assetUrlReplacements,
-                    sourceParams: layer.sourceParams,
-                    zoomExtent: layer.zoomExtent
+                    ...layer
                   }}
                   selectedDay={runtimeData.datetime ?? new Date()}
                   order={lIdx}
