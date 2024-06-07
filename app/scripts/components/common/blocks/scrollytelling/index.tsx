@@ -444,6 +444,7 @@ function Scrollytelling(props) {
                   id={`scrolly-${runtimeData.id}`}
                   dataset={{
                     // @TODO: Handle type here
+                    // @ts-expect-error type is missing on type
                     data: layer,
                     id: layer.id,
                     timeDensity: layer.timeseries.timeDensity,
