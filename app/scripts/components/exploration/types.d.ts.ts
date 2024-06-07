@@ -107,42 +107,54 @@ export interface TimelineDatasetSettings {
 // Tile endpoints for the layer given the current map view.
 type TimelineDatasetMeta = Record<string, any>;
 
-// TimelineDataset type discriminants
-export interface TimelineDatasetIdle {
+// Holds only dataset needed for visualization (Subset of timeline dataset)
+// @ TODO: Rename Timeline specific variable names
+export interface VizDatasetIdle {
   status: TimelineDatasetStatus.IDLE;
   data: EnhancedDatasetLayer;
   error: null;
-  // User controlled settings like visibility, opacity.
   settings: TimelineDatasetSettings;
-  analysis: TimelineDatasetAnalysisIdle;
   meta?: TimelineDatasetMeta;
 }
-export interface TimelineDatasetLoading {
+
+export interface VizDatasetLoading {
   status: TimelineDatasetStatus.LOADING;
   data: EnhancedDatasetLayer;
   error: null;
-  // User controlled settings like visibility, opacity.
   settings: TimelineDatasetSettings;
-  analysis: TimelineDatasetAnalysisIdle;
   meta?: TimelineDatasetMeta;
 }
-export interface TimelineDatasetError {
+
+export interface VizDatasetError {
   status: TimelineDatasetStatus.ERROR;
   data: EnhancedDatasetLayer;
   error: unknown;
-  // User controlled settings like visibility, opacity.
   settings: TimelineDatasetSettings;
-  analysis: TimelineDatasetAnalysisIdle;
   meta?: TimelineDatasetMeta;
 }
-export interface TimelineDatasetSuccess {
-  status: TimelineDatasetStatus.SUCCESS;
-  data: TimelineDatasetData;
-  error: null;
-  // User controlled settings like visibility, opacity.
-  settings: TimelineDatasetSettings;
+
+export interface VizDatasetSuccess {
+    status: TimelineDatasetStatus.SUCCESS;
+    data: TimelineDatasetData;
+    error: null;
+    settings: TimelineDatasetSettings;
+    meta?: TimelineDatasetMeta;
+}
+
+export type VizDataset = VizDatasetLoading | VizDatasetIdle | VizDatasetError | VizDatasetSuccess;
+
+// TimelineDataset type discriminants
+export interface TimelineDatasetIdle extends VizDatasetIdle {
+  analysis: TimelineDatasetAnalysisIdle;
+}
+export interface TimelineDatasetLoading extends VizDatasetLoading {
+  analysis: TimelineDatasetAnalysisIdle;
+}
+export interface TimelineDatasetError extends VizDatasetError {
+  analysis: TimelineDatasetAnalysisIdle;
+}
+export interface TimelineDatasetSuccess extends VizDatasetSuccess {
   analysis: TimelineDatasetAnalysis;
-  meta?: TimelineDatasetMeta;
 }
 
 export type TimelineDataset =
