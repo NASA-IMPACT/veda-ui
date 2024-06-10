@@ -9,7 +9,7 @@ import { DAY_SIZE_MAX } from '../constants';
 import {
   TimeDensity,
   TimelineDataset,
-  TimelineDatasetStatus,
+  DatasetStatus,
   TimelineDatasetSuccess
 } from '../types.d.ts';
 import { timelineSizesAtom } from './timeline';
@@ -37,8 +37,7 @@ export function useTimelineDatasetsDomain() {
 
   return useMemo(() => {
     const successDatasets = datasets.filter(
-      (d): d is TimelineDatasetSuccess =>
-        d.status === TimelineDatasetStatus.SUCCESS
+      (d): d is TimelineDatasetSuccess => d.status === DatasetStatus.SUCCESS
     );
     if (!successDatasets.length) return undefined;
 
@@ -140,13 +139,15 @@ export function useTimelineDatasetVisibility(
   return useAtom(visibilityAtom);
 }
 
-export const useTimelineDatasetAnalysis = (datasetAtom: PrimitiveAtom<TimelineDataset>) => {
+export const useTimelineDatasetAnalysis = (
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+) => {
   return useSetAtom(
     focusAtom(
       datasetAtom,
       // (Use OpticsFor type from optics-ts)
-      // @ts-expect-error:  For now until making sure this is the solution 
-      useCallback((optic) => optic.prop("analysis"), [])
+      // @ts-expect-error:  For now until making sure this is the solution
+      useCallback((optic) => optic.prop('analysis'), [])
     )
   );
 };

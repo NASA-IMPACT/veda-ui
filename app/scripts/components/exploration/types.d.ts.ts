@@ -7,7 +7,7 @@ export enum TimeDensity {
   DAY = 'day'
 }
 
-export enum TimelineDatasetStatus {
+export enum DatasetStatus {
   IDLE = 'idle',
   LOADING = 'loading',
   SUCCESS = 'success',
@@ -47,25 +47,25 @@ interface AnalysisMeta {
 
 // TimelineDatasetAnalysis type discriminants
 export interface TimelineDatasetAnalysisIdle {
-  status: TimelineDatasetStatus.IDLE;
+  status: DatasetStatus.IDLE;
   data: null;
   error: null;
   meta: Record<string, never>;
 }
 export interface TimelineDatasetAnalysisLoading {
-  status: TimelineDatasetStatus.LOADING;
+  status: DatasetStatus.LOADING;
   data: null;
   error: null;
-  meta: Partial<AnalysisMeta>
+  meta: Partial<AnalysisMeta>;
 }
 export interface TimelineDatasetAnalysisError {
-  status: TimelineDatasetStatus.ERROR;
+  status: DatasetStatus.ERROR;
   data: null;
   error: any;
-  meta: Partial<AnalysisMeta>
+  meta: Partial<AnalysisMeta>;
 }
 export interface TimelineDatasetAnalysisSuccess {
-  status: TimelineDatasetStatus.SUCCESS;
+  status: DatasetStatus.SUCCESS;
   data: {
     timeseries: AnalysisTimeseriesEntry[];
   };
@@ -88,7 +88,7 @@ export interface EnhancedDatasetLayer extends DatasetLayer {
   parentDataset: ParentDatset;
 }
 
-export interface TimelineDatasetData extends EnhancedDatasetLayer {
+export interface DatasetData extends EnhancedDatasetLayer {
   isPeriodic: boolean;
   timeDensity: TimeDensity;
   domain: Date[];
@@ -105,43 +105,47 @@ export interface TimelineDatasetSettings {
 
 // Any sort of meta information the dataset like:
 // Tile endpoints for the layer given the current map view.
-type TimelineDatasetMeta = Record<string, any>;
+type DatasetMeta = Record<string, any>;
 
 // Holds only dataset needed for visualization (Subset of timeline dataset)
 // @ TODO: Rename Timeline specific variable names
 export interface VizDatasetIdle {
-  status: TimelineDatasetStatus.IDLE;
+  status: DatasetStatus.IDLE;
   data: EnhancedDatasetLayer;
   error: null;
   settings: TimelineDatasetSettings;
-  meta?: TimelineDatasetMeta;
+  meta?: DatasetMeta;
 }
 
 export interface VizDatasetLoading {
-  status: TimelineDatasetStatus.LOADING;
+  status: DatasetStatus.LOADING;
   data: EnhancedDatasetLayer;
   error: null;
   settings: TimelineDatasetSettings;
-  meta?: TimelineDatasetMeta;
+  meta?: DatasetMeta;
 }
 
 export interface VizDatasetError {
-  status: TimelineDatasetStatus.ERROR;
+  status: DatasetStatus.ERROR;
   data: EnhancedDatasetLayer;
   error: unknown;
   settings: TimelineDatasetSettings;
-  meta?: TimelineDatasetMeta;
+  meta?: DatasetMeta;
 }
 
 export interface VizDatasetSuccess {
-    status: TimelineDatasetStatus.SUCCESS;
-    data: TimelineDatasetData;
-    error: null;
-    settings: TimelineDatasetSettings;
-    meta?: TimelineDatasetMeta;
+  status: DatasetStatus.SUCCESS;
+  data: DatasetData;
+  error: null;
+  settings: TimelineDatasetSettings;
+  meta?: DatasetMeta;
 }
 
-export type VizDataset = VizDatasetLoading | VizDatasetIdle | VizDatasetError | VizDatasetSuccess;
+export type VizDataset =
+  | VizDatasetLoading
+  | VizDatasetIdle
+  | VizDatasetError
+  | VizDatasetSuccess;
 
 // TimelineDataset type discriminants
 export interface TimelineDatasetIdle extends VizDatasetIdle {

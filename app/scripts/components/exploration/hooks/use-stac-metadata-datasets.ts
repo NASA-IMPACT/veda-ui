@@ -9,7 +9,7 @@ import {
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
-  TimelineDatasetStatus
+  DatasetStatus
 } from '../types.d.ts';
 import { resolveLayerTemporalExtent } from '../data-utils';
 
@@ -39,11 +39,11 @@ function reconcileQueryDataWithDataset(
   try {
     let base = {
       ...dataset,
-      status: queryData.status as TimelineDatasetStatus,
+      status: queryData.status as DatasetStatus,
       error: queryData.error
     };
 
-    if (queryData.status === TimelineDatasetStatus.SUCCESS) {
+    if (queryData.status === DatasetStatus.SUCCESS) {
       const domain = resolveLayerTemporalExtent(base.data.id, queryData.data);
       base = {
         ...base,
@@ -63,7 +63,7 @@ function reconcileQueryDataWithDataset(
 
     return {
       ...dataset,
-      status: TimelineDatasetStatus.ERROR,
+      status: DatasetStatus.ERROR,
       error: e
     } as TimelineDataset;
   }
@@ -97,12 +97,12 @@ async function fetchStacDatasetById(
     };
   } else if (type === 'cmr') {
     const domain = data.summaries?.datetime?.[0]
-    ? data.summaries.datetime
-    : data.extent.temporal.interval[0];
-  const domainStart = domain[0];
-  
-  // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
-  const lastDatetime = domain[domain.length - 1] ||  new Date().toISOString();
+      ? data.summaries.datetime
+      : data.extent.temporal.interval[0];
+    const domainStart = domain[0];
+
+    // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
+    const lastDatetime = domain[domain.length - 1] || new Date().toISOString();
     // CMR STAC misses the dashboard specific attributes, shim these values
     return {
       isPeriodic: true,
@@ -130,7 +130,7 @@ function makeQueryObject(
   dataset: TimelineDataset
 ): UseQueryOptions<unknown, unknown, StacDatasetData> {
   return {
-    queryKey: ['dataset', dataset?.data?.id],
+    queryKey: ['dataset', dataset.data.id],
     queryFn: () => fetchStacDatasetById(dataset),
     // This data will not be updated in the context of a browser session, so it is
     // safe to set the staleTime to Infinity. As specified by react-query's
@@ -153,12 +153,19 @@ function makeQueryObject(
  */
 export function useReconcileWithStacMetadata(
   datasets: TimelineDataset[],
-  handleUpdate: SetAtom<[updates: SetStateAction<TimelineDataset[]>], void> | React.Dispatch<React.SetStateAction<undefined | TimelineDataset[]>>
+  handleUpdate:
+    | SetAtom<[updates: SetStateAction<TimelineDataset[]>], void>
+    | React.Dispatch<React.SetStateAction<undefined | TimelineDataset[]>>
 ) {
-  const noDatasetsToQuery: boolean = !datasets || (datasets.length === 1 && datasets[0] === undefined);
+  const noDatasetsToQuery: boolean =
+    !datasets || (datasets.length === 1 && datasets[0] === undefined);
 
   const datasetsQueryData = useQueries({
-    queries: noDatasetsToQuery ? [] : datasets.filter((d) => !(d as any)?.mocked).map((dataset) => makeQueryObject(dataset))
+    queries: noDatasetsToQuery
+      ? []
+      : datasets
+          .filter((d) => !(d as any)?.mocked)
+          .map((dataset) => makeQueryObject(dataset))
   });
 
   useEffectPrevious<[typeof datasetsQueryData, TimelineDataset[]]>(
@@ -197,11 +204,7 @@ export function useReconcileWithStacMetadata(
       if (updated) {
         handleUpdate(updatedDatasets);
       }
-
     },
     [datasetsQueryData, datasets]
   );
 }
-
-
-

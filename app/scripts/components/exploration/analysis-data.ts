@@ -5,7 +5,7 @@ import { ConcurrencyManagerInstance } from './concurrency';
 import {
   TimelineDataset,
   TimelineDatasetAnalysis,
-  TimelineDatasetStatus
+  DatasetStatus
 } from './types.d.ts';
 import { ExtendedError } from './data-utils';
 import {
@@ -91,14 +91,13 @@ export async function requestDatasetTimeseriesData({
   queryClient,
   concurrencyManager,
   onProgress
-}: TimeseriesRequesterParams)
-:  Promise<TimelineDatasetAnalysis> {
+}: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
 
   if (datasetData.type !== 'raster') {
     return {
-      status: TimelineDatasetStatus.ERROR,
+      status: DatasetStatus.ERROR,
       meta: {},
       error: new ExtendedError(
         'Analysis is only supported for raster datasets',
@@ -111,7 +110,7 @@ export async function requestDatasetTimeseriesData({
   const id = datasetData.id;
 
   onProgress({
-    status: TimelineDatasetStatus.LOADING,
+    status: DatasetStatus.LOADING,
     error: null,
     data: null,
     meta: {}
@@ -148,7 +147,7 @@ export async function requestDatasetTimeseriesData({
     const { assets } = layerInfoFromSTAC;
 
     onProgress({
-      status: TimelineDatasetStatus.LOADING,
+      status: DatasetStatus.LOADING,
       error: null,
       data: null,
       meta: {
@@ -168,7 +167,7 @@ export async function requestDatasetTimeseriesData({
 
       return {
         ...datasetAnalysis,
-        status: TimelineDatasetStatus.ERROR,
+        status: DatasetStatus.ERROR,
         error: e,
         data: null
       };
@@ -177,7 +176,7 @@ export async function requestDatasetTimeseriesData({
     if (!assets.length) {
       return {
         ...datasetAnalysis,
-        status: TimelineDatasetStatus.ERROR,
+        status: DatasetStatus.ERROR,
         error: new ExtendedError(
           'No data in the given time range and area of interest',
           'ANALYSIS_NO_DATA'
@@ -186,7 +185,7 @@ export async function requestDatasetTimeseriesData({
       };
     }
 
-    let loaded = 0;//new Array(assets.length).fill(0);
+    let loaded = 0; //new Array(assets.length).fill(0);
 
     const tileEndpointToUse =
       datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
@@ -194,8 +193,7 @@ export async function requestDatasetTimeseriesData({
     const analysisParams = datasetData.analysis?.sourceParams ?? {};
 
     const layerStatistics = await Promise.all(
-      assets.map(
-        async ({ date, url }) => {
+      assets.map(async ({ date, url }) => {
         const statistics = await concurrencyManager.queue(
           `${id}-analysis-asset`,
           () => {
@@ -210,7 +208,7 @@ export async function requestDatasetTimeseriesData({
                 );
                 return {
                   date,
-                  
+
                   ...data.properties.statistics.b1
                 };
               },
@@ -219,26 +217,25 @@ export async function requestDatasetTimeseriesData({
               }
             );
           }
-            );
-          onProgress({
-            status: TimelineDatasetStatus.LOADING,
-            error: null,
-            data: null,
-            meta: {
-              total: assets.length,
-              loaded: ++loaded
-            }
-          });
+        );
+        onProgress({
+          status: DatasetStatus.LOADING,
+          error: null,
+          data: null,
+          meta: {
+            total: assets.length,
+            loaded: ++loaded
+          }
+        });
 
         return statistics;
-      }
-      )
+      })
     );
 
-    if (layerStatistics.filter(e => e.mean).length === 0) {
+    if (layerStatistics.filter((e) => e.mean).length === 0) {
       return {
         ...datasetAnalysis,
-        status: TimelineDatasetStatus.ERROR,
+        status: DatasetStatus.ERROR,
         error: new ExtendedError(
           'The selected time and area of interest contains no valid data. Please adjust your selection.',
           'ANALYSIS_NO_VALID_DATA'
@@ -248,7 +245,7 @@ export async function requestDatasetTimeseriesData({
     }
 
     onProgress({
-      status: TimelineDatasetStatus.SUCCESS,
+      status: DatasetStatus.SUCCESS,
       meta: {
         total: assets.length,
         loaded: assets.length
@@ -259,7 +256,7 @@ export async function requestDatasetTimeseriesData({
       }
     });
     return {
-      status: TimelineDatasetStatus.SUCCESS,
+      status: DatasetStatus.SUCCESS,
       meta: {
         total: assets.length,
         loaded: assets.length
@@ -273,7 +270,7 @@ export async function requestDatasetTimeseriesData({
     // Discard abort related errors.
     if (error.revert) {
       return {
-        status: TimelineDatasetStatus.LOADING,
+        status: DatasetStatus.LOADING,
         error: null,
         data: null,
         meta: {}
@@ -286,7 +283,7 @@ export async function requestDatasetTimeseriesData({
     concurrencyManager.dequeue(`${id}-analysis-asset`);
     return {
       ...datasetAnalysis,
-      status: TimelineDatasetStatus.ERROR,
+      status: DatasetStatus.ERROR,
       error,
       data: null
     };

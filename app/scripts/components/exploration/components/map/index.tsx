@@ -4,7 +4,7 @@ import { ProjectionOptions } from 'veda';
 import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
 import {
   TimelineDataset,
-  TimelineDatasetStatus,
+  DatasetStatus,
   TimelineDatasetSuccess
 } from '../../types.d.ts';
 import { Layer } from './layer';
@@ -86,7 +86,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
   const loadedDatasets = datasets
     .filter(
       (d): d is TimelineDatasetSuccess =>
-        d.status === TimelineDatasetStatus.SUCCESS
+        d.status === DatasetStatus.SUCCESS
     )
     .slice()
     .reverse();
@@ -95,7 +95,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
     (style: ExtendedStyle) => {
       const updatedDatasets = datasets.map((dataset) => {
         // Skip non loaded datasets
-        if (dataset.status !== TimelineDatasetStatus.SUCCESS) return dataset;
+        if (dataset.status !== DatasetStatus.SUCCESS) return dataset;
 
         // Check if there's layer information for this dataset.
         const layerMetadata = style.layers.find(
