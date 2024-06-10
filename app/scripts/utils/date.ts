@@ -19,7 +19,7 @@ import {
  *
  * Basically it parses the date ignoring the timezone and treats it as if the
  * date is already in the user's Tz.
- * Times I had timezone related bugs and this fn saved me: 7
+ * Times I had timezone related bugs and this fn saved me: 8
  *
  * Reverse function of userTzDate2utcString()
  *
