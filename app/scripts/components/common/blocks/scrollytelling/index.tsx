@@ -38,6 +38,7 @@ import { Layer } from '$components/exploration/components/map/layer';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { formatSingleDate, resolveConfigFunctions } from '$components/common/map/utils';
 import { convertProjectionToMapbox } from '$components/common/map/controls/map-options/projections';
+import { DatasetStatus, VizDatasetSuccess } from '$components/exploration/types.d.ts';
 
 type ResolvedLayer = {
   layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
@@ -141,13 +142,11 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   }, [chList]);
 
   // Create an array of datasetId & layerId to pass useAsyncLayers so that the
-  // layers can be loaded. The skipCompare prevents the compare layer to be
-  // loaded, since it will never be used.
+  // layers can be loaded.
   const uniqueLayerRefs = useMemo(() => {
     return uniqueChapterLayers.map(({ datasetId, layerId }) => ({
       datasetId,
       layerId,
-      skipCompare: true
     }));
   }, [uniqueChapterLayers]);
 
@@ -443,15 +442,14 @@ function Scrollytelling(props) {
                   key={runtimeData.id}
                   id={`scrolly-${runtimeData.id}`}
                   dataset={{
-                    // @TODO: Handle type here
-                    // @ts-expect-error type is missing on type
-                    data: layer,
-                    ...layer
+                    ...reconcileVizDataset(layer),
+                    settings: {
+                      ...reconcileVizDataset(layer).settings,
+                      isVisible: !isHidden
+                    }
                   }}
                   selectedDay={runtimeData.datetime ?? new Date()}
                   order={lIdx}
-                  // @TODO: Get/set the visibility as part of the dataset settings
-                  hidden={isHidden}
                   onStatusChange={onLayerLoadSuccess}
                 />
               );
@@ -470,4 +468,12 @@ Scrollytelling.propTypes = {
 
 export function ScrollytellingBlock(props) {
   return <BlockErrorBoundary {...props} childToRender={Scrollytelling} />;
+}
+
+export function reconcileVizDataset(dataset): VizDatasetSuccess {
+  return {
+    status: DatasetStatus.SUCCESS,
+    data: dataset,
+    error: null
+  };
 }

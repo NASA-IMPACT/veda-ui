@@ -13,6 +13,7 @@ import { DatasetLayer, DatasetLayerCompareNormalized, datasets } from 'veda';
 
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
+import { DatasetStatus } from '$components/exploration/types.d.ts';
 
 export type TimeDensity = 'day' | 'month' | 'year' | null;
 
@@ -57,10 +58,10 @@ const fetchLayerById = async (
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
     const domainStart = domain[0];
-    
+
     // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
     const lastDatetime = domain[domain.length - 1] ||  new Date().toISOString();
-    
+
     return {
       timeseries: {
         ...commonTimeseriesParams,
@@ -259,7 +260,7 @@ export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
   // Get the layers from the different datasets.
   const layers = useMemo(
     () =>
-      referencedLayers.map(({ datasetId, layerId, skipCompare }) => {
+      referencedLayers.map(({ datasetId, layerId }) => {
         const layers = datasets[datasetId]?.data.layers;
         // Get the layer information from the dataset defined in the configuration.
         const layer = layers?.find(
@@ -274,14 +275,6 @@ export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
           );
         }
 
-        // Skip the compare to avoid unnecessary network requests.
-        if (skipCompare) {
-          return {
-            ...layer,
-            compare: null
-          };
-        }
-
         return layer;
       }),
     [referencedLayers]
@@ -289,4 +282,39 @@ export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
 
   // Get the layer information from the dataset defined in the configuration.
   return useLayersInit(layers);
+};
+
+export const reconcileLayerToVizDatasetSuccess = (asyncLayer: AsyncDatasetLayer) => {
+
+  const baseLayerData = asyncLayer.baseLayer.data;
+
+  if (!baseLayerData) {
+    throw new Error('Base layer data is missing');
+  }
+
+  const datasetData = {
+    ...baseLayerData,
+    domain: baseLayerData.timeseries.domain.map(dateStr => new Date(dateStr))
+  };
+
+  const analysisData = {
+    timeseries: [],
+    status: DatasetStatus.SUCCESS,
+    data: null,
+    error: null,
+    meta: { loaded: 100, total: 100 }
+  };
+
+  return {
+    status: DatasetStatus.SUCCESS,
+    data: datasetData,
+    error: null,
+    settings: {
+      isVisible: true,
+      opacity: 1,
+      analysisMetrics: []
+    },
+    meta: {},
+    analysis: analysisData
+  };
 };
