@@ -99,8 +99,6 @@ export interface DatasetSettings {
   isVisible?: boolean;
   // Opacity of the layer on the map.
   opacity?: number;
-}
-export interface TimelineDatasetSettings extends DatasetSettings {
   // Active metrics for the analysis chart.
   analysisMetrics?: DataMetric[];
 }
@@ -115,7 +113,7 @@ export interface VizDatasetIdle {
   status: DatasetStatus.IDLE;
   data: EnhancedDatasetLayer;
   error: null;
-  settings?: DatasetSettings;
+  settings: DatasetSettings;
   meta?: DatasetMeta;
 }
 
@@ -123,7 +121,7 @@ export interface VizDatasetLoading {
   status: DatasetStatus.LOADING;
   data: EnhancedDatasetLayer;
   error: null;
-  settings?: DatasetSettings;
+  settings: DatasetSettings;
   meta?: DatasetMeta;
 }
 
@@ -131,7 +129,7 @@ export interface VizDatasetError {
   status: DatasetStatus.ERROR;
   data: EnhancedDatasetLayer;
   error: unknown;
-  settings?: DatasetSettings;
+  settings: DatasetSettings;
   meta?: DatasetMeta;
 }
 
@@ -139,7 +137,7 @@ export interface VizDatasetSuccess {
   status: DatasetStatus.SUCCESS;
   data: DatasetData;
   error: null;
-  settings?: DatasetSettings;
+  settings: DatasetSettings;
   meta?: DatasetMeta;
 }
 
@@ -173,7 +171,7 @@ export type TimelineDataset =
 
 export interface TimelineDatasetForUrl {
   id: string;
-  settings?: TimelineDatasetSettings;
+  settings: DatasetSettings;
 }
 
 export interface DateRange {

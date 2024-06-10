@@ -474,6 +474,7 @@ export function reconcileVizDataset(dataset): VizDatasetSuccess {
   return {
     status: DatasetStatus.SUCCESS,
     data: dataset,
-    error: null
+    error: null,
+    settings: dataset.settings
   };
 }
