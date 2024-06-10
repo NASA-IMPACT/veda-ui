@@ -12,7 +12,7 @@ export function useSlidingStickyHeader() {
   const [wrapperHeight, setWrapperHeight] = useState(0);
 
   const { pathname } = useLocation();
-  
+
   const navWrapperElement = document.querySelector<HTMLElement>(
     `#${HEADER_WRAPPER_ID}`
   );
@@ -28,7 +28,7 @@ export function useSlidingStickyHeader() {
     },
     [pathname]
   );
-  
+
   useEffect(() => {
     let ticking = false;
     let prevY = window.scrollY;

@@ -11,7 +11,6 @@ import {
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 import { LayerInfoLiner } from '../layer-info-modal';
-import { ParentDatasetTitle } from '../dataset-selector-modal/content';
 import LayerMenuOptions from './layer-options-menu';
 import { TipButton } from '$components/common/tip-button';
 import {
@@ -21,6 +20,7 @@ import {
 
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
+import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
 
 interface CardProps {
   dataset: TimelineDataset;

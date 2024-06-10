@@ -7,7 +7,7 @@ import { Button } from '@devseed-ui/button';
 import { pluralize } from '$utils/pluralize';
 
 interface ModalFooterComponentProps {
-  selectedIds: string[];
+  selectedDatasetsCount: number;
   onConfirm: () => void;
   close: () => void;
 }
@@ -29,13 +29,13 @@ const LayerResult = styled.div`
 `;
 
 export default function ModalFooterRender (props:ModalFooterComponentProps) {
-  const { selectedIds, close, onConfirm } = props;
+  const { selectedDatasetsCount, close, onConfirm } = props;
 
   return (
     <>
       <LayerResult aria-live='polite' className='selection-info'>
-        {selectedIds.length
-          ? <><LayerNumberHighlight>{selectedIds.length} </LayerNumberHighlight> <div>{pluralize({ singular: 'layer', plural: 'layers', count: selectedIds.length})} selected</div></>
+        {selectedDatasetsCount
+          ? <><LayerNumberHighlight>{selectedDatasetsCount} </LayerNumberHighlight> <div>{pluralize({ singular: 'layer', plural: 'layers', count: selectedDatasetsCount})} selected</div></>
           : 'No data layers selected'}
       </LayerResult>
         <Button variation='base-text' onClick={close}>
@@ -43,7 +43,7 @@ export default function ModalFooterRender (props:ModalFooterComponentProps) {
         </Button>
       <Button
         variation='primary-fill'
-        disabled={!selectedIds.length}
+        disabled={!selectedDatasetsCount}
         onClick={onConfirm}
       >
         Add to map
