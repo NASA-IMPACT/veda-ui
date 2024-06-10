@@ -47,12 +47,14 @@ interface AnalysisMeta {
 
 // TimelineDatasetAnalysis type discriminants
 export interface TimelineDatasetAnalysisIdle {
+  // @TODO : make status right
   status: TimelineDatasetStatus.IDLE;
   data: null;
   error: null;
   meta: Record<string, never>;
 }
 export interface TimelineDatasetAnalysisLoading {
+  // @TO DO : make status right
   status: TimelineDatasetStatus.LOADING;
   data: null;
   error: null;

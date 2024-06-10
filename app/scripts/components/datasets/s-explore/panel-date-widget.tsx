@@ -75,6 +75,7 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
     children
   } = props;
 
+
   const currIndex =
     availableDates?.findIndex((d) => d.getTime() === value.start?.getTime()) ??
     -1;
@@ -86,6 +87,7 @@ export function PanelDateWidget(props: PanelDateWidgetProps) {
         : null,
     [availableDates, timeDensity]
   );
+  console.log(timeDensity)
 
   return (
     <PanelWidget>

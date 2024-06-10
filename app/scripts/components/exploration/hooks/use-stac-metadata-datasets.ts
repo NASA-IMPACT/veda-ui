@@ -9,7 +9,9 @@ import {
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
-  TimelineDatasetStatus
+  TimelineDatasetStatus,
+  VizDataset,
+  VizDatasetSuccess
 } from '../types.d.ts';
 import { resolveLayerTemporalExtent } from '../data-utils';
 
@@ -34,8 +36,8 @@ function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
  */
 function reconcileQueryDataWithDataset(
   queryData: UseQueryResult<StacDatasetData>,
-  dataset: TimelineDataset
-): TimelineDataset {
+  dataset: VizDataset
+): VizDataset {
   try {
     let base = {
       ...dataset,
@@ -55,7 +57,7 @@ function reconcileQueryDataWithDataset(
       };
     }
 
-    return base as TimelineDataset;
+    return base as VizDataset;
   } catch (error) {
     const e = new Error('Error reconciling query data with dataset');
     // @ts-expect-error detail is not a property of Error
@@ -65,14 +67,14 @@ function reconcileQueryDataWithDataset(
       ...dataset,
       status: TimelineDatasetStatus.ERROR,
       error: e
-    } as TimelineDataset;
+    } as VizDataset;
   }
 }
 
 async function fetchStacDatasetById(
-  dataset: TimelineDataset
+  dataset: VizDataset
 ): Promise<StacDatasetData> {
-  const { type, stacCol, stacApiEndpoint, time_density } = dataset.data;
+  const { type, stacCol, stacApiEndpoint } = dataset.data;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
 
@@ -96,6 +98,7 @@ async function fetchStacDatasetById(
       domain: featuresApiData.extent.temporal.interval[0]
     };
   } else if (type === 'cmr') {
+
     const domain = data.summaries?.datetime?.[0]
     ? data.summaries.datetime
     : data.extent.temporal.interval[0];
@@ -104,6 +107,7 @@ async function fetchStacDatasetById(
   // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
   const lastDatetime = domain[domain.length - 1] ||  new Date().toISOString();
     // CMR STAC misses the dashboard specific attributes, shim these values
+    const { time_density } = dataset.data;
     return {
       isPeriodic: true,
       timeDensity: time_density ?? TimeDensity.DAY,
@@ -127,10 +131,10 @@ async function fetchStacDatasetById(
 
 // Create a query object for react query.
 function makeQueryObject(
-  dataset: TimelineDataset
+  dataset: VizDataset
 ): UseQueryOptions<unknown, unknown, StacDatasetData> {
   return {
-    queryKey: ['dataset', dataset?.data?.id],
+    queryKey: ['dataset', dataset.data.id],
     queryFn: () => fetchStacDatasetById(dataset),
     // This data will not be updated in the context of a browser session, so it is
     // safe to set the staleTime to Infinity. As specified by react-query's
@@ -151,27 +155,38 @@ function makeQueryObject(
  * Whenever a dataset is added to the timeline, this hook will fetch the STAC
  * metadata for that dataset and add it to the dataset state atom.
  */
-export function useReconcileWithStacMetadata(
-  datasets: TimelineDataset[],
-  handleUpdate: SetAtom<[updates: SetStateAction<TimelineDataset[]>], void> | React.Dispatch<React.SetStateAction<undefined | TimelineDataset[]>>
-) {
-  const noDatasetsToQuery: boolean = !datasets || (datasets.length === 1 && datasets[0] === undefined);
 
+// Overload signatures
+export function useReconcileWithStacMetadata(
+  datasets: VizDataset[],
+  handleUpdate: React.Dispatch<React.SetStateAction<undefined | VizDatasetSuccess[]>>
+): void;
+export function useReconcileWithStacMetadata(
+  datasets: VizDataset[],
+  handleUpdate: SetAtom<[updates: SetStateAction<VizDataset[]>], void> 
+): void;
+
+export function useReconcileWithStacMetadata<T extends VizDataset>(
+  datasets: T[],
+  handleUpdate: SetAtom<[updates: SetStateAction<TimelineDataset[]>], void> | React.Dispatch<React.SetStateAction<undefined | VizDataset[]>>
+):void {
+  
+  const noDatasetsToQuery: boolean = (datasets.length === 1 && datasets[0] === undefined);
   const datasetsQueryData = useQueries({
     queries: noDatasetsToQuery ? [] : datasets.filter((d) => !(d as any)?.mocked).map((dataset) => makeQueryObject(dataset))
   });
 
-  useEffectPrevious<[typeof datasetsQueryData, TimelineDataset[]]>(
+  useEffectPrevious<[typeof datasetsQueryData, T[]]>(
     (prev) => {
       if (noDatasetsToQuery) return;
 
       const prevQueryData = prev[0];
       const hasPrev = !!prevQueryData;
       const { updated, data: updatedDatasets } = datasets
-        .filter((d) => !(d as any)?.mocked)
         .reduce<{
           updated: boolean;
-          data: TimelineDataset[];
+          // @TODO: type this properly
+          data;
         }>(
           (acc, dataset, idx) => {
             const curr = datasetsQueryData[idx];
@@ -197,11 +212,7 @@ export function useReconcileWithStacMetadata(
       if (updated) {
         handleUpdate(updatedDatasets);
       }
-
     },
     [datasetsQueryData, datasets]
   );
 }
-
-
-

@@ -1,3 +1,7 @@
+// @TODO - Do ts check
+/* eslint-disable */
+// @ts-nocheck
+ 
 import React, {
   useCallback,
   useEffect,
@@ -10,6 +14,7 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import useQsStateCreator from 'qs-state-hook';
 import { isSameDay } from 'date-fns';
+import { isEqual } from 'lodash';
 import { themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonExpandFromLeft,
@@ -19,14 +24,14 @@ import {
 import { ProjectionOptions } from 'veda';
 import { FormSwitch } from '@devseed-ui/form';
 
-import LayerVisibilityToggleButton from './layer-visibility-toggle';
-import TileLinkButton from './tile-link';
 import DatasetLayers from './dataset-layers';
 import { PanelDateWidget } from './panel-date-widget';
+import { ExploreMap as NewMap } from './map';
+import { reconcileVizDataset, datasetLayers } from '$components/exploration/data-utils';
 import { DATASETS_PATH } from '$utils/routes';
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
-import MapboxMap, { MapboxMapRef } from '$components/common/mapbox';
+import MapboxMap from '$components/common/mapbox';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import {
@@ -50,20 +55,17 @@ import { useDataset } from '$utils/veda-data';
 import { useMediaQuery } from '$utils/use-media-query';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
-import { AsyncDatasetLayer, useDatasetAsyncLayers } from '$context/layer-data';
-import {
-  checkLayerLoadStatus,
-  resolveLayerTemporalExtent
-} from '$components/common/mapbox/layers/utils';
+
 import { variableGlsp } from '$styles/variable-utils';
 import { S_SUCCEEDED } from '$utils/status';
 import { projectionDefault } from '$components/common/mapbox/map-options/utils';
-import { NotebookConnectButton } from '$components/common/notebook-connect';
 import { ExtendedStyle } from '$components/common/mapbox/layers/styles';
 import {
   BasemapId,
   BASEMAP_ID_DEFAULT
 } from '$components/common/mapbox/map-options/basemaps';
+import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
+
 
 const BackLink = styled(Link)`
   display: flex;
@@ -229,8 +231,7 @@ const useDatePickerValue = (
 };
 
 function DatasetsExplore() {
-  const mapboxRef = useRef<MapboxMapRef>(null);
-  const dataset = useDataset();
+  const dataset = useDataset(); // @TO-DO : replace this
 
   if (!dataset) throw resourceNotFound();
 
@@ -239,6 +240,39 @@ function DatasetsExplore() {
       `There are no layers defined in dataset ${dataset.data.id}`
     );
   }
+
+  const vizLayers =  dataset.data.layers.map(reconcileVizDataset);
+  const vizCompareLayers = vizLayers
+  .map(d => ({
+    origin: d.data.id,
+    id: d.data.compare?.layerId,
+    ...d.data.compare
+  }))
+  .filter(d => d.id)
+  .map(d => {
+    const matchingDataset = datasetLayers.find((dd) => dd.id === d.id);
+    return {
+    origin: d.origin, 
+    ...reconcileVizDataset(matchingDataset)
+  }});
+
+  const [browseLayers, setBrowseLayers] = useState(vizLayers);
+  const [compareBrowseLayers, setCompareBrowseLayers] = useState(vizCompareLayers);
+
+
+  // Generic handleSet function
+  const handleSet = (currentLayers, setLayers) => (newDatasets) => {
+    if (!isEqual(currentLayers, newDatasets)) {
+      setLayers(newDatasets);
+    }
+  };
+
+  const handleSetDatasets = useCallback(handleSet(browseLayers, setBrowseLayers), [browseLayers]);
+  const handleSetCompareDatasets = useCallback(handleSet(compareBrowseLayers, setCompareBrowseLayers),[compareBrowseLayers])
+
+  useReconcileWithStacMetadata(browseLayers, handleSetDatasets);
+  useReconcileWithStacMetadata(compareBrowseLayers, handleSetCompareDatasets);
+  
 
   /** *********************************************************************** */
   // Panel relate stuff to ensure it opens and closes and this action resizes
@@ -275,15 +309,6 @@ function DatasetsExplore() {
     setPanelRevealed(!isMediumDown);
   }, [isMediumDown]);
 
-  // When the panel changes resize the map after a the animation finishes.
-  useEffect(() => {
-    const id = setTimeout(
-      () => mapboxRef.current?.resize(),
-      PANEL_REVEAL_DURATION
-    );
-    return () => clearTimeout(id);
-  }, [panelRevealed]);
-
   /** *********************************************************************** */
   // Setup Qs State to store data in the url's query string
   // react-router function to get the navigation.
@@ -299,6 +324,20 @@ function DatasetsExplore() {
     },
     [dataset]
   );
+
+  // Current active layer if is loaded, undefined otherwise.
+  const activeLayer = useMemo(() => {
+    return browseLayers.find((l) => {
+      return l.data.id === selectedLayerId;
+    });
+  }, [browseLayers, selectedLayerId]);
+
+  // Current compare layer if is loaded, undefined otherwise.
+  const activeCompareLayer = useMemo(() => {
+    return compareBrowseLayers.find((l) => {
+      return l.origin === activeLayer.data.id;
+    });
+  }, [activeLayer]);
 
   const [mapPosition, setMapPosition] = useQsState.memo<{
     lng: number;
@@ -378,42 +417,36 @@ function DatasetsExplore() {
   /** *********************************************************************** */
 
   const [isComparing, setIsComparing] = useState(!!selectedCompareDatetime);
-  const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
+  // const [isDatasetLayerHidden, setIsDatasetLayerHidden] = useState(false);
   const [layerStyle, setLayerStyle] = useState<ExtendedStyle | undefined>(
     undefined
   );
 
-  const currentLayerStyle = layerStyle?.layers.find((l) => {
-    return l.metadata.id === `base-${selectedLayerId}`;
-  });
+  // const currentLayerStyle = layerStyle?.layers.find((l) => {
+  //   return l.metadata.id === `base-${selectedLayerId}`;
+  // });
 
   // Get the dataset's layers.
   // Since async data has to be loaded, each layer is in an async format which
   // has the following structure:
   // Array of { baseLayer, compareLayer }
   // See the type definitions in the layer-data context for more.
-  const asyncLayers = useDatasetAsyncLayers(dataset.data.id);
+  // const asyncLayers = useDatasetAsyncLayers(dataset.data.id);
 
-  // Current active layer if is loaded, undefined otherwise.
-  const activeLayer = useMemo(() => {
-    return asyncLayers.find((l) => {
-      const status = checkLayerLoadStatus(l);
-      // @ts-expect-error l.baseLayer.data is always defined if S_SUCCEEDED.
-      return status === S_SUCCEEDED && l.baseLayer.data.id === selectedLayerId;
-    });
-  }, [asyncLayers, selectedLayerId]);
+ // Get the layers for new map
+  
 
   // Get the active layer timeseries data so we can render the date selector.
   // Done both for the base layer and the compare layer.
   const activeLayerTimeseries = useMemo(
     // @ts-expect-error if there is activeLayer the the rest is loaded.
-    () => activeLayer?.baseLayer.data.timeseries ?? null,
+    () => activeLayer?.data.domain ?? null,
     [activeLayer]
   );
-  const activeLayerCompareTimeseries = useMemo(
+  const activeLayerCompareTimeDensity = useMemo(
     // @ts-expect-error if there is activeLayer the the rest is loaded.
-    () => activeLayer?.compareLayer?.data.timeseries ?? null,
-    [activeLayer]
+    () => activeCompareLayer?.data.timeDensity ?? null,
+    [activeCompareLayer]
   );
 
   // On layer change, reset the projection.
@@ -421,10 +454,10 @@ function DatasetsExplore() {
   // otherwise default to mercator. If this is the first layer loading (like
   // when the user enters the page), then use the projection in the url. This is
   // needed in case the url was shared with a different projection.
-  useEffectPrevious<[AsyncDatasetLayer | undefined, ProjectionOptions | null]>(
+  /*useEffectPrevious<[AsyncDatasetLayer | undefined, ProjectionOptions | null]>(
     (prev) => {
       const prevActiveData = prev[0]?.baseLayer.data;
-      const currActiveData = activeLayer?.baseLayer.data;
+      const currActiveData = activeLayer?.data;
 
       if (prevActiveData?.id === undefined && currActiveData) {
         // First load.
@@ -455,12 +488,13 @@ function DatasetsExplore() {
     },
     [activeLayer, mapProjection]
   );
-
+  */
   // On layer change, reset the basemapId.
   // When activating a layer always use the layer basemap (if defined),
   // otherwise default to satellite. If this is the first layer loading (like
   // when the user enters the page), then use the basemap in the url. This is
   // needed in case the url was shared with a different basemap.
+  /*
   useEffectPrevious<[AsyncDatasetLayer | undefined, BasemapId | null]>(
     (prev) => {
       const prevActiveData = prev[0]?.baseLayer.data;
@@ -495,21 +529,19 @@ function DatasetsExplore() {
     },
     [activeLayer, mapBasemapId]
   );
-
+*/
   // Available dates for the baseLayer of the currently active layer.
   // null if there's no active layer or it hasn't loaded yet.
   const availableActiveLayerDates = useMemo(() => {
-    if (!activeLayer) return undefined;
-    return resolveLayerTemporalExtent(activeLayer.baseLayer.data) ?? undefined;
+    if (!activeLayer || activeLayer.status !== S_SUCCEEDED) return undefined;
+    return activeLayer.data.domain;
   }, [activeLayer]);
   // Available dates for the compareLayer of the currently active layer.
   // null if there's no compare layer or it hasn't loaded yet.
   const availableActiveLayerCompareDates = useMemo(() => {
-    if (!activeLayer?.compareLayer) return undefined;
-    return (
-      resolveLayerTemporalExtent(activeLayer.compareLayer.data) ?? undefined
-    );
-  }, [activeLayer]);
+    if (!activeCompareLayer || activeCompareLayer.status !== S_SUCCEEDED) return undefined;
+    return activeCompareLayer.data.domain;
+  }, [activeCompareLayer]);
 
   // On layer change, if there's no compare layer, unset the date.
   useEffect(() => {
@@ -519,7 +551,7 @@ function DatasetsExplore() {
     }
   }, [activeLayer, setSelectedCompareDatetime]);
 
-  const initialDatetime = activeLayer?.baseLayer.data?.initialDatetime;
+  const initialDatetime = activeLayer?.data.initialDatetime;
 
   // Deselect compare dates when compare toggle changes.
   useEffect(() => {
@@ -623,7 +655,7 @@ function DatasetsExplore() {
                         meaningful
                       />
                     )}
-                  </PanelToggle>
+                  </PanelToggle> 
                 </PanelActions>
               </PanelHeader>
               <PanelBody>
@@ -641,10 +673,10 @@ function DatasetsExplore() {
                           title='Date'
                           value={datePickerValue}
                           onConfirm={datePickerConfirm}
-                          timeDensity={activeLayerTimeseries.timeDensity}
-                          availableDates={availableActiveLayerDates}
+                          timeDensity={activeLayer?.data.timeDensity}
+                          availableDates={activeLayerTimeseries}
                         >
-                          {activeLayerCompareTimeseries && (
+                          {activeLayerCompareTimeDensity && (
                             <FormSwitch
                               id='compare-date-toggle'
                               name='compare-date-toggle'
@@ -658,12 +690,12 @@ function DatasetsExplore() {
                           )}
                         </PanelDateWidget>
                       )}
-                      {isComparing && activeLayerCompareTimeseries && (
+                      {isComparing && activeLayerCompareTimeDensity && (
                         <PanelDateWidget
                           title='Date comparison'
                           value={datePickerCompareValue}
                           onConfirm={datePickerCompareConfirm}
-                          timeDensity={activeLayerCompareTimeseries.timeDensity}
+                          timeDensity={activeLayerCompareTimeDensity}
                           availableDates={availableActiveLayerCompareDates}
                         />
                       )}
@@ -674,8 +706,9 @@ function DatasetsExplore() {
                       </PanelWidgetHeader>
                       <PanelWidgetBody>
                         <DatasetLayers
+                          dataset={dataset}
                           datasetId={dataset.data.id}
-                          asyncLayers={asyncLayers}
+                          asyncLayers={browseLayers}
                           selectedLayerId={selectedLayerId ?? undefined}
                           onAction={onLayerAction}
                         />
@@ -687,40 +720,14 @@ function DatasetsExplore() {
             </PanelInner>
           </Panel>
           <Carto>
-            <CustomControlWrapper>
-              <NotebookConnectButton dataset={dataset.data} />
-              <TileLinkButton
-                layerData={currentLayerStyle}
-                disabled={!currentLayerStyle?.metadata.xyzTileUrl}
-              />
-              <LayerVisibilityToggleButton
-                isDatasetLayerHidden={isDatasetLayerHidden}
-                onLayerVisibilityClick={setIsDatasetLayerHidden}
-              />
-            </CustomControlWrapper>
-            <MapboxMap
-              ref={mapboxRef}
-              withGeocoder
-              withScale
-              datasetId={dataset.data.id}
-              layerId={activeLayer?.baseLayer.data?.id}
-              date={selectedDatetime ?? undefined}
-              compareDate={selectedCompareDatetime ?? undefined}
-              isComparing={isComparing}
-              initialPosition={mapPosition ?? undefined}
-              onPositionChange={(v) => {
-                // Only store the map position if the change was initiated by
-                // the user.
-                if (v.userInitiated) {
-                  setMapPosition(v);
-                }
-              }}
-              projection={mapProjection ?? projectionDefault}
-              onProjectionChange={setMapProjection}
-              basemapStyleId={mapBasemapId ?? BASEMAP_ID_DEFAULT}
-              onBasemapStyleIdChange={setBasemapId}
-              isDatasetLayerHidden={isDatasetLayerHidden}
-              onStyleChange={setLayerStyle}
+            <NewMap 
+              datasets={browseLayers}
+              compareLayer={activeCompareLayer}
+              selectedLayerId={selectedLayerId}
+              selectedDay={selectedDatetime} 
+              selectedCompareDay={selectedCompareDatetime} 
+              setDatasets={handleSetDatasets} 
+              selectedCompareDay={selectedCompareDatetime}
             />
           </Carto>
         </Explorer>

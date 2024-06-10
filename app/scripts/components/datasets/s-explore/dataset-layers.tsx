@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import { listReset, themeVal } from '@devseed-ui/theme-provider';
 import { AccordionManager } from '@devseed-ui/accordion';
 
-import { datasets } from 'veda'; // virtual module - parsed mdx files
+
 import { Layer } from './dataset-layer-single';
 import LayerAlert from './layer-alert';
 import { InlineLayerLoadingSkeleton } from './layer-loading';
-import { checkLayerLoadStatus } from '$components/common/mapbox/layers/utils';
 import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
-import { AsyncDatasetLayer } from '$context/layer-data';
+
+
+import { VizDataset } from '$components/exploration/types.d.ts';
 
 const LayerList = styled.ol`
   ${listReset()};
@@ -22,17 +23,14 @@ const LayerList = styled.ol`
 `;
 
 interface DatasetLayersProps {
-  datasetId: string;
-  asyncLayers: AsyncDatasetLayer[];
-  onAction: (action: string, payload: { [key: string]: any }) => void;
+  dataset: VizDataset;
+  asyncLayers: VizDataset[];
+  onAction: (action: string, payload: Record<string, any>) => void;
   selectedLayerId?: string;
 }
 
 export default function DatasetLayers(props: DatasetLayersProps) {
-  const { datasetId, asyncLayers, onAction, selectedLayerId } = props;
-
-  const dataset = datasets[datasetId];
-  if (!dataset) return null;
+  const { dataset, asyncLayers, onAction, selectedLayerId } = props;
 
   return (
     <AccordionManager>
@@ -40,7 +38,7 @@ export default function DatasetLayers(props: DatasetLayersProps) {
         {asyncLayers.map((l, idx) => {
           // A layer is considered ready when its data and the compare layer
           // data (if any) is also loaded.
-          const status = checkLayerLoadStatus(l);
+          const { status } = l;
           switch (status) {
             case S_IDLE:
             case S_LOADING:
@@ -65,7 +63,7 @@ export default function DatasetLayers(props: DatasetLayersProps) {
             }
             case S_SUCCEEDED: {
               // On succeed the data is never null.
-              const lData = l.baseLayer.data!;
+              const lData = l.data!;
               return (
                 <li key={lData.id}>
                   <Layer

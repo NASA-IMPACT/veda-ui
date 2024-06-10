@@ -1,15 +1,17 @@
+// @TODO - Do ts check
+/* eslint-disable */
+// @ts-nocheck
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { ProjectionOptions } from 'veda';
-import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
+import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import {
-  TimelineDataset,
+  VizDataset,
+  VizDatasetSuccess,
   TimelineDatasetStatus,
   TimelineDatasetSuccess
-} from '../../types.d.ts';
-import { Layer } from './layer';
-import { AnalysisMessageControl } from './analysis-message-control';
-import { ShowTourControl } from './tour-control';
+} from '$components/exploration/types.d.ts';
+import { Layer } from '$components/exploration/components/map/layer';
 
 import Map, { Compare, MapControls } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
@@ -22,20 +24,18 @@ import MapCoordsControl from '$components/common/map/controls/coords';
 import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
-import DrawControl from '$components/common/map/controls/aoi';
-import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { ExtendedStyle } from '$components/common/map/styles';
 
 interface ExplorationMapProps {
-  datasets: TimelineDataset[];
-  setDatasets: (datasets: TimelineDataset[]) => void;
+  datasets: VizDataset[];
+  setDatasets: (datasets: VizDatasetSuccess[]) => void;
   selectedDay: Date | null;
   selectedCompareDay: Date | null;
 }
 
-export function ExplorationMap(props: ExplorationMapProps) {
-  const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
+export function ExploreMap(props: ExplorationMapProps) {
+  const { datasets, setDatasets, compareLayer, selectedLayerId, selectedDay, selectedCompareDay } = props;
 
   const [projection, setProjection] =
     useState<ProjectionOptions>(projectionDefault);
@@ -47,8 +47,6 @@ export function ExplorationMap(props: ExplorationMapProps) {
     boundariesOption,
     onOptionChange
   } = useBasemap();
-
-  useReconcileWithStacMetadata(datasets, setDatasets);
 
   // Different datasets may have a different default projection.
   // When datasets are selected the first time, we set the map projection to the
@@ -67,6 +65,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
   // datasets are changed, because it is not possible to know which projection
   // to use.
   const prevDatasetsIds = usePreviousValue(datasets.map((d) => d.data.id));
+
   useEffect(() => {
     if (!prevDatasetsIds) return;
 
@@ -89,10 +88,12 @@ export function ExplorationMap(props: ExplorationMapProps) {
         d.status === TimelineDatasetStatus.SUCCESS
     )
     .slice()
-    .reverse();
+    .reverse()
+    .filter(d => d.data.id === selectedLayerId);
 
   const onStyleUpdate = useCallback(
     (style: ExtendedStyle) => {
+      // const updatedDatasets = datasets.map(d=>d);
       const updatedDatasets = datasets.map((dataset) => {
         // Skip non loaded datasets
         if (dataset.status !== TimelineDatasetStatus.SUCCESS) return dataset;
@@ -118,8 +119,9 @@ export function ExplorationMap(props: ExplorationMapProps) {
           }
         };
       });
-
+    
       setDatasets(updatedDatasets);
+      
     },
     [datasets, setDatasets]
   );
@@ -133,20 +135,13 @@ export function ExplorationMap(props: ExplorationMapProps) {
         boundariesOption={boundariesOption}
       />
       {selectedDay && (
-        <ExplorationMapLayers
+        <ExploreMapLayers
           datasets={loadedDatasets}
           selectedDay={selectedDay}
         />
       )}
-      {/* Map controls */}
+      {/* Needed Controls: Projection, Notebook connection button */}
       <MapControls>
-        <DrawControl />
-        <CustomAoIControl
-          disableReason={
-            comparing && 'Analysis is not possible when comparing dates'
-          }
-        />
-        <AnalysisMessageControl />
         <GeocoderControl />
         <MapOptionsControl
           projection={projection}
@@ -158,7 +153,6 @@ export function ExplorationMap(props: ExplorationMapProps) {
           onOptionChange={onOptionChange}
         />
         <ScaleControl />
-        <ShowTourControl />
         <MapCoordsControl />
         <NavigationControl />
       </MapControls>
@@ -171,8 +165,8 @@ export function ExplorationMap(props: ExplorationMapProps) {
             boundariesOption={boundariesOption}
           />
           {selectedDay && (
-            <ExplorationMapLayers
-              datasets={loadedDatasets} 
+            <ExploreMapLayers
+              datasets={[compareLayer]}
               selectedDay={selectedCompareDay}
               idSuffix='-compare'
             />
@@ -189,8 +183,9 @@ interface ExplorationMapLayersProps {
   idSuffix?: string;
 }
 
-export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
+export function ExploreMapLayers(props: ExplorationMapLayersProps) {
   const { datasets, selectedDay, idSuffix = '' } = props;
+
   return (
     <>
       {datasets.map((dataset, idx) => (

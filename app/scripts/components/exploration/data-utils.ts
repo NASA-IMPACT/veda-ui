@@ -12,7 +12,8 @@ import {
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
-  TimelineDatasetStatus
+  TimelineDatasetStatus,
+  VizDataset
 } from './types.d.ts';
 import {
   DataMetric,
@@ -98,6 +99,19 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
     .filter(Boolean);
 
   return foundMetrics;
+}
+
+
+export function reconcileVizDataset(dataset): VizDataset {
+  return {
+    status: TimelineDatasetStatus.IDLE,
+    data: dataset,
+    error: null,
+    settings: {
+      isVisible: true,
+      opacity: 100
+    }
+  };
 }
 
 /**

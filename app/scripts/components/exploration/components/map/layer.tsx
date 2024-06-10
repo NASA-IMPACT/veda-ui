@@ -2,12 +2,8 @@ import React, { useMemo } from 'react';
 // Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import * as dateFns from 'date-fns';
 
-import { TimelineDatasetSuccess } from '../../types.d.ts';
+import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types.d.ts';
 import { getTimeDensityStartDate } from '../../data-utils';
-import {
-  useTimelineDatasetAtom,
-  useTimelineDatasetSettings
-} from '../../atoms/hooks';
 
 import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
@@ -17,36 +13,20 @@ import { CMRTimeseries } from '$components/common/map/style-generators/cmr-times
 
 interface LayerProps {
   id: string;
-  dataset: TimelineDatasetSuccess;
+  dataset: TimelineDatasetSuccess | VizDatasetSuccess;
   order?: number;
   selectedDay: Date;
 }
 
 export function Layer(props: LayerProps) {
   const { id: layerId, dataset, order, selectedDay } = props;
-
-  let isVisible: boolean | undefined;
-  let opacity: number | undefined;
-
-  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
-  
-  try {
-    // @TECH-DEBT: Wrapping this logic with a try/catch because jotai errors because it is unable to find
-    // 'settings' on undefined value even when dataset has 'settings' key. This is a workaround for now but
-    // should be revisited. Ideally type should be fine with 'Partial<TimelineDataset>'
-    const [getSettings] = useTimelineDatasetSettings(datasetAtom);
-  
-    isVisible = getSettings('isVisible');
-    opacity = getSettings('opacity');
-  } catch {
-    isVisible = true;
-    opacity = undefined;
-  }
+  const { isVisible, opacity } = dataset.settings;
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(
-    () => getTimeDensityStartDate(selectedDay, dataset.data?.timeDensity),
-    [selectedDay, dataset.data?.timeDensity]
+    () => {
+      return getTimeDensityStartDate(selectedDay, dataset.data.timeDensity);
+    }, [selectedDay, dataset.data.timeDensity]
   );
 
   // Resolve config functions.
