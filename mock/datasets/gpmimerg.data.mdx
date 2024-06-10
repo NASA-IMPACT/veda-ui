@@ -1,0 +1,61 @@
+---
+id: GPM_3IMERGDF
+name: 'Final Precipitation L3 1 day 0.1 degree x 0.1 degree V06'
+description: 'This dataset is the GPM Level 3 IMERG  *Final* Daily  10 x 10 km (GPM_3IMERGDF) derived from the half-hourly GPM_3IMERGHH.  The derived result represents the Final estimate of the daily mean precipitation rate in mm/day.'
+media:
+  src: ::file ./trmm.png
+  alt:
+  author:
+    name: NASA
+    url:
+taxonomy:
+  - name: Topics
+    values:
+      - Climate
+layers:
+  - id: GPM_3IMERGDF
+    stacApiEndpoint: 'https://staging-stac.delta-backend.com'
+    tileApiEndpoint: 'https://dev-titiler-cmr.delta-backend.com/WebMercatorQuad/tilejson.json'
+    stacCol: GPM_3IMERGDF
+    name: GPM_3IMERGDF
+    type: zarr
+    time_density: day
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      concept_id: C2723754864-GES_DISC
+      resampling_method: average
+      variable: precipitation
+      colormap_name: gnbu
+      rescale: 0,48
+      maxzoom: 12
+      backend: xarray
+    analysis:
+      exclude: true
+    legend:
+      unit:
+        label:
+      type: gradient
+      min: '0 mm/hr'
+      max: '48 mm/hr'
+      stops:
+        [
+          '#f7fcf0',
+          '#e6f5e1',
+          '#d7efd1',
+          '#c5e8c2',
+          '#abdeb6',
+          '#8bd2bf',
+          '#6bc3c9',
+          '#4bafd1',
+          '#3193c2',
+          '#1878b4',
+          '#085da0',
+          '#084081'
+        ]
+---
+
+<Block>
+
+</Block>

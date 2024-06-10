@@ -11,7 +11,8 @@ interface ZarrResponseData {
     zarr: {
       href: string
     }
-  }
+  },
+  //collection_concept_id: string
 }
 interface CMRResponseData {
   features: {
@@ -25,6 +26,7 @@ interface CMRResponseData {
 
 export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChange }){
   const [assetUrl, setAssetUrl] = useState('');
+  // const [sourceParams, setSourceParams] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
@@ -38,7 +40,12 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
           controller
         });
 
-        setAssetUrl(data.assets.zarr.href);
+        if (data.assets.zarr.href) {
+          setAssetUrl(data.assets.zarr.href);
+        }
+        // const cmrSourceParams = data.renders['preciptation'];
+        // // cmrSourceParams['concept_id'] = data.collection_concept_id;
+        // // setSourceParams(cmrSourceParams);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -56,6 +63,7 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
     };
   }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
 
+  //return sourceParams;
   return assetUrl;
 } 
 

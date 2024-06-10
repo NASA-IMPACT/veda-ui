@@ -215,7 +215,7 @@ function MapboxMapComponent(
     // Include access to raw data.
     const bag = { ...resolverBag, raw: baseLayer.data };
     const data = resolveConfigFunctions(baseLayer.data, bag);
-
+    
     return [data, getLayerComponent(!!data.timeseries, data.type)];
   }, [baseLayer, resolverBag]);
 

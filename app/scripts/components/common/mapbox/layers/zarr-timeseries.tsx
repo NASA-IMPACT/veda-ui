@@ -58,11 +58,11 @@ export function ZarrPaintLayer(props: ZarrPaintLayerProps) {
 
   useEffect(
     () => {
-      if (!assetUrl) return;
+      //if (!assetUrl) return;
 
       const tileParams = qs.stringify({
         url: assetUrl,
-        time_slice: date,
+        datetime: date,
         ...sourceParams
       });
 
@@ -142,5 +142,6 @@ export function MapLayerZarrTimeseries(props:MapLayerZarrTimeseriesProps) {
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
   const assetUrl = useZarr({id, stacCol, stacApiEndpointToUse, date, onStatusChange});
+
   return <ZarrPaintLayer {...props} assetUrl={assetUrl} />;
 }
