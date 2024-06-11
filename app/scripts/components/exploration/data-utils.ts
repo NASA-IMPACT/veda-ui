@@ -154,6 +154,7 @@ export function resolveLayerTemporalExtent(
   datasetId: string,
   datasetData: StacDatasetData
 ): Date[] {
+
   const { domain, isPeriodic, timeDensity } = datasetData;
 
   if (!domain || domain.length === 0) {
@@ -161,7 +162,7 @@ export function resolveLayerTemporalExtent(
   }
 
   if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
-
+  
   switch (timeDensity) {
     case TimeDensity.YEAR:
       return eachYearOfInterval({
@@ -186,14 +187,21 @@ export function resolveLayerTemporalExtent(
 }
 
 export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
+  
   switch (timeDensity) {
     case TimeDensity.MONTH:
-      return startOfMonth(date);
+      return startOfMonth(date); 
     case TimeDensity.YEAR:
       return startOfYear(date);
   }
 
   return startOfDay(date);
+}
+
+export function getRelavantDate(date: Date, domain: Date[]) {
+  // Return the date that falls into the same year - Is there any better way to handle this?
+  const matchingDate = domain.find(d => d.getFullYear() === date.getFullYear());
+  return matchingDate;
 }
 
 export class ExtendedError extends Error {

@@ -95,6 +95,16 @@ async function fetchStacDatasetById(
       ...commonTimeseriesParams,
       domain: featuresApiData.extent.temporal.interval[0]
     };
+  } else if (type === 'arc') {
+    // @TODO: Datasets missing interval - timestamp - WHAT TO DO?
+    const domain = data.summaries?.datetime?.[0]
+      ? data.summaries.datetime
+      : data.extent.temporal.interval[0];
+
+    return {
+      ...commonTimeseriesParams,
+      domain
+    };
   } else if (type === 'cmr') {
     const domain = data.summaries?.datetime?.[0]
     ? data.summaries.datetime
@@ -130,7 +140,7 @@ function makeQueryObject(
   dataset: TimelineDataset
 ): UseQueryOptions<unknown, unknown, StacDatasetData> {
   return {
-    queryKey: ['dataset', dataset?.data?.id],
+    queryKey: ['dataset', dataset.data.id],
     queryFn: () => fetchStacDatasetById(dataset),
     // This data will not be updated in the context of a browser session, so it is
     // safe to set the staleTime to Infinity. As specified by react-query's

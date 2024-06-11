@@ -42,11 +42,6 @@ import {
   MapLayerArcProps
 } from './arc';
 
-import {
-  MapLayerArcImageServer,
-  MapLayerArcImageServerProps
-} from './arc-imageserver';
-
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
@@ -61,14 +56,13 @@ export const getLayerComponent = (
   | MapLayerZarrTimeseriesProps
   | MapLayerCMRTimeseriesProps
   | MapLayerArcProps
-  | MapLayerArcImageServerProps
 > | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
     if (layerType === 'vector') return MapLayerVectorTimeseries;
     if (layerType === 'zarr') return MapLayerZarrTimeseries;
     if (layerType === 'cmr') return MapLayerCMRTimeseries;
-    if (layerType === 'arc') return MapLayerArcImageServer;
+    if (layerType === 'arc') return MapLayerArc;
   }
 
   return null;

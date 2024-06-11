@@ -15,9 +15,9 @@ taxonomy:
       - Air Quality
 layers:
   - id: cdd10
-    stacApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
     tileApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
-    stacCol: POWER/power_901_annual_meterology_utc
+    stacCol: power_power_901_annual_meterology_utc
     name: Cooling Degree Days Above 10 C
     type: arc
     description:
@@ -53,9 +53,9 @@ layers:
     # analysis:
     #   exclude: true
   - id: cdd18_3
-    stacApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
     tileApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
-    stacCol: POWER/power_901_annual_meterology_utc
+    stacCol: power_power_901_annual_meterology_utc
     name: Cooling Degree Days Above 18.3 C
     type: arc
     description:
@@ -65,6 +65,8 @@ layers:
       - 20
     sourceParams:
       layers: CDD18_3
+      version: 1.1.0
+      srs: EPSG:3857
     # TODO: get this from `/legend` endpoint? ex - https://arcgis.asdc.larc.nasa.gov/server/rest/services/POWER/power_901_annual_meterology_utc/ImageServer/legend
     compare:
       datasetId: power_901_annual_meterology_utc
@@ -90,9 +92,9 @@ layers:
     # analysis:
     #   exclude: true
   - id: power_901_annual_meterology_utc_DISPH
-    stacApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
     tileApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
-    stacCol: POWER/power_901_annual_meterology_utc
+    stacCol: power_power_901_annual_meterology_utc
     name: Zero Plane Displacement Height
     type: arc
     description:
@@ -102,6 +104,8 @@ layers:
       - 20
     sourceParams:
       layers: DISPH
+      version: 1.1.0
+      srs: EPSG:3857
     compare:
       datasetId: power_901_annual_meterology_utc
       layerId: power_901_annual_meterology_utc_DISPH

@@ -3,15 +3,15 @@ import qs from 'qs';
 import { RasterSource, RasterLayer } from 'mapbox-gl';
 
 import { useMapStyle } from './styles';
-import { ArcImageServerPaintLayer } from './arc-imageserver';
 import { useArc } from '$components/common/map/style-generators/hooks';
 
+import { userTzDate2utcString } from '$utils/date';
 import { ActionStatus } from '$utils/status';
 
-// @NOTE: ArcGIS Layer doens't have a timestamp
 export interface MapLayerArcProps {
   id: string;
   stacCol: string;
+  date?: Date;
   sourceParams?: Record<string, any>;
   stacApiEndpoint?: string;
   zoomExtent?: number[];
@@ -45,7 +45,7 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
 
   const [minZoom] = zoomExtent ?? [0, 20];
 
-  const generatorId = 'arc-' + idSuffix;
+  const generatorId = 'arc-timeseries' + idSuffix;
 
   // Generate Mapbox GL layers and sources for raster timeseries
   //
@@ -57,24 +57,21 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
   useEffect(
     () => {
       if (!wmsUrl) return;
-
+      // @TODO: time
       const tileParams = qs.stringify({
         format: 'image/png',
-        service: 'WMS',
-        version: '1.3.0',
-        request: 'GetMap',
-        crs: 'EPSG:3857',
-        transparent: 'true',
-        width: '256',
-        height: '256',
-        styles: '',
+        service: "WMS",
+        request: "GetMap",
+        transparent: "true", // TODO: get from sourceparams maybe
+        width: "256",
+        height: "256",
+        ...(date && { DIM_StdTime: userTzDate2utcString(date) }),
         ...sourceParams
       });
-      
+
       const arcSource: RasterSource = {
         type: 'raster',
-        tiles: [`${wmsUrl}?${tileParams}&bbox={bbox-epsg-3857}`],
-        tileSize: 256,
+        tiles: [`${wmsUrl}?${tileParams}&bbox={bbox-epsg-3857}`]
       };
 
       const arcLayer: RasterLayer = {
@@ -146,6 +143,5 @@ export function MapLayerArc(props:MapLayerArcProps) {
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
   const wmsUrl = useArc({id, stacCol, stacApiEndpointToUse, onStatusChange});
-
-  return <ArcImageServerPaintLayer {...props} wmsUrl={wmsUrl} />;
+  return <ArcPaintLayer {...props} wmsUrl={wmsUrl} />;
 }

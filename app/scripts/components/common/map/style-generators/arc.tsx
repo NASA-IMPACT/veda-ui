@@ -9,9 +9,12 @@ import { BaseGeneratorParams } from '../types';
 import { useArc } from '$components/common/map/style-generators/hooks';
 import { ActionStatus } from '$utils/status';
 
+import { userTzDate2utcString } from '$utils/date';
+
 // @NOTE: ArcGIS Layer doens't have a timestamp
 export interface MapLayerArcProps extends BaseGeneratorParams {
   id: string;
+  date?: Date;
   stacCol: string;
   sourceParams?: Record<string, any>;
   stacApiEndpoint?: string;
@@ -22,6 +25,7 @@ export interface MapLayerArcProps extends BaseGeneratorParams {
 interface ArcPaintLayerProps extends BaseGeneratorParams{
   id: string;
   sourceParams?: Record<string, any>;
+  date?: Date;
   zoomExtent?: number[];
   wmsUrl: string;
 }
@@ -29,6 +33,7 @@ interface ArcPaintLayerProps extends BaseGeneratorParams{
 export function ArcPaintLayer(props: ArcPaintLayerProps) {
   const {
     id,
+    date,
     sourceParams,
     zoomExtent,
     wmsUrl,
@@ -58,14 +63,12 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
 
       const tileParams = qs.stringify({
         format: 'image/png',
-        service: 'WMS',
-        version: '1.3.0',
-        request: 'GetMap',
-        crs: 'EPSG:3857',
-        transparent: 'true',
-        width: '256',
-        height: '256',
-        styles: '',
+        service: "WMS",
+        request: "GetMap",
+        transparent: "true", // TODO: get from sourceparams maybe
+        width: "256",
+        height: "256",
+        ...(date && { DIM_StdTime: userTzDate2utcString(date) }),
         ...sourceParams
       });
       
@@ -115,6 +118,7 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
     [
       updateStyle,
       id,
+      date,
       wmsUrl,
       minZoom,
       haveSourceParamsChanged,
@@ -151,7 +155,7 @@ export function Arc(props:MapLayerArcProps) {
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-  const wmsUrl = useArc({id, stacCol, stacApiEndpointToUse, onStatusChange});
+  const wmsUrl = useArc({ id, stacCol, stacApiEndpointToUse, onStatusChange });
 
   return <ArcPaintLayer {...props} wmsUrl={wmsUrl} />;
 }

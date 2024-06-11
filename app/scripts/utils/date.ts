@@ -59,6 +59,9 @@ export function utcString2userTzDate(str?: string | null) {
     if (isNaN(date.getTime())) return date;
     const offset = date.getTimezoneOffset();
     date.setTime(date.getTime() + offset * 60 * 1000);
+    // @TODO: needed?
+    date.setMinutes(date.getMinutes());
+    date.setSeconds(date.getSeconds());
     return date;
   } else {
     // For the full date view Date does a good job, except with the ordinal
