@@ -35,6 +35,11 @@ import {
 // Whether or not to print the request logs.
 const LOG = process.env.NODE_ENV !== 'production';
 
+interface AssetUrlReplacement {
+  from: string;
+  to: string;
+}
+
 export interface MapLayerRasterTimeseriesProps {
   id: string;
   stacCol: string;
@@ -49,6 +54,7 @@ export interface MapLayerRasterTimeseriesProps {
   isHidden?: boolean;
   idSuffix?: string;
   isPositionSet?: boolean;
+  assetUrlReplacements?: AssetUrlReplacement;
 }
 
 export interface StacFeature {

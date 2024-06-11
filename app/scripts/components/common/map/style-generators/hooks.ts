@@ -25,8 +25,7 @@ interface CMRResponseData {
 }
 
 export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChange }){
-  const [assetUrl, setAssetUrl] = useState('');
-  // const [sourceParams, setSourceParams] = useState({});
+  const [tileParams, setTileParams] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
@@ -40,16 +39,18 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
           controller
         });
 
+        const tileParams = {
+          url: data.assets.zarr.href,
+          time_slice: date,
+        };
         if (data.assets.zarr.href) {
-          setAssetUrl(data.assets.zarr.href);
+          setTileParams(tileParams);
         }
-        // const cmrSourceParams = data.renders['preciptation'];
-        // // cmrSourceParams['concept_id'] = data.collection_concept_id;
-        // // setSourceParams(cmrSourceParams);
+
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setAssetUrl('');
+          setTileParams('');
           onStatusChange?.({ status: S_FAILED, id });
         }
         return;
@@ -63,14 +64,13 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
     };
   }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
 
-  //return sourceParams;
-  return assetUrl;
+  return tileParams;
 } 
 
 
 
 export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange }){
-  const [assetUrl, setAssetUrl] = useState('');
+  const [tileParams, setTileParams] = useState({});
   
   const replaceInAssetUrl = (url: string, replacement: AssetUrlReplacement) => {
     const {from, to } = replacement;
@@ -98,11 +98,14 @@ export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplac
         });
 
         const assetUrl = replaceInAssetUrl(data.features[0].assets.data.href, assetUrlReplacements);
-        setAssetUrl(assetUrl);
+        setTileParams({
+          url: assetUrl,
+          time_slice: date
+        });
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setAssetUrl('');
+          setTileParams({});
           onStatusChange?.({ status: S_FAILED, id });
         }
         return;
@@ -116,6 +119,6 @@ export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplac
     };
   }, [id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange]);
 
-  return assetUrl;
+  return tileParams;
 
 } 
