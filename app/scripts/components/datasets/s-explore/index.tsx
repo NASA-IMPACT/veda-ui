@@ -406,13 +406,18 @@ function DatasetsExplore() {
   // Get the active layer timeseries data so we can render the date selector.
   // Done both for the base layer and the compare layer.
   const activeLayerTimeseries = useMemo(
-    // @ts-expect-error if there is activeLayer the the rest is loaded.
-    () => activeLayer?.baseLayer.data.timeseries ?? null,
+    () => {
+      // @ts-expect-error if there is activeLayer the the rest is loaded.
+      return activeLayer?.baseLayer.data.timeseries.isTimeless? null : activeLayer?.baseLayer.data.timeseries ?? null;
+    },
     [activeLayer]
   );
+
   const activeLayerCompareTimeseries = useMemo(
-    // @ts-expect-error if there is activeLayer the the rest is loaded.
-    () => activeLayer?.compareLayer?.data.timeseries ?? null,
+    () => {
+      // @ts-expect-error if there is activeLayer the the rest is loaded.
+      return activeLayer?.compareLayer?.data.timeseries.isTimeless? null : activeLayer?.compareLayer?.data.timeseries ?? null;
+    },
     [activeLayer]
   );
 
@@ -499,6 +504,7 @@ function DatasetsExplore() {
   // Available dates for the baseLayer of the currently active layer.
   // null if there's no active layer or it hasn't loaded yet.
   const availableActiveLayerDates = useMemo(() => {
+    if (activeLayer?.baseLayer.data?.timeseries.isTimeless) return undefined;
     if (!activeLayer) return undefined;
     return resolveLayerTemporalExtent(activeLayer.baseLayer.data) ?? undefined;
   }, [activeLayer]);

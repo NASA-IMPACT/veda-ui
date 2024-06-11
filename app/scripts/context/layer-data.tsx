@@ -19,6 +19,7 @@ export type TimeDensity = 'day' | 'month' | 'year' | null;
 interface STACLayerData {
   timeseries: {
     isPeriodic: boolean;
+    isTimeless?: boolean;
     timeDensity: TimeDensity;
     domain: string[];
   };
@@ -37,6 +38,7 @@ const fetchLayerById = async (
   // CMR Layer needs to get time_density from MDX file
   const commonTimeseriesParams = {
     isPeriodic: !!time_density || data['dashboard:is_periodic'],
+    isTimeless: !!data['dashboard:is_timeless'],
     timeDensity: time_density ?? data['dashboard:time_density']
   };
 
@@ -53,21 +55,10 @@ const fetchLayerById = async (
       }
     };
   } else if (type === 'arc') {
-    let domain = data.summaries?.datetime?.[0]
-    ? data.summaries.datetime
-    : data.extent.temporal.interval[0];
-
-    // @TODO: what to do with timeless data? Setting up as today as a temporary solution
-    if (data['dashboard:is_timeless']) {
-      const date = new Date();
-      const tempStart = new Date(date.setDate(date.getDate() - 10));
-      domain = [tempStart.toISOString(), new Date().toISOString()];
-    }
-
     return {
       timeseries: {
         ...commonTimeseriesParams,
-        domain
+        domain: ['', '']
       }
     };
   } else if (type === 'cmr') {
