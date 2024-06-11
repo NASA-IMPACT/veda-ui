@@ -48,7 +48,7 @@ export function Layer(props: LayerProps) {
   // The date needs to match the dataset's time density.
   // But ArcGIS data?
   const relevantDate = useMemo(
-    () => dataset.data.type === 'arc'? getRelavantDate(selectedDay, dataset.data.domain) : getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
+    () => dataset.data.type === 'arc'? getRelavantDate(selectedDay, dataset.data.domain, dataset.data.timeDensity) : getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
     [selectedDay, dataset.data.timeDensity, dataset.data.domain, dataset.data.type]
   );
 

@@ -4,7 +4,8 @@ import {
   eachYearOfInterval,
   startOfDay,
   startOfMonth,
-  startOfYear
+  startOfYear,
+  closestTo
 } from 'date-fns';
 import { DatasetLayer, DatasetData } from 'veda';
 import {
@@ -198,10 +199,26 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
   return startOfDay(date);
 }
 
-export function getRelavantDate(date: Date, domain: Date[]) {
-  // Return the date that falls into the same year - Is there any better way to handle this?
-  const matchingDate = domain.find(d => d.getFullYear() === date.getFullYear());
-  return matchingDate;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function getRelavantDate(date: Date, domain: Date[], timeDensity: TimeDensity) {
+  // Return the date that falls into the same year? Or closest one? 
+  // Returning the close one now, but then it is weird when timeDensity is set up as year and 
+  // selected date is ~ March 2020, it will send a request for 2019-12-31 (since it is the closest date)
+  // but user will see that the timeline head is in the middle of 2020
+  return closestTo(date, domain);
+  // switch (timeDensity) {
+  //   // @FLAG: time_density is flagged in unexpected way ex.esi - day
+  //   case TimeDensity.DAY:
+  //     return domain.find(d => (d.getFullYear() === date.getFullYear()) && (d.getMonth() === date.getMonth()) && (d.getDate() === date.getDate()));
+  //   case TimeDensity.MONTH:
+  //     return domain.find(d => (d.getFullYear() === date.getFullYear()) && (d.getMonth() === date.getMonth()));
+  //   case TimeDensity.YEAR:
+  //     return domain.find(d => d.getFullYear() === date.getFullYear());
+  //   default: 
+  //     return closestTo(date, domain);
+  // }
+
+  // return closestTo(date, domain);
 }
 
 export class ExtendedError extends Error {
