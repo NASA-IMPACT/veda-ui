@@ -52,6 +52,24 @@ const fetchLayerById = async (
         domain: featuresApiData.extent.temporal.interval[0]
       }
     };
+  } else if (type === 'arc') {
+    let domain = data.summaries?.datetime?.[0]
+    ? data.summaries.datetime
+    : data.extent.temporal.interval[0];
+
+    // @TODO: what to do with timeless data? Setting up as today as a temporary solution
+    if (data['dashboard:is_timeless']) {
+      const date = new Date();
+      const tempStart = new Date(date.setDate(date.getDate() - 10));
+      domain = [tempStart.toISOString(), new Date().toISOString()];
+    }
+
+    return {
+      timeseries: {
+        ...commonTimeseriesParams,
+        domain
+      }
+    };
   } else if (type === 'cmr') {
     const domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
