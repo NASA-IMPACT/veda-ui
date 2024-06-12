@@ -311,67 +311,85 @@ export async function requestDatasetTimeseriesData({
     }
     // Isolate arc layer logic here for now
   } else {
+      try {
+        onProgress({
+          status: TimelineDatasetStatus.LOADING,
+          error: null,
+          data: null,
+          meta: {
+            total: 1,
+            loaded: 0
+          }
+        });
 
-    const { data: stacData } = await axios.get(`${datasetData.stacApiEndpoint}/collections/${datasetData.stacCol}`);
+      const { data: stacData } = await axios.get(`${datasetData.stacApiEndpoint}/collections/${datasetData.stacCol}`);
 
-    const serverBaseUrl = stacData?.links.find(e => e.rel === 'via')?.href;
-    
-    const tileEndpointToUse =
-    datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
-    const collectionId = datasetData.stacCol;
-    const variable = datasetData.sourceParams?.layers;
-    const dateTimeRange = [userTzDate2utcString(start), userTzDate2utcString(end)];
-    const ffAoi = fixAoiForArcGISAnalysis(aoi);
-    const fAoi = {
-      ...ffAoi,
-      features: ffAoi.features.map(fromMultiPolygontoPolygon)
-    };
+      const serverBaseUrl = stacData?.links.find(e => e.rel === 'via')?.href;
+      
+      const tileEndpointToUse =
+      datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
+      const collectionId = datasetData.stacCol;
+      const variable = datasetData.sourceParams?.layers;
+      const dateTimeRange = [userTzDate2utcString(start), userTzDate2utcString(end)];
+      const ffAoi = fixAoiForArcGISAnalysis(aoi);
+      const fAoi = {
+        ...ffAoi,
+        features: ffAoi.features.map(fromMultiPolygontoPolygon)
+      };
 
-    const reqBody = {
-      server_url: serverBaseUrl, collection_id: collectionId, variable, datetime_range: dateTimeRange,  aoi: fAoi
-    };
+      const reqBody = {
+        server_url: serverBaseUrl, collection_id: collectionId, variable, datetime_range: dateTimeRange,  aoi: fAoi
+      };
 
-    const stats = await queryClient.fetchQuery(
-      ['analysis', id, 'asset', variable, start, end,  aoi],
-      async ({ signal }) => {
-        const { data } = await axios.post(
-          `${tileEndpointToUse}/statistics`,
-          // Making a request with a FC causes a 500 (as of 2023/01/20)
-          reqBody,
-          { signal }
-        );
-        // Mimick statistics response
-        return Object.keys(data).map(dataDate => ({
-            date: new Date(dataDate),
-            ...data[dataDate]
-        }));
-      },
-      {
-        staleTime: Infinity
-      }
-    );
-    onProgress({
-      status: TimelineDatasetStatus.SUCCESS,
-      meta: {
-        total: stats.length,
-        loaded: stats.length
-      },
-      error: null,
-      data: {
-        timeseries: stats
-      }
-    });
-    return {
-      status: TimelineDatasetStatus.SUCCESS,
-      meta: {
-        total: stats.length,
-        loaded: stats.length
-      },
-      error: null,
-      data: {
-        timeseries: stats
-      }
-    };
+      const stats = await queryClient.fetchQuery(
+        ['analysis', id, 'asset', variable, start, end,  aoi],
+        async ({ signal }) => {
+          const { data } = await axios.post(
+            `${tileEndpointToUse}/statistics`,
+            // Making a request with a FC causes a 500 (as of 2023/01/20)
+            reqBody,
+            { signal }
+          );
+          // Mimick statistics response
+          return Object.keys(data).map(dataDate => ({
+              date: new Date(dataDate),
+              ...data[dataDate]
+          }));
+        },
+        {
+          staleTime: Infinity
+        }
+      );
+      onProgress({
+        status: TimelineDatasetStatus.SUCCESS,
+        meta: {
+          total: stats.length,
+          loaded: stats.length
+        },
+        error: null,
+        data: {
+          timeseries: stats
+        }
+      });
+      return {
+        status: TimelineDatasetStatus.SUCCESS,
+        meta: {
+          total: stats.length,
+          loaded: stats.length
+        },
+        error: null,
+        data: {
+          timeseries: stats
+        }
+      };
+    } catch (error) {
+      return {
+        ...datasetAnalysis,
+        status: TimelineDatasetStatus.ERROR,
+        error,
+        data: null
+      };
+    }
   }
 }
 
