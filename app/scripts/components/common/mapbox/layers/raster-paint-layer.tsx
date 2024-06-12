@@ -39,7 +39,14 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
   useEffect(
     () => {
 
-      const tileParamsAsString = qs.stringify(tileParams);
+    // Customize qs to use comma separated values for arrays
+    // e.g. rescale: [[0, 100]] -> rescale=0,100
+    // TODO: test this with multiple rescale values, for multiple bands
+    const options = {
+        arrayFormat: 'comma',
+    };
+
+      const tileParamsAsString = qs.stringify(tileParams, options);
 
       const layerSource: RasterSource = {
         type: 'raster',

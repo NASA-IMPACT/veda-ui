@@ -18,19 +18,14 @@ layers:
     tileApiEndpoint: 'https://dev-titiler-cmr.delta-backend.com/WebMercatorQuad/tilejson.json'
     stacCol: GPM_3IMERGDF
     name: GPM_3IMERGDF
-    type: zarr
+    type: titiler-cmr
     time_density: day
     zoomExtent:
       - 0
       - 20
     sourceParams:
       concept_id: C2723754864-GES_DISC
-      resampling_method: average
       variable: precipitation
-      colormap_name: gnbu
-      rescale: 0,48
-      maxzoom: 12
-      backend: xarray
     analysis:
       exclude: true
     legend:
@@ -39,23 +34,22 @@ layers:
       type: gradient
       min: '0 mm/hr'
       max: '48 mm/hr'
-      stops:
-        [
-          '#f7fcf0',
-          '#e6f5e1',
-          '#d7efd1',
-          '#c5e8c2',
-          '#abdeb6',
-          '#8bd2bf',
-          '#6bc3c9',
-          '#4bafd1',
-          '#3193c2',
-          '#1878b4',
-          '#085da0',
-          '#084081'
-        ]
+      stops: []
 ---
 
 <Block>
+<Prose>
+# GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V06 (GPM_3IMERGDF)
 
+## Dataset Description
+
+This dataset is the GPM Level 3 IMERG _Final_ Daily 10 x 10 km (GPM_3IMERGDF) derived from the half-hourly GPM_3IMERGHH. The derived result represents the Final estimate of the daily mean precipitation rate in mm/day. The dataset is produced by first computing the mean precipitation rate in (mm/hour) in every grid cell, and then multiplying the result by 24.
+
+Source: [https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGDF_07/summary](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGDF_07/summary)
+
+## Data Source
+
+The files represented are NetCDF files in GES DISC's Earthdata Cloud bucket and discovered from the CMR STAC entries for this collection: https://cmr.earthdata.nasa.gov/cloudstac/GES_DISC/collections/GPM_3IMERGDF.v07. The daily product is not yet available in CMR's CLOUD STAC.
+
+</Prose>
 </Block>
