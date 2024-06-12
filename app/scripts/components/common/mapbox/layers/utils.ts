@@ -31,11 +31,9 @@ import {
 } from './vector-timeseries';
 import {
   MapLayerZarrTimeseries,
-  MapLayerZarrTimeseriesProps
 } from './zarr-timeseries';
 import {
   MapLayerCMRTimeseries,
-  MapLayerCMRTimeseriesProps
 } from './cmr-timeseries';
 
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
@@ -49,8 +47,8 @@ export const getLayerComponent = (
 ): FunctionComponent<
   | MapLayerRasterTimeseriesProps
   | MapLayerVectorTimeseriesProps
-  | MapLayerZarrTimeseriesProps
-  | MapLayerCMRTimeseriesProps
+  | MapLayerRasterTimeseriesProps
+  | MapLayerRasterTimeseriesProps
 > | null => {
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;

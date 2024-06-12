@@ -12,7 +12,6 @@ interface ZarrResponseData {
       href: string
     }
   },
-  //collection_concept_id: string
 }
 interface CMRResponseData {
   features: {
@@ -24,7 +23,12 @@ interface CMRResponseData {
   }[]
 }
 
-export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChange }){
+interface STACforCMRResponseData {
+  collection_concept_id: string;
+  renders: Record<string, any>;
+}
+
+export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChange, sourceParams }){
   const [tileParams, setTileParams] = useState({});
 
   useEffect(() => {
@@ -42,6 +46,7 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
         const tileParams = {
           url: data.assets.zarr.href,
           time_slice: date,
+          ...sourceParams
         };
         if (data.assets.zarr.href) {
           setTileParams(tileParams);
@@ -62,14 +67,14 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
     return () => {
       controller.abort();
     };
-  }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
+  }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange, sourceParams]);
 
   return tileParams;
 } 
 
 
 
-export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange }){
+export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams }){
   const [tileParams, setTileParams] = useState({});
   
   const replaceInAssetUrl = (url: string, replacement: AssetUrlReplacement) => {
@@ -100,7 +105,8 @@ export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplac
         const assetUrl = replaceInAssetUrl(data.features[0].assets.data.href, assetUrlReplacements);
         setTileParams({
           url: assetUrl,
-          time_slice: date
+          time_slice: date,
+          ...sourceParams
         });
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
@@ -117,8 +123,54 @@ export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplac
     return () => {
       controller.abort();
     };
-  }, [id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange]);
+  }, [id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams]);
 
   return tileParams;
 
 } 
+
+
+// export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, stacApiEndpoint, onStatusChange, sourceParams }){
+//   const [tileParams, setTileParams] = useState({});
+
+//   useEffect(() => {
+//     const controller = new AbortController();
+
+//     async function load() {
+//       try {
+//         onStatusChange?.({ status: S_LOADING, id });
+
+//         const stacApiEndpointToUse = `${stacApiEndpoint}/search?collections=${stacCol}&datetime=${date?.toISOString()}`;
+
+//         const data: STACforCMRResponseData = await requestQuickCache({
+//           url: `${stacApiEndpointToUse}/collections/${stacCol}`,
+//           method: 'GET',
+//           controller
+//         });
+
+//         setTileParams({
+//           concept_id: data.collection_concept_id,
+//           datetime: date,
+//           renders: data.renders,
+//           ...sourceParams
+//         });
+//         onStatusChange?.({ status: S_SUCCEEDED, id });
+//       } catch (error) {
+//         if (!controller.signal.aborted) {
+//           setTileParams({});
+//           onStatusChange?.({ status: S_FAILED, id });
+//         }
+//         return;
+//       }
+//     }
+
+//     load();
+
+//     return () => {
+//       controller.abort();
+//     };
+//   }, [id, stacCol, stacApiEndpointToUse, date, stacApiEndpoint, onStatusChange, sourceParams]);
+
+//   return tileParams;
+
+// } 

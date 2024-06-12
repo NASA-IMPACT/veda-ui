@@ -5,17 +5,18 @@ import { RasterPaintLayer } from './raster-paint-layer';
 import { MapLayerRasterTimeseriesProps } from './raster-timeseries';
 import { useZarr } from '$components/common/map/style-generators/hooks';
 
-export function MapLayerZarrTimeseries(props:MapLayerRasterTimeseriesProps) {
+export function MapLayerZarrTimeseries(props: MapLayerRasterTimeseriesProps) {
   const {
     id,
     stacCol,
     stacApiEndpoint,
     date,
+    sourceParams,
     onStatusChange,
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-  const tileParams = useZarr({id, stacCol, stacApiEndpointToUse, date, onStatusChange});
+  const tileParams = useZarr({id, stacCol, stacApiEndpointToUse, date, onStatusChange, sourceParams});
 
   return <RasterPaintLayer {...props} tileParams={tileParams} />;
 }
