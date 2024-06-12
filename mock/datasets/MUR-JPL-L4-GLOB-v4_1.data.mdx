@@ -1,0 +1,68 @@
+---
+id: MUR-JPL-L4-GLOB-v4_1
+name: 'Multiscale Ultrahigh Resolution (MUR) Sea Surface Temperature (SST) Level 4 Version 4.1'
+description: 'The Group for High Resolution Sea Surface Temperature (GHRSST) Level 4 sea surface temperature analysis is produced as a retrospective dataset (four day latency) and near-real-time dataset (one day latency) at the JPL Physical Oceanography DAAC.'
+media:
+  src: ::file ./MUR-JPL-L4-GLOB-v4_1.png
+  author:
+    name: NASA
+    url:
+taxonomy:
+  - name: Topics
+    values:
+      - Climate
+layers:
+  - id: MUR-JPL-L4-GLOB-v4_1
+    type: titiler-cmr
+    stacApiEndpoint: 'https://staging-stac.delta-backend.com'
+    tileApiEndpoint: 'https://dev-titiler-cmr.delta-backend.com/WebMercatorQuad/tilejson.json'
+    stacCol: MUR-JPL-L4-GLOB-v4_1
+    name: Multiscale Ultrahigh Resolution (MUR) Sea Surface Temperature (SST) Level 4 Version 4.1
+    description: Multiscale Ultrahigh Resolution (MUR) Sea Surface Temperature (SST) Level 4 Version 4.1
+    time_density: day
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      variable: analysed_sst
+    legend:
+      unit:
+        label:
+      type: gradient
+      min: '0 mm/hr'
+      max: '46 mm/hr'
+      stops:
+        [
+          '#8000ff',
+          '#5247fc',
+          '#2489f5',
+          '#0ac0e8',
+          '#3ae8d6',
+          '#68fcc1',
+          '#96fca7',
+          '#c4e88a',
+          '#f4c069',
+          '#ff8947',
+          '#ff4724',
+          '#ff0000'
+        ]
+---
+
+<Block>
+<Prose>
+# Multiscale Ultrahigh Resolution (MUR) Sea Surface Temperature (SST) Level 4 Version 4.1
+
+## Dataset Description
+
+The Multi-scale Ultra-high Resolution (MUR) Sea Surface Temperature (SST) Analyses is part of the NASA Making Earth System Data Records for Use in Research Environments (MEaSUREs) Program. MEaSUREs, develops consistent global- and continental-scale Earth System Data Records by supporting projects that produce data using proven algorithms and input.
+
+SST has been observed by satellite instruments since September 1981 and is one of the longest satellite-based records of any Earth climate variable. Measurements from the different satellite sensors need to be calibrated with each other in order to produce an SST Climate Data Record (CDR) that is consistent both in space and time. The microwave (MW) sensors typically have coarser resolutions on the order of 25 km compared to infrared (IR) sensors that can resolve down to 1-km scales. The Figure below illustrates differences in SST using various spatial resolutions, with greater detail observed at higher resolutions. On the other hand, IR-based measurements are prone to data-voids due to cloud contamination, which does not affect MW sensors nearly as much. Combination of these datasets can thus be complementary, contributing to accuracy of the blended SST maps. The objective for creating the MUR SST is to develop a coherent and consistent daily map of SST at the highest spatial (horizontal) resolution possible.
+
+Source: [https://podaac.jpl.nasa.gov/MEaSUREs-MUR](https://podaac.jpl.nasa.gov/MEaSUREs-MUR)
+
+## Data Source
+
+The files represented are NetCDF files in PO.DAAC's Earthdata Cloud bucket and tiled using [titiler-cmr](https://github.com/developmentseed/titiler-cmr).
+
+</Prose>
+</Block>
