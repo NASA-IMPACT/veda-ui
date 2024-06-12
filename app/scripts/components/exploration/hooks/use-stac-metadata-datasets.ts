@@ -95,19 +95,23 @@ async function fetchStacDatasetById(
       ...commonTimeseriesParams,
       domain: featuresApiData.extent.temporal.interval[0]
     };
-  } else if (type === 'cmr') {
+  } else if (type === 'cmr-stac') {
     const domain = data.summaries?.datetime?.[0]
-    ? data.summaries.datetime
-    : data.extent.temporal.interval[0];
-  const domainStart = domain[0];
+      ? data.summaries.datetime
+      : data.extent.temporal.interval[0];
+
+
+    // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
+    const domain_length = domain.length;
+    if (domain[domain_length - 1] == null) {
+      domain[domain_length - 1] = new Date().toISOString();
+    }
   
-  // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
-  const lastDatetime = domain[domain.length - 1] ||  new Date().toISOString();
     // CMR STAC misses the dashboard specific attributes, shim these values
     return {
       isPeriodic: true,
       timeDensity: time_density ?? TimeDensity.DAY,
-      domain: [domainStart, lastDatetime]
+      domain: domain
     };
   } else {
     const domain = data.summaries?.datetime?.[0]

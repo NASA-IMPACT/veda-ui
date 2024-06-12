@@ -3,7 +3,7 @@ import React from 'react';
 import { RasterPaintLayer } from './raster-paint-layer';
 
 import { MapLayerRasterTimeseriesProps } from './raster-timeseries';
-import { useCMR } from '$components/common/map/style-generators/hooks';
+import { useCMRSTAC } from '$components/common/map/style-generators/hooks';
 
 export function MapLayerCMRTimeseries(props:MapLayerRasterTimeseriesProps) {
   const {
@@ -17,6 +17,6 @@ export function MapLayerCMRTimeseries(props:MapLayerRasterTimeseriesProps) {
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-  const tileParams = useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams });
+  const tileParams = useCMRSTAC({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams });
   return <RasterPaintLayer {...props} tileParams={tileParams} />;
 }

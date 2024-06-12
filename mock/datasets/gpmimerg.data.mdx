@@ -3,7 +3,7 @@ id: GPM_3IMERGDF
 name: 'Final Precipitation L3 1 day 0.1 degree x 0.1 degree V06'
 description: 'This dataset is the GPM Level 3 IMERG  *Final* Daily  10 x 10 km (GPM_3IMERGDF) derived from the half-hourly GPM_3IMERGHH.  The derived result represents the Final estimate of the daily mean precipitation rate in mm/day.'
 media:
-  src: ::file ./trmm.png
+  src: ::file ./gpmimerg-cmr.png
   alt:
   author:
     name: NASA
@@ -26,6 +26,7 @@ layers:
     sourceParams:
       concept_id: C2723754864-GES_DISC
       variable: precipitation
+      colormap_name: jet
     analysis:
       exclude: true
     legend:
@@ -34,7 +35,21 @@ layers:
       type: gradient
       min: '0 mm/hr'
       max: '48 mm/hr'
-      stops: []
+      stops:
+        [
+          '#000080',
+          '#0000e8',
+          '#0038ff',
+          '#0094ff',
+          '#0cf4eb',
+          '#56ffa0',
+          '#a0ff56',
+          '#ebff0c',
+          '#ffab00',
+          '#ff5500',
+          '#e80000',
+          '#800000'
+        ]
 ---
 
 <Block>

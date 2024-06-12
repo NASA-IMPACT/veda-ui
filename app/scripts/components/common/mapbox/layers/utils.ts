@@ -57,7 +57,7 @@ export const getLayerComponent = (
     if (layerType === 'raster') return MapLayerRasterTimeseries;
     if (layerType === 'vector') return MapLayerVectorTimeseries;
     if (layerType === 'zarr') return MapLayerZarrTimeseries;
-    if (layerType === 'cmr') return MapLayerCMRTimeseries;
+    if (layerType === 'cmr-stac') return MapLayerCMRTimeseries;
     if (layerType === 'titiler-cmr') return MapLayerTitilerCMRTimeseries;
   }
 

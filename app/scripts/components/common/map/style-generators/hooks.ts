@@ -55,7 +55,7 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setTileParams('');
+          setTileParams({});
           onStatusChange?.({ status: S_FAILED, id });
         }
         return;
@@ -74,7 +74,7 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
 
 
 
-export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams }){
+export function useCMRSTAC({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams }){
   const [tileParams, setTileParams] = useState({});
   
   const replaceInAssetUrl = (url: string, replacement: AssetUrlReplacement) => {
@@ -158,7 +158,8 @@ export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, stacApi
         if (variable != null) {
           tileParams.variable = variable;
           if (data.renders[variable]) {
-            tileParams = { ...tileParams, ...data.renders[variable] };
+            // what's in sourceParams will override what's in the renders object
+            tileParams = { ...data.renders[variable], ...tileParams };
           }
         }
         // if it's a COG collection we would want to use the bands parameter
