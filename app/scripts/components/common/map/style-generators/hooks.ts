@@ -130,47 +130,58 @@ export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplac
 } 
 
 
-// export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, stacApiEndpoint, onStatusChange, sourceParams }){
-//   const [tileParams, setTileParams] = useState({});
+export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, stacApiEndpoint, onStatusChange, sourceParams }){
+  const [tileParams, setTileParams] = useState({});
 
-//   useEffect(() => {
-//     const controller = new AbortController();
+  useEffect(() => {
+    const controller = new AbortController();
 
-//     async function load() {
-//       try {
-//         onStatusChange?.({ status: S_LOADING, id });
+    async function load() {
+      try {
+        onStatusChange?.({ status: S_LOADING, id });
 
-//         const stacApiEndpointToUse = `${stacApiEndpoint}/search?collections=${stacCol}&datetime=${date?.toISOString()}`;
+        const data: STACforCMRResponseData = await requestQuickCache({
+          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
+          method: 'GET',
+          controller
+        });
 
-//         const data: STACforCMRResponseData = await requestQuickCache({
-//           url: `${stacApiEndpointToUse}/collections/${stacCol}`,
-//           method: 'GET',
-//           controller
-//         });
+        let tileParams = {
+          concept_id: data.collection_concept_id,
+          datetime: date,
+          ...sourceParams
+        };
 
-//         setTileParams({
-//           concept_id: data.collection_concept_id,
-//           datetime: date,
-//           renders: data.renders,
-//           ...sourceParams
-//         });
-//         onStatusChange?.({ status: S_SUCCEEDED, id });
-//       } catch (error) {
-//         if (!controller.signal.aborted) {
-//           setTileParams({});
-//           onStatusChange?.({ status: S_FAILED, id });
-//         }
-//         return;
-//       }
-//     }
+        // pick out the variable from the sourceParams and use it to get the renders params
+        // see all ZarrReader Options: https://github.com/developmentseed/titiler-cmr/blob/develop/titiler/cmr/factory.py#L433-L452
+        const variable = sourceParams?.variable || null;
+        if (variable != null) {
+          tileParams.variable = variable;
+          if (data.renders[variable]) {
+            tileParams = { ...tileParams, ...data.renders[variable] };
+          }
+        }
+        // if it's a COG collection we would want to use the bands parameter
+        // see all Rasterio Reader Options: https://github.com/developmentseed/titiler-cmr/blob/develop/titiler/cmr/factory.py#L454-L498
 
-//     load();
+        setTileParams(tileParams);
+        onStatusChange?.({ status: S_SUCCEEDED, id });
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setTileParams({});
+          onStatusChange?.({ status: S_FAILED, id });
+        }
+        return;
+      }
+    }
 
-//     return () => {
-//       controller.abort();
-//     };
-//   }, [id, stacCol, stacApiEndpointToUse, date, stacApiEndpoint, onStatusChange, sourceParams]);
+    load();
 
-//   return tileParams;
+    return () => {
+      controller.abort();
+    };
+  }, [id, stacCol, stacApiEndpointToUse, date, stacApiEndpoint, onStatusChange, sourceParams]);
 
-// } 
+  return tileParams;
+
+} 
