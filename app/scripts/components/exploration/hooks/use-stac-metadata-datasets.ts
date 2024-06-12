@@ -82,7 +82,8 @@ async function fetchStacDatasetById(
 
   const commonTimeseriesParams = {
     isPeriodic: !!data['dashboard:is_periodic'],
-    timeDensity: data['dashboard:time_density'] || TimeDensity.DAY
+    // priority is given to time density in dataset configuration, then metadata in STAC, and falling back to DAY if neither is present
+    timeDensity: time_density || data['dashboard:time_density'] || TimeDensity.DAY
   };
 
   if (type === 'vector') {
@@ -95,28 +96,16 @@ async function fetchStacDatasetById(
       ...commonTimeseriesParams,
       domain: featuresApiData.extent.temporal.interval[0]
     };
-  } else if (type === 'cmr-stac') {
-    const domain = data.summaries?.datetime?.[0]
-      ? data.summaries.datetime
-      : data.extent.temporal.interval[0];
-
-
-    // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
-    const domain_length = domain.length;
-    if (domain[domain_length - 1] == null) {
-      domain[domain_length - 1] = new Date().toISOString();
-    }
-  
-    // CMR STAC misses the dashboard specific attributes, shim these values
-    return {
-      isPeriodic: true,
-      timeDensity: time_density ?? TimeDensity.DAY,
-      domain: domain
-    };
   } else {
     const domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
+
+    // STAC may return datetimes with `null` as the last value to indicate ongoing data.
+    const domain_length = domain.length;
+    if (domain[domain_length - 1] == null) {
+      domain[domain_length - 1] = new Date().toISOString();
+    }
 
     if (!domain?.length || domain.some((d) => !d)) {
       throw new Error('Invalid datetime domain');
