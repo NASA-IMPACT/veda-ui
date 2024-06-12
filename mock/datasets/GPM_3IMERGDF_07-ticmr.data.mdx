@@ -1,0 +1,70 @@
+---
+id: GPM_3IMERGDF.07
+name: 'GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V07 (GPM_3IMERGDF) at GES DISC'
+description: 'This dataset is the GPM Level 3 IMERG  *Final* Daily  10 x 10 km (GPM_3IMERGDF) derived from the half-hourly GPM_3IMERGHH.  The derived result represents the Final estimate of the daily mean precipitation rate in mm/day.'
+media:
+  src: ::file ./GPM_3IMERGDF_07-jet.png
+  alt:
+  author:
+    name: NASA
+    url:
+taxonomy:
+  - name: Topics
+    values:
+      - Climate
+layers:
+  - id: GPM_3IMERGDF
+    stacApiEndpoint: 'https://staging-stac.delta-backend.com'
+    tileApiEndpoint: 'https://dev-titiler-cmr.delta-backend.com/WebMercatorQuad/tilejson.json'
+    stacCol: GPM_3IMERGDF
+    name: GPM_3IMERGDF
+    type: titiler-cmr
+    time_density: day
+    zoomExtent:
+      - 0
+      - 20
+    sourceParams:
+      concept_id: C2723754864-GES_DISC
+      variable: precipitation
+      colormap_name: jet
+    analysis:
+      exclude: true
+    legend:
+      unit:
+        label:
+      type: gradient
+      min: '0 mm/hr'
+      max: '48 mm/hr'
+      stops:
+        [
+          '#000080',
+          '#0000e8',
+          '#0038ff',
+          '#0094ff',
+          '#0cf4eb',
+          '#56ffa0',
+          '#a0ff56',
+          '#ebff0c',
+          '#ffab00',
+          '#ff5500',
+          '#e80000',
+          '#800000'
+        ]
+---
+
+<Block>
+<Prose>
+# GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V07 (GPM_3IMERGDF) at GES DISC
+
+## Dataset Description
+
+This dataset is the GPM Level 3 IMERG _Final_ Daily 10 x 10 km (GPM_3IMERGDF) derived from the half-hourly GPM_3IMERGHH. The derived result represents the Final estimate of the daily mean precipitation rate in mm/day. The dataset is produced by first computing the mean precipitation rate in (mm/hour) in every grid cell, and then multiplying the result by 24. This minimizes the possible dry bias in versions before "07", in the simple daily totals for cells where less than 48 half-hourly observations are valid for the day. The latter under-sampling is very rare in the combined microwave-infrared and rain gauge dataset, variable "precipitation", and appears in higher latitudes. Thus, in most cases users of global "precipitation" data will not notice any difference. This correction, however, is noticeable in the high-quality microwave retrieval, variable "MWprecipitation", where the occurrence of less than 48 valid half-hourly samples per day is very common. The counts of the valid half-hourly samples per day have always been provided as a separate variable, and users of daily data were advised to pay close attention to that variable and use it to calculate the correct precipitation daily rates. Starting with version "07", this is done in production to minimize possible misinterpretations of the data. The counts are still provided in the data, but they are only given to gauge the significance of the daily rates, and reconstruct the simple totals if someone wishes to do so.
+
+Source: [https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGDF_07/summary](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGDF_07/summary)
+
+## Data Source
+
+The files represented are NetCDF files in GES DISC's Earthdata Cloud bucket, tiled using [titiler-cmr](https://github.com/developmentseed/titiler-cmr).
+
+</Prose>
+</Block>

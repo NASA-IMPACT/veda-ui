@@ -1,10 +1,10 @@
 ---
-id: GPM_3IMERGDF
-name: 'Final Precipitation L3 1 day 0.1 degree x 0.1 degree V06'
-description: 'This dataset is the GPM Level 3 IMERG  *Final* Daily  10 x 10 km (GPM_3IMERGDF) derived from the half-hourly GPM_3IMERGHH.  The derived result represents the Final estimate of the daily mean precipitation rate in mm/day.'
+id: GPM_3IMERGDF.v07
+name: 'GPM IMERG Daily Precipitation'
+description: 'GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree'
 media:
-  src: ::file ./gpmimerg-cmr.png
-  alt:
+  src: ::file ./GPM_3IMERGDF_07-gnbu.png
+  alt: CMIP6 Near-Surface Air Temperature Screenshot
   author:
     name: NASA
     url:
@@ -13,42 +13,46 @@ taxonomy:
     values:
       - Climate
 layers:
-  - id: GPM_3IMERGDF
-    stacApiEndpoint: 'https://staging-stac.delta-backend.com'
-    tileApiEndpoint: 'https://dev-titiler-cmr.delta-backend.com/WebMercatorQuad/tilejson.json'
-    stacCol: GPM_3IMERGDF
-    name: GPM_3IMERGDF
-    type: titiler-cmr
+  - id: GPM_3IMERGDF.v07
+    type: cmr-stac
+    stacApiEndpoint: 'https://cmr.earthdata.nasa.gov/cloudstac/GES_DISC'
+    tileApiEndpoint: 'https://prod-titiler-xarray.delta-backend.com/tilejson.json'
+    stacCol: GPM_3IMERGDF.v07
+    assetUrlReplacements:
+      from: https://data.gesdisc.earthdata.nasa.gov/data
+      to: s3://gesdisc-cumulus-prod-protected
+    name: GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree
+    description: 'GPM Level 3 IMERG Final Daily 10 x 10 km (GPM_3IMERGDF) accumulated precipitation'
     time_density: day
     zoomExtent:
       - 0
       - 20
     sourceParams:
-      concept_id: C2723754864-GES_DISC
+      resampling_method: bilinear
       variable: precipitation
-      colormap_name: jet
-    analysis:
-      exclude: true
+      colormap_name: gnbu
+      rescale: 0,46
+      maxzoom: 12
     legend:
       unit:
         label:
       type: gradient
       min: '0 mm/hr'
-      max: '48 mm/hr'
+      max: '46 mm/hr'
       stops:
         [
-          '#000080',
-          '#0000e8',
-          '#0038ff',
-          '#0094ff',
-          '#0cf4eb',
-          '#56ffa0',
-          '#a0ff56',
-          '#ebff0c',
-          '#ffab00',
-          '#ff5500',
-          '#e80000',
-          '#800000'
+          '#f7fcf0',
+          '#e6f5e1',
+          '#d7efd1',
+          '#c5e8c2',
+          '#abdeb6',
+          '#8bd2bf',
+          '#6bc3c9',
+          '#4bafd1',
+          '#3193c2',
+          '#1878b4',
+          '#085da0',
+          '#084081'
         ]
 ---
 
