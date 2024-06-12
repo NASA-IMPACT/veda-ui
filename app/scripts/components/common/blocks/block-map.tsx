@@ -220,7 +220,11 @@ function MapBlock(props: MapBlockProps) {
   }, [baseLayers, resolverBag]);
 
   const baseDataLayer: TimelineDataset | null = {
-    data: baseLayerResolvedData
+    data: baseLayerResolvedData,
+    settings: {
+      isVisible: true,
+      opacity: 100
+    }
   } as unknown as TimelineDataset;
   const baseTimeDensity = baseLayerResolvedData?.timeDensity;
 
@@ -237,7 +241,11 @@ function MapBlock(props: MapBlockProps) {
   }, [compareLayers, resolverBag]);
 
   const compareDataLayer: TimelineDataset | null = {
-    data: compareLayerResolvedData
+    data: compareLayerResolvedData,
+    settings: {
+      isVisible: true,
+      opacity: 100
+    }
   } as unknown as TimelineDataset;
   const compareTimeDensity = compareLayerResolvedData?.timeDensity;
 
@@ -285,7 +293,7 @@ function MapBlock(props: MapBlockProps) {
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.
     if (compareLabel && compareLayerResolvedData) {
-      const providedLabel = compareLayerResolvedData?.mapLabel as string;
+      const providedLabel = compareLayerResolvedData.mapLabel as string;
       return providedLabel;
     }
 
@@ -323,8 +331,8 @@ function MapBlock(props: MapBlockProps) {
         <Basemap basemapStyleId={mapBasemapId} />
         {dataset && selectedDatetime && layerId && baseLayerResolvedData && (
           <Layer
-            key={baseLayerResolvedData?.id}
-            id={`base-${baseLayerResolvedData?.id}`}
+            key={baseLayerResolvedData.id}
+            id={`base-${baseLayerResolvedData.id}`}
             dataset={baseDataLayer as unknown as TimelineDatasetSuccess}
             selectedDay={selectedDatetime}
           />

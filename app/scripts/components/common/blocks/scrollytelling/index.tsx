@@ -9,12 +9,12 @@ import React, {
 import T from 'prop-types';
 import styled, { css } from 'styled-components';
 // Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
-import * as dateFns from 'date-fns';
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
 import { MapRef } from 'react-map-gl';
+import { DatasetLayer, datasets } from 'veda';
 import { BlockErrorBoundary } from '..';
 import {
   chapterDisplayName,
@@ -22,7 +22,6 @@ import {
   ScrollyChapter,
   validateChapter
 } from './chapter';
-import { AsyncDatasetLayer, useAsyncLayers } from '$context/layer-data';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { S_FAILED, S_SUCCEEDED } from '$utils/status';
 
@@ -36,12 +35,13 @@ import Map from '$components/common/map';
 import { LayerLegend, LayerLegendContainer } from '$components/common/map/layer-legend';
 import { Layer } from '$components/exploration/components/map/layer';
 import { MapLoading } from '$components/common/loading-skeleton';
-import { formatSingleDate, resolveConfigFunctions } from '$components/common/map/utils';
 import { convertProjectionToMapbox } from '$components/common/map/controls/map-options/projections';
-import { DatasetStatus, VizDatasetSuccess } from '$components/exploration/types.d.ts';
+import { DatasetStatus, VizDataset, VizDatasetSuccess } from '$components/exploration/types.d.ts';
+import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
+import { formatSingleDate } from '$components/common/map/utils';
 
 type ResolvedLayer = {
-  layer: Exclude<AsyncDatasetLayer['baseLayer']['data'], null>;
+  layer: Exclude<VizDataset['data'], null>;
   runtimeData: { datetime?: Date; id: string };
 } | null;
 
@@ -123,11 +123,14 @@ function getChapterLayerKey(ch: ScrollyChapter) {
 
 /**
  *
- * @param {array} chList List of chapters
+ * @param {array} chList List of chapters with related layers.
  */
-function useMapLayersFromChapters(chList: ScrollyChapter[]) {
+function useMapLayersFromChapters(chList: ScrollyChapter[]): [
+  ResolvedLayer[],
+  string[]
+] {
   // The layers are unique based on the dataset, layer id and datetime.
-  // Filter out scrollytelling block that doesn't have layer first.
+  // First we filter out any scrollytelling block that doesn't have layer.
   const uniqueChapterLayers = useMemo(() => {
     const unique = chList
       .filter(({ showBaseMap }) => !showBaseMap)
@@ -141,8 +144,8 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
 
   }, [chList]);
 
-  // Create an array of datasetId & layerId to pass useAsyncLayers so that the
-  // layers can be loaded.
+  // Create an array of datasetId & layerId pairs which we can easily validate when creating
+  // the layers array.
   const uniqueLayerRefs = useMemo(() => {
     return uniqueChapterLayers.map(({ datasetId, layerId }) => ({
       datasetId,
@@ -150,16 +153,36 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
     }));
   }, [uniqueChapterLayers]);
 
-  const asyncLayers = useAsyncLayers(uniqueLayerRefs);
+  // Validate that all layers are defined in the configuration.
+  // They must be defined in the configuration otherwise it is not possible to load them.
+  const layers = uniqueLayerRefs.map(({ datasetId, layerId }) => {
+    const layers = datasets[datasetId]?.data.layers;
 
-  // Create a ref to cache each of the async layers.
-  // After the async layer data is loaded from STAC, the layer functions have
+    const layer = layers?.find(
+      (l) => l.id === layerId
+    ) as DatasetLayer | null;
+
+    if (!layer) {
+      throw new Error(
+        `Layer [${layerId}] not found in dataset [${datasetId}]`
+      );
+    }
+
+    return reconcileVizDataset(layer);
+  });
+
+  const [resolvedLayersWithStac, setResolvedLayersWithStac] = useState<VizDataset[]>([]);
+
+  useReconcileWithStacMetadata(layers, setResolvedLayersWithStac);
+
+  // Create a ref to cache each of the reconciled layers.
+  // After the layer data is loaded from STAC, the layer functions have
   // to be resolved by the `resolveConfigFunctions`. This function will return a
   // new object every time causing useEffects that depend on this data to fire
   // multiple times, even though the data didn't actually change. An example of
   // this is the `sourceParams` in `MapLayerRasterTimeseries`.
   // Since the these values only have to be computed once, when the layer loads,
-  // we can use this cache. On every hook run the asyncLayers.map below will
+  // we can use this cache. On every hook run the resolvedLayersWithStac.map below will
   // return the cached value if it exists or compute and cache.
   const resolvedLayersCache = useRef<ResolvedLayer[]>([]);
 
@@ -171,48 +194,34 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]) {
   // layer definition data, the runtimeData belongs to the application and not
   // the layer. For example the datetime, results from a user action (picking
   // on the calendar or in this case setting it in the MDX).
-  const resolvedLayers = useMemo(
-    () =>
-      asyncLayers.map(({ baseLayer }, index) => {
-        if (baseLayer.status !== S_SUCCEEDED || !baseLayer.data) return null;
+  const resolvedLayers = resolvedLayersWithStac.map(({ data, status }, index) => {
+    if (status !== S_SUCCEEDED) return null;
 
-        if (resolvedLayersCache.current[index]) {
-          return resolvedLayersCache.current[index];
-        }
+    if (resolvedLayersCache.current[index]) {
+      return resolvedLayersCache.current[index];
+    }
 
-        // Some properties defined in the dataset layer config may be functions
-        // that need to be resolved before rendering them. These functions accept
-        // data to return the correct value. Include access to raw data.
-        const datetime = uniqueChapterLayers[index].datetime;
-        const bag = {
-          datetime,
-          dateFns,
-          raw: baseLayer.data
-        };
-        const data = resolveConfigFunctions(baseLayer.data, bag);
+    // Some properties defined in the dataset layer config may be functions
+    // that need to be resolved before rendering them. These functions accept
+    // data to return the correct value. Include access to raw data.
+    const datetime = uniqueChapterLayers[index].datetime;
 
-        const resolved = {
-          layer: data,
-          runtimeData: {
-            datetime,
-            id: getChapterLayerKey(uniqueChapterLayers[index])
-          }
-        };
+    const resolved = {
+      layer: data,
+      runtimeData: {
+        datetime,
+        id: getChapterLayerKey(uniqueChapterLayers[index])
+      }
+    };
 
-        // Need to set it as ResolvedLayer because the "resolveConfigFunctions"
-        // is doing something weird to the tuples and converting something like
-        // "center: [number, number]" to "center: number[]" which fails
-        // validation.
-        resolvedLayersCache.current[index] = resolved as ResolvedLayer;
+    resolvedLayersCache.current[index] = resolved;
 
-        return resolved;
-      }),
-    [uniqueChapterLayers, asyncLayers]
-  );
+    return resolved;
+  });
 
   const resolvedStatus = useMemo(
-    () => asyncLayers.map(({ baseLayer }) => baseLayer.status),
-    [asyncLayers]
+    () => resolvedLayersWithStac.map(({ status }) => status),
+    [resolvedLayersWithStac]
   );
 
   return [resolvedLayers, resolvedStatus] as [
@@ -375,7 +384,7 @@ function Scrollytelling(props) {
           {activeChapterLayer?.runtimeData.datetime
             ? formatSingleDate(
                 activeChapterLayer.runtimeData.datetime,
-                activeChapterLayer.layer.timeseries.timeDensity
+                activeChapterLayer.layer.time_density
               )
             : null}
         </MapMessage>
@@ -445,7 +454,7 @@ function Scrollytelling(props) {
                     ...reconcileVizDataset(layer),
                     settings: {
                       ...reconcileVizDataset(layer).settings,
-                      isVisible: !isHidden
+                      isVisible: !isHidden,
                     }
                   }}
                   selectedDay={runtimeData.datetime ?? new Date()}
@@ -475,6 +484,9 @@ export function reconcileVizDataset(dataset): VizDatasetSuccess {
     status: DatasetStatus.SUCCESS,
     data: dataset,
     error: null,
-    settings: dataset.settings
+    settings: {
+      isVisible: true,
+      opacity: 100
+    }
   };
 }

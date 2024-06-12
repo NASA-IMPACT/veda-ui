@@ -9,7 +9,8 @@ import {
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
-  DatasetStatus
+  DatasetStatus,
+  VizDataset
 } from '../types.d.ts';
 import { resolveLayerTemporalExtent } from '../data-utils';
 
@@ -34,8 +35,8 @@ function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
  */
 function reconcileQueryDataWithDataset(
   queryData: UseQueryResult<StacDatasetData>,
-  dataset: TimelineDataset
-): TimelineDataset {
+  dataset: TimelineDataset | VizDataset
+): TimelineDataset | VizDataset {
   try {
     let base = {
       ...dataset,
@@ -55,7 +56,7 @@ function reconcileQueryDataWithDataset(
       };
     }
 
-    return base as TimelineDataset;
+    return base as TimelineDataset | VizDataset;
   } catch (error) {
     const e = new Error('Error reconciling query data with dataset');
     // @ts-expect-error detail is not a property of Error
@@ -65,12 +66,12 @@ function reconcileQueryDataWithDataset(
       ...dataset,
       status: DatasetStatus.ERROR,
       error: e
-    } as TimelineDataset;
+    } as TimelineDataset | VizDataset;
   }
 }
 
 async function fetchStacDatasetById(
-  dataset: TimelineDataset
+  dataset: TimelineDataset | VizDataset
 ): Promise<StacDatasetData> {
   const { type, stacCol, stacApiEndpoint, time_density } = dataset.data;
 
@@ -127,7 +128,7 @@ async function fetchStacDatasetById(
 
 // Create a query object for react query.
 function makeQueryObject(
-  dataset: TimelineDataset
+  dataset: TimelineDataset | VizDataset
 ): UseQueryOptions<unknown, unknown, StacDatasetData> {
   return {
     queryKey: ['dataset', dataset.data.id],
@@ -152,10 +153,12 @@ function makeQueryObject(
  * metadata for that dataset and add it to the dataset state atom.
  */
 export function useReconcileWithStacMetadata(
-  datasets: TimelineDataset[],
+  datasets: TimelineDataset[] | VizDataset[],
   handleUpdate:
-    | SetAtom<[updates: SetStateAction<TimelineDataset[]>], void>
-    | React.Dispatch<React.SetStateAction<undefined | TimelineDataset[]>>
+    | SetAtom<[updates: SetStateAction<TimelineDataset[] | VizDataset[]>], void>
+    | React.Dispatch<
+        React.SetStateAction<undefined | TimelineDataset[] | VizDataset[]>
+      >
 ) {
   const noDatasetsToQuery: boolean =
     !datasets || (datasets.length === 1 && datasets[0] === undefined);
@@ -168,7 +171,9 @@ export function useReconcileWithStacMetadata(
           .map((dataset) => makeQueryObject(dataset))
   });
 
-  useEffectPrevious<[typeof datasetsQueryData, TimelineDataset[]]>(
+  useEffectPrevious<
+    [typeof datasetsQueryData, TimelineDataset[] | VizDataset[]]
+  >(
     (prev) => {
       if (noDatasetsToQuery) return;
 
@@ -178,7 +183,7 @@ export function useReconcileWithStacMetadata(
         .filter((d) => !(d as any)?.mocked)
         .reduce<{
           updated: boolean;
-          data: TimelineDataset[];
+          data: TimelineDataset[] | VizDataset[];
         }>(
           (acc, dataset, idx) => {
             const curr = datasetsQueryData[idx];

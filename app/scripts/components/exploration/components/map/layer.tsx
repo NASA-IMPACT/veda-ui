@@ -23,8 +23,7 @@ interface LayerProps {
 export function Layer(props: LayerProps) {
   const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
 
-  const isVisible = dataset.settings?.isVisible ?? true;
-  const opacity = dataset.settings?.opacity ?? 100;
+  const { isVisible, opacity } = dataset.settings;
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(

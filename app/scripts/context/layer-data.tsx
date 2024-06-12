@@ -248,37 +248,3 @@ export const useDatasetAsyncLayers = (datasetId) => {
   // Get the layer information from the dataset defined in the configuration.
   return useLayersInit(dataset?.data.layers ?? []);
 };
-
-interface ReferencedLayer {
-  datasetId: string;
-  layerId: string;
-  skipCompare?: boolean;
-}
-
-export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
-  // Get the layers from the different datasets.
-  const layers = useMemo(
-    () =>
-      referencedLayers.map(({ datasetId, layerId }) => {
-        const layers = datasets[datasetId]?.data.layers;
-        // Get the layer information from the dataset defined in the configuration.
-        const layer = layers?.find(
-          (l) => l.id === layerId
-        ) as DatasetLayer | null;
-
-        // The layers must be defined in the configuration otherwise it is not
-        // possible to load them.
-        if (!layer) {
-          throw new Error(
-            `Layer [${layerId}] not found in dataset [${datasetId}]`
-          );
-        }
-
-        return layer;
-      }),
-    [referencedLayers]
-  );
-
-  // Get the layer information from the dataset defined in the configuration.
-  return useLayersInit(layers);
-};
