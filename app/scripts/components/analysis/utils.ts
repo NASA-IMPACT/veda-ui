@@ -110,6 +110,15 @@ export function fixAoiFcForStacSearch(aoi: FeatureCollection<Polygon>) {
   return aoiMultiPolygon;
 }
 
+export function fixAoiForArcGISAnalysis(aoi: FeatureCollection<Polygon>) {
+  
+  const fixedAois = aoi.features.map(fixAntimeridian);
+  return {
+    type: 'FeatureCollection',
+    features: fixedAois
+  };
+}
+
 export function getDateRangeFormatted(startDate, endDate) {
   const dFormat = 'yyyy-MM-dd';
   const startDateFormatted = format(startDate, dFormat);
