@@ -155,7 +155,7 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]): [
 
   // Validate that all layers are defined in the configuration.
   // They must be defined in the configuration otherwise it is not possible to load them.
-  const layers = uniqueLayerRefs.map(({ datasetId, layerId }) => {
+  const reconciledVizDatasets = uniqueLayerRefs.map(({ datasetId, layerId }) => {
     const layers = datasets[datasetId]?.data.layers;
 
     const layer = layers?.find(
@@ -171,20 +171,9 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]): [
     return reconcileVizDataset(layer);
   });
 
-  const [resolvedLayersWithStac, setResolvedLayersWithStac] = useState<VizDataset[]>([]);
+  const [resolvedDatasetsWithStac, setResolvedDatasetsWithStac] = useState<VizDataset[]>([]);
 
-  useReconcileWithStacMetadata(layers, setResolvedLayersWithStac);
-
-  // Create a ref to cache each of the reconciled layers.
-  // After the layer data is loaded from STAC, the layer functions have
-  // to be resolved by the `resolveConfigFunctions`. This function will return a
-  // new object every time causing useEffects that depend on this data to fire
-  // multiple times, even though the data didn't actually change. An example of
-  // this is the `sourceParams` in `MapLayerRasterTimeseries`.
-  // Since the these values only have to be computed once, when the layer loads,
-  // we can use this cache. On every hook run the resolvedLayersWithStac.map below will
-  // return the cached value if it exists or compute and cache.
-  const resolvedLayersCache = useRef<ResolvedLayer[]>([]);
+  useReconcileWithStacMetadata(reconciledVizDatasets, setResolvedDatasetsWithStac);
 
   // Each resolved layer will be an object with:
   // layer: The resolved layerData
@@ -194,40 +183,24 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]): [
   // layer definition data, the runtimeData belongs to the application and not
   // the layer. For example the datetime, results from a user action (picking
   // on the calendar or in this case setting it in the MDX).
-  const resolvedLayers = resolvedLayersWithStac.map(({ data, status }, index) => {
-    if (status !== S_SUCCEEDED) return null;
-
-    if (resolvedLayersCache.current[index]) {
-      return resolvedLayersCache.current[index];
-    }
-
-    // Some properties defined in the dataset layer config may be functions
-    // that need to be resolved before rendering them. These functions accept
-    // data to return the correct value. Include access to raw data.
+  const resolvedLayers = resolvedDatasetsWithStac.map(({ data }, index) => {
     const datetime = uniqueChapterLayers[index].datetime;
 
-    const resolved = {
+    return {
       layer: data,
       runtimeData: {
         datetime,
         id: getChapterLayerKey(uniqueChapterLayers[index])
       }
     };
-
-    resolvedLayersCache.current[index] = resolved;
-
-    return resolved;
   });
 
   const resolvedStatus = useMemo(
-    () => resolvedLayersWithStac.map(({ status }) => status),
-    [resolvedLayersWithStac]
+    () => resolvedDatasetsWithStac.map(({ status }) => status),
+    [resolvedDatasetsWithStac]
   );
 
-  return [resolvedLayers, resolvedStatus] as [
-    typeof resolvedLayers,
-    typeof resolvedStatus
-  ];
+  return [resolvedLayers, resolvedStatus];
 }
 
 /**
@@ -453,7 +426,7 @@ function Scrollytelling(props) {
                   dataset={{
                     ...reconcileVizDataset(layer),
                     settings: {
-                      ...reconcileVizDataset(layer).settings,
+                      opacity: 100,
                       isVisible: !isHidden,
                     }
                   }}
