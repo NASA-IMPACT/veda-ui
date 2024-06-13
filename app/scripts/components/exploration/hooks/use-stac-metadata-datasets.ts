@@ -4,7 +4,6 @@ import {
   UseQueryResult
 } from '@tanstack/react-query';
 import axios from 'axios';
-import { SetStateAction } from 'react';
 import {
   StacDatasetData,
   TimeDensity,
@@ -15,8 +14,7 @@ import {
 import { resolveLayerTemporalExtent } from '../data-utils';
 
 import { useEffectPrevious } from '$utils/use-effect-previous';
-
-export type SetAtom<Args extends any[], Result> = (...args: Args) => Result;
+import { SetState } from '$types/aliases';
 
 function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
   const currKey = `${curr.errorUpdatedAt}-${curr.dataUpdatedAt}-${curr.failureCount}`;
@@ -154,11 +152,7 @@ function makeQueryObject(
  */
 export function useReconcileWithStacMetadata(
   datasets: TimelineDataset[] | VizDataset[],
-  handleUpdate:
-    | SetAtom<[updates: SetStateAction<TimelineDataset[] | VizDataset[]>], void>
-    | React.Dispatch<
-        React.SetStateAction<undefined | TimelineDataset[] | VizDataset[]>
-      >
+  handleUpdate: SetState<TimelineDataset[] | VizDataset[] | undefined>
 ) {
   const noDatasetsToQuery: boolean =
     !datasets || (datasets.length === 1 && datasets[0] === undefined);

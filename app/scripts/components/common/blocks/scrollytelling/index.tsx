@@ -227,7 +227,7 @@ function useAllLayersAdded(count): [boolean, (cb: { status: string }) => void] {
   return [allAdded, onLoadCb];
 }
 
-const mapOptions = {
+const MAP_OPTIONS = {
   interactive: false,
   trackResize: true,
   center: [0, 0] as [number, number],
@@ -399,7 +399,7 @@ function Scrollytelling(props) {
 
         <Map
           id='scrollymap-map'
-          mapOptions={mapOptions}
+          mapOptions={MAP_OPTIONS}
           mapRef={mapRef}
           onMapLoad={() => {
             setMapLoaded(true);
