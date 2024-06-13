@@ -90,7 +90,7 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
         />
       );
-    case 'cmr':
+    case 'cmr-stac':
       return (
         <CMRTimeseries
           id={layerId}

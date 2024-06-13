@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { BaseGeneratorParams } from '../types';
-import { ZarrPaintLayer } from './zarr-timeseries';
-import { useCMR } from './hooks';
+import { useCMRSTAC } from './hooks';
 import { ActionStatus } from '$utils/status';
+import { RasterPaintLayer } from '$components/common/mapbox/layers/raster-paint-layer';
 
 interface AssetUrlReplacement {
   from: string;
@@ -30,9 +30,10 @@ export function CMRTimeseries(props:CMRTimeseriesProps) {
     date,
     assetUrlReplacements,
     onStatusChange,
+    sourceParams
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-  const assetUrl = useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange });
-  return <ZarrPaintLayer {...props} assetUrl={assetUrl} />;
+  const tileParams = useCMRSTAC({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams });
+  return <RasterPaintLayer {...props} tileParams={tileParams} />;
 }
