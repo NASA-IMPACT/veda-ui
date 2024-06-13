@@ -36,7 +36,7 @@ import { LayerLegend, LayerLegendContainer } from '$components/common/map/layer-
 import { Layer } from '$components/exploration/components/map/layer';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { convertProjectionToMapbox } from '$components/common/map/controls/map-options/projections';
-import { DatasetStatus, EnhancedDatasetLayer, VizDataset, VizDatasetSuccess } from '$components/exploration/types.d.ts';
+import { DatasetData, DatasetStatus, VizDataset, VizDatasetSuccess } from '$components/exploration/types.d.ts';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { formatSingleDate } from '$components/common/map/utils';
 
@@ -160,7 +160,7 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]): [
 
     const layer = layers?.find(
       (l) => l.id === layerId
-    ) as EnhancedDatasetLayer | null;
+    ) as DatasetData | null;
 
     if (!layer) {
       throw new Error(
@@ -458,7 +458,7 @@ export function ScrollytellingBlock(props) {
   return <BlockErrorBoundary {...props} childToRender={Scrollytelling} />;
 }
 
-export function reconcileVizDataset(dataset: EnhancedDatasetLayer): VizDataset {
+export function reconcileVizDataset(dataset: DatasetData): VizDataset {
   return {
     status: DatasetStatus.SUCCESS,
     data: dataset,

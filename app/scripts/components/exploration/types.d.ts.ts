@@ -135,7 +135,7 @@ export interface VizDatasetError {
 
 export interface VizDatasetSuccess {
   status: DatasetStatus.SUCCESS;
-  data: EnhancedDatasetLayer;
+  data: DatasetData;
   error: null;
   settings: DatasetSettings;
   meta?: DatasetMeta;
