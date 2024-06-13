@@ -33,7 +33,7 @@ import { userTzDate2utcString } from '$utils/date';
 export interface VectorTimeseriesProps extends BaseGeneratorParams {
   id: string;
   stacCol: string;
-  date: Date;
+  date?: Date;
   sourceParams?: Record<string, any>;
   zoomExtent?: number[];
   bounds?: number[];

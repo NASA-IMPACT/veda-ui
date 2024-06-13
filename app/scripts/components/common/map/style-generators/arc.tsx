@@ -2,80 +2,91 @@ import React, { useEffect, useMemo } from 'react';
 import qs from 'qs';
 import { RasterSource, RasterLayer } from 'mapbox-gl';
 
-import useMapStyle from '../hooks/use-map-style';
 import useGeneratorParams from '../hooks/use-generator-params';
+import useMapStyle from '../hooks/use-map-style';
 import { BaseGeneratorParams } from '../types';
 
-import { useZarr } from './hooks';
+import { useArc } from '$components/common/map/style-generators/hooks';
 import { ActionStatus } from '$utils/status';
 
-export interface ZarrTimeseriesProps extends BaseGeneratorParams {
+import { userTzDate2utcString } from '$utils/date';
+
+// @NOTE: ArcGIS Layer doens't have a timestamp
+export interface MapLayerArcProps extends BaseGeneratorParams {
   id: string;
-  stacCol: string;
   date?: Date;
+  stacCol: string;
   sourceParams?: Record<string, any>;
   stacApiEndpoint?: string;
-  tileApiEndpoint?: string;
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
 
-interface ZarrPaintLayerProps extends BaseGeneratorParams {
+interface ArcPaintLayerProps extends BaseGeneratorParams{
   id: string;
-  date?: Date;
   sourceParams?: Record<string, any>;
-  tileApiEndpoint?: string;
+  date?: Date;
   zoomExtent?: number[];
-  assetUrl: string;
+  wmsUrl: string;
 }
 
-export function ZarrPaintLayer(props: ZarrPaintLayerProps) {
+export function ArcPaintLayer(props: ArcPaintLayerProps) {
   const {
     id,
-    tileApiEndpoint,
     date,
     sourceParams,
     zoomExtent,
-    assetUrl,
+    wmsUrl,
+    generatorOrder,
     hidden,
     opacity
   } = props;
 
   const { updateStyle } = useMapStyle();
-  const [minZoom] = zoomExtent ?? [0, 20];
-  const generatorId = `zarr-timeseries-${id}`;
 
-  //
-  // Generate Mapbox GL layers and sources for raster timeseries
+  const [minZoom] = zoomExtent ?? [0, 20];
+
+  const generatorId = 'arc-' + id;
+  
+  const generatorParams = useGeneratorParams( {generatorOrder, hidden, opacity });
+
+  // Generate Mapbox GL layers and sources for raster layer
   //
   const haveSourceParamsChanged = useMemo(
     () => JSON.stringify(sourceParams),
     [sourceParams]
   );
 
-  const generatorParams = useGeneratorParams(props);
-
   useEffect(
     () => {
-      if (!assetUrl) return;
+      if (!wmsUrl) return;
 
       const tileParams = qs.stringify({
-        url: assetUrl,
-        time_slice: date,
+        format: 'image/png',
+        service: "WMS",
+        request: "GetMap",
+        transparent: "true", // TODO: get from sourceparams maybe
+        width: "256",
+        height: "256",
+        ...(date && { DIM_StdTime: userTzDate2utcString(date) }),
         ...sourceParams
       });
-
-      const zarrSource: RasterSource = {
+      
+      const arcSource: RasterSource = {
         type: 'raster',
-        url: `${tileApiEndpoint}?${tileParams}`
+        tiles: [`${wmsUrl}?${tileParams}&bbox={bbox-epsg-3857}`],
+        tileSize: 256,
       };
 
       const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
-      const zarrLayer: RasterLayer = {
+      const arcLayer: RasterLayer = {
         id: id,
         type: 'raster',
         source: id,
+        layout: {
+          visibility: hidden ? 'none' : 'visible'
+        },
         paint: {
           'raster-opacity': hidden ? 0 : rasterOpacity,
           'raster-opacity-transition': {
@@ -84,14 +95,17 @@ export function ZarrPaintLayer(props: ZarrPaintLayerProps) {
         },
         minzoom: minZoom,
         metadata: {
-          layerOrderPosition: 'raster'
+          id,
+          layerOrderPosition: 'raster',
+          xyzTileUrl: '',
+          wmtsTileUrl: `${wmsUrl}?${tileParams}`
         }
       };
 
       const sources = {
-        [id]: zarrSource
+        [id]: arcSource
       };
-      const layers = [zarrLayer];
+      const layers = [arcLayer];
 
       updateStyle({
         generatorId,
@@ -100,14 +114,12 @@ export function ZarrPaintLayer(props: ZarrPaintLayerProps) {
         params: generatorParams
       });
     },
-    // sourceParams not included, but using a stringified version of it to
-    // detect changes (haveSourceParamsChanged)
+    // sourceParams not included, but using a stringified version of it to detect changes (haveSourceParamsChanged)
     [
       updateStyle,
       id,
-      assetUrl,
       date,
-      tileApiEndpoint,
+      wmsUrl,
       minZoom,
       haveSourceParamsChanged,
       hidden,
@@ -134,16 +146,16 @@ export function ZarrPaintLayer(props: ZarrPaintLayerProps) {
   return null;
 }
 
-export function ZarrTimeseries(props:ZarrTimeseriesProps) {
+export function Arc(props:MapLayerArcProps) {
   const {
     id,
     stacCol,
     stacApiEndpoint,
-    date,
     onStatusChange,
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-  const assetUrl = useZarr({id, stacCol, stacApiEndpointToUse, date, onStatusChange});
-  return <ZarrPaintLayer {...props} assetUrl={assetUrl} />;
+  const wmsUrl = useArc({ id, stacCol, stacApiEndpointToUse, onStatusChange });
+
+  return <ArcPaintLayer {...props} wmsUrl={wmsUrl} />;
 }
