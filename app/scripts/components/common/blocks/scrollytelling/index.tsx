@@ -38,7 +38,7 @@ import { MapLoading } from '$components/common/loading-skeleton';
 import { convertProjectionToMapbox } from '$components/common/map/controls/map-options/projections';
 import { DatasetData, DatasetStatus, VizDataset, VizDatasetSuccess } from '$components/exploration/types.d.ts';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
-import { formatSingleDate } from '$components/common/map/utils';
+import { formatSingleDate, reconcileVizDataset } from '$components/common/map/utils';
 
 type ResolvedScrollyMapLayer = {
   vizDataset: VizDatasetSuccess;
@@ -456,16 +456,4 @@ Scrollytelling.propTypes = {
 
 export function ScrollytellingBlock(props) {
   return <BlockErrorBoundary {...props} childToRender={Scrollytelling} />;
-}
-
-export function reconcileVizDataset(dataset: DatasetData): VizDataset {
-  return {
-    status: DatasetStatus.SUCCESS,
-    data: dataset,
-    error: null,
-    settings: {
-      isVisible: true,
-      opacity: 100
-    }
-  };
 }
