@@ -317,7 +317,7 @@ export async function requestDatasetTimeseriesData({
           error: null,
           data: null,
           meta: {
-            total: 1,
+            total: undefined,
             loaded: 0
           }
         });
@@ -351,15 +351,30 @@ export async function requestDatasetTimeseriesData({
             { signal }
           );
           // Mimick statistics response
-          return Object.keys(data).map(dataDate => ({
+          // Since we are mutating the copy
+          // eslint-disable-next-line fp/no-mutating-methods
+          return [...Object.keys(data).map(dataDate => ({
               date: new Date(dataDate),
               ...data[dataDate]
-          }));
+          }))].reverse();
         },
         {
           staleTime: Infinity
         }
       );
+      // return response 500 when there is no return :[
+      // if (stats.length === 0) {
+      //   return {
+      //     ...datasetAnalysis,
+      //     status: TimelineDatasetStatus.ERROR,
+      //     error: new ExtendedError(
+      //       'No data in the given time range and area of interest',
+      //       'ANALYSIS_NO_DATA'
+      //     ),
+      //     data: null
+      //   };
+      // }
+
       onProgress({
         status: TimelineDatasetStatus.SUCCESS,
         meta: {
