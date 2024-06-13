@@ -54,6 +54,8 @@ export interface MapLayerRasterTimeseriesProps {
   isHidden?: boolean;
   idSuffix?: string;
   isPositionSet?: boolean;
+  // For replacing HTTPS asset URLs with S3 in the CMR STAC response.
+  // eslint-disable-next-line react/no-unused-prop-types
   assetUrlReplacements?: AssetUrlReplacement;
 }
 
