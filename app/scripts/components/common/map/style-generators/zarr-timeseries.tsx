@@ -57,6 +57,8 @@ export function ZarrPaintLayer(props: ZarrPaintLayerProps) {
 
   useEffect(
     () => {
+      if (!assetUrl) return;
+
       const tileParams = qs.stringify({
         url: assetUrl,
         time_slice: date,

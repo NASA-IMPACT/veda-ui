@@ -2,7 +2,7 @@ import React from 'react';
 
 import { BaseGeneratorParams } from '../types';
 import { ZarrPaintLayer } from './zarr-timeseries';
-import { useCMRSTAC } from './hooks';
+import { useCMR } from './hooks';
 import { ActionStatus } from '$utils/status';
 
 interface AssetUrlReplacement {
@@ -33,6 +33,6 @@ export function CMRTimeseries(props:CMRTimeseriesProps) {
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-  const assetUrl = useCMRSTAC({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange });
+  const assetUrl = useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange });
   return <ZarrPaintLayer {...props} assetUrl={assetUrl} />;
 }
