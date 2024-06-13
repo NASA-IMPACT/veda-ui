@@ -14,7 +14,7 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
 import { MapRef } from 'react-map-gl';
-import { DatasetLayer, datasets } from 'veda';
+import { datasets } from 'veda';
 import { BlockErrorBoundary } from '..';
 import {
   chapterDisplayName,
@@ -36,12 +36,12 @@ import { LayerLegend, LayerLegendContainer } from '$components/common/map/layer-
 import { Layer } from '$components/exploration/components/map/layer';
 import { MapLoading } from '$components/common/loading-skeleton';
 import { convertProjectionToMapbox } from '$components/common/map/controls/map-options/projections';
-import { DatasetStatus, VizDataset, VizDatasetSuccess } from '$components/exploration/types.d.ts';
+import { DatasetStatus, EnhancedDatasetLayer, VizDataset, VizDatasetSuccess } from '$components/exploration/types.d.ts';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { formatSingleDate } from '$components/common/map/utils';
 
-type ResolvedLayer = {
-  layer: Exclude<VizDataset['data'], null>;
+type ResolvedScrollyMapLayer = {
+  vizDataset: VizDatasetSuccess;
   runtimeData: { datetime?: Date; id: string };
 } | null;
 
@@ -126,7 +126,7 @@ function getChapterLayerKey(ch: ScrollyChapter) {
  * @param {array} chList List of chapters with related layers.
  */
 function useMapLayersFromChapters(chList: ScrollyChapter[]): [
-  ResolvedLayer[],
+  ResolvedScrollyMapLayer[],
   string[]
 ] {
   // The layers are unique based on the dataset, layer id and datetime.
@@ -160,7 +160,7 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]): [
 
     const layer = layers?.find(
       (l) => l.id === layerId
-    ) as DatasetLayer | null;
+    ) as EnhancedDatasetLayer | null;
 
     if (!layer) {
       throw new Error(
@@ -183,11 +183,13 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]): [
   // layer definition data, the runtimeData belongs to the application and not
   // the layer. For example the datetime, results from a user action (picking
   // on the calendar or in this case setting it in the MDX).
-  const resolvedLayers = resolvedDatasetsWithStac.map(({ data }, index) => {
+  const resolvedLayers = resolvedDatasetsWithStac.map((layer, index) => {
+    if (layer.status !== DatasetStatus.SUCCESS) return null;
+
     const datetime = uniqueChapterLayers[index].datetime;
 
     return {
-      layer: data,
+      vizDataset: layer,
       runtimeData: {
         datetime,
         id: getChapterLayerKey(uniqueChapterLayers[index])
@@ -328,6 +330,10 @@ function Scrollytelling(props) {
     : // Otherwise it's the full header height.
       wrapperHeight;
 
+  const activeChapterLayerData = activeChapterLayer ? activeChapterLayer.vizDataset.data : null;
+
+  const { description, id, name, legend, time_density } = activeChapterLayerData ?? {};
+
   return (
     <>
       <ScrollyMapContainer topOffset={topOffset}>
@@ -357,7 +363,7 @@ function Scrollytelling(props) {
           {activeChapterLayer?.runtimeData.datetime
             ? formatSingleDate(
                 activeChapterLayer.runtimeData.datetime,
-                activeChapterLayer.layer.time_density
+                time_density
               )
             : null}
         </MapMessage>
@@ -374,7 +380,7 @@ function Scrollytelling(props) {
         */}
         <SwitchTransition>
           <CSSTransition
-            key={activeChapterLayer?.layer.name}
+            key={name}
             timeout={!activeChapterLayer ? 1 : undefined}
             addEndListener={(node, done) => {
               if (!activeChapterLayer) return;
@@ -382,13 +388,13 @@ function Scrollytelling(props) {
             }}
             classNames='reveal'
           >
-            {activeChapterLayer?.layer.legend ? (
+            {legend ? (
               <LayerLegendContainer>
                 <LayerLegend
-                  id={`base-${activeChapterLayer.layer.id}`}
-                  description={activeChapterLayer.layer.description}
-                  title={activeChapterLayer.layer.name}
-                  {...activeChapterLayer.layer.legend}
+                  id={`base-${id}`}
+                  description={description ?? ''}
+                  title={name ?? ''}
+                  {...legend}
                 />
               </LayerLegendContainer>
             ) : (
@@ -413,7 +419,7 @@ function Scrollytelling(props) {
             resolvedLayers.map((resolvedLayer, lIdx) => {
               if (!resolvedLayer || !mapRef.current) return null;
 
-              const { runtimeData, layer } = resolvedLayer;
+              const { runtimeData, vizDataset } = resolvedLayer;
               const isHidden =
                 !activeChapterLayerId ||
                 activeChapterLayerId !== runtimeData.id ||
@@ -424,7 +430,7 @@ function Scrollytelling(props) {
                   key={runtimeData.id}
                   id={`scrolly-${runtimeData.id}`}
                   dataset={{
-                    ...reconcileVizDataset(layer),
+                    ...vizDataset,
                     settings: {
                       opacity: 100,
                       isVisible: !isHidden,
@@ -452,7 +458,7 @@ export function ScrollytellingBlock(props) {
   return <BlockErrorBoundary {...props} childToRender={Scrollytelling} />;
 }
 
-export function reconcileVizDataset(dataset): VizDatasetSuccess {
+export function reconcileVizDataset(dataset: EnhancedDatasetLayer): VizDataset {
   return {
     status: DatasetStatus.SUCCESS,
     data: dataset,
