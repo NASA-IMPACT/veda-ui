@@ -332,7 +332,7 @@ function Scrollytelling(props) {
 
   const activeChapterLayerData = activeChapterLayer ? activeChapterLayer.vizDataset.data : null;
 
-  const { description, id, name, legend, time_density } = activeChapterLayerData ?? {};
+  const { description, id, name, legend, timeDensity } = activeChapterLayerData ?? {};
 
   return (
     <>
@@ -363,7 +363,7 @@ function Scrollytelling(props) {
           {activeChapterLayer?.runtimeData.datetime
             ? formatSingleDate(
                 activeChapterLayer.runtimeData.datetime,
-                time_density
+                timeDensity
               )
             : null}
         </MapMessage>
