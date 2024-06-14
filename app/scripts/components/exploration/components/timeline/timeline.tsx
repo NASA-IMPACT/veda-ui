@@ -61,7 +61,7 @@ import {
 import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
 import {
   TimelineDataset,
-  TimelineDatasetStatus,
+  DatasetStatus,
   TimelineDatasetSuccess,
   ZoomTransformPlain
 } from '$components/exploration/types.d.ts';
@@ -368,7 +368,7 @@ export default function Timeline(props: TimelineProps) {
     () =>
       datasets.filter(
         (d): d is TimelineDatasetSuccess =>
-          d.status === TimelineDatasetStatus.SUCCESS
+          d.status === DatasetStatus.SUCCESS
       ),
     [datasets]
   );

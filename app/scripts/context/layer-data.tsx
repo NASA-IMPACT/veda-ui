@@ -57,10 +57,10 @@ const fetchLayerById = async (
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
     const domainStart = domain[0];
-    
+
     // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
     const lastDatetime = domain[domain.length - 1] ||  new Date().toISOString();
-    
+
     return {
       timeseries: {
         ...commonTimeseriesParams,
@@ -247,46 +247,4 @@ export const useDatasetAsyncLayers = (datasetId) => {
   const dataset = datasets[datasetId ?? ''];
   // Get the layer information from the dataset defined in the configuration.
   return useLayersInit(dataset?.data.layers ?? []);
-};
-
-interface ReferencedLayer {
-  datasetId: string;
-  layerId: string;
-  skipCompare?: boolean;
-}
-
-export const useAsyncLayers = (referencedLayers: ReferencedLayer[]) => {
-  // Get the layers from the different datasets.
-  const layers = useMemo(
-    () =>
-      referencedLayers.map(({ datasetId, layerId, skipCompare }) => {
-        const layers = datasets[datasetId]?.data.layers;
-        // Get the layer information from the dataset defined in the configuration.
-        const layer = layers?.find(
-          (l) => l.id === layerId
-        ) as DatasetLayer | null;
-
-        // The layers must be defined in the configuration otherwise it is not
-        // possible to load them.
-        if (!layer) {
-          throw new Error(
-            `Layer [${layerId}] not found in dataset [${datasetId}]`
-          );
-        }
-
-        // Skip the compare to avoid unnecessary network requests.
-        if (skipCompare) {
-          return {
-            ...layer,
-            compare: null
-          };
-        }
-
-        return layer;
-      }),
-    [referencedLayers]
-  );
-
-  // Get the layer information from the dataset defined in the configuration.
-  return useLayersInit(layers);
 };

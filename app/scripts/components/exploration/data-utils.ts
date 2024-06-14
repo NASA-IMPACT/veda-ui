@@ -12,14 +12,14 @@ import {
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
-  TimelineDatasetStatus
+  DatasetStatus
 } from './types.d.ts';
 import {
   DataMetric,
   DATA_METRICS,
   DEFAULT_DATA_METRICS
 } from './components/datasets/analysis-metrics';
-import { veda_datasets } from "$data-layer/datasets";
+import { veda_datasets } from '$data-layer/datasets';
 
 import { utcString2userTzDate } from '$utils/date';
 
@@ -32,13 +32,17 @@ export const findParentDataset = (layerId: string) => {
   return parentDataset?.data;
 };
 
-export const findDatasetAttribute = ({ datasetId, attr }: {datasetId: string, attr: string}) => {
+export const findDatasetAttribute = ({
+  datasetId,
+  attr
+}: {
+  datasetId: string;
+  attr: string;
+}) => {
   return veda_datasets[datasetId]?.data[attr];
 };
 
-export const allDatasets = Object.values(veda_datasets)
-  .map((d) => d!.data);
-
+export const allDatasets = Object.values(veda_datasets).map((d) => d!.data);
 
 export const allExploreDatasets = Object.values(veda_datasets)
   .map((d) => d!.data)
@@ -50,31 +54,33 @@ export interface DatasetDataWithEnhancedLayers extends DatasetData {
 
 function enhanceDatasetLayers(dataset) {
   return {
-      ...dataset,
-      layers: dataset.layers.map(layer => ({
-          ...layer,
-          parentDataset: {
-              id: dataset.id,
-              name: dataset.name
-          }
-      }))
+    ...dataset,
+    layers: dataset.layers.map((layer) => ({
+      ...layer,
+      parentDataset: {
+        id: dataset.id,
+        name: dataset.name
+      }
+    }))
   };
 }
 
-export const allExploreDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[] = allExploreDatasets.map(enhanceDatasetLayers);
+export const allExploreDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[] =
+  allExploreDatasets.map(enhanceDatasetLayers);
 
-export const getAllDatasetsWithEnhancedLayers = (dataset): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
+export const getAllDatasetsWithEnhancedLayers = (
+  dataset
+): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
 
-export const datasetLayers = Object.values(veda_datasets)
-  .flatMap((dataset) => {
-    return dataset!.data.layers.map(l => ({
-      ...l,
-      parentDataset: {
-        id: dataset!.data.id,
-        name: dataset!.data.name
-      }
-    }));
-  });
+export const datasetLayers = Object.values(veda_datasets).flatMap((dataset) => {
+  return dataset!.data.layers.map((l) => ({
+    ...l,
+    parentDataset: {
+      id: dataset!.data.id,
+      name: dataset!.data.name
+    }
+  }));
+});
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
@@ -132,7 +138,7 @@ export function reconcileDatasets(
     }
 
     return {
-      status: TimelineDatasetStatus.IDLE,
+      status: DatasetStatus.IDLE,
       data: dataset,
       error: null,
       settings: {
@@ -141,7 +147,7 @@ export function reconcileDatasets(
         analysisMetrics: getInitialMetrics(dataset)
       },
       analysis: {
-        status: TimelineDatasetStatus.IDLE,
+        status: DatasetStatus.IDLE,
         data: null,
         error: null,
         meta: {}

@@ -12,7 +12,7 @@ import Map, { mapHeight } from '$components/common/blocks/block-map';
 import Embed from '$components/common/blocks/embed';
 import {
   ScrollytellingBlock,
-  scrollyMapHeight
+  SCROLLY_MAP_HEIGHT
 } from '$components/common/blocks/scrollytelling';
 
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
@@ -32,7 +32,7 @@ export function LazyChart(props) {
 export function LazyScrollyTelling(props) {
   return (
     <LazyLoad
-      placeholder={<LoadingSkeleton height={scrollyMapHeight} />}
+      placeholder={<LoadingSkeleton height={SCROLLY_MAP_HEIGHT} />}
       offset={100}
       once
     >
