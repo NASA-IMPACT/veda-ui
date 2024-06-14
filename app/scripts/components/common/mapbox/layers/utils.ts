@@ -30,14 +30,14 @@ import {
   MapLayerVectorTimeseriesProps
 } from './vector-timeseries';
 import {
-  MapLayerZarrTimeseries,
-} from './zarr-timeseries';
+  ZarrTimeseries,
+} from '$components/common/map/style-generators/zarr-timeseries';
 import {
-  MapLayerCMRTimeseries,
-} from './cmr-timeseries';
+  CMRTimeseries,
+} from '$components/common/map/style-generators/cmr-timeseries';
 import {
-  MapLayerTitilerCMRTimeseries,
-} from './titiler-cmr-timeseries';
+  TitilerCMRTimeseries,
+} from '$components/common/map/style-generators/titiler-cmr-timeseries';
 
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
@@ -56,9 +56,9 @@ export const getLayerComponent = (
   if (isTimeseries) {
     if (layerType === 'raster') return MapLayerRasterTimeseries;
     if (layerType === 'vector') return MapLayerVectorTimeseries;
-    if (layerType === 'zarr') return MapLayerZarrTimeseries;
-    if (layerType === 'cmr-stac') return MapLayerCMRTimeseries;
-    if (layerType === 'titiler-cmr') return MapLayerTitilerCMRTimeseries;
+    if (layerType === 'zarr') return ZarrTimeseries;
+    if (layerType === 'cmr-stac') return CMRTimeseries;
+    if (layerType === 'titiler-cmr') return TitilerCMRTimeseries;
   }
 
   return null;

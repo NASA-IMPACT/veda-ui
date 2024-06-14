@@ -2,8 +2,8 @@ import React from 'react';
 import { BaseGeneratorParams } from '../types';
 
 import { useZarr } from './hooks';
+import { RasterPaintLayer } from './raster-paint-layer';
 import { ActionStatus } from '$utils/status';
-import { RasterPaintLayer } from '$components/common/mapbox/layers/raster-paint-layer';
 
 export interface ZarrTimeseriesProps extends BaseGeneratorParams {
   id: string;

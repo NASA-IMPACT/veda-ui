@@ -3,7 +3,7 @@ import React from 'react';
 import { BaseGeneratorParams } from '../types';
 import { useCMRSTAC } from './hooks';
 import { ActionStatus } from '$utils/status';
-import { RasterPaintLayer } from '$components/common/mapbox/layers/raster-paint-layer';
+import { RasterPaintLayer } from '$components/common/map/style-generators/raster-paint-layer';
 
 interface AssetUrlReplacement {
   from: string;

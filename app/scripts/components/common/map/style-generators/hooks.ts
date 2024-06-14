@@ -146,26 +146,22 @@ export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, stacApi
           controller
         });
 
-        let tileParams = {
+        const baseParams = {
           concept_id: data.collection_concept_id,
           datetime: date,
           ...sourceParams
         };
-
-        // pick out the variable from the sourceParams and use it to get the renders params
-        // see all ZarrReader Options: https://github.com/developmentseed/titiler-cmr/blob/develop/titiler/cmr/factory.py#L433-L452
-        const variable = sourceParams?.variable || null;
-        if (variable != null) {
-          tileParams.variable = variable;
-          if (data.renders[variable]) {
-            // what's in sourceParams will override what's in the renders object
-            tileParams = { ...data.renders[variable], ...tileParams };
-          }
+        
+        const variable = sourceParams?.variable;
+        
+        if (variable) {
+          baseParams.variable = variable;
+          const renderParams = data.renders[variable] || {};
+          setTileParams({ ...renderParams, ...baseParams });
+        } else {
+          setTileParams(baseParams);
         }
-        // if it's a COG collection we would want to use the bands parameter
-        // see all Rasterio Reader Options: https://github.com/developmentseed/titiler-cmr/blob/develop/titiler/cmr/factory.py#L454-L498
 
-        setTileParams(tileParams);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
