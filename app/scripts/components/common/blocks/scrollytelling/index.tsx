@@ -183,19 +183,21 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]): [
   // layer definition data, the runtimeData belongs to the application and not
   // the layer. For example the datetime, results from a user action (picking
   // on the calendar or in this case setting it in the MDX).
-  const resolvedLayers = resolvedDatasetsWithStac.map((layer, index) => {
-    if (layer.status !== DatasetStatus.SUCCESS) return null;
+  const resolvedLayers = useMemo(() => {
+    return resolvedDatasetsWithStac.map((layer, index) => {
+      if (layer.status !== DatasetStatus.SUCCESS) return null;
 
-    const datetime = uniqueChapterLayers[index].datetime;
+      const datetime = uniqueChapterLayers[index].datetime;
 
-    return {
-      vizDataset: layer,
-      runtimeData: {
-        datetime,
-        id: getChapterLayerKey(uniqueChapterLayers[index])
-      }
-    };
-  });
+      return {
+        vizDataset: layer,
+        runtimeData: {
+          datetime,
+          id: getChapterLayerKey(uniqueChapterLayers[index])
+        }
+      };
+    });
+  }, [resolvedDatasetsWithStac, uniqueChapterLayers]);
 
   const resolvedStatus = useMemo(
     () => resolvedDatasetsWithStac.map(({ status }) => status),
