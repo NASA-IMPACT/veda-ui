@@ -43,13 +43,12 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
           controller
         });
 
-        const tileParams = {
-          url: data.assets.zarr.href,
-          time_slice: date,
-          ...sourceParams
-        };
         if (data.assets.zarr.href) {
-          setTileParams(tileParams);
+          setTileParams({
+            url: data.assets.zarr.href,
+            time_slice: date,
+            ...sourceParams
+          });
         }
 
         onStatusChange?.({ status: S_SUCCEEDED, id });
@@ -180,5 +179,4 @@ export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, stacApi
   }, [id, stacCol, stacApiEndpointToUse, date, stacApiEndpoint, onStatusChange, sourceParams]);
 
   return tileParams;
-
 } 
