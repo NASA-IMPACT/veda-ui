@@ -2,12 +2,8 @@ import React, { useMemo } from 'react';
 // Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import * as dateFns from 'date-fns';
 
-import { TimelineDatasetSuccess } from '../../types.d.ts';
+import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types.d.ts';
 import { getTimeDensityStartDate } from '../../data-utils';
-import {
-  useTimelineDatasetAtom,
-  useTimelineDatasetSettings
-} from '../../atoms/hooks';
 
 import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
@@ -15,39 +11,25 @@ import { VectorTimeseries } from '$components/common/map/style-generators/vector
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
 import { TitilerCMRTimeseries } from '$components/common/map/style-generators/titiler-cmr-timeseries';
+import { ActionStatus } from '$utils/status';
 
 interface LayerProps {
   id: string;
-  dataset: TimelineDatasetSuccess;
+  dataset: TimelineDatasetSuccess | VizDatasetSuccess;
   order?: number;
   selectedDay: Date;
+  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
 
 export function Layer(props: LayerProps) {
-  const { id: layerId, dataset, order, selectedDay } = props;
+  const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
 
-  let isVisible: boolean | undefined;
-  let opacity: number | undefined;
-
-  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
-  
-  try {
-    // @TECH-DEBT: Wrapping this logic with a try/catch because jotai errors because it is unable to find
-    // 'settings' on undefined value even when dataset has 'settings' key. This is a workaround for now but
-    // should be revisited. Ideally type should be fine with 'Partial<TimelineDataset>'
-    const [getSettings] = useTimelineDatasetSettings(datasetAtom);
-  
-    isVisible = getSettings('isVisible');
-    opacity = getSettings('opacity');
-  } catch {
-    isVisible = true;
-    opacity = undefined;
-  }
+  const { isVisible, opacity } = dataset.settings;
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(
-    () => getTimeDensityStartDate(selectedDay, dataset.data?.timeDensity),
-    [selectedDay, dataset.data?.timeDensity]
+    () => getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
+    [selectedDay, dataset.data.timeDensity]
   );
 
   // Resolve config functions.
@@ -74,6 +56,7 @@ export function Layer(props: LayerProps) {
           generatorOrder={order}
           hidden={!isVisible}
           opacity={opacity}
+          onStatusChange={onStatusChange}
         />
       );
     case 'zarr':
@@ -89,6 +72,7 @@ export function Layer(props: LayerProps) {
           generatorOrder={order}
           hidden={!isVisible}
           opacity={opacity}
+          onStatusChange={onStatusChange}
         />
       );
     case 'cmr-stac':
@@ -105,6 +89,7 @@ export function Layer(props: LayerProps) {
           generatorOrder={order}
           hidden={!isVisible}
           opacity={opacity}
+          onStatusChange={onStatusChange}
         />
       );
       case 'titiler-cmr':
@@ -135,6 +120,7 @@ export function Layer(props: LayerProps) {
           generatorOrder={order}
           hidden={!isVisible}
           opacity={opacity}
+          onStatusChange={onStatusChange}
         />
       );
     default:

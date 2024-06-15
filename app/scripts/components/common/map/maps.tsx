@@ -4,7 +4,8 @@ import React, {
   useMemo,
   ReactElement,
   useState,
-  createContext
+  createContext,
+  Ref
 } from 'react';
 import styled from 'styled-components';
 import { MapboxOptions } from 'mapbox-gl';
@@ -18,6 +19,7 @@ import { ProjectionOptions } from 'veda';
 import useDimensions from 'react-cool-dimensions';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
+import { MapRef } from 'react-map-gl';
 import MapboxStyleOverride from './mapbox-style-override';
 import { ExtendedStyle, Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
@@ -83,12 +85,13 @@ const MapsContainer = styled.div`
 
 type MapsProps = Pick<
   MapsContextWrapperProps,
-  'projection' | 'onStyleUpdate'
+  'projection' | 'onStyleUpdate' | 'mapRef' | 'onMapLoad'
 > & {
   children: ReactNode;
+  interactive?: boolean;
 };
 
-function Maps({ children, projection, onStyleUpdate }: MapsProps) {
+function Maps({ children, projection, onStyleUpdate, mapRef, onMapLoad, interactive }: MapsProps) {
   // Instantiate MGL Compare, if compare is enabled
   useMapCompare();
 
@@ -142,15 +145,18 @@ function Maps({ children, projection, onStyleUpdate }: MapsProps) {
     <MapsContainer id={containerId} ref={observe}>
       <Styles onStyleUpdate={onStyleUpdate}>
         {generators}
-        <MapComponent controls={controls} projection={projection} />
+        <MapComponent interactive={interactive} mapRef={mapRef} onMapLoad={onMapLoad} controls={controls} projection={projection} />
       </Styles>
       {!!compareGenerators.length && (
         <Styles isCompared>
           {compareGenerators}
           <MapComponent
+            interactive={interactive}
+            mapRef={mapRef}
             isCompared
             controls={controls}
             projection={projection}
+            onMapLoad={onMapLoad}
           />
         </Styles>
       )}
@@ -161,13 +167,15 @@ function Maps({ children, projection, onStyleUpdate }: MapsProps) {
 export interface MapsContextWrapperProps {
   children: ReactNode;
   id: string;
+  mapRef?: Ref<MapRef>;
+  onMapLoad?: () => void;
   projection?: ProjectionOptions;
   onStyleUpdate?: (style: ExtendedStyle) => void;
   mapOptions?: Partial<Omit<MapboxOptions, 'container'>>;
 }
 
 export default function MapsContextWrapper(props: MapsContextWrapperProps) {
-  const { id, mapOptions } = props;
+  const { id, mapOptions, mapRef, onMapLoad } = props;
   const mainId = `main-map-${id}`;
   const comparedId = `compared-map-${id}`;
   const containerId = `comparison-container-${id}`;
@@ -189,7 +197,7 @@ export default function MapsContextWrapper(props: MapsContextWrapperProps) {
         containerId
       }}
     >
-      <Maps {...props}>{props.children}</Maps>
+      <Maps interactive={mapOptions?.interactive} onMapLoad={onMapLoad} mapRef={mapRef} {...props}>{props.children}</Maps>
     </MapsContext.Provider>
   );
 }

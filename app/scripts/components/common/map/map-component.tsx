@@ -1,5 +1,5 @@
-import React, { useCallback, ReactElement, useMemo } from 'react';
-import ReactMapGlMap, { LngLatBoundsLike } from 'react-map-gl';
+import React, { useCallback, ReactElement, useMemo, Ref } from 'react';
+import ReactMapGlMap, { LngLatBoundsLike, MapRef } from 'react-map-gl';
 import { debounce } from 'lodash';
 import { ProjectionOptions } from 'veda';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -16,11 +16,17 @@ const maxMapBounds: LngLatBoundsLike = [
 export default function MapComponent({
   controls,
   isCompared,
-  projection
+  projection,
+  mapRef,
+  onMapLoad,
+  interactive
 }: {
   controls: ReactElement[];
   isCompared?: boolean;
   projection?: ProjectionOptions;
+  mapRef?: Ref<MapRef>;
+  onMapLoad?: () => void;
+  interactive?: boolean;
 }) {
   const { initialViewState, setInitialViewState, mainId, comparedId } =
     useMapsContext();
@@ -62,6 +68,7 @@ export default function MapComponent({
   return (
     <ReactMapGlMap
       id={id}
+      ref={mapRef}
       mapboxAccessToken={process.env.MAPBOX_TOKEN}
       dragRotate={false}
       touchPitch={false}
@@ -70,8 +77,10 @@ export default function MapComponent({
       initialViewState={initialViewState}
       mapStyle={style as any}
       onMove={onMove}
+      onLoad={onMapLoad}
       projection={mapboxProjection}
       maxBounds={maxMapBounds}
+      interactive={interactive}
     >
       {controls}
     </ReactMapGlMap>

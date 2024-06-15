@@ -21,7 +21,7 @@ import { getBlockBoundaries, lumpBlocks } from './block-utils';
 import DataLayerCard from './data-layer-card';
 import { findDatasetAttribute } from '$components/exploration/data-utils';
 import {
-  TimelineDatasetStatus,
+  DatasetStatus,
   TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
 import {
@@ -167,16 +167,16 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   useAnalysisDataRequest({ datasetAtom });
 
-  const isDatasetError = dataset.status === TimelineDatasetStatus.ERROR;
-  const isDatasetLoading = dataset.status === TimelineDatasetStatus.LOADING;
-  const isDatasetSuccess = dataset.status === TimelineDatasetStatus.SUCCESS;
+  const isDatasetError = dataset.status === DatasetStatus.ERROR;
+  const isDatasetLoading = dataset.status === DatasetStatus.LOADING;
+  const isDatasetSuccess = dataset.status === DatasetStatus.SUCCESS;
 
   const isAnalysisAndError =
-    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.ERROR;
+    isAnalyzing && dataset.analysis.status === DatasetStatus.ERROR;
   const isAnalysisAndLoading =
-    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.LOADING;
+    isAnalyzing && dataset.analysis.status === DatasetStatus.LOADING;
   const isAnalysisAndSuccess =
-    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
+    isAnalyzing && dataset.analysis.status === DatasetStatus.SUCCESS;
 
   const datasetLegend = dataset.data.legend;
   const analysisMetrics = useMemo(

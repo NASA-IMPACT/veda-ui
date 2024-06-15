@@ -4,7 +4,7 @@ import { Map as MapboxMap } from 'mapbox-gl';
 import { MapRef } from 'react-map-gl';
 import { endOfDay, startOfDay } from 'date-fns';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
-import { BBox } from "@turf/helpers";
+import { BBox } from '@turf/helpers';
 import {
   DatasetDatumFn,
   DatasetDatumFnResolverBag,
@@ -15,6 +15,11 @@ import { StacFeature } from './types';
 import { TimeDensity } from '$context/layer-data';
 import { userTzDate2utcString } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
+import {
+  DatasetStatus,
+  DatasetData,
+  VizDataset
+} from '$components/exploration/types.d.ts';
 
 export const FIT_BOUNDS_PADDING = 32;
 
@@ -265,9 +270,23 @@ export function getZoomFromBbox(bbox: BBox): number {
   const maxDiff = Math.max(latMax - latMin, lngMax - lngMin);
   if (maxDiff < 360 / Math.pow(2, 20)) {
     return 21;
-} else {
-    const zoomLevel = Math.floor(-1*( (Math.log(maxDiff)/Math.log(2)) - (Math.log(360)/Math.log(2))));
+  } else {
+    const zoomLevel = Math.floor(
+      -1 * (Math.log(maxDiff) / Math.log(2) - Math.log(360) / Math.log(2))
+    );
     if (zoomLevel < 1) return 1;
     else return zoomLevel;
   }
+}
+
+export function reconcileVizDataset(dataset: DatasetData): VizDataset {
+  return {
+    status: DatasetStatus.SUCCESS,
+    data: dataset,
+    error: null,
+    settings: {
+      isVisible: true,
+      opacity: 100
+    }
+  };
 }
