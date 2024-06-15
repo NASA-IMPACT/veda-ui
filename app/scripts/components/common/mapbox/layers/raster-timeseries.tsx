@@ -35,11 +35,6 @@ import {
 // Whether or not to print the request logs.
 const LOG = process.env.NODE_ENV !== 'production';
 
-interface AssetUrlReplacement {
-  from: string;
-  to: string;
-}
-
 export interface MapLayerRasterTimeseriesProps {
   id: string;
   stacCol: string;
@@ -54,9 +49,6 @@ export interface MapLayerRasterTimeseriesProps {
   isHidden?: boolean;
   idSuffix?: string;
   isPositionSet?: boolean;
-  // For replacing HTTPS asset URLs with S3 in the CMR STAC response.
-  // eslint-disable-next-line react/no-unused-prop-types
-  assetUrlReplacements?: AssetUrlReplacement;
 }
 
 export interface StacFeature {

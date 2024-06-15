@@ -1,7 +1,5 @@
 import React from 'react';
-
 import { RasterPaintLayer } from './raster-paint-layer';
-
 import { RasterTimeseriesProps } from './raster-timeseries';
 import { useTitilerCMR } from '$components/common/map/style-generators/hooks';
 

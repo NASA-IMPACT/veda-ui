@@ -1,22 +1,10 @@
 import React from 'react';
-import { BaseGeneratorParams } from '../types';
 
 import { useZarr } from './hooks';
+import { RasterTimeseriesProps } from './raster-timeseries';
 import { RasterPaintLayer } from './raster-paint-layer';
-import { ActionStatus } from '$utils/status';
 
-export interface ZarrTimeseriesProps extends BaseGeneratorParams {
-  id: string;
-  stacCol: string;
-  date?: Date;
-  sourceParams?: Record<string, any>;
-  stacApiEndpoint?: string;
-  tileApiEndpoint?: string;
-  zoomExtent?: number[];
-  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-}
-
-export function ZarrTimeseries(props:ZarrTimeseriesProps) {
+export function ZarrTimeseries(props: RasterTimeseriesProps) {
   const {
     id,
     stacCol,
