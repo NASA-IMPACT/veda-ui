@@ -9,8 +9,9 @@ interface RasterPaintLayerProps {
   tileParams?: Record<string, any>;
   tileApiEndpoint?: string;
   zoomExtent?: number[];
-  isHidden?: boolean;
+  hidden?: boolean;
   idSuffix?: string;
+  opacity?: number;
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
@@ -19,7 +20,8 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     tileApiEndpoint,
     tileParams,
     zoomExtent,
-    isHidden,
+    hidden,
+    opacity,
     idSuffix = ''
   } = props;
 
@@ -47,28 +49,30 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     };
 
       const tileParamsAsString = qs.stringify(tileParams, options);
-
+      const tileServerUrl = `${tileApiEndpoint}?${tileParamsAsString}`;
       const layerSource: RasterSource = {
         type: 'raster',
-        url: `${tileApiEndpoint}?${tileParamsAsString}`
+        url: tileServerUrl
       };
-
+      const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
       const layer: RasterLayer = {
         id: id,
         type: 'raster',
         source: id,
         layout: {
-          visibility: isHidden ? 'none' : 'visible'
+          visibility: hidden ? 'none' : 'visible'
         },
         paint: {
-          'raster-opacity': Number(!isHidden),
+          //'raster-opacity': hidden ? 0 : rasterOpacity,
           'raster-opacity-transition': {
             duration: 320
           }
         },
         minzoom: minZoom,
         metadata: {
-          layerOrderPosition: 'raster'
+          id,
+          layerOrderPosition: 'raster',
+          xyzTileUrl: tileServerUrl,
         }
       };
 
@@ -90,9 +94,10 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       tileParams,
       minZoom,
       haveSourceParamsChanged,
-      isHidden,
+      hidden,
       generatorId,
       tileApiEndpoint,
+      opacity
 
     ]
   );

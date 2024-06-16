@@ -12,7 +12,8 @@ export function CMRTimeseries(props: RasterTimeseriesProps) {
     date,
     assetUrlReplacements,
     onStatusChange,
-    sourceParams
+    sourceParams,
+    hidden
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;

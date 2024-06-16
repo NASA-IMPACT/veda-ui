@@ -11,6 +11,7 @@ export function TitilerCMRTimeseries(props: RasterTimeseriesProps) {
     date,
     onStatusChange,
     sourceParams,
+    hidden,
   } = props;
  
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;

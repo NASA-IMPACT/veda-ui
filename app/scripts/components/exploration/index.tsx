@@ -11,6 +11,7 @@ import { useAnalysisController } from './hooks/use-analysis-data-request';
 import { TimelineDataset } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
+import { de } from 'date-fns/locale';
 
 const Container = styled.div`
   display: flex;

@@ -11,7 +11,8 @@ export function ZarrTimeseries(props: RasterTimeseriesProps) {
     stacApiEndpoint,
     date,
     onStatusChange,
-    sourceParams
+    sourceParams,
+    hidden
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;

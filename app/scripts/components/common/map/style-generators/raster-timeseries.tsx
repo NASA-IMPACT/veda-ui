@@ -55,6 +55,7 @@ export interface RasterTimeseriesProps extends BaseGeneratorParams {
   // For replacing HTTPS asset URLs with S3 in the CMR STAC response.
   // eslint-disable-next-line react/no-unused-prop-types  
   assetUrlReplacements?: AssetUrlReplacement;
+  hidden?: boolean;
 }
 
 enum STATUS_KEY {
