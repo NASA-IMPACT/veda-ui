@@ -5,6 +5,9 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
 import { userPages } from 'veda';
 
+// import '@trussworks/react-uswds/lib/index.css';
+import '$styles/styles.scss';
+
 import { discoveryRoutes } from './redirects';
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
