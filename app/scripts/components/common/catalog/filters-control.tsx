@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { Taxonomy } from 'veda';
+import { Taxonomy } from '$types/veda';
 import { FilterActions } from './utils';
 import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';

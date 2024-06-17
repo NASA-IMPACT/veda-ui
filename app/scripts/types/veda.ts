@@ -131,6 +131,7 @@ interface LayerLegendUnit {
   label: string;
 }
 
+
 export interface LayerLegendGradient {
   type: 'gradient';
   unit?: LayerLegendUnit;
@@ -246,7 +247,7 @@ export interface Taxonomy {
   values: TaxonomyItem[];
 }
 
-interface TaxonomyItem {
+export interface TaxonomyItem {
   id: string;
   name: string;
 }

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { DatasetData } from 'veda';
+import { DatasetData, DatasetDataWithEnhancedLayers, VedaDatum } from '$types/veda';
 
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
@@ -19,9 +19,8 @@ import {
   generateTaxonomies,
   getTaxonomy,
   TAXONOMY_SOURCE,
-} from '$utils/veda-data';
+} from '$utils/veda-data-no-faux-module';
 import { OptionItem } from '$components/common/form/checkable-filter';
-import { findParentDataset, getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
@@ -39,6 +38,28 @@ export interface CatalogContentProps {
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
+
+export const findParentDataset = (layerId: string, datasets) => {
+  const parentDataset: VedaDatum<DatasetData> | undefined = Object.values(datasets).find((dataset: VedaDatum<DatasetData>) =>
+    dataset!.data.layers.find((l) => l.id === layerId)
+  ) as VedaDatum<DatasetData> | undefined;
+  return parentDataset?.data;
+};
+
+function enhanceDatasetLayers(dataset) {
+  return {
+      ...dataset,
+      layers: dataset.layers.map(layer => ({
+          ...layer,
+          parentDataset: {
+              id: dataset.id,
+              name: dataset.name
+          }
+      }))
+  };
+}
+
+export const getAllDatasetsWithEnhancedLayers = (dataset): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
 
 function CatalogContent({
   datasets,
@@ -115,7 +136,7 @@ function CatalogContent({
 
   const getSelectedIdsWithParentData = (selectedIds) => {
     return selectedIds.map((selectedId: string) => {
-      const parentData = findParentDataset(selectedId);
+      const parentData = findParentDataset(selectedId, datasets);
       const exclusiveSource = parentData?.sourceExclusive;
       const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')[0]?.values.map((value) => value.id);
       return { id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() ?? '' };
