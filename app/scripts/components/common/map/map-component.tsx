@@ -19,7 +19,7 @@ export default function MapComponent({
   projection,
   mapRef,
   onMapLoad,
-  interactive
+  interactive = true
 }: {
   controls: ReactElement[];
   isCompared?: boolean;
