@@ -303,8 +303,9 @@ function Scrollytelling(props) {
           : undefined;
 
         projection &&
-          // @ts-expect-error setProjection is missing on type
-          mapRef.current?.setProjection(convertProjectionToMapbox(projection));
+          // setProjection is a hidden member, we need access to native map instance via getMap
+          // https://visgl.github.io/react-map-gl/docs/api-reference/map
+          mapRef.current?.getMap().setProjection(convertProjectionToMapbox(projection));
       });
 
     return () => {
