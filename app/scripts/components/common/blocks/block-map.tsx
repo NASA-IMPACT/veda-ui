@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
+// @NOTE: This should be replaced by types/veda once the changes are consolidated
 import { ProjectionOptions } from 'veda';
 import { MapboxOptions } from 'mapbox-gl';
 import {
