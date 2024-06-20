@@ -28,10 +28,10 @@ import {
   ScaleControl
 } from '$components/common/map/controls';
 import { Layer } from '$components/exploration/components/map/layer';
-import { S_SUCCEEDED } from '$utils/status';
 import {
   VizDataset,
-  VizDatasetSuccess
+  VizDatasetSuccess,
+  DatasetStatus
 } from '$components/exploration/types.d.ts';
 
 import { reconcileDatasets } from '$components/exploration/data-utils';
@@ -197,7 +197,7 @@ function MapBlock(props: MapBlockProps) {
     if (!baseLayers || baseLayers.length !== 1) return null;
     const baseLayer = baseLayers[0];
 
-    if (baseLayer.status !== S_SUCCEEDED) return null;
+    if (baseLayer.status !== DatasetStatus.SUCCESS) return null;
     return {
       ...baseLayer,
       settings: {
@@ -214,7 +214,7 @@ function MapBlock(props: MapBlockProps) {
     if (!compareLayers || compareLayers.length !== 1) return null;
     const compareLayer = compareLayers[0];
 
-    if (compareLayer.status !== S_SUCCEEDED) return null;
+    if (compareLayer.status !== DatasetStatus.SUCCESS) return null;
 
     return {
       ...compareLayer,
