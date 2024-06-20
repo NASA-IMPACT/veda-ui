@@ -124,6 +124,20 @@ interface MapBlockProps {
   layerId: string;
 }
 
+const getDataLayer = (layerIndex: number, layers: VizDataset[] | undefined): (VizDatasetSuccess | null) => {
+  if (!layers || layers.length <= layerIndex) return null;
+  const layer = layers[layerIndex];
+
+  if (layer.status !== DatasetStatus.SUCCESS) return null;
+  return {
+    ...layer,
+    settings: {
+      isVisible: true,
+      opacity: 100
+    }
+  };
+};
+
 function MapBlock(props: MapBlockProps) {
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
 
@@ -146,25 +160,23 @@ function MapBlock(props: MapBlockProps) {
     throw new HintedError('Malformed Map Block', errors);
   }
 
-  const [baseLayers, setBaseLayers] = useState<VizDataset[] | undefined>();
-  const [compareLayers, setCompareLayers] = useState<VizDataset[] | undefined>();
-
   const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
+  let layersToFetch = [baseMapStaticData];
+  
   const baseMapStaticCompareData = baseMapStaticData.data.compare;
-
-  let compareLayerId: undefined | string;
   if (baseMapStaticCompareData && 'layerId' in baseMapStaticCompareData) {
-    compareLayerId = baseMapStaticCompareData.layerId;
+    const compareLayerId = baseMapStaticCompareData.layerId;
+    const [compareMapStaticData] = reconcileDatasets(
+      compareLayerId ? [compareLayerId] : [],
+      datasetLayers,
+      []
+    );
+    layersToFetch = [...layersToFetch, compareMapStaticData];
   }
 
-  const [compareMapStaticData] = reconcileDatasets(
-    compareLayerId ? [compareLayerId] : [],
-    datasetLayers,
-    []
-  );
+  const [layers, setLayers] = useState<VizDataset[] | undefined>(layersToFetch);
 
-  useReconcileWithStacMetadata([baseMapStaticData], setBaseLayers);
-  useReconcileWithStacMetadata([compareMapStaticData], setCompareLayers);
+  useReconcileWithStacMetadata(layersToFetch, setLayers);
 
   const selectedDatetime: (Date | undefined) = dateTime
     ? utcString2userTzDate(dateTime)
@@ -193,38 +205,10 @@ function MapBlock(props: MapBlockProps) {
 
   const [, setProjection] = useState(projectionStart);
 
-  const baseDataLayer:(VizDatasetSuccess| null) = useMemo(() => {
-    if (!baseLayers || baseLayers.length !== 1) return null;
-    const baseLayer = baseLayers[0];
-
-    if (baseLayer.status !== DatasetStatus.SUCCESS) return null;
-    return {
-      ...baseLayer,
-      settings: {
-        isVisible: true,
-        opacity: 100
-      }
-    };
-  }, [baseLayers]);
+  const baseDataLayer: (VizDatasetSuccess | null) = useMemo(() => getDataLayer(0, layers), [layers]);
+  const compareDataLayer: (VizDatasetSuccess | null) = useMemo(() => getDataLayer(1, layers), [layers]);
 
   const baseTimeDensity = baseDataLayer?.data.timeDensity;
-
-  // Resolve data needed for the compare layer once it is loaded.
-  const compareDataLayer: (VizDatasetSuccess | null) = useMemo(() => {
-    if (!compareLayers || compareLayers.length !== 1) return null;
-    const compareLayer = compareLayers[0];
-
-    if (compareLayer.status !== DatasetStatus.SUCCESS) return null;
-
-    return {
-      ...compareLayer,
-      settings: {
-        isVisible: true,
-        opacity: 100
-      }
-    };
-  }, [compareLayers]);
-
   const compareTimeDensity = compareDataLayer?.data.timeDensity;
 
   const mapOptions: Partial<MapboxOptions> = {
