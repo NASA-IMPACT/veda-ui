@@ -244,7 +244,7 @@ function Scrollytelling(props) {
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();
 
-  const mapRef = useRef<MapRef>(null);
+  const mapRef = useRef<MapRef | null>(null);
   const [isMapLoaded, setMapLoaded] = useState(false);
 
   // Extract the props from the chapters.
@@ -273,8 +273,11 @@ function Scrollytelling(props) {
     // Setup initial map state which will be the values on the first chapter.
     const initialChapter = chapterProps[0];
 
-    mapRef.current?.setZoom(initialChapter.zoom);
-    mapRef.current?.setCenter(initialChapter.center);
+    // @NOTE: getMap method is needed to access hidden method
+    // https://visgl.github.io/react-map-gl/docs/api-reference/map#getmap
+    const currentMapRef = mapRef.current?.getMap();
+    currentMapRef?.setZoom(initialChapter.zoom);
+    currentMapRef?.setCenter(initialChapter.center);
 
     setActiveChapter(initialChapter);
 
@@ -290,7 +293,7 @@ function Scrollytelling(props) {
         const chapter = chapterProps[index];
         setActiveChapter(chapter);
 
-        mapRef.current?.flyTo({
+        currentMapRef?.flyTo({
           center: chapter.center,
           zoom: chapter.zoom
         });
@@ -411,7 +414,6 @@ function Scrollytelling(props) {
           onMapLoad={() => {
             setMapLoaded(true);
             mapRef.current?.resize();
-            mapRef.current?.getMap().setProjection('globe');
           }}
           onStyleUpdate={() => {
             mapRef.current?.resize();
