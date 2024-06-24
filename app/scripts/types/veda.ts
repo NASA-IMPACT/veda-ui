@@ -1,7 +1,6 @@
 import * as dateFns from 'date-fns';
 import mapboxgl from 'mapbox-gl';
 import { MDXModule } from 'mdx/types';
-import { DefaultTheme } from 'styled-components';
 
 // ///////////////////////////////////////////////////////////////////////////
 //  Datasets                                                                //
@@ -228,7 +227,7 @@ export interface Media {
 /**
  * Base structure for each of the data types in veda.
  */
-type VedaData<T> = Record<string, VedaDatum<T> | undefined>;
+// type VedaData<T> = Record<string, VedaDatum<T> | undefined>;
 
 export interface VedaDatum<T> {
   /**
@@ -252,26 +251,6 @@ export interface TaxonomyItem {
   name: string;
 }
 
-/**
- * Named exports: datasets.
- * Object with all the veda datasets keyed by the dataset id.
- */
-export const datasets: VedaData<DatasetData>;
-
-/**
- * Named exports: stories.
- * Object with all the veda stories keyed by the story id.
- */
-export const stories: VedaData<StoryData>;
-
-/**
- * Named exports: storyTaxonomies.
- * Contains a static array of Veda story taxonomies.
- * Unlike DatasetTaxonomies which are generated dynamically,
- * story taxonomies are predefined as dynamic filters are not anticipated.
- */
-export const storyTaxonomies: Taxonomy[];
-
 export type PageOverrides =
   | 'developmentContent'
   | 'aboutContent'
@@ -282,24 +261,6 @@ export type PageOverrides =
   | 'pageFooter'
   | 'headerBrand'
   | 'homeHero';
-/**
- * Configuration export for specific overrides.
- */
-export const getOverride: (key: PageOverrides) => VedaDatum<any> | undefined;
-
-export const getString: (variable: string) => {
-  one: string;
-  other: string;
-};
-
-export const getBoolean: (variable: string) => boolean;
-
-/**
- * List of custom user defined pages.
- */
-export const userPages: string[];
-
-export const theme: DefaultTheme | null;
 
 export interface ParentDatset {
   id: string;

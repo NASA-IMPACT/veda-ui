@@ -181,7 +181,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
           ...baseData as DatasetLayer,
           ...dataSTAC.data
         }
-      } as NullableQueryState<T & STACLayerData>;
+      } as unknown as NullableQueryState<T & STACLayerData>;
     }
 
     return layers.map((layer) => {
