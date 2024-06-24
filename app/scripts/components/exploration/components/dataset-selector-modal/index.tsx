@@ -17,7 +17,7 @@ import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
   reconcileDatasets,
   datasetLayers,
-  allDatasets
+  allExploreDatasets
 } from '../../data-utils';
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
@@ -113,7 +113,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       )}
       content={
         <CatalogContent
-          datasets={allDatasets}
+          datasets={allExploreDatasets}
           search={searchTerm}
           taxonomies={taxonomies}
           selectedIds={selectedIds}
