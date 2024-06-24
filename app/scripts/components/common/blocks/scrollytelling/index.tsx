@@ -14,7 +14,7 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
 import { MapRef } from 'react-map-gl';
-import { datasets } from 'veda';
+import { datasets, ProjectionOptions } from 'veda';
 import { BlockErrorBoundary } from '..';
 import {
   chapterDisplayName,
@@ -22,6 +22,7 @@ import {
   ScrollyChapter,
   validateChapter
 } from './chapter';
+import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { S_FAILED, S_SUCCEEDED } from '$utils/status';
 
@@ -35,7 +36,6 @@ import Map from '$components/common/map';
 import { LayerLegend, LayerLegendContainer } from '$components/common/map/layer-legend';
 import { Layer } from '$components/exploration/components/map/layer';
 import { MapLoading } from '$components/common/loading-skeleton';
-import { convertProjectionToMapbox } from '$components/common/map/controls/map-options/projections';
 import { DatasetData, DatasetStatus, VizDataset, VizDatasetSuccess } from '$components/exploration/types.d.ts';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { formatSingleDate, reconcileVizDataset } from '$components/common/map/utils';
@@ -256,6 +256,7 @@ function Scrollytelling(props) {
   const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(
     null
   );
+  const [projection, setProjection] = useState<ProjectionOptions>(projectionDefault);
 
   // All layers must be loaded, resolved, and added to the map before we
   // initialize scrollama. This is needed because in a scrollytelling map we
@@ -294,7 +295,7 @@ function Scrollytelling(props) {
           zoom: chapter.zoom
         });
 
-        const projection = chapter.projectionId
+        const currentProjection = chapter.projectionId
           ? {
               id: chapter.projectionId,
               center: chapter.projectionCenter,
@@ -302,10 +303,7 @@ function Scrollytelling(props) {
             }
           : undefined;
 
-        projection &&
-          // setProjection is a hidden member, we need access to native map instance via getMap
-          // https://visgl.github.io/react-map-gl/docs/api-reference/map
-          mapRef.current?.getMap().setProjection(convertProjectionToMapbox(projection));
+        currentProjection && setProjection(currentProjection);
       });
 
     return () => {
@@ -413,10 +411,12 @@ function Scrollytelling(props) {
           onMapLoad={() => {
             setMapLoaded(true);
             mapRef.current?.resize();
+            mapRef.current?.getMap().setProjection('globe');
           }}
           onStyleUpdate={() => {
             mapRef.current?.resize();
           }}
+          projection={projection}
         >
           {isMapLoaded &&
             resolvedLayers.map((resolvedLayer, lIdx) => {
