@@ -303,7 +303,6 @@ function MapBlock(props: MapBlockProps) {
         {baseDataLayer?.data.legend && (
           // Map overlay element
           // Layer legend for the active layer.
-          // @NOTE: LayerLegendContainer is in old mapbox directory, may want to move this over to /map directory once old directory is deprecated
           <LayerLegendContainer>
             <LayerLegend
               id={`base-${baseDataLayer.data.id}`}
