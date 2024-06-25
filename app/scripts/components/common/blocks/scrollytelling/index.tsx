@@ -14,7 +14,7 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
 import { MapRef } from 'react-map-gl';
-import { datasets } from 'veda';
+import { datasets, ProjectionOptions } from 'veda';
 import { BlockErrorBoundary } from '..';
 import {
   chapterDisplayName,
@@ -22,6 +22,7 @@ import {
   ScrollyChapter,
   validateChapter
 } from './chapter';
+import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { S_FAILED, S_SUCCEEDED } from '$utils/status';
 
@@ -35,7 +36,6 @@ import Map from '$components/common/map';
 import { LayerLegend, LayerLegendContainer } from '$components/common/map/layer-legend';
 import { Layer } from '$components/exploration/components/map/layer';
 import { MapLoading } from '$components/common/loading-skeleton';
-import { convertProjectionToMapbox } from '$components/common/map/controls/map-options/projections';
 import { DatasetData, DatasetStatus, VizDataset, VizDatasetSuccess } from '$components/exploration/types.d.ts';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { formatSingleDate, reconcileVizDataset } from '$components/common/map/utils';
@@ -244,7 +244,7 @@ function Scrollytelling(props) {
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();
 
-  const mapRef = useRef<MapRef>(null);
+  const mapRef = useRef<MapRef | null>(null);
   const [isMapLoaded, setMapLoaded] = useState(false);
 
   // Extract the props from the chapters.
@@ -256,6 +256,7 @@ function Scrollytelling(props) {
   const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(
     null
   );
+  const [projection, setProjection] = useState<ProjectionOptions>(projectionDefault);
 
   // All layers must be loaded, resolved, and added to the map before we
   // initialize scrollama. This is needed because in a scrollytelling map we
@@ -272,8 +273,11 @@ function Scrollytelling(props) {
     // Setup initial map state which will be the values on the first chapter.
     const initialChapter = chapterProps[0];
 
-    mapRef.current?.setZoom(initialChapter.zoom);
-    mapRef.current?.setCenter(initialChapter.center);
+    // @NOTE: getMap method is needed to access hidden method
+    // https://visgl.github.io/react-map-gl/docs/api-reference/map#getmap
+    const currentMapRef = mapRef.current?.getMap();
+    currentMapRef?.setZoom(initialChapter.zoom);
+    currentMapRef?.setCenter(initialChapter.center);
 
     setActiveChapter(initialChapter);
 
@@ -289,12 +293,12 @@ function Scrollytelling(props) {
         const chapter = chapterProps[index];
         setActiveChapter(chapter);
 
-        mapRef.current?.flyTo({
+        currentMapRef?.flyTo({
           center: chapter.center,
           zoom: chapter.zoom
         });
 
-        const projection = chapter.projectionId
+        const currentProjection = chapter.projectionId
           ? {
               id: chapter.projectionId,
               center: chapter.projectionCenter,
@@ -302,9 +306,7 @@ function Scrollytelling(props) {
             }
           : undefined;
 
-        projection &&
-          // @ts-expect-error setProjection is missing on type
-          mapRef.current?.setProjection(convertProjectionToMapbox(projection));
+        currentProjection && setProjection(currentProjection);
       });
 
     return () => {
@@ -416,6 +418,7 @@ function Scrollytelling(props) {
           onStyleUpdate={() => {
             mapRef.current?.resize();
           }}
+          projection={projection}
         >
           {isMapLoaded &&
             resolvedLayers.map((resolvedLayer, lIdx) => {
