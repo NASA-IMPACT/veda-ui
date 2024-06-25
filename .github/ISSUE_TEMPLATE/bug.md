@@ -11,7 +11,7 @@ Priority:
 - P3 - Minor annoyance or issue, place in backlog for future consideration
 
 
-### Reproduction Steps
+### Steps to reproduce the issue
 
 1. [Step 1 to reproduce]
 2. [Step 2 to reproduce]
