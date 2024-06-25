@@ -108,8 +108,7 @@ function CatalogContent({
 
   useEffect(() => {
     if (!selectedFilters.length) {
-      onAction(CatalogActions.CLEAR);
-
+      onAction(CatalogActions.CLEAR_TAXONOMY);
       if (!isSelectable) {
         navigate(DATASETS_PATH);
       }
@@ -118,6 +117,13 @@ function CatalogContent({
     setExclusiveSourceSelected(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilters]);
+
+  // Trigger URL parameter set up first initialized without any search paramter
+  useEffect(() => {
+    if (!search) {
+      onAction(CatalogActions.CLEAR_SEARCH);
+    }
+  }, [search, onAction]);
 
   const getSelectedIdsWithParentData = (selectedIds) => {
     return selectedIds.map((selectedId: string) => {

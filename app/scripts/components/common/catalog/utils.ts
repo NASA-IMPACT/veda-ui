@@ -2,6 +2,8 @@ import { omit, set } from 'lodash';
 
 export enum CatalogActions {
   CLEAR = 'clear',
+  CLEAR_TAXONOMY = 'clear_taxonomy',
+  CLEAR_SEARCH = 'clear_search',
   SEARCH = 'search',
   TAXONOMY_MULTISELECT = 'taxonomy_multiselect'
 }
@@ -16,6 +18,14 @@ export function onCatalogAction(
   setTaxonomies: (value: any) => void
 ) {
   switch (action) {
+    case CatalogActions.CLEAR_TAXONOMY: {
+      setTaxonomies({});
+      break;
+    }
+    case CatalogActions.CLEAR_SEARCH: {
+      setSearch('');
+      break;
+    }
     case CatalogActions.CLEAR: {
       setSearch('');
       setTaxonomies({});

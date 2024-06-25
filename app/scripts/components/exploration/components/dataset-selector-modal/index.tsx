@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
 import styled from 'styled-components';
 import { useAtom } from 'jotai';
 
@@ -77,8 +79,11 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const { revealed, close } = props;
 
   const [timelineDatasets, setTimelineDatasets] = useAtom(timelineDatasetsAtom);
-
-  const [searchTerm, setSearchTerm] = useState('');
+  // Use the search url paramter for the initial value 
+  const [searchParams] = useSearchParams();
+  const search = searchParams.get('search');
+  
+  const [searchTerm, setSearchTerm] = useState(search?? '');
   const [taxonomies, setTaxonomies] = useState({});
   // Store a list of selected datasets and only confirm on save.
   const [selectedIds, setSelectedIds] = useState<string[]>(
