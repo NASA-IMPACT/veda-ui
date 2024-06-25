@@ -129,6 +129,7 @@ const getDataLayer = (layerIndex: number, layers: VizDataset[] | undefined): (Vi
   if (!layers || layers.length <= layerIndex) return null;
   const layer = layers[layerIndex];
 
+  // @NOTE: What to do when data returns ERROR
   if (layer.status !== DatasetStatus.SUCCESS) return null;
   return {
     ...layer,
@@ -161,19 +162,21 @@ function MapBlock(props: MapBlockProps) {
     throw new HintedError('Malformed Map Block', errors);
   }
 
-  const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
-  let layersToFetch = [baseMapStaticData];
-  
-  const baseMapStaticCompareData = baseMapStaticData.data.compare;
-  if (baseMapStaticCompareData && 'layerId' in baseMapStaticCompareData) {
-    const compareLayerId = baseMapStaticCompareData.layerId;
-    const [compareMapStaticData] = reconcileDatasets(
-      compareLayerId ? [compareLayerId] : [],
-      datasetLayers,
-      []
-    );
-    layersToFetch = [...layersToFetch, compareMapStaticData];
-  }
+  const layersToFetch = useMemo(() => {
+    const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
+    let totalLayers = [baseMapStaticData];
+    const baseMapStaticCompareData = baseMapStaticData.data.compare;
+    if (baseMapStaticCompareData && 'layerId' in baseMapStaticCompareData) {
+      const compareLayerId = baseMapStaticCompareData.layerId;
+      const [compareMapStaticData] = reconcileDatasets(
+        compareLayerId ? [compareLayerId] : [],
+        datasetLayers,
+        []
+      );
+      totalLayers = [...totalLayers, compareMapStaticData];
+    }
+    return totalLayers;
+  },[layerId]);
 
   const [layers, setLayers] = useState<VizDataset[] | undefined>(layersToFetch);
 
