@@ -4,6 +4,9 @@ URL:
 
 Blocking a release? (y/n): 
 
+Regression issue? (y/n):
+[If yes, add Regression label]
+
 Priority: 
 
 <!--
