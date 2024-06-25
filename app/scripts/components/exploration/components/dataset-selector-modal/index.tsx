@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAtom } from 'jotai';
-
+import { useSearchParams } from 'react-router-dom';
 import { DatasetData, DatasetLayer } from 'veda';
 import {
   Modal,
@@ -20,7 +20,9 @@ import {
   allExploreDatasets
 } from '../../data-utils';
 import RenderModalHeader from './header';
+
 import ModalFooterRender from './footer';
+import { useBrowserControls } from '$components/common/browse-controls/use-browse-controls';
 
 import CatalogContent from '$components/common/catalog/catalog-content';
 import { DATASETS_PATH } from '$utils/routes';
@@ -77,10 +79,14 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const { revealed, close } = props;
 
   const [timelineDatasets, setTimelineDatasets] = useAtom(timelineDatasetsAtom);
+  // Use the search url paramter for the initial value 
+  // const [searchParams] = useSearchParams();
+  // const search = searchParams.get('search');
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [taxonomies, setTaxonomies] = useState({});
+  // const [searchTerm, setSearchTerm] = useState(search?? '');
+  // const [taxonomies, setTaxonomies] = useState({});
   // Store a list of selected datasets and only confirm on save.
+  const { search: searchTerm, taxonomies, onAction} = useBrowserControls();
   const [selectedIds, setSelectedIds] = useState<string[]>(
     timelineDatasets.map((dataset) => dataset.data.id)
   );
@@ -96,10 +102,10 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     close();
   }, [close, selectedIds, timelineDatasets, setTimelineDatasets]);
 
-  const onAction = useCallback<CatalogViewAction>(
-    (action, value) => onCatalogAction(action, value, taxonomies, setSearchTerm, setTaxonomies),
-    [setTaxonomies, taxonomies]
-  );
+  // const onAction = useCallback<CatalogViewAction>(
+  //   (action, value) => onCatalogAction(action, value, taxonomies, setSearchTerm, setTaxonomies),
+  //   []
+  // );
 
   return (
     <DatasetModal

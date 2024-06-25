@@ -1,9 +1,14 @@
 import { omit, set } from 'lodash';
 
 export enum CatalogActions {
+  TAXONOMY_MULTISELECT = 'taxonomy_multiselect',
   CLEAR = 'clear',
   SEARCH = 'search',
-  TAXONOMY_MULTISELECT = 'taxonomy_multiselect'
+  SORT_FIELD = 'sfield',
+  SORT_DIR = 'sdir',
+  TAXONOMY = 'taxonomy',
+  CLEAR_TAXONOMY = 'clear_taxonomy',
+  CLEAR_SEARCH = 'clear_search',
 }
 
 export type CatalogViewAction = (action: CatalogActions, value?: any) => void;

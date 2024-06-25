@@ -95,7 +95,7 @@ function CatalogContent({
   const handleClearTags = useCallback(() => {
     setSelectedFilters([]);
     setExclusiveSourceSelected(null);
-    onAction(CatalogActions.CLEAR);
+    onAction(CatalogActions.CLEAR_TAXONOMY);
   }, [onAction]);
 
   useEffect(() => {
@@ -108,8 +108,7 @@ function CatalogContent({
 
   useEffect(() => {
     if (!selectedFilters.length) {
-      onAction(CatalogActions.CLEAR);
-
+      onAction(CatalogActions.CLEAR_TAXONOMY);
       if (!isSelectable) {
         navigate(DATASETS_PATH);
       }

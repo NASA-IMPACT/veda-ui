@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { DatasetData } from 'veda';
 import { themeVal } from '@devseed-ui/theme-provider';
+import { useBrowserControls } from '../browse-controls/use-browse-controls';
 import CatalogContent from './catalog-content';
 import { useCatalogView } from './controls/hooks/use-catalog-view';
 import {
@@ -46,7 +47,7 @@ function CatalogView({
 
   const { headerHeight } = useSlidingStickyHeaderProps();
 
-  const { search, taxonomies, onAction } = useCatalogView();
+  const { search, taxonomies, onAction } = useBrowserControls();
 
   return (
     <CatalogWrapper>
