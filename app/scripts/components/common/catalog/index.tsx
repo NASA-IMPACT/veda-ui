@@ -46,7 +46,8 @@ function CatalogView({
 
   const { headerHeight } = useSlidingStickyHeaderProps();
 
-  const { search, taxonomies, onAction } = useCatalogView();
+  const { search, taxonomies, onAction } = useCatalogView(false);
+  console.log(`TAXONOMIES: `, taxonomies)
 
   return (
     <CatalogWrapper>
