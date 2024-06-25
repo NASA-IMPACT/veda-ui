@@ -178,9 +178,9 @@ function MapBlock(props: MapBlockProps) {
     return totalLayers;
   },[layerId]);
 
-  const [layers, setLayers] = useState<VizDataset[] | undefined>(layersToFetch);
+  const [layers, setLayers] = useState<VizDataset[]>(layersToFetch);
 
-  useReconcileWithStacMetadata(layersToFetch, setLayers);
+  useReconcileWithStacMetadata(layers, setLayers);
 
   const selectedDatetime: (Date | undefined) = dateTime
     ? utcString2userTzDate(dateTime)
@@ -295,7 +295,7 @@ function MapBlock(props: MapBlockProps) {
         }}
       >
         <Basemap basemapStyleId={mapBasemapId} />
-        {selectedDatetime && layerId && baseDataLayer && (
+        {selectedDatetime && baseDataLayer && (
           <Layer
             key={baseDataLayer.data.id}
             id={`base-${baseDataLayer.data.id}`}
@@ -352,8 +352,7 @@ function MapBlock(props: MapBlockProps) {
         {selectedCompareDatetime && (
           <Compare>
             <Basemap basemapStyleId={mapBasemapId} />
-            {layerId &&
-              compareDataLayer && (
+            {compareDataLayer && (
                 <Layer
                   key={compareDataLayer.data.id}
                   id={`compare-${compareDataLayer.data.id}`}
