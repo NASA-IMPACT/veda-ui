@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { DatasetData } from 'veda';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
@@ -13,7 +13,7 @@ import CatalogTagsContainer from './catalog-tags';
 import { CatalogActions } from './utils';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
-import { DATASETS_PATH } from '$utils/routes';
+// import { DATASETS_PATH } from '$utils/routes';
 import {
   getTaxonomyByIds,
   generateTaxonomies,
@@ -53,7 +53,7 @@ function CatalogContent({
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
   const isSelectable = selectedIds !== undefined;
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const datasetTaxonomies = generateTaxonomies(datasets);
   const urlTaxonomyItems = taxonomies ? Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() : [];
@@ -109,9 +109,10 @@ function CatalogContent({
   useEffect(() => {
     if (!selectedFilters.length) {
       onAction(CatalogActions.CLEAR_TAXONOMY);
-      if (!isSelectable) {
-        navigate(DATASETS_PATH);
-      }
+      // @NOTE: When is this used? Is this safe to remove?
+      // if (!isSelectable && !search) {
+      //   navigate(DATASETS_PATH);
+      // }
     }
 
     setExclusiveSourceSelected(null);

@@ -1,5 +1,4 @@
 import { omit, set } from 'lodash';
-
 export enum CatalogActions {
   TAXONOMY_MULTISELECT = 'taxonomy_multiselect',
   CLEAR = 'clear',
@@ -28,6 +27,14 @@ export function onCatalogAction(
     }
     case CatalogActions.SEARCH: {
       setSearch(value);
+      break;
+    }
+    case CatalogActions.CLEAR_TAXONOMY: {
+      setTaxonomies({});
+      break;
+    }
+    case CatalogActions.CLEAR_SEARCH: {
+      setSearch('');
       break;
     }
     case CatalogActions.TAXONOMY_MULTISELECT: {
