@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAtom } from 'jotai';
-import { useSearchParams } from 'react-router-dom';
 import { DatasetData, DatasetLayer } from 'veda';
 import {
   Modal,
@@ -22,11 +21,10 @@ import {
 import RenderModalHeader from './header';
 
 import ModalFooterRender from './footer';
-import { useBrowserControls } from '$components/common/browse-controls/use-browse-controls';
 
 import CatalogContent from '$components/common/catalog/catalog-content';
 import { DATASETS_PATH } from '$utils/routes';
-import { CatalogViewAction, onCatalogAction } from '$components/common/catalog/utils';
+import { useCatalogView } from '$components/common/catalog/controls/hooks/use-catalog-view';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -79,17 +77,12 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const { revealed, close } = props;
 
   const [timelineDatasets, setTimelineDatasets] = useAtom(timelineDatasetsAtom);
-  // Use the search url paramter for the initial value 
-  // const [searchParams] = useSearchParams();
-  // const search = searchParams.get('search');
-
-  // const [searchTerm, setSearchTerm] = useState(search?? '');
-  // const [taxonomies, setTaxonomies] = useState({});
-  // Store a list of selected datasets and only confirm on save.
-  const { search: searchTerm, taxonomies, onAction} = useBrowserControls();
   const [selectedIds, setSelectedIds] = useState<string[]>(
     timelineDatasets.map((dataset) => dataset.data.id)
   );
+
+  // Use Jotai controlled atoms for query parameter manipulation on new E&A page 
+  const {search: searchTerm, taxonomies, onAction } = useCatalogView();
 
   useEffect(() => {
     setSelectedIds(timelineDatasets.map((dataset) => dataset.data.id));
@@ -101,11 +94,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     );
     close();
   }, [close, selectedIds, timelineDatasets, setTimelineDatasets]);
-
-  // const onAction = useCallback<CatalogViewAction>(
-  //   (action, value) => onCatalogAction(action, value, taxonomies, setSearchTerm, setTaxonomies),
-  //   []
-  // );
 
   return (
     <DatasetModal

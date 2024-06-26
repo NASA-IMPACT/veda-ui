@@ -33,8 +33,8 @@ export interface CatalogContentProps {
   setSelectedIds?: (selectedIds: string[]) => void;
   filterLayers?: boolean;
   emptyStateContent?: React.ReactNode;
-  search: string;
-  taxonomies: Record<string, string[]>;
+  search: string | null;
+  taxonomies: Record<string, string[]> | null;
   onAction: (action: CatalogActions, value?: any) => void;
 }
 

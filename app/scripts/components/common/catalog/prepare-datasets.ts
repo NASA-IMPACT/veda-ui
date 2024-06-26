@@ -5,7 +5,7 @@ import { TAXONOMY_TOPICS } from '$utils/veda-data';
 const prepareDatasets = (
   data: DatasetData[],
   options: {
-    search: string;
+    search: string | null;
     taxonomies: Record<string, string | string[]> | null;
     sortField: string | null;
     sortDir: string | null;
@@ -16,7 +16,7 @@ const prepareDatasets = (
   let filtered = [...data];
 
   // Does the free text search appear in specific fields?
-  if (search.length >= 3) {
+  if (search && search.length >= 3) {
     const searchLower = search.toLowerCase();
     // Function to check if searchLower is included in any of the string fields
     const includesSearchLower = (str) => str.toLowerCase().includes(searchLower);

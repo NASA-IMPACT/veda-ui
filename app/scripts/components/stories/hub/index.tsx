@@ -68,26 +68,19 @@ const FoldWithTopMargin = styled(Fold)`
   margin-top: ${glsp()};
 `;
 
-const sortOptions = [
-  { id: 'name', name: 'Name' },
-  { id: 'pubDate', name: 'Date' }
-];
-
 const prepareStories = (
   data: StoryData[],
   options: {
-    search: string;
+    search: string | null;
     taxonomies: Record<string, string | string[]> | null;
-    sortField: string | null;
-    sortDir: string | null;
   }
 ) => {
-  const { sortField, sortDir, search, taxonomies } = options;
+  const { search, taxonomies } = options;
 
   let filtered = [...data];
 
   // Does the free text search appear in specific fields?
-  if (search.length >= 3) {
+  if (search && search.length >= 3) {
     const searchLower = search.toLowerCase();
     filtered = filtered.filter((d) => {
       const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
@@ -111,46 +104,22 @@ const prepareStories = (
         );
       }
     });
-
-  sortField &&
-    /* eslint-disable-next-line fp/no-mutating-methods */
-    filtered.sort((a, b) => {
-      if (!a[sortField]) return Infinity;
-
-      return a[sortField]?.localeCompare(b[sortField]);
-    });
-
-  // In the case of the date, ordering is reversed.
-  if (sortField === 'pubDate') {
-    /* eslint-disable-next-line fp/no-mutating-methods */
-    filtered.reverse();
-  }
-
-  if (sortDir === 'desc') {
-    /* eslint-disable-next-line fp/no-mutating-methods */
-    filtered.reverse();
-  }
-
   return filtered;
 };
 
 function StoriesHub() {
-  const controlVars = useBrowserControls({
-    sortOptions
-  });
+  const controlVars = useBrowserControls();
 
-  const { taxonomies, sortField, sortDir, onAction } = controlVars;
+  const { taxonomies, onAction } = controlVars;
   const search = controlVars.search ?? '';
 
   const displayStories = useMemo(
     () =>
       prepareStories(allStories, {
         search,
-        taxonomies,
-        sortField,
-        sortDir
+        taxonomies
       }),
-    [search, taxonomies, sortField, sortDir]
+    [search, taxonomies]
   );
 
   const isFiltering = !!(
@@ -232,17 +201,9 @@ function StoriesHub() {
                             }}
                           />
                           <VerticalDivider variation='dark' />
+                          
                           {!isNaN(pubDate.getTime()) && (
-                            <Link
-                              to={`${STORIES_PATH}?${Actions.SORT_FIELD}=pubDate`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                onAction(Actions.SORT_FIELD, 'pubDate');
-                                browseControlsHeaderRef.current?.scrollIntoView();
-                              }}
-                            >
                               <PublishedDate date={pubDate} />
-                            </Link>
                           )}
                         </CardMeta>
                       }
