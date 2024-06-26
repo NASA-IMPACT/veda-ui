@@ -10,6 +10,20 @@ export function useCatalogView() {
   const [search, setSearch] = useAtom(searchAtom);
   const [taxonomies, setTaxonomies] = useAtom(taxonomyAtom);
 
+  const onCatalogViewAction = useCallback<CatalogViewAction>(
+    (action, value) =>
+      onCatalogAction(action, value, taxonomies, setSearch, setTaxonomies),
+    [setSearch, setTaxonomies, taxonomies]
+  );
+
+  return {
+    search,
+    taxonomies,
+    onCatalogViewAction,
+  };
+}
+
+export function useCatalogViewQS() {
   const navigate = useNavigate();
   const useQsState = useQsStateCreator({
     commit: navigate
@@ -22,9 +36,9 @@ export function useCatalogView() {
     },
     []
   );
-  
+
   const [qsTaxonomies, setQsTaxonomies] = useQsState.memo<
-  Record<string, string | string[]>
+    Record<string, string | string[]>
   >(
     {
       key: CatalogActions.TAXONOMY,
@@ -35,25 +49,15 @@ export function useCatalogView() {
     []
   );
 
-  const onCatalogViewAction = useCallback<CatalogViewAction>(
-    (action, value) =>
-      onCatalogAction(action, value, taxonomies, setSearch, setTaxonomies),
-    [setSearch, setTaxonomies, taxonomies]
-  );
-  
   const onBrowserControlAction = useCallback<CatalogViewAction>(
     (action, value) =>
       onCatalogAction(action, value, qsTaxonomies, setQsSearch, setQsTaxonomies),
     [setQsSearch, setQsTaxonomies, qsTaxonomies]
   );
 
-
   return {
-    search,
     qsSearch,
-    taxonomies,
     qsTaxonomies,
-    onCatalogViewAction,
     onBrowserControlAction,
   };
 }

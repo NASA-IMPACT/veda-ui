@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { DatasetData } from 'veda';
 import { themeVal } from '@devseed-ui/theme-provider';
 import CatalogContent from './catalog-content';
-import { useCatalogView } from './controls/hooks/use-catalog-view';
+import { useCatalogViewQS } from './controls/hooks/use-catalog-view';
 import {
   useSlidingStickyHeaderProps
 } from '$components/common/layout-root';
@@ -47,7 +47,7 @@ function CatalogView({
   const { headerHeight } = useSlidingStickyHeaderProps();
   // Use QS State for query parameter manipulation on data catalog page
   // to make cross-page navigation smooth
-  const { qsSearch, qsTaxonomies , onBrowserControlAction } = useCatalogView();
+  const { qsSearch, qsTaxonomies , onBrowserControlAction } = useCatalogViewQS();
 
   return (
     <CatalogWrapper>
