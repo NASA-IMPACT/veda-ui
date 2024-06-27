@@ -37,6 +37,11 @@ export function onCatalogAction(
       setSearch('');
       break;
     }
+    case CatalogActions.TAXONOMY: {
+      const { key, value: val } = value;
+      setTaxonomies(set({ ...taxonomies }, key, [val]));
+      break;
+    }
     case CatalogActions.TAXONOMY_MULTISELECT: {
       const { key, value: val } = value;
 

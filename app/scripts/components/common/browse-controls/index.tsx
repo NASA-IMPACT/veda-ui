@@ -95,7 +95,7 @@ function BrowseControls(props: BrowseControlsProps) {
         items={[optionAll].concat(values)}
         currentId={(taxonomies[name]?.length ? taxonomies[name][0] as string : 'all')}
         onChange={(v) => {
-          onAction(CatalogActions.TAXONOMY_MULTISELECT, { key: name, value: v });
+          onAction(CatalogActions.TAXONOMY, { key: name, value: v });
         }}
         size={isLargeUp ? 'large' : 'medium'}
       />
