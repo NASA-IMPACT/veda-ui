@@ -2,9 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { DatasetData } from 'veda';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { useBrowserControls } from '../browse-controls/use-browse-controls';
 import CatalogContent from './catalog-content';
-
+import { useCatalogViewQS } from './controls/hooks/use-catalog-view';
 import {
   useSlidingStickyHeaderProps
 } from '$components/common/layout-root';
@@ -48,7 +47,7 @@ function CatalogView({
   const { headerHeight } = useSlidingStickyHeaderProps();
   // Use QS State for query parameter manipulation on data catalog page
   // to make cross-page navigation smooth
-  const { search, taxonomies, onAction } = useBrowserControls();
+  const { qsSearch, qsTaxonomies , onBrowserControlAction } = useCatalogViewQS();
 
   return (
     <CatalogWrapper>
@@ -63,9 +62,9 @@ function CatalogView({
       </CatalogFoldHeader>
       <CatalogContent
         datasets={datasets}
-        search={search}
-        taxonomies={taxonomies}
-        onAction={onAction}
+        search={qsSearch}
+        taxonomies={qsTaxonomies}
+        onAction={onBrowserControlAction}
       />
     </CatalogWrapper>
   );
