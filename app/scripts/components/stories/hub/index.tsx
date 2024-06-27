@@ -10,7 +10,6 @@ import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
-import { optionAll } from '$components/common/browse-controls/constant';
 import { CatalogActions } from '$components/common/catalog/utils';
 import { useCatalogViewQS } from '$components/common/catalog/controls/hooks/use-catalog-view';
 import {
@@ -82,9 +81,8 @@ function StoriesHub() {
     [search, taxonomies]
   );
   
-  const taxonomyValueAll = Object.keys(taxonomies).every(t => taxonomies[t].includes(optionAll.id));
   const isFiltering = !!(
-    (taxonomies && Object.keys(taxonomies).length && !taxonomyValueAll) ||
+    (taxonomies && Object.keys(taxonomies).length )||
     search
   );
 

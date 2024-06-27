@@ -1,4 +1,6 @@
 import { omit, set } from 'lodash';
+import { optionAll } from '$components/common/browse-controls/constant';
+
 export enum CatalogActions {
   TAXONOMY_MULTISELECT = 'taxonomy_multiselect',
   CLEAR = 'clear',
@@ -38,8 +40,14 @@ export function onCatalogAction(
       break;
     }
     case CatalogActions.TAXONOMY: {
-      const { key, value: val } = value;
-      setTaxonomies(set({ ...taxonomies }, key, [val]));
+      {
+        const { key, value: val } = value;
+        if (val === optionAll.id) {
+          setTaxonomies(omit(taxonomies, key));
+        } else {
+          setTaxonomies(set({ ...taxonomies }, key, val));
+        }
+      }
       break;
     }
     case CatalogActions.TAXONOMY_MULTISELECT: {
