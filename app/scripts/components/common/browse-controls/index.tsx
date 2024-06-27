@@ -10,18 +10,20 @@ import {
 import { glsp, truncated } from '@devseed-ui/theme-provider';
 import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
 
-import {
-  Actions,
-  FilterOption,
-  optionAll,
-  useBrowserControls
-} from './use-browse-controls';
+import { useCatalogViewQS } from '../catalog/controls/hooks/use-catalog-view';
+import { optionAll } from './constant';
+import { CatalogActions } from '$components/common/catalog/utils';
 
 import DropdownScrollable from '$components/common/dropdown-scrollable';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { variableGlsp } from '$styles/variable-utils';
 import SearchField from '$components/common/search-field';
 import { useMediaQuery } from '$utils/use-media-query';
+
+export interface FilterOption {
+  id: string;
+  name: string;
+}
 
 const BrowseControlsWrapper = styled.div`
   display: flex;
@@ -67,7 +69,7 @@ const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
   white-space: nowrap;
 `;
 
-interface BrowseControlsProps extends ReturnType<typeof useBrowserControls> {
+interface BrowseControlsProps extends ReturnType<typeof useCatalogViewQS> {
   taxonomiesOptions: Taxonomy[];
 }
 
@@ -91,9 +93,9 @@ function BrowseControls(props: BrowseControlsProps) {
         key={name}
         prefix={name}
         items={[optionAll].concat(values)}
-        currentId={(taxonomies?.[name]?.length ? taxonomies[name][0] as string : 'all')}
+        currentId={(taxonomies[name]?.length ? taxonomies[name][0] as string : 'all')}
         onChange={(v) => {
-          onAction(Actions.TAXONOMY_MULTISELECT, { key: name, value: v });
+          onAction(CatalogActions.TAXONOMY_MULTISELECT, { key: name, value: v });
         }}
         size={isLargeUp ? 'large' : 'medium'}
       />
@@ -107,8 +109,8 @@ function BrowseControls(props: BrowseControlsProps) {
           size={isLargeUp ? 'large' : 'medium'}
           placeholder='Title, description...'
           keepOpen={isLargeUp}
-          value={search ?? ''}
-          onChange={(v) => onAction(Actions.SEARCH, v)}
+          value={search}
+          onChange={(v) => onAction(CatalogActions.SEARCH, v)}
         />
         <FilterOptionsWrapper>
           {createFilterList(taxonomiesOptions.slice(0, filterWrapConstant))}

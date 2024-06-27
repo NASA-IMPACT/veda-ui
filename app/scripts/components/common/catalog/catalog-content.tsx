@@ -34,7 +34,7 @@ export interface CatalogContentProps {
   filterLayers?: boolean;
   emptyStateContent?: React.ReactNode;
   search: string;
-  taxonomies: Record<string, string[]> | null;
+  taxonomies: Record<string, string[]>;
   onAction: (action: CatalogActions, value?: any) => void;
 }
 

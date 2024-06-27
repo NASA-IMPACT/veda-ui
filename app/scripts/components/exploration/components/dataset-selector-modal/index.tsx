@@ -82,7 +82,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   );
 
   // Use Jotai controlled atoms for query parameter manipulation on new E&A page 
-  const {search: searchTerm, taxonomies, onCatalogViewAction } = useCatalogView();
+  const {search: searchTerm, taxonomies, onAction } = useCatalogView();
 
   useEffect(() => {
     setSelectedIds(timelineDatasets.map((dataset) => dataset.data.id));
@@ -112,7 +112,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
           taxonomies={taxonomies}
           selectedIds={selectedIds}
           setSelectedIds={setSelectedIds}
-          onAction={onCatalogViewAction}
+          onAction={onAction}
           filterLayers={true}
           emptyStateContent={
             <>

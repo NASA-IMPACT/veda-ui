@@ -1,5 +1,5 @@
 import { DatasetData, StoryData } from 'veda';
-import { optionAll } from '$components/common/browse-controls/use-browse-controls';
+import { optionAll } from '$components/common/browse-controls/constant';
 import { TAXONOMY_TOPICS } from '$utils/veda-data';
 
 const isDatasetData = (data: DatasetData | StoryData): data is DatasetData => {

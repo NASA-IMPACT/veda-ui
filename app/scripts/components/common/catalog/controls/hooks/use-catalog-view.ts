@@ -6,11 +6,17 @@ import { taxonomyAtom } from '../atoms/taxonomy-atom';
 import { searchAtom } from '../atoms/search-atom';
 import { CatalogActions, CatalogViewAction, onCatalogAction } from '../../utils';
 
-export function useCatalogView() {
+interface UseCatalogViewResult {
+  search: string;
+  taxonomies: Record<string, string[]> | Record<string, never>;
+  onAction: CatalogViewAction
+}
+
+export function useCatalogView(): UseCatalogViewResult {
   const [search, setSearch] = useAtom(searchAtom);
   const [taxonomies, setTaxonomies] = useAtom(taxonomyAtom);
 
-  const onCatalogViewAction = useCallback<CatalogViewAction>(
+  const onAction = useCallback<CatalogViewAction>(
     (action, value) =>
       onCatalogAction(action, value, taxonomies, setSearch, setTaxonomies),
     [setSearch, setTaxonomies, taxonomies]
@@ -19,17 +25,18 @@ export function useCatalogView() {
   return {
     search,
     taxonomies,
-    onCatalogViewAction,
+    onAction,
   };
-}
-
-export function useCatalogViewQS() {
+} 
+// @NOTE: A hook using qs-state for query parameter management for cross-page navigation
+// Details: https://github.com/NASA-IMPACT/veda-ui/pull/1021
+export function useCatalogViewQS(): UseCatalogViewResult {
   const navigate = useNavigate();
   const useQsState = useQsStateCreator({
     commit: navigate
   });
 
-  const [qsSearch, setQsSearch] = useQsState.memo(
+  const [search, setSearch] = useQsState.memo(
     {
       key: CatalogActions.SEARCH,
       default: ''
@@ -37,9 +44,7 @@ export function useCatalogViewQS() {
     []
   );
 
-  const [qsTaxonomies, setQsTaxonomies] = useQsState.memo<
-    Record<string, string | string[]>
-  >(
+  const [taxonomies, setTaxonomies] = useQsState.memo(
     {
       key: CatalogActions.TAXONOMY,
       default: {},
@@ -49,15 +54,15 @@ export function useCatalogViewQS() {
     []
   );
 
-  const onBrowserControlAction = useCallback<CatalogViewAction>(
+  const onAction = useCallback<CatalogViewAction>(
     (action, value) =>
-      onCatalogAction(action, value, qsTaxonomies, setQsSearch, setQsTaxonomies),
-    [setQsSearch, setQsTaxonomies, qsTaxonomies]
+      onCatalogAction(action, value, taxonomies, setSearch, setTaxonomies),
+    [setSearch, setTaxonomies, taxonomies]
   );
 
   return {
-    qsSearch,
-    qsTaxonomies,
-    onBrowserControlAction,
+    search: search?? '',
+    taxonomies: taxonomies?? {},
+    onAction,
   };
 }

@@ -10,11 +10,8 @@ import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
-import {
-  Actions,
-  useBrowserControls
-} from '$components/common/browse-controls/use-browse-controls';
-import { useCatalogView, useCatalogViewQS } from '$components/common/catalog/controls/hooks/use-catalog-view';
+import { CatalogActions } from '$components/common/catalog/utils';
+import { useCatalogViewQS } from '$components/common/catalog/controls/hooks/use-catalog-view';
 import {
   LayoutProps,
   useSlidingStickyHeaderProps
@@ -72,7 +69,7 @@ const FoldWithTopMargin = styled(Fold)`
 function StoriesHub() {
   const controlVars = useCatalogViewQS();
 
-  const { qsSearch, qsTaxonomies: taxonomies, onBrowserControlAction: onAction } = controlVars;
+  const { search: qsSearch, taxonomies, onAction } = controlVars;
   const search = qsSearch ?? '';
 
   const displayStories = useMemo(
@@ -157,7 +154,7 @@ function StoriesHub() {
                             sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                             rootPath={STORIES_PATH}
                             onSourceClick={(id) => {
-                              onAction(Actions.TAXONOMY_MULTISELECT, {
+                              onAction(CatalogActions.TAXONOMY_MULTISELECT, {
                                 key: TAXONOMY_SOURCE,
                                 value: id
                               });
@@ -201,7 +198,7 @@ function StoriesHub() {
                                   <Pill
                                     as={Link}
                                     to={`${STORIES_PATH}?${
-                                      Actions.TAXONOMY_MULTISELECT
+                                      CatalogActions.TAXONOMY
                                     }=${encodeURIComponent(
                                       JSON.stringify({ Topics: t.id })
                                     )}`}

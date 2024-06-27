@@ -45,9 +45,7 @@ function CatalogView({
 }: CatalogViewProps) {
 
   const { headerHeight } = useSlidingStickyHeaderProps();
-  // Use QS State for query parameter manipulation on data catalog page
-  // to make cross-page navigation smooth
-  const { qsSearch, qsTaxonomies , onBrowserControlAction } = useCatalogViewQS();
+  const { search, taxonomies , onAction } = useCatalogViewQS();
 
   return (
     <CatalogWrapper>
@@ -62,9 +60,9 @@ function CatalogView({
       </CatalogFoldHeader>
       <CatalogContent
         datasets={datasets}
-        search={qsSearch}
-        taxonomies={qsTaxonomies}
-        onAction={onBrowserControlAction}
+        search={search}
+        taxonomies={taxonomies}
+        onAction={onAction}
       />
     </CatalogWrapper>
   );
