@@ -84,20 +84,21 @@ function BrowseControls(props: BrowseControlsProps) {
   const filterWrapConstant = 4;
   const wrapTaxonomies = taxonomiesOptions.length > filterWrapConstant; // wrap list of taxonomies when more then 4 filter options
 
-  const createFilterList = (filterList: Taxonomy[]) => (
-    filterList.map(({ name, values }) => (
+  
+  const createFilterList = (filterList: Taxonomy[]) => {
+    return filterList.map(({ name, values }) => (
       <DropdownOptions
         key={name}
         prefix={name}
         items={[optionAll].concat(values)}
-        currentId={(taxonomies?.[name] as string) || 'all'}
+        currentId={(taxonomies?.[name]?.length ? taxonomies[name][0] as string : 'all')}
         onChange={(v) => {
-          onAction(Actions.TAXONOMY, { key: name, value: v });
+          onAction(Actions.TAXONOMY_MULTISELECT, { key: name, value: v });
         }}
         size={isLargeUp ? 'large' : 'medium'}
       />
-    ))
-  );
+    ));
+  };
 
   return (  
     <BrowseControlsWrapper {...rest}>
@@ -140,7 +141,7 @@ function DropdownOptions(props: DropdownOptionsProps) {
   const { size, items, currentId, onChange, prefix } = props;
 
   const currentItem = items.find((d) => d.id === currentId);
-  
+
   return (
     <DropdownScrollable
       alignment='left'

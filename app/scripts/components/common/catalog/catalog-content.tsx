@@ -5,7 +5,7 @@ import { DatasetData } from 'veda';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
-import prepareDatasets from './prepare-datasets';
+import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
@@ -33,7 +33,7 @@ export interface CatalogContentProps {
   setSelectedIds?: (selectedIds: string[]) => void;
   filterLayers?: boolean;
   emptyStateContent?: React.ReactNode;
-  search: string | null;
+  search: string;
   taxonomies: Record<string, string[]> | null;
   onAction: (action: CatalogActions, value?: any) => void;
 }
@@ -110,7 +110,7 @@ function CatalogContent({
     if (!selectedFilters.length) {
       onAction(CatalogActions.CLEAR_TAXONOMY);
       // @NOTE: When is this used? Is this safe to remove?
-      // if (!isSelectable && !search) {
+      // if (!isSelectable) {
       //   navigate(DATASETS_PATH);
       // }
     }

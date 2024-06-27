@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { StoryData, stories, storyTaxonomies, getString } from 'veda';
+import { stories, storyTaxonomies, getString } from 'veda';
 import { glsp } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
@@ -12,9 +12,9 @@ import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
 import {
   Actions,
-  optionAll,
   useBrowserControls
 } from '$components/common/browse-controls/use-browse-controls';
+import { useCatalogView, useCatalogViewQS } from '$components/common/catalog/controls/hooks/use-catalog-view';
 import {
   LayoutProps,
   useSlidingStickyHeaderProps
@@ -45,6 +45,7 @@ import {
   ComponentOverride,
   ContentOverride
 } from '$components/common/page-overrides';
+import { prepareDatasets } from '$components/common/catalog/prepare-datasets';
 
 const allStories = Object.values(stories).map((d) => d!.data);
 
@@ -67,55 +68,16 @@ const BrowseFoldHeader = styled(FoldHeader)`
 const FoldWithTopMargin = styled(Fold)`
   margin-top: ${glsp()};
 `;
-
-const prepareStories = (
-  data: StoryData[],
-  options: {
-    search: string | null;
-    taxonomies: Record<string, string | string[]> | null;
-  }
-) => {
-  const { search, taxonomies } = options;
-
-  let filtered = [...data];
-
-  // Does the free text search appear in specific fields?
-  if (search && search.length >= 3) {
-    const searchLower = search.toLowerCase();
-    filtered = filtered.filter((d) => {
-      const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
-      return (
-        d.name.toLowerCase().includes(searchLower) ||
-        d.description.toLowerCase().includes(searchLower) ||
-        topicsTaxonomy?.values.some((t) =>
-          t.name.toLowerCase().includes(searchLower)
-        )
-      );
-    });
-  }
-
-  taxonomies &&
-    Object.entries(taxonomies).forEach(([name, value]) => {
-      if (value !== optionAll.id) {
-        filtered = filtered.filter((d) =>
-          d.taxonomy.some(
-            (t) => t.name === name && t.values.some((v) => v.id === value)
-          )
-        );
-      }
-    });
-  return filtered;
-};
-
+ 
 function StoriesHub() {
-  const controlVars = useBrowserControls();
+  const controlVars = useCatalogViewQS();
 
-  const { taxonomies, onAction } = controlVars;
-  const search = controlVars.search ?? '';
+  const { qsSearch, qsTaxonomies: taxonomies, onBrowserControlAction: onAction } = controlVars;
+  const search = qsSearch ?? '';
 
   const displayStories = useMemo(
     () =>
-      prepareStories(allStories, {
+      prepareDatasets(allStories, {
         search,
         taxonomies
       }),
@@ -155,7 +117,9 @@ function StoriesHub() {
               <FoldTitle>Browse</FoldTitle>
             </FoldHeadline>
             <BrowseControls
-              {...controlVars}
+              search={search}
+              taxonomies={taxonomies}
+              onAction={onAction}
               taxonomiesOptions={storyTaxonomies}
             />
           </BrowseFoldHeader>
@@ -193,7 +157,7 @@ function StoriesHub() {
                             sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                             rootPath={STORIES_PATH}
                             onSourceClick={(id) => {
-                              onAction(Actions.TAXONOMY, {
+                              onAction(Actions.TAXONOMY_MULTISELECT, {
                                 key: TAXONOMY_SOURCE,
                                 value: id
                               });
@@ -237,7 +201,7 @@ function StoriesHub() {
                                   <Pill
                                     as={Link}
                                     to={`${STORIES_PATH}?${
-                                      Actions.TAXONOMY
+                                      Actions.TAXONOMY_MULTISELECT
                                     }=${encodeURIComponent(
                                       JSON.stringify({ Topics: t.id })
                                     )}`}

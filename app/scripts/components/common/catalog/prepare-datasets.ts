@@ -1,17 +1,25 @@
-import { DatasetData } from 'veda';
+import { DatasetData, StoryData } from 'veda';
 import { optionAll } from '$components/common/browse-controls/use-browse-controls';
 import { TAXONOMY_TOPICS } from '$utils/veda-data';
 
-const prepareDatasets = (
-  data: DatasetData[],
-  options: {
-    search: string | null;
-    taxonomies: Record<string, string | string[]> | null;
-    sortField: string | null;
-    sortDir: string | null;
-    filterLayers: boolean | null;
-  }
-) => {
+const isDatasetData = (data: DatasetData | StoryData): data is DatasetData => {
+  return 'layers' in data;
+};
+
+interface OptionsType {
+  search: string | null;
+  taxonomies: Record<string, string | string[]> | null;
+  sortField?: string | null;
+  sortDir?: string | null;
+  filterLayers?: boolean | null;
+}
+
+export function prepareDatasets(data: DatasetData[], options: OptionsType): DatasetData[];
+export function prepareDatasets(data: StoryData[], options: OptionsType): StoryData[];
+export function prepareDatasets (
+  data: DatasetData[] | StoryData[],
+  options: OptionsType
+) {
   const { sortField, sortDir, search, taxonomies, filterLayers } = options;
   let filtered = [...data];
 
@@ -40,7 +48,7 @@ const prepareDatasets = (
           idLower.includes(searchLower) ||
           nameLower.includes(searchLower) ||
           descriptionLower.includes(searchLower) ||
-          d.layers.some(layerMatchesSearch) ||
+          (isDatasetData(d) && d.layers.some(layerMatchesSearch)) ||
           topicsTaxonomy?.values.some((t) => includesSearchLower(t.name))
         );
       });
@@ -48,8 +56,8 @@ const prepareDatasets = (
       if (filterLayers)
         filtered = filtered.map((d) => ({
           ...d,
-          layers: d.layers.filter(layerMatchesSearch),
-        }));
+          layers: (isDatasetData(d) && d.layers.filter(layerMatchesSearch)),
+        })) as DatasetData[];
   }
 
   taxonomies &&
@@ -77,6 +85,4 @@ const prepareDatasets = (
   }
 
   return filtered;
-};
-
-export default prepareDatasets;
+}

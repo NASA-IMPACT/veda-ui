@@ -46,7 +46,11 @@ export function useBrowserControls() {
   const [search, setSearch] = useQsState.memo(
     {
       key: Actions.SEARCH,
-      default: ''
+      default: '',
+      dehydrator: (v) => v!,
+      hydrator: (v) => {
+        return (v ?? '');
+      }
     },
     []
   );
@@ -58,7 +62,9 @@ export function useBrowserControls() {
       key: Actions.TAXONOMY,
       default: {},
       dehydrator: (v) => JSON.stringify(v), // dehydrator defines how a value is stored in the url
-      hydrator: (v) => (v ? JSON.parse(v) : {}) // hydrator defines how a value is read from the url
+      hydrator: (v) => {
+        return (v ? JSON.parse(v) : {});
+      } // hydrator defines how a value is read from the url
     },
     []
   );
