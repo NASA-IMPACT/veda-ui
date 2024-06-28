@@ -25,6 +25,7 @@ import ModalFooterRender from './footer';
 import CatalogContent from '$components/common/catalog/catalog-content';
 import { DATASETS_PATH } from '$utils/routes';
 import { useCatalogView } from '$components/common/catalog/controls/hooks/use-catalog-view';
+import { CatalogActions } from '$components/common/catalog/utils';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -92,8 +93,10 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     setTimelineDatasets(
       reconcileDatasets(selectedIds, datasetLayers, timelineDatasets)
     );
+    onAction(CatalogActions.CLEAR_SEARCH);
+    onAction(CatalogActions.CLEAR_TAXONOMY);
     close();
-  }, [close, selectedIds, timelineDatasets, setTimelineDatasets]);
+  }, [close, selectedIds, timelineDatasets, setTimelineDatasets, onAction]);
 
   return (
     <DatasetModal

@@ -28,6 +28,31 @@ describe('onCatalogAction', () => {
     expect(setTaxonomiesMock).toHaveBeenCalledWith({});
   });
 
+  it('should clear only taxonomies on CLEAR_TAXONOMY action', () => {
+    onCatalogAction(
+      CatalogActions.CLEAR_TAXONOMY,
+      null,
+      taxonomies,
+      setSearchMock,
+      setTaxonomiesMock
+    );
+
+    expect(setTaxonomiesMock).toHaveBeenCalledWith({});
+    expect(setSearchMock).not.toHaveBeenCalled();
+  }); 
+
+  it('should clear only search on CLEAR_SEARCH action', () => {
+    onCatalogAction(
+      CatalogActions.CLEAR_SEARCH,
+      null,
+      taxonomies,
+      setSearchMock,
+      setTaxonomiesMock
+    );
+
+    expect(setSearchMock).toHaveBeenCalledWith('');
+    expect(setTaxonomiesMock).not.toHaveBeenCalled();
+  }); 
   it('should set search value on SEARCH action', () => {
     const searchValue = 'climate';
     onCatalogAction(
@@ -53,6 +78,21 @@ describe('onCatalogAction', () => {
 
     expect(setTaxonomiesMock).toHaveBeenCalledWith(
       set({ ...taxonomies }, value.key, [...taxonomies[value.key], value.value])
+    );
+  });
+
+  it('should overwrite the existing taxonomy value with TAXONOMY action', () => {
+    const value = { key: 'Topics', value: 'climate' };
+    onCatalogAction(
+      CatalogActions.TAXONOMY,
+      value,
+      taxonomies,
+      setSearchMock,
+      setTaxonomiesMock
+    );
+
+    expect(setTaxonomiesMock).toHaveBeenCalledWith(
+      set({ ...taxonomies }, value.key, value.value)
     );
   });
 
