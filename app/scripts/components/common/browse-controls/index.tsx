@@ -12,7 +12,7 @@ import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
 
 import { useFiltersWithQS } from '../catalog/controls/hooks/use-filters-with-query';
 import { optionAll } from './constants';
-import { CatalogActions } from '$components/common/catalog/utils';
+import { FilterActions } from '$components/common/catalog/utils';
 
 import DropdownScrollable from '$components/common/dropdown-scrollable';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
@@ -95,7 +95,7 @@ function BrowseControls(props: BrowseControlsProps) {
         items={[optionAll].concat(values)}
         currentId={(taxonomies[name]?.length ? taxonomies[name][0] as string : 'all')}
         onChange={(v) => {
-          onAction(CatalogActions.TAXONOMY, { key: name, value: v });
+          onAction(FilterActions.TAXONOMY, { key: name, value: v });
         }}
         size={isLargeUp ? 'large' : 'medium'}
       />
@@ -110,7 +110,7 @@ function BrowseControls(props: BrowseControlsProps) {
           placeholder='Title, description...'
           keepOpen={isLargeUp}
           value={search}
-          onChange={(v) => onAction(CatalogActions.SEARCH, v)}
+          onChange={(v) => onAction(FilterActions.SEARCH, v)}
         />
         <FilterOptionsWrapper>
           {createFilterList(taxonomiesOptions.slice(0, filterWrapConstant))}

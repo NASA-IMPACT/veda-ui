@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
 import { taxonomyAtom } from '../atoms/taxonomy-atom';
 import { searchAtom } from '../atoms/search-atom';
-import { CatalogActions, CatalogViewAction, onCatalogAction } from '../../utils';
+import { FilterActions, FilterAction, onFilterAction } from '../../utils';
 interface UseFiltersWithQueryResult {
   search: string;
   taxonomies: Record<string, string[]> | Record<string, never>;
-  onAction: CatalogViewAction
+  onAction: FilterAction
 }
 
 // @TECH-DEBT: We have diverged ways of dealing with query parameters and need to consolidate them.
@@ -19,9 +19,9 @@ export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
   const [search, setSearch] = useAtom(searchAtom);
   const [taxonomies, setTaxonomies] = useAtom(taxonomyAtom);
 
-  const onAction = useCallback<CatalogViewAction>(
+  const onAction = useCallback<FilterAction>(
     (action, value) =>
-      onCatalogAction(action, value, taxonomies, setSearch, setTaxonomies),
+      onFilterAction(action, value, taxonomies, setSearch, setTaxonomies),
     [setSearch, setTaxonomies, taxonomies]
   );
 
@@ -40,7 +40,7 @@ export function useFiltersWithQS(): UseFiltersWithQueryResult {
 
   const [search, setSearch] = useQsState.memo(
     {
-      key: CatalogActions.SEARCH,
+      key: FilterActions.SEARCH,
       default: ''
     },
     []
@@ -48,7 +48,7 @@ export function useFiltersWithQS(): UseFiltersWithQueryResult {
 
   const [taxonomies, setTaxonomies] = useQsState.memo(
     {
-      key: CatalogActions.TAXONOMY,
+      key: FilterActions.TAXONOMY,
       default: {},
       dehydrator: (v) => JSON.stringify(v), // dehydrator defines how a value is stored in the url
       hydrator: (v) => (v ? JSON.parse(v) : {}) // hydrator defines how a value is read from the url
@@ -56,9 +56,9 @@ export function useFiltersWithQS(): UseFiltersWithQueryResult {
     []
   );
 
-  const onAction = useCallback<CatalogViewAction>(
+  const onAction = useCallback<FilterAction>(
     (action, value) =>
-      onCatalogAction(action, value, taxonomies, setSearch, setTaxonomies),
+      onFilterAction(action, value, taxonomies, setSearch, setTaxonomies),
     [setSearch, setTaxonomies, taxonomies]
   );
 

@@ -1,7 +1,7 @@
 import { omit, set } from 'lodash';
 import { optionAll } from '$components/common/browse-controls/constants';
 
-export enum CatalogActions {
+export enum FilterActions {
   TAXONOMY_MULTISELECT = 'taxonomy_multiselect',
   CLEAR = 'clear',
   SEARCH = 'search',
@@ -12,34 +12,34 @@ export enum CatalogActions {
   CLEAR_SEARCH = 'clear_search',
 }
 
-export type CatalogViewAction = (action: CatalogActions, value?: any) => void;
+export type FilterAction = (action: FilterActions, value?: any) => void;
 
-export function onCatalogAction(
-  action: CatalogActions,
+export function onFilterAction(
+  action: FilterActions,
   value: any,
   taxonomies: any,
   setSearch: (value: string) => void,
   setTaxonomies: (value: any) => void
 ) {
   switch (action) {
-    case CatalogActions.CLEAR: {
+    case FilterActions.CLEAR: {
       setSearch('');
       setTaxonomies({});
       break;
     }
-    case CatalogActions.SEARCH: {
+    case FilterActions.SEARCH: {
       setSearch(value);
       break;
     }
-    case CatalogActions.CLEAR_TAXONOMY: {
+    case FilterActions.CLEAR_TAXONOMY: {
       setTaxonomies({});
       break;
     }
-    case CatalogActions.CLEAR_SEARCH: {
+    case FilterActions.CLEAR_SEARCH: {
       setSearch('');
       break;
     }
-    case CatalogActions.TAXONOMY: {
+    case FilterActions.TAXONOMY: {
       {
         const { key, value: val } = value;
         if (val === optionAll.id) {
@@ -50,7 +50,7 @@ export function onCatalogAction(
       }
       break;
     }
-    case CatalogActions.TAXONOMY_MULTISELECT: {
+    case FilterActions.TAXONOMY_MULTISELECT: {
       const { key, value: val } = value;
 
       if (taxonomies && key in taxonomies) {

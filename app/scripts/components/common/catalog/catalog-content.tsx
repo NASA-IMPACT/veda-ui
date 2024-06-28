@@ -10,7 +10,7 @@ import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
 
-import { CatalogActions } from './utils';
+import { FilterActions } from './utils';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 
@@ -35,7 +35,7 @@ export interface CatalogContentProps {
   emptyStateContent?: React.ReactNode;
   search: string;
   taxonomies: Record<string, string[]>;
-  onAction: (action: CatalogActions, value?: any) => void;
+  onAction: (action: FilterActions, value?: any) => void;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -82,7 +82,7 @@ function CatalogContent({
       setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
     }
 
-    onAction(CatalogActions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
+    onAction(FilterActions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
   }, [setSelectedFilters, selectedFilters, onAction]);
 
   const handleClearTag = useCallback((item: OptionItem) => {
@@ -93,12 +93,12 @@ function CatalogContent({
   const handleClearTags = useCallback(() => {
     setSelectedFilters([]);
     setExclusiveSourceSelected(null);
-    onAction(CatalogActions.CLEAR_TAXONOMY);
+    onAction(FilterActions.CLEAR_TAXONOMY);
   }, [onAction]);
 
   useEffect(() => {
     if (clearedTagItem && (selectedFilters.length == prevSelectedFilters.length - 1)) {
-      onAction(CatalogActions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id});
+      onAction(FilterActions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id});
       setClearedTagItem(undefined);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,7 +106,7 @@ function CatalogContent({
 
   useEffect(() => {
     if (!selectedFilters.length) {
-      onAction(CatalogActions.CLEAR_TAXONOMY);
+      onAction(FilterActions.CLEAR_TAXONOMY);
     }
 
     setExclusiveSourceSelected(null);

@@ -10,7 +10,7 @@ import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
-import { CatalogActions } from '$components/common/catalog/utils';
+import { FilterActions } from '$components/common/catalog/utils';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import {
   LayoutProps,
@@ -154,7 +154,7 @@ function StoriesHub() {
                             sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                             rootPath={STORIES_PATH}
                             onSourceClick={(id) => {
-                              onAction(CatalogActions.TAXONOMY_MULTISELECT, {
+                              onAction(FilterActions.TAXONOMY_MULTISELECT, {
                                 key: TAXONOMY_SOURCE,
                                 value: id
                               });
@@ -198,7 +198,7 @@ function StoriesHub() {
                                   <Pill
                                     as={Link}
                                     to={`${STORIES_PATH}?${
-                                      CatalogActions.TAXONOMY
+                                      FilterActions.TAXONOMY
                                     }=${encodeURIComponent(
                                       JSON.stringify({ Topics: t.id })
                                     )}`}

@@ -1,7 +1,7 @@
 import { omit, set } from 'lodash';
-import { CatalogActions, onCatalogAction } from './utils';
+import { FilterActions, onFilterAction } from './utils';
 
-describe('onCatalogAction', () => {
+describe('onFilterAction', () => {
   let setSearchMock;
   let setTaxonomiesMock;
   let taxonomies;
@@ -16,8 +16,8 @@ describe('onCatalogAction', () => {
   });
 
   it('should clear search and taxonomies on CLEAR action', () => {
-    onCatalogAction(
-      CatalogActions.CLEAR,
+    onFilterAction(
+      FilterActions.CLEAR,
       null,
       taxonomies,
       setSearchMock,
@@ -29,8 +29,8 @@ describe('onCatalogAction', () => {
   });
 
   it('should clear only taxonomies on CLEAR_TAXONOMY action', () => {
-    onCatalogAction(
-      CatalogActions.CLEAR_TAXONOMY,
+    onFilterAction(
+      FilterActions.CLEAR_TAXONOMY,
       null,
       taxonomies,
       setSearchMock,
@@ -42,8 +42,8 @@ describe('onCatalogAction', () => {
   }); 
 
   it('should clear only search on CLEAR_SEARCH action', () => {
-    onCatalogAction(
-      CatalogActions.CLEAR_SEARCH,
+    onFilterAction(
+      FilterActions.CLEAR_SEARCH,
       null,
       taxonomies,
       setSearchMock,
@@ -55,8 +55,8 @@ describe('onCatalogAction', () => {
   }); 
   it('should set search value on SEARCH action', () => {
     const searchValue = 'climate';
-    onCatalogAction(
-      CatalogActions.SEARCH,
+    onFilterAction(
+      FilterActions.SEARCH,
       searchValue,
       taxonomies,
       setSearchMock,
@@ -68,8 +68,8 @@ describe('onCatalogAction', () => {
 
   it('should add value to Topics taxonomy on TAXONOMY_MULTISELECT action', () => {
     const value = { key: 'Topics', value: 'pollution' };
-    onCatalogAction(
-      CatalogActions.TAXONOMY_MULTISELECT,
+    onFilterAction(
+      FilterActions.TAXONOMY_MULTISELECT,
       value,
       taxonomies,
       setSearchMock,
@@ -83,8 +83,8 @@ describe('onCatalogAction', () => {
 
   it('should overwrite the existing taxonomy value with TAXONOMY action', () => {
     const value = { key: 'Topics', value: 'climate' };
-    onCatalogAction(
-      CatalogActions.TAXONOMY,
+    onFilterAction(
+      FilterActions.TAXONOMY,
       value,
       taxonomies,
       setSearchMock,
@@ -98,8 +98,8 @@ describe('onCatalogAction', () => {
 
   it('should remove value from Topics taxonomy on TAXONOMY_MULTISELECT action', () => {
     const value = { key: 'Topics', value: 'climate' };
-    onCatalogAction(
-      CatalogActions.TAXONOMY_MULTISELECT,
+    onFilterAction(
+      FilterActions.TAXONOMY_MULTISELECT,
       value,
       taxonomies,
       setSearchMock,
@@ -114,8 +114,8 @@ describe('onCatalogAction', () => {
 
   it('should remove Topics key when last value is removed on TAXONOMY_MULTISELECT action', () => {
     const value = { key: 'Topics', value: 'climate' };
-    onCatalogAction(
-      CatalogActions.TAXONOMY_MULTISELECT,
+    onFilterAction(
+      FilterActions.TAXONOMY_MULTISELECT,
       value,
       { Topics: ['climate'] },
       setSearchMock,
@@ -129,8 +129,8 @@ describe('onCatalogAction', () => {
 
   it('should initialize new taxonomy key on TAXONOMY_MULTISELECT action', () => {
     const value = { key: 'Regions', value: 'Europe' };
-    onCatalogAction(
-      CatalogActions.TAXONOMY_MULTISELECT,
+    onFilterAction(
+      FilterActions.TAXONOMY_MULTISELECT,
       value,
       taxonomies,
       setSearchMock,
