@@ -204,6 +204,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             'color: red;',
             id
           );
+        // Temporarily turning on log for debugging
+        /* eslint-disable-next-line no-console */
+        console.log(error);
         return;
       }
     };
