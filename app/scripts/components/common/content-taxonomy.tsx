@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Heading, Overline } from '@devseed-ui/typography';
 
-import { Actions } from './browse-controls/use-browse-controls';
+import { FilterActions } from '$components/common/catalog/utils';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { Pill } from '$styles/pill';
@@ -60,7 +60,7 @@ export function ContentTaxonomy(props: ContentTaxonomyProps) {
                   variation='achromic'
                   key={t.id}
                   as={Link}
-                  to={`${linkBase}?${Actions.TAXONOMY}=${encodeURIComponent(
+                  to={`${linkBase}?${FilterActions.TAXONOMY}=${encodeURIComponent(
                     JSON.stringify({ [name]: [t.id] })
                   )}`}
                 >

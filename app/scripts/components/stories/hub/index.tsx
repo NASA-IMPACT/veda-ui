@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { StoryData, stories, storyTaxonomies, getString } from 'veda';
+import { stories, storyTaxonomies, getString } from 'veda';
 import { glsp } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
@@ -10,11 +10,8 @@ import { VerticalDivider } from '@devseed-ui/toolbar';
 
 import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
-import {
-  Actions,
-  optionAll,
-  useBrowserControls
-} from '$components/common/browse-controls/use-browse-controls';
+import { FilterActions } from '$components/common/catalog/utils';
+import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import {
   LayoutProps,
   useSlidingStickyHeaderProps
@@ -45,6 +42,7 @@ import {
   ComponentOverride,
   ContentOverride
 } from '$components/common/page-overrides';
+import { prepareDatasets } from '$components/common/catalog/prepare-datasets';
 
 const allStories = Object.values(stories).map((d) => d!.data);
 
@@ -67,94 +65,24 @@ const BrowseFoldHeader = styled(FoldHeader)`
 const FoldWithTopMargin = styled(Fold)`
   margin-top: ${glsp()};
 `;
-
-const sortOptions = [
-  { id: 'name', name: 'Name' },
-  { id: 'pubDate', name: 'Date' }
-];
-
-const prepareStories = (
-  data: StoryData[],
-  options: {
-    search: string;
-    taxonomies: Record<string, string | string[]> | null;
-    sortField: string | null;
-    sortDir: string | null;
-  }
-) => {
-  const { sortField, sortDir, search, taxonomies } = options;
-
-  let filtered = [...data];
-
-  // Does the free text search appear in specific fields?
-  if (search.length >= 3) {
-    const searchLower = search.toLowerCase();
-    filtered = filtered.filter((d) => {
-      const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
-      return (
-        d.name.toLowerCase().includes(searchLower) ||
-        d.description.toLowerCase().includes(searchLower) ||
-        topicsTaxonomy?.values.some((t) =>
-          t.name.toLowerCase().includes(searchLower)
-        )
-      );
-    });
-  }
-
-  taxonomies &&
-    Object.entries(taxonomies).forEach(([name, value]) => {
-      if (value !== optionAll.id) {
-        filtered = filtered.filter((d) =>
-          d.taxonomy.some(
-            (t) => t.name === name && t.values.some((v) => v.id === value)
-          )
-        );
-      }
-    });
-
-  sortField &&
-    /* eslint-disable-next-line fp/no-mutating-methods */
-    filtered.sort((a, b) => {
-      if (!a[sortField]) return Infinity;
-
-      return a[sortField]?.localeCompare(b[sortField]);
-    });
-
-  // In the case of the date, ordering is reversed.
-  if (sortField === 'pubDate') {
-    /* eslint-disable-next-line fp/no-mutating-methods */
-    filtered.reverse();
-  }
-
-  if (sortDir === 'desc') {
-    /* eslint-disable-next-line fp/no-mutating-methods */
-    filtered.reverse();
-  }
-
-  return filtered;
-};
-
+ 
 function StoriesHub() {
-  const controlVars = useBrowserControls({
-    sortOptions
-  });
+  const controlVars = useFiltersWithQS();
 
-  const { taxonomies, sortField, sortDir, onAction } = controlVars;
-  const search = controlVars.search ?? '';
+  const { search, taxonomies, onAction } = controlVars;
+  
 
   const displayStories = useMemo(
     () =>
-      prepareStories(allStories, {
+      prepareDatasets(allStories, {
         search,
-        taxonomies,
-        sortField,
-        sortDir
+        taxonomies
       }),
-    [search, taxonomies, sortField, sortDir]
+    [search, taxonomies]
   );
-
+  
   const isFiltering = !!(
-    (taxonomies && Object.keys(taxonomies).length) ||
+    (taxonomies && Object.keys(taxonomies).length )||
     search
   );
 
@@ -186,7 +114,9 @@ function StoriesHub() {
               <FoldTitle>Browse</FoldTitle>
             </FoldHeadline>
             <BrowseControls
-              {...controlVars}
+              search={search}
+              taxonomies={taxonomies}
+              onAction={onAction}
               taxonomiesOptions={storyTaxonomies}
             />
           </BrowseFoldHeader>
@@ -224,7 +154,7 @@ function StoriesHub() {
                             sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                             rootPath={STORIES_PATH}
                             onSourceClick={(id) => {
-                              onAction(Actions.TAXONOMY, {
+                              onAction(FilterActions.TAXONOMY_MULTISELECT, {
                                 key: TAXONOMY_SOURCE,
                                 value: id
                               });
@@ -232,17 +162,9 @@ function StoriesHub() {
                             }}
                           />
                           <VerticalDivider variation='dark' />
+                          
                           {!isNaN(pubDate.getTime()) && (
-                            <Link
-                              to={`${STORIES_PATH}?${Actions.SORT_FIELD}=pubDate`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                onAction(Actions.SORT_FIELD, 'pubDate');
-                                browseControlsHeaderRef.current?.scrollIntoView();
-                              }}
-                            >
                               <PublishedDate date={pubDate} />
-                            </Link>
                           )}
                         </CardMeta>
                       }
@@ -276,7 +198,7 @@ function StoriesHub() {
                                   <Pill
                                     as={Link}
                                     to={`${STORIES_PATH}?${
-                                      Actions.TAXONOMY
+                                      FilterActions.TAXONOMY
                                     }=${encodeURIComponent(
                                       JSON.stringify({ Topics: t.id })
                                     )}`}
