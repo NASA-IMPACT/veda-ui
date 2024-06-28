@@ -5,14 +5,17 @@ import useQsStateCreator from 'qs-state-hook';
 import { taxonomyAtom } from '../atoms/taxonomy-atom';
 import { searchAtom } from '../atoms/search-atom';
 import { CatalogActions, CatalogViewAction, onCatalogAction } from '../../utils';
-
-interface UseCatalogViewResult {
+interface UseFiltersWithQueryResult {
   search: string;
   taxonomies: Record<string, string[]> | Record<string, never>;
   onAction: CatalogViewAction
 }
 
-export function useCatalogView(): UseCatalogViewResult {
+// @TECH-DEBT: We have diverged ways of dealing with query parameters and need to consolidate them.
+// useFiltersWithURLAtom uses URLAtoms, while useFiltersWithQS uses QS for query parameters related to filters.
+// For more details on why we ended up with these two approaches, see: https://github.com/NASA-IMPACT/veda-ui/pull/1021
+
+export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
   const [search, setSearch] = useAtom(searchAtom);
   const [taxonomies, setTaxonomies] = useAtom(taxonomyAtom);
 
@@ -28,9 +31,8 @@ export function useCatalogView(): UseCatalogViewResult {
     onAction,
   };
 } 
-// @NOTE: A hook using qs-state for query parameter management for cross-page navigation
-// Details: https://github.com/NASA-IMPACT/veda-ui/pull/1021
-export function useCatalogViewQS(): UseCatalogViewResult {
+
+export function useFiltersWithQS(): UseFiltersWithQueryResult {
   const navigate = useNavigate();
   const useQsState = useQsStateCreator({
     commit: navigate

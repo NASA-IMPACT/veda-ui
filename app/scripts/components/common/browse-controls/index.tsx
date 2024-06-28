@@ -10,7 +10,7 @@ import {
 import { glsp, truncated } from '@devseed-ui/theme-provider';
 import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
 
-import { useCatalogViewQS } from '../catalog/controls/hooks/use-catalog-view';
+import { useFiltersWithQS } from '../catalog/controls/hooks/use-filters-with-query';
 import { optionAll } from './constants';
 import { CatalogActions } from '$components/common/catalog/utils';
 
@@ -69,7 +69,7 @@ const ButtonPrefix = styled(Overline).attrs({ as: 'small' })`
   white-space: nowrap;
 `;
 
-interface BrowseControlsProps extends ReturnType<typeof useCatalogViewQS> {
+interface BrowseControlsProps extends ReturnType<typeof useFiltersWithQS> {
   taxonomiesOptions: Taxonomy[];
 }
 

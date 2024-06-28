@@ -24,7 +24,7 @@ import ModalFooterRender from './footer';
 
 import CatalogContent from '$components/common/catalog/catalog-content';
 import { DATASETS_PATH } from '$utils/routes';
-import { useCatalogView } from '$components/common/catalog/controls/hooks/use-catalog-view';
+import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { CatalogActions } from '$components/common/catalog/utils';
 
 const DatasetModal = styled(Modal)`
@@ -83,7 +83,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   );
 
   // Use Jotai controlled atoms for query parameter manipulation on new E&A page 
-  const {search: searchTerm, taxonomies, onAction } = useCatalogView();
+  const {search: searchTerm, taxonomies, onAction } = useFiltersWithURLAtom();
 
   useEffect(() => {
     // Reset filter when modal is hidden

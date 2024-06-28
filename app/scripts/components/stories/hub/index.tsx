@@ -11,7 +11,7 @@ import { VerticalDivider } from '@devseed-ui/toolbar';
 import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
 import { CatalogActions } from '$components/common/catalog/utils';
-import { useCatalogViewQS } from '$components/common/catalog/controls/hooks/use-catalog-view';
+import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import {
   LayoutProps,
   useSlidingStickyHeaderProps
@@ -67,10 +67,10 @@ const FoldWithTopMargin = styled(Fold)`
 `;
  
 function StoriesHub() {
-  const controlVars = useCatalogViewQS();
+  const controlVars = useFiltersWithQS();
 
-  const { search: qsSearch, taxonomies, onAction } = controlVars;
-  const search = qsSearch ?? '';
+  const { search, taxonomies, onAction } = controlVars;
+  
 
   const displayStories = useMemo(
     () =>
