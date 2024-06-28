@@ -86,9 +86,9 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const {search: searchTerm, taxonomies, onAction } = useCatalogView();
 
   useEffect(() => {
+    // Reset filter when modal is hidden
     if(!revealed) {
-      onAction(CatalogActions.CLEAR_SEARCH);
-      onAction(CatalogActions.CLEAR_TAXONOMY);
+      onAction(CatalogActions.CLEAR);
     }
   },[revealed, onAction]);
 
@@ -100,8 +100,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     setTimelineDatasets(
       reconcileDatasets(selectedIds, datasetLayers, timelineDatasets)
     );
-    onAction(CatalogActions.CLEAR_SEARCH);
-    onAction(CatalogActions.CLEAR_TAXONOMY);
+    onAction(CatalogActions.CLEAR);
     close();
   }, [close, selectedIds, timelineDatasets, setTimelineDatasets, onAction]);
 

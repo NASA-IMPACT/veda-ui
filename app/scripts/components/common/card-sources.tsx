@@ -60,7 +60,7 @@ export function CardSourcesList(props: SourcesListProps) {
                 e.preventDefault();
                 onSourceClick(source.id);
               }}
-            ><span>a</span>
+            >
               {source.name}
             </Link>
           </li>

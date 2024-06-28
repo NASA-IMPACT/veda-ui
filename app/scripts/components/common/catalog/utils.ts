@@ -1,5 +1,5 @@
 import { omit, set } from 'lodash';
-import { optionAll } from '$components/common/browse-controls/constant';
+import { optionAll } from '$components/common/browse-controls/constants';
 
 export enum CatalogActions {
   TAXONOMY_MULTISELECT = 'taxonomy_multiselect',

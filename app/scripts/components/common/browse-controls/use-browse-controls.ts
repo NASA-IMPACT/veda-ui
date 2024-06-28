@@ -3,8 +3,5 @@
 export enum Actions {
   CLEAR = 'clear',
   SEARCH = 'search',
-  TAXONOMY = 'taxonomy',
-  TAXONOMY_MULTISELECT = 'taxonomy_multiselect',
-  CLEAR_TAXONOMY = 'clear_taxonomy',
-  CLEAR_SEARCH = 'clear_search',
+  TAXONOMY = 'taxonomy'
 }

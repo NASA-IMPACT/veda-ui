@@ -1,12 +1,12 @@
 import { DatasetData, StoryData } from 'veda';
-import { optionAll } from '$components/common/browse-controls/constant';
+import { optionAll } from '$components/common/browse-controls/constants';
 import { TAXONOMY_TOPICS } from '$utils/veda-data';
 
 const isDatasetData = (data: DatasetData | StoryData): data is DatasetData => {
   return 'layers' in data;
 };
 
-interface OptionsType {
+interface FilterOptionsType {
   search: string | null;
   taxonomies: Record<string, string | string[]> | null;
   sortField?: string | null;
@@ -14,11 +14,11 @@ interface OptionsType {
   filterLayers?: boolean | null;
 }
 
-export function prepareDatasets(data: DatasetData[], options: OptionsType): DatasetData[];
-export function prepareDatasets(data: StoryData[], options: OptionsType): StoryData[];
+export function prepareDatasets(data: DatasetData[], options: FilterOptionsType): DatasetData[];
+export function prepareDatasets(data: StoryData[], options: FilterOptionsType): StoryData[];
 export function prepareDatasets (
   data: DatasetData[] | StoryData[],
-  options: OptionsType
+  options: FilterOptionsType
 ) {
   const { sortField, sortDir, search, taxonomies, filterLayers } = options;
   let filtered = [...data];

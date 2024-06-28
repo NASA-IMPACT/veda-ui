@@ -11,7 +11,7 @@ import { glsp, truncated } from '@devseed-ui/theme-provider';
 import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
 
 import { useCatalogViewQS } from '../catalog/controls/hooks/use-catalog-view';
-import { optionAll } from './constant';
+import { optionAll } from './constants';
 import { CatalogActions } from '$components/common/catalog/utils';
 
 import DropdownScrollable from '$components/common/dropdown-scrollable';
