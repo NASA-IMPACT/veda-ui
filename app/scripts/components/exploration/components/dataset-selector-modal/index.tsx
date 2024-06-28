@@ -86,6 +86,13 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
   const {search: searchTerm, taxonomies, onAction } = useCatalogView();
 
   useEffect(() => {
+    if(!revealed) {
+      onAction(CatalogActions.CLEAR_SEARCH);
+      onAction(CatalogActions.CLEAR_TAXONOMY);
+    }
+  },[revealed, onAction]);
+
+  useEffect(() => {
     setSelectedIds(timelineDatasets.map((dataset) => dataset.data.id));
   }, [timelineDatasets]);
 
