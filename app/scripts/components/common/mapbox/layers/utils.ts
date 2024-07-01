@@ -29,15 +29,6 @@ import {
   MapLayerVectorTimeseries,
   MapLayerVectorTimeseriesProps
 } from './vector-timeseries';
-import {
-  ZarrTimeseries,
-} from '$components/common/map/style-generators/zarr-timeseries';
-import {
-  CMRTimeseries,
-} from '$components/common/map/style-generators/cmr-timeseries';
-import {
-  TitilerCMRTimeseries,
-} from '$components/common/map/style-generators/titiler-cmr-timeseries';
 
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';

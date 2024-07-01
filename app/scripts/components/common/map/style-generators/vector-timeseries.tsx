@@ -11,7 +11,7 @@ import centroid from '@turf/centroid';
 import { LngLatLike } from 'react-map-gl';
 import { Feature } from 'geojson';
 
-import { BaseGeneratorParams } from '../types';
+import { BaseGeneratorParams, StatusData } from '../types';
 import useMapStyle from '../hooks/use-map-style';
 import {
   requestQuickCache
@@ -23,7 +23,6 @@ import useMaps from '../hooks/use-maps';
 import useGeneratorParams from '../hooks/use-generator-params';
 
 import {
-  ActionStatus,
   S_FAILED,
   S_LOADING,
   S_SUCCEEDED
@@ -37,7 +36,7 @@ export interface VectorTimeseriesProps extends BaseGeneratorParams {
   sourceParams?: Record<string, any>;
   zoomExtent?: number[];
   bounds?: number[];
-  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+  onStatusChange?: (result: StatusData) => void;
   isPositionSet?: boolean;
   stacApiEndpoint?: string;
 }
