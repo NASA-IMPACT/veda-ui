@@ -11,13 +11,17 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
-import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
-import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
+import { Card as CardUSWDS, CardBody as CardBodyUSWDS, CardHeader as CardHeaderUSWDS, CardMedia } from '@trussworks/react-uswds';
+import { CardBody, CardBlank, CardTitle, CardOverline } from './styles';
+
+import { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
 import { getLinkProps } from '$utils/url';
+
+import './card.module.scss';
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -239,6 +243,10 @@ export interface CardComponentProps {
   onLinkClick?: MouseEventHandler;
 }
 
+const StyledCardUSWDS = styled(CardUSWDS)`
+  border: 0 !important;
+`;
+
 function CardComponent(props: CardComponentProps) {
   const {
     className,
@@ -261,7 +269,6 @@ function CardComponent(props: CardComponentProps) {
   const isExternalLink = /^https?:\/\//.test(linkTo);
   const linkProps = getLinkProps(linkTo, Link, onLinkClick);
 
-
   return (
     <ElementInteractive
       as={CardItem}
@@ -274,7 +281,34 @@ function CardComponent(props: CardComponentProps) {
       {
         cardType !== 'horizontal-info' && (
           <>
-            <CardHeader>
+            <CardUSWDS containerProps={{
+              className: 'border-0'
+            }}
+            >
+              <CardMedia imageClass='add-aspect-16x9'>
+                <img src={imgSrc} alt="An image's description" className='pin-all' />
+              </CardMedia>
+              <CardHeaderUSWDS>
+                {date ? (
+                    <>
+                      published on{' '}
+                      <time dateTime={format(date, 'yyyy-MM-dd')}>
+                        {format(date, 'MMM d, yyyy')}
+                      </time>
+                    </>
+                  ) : (
+                    overline
+                  )}
+                <h3>{title}</h3>
+              </CardHeaderUSWDS>
+              <CardBodyUSWDS className='padding-top-3'>
+                <p>
+                 {description}
+                </p>
+              </CardBodyUSWDS>
+            </CardUSWDS>
+
+            {/* <CardHeader>
               <CardHeadline>
                 <CardTitle>{title}</CardTitle>
                 <CardOverline as='div'>
@@ -309,11 +343,11 @@ function CardComponent(props: CardComponentProps) {
               <CardFigure>
                 <img src={imgSrc} alt={imgAlt} loading='lazy' />
               </CardFigure>
-            )}
+            )} */}
           </>
         )
       }
-      {
+      {/* {
         cardType === 'horizontal-info' && (
           <HorizontalInfoCard
             title={title}
@@ -323,7 +357,7 @@ function CardComponent(props: CardComponentProps) {
             tagLabels={tagLabels}
           />
         )
-      }
+      } */}
     </ElementInteractive>
   );
 }
