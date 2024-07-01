@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { DatasetData, DatasetDataWithEnhancedLayers, VedaDatum } from '$types/veda';
 
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
@@ -11,6 +10,7 @@ import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
 
 import { FilterActions } from './utils';
+import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 
@@ -21,6 +21,7 @@ import {
   TAXONOMY_SOURCE,
 } from '$utils/veda-data-no-faux-module';
 import { OptionItem } from '$components/common/form/checkable-filter';
+// import { findParentDataset, getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
@@ -40,10 +41,10 @@ export interface CatalogContentProps {
 const DEFAULT_SORT_OPTION = 'asc';
 
 export const findParentDataset = (layerId: string, datasets) => {
-  const parentDataset: VedaDatum<DatasetData> | undefined = Object.values(datasets).find((dataset: VedaDatum<DatasetData>) =>
-    dataset!.data.layers.find((l) => l.id === layerId)
-  ) as VedaDatum<DatasetData> | undefined;
-  return parentDataset?.data;
+  const parentDataset: DatasetData | undefined = Object.values(datasets).find((dataset: DatasetData) =>
+    dataset!.layers.find((l) => l.id === layerId)
+  ) as DatasetData | undefined;
+  return parentDataset;
 };
 
 function enhanceDatasetLayers(dataset) {
