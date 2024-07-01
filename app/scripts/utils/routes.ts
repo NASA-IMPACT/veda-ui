@@ -1,5 +1,5 @@
-import { DatasetData, StoryData } from 'veda';
 import { checkEnvFlag } from './utils';
+import { DatasetData, StoryData } from '$types/veda';
 
 export const ABOUT_PATH = '/about';
 export const STORIES_PATH = '/stories';

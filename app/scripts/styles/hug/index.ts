@@ -103,7 +103,7 @@ type GridderDefinition = {
   [K in MdQueryUp]?: GridderRange;
 };
 
-interface HugProps {
+export interface HugProps {
   // Remap the keys
   // https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as
   readonly grid?:

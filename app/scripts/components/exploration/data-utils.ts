@@ -6,7 +6,7 @@ import {
   startOfMonth,
   startOfYear
 } from 'date-fns';
-import { DatasetLayer, DatasetData } from 'veda';
+import { DatasetLayer, DatasetData, VedaDatum } from 'veda';
 import {
   EnhancedDatasetLayer,
   StacDatasetData,
@@ -26,7 +26,7 @@ import { utcString2userTzDate } from '$utils/date';
 // @TODO: These should be updated to take in datasets as a param instead of using veda_datasets directly
 
 export const findParentDataset = (layerId: string) => {
-  const parentDataset = Object.values(veda_datasets).find((dataset) =>
+  const parentDataset: VedaDatum<DatasetData> | undefined = Object.values(veda_datasets).find((dataset: VedaDatum<DatasetData>) =>
     dataset!.data.layers.find((l) => l.id === layerId)
   );
   return parentDataset?.data;
@@ -42,11 +42,13 @@ export const findDatasetAttribute = ({
   return veda_datasets[datasetId]?.data[attr];
 };
 
-export const allDatasets = Object.values(veda_datasets).map((d) => d!.data);
+export const allDatasets = Object.values(veda_datasets)
+  .map((d: VedaDatum<DatasetData>) => d!.data);
+
 
 export const allExploreDatasets = Object.values(veda_datasets)
-  .map((d) => d!.data)
-  .filter((d) => !d.disableExplore);
+  .map((d: VedaDatum<DatasetData>) => d!.data)
+  .filter((d: DatasetData) => !d.disableExplore);
 
 export interface DatasetDataWithEnhancedLayers extends DatasetData {
   layers: EnhancedDatasetLayer[];
@@ -72,15 +74,16 @@ export const getAllDatasetsWithEnhancedLayers = (
   dataset
 ): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
 
-export const datasetLayers = Object.values(veda_datasets).flatMap((dataset) => {
-  return dataset!.data.layers.map((l) => ({
-    ...l,
-    parentDataset: {
-      id: dataset!.data.id,
-      name: dataset!.data.name
-    }
-  }));
-});
+export const datasetLayers = Object.values(veda_datasets)
+  .flatMap((dataset: VedaDatum<DatasetData>) => {
+    return dataset!.data.layers.map(l => ({
+      ...l,
+      parentDataset: {
+        id: dataset!.data.id,
+        name: dataset!.data.name
+      }
+    }));
+  });
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.

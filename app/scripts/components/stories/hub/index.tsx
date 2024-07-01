@@ -12,10 +12,8 @@ import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
 import { FilterActions } from '$components/common/catalog/utils';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
-import {
-  LayoutProps,
-  useSlidingStickyHeaderProps
-} from '$components/common/layout-root';
+import { LayoutProps } from '$components/common/layout-root';
+import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
 import PageHero from '$components/common/page-hero';
 import {
   Fold,

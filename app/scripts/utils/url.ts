@@ -1,5 +1,5 @@
 import React, { MouseEventHandler } from 'react';
-import { getBoolean } from 'veda';
+// import { getBoolean } from 'veda';
 import { LinkProps } from 'react-router-dom';
 
 
@@ -8,7 +8,8 @@ export const getLinkProps = (
     as?: React.ForwardRefExoticComponent<LinkProps & React.RefAttributes<HTMLAnchorElement>>,
     onClick?: (() => void) | MouseEventHandler
   ) => {
-    const externalLinksInNewTab = getBoolean('externalLinksInNewTab');
+    // const externalLinksInNewTab = getBoolean('externalLinksInNewTab');
+    const externalLinksInNewTab = false;
     const isExternalLink = /^https?:\/\//.test(linkTo);
     return isExternalLink
     ? {

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TaxonomyItem } from 'veda';
 import { Link } from 'react-router-dom';
 import { listReset } from '@devseed-ui/theme-provider';
+import { TaxonomyItem } from '$types/veda';
 import { FilterActions } from '$components/common//catalog/utils';
 
 const SourcesUl = styled.ul`

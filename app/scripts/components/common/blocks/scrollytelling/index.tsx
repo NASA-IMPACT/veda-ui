@@ -29,7 +29,7 @@ import { S_FAILED, S_SUCCEEDED } from '$utils/status';
 import Hug from '$styles/hug';
 import MapMessage from '$components/common/map/map-message';
 import { HintedError } from '$utils/hinted-error';
-import { useSlidingStickyHeaderProps } from '$components/common/layout-root';
+import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
 import { HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import Map from '$components/common/map';
