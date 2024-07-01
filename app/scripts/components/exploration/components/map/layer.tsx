@@ -10,6 +10,7 @@ import { RasterTimeseries } from '$components/common/map/style-generators/raster
 import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
+import { TitilerCMRTimeseries } from '$components/common/map/style-generators/titiler-cmr-timeseries';
 import { ActionStatus } from '$utils/status';
 
 interface LayerProps {
@@ -74,7 +75,7 @@ export function Layer(props: LayerProps) {
           onStatusChange={onStatusChange}
         />
       );
-    case 'cmr':
+    case 'cmr-stac':
       return (
         <CMRTimeseries
           id={layerId}
@@ -91,6 +92,21 @@ export function Layer(props: LayerProps) {
           onStatusChange={onStatusChange}
         />
       );
+      case 'titiler-cmr':
+        return (
+          <TitilerCMRTimeseries
+            id={layerId}
+            stacCol={dataset.data.stacCol}
+            stacApiEndpoint={dataset.data.stacApiEndpoint}
+            tileApiEndpoint={dataset.data.tileApiEndpoint}
+            date={relevantDate}
+            zoomExtent={params.zoomExtent}
+            sourceParams={params.sourceParams}
+            generatorOrder={order}
+            hidden={!isVisible}
+            opacity={opacity}
+          />
+        );      
     case 'raster':
       return (
         <RasterTimeseries

@@ -11,7 +11,7 @@ interface ZarrResponseData {
     zarr: {
       href: string
     }
-  }
+  },
 }
 interface CMRResponseData {
   features: {
@@ -23,8 +23,13 @@ interface CMRResponseData {
   }[]
 }
 
-export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChange }){
-  const [assetUrl, setAssetUrl] = useState('');
+interface STACforCMRResponseData {
+  collection_concept_id: string;
+  renders: Record<string, any>;
+}
+
+export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChange, sourceParams }){
+  const [tileParams, setTileParams] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
@@ -38,11 +43,18 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
           controller
         });
 
-        setAssetUrl(data.assets.zarr.href);
+        if (data.assets.zarr.href) {
+          setTileParams({
+            url: data.assets.zarr.href,
+            time_slice: date,
+            ...sourceParams
+          });
+        }
+
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setAssetUrl('');
+          setTileParams({});
           onStatusChange?.({ status: S_FAILED, id });
         }
         return;
@@ -54,15 +66,15 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
     return () => {
       controller.abort();
     };
-  }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
+  }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange, sourceParams]);
 
-  return assetUrl;
+  return tileParams;
 } 
 
 
 
-export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange }){
-  const [assetUrl, setAssetUrl] = useState('');
+export function useCMRSTAC({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams }){
+  const [tileParams, setTileParams] = useState({});
   
   const replaceInAssetUrl = (url: string, replacement: AssetUrlReplacement) => {
     const {from, to } = replacement;
@@ -90,11 +102,15 @@ export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplac
         });
 
         const assetUrl = replaceInAssetUrl(data.features[0].assets.data.href, assetUrlReplacements);
-        setAssetUrl(assetUrl);
+        setTileParams({
+          url: assetUrl,
+          time_slice: date,
+          ...sourceParams
+        });
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setAssetUrl('');
+          setTileParams({});
           onStatusChange?.({ status: S_FAILED, id });
         }
         return;
@@ -106,8 +122,61 @@ export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplac
     return () => {
       controller.abort();
     };
-  }, [id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange]);
+  }, [id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams]);
 
-  return assetUrl;
+  return tileParams;
 
+} 
+
+
+export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, stacApiEndpoint, onStatusChange, sourceParams }){
+  const [tileParams, setTileParams] = useState({});
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function load() {
+      try {
+        onStatusChange?.({ status: S_LOADING, id });
+
+        const data: STACforCMRResponseData = await requestQuickCache({
+          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
+          method: 'GET',
+          controller
+        });
+
+        const baseParams = {
+          concept_id: data.collection_concept_id,
+          datetime: date,
+          ...sourceParams
+        };
+        
+        const variable = sourceParams?.variable;
+        
+        if (variable) {
+          baseParams.variable = variable;
+          const renderParams = data.renders[variable] || {};
+          setTileParams({ ...renderParams, ...baseParams });
+        } else {
+          setTileParams(baseParams);
+        }
+
+        onStatusChange?.({ status: S_SUCCEEDED, id });
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setTileParams({});
+          onStatusChange?.({ status: S_FAILED, id });
+        }
+        return;
+      }
+    }
+
+    load();
+
+    return () => {
+      controller.abort();
+    };
+  }, [id, stacCol, stacApiEndpointToUse, date, stacApiEndpoint, onStatusChange, sourceParams]);
+
+  return tileParams;
 } 

@@ -1,28 +1,10 @@
 import React from 'react';
 
-import { BaseGeneratorParams } from '../types';
-import { ZarrPaintLayer } from './zarr-timeseries';
-import { useCMR } from './hooks';
-import { ActionStatus } from '$utils/status';
+import { useCMRSTAC } from './hooks';
+import { RasterTimeseriesProps } from './raster-timeseries';
+import { RasterPaintLayer } from '$components/common/map/style-generators/raster-paint-layer';
 
-interface AssetUrlReplacement {
-  from: string;
-  to: string;
-}
-
-export interface CMRTimeseriesProps extends BaseGeneratorParams {
-  id: string;
-  stacCol: string;
-  date?: Date;
-  sourceParams?: Record<string, any>;
-  stacApiEndpoint?: string;
-  tileApiEndpoint?: string;
-  assetUrlReplacements?: AssetUrlReplacement;
-  zoomExtent?: number[];
-  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-}
-
-export function CMRTimeseries(props:CMRTimeseriesProps) {
+export function CMRTimeseries(props: RasterTimeseriesProps) {
   const {
     id,
     stacCol,
@@ -30,9 +12,11 @@ export function CMRTimeseries(props:CMRTimeseriesProps) {
     date,
     assetUrlReplacements,
     onStatusChange,
+    sourceParams,
+    hidden
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-  const assetUrl = useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange });
-  return <ZarrPaintLayer {...props} assetUrl={assetUrl} />;
+  const tileParams = useCMRSTAC({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams });
+  return <RasterPaintLayer {...props} tileParams={tileParams} />;
 }
