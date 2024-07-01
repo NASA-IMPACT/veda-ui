@@ -8,7 +8,7 @@ import {
 } from '@devseed-ui/collecticons';
 
 import { LayoutProps } from '$components/common/layout-root';
-import { useFeedbackModal } from '$components/common/layout-root/useFeedbackModal';
+import { useFeedbackModal } from '$components/common/layout-root';
 import { PageMainContent } from '$styles/page';
 
 import PageHero from '$components/common/page-hero';

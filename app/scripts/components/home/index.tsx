@@ -14,7 +14,7 @@ import ValueProposition from './value-propostion';
 import Audience from './audience';
 
 import { LayoutProps } from '$components/common/layout-root';
-import { useFeedbackModal } from '$components/common/layout-root/useFeedbackModal';
+import { useFeedbackModal } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import { variableGlsp } from '$styles/variable-utils';

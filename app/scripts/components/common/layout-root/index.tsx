@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode, useContext, useCallback } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
@@ -70,4 +70,24 @@ export function LayoutProps(props) {
   }, [setLayoutProps, props]);
 
   return null;
+}
+
+/**
+ * Hook to access the feedback modal.
+ */
+export function useFeedbackModal() {
+  const { feedbackModalRevealed, setFeedbackModalRevealed } =
+    useContext(LayoutRootContext);
+
+  return {
+    isRevealed: feedbackModalRevealed,
+    show: useCallback(
+      () => setFeedbackModalRevealed(true),
+      [setFeedbackModalRevealed]
+    ),
+    hide: useCallback(
+      () => setFeedbackModalRevealed(false),
+      [setFeedbackModalRevealed]
+    )
+  };
 }

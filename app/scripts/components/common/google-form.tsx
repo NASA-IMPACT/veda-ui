@@ -4,7 +4,7 @@ import { Button } from '@devseed-ui/button';
 import { Modal } from '@devseed-ui/modal';
 import { media, themeVal } from '@devseed-ui/theme-provider';
 
-import { useFeedbackModal } from './layout-root/useFeedbackModal';
+import { useFeedbackModal } from './layout-root';
 
 import GlobalMenuLinkCSS from '$styles/menu-link';
 
