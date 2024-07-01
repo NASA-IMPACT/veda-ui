@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DatasetData } from '$types/veda';
 import { themeVal } from '@devseed-ui/theme-provider';
 import CatalogContent from './catalog-content';
 import { useFiltersWithQS } from './controls/hooks/use-filters-with-query';
+import { DatasetData } from '$types/veda';
 import {
   useSlidingStickyHeaderProps
 } from '$components/common/layout-root/useSlidingStickyHeaderProps';
