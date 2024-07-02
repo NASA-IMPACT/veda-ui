@@ -31,11 +31,16 @@ import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 import { FeaturedStories } from '$components/common/featured-slider-section';
 import { CardSourcesList } from '$components/common/card-sources';
+// import {
+//   getTaxonomy,
+//   TAXONOMY_SOURCE,
+//   TAXONOMY_TOPICS
+// } from '$utils/veda-data';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
-} from '$utils/veda-data';
+} from '$utils/veda-data/taxonomies';
 import {
   ComponentOverride,
   ContentOverride

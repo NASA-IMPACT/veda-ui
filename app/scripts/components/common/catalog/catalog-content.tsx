@@ -14,12 +14,18 @@ import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 
+// import {
+//   getTaxonomyByIds,
+//   generateTaxonomies,
+//   getTaxonomy,
+//   TAXONOMY_SOURCE,
+// } from '$utils/veda-data-no-faux-module';
 import {
   getTaxonomyByIds,
   generateTaxonomies,
   getTaxonomy,
   TAXONOMY_SOURCE,
-} from '$utils/veda-data-no-faux-module';
+} from '$utils/veda-data/taxonomies';
 import { OptionItem } from '$components/common/form/checkable-filter';
 // import { findParentDataset, getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import { Pill } from '$styles/pill';

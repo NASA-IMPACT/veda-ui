@@ -13,16 +13,20 @@ import { NotebookConnectButton } from '$components/common/notebook-connect';
 import {
   TAXONOMY_GRADE,
   TAXONOMY_UNCERTAINTY,
+} from '$utils/veda-data/taxonomies';
+import {
   useDataset
 } from '$utils/veda-data';
 import { DATASETS_PATH, getDatasetExplorePath } from '$utils/routes';
 import { ContentTaxonomy } from '$components/common/content-taxonomy';
 import { DatasetClassification } from '$components/common/dataset-classification';
+import { veda_faux_module_datasets } from '$data-layer/datasets';
 
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
 function DatasetsOverview() {
-  const dataset = useDataset();
+  // const dataset = useDataset();
+  const dataset = useDataset(veda_faux_module_datasets);
 
   if (!dataset) throw resourceNotFound();
 

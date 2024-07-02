@@ -51,7 +51,9 @@ import {
 } from '$components/common/chart/analysis/utils';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { getDatasetPath } from '$utils/routes';
-import { allDatasetsProps } from '$utils/veda-data';
+// import { allDatasetsProps } from '$utils/veda-data-to-deprecate';
+import { veda_faux_module_datasets } from '$data-layer/datasets';
+import { getAllDatasetsProps } from '$utils/veda-data';
 
 const InfoTipContent = styled.div`
   padding: ${glsp(0.25)};
@@ -117,8 +119,9 @@ const getNoDownloadReason = ({ status, data }: TimeseriesData) => {
  * @returns Internal path for Link
  */
 const getDatasetOverviewPath = (layerId: string) => {
+  const allDatasetsProps = getAllDatasetsProps(veda_faux_module_datasets);
   const dataset = allDatasetsProps.find((d) =>
-    d.layers.find((l) => l.id === layerId)
+    d?.layers.find((l) => l.id === layerId)
   );
 
   return dataset ? getDatasetPath(dataset) : '/';

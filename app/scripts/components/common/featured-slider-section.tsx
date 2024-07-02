@@ -20,11 +20,16 @@ import { useReactIndianaScrollControl } from '$styles/continuum/use-react-indian
 import { ContinuumScrollIndicator } from '$styles/continuum/continuum-scroll-indicator';
 import { getDatasetPath, getStoryPath } from '$utils/routes';
 import { Pill } from '$styles/pill';
+// import {
+//   getTaxonomy,
+//   TAXONOMY_SOURCE,
+//   TAXONOMY_TOPICS
+// } from '$utils/veda-data';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
-} from '$utils/veda-data';
+} from '$utils/veda-data/taxonomies';
 import DatasetMenu from '$components/data-catalog/dataset-menu';
 
 const allFeaturedStories = Object.values(stories)
