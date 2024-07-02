@@ -5,6 +5,8 @@
   "resolvers": ["parcel-resolver-ignore", "parcel-resolver-veda", "@parcel/resolver-glob", "..."],
   "transformers": {
     "raw:*": ["@parcel/transformer-raw"],
-    "*.mdx": ["parcel-transformer-mdx-frontmatter", "parcel-transformer-mdx"]
+    "*.mdx": ["parcel-transformer-mdx-frontmatter", "parcel-transformer-mdx"],
+    "*.css": ["@parcel/transformer-postcss"],
+    "*.scss": ["@parcel/transformer-sass"]
   }
 }
