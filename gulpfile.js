@@ -98,13 +98,15 @@ function parcelBuild(cb) {
   // listen for it to mark the gulp task as finished.
 
   const args = [
+    '--target',
+    'veda-app',
     '--config',
     parcelConfig,
     '--public-url',
     process.env.PUBLIC_URL || '/'
   ];
 
-  const pr = spawn('node', [parcelCli, 'build', ...args, ...parcelTarget], {
+  const pr = spawn('node', [parcelCli, 'build', ...args], {
     stdio: 'inherit'
   });
   pr.on('close', (code) => {

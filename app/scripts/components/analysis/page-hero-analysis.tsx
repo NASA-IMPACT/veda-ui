@@ -11,7 +11,7 @@ import { reveal } from '@devseed-ui/animation';
 import { ButtonProps } from '@devseed-ui/button';
 
 import { FeatureCollection, Polygon } from 'geojson';
-import { useSlidingStickyHeaderProps } from '../common/layout-root';
+import { useSlidingStickyHeaderProps } from '../common/layout-root/useSlidingStickyHeaderProps';
 import PageHeroMedia from './page-hero-media';
 import { PageLead, PageMainTitle } from '$styles/page';
 import Constrainer from '$styles/constrainer';
