@@ -10,7 +10,6 @@ import { CardSourcesList } from "../card-sources";
 import TextHighlight from "../text-highlight";
 import { DatasetData, DatasetLayer } from "$types/veda";
 import { getDatasetPath } from "$utils/routes";
-// import { TAXONOMY_SOURCE, TAXONOMY_TOPICS, getAllTaxonomyValues, getTaxonomy } from "$utils/veda-data-no-faux-module";
 import { TAXONOMY_SOURCE, TAXONOMY_TOPICS, getAllTaxonomyValues, getTaxonomy } from "$utils/veda-data/taxonomies";
 import { Pill } from "$styles/pill";
 

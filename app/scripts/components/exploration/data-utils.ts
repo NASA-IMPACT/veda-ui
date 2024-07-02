@@ -42,11 +42,6 @@ export const findDatasetAttribute = ({
   return veda_faux_module_datasets[datasetId]?.data[attr];
 };
 
-// @NOTE: This exists in "app/scripts/utils/veda-data-no-faux-module", move all references to use that instead
-export const allDatasets = Object.values(veda_faux_module_datasets)
-  .map((d: VedaDatum<DatasetData>) => d!.data);
-
-
 export const allExploreDatasets = Object.values(veda_faux_module_datasets)
   .map((d: VedaDatum<DatasetData>) => d!.data)
   .filter((d: DatasetData) => !d.disableExplore);

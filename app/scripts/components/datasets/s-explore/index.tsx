@@ -44,9 +44,6 @@ import {
   PanelWidgetTitle,
   PANEL_REVEAL_DURATION
 } from '$styles/panel';
-
-
-// import { useDataset } from '$utils/veda-data-to-deprecate';
 import { useDataset } from '$utils/veda-data';
 import { useMediaQuery } from '$utils/use-media-query';
 import { useEffectPrevious } from '$utils/use-effect-previous';

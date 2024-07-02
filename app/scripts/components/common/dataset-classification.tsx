@@ -13,12 +13,6 @@ import { CollecticonMedal } from './icons/medal';
 import { DatasetData } from '$types/veda';
 
 import { variableGlsp } from '$styles/variable-utils';
-// import {
-//   getTaxonomy,
-//   TAXONOMY_GRADE,
-//   TAXONOMY_UNCERTAINTY
-// } from '$utils/veda-data-no-faux-module';
-
 import {
   getTaxonomy,
   TAXONOMY_GRADE,

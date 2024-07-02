@@ -2,7 +2,6 @@ import React, { lazy, ReactNode } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { getOverride, PageOverrides } from 'veda';
 
-// import { useMdxPageLoader } from '$utils/veda-data';
 import { useMdxPageLoader } from '$utils/veda-data/mdx';
 import { S_SUCCEEDED } from '$utils/status';
 

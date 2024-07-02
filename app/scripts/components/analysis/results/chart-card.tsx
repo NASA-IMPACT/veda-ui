@@ -51,7 +51,6 @@ import {
 } from '$components/common/chart/analysis/utils';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { getDatasetPath } from '$utils/routes';
-// import { allDatasetsProps } from '$utils/veda-data-to-deprecate';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
 import { getAllDatasetsProps } from '$utils/veda-data';
 
