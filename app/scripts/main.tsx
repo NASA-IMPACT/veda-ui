@@ -2,6 +2,9 @@ import React, { lazy, Suspense, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import T from 'prop-types';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+
+import '$styles/styles.scss';
+
 import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
 import { userPages } from 'veda';
 
