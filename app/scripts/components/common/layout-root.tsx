@@ -10,8 +10,8 @@ import React, {
 import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
-
 import { reveal } from '@devseed-ui/animation';
+import Announcement from './announcement';
 
 import MetaTags from './meta-tags';
 import PageFooter from './page-footer';
@@ -57,6 +57,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
+      <Announcement />
       <NavWrapper />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
