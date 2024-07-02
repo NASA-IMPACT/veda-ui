@@ -25,7 +25,6 @@ import { veda_faux_module_datasets } from '$data-layer/datasets';
 const MdxContent = lazy(() => import('$components/common/mdx-content'));
 
 function DatasetsOverview() {
-  // const dataset = useDataset();
   const dataset = useDataset(veda_faux_module_datasets);
 
   if (!dataset) throw resourceNotFound();

@@ -229,7 +229,6 @@ const useDatePickerValue = (
 
 function DatasetsExplore() {
   const mapboxRef = useRef<MapboxMapRef>(null);
-  // const dataset = useDataset();
   const dataset = useDataset(veda_faux_module_datasets);
 
   if (!dataset) throw resourceNotFound();
