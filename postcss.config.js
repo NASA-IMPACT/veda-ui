@@ -4,8 +4,13 @@ module.exports = {
   plugins: [
     require('autoprefixer'),
     require('postcss-import'),
-    require('postcss-uncss')({
-      html: './app/index.html'
+    require('@fullhuman/postcss-purgecss')({
+      content: [
+        './dist/index.html',
+        './app/**/*.{js,jsx,ts,tsx}',
+        '@trussworks/react-uswds/lib/index.css'
+      ],
+      defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || []
     })
   ]
 };
