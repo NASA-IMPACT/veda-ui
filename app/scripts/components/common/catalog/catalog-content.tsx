@@ -1,27 +1,27 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { DatasetData } from 'veda';
-import { useNavigate } from 'react-router-dom';
+
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
-import prepareDatasets from './prepare-datasets';
+import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
 
-import { CatalogActions } from './utils';
+import { FilterActions } from './utils';
+import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
-import { DATASETS_PATH } from '$utils/routes';
+
 import {
   getTaxonomyByIds,
   generateTaxonomies,
   getTaxonomy,
   TAXONOMY_SOURCE,
-} from '$utils/veda-data';
+} from '$utils/veda-data-no-faux-module';
 import { OptionItem } from '$components/common/form/checkable-filter';
-import { findParentDataset, getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
+// import { findParentDataset, getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
@@ -35,10 +35,32 @@ export interface CatalogContentProps {
   emptyStateContent?: React.ReactNode;
   search: string;
   taxonomies: Record<string, string[]>;
-  onAction: (action: CatalogActions, value?: any) => void;
+  onAction: (action: FilterActions, value?: any) => void;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
+
+export const findParentDataset = (layerId: string, datasets) => {
+  const parentDataset: DatasetData | undefined = Object.values(datasets).find((dataset: DatasetData) =>
+    dataset!.layers.find((l) => l.id === layerId)
+  ) as DatasetData | undefined;
+  return parentDataset;
+};
+
+function enhanceDatasetLayers(dataset) {
+  return {
+      ...dataset,
+      layers: dataset.layers.map(layer => ({
+          ...layer,
+          parentDataset: {
+              id: dataset.id,
+              name: dataset.name
+          }
+      }))
+  };
+}
+
+export const getAllDatasetsWithEnhancedLayers = (dataset): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
 
 function CatalogContent({
   datasets,
@@ -52,8 +74,6 @@ function CatalogContent({
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
   const isSelectable = selectedIds !== undefined;
-
-  const navigate = useNavigate();
 
   const datasetTaxonomies = generateTaxonomies(datasets);
   const urlTaxonomyItems = taxonomies ? Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() : [];
@@ -84,7 +104,7 @@ function CatalogContent({
       setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
     }
 
-    onAction(CatalogActions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
+    onAction(FilterActions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
   }, [setSelectedFilters, selectedFilters, onAction]);
 
   const handleClearTag = useCallback((item: OptionItem) => {
@@ -95,12 +115,12 @@ function CatalogContent({
   const handleClearTags = useCallback(() => {
     setSelectedFilters([]);
     setExclusiveSourceSelected(null);
-    onAction(CatalogActions.CLEAR);
+    onAction(FilterActions.CLEAR_TAXONOMY);
   }, [onAction]);
 
   useEffect(() => {
     if (clearedTagItem && (selectedFilters.length == prevSelectedFilters.length - 1)) {
-      onAction(CatalogActions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id});
+      onAction(FilterActions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id});
       setClearedTagItem(undefined);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,11 +128,7 @@ function CatalogContent({
 
   useEffect(() => {
     if (!selectedFilters.length) {
-      onAction(CatalogActions.CLEAR);
-
-      if (!isSelectable) {
-        navigate(DATASETS_PATH);
-      }
+      onAction(FilterActions.CLEAR_TAXONOMY);
     }
 
     setExclusiveSourceSelected(null);
@@ -121,7 +137,7 @@ function CatalogContent({
 
   const getSelectedIdsWithParentData = (selectedIds) => {
     return selectedIds.map((selectedId: string) => {
-      const parentData = findParentDataset(selectedId);
+      const parentData = findParentDataset(selectedId, datasets);
       const exclusiveSource = parentData?.sourceExclusive;
       const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')[0]?.values.map((value) => value.id);
       return { id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() ?? '' };

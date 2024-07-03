@@ -56,6 +56,7 @@ export const HorizontalCardStyles = css`
 
   #tags {
     display: flex;
+    flex-wrap: wrap;
     gap: ${glsp(0.5)};
   }
 `;

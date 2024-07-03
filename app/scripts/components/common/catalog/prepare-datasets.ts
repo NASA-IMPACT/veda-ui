@@ -1,22 +1,31 @@
-import { DatasetData } from 'veda';
-import { optionAll } from '$components/common/browse-controls/use-browse-controls';
-import { TAXONOMY_TOPICS } from '$utils/veda-data';
+import { DatasetData, StoryData } from '$types/veda';
+import { optionAll } from '$components/common/browse-controls/constants';
 
-const prepareDatasets = (
-  data: DatasetData[],
-  options: {
-    search: string;
-    taxonomies: Record<string, string | string[]> | null;
-    sortField: string | null;
-    sortDir: string | null;
-    filterLayers: boolean | null;
-  }
-) => {
+const TAXONOMY_TOPICS = 'Topics';
+
+const isDatasetData = (data: DatasetData | StoryData): data is DatasetData => {
+  return 'layers' in data;
+};
+
+interface FilterOptionsType {
+  search: string | null;
+  taxonomies: Record<string, string | string[]> | null;
+  sortField?: string | null;
+  sortDir?: string | null;
+  filterLayers?: boolean | null;
+}
+
+export function prepareDatasets(data: DatasetData[], options: FilterOptionsType): DatasetData[];
+export function prepareDatasets(data: StoryData[], options: FilterOptionsType): StoryData[];
+export function prepareDatasets (
+  data: DatasetData[] | StoryData[],
+  options: FilterOptionsType
+) {
   const { sortField, sortDir, search, taxonomies, filterLayers } = options;
   let filtered = [...data];
 
   // Does the free text search appear in specific fields?
-  if (search.length >= 3) {
+  if (search && search.length >= 3) {
     const searchLower = search.toLowerCase();
     // Function to check if searchLower is included in any of the string fields
     const includesSearchLower = (str) => str.toLowerCase().includes(searchLower);
@@ -40,7 +49,7 @@ const prepareDatasets = (
           idLower.includes(searchLower) ||
           nameLower.includes(searchLower) ||
           descriptionLower.includes(searchLower) ||
-          d.layers.some(layerMatchesSearch) ||
+          (isDatasetData(d) && d.layers.some(layerMatchesSearch)) ||
           topicsTaxonomy?.values.some((t) => includesSearchLower(t.name))
         );
       });
@@ -48,8 +57,8 @@ const prepareDatasets = (
       if (filterLayers)
         filtered = filtered.map((d) => ({
           ...d,
-          layers: d.layers.filter(layerMatchesSearch),
-        }));
+          layers: (isDatasetData(d) && d.layers.filter(layerMatchesSearch)),
+        })) as DatasetData[];
   }
 
   taxonomies &&
@@ -77,6 +86,4 @@ const prepareDatasets = (
   }
 
   return filtered;
-};
-
-export default prepareDatasets;
+}

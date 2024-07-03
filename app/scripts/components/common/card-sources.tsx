@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TaxonomyItem } from 'veda';
 import { Link } from 'react-router-dom';
 import { listReset } from '@devseed-ui/theme-provider';
-import { Actions } from '$components/common/browse-controls/use-browse-controls';
+import { TaxonomyItem } from '$types/veda';
+import { FilterActions } from '$components/common//catalog/utils';
 
 const SourcesUl = styled.ul`
   ${listReset()}
@@ -51,7 +51,7 @@ export function CardSourcesList(props: SourcesListProps) {
         {sources.map((source) => (
           <li key={source.id}>
             <Link
-              to={`${rootPath}?${Actions.TAXONOMY}=${encodeURIComponent(
+              to={`${rootPath}?${FilterActions.TAXONOMY}=${encodeURIComponent(
                 JSON.stringify({
                   Source: source.id
                 })
