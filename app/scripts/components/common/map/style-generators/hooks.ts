@@ -1,26 +1,57 @@
 import {useState, useEffect} from 'react';
+import qs from 'qs';
 import { requestQuickCache, getFilterPayload } from '../utils';
 import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { 
   StacFeature,
   STATUS_KEY,
   ZarrResponseData,
-  AssetUrlReplacement,
   CMRResponseData,
   STACforCMRResponseData,  
 } from '$components/common/map/types.d';
 
 const LOG = true;
 
-export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChange, sourceParams }){
-  const [tileParams, setTileParams] = useState({});
+interface AssetUrlReplacement {
+  from: string;
+  to: string;
+}
+
+interface UseDatasetTilesOptions {
+  id: string,
+  stacCol: string,
+  tileApiEndpointToUse?: string,
+  stacApiEndpointToUse?: string,
+  date: Date,
+  onStatusChange: CallableFunction,
+  sourceParams?: Record<string, any>,
+  assetUrlReplacements?: AssetUrlReplacement,
+  datasetType?: 'vector' | 'raster' | 'titiler-cmr' | 'zarr' | 'cmr-stac';
+}
+
+export interface TileUrls {
+  tileJsonUrl?: string,
+  wmtsUrl?: string,
+  tileServerUrl?: string
+}
+
+type UseDatasetTilesFunction = (options: UseDatasetTilesOptions) => TileUrls;
+
+function generateTileJsonUrlWithParams(tileParams: Record<string, any>, tileApiEndpointToUse?: string) {
+  const paramsOptions = { arrayFormat: 'comma' };
+  return `${tileApiEndpointToUse}?${qs.stringify(tileParams, paramsOptions)}`;
+}
+
+export const useZarr: UseDatasetTilesFunction = (options: UseDatasetTilesOptions) => {
+  const { id, stacCol, tileApiEndpointToUse, stacApiEndpointToUse, date, onStatusChange, sourceParams } = options;
+  const [tileUrls, setTileUrls] = useState<TileUrls>({});
 
   useEffect(() => {
     const controller = new AbortController();
 
     async function load() {
       try {
-        onStatusChange?.({ status: S_LOADING, id });
+        onStatusChange({ status: S_LOADING, id });
         const data:ZarrResponseData = await requestQuickCache({
           url: `${stacApiEndpointToUse}/collections/${stacCol}`,
           method: 'GET',
@@ -28,18 +59,21 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
         });
 
         if (data.assets.zarr.href) {
-          setTileParams({
+          const tileParams = {
             url: data.assets.zarr.href,
             time_slice: date,
             ...sourceParams
+          };
+          setTileUrls({
+            tileJsonUrl: generateTileJsonUrlWithParams(tileParams, tileApiEndpointToUse),
           });
         }
 
-        onStatusChange?.({ status: S_SUCCEEDED, id });
+        onStatusChange({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setTileParams({});
-          onStatusChange?.({ status: S_FAILED, id });
+          setTileUrls({});
+          onStatusChange({ status: S_FAILED, id });
         }
         return;
       }
@@ -50,15 +84,14 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
     return () => {
       controller.abort();
     };
-  }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange, sourceParams]);
-
-  return tileParams;
-}
-
+  }, [id, stacCol, tileApiEndpointToUse, stacApiEndpointToUse, date, onStatusChange, sourceParams]);
+  return tileUrls;
+};
 
 
-export function useCMRSTAC({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, onStatusChange, sourceParams }){
-  const [tileParams, setTileParams] = useState({});
+export const useCMRSTAC: UseDatasetTilesFunction = (options: UseDatasetTilesOptions) => {
+  const { id, stacCol, tileApiEndpointToUse, stacApiEndpointToUse, date, onStatusChange, sourceParams, assetUrlReplacements } = options;
+  const [tileUrls, setTileUrls] = useState({});
 
   const replaceInAssetUrl = (url: string, replacement: AssetUrlReplacement) => {
     const {from, to } = replacement;
@@ -72,7 +105,7 @@ export function useCMRSTAC({ id, stacCol, stacApiEndpointToUse, date, assetUrlRe
 
     async function load() {
       try {
-        onStatusChange?.({ status: S_LOADING, id });
+        onStatusChange({ status: S_LOADING, id });
         if (!assetUrlReplacements) throw (new Error('CMR  layer requires asset url remplacement attributes'));
 
         // Zarr collections in _VEDA_ should have a single entrypoint (zarr or virtual zarr / reference)
@@ -84,16 +117,19 @@ export function useCMRSTAC({ id, stacCol, stacApiEndpointToUse, date, assetUrlRe
         });
 
         const assetUrl = replaceInAssetUrl(data.features[0].assets.data.href, assetUrlReplacements);
-        setTileParams({
+        const tileParams = {
           url: assetUrl,
           time_slice: date,
           ...sourceParams
+        };
+        setTileUrls({
+          tileJsonUrl: generateTileJsonUrlWithParams(tileParams, tileApiEndpointToUse),
         });
-        onStatusChange?.({ status: S_SUCCEEDED, id });
+        onStatusChange({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setTileParams({});
-          onStatusChange?.({ status: S_FAILED, id });
+          setTileUrls({});
+          onStatusChange({ status: S_FAILED, id });
         }
         return;
       }
@@ -104,22 +140,29 @@ export function useCMRSTAC({ id, stacCol, stacApiEndpointToUse, date, assetUrlRe
     return () => {
       controller.abort();
     };
-  }, [id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange, sourceParams]);
+  }, [id, stacCol, tileApiEndpointToUse, stacApiEndpointToUse, date, assetUrlReplacements, onStatusChange, sourceParams]);
 
-  return tileParams;
+  return tileUrls;
 
+};
+
+interface CmrSourceParams {
+  concept_id: string;
+  datetime: Date;
+  variable?: string; // Assuming variable is of type string and optional
+  [key: string]: any; // This allows for additional properties not explicitly defined
 }
 
-
-export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, onStatusChange, sourceParams }){
-  const [tileParams, setTileParams] = useState({});
+export const useTitilerCMR: UseDatasetTilesFunction = (options: UseDatasetTilesOptions) => {
+  const { id, stacCol, tileApiEndpointToUse, stacApiEndpointToUse, date, onStatusChange, sourceParams } = options;
+  const [tileUrls, setTileUrls] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
 
     async function load() {
       try {
-        onStatusChange?.({ status: S_LOADING, id });
+        onStatusChange({ status: S_LOADING, id });
 
         const data: STACforCMRResponseData = await requestQuickCache({
           url: `${stacApiEndpointToUse}/collections/${stacCol}`,
@@ -127,7 +170,7 @@ export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, onStatu
           controller
         });
 
-        const baseParams = {
+        const baseParams: CmrSourceParams = {
           concept_id: data.collection_concept_id,
           datetime: date,
           ...sourceParams
@@ -138,16 +181,19 @@ export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, onStatu
         if (variable) {
           baseParams.variable = variable;
           const renderParams = data.renders[variable] || {};
-          setTileParams({ ...renderParams, ...baseParams });
+          const tileParams = { ...renderParams, ...baseParams };
+          setTileUrls({
+            tileJsonUrl: generateTileJsonUrlWithParams(tileParams, tileApiEndpointToUse),
+          });
         } else {
-          setTileParams(baseParams);
+          setTileUrls(baseParams);
         }
 
-        onStatusChange?.({ status: S_SUCCEEDED, id });
+        onStatusChange({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setTileParams({});
-          onStatusChange?.({ status: S_FAILED, id });
+          setTileUrls({});
+          onStatusChange({ status: S_FAILED, id });
         }
         return;
       }
@@ -158,17 +204,18 @@ export function useTitilerCMR({ id, stacCol, stacApiEndpointToUse, date, onStatu
     return () => {
       controller.abort();
     };
-  }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange, sourceParams]);
+  }, [id, stacCol, tileApiEndpointToUse, stacApiEndpointToUse, date, onStatusChange, sourceParams]);
 
-  return tileParams;
-}
+  return tileUrls;
+};
 
-export function useMosaic({id, stacCol, tileApiEndpointToUse, date, sourceParams}) {
-  const [tileUrlWithParams, setTileUrlWithParams] = useState<string>('');
-  const [wmtsTilesUrl, setWmtsTilesUrl] = useState<string>('');
+export function useMosaic(options: UseDatasetTilesOptions) {
+  const { id, tileApiEndpointToUse, stacCol, date, sourceParams, datasetType } = options;
+  const [tileUrls, setTileUrls] = useState({});
 
   useEffect(() => {
     if (!id || !stacCol) return;
+    if (datasetType !== 'raster') return;
 
     const controller = new AbortController();
 
@@ -198,7 +245,7 @@ export function useMosaic({id, stacCol, tileApiEndpointToUse, date, sourceParams
 
         const registeredMosaicUrl = responseData.links[1].href;
 
-        // create tileParams
+        // create tileUrls
         const tileParamsAsString = qs.stringify(
           {
             assets: 'cog_default',
@@ -211,19 +258,22 @@ export function useMosaic({id, stacCol, tileApiEndpointToUse, date, sourceParams
         );
 
         const tileJsonUrl = `${registeredMosaicUrl}?${tileParamsAsString}`;
+        let tileServerUrl = '';
+        try {
+          const tileJsonData: Record<string, any> = await requestQuickCache({
+            url: tileJsonUrl,
+            method: 'GET',
+            payload: null,
+            controller
+          });
+          tileServerUrl = tileJsonData.tiles[0];
+        } catch (error) {
+          // Ignore errors.
+        }
 
-        // don't fully understand this
-        // this is diff from how other layers work because they don't use tilejson endpoint
-        const tilejsonData = await requestQuickCache<any>({
-          url: tileJsonUrl,
-          method: 'GET',
-          payload: null,
-          controller
-        });
+        const wmtsUrl = `${registeredMosaicUrl.replace('tilejson.json', 'WMTSCapabilities.xml')}?${tileParamsAsString}`;
 
-        setTileUrlWithParams(tilejsonData.tiles[0]);
-        const wmtsUrlWithParams = `${registeredMosaicUrl.replace('tilejson.json', 'WMTSCapabilities.xml')}?${tileParamsAsString}`;
-        setWmtsTilesUrl(wmtsUrlWithParams);
+        setTileUrls({tileJsonUrl, wmtsUrl, tileServerUrl});
 
         /* eslint-disable no-console */
         LOG &&
@@ -240,6 +290,7 @@ export function useMosaic({id, stacCol, tileApiEndpointToUse, date, sourceParams
         LOG &&
           /* eslint-disable-next-line no-console */
           console.log('RasterTimeseries %cAborted Mosaic', 'color: red;', id);
+          console.log(error);
       }
     };
 
@@ -253,19 +304,21 @@ export function useMosaic({id, stacCol, tileApiEndpointToUse, date, sourceParams
     stacCol,
     tileApiEndpointToUse,
     date,
-    sourceParams
+    sourceParams,
+    datasetType
   ]);
-  return [tileUrlWithParams, wmtsTilesUrl];
+  return tileUrls;
 }
 
 // Load stac collection features
 // stacCollection could also get passed through to the raster timeseries as an optional parameter
 // but how to handle change status
-export function useStacCollection({ id, stacCol, date, stacApiEndpoint, onStatusChange }) {
-  const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
+export function useStacCollection(options: UseDatasetTilesOptions) {
+  const { id, stacCol, date, stacApiEndpointToUse, onStatusChange, datasetType } = options;
   const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
   useEffect(() => {
     if (!id || !stacCol) return;
+    if (datasetType !== 'raster') return;
 
     const controller = new AbortController();
 
@@ -332,6 +385,6 @@ export function useStacCollection({ id, stacCol, date, stacApiEndpoint, onStatus
       controller.abort();
       onStatusChange({ status: 'idle', context: STATUS_KEY.StacSearch });
     };
-  }, [id, onStatusChange, stacCol, date, stacApiEndpointToUse]);  
+  }, [id, onStatusChange, stacCol, date, stacApiEndpointToUse, datasetType]);  
   return stacCollection;
 }

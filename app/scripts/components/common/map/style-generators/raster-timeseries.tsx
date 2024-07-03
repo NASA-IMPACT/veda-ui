@@ -38,7 +38,7 @@ interface AssetUrlReplacement {
 
 export interface RasterTimeseriesProps extends BaseGeneratorParams {
   id: string;
-  stacCollection: StacFeature[];
+  stacCollection?: StacFeature[] | null;
   sourceParams?: Record<string, any>;
   zoomExtent?: number[];
   bounds?: number[];
@@ -48,8 +48,9 @@ export interface RasterTimeseriesProps extends BaseGeneratorParams {
   // eslint-disable-next-line react/no-unused-prop-types  
   assetUrlReplacements?: AssetUrlReplacement;
   hidden?: boolean;
-  tileUrlWithParams?: string | undefined;
+  tileJsonUrl?: string | undefined;
   wmtsTilesUrl?: string | undefined;
+  tileServerUrl?: string | undefined;
 }
 
 export function RasterTimeseries(props: RasterTimeseriesProps) {
@@ -63,8 +64,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     isPositionSet,
     hidden,
     opacity,
-    tileUrlWithParams,
-    wmtsTilesUrl
+    tileJsonUrl,
+    wmtsTilesUrl,
+    tileServerUrl
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -79,7 +81,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   // Markers
   //
   const points = useMemo(() => {
-    if (!stacCollection.length) return null;
+    if (!stacCollection?.length) return null;
     const points = stacCollection.map((f) => {
       const [w, s, e, n] = f.bbox;
       return {
@@ -111,11 +113,10 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       let sources: Record<string, AnySourceImpl> = {};
 
       try {
-        if (!tileUrlWithParams) return;
-
+        if (!tileJsonUrl) return;
         const rasterSource: RasterSource = {
           type: 'raster',
-          url: tileUrlWithParams 
+          url: tileJsonUrl 
         };
 
         const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
@@ -137,7 +138,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           metadata: {
             id,
             layerOrderPosition: 'raster',
-            xyzTileUrl: tileUrlWithParams,
+            xyzTileUrl: tileServerUrl,
             wmtsTilesUrl
           }
         };
@@ -218,8 +219,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     minZoom,
     haveSourceParamsChanged,
     generatorParams,
+    tileJsonUrl,
     // This hook depends on a series of properties, but whenever they change the
-    // `mosaicUrl` is guaranteed to change because a new STAC request is
+    // `tileUrlWithParams` is guaranteed to change because a new STAC request is
     // needed to show the data. The following properties are therefore removed
     // from the dependency array:
     // - id
@@ -269,7 +271,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   // FitBounds when needed
   //
   const layerBounds = useMemo(
-    () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
+    () => (stacCollection?.length ? getMergedBBox(stacCollection) : undefined),
     [stacCollection]
   );
   useFitBbox(!!isPositionSet, bounds, layerBounds);

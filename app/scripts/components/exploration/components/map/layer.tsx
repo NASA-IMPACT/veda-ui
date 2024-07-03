@@ -1,16 +1,17 @@
-import React, { useMemo, useRef, useCallback } from 'react';
+import React, { useMemo, useRef, useCallback, useEffect, useState } from 'react';
 // Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import * as dateFns from 'date-fns';
 import qs from 'qs';
 import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types.d.ts';
 import { getTimeDensityStartDate } from '../../data-utils';
+import { StacFeature } from '$components/common/map/types';
 
 import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
 import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
 import { Statuses, STATUS_KEY, StatusData } from '$components/common/map/types.d';
 import { ActionStatus } from '$utils/status';
-import { useZarr, useMosaic, useCMRSTAC, useTitilerCMR, useStacCollection } from '$components/common/map/style-generators/hooks';
+import { TileUrls, useZarr, useMosaic, useCMRSTAC, useTitilerCMR, useStacCollection } from '$components/common/map/style-generators/hooks';
 import {
   S_IDLE,
   S_SUCCEEDED,
@@ -26,6 +27,14 @@ interface LayerProps {
   selectedDay: Date;
   onStatusChange?: (result: StatusData) => void;
 }
+
+// Mapping object to select the appropriate hook based on dataset type
+const datasetTypeHooks = {
+  zarr: useZarr,
+  'titiler-cmr': useTitilerCMR,
+  'cmr-stac': useCMRSTAC,
+  'raster': useMosaic,
+};
 
 export function Layer(props: LayerProps) {
   const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
@@ -105,38 +114,38 @@ export function Layer(props: LayerProps) {
 
   const stacApiEndpointToUse = dataset.data.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
   const tileApiEndpointToUse = dataset.data.tileApiEndpoint ?? process.env.API_TILE_ENDPOINT;
-  // Customize qs to use comma separated values for arrays
-  // e.g. rescale: [[0, 100]] -> rescale=0,100
-  // TODO: test this with multiple rescale values, for multiple bands
-  const paramsOptions = {
-    arrayFormat: 'comma',
-  };
 
-  let tileParams, tileUrlWithParams, wmtsTilesUrl, stacCollection;
+  const [tileUrls, setTileUrls] = useState<TileUrls>({});
   const assetUrlReplacements = dataset.data.assetUrlReplacements;
-  switch (dataset.data.type) {
-    case 'zarr':
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      tileParams = useZarr({id: layerId, stacCol: dataset.data.stacCol, stacApiEndpointToUse, date: relevantDate, onStatusChange: changeStatus, sourceParams: params.sourceParams});
-      tileUrlWithParams = `${tileApiEndpointToUse}?${qs.stringify(tileParams, paramsOptions)}`;
-      break;
-    case 'cmr-stac':
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      tileParams = useCMRSTAC({id: layerId, stacCol: dataset.data.stacCol, stacApiEndpointToUse, date: relevantDate, assetUrlReplacements, onStatusChange: changeStatus, sourceParams: params.sourceParams});
-      tileUrlWithParams = `${tileApiEndpointToUse}?${qs.stringify(tileParams, paramsOptions)}`;
-      break;
-    case 'titiler-cmr':
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      tileParams = useTitilerCMR({id: layerId, stacCol: dataset.data.stacCol, stacApiEndpointToUse, date: relevantDate, onStatusChange: changeStatus, sourceParams: params.sourceParams});
-      tileUrlWithParams = `${tileApiEndpointToUse}?${qs.stringify(tileParams, paramsOptions)}`;
-      break;
-    case 'raster':
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      [tileUrlWithParams, wmtsTilesUrl] = useMosaic({ id: layerId, stacCol: dataset.data.stacCol, tileApiEndpointToUse: dataset.data.tileApiEndpoint, date: relevantDate, sourceParams: params.sourceParams });
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      stacCollection = useStacCollection({ id: layerId, stacCol: dataset.data.stacCol, date: relevantDate, stacApiEndpoint: stacApiEndpointToUse, onStatusChange: changeStatus })
-      break;
-  }
+  const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
+
+  // How to create a type interface for arguments to the useDatasetTiles functions
+ // Determine which hook to use based on the dataset type
+ const useDatasetTiles = datasetTypeHooks[dataset.data.type];
+ const fetchTileUrls = useDatasetTiles({
+    id: layerId,
+    stacCol: dataset.data.stacCol,
+    tileApiEndpointToUse,
+    stacApiEndpointToUse,
+    assetUrlReplacements,
+    date: relevantDate,
+    onStatusChange: changeStatus,
+    sourceParams: params.sourceParams,
+    datasetType: dataset.data.type,
+  });
+  const fetchStacCollection = useStacCollection({
+    id: layerId,
+    stacCol: dataset.data.stacCol,
+    date: relevantDate,
+    stacApiEndpointToUse,
+    onStatusChange: changeStatus,
+    datasetType: dataset.data.type,
+  });
+
+  useEffect(() => {
+    setStacCollection(fetchStacCollection);
+    setTileUrls(fetchTileUrls);
+  }, [fetchTileUrls, fetchStacCollection]);
 
   if (dataset.data.type === 'vector') {
     return (
@@ -153,14 +162,15 @@ export function Layer(props: LayerProps) {
         onStatusChange={changeStatus}
       />
     );    
-  } else if (dataset.data.type in ['raster', 'titiler-cmr', 'cmr-stac']) {
+  } else if (['raster', 'titiler-cmr', 'cmr-stac', 'zarr'].includes(dataset.data.type)) {
     return (
       <RasterTimeseries
         id={layerId}
         stacCollection={stacCollection}
         zoomExtent={params.zoomExtent}
-        tileUrlWithParams={tileUrlWithParams}
-        wmtsTilesUrl={wmtsTilesUrl}
+        tileJsonUrl={tileUrls.tileJsonUrl}
+        wmtsTilesUrl={tileUrls.wmtsUrl}
+        tileServerUrl={tileUrls.tileServerUrl}
         generatorOrder={order}
         hidden={!isVisible}
         opacity={opacity}
