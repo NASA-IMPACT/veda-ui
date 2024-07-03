@@ -10,7 +10,11 @@ module.exports = {
         './app/**/*.{js,jsx,ts,tsx}',
         '@trussworks/react-uswds/lib/index.css'
       ],
-      defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || []
+      defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
+      safelist: {
+        deep: [/usa-alert$/, /usa-site-alert$/],
+        greedy: [/^usa-alert/, /^usa-site-alert/]
+      }
     })
   ]
 };
