@@ -1,7 +1,6 @@
 import React, { useMemo, useRef, useCallback, useEffect, useState } from 'react';
 // Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import * as dateFns from 'date-fns';
-import qs from 'qs';
 import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types.d.ts';
 import { getTimeDensityStartDate } from '../../data-utils';
 import { StacFeature } from '$components/common/map/types';

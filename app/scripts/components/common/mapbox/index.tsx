@@ -419,9 +419,6 @@ function MapboxMapComponent(
                 id={`base-${baseLayerResolvedData.id}`}
                 stacApiEndpoint={baseLayerResolvedData.stacApiEndpoint}
                 tileApiEndpoint={baseLayerResolvedData.tileApiEndpoint}
-                assetUrlReplacements={
-                  baseLayerResolvedData.assetUrlReplacements
-                }
                 stacCol={baseLayerResolvedData.stacCol}
                 mapInstance={mapRef.current}
                 isPositionSet={!!initialPosition}
