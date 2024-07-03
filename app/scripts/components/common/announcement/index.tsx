@@ -3,7 +3,7 @@ import { SiteAlert } from "@trussworks/react-uswds";
 import './index.scss';
 
 export default function Announcement() {
-  return <SiteAlert slim variant='emergency'>Alert</SiteAlert>;
+  return <SiteAlert variant='info' heading='Alert Heading'>Alert</SiteAlert>;
 }
 
 // return (<div className='usa-alert usa-alert--info usa-alert--no-icon'>
