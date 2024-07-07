@@ -5,7 +5,7 @@ import { MDXModule } from 'mdx/types';
 // ///////////////////////////////////////////////////////////////////////////
 //  Datasets                                                                //
 // ///////////////////////////////////////////////////////////////////////////
-type DatasetLayerType = 'raster' | 'vector' | 'zarr'| 'cmr';
+export type DatasetLayerType = 'raster' | 'vector' | 'zarr'| 'cmr-stac' | 'titiler-cmr';
 
 //
 // Dataset Layers

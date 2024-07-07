@@ -9,6 +9,7 @@ import {
   CMRResponseData,
   STACforCMRResponseData,  
 } from '$components/common/map/types.d';
+import { DatasetLayerType } from '$types/veda';
 
 const LOG = true;
 
@@ -17,17 +18,33 @@ interface AssetUrlReplacement {
   to: string;
 }
 
-interface UseDatasetTilesOptions {
-  id: string,
-  stacCol: string,
-  tileApiEndpointToUse?: string,
-  stacApiEndpointToUse?: string,
-  date: Date,
-  onStatusChange: CallableFunction,
-  sourceParams?: Record<string, any>,
-  assetUrlReplacements?: AssetUrlReplacement,
-  datasetType?: 'vector' | 'raster' | 'titiler-cmr' | 'zarr' | 'cmr-stac';
+interface DatasetTilesOptions {
+  id: string;
+  stacCol: string;
+  date: Date;
+  onStatusChange: CallableFunction;
+  sourceParams?: Record<string, any>;
 }
+
+interface TilesOptionsWithEndpoints extends DatasetTilesOptions {
+  tileApiEndpointToUse: string;
+  stacApiEndpointToUse: string;
+}
+
+interface CRMSTACOptions extends TilesOptionsWithEndpoints {
+  assetUrlReplacements?: AssetUrlReplacement
+}
+
+interface MosaicOptions extends DatasetTilesOptions {
+  tileApiEndpointToUse: string;
+  datasetType?: DatasetLayerType;
+}
+
+interface StacCollectionOptions extends DatasetTilesOptions {
+  stacApiEndpointToUse: string;
+  datasetType?: DatasetLayerType;
+}
+
 
 export interface TileUrls {
   tileJsonUrl?: string,
@@ -35,24 +52,25 @@ export interface TileUrls {
   tileServerUrl?: string
 }
 
-type UseDatasetTilesFunction = (options: UseDatasetTilesOptions) => TileUrls;
+export type UseDatasetTilesHooks = (options: TilesOptionsWithEndpoints | CRMSTACOptions | MosaicOptions) => TileUrls;
 
-function generateTileJsonUrlWithParams(tileParams: Record<string, any>, tileApiEndpointToUse?: string) {
+function generateTileJsonUrlWithParams(tileParams: Record<string, any>, tileApiEndpointToUse: string) {
   const paramsOptions = { arrayFormat: 'comma' };
   return `${tileApiEndpointToUse}?${qs.stringify(tileParams, paramsOptions)}`;
 }
 
-export const useZarr: UseDatasetTilesFunction = (options: UseDatasetTilesOptions) => {
+export const useZarr: UseDatasetTilesHooks = (options: TilesOptionsWithEndpoints): TileUrls => {
   const { id, stacCol, tileApiEndpointToUse, stacApiEndpointToUse, date, onStatusChange, sourceParams } = options;
   const [tileUrls, setTileUrls] = useState<TileUrls>({});
 
   useEffect(() => {
+    if (tileApiEndpointToUse === '' || stacApiEndpointToUse === '') return;
     const controller = new AbortController();
 
     async function load() {
       try {
         onStatusChange({ status: S_LOADING, id });
-        const data:ZarrResponseData = await requestQuickCache({
+        const data: ZarrResponseData = await requestQuickCache({
           url: `${stacApiEndpointToUse}/collections/${stacCol}`,
           method: 'GET',
           controller
@@ -88,8 +106,7 @@ export const useZarr: UseDatasetTilesFunction = (options: UseDatasetTilesOptions
   return tileUrls;
 };
 
-
-export const useCMRSTAC: UseDatasetTilesFunction = (options: UseDatasetTilesOptions) => {
+export const useCMRSTAC: UseDatasetTilesHooks = (options: CRMSTACOptions): TileUrls => {
   const { id, stacCol, tileApiEndpointToUse, stacApiEndpointToUse, date, onStatusChange, sourceParams, assetUrlReplacements } = options;
   const [tileUrls, setTileUrls] = useState({});
 
@@ -99,8 +116,8 @@ export const useCMRSTAC: UseDatasetTilesFunction = (options: UseDatasetTilesOpti
     return cmrAssetUrl;
   };
 
-
   useEffect(() => {
+    if (tileApiEndpointToUse === '' || stacApiEndpointToUse === '') return;
     const controller = new AbortController();
 
     async function load() {
@@ -153,11 +170,12 @@ interface CmrSourceParams {
   [key: string]: any; // This allows for additional properties not explicitly defined
 }
 
-export const useTitilerCMR: UseDatasetTilesFunction = (options: UseDatasetTilesOptions) => {
+export const useTitilerCMR: UseDatasetTilesHooks = (options: TilesOptionsWithEndpoints): TileUrls => {
   const { id, stacCol, tileApiEndpointToUse, stacApiEndpointToUse, date, onStatusChange, sourceParams } = options;
   const [tileUrls, setTileUrls] = useState({});
 
   useEffect(() => {
+    if (tileApiEndpointToUse === '' || stacApiEndpointToUse === '') return;
     const controller = new AbortController();
 
     async function load() {
@@ -209,13 +227,12 @@ export const useTitilerCMR: UseDatasetTilesFunction = (options: UseDatasetTilesO
   return tileUrls;
 };
 
-export function useMosaic(options: UseDatasetTilesOptions) {
+export const useMosaic: UseDatasetTilesHooks = (options: MosaicOptions): TileUrls => {
   const { id, tileApiEndpointToUse, stacCol, date, sourceParams, datasetType } = options;
   const [tileUrls, setTileUrls] = useState({});
 
   useEffect(() => {
-    if (!id || !stacCol) return;
-    if (datasetType !== 'raster') return;
+    if (!id || !stacCol || tileApiEndpointToUse === '' || datasetType !== 'raster') return;
 
     const controller = new AbortController();
 
@@ -308,16 +325,16 @@ export function useMosaic(options: UseDatasetTilesOptions) {
     datasetType
   ]);
   return tileUrls;
-}
+};
 
 // Load stac collection features
 // stacCollection could also get passed through to the raster timeseries as an optional parameter
 // but how to handle change status
-export function useStacCollection(options: UseDatasetTilesOptions) {
+export function useStacCollection(options: StacCollectionOptions) {
   const { id, stacCol, date, stacApiEndpointToUse, onStatusChange, datasetType } = options;
   const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
   useEffect(() => {
-    if (!id || !stacCol) return;
+    if (!id || !stacCol || stacApiEndpointToUse === '') return;
     if (datasetType !== 'raster') return;
 
     const controller = new AbortController();
