@@ -1,9 +1,9 @@
-module.exports = {
-  syntax: 'postcss-scss',
-  parser: 'postcss-safe-parser',
-  plugins: [
-    require('autoprefixer'),
-    require('postcss-import'),
+let plugins = [require('autoprefixer'), require('postcss-import')];
+
+console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV === 'production') {
+  plugins = [
+    ...plugins,
     require('@fullhuman/postcss-purgecss')({
       content: [
         './dist/index.html',
@@ -12,5 +12,10 @@ module.exports = {
       ],
       defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || []
     })
-  ]
+  ];
+}
+module.exports = {
+  syntax: 'postcss-scss',
+  parser: 'postcss-safe-parser',
+  plugins: plugins
 };
