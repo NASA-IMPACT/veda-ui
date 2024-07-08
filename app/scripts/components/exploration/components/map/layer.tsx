@@ -10,7 +10,7 @@ import { RasterTimeseries } from '$components/common/map/style-generators/raster
 import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
 import { Statuses, STATUS_KEY, StatusData } from '$components/common/map/types.d';
 import { ActionStatus } from '$utils/status';
-import { TileUrls, useZarr, useMosaic, useCMRSTAC, useTitilerCMR, useStacCollection } from '$components/common/map/style-generators/hooks';
+import { TileUrls, useZarr, useMosaic, useCMRSTAC, useTitilerCMR, useStacCollection, UseDatasetTilesHooks } from '$components/common/map/style-generators/hooks';
 import {
   S_IDLE,
   S_SUCCEEDED,
@@ -28,7 +28,7 @@ interface LayerProps {
 }
 
 // Mapping object to select the appropriate hook based on dataset type
-const datasetTypeHooks = {
+const datasetTypeHooksMap = {
   zarr: useZarr,
   'titiler-cmr': useTitilerCMR,
   'cmr-stac': useCMRSTAC,
@@ -37,8 +37,15 @@ const datasetTypeHooks = {
 
 export function Layer(props: LayerProps) {
   const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
+  const [tileUrls, setTileUrls] = useState<TileUrls>({});
+  const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
 
+  const assetUrlReplacements = dataset.data.assetUrlReplacements;
   const { isVisible, opacity } = dataset.settings;
+
+  // How to create a type interface for arguments to the useDatasetTiles functions
+  // Determine which hook to use based on the dataset type
+  const useDatasetTiles: UseDatasetTilesHooks = datasetTypeHooksMap[dataset.data.type];
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
@@ -114,29 +121,23 @@ export function Layer(props: LayerProps) {
   const stacApiEndpointToUse = dataset.data.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
   const tileApiEndpointToUse = dataset.data.tileApiEndpoint ?? process.env.API_TILE_ENDPOINT;
 
-  const [tileUrls, setTileUrls] = useState<TileUrls>({});
-  const assetUrlReplacements = dataset.data.assetUrlReplacements;
-  const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
-
-  // How to create a type interface for arguments to the useDatasetTiles functions
- // Determine which hook to use based on the dataset type
- const useDatasetTiles = datasetTypeHooks[dataset.data.type];
- const fetchTileUrls = useDatasetTiles({
+  const fetchTileUrls = useDatasetTiles({
     id: layerId,
     stacCol: dataset.data.stacCol,
-    tileApiEndpointToUse,
-    stacApiEndpointToUse,
+    tileApiEndpointToUse: tileApiEndpointToUse || '',
+    stacApiEndpointToUse: stacApiEndpointToUse || '',
     assetUrlReplacements,
     date: relevantDate,
     onStatusChange: changeStatus,
     sourceParams: params.sourceParams,
     datasetType: dataset.data.type,
   });
+
   const fetchStacCollection = useStacCollection({
     id: layerId,
     stacCol: dataset.data.stacCol,
     date: relevantDate,
-    stacApiEndpointToUse,
+    stacApiEndpointToUse: stacApiEndpointToUse || '',
     onStatusChange: changeStatus,
     datasetType: dataset.data.type,
   });
@@ -144,7 +145,7 @@ export function Layer(props: LayerProps) {
   useEffect(() => {
     setStacCollection(fetchStacCollection);
     setTileUrls(fetchTileUrls);
-  }, [fetchTileUrls, fetchStacCollection]);
+}, [fetchTileUrls, fetchStacCollection]);
 
   if (dataset.data.type === 'vector') {
     return (

@@ -31,11 +31,6 @@ import {
 // Whether or not to print the request logs.
 const LOG = true;
 
-interface AssetUrlReplacement {
-  from: string;
-  to: string;
-}
-
 export interface RasterTimeseriesProps extends BaseGeneratorParams {
   id: string;
   stacCollection?: StacFeature[] | null;
@@ -46,11 +41,10 @@ export interface RasterTimeseriesProps extends BaseGeneratorParams {
   isPositionSet?: boolean;
   // For replacing HTTPS asset URLs with S3 in the CMR STAC response.
   // eslint-disable-next-line react/no-unused-prop-types  
-  assetUrlReplacements?: AssetUrlReplacement;
   hidden?: boolean;
-  tileJsonUrl?: string | undefined;
-  wmtsTilesUrl?: string | undefined;
-  tileServerUrl?: string | undefined;
+  tileJsonUrl?: string;
+  wmtsTilesUrl?: string;
+  tileServerUrl?: string;
 }
 
 export function RasterTimeseries(props: RasterTimeseriesProps) {
