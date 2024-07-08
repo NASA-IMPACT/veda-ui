@@ -1,11 +1,12 @@
 import React from 'react';
 import { getString } from 'veda';
-import { allDatasets } from '$components/exploration/data-utils';
+import { getAllDatasetsProps } from '$utils/veda-data';
 import CatalogView from '$components/common/catalog';
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
+import { veda_faux_module_datasets } from '$data-layer/datasets';
 
 /**
  * @VEDA2-REFACTOR-WORK
@@ -15,6 +16,8 @@ import { FeaturedDatasets } from '$components/common/featured-slider-section';
  */
 
 export default function DataCatalogContainer() {
+  const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
+  
   return (
     <PageMainContent>
       <LayoutProps title='Data Catalog' description={getString('dataCatalogBanner').other} />

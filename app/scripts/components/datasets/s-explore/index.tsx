@@ -44,8 +44,6 @@ import {
   PanelWidgetTitle,
   PANEL_REVEAL_DURATION
 } from '$styles/panel';
-
-
 import { useDataset } from '$utils/veda-data';
 import { useMediaQuery } from '$utils/use-media-query';
 import { useEffectPrevious } from '$utils/use-effect-previous';
@@ -64,6 +62,7 @@ import {
   BasemapId,
   BASEMAP_ID_DEFAULT
 } from '$components/common/mapbox/map-options/basemaps';
+import { veda_faux_module_datasets } from '$data-layer/datasets';
 
 const BackLink = styled(Link)`
   display: flex;
@@ -230,7 +229,7 @@ const useDatePickerValue = (
 
 function DatasetsExplore() {
   const mapboxRef = useRef<MapboxMapRef>(null);
-  const dataset = useDataset();
+  const dataset = useDataset(veda_faux_module_datasets);
 
   if (!dataset) throw resourceNotFound();
 

@@ -35,7 +35,7 @@ import {
   getTaxonomy,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
-} from '$utils/veda-data';
+} from '$utils/veda-data/taxonomies';
 import {
   ComponentOverride,
   ContentOverride
