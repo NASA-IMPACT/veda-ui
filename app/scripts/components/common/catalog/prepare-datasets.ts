@@ -1,6 +1,7 @@
-import { DatasetData, StoryData } from 'veda';
+import { DatasetData, StoryData } from '$types/veda';
 import { optionAll } from '$components/common/browse-controls/constants';
-import { TAXONOMY_TOPICS } from '$utils/veda-data';
+
+const TAXONOMY_TOPICS = 'Topics';
 
 const isDatasetData = (data: DatasetData | StoryData): data is DatasetData => {
   return 'layers' in data;

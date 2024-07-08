@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import PageHeader from './page-header';
-import { useSlidingStickyHeaderProps } from './layout-root';
+import { useSlidingStickyHeaderProps } from './layout-root/useSlidingStickyHeaderProps';
 
 import {
   HEADER_WRAPPER_ID,
