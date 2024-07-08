@@ -142,6 +142,7 @@
     "@types/react": "^18.2.12",
     "@types/react-dom": "^18.2.5",
     "@types/styled-components": "^5.1.26",
+    "@uswds/compile": "^1.1.0",
     "@uswds/uswds": "^3.8.1",
     "autoprefixer": "^10.4.19",
     "axios": "^0.25.0",
@@ -216,3 +217,4 @@
     "$test": "~/test"
   }
 }
+
