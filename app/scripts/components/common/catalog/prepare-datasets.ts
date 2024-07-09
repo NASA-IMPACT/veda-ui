@@ -30,7 +30,7 @@ export function prepareDatasets (
     // Function to check if searchLower is included in any of the string fields
     const includesSearchLower = (str) => str.toLowerCase().includes(searchLower);
     // Function to determine if a layer matches the search criteria
-    const layerMatchesSearch = (layer) => 
+    const layerMatchesSearch = (layer) =>
       includesSearchLower(layer.stacCol) ||
       includesSearchLower(layer.name) ||
       includesSearchLower(layer.parentDataset.name) ||
@@ -79,6 +79,15 @@ export function prepareDatasets (
 
       return a[sortField]?.localeCompare(b[sortField]);
     });
+
+  if (filterLayers && sortField) {
+    filtered = filtered.map((d) => ({
+      ...d,
+      layers:
+        isDatasetData(d) &&
+        d.layers.sort((a, b) => a[sortField]?.localeCompare(b[sortField]) || 0)
+    })) as DatasetData[];
+  }
 
   if (sortDir === 'desc') {
     /* eslint-disable-next-line fp/no-mutating-methods */

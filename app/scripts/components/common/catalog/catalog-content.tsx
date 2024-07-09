@@ -37,6 +37,7 @@ export interface CatalogContentProps {
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
+const DEFAULT_SORT_FIELD = 'name';
 
 export const findParentDataset = (layerId: string, datasets) => {
   const parentDataset: DatasetData | undefined = Object.values(datasets).find((dataset: DatasetData) =>
@@ -82,7 +83,7 @@ function CatalogContent({
     prepareDatasets(allDatasetsWithEnhancedLayers, {
     search,
     taxonomies,
-    sortField: DEFAULT_SORT_OPTION,
+    sortField: DEFAULT_SORT_FIELD,
     sortDir: DEFAULT_SORT_OPTION,
     filterLayers: filterLayers ?? false
   }));
@@ -176,7 +177,7 @@ function CatalogContent({
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
       search,
       taxonomies,
-      sortField: DEFAULT_SORT_OPTION,
+      sortField: DEFAULT_SORT_FIELD,
       sortDir: DEFAULT_SORT_OPTION,
       filterLayers: filterLayers ?? false
     });
