@@ -3,6 +3,7 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
+import Announcement from './announcement';
 
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
