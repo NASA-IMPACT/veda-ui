@@ -7,11 +7,13 @@ const isDatasetData = (data: DatasetData | StoryData): data is DatasetData => {
   return 'layers' in data;
 };
 
+type SortOptions = 'asc' | 'desc';
+
 interface FilterOptionsType {
   search: string | null;
   taxonomies: Record<string, string | string[]> | null;
   sortField?: string | null;
-  sortDir?: string | null;
+  sortDir?: SortOptions | null;
   filterLayers?: boolean | null;
 }
 
@@ -21,7 +23,7 @@ export function prepareDatasets (
   data: DatasetData[] | StoryData[],
   options: FilterOptionsType
 ) {
-  const { sortField, sortDir, search, taxonomies, filterLayers } = options;
+  const { sortField = 'name', sortDir, search, taxonomies, filterLayers } = options;
   let filtered = [...data];
 
   // Does the free text search appear in specific fields?

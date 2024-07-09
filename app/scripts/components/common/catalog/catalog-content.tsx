@@ -82,7 +82,6 @@ function CatalogContent({
     prepareDatasets(allDatasetsWithEnhancedLayers, {
     search,
     taxonomies,
-    sortField: DEFAULT_SORT_OPTION,
     sortDir: DEFAULT_SORT_OPTION,
     filterLayers: filterLayers ?? false
   }));
@@ -176,7 +175,6 @@ function CatalogContent({
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
       search,
       taxonomies,
-      sortField: DEFAULT_SORT_OPTION,
       sortDir: DEFAULT_SORT_OPTION,
       filterLayers: filterLayers ?? false
     });
