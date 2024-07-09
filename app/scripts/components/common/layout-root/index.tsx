@@ -3,7 +3,6 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
-import Announcement from './announcement';
 
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
@@ -12,6 +11,7 @@ import { LayoutRootContext } from './context';
 import { useGoogleTagManager } from '$utils/use-google-tag-manager';
 
 import NavWrapper from '$components/common/nav-wrapper';
+import Announcement from '../announcement';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
