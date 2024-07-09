@@ -63,22 +63,24 @@ const BrowseFoldHeader = styled(FoldHeader)`
 const FoldWithTopMargin = styled(Fold)`
   margin-top: ${glsp()};
 `;
- 
+
 function StoriesHub() {
   const controlVars = useFiltersWithQS();
 
   const { search, taxonomies, onAction } = controlVars;
-  
+
 
   const displayStories = useMemo(
     () =>
       prepareDatasets(allStories, {
         search,
-        taxonomies
+        taxonomies,
+        sortField: 'pubDate',
+        sortDir: 'desc',
       }),
     [search, taxonomies]
   );
-  
+
   const isFiltering = !!(
     (taxonomies && Object.keys(taxonomies).length )||
     search
@@ -160,7 +162,7 @@ function StoriesHub() {
                             }}
                           />
                           <VerticalDivider variation='dark' />
-                          
+
                           {!isNaN(pubDate.getTime()) && (
                               <PublishedDate date={pubDate} />
                           )}

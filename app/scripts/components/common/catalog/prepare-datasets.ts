@@ -10,8 +10,8 @@ const isDatasetData = (data: DatasetData | StoryData): data is DatasetData => {
 interface FilterOptionsType {
   search: string | null;
   taxonomies: Record<string, string | string[]> | null;
-  sortField?: string | null;
-  sortDir?: string | null;
+  sortField?: 'pubDate' | 'name';
+  sortDir?: 'asc' | 'desc';
   filterLayers?: boolean | null;
 }
 
