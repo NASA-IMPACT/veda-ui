@@ -20,7 +20,7 @@
     "serve": "NODE_ENV=development gulp serve",
     "build": "NODE_ENV=production gulp",
     "buildlib": "gulp clean && parcel build 'app/scripts/index.ts' --dist-dir='lib'",
-    "stage": "NODE_ENV=staging gulp",
+    "stage": "yarn buildlib && NODE_ENV=staging gulp",
     "clean": "gulp clean",
     "lint": "yarn lint:scripts && yarn lint:css",
     "lint:scripts": "eslint app/scripts/",
