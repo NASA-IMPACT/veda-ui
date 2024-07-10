@@ -2,31 +2,33 @@ const path = require('path');
 const fs = require('fs-extra');
 const { Resolver } = require('@parcel/plugin');
 
+// Resolver for resolving aliases in library building
+// Related issue in Parcel repo: https://github.com/parcel-bundler/parcel/issues/9519
+
+// Files with redundant extensions ex. $components/panel (components/panel.d.ts.ts)
 const fileExtensions = ['.js', '.ts', '.jsx', '.tsx'];
+// Index files with a trailing slash ex. $components/panel/ (components/panel/index.jsx)
 const indexFileExtensions = fileExtensions.map((e) => `index${e}`);
+// Index files without a trailing slash ex. $components/panel (components/panel/index.jsx)
+const pathIndexExtensions = fileExtensions.map((e) => `/index${e}`);
 
 function findMatchingFile(filePath) {
   const filePathParts = filePath.split('/');
   const fileName = filePathParts[filePathParts.length - 1];
-  // If the file name includes extension ex. panel.jsx or panel.css
+  // Files ex. $components/panel.jsx or $components/panel.css
   if (fileName.includes('.')) {
     if (fs.existsSync(filePath)) return filePath;
   }
 
-  for (const extension of fileExtensions) {
+  for (const extension of [
+    ...fileExtensions,
+    ...indexFileExtensions,
+    ...pathIndexExtensions
+  ]) {
     if (fs.existsSync(`${filePath}${extension}`))
       return `${filePath}${extension}`;
   }
 
-  for (const extension of indexFileExtensions) {
-    if (fs.existsSync(`${filePath}/${extension}`))
-      return `${filePath}/${extension}`;
-  }
-
-  for (const extension of indexFileExtensions) {
-    if (fs.existsSync(`${filePath}${extension}`))
-      return `${filePath}${extension}`;
-  }
   return null;
 }
 
@@ -54,9 +56,7 @@ module.exports = new Resolver({
       }
     }
     if (toReturn) return toReturn;
+    // Let the next resolver in the pipeline handle this dependency
     else return null;
-    // Let the next resolver in the pipeline handle
-    // this dependency.
-    // return null;
   }
 });
