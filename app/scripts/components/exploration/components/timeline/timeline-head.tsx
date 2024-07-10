@@ -18,6 +18,11 @@ const TimelineHeadSVG = styled.svg`
   height: calc(100% + 1rem);
   pointer-events: none;
   z-index: ${themeVal('zIndices.overlay' as any)};
+
+  // &:nth-child(2) line,
+  // &:nth-child(3) line {
+  //   stroke-dasharray: 2;
+  // }
 `;
 
 const dropShadowFilter =
@@ -176,14 +181,16 @@ export function TimelineHeadOut(props: TimelineHeadProps) {
 
 const TimelineRangeTrackSelf = styled.div`
   position: absolute;
-  top: -0.5rem;
+  top: 0;
   right: ${RIGHT_AXIS_SPACE}px;
   overflow: hidden;
+  background: ${themeVal('color.base-100a')};
+  height: 100%;
 
   .shaded {
     position: relative;
-    background: ${themeVal('color.base-100a')};
-    height: 0.5rem;
+    background: #ffffff;
+    height: 100%;
   }
 `;
 
