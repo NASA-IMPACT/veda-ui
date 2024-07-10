@@ -21,11 +21,11 @@
     & *:not(:focus), & *:not(:active) {
         font-family: themeVal('type.base.family');
         z-index: 9999;
-        // background-color: #f8f8f8;
-        // box-shadow: rgba(0, 0, 0, 0.2);
     }
 
-    .usa-input {
+    .usa-input,
+    &__button,
+    &__status {
         display: none;
     }
 }

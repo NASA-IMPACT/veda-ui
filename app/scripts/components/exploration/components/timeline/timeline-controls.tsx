@@ -4,15 +4,12 @@ import { useAtom } from 'jotai';
 import { endOfYear, startOfYear } from 'date-fns';
 import { scaleTime, ScaleTime } from 'd3';
 
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import {
-  CollecticonChevronDownSmall
-} from '@devseed-ui/collecticons';
+import { glsp } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
-import moment from 'moment';
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
+import { TimelineDatePicker } from './timeline-datepicker';
 import {
   selectedCompareDateAtom,
   selectedDateAtom,
@@ -21,9 +18,8 @@ import {
 import { DAY_SIZE_MAX } from '$components/exploration/constants';
 import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minus';
 import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
-import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
+import { TipToolbarIconButton } from '$components/common/tip-button';
 import useAois from '$components/common/map/controls/hooks/use-aois';
-import { CustomDatePicker } from '$components/common/datepicker';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -46,19 +42,10 @@ const ControlsToolbar = styled.div`
   }
 `;
 
-const DatePickerTrigger = styled(TipButton)`
-  gap: ${glsp(0.5)};
-
-  .head-reference {
-    font-weight: ${themeVal('type.base.regular')};
-    color: ${themeVal('color.base-400')};
-    font-size: 0.875rem;
-  }
-`;
-
 const DatePickersWrapper = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-grow: 1;
 `;
 
@@ -172,7 +159,7 @@ export function TimelineControls(props: TimelineControlsProps) {
             )}
             {selectedInterval ? (
               <DatePickersWrapper>
-                <CustomDatePicker
+                <TimelineDatePicker
                   id='date-picker-start'
                   triggerHeadReference='FROM:'
                   selectedDay={selectedInterval.start}
@@ -185,22 +172,10 @@ export function TimelineControls(props: TimelineControlsProps) {
                   }}
                   disabled={!xScaled}
                   tipContent='Start date for analysis'
-                  renderTriggerElement={({ onClick, disabled, tipContent, triggerHeadReference, selectedDay }) => (
-                    <DatePickerTrigger
-                      size='small'
-                      disabled={disabled}
-                      data-tour='date-picker-start'
-                      tipContent={tipContent}
-                      onClick={onClick}
-                    >
-                      <span className='head-reference'>{triggerHeadReference}</span>
-                      <span>{moment(selectedDay).format('MMM Do, YYYY')}</span>
-                      <CollecticonChevronDownSmall />
-                    </DatePickerTrigger>
-                  )}
+                  dataTour='date-picker-start'
                 />
                 <VerticalDivider />
-                <CustomDatePicker
+                <TimelineDatePicker
                   id='date-picker-a'
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
@@ -209,25 +184,11 @@ export function TimelineControls(props: TimelineControlsProps) {
                     setSelectedDay(new Date(d));
                   }}
                   disabled={!xScaled}
-                  tipContent={selectedCompareDay
-                    ? 'Date shown on left map '
-                    : 'Date shown on map'}
-                  renderTriggerElement={({ onClick, disabled, tipContent, triggerHeadReference, selectedDay }) => (
-                    <DatePickerTrigger
-                      size='small'
-                      disabled={disabled}
-                      data-tour='date-picker-a'
-                      tipContent={tipContent}
-                      onClick={onClick}
-                    >
-                      <span className='head-reference'>{triggerHeadReference}</span>
-                      <span>{moment(selectedDay).format('MMM Do, YYYY')}</span>
-                      <CollecticonChevronDownSmall />
-                    </DatePickerTrigger>
-                  )}
+                  tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
+                  dataTour='date-picker-a'
                 />
                 <VerticalDivider />
-                <CustomDatePicker
+                <TimelineDatePicker
                   id='date-picker-end'
                   triggerHeadReference='TO:'
                   selectedDay={selectedInterval.end}
@@ -240,26 +201,13 @@ export function TimelineControls(props: TimelineControlsProps) {
                   }}
                   disabled={!xScaled}
                   tipContent='End date for analysis'
-                  renderTriggerElement={({ onClick, disabled, tipContent, triggerHeadReference, selectedDay }) => (
-                    <DatePickerTrigger
-                      size='small'
-                      disabled={disabled}
-                      data-tour='date-picker-end'
-                      tipContent={tipContent}
-                      onClick={onClick}
-                    >
-                      <span className='head-reference'>{triggerHeadReference}</span>
-                      <span>{moment(selectedDay).format('MMM Do, YYYY')}</span>
-                      <CollecticonChevronDownSmall />
-                    </DatePickerTrigger>
-                  )}
+                  dataTour='date-picker-end'
                 />
-                <VerticalDivider />
               </DatePickersWrapper>
             ) : (
               <>
                 <DatePickersWrapper>
-                <CustomDatePicker
+                <TimelineDatePicker
                   id='date-picker-a'
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
@@ -268,27 +216,13 @@ export function TimelineControls(props: TimelineControlsProps) {
                     setSelectedDay(new Date(d));
                   }}
                   disabled={!xScaled}
-                  tipContent={selectedCompareDay
-                    ? 'Date shown on left map '
-                    : 'Date shown on map'}
-                  renderTriggerElement={({ onClick, disabled, tipContent, triggerHeadReference, selectedDay }) => (
-                    <DatePickerTrigger
-                      size='small'
-                      disabled={disabled}
-                      data-tour='date-picker-a'
-                      tipContent={tipContent}
-                      onClick={onClick}
-                    >
-                      <span className='head-reference'>{triggerHeadReference}</span>
-                      <span>{moment(selectedDay).format('MMM Do, YYYY')}</span>
-                      <CollecticonChevronDownSmall />
-                    </DatePickerTrigger>
-                  )}
+                  tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
+                  dataTour='date-picker-a'
                 />
                 {selectedCompareDay && (
                   <>
                     <VerticalDivider />
-                    <CustomDatePicker
+                    <TimelineDatePicker
                       id='date-picker-b'
                       triggerHeadReference='B:'
                       selectedDay={selectedCompareDay}
@@ -298,19 +232,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                       }}
                       disabled={!xScaled}
                       tipContent='Date shown on right map'
-                      renderTriggerElement={({ onClick, disabled, tipContent, triggerHeadReference, selectedDay }) => (
-                        <DatePickerTrigger
-                          size='small'
-                          disabled={disabled}
-                          data-tour='date-picker-b'
-                          tipContent={tipContent}
-                          onClick={onClick}
-                        >
-                          <span className='head-reference'>{triggerHeadReference}</span>
-                          <span>{moment(selectedDay).format('MMM Do, YYYY')}</span>
-                          <CollecticonChevronDownSmall />
-                        </DatePickerTrigger>
-                      )}
+                      dataTour='date-picker-b'
                     />
                   </>
                 )}

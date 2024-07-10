@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import './index.scss';
 
-interface CustomDatePickerProps {
+interface SimpleDatePickerProps {
   disabled: boolean;
   tipContent: ReactNode;
   onConfirm: (date: string) => void;
@@ -20,13 +20,16 @@ interface CustomDatePickerProps {
   }) => ReactElement;
 }
 
-export const CustomDatePicker = ({ disabled, tipContent, onConfirm, id, triggerHeadReference, selectedDay, renderTriggerElement }: CustomDatePickerProps) => {
+export const SimpleDatePicker = ({ disabled, tipContent, onConfirm, id, triggerHeadReference, selectedDay, renderTriggerElement }: SimpleDatePickerProps) => {
     const [showCalendar, setShowCalendar] = useState(true);
-    const datePickerRef = useRef(null);
+    const datePickerRef = useRef<HTMLDivElement>(null);
 
-    const handleButtonClick = () => {
+    const toggleCalendar = () => {
+      // We have no reference to the internals of the react-uswds DatePicker, so we have to query for it's trigger.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (datePickerRef.current) {
-        datePickerRef.current.querySelector('button.usa-date-picker__button').click();
+        const button = datePickerRef.current.querySelector('button.usa-date-picker__button')! as HTMLButtonElement;
+        button.click();
       }
       setShowCalendar(!showCalendar);
     };
@@ -34,13 +37,13 @@ export const CustomDatePicker = ({ disabled, tipContent, onConfirm, id, triggerH
     return (
       <>
         {renderTriggerElement({
-          onClick: handleButtonClick,
+          onClick: toggleCalendar,
           disabled,
           tipContent,
           triggerHeadReference,
           selectedDay,
         })}
-        <div className="bg-primary-darker" ref={datePickerRef}>
+        <div ref={datePickerRef}>
           <DatePicker
             key={selectedDay ? selectedDay.toISOString() : 'default'}
             aria-describedby='veda-date-hint'
