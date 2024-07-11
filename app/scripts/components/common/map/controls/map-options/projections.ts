@@ -1,4 +1,4 @@
-import { MbProjectionOptions, ProjectionOptions } from 'veda';
+import { MbProjectionOptions, ProjectionOptions } from '$types/veda';
 
 import { validateLat, validateLon } from '../../utils';
 import { ProjectionListItem } from './types';

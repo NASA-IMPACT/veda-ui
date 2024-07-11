@@ -1,6 +1,6 @@
 import React, { ReactNode, Fragment, useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
+import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
 import { AccordionFold, AccordionManager } from '@devseed-ui/accordion';
 import {
   glsp,

@@ -6,7 +6,7 @@ import {
   startOfMonth,
   startOfYear
 } from 'date-fns';
-import { DatasetLayer, DatasetData, VedaDatum } from 'veda';
+import { DatasetLayer, DatasetData, VedaDatum } from '$types/veda';
 import {
   EnhancedDatasetLayer,
   StacDatasetData,

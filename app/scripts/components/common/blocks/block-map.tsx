@@ -1,7 +1,8 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 // @NOTE: This should be replaced by types/veda once the changes are consolidated
-import { ProjectionOptions } from 'veda';
+// import { ProjectionOptions } from 'veda';
+import { ProjectionOptions } from '$types/veda';
 import { MapboxOptions } from 'mapbox-gl';
 import {
   convertProjectionToMapbox,
@@ -35,9 +36,13 @@ import {
   DatasetStatus
 } from '$components/exploration/types.d.ts';
 
-import { reconcileDatasets } from '$components/exploration/data-utils';
-import { datasetLayers } from '$components/exploration/data-utils';
+// import { reconcileDatasets } from '$components/exploration/data-utils';
+// import { datasetLayers } from '$components/exploration/data-utils';
+import { reconcileDatasets, getDatasetLayers } from '$components/exploration/data-utils-no-faux-module';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
+
+import { ReactQueryProvider } from '$context/react-query';
+import { VedaDatum, DatasetData } from '$types/veda';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -111,6 +116,7 @@ function validateBlockProps(props: MapBlockProps) {
 }
 
 interface MapBlockProps {
+  datasets: VedaDatum<DatasetData>;
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
@@ -126,9 +132,10 @@ interface MapBlockProps {
 }
 
 const getDataLayer = (layerIndex: number, layers: VizDataset[] | undefined): (VizDatasetSuccess | null) => {
+  console.log(`getDataLayer_layers: `, layers)
   if (!layers || layers.length <= layerIndex) return null;
   const layer = layers[layerIndex];
-
+  console.log(`getDataLayer_layer: `, layer)
   // @NOTE: What to do when data returns ERROR
   if (layer.status !== DatasetStatus.SUCCESS) return null;
   return {
@@ -144,6 +151,7 @@ function MapBlock(props: MapBlockProps) {
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
 
   const {
+    datasets,
     layerId,
     dateTime,
     compareDateTime,
@@ -161,7 +169,9 @@ function MapBlock(props: MapBlockProps) {
   if (errors.length) {
     throw new HintedError('Malformed Map Block', errors);
   }
-
+  // console.log(`datasets_in_blockmap: `, datasets)
+  const datasetLayers = getDatasetLayers(datasets);
+  console.log(`datasetLayers: `, datasetLayers)
   const layersToFetch = useMemo(() => {
     const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
     let totalLayers = [baseMapStaticData];
@@ -177,7 +187,7 @@ function MapBlock(props: MapBlockProps) {
     }
     return totalLayers;
   },[layerId]);
-
+  console.log(`layersToFetch: `, layersToFetch)
   const [layers, setLayers] = useState<VizDataset[]>(layersToFetch);
 
   useReconcileWithStacMetadata(layers, setLayers);
@@ -208,7 +218,7 @@ function MapBlock(props: MapBlockProps) {
   }, [projectionId, projectionCenter, projectionParallels]);
 
   const [, setProjection] = useState(projectionStart);
-
+  console.log(`layers_before_getDataLayer: `, layers)
   const baseDataLayer: (VizDatasetSuccess | null) = useMemo(() => getDataLayer(0, layers), [layers]);
   const compareDataLayer: (VizDatasetSuccess | null) = useMemo(() => getDataLayer(1, layers), [layers]);
 
@@ -262,16 +272,18 @@ function MapBlock(props: MapBlockProps) {
       const providedLabel = compareDataLayer.data.mapLabel as string;
       return providedLabel;
     }
-
-    // Default to date comparison.
-    return selectedDatetime && compareToDate
-      ? formatCompareDate(
-          selectedDatetime,
-          compareToDate,
-          baseTimeDensity,
-          compareTimeDensity
-        )
-      : null;
+    // console.log(`selectedDatetime; `, selectedDatetime, `compareToDate: `, compareToDate, `baseTimeDensity: `, baseTimeDensity, 'compareTimeDensity: ', compareTimeDensity)
+    // // Default to date comparison.
+    // return selectedDatetime && compareToDate
+    //   ? formatCompareDate(
+    //       selectedDatetime,
+    //       compareToDate,
+    //       baseTimeDensity,
+    //       compareTimeDensity
+    //     )
+    //   : null;
+    return null; // @NOTE-SANDRA: failing with $3Zh6r$format is not defined
+    // selectedDatetime;  Thu Mar 01 2018 00:00:00 GMT-0500 (Eastern Standard Time) compareToDate:  Wed Mar 01 2017 00:00:00 GMT-0500 (Eastern Standard Time) baseTimeDensity:  undefined compareTimeDensity:  undefined
   }, [
     compareLabel,
     compareDataLayer,
@@ -280,7 +292,7 @@ function MapBlock(props: MapBlockProps) {
     baseTimeDensity,
     compareTimeDensity
   ]);
-
+  console.log(`baseDataLayer: `, baseDataLayer)
   const initialPosition = useMemo(
     () => (center ? { lng: center[0], lat: center[1], zoom } : undefined),
     [center, zoom]
@@ -325,7 +337,7 @@ function MapBlock(props: MapBlockProps) {
               )}
           </LayerLegendContainer>
         )}
-        <MapControls>
+        {/* <MapControls>
           {selectedDatetime && selectedCompareDatetime ? (
             <MapMessage
               id='compare-message'
@@ -361,10 +373,18 @@ function MapBlock(props: MapBlockProps) {
                 />
               )}
           </Compare>
-        )}
+        )} */}
       </Map>
     </Carto>
   );
 }
+
+export function MapBlockWithProvider(props: MapBlockProps) {
+  return (
+    <ReactQueryProvider>
+      <MapBlock {...props}/>
+    </ReactQueryProvider>
+  );
+};
 
 export default MapBlock;

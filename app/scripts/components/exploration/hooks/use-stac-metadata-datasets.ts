@@ -11,10 +11,53 @@ import {
   DatasetStatus,
   VizDataset
 } from '../types.d.ts';
-import { resolveLayerTemporalExtent } from '../data-utils';
+// import { resolveLayerTemporalExtent } from '../data-utils';
 
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { SetState } from '$types/aliases';
+
+import {
+  eachDayOfInterval,
+  eachMonthOfInterval,
+  eachYearOfInterval,
+} from 'date-fns';
+import { utcString2userTzDate } from '$utils/date';
+
+export function resolveLayerTemporalExtent(
+  datasetId: string,
+  datasetData: StacDatasetData
+): Date[] {
+  const { domain, isPeriodic, timeDensity } = datasetData;
+
+  if (!domain || domain.length === 0) {
+    throw new Error(`Invalid domain on dataset [${datasetId}]`);
+  }
+
+  if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
+
+  switch (timeDensity) {
+    case TimeDensity.YEAR:
+      return eachYearOfInterval({
+        start: utcString2userTzDate(domain[0]),
+        end: utcString2userTzDate(domain.last)
+      });
+    case TimeDensity.MONTH:
+      return eachMonthOfInterval({
+        start: utcString2userTzDate(domain[0]),
+        end: utcString2userTzDate(domain.last)
+      });
+    case TimeDensity.DAY:
+      return eachDayOfInterval({
+        start: utcString2userTzDate(domain[0]),
+        end: utcString2userTzDate(domain.last)
+      });
+    default:
+      throw new Error(
+        `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
+      );
+  }
+}
+
 
 function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
   const currKey = `${curr.errorUpdatedAt}-${curr.dataUpdatedAt}-${curr.failureCount}`;

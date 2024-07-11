@@ -9,7 +9,7 @@ import {
   DatasetDatumFn,
   DatasetDatumFnResolverBag,
   DatasetDatumReturnType
-} from 'veda';
+} from '$types/veda';
 
 import { StacFeature } from './types';
 import { TimeDensity } from '$context/layer-data';

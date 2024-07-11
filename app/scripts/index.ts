@@ -1,6 +1,8 @@
 import DataCatalog from './components/common/catalog';
 
 import Block from './components/common/blocks';
+import Image from './components/common/blocks/images'
+import { MapBlockWithProvider } from './components/common/blocks/block-map';
 import Figure from './components/common/blocks/figure';
 import { ContentBlockProse as Prose } from './styles/content-block';
 import MDXImage, { Caption } from './components/common/blocks/images';
@@ -27,5 +29,7 @@ export {
   Chart,
   Table,
   Embed,
-  TProvider
+  TProvider,
+  MapBlockWithProvider,
+  Image,
 };

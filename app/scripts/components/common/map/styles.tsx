@@ -14,13 +14,13 @@ import {
   LayerOrderPosition
 } from './types';
 
-interface StylesContextType {
-  updateStyle: (params: GeneratorStyleParams) => void;
-  style?: Style;
-  updateMetaData?: (params: unknown) => void;
-  metaData?: unknown;
-  isCompared?: boolean;
-}
+// interface StylesContextType {
+//   updateStyle: (params: GeneratorStyleParams) => void;
+//   style?: Style;
+//   updateMetaData?: (params: unknown) => void;
+//   metaData?: unknown;
+//   isCompared?: boolean;
+// }
 
 // This is the glyphs source used in the default satellite basemap (mapbox://fonts/mapbox/{fontstack}/{range}.pbf)
 const DEFAULT_GLYPHS_SOURCE = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf';
@@ -29,7 +29,8 @@ const DEFAULT_SPRITE_SOURCE =
   'mapbox://sprites/covid-nasa/cldu1cb8f00ds01p6gi583w1m/e3w0e56evrnnyy9tj4v36mbo4';
 const DEFAULT_MAPBOX_STYLE_VERSION = 8;
 
-export const StylesContext = createContext<StylesContextType>({
+// export const StylesContext = createContext<StylesContextType>({ // @NOTE: Breaks with "@parcel/transformer-typescript-types: Got unexpected undefined"
+  export const StylesContext = createContext({
   updateStyle: (params: GeneratorStyleParams) => {
     return params;
   },

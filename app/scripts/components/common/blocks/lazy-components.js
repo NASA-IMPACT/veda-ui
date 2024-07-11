@@ -16,6 +16,7 @@ import {
 } from '$components/common/blocks/scrollytelling';
 
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
+import { veda_datasets } from '$data-layer/datasets';
 
 export function LazyChart(props) {
   return (
@@ -48,7 +49,7 @@ export function LazyMap(props) {
       offset={100}
       once
     >
-      <Map {...props} />
+      <Map {...props} datasets={veda_datasets}/>
     </LazyLoad>
   );
 }

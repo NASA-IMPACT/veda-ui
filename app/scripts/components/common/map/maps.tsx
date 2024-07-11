@@ -15,7 +15,7 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { ProjectionOptions } from 'veda';
+import { ProjectionOptions } from '$types/veda';
 import useDimensions from 'react-cool-dimensions';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -210,7 +210,8 @@ interface MapsContextType {
   containerId: string;
 }
 
-export const MapsContext = createContext<MapsContextType>({
+// export const MapsContext = createContext<MapsContextType>({
+export const MapsContext = createContext({
   initialViewState: {},
   setInitialViewState: () => undefined,
   mainId: '',
