@@ -1,9 +1,16 @@
+// Resolver for resolving aliases in library building
+// Related issue in Parcel repo: https://github.com/parcel-bundler/parcel/issues/9519
+
 const path = require('path');
 const fs = require('fs-extra');
 const { Resolver } = require('@parcel/plugin');
+const { alias } = require('../package.json');
 
-// Resolver for resolving aliases in library building
-// Related issue in Parcel repo: https://github.com/parcel-bundler/parcel/issues/9519
+const aliases = Object.keys(alias).reduce((acc, key) => {
+  const value = alias[key].replace('~', '');
+  acc[`${key}`] = `${value}`;
+  return acc;
+}, {});
 
 // Files with redundant extensions ex. $components/panel (components/panel.d.ts.ts)
 const fileExtensions = ['.js', '.ts', '.jsx', '.tsx'];
@@ -35,15 +42,6 @@ function findMatchingFile(filePath) {
 module.exports = new Resolver({
   async resolve({ specifier }) {
     let toReturn;
-    const aliases = {
-      $components: '/app/scripts/components',
-      $styles: '/app/scripts/styles',
-      $utils: '/app/scripts/utils',
-      $types: '/app/scripts/types',
-      $context: '/app/scripts/context',
-      '$data-layer': '/app/scripts/data-layer',
-      $test: '/test'
-    };
     for (let aliasKey in aliases) {
       if (specifier.startsWith(aliasKey)) {
         const replaced = specifier.replace(aliasKey, aliases[aliasKey]);
