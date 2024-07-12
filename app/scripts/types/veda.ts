@@ -227,7 +227,7 @@ export interface Media {
 /**
  * Base structure for each of the data types in veda.
  */
-// type VedaData<T> = Record<string, VedaDatum<T> | undefined>;
+export type VedaData<T> = Record<string, VedaDatum<T> | undefined>;
 
 export interface VedaDatum<T> {
   /**
