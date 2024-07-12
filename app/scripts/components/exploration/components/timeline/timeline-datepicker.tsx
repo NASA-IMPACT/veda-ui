@@ -1,4 +1,4 @@
-import moment from "moment";
+import { format } from 'date-fns';
 import React from "react";
 import { CollecticonChevronDownSmall } from "@devseed-ui/collecticons";
 import { glsp, themeVal } from "@devseed-ui/theme-provider";
@@ -51,7 +51,7 @@ export const TimelineDatePicker = ({
           onClick={onClick}
         >
           <span className='head-reference'>{triggerHeadReference}</span>
-          <span>{moment(selectedDay ?? new Date()).format('MMM Do, YYYY')}</span>
+          <span>{format(selectedDay ?? new Date(), 'MMM do, yyyy')}</span>
           <CollecticonChevronDownSmall />
         </DatePickerTrigger>
       )}

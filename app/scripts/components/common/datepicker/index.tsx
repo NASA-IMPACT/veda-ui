@@ -1,6 +1,6 @@
-import React, { ReactNode, useRef, useState, ReactElement } from "react";
+import React, { ReactNode, useRef, ReactElement } from "react";
 import { DatePicker } from "@trussworks/react-uswds";
-import moment from 'moment';
+import { format } from 'date-fns';
 
 import './index.scss';
 
@@ -21,7 +21,6 @@ interface SimpleDatePickerProps {
 }
 
 export const SimpleDatePicker = ({ disabled, tipContent, onConfirm, id, triggerHeadReference, selectedDay, renderTriggerElement }: SimpleDatePickerProps) => {
-    const [showCalendar, setShowCalendar] = useState(true);
     const datePickerRef = useRef<HTMLDivElement>(null);
 
     const toggleCalendar = () => {
@@ -31,7 +30,6 @@ export const SimpleDatePicker = ({ disabled, tipContent, onConfirm, id, triggerH
         const button = datePickerRef.current.querySelector('button.usa-date-picker__button')! as HTMLButtonElement;
         button.click();
       }
-      setShowCalendar(!showCalendar);
     };
 
     return (
@@ -51,7 +49,7 @@ export const SimpleDatePicker = ({ disabled, tipContent, onConfirm, id, triggerH
             id={id}
             name={id}
             onChange={onConfirm}
-            defaultValue={moment(selectedDay ?? new Date()).format('YYYY-MM-DD')}
+            defaultValue={format(selectedDay ?? new Date(), 'yyyy-MM-dd')}
           />
         </div>
       </>
