@@ -1,1 +1,18 @@
-@use "usa-site-alert";
+@use "usa-site-alert" as siteAlert;
+@use "usa-button" as button;
+@use "uswds-helpers/src/styles" as helpers;
+
+// @TODO: How can I use USWDS mixins ?
+.position-relative {
+  position: relative;
+}
+
+.position-absolute {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+
+}
+

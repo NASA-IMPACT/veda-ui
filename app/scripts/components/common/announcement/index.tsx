@@ -1,17 +1,28 @@
-import React from "react";
-import { SiteAlert } from "@trussworks/react-uswds";
+import React, {useState} from "react";
+import { Alert } from "@trussworks/react-uswds";
 import './index.scss';
 
-export default function Announcement() {
-  return <SiteAlert variant='info' heading='Alert Heading'>Alert</SiteAlert>;
-}
+export default function Announcement(props) {
+  const [isOpen, setIsOpen] = useState(true);
+  const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vestibulum commodo libero quis bibendum. Ut in lobortis augue, vel ultricies ligula.";
+  
+  return (
+    <div>
+      {isOpen && 
+        (<div className='position-relative'>
+        <Alert type='error' headingLevel='h4' slim noIcon>
 
-// return (<div className='usa-alert usa-alert--info usa-alert--no-icon'>
-//   <div className='usa-alert__body'>
-//     <p className='usa-alert__text'>
-//       Lorem ipsum dolor sit amet,
-//       <a className='usa-link' >consectetur adipiscing</a>
-//       elit, sed do eiusmod.
-//     </p>
-//   </div>
-//         </div>);
+            {text}
+        </Alert>
+        <div className='position-absolute'>
+            <button 
+              className='usa-button usa-button--secondary usa-button--unstyled'
+            type='button'
+            onClick={(e) => {setIsOpen(false);}}
+            >X
+            </button>
+        </div>
+         </div>)}
+    </div>
+  );
+}

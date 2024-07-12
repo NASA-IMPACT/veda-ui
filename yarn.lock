@@ -2460,18 +2460,6 @@
     "@parcel/utils" "2.12.0"
     nullthrows "^1.1.1"
 
-"@parcel/bundler-experimental@^2.7.0":
-  version "2.7.0"
-  resolved "http://verdaccio.ds.io:4873/@parcel%2fbundler-experimental/-/bundler-experimental-2.7.0.tgz#b1bdb830732ac77e5997ed7ed4a31448dd6a5866"
-  integrity sha512-FrQVMiyy/yQHKiXwpgnphnaThRdPe5qmBh/6MZTzHRIUszONOvA1oGvVskDJhVG4zE/l5lCkdvlJH/aaR//s7A==
-  dependencies:
-    "@parcel/diagnostic" "2.7.0"
-    "@parcel/graph" "2.7.0"
-    "@parcel/hash" "2.7.0"
-    "@parcel/plugin" "2.7.0"
-    "@parcel/utils" "2.7.0"
-    nullthrows "^1.1.1"
-
 "@parcel/cache@2.12.0":
   version "2.12.0"
   resolved "http://verdaccio.ds.io:4873/@parcel%2fcache/-/cache-2.12.0.tgz#b8fd2ea2bc7a2353a9b20344cc191bfb4f8284f3"
@@ -2683,14 +2671,6 @@
     "@parcel/utils" "2.7.0"
     "@parcel/watcher" "^2.0.0"
     "@parcel/workers" "2.7.0"
-
-"@parcel/graph@2.7.0":
-  version "2.7.0"
-  resolved "http://verdaccio.ds.io:4873/@parcel%2fgraph/-/graph-2.7.0.tgz#2ae326c62764aaa53324b89d9c83ec0bc6ad55bf"
-  integrity sha512-Q6E94GS6q45PtsZh+m+gvFRp/N1Qopxhu2sxjcWsGs5iBd6IWn2oYLWOH5iVzEjWuYpW2HkB08lH6J50O63uOA==
-  dependencies:
-    "@parcel/utils" "2.7.0"
-    nullthrows "^1.1.1"
 
 "@parcel/graph@3.2.0":
   version "3.2.0"
