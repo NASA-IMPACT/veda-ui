@@ -15,6 +15,9 @@ import CompareImage from './components/common/blocks/images/compare';
 import Embed from './components/common/blocks/embed';
 import TProvider from './theme-provider';
 
+import { LayoutRootContextProvider } from '$components/common/layout-root/context';
+import { ReactQueryProvider } from '$context/react-query';
+
 export {
   DataCatalog,
   Block,
@@ -27,5 +30,7 @@ export {
   Chart,
   Table,
   Embed,
-  TProvider
+  TProvider,
+  LayoutRootContextProvider,
+  ReactQueryProvider
 };

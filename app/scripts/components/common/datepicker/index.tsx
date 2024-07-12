@@ -37,7 +37,7 @@ export const SimpleDatePicker = ({ disabled, tipContent, onConfirm, id, triggerH
     return (
       <>
         {renderTriggerElement({
-          onClick: toggleCalendar,
+          onClick: () => {},
           disabled,
           tipContent,
           triggerHeadReference,

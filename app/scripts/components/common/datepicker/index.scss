@@ -1,14 +1,15 @@
-@use "usa-date-picker/src/styles";
+@use "usa-date-picker/src/styles" as datepicker;
 
 .usa-date-picker {
     position: relative;
-    width: 0;
-    height: 0;
+    // width: 0;
+    // height: 0;
 
     &__calendar {
       width: 20rem;
       position: absolute;
       top: 100%;
+      left: 0;
       border: 1px solid rgb(230, 230, 230);
     }
 
@@ -22,9 +23,16 @@
         z-index: 9999;
     }
 
-    .usa-input,
-    &__button,
-    &__status {
-        display: none;
+    .usa-input {
+    // &__button,
+    // &__status {
+        // pointer-events: none;
+        // background-color: #f6f7f8;
+        // border: 0;
+        display:none;
+    }
+    &__button {
+      height: 3rem;
+      background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2230%22%20height%3D%2215%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20%3E%3Cpolygon%20points%3D'14.586%2C3.586%208%2C10.172%201.414%2C3.586%200%2C5%208%2C13%2016%2C5'%20%2F%3E%3C%2Fsvg%3E");
     }
 }

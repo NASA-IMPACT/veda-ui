@@ -52,7 +52,6 @@ export const TimelineDatePicker = ({
         >
           <span className='head-reference'>{triggerHeadReference}</span>
           <span>{moment(selectedDay ?? new Date()).format('MMM Do, YYYY')}</span>
-          <CollecticonChevronDownSmall />
         </DatePickerTrigger>
       )}
     />
