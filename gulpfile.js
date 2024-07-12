@@ -1,10 +1,15 @@
-const fs = require('fs-extra');
 const path = require('path');
 const { spawn } = require('child_process');
+const fs = require('fs-extra');
 const gulp = require('gulp');
 const del = require('del');
 const portscanner = require('portscanner');
 const log = require('fancy-log');
+const uswds = require('@uswds/compile');
+
+uswds.settings.version = 3;
+
+uswds.paths.dist.img = './dist/img';
 
 // /////////////////////////////////////////////////////////////////////////////
 // --------------------------- Variables -------------------------------------//
@@ -66,6 +71,10 @@ function copyNetlifyCMS() {
   return gulp.src('admin/**/*').pipe(gulp.dest('dist/admin'));
 }
 
+function copyUswdsImages() {
+  return uswds.copyImages();
+}
+
 // Below are the parcel related tasks. One for the build process and other to
 // start the development server.
 
@@ -125,7 +134,8 @@ module.exports.serve = gulp.series(
   gulp.parallel(
     // Task to copy the files. DO NOT REMOVE
     copyFiles,
-    copyNetlifyCMS
+    copyNetlifyCMS,
+    copyUswdsImages
   ),
   gulp.parallel(watcher, parcelServe)
 );
@@ -133,8 +143,8 @@ module.exports.serve = gulp.series(
 // do not deploy netlify cms to production
 const parallelTasks =
   process.env.NODE_ENV === 'production'
-    ? gulp.parallel(copyFiles)
-    : gulp.parallel(copyFiles, copyNetlifyCMS);
+    ? gulp.parallel(copyFiles, copyUswdsImages)
+    : gulp.parallel(copyFiles, copyNetlifyCMS, copyUswdsImages);
 
 // Task orchestration used during the production process.
 module.exports.default = gulp.series(clean, parallelTasks, parcelBuild);
