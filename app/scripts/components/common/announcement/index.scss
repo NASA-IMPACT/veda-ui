@@ -1,7 +1,9 @@
-@use "usa-site-alert" as siteAlert;
+@use "usa-banner" as siteAlert;
 @use "usa-button" as button;
-@use "uswds-helpers/src/styles" as helpers;
 
+@use "uswds-core/src/styles/functions/units" as units;
+@use "uswds-utilities";
+// @use "uswds-utilities/src/styles/rules";
 // @TODO: How can I use USWDS mixins ?
 .position-relative {
   position: relative;
@@ -13,6 +15,9 @@
   right: 0;
   height: 100%;
   display: flex;
-
 }
 
+.usa-banner__content {
+  padding-top: units.spacing-multiple(1);
+  padding-bottom: units.spacing-multiple(1);
+}

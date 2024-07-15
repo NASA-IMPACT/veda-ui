@@ -6,12 +6,12 @@ import { reveal } from '@devseed-ui/animation';
 
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
+import Announcement from '../announcement';
 import { LayoutRootContext } from './context';
 
 import { useGoogleTagManager } from '$utils/use-google-tag-manager';
 
 import NavWrapper from '$components/common/nav-wrapper';
-import Announcement from '../announcement';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
@@ -36,7 +36,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
 
   useGoogleTagManager();
 
-  const { title, thumbnail, description, hideFooter } =
+  const { title, thumbnail, description, announcement, hideFooter } =
     useContext(LayoutRootContext);
 
   const truncatedTitle =
@@ -50,7 +50,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
-      <Announcement />
+      {announcement && <Announcement contents={announcement.contents} expiryDate={announcement.expiryDate} actionUrl={announcement.actionUrl} />}
       <NavWrapper />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
