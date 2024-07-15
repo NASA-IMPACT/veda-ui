@@ -1,30 +1,52 @@
-@use "usa-date-picker/src/styles";
+@use "uswds-core/src/styles/functions/utilities" as utils;
 
-.usa-date-picker {
-    position: relative;
-    width: 0;
-    height: 0;
+.react-calendar {
+  z-index: 99999;
 
-    &__calendar {
-      width: 20rem;
-      position: absolute;
-      top: 100%;
-      border: 1px solid rgb(230, 230, 230);
-    }
+  * {
+    font-family: var(--base-font-family);
+  }
 
-    &--open-upwards .usa-date-picker__calendar {
-        top: auto;
-        bottom: 100%;
-      }
+  &__navigation {
+    margin-bottom: 0 !important;
+  }
 
-    & *:not(:focus), & *:not(:active) {
-        font-family: themeVal('type.base.family');
-        z-index: 9999;
-    }
+  &__month-view__weekdays__weekday {
+    color: utils.color('gray-90');
+  }
 
-    .usa-input,
-    &__button,
-    &__status {
-        display: none;
-    }
+  &__tile--hasActive {
+    background-color: utils.color('primary-vivid') !important;
+    color: utils.color('base-lightest');
+  }
+
+  &__month-view__days__day--weekend {
+    color: utils.color('gray-90') !important;
+  }
+}
+
+.tippy-box {
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.tippy-box[data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: transparent !important;
+}
+
+.tippy-box[data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: transparent !important;
+}
+
+.tippy-box[data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: transparent !important;
+}
+
+.tippy-box[data-placement^='right'] > .tippy-arrow::before {
+  border-right-color: transparent !important;
+}
+
+.tippy-content {
+  padding: 0 !important;
 }

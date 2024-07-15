@@ -31,6 +31,7 @@ export const VEDA_OVERRIDE_THEME = {
   },
   type: {
     base: {
+      fontFamily: 'Inter, sans-serif',
       leadSize: '1.25rem',
       extrabold: '800',
       // Increments to the type.base.size for each media breakpoint.
@@ -79,6 +80,7 @@ export const GlobalStyles = createGlobalStyle`
 
   :root {
     --base-space-multiplier: ${themeVal('layout.glspMultiplier.xsmall')};
+    --base-font-family: ${themeVal('type.base.fontFamily')};
   }
 
   ${media.smallUp`

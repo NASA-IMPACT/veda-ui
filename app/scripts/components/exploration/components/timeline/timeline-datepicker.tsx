@@ -20,7 +20,7 @@ interface TimelineDatePickerProps {
     id: string;
     triggerHeadReference: string;
     selectedDay: Date | null;
-    onConfirm: (date: string) => void;
+    onConfirm: (date: Date | null) => void;
     disabled: boolean;
     tipContent?: string;
     dataTour?: string;

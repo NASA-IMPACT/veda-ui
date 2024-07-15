@@ -1,15 +1,16 @@
-import React, { ReactNode, useRef, ReactElement } from "react";
-import { DatePicker } from "@trussworks/react-uswds";
-import { format } from 'date-fns';
+import React, { ReactNode, useState } from "react";
+import Calendar from 'react-calendar';
+
+import 'react-calendar/dist/Calendar.css';
 
 import './index.scss';
+import Tippy from "@tippyjs/react";
 
 interface SimpleDatePickerProps {
   disabled: boolean;
   tipContent: ReactNode;
-  onConfirm: (date: string) => void;
+  onConfirm: (date: Date | null) => void;
   triggerHeadReference: string;
-  id: string;
   selectedDay: Date | null;
   renderTriggerElement: (props: {
     onClick: () => void;
@@ -17,41 +18,55 @@ interface SimpleDatePickerProps {
     tipContent: ReactNode;
     triggerHeadReference: string;
     selectedDay: Date | null;
-  }) => ReactElement;
+  }) => ReactNode;
 }
 
-export const SimpleDatePicker = ({ disabled, tipContent, onConfirm, id, triggerHeadReference, selectedDay, renderTriggerElement }: SimpleDatePickerProps) => {
-    const datePickerRef = useRef<HTMLDivElement>(null);
+export const SimpleDatePicker = ({
+  disabled,
+  tipContent,
+  onConfirm,
+  triggerHeadReference,
+  selectedDay,
+  renderTriggerElement
+}: SimpleDatePickerProps) => {
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-    const toggleCalendar = () => {
-      // We have no reference to the internals of the react-uswds DatePicker, so we have to query for it's trigger.
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (datePickerRef.current) {
-        const button = datePickerRef.current.querySelector('button.usa-date-picker__button')! as HTMLButtonElement;
-        button.click();
-      }
-    };
-
-    return (
-      <>
-        {renderTriggerElement({
-          onClick: toggleCalendar,
-          disabled,
-          tipContent,
-          triggerHeadReference,
-          selectedDay,
-        })}
-        <div ref={datePickerRef}>
-          <DatePicker
-            key={selectedDay ? selectedDay.toISOString() : 'default'}
-            aria-describedby='veda-date-hint'
-            aria-labelledby='veda-date-label'
-            id={id}
-            name={id}
-            onChange={onConfirm}
-            defaultValue={format(selectedDay ?? new Date(), 'yyyy-MM-dd')}
-          />
-        </div>
-      </>
-    );
+  const handleDateChange = (date: Date) => {
+    onConfirm(date);
+    setIsCalendarOpen(false);
   };
+
+  const handleTriggerClick = () => {
+    setIsCalendarOpen(!isCalendarOpen);
+  };
+
+  return (
+    <>
+      {renderTriggerElement({
+        onClick: handleTriggerClick,
+        disabled,
+        tipContent,
+        triggerHeadReference,
+        selectedDay,
+      })}
+      {isCalendarOpen && (
+        <Tippy
+          visible={isCalendarOpen}
+          onClickOutside={() => setIsCalendarOpen(false)}
+          interactive={true}
+          placement='bottom'
+          content={
+            <Calendar
+              onChange={handleDateChange}
+              value={selectedDay}
+              className='react-calendar'
+              maxDetail='month'
+            />
+          }
+        >
+          <div />
+        </Tippy>
+      )}
+    </>
+  );
+};
