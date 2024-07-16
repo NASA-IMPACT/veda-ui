@@ -19,8 +19,8 @@ const mockDatasets = [
     status: 'success',
     data: {
       id: 'casa-gfed-co2-flux-hr',
-      stacApiEndpoint: 'https://ghg.center/api/stac',
-      tileApiEndpoint: 'https://ghg.center/api/raster',
+      stacApiEndpoint: 'https://earth.gov/ghgcenter/api/stac',
+      tileApiEndpoint: 'https://earth.gov/ghgcenter/api/raster',
       stacCol: 'casagfed-carbonflux-monthgrid-v3',
       name: 'Heterotrophic Respiration (Rh)',
       type: 'raster',
