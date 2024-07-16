@@ -1,4 +1,5 @@
 import React, { ReactNode, useState } from "react";
+import { Icon } from "@trussworks/react-uswds";
 import Calendar from 'react-calendar';
 import Tippy from "@tippyjs/react";
 
@@ -61,26 +62,10 @@ export const SimpleDatePicker = ({
               value={selectedDay}
               className='react-calendar'
               maxDetail='month'
-              nextLabel={
-                <svg className='usa-icon' aria-hidden='true' focusable='false' role='img'>
-                  <use xlinkHref='./img/sprite.svg#navigate_next' />
-                </svg>
-              }
-              prevLabel={
-                <svg className='usa-icon' aria-hidden='true' focusable='false' role='img'>
-                  <use xlinkHref='./img/sprite.svg#navigate_before' />
-                </svg>
-              }
-              prev2Label={
-                <svg className='usa-icon' aria-hidden='true' focusable='false' role='img'>
-                  <use xlinkHref='./img/sprite.svg#navigate_far_before' />
-                </svg>
-              }
-              next2Label={
-                <svg className='usa-icon' aria-hidden='true' focusable='false' role='img'>
-                  <use xlinkHref='./img/sprite.svg#navigate_far_next' />
-                </svg>
-              }
+              nextLabel={<Icon.NavigateNext />}
+              prevLabel={<Icon.NavigateBefore />}
+              prev2Label={<Icon.NavigateFarBefore />}
+              next2Label={<Icon.NavigateFarNext />}
             />
           }
         >
