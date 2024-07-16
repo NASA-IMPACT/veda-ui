@@ -17,26 +17,23 @@ const DatePickerTrigger = styled(TipButton)`
 `;
 
 interface TimelineDatePickerProps {
-    id: string;
     triggerHeadReference: string;
     selectedDay: Date | null;
     onConfirm: (date: Date | null) => void;
     disabled: boolean;
     tipContent?: string;
-    dataTour?: string;
+    dataTourId?: string;
   }
 
 export const TimelineDatePicker = ({
-    id,
     triggerHeadReference,
     selectedDay,
     onConfirm,
     disabled = false,
     tipContent,
-    dataTour
+    dataTourId
   }: TimelineDatePickerProps) => (
     <SimpleDatePicker
-      id={id}
       triggerHeadReference={triggerHeadReference}
       selectedDay={selectedDay}
       onConfirm={onConfirm}
@@ -46,7 +43,7 @@ export const TimelineDatePicker = ({
         <DatePickerTrigger
           size='small'
           disabled={disabled}
-          data-tour={dataTour}
+          data-tour={dataTourId}
           tipContent={tipContent}
           onClick={onClick}
         >

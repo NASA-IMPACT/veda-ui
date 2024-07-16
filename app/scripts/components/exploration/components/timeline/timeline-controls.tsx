@@ -160,7 +160,6 @@ export function TimelineControls(props: TimelineControlsProps) {
             {selectedInterval ? (
               <DatePickersWrapper>
                 <TimelineDatePicker
-                  id='date-picker-start'
                   triggerHeadReference='FROM:'
                   selectedDay={selectedInterval.start}
                   onConfirm={(d) => {
@@ -172,11 +171,10 @@ export function TimelineControls(props: TimelineControlsProps) {
                   }}
                   disabled={!xScaled}
                   tipContent='Start date for analysis'
-                  dataTour='date-picker-start'
+                  dataTourId='date-picker-start'
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
-                  id='date-picker-a'
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
                   onConfirm={(d) => {
@@ -185,11 +183,10 @@ export function TimelineControls(props: TimelineControlsProps) {
                   }}
                   disabled={!xScaled}
                   tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
-                  dataTour='date-picker-a'
+                  dataTourId='date-picker-a'
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
-                  id='date-picker-end'
                   triggerHeadReference='TO:'
                   selectedDay={selectedInterval.end}
                   onConfirm={(d) => {
@@ -201,14 +198,13 @@ export function TimelineControls(props: TimelineControlsProps) {
                   }}
                   disabled={!xScaled}
                   tipContent='End date for analysis'
-                  dataTour='date-picker-end'
+                  dataTourId='date-picker-end'
                 />
               </DatePickersWrapper>
             ) : (
               <>
                 <DatePickersWrapper>
                 <TimelineDatePicker
-                  id='date-picker-a'
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
                   onConfirm={(d) => {
@@ -217,13 +213,12 @@ export function TimelineControls(props: TimelineControlsProps) {
                   }}
                   disabled={!xScaled}
                   tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
-                  dataTour='date-picker-a'
+                  dataTourId='date-picker-a'
                 />
                 {selectedCompareDay && (
                   <>
                     <VerticalDivider />
                     <TimelineDatePicker
-                      id='date-picker-b'
                       triggerHeadReference='B:'
                       selectedDay={selectedCompareDay}
                       onConfirm={(d) => {
@@ -232,7 +227,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                       }}
                       disabled={!xScaled}
                       tipContent='Date shown on right map'
-                      dataTour='date-picker-b'
+                      dataTourId='date-picker-b'
                     />
                   </>
                 )}

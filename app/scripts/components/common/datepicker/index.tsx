@@ -1,10 +1,9 @@
 import React, { ReactNode, useState } from "react";
 import Calendar from 'react-calendar';
+import Tippy from "@tippyjs/react";
 
 import 'react-calendar/dist/Calendar.css';
-
 import './index.scss';
-import Tippy from "@tippyjs/react";
 
 interface SimpleDatePickerProps {
   disabled: boolean;
@@ -51,6 +50,7 @@ export const SimpleDatePicker = ({
       })}
       {isCalendarOpen && (
         <Tippy
+          className='react-calendar__tippy'
           visible={isCalendarOpen}
           onClickOutside={() => setIsCalendarOpen(false)}
           interactive={true}
@@ -61,6 +61,26 @@ export const SimpleDatePicker = ({
               value={selectedDay}
               className='react-calendar'
               maxDetail='month'
+              nextLabel={
+                <svg className='usa-icon' aria-hidden='true' focusable='false' role='img'>
+                  <use xlinkHref='./img/sprite.svg#navigate_next' />
+                </svg>
+              }
+              prevLabel={
+                <svg className='usa-icon' aria-hidden='true' focusable='false' role='img'>
+                  <use xlinkHref='./img/sprite.svg#navigate_before' />
+                </svg>
+              }
+              prev2Label={
+                <svg className='usa-icon' aria-hidden='true' focusable='false' role='img'>
+                  <use xlinkHref='./img/sprite.svg#navigate_far_before' />
+                </svg>
+              }
+              next2Label={
+                <svg className='usa-icon' aria-hidden='true' focusable='false' role='img'>
+                  <use xlinkHref='./img/sprite.svg#navigate_far_next' />
+                </svg>
+              }
             />
           }
         >
