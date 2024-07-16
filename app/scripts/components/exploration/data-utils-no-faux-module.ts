@@ -16,6 +16,9 @@ import {
 import { utcString2userTzDate } from '$utils/date';
 import { DatasetLayer, VedaDatum, DatasetData } from '$types/veda';
 
+// @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
+// `./date-utils` to be deprecated!!
+
 export const getDatasetLayers = (datasets: VedaDatum<DatasetData>) => Object.values(datasets)
   .flatMap((dataset: VedaDatum<DatasetData>) => {
     return dataset!.data.layers.map(l => ({
