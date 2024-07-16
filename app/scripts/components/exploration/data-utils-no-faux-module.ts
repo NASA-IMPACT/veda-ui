@@ -1,14 +1,20 @@
-import { DatasetLayer, VedaDatum, DatasetData } from '$types/veda';
+import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
+import eachDayOfInterval from 'date-fns/eachDayOfInterval';
+import eachYearOfInterval from 'date-fns/eachYearOfInterval';
 import {
   EnhancedDatasetLayer,
   TimelineDataset,
-  DatasetStatus
+  DatasetStatus,
+  StacDatasetData,
+  TimeDensity,
 } from './types.d.ts';
 import {
   DataMetric,
   DATA_METRICS,
   DEFAULT_DATA_METRICS
 } from './components/datasets/analysis-metrics';
+import { utcString2userTzDate } from '$utils/date';
+import { DatasetLayer, VedaDatum, DatasetData } from '$types/veda';
 
 export const getDatasetLayers = (datasets: VedaDatum<DatasetData>) => Object.values(datasets)
   .flatMap((dataset: VedaDatum<DatasetData>) => {
@@ -20,7 +26,6 @@ export const getDatasetLayers = (datasets: VedaDatum<DatasetData>) => Object.val
       }
     }));
   });
-
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
@@ -81,4 +86,39 @@ export function reconcileDatasets(
       }
     };
   });
+}
+
+export function resolveLayerTemporalExtent(
+  datasetId: string,
+  datasetData: StacDatasetData
+): Date[] {
+  const { domain, isPeriodic, timeDensity } = datasetData;
+
+  if (!domain || domain.length === 0) {
+    throw new Error(`Invalid domain on dataset [${datasetId}]`);
+  }
+
+  if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
+
+  switch (timeDensity) {
+    case TimeDensity.YEAR:
+      return eachYearOfInterval({
+        start: utcString2userTzDate(domain[0]),
+        end: utcString2userTzDate(domain[domain.length-1])
+      });
+    case TimeDensity.MONTH:
+      return eachMonthOfInterval({
+        start: utcString2userTzDate(domain[0]),
+        end: utcString2userTzDate(domain[domain.length-1])
+      });
+    case TimeDensity.DAY:
+      return eachDayOfInterval({
+        start: utcString2userTzDate(domain[0]),
+        end: utcString2userTzDate(domain[domain.length-1])
+      });
+    default:
+      throw new Error(
+        `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
+      );
+  }
 }

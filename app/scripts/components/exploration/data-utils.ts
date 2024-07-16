@@ -1,11 +1,11 @@
 import {
   eachDayOfInterval,
-  eachMonthOfInterval,
   eachYearOfInterval,
   startOfDay,
   startOfYear
 } from 'date-fns';
 import startOfMonth from 'date-fns/startOfMonth';
+import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
 import {
   EnhancedDatasetLayer,
   StacDatasetData,
@@ -22,7 +22,8 @@ import { veda_faux_module_datasets } from '$data-layer/datasets';
 import { DatasetLayer, DatasetData, VedaDatum } from '$types/veda';
 import { utcString2userTzDate } from '$utils/date';
 
-// @TODO: These should be updated to take in datasets as a param instead of using veda_faux_module_datasets directly
+// @TODO: This file should be deprecated and merged with `data-utils-no-faux-module` 
+// to get rid of the faux modules dependency
 
 export const findParentDataset = (layerId: string) => {
   const parentDataset: VedaDatum<DatasetData> | undefined = Object.values(veda_faux_module_datasets).find((dataset: VedaDatum<DatasetData>) =>
