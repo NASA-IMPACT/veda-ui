@@ -15,9 +15,16 @@
     color: utils.color('gray-90');
   }
 
-  &__tile--hasActive {
-    background-color: utils.color('primary-vivid') !important;
-    color: utils.color('base-lightest');
+  &__tile {
+
+    &--hasActive {
+      background-color: utils.color('primary-vivid') !important;
+      color: utils.color('base-lightest');
+    }
+
+    &--now:not(&--hasActive) {
+      background: none !important;
+    }
   }
 
   .usa-icon {
