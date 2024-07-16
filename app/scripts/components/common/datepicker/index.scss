@@ -27,6 +27,7 @@
 
     &--now:not(&--hasActive) {
       background: none !important;
+      color: utils.color('gray-90') !important;
     }
   }
 
