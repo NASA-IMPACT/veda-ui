@@ -5,23 +5,21 @@ import {
 } from '@tanstack/react-query';
 import axios from 'axios';
 import {
+  eachDayOfInterval,
+  eachYearOfInterval,
+} from 'date-fns';
+import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
+import {
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
   DatasetStatus,
   VizDataset
 } from '../types.d.ts';
-// import { resolveLayerTemporalExtent } from '../data-utils';
-
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { SetState } from '$types/aliases';
-
-import {
-  eachDayOfInterval,
-  eachMonthOfInterval,
-  eachYearOfInterval,
-} from 'date-fns';
 import { utcString2userTzDate } from '$utils/date';
+
 
 export function resolveLayerTemporalExtent(
   datasetId: string,
@@ -44,7 +42,7 @@ export function resolveLayerTemporalExtent(
     case TimeDensity.MONTH:
       return eachMonthOfInterval({
         start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain.last)
+        end: utcString2userTzDate(domain[domain.length - 1])
       });
     case TimeDensity.DAY:
       return eachDayOfInterval({

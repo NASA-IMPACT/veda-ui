@@ -3,10 +3,9 @@ import {
   eachMonthOfInterval,
   eachYearOfInterval,
   startOfDay,
-  startOfMonth,
   startOfYear
 } from 'date-fns';
-import { DatasetLayer, DatasetData, VedaDatum } from '$types/veda';
+import startOfMonth from 'date-fns/startOfMonth';
 import {
   EnhancedDatasetLayer,
   StacDatasetData,
@@ -20,7 +19,7 @@ import {
   DEFAULT_DATA_METRICS
 } from './components/datasets/analysis-metrics';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
-
+import { DatasetLayer, DatasetData, VedaDatum } from '$types/veda';
 import { utcString2userTzDate } from '$utils/date';
 
 // @TODO: These should be updated to take in datasets as a param instead of using veda_faux_module_datasets directly

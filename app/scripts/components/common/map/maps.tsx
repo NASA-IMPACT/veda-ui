@@ -15,7 +15,6 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { ProjectionOptions } from '$types/veda';
 import useDimensions from 'react-cool-dimensions';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
@@ -27,6 +26,7 @@ import MapComponent from './map-component';
 import useMaps, { useMapsContext } from './hooks/use-maps';
 import { aoiCustomCursorStyle } from './controls/aoi/custom-aoi-control';
 import { COMPARE_CONTAINER_NAME, CONTROLS_CONTAINER_NAME } from '.';
+import { ProjectionOptions } from '$types/veda';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -210,8 +210,7 @@ interface MapsContextType {
   containerId: string;
 }
 
-// export const MapsContext = createContext<MapsContextType>({
-export const MapsContext = createContext({
+export const MapsContext = createContext<MapsContextType>({
   initialViewState: {},
   setInitialViewState: () => undefined,
   mainId: '',
