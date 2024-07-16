@@ -1,12 +1,4 @@
 @use 'uswds-core' with (
     $utilities-use-important: true,
     $theme-show-notifications: false,
-    $theme-typeface-tokens: (
-    "Inter": (
-        "display-name": "Inter",
-        "cap-height": 364px,
-        "stack": "Inter, sans-serif",
-        ),
-    ),
-    $theme-font-type-sans: "Inter",
 );
