@@ -2952,12 +2952,12 @@
     "@parcel/utils" "2.12.0"
     posthtml "^0.16.4"
 
-"@parcel/packager-ts@2.7.0":
-  version "2.7.0"
-  resolved "http://verdaccio.ds.io:4873/@parcel%2fpackager-ts/-/packager-ts-2.7.0.tgz#631c3918fe475a1f69fc82628bebe99d73bae921"
-  integrity sha512-XT46njOHQCYmubQRbtjQOLT9RbXgxQ8aTxCOeO9jEay6snDnY6k+HdMXHAD6qZNyVgm85HJzjmDFDUeJQt9LKw==
+"@parcel/packager-ts@2.12.0":
+  version "2.12.0"
+  resolved "http://verdaccio.ds.io:4873/@parcel%2fpackager-ts/-/packager-ts-2.12.0.tgz#7422c07ff3a327fdb592f6d707d31bc146590a17"
+  integrity sha512-8wR0BNN2NBD+IIU0tjioK+lRD4p2Qi/fKxDH5ixEW912tRV+Vd4kE8k++U6YQIpSlK4FRnjFod5zYYhNSLuiXg==
   dependencies:
-    "@parcel/plugin" "2.7.0"
+    "@parcel/plugin" "2.12.0"
 
 "@parcel/packager-wasm@2.12.0":
   version "2.12.0"
@@ -3274,16 +3274,16 @@
     posthtml-render "^3.0.0"
     semver "^7.5.2"
 
-"@parcel/transformer-typescript-types@2.7.0":
-  version "2.7.0"
-  resolved "http://verdaccio.ds.io:4873/@parcel%2ftransformer-typescript-types/-/transformer-typescript-types-2.7.0.tgz#a3e35c1f5030ce772d82d6ae18311dfab36d96b4"
-  integrity sha512-7eZFJH+0ZOZoh+4ZUKVnP79LI8h45hGAAqCI1UG8l7ZEf6q9yy8lwF9cREu4dUih70TDUHnHkxoNHfZWOjkDSg==
+"@parcel/transformer-typescript-types@2.12.0":
+  version "2.12.0"
+  resolved "http://verdaccio.ds.io:4873/@parcel%2ftransformer-typescript-types/-/transformer-typescript-types-2.12.0.tgz#63e3fc4d1c5d61e1d3a2d56ff58454cf58b514ca"
+  integrity sha512-uxF4UBMYvbjiV3zHTWMrZX8cFD92VUvD3ArcGi5WEtuVROUm9Sc47o0mOzxKfMFlJu2KOfZVHYlzK9f/UKA2kQ==
   dependencies:
-    "@parcel/diagnostic" "2.7.0"
-    "@parcel/plugin" "2.7.0"
-    "@parcel/source-map" "^2.0.0"
-    "@parcel/ts-utils" "2.7.0"
-    "@parcel/utils" "2.7.0"
+    "@parcel/diagnostic" "2.12.0"
+    "@parcel/plugin" "2.12.0"
+    "@parcel/source-map" "^2.1.1"
+    "@parcel/ts-utils" "2.12.0"
+    "@parcel/utils" "2.12.0"
     nullthrows "^1.1.1"
 
 "@parcel/transformer-webmanifest@2.7.0":
@@ -3296,10 +3296,10 @@
     "@parcel/plugin" "2.7.0"
     "@parcel/utils" "2.7.0"
 
-"@parcel/ts-utils@2.7.0":
-  version "2.7.0"
-  resolved "http://verdaccio.ds.io:4873/@parcel%2fts-utils/-/ts-utils-2.7.0.tgz#b5abe7eb5f977c238e11178bbf9a481481d60d1e"
-  integrity sha512-hxgWu9p9+zo9OvllYy12DRrAEyAGGLQysI6PyNvYvsZSmb7sQg9YQ7spD1QmWIQUC1H6BkyzQsowpK0hvPK1xg==
+"@parcel/ts-utils@2.12.0":
+  version "2.12.0"
+  resolved "http://verdaccio.ds.io:4873/@parcel%2fts-utils/-/ts-utils-2.12.0.tgz#47878a6f3baff77d2fa6f9878fe235c9c5d75da8"
+  integrity sha512-zou+W6dcqnXXUOfN5zGM+ePIWbYOhGp8bVB2jICoNkoKmNAHd4l4zeHl5yQXnbZfynVw88cZVqxtXS8tYebelg==
   dependencies:
     nullthrows "^1.1.1"
 
@@ -11817,6 +11817,10 @@ papaparse@^5.3.2:
   version "5.3.2"
   resolved "http://verdaccio.ds.io:4873/papaparse/-/papaparse-5.3.2.tgz#d1abed498a0ee299f103130a6109720404fbd467"
   integrity sha512-6dNZu0Ki+gyV0eBsFKJhYr+MdQYAzFUGlBMNj3GNrmHxmz1lfRa24CjFObPXtjcetlOv5Ad299MhIK0znp3afw==
+
+"parcel-resolver-alias@link:./parcel-resolver-alias":
+  version "0.0.0"
+  uid ""
 
 parcel-resolver-ignore@^2.1.3:
   version "2.1.3"

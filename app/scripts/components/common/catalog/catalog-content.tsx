@@ -13,15 +13,13 @@ import { FilterActions } from './utils';
 import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
-
 import {
   getTaxonomyByIds,
   generateTaxonomies,
   getTaxonomy,
   TAXONOMY_SOURCE,
-} from '$utils/veda-data-no-faux-module';
+} from '$utils/veda-data/taxonomies';
 import { OptionItem } from '$components/common/form/checkable-filter';
-// import { findParentDataset, getAllDatasetsWithEnhancedLayers } from '$components/exploration/data-utils';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
@@ -39,6 +37,7 @@ export interface CatalogContentProps {
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
+const DEFAULT_SORT_FIELD = 'name';
 
 export const findParentDataset = (layerId: string, datasets) => {
   const parentDataset: DatasetData | undefined = Object.values(datasets).find((dataset: DatasetData) =>
@@ -84,7 +83,7 @@ function CatalogContent({
     prepareDatasets(allDatasetsWithEnhancedLayers, {
     search,
     taxonomies,
-    sortField: DEFAULT_SORT_OPTION,
+    sortField: DEFAULT_SORT_FIELD,
     sortDir: DEFAULT_SORT_OPTION,
     filterLayers: filterLayers ?? false
   }));
@@ -178,7 +177,7 @@ function CatalogContent({
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
       search,
       taxonomies,
-      sortField: DEFAULT_SORT_OPTION,
+      sortField: DEFAULT_SORT_FIELD,
       sortDir: DEFAULT_SORT_OPTION,
       filterLayers: filterLayers ?? false
     });
