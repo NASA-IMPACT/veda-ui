@@ -1,7 +1,8 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useRef, useState } from "react";
 import { Icon } from "@trussworks/react-uswds";
 import Calendar from 'react-calendar';
 import Tippy from "@tippyjs/react";
+import styled from "styled-components";
 
 import 'react-calendar/dist/Calendar.css';
 import './index.scss';
@@ -21,6 +22,10 @@ interface SimpleDatePickerProps {
   }) => ReactNode;
 }
 
+const TriggerWrapper = styled.div`
+  display: flex;
+`;
+
 export const SimpleDatePicker = ({
   disabled,
   tipContent,
@@ -30,6 +35,7 @@ export const SimpleDatePicker = ({
   renderTriggerElement
 }: SimpleDatePickerProps) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const triggerRef = useRef<HTMLDivElement>(null);
 
   const handleDateChange = (date: Date) => {
     onConfirm(date);
@@ -40,20 +46,28 @@ export const SimpleDatePicker = ({
     setIsCalendarOpen(!isCalendarOpen);
   };
 
+  const handleClickOutside = (event) => {
+    if (triggerRef.current && !triggerRef.current.contains(event.target as Node)) {
+      setIsCalendarOpen(false);
+    }
+  };
+
   return (
-    <>
-      {renderTriggerElement({
-        onClick: handleTriggerClick,
-        disabled,
-        tipContent,
-        triggerHeadReference,
-        selectedDay,
-      })}
+    <div>
+      <TriggerWrapper ref={triggerRef}>
+        {renderTriggerElement({
+          onClick: handleTriggerClick,
+          disabled,
+          tipContent,
+          triggerHeadReference,
+          selectedDay,
+        })}
+      </TriggerWrapper>
       {isCalendarOpen && (
         <Tippy
           className='react-calendar__tippy'
           visible={isCalendarOpen}
-          onClickOutside={() => setIsCalendarOpen(false)}
+          onClickOutside={(_, event) => handleClickOutside(event)}
           interactive={true}
           placement='bottom'
           content={
@@ -72,6 +86,6 @@ export const SimpleDatePicker = ({
           <div />
         </Tippy>
       )}
-    </>
+    </div>
   );
 };

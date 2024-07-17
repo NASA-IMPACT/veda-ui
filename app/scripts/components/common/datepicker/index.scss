@@ -22,14 +22,21 @@
 
   &__tile {
 
+    &--active,
     &--hasActive {
       background-color: utils.color('primary-vivid') !important;
       color: utils.color('base-lightest');
     }
 
+    &--now:not(&--active),
     &--now:not(&--hasActive) {
       background: none !important;
       color: utils.color('gray-90') !important;
+
+      &:hover,
+      &:focus {
+        background-color: utils.color('gray-10') !important;
+      }
     }
   }
 
@@ -42,7 +49,7 @@
     min-width: 32px;
   }
 
-  [class*="--weekend"] {
+  [class*="--weekend"]:not(.react-calendar__tile--active) {
     color: utils.color('gray-90') !important;
   }
 
@@ -77,4 +84,3 @@
     }
   }
 }
-
