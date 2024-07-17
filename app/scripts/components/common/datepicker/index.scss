@@ -1,12 +1,14 @@
 // @NOTE: Optimize the import paths to the file
 @use "uswds-core/src/styles/functions/utilities" as utils;
 @use "uswds-core/src/styles/mixins/utilities" as mixins;
+@use "uswds-core/src/styles/mixins/typography" as typography;
 
 .react-calendar {
   z-index: 99999;
   font-family: inherit !important;
 
   * {
+    @include typography.typeset('ui', 3);
     font-family: inherit !important;
   }
 
