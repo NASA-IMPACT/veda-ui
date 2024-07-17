@@ -7,6 +7,7 @@ import { getTimeDensityStartDate } from '../../data-utils';
 
 import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
+import { RasterInteractive } from '$components/common/map/style-generators/raster-with-interactive-marker';
 import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
@@ -107,6 +108,22 @@ export function Layer(props: LayerProps) {
           onStatusChange={onStatusChange}
         />
       );
+      case 'raster-interactive':
+        return (
+          <RasterInteractive
+            id={layerId}
+            stacCol={dataset.data.stacCol}
+            stacApiEndpoint={dataset.data.stacApiEndpoint}
+            tileApiEndpoint={dataset.data.tileApiEndpoint}
+            date={relevantDate}
+            zoomExtent={params.zoomExtent}
+            sourceParams={params.sourceParams}
+            generatorOrder={order}
+            hidden={!isVisible}
+            opacity={opacity}
+            onStatusChange={onStatusChange}
+          />
+        );
     default:
       throw new Error(`No layer generator for type: ${dataset.data.type}`);
   }
