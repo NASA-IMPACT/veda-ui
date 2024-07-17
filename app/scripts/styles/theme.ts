@@ -31,7 +31,7 @@ export const VEDA_OVERRIDE_THEME = {
   },
   type: {
     base: {
-      family: '"Inter", sans-serif',
+      family: '"Open Sans",sans-serif',
       leadSize: '1.25rem',
       extrabold: '800',
       // Increments to the type.base.size for each media breakpoint.
