@@ -1,18 +1,15 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useAtom } from 'jotai';
-import { endOfYear, format, startOfYear } from 'date-fns';
+import { endOfYear, startOfYear } from 'date-fns';
 import { scaleTime, ScaleTime } from 'd3';
 
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import {
-  CollecticonChevronDownSmall
-} from '@devseed-ui/collecticons';
-import { DatePicker } from '@devseed-ui/date-picker';
+import { glsp } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
+import { TimelineDatePicker } from './timeline-datepicker';
 import {
   selectedCompareDateAtom,
   selectedDateAtom,
@@ -21,7 +18,7 @@ import {
 import { DAY_SIZE_MAX } from '$components/exploration/constants';
 import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minus';
 import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
-import { TipButton, TipToolbarIconButton } from '$components/common/tip-button';
+import { TipToolbarIconButton } from '$components/common/tip-button';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 
 const TimelineControlsSelf = styled.div`
@@ -36,6 +33,8 @@ const TimelineControlsSelf = styled.div`
 `;
 
 const ControlsToolbar = styled.div`
+  display: flex;
+  justify-content: space-between;
   padding: ${glsp(1.5, 1, 0.5, 1)};
 
   ${ToolbarGroup /* sc-selector */}:last-child:not(:first-child) {
@@ -43,18 +42,19 @@ const ControlsToolbar = styled.div`
   }
 `;
 
-const DatePickerButton = styled(TipButton)`
-  gap: ${glsp(0.5)};
-
-  .head-reference {
-    font-weight: ${themeVal('type.base.regular')};
-    color: ${themeVal('color.base-400')};
-    font-size: 0.875rem;
-  }
+const DatePickersWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
 `;
 
 const EmptyDateAxisWrapper = styled.div`
   padding-top: ${glsp(3)};
+`;
+
+const ToolbarFullWidth = styled(Toolbar)`
+  width: 100%;
 `;
 
 interface TimelineControlsProps {
@@ -77,7 +77,7 @@ export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom">) {
   const initialScale = useMemo(() => {
     return getInitialScale(width);
   }, [width]);
-  
+
   return (
     <TimelineControlsSelf>
       <EmptyDateAxisWrapper>
@@ -102,149 +102,142 @@ export function TimelineControls(props: TimelineControlsProps) {
 
   return (
     <TimelineControlsSelf>
-      <ControlsToolbar>
-        <Toolbar>
+        <ControlsToolbar>
+        <ToolbarFullWidth>
           <ToolbarGroup>
-            <DatePicker
-              id='date-picker-a'
-              value={{ start: selectedDay, end: selectedDay }}
-              onConfirm={(d) => {
-                setSelectedDay(d.start!);
-              }}
-              renderTriggerElement={(props, label) => (
-                <DatePickerButton
-                  {...props}
-                  size='small'
-                  disabled={!xScaled}
-                  data-tour='date-picker-a'
-                  tipContent={
-                    selectedCompareDay
-                      ? 'Date shown on left map '
-                      : 'Date shown on map'
-                  }
-                >
-                  <span className='head-reference'>A</span>
-                  <span>{label}</span>
-                  <CollecticonChevronDownSmall />
-                </DatePickerButton>
-              )}
-            />
-            <VerticalDivider />
-            {selectedCompareDay ? (
+            {!selectedInterval && (
               <>
-                <DatePicker
-                  id='date-picker-b'
-                  value={{ start: selectedCompareDay, end: selectedCompareDay }}
-                  onConfirm={(d) => {
-                    setSelectedCompareDay(d.start!);
-                  }}
-                  renderTriggerElement={(props, label) => (
-                    <DatePickerButton
-                      {...props}
-                      size='small'
-                      disabled={!xScaled}
-                      tipContent='Date shown on right map'
-                    >
-                      <span className='head-reference'>B</span>
-                      <span>{label}</span>
-                      <CollecticonChevronDownSmall />
-                    </DatePickerButton>
-                  )}
-                />
-                <TipToolbarIconButton
-                  tipContent='Stop comparing dates'
-                  size='small'
-                  onClick={() => {
-                    setSelectedCompareDay(null);
-                  }}
-                >
-                  <CollecticonCalendarMinus
-                    meaningful
-                    title='Stop comparing dates'
-                  />
-                </TipToolbarIconButton>
+                {!selectedCompareDay && (
+                  <TipToolbarIconButton
+                    visuallyDisabled={!!features.length}
+                    tipContent={
+                      features.length
+                        ? 'Compare is not possible when there are areas of interest on the map'
+                        : 'Add date to compare'
+                    }
+                    size='small'
+                    variation='primary-text'
+                    data-tour='compare-date'
+                    onClick={() => {
+                      if (!xScaled || !selectedDay) return;
+                      const [, max] = xScaled.range();
+
+                      const currentX = xScaled(selectedDay);
+                      const nextX = currentX + DAY_SIZE_MAX;
+                      const newDate = xScaled.invert(
+                        nextX > max ? currentX - DAY_SIZE_MAX : nextX
+                      );
+
+                      setSelectedCompareDay(newDate);
+                    }}
+                  >
+                    <CollecticonCalendarPlus
+                      meaningful
+                      title='Add comparison date'
+                    />
+                    Add date to compare
+                  </TipToolbarIconButton>
+                )}
+
+                {selectedCompareDay && (
+                  <TipToolbarIconButton
+                    tipContent='Stop comparing dates'
+                    size='small'
+                    variation='primary-text'
+                    onClick={() => {
+                      setSelectedCompareDay(null);
+                    }}
+                  >
+                    <CollecticonCalendarMinus
+                      meaningful
+                      title='Stop comparing dates'
+                    />
+                    Stop comparing dates
+                  </TipToolbarIconButton>
+                )}
               </>
-            ) : (
-              <TipToolbarIconButton
-                visuallyDisabled={!!features.length}
-                tipContent={
-                  features.length
-                    ? 'Compare is not possible when there are areas of interest on the map'
-                    : 'Add date to compare'
-                }
-                size='small'
-                data-tour='compare-date'
-                onClick={() => {
-                  if (!xScaled || !selectedDay) return;
-                  const [, max] = xScaled.range();
-
-                  // If we select a day using a fixed distance (like 2 days) the
-                  // selected day will be close or far away depending on
-                  // timeline zoom. Select using a pixel distance instead
-                  const currentX = xScaled(selectedDay);
-                  // We use DAY_SIZE_MAX as the pixel distance, so that at max
-                  // zoom, we ensure that we do not select a date with less than
-                  // 1 day of difference.
-                  const nextX = currentX + DAY_SIZE_MAX;
-                  // If date is outside the range, select the previous one.
-                  const newDate = xScaled.invert(
-                    nextX > max ? currentX - DAY_SIZE_MAX : nextX
-                  );
-
-                  setSelectedCompareDay(newDate);
-                }}
-              >
-                <CollecticonCalendarPlus
-                  meaningful
-                  title='Add comparison date'
-                />
-              </TipToolbarIconButton>
             )}
-          </ToolbarGroup>
-          <ToolbarGroup>
             {selectedInterval ? (
-              <>
-                <DatePicker
-                  id='date-picker-lr'
-                  value={selectedInterval}
+              <DatePickersWrapper>
+                <TimelineDatePicker
+                  triggerHeadReference='FROM:'
+                  selectedDay={selectedInterval.start}
                   onConfirm={(d) => {
+                    if (!d) return;
                     setSelectedInterval({
-                      start: d.start!,
-                      end: d.end!
+                      ...selectedInterval,
+                      start: new Date(d)
                     });
                   }}
-                  isClearable={false}
-                  isRange
-                  alignment='right'
-                  renderTriggerElement={(props) => (
-                    <DatePickerButton
-                      {...props}
-                      size='small'
-                      disabled={!xScaled}
-                      data-tour='analysis-toolbar'
-                      tipContent='Date range for analysis'
-                    >
-                      <span className='head-reference'>From</span>
-                      <span>
-                        {format(selectedInterval.start, 'MMM do, yyyy')}
-                      </span>
-                      <span className='head-reference'>to</span>
-                      <span>
-                        {format(selectedInterval.end, 'MMM do, yyyy')}
-                      </span>
-                      <CollecticonChevronDownSmall />
-                    </DatePickerButton>
-                  )}
+                  disabled={!xScaled}
+                  tipContent='Start date for analysis'
+                  dataTourId='date-picker-start'
                 />
                 <VerticalDivider />
-                <TimelineZoomControls onZoom={onZoom} />
-              </>
+                <TimelineDatePicker
+                  triggerHeadReference={selectedCompareDay ? 'A:' : ''}
+                  selectedDay={selectedDay}
+                  onConfirm={(d) => {
+                    if (!d) return;
+                    setSelectedDay(new Date(d));
+                  }}
+                  disabled={!xScaled}
+                  tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
+                  dataTourId='date-picker-a'
+                />
+                <VerticalDivider />
+                <TimelineDatePicker
+                  triggerHeadReference='TO:'
+                  selectedDay={selectedInterval.end}
+                  onConfirm={(d) => {
+                    if (!d) return;
+                    setSelectedInterval({
+                      ...selectedInterval,
+                      end: new Date(d)
+                    });
+                  }}
+                  disabled={!xScaled}
+                  tipContent='End date for analysis'
+                  dataTourId='date-picker-end'
+                />
+              </DatePickersWrapper>
             ) : (
-              <TimelineZoomControls onZoom={onZoom} />
+              <>
+                <DatePickersWrapper>
+                <TimelineDatePicker
+                  triggerHeadReference={selectedCompareDay ? 'A:' : ''}
+                  selectedDay={selectedDay}
+                  onConfirm={(d) => {
+                    if (!d) return;
+                    setSelectedDay(new Date(d));
+                  }}
+                  disabled={!xScaled}
+                  tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
+                  dataTourId='date-picker-a'
+                />
+                {selectedCompareDay && (
+                  <>
+                    <VerticalDivider />
+                    <TimelineDatePicker
+                      triggerHeadReference='B:'
+                      selectedDay={selectedCompareDay}
+                      onConfirm={(d) => {
+                        if (!d) return;
+                        setSelectedCompareDay(new Date(d));
+                      }}
+                      disabled={!xScaled}
+                      tipContent='Date shown on right map'
+                      dataTourId='date-picker-b'
+                    />
+                  </>
+                )}
+                </DatePickersWrapper>
+              </>
             )}
+            <TimelineZoomControls onZoom={onZoom} />
           </ToolbarGroup>
-        </Toolbar>
-      </ControlsToolbar>
+        </ToolbarFullWidth>
+        </ControlsToolbar>
 
       <DateAxis xScaled={xScaled ?? initialScale} width={width} />
     </TimelineControlsSelf>

@@ -1,0 +1,86 @@
+// @NOTE: Optimize the import paths to the file
+@use "uswds-core/src/styles/functions/utilities" as utils;
+@use "uswds-core/src/styles/mixins/utilities" as mixins;
+@use "uswds-core/src/styles/mixins/typography" as typography;
+
+.react-calendar {
+  z-index: 99999;
+  font-family: inherit !important;
+
+  * {
+    @include typography.typeset('ui', 3);
+    font-family: inherit !important;
+  }
+
+  &__navigation {
+    margin-bottom: 0 !important;
+  }
+
+  &__month-view__weekdays__weekday {
+    color: utils.color('gray-90');
+  }
+
+  &__tile {
+
+    &--active,
+    &--hasActive {
+      background-color: utils.color('primary-vivid') !important;
+      color: utils.color('base-lightest');
+    }
+
+    &--now:not(&--active),
+    &--now:not(&--hasActive) {
+      background: none !important;
+      color: utils.color('gray-90') !important;
+
+      &:hover,
+      &:focus {
+        background-color: utils.color('gray-10') !important;
+      }
+    }
+  }
+
+  .usa-icon {
+    width: 32px;
+    height: 20px;
+  }
+
+  &__navigation-button {
+    min-width: 32px;
+  }
+
+  [class*="--weekend"]:not(.react-calendar__tile--active) {
+    color: utils.color('gray-90') !important;
+  }
+
+  abbr[title] {
+    @include mixins.u-text('normal');
+    text-decoration: none;
+  }
+
+  &__tippy {
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+
+    &[data-placement^='top'] > .tippy-arrow::before {
+      border-top-color: transparent !important;
+    }
+
+    &[data-placement^='bottom'] > .tippy-arrow::before {
+      border-bottom-color: transparent !important;
+    }
+
+    &[data-placement^='left'] > .tippy-arrow::before {
+      border-left-color: transparent !important;
+    }
+
+    &[data-placement^='right'] > .tippy-arrow::before {
+      border-right-color: transparent !important;
+    }
+
+    .tippy-content {
+      padding: 0 !important;
+    }
+  }
+}
