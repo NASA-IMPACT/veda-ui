@@ -7,6 +7,7 @@ import { Heading } from '@devseed-ui/typography';
 import { CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
 import { getOverride } from 'veda';
 
+import { Alert } from '@trussworks/react-uswds';
 import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
 
 import FeaturedStories from './featured-stories';
@@ -134,6 +135,21 @@ function RootHome() {
   return (
     <PageMainContent>
       <LayoutProps title='Welcome' />
+      <Alert type='error' headingLevel='h4' slim noIcon>
+
+            Testing stuff
+      </Alert>
+
+      <div className='usa-alert usa-alert--info'>
+  <div className='usa-alert__body bg-primary-darker'>
+    <h4 className='usa-alert__heading'>Informative status</h4>
+    <p className='usa-alert__text'>
+      Lorem ipsum dolor sit amet,
+      <a className='usa-link' href='javascript:void(0);'>consectetur adipiscing</a>
+      elit, sed do eiusmod.
+    </p>
+  </div>
+      </div>
 
       <ComponentOverride with='homeHero'>
         <PageHeroHome
