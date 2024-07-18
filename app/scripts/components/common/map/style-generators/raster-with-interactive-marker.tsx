@@ -525,12 +525,12 @@ export function RasterInteractive(props: RasterTimeseriesProps) {
       const bounds = JSON.parse(properties.bounds);
       const center = JSON.parse(properties.center);
       
-      const returnedV =  onClick(features[0])
-      console.log('returend V')
-      console.log(returnedV)
+      const returnedV =  onClick(features[0]);
+      console.log('returend V');
+      console.log(returnedV);
 
       new Popup().setLngLat(center)
-      .setHTML(`Dyanimc Content Example: ${properties.center}`)
+      .setHTML(`Dyanimc Content Example: ${returnedV}`)
       .addTo(mapInstance?.getMap());
       mapInstance?.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
     },
