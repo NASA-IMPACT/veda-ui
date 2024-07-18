@@ -23,7 +23,9 @@ interface LayerProps {
 
 export function Layer(props: LayerProps) {
   const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
-
+console.log('DATASET');
+console.log(dataset);
+console.log(typeof dataset.data.onClick);
   const { isVisible, opacity } = dataset.settings;
 
   // The date needs to match the dataset's time density.
@@ -122,6 +124,7 @@ export function Layer(props: LayerProps) {
             hidden={!isVisible}
             opacity={opacity}
             onStatusChange={onStatusChange}
+            onClick={dataset.data.onClick}
           />
         );
     default:

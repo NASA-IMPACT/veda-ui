@@ -75,7 +75,8 @@ export function RasterInteractive(props: RasterTimeseriesProps) {
     hidden,
     opacity,
     stacApiEndpoint,
-    tileApiEndpoint
+    tileApiEndpoint,
+    onClick
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -520,10 +521,14 @@ export function RasterInteractive(props: RasterTimeseriesProps) {
   const onPointsClick = useCallback(
     (features) => {
       const properties = features[0].properties;
-      console.log(properties)
+      
       const bounds = JSON.parse(properties.bounds);
       const center = JSON.parse(properties.center);
-      console.log(center)
+      
+      const returnedV =  onClick(features[0])
+      console.log('returend V')
+      console.log(returnedV)
+
       new Popup().setLngLat(center)
       .setHTML(`Dyanimc Content Example: ${properties.center}`)
       .addTo(mapInstance?.getMap());

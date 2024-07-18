@@ -29,6 +29,10 @@ layers:
     name: Nightlights Monthly
     type: raster-interactive
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sodales semper risus, suscipit varius diam facilisis non.'
+    onClick: |
+      ::js (property) => {
+        return `Dynamic content test: ${JSON.stringify(property)}`
+      }
     zoomExtent:
       - 4
       - 16
