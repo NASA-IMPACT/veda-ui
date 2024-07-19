@@ -50,7 +50,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
-      {announcement && <Announcement contents={announcement.contents} expiryDate={announcement.expiryDate} actionUrl={announcement.actionUrl} />}
+      {announcement && <Announcement appTitle={title} contents={announcement.contents} expiryDate={announcement.expiryDate} actionUrl={announcement.actionUrl} />}
       <NavWrapper />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />

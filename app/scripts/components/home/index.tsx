@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '@devseed-ui/button';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
-import { CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
-import { getOverride, getString } from 'veda';
+import { CollecticonChevronRightSmall, CollecticonShrinkToLeft } from '@devseed-ui/collecticons';
+import { getOverride, getBanner, getConfig } from 'veda';
 
 import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
 
@@ -24,7 +24,6 @@ import {
   ComponentOverride,
   ContentOverride
 } from '$components/common/page-overrides';
-import { render } from 'react-dom';
 
 const homeContent = getOverride('homeContent');
 
@@ -132,16 +131,17 @@ const getCoverProps = () => {
 function RootHome() {
   const { show: showFeedbackModal } = useFeedbackModal();
 
-  const renderAnnouncement = getString('bannerUrl')?.other && getString('banner')?.other;
+  const banner = getBanner();
+  const renderBanner = !!banner && banner.text && banner.url && banner.expires;
 
   return (
     <PageMainContent>
       <LayoutProps 
         title='Welcome' 
-        announcement={renderAnnouncement? {
-          actionUrl: getString('bannerUrl').other,
-          contents: getString('banner').other,
-          expiryDate: getString('bannerExpires')
+        announcement={renderBanner? {
+          actionUrl: banner.url,
+          contents: banner.text,
+          expiryDate: banner.expires
         }: null}
       />
 

@@ -11,7 +11,7 @@ function hasExpired(expiryDatetime) {
   return !!(currentDate > expiryDate);
 }
 
-export default function Announcement({expiryDate, actionUrl, contents}) {
+export default function Announcement({appTitle, expiryDate, actionUrl, contents}: {appTitle: string, expiryDate: Date, actionUrl: string, contents: string}) {
   
   const showBanner = (localStorage.getItem(BANNER_KEY) !== actionUrl);
   const [isOpen, setIsOpen] = useState(showBanner && !(hasExpired(expiryDate)));
@@ -23,27 +23,28 @@ export default function Announcement({expiryDate, actionUrl, contents}) {
     );
     setIsOpen(false);
   }
-  console.log(showBanner);
+
   return (
     <div>
       {isOpen && 
         (<div className='position-relative'>
-      <Banner aria-label='Official website of the state department of something specific'>
-        <SmartLink to={actionUrl} target='_blank'>
-          <BannerContent className='padding-top-1 padding-bottom-1' isOpen={true}>
-            <p dangerouslySetInnerHTML={{__html: contents}} />
-          </BannerContent>
-        </SmartLink>
-      </Banner>
-        <div className='position-absolute margin-right-3'>
-            <button 
+          <Banner aria-label={appTitle}>
+            <SmartLink to={actionUrl} target='_blank'>
+              <BannerContent className='padding-top-1 padding-bottom-1' isOpen={true}>
+                <p dangerouslySetInnerHTML={{ __html: contents }} />
+              </BannerContent>
+            </SmartLink>
+          </Banner>
+          <div className='position-absolute margin-right-3'>
+              <button 
               className='usa-button usa-button--secondary usa-button--unstyled'
-            type='button'
-            onClick={onClose}
-            >
-              <Icon.Close />
-            </button>
-        </div>
+              type='button'
+              aria-label="Close Banner"
+              onClick={onClose}
+              >
+                <Icon.Close />
+              </button>
+          </div>
          </div>)}
     </div>
   );
