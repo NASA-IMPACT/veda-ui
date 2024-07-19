@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Banner, BannerContent, Icon } from "@trussworks/react-uswds";
+import { Banner as USWDSBanner, BannerContent, Icon } from "@trussworks/react-uswds";
 import SmartLink from '$components/common/smart-link';
 import './index.scss';
 
@@ -11,7 +11,7 @@ function hasExpired(expiryDatetime) {
   return !!(currentDate > expiryDate);
 }
 
-export default function Announcement({appTitle, expiryDate, actionUrl, contents}: {appTitle: string, expiryDate: Date, actionUrl: string, contents: string}) {
+export default function Banner({appTitle, expiryDate, actionUrl, contents}: {appTitle: string, expiryDate: Date, actionUrl: string, contents: string}) {
   
   const showBanner = (localStorage.getItem(BANNER_KEY) !== actionUrl);
   const [isOpen, setIsOpen] = useState(showBanner && !(hasExpired(expiryDate)));
@@ -28,18 +28,18 @@ export default function Announcement({appTitle, expiryDate, actionUrl, contents}
     <div>
       {isOpen && 
         (<div className='position-relative'>
-          <Banner aria-label={appTitle}>
+          <USWDSBanner aria-label={appTitle}>
             <SmartLink to={actionUrl} target='_blank'>
               <BannerContent className='padding-top-1 padding-bottom-1' isOpen={true}>
                 <p dangerouslySetInnerHTML={{ __html: contents }} />
               </BannerContent>
             </SmartLink>
-          </Banner>
+          </USWDSBanner>
           <div className='position-absolute margin-right-3'>
               <button 
               className='usa-button usa-button--secondary usa-button--unstyled'
               type='button'
-              aria-label="Close Banner"
+              aria-label='Close Banner'
               onClick={onClose}
               >
                 <Icon.Close />

@@ -6,7 +6,7 @@ import { reveal } from '@devseed-ui/animation';
 
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
-import Announcement from '../announcement';
+import Banner from '../banner';
 import { LayoutRootContext } from './context';
 
 import { useGoogleTagManager } from '$utils/use-google-tag-manager';
@@ -50,7 +50,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
-      {announcement && <Announcement appTitle={title} contents={announcement.contents} expiryDate={announcement.expiryDate} actionUrl={announcement.actionUrl} />}
+      {announcement && <Banner appTitle={title} contents={announcement.contents} expiryDate={announcement.expiryDate} actionUrl={announcement.actionUrl} />}
       <NavWrapper />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />

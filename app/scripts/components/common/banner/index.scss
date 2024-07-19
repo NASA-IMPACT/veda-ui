@@ -1,9 +1,6 @@
-@use "usa-banner" as siteAlert;
-@use "usa-button" as button;
-
 @use "uswds-core/src/styles/functions/units" as units;
-@use "uswds-utilities";
-// @use "uswds-utilities/src/styles/rules";
+
+
 // @TODO: How can I use USWDS mixins ?
 .position-relative {
   position: relative;
