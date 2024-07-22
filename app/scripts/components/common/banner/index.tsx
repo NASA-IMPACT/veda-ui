@@ -12,7 +12,7 @@ function hasExpired(expiryDatetime) {
 
 export default function Banner({appTitle, expiryDate, actionUrl, contents}: {appTitle: string, expiryDate: Date, actionUrl: string, contents: string}) {
   
-  const showBanner = (localStorage.getItem(BANNER_KEY) !== actionUrl);
+  const showBanner = true;//(localStorage.getItem(BANNER_KEY) !== actionUrl);
   const [isOpen, setIsOpen] = useState(showBanner && !(hasExpired(expiryDate)));
 
   function onClose () {
