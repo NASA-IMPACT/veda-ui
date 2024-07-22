@@ -1,23 +1,24 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
 import { getLinkProps } from '$utils/url';
 
 interface SmartLinkProps {
   to: string;
+  children?: ReactNode;
 }
 
 /**
  * Switches between a `a` and a `Link` depending on the url.
  */
 export default function SmartLink(props: SmartLinkProps) {
-  const { to, ...rest } = props;
+  const { to, children, ...rest } = props;
   const isExternalLink = /^https?:\/\//.test(to);
   const linkProps = getLinkProps(to);
   return isExternalLink ? (
-      <a {...linkProps} {...rest} />
+      <a {...linkProps} {...rest}> {children} </a>
   ) : (
-    <Link {...linkProps} {...rest} />
+    <Link {...linkProps} {...rest}> {children} </Link>
   );
 }
 

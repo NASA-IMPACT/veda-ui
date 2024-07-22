@@ -251,6 +251,24 @@ export interface LayerInfo {
     id: string;
     name: string;
   }
+    /**
+     * Not exporting this type 
+     * Since we are moving forward to ditching VEDA faux module
+     */
+
+  enum BannerType {
+    info = 'info',
+    warning ='warning'
+  }
+  
+  const infoTypeFlag = BannerType.info;
+  interface BannerData {
+    expiryDate: Date,
+    actionUrl: string,
+    contents: string,
+    type?: BannerType
+  }
+  
 
   /**
    * Named exports: datasets.
@@ -293,6 +311,8 @@ export interface LayerInfo {
   };
 
   export const getBoolean: (variable: string) => boolean;
+
+  export const getBanner: () => BannerData | undefined;
 
   /**
    * List of custom user defined pages.

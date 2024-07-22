@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import { Banner as USWDSBanner, BannerContent, Icon } from "@trussworks/react-uswds";
-import SmartLink from '$components/common/smart-link';
 
 const BANNER_KEY = 'dismissedBannerUrl';
 
@@ -10,9 +9,23 @@ function hasExpired(expiryDatetime) {
   return !!(currentDate > expiryDate);
 }
 
-export default function Banner({appTitle, expiryDate, actionUrl, contents}: {appTitle: string, expiryDate: Date, actionUrl: string, contents: string}) {
+enum BannerType {
+  info = 'info',
+  warning ='warning'
+}
+
+const infoTypeFlag = BannerType.info;
+interface BannerProps {
+  appTitle: string,
+  expiryDate: Date,
+  actionUrl: string,
+  contents: string,
+  type?: BannerType
+}
+
+export default function Banner({appTitle, expiryDate, actionUrl, contents, type = infoTypeFlag }: BannerProps) {
   
-  const showBanner = true;//(localStorage.getItem(BANNER_KEY) !== actionUrl);
+  const showBanner = localStorage.getItem(BANNER_KEY) !== actionUrl;
   const [isOpen, setIsOpen] = useState(showBanner && !(hasExpired(expiryDate)));
 
   function onClose () {
@@ -27,12 +40,12 @@ export default function Banner({appTitle, expiryDate, actionUrl, contents}: {app
     <div>
       {isOpen && 
         (<div className='position-relative'>
-          <USWDSBanner aria-label={appTitle}>
-            <SmartLink to={actionUrl} target='_blank'>
+          <USWDSBanner aria-label={appTitle} className={type !== infoTypeFlag? 'bg-secondary-lighter': ''}>
+            <a href={actionUrl} target='_blank' rel='noreferrer'>
               <BannerContent className='padding-top-1 padding-bottom-1' isOpen={true}>
                 <p dangerouslySetInnerHTML={{ __html: contents }} />
               </BannerContent>
-            </SmartLink>
+            </a>
           </USWDSBanner>
           <div className='position-absolute top-0 right-0 margin-right-3 height-full display-flex'>
               <button 

@@ -36,7 +36,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
 
   useGoogleTagManager();
 
-  const { title, thumbnail, description, announcement, hideFooter } =
+  const { title, thumbnail, description, banner, hideFooter } =
     useContext(LayoutRootContext);
 
   const truncatedTitle =
@@ -50,7 +50,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
-      {announcement && <Banner appTitle={title} contents={announcement.contents} expiryDate={announcement.expiryDate} actionUrl={announcement.actionUrl} />}
+      {banner && <Banner appTitle={title} {...banner} />}
       <NavWrapper />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />

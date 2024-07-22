@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '@devseed-ui/button';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
-import { CollecticonChevronRightSmall, CollecticonShrinkToLeft } from '@devseed-ui/collecticons';
-import { getOverride, getBanner, getConfig } from 'veda';
+import { CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
+import { getOverride, getBanner } from 'veda';
 
 import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
 
@@ -132,17 +132,13 @@ function RootHome() {
   const { show: showFeedbackModal } = useFeedbackModal();
 
   const banner = getBanner();
-  const renderBanner = !!banner && banner.text && banner.url && banner.expires;
+  const renderBanner = !!banner && banner.contents && banner.actionUrl && banner.expiryDate;
 
   return (
     <PageMainContent>
       <LayoutProps 
         title='Welcome' 
-        announcement={renderBanner? {
-          actionUrl: banner.url,
-          contents: banner.text,
-          expiryDate: banner.expires
-        }: null}
+        banner={renderBanner? {...banner}: null}
       />
 
       <ComponentOverride with='homeHero'>
