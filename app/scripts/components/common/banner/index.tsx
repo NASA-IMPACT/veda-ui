@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import { Banner as USWDSBanner, BannerContent, Icon } from "@trussworks/react-uswds";
 import SmartLink from '$components/common/smart-link';
-import './index.scss';
 
 const BANNER_KEY = 'dismissedBannerUrl';
 
@@ -35,7 +34,7 @@ export default function Banner({appTitle, expiryDate, actionUrl, contents}: {app
               </BannerContent>
             </SmartLink>
           </USWDSBanner>
-          <div className='position-absolute margin-right-3'>
+          <div className='position-absolute top-0 right-0 margin-right-3 height-full display-flex'>
               <button 
               className='usa-button usa-button--secondary usa-button--unstyled'
               type='button'
