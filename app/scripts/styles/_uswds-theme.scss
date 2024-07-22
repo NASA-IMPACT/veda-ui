@@ -1,4 +1,14 @@
-@use 'uswds-core' with (
+@use 'uswds-core' as * with (
     $utilities-use-important: true,
-    $theme-show-notifications: false
+    $theme-show-notifications: false,
+    // To add more custom fonts, see 'Adding fonts to USWDS':
+    // https://designsystem.digital.gov/design-tokens/typesetting/font-family/
+    $theme-typeface-tokens: (
+        baseFontFamily: (
+            "display-name": var(--base-font-family),
+            "cap-height": 364px,
+        ),
+    ),
+    $theme-font-type-sans: baseFontFamily,
+    $theme-font-type-serif: baseFontFamily,
 );

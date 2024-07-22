@@ -51,7 +51,7 @@ interface PanelDateWidgetProps {
   children?: ReactNode;
 }
 
-const formatDate = (date: Date | null, view: string) => {
+export const formatDate = (date: Date | null, view: string) => {
   if (!date) return 'Date';
 
   switch (view) {

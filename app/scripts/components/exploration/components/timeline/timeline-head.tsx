@@ -29,6 +29,7 @@ interface TimelineHeadBaseProps {
   selectedDay: Date;
   width: number;
   onDayChange: (date: Date) => void;
+  isStrokeDashed?: boolean;
   children: React.ReactNode;
   'data-tour'?: string;
 }
@@ -38,7 +39,7 @@ type TimelineHeadProps = Omit<TimelineHeadBaseProps, 'children'> & {
 };
 
 export function TimelineHeadBase(props: TimelineHeadBaseProps) {
-  const { domain, xScaled, selectedDay, width, onDayChange, children } = props;
+  const { domain, xScaled, selectedDay, width, onDayChange, isStrokeDashed, children } = props;
 
   const theme = useTheme();
   const rectRef = useRef<SVGRectElement>(null);
@@ -89,7 +90,14 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
         transform={`translate(${SVG_PADDING}, 0)`}
         data-tour={props['data-tour']}
       >
-        <line x1={xPos} x2={xPos} y1={0} y2='100%' stroke={theme.color?.base} />
+        <line
+          x1={xPos}
+          x2={xPos}
+          y1={0}
+          y2='100%'
+          stroke={theme.color?.base}
+          strokeDasharray={isStrokeDashed ? 2 : 'none'}
+        />
         <g transform={`translate(${xPos}, 0)`} ref={rectRef}>
           {children}
         </g>
@@ -126,7 +134,7 @@ export function TimelineHeadIn(props: TimelineHeadProps) {
   const { label, ...rest } = props;
 
   return (
-    <TimelineHeadBase {...rest}>
+    <TimelineHeadBase isStrokeDashed {...rest}>
       <path
         transform='translate(-6, -4)'
         d='M4 6C4 4.89543 4.89543 4 6 4H15.1716C15.702 4 16.2107 4.21071 16.5858 4.58579L22.5858 10.5858C23.3668 11.3668 23.3668 12.6332 22.5858 13.4142L16.5858 19.4142C16.2107 19.7893 15.702 20 15.1716 20H6C4.89543 20 4 19.1046 4 18V6Z'
@@ -149,7 +157,7 @@ export function TimelineHeadOut(props: TimelineHeadProps) {
   const { label, ...rest } = props;
 
   return (
-    <TimelineHeadBase {...rest}>
+    <TimelineHeadBase isStrokeDashed {...rest}>
       <path
         transform='translate(-22, -4)'
         d='M24 6C24 4.89543 23.1046 4 22 4H12.8284C12.298 4 11.7893 4.21071 11.4142 4.58579L5.41421 10.5858C4.63316 11.3668 4.63317 12.6332 5.41421 13.4142L11.4142 19.4142C11.7893 19.7893 12.298 20 12.8284 20H22C23.1046 20 24 19.1046 24 18V6Z'
@@ -176,14 +184,16 @@ export function TimelineHeadOut(props: TimelineHeadProps) {
 
 const TimelineRangeTrackSelf = styled.div`
   position: absolute;
-  top: -0.5rem;
+  top: 0;
   right: ${RIGHT_AXIS_SPACE}px;
   overflow: hidden;
+  background: ${themeVal('color.base-100a')};
+  height: 100%;
 
   .shaded {
     position: relative;
-    background: ${themeVal('color.base-100a')};
-    height: 0.5rem;
+    background: #ffffff;
+    height: 100%;
   }
 `;
 
