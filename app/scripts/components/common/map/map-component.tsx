@@ -1,12 +1,13 @@
+import * as process from 'process';
 import React, { useCallback, ReactElement, useMemo, Ref } from 'react';
 import ReactMapGlMap, { LngLatBoundsLike, MapRef } from 'react-map-gl';
 import { debounce } from 'lodash';
-import { ProjectionOptions } from 'veda';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import useMapStyle from './hooks/use-map-style';
 import { useMapsContext } from './hooks/use-maps';
 import { convertProjectionToMapbox } from './controls/map-options/projections';
+import { ProjectionOptions } from '$types/veda';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 
 const maxMapBounds: LngLatBoundsLike = [
   [-540, -90], // SW

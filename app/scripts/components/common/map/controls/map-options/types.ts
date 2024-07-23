@@ -1,5 +1,5 @@
-import { MbProjectionOptions, ProjectionOptions } from 'veda';
 import { BasemapId, Option } from './basemap';
+import { MbProjectionOptions, ProjectionOptions } from '$types/veda';
 
 export interface MapOptionsProps {
   onProjectionChange: (projection: ProjectionOptions) => void;

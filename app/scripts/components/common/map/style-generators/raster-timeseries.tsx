@@ -1,3 +1,4 @@
+import * as process from 'process';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import qs from 'qs';
 import {

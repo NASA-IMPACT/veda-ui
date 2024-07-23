@@ -1,5 +1,5 @@
+import * as process from 'process';
 import { useMemo } from 'react';
-
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   QueryState,
@@ -10,7 +10,6 @@ import {
 } from '@tanstack/react-query';
 import axios from 'axios';
 import { DatasetLayer, DatasetLayerCompareNormalized, datasets } from 'veda';
-
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
 

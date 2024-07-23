@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { themeVal, media, multiply } from '@devseed-ui/theme-provider';
-import { ProjectionOptions } from 'veda';
+import { ProjectionOptions } from '$types/veda';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlockProse } from '$styles/content-block';

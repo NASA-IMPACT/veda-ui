@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { useMap } from 'react-map-gl';
-import { MapsContext } from '../maps';
+import { MapsContext, MapsContextType } from '../maps';
 import { useStylesContext } from './use-map-style';
 
-export function useMapsContext() {
+export function useMapsContext(): MapsContextType {
   return useContext(MapsContext);
 }
 

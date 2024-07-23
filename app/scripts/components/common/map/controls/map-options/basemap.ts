@@ -1,3 +1,5 @@
+import * as process from 'process';
+
 /**
  * Basemap style requirements (followed by standaard Mapbox Studio styles)
  * - have a layer named "admin-0-boundary-bg". Data will be added below

@@ -1,7 +1,7 @@
+import * as process from 'process';
 import React, { useEffect, useMemo } from 'react';
 import qs from 'qs';
 import { RasterSource, RasterLayer } from 'mapbox-gl';
-
 import useMapStyle from '../hooks/use-map-style';
 import useGeneratorParams from '../hooks/use-generator-params';
 import { BaseGeneratorParams } from '../types';

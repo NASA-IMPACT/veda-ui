@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { StylesContext } from "../styles";
+import { StylesContext, StylesContextType } from "../styles";
 import useCustomMarker from "./use-custom-marker";
 import useMaps from "./use-maps";
 
-export function useStylesContext() {
+export function useStylesContext(): StylesContextType {
   return useContext(StylesContext);
 }
 

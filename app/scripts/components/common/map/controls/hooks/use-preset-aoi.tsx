@@ -1,7 +1,7 @@
+import * as process from 'process';
 import { Feature, Polygon } from 'geojson';
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-
 import { getAoiAppropriateFeatures } from './use-custom-aoi';
 
 const presetFilePath = `${process.env.PUBLIC_URL ?? ''}/public/geo-data/states/`;

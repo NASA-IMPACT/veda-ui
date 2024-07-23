@@ -1,3 +1,4 @@
+import * as process from 'process';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'styled-components';
 import qs from 'qs';
@@ -11,7 +12,6 @@ import {
 import { Feature } from 'geojson';
 import { endOfDay, startOfDay } from 'date-fns';
 import centroid from '@turf/centroid';
-
 import { requestQuickCache, useFitBbox, useLayerInteraction } from './utils';
 import { useMapStyle } from './styles';
 import { useCustomMarker } from './custom-marker';
