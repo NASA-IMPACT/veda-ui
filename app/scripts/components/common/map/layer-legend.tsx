@@ -1,6 +1,5 @@
 import React, { ReactNode, Fragment, useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
 import { AccordionFold, AccordionManager } from '@devseed-ui/accordion';
 import {
   glsp,
@@ -12,7 +11,6 @@ import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { followCursor } from 'tippy.js';
 import { scaleLinear } from 'd3';
-
 import { Tip } from '../tip';
 import {
   formatAsScientificNotation,
@@ -26,6 +24,7 @@ import {
   WidgetItemHeadline,
   WidgetItemHGroup
 } from '$styles/panel';
+import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
 
 interface LayerLegendCommonProps {
   id: string;

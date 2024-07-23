@@ -1,7 +1,6 @@
-import { MbProjectionOptions, ProjectionOptions } from '$types/veda';
-
 import { validateLat, validateLon } from '../../utils';
 import { ProjectionListItem } from './types';
+import { MbProjectionOptions, ProjectionOptions } from '$types/veda';
 
 // The id is internal to the app.
 // The mbId is the projection name to use with mapbox. This is needed because
