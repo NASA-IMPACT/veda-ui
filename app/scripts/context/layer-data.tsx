@@ -9,7 +9,7 @@ import {
   UseQueryResult
 } from '@tanstack/react-query';
 import axios from 'axios';
-import { DatasetLayer, DatasetLayerCompareNormalized, datasets } from 'veda';
+import { DatasetLayer, DatasetLayerCompareNormalized, VedaData, DatasetData } from '$types/veda';
 import { getCompareLayerData } from '$components/common/mapbox/layers/utils';
 import { S_SUCCEEDED } from '$utils/status';
 
@@ -126,7 +126,7 @@ interface NullAsyncDatasetLayer {
   reFetch: null;
 }
 
-const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
+const useLayersInit = (datasets: VedaData<DatasetData>, layers: DatasetLayer[]): AsyncDatasetLayer[] => {
   const queryClient = useQueryClient();
 
   const queries = useMemo(
@@ -134,7 +134,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
       layers.reduce<UseQueryOptions[]>((acc, layer) => {
         let queries = acc.concat(makeQueryObject(layer));
 
-        const compareLayer = getCompareLayerData(layer);
+        const compareLayer = getCompareLayerData(datasets, layer);
         if (compareLayer && compareLayer.stacCol !== layer.stacCol) {
           queries = queries.concat(makeQueryObject(compareLayer));
         }
@@ -193,7 +193,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
       // defined:
       // is if from a dataset?
       // is it a layer defined in-line?
-      const compareLayer = getCompareLayerData(layer);
+      const compareLayer = getCompareLayerData(datasets, layer);
 
       return {
         baseLayer: mergeSTACData(layerProps),
@@ -213,6 +213,7 @@ const useLayersInit = (layers: DatasetLayer[]): AsyncDatasetLayer[] => {
 
 // Context consumers.
 export const useDatasetAsyncLayer = (
+  datasets: VedaData<DatasetData>,
   datasetId?: string,
   layerId?: string
 ): NullAsyncDatasetLayer | AsyncDatasetLayer => {
@@ -229,7 +230,7 @@ export const useDatasetAsyncLayer = (
   }
 
   const layerAsArray = useMemo(() => (layer ? [layer] : []), [layer]);
-  const asyncLayers = useLayersInit(layerAsArray);
+  const asyncLayers = useLayersInit(datasets, layerAsArray);
 
   return useMemo(
     () =>
@@ -242,8 +243,8 @@ export const useDatasetAsyncLayer = (
   );
 };
 
-export const useDatasetAsyncLayers = (datasetId) => {
+export const useDatasetAsyncLayers = (datasets, datasetId) => {
   const dataset = datasets[datasetId ?? ''];
   // Get the layer information from the dataset defined in the configuration.
-  return useLayersInit(dataset?.data.layers ?? []);
+  return useLayersInit(datasets, dataset?.data.layers ?? []);
 };

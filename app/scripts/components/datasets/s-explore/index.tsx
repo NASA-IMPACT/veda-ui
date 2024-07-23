@@ -391,7 +391,7 @@ function DatasetsExplore() {
   // has the following structure:
   // Array of { baseLayer, compareLayer }
   // See the type definitions in the layer-data context for more.
-  const asyncLayers = useDatasetAsyncLayers(dataset.data.id);
+  const asyncLayers = useDatasetAsyncLayers(veda_faux_module_datasets, dataset.data.id);
 
   // Current active layer if is loaded, undefined otherwise.
   const activeLayer = useMemo(() => {

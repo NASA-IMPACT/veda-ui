@@ -202,7 +202,7 @@ export default function MapsContextWrapper(props: MapsContextWrapperProps) {
   );
 }
 
-interface MapsContextType {
+export interface MapsContextType {
   initialViewState: any;
   setInitialViewState: (viewState: any) => void;
   mainId: string;

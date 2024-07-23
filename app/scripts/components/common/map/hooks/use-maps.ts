@@ -7,7 +7,7 @@ export function useMapsContext(): MapsContextType {
   return useContext(MapsContext);
 }
 
-export default function useMaps() {
+export default function useMaps(): Record<string, any | undefined> {
   const { mainId, comparedId } = useMapsContext();
   const { isCompared } = useStylesContext();
   const maps = useMap();

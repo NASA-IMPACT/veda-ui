@@ -328,7 +328,6 @@ export default function CustomAoIControl({
 
   // Start/stop the drawing.
   useEffect(() => {
-    // @ts-expect-error Property '_drawControl' does not exist on type 'Map'.
     // Property was added to access draw control.
     const mbDraw = main?._drawControl;
     if (!mbDraw) return;

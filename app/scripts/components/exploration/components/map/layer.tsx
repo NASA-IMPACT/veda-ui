@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import * as dateFns from 'date-fns';
 
 import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types.d.ts';
-import { getTimeDensityStartDate } from '../../data-utils';
+import { getTimeDensityStartDate } from '../../data-utils-no-faux-module.js';
 
 import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';

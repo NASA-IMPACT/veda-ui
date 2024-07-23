@@ -1,5 +1,3 @@
-import DataCatalog from './components/common/catalog';
-
 import Block from './components/common/blocks';
 import Image from './components/common/blocks/images';
 import MapBlock from './components/common/blocks/block-map';
@@ -17,7 +15,6 @@ import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
 
 export {
-  DataCatalog,
   Block,
   Figure,
   Prose,

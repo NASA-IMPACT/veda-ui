@@ -1,6 +1,9 @@
 import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
 import eachDayOfInterval from 'date-fns/eachDayOfInterval';
 import eachYearOfInterval from 'date-fns/eachYearOfInterval';
+import startOfDay from 'date-fns/startOfDay';
+import startOfMonth from 'date-fns/startOfMonth';
+import startOfYear from 'date-fns/startOfYear';
 import {
   EnhancedDatasetLayer,
   TimelineDataset,
@@ -124,4 +127,15 @@ export function resolveLayerTemporalExtent(
         `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
       );
   }
+}
+
+export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
+  switch (timeDensity) {
+    case TimeDensity.MONTH:
+      return startOfMonth(date);
+    case TimeDensity.YEAR:
+      return startOfYear(date);
+  }
+
+  return startOfDay(date);
 }
