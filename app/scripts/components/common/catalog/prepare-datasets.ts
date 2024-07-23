@@ -80,15 +80,6 @@ export function prepareDatasets (
       return a[sortField]?.localeCompare(b[sortField]);
     });
 
-  if (filterLayers && sortField) {
-    filtered = filtered.map((d) => ({
-      ...d,
-      layers:
-        isDatasetData(d) &&
-        d.layers.sort((a, b) => a[sortField]?.localeCompare(b[sortField]) || 0)
-    })) as DatasetData[];
-  }
-
   if (sortDir === 'desc') {
     /* eslint-disable-next-line fp/no-mutating-methods */
     filtered.reverse();
