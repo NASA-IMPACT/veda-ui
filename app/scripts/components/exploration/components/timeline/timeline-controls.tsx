@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useAtom } from 'jotai';
-import { endOfYear, startOfYear } from 'date-fns';
+import { endOfYear, format, startOfYear } from 'date-fns';
 import { scaleTime, ScaleTime } from 'd3';
 
 import { glsp } from '@devseed-ui/theme-provider';
@@ -36,6 +36,7 @@ const ControlsToolbar = styled.div`
   display: flex;
   justify-content: space-between;
   padding: ${glsp(1.5, 1, 0.5, 1)};
+  position: relative;
 
   ${ToolbarGroup /* sc-selector */}:last-child:not(:first-child) {
     margin-left: auto;
@@ -60,6 +61,7 @@ const ToolbarFullWidth = styled(Toolbar)`
 interface TimelineControlsProps {
   xScaled?: ScaleTime<number, number>;
   width: number;
+  outOfViewHeads?: any[];
   onZoom: (zoom: number) => void;
 }
 
@@ -87,8 +89,160 @@ export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom">) {
   );
 }
 
+const TimelineHeadIndicatorsWrapper = styled.div`
+  position: absolute;
+  bottom: -30px;
+  width: 100%;
+`;
+
+const TimelinePlayead = styled.div`
+  background-color: #8b8b8b;
+  color: white;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  position: relative;
+  width: max-content;
+  font-weight: 500;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: -2px;
+    width: 0;
+    height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-right: 3px solid black;
+  }
+`;
+
+const TimelinePlayheadLeftIndicator = styled(TimelinePlayead)`
+  background-color: black;
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: -6px;
+    width: 0px;
+    height: 0px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 6px solid black;
+  }
+`;
+
+const TimelinePlayheadLeftIndicatorSecondary = styled(TimelinePlayheadLeftIndicator)`
+  background-color: #8b8b8b;
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: -6px;
+    width: 0px;
+    height: 0px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 6px solid #8b8b8b;
+  }
+`;
+
+const TimelinePlayheadRightIndicator = styled(TimelinePlayead)`
+  background-color: black;
+
+  &:after {
+    display: none;
+  }
+
+  &:before {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      right: -6px;
+      width: 0px;
+      height: 0px;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-left: 6px solid black;
+      border-right: none;
+  }
+`;
+
+const TimelinePlayheadRightIndicatorSecondary = styled(TimelinePlayheadRightIndicator)`
+  background-color: #8b8b8b;
+
+  &:after {
+    display: none;
+  }
+
+  &:before {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      right: -6px;
+      width: 0px;
+      height: 0px;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-left: 6px solid #8b8b8b;
+      border-right: none;
+  }
+`;
+
+const TimelineHeadRightIndicators = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 120px;
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 10px;
+`;
+
+const TimelineHeadLeftIndicators = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: -8px;
+  display: flex;
+  gap: 10px;
+`;
+
+const getIndicators = (outOfViewHeads) => {
+  const leftHeads = outOfViewHeads.filter(head => head.outDirection === 'left');
+  const rightHeads = outOfViewHeads.filter(head => head.outDirection === 'right');
+
+  return (
+    <>
+      {leftHeads.length > 0 && (
+        <TimelineHeadLeftIndicators>
+          <TimelinePlayheadLeftIndicator>
+          <span>{format(leftHeads[0].date, 'MMM do, yyyy')}</span>
+          </TimelinePlayheadLeftIndicator>
+          {leftHeads.length > 1 &&
+            <TimelinePlayheadLeftIndicatorSecondary>
+              +{leftHeads.length - 1}
+            </TimelinePlayheadLeftIndicatorSecondary>}
+        </TimelineHeadLeftIndicators>
+      )}
+      {rightHeads.length > 0 && (
+        <TimelineHeadRightIndicators>
+          <TimelinePlayheadRightIndicator>
+            <span>{format(rightHeads[rightHeads.length - 1].date, 'MMM do, yyyy')}</span>
+          </TimelinePlayheadRightIndicator>
+          {rightHeads.length > 1 &&
+           <TimelinePlayheadRightIndicatorSecondary>
+              +{rightHeads.length - 1}
+           </TimelinePlayheadRightIndicatorSecondary>}
+        </TimelineHeadRightIndicators>
+      )}
+    </>
+  );
+};
+
 export function TimelineControls(props: TimelineControlsProps) {
-  const { xScaled, width, onZoom } = props;
+  const { xScaled, width, outOfViewHeads, onZoom } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
@@ -100,9 +254,13 @@ export function TimelineControls(props: TimelineControlsProps) {
   // Scale to use when there are no datasets with data (loading or error)
   const initialScale = useMemo(() => getInitialScale(width) ,[width]);
 
+  console.log(outOfViewHeads);
   return (
     <TimelineControlsSelf>
         <ControlsToolbar>
+        <TimelineHeadIndicatorsWrapper>
+          {getIndicators(outOfViewHeads)}
+        </TimelineHeadIndicatorsWrapper>
         <ToolbarFullWidth>
           <ToolbarGroup>
             {!selectedInterval && (

@@ -317,6 +317,7 @@ export default function Timeline(props: TimelineProps) {
 
         return {
           name: head.name,
+          date: head.date ?? new Date(),
           isInView: false,
           outDirection
         };
@@ -664,6 +665,7 @@ export default function Timeline(props: TimelineProps) {
           xScaled={xScaled}
           width={width}
           onZoom={onControlsZoom}
+          outOfViewHeads={outOfViewHeads}
         />
       </TimelineHeader>
       <TimelineContent>
@@ -698,6 +700,7 @@ export default function Timeline(props: TimelineProps) {
                   ref={headInRef}
                   domain={dataDomain}
                   xScaled={xScaled}
+                  label='FROM'
                   onDayChange={(d) => {
                     setSelectedInterval((interval) => {
                       const prevDay = sub(interval!.end, { days: 1 });
@@ -714,6 +717,7 @@ export default function Timeline(props: TimelineProps) {
                   ref={headOutRef}
                   domain={dataDomain}
                   xScaled={xScaled}
+                  label='TO'
                   onDayChange={(d) => {
                     setSelectedInterval((interval) => {
                       const nextDay = add(interval!.start, { days: 1 });
