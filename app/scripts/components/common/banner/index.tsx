@@ -41,7 +41,7 @@ export default function Banner({appTitle, expires, url, text, type = infoTypeFla
       {isOpen && 
         (<div className='position-relative'>
           <USWDSBanner aria-label={appTitle} className={type !== infoTypeFlag? 'bg-secondary-lighter': ''}>
-            <a href={actionUrl} target='_blank' rel='noreferrer'>
+            <a href={url} target='_blank' rel='noreferrer'>
               <BannerContent className='padding-top-1 padding-bottom-1' isOpen={true}>
                 <p dangerouslySetInnerHTML={{ __html: text }} />
               </BannerContent>
