@@ -123,7 +123,7 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
 
     const dragger = drag()
       .on('start', function dragstarted() {
-        // document.body.style.cursor = 'grabbing';
+        document.body.style.cursor = 'grabbing';
         select(this).attr('cursor', 'grabbing');
       })
       .on('drag', function dragged(event) {
@@ -148,6 +148,7 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
       })
       .on('end', function dragended() {
         select(this).attr('cursor', 'grab');
+        document.body.style.cursor = 'default';
       });
 
     select(rectRef.current).call(dragger);
@@ -158,8 +159,8 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
   if (xPos < 0 || xPos > width) return null;
 
   return (
-    <TimelineHeadWrapper style={{width: width + SVG_PADDING * 2, pointerEvents: 'none', zIndex: zIndex as number}}>
-      <div data-tour={props['data-tour']} ref={rectRef} style={{ transform: `translate(${xPos - xPosOffset}px, -6px)`, position: 'absolute', pointerEvents: 'all' }}>
+    <TimelineHeadWrapper style={{width: width + SVG_PADDING * 2, zIndex: zIndex as number}}>
+      <div data-tour={props['data-tour']} ref={rectRef} style={{ transform: `translate(${xPos - xPosOffset}px, -6px)`, position: 'absolute' }}>
         {children}
       </div>
       <svg style={{width: width + SVG_PADDING * 2, height: '100%'}}>
