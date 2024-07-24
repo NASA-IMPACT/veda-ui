@@ -33,6 +33,24 @@ const TimelineHeadWrapper = styled.div`
   z-index: ${themeVal('zIndices.overlay' as any)};
 `;
 
+const TimelinePlayheadWrapper = styled.div`
+  position: absolute;
+
+  &:hover {
+    cursor: grab;
+  }
+
+  &.playhead-grab * {
+      cursor: grabbing;
+      background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY} !important;
+
+      &::after {
+        border-top: 8px solid ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
+      }
+    }
+  }
+`;
+
 const TimelinePlayheadBase = styled.div`
   background-color: ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   color: ${TIMELINE_PLAYHEAD_COLOR_TEXT};
@@ -132,6 +150,7 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
     const dragger = drag()
       .on('start', function dragstarted() {
         select(this).attr('cursor', 'grabbing');
+        select(this).classed('playhead-grab', true);
       })
       .on('drag', function dragged(event) {
         if (event.x < 0 || event.x > width) {
@@ -155,6 +174,7 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
       })
       .on('end', function dragended() {
         select(this).attr('cursor', 'grab');
+        select(this).classed('playhead-grab', false);
       });
 
     select(rectRef.current).call(dragger);
@@ -166,9 +186,9 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
 
   return (
     <TimelineHeadWrapper style={{width: width + SVG_PADDING * 2, zIndex: zIndex as number}}>
-      <div data-tour={props['data-tour']} ref={rectRef} style={{ transform: `translate(${xPos - xPosOffset}px, -12px)`, position: 'absolute' }}>
+      <TimelinePlayheadWrapper data-tour={props['data-tour']} ref={rectRef} style={{ transform: `translate(${xPos - xPosOffset}px, -12px)`}}>
         {children}
-      </div>
+      </TimelinePlayheadWrapper>
       <svg style={{width: width + SVG_PADDING * 2, height: '100%'}}>
         <g
           transform={`translate(${SVG_PADDING}, 0)`}
