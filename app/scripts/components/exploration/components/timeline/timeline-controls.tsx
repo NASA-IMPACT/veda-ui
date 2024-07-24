@@ -230,10 +230,10 @@ export function TimelineControls(props: TimelineControlsProps) {
   return (
     <TimelineControlsSelf>
         <ControlsToolbar>
-        {outOfViewHeads?.length &&
-          <TimelineHeadIndicatorsWrapper>
-            {getIndicators(outOfViewHeads)}
-          </TimelineHeadIndicatorsWrapper>}
+        {outOfViewHeads && outOfViewHeads.length > 0 &&
+        <TimelineHeadIndicatorsWrapper>
+          {getIndicators(outOfViewHeads)}
+        </TimelineHeadIndicatorsWrapper>}
         <ToolbarFullWidth>
           <ToolbarGroup>
             {!selectedInterval && (
