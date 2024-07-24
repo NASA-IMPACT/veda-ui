@@ -173,29 +173,37 @@ const TimelineHeadLeftIndicators = styled.div`
 `;
 
 const getIndicators = (outOfViewHeads: TimelineHead[]) => {
+  // Filter the out-of-view heads to get those that are out to the left
   const leftHeads = outOfViewHeads.filter(head => head.outDirection === 'left');
+  // Filter the out-of-view heads to get those that are out to the right
   const rightHeads = outOfViewHeads.filter(head => head.outDirection === 'right');
 
   const formatDate = (date: Date | null) => (date ? format(date, 'MMM do, yyyy') : 'Invalid date');
 
   return (
     <>
+      {/* If there are any heads out to the left, render the left indicators */}
       {leftHeads.length > 0 && (
         <TimelineHeadLeftIndicators>
+          {/* Primary left indicator displaying the date of the first out-of-view head on the left */}
           <TimelinePlayheadLeftIndicator>
             <span>{formatDate(leftHeads[0].date)}</span>
           </TimelinePlayheadLeftIndicator>
+          {/* Secondary left indicator(s) displaying the count of additional out-of-view heads on the left */}
           {leftHeads.length > 1 &&
             <TimelinePlayheadLeftIndicatorSecondary>
               +{leftHeads.length - 1}
             </TimelinePlayheadLeftIndicatorSecondary>}
         </TimelineHeadLeftIndicators>
       )}
+      {/* If there are any heads out to the right, render the right indicators */}
       {rightHeads.length > 0 && (
         <TimelineHeadRightIndicators>
+          {/* Primary right indicator displaying the date of the last out-of-view head on the right */}
           <TimelinePlayheadRightIndicator>
             <span>{formatDate(rightHeads[rightHeads.length - 1].date)}</span>
           </TimelinePlayheadRightIndicator>
+          {/* Secondary right indicator displaying the count of additional out-of-view heads on the right */}
           {rightHeads.length > 1 &&
             <TimelinePlayheadRightIndicatorSecondary>
               +{rightHeads.length - 1}
@@ -222,9 +230,10 @@ export function TimelineControls(props: TimelineControlsProps) {
   return (
     <TimelineControlsSelf>
         <ControlsToolbar>
-        <TimelineHeadIndicatorsWrapper>
-          {getIndicators(outOfViewHeads)}
-        </TimelineHeadIndicatorsWrapper>
+        {outOfViewHeads?.length &&
+          <TimelineHeadIndicatorsWrapper>
+            {getIndicators(outOfViewHeads)}
+          </TimelineHeadIndicatorsWrapper>}
         <ToolbarFullWidth>
           <ToolbarGroup>
             {!selectedInterval && (
