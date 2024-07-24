@@ -67,21 +67,21 @@ const TimelinePlayeadRight = styled(TimelinePlayeadBase)`
 `;
 
 const TimelinePlayeadWithAfter = styled(TimelinePlayeadBase)`
-  min-width: 100px;
+  min-width: 110px;
   text-align: center;
-  left: -35px;
+  left: -40px;
 
   &::after {
     content: '';
     position: absolute;
     bottom: -3px;
     left: 50%;
-    transform: translateX(-40%);
+    transform: translateX(-44%);
     width: 0;
     height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 3px solid black;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid black;
   }
 `;
 

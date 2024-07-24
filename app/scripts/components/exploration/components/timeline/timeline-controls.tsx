@@ -124,13 +124,13 @@ const TimelinePlayheadLeftIndicator = styled(TimelinePlayead)`
   &:after {
     content: '';
     position: absolute;
-    bottom: 2px;
+    bottom: 1px;
     left: -6px;
     width: 0px;
     height: 0px;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 6px solid black;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-right: 7px solid black;
   }
 `;
 
@@ -140,13 +140,13 @@ const TimelinePlayheadLeftIndicatorSecondary = styled(TimelinePlayheadLeftIndica
   &:after {
     content: '';
     position: absolute;
-    bottom: 2px;
+    bottom: 1px;
     left: -6px;
     width: 0px;
     height: 0px;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 6px solid #8b8b8b;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-right: 7px solid #8b8b8b;
   }
 `;
 
@@ -160,13 +160,13 @@ const TimelinePlayheadRightIndicator = styled(TimelinePlayead)`
   &:before {
       content: '';
       position: absolute;
-      bottom: 2px;
+      bottom: 1px;
       right: -6px;
       width: 0px;
       height: 0px;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-      border-left: 6px solid black;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+      border-left: 7px solid black;
       border-right: none;
   }
 `;
@@ -181,13 +181,13 @@ const TimelinePlayheadRightIndicatorSecondary = styled(TimelinePlayheadRightIndi
   &:before {
       content: '';
       position: absolute;
-      bottom: 2px;
+      bottom: 1px;
       right: -6px;
       width: 0px;
       height: 0px;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-      border-left: 6px solid #8b8b8b;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+      border-left: 7px solid #8b8b8b;
       border-right: none;
   }
 `;
@@ -254,7 +254,6 @@ export function TimelineControls(props: TimelineControlsProps) {
   // Scale to use when there are no datasets with data (loading or error)
   const initialScale = useMemo(() => getInitialScale(width) ,[width]);
 
-  console.log(outOfViewHeads);
   return (
     <TimelineControlsSelf>
         <ControlsToolbar>
