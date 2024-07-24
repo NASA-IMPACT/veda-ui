@@ -10,6 +10,7 @@ import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
 import { TimelineDatePicker } from './timeline-datepicker';
+import { OutOfViewHead } from './timeline';
 import {
   selectedCompareDateAtom,
   selectedDateAtom,
@@ -61,7 +62,7 @@ const ToolbarFullWidth = styled(Toolbar)`
 interface TimelineControlsProps {
   xScaled?: ScaleTime<number, number>;
   width: number;
-  outOfViewHeads?: any[];
+  outOfViewHeads?: OutOfViewHead[];
   onZoom: (zoom: number) => void;
 }
 

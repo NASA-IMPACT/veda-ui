@@ -185,6 +185,13 @@ const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
   };
 };
 
+export interface OutOfViewHead {
+  name: 'Point' | 'PointCompare' | 'In' | 'Out';
+  date: Date;
+  isInView: boolean;
+  outDirection: 'left' | 'right' | undefined;
+}
+
 export default function Timeline(props: TimelineProps) {
   const {
     datasets,
@@ -209,7 +216,7 @@ export default function Timeline(props: TimelineProps) {
   const headInRef = useRef(null);
   const headOutRef = useRef(null);
 
-  const [outOfViewHeads, setOutOfViewHeads] = useState([]);
+  const [outOfViewHeads, setOutOfViewHeads] = useState<OutOfViewHead[]>([]);
 
   const dataDomain = useTimelineDatasetsDomain();
 
@@ -284,12 +291,15 @@ export default function Timeline(props: TimelineProps) {
   useEffect(() => {
     if (!xScaled) return;
 
+    // Get the start and end of the current scaled domain (visible timeline)
     const [extentStart, extentEnd] = xScaled.domain();
 
-    let heads = [
+    // Initialize the heads array with the selected day point
+    let heads: { name: 'Point' | 'PointCompare' | 'In' | 'Out'; ref: React.MutableRefObject<any>; date: Date | null }[] = [
       { name: 'Point', ref: headPointRef, date: selectedDay }
     ];
 
+    // If there is a selected compare day, add it to the heads array
     if (selectedCompareDay) {
       heads = [
         ...heads,
@@ -297,6 +307,7 @@ export default function Timeline(props: TimelineProps) {
       ];
     }
 
+    // If there is a selected interval, add its start and end to the heads array
     if (selectedInterval) {
       heads = [
         ...heads,
@@ -305,28 +316,30 @@ export default function Timeline(props: TimelineProps) {
       ];
     }
 
-    const outOfViewHeads = heads
+    // Filter heads that are not currently in view and map them to the OutOfViewHead type
+    const outOfViewHeads: OutOfViewHead[] = heads
       .filter(head => !head.ref.current)
       .map(head => {
-        let outDirection;
-        if (head.date < extentStart) {
+        let outDirection: 'left' | 'right' | undefined;
+        if (head.date && head.date < extentStart) {
           outDirection = 'left';
-        } else if (head.date > extentEnd) {
+        } else if (head.date && head.date > extentEnd) {
           outDirection = 'right';
         }
 
         return {
           name: head.name,
+          // Default to current date if date is null (e.g. could occur on initial component mount)
           date: head.date ?? new Date(),
           isInView: false,
           outDirection
         };
       });
 
-    console.log(outOfViewHeads);
     setOutOfViewHeads(outOfViewHeads);
 
   }, [selectedDay, selectedInterval, selectedCompareDay, xScaled, zoomBehavior]);
+
 
   useEffect(() => {
     if (!interactionRef.current) return;
