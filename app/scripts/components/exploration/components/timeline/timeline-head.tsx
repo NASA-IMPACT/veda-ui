@@ -30,6 +30,7 @@ interface TimelineHeadBaseProps {
   children: React.ReactNode;
   'data-tour'?: string;
   xPosOffset?: number;
+  zIndex?: number;
 }
 
 const TimelinePlayheadBase = styled.div`
@@ -112,7 +113,7 @@ type TimelineHeadProps = Omit<TimelineHeadBaseProps, 'children'> & {
 };
 
 export function TimelineHeadBase(props: TimelineHeadBaseProps) {
-  const { domain, xScaled, selectedDay, width, onDayChange, xPosOffset = 0, isStrokeDashed, children } = props;
+  const { domain, xScaled, selectedDay, width, onDayChange, xPosOffset = 0, zIndex = themeVal('zIndices.overlay'), isStrokeDashed, children } = props;
 
   const theme = useTheme();
   const rectRef = useRef<HTMLDivElement>(null);
@@ -157,7 +158,7 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
   if (xPos < 0 || xPos > width) return null;
 
   return (
-    <TimelineHeadWrapper style={{width: width + SVG_PADDING * 2, pointerEvents: 'none'}}>
+    <TimelineHeadWrapper style={{width: width + SVG_PADDING * 2, pointerEvents: 'none', zIndex: zIndex as number}}>
       <div data-tour={props['data-tour']} ref={rectRef} style={{ transform: `translate(${xPos - xPosOffset}px, -6px)`, position: 'absolute', pointerEvents: 'all' }}>
         {children}
       </div>
@@ -184,7 +185,7 @@ export const TimelineHeadPoint = forwardRef<HTMLDivElement, TimelineHeadProps>((
   const { label, selectedDay, ...rest } = props;
 
   return (
-    <TimelineHeadBase selectedDay={selectedDay} xPosOffset={40} {...rest}>
+    <TimelineHeadBase selectedDay={selectedDay} xPosOffset={40} zIndex={1301} {...rest}>
       <TimelinePlayheadWithAfter ref={ref}>
         <TimelinePlayheadContent>
           <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
