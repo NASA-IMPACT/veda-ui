@@ -41,12 +41,11 @@ const TimelinePlayheadWrapper = styled.div`
   }
 
   &.playhead-grab * {
-      cursor: grabbing;
-      background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY} !important;
+    cursor: grabbing;
+    background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY} !important;
 
-      &::after {
-        border-top: 8px solid ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
-      }
+    &::after {
+      border-top: 8px solid ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
     }
   }
 `;
