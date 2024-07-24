@@ -4,22 +4,13 @@ import { drag, ScaleTime, select } from 'd3';
 import { clamp, format, startOfDay } from 'date-fns';
 import { themeVal } from '@devseed-ui/theme-provider';
 
+import { TIMELINE_PLAYHEAD_COLOR_LABEL, TIMELINE_PLAYHEAD_COLOR_PRIMARY, TIMELINE_PLAYHEAD_COLOR_SECONDARY, TIMELINE_PLAYHEAD_COLOR_TEXT } from './timeline-controls';
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
 import { DateRange } from '$components/exploration/types.d.ts';
 
 // Needs padding so that the timeline head is fully visible.
 // This value gets added to the width.
 const SVG_PADDING = 16;
-
-const TimelineHeadWrapper = styled.div`
-  position: absolute;
-  right: ${RIGHT_AXIS_SPACE - SVG_PADDING}px;
-  top: -1rem;
-  height: calc(100% + 1rem);
-  pointer-events: none;
-  z-index: ${themeVal('zIndices.overlay' as any)};
-`;
-
 interface TimelineHeadBaseProps {
   domain: [Date, Date];
   xScaled: ScaleTime<number, number>;
@@ -33,24 +24,30 @@ interface TimelineHeadBaseProps {
   zIndex?: number;
 }
 
+const TimelineHeadWrapper = styled.div`
+  position: absolute;
+  right: ${RIGHT_AXIS_SPACE - SVG_PADDING}px;
+  top: -1rem;
+  height: calc(100% + 1rem);
+  pointer-events: none;
+  z-index: ${themeVal('zIndices.overlay' as any)};
+`;
+
 const TimelinePlayheadBase = styled.div`
-  background-color: #333333;
-  color: #ffffff;
-  padding: 0 4px;
+  background-color: ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+  color: ${TIMELINE_PLAYHEAD_COLOR_TEXT};
+  padding: 3px;
   border-radius: 4px;
   font-size: 0.75rem;
   position: relative;
 `;
 
 const TimelinePlayheadLeft = styled(TimelinePlayheadBase)`
-  background-color: #8b8b8b;
-  color: #ffffff;
-  padding: 0 4px;
+  background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 0;
-  font-size: 0.75rem;
   position: absolute;
   transform: translateX(-100%);
   white-space: nowrap;
@@ -60,15 +57,11 @@ const TimelinePlayheadLeft = styled(TimelinePlayheadBase)`
 `;
 
 const TimelinePlayheadRight = styled(TimelinePlayheadBase)`
-  background-color: #8b8b8b;
-  color: #ffffff;
-  padding: 0 4px;
+  background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 0;
-  font-size: 0.75rem;
-  position: relative;
   right: 0;
   min-width: 115px;
   text-align: center;
@@ -89,12 +82,12 @@ const TimelinePlayheadWithAfter = styled(TimelinePlayheadBase)`
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-top: 8px solid #333333;
+    border-top: 8px solid ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   }
 `;
 
 const TimelinePlayheadLabel = styled.span`
-  color: #cccccc;
+  color: ${TIMELINE_PLAYHEAD_COLOR_LABEL};
   margin-right: 5px;
 `;
 
@@ -106,6 +99,21 @@ const TimelinePlayheadContent = styled.span`
   white-space: nowrap;
   position: relative;
   z-index: 1;
+`;
+
+const TimelineRangeTrackSelf = styled.div`
+  position: absolute;
+  top: 0;
+  right: ${RIGHT_AXIS_SPACE}px;
+  overflow: hidden;
+  background: ${themeVal('color.base-100a')};
+  height: 100%;
+
+  .shaded {
+    position: relative;
+    background: ${TIMELINE_PLAYHEAD_COLOR_TEXT};
+    height: 100%;
+  }
 `;
 
 type TimelineHeadProps = Omit<TimelineHeadBaseProps, 'children'> & {
@@ -123,7 +131,6 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
 
     const dragger = drag()
       .on('start', function dragstarted() {
-        document.body.style.cursor = 'grabbing';
         select(this).attr('cursor', 'grabbing');
       })
       .on('drag', function dragged(event) {
@@ -148,7 +155,6 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
       })
       .on('end', function dragended() {
         select(this).attr('cursor', 'grab');
-        document.body.style.cursor = 'default';
       });
 
     select(rectRef.current).call(dragger);
@@ -160,7 +166,7 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
 
   return (
     <TimelineHeadWrapper style={{width: width + SVG_PADDING * 2, zIndex: zIndex as number}}>
-      <div data-tour={props['data-tour']} ref={rectRef} style={{ transform: `translate(${xPos - xPosOffset}px, -6px)`, position: 'absolute' }}>
+      <div data-tour={props['data-tour']} ref={rectRef} style={{ transform: `translate(${xPos - xPosOffset}px, -12px)`, position: 'absolute' }}>
         {children}
       </div>
       <svg style={{width: width + SVG_PADDING * 2, height: '100%'}}>
@@ -232,21 +238,6 @@ export const TimelineHeadOut = forwardRef<HTMLDivElement, TimelineHeadProps>((pr
 });
 
 TimelineHeadOut.displayName = 'TimelineHeadOut';
-
-const TimelineRangeTrackSelf = styled.div`
-  position: absolute;
-  top: 0;
-  right: ${RIGHT_AXIS_SPACE}px;
-  overflow: hidden;
-  background: ${themeVal('color.base-100a')};
-  height: 100%;
-
-  .shaded {
-    position: relative;
-    background: #ffffff;
-    height: 100%;
-  }
-`;
 
 interface TimelineRangeTrackProps {
   range: DateRange;

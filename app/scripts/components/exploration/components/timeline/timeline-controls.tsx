@@ -90,106 +90,67 @@ export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom">) {
   );
 }
 
+export const TIMELINE_PLAYHEAD_COLOR_PRIMARY = '#8b8b8b';
+export const TIMELINE_PLAYHEAD_COLOR_SECONDARY = '#333333';
+export const TIMELINE_PLAYHEAD_COLOR_TEXT = '#ffffff';
+export const TIMELINE_PLAYHEAD_COLOR_LABEL = '#cccccc';
+
 const TimelineHeadIndicatorsWrapper = styled.div`
   position: absolute;
   bottom: -30px;
   width: 100%;
 `;
 
-const TimelinePlayead = styled.div`
-  background-color: #8b8b8b;
-  color: #ffffff;
-  padding: 0 4px;
+const TimelinePlayheadBase = styled.div`
+  background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
+  color: ${TIMELINE_PLAYHEAD_COLOR_TEXT};
+  padding: 3px;
   border-radius: 4px;
   font-size: 0.75rem;
   position: relative;
   width: max-content;
   font-weight: 500;
 
-  &::after {
+  &::after, &::before {
     content: '';
     position: absolute;
-    bottom: 5px;
-    left: -2px;
+    bottom: 3px;
     width: 0;
     height: 0;
-    border-top: 4px solid transparent;
-    border-bottom: 4px solid transparent;
-    border-right: 3px solid #333333;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
   }
 `;
 
-const TimelinePlayheadLeftIndicator = styled(TimelinePlayead)`
-  background-color: #333333;
+const TimelinePlayheadLeftIndicator = styled(TimelinePlayheadBase)`
+  background-color: ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
 
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 1px;
-    left: -6px;
-    width: 0px;
-    height: 0px;
-    border-top: 9px solid transparent;
-    border-bottom: 9px solid transparent;
-    border-right: 7px solid #333333;
+  &::after {
+    left: -7px;
+    border-right: 7px solid ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   }
 `;
 
-const TimelinePlayheadLeftIndicatorSecondary = styled(TimelinePlayheadLeftIndicator)`
-  background-color: #8b8b8b;
-
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 1px;
-    left: -6px;
-    width: 0px;
-    height: 0px;
-    border-top: 9px solid transparent;
-    border-bottom: 9px solid transparent;
-    border-right: 7px solid #8b8b8b;
+const TimelinePlayheadLeftIndicatorSecondary = styled(TimelinePlayheadBase)`
+  &::after {
+    left: -7px;
+    border-right: 7px solid ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
   }
 `;
 
-const TimelinePlayheadRightIndicator = styled(TimelinePlayead)`
-  background-color: #333333;
+const TimelinePlayheadRightIndicator = styled(TimelinePlayheadBase)`
+  background-color: ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
 
-  &:after {
-    display: none;
-  }
-
-  &:before {
-      content: '';
-      position: absolute;
-      bottom: 1px;
-      right: -6px;
-      width: 0px;
-      height: 0px;
-      border-top: 9px solid transparent;
-      border-bottom: 9px solid transparent;
-      border-left: 7px solid #333333;
-      border-right: none;
+  &::before {
+    right: -6px;
+    border-left: 7px solid ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   }
 `;
 
-const TimelinePlayheadRightIndicatorSecondary = styled(TimelinePlayheadRightIndicator)`
-  background-color: #8b8b8b;
-
-  &:after {
-    display: none;
-  }
-
-  &:before {
-      content: '';
-      position: absolute;
-      bottom: 1px;
-      right: -6px;
-      width: 0px;
-      height: 0px;
-      border-top: 9px solid transparent;
-      border-bottom: 9px solid transparent;
-      border-left: 7px solid #8b8b8b;
-      border-right: none;
+const TimelinePlayheadRightIndicatorSecondary = styled(TimelinePlayheadBase)`
+  &::before {
+    right: -7px;
+    border-left: 7px solid ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
   }
 `;
 
@@ -201,6 +162,7 @@ const TimelineHeadRightIndicators = styled.div`
   flex-direction: row-reverse;
   gap: 10px;
 `;
+
 
 const TimelineHeadLeftIndicators = styled.div`
   position: absolute;

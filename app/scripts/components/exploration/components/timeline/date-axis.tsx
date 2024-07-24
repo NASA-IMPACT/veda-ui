@@ -18,6 +18,8 @@ const GridLine = styled.line`
 `;
 
 const DateAxisSVG = styled.svg`
+  border-top: 1.5px solid #dde0e3;
+
   text {
     font-size: 0.75rem;
     fill: ${themeVal('color.base')};
