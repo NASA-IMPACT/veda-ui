@@ -114,11 +114,11 @@ const TimelinePlayheadBase = styled.div`
   &::after, &::before {
     content: '';
     position: absolute;
-    bottom: 3px;
+    bottom: 1px;
     width: 0;
     height: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
   }
 `;
 
@@ -126,14 +126,14 @@ const TimelinePlayheadLeftIndicator = styled(TimelinePlayheadBase)`
   background-color: ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
 
   &::after {
-    left: -7px;
+    left: -6%;
     border-right: 7px solid ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   }
 `;
 
 const TimelinePlayheadLeftIndicatorSecondary = styled(TimelinePlayheadBase)`
   &::after {
-    left: -7px;
+    left: -30%;
     border-right: 7px solid ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
   }
 `;
@@ -142,14 +142,14 @@ const TimelinePlayheadRightIndicator = styled(TimelinePlayheadBase)`
   background-color: ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
 
   &::before {
-    right: -6px;
+    right: -6%;
     border-left: 7px solid ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   }
 `;
 
 const TimelinePlayheadRightIndicatorSecondary = styled(TimelinePlayheadBase)`
   &::before {
-    right: -7px;
+    right: -30%;
     border-left: 7px solid ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
   }
 `;
