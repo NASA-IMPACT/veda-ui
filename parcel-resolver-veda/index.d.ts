@@ -263,9 +263,9 @@ export interface LayerInfo {
   
   const infoTypeFlag = BannerType.info;
   interface BannerData {
-    expiryDate: Date,
-    actionUrl: string,
-    contents: string,
+    expires: Date,
+    url: string,
+    text: string,
     type?: BannerType
   }
   

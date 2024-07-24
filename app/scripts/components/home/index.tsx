@@ -132,7 +132,7 @@ function RootHome() {
   const { show: showFeedbackModal } = useFeedbackModal();
 
   const banner = getBanner();
-  const renderBanner = !!banner && banner.contents && banner.actionUrl && banner.expiryDate;
+  const renderBanner = !!banner && banner.text && banner.url && banner.expires;
 
   return (
     <PageMainContent>

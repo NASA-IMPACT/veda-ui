@@ -17,21 +17,21 @@ enum BannerType {
 const infoTypeFlag = BannerType.info;
 interface BannerProps {
   appTitle: string,
-  expiryDate: Date,
-  actionUrl: string,
-  contents: string,
+  expires: Date,
+  url: string,
+  text: string,
   type?: BannerType
 }
 
-export default function Banner({appTitle, expiryDate, actionUrl, contents, type = infoTypeFlag }: BannerProps) {
+export default function Banner({appTitle, expires, url, text, type = infoTypeFlag }: BannerProps) {
   
-  const showBanner = localStorage.getItem(BANNER_KEY) !== actionUrl;
-  const [isOpen, setIsOpen] = useState(showBanner && !(hasExpired(expiryDate)));
+  const showBanner = localStorage.getItem(BANNER_KEY) !== url;
+  const [isOpen, setIsOpen] = useState(showBanner && !(hasExpired(expires)));
 
   function onClose () {
     localStorage.setItem(
       BANNER_KEY,
-      actionUrl
+      url
     );
     setIsOpen(false);
   }
@@ -43,7 +43,7 @@ export default function Banner({appTitle, expiryDate, actionUrl, contents, type 
           <USWDSBanner aria-label={appTitle} className={type !== infoTypeFlag? 'bg-secondary-lighter': ''}>
             <a href={actionUrl} target='_blank' rel='noreferrer'>
               <BannerContent className='padding-top-1 padding-bottom-1' isOpen={true}>
-                <p dangerouslySetInnerHTML={{ __html: contents }} />
+                <p dangerouslySetInnerHTML={{ __html: text }} />
               </BannerContent>
             </a>
           </USWDSBanner>
