@@ -1,4 +1,3 @@
-import * as process from 'process';
 import { useMemo } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {

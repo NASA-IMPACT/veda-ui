@@ -1,4 +1,3 @@
-import * as process from 'process';
 import React, { useEffect, useMemo } from 'react';
 import qs from 'qs';
 import { RasterSource, RasterLayer } from 'mapbox-gl';

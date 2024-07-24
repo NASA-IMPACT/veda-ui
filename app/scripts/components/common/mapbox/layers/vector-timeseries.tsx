@@ -1,4 +1,3 @@
-import * as process from 'process';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'styled-components';
 import qs from 'qs';

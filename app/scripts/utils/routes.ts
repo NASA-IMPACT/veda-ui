@@ -1,4 +1,3 @@
-import * as process from 'process';
 import { checkEnvFlag } from './utils';
 import { DatasetData, StoryData } from '$types/veda';
 

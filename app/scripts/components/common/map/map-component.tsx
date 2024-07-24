@@ -1,4 +1,3 @@
-import * as process from 'process';
 import React, { useCallback, ReactElement, useMemo, Ref } from 'react';
 import ReactMapGlMap, { LngLatBoundsLike, MapRef } from 'react-map-gl';
 import { debounce } from 'lodash';

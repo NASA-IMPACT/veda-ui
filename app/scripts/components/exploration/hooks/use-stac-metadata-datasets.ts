@@ -1,4 +1,3 @@
-import * as process from 'process';
 import {
   useQueries,
   UseQueryOptions,

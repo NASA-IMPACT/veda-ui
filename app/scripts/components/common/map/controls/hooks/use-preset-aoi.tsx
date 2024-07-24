@@ -1,4 +1,3 @@
-import * as process from 'process';
 import { Feature, Polygon } from 'geojson';
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';

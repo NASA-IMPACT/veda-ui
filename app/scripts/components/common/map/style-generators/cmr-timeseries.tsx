@@ -1,4 +1,3 @@
-import * as process from 'process';
 import React from 'react';
 import { BaseGeneratorParams } from '../types';
 import { ZarrPaintLayer } from './zarr-timeseries';
