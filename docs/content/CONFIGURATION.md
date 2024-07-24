@@ -49,6 +49,25 @@ strings: {
 }
 ```
 
+### Banner
+
+`Banner` object allows you to display a site-wide banner that sits atop your application. To create a banner, you need to provide four attributes (one optional) as outlined below. 
+
+```
+expiryDate: Date,
+actionUrl: string,
+contents: string,
+type?: BannerType
+``` 
+
+| Option | Type | Description| Example|
+|---|---|---|---|
+| expiryDate | Date | The date and time when the banner expires. (ISO 8601 format) | '2024-08-03T12:00:00-04:00'|
+| actionUrl | string | The URL that will be triggered when the user clicks on the banner. | 'stories/emit-and-aviris-3' |
+| contents | string | The text content to display in the banner. | 'Read the new data insight on using EMIT and AVIRIS-3 for monitoring large methane emission events.' |
+| type | enum('info', 'warning') |The type of information delivered by the banner, which determines its background color. | 'info'|
+
+
 ## Meta files
 
 _There is currently not a lot of customization that can be done to meta images._
