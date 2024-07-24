@@ -68,7 +68,7 @@ const TimelinePlayheadLeft = styled(TimelinePlayheadBase)`
   position: absolute;
   transform: translateX(-100%);
   white-space: nowrap;
-  left: 16px;
+  left: 17px;
   min-width: 115px;
   text-align: center;
 `;
