@@ -29,11 +29,12 @@ interface TimelineHeadBaseProps {
   isStrokeDashed?: boolean;
   children: React.ReactNode;
   'data-tour'?: string;
+  xPosOffset?: number;
 }
 
 const TimelinePlayheadBase = styled.div`
-  background-color: black;
-  color: white;
+  background-color: #333333;
+  color: #ffffff;
   padding: 0 4px;
   border-radius: 4px;
   font-size: 0.75rem;
@@ -42,26 +43,32 @@ const TimelinePlayheadBase = styled.div`
 
 const TimelinePlayheadLeft = styled(TimelinePlayheadBase)`
   background-color: #8b8b8b;
-  color: white;
+  color: #ffffff;
   padding: 0 4px;
-  border-radius: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 0;
   font-size: 0.75rem;
   position: absolute;
   transform: translateX(-100%);
   white-space: nowrap;
-  left: 17px;
+  left: 16px;
   min-width: 115px;
   text-align: center;
 `;
 
 const TimelinePlayheadRight = styled(TimelinePlayheadBase)`
   background-color: #8b8b8b;
-  color: white;
+  color: #ffffff;
   padding: 0 4px;
-  border-radius: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 0;
   font-size: 0.75rem;
   position: relative;
-  left: 15px;
+  right: 0;
   min-width: 115px;
   text-align: center;
 `;
@@ -69,7 +76,7 @@ const TimelinePlayheadRight = styled(TimelinePlayheadBase)`
 const TimelinePlayheadWithAfter = styled(TimelinePlayheadBase)`
   min-width: 110px;
   text-align: center;
-  left: -40px;
+  left: 0;
 
   &::after {
     content: '';
@@ -81,8 +88,23 @@ const TimelinePlayheadWithAfter = styled(TimelinePlayheadBase)`
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-top: 8px solid black;
+    border-top: 8px solid #333333;
   }
+`;
+
+const TimelinePlayheadLabel = styled.span`
+  color: #cccccc;
+  margin-right: 5px;
+`;
+
+const TimelinePlayheadContent = styled.span`
+  pointer-events: all;
+  user-select: none;
+  font-weight: 500;
+  transform: translate(-14px, -4px);
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
 `;
 
 type TimelineHeadProps = Omit<TimelineHeadBaseProps, 'children'> & {
@@ -90,7 +112,7 @@ type TimelineHeadProps = Omit<TimelineHeadBaseProps, 'children'> & {
 };
 
 export function TimelineHeadBase(props: TimelineHeadBaseProps) {
-  const { domain, xScaled, selectedDay, width, onDayChange, isStrokeDashed, children } = props;
+  const { domain, xScaled, selectedDay, width, onDayChange, xPosOffset = 0, isStrokeDashed, children } = props;
 
   const theme = useTheme();
   const rectRef = useRef<HTMLDivElement>(null);
@@ -136,7 +158,7 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
 
   return (
     <TimelineHeadWrapper style={{width: width + SVG_PADDING * 2, pointerEvents: 'none'}}>
-      <div data-tour={props['data-tour']} ref={rectRef} style={{ transform: `translate(${xPos}px, -6px)`, position: 'absolute', pointerEvents: 'all' }}>
+      <div data-tour={props['data-tour']} ref={rectRef} style={{ transform: `translate(${xPos - xPosOffset}px, -6px)`, position: 'absolute', pointerEvents: 'all' }}>
         {children}
       </div>
       <svg style={{width: width + SVG_PADDING * 2, height: '100%'}}>
@@ -162,11 +184,12 @@ export const TimelineHeadPoint = forwardRef<HTMLDivElement, TimelineHeadProps>((
   const { label, selectedDay, ...rest } = props;
 
   return (
-    <TimelineHeadBase selectedDay={selectedDay} {...rest}>
+    <TimelineHeadBase selectedDay={selectedDay} xPosOffset={40} {...rest}>
       <TimelinePlayheadWithAfter ref={ref}>
-        <span style={{ pointerEvents: 'all', userSelect: 'none', fontWeight: 500}}>
-          <span style={{ color: '#CCCCCC'}}>{label}</span> {format(selectedDay, 'MMM do, yyyy')}
-        </span>
+        <TimelinePlayheadContent>
+          <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
+          {format(selectedDay, 'MMM do, yyyy')}
+        </TimelinePlayheadContent>
       </TimelinePlayheadWithAfter>
     </TimelineHeadBase>
   );
@@ -180,9 +203,10 @@ export const TimelineHeadIn = forwardRef<HTMLDivElement, TimelineHeadProps>((pro
   return (
     <TimelineHeadBase isStrokeDashed selectedDay={selectedDay} {...rest}>
       <TimelinePlayheadLeft ref={ref}>
-        <span style={{ pointerEvents: 'all', transform: `translate(-14, -4)`, userSelect: 'none', fontWeight: 500}}>
-          <span style={{ color: '#CCCCCC'}}>{label}</span> {format(selectedDay, 'MMM do, yyyy')}
-        </span>
+        <TimelinePlayheadContent>
+          <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
+          {format(selectedDay, 'MMM do, yyyy')}
+        </TimelinePlayheadContent>
       </TimelinePlayheadLeft>
     </TimelineHeadBase>
   );
@@ -194,11 +218,12 @@ export const TimelineHeadOut = forwardRef<HTMLDivElement, TimelineHeadProps>((pr
   const { label, selectedDay, ...rest } = props;
 
   return (
-    <TimelineHeadBase isStrokeDashed selectedDay={selectedDay} {...rest}>
+    <TimelineHeadBase isStrokeDashed selectedDay={selectedDay} xPosOffset={-15} {...rest}>
       <TimelinePlayheadRight ref={ref}>
-      <span style={{ pointerEvents: 'all', transform: `translate(-14, -4)`, userSelect: 'none', fontWeight: 500}}>
-        <span style={{ color: '#CCCCCC'}}>{label}</span> {format(selectedDay, 'MMM do, yyyy')}
-      </span>
+        <TimelinePlayheadContent>
+          <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
+          {format(selectedDay, 'MMM do, yyyy')}
+        </TimelinePlayheadContent>
       </TimelinePlayheadRight>
     </TimelineHeadBase>
   );

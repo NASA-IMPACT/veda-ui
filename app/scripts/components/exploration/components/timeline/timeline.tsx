@@ -185,11 +185,12 @@ const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
   };
 };
 
-export interface OutOfViewHead {
+export interface TimelineHead {
   name: 'Point' | 'PointCompare' | 'In' | 'Out';
-  date: Date;
-  isInView: boolean;
-  outDirection: 'left' | 'right' | undefined;
+  date: Date | null;
+  ref?: React.MutableRefObject<any>;
+  isInView?: boolean;
+  outDirection?: 'left' | 'right' | undefined;
 }
 
 export default function Timeline(props: TimelineProps) {
@@ -216,7 +217,7 @@ export default function Timeline(props: TimelineProps) {
   const headInRef = useRef(null);
   const headOutRef = useRef(null);
 
-  const [outOfViewHeads, setOutOfViewHeads] = useState<OutOfViewHead[]>([]);
+  const [outOfViewHeads, setOutOfViewHeads] = useState<TimelineHead[]>([]);
 
   const dataDomain = useTimelineDatasetsDomain();
 
@@ -317,7 +318,7 @@ export default function Timeline(props: TimelineProps) {
     }
 
     // Filter heads that are not currently in view and map them to the OutOfViewHead type
-    const outOfViewHeads: OutOfViewHead[] = heads
+    const outOfViewHeads: TimelineHead[] = heads
       .filter(head => !head.ref.current)
       .map(head => {
         let outDirection: 'left' | 'right' | undefined;

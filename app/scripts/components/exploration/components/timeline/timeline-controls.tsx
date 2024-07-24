@@ -10,7 +10,7 @@ import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
 import { TimelineDatePicker } from './timeline-datepicker';
-import { OutOfViewHead } from './timeline';
+import { TimelineHead } from './timeline';
 import {
   selectedCompareDateAtom,
   selectedDateAtom,
@@ -62,7 +62,7 @@ const ToolbarFullWidth = styled(Toolbar)`
 interface TimelineControlsProps {
   xScaled?: ScaleTime<number, number>;
   width: number;
-  outOfViewHeads?: OutOfViewHead[];
+  outOfViewHeads?: TimelineHead[];
   onZoom: (zoom: number) => void;
 }
 
@@ -98,7 +98,7 @@ const TimelineHeadIndicatorsWrapper = styled.div`
 
 const TimelinePlayead = styled.div`
   background-color: #8b8b8b;
-  color: white;
+  color: #ffffff;
   padding: 0 4px;
   border-radius: 4px;
   font-size: 0.75rem;
@@ -115,12 +115,12 @@ const TimelinePlayead = styled.div`
     height: 0;
     border-top: 4px solid transparent;
     border-bottom: 4px solid transparent;
-    border-right: 3px solid black;
+    border-right: 3px solid #333333;
   }
 `;
 
 const TimelinePlayheadLeftIndicator = styled(TimelinePlayead)`
-  background-color: black;
+  background-color: #333333;
 
   &:after {
     content: '';
@@ -131,7 +131,7 @@ const TimelinePlayheadLeftIndicator = styled(TimelinePlayead)`
     height: 0px;
     border-top: 9px solid transparent;
     border-bottom: 9px solid transparent;
-    border-right: 7px solid black;
+    border-right: 7px solid #333333;
   }
 `;
 
@@ -152,7 +152,7 @@ const TimelinePlayheadLeftIndicatorSecondary = styled(TimelinePlayheadLeftIndica
 `;
 
 const TimelinePlayheadRightIndicator = styled(TimelinePlayead)`
-  background-color: black;
+  background-color: #333333;
 
   &:after {
     display: none;
@@ -167,7 +167,7 @@ const TimelinePlayheadRightIndicator = styled(TimelinePlayead)`
       height: 0px;
       border-top: 9px solid transparent;
       border-bottom: 9px solid transparent;
-      border-left: 7px solid black;
+      border-left: 7px solid #333333;
       border-right: none;
   }
 `;
@@ -210,16 +210,18 @@ const TimelineHeadLeftIndicators = styled.div`
   gap: 10px;
 `;
 
-const getIndicators = (outOfViewHeads) => {
+const getIndicators = (outOfViewHeads: TimelineHead[]) => {
   const leftHeads = outOfViewHeads.filter(head => head.outDirection === 'left');
   const rightHeads = outOfViewHeads.filter(head => head.outDirection === 'right');
+
+  const formatDate = (date: Date | null) => (date ? format(date, 'MMM do, yyyy') : 'Invalid date');
 
   return (
     <>
       {leftHeads.length > 0 && (
         <TimelineHeadLeftIndicators>
           <TimelinePlayheadLeftIndicator>
-          <span>{format(leftHeads[0].date, 'MMM do, yyyy')}</span>
+            <span>{formatDate(leftHeads[0].date)}</span>
           </TimelinePlayheadLeftIndicator>
           {leftHeads.length > 1 &&
             <TimelinePlayheadLeftIndicatorSecondary>
@@ -230,12 +232,12 @@ const getIndicators = (outOfViewHeads) => {
       {rightHeads.length > 0 && (
         <TimelineHeadRightIndicators>
           <TimelinePlayheadRightIndicator>
-            <span>{format(rightHeads[rightHeads.length - 1].date, 'MMM do, yyyy')}</span>
+            <span>{formatDate(rightHeads[rightHeads.length - 1].date)}</span>
           </TimelinePlayheadRightIndicator>
           {rightHeads.length > 1 &&
-           <TimelinePlayheadRightIndicatorSecondary>
+            <TimelinePlayheadRightIndicatorSecondary>
               +{rightHeads.length - 1}
-           </TimelinePlayheadRightIndicatorSecondary>}
+            </TimelinePlayheadRightIndicatorSecondary>}
         </TimelineHeadRightIndicators>
       )}
     </>
