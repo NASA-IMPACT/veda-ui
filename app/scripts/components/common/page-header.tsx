@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { Link, NavLink } from 'react-router-dom';
-import { userPages, getOverride, getString } from 'veda';
+import { Link, NavLink, NavLinkProps } from 'react-router-dom';
+import { userPages, getOverride } from 'veda';
 import {
   glsp,
   listReset,
@@ -25,14 +25,9 @@ import GoogleForm from './google-form';
 import { Tip } from './tip';
 import UnscrollableBody from './unscrollable-body';
 
-import { checkEnvFlag } from '$utils/utils';
 import { variableGlsp } from '$styles/variable-utils';
 import {
-  STORIES_PATH,
-  DATASETS_PATH,
-  ANALYSIS_PATH,
-  ABOUT_PATH,
-  EXPLORATION_PATH
+  ABOUT_PATH
 } from '$utils/routes';
 import { PAGE_BODY_ID } from '$components/common/layout-root';
 import GlobalMenuLinkCSS from '$styles/menu-link';
@@ -344,8 +339,19 @@ const DropMenuNavItem = styled(DropMenuItem)`
     background-color: ${rgbaFixed(themeVal('color.link'), 0.08)};
   }
 `;
+interface AdditionalNavLinkProps {
+  title: string;
+}
 
-function PageHeader({ mainNavItems }) {
+export type InternalNavLink =  NavLinkProps  & AdditionalNavLinkProps;
+export type ExternalNavLink  = React.RefAttributes<HTMLAnchorElement> & AdditionalNavLinkProps;
+
+interface PageHeaderProps {
+  mainNavItems: (ExternalNavLink & InternalNavLink)[];
+}
+
+function PageHeader(props: PageHeaderProps) {
+  const { mainNavItems } = props;
   const { isMediumDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
@@ -381,6 +387,7 @@ function PageHeader({ mainNavItems }) {
         <GlobalMenuLink to={id} onClick={closeNavOnClick}>
           {page.data.mainNavItem.navTitle }
         </GlobalMenuLink>
+
       </li>
     );
   });
@@ -453,11 +460,12 @@ function PageHeader({ mainNavItems }) {
                   {mainNavItems.map((item) => {
                     const { title, ...rest } = item;
                     return (
-                      <li key={`${name}-nav-item`}>
+                      <li key={`${title}-nav-item`}>
                       <GlobalMenuLink {...rest}>
                         {title}
                       </GlobalMenuLink>
                       </li>
+                      
                     );
                   })}
                 </GlobalMenu>

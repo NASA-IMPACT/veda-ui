@@ -28,7 +28,6 @@ const NavWrapper = styled.div`
 `;
 
 function PageNavWrapper(props) {
-  console.log(props);
   const { isHeaderHidden, headerHeight } = useSlidingStickyHeaderProps();
   return (
     <NavWrapper

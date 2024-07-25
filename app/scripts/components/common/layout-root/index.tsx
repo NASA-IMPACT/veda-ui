@@ -3,23 +3,24 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
-import { ContentOverride } from '$components/common/page-overrides';
 import { getString } from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 import Banner from '../banner';
 import { LayoutRootContext } from './context';
 
+import { ContentOverride } from '$components/common/page-overrides';
+
 import { useGoogleTagManager } from '$utils/use-google-tag-manager';
 
 import NavWrapper from '$components/common/nav-wrapper';
+import { InternalNavLink, ExternalNavLink } from '$components/common/page-header';
 
 import { checkEnvFlag } from '$utils/utils';
 import {
   STORIES_PATH,
   DATASETS_PATH,
   ANALYSIS_PATH,
-  ABOUT_PATH,
   EXPLORATION_PATH
 } from '$utils/routes';
 const appTitle = process.env.APP_TITLE;
@@ -41,8 +42,7 @@ const PageBody = styled.div`
 `;
 
 
-
-let navItems = [{
+let navItems:(ExternalNavLink & InternalNavLink)[] = [{
   title: 'Data Catalog',
   to: DATASETS_PATH
 }, {
@@ -55,6 +55,8 @@ let navItems = [{
 
 if (!!process.env.HUB_URL && !!process.env.HUB_NAME) navItems = [...navItems, {
   title: process.env.HUB_NAME,
+  // @ts-expect-error : href is omitted from NavLinkProps
+  // But we need this prop for outernal link
   href: process.env.HUB_URL,
   as:'a',
   target:'_blank',
@@ -82,7 +84,6 @@ function LayoutRoot(props: { children?: ReactNode }) {
         thumbnail={thumbnail}
       />
       {banner && <Banner appTitle={title} {...banner} />}
-      <NavWrapper />
       <ContentOverride with='nav'>
         <NavWrapper mainNavItems={navItems} />
       </ContentOverride>

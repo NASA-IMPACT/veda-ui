@@ -299,6 +299,7 @@ export interface LayerInfo {
     | 'sandbox-override'
     | 'pageFooter'
     | 'headerBrand'
+    | 'nav'
     | 'homeHero';
   /**
    * Configuration export for specific overrides.
