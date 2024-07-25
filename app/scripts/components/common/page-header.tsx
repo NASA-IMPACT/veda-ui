@@ -345,7 +345,7 @@ const DropMenuNavItem = styled(DropMenuItem)`
   }
 `;
 
-function PageHeader() {
+function PageHeader({ mainNavItems }) {
   const { isMediumDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
@@ -450,55 +450,16 @@ function PageHeader() {
               <SectionsNavBlock>
                 <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
                 <GlobalMenu>
-                  <li>
-                    <GlobalMenuLink
-                      to={DATASETS_PATH}
-                      onClick={closeNavOnClick}
-                    >
-                      Data Catalog
-                    </GlobalMenuLink>
-                  </li>
-                  <li>
-                    {checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION) ? (
-                      <GlobalMenuLink
-                        to={EXPLORATION_PATH}
-                        onClick={closeNavOnClick}
-                      >
-                        Exploration
+                  {mainNavItems.map((item) => {
+                    const { title, ...rest } = item;
+                    return (
+                      <li key={`${name}-nav-item`}>
+                      <GlobalMenuLink {...rest}>
+                        {title}
                       </GlobalMenuLink>
-                    ) : (
-                      <GlobalMenuLink
-                        to={ANALYSIS_PATH}
-                        onClick={closeNavOnClick}
-                      >
-                        Data Analysis
-                      </GlobalMenuLink>
-                    )}
-                  </li>
-                  <li>
-                    <GlobalMenuLink to={STORIES_PATH} onClick={closeNavOnClick}>
-                      {getString('stories').other}
-                    </GlobalMenuLink>
-                  </li>
-
-                  {/*
-                    Temporarily add hub link through env variables.
-                    This does not scale for the different instances, but it's a
-                    quick fix for the GHG app.
-                  */}
-                  {!!process.env.HUB_URL && !!process.env.HUB_NAME && (
-                    <li>
-                      <GlobalMenuLink
-                        as='a'
-                        target='_blank'
-                        rel='noopener'
-                        href={process.env.HUB_URL}
-                        onClick={closeNavOnClick}
-                      >
-                        {process.env.HUB_NAME}
-                      </GlobalMenuLink>
-                    </li>
-                  )}
+                      </li>
+                    );
+                  })}
                 </GlobalMenu>
               </SectionsNavBlock>
               <SectionsNavBlock>

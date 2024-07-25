@@ -3,7 +3,8 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
-
+import { ContentOverride } from '$components/common/page-overrides';
+import { getString } from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 import Banner from '../banner';
@@ -13,6 +14,14 @@ import { useGoogleTagManager } from '$utils/use-google-tag-manager';
 
 import NavWrapper from '$components/common/nav-wrapper';
 
+import { checkEnvFlag } from '$utils/utils';
+import {
+  STORIES_PATH,
+  DATASETS_PATH,
+  ANALYSIS_PATH,
+  ABOUT_PATH,
+  EXPLORATION_PATH
+} from '$utils/routes';
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
 export const PAGE_BODY_ID = 'pagebody';
@@ -30,6 +39,28 @@ const PageBody = styled.div`
   flex-direction: column;
   overflow-anchor: auto;
 `;
+
+
+
+let navItems = [{
+  title: 'Data Catalog',
+  to: DATASETS_PATH
+}, {
+  title: checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION) ? 'Exploration' : 'Analysis',
+  to: checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION) ? EXPLORATION_PATH : ANALYSIS_PATH,
+}, {
+  title: getString('stories').other,
+  to: STORIES_PATH
+}];
+
+if (!!process.env.HUB_URL && !!process.env.HUB_NAME) navItems = [...navItems, {
+  title: process.env.HUB_NAME,
+  href: process.env.HUB_URL,
+  as:'a',
+  target:'_blank',
+  rel:'noopener'
+}];
+
 
 function LayoutRoot(props: { children?: ReactNode }) {
   const { children } = props;
@@ -52,6 +83,9 @@ function LayoutRoot(props: { children?: ReactNode }) {
       />
       {banner && <Banner appTitle={title} {...banner} />}
       <NavWrapper />
+      <ContentOverride with='nav'>
+        <NavWrapper mainNavItems={navItems} />
+      </ContentOverride>
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
