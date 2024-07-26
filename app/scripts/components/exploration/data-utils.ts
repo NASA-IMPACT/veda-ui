@@ -2,6 +2,7 @@ import {
   eachDayOfInterval,
   eachMonthOfInterval,
   eachYearOfInterval,
+  format,
   startOfDay,
   startOfMonth,
   startOfYear
@@ -26,7 +27,9 @@ import { utcString2userTzDate } from '$utils/date';
 // @TODO: These should be updated to take in datasets as a param instead of using veda_faux_module_datasets directly
 
 export const findParentDataset = (layerId: string) => {
-  const parentDataset: VedaDatum<DatasetData> | undefined = Object.values(veda_faux_module_datasets).find((dataset: VedaDatum<DatasetData>) =>
+  const parentDataset: VedaDatum<DatasetData> | undefined = Object.values(
+    veda_faux_module_datasets
+  ).find((dataset: VedaDatum<DatasetData>) =>
     dataset!.data.layers.find((l) => l.id === layerId)
   );
   return parentDataset?.data;
@@ -70,16 +73,17 @@ export const getAllDatasetsWithEnhancedLayers = (
   dataset
 ): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
 
-export const datasetLayers = Object.values(veda_faux_module_datasets)
-  .flatMap((dataset: VedaDatum<DatasetData>) => {
-    return dataset!.data.layers.map(l => ({
+export const datasetLayers = Object.values(veda_faux_module_datasets).flatMap(
+  (dataset: VedaDatum<DatasetData>) => {
+    return dataset!.data.layers.map((l) => ({
       ...l,
       parentDataset: {
         id: dataset!.data.id,
         name: dataset!.data.name
       }
     }));
-  });
+  }
+);
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
@@ -200,6 +204,19 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
 
   return startOfDay(date);
 }
+
+export const formatDate = (date: Date | null, view?: string) => {
+  if (!date) return 'Date';
+
+  switch (view) {
+    case 'decade':
+      return format(date, 'yyyy');
+    case 'year':
+      return format(date, 'MMM yyyy');
+    default:
+      return format(date, 'MMM do, yyyy');
+  }
+};
 
 export class ExtendedError extends Error {
   code: string;

@@ -1,12 +1,13 @@
-import React, { useMemo } from 'react';
-import styled from 'styled-components';
+import React, { memo, useMemo } from 'react';
+import styled, { css } from 'styled-components';
 import { useAtom } from 'jotai';
-import { endOfYear, format, startOfYear } from 'date-fns';
+import { endOfYear, startOfYear } from 'date-fns';
 import { scaleTime, ScaleTime } from 'd3';
 
-import { glsp } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
+import { isEqual } from 'lodash';
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
 import { TimelineDatePicker } from './timeline-datepicker';
@@ -21,6 +22,7 @@ import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minu
 import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import useAois from '$components/common/map/controls/hooks/use-aois';
+import { formatDate } from '$components/exploration/data-utils';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -101,15 +103,19 @@ const TimelineHeadIndicatorsWrapper = styled.div`
   width: 100%;
 `;
 
-const TimelinePlayheadBase = styled.div`
+interface PlayheadProps {
+  secondary?: boolean;
+}
+
+const TimelinePlayheadBase = styled.div<PlayheadProps>`
   background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
   color: ${TIMELINE_PLAYHEAD_COLOR_TEXT};
-  padding: 3px;
-  border-radius: 4px;
+  padding: ${glsp(0.15)} ${glsp(0.30)};
+  border-radius: ${themeVal('shape.rounded')};
   font-size: 0.75rem;
   position: relative;
   width: max-content;
-  font-weight: 500;
+  font-weight: ${themeVal('type.base.regular')};
 
   &::after, &::before {
     content: '';
@@ -117,102 +123,110 @@ const TimelinePlayheadBase = styled.div`
     bottom: 1px;
     width: 0;
     height: 0;
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
+    border-top: 11.5px solid transparent;
+    border-bottom: 11.5px solid transparent;
+  }
+`;
+
+const PlayheadArrow = css<PlayheadProps>`
+  &::after, &::before {
+    content: '';
+    position: absolute;
+    bottom: 1px;
+    width: 0;
+    height: 0;
+    border-top: 11.5px solid transparent;
+    border-bottom: 11.5px solid transparent;
+  }
+`;
+
+const LeftPlayheadArrow = css<PlayheadProps>`
+  ${PlayheadArrow}
+  &::after {
+    border-right: 8px solid ${props => props.secondary ? TIMELINE_PLAYHEAD_COLOR_PRIMARY : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+  }
+`;
+
+const RightPlayheadArrow = css<PlayheadProps>`
+  ${PlayheadArrow}
+  &::before {
+    border-left: 8px solid ${props => props.secondary ? TIMELINE_PLAYHEAD_COLOR_PRIMARY : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   }
 `;
 
 const TimelinePlayheadLeftIndicator = styled(TimelinePlayheadBase)`
-  background-color: ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
-
+  background-color: ${props => props.secondary ? TIMELINE_PLAYHEAD_COLOR_PRIMARY : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+  ${LeftPlayheadArrow}
   &::after {
-    left: -6%;
-    border-right: 7px solid ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
-  }
-`;
-
-const TimelinePlayheadLeftIndicatorSecondary = styled(TimelinePlayheadBase)`
-  &::after {
-    left: -30%;
-    border-right: 7px solid ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
+    left: ${props => props.secondary ? '-28%' : '-8%'};
   }
 `;
 
 const TimelinePlayheadRightIndicator = styled(TimelinePlayheadBase)`
-  background-color: ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
-
+  background-color: ${props => props.secondary ? TIMELINE_PLAYHEAD_COLOR_PRIMARY : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+  ${RightPlayheadArrow}
   &::before {
-    right: -6%;
-    border-left: 7px solid ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+    right: ${props => props.secondary ? '-28%' : '-8%'};
   }
 `;
 
-const TimelinePlayheadRightIndicatorSecondary = styled(TimelinePlayheadBase)`
-  &::before {
-    right: -30%;
-    border-left: 7px solid ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
-  }
-`;
-
-const TimelineHeadRightIndicators = styled.div`
+const TimelineHeadIndicatorsBase = styled.div`
   position: absolute;
-  bottom: 0;
-  right: 120px;
+  bottom: 1px;
   display: flex;
+  gap: ${glsp(1)};
+`;
+
+const TimelineHeadLeftIndicators = styled(TimelineHeadIndicatorsBase)`
+  left: 0;
+`;
+
+const TimelineHeadRightIndicators = styled(TimelineHeadIndicatorsBase)`
+  right: 125px;
   flex-direction: row-reverse;
-  gap: 10px;
 `;
 
-
-const TimelineHeadLeftIndicators = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: -8px;
-  display: flex;
-  gap: 10px;
-`;
-
-const getIndicators = (outOfViewHeads: TimelineHead[]) => {
+export const TimelineHeadIndicators = memo(({ outOfViewHeads }: { outOfViewHeads: TimelineHead[] }) => {
   // Filter the out-of-view heads to get those that are out to the left
   const leftHeads = outOfViewHeads.filter(head => head.outDirection === 'left');
   // Filter the out-of-view heads to get those that are out to the right
   const rightHeads = outOfViewHeads.filter(head => head.outDirection === 'right');
-
-  const formatDate = (date: Date | null) => (date ? format(date, 'MMM do, yyyy') : 'Invalid date');
 
   return (
     <>
       {/* If there are any heads out to the left, render the left indicators */}
       {leftHeads.length > 0 && (
         <TimelineHeadLeftIndicators>
-          {/* Primary left indicator displaying the date of the first out-of-view head on the left */}
-          <TimelinePlayheadLeftIndicator>
-            <span>{formatDate(leftHeads[0].date)}</span>
-          </TimelinePlayheadLeftIndicator>
-          {/* Secondary left indicator(s) displaying the count of additional out-of-view heads on the left */}
-          {leftHeads.length > 1 &&
-            <TimelinePlayheadLeftIndicatorSecondary>
-              +{leftHeads.length - 1}
-            </TimelinePlayheadLeftIndicatorSecondary>}
+        <TimelinePlayheadLeftIndicator>
+          <span>{formatDate(leftHeads[0].date)}</span>
+        </TimelinePlayheadLeftIndicator>
+        {leftHeads.length > 1 &&
+          <TimelinePlayheadLeftIndicator secondary>
+            +{leftHeads.length - 1}
+          </TimelinePlayheadLeftIndicator>}
         </TimelineHeadLeftIndicators>
       )}
       {/* If there are any heads out to the right, render the right indicators */}
       {rightHeads.length > 0 && (
-        <TimelineHeadRightIndicators>
-          {/* Primary right indicator displaying the date of the last out-of-view head on the right */}
-          <TimelinePlayheadRightIndicator>
-            <span>{formatDate(rightHeads[rightHeads.length - 1].date)}</span>
-          </TimelinePlayheadRightIndicator>
-          {/* Secondary right indicator displaying the count of additional out-of-view heads on the right */}
-          {rightHeads.length > 1 &&
-            <TimelinePlayheadRightIndicatorSecondary>
-              +{rightHeads.length - 1}
-            </TimelinePlayheadRightIndicatorSecondary>}
-        </TimelineHeadRightIndicators>
+       <TimelineHeadRightIndicators>
+       <TimelinePlayheadRightIndicator>
+         <span>{formatDate(rightHeads[rightHeads.length - 1].date)}</span>
+       </TimelinePlayheadRightIndicator>
+       {rightHeads.length > 1 &&
+         <TimelinePlayheadRightIndicator secondary>
+           +{rightHeads.length - 1}
+         </TimelinePlayheadRightIndicator>}
+       </TimelineHeadRightIndicators>
       )}
     </>
   );
-};
+}, (prevProps, nextProps) => {
+  // React.memo does a shallow comparison of props, so we need to supply
+  // a custom comparison function to compare the outOfViewHead objects
+  return isEqual(prevProps.outOfViewHeads, nextProps.outOfViewHeads);
+});
+
+TimelineHeadIndicators.displayName = 'TimelineHeadIndicators';
 
 export function TimelineControls(props: TimelineControlsProps) {
   const { xScaled, width, outOfViewHeads, onZoom } = props;
@@ -230,10 +244,11 @@ export function TimelineControls(props: TimelineControlsProps) {
   return (
     <TimelineControlsSelf>
         <ControlsToolbar>
-        {outOfViewHeads && outOfViewHeads.length > 0 &&
-        <TimelineHeadIndicatorsWrapper>
-          {getIndicators(outOfViewHeads)}
-        </TimelineHeadIndicatorsWrapper>}
+        {outOfViewHeads && outOfViewHeads.length > 0 && (
+          <TimelineHeadIndicatorsWrapper>
+            <TimelineHeadIndicators outOfViewHeads={outOfViewHeads} />
+          </TimelineHeadIndicatorsWrapper>
+        )}
         <ToolbarFullWidth>
           <ToolbarGroup>
             {!selectedInterval && (

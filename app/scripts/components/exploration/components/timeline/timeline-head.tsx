@@ -1,8 +1,8 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import { drag, ScaleTime, select } from 'd3';
 import { clamp, format, startOfDay } from 'date-fns';
-import { themeVal } from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { TIMELINE_PLAYHEAD_COLOR_LABEL, TIMELINE_PLAYHEAD_COLOR_PRIMARY, TIMELINE_PLAYHEAD_COLOR_SECONDARY, TIMELINE_PLAYHEAD_COLOR_TEXT } from './timeline-controls';
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
@@ -53,35 +53,35 @@ const TimelinePlayheadWrapper = styled.div`
 const TimelinePlayheadBase = styled.div`
   background-color: ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   color: ${TIMELINE_PLAYHEAD_COLOR_TEXT};
-  padding: 3px;
-  border-radius: 4px;
+  padding: ${glsp(0.15)} ${glsp(0.30)};
+  border-radius: ${themeVal('shape.rounded')};
   font-size: 0.75rem;
   position: relative;
 `;
 
-const TimelinePlayheadLeft = styled(TimelinePlayheadBase)`
+const TimelinePlayheadExtended = styled(TimelinePlayheadBase)`
   background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 0;
-  position: absolute;
-  transform: translateX(-100%);
-  white-space: nowrap;
-  left: 17px;
+  border-top-left-radius: ${themeVal('shape.rounded')};
+  border-top-right-radius: ${themeVal('shape.rounded')};
   min-width: 115px;
   text-align: center;
 `;
 
-const TimelinePlayheadRight = styled(TimelinePlayheadBase)`
-  background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 0;
-  right: 0;
-  min-width: 115px;
-  text-align: center;
+const TimelinePlayhead = styled(TimelinePlayheadExtended)<{ direction: 'left' | 'right' }>`
+  ${({ direction }) => direction === 'left'
+    ? css`
+      border-bottom-left-radius: ${themeVal('shape.rounded')};
+      border-bottom-right-radius: 0;
+      position: absolute;
+      transform: translateX(-100%);
+      left: ${glsp(1.05)};
+    `
+    : css`
+      border-bottom-right-radius: ${themeVal('shape.rounded')};
+      border-bottom-left-radius: 0;
+      right: 0;
+    `
+  }
 `;
 
 const TimelinePlayheadWithAfter = styled(TimelinePlayheadBase)`
@@ -111,7 +111,7 @@ const TimelinePlayheadLabel = styled.span`
 const TimelinePlayheadContent = styled.span`
   pointer-events: all;
   user-select: none;
-  font-weight: 500;
+  font-weight: ${themeVal('type.base.regular')};
   transform: translate(-14px, -4px);
   white-space: nowrap;
   position: relative;
@@ -229,12 +229,12 @@ export const TimelineHeadIn = forwardRef<HTMLDivElement, TimelineHeadProps>((pro
 
   return (
     <TimelineHeadBase isStrokeDashed selectedDay={selectedDay} {...rest}>
-      <TimelinePlayheadLeft ref={ref}>
+      <TimelinePlayhead direction='left' ref={ref}>
         <TimelinePlayheadContent>
           <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
           {format(selectedDay, 'MMM do, yyyy')}
         </TimelinePlayheadContent>
-      </TimelinePlayheadLeft>
+      </TimelinePlayhead>
     </TimelineHeadBase>
   );
 });
@@ -246,12 +246,12 @@ export const TimelineHeadOut = forwardRef<HTMLDivElement, TimelineHeadProps>((pr
 
   return (
     <TimelineHeadBase isStrokeDashed selectedDay={selectedDay} xPosOffset={-15} {...rest}>
-      <TimelinePlayheadRight ref={ref}>
+      <TimelinePlayhead direction='right' ref={ref}>
         <TimelinePlayheadContent>
           <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
           {format(selectedDay, 'MMM do, yyyy')}
         </TimelinePlayheadContent>
-      </TimelinePlayheadRight>
+      </TimelinePlayhead>
     </TimelineHeadBase>
   );
 });
