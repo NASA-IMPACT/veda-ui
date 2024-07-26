@@ -57,6 +57,7 @@ const TimelinePlayheadBase = styled.div`
   border-radius: ${themeVal('shape.rounded')};
   font-size: 0.75rem;
   position: relative;
+  box-shadow: 1px 1px 1px rgba(255, 255, 255, 0.3);
 `;
 
 const TimelinePlayheadExtended = styled(TimelinePlayheadBase)`
