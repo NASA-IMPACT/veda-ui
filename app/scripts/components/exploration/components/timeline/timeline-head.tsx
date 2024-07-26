@@ -1,28 +1,16 @@
-import React, { useEffect, useRef } from 'react';
-import styled, { useTheme } from 'styled-components';
+import React, { forwardRef, useEffect, useRef } from 'react';
+import styled, { css, useTheme } from 'styled-components';
 import { drag, ScaleTime, select } from 'd3';
-import { clamp, startOfDay } from 'date-fns';
-import { themeVal } from '@devseed-ui/theme-provider';
+import { clamp, format, startOfDay } from 'date-fns';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
+import { TIMELINE_PLAYHEAD_COLOR_LABEL, TIMELINE_PLAYHEAD_COLOR_PRIMARY, TIMELINE_PLAYHEAD_COLOR_SECONDARY, TIMELINE_PLAYHEAD_COLOR_TEXT } from './timeline-controls';
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
 import { DateRange } from '$components/exploration/types.d.ts';
 
 // Needs padding so that the timeline head is fully visible.
 // This value gets added to the width.
 const SVG_PADDING = 16;
-
-const TimelineHeadSVG = styled.svg`
-  position: absolute;
-  right: ${RIGHT_AXIS_SPACE - SVG_PADDING}px;
-  top: -1rem;
-  height: calc(100% + 1rem);
-  pointer-events: none;
-  z-index: ${themeVal('zIndices.overlay' as any)};
-`;
-
-const dropShadowFilter =
-  'drop-shadow(0px 2px 2px rgba(44, 62, 80, 0.08)) drop-shadow(0px 0px 4px rgba(44, 62, 80, 0.08))';
-
 interface TimelineHeadBaseProps {
   domain: [Date, Date];
   xScaled: ScaleTime<number, number>;
@@ -32,25 +20,137 @@ interface TimelineHeadBaseProps {
   isStrokeDashed?: boolean;
   children: React.ReactNode;
   'data-tour'?: string;
+  xPosOffset?: number;
+  zIndex?: number;
 }
+
+const TimelineHeadWrapper = styled.div`
+  position: absolute;
+  right: ${RIGHT_AXIS_SPACE - SVG_PADDING}px;
+  top: -1rem;
+  height: calc(100% + 1rem);
+  pointer-events: none;
+  z-index: ${themeVal('zIndices.overlay' as any)};
+`;
+
+const TimelinePlayheadWrapper = styled.div`
+  position: absolute;
+
+  &:hover {
+    cursor: grab;
+  }
+
+  &.playhead-grab * {
+    cursor: grabbing;
+    background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY} !important;
+
+    &::after {
+      border-top: 8px solid ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
+    }
+  }
+`;
+
+const TimelinePlayheadBase = styled.div`
+  background-color: ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+  color: ${TIMELINE_PLAYHEAD_COLOR_TEXT};
+  padding: ${glsp(0.15)} ${glsp(0.30)};
+  border-radius: ${themeVal('shape.rounded')};
+  font-size: 0.75rem;
+  position: relative;
+  box-shadow: 1px 1px 1px rgba(255, 255, 255, 0.3);
+`;
+
+const TimelinePlayheadExtended = styled(TimelinePlayheadBase)`
+  background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
+  border-top-left-radius: ${themeVal('shape.rounded')};
+  border-top-right-radius: ${themeVal('shape.rounded')};
+  min-width: 115px;
+  text-align: center;
+`;
+
+const TimelinePlayhead = styled(TimelinePlayheadExtended)<{ direction: 'left' | 'right' }>`
+  ${({ direction }) => direction === 'left'
+    ? css`
+      border-bottom-left-radius: ${themeVal('shape.rounded')};
+      border-bottom-right-radius: 0;
+      position: absolute;
+      transform: translateX(-100%);
+      left: ${glsp(1.05)};
+    `
+    : css`
+      border-bottom-right-radius: ${themeVal('shape.rounded')};
+      border-bottom-left-radius: 0;
+      right: 0;
+    `
+  }
+`;
+
+const TimelinePlayheadWithAfter = styled(TimelinePlayheadBase)`
+  min-width: 110px;
+  text-align: center;
+  left: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-44%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid ${TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+  }
+`;
+
+const TimelinePlayheadLabel = styled.span`
+  color: ${TIMELINE_PLAYHEAD_COLOR_LABEL};
+  margin-right: 5px;
+`;
+
+const TimelinePlayheadContent = styled.span`
+  pointer-events: all;
+  user-select: none;
+  font-weight: ${themeVal('type.base.regular')};
+  transform: translate(-14px, -4px);
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+`;
+
+const TimelineRangeTrackSelf = styled.div`
+  position: absolute;
+  top: 0;
+  right: ${RIGHT_AXIS_SPACE}px;
+  overflow: hidden;
+  background: ${themeVal('color.base-100a')};
+  height: 100%;
+
+  .shaded {
+    position: relative;
+    background: ${TIMELINE_PLAYHEAD_COLOR_TEXT};
+    height: 100%;
+  }
+`;
 
 type TimelineHeadProps = Omit<TimelineHeadBaseProps, 'children'> & {
   label?: string;
 };
 
 export function TimelineHeadBase(props: TimelineHeadBaseProps) {
-  const { domain, xScaled, selectedDay, width, onDayChange, isStrokeDashed, children } = props;
+  const { domain, xScaled, selectedDay, width, onDayChange, xPosOffset = 0, zIndex = themeVal('zIndices.overlay'), isStrokeDashed, children } = props;
 
   const theme = useTheme();
-  const rectRef = useRef<SVGRectElement>(null);
+  const rectRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!rectRef.current) return;
 
     const dragger = drag()
       .on('start', function dragstarted() {
-        // document.body.style.cursor = 'grabbing';
         select(this).attr('cursor', 'grabbing');
+        select(this).classed('playhead-grab', true);
       })
       .on('drag', function dragged(event) {
         if (event.x < 0 || event.x > width) {
@@ -73,8 +173,8 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
         }
       })
       .on('end', function dragended() {
-        // document.body.style.cursor = '';
         select(this).attr('cursor', 'grab');
+        select(this).classed('playhead-grab', false);
       });
 
     select(rectRef.current).call(dragger);
@@ -85,117 +185,79 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
   if (xPos < 0 || xPos > width) return null;
 
   return (
-    <TimelineHeadSVG width={width + SVG_PADDING * 2}>
-      <g
-        transform={`translate(${SVG_PADDING}, 0)`}
-        data-tour={props['data-tour']}
-      >
-        <line
-          x1={xPos}
-          x2={xPos}
-          y1={0}
-          y2='100%'
-          stroke={theme.color?.base}
-          strokeDasharray={isStrokeDashed ? 2 : 'none'}
-        />
-        <g transform={`translate(${xPos}, 0)`} ref={rectRef}>
-          {children}
+    <TimelineHeadWrapper style={{width: width + SVG_PADDING * 2, zIndex: zIndex as number}}>
+      <TimelinePlayheadWrapper data-tour={props['data-tour']} ref={rectRef} style={{ transform: `translate(${xPos - xPosOffset}px, -12px)`}}>
+        {children}
+      </TimelinePlayheadWrapper>
+      <svg style={{width: width + SVG_PADDING * 2, height: '100%'}}>
+        <g
+          transform={`translate(${SVG_PADDING}, 0)`}
+          data-tour={props['data-tour']}
+        >
+          <line
+            x1={xPos}
+            x2={xPos}
+            y1={0}
+            y2='100%'
+            stroke={theme.color?.base}
+            strokeDasharray={isStrokeDashed ? 2 : 'none'}
+          />
         </g>
-      </g>
-    </TimelineHeadSVG>
+      </svg>
+    </TimelineHeadWrapper>
   );
 }
 
-export function TimelineHeadPoint(props: TimelineHeadProps) {
-  const theme = useTheme();
-  const { label, ...rest } = props;
+export const TimelineHeadPoint = forwardRef<HTMLDivElement, TimelineHeadProps>((props, ref) => {
+  const { label, selectedDay, ...rest } = props;
 
   return (
-    <TimelineHeadBase {...rest}>
-      <path
-        transform='translate(-14, -4)'
-        d='M4 14.6459C4 15.4637 4.4979 16.1992 5.25722 16.5029L13.2572 19.7029C13.734 19.8936 14.266 19.8936 14.7428 19.7029L22.7428 16.5029C23.5021 16.1992 24 15.4637 24 14.6459L24 6C24 4.89543 23.1046 4 22 4L6 4C4.89543 4 4 4.89543 4 6L4 14.6459Z'
-        fill={theme.color?.surface}
-        stroke={theme.color?.['base-200']}
-        style={{
-          filter: dropShadowFilter,
-          pointerEvents: 'all'
-        }}
-      />
-      <text fill={theme.color?.base} fontSize='0.75rem' y='0' x='-4' dy='1em'>
-        {label}
-      </text>
+    <TimelineHeadBase selectedDay={selectedDay} xPosOffset={40} zIndex={1301} {...rest}>
+      <TimelinePlayheadWithAfter ref={ref}>
+        <TimelinePlayheadContent>
+          <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
+          {format(selectedDay, 'MMM do, yyyy')}
+        </TimelinePlayheadContent>
+      </TimelinePlayheadWithAfter>
     </TimelineHeadBase>
   );
-}
+});
 
-export function TimelineHeadIn(props: TimelineHeadProps) {
-  const theme = useTheme();
-  const { label, ...rest } = props;
+TimelineHeadPoint.displayName = 'TimelineHeadPoint';
+
+export const TimelineHeadIn = forwardRef<HTMLDivElement, TimelineHeadProps>((props, ref) => {
+  const { label, selectedDay, ...rest } = props;
 
   return (
-    <TimelineHeadBase isStrokeDashed {...rest}>
-      <path
-        transform='translate(-6, -4)'
-        d='M4 6C4 4.89543 4.89543 4 6 4H15.1716C15.702 4 16.2107 4.21071 16.5858 4.58579L22.5858 10.5858C23.3668 11.3668 23.3668 12.6332 22.5858 13.4142L16.5858 19.4142C16.2107 19.7893 15.702 20 15.1716 20H6C4.89543 20 4 19.1046 4 18V6Z'
-        fill={theme.color?.surface}
-        stroke={theme.color?.['base-200']}
-        style={{
-          filter: dropShadowFilter,
-          pointerEvents: 'all'
-        }}
-      />
-      <text fill={theme.color?.base} fontSize='0.75rem' y='0' x='2' dy='1em'>
-        {label}
-      </text>
+    <TimelineHeadBase isStrokeDashed selectedDay={selectedDay} {...rest}>
+      <TimelinePlayhead direction='left' ref={ref}>
+        <TimelinePlayheadContent>
+          <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
+          {format(selectedDay, 'MMM do, yyyy')}
+        </TimelinePlayheadContent>
+      </TimelinePlayhead>
     </TimelineHeadBase>
   );
-}
+});
 
-export function TimelineHeadOut(props: TimelineHeadProps) {
-  const theme = useTheme();
-  const { label, ...rest } = props;
+TimelineHeadIn.displayName = 'TimelineHeadIn';
+
+export const TimelineHeadOut = forwardRef<HTMLDivElement, TimelineHeadProps>((props, ref) => {
+  const { label, selectedDay, ...rest } = props;
 
   return (
-    <TimelineHeadBase isStrokeDashed {...rest}>
-      <path
-        transform='translate(-22, -4)'
-        d='M24 6C24 4.89543 23.1046 4 22 4H12.8284C12.298 4 11.7893 4.21071 11.4142 4.58579L5.41421 10.5858C4.63316 11.3668 4.63317 12.6332 5.41421 13.4142L11.4142 19.4142C11.7893 19.7893 12.298 20 12.8284 20H22C23.1046 20 24 19.1046 24 18V6Z'
-        fill={theme.color?.surface}
-        stroke={theme.color?.['base-200']}
-        style={{
-          filter: dropShadowFilter,
-          pointerEvents: 'all'
-        }}
-      />
-      <text
-        fill={theme.color?.base}
-        fontSize='0.75rem'
-        y='0'
-        x='-2'
-        dy='1em'
-        textAnchor='end'
-      >
-        {label}
-      </text>
+    <TimelineHeadBase isStrokeDashed selectedDay={selectedDay} xPosOffset={-15} {...rest}>
+      <TimelinePlayhead direction='right' ref={ref}>
+        <TimelinePlayheadContent>
+          <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
+          {format(selectedDay, 'MMM do, yyyy')}
+        </TimelinePlayheadContent>
+      </TimelinePlayhead>
     </TimelineHeadBase>
   );
-}
+});
 
-const TimelineRangeTrackSelf = styled.div`
-  position: absolute;
-  top: 0;
-  right: ${RIGHT_AXIS_SPACE}px;
-  overflow: hidden;
-  background: ${themeVal('color.base-100a')};
-  height: 100%;
-
-  .shaded {
-    position: relative;
-    background: #ffffff;
-    height: 100%;
-  }
-`;
+TimelineHeadOut.displayName = 'TimelineHeadOut';
 
 interface TimelineRangeTrackProps {
   range: DateRange;
