@@ -144,6 +144,7 @@ function MapBlock(props: MapBlockProps) {
   const {
     datasets,
     layerId,
+    className,
     dateTime,
     compareDateTime,
     compareLabel,
@@ -286,7 +287,7 @@ function MapBlock(props: MapBlockProps) {
     [center, zoom]
   );
   return (
-    <Carto>
+    <Carto className={className}>
       <Map
         id={generatedId}
         mapOptions={{
