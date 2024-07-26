@@ -11,7 +11,6 @@ import {
 import { Feature } from 'geojson';
 import { endOfDay, startOfDay } from 'date-fns';
 import centroid from '@turf/centroid';
-
 import { requestQuickCache, useFitBbox, useLayerInteraction } from './utils';
 import { useMapStyle } from './styles';
 import { useCustomMarker } from './custom-marker';

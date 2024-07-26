@@ -1,89 +1,37 @@
-import {
-  eachDayOfInterval,
-  eachYearOfInterval,
-  format,
-  startOfDay,
-  startOfYear
-} from 'date-fns';
-import startOfMonth from 'date-fns/startOfMonth';
 import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
+import eachDayOfInterval from 'date-fns/eachDayOfInterval';
+import eachYearOfInterval from 'date-fns/eachYearOfInterval';
+import startOfDay from 'date-fns/startOfDay';
+import startOfMonth from 'date-fns/startOfMonth';
+import startOfYear from 'date-fns/startOfYear';
 import {
   EnhancedDatasetLayer,
+  TimelineDataset,
+  DatasetStatus,
   StacDatasetData,
   TimeDensity,
-  TimelineDataset,
-  DatasetStatus
 } from './types.d.ts';
 import {
   DataMetric,
   DATA_METRICS,
   DEFAULT_DATA_METRICS
 } from './components/datasets/analysis-metrics';
-import { veda_faux_module_datasets } from '$data-layer/datasets';
-import { DatasetLayer, DatasetData, VedaDatum } from '$types/veda';
 import { utcString2userTzDate } from '$utils/date';
+import { DatasetLayer, VedaDatum, DatasetData } from '$types/veda';
 
-// @TODO: This file should be deprecated and merged with `data-utils-no-faux-module` 
-// to get rid of the faux modules dependency
+// @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
+// `./date-utils` to be deprecated!!
 
-export const findParentDataset = (layerId: string) => {
-  const parentDataset: VedaDatum<DatasetData> | undefined = Object.values(
-    veda_faux_module_datasets
-  ).find((dataset: VedaDatum<DatasetData>) =>
-    dataset!.data.layers.find((l) => l.id === layerId)
-  );
-  return parentDataset?.data;
-};
-
-export const findDatasetAttribute = ({
-  datasetId,
-  attr
-}: {
-  datasetId: string;
-  attr: string;
-}) => {
-  return veda_faux_module_datasets[datasetId]?.data[attr];
-};
-
-export const allExploreDatasets = Object.values(veda_faux_module_datasets)
-  .map((d: VedaDatum<DatasetData>) => d!.data)
-  .filter((d: DatasetData) => !d.disableExplore);
-
-export interface DatasetDataWithEnhancedLayers extends DatasetData {
-  layers: EnhancedDatasetLayer[];
-}
-
-function enhanceDatasetLayers(dataset) {
-  return {
-    ...dataset,
-    layers: dataset.layers.map((layer) => ({
-      ...layer,
-      parentDataset: {
-        id: dataset.id,
-        name: dataset.name
-      }
-    }))
-  };
-}
-
-export const allExploreDatasetsWithEnhancedLayers: DatasetDataWithEnhancedLayers[] =
-  allExploreDatasets.map(enhanceDatasetLayers);
-
-export const getAllDatasetsWithEnhancedLayers = (
-  dataset
-): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
-
-export const datasetLayers = Object.values(veda_faux_module_datasets).flatMap(
-  (dataset: VedaDatum<DatasetData>) => {
-    return dataset!.data.layers.map((l) => ({
+export const getDatasetLayers = (datasets: VedaDatum<DatasetData>) => Object.values(datasets)
+  .flatMap((dataset: VedaDatum<DatasetData>) => {
+    return dataset!.data.layers.map(l => ({
       ...l,
       parentDataset: {
         id: dataset!.data.id,
         name: dataset!.data.name
       }
     }));
-  }
-);
+  });
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
@@ -108,19 +56,6 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
 
   return foundMetrics;
 }
-
-/**
- * Converts the datasets to a format that can be used by the timeline, skipping
- * the ones that have already been reconciled.
- *
- * @param ids The ids of the datasets to reconcile.
- * @param datasetsList The list of datasets layers from VEDA
- * @param reconciledDatasets The datasets that were already reconciled.
- */
-
-// @TODO: Assuming that all the datasets are added only through this method
-// We can find a dataset that a layer belongs to in this method
-// Include it as a part of returned value
 
 export function reconcileDatasets(
   ids: string[],
@@ -175,17 +110,17 @@ export function resolveLayerTemporalExtent(
     case TimeDensity.YEAR:
       return eachYearOfInterval({
         start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain.last)
+        end: utcString2userTzDate(domain[domain.length-1])
       });
     case TimeDensity.MONTH:
       return eachMonthOfInterval({
         start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain.last)
+        end: utcString2userTzDate(domain[domain.length-1])
       });
     case TimeDensity.DAY:
       return eachDayOfInterval({
         start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain.last)
+        end: utcString2userTzDate(domain[domain.length-1])
       });
     default:
       throw new Error(
@@ -203,27 +138,4 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
   }
 
   return startOfDay(date);
-}
-
-export const formatDate = (date: Date | null, view?: string) => {
-  if (!date) return 'Date';
-
-  switch (view) {
-    case 'decade':
-      return format(date, 'yyyy');
-    case 'year':
-      return format(date, 'MMM yyyy');
-    default:
-      return format(date, 'MMM do, yyyy');
-  }
-};
-
-export class ExtendedError extends Error {
-  code: string;
-  details?: any;
-
-  constructor(message: string, code: string) {
-    super(message);
-    this.code = code;
-  }
 }

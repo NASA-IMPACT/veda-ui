@@ -1,12 +1,11 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { QueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
-import { DatasetLayer } from 'veda';
-
 import { MAX_QUERY_NUM } from '../constants';
 import { getFilterPayload, combineFeatureCollection } from '../utils';
-import EventEmitter from './mini-events';
 import { ConcurrencyManager, ConcurrencyManagerInstance } from './concurrency';
+import EventEmitter from './mini-events';
+import { DatasetLayer } from '$types/veda';
 import { TimeDensity } from '$context/layer-data';
 
 export const TIMESERIES_DATA_BASE_ID = 'analysis';

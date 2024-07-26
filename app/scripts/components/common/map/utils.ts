@@ -1,17 +1,17 @@
 import axios, { Method } from 'axios';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { Map as MapboxMap } from 'mapbox-gl';
 import { MapRef } from 'react-map-gl';
-import { endOfDay, startOfDay } from 'date-fns';
+import startOfDay from 'date-fns/startOfDay';
+import endOfDay from 'date-fns/endOfDay';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { BBox } from '@turf/helpers';
+import { StacFeature } from './types';
 import {
   DatasetDatumFn,
   DatasetDatumFnResolverBag,
   DatasetDatumReturnType
-} from 'veda';
-
-import { StacFeature } from './types';
+} from '$types/veda';
 import { TimeDensity } from '$context/layer-data';
 import { userTzDate2utcString } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';

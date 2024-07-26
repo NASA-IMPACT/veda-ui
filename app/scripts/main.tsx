@@ -47,7 +47,7 @@ const UserPagesComponent = lazy(() => import('$components/user-pages'));
 
 
 // Contexts
-import { ReactQueryProvider } from '$context/react-query';
+import ReactQueryProvider from '$context/react-query';
 import {
   ABOUT_PATH,
   ANALYSIS_PATH,

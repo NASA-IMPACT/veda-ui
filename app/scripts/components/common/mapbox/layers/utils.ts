@@ -10,17 +10,6 @@ import {
 } from 'date-fns';
 import { endOfDay, startOfDay } from 'date-fns';
 import {
-  datasets,
-  DatasetLayer,
-  DatasetLayerCompareInternal,
-  DatasetLayerCompareSTAC,
-  DatasetDatumFn,
-  DatasetDatumFnResolverBag,
-  DatasetDatumReturnType,
-  DatasetLayerCompareNormalized,
-  DatasetLayerType
-} from 'veda';
-import {
   MapLayerRasterTimeseries,
   MapLayerRasterTimeseriesProps,
   StacFeature
@@ -37,7 +26,18 @@ import {
   MapLayerCMRTimeseries,
   MapLayerCMRTimeseriesProps
 } from './cmr-timeseries';
-
+import {
+  DatasetLayer,
+  DatasetLayerCompareInternal,
+  DatasetLayerCompareSTAC,
+  DatasetDatumFn,
+  DatasetDatumFnResolverBag,
+  DatasetDatumReturnType,
+  DatasetLayerCompareNormalized,
+  DatasetLayerType,
+  VedaData,
+  DatasetData,
+} from '$types/veda';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { AsyncDatasetLayer } from '$context/layer-data';
 import { S_FAILED, S_IDLE, S_LOADING, S_SUCCEEDED } from '$utils/status';
@@ -70,6 +70,7 @@ export const getLayerComponent = (
  * @returns object
  */
 export const getCompareLayerData = (
+  datasets: VedaData<DatasetData>,
   layerData: DatasetLayer | null
 ): DatasetLayerCompareNormalized | null => {
   if (!layerData?.compare) return null;

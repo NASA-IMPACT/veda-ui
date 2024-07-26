@@ -358,7 +358,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         );
 
         const tilejsonUrl = `${mosaicUrl}?${tileParams}`;
-
         try {
           const tilejsonData = await requestQuickCache<any>({
             url: tilejsonUrl,
@@ -366,7 +365,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             payload: null,
             controller
           });
-
           const tileServerUrl = tilejsonData.tiles[0];
 
           const wmtsBaseUrl = mosaicUrl.replace(
@@ -417,6 +415,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
               context: STATUS_KEY.StacSearch
             });
           }
+
           LOG &&
             /* eslint-disable-next-line no-console */
             console.log(

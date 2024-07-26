@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import qs from 'qs';
 import { RasterSource, RasterLayer } from 'mapbox-gl';
-
 import { useMapStyle } from './styles';
 
 import { ActionStatus } from '$utils/status';

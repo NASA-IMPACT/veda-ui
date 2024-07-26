@@ -1,6 +1,5 @@
 import React from 'react';
 import { Map as MapboxMap } from 'mapbox-gl';
-
 import { ZarrPaintLayer } from './zarr-timeseries';
 import { ActionStatus } from '$utils/status';
 

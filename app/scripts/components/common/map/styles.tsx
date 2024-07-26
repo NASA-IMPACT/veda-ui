@@ -14,7 +14,7 @@ import {
   LayerOrderPosition
 } from './types';
 
-interface StylesContextType {
+export interface StylesContextType {
   updateStyle: (params: GeneratorStyleParams) => void;
   style?: Style;
   updateMetaData?: (params: unknown) => void;

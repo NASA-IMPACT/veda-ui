@@ -11,8 +11,7 @@ import {
   DatasetStatus,
   VizDataset
 } from '../types.d.ts';
-import { resolveLayerTemporalExtent } from '../data-utils';
-
+import { resolveLayerTemporalExtent } from '../data-utils-no-faux-module';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { SetState } from '$types/aliases';
 

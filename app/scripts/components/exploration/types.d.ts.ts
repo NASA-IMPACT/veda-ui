@@ -1,5 +1,5 @@
-import { DatasetLayer } from 'veda';
 import { DataMetric } from './components/datasets/analysis-metrics';
+import { DatasetLayer } from '$types/veda';
 
 export enum TimeDensity {
   YEAR = 'year',

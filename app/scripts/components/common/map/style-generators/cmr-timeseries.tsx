@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { BaseGeneratorParams } from '../types';
 import { ZarrPaintLayer } from './zarr-timeseries';
 import { useCMR } from './hooks';

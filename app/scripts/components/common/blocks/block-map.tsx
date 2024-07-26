@@ -1,7 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
-// @NOTE: This should be replaced by types/veda once the changes are consolidated
-import { ProjectionOptions } from 'veda';
 import { MapboxOptions } from 'mapbox-gl';
 import {
   convertProjectionToMapbox,
@@ -35,9 +33,9 @@ import {
   DatasetStatus
 } from '$components/exploration/types.d.ts';
 
-import { reconcileDatasets } from '$components/exploration/data-utils';
-import { datasetLayers } from '$components/exploration/data-utils';
+import { reconcileDatasets, getDatasetLayers } from '$components/exploration/data-utils-no-faux-module';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
+import { ProjectionOptions, VedaDatum, DatasetData } from '$types/veda';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -111,6 +109,7 @@ function validateBlockProps(props: MapBlockProps) {
 }
 
 interface MapBlockProps {
+  datasets: VedaDatum<DatasetData>;
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
@@ -128,7 +127,6 @@ interface MapBlockProps {
 const getDataLayer = (layerIndex: number, layers: VizDataset[] | undefined): (VizDatasetSuccess | null) => {
   if (!layers || layers.length <= layerIndex) return null;
   const layer = layers[layerIndex];
-
   // @NOTE: What to do when data returns ERROR
   if (layer.status !== DatasetStatus.SUCCESS) return null;
   return {
@@ -144,6 +142,7 @@ function MapBlock(props: MapBlockProps) {
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
 
   const {
+    datasets,
     layerId,
     dateTime,
     compareDateTime,
@@ -161,6 +160,8 @@ function MapBlock(props: MapBlockProps) {
   if (errors.length) {
     throw new HintedError('Malformed Map Block', errors);
   }
+
+  const datasetLayers = getDatasetLayers(datasets);
 
   const layersToFetch = useMemo(() => {
     const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
@@ -262,7 +263,7 @@ function MapBlock(props: MapBlockProps) {
       const providedLabel = compareDataLayer.data.mapLabel as string;
       return providedLabel;
     }
-
+  
     // Default to date comparison.
     return selectedDatetime && compareToDate
       ? formatCompareDate(
@@ -280,7 +281,6 @@ function MapBlock(props: MapBlockProps) {
     baseTimeDensity,
     compareTimeDensity
   ]);
-
   const initialPosition = useMemo(
     () => (center ? { lng: center[0], lat: center[1], zoom } : undefined),
     [center, zoom]

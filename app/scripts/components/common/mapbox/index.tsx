@@ -23,7 +23,7 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { DatasetDatumFnResolverBag, ProjectionOptions } from 'veda';
+import { DatasetDatumFnResolverBag, ProjectionOptions, datasets } from 'veda';
 
 import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
 import MapMessage from '../map/map-message';
@@ -176,7 +176,7 @@ function MapboxMapComponent(
     compareInstance: mapCompareRef.current
   }));
 
-  const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasetId, layerId);
+  const { baseLayer, compareLayer } = useDatasetAsyncLayer(datasets, datasetId, layerId);
 
   const shouldRenderCompare = isMapLoaded && isComparing;
 
