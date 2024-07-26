@@ -12,7 +12,6 @@ import {
   ToolbarIconButton,
   VerticalDivider
 } from '@devseed-ui/toolbar';
-import { format } from 'date-fns';
 import {
   PanelWidget,
   PanelWidgetBody,
@@ -26,6 +25,7 @@ import { TimeDensity } from '$context/layer-data';
 import { mod } from '$utils/utils';
 import DateSliderControl from '$components/common/dateslider';
 import { prepareDateSliderData } from '$components/common/dateslider/utils';
+import { formatDate } from '$components/exploration/data-utils';
 
 function getDatePickerView(timeDensity?: TimeDensity) {
   const view = {
@@ -50,19 +50,6 @@ interface PanelDateWidgetProps {
   isClearable?: boolean;
   children?: ReactNode;
 }
-
-export const formatDate = (date: Date | null, view: string) => {
-  if (!date) return 'Date';
-
-  switch (view) {
-    case 'decade':
-      return format(date, 'yyyy');
-    case 'year':
-      return format(date, 'MMM yyyy');
-    default:
-      return format(date, 'MMM do, yyyy');
-  }
-};
 
 export function PanelDateWidget(props: PanelDateWidgetProps) {
   const {

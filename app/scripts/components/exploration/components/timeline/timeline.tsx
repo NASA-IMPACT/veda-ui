@@ -21,7 +21,8 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useRef
+  useRef,
+  useState
 } from 'react';
 import useDimensions from 'react-cool-dimensions';
 import styled from 'styled-components';
@@ -184,6 +185,14 @@ const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
   };
 };
 
+export interface TimelineHead {
+  name: 'Point' | 'PointCompare' | 'In' | 'Out';
+  date: Date | null;
+  ref?: React.MutableRefObject<any>;
+  isInView?: boolean;
+  outDirection?: 'left' | 'right' | undefined;
+}
+
 export default function Timeline(props: TimelineProps) {
   const {
     datasets,
@@ -202,6 +211,13 @@ export default function Timeline(props: TimelineProps) {
   // Because the interaction rect traps the events, we need a ref to the
   // container to propagate the needed events to it, like scroll.
   const datasetsContainerRef = useRef<HTMLDivElement>(null);
+
+  const headPointRef = useRef(null);
+  const headPointCompareRef = useRef(null);
+  const headInRef = useRef(null);
+  const headOutRef = useRef(null);
+
+  const [outOfViewHeads, setOutOfViewHeads] = useState<TimelineHead[]>([]);
 
   const dataDomain = useTimelineDatasetsDomain();
 
@@ -272,6 +288,59 @@ export default function Timeline(props: TimelineProps) {
         );
       });
   }, [setZoomTransform, translateExtent, k0, k1]);
+
+  useEffect(() => {
+    if (!xScaled) return;
+
+    // Get the start and end of the current scaled domain (visible timeline)
+    const [extentStart, extentEnd] = xScaled.domain();
+
+    // Initialize the heads array with the selected day point
+    let heads: { name: 'Point' | 'PointCompare' | 'In' | 'Out'; ref: React.MutableRefObject<any>; date: Date | null }[] = [
+      { name: 'Point', ref: headPointRef, date: selectedDay }
+    ];
+
+    // If there is a selected compare day, add it to the heads array
+    if (selectedCompareDay) {
+      heads = [
+        ...heads,
+        { name: 'PointCompare', ref: headPointCompareRef, date: selectedCompareDay }
+      ];
+    }
+
+    // If there is a selected interval, add its start and end to the heads array
+    if (selectedInterval) {
+      heads = [
+        ...heads,
+        { name: 'In', ref: headInRef, date: selectedInterval.start },
+        { name: 'Out', ref: headOutRef, date: selectedInterval.end }
+      ];
+    }
+
+    // Filter heads that are not currently in view and map them to the OutOfViewHead type
+    const outOfViewHeads: TimelineHead[] = heads
+      .filter(head => !head.ref.current)
+      .map(head => {
+        let outDirection: 'left' | 'right' | undefined;
+        if (head.date && head.date < extentStart) {
+          outDirection = 'left';
+        } else if (head.date && head.date > extentEnd) {
+          outDirection = 'right';
+        }
+
+        return {
+          name: head.name,
+          // Default to current date if date is null (e.g. could occur on initial component mount)
+          date: head.date ?? new Date(),
+          isInView: false,
+          outDirection
+        };
+      });
+
+    setOutOfViewHeads(outOfViewHeads);
+
+  }, [selectedDay, selectedInterval, selectedCompareDay, xScaled, zoomBehavior]);
+
 
   useEffect(() => {
     if (!interactionRef.current) return;
@@ -610,6 +679,7 @@ export default function Timeline(props: TimelineProps) {
           xScaled={xScaled}
           width={width}
           onZoom={onControlsZoom}
+          outOfViewHeads={outOfViewHeads}
         />
       </TimelineHeader>
       <TimelineContent>
@@ -617,6 +687,7 @@ export default function Timeline(props: TimelineProps) {
           <>
             {selectedDay && (
               <TimelineHeadPoint
+                ref={headPointRef}
                 data-tour='timeline-head-a'
                 label={selectedCompareDay ? 'A' : undefined}
                 domain={dataDomain}
@@ -628,6 +699,7 @@ export default function Timeline(props: TimelineProps) {
             )}
             {selectedCompareDay && (
               <TimelineHeadPoint
+                ref={headPointCompareRef}
                 label='B'
                 domain={dataDomain}
                 xScaled={xScaled}
@@ -639,8 +711,10 @@ export default function Timeline(props: TimelineProps) {
             {selectedInterval && (
               <>
                 <TimelineHeadIn
+                  ref={headInRef}
                   domain={dataDomain}
                   xScaled={xScaled}
+                  label='FROM'
                   onDayChange={(d) => {
                     setSelectedInterval((interval) => {
                       const prevDay = sub(interval!.end, { days: 1 });
@@ -654,8 +728,10 @@ export default function Timeline(props: TimelineProps) {
                   width={width}
                 />
                 <TimelineHeadOut
+                  ref={headOutRef}
                   domain={dataDomain}
                   xScaled={xScaled}
+                  label='TO'
                   onDayChange={(d) => {
                     setSelectedInterval((interval) => {
                       const nextDay = add(interval!.start, { days: 1 });
