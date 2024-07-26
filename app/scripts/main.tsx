@@ -44,7 +44,6 @@ const Sandbox = lazy(() => import('$components/sandbox'));
 
 const UserPagesComponent = lazy(() => import('$components/user-pages'));
 
-
 // Contexts
 import { ReactQueryProvider } from '$context/react-query';
 import {

@@ -50,7 +50,7 @@ export default function Banner({appTitle, expires, url, text, type = infoTypeFla
           </USWDSBanner>
           <div className='position-absolute top-0 right-0 margin-right-3 height-full display-flex'>
               <button 
-              className='usa-button usa-button--secondary usa-button--unstyled'
+              className='usa-button usa-button--unstyled'
               type='button'
               aria-label='Close Banner'
               onClick={onClose}
