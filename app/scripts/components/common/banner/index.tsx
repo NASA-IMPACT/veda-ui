@@ -1,5 +1,6 @@
-import React, {useState} from "react";
-import { Banner as USWDSBanner, BannerContent, Icon } from "@trussworks/react-uswds";
+import React, { useState } from "react";
+import { Icon } from "@trussworks/react-uswds";
+import { USWDSBanner, USWDSBannerContent } from "$components/common/uswds/banner";
 
 const BANNER_KEY = 'dismissedBannerUrl';
 
@@ -42,9 +43,9 @@ export default function Banner({appTitle, expires, url, text, type = infoTypeFla
         (<div className='position-relative'>
           <USWDSBanner aria-label={appTitle} className={type !== infoTypeFlag? 'bg-secondary-lighter': ''}>
             <a href={url} target='_blank' rel='noreferrer'>
-              <BannerContent className='padding-top-1 padding-bottom-1' isOpen={true}>
+              <USWDSBannerContent className='padding-top-1 padding-bottom-1' isOpen={true}>
                 <p dangerouslySetInnerHTML={{ __html: text }} />
-              </BannerContent>
+              </USWDSBannerContent>
             </a>
           </USWDSBanner>
           <div className='position-absolute top-0 right-0 margin-right-3 height-full display-flex'>
