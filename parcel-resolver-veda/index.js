@@ -194,7 +194,8 @@ module.exports = new Resolver({
             logger
           )},
           strings: ${JSON.stringify(withDefaultStrings(result.strings))},
-          booleans: ${JSON.stringify(withDefaultStrings(result.booleans))}
+          booleans: ${JSON.stringify(withDefaultStrings(result.booleans))},
+          banner: ${JSON.stringify(result.banner)}
         };
 
         export const theme = ${JSON.stringify(result.theme) || null};
@@ -210,6 +211,9 @@ module.exports = new Resolver({
 
         export const getString = (variable) => config.strings[variable];
         export const getBoolean = (variable) => config.booleans[variable];
+
+        export const getConfig = () => config;
+        export const getBanner = () => config.banner;
 
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
         export const stories = ${generateMdxDataObject(storiesImportData)};

@@ -5,7 +5,7 @@ import { Button } from '@devseed-ui/button';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
 import { CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
-import { getOverride } from 'veda';
+import { getOverride, getBanner } from 'veda';
 
 import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
 
@@ -131,9 +131,15 @@ const getCoverProps = () => {
 function RootHome() {
   const { show: showFeedbackModal } = useFeedbackModal();
 
+  const banner = getBanner();
+  const renderBanner = !!banner && banner.text && banner.url && banner.expires;
+
   return (
     <PageMainContent>
-      <LayoutProps title='Welcome' />
+      <LayoutProps 
+        title='Welcome' 
+        banner={renderBanner? {...banner}: null}
+      />
 
       <ComponentOverride with='homeHero'>
         <PageHeroHome
