@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 import MapBlock from '$components/common/blocks/block-map';
+import { veda_faux_module_datasets } from '$data-layer/datasets';
 
 const DemoMap = styled(MapBlock)`
   height: 40rem;
@@ -20,6 +21,7 @@ function SandboxMapBlock() {
       <Constrainer>
         <Wrapper>
           <DemoMap
+            datasets={veda_faux_module_datasets}
             datasetId='no2'
             layerId='no2-monthly'
             dateTime='2020-03-01'
