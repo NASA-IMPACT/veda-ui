@@ -1,11 +1,12 @@
 let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
   content: [
-    './app/**/*.{js,jsx,ts,tsx,html}',
+    './app/**/*.{js,jsx,ts,tsx}',
+    './app/index.html',
     '@trussworks/react-uswds/lib/index.css'
   ],
   safelist: {
-    deep: [/usa-banner$/],
+    deep: [/usa-banner$/, /welcome-banner$/],
     greedy: [/^usa-banner/]
   }
 });
