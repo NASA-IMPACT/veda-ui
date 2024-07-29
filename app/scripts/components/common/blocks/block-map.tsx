@@ -111,6 +111,7 @@ function validateBlockProps(props: MapBlockProps) {
 interface MapBlockProps {
   datasets: VedaDatum<DatasetData>;
   dateTime?: string;
+  className?: string;
   compareDateTime?: string;
   center?: [number, number];
   zoom?: number;
