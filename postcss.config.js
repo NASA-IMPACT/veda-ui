@@ -1,7 +1,7 @@
 let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
   content: [
-    './app/**/*.{js,jsx,ts,tsx}',
+    './app/**/*.{js,jsx,ts,tsx,html}',
     '@trussworks/react-uswds/lib/index.css'
   ],
   safelist: {
