@@ -1,4 +1,8 @@
-let plugins = [require('autoprefixer'), require('postcss-import')];
+let plugins = [
+  require('autoprefixer'),
+  require('postcss-import'),
+  require('postcss-reporter')
+];
 const purge = require('@fullhuman/postcss-purgecss')({
   content: [
     './app/**/*.{js,jsx,ts,tsx}',
