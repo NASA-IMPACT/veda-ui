@@ -1,9 +1,26 @@
+const path = require('path');
+const fs = require('fs-extra');
+const CWD = process.cwd();
+
+const vedaPath = path.resolve(CWD, '.veda/ui');
+const isVedaInstance = fs.existsSync(vedaPath);
+
+let uswdsPath = path.resolve(CWD, 'node_modules/@trussworks/react-uswds/lib');
+
+if (isVedaInstance)
+  uswdsPath = path.resolve(
+    CWD,
+    '.veda/ui',
+    'node_modules/@trussworks/react-uswds/lib'
+  );
+
+const contentPaths = isVedaInstance
+  ? ['.veda/ui/app/**/*.{js,jsx,ts,tsx}', `${uswdsPath}/index.css`]
+  : ['./app/**/*.{js,jsx,ts,tsx}', `${uswdsPath}/index.css`];
+
 let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
-  content: [
-    './app/**/*.{js,jsx,ts,tsx}',
-    '@trussworks/react-uswds/lib/index.css'
-  ],
+  content: contentPaths,
   safelist: {
     deep: [/usa-banner$/],
     greedy: [/^usa-banner/]
