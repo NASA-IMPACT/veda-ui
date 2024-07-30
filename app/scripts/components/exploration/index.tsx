@@ -29,7 +29,6 @@ const Container = styled.div`
 
   .panel-timeline {
     box-shadow: 0 -1px 0 0 ${themeVal('color.base-100')};
-    overflow: visible !important;
   }
 
   .resize-handle {
