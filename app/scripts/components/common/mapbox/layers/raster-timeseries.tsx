@@ -274,7 +274,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-enable no-console */
 
         const responseData = await requestQuickCache({
-          url: `${tileApiEndpointToUse}/mosaic/register`,
+          url: `${tileApiEndpointToUse}/searches/register`,
           payload,
           controller
         });
