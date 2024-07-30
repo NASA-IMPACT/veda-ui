@@ -188,7 +188,6 @@
     "polished": "^4.1.3",
     "postcss": "^8.4.39",
     "postcss-import": "^16.1.0",
-    "postcss-reporter": "^7.1.0",
     "postcss-safe-parser": "^7.0.0",
     "postcss-scss": "^4.0.9",
     "prop-types": "^15.7.2",

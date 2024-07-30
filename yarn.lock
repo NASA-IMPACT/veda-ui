@@ -12263,14 +12263,6 @@ postcss-media-query-parser@^0.2.3:
   dependencies:
     postcss-selector-parser "^6.0.6"
 
-postcss-reporter@^7.1.0:
-  version "7.1.0"
-  resolved "http://verdaccio.ds.io:4873/postcss-reporter/-/postcss-reporter-7.1.0.tgz#5ec476d224e2fe25a054e3c66d9b2901d4fab422"
-  integrity sha512-/eoEylGWyy6/DOiMP5lmFRdmDKThqgn7D6hP2dXKJI/0rJSO1ADFNngZfDzxL0YAxFvws+Rtpuji1YIHj4mySA==
-  dependencies:
-    picocolors "^1.0.0"
-    thenby "^1.3.4"
-
 postcss-resolve-nested-selector@^0.1.1:
   version "0.1.1"
   resolved "http://verdaccio.ds.io:4873/postcss-resolve-nested-selector/-/postcss-resolve-nested-selector-0.1.1.tgz#29ccbc7c37dedfac304e9fff0bf1596b3f6a0e4e"
@@ -14405,11 +14397,6 @@ textextensions@^3.2.0:
   version "3.3.0"
   resolved "http://verdaccio.ds.io:4873/textextensions/-/textextensions-3.3.0.tgz#03530d5287b86773c08b77458589148870cc71d3"
   integrity sha512-mk82dS8eRABNbeVJrEiN5/UMSCliINAuz8mkUwH4SwslkNP//gbEzlWNS5au0z5Dpx40SQxzqZevZkn+WYJ9Dw==
-
-thenby@^1.3.4:
-  version "1.3.4"
-  resolved "http://verdaccio.ds.io:4873/thenby/-/thenby-1.3.4.tgz#81581f6e1bb324c6dedeae9bfc28e59b1a2201cc"
-  integrity sha512-89Gi5raiWA3QZ4b2ePcEwswC3me9JIg+ToSgtE0JWeCynLnLxNr/f9G+xfo9K+Oj4AFdom8YNJjibIARTJmapQ==
 
 through2-filter@^3.0.0:
   version "3.0.0"
