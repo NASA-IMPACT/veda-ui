@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { Link, NavLink, NavLinkProps } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import {
   glsp,
   listReset,
@@ -354,12 +354,15 @@ enum LinkItemType {
   ExternalLink = 'externalLink'
 }
 type AlignmentEnum  = 'left' | 'center' | 'right' | 'top' | 'middle' | 'bottom';
-export interface InternalNavLink extends NavLinkProps{
+
+export interface InternalNavLink {
   title: string;
+  to: string;
   type: 'internalLink'
 }
-export interface ExternalNavLink extends React.RefAttributes<HTMLAnchorElement> {
+export interface ExternalNavLink {
   title: string;
+  href: string;
   type: 'externalLink'
 }
 export type NavLinkItem = (ExternalNavLink | InternalNavLink);
@@ -387,8 +390,7 @@ function ChildItem({ child }: { child: NavLinkItem}) {
   if (type === LinkItemType.InternalLink) {
     return (
     <li> 
-      {/* @ts-expect-error DropMenuNavItem seems to expect a tag props */}
-      <DropMenuNavItem as={NavLink} {...rest as NavLinkProps} data-dropdown='click.close'>
+      <DropMenuNavItem as={NavLink} {...rest as InternalNavLink} data-dropdown='click.close'>
         {title}
       </DropMenuNavItem>
     </li>
@@ -396,7 +398,7 @@ function ChildItem({ child }: { child: NavLinkItem}) {
   } else {
     return (
       <li key={`${title}-dropdown-menu`}>
-        <DropMenuNavItem as='a' {...rest as React.RefAttributes<HTMLAnchorElement>} data-dropdown='click.close'>
+        <DropMenuNavItem as='a' target='blank' rel='noopener' {...rest as ExternalNavLink} data-dropdown='click.close'>
           {title}
         </DropMenuNavItem>
       </li>
@@ -425,8 +427,8 @@ function NavItemMenu({ item, alignment, onClick }: {item: NavItem, alignment?: A
         as='a'
         target='blank'
         rel='noopener'
-        {...rest} 
         onClick={onClick}
+        {...rest} 
       >
         {title}
       </GlobalMenuLink>

@@ -268,7 +268,29 @@ export interface LayerInfo {
     text: string,
     type?: BannerType
   }
+
+  interface InternalNavLink {
+    title: string;
+    to: string;
+    type: 'internalLink'
+  }
+  interface ExternalNavLink {
+    title: string;
+    href: string;
+    type: 'externalLink'
+  }
+  type NavLinkItem = (ExternalNavLink | InternalNavLink);
+  export interface ModalNavLink {
+    title: string;
+    type: 'modal';
+    src: string;
+  }
   
+  export interface DropdownNavLink { 
+    title: string;
+    type: 'dropdown';
+    children: NavLinkItem[];
+  }
 
   /**
    * Named exports: datasets.
@@ -299,7 +321,6 @@ export interface LayerInfo {
     | 'sandbox-override'
     | 'pageFooter'
     | 'headerBrand'
-    | 'nav'
     | 'homeHero';
   /**
    * Configuration export for specific overrides.
@@ -313,7 +334,8 @@ export interface LayerInfo {
 
   export const getBoolean: (variable: string) => boolean;
 
-  export const getBanner: () => BannerData | undefined;
+  export const getBannerFromVedaConfig: () => BannerData | undefined;
+  export const getNavItemsFromVedaConfig: () => {mainNavItems: (NavLinkItem | ModalNavLink | DropdownNavLink)[]| undefined, subNavItems: (NavLinkItem | ModalNavLink | DropdownNavLink)[] | undefined } | undefined;
 
   /**
    * List of custom user defined pages.

@@ -3,13 +3,11 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
-import { getString } from 'veda';
+import { getString, getNavItemsFromVedaConfig } from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 import Banner from '../banner';
 import { LayoutRootContext } from './context';
-
-import { ContentOverride } from '$components/common/page-overrides';
 
 import { useGoogleTagManager } from '$utils/use-google-tag-manager';
 
@@ -46,15 +44,7 @@ const PageBody = styled.div`
 `;
 
 
-let navItems:(ExternalNavLink | InternalNavLink | DropdownNavLink | ModalNavLink)[] = [ {
-  title: 'test',
-  type: 'dropdown',
-  children: [{
-    title: 'test dropdown',
-    to: STORIES_PATH,
-    type: 'internalLink'
-  }]
-}, {
+let defaultMainNavItems:(ExternalNavLink | InternalNavLink | DropdownNavLink | ModalNavLink)[] = [{
   title: 'Data Catalog',
   to: DATASETS_PATH,
   type: 'internalLink'
@@ -68,25 +58,28 @@ let navItems:(ExternalNavLink | InternalNavLink | DropdownNavLink | ModalNavLink
   type: 'internalLink'
 }];
 
-if (!!process.env.HUB_URL && !!process.env.HUB_NAME) navItems = [...navItems, {
+if (!!process.env.HUB_URL && !!process.env.HUB_NAME) defaultMainNavItems = [...defaultMainNavItems, {
   title: process.env.HUB_NAME,
   href: process.env.HUB_URL,
   type: 'externalLink'
 } as ExternalNavLink];
 
-let subNavItems:(ExternalNavLink | InternalNavLink | DropdownNavLink | ModalNavLink)[] = [{
+let defaultSubNavItems:(ExternalNavLink | InternalNavLink | DropdownNavLink | ModalNavLink)[] = [{
   title: 'About',
   to: ABOUT_PATH,
   type: 'internalLink'
 }];
 
 if (process.env.GOOGLE_FORM) {
-  subNavItems = [...subNavItems, {
+  defaultSubNavItems = [...defaultSubNavItems, {
     title: 'Contact us',
     src: process.env.GOOGLE_FORM,
     type: 'modal'
   }];
 }
+
+const navItems = getNavItemsFromVedaConfig()?.mainNavItems?? defaultMainNavItems;
+const subNavItems = getNavItemsFromVedaConfig()?.subNavItems?? defaultSubNavItems;
 
 function LayoutRoot(props: { children?: ReactNode }) {
   const { children } = props;
@@ -108,9 +101,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         thumbnail={thumbnail}
       />
       {banner && <Banner appTitle={title} {...banner} />}
-      <ContentOverride with='nav'>
-        <NavWrapper mainNavItems={navItems} subNavItems={subNavItems} />
-      </ContentOverride>
+      <NavWrapper mainNavItems={navItems} subNavItems={subNavItems} />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
