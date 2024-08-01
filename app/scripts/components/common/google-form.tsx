@@ -42,7 +42,8 @@ const ButtonAsNavLink = styled(Button)`
   `}
 `;
 
-function GoogleForm() {
+function GoogleForm(props: { title: string, src: string}) {
+  const { title, src } = props;
   const { isRevealed, show, hide } = useFeedbackModal();
 
   return (
@@ -53,7 +54,7 @@ function GoogleForm() {
         onClick={show}
         style={{ color: 'white' }}
       >
-        Contact Us
+        {title}
       </ButtonAsNavLink>
       <Modal
         id='modal'
@@ -65,7 +66,7 @@ function GoogleForm() {
         closeButton
         content={
           <StyledGoogleForm
-            src={process.env.GOOGLE_FORM}
+            src={src}
             height={504}
             frameBorder={0}
             marginHeight={0}

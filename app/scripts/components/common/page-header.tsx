@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, NavLink, NavLinkProps } from 'react-router-dom';
-import { userPages, getOverride } from 'veda';
 import {
   glsp,
   listReset,
@@ -14,7 +13,6 @@ import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
 import {
-  CollecticonEllipsisVertical,
   CollecticonHamburgerMenu
 } from '@devseed-ui/collecticons';
 import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
@@ -26,9 +24,6 @@ import { Tip } from './tip';
 import UnscrollableBody from './unscrollable-body';
 
 import { variableGlsp } from '$styles/variable-utils';
-import {
-  ABOUT_PATH
-} from '$utils/routes';
 import { PAGE_BODY_ID } from '$components/common/layout-root';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
@@ -330,7 +325,18 @@ const GlobalMenu = styled.ul`
   `}
 `;
 
+const GlobalMenuItem = styled.span`
+  ${GlobalMenuLinkCSS}
+  cursor: default;
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 const GlobalMenuLink = styled(NavLink)`
+  ${GlobalMenuLinkCSS}
+`;
+const GlobalMenuButton = styled(Button)`
   ${GlobalMenuLinkCSS}
 `;
 
@@ -339,19 +345,132 @@ const DropMenuNavItem = styled(DropMenuItem)`
     background-color: ${rgbaFixed(themeVal('color.link'), 0.08)};
   }
 `;
-interface AdditionalNavLinkProps {
+
+const MODAL_TYPE = 'modal';
+// const DROPDOWN_TYPE = 'dropdown';
+
+enum LinkItemType {
+  InternalLink = 'internalLink',
+  ExternalLink = 'externalLink'
+}
+type AlignmentEnum  = 'left' | 'center' | 'right' | 'top' | 'middle' | 'bottom';
+export interface InternalNavLink extends NavLinkProps{
   title: string;
+  type: 'internalLink'
+}
+export interface ExternalNavLink extends React.RefAttributes<HTMLAnchorElement> {
+  title: string;
+  type: 'externalLink'
+}
+export type NavLinkItem = (ExternalNavLink | InternalNavLink);
+export interface ModalNavLink {
+  title: string;
+  type: 'modal';
+  src: string;
 }
 
-export type InternalNavLink =  NavLinkProps  & AdditionalNavLinkProps;
-export type ExternalNavLink  = React.RefAttributes<HTMLAnchorElement> & AdditionalNavLinkProps;
+export interface DropdownNavLink { 
+  title: string;
+  type: 'dropdown';
+  children: NavLinkItem[];
+}
+
+export type NavItem = (NavLinkItem | ModalNavLink | DropdownNavLink);
 
 interface PageHeaderProps {
-  mainNavItems: (ExternalNavLink & InternalNavLink)[];
+  mainNavItems: NavItem[];
+  subNavItems: NavItem[];
+}
+
+function ChildItem({ child }: { child: NavLinkItem}) {
+  const { title, type, ...rest } = child;
+  if (type === LinkItemType.InternalLink) {
+    return (
+    <li> 
+      {/* @ts-expect-error DropMenuNavItem seems to expect a tag props */}
+      <DropMenuNavItem as={NavLink} {...rest as NavLinkProps} data-dropdown='click.close'>
+        {title}
+      </DropMenuNavItem>
+    </li>
+    );
+  } else {
+    return (
+      <li key={`${title}-dropdown-menu`}>
+        <DropMenuNavItem as='a' {...rest as React.RefAttributes<HTMLAnchorElement>} data-dropdown='click.close'>
+          {title}
+        </DropMenuNavItem>
+      </li>
+    );
+  }
+}
+
+
+function NavItemMenu({ item, alignment, onClick }: {item: NavItem, alignment?: AlignmentEnum, onClick?: () => void }) {
+  const { isMediumDown } = useMediaQuery();
+  if (item.type === LinkItemType.InternalLink) {
+    const { title, ...rest } = item as InternalNavLink;
+      return (
+        <li key={`${title}-nav-item`}>
+        <GlobalMenuLink {...rest} onClick={onClick}>
+          {title}
+        </GlobalMenuLink>
+        </li>
+        
+      );
+  } else if (item.type === LinkItemType.ExternalLink) {
+    const { title, ...rest } = item as ExternalNavLink;
+    return (
+      <li key={`${title}-nav-item`}>
+      <GlobalMenuLink 
+        as='a'
+        target='blank'
+        rel='noopener'
+        {...rest} 
+        onClick={onClick}
+      >
+        {title}
+      </GlobalMenuLink>
+      </li>
+      
+    );
+  } else if (item.type === MODAL_TYPE) {
+    return (<li><GoogleForm title={item.title} src={item.src} /></li>);
+  } else {// if (item.type === DROPDOWN_TYPE
+    const { title } = item as DropdownNavLink;
+    // Mobile view
+    if (isMediumDown) {
+      return (
+        <>
+        <li><GlobalMenuItem>{title} </GlobalMenuItem></li>
+          {item.children.map((child) => {
+            return <ChildItem key={`${title}-dropdown-menu`} child={child} />;
+          })}
+        </>
+      );
+    } else {
+    return (<li>
+      <DropdownScrollable
+        alignment={alignment?? 'left'}
+        triggerElement={(props) => (
+          // @ts-expect-error UI lib error. achromic-text does exit
+          <GlobalMenuButton {...props} variation='achromic-text' fitting='skinny'>
+            {title}
+          </GlobalMenuButton>
+        )}
+      >
+        <DropMenu>
+          {item.children.map((child) => {
+            return <ChildItem key={`${title}-dropdown-menu`} child={child} />;
+          })}
+        </DropMenu>
+      </DropdownScrollable>
+            </li>);
+    }
+  }
 }
 
 function PageHeader(props: PageHeaderProps) {
-  const { mainNavItems } = props;
+  const { mainNavItems, subNavItems } = props;
   const { isMediumDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
@@ -377,20 +496,6 @@ function PageHeader(props: PageHeaderProps) {
   const closeNavOnClick = useCallback(() => {
     setGlobalNavRevealed(false);
   }, []);
-
-  const userPagesMainNavItem = userPages.map((id) => {
-    const page = getOverride(id as any);
-    if (!(page?.data.mainNavItem && page.data.mainNavItem.navTitle)) return false;
-
-    return (
-      <li key={id}>
-        <GlobalMenuLink to={id} onClick={closeNavOnClick}>
-          {page.data.mainNavItem.navTitle }
-        </GlobalMenuLink>
-
-      </li>
-    );
-  });
 
   function skipNav(e) {
     // a tag won't appear for keyboard focus without href
@@ -458,37 +563,16 @@ function PageHeader(props: PageHeaderProps) {
                 <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
                 <GlobalMenu>
                   {mainNavItems.map((item) => {
-                    const { title, ...rest } = item;
-                    return (
-                      <li key={`${title}-nav-item`}>
-                      <GlobalMenuLink {...rest}>
-                        {title}
-                      </GlobalMenuLink>
-                      </li>
-                      
-                    );
+                    return <NavItemMenu key={`${item.title}-nav-item`} item={item} alignment='left' onClick={closeNavOnClick} />;
                   })}
                 </GlobalMenu>
               </SectionsNavBlock>
               <SectionsNavBlock>
                 <GlobalNavBlockTitle>Meta</GlobalNavBlockTitle>
                 <GlobalMenu>
-                  {userPagesMainNavItem}
-                  <li>
-                    <GlobalMenuLink to={ABOUT_PATH} onClick={closeNavOnClick}>
-                      About
-                    </GlobalMenuLink>
-                  </li>
-                  {!!process.env.GOOGLE_FORM && (
-                    <li>
-                      <GoogleForm />
-                    </li>
-                  )}
-
-                  <UserPagesDotMenu
-                    onItemClick={closeNavOnClick}
-                    isMediumDown={isMediumDown}
-                  />
+                  {subNavItems.map((item) => {
+                    return <NavItemMenu key={`${item.title}-nav-item`} item={item} alignment='right' onClick={closeNavOnClick} />;
+                  })}
                 </GlobalMenu>
               </SectionsNavBlock>
             </GlobalNavBodyInner>
@@ -501,74 +585,3 @@ function PageHeader(props: PageHeaderProps) {
 }
 
 export default PageHeader;
-
-interface DotMenuItem {
-  id: any;
-  menu: string;
-}
-
-function UserPagesDotMenu(props: {
-  isMediumDown: boolean;
-  onItemClick: () => void;
-}) {
-  const { isMediumDown, onItemClick } = props;
-
-  const dotMenuItems = userPages.reduce((menuItems: DotMenuItem[], id: any) => {
-    const page = getOverride(id as any);
-    if (page?.data.menu)
-      // eslint-disable-next-line fp/no-mutating-methods
-      return menuItems.concat({
-        id,
-        menu: page.data.menu
-      });
-    return menuItems;
-  }, []);
-
-  if (!dotMenuItems.length) return <>{false}</>;
-
-  if (isMediumDown) {
-    return (
-      <>
-        {dotMenuItems.map((menuItem) => {
-          const page = getOverride(menuItem.id as any);
-          if (!page?.data.menu) return false;
-
-          return (
-            <li key={menuItem.id}>
-              <GlobalMenuLink to={menuItem.id} onClick={onItemClick}>
-                {menuItem.menu}
-              </GlobalMenuLink>
-            </li>
-          );
-        })}
-      </>
-    );
-  }
-
-  return (
-    <DropdownScrollable
-      alignment='right'
-      triggerElement={(props) => (
-        // @ts-expect-error UI lib error. achromic-text does exit
-        <Button {...props} variation='achromic-text' fitting='skinny'>
-          <CollecticonEllipsisVertical meaningful title='View pages menu' />
-        </Button>
-      )}
-    >
-      <DropMenu>
-        {userPages.map((id) => {
-          const page = getOverride(id as any);
-          if (!page?.data.menu) return false;
-
-          return (
-            <li key={id}>
-              <DropMenuNavItem as={NavLink} to={id} data-dropdown='click.close'>
-                {page.data.menu}
-              </DropMenuNavItem>
-            </li>
-          );
-        })}
-      </DropMenu>
-    </DropdownScrollable>
-  );
-}

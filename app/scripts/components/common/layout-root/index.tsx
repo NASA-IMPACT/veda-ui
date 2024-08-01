@@ -14,18 +14,22 @@ import { ContentOverride } from '$components/common/page-overrides';
 import { useGoogleTagManager } from '$utils/use-google-tag-manager';
 
 import NavWrapper from '$components/common/nav-wrapper';
-import { InternalNavLink, ExternalNavLink } from '$components/common/page-header';
+import { InternalNavLink, ExternalNavLink, ModalNavLink, DropdownNavLink } from '$components/common/page-header';
 
 import { checkEnvFlag } from '$utils/utils';
 import {
   STORIES_PATH,
   DATASETS_PATH,
   ANALYSIS_PATH,
-  EXPLORATION_PATH
+  EXPLORATION_PATH,
+  ABOUT_PATH
 } from '$utils/routes';
+
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
+
 export const PAGE_BODY_ID = 'pagebody';
+
 const Page = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,27 +46,47 @@ const PageBody = styled.div`
 `;
 
 
-let navItems:(ExternalNavLink & InternalNavLink)[] = [{
+let navItems:(ExternalNavLink | InternalNavLink | DropdownNavLink | ModalNavLink)[] = [ {
+  title: 'test',
+  type: 'dropdown',
+  children: [{
+    title: 'test dropdown',
+    to: STORIES_PATH,
+    type: 'internalLink'
+  }]
+}, {
   title: 'Data Catalog',
-  to: DATASETS_PATH
+  to: DATASETS_PATH,
+  type: 'internalLink'
 }, {
   title: checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION) ? 'Exploration' : 'Analysis',
   to: checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION) ? EXPLORATION_PATH : ANALYSIS_PATH,
+  type: 'internalLink'
 }, {
   title: getString('stories').other,
-  to: STORIES_PATH
+  to: STORIES_PATH,
+  type: 'internalLink'
 }];
 
 if (!!process.env.HUB_URL && !!process.env.HUB_NAME) navItems = [...navItems, {
   title: process.env.HUB_NAME,
-  // @ts-expect-error : href is omitted from NavLinkProps
-  // But we need this prop for outernal link
   href: process.env.HUB_URL,
-  as:'a',
-  target:'_blank',
-  rel:'noopener'
+  type: 'externalLink'
+} as ExternalNavLink];
+
+let subNavItems:(ExternalNavLink | InternalNavLink | DropdownNavLink | ModalNavLink)[] = [{
+  title: 'About',
+  to: ABOUT_PATH,
+  type: 'internalLink'
 }];
 
+if (process.env.GOOGLE_FORM) {
+  subNavItems = [...subNavItems, {
+    title: 'Contact us',
+    src: process.env.GOOGLE_FORM,
+    type: 'modal'
+  }];
+}
 
 function LayoutRoot(props: { children?: ReactNode }) {
   const { children } = props;
@@ -85,7 +109,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
       />
       {banner && <Banner appTitle={title} {...banner} />}
       <ContentOverride with='nav'>
-        <NavWrapper mainNavItems={navItems} />
+        <NavWrapper mainNavItems={navItems} subNavItems={subNavItems} />
       </ContentOverride>
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
