@@ -1,3 +1,5 @@
+const config = require('dotenv').config();
+
 function checkEnvFlag(value) {
   return (value ?? '').toLowerCase() === 'true';
 }
@@ -20,10 +22,10 @@ let mainNavItems = [
     type: 'internalLink'
   },
   {
-    title: checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION)
+    title: checkEnvFlag(config.FEATURE_NEW_EXPLORATION)
       ? 'Exploration'
       : 'Analysis',
-    to: checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION)
+    to: checkEnvFlag(config.FEATURE_NEW_EXPLORATION)
       ? '/exploration'
       : '/analysis',
     type: 'internalLink'
@@ -35,7 +37,7 @@ let mainNavItems = [
   }
 ];
 
-if (!!process.env.HUB_URL && !!process.env.HUB_NAME)
+if (!!config.HUB_URL && !!config.HUB_NAME)
   mainNavItems = [
     ...mainNavItems,
     {
@@ -53,12 +55,12 @@ let subNavItems = [
   }
 ];
 
-if (process.env.GOOGLE_FORM) {
+if (config.GOOGLE_FORM) {
   subNavItems = [
     ...subNavItems,
     {
       title: 'Contact us',
-      src: process.env.GOOGLE_FORM,
+      src: config.GOOGLE_FORM,
       type: 'modal'
     }
   ];
