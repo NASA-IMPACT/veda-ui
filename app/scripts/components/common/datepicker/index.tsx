@@ -97,6 +97,7 @@ export const SimpleDatePicker = ({
               prev2Label={<Icon.NavigateFarBefore />}
               next2Label={<Icon.NavigateFarNext />}
               defaultView={calendarView}
+              maxDetail={calendarView}
             />
           }
         >
