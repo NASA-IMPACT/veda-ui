@@ -1,5 +1,5 @@
-const config = require('dotenv').config();
-
+const dotEnvConfig = require('dotenv').config();
+const { parsed: config } = dotEnvConfig;
 function checkEnvFlag(value) {
   return (value ?? '').toLowerCase() === 'true';
 }
