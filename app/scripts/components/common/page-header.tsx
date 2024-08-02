@@ -344,6 +344,9 @@ const DropMenuNavItem = styled(DropMenuItem)`
   &.active {
     background-color: ${rgbaFixed(themeVal('color.link'), 0.08)};
   }
+  ${media.largeDown`
+    padding-left ${glsp(2)};
+  `}
 `;
 
 const MODAL_TYPE = 'modal';
