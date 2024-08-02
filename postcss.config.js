@@ -5,18 +5,33 @@ const CWD = process.cwd();
 const vedaPath = path.resolve(CWD, '.veda/ui');
 const isVedaInstance = fs.existsSync(vedaPath);
 
-let uswdsPath = path.resolve(CWD, 'node_modules/@trussworks/react-uswds/lib');
+let basePath = CWD;
+let uswdsPath = path.resolve(
+  basePath,
+  'node_modules/@trussworks/react-uswds/lib'
+);
+let reactCalendarPath = path.resolve(
+  basePath,
+  'node_modules/react-calendar/dist/**/*.css'
+);
 
-if (isVedaInstance)
+if (isVedaInstance) {
+  basePath = vedaPath;
   uswdsPath = path.resolve(
-    CWD,
-    '.veda/ui',
+    basePath,
     'node_modules/@trussworks/react-uswds/lib'
   );
+  reactCalendarPath = path.resolve(
+    basePath,
+    'node_modules/react-calendar/dist/**/*.css'
+  );
+}
 
-const contentPaths = isVedaInstance
-  ? ['.veda/ui/app/**/*.{js,jsx,ts,tsx}', `${uswdsPath}/index.css`]
-  : ['./app/**/*.{js,jsx,ts,tsx}', `${uswdsPath}/index.css`];
+const contentPaths = [
+  `${basePath}/app/**/*.{js,jsx,ts,tsx}`,
+  `${uswdsPath}/index.css`,
+  reactCalendarPath
+];
 
 let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
