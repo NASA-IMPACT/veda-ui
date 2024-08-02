@@ -13,6 +13,7 @@ interface SimpleDatePickerProps {
   onConfirm: (date: Date | null) => void;
   triggerHeadReference: string;
   selectedDay: Date | null;
+  view?: 'month' | 'year' | 'decade' | 'century';
   renderTriggerElement: (props: {
     onClick: () => void;
     disabled: boolean;
@@ -26,13 +27,27 @@ const TriggerWrapper = styled.div`
   display: flex;
 `;
 
+const getCalendarView = (timeDensity: 'day' | 'month' | 'year'): 'month' | 'year' | 'decade' | 'century' => {
+  switch (timeDensity) {
+    case 'day':
+      return 'month';
+    case 'month':
+      return 'year';
+    case 'year':
+      return 'decade';
+    default:
+      return 'month';
+  }
+};
+
 export const SimpleDatePicker = ({
   disabled,
   tipContent,
   onConfirm,
   triggerHeadReference,
   selectedDay,
-  renderTriggerElement
+  renderTriggerElement,
+  view
 }: SimpleDatePickerProps) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -51,6 +66,8 @@ export const SimpleDatePicker = ({
       setIsCalendarOpen(false);
     }
   };
+
+  const calendarView = getCalendarView(view);
 
   return (
     <div>
@@ -75,11 +92,11 @@ export const SimpleDatePicker = ({
               onChange={handleDateChange}
               value={selectedDay}
               className='react-calendar'
-              maxDetail='month'
               nextLabel={<Icon.NavigateNext />}
               prevLabel={<Icon.NavigateBefore />}
               prev2Label={<Icon.NavigateFarBefore />}
               next2Label={<Icon.NavigateFarNext />}
+              defaultView={calendarView}
             />
           }
         >

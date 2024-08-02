@@ -70,6 +70,7 @@ import { useInteractionRectHover } from '$components/exploration/hooks/use-datas
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import Pluralize from '$utils/pluralize';
+import { getSmallestTimeDensity } from '$components/exploration/data-utils';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -656,6 +657,8 @@ export default function Timeline(props: TimelineProps) {
     );
   }
 
+  console.log(datasets, getSmallestTimeDensity(datasets));
+
   return (
     <TimelineWrapper ref={observe}>
       <InteractionRect
@@ -680,6 +683,7 @@ export default function Timeline(props: TimelineProps) {
           width={width}
           onZoom={onControlsZoom}
           outOfViewHeads={outOfViewHeads}
+          timeDensity={getSmallestTimeDensity(datasets)}
         />
       </TimelineHeader>
       <TimelineContent>

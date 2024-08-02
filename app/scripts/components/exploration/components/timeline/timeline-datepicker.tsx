@@ -23,7 +23,22 @@ interface TimelineDatePickerProps {
     disabled: boolean;
     tipContent?: string;
     dataTourId?: string;
+    view?: 'month' | 'year' | 'decade' | 'century';
   }
+
+
+const getLabel = (timeDensity) => {
+  switch (timeDensity) {
+    case 'day':
+      return 'MMM do, yyyy';
+    case 'month':
+      return 'MMMM, yyyy';
+    case 'year':
+      return 'yyyy';
+    default:
+      return 'MMM do, yyyy';
+  }
+};
 
 export const TimelineDatePicker = ({
     triggerHeadReference,
@@ -31,9 +46,15 @@ export const TimelineDatePicker = ({
     onConfirm,
     disabled = false,
     tipContent,
-    dataTourId
-  }: TimelineDatePickerProps) => (
+    dataTourId,
+    view = 'month'
+  }: TimelineDatePickerProps) => {
+    console.log(view);
+    console.log('label ', getLabel(view));
+
+    return (
     <SimpleDatePicker
+      view={view}
       triggerHeadReference={triggerHeadReference}
       selectedDay={selectedDay}
       onConfirm={onConfirm}
@@ -48,9 +69,9 @@ export const TimelineDatePicker = ({
           onClick={onClick}
         >
           <span className='head-reference'>{triggerHeadReference}</span>
-          <span>{format(selectedDay ?? new Date(), 'MMM do, yyyy')}</span>
+          <span>{format(selectedDay ?? new Date(), (getLabel(view)))}</span>
           <CollecticonChevronDownSmall />
         </DatePickerTrigger>
       )}
     />
-  );
+  );};

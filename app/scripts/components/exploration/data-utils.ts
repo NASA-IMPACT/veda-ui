@@ -23,7 +23,7 @@ import { veda_faux_module_datasets } from '$data-layer/datasets';
 import { DatasetLayer, DatasetData, VedaDatum } from '$types/veda';
 import { utcString2userTzDate } from '$utils/date';
 
-// @TODO: This file should be deprecated and merged with `data-utils-no-faux-module` 
+// @TODO: This file should be deprecated and merged with `data-utils-no-faux-module`
 // to get rid of the faux modules dependency
 
 export const findParentDataset = (layerId: string) => {
@@ -227,3 +227,28 @@ export class ExtendedError extends Error {
     this.code = code;
   }
 }
+
+const TIME_DENSITY_ORDER: Record<TimeDensity, number> = {
+  [TimeDensity.DAY]: 1,
+  [TimeDensity.MONTH]: 2,
+  [TimeDensity.YEAR]: 3
+};
+
+export const getSmallestTimeDensity = (
+  dataArray: TimelineDataset[]
+): TimeDensity | null => {
+  if (dataArray.length === 0) return null;
+
+  let smallestDensity: TimeDensity = TimeDensity.YEAR;
+
+  for (const obj of dataArray) {
+    const currentDensity = obj.data.timeDensity;
+    if (
+      TIME_DENSITY_ORDER[currentDensity] < TIME_DENSITY_ORDER[smallestDensity]
+    ) {
+      smallestDensity = currentDensity;
+    }
+  }
+
+  return smallestDensity;
+};

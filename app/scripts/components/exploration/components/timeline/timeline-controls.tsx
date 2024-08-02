@@ -66,6 +66,7 @@ interface TimelineControlsProps {
   width: number;
   outOfViewHeads?: TimelineHead[];
   onZoom: (zoom: number) => void;
+  timeDensity?: 'day' | 'month' | 'year';
 }
 
 
@@ -229,7 +230,7 @@ export const TimelineHeadIndicators = memo(({ outOfViewHeads }: { outOfViewHeads
 TimelineHeadIndicators.displayName = 'TimelineHeadIndicators';
 
 export function TimelineControls(props: TimelineControlsProps) {
-  const { xScaled, width, outOfViewHeads, onZoom } = props;
+  const { xScaled, width, outOfViewHeads, onZoom, timeDensity } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
@@ -318,6 +319,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                   disabled={!xScaled}
                   tipContent='Start date for analysis'
                   dataTourId='date-picker-start'
+                  view={timeDensity}
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
@@ -330,6 +332,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                   disabled={!xScaled}
                   tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
                   dataTourId='date-picker-a'
+                  view={timeDensity}
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
@@ -345,6 +348,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                   disabled={!xScaled}
                   tipContent='End date for analysis'
                   dataTourId='date-picker-end'
+                  view={timeDensity}
                 />
               </DatePickersWrapper>
             ) : (
@@ -354,12 +358,14 @@ export function TimelineControls(props: TimelineControlsProps) {
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
                   onConfirm={(d) => {
+                    console.log(d);
                     if (!d) return;
                     setSelectedDay(new Date(d));
                   }}
                   disabled={!xScaled}
                   tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
                   dataTourId='date-picker-a'
+                  view={timeDensity}
                 />
                 {selectedCompareDay && (
                   <>
@@ -374,6 +380,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                       disabled={!xScaled}
                       tipContent='Date shown on right map'
                       dataTourId='date-picker-b'
+                      view={timeDensity}
                     />
                   </>
                 )}
