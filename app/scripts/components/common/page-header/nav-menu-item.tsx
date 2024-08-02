@@ -12,7 +12,7 @@ import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from '../dropdown-scrollable';
 import GoogleForm from '../google-form';
-import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, NavItem } from './types';
+import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, ModalNavLink, NavItem } from './types';
 
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
@@ -51,6 +51,10 @@ const DropMenuNavItem = styled(DropMenuItem)`
   }
   ${media.largeDown`
     padding-left ${glsp(2)};
+    &:hover {
+      color: inherit;
+      opacity: 0.64;
+    }
   `}
 `;
 
@@ -60,12 +64,12 @@ export const EXTERNAL_LINK_TYPE = 'externalLink';
 export const DROPDOWN_TYPE = 'dropdown';
 
 
-function ChildItem({ child }: { child: NavLinkItem}) {
+function ChildItem({ child, onClick }: { child: NavLinkItem, onClick?:() => void}) {
   const { title, type, ...rest } = child;
   if (type === INTERNAL_LINK_TYPE) {
     return (
     <li> 
-      <DropMenuNavItem as={NavLink} {...rest as InternalNavLink} data-dropdown='click.close'>
+      <DropMenuNavItem as={NavLink} to={(rest as InternalNavLink).to} onClick={onClick} data-dropdown='click.close'>
         {title}
       </DropMenuNavItem>
     </li>
@@ -75,7 +79,7 @@ function ChildItem({ child }: { child: NavLinkItem}) {
   } else if (type === EXTERNAL_LINK_TYPE) {
     return (
       <li key={`${title}-dropdown-menu`}>
-        <DropMenuNavItem as='a' target='blank' rel='noopener' {...rest as ExternalNavLink} data-dropdown='click.close'>
+        <DropMenuNavItem as='a' target='blank' rel='noopener' href={(rest as ExternalNavLink).href} onClick={onClick} data-dropdown='click.close'>
           {title}
         </DropMenuNavItem>
       </li>
@@ -86,18 +90,17 @@ function ChildItem({ child }: { child: NavLinkItem}) {
 
 export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem, alignment?: AlignmentEnum, onClick?: () => void }) {
   const { isMediumDown } = useMediaQuery();
-  if (item.type === INTERNAL_LINK_TYPE) {
-    const { title, ...rest } = item as InternalNavLink;
+  const { title, type, ...rest } = item;
+  if (type === INTERNAL_LINK_TYPE) {
       return (
         <li key={`${title}-nav-item`}>
-        <GlobalMenuLink {...rest} onClick={onClick}>
+        <GlobalMenuLink to={(rest as InternalNavLink).to} onClick={onClick}>
           {title}
         </GlobalMenuLink>
         </li>
         
       );
   } else if (item.type === EXTERNAL_LINK_TYPE) {
-    const { title, ...rest } = item as ExternalNavLink;
     return (
       <li key={`${title}-nav-item`}>
       <GlobalMenuLink 
@@ -105,15 +108,15 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
         target='blank'
         rel='noopener'
         onClick={onClick}
-        {...rest} 
+        href={(rest as ExternalNavLink).href}
       >
         {title}
       </GlobalMenuLink>
       </li>
-      
+
     );
-  } else if (item.type === MODAL_TYPE) {
-    return (<li><GoogleForm title={item.title} src={item.src} /></li>);
+  } else if (type === MODAL_TYPE) {
+    return (<li><GoogleForm title={title} src={(item as ModalNavLink).src} /></li>);
   } else {// if (item.type === DROPDOWN_TYPE
     const { title } = item as DropdownNavLink;
     // Mobile view
@@ -122,14 +125,14 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
         <>
         <li><GlobalMenuItem>{title} </GlobalMenuItem></li>
           {item.children.map((child) => {
-            return <ChildItem key={`${title}-dropdown-menu`} child={child} />;
+            return <ChildItem key={`${title}-dropdown-menu`} child={child} onClick={onClick} />;
           })}
         </>
       );
     // In case a user inputs a wrong type
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    } else if (item.type === DROPDOWN_TYPE) {
-    return (<li>
+    } else if (type === DROPDOWN_TYPE) {
+     return (<li>
       <DropdownScrollable
         alignment={alignment?? 'left'}
         triggerElement={(props) => (
@@ -140,12 +143,12 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
         )}
       >
         <DropMenu>
-          {item.children.map((child) => {
+          {(item as DropdownNavLink).children.map((child) => {
             return <ChildItem key={`${title}-dropdown-menu`} child={child} />;
           })}
         </DropMenu>
       </DropdownScrollable>
-            </li>);
+             </li>);
     } else throw Error('Invalid type for Nav Items');
   }
 }
