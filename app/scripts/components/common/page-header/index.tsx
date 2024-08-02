@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, ReactElement } from 'react';
 import styled, { css } from 'styled-components';
-import { Link, NavLink } from 'react-router-dom';
 import {
   glsp,
   listReset,
   media,
-  rgba,
   themeVal,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
@@ -15,25 +13,16 @@ import { Button } from '@devseed-ui/button';
 import {
   CollecticonHamburgerMenu
 } from '@devseed-ui/collecticons';
-import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
-import DropdownScrollable from './dropdown-scrollable';
-import NasaLogo from './nasa-logo';
-import GoogleForm from './google-form';
-import { Tip } from './tip';
-import UnscrollableBody from './unscrollable-body';
+import UnscrollableBody from '../unscrollable-body';
+import NavMenuItem from './nav-menu-item';
+import { NavItem } from './types';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { PAGE_BODY_ID } from '$components/common/layout-root';
-import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { HEADER_ID } from '$utils/use-sliding-sticky-header';
-import { ComponentOverride } from '$components/common/page-overrides';
 
-const rgbaFixed = rgba as any;
-
-const appTitle = process.env.APP_TITLE;
-const appVersion = process.env.APP_VERSION;
 
 const PageHeaderSelf = styled.header`
   display: flex;
@@ -51,94 +40,6 @@ const PageHeaderSelf = styled.header`
   }
 `;
 
-const Brand = styled.div`
-  display: flex;
-  flex-shrink: 0;
-
-  a {
-    display: grid;
-    align-items: center;
-    gap: ${glsp(0, 0.5)};
-
-    &,
-    &:visited {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    #nasa-logo-neg-mono {
-      opacity: 1;
-      transition: all 0.32s ease 0s;
-    }
-
-    #nasa-logo-pos {
-      opacity: 0;
-      transform: translate(0, -100%);
-      transition: all 0.32s ease 0s;
-    }
-
-    &:hover {
-      opacity: 1;
-
-      #nasa-logo-neg-mono {
-        opacity: 0;
-      }
-
-      #nasa-logo-pos {
-        opacity: 1;
-      }
-    }
-
-    svg {
-      grid-row: 1 / span 2;
-      height: 2.5rem;
-      width: auto;
-
-      ${media.largeUp`
-        transform: scale(1.125);
-      `}
-    }
-
-    span:first-of-type {
-      font-size: 0.875rem;
-      line-height: 1rem;
-      font-weight: ${themeVal('type.base.extrabold')};
-      text-transform: uppercase;
-    }
-
-    span:last-of-type {
-      grid-row: 2;
-      font-size: 1.25rem;
-      line-height: 1.5rem;
-      font-weight: ${themeVal('type.base.regular')};
-      letter-spacing: -0.025em;
-    }
-  }
-`;
-
-const PageTitleSecLink = styled(Link)`
-  align-self: end;
-  font-size: 0.75rem;
-  font-weight: ${themeVal('type.base.bold')};
-  line-height: 1rem;
-  text-transform: uppercase;
-  background: ${themeVal('color.surface')};
-  padding: ${glsp(0, 0.25)};
-  border-radius: ${themeVal('shape.rounded')};
-  margin: ${glsp(0.125, 0.5)};
-
-  &&,
-  &&:visited {
-    color: ${themeVal('color.primary')};
-  }
-
-  ${media.largeUp`
-    margin: ${glsp(0, 0.5)};
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    padding: 0 ${glsp(0.5)};
-  `}
-`;
 
 const GlobalNav = styled.nav<{ revealed: boolean }>`
   position: fixed;
@@ -325,158 +226,21 @@ const GlobalMenu = styled.ul`
   `}
 `;
 
-const GlobalMenuItem = styled.span`
-  ${GlobalMenuLinkCSS}
-  cursor: default;
-  &:hover {
-    opacity: 1;
-  }
-`;
 
-const GlobalMenuLink = styled(NavLink)`
-  ${GlobalMenuLinkCSS}
-`;
-const GlobalMenuButton = styled(Button)`
-  ${GlobalMenuLinkCSS}
-`;
-
-const DropMenuNavItem = styled(DropMenuItem)`
-  &.active {
-    background-color: ${rgbaFixed(themeVal('color.link'), 0.08)};
-  }
-  ${media.largeDown`
-    padding-left ${glsp(2)};
-  `}
-`;
-
-const MODAL_TYPE = 'modal';
-// const DROPDOWN_TYPE = 'dropdown';
-
-enum LinkItemType {
-  InternalLink = 'internalLink',
-  ExternalLink = 'externalLink'
-}
-
-type AlignmentEnum  = 'left' | 'right' ;
-
-export interface InternalNavLink {
-  title: string;
-  to: string;
-  type: 'internalLink'
-}
-export interface ExternalNavLink {
-  title: string;
-  href: string;
-  type: 'externalLink'
-}
-export type NavLinkItem = (ExternalNavLink | InternalNavLink);
-export interface ModalNavLink {
-  title: string;
-  type: 'modal';
-  src: string;
-}
-
-export interface DropdownNavLink { 
-  title: string;
-  type: 'dropdown';
-  children: NavLinkItem[];
-}
-
-export type NavItem = (NavLinkItem | ModalNavLink | DropdownNavLink);
+export const MODAL_TYPE = 'modal';
+export const INTERNAL_LINK_TYPE = 'internalLink';
+export const EXTERNAL_LINK_TYPE = 'externalLink';
+export const DROPDOWN_TYPE = 'dropdown';
 
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
+  logo: ReactElement
 }
 
-function ChildItem({ child }: { child: NavLinkItem}) {
-  const { title, type, ...rest } = child;
-  if (type === LinkItemType.InternalLink) {
-    return (
-    <li> 
-      <DropMenuNavItem as={NavLink} {...rest as InternalNavLink} data-dropdown='click.close'>
-        {title}
-      </DropMenuNavItem>
-    </li>
-    );
-  } else {
-    return (
-      <li key={`${title}-dropdown-menu`}>
-        <DropMenuNavItem as='a' target='blank' rel='noopener' {...rest as ExternalNavLink} data-dropdown='click.close'>
-          {title}
-        </DropMenuNavItem>
-      </li>
-    );
-  }
-}
-
-
-function NavItemMenu({ item, alignment, onClick }: {item: NavItem, alignment?: AlignmentEnum, onClick?: () => void }) {
-  const { isMediumDown } = useMediaQuery();
-  if (item.type === LinkItemType.InternalLink) {
-    const { title, ...rest } = item as InternalNavLink;
-      return (
-        <li key={`${title}-nav-item`}>
-        <GlobalMenuLink {...rest} onClick={onClick}>
-          {title}
-        </GlobalMenuLink>
-        </li>
-        
-      );
-  } else if (item.type === LinkItemType.ExternalLink) {
-    const { title, ...rest } = item as ExternalNavLink;
-    return (
-      <li key={`${title}-nav-item`}>
-      <GlobalMenuLink 
-        as='a'
-        target='blank'
-        rel='noopener'
-        onClick={onClick}
-        {...rest} 
-      >
-        {title}
-      </GlobalMenuLink>
-      </li>
-      
-    );
-  } else if (item.type === MODAL_TYPE) {
-    return (<li><GoogleForm title={item.title} src={item.src} /></li>);
-  } else {// if (item.type === DROPDOWN_TYPE
-    const { title } = item as DropdownNavLink;
-    // Mobile view
-    if (isMediumDown) {
-      return (
-        <>
-        <li><GlobalMenuItem>{title} </GlobalMenuItem></li>
-          {item.children.map((child) => {
-            return <ChildItem key={`${title}-dropdown-menu`} child={child} />;
-          })}
-        </>
-      );
-    } else {
-    return (<li>
-      <DropdownScrollable
-        alignment={alignment?? 'left'}
-        triggerElement={(props) => (
-          // @ts-expect-error UI lib error. achromic-text does exit
-          <GlobalMenuButton {...props} variation='achromic-text' fitting='skinny'>
-            {title}
-          </GlobalMenuButton>
-        )}
-      >
-        <DropMenu>
-          {item.children.map((child) => {
-            return <ChildItem key={`${title}-dropdown-menu`} child={child} />;
-          })}
-        </DropMenu>
-      </DropdownScrollable>
-            </li>);
-    }
-  }
-}
 
 function PageHeader(props: PageHeaderProps) {
-  const { mainNavItems, subNavItems } = props;
+  const { mainNavItems, subNavItems, logo } = props;
   const { isMediumDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
@@ -520,17 +284,7 @@ function PageHeader(props: PageHeaderProps) {
     <PageHeaderSelf id={HEADER_ID}>
       
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
-      <ComponentOverride with='headerBrand'>
-        <Brand>
-          <Link to='/'>
-            <NasaLogo />
-            <span>Earthdata</span> <span>{appTitle}</span>
-          </Link>
-          <Tip content={`v${appVersion}`}>
-            <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
-          </Tip>
-        </Brand>
-      </ComponentOverride>
+      {logo}
       {isMediumDown && (
         <GlobalNavActions>
           <GlobalNavToggle
@@ -569,7 +323,7 @@ function PageHeader(props: PageHeaderProps) {
                 <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
                 <GlobalMenu>
                   {mainNavItems.map((item) => {
-                    return <NavItemMenu key={`${item.title}-nav-item`} item={item} alignment='left' onClick={closeNavOnClick} />;
+                    return <NavMenuItem key={`${item.title}-nav-item`} item={item} alignment='left' onClick={closeNavOnClick} />;
                   })}
                 </GlobalMenu>
               </SectionsNavBlock>
@@ -577,7 +331,7 @@ function PageHeader(props: PageHeaderProps) {
                 <GlobalNavBlockTitle>Meta</GlobalNavBlockTitle>
                 <GlobalMenu>
                   {subNavItems.map((item) => {
-                    return <NavItemMenu key={`${item.title}-nav-item`} item={item} alignment='right' onClick={closeNavOnClick} />;
+                    return <NavMenuItem key={`${item.title}-nav-item`} item={item} alignment='right' onClick={closeNavOnClick} />;
                   })}
                 </GlobalMenu>
               </SectionsNavBlock>
