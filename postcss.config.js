@@ -12,7 +12,7 @@ let uswdsPath = path.resolve(
 );
 let reactCalendarPath = path.resolve(
   basePath,
-  'node_modules/react-calendar/dist/**/*.css'
+  'node_modules/react-calendar/src/**/*.{js,jsx,ts,tsx}'
 );
 
 if (isVedaInstance) {
@@ -37,8 +37,8 @@ let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
   content: contentPaths,
   safelist: {
-    deep: [/usa-banner$/, /react-calendar$/],
-    greedy: [/^usa-banner/, /^react-calendar/]
+    deep: [/usa-banner$/],
+    greedy: [/^usa-banner/]
   }
 });
 
