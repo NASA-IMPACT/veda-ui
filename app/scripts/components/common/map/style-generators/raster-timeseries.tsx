@@ -274,13 +274,15 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         /* eslint-enable no-console */
         
         let responseData;
-        let fallbackToOld = false;
+
         try {
           responseData = await requestQuickCache<any>({
             url: `${tileApiEndpointToUse}/searches/register`,
             payload,
             controller
           });
+          const mosaicUrl = responseData.links[1].href;
+          setMosaicUrl(mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad'));
         } catch (e) {
           // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance... 
           if (e.request) {
@@ -290,16 +292,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
               payload,
               controller
             });
-            fallbackToOld = true;
+      
+            const mosaicUrl = responseData.links[1].href;
+            setMosaicUrl(mosaicUrl);
+          } else {
+              LOG && 
+                /* eslint-disable-next-line no-console */
+                console.log('Titiler /register endpoint error', 'color: red;', e);
           }
-        }
-        let mosaicUrl = responseData.links[1].href;
-        
-        if (fallbackToOld) { // @NOTE:  conditional logic TO BE REMOVED once new BE endpoints have moved to prod...
-          setMosaicUrl(mosaicUrl);
-        } else {
-          mosaicUrl = mosaicUrl.replace('/{tileMatrixSetId}', '');
-          setMosaicUrl(mosaicUrl.replace('/{tileMatrixSetId}', ''));
         }
 
         /* eslint-disable no-console */
