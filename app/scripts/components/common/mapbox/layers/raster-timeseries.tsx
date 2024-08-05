@@ -274,7 +274,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         /* eslint-enable no-console */
 
         let responseData;
-
+        let fallbackToOld = false;
         try {
           responseData = await requestQuickCache({
             url: `${tileApiEndpointToUse}/searches/register`,
@@ -290,12 +290,19 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
               payload,
               controller
             });
+            fallbackToOld = true;
           }
         }
 
+        let mosaicUrl = responseData.links[1].href;
+        
+        if (fallbackToOld) { // @NOTE:  conditional logic TO BE REMOVED once new BE endpoints have moved to prod...
+          setMosaicUrl(mosaicUrl);
+        } else {
+          mosaicUrl = mosaicUrl.replace('/{tileMatrixSetId}', '');
+          setMosaicUrl(mosaicUrl.replace('/{tileMatrixSetId}', ''));
+        }
 
-
-        setMosaicUrl(responseData.links[1].href);
 
         /* eslint-disable no-console */
         LOG &&

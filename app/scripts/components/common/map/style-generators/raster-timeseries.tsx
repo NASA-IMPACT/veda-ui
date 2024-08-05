@@ -274,7 +274,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         /* eslint-enable no-console */
         
         let responseData;
-
+        let fallbackToOld = false;
         try {
           responseData = await requestQuickCache<any>({
             url: `${tileApiEndpointToUse}/searches/register`,
@@ -290,10 +290,17 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
               payload,
               controller
             });
+            fallbackToOld = true;
           }
         }
-
-        setMosaicUrl(responseData.links[1].href);
+        let mosaicUrl = responseData.links[1].href;
+        
+        if (fallbackToOld) { // @NOTE:  conditional logic TO BE REMOVED once new BE endpoints have moved to prod...
+          setMosaicUrl(mosaicUrl);
+        } else {
+          mosaicUrl = mosaicUrl.replace('/{tileMatrixSetId}', '');
+          setMosaicUrl(mosaicUrl.replace('/{tileMatrixSetId}', ''));
+        }
 
         /* eslint-disable no-console */
         LOG &&
