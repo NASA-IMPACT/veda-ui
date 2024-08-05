@@ -72,6 +72,11 @@ export const SimpleDatePicker = ({
           visible={isCalendarOpen}
           onClickOutside={(_, event) => handleClickOutside(event)}
           interactive={true}
+          // Appending the Tippy container to the body instead of its default parent
+          // (in this case it's the panel) to prevent the calendar from being cut off. The
+          // panel has `overflow: hidden;` which is needed for the resizing. However, this
+          // causes the calendar to be cut-off when it opens upwards, near the bottom of the screen.
+          appendTo={() => document.body}
           placement='bottom'
           content={
             <Calendar
