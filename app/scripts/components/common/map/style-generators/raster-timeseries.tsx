@@ -272,12 +272,26 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         LOG && console.log('Payload', payload);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
+        
+        let responseData;
 
-        const responseData = await requestQuickCache<any>({
-          url: `${tileApiEndpointToUse}/searches/register`,
-          payload,
-          controller
-        });
+        try {
+          responseData = await requestQuickCache<any>({
+            url: `${tileApiEndpointToUse}/searches/register`,
+            payload,
+            controller
+          });
+        } catch (e) {
+          // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance... 
+          if (e.request) {
+            // The request was made but no response was received
+            responseData = await requestQuickCache<any>({
+              url: `${tileApiEndpointToUse}/mosaic/register`, // @NOTE: This will fail anyways with "staging-raster.delta-backend.com" because its already deprecated...
+              payload,
+              controller
+            });
+          }
+        }
 
         setMosaicUrl(responseData.links[1].href);
 
