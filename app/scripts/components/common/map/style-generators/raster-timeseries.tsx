@@ -297,8 +297,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             setMosaicUrl(mosaicUrl);
           } else {
               LOG && 
-                /* eslint-disable-next-line no-console */
-                console.log('Titiler /register endpoint error', 'color: red;', e);
+              /* eslint-disable-next-line no-console */
+              console.log('Titiler /register endpoint error', 'color: red;', e);
+              changeStatus({ status: S_FAILED, context: STATUS_KEY.Layer });
           }
         }
 
