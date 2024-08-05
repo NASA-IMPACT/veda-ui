@@ -1,5 +1,6 @@
 import React, { ReactNode, useRef, useState } from "react";
 import { Icon } from "@trussworks/react-uswds";
+import { View } from "react-calendar/dist/cjs/shared/types";
 import Calendar from 'react-calendar';
 import Tippy from "@tippyjs/react";
 import styled from "styled-components";
@@ -13,7 +14,7 @@ interface SimpleDatePickerProps {
   onConfirm: (date: Date | null) => void;
   triggerHeadReference: string;
   selectedDay: Date | null;
-  view?: 'month' | 'year' | 'decade' | 'century';
+  calendarView?: View | undefined;
   renderTriggerElement: (props: {
     onClick: () => void;
     disabled: boolean;
@@ -27,19 +28,6 @@ const TriggerWrapper = styled.div`
   display: flex;
 `;
 
-const getCalendarView = (timeDensity: 'day' | 'month' | 'year'): 'month' | 'year' | 'decade' | 'century' => {
-  switch (timeDensity) {
-    case 'day':
-      return 'month';
-    case 'month':
-      return 'year';
-    case 'year':
-      return 'decade';
-    default:
-      return 'month';
-  }
-};
-
 export const SimpleDatePicker = ({
   disabled,
   tipContent,
@@ -47,7 +35,7 @@ export const SimpleDatePicker = ({
   triggerHeadReference,
   selectedDay,
   renderTriggerElement,
-  view
+  calendarView
 }: SimpleDatePickerProps) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -66,8 +54,6 @@ export const SimpleDatePicker = ({
       setIsCalendarOpen(false);
     }
   };
-
-  const calendarView = getCalendarView(view);
 
   return (
     <div>

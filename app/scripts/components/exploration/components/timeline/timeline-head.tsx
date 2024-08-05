@@ -136,6 +136,7 @@ const TimelineRangeTrackSelf = styled.div`
 
 type TimelineHeadProps = Omit<TimelineHeadBaseProps, 'children'> & {
   label?: string;
+  labelFormat: string;
 };
 
 export function TimelineHeadBase(props: TimelineHeadBaseProps) {
@@ -209,14 +210,14 @@ export function TimelineHeadBase(props: TimelineHeadBaseProps) {
 }
 
 export const TimelineHeadPoint = forwardRef<HTMLDivElement, TimelineHeadProps>((props, ref) => {
-  const { label, selectedDay, ...rest } = props;
+  const { label, selectedDay, labelFormat, ...rest } = props;
 
   return (
     <TimelineHeadBase selectedDay={selectedDay} xPosOffset={40} zIndex={1301} {...rest}>
       <TimelinePlayheadWithAfter ref={ref}>
         <TimelinePlayheadContent>
           <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
-          {format(selectedDay, 'MMM do, yyyy')}
+          {format(selectedDay, labelFormat)}
         </TimelinePlayheadContent>
       </TimelinePlayheadWithAfter>
     </TimelineHeadBase>
@@ -226,14 +227,14 @@ export const TimelineHeadPoint = forwardRef<HTMLDivElement, TimelineHeadProps>((
 TimelineHeadPoint.displayName = 'TimelineHeadPoint';
 
 export const TimelineHeadIn = forwardRef<HTMLDivElement, TimelineHeadProps>((props, ref) => {
-  const { label, selectedDay, ...rest } = props;
+  const { label, selectedDay, labelFormat, ...rest } = props;
 
   return (
     <TimelineHeadBase isStrokeDashed selectedDay={selectedDay} {...rest}>
       <TimelinePlayhead direction='left' ref={ref}>
         <TimelinePlayheadContent>
           <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
-          {format(selectedDay, 'MMM do, yyyy')}
+          {format(selectedDay, labelFormat)}
         </TimelinePlayheadContent>
       </TimelinePlayhead>
     </TimelineHeadBase>
@@ -243,14 +244,14 @@ export const TimelineHeadIn = forwardRef<HTMLDivElement, TimelineHeadProps>((pro
 TimelineHeadIn.displayName = 'TimelineHeadIn';
 
 export const TimelineHeadOut = forwardRef<HTMLDivElement, TimelineHeadProps>((props, ref) => {
-  const { label, selectedDay, ...rest } = props;
+  const { label, selectedDay, labelFormat, ...rest } = props;
 
   return (
     <TimelineHeadBase isStrokeDashed selectedDay={selectedDay} xPosOffset={-15} {...rest}>
       <TimelinePlayhead direction='right' ref={ref}>
         <TimelinePlayheadContent>
           <TimelinePlayheadLabel>{label}</TimelinePlayheadLabel>
-          {format(selectedDay, 'MMM do, yyyy')}
+          {format(selectedDay, labelFormat)}
         </TimelinePlayheadContent>
       </TimelinePlayhead>
     </TimelineHeadBase>

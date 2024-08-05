@@ -8,6 +8,10 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
 import { isEqual } from 'lodash';
+import { View } from 'react-calendar/dist/cjs/shared/types';
+import {
+  TimeDensity,
+} from './../../types.d.ts';
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
 import { TimelineDatePicker } from './timeline-datepicker';
@@ -66,7 +70,8 @@ interface TimelineControlsProps {
   width: number;
   outOfViewHeads?: TimelineHead[];
   onZoom: (zoom: number) => void;
-  timeDensity?: 'day' | 'month' | 'year';
+  timeDensity: TimeDensity;
+  timelineLabelsFormat: string;
 }
 
 
@@ -229,8 +234,29 @@ export const TimelineHeadIndicators = memo(({ outOfViewHeads }: { outOfViewHeads
 
 TimelineHeadIndicators.displayName = 'TimelineHeadIndicators';
 
+/**
+ * Determines the appropriate calendar view based on the time density.
+ *
+ * The TimeDensity enumeration is mapped to the corresponding calendar view:
+ * - DAY: Displays the calendar in 'month' view, which shows all days of the month.
+ * - MONTH: Displays the calendar in 'year' view, showing all months in a year.
+ * - YEAR: Displays the calendar in 'decade' view, which shows a range of years.
+ */
+const getCalendarView = (timeDensity: TimeDensity): View | undefined => {
+  switch (timeDensity) {
+    case TimeDensity.DAY:
+      return 'month';
+    case TimeDensity.MONTH:
+      return 'year';
+    case TimeDensity.YEAR:
+      return 'decade';
+    default:
+      return 'month';
+  }
+};
+
 export function TimelineControls(props: TimelineControlsProps) {
-  const { xScaled, width, outOfViewHeads, onZoom, timeDensity } = props;
+  const { xScaled, width, outOfViewHeads, onZoom, timeDensity, timelineLabelsFormat } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
@@ -241,6 +267,8 @@ export function TimelineControls(props: TimelineControlsProps) {
 
   // Scale to use when there are no datasets with data (loading or error)
   const initialScale = useMemo(() => getInitialScale(width) ,[width]);
+
+  const calendarView = useMemo(() => getCalendarView(timeDensity), [timeDensity]);
 
   return (
     <TimelineControlsSelf>
@@ -319,7 +347,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                   disabled={!xScaled}
                   tipContent='Start date for analysis'
                   dataTourId='date-picker-start'
-                  view={timeDensity}
+                  calendarView={calendarView}
+                  triggerLabelFormat={timelineLabelsFormat}
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
@@ -332,7 +361,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                   disabled={!xScaled}
                   tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
                   dataTourId='date-picker-a'
-                  view={timeDensity}
+                  calendarView={calendarView}
+                  triggerLabelFormat={timelineLabelsFormat}
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
@@ -348,7 +378,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                   disabled={!xScaled}
                   tipContent='End date for analysis'
                   dataTourId='date-picker-end'
-                  view={timeDensity}
+                  calendarView={calendarView}
+                  triggerLabelFormat={timelineLabelsFormat}
                 />
               </DatePickersWrapper>
             ) : (
@@ -358,14 +389,14 @@ export function TimelineControls(props: TimelineControlsProps) {
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
                   onConfirm={(d) => {
-                    console.log(d);
                     if (!d) return;
                     setSelectedDay(new Date(d));
                   }}
                   disabled={!xScaled}
                   tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
                   dataTourId='date-picker-a'
-                  view={timeDensity}
+                  calendarView={calendarView}
+                  triggerLabelFormat={timelineLabelsFormat}
                 />
                 {selectedCompareDay && (
                   <>
@@ -380,7 +411,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                       disabled={!xScaled}
                       tipContent='Date shown on right map'
                       dataTourId='date-picker-b'
-                      view={timeDensity}
+                      calendarView={calendarView}
+                      triggerLabelFormat={timelineLabelsFormat}
                     />
                   </>
                 )}

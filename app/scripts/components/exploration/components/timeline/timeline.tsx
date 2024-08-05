@@ -29,11 +29,11 @@ import styled from 'styled-components';
 
 import { DatasetList } from '../datasets/dataset-list';
 
-import { applyTransform, isEqualTransform, rescaleX } from './timeline-utils';
+import { applyTransform, getLabelFormat, isEqualTransform, rescaleX } from './timeline-utils';
 import {
   TimelineControls,
   getInitialScale,
-  TimelineDateAxis
+  TimelineDateAxis,
 } from './timeline-controls';
 import {
   TimelineHeadIn,
@@ -657,7 +657,8 @@ export default function Timeline(props: TimelineProps) {
     );
   }
 
-  console.log(datasets, getSmallestTimeDensity(datasets));
+  const lowestCommonTemporalDenominator = getSmallestTimeDensity(datasets);
+  const timelineLabelFormat = getLabelFormat(lowestCommonTemporalDenominator);
 
   return (
     <TimelineWrapper ref={observe}>
@@ -683,7 +684,8 @@ export default function Timeline(props: TimelineProps) {
           width={width}
           onZoom={onControlsZoom}
           outOfViewHeads={outOfViewHeads}
-          timeDensity={getSmallestTimeDensity(datasets)}
+          timeDensity={lowestCommonTemporalDenominator}
+          timelineLabelsFormat={timelineLabelFormat}
         />
       </TimelineHeader>
       <TimelineContent>
@@ -699,6 +701,7 @@ export default function Timeline(props: TimelineProps) {
                 onDayChange={setSelectedDay}
                 selectedDay={selectedDay}
                 width={width}
+                labelFormat={timelineLabelFormat}
               />
             )}
             {selectedCompareDay && (
@@ -710,6 +713,7 @@ export default function Timeline(props: TimelineProps) {
                 onDayChange={setSelectedCompareDay}
                 selectedDay={selectedCompareDay}
                 width={width}
+                labelFormat={timelineLabelFormat}
               />
             )}
             {selectedInterval && (
@@ -730,6 +734,7 @@ export default function Timeline(props: TimelineProps) {
                   }}
                   selectedDay={selectedInterval.start}
                   width={width}
+                  labelFormat={timelineLabelFormat}
                 />
                 <TimelineHeadOut
                   ref={headOutRef}
@@ -747,6 +752,7 @@ export default function Timeline(props: TimelineProps) {
                   }}
                   selectedDay={selectedInterval.end}
                   width={width}
+                  labelFormat={timelineLabelFormat}
                 />
                 <TimelineRangeTrack
                   range={selectedInterval}

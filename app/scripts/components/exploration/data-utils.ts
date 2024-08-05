@@ -214,7 +214,7 @@ export const formatDate = (date: Date | null, view?: string) => {
     case 'year':
       return format(date, 'MMM yyyy');
     default:
-      return format(date, 'MMM do, yyyy');
+      return format(date, 'MMM d yyyy');
   }
 };
 

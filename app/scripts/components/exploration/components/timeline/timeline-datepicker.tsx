@@ -3,6 +3,7 @@ import React from "react";
 import { CollecticonChevronDownSmall } from "@devseed-ui/collecticons";
 import { glsp, themeVal } from "@devseed-ui/theme-provider";
 import styled from "styled-components";
+import { View } from 'react-calendar/dist/cjs/shared/types';
 import { SimpleDatePicker } from "$components/common/datepicker";
 import { TipButton } from "$components/common/tip-button";
 
@@ -21,24 +22,11 @@ interface TimelineDatePickerProps {
     selectedDay: Date | null;
     onConfirm: (date: Date | null) => void;
     disabled: boolean;
+    triggerLabelFormat: string;
     tipContent?: string;
     dataTourId?: string;
-    view?: 'month' | 'year' | 'decade' | 'century';
-  }
-
-
-const getLabel = (timeDensity) => {
-  switch (timeDensity) {
-    case 'day':
-      return 'MMM do, yyyy';
-    case 'month':
-      return 'MMMM, yyyy';
-    case 'year':
-      return 'yyyy';
-    default:
-      return 'MMM do, yyyy';
-  }
-};
+    calendarView?: View | undefined;
+}
 
 export const TimelineDatePicker = ({
     triggerHeadReference,
@@ -47,14 +35,12 @@ export const TimelineDatePicker = ({
     disabled = false,
     tipContent,
     dataTourId,
-    view = 'month'
+    calendarView = 'month',
+    triggerLabelFormat
   }: TimelineDatePickerProps) => {
-    console.log(view);
-    console.log('label ', getLabel(view));
-
     return (
     <SimpleDatePicker
-      view={view}
+      calendarView={calendarView}
       triggerHeadReference={triggerHeadReference}
       selectedDay={selectedDay}
       onConfirm={onConfirm}
@@ -69,7 +55,7 @@ export const TimelineDatePicker = ({
           onClick={onClick}
         >
           <span className='head-reference'>{triggerHeadReference}</span>
-          <span>{format(selectedDay ?? new Date(), (getLabel(view)))}</span>
+          <span>{format(selectedDay ?? new Date(), (triggerLabelFormat))}</span>
           <CollecticonChevronDownSmall />
         </DatePickerTrigger>
       )}

@@ -82,3 +82,14 @@ export function applyTransform(
   // is set on the state, so there's no need to do it here.
   zoomBehavior.transform(element, newTransform);
 }
+
+export const getLabelFormat = (timeDensity) => {
+  switch (timeDensity) {
+    case 'month':
+      return 'MMM yyyy';
+    case 'year':
+      return 'MMMM yyyy';
+    default:
+      return 'MMM d yyyy';
+  }
+};
