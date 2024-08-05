@@ -298,7 +298,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           } else {
               LOG && 
               /* eslint-disable-next-line no-console */
-              console.log('Titiler /register endpoint error', 'color: red;', error);
+              console.log('Titiler /register %cEndpoint error', 'color: red;', error);
               throw error;
           }
         }
