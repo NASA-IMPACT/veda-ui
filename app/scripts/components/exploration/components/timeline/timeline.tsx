@@ -625,6 +625,16 @@ export default function Timeline(props: TimelineProps) {
   // Stub scale for when there is no layers
   const initialScale = useMemo(() => getInitialScale(width), [width]);
 
+  const lowestCommonTimeDensity = useMemo(
+    () => getLowestCommonTimeDensity(datasets),
+    [datasets]
+  );
+
+  const timelineLabelFormat = useMemo(
+    () => getLabelFormat(lowestCommonTimeDensity),
+    [lowestCommonTimeDensity]
+  );
+
   // Some of these values depend on each other, but we check all of them so
   // typescript doesn't complain.
   if (datasets.length === 0) {
@@ -656,9 +666,6 @@ export default function Timeline(props: TimelineProps) {
       </TimelineWrapper>
     );
   }
-
-  const lowestCommonTimeDensity = getLowestCommonTimeDensity(datasets);
-  const timelineLabelFormat = getLabelFormat(lowestCommonTimeDensity);
 
   return (
     <TimelineWrapper ref={observe}>
