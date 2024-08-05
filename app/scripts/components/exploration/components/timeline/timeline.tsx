@@ -70,7 +70,7 @@ import { useInteractionRectHover } from '$components/exploration/hooks/use-datas
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import Pluralize from '$utils/pluralize';
-import { getSmallestTimeDensity } from '$components/exploration/data-utils';
+import { getLowestCommonTimeDensity } from '$components/exploration/data-utils';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -657,8 +657,8 @@ export default function Timeline(props: TimelineProps) {
     );
   }
 
-  const lowestCommonTemporalDenominator = getSmallestTimeDensity(datasets);
-  const timelineLabelFormat = getLabelFormat(lowestCommonTemporalDenominator);
+  const lowestCommonTimeDensity = getLowestCommonTimeDensity(datasets);
+  const timelineLabelFormat = getLabelFormat(lowestCommonTimeDensity);
 
   return (
     <TimelineWrapper ref={observe}>
@@ -684,7 +684,7 @@ export default function Timeline(props: TimelineProps) {
           width={width}
           onZoom={onControlsZoom}
           outOfViewHeads={outOfViewHeads}
-          timeDensity={lowestCommonTemporalDenominator}
+          timeDensity={lowestCommonTimeDensity}
           timelineLabelsFormat={timelineLabelFormat}
         />
       </TimelineHeader>

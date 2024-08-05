@@ -228,27 +228,35 @@ export class ExtendedError extends Error {
   }
 }
 
+// Define an order for TimeDensity, where smaller numbers indicate finer granularity
 const TIME_DENSITY_ORDER: Record<TimeDensity, number> = {
   [TimeDensity.DAY]: 1,
   [TimeDensity.MONTH]: 2,
   [TimeDensity.YEAR]: 3
 };
 
-export const getSmallestTimeDensity = (
+/**
+ * Determines the lowest common time density among an array of timeline datasets.
+ *
+ * @param {TimelineDataset[]} dataArray - An array of timeline datasets, each containing time density info.
+ * @returns {TimeDensity | null} - The smallest TimeDensity found in the datasets array, or null if the array is empty.
+ */
+export const getLowestCommonTimeDensity = (
   dataArray: TimelineDataset[]
-): TimeDensity | null => {
-  if (dataArray.length === 0) return null;
-
-  let smallestDensity: TimeDensity = TimeDensity.YEAR;
+): TimeDensity => {
+  let lowestCommonDensity: TimeDensity = TimeDensity.YEAR;
 
   for (const obj of dataArray) {
-    const currentDensity = obj.data.timeDensity;
+    const currentDensity = obj.data.time_density;
+
     if (
-      TIME_DENSITY_ORDER[currentDensity] < TIME_DENSITY_ORDER[smallestDensity]
+      currentDensity &&
+      TIME_DENSITY_ORDER[currentDensity] <
+        TIME_DENSITY_ORDER[lowestCommonDensity]
     ) {
-      smallestDensity = currentDensity;
+      lowestCommonDensity = currentDensity;
     }
   }
 
-  return smallestDensity;
+  return lowestCommonDensity;
 };

@@ -154,7 +154,7 @@ export function DateAxis(props: DateAxisProps) {
             key={`minor-${d.getTime()}`}
             x1={xPos}
             x2={xPos}
-            y1={24}
+            y1={26}
             y2={32}
           />
         );
