@@ -5,7 +5,7 @@ import { MDXModule } from 'mdx/types';
 // ///////////////////////////////////////////////////////////////////////////
 //  Datasets                                                                //
 // ///////////////////////////////////////////////////////////////////////////
-export type DatasetLayerType = 'raster' | 'vector' | 'zarr'| 'cmr';
+export type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr';
 
 //
 // Dataset Layers
@@ -26,7 +26,7 @@ interface DatasetLayerCommonCompareProps {
   mapLabel?: string | DatasetDatumFn<DatasetDatumReturnType>;
 }
 
-interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps{
+interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps {
   zoomExtent?: number[];
   bounds?: number[];
   sourceParams?: Record<string, any>;
@@ -35,8 +35,7 @@ interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps{
 export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
 export type DatasetDatumReturnType = Primitives | Date;
 
-export interface DatasetLayerCompareSTAC
-  extends DatasetLayerCommonProps {
+export interface DatasetLayerCompareSTAC extends DatasetLayerCommonProps {
   stacCol: string;
   type: DatasetLayerType;
   name: string;
@@ -44,8 +43,7 @@ export interface DatasetLayerCompareSTAC
   legend?: LayerLegendCategorical | LayerLegendGradient;
 }
 
-export interface DatasetLayerCompareInternal
-  extends DatasetLayerCommonProps {
+export interface DatasetLayerCompareInternal extends DatasetLayerCommonProps {
   datasetId: string;
   layerId: string;
 }
@@ -56,10 +54,10 @@ export enum TimeDensity {
   DAY = 'day'
 }
 export interface LayerInfo {
-source: string;
-spatialExtent: string;
-temporalResolution: string;
-unit: string;
+  source: string;
+  spatialExtent: string;
+  temporalResolution: string;
+  unit: string;
 }
 export interface DatasetLayer extends DatasetLayerCommonProps {
   id: string;
@@ -83,7 +81,7 @@ export interface DatasetLayer extends DatasetLayerCommonProps {
   assetUrlReplacements?: {
     from: string;
     to: string;
-  },
+  };
   time_density?: TimeDensity;
   info?: LayerInfo;
 }
@@ -91,14 +89,12 @@ export interface DatasetLayer extends DatasetLayerCommonProps {
 // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
 // difference with a "base" dataset layer is not having a name and
 // description.
-export interface DatasetLayerCompareBase
-  extends DatasetLayerCommonProps {
+export interface DatasetLayerCompareBase extends DatasetLayerCommonProps {
   id: string;
   stacCol: string;
   type: DatasetLayerType;
 }
-export interface DatasetLayerCompareNormalized
-  extends DatasetLayerCommonProps {
+export interface DatasetLayerCompareNormalized extends DatasetLayerCommonProps {
   id: string;
   name: string;
   description: string;
@@ -129,7 +125,6 @@ export interface DatasetDatumFnResolverBag {
 interface LayerLegendUnit {
   label: string;
 }
-
 
 export interface LayerLegendGradient {
   type: 'gradient';
@@ -189,6 +184,7 @@ export interface DatasetData {
   layers: DatasetLayer[];
   related?: RelatedContentData[];
   disableExplore?: boolean;
+  isHidden?: boolean;
 }
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -208,6 +204,7 @@ export interface StoryData {
   taxonomy: Taxonomy[];
   related?: RelatedContentData[];
   asLink?: LinkContentData;
+  isHidden?: boolean;
 }
 
 // ///////////////////////////////////////////////////////////////////////////

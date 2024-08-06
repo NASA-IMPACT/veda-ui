@@ -7,7 +7,7 @@ declare module 'veda' {
   // ///////////////////////////////////////////////////////////////////////////
   //  Datasets                                                                //
   // ///////////////////////////////////////////////////////////////////////////
-  type DatasetLayerType = 'raster' | 'vector' | 'zarr'| 'cmr';
+  type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr';
 
   //
   // Dataset Layers
@@ -28,7 +28,7 @@ declare module 'veda' {
     mapLabel?: string | DatasetDatumFn<DatasetDatumReturnType>;
   }
 
-  interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps{
+  interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps {
     zoomExtent?: number[];
     bounds?: number[];
     sourceParams?: Record<string, any>;
@@ -36,9 +36,8 @@ declare module 'veda' {
 
   export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
   export type DatasetDatumReturnType = Primitives | Date;
-  
-  export interface DatasetLayerCompareSTAC
-    extends DatasetLayerCommonProps {
+
+  export interface DatasetLayerCompareSTAC extends DatasetLayerCommonProps {
     stacCol: string;
     type: DatasetLayerType;
     name: string;
@@ -46,8 +45,7 @@ declare module 'veda' {
     legend?: LayerLegendCategorical | LayerLegendGradient;
   }
 
-  export interface DatasetLayerCompareInternal
-    extends DatasetLayerCommonProps {
+  export interface DatasetLayerCompareInternal extends DatasetLayerCommonProps {
     datasetId: string;
     layerId: string;
   }
@@ -57,12 +55,12 @@ declare module 'veda' {
     MONTH = 'month',
     DAY = 'day'
   }
-export interface LayerInfo {
-  source: string;
-  spatialExtent: string;
-  temporalResolution: string;
-  unit: string;
-}
+  export interface LayerInfo {
+    source: string;
+    spatialExtent: string;
+    temporalResolution: string;
+    unit: string;
+  }
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
@@ -85,7 +83,7 @@ export interface LayerInfo {
     assetUrlReplacements?: {
       from: string;
       to: string;
-    },
+    };
     time_density?: TimeDensity;
     info?: LayerInfo;
   }
@@ -93,8 +91,7 @@ export interface LayerInfo {
   // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
   // difference with a "base" dataset layer is not having a name and
   // description.
-  export interface DatasetLayerCompareBase
-    extends DatasetLayerCommonProps {
+  export interface DatasetLayerCompareBase extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
     type: DatasetLayerType;
@@ -190,6 +187,7 @@ export interface LayerInfo {
     layers: DatasetLayer[];
     related?: RelatedContentData[];
     disableExplore?: boolean;
+    isHidden?: boolean;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -209,6 +207,7 @@ export interface LayerInfo {
     taxonomy: Taxonomy[];
     related?: RelatedContentData[];
     asLink?: LinkContentData;
+    isHidden?: boolean;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -251,24 +250,23 @@ export interface LayerInfo {
     id: string;
     name: string;
   }
-    /**
-     * Not exporting this type 
-     * Since we are moving forward to ditching VEDA faux module
-     */
+  /**
+   * Not exporting this type
+   * Since we are moving forward to ditching VEDA faux module
+   */
 
   enum BannerType {
     info = 'info',
-    warning ='warning'
+    warning = 'warning'
   }
-  
+
   const infoTypeFlag = BannerType.info;
   interface BannerData {
-    expires: Date,
-    url: string,
-    text: string,
-    type?: BannerType
+    expires: Date;
+    url: string;
+    text: string;
+    type?: BannerType;
   }
-  
 
   /**
    * Named exports: datasets.
