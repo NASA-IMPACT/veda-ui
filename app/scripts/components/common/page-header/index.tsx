@@ -226,7 +226,6 @@ const GlobalMenu = styled.ul`
   `}
 `;
 
-
 export const MODAL_TYPE = 'modal';
 export const INTERNAL_LINK_TYPE = 'internalLink';
 export const EXTERNAL_LINK_TYPE = 'externalLink';

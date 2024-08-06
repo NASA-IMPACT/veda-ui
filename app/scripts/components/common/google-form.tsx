@@ -42,7 +42,7 @@ const ButtonAsNavLink = styled(Button)`
   `}
 `;
 
-function GoogleForm(props: { title: string, src: string}) {
+const GoogleForm: React.FC<{ title: string, src: string }> = (props) => {
   const { title, src } = props;
   const { isRevealed, show, hide } = useFeedbackModal();
 
@@ -78,6 +78,6 @@ function GoogleForm(props: { title: string, src: string}) {
       />
     </>
   );
-}
+};
 
 export default GoogleForm;

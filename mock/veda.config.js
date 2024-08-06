@@ -6,7 +6,7 @@ function checkEnvFlag(value) {
 
 let mainNavItems = [
   {
-    title: 'test',
+    title: 'Test',
     type: 'dropdown',
     children: [
       {

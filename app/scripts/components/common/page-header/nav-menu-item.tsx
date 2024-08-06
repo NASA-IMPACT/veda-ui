@@ -8,12 +8,14 @@ import {
   themeVal
 } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
+import { CollecticonChevronDownSmall } from '@devseed-ui/collecticons';
 import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from '../dropdown-scrollable';
 import GoogleForm from '../google-form';
 import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, ModalNavLink, NavItem } from './types';
 
+import { MODAL_TYPE, INTERNAL_LINK_TYPE, EXTERNAL_LINK_TYPE,  DROPDOWN_TYPE } from './';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 
@@ -58,13 +60,8 @@ const DropMenuNavItem = styled(DropMenuItem)`
   `}
 `;
 
-export const MODAL_TYPE = 'modal';
-export const INTERNAL_LINK_TYPE = 'internalLink';
-export const EXTERNAL_LINK_TYPE = 'externalLink';
-export const DROPDOWN_TYPE = 'dropdown';
 
-
-function ChildItem({ child, onClick }: { child: NavLinkItem, onClick?:() => void}) {
+function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:() => void}) {
   const { title, type, ...rest } = child;
   if (type === INTERNAL_LINK_TYPE) {
     return (
@@ -117,7 +114,8 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
     );
   } else if (type === MODAL_TYPE) {
     return (<li><GoogleForm title={title} src={(item as ModalNavLink).src} /></li>);
-  } else {// if (item.type === DROPDOWN_TYPE
+
+  } else if (type === DROPDOWN_TYPE) {
     const { title } = item as DropdownNavLink;
     // Mobile view
     if (isMediumDown) {
@@ -125,30 +123,28 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
         <>
         <li><GlobalMenuItem>{title} </GlobalMenuItem></li>
           {item.children.map((child) => {
-            return <ChildItem key={`${title}-dropdown-menu`} child={child} onClick={onClick} />;
+            return <LinkDropMenuNavItem key={`${title}-dropdown-menu`} child={child} onClick={onClick} />;
           })}
         </>
       );
-    // In case a user inputs a wrong type
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    } else if (type === DROPDOWN_TYPE) {
+    } else {
      return (<li>
       <DropdownScrollable
         alignment={alignment?? 'left'}
         triggerElement={(props) => (
           // @ts-expect-error achromic text exists
           <GlobalMenuButton {...props} variation='achromic-text' fitting='skinny'>
-            {title}
+            {title} <CollecticonChevronDownSmall size='small' />
           </GlobalMenuButton>
         )}
       >
         <DropMenu>
           {(item as DropdownNavLink).children.map((child) => {
-            return <ChildItem key={`${title}-dropdown-menu`} child={child} />;
+            return <LinkDropMenuNavItem key={`${title}-dropdown-menu`} child={child} />;
           })}
         </DropMenu>
       </DropdownScrollable>
              </li>);
-    } else throw Error('Invalid type for Nav Items');
-  }
+    } 
+  } else throw Error('Invalid type for Nav Items');
 }
