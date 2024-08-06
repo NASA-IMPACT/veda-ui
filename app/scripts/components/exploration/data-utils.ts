@@ -244,7 +244,7 @@ const TIME_DENSITY_ORDER: Record<TimeDensity, number> = {
 export const getLowestCommonTimeDensity = (
   dataArray: TimelineDataset[]
 ): TimeDensity => {
-  let lowestCommonDensity: TimeDensity = TimeDensity.MONTH;
+  let lowestCommonDensity: TimeDensity = TimeDensity.DAY;
 
   for (const obj of dataArray) {
     const currentDensity = obj.data.time_density;
