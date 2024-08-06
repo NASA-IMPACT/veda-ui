@@ -239,15 +239,16 @@ TimelineHeadIndicators.displayName = 'TimelineHeadIndicators';
  * Determines the appropriate calendar view based on the time density.
  *
  * The TimeDensity enumeration is mapped to the corresponding calendar view:
- * - DAY: Displays the calendar in 'month' view, which shows all days of the month.
- * - YEAR: Displays the calendar in 'year' view, showing all months in a year.
+ * - MONTH: Displays the calendar in 'year' view, showing all months in a year.
+ * - YEAR: Displays the calendar in 'decade' view, showing multiple years in a decade.
+ * - Default: Displays the calendar in 'month' view, showing all days of the current month.
  */
 const getCalendarView = (timeDensity: TimeDensity): View | undefined => {
   switch (timeDensity) {
     case TimeDensity.MONTH:
-      return 'month';
-    case TimeDensity.YEAR:
       return 'year';
+    case TimeDensity.YEAR:
+      return 'decade';
     default:
       return 'month';
   }

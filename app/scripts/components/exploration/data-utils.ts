@@ -12,7 +12,8 @@ import {
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
-  DatasetStatus
+  DatasetStatus,
+  TimelineDatasetSuccess
 } from './types.d.ts';
 import {
   DataMetric,
@@ -242,17 +243,15 @@ const TIME_DENSITY_ORDER: Record<TimeDensity, number> = {
  * @returns {TimeDensity | null} - The smallest TimeDensity found in the datasets array, or null if the array is empty.
  */
 export const getLowestCommonTimeDensity = (
-  dataArray: TimelineDataset[]
+  dataArray: TimelineDatasetSuccess[]
 ): TimeDensity => {
-  let lowestCommonDensity: TimeDensity = TimeDensity.DAY;
+  let lowestCommonDensity: TimeDensity = TimeDensity.YEAR;
 
   for (const obj of dataArray) {
-    const currentDensity = obj.data.time_density;
-
+    const currentDensity = obj.data.timeDensity;
     if (
-      currentDensity &&
       TIME_DENSITY_ORDER[currentDensity] <
-        TIME_DENSITY_ORDER[lowestCommonDensity]
+      TIME_DENSITY_ORDER[lowestCommonDensity]
     ) {
       lowestCommonDensity = currentDensity;
     }

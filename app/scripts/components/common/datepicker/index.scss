@@ -38,6 +38,16 @@
         background-color: utils.color('gray-10') !important;
       }
     }
+
+    &--now:disabled {
+      background-color: utils.color('gray-5') !important;
+      color: utils.color('gray-30') !important;
+
+      &:hover,
+      &:focus {
+        background-color: utils.color('gray-5') !important;
+      }
+    }
   }
 
   .usa-icon {

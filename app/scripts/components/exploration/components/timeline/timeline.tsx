@@ -626,7 +626,13 @@ export default function Timeline(props: TimelineProps) {
   const initialScale = useMemo(() => getInitialScale(width), [width]);
 
   const lowestCommonTimeDensity = useMemo(
-    () => getLowestCommonTimeDensity(datasets),
+    () =>
+      getLowestCommonTimeDensity(
+        // Filter the datasets to only include those with status 'SUCCESS'.
+        // The function getLowestCommonTimeDensity expects an array of TimelineDatasetSuccess objects,
+        // which have the 'data.timeDensity' property (formated as such).
+        datasets.filter((dataset): dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
+      ),
     [datasets]
   );
 
