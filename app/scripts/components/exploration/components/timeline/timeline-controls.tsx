@@ -83,7 +83,7 @@ export function getInitialScale(width) {
     .range([0, width]);
 }
 
-export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom" | "timeDensity" | "timelineLabelsFormat">) {
+export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom" | "timeDensity" | "timelineLabelsFormat" | "dataDomain">) {
   const { xScaled, width } = props;
 
   const initialScale = useMemo(() => {
