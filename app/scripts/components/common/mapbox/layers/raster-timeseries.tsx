@@ -273,13 +273,35 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const responseData = await requestQuickCache({
-          url: `${tileApiEndpointToUse}/mosaic/register`,
-          payload,
-          controller
-        });
+        let responseData;
 
-        setMosaicUrl(responseData.links[1].href);
+        try {
+          responseData = await requestQuickCache({
+            url: `${tileApiEndpointToUse}/searches/register`,
+            payload,
+            controller
+          });
+          const mosaicUrl = responseData.links[1].href;
+          setMosaicUrl(mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad'));
+        } catch (error) {
+          // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance... 
+          if (error.request) {
+            // The request was made but no response was received
+            responseData = await requestQuickCache({
+              url: `${tileApiEndpointToUse}/mosaic/register`, // @NOTE: This will fail anyways with "staging-raster.delta-backend.com" because its already deprecated...
+              payload,
+              controller
+            });
+            
+            const mosaicUrl = responseData.links[1].href;
+            setMosaicUrl(mosaicUrl);
+          } else {
+              LOG && 
+              /* eslint-disable-next-line no-console */
+              console.log('Titiler /register %cEndpoint error', 'color: red;', error);
+              throw error;
+          }
+        }
 
         /* eslint-disable no-console */
         LOG &&
