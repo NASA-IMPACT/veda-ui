@@ -26,6 +26,8 @@ interface TimelineDatePickerProps {
     tipContent?: string;
     dataTourId?: string;
     calendarView?: View | undefined;
+    minDate?: Date | undefined;
+    maxDate?: Date | undefined;
 }
 
 export const TimelineDatePicker = ({
@@ -36,7 +38,9 @@ export const TimelineDatePicker = ({
     tipContent,
     dataTourId,
     calendarView = 'month',
-    triggerLabelFormat
+    triggerLabelFormat,
+    minDate,
+    maxDate,
   }: TimelineDatePickerProps) => {
     return (
     <SimpleDatePicker
@@ -46,6 +50,8 @@ export const TimelineDatePicker = ({
       onConfirm={onConfirm}
       disabled={disabled}
       tipContent={tipContent}
+      minDate={minDate}
+      maxDate={maxDate}
       renderTriggerElement={({ onClick, disabled, tipContent, triggerHeadReference, selectedDay }) => (
         <DatePickerTrigger
           size='small'

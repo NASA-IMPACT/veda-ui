@@ -687,6 +687,7 @@ export default function Timeline(props: TimelineProps) {
           </small>
         </TimelineDetails>
         <TimelineControls
+          dataDomain={dataDomain}
           xScaled={xScaled}
           width={width}
           onZoom={onControlsZoom}

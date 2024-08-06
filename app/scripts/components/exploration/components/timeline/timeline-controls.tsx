@@ -72,6 +72,7 @@ interface TimelineControlsProps {
   onZoom: (zoom: number) => void;
   timeDensity: TimeDensity;
   timelineLabelsFormat: string;
+  dataDomain: [Date, Date] | undefined;
 }
 
 
@@ -253,7 +254,7 @@ const getCalendarView = (timeDensity: TimeDensity): View | undefined => {
 };
 
 export function TimelineControls(props: TimelineControlsProps) {
-  const { xScaled, width, outOfViewHeads, onZoom, timeDensity, timelineLabelsFormat } = props;
+  const { xScaled, width, outOfViewHeads, onZoom, timeDensity, timelineLabelsFormat, dataDomain } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
@@ -332,6 +333,8 @@ export function TimelineControls(props: TimelineControlsProps) {
             {selectedInterval ? (
               <DatePickersWrapper>
                 <TimelineDatePicker
+                  minDate={dataDomain ? dataDomain[0] : undefined}
+                  maxDate={dataDomain ? dataDomain[1] : undefined}
                   triggerHeadReference='FROM:'
                   selectedDay={selectedInterval.start}
                   onConfirm={(d) => {
@@ -349,6 +352,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
+                  minDate={dataDomain ? dataDomain[0] : undefined}
+                  maxDate={dataDomain ? dataDomain[1] : undefined}
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
                   onConfirm={(d) => {
@@ -363,6 +368,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
+                  minDate={dataDomain ? dataDomain[0] : undefined}
+                  maxDate={dataDomain ? dataDomain[1] : undefined}
                   triggerHeadReference='TO:'
                   selectedDay={selectedInterval.end}
                   onConfirm={(d) => {
@@ -383,6 +390,8 @@ export function TimelineControls(props: TimelineControlsProps) {
               <>
                 <DatePickersWrapper>
                 <TimelineDatePicker
+                  minDate={dataDomain ? dataDomain[0] : undefined}
+                  maxDate={dataDomain ? dataDomain[1] : undefined}
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
                   onConfirm={(d) => {
@@ -399,6 +408,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                   <>
                     <VerticalDivider />
                     <TimelineDatePicker
+                      minDate={dataDomain ? dataDomain[0] : undefined}
+                      maxDate={dataDomain ? dataDomain[1] : undefined}
                       triggerHeadReference='B:'
                       selectedDay={selectedCompareDay}
                       onConfirm={(d) => {

@@ -15,6 +15,8 @@ interface SimpleDatePickerProps {
   triggerHeadReference: string;
   selectedDay: Date | null;
   calendarView?: View | undefined;
+  minDate?: Date | undefined;
+  maxDate?: Date | undefined;
   renderTriggerElement: (props: {
     onClick: () => void;
     disabled: boolean;
@@ -35,7 +37,9 @@ export const SimpleDatePicker = ({
   triggerHeadReference,
   selectedDay,
   renderTriggerElement,
-  calendarView
+  calendarView,
+  minDate,
+  maxDate,
 }: SimpleDatePickerProps) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -89,6 +93,8 @@ export const SimpleDatePicker = ({
               next2Label={<Icon.NavigateFarNext />}
               defaultView={calendarView}
               maxDetail={calendarView}
+              minDate={minDate}
+              maxDate={maxDate}
             />
           }
         >
