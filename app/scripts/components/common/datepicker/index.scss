@@ -58,6 +58,12 @@
     text-decoration: none;
   }
 
+  .react-calendar__year-view .react-calendar__tile,
+  .react-calendar__decade-view .react-calendar__tile,
+  .react-calendar__century-view .react-calendar__tile {
+    padding: 1em .1em !important;
+  }
+
   &__tippy {
     box-shadow: none !important;
     border: none !important;

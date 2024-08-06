@@ -93,7 +93,7 @@ const PresetSelect = styled.select`
   height: ${selectorHeight};
   color: transparent;
   background: none;
-  option { 
+  option {
     color: black;
   }
 `;
@@ -103,7 +103,7 @@ const OptionValueDisplay = styled.div`
   width: 100%;
   height: 100%;
   z-index: 1;
-  padding: ${glsp(0.125)};
+  padding: ${glsp(0.125)} ${glsp(0.5)};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -117,7 +117,7 @@ const OptionValueDisplay = styled.div`
 const SelectorSubAction = css`
   position: absolute;
   top: 0;
-  right: 10px;
+  right: ${glsp(1.3)};
   height: ${selectorHeight};
 `;
 
@@ -138,7 +138,7 @@ const LoadingWrapper = styled.div`
   ${SelectorSubAction}
   display: flex;
   align-items: center;
-  right: 18px;
+  right: ${glsp(2)};
 `;
 
 const AnimatingCollecticonArrowSpinCcw = styled(CollecticonArrowSpinCcw)`
@@ -155,9 +155,9 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
 
   useEffect(() => {
     if (features?.length) onConfirm(features);
-  
+
   // Excluding onConfirm from the dependencies array to prevent an infinite loop:
-  // onConfirm depends on the Map instance, and invoking it modifies the Map, 
+  // onConfirm depends on the Map instance, and invoking it modifies the Map,
   // which can re-trigger this effect if included as a dependency.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[features]);
@@ -167,7 +167,7 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
   return (
     <SelectorWrapper>
       <OptionValueDisplay><span>{currentlySelected? currentlySelected.label: 'Analyze an area'} </span><CollecticonChevronDownSmall /></OptionValueDisplay>
-      
+
       <PresetSelect
         id='preset-selector'
         name='presetSelector'
@@ -186,7 +186,7 @@ export default function PresetSelector({ selectedState, setSelectedState, onConf
           return (<option key={`${e.value}-option-analysis`} value={e.value}>{e.label}</option>);
         })}
       </PresetSelect>
-      {(selectedState && !isLoading) && 
+      {(selectedState && !isLoading) &&
         <CancelButton
         fitting='skinny'
         onClick={() => {
