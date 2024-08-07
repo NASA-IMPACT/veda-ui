@@ -13,9 +13,7 @@ import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from '../dropdown-scrollable';
 import GoogleForm from '../google-form';
-import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, ModalNavLink, NavItem } from './types';
-
-import { NAVITEM_TYPE } from './types.d';
+import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, ModalNavLink, NavItem, NavItemType } from './types.d';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 
@@ -63,7 +61,7 @@ const DropMenuNavItem = styled(DropMenuItem)`
 
 function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:() => void}) {
   const { title, type, ...rest } = child;
-  if (type === NAVITEM_TYPE.internalLink) {
+  if (type === NavItemType.INTERNAL_LINK) {
     return (
     <li> 
       <DropMenuNavItem as={NavLink} to={(rest as InternalNavLink).to} onClick={onClick} data-dropdown='click.close'>
@@ -73,7 +71,7 @@ function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:
     );
     // In case a user inputs a wrong type
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  } else if (type === NAVITEM_TYPE.externalLink) {
+  } else if (type === NavItemType.EXTERNAL_LINK) {
     return (
       <li key={`${title}-dropdown-menu`}>
         <DropMenuNavItem as='a' target='blank' rel='noopener' href={(rest as ExternalNavLink).href} onClick={onClick} data-dropdown='click.close'>
@@ -88,7 +86,7 @@ function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:
 export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem, alignment?: AlignmentEnum, onClick?: () => void }) {
   const { isMediumDown } = useMediaQuery();
   const { title, type, ...rest } = item;
-  if (type === NAVITEM_TYPE.internalLink) {
+  if (type === NavItemType.INTERNAL_LINK) {
       return (
         <li key={`${title}-nav-item`}>
         <GlobalMenuLink to={(rest as InternalNavLink).to} onClick={onClick}>
@@ -97,7 +95,7 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
         </li>
         
       );
-  } else if (item.type === NAVITEM_TYPE.externalLink) {
+  } else if (item.type === NavItemType.EXTERNAL_LINK) {
     return (
       <li key={`${title}-nav-item`}>
       <GlobalMenuLink 
@@ -112,9 +110,10 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
       </li>
 
     );
-  } else if (type === NAVITEM_TYPE.modal) {
+  } else if (type === NavItemType.MODAL) {
     return (<li><GoogleForm title={title} src={(item as ModalNavLink).src} /></li>);
-  } else if (type === NAVITEM_TYPE.dropdown) {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  } else if (type === NavItemType.DROPDOWN) {
     const { title } = item as DropdownNavLink;
     // Mobile view
     if (isMediumDown) {
