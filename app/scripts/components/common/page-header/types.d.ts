@@ -1,27 +1,32 @@
-import { MODAL_TYPE, INTERNAL_LINK_TYPE, EXTERNAL_LINK_TYPE, DROPDOWN_TYPE } from './';
-
 export type AlignmentEnum = 'left' | 'right';
+
+export enum NAVITEM_TYPE {
+  internalLink= 'internalLink',
+  externalLink= 'externalLink',
+  dropdown= 'dropdown',
+  modal= 'modal'
+}
 
 export interface InternalNavLink {
   title: string;
   to: string;
-  type: typeof INTERNAL_LINK_TYPE;
+  type: NAVITEM_TYPE.internalLink;
 }
 export interface ExternalNavLink {
   title: string;
   href: string;
-  type: typeof EXTERNAL_LINK_TYPE;
+  type: NAVITEM_TYPE.externalLink;
 }
 export type NavLinkItem = (ExternalNavLink | InternalNavLink);
 export interface ModalNavLink {
   title: string;
-  type: typeof MODAL_TYPE;
+  type: NAVITEM_TYPE.modal;
   src: string;
 }
 
 export interface DropdownNavLink { 
   title: string;
-  type: typeof DROPDOWN_TYPE;
+  type: NAVITEM_TYPE.dropdown;
   children: NavLinkItem[];
 }
 
