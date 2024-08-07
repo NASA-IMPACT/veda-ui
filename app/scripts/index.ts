@@ -13,6 +13,7 @@ import Embed from './components/common/blocks/embed';
 import DevseedUiThemeProvider from './theme-provider';
 import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
+import CatalogView from './components/common/catalog';
 
 export {
   Block,
@@ -27,6 +28,7 @@ export {
   Embed,
   MapBlock,
   Image,
+  CatalogView,
   DevseedUiThemeProvider,
   PageMainContent,
   PageHero,

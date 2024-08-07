@@ -5,7 +5,8 @@ import useQsStateCreator from 'qs-state-hook';
 import { taxonomyAtom } from '../atoms/taxonomy-atom';
 import { searchAtom } from '../atoms/search-atom';
 import { FilterActions, FilterAction, onFilterAction } from '../../utils';
-interface UseFiltersWithQueryResult {
+
+export interface UseFiltersWithQueryResult {
   search: string;
   taxonomies: Record<string, string[]> | Record<string, never>;
   onAction: FilterAction

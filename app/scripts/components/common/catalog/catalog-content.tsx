@@ -243,14 +243,14 @@ function CatalogContent({
                   <Cards>
                     {currentDataset.layers.map((datasetLayer) => (
                       <li key={datasetLayer.id}>
-                        <CatalogCard
+                        {/* <CatalogCard
                           searchTerm={search}
                           layer={datasetLayer}
                           dataset={currentDataset}
                           selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
                           onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
-                        />
+                        /> */}
                       </li>
                     ))}
                   </Cards>
@@ -261,7 +261,7 @@ function CatalogContent({
             <Cards>
               {datasetsToDisplay.map((d) => (
                 <li key={d.id}>
-                  <CatalogCard dataset={d} searchTerm={search} />
+                  {/* <CatalogCard dataset={d} searchTerm={search} /> */}
                 </li>
               ))}
             </Cards>

@@ -7,6 +7,7 @@ import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
+import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 
 /**
  * @VEDA2-REFACTOR-WORK
@@ -17,13 +18,14 @@ import { veda_faux_module_datasets } from '$data-layer/datasets';
 
 export default function DataCatalogContainer() {
   const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
-  
+  // const { search, taxonomies , onAction } = useFiltersWithQS();
+
   return (
     <PageMainContent>
       <LayoutProps title='Data Catalog' description={getString('dataCatalogBanner').other} />
       <PageHero title='Data Catalog' description={getString('dataCatalogBanner').other} />
       <FeaturedDatasets />
-      <CatalogView datasets={allDatasets} />
+      <CatalogView datasets={allDatasets} onFilterChanges={useFiltersWithQS}/>
     </PageMainContent>
   );
 }
