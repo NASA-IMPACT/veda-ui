@@ -1,5 +1,5 @@
 import { getString, getNavItemsFromVedaConfig } from 'veda';
-import { InternalNavLink, ExternalNavLink, ModalNavLink, DropdownNavLink, NAVITEM_TYPE } from '$components/common/page-header/types';
+import { InternalNavLink, ExternalNavLink, ModalNavLink, DropdownNavLink, NAVITEM_TYPE } from '$components/common/page-header/types.d';
 
 import { checkEnvFlag } from '$utils/utils';
 import {

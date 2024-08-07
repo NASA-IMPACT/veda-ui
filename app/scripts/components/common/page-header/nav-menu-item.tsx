@@ -15,7 +15,7 @@ import DropdownScrollable from '../dropdown-scrollable';
 import GoogleForm from '../google-form';
 import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, ModalNavLink, NavItem } from './types';
 
-import { NAVITEM_TYPE } from './types';
+import { NAVITEM_TYPE } from './types.d';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 
