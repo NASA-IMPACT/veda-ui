@@ -117,7 +117,7 @@ const OptionValueDisplay = styled.div`
 const SelectorSubAction = css`
   position: absolute;
   top: 0;
-  right: ${glsp(1.3)};
+  right: ${glsp(1.25)};
   height: ${selectorHeight};
 `;
 

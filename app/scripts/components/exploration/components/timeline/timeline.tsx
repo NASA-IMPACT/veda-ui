@@ -70,7 +70,7 @@ import { useInteractionRectHover } from '$components/exploration/hooks/use-datas
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import Pluralize from '$utils/pluralize';
-import { getLowestCommonTimeDensity } from '$components/exploration/data-utils';
+import { getLowestCommonTimeDensity } from '$components/exploration/data-utils-no-faux-module';
 
 const TimelineWrapper = styled.div`
   position: relative;
