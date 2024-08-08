@@ -3,7 +3,6 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
-
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 import Banner from '../banner';
@@ -12,10 +11,14 @@ import { LayoutRootContext } from './context';
 import { useGoogleTagManager } from '$utils/use-google-tag-manager';
 
 import NavWrapper from '$components/common/nav-wrapper';
+import Logo from '$components/common/page-header/logo';
+import { mainNavItems, subNavItems} from '$components/common/page-header/default-config';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
+
 export const PAGE_BODY_ID = 'pagebody';
+
 const Page = styled.div`
   display: flex;
   flex-direction: column;
@@ -51,7 +54,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         thumbnail={thumbnail}
       />
       {banner && <Banner appTitle={title} {...banner} />}
-      <NavWrapper />
+      <NavWrapper mainNavItems={mainNavItems} subNavItems={subNavItems} logo={<Logo />} />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
