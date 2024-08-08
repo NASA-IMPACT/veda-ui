@@ -39,7 +39,7 @@ import Hug from "$styles/hug";
 import { Actions } from "$components/common/browse-controls/use-browse-controls";
 import Image from "$components/common/blocks/images";
 
-export default {
+export {
   STORIES_PATH,
   DATASETS_PATH,
   ANALYSIS_PATH,
