@@ -152,7 +152,7 @@ const TIME_DENSITY_ORDER: Record<TimeDensity, number> = {
  * Determines the lowest common time density among an array of timeline datasets.
  *
  * @param {TimelineDataset[]} dataArray - An array of timeline datasets, each containing time density info.
- * @returns {TimeDensity} - The smallest TimeDensity found in the datasets array, or null if the array is empty.
+ * @returns {TimeDensity} - The smallest TimeDensity found in the datasets array, or TimeDensity.YEAR as a default.
  */
 export const getLowestCommonTimeDensity = (
   dataArray: TimelineDatasetSuccess[]
