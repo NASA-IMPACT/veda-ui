@@ -625,7 +625,13 @@ export default function Timeline(props: TimelineProps) {
   // Stub scale for when there is no layers
   const initialScale = useMemo(() => getInitialScale(width), [width]);
 
-  const minMaxTemporalExtent = useMemo(() => getTemporalExtent(datasets), [datasets]);
+  const minMaxTemporalExtent = useMemo(
+    () => getTemporalExtent(
+      // Filter the datasets to only include those with status 'SUCCESS'.
+      datasets.filter((dataset): dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
+    ),
+    [datasets]
+  );
 
   const lowestCommonTimeDensity = useMemo(
     () =>

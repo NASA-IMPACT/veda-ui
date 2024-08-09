@@ -113,7 +113,7 @@ export const getTemporalExtent = (
   const extents: TemporalExtent[] = datasets.map((dataset) => {
     const { domain } = dataset.data;
 
-    if (!domain || domain.length === 0) {
+    if (domain.length === 0) {
       return [undefined, undefined];
     }
 
@@ -128,7 +128,6 @@ export const getTemporalExtent = (
   });
 
   // Ensure that both min and max are defined
-  // (e.g. until the dataset finished changing state from 'loading' to 'success')
   const validExtents = extents.filter(
     ([min, max]) => min !== undefined && max !== undefined
   ) as [Date, Date][];
