@@ -29,7 +29,7 @@ import styled from 'styled-components';
 
 import { DatasetList } from '../datasets/dataset-list';
 
-import { applyTransform, getLabelFormat, isEqualTransform, rescaleX } from './timeline-utils';
+import { applyTransform, getLabelFormat, getTemporalExtent, isEqualTransform, rescaleX } from './timeline-utils';
 import {
   TimelineControls,
   getInitialScale,
@@ -625,6 +625,8 @@ export default function Timeline(props: TimelineProps) {
   // Stub scale for when there is no layers
   const initialScale = useMemo(() => getInitialScale(width), [width]);
 
+  const minMaxTemporalExtent = useMemo(() => getTemporalExtent(datasets), [datasets]);
+
   const lowestCommonTimeDensity = useMemo(
     () =>
       getLowestCommonTimeDensity(
@@ -693,7 +695,7 @@ export default function Timeline(props: TimelineProps) {
           </small>
         </TimelineDetails>
         <TimelineControls
-          dataDomain={dataDomain}
+          minMaxTemporalExtent={minMaxTemporalExtent}
           xScaled={xScaled}
           width={width}
           onZoom={onControlsZoom}

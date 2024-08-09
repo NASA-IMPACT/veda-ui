@@ -16,6 +16,7 @@ import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
 import { TimelineDatePicker } from './timeline-datepicker';
 import { TimelineHead } from './timeline';
+import { TemporalExtent } from './timeline-utils.js';
 import {
   selectedCompareDateAtom,
   selectedDateAtom,
@@ -72,7 +73,7 @@ interface TimelineControlsProps {
   onZoom: (zoom: number) => void;
   timeDensity: TimeDensity;
   timelineLabelsFormat: string;
-  dataDomain: [Date, Date] | undefined;
+  minMaxTemporalExtent: TemporalExtent;
 }
 
 
@@ -83,7 +84,7 @@ export function getInitialScale(width) {
     .range([0, width]);
 }
 
-export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom" | "timeDensity" | "timelineLabelsFormat" | "dataDomain">) {
+export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom" | "timeDensity" | "timelineLabelsFormat" | "minMaxTemporalExtent">) {
   const { xScaled, width } = props;
 
   const initialScale = useMemo(() => {
@@ -255,7 +256,7 @@ const getCalendarView = (timeDensity: TimeDensity): View | undefined => {
 };
 
 export function TimelineControls(props: TimelineControlsProps) {
-  const { xScaled, width, outOfViewHeads, onZoom, timeDensity, timelineLabelsFormat, dataDomain } = props;
+  const { xScaled, width, outOfViewHeads, onZoom, timeDensity, timelineLabelsFormat, minMaxTemporalExtent } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
@@ -334,8 +335,8 @@ export function TimelineControls(props: TimelineControlsProps) {
             {selectedInterval ? (
               <DatePickersWrapper>
                 <TimelineDatePicker
-                  minDate={dataDomain ? dataDomain[0] : undefined}
-                  maxDate={dataDomain ? dataDomain[1] : undefined}
+                  minDate={minMaxTemporalExtent[0]}
+                  maxDate={minMaxTemporalExtent[1]}
                   triggerHeadReference='FROM:'
                   selectedDay={selectedInterval.start}
                   onConfirm={(d) => {
@@ -353,8 +354,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
-                  minDate={dataDomain ? dataDomain[0] : undefined}
-                  maxDate={dataDomain ? dataDomain[1] : undefined}
+                  minDate={minMaxTemporalExtent[0]}
+                  maxDate={minMaxTemporalExtent[1]}
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
                   onConfirm={(d) => {
@@ -369,8 +370,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
-                  minDate={dataDomain ? dataDomain[0] : undefined}
-                  maxDate={dataDomain ? dataDomain[1] : undefined}
+                  minDate={minMaxTemporalExtent[0]}
+                  maxDate={minMaxTemporalExtent[1]}
                   triggerHeadReference='TO:'
                   selectedDay={selectedInterval.end}
                   onConfirm={(d) => {
@@ -391,8 +392,8 @@ export function TimelineControls(props: TimelineControlsProps) {
               <>
                 <DatePickersWrapper>
                 <TimelineDatePicker
-                  minDate={dataDomain ? dataDomain[0] : undefined}
-                  maxDate={dataDomain ? dataDomain[1] : undefined}
+                  minDate={minMaxTemporalExtent[0]}
+                  maxDate={minMaxTemporalExtent[1]}
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
                   onConfirm={(d) => {
@@ -409,8 +410,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                   <>
                     <VerticalDivider />
                     <TimelineDatePicker
-                      minDate={dataDomain ? dataDomain[0] : undefined}
-                      maxDate={dataDomain ? dataDomain[1] : undefined}
+                      minDate={minMaxTemporalExtent[0]}
+                      maxDate={minMaxTemporalExtent[1]}
                       triggerHeadReference='B:'
                       selectedDay={selectedCompareDay}
                       onConfirm={(d) => {
