@@ -10,6 +10,7 @@ import {
   DatasetStatus,
   StacDatasetData,
   TimeDensity,
+  TimelineDatasetSuccess
 } from './types.d.ts';
 import {
   DataMetric,
@@ -22,9 +23,9 @@ import { DatasetLayer, VedaDatum, DatasetData } from '$types/veda';
 // @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
 // `./date-utils` to be deprecated!!
 
-export const getDatasetLayers = (datasets: VedaDatum<DatasetData>) => Object.values(datasets)
-  .flatMap((dataset: VedaDatum<DatasetData>) => {
-    return dataset!.data.layers.map(l => ({
+export const getDatasetLayers = (datasets: VedaDatum<DatasetData>) =>
+  Object.values(datasets).flatMap((dataset: VedaDatum<DatasetData>) => {
+    return dataset!.data.layers.map((l) => ({
       ...l,
       parentDataset: {
         id: dataset!.data.id,
@@ -110,17 +111,17 @@ export function resolveLayerTemporalExtent(
     case TimeDensity.YEAR:
       return eachYearOfInterval({
         start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length-1])
+        end: utcString2userTzDate(domain[domain.length - 1])
       });
     case TimeDensity.MONTH:
       return eachMonthOfInterval({
         start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length-1])
+        end: utcString2userTzDate(domain[domain.length - 1])
       });
     case TimeDensity.DAY:
       return eachDayOfInterval({
         start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length-1])
+        end: utcString2userTzDate(domain[domain.length - 1])
       });
     default:
       throw new Error(
@@ -139,3 +140,28 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
 
   return startOfDay(date);
 }
+
+// Define an order for TimeDensity, where smaller numbers indicate finer granularity
+const TIME_DENSITY_ORDER: Record<TimeDensity, number> = {
+  [TimeDensity.DAY]: 1,
+  [TimeDensity.MONTH]: 2,
+  [TimeDensity.YEAR]: 3
+};
+
+/**
+ * Determines the lowest common time density among an array of timeline datasets.
+ *
+ * @param {TimelineDataset[]} dataArray - An array of timeline datasets, each containing time density info.
+ * @returns {TimeDensity} - The smallest TimeDensity found in the datasets array, or TimeDensity.YEAR as a default.
+ */
+export const getLowestCommonTimeDensity = (
+  dataArray: TimelineDatasetSuccess[]
+): TimeDensity =>
+  dataArray.reduce(
+    (lowestDensity, obj) =>
+      TIME_DENSITY_ORDER[obj.data.timeDensity] <
+      TIME_DENSITY_ORDER[lowestDensity]
+        ? obj.data.timeDensity
+        : lowestDensity,
+    TimeDensity.YEAR
+  );

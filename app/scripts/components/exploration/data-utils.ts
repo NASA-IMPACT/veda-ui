@@ -23,7 +23,7 @@ import { veda_faux_module_datasets } from '$data-layer/datasets';
 import { DatasetLayer, DatasetData, VedaDatum } from '$types/veda';
 import { utcString2userTzDate } from '$utils/date';
 
-// @TODO: This file should be deprecated and merged with `data-utils-no-faux-module` 
+// @TODO: This file should be deprecated and merged with `data-utils-no-faux-module`
 // to get rid of the faux modules dependency
 
 export const findParentDataset = (layerId: string) => {
@@ -214,7 +214,7 @@ export const formatDate = (date: Date | null, view?: string) => {
     case 'year':
       return format(date, 'MMM yyyy');
     default:
-      return format(date, 'MMM do, yyyy');
+      return format(date, 'MMM d yyyy');
   }
 };
 

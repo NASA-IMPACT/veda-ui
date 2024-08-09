@@ -8,10 +8,15 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
 import { isEqual } from 'lodash';
+import { View } from 'react-calendar/dist/cjs/shared/types';
+import {
+  TimeDensity,
+} from './../../types.d.ts';
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
 import { TimelineDatePicker } from './timeline-datepicker';
 import { TimelineHead } from './timeline';
+import { TemporalExtent } from './timeline-utils.js';
 import {
   selectedCompareDateAtom,
   selectedDateAtom,
@@ -66,6 +71,9 @@ interface TimelineControlsProps {
   width: number;
   outOfViewHeads?: TimelineHead[];
   onZoom: (zoom: number) => void;
+  timeDensity: TimeDensity;
+  timelineLabelsFormat: string;
+  minMaxTemporalExtent: TemporalExtent;
 }
 
 
@@ -76,7 +84,7 @@ export function getInitialScale(width) {
     .range([0, width]);
 }
 
-export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom">) {
+export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom" | "timeDensity" | "timelineLabelsFormat" | "minMaxTemporalExtent">) {
   const { xScaled, width } = props;
 
   const initialScale = useMemo(() => {
@@ -228,8 +236,27 @@ export const TimelineHeadIndicators = memo(({ outOfViewHeads }: { outOfViewHeads
 
 TimelineHeadIndicators.displayName = 'TimelineHeadIndicators';
 
+/**
+ * Determines the appropriate calendar view based on the time density.
+ *
+ * The TimeDensity enumeration is mapped to the corresponding calendar view:
+ * - MONTH: Displays the calendar in 'year' view, showing all months in a year.
+ * - YEAR: Displays the calendar in 'decade' view, showing multiple years in a decade.
+ * - Default: Displays the calendar in 'month' view, showing all days of the current month.
+ */
+const getCalendarView = (timeDensity: TimeDensity): View | undefined => {
+  switch (timeDensity) {
+    case TimeDensity.MONTH:
+      return 'year';
+    case TimeDensity.YEAR:
+      return 'decade';
+    default:
+      return 'month';
+  }
+};
+
 export function TimelineControls(props: TimelineControlsProps) {
-  const { xScaled, width, outOfViewHeads, onZoom } = props;
+  const { xScaled, width, outOfViewHeads, onZoom, timeDensity, timelineLabelsFormat, minMaxTemporalExtent } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
@@ -240,6 +267,8 @@ export function TimelineControls(props: TimelineControlsProps) {
 
   // Scale to use when there are no datasets with data (loading or error)
   const initialScale = useMemo(() => getInitialScale(width) ,[width]);
+
+  const calendarView = useMemo(() => getCalendarView(timeDensity), [timeDensity]);
 
   return (
     <TimelineControlsSelf>
@@ -306,6 +335,8 @@ export function TimelineControls(props: TimelineControlsProps) {
             {selectedInterval ? (
               <DatePickersWrapper>
                 <TimelineDatePicker
+                  minDate={minMaxTemporalExtent[0]}
+                  maxDate={minMaxTemporalExtent[1]}
                   triggerHeadReference='FROM:'
                   selectedDay={selectedInterval.start}
                   onConfirm={(d) => {
@@ -318,9 +349,13 @@ export function TimelineControls(props: TimelineControlsProps) {
                   disabled={!xScaled}
                   tipContent='Start date for analysis'
                   dataTourId='date-picker-start'
+                  calendarView={calendarView}
+                  triggerLabelFormat={timelineLabelsFormat}
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
+                  minDate={minMaxTemporalExtent[0]}
+                  maxDate={minMaxTemporalExtent[1]}
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
                   onConfirm={(d) => {
@@ -330,9 +365,13 @@ export function TimelineControls(props: TimelineControlsProps) {
                   disabled={!xScaled}
                   tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
                   dataTourId='date-picker-a'
+                  calendarView={calendarView}
+                  triggerLabelFormat={timelineLabelsFormat}
                 />
                 <VerticalDivider />
                 <TimelineDatePicker
+                  minDate={minMaxTemporalExtent[0]}
+                  maxDate={minMaxTemporalExtent[1]}
                   triggerHeadReference='TO:'
                   selectedDay={selectedInterval.end}
                   onConfirm={(d) => {
@@ -345,12 +384,16 @@ export function TimelineControls(props: TimelineControlsProps) {
                   disabled={!xScaled}
                   tipContent='End date for analysis'
                   dataTourId='date-picker-end'
+                  calendarView={calendarView}
+                  triggerLabelFormat={timelineLabelsFormat}
                 />
               </DatePickersWrapper>
             ) : (
               <>
                 <DatePickersWrapper>
                 <TimelineDatePicker
+                  minDate={minMaxTemporalExtent[0]}
+                  maxDate={minMaxTemporalExtent[1]}
                   triggerHeadReference={selectedCompareDay ? 'A:' : ''}
                   selectedDay={selectedDay}
                   onConfirm={(d) => {
@@ -360,11 +403,15 @@ export function TimelineControls(props: TimelineControlsProps) {
                   disabled={!xScaled}
                   tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
                   dataTourId='date-picker-a'
+                  calendarView={calendarView}
+                  triggerLabelFormat={timelineLabelsFormat}
                 />
                 {selectedCompareDay && (
                   <>
                     <VerticalDivider />
                     <TimelineDatePicker
+                      minDate={minMaxTemporalExtent[0]}
+                      maxDate={minMaxTemporalExtent[1]}
                       triggerHeadReference='B:'
                       selectedDay={selectedCompareDay}
                       onConfirm={(d) => {
@@ -374,6 +421,8 @@ export function TimelineControls(props: TimelineControlsProps) {
                       disabled={!xScaled}
                       tipContent='Date shown on right map'
                       dataTourId='date-picker-b'
+                      calendarView={calendarView}
+                      triggerLabelFormat={timelineLabelsFormat}
                     />
                   </>
                 )}
