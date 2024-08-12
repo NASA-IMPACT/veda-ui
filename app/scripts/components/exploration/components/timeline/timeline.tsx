@@ -188,7 +188,7 @@ const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
 
 export interface TimelineHead {
   name: 'Point' | 'PointCompare' | 'In' | 'Out';
-  date: Date | null;
+  date: Date;
   ref?: React.MutableRefObject<any>;
   isInView?: boolean;
   outDirection?: 'left' | 'right' | undefined;

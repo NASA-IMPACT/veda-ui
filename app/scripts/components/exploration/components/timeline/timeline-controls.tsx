@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { useAtom } from 'jotai';
-import { endOfYear, startOfYear } from 'date-fns';
+import { endOfYear, format, startOfYear } from 'date-fns';
 import { scaleTime, ScaleTime } from 'd3';
 
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
@@ -27,7 +27,6 @@ import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minu
 import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import useAois from '$components/common/map/controls/hooks/use-aois';
-import { formatDate } from '$components/exploration/data-utils';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -194,7 +193,7 @@ const TimelineHeadRightIndicators = styled(TimelineHeadIndicatorsBase)`
   flex-direction: row-reverse;
 `;
 
-export const TimelineHeadIndicators = memo(({ outOfViewHeads }: { outOfViewHeads: TimelineHead[] }) => {
+export const TimelineHeadIndicators = memo(({ outOfViewHeads, timelineLabelsFormat }: { outOfViewHeads: TimelineHead[], timelineLabelsFormat: string }) => {
   // Filter the out-of-view heads to get those that are out to the left
   const leftHeads = outOfViewHeads.filter(head => head.outDirection === 'left');
   // Filter the out-of-view heads to get those that are out to the right
@@ -206,7 +205,7 @@ export const TimelineHeadIndicators = memo(({ outOfViewHeads }: { outOfViewHeads
       {leftHeads.length > 0 && (
         <TimelineHeadLeftIndicators>
         <TimelinePlayheadLeftIndicator>
-          <span>{formatDate(leftHeads[0].date)}</span>
+          <span>{format(leftHeads[0].date, timelineLabelsFormat)}</span>
         </TimelinePlayheadLeftIndicator>
         {leftHeads.length > 1 &&
           <TimelinePlayheadLeftIndicator secondary>
@@ -218,7 +217,7 @@ export const TimelineHeadIndicators = memo(({ outOfViewHeads }: { outOfViewHeads
       {rightHeads.length > 0 && (
        <TimelineHeadRightIndicators>
        <TimelinePlayheadRightIndicator>
-         <span>{formatDate(rightHeads[rightHeads.length - 1].date)}</span>
+       <span>{format(rightHeads[rightHeads.length - 1].date, timelineLabelsFormat)}</span>
        </TimelinePlayheadRightIndicator>
        {rightHeads.length > 1 &&
          <TimelinePlayheadRightIndicator secondary>
@@ -244,7 +243,7 @@ TimelineHeadIndicators.displayName = 'TimelineHeadIndicators';
  * - YEAR: Displays the calendar in 'decade' view, showing multiple years in a decade.
  * - Default: Displays the calendar in 'month' view, showing all days of the current month.
  */
-const getCalendarView = (timeDensity: TimeDensity): View | undefined => {
+const getCalendarView = (timeDensity: TimeDensity): View => {
   switch (timeDensity) {
     case TimeDensity.MONTH:
       return 'year';
@@ -275,7 +274,7 @@ export function TimelineControls(props: TimelineControlsProps) {
         <ControlsToolbar>
         {outOfViewHeads && outOfViewHeads.length > 0 && (
           <TimelineHeadIndicatorsWrapper>
-            <TimelineHeadIndicators outOfViewHeads={outOfViewHeads} />
+            <TimelineHeadIndicators outOfViewHeads={outOfViewHeads} timelineLabelsFormat={timelineLabelsFormat} />
           </TimelineHeadIndicatorsWrapper>
         )}
         <ToolbarFullWidth>

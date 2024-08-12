@@ -78,7 +78,7 @@ function getTicks(scale: ScaleTime<number, number>) {
  * @returns {Date[]} - An array of minor tick dates.
  */
 function getMinorTicks(scale: ScaleTime<number, number>, majorTicks: Date[], timeDensity: TimeDensity): Date[] {
-  if (timeDensity === TimeDensity.DAY) {
+  if (timeDensity === TimeDensity.DAY || majorTicks.length < 2) {
     return [];
   }
 
@@ -89,11 +89,6 @@ function getMinorTicks(scale: ScaleTime<number, number>, majorTicks: Date[], tim
   // it offers a better alignment of the timeline playhead over the
   // minor ticks.
   const segments = 10;
-
-  // Ensure there are at least two major ticks to define an interval
-  if (majorTicks.length < 2) {
-    return [];
-  }
 
   // Calculate the interval between minor ticks based on the first two major ticks
   const minorTickInterval = (majorTicks[1].getTime() - majorTicks[0].getTime()) / segments;
