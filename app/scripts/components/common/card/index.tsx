@@ -263,14 +263,15 @@ function CardComponent(props: CardComponentProps) {
 
 
   return (
-    <ElementInteractive
-      as={CardItem}
-      cardType={cardType}
-      className={className}
-      linkLabel={linkLabel ?? 'View more'}
-      linkProps={linkProps}
-      onClickCapture={onCardClickCapture}
-    >
+    // <ElementInteractive
+    //   as={CardItem}
+    //   cardType={cardType}
+    //   className={className}
+    //   linkLabel={linkLabel ?? 'View more'}
+    //   linkProps={linkProps}
+    //   onClickCapture={onCardClickCapture}
+    // >
+    <>
       {
         cardType !== 'horizontal-info' && (
           <>
@@ -324,7 +325,8 @@ function CardComponent(props: CardComponentProps) {
           />
         )
       }
-    </ElementInteractive>
+    {/* </ElementInteractive> */}
+    </>
   );
 }
 

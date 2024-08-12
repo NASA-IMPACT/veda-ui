@@ -188,7 +188,7 @@ function CatalogContent({
   const getSelectedLayerCount = (dataset) => {
     return dataset.layers.filter((layer) => selectedIds?.includes(layer.id)).length;
   };
-
+  console.log(`LOG_FOR_TEST_DATASETS: `, datasets)
   return (
     <Content>
       <FiltersControl
@@ -243,14 +243,14 @@ function CatalogContent({
                   <Cards>
                     {currentDataset.layers.map((datasetLayer) => (
                       <li key={datasetLayer.id}>
-                        {/* <CatalogCard
+                        <CatalogCard
                           searchTerm={search}
                           layer={datasetLayer}
                           dataset={currentDataset}
                           selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
-                          onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
-                        /> */}
+                          // onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
+                        />
                       </li>
                     ))}
                   </Cards>
@@ -261,7 +261,7 @@ function CatalogContent({
             <Cards>
               {datasetsToDisplay.map((d) => (
                 <li key={d.id}>
-                  {/* <CatalogCard dataset={d} searchTerm={search} /> */}
+                  <CatalogCard dataset={d} searchTerm={search} />
                 </li>
               ))}
             </Cards>
