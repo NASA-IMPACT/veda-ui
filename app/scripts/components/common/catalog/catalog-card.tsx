@@ -120,9 +120,9 @@ export const CatalogCard = (props: CatalogCardProps) => {
           <CardSourcesList sources={sources} />
         </CardMeta>
       }
-      // linkTo={getDatasetPath(dataset)}
+      linkTo={getDatasetPath(dataset)}
       linkLabel='View dataset'
-      // onLinkClick={handleClick}
+      onLinkClick={handleClick}
       title={
         <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
           {title}
@@ -135,24 +135,24 @@ export const CatalogCard = (props: CatalogCardProps) => {
       }
       imgSrc={imgSrc}
       imgAlt={imgAlt}
-      // footerContent={
-      //   <>
-      //     {topics?.length ? (
-      //       <CardTopicsList>
-      //         <dt>Topics</dt>
-      //         {topics.map((t) => (
-      //           <dd key={t.id}>
-      //             <Pill variation='primary'>
-      //               <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
-      //                 {t.name}
-      //               </TextHighlight>
-      //             </Pill>
-      //           </dd>
-      //         ))}
-      //       </CardTopicsList>
-      //     ) : null}
-      //   </>
-      // }
+      footerContent={
+        <>
+          {topics?.length ? (
+            <CardTopicsList>
+              <dt>Topics</dt>
+              {topics.map((t) => (
+                <dd key={t.id}>
+                  <Pill variation='primary'>
+                    <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
+                      {t.name}
+                    </TextHighlight>
+                  </Pill>
+                </dd>
+              ))}
+            </CardTopicsList>
+          ) : null}
+        </>
+      }
     />
   );
 };
