@@ -1,5 +1,6 @@
 import React, { ReactNode, useRef, useState } from "react";
 import { Icon } from "@trussworks/react-uswds";
+import { View } from "react-calendar/dist/cjs/shared/types";
 import Calendar from 'react-calendar';
 import Tippy from "@tippyjs/react";
 import styled from "styled-components";
@@ -13,6 +14,9 @@ interface SimpleDatePickerProps {
   onConfirm: (date: Date | null) => void;
   triggerHeadReference: string;
   selectedDay: Date | null;
+  calendarView?: View | undefined;
+  minDate?: Date | undefined;
+  maxDate?: Date | undefined;
   renderTriggerElement: (props: {
     onClick: () => void;
     disabled: boolean;
@@ -32,7 +36,10 @@ export const SimpleDatePicker = ({
   onConfirm,
   triggerHeadReference,
   selectedDay,
-  renderTriggerElement
+  renderTriggerElement,
+  calendarView,
+  minDate,
+  maxDate,
 }: SimpleDatePickerProps) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -69,17 +76,25 @@ export const SimpleDatePicker = ({
           visible={isCalendarOpen}
           onClickOutside={(_, event) => handleClickOutside(event)}
           interactive={true}
+          // Appending the Tippy container to the body instead of its default parent
+          // (in this case it's the panel) to prevent the calendar from being cut off. The
+          // panel has `overflow: hidden;` which is needed for the resizing. However, this
+          // causes the calendar to be cut-off when it opens upwards, near the bottom of the screen.
+          appendTo={() => document.body}
           placement='bottom'
           content={
             <Calendar
               onChange={handleDateChange}
               value={selectedDay}
               className='react-calendar'
-              maxDetail='month'
               nextLabel={<Icon.NavigateNext />}
               prevLabel={<Icon.NavigateBefore />}
               prev2Label={<Icon.NavigateFarBefore />}
               next2Label={<Icon.NavigateFarNext />}
+              defaultView={calendarView}
+              maxDetail={calendarView}
+              minDate={minDate}
+              maxDate={maxDate}
             />
           }
         >

@@ -29,11 +29,11 @@ import styled from 'styled-components';
 
 import { DatasetList } from '../datasets/dataset-list';
 
-import { applyTransform, isEqualTransform, rescaleX } from './timeline-utils';
+import { applyTransform, getLabelFormat, getTemporalExtent, isEqualTransform, rescaleX } from './timeline-utils';
 import {
   TimelineControls,
   getInitialScale,
-  TimelineDateAxis
+  TimelineDateAxis,
 } from './timeline-controls';
 import {
   TimelineHeadIn,
@@ -70,6 +70,7 @@ import { useInteractionRectHover } from '$components/exploration/hooks/use-datas
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import Pluralize from '$utils/pluralize';
+import { getLowestCommonTimeDensity } from '$components/exploration/data-utils-no-faux-module';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -187,7 +188,7 @@ const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
 
 export interface TimelineHead {
   name: 'Point' | 'PointCompare' | 'In' | 'Out';
-  date: Date | null;
+  date: Date;
   ref?: React.MutableRefObject<any>;
   isInView?: boolean;
   outDirection?: 'left' | 'right' | undefined;
@@ -624,6 +625,30 @@ export default function Timeline(props: TimelineProps) {
   // Stub scale for when there is no layers
   const initialScale = useMemo(() => getInitialScale(width), [width]);
 
+  const minMaxTemporalExtent = useMemo(
+    () => getTemporalExtent(
+      // Filter the datasets to only include those with status 'SUCCESS'.
+      datasets.filter((dataset): dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
+    ),
+    [datasets]
+  );
+
+  const lowestCommonTimeDensity = useMemo(
+    () =>
+      getLowestCommonTimeDensity(
+        // Filter the datasets to only include those with status 'SUCCESS'.
+        // The function getLowestCommonTimeDensity expects an array of TimelineDatasetSuccess objects,
+        // which have the 'data.timeDensity' property (formated as such).
+        datasets.filter((dataset): dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
+      ),
+    [datasets]
+  );
+
+  const timelineLabelFormat = useMemo(
+    () => getLabelFormat(lowestCommonTimeDensity),
+    [lowestCommonTimeDensity]
+  );
+
   // Some of these values depend on each other, but we check all of them so
   // typescript doesn't complain.
   if (datasets.length === 0) {
@@ -676,10 +701,13 @@ export default function Timeline(props: TimelineProps) {
           </small>
         </TimelineDetails>
         <TimelineControls
+          minMaxTemporalExtent={minMaxTemporalExtent}
           xScaled={xScaled}
           width={width}
           onZoom={onControlsZoom}
           outOfViewHeads={outOfViewHeads}
+          timeDensity={lowestCommonTimeDensity}
+          timelineLabelsFormat={timelineLabelFormat}
         />
       </TimelineHeader>
       <TimelineContent>
@@ -695,6 +723,7 @@ export default function Timeline(props: TimelineProps) {
                 onDayChange={setSelectedDay}
                 selectedDay={selectedDay}
                 width={width}
+                labelFormat={timelineLabelFormat}
               />
             )}
             {selectedCompareDay && (
@@ -706,6 +735,7 @@ export default function Timeline(props: TimelineProps) {
                 onDayChange={setSelectedCompareDay}
                 selectedDay={selectedCompareDay}
                 width={width}
+                labelFormat={timelineLabelFormat}
               />
             )}
             {selectedInterval && (
@@ -726,6 +756,7 @@ export default function Timeline(props: TimelineProps) {
                   }}
                   selectedDay={selectedInterval.start}
                   width={width}
+                  labelFormat={timelineLabelFormat}
                 />
                 <TimelineHeadOut
                   ref={headOutRef}
@@ -743,6 +774,7 @@ export default function Timeline(props: TimelineProps) {
                   }}
                   selectedDay={selectedInterval.end}
                   width={width}
+                  labelFormat={timelineLabelFormat}
                 />
                 <TimelineRangeTrack
                   range={selectedInterval}
