@@ -28,7 +28,10 @@ if (isVedaInstance) {
     vedaUIPath,
     'node_modules/react-calendar/dist/**/*.css'
   );
-  contentPaths = [...contentPaths, path.resolve(basePath, 'overrides')];
+  contentPaths = [
+    ...contentPaths,
+    `${basePath}/overrides/**/*.{js,jsx,ts,tsx}`
+  ];
 }
 
 const allContentPaths = [
