@@ -4,7 +4,7 @@ import T from 'prop-types';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 
 import '$styles/styles.scss';
-import '@trussworks/react-uswds/lib/uswds.css';
+// import '@trussworks/react-uswds/lib/uswds.css';
 
 import { userPages } from 'veda';
 import DevseedUiThemeProvider from './theme-provider';
