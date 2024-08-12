@@ -2,14 +2,14 @@ import React, { useCallback, useState } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 
-const InteractiveLink = styled.a`
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: auto;
-  font-size: 0;
-  margin: 0;
-`;
+// const InteractiveLink = styled.a`
+//   position: absolute;
+//   inset: 0;
+//   z-index: -1;
+//   pointer-events: auto;
+//   font-size: 0;
+//   margin: 0;
+// `;
 
 export const Wrapper = styled.div`
   position: relative;
@@ -77,7 +77,7 @@ export const ElementInteractive = React.forwardRef(
     const [isStateOver, setStateOver] = useState(false);
     const [isStateActive, setStateActive] = useState(false);
     const [isStateFocus, setStateFocus] = useState(false);
-
+    console.log(`linkLabel: `, linkLabel)
     return (
       <Wrapper
         ref={ref}
@@ -94,7 +94,7 @@ export const ElementInteractive = React.forwardRef(
         }, [])}
       >
         {children}
-        <InteractiveLink
+        {/* <InteractiveLink
           {...linkProps}
           onMouseDown={useCallback(() => setStateActive(true), [])}
           onMouseUp={useCallback(() => setStateActive(false), [])}
@@ -102,7 +102,16 @@ export const ElementInteractive = React.forwardRef(
           onBlur={useCallback(() => setStateFocus(false), [])}
         >
           {linkLabel}
-        </InteractiveLink>
+        </InteractiveLink> */}
+        <a
+          {...linkProps}
+          onMouseDown={useCallback(() => setStateActive(true), [])}
+          onMouseUp={useCallback(() => setStateActive(false), [])}
+          onFocus={useCallback(() => setStateFocus(true), [])}
+          onBlur={useCallback(() => setStateFocus(false), [])}
+        >
+          {linkLabel}
+        </a>
       </Wrapper>
     );
   }
