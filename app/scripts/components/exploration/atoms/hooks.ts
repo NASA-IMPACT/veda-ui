@@ -26,7 +26,13 @@ function addDurationToDate(date, timeDensity: TimeDensity) {
 }
 
 /**
- * Calculates the date domain of the datasets, if any are selected.
+ * Calculates the date domain of the datasets, if any are selected, adjusting
+ * based on the available content width. The domain is expanded to ensure that
+ * the timeline displays at least a minimum number of days (minDays), which is
+ * derived from the content width. This function does not determine the absolute
+ * maximum temporal extent of all datasets but ensures the timeline covers a
+ * suitable range of dates based on the current width of the timeline.
+ *
  * @returns Dataset date domain or undefined.
  */
 export function useTimelineDatasetsDomain() {
