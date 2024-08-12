@@ -6,6 +6,9 @@ const vedaPath = path.resolve(CWD, '.veda/ui');
 const isVedaInstance = fs.existsSync(vedaPath);
 
 let basePath = CWD;
+let vedaUIPath = CWD;
+let contentPaths = [`${vedaUIPath}/app/**/*.{js,jsx,ts,tsx}`];
+
 let uswdsPath = path.resolve(
   basePath,
   'node_modules/@trussworks/react-uswds/lib'
@@ -16,26 +19,27 @@ let reactCalendarPath = path.resolve(
 );
 
 if (isVedaInstance) {
-  basePath = vedaPath;
+  vedaUIPath = vedaPath;
   uswdsPath = path.resolve(
-    basePath,
+    vedaUIPath,
     'node_modules/@trussworks/react-uswds/lib'
   );
   reactCalendarPath = path.resolve(
-    basePath,
+    vedaUIPath,
     'node_modules/react-calendar/dist/**/*.css'
   );
+  contentPaths = [...contentPaths, path.resolve(basePath, 'overrides')];
 }
 
-const contentPaths = [
-  `${basePath}/app/**/*.{js,jsx,ts,tsx}`,
+const allContentPaths = [
+  ...contentPaths,
   `${uswdsPath}/index.css`,
   reactCalendarPath
 ];
 
 let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
-  content: contentPaths,
+  content: allContentPaths,
   safelist: {
     deep: [/usa-banner$/],
     greedy: [/^usa-banner/]
