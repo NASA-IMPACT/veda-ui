@@ -18,10 +18,12 @@ interface LayerProps {
   order?: number;
   selectedDay: Date;
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+  colorMap?: string;
+  isReversed?: boolean;
 }
 
 export function Layer(props: LayerProps) {
-  const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
+  const { id: layerId, dataset, order, selectedDay, onStatusChange, colorMap, isReversed } = props;
 
   const { isVisible, opacity } = dataset.settings;
 
@@ -105,6 +107,8 @@ export function Layer(props: LayerProps) {
           hidden={!isVisible}
           opacity={opacity}
           onStatusChange={onStatusChange}
+          colorMap={colorMap}
+          reverse={isReversed}
         />
       );
     default:

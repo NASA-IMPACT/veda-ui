@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { PrimitiveAtom } from 'jotai';
+import { PrimitiveAtom, useSetAtom } from 'jotai';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import {
   CollecticonCircleInformation,
   CollecticonEyeDisabled,
-  CollecticonEye
+  CollecticonEye,
+  CollecticonChevronDownSmall
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
+import Tippy from '@tippyjs/react';
 import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
+import { ColormapOptions } from './colormap-options';
 import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,
@@ -21,6 +24,9 @@ import {
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
+
+import 'tippy.js/dist/tippy.css';
+import { colorMapAtom } from '$components/exploration/atoms/colorMap';
 
 interface CardProps {
   dataset: TimelineDataset;
@@ -89,6 +95,28 @@ const DatasetMetricInfo = styled.div`
   color: ${themeVal('color.base-500')};
 `;
 
+const LegendWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0 0 8px;
+  border-radius: 4px;
+  border: 1px solid #e5e5e5;
+  margin: 8px 0;
+`;
+
+const LegendColorMapTrigger = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 46px;
+  background-color: #f4f4f4;
+  padding: 4px;
+  min-width: 30px;
+  margin-left: 8px;
+  cursor: pointer;
+`;
+
 export default function DataLayerCard(props: CardProps) {
   const {
     dataset,
@@ -98,7 +126,24 @@ export default function DataLayerCard(props: CardProps) {
     datasetLegend,
     onClickLayerInfo
   } = props;
+  const setColorMap = useSetAtom(colorMapAtom);
   const layerInfo = dataset.data.info;
+  const [isColorMapOpen, setIsColorMapOpen] = useState(false);
+  const triggerRef = useRef(null);
+
+  const handleColorMapTriggerClick = () => {
+    setIsColorMapOpen((prev) => !prev);
+  };
+
+  const handleClickOutside = (event) => {
+    if (triggerRef.current && !triggerRef.current.contains(event.target)) {
+      setIsColorMapOpen(false);
+    }
+  };
+
+  const handleColorMapChange = (newColorMap) => {
+    setColorMap(newColorMap);
+  };
 
   return (
     <>
@@ -117,37 +162,24 @@ export default function DataLayerCard(props: CardProps) {
             <DatasetToolbar size='small'>
               <TipButton
                 tipContent='Layer info'
-                // Using a button instead of a toolbar button because the
-                // latter doesn't support the `forwardedAs` prop.
                 size='small'
                 fitting='skinny'
                 onPointerDownCapture={(e) => e.stopPropagation()}
                 onClick={onClickLayerInfo}
               >
-                <CollecticonCircleInformation
-                  meaningful
-                  title='View dataset page'
-                />
+                <CollecticonCircleInformation meaningful title='View dataset page' />
               </TipButton>
               <TipButton
                 tipContent={isVisible ? 'Hide layer' : 'Show layer'}
-                // Using a button instead of a toolbar button because the
-                // latter doesn't support the `forwardedAs` prop.
                 size='small'
                 fitting='skinny'
                 onPointerDownCapture={(e) => e.stopPropagation()}
                 onClick={() => setVisible((v) => !v)}
               >
                 {isVisible ? (
-                  <CollecticonEye
-                    meaningful
-                    title='Toggle dataset visibility'
-                  />
+                  <CollecticonEye meaningful title='Toggle dataset visibility' />
                 ) : (
-                  <CollecticonEyeDisabled
-                    meaningful
-                    title='Toggle dataset visibility'
-                  />
+                  <CollecticonEyeDisabled meaningful title='Toggle dataset visibility' />
                 )}
               </TipButton>
               <LayerMenuOptions datasetAtom={datasetAtom} />
@@ -159,18 +191,34 @@ export default function DataLayerCard(props: CardProps) {
           </DatasetMetricInfo>
         </DatasetCardInfo>
         {datasetLegend?.type === 'categorical' && (
-          <LayerCategoricalGraphic
-            type='categorical'
-            stops={datasetLegend.stops}
-          />
+          <LayerCategoricalGraphic type='categorical' stops={datasetLegend.stops} />
         )}
         {datasetLegend?.type === 'gradient' && (
-          <LayerGradientGraphic
-            type='gradient'
-            stops={datasetLegend.stops}
-            min={datasetLegend.min}
-            max={datasetLegend.max}
-          />
+          <LegendWrapper ref={triggerRef}>
+            <LayerGradientGraphic
+              type='gradient'
+              stops={datasetLegend.stops}
+              min={datasetLegend.min}
+              max={datasetLegend.max}
+            />
+            <Tippy
+              className='color-map-options'
+              content={
+                <ColormapOptions
+                  onChangeColorMap={handleColorMapChange}
+                />
+              }
+              appendTo={() => document.body}
+              visible={isColorMapOpen}
+              interactive={true}
+              placement='top'
+              onClickOutside={(_, event) => handleClickOutside(event)}
+            >
+              <LegendColorMapTrigger onClick={handleColorMapTriggerClick}>
+                <CollecticonChevronDownSmall />
+              </LegendColorMapTrigger>
+            </Tippy>
+          </LegendWrapper>
         )}
       </DatasetInfo>
     </>

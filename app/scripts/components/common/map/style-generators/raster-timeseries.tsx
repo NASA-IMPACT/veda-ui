@@ -47,6 +47,7 @@ export interface RasterTimeseriesProps extends BaseGeneratorParams {
   isPositionSet?: boolean;
   stacApiEndpoint?: string;
   tileApiEndpoint?: string;
+  colorMap?: string;
 }
 
 enum STATUS_KEY {
@@ -74,7 +75,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     hidden,
     opacity,
     stacApiEndpoint,
-    tileApiEndpoint
+    tileApiEndpoint,
+    colorMap,
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -272,7 +274,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         LOG && console.log('Payload', payload);
         LOG && console.groupEnd();
         /* eslint-enable no-console */
-        
+
         let responseData;
 
         try {
@@ -284,7 +286,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           const mosaicUrl = responseData.links[1].href;
           setMosaicUrl(mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad'));
         } catch (error) {
-          // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance... 
+          // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance...
           if (error.request) {
             // The request was made but no response was received
             responseData = await requestQuickCache<any>({
@@ -292,11 +294,11 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
               payload,
               controller
             });
-      
+
             const mosaicUrl = responseData.links[1].href;
             setMosaicUrl(mosaicUrl);
           } else {
-              LOG && 
+              LOG &&
               /* eslint-disable-next-line no-console */
               console.log('Titiler /register %cEndpoint error', 'color: red;', error);
               throw error;
@@ -334,6 +336,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       changeStatus({ status: 'idle', context: STATUS_KEY.Layer });
     };
   }, [
+    colorMap,
     stacCollection
     // This hook depends on a series of properties, but whenever they change the
     // `stacCollection` is guaranteed to change because a new STAC request is
@@ -371,7 +374,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         const tileParams = qs.stringify(
           {
             assets: 'cog_default',
-            ...(sourceParams ?? {})
+            ...(sourceParams ?? {}),
+            colormap_name: colorMap
           },
           // Temporary solution to pass different tile parameters for hls data
           {
@@ -498,6 +502,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     };
   }, [
     mosaicUrl,
+    colorMap,
     points,
     minZoom,
     haveSourceParamsChanged,
