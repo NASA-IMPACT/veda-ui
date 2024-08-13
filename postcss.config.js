@@ -7,7 +7,8 @@ const isVedaInstance = fs.existsSync(vedaPath);
 
 let basePath = CWD;
 let vedaUIPath = CWD;
-let contentPaths = [`${vedaUIPath}/app/**/*.{js,jsx,ts,tsx}`];
+let contentPaths = [`${vedaUIPath}/app/**/*.{js,jsx,ts,tsx}`
+];
 
 let uswdsPath = path.resolve(
   basePath,
@@ -46,13 +47,13 @@ const purge = require('@fullhuman/postcss-purgecss')({
   // Passing custom extractor to include classnames with colons : and at @
   defaultExtractor: (content) => content.match(/[A-z0-9-:\/@]+/g) || [],
   safelist: {
-    deep: [/usa-banner$/],
+    deep: [/usa-banner$/, /welcome-banner$/],
     greedy: [/^usa-banner/]
   }
 });
 
 // Do not purge for local development.
-if (process.env.NODE_ENV !== 'development') plugins = [...plugins, purge];
+plugins = [...plugins, purge];
 
 module.exports = {
   syntax: 'postcss-scss',
