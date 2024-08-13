@@ -1,3 +1,6 @@
+// @NOTE: Components used directly by instances
+// Ensure this file is updated whenever components listed here are moved or modified.
+
 import { Card } from "$components/common/card";
 import { CardFooter } from "$components/common/card/styles";
 
@@ -18,7 +21,6 @@ import {
   Figure,
   FigureAttribution,
 } from "$components/common/figure";
-
 
 import { Tip } from "$components/common/tip";
 import { variableGlsp } from "$styles/variable-utils";
@@ -44,28 +46,28 @@ export {
   DATASETS_PATH,
   ANALYSIS_PATH,
   ABOUT_PATH,
-  FoldProse,
+  continuumFoldStartCols,
   getLinkProps,
   useMediaQuery,
   useFeedbackModal,
-  Actions,
-  VarHeading,
+  useReactIndianaScrollControl,
   variableGlsp,
-  Hug,
+  Actions,
   Card,
   CardFooter,
-  Image,
-  Tip,
-  Figcaption,
-  Figure,
-  FigureAttribution,
   Constrainer,
   Continuum,
   ContinuumGridItem,
   ContinuumCardsDragScrollWrapper,
   ContinuumDragScroll,
   ContinuumScrollIndicator,
-  useReactIndianaScrollControl,
-  continuumFoldStartCols,
-  Pill
+  Figcaption,
+  Figure,
+  FigureAttribution,
+  FoldProse,
+  Hug,
+  Image,
+  Pill,
+  Tip,
+  VarHeading
 };
