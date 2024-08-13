@@ -42,7 +42,7 @@ import {
 } from '$components/common/page-overrides';
 import { prepareDatasets } from '$components/common/catalog/prepare-datasets';
 
-const allStories = Object.values(stories).map((d) => d!.data);
+const allStories = Object.values(stories).map((d) => d!.data).filter(d => !d.isHidden);
 
 const StoryCount = styled(Subtitle)`
   grid-column: 1 / -1;
