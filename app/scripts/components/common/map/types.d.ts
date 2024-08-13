@@ -1,5 +1,6 @@
 import { Feature, Polygon } from 'geojson';
 import { AnyLayer, AnySourceImpl } from 'mapbox-gl';
+import { ActionStatus } from '$utils/status';
 
 export interface ExtendedMetadata {
   layerOrderPosition?: LayerOrderPosition;
@@ -42,3 +43,33 @@ export type AoIFeature = Feature<Polygon> & {
   selected: boolean;
   id: string;
 };
+
+export interface BaseTimeseriesProps extends BaseGeneratorParams {
+  id: string;
+  stacCol: string;
+  date?: Date;
+  sourceParams?: Record<string, any>;
+  stacApiEndpoint?: string;
+  tileApiEndpoint?: string;
+  zoomExtent?: number[];
+  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+}
+
+// export interface ZarrTimeseriesProps extends BaseTimeseriesProps {
+//   // No additional properties, using BaseTimeseriesProps as is
+// }
+
+export interface RasterTimeseriesProps extends BaseTimeseriesProps {
+  bounds?: number[];
+  isPositionSet?: boolean;
+}
+
+interface AssetUrlReplacement {
+  from: string;
+  to: string;
+}
+
+export interface CMRTimeseriesProps extends BaseTimeseriesProps {
+  assetUrlReplacements?: AssetUrlReplacement;
+}
+

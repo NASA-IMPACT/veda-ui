@@ -11,7 +11,7 @@ import {
 } from 'mapbox-gl';
 import { useTheme } from 'styled-components';
 import { featureCollection, point } from '@turf/helpers';
-import { BaseGeneratorParams, StacFeature } from '../types';
+import { RasterTimeseriesProps, StacFeature } from '../types';
 import useMapStyle from '../hooks/use-map-style';
 import {
   FIT_BOUNDS_PADDING,
@@ -35,19 +35,6 @@ import {
 
 // Whether or not to print the request logs.
 const LOG = true;
-
-export interface RasterTimeseriesProps extends BaseGeneratorParams {
-  id: string;
-  stacCol: string;
-  date: Date;
-  sourceParams?: Record<string, any>;
-  zoomExtent?: number[];
-  bounds?: number[];
-  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  isPositionSet?: boolean;
-  stacApiEndpoint?: string;
-  tileApiEndpoint?: string;
-}
 
 enum STATUS_KEY {
   Global,
