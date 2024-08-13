@@ -34,11 +34,7 @@ if (isVedaInstance) {
   ];
 }
 
-contentPaths = [
-  ...contentPaths, 
-  `${uswdsPath}/index.css`,
-  reactCalendarPath
-];
+contentPaths = [...contentPaths, `${uswdsPath}/index.css`, reactCalendarPath];
 
 let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
@@ -50,7 +46,8 @@ const purge = require('@fullhuman/postcss-purgecss')({
   }
 });
 
-plugins = [...plugins, purge];
+// Do not purge for local development.
+if (process.env.NODE_ENV !== 'development') plugins = [...plugins, purge];
 
 module.exports = {
   syntax: 'postcss-scss',
