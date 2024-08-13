@@ -7,9 +7,7 @@ const isVedaInstance = fs.existsSync(vedaPath);
 
 let basePath = CWD;
 let vedaUIPath = CWD;
-let contentPaths = [`${vedaUIPath}/app/**/*.{js,jsx,ts,tsx}`
-];
-
+let contentPaths = [`${vedaUIPath}/app/**/*.{js,jsx,ts,tsx, html}`];
 let uswdsPath = path.resolve(
   basePath,
   'node_modules/@trussworks/react-uswds/lib'
@@ -29,30 +27,29 @@ if (isVedaInstance) {
     vedaUIPath,
     'node_modules/react-calendar/dist/**/*.css'
   );
+
   contentPaths = [
-    ...contentPaths,
+    `${vedaUIPath}/app/**/*.{js,jsx,ts,tsx, html}`,
     `${basePath}/overrides/**/*.{js,jsx,ts,tsx}`
   ];
 }
 
-const allContentPaths = [
-  ...contentPaths,
+contentPaths = [
+  ...contentPaths, 
   `${uswdsPath}/index.css`,
   reactCalendarPath
 ];
 
 let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
-  content: allContentPaths,
-  // Passing custom extractor to include classnames with colons : and at @
+  content: contentPaths,
   defaultExtractor: (content) => content.match(/[A-z0-9-:\/@]+/g) || [],
   safelist: {
-    deep: [/usa-banner$/, /welcome-banner$/],
+    deep: [/usa-banner$/],
     greedy: [/^usa-banner/]
   }
 });
 
-// Do not purge for local development.
 plugins = [...plugins, purge];
 
 module.exports = {
