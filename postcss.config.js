@@ -43,12 +43,15 @@ const allContentPaths = [
 let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
   content: allContentPaths,
+  // Passing custom extractor to include classnames with colons : and at @
+  defaultExtractor: (content) => content.match(/[A-z0-9-:\/@]+/g) || [],
   safelist: {
     deep: [/usa-banner$/],
     greedy: [/^usa-banner/]
   }
 });
 
+// Do not purge for local development.
 if (process.env.NODE_ENV !== 'development') plugins = [...plugins, purge];
 
 module.exports = {
