@@ -307,11 +307,16 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
 
   const moveListener = useCallback(
     (e) => {
-      const width = e.nativeEvent.target.clientWidth;
+      const target = e.nativeEvent.target;
+      const boundingRect = target.getBoundingClientRect();
+      const offsetX = e.nativeEvent.clientX - boundingRect.left;
+      const width = boundingRect.width;
+
       const scale = scaleLinear()
         .domain([0, width])
         .range([Number(min), Number(max)]);
-      setHoverVal(scale(e.nativeEvent.layerX));
+
+      setHoverVal(Math.max(Number(min), Math.min(Number(max), scale(offsetX))));
     },
     [min, max]
   );
@@ -369,6 +374,7 @@ const ColormapPreview = styled.span<ColormapPreviewProps>`
   border-radius: 4px;
   border: 1px solid #E0E0EB;
   display: flex;
+  cursor: default;
 `;
 
 export const findColormapByName = (name: string) => {
