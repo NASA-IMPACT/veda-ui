@@ -43,12 +43,16 @@ function reconcileQueryDataWithDataset(
 
     if (queryData.status === DatasetStatus.SUCCESS) {
       const domain = resolveLayerTemporalExtent(base.data.id, queryData.data);
+      const titilerParams =
+        queryData.data.renderParams ?? base.data.sourceParams;
+
       base = {
         ...base,
         data: {
           ...base.data,
           ...queryData.data,
-          domain
+          domain,
+          sourceParams: titilerParams
         }
       };
     }
@@ -112,13 +116,16 @@ async function fetchStacDatasetById(
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
+    const renderParams = data.renders?.dashboard;
+
     if (!domain?.length || domain.some((d) => !d)) {
       throw new Error('Invalid datetime domain');
     }
 
     return {
       ...commonTimeseriesParams,
-      domain
+      domain,
+      renderParams
     };
   }
 }
