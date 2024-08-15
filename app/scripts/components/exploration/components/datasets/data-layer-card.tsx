@@ -130,6 +130,7 @@ export default function DataLayerCard(props: CardProps) {
     onClickLayerInfo
   } = props;
   const layerInfo = dataset.data.info;
+  const [min, max] = dataset.data.sourceParams.rescale;
   const [isColorMapOpen, setIsColorMapOpen] = useState(false);
   const triggerRef = useRef(null);
 
@@ -195,8 +196,8 @@ export default function DataLayerCard(props: CardProps) {
           <LegendWrapper ref={triggerRef}>
             <LayerGradientGraphic
               type='gradient'
-              min={0}
-              max={0.3}
+              min={min}
+              max={max}
               colorMap={colorMap}
             />
             <Tippy
@@ -205,8 +206,8 @@ export default function DataLayerCard(props: CardProps) {
                 <ColormapOptions
                   colorMap={colorMap}
                   setColorMap={setColorMap}
-                  min={0}
-                  max={0.3}
+                  min={min}
+                  max={max}
                 />
               }
               appendTo={() => document.body}

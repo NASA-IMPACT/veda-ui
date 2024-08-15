@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3-scale-chromatic';
 import { Icon } from "@trussworks/react-uswds";
@@ -115,6 +115,8 @@ export const DIVERGING_COLORMAPS = [
 ];
 
 export const classifyColormap = (colormapName) => {
+  if (!colormapName) return 'unknown';
+
   if (SEQUENTIAL_COLORMAPS.some(cmap => cmap.name.toLowerCase() === colormapName.toLowerCase())) {
     return 'sequential';
   } else if (DIVERGING_COLORMAPS.some(cmap => cmap.name.toLowerCase() === colormapName.toLowerCase())) {
@@ -132,14 +134,27 @@ export const isCategoricalColormap = (colormap) => {
   }
 };
 
-export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 3 }) {
+interface ColormapOptionsProps {
+  colorMap: string;
+  setColorMap: (colorMap: string) => void;
+  min?: number;
+  max?: number;
+}
+
+export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: ColormapOptionsProps) {
   const [isReversed, setIsReversed] = useState(false);
-  const [selectedColorMap, setSelectedColorMap] = useState(colorMap ?? 'viridis');
+  const [selectedColorMap, setSelectedColorMap] = useState(colorMap);
 
   const colormapType = classifyColormap(selectedColorMap);
 
   const availableColormaps =
     colormapType === 'diverging' ? DIVERGING_COLORMAPS : SEQUENTIAL_COLORMAPS;
+
+  useEffect(() => {
+    if (colorMap && colorMap.endsWith('_r')) {
+      setIsReversed(true);
+    }
+  }, [colorMap]);
 
   const handleReverseToggle = () => {
     const newIsReversed = !isReversed;
