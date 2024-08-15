@@ -29,9 +29,11 @@ const tourProviderStyles = {
 
 export default function ExplorationAndAnalysisContainer() {
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
-  // @NOTE: 
+  // @NOTE: When Exploration page is preloaded (ex. Linked with react-router)
+  // atomWithLocation gets initialized outside of Exploration page and returns the previous page's value
+  // We check if url Atom actually returns the values for exploration page here.
   const [currentUrl]= useAtom(urlAtom);
-  if(!currentUrl.pathname?.includes(EXPLORATION_PATH)) return <></>;
+  if(!currentUrl.pathname?.includes(EXPLORATION_PATH)) return null;
   
   return (
     <TourProvider
