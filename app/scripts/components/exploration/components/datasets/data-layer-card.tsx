@@ -130,9 +130,9 @@ export default function DataLayerCard(props: CardProps) {
     onClickLayerInfo
   } = props;
   const layerInfo = dataset.data.info;
-  const [min, max] = dataset.data.sourceParams.rescale;
+  const [min, max] = dataset.data.sourceParams?.rescale || [0, 1];
   const [isColorMapOpen, setIsColorMapOpen] = useState(false);
-  const triggerRef = useRef(null);
+  const triggerRef = useRef<HTMLDivElement | null>(null);
 
   const handleColorMapTriggerClick = () => {
     setIsColorMapOpen((prev) => !prev);
