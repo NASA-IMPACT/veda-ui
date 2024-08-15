@@ -33,11 +33,10 @@ interface ExplorationMapProps {
   selectedDay: Date | null;
   selectedCompareDay: Date | null;
   colorMap?: string;
-  isReversed?: boolean;
 }
 
 export function ExplorationMap(props: ExplorationMapProps) {
-  const { datasets, setDatasets, selectedDay, selectedCompareDay, colorMap, isReversed } = props;
+  const { datasets, setDatasets, selectedDay, selectedCompareDay, colorMap } = props;
 
   const [projection, setProjection] =
     useState<ProjectionOptions>(projectionDefault);
@@ -139,7 +138,6 @@ export function ExplorationMap(props: ExplorationMapProps) {
           datasets={loadedDatasets}
           selectedDay={selectedDay}
           colorMap={colorMap}
-          isReversed={isReversed}
         />
       )}
       {/* Map controls */}
@@ -180,7 +178,6 @@ export function ExplorationMap(props: ExplorationMapProps) {
               selectedDay={selectedCompareDay}
               idSuffix='-compare'
               colorMap={colorMap}
-              isReversed={isReversed}
             />
           )}
         </Compare>
@@ -194,11 +191,10 @@ interface ExplorationMapLayersProps {
   selectedDay: Date;
   idSuffix?: string;
   colorMap?: string;
-  isReversed?: boolean;
 }
 
 export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
-  const { datasets, selectedDay, idSuffix = '', colorMap = 'viridis', isReversed = false } = props;
+  const { datasets, selectedDay, idSuffix = '', colorMap = 'viridis' } = props;
 
   return (
     <>
@@ -210,7 +206,6 @@ export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
           selectedDay={selectedDay}
           order={idx}
           colorMap={colorMap}
-          isReversed={isReversed}
         />
       ))}
     </>
