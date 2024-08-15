@@ -30,7 +30,8 @@ if (isVedaInstance) {
 
   contentPaths = [
     `${vedaUIPath}/app/**/*.{js,jsx,ts,tsx, html}`,
-    `${basePath}/overrides/**/*.{js,jsx,ts,tsx}`
+    `${basePath}/overrides/**/*.{js,jsx,ts,tsx}`,
+    `${basePath}/custom-pages/**/*.{js,jsx,ts,tsx}`
   ];
 }
 
