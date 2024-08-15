@@ -324,7 +324,7 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   const hasNumericLegend = !isNaN(Number(min) + Number(max));
   const tipText = formatTooltipValue(hoverVal, unit);
 
-  const rescale = (t) => (t - min) / (max - min);
+  const rescale = (t) => (t - Number(min)) / (Number(max) - Number(min));
   const colormap = findColormapByName(colorMap ?? 'viridis');
 
   if (!colormap) {
@@ -333,7 +333,9 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
 
   const colors = [0, 0.5, 1].map((t) => colormap.scale(rescale(t)));
 
-  const previewColors = colormap.isReversed ? colors.reverse() : colors;
+  const previewColors = colormap.isReversed
+  ? colors.reduceRight((acc, color) => [...acc, color], [])
+  : colors;
 
   return (
     <LegendList>
