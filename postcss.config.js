@@ -6,6 +6,8 @@ const vedaPath = path.resolve(CWD, '.veda/ui');
 const isVedaInstance = fs.existsSync(vedaPath);
 
 let basePath = CWD;
+let vedaUIPath = CWD;
+let contentPaths = [`${vedaUIPath}/app/**/*.{js,jsx,ts,tsx, html}`];
 let uswdsPath = path.resolve(
   basePath,
   'node_modules/@trussworks/react-uswds/lib'
@@ -16,32 +18,36 @@ let reactCalendarPath = path.resolve(
 );
 
 if (isVedaInstance) {
-  basePath = vedaPath;
+  vedaUIPath = vedaPath;
   uswdsPath = path.resolve(
-    basePath,
+    vedaUIPath,
     'node_modules/@trussworks/react-uswds/lib'
   );
   reactCalendarPath = path.resolve(
-    basePath,
+    vedaUIPath,
     'node_modules/react-calendar/dist/**/*.css'
   );
+
+  contentPaths = [
+    `${vedaUIPath}/app/**/*.{js,jsx,ts,tsx, html}`,
+    `${basePath}/overrides/**/*.{js,jsx,ts,tsx}`,
+    `${basePath}/custom-pages/**/*.{js,jsx,ts,tsx}`
+  ];
 }
 
-const contentPaths = [
-  `${basePath}/app/**/*.{js,jsx,ts,tsx}`,
-  `${uswdsPath}/index.css`,
-  reactCalendarPath
-];
+contentPaths = [...contentPaths, `${uswdsPath}/index.css`, reactCalendarPath];
 
 let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
   content: contentPaths,
+  defaultExtractor: (content) => content.match(/[A-z0-9-:\/@]+/g) || [],
   safelist: {
     deep: [/usa-banner$/],
     greedy: [/^usa-banner/]
   }
 });
 
+// Do not purge for local development.
 if (process.env.NODE_ENV !== 'development') plugins = [...plugins, purge];
 
 module.exports = {
