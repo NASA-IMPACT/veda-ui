@@ -51,7 +51,8 @@ import {
   ANALYSIS_PATH,
   ANALYSIS_RESULTS_PATH,
   DATASETS_PATH,
-  STORIES_PATH
+  STORIES_PATH,
+  EXPLORATION_PATH
 } from '$utils/routes';
 
 const composingComponents = [
@@ -122,7 +123,7 @@ function Root() {
 
                 {/* {useNewExploration && ( */}
                 <Route
-                  path='exploration'
+                  path={EXPLORATION_PATH}
                   element={<ExplorationAndAnalysis />}
                 />
                 {/* )} */}
