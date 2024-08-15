@@ -18,13 +18,12 @@ interface LayerProps {
   order?: number;
   selectedDay: Date;
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  colorMap?: string;
 }
 
 export function Layer(props: LayerProps) {
-  const { id: layerId, dataset, order, selectedDay, onStatusChange, colorMap } = props;
+  const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
 
-  const { isVisible, opacity } = dataset.settings;
+  const { isVisible, opacity, colorMap } = dataset.settings;
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(

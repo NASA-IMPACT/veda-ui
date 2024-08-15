@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { PrimitiveAtom, useSetAtom } from 'jotai';
+import { PrimitiveAtom } from 'jotai';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import {
@@ -26,13 +26,14 @@ import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layer
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
 
 import 'tippy.js/dist/tippy.css';
-import { colorMapAtom } from '$components/exploration/atoms/colorMap';
 
 interface CardProps {
   dataset: TimelineDataset;
   datasetAtom: PrimitiveAtom<TimelineDataset>;
   isVisible: boolean | undefined;
   setVisible: any;
+  colorMap: string;
+  setColorMap: any;
   onClickLayerInfo: () => void;
   datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
 }
@@ -123,10 +124,11 @@ export default function DataLayerCard(props: CardProps) {
     datasetAtom,
     isVisible,
     setVisible,
+    colorMap,
+    setColorMap,
     datasetLegend,
     onClickLayerInfo
   } = props;
-  const setColorMap = useSetAtom(colorMapAtom);
   const layerInfo = dataset.data.info;
   const [isColorMapOpen, setIsColorMapOpen] = useState(false);
   const triggerRef = useRef(null);
@@ -139,10 +141,6 @@ export default function DataLayerCard(props: CardProps) {
     if (triggerRef.current && !triggerRef.current.contains(event.target)) {
       setIsColorMapOpen(false);
     }
-  };
-
-  const handleColorMapChange = (newColorMap) => {
-    setColorMap(newColorMap);
   };
 
   return (
@@ -197,15 +195,18 @@ export default function DataLayerCard(props: CardProps) {
           <LegendWrapper ref={triggerRef}>
             <LayerGradientGraphic
               type='gradient'
-              stops={datasetLegend.stops}
-              min={datasetLegend.min}
-              max={datasetLegend.max}
+              min={0}
+              max={0.3}
+              colorMap={colorMap}
             />
             <Tippy
               className='color-map-options'
               content={
                 <ColormapOptions
-                  onChangeColorMap={handleColorMapChange}
+                  colorMap={colorMap}
+                  setColorMap={setColorMap}
+                  min={0}
+                  max={0.3}
                 />
               }
               appendTo={() => document.body}

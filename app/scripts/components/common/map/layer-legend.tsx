@@ -25,6 +25,7 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
+import { DIVERGING_COLORMAPS, SEQUENTIAL_COLORMAPS } from '$components/exploration/components/datasets/colormap-options';
 
 interface LayerLegendCommonProps {
   id: string;
@@ -300,9 +301,8 @@ export function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   );
 }
 
-export function LayerGradientGraphic(props: LayerLegendGradient) {
-  const { stops, min, max, unit } = props;
-
+export const LayerGradientGraphic = (props: LayerLegendGradient) => {
+  const { stops, min, max, unit, colorMap } = props;
   const [hoverVal, setHoverVal] = useState(0);
 
   const moveListener = useCallback(
@@ -319,6 +319,17 @@ export function LayerGradientGraphic(props: LayerLegendGradient) {
   const hasNumericLegend = !isNaN(Number(min) + Number(max));
   const tipText = formatTooltipValue(hoverVal, unit);
 
+  const rescale = (t) => (t - min) / (max - min);
+  const colormap = findColormapByName(colorMap ?? 'viridis');
+
+  if (!colormap) {
+    return null;
+  }
+
+  const colors = [0, 0.5, 1].map((t) => colormap.scale(rescale(t)));
+
+  const previewColors = colormap.isReversed ? colors.reverse() : colors;
+
   return (
     <LegendList>
       <dt>
@@ -328,9 +339,13 @@ export function LayerGradientGraphic(props: LayerLegendGradient) {
           followCursor='horizontal'
           plugins={[followCursor]}
         >
-          <LegendSwatch stops={stops} onMouseMove={moveListener}>
-            {stops[0]} to {stops[stops.length - 1]}
-          </LegendSwatch>
+          {stops ? (
+            <LegendSwatch stops={stops} onMouseMove={moveListener}>
+              {stops[0]} to {stops[stops.length - 1]}
+            </LegendSwatch>
+          ) : (
+            <ColormapPreview colormap={previewColors} onMouseMove={moveListener} />
+          )}
         </Tip>
       </dt>
       <dd>
@@ -340,4 +355,32 @@ export function LayerGradientGraphic(props: LayerLegendGradient) {
       {unit?.label && <dd className='unit'>{unit.label}</dd>}
     </LegendList>
   );
+};
+
+interface ColormapPreviewProps {
+  colormap: string[];
 }
+
+const ColormapPreview = styled.span<ColormapPreviewProps>`
+  width: 100%;
+  height: 12px;
+  background: ${({ colormap }) =>
+    `linear-gradient(to right, ${colormap.join(', ')})`};
+  border-radius: 4px;
+  border: 1px solid #E0E0EB;
+  display: flex;
+`;
+
+export const findColormapByName = (name: string) => {
+  const isReversed = name.toLowerCase().endsWith('_r');
+  const baseName = isReversed ? name.slice(0, -2).toLowerCase() : name.toLowerCase();
+
+  const colormap = SEQUENTIAL_COLORMAPS.find((colormap) => colormap.name.toLowerCase() === baseName) ||
+    DIVERGING_COLORMAPS.find((colormap) => colormap.name.toLowerCase() === baseName);
+
+  if (!colormap) {
+    return null;
+  }
+
+  return { ...colormap, isReversed };
+};

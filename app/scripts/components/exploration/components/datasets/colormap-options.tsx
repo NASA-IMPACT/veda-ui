@@ -56,7 +56,7 @@ interface ColormapPreviewProps {
   colormap: string[];
 }
 
-const ColormapPreview = styled.div<ColormapPreviewProps>`
+const ColormapPreview = styled.span<ColormapPreviewProps>`
   width: 260px;
   height: 12px;
   background: ${({ colormap }) =>
@@ -91,7 +91,7 @@ const Divider = styled.div`
   margin: 0 auto;
 `;
 
-const Colormaps = [
+export const SEQUENTIAL_COLORMAPS = [
   { name: 'Viridis', scale: d3.interpolateViridis },
   { name: 'Plasma', scale: d3.interpolatePlasma },
   { name: 'Inferno', scale: d3.interpolateInferno },
@@ -107,60 +107,92 @@ const Colormaps = [
   { name: 'GnBu', scale: d3.interpolateGnBu },
 ];
 
-export function ColormapOptions({ onChangeColorMap }) {
-    const [isReversed, setIsReversed] = useState(false);
-    const [selectedColorMap, setSelectedColorMap] = useState('viridis');
+export const DIVERGING_COLORMAPS = [
+  { name: 'RdBu', scale: d3.interpolateRdBu },
+  { name: 'RdYlBu', scale: d3.interpolateRdYlBu },
+  { name: 'Bwr', scale: d3.interpolateBrBG },
+  { name: 'Coolwarm', scale: d3.interpolateCool }
+];
 
-    const handleReverseToggle = () => {
-      const newIsReversed = !isReversed;
-      setIsReversed(newIsReversed);
-      onChangeColorMap(newIsReversed ? `${selectedColorMap}_r` : selectedColorMap);
-    };
+export const classifyColormap = (colormapName) => {
+  if (SEQUENTIAL_COLORMAPS.some(cmap => cmap.name.toLowerCase() === colormapName.toLowerCase())) {
+    return 'sequential';
+  } else if (DIVERGING_COLORMAPS.some(cmap => cmap.name.toLowerCase() === colormapName.toLowerCase())) {
+    return 'diverging';
+  }
+  return 'unknown';
+};
 
-    const handleColorMapSelect = (colorMap) => {
-      setSelectedColorMap(colorMap);
-      onChangeColorMap(isReversed ? `${colorMap}_r` : colorMap);
-    };
+export const isCategoricalColormap = (colormap) => {
+  try {
+    const parsed = JSON.parse(colormap);
+    return typeof parsed === 'object' && parsed !== null;
+  } catch (e) {
+    return false;
+  }
+};
 
-    return (
-      <Container>
-        <Header>Colormap options</Header>
+export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 3 }) {
+  const [isReversed, setIsReversed] = useState(false);
+  const [selectedColorMap, setSelectedColorMap] = useState(colorMap ?? 'viridis');
 
-        <ToggleContainer onClick={handleReverseToggle}>
-          <ToggleLabel>Reverse</ToggleLabel>
-          {isReversed ? (
-              <Icon.ToggleOn
-                  className='text-primary'
-                  size={4}
-                  fill=''
-              />
-          ) : (
-              <Icon.ToggleOff
-                  className='text-primary-dark'
-                  size={4}
-              />
-          )}
-          <ToggleInput checked={isReversed} />
-        </ToggleContainer>
+  const colormapType = classifyColormap(selectedColorMap);
 
-        <Divider />
-        <ColormapWrapper>
-          {Colormaps.map((colormap) => {
-            const colors = [0, 0.5, 1].map(t => colormap.scale(t));
-            const previewColors = isReversed ? colors.reverse() : colors;
+  const availableColormaps =
+    colormapType === 'diverging' ? DIVERGING_COLORMAPS : SEQUENTIAL_COLORMAPS;
 
-            return (
-                <ColormapItem
+  const handleReverseToggle = () => {
+    const newIsReversed = !isReversed;
+    setIsReversed(newIsReversed);
+    setColorMap(newIsReversed ? `${selectedColorMap}_r` : selectedColorMap);
+  };
+
+  const handleColorMapSelect = (colorMap) => {
+    setSelectedColorMap(colorMap);
+    setColorMap(isReversed ? `${colorMap}_r` : colorMap);
+  };
+
+  const rescale = (t) => (t - min) / (max - min);
+
+  return (
+    <Container>
+      <Header>Colormap options</Header>
+
+      <ToggleContainer onClick={handleReverseToggle}>
+        <ToggleLabel>Reverse</ToggleLabel>
+        {isReversed ? (
+            <Icon.ToggleOn
+                className='text-primary'
+                size={4}
+                fill=''
+            />
+        ) : (
+            <Icon.ToggleOff
+                className='text-primary-dark'
+                size={4}
+            />
+        )}
+        <ToggleInput checked={isReversed} />
+      </ToggleContainer>
+
+      <Divider />
+      <ColormapWrapper>
+        {availableColormaps.map((colormap) => {
+          const colors = [0, 0.5, 1].map((t) => colormap.scale(rescale(t)));
+          const previewColors = isReversed ? colors.reverse() : colors;
+
+          return (
+              <ColormapItem
                 key={colormap.name}
                 selected={selectedColorMap === colormap.name.toLowerCase()}
                 onClick={() => handleColorMapSelect(colormap.name.toLowerCase())}
-                >
+              >
                 <ColormapPreview colormap={previewColors} />
                 <ColormapLabel>{colormap.name}</ColormapLabel>
-                </ColormapItem>
-            );
-          })}
-        </ColormapWrapper>
-      </Container>
-    );
+              </ColormapItem>
+          );
+        })}
+      </ColormapWrapper>
+    </Container>
+  );
 }

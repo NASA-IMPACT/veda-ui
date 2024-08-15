@@ -103,6 +103,8 @@ export interface DatasetSettings {
   opacity?: number;
   // Active metrics for the analysis chart.
   analysisMetrics?: DataMetric[];
+  // Active colormap of the layer.
+  colorMap?: string;
 }
 
 // Any sort of meta information the dataset like:

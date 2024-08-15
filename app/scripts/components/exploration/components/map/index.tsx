@@ -32,11 +32,10 @@ interface ExplorationMapProps {
   setDatasets: (datasets: TimelineDataset[]) => void;
   selectedDay: Date | null;
   selectedCompareDay: Date | null;
-  colorMap?: string;
 }
 
 export function ExplorationMap(props: ExplorationMapProps) {
-  const { datasets, setDatasets, selectedDay, selectedCompareDay, colorMap } = props;
+  const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
 
   const [projection, setProjection] =
     useState<ProjectionOptions>(projectionDefault);
@@ -137,7 +136,6 @@ export function ExplorationMap(props: ExplorationMapProps) {
         <ExplorationMapLayers
           datasets={loadedDatasets}
           selectedDay={selectedDay}
-          colorMap={colorMap}
         />
       )}
       {/* Map controls */}
@@ -177,7 +175,6 @@ export function ExplorationMap(props: ExplorationMapProps) {
               datasets={loadedDatasets}
               selectedDay={selectedCompareDay}
               idSuffix='-compare'
-              colorMap={colorMap}
             />
           )}
         </Compare>
@@ -190,11 +187,10 @@ interface ExplorationMapLayersProps {
   datasets: TimelineDatasetSuccess[];
   selectedDay: Date;
   idSuffix?: string;
-  colorMap?: string;
 }
 
 export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
-  const { datasets, selectedDay, idSuffix = '', colorMap = 'viridis' } = props;
+  const { datasets, selectedDay, idSuffix = '' } = props;
 
   return (
     <>
@@ -205,7 +201,6 @@ export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
           dataset={dataset}
           selectedDay={selectedDay}
           order={idx}
-          colorMap={colorMap}
         />
       ))}
     </>

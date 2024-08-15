@@ -10,7 +10,6 @@ import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { useAnalysisController } from './hooks/use-analysis-data-request';
 import { TimelineDataset } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
-import { colorMapAtom } from './atoms/colorMap';
 import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
 
 const Container = styled.div`
@@ -65,8 +64,6 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
 
-  const [colorMap, setColorMap] = useAtom(colorMapAtom);
-
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
     selectedCompareDateAtom
   );
@@ -107,7 +104,6 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
             setDatasets={setDatasets}
             selectedDay={selectedDay}
             selectedCompareDay={selectedCompareDay}
-            colorMap={colorMap}
           />
         </Panel>
         <PanelResizeHandle className='resize-handle' />
