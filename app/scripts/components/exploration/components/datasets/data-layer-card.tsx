@@ -131,6 +131,7 @@ export default function DataLayerCard(props: CardProps) {
   } = props;
   const layerInfo = dataset.data.info;
   const [min, max] = dataset.data.sourceParams?.rescale || [0, 1];
+  const isColorMapCategorical = 'colormap' in (dataset.data.sourceParams ?? {});
   const [isColorMapOpen, setIsColorMapOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement | null>(null);
 
@@ -189,10 +190,10 @@ export default function DataLayerCard(props: CardProps) {
             {layerInfo && <LayerInfoLiner info={layerInfo} />}
           </DatasetMetricInfo>
         </DatasetCardInfo>
-        {datasetLegend?.type === 'categorical' && (
+        {isColorMapCategorical && datasetLegend?.type === 'categorical' && (
           <LayerCategoricalGraphic type='categorical' stops={datasetLegend.stops} />
         )}
-        {datasetLegend?.type === 'gradient' && (
+        {!isColorMapCategorical && (
           <LegendWrapper ref={triggerRef}>
             <LayerGradientGraphic
               type='gradient'
