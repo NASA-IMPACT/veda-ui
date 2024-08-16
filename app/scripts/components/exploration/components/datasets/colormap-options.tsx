@@ -205,7 +205,7 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
           return (
               <ColormapItem
                 key={colormap.name}
-                selected={selectedColorMap === colormap.name.toLowerCase()}
+                selected={selectedColorMap.toLowerCase() === colormap.name.toLowerCase()}
                 onClick={() => handleColorMapSelect(colormap.name.toLowerCase())}
               >
                 <ColormapPreview colormap={previewColors} />
