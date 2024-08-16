@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3-scale-chromatic';
+import * as d3Lib from 'd3';
 import { Icon } from "@trussworks/react-uswds";
 
 import { themeVal } from '@devseed-ui/theme-provider';
@@ -98,10 +99,15 @@ export const SEQUENTIAL_COLORMAPS = [
   { name: 'GnBu', scale: d3.interpolateGnBu },
 ];
 
+// d3-scale-chromatic does not provide a predefined Bwr (Blue-White-Red) colormap.
+// To fix that, we manually define the Bwr colors and use d3.interpolateRgbBasis
+// to create interpolation between the blue (#4575b4), white (#ffffff), and red (#d73027).
+const interpolateBwr = d3Lib.interpolateRgbBasis(['#4575b4', '#ffffff', '#d73027']);
+
 export const DIVERGING_COLORMAPS = [
   { name: 'RdBu', scale: d3.interpolateRdBu },
   { name: 'RdYlBu', scale: d3.interpolateRdYlBu },
-  { name: 'Bwr', scale: d3.interpolateBrBG },
+  { name: 'Bwr', scale: interpolateBwr },
   { name: 'Coolwarm', scale: d3.interpolateCool }
 ];
 
