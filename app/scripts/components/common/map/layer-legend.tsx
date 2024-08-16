@@ -324,7 +324,6 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   const hasNumericLegend = !isNaN(Number(min) + Number(max));
   const tipText = formatTooltipValue(hoverVal, unit);
 
-  const rescale = (t: number) => (t - Number(min)) / (Number(max) - Number(min));
   const colormap = findColormapByName(colorMap ?? 'viridis');
 
   if (!colormap) {

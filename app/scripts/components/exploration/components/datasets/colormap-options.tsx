@@ -181,8 +181,6 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
     setColorMap(isReversed ? `${baseColorMap}_r` : baseColorMap);
   };
 
-  const rescale = (t: number) => (t - min) / (max - min);
-
   return (
     <Container className='bg-white'>
       <Header className='text-gray-90 padding-2 font-heading-xs text-bold'>Colormap options</Header>
