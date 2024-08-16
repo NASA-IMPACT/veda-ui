@@ -37,8 +37,8 @@ let plugins = [require('autoprefixer'), require('postcss-import')];
 const purge = require('@fullhuman/postcss-purgecss')({
   content: contentPaths,
   safelist: {
-    deep: [/usa-banner$/],
-    greedy: [/^usa-banner/]
+    deep: [/usa-banner$/, /usa-icon$/],
+    greedy: [/^usa-banner/, /^usa-icon/]
   }
 });
 
