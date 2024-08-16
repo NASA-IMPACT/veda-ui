@@ -3,18 +3,20 @@ import styled from 'styled-components';
 import * as d3 from 'd3-scale-chromatic';
 import { Icon } from "@trussworks/react-uswds";
 
+import { themeVal } from '@devseed-ui/theme-provider';
+import { variableGlsp } from '$styles/variable-utils';
+
 import './colormap-options.scss';
 
 const Container = styled.div`
   background: white;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  width: 360px;
+  box-shadow: ${themeVal('boxShadow.elevationB')};
+  width: 373px;
+  overflow-y: auto;
+  max-height: 500px;
 `;
 
 const Header = styled.div`
-  font-size: 1rem;
-  font-weight: bold;
-  color: #000;
   padding: 16px;
 `;
 
@@ -28,9 +30,9 @@ const ColormapItem = styled.div<{ selected: boolean }>`
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  padding: 12px 16px;
-  border-bottom: 1px solid #E0E0EB;
-  border-radius: 4px;
+  padding: ${variableGlsp(0.5)};
+  border-bottom: 1px solid ${themeVal('color.base-200')};
+  border-radius: ${themeVal('shape.rounded')};
   gap: 12px;
   &:hover {
     background-color: #f4f4f4;
@@ -45,9 +47,6 @@ const ColormapItem = styled.div<{ selected: boolean }>`
 `;
 
 const ColormapLabel = styled.div`
-  font-size: 0.875rem;
-  color: #858585;
-  font-weight: 500;
   text-align: left;
   flex: 1;
 `;
@@ -56,28 +55,28 @@ interface ColormapPreviewProps {
   colormap: string[];
 }
 
-const ColormapPreview = styled.span<ColormapPreviewProps>`
-  width: 260px;
+export const ColormapPreview = styled.span<ColormapPreviewProps & { width?: string }>`
+  width: ${({ width }) => width ?? '260px'};
   height: 12px;
   background: ${({ colormap }) =>
     `linear-gradient(to right, ${colormap.join(', ')})`};
-  border-radius: 4px;
-  border: 1px solid #E0E0EB;
+  border-radius: ${themeVal('shape.rounded')};
+  border: 1px solid ${themeVal('color.base-200')};
+  display: flex;
+  cursor: default;
 `;
 
 const ToggleContainer = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  font-weight: 500;
   padding: 16px;
   background-color: #FAFAFA;
-  border-top: 1px solid #E0E0EB;
+  border-top: 1px solid ${themeVal('color.base-200')};
 `;
 
 const ToggleLabel = styled.label`
   margin-right: 8px;
-  color: #000;
 `;
 
 const ToggleInput = styled.input.attrs({ type: 'checkbox' })`
@@ -117,13 +116,16 @@ export const DIVERGING_COLORMAPS = [
 export const classifyColormap = (colormapName) => {
   if (!colormapName) return 'unknown';
 
-  if (SEQUENTIAL_COLORMAPS.some(cmap => cmap.name.toLowerCase() === colormapName.toLowerCase())) {
+  const normalizedColormapName = colormapName.replace(/_r$/, '');
+
+  if (SEQUENTIAL_COLORMAPS.some(cmap => cmap.name.toLowerCase() === normalizedColormapName.toLowerCase())) {
     return 'sequential';
-  } else if (DIVERGING_COLORMAPS.some(cmap => cmap.name.toLowerCase() === colormapName.toLowerCase())) {
+  } else if (DIVERGING_COLORMAPS.some(cmap => cmap.name.toLowerCase() === normalizedColormapName.toLowerCase())) {
     return 'diverging';
   }
   return 'unknown';
 };
+
 
 export const isCategoricalColormap = (colormap) => {
   try {
@@ -145,10 +147,22 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
   const [isReversed, setIsReversed] = useState(false);
   const [selectedColorMap, setSelectedColorMap] = useState(colorMap);
 
-  const colormapType = classifyColormap(selectedColorMap);
+  const isValidColormap = (name: string) => d3[`interpolate${name}`];
 
-  const availableColormaps =
+  const colormapType = classifyColormap(selectedColorMap);
+  let availableColormaps =
     colormapType === 'diverging' ? DIVERGING_COLORMAPS : SEQUENTIAL_COLORMAPS;
+
+  if (colormapType === 'unknown' && isValidColormap(selectedColorMap)) {
+    const newDefault = {
+      name: 'Default',
+      scale: d3[`interpolate${selectedColorMap}`],
+    };
+    availableColormaps = [newDefault, ...availableColormaps];
+  } else if (colormapType === 'unknown') {
+    setSelectedColorMap(SEQUENTIAL_COLORMAPS[0].name.toLowerCase());
+    setColorMap(SEQUENTIAL_COLORMAPS[0].name.toLowerCase());
+  }
 
   useEffect(() => {
     if (colorMap && colorMap.endsWith('_r')) {
@@ -167,19 +181,18 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
     setColorMap(isReversed ? `${colorMap}_r` : colorMap);
   };
 
-  const rescale = (t) => (t - min) / (max - min);
+  const rescale = (t: number) => (t - min) / (max - min);
 
   return (
     <Container>
-      <Header>Colormap options</Header>
+      <Header className='text-gray-90 font-heading-xs text-bold'>Colormap options</Header>
 
-      <ToggleContainer onClick={handleReverseToggle}>
-        <ToggleLabel>Reverse</ToggleLabel>
+      <ToggleContainer className='text-semibold' onClick={handleReverseToggle}>
+        <ToggleLabel className='text-gray-90'>Reverse</ToggleLabel>
         {isReversed ? (
             <Icon.ToggleOn
                 className='text-primary'
                 size={4}
-                fill=''
             />
         ) : (
             <Icon.ToggleOff
@@ -203,7 +216,7 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
                 onClick={() => handleColorMapSelect(colormap.name.toLowerCase())}
               >
                 <ColormapPreview colormap={previewColors} />
-                <ColormapLabel>{colormap.name}</ColormapLabel>
+                <ColormapLabel className='text-gray-90 font-heading-xs'>{colormap.name}</ColormapLabel>
               </ColormapItem>
           );
         })}

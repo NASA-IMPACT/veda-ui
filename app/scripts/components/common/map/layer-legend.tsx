@@ -25,7 +25,7 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
-import { DIVERGING_COLORMAPS, SEQUENTIAL_COLORMAPS } from '$components/exploration/components/datasets/colormap-options';
+import { ColormapPreview, DIVERGING_COLORMAPS, SEQUENTIAL_COLORMAPS } from '$components/exploration/components/datasets/colormap-options';
 
 interface LayerLegendCommonProps {
   id: string;
@@ -324,7 +324,7 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   const hasNumericLegend = !isNaN(Number(min) + Number(max));
   const tipText = formatTooltipValue(hoverVal, unit);
 
-  const rescale = (t) => (t - Number(min)) / (Number(max) - Number(min));
+  const rescale = (t: number) => (t - Number(min)) / (Number(max) - Number(min));
   const colormap = findColormapByName(colorMap ?? 'viridis');
 
   if (!colormap) {
@@ -351,7 +351,7 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
               {stops[0]} to {stops[stops.length - 1]}
             </LegendSwatch>
           ) : (
-            <ColormapPreview colormap={previewColors} onMouseMove={moveListener} />
+            <ColormapPreview colormap={previewColors} onMouseMove={moveListener} width='100%' />
           )}
         </Tip>
       </dt>
@@ -364,26 +364,11 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   );
 };
 
-interface ColormapPreviewProps {
-  colormap: string[];
-}
-
-const ColormapPreview = styled.span<ColormapPreviewProps>`
-  width: 100%;
-  height: 12px;
-  background: ${({ colormap }) =>
-    `linear-gradient(to right, ${colormap.join(', ')})`};
-  border-radius: 4px;
-  border: 1px solid #E0E0EB;
-  display: flex;
-  cursor: default;
-`;
-
 export const findColormapByName = (name: string) => {
   const isReversed = name.toLowerCase().endsWith('_r');
   const baseName = isReversed ? name.slice(0, -2).toLowerCase() : name.toLowerCase();
 
-  const colormap = SEQUENTIAL_COLORMAPS.find((colormap) => colormap.name.toLowerCase() === baseName) ||
+  const colormap = SEQUENTIAL_COLORMAPS.find((colormap) => colormap.name.toLowerCase() === baseName) ??
     DIVERGING_COLORMAPS.find((colormap) => colormap.name.toLowerCase() === baseName);
 
   if (!colormap) {
