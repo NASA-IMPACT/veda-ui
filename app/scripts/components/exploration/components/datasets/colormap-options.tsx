@@ -11,7 +11,7 @@ import './colormap-options.scss';
 const Container = styled.div`
   background: white;
   box-shadow: ${themeVal('boxShadow.elevationB')};
-  width: 373px;
+  width: 383px;
   overflow-y: auto;
   max-height: 500px;
 `;

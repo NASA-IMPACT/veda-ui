@@ -1,7 +1,11 @@
 .color-map-options {
-    background-color: white !important;
+    background-color: themeVal('color.base');
 
     .tippy-content {
         padding: 0;
+    }
+
+    .tippy-arrow {
+        display: none;
     }
 }
