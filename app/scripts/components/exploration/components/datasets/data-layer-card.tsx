@@ -100,10 +100,8 @@ const LegendWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 0 0 8px;
-  border-radius: 4px;
-  border: 1px solid #e5e5e5;
-  margin: 8px 0;
+  border-radius: ${themeVal('shape.rounded')};
+  border: 1px solid ${themeVal('color.base-200')};
 `;
 
 const LegendColorMapTrigger = styled.div`
@@ -111,10 +109,7 @@ const LegendColorMapTrigger = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 46px;
-  background-color: #f4f4f4;
-  padding: 4px;
   min-width: 30px;
-  margin-left: 8px;
   cursor: pointer;
 `;
 
@@ -194,7 +189,7 @@ export default function DataLayerCard(props: CardProps) {
           <LayerCategoricalGraphic type='categorical' stops={datasetLegend.stops} />
         )}
         {!isColorMapCategorical && (
-          <LegendWrapper ref={triggerRef}>
+          <LegendWrapper className='margin-y-1 padding-left-1' ref={triggerRef}>
             <LayerGradientGraphic
               type='gradient'
               min={min}
@@ -217,7 +212,7 @@ export default function DataLayerCard(props: CardProps) {
               placement='top'
               onClickOutside={(_, event) => handleClickOutside(event)}
             >
-              <LegendColorMapTrigger onClick={handleColorMapTriggerClick}>
+              <LegendColorMapTrigger className='bg-base-lightest margin-left-1 padding-05' onClick={handleColorMapTriggerClick}>
                 <CollecticonChevronDownSmall />
               </LegendColorMapTrigger>
             </Tippy>
