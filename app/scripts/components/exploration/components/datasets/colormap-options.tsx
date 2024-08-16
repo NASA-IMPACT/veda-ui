@@ -40,9 +40,11 @@ const ColormapItem = styled.div<{ selected: boolean }>`
   ${({ selected }) =>
     selected &&
     `
+    border-radius: 0;
     outline: 2px solid #007BFF;
     outline-offset: -2px;
     background-color: #E8F0FD;
+    font-weight: 600;
   `}
 `;
 
@@ -70,23 +72,14 @@ const ToggleContainer = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 16px;
   border-top: 1px solid ${themeVal('color.base-200')};
+  border-bottom: 1px solid ${themeVal('color.base-200')};
 `;
 
-const ToggleLabel = styled.label`
-  margin-right: 8px;
-`;
+const ToggleLabel = styled.label``;
 
 const ToggleInput = styled.input.attrs({ type: 'checkbox' })`
   display: none;
-`;
-
-const Divider = styled.div`
-  width: calc(100% - 32px);
-  height: 1px;
-  background-color: #E0E0EB;
-  margin: 0 auto;
 `;
 
 export const SEQUENTIAL_COLORMAPS = [
@@ -115,7 +108,7 @@ export const DIVERGING_COLORMAPS = [
 export const classifyColormap = (colormapName) => {
   if (!colormapName) return 'unknown';
 
-  const normalizedColormapName = colormapName.replace(/_r$/, '');
+  const normalizedColormapName = normalizeColorMap(colormapName);
 
   if (SEQUENTIAL_COLORMAPS.some(cmap => cmap.name.toLowerCase() === normalizedColormapName.toLowerCase())) {
     return 'sequential';
@@ -172,12 +165,14 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
   const handleReverseToggle = () => {
     const newIsReversed = !isReversed;
     setIsReversed(newIsReversed);
-    setColorMap(newIsReversed ? `${selectedColorMap}_r` : selectedColorMap);
+    const baseColorMap = normalizeColorMap(selectedColorMap);
+    setColorMap(newIsReversed ? `${baseColorMap}_r` : baseColorMap);
   };
 
   const handleColorMapSelect = (colorMap) => {
-    setSelectedColorMap(colorMap);
-    setColorMap(isReversed ? `${colorMap}_r` : colorMap);
+    const baseColorMap = normalizeColorMap(colorMap);
+    setSelectedColorMap(baseColorMap);
+    setColorMap(isReversed ? `${baseColorMap}_r` : baseColorMap);
   };
 
   const rescale = (t: number) => (t - min) / (max - min);
@@ -186,8 +181,8 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
     <Container className='bg-white'>
       <Header className='text-gray-90 padding-2 font-heading-xs text-bold'>Colormap options</Header>
 
-      <ToggleContainer className='text-semibold bg-gray-5' onClick={handleReverseToggle}>
-        <ToggleLabel className='text-gray-90'>Reverse</ToggleLabel>
+      <ToggleContainer className='bg-base-lightest padding-2' onClick={handleReverseToggle}>
+        <ToggleLabel className='text-gray-90 text-semibold margin-right-1'>Reverse</ToggleLabel>
         {isReversed ? (
             <Icon.ToggleOn
                 className='text-primary'
@@ -202,7 +197,6 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
         <ToggleInput checked={isReversed} />
       </ToggleContainer>
 
-      <Divider />
       <ColormapWrapper>
         {availableColormaps.map((colormap) => {
           const colors = [0, 0.5, 1].map((t) => colormap.scale(rescale(t)));
@@ -222,4 +216,8 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
       </ColormapWrapper>
     </Container>
   );
+}
+
+function normalizeColorMap(colorMap) {
+  return colorMap.replace(/_r$/, '');
 }
