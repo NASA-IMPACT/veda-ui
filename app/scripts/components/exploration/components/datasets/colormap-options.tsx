@@ -199,7 +199,7 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
 
       <ColormapWrapper>
         {availableColormaps.map((colormap) => {
-          const colors = [0, 0.5, 1].map((t) => colormap.scale(rescale(t)));
+          const colors = [0, 0.5, 1].map((t) => colormap.scale(t));
           const previewColors = isReversed ? colors.reverse() : colors;
 
           return (

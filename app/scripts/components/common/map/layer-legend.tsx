@@ -331,7 +331,7 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
     return null;
   }
 
-  const colors = [0, 0.5, 1].map((t) => colormap.scale(rescale(t)));
+  const colors = [0, 0.5, 1].map((t) => colormap.scale(t));
 
   const previewColors = colormap.isReversed
   ? colors.reduceRight((acc, color) => [...acc, color], [])
