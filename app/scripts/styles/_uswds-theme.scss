@@ -9,6 +9,10 @@
             "cap-height": 364px,
         ),
     ),
+    $theme-utility-breakpoints: (
+        "mobile-lg": false,
+        "desktop": false
+    ),
     $theme-font-type-sans: baseFontFamily,
     $theme-font-type-serif: baseFontFamily,
 );
