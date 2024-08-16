@@ -9,7 +9,6 @@ import { variableGlsp } from '$styles/variable-utils';
 import './colormap-options.scss';
 
 const Container = styled.div`
-  background: white;
   box-shadow: ${themeVal('boxShadow.elevationB')};
   width: 383px;
   overflow-y: auto;
@@ -17,7 +16,6 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-  padding: 16px;
 `;
 
 const ColormapWrapper = styled.div`
@@ -34,9 +32,11 @@ const ColormapItem = styled.div<{ selected: boolean }>`
   border-bottom: 1px solid ${themeVal('color.base-200')};
   border-radius: ${themeVal('shape.rounded')};
   gap: 12px;
+
   &:hover {
     background-color: #f4f4f4;
   }
+
   ${({ selected }) =>
     selected &&
     `
@@ -71,7 +71,6 @@ const ToggleContainer = styled.div`
   align-items: center;
   cursor: pointer;
   padding: 16px;
-  background-color: #FAFAFA;
   border-top: 1px solid ${themeVal('color.base-200')};
 `;
 
@@ -184,10 +183,10 @@ export function ColormapOptions({ colorMap, setColorMap, min = 0, max = 1 }: Col
   const rescale = (t: number) => (t - min) / (max - min);
 
   return (
-    <Container>
-      <Header className='text-gray-90 font-heading-xs text-bold'>Colormap options</Header>
+    <Container className='bg-white'>
+      <Header className='text-gray-90 padding-2 font-heading-xs text-bold'>Colormap options</Header>
 
-      <ToggleContainer className='text-semibold' onClick={handleReverseToggle}>
+      <ToggleContainer className='text-semibold bg-gray-5' onClick={handleReverseToggle}>
         <ToggleLabel className='text-gray-90'>Reverse</ToggleLabel>
         {isReversed ? (
             <Icon.ToggleOn
