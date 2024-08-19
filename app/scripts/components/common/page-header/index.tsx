@@ -229,16 +229,18 @@ const GlobalMenu = styled.ul`
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
-  logo: ReactElement
+  logo: ReactElement;
+  resetFocus: boolean;
 }
 
 
 function PageHeader(props: PageHeaderProps) {
-  const { mainNavItems, subNavItems, logo } = props;
+  const { mainNavItems, subNavItems, logo, resetFocus } = props;
   const { isMediumDown } = useMediaQuery();
 
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
 
+  const skipNavRef = useRef<HTMLAnchorElement>(null);
   const globalNavBodyRef = useRef<HTMLDivElement>(null);
   // Click listener for the whole global nav body so we can close it when clicking
   // the overlay on medium down media query.
@@ -258,6 +260,10 @@ function PageHeader(props: PageHeaderProps) {
   }, [isMediumDown]);
 
   const closeNavOnClick = useCallback(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      // reset focus when an item on nav link is clicked.
+      document.activeElement.blur();
+    }
     setGlobalNavRevealed(false);
   }, []);
 
@@ -274,7 +280,7 @@ function PageHeader(props: PageHeaderProps) {
 
   return (
     <>
-    <SROnly href='#' onClick={skipNav}>Skip to main content</SROnly>
+    <SROnly ref={skipNavRef} href='#' onClick={skipNav}>Skip to main content</SROnly>
     <PageHeaderSelf id={HEADER_ID}>
       
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
