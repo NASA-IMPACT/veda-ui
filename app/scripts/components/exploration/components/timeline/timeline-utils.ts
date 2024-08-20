@@ -89,7 +89,7 @@ export const getLabelFormat = (timeDensity) => {
     case 'month':
       return 'MMM yyyy';
     case 'year':
-      return 'MMMM yyyy';
+      return 'yyyy';
     default:
       return 'MMM d yyyy';
   }
