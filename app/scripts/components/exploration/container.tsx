@@ -5,9 +5,12 @@ import { useAtom } from 'jotai';
 import { PopoverTourComponent, TourManager } from './tour-manager';
 import { timelineDatasetsAtom } from './atoms/datasets';
 import ExplorationAndAnalysis from '.';
+import { urlAtom } from '$utils/params-location-atom/url';
+import { EXPLORATION_PATH } from '$utils/routes';
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
+
 
 /**
  * @VEDA2-REFACTOR-WORK
@@ -26,7 +29,12 @@ const tourProviderStyles = {
 
 export default function ExplorationAndAnalysisContainer() {
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
-
+  // @NOTE: When Exploration page is preloaded (ex. Linked with react-router)
+  // atomWithLocation gets initialized outside of Exploration page and returns the previous page's value
+  // We check if url Atom actually returns the values for exploration page here.
+  const [currentUrl]= useAtom(urlAtom);
+  if(!currentUrl.pathname?.includes(EXPLORATION_PATH)) return null;
+  
   return (
     <TourProvider
       steps={[]}
