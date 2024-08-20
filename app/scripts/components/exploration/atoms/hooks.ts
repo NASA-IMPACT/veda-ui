@@ -159,7 +159,7 @@ export function useTimelineDatasetColormap(
   const [colorMap, setColorMap] = useAtom(colorMapAtom);
 
   const effectiveColorMap =
-    colorMap ?? dataset.data.sourceParams?.colormap_name;
+    colorMap ?? dataset.data.sourceParams?.colormap_name ?? 'viridis';
 
   return [effectiveColorMap, setColorMap];
 }

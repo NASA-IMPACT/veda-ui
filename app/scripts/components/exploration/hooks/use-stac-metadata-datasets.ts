@@ -43,8 +43,20 @@ function reconcileQueryDataWithDataset(
 
     if (queryData.status === DatasetStatus.SUCCESS) {
       const domain = resolveLayerTemporalExtent(base.data.id, queryData.data);
-      const titilerParams =
-        queryData.data.renderParams ?? base.data.sourceParams;
+
+      // renderParams precedence: Start with sourceParams from the dataset.
+      // If it's not defined, check for the dashboard render configuration in queryData.
+      // If still undefined, check for asset-specific renders using the sourceParams' assets
+      // property.
+      let renderParams = base.data.sourceParams;
+
+      if (!renderParams && queryData.data.renders?.dashboard) {
+        renderParams = queryData.data.renders.dashboard;
+      }
+
+      if (!renderParams && base.data.sourceParams?.assets) {
+        renderParams = queryData.data.renders?.[base.data.sourceParams.assets];
+      }
 
       base = {
         ...base,
@@ -52,7 +64,7 @@ function reconcileQueryDataWithDataset(
           ...base.data,
           ...queryData.data,
           domain,
-          sourceParams: titilerParams
+          sourceParams: renderParams
         }
       };
     }
@@ -116,7 +128,7 @@ async function fetchStacDatasetById(
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
-    const renderParams = data.renders?.dashboard;
+    const renders = data.renders;
 
     if (!domain?.length || domain.some((d) => !d)) {
       throw new Error('Invalid datetime domain');
@@ -125,7 +137,7 @@ async function fetchStacDatasetById(
     return {
       ...commonTimeseriesParams,
       domain,
-      renderParams
+      renders
     };
   }
 }

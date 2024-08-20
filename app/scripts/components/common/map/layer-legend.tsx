@@ -25,7 +25,8 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
-import { ColormapPreview, DIVERGING_COLORMAPS, SEQUENTIAL_COLORMAPS } from '$components/exploration/components/datasets/colormap-options';
+import { ColormapPreview } from '$components/exploration/components/datasets/colormap-options';
+import { divergingColorMaps, sequentialColorMaps } from '$components/exploration/components/datasets/colorMaps';
 
 interface LayerLegendCommonProps {
   id: string;
@@ -330,11 +331,17 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
     return null;
   }
 
-  const colors = [0, 0.5, 1].map((t) => colormap.scale(t));
+  const colors = Object.values(colormap).map((value) => {
+    if (Array.isArray(value) && value.length === 4) {
+      return `rgba(${value.join(',')})`;
+    } else {
+      return `rgba(0, 0, 0, 1)`;
+    }
+  });
 
   const previewColors = colormap.isReversed
-  ? colors.reduceRight((acc, color) => [...acc, color], [])
-  : colors;
+    ? colors.reduceRight((acc, color) => [...acc, color], [])
+    : colors;
 
   return (
     <LegendList>
@@ -350,7 +357,7 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
               {stops[0]} to {stops[stops.length - 1]}
             </LegendSwatch>
           ) : (
-            <ColormapPreview colormap={previewColors} onMouseMove={moveListener} width='100%' />
+            <ColormapPreview className='border-1px border-base-lightest radius-md' colormap={previewColors} onMouseMove={moveListener} width='100%' />
           )}
         </Tip>
       </dt>
@@ -363,12 +370,12 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   );
 };
 
+
 export const findColormapByName = (name: string) => {
   const isReversed = name.toLowerCase().endsWith('_r');
   const baseName = isReversed ? name.slice(0, -2).toLowerCase() : name.toLowerCase();
 
-  const colormap = SEQUENTIAL_COLORMAPS.find((colormap) => colormap.name.toLowerCase() === baseName) ??
-    DIVERGING_COLORMAPS.find((colormap) => colormap.name.toLowerCase() === baseName);
+  const colormap = sequentialColorMaps[baseName] ?? divergingColorMaps[baseName];
 
   if (!colormap) {
     return null;

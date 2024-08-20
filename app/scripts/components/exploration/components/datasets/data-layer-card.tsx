@@ -33,7 +33,7 @@ interface CardProps {
   isVisible: boolean | undefined;
   setVisible: any;
   colorMap: string;
-  setColorMap: any;
+  setColorMap: string;
   onClickLayerInfo: () => void;
   datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
 }
@@ -202,8 +202,6 @@ export default function DataLayerCard(props: CardProps) {
                 <ColormapOptions
                   colorMap={colorMap}
                   setColorMap={setColorMap}
-                  min={min}
-                  max={max}
                 />
               }
               appendTo={() => document.body}

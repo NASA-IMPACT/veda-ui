@@ -18,7 +18,7 @@ export interface StacDatasetData {
   isPeriodic: boolean;
   timeDensity: TimeDensity;
   domain: string[];
-  renderParams?: Record<string, any> | undefined;
+  renders?: Record<string, any> | undefined;
 }
 
 export interface AnalysisTimeseriesEntry {
