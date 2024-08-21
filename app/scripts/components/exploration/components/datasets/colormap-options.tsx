@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button, Icon } from "@trussworks/react-uswds";
 import { CollecticonDrop } from '@devseed-ui/collecticons';
 import { sequentialColorMaps, divergingColorMaps, restColorMaps } from './colorMaps';
+
 import './colormap-options.scss';
 
 const Container = styled.div`
@@ -11,23 +12,8 @@ const Container = styled.div`
   max-height: 500px;
 `;
 
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const ColormapWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 const ColormapItem = styled.div<{ selected: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   cursor: pointer;
-  gap: 12px;
 
   &:hover {
     background-color: #f4f4f4;
@@ -40,13 +26,12 @@ const ColormapItem = styled.div<{ selected: boolean }>`
     outline: 2px solid #007BFF;
     outline-offset: -2px;
     background-color: #E8F0FD;
-    font-weight: 600;
+    font-weight: bold;
   `}
 `;
 
 const ColormapLabel = styled.div`
   text-align: left;
-  flex: 1;
 `;
 
 export const ColormapPreview = styled.span<{ colormap: string[], width?: string }>`
@@ -57,20 +42,6 @@ export const ColormapPreview = styled.span<{ colormap: string[], width?: string 
   display: flex;
   cursor: default;
 `;
-
-const ActionsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-`;
-
-const ToggleContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const ToggleLabel = styled.label``;
 
 const ToggleInput = styled.input.attrs({ type: 'checkbox' })`
   display: none;
@@ -180,40 +151,40 @@ export function ColormapOptions({ colorMap = 'viridis', setColorMap}: ColormapOp
 
   return (
     <Container className='bg-white shadow-1'>
-      <Header className='text-gray-90 padding-2 font-heading-xs text-bold'><CollecticonDrop /> Colormap options</Header>
+      <div className='display-flex flex-align-center text-gray-90 padding-2 font-heading-xs text-bold'><CollecticonDrop className='margin-right-1' /> Colormap options</div>
 
-      <ActionsContainer className='border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2'>
-        <ToggleContainer onClick={handleReverseToggle}>
-          <ToggleLabel className='text-gray-90 text-semibold margin-right-1'>Reverse</ToggleLabel>
+      <div className='display-flex flex-align-center flex-justify border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2'>
+        <div className='display-flex flex-align-center' onClick={handleReverseToggle}>
+          <label className='font-ui-3xs text-gray-90 text-semibold margin-right-1'>Reverse</label>
           {isReversed ? (
             <Icon.ToggleOn className='text-primary' size={4} />
           ) : (
             <Icon.ToggleOff className='text-base-light' size={4} />
           )}
           <ToggleInput checked={isReversed} />
-        </ToggleContainer>
-        <Button onClick={handleResetAll} type='button' disabled={!isReversed} unstyled>Reset all</Button>
-      </ActionsContainer>
+        </div>
+        <Button className='font-ui-3xs' onClick={handleResetAll} type='button' disabled={!isReversed} unstyled>Reset all</Button>
+      </div>
 
-      <ColormapWrapper>
+      <div>
         {availableColormaps.map(({ name, label }) => {
           const previewColors = getColormapColors(name, isReversed);
 
           return (
             <ColormapItem
-              className='padding-2 border-bottom-1px border-base-lightest radius-md'
+              className='display-flex flex-align-center flex-justify padding-2 border-bottom-1px border-base-lightest radius-md'
               key={name}
               selected={selectedColorMap.toLowerCase() === name.toLowerCase()}
               onClick={() => handleColorMapSelect(name.toLowerCase())}
             >
-              <ColormapPreview className='border-1px border-base-lightest radius-md' colormap={previewColors} />
-              <ColormapLabel className='text-gray-90 font-heading-xs'>
+              <ColormapPreview className='border-1px border-base-lightest radius-md margin-right-2' colormap={previewColors} />
+              <ColormapLabel className='text-gray-90 font-heading-xs flex-1'>
                 {label ? 'Default' : name}
               </ColormapLabel>
             </ColormapItem>
           );
         })}
-      </ColormapWrapper>
+      </div>
     </Container>
   );
 }
