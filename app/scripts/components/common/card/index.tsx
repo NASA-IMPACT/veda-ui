@@ -11,13 +11,14 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
+import SmartLink from '../smart-link';
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
-import { getLinkProps } from '$utils/url';
+
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -259,8 +260,6 @@ function CardComponent(props: CardComponentProps) {
   } = props;
 
   const isExternalLink = /^https?:\/\//.test(linkTo);
-  const linkProps = getLinkProps(linkTo, Link, onLinkClick);
-
 
   return (
     <ElementInteractive
@@ -268,7 +267,8 @@ function CardComponent(props: CardComponentProps) {
       cardType={cardType}
       className={className}
       linkLabel={linkLabel ?? 'View more'}
-      linkProps={linkProps}
+      linkTo={linkTo}
+      onLinkClick={onLinkClick}
       onClickCapture={onCardClickCapture}
     >
       {

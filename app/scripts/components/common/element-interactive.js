@@ -1,15 +1,16 @@
 import React, { useCallback, useState } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
+import SmartLink from './smart-link';
 
-// const InteractiveLink = styled.a`
-//   position: absolute;
-//   inset: 0;
-//   z-index: -1;
-//   pointer-events: auto;
-//   font-size: 0;
-//   margin: 0;
-// `;
+const InteractiveLink = styled(SmartLink)`
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: auto;
+  font-size: 0;
+  margin: 0;
+`;
 
 export const Wrapper = styled.div`
   position: relative;
@@ -73,11 +74,19 @@ export const Wrapper = styled.div`
  */
 export const ElementInteractive = React.forwardRef(
   function ElementInteractiveFwd(props, ref) {
-    const { linkProps = {}, linkLabel = 'View', children, ...rest } = props;
+    const {
+      linkProps = {},
+      linkTo,
+      onLinkClick,
+      linkLabel = 'View',
+      children,
+      ...rest
+    } = props;
+
     const [isStateOver, setStateOver] = useState(false);
     const [isStateActive, setStateActive] = useState(false);
     const [isStateFocus, setStateFocus] = useState(false);
-    console.log(`linkLabel: `, linkLabel)
+
     return (
       <Wrapper
         ref={ref}
@@ -94,24 +103,27 @@ export const ElementInteractive = React.forwardRef(
         }, [])}
       >
         {children}
-        {/* <InteractiveLink
-          {...linkProps}
+        {/* @TODO: make the linkcopoinent as prop with as */}
+        <InteractiveLink
+          to={linkTo}
+          onLinkClick={onLinkClick}
           onMouseDown={useCallback(() => setStateActive(true), [])}
           onMouseUp={useCallback(() => setStateActive(false), [])}
           onFocus={useCallback(() => setStateFocus(true), [])}
           onBlur={useCallback(() => setStateFocus(false), [])}
         >
           {linkLabel}
-        </InteractiveLink> */}
-        <a
-          {...linkProps}
+        </InteractiveLink>
+        <InteractiveLink
+          to={linkTo}
+          onLinkClick={onLinkClick}
           onMouseDown={useCallback(() => setStateActive(true), [])}
           onMouseUp={useCallback(() => setStateActive(false), [])}
           onFocus={useCallback(() => setStateFocus(true), [])}
           onBlur={useCallback(() => setStateFocus(false), [])}
         >
           {linkLabel}
-        </a>
+        </InteractiveLink>
       </Wrapper>
     );
   }

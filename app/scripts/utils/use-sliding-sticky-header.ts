@@ -6,7 +6,7 @@ export const HEADER_ID = 'page-header';
 export const HEADER_WRAPPER_ID = 'header-wrapper';
 export const HEADER_TRANSITION_DURATION = 320;
 
-export function useSlidingStickyHeader({ pathname }: { pathname: string }) {
+export function useSlidingStickyHeader() {
   const [isHidden, setHidden] = useState(false); 
   const [headerHeight, setHeaderHeight] = useState(0);
   const [wrapperHeight, setWrapperHeight] = useState(0);
