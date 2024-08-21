@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Icon } from "@trussworks/react-uswds";
+import { Button, Icon } from "@trussworks/react-uswds";
+import { CollecticonDrop } from '@devseed-ui/collecticons';
 import { sequentialColorMaps, divergingColorMaps, restColorMaps } from './colorMaps';
 import './colormap-options.scss';
 
@@ -10,7 +11,11 @@ const Container = styled.div`
   max-height: 500px;
 `;
 
-const Header = styled.div``;
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
 
 const ColormapWrapper = styled.div`
   display: flex;
@@ -53,10 +58,16 @@ export const ColormapPreview = styled.span<{ colormap: string[], width?: string 
   cursor: default;
 `;
 
+const ActionsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+`;
+
 const ToggleContainer = styled.div`
   display: flex;
   align-items: center;
-  cursor: pointer;
 `;
 
 const ToggleLabel = styled.label``;
@@ -161,19 +172,28 @@ export function ColormapOptions({ colorMap = 'viridis', setColorMap}: ColormapOp
     setColorMap(isReversed ? `${baseColorMap}_r` : baseColorMap);
   };
 
+  const handleResetAll = () => {
+    setIsReversed(false);
+    const baseColorMap = normalizeColorMap(selectedColorMap);
+    setColorMap(baseColorMap);
+  };
+
   return (
     <Container className='bg-white shadow-1'>
-      <Header className='text-gray-90 padding-2 font-heading-xs text-bold'>Colormap options</Header>
+      <Header className='text-gray-90 padding-2 font-heading-xs text-bold'><CollecticonDrop /> Colormap options</Header>
 
-      <ToggleContainer className='border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2' onClick={handleReverseToggle}>
-        <ToggleLabel className='text-gray-90 text-semibold margin-right-1'>Reverse</ToggleLabel>
-        {isReversed ? (
-          <Icon.ToggleOn className='text-primary' size={4} />
-        ) : (
-          <Icon.ToggleOff className='text-primary-dark' size={4} />
-        )}
-        <ToggleInput checked={isReversed} />
-      </ToggleContainer>
+      <ActionsContainer className='border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2'>
+        <ToggleContainer onClick={handleReverseToggle}>
+          <ToggleLabel className='text-gray-90 text-semibold margin-right-1'>Reverse</ToggleLabel>
+          {isReversed ? (
+            <Icon.ToggleOn className='text-primary' size={4} />
+          ) : (
+            <Icon.ToggleOff className='text-base-light' size={4} />
+          )}
+          <ToggleInput checked={isReversed} />
+        </ToggleContainer>
+        <Button onClick={handleResetAll} type='button' disabled={!isReversed} unstyled>Reset all</Button>
+      </ActionsContainer>
 
       <ColormapWrapper>
         {availableColormaps.map(({ name, label }) => {

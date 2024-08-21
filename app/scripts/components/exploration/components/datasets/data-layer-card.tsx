@@ -33,7 +33,7 @@ interface CardProps {
   isVisible: boolean | undefined;
   setVisible: any;
   colorMap: string;
-  setColorMap: string;
+  setColorMap: (colorMap: string) => void;
   onClickLayerInfo: () => void;
   datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
 }
