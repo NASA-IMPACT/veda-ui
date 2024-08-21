@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
+import SmartLink from './smart-link';
 
-const InteractiveLink = styled.a`
+const InteractiveLink = styled(SmartLink)`
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -73,7 +74,14 @@ export const Wrapper = styled.div`
  */
 export const ElementInteractive = React.forwardRef(
   function ElementInteractiveFwd(props, ref) {
-    const { linkProps = {}, linkLabel = 'View', children, ...rest } = props;
+    const {
+      linkTo,
+      onLinkClick,
+      linkLabel = 'View',
+      children,
+      ...rest
+    } = props;
+
     const [isStateOver, setStateOver] = useState(false);
     const [isStateActive, setStateActive] = useState(false);
     const [isStateFocus, setStateFocus] = useState(false);
@@ -95,7 +103,8 @@ export const ElementInteractive = React.forwardRef(
       >
         {children}
         <InteractiveLink
-          {...linkProps}
+          to={linkTo}
+          onLinkClick={onLinkClick}
           onMouseDown={useCallback(() => setStateActive(true), [])}
           onMouseUp={useCallback(() => setStateActive(false), [])}
           onFocus={useCallback(() => setStateFocus(true), [])}
@@ -109,6 +118,8 @@ export const ElementInteractive = React.forwardRef(
 );
 
 ElementInteractive.propTypes = {
+  linkTo: T.string.isRequired,
+  onLinkClick: T.func,
   children: T.node.isRequired,
   linkLabel: T.string.isRequired,
   linkProps: T.object
