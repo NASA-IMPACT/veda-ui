@@ -81,6 +81,10 @@ export const GlobalStyles = createGlobalStyle`
   :root {
     --base-space-multiplier: ${themeVal('layout.glspMultiplier.xsmall')};
     --base-font-family: ${themeVal('type.base.family')};
+    --veda-color-primary: ${themeVal('color.primary')};
+    --veda-color-secondary: ${themeVal('color.secondary')};
+    --veda-color-link: ${themeVal('color.link')};
+    --veda-color-base: ${themeVal('color.base')};
   }
 
   ${media.smallUp`
