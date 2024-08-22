@@ -1,0 +1,16 @@
+@mixin only-focus-visible {
+  &:focus {
+    outline: none;
+    box-shadow: 1px #ccc;
+  }
+  &:focus-visible {
+    outline: 1px solid;
+  }
+
+  @supports not selector(:focus-visible) {
+    &:focus {
+      outline: 1px solid;
+    }
+  }
+}
+
