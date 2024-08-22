@@ -26,6 +26,7 @@ import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layer
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
 
 import 'tippy.js/dist/tippy.css';
+import { LoadingSkeleton } from '$components/common/loading-skeleton';
 
 interface CardProps {
   dataset: TimelineDataset;
@@ -177,7 +178,12 @@ export default function DataLayerCard(props: CardProps) {
         {isColorMapCategorical && datasetLegend?.type === 'categorical' && (
           <LayerCategoricalGraphic type='categorical' stops={datasetLegend.stops} />
         )}
-        {!isColorMapCategorical && datasetLegend?.type === 'gradient' && (
+        {/* Show a loading skeleton when the color map is not categorical and the dataset
+        status is 'loading'. This is because we color map sometimes might come from the titiler
+        which could introduce a visual flash when going from the 'default' color map to the one
+        configured in titiler */}
+        {!isColorMapCategorical && dataset.status === 'loading'  && datasetLegend?.type === 'gradient' && <LoadingSkeleton />}
+        {!isColorMapCategorical && dataset.status === 'success' && datasetLegend?.type === 'gradient' && (
           <div className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md' ref={triggerRef}>
             <LayerGradientGraphic
               type='gradient'

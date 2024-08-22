@@ -92,7 +92,7 @@ export const getColormapColors = (colormapName: string, isReversed: boolean): st
   return isReversed ? colors.reduceRight((acc, color) => [...acc, color], []) : colors;
 };
 
-export function ColormapOptions({ colorMap = 'viridis', setColorMap}: ColormapOptionsProps) {
+export function ColormapOptions({ colorMap, setColorMap}: ColormapOptionsProps) {
   const initialIsReversed = colorMap.endsWith('_r');
   const initialColorMap = normalizeColorMap(colorMap);
 

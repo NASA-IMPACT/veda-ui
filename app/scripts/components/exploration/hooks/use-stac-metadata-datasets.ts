@@ -22,6 +22,15 @@ function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
   return prevKey !== currKey;
 }
 
+const hasValidSourceParams = (params) => {
+  return (
+    params &&
+    'assets' in params &&
+    'colormap_name' in params &&
+    'rescale' in params
+  );
+};
+
 /**
  * Merges STAC metadata with local dataset, computing the domain.
  *
@@ -48,14 +57,31 @@ function reconcileQueryDataWithDataset(
       // If it's not defined, check for the dashboard render configuration in queryData.
       // If still undefined, check for asset-specific renders using the sourceParams' assets
       // property.
-      let renderParams = base.data.sourceParams;
+      let renderParams = hasValidSourceParams(base.data.sourceParams)
+        ? base.data.sourceParams
+        : undefined;
 
       if (!renderParams && queryData.data.renders?.dashboard) {
         renderParams = queryData.data.renders.dashboard;
       }
 
-      if (!renderParams && base.data.sourceParams?.assets) {
-        renderParams = queryData.data.renders?.[base.data.sourceParams.assets];
+      if (
+        !renderParams &&
+        queryData.data.renders?.[base.data.sourceParams?.assets]
+      ) {
+        renderParams = queryData.data.renders[base.data.sourceParams?.assets];
+
+        // The backend sometimes sends `renderParams.rescale` as a nested array, e.g., [[min, max]],
+        // even when it contains only one range. We check if `rescale` is an array with exactly one
+        // element, and if that element is itself an array. If so, we "flatten" it by taking
+        // the first element to simplify the structure for further use.
+        if (
+          Array.isArray(renderParams?.rescale) &&
+          renderParams.rescale.length === 1 &&
+          Array.isArray(renderParams.rescale[0])
+        ) {
+          renderParams.rescale = renderParams.rescale[0];
+        }
       }
 
       base = {
