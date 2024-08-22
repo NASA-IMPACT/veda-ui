@@ -1,3 +1,4 @@
+// You can find the tokens from https://designsystem.digital.gov/documentation/settings/
 @use 'uswds-core' as * with (
     $utilities-use-important: true,
     $theme-show-notifications: false,
@@ -13,6 +14,8 @@
         "mobile-lg": false,
         "desktop": false
     ),
+    $theme-focus-width: '1px',
+    $theme-focus-offset: '1px',
     $theme-font-type-sans: baseFontFamily,
     $theme-font-type-serif: baseFontFamily,
 );
