@@ -177,7 +177,7 @@ export default function DataLayerCard(props: CardProps) {
         {isColorMapCategorical && datasetLegend?.type === 'categorical' && (
           <LayerCategoricalGraphic type='categorical' stops={datasetLegend.stops} />
         )}
-        {!isColorMapCategorical && (
+        {!isColorMapCategorical && datasetLegend?.type === 'gradient' && (
           <div className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md' ref={triggerRef}>
             <LayerGradientGraphic
               type='gradient'
