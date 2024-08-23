@@ -1,4 +1,43 @@
-.color-map-options {
+@use "uswds-core/src/styles/mixins/utilities" as mixins;
+
+
+.colormap-options {
+
+    &__container {
+        width: 383px;
+        overflow-y: auto;
+    }
+
+    &__item {
+        cursor: pointer;
+
+        &:hover {
+            @include mixins.u-bg('base-lightest')
+        }
+
+        &.selected {
+            border-radius: 0;
+            outline: 2px solid;
+            outline-offset: -2px;
+            @include mixins.u-text('bold');
+            @include mixins.u-outline-color('blue-40');
+            @include mixins.u-bg('primary-lighter');
+        }
+    }
+
+    &__label {
+        text-align: left;
+    }
+
+    &__preview {
+        width: 260px;
+        height: 12px;
+        cursor: default;
+    }
+
+    &__input {
+        display: none;
+    }
 
     .tippy-content {
         padding: 0;

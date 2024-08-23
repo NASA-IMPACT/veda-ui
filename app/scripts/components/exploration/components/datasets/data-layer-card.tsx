@@ -116,7 +116,6 @@ export default function DataLayerCard(props: CardProps) {
   } = props;
   const layerInfo = dataset.data.info;
   const [min, max] = dataset.data.sourceParams?.rescale || [0, 1];
-  const isColorMapCategorical = 'colormap' in (dataset.data.sourceParams ?? {});
   const [isColorMapOpen, setIsColorMapOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement | null>(null);
 
@@ -175,15 +174,15 @@ export default function DataLayerCard(props: CardProps) {
             {layerInfo && <LayerInfoLiner info={layerInfo} />}
           </DatasetMetricInfo>
         </DatasetCardInfo>
-        {isColorMapCategorical && datasetLegend?.type === 'categorical' && (
+        {datasetLegend?.type === 'categorical' && (
           <LayerCategoricalGraphic type='categorical' stops={datasetLegend.stops} />
         )}
         {/* Show a loading skeleton when the color map is not categorical and the dataset
         status is 'loading'. This is because we color map sometimes might come from the titiler
         which could introduce a visual flash when going from the 'default' color map to the one
         configured in titiler */}
-        {!isColorMapCategorical && dataset.status === 'loading'  && datasetLegend?.type === 'gradient' && <LoadingSkeleton />}
-        {!isColorMapCategorical && dataset.status === 'success' && datasetLegend?.type === 'gradient' && (
+        {dataset.status === 'loading'  && datasetLegend?.type === 'gradient' && <LoadingSkeleton height='60px' />}
+        {dataset.status === 'success' && datasetLegend?.type === 'gradient' && (
           <div className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md' ref={triggerRef}>
             <LayerGradientGraphic
               type='gradient'
@@ -192,7 +191,7 @@ export default function DataLayerCard(props: CardProps) {
               colorMap={colorMap}
             />
             <Tippy
-              className='color-map-options'
+              className='colormap-options'
               content={
                 <ColormapOptions
                   colorMap={colorMap}

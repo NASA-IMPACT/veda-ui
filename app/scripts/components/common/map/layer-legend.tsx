@@ -25,7 +25,6 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
-import { ColormapPreview } from '$components/exploration/components/datasets/colormap-options';
 import { divergingColorMaps, sequentialColorMaps } from '$components/exploration/components/datasets/colorMaps';
 
 interface LayerLegendCommonProps {
@@ -357,7 +356,11 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
               {stops[0]} to {stops[stops.length - 1]}
             </LegendSwatch>
           ) : (
-            <ColormapPreview className='border-1px border-base-lightest radius-md' colormap={previewColors} onMouseMove={moveListener} width='100%' />
+            <div
+              className='colormap-options__preview width-full border-1px border-base-lightest radius-md margin-right-2'
+              style={{ background: `linear-gradient(to right, ${previewColors.join(', ')})` }}
+              onMouseMove={moveListener}
+            />
           )}
         </Tip>
       </dt>

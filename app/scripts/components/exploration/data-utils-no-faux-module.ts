@@ -130,6 +130,50 @@ export function resolveLayerTemporalExtent(
   }
 }
 
+const hasValidSourceParams = (params) => {
+  return params && 'colormap_name' in params && 'rescale' in params;
+};
+
+// renderParams precedence: Start with sourceParams from the dataset.
+// If it's not defined, check for the dashboard render configuration in queryData.
+// If still undefined, check for asset-specific renders using the sourceParams' assets
+// property.
+export function resolveRenderParams(
+  datasetSourceParams: Record<string, any> | undefined,
+  queryDataRenders: Record<string, any> | undefined
+): any {
+  let renderParams: Record<string, any> | undefined;
+
+  // Start with sourceParams from the dataset.
+  if (hasValidSourceParams(datasetSourceParams)) {
+    renderParams = datasetSourceParams;
+  }
+
+  // Check for the dashboard render configuration in queryData if not defined.
+  if (!renderParams && queryDataRenders?.dashboard) {
+    renderParams = queryDataRenders.dashboard;
+  }
+
+  // Check for asset-specific renders using the sourceParams' assets property.
+  if (!renderParams && queryDataRenders?.[datasetSourceParams?.assets]) {
+    renderParams = queryDataRenders[datasetSourceParams?.assets];
+
+    // The backend sometimes sends `renderParams.rescale` as a nested array, e.g., [[min, max]],
+    // even when it contains only one range. We check if `rescale` is an array with exactly one
+    // element, and if that element is itself an array. If so, we "flatten" it by taking
+    // the first element to simplify the structure for further use.
+    if (
+      Array.isArray(renderParams?.rescale) &&
+      renderParams.rescale.length === 1 &&
+      Array.isArray(renderParams.rescale[0])
+    ) {
+      renderParams.rescale = renderParams.rescale[0];
+    }
+  }
+
+  return renderParams;
+}
+
 export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
   switch (timeDensity) {
     case TimeDensity.MONTH:

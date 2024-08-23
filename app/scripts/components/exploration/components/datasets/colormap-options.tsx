@@ -1,51 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { Button, Icon } from "@trussworks/react-uswds";
 import { CollecticonDrop } from '@devseed-ui/collecticons';
 import { sequentialColorMaps, divergingColorMaps, restColorMaps } from './colorMaps';
 
 import './colormap-options.scss';
-
-const Container = styled.div`
-  width: 383px;
-  overflow-y: auto;
-  max-height: 500px;
-`;
-
-const ColormapItem = styled.div<{ selected: boolean }>`
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f4f4f4;
-  }
-
-  ${({ selected }) =>
-    selected &&
-    `
-    border-radius: 0;
-    outline: 2px solid #007BFF;
-    outline-offset: -2px;
-    background-color: #E8F0FD;
-    font-weight: bold;
-  `}
-`;
-
-const ColormapLabel = styled.div`
-  text-align: left;
-`;
-
-export const ColormapPreview = styled.span<{ colormap: string[], width?: string }>`
-  width: ${({ width }) => width ?? '260px'};
-  height: 12px;
-  background: ${({ colormap }) =>
-    `linear-gradient(to right, ${colormap.join(', ')})`};
-  display: flex;
-  cursor: default;
-`;
-
-const ToggleInput = styled.input.attrs({ type: 'checkbox' })`
-  display: none;
-`;
 
 const CURATED_SEQUENTIAL_COLORMAPS = [
   'viridis', 'plasma', 'inferno', 'magma', 'cividis',
@@ -150,7 +108,7 @@ export function ColormapOptions({ colorMap, setColorMap}: ColormapOptionsProps) 
   };
 
   return (
-    <Container className='bg-white shadow-1'>
+    <div className='colormap-options__container bg-white shadow-1 maxh-mobile-lg'>
       <div className='display-flex flex-align-center text-gray-90 padding-2 font-heading-xs text-bold'><CollecticonDrop className='margin-right-1' /> Colormap options</div>
 
       <div className='display-flex flex-align-center flex-justify border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2'>
@@ -161,7 +119,7 @@ export function ColormapOptions({ colorMap, setColorMap}: ColormapOptionsProps) 
           ) : (
             <Icon.ToggleOff className='text-base-light' size={4} />
           )}
-          <ToggleInput checked={isReversed} />
+          <input className='colormap-options__input' checked={isReversed} type='checkbox' readOnly />
         </div>
         <Button className='font-ui-3xs' onClick={handleResetAll} type='button' disabled={!isReversed} unstyled>Reset all</Button>
       </div>
@@ -171,21 +129,23 @@ export function ColormapOptions({ colorMap, setColorMap}: ColormapOptionsProps) 
           const previewColors = getColormapColors(name, isReversed);
 
           return (
-            <ColormapItem
-              className='display-flex flex-align-center flex-justify padding-2 border-bottom-1px border-base-lightest radius-md'
+            <div
+              className={`colormap-options__item display-flex flex-align-center flex-justify padding-2 border-bottom-1px border-base-lightest radius-md ${selectedColorMap.toLowerCase() === name.toLowerCase() ? 'selected' : ''}`}
               key={name}
-              selected={selectedColorMap.toLowerCase() === name.toLowerCase()}
               onClick={() => handleColorMapSelect(name.toLowerCase())}
             >
-              <ColormapPreview className='border-1px border-base-lightest radius-md margin-right-2' colormap={previewColors} />
-              <ColormapLabel className='text-gray-90 font-heading-xs flex-1'>
+              <div
+                className='colormap-options__preview display-flex border-1px border-base-lightest radius-md margin-right-2'
+                style={{ background: `linear-gradient(to right, ${previewColors.join(', ')})` }}
+              />
+              <label className='colormap-options__label text-gray-90 font-heading-xs flex-1'>
                 {label ? 'Default' : name}
-              </ColormapLabel>
-            </ColormapItem>
+              </label>
+            </div>
           );
         })}
       </div>
-    </Container>
+    </div>
   );
 }
 
