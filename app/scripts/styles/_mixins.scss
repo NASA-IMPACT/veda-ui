@@ -1,3 +1,5 @@
+@use "uswds-core/src/styles/functions/utilities" as utils;
+
 @mixin only-focus-visible {
   &:focus {
     outline: none;
