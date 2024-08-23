@@ -181,7 +181,7 @@ export default function DataLayerCard(props: CardProps) {
         status is 'loading'. This is because we color map sometimes might come from the titiler
         which could introduce a visual flash when going from the 'default' color map to the one
         configured in titiler */}
-        {dataset.status === 'loading'  && datasetLegend?.type === 'gradient' && <LoadingSkeleton height='60px' />}
+        {dataset.status === 'loading'  && datasetLegend?.type === 'gradient' && <div className='display-flex flex-align-center height-8'><LoadingSkeleton /></div>}
         {dataset.status === 'success' && datasetLegend?.type === 'gradient' && (
           <div className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md' ref={triggerRef}>
             <LayerGradientGraphic
