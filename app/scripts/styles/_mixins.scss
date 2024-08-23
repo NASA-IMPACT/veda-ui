@@ -3,7 +3,7 @@
 @mixin only-focus-visible {
   &:focus {
     outline: none;
-    box-shadow: 1px #ccc;
+    box-shadow: 1px utils.color('gray-5');
   }
   &:focus-visible {
     outline: 1px solid;

@@ -5,3 +5,14 @@
 @use "usa-banner";
 @use "usa-button";
 @use "usa-card";
+
+.blocklink {
+  &:focus { outline: none; }
+  &:focus-visible { outline: 1px solid  #0076d6; }
+
+  @supports not selector(:focus-visible) {
+    &:focus {
+      outline: 1px solid  #0076d6;
+    }
+  }
+}
