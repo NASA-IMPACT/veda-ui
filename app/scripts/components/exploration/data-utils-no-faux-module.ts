@@ -164,10 +164,12 @@ export function resolveRenderParams(
     // the first element to simplify the structure for further use.
     if (
       Array.isArray(renderParams?.rescale) &&
-      renderParams.rescale.length === 1 &&
-      Array.isArray(renderParams.rescale[0])
+      renderParams?.rescale.length === 1 &&
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      Array.isArray(renderParams?.rescale[0])
     ) {
-      renderParams.rescale = renderParams.rescale[0];
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      renderParams.rescale = renderParams?.rescale[0];
     }
   }
 
