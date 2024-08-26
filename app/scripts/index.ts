@@ -11,11 +11,13 @@ import CompareImage from './components/common/blocks/images/compare';
 import ReactQueryProvider from './context/react-query';
 import Embed from './components/common/blocks/embed';
 import DevseedUiThemeProvider from './theme-provider';
+import CatalogView from './components/common/catalog';
 import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
-import CatalogView from './components/common/catalog';
+import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 
 export {
+  // COMPONENTS
   Block,
   Figure,
   Prose,
@@ -33,4 +35,6 @@ export {
   PageMainContent,
   PageHero,
   ReactQueryProvider,
+  // HOOKS
+  useFiltersWithQS,
 };

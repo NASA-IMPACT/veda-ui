@@ -20,6 +20,7 @@ interface CatalogCardProps {
   selectable?: boolean;
   selected?: boolean;
   onDatasetClick?: () => void;
+  CardInteractiveElement?: any;
 }
 
 const CardSelectable = styled(Card)<{ checked?: boolean, selectable?: boolean }>`
@@ -90,7 +91,7 @@ const CardSelectable = styled(Card)<{ checked?: boolean, selectable?: boolean }>
 `;
 
 export const CatalogCard = (props: CatalogCardProps) => {
-  const { dataset, layer, searchTerm, selectable, selected, onDatasetClick } = props;
+  const { dataset, layer, searchTerm, selectable, selected, onDatasetClick, CardInteractiveElement } = props;
 
   const topics = getTaxonomy(dataset, TAXONOMY_TOPICS)?.values;
   const sources = getTaxonomy(dataset, TAXONOMY_SOURCE)?.values;
@@ -153,6 +154,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
           ) : null}
         </>
       }
+      CardInteractiveElement={CardInteractiveElement}
     />
   );
 };

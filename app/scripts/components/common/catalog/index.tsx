@@ -2,11 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import CatalogContent from './catalog-content';
-// import { useFiltersWithQS } from './controls/hooks/use-filters-with-query';
 import { DatasetData } from '$types/veda';
-// import {
-//   useSlidingStickyHeaderProps
-// } from '$components/common/layout-root/useSlidingStickyHeaderProps';
+import {
+  useSlidingStickyHeaderProps
+} from '$components/common/layout-root/useSlidingStickyHeaderProps';
 
 import {
   FoldHeader,
@@ -14,7 +13,6 @@ import {
   FoldTitle
 } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
-// import { UseFiltersWithQueryResult } from './controls/hooks/use-filters-with-query';
 
 /**
  * CATALOG Feature component
@@ -44,20 +42,20 @@ export interface CatalogViewProps {
     taxonomies: Record<string, string[]> | Record<string, never>,
     onAction: () => void,
   } | any;
+  location?: any;
+  CardInteractiveElement?: any;
 }
 
 function CatalogView({
   datasets,
-  onFilterChanges
+  onFilterChanges,
+  location,
+  CardInteractiveElement,
 }: CatalogViewProps) {
 
-  // const { headerHeight } = useSlidingStickyHeaderProps();
-  // const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader();
+  const { headerHeight } = useSlidingStickyHeaderProps();
 
-  // const { search, taxonomies , onAction } = useFiltersWithQS();
   const { search, taxonomies , onAction } = onFilterChanges();
-  console.log(`taxonomies: `, taxonomies)
-  const headerHeight = 60;
   
   return (
     <CatalogWrapper>
@@ -75,9 +73,8 @@ function CatalogView({
         search={search}
         taxonomies={taxonomies}
         onAction={onAction}
-        search={''}
-        taxonomies={{}}
-        onAction={() => true}
+        location={location}
+        CardInteractiveElement={CardInteractiveElement}
       />
     </CatalogWrapper>
   );

@@ -2,15 +2,6 @@ import React, { useCallback, useState } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 
-// const InteractiveLink = styled.a`
-//   position: absolute;
-//   inset: 0;
-//   z-index: -1;
-//   pointer-events: auto;
-//   font-size: 0;
-//   margin: 0;
-// `;
-
 export const Wrapper = styled.div`
   position: relative;
   z-index: 1;
@@ -73,11 +64,19 @@ export const Wrapper = styled.div`
  */
 export const ElementInteractive = React.forwardRef(
   function ElementInteractiveFwd(props, ref) {
-    const { linkProps = {}, linkLabel = 'View', children, ...rest } = props;
+    const {
+      linkProps = {},
+      linkLabel = 'View',
+      children,
+      CardInteractiveElement,
+      ...rest
+    } = props;
     const [isStateOver, setStateOver] = useState(false);
     const [isStateActive, setStateActive] = useState(false);
     const [isStateFocus, setStateFocus] = useState(false);
-    console.log(`linkLabel: `, linkLabel)
+
+    const CardInteractive = CardInteractiveElement ?? 'a';
+
     return (
       <Wrapper
         ref={ref}
@@ -94,7 +93,7 @@ export const ElementInteractive = React.forwardRef(
         }, [])}
       >
         {children}
-        {/* <InteractiveLink
+        <CardInteractive
           {...linkProps}
           onMouseDown={useCallback(() => setStateActive(true), [])}
           onMouseUp={useCallback(() => setStateActive(false), [])}
@@ -102,16 +101,7 @@ export const ElementInteractive = React.forwardRef(
           onBlur={useCallback(() => setStateFocus(false), [])}
         >
           {linkLabel}
-        </InteractiveLink> */}
-        <a
-          {...linkProps}
-          onMouseDown={useCallback(() => setStateActive(true), [])}
-          onMouseUp={useCallback(() => setStateActive(false), [])}
-          onFocus={useCallback(() => setStateFocus(true), [])}
-          onBlur={useCallback(() => setStateFocus(false), [])}
-        >
-          {linkLabel}
-        </a>
+        </CardInteractive>
       </Wrapper>
     );
   }
@@ -120,7 +110,8 @@ export const ElementInteractive = React.forwardRef(
 ElementInteractive.propTypes = {
   children: T.node.isRequired,
   linkLabel: T.string.isRequired,
-  linkProps: T.object
+  linkProps: T.object,
+  CardInteractiveElement: T.any
 };
 
 /**

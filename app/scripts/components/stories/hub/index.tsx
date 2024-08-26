@@ -1,4 +1,5 @@
 import React, { useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { stories, storyTaxonomies, getString } from 'veda';
@@ -65,7 +66,7 @@ const FoldWithTopMargin = styled(Fold)`
 `;
 
 function StoriesHub() {
-  const controlVars = useFiltersWithQS();
+  const controlVars = useFiltersWithQS({navigate: useNavigate()});
 
   const { search, taxonomies, onAction } = controlVars;
 

@@ -239,6 +239,7 @@ export interface CardComponentProps {
   footerContent?: JSX.Element;
   onCardClickCapture?: MouseEventHandler;
   onLinkClick?: MouseEventHandler;
+  CardInteractiveElement?: any;
 }
 
 function CardComponent(props: CardComponentProps) {
@@ -257,7 +258,8 @@ function CardComponent(props: CardComponentProps) {
     parentTo,
     footerContent,
     onCardClickCapture,
-    onLinkClick
+    onLinkClick,
+    CardInteractiveElement,
   } = props;
 
   const isExternalLink = /^https?:\/\//.test(linkTo);
@@ -276,6 +278,7 @@ function CardComponent(props: CardComponentProps) {
       linkTo={linkTo}
       onLinkClick={onLinkClick}
       onClickCapture={onCardClickCapture}
+      CardInteractiveElement={CardInteractiveElement}
     >
       {
         cardType !== 'horizontal-info' && (

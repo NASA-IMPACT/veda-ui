@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { Location } from 'react-router';
 import styled from 'styled-components';
 import { FilterActions } from './utils';
 import { Taxonomy } from '$types/veda';
 import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
-// import { useSlidingStickyHeader, HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
+import { useSlidingStickyHeader, HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
 
 const ControlsWrapper = styled.div<{ widthValue?: string; heightValue?: string; topValue: string }>`
   min-width: 20rem;
@@ -12,8 +13,7 @@ const ControlsWrapper = styled.div<{ widthValue?: string; heightValue?: string; 
   position: sticky;
   top: calc(${props => props.topValue} + 1rem);
   height: ${props => props.heightValue};
-  // transition: top ${HEADER_TRANSITION_DURATION}ms ease-out;
-  transition: top 1000ms ease-out;
+  transition: top ${HEADER_TRANSITION_DURATION}ms ease-out;
 `;
 
 interface FiltersMenuProps {
@@ -28,6 +28,7 @@ interface FiltersMenuProps {
   exclusiveSourceSelected?: string | null;
   customTopOffset?: number;
   openByDefault?: boolean;
+  location?: Location
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
@@ -47,12 +48,13 @@ export default function FiltersControl(props: FiltersMenuProps) {
     // has a different header reference as opposed to what the useSlidingStickyHeader hook
     // uses as a reference (the main page header). To avoid changing the reference IDs in the
     // main logic of the sliding sticky header hook, we provide this custom top offset for more control.
-    customTopOffset = 0
+    customTopOffset = 0,
+    location,
   } = props;
 
   const controlsRef = useRef<HTMLDivElement>(null);
   const [controlsHeight, setControlsHeight] =  useState<number>(0);
-  // const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader();
+  const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader(location);
 
   const handleChanges = useCallback((item: OptionItem, action: 'add' | 'remove') => {
     const isSelected = allSelected.some(selected => selected.id === item.id && selected.taxonomy === item.taxonomy);
@@ -96,10 +98,9 @@ export default function FiltersControl(props: FiltersMenuProps) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exclusiveSourceSelected]);
-
+  
   return (
-    // <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden ? '0px': `${wrapperHeight - customTopOffset}px`}>
-    <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={'0px'}>
+    <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden && wrapperHeight ? '0px': `${wrapperHeight - customTopOffset}px`}>
       <div ref={controlsRef}>
         <SearchField
           size='large'
