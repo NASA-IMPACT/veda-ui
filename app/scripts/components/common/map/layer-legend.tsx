@@ -363,7 +363,9 @@ export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 's
     }
   });
 
-  const processedStops = colormap.isReversed ? stops.toReversed() : stops;
+  const processedStops = colormap.isReversed
+  ? stops.reduceRight((acc, stop) => [...acc, stop], [])
+  : stops;
 
   return <LayerGradientGraphic type='gradient' stops={processedStops} {...otherProps} />;
 };
