@@ -89,7 +89,7 @@ These values can vary depending on the layer being added, but common parameters 
   The minimum and maximum values for rescale, used for color mapping. The minimum value corresponds to the start of the color map, and the maximum value corresponds to the end. Adjusting these values changes the data-to-color mapping, allowing for analysis of different data trends. Rescale values follow the defined precedence, starting with the `sourceParams` configuration.
 - **colormap_name**
   `string`
-  The colormap to be used for the layer. These can be from the curated list of color maps in the back-end, as seen [here](https://openveda.cloud/api/raster/colorMaps). The precedence follows the same rules as `rescale`, and if no colormap is specified or found, the default will be `viridis`.
+  The colormap to be used for the layer. This can be one of the supported color maps from [rio-tiler](https://cogeotiff.github.io/rio-tiler/colormap/#default-rio-tilers-colormaps) or from the curated list of color maps in the back-end, as described [here](https://openveda.cloud/api/raster/colorMaps). The precedence follows the same rules as `rescale`, and if no colormap is specified or found, the default will be `viridis`.
 - **minzoom**
   `integer`
   The minimum zoom level for displaying the layer. Map tiles below this zoom level will not be loaded or shown.
