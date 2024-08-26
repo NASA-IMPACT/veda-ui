@@ -302,7 +302,7 @@ export function LayerCategoricalGraphic(props: LayerLegendCategorical) {
 }
 
 export const LayerGradientGraphic = (props: LayerLegendGradient) => {
-  const { stops, min, max, unit, colorMap } = props;
+  const { stops, min, max, unit } = props;
   const [hoverVal, setHoverVal] = useState(0);
 
   const moveListener = useCallback(
@@ -324,24 +324,6 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   const hasNumericLegend = !isNaN(Number(min) + Number(max));
   const tipText = formatTooltipValue(hoverVal, unit);
 
-  const colormap = findColormapByName(colorMap ?? 'viridis');
-
-  if (!colormap) {
-    return null;
-  }
-
-  const colors = Object.values(colormap).map((value) => {
-    if (Array.isArray(value) && value.length === 4) {
-      return `rgba(${value.join(',')})`;
-    } else {
-      return `rgba(0, 0, 0, 1)`;
-    }
-  });
-
-  const previewColors = colormap.isReversed
-    ? colors.reduceRight((acc, color) => [...acc, color], [])
-    : colors;
-
   return (
     <LegendList>
       <dt>
@@ -351,17 +333,9 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
           followCursor='horizontal'
           plugins={[followCursor]}
         >
-          {stops ? (
-            <LegendSwatch stops={stops} onMouseMove={moveListener}>
-              {stops[0]} to {stops[stops.length - 1]}
-            </LegendSwatch>
-          ) : (
-            <div
-              className='colormap-options__preview width-full border-1px border-base-lightest radius-md margin-right-2'
-              style={{ background: `linear-gradient(to right, ${previewColors.join(', ')})` }}
-              onMouseMove={moveListener}
-            />
-          )}
+          <LegendSwatch stops={stops} onMouseMove={moveListener}>
+            {stops[0]} to {stops[stops.length - 1]}
+          </LegendSwatch>
         </Tip>
       </dt>
       <dd>
@@ -373,6 +347,26 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   );
 };
 
+export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 'stops' | 'type'>) => {
+  const { colorMap, ...otherProps } = props;
+
+  const colormap = findColormapByName(colorMap ?? 'viridis');
+  if (!colormap) {
+    return null;
+  }
+
+  const stops = Object.values(colormap).map((value) => {
+    if (Array.isArray(value) && value.length === 4) {
+      return `rgba(${value.join(',')})`;
+    } else {
+      return `rgba(0, 0, 0, 1)`;
+    }
+  });
+
+  const processedStops = colormap.isReversed ? stops.toReversed() : stops;
+
+  return <LayerGradientGraphic type='gradient' stops={processedStops} {...otherProps} />;
+};
 
 export const findColormapByName = (name: string) => {
   const isReversed = name.toLowerCase().endsWith('_r');

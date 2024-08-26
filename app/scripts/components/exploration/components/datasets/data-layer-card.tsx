@@ -17,8 +17,7 @@ import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
 import { TipButton } from '$components/common/tip-button';
 import {
-  LayerCategoricalGraphic,
-  LayerGradientGraphic
+  LayerCategoricalGraphic, LayerGradientColormapGraphic
 } from '$components/common/map/layer-legend';
 
 import { TimelineDataset } from '$components/exploration/types.d.ts';
@@ -99,7 +98,7 @@ const DatasetMetricInfo = styled.div`
 
 const LegendColorMapTrigger = styled.div`
   min-height: 46px;
-  min-width: 30px;
+  min-width: 25px;
   cursor: pointer;
 `;
 
@@ -184,8 +183,7 @@ export default function DataLayerCard(props: CardProps) {
         {dataset.status === 'loading'  && datasetLegend?.type === 'gradient' && <div className='display-flex flex-align-center height-8'><LoadingSkeleton /></div>}
         {dataset.status === 'success' && datasetLegend?.type === 'gradient' && (
           <div className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md' ref={triggerRef}>
-            <LayerGradientGraphic
-              type='gradient'
+            <LayerGradientColormapGraphic
               min={min}
               max={max}
               colorMap={colorMap}

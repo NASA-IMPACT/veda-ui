@@ -134,7 +134,7 @@ declare module 'veda' {
     unit?: LayerLegendUnit;
     min: string | number;
     max: string | number;
-    stops?: string[];
+    stops: string[];
   }
 
   interface CategoricalStop {

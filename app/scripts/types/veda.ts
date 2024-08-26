@@ -131,7 +131,7 @@ export interface LayerLegendGradient {
   unit?: LayerLegendUnit;
   min: string | number;
   max: string | number;
-  stops?: string[];
+  stops: string[];
   colorMap?: string;
 }
 

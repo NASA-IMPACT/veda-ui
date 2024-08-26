@@ -73,6 +73,7 @@ export function Layer(props: LayerProps) {
           hidden={!isVisible}
           opacity={opacity}
           onStatusChange={onStatusChange}
+          colorMap={colorMap}
         />
       );
     case 'cmr':
@@ -90,6 +91,7 @@ export function Layer(props: LayerProps) {
           hidden={!isVisible}
           opacity={opacity}
           onStatusChange={onStatusChange}
+          colorMap={colorMap}
         />
       );
     case 'raster':
