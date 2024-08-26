@@ -134,6 +134,34 @@ const hasValidSourceParams = (params) => {
   return params && 'colormap_name' in params && 'rescale' in params;
 };
 
+/**
+ * Util to flatten and process rescale values,
+ *
+ * The need for flattening is because the `rescale` values can be received
+ * in different formats depending on their source. When parsing through Parcel,
+ * `rescale` values are typically a flat array (e.g., [0, 0.1, 0.01, 0.2]).
+ * However, when these values come from the back-end, they may be nested,
+ * like `[[0, 0.1], [0.01, 0.2]]`.
+ *
+ * To ensure consistency across the application and guard against any nesting
+ * issues (especially when working with multiple pairs of tuples from the back-end),
+ * this function flattens the input array and calculates the global minimum and maximum values.
+ * This guarantees that the `rescale` values are always returned in the correct [min, max] format.
+ *
+ * @param rescale - A potentially nested array of rescale values.
+ * @returns A tuple containing the minimum and maximum values [min, max].
+ */
+function flattenAndCalculateMinMax(rescale: number[]): [number, number] {
+  const flattenArray = (arr: number[]): number[] => arr.flat(Infinity);
+
+  const rescaleArray = flattenArray(rescale);
+
+  const min = Math.min(...rescaleArray);
+  const max = Math.max(...rescaleArray);
+
+  return [min, max];
+}
+
 // renderParams precedence: Start with sourceParams from the dataset.
 // If it's not defined, check for the dashboard render configuration in queryData.
 // If still undefined, check for asset-specific renders using the sourceParams' assets
@@ -141,9 +169,8 @@ const hasValidSourceParams = (params) => {
 export function resolveRenderParams(
   datasetSourceParams: Record<string, any> | undefined,
   queryDataRenders: Record<string, any> | undefined
-): any {
+): Record<string, any> | undefined {
   let renderParams: Record<string, any> | undefined;
-
   // Start with sourceParams from the dataset.
   if (hasValidSourceParams(datasetSourceParams)) {
     renderParams = datasetSourceParams;
@@ -152,25 +179,23 @@ export function resolveRenderParams(
   // Check for the dashboard render configuration in queryData if not defined.
   if (!renderParams && queryDataRenders?.dashboard) {
     renderParams = queryDataRenders.dashboard;
+
+    if (renderParams?.rescale) {
+      renderParams.rescale = flattenAndCalculateMinMax([renderParams.rescale]);
+    }
   }
 
   // Check for asset-specific renders using the sourceParams' assets property.
   if (!renderParams && queryDataRenders?.[datasetSourceParams?.assets]) {
     renderParams = queryDataRenders[datasetSourceParams?.assets];
 
-    // The backend sometimes sends `renderParams.rescale` as a nested array, e.g., [[min, max]],
-    // even when it contains only one range. We check if `rescale` is an array with exactly one
-    // element, and if that element is itself an array. If so, we "flatten" it by taking
-    // the first element to simplify the structure for further use.
-    if (
-      Array.isArray(renderParams?.rescale) &&
-      renderParams?.rescale.length === 1 &&
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      Array.isArray(renderParams?.rescale[0])
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      renderParams.rescale = renderParams?.rescale[0];
+    if (renderParams?.rescale) {
+      renderParams.rescale = flattenAndCalculateMinMax(renderParams.rescale);
     }
+  }
+
+  if (renderParams?.rescale) {
+    renderParams.rescale = flattenAndCalculateMinMax(renderParams.rescale);
   }
 
   return renderParams;
