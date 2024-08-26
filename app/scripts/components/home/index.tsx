@@ -26,7 +26,6 @@ import {
 } from '$components/common/page-overrides';
 
 
-
 const homeContent = getOverride('homeContent');
 
 const Connections = styled(Hug)`
