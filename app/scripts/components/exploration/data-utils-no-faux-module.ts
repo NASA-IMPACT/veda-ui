@@ -58,6 +58,10 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
   return foundMetrics;
 }
 
+function getInitialColorMap(dataset: DatasetLayer): string {
+  return dataset.sourceParams?.colormap_name ?? 'viridis';
+}
+
 export function reconcileDatasets(
   ids: string[],
   datasetsList: EnhancedDatasetLayer[],
@@ -75,7 +79,6 @@ export function reconcileDatasets(
     if (!dataset) {
       throw new Error(`Dataset [${id}] not found`);
     }
-
     return {
       status: DatasetStatus.IDLE,
       data: dataset,
@@ -83,7 +86,8 @@ export function reconcileDatasets(
       settings: {
         isVisible: true,
         opacity: 100,
-        analysisMetrics: getInitialMetrics(dataset)
+        analysisMetrics: getInitialMetrics(dataset),
+        colorMap: getInitialColorMap(dataset)
       },
       analysis: {
         status: DatasetStatus.IDLE,
