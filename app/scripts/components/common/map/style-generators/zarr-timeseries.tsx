@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { BaseTimeseriesProps } from '../types';
+import { StacTimeseriesProps } from '../types';
 import { useZarr } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
 
-export function ZarrTimeseries(props: BaseTimeseriesProps) {
+export function ZarrTimeseries(props: StacTimeseriesProps) {
   const {
     id,
     stacCol,

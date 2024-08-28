@@ -12,7 +12,7 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
   sourceParams?: Record<string, any>;
   tileApiEndpoint?: string;
   zoomExtent?: number[];
-  assetUrl: string;
+  assetUrl?: string;
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
@@ -29,7 +29,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
 
   const { updateStyle } = useMapStyle();
   const [minZoom] = zoomExtent ?? [0, 20];
-  const generatorId = `zarr-timeseries-${id}`;
+  const generatorId = `raster-timeseries-${id}`;
 
   //
   // Generate Mapbox GL layers and sources for raster timeseries
@@ -43,11 +43,10 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
 
   useEffect(
     () => {
-      if (!assetUrl) return;
-
+      // in the case of titiler-cmr, there is no asset url. The asset urls are determined internally by titiler-cmr.
       const tileParams = qs.stringify({
-        url: assetUrl,
-        time_slice: date,
+        ...(assetUrl && { url: assetUrl }), // Only include `url` if `assetUrl` is truthy (not null or undefined)
+        datetime: date,
         ...sourceParams
       });
 

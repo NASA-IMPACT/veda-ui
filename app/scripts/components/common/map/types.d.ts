@@ -46,30 +46,20 @@ export type AoIFeature = Feature<Polygon> & {
 
 export interface BaseTimeseriesProps extends BaseGeneratorParams {
   id: string;
-  stacCol: string;
   date: Date;
   sourceParams?: Record<string, any>;
-  stacApiEndpoint?: string;
   tileApiEndpoint?: string;
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
 
-// export interface ZarrTimeseriesProps extends BaseTimeseriesProps {
-//   // No additional properties, using BaseTimeseriesProps as is
-// }
+export interface StacTimeseriesProps extends BaseTimeseriesProps {
+  stacCol: string;
+  stacApiEndpoint?: string; // default will be process.env.API_STAC_ENDPOINT, the VEDA STAC endpoint
+}
 
-export interface RasterTimeseriesProps extends BaseTimeseriesProps {
+export interface RasterTimeseriesProps extends StacTimeseriesProps {
   bounds?: number[];
   isPositionSet?: boolean;
-}
-
-interface AssetUrlReplacement {
-  from: string;
-  to: string;
-}
-
-export interface CMRTimeseriesProps extends BaseTimeseriesProps {
-  assetUrlReplacements?: AssetUrlReplacement;
 }
 
