@@ -5,6 +5,8 @@ import { sequentialColorMaps, divergingColorMaps, restColorMaps } from './colorM
 
 import './colormap-options.scss';
 
+export const DEFAULT_COLORMAP = 'viridis';
+
 const CURATED_SEQUENTIAL_COLORMAPS = [
   'viridis', 'plasma', 'inferno', 'magma', 'cividis',
   'purples', 'blues', 'reds', 'greens', 'oranges',
@@ -50,7 +52,7 @@ export const getColormapColors = (colormapName: string, isReversed: boolean): st
   return isReversed ? colors.reduceRight((acc, color) => [...acc, color], []) : colors;
 };
 
-export function ColormapOptions({ colorMap = 'viridis', setColorMap}: ColormapOptionsProps) {
+export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: ColormapOptionsProps) {
   const initialIsReversed = colorMap.endsWith('_r');
   const initialColorMap = normalizeColorMap(colorMap);
 
@@ -85,7 +87,7 @@ export function ColormapOptions({ colorMap = 'viridis', setColorMap}: ColormapOp
   } else if (colormapType === 'rest') {
     availableColormaps = [{ name: selectedColorMap }];
   } else {
-    availableColormaps = [{ name: 'viridis' }];
+    availableColormaps = [{ name: DEFAULT_COLORMAP }];
   }
 
   const handleReverseToggle = () => {
