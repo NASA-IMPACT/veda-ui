@@ -80,7 +80,7 @@ Parameters to be appended to the tile source. These values will be used as query
 1. **Start with the configuration in the `sourceParams` of the dataset.**
 2. **If not defined, fallback to the dashboard render configuration from the STAC endpoint.**
 3. **If still undefined, check for asset-specific renders using the `sourceParams`' `assets` property.**
-4. **Finally, default to 'viridis' if all else fails.**
+4. **Finally, default to `{colormap_name: 'viridis'}` if all else fails.**
 
 These values can vary depending on the layer being added, but common parameters include:
 
