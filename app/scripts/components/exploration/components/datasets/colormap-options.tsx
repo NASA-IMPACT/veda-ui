@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Icon } from "@trussworks/react-uswds";
+import { Icon } from "@trussworks/react-uswds";
 import { CollecticonDrop } from '@devseed-ui/collecticons';
 import { sequentialColorMaps, divergingColorMaps, restColorMaps } from './colorMaps';
 
@@ -29,7 +29,7 @@ export const classifyColormap = (colormapName: string): 'sequential' | 'divergin
 };
 
 interface ColormapOptionsProps {
-  colorMap: string;
+  colorMap: string | undefined;
   setColorMap: (colorMap: string) => void;
 }
 
@@ -50,7 +50,7 @@ export const getColormapColors = (colormapName: string, isReversed: boolean): st
   return isReversed ? colors.reduceRight((acc, color) => [...acc, color], []) : colors;
 };
 
-export function ColormapOptions({ colorMap, setColorMap}: ColormapOptionsProps) {
+export function ColormapOptions({ colorMap = 'viridis', setColorMap}: ColormapOptionsProps) {
   const initialIsReversed = colorMap.endsWith('_r');
   const initialColorMap = normalizeColorMap(colorMap);
 
@@ -72,13 +72,13 @@ export function ColormapOptions({ colorMap, setColorMap}: ColormapOptionsProps) 
 
   if (colormapType === 'sequential') {
     if (customColorMap) {
-      availableColormaps = [{ name: customColorMap, label: 'Default' }, ...CURATED_SEQUENTIAL_COLORMAPS.map(name => ({ name }))];
+      availableColormaps = [{ name: customColorMap }, ...CURATED_SEQUENTIAL_COLORMAPS.map(name => ({ name }))];
     } else {
       availableColormaps = CURATED_SEQUENTIAL_COLORMAPS.map(name => ({ name }));
     }
   } else if (colormapType === 'diverging') {
     if (customColorMap) {
-      availableColormaps = [{ name: customColorMap, label: 'Default' }, ...CURATED_DIVERGING_COLORMAPS.map(name => ({ name }))];
+      availableColormaps = [{ name: customColorMap }, ...CURATED_DIVERGING_COLORMAPS.map(name => ({ name }))];
     } else {
       availableColormaps = CURATED_DIVERGING_COLORMAPS.map(name => ({ name }));
     }
@@ -101,12 +101,6 @@ export function ColormapOptions({ colorMap, setColorMap}: ColormapOptionsProps) 
     setColorMap(isReversed ? `${baseColorMap}_r` : baseColorMap);
   };
 
-  const handleResetAll = () => {
-    setIsReversed(false);
-    const baseColorMap = normalizeColorMap(selectedColorMap);
-    setColorMap(baseColorMap);
-  };
-
   return (
     <div className='colormap-options__container bg-white shadow-1 maxh-mobile-lg'>
       <div className='display-flex flex-align-center text-gray-90 padding-2 font-heading-xs text-bold'><CollecticonDrop className='margin-right-1' /> Colormap options</div>
@@ -121,11 +115,10 @@ export function ColormapOptions({ colorMap, setColorMap}: ColormapOptionsProps) 
           )}
           <input className='colormap-options__input' checked={isReversed} type='checkbox' readOnly />
         </div>
-        <Button className='font-ui-3xs' onClick={handleResetAll} type='button' disabled={!isReversed} unstyled>Reset all</Button>
       </div>
 
       <div>
-        {availableColormaps.map(({ name, label }) => {
+        {availableColormaps.map(({ name }) => {
           const previewColors = getColormapColors(name, isReversed);
 
           return (
@@ -139,7 +132,7 @@ export function ColormapOptions({ colorMap, setColorMap}: ColormapOptionsProps) 
                 style={{ background: `linear-gradient(to right, ${previewColors.join(', ')})` }}
               />
               <label className='colormap-options__label text-gray-90 font-heading-xs flex-1'>
-                {label ? 'Default' : name}
+                {name}
               </label>
             </div>
           );
