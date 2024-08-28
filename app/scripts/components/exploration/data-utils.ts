@@ -10,17 +10,10 @@ import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
 import {
   EnhancedDatasetLayer,
   StacDatasetData,
-  TimeDensity,
-  TimelineDataset,
-  DatasetStatus
+  TimeDensity
 } from './types.d.ts';
-import {
-  DataMetric,
-  DATA_METRICS,
-  DEFAULT_DATA_METRICS
-} from './components/datasets/analysis-metrics';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
-import { DatasetLayer, DatasetData, VedaDatum } from '$types/veda';
+import { DatasetData, VedaDatum } from '$types/veda';
 import { utcString2userTzDate } from '$utils/date';
 
 // @TODO: This file should be deprecated and merged with `data-utils-no-faux-module`
@@ -84,7 +77,6 @@ export const datasetLayers = Object.values(veda_faux_module_datasets).flatMap(
     }));
   }
 );
-
 
 export function resolveLayerTemporalExtent(
   datasetId: string,
