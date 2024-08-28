@@ -148,20 +148,13 @@ export function useTimelineDatasetVisibility(
 export function useTimelineDatasetColormap(
   datasetAtom: PrimitiveAtom<TimelineDataset>
 ) {
-  const dataset = useAtomValue(datasetAtom);
-
   const colorMapAtom = useMemo(() => {
     return focusAtom(datasetAtom, (optic) =>
       optic.prop('settings').prop('colorMap')
     );
   }, [datasetAtom]);
 
-  const [colorMap, setColorMap] = useAtom(colorMapAtom);
-
-  const effectiveColorMap =
-    colorMap ?? dataset.data.sourceParams?.colormap_name ?? 'viridis';
-
-  return [effectiveColorMap, setColorMap];
+  return useAtom(colorMapAtom);
 }
 
 export const useTimelineDatasetAnalysis = (

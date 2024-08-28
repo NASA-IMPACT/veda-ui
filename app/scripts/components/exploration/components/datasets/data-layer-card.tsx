@@ -32,7 +32,7 @@ interface CardProps {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
   isVisible: boolean | undefined;
   setVisible: any;
-  colorMap: string;
+  colorMap: string | undefined;
   setColorMap: (colorMap: string) => void;
   onClickLayerInfo: () => void;
   datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
