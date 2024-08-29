@@ -1,8 +1,15 @@
 .modal {
-    z-index: 999;
-    position: fixed;
-    max-width: 725px;
-    border-radius: 35px;
+  z-index: 999;
+  position: fixed;
+  max-width: 725px;
+  bottom: 65px;
+  @media screen and (min-width: 768px) {
     bottom: 0;
     right: 0;
+  }
 }
+.hide-modal {
+    bottom: -500px;
+    opacity: 0;
+    transition: bottom 1.125s ease-in-out 0.125s, opacity 1s ease-in-out 0.125s;
+  }
