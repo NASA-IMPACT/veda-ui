@@ -11,12 +11,14 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
+import SmartLink from '../smart-link';
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
+
 
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
@@ -262,6 +264,11 @@ function CardComponent(props: CardComponentProps) {
 
   return (
     <ElementInteractive
+      linkProps={{
+        as: SmartLink,
+        to: linkTo,
+        onLinkClick
+      }}
       as={CardItem}
       cardType={cardType}
       className={className}
