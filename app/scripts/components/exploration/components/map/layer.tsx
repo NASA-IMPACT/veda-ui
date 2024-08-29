@@ -80,7 +80,6 @@ export function Layer(props: LayerProps) {
           id={layerId}
           stacCol={dataset.data.stacCol}
           tileApiEndpoint={dataset.data.tileApiEndpoint}
-          assetUrlReplacements={dataset.data.assetUrlReplacements}
           date={relevantDate}
           zoomExtent={params.zoomExtent}
           sourceParams={params.sourceParams}
