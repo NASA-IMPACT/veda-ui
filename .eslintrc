@@ -113,6 +113,10 @@
       "parserOptions": {
         "project": ["./tsconfig.json"]
       }
+    },
+    {
+      "files": "test/playwright/**",
+      "extends": "plugin:playwright/recommended"
     }
   ]
 }
