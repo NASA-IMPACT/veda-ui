@@ -25,7 +25,7 @@ import {
   ContentOverride
 } from '$components/common/page-overrides';
 
-import { CookieConsent } from '$components/common/cookie-consent';
+
 
 const homeContent = getOverride('homeContent');
 
@@ -142,7 +142,6 @@ function RootHome() {
         title='Welcome'
         banner={renderBanner ? { ...banner } : null}
       />
-    <CookieConsent/>
       <ComponentOverride with='homeHero'>
         <PageHeroHome
           title={homeContent?.data.title ?? `Welcome to the ${appTitle}`}
