@@ -13,6 +13,7 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
   tileApiEndpoint?: string;
   zoomExtent?: number[];
   assetUrl: string;
+  colorMap?: string | undefined;
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
@@ -24,19 +25,24 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     zoomExtent,
     assetUrl,
     hidden,
-    opacity
+    opacity,
+    colorMap
   } = props;
 
   const { updateStyle } = useMapStyle();
   const [minZoom] = zoomExtent ?? [0, 20];
   const generatorId = `zarr-timeseries-${id}`;
 
+  const updatedSourceParams = useMemo(() => {
+    return { ...sourceParams, ...colorMap &&  {colormap_name: colorMap}};
+  }, [sourceParams, colorMap]);
+
   //
   // Generate Mapbox GL layers and sources for raster timeseries
   //
   const haveSourceParamsChanged = useMemo(
-    () => JSON.stringify(sourceParams),
-    [sourceParams]
+    () => JSON.stringify(updatedSourceParams),
+    [updatedSourceParams]
   );
 
   const generatorParams = useGeneratorParams(props);
@@ -48,7 +54,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       const tileParams = qs.stringify({
         url: assetUrl,
         time_slice: date,
-        ...sourceParams
+        ...updatedSourceParams,
       });
 
       const zarrSource: RasterSource = {
@@ -65,12 +71,13 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
         paint: {
           'raster-opacity': hidden ? 0 : rasterOpacity,
           'raster-opacity-transition': {
-            duration: 320
-          }
+            duration: 320,
+          },
         },
         minzoom: minZoom,
         metadata: {
-          layerOrderPosition: 'raster'
+          layerOrderPosition: 'raster',
+          colorMapVersion: colorMap,
         }
       };
 
@@ -96,7 +103,8 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       minZoom,
       tileApiEndpoint,
       haveSourceParamsChanged,
-      generatorParams
+      generatorParams,
+      colorMap
       // generatorParams includes hidden and opacity
       // hidden,
       // opacity,

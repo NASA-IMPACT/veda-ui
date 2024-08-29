@@ -53,6 +53,7 @@ export interface BaseTimeseriesProps extends BaseGeneratorParams {
   tileApiEndpoint?: string;
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+  colorMap?: string;
 }
 
 // export interface ZarrTimeseriesProps extends BaseTimeseriesProps {
@@ -72,4 +73,3 @@ interface AssetUrlReplacement {
 export interface CMRTimeseriesProps extends BaseTimeseriesProps {
   assetUrlReplacements?: AssetUrlReplacement;
 }
-

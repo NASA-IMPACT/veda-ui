@@ -31,6 +31,7 @@ import {
 import { useDatasetHover } from '$components/exploration/hooks/use-dataset-hover';
 import {
   useTimelineDatasetAtom,
+  useTimelineDatasetColormap,
   useTimelineDatasetSettings,
   useTimelineDatasetVisibility
 } from '$components/exploration/atoms/hooks';
@@ -101,6 +102,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const { isAnalyzing, runAnalysis } = useAnalysisController();
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
+  const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
   const [modalLayerInfo, setModalLayerInfo] = React.useState<LayerInfoModalData>();
   const [, setSetting] = useTimelineDatasetSettings(datasetAtom);
 
@@ -207,7 +209,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <div style={{width: '100%'}} onPointerDown={onDragging}>
-              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} onClickLayerInfo={onClickLayerInfo} />
+              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} colorMap={colorMap} setColorMap={setColorMap} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} onClickLayerInfo={onClickLayerInfo} />
             </div>
             {modalLayerInfo && (
               <LayerInfoModal

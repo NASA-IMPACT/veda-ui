@@ -1,4 +1,5 @@
-import { datasetLayers, reconcileDatasets } from '../data-utils';
+import { datasetLayers } from '../data-utils';
+import { reconcileDatasets } from '../data-utils-no-faux-module';
 import { TimelineDataset, TimelineDatasetForUrl } from '../types.d.ts';
 import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 
