@@ -47,7 +47,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
 
   useEffect(
     () => {
-      const tileParamsAsString = qs.stringify(updatedTileParams);
+      const tileParamsAsString = qs.stringify(updatedTileParams, { arrayFormat: 'comma' });
 
       const zarrSource: RasterSource = {
         type: 'raster',

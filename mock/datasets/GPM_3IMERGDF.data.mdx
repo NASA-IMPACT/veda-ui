@@ -27,7 +27,9 @@ layers:
       resampling: bilinear
       variable: precipitation
       colormap_name: gnbu
-      rescale: 0,46
+      rescale:
+       - 0
+       - 46
       maxzoom: 12
       concept_id: C2723754864-GES_DISC
       backend: xarray
