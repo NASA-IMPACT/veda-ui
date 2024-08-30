@@ -54,6 +54,9 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
         ...(assetUrl && { url: assetUrl }), // Only include `url` if `assetUrl` is truthy (not null or undefined)
         datetime: date,
         ...updatedSourceParams,
+      },
+      {
+        arrayFormat: 'comma'
       });
 
       const zarrSource: RasterSource = {
