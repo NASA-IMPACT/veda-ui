@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import qs from 'qs';
 import { RasterSource, RasterLayer } from 'mapbox-gl';
 
 import { BaseGeneratorParams } from '../types';
@@ -9,7 +10,8 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
   id: string;
   tileApiEndpoint?: string;
   zoomExtent?: number[];
-  tileParams: string;
+  colorMap?: string | undefined;
+  tileParams: Record<string, any>;
   generatorPrefix?: string;
 }
 
@@ -21,6 +23,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     zoomExtent,
     hidden,
     opacity,
+    colorMap,
     generatorPrefix = 'raster',
   } = props;
 
@@ -28,21 +31,27 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
   const [minZoom] = zoomExtent ?? [0, 20];
   const generatorId = `${generatorPrefix}-${id}`;
 
+  const updatedTileParams = useMemo(() => {
+    return { ...tileParams, ...colorMap &&  {colormap_name: colorMap}};
+  }, [tileParams, colorMap]);
+
   //
   // Generate Mapbox GL layers and sources for raster timeseries
   //
   const haveTileParamsChanged = useMemo(
-    () => JSON.stringify(tileParams),
-    [tileParams]
+    () => JSON.stringify(updatedTileParams),
+    [updatedTileParams]
   );
 
   const generatorParams = useGeneratorParams(props);
 
   useEffect(
     () => {
+      const tileParamsAsString = qs.stringify(updatedTileParams);
+
       const zarrSource: RasterSource = {
         type: 'raster',
-        url: `${tileApiEndpoint}?${tileParams}`
+        url: `${tileApiEndpoint}?${tileParamsAsString}`
       };
 
       const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
@@ -83,7 +92,8 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       minZoom,
       tileApiEndpoint,
       haveTileParamsChanged,
-      generatorParams
+      generatorParams,
+      colorMap
       // generatorParams includes hidden and opacity
       // hidden,
       // opacity,
