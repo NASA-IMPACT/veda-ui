@@ -9,7 +9,16 @@
   }
 }
 .hide-modal {
-    bottom: -500px;
-    opacity: 0;
-    transition: bottom 1.125s ease-in-out 0.125s, opacity 1s ease-in-out 0.125s;
+  bottom: -500px;
+  opacity: 0;
+  transition: bottom 1.125s ease-in-out 0.125s, opacity 1s ease-in-out 0.125s;
+}
+
+.close {
+  padding: 0;
+  & svg {
+    @media screen and (min-width: 768px) {
+      right: -50px;
+    }
   }
+}
