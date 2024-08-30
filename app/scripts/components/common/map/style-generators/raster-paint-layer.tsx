@@ -10,6 +10,7 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
   tileApiEndpoint?: string;
   zoomExtent?: number[];
   tileParams: string;
+  generatorPrefix?: string;
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
@@ -19,12 +20,13 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     tileParams,
     zoomExtent,
     hidden,
-    opacity
+    opacity,
+    generatorPrefix = 'raster',
   } = props;
 
   const { updateStyle } = useMapStyle();
   const [minZoom] = zoomExtent ?? [0, 20];
-  const generatorId = `raster-timeseries-${id}`;
+  const generatorId = `${generatorPrefix}-${id}`;
 
   //
   // Generate Mapbox GL layers and sources for raster timeseries

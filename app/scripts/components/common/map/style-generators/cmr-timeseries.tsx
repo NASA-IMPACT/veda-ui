@@ -9,5 +9,5 @@ export function CMRTimeseries(props: BaseTimeseriesProps) {
     datetime: date,
     ...sourceParams,
   });
-  return <RasterPaintLayer {...props} tileParams={tileParams} />;
+  return <RasterPaintLayer {...props} tileParams={tileParams} generatorPrefix='cmr-timeseries' />;
 }

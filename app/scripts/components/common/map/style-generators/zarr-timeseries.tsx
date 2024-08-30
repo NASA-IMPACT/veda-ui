@@ -21,5 +21,5 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
     datetime: date,
     ...sourceParams,
   });
-  return <RasterPaintLayer {...props} tileParams={tileParams} />;
+  return <RasterPaintLayer {...props} tileParams={tileParams} generatorPrefix='zarr-timeseries' />;
 }
