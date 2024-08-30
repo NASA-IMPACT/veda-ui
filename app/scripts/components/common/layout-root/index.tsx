@@ -12,7 +12,11 @@ import { useGoogleTagManager } from '$utils/use-google-tag-manager';
 
 import NavWrapper from '$components/common/nav-wrapper';
 import Logo from '$components/common/page-header/logo';
-import { mainNavItems, subNavItems} from '$components/common/page-header/default-config';
+import {
+  mainNavItems,
+  subNavItems
+} from '$components/common/page-header/default-config';
+import { CookieConsent } from '../cookie-consent';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
@@ -35,17 +39,57 @@ const PageBody = styled.div`
 `;
 
 function LayoutRoot(props: { children?: ReactNode }) {
+  interface CookieObject {
+    response: boolean;
+    answer: boolean;
+  }
+  const readCookie = (name) => {
+    var nameEQ = name + '=';
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  };
   const { children } = props;
+  let cookieContents;
 
-  useGoogleTagManager();
+  const getCookie = () => {
+    if (document.cookie != '') {
+      const cookie = readCookie('CookieConsent');
+      //Need to think through work around for the null warning.
+      cookieContents = JSON.parse(cookie);
+      cookieContents.answer
+        ? console.log('useGoogleTagManager called')
+        : console.log('eval as false');
+      return cookieContents;
+    }
+    cookieContents = 'NO COOKIE';
+  };
+
+  const showForm = () => {
+    //CHECK IF COOKIES ARE ENABLED
+    //navigator.cookieEnabled
+    const cookie = getCookie();
+    console.log(cookie);
+    if (cookieContents === 'NO COOKIE') {
+      return true;
+    } else {
+      return !cookieContents.responded;
+    }
+  };
+
+  //  useGoogleTagManager();
 
   const { title, thumbnail, description, banner, hideFooter } =
     useContext(LayoutRootContext);
 
   const truncatedTitle =
     title?.length > 32 ? `${title.slice(0, 32)}...` : title;
-
   const fullTitle = truncatedTitle ? `${truncatedTitle} — ` : '';
+
   return (
     <Page>
       <MetaTags
@@ -54,10 +98,25 @@ function LayoutRoot(props: { children?: ReactNode }) {
         thumbnail={thumbnail}
       />
       {banner && <Banner appTitle={title} {...banner} />}
-      <NavWrapper mainNavItems={mainNavItems} subNavItems={subNavItems} logo={<Logo />} />
+      <NavWrapper
+        mainNavItems={mainNavItems}
+        subNavItems={subNavItems}
+        logo={<Logo />}
+      />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
+        {showForm() && (
+          <CookieConsent
+            title='Cookie Consent'
+            copy='We use cookies to enhance your browsing experience and to help us
+          understand how our website is used. These cookies allow us to collect
+          data on site usage and improve our services based on your
+          interactions. To learn more about it, see our'
+            linkUrl='https://www.nasa.gov/privacy/#cookies'
+            linkText='Privacy Policy'
+          />
+        )}
       </PageBody>
       <PageFooter isHidden={hideFooter} />
     </Page>
