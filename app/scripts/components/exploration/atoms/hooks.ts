@@ -145,6 +145,18 @@ export function useTimelineDatasetVisibility(
   return useAtom(visibilityAtom);
 }
 
+export function useTimelineDatasetColormap(
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+) {
+  const colorMapAtom = useMemo(() => {
+    return focusAtom(datasetAtom, (optic) =>
+      optic.prop('settings').prop('colorMap')
+    );
+  }, [datasetAtom]);
+
+  return useAtom(colorMapAtom);
+}
+
 export const useTimelineDatasetAnalysis = (
   datasetAtom: PrimitiveAtom<TimelineDataset>
 ) => {

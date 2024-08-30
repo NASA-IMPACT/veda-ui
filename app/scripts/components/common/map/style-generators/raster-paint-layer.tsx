@@ -28,6 +28,10 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
   const [minZoom] = zoomExtent ?? [0, 20];
   const generatorId = `${generatorPrefix}-${id}`;
 
+  const updatedSourceParams = useMemo(() => {
+    return { ...sourceParams, ...colorMap &&  {colormap_name: colorMap}};
+  }, [sourceParams, colorMap]);
+
   //
   // Generate Mapbox GL layers and sources for raster timeseries
   //
@@ -54,12 +58,13 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
         paint: {
           'raster-opacity': hidden ? 0 : rasterOpacity,
           'raster-opacity-transition': {
-            duration: 320
-          }
+            duration: 320,
+          },
         },
         minzoom: minZoom,
         metadata: {
-          layerOrderPosition: 'raster'
+          layerOrderPosition: 'raster',
+          colorMapVersion: colorMap,
         }
       };
 

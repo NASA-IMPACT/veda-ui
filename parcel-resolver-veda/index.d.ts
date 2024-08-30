@@ -271,21 +271,21 @@ declare module 'veda' {
   interface InternalNavLink {
     title: string;
     to: string;
-    type: 'internalLink'
+    type: 'internalLink';
   }
   interface ExternalNavLink {
     title: string;
     href: string;
-    type: 'externalLink'
+    type: 'externalLink';
   }
-  type NavLinkItem = (ExternalNavLink | InternalNavLink);
+  type NavLinkItem = ExternalNavLink | InternalNavLink;
   export interface ModalNavLink {
     title: string;
     type: 'modal';
     src: string;
   }
-  
-  export interface DropdownNavLink { 
+
+  export interface DropdownNavLink {
     title: string;
     type: 'dropdown';
     children: NavLinkItem[];
@@ -334,7 +334,16 @@ declare module 'veda' {
   export const getBoolean: (variable: string) => boolean;
 
   export const getBannerFromVedaConfig: () => BannerData | undefined;
-  export const getNavItemsFromVedaConfig: () => {mainNavItems: (NavLinkItem | ModalNavLink | DropdownNavLink)[]| undefined, subNavItems: (NavLinkItem | ModalNavLink | DropdownNavLink)[] | undefined } | undefined;
+  export const getNavItemsFromVedaConfig: () =>
+    | {
+        mainNavItems:
+          | (NavLinkItem | ModalNavLink | DropdownNavLink)[]
+          | undefined;
+        subNavItems:
+          | (NavLinkItem | ModalNavLink | DropdownNavLink)[]
+          | undefined;
+      }
+    | undefined;
 
   /**
    * List of custom user defined pages.
