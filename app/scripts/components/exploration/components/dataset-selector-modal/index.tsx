@@ -14,10 +14,10 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Link } from 'react-router-dom';
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
-  reconcileDatasets,
-  datasetLayers,
-  allExploreDatasets
-} from '../../data-utils';
+  reconcileDatasets
+} from '../../data-utils-no-faux-module';
+import {   datasetLayers,
+  allExploreDatasets} from '../../data-utils';
 import RenderModalHeader from './header';
 
 import ModalFooterRender from './footer';
