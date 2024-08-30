@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react';
-import qs from 'qs';
 import { RasterSource, RasterLayer } from 'mapbox-gl';
 
 import { BaseGeneratorParams } from '../types';
@@ -8,21 +7,17 @@ import useGeneratorParams from '../hooks/use-generator-params';
 
 interface RasterPaintLayerProps extends BaseGeneratorParams {
   id: string;
-  date?: Date;
-  sourceParams?: Record<string, any>;
   tileApiEndpoint?: string;
   zoomExtent?: number[];
-  assetUrl?: string;
+  tileParams: string;
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
   const {
     id,
     tileApiEndpoint,
-    date,
-    sourceParams,
+    tileParams,
     zoomExtent,
-    assetUrl,
     hidden,
     opacity
   } = props;
@@ -34,22 +29,15 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
   //
   // Generate Mapbox GL layers and sources for raster timeseries
   //
-  const haveSourceParamsChanged = useMemo(
-    () => JSON.stringify(sourceParams),
-    [sourceParams]
+  const haveTileParamsChanged = useMemo(
+    () => JSON.stringify(tileParams),
+    [tileParams]
   );
 
   const generatorParams = useGeneratorParams(props);
 
   useEffect(
     () => {
-      // in the case of titiler-cmr, there is no asset url. The asset urls are determined internally by titiler-cmr.
-      const tileParams = qs.stringify({
-        ...(assetUrl && { url: assetUrl }), // Only include `url` if `assetUrl` is truthy (not null or undefined)
-        datetime: date,
-        ...sourceParams
-      });
-
       const zarrSource: RasterSource = {
         type: 'raster',
         url: `${tileApiEndpoint}?${tileParams}`
@@ -90,11 +78,9 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     [
       updateStyle,
       id,
-      date,
-      assetUrl,
       minZoom,
       tileApiEndpoint,
-      haveSourceParamsChanged,
+      haveTileParamsChanged,
       generatorParams
       // generatorParams includes hidden and opacity
       // hidden,
