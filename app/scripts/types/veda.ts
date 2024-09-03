@@ -132,6 +132,7 @@ export interface LayerLegendGradient {
   min: string | number;
   max: string | number;
   stops: string[];
+  colorMap?: string;
 }
 
 interface CategoricalStop {

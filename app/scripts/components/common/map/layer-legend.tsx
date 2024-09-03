@@ -25,6 +25,7 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
+import { divergingColorMaps, sequentialColorMaps } from '$components/exploration/components/datasets/colorMaps';
 
 interface LayerLegendCommonProps {
   id: string;
@@ -300,18 +301,22 @@ export function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   );
 }
 
-export function LayerGradientGraphic(props: LayerLegendGradient) {
+export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   const { stops, min, max, unit } = props;
-
   const [hoverVal, setHoverVal] = useState(0);
 
   const moveListener = useCallback(
     (e) => {
-      const width = e.nativeEvent.target.clientWidth;
+      const target = e.nativeEvent.target;
+      const boundingRect = target.getBoundingClientRect();
+      const offsetX = e.nativeEvent.clientX - boundingRect.left;
+      const width = boundingRect.width;
+
       const scale = scaleLinear()
         .domain([0, width])
         .range([Number(min), Number(max)]);
-      setHoverVal(scale(e.nativeEvent.layerX));
+
+      setHoverVal(Math.max(Number(min), Math.min(Number(max), scale(offsetX))));
     },
     [min, max]
   );
@@ -340,4 +345,40 @@ export function LayerGradientGraphic(props: LayerLegendGradient) {
       {unit?.label && <dd className='unit'>{unit.label}</dd>}
     </LegendList>
   );
-}
+};
+
+export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 'stops' | 'type'>) => {
+  const { colorMap, ...otherProps } = props;
+
+  const colormap = findColormapByName(colorMap ?? 'viridis');
+  if (!colormap) {
+    return null;
+  }
+
+  const stops = Object.values(colormap).map((value) => {
+    if (Array.isArray(value) && value.length === 4) {
+      return `rgba(${value.join(',')})`;
+    } else {
+      return `rgba(0, 0, 0, 1)`;
+    }
+  });
+
+  const processedStops = colormap.isReversed
+  ? stops.reduceRight((acc, stop) => [...acc, stop], [])
+  : stops;
+
+  return <LayerGradientGraphic type='gradient' stops={processedStops} {...otherProps} />;
+};
+
+export const findColormapByName = (name: string) => {
+  const isReversed = name.toLowerCase().endsWith('_r');
+  const baseName = isReversed ? name.slice(0, -2).toLowerCase() : name.toLowerCase();
+
+  const colormap = sequentialColorMaps[baseName] ?? divergingColorMaps[baseName];
+
+  if (!colormap) {
+    return null;
+  }
+
+  return { ...colormap, isReversed };
+};

@@ -22,8 +22,7 @@ interface LayerProps {
 
 export function Layer(props: LayerProps) {
   const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
-
-  const { isVisible, opacity } = dataset.settings;
+  const { isVisible, opacity, colorMap } = dataset.settings;
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(
@@ -72,6 +71,7 @@ export function Layer(props: LayerProps) {
           hidden={!isVisible}
           opacity={opacity}
           onStatusChange={onStatusChange}
+          colorMap={colorMap}
         />
       );
     case 'cmr':
@@ -89,6 +89,7 @@ export function Layer(props: LayerProps) {
           hidden={!isVisible}
           opacity={opacity}
           onStatusChange={onStatusChange}
+          colorMap={colorMap}
         />
       );
     case 'raster':
@@ -105,6 +106,7 @@ export function Layer(props: LayerProps) {
           hidden={!isVisible}
           opacity={opacity}
           onStatusChange={onStatusChange}
+          colorMap={colorMap}
         />
       );
     default:
