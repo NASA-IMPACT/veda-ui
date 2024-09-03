@@ -1,4 +1,5 @@
 import React from "react";
+import { Location } from 'react-router';
 import styled, { css } from "styled-components";
 import { CollecticonPlus, CollecticonTickSmall, iconDataURI } from "@devseed-ui/collecticons";
 import { glsp, themeVal } from "@devseed-ui/theme-provider";
@@ -20,7 +21,8 @@ interface CatalogCardProps {
   selectable?: boolean;
   selected?: boolean;
   onDatasetClick?: () => void;
-  CardInteractiveElement?: any;
+  OverrideLinkElement?: JSX.Element;
+  location?: Location | string;
 }
 
 const CardSelectable = styled(Card)<{ checked?: boolean, selectable?: boolean }>`
@@ -91,7 +93,7 @@ const CardSelectable = styled(Card)<{ checked?: boolean, selectable?: boolean }>
 `;
 
 export const CatalogCard = (props: CatalogCardProps) => {
-  const { dataset, layer, searchTerm, selectable, selected, onDatasetClick, CardInteractiveElement } = props;
+  const { dataset, layer, searchTerm, selectable, selected, onDatasetClick, OverrideLinkElement, location } = props;
 
   const topics = getTaxonomy(dataset, TAXONOMY_TOPICS)?.values;
   const sources = getTaxonomy(dataset, TAXONOMY_SOURCE)?.values;
@@ -154,7 +156,8 @@ export const CatalogCard = (props: CatalogCardProps) => {
           ) : null}
         </>
       }
-      CardInteractiveElement={CardInteractiveElement}
+      OverrideLinkElement={OverrideLinkElement}
+      location={location}
     />
   );
 };

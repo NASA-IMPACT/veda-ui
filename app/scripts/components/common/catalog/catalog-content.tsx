@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { Location } from 'react-router';
 import styled from 'styled-components';
-
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
@@ -34,8 +34,8 @@ export interface CatalogContentProps {
   search: string;
   taxonomies: Record<string, string[]>;
   onAction: (action: FilterActions, value?: any) => void;
-  location?: any;
-  CardInteractiveElement?: any;
+  location?: Location | string;
+  OverrideLinkElement?: JSX.Element;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -73,7 +73,7 @@ function CatalogContent({
   taxonomies,
   onAction,
   location,
-  CardInteractiveElement,
+  OverrideLinkElement,
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
   const isSelectable = selectedIds !== undefined;
@@ -255,7 +255,8 @@ function CatalogContent({
                           selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
                           onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
-                          CardInteractiveElement={CardInteractiveElement}
+                          OverrideLinkElement={OverrideLinkElement}
+                          location={location}
                         />
                       </li>
                     ))}
@@ -267,7 +268,12 @@ function CatalogContent({
             <Cards>
               {datasetsToDisplay.map((d) => (
                 <li key={d.id}>
-                  <CatalogCard dataset={d} searchTerm={search} />
+                  <CatalogCard
+                    dataset={d}
+                    searchTerm={search}
+                    OverrideLinkElement={OverrideLinkElement}
+                    location={location}
+                  />
                 </li>
               ))}
             </Cards>

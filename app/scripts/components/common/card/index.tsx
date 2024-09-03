@@ -1,4 +1,5 @@
 import React, { MouseEventHandler } from 'react';
+import { Location } from 'react-router';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -239,7 +240,8 @@ export interface CardComponentProps {
   footerContent?: JSX.Element;
   onCardClickCapture?: MouseEventHandler;
   onLinkClick?: MouseEventHandler;
-  CardInteractiveElement?: any;
+  OverrideLinkElement?: JSX.Element;
+  location?: Location | string;
 }
 
 function CardComponent(props: CardComponentProps) {
@@ -259,17 +261,19 @@ function CardComponent(props: CardComponentProps) {
     footerContent,
     onCardClickCapture,
     onLinkClick,
-    CardInteractiveElement,
+    OverrideLinkElement,
+    location,
   } = props;
 
   const isExternalLink = /^https?:\/\//.test(linkTo);
-
+  
   return (
     <ElementInteractive
       linkProps={{
         as: SmartLink,
         to: linkTo,
-        onLinkClick
+        onLinkClick,
+        ...(OverrideLinkElement && {OverrideTag: OverrideLinkElement})
       }}
       as={CardItem}
       cardType={cardType}
@@ -278,7 +282,8 @@ function CardComponent(props: CardComponentProps) {
       linkTo={linkTo}
       onLinkClick={onLinkClick}
       onClickCapture={onCardClickCapture}
-      CardInteractiveElement={CardInteractiveElement}
+      OverrideLinkElement={OverrideLinkElement}
+      location={location}
     >
       {
         cardType !== 'horizontal-info' && (

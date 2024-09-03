@@ -1,4 +1,5 @@
 import React from 'react';
+import { Location } from 'react-router';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import CatalogContent from './catalog-content';
@@ -42,15 +43,15 @@ export interface CatalogViewProps {
     taxonomies: Record<string, string[]> | Record<string, never>,
     onAction: () => void,
   } | any;
-  location?: any;
-  CardInteractiveElement?: any;
+  location?: Location | string;
+  OverrideLinkElement?: JSX.Element;
 }
 
 function CatalogView({
   datasets,
   onFilterChanges,
   location,
-  CardInteractiveElement,
+  OverrideLinkElement,
 }: CatalogViewProps) {
 
   const { headerHeight } = useSlidingStickyHeaderProps();
@@ -74,7 +75,7 @@ function CatalogView({
         taxonomies={taxonomies}
         onAction={onAction}
         location={location}
-        CardInteractiveElement={CardInteractiveElement}
+        OverrideLinkElement={OverrideLinkElement}
       />
     </CatalogWrapper>
   );

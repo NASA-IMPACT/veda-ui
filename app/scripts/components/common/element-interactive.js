@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
+import SmartLink from './smart-link';
 
 export const Wrapper = styled.div`
   position: relative;
@@ -9,6 +10,15 @@ export const Wrapper = styled.div`
   > *:not(a) {
     pointer-events: none;
   }
+`;
+
+const InteractiveLink = styled(SmartLink)`
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: auto;
+  font-size: 0;
+  margin: 0;
 `;
 
 /**
@@ -68,14 +78,23 @@ export const ElementInteractive = React.forwardRef(
       linkProps = {},
       linkLabel = 'View',
       children,
-      CardInteractiveElement,
+      OverrideLinkElement,
+      location,
       ...rest
     } = props;
     const [isStateOver, setStateOver] = useState(false);
     const [isStateActive, setStateActive] = useState(false);
     const [isStateFocus, setStateFocus] = useState(false);
 
-    const CardInteractive = CardInteractiveElement ?? 'a';
+    let InteractiveRoutePush, path;
+
+    if (OverrideLinkElement && location) {
+      InteractiveRoutePush = OverrideLinkElement;
+      path = `${location}/${linkProps.to.split('/')[2]}`;
+    } else {
+      InteractiveRoutePush = InteractiveLink;
+      path = linkProps.to;
+    }
 
     return (
       <Wrapper
@@ -93,15 +112,15 @@ export const ElementInteractive = React.forwardRef(
         }, [])}
       >
         {children}
-        <CardInteractive
-          {...linkProps}
+        <InteractiveRoutePush
+          {...(OverrideLinkElement ? { href: path } : linkProps)}
           onMouseDown={useCallback(() => setStateActive(true), [])}
           onMouseUp={useCallback(() => setStateActive(false), [])}
           onFocus={useCallback(() => setStateFocus(true), [])}
           onBlur={useCallback(() => setStateFocus(false), [])}
         >
           {linkLabel}
-        </CardInteractive>
+        </InteractiveRoutePush>
       </Wrapper>
     );
   }
@@ -111,7 +130,8 @@ ElementInteractive.propTypes = {
   children: T.node.isRequired,
   linkLabel: T.string.isRequired,
   linkProps: T.object,
-  CardInteractiveElement: T.any
+  OverrideLinkElement: T.node,
+  location: T.any
 };
 
 /**

@@ -28,7 +28,7 @@ interface FiltersMenuProps {
   exclusiveSourceSelected?: string | null;
   customTopOffset?: number;
   openByDefault?: boolean;
-  location?: Location
+  location?: Location | string;
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
