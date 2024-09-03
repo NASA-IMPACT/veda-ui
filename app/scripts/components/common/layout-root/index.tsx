@@ -60,20 +60,19 @@ function LayoutRoot(props: { children?: ReactNode }) {
     if (document.cookie != '') {
       const cookie = readCookie('CookieConsent');
       //Need to think through work around for the null warning.
-      cookieContents = JSON.parse(cookie);
-      cookieContents.answer
-        ? console.log('useGoogleTagManager called')
-        : console.log('eval as false');
+      if(cookie != null){
+        cookieContents = JSON.parse(cookie)
+      }
+      cookieContents.answer && useGoogleTagManager()
+
       return cookieContents;
     }
     cookieContents = 'NO COOKIE';
   };
 
   const showForm = () => {
-    //CHECK IF COOKIES ARE ENABLED
-    //navigator.cookieEnabled
     const cookie = getCookie();
-    console.log(cookie);
+
     if (cookieContents === 'NO COOKIE') {
       return true;
     } else {
@@ -81,7 +80,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
     }
   };
 
-  //  useGoogleTagManager();
+
 
   const { title, thumbnail, description, banner, hideFooter } =
     useContext(LayoutRootContext);
@@ -112,9 +111,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
             copy='We use cookies to enhance your browsing experience and to help us
           understand how our website is used. These cookies allow us to collect
           data on site usage and improve our services based on your
-          interactions. To learn more about it, see our'
-            linkUrl='https://www.nasa.gov/privacy/#cookies'
-            linkText='Privacy Policy'
+          interactions. To learn more about it, see our [Privacy Policy](https://www.nasa.gov/privacy/#cookies)'
           />
         )}
       </PageBody>
