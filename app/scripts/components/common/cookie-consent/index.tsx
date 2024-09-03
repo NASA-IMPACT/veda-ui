@@ -63,40 +63,6 @@ path=/;SameSite=true;expires=${setCookieExpiration()}`);
     setCookie(cookieValue, closeConsent);
   }, [cookieConsentResponded, cookieConsentAnswer]);
 
-
-  const alertContent =  <>
-  <Button
-    type={'button'}
-    className='usa-modal__close close'
-    onClick={() => {
-      setCloseConsent(true);
-    }}
-  >
-    <Icon.Close />
-  </Button>
-
-  <ButtonGroup className='padding-top-2'>
-    <Button
-      onClick={() => {
-        SetCookieConsentResponded(true);
-        SetCookieConsentAnswer(false);
-      }}
-      outline={true}
-      type={'button'}
-    >
-      Decline Cookies
-    </Button>
-    <Button
-      onClick={() => {
-        SetCookieConsentResponded(true);
-        SetCookieConsentAnswer(true);
-      }}
-      type={'button'}
-    >
-      Accept Cookies
-    </Button>
-  </ButtonGroup>
-</>
   return (
     <div
       className={`modal margin-2 shadow-2 ${
@@ -109,9 +75,39 @@ path=/;SameSite=true;expires=${setCookieExpiration()}`);
         headingLevel='h1'
         noIcon={true}
         className='radius-lg'
-        cta={renderContent()}
-        children={alertContent}
       >
+        <Button
+          type={'button'}
+          className='usa-modal__close close'
+          onClick={() => {
+            setCloseConsent(true);
+          }}
+        >
+          <Icon.Close />
+        </Button>
+
+        {renderContent()}
+        <ButtonGroup className='padding-top-2'>
+          <Button
+            onClick={() => {
+              SetCookieConsentResponded(true);
+              SetCookieConsentAnswer(false);
+            }}
+            outline={true}
+            type={'button'}
+          >
+            Decline Cookies
+          </Button>
+          <Button
+            onClick={() => {
+              SetCookieConsentResponded(true);
+              SetCookieConsentAnswer(true);
+            }}
+            type={'button'}
+          >
+            Accept Cookies
+          </Button>
+        </ButtonGroup>
       </Alert>
     </div>
   );
