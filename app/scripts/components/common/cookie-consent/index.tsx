@@ -12,16 +12,9 @@ import './index.scss';
 interface CookieConsentProps {
   title: string;
   copy: string;
-  linkUrl: string;
-  linkText: string;
 }
 
-export const CookieConsent = ({
-  title,
-  copy,
-  linkUrl,
-  linkText
-}: CookieConsentProps) => {
+export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
   const [cookieConsentResponded, SetCookieConsentResponded] = useState(Boolean);
   const [cookieConsentAnswer, SetCookieConsentAnswer] = useState(Boolean);
   const [closeConsent, setCloseConsent] = useState(Boolean);
@@ -32,21 +25,78 @@ export const CookieConsent = ({
     return today;
   };
 
-  const setCookie = (cookieValue) => {
-    const expiration = setCookieExpiration();
-
-    // expires= ${expiration}
-    document.cookie = `CookieConsent=${JSON.stringify(cookieValue)};
-    path=/;SameSite=true;`;
+  const setCookie = (cookieValue, closeConsent) => {
+    let cookieContent;
+    closeConsent
+      ? (cookieContent = `CookieConsent=${JSON.stringify(cookieValue)};
+path=/;SameSite=true;expires=0`)
+      : (cookieContent = `CookieConsent=${JSON.stringify(cookieValue)};
+path=/;SameSite=true;expires=${setCookieExpiration()}`);
+    document.cookie = cookieContent;
   };
+  const renderContent = () => {
+    const bracketsParenthRegex = /\[(.*?)\)/;
+    const interiroBracketsRegex = /\]\(/;
+
+    let parts = copy.split(bracketsParenthRegex);
+
+    const updatedContent = parts.map((item, key) => {
+      if (interiroBracketsRegex.test(item)) {
+        let linkParts = item.split(interiroBracketsRegex);
+        const newItem = (
+          <Link key={key} href={linkParts[1]} target='_blank'>
+            {linkParts[0]}
+          </Link>
+        );
+        return newItem;
+      }
+      return item;
+    });
+    return updatedContent;
+  };
+
   useEffect(() => {
     const cookieValue = {
       responded: cookieConsentResponded,
       answer: cookieConsentAnswer
     };
-    setCookie(cookieValue);
+    setCookie(cookieValue, closeConsent);
   }, [cookieConsentResponded, cookieConsentAnswer]);
 
+
+  const alertContent =  <>
+  <Button
+    type={'button'}
+    className='usa-modal__close close'
+    onClick={() => {
+      setCloseConsent(true);
+    }}
+  >
+    <Icon.Close />
+  </Button>
+
+  <ButtonGroup className='padding-top-2'>
+    <Button
+      onClick={() => {
+        SetCookieConsentResponded(true);
+        SetCookieConsentAnswer(false);
+      }}
+      outline={true}
+      type={'button'}
+    >
+      Decline Cookies
+    </Button>
+    <Button
+      onClick={() => {
+        SetCookieConsentResponded(true);
+        SetCookieConsentAnswer(true);
+      }}
+      type={'button'}
+    >
+      Accept Cookies
+    </Button>
+  </ButtonGroup>
+</>
   return (
     <div
       className={`modal margin-2 shadow-2 ${
@@ -59,43 +109,9 @@ export const CookieConsent = ({
         headingLevel='h1'
         noIcon={true}
         className='radius-lg'
+        cta={renderContent()}
+        children={alertContent}
       >
-        <Button
-          type={'button'}
-          className='usa-modal__close close'
-          onClick={() => {
-            setCloseConsent(true);
-          }}
-        >
-          <Icon.Close />
-        </Button>
-        <p className='padding-bottom-2'>
-          {copy}{' '}
-          <Link href={linkUrl} target='_blank'>
-            {linkText}
-          </Link>
-        </p>
-        <ButtonGroup>
-          <Button
-            onClick={() => {
-              SetCookieConsentResponded(true);
-              SetCookieConsentAnswer(false);
-            }}
-            outline={true}
-            type={'button'}
-          >
-            Decline Cookies
-          </Button>
-          <Button
-            onClick={() => {
-              SetCookieConsentResponded(true);
-              SetCookieConsentAnswer(true);
-            }}
-            type={'button'}
-          >
-            Accept Cookies
-          </Button>
-        </ButtonGroup>
       </Alert>
     </div>
   );
