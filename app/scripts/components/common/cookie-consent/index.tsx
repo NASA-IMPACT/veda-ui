@@ -5,7 +5,7 @@ import {
   Link,
   Icon
 } from '@trussworks/react-uswds';
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './index.scss';
 
@@ -24,7 +24,6 @@ export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
     today.setMonth(today.getMonth() + 3);
     return today.toUTCString();
   };
-  // document.cookie = 'testCookie';
 
   const setCookie = (cookieValue, closeConsent) => {
     document.cookie = `CookieConsent=${JSON.stringify(cookieValue)}; expires=${closeConsent
