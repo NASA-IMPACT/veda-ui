@@ -2,6 +2,7 @@ import React from 'react';
 import { Location } from 'react-router';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
+import { LinkProperties } from '../card';
 import CatalogContent from './catalog-content';
 import { DatasetData } from '$types/veda';
 import {
@@ -14,7 +15,6 @@ import {
   FoldTitle
 } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
-
 /**
  * CATALOG Feature component
  * Allows you to browse through datasets and layers using the filters sidebar control
@@ -43,15 +43,17 @@ export interface CatalogViewProps {
     taxonomies: Record<string, string[]> | Record<string, never>,
     onAction: () => void,
   } | any;
+  linkProperties: LinkProperties;
   location?: Location | string;
-  OverrideLinkElement?: JSX.Element;
+  rootPath?: string;
 }
 
 function CatalogView({
   datasets,
   onFilterChanges,
   location,
-  OverrideLinkElement,
+  linkProperties,
+  rootPath,
 }: CatalogViewProps) {
 
   const { headerHeight } = useSlidingStickyHeaderProps();
@@ -75,7 +77,8 @@ function CatalogView({
         taxonomies={taxonomies}
         onAction={onAction}
         location={location}
-        OverrideLinkElement={OverrideLinkElement}
+        rootPath={rootPath}
+        linkProperties={linkProperties}
       />
     </CatalogWrapper>
   );

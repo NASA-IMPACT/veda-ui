@@ -9,6 +9,7 @@ import PageHero from '$components/common/page-hero';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
+import SmartLink from '$components/common/smart-link';
 
 /**
  * @VEDA2-REFACTOR-WORK
@@ -19,7 +20,7 @@ import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-
 
 export default function DataCatalogContainer() {
   const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
-  const pathName = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const controlVars = useFiltersWithQS({navigate: navigate});
 
@@ -31,7 +32,11 @@ export default function DataCatalogContainer() {
       <CatalogView 
         datasets={allDatasets}
         onFilterChanges={() => controlVars}
-        location={pathName}
+        location={location}
+        linkProperties={{
+          LinkElement: SmartLink,
+          pathAttributeKeyName: 'to'
+        }}
       />
     </PageMainContent>
   );

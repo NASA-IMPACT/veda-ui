@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
-import SmartLink from './smart-link';
 
 export const Wrapper = styled.div`
   position: relative;
@@ -12,7 +11,7 @@ export const Wrapper = styled.div`
   }
 `;
 
-const InteractiveLink = styled(SmartLink)`
+const InteractiveLink = styled.a`
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -74,27 +73,10 @@ const InteractiveLink = styled(SmartLink)`
  */
 export const ElementInteractive = React.forwardRef(
   function ElementInteractiveFwd(props, ref) {
-    const {
-      linkProps = {},
-      linkLabel = 'View',
-      children,
-      OverrideLinkElement,
-      location,
-      ...rest
-    } = props;
+    const { linkProps = {}, linkLabel = 'View', children, ...rest } = props;
     const [isStateOver, setStateOver] = useState(false);
     const [isStateActive, setStateActive] = useState(false);
     const [isStateFocus, setStateFocus] = useState(false);
-
-    let InteractiveRoutePush, path;
-
-    if (OverrideLinkElement && location) {
-      InteractiveRoutePush = OverrideLinkElement;
-      path = `${location}/${linkProps.to.split('/')[2]}`;
-    } else {
-      InteractiveRoutePush = InteractiveLink;
-      path = linkProps.to;
-    }
 
     return (
       <Wrapper
@@ -112,15 +94,15 @@ export const ElementInteractive = React.forwardRef(
         }, [])}
       >
         {children}
-        <InteractiveRoutePush
-          {...(OverrideLinkElement ? { href: path } : linkProps)}
+        <InteractiveLink
+          {...linkProps}
           onMouseDown={useCallback(() => setStateActive(true), [])}
           onMouseUp={useCallback(() => setStateActive(false), [])}
           onFocus={useCallback(() => setStateFocus(true), [])}
           onBlur={useCallback(() => setStateFocus(false), [])}
         >
           {linkLabel}
-        </InteractiveRoutePush>
+        </InteractiveLink>
       </Wrapper>
     );
   }
@@ -129,9 +111,7 @@ export const ElementInteractive = React.forwardRef(
 ElementInteractive.propTypes = {
   children: T.node.isRequired,
   linkLabel: T.string.isRequired,
-  linkProps: T.object,
-  OverrideLinkElement: T.node,
-  location: T.any
+  linkProps: T.object
 };
 
 /**

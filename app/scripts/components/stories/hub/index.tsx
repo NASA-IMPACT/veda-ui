@@ -42,6 +42,7 @@ import {
   ContentOverride
 } from '$components/common/page-overrides';
 import { prepareDatasets } from '$components/common/catalog/prepare-datasets';
+import SmartLink from '$components/common/smart-link';
 
 const allStories = Object.values(stories).map((d) => d!.data).filter(d => !d.isHidden);
 
@@ -170,7 +171,11 @@ function StoriesHub() {
                         </CardMeta>
                       }
                       linkLabel='View more'
-                      linkTo={d.asLink?.url ?? getStoryPath(d)}
+                      linkProperties={{
+                        linkTo: `${d.asLink?.url ?? getStoryPath(d)}`,
+                        LinkElement: SmartLink,
+                        pathAttributeKeyName: 'to'
+                      }}
                       title={
                         <TextHighlight
                           value={search}

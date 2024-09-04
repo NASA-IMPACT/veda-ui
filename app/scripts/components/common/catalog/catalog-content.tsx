@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
+import { LinkProperties } from '../card';
 import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
@@ -34,8 +35,9 @@ export interface CatalogContentProps {
   search: string;
   taxonomies: Record<string, string[]>;
   onAction: (action: FilterActions, value?: any) => void;
+  linkProperties: LinkProperties;
   location?: Location | string;
-  OverrideLinkElement?: JSX.Element;
+  rootPath?: string;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -73,7 +75,8 @@ function CatalogContent({
   taxonomies,
   onAction,
   location,
-  OverrideLinkElement,
+  rootPath,
+  linkProperties
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
   const isSelectable = selectedIds !== undefined;
@@ -255,8 +258,8 @@ function CatalogContent({
                           selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
                           onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
-                          OverrideLinkElement={OverrideLinkElement}
-                          location={location}
+                          linkProperties={linkProperties}
+                          rootPath={rootPath}
                         />
                       </li>
                     ))}
@@ -271,8 +274,8 @@ function CatalogContent({
                   <CatalogCard
                     dataset={d}
                     searchTerm={search}
-                    OverrideLinkElement={OverrideLinkElement}
-                    location={location}
+                    linkProperties={linkProperties}
+                    rootPath={rootPath}
                   />
                 </li>
               ))}

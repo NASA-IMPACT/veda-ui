@@ -14,22 +14,15 @@ interface SmartLinkProps {
  * Switches between a `a` and a `Link` depending on the url.
  */
 export default function SmartLink(props: SmartLinkProps) {
-  const { to, onLinkClick, OverrideTag, children, ...rest } = props;
+  const { to, onLinkClick, children, ...rest } = props;
   const isExternalLink = /^https?:\/\//.test(to);
   const linkProps = getLinkProps(to, undefined, onLinkClick);
-  
-  if (OverrideTag) {
-    // for example next/link
-    return (
-      <OverrideTag href={to}>{children}</OverrideTag>
+
+  return isExternalLink ? ( 
+    <a {...linkProps} {...rest}> {children} </a>
+    ) : (
+      <Link {...linkProps} {...rest}> {children} </Link>
     );
-  } else {
-    return isExternalLink ? ( 
-      <a {...linkProps} {...rest}> {children} </a>
-      ) : (
-        <Link {...linkProps} {...rest}> {children} </Link>
-      );
-  }
 }
 
 

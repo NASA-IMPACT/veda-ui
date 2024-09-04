@@ -1,5 +1,4 @@
 import React, { MouseEventHandler } from 'react';
-import { Location } from 'react-router';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -12,15 +11,11 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
-import SmartLink from '../smart-link';
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
-
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
-
-
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -224,9 +219,17 @@ export function ExternalLinkFlag() {
   );
 }
 
+export interface LinkProperties {
+  LinkElement: JSX.Element | ((props: any) => JSX.Element);
+  pathAttributeKeyName: string;
+  onLinkClick?: MouseEventHandler;
+}
+
 export interface CardComponentProps {
   title: JSX.Element | string;
-  linkTo: string;
+  linkProperties: {
+    linkTo: string,
+  } & LinkProperties;
   linkLabel?: string;
   className?: string;
   cardType?: CardType;
@@ -239,9 +242,6 @@ export interface CardComponentProps {
   tagLabels?: string[];
   footerContent?: JSX.Element;
   onCardClickCapture?: MouseEventHandler;
-  onLinkClick?: MouseEventHandler;
-  OverrideLinkElement?: JSX.Element;
-  location?: Location | string;
 }
 
 function CardComponent(props: CardComponentProps) {
@@ -251,7 +251,6 @@ function CardComponent(props: CardComponentProps) {
     cardType,
     description,
     linkLabel,
-    linkTo,
     date,
     overline,
     imgSrc,
@@ -260,30 +259,23 @@ function CardComponent(props: CardComponentProps) {
     parentTo,
     footerContent,
     onCardClickCapture,
-    onLinkClick,
-    OverrideLinkElement,
-    location,
+    linkProperties
   } = props;
 
-  const isExternalLink = /^https?:\/\//.test(linkTo);
-  
+  const isExternalLink = /^https?:\/\//.test(linkProperties?.linkTo);
+
   return (
     <ElementInteractive
       linkProps={{
-        as: SmartLink,
-        to: linkTo,
-        onLinkClick,
-        ...(OverrideLinkElement && {OverrideTag: OverrideLinkElement})
+        as: linkProperties?.LinkElement,
+        [linkProperties?.pathAttributeKeyName]: linkProperties?.linkTo,
+        onLinkClick: linkProperties?.onLinkClick,
       }}
       as={CardItem}
       cardType={cardType}
       className={className}
       linkLabel={linkLabel ?? 'View more'}
-      linkTo={linkTo}
-      onLinkClick={onLinkClick}
       onClickCapture={onCardClickCapture}
-      OverrideLinkElement={OverrideLinkElement}
-      location={location}
     >
       {
         cardType !== 'horizontal-info' && (
