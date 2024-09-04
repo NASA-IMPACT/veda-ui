@@ -196,7 +196,8 @@ module.exports = new Resolver({
           strings: ${JSON.stringify(withDefaultStrings(result.strings))},
           booleans: ${JSON.stringify(withDefaultStrings(result.booleans))},
           banner: ${JSON.stringify(result.banner)},
-          navItems: ${JSON.stringify(result.navItems)}
+          navItems: ${JSON.stringify(result.navItems)},
+          cookieConsentForm: ${JSON.stringify(result.cookieConsentForm)}
         };
 
         export const theme = ${JSON.stringify(result.theme) || null};
@@ -216,6 +217,8 @@ module.exports = new Resolver({
         export const getConfig = () => config;
         export const getBannerFromVedaConfig = () => config.banner;
         export const getNavItemsFromVedaConfig = () => config.navItems;
+        export const getCookieConsentFromVedaConfig = () => config.cookieConsentForm;
+
 
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
         export const stories = ${generateMdxDataObject(storiesImportData)};

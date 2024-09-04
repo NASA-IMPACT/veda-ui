@@ -268,6 +268,11 @@ declare module 'veda' {
     type?: BannerType;
   }
 
+  interface CookieConsentData {
+    title: string;
+    copy: string;
+  }
+
   interface InternalNavLink {
     title: string;
     to: string;
@@ -334,6 +339,8 @@ declare module 'veda' {
   export const getBoolean: (variable: string) => boolean;
 
   export const getBannerFromVedaConfig: () => BannerData | undefined;
+  export const getCookieConsentFromVedaConfig: () => CookieConsentData | undefined;
+
   export const getNavItemsFromVedaConfig: () =>
     | {
         mainNavItems:
