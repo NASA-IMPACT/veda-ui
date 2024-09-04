@@ -6,7 +6,6 @@ import { getLinkProps } from '$utils/url';
 interface SmartLinkProps {
   to: string;
   onLinkClick?: ()=> void;
-  OverrideTag?: any;
   children?: ReactNode;
 }
 
