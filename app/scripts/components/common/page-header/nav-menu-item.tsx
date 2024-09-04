@@ -100,7 +100,7 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
       <li key={`${title}-nav-item`}>
       <GlobalMenuLink 
         as='a'
-        target='blank'
+        target='_blank'
         rel='noopener'
         onClick={onClick}
         href={(rest as ExternalNavLink).href}
