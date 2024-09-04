@@ -22,18 +22,17 @@ export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
   const setCookieExpiration = () => {
     const today = new Date();
     today.setMonth(today.getMonth() + 3);
-    return today;
+    return today.toUTCString();
   };
+  // document.cookie = 'testCookie';
 
   const setCookie = (cookieValue, closeConsent) => {
-    let cookieContent;
-    closeConsent
-      ? (cookieContent = `CookieConsent=${JSON.stringify(cookieValue)};
-path=/;SameSite=true;expires=0`)
-      : (cookieContent = `CookieConsent=${JSON.stringify(cookieValue)};
-path=/;SameSite=true;expires=${setCookieExpiration()}`);
-    document.cookie = cookieContent;
+    document.cookie = `CookieConsent=${JSON.stringify(cookieValue)}; expires=${closeConsent
+      ? '0'
+      : setCookieExpiration()}`;
+    document.cookie['CookieConsent'] = `path=/;`;
   };
+
   const renderContent = () => {
     const bracketsParenthRegex = /\[(.*?)\)/;
     const interiroBracketsRegex = /\]\(/;
