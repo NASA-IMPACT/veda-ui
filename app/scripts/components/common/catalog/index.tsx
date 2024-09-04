@@ -44,8 +44,7 @@ export interface CatalogViewProps {
     onAction: () => void,
   } | any;
   linkProperties: LinkProperties;
-  location?: Location | string;
-  rootPath?: string;
+  location: Location | string;
 }
 
 function CatalogView({
@@ -53,7 +52,6 @@ function CatalogView({
   onFilterChanges,
   location,
   linkProperties,
-  rootPath,
 }: CatalogViewProps) {
 
   const { headerHeight } = useSlidingStickyHeaderProps();
@@ -77,7 +75,6 @@ function CatalogView({
         taxonomies={taxonomies}
         onAction={onAction}
         location={location}
-        rootPath={rootPath}
         linkProperties={linkProperties}
       />
     </CatalogWrapper>

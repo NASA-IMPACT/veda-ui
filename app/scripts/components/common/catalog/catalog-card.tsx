@@ -1,4 +1,5 @@
 import React from "react";
+import { Location } from 'react-router';
 import styled, { css } from "styled-components";
 import { CollecticonPlus, CollecticonTickSmall, iconDataURI } from "@devseed-ui/collecticons";
 import { glsp, themeVal } from "@devseed-ui/theme-provider";
@@ -20,7 +21,7 @@ interface CatalogCardProps {
   selectable?: boolean;
   selected?: boolean;
   onDatasetClick?: () => void;
-  rootPath?: string;
+  location?: Location | string;
   linkProperties: LinkProperties;
 }
 
@@ -92,7 +93,7 @@ const CardSelectable = styled(Card)<{ checked?: boolean, selectable?: boolean }>
 `;
 
 export const CatalogCard = (props: CatalogCardProps) => {
-  const { dataset, layer, searchTerm, selectable, selected, onDatasetClick, linkProperties, rootPath} = props;
+  const { dataset, layer, searchTerm, selectable, selected, onDatasetClick, linkProperties, location} = props;
 
   const topics = getTaxonomy(dataset, TAXONOMY_TOPICS)?.values;
   const sources = getTaxonomy(dataset, TAXONOMY_SOURCE)?.values;
@@ -110,7 +111,8 @@ export const CatalogCard = (props: CatalogCardProps) => {
     }
   };
 
-  const linkTo = getDatasetPath(dataset, rootPath);
+  // Either type Location for return type of react-router-dom "useLocation" or string from nextJs "usePathname"
+  const linkTo = typeof location === 'string' ? getDatasetPath(dataset, location) : getDatasetPath(dataset);
 
   return (
     <CardSelectable

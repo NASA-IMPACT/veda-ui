@@ -37,7 +37,6 @@ export interface CatalogContentProps {
   onAction: (action: FilterActions, value?: any) => void;
   linkProperties: LinkProperties;
   location?: Location | string;
-  rootPath?: string;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -75,7 +74,6 @@ function CatalogContent({
   taxonomies,
   onAction,
   location,
-  rootPath,
   linkProperties
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
@@ -259,7 +257,7 @@ function CatalogContent({
                           selected={selectedIds.includes(datasetLayer.id)}
                           onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
                           linkProperties={linkProperties}
-                          rootPath={rootPath}
+                          location={location}
                         />
                       </li>
                     ))}
@@ -275,7 +273,7 @@ function CatalogContent({
                     dataset={d}
                     searchTerm={search}
                     linkProperties={linkProperties}
-                    rootPath={rootPath}
+                    location={location}
                   />
                 </li>
               ))}
