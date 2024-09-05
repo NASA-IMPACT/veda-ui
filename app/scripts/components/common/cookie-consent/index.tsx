@@ -26,9 +26,9 @@ export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
   };
 
   const setCookie = (cookieValue, closeConsent) => {
-    document.cookie = `CookieConsent=${JSON.stringify(cookieValue)}; expires=${closeConsent
-      ? '0'
-      : setCookieExpiration()}`;
+    document.cookie = `CookieConsent=${JSON.stringify(cookieValue)}; expires=${
+      closeConsent ? '0' : setCookieExpiration()
+    }`;
     document.cookie['CookieConsent'] = `path=/;`;
   };
 
@@ -69,7 +69,7 @@ export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
     >
       <Alert
         type='info'
-        heading={title}
+        heading={title && title}
         headingLevel='h1'
         noIcon={true}
         className='radius-lg'
@@ -84,7 +84,7 @@ export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
           <Icon.Close />
         </Button>
 
-        {renderContent()}
+        {copy && renderContent()}
         <ButtonGroup className='padding-top-2'>
           <Button
             onClick={() => {
