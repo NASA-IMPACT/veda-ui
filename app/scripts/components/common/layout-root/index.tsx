@@ -17,6 +17,8 @@ import {
   subNavItems
 } from '$components/common/page-header/default-config';
 import { CookieConsent } from '../cookie-consent';
+import { checkEnvFlag } from '$utils/utils';
+import { getCookieConsentFromVedaConfig } from 'veda';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
@@ -39,15 +41,16 @@ const PageBody = styled.div`
 `;
 
 function LayoutRoot(props: { children?: ReactNode }) {
-  interface CookieObject {
-    response: boolean;
-    answer: boolean;
-  }
+
+  const useConsentForm = checkEnvFlag(process.env.COOKIE_CONSENT_FORM);
+
+  !useConsentForm && useGoogleTagManager();
+
   const readCookie = (name) => {
     var nameEQ = name + '=';
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
+    var attribute = document.cookie.split(';');
+    for (var i = 0; i < attribute.length; i++) {
+      var c = attribute[i];
       while (c.charAt(0) == ' ') c = c.substring(1, c.length);
       if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
     }
@@ -60,18 +63,19 @@ function LayoutRoot(props: { children?: ReactNode }) {
     if (document.cookie != '') {
       const cookie = readCookie('CookieConsent');
       //Need to think through work around for the null warning.
-      if(cookie != null){
-        cookieContents = JSON.parse(cookie)
+      if (cookie != null) {
+        cookieContents = JSON.parse(cookie);
       }
-      cookieContents.answer && useGoogleTagManager()
+      cookieContents.answer && useGoogleTagManager();
 
       return cookieContents;
     }
     cookieContents = 'NO COOKIE';
   };
 
+  const cookieConsentContent = getCookieConsentFromVedaConfig()
   const showForm = () => {
-    const cookie = getCookie();
+    getCookie();
 
     if (cookieContents === 'NO COOKIE') {
       return true;
@@ -79,8 +83,6 @@ function LayoutRoot(props: { children?: ReactNode }) {
       return !cookieContents.responded;
     }
   };
-
-
 
   const { title, thumbnail, description, banner, hideFooter } =
     useContext(LayoutRootContext);
@@ -105,13 +107,9 @@ function LayoutRoot(props: { children?: ReactNode }) {
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
-        {showForm() && (
+        {useConsentForm && showForm() && (
           <CookieConsent
-            title='Cookie Consent'
-            copy='We use cookies to enhance your browsing experience and to help us
-          understand how our website is used. These cookies allow us to collect
-          data on site usage and improve our services based on your
-          interactions. To learn more about it, see our [Privacy Policy](https://www.nasa.gov/privacy/#cookies)'
+          {...cookieConsentContent}
           />
         )}
       </PageBody>

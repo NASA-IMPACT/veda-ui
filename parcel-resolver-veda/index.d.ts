@@ -339,7 +339,7 @@ declare module 'veda' {
   export const getBoolean: (variable: string) => boolean;
 
   export const getBannerFromVedaConfig: () => BannerData | undefined;
-  export const getCookieConsentFromVedaConfig: () => CookieConsentData | undefined;
+  export const getCookieConsentFromVedaConfig: () => CookieConsentData;
 
   export const getNavItemsFromVedaConfig: () =>
     | {
