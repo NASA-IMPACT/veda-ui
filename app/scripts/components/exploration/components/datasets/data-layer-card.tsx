@@ -214,6 +214,7 @@ export default function DataLayerCard(props: CardProps) {
             </div>
           )}
         {!showConfigurableColorMap && 
+          datasetLegend?.type === 'gradient' && 
           <LayerGradientColormapGraphic
             min={min}
             max={max}
