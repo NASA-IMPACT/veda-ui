@@ -23,6 +23,7 @@ import {
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
+import { checkEnvFlag } from '$utils/utils';
 
 import 'tippy.js/dist/tippy.css';
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
@@ -103,7 +104,7 @@ const LegendColorMapTrigger = styled.div`
 `;
 
 // Hiding configurable map for now until Instances are ready to adapt it
-const showConfigurableColorMap = process.env.SHOW_CONFIGURABLE_COLOR_MAP?? false;
+const showConfigurableColorMap = checkEnvFlag(process.env.SHOW_CONFIGURABLE_COLOR_MAP);
 
 export default function DataLayerCard(props: CardProps) {
   const {
