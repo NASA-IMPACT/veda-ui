@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+
 import TagManager from 'react-gtm-module';
 
 const gtMCode = process.env.GOOGLE_TAG_MANAGER_ID;
@@ -13,11 +13,8 @@ const tagManagerArgs = {
   cookies_win:'x'
 };
 
-export function useGoogleTagManager() {
-
-  useEffect(() => {
+export function setGoogleTagManager() {
     if (gtMCode) {
       TagManager.initialize(tagManagerArgs);
     }
-  }, []);
 }

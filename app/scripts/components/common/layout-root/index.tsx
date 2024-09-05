@@ -1,14 +1,17 @@
-import React, { ReactNode, useContext, useCallback } from 'react';
+import React, { ReactNode, useContext, useCallback, useEffect } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
+import { getCookieConsentFromVedaConfig } from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 import Banner from '../banner';
+import { CookieConsent } from '../cookie-consent';
+
 import { LayoutRootContext } from './context';
 
-import { useGoogleTagManager } from '$utils/use-google-tag-manager';
+import { setGoogleTagManager } from '$utils/use-google-tag-manager';
 
 import NavWrapper from '$components/common/nav-wrapper';
 import Logo from '$components/common/page-header/logo';
@@ -16,9 +19,8 @@ import {
   mainNavItems,
   subNavItems
 } from '$components/common/page-header/default-config';
-import { CookieConsent } from '../cookie-consent';
+
 import { checkEnvFlag } from '$utils/utils';
-import { getCookieConsentFromVedaConfig } from 'veda';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
@@ -41,16 +43,13 @@ const PageBody = styled.div`
 `;
 
 function LayoutRoot(props: { children?: ReactNode }) {
-
   const useConsentForm = checkEnvFlag(process.env.COOKIE_CONSENT_FORM);
 
-  !useConsentForm && useGoogleTagManager();
-
   const readCookie = (name) => {
-    var nameEQ = name + '=';
-    var attribute = document.cookie.split(';');
-    for (var i = 0; i < attribute.length; i++) {
-      var c = attribute[i];
+    const nameEQ = name + '=';
+    const attribute = document.cookie.split(';');
+    for (let i = 0; i < attribute.length; i++) {
+      let c = attribute[i];
       while (c.charAt(0) == ' ') c = c.substring(1, c.length);
       if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
     }
@@ -59,21 +58,21 @@ function LayoutRoot(props: { children?: ReactNode }) {
   const { children } = props;
   let cookieContents;
 
-  const getCookie = () => {
+  function getCookie() {
     if (document.cookie != '') {
       const cookie = readCookie('CookieConsent');
-      //Need to think through work around for the null warning.
       if (cookie != null) {
         cookieContents = JSON.parse(cookie);
-      }
-      cookieContents.answer && useGoogleTagManager();
 
-      return cookieContents;
+        cookieContents.answer && setGoogleTagManager();
+
+        return cookieContents;
+      }
     }
     cookieContents = 'NO COOKIE';
-  };
+  }
 
-  const cookieConsentContent = getCookieConsentFromVedaConfig()
+  const cookieConsentContent = getCookieConsentFromVedaConfig();
   const showForm = () => {
     getCookie();
 
@@ -83,6 +82,11 @@ function LayoutRoot(props: { children?: ReactNode }) {
       return !cookieContents.responded;
     }
   };
+
+  useEffect(() => {
+    !useConsentForm && setGoogleTagManager();
+
+  }, []);
 
   const { title, thumbnail, description, banner, hideFooter } =
     useContext(LayoutRootContext);
@@ -109,7 +113,8 @@ function LayoutRoot(props: { children?: ReactNode }) {
         {children}
         {useConsentForm && showForm() && (
           <CookieConsent
-          {...cookieConsentContent}
+            {...cookieConsentContent}
+            onFormInteraction={getCookie}
           />
         )}
       </PageBody>

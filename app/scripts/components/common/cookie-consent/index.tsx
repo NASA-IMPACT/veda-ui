@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+
 import {
   Alert,
   Button,
@@ -5,16 +7,19 @@ import {
   Link,
   Icon
 } from '@trussworks/react-uswds';
-import React, { useState, useEffect } from 'react';
-
 import './index.scss';
 
 interface CookieConsentProps {
   title: string;
   copy: string;
+  onFormInteraction: () => void;
 }
 
-export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
+export const CookieConsent = ({
+  title,
+  copy,
+  onFormInteraction
+}: CookieConsentProps) => {
   const [cookieConsentResponded, SetCookieConsentResponded] = useState(Boolean);
   const [cookieConsentAnswer, SetCookieConsentAnswer] = useState(Boolean);
   const [closeConsent, setCloseConsent] = useState(Boolean);
@@ -26,26 +31,30 @@ export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
   };
 
   const setCookie = (cookieValue, closeConsent) => {
-    document.cookie = `CookieConsent=${JSON.stringify(cookieValue)}; expires=${
-      closeConsent ? '0' : setCookieExpiration()
-    }`;
-    document.cookie['CookieConsent'] = `path=/;`;
+    document.cookie = `CookieConsent=${JSON.stringify(
+      cookieValue
+    )}; path=/; expires=${closeConsent ? '0' : setCookieExpiration()}`;
   };
 
   const renderContent = () => {
     const bracketsParenthRegex = /\[(.*?)\)/;
     const interiroBracketsRegex = /\]\(/;
 
-    let parts = copy.split(bracketsParenthRegex);
+    const parts = copy.split(bracketsParenthRegex);
 
     const updatedContent = parts.map((item, key) => {
       if (interiroBracketsRegex.test(item)) {
-        let linkParts = item.split(interiroBracketsRegex);
+        const linkParts = item.split(interiroBracketsRegex);
+
         const newItem = (
+          /* eslint-disable react/no-array-index-key */
+
           <Link key={key} href={linkParts[1]} target='_blank'>
             {linkParts[0]}
           </Link>
         );
+        /* eslint-enable react/no-array-index-key */
+
         return newItem;
       }
       return item;
@@ -54,11 +63,16 @@ export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
   };
 
   useEffect(() => {
+    // if (readCookie('CookieConsent') ) {
+    //   console.log('document.cookie[CookieConsent]', readCookie('CookieConsent'))
     const cookieValue = {
       responded: cookieConsentResponded,
       answer: cookieConsentAnswer
     };
-    setCookie(cookieValue, closeConsent);
+   
+      setCookie(cookieValue, closeConsent);
+      onFormInteraction();
+    // }
   }, [cookieConsentResponded, cookieConsentAnswer]);
 
   return (
@@ -75,7 +89,7 @@ export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
         className='radius-lg'
       >
         <Button
-          type={'button'}
+          type='button'
           className='usa-modal__close close'
           onClick={() => {
             setCloseConsent(true);
@@ -90,9 +104,10 @@ export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
             onClick={() => {
               SetCookieConsentResponded(true);
               SetCookieConsentAnswer(false);
+              
             }}
             outline={true}
-            type={'button'}
+            type='button'
           >
             Decline Cookies
           </Button>
@@ -101,7 +116,7 @@ export const CookieConsent = ({ title, copy }: CookieConsentProps) => {
               SetCookieConsentResponded(true);
               SetCookieConsentAnswer(true);
             }}
-            type={'button'}
+            type='button'
           >
             Accept Cookies
           </Button>
