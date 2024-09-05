@@ -17,7 +17,7 @@ import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
 import { TipButton } from '$components/common/tip-button';
 import {
-  LayerCategoricalGraphic, LayerGradientColormapGraphic, LayerGradientGraphic
+  LayerCategoricalGraphic, LayerGradientColormapGraphic
 } from '$components/common/map/layer-legend';
 
 import { TimelineDataset } from '$components/exploration/types.d.ts';
@@ -103,7 +103,7 @@ const LegendColorMapTrigger = styled.div`
 `;
 
 // Hiding configurable map for now until Instances are ready to adapt it
-const showConfigurableColorMap = false;
+const showConfigurableColorMap = process.env.SHOW_CONFIGURABLE_COLOR_MAP?? false;
 
 export default function DataLayerCard(props: CardProps) {
   const {
@@ -218,8 +218,7 @@ export default function DataLayerCard(props: CardProps) {
             min={min}
             max={max}
             colorMap={colorMap}
-          />
-        }
+          />}
 
       </DatasetInfo>
     </>
