@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Location } from 'react-router';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
@@ -36,7 +35,7 @@ export interface CatalogContentProps {
   taxonomies: Record<string, string[]>;
   onAction: (action: FilterActions, value?: any) => void;
   linkProperties: LinkProperties;
-  location?: Location | string;
+  pathname?: string;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -73,7 +72,7 @@ function CatalogContent({
   search,
   taxonomies,
   onAction,
-  location,
+  pathname,
   linkProperties
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
@@ -207,7 +206,7 @@ function CatalogContent({
         exclusiveSourceSelected={exclusiveSourceSelected}
         customTopOffset={isSelectable ? 50 : 0}
         openByDefault={isSelectable ? false : true}
-        location={location}
+        pathname={pathname}
       />
       <Catalog>
         <CatalogTagsContainer
@@ -257,7 +256,7 @@ function CatalogContent({
                           selected={selectedIds.includes(datasetLayer.id)}
                           onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
                           linkProperties={linkProperties}
-                          location={location}
+                          pathname={pathname}
                         />
                       </li>
                     ))}
@@ -273,7 +272,7 @@ function CatalogContent({
                     dataset={d}
                     searchTerm={search}
                     linkProperties={linkProperties}
-                    location={location}
+                    pathname={pathname}
                   />
                 </li>
               ))}

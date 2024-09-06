@@ -30,7 +30,7 @@ export function LayoutRootContextProvider({
 
   // Put the header size and visibility status in the context so that children
   // elements can access them for positioning purposes.
-  const location = useLocation();
+  const location = useLocation().pathname;
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeader(location);
 

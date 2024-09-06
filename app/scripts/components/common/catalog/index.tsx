@@ -1,5 +1,4 @@
 import React from 'react';
-import { Location } from 'react-router';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { LinkProperties } from '../card';
@@ -44,13 +43,13 @@ export interface CatalogViewProps {
     onAction: () => void,
   } | any;
   linkProperties: LinkProperties;
-  location: Location | string;
+  pathname: string;
 }
 
 function CatalogView({
   datasets,
   onFilterChanges,
-  location,
+  pathname,
   linkProperties,
 }: CatalogViewProps) {
 
@@ -74,7 +73,7 @@ function CatalogView({
         search={search}
         taxonomies={taxonomies}
         onAction={onAction}
-        location={location}
+        pathname={pathname}
         linkProperties={linkProperties}
       />
     </CatalogWrapper>

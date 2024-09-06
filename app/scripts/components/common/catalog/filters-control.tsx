@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { Location } from 'react-router';
 import styled from 'styled-components';
 import { FilterActions } from './utils';
 import { Taxonomy } from '$types/veda';
@@ -28,7 +27,7 @@ interface FiltersMenuProps {
   exclusiveSourceSelected?: string | null;
   customTopOffset?: number;
   openByDefault?: boolean;
-  location?: Location | string;
+  pathname?: string;
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
@@ -49,12 +48,12 @@ export default function FiltersControl(props: FiltersMenuProps) {
     // uses as a reference (the main page header). To avoid changing the reference IDs in the
     // main logic of the sliding sticky header hook, we provide this custom top offset for more control.
     customTopOffset = 0,
-    location,
+    pathname,
   } = props;
 
   const controlsRef = useRef<HTMLDivElement>(null);
   const [controlsHeight, setControlsHeight] =  useState<number>(0);
-  const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader(location);
+  const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader(pathname);
 
   const handleChanges = useCallback((item: OptionItem, action: 'add' | 'remove') => {
     const isSelected = allSelected.some(selected => selected.id === item.id && selected.taxonomy === item.taxonomy);

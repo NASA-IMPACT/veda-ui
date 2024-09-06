@@ -20,10 +20,10 @@ import SmartLink from '$components/common/smart-link';
 
 export default function DataCatalogContainer() {
   const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
-  const location = useLocation();
+  const pathname = useLocation().pathname;
   const navigate = useNavigate();
   const controlVars = useFiltersWithQS({navigate: navigate});
-
+  
   return (
     <PageMainContent>
       <LayoutProps title='Data Catalog' description={getString('dataCatalogBanner').other} />
@@ -32,7 +32,7 @@ export default function DataCatalogContainer() {
       <CatalogView 
         datasets={allDatasets}
         onFilterChanges={() => controlVars}
-        location={location}
+        pathname={pathname}
         linkProperties={{
           LinkElement: SmartLink,
           pathAttributeKeyName: 'to'

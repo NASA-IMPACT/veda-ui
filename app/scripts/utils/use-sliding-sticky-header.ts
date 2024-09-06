@@ -11,7 +11,7 @@ interface SlidingStickyHeaderResults {
   wrapperHeight: number;
 }
 
-export function useSlidingStickyHeader(location): SlidingStickyHeaderResults {
+export function useSlidingStickyHeader(pathname?: string): SlidingStickyHeaderResults {
   const [isHidden, setHidden] = useState(false); 
   const [headerHeight, setHeaderHeight] = useState(0);
   const [wrapperHeight, setWrapperHeight] = useState(0);
@@ -20,16 +20,16 @@ export function useSlidingStickyHeader(location): SlidingStickyHeaderResults {
     `#${HEADER_WRAPPER_ID}`
   );
 
-  const prevLocation = usePreviousValue(location);
-  
+  const prevPathname = usePreviousValue(pathname);
+
   useEffect(() => {
-    const pageChanged = prevLocation?.pathname !== location?.pathname;
+    const pageChanged = prevPathname !== pathname;
     if (pageChanged) {
       setHidden(false);
       setHeaderHeight(0);
       setWrapperHeight(0);
     }
-  }, [location, prevLocation]);
+  }, [pathname, prevPathname]);
 
   useEffect(() => {
     let ticking = false;
