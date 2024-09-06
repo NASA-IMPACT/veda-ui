@@ -27,6 +27,7 @@ interface FiltersMenuProps {
   exclusiveSourceSelected?: string | null;
   customTopOffset?: number;
   openByDefault?: boolean;
+  pathname?: string;
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
@@ -46,12 +47,13 @@ export default function FiltersControl(props: FiltersMenuProps) {
     // has a different header reference as opposed to what the useSlidingStickyHeader hook
     // uses as a reference (the main page header). To avoid changing the reference IDs in the
     // main logic of the sliding sticky header hook, we provide this custom top offset for more control.
-    customTopOffset = 0
+    customTopOffset = 0,
+    pathname,
   } = props;
 
   const controlsRef = useRef<HTMLDivElement>(null);
   const [controlsHeight, setControlsHeight] =  useState<number>(0);
-  const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader();
+  const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader(pathname);
 
   const handleChanges = useCallback((item: OptionItem, action: 'add' | 'remove') => {
     const isSelected = allSelected.some(selected => selected.id === item.id && selected.taxonomy === item.taxonomy);
@@ -95,9 +97,9 @@ export default function FiltersControl(props: FiltersMenuProps) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exclusiveSourceSelected]);
-
+  
   return (
-    <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden ? '0px': `${wrapperHeight - customTopOffset}px`}>
+    <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden && wrapperHeight ? '0px': `${wrapperHeight - customTopOffset}px`}>
       <div ref={controlsRef}>
         <SearchField
           size='large'

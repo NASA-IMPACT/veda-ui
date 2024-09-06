@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router';
 import { getString } from 'veda';
 import { getAllDatasetsProps } from '$utils/veda-data';
 import CatalogView from '$components/common/catalog';
@@ -7,6 +8,8 @@ import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
+import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
+import SmartLink from '$components/common/smart-link';
 
 /**
  * @VEDA2-REFACTOR-WORK
@@ -17,13 +20,24 @@ import { veda_faux_module_datasets } from '$data-layer/datasets';
 
 export default function DataCatalogContainer() {
   const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
+  const pathname = useLocation().pathname;
+  const navigate = useNavigate();
+  const controlVars = useFiltersWithQS({navigate: navigate});
   
   return (
     <PageMainContent>
       <LayoutProps title='Data Catalog' description={getString('dataCatalogBanner').other} />
       <PageHero title='Data Catalog' description={getString('dataCatalogBanner').other} />
       <FeaturedDatasets />
-      <CatalogView datasets={allDatasets} />
+      <CatalogView 
+        datasets={allDatasets}
+        onFilterChanges={() => controlVars}
+        pathname={pathname}
+        linkProperties={{
+          LinkElement: SmartLink,
+          pathAttributeKeyName: 'to'
+        }}
+      />
     </PageMainContent>
   );
 }
