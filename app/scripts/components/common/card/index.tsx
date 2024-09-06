@@ -262,14 +262,14 @@ function CardComponent(props: CardComponentProps) {
     linkProperties
   } = props;
 
-  const isExternalLink = /^https?:\/\//.test(linkProperties?.linkTo);
+  const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);
 
   return (
     <ElementInteractive
       linkProps={{
-        as: linkProperties?.LinkElement,
-        [linkProperties?.pathAttributeKeyName]: linkProperties?.linkTo,
-        onLinkClick: linkProperties?.onLinkClick,
+        as: linkProperties.LinkElement,
+        [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
+        onLinkClick: linkProperties.onLinkClick,
       }}
       as={CardItem}
       cardType={cardType}

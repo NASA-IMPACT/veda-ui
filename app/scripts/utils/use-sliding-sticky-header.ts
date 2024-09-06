@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useEffectPrevious } from './use-effect-previous';
+import { usePreviousValue } from './use-effect-previous';
 
 export const HEADER_ID = 'page-header';
 export const HEADER_WRAPPER_ID = 'header-wrapper';
 export const HEADER_TRANSITION_DURATION = 320;
 
-export function useSlidingStickyHeader(location) {
+interface SlidingStickyHeaderResults {
+  isHeaderHidden: boolean;
+  headerHeight: number;
+  wrapperHeight: number;
+}
+
+export function useSlidingStickyHeader(location): SlidingStickyHeaderResults {
   const [isHidden, setHidden] = useState(false); 
   const [headerHeight, setHeaderHeight] = useState(0);
   const [wrapperHeight, setWrapperHeight] = useState(0);
@@ -13,20 +19,17 @@ export function useSlidingStickyHeader(location) {
   const navWrapperElement = document.querySelector<HTMLElement>(
     `#${HEADER_WRAPPER_ID}`
   );
-  
-  const { pathname } = location;
 
-  useEffectPrevious(
-    ([pathnamePrev]) => {
-      const pageChanged = pathnamePrev !== pathname;
-      if (pageChanged) {
-        setHidden(false);
-        setHeaderHeight(0);
-        setWrapperHeight(0);
-      }
-    },
-    [pathname]
-  );
+  const prevLocation = usePreviousValue(location);
+  
+  useEffect(() => {
+    const pageChanged = prevLocation?.pathname !== location?.pathname;
+    if (pageChanged) {
+      setHidden(false);
+      setHeaderHeight(0);
+      setWrapperHeight(0);
+    }
+  }, [location, prevLocation]);
 
   useEffect(() => {
     let ticking = false;
