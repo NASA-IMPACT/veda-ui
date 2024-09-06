@@ -24,7 +24,7 @@ export interface ModalNavLink {
   src: string;
 }
 
-export interface DropdownNavLink { 
+export interface DropdownNavLink {
   title: string;
   type: NavItemType.DROPDOWN;
   children: NavLinkItem[];

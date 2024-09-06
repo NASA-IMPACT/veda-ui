@@ -142,7 +142,7 @@ export function DatasetTrackError(props: {
       </>
     );
   }
-  
+
   if (error instanceof ExtendedError && error.code === 'ANALYSIS_NO_DATA') {
     return (
       <>

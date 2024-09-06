@@ -262,7 +262,7 @@ export function BlockComponent(props: BlockComponentProps) {
       } else {
         return typeVal?.displayName ?? 'undefined';
       }
-      
+
     }
   );
 

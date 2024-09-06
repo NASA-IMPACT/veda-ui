@@ -118,7 +118,7 @@ export function TourManager() {
   // Control states for the different tours.
   const hideTour = window.localStorage.getItem(HIDE_TOUR_KEY) === 'true';
   const [introTourShown, setIntroTourShown] = useState(false);
-  
+
   // Variables that cause tour 1 to start.
   const datasets = useAtomValue(timelineDatasetsAtom);
   const datasetCount = datasets.length;

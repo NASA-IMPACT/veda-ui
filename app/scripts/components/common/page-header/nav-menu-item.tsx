@@ -63,7 +63,7 @@ function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:
   const { title, type, ...rest } = child;
   if (type === NavItemType.INTERNAL_LINK) {
     return (
-    <li> 
+    <li>
       <DropMenuNavItem as={NavLink} to={(rest as InternalNavLink).to} onClick={onClick} data-dropdown='click.close'>
         {title}
       </DropMenuNavItem>
@@ -93,12 +93,12 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
           {title}
         </GlobalMenuLink>
         </li>
-        
+
       );
   } else if (item.type === NavItemType.EXTERNAL_LINK) {
     return (
       <li key={`${title}-nav-item`}>
-      <GlobalMenuLink 
+      <GlobalMenuLink
         as='a'
         target='_blank'
         rel='noopener'
@@ -143,6 +143,6 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
         </DropMenu>
       </DropdownScrollable>
              </li>);
-    } 
+    }
   } else throw Error('Invalid type for Nav Items');
 }

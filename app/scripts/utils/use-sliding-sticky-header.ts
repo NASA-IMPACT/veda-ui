@@ -12,7 +12,7 @@ interface SlidingStickyHeaderResults {
 }
 
 export function useSlidingStickyHeader(pathname?: string): SlidingStickyHeaderResults {
-  const [isHidden, setHidden] = useState(false); 
+  const [isHidden, setHidden] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [wrapperHeight, setWrapperHeight] = useState(0);
 

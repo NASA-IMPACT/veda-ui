@@ -17,7 +17,7 @@ export default function SmartLink(props: SmartLinkProps) {
   const isExternalLink = /^https?:\/\//.test(to);
   const linkProps = getLinkProps(to, undefined, onLinkClick);
 
-  return isExternalLink ? ( 
+  return isExternalLink ? (
     <a {...linkProps} {...rest}> {children} </a>
     ) : (
       <Link {...linkProps} {...rest}> {children} </Link>

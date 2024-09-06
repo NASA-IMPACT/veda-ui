@@ -56,7 +56,7 @@ function CatalogView({
   const { headerHeight } = useSlidingStickyHeaderProps();
 
   const { search, taxonomies , onAction } = onFilterChanges();
-  
+
   return (
     <CatalogWrapper>
       <CatalogFoldHeader

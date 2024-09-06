@@ -23,13 +23,13 @@ export default function DataCatalogContainer() {
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
   const controlVars = useFiltersWithQS({navigate: navigate});
-  
+
   return (
     <PageMainContent>
       <LayoutProps title='Data Catalog' description={getString('dataCatalogBanner').other} />
       <PageHero title='Data Catalog' description={getString('dataCatalogBanner').other} />
       <FeaturedDatasets />
-      <CatalogView 
+      <CatalogView
         datasets={allDatasets}
         onFilterChanges={() => controlVars}
         pathname={pathname}

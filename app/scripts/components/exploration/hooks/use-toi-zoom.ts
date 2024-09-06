@@ -12,7 +12,7 @@ export function useOnTOIZoom() {
       if (!newX || !newK) return;
       const { current: interactionElement } = interactionRef;
       if (!interactionElement) return;
-      
+
       applyTransform(
         zoomBehavior,
         select(interactionElement),
