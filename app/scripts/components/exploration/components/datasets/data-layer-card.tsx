@@ -23,6 +23,7 @@ import {
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
+import { checkEnvFlag } from '$utils/utils';
 
 import 'tippy.js/dist/tippy.css';
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
@@ -102,6 +103,9 @@ const LegendColorMapTrigger = styled.div`
   cursor: pointer;
 `;
 
+// Hiding configurable map for now until Instances are ready to adapt it
+const showConfigurableColorMap = checkEnvFlag(process.env.SHOW_CONFIGURABLE_COLOR_MAP);
+
 export default function DataLayerCard(props: CardProps) {
   const {
     dataset,
@@ -176,38 +180,48 @@ export default function DataLayerCard(props: CardProps) {
         {datasetLegend?.type === 'categorical' && (
           <LayerCategoricalGraphic type='categorical' stops={datasetLegend.stops} />
         )}
-        {/* Show a loading skeleton when the color map is not categorical and the dataset
-        status is 'loading'. This is because we color map sometimes might come from the titiler
-        which could introduce a visual flash when going from the 'default' color map to the one
-        configured in titiler */}
-        {dataset.status === 'loading'  && datasetLegend?.type === 'gradient' && <div className='display-flex flex-align-center height-8'><LoadingSkeleton /></div>}
-        {dataset.status === 'success' && datasetLegend?.type === 'gradient' && (
-          <div className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md' ref={triggerRef}>
-            <LayerGradientColormapGraphic
-              min={min}
-              max={max}
-              colorMap={colorMap}
-            />
-            <Tippy
-              className='colormap-options'
-              content={
-                <ColormapOptions
-                  colorMap={colorMap}
-                  setColorMap={setColorMap}
-                />
-              }
-              appendTo={() => document.body}
-              visible={isColorMapOpen}
-              interactive={true}
-              placement='top'
-              onClickOutside={(_, event) => handleClickOutside(event)}
-            >
-              <LegendColorMapTrigger className='display-flex flex-align-center flex-justify bg-base-lightest margin-left-1 padding-05' onClick={handleColorMapTriggerClick}>
-                <CollecticonChevronDownSmall />
-              </LegendColorMapTrigger>
-            </Tippy>
-          </div>
-        )}
+
+          {/* Show a loading skeleton when the color map is not categorical and the dataset
+          status is 'loading'. This is because we color map sometimes might come from the titiler
+          which could introduce a visual flash when going from the 'default' color map to the one
+          configured in titiler */}
+
+          {showConfigurableColorMap && dataset.status === 'loading'  && datasetLegend?.type === 'gradient' && <div className='display-flex flex-align-center height-8'><LoadingSkeleton /></div>}
+          {showConfigurableColorMap && dataset.status === 'success' && datasetLegend?.type === 'gradient' && (
+            <div className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md' ref={triggerRef}>
+              <LayerGradientColormapGraphic
+                min={min}
+                max={max}
+                colorMap={colorMap}
+              />
+              <Tippy
+                className='colormap-options'
+                content={
+                  <ColormapOptions
+                    colorMap={colorMap}
+                    setColorMap={setColorMap}
+                  />
+                }
+                appendTo={() => document.body}
+                visible={isColorMapOpen}
+                interactive={true}
+                placement='top'
+                onClickOutside={(_, event) => handleClickOutside(event)}
+              >
+                <LegendColorMapTrigger className='display-flex flex-align-center flex-justify bg-base-lightest margin-left-1 padding-05' onClick={handleColorMapTriggerClick}>
+                  <CollecticonChevronDownSmall />
+                </LegendColorMapTrigger>
+              </Tippy>
+            </div>
+          )}
+        {!showConfigurableColorMap && 
+          datasetLegend?.type === 'gradient' && 
+          <LayerGradientColormapGraphic
+            min={min}
+            max={max}
+            colorMap={colorMap}
+          />}
+
       </DatasetInfo>
     </>
   );
