@@ -34,7 +34,7 @@ export default function ExplorationAndAnalysisContainer() {
   // We check if url Atom actually returns the values for exploration page here.
   const [currentUrl]= useAtom(urlAtom);
   if(!currentUrl.pathname?.includes(EXPLORATION_PATH)) return null;
-  
+
   return (
     <TourProvider
       steps={[]}

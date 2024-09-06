@@ -7,7 +7,7 @@ interface TriggerRectProps {
   onDataOverOut: (result: { hover: boolean; date: Date | null }) => void;
   onDataClick: (result: { date: Date }) => void;
   data: DateSliderDataItem[];
-  x: ScaleLinear<number, number, never>;
+  x: ScaleLinear<number, number>;
   zoomXTranslation: number;
   width: number;
   height: number;

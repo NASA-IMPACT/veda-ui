@@ -83,7 +83,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     timelineDatasets.map((dataset) => dataset.data.id)
   );
 
-  // Use Jotai controlled atoms for query parameter manipulation on new E&A page 
+  // Use Jotai controlled atoms for query parameter manipulation on new E&A page
   const {search: searchTerm, taxonomies, onAction } = useFiltersWithURLAtom();
 
   useEffect(() => {

@@ -100,7 +100,7 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
   const handleLoadIntoGIS = () => {
     setTileModalRevealed(true);
   };
-  
+
   return (
     <>
       <StyledDropdown

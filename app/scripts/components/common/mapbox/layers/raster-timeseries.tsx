@@ -85,7 +85,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
   } = props;
 
   const theme = useTheme();
-  const { updateStyle } = useMapStyle(); 
+  const { updateStyle } = useMapStyle();
 
   const minZoom = zoomExtent?.[0] ?? 0;
   const generatorId = 'raster-timeseries' + idSuffix;
@@ -284,7 +284,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           const mosaicUrl = responseData.links[1].href;
           setMosaicUrl(mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad'));
         } catch (error) {
-          // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance... 
+          // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance...
           if (error.request) {
             // The request was made but no response was received
             responseData = await requestQuickCache({
@@ -292,11 +292,11 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
               payload,
               controller
             });
-            
+
             const mosaicUrl = responseData.links[1].href;
             setMosaicUrl(mosaicUrl);
           } else {
-              LOG && 
+              LOG &&
               /* eslint-disable-next-line no-console */
               console.log('Titiler /register %cEndpoint error', 'color: red;', error);
               throw error;
@@ -475,7 +475,7 @@ export function MapLayerRasterTimeseries(props: MapLayerRasterTimeseriesProps) {
           };
           layers = [...layers, pointsLayer];
         }
-        
+
         updateStyle({
           generatorId,
           sources,

@@ -97,7 +97,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exclusiveSourceSelected]);
-  
+
   return (
     <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden && wrapperHeight ? '0px': `${wrapperHeight - customTopOffset}px`}>
       <div ref={controlsRef}>

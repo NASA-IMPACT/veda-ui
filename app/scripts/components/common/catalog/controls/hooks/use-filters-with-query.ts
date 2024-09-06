@@ -30,7 +30,7 @@ export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
     taxonomies,
     onAction,
   };
-} 
+}
 
   export function useFiltersWithQS({
     navigate,
@@ -39,7 +39,7 @@ export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
     navigate: any,
     push?: boolean,
   }): UseFiltersWithQueryResult {
-    
+
     let navCommit = navigate;
 
     if (push) {

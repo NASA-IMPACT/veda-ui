@@ -62,7 +62,7 @@ interface DataPointsProps {
   data: DateSliderDataItem[];
   hoveringDataPoint: Date | null;
   value?: Date;
-  x: ScaleLinear<number, number, never>;
+  x: ScaleLinear<number, number>;
   zoomXTranslation: number;
   timeDensity: DateSliderTimeDensity;
 }
@@ -161,7 +161,7 @@ export function DataPoints(props: DataPointsProps) {
 }
 
 interface DataLineProps {
-  x: ScaleLinear<number, number, never>;
+  x: ScaleLinear<number, number>;
   zoomXTranslation: number;
 }
 

@@ -358,7 +358,7 @@ export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 's
   const stops = Object.values(foundColorMap)
   .filter(value => Array.isArray(value) && value.length === 4)
   .map((value) => {
-    return `rgba(${(value as Array<number>).join(',')})`;
+    return `rgba(${(value as number[]).join(',')})`;
   });
 
   const processedStops = isReversed

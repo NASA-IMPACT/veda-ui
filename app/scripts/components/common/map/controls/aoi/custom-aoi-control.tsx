@@ -125,7 +125,7 @@ function CustomAoI({
   const resetForDrawingAoi = useCallback(() =>  {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
-    
+
     if (fileUploadedIds.length) {
       mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: fileUploadedIds
@@ -255,7 +255,7 @@ function CustomAoI({
             size='small'
             data-tour='analysis-tour'
           >
-            <PresetSelector 
+            <PresetSelector
               selectedState={selectedState}
               setSelectedState={setSelectedState}
               onConfirm={onPresetConfirm}
