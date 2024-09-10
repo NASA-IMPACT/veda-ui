@@ -18,12 +18,12 @@ import {
   NavigationControl,
   ScaleControl
 } from '$components/common/map/controls';
-import MapCoordsControl from '$components/common/map/controls/coords';
-import MapOptionsControl from '$components/common/map/controls/map-options';
+// import MapCoordsControl from '$components/common/map/controls/coords';
+// import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
-import DrawControl from '$components/common/map/controls/aoi';
-import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
+// import DrawControl from '$components/common/map/controls/aoi';
+// import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { ExtendedStyle } from '$components/common/map/styles';
 
@@ -49,7 +49,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
   } = useBasemap();
 
   useReconcileWithStacMetadata(datasets, setDatasets);
-
+  console.log(`inExplorationMap`)
   // Different datasets may have a different default projection.
   // When datasets are selected the first time, we set the map projection to the
   // first dataset's projection.
@@ -140,15 +140,15 @@ export function ExplorationMap(props: ExplorationMapProps) {
       )}
       {/* Map controls */}
       <MapControls>
-        <DrawControl />
-        <CustomAoIControl
+        {/* <DrawControl /> */}
+        {/* <CustomAoIControl
           disableReason={
             comparing && 'Analysis is not possible when comparing dates'
           }
-        />
+        /> */}
         <AnalysisMessageControl />
         <GeocoderControl />
-        <MapOptionsControl
+        {/* <MapOptionsControl
           projection={projection}
           onProjectionChange={setProjection}
           basemapStyleId={mapBasemapId}
@@ -156,10 +156,10 @@ export function ExplorationMap(props: ExplorationMapProps) {
           labelsOption={labelsOption}
           boundariesOption={boundariesOption}
           onOptionChange={onOptionChange}
-        />
+        /> */}
         <ScaleControl />
         <ShowTourControl />
-        <MapCoordsControl />
+        {/* <MapCoordsControl /> */}
         <NavigationControl />
       </MapControls>
       {comparing && (

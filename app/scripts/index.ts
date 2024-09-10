@@ -20,6 +20,8 @@ import PageHeader from '$components/common/page-header';
 import LogoContainer from '$components/common/page-header/logo-container';
 import type { NavItem, InternalNavLink, NavItemType } from '$components/common/page-header/types';
 
+import ExplorationAndAnalysis from '$components/exploration';
+import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 
 export {
   // COMPONENTS
@@ -43,6 +45,7 @@ export {
   ReactQueryProvider,
   StoriesHubContent,
   LogoContainer,
+  ExplorationAndAnalysis,
 
   // HOOKS and utility functions
   useFiltersWithQS,
@@ -50,5 +53,8 @@ export {
   // TYPES
   NavItem,
   NavItemType,
-  InternalNavLink
+  InternalNavLink,
+
+  // STATE
+  timelineDatasetsAtom
 };

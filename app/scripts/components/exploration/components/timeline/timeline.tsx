@@ -12,9 +12,9 @@ import {
   isBefore,
   isWithinInterval,
   max,
-  startOfDay,
   sub
 } from 'date-fns';
+import startOfDay from 'date-fns/startOfDay';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, {
   useCallback,
@@ -30,11 +30,11 @@ import styled from 'styled-components';
 import { DatasetList } from '../datasets/dataset-list';
 
 import { applyTransform, getLabelFormat, getTemporalExtent, isEqualTransform, rescaleX } from './timeline-utils';
-import {
-  TimelineControls,
-  getInitialScale,
-  TimelineDateAxis,
-} from './timeline-controls';
+// import {
+//   TimelineControls,
+//   getInitialScale,
+//   TimelineDateAxis,
+// } from './timeline-controls';
 import {
   TimelineHeadIn,
   TimelineHeadPoint,
@@ -623,7 +623,7 @@ export default function Timeline(props: TimelineProps) {
     );
   };
   // Stub scale for when there is no layers
-  const initialScale = useMemo(() => getInitialScale(width), [width]);
+  // const initialScale = useMemo(() => getInitialScale(width), [width]);
 
   const minMaxTemporalExtent = useMemo(
     () => getTemporalExtent(
@@ -656,12 +656,12 @@ export default function Timeline(props: TimelineProps) {
       <TimelineWrapper ref={observe}>
         <TimelineHeader>
           <TimelineDetails>{CommonTimelineHeadline()}</TimelineDetails>
-          <TimelineDateAxis xScaled={initialScale} width={width} />
+          {/* <TimelineDateAxis xScaled={initialScale} width={width} /> */}
         </TimelineHeader>
         <TimelineContent>
           <TimelineDetails />
           <EmptyTimelineContentInner>
-            <DateGrid width={width} xScaled={initialScale} />
+            {/* <DateGrid width={width} xScaled={initialScale} /> */}
             <LayerActionBox>
               <div>
                 <CollecticonIsoStack size='xxlarge' />
@@ -700,7 +700,7 @@ export default function Timeline(props: TimelineProps) {
             added
           </small>
         </TimelineDetails>
-        <TimelineControls
+        {/* <TimelineControls
           minMaxTemporalExtent={minMaxTemporalExtent}
           xScaled={xScaled}
           width={width}
@@ -708,7 +708,7 @@ export default function Timeline(props: TimelineProps) {
           outOfViewHeads={outOfViewHeads}
           timeDensity={lowestCommonTimeDensity}
           timelineLabelsFormat={timelineLabelFormat}
-        />
+        /> */}
       </TimelineHeader>
       <TimelineContent>
         {shouldRenderTimeline && (

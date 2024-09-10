@@ -6,7 +6,7 @@ import { themeVal } from '@devseed-ui/theme-provider';
 import { useAtom, useSetAtom } from 'jotai';
 import Timeline from './components/timeline/timeline';
 import { ExplorationMap } from './components/map';
-import { DatasetSelectorModal } from './components/dataset-selector-modal';
+// import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { useAnalysisController } from './hooks/use-analysis-data-request';
 import { TimelineDataset } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
@@ -119,10 +119,10 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
           />
         </Panel>
       </PanelGroup>
-      <DatasetSelectorModal
+      {/* <DatasetSelectorModal
         revealed={datasetModalRevealed}
         close={closeModal}
-      />
+      /> */}
     </Container>
   );
 }
