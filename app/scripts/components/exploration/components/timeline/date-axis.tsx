@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { ScaleTime } from 'd3';
-import {
-  format, startOfMonth,
-  startOfYear
-} from 'date-fns';
+import format from 'date-fns/format';
+import startOfMonth from 'date-fns/startOfMonth'; 
+import startOfYear from 'date-fns/startOfYear'; 
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';

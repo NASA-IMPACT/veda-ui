@@ -1,7 +1,9 @@
 import React, { memo, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { useAtom } from 'jotai';
-import { endOfYear, format, startOfYear } from 'date-fns';
+import { format } from 'date-fns';
+import startOfYear from 'date-fns/startOfYear';
+import endOfYear from 'date-fns/endOfYear';
 import { scaleTime, ScaleTime } from 'd3';
 
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
