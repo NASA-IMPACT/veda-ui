@@ -9,7 +9,7 @@ const FADE_ID = 'fade-gradient';
 
 interface FaderDefinitionProps {
   data: DateSliderDataItem[];
-  x: ScaleLinear<number, number, never>;
+  x: ScaleLinear<number, number>;
   zoomXTranslation: number;
   width: number;
   height: number;

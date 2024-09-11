@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
+import { LinkProperties } from '../card';
 import CatalogContent from './catalog-content';
-import { useFiltersWithQS } from './controls/hooks/use-filters-with-query';
 import { DatasetData } from '$types/veda';
 import {
   useSlidingStickyHeaderProps
@@ -14,7 +14,6 @@ import {
   FoldTitle
 } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
-
 /**
  * CATALOG Feature component
  * Allows you to browse through datasets and layers using the filters sidebar control
@@ -38,14 +37,25 @@ export const sortOptions = [{ id: 'name', name: 'Name' }];
 
 export interface CatalogViewProps {
   datasets: DatasetData[];
+  onFilterChanges: () => {
+    search: string,
+    taxonomies: Record<string, string[]> | Record<string, never>,
+    onAction: () => void,
+  } | any;
+  linkProperties: LinkProperties;
+  pathname: string;
 }
 
 function CatalogView({
   datasets,
+  onFilterChanges,
+  pathname,
+  linkProperties,
 }: CatalogViewProps) {
 
   const { headerHeight } = useSlidingStickyHeaderProps();
-  const { search, taxonomies , onAction } = useFiltersWithQS();
+
+  const { search, taxonomies , onAction } = onFilterChanges();
 
   return (
     <CatalogWrapper>
@@ -63,6 +73,8 @@ function CatalogView({
         search={search}
         taxonomies={taxonomies}
         onAction={onAction}
+        pathname={pathname}
+        linkProperties={linkProperties}
       />
     </CatalogWrapper>
   );

@@ -82,7 +82,7 @@ export function useStacCollectionSearch({
     d.timeseries ? result[0].push(d as DatasetWithCollections) : result[1].push(d as DatasetMissingSummaries);
     return result;
   },[[], []]);
-  
+
   const datasetLayersInRangeWithNumberOfItems: DatasetWithTimeseriesData[] =
     useMemo(() => {
       return datasetsWithSummaries.map((l) => {
@@ -102,7 +102,7 @@ export function useStacCollectionSearch({
       (l) => l.numberOfItems > MAX_QUERY_NUM
     );
   }, [datasetLayersInRangeWithNumberOfItems]);
-  
+
   const unselectableDatasetLayers:InvalidDatasets[] = [...datasetsWithTooManyRequests, ...invalidDatasets];
 
   return {
@@ -125,7 +125,7 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
           l.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
         return l.stacCol === id && stacApiEndpointUsed === stacApiEndpoint;
       });
-  
+
       if (
         !isAppDataset ||
         !col.extent.spatial.bbox ||
@@ -133,15 +133,15 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
       ) {
         return acc;
       }
-  
+
       const bbox = col.extent.spatial.bbox[0];
       const start = utcString2userTzDate(col.extent.temporal.interval[0][0]);
       const end = utcString2userTzDate(col.extent.temporal.interval[0][1]);
-  
+
       const isInAOI = aoi.features.some((feature) =>
         booleanIntersects(feature, bboxPolygon(bbox))
       );
-  
+
       const isInTOI = areIntervalsOverlapping(
         { start: new Date(timeRange.start), end: new Date(timeRange.end) },
         {
@@ -149,7 +149,7 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
           end: new Date(end)
         }
       );
-  
+
       if (isInAOI && isInTOI) {
         return [...acc, id];
       } else {
@@ -181,6 +181,6 @@ function getInTemporalAndSpatialExtent(collectionData, aoi, timeRange) {
       timeseries: collection.summaries?.datetime,
     };
   });
-  
+
   return filteredDatasetsWithCollections;
 }

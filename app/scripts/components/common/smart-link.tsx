@@ -18,10 +18,10 @@ export default function SmartLink(props: SmartLinkProps) {
   const linkProps = getLinkProps(to, undefined, onLinkClick);
 
   return isExternalLink ? (
-      <a {...linkProps} {...rest}> {children} </a>
-  ) : (
-    <Link {...linkProps} {...rest}> {children} </Link>
-  );
+    <a {...linkProps} {...rest}> {children} </a>
+    ) : (
+      <Link {...linkProps} {...rest}> {children} </Link>
+    );
 }
 
 

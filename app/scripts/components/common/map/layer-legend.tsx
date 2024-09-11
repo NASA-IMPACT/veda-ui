@@ -272,7 +272,6 @@ export function LayerLegendContainer(props: LayerLegendContainerProps) {
 
 export function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   const { stops } = props;
-
   return (
     <LegendList>
       {stops.map((stop) => (
@@ -350,20 +349,19 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
 export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 'stops' | 'type'>) => {
   const { colorMap, ...otherProps } = props;
 
-  const colormap = findColormapByName(colorMap ?? 'viridis');
-  if (!colormap) {
+  const colormapResult = findColormapByName(colorMap ?? 'viridis');
+  if (!colormapResult) {
     return null;
   }
+  const { foundColorMap, isReversed } = colormapResult;
 
-  const stops = Object.values(colormap).map((value) => {
-    if (Array.isArray(value) && value.length === 4) {
-      return `rgba(${value.join(',')})`;
-    } else {
-      return `rgba(0, 0, 0, 1)`;
-    }
+  const stops = Object.values(foundColorMap)
+  .filter(value => Array.isArray(value) && value.length === 4)
+  .map((value) => {
+    return `rgba(${(value as number[]).join(',')})`;
   });
 
-  const processedStops = colormap.isReversed
+  const processedStops = isReversed
   ? stops.reduceRight((acc, stop) => [...acc, stop], [])
   : stops;
 
@@ -380,5 +378,5 @@ export const findColormapByName = (name: string) => {
     return null;
   }
 
-  return { ...colormap, isReversed };
+  return { foundColorMap: {...colormap}, isReversed };
 };

@@ -156,7 +156,7 @@ function shiftRing(ring: Position[], direction: Direction): Position[] {
  * Cuts a given Polygon or MultiPolygon by the antimeridian. Whenever some
  * feature crosses the Antimeridian (180° E or 180° W), it should be broken up
  * into two or more objects, none of which cross the antimeridian, and which
- * together are all equivalent. 
+ * together are all equivalent.
  * @param feature Input feature to fix
  * @returns A MultiPolygon feature with no Polygons crossing the antimeridian,
  * but that together are equivalent to the input feature.

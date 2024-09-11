@@ -22,7 +22,7 @@ export function CopyField(props: CopyFieldProps) {
 
   useEffect(() => {
     if (!triggerElement.current) throw new Error("ref for trigger element is not set");
-    
+
     let copiedMsgTimeout: NodeJS.Timeout | undefined;
     const clipboard = new Clipboard(triggerElement.current, {
       text: () => copyValue.current

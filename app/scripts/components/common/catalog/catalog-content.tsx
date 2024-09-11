@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
+import { LinkProperties } from '../card';
 import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
@@ -34,6 +34,8 @@ export interface CatalogContentProps {
   search: string;
   taxonomies: Record<string, string[]>;
   onAction: (action: FilterActions, value?: any) => void;
+  linkProperties: LinkProperties;
+  pathname?: string;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -70,6 +72,8 @@ function CatalogContent({
   search,
   taxonomies,
   onAction,
+  pathname,
+  linkProperties
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
   const isSelectable = selectedIds !== undefined;
@@ -202,6 +206,7 @@ function CatalogContent({
         exclusiveSourceSelected={exclusiveSourceSelected}
         customTopOffset={isSelectable ? 50 : 0}
         openByDefault={isSelectable ? false : true}
+        pathname={pathname}
       />
       <Catalog>
         <CatalogTagsContainer
@@ -250,6 +255,8 @@ function CatalogContent({
                           selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
                           onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
+                          linkProperties={linkProperties}
+                          pathname={pathname}
                         />
                       </li>
                     ))}
@@ -261,7 +268,12 @@ function CatalogContent({
             <Cards>
               {datasetsToDisplay.map((d) => (
                 <li key={d.id}>
-                  <CatalogCard dataset={d} searchTerm={search} />
+                  <CatalogCard
+                    dataset={d}
+                    searchTerm={search}
+                    linkProperties={linkProperties}
+                    pathname={pathname}
+                  />
                 </li>
               ))}
             </Cards>
