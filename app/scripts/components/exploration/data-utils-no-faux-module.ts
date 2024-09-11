@@ -174,35 +174,22 @@ export function resolveRenderParams(
   datasetSourceParams: Record<string, any> | undefined,
   queryDataRenders: Record<string, any> | undefined
 ): Record<string, any> | undefined {
-  let renderParams: Record<string, any> | undefined;
   // Start with sourceParams from the dataset.
+  // Return the source param as it is if exists
   if (hasValidSourceParams(datasetSourceParams)) {
-    renderParams = datasetSourceParams;
+    return datasetSourceParams;
   }
 
   // Check for the dashboard render configuration in queryData if not defined.
-  if (!renderParams && queryDataRenders?.dashboard) {
-    renderParams = queryDataRenders.dashboard;
-
-    if (renderParams?.rescale) {
-      renderParams.rescale = flattenAndCalculateMinMax([renderParams.rescale]);
-    }
+  const renderKey = queryDataRenders?.dashboard? 'dashboard' : datasetSourceParams?.assets;
+  if (!queryDataRenders?.[renderKey]) throw new Error ('No proper render parameter exists.');
+  if (queryDataRenders[renderKey] && hasValidSourceParams(queryDataRenders[renderKey])) {
+    const renderParams = queryDataRenders.dashboard;
+    return {
+      ...renderParams,
+      rescale: flattenAndCalculateMinMax([renderParams.rescale])
+    };
   }
-
-  // Check for asset-specific renders using the sourceParams' assets property.
-  if (!renderParams && queryDataRenders?.[datasetSourceParams?.assets]) {
-    renderParams = queryDataRenders[datasetSourceParams?.assets];
-
-    if (renderParams?.rescale) {
-      renderParams.rescale = flattenAndCalculateMinMax(renderParams.rescale);
-    }
-  }
-
-  if (renderParams?.rescale) {
-    renderParams.rescale = flattenAndCalculateMinMax(renderParams.rescale);
-  }
-
-  return renderParams;
 }
 
 export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
