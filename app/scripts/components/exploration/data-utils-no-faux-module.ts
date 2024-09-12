@@ -180,11 +180,16 @@ export function resolveRenderParams(
     return datasetSourceParams;
   }
 
-  // Check for the dashboard render configuration in queryData if not defined.
-  const renderKey = queryDataRenders?.dashboard? 'dashboard' : datasetSourceParams?.assets;
-  if (!queryDataRenders?.[renderKey]) throw new Error ('No proper render parameter exists.');
+  // Check for the dashboard render configuration in queryData
+  if (!queryDataRenders) throw new Error ('No proper render parameter exists.');
+
+  // Check the namespace from render extension
+  const renderKey = queryDataRenders.dashboard? 'dashboard' : datasetSourceParams?.assets;
+  if (!queryDataRenders[renderKey]) throw new Error ('No proper render parameter exists.');
+
+  // Return the render extension parameter
   if (queryDataRenders[renderKey] && hasValidSourceParams(queryDataRenders[renderKey])) {
-    const renderParams = queryDataRenders.dashboard;
+    const renderParams = queryDataRenders[renderKey];
     return {
       ...renderParams,
       rescale: flattenAndCalculateMinMax([renderParams.rescale])
