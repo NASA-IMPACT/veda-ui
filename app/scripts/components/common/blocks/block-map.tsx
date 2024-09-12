@@ -171,7 +171,7 @@ function MapBlock(props: MapBlockProps) {
     const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
     let totalLayers = [baseMapStaticData];
     const baseMapStaticCompareData =
-      !!(compareDatasetId && compareLayerId)
+      (!!compareDatasetId && !!compareLayerId)
         ? {
             datasetId: compareDatasetId,
             layerId: compareLayerId
