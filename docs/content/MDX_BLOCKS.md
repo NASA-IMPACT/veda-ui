@@ -484,6 +484,8 @@ Syntax for Chart used in Wide Figure Block looks like this. Check how the data i
 | datasetId | string | `''` | `id` defined in dataset mdx. |
 | layerId | string | `''` | `id` for layer to display. The layer should be a part of the dataset above. |
 | dateTime | string | `''` | Optional. This string should follow `yyyy-mm-dd` format. When omitted, the very first available dateTime for the dataset will be displayed |
+| compareDataSetId | string | `''` | `id` The `id` defined in the dataset MDX. Include this only if a comparison with the dataset defined by `datasetId` is needed.  |
+| compareLayerId | string | `''` | `id` The `id` for the comparison layer to display. This layer must be part of the comparison dataset specified by `compareDataSetId` . |
 | compareDateTime | string | `''` | Optional. This string should follow `yyyy-mm-dd` format. A date should only be specified if you wish to display the comparison slider |
 | compareLabel | string | `''` | Text to display over the map when the comparison is active. If is for example used to indicate what dates are being compared. If not provided it will default to the value specified in the [dataset layer configuration](./frontmatter/layer.md#compare) |
 | projectionId | string | `mercator` | The id of the [projection](./frontmatter/layer.md#projections) to load. |
