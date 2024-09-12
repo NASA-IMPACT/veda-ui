@@ -58,6 +58,7 @@ const DropMenuNavItem = styled(DropMenuItem)`
   `}
 `;
 
+const LOG = true;
 
 function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:() => void}) {
   const { title, type, ...rest } = child;
@@ -79,7 +80,12 @@ function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:
         </DropMenuNavItem>
       </li>
     );
-  } else throw Error('Invalid child Nav item type');
+  } else {
+    LOG &&
+      /* eslint-disable-next-line no-console */
+      console.error(`Invalid child Nav Item type, type "${type}" is not of `, NavItemType);
+    return null;
+  }
 }
 
 
@@ -144,5 +150,10 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
       </DropdownScrollable>
              </li>);
     }
-  } else throw Error('Invalid type for Nav Items');
+  } else {
+    LOG &&
+      /* eslint-disable-next-line no-console */
+      console.error(`Invalid type for Nav Items, type "${type}" is not of `, NavItemType);
+    return null;
+  }
 }
