@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { MapboxOptions } from 'mapbox-gl';
+import * as dateFns from 'date-fns';
 import {
   convertProjectionToMapbox,
   projectionDefault,
@@ -162,7 +163,6 @@ function MapBlock(props: MapBlockProps) {
   }
 
   const datasetLayers = getDatasetLayers(datasets);
-
   const layersToFetch = useMemo(() => {
     const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
     let totalLayers = [baseMapStaticData];
@@ -259,9 +259,12 @@ function MapBlock(props: MapBlockProps) {
 
   const computedCompareLabel = useMemo(() => {
     // Use a provided label if it exist.
-    if (compareLabel && compareDataLayer) {
-      const providedLabel = compareDataLayer.data.mapLabel as string;
-      return providedLabel;
+    if (compareLabel) return compareLabel as string;
+    // Use label function from originalData.Compare
+    else if (baseDataLayer?.data.compare?.mapLabel) {
+      if (typeof baseDataLayer.data.compare.mapLabel === 'string') return baseDataLayer.data.compare.mapLabel;
+      const labelFn = baseDataLayer.data.compare.mapLabel as (unknown) => string;
+      return labelFn({dateFns, datetime: selectedDatetime, compareDatetime: compareToDate });
     }
   
     // Default to date comparison.
@@ -275,7 +278,7 @@ function MapBlock(props: MapBlockProps) {
       : null;
   }, [
     compareLabel,
-    compareDataLayer,
+    baseDataLayer,
     selectedDatetime,
     compareToDate,
     baseTimeDensity,
