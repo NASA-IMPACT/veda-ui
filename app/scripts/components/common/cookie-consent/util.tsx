@@ -8,4 +8,3 @@ export const readCookie = (name) => {
     }
     return null;
   };
-  

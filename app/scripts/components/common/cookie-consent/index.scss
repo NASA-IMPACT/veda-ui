@@ -1,4 +1,4 @@
-.modal {
+#cookie-consent{
   z-index: 999;
   position: fixed;
   max-width: 725px;
@@ -8,6 +8,7 @@
     right: 0;
   }
 }
+
 .hide-modal {
   bottom: -500px;
   opacity: 0;

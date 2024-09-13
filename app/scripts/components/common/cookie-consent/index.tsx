@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import {
   Alert,
@@ -20,9 +20,11 @@ export const CookieConsent = ({
   copy,
   onFormInteraction
 }: CookieConsentProps) => {
-  const [cookieConsentResponded, SetCookieConsentResponded] = useState(Boolean);
-  const [cookieConsentAnswer, SetCookieConsentAnswer] = useState(Boolean);
-  const [closeConsent, setCloseConsent] = useState(Boolean);
+  const [cookieConsentResponded, SetCookieConsentResponded] =
+    useState<boolean>(false);
+  const [cookieConsentAnswer, SetCookieConsentAnswer] =
+    useState<boolean>(false);
+  const [closeConsent, setCloseConsent] = useState<boolean>(false);
   //Setting expiration date for cookie to expire and re-ask user for consent.
   const setCookieExpiration = () => {
     const today = new Date();
@@ -36,7 +38,7 @@ export const CookieConsent = ({
     )}; path=/; expires=${closeConsent ? '0' : setCookieExpiration()}`;
   };
 
-  const renderContent = () => {
+  const renderContent = useMemo(() => {
     const bracketsParenthRegex = /\[(.*?)\)/;
     const interiroBracketsRegex = /\]\(/;
 
@@ -60,7 +62,7 @@ export const CookieConsent = ({
       return item;
     });
     return updatedContent;
-  };
+  }, [copy]);
 
   useEffect(() => {
     // if (readCookie('CookieConsent') ) {
@@ -69,15 +71,16 @@ export const CookieConsent = ({
       responded: cookieConsentResponded,
       answer: cookieConsentAnswer
     };
-   
-      setCookie(cookieValue, closeConsent);
-      onFormInteraction();
+
+    setCookie(cookieValue, closeConsent);
+    onFormInteraction();
     // }
   }, [cookieConsentResponded, cookieConsentAnswer]);
 
   return (
     <div
-      className={`modal margin-2 shadow-2 ${
+      id='cookie-consent'
+      className={`margin-2 shadow-2 ${
         cookieConsentResponded || closeConsent ? 'hide-modal' : ''
       }`}
     >
@@ -98,13 +101,12 @@ export const CookieConsent = ({
           <Icon.Close />
         </Button>
 
-        {copy && renderContent()}
+        {copy && renderContent}
         <ButtonGroup className='padding-top-2'>
           <Button
             onClick={() => {
               SetCookieConsentResponded(true);
               SetCookieConsentAnswer(false);
-              
             }}
             outline={true}
             type='button'
