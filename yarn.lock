@@ -5570,20 +5570,10 @@ camelize@^1.0.0:
   resolved "http://verdaccio.ds.io:4873/camelize/-/camelize-1.0.0.tgz#164a5483e630fa4321e5af07020e531831b2609b"
   integrity sha1-FkpUg+Yw+kMh5a8HAg5TGDGyYJs=
 
-caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001366:
-  version "1.0.30001441"
-  resolved "http://verdaccio.ds.io:4873/caniuse-lite/-/caniuse-lite-1.0.30001441.tgz"
-  integrity sha512-OyxRR4Vof59I3yGWXws6i908EtGbMzVUi3ganaZQHmydk1iwDhRnvaPG2WaR0KcqrDFKrxVZHULT396LEPhXfg==
-
-caniuse-lite@^1.0.30001538:
-  version "1.0.30001640"
-  resolved "http://verdaccio.ds.io:4873/caniuse-lite/-/caniuse-lite-1.0.30001640.tgz#32c467d4bf1f1a0faa63fc793c2ba81169e7652f"
-  integrity sha512-lA4VMpW0PSUrFnkmVuEKBUovSWKhj7puyCg8StBChgu298N1AtuF1sKWEvfDuimSEDbhlb/KqPKC3fs1HbuQUA==
-
-caniuse-lite@^1.0.30001599, caniuse-lite@^1.0.30001629:
-  version "1.0.30001639"
-  resolved "http://verdaccio.ds.io:4873/caniuse-lite/-/caniuse-lite-1.0.30001639.tgz#972b3a6adeacdd8f46af5fc7f771e9639f6c1521"
-  integrity sha512-eFHflNTBIlFwP2AIKaYuBQN/apnUoKNhBdza8ZnW/h2di4LCZ4xFqYlxUxo+LQ76KFI1PGcC1QDxMbxTZpSCAg==
+caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001366, caniuse-lite@^1.0.30001538, caniuse-lite@^1.0.30001599, caniuse-lite@^1.0.30001629:
+  version "1.0.30001658"
+  resolved "http://verdaccio.ds.io:4873/caniuse-lite/-/caniuse-lite-1.0.30001658.tgz"
+  integrity sha512-N2YVqWbJELVdrnsW5p+apoQyYt51aBMSsBZki1XZEfeBCexcM/sf4xiAHcXQBkuOwJBXtWF7aW1sYX6tKebPHw==
 
 ccount@^1.0.0:
   version "1.1.0"
@@ -12727,6 +12717,11 @@ react-smooth@^2.0.1:
   dependencies:
     fast-equals "^2.0.0"
     react-transition-group "2.9.0"
+
+react-spinners@^0.14.1:
+  version "0.14.1"
+  resolved "http://verdaccio.ds.io:4873/react-spinners/-/react-spinners-0.14.1.tgz#de7d7d6b3e6d4f29d9620c65495b502c7dd90812"
+  integrity sha512-2Izq+qgQ08HTofCVEdcAQCXFEYfqTDdfeDQJeo/HHQiQJD4imOicNLhkfN2eh1NYEWVOX4D9ok2lhuDB0z3Aag==
 
 react-style-singleton@^2.2.1:
   version "2.2.1"
