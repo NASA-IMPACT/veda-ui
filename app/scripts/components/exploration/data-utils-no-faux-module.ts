@@ -181,11 +181,11 @@ export function resolveRenderParams(
   }
 
   // Check for the dashboard render configuration in queryData
-  if (!queryDataRenders) throw new Error ('No proper render parameter exists.');
+  if (!queryDataRenders) throw new Error ('No render parameter exists from stac endpoint.');
 
   // Check the namespace from render extension
   const renderKey = queryDataRenders.dashboard? 'dashboard' : datasetSourceParams?.assets;
-  if (!queryDataRenders[renderKey]) throw new Error ('No proper render parameter exists.');
+  if (!queryDataRenders[renderKey]) throw new Error ('No proper render parameter for dashboard namespace exists.');
 
   // Return the render extension parameter
   if (queryDataRenders[renderKey] && hasValidSourceParams(queryDataRenders[renderKey])) {
