@@ -10,8 +10,10 @@ import {
 import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
 import { ShowTourControl } from './tour-control';
+import { GeoCoPilotControl } from '$components/exploration/components/geo-copilot/geo-copilot-control';
 
 import Map, { Compare, MapControls } from '$components/common/map';
+
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import GeocoderControl from '$components/common/map/controls/geocoder';
 import {
@@ -32,10 +34,23 @@ interface ExplorationMapProps {
   setDatasets: (datasets: TimelineDataset[]) => void;
   selectedDay: Date | null;
   selectedCompareDay: Date | null;
+  openGeoCoPilot: () => void;
+  closeGeoCoPilot: () => void;
+  showGeoCoPilot: boolean;
+  setMap: (any) => void;
 }
 
 export function ExplorationMap(props: ExplorationMapProps) {
-  const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
+  const { 
+    datasets, 
+    setDatasets, 
+    selectedDay, 
+    selectedCompareDay,
+    showGeoCoPilot, 
+    closeGeoCoPilot, 
+    openGeoCoPilot,
+    setMap
+  } = props;
 
   const [projection, setProjection] =
     useState<ProjectionOptions>(projectionDefault);
@@ -161,6 +176,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
         <ShowTourControl />
         <MapCoordsControl />
         <NavigationControl />
+        <GeoCoPilotControl showGeoCoPilot={showGeoCoPilot ? closeGeoCoPilot : openGeoCoPilot } setMap={setMap}/>
       </MapControls>
       {comparing && (
         // Compare map layers
