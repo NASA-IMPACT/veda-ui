@@ -17,6 +17,7 @@ import PageHero from '$components/common/page-hero';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import ExplorationAndAnalysis from '$components/exploration';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
+import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
 
 export {
   // COMPONENTS
@@ -38,6 +39,7 @@ export {
   PageHero,
   ReactQueryProvider,
   ExplorationAndAnalysis,
+  DatasetSelectorModal,
   // HOOKS
   useFiltersWithQS,
   // STATE
