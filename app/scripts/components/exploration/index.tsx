@@ -16,6 +16,7 @@ const Container = styled.div`
   display: flex;
   flex-flow: column;
   flex-grow: 1;
+  height: 100%; // @TODO-SANDRA: Added because it wasn't showing up but this will need to recheck this
 
   .panel-wrapper {
     flex-grow: 1;

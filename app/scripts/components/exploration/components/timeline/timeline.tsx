@@ -30,11 +30,11 @@ import styled from 'styled-components';
 import { DatasetList } from '../datasets/dataset-list';
 
 import { applyTransform, getLabelFormat, getTemporalExtent, isEqualTransform, rescaleX } from './timeline-utils';
-// import {
-//   TimelineControls,
-//   getInitialScale,
-//   TimelineDateAxis,
-// } from './timeline-controls';
+import {
+  TimelineControls,
+  getInitialScale,
+  TimelineDateAxis,
+} from './timeline-controls';
 import {
   TimelineHeadIn,
   TimelineHeadPoint,
@@ -700,7 +700,7 @@ export default function Timeline(props: TimelineProps) {
             added
           </small>
         </TimelineDetails>
-        {/* <TimelineControls
+        <TimelineControls
           minMaxTemporalExtent={minMaxTemporalExtent}
           xScaled={xScaled}
           width={width}
@@ -708,7 +708,7 @@ export default function Timeline(props: TimelineProps) {
           outOfViewHeads={outOfViewHeads}
           timeDensity={lowestCommonTimeDensity}
           timelineLabelsFormat={timelineLabelFormat}
-        /> */}
+        />
       </TimelineHeader>
       <TimelineContent>
         {shouldRenderTimeline && (
