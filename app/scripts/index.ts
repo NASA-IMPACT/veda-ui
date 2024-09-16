@@ -22,6 +22,7 @@ import type { NavItem, InternalNavLink, NavItemType } from '$components/common/p
 
 import ExplorationAndAnalysis from '$components/exploration';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
+import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
 
 export {
   // COMPONENTS
@@ -46,6 +47,7 @@ export {
   StoriesHubContent,
   LogoContainer,
   ExplorationAndAnalysis,
+  DatasetSelectorModal,
 
   // HOOKS and utility functions
   useFiltersWithQS,
