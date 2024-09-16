@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
+import { Icon } from '@trussworks/react-uswds';
 import {
-  Alert,
-  Button,
-  ButtonGroup,
-  Link,
-  Icon
-} from '@trussworks/react-uswds';
+  USWDSAlert,
+  USWDSButton,
+  USWDSButtonGroup,
+  USWDSLink
+} from '$components/common/uswds';
+
 import './index.scss';
 
 interface CookieConsentProps {
@@ -51,9 +52,9 @@ export const CookieConsent = ({
         const newItem = (
           /* eslint-disable react/no-array-index-key */
 
-          <Link key={key} href={linkParts[1]} target='_blank'>
+          <USWDSLink key={key} href={linkParts[1]} target='_blank'>
             {linkParts[0]}
-          </Link>
+          </USWDSLink>
         );
         /* eslint-enable react/no-array-index-key */
 
@@ -84,14 +85,14 @@ export const CookieConsent = ({
         cookieConsentResponded || closeConsent ? 'hide-modal' : ''
       }`}
     >
-      <Alert
+      <USWDSAlert
         type='info'
         heading={title && title}
         headingLevel='h1'
         noIcon={true}
         className='radius-lg'
       >
-        <Button
+        <USWDSButton
           type='button'
           className='usa-modal__close close'
           onClick={() => {
@@ -99,11 +100,11 @@ export const CookieConsent = ({
           }}
         >
           <Icon.Close />
-        </Button>
+        </USWDSButton>
 
         {copy && renderContent}
-        <ButtonGroup className='padding-top-2'>
-          <Button
+        <USWDSButtonGroup className='padding-top-2'>
+          <USWDSButton
             onClick={() => {
               SetCookieConsentResponded(true);
               SetCookieConsentAnswer(false);
@@ -112,8 +113,8 @@ export const CookieConsent = ({
             type='button'
           >
             Decline Cookies
-          </Button>
-          <Button
+          </USWDSButton>
+          <USWDSButton
             onClick={() => {
               SetCookieConsentResponded(true);
               SetCookieConsentAnswer(true);
@@ -121,9 +122,9 @@ export const CookieConsent = ({
             type='button'
           >
             Accept Cookies
-          </Button>
-        </ButtonGroup>
-      </Alert>
+          </USWDSButton>
+        </USWDSButtonGroup>
+      </USWDSAlert>
     </div>
   );
 };
