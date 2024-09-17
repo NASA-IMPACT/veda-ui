@@ -11,6 +11,66 @@
         "system": (
             "cap-height": 364px
         ),
+        "merriweather": (
+            display-name: "Merriweather Web",
+            cap-height: 364px,
+            stack: 'font-stack-georgia',
+            src: (
+                dir: "merriweather",
+                roman: (
+                    100: false,
+                    200: false,
+                    300: "Latin-Merriweather-Light",
+                    400: "Latin-Merriweather-Regular",
+                    500: false,
+                    600: false,
+                    700: "Latin-Merriweather-Bold",
+                    800: false,
+                    900: "Latin-Merriweather-Black",
+                ),
+                italic: (
+                    100: false,
+                    200: false,
+                    300: "Latin-Merriweather-LightItalic",
+                    400: "Latin-Merriweather-Italic",
+                    500: false,
+                    600: false,
+                    700: "Latin-Merriweather-BoldItalic",
+                    800: false,
+                    900: "Latin-Merriweather-BlackItalic",
+                ),
+            ),
+        ),
+        "roboto-mono": (
+            display-name: "Roboto Mono Web",
+            cap-height: 364px,
+            stack: 'font-stack-monospace',
+            src: (
+                dir: "roboto-mono",
+                roman: (
+                    100: "roboto-mono-v5-latin-100",
+                    200: false,
+                    300: "roboto-mono-v5-latin-300",
+                    400: "roboto-mono-v5-latin-regular",
+                    500: "roboto-mono-v5-latin-500",
+                    600: false,
+                    700: "roboto-mono-v5-latin-700",
+                    800: false,
+                    900: false,
+                ),
+                italic: (
+                    100: "roboto-mono-v5-latin-100italic",
+                    200: false,
+                    300: "roboto-mono-v5-latin-300italic",
+                    400: "roboto-mono-v5-latin-italic",
+                    500: "roboto-mono-v5-latin-500italic",
+                    600: false,
+                    700: "roboto-mono-v5-latin-700italic",
+                    800: false,
+                    900: false,
+                ),
+            ),
+        ),
     ),
     $theme-type-scale-md: 8,
     $theme-utility-breakpoints: (
@@ -18,5 +78,4 @@
         "desktop": false
     ),
     $theme-font-type-sans: baseFontFamily,
-    $theme-font-type-serif: baseFontFamily,
 );
