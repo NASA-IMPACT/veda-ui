@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
@@ -11,11 +11,12 @@ import { TimelineDataset } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
 
+// @TODO: "height: 100%" Added for exploration container to show correctly in NextJs instance but investigate why this is needed and possibly work to remove
 const Container = styled.div`
   display: flex;
   flex-flow: column;
   flex-grow: 1;
-  height: 100%; // @TODO-SANDRA: Added because it wasn't showing up but this will need to recheck this
+  height: 100%;
 
   .panel-wrapper {
     flex-grow: 1;
