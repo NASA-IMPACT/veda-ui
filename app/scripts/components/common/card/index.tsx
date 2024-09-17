@@ -246,16 +246,22 @@ export interface CardComponentBaseProps {
 // @TODO: Consolidate these props when the instance adapts the new syntax
 export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
   linkTo: string;
-  onLinkClick: MouseEventHandler;
+  onLinkClick?: MouseEventHandler;
 }
 export interface CardComponentProps extends CardComponentBaseProps {
   linkProperties: {
     linkTo: string,
   } & LinkProperties;
-
 }
 
-function CardComponent(props: (CardComponentProps & CardComponentPropsDeprecated)) {
+type CardComponentPropsType = CardComponentProps | CardComponentPropsDeprecated;
+
+// Type guard to check if props has linkProperties
+function hasLinkProperties(props: CardComponentPropsType): props is CardComponentProps {
+  return !!((props as CardComponentProps).linkProperties);
+}
+
+function CardComponent(props: CardComponentPropsType) {
   const {
     className,
     title,
@@ -269,16 +275,24 @@ function CardComponent(props: (CardComponentProps & CardComponentPropsDeprecated
     tagLabels,
     parentTo,
     footerContent,
-    linkTo,
-    onLinkClick,
-    onCardClickCapture,
-    linkProperties = {
-      LinkElement: SmartLink,
-      pathAttributeKeyName: 'to',
-      linkTo,
-      onLinkClick
-    }
+    onCardClickCapture
   } = props;
+
+  let linkProperties;
+
+  if (hasLinkProperties(props)) {
+    // Handle new props with linkProperties
+    const { linkProperties: linkPropertiesProps } = props;
+    linkProperties = linkPropertiesProps;
+  } else {
+    const { linkTo, onLinkClick,  } = props;
+    linkProperties = {
+      to: linkTo,
+      onLinkClick,
+      pathAttributeKeyName: 'to',
+      linkComponent: SmartLink
+    };
+  }
 
   const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);
 
