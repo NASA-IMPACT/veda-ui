@@ -11,6 +11,7 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
+import SmartLink from '../smart-link';
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
@@ -225,11 +226,9 @@ export interface LinkProperties {
   onLinkClick?: MouseEventHandler;
 }
 
-export interface CardComponentProps {
+export interface CardComponentBaseProps {
   title: JSX.Element | string;
-  linkProperties: {
-    linkTo: string,
-  } & LinkProperties;
+
   linkLabel?: string;
   className?: string;
   cardType?: CardType;
@@ -244,7 +243,19 @@ export interface CardComponentProps {
   onCardClickCapture?: MouseEventHandler;
 }
 
-function CardComponent(props: CardComponentProps) {
+// @TODO: Consolidate these props when the instance adapts the new syntax
+export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
+  linkTo: string;
+  onLinkClick: MouseEventHandler;
+}
+export interface CardComponentProps extends CardComponentBaseProps {
+  linkProperties: {
+    linkTo: string,
+  } & LinkProperties;
+
+}
+
+function CardComponent(props: (CardComponentProps & CardComponentPropsDeprecated)) {
   const {
     className,
     title,
@@ -258,8 +269,15 @@ function CardComponent(props: CardComponentProps) {
     tagLabels,
     parentTo,
     footerContent,
+    linkTo,
+    onLinkClick,
     onCardClickCapture,
-    linkProperties
+    linkProperties = {
+      LinkElement: SmartLink,
+      pathAttributeKeyName: 'to',
+      linkTo,
+      onLinkClick
+    }
   } = props;
 
   const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);

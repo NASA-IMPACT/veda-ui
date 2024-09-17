@@ -33,21 +33,13 @@ export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
 }
 
   export function useFiltersWithQS({
-    navigate,
-    push=false
+    navigate
   }: {
-    navigate: any,
-    push?: boolean,
+    navigate: any
   }): UseFiltersWithQueryResult {
 
-    let navCommit = navigate;
-
-    if (push) {
-      navCommit = ({ search }) => navigate.push(`?${search}`);
-    }
-
     const useQsState = useQsStateCreator({
-      commit: navCommit
+      commit: navigate
     });
 
   const [search, setSearch] = useQsState.memo(
@@ -68,9 +60,10 @@ export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
     []
   );
 
+
   const onAction = useCallback<FilterAction>(
-    (action, value) =>
-      onFilterAction(action, value, taxonomies, setSearch, setTaxonomies),
+    (action, value) => {
+      onFilterAction(action, value, taxonomies, setSearch, setTaxonomies);},
     [setSearch, setTaxonomies, taxonomies]
   );
 
