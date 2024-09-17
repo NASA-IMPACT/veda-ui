@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import React from "react";
 import { CollecticonChevronDownSmall } from "@devseed-ui/collecticons";
 import { glsp, themeVal } from "@devseed-ui/theme-provider";
