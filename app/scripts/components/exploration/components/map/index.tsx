@@ -8,7 +8,7 @@ import {
   TimelineDatasetSuccess
 } from '../../types.d.ts';
 import { Layer } from './layer';
-import { AnalysisMessageControl } from './analysis-message-control';
+// import { AnalysisMessageControl } from './analysis-message-control';
 import { ShowTourControl } from './tour-control';
 
 import Map, { Compare, MapControls } from '$components/common/map';
@@ -146,7 +146,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
             comparing && 'Analysis is not possible when comparing dates'
           }
         /> */}
-        <AnalysisMessageControl />
+        {/* <AnalysisMessageControl /> */}
         <GeocoderControl />
         <MapOptionsControl
           projection={projection}

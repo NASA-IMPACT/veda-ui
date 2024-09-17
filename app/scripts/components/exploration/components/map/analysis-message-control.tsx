@@ -23,7 +23,7 @@ import useAois from '$components/common/map/controls/hooks/use-aois';
 import { calcFeatCollArea } from '$components/common/aoi/utils';
 import { formatDateRange } from '$utils/date';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
-// import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
+import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { AoIFeature } from '$components/common/map/types';
 import { ShortcutCode } from '$styles/shortcut-code';
@@ -164,7 +164,7 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
 
 export function AnalysisMessageControl() {
   const { main } = useMaps();
-  // useThemedControl(() => <AnalysisMessage mainMap={main} />, { position: 'top-left' });
+  useThemedControl(() => <AnalysisMessage mainMap={main} />, { position: 'top-left' });
 
   return null;
 }
