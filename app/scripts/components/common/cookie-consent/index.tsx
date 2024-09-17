@@ -11,8 +11,8 @@ import {
 import './index.scss';
 
 interface CookieConsentProps {
-  title: string;
-  copy: string;
+  title?: string | undefined;
+  copy?: string | undefined;
   onFormInteraction: () => void;
 }
 
@@ -43,9 +43,9 @@ export const CookieConsent = ({
     const bracketsParenthRegex = /\[(.*?)\)/;
     const interiroBracketsRegex = /\]\(/;
 
-    const parts = copy.split(bracketsParenthRegex);
+      const parts = copy && copy.split(bracketsParenthRegex);
 
-    const updatedContent = parts.map((item, key) => {
+    const updatedContent = parts && parts.map((item, key) => {
       if (interiroBracketsRegex.test(item)) {
         const linkParts = item.split(interiroBracketsRegex);
 
