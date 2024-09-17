@@ -627,7 +627,7 @@ export default function Timeline(props: TimelineProps) {
     );
   };
   // Stub scale for when there is no layers
-  // const initialScale = useMemo(() => getInitialScale(width), [width]);
+  const initialScale = useMemo(() => getInitialScale(width), [width]);
 
   const minMaxTemporalExtent = useMemo(
     () => getTemporalExtent(
@@ -660,12 +660,12 @@ export default function Timeline(props: TimelineProps) {
       <TimelineWrapper ref={observe}>
         <TimelineHeader>
           <TimelineDetails>{CommonTimelineHeadline()}</TimelineDetails>
-          {/* <TimelineDateAxis xScaled={initialScale} width={width} /> */}
+          <TimelineDateAxis xScaled={initialScale} width={width} />
         </TimelineHeader>
         <TimelineContent>
           <TimelineDetails />
           <EmptyTimelineContentInner>
-            {/* <DateGrid width={width} xScaled={initialScale} /> */}
+            <DateGrid width={width} xScaled={initialScale} />
             <LayerActionBox>
               <div>
                 <CollecticonIsoStack size='xxlarge' />
