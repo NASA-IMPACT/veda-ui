@@ -160,15 +160,22 @@ function CatalogContent({
 
     const newSelectedIds = selectedIds.includes(id) ? selectedIds.filter((i) => i !== id) : [...selectedIds, id];
 
-    const selectedIdsWithParentData = getSelectedIdsWithParentData(newSelectedIds);
+    let selectedIdsWithParentData = getSelectedIdsWithParentData(newSelectedIds);
+
+    // @NOTE: Check if the new exclusiveSource is selected. Filter out the old one.
+    if (exclusiveSource !== exclusiveSourceSelected) {
+      selectedIdsWithParentData = selectedIdsWithParentData.filter(d => d.sourceExclusive !== exclusiveSourceSelected)
+    }
+
+    const relevantIdsBasedOnExclusion = filterRelevantIdsBasedOnExclusion(selectedIdsWithParentData, exclusiveSource && sourceIds?.includes(exclusiveSource));
+    
+    let relevantIdsBasedOnPreviousExclusion
 
     if (exclusiveSource && sourceIds?.includes(exclusiveSource)) {
       setExclusiveSourceSelected(exclusiveSource);
     } else {
       setExclusiveSourceSelected(null);
     }
-
-    const relevantIdsBasedOnExclusion = filterRelevantIdsBasedOnExclusion(selectedIdsWithParentData, exclusiveSource && sourceIds?.includes(exclusiveSource));
 
     setSelectedIds(newSelectedIds.filter((id) => relevantIdsBasedOnExclusion.includes(id)));
   }, [selectedIds, setSelectedIds]);
