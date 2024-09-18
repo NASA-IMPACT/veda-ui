@@ -11,6 +11,7 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
+import SmartLink from '../smart-link';
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
@@ -225,11 +226,9 @@ export interface LinkProperties {
   onLinkClick?: MouseEventHandler;
 }
 
-export interface CardComponentProps {
+export interface CardComponentBaseProps {
   title: JSX.Element | string;
-  linkProperties: {
-    linkTo: string,
-  } & LinkProperties;
+
   linkLabel?: string;
   className?: string;
   cardType?: CardType;
@@ -244,7 +243,25 @@ export interface CardComponentProps {
   onCardClickCapture?: MouseEventHandler;
 }
 
-function CardComponent(props: CardComponentProps) {
+// @TODO: Consolidate these props when the instance adapts the new syntax
+export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
+  linkTo: string;
+  onLinkClick?: MouseEventHandler;
+}
+export interface CardComponentProps extends CardComponentBaseProps {
+  linkProperties: {
+    linkTo: string,
+  } & LinkProperties;
+}
+
+type CardComponentPropsType = CardComponentProps | CardComponentPropsDeprecated;
+
+// Type guard to check if props has linkProperties
+function hasLinkProperties(props: CardComponentPropsType): props is CardComponentProps {
+  return !!((props as CardComponentProps).linkProperties);
+}
+
+function CardComponent(props: CardComponentPropsType) {
   const {
     className,
     title,
@@ -258,9 +275,24 @@ function CardComponent(props: CardComponentProps) {
     tagLabels,
     parentTo,
     footerContent,
-    onCardClickCapture,
-    linkProperties
+    onCardClickCapture
   } = props;
+
+  let linkProperties;
+
+  if (hasLinkProperties(props)) {
+    // Handle new props with linkProperties
+    const { linkProperties: linkPropertiesProps } = props;
+    linkProperties = linkPropertiesProps;
+  } else {
+    const { linkTo, onLinkClick,  } = props;
+    linkProperties = {
+      to: linkTo,
+      onLinkClick,
+      pathAttributeKeyName: 'to',
+      linkComponent: SmartLink
+    };
+  }
 
   const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);
 
