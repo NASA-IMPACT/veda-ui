@@ -20,8 +20,6 @@ import {
   subNavItems
 } from '$components/common/page-header/default-config';
 
-import { checkEnvFlag } from '$utils/utils';
-
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
 
@@ -43,8 +41,7 @@ const PageBody = styled.div`
 `;
 
 function LayoutRoot(props: { children?: ReactNode }) {
-  const useConsentForm = checkEnvFlag(process.env.COOKIE_CONSENT_FORM);
-
+  const cookieConsentContent = getCookieConsentFromVedaConfig();
   const readCookie = (name) => {
     const nameEQ = name + '=';
     const attribute = document.cookie.split(';');
@@ -56,26 +53,19 @@ function LayoutRoot(props: { children?: ReactNode }) {
     return null;
   };
   const { children } = props;
-  let cookieContents;
 
-  function getCookie() {
-    if (document.cookie != '') {
-      const cookie = readCookie('CookieConsent');
-      if (cookie != null) {
-        cookieContents = JSON.parse(cookie);
-
-        cookieContents.answer && setGoogleTagManager();
-
-        return cookieContents;
-      }
+  const getCookie = () => {
+    const cookie = readCookie('CookieConsent');
+    if (cookie) {
+      const cookieContents = JSON.parse(cookie);
+      if (cookieContents.answer) setGoogleTagManager();
+      return cookieContents;
     }
-    cookieContents = 'NO COOKIE';
-  }
+    return 'NO COOKIE';
+  };
 
-  const cookieConsentContent = getCookieConsentFromVedaConfig();
   const showForm = () => {
-    getCookie();
-
+    const cookieContents = getCookie();
     if (cookieContents === 'NO COOKIE') {
       return true;
     } else {
@@ -84,8 +74,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
   };
 
   useEffect(() => {
-    !useConsentForm && setGoogleTagManager();
-
+    !cookieConsentContent && setGoogleTagManager();
   }, []);
 
   const { title, thumbnail, description, banner, hideFooter } =
@@ -111,7 +100,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
-        {useConsentForm && showForm() && (
+        {cookieConsentContent && showForm() && (
           <CookieConsent
             {...cookieConsentContent}
             onFormInteraction={getCookie}
