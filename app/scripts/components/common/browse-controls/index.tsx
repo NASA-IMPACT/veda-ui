@@ -93,7 +93,7 @@ function BrowseControls(props: BrowseControlsProps) {
         key={name}
         prefix={name}
         items={[optionAll].concat(values)}
-        currentId={(taxonomies[name]?.length ? taxonomies[name][0] as string : 'all')}
+        currentId={(taxonomies[name]? taxonomies[name] as unknown as string : 'all')}
         onChange={(v) => {
           onAction(FilterActions.TAXONOMY, { key: name, value: v });
         }}
@@ -141,9 +141,8 @@ interface DropdownOptionsProps {
 
 function DropdownOptions(props: DropdownOptionsProps) {
   const { size, items, currentId, onChange, prefix } = props;
-
   const currentItem = items.find((d) => d.id === currentId);
-
+  
   return (
     <DropdownScrollable
       alignment='left'
