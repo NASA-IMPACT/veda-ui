@@ -66,8 +66,6 @@ export const CookieConsent = ({
   }, [copy]);
 
   useEffect(() => {
-    // if (readCookie('CookieConsent') ) {
-    //   console.log('document.cookie[CookieConsent]', readCookie('CookieConsent'))
     const cookieValue = {
       responded: cookieConsentResponded,
       answer: cookieConsentAnswer
@@ -81,8 +79,8 @@ export const CookieConsent = ({
   return (
     <div
       id='cookie-consent'
-      className={`margin-2 shadow-2 ${
-        cookieConsentResponded || closeConsent ? 'hide-modal' : ''
+      className={`margin-2 shadow-2 position-fixed z-top maxw-tablet-lg bottom-65px ${
+        cookieConsentResponded || closeConsent ? 'hide-modal bottom-neg-500 ' : ''
       }`}
     >
       <USWDSAlert
@@ -94,7 +92,7 @@ export const CookieConsent = ({
       >
         <USWDSButton
           type='button'
-          className='usa-modal__close close'
+          className='usa-modal__close close padding-0'
           onClick={() => {
             setCloseConsent(true);
           }}
