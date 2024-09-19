@@ -322,7 +322,7 @@ function CardComponent(props: CardComponentPropsType) {
                   {isExternalLink && <ExternalLinkFlag />}
                   {!isExternalLink && tagLabels && parentTo && (
                     tagLabels.map((label) => (
-                      <CardLabel as={Link} to={parentTo} key={label}>
+                      <CardLabel as={linkProperties.LinkElement} to={parentTo} key={label}>
                         {label}
                       </CardLabel>
                     ))
