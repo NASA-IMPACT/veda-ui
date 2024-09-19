@@ -1,7 +1,5 @@
-import React, { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useRef, useMemo } from 'react';
 
-import { storyTaxonomies, getString } from 'veda';
 import styled from 'styled-components';
 import { glsp } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
@@ -17,11 +15,12 @@ import {
   FoldHeadline,
   FoldTitle
 } from '$components/common/fold';
+import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
 import { Card } from '$components/common/card';
 import { CardListGrid, CardMeta, CardTopicsList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
+import { prepareDatasets } from '$components/common/catalog/prepare-datasets';
 
-import { STORIES_PATH, getStoryPath } from '$utils/routes';
 import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
@@ -33,14 +32,10 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data/taxonomies';
 
-
-import SmartLink from '$components/common/smart-link';
-
 const StoryCount = styled(Subtitle)`
   grid-column: 1 / -1;
   display: flex;
   gap: ${glsp(0.5)};
-
   span {
     text-transform: uppercase;
     line-height: 1.5rem;
@@ -56,8 +51,25 @@ const FoldWithTopMargin = styled(Fold)`
   margin-top: ${glsp()};
 `;
 
-export default function HubContent({ allStories }) {
+export default function HubContent({ allStories, search, taxonomies, onAction, LinkElement, STORIES_PATH, storyTaxonomies, storiesString }) {
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
+  const { headerHeight } = useSlidingStickyHeaderProps();
+  const displayStories = useMemo(
+    () =>
+      prepareDatasets(allStories, {
+        search,
+        taxonomies,
+        sortField: 'pubDate',
+        sortDir: 'desc',
+      }),
+    [search, taxonomies, allStories]
+  );
+
+  const isFiltering = !!(
+    (taxonomies && Object.keys(taxonomies).length )||
+    search
+  );
+
   return (        <FoldWithTopMargin>
     <BrowseFoldHeader
       ref={browseControlsHeaderRef}
@@ -80,15 +92,15 @@ export default function HubContent({ allStories }) {
       <span>
         Showing{' '}
         <Pluralize
-          singular={getString('stories').one}
-          plural={getString('stories').other}
+          singular={storiesString.one}
+          plural={storiesString.other}
           count={displayStories.length}
           showCount={true}
         />{' '}
         out of {allStories.length}.
       </span>
       {isFiltering && (
-        <Button forwardedAs={Link} to={STORIES_PATH} size='small'>
+        <Button forwardedAs={LinkElement} to={STORIES_PATH} size='small'>
           Clear filters <CollecticonXmarkSmall />
         </Button>
       )}
@@ -125,8 +137,8 @@ export default function HubContent({ allStories }) {
                 }
                 linkLabel='View more'
                 linkProperties={{
-                  linkTo: `${d.asLink?.url ?? getStoryPath(d)}`,
-                  LinkElement: SmartLink,
+                  linkTo: `${d.asLink?.url ?? d.path}`,
+                  LinkElement,
                   pathAttributeKeyName: 'to'
                 }}
                 title={
@@ -155,7 +167,7 @@ export default function HubContent({ allStories }) {
                         {topics.map((t) => (
                           <dd key={t.id}>
                             <Pill
-                              as={Link}
+                              as={LinkElement}
                               to={`${STORIES_PATH}?${
                                 FilterActions.TAXONOMY
                               }=${encodeURIComponent(
@@ -185,7 +197,7 @@ export default function HubContent({ allStories }) {
       </CardListGrid>
     ) : (
       <EmptyHub>
-        There are no {getString('stories').other.toLocaleLowerCase()} to
+        There are no {storiesString.other.toLocaleLowerCase()} to
         show with the selected filters.
       </EmptyHub>
     )}
