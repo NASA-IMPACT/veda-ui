@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 
-import { stories, storyTaxonomies, getString } from 'veda';
-
+import { stories, getString } from 'veda';
 import HubContent from './hub-content';
+import { generateTaxonomies } from '$utils/veda-data/taxonomies';
 
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { LayoutProps } from '$components/common/layout-root';
@@ -25,6 +25,7 @@ const allStories = Object.values(stories).map((d) => d!.data).filter(d => !d.isH
 function StoriesHub() {
   const controlVars = useFiltersWithQS({navigate: useNavigate()});
   const { search, taxonomies, onAction } = controlVars;
+  const storyTaxonomies = generateTaxonomies(allStories);
   return (
     <PageMainContent>
       <LayoutProps
@@ -39,7 +40,7 @@ function StoriesHub() {
       </ComponentOverride>
       <FeaturedStories />
       <ContentOverride with='storiesHubContent'>
-        <HubContent allStories={allStories} search={search} taxonomies={taxonomies} onAction={onAction} LinkElement={SmartLink} STORIES_PATH={STORIES_PATH} storiesString={{one: getString('stories').one,other: getString('stories').other}} storyTaxonomies={storyTaxonomies} />
+        <HubContent allStories={allStories} search={search} taxonomies={taxonomies} onAction={onAction} linkProperties={{ LinkElement: SmartLink, pathAttributeKeyName: 'to'}} STORIES_PATH={STORIES_PATH} storiesString={{one: getString('stories').one,other: getString('stories').other}} storyTaxonomies={storyTaxonomies} />
       </ContentOverride>
     </PageMainContent>
   );

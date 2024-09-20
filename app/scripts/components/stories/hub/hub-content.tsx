@@ -51,9 +51,21 @@ const FoldWithTopMargin = styled(Fold)`
   margin-top: ${glsp()};
 `;
 
-export default function HubContent({ allStories, search, taxonomies, onAction, LinkElement, STORIES_PATH, storyTaxonomies, storiesString }) {
+export default function HubContent({ allStories, search, taxonomies, onAction, linkProperties, STORIES_PATH, storyTaxonomies, storiesString }) {
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
+  const { LinkElement, pathAttributeKeyName } = linkProperties;
+  const ButtonLinkProps = {
+    forwardedAs: LinkElement,
+    [pathAttributeKeyName]: STORIES_PATH
+  };
+
+  function getPillLinkProps(t){
+    return {
+      as: LinkElement,
+      [pathAttributeKeyName]: `${STORIES_PATH}?${FilterActions.TAXONOMY}=${encodeURIComponent(JSON.stringify({ Topics: t.id }))}`
+    };
+  }
   const displayStories = useMemo(
     () =>
       prepareDatasets(allStories, {
@@ -100,7 +112,7 @@ export default function HubContent({ allStories, search, taxonomies, onAction, L
         out of {allStories.length}.
       </span>
       {isFiltering && (
-        <Button forwardedAs={LinkElement} to={STORIES_PATH} size='small'>
+        <Button {...ButtonLinkProps} size='small'>
           Clear filters <CollecticonXmarkSmall />
         </Button>
       )}
@@ -139,7 +151,7 @@ export default function HubContent({ allStories, search, taxonomies, onAction, L
                 linkProperties={{
                   linkTo: `${d.asLink?.url ?? d.path}`,
                   LinkElement,
-                  pathAttributeKeyName: 'to'
+                  pathAttributeKeyName
                 }}
                 title={
                   <TextHighlight
@@ -167,12 +179,7 @@ export default function HubContent({ allStories, search, taxonomies, onAction, L
                         {topics.map((t) => (
                           <dd key={t.id}>
                             <Pill
-                              as={LinkElement}
-                              to={`${STORIES_PATH}?${
-                                FilterActions.TAXONOMY
-                              }=${encodeURIComponent(
-                                JSON.stringify({ Topics: t.id })
-                              )}`}
+                              {...getPillLinkProps(t)}
                               onClick={() => {
                                 browseControlsHeaderRef.current?.scrollIntoView();
                               }}
