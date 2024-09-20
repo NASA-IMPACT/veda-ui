@@ -24,7 +24,6 @@ const allStories = Object.values(stories).map((d) => d!.data).filter(d => !d.isH
 
 function StoriesHub() {
   const controlVars = useFiltersWithQS({navigate: useNavigate()});
-  const { search, taxonomies, onAction } = controlVars;
   const storyTaxonomies = generateTaxonomies(allStories);
   return (
     <PageMainContent>
@@ -40,7 +39,14 @@ function StoriesHub() {
       </ComponentOverride>
       <FeaturedStories />
       <ContentOverride with='storiesHubContent'>
-        <HubContent allStories={allStories} search={search} taxonomies={taxonomies} onAction={onAction} linkProperties={{ LinkElement: SmartLink, pathAttributeKeyName: 'to'}} STORIES_PATH={STORIES_PATH} storiesString={{one: getString('stories').one,other: getString('stories').other}} storyTaxonomies={storyTaxonomies} />
+        <HubContent
+          allStories={allStories}
+          onFilterchanges={() => controlVars}
+          linkProperties={{ LinkElement: SmartLink, pathAttributeKeyName: 'to'}}
+          STORIES_PATH={STORIES_PATH}
+          storiesString={{one: getString('stories').one,other: getString('stories').other}}
+          storyTaxonomies={storyTaxonomies}
+        />
       </ContentOverride>
     </PageMainContent>
   );

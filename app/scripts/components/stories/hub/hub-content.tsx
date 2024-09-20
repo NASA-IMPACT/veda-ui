@@ -16,7 +16,7 @@ import {
   FoldTitle
 } from '$components/common/fold';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
-import { Card } from '$components/common/card';
+import { Card, LinkProperties } from '$components/common/card';
 import { CardListGrid, CardMeta, CardTopicsList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { prepareDatasets } from '$components/common/catalog/prepare-datasets';
@@ -31,6 +31,9 @@ import {
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data/taxonomies';
+
+import { StoryData, Taxonomy } from '$types/veda';
+import { UseFiltersWithQueryResult } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 
 const StoryCount = styled(Subtitle)`
   grid-column: 1 / -1;
@@ -51,10 +54,22 @@ const FoldWithTopMargin = styled(Fold)`
   margin-top: ${glsp()};
 `;
 
-export default function HubContent({ allStories, search, taxonomies, onAction, linkProperties, STORIES_PATH, storyTaxonomies, storiesString }) {
+interface StoryDataWithPath extends StoryData {path: string}
+interface HubContentProps {
+  allStories: StoryDataWithPath[];
+  linkProperties: LinkProperties;
+  STORIES_PATH: string;
+  storyTaxonomies: Taxonomy[];
+  storiesString: {one: string, other: string};
+  onFilterchanges: () => UseFiltersWithQueryResult;
+}
+
+export default function HubContent(props:HubContentProps) {
+  const { allStories, linkProperties, STORIES_PATH, storyTaxonomies, storiesString, onFilterchanges } = props;
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
   const { LinkElement, pathAttributeKeyName } = linkProperties;
+  const { search, taxonomies, onAction } = onFilterchanges();
   const ButtonLinkProps = {
     forwardedAs: LinkElement,
     [pathAttributeKeyName]: STORIES_PATH
@@ -73,7 +88,7 @@ export default function HubContent({ allStories, search, taxonomies, onAction, l
         taxonomies,
         sortField: 'pubDate',
         sortDir: 'desc',
-      }),
+      }) as StoryDataWithPath[],
     [search, taxonomies, allStories]
   );
 
