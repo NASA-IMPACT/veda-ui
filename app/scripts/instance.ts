@@ -41,6 +41,8 @@ import Hug from "$styles/hug";
 import { Actions } from "$components/common/browse-controls/use-browse-controls";
 import Image from "$components/common/blocks/images";
 
+import SmartLink from "$components/common/smart-link";
+
 export {
   STORIES_PATH,
   DATASETS_PATH,
@@ -67,6 +69,7 @@ export {
   FoldProse,
   Hug,
   Image,
+  SmartLink,
   Pill,
   Tip,
   VarHeading

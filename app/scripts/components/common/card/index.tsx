@@ -1,8 +1,8 @@
-import React, { lazy, MouseEventHandler } from 'react';
+import React, { lazy, MouseEventHandler, ComponentType } from 'react';
 import styled, { css } from 'styled-components';
-import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
+import { Link } from 'react-router-dom';
 const SmartLink = lazy(() => import('../smart-link'));
 import {
   glsp,
@@ -221,7 +221,7 @@ export function ExternalLinkFlag() {
 }
 
 export interface LinkProperties {
-  LinkElement: JSX.Element | ((props: any) => JSX.Element);
+  LinkElement: JSX.Element | ((props: any) => JSX.Element) | ComponentType<any>;
   pathAttributeKeyName: string;
   onLinkClick?: MouseEventHandler;
 }
@@ -247,6 +247,7 @@ export interface CardComponentBaseProps {
 }
 
 // @TODO: Consolidate these props when the instance adapts the new syntax
+// Specifically: https://github.com/US-GHG-Center/veda-config-ghg/blob/develop/custom-pages/news-and-events/component.tsx#L108
 export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
   linkTo: string;
   onLinkClick?: MouseEventHandler;
@@ -278,7 +279,8 @@ function CardComponent(props: CardComponentPropsType) {
     footerContent,
     onCardClickCapture
   } = props;
-
+// @TODO: This process is not necessary once all the instances adapt the linkProperties syntax
+// Consolidate them to use LinkProperties only
   let linkProperties: LinkWithPathProperties;
 
   if (hasLinkProperties(props)) {
@@ -291,7 +293,6 @@ function CardComponent(props: CardComponentPropsType) {
       linkTo,
       onLinkClick,
       pathAttributeKeyName: 'to',
-      // @ts-expect-error SmartLink needs to be lazily loaded temporarily to prevent ui-library from loading react-router-dom
       LinkElement: SmartLink
     };
   }
