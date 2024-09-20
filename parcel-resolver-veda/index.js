@@ -6,6 +6,7 @@ const dedent = require('dedent');
 const _ = require('lodash');
 const { Resolver } = require('@parcel/plugin');
 
+const markdownit = require('markdown-it');
 const stringifyYmlWithFns = require('./stringify-yml-func');
 const { loadVedaConfig } = require('./config');
 const { getFrontmatterData } = require('./frontmatter');
@@ -18,6 +19,8 @@ const {
   generateTaxonomiesModuleOutput
 } = require('./taxonomies');
 const { withDefaultStrings } = require('./defaults');
+
+const md = markdownit();
 
 async function loadOptionalContent(logger, root, globPath, type) {
   try {
@@ -78,6 +81,15 @@ function generateMdxDataObject(data) {
   return `{
       ${imports.join(',\n')}
     }`;
+}
+
+function getCookieConsentForm(result) {
+  if (!result.cookieConsentForm) return undefined;
+  else {
+    const parsedCopy =  md.render(result.cookieConsentForm.copy)
+    const trimmedCopy = parsedCopy.replace(/(\r\n|\n|\r)/gm, '');
+    return JSON.stringify({ title: result.cookieConsentForm.title, copy: trimmedCopy});
+  }
 }
 
 // Using all the "key: path" combinations under config.pageOverrides, load the
@@ -197,7 +209,7 @@ module.exports = new Resolver({
           booleans: ${JSON.stringify(withDefaultStrings(result.booleans))},
           banner: ${JSON.stringify(result.banner)},
           navItems: ${JSON.stringify(result.navItems)},
-          cookieConsentForm: ${JSON.stringify(result.cookieConsentForm)}
+          cookieConsentForm: ${getCookieConsentForm(result)}
         };
 
         export const theme = ${JSON.stringify(result.theme) || null};
@@ -258,9 +270,5 @@ module.exports = new Resolver({
       // console.log('resolved', resolved);
       return resolved;
     }
-
-    // Let the next resolver in the pipeline handle
-    // this dependency.
-    return null;
   }
 });
