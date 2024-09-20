@@ -1,9 +1,9 @@
-import React, { MouseEventHandler } from 'react';
+import React, { lazy, MouseEventHandler, ComponentType } from 'react';
 import styled, { css } from 'styled-components';
-import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
-
+import { Link } from 'react-router-dom';
+const SmartLink = lazy(() => import('../smart-link'));
 import {
   glsp,
   media,
@@ -11,7 +11,7 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
-import SmartLink from '../smart-link';
+
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
@@ -221,14 +221,17 @@ export function ExternalLinkFlag() {
 }
 
 export interface LinkProperties {
-  LinkElement: JSX.Element | ((props: any) => JSX.Element);
+  LinkElement: JSX.Element | ((props: any) => JSX.Element) | ComponentType<any>;
   pathAttributeKeyName: string;
   onLinkClick?: MouseEventHandler;
 }
 
+export interface LinkWithPathProperties extends LinkProperties {
+  linkTo: string;
+}
+
 export interface CardComponentBaseProps {
   title: JSX.Element | string;
-
   linkLabel?: string;
   className?: string;
   cardType?: CardType;
@@ -244,14 +247,13 @@ export interface CardComponentBaseProps {
 }
 
 // @TODO: Consolidate these props when the instance adapts the new syntax
+// Specifically: https://github.com/US-GHG-Center/veda-config-ghg/blob/develop/custom-pages/news-and-events/component.tsx#L108
 export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
   linkTo: string;
   onLinkClick?: MouseEventHandler;
 }
 export interface CardComponentProps extends CardComponentBaseProps {
-  linkProperties: {
-    linkTo: string,
-  } & LinkProperties;
+  linkProperties: LinkWithPathProperties;
 }
 
 type CardComponentPropsType = CardComponentProps | CardComponentPropsDeprecated;
@@ -277,8 +279,9 @@ function CardComponent(props: CardComponentPropsType) {
     footerContent,
     onCardClickCapture
   } = props;
-
-  let linkProperties;
+// @TODO: This process is not necessary once all the instances adapt the linkProperties syntax
+// Consolidate them to use LinkProperties only
+  let linkProperties: LinkWithPathProperties;
 
   if (hasLinkProperties(props)) {
     // Handle new props with linkProperties
@@ -287,10 +290,10 @@ function CardComponent(props: CardComponentPropsType) {
   } else {
     const { linkTo, onLinkClick,  } = props;
     linkProperties = {
-      to: linkTo,
+      linkTo,
       onLinkClick,
       pathAttributeKeyName: 'to',
-      linkComponent: SmartLink
+      LinkElement: SmartLink
     };
   }
 
