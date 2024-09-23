@@ -2,7 +2,6 @@ import React, { lazy, MouseEventHandler, ComponentType } from 'react';
 import styled, { css } from 'styled-components';
 import { format } from 'date-fns';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
-import { Link } from 'react-router-dom';
 const SmartLink = lazy(() => import('../smart-link'));
 import {
   glsp,
