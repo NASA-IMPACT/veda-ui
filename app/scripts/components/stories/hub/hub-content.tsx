@@ -58,27 +58,28 @@ interface StoryDataWithPath extends StoryData {path: string}
 interface HubContentProps {
   allStories: StoryDataWithPath[];
   linkProperties: LinkProperties;
-  STORIES_PATH: string;
+  storiesPagePath: string;
   storyTaxonomies: Taxonomy[];
   storiesString: {one: string, other: string};
   onFilterchanges: () => UseFiltersWithQueryResult;
 }
 
 export default function HubContent(props:HubContentProps) {
-  const { allStories, linkProperties, STORIES_PATH, storyTaxonomies, storiesString, onFilterchanges } = props;
+  const { allStories, linkProperties, storiesPagePath, storyTaxonomies, storiesString, onFilterchanges } = props;
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
   const { LinkElement, pathAttributeKeyName } = linkProperties;
   const { search, taxonomies, onAction } = onFilterchanges();
+
   const ButtonLinkProps = {
     forwardedAs: LinkElement,
-    [pathAttributeKeyName]: STORIES_PATH
+    [pathAttributeKeyName]: storiesPagePath
   };
 
   function getPillLinkProps(t){
     return {
       as: LinkElement,
-      [pathAttributeKeyName]: `${STORIES_PATH}?${FilterActions.TAXONOMY}=${encodeURIComponent(JSON.stringify({ Topics: t.id }))}`
+      [pathAttributeKeyName]: `${storiesPagePath}?${FilterActions.TAXONOMY}=${encodeURIComponent(JSON.stringify({ Topics: t.id }))}`
     };
   }
   const displayStories = useMemo(
@@ -146,7 +147,7 @@ export default function HubContent(props:HubContentProps) {
                   <CardMeta>
                     <CardSourcesList
                       sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
-                      rootPath={STORIES_PATH}
+                      rootPath={storiesPagePath}
                       onSourceClick={(id) => {
                         onAction(FilterActions.TAXONOMY_MULTISELECT, {
                           key: TAXONOMY_SOURCE,

@@ -43,7 +43,7 @@ function StoriesHub() {
           allStories={allStories}
           onFilterchanges={() => controlVars}
           linkProperties={{ LinkElement: SmartLink, pathAttributeKeyName: 'to'}}
-          STORIES_PATH={STORIES_PATH}
+          storiesPagePath={STORIES_PATH}
           storiesString={{one: getString('stories').one,other: getString('stories').other}}
           storyTaxonomies={storyTaxonomies}
         />
