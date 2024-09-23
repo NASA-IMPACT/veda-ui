@@ -26,6 +26,7 @@ import {
 } from '$styles/panel';
 import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
 import { divergingColorMaps, sequentialColorMaps } from '$components/exploration/components/datasets/colorMaps';
+import { DEFAULT_COLORMAP } from '$components/exploration/components/datasets/colormap-options';
 
 interface LayerLegendCommonProps {
   id: string;
@@ -348,13 +349,15 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
 
 export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 'stops' | 'type'>) => {
   const { colorMap, ...otherProps } = props;
+  let colormapResult;
 
-  const colormapResult = findColormapByName(colorMap ?? 'viridis');
-  if (!colormapResult) {
-    return null;
+  if (colorMap) {
+    colormapResult = findColormapByName(colorMap);
+  }
+  if (!colorMap || !colormapResult) {
+    colormapResult = findColormapByName(DEFAULT_COLORMAP);
   }
   const { foundColorMap, isReversed } = colormapResult;
-
   const stops = Object.values(foundColorMap)
   .filter(value => Array.isArray(value) && value.length === 4)
   .map((value) => {
@@ -371,7 +374,6 @@ export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 's
 export const findColormapByName = (name: string) => {
   const isReversed = name.toLowerCase().endsWith('_r');
   const baseName = isReversed ? name.slice(0, -2).toLowerCase() : name.toLowerCase();
-
   const colormap = sequentialColorMaps[baseName] ?? divergingColorMaps[baseName];
 
   if (!colormap) {

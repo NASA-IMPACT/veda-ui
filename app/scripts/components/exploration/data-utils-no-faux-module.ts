@@ -19,6 +19,7 @@ import {
 } from './components/datasets/analysis-metrics';
 import { utcString2userTzDate } from '$utils/date';
 import { DatasetLayer, VedaDatum, DatasetData } from '$types/veda';
+import { DEFAULT_COLORMAP } from './components/datasets/colormap-options.js';
 
 // @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
 // `./date-utils` to be deprecated!!
@@ -59,7 +60,7 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
 }
 
 function getInitialColorMap(dataset: DatasetLayer): string {
-  return dataset.sourceParams?.colormap_name ?? 'viridis';
+  return dataset.sourceParams?.colormap_name ?? DEFAULT_COLORMAP;
 }
 
 export function reconcileDatasets(
