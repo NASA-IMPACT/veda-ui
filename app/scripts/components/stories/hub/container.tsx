@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router';
 
 import { stories, getString } from 'veda';
 import HubContent from './hub-content';
-import { generateTaxonomies } from '$utils/veda-data/taxonomies';
 
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { LayoutProps } from '$components/common/layout-root';
@@ -24,7 +23,6 @@ const allStories = Object.values(stories).map((d) => d!.data).filter(d => !d.isH
 
 function StoriesHub() {
   const controlVars = useFiltersWithQS({navigate: useNavigate()});
-  const storyTaxonomies = generateTaxonomies(allStories);
   return (
     <PageMainContent>
       <LayoutProps
@@ -45,7 +43,6 @@ function StoriesHub() {
           linkProperties={{ LinkElement: SmartLink, pathAttributeKeyName: 'to'}}
           storiesPagePath={STORIES_PATH}
           storiesString={{one: getString('stories').one,other: getString('stories').other}}
-          storyTaxonomies={storyTaxonomies}
         />
       </ContentOverride>
     </PageMainContent>

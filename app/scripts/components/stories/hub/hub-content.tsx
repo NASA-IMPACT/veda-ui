@@ -31,8 +31,8 @@ import {
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
 } from '$utils/veda-data/taxonomies';
-
-import { StoryData, Taxonomy } from '$types/veda';
+import { generateTaxonomies } from '$utils/veda-data/taxonomies';
+import { StoryData } from '$types/veda';
 import { UseFiltersWithQueryResult } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 
 const StoryCount = styled(Subtitle)`
@@ -59,17 +59,18 @@ interface HubContentProps {
   allStories: StoryDataWithPath[];
   linkProperties: LinkProperties;
   storiesPagePath: string;
-  storyTaxonomies: Taxonomy[];
   storiesString: {one: string, other: string};
   onFilterchanges: () => UseFiltersWithQueryResult;
 }
 
 export default function HubContent(props:HubContentProps) {
-  const { allStories, linkProperties, storiesPagePath, storyTaxonomies, storiesString, onFilterchanges } = props;
+  const { allStories, linkProperties, storiesPagePath, storiesString, onFilterchanges } = props;
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
-  const { LinkElement, pathAttributeKeyName } = linkProperties;
   const { search, taxonomies, onAction } = onFilterchanges();
+
+  const { LinkElement, pathAttributeKeyName } = linkProperties;
+  const storyTaxonomies = generateTaxonomies(allStories);
 
   const ButtonLinkProps = {
     forwardedAs: LinkElement,
