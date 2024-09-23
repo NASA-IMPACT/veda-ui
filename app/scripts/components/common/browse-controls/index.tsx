@@ -142,7 +142,7 @@ interface DropdownOptionsProps {
 function DropdownOptions(props: DropdownOptionsProps) {
   const { size, items, currentId, onChange, prefix } = props;
   const currentItem = items.find((d) => d.id === currentId);
-  
+
   return (
     <DropdownScrollable
       alignment='left'

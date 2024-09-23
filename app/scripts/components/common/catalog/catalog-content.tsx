@@ -158,7 +158,7 @@ function CatalogContent({
         return { id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() ?? '' };
       });
     };
-  
+
     const exclusiveSource = currentDataset.sourceExclusive?.toLowerCase();
     const sources = getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values;
     const sourceIds = sources?.map(source => source.id);
@@ -176,7 +176,7 @@ function CatalogContent({
     }
 
     const relevantIdsBasedOnExclusion = filterRelevantIdsBasedOnExclusion(selectedIdsWithParentData, exclusiveSource && sourceIds?.includes(exclusiveSource));
-    
+
     if (exclusiveSource && sourceIds?.includes(exclusiveSource)) {
       setExclusiveSourceSelected(exclusiveSource);
     } else {
