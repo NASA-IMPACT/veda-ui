@@ -74,12 +74,10 @@ export const CookieConsent = ({
     onFormInteraction();
   }, [cookieConsentResponded, cookieConsentAnswer, closeConsent]);
 
-  
-    if (closeConsent) return null;
-    else return (<div
+    return (<div
       id='cookie-consent'
-      className={`margin-0 tablet:margin-2 shadow-2 position-fixed z-top maxw-full tablet:maxw-tablet-lg bottom-0 right-0 ${
-        (cookieConsentResponded || closeConsent) ? 'animation--fade-out' : ''
+      className={`margin-0 tablet:margin-2 shadow-2 position-fixed z-top maxw-full tablet:maxw-tablet-lg animation--fade-out right-0 bottom-0 ${
+        (cookieConsentResponded || closeConsent) ? ' opacity-0' : 'opacity-1'
       }`}
     >
       <USWDSAlert
