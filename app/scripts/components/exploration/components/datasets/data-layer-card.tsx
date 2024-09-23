@@ -223,8 +223,7 @@ export default function DataLayerCard(props: CardProps) {
             min={min}
             max={max}
             colorMap={colorMap}
-          />
-        }
+          />}
 
       </DatasetInfo>
     </>
