@@ -15,6 +15,9 @@ import CatalogView from './components/common/catalog';
 import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
+import ExplorationAndAnalysis from '$components/exploration';
+import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
+import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
 
 export {
   // COMPONENTS
@@ -35,6 +38,10 @@ export {
   PageMainContent,
   PageHero,
   ReactQueryProvider,
+  ExplorationAndAnalysis,
+  DatasetSelectorModal,
   // HOOKS
   useFiltersWithQS,
+  // STATE
+  timelineDatasetsAtom
 };

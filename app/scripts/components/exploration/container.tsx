@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TourProvider } from '@reactour/tour';
 import { DevTools } from 'jotai-devtools';
 import { useAtom } from 'jotai';
@@ -10,6 +10,7 @@ import { EXPLORATION_PATH } from '$utils/routes';
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
+import { DatasetSelectorModal } from './components/dataset-selector-modal';
 
 
 /**
@@ -33,7 +34,14 @@ export default function ExplorationAndAnalysisContainer() {
   // atomWithLocation gets initialized outside of Exploration page and returns the previous page's value
   // We check if url Atom actually returns the values for exploration page here.
   const [currentUrl]= useAtom(urlAtom);
+  const [datasetModalRevealed, setDatasetModalRevealed] = useState(
+    !datasets.length
+  );
+
   if(!currentUrl.pathname?.includes(EXPLORATION_PATH)) return null;
+
+  const openModal = () => setDatasetModalRevealed(true);
+  const closeModal = () => setDatasetModalRevealed(false);
 
   return (
     <TourProvider
@@ -50,7 +58,11 @@ export default function ExplorationAndAnalysisContainer() {
       <TourManager />
       <PageMainContent>
         <PageHero title='Exploration' isHidden />
-        <ExplorationAndAnalysis datasets={datasets} setDatasets={setDatasets} />
+        <ExplorationAndAnalysis datasets={datasets} setDatasets={setDatasets} openDatasetsSelectionModal={openModal} />
+        <DatasetSelectorModal
+          revealed={datasetModalRevealed}
+          close={closeModal}
+        />
       </PageMainContent>
     </TourProvider>
   );

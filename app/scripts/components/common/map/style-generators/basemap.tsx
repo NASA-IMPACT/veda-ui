@@ -33,7 +33,6 @@ export function Basemap({
   boundariesOption = true
 }: BasemapProps) {
   const { updateStyle } = useMapStyle();
-
   const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
 
   const { data: styleJson } = useQuery(
