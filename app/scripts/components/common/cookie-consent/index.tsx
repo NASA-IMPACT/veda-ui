@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import { Icon } from '@trussworks/react-uswds';
 import {
   USWDSAlert,
@@ -38,7 +37,9 @@ export const CookieConsent = ({
     )}; path=/; expires=${closeConsent ? '0' : setCookieExpiration()}`;
   };
 
-  const addAttribute = copy && copy?.replaceAll('<a', `<a target="_blank" rel="noopener" role="link"`);
+  const addAttribute =
+    copy &&
+    copy?.replaceAll('<a', `<a target="_blank" rel="noopener" role="link"`);
   useEffect(() => {
     const cookieValue = {
       responded: cookieConsentResponded,
@@ -46,33 +47,36 @@ export const CookieConsent = ({
     };
     setCookie(cookieValue, closeConsent);
     onFormInteraction();
-  }, [cookieConsentResponded, cookieConsentAnswer]);
+  }, [cookieConsentResponded, cookieConsentAnswer, closeConsent]);
+
   return (
     <div
       id='cookie-consent'
-      className={`margin-2 shadow-2 position-fixed z-top maxw-tablet-lg bottom-65px ${
-        cookieConsentResponded || closeConsent
-          ? 'hide-modal bottom-neg-500 '
-          : ''
+      className={`margin-0 tablet:margin-2 shadow-2 position-fixed z-top maxw-full tablet:maxw-tablet-lg animation--fade-out right-0 bottom-0 ${
+        cookieConsentResponded || closeConsent ? ' opacity-0' : 'opacity-1'
       }`}
     >
       <USWDSAlert
         type='info'
         heading={title && title}
-        headingLevel='h1'
+        headingLevel='h2'
         noIcon={true}
         className='radius-lg'
       >
         <USWDSButton
-          type='button'
-          className='usa-modal__close close padding-0'
+          type='button '
+          className='width-3 height-3 padding-0 position-absolute right-2 top-2'
           onClick={() => {
             setCloseConsent(true);
           }}
+          unstyled
         >
-          <Icon.Close />
+          <Icon.Close size={3} />
         </USWDSButton>
-        {addAttribute && <div dangerouslySetInnerHTML={{ __html: addAttribute }} />}
+
+        {addAttribute && (
+          <div dangerouslySetInnerHTML={{ __html: addAttribute }} />
+        )}
         <USWDSButtonGroup className='padding-top-2'>
           <USWDSButton
             onClick={() => {

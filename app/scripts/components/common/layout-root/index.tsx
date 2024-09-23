@@ -8,6 +8,7 @@ import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 import Banner from '../banner';
 import { CookieConsent } from '../cookie-consent';
+import { COOKIE_CONSENT_KEY, NO_COOKIE } from '../cookie-consent/utils';
 
 import { LayoutRootContext } from './context';
 
@@ -52,26 +53,27 @@ function LayoutRoot(props: { children?: ReactNode }) {
     }
     return null;
   };
-  const { children } = props;
 
   const getCookie = () => {
-    const cookie = readCookie('CookieConsent');
+    const cookie = readCookie(COOKIE_CONSENT_KEY);
     if (cookie) {
       const cookieContents = JSON.parse(cookie);
       if (cookieContents.answer) setGoogleTagManager();
       return cookieContents;
     }
-    return 'NO COOKIE';
+    return NO_COOKIE;
   };
 
   const showForm = () => {
     const cookieContents = getCookie();
-    if (cookieContents === 'NO COOKIE') {
+    if (cookieContents === NO_COOKIE) {
       return true;
     } else {
       return !cookieContents.responded;
     }
   };
+  const { children } = props;
+
 
   useEffect(() => {
     !cookieConsentContent && setGoogleTagManager();
