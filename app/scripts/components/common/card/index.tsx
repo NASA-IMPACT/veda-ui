@@ -221,7 +221,7 @@ export function ExternalLinkFlag() {
 }
 
 export interface LinkProperties {
-  LinkElement: string | ComponentType<any> | JSX.Element | ((props: any) => JSX.Element) | undefined;
+  LinkElement: string | ComponentType<any> | undefined;
   pathAttributeKeyName: string;
   onLinkClick?: MouseEventHandler;
 }
