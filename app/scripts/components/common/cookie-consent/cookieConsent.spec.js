@@ -7,7 +7,7 @@ import { CookieConsent } from './index';
 describe('Cookie consent form should render with correct content.', () => {
   const cookieData = {
     title: 'Cookie Consent',
-    copy: 'We use cookies to enhance your browsing experience and to help us understand how our website is used. These cookies allow us to collect data on site usage and improve our services based on your interactions. To learn more about it, see our [Privacy Policy](https://www.nasa.gov/privacy/#cookies)'
+    copy: '<p>We use cookies to enhance your browsing experience and to help us understand how our website is used. These cookies allow us to collect data on site usage and improve our services based on your interactions. To learn more about it, see our <a href="https://www.nasa.gov/privacy/#cookies">Privacy Policy</a></p>We use cookies to enhance your browsing experience and to help us understand how our website is used. These cookies allow us to collect data on site usage and improve our services based on your interactions. To learn more about it, see our [Privacy Policy](https://www.nasa.gov/privacy/#cookies)'
   };
   const onFormInteraction = jest.fn();
   beforeEach(() => {
