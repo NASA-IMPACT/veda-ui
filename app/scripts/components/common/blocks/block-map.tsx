@@ -266,7 +266,7 @@ function MapBlock(props: MapBlockProps) {
       const labelFn = baseDataLayer.data.compare.mapLabel as (unknown) => string;
       return labelFn({dateFns, datetime: selectedDatetime, compareDatetime: compareToDate });
     }
-  
+
     // Default to date comparison.
     return selectedDatetime && compareToDate
       ? formatCompareDate(

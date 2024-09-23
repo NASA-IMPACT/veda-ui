@@ -136,8 +136,8 @@ function RootHome() {
 
   return (
     <PageMainContent>
-      <LayoutProps 
-        title='Welcome' 
+      <LayoutProps
+        title='Welcome'
         banner={renderBanner? {...banner}: null}
       />
 

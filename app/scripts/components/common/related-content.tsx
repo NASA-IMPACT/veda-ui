@@ -10,6 +10,7 @@ import {
   LinkContentData,
   StoryData
 } from 'veda';
+import SmartLink from './smart-link';
 import { utcString2userTzDate } from '$utils/date';
 import {
   getDatasetPath,
@@ -147,7 +148,11 @@ export default function RelatedContent(props: RelatedContentProps) {
               <Card
                 cardType='cover'
                 linkLabel={`View ${t.parent} ${t.name}`}
-                linkTo={t.asLink?.url ?? t.link}
+                linkProperties={{
+                  linkTo: `${t.asLink?.url ?? t.link}`,
+                  LinkElement: SmartLink,
+                  pathAttributeKeyName: 'to'
+                }}
                 title={t.name}
                 date={
                   t.parent === storyString

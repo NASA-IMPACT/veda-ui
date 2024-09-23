@@ -86,7 +86,7 @@ function BrowseControls(props: BrowseControlsProps) {
   const filterWrapConstant = 4;
   const wrapTaxonomies = taxonomiesOptions.length > filterWrapConstant; // wrap list of taxonomies when more then 4 filter options
 
-  
+
   const createFilterList = (filterList: Taxonomy[]) => {
     return filterList.map(({ name, values }) => (
       <DropdownOptions
@@ -102,7 +102,7 @@ function BrowseControls(props: BrowseControlsProps) {
     ));
   };
 
-  return (  
+  return (
     <BrowseControlsWrapper {...rest}>
       <SearchWrapper>
         <SearchField

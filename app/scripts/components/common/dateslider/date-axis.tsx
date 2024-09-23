@@ -35,7 +35,7 @@ const StyledG = styled.g`
 
 interface DateAxisProps {
   data: DateSliderDataItem[];
-  x: ScaleLinear<number, number, never>;
+  x: ScaleLinear<number, number>;
   zoomXTranslation: number;
   timeDensity: DateSliderTimeDensity;
 }
@@ -70,7 +70,7 @@ export function DateAxis(props: DateAxisProps) {
 
 interface DateAxisParentProps {
   data: DateSliderDataItem[];
-  x: ScaleLinear<number, number, never>;
+  x: ScaleLinear<number, number>;
   zoomXTranslation: number;
   timeDensity: DateSliderTimeDensity;
 }

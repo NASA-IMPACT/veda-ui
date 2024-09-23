@@ -59,6 +59,7 @@
     "no-setter-return": 0,
     "prefer-promise-reject-errors": 0,
     "import/order": 2,
+    "no-trailing-spaces": 2,
     "react/button-has-type": 2,
     "react/default-props-match-prop-types": 2,
     "react/jsx-closing-bracket-location": 2,

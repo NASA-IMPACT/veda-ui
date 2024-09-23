@@ -72,7 +72,7 @@ export function DatasetChart(props: DatasetChartProps) {
     const extents = [
       ...enhancedTimeseries.flatMap(d => extent(lineMetrics.map(m => d[m.id]))),
       ...(areaMetrics.length ? enhancedTimeseries.flatMap(d => extent([d[areaDataKey]].flat())) : [])
-    ].filter(Boolean); // Filter out falsey values 
+    ].filter(Boolean); // Filter out falsey values
     return extent(extents.flat()) as [undefined, undefined] | [number, number];
   }, [enhancedTimeseries, lineMetrics, areaMetrics]);
 
@@ -183,12 +183,12 @@ type AreaDataItem = {
 
 function DataArea(props: DataAreaProps) {
   const { x, y, prop, data, color, highlightDate, isVisible } = props;
-  
+
   const path = useMemo(() => {
     const areaGenerator = area<AreaDataItem>()
     .defined((d) => !!d[prop])
-    .x((d) => x(d.date)) 
-    .y0((d) => y(d[prop][0])) 
+    .x((d) => x(d.date))
+    .y0((d) => y(d[prop][0]))
     .y1((d) => y(d[prop][1]));
 
     return areaGenerator(data);
