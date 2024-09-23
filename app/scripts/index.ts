@@ -16,7 +16,6 @@ import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
 import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
-import { generateTaxonomies } from '$utils/veda-data/taxonomies';
 
 
 export {
@@ -40,6 +39,5 @@ export {
   ReactQueryProvider,
   StoriesHubContent,
   // HOOKS and utility functions
-  useFiltersWithQS,
-  generateTaxonomies
+  useFiltersWithQS
 };
