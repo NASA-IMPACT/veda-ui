@@ -221,7 +221,11 @@ export function ExternalLinkFlag() {
 }
 
 export interface LinkProperties {
+<<<<<<< HEAD
   LinkElement: JSX.Element | ((props: any) => JSX.Element) | ComponentType<any>;
+=======
+  LinkElement: string | ComponentType<any> | undefined;
+>>>>>>> 500d9535 (Add path to story data type, adjust Link Element type as Styled)
   pathAttributeKeyName: string;
   onLinkClick?: MouseEventHandler;
 }
