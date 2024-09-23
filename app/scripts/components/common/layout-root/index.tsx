@@ -52,7 +52,6 @@ function LayoutRoot(props: { children?: ReactNode }) {
     }
     return null;
   };
-  const { children } = props;
 
   const getCookie = () => {
     const cookie = readCookie('CookieConsent');
@@ -72,6 +71,8 @@ function LayoutRoot(props: { children?: ReactNode }) {
       return !cookieContents.responded;
     }
   };
+  const { children } = props;
+
 
   useEffect(() => {
     !cookieConsentContent && setGoogleTagManager();
