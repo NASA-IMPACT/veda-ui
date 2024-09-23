@@ -37,7 +37,9 @@ export const CookieConsent = ({
     )}; path=/; expires=${closeConsent ? '0' : setCookieExpiration()}`;
   };
 
-  const addAttribute = copy && copy?.replaceAll('<a', `<a target="_blank" rel="noopener" role="link"`);
+  const addAttribute =
+    copy &&
+    copy?.replaceAll('<a', `<a target="_blank" rel="noopener" role="link"`);
   useEffect(() => {
     const cookieValue = {
       responded: cookieConsentResponded,
@@ -45,14 +47,13 @@ export const CookieConsent = ({
     };
     setCookie(cookieValue, closeConsent);
     onFormInteraction();
-
   }, [cookieConsentResponded, cookieConsentAnswer, closeConsent]);
 
-    return (<div
+  return (
+    <div
       id='cookie-consent'
       className={`margin-0 tablet:margin-2 shadow-2 position-fixed z-top maxw-full tablet:maxw-tablet-lg animation--fade-out right-0 bottom-0 ${
-        (cookieConsentResponded || closeConsent) ? ' opacity-0' : 'opacity-1'
-
+        cookieConsentResponded || closeConsent ? ' opacity-0' : 'opacity-1'
       }`}
     >
       <USWDSAlert
@@ -73,7 +74,9 @@ export const CookieConsent = ({
           <Icon.Close size={3} />
         </USWDSButton>
 
-        {addAttribute && <div dangerouslySetInnerHTML={{ __html: addAttribute }} />}
+        {addAttribute && (
+          <div dangerouslySetInnerHTML={{ __html: addAttribute }} />
+        )}
         <USWDSButtonGroup className='padding-top-2'>
           <USWDSButton
             onClick={() => {
@@ -96,5 +99,6 @@ export const CookieConsent = ({
           </USWDSButton>
         </USWDSButtonGroup>
       </USWDSAlert>
-    </div>);
+    </div>
+  );
 };
