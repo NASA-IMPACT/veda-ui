@@ -72,6 +72,10 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
     setShowDetails(!showDetails);
   }
 
+  const copyURL = () => {
+    navigator.clipboard.writeText(document.URL);
+  }
+
   return (
     <DialogContent>
       <div>{summary}</div>  
@@ -89,7 +93,7 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
         <div>
           <Button size={'small'}>
             <CollecticonLink size={10} /> 
-            <ButtonContent>Copy Map Link</ButtonContent> 
+            <ButtonContent onClick={copyURL}>Copy Map Link</ButtonContent>
           </Button>
         </div>
         {/*Summary*/}
