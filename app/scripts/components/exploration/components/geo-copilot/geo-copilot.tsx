@@ -9,7 +9,13 @@ import { askGeoCoPilot } from './geo-copilot-interaction';
 import { reconcileDatasets } from '$components/exploration/data-utils-no-faux-module';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { datasetLayers} from '$components/exploration/data-utils';
-import useMaps from '$components/common/map/hooks/use-maps';
+import { aoiDeleteAllAtom, selectedForEditingAtom } from '$components/common/map/controls/aoi/atoms';
+import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
+import { makeFeatureCollection } from '$components/common/aoi/utils';
+import { STATIC_MODE } from '$components/common/map/controls/aoi/index';
+import useAois from '$components/common/map/controls/hooks/use-aois';
+
+import { useAtom, useSetAtom } from 'jotai';
 import { getZoomFromBbox } from '$components/common/map/utils';
 
 import bbox from '@turf/bbox';
@@ -28,6 +34,11 @@ import {
 } from '@devseed-ui/form';
 
 import styled from 'styled-components';
+import { TemporalExtent } from '../timeline/timeline-utils';
+
+import {
+  selectedIntervalAtom
+} from '$components/exploration/atoms/dates';
 
 interface GeoCoPilotModalProps {
   show: boolean;
@@ -39,6 +50,7 @@ interface GeoCoPilotModalProps {
   selectedCompareDay: Date | null;
   setSelectedCompareDay: (d: Date | null) => void;
   map: any;
+  setStartEndDates: (startEndDates: TemporalExtent) => void;
 }
 
 const GeoCoPilotWrapper = styled.div`
@@ -70,6 +82,7 @@ const GeoCoPilotQueryWrapper = styled.div`
 
 const GeoCoPilotQuery = styled(FormInput)`
   width: 100%;
+  padding-right: 35px;
   &:focus-within {
     border-radius: ${themeVal('shape.rounded')};
     outline-width: 0.25rem;
@@ -120,7 +133,8 @@ export function GeoCoPilotComponent({
   setSelectedDay, 
   selectedCompareDay, 
   setSelectedCompareDay,
-  map
+  map,
+  setStartEndDates
 }: {
   close: () => void;
   show: boolean;
@@ -131,6 +145,7 @@ export function GeoCoPilotComponent({
   selectedCompareDay: Date | null;
   setSelectedCompareDay: (d: Date | null) => void;
   map: any;
+  setStartEndDates: (startEndDates: TemporalExtent) => void;
 }) {
   const defaultSystemComment = {
     summary: "Welcome to Geo Co-Pilot! I'm here to assist you with identifying datasets with location and date information. Whether you're analyzing time-sensitive trends or working with geospatial data, I've got you covered. Let me know how I can assist you today!",
@@ -147,54 +162,99 @@ export function GeoCoPilotComponent({
   const [query, setQuery] = useState<string>('');
   const phantomElementRef = useRef(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [history, setHistory] = useState<any>([]);
+
+  const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
+
+  const { onUpdate } = useAois();
+  const { runAnalysis } = useAnalysisController();
 
   const scrollToBottom = () => {
     const phantomElement = phantomElementRef.current;
     phantomElement.scrollIntoView({ behavior: "smooth" });
   };
 
+  const loadInMap = (answer: any) => {
+    const geojson = JSON.parse(JSON.stringify(answer.bbox).replace('coordinates:', 'coordinates'));
+    const bounds = bbox(geojson);
+    const center = centroid(geojson as AllGeoJSON).geometry.coordinates;
+
+    map.flyTo({
+      center,
+      zoom: getZoomFromBbox(bounds)
+    });
+    return geojson;
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [loading]);
-  // hook to setup chat UI
   // hook to process and start load/process/analyze data
-  // change behavior of bounding box zoom
   // add upvote/downvote/share link, approaches
-  // add reset conversation option
   // add localstorage option for conversation
   // add verification links to the user dialog
   const addSystemResponse = (answer: any, content: any) => {
     answer['contentType'] = 'system';
     const action = answer['action'];
+    const startDate = new Date(answer['date_range']['start_date']);
+    const endDate = new Date(answer['date_range']['end_date']);
+    const newDatasetIds = answer['dataset_ids'].reduce((layerIds, collectionId) => {
+      const foundDataset = datasetLayers.find((dataset) => dataset.stacCol == collectionId);
+      if (!!foundDataset) {
+        layerIds.push(foundDataset.id)
+      }
+      return layerIds;
+    }, []);
+    const newDatasets = reconcileDatasets(newDatasetIds, datasetLayers, datasets);
+    const mbDraw = map?._drawControl;
     
-    switch(action) {
-      case 'load': {
-        const newDatasets = reconcileDatasets(answer['dataset_ids'], datasetLayers, datasets);
-        setSelectedDay(new Date(answer['date_range']['start_date']));
-        setDatasets(newDatasets);
-        const geojson = JSON.parse(JSON.stringify(answer.bbox).replace('coordinates:', 'coordinates'))
-        // const {simplifiedFeatures} = getAoiAppropriateFeatures(geojson);
-        // debugger;
-        const bounds = bbox(geojson);
-        const center = centroid(geojson as AllGeoJSON).geometry.coordinates;
-        map.flyTo({
-          center,
-          zoom: getZoomFromBbox(bounds)
-        });
-        break;
-        
-      } 
-      case 'compare': {
-        const newDatasets = reconcileDatasets(answer['dataset_ids'], datasetLayers, datasets);
-        setSelectedCompareDay(new Date(answer['date_range']['end_date']));
-        setDatasets(newDatasets);
-        break;
-      } 
-      case 'analysis':
-        console.log('analysis');
-      default:
-        console.log(action, answer);
+    mbDraw.deleteAll();
+
+    setDatasets(newDatasets);
+    try {
+      switch(action) {
+        case 'load': {
+          loadInMap(answer);
+          setSelectedCompareDay(null);
+          setSelectedDay(endDate);
+          break;
+        } 
+        case 'compare': {
+          loadInMap(answer);
+          setSelectedDay(startDate);
+          setSelectedCompareDay(endDate);
+          break;
+        } 
+        case 'statistics': {
+          const geojson = loadInMap(answer);
+          const updatedGeojson = makeFeatureCollection(
+            geojson.features.map((f, i) => ({ id: `${new Date().getTime().toString().slice(-4)}${i}`, ...f }))
+          )
+          if (!mbDraw) return;
+  
+          setStartEndDates([startDate, endDate]);
+          
+          setSelectedInterval({
+            start: startDate, end: endDate
+          });
+  
+          onUpdate(updatedGeojson);
+  
+          const pids = mbDraw.add(geojson);
+          
+          mbDraw.changeMode(STATIC_MODE, {
+            featureIds: pids
+          });
+          runAnalysis(newDatasets);
+          break;
+        }
+        default:
+          console.log(action, answer);
+      }
+    } catch (error) {
+      console.log('Error processing', error);
     }
+
     content = [...content, answer]
     setConversation(content);
     setLoading(false);
@@ -207,10 +267,33 @@ export function GeoCoPilotComponent({
       query: query,
       contentType: 'user'
     }
+    const length = conversation.length;
+    // merge user and system in one payload rather than multiple elements
+    let chatHistory = conversation.reduce((history, innerContent, index) => {
+      let identifier = innerContent.contentType;
+      let chatElement = {};
+      if(identifier == 'user' && index != (length - 1)) {
+        chatElement = { inputs: {question: innerContent.query} };
+        history.push(chatElement);
+      }
+      else {
+        const innerLength = history.length - 1;
+        if (!!innerContent.action) {
+          chatElement = { outputs: {answer: innerContent.summary} };
+        }
+        else {
+          chatElement = { outputs: {answer: ''} };
+        }
+        history[innerLength] = {...history[innerLength], ...chatElement};
+      }
+      return history;
+    }, []);
+
     const content = [...conversation, userContent];
     setConversation(content);
     setQuery('');
     setLoading(true);
+
     askGeoCoPilot({question: query, chat_history: [], content: content}, addSystemResponse);
   };
 
