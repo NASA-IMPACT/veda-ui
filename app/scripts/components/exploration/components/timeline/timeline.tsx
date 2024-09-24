@@ -29,7 +29,7 @@ import styled from 'styled-components';
 
 import { DatasetList } from '../datasets/dataset-list';
 
-import { applyTransform, getLabelFormat, getTemporalExtent, isEqualTransform, rescaleX } from './timeline-utils';
+import { applyTransform, getLabelFormat, getTemporalExtent, isEqualTransform, rescaleX, TemporalExtent } from './timeline-utils';
 import {
   TimelineControls,
   getInitialScale,
@@ -172,6 +172,7 @@ interface TimelineProps {
   setSelectedCompareDay: (d: Date | null) => void;
   onDatasetAddClick: () => void;
   panelHeight: number;
+  startEndDates: TemporalExtent;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -202,7 +203,8 @@ export default function Timeline(props: TimelineProps) {
     selectedCompareDay,
     setSelectedCompareDay,
     onDatasetAddClick,
-    panelHeight
+    panelHeight,
+    startEndDates
   } = props;
 
   // Refs for non react based interactions.
@@ -626,11 +628,17 @@ export default function Timeline(props: TimelineProps) {
   const initialScale = useMemo(() => getInitialScale(width), [width]);
 
   const minMaxTemporalExtent = useMemo(
-    () => getTemporalExtent(
-      // Filter the datasets to only include those with status 'SUCCESS'.
-      datasets.filter((dataset): dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
-    ),
-    [datasets]
+    () => {
+      const temporalExtent = getTemporalExtent(
+        // Filter the datasets to only include those with status 'SUCCESS'.
+        datasets.filter((dataset): dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
+      );
+      return startEndDates[0] ? 
+        [((startEndDates[0] > temporalExtent[0]) ? startEndDates[0] : temporalExtent[0]), 
+        ((startEndDates[1] > temporalExtent[1]) ? startEndDates[1] : temporalExtent[1])] :
+        temporalExtent
+    },
+    [datasets, startEndDates]
   );
 
   const lowestCommonTimeDensity = useMemo(

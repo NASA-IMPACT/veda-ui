@@ -17,6 +17,7 @@ import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
 import { GeoCoPilot } from './components/geo-copilot/geo-copilot';
 
 import useMaps from '$components/common/map/hooks/use-maps';
+import { TemporalExtent } from './components/timeline/timeline-utils';
 
 const Container = styled.div`
   display: flex;
@@ -76,6 +77,10 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
 
   const [datasetModalRevealed, setDatasetModalRevealed] = useState(
     !datasets.length
+  );
+
+  const [startEndDates, setStartEndDates] = useState<TemporalExtent>(
+    [undefined, undefined]
   );
 
   const [showGeoCoPilot, setShowGeoCoPilot] = useState(
@@ -177,6 +182,7 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
                 selectedCompareDay={selectedCompareDay}
                 setSelectedCompareDay={setSelectedCompareDay}
                 map={map}
+                setStartEndDates={setStartEndDates}
               />
             </Panel>
           </PanelGroup>
@@ -190,6 +196,7 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
             selectedCompareDay={selectedCompareDay}
             setSelectedCompareDay={setSelectedCompareDay}
             onDatasetAddClick={openModal}
+            startEndDates={startEndDates}
             panelHeight={panelHeight}
           />
         </Panel>
