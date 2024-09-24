@@ -7,7 +7,14 @@ import {
   CollecticonLink, 
   CollecticonChevronUpTrailSmall, 
   CollecticonChevronDownTrailSmall,
+  CollecticonCalendarRange,
+  CollecticonMarker,
+  CollecticonMap,
+
 } from '@devseed-ui/collecticons';
+
+import centroid from '@turf/centroid';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 import styled from 'styled-components';
 
@@ -37,12 +44,26 @@ const ShowHideDetail = styled.div`
 
 const AnswerDetails = styled.div`
   font-size: 0.6rem;
-  padding: 1em;
+  padding: 2em;
   background: #f6f7f8;
   border-radius: 10px;
+`
 
-  pre {
-    text-wrap: pretty;
+const AnswerDetailsIcon = styled.div`
+  display: flex;
+  align-items: center;
+
+  span {
+    margin-left: 4px;
+  }
+`
+
+const AnswerDetailsItem = styled.div`
+  margin-bottom: 6px;
+
+  p {
+    font-size: 0.7rem;
+    margin-left: 12px;
   }
 `
 
@@ -50,7 +71,7 @@ export interface GeoCoPilotModalProps {
     summary: string;
     dataset_ids: any;
     bbox: any;
-    dateRange: any;
+    date_range: any;
     date: Date;
     action: string;
     explanation: any;
@@ -71,7 +92,11 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
   const updateShowDetails = () => {
     setShowDetails(!showDetails);
   }
-
+  console.log("bbox", bbox);
+  console.log("dateRange", dateRange);
+  console.log("date", date);
+  console.log("dataset_ids", dataset_ids);
+  const geojson = JSON.parse(JSON.stringify(bbox).replace('coordinates:', 'coordinates'));
   const copyURL = () => {
     navigator.clipboard.writeText(document.URL);
   }
@@ -114,9 +139,24 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
       {
         showDetails && 
         <AnswerDetails>
-          <pre>
-            {JSON.stringify(explanation?.verification)}
-          </pre>
+          <AnswerDetailsItem>
+            <AnswerDetailsIcon>
+              <CollecticonMarker size={10} /><span>Location</span>
+            </AnswerDetailsIcon>
+            <p>{centroid(geojson).geometry.coordinates.join(", ")}</p>
+          </AnswerDetailsItem>
+          <AnswerDetailsItem>
+            <AnswerDetailsIcon>
+              <CollecticonCalendarRange size={10} /><span>Timeframe</span>
+            </AnswerDetailsIcon>
+            <p>{`${dateRange.start_date} > ${dateRange.end_date}`}</p>
+          </AnswerDetailsItem>
+          <AnswerDetailsItem>
+            <AnswerDetailsIcon>
+              <CollecticonMap size={10} /><span>Map layers</span>
+            </AnswerDetailsIcon>
+            <p>{dataset_ids.join(", ")}</p>
+          </AnswerDetailsItem>
         </AnswerDetails> 
       }
     </DialogContent>
@@ -124,12 +164,12 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
 }
 
 export function GeoCoPilotSystemDialog(props: GeoCoPilotModalProps) {
-    const {summary, dataset_ids, bbox, dateRange, date, action, explanation, query} = props;
+    const {summary, dataset_ids, bbox, date_range, date, action, explanation, query} = props;
     return <GeoCoPilotSystemDialogComponent
         summary={summary}
         dataset_ids={dataset_ids}
         bbox={bbox}
-        dateRange={dateRange}
+        dateRange={date_range}
         date={date}
         action={action}
         explanation={explanation}

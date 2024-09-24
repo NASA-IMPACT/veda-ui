@@ -1,17 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios';
-import { QueryClient } from '@tanstack/react-query';
-import { FeatureCollection, Polygon } from 'geojson';
-import { ConcurrencyManagerInstance } from '$components/exploration/concurrency';
-import { GeoCoPilotModalProps } from '$components/exploration/components/geo-copilot/geo-copilot-system-dialog';
-import { TimelineDataset, TimelineDatasetForUrl } from '$components/exploration/types.d.ts';
-
-import { ExtendedError } from '$components/exploration//data-utils';
-
-import {
-  fixAoiFcForStacSearch,
-  getFilterPayload
-} from '$components/analysis/utils';
-import { json } from 'd3';
+import axios from 'axios';
 
 interface GeoCoPilotInteractionQuery {
   question: string;

@@ -9,7 +9,6 @@ import { askGeoCoPilot } from './geo-copilot-interaction';
 import { reconcileDatasets } from '$components/exploration/data-utils-no-faux-module';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { datasetLayers} from '$components/exploration/data-utils';
-import { aoiDeleteAllAtom, selectedForEditingAtom } from '$components/common/map/controls/aoi/atoms';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import { makeFeatureCollection } from '$components/common/aoi/utils';
 import { STATIC_MODE } from '$components/common/map/controls/aoi/index';
