@@ -45,7 +45,20 @@ export async function askGeoCoPilot(
     }
   ).then((answer) => {
     setSystemResponse(JSON.parse(answer.data.answer), content);
+  }).catch((e) => {
+    console.log(e);
+    setSystemResponse({
+      "dataset_ids": [],
+      "summary": "An unidentified error occured. Please try again later.",
+      "date_range": {'start_date': '', 'end_date': ''},
+      "bbox":{},
+      "action": "error",
+      "explanation":
+      {
+          "validation": "",
+          "verification":[]
+      },
+      "query": question
+    }, content);
   });
 };
-
-
