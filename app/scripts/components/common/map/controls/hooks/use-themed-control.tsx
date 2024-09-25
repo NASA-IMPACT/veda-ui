@@ -49,6 +49,10 @@ export default function useThemedControl(
         <ThemeProvider theme={theme}>{renderFn() as any}</ThemeProvider>
       );
     }
+    return () => {
+      rootRef.current?.unmount();
+      rootRef.current = null;
+    };
   }, [renderFn, theme]);
 
   useControl(() => new ThemedControl(), opts);
