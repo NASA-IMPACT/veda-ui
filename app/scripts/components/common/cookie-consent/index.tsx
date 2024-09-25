@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Icon } from '@trussworks/react-uswds';
+import { COOKIE_CONSENT_KEY } from './utils';
 import {
   USWDSAlert,
   USWDSButton,
@@ -12,6 +13,10 @@ interface CookieConsentProps {
   title?: string | undefined;
   copy?: string | undefined;
   onFormInteraction: () => void;
+}
+
+function addAttribute (copy) {
+  return copy.replaceAll('<a', `<a target="_blank" rel="noopener" role="link"`);
 }
 
 export const CookieConsent = ({
@@ -32,14 +37,11 @@ export const CookieConsent = ({
   };
 
   const setCookie = (cookieValue, closeConsent) => {
-    document.cookie = `CookieConsent=${JSON.stringify(
+    document.cookie = `${COOKIE_CONSENT_KEY}=${JSON.stringify(
       cookieValue
     )}; path=/; expires=${closeConsent ? '0' : setCookieExpiration()}`;
   };
 
-  const addAttribute =
-    copy &&
-    copy?.replaceAll('<a', `<a target="_blank" rel="noopener" role="link"`);
   useEffect(() => {
     const cookieValue = {
       responded: cookieConsentResponded,
@@ -47,7 +49,9 @@ export const CookieConsent = ({
     };
     setCookie(cookieValue, closeConsent);
     onFormInteraction();
-  }, [cookieConsentResponded, cookieConsentAnswer, closeConsent]);
+  // Ignoring setcookie for now sine it will make infinite rendering
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cookieConsentResponded, cookieConsentAnswer, closeConsent, onFormInteraction]);
 
   return (
     <div
@@ -74,8 +78,8 @@ export const CookieConsent = ({
           <Icon.Close size={3} />
         </USWDSButton>
 
-        {addAttribute && (
-          <div dangerouslySetInnerHTML={{ __html: addAttribute }} />
+        {copy && (
+          <div dangerouslySetInnerHTML={{ __html: addAttribute(copy) }} />
         )}
         <USWDSButtonGroup className='padding-top-2'>
           <USWDSButton
