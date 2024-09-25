@@ -213,6 +213,7 @@ function CustomAoI({
     // selected, the trash method doesn't do anything. So, in this case, we
     // trigger the delete for the whole feature.
     const selectedFeatures = mbDraw.getSelected()?.features;
+
     if (
       mbDraw.getMode() === DIRECT_SELECT &&
       selectedFeatures.length &&

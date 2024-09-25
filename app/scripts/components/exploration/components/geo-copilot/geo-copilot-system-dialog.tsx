@@ -68,6 +68,7 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
     query: string;
 }) {
   const [showDetails, setShowDetails] = useState(false);
+
   const updateShowDetails = () => {
     setShowDetails(!showDetails);
   }
