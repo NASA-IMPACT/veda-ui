@@ -276,7 +276,7 @@ function PageHeader(props: PageHeaderProps) {
     <>
     <SROnly href='#' onClick={skipNav}>Skip to main content</SROnly>
     <PageHeaderSelf id={HEADER_ID}>
-      
+
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
       {logo}
       {isMediumDown && (

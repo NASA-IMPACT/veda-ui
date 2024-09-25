@@ -26,6 +26,7 @@ import CatalogContent from '$components/common/catalog/catalog-content';
 import { DATASETS_PATH } from '$utils/routes';
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';
+import SmartLink from '$components/common/smart-link';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -82,7 +83,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     timelineDatasets.map((dataset) => dataset.data.id)
   );
 
-  // Use Jotai controlled atoms for query parameter manipulation on new E&A page 
+  // Use Jotai controlled atoms for query parameter manipulation on new E&A page
   const {search: searchTerm, taxonomies, onAction } = useFiltersWithURLAtom();
 
   useEffect(() => {
@@ -123,6 +124,10 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
           setSelectedIds={setSelectedIds}
           onAction={onAction}
           filterLayers={true}
+          linkProperties={{
+            LinkElement: SmartLink,
+            pathAttributeKeyName: 'to'
+          }}
           emptyStateContent={
             <>
               <p>There are no datasets to show with the selected filters.</p>

@@ -113,7 +113,7 @@ function DatasetPopoverComponent(
   ref: MutableRefObject<HTMLDivElement>
 ) {
   const { data, dataset, activeMetrics, timeDensity, style, ...rest } = props;
-  
+
   // Check if there is no data to show
   const hasData = activeMetrics.some(
     (metric) => typeof data[metric.id] === 'number'
@@ -229,7 +229,7 @@ export function getInteractionDataPoint(options: InteractionDataPointOptions) {
   const closestDataPointPosition = closestDataPoint
     ? xScaled(closestDataPoint.date)
     : Infinity;
-  
+
   const inView =
     closestDataPointPosition >= 0 &&
     closestDataPointPosition <= containerWidth;
@@ -249,8 +249,8 @@ interface PopoverHookOptions {
 /**
  * Use a floating popover at the given position if there's data.
  * Uses React floating-ui library.
- * @param options 
- * @returns 
+ * @param options
+ * @returns
  */
 export function usePopover(options: PopoverHookOptions) {
   const { x, y, data, xScaled, dataset, enabled } = options;
@@ -265,7 +265,7 @@ export function usePopover(options: PopoverHookOptions) {
   const isVisible = enabled && _isVisible;
 
   // Do not make tooltip to follow the cursor.
-  // Instead, show tooltip at the edge of the timeline 
+  // Instead, show tooltip at the edge of the timeline
   // even if the cursor is off from the data timeline.
   const datasetMinX = useMemo(() => {
     if (!xScaled || !dataset) return;
@@ -289,12 +289,12 @@ export function usePopover(options: PopoverHookOptions) {
     const end = xScaled(dataset[dataset.length - 1]?.date) + HEADER_COLUMN_WIDTH;
     return (start + end) / 2;
   }, [xScaled, dataset]);
-  
+
   const popoverLeft = useMemo(() => {
     if (finalClientX === undefined || midpointX === undefined) return true; // Default to true or decide based on your UI needs
     return finalClientX < midpointX;
   }, [finalClientX, midpointX]);
-  
+
   const floating = useFloating({
     placement: popoverLeft ? 'left' : 'right',
     open: isVisible,

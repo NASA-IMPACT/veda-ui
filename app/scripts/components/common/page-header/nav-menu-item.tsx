@@ -58,12 +58,13 @@ const DropMenuNavItem = styled(DropMenuItem)`
   `}
 `;
 
+const LOG = true;
 
 function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:() => void}) {
   const { title, type, ...rest } = child;
   if (type === NavItemType.INTERNAL_LINK) {
     return (
-    <li> 
+    <li>
       <DropMenuNavItem as={NavLink} to={(rest as InternalNavLink).to} onClick={onClick} data-dropdown='click.close'>
         {title}
       </DropMenuNavItem>
@@ -79,7 +80,12 @@ function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:
         </DropMenuNavItem>
       </li>
     );
-  } else throw Error('Invalid child Nav item type');
+  } else {
+    LOG &&
+      /* eslint-disable-next-line no-console */
+      console.error(`Invalid child Nav Item type, type "${type}" is not of `, NavItemType);
+    return null;
+  }
 }
 
 
@@ -93,14 +99,14 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
           {title}
         </GlobalMenuLink>
         </li>
-        
+
       );
   } else if (item.type === NavItemType.EXTERNAL_LINK) {
     return (
       <li key={`${title}-nav-item`}>
-      <GlobalMenuLink 
+      <GlobalMenuLink
         as='a'
-        target='blank'
+        target='_blank'
         rel='noopener'
         onClick={onClick}
         href={(rest as ExternalNavLink).href}
@@ -143,6 +149,11 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
         </DropMenu>
       </DropdownScrollable>
              </li>);
-    } 
-  } else throw Error('Invalid type for Nav Items');
+    }
+  } else {
+    LOG &&
+      /* eslint-disable-next-line no-console */
+      console.error(`Invalid type for Nav Items, type "${type}" is not of `, NavItemType);
+    return null;
+  }
 }

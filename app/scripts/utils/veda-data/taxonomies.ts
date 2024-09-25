@@ -56,7 +56,7 @@ export function getAllTaxonomyValues(
 
 export function getTaxonomyByIds(group: string, ids: string | string[], taxonomies: Taxonomy[]) {
   const groupValues = taxonomies.find((t) => t.name == group)?.values;
-  
+
   let taxonomyItems: any[] = [];
 
   if (ids instanceof Array) {

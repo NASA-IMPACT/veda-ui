@@ -86,14 +86,14 @@ function BrowseControls(props: BrowseControlsProps) {
   const filterWrapConstant = 4;
   const wrapTaxonomies = taxonomiesOptions.length > filterWrapConstant; // wrap list of taxonomies when more then 4 filter options
 
-  
+
   const createFilterList = (filterList: Taxonomy[]) => {
     return filterList.map(({ name, values }) => (
       <DropdownOptions
         key={name}
         prefix={name}
         items={[optionAll].concat(values)}
-        currentId={(taxonomies[name]?.length ? taxonomies[name][0] as string : 'all')}
+        currentId={(taxonomies[name] as string[] | null)?.length ? taxonomies[name][0] as string : 'all'}
         onChange={(v) => {
           onAction(FilterActions.TAXONOMY, { key: name, value: v });
         }}
@@ -102,7 +102,7 @@ function BrowseControls(props: BrowseControlsProps) {
     ));
   };
 
-  return (  
+  return (
     <BrowseControlsWrapper {...rest}>
       <SearchWrapper>
         <SearchField

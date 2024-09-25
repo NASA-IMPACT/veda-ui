@@ -77,7 +77,7 @@ export function SliderInput(props: SliderInputProps) {
 export function NativeSliderInput(props: SliderInputProps) {
   const { value, onInput, ...rest } = props;
   return (
-    <input 
+    <input
       type='range'
       {...rest}
       value={value}

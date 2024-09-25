@@ -33,18 +33,18 @@ function BlockChart(props: BlockChartProp) {
       extension === 'csv'
         ? (await csv(dataPath)) as DSVRowArray
         : (await json(dataPath).then(d => [d].flat())) as object[];
-      
+
         // if no idKey is provided (when there are only two columns in the data), sub it with empty data
         const dataToUse = idKey? data: data.map(e => ({...e, [subIdKey]: ''}));
-        
-        const { fData, uniqueKeys } = getFData({  
+
+        const { fData, uniqueKeys } = getFData({
           data: dataToUse,
           idKey: idKey? idKey: subIdKey,
           xKey,
           yKey,
           dateFormat
         });
-  
+
         const formattedUniqueKeys = uniqueKeys.map((e) => ({
           label: e,
           value: e,
@@ -55,7 +55,7 @@ function BlockChart(props: BlockChartProp) {
       } catch(e) {
         throwAsyncError(e);
       }
-      
+
     };
 
     getData();

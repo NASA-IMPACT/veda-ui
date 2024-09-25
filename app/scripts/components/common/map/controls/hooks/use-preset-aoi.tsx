@@ -28,7 +28,7 @@ function usePresetAOI(selectedState) {
           return;
         }
         const { simplifiedFeatures } = getAoiAppropriateFeatures(geojson);
-    
+
         setFeatures(simplifiedFeatures.map((feat, i) => ({
           id: `${new Date().getTime().toString().slice(-4)}${i}`,
           ...feat
