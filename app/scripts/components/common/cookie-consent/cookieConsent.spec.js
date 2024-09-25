@@ -2,6 +2,7 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import { render, screen, fireEvent } from '@testing-library/react';
+import { COOKIE_CONSENT_KEY } from './utils';
 import { CookieConsent } from './index';
 
 describe('Cookie consent form should render with correct content.', () => {
@@ -37,7 +38,7 @@ describe('Cookie consent form should render with correct content.', () => {
     const resultCookie = document.cookie;
 
     expect(resultCookie).toBe(
-      'CookieConsent={"responded":false,"answer":false}'
+      `${COOKIE_CONSENT_KEY}={"responded":false,"answer":false}`
     );
   });
 
@@ -46,7 +47,7 @@ describe('Cookie consent form should render with correct content.', () => {
     fireEvent.click(button);
     const resultCookie = document.cookie;
     expect(resultCookie).toBe(
-      'CookieConsent={"responded":true,"answer":false}'
+      `${COOKIE_CONSENT_KEY}={"responded":true,"answer":false}`
     );
   });
 
@@ -55,6 +56,8 @@ describe('Cookie consent form should render with correct content.', () => {
     fireEvent.click(button);
     const resultCookie = document.cookie;
 
-    expect(resultCookie).toBe('CookieConsent={"responded":true,"answer":true}');
+    expect(resultCookie).toBe(
+      `${COOKIE_CONSENT_KEY}={"responded":true,"answer":true}`
+    );
   });
 });
