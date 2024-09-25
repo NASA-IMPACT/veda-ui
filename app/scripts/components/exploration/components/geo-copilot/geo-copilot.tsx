@@ -11,6 +11,8 @@ import {
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
 
+import PulseLoader from "react-spinners/PulseLoader";
+
 import { useAtom, useSetAtom } from 'jotai';
 
 import {
