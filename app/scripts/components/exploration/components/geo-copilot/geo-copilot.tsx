@@ -162,9 +162,9 @@ export function GeoCoPilotComponent({
   const [query, setQuery] = useState<string>('');
   const phantomElementRef = useRef(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [history, setHistory] = useState<any>([]);
 
   const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
+  const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
 
   const { onUpdate } = useAois();
   const { runAnalysis } = useAnalysisController();
@@ -189,9 +189,7 @@ export function GeoCoPilotComponent({
   useEffect(() => {
     scrollToBottom();
   }, [loading]);
-  // hook to process and start load/process/analyze data
-  // add upvote/downvote/share link, approaches
-  // add localstorage option for conversation
+  // add upvote/downvote, approaches
   // add verification links to the user dialog
   const addSystemResponse = (answer: any, content: any) => {
     answer['contentType'] = 'system';
@@ -210,6 +208,7 @@ export function GeoCoPilotComponent({
     
     mbDraw.deleteAll();
 
+    aoiDeleteAll();
     setDatasets(newDatasets);
     try {
       switch(action) {
