@@ -25,7 +25,8 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
-import { divergingColorMaps, sequentialColorMaps } from '$components/exploration/components/datasets/colorMaps';
+import { divergingColorMaps, sequentialColorMaps, restColorMaps } from '$components/exploration/components/datasets/colorMaps';
+import { DEFAULT_COLORMAP } from '$components/exploration/components/datasets/colormap-options';
 
 interface LayerLegendCommonProps {
   id: string;
@@ -347,14 +348,10 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
 };
 
 export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 'stops' | 'type'>) => {
-  const { colorMap, ...otherProps } = props;
+  const { colorMap = DEFAULT_COLORMAP, ...otherProps } = props;
+  const colormapResult = findColormapByName(colorMap);
 
-  const colormapResult = findColormapByName(colorMap ?? 'viridis');
-  if (!colormapResult) {
-    return null;
-  }
   const { foundColorMap, isReversed } = colormapResult;
-
   const stops = Object.values(foundColorMap)
   .filter(value => Array.isArray(value) && value.length === 4)
   .map((value) => {
@@ -371,11 +368,11 @@ export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 's
 export const findColormapByName = (name: string) => {
   const isReversed = name.toLowerCase().endsWith('_r');
   const baseName = isReversed ? name.slice(0, -2).toLowerCase() : name.toLowerCase();
-
-  const colormap = sequentialColorMaps[baseName] ?? divergingColorMaps[baseName];
+  const colormap = sequentialColorMaps[baseName] ?? divergingColorMaps[baseName] ?? restColorMaps[baseName];
 
   if (!colormap) {
-    return null;
+    const defaultColormap = sequentialColorMaps[DEFAULT_COLORMAP.toLowerCase()] ?? divergingColorMaps[DEFAULT_COLORMAP.toLowerCase()];
+    return { foundColorMap: {...defaultColormap}, isReversed: false };
   }
 
   return { foundColorMap: {...colormap}, isReversed };

@@ -132,6 +132,10 @@ export default function DataLayerCard(props: CardProps) {
     }
   };
 
+  const showLoadingConfigurableCmapSkeleton = showConfigurableColorMap && dataset.status === 'loading' && datasetLegend?.type === 'gradient';
+  const showConfigurableCmap = showConfigurableColorMap && dataset.status === 'success' && datasetLegend?.type === 'gradient';
+  const showNonConfigurableCmap = !showConfigurableColorMap && datasetLegend?.type === 'gradient';
+
   return (
     <>
       <DatasetInfo className={isVisible ? 'layerShown' : 'layerHidden'}>
@@ -186,8 +190,8 @@ export default function DataLayerCard(props: CardProps) {
           which could introduce a visual flash when going from the 'default' color map to the one
           configured in titiler */}
 
-          {showConfigurableColorMap && dataset.status === 'loading'  && datasetLegend?.type === 'gradient' && <div className='display-flex flex-align-center height-8'><LoadingSkeleton /></div>}
-          {showConfigurableColorMap && dataset.status === 'success' && datasetLegend?.type === 'gradient' && (
+          {showLoadingConfigurableCmapSkeleton && <div className='display-flex flex-align-center height-8'><LoadingSkeleton /></div>}
+          {showConfigurableCmap && (
             <div className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md' ref={triggerRef}>
               <LayerGradientColormapGraphic
                 min={min}
@@ -214,8 +218,7 @@ export default function DataLayerCard(props: CardProps) {
               </Tippy>
             </div>
           )}
-        {!showConfigurableColorMap &&
-          datasetLegend?.type === 'gradient' &&
+        {showNonConfigurableCmap &&
           <LayerGradientColormapGraphic
             min={min}
             max={max}

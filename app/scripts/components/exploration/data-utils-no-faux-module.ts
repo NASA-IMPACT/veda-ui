@@ -17,6 +17,7 @@ import {
   DATA_METRICS,
   DEFAULT_DATA_METRICS
 } from './components/datasets/analysis-metrics';
+import { DEFAULT_COLORMAP } from './components/datasets/colormap-options';
 import { utcString2userTzDate } from '$utils/date';
 import { DatasetLayer, VedaDatum, DatasetData } from '$types/veda';
 
@@ -59,7 +60,7 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
 }
 
 function getInitialColorMap(dataset: DatasetLayer): string {
-  return dataset.sourceParams?.colormap_name ?? 'viridis';
+  return dataset.sourceParams?.colormap_name ?? DEFAULT_COLORMAP;
 }
 
 export function reconcileDatasets(
