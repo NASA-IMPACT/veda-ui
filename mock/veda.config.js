@@ -94,5 +94,9 @@ module.exports = {
   navItems: {
     mainNavItems,
     subNavItems
-  }
+  },
+cookieConsentForm:{
+  title: 'Cookie Consent',
+  copy: 'We use cookies to enhance your browsing experience and to help us understand how our website is used. These cookies allow us to collect data on site usage and improve our services based on your interactions. To learn more about it, see our [Privacy Policy](https://www.nasa.gov/privacy/#cookies)'
+}
 };
