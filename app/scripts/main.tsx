@@ -14,7 +14,6 @@ import { getAppURL } from '$utils/history';
 import LayoutRoot from '$components/common/layout-root';
 import { LayoutRootContextProvider } from '$components/common/layout-root/context';
 import { useScrollbarWidthAsCssVar } from '$utils/use-scrollbar-width-css';
-import { checkEnvFlag } from '$utils/utils';
 
 // Page loading
 import { PageLoading } from '$components/common/loading-skeleton';
@@ -45,8 +44,6 @@ const UserPagesComponent = lazy(() => import('$components/user-pages'));
 import ReactQueryProvider from '$context/react-query';
 import {
   ABOUT_PATH,
-  ANALYSIS_PATH,
-  ANALYSIS_RESULTS_PATH,
   DATASETS_PATH,
   STORIES_PATH,
   EXPLORATION_PATH
@@ -58,8 +55,6 @@ const composingComponents = [
   ReactQueryProvider,
   LayoutRootContextProvider
 ];
-
-const useNewExploration = checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION);
 
 function ScrollTop() {
   const { pathname } = useLocation();
@@ -104,12 +99,10 @@ function Root() {
 
                 <Route path='development' element={<Development />} />
 
-                {/* {useNewExploration && ( */}
                 <Route
                   path={EXPLORATION_PATH}
                   element={<ExplorationAndAnalysis />}
                 />
-                {/* )} */}
 
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />
