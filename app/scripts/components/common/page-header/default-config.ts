@@ -1,11 +1,9 @@
 import { getString, getNavItemsFromVedaConfig } from 'veda';
 import { InternalNavLink, ExternalNavLink, ModalNavLink, DropdownNavLink, NavItemType } from '$components/common/page-header/types.d';
 
-import { checkEnvFlag } from '$utils/utils';
 import {
   STORIES_PATH,
   DATASETS_PATH,
-  ANALYSIS_PATH,
   EXPLORATION_PATH,
   ABOUT_PATH
 } from '$utils/routes';
