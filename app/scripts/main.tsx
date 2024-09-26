@@ -14,12 +14,13 @@ import { getAppURL } from '$utils/history';
 import LayoutRoot from '$components/common/layout-root';
 import { LayoutRootContextProvider } from '$components/common/layout-root/context';
 import { useScrollbarWidthAsCssVar } from '$utils/use-scrollbar-width-css';
-
 // Page loading
 import { PageLoading } from '$components/common/loading-skeleton';
 // Views
 import UhOh from '$components/uhoh';
 import ErrorBoundary from '$components/uhoh/fatal-error';
+
+import '$types/array.d';
 
 const Home = lazy(() => import('$components/home'));
 const About = lazy(() => import('$components/about'));
