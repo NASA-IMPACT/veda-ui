@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes, useParams } from 'react-router-dom';
+import { Link, Route, Routes, useParams } from 'react-router-dom';
 
 import SandboxTypography from './typography';
 import SandboxHug from './hug';
@@ -36,11 +36,6 @@ const pages = [
     component: SandboxHug
   },
   {
-    id: 'map',
-    name: 'Mapbox map',
-    component: SandboxMap
-  },
-  {
     id: 'exploration-map',
     name: 'Exploration map',
     component: SandboxExplorationMap
@@ -71,19 +66,9 @@ const pages = [
     component: SandboxChart
   },
   {
-    id: 'analysis-chart',
-    name: 'Analysis Page Chart',
-    component: SandboxAnalysisChart
-  },
-  {
     id: 'cards',
     name: 'Cards',
     component: SandboxCards
-  },
-  {
-    id: 'aoi',
-    name: 'Map AOI',
-    component: SandboxAOI
   },
   {
     id: 'override',
@@ -94,11 +79,6 @@ const pages = [
     id: 'dateslider',
     name: 'Dateslider',
     component: SandboxDateslider
-  },
-  {
-    id: 'request',
-    name: 'Requests',
-    component: SandboxRequest
   },
   {
     id: 'colors',
@@ -160,7 +140,15 @@ function Sandbox() {
               <CardListGrid>
                 {pages.map((p) => (
                   <li key={p.id}>
-                    <Card linkLabel='View more' linkTo={p.id} title={p.name} />
+                    <Card
+                      linkLabel='View more'
+                      title={p.name}
+                      linkProperties={{
+                        linkTo: p.id,
+                        LinkElement: Link,
+                        pathAttributeKeyName: 'to'
+                      }}
+                    />
                   </li>
                 ))}
               </CardListGrid>
