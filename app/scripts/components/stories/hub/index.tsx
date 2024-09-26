@@ -1,4 +1,5 @@
 import React, { useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { stories, storyTaxonomies, getString } from 'veda';
@@ -41,6 +42,7 @@ import {
   ContentOverride
 } from '$components/common/page-overrides';
 import { prepareDatasets } from '$components/common/catalog/prepare-datasets';
+import SmartLink from '$components/common/smart-link';
 
 const allStories = Object.values(stories).map((d) => d!.data).filter(d => !d.isHidden);
 
@@ -65,7 +67,7 @@ const FoldWithTopMargin = styled(Fold)`
 `;
 
 function StoriesHub() {
-  const controlVars = useFiltersWithQS();
+  const controlVars = useFiltersWithQS({navigate: useNavigate()});
 
   const { search, taxonomies, onAction } = controlVars;
 
@@ -169,7 +171,11 @@ function StoriesHub() {
                         </CardMeta>
                       }
                       linkLabel='View more'
-                      linkTo={d.asLink?.url ?? getStoryPath(d)}
+                      linkProperties={{
+                        linkTo: `${d.asLink?.url ?? getStoryPath(d)}`,
+                        LinkElement: SmartLink,
+                        pathAttributeKeyName: 'to'
+                      }}
                       title={
                         <TextHighlight
                           value={search}

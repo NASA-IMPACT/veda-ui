@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 interface GeoCoPilotInteractionQuery {
   question: string;
@@ -6,7 +6,7 @@ interface GeoCoPilotInteractionQuery {
   content: any;
 }
 
-const GEOCOPILOT_ENDPOINT = 'https://veda-search-poc.azurewebsites.net/score';
+const GEOCOPILOT_ENDPOINT = process.env.GEO_COPILOT_ENDPOINT;
 
 /**
  * Gets the asset urls for all datasets in the results of a STAC search given by
@@ -33,7 +33,6 @@ export async function askGeoCoPilot(
   ).then((answer) => {
     setSystemResponse(JSON.parse(answer.data.answer), content);
   }).catch((e) => {
-    console.log(e);
     setSystemResponse({
       "dataset_ids": [],
       "summary": "An unidentified error occured. Please try again later.",

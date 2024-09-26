@@ -57,13 +57,13 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
   }, [id, stacCol, stacApiEndpointToUse, date, onStatusChange]);
 
   return assetUrl;
-} 
+}
 
 
 
 export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplacements, stacApiEndpoint, onStatusChange }){
   const [assetUrl, setAssetUrl] = useState('');
-  
+
   const replaceInAssetUrl = (url: string, replacement: AssetUrlReplacement) => {
     const {from, to } = replacement;
     const cmrAssetUrl = url.replace(from, to);
@@ -110,4 +110,4 @@ export function useCMR({ id, stacCol, stacApiEndpointToUse, date, assetUrlReplac
 
   return assetUrl;
 
-} 
+}

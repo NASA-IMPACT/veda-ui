@@ -24,7 +24,7 @@ const LayerList = styled.ol`
 interface DatasetLayersProps {
   datasetId: string;
   asyncLayers: AsyncDatasetLayer[];
-  onAction: (action: string, payload: { [key: string]: any }) => void;
+  onAction: (action: string, payload: Record<string, any>) => void;
   selectedLayerId?: string;
 }
 

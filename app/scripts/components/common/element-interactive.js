@@ -2,15 +2,6 @@ import React, { useCallback, useState } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 
-const InteractiveLink = styled.a`
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: auto;
-  font-size: 0;
-  margin: 0;
-`;
-
 export const Wrapper = styled.div`
   position: relative;
   z-index: 1;
@@ -18,6 +9,15 @@ export const Wrapper = styled.div`
   > *:not(a) {
     pointer-events: none;
   }
+`;
+
+const InteractiveLink = styled.a`
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: auto;
+  font-size: 0;
+  margin: 0;
 `;
 
 /**

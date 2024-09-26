@@ -15,11 +15,8 @@ import SmartLink from '../smart-link';
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
-
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
-
-
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -223,9 +220,15 @@ export function ExternalLinkFlag() {
   );
 }
 
-export interface CardComponentProps {
+export interface LinkProperties {
+  LinkElement: JSX.Element | ((props: any) => JSX.Element);
+  pathAttributeKeyName: string;
+  onLinkClick?: MouseEventHandler;
+}
+
+export interface CardComponentBaseProps {
   title: JSX.Element | string;
-  linkTo: string;
+
   linkLabel?: string;
   className?: string;
   cardType?: CardType;
@@ -238,17 +241,33 @@ export interface CardComponentProps {
   tagLabels?: string[];
   footerContent?: JSX.Element;
   onCardClickCapture?: MouseEventHandler;
-  onLinkClick?: MouseEventHandler;
 }
 
-function CardComponent(props: CardComponentProps) {
+// @TODO: Consolidate these props when the instance adapts the new syntax
+export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
+  linkTo: string;
+  onLinkClick?: MouseEventHandler;
+}
+export interface CardComponentProps extends CardComponentBaseProps {
+  linkProperties: {
+    linkTo: string,
+  } & LinkProperties;
+}
+
+type CardComponentPropsType = CardComponentProps | CardComponentPropsDeprecated;
+
+// Type guard to check if props has linkProperties
+function hasLinkProperties(props: CardComponentPropsType): props is CardComponentProps {
+  return !!((props as CardComponentProps).linkProperties);
+}
+
+function CardComponent(props: CardComponentPropsType) {
   const {
     className,
     title,
     cardType,
     description,
     linkLabel,
-    linkTo,
     date,
     overline,
     imgSrc,
@@ -256,25 +275,38 @@ function CardComponent(props: CardComponentProps) {
     tagLabels,
     parentTo,
     footerContent,
-    onCardClickCapture,
-    onLinkClick
+    onCardClickCapture
   } = props;
 
-  const isExternalLink = /^https?:\/\//.test(linkTo);
+  let linkProperties;
+
+  if (hasLinkProperties(props)) {
+    // Handle new props with linkProperties
+    const { linkProperties: linkPropertiesProps } = props;
+    linkProperties = linkPropertiesProps;
+  } else {
+    const { linkTo, onLinkClick,  } = props;
+    linkProperties = {
+      to: linkTo,
+      onLinkClick,
+      pathAttributeKeyName: 'to',
+      linkComponent: SmartLink
+    };
+  }
+
+  const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);
 
   return (
     <ElementInteractive
       linkProps={{
-        as: SmartLink,
-        to: linkTo,
-        onLinkClick
+        as: linkProperties.LinkElement,
+        [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
+        onLinkClick: linkProperties.onLinkClick,
       }}
       as={CardItem}
       cardType={cardType}
       className={className}
       linkLabel={linkLabel ?? 'View more'}
-      linkTo={linkTo}
-      onLinkClick={onLinkClick}
       onClickCapture={onCardClickCapture}
     >
       {

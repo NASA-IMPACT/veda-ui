@@ -8,6 +8,7 @@ import {
   DatasetStatus
 } from './types.d.ts';
 import { ExtendedError } from './data-utils';
+import { utcString2userTzDate } from '$utils/date';
 import {
   fixAoiFcForStacSearch,
   getFilterPayload
@@ -58,10 +59,9 @@ async function getDatasetAssets(
     },
     opts
   );
-
   return {
     assets: searchReqRes.data.features.map((o) => ({
-      date: new Date(o.properties.start_datetime || o.properties.datetime),
+      date: utcString2userTzDate(o.properties.start_datetime || o.properties.datetime),
       url: o.assets[assets].href
     }))
   };
@@ -218,6 +218,7 @@ export async function requestDatasetTimeseriesData({
             );
           }
         );
+
         onProgress({
           status: DatasetStatus.LOADING,
           error: null,

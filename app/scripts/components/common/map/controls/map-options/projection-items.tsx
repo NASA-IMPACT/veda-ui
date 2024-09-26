@@ -120,7 +120,7 @@ export function ProjectionItemConic(props: ProjectionItemConicProps) {
                   id={`center-${field.id}`}
                   name={`center-${field.id}`}
                   label={field.label}
-                  value={conicValues.center?.[idx]}
+                  value={conicValues.center[idx]}
                   validate={field.validate}
                   onChange={(value) => {
                     onChangeConicValues(Number(value), 'center', idx);

@@ -2,11 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { DatasetData, StoryData, datasets, stories, getString } from 'veda';
 import { VerticalDivider } from '@devseed-ui/toolbar';
-
+import SmartLink from './smart-link';
 import PublishedDate from './pub-date';
 import { CardSourcesList } from './card-sources';
 import { DatasetClassification } from './dataset-classification';
-
 import { Card } from '$components/common/card';
 import { CardMeta, CardTopicsList } from '$components/common/card/styles';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
@@ -108,7 +107,11 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       }}
                       cardType='featured'
                       linkLabel='View more'
-                      linkTo={d.asLink?.url ?? getItemPath(d)}
+                      linkProperties={{
+                        linkTo: `${d.asLink?.url ?? getItemPath(d)}`,
+                        pathAttributeKeyName: 'to',
+                        LinkElement: SmartLink
+                      }}
                       title={d.name}
                       overline={
                         <CardMeta>

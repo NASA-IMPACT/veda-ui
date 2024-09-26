@@ -125,7 +125,7 @@ function CustomAoI({
   const resetForDrawingAoi = useCallback(() =>  {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
-    
+
     if (fileUploadedIds.length) {
       mbDraw.changeMode(SIMPLE_SELECT, {
         featureIds: fileUploadedIds
@@ -213,6 +213,7 @@ function CustomAoI({
     // selected, the trash method doesn't do anything. So, in this case, we
     // trigger the delete for the whole feature.
     const selectedFeatures = mbDraw.getSelected()?.features;
+
     if (
       mbDraw.getMode() === DIRECT_SELECT &&
       selectedFeatures.length &&
@@ -255,7 +256,7 @@ function CustomAoI({
             size='small'
             data-tour='analysis-tour'
           >
-            <PresetSelector 
+            <PresetSelector
               selectedState={selectedState}
               setSelectedState={setSelectedState}
               onConfirm={onPresetConfirm}

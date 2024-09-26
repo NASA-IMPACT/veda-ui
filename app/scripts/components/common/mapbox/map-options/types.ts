@@ -1,7 +1,7 @@
 import { MbProjectionOptions, ProjectionOptions } from 'veda';
 import { BasemapId, Option } from './basemaps';
 
-export type MapOptionsProps = {
+export interface MapOptionsProps {
   onProjectionChange: (projection: ProjectionOptions) => void;
   projection: ProjectionOptions;
   basemapStyleId?: BasemapId;
@@ -9,27 +9,27 @@ export type MapOptionsProps = {
   labelsOption?: boolean;
   boundariesOption?: boolean;
   onOptionChange?: (option: Option, value: boolean) => void;
-};
+}
 
-export type ProjectionConicOptions = {
+export interface ProjectionConicOptions {
   center: [number, number];
   parallels: [number, number];
-};
+}
 
-export type ProjectionListItem = {
+export interface ProjectionListItem {
   id: ProjectionOptions['id'];
   mbId: MbProjectionOptions['name'];
   label: string;
   isCustom?: boolean;
   conicValues?: ProjectionConicOptions;
-};
+}
 
-export type ProjectionItemProps = {
+export interface ProjectionItemProps {
   onChange: MapOptionsProps['onProjectionChange'];
   id: ProjectionOptions['id'];
   label: string;
   activeProjection: ProjectionOptions;
-};
+}
 
 export type ProjectionItemConicProps = ProjectionItemProps & {
   defaultConicValues: ProjectionConicOptions;

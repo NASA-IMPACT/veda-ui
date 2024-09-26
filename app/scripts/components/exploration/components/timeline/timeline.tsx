@@ -71,6 +71,8 @@ import { useAnalysisController } from '$components/exploration/hooks/use-analysi
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import Pluralize from '$utils/pluralize';
 import { getLowestCommonTimeDensity } from '$components/exploration/data-utils-no-faux-module';
+import { TimeDensity } from '$context/layer-data';
+import { TimeDensity as TimeDensityType} from '$components/exploration/types.d.ts';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -173,6 +175,7 @@ interface TimelineProps {
   onDatasetAddClick: () => void;
   panelHeight: number;
   startEndDates: TemporalExtent;
+  timeDensity: TimeDensityType | null;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -204,7 +207,8 @@ export default function Timeline(props: TimelineProps) {
     setSelectedCompareDay,
     onDatasetAddClick,
     panelHeight,
-    startEndDates
+    startEndDates,
+    timeDensity
   } = props;
 
   // Refs for non react based interactions.
@@ -627,7 +631,7 @@ export default function Timeline(props: TimelineProps) {
   // Stub scale for when there is no layers
   const initialScale = useMemo(() => getInitialScale(width), [width]);
 
-  const minMaxTemporalExtent = useMemo(
+  const minMaxTemporalExtent = useMemo<TemporalExtent>(
     () => {
       const temporalExtent = getTemporalExtent(
         // Filter the datasets to only include those with status 'SUCCESS'.
@@ -714,7 +718,7 @@ export default function Timeline(props: TimelineProps) {
           width={width}
           onZoom={onControlsZoom}
           outOfViewHeads={outOfViewHeads}
-          timeDensity={lowestCommonTimeDensity}
+          timeDensity={timeDensity || lowestCommonTimeDensity}
           timelineLabelsFormat={timelineLabelFormat}
         />
       </TimelineHeader>
