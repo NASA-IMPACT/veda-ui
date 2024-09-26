@@ -1,4 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
+
 
 import { Button } from '@devseed-ui/button';
 import { 
@@ -14,9 +16,9 @@ import {
 } from '@devseed-ui/collecticons';
 
 import centroid from '@turf/centroid';
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 import styled from 'styled-components';
+import { geolocationUrl } from './geo-copilot-interaction';
 
 const DialogContent = styled.div`
   width: fit-content;
@@ -89,15 +91,29 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
     query: string;
 }) {
   const [showDetails, setShowDetails] = useState(false);
+  const [location, setLocation] = useState("");
+
+  useEffect(() => {
+    const fetchGeolocation = async (center) => {
+      try {
+        const response = await axios.get(geolocationUrl(center, process.env.MAPBOX_TOKEN));
+        console.log(response.data.features[2].place_name)
+        setLocation(response.data.features[2].place_name);  // assuming 'features' is the array in the API response
+      } catch (error) {
+        console.error("Reverse geocoding failed.", error);
+      }
+    };
+    
+    if (!!Object.keys(bbox).length) {
+      const geojson = JSON.parse(JSON.stringify(bbox).replace('coordinates:', 'coordinates'));
+      const center = centroid(geojson).geometry.coordinates;
+      fetchGeolocation(center);
+    }
+  }, [bbox])
 
   const updateShowDetails = () => {
     setShowDetails(!showDetails);
   }
-  console.log("bbox", bbox);
-  console.log("dateRange", dateRange);
-  console.log("date", date);
-  console.log("dataset_ids", dataset_ids);
-  const geojson = JSON.parse(JSON.stringify(bbox).replace('coordinates:', 'coordinates'));
   const copyURL = () => {
     navigator.clipboard.writeText(document.URL);
   }
@@ -144,7 +160,7 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
             <AnswerDetailsIcon>
               <CollecticonMarker size={10} /><span>Location</span>
             </AnswerDetailsIcon>
-            <p>{centroid(geojson).geometry.coordinates.join(", ")}</p>
+            <p>{location}</p>
           </AnswerDetailsItem>
           <AnswerDetailsItem>
             <AnswerDetailsIcon>
