@@ -30,11 +30,8 @@ const StoriesHub = lazy(() => import('$components/stories/hub'));
 const StoriesSingle = lazy(() => import('$components/stories/single'));
 
 const DataCatalog = lazy(() => import('$components/data-catalog/container'));
-const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
-const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
-const Analysis = lazy(() => import('$components/analysis/define'));
-const AnalysisResults = lazy(() => import('$components/analysis/results'));
+const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
 const ExplorationAndAnalysis = lazy(
   () => import('$components/exploration/container')
@@ -104,20 +101,6 @@ function Root() {
                   path={`${STORIES_PATH}/:storyId`}
                   element={<StoriesSingle />}
                 />
-
-                {!useNewExploration && (
-                  <>
-                    <Route
-                      path={`${DATASETS_PATH}/:datasetId/explore`}
-                      element={<DatasetsExplore />}
-                    />
-                    <Route path={ANALYSIS_PATH} element={<Analysis />} />
-                    <Route
-                      path={ANALYSIS_RESULTS_PATH}
-                      element={<AnalysisResults />}
-                    />
-                  </>
-                )}
 
                 <Route path='development' element={<Development />} />
 

@@ -4,8 +4,9 @@ import { Map as MapboxMap } from 'mapbox-gl';
 import { MapRef } from 'react-map-gl';
 import startOfDay from 'date-fns/startOfDay';
 import endOfDay from 'date-fns/endOfDay';
-import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { BBox } from '@turf/helpers';
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+import combine from '@turf/combine';
 import { StacFeature } from './types';
 import {
   DatasetDatumFn,
@@ -20,6 +21,7 @@ import {
   DatasetData,
   VizDataset
 } from '$components/exploration/types.d.ts';
+import { fixAntimeridian } from '$utils/antimeridian';
 
 export const FIT_BOUNDS_PADDING = 32;
 
@@ -289,4 +291,41 @@ export function reconcileVizDataset(dataset: DatasetData): VizDataset {
       opacity: 100
     }
   };
+}
+
+/**
+ * Converts a Feature Collection of polygons into a MultiPolygon
+ *
+ * @param featureCollection Feature Collection of Polygons
+ *
+ * @see multiPolygonToPolygons() for opposite
+ *
+ * @returns MultiPolygon Feature
+ */
+export function combineFeatureCollection(
+  featureCollection: FeatureCollection<Polygon>
+): Feature<MultiPolygon> {
+  const combined = combine(featureCollection);
+  return {
+    type: 'Feature',
+    properties: {},
+    geometry: combined.features[0].geometry as MultiPolygon
+  };
+}
+
+/**
+ * Fixes the AOI feature collection for a STAC search by converting all polygons
+ * to a single multipolygon and ensuring that every polygon is inside the
+ * -180/180 range.
+ * @param aoi The AOI feature collection
+ * @returns AOI as a multipolygon with every polygon inside the -180/180 range
+ */
+export function fixAoiFcForStacSearch(aoi: FeatureCollection<Polygon>) {
+  // Stac search spatial intersect needs to be done on a single feature.
+  // Using a Multipolygon
+  const singleMultiPolygon = combineFeatureCollection(aoi);
+  // And every polygon must be inside the -180/180 range.
+  // See: https://github.com/NASA-IMPACT/veda-ui/issues/732
+  const aoiMultiPolygon = fixAntimeridian(singleMultiPolygon);
+  return aoiMultiPolygon;
 }

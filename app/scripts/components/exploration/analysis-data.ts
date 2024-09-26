@@ -12,7 +12,7 @@ import { utcString2userTzDate } from '$utils/date';
 import {
   fixAoiFcForStacSearch,
   getFilterPayload
-} from '$components/analysis/utils';
+} from '$components/common/map/utils';
 
 interface DatasetAssetsRequestParams {
   stacCol: string;
