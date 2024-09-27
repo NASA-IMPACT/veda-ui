@@ -11,8 +11,8 @@ export const ANALYSIS_RESULTS_PATH = '/analysis/results';
 export const getStoryPath = (d: StoryData | string) =>
   `${STORIES_PATH}/${typeof d === 'string' ? d : d.id}`;
 
-export const getDatasetPath = (d: DatasetData | string) =>
-  `${DATASETS_PATH}/${typeof d === 'string' ? d : d.id}`;
+export const getDatasetPath = (d: DatasetData | string, path: string = DATASETS_PATH) =>
+  `${path}/${typeof d === 'string' ? d : d.id}`;
 
 export const getDatasetExplorePath = (d: DatasetData | string) => {
   if (!checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION)) {

@@ -1,5 +1,5 @@
 import { useParams } from 'react-router';
-import { 
+import {
   DatasetData, StoryData, VedaData
 } from "$types/veda";
 

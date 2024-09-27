@@ -6,7 +6,21 @@ interface GeoCoPilotInteractionQuery {
   content: any;
 }
 
-const GEOCOPILOT_ENDPOINT = 'https://veda-search-poc.azurewebsites.net/score';
+const GEOCOPILOT_ENDPOINT = process.env.GEO_COPILOT_ENDPOINT;
+
+const ERROR_RESPONSE = {
+  "dataset_ids": [],
+  "summary": "An unidentified error occured. Please try again later.",
+  "date_range": {'start_date': '', 'end_date': ''},
+  "bbox":{},
+  "action": "error",
+  "explanation":
+  {
+      "validation": "",
+      "verification":[]
+  },
+  "query": ''
+}
 
 /**
  * Gets the asset urls for all datasets in the results of a STAC search given by
@@ -24,7 +38,14 @@ export async function askGeoCoPilot(
   }: GeoCoPilotInteractionQuery,
   setSystemResponse: (answer: any, content: any) => void
 ){
-  const queryResponse = await axios.post(
+  ERROR_RESPONSE['query'] = question
+
+  if (!GEOCOPILOT_ENDPOINT) {
+    setSystemResponse(ERROR_RESPONSE, content); 
+    return;
+  }
+  
+  await axios.post(
     GEOCOPILOT_ENDPOINT,
     {
       'question': question,
@@ -33,19 +54,6 @@ export async function askGeoCoPilot(
   ).then((answer) => {
     setSystemResponse(JSON.parse(answer.data.answer), content);
   }).catch((e) => {
-    console.log(e);
-    setSystemResponse({
-      "dataset_ids": [],
-      "summary": "An unidentified error occured. Please try again later.",
-      "date_range": {'start_date': '', 'end_date': ''},
-      "bbox":{},
-      "action": "error",
-      "explanation":
-      {
-          "validation": "",
-          "verification":[]
-      },
-      "query": question
-    }, content);
+    setSystemResponse(ERROR_RESPONSE, content);
   });
 };

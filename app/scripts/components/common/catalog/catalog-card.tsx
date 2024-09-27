@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { CollecticonPlus, CollecticonTickSmall, iconDataURI } from "@devseed-ui/collecticons";
 import { glsp, themeVal } from "@devseed-ui/theme-provider";
 
-import { Card } from "../card";
+import { Card, LinkProperties } from "../card";
 import { CardMeta, CardTopicsList } from "../card/styles";
 import { DatasetClassification } from "../dataset-classification";
 import { CardSourcesList } from "../card-sources";
@@ -20,6 +20,8 @@ interface CatalogCardProps {
   selectable?: boolean;
   selected?: boolean;
   onDatasetClick?: () => void;
+  pathname?: string;
+  linkProperties: LinkProperties;
 }
 
 const CardSelectable = styled(Card)<{ checked?: boolean, selectable?: boolean }>`
@@ -90,7 +92,7 @@ const CardSelectable = styled(Card)<{ checked?: boolean, selectable?: boolean }>
 `;
 
 export const CatalogCard = (props: CatalogCardProps) => {
-  const { dataset, layer, searchTerm, selectable, selected, onDatasetClick } = props;
+  const { dataset, layer, searchTerm, selectable, selected, onDatasetClick, linkProperties, pathname} = props;
 
   const topics = getTaxonomy(dataset, TAXONOMY_TOPICS)?.values;
   const sources = getTaxonomy(dataset, TAXONOMY_SOURCE)?.values;
@@ -108,6 +110,8 @@ export const CatalogCard = (props: CatalogCardProps) => {
     }
   };
 
+  const linkTo = getDatasetPath(dataset, pathname);
+
   return (
     <CardSelectable
       cardType='horizontal-info'
@@ -120,9 +124,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
           <CardSourcesList sources={sources} />
         </CardMeta>
       }
-      linkTo={getDatasetPath(dataset)}
       linkLabel='View dataset'
-      onLinkClick={handleClick}
       title={
         <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
           {title}
@@ -153,6 +155,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
           ) : null}
         </>
       }
+      linkProperties={{...linkProperties, linkTo: linkTo, onLinkClick: handleClick}}
     />
   );
 };

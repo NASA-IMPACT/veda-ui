@@ -71,6 +71,7 @@ import { useAnalysisController } from '$components/exploration/hooks/use-analysi
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import Pluralize from '$utils/pluralize';
 import { getLowestCommonTimeDensity } from '$components/exploration/data-utils-no-faux-module';
+import { TimeDensity as TimeDensityType} from '$components/exploration/types.d.ts';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -173,6 +174,7 @@ interface TimelineProps {
   onDatasetAddClick: () => void;
   panelHeight: number;
   startEndDates: TemporalExtent;
+  timeDensity: TimeDensityType | null;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -204,7 +206,8 @@ export default function Timeline(props: TimelineProps) {
     setSelectedCompareDay,
     onDatasetAddClick,
     panelHeight,
-    startEndDates
+    startEndDates,
+    timeDensity
   } = props;
 
   // Refs for non react based interactions.
@@ -627,12 +630,15 @@ export default function Timeline(props: TimelineProps) {
   // Stub scale for when there is no layers
   const initialScale = useMemo(() => getInitialScale(width), [width]);
 
-  const minMaxTemporalExtent = useMemo(
+  const minMaxTemporalExtent = useMemo<TemporalExtent>(
     () => {
       const temporalExtent = getTemporalExtent(
         // Filter the datasets to only include those with status 'SUCCESS'.
         datasets.filter((dataset): dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
       );
+      if (!temporalExtent[0] || !temporalExtent[1] || !startEndDates[0] || !startEndDates[1])
+        return [undefined, undefined];
+        
       return startEndDates[0] ? 
         [((startEndDates[0] > temporalExtent[0]) ? startEndDates[0] : temporalExtent[0]), 
         ((startEndDates[1] > temporalExtent[1]) ? startEndDates[1] : temporalExtent[1])] :
@@ -714,7 +720,7 @@ export default function Timeline(props: TimelineProps) {
           width={width}
           onZoom={onControlsZoom}
           outOfViewHeads={outOfViewHeads}
-          timeDensity={lowestCommonTimeDensity}
+          timeDensity={timeDensity || lowestCommonTimeDensity}
           timelineLabelsFormat={timelineLabelFormat}
         />
       </TimelineHeader>

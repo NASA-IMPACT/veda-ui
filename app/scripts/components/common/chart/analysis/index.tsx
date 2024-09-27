@@ -39,7 +39,7 @@ export default forwardRef<AnalysisChartRef, AnalysisChartProps>(
         dateFormat,
       });
     }, [timeSeriesData, dates, uniqueKeys, dateFormat]);
-    
+
     useImperativeHandle(
       ref,
       () => ({

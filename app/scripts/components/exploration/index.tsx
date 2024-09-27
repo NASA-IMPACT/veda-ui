@@ -11,7 +11,7 @@ import Timeline from './components/timeline/timeline';
 import { ExplorationMap } from './components/map';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { useAnalysisController } from './hooks/use-analysis-data-request';
-import { TimelineDataset } from './types.d.ts';
+import { TimelineDataset, TimeDensity } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
 import { GeoCoPilot } from './components/geo-copilot/geo-copilot';
@@ -87,6 +87,8 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
     false
   );
 
+  const [timeDensity, setTimeDensity] = useState<TimeDensity | null>(null);
+
   const [map, setMap] = useState<MapboxMap | MapRef>();
 
   // @TECH-DEBT: panelHeight  needs to be passed to work around Safari CSS
@@ -106,8 +108,8 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
     };
   }, [resetAnalysisController, setUrl]);
 
-  const mapRef = useRef(null);
-  const geoCoPilotRef = useRef(null);
+  const mapRef = useRef<any>(null);
+  const geoCoPilotRef = useRef<any>(null);
 
   const expandGeoCoPilotPanel = () => {
     const mapPanel = mapRef.current;
@@ -183,6 +185,7 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
                 setSelectedCompareDay={setSelectedCompareDay}
                 map={map}
                 setStartEndDates={setStartEndDates}
+                setTimeDensity={setTimeDensity}
               />
             </Panel>
           </PanelGroup>
@@ -198,6 +201,7 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
             onDatasetAddClick={openModal}
             startEndDates={startEndDates}
             panelHeight={panelHeight}
+            timeDensity={timeDensity}
           />
         </Panel>
       </PanelGroup>

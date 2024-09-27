@@ -107,7 +107,7 @@ function Audience() {
               <BlockAudienceProse>
                 <h3>Science enthusiasts</h3>
                 <p>
-                  Discover the latest in Earth Observation, how that might impact environmental change, 
+                  Discover the latest in Earth Observation, how that might impact environmental change,
                   and how this might impact where you live.
                 </p>
               </BlockAudienceProse>

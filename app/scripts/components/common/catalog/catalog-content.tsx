@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
+import { LinkProperties } from '../card';
 import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
@@ -34,6 +34,8 @@ export interface CatalogContentProps {
   search: string;
   taxonomies: Record<string, string[]>;
   onAction: (action: FilterActions, value?: any) => void;
+  linkProperties: LinkProperties;
+  pathname?: string;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -70,6 +72,8 @@ function CatalogContent({
   search,
   taxonomies,
   onAction,
+  pathname,
+  linkProperties
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
   const isSelectable = selectedIds !== undefined;
@@ -134,15 +138,6 @@ function CatalogContent({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilters]);
 
-  const getSelectedIdsWithParentData = (selectedIds) => {
-    return selectedIds.map((selectedId: string) => {
-      const parentData = findParentDataset(selectedId, datasets);
-      const exclusiveSource = parentData?.sourceExclusive;
-      const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')[0]?.values.map((value) => value.id);
-      return { id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() ?? '' };
-    });
-  };
-
   const filterRelevantIdsBasedOnExclusion = (selectedIdsWithParentData, exclusionSelected) => {
     if (exclusionSelected) {
       return selectedIdsWithParentData.filter((x) => x.values?.includes(x.sourceExclusive)).map((x) => x.id);
@@ -152,7 +147,17 @@ function CatalogContent({
   };
 
   const onCardSelect = useCallback((id: string, currentDataset: DatasetData) => {
+
     if (!setSelectedIds || selectedIds === undefined) return;
+
+    const getSelectedIdsWithParentData = (selectedIds) => {
+      return selectedIds.map((selectedId: string) => {
+        const parentData = findParentDataset(selectedId, datasets);
+        const exclusiveSource = parentData?.sourceExclusive;
+        const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')[0]?.values.map((value) => value.id);
+        return { id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() ?? '' };
+      });
+    };
 
     const exclusiveSource = currentDataset.sourceExclusive?.toLowerCase();
     const sources = getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values;
@@ -160,7 +165,17 @@ function CatalogContent({
 
     const newSelectedIds = selectedIds.includes(id) ? selectedIds.filter((i) => i !== id) : [...selectedIds, id];
 
-    const selectedIdsWithParentData = getSelectedIdsWithParentData(newSelectedIds);
+    let selectedIdsWithParentData = getSelectedIdsWithParentData(newSelectedIds);
+
+    // @NOTE: Check if the new exclusiveSource is selected. Filter out the old one.
+    let prevExclusiveSourceValue;
+    if (exclusiveSourceSelected) prevExclusiveSourceValue = exclusiveSourceSelected;
+    else if (selectedIdsWithParentData.length) prevExclusiveSourceValue = selectedIdsWithParentData.find(d => d.sourceExclusive)?.sourceExclusive;
+    if (exclusiveSource !== prevExclusiveSourceValue) {
+      selectedIdsWithParentData = selectedIdsWithParentData.filter(d => d.sourceExclusive !== prevExclusiveSourceValue);
+    }
+
+    const relevantIdsBasedOnExclusion = filterRelevantIdsBasedOnExclusion(selectedIdsWithParentData, exclusiveSource && sourceIds?.includes(exclusiveSource));
 
     if (exclusiveSource && sourceIds?.includes(exclusiveSource)) {
       setExclusiveSourceSelected(exclusiveSource);
@@ -168,10 +183,8 @@ function CatalogContent({
       setExclusiveSourceSelected(null);
     }
 
-    const relevantIdsBasedOnExclusion = filterRelevantIdsBasedOnExclusion(selectedIdsWithParentData, exclusiveSource && sourceIds?.includes(exclusiveSource));
-
     setSelectedIds(newSelectedIds.filter((id) => relevantIdsBasedOnExclusion.includes(id)));
-  }, [selectedIds, setSelectedIds]);
+  }, [selectedIds, setSelectedIds, exclusiveSourceSelected, datasets]);
 
   useEffect(() => {
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
@@ -202,6 +215,7 @@ function CatalogContent({
         exclusiveSourceSelected={exclusiveSourceSelected}
         customTopOffset={isSelectable ? 50 : 0}
         openByDefault={isSelectable ? false : true}
+        pathname={pathname}
       />
       <Catalog>
         <CatalogTagsContainer
@@ -250,6 +264,8 @@ function CatalogContent({
                           selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
                           onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
+                          linkProperties={linkProperties}
+                          pathname={pathname}
                         />
                       </li>
                     ))}
@@ -261,7 +277,12 @@ function CatalogContent({
             <Cards>
               {datasetsToDisplay.map((d) => (
                 <li key={d.id}>
-                  <CatalogCard dataset={d} searchTerm={search} />
+                  <CatalogCard
+                    dataset={d}
+                    searchTerm={search}
+                    linkProperties={linkProperties}
+                    pathname={pathname}
+                  />
                 </li>
               ))}
             </Cards>
@@ -280,10 +301,10 @@ function CatalogContent({
 }
 
 export default CatalogContent;
-
 const WarningPill = styled(Pill)`
   margin-left: 8px;
 `;
+
 
 export const ParentDatasetTitle = styled.h2<{size?: string}>`
   color: ${themeVal('color.primary')};

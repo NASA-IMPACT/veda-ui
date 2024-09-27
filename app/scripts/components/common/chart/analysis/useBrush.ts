@@ -5,12 +5,12 @@ import { useResizeObserver } from '$utils/use-resize-observer';
 type DraggingState = 'start' | 'drag' | 'end';
 
 /**
- * 
+ *
  * @param  {[Date, Date]} domain Overall domain for the brush
  * @param {[Date, Date]} currentValues Current start and end for the brush selection. This state needs to be managed from outside the hook.
  * @param {function} changeCallback Callback to call when user updated brush. Receives a [Date, Date] argument
  * @param {number} minBrushWidthPx Minimum Width of the brush allowed, defaults to 10
- * @returns {{ wrapperRef, onBrushMouseDown, containerStyles}} 
+ * @returns {{ wrapperRef, onBrushMouseDown, containerStyles}}
  */
 function useBrush(
   domain: [Date, Date],
@@ -23,7 +23,7 @@ function useBrush(
   const initialOffsetX = useRef(0);
 
   const wrapperWidth = useResizeObserver(wrapperRef, { initialWidth: 300 });
- 
+
   const scale = useMemo(() => {
     return scaleTime()
       .domain(domain)

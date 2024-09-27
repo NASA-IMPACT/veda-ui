@@ -1,9 +1,9 @@
-import React, { MouseEventHandler } from 'react';
+import React, { lazy, MouseEventHandler, ComponentType } from 'react';
 import styled, { css } from 'styled-components';
-import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
-
+import { Link } from 'react-router-dom';
+const SmartLink = lazy(() => import('../smart-link'));
 import {
   glsp,
   media,
@@ -11,15 +11,12 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
-import SmartLink from '../smart-link';
+
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
-
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
-
-
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -223,9 +220,18 @@ export function ExternalLinkFlag() {
   );
 }
 
-export interface CardComponentProps {
-  title: JSX.Element | string;
+export interface LinkProperties {
+  LinkElement: JSX.Element | ((props: any) => JSX.Element) | ComponentType<any>;
+  pathAttributeKeyName: string;
+  onLinkClick?: MouseEventHandler;
+}
+
+export interface LinkWithPathProperties extends LinkProperties {
   linkTo: string;
+}
+
+export interface CardComponentBaseProps {
+  title: JSX.Element | string;
   linkLabel?: string;
   className?: string;
   cardType?: CardType;
@@ -238,17 +244,32 @@ export interface CardComponentProps {
   tagLabels?: string[];
   footerContent?: JSX.Element;
   onCardClickCapture?: MouseEventHandler;
-  onLinkClick?: MouseEventHandler;
 }
 
-function CardComponent(props: CardComponentProps) {
+// @TODO: Consolidate these props when the instance adapts the new syntax
+// Specifically: https://github.com/US-GHG-Center/veda-config-ghg/blob/develop/custom-pages/news-and-events/component.tsx#L108
+export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
+  linkTo: string;
+  onLinkClick?: MouseEventHandler;
+}
+export interface CardComponentProps extends CardComponentBaseProps {
+  linkProperties: LinkWithPathProperties;
+}
+
+type CardComponentPropsType = CardComponentProps | CardComponentPropsDeprecated;
+
+// Type guard to check if props has linkProperties
+function hasLinkProperties(props: CardComponentPropsType): props is CardComponentProps {
+  return !!((props as CardComponentProps).linkProperties);
+}
+
+function CardComponent(props: CardComponentPropsType) {
   const {
     className,
     title,
     cardType,
     description,
     linkLabel,
-    linkTo,
     date,
     overline,
     imgSrc,
@@ -256,25 +277,39 @@ function CardComponent(props: CardComponentProps) {
     tagLabels,
     parentTo,
     footerContent,
-    onCardClickCapture,
-    onLinkClick
+    onCardClickCapture
   } = props;
+// @TODO: This process is not necessary once all the instances adapt the linkProperties syntax
+// Consolidate them to use LinkProperties only
+  let linkProperties: LinkWithPathProperties;
 
-  const isExternalLink = /^https?:\/\//.test(linkTo);
+  if (hasLinkProperties(props)) {
+    // Handle new props with linkProperties
+    const { linkProperties: linkPropertiesProps } = props;
+    linkProperties = linkPropertiesProps;
+  } else {
+    const { linkTo, onLinkClick,  } = props;
+    linkProperties = {
+      linkTo,
+      onLinkClick,
+      pathAttributeKeyName: 'to',
+      LinkElement: SmartLink
+    };
+  }
+
+  const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);
 
   return (
     <ElementInteractive
       linkProps={{
-        as: SmartLink,
-        to: linkTo,
-        onLinkClick
+        as: linkProperties.LinkElement,
+        [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
+        onLinkClick: linkProperties.onLinkClick,
       }}
       as={CardItem}
       cardType={cardType}
       className={className}
       linkLabel={linkLabel ?? 'View more'}
-      linkTo={linkTo}
-      onLinkClick={onLinkClick}
       onClickCapture={onCardClickCapture}
     >
       {

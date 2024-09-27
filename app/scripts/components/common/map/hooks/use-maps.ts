@@ -11,7 +11,7 @@ export default function useMaps(): Record<string, any | undefined> {
   const { mainId, comparedId } = useMapsContext();
   const { isCompared } = useStylesContext();
   const maps = useMap();
-  const main = maps?.[mainId];
+  const main = maps[mainId];
   const compared = maps[comparedId];
   const current = isCompared ? compared : main;
 

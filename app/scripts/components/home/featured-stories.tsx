@@ -7,6 +7,7 @@ import { Card } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle, FoldBody } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 import { STORIES_PATH, getStoryPath } from '$utils/routes';
+import SmartLink from '$components/common/smart-link';
 
 const FeaturedStoryList = styled.ol`
   ${listReset()}
@@ -78,7 +79,11 @@ function FeaturedStories() {
                   <Card
                     cardType='cover'
                     linkLabel='View more'
-                    linkTo={d.asLink?.url ?? getStoryPath(d)}
+                    linkProperties={{
+                      linkTo: `${d.asLink?.url ?? getStoryPath(d)}`,
+                      LinkElement: SmartLink,
+                      pathAttributeKeyName: 'to'
+                    }}
                     title={d.name}
                     tagLabels={[getString('stories').one]}
                     parentTo={STORIES_PATH}

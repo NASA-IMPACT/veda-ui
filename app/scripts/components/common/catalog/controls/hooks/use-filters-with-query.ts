@@ -1,11 +1,11 @@
 import { useAtom } from 'jotai';
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router';
 import useQsStateCreator from 'qs-state-hook';
 import { taxonomyAtom } from '../atoms/taxonomy-atom';
 import { searchAtom } from '../atoms/search-atom';
 import { FilterActions, FilterAction, onFilterAction } from '../../utils';
-interface UseFiltersWithQueryResult {
+
+export interface UseFiltersWithQueryResult {
   search: string;
   taxonomies: Record<string, string[]> | Record<string, never>;
   onAction: FilterAction
@@ -30,13 +30,17 @@ export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
     taxonomies,
     onAction,
   };
-} 
+}
 
-export function useFiltersWithQS(): UseFiltersWithQueryResult {
-  const navigate = useNavigate();
-  const useQsState = useQsStateCreator({
-    commit: navigate
-  });
+  export function useFiltersWithQS({
+    navigate
+  }: {
+    navigate: any
+  }): UseFiltersWithQueryResult {
+
+    const useQsState = useQsStateCreator({
+      commit: navigate
+    });
 
   const [search, setSearch] = useQsState.memo(
     {
@@ -56,9 +60,10 @@ export function useFiltersWithQS(): UseFiltersWithQueryResult {
     []
   );
 
+
   const onAction = useCallback<FilterAction>(
-    (action, value) =>
-      onFilterAction(action, value, taxonomies, setSearch, setTaxonomies),
+    (action, value) => {
+      onFilterAction(action, value, taxonomies, setSearch, setTaxonomies);},
     [setSearch, setTaxonomies, taxonomies]
   );
 

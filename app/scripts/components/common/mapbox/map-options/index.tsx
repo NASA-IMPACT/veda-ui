@@ -138,7 +138,7 @@ function MapOptions(props: MapOptionsProps) {
         <DropTitle>Map options</DropTitle>
       </DropHeader>
       <DropBody>
-        
+
           <ContentGroup>
             <ContentGroupHeader>
               <ContentGroupTitle>Style</ContentGroupTitle>
@@ -253,7 +253,7 @@ function MapOptions(props: MapOptionsProps) {
               </DropMenu>
             </ContentGroupBody>
           </ContentGroup>
-        
+
       </DropBody>
     </MapOptionsDropdown>
   );
