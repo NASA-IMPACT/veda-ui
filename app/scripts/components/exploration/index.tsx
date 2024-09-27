@@ -108,8 +108,8 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
     };
   }, [resetAnalysisController, setUrl]);
 
-  const mapRef = useRef(null);
-  const geoCoPilotRef = useRef(null);
+  const mapRef = useRef<any>(null);
+  const geoCoPilotRef = useRef<any>(null);
 
   const expandGeoCoPilotPanel = () => {
     const mapPanel = mapRef.current;
