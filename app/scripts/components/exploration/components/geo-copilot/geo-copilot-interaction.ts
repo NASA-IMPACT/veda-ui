@@ -10,7 +10,7 @@ const GEOCOPILOT_ENDPOINT = process.env.GEO_COPILOT_ENDPOINT;
 
 const ERROR_RESPONSE = {
   "dataset_ids": [],
-  "summary": "An unidentified error occured. Please try again later.",
+  "summary": "An unexpected error occurred with this request. Please ask another question.",
   "date_range": {'start_date': '', 'end_date': ''},
   "bbox":{},
   "action": "error",
