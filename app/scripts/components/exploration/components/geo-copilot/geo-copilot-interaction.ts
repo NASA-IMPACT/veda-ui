@@ -57,3 +57,8 @@ export async function askGeoCoPilot(
     setSystemResponse(ERROR_RESPONSE, content);
   });
 };
+
+
+// Returns the full geolocation url based on centroid (lat, lon) and mapboxaccesstoken
+export const geolocationUrl = (centroid, mapboxAccessToken) => 
+  `https://api.mapbox.com/geocoding/v5/mapbox.places/${centroid[0]},${centroid[1]}.json?access_token=${mapboxAccessToken}`;
