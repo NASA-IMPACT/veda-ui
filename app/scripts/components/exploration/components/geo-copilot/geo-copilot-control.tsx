@@ -3,7 +3,6 @@ import { CollecticonCode } from '@devseed-ui/collecticons';
 import useMaps from '$components/common/map/hooks/use-maps';
 import { SelectorButton } from '$components/common/map/style/button';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
-import { sequentialColorMaps } from '../datasets/colorMaps';
 
 interface GeoCoPilotControlProps {
   showGeoCoPilot: () => void;
