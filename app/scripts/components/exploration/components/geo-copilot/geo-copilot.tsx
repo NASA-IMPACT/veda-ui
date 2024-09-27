@@ -221,7 +221,7 @@ export function GeoCoPilotComponent({
   useEffect(() => {
     // Fit TOI only after datasets are available
     // way to do this is by using useeffect for datasets and aoi atom then checking for missing values.
-    if(!main || !timelineWidth || datasets.length == 0 || !interval?.end)
+    if(!main || !timelineWidth || datasets?.length == 0 || !interval?.end)
       return;
 
     const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) * 0.9;

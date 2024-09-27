@@ -100,9 +100,7 @@ export function GeoCoPilotUserDialogComponent({explanations, query}: {
     {
       (query.length) &&
       <DialogContent>
-      { explanationss.length ?
-        renderHighlightedQuery(query, explanationss) : query
-      }
+        { query }
       </DialogContent>
     }
     </>
