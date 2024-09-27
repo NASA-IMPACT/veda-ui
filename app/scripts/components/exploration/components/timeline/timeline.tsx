@@ -71,7 +71,6 @@ import { useAnalysisController } from '$components/exploration/hooks/use-analysi
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import Pluralize from '$utils/pluralize';
 import { getLowestCommonTimeDensity } from '$components/exploration/data-utils-no-faux-module';
-import { TimeDensity } from '$context/layer-data';
 import { TimeDensity as TimeDensityType} from '$components/exploration/types.d.ts';
 
 const TimelineWrapper = styled.div`
@@ -637,6 +636,9 @@ export default function Timeline(props: TimelineProps) {
         // Filter the datasets to only include those with status 'SUCCESS'.
         datasets.filter((dataset): dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
       );
+      if (!temporalExtent[0] || !temporalExtent[1] || !startEndDates[0] || !startEndDates[1])
+        return [undefined, undefined];
+        
       return startEndDates[0] ? 
         [((startEndDates[0] > temporalExtent[0]) ? startEndDates[0] : temporalExtent[0]), 
         ((startEndDates[1] > temporalExtent[1]) ? startEndDates[1] : temporalExtent[1])] :
