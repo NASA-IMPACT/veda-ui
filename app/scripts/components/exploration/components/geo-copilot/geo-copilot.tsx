@@ -13,7 +13,7 @@ import {
 
 import PulseLoader from "react-spinners/PulseLoader";
 
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 import {
   TimelineDataset,
@@ -50,6 +50,11 @@ import { useAnalysisController } from '$components/exploration/hooks/use-analysi
 
 import { SIMPLE_SELECT } from '$components/common/map/controls/aoi/index';
 import useAois from '$components/common/map/controls/hooks/use-aois';
+
+import { RIGHT_AXIS_SPACE, HEADER_COLUMN_WIDTH } from '$components/exploration/constants';
+import { timelineWidthAtom } from '$components/exploration/atoms/timeline';
+import { useScales } from '$components/exploration/hooks/scales-hooks';
+import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
 
 interface GeoCoPilotModalProps {
   show: boolean;
@@ -185,6 +190,7 @@ export function GeoCoPilotComponent({
 
   const scrollToBottom = () => {
     const phantomElement = phantomElementRef.current;
+    if (!phantomElement) return;
     phantomElement.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -201,10 +207,30 @@ export function GeoCoPilotComponent({
   };
 
   const aoisUpdateGeometry = useSetAtom(aoisUpdateGeometryAtom);
-  
+
+  const timelineWidth = useAtomValue(timelineWidthAtom);
+  const { main } = useScales();
+  const { onTOIZoom } = useOnTOIZoom();
+
+  const interval = useAtomValue(selectedIntervalAtom);
+
   useEffect(() => {
     scrollToBottom();
   }, [loading]);
+
+  useEffect(() => {
+    // Fit TOI only after datasets are available
+    // way to do this is by using useeffect for datasets and aoi atom then checking for missing values.
+    if(!main || !timelineWidth || datasets.length == 0 || !interval?.end)
+      return;
+
+    const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) * 0.9;
+    const startPoint = 0;
+    const new_k = widthToFit/(main(interval.end) - main(interval.start));
+    const new_x = startPoint - new_k * main(interval.start);
+
+    onTOIZoom(new_x, new_k);
+  }, [datasets, interval]);
 
   const addSystemResponse = (answer: any, content: any) => {
     const action = answer['action'];
@@ -247,32 +273,24 @@ export function GeoCoPilotComponent({
         } 
         case 'statistics': {
           const geojson = loadInMap(answer);
+          
           const updatedGeojson = makeFeatureCollection(
-            geojson.features.map((f, i) => ({ id: `${new Date().getTime().toString().slice(-4)}${i}`, ...f }))
+            geojson.features.map((f, i) => ({ 
+              id: `${new Date().getTime().toString().slice(-4)}${i}`, ...f 
+            }))
           );
 
           setSelectedCompareDay(null);
 
-          aoisUpdateGeometry(updatedGeojson.features);
-
-          if (!mbDraw) return;
-  
-          setStartEndDates([startDate, endDate]);
-          
           setSelectedInterval({
             start: startDate, end: endDate
           });
 
-          setTimeDensity(
-            getLowestCommonTimeDensity(
-              datasets.filter((dataset): 
-                dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
-            )
-          );
-          
-          runAnalysis(newDatasetIds);
-  
           onUpdate(updatedGeojson);
+
+          aoisUpdateGeometry(updatedGeojson.features);
+
+          setStartEndDates([startDate, endDate]);
   
           const pids = mbDraw.add(updatedGeojson);
           
@@ -280,6 +298,14 @@ export function GeoCoPilotComponent({
             featureIds: pids
           });
 
+          runAnalysis(newDatasetIds);
+
+          setTimeDensity(
+            getLowestCommonTimeDensity(
+              datasets.filter((dataset): 
+                dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
+            )
+          );
           break;
         }
       }
@@ -347,11 +373,13 @@ export function GeoCoPilotComponent({
           if(convComponent.contentType == 'user') {
             return <GeoCoPilotUserDialog key={`user-dialog-${index}`}
               {...convComponent}
+              id={index}
             />
           }
           else if (convComponent.contentType == 'system') {
             return <GeoCoPilotSystemDialog key={`system-dialog-${index}`}
               {...convComponent}
+              id={index}
             />
           }
         })}
