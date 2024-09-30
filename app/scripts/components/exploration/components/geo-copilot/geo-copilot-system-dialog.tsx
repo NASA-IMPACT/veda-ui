@@ -3,11 +3,11 @@ import axios from 'axios';
 
 
 import { Button } from '@devseed-ui/button';
-import { 
-  CollecticonHandThumbsUp, 
-  CollecticonHandThumbsDown, 
-  CollecticonLink, 
-  CollecticonChevronUpTrailSmall, 
+import {
+  CollecticonHandThumbsUp,
+  CollecticonHandThumbsDown,
+  CollecticonLink,
+  CollecticonChevronUpTrailSmall,
   CollecticonChevronDownTrailSmall,
   CollecticonCalendarRange,
   CollecticonMarker,
@@ -103,8 +103,8 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
         console.error("Reverse geocoding failed.", error);
       }
     };
-    
-    if (!!Object.keys(bbox).length) {
+
+    if (Object.keys(bbox).length > 0) {
       const geojson = JSON.parse(JSON.stringify(bbox).replace('coordinates:', 'coordinates'));
       const center = centroid(geojson).geometry.coordinates;
       fetchGeolocation(center);
@@ -120,7 +120,7 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
 
   return (
     <DialogContent>
-      <div>{summary}</div>  
+      <div>{summary}</div>
       {/*Content*/}
       {explanation && <DialogInteraction>
         <div>
@@ -130,22 +130,22 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
           <Button size={'small'}>
             <CollecticonHandThumbsDown size={10}/>
           </Button>
-        </div> | 
+        </div> |
         {/*Interaction*/}
         <div>
           <Button size={'small'}>
-            <CollecticonLink size={10} /> 
+            <CollecticonLink size={10} />
             <ButtonContent onClick={copyURL}>Copy Map Link</ButtonContent>
           </Button>
         </div>
         {/*Summary*/}
         <ShowHideDetail onClick={updateShowDetails}>
           <Button size={'small'}>
-            
-            {showDetails ? 
+
+            {showDetails ?
               <>
                 <ButtonContent>Hide Details</ButtonContent> <CollecticonChevronUpTrailSmall size={10}/>
-              </> : 
+              </> :
               <>
                 <ButtonContent>Show Details</ButtonContent> <CollecticonChevronDownTrailSmall size={10}/>
               </>
@@ -154,7 +154,7 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
         </ShowHideDetail>
       </DialogInteraction>}
       {
-        showDetails && 
+        showDetails &&
         <AnswerDetails>
           <AnswerDetailsItem>
             <AnswerDetailsIcon>
@@ -174,7 +174,7 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
             </AnswerDetailsIcon>
             <p>{dataset_ids.join(", ")}</p>
           </AnswerDetailsItem>
-        </AnswerDetails> 
+        </AnswerDetails>
       }
     </DialogContent>
   )

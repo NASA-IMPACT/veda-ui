@@ -5,22 +5,15 @@ import { themeVal, glsp } from '@devseed-ui/theme-provider';
 
 import { Button } from '@devseed-ui/button';
 import { FormInput } from '@devseed-ui/form';
-import { 
-  CollecticonChevronRightTrailSmall, 
-  CollecticonArrowLoop, 
+import {
+  CollecticonChevronRightTrailSmall,
+  CollecticonArrowLoop,
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
 
 import PulseLoader from "react-spinners/PulseLoader";
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-
-import {
-  TimelineDataset,
-  TimeDensity,
-  TimelineDatasetSuccess,
-  DatasetStatus
-} from '$components/exploration/types.d.ts';
 
 import bbox from '@turf/bbox';
 import centroid from '@turf/centroid';
@@ -30,21 +23,28 @@ import { GeoCoPilotSystemDialog } from './geo-copilot-system-dialog';
 import { GeoCoPilotUserDialog } from './geo-copilot-user-dialog';
 import { askGeoCoPilot } from './geo-copilot-interaction';
 
-import { 
-  getLowestCommonTimeDensity, 
-  reconcileDatasets 
-} from '$components/exploration/data-utils-no-faux-module';
-
-import { 
-  aoiDeleteAllAtom, 
-  aoisUpdateGeometryAtom 
-} from '$components/common/map/controls/aoi/atoms';
-import { selectedIntervalAtom } from '$components/exploration/atoms/dates';
-
 import { datasetLayers} from '$components/exploration/data-utils';
 import { makeFeatureCollection } from '$components/common/aoi/utils';
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { TemporalExtent } from '../timeline/timeline-utils';
+
+import {
+  TimelineDataset,
+  TimeDensity,
+  TimelineDatasetSuccess,
+  DatasetStatus
+} from '$components/exploration/types.d.ts';
+
+import {
+  getLowestCommonTimeDensity,
+  reconcileDatasets
+} from '$components/exploration/data-utils-no-faux-module';
+
+import {
+  aoiDeleteAllAtom,
+  aoisUpdateGeometryAtom
+} from '$components/common/map/controls/aoi/atoms';
+import { selectedIntervalAtom } from '$components/exploration/atoms/dates';
 
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 
@@ -57,13 +57,10 @@ import { useScales } from '$components/exploration/hooks/scales-hooks';
 import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
 
 interface GeoCoPilotModalProps {
-  show: boolean;
   close: () => void;
   datasets: TimelineDataset[];
   setDatasets: (datasets: TimelineDataset[]) => void;
-  selectedDay: Date | null;
   setSelectedDay: (d: Date | null) => void;
-  selectedCompareDay: Date | null;
   setSelectedCompareDay: (d: Date | null) => void;
   map: any;
   setStartEndDates: (startEndDates: TemporalExtent) => void;
@@ -142,25 +139,19 @@ const override: CSSProperties = {
 
 
 export function GeoCoPilotComponent({
-  close, 
-  show, 
-  datasets, 
-  setDatasets, 
-  selectedDay, 
-  setSelectedDay, 
-  selectedCompareDay, 
+  close,
+  datasets,
+  setDatasets,
+  setSelectedDay,
   setSelectedCompareDay,
   map,
   setStartEndDates,
   setTimeDensity
 }: {
   close: () => void;
-  show: boolean;
   datasets: TimelineDataset[];
   setDatasets: (datasets: TimelineDataset[]) => void;
-  selectedDay: Date | null;
   setSelectedDay: (d: Date | null) => void;
-  selectedCompareDay: Date | null;
   setSelectedCompareDay: (d: Date | null) => void;
   map: any;
   setStartEndDates: (startEndDates: TemporalExtent) => void;
@@ -238,14 +229,14 @@ export function GeoCoPilotComponent({
     const endDate = new Date(answer['date_range']['end_date']);
     const newDatasetIds = answer['dataset_ids'].reduce((layerIds, collectionId) => {
       const foundDataset = datasetLayers.find((dataset) => dataset.stacCol == collectionId);
-      if (!!foundDataset) {
-        layerIds.push(foundDataset.id)
+      if (foundDataset) {
+        layerIds.push(foundDataset.id);
       }
       return layerIds;
     }, []);
     const newDatasets = reconcileDatasets(newDatasetIds, datasetLayers, datasets);
     const mbDraw = map?._drawControl;
-    
+
     answer['contentType'] = 'system';
 
     aoiDeleteAll();
@@ -260,7 +251,7 @@ export function GeoCoPilotComponent({
           setSelectedCompareDay(null);
           setSelectedDay(endDate);
           break;
-        } 
+        }
         case 'compare': {
           mbDraw.deleteAll();
           aoiDeleteAll();
@@ -270,13 +261,13 @@ export function GeoCoPilotComponent({
           setSelectedDay(startDate);
           setSelectedCompareDay(endDate);
           break;
-        } 
+        }
         case 'statistics': {
           const geojson = loadInMap(answer);
-          
+
           const updatedGeojson = makeFeatureCollection(
-            geojson.features.map((f, i) => ({ 
-              id: `${new Date().getTime().toString().slice(-4)}${i}`, ...f 
+            geojson.features.map((f, i) => ({
+              id: `${new Date().getTime().toString().slice(-4)}${i}`, ...f
             }))
           );
 
@@ -291,9 +282,9 @@ export function GeoCoPilotComponent({
           aoisUpdateGeometry(updatedGeojson.features);
 
           setStartEndDates([startDate, endDate]);
-  
+
           const pids = mbDraw.add(updatedGeojson);
-          
+
           mbDraw.changeMode(SIMPLE_SELECT, {
             featureIds: pids
           });
@@ -302,7 +293,7 @@ export function GeoCoPilotComponent({
 
           setTimeDensity(
             getLowestCommonTimeDensity(
-              datasets.filter((dataset): 
+              datasets.filter((dataset):
                 dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
             )
           );
@@ -352,7 +343,7 @@ export function GeoCoPilotComponent({
     setQuery('');
     setLoading(true);
 
-    askGeoCoPilot({question: query, chat_history: [], content: content}, addSystemResponse);
+    askGeoCoPilot({question: query, chat_history: chatHistory, content: content}, addSystemResponse);
   };
 
   const clearSession = () => {
@@ -367,7 +358,7 @@ export function GeoCoPilotComponent({
           <CollecticonArrowLoop/> Restart Session
         </RestartSession>
         <CloseSession onClick={close}><CollecticonXmarkSmall /></CloseSession>
-      </GeoCoPilotTitleWrapper> 
+      </GeoCoPilotTitleWrapper>
       <GeoCoPilotContent>
         {conversation.map((convComponent, index) => {
           if(convComponent.contentType == 'user') {
@@ -384,12 +375,12 @@ export function GeoCoPilotComponent({
           }
         })}
         <PulseLoader
-          color={'#2276ad'}
+          color='#2276ad'
           loading={loading}
           cssOverride={override}
           size={5}
-          aria-label="Processing..."
-          data-testid="loader"
+          aria-label='Processing...'
+          data-testid='loader'
           ref={phantomElementRef}
         />
         <div id='geo-copilot-phantom' ref={phantomElementRef}></div>
@@ -402,7 +393,7 @@ export function GeoCoPilotComponent({
         >
           <CollecticonChevronRightTrailSmall meaningful style={{'color': '#2276ad'}}/>
         </Button>
-      </GeoCoPilotQueryWrapper> 
+      </GeoCoPilotQueryWrapper>
     </GeoCoPilotWrapper>
   )
 }
