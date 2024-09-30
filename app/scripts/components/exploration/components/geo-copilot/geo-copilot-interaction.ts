@@ -41,10 +41,10 @@ export async function askGeoCoPilot(
   ERROR_RESPONSE['query'] = question
 
   if (!GEOCOPILOT_ENDPOINT) {
-    setSystemResponse(ERROR_RESPONSE, content); 
+    setSystemResponse(ERROR_RESPONSE, content);
     return;
   }
-  
+
   await axios.post(
     GEOCOPILOT_ENDPOINT,
     {
@@ -52,6 +52,8 @@ export async function askGeoCoPilot(
       'chat_history': chat_history
     }
   ).then((answer) => {
+    const extractedAnswer = JSON.parse(answer.data.answer);
+    content[content.length - 1].explanations = extractedAnswer.explanation.verification;
     setSystemResponse(JSON.parse(answer.data.answer), content);
   }).catch((e) => {
     setSystemResponse(ERROR_RESPONSE, content);
@@ -60,5 +62,5 @@ export async function askGeoCoPilot(
 
 
 // Returns the full geolocation url based on centroid (lat, lon) and mapboxaccesstoken
-export const geolocationUrl = (centroid, mapboxAccessToken) => 
+export const geolocationUrl = (centroid, mapboxAccessToken) =>
   `https://api.mapbox.com/geocoding/v5/mapbox.places/${centroid[0]},${centroid[1]}.json?access_token=${mapboxAccessToken}`;
