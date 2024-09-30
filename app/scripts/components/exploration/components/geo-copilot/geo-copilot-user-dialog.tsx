@@ -13,7 +13,6 @@ const DialogContent = styled.div`
     border-radius: 10px;
     justify-content: flex-end;
     display: inline-block;
-
 `;
 
 const Query = styled.span`
@@ -58,6 +57,8 @@ const Query = styled.span`
     z-index: 100;
     opacity: 0.9;
     font-size: 12px;
+    width: 390px;
+    text-wrap: balance;
   }
 `;
 
