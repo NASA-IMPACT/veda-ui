@@ -227,13 +227,18 @@ export function GeoCoPilotComponent({
     const action = answer['action'];
     const startDate = new Date(answer['date_range']['start_date']);
     const endDate = new Date(answer['date_range']['end_date']);
-    const newDatasetIds = answer['dataset_ids'].reduce((layerIds, collectionId) => {
+    let newDatasetIds = answer['dataset_ids'].reduce((layerIds, collectionId) => {
       const foundDataset = datasetLayers.find((dataset) => dataset.stacCol == collectionId);
       if (foundDataset) {
         layerIds.push(foundDataset.id);
       }
       return layerIds;
     }, []);
+
+    newDatasetIds = newDatasetIds.filter((datasetId, index, internalArray) =>
+      internalArray.indexOf(datasetId) === index
+    );
+
     const newDatasets = reconcileDatasets(newDatasetIds, datasetLayers, datasets);
     const mbDraw = map?._drawControl;
 
@@ -258,8 +263,8 @@ export function GeoCoPilotComponent({
           cancelAnalysis();
 
           loadInMap(answer);
-          setSelectedDay(startDate);
-          setSelectedCompareDay(endDate);
+          setSelectedDay(endDate);
+          setSelectedCompareDay(startDate);
           break;
         }
         case 'statistics': {
@@ -381,7 +386,6 @@ export function GeoCoPilotComponent({
           size={5}
           aria-label='Processing...'
           data-testid='loader'
-          ref={phantomElementRef}
         />
         <div id='geo-copilot-phantom' ref={phantomElementRef}></div>
       </GeoCoPilotContent>
