@@ -47,10 +47,11 @@ function reconcileQueryDataWithDataset(
     if (queryData.status === DatasetStatus.SUCCESS) {
       const domain = resolveLayerTemporalExtent(base.data.id, queryData.data);
 
-      const renderParams = resolveRenderParams(
-        base.data.sourceParams,
-        queryData.data.renders
-      );
+      // Commenting this out because of issues with vector datasets.
+      // const renderParams = resolveRenderParams(
+      //   base.data.sourceParams,
+      //   queryData.data.renders
+      // );
 
       base = {
         ...base,
@@ -58,7 +59,7 @@ function reconcileQueryDataWithDataset(
           ...base.data,
           ...queryData.data,
           domain,
-          sourceParams: renderParams
+          // sourceParams: renderParams
         }
       };
     }
