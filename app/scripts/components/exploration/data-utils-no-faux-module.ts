@@ -19,7 +19,12 @@ import {
 } from './components/datasets/analysis-metrics';
 import { DEFAULT_COLORMAP } from './components/datasets/colormap-options';
 import { utcString2userTzDate } from '$utils/date';
-import { DatasetLayer, VedaDatum, DatasetData } from '$types/veda';
+import {
+  DatasetLayer,
+  VedaDatum,
+  DatasetData,
+  DatasetLayerType
+} from '$types/veda';
 
 // @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
 // `./date-utils` to be deprecated!!
@@ -145,7 +150,9 @@ const hasValidSourceParams = (params) => {
  * @param datasetType The type of the dataset (e.g., 'vector').
  * @returns Boolean indicating if render parameters are applicable.
  */
-export const isRenderParamsApplicable = (datasetType: string): boolean => {
+export const isRenderParamsApplicable = (
+  datasetType: DatasetLayerType
+): boolean => {
   const nonApplicableTypes = ['vector'];
 
   return !nonApplicableTypes.includes(datasetType);
