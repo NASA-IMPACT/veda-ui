@@ -13,7 +13,8 @@ import {
 } from '../types.d.ts';
 import {
   resolveLayerTemporalExtent,
-  resolveRenderParams
+  resolveRenderParams,
+  isRenderParamsApplicable
 } from '../data-utils-no-faux-module';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { SetState } from '$types/aliases';
@@ -47,11 +48,14 @@ function reconcileQueryDataWithDataset(
     if (queryData.status === DatasetStatus.SUCCESS) {
       const domain = resolveLayerTemporalExtent(base.data.id, queryData.data);
 
-      // Commenting this out because of issues with vector datasets.
-      // const renderParams = resolveRenderParams(
-      //   base.data.sourceParams,
-      //   queryData.data.renders
-      // );
+      let renderParams;
+
+      if (isRenderParamsApplicable(base.data.type)) {
+        renderParams = resolveRenderParams(
+          base.data.sourceParams,
+          queryData.data.renders
+        );
+      }
 
       base = {
         ...base,
@@ -59,7 +63,7 @@ function reconcileQueryDataWithDataset(
           ...base.data,
           ...queryData.data,
           domain,
-          // sourceParams: renderParams
+          ...(renderParams && { sourceParams: renderParams })
         }
       };
     }
