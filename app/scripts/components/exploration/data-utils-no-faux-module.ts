@@ -19,7 +19,12 @@ import {
 } from './components/datasets/analysis-metrics';
 import { DEFAULT_COLORMAP } from './components/datasets/colormap-options';
 import { utcString2userTzDate } from '$utils/date';
-import { DatasetLayer, VedaDatum, DatasetData } from '$types/veda';
+import {
+  DatasetLayer,
+  VedaDatum,
+  DatasetData,
+  DatasetLayerType
+} from '$types/veda';
 
 // @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
 // `./date-utils` to be deprecated!!
@@ -140,6 +145,20 @@ const hasValidSourceParams = (params) => {
 };
 
 /**
+ * Utility to check if render parameters are applicable based on dataset type.
+ *
+ * @param datasetType The type of the dataset (e.g., 'vector').
+ * @returns Boolean indicating if render parameters are applicable.
+ */
+export const isRenderParamsApplicable = (
+  datasetType: DatasetLayerType
+): boolean => {
+  const nonApplicableTypes = ['vector'];
+
+  return !nonApplicableTypes.includes(datasetType);
+};
+
+/**
  * Util to flatten and process rescale values,
  *
  * The need for flattening is because the `rescale` values can be received
@@ -182,14 +201,23 @@ export function resolveRenderParams(
   }
 
   // Check for the dashboard render configuration in queryData
-  if (!queryDataRenders) throw new Error ('No render parameter exists from stac endpoint.');
+  if (!queryDataRenders)
+    throw new Error('No render parameter exists from stac endpoint.');
 
   // Check the namespace from render extension
-  const renderKey = queryDataRenders.dashboard? 'dashboard' : datasetSourceParams?.assets;
-  if (!queryDataRenders[renderKey]) throw new Error ('No proper render parameter for dashboard namespace exists.');
+  const renderKey = queryDataRenders.dashboard
+    ? 'dashboard'
+    : datasetSourceParams?.assets;
+  if (!queryDataRenders[renderKey])
+    throw new Error(
+      'No proper render parameter for dashboard namespace exists.'
+    );
 
   // Return the render extension parameter
-  if (queryDataRenders[renderKey] && hasValidSourceParams(queryDataRenders[renderKey])) {
+  if (
+    queryDataRenders[renderKey] &&
+    hasValidSourceParams(queryDataRenders[renderKey])
+  ) {
     const renderParams = queryDataRenders[renderKey];
     return {
       ...renderParams,
