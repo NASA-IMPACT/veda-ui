@@ -107,6 +107,18 @@ export async function requestDatasetTimeseriesData({
     };
   }
 
+  if (datasetData.analysis?.exclude) {
+    return {
+      status: DatasetStatus.ERROR,
+      meta: {},
+      error: new ExtendedError(
+        'Analysis is turned off for the dataset',
+        'ANALYSIS_NOT_SUPPORTED'
+      ),
+      data: null
+    };
+  }
+
   const id = datasetData.id;
 
   onProgress({
