@@ -2,6 +2,8 @@ import React from 'react';
 
 import styled from 'styled-components';
 
+import JsxParser from 'react-jsx-parser'
+
 const DialogContent = styled.div`
     min-width: 25%;
     max-width: 75%;
@@ -13,12 +15,32 @@ const DialogContent = styled.div`
     border-radius: 10px;
     justify-content: flex-end;
     display: inline-block;
+    position: relative;
+
+    &.active::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background-color: #333;
+      color: #fff;
+      padding: 5px;
+      border-radius: 5px;
+      bottom: 100%;
+      right: 0;
+      white-space: nowrap;
+      z-index: 100;
+      opacity: 0.9;
+      font-size: 12px;
+      max-width: 150px;
+      text-wrap: balance;
+    }
 `;
 
 const Query = styled.span`
   position: relative;
   cursor: pointer;
-  border-bottom: 1px dashed;
+  display: inline-block;
+  padding-bottom: 1px;
+  border-bottom: 1px solid;
 
   &[data-explanation-index='0'] {
     border-bottom-color: blue;
@@ -43,23 +65,6 @@ const Query = styled.span`
   &[data-explanation-index='5'] {
     border-bottom-color: pink;
   }
-
-  &:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    background-color: #333;
-    color: #fff;
-    padding: 5px;
-    border-radius: 5px;
-    bottom: 100%;
-    right: 0;
-    white-space: nowrap;
-    z-index: 100;
-    opacity: 0.9;
-    font-size: 12px;
-    width: 390px;
-    text-wrap: balance;
-  }
 `;
 
 interface GeoCoPilotModalProps {
@@ -71,45 +76,55 @@ export function GeoCoPilotUserDialogComponent({explanations, query}: {
     explanations: any;
     query: string;
 }) {
-
   // Function to dynamically split the query and insert Query parts
   const renderHighlightedQuery = (query: string, explanations: any) => {
-    let remainingQuery = query.toLowerCase();
-    let elements: (string | any)[] = [];
+    let elementsToRender: string[] = query.toLowerCase().split(' ');
 
     explanations.forEach(({ query_part, matchup }, internalIndex) => {
-      const index = remainingQuery.indexOf(query_part.toLowerCase());
-      if (index !== -1) {
-        // Before query_part text
-        if (index > 0) {
-          elements.push(remainingQuery.slice(0, index));
-        }
-        // Highlighted query_part with a tooltip
-        elements.push(
-          <Query key={query_part} data-tooltip={matchup} data-explanation-index={internalIndex.toString()}>
-            {query_part}
-          </Query>
-        );
-        // Update remaining query
-        remainingQuery = remainingQuery.slice(index + query_part.length);
-      }
+      const index = query.indexOf(query_part.toLowerCase());
+      if (index < 0) return;
+      let splits = query_part.split(' ');
+      let lastWord = splits.at(-1) || '';
+      let firstWord = splits[0] || '';
+      let firstWordIndex = elementsToRender.indexOf(firstWord.toLowerCase());
+      if (firstWordIndex < 0) return;
+      elementsToRender.splice(firstWordIndex, 0, `<Query key="${query_part}" data-tooltip="${matchup}" data-explanation-index="${internalIndex.toString()}">`);
+      let lastWordIndex = elementsToRender.indexOf(lastWord.toLowerCase());
+      elementsToRender.splice(lastWordIndex + 1, 0, '</Query>')
     });
-
-    // Add remaining text after the last match
-    if (remainingQuery) {
-      elements.push(remainingQuery);
-    }
-
-    return elements;
+    return elementsToRender.join(' ');
   };
+
+  const handleEnter = (e) => {
+    if (e.target) {
+      const toolTipValue = e.target.attributes['data-tooltip']?.value;
+      if (toolTipValue) {
+        e.currentTarget.setAttribute('data-tooltip', toolTipValue);
+        e.currentTarget.classList.add('active');
+      }
+    }
+  }
+
+  const handleExit = (e) => {
+    if (e.currentTarget) {
+      e.currentTarget.setAttribute('data-tooltip', '');
+      e.currentTarget.classList.remove('active');
+    }
+  }
 
   return (
     <>
     {
       (query.length) &&
-      <DialogContent>
+      <DialogContent onMouseMove={handleEnter} onMouseLeave={handleExit}>
         { explanations.length ?
-        renderHighlightedQuery(query, explanations) : query }
+          <JsxParser
+            allowUnknownElements={false}
+            components={{Query}}
+            jsx={renderHighlightedQuery(query, explanations)}
+          /> :
+          query
+        }
       </DialogContent>
     }
     </>
