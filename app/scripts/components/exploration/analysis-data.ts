@@ -112,7 +112,7 @@ export async function requestDatasetTimeseriesData({
       status: DatasetStatus.ERROR,
       meta: {},
       error: new ExtendedError(
-        'Analysis is turend off for the dataset',
+        'Analysis is turned off for the dataset',
         'ANALYSIS_NOT_SUPPORTED'
       ),
       data: null
