@@ -332,57 +332,94 @@ export function TimelineControls(props: TimelineControlsProps) {
   //Center to selected point
   const { onTOIZoom } = useOnTOIZoom();
   const timelineWidth = useAtomValue(timelineWidthAtom);
-  const { k } = useAtomValue(zoomTransformAtom);
-
+  const { k: currentZoomTransformRatio } = useAtomValue(zoomTransformAtom);
   const { main } = useScales();
+  const visualBufferSizing = 0.9;
+  const startPoint = 0;
+
+  const calculateNewTOIZoom = (
+    dateStart,
+    dateEnd,
+    widthToFit
+  ): { zTransform: number; panPosition: number } => {
+    const zTransform = widthToFit / (dateEnd - dateStart);
+    const panPosition = startPoint - zTransform * dateStart;
+    return { zTransform, panPosition };
+  };
+
   const centerTimelineOnSelections = useCallback(
     (newDate) => {
       if (!timelineWidth || !main) return;
+
+      //defining width of visible area after confirming we have a timeline width
+      const widthToFit =
+        (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) *
+        visualBufferSizing;
 
       //setting most recent date value depending on interaction
       const newSelectedDay = newDate.selectedDay ?? selectedDay;
       const newSelectedCompareDay =
         newDate.selectedCompareDay ?? selectedCompareDay;
       const newSelectedStartInterval = newDate.start ?? selectedInterval?.start;
-      const newSelectedEndInterval = newDate.end ?? selectedInterval?.end;
 
-      //Settign visible areas to base calculations
-      const visibleTimeline =
-        timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH;
-      const widthToFit = visibleTimeline * 0.9;
-      const timelineCenter = visibleTimeline * 0.5;
-      const startPoint = 0;
-      let new_k;
-      let new_x;
+      const newSelectedEndInterval = newDate.end ?? selectedInterval?.end;
+      let newZoomArgs: { zTransform: number; panPosition: number } = {
+        zTransform: 0,
+        panPosition: 0
+      };
+      const calcNewSelectedDay = main(newSelectedDay);
+      const calcNewSelectedCompareDay = main(newSelectedCompareDay);
+      const calcNewSelectedEndInterval = main(newSelectedEndInterval);
+      const calcNewSelectedStartInterval = main(newSelectedStartInterval);
+
       if (newSelectedDay) {
-        new_k = k;
-        new_x = startPoint - new_k * main(newSelectedDay) + timelineCenter;
+        const halfOfCurrentWidth = 0.5;
+        const timelineCenter = widthToFit * halfOfCurrentWidth;
+
+        newZoomArgs.zTransform = currentZoomTransformRatio;
+        newZoomArgs.panPosition =
+          startPoint -
+          newZoomArgs.zTransform * calcNewSelectedDay +
+          timelineCenter;
       }
       if (newSelectedCompareDay) {
         if (newSelectedDay < newSelectedCompareDay) {
-          new_k =
-            widthToFit / (main(newSelectedCompareDay) - main(newSelectedDay));
-          new_x = startPoint - new_k * main(newSelectedDay);
+          newZoomArgs = calculateNewTOIZoom(
+            calcNewSelectedDay,
+            calcNewSelectedCompareDay,
+            widthToFit
+          );
         } else {
-          new_k =
-            widthToFit / (main(newSelectedDay) - main(newSelectedCompareDay));
-          new_x = startPoint - new_k * main(newSelectedCompareDay);
+          newZoomArgs = calculateNewTOIZoom(
+            calcNewSelectedCompareDay,
+            calcNewSelectedDay,
+            widthToFit
+          );
         }
       }
 
       if (newSelectedStartInterval && newSelectedEndInterval) {
-        new_k =
-          widthToFit /
-          (main(newSelectedEndInterval) - main(newSelectedStartInterval));
-        new_x = startPoint - new_k * main(newSelectedStartInterval);
+        if (newSelectedStartInterval > newSelectedEndInterval) {
+          newZoomArgs = calculateNewTOIZoom(
+            calcNewSelectedEndInterval,
+            calcNewSelectedStartInterval,
+            widthToFit
+          );
+        } else {
+          newZoomArgs = calculateNewTOIZoom(
+            calcNewSelectedStartInterval,
+            calcNewSelectedEndInterval,
+            widthToFit
+          );
+        }
       }
-      return onTOIZoom(new_x, new_k);
+      return onTOIZoom(newZoomArgs.panPosition, newZoomArgs.zTransform);
     },
     [
       selectedDay,
       selectedInterval,
       selectedCompareDay,
-      k,
+      currentZoomTransformRatio,
       main,
       timelineWidth,
       onTOIZoom
