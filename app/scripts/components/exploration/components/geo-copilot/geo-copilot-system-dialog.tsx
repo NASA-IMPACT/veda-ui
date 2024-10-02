@@ -97,7 +97,6 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
     const fetchGeolocation = async (center) => {
       try {
         const response = await axios.get(geolocationUrl(center, process.env.MAPBOX_TOKEN));
-        console.log(response.data.features[2].place_name)
         setLocation(response.data.features[2].place_name);  // assuming 'features' is the array in the API response
       } catch (error) {
         console.error("Reverse geocoding failed.", error);
