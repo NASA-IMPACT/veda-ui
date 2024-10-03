@@ -338,9 +338,9 @@ export function TimelineControls(props: TimelineControlsProps) {
   const startPoint = 0;
 
   const calculateNewTOIZoom = (
-    dateStart,
-    dateEnd,
-    widthToFit
+    dateStart: number,
+    dateEnd: number,
+    widthToFit: number
   ): { zTransform: number; panPosition: number } => {
     const zTransform = widthToFit / (dateEnd - dateStart);
     const panPosition = startPoint - zTransform * dateStart;
@@ -348,7 +348,12 @@ export function TimelineControls(props: TimelineControlsProps) {
   };
 
   const centerTimelineOnSelections = useCallback(
-    (newDate) => {
+    (newDate: {
+      selectedDay?: Date | null;
+      start?: Date | null;
+      end?: Date | null;
+      selectedCompareDay?: Date | null;
+    }) => {
       if (!timelineWidth || !main) return;
 
       //defining width of visible area after confirming we have a timeline width
@@ -356,13 +361,18 @@ export function TimelineControls(props: TimelineControlsProps) {
         (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) *
         visualBufferSizing;
 
-      //setting most recent date value depending on interaction
-      const newSelectedDay = newDate.selectedDay ?? selectedDay;
-      const newSelectedCompareDay =
-        newDate.selectedCompareDay ?? selectedCompareDay;
-      const newSelectedStartInterval = newDate.start ?? selectedInterval?.start;
+      //Setting fallback incase no values are provided at any layer
+      const dateFallBack = new Date();
 
-      const newSelectedEndInterval = newDate.end ?? selectedInterval?.end;
+      //setting most recent date value depending on interaction
+      const newSelectedDay = newDate.selectedDay ?? selectedDay ?? dateFallBack;
+      const newSelectedCompareDay =
+        newDate.selectedCompareDay ?? selectedCompareDay ?? dateFallBack;
+      const newSelectedStartInterval =
+        newDate.start ?? selectedInterval?.start ?? dateFallBack;
+      const newSelectedEndInterval =
+        newDate.end ?? selectedInterval?.end ?? dateFallBack;
+
       let newZoomArgs: { zTransform: number; panPosition: number } = {
         zTransform: 0,
         panPosition: 0
