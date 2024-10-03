@@ -361,28 +361,21 @@ export function TimelineControls(props: TimelineControlsProps) {
         (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) *
         visualBufferSizing;
 
-      //Setting fallback incase no values are provided at any layer
-      const dateFallBack = new Date();
-
       //setting most recent date value depending on interaction
-      const newSelectedDay = newDate.selectedDay ?? selectedDay ?? dateFallBack;
+      const newSelectedDay = newDate.selectedDay ?? selectedDay;
       const newSelectedCompareDay =
-        newDate.selectedCompareDay ?? selectedCompareDay ?? dateFallBack;
-      const newSelectedStartInterval =
-        newDate.start ?? selectedInterval?.start ?? dateFallBack;
-      const newSelectedEndInterval =
-        newDate.end ?? selectedInterval?.end ?? dateFallBack;
+        newDate.selectedCompareDay ?? selectedCompareDay;
+      const newSelectedStartInterval = newDate.start ?? selectedInterval?.start;
+      const newSelectedEndInterval = newDate.end ?? selectedInterval?.end;
 
       let newZoomArgs: { zTransform: number; panPosition: number } = {
         zTransform: 0,
         panPosition: 0
       };
-      const calcNewSelectedDay = main(newSelectedDay);
-      const calcNewSelectedCompareDay = main(newSelectedCompareDay);
-      const calcNewSelectedEndInterval = main(newSelectedEndInterval);
-      const calcNewSelectedStartInterval = main(newSelectedStartInterval);
 
       if (newSelectedDay) {
+        const calcNewSelectedDay = main(newSelectedDay);
+
         const halfOfCurrentWidth = 0.5;
         const timelineCenter = widthToFit * halfOfCurrentWidth;
 
@@ -391,24 +384,28 @@ export function TimelineControls(props: TimelineControlsProps) {
           startPoint -
           newZoomArgs.zTransform * calcNewSelectedDay +
           timelineCenter;
-      }
-      if (newSelectedCompareDay) {
-        if (newSelectedDay < newSelectedCompareDay) {
-          newZoomArgs = calculateNewTOIZoom(
-            calcNewSelectedDay,
-            calcNewSelectedCompareDay,
-            widthToFit
-          );
-        } else {
-          newZoomArgs = calculateNewTOIZoom(
-            calcNewSelectedCompareDay,
-            calcNewSelectedDay,
-            widthToFit
-          );
+
+        if (newSelectedCompareDay) {
+          const calcNewSelectedCompareDay = main(newSelectedCompareDay);
+
+          if (newSelectedDay < newSelectedCompareDay) {
+            newZoomArgs = calculateNewTOIZoom(
+              calcNewSelectedDay,
+              calcNewSelectedCompareDay,
+              widthToFit
+            );
+          } else {
+            newZoomArgs = calculateNewTOIZoom(
+              calcNewSelectedCompareDay,
+              calcNewSelectedDay,
+              widthToFit
+            );
+          }
         }
       }
-
       if (newSelectedStartInterval && newSelectedEndInterval) {
+        const calcNewSelectedEndInterval = main(newSelectedEndInterval);
+        const calcNewSelectedStartInterval = main(newSelectedStartInterval);
         if (newSelectedStartInterval > newSelectedEndInterval) {
           newZoomArgs = calculateNewTOIZoom(
             calcNewSelectedEndInterval,
