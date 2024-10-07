@@ -19,14 +19,14 @@ import bbox from '@turf/bbox';
 import centroid from '@turf/centroid';
 import { AllGeoJSON } from '@turf/helpers';
 
-import { GeoCoPilotSystemDialog } from './geo-copilot-system-dialog';
-import { GeoCoPilotUserDialog } from './geo-copilot-user-dialog';
-import { askGeoCoPilot } from './geo-copilot-interaction';
-
 import { datasetLayers} from '$components/exploration/data-utils';
 import { makeFeatureCollection } from '$components/common/aoi/utils';
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { TemporalExtent } from '../timeline/timeline-utils';
+
+import { GeoCoPilotSystemDialog } from './geo-copilot-system-dialog';
+import { GeoCoPilotUserDialog } from './geo-copilot-user-dialog';
+import { askGeoCoPilot } from './geo-copilot-interaction';
 
 import {
   TimelineDataset,
@@ -65,7 +65,7 @@ interface GeoCoPilotModalProps {
   map: any;
   setStartEndDates: (startEndDates: TemporalExtent) => void;
   setTimeDensity: (timeDensity: TimeDensity) => void;
-}
+};
 
 const GeoCoPilotWrapper = styled.div`
   padding-bottom: ${glsp()};
@@ -73,7 +73,8 @@ const GeoCoPilotWrapper = styled.div`
   width: 100%;
   background: #f6f7f8;
   position: relative;
-`
+`;
+
 const GeoCoPilotContent = styled.div`
   width: 100%;
   height: calc(100% - 80px);
@@ -81,7 +82,8 @@ const GeoCoPilotContent = styled.div`
   flex-direction: column;
   font-size: 12px;
   display: flex;
-`
+`;
+
 const GeoCoPilotQueryWrapper = styled.div`
   display: flex;
   overflow: hidden;
@@ -92,7 +94,7 @@ const GeoCoPilotQueryWrapper = styled.div`
   > button {
     margin-left: -35px;
   }
-`
+`;
 
 const GeoCoPilotQuery = styled(FormInput)`
   width: 100%;
@@ -103,7 +105,7 @@ const GeoCoPilotQuery = styled(FormInput)`
     outline-color: ${themeVal('color.primary-200a')};
     outline-style: solid;
   }
-`
+`;
 
 const GeoCoPilotTitleWrapper = styled.div`
   background: white;
@@ -112,24 +114,24 @@ const GeoCoPilotTitleWrapper = styled.div`
   box-shadow: 0 2px 4px #b1b1b1;
   margin-bottom: 3px;
   display: flex;
-`
+`;
 
 const GeoCoPilotTitle = styled.strong`
   color: #2276ad;
   width: 210px;
   margin: auto;
-`
+`;
 
 const RestartSession = styled(Button)`
   align-self: flex-end;
   background: #2276ad;
   margin: auto;
   color: white;
-`
+`;
 
 const CloseSession = styled(Button)`
   align-self: flex-end;
-`
+`;
 
 const override: CSSProperties = {
   display: "block",
@@ -167,13 +169,14 @@ export function GeoCoPilotComponent({
     explanation: null,
     query: '',
     contentType: 'system'
-  }
+  };
+
   const [conversation, setConversation] = useState<any>([defaultSystemComment]);
   const [query, setQuery] = useState<string>('');
   const phantomElementRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
+  const [_, setSelectedInterval] = useAtom(selectedIntervalAtom);
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
 
   const { onUpdate } = useAois();
@@ -307,24 +310,24 @@ export function GeoCoPilotComponent({
       }
     } catch (error) {
       console.log('Error processing', error);
-    }
+    };
 
-    content = [...content, answer]
+    content = [...content, answer];
     setConversation(content);
     setLoading(false);
     //close loading
-  }
+  };
 
   const addNewResponse = () => {
     const userContent = {
       explanations: '',
       query: query,
       contentType: 'user'
-    }
+    };
     const length = conversation.length;
     // merge user and system in one payload rather than multiple elements
     let chatHistory = conversation.reduce((history, innerContent, index) => {
-      let identifier = innerContent.contentType;
+      const identifier = innerContent.contentType;
       let chatElement = {};
       if(identifier == 'user' && index != (length - 1)) {
         chatElement = { inputs: {question: innerContent.query} };
@@ -353,7 +356,7 @@ export function GeoCoPilotComponent({
 
   const clearSession = () => {
     setConversation([defaultSystemComment]);
-  }
+  };
 
   return (
     <GeoCoPilotWrapper>
@@ -370,13 +373,13 @@ export function GeoCoPilotComponent({
             return <GeoCoPilotUserDialog key={`user-dialog-${index}`}
               {...convComponent}
               id={index}
-            />
+            />;
           }
           else if (convComponent.contentType == 'system') {
             return <GeoCoPilotSystemDialog key={`system-dialog-${index}`}
               {...convComponent}
               id={index}
-            />
+            />;
           }
         })}
         <PulseLoader
@@ -399,7 +402,7 @@ export function GeoCoPilotComponent({
         </Button>
       </GeoCoPilotQueryWrapper>
     </GeoCoPilotWrapper>
-  )
+  );
 }
 
 export function GeoCoPilot(props: GeoCoPilotModalProps) {

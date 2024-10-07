@@ -34,22 +34,22 @@ const DialogContent = styled.div`
 const DialogInteraction = styled.div`
   font-size: 0.6rem;
   display: flex;
-`
+`;
 
 const ButtonContent = styled.span`
   font-size: 0.6rem;
-`
+`;
 
 const ShowHideDetail = styled.div`
   margin-left: auto;
-`
+`;
 
 const AnswerDetails = styled.div`
   font-size: 0.6rem;
   padding: 2em;
   background: #f6f7f8;
   border-radius: 10px;
-`
+`;
 
 const AnswerDetailsIcon = styled.div`
   display: flex;
@@ -58,7 +58,7 @@ const AnswerDetailsIcon = styled.div`
   span {
     margin-left: 4px;
   }
-`
+`;
 
 const AnswerDetailsItem = styled.div`
   margin-bottom: 6px;
@@ -67,7 +67,7 @@ const AnswerDetailsItem = styled.div`
     font-size: 0.7rem;
     margin-left: 12px;
   }
-`
+`;
 
 export interface GeoCoPilotModalProps {
     summary: string;
@@ -78,7 +78,7 @@ export interface GeoCoPilotModalProps {
     action: string;
     explanation: any;
     query: string;
-}
+};
 
 export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dateRange, date, action, explanation, query}: {
     summary: string;
@@ -108,14 +108,15 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
       const center = centroid(geojson).geometry.coordinates;
       fetchGeolocation(center);
     }
-  }, [bbox])
+  }, [bbox]);
 
   const updateShowDetails = () => {
     setShowDetails(!showDetails);
-  }
+  };
+
   const copyURL = () => {
     navigator.clipboard.writeText(document.URL);
-  }
+  };
 
   return (
     <DialogContent>
@@ -176,7 +177,7 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
         </AnswerDetails>
       }
     </DialogContent>
-  )
+  );
 }
 
 export function GeoCoPilotSystemDialog(props: GeoCoPilotModalProps) {
@@ -190,5 +191,5 @@ export function GeoCoPilotSystemDialog(props: GeoCoPilotModalProps) {
         action={action}
         explanation={explanation}
         query={query}
-    />
+    />;
 }

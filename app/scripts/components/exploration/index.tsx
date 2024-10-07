@@ -13,10 +13,10 @@ import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { useAnalysisController } from './hooks/use-analysis-data-request';
 import { TimelineDataset, TimeDensity } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
-import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
 import { GeoCoPilot } from './components/geo-copilot/geo-copilot';
 
 import { TemporalExtent } from './components/timeline/timeline-utils';
+import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
 
 const Container = styled.div`
   display: flex;
@@ -190,13 +190,10 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
           ref={geoCoPilotRef}
         >
           <GeoCoPilot
-            show={showGeoCoPilot}
             close={closeGeoCoPilotPanel}
             datasets={datasets}
             setDatasets={setDatasets}
-            selectedDay={selectedDay}
             setSelectedDay={setSelectedDay}
-            selectedCompareDay={selectedCompareDay}
             setSelectedCompareDay={setSelectedCompareDay}
             map={map}
             setStartEndDates={setStartEndDates}

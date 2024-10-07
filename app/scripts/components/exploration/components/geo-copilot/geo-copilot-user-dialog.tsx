@@ -83,16 +83,25 @@ export function GeoCoPilotUserDialogComponent({explanations, query}: {
     explanations.forEach(({ query_part, matchup }, internalIndex) => {
       const index = query.indexOf(query_part.toLowerCase());
       if (index < 0) return;
-      let splits = query_part.split(' ');
-      let lastWord = splits.at(-1) || '';
-      let firstWord = splits[0] || '';
-      let firstWordIndex = elementsToRender.indexOf(firstWord.toLowerCase());
+      const splits = query_part.split(' ');
+      const lastWord = splits.at(-1) || '';
+      const firstWord = splits[0] || '';
+      const firstWordIndex = elementsToRender.indexOf(firstWord.toLowerCase());
       if (firstWordIndex < 0) return;
-      elementsToRender.splice(firstWordIndex, 0, `<Query key="${query_part}" data-tooltip="${matchup}" data-explanation-index="${internalIndex.toString()}">`);
+      elementsToRender.splice(
+        firstWordIndex,
+        0,
+        `<Query key="${query_part}" data-tooltip="${matchup}" data-explanation-index="${internalIndex.toString()}">`
+      );
       let lastWordIndex = elementsToRender.indexOf(lastWord.toLowerCase());
       elementsToRender.splice(lastWordIndex + 1, 0, '</Query>')
     });
     return elementsToRender.join(' ');
+  };
+
+  const resetToolTip = (e) => {
+    e.currentTarget.setAttribute('data-tooltip', '');
+    e.currentTarget.classList.remove('active');
   };
 
   const handleEnter = (e) => {
@@ -102,15 +111,15 @@ export function GeoCoPilotUserDialogComponent({explanations, query}: {
         e.currentTarget.setAttribute('data-tooltip', toolTipValue);
         e.currentTarget.classList.add('active');
       }
+      else resetToolTip(e);
     }
-  }
+  };
 
   const handleExit = (e) => {
     if (e.currentTarget) {
-      e.currentTarget.setAttribute('data-tooltip', '');
-      e.currentTarget.classList.remove('active');
+      resetToolTip(e);
     }
-  }
+  };
 
   return (
     <>
@@ -136,5 +145,5 @@ export function GeoCoPilotUserDialog(props: GeoCoPilotModalProps) {
     return <GeoCoPilotUserDialogComponent
         explanations={explanations}
         query={query}
-    />
+    />;
 }
