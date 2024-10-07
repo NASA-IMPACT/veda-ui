@@ -5,15 +5,29 @@ import { themeVal, glsp } from '@devseed-ui/theme-provider';
 
 import { Button } from '@devseed-ui/button';
 import { FormInput } from '@devseed-ui/form';
-import { 
-  CollecticonChevronRightTrailSmall, 
-  CollecticonArrowLoop, 
+import {
+  CollecticonChevronRightTrailSmall,
+  CollecticonArrowLoop,
   CollecticonXmarkSmall
 } from '@devseed-ui/collecticons';
 
 import PulseLoader from "react-spinners/PulseLoader";
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+
+import bbox from '@turf/bbox';
+import centroid from '@turf/centroid';
+import { AllGeoJSON } from '@turf/helpers';
+
+import { TemporalExtent } from '../timeline/timeline-utils';
+
+import { GeoCoPilotSystemDialog } from './geo-copilot-system-dialog';
+import { GeoCoPilotUserDialog } from './geo-copilot-user-dialog';
+import { askGeoCoPilot } from './geo-copilot-interaction';
+
+import { datasetLayers} from '$components/exploration/data-utils';
+import { makeFeatureCollection } from '$components/common/aoi/utils';
+import { getZoomFromBbox } from '$components/common/map/utils';
 
 import {
   TimelineDataset,
@@ -22,29 +36,16 @@ import {
   DatasetStatus
 } from '$components/exploration/types.d.ts';
 
-import bbox from '@turf/bbox';
-import centroid from '@turf/centroid';
-import { AllGeoJSON } from '@turf/helpers';
-
-import { GeoCoPilotSystemDialog } from './geo-copilot-system-dialog';
-import { GeoCoPilotUserDialog } from './geo-copilot-user-dialog';
-import { askGeoCoPilot } from './geo-copilot-interaction';
-
-import { 
-  getLowestCommonTimeDensity, 
-  reconcileDatasets 
+import {
+  getLowestCommonTimeDensity,
+  reconcileDatasets
 } from '$components/exploration/data-utils-no-faux-module';
 
-import { 
-  aoiDeleteAllAtom, 
-  aoisUpdateGeometryAtom 
+import {
+  aoiDeleteAllAtom,
+  aoisUpdateGeometryAtom
 } from '$components/common/map/controls/aoi/atoms';
 import { selectedIntervalAtom } from '$components/exploration/atoms/dates';
-
-import { datasetLayers} from '$components/exploration/data-utils';
-import { makeFeatureCollection } from '$components/common/aoi/utils';
-import { getZoomFromBbox } from '$components/common/map/utils';
-import { TemporalExtent } from '../timeline/timeline-utils';
 
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 
@@ -57,13 +58,10 @@ import { useScales } from '$components/exploration/hooks/scales-hooks';
 import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
 
 interface GeoCoPilotModalProps {
-  show: boolean;
   close: () => void;
   datasets: TimelineDataset[];
   setDatasets: (datasets: TimelineDataset[]) => void;
-  selectedDay: Date | null;
   setSelectedDay: (d: Date | null) => void;
-  selectedCompareDay: Date | null;
   setSelectedCompareDay: (d: Date | null) => void;
   map: any;
   setStartEndDates: (startEndDates: TemporalExtent) => void;
@@ -76,7 +74,8 @@ const GeoCoPilotWrapper = styled.div`
   width: 100%;
   background: #f6f7f8;
   position: relative;
-`
+`;
+
 const GeoCoPilotContent = styled.div`
   width: 100%;
   height: calc(100% - 80px);
@@ -84,7 +83,8 @@ const GeoCoPilotContent = styled.div`
   flex-direction: column;
   font-size: 12px;
   display: flex;
-`
+`;
+
 const GeoCoPilotQueryWrapper = styled.div`
   display: flex;
   overflow: hidden;
@@ -95,7 +95,7 @@ const GeoCoPilotQueryWrapper = styled.div`
   > button {
     margin-left: -35px;
   }
-`
+`;
 
 const GeoCoPilotQuery = styled(FormInput)`
   width: 100%;
@@ -106,7 +106,7 @@ const GeoCoPilotQuery = styled(FormInput)`
     outline-color: ${themeVal('color.primary-200a')};
     outline-style: solid;
   }
-`
+`;
 
 const GeoCoPilotTitleWrapper = styled.div`
   background: white;
@@ -115,24 +115,24 @@ const GeoCoPilotTitleWrapper = styled.div`
   box-shadow: 0 2px 4px #b1b1b1;
   margin-bottom: 3px;
   display: flex;
-`
+`;
 
 const GeoCoPilotTitle = styled.strong`
   color: #2276ad;
   width: 210px;
   margin: auto;
-`
+`;
 
 const RestartSession = styled(Button)`
   align-self: flex-end;
   background: #2276ad;
   margin: auto;
   color: white;
-`
+`;
 
 const CloseSession = styled(Button)`
   align-self: flex-end;
-`
+`;
 
 const override: CSSProperties = {
   display: "block",
@@ -142,25 +142,19 @@ const override: CSSProperties = {
 
 
 export function GeoCoPilotComponent({
-  close, 
-  show, 
-  datasets, 
-  setDatasets, 
-  selectedDay, 
-  setSelectedDay, 
-  selectedCompareDay, 
+  close,
+  datasets,
+  setDatasets,
+  setSelectedDay,
   setSelectedCompareDay,
   map,
   setStartEndDates,
   setTimeDensity
 }: {
   close: () => void;
-  show: boolean;
   datasets: TimelineDataset[];
   setDatasets: (datasets: TimelineDataset[]) => void;
-  selectedDay: Date | null;
   setSelectedDay: (d: Date | null) => void;
-  selectedCompareDay: Date | null;
   setSelectedCompareDay: (d: Date | null) => void;
   map: any;
   setStartEndDates: (startEndDates: TemporalExtent) => void;
@@ -176,7 +170,8 @@ export function GeoCoPilotComponent({
     explanation: null,
     query: '',
     contentType: 'system'
-  }
+  };
+
   const [conversation, setConversation] = useState<any>([defaultSystemComment]);
   const [query, setQuery] = useState<string>('');
   const phantomElementRef = useRef<HTMLDivElement | null>(null);
@@ -221,7 +216,7 @@ export function GeoCoPilotComponent({
   useEffect(() => {
     // Fit TOI only after datasets are available
     // way to do this is by using useeffect for datasets and aoi atom then checking for missing values.
-    if(!main || !timelineWidth || datasets.length == 0 || !interval?.end)
+    if(!main || !timelineWidth || datasets?.length == 0 || !interval?.end)
       return;
 
     const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) * 0.9;
@@ -236,16 +231,21 @@ export function GeoCoPilotComponent({
     const action = answer['action'];
     const startDate = new Date(answer['date_range']['start_date']);
     const endDate = new Date(answer['date_range']['end_date']);
-    const newDatasetIds = answer['dataset_ids'].reduce((layerIds, collectionId) => {
+    let newDatasetIds = answer['dataset_ids'].reduce((layerIds, collectionId) => {
       const foundDataset = datasetLayers.find((dataset) => dataset.stacCol == collectionId);
-      if (!!foundDataset) {
-        layerIds.push(foundDataset.id)
+      if (foundDataset) {
+        layerIds.push(foundDataset.id);
       }
       return layerIds;
     }, []);
+
+    newDatasetIds = newDatasetIds.filter((datasetId, index, internalArray) =>
+      internalArray.indexOf(datasetId) === index
+    );
+
     const newDatasets = reconcileDatasets(newDatasetIds, datasetLayers, datasets);
     const mbDraw = map?._drawControl;
-    
+
     answer['contentType'] = 'system';
 
     aoiDeleteAll();
@@ -260,23 +260,23 @@ export function GeoCoPilotComponent({
           setSelectedCompareDay(null);
           setSelectedDay(endDate);
           break;
-        } 
+        }
         case 'compare': {
           mbDraw.deleteAll();
           aoiDeleteAll();
           cancelAnalysis();
 
           loadInMap(answer);
-          setSelectedDay(startDate);
-          setSelectedCompareDay(endDate);
+          setSelectedDay(endDate);
+          setSelectedCompareDay(startDate);
           break;
-        } 
+        }
         case 'statistics': {
           const geojson = loadInMap(answer);
-          
+
           const updatedGeojson = makeFeatureCollection(
-            geojson.features.map((f, i) => ({ 
-              id: `${new Date().getTime().toString().slice(-4)}${i}`, ...f 
+            geojson.features.map((f, i) => ({
+              id: `${new Date().getTime().toString().slice(-4)}${i}`, ...f
             }))
           );
 
@@ -291,9 +291,9 @@ export function GeoCoPilotComponent({
           aoisUpdateGeometry(updatedGeojson.features);
 
           setStartEndDates([startDate, endDate]);
-  
+
           const pids = mbDraw.add(updatedGeojson);
-          
+
           mbDraw.changeMode(SIMPLE_SELECT, {
             featureIds: pids
           });
@@ -302,7 +302,7 @@ export function GeoCoPilotComponent({
 
           setTimeDensity(
             getLowestCommonTimeDensity(
-              datasets.filter((dataset): 
+              datasets.filter((dataset):
                 dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
             )
           );
@@ -313,22 +313,22 @@ export function GeoCoPilotComponent({
       console.log('Error processing', error);
     }
 
-    content = [...content, answer]
+    content = [...content, answer];
     setConversation(content);
     setLoading(false);
     //close loading
-  }
+  };
 
   const addNewResponse = () => {
     const userContent = {
       explanations: '',
       query: query,
       contentType: 'user'
-    }
+    };
     const length = conversation.length;
     // merge user and system in one payload rather than multiple elements
-    let chatHistory = conversation.reduce((history, innerContent, index) => {
-      let identifier = innerContent.contentType;
+    const chatHistory = conversation.reduce((history, innerContent, index) => {
+      const identifier = innerContent.contentType;
       let chatElement = {};
       if(identifier == 'user' && index != (length - 1)) {
         chatElement = { inputs: {question: innerContent.query} };
@@ -336,7 +336,7 @@ export function GeoCoPilotComponent({
       }
       else {
         const innerLength = history.length - 1;
-        if (!!innerContent.action) {
+        if (innerContent.action) {
           chatElement = { outputs: {answer: innerContent.summary} };
         }
         else {
@@ -352,59 +352,70 @@ export function GeoCoPilotComponent({
     setQuery('');
     setLoading(true);
 
-    askGeoCoPilot({question: query, chat_history: [], content: content}, addSystemResponse);
+    askGeoCoPilot({question: query, chat_history: chatHistory, content: content}, addSystemResponse);
   };
 
   const clearSession = () => {
     setConversation([defaultSystemComment]);
-  }
+  };
 
   return (
     <GeoCoPilotWrapper>
       <GeoCoPilotTitleWrapper>
         <GeoCoPilotTitle>Geo Co-Pilot</GeoCoPilotTitle>
-        <RestartSession size={'small'} onClick={clearSession}>
-          <CollecticonArrowLoop/> Restart Session
+        <RestartSession size='small' onClick={clearSession}>
+          <CollecticonArrowLoop /> Restart Session
         </RestartSession>
         <CloseSession onClick={close}><CollecticonXmarkSmall /></CloseSession>
-      </GeoCoPilotTitleWrapper> 
+      </GeoCoPilotTitleWrapper>
       <GeoCoPilotContent>
         {conversation.map((convComponent, index) => {
           if(convComponent.contentType == 'user') {
-            return <GeoCoPilotUserDialog key={`user-dialog-${index}`}
-              {...convComponent}
-              id={index}
-            />
+            return (
+              <GeoCoPilotUserDialog
+                key={`user-dialog-${index}`}
+                {...convComponent}
+                id={index}
+              />
+            );
           }
           else if (convComponent.contentType == 'system') {
-            return <GeoCoPilotSystemDialog key={`system-dialog-${index}`}
-              {...convComponent}
-              id={index}
-            />
+            return (
+              <GeoCoPilotSystemDialog
+                key={`system-dialog-${index}`}
+                {...convComponent}
+                id={index}
+              />
+            );
           }
         })}
         <PulseLoader
-          color={'#2276ad'}
+          color='#2276ad'
           loading={loading}
           cssOverride={override}
           size={5}
-          aria-label="Processing..."
-          data-testid="loader"
-          ref={phantomElementRef}
+          aria-label='Processing...'
+          data-testid='loader'
         />
-        <div id='geo-copilot-phantom' ref={phantomElementRef}></div>
+        <div id='geo-copilot-phantom' ref={phantomElementRef} />
       </GeoCoPilotContent>
       <GeoCoPilotQueryWrapper>
-        <GeoCoPilotQuery type="text" placeholder="Type your message..." value={query} onChange={(e) => {setQuery(e.target.value)}} onKeyUp={(e) => e.code == 'Enter' ? addNewResponse() : ''}/>
+        <GeoCoPilotQuery
+          type='text'
+          placeholder='Type your message...'
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyUp={(e) => e.code == 'Enter' ? addNewResponse() : ''}
+        />
         <Button
-          fitting="skinny"
+          fitting='skinny'
           onClick={addNewResponse}
         >
-          <CollecticonChevronRightTrailSmall meaningful style={{'color': '#2276ad'}}/>
+          <CollecticonChevronRightTrailSmall meaningful style={{'color': '#2276ad'}} />
         </Button>
-      </GeoCoPilotQueryWrapper> 
+      </GeoCoPilotQueryWrapper>
     </GeoCoPilotWrapper>
-  )
+  );
 }
 
 export function GeoCoPilot(props: GeoCoPilotModalProps) {
