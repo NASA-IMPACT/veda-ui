@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentType } from 'react';
 import styled from 'styled-components';
 import {
   glsp,
@@ -65,7 +65,7 @@ const LOG = true;
 function LinkDropMenuNavItem({ child, onClick, linkProperties }: { child: NavLinkItem, onClick?:() => void, linkProperties: LinkProperties }) {
   const { title, type, ...rest } = child;
   const linkProps = {
-    as: linkProperties.LinkElement,
+    as: linkProperties.LinkElement as ComponentType<any>,
     to: (rest as InternalNavLink).to,
   };
 
@@ -102,7 +102,7 @@ export default function NavMenuItem({ item, alignment, onClick, linkProperties }
 
   if (type === NavItemType.INTERNAL_LINK) {
     const linkProps = {
-      as: linkProperties.LinkElement,
+      as: linkProperties.LinkElement as ComponentType<any>,
       href: (rest as InternalNavLink).to, // href
     };
     return (

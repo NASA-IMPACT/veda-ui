@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentType } from 'react';
 import styled from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import NasaLogo from '../nasa-logo';
@@ -99,7 +99,7 @@ const PageTitleSecLink = styled.a`
 `;
 
 export default function Logo ({ linkProperties }: { linkProperties: LinkProperties }) {
-  const LinkElement = linkProperties.LinkElement; // @TODO-SANDRA: Revisit typing here...
+  const LinkElement: ComponentType<any> = linkProperties.LinkElement as ComponentType<any>;
   const linkProps = {
     [linkProperties.pathAttributeKeyName]: '/'
   };
