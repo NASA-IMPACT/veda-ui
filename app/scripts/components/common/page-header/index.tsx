@@ -15,6 +15,7 @@ import {
 } from '@devseed-ui/collecticons';
 
 import UnscrollableBody from '../unscrollable-body';
+import { LinkProperties } from '../card';
 import NavMenuItem from './nav-menu-item';
 import { NavItem } from './types';
 
@@ -229,14 +230,13 @@ const GlobalMenu = styled.ul`
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
-  logo: ReactElement
+  logo: ReactElement;
+  linkProperties: LinkProperties;
 }
 
-
 function PageHeader(props: PageHeaderProps) {
-  const { mainNavItems, subNavItems, logo } = props;
+  const { mainNavItems, subNavItems, logo, linkProperties } = props;
   const { isMediumDown } = useMediaQuery();
-
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
 
   const globalNavBodyRef = useRef<HTMLDivElement>(null);
@@ -276,7 +276,6 @@ function PageHeader(props: PageHeaderProps) {
     <>
     <SROnly href='#' onClick={skipNav}>Skip to main content</SROnly>
     <PageHeaderSelf id={HEADER_ID}>
-
       {globalNavRevealed && isMediumDown && <UnscrollableBody />}
       {logo}
       {isMediumDown && (
@@ -317,7 +316,7 @@ function PageHeader(props: PageHeaderProps) {
                 <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
                 <GlobalMenu>
                   {mainNavItems.map((item) => {
-                    return <NavMenuItem key={`${item.title}-nav-item`} item={item} alignment='left' onClick={closeNavOnClick} />;
+                    return <NavMenuItem linkProperties={linkProperties} key={`${item.title}-nav-item`} item={item} alignment='left' onClick={closeNavOnClick} />;
                   })}
                 </GlobalMenu>
               </SectionsNavBlock>
@@ -325,7 +324,7 @@ function PageHeader(props: PageHeaderProps) {
                 <GlobalNavBlockTitle>Meta</GlobalNavBlockTitle>
                 <GlobalMenu>
                   {subNavItems.map((item) => {
-                    return <NavMenuItem key={`${item.title}-nav-item`} item={item} alignment='right' onClick={closeNavOnClick} />;
+                    return <NavMenuItem linkProperties={linkProperties} key={`${item.title}-nav-item`} item={item} alignment='right' onClick={closeNavOnClick} />;
                   })}
                 </GlobalMenu>
               </SectionsNavBlock>

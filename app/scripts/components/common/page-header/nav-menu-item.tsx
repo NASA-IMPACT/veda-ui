@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
 import {
   glsp,
   media,
@@ -13,9 +12,11 @@ import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from '../dropdown-scrollable';
 import GoogleForm from '../google-form';
+import { LinkProperties } from '../card';
 import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, ModalNavLink, NavItem, NavItemType } from './types.d';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
+
 
 const rgbaFixed = rgba as any;
 
@@ -38,9 +39,10 @@ export const GlobalNavToggle = styled(Button)`
   z-index: 2000;
 `;
 
-const GlobalMenuLink = styled(NavLink)`
+const GlobalMenuLink = styled.a`
   ${GlobalMenuLinkCSS}
 `;
+
 const GlobalMenuButton = styled(Button)`
   ${GlobalMenuLinkCSS}
 `;
@@ -60,12 +62,17 @@ const DropMenuNavItem = styled(DropMenuItem)`
 
 const LOG = true;
 
-function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:() => void}) {
+function LinkDropMenuNavItem({ child, onClick, linkProperties }: { child: NavLinkItem, onClick?:() => void, linkProperties: LinkProperties }) {
   const { title, type, ...rest } = child;
+  const linkProps = {
+    as: linkProperties.LinkElement,
+    to: (rest as InternalNavLink).to,
+  };
+
   if (type === NavItemType.INTERNAL_LINK) {
     return (
     <li>
-      <DropMenuNavItem as={NavLink} to={(rest as InternalNavLink).to} onClick={onClick} data-dropdown='click.close'>
+      <DropMenuNavItem {...linkProps} onClick={onClick} data-dropdown='click.close'>
         {title}
       </DropMenuNavItem>
     </li>
@@ -89,18 +96,23 @@ function LinkDropMenuNavItem({ child, onClick }: { child: NavLinkItem, onClick?:
 }
 
 
-export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem, alignment?: AlignmentEnum, onClick?: () => void }) {
+export default function NavMenuItem({ item, alignment, onClick, linkProperties }: {item: NavItem, alignment?: AlignmentEnum, onClick?: () => void, linkProperties: LinkProperties }) {
   const { isMediumDown } = useMediaQuery();
   const { title, type, ...rest } = item;
-  if (type === NavItemType.INTERNAL_LINK) {
-      return (
-        <li key={`${title}-nav-item`}>
-        <GlobalMenuLink to={(rest as InternalNavLink).to} onClick={onClick}>
-          {title}
-        </GlobalMenuLink>
-        </li>
 
-      );
+  if (type === NavItemType.INTERNAL_LINK) {
+    const linkProps = {
+      as: linkProperties.LinkElement,
+      href: (rest as InternalNavLink).to, // href
+    };
+    return (
+      <li key={`${title}-nav-item`}>
+      <GlobalMenuLink {...linkProps} onClick={onClick}>
+        {title}
+      </GlobalMenuLink>
+      </li>
+
+    );
   } else if (item.type === NavItemType.EXTERNAL_LINK) {
     return (
       <li key={`${title}-nav-item`}>
@@ -127,7 +139,7 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
         <>
         <li><GlobalMenuItem>{title} </GlobalMenuItem></li>
           {item.children.map((child) => {
-            return <LinkDropMenuNavItem key={`${title}-dropdown-menu`} child={child} onClick={onClick} />;
+            return <LinkDropMenuNavItem key={`${title}-dropdown-menu`} child={child} onClick={onClick} linkProperties={linkProperties} />;
           })}
         </>
       );
@@ -144,7 +156,7 @@ export default function NavMenuItem({ item, alignment, onClick }: {item: NavItem
       >
         <DropMenu>
           {(item as DropdownNavLink).children.map((child) => {
-            return <LinkDropMenuNavItem key={`${title}-dropdown-menu`} child={child} />;
+            return <LinkDropMenuNavItem key={`${title}-dropdown-menu`} child={child} linkProperties={linkProperties} />;
           })}
         </DropMenu>
       </DropdownScrollable>

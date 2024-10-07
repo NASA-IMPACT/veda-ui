@@ -1,4 +1,5 @@
 import React, { ReactNode, useContext, useCallback, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
@@ -97,7 +98,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
       <NavWrapper
         mainNavItems={mainNavItems}
         subNavItems={subNavItems}
-        logo={<Logo />}
+        logo={<Logo linkProperties={{LinkElement: Link, pathAttributeKeyName: 'to'}} />}
       />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
