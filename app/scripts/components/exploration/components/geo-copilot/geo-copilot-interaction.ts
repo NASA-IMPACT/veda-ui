@@ -20,7 +20,7 @@ const ERROR_RESPONSE = {
       "verification":[]
   },
   "query": ''
-}
+};
 
 /**
  * Gets the asset urls for all datasets in the results of a STAC search given by
@@ -38,7 +38,7 @@ export async function askGeoCoPilot(
   }: GeoCoPilotInteractionQuery,
   setSystemResponse: (answer: any, content: any) => void
 ){
-  ERROR_RESPONSE['query'] = question
+  ERROR_RESPONSE['query'] = question;
 
   if (!GEOCOPILOT_ENDPOINT) {
     setSystemResponse(ERROR_RESPONSE, content);
@@ -55,9 +55,9 @@ export async function askGeoCoPilot(
     const extractedAnswer = JSON.parse(answer.data.answer);
     content[content.length - 1].explanations = extractedAnswer.explanation.verification;
     setSystemResponse(JSON.parse(answer.data.answer), content);
-  }).catch((e) => {
+  }).catch(() => {
     setSystemResponse(ERROR_RESPONSE, content);
-  });
+  })
 };
 
 

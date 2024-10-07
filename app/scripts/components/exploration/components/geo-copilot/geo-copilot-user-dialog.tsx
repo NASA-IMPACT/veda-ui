@@ -2,7 +2,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import JsxParser from 'react-jsx-parser'
+import JsxParser from 'react-jsx-parser';
 
 const DialogContent = styled.div`
     min-width: 25%;
@@ -78,7 +78,7 @@ export function GeoCoPilotUserDialogComponent({explanations, query}: {
 }) {
   // Function to dynamically split the query and insert Query parts
   const renderHighlightedQuery = (query: string, explanations: any) => {
-    let elementsToRender: string[] = query.toLowerCase().split(' ');
+    const elementsToRender: string[] = query.toLowerCase().split(' ');
 
     explanations.forEach(({ query_part, matchup }, internalIndex) => {
       const index = query.indexOf(query_part.toLowerCase());
@@ -93,8 +93,8 @@ export function GeoCoPilotUserDialogComponent({explanations, query}: {
         0,
         `<Query key="${query_part}" data-tooltip="${matchup}" data-explanation-index="${internalIndex.toString()}">`
       );
-      let lastWordIndex = elementsToRender.indexOf(lastWord.toLowerCase());
-      elementsToRender.splice(lastWordIndex + 1, 0, '</Query>')
+      const lastWordIndex = elementsToRender.indexOf(lastWord.toLowerCase());
+      elementsToRender.splice(lastWordIndex + 1, 0, '</Query>');
     });
     return elementsToRender.join(' ');
   };
@@ -126,24 +126,25 @@ export function GeoCoPilotUserDialogComponent({explanations, query}: {
     {
       (query.length) &&
       <DialogContent onMouseMove={handleEnter} onMouseLeave={handleExit}>
-        { explanations.length ?
+        {explanations.length ?
           <JsxParser
             allowUnknownElements={false}
             components={{Query}}
             jsx={renderHighlightedQuery(query, explanations)}
           /> :
-          query
-        }
+          query}
       </DialogContent>
     }
     </>
-  )
+  );
 }
 
 export function GeoCoPilotUserDialog(props: GeoCoPilotModalProps) {
     const {query, explanations} = props;
-    return <GeoCoPilotUserDialogComponent
-        explanations={explanations}
-        query={query}
-    />;
+    return (
+      <GeoCoPilotUserDialogComponent
+          explanations={explanations}
+          query={query}
+      />
+    );
 }

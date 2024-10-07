@@ -74,21 +74,15 @@ export interface GeoCoPilotModalProps {
     dataset_ids: any;
     bbox: any;
     date_range: any;
-    date: Date;
-    action: string;
     explanation: any;
-    query: string;
-};
+}
 
-export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dateRange, date, action, explanation, query}: {
+export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dateRange, explanation}: {
     summary: string;
     dataset_ids: any;
     bbox: any;
     dateRange: any;
-    date: Date;
-    action: string;
     explanation: any;
-    query: string;
 }) {
   const [showDetails, setShowDetails] = useState(false);
   const [location, setLocation] = useState("");
@@ -124,37 +118,37 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
       {/*Content*/}
       {explanation && <DialogInteraction>
         <div>
-          <Button size={'small'}>
+          <Button size='small'>
             <CollecticonHandThumbsUp size={10} />
           </Button>
-          <Button size={'small'}>
-            <CollecticonHandThumbsDown size={10}/>
+          <Button size='small'>
+            <CollecticonHandThumbsDown size={10} />
           </Button>
         </div> |
         {/*Interaction*/}
         <div>
-          <Button size={'small'}>
+          <Button size='small'>
             <CollecticonLink size={10} />
             <ButtonContent onClick={copyURL}>Copy Map Link</ButtonContent>
           </Button>
         </div>
         {/*Summary*/}
         <ShowHideDetail onClick={updateShowDetails}>
-          <Button size={'small'}>
-
+          <Button size='small'>
             {showDetails ?
               <>
-                <ButtonContent>Hide Details</ButtonContent> <CollecticonChevronUpTrailSmall size={10}/>
+                <ButtonContent>Hide Details</ButtonContent>
+                <CollecticonChevronUpTrailSmall size={10} />
               </> :
               <>
-                <ButtonContent>Show Details</ButtonContent> <CollecticonChevronDownTrailSmall size={10}/>
+                <ButtonContent>Show Details</ButtonContent>
+                <CollecticonChevronDownTrailSmall size={10} />
               </>
             }
           </Button>
         </ShowHideDetail>
       </DialogInteraction>}
-      {
-        showDetails &&
+      {showDetails &&
         <AnswerDetails>
           <AnswerDetailsItem>
             <AnswerDetailsIcon>
@@ -181,15 +175,14 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
 }
 
 export function GeoCoPilotSystemDialog(props: GeoCoPilotModalProps) {
-    const {summary, dataset_ids, bbox, date_range, date, action, explanation, query} = props;
-    return <GeoCoPilotSystemDialogComponent
+    const {summary, dataset_ids, bbox, date_range, explanation} = props;
+    return (
+      <GeoCoPilotSystemDialogComponent
         summary={summary}
         dataset_ids={dataset_ids}
         bbox={bbox}
         dateRange={date_range}
-        date={date}
-        action={action}
         explanation={explanation}
-        query={query}
-    />;
+      />
+    );
 }

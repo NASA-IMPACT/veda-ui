@@ -19,14 +19,15 @@ import bbox from '@turf/bbox';
 import centroid from '@turf/centroid';
 import { AllGeoJSON } from '@turf/helpers';
 
-import { datasetLayers} from '$components/exploration/data-utils';
-import { makeFeatureCollection } from '$components/common/aoi/utils';
-import { getZoomFromBbox } from '$components/common/map/utils';
 import { TemporalExtent } from '../timeline/timeline-utils';
 
 import { GeoCoPilotSystemDialog } from './geo-copilot-system-dialog';
 import { GeoCoPilotUserDialog } from './geo-copilot-user-dialog';
 import { askGeoCoPilot } from './geo-copilot-interaction';
+
+import { datasetLayers} from '$components/exploration/data-utils';
+import { makeFeatureCollection } from '$components/common/aoi/utils';
+import { getZoomFromBbox } from '$components/common/map/utils';
 
 import {
   TimelineDataset,
@@ -65,7 +66,7 @@ interface GeoCoPilotModalProps {
   map: any;
   setStartEndDates: (startEndDates: TemporalExtent) => void;
   setTimeDensity: (timeDensity: TimeDensity) => void;
-};
+}
 
 const GeoCoPilotWrapper = styled.div`
   padding-bottom: ${glsp()};
@@ -176,7 +177,7 @@ export function GeoCoPilotComponent({
   const phantomElementRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [_, setSelectedInterval] = useAtom(selectedIntervalAtom);
+  const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
 
   const { onUpdate } = useAois();
@@ -310,7 +311,7 @@ export function GeoCoPilotComponent({
       }
     } catch (error) {
       console.log('Error processing', error);
-    };
+    }
 
     content = [...content, answer];
     setConversation(content);
@@ -326,7 +327,7 @@ export function GeoCoPilotComponent({
     };
     const length = conversation.length;
     // merge user and system in one payload rather than multiple elements
-    let chatHistory = conversation.reduce((history, innerContent, index) => {
+    const chatHistory = conversation.reduce((history, innerContent, index) => {
       const identifier = innerContent.contentType;
       let chatElement = {};
       if(identifier == 'user' && index != (length - 1)) {
@@ -335,7 +336,7 @@ export function GeoCoPilotComponent({
       }
       else {
         const innerLength = history.length - 1;
-        if (!!innerContent.action) {
+        if (innerContent.action) {
           chatElement = { outputs: {answer: innerContent.summary} };
         }
         else {
@@ -362,24 +363,30 @@ export function GeoCoPilotComponent({
     <GeoCoPilotWrapper>
       <GeoCoPilotTitleWrapper>
         <GeoCoPilotTitle>Geo Co-Pilot</GeoCoPilotTitle>
-        <RestartSession size={'small'} onClick={clearSession}>
-          <CollecticonArrowLoop/> Restart Session
+        <RestartSession size='small' onClick={clearSession}>
+          <CollecticonArrowLoop /> Restart Session
         </RestartSession>
         <CloseSession onClick={close}><CollecticonXmarkSmall /></CloseSession>
       </GeoCoPilotTitleWrapper>
       <GeoCoPilotContent>
         {conversation.map((convComponent, index) => {
           if(convComponent.contentType == 'user') {
-            return <GeoCoPilotUserDialog key={`user-dialog-${index}`}
-              {...convComponent}
-              id={index}
-            />;
+            return (
+              <GeoCoPilotUserDialog
+                key={`user-dialog-${index}`}
+                {...convComponent}
+                id={index}
+              />
+            );
           }
           else if (convComponent.contentType == 'system') {
-            return <GeoCoPilotSystemDialog key={`system-dialog-${index}`}
-              {...convComponent}
-              id={index}
-            />;
+            return (
+              <GeoCoPilotSystemDialog
+                key={`system-dialog-${index}`}
+                {...convComponent}
+                id={index}
+              />
+            );
           }
         })}
         <PulseLoader
@@ -390,15 +397,27 @@ export function GeoCoPilotComponent({
           aria-label='Processing...'
           data-testid='loader'
         />
-        <div id='geo-copilot-phantom' ref={phantomElementRef}></div>
+        <div id='geo-copilot-phantom' ref={phantomElementRef}>
+        </div>
       </GeoCoPilotContent>
       <GeoCoPilotQueryWrapper>
-        <GeoCoPilotQuery type="text" placeholder="Type your message..." value={query} onChange={(e) => {setQuery(e.target.value)}} onKeyUp={(e) => e.code == 'Enter' ? addNewResponse() : ''}/>
+        <GeoCoPilotQuery
+          type='text'
+          placeholder='Type your message...'
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value)
+            }
+          }
+          onKeyUp={(e) =>
+            e.code == 'Enter' ? addNewResponse() : ''
+          }
+        />
         <Button
-          fitting="skinny"
+          fitting='skinny'
           onClick={addNewResponse}
         >
-          <CollecticonChevronRightTrailSmall meaningful style={{'color': '#2276ad'}}/>
+          <CollecticonChevronRightTrailSmall meaningful style={{'color': '#2276ad'}} />
         </Button>
       </GeoCoPilotQueryWrapper>
     </GeoCoPilotWrapper>
