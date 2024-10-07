@@ -57,8 +57,8 @@ export async function askGeoCoPilot(
     setSystemResponse(JSON.parse(answer.data.answer), content);
   }).catch(() => {
     setSystemResponse(ERROR_RESPONSE, content);
-  })
-};
+  });
+}
 
 
 // Returns the full geolocation url based on centroid (lat, lon) and mapboxaccesstoken

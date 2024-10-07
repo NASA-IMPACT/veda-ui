@@ -397,21 +397,15 @@ export function GeoCoPilotComponent({
           aria-label='Processing...'
           data-testid='loader'
         />
-        <div id='geo-copilot-phantom' ref={phantomElementRef}>
-        </div>
+        <div id='geo-copilot-phantom' ref={phantomElementRef} />
       </GeoCoPilotContent>
       <GeoCoPilotQueryWrapper>
         <GeoCoPilotQuery
           type='text'
           placeholder='Type your message...'
           value={query}
-          onChange={(e) => {
-            setQuery(e.target.value)
-            }
-          }
-          onKeyUp={(e) =>
-            e.code == 'Enter' ? addNewResponse() : ''
-          }
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyUp={(e) => e.code == 'Enter' ? addNewResponse() : ''}
         />
         <Button
           fitting='skinny'

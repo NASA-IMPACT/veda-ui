@@ -116,26 +116,27 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
     <DialogContent>
       <div>{summary}</div>
       {/*Content*/}
-      {explanation && <DialogInteraction>
-        <div>
-          <Button size='small'>
-            <CollecticonHandThumbsUp size={10} />
-          </Button>
-          <Button size='small'>
-            <CollecticonHandThumbsDown size={10} />
-          </Button>
-        </div> |
-        {/*Interaction*/}
-        <div>
-          <Button size='small'>
-            <CollecticonLink size={10} />
-            <ButtonContent onClick={copyURL}>Copy Map Link</ButtonContent>
-          </Button>
-        </div>
-        {/*Summary*/}
-        <ShowHideDetail onClick={updateShowDetails}>
-          <Button size='small'>
-            {showDetails ?
+      {explanation &&
+        <DialogInteraction>
+          <div>
+            <Button size='small'>
+              <CollecticonHandThumbsUp size={10} />
+            </Button>
+            <Button size='small'>
+              <CollecticonHandThumbsDown size={10} />
+            </Button>
+          </div> |
+          {/*Interaction*/}
+          <div>
+            <Button size='small'>
+              <CollecticonLink size={10} />
+              <ButtonContent onClick={copyURL}>Copy Map Link</ButtonContent>
+            </Button>
+          </div>
+          {/*Summary*/}
+          <ShowHideDetail onClick={updateShowDetails}>
+            <Button size='small'>
+              {showDetails ?
               <>
                 <ButtonContent>Hide Details</ButtonContent>
                 <CollecticonChevronUpTrailSmall size={10} />
@@ -143,11 +144,10 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
               <>
                 <ButtonContent>Show Details</ButtonContent>
                 <CollecticonChevronDownTrailSmall size={10} />
-              </>
-            }
-          </Button>
-        </ShowHideDetail>
-      </DialogInteraction>}
+              </>}
+            </Button>
+          </ShowHideDetail>
+        </DialogInteraction>}
       {showDetails &&
         <AnswerDetails>
           <AnswerDetailsItem>
@@ -168,8 +168,7 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
             </AnswerDetailsIcon>
             <p>{dataset_ids.join(", ")}</p>
           </AnswerDetailsItem>
-        </AnswerDetails>
-      }
+        </AnswerDetails>}
     </DialogContent>
   );
 }
