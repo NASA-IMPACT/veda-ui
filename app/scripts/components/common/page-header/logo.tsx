@@ -100,19 +100,16 @@ const PageTitleSecLink = styled.a`
 
 export default function Logo ({ linkProperties }: { linkProperties: LinkProperties }) {
   const LinkElement: ComponentType<any> = linkProperties.LinkElement as ComponentType<any>;
-  const linkProps = {
-    [linkProperties.pathAttributeKeyName]: '/'
-  };
 
   return (
   <ComponentOverride with='headerBrand'>
     <Brand>
-      <LinkElement {...linkProps}>
+      <LinkElement {...{[linkProperties.pathAttributeKeyName]: '/'}}>
         <NasaLogo />
         <span>Earthdata</span> <span>{appTitle}</span>
       </LinkElement>
       <Tip content={`v${appVersion}`}>
-        <PageTitleSecLink as={LinkElement} href='/development'>Beta</PageTitleSecLink>
+      <PageTitleSecLink {...{as: linkProperties.LinkElement as ComponentType<any>, [linkProperties.pathAttributeKeyName]: '/development'}}>Beta</PageTitleSecLink>
       </Tip>
     </Brand>
   </ComponentOverride>);
