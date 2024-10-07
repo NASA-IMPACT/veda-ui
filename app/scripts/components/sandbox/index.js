@@ -1,21 +1,16 @@
 import React from 'react';
-import { Route, Routes, useParams } from 'react-router-dom';
+import { Link, Route, Routes, useParams } from 'react-router-dom';
 
 import SandboxTypography from './typography';
 import SandboxHug from './hug';
-import SandboxMap from './map';
 import SandboxExplorationMap from './exploration-map';
 import SandboxMapBlock from './map-block';
 import SandboxContentBlocks from './content-blocks';
 import SandboxCards from './cards';
 import SandboxMDXPage from './mdx-page';
 import SandboxMDXScrolly from './mdx-scrollytelling';
-import SandboxAOI from './aoi';
 import SandboxOverride from './override';
-import SandboxDateslider from './dateslider';
 import SandboxChart from './mdx-chart';
-import SandboxAnalysisChart from './analysis-chart';
-import SandboxRequest from './request';
 import SandboxColors from './colors';
 import SandboxMDXEditor from './mdx-editor';
 import SandboxTable from './table';
@@ -38,11 +33,6 @@ const pages = [
     id: 'hug',
     name: 'Human Universal Gridder (Hug)',
     component: SandboxHug
-  },
-  {
-    id: 'map',
-    name: 'Mapbox map',
-    component: SandboxMap
   },
   {
     id: 'exploration-map',
@@ -75,34 +65,14 @@ const pages = [
     component: SandboxChart
   },
   {
-    id: 'analysis-chart',
-    name: 'Analysis Page Chart',
-    component: SandboxAnalysisChart
-  },
-  {
     id: 'cards',
     name: 'Cards',
     component: SandboxCards
   },
   {
-    id: 'aoi',
-    name: 'Map AOI',
-    component: SandboxAOI
-  },
-  {
     id: 'override',
     name: 'Override',
     component: SandboxOverride
-  },
-  {
-    id: 'dateslider',
-    name: 'Dateslider',
-    component: SandboxDateslider
-  },
-  {
-    id: 'request',
-    name: 'Requests',
-    component: SandboxRequest
   },
   {
     id: 'colors',
@@ -164,7 +134,15 @@ function Sandbox() {
               <CardListGrid>
                 {pages.map((p) => (
                   <li key={p.id}>
-                    <Card linkLabel='View more' linkTo={p.id} title={p.name} />
+                    <Card
+                      linkLabel='View more'
+                      title={p.name}
+                      linkProperties={{
+                        linkTo: p.id,
+                        LinkElement: Link,
+                        pathAttributeKeyName: 'to'
+                      }}
+                    />
                   </li>
                 ))}
               </CardListGrid>
