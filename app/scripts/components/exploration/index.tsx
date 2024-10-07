@@ -13,11 +13,10 @@ import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { useAnalysisController } from './hooks/use-analysis-data-request';
 import { TimelineDataset, TimeDensity } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
-import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
 import { GeoCoPilot } from './components/geo-copilot/geo-copilot';
 
-import useMaps from '$components/common/map/hooks/use-maps';
 import { TemporalExtent } from './components/timeline/timeline-utils';
+import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
 
 const Container = styled.div`
   display: flex;
@@ -36,6 +35,10 @@ const Container = styled.div`
 
   .panel-timeline {
     box-shadow: 0 -1px 0 0 ${themeVal('color.base-100')};
+  }
+
+  .panel-geo-copilot {
+    height: 90vh;
   }
 
   .resize-handle {
@@ -108,13 +111,13 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
     };
   }, [resetAnalysisController, setUrl]);
 
-  const mapRef = useRef<any>(null);
+  const mapPanelRef = useRef<any>(null);
   const geoCoPilotRef = useRef<any>(null);
 
   const expandGeoCoPilotPanel = () => {
-    const mapPanel = mapRef.current;
+    const mapPanel = mapPanelRef.current;
     const geoCoPilotPanel = geoCoPilotRef.current;
-    if (mapPanel || geoCoPilotPanel) {
+    if (mapPanel && geoCoPilotPanel) {
       // panel.expand(50);
       // resize panel from 0 to 50
       mapPanel.resize(75);
@@ -124,11 +127,9 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
   };
 
   const closeGeoCoPilotPanel = () => {
-    const mapPanel = mapRef.current;
+    const mapPanel = mapPanelRef.current;
     const geoCoPilotPanel = geoCoPilotRef.current;
-    if (mapPanel || geoCoPilotPanel) {
-      // panel.expand(50);
-      // resize panel from 0 to 50
+    if (mapPanel && geoCoPilotPanel) {
       mapPanel.resize(100);
       geoCoPilotPanel.resize(0);
       setShowGeoCoPilot(false);
@@ -137,24 +138,22 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
 
   return (
     <Container>
-      <PanelGroup direction='vertical' className='panel-wrapper'>
+      <PanelGroup direction='horizontal' className='panel-wrapper'>
         <Panel
-          maxSize={75}
+          defaultSize={100}
           className='panel'
           onResize={(size: number) => {
             setPanelHeight(size);
           }}
+          ref={mapPanelRef}
         >
-          <PanelGroup direction='horizontal' className='panel-wrapper-internal'>
-            <Panel 
-              minSize={75} 
-              maxSize={100} 
-              defaultSize={100}
+          <PanelGroup direction='vertical' className='panel-wrapper-internal'>
+            <Panel
+              maxSize={100}
               onResize={(size: number) => {
                 setPanelHeight(size);
               }}
               className='panel panel-map'
-              ref={mapRef}
             >
               <ExplorationMap
                 datasets={datasets}
@@ -167,41 +166,38 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
                 setMap={setMap}
               />
             </Panel>
-            <Panel
-              minSize={0}
-              maxSize={25}
-              defaultSize={0} // Collapsed by default
-              className='panel panel-geo-copilot'
-              ref={geoCoPilotRef}
-            >
-              <GeoCoPilot 
-                show={showGeoCoPilot} 
-                close={closeGeoCoPilotPanel}
+            <PanelResizeHandle className='resize-handle' />
+            <Panel maxSize={75} className='panel panel-timeline'>
+              <Timeline
                 datasets={datasets}
-                setDatasets={setDatasets}
                 selectedDay={selectedDay}
                 setSelectedDay={setSelectedDay}
                 selectedCompareDay={selectedCompareDay}
                 setSelectedCompareDay={setSelectedCompareDay}
-                map={map}
-                setStartEndDates={setStartEndDates}
-                setTimeDensity={setTimeDensity}
+                onDatasetAddClick={openModal}
+                startEndDates={startEndDates}
+                panelHeight={panelHeight}
+                timeDensity={timeDensity}
               />
             </Panel>
           </PanelGroup>
         </Panel>
-        <PanelResizeHandle className='resize-handle' />
-        <Panel maxSize={75} className='panel panel-timeline'>
-          <Timeline
+        <Panel
+          minSize={0}
+          maxSize={25}
+          defaultSize={0} // Collapsed by default
+          className='panel panel-geo-copilot'
+          ref={geoCoPilotRef}
+        >
+          <GeoCoPilot
+            close={closeGeoCoPilotPanel}
             datasets={datasets}
-            selectedDay={selectedDay}
+            setDatasets={setDatasets}
             setSelectedDay={setSelectedDay}
-            selectedCompareDay={selectedCompareDay}
             setSelectedCompareDay={setSelectedCompareDay}
-            onDatasetAddClick={openModal}
-            startEndDates={startEndDates}
-            panelHeight={panelHeight}
-            timeDensity={timeDensity}
+            map={map}
+            setStartEndDates={setStartEndDates}
+            setTimeDensity={setTimeDensity}
           />
         </Panel>
       </PanelGroup>

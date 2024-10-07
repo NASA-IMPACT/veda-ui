@@ -41,13 +41,13 @@ interface ExplorationMapProps {
 }
 
 export function ExplorationMap(props: ExplorationMapProps) {
-  const { 
-    datasets, 
-    setDatasets, 
-    selectedDay, 
+  const {
+    datasets,
+    setDatasets,
+    selectedDay,
     selectedCompareDay,
-    showGeoCoPilot, 
-    closeGeoCoPilot, 
+    showGeoCoPilot,
+    closeGeoCoPilot,
     openGeoCoPilot,
     setMap
   } = props;
@@ -176,7 +176,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
         <ShowTourControl />
         <MapCoordsControl />
         <NavigationControl />
-        <GeoCoPilotControl showGeoCoPilot={showGeoCoPilot ? closeGeoCoPilot : openGeoCoPilot } setMap={setMap}/>
+        <GeoCoPilotControl showGeoCoPilot={showGeoCoPilot ? closeGeoCoPilot : openGeoCoPilot} setMap={setMap} />
       </MapControls>
       {comparing && (
         // Compare map layers

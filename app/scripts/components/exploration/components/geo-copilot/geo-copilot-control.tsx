@@ -25,12 +25,11 @@ export function GeoCoPilotComponent({onClick}: {
 
 export function GeoCoPilotControl(props: GeoCoPilotControlProps) {
   const {showGeoCoPilot, setMap} = props;
-  const disabled = false;
   // Show conversation modal
   const {main} = useMaps();
   setMap(main);
 
-  useThemedControl(() => <GeoCoPilotComponent onClick={showGeoCoPilot}/>, {
+  useThemedControl(() => <GeoCoPilotComponent onClick={showGeoCoPilot} />, {
     position: 'top-right'
   });
   return null;

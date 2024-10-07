@@ -203,6 +203,7 @@
     "react-gtm-module": "^2.0.11",
     "react-helmet": "^6.1.0",
     "react-indiana-drag-scroll": "^2.2.0",
+    "react-jsx-parser": "^2.1.0",
     "react-lazyload": "^3.2.0",
     "react-map-gl": "^7.1.5",
     "react-nl2br": "^1.0.2",

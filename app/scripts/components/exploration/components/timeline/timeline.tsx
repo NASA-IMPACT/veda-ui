@@ -638,11 +638,11 @@ export default function Timeline(props: TimelineProps) {
       );
       if (!temporalExtent[0] || !temporalExtent[1] || !startEndDates[0] || !startEndDates[1])
         return [undefined, undefined];
-        
-      return startEndDates[0] ? 
-        [((startEndDates[0] > temporalExtent[0]) ? startEndDates[0] : temporalExtent[0]), 
+
+      return startEndDates[0] ?
+        [((startEndDates[0] > temporalExtent[0]) ? startEndDates[0] : temporalExtent[0]),
         ((startEndDates[1] > temporalExtent[1]) ? startEndDates[1] : temporalExtent[1])] :
-        temporalExtent
+        temporalExtent;
     },
     [datasets, startEndDates]
   );
