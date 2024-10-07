@@ -37,7 +37,7 @@ function PageNavWrapper(props) {
     >
       <PageHeader
         {...props}
-        linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'href' }}
+        linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
       />
     </NavWrapper>
   );

@@ -66,7 +66,7 @@ function LinkDropMenuNavItem({ child, onClick, linkProperties }: { child: NavLin
   const { title, type, ...rest } = child;
   const linkProps = {
     as: linkProperties.LinkElement as ComponentType<any>,
-    to: (rest as InternalNavLink).to,
+    [linkProperties.pathAttributeKeyName]: (rest as InternalNavLink).to,
   };
 
   if (type === NavItemType.INTERNAL_LINK) {
@@ -103,7 +103,7 @@ export default function NavMenuItem({ item, alignment, onClick, linkProperties }
   if (type === NavItemType.INTERNAL_LINK) {
     const linkProps = {
       as: linkProperties.LinkElement as ComponentType<any>,
-      href: (rest as InternalNavLink).to, // href
+      [linkProperties.pathAttributeKeyName]: (rest as InternalNavLink).to,
     };
     return (
       <li key={`${title}-nav-item`}>
