@@ -1,4 +1,3 @@
-import { checkEnvFlag } from './utils';
 import { DatasetData, StoryData } from '$types/veda';
 
 export const ABOUT_PATH = '/about';
@@ -15,10 +14,6 @@ export const getDatasetPath = (d: DatasetData | string, path: string = DATASETS_
   `${path}/${typeof d === 'string' ? d : d.id}`;
 
 export const getDatasetExplorePath = (d: DatasetData | string) => {
-  if (!checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION)) {
-    return `${DATASETS_PATH}/${typeof d === 'string' ? d : d.id}/explore`;
-  }
-
   const id = typeof d === 'string' ? d : d.id;
   return `${EXPLORATION_PATH}?search=${id}`;
 };

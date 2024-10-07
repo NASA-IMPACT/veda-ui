@@ -11,8 +11,8 @@ import { ExtendedError } from './data-utils';
 import { utcString2userTzDate } from '$utils/date';
 import {
   fixAoiFcForStacSearch,
-  getFilterPayload
-} from '$components/analysis/utils';
+  getFilterPayloadWithAOI
+} from '$components/common/map/utils';
 
 interface DatasetAssetsRequestParams {
   stacCol: string;
@@ -55,7 +55,7 @@ async function getDatasetAssets(
         ],
         exclude: ['collection', 'links']
       },
-      filter: getFilterPayload(dateStart, dateEnd, aoi, [stacCol])
+      filter: getFilterPayloadWithAOI(dateStart, dateEnd, aoi, [stacCol])
     },
     opts
   );

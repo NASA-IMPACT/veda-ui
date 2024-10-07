@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import { brushHeight } from '../constant';
+import { brushHeight } from './constant';
 import useBrush from './useBrush';
 
 const BrushWrapper = styled.div`
