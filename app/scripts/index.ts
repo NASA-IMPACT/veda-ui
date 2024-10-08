@@ -15,6 +15,8 @@ import CatalogView from './components/common/catalog';
 import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
+import PageHeader from '$components/common/page-header';
+import Logo from '$components/common/page-header/logo';
 
 export {
   // COMPONENTS
@@ -34,7 +36,9 @@ export {
   DevseedUiThemeProvider,
   PageMainContent,
   PageHero,
+  PageHeader,
   ReactQueryProvider,
+  Logo,
   // HOOKS
   useFiltersWithQS,
 };
