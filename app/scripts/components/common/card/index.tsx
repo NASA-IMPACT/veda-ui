@@ -2,7 +2,6 @@ import React, { lazy, MouseEventHandler, ComponentType } from 'react';
 import styled, { css } from 'styled-components';
 import { format } from 'date-fns';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
-import { Link } from 'react-router-dom';
 const SmartLink = lazy(() => import('../smart-link'));
 import {
   glsp,
@@ -221,7 +220,7 @@ export function ExternalLinkFlag() {
 }
 
 export interface LinkProperties {
-  LinkElement: JSX.Element | ((props: any) => JSX.Element) | ComponentType<any>;
+  LinkElement: string | ComponentType<any> | undefined;
   pathAttributeKeyName: string;
   onLinkClick?: MouseEventHandler;
 }
@@ -322,7 +321,7 @@ function CardComponent(props: CardComponentPropsType) {
                   {isExternalLink && <ExternalLinkFlag />}
                   {!isExternalLink && tagLabels && parentTo && (
                     tagLabels.map((label) => (
-                      <CardLabel as={Link} to={parentTo} key={label}>
+                      <CardLabel as={linkProperties.LinkElement} to={parentTo} key={label}>
                         {label}
                       </CardLabel>
                     ))
