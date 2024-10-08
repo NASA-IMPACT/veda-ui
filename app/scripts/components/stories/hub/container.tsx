@@ -21,7 +21,7 @@ import SmartLink from '$components/common/smart-link';
 
 const allStories = Object.values(stories).map((d) => d!.data).filter(d => !d.isHidden).map((d) => ({ ...d, path: getStoryPath(d)}));
 
-function StoriesHub() {
+function StoriesHubContainer() {
   const controlVars = useFiltersWithQS({navigate: useNavigate()});
   return (
     <PageMainContent>
@@ -41,7 +41,7 @@ function StoriesHub() {
           allStories={allStories}
           onFilterchanges={() => controlVars}
           linkProperties={{ LinkElement: SmartLink, pathAttributeKeyName: 'to'}}
-          storiesPagePath={STORIES_PATH}
+          pathname={STORIES_PATH}
           storiesString={{one: getString('stories').one,other: getString('stories').other}}
         />
       </ContentOverride>
@@ -49,4 +49,4 @@ function StoriesHub() {
   );
 }
 
-export default StoriesHub;
+export default StoriesHubContainer;
