@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const fg = require('fast-glob');
 const dedent = require('dedent');
 const _ = require('lodash');
+const axios = require('axios');
 const { Resolver } = require('@parcel/plugin');
 
 const markdownit = require('markdown-it');
@@ -22,14 +23,54 @@ const { withDefaultStrings } = require('./defaults');
 
 const md = markdownit();
 
-async function reconcileDataWithStacMetadata(data) {
-  await setTimeout(() => {
-    // eslint-disable-next-line no-console
-    console.log(data.layers);
-    // eslint-disable-next-line no-console
-    console.log('end of data');
-  }, 2);
-  return data;
+let globalFlag = false;
+let datasetsImportData;
+let errorInc = 0;
+let requestCount = 0;
+
+async function reconcileDataWithStacMetadata(dataset) {
+  if (!dataset.layers) return;
+
+  const reconciledLayerData = await Promise.all(
+    dataset.layers.map(async (layer) => {
+      // fetch stac
+      const stacApiEndpointToUse =
+        layer.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
+      try {
+        // console.log(`${stacApiEndpointToUse}/collections/${layer.id}`);
+        const response = await axios.get(
+          `${stacApiEndpointToUse}/collections/${layer.id}`
+        );
+        requestCount += 1;
+        // console.log(`data_is_good: `, response.data);
+        if (!response.data.title) throw Error('No proper title');
+        return {
+          title: response.data.title,
+          description: response.data.description,
+          ...layer
+        };
+        // reconcile here
+      } catch (e) {
+        errorInc += 1;
+        // console.log(e);
+        console.log(`layerId:`, layer.id);
+      }
+    })
+  );
+  console.log('request_count: ', requestCount);
+  console.log('ERROR_INC: ', errorInc);
+  return {
+    ...dataset,
+    layers: reconciledLayerData
+  };
+
+  // await setTimeout(() => {
+  //   // eslint-disable-next-line no-console
+  //   console.log(data.layers);
+  //   // eslint-disable-next-line no-console
+  //   console.log('end of data');
+  // }, 2);
+  // return data;
 }
 
 async function loadOptionalContent(logger, root, globPath, type) {
@@ -46,7 +87,7 @@ async function loadOptionalContent(logger, root, globPath, type) {
             message: `Missing "id" on ${type} ${path.basename(p)}`,
             hints: ['Add an "id" property to the file\'s frontmatter.']
           });
-        }
+        } 
 
         if (frontMatterData.published === false) return null;
 
@@ -199,14 +240,21 @@ module.exports = new Resolver({
         })
         .thru((value) => processTaxonomies(value))
         .value();
+      console.log('global flag value');
+      console.log(globalFlag);
+      console.log(`datasetsData_count: `, datasetsData.data.length);
+      if (!globalFlag) {
+        console.log('global falg is not true');
+        datasetsImportData = await Promise.all(
+          datasetsData.data.map(async (o, i) => ({
+            key: o.id,
+            data: await reconcileDataWithStacMetadata(o), // reconcile the data
+            filePath: datasetsData.filePaths[i]
+          }))
+        );
+      }
 
-      const datasetsImportData = await Promise.all(
-        datasetsData.data.map(async (o, i) => ({
-          key: o.id,
-          data: await reconcileDataWithStacMetadata(o), // reconcile the data
-          filePath: datasetsData.filePaths[i]
-        }))
-      );
+      globalFlag = true;
       const storiesImportData = storiesData.data.map((o, i) => ({
         key: o.id,
         data: o,
