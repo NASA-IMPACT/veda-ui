@@ -22,6 +22,16 @@ const { withDefaultStrings } = require('./defaults');
 
 const md = markdownit();
 
+async function reconcileDataWithStacMetadata(data) {
+  await setTimeout(() => {
+    // eslint-disable-next-line no-console
+    console.log(data.layers);
+    // eslint-disable-next-line no-console
+    console.log('end of data');
+  }, 2);
+  return data;
+}
+
 async function loadOptionalContent(logger, root, globPath, type) {
   try {
     const loadPath = path.resolve(root, globPath);
@@ -86,9 +96,12 @@ function generateMdxDataObject(data) {
 function getCookieConsentForm(result) {
   if (!result.cookieConsentForm) return undefined;
   else {
-    const parsedCopy =  md.render(result.cookieConsentForm.copy)
+    const parsedCopy = md.render(result.cookieConsentForm.copy);
     const trimmedCopy = parsedCopy.replace(/(\r\n|\n|\r)/gm, '');
-    return JSON.stringify({ title: result.cookieConsentForm.title, copy: trimmedCopy});
+    return JSON.stringify({
+      title: result.cookieConsentForm.title,
+      copy: trimmedCopy
+    });
   }
 }
 
@@ -187,11 +200,13 @@ module.exports = new Resolver({
         .thru((value) => processTaxonomies(value))
         .value();
 
-      const datasetsImportData = datasetsData.data.map((o, i) => ({
-        key: o.id,
-        data: o,
-        filePath: datasetsData.filePaths[i]
-      }));
+      const datasetsImportData = await Promise.all(
+        datasetsData.data.map(async (o, i) => ({
+          key: o.id,
+          data: await reconcileDataWithStacMetadata(o), // reconcile the data
+          filePath: datasetsData.filePaths[i]
+        }))
+      );
       const storiesImportData = storiesData.data.map((o, i) => ({
         key: o.id,
         data: o,
