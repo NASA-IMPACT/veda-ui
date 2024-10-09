@@ -10,6 +10,7 @@ import {
 
 import './colormap-options.scss';
 import { ColorRangeSlider } from './colorRangeSlider';
+import { colorMapScale } from '$components/exploration/types.d.ts';
 
 export const DEFAULT_COLORMAP = 'viridis';
 
@@ -51,6 +52,8 @@ interface ColormapOptionsProps {
   setColorMap: (colorMap: string) => void;
   min: number;
   max: number;
+  setColorMapScale: (colorMapScale: colorMapScale) => void;
+  colorMapScale: colorMapScale | undefined;
 }
 
 export const getColormapColors = (
@@ -79,7 +82,9 @@ export function ColormapOptions({
   colorMap = DEFAULT_COLORMAP,
   min,
   max,
-  setColorMap
+  setColorMap,
+  setColorMapScale,
+  colorMapScale
 }: ColormapOptionsProps) {
   const initialIsReversed = colorMap.endsWith('_r');
   const initialColorMap = normalizeColorMap(colorMap);
@@ -154,7 +159,12 @@ export function ColormapOptions({
       </div>
 
       <div className='display-flex flex-align-center flex-column flex-justify border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2'>
-        <ColorRangeSlider min={min} max={max} onChange={({ min, max }) => console.log(`min = ${min}, max = ${max}`)} />
+        <ColorRangeSlider
+          min={min}
+          max={max}
+          colorMapScale={colorMapScale}
+          setColorMapScale={setColorMapScale}
+        />
         <div
           className='display-flex flex-align-center width-full padding-top-1'
           onClick={handleReverseToggle}

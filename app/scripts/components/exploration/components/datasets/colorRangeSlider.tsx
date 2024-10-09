@@ -1,10 +1,30 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 
 import './color-range-slider.scss';
+import { colorMapScale } from '$components/exploration/types.d.ts';
 
 import { USWDSTextInput } from '$components/common/uswds';
 
-export function ColorRangeSlider({ min, max, onChange }) {
+interface ColorrangeRangeSlideProps {
+  // Absolute minimum of color range
+  min: number;
+
+  // Absolute maximum of color range
+  max: number;
+
+  // Previously selected minimum and maximum of colorRangeScale
+  colorMapScale: colorMapScale | undefined;
+
+  // Update colorRangeScale
+  setColorMapScale: (colorMapScale: colorMapScale) => void;
+}
+
+export function ColorRangeSlider({
+  min,
+  max,
+  colorMapScale,
+  setColorMapScale
+}: ColorrangeRangeSlideProps) {
   const fromInput = useRef(null);
   const toInput = useRef(null);
 
@@ -12,8 +32,8 @@ export function ColorRangeSlider({ min, max, onChange }) {
   const [maxVal, setMaxVal] = useState(max);
   const [inputError, setInputError] = useState({ min: false, max: false });
 
-  const minValRef = useRef(min);
-  const maxValRef = useRef(max);
+  const minValRef = useRef(colorMapScale?.min ? colorMapScale.min : min);
+  const maxValRef = useRef(colorMapScale?.max ? colorMapScale.max : max);
   const range = useRef(null);
   const middleMarker = useRef(null);
 
@@ -22,39 +42,49 @@ export function ColorRangeSlider({ min, max, onChange }) {
     (value) => Math.round(((value - min) / (max - min)) * 100),
     [min, max]
   );
-
+  const rangeCalculation = (maxPercent, minPercent) => {
+    range.current.style.width = `${
+      maxPercent - minPercent >= 100 ? 100 : maxPercent - minPercent
+    }%`;
+    if (middleMarker.current)
+      middleMarker.current.style.left = `${range.current.style.width}%`;
+    return;
+  };
   // Set width of the range to decrease from the right side
+
   useEffect(() => {
     let maxValPrevious;
-
     let minValPrevious;
-    if (maxVal != maxValPrevious) {
-      maxValPrevious = maxVal;
+
+    if (colorMapScale && maxVal != maxValPrevious && minVal != minValPrevious) {
       const minPercent = getPercent(minValRef.current);
-      const maxPercent = getPercent(maxVal);
-
-      if (range.current) {
-        range.current.style.width = `${
-          maxPercent - minPercent >= 100 ? 100 : maxPercent - minPercent
-        }%`;
-        if (middleMarker.current)
-          middleMarker.current.style.left = `${range.current.style.width}%`;
-      }
-    }
-    if (minVal != minValPrevious) {
-      minValPrevious = maxVal;
-      const minPercent = getPercent(minVal);
       const maxPercent = getPercent(maxValRef.current);
+      rangeCalculation(maxPercent, minPercent);
+      if (range.current) range.current.style.left = `${minPercent}%`;
+    } else {
+      if (maxVal != maxValPrevious) {
+        maxValPrevious = maxVal;
+        const minPercent = getPercent(minValRef.current);
+        const maxPercent = getPercent(maxVal);
+        rangeCalculation(maxPercent, minPercent);
+      }
 
-      if (range.current) {
-        range.current.style.left = `${minPercent}%`;
-        range.current.style.width = `${
-          maxPercent - minPercent >= 100 ? 100 : maxPercent - minPercent
-        }%`;
+      if (minVal != minValPrevious) {
+        minValPrevious = minVal;
+        const minPercent = getPercent(minVal);
+        const maxPercent = getPercent(maxValRef.current);
+        rangeCalculation(maxPercent, minPercent);
+        if (range.current) range.current.style.left = `${minPercent}%`;
       }
     }
-    onChange({ min: minVal, max: maxVal });
-  }, [maxVal, minVal, getPercent, onChange]);
+    if (
+      !colorMapScale ||
+      colorMapScale.max == max ||
+      colorMapScale.min == min
+    ) {
+      setColorMapScale({ min: minVal, max: maxVal });
+    }
+  }, [maxVal, minVal, getPercent, setColorMapScale]);
 
   const textInputClasses =
     'flex-1 radius-md height-3 font-size-3xs width-5 border-2px ';
@@ -84,17 +114,19 @@ export function ColorRangeSlider({ min, max, onChange }) {
               : ' border-base-light'
           }`}
           value={minValRef.current}
-          min={min}
-          max={max}
           onChange={(event) => {
             const value = Number(event.target.value);
-
+            if (value > maxVal - 0.01) return false;
             if (value < min || value > max) {
               return setInputError({ max: inputError.max, min: true });
             }
             setInputError({ max: inputError.max, min: false });
+            setMinVal(Math.min(value, minVal + 0.01));
+            setColorMapScale({
+              min: minValRef.current,
+              max: colorMapScale.max
+            });
 
-            setMinVal(value);
             return (minValRef.current = value);
           }}
         />
@@ -105,10 +137,15 @@ export function ColorRangeSlider({ min, max, onChange }) {
             min={min}
             max={max}
             step='.001'
-            value={minVal}
+            value={minValRef.current}
             onChange={(event) => {
-              setMinVal(Math.min(Number(event.target.value), maxVal - 0.01));
-              minValRef.current = Number(event.target.value);
+              const value = Number(event.target.value);
+              setMinVal(Math.min(value, maxVal - 0.01));
+              minValRef.current = value;
+              setColorMapScale({
+                min: minValRef.current,
+                max: colorMapScale.max
+              });
             }}
             className={`thumb ${thumbPosition} z-index-300`}
             style={{ zIndex: minVal >= max - 10 * 0.01 ? '500' : '300' }}
@@ -118,10 +155,16 @@ export function ColorRangeSlider({ min, max, onChange }) {
             min={min}
             step='.001'
             max={max}
-            value={maxVal}
+            value={maxValRef.current}
             onChange={(event) => {
               setMaxVal(Math.max(Number(event.target.value), minVal + 0.01));
               maxValRef.current = Number(event.target.value);
+              console.log('maxValRef.current', maxValRef.current);
+
+              setColorMapScale({
+                min: colorMapScale.min,
+                max: maxValRef.current
+              });
             }}
             className={`thumb ${thumbPosition} z-400`}
             style={{ zIndex: minVal <= max - 10 * 0.01 ? '500' : '400' }}
@@ -141,14 +184,11 @@ export function ColorRangeSlider({ min, max, onChange }) {
             </div>
           </div>
         </div>
-
         <USWDSTextInput
           ref={toInput}
           type='number'
           id='range slider max'
           name='max'
-          min={min}
-          max={max}
           placeHolder={maxValRef.current}
           className={`${textInputClasses} ${
             inputError.max
@@ -158,15 +198,18 @@ export function ColorRangeSlider({ min, max, onChange }) {
           value={maxValRef.current}
           onChange={(event) => {
             const value = Number(event.target.value);
-
+            if (value < minVal + 0.01) return false;
             if (value < min || value > max) {
               return setInputError({ max: true, min: inputError.min });
-            } else{
-            setInputError({ max: false, min: inputError.min });
-            setMaxVal(value);
-            return (maxValRef.current = value);}
-
-            //NEED to find the value on change for color maps.
+            } else {
+              setInputError({ max: false, min: inputError.min });
+              setMaxVal(Math.max(value, minVal + 0.01));
+              setColorMapScale({
+                min: colorMapScale.min,
+                max: maxValRef.current
+              });
+              return (maxValRef.current = value);
+            }
           }}
         />
       </form>
