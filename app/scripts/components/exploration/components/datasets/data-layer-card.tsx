@@ -202,6 +202,8 @@ export default function DataLayerCard(props: CardProps) {
                 className='colormap-options'
                 content={
                   <ColormapOptions
+                  min={min}
+                  max={max}
                     colorMap={colorMap}
                     setColorMap={setColorMap}
                   />
