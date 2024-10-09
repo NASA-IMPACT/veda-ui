@@ -25,9 +25,6 @@ export function ColorRangeSlider({
   colorMapScale,
   setColorMapScale
 }: ColorrangeRangeSlideProps) {
-  const fromInput = useRef(null);
-  const toInput = useRef(null);
-
   const [minVal, setMinVal] = useState(min);
   const [maxVal, setMaxVal] = useState(max);
   const [inputError, setInputError] = useState({ min: false, max: false });
@@ -103,11 +100,10 @@ export function ColorRangeSlider({
         </label>
 
         <USWDSTextInput
-          ref={fromInput}
           type='number'
           id='range slider min'
           name='min'
-          placeHolder={minValRef.current}
+          placeholder={minValRef.current}
           className={`${textInputClasses} ${
             inputError.min
               ? 'border-secondary-vivid text-secondary-vivid'
@@ -185,11 +181,10 @@ export function ColorRangeSlider({
           </div>
         </div>
         <USWDSTextInput
-          ref={toInput}
           type='number'
           id='range slider max'
           name='max'
-          placeHolder={maxValRef.current}
+          placeholder={maxValRef.current}
           className={`${textInputClasses} ${
             inputError.max
               ? 'border-secondary-vivid text-secondary-vivid'
