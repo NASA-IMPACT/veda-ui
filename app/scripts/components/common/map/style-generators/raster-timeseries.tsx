@@ -63,10 +63,10 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     stacApiEndpoint,
     tileApiEndpoint,
     colorMap,
+    reScale
   } = props;
 
   const { current: mapInstance } = useMaps();
-
   const theme = useTheme();
   const { updateStyle } = useMapStyle();
 
@@ -270,7 +270,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             controller
           });
           const mosaicUrl = responseData.links[1].href;
-          setMosaicUrl(mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad'));
+          setMosaicUrl(
+            mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad')
+          );
         } catch (error) {
           // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance...
           if (error.request) {
@@ -284,10 +286,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             const mosaicUrl = responseData.links[1].href;
             setMosaicUrl(mosaicUrl);
           } else {
-              LOG &&
+            LOG &&
               /* eslint-disable-next-line no-console */
-              console.log('Titiler /register %cEndpoint error', 'color: red;', error);
-              throw error;
+              console.log(
+                'Titiler /register %cEndpoint error',
+                'color: red;',
+                error
+              );
+            throw error;
           }
         }
 
@@ -361,7 +367,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           {
             assets: 'cog_default',
             ...(sourceParams ?? {}),
-            ...colorMap &&  {colormap_name: colorMap}
+            ...(colorMap && { colormap_name: colorMap, rescale: Object.values(reScale) })
           },
           // Temporary solution to pass different tile parameters for hls data
           {
@@ -489,6 +495,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   }, [
     mosaicUrl,
     colorMap,
+    reScale,
     points,
     minZoom,
     haveSourceParamsChanged,

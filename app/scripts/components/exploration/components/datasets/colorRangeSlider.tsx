@@ -29,8 +29,12 @@ export function ColorRangeSlider({
   const [maxVal, setMaxVal] = useState(max);
   const [inputError, setInputError] = useState({ min: false, max: false });
 
-  const minValRef = useRef(colorMapScale?.min ? colorMapScale.min : min);
-  const maxValRef = useRef(colorMapScale?.max ? colorMapScale.max : max);
+  const minValRef = useRef(
+    String(colorMapScale?.min ? colorMapScale.min : min)
+  );
+  const maxValRef = useRef(
+    String(colorMapScale?.max ? colorMapScale.max : max)
+  );
   const range = useRef(null);
   const middleMarker = useRef(null);
 
@@ -65,7 +69,6 @@ export function ColorRangeSlider({
         const maxPercent = getPercent(maxVal);
         rangeCalculation(maxPercent, minPercent);
       }
-
       if (minVal != minValPrevious) {
         minValPrevious = minVal;
         const minPercent = getPercent(minVal);
@@ -76,22 +79,19 @@ export function ColorRangeSlider({
     }
     if (
       !colorMapScale ||
-      colorMapScale.max == max ||
-      colorMapScale.min == min
+      (colorMapScale.max == max && colorMapScale.min == min)
     ) {
       setColorMapScale({ min: minVal, max: maxVal });
-    }
+    } else
+      setColorMapScale({
+        min: Number(minValRef.current),
+        max: Number(maxValRef.current)
+      });
   }, [maxVal, minVal, getPercent, setColorMapScale]);
 
   const textInputClasses =
     'flex-1 radius-md height-3 font-size-3xs width-5 border-2px ';
   const thumbPosition = `position-absolute pointer-events width-card height-0 outline-0`;
-
-  const dynamicStepIncrement = (max, min) => {
-    // determining numeric distance between min and max
-    const value = Math.abs(max - min);
-    const tenLog = Math.floor(Math.log(value) / Math.log(10));
-  };
   return (
     <div className='border-bottom-1px padding-bottom-1 border-base-light width-full text-normal'>
       <form className='usa-form display-flex flex-row flex-justify flex-align-center padding-bottom-1'>
@@ -112,18 +112,14 @@ export function ColorRangeSlider({
           value={minValRef.current}
           onChange={(event) => {
             const value = Number(event.target.value);
-            if (value > maxVal - 0.01) return false;
-            if (value < min || value > max) {
-              return setInputError({ max: inputError.max, min: true });
-            }
-            setInputError({ max: inputError.max, min: false });
-            setMinVal(Math.min(value, minVal + 0.01));
-            setColorMapScale({
-              min: minValRef.current,
-              max: colorMapScale.max
-            });
-
-            return (minValRef.current = value);
+            minValRef.current = value;
+            setTimeout(() => {
+              if (value > maxVal - 0.001) return false;
+              if (value < min || value > max) {
+                return setInputError({ max: inputError.max, min: true });
+              } else setInputError({ max: inputError.max, min: false });
+              setMinVal(Math.min(value, maxVal - 0.001));
+            }, 2500);
           }}
         />
 
@@ -136,15 +132,11 @@ export function ColorRangeSlider({
             value={minValRef.current}
             onChange={(event) => {
               const value = Number(event.target.value);
-              setMinVal(Math.min(value, maxVal - 0.01));
+              setMinVal(Math.min(value, maxVal - 0.001));
               minValRef.current = value;
-              setColorMapScale({
-                min: minValRef.current,
-                max: colorMapScale.max
-              });
             }}
             className={`thumb ${thumbPosition} z-index-300`}
-            style={{ zIndex: minVal >= max - 10 * 0.01 ? '500' : '300' }}
+            style={{ zIndex: minVal >= max - 10 * 0.001 ? '500' : '300' }}
           />
           <input
             type='range'
@@ -153,17 +145,13 @@ export function ColorRangeSlider({
             max={max}
             value={maxValRef.current}
             onChange={(event) => {
-              setMaxVal(Math.max(Number(event.target.value), minVal + 0.01));
-              maxValRef.current = Number(event.target.value);
-              console.log('maxValRef.current', maxValRef.current);
+              const value = Number(event.target.value);
 
-              setColorMapScale({
-                min: colorMapScale.min,
-                max: maxValRef.current
-              });
+              setMaxVal(Math.max(value, minVal + 0.001));
+              maxValRef.current = value;
             }}
             className={`thumb ${thumbPosition} z-400`}
-            style={{ zIndex: minVal <= max - 10 * 0.01 ? '500' : '400' }}
+            style={{ zIndex: minVal <= max - 10 * 0.001 ? '500' : '400' }}
           />
           <div className='slider width-card position-relative height-3 display-flex flex-align-center'>
             <div className='slider__track radius-md position-absolute height-05 z-100 width-full display-flex flex-align-center' />
@@ -182,6 +170,7 @@ export function ColorRangeSlider({
         </div>
         <USWDSTextInput
           type='number'
+          data-validate-numerical='[0-9]*'
           id='range slider max'
           name='max'
           placeholder={maxValRef.current}
@@ -193,17 +182,13 @@ export function ColorRangeSlider({
           value={maxValRef.current}
           onChange={(event) => {
             const value = Number(event.target.value);
-            if (value < minVal + 0.01) return false;
+            if (value < minVal + 0.001) return false;
             if (value < min || value > max) {
               return setInputError({ max: true, min: inputError.min });
             } else {
               setInputError({ max: false, min: inputError.min });
-              setMaxVal(Math.max(value, minVal + 0.01));
-              setColorMapScale({
-                min: colorMapScale.min,
-                max: maxValRef.current
-              });
-              return (maxValRef.current = value);
+              setMaxVal(Math.max(value, minVal + 0.001));
+              maxValRef.current = event.target.value;
             }
           }}
         />
