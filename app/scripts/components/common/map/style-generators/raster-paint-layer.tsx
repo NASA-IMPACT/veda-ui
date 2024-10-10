@@ -13,7 +13,7 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
   colorMap?: string | undefined;
   tileParams: Record<string, any>;
   generatorPrefix?: string;
-  scale?: { min: number; max: number };
+  reScale?: { min: number; max: number };
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
@@ -25,7 +25,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     hidden,
     opacity,
     colorMap,
-    scale,
+    reScale,
     generatorPrefix = 'raster'
   } = props;
 
@@ -39,9 +39,9 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       ...(colorMap && {
         colormap_name: colorMap
       }),
-      ...(scale && { rescale: Object.values(scale) })
+      ...(reScale && { rescale: Object.values(reScale) })
     };
-  }, [tileParams, colorMap, scale]);
+  }, [tileParams, colorMap, reScale]);
 
   //
   // Generate Mapbox GL layers and sources for raster timeseries
@@ -104,7 +104,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       haveTileParamsChanged,
       generatorParams,
       colorMap,
-      scale
+      reScale
       // generatorParams includes hidden and opacity
       // hidden,
       // opacity,

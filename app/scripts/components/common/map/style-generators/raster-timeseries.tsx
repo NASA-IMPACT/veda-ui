@@ -367,7 +367,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           {
             assets: 'cog_default',
             ...(sourceParams ?? {}),
-            ...(colorMap && { colormap_name: colorMap, rescale: Object.values(reScale) })
+            ...(colorMap && { colormap_name: colorMap }),
+            ...(reScale && {rescale: Object.values(reScale)})
           },
           // Temporary solution to pass different tile parameters for hls data
           {
