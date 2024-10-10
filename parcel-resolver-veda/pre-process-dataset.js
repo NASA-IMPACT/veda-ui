@@ -128,4 +128,5 @@ async function reconcileDataWithStacMetadata(dataset) {
     path.resolve(CWD, './parcel-resolver-veda/dataset-output.json'),
     JSON.stringify(datasetsImportData)
   );
+  console.log('DATA PRE PROCESSDING FINISHED');
 })();
