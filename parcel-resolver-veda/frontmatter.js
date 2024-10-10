@@ -10,27 +10,28 @@ async function getFrontmatterData(filePath, logger) {
     // cached as empty and no error are thrown the second time.
     return matter(content, {}).data;
   } catch (error) {
-    logger.error({
-      message: error.message,
-      codeFrames: [
-        {
-          filePath,
-          code: error.mark.buffer,
-          codeHighlights: [
-            {
-              start: {
-                line: error.mark.line,
-                column: error.mark.column
-              },
-              end: {
-                line: error.mark.line,
-                column: error.mark.column
+    if (logger)
+      logger.error({
+        message: error.message,
+        codeFrames: [
+          {
+            filePath,
+            code: error.mark.buffer,
+            codeHighlights: [
+              {
+                start: {
+                  line: error.mark.line,
+                  column: error.mark.column
+                },
+                end: {
+                  line: error.mark.line,
+                  column: error.mark.column
+                }
               }
-            }
-          ]
-        }
-      ]
-    });
+            ]
+          }
+        ]
+      });
     return null;
   }
 }
