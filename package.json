@@ -20,7 +20,7 @@
         "serve": "NODE_ENV=development gulp serve",
         "build": "node ./parcel-resolver-veda/pre-process-dataset.js && NODE_ENV=production gulp",
         "buildlib": "gulp clean && parcel build 'app/scripts/index.ts' --dist-dir='lib' --config '.parcelrc-lib'",
-        "stage": "yarn buildlib && NODE_ENV=staging gulp",
+        "stage": "node ./parcel-resolver-veda/pre-process-dataset.js && yarn buildlib && NODE_ENV=staging gulp",
         "clean": "gulp clean",
         "lint": "yarn lint:scripts && yarn lint:css",
         "lint:scripts": "eslint app/scripts/",
