@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const process = require('process');
 const _ = require('lodash');
 const fs = require('fs-extra');
 const fg = require('fast-glob');
@@ -15,6 +16,8 @@ const {
   validateDatasetLayerId
 } = require('./validation');
 const { processTaxonomies } = require('./taxonomies');
+
+const CWD = process.cwd();
 
 async function loadOptionalContent(root, globPath, type) {
   try {
@@ -31,7 +34,6 @@ async function loadOptionalContent(root, globPath, type) {
         }
 
         if (frontMatterData.published === false) return null;
-
         return frontMatterData;
       })
     );
@@ -123,7 +125,7 @@ async function reconcileDataWithStacMetadata(dataset) {
   );
 
   fs.writeFileSync(
-    './parcel-resolver-veda/dataset-output.json',
+    path.resolve(CWD, './parcel-resolver-veda/dataset-output.json'),
     JSON.stringify(datasetsImportData)
   );
 })();
