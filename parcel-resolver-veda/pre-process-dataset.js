@@ -4,9 +4,10 @@ const path = require('path');
 const _ = require('lodash');
 const fs = require('fs-extra');
 const fg = require('fast-glob');
+const markdownit = require('markdown-it');
 
 const axios = require('axios');
-
+const md = markdownit();
 const { loadVedaConfig } = require('./config');
 const { getFrontmatterData } = require('./frontmatter');
 const {
@@ -65,20 +66,24 @@ async function reconcileDataWithStacMetadata(dataset) {
         );
         // console.log(`data_is_good: `, response.data);
         if (!response.data.title) throw Error('No proper title');
+        // if (layer.stacCol === 'no2-monthly') console.log(response.data);
+        let responseDescription = md.render(response.data.description);
+        responseDescription = responseDescription.replace(/(\r\n|\n|\r)/gm, '');
         return {
+          ...layer,
           title: response.data.title,
-          description: response.data.description,
-          ...layer
+          description: responseDescription
         };
         // reconcile here
       } catch (e) {
         console.log('REQUEST ERROR');
         return {
-          title: 'error'
+          ...layer
         };
       }
     })
   );
+  console.log(reconciledLayerData);
   return {
     ...dataset,
     layers: reconciledLayerData
