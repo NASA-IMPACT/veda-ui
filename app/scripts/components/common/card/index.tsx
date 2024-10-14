@@ -2,7 +2,6 @@ import React, { lazy, MouseEventHandler, ComponentType } from 'react';
 import styled, { css } from 'styled-components';
 import { format } from 'date-fns';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
-const SmartLink = lazy(() => import('../smart-link'));
 import {
   glsp,
   media,
@@ -10,12 +9,14 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
+const SmartLink = lazy(() => import('../smart-link'));
 
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
+import { isExternalLink } from '$utils/url';
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -296,8 +297,6 @@ function CardComponent(props: CardComponentPropsType) {
     };
   }
 
-  const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);
-
   return (
     <ElementInteractive
       linkProps={{
@@ -318,8 +317,8 @@ function CardComponent(props: CardComponentPropsType) {
               <CardHeadline>
                 <CardTitle>{title}</CardTitle>
                 <CardOverline as='div'>
-                  {isExternalLink && <ExternalLinkFlag />}
-                  {!isExternalLink && tagLabels && parentTo && (
+                  {isExternalLink(linkProperties.linkTo) && <ExternalLinkFlag />}
+                  {!isExternalLink(linkProperties.linkTo) && tagLabels && parentTo && (
                     tagLabels.map((label) => (
                       <CardLabel as={linkProperties.LinkElement} to={parentTo} key={label}>
                         {label}
