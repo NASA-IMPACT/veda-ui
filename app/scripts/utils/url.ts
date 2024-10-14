@@ -7,13 +7,15 @@ export function isExternalLink(link: string): boolean {
 
 export const getLinkProps = (
   linkTo: string,
+  isLinkExternal?: boolean,
   as?: React.ForwardRefExoticComponent<
     LinkProps & React.RefAttributes<HTMLAnchorElement>
   >,
   onClick?: (() => void) | MouseEventHandler
 ) => {
   // Open the link in a new tab when link is external
-  return isExternalLink(linkTo)
+  const isExternalLink = isLinkExternal ?? /^https?:\/\//.test(linkTo);
+  return isExternalLink
     ? {
         href: linkTo,
         to: linkTo,

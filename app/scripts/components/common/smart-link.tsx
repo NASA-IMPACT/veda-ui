@@ -1,10 +1,11 @@
 import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { getLinkProps, isExternalLink } from '$utils/url';
+import { getLinkProps } from '$utils/url';
 
 interface SmartLinkProps {
   to: string;
+  isLinkExternal?: boolean;
   onLinkClick?: ()=> void;
   children?: ReactNode;
 }
@@ -13,10 +14,11 @@ interface SmartLinkProps {
  * Switches between a `a` and a `Link` depending on the url.
  */
 export default function SmartLink(props: SmartLinkProps) {
-  const { to, onLinkClick, children, ...rest } = props;
-  const linkProps = getLinkProps(to, undefined, onLinkClick);
+  const { to, isLinkExternal, onLinkClick, children, ...rest } = props;
+  const isExternalLink = isLinkExternal ?? /^https?:\/\//.test(to);
+  const linkProps = getLinkProps(to, isLinkExternal, undefined, onLinkClick);
 
-  return isExternalLink(to) ? (
+  return isExternalLink ? (
     <a {...linkProps} {...rest}> {children} </a>
     ) : (
       <Link {...linkProps} {...rest}> {children} </Link>
@@ -33,8 +35,9 @@ interface CustomLinkProps {
  */
 export function CustomLink(props: CustomLinkProps) {
   const { href, ...rest } = props;
+  const isExternalLink = /^https?:\/\//.test(href);
   const linkProps = getLinkProps(href);
-  return isExternalLink(href) ? (
+  return isExternalLink ? (
       <a {...linkProps} {...rest} />
   ) : (
     <Link {...linkProps} {...rest} />

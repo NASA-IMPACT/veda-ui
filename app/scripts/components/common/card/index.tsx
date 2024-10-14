@@ -16,7 +16,6 @@ import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
-import { isExternalLink } from '$utils/url';
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -228,6 +227,7 @@ export interface LinkProperties {
 
 export interface LinkWithPathProperties extends LinkProperties {
   linkTo: string;
+  isLinkExternal?: boolean;
 }
 
 export interface CardComponentBaseProps {
@@ -251,6 +251,7 @@ export interface CardComponentBaseProps {
 export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
   linkTo: string;
   onLinkClick?: MouseEventHandler;
+  isLinkExternal?: boolean;
 }
 export interface CardComponentProps extends CardComponentBaseProps {
   linkProperties: LinkWithPathProperties;
@@ -288,14 +289,17 @@ function CardComponent(props: CardComponentPropsType) {
     const { linkProperties: linkPropertiesProps } = props;
     linkProperties = linkPropertiesProps;
   } else {
-    const { linkTo, onLinkClick,  } = props;
+    const { linkTo, onLinkClick, isLinkExternal } = props;
     linkProperties = {
       linkTo,
       onLinkClick,
       pathAttributeKeyName: 'to',
-      LinkElement: SmartLink
+      LinkElement: SmartLink,
+      isLinkExternal
     };
   }
+
+  const isExternalLink = linkProperties.isLinkExternal ?? /^https?:\/\//.test(linkProperties.linkTo);
 
   return (
     <ElementInteractive
@@ -317,8 +321,8 @@ function CardComponent(props: CardComponentPropsType) {
               <CardHeadline>
                 <CardTitle>{title}</CardTitle>
                 <CardOverline as='div'>
-                  {isExternalLink(linkProperties.linkTo) && <ExternalLinkFlag />}
-                  {!isExternalLink(linkProperties.linkTo) && tagLabels && parentTo && (
+                  {isExternalLink && <ExternalLinkFlag />}
+                  {!isExternalLink && tagLabels && parentTo && (
                     tagLabels.map((label) => (
                       <CardLabel as={linkProperties.LinkElement} to={parentTo} key={label}>
                         {label}
