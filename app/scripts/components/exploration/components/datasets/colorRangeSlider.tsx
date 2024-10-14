@@ -27,13 +27,18 @@ export function ColorRangeSlider({
 }: ColorrangeRangeSlideProps) {
   const [minVal, setMinVal] = useState(min);
   const [maxVal, setMaxVal] = useState(max);
-  const [inputError, setInputError] = useState({ min: false, max: false });
+  const [inputError, setInputError] = useState({
+    min: false,
+    max: false,
+    largerThanMax: false,
+    lessThanMin: false
+  });
 
-  const minValRef = useRef(
-    String(colorMapScale?.min ? colorMapScale.min : min)
+  const minValRef = useRef<string | number>(
+    colorMapScale?.min ? colorMapScale.min : min
   );
-  const maxValRef = useRef(
-    String(colorMapScale?.max ? colorMapScale.max : max)
+  const maxValRef = useRef<string | number>(
+    colorMapScale?.max ? colorMapScale.max : max
   );
   const range = useRef(null);
   const middleMarker = useRef(null);
@@ -44,39 +49,51 @@ export function ColorRangeSlider({
     [min, max]
   );
   const rangeCalculation = (maxPercent, minPercent) => {
-    range.current.style.width = `${
-      maxPercent - minPercent >= 100 ? 100 : maxPercent - minPercent
-    }%`;
+    if (range.current) {
+      range.current.style.width = `${
+        maxPercent - minPercent >= 100 ? 100 : maxPercent - minPercent
+      }%`;
+    }
     if (middleMarker.current)
       middleMarker.current.style.left = `${range.current.style.width}%`;
     return;
   };
+
   // Set width of the range to decrease from the right side
 
   useEffect(() => {
     let maxValPrevious;
     let minValPrevious;
 
-    if (colorMapScale && maxVal != maxValPrevious && minVal != minValPrevious) {
-      const minPercent = getPercent(minValRef.current);
-      const maxPercent = getPercent(maxValRef.current);
-      rangeCalculation(maxPercent, minPercent);
-      if (range.current) range.current.style.left = `${minPercent}%`;
-    } else {
-      if (maxVal != maxValPrevious) {
-        maxValPrevious = maxVal;
+    if (Object.values(inputError).every((v) => v === false)) {
+      if (
+        colorMapScale &&
+        maxVal != maxValPrevious &&
+        minVal != minValPrevious
+      ) {
         const minPercent = getPercent(minValRef.current);
-        const maxPercent = getPercent(maxVal);
-        rangeCalculation(maxPercent, minPercent);
-      }
-      if (minVal != minValPrevious) {
-        minValPrevious = minVal;
-        const minPercent = getPercent(minVal);
         const maxPercent = getPercent(maxValRef.current);
+
         rangeCalculation(maxPercent, minPercent);
+
         if (range.current) range.current.style.left = `${minPercent}%`;
+      } else {
+        if (maxVal != maxValPrevious) {
+          maxValPrevious = maxVal;
+          const minPercent = getPercent(minValRef.current);
+          const maxPercent = getPercent(maxVal);
+          rangeCalculation(maxPercent, minPercent);
+        }
+        if (minVal != minValPrevious) {
+          minValPrevious = minVal;
+          const minPercent = getPercent(minVal);
+          const maxPercent = getPercent(maxValRef.current);
+          rangeCalculation(maxPercent, minPercent);
+          if (range.current) range.current.style.left = `${minPercent}%`;
+        }
       }
     }
+
     if (
       !colorMapScale ||
       (colorMapScale.max == max && colorMapScale.min == min)
@@ -87,8 +104,15 @@ export function ColorRangeSlider({
         min: Number(minValRef.current),
         max: Number(maxValRef.current)
       });
-  }, [maxVal, minVal, getPercent, setColorMapScale]);
+  }, [maxVal, minVal, getPercent, setColorMapScale, inputError]);
 
+  const resetErrorOnSlide = (value, slider) => {
+    if (value > min || value < max) {
+      slider === 'max'
+        ? setInputError({ ...inputError, max: false, lessThanMin: false })
+        : setInputError({ ...inputError, min: false, largerThanMax: false });
+    }
+  };
   const textInputClasses =
     'flex-1 radius-md height-3 font-size-3xs width-5 border-2px ';
   const thumbPosition = `position-absolute pointer-events width-card height-0 outline-0`;
@@ -105,21 +129,27 @@ export function ColorRangeSlider({
           name='min'
           placeholder={minValRef.current}
           className={`${textInputClasses} ${
-            inputError.min
+            inputError.min || inputError.largerThanMax
               ? 'border-secondary-vivid text-secondary-vivid'
               : ' border-base-light'
           }`}
           value={minValRef.current}
           onChange={(event) => {
+            minValRef.current = event.target.value;
             const value = Number(event.target.value);
-            minValRef.current = value;
-            setTimeout(() => {
-              if (value > maxVal - 0.001) return false;
-              if (value < min || value > max) {
-                return setInputError({ max: inputError.max, min: true });
-              } else setInputError({ max: inputError.max, min: false });
+
+            if (value > maxVal - 0.001)
+              return setInputError({ ...inputError, largerThanMax: true });
+            if (value < min || value > max) {
+              return setInputError({ ...inputError, min: true });
+            } else {
+              setInputError({
+                ...inputError,
+                min: false,
+                largerThanMax: false
+              });
               setMinVal(Math.min(value, maxVal - 0.001));
-            }, 2500);
+            }
           }}
         />
 
@@ -129,10 +159,14 @@ export function ColorRangeSlider({
             min={min}
             max={max}
             step='.001'
-            value={minValRef.current}
+            value={minVal}
             onChange={(event) => {
-              const value = Number(event.target.value);
-              setMinVal(Math.min(value, maxVal - 0.001));
+              const value = Math.min(
+                Number(event.target.value),
+                maxVal - 0.001
+              );
+              resetErrorOnSlide(value, 'min');
+              setMinVal(value);
               minValRef.current = value;
             }}
             className={`thumb ${thumbPosition} z-index-300`}
@@ -143,11 +177,14 @@ export function ColorRangeSlider({
             min={min}
             step='.001'
             max={max}
-            value={maxValRef.current}
+            value={maxVal}
             onChange={(event) => {
-              const value = Number(event.target.value);
-
-              setMaxVal(Math.max(value, minVal + 0.001));
+              const value = Math.max(
+                Number(event.target.value),
+                minVal + 0.001
+              );
+              resetErrorOnSlide(value, 'max');
+              setMaxVal(value);
               maxValRef.current = value;
             }}
             className={`thumb ${thumbPosition} z-400`}
@@ -175,20 +212,24 @@ export function ColorRangeSlider({
           name='max'
           placeholder={maxValRef.current}
           className={`${textInputClasses} ${
-            inputError.max
+            inputError.max || inputError.lessThanMin
               ? 'border-secondary-vivid text-secondary-vivid'
               : ' border-base-light'
           }`}
           value={maxValRef.current}
           onChange={(event) => {
             const value = Number(event.target.value);
-            if (value < minVal + 0.001) return false;
+            maxValRef.current = event.target.value;
+
+            if (value < minVal + 0.001)
+              return setInputError({ ...inputError, lessThanMin: true });
+
             if (value < min || value > max) {
-              return setInputError({ max: true, min: inputError.min });
+              return setInputError({ ...inputError, max: true });
             } else {
-              setInputError({ max: false, min: inputError.min });
+              setInputError({ ...inputError, max: false, lessThanMin: false });
               setMaxVal(Math.max(value, minVal + 0.001));
-              maxValRef.current = event.target.value;
+              // maxValRef.current = event.target.value;
             }
           }}
         />
@@ -196,6 +237,16 @@ export function ColorRangeSlider({
       {inputError.max || inputError.min ? (
         <p className='text-secondary-vivid'>
           Please enter a value between {min} and {max}
+        </p>
+      ) : null}{' '}
+      {inputError.largerThanMax ? (
+        <p className='text-secondary-vivid'>
+          Please enter a value less than {maxValRef.current}
+        </p>
+      ) : null}
+      {inputError.lessThanMin ? (
+        <p className='text-secondary-vivid'>
+          Please enter a value larger than {minValRef.current}
         </p>
       ) : null}
     </div>
