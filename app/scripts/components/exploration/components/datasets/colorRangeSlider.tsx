@@ -111,7 +111,7 @@ export function ColorRangeSlider({
         }
       }
     }
-
+    // determining if there is an initial colorMapeScale or if it is the default min and max
     if (
       !colorMapScale ||
       (colorMapScale.max == max && colorMapScale.min == min)
