@@ -212,7 +212,7 @@ export function ColorRangeSlider({
               {min < 0 ? (
                 <div
                   ref={middleMarker}
-                  className='position-relative height-2 width-1px middle_marker'
+                  className='position-relative height-2 width-1px middle-marker'
                 />
               ) : null}
             </div>

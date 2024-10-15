@@ -1,3 +1,4 @@
+
 .slider__track {
   background-color: #dddfe2;
 }
@@ -9,6 +10,8 @@
 /* Removing the default appearance */
 .thumb,
 .thumb::-webkit-slider-thumb {
+  touch-action: 'none';
+
   -webkit-appearance: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -16,8 +19,8 @@
 .thumb {
   pointer-events: none;
 }
-.middle_marker{
-  background-color: #1B2631;
+.middle-marker {
+  background-color: #1b2631;
 }
 /* For Chrome browsers */
 .thumb::-webkit-slider-thumb {
