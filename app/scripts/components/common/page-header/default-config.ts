@@ -1,11 +1,9 @@
 import { getString, getNavItemsFromVedaConfig } from 'veda';
 import { InternalNavLink, ExternalNavLink, ModalNavLink, DropdownNavLink, NavItemType } from '$components/common/page-header/types.d';
 
-import { checkEnvFlag } from '$utils/utils';
 import {
   STORIES_PATH,
   DATASETS_PATH,
-  ANALYSIS_PATH,
   EXPLORATION_PATH,
   ABOUT_PATH
 } from '$utils/routes';
@@ -15,8 +13,8 @@ let defaultMainNavItems:(ExternalNavLink | InternalNavLink | DropdownNavLink | M
   to: DATASETS_PATH,
   type: NavItemType.INTERNAL_LINK
 }, {
-  title: checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION) ? 'Exploration' : 'Analysis',
-  to: checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION) ? EXPLORATION_PATH : ANALYSIS_PATH,
+  title: 'Exploration',
+  to: EXPLORATION_PATH,
   type: NavItemType.INTERNAL_LINK
 }, {
   title: getString('stories').other,

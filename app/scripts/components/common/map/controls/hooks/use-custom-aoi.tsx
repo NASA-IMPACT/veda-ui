@@ -16,7 +16,7 @@ export interface FileInfo {
   type: 'Shapefile' | 'GeoJSON';
 }
 
-interface PolygonGeojson { 
+interface PolygonGeojson {
   "type": "FeatureCollection",
   "features": Feature<Polygon | MultiPolygon>[];
 }
@@ -117,7 +117,7 @@ export function getAoiAppropriateFeatures(geojson: PolygonGeojson) {
     warnings= [...warnings, `${numberOfSimplifedFeatures} ${featureWPrefix} simplified to have less than ${eachFeatureMaxPointNum} points.`];
   }
 
-  // Further Simplify features in case there are a lot of features 
+  // Further Simplify features in case there are a lot of features
   // so the sum of the points doesn't exceed 1000
   while (numPoints > 1000 && tolerance < 5) {
     simplifiedFeatures = simplifiedFeatures.map((feature) =>

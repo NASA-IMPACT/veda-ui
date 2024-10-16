@@ -25,6 +25,7 @@ import {
   ContentOverride
 } from '$components/common/page-overrides';
 
+
 const homeContent = getOverride('homeContent');
 
 const Connections = styled(Hug)`
@@ -112,10 +113,10 @@ const getCoverProps = () => {
 
     return author
       ? {
-          ...coverProps,
-          attributionAuthor: author.name,
-          attributionUrl: author.url
-        }
+        ...coverProps,
+        attributionAuthor: author.name,
+        attributionUrl: author.url
+      }
       : coverProps;
   } else {
     return {
@@ -136,11 +137,10 @@ function RootHome() {
 
   return (
     <PageMainContent>
-      <LayoutProps 
-        title='Welcome' 
-        banner={renderBanner? {...banner}: null}
+      <LayoutProps
+        title='Welcome'
+        banner={renderBanner ? { ...banner } : null}
       />
-
       <ComponentOverride with='homeHero'>
         <PageHeroHome
           title={homeContent?.data.title ?? `Welcome to the ${appTitle}`}
@@ -171,6 +171,7 @@ function RootHome() {
       </ComponentOverride>
 
       <ContentOverride with='homeContent'>
+
         <Audience />
 
         <FeaturedStories />

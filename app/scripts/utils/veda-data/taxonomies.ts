@@ -9,7 +9,7 @@ import {
 
 // @NOTE: Independent of veda faux modules
 
-export function generateTaxonomies(data: DatasetDataWithEnhancedLayers[] | DatasetData[]): Taxonomy[] {
+export function generateTaxonomies(data: DatasetDataWithEnhancedLayers[] | DatasetData[] | StoryData []): Taxonomy[] {
   const concat = (arr, v) => (arr || []).concat(v);
 
   const taxonomyData = {};
@@ -56,7 +56,7 @@ export function getAllTaxonomyValues(
 
 export function getTaxonomyByIds(group: string, ids: string | string[], taxonomies: Taxonomy[]) {
   const groupValues = taxonomies.find((t) => t.name == group)?.values;
-  
+
   let taxonomyItems: any[] = [];
 
   if (ids instanceof Array) {

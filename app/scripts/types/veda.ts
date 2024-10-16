@@ -132,6 +132,7 @@ export interface LayerLegendGradient {
   min: string | number;
   max: string | number;
   stops: string[];
+  colorMap?: string;
 }
 
 interface CategoricalStop {
@@ -200,10 +201,12 @@ export interface StoryData {
   name: string;
   description: string;
   pubDate: string;
+  path?: string;
   media?: Media;
   taxonomy: Taxonomy[];
   related?: RelatedContentData[];
   asLink?: LinkContentData;
+  isLinkExternal?: boolean;
   isHidden?: boolean;
 }
 

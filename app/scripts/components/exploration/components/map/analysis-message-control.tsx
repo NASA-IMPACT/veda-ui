@@ -128,7 +128,7 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
 
     // Fit TOI
     if (!main || !timelineWidth || !selectedInterval?.start ) return;
-    
+
     const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) * 0.9;
     const startPoint = 0;
     const new_k = widthToFit/(main(selectedInterval.end) - main(selectedInterval.start));

@@ -39,7 +39,7 @@ describe('onFilterAction', () => {
 
     expect(setTaxonomiesMock).toHaveBeenCalledWith({});
     expect(setSearchMock).not.toHaveBeenCalled();
-  }); 
+  });
 
   it('should clear only search on CLEAR_SEARCH action', () => {
     onFilterAction(
@@ -52,7 +52,7 @@ describe('onFilterAction', () => {
 
     expect(setSearchMock).toHaveBeenCalledWith('');
     expect(setTaxonomiesMock).not.toHaveBeenCalled();
-  }); 
+  });
   it('should set search value on SEARCH action', () => {
     const searchValue = 'climate';
     onFilterAction(

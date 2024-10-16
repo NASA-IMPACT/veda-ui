@@ -1,7 +1,7 @@
 import { RefObject, useCallback, useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { Map as MapboxMap } from 'mapbox-gl';
 
-import { MapboxMapRef } from '../mapbox';
 import { AoiChangeListenerOverload, AoiState } from './types';
 import { makeFeatureCollection } from './utils';
 
@@ -12,6 +12,12 @@ const DEFAULT_PARAMETERS = {
   featureCollection: null,
   actionOrigin: null
 };
+
+export interface MapboxMapRef {
+  resize: () => void;
+  instance: MapboxMap | null;
+  compareInstance: MapboxMap | null;
+}
 
 export function useAoiControls(
   mapRef: RefObject<MapboxMapRef>,

@@ -14,27 +14,24 @@ import { getAppURL } from '$utils/history';
 import LayoutRoot from '$components/common/layout-root';
 import { LayoutRootContextProvider } from '$components/common/layout-root/context';
 import { useScrollbarWidthAsCssVar } from '$utils/use-scrollbar-width-css';
-import { checkEnvFlag } from '$utils/utils';
-
 // Page loading
 import { PageLoading } from '$components/common/loading-skeleton';
 // Views
 import UhOh from '$components/uhoh';
 import ErrorBoundary from '$components/uhoh/fatal-error';
 
+import '$types/array.d';
+
 const Home = lazy(() => import('$components/home'));
 const About = lazy(() => import('$components/about'));
 const Development = lazy(() => import('$components/development'));
 
-const StoriesHub = lazy(() => import('$components/stories/hub'));
+const StoriesHub = lazy(() => import('$components/stories/hub/container'));
 const StoriesSingle = lazy(() => import('$components/stories/single'));
 
 const DataCatalog = lazy(() => import('$components/data-catalog/container'));
-const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
-const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
-const Analysis = lazy(() => import('$components/analysis/define'));
-const AnalysisResults = lazy(() => import('$components/analysis/results'));
+const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
 const ExplorationAndAnalysis = lazy(
   () => import('$components/exploration/container')
@@ -48,8 +45,6 @@ const UserPagesComponent = lazy(() => import('$components/user-pages'));
 import ReactQueryProvider from '$context/react-query';
 import {
   ABOUT_PATH,
-  ANALYSIS_PATH,
-  ANALYSIS_RESULTS_PATH,
   DATASETS_PATH,
   STORIES_PATH,
   EXPLORATION_PATH
@@ -61,8 +56,6 @@ const composingComponents = [
   ReactQueryProvider,
   LayoutRootContextProvider
 ];
-
-const useNewExploration = checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION);
 
 function ScrollTop() {
   const { pathname } = useLocation();
@@ -105,28 +98,12 @@ function Root() {
                   element={<StoriesSingle />}
                 />
 
-                {!useNewExploration && (
-                  <>
-                    <Route
-                      path={`${DATASETS_PATH}/:datasetId/explore`}
-                      element={<DatasetsExplore />}
-                    />
-                    <Route path={ANALYSIS_PATH} element={<Analysis />} />
-                    <Route
-                      path={ANALYSIS_RESULTS_PATH}
-                      element={<AnalysisResults />}
-                    />
-                  </>
-                )}
-
                 <Route path='development' element={<Development />} />
 
-                {/* {useNewExploration && ( */}
                 <Route
                   path={EXPLORATION_PATH}
                   element={<ExplorationAndAnalysis />}
                 />
-                {/* )} */}
 
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />

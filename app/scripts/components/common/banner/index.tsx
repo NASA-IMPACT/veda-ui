@@ -25,7 +25,7 @@ interface BannerProps {
 }
 
 export default function Banner({appTitle, expires, url, text, type = infoTypeFlag }: BannerProps) {
-  
+
   const showBanner = localStorage.getItem(BANNER_KEY) !== url;
   const [isOpen, setIsOpen] = useState(showBanner && !(hasExpired(expires)));
 
@@ -39,7 +39,7 @@ export default function Banner({appTitle, expires, url, text, type = infoTypeFla
 
   return (
     <div>
-      {isOpen && 
+      {isOpen &&
         (<div className='position-relative'>
           <USWDSBanner aria-label={appTitle} className={type !== infoTypeFlag? 'bg-secondary-lighter': ''}>
             <a href={url} target='_blank' rel='noreferrer'>
@@ -49,7 +49,7 @@ export default function Banner({appTitle, expires, url, text, type = infoTypeFla
             </a>
           </USWDSBanner>
           <div className='position-absolute top-0 right-0 margin-right-3 height-full display-flex'>
-              <button 
+              <button
               className='usa-button usa-button--unstyled'
               type='button'
               aria-label='Close Banner'

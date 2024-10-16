@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, forwardRef } from 'react';
+import React, { Component, useState, useMemo, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -36,9 +36,14 @@ import {
   chartYAxisWidth,
   chartLabelOffset
 } from './constant';
-import { ChartWrapperRef } from './analysis/utils';
-import BrushCustom from './analysis/brush';
+import BrushCustom from './brush';
 import { useMediaQuery } from '$utils/use-media-query';
+
+// Rechart does not export the type for wrapper component (CategoricalChartWrapper)
+// Working around
+export interface ChartWrapperRef extends Component {
+  container: HTMLElement;
+}
 
 const LineChartWithFont = styled(LineChart)`
   font-size: 0.8rem;

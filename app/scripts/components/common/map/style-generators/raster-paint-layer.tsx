@@ -8,52 +8,50 @@ import useGeneratorParams from '../hooks/use-generator-params';
 
 interface RasterPaintLayerProps extends BaseGeneratorParams {
   id: string;
-  date?: Date;
-  sourceParams?: Record<string, any>;
   tileApiEndpoint?: string;
   zoomExtent?: number[];
-  assetUrl: string;
+  colorMap?: string | undefined;
+  tileParams: Record<string, any>;
+  generatorPrefix?: string;
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
   const {
     id,
     tileApiEndpoint,
-    date,
-    sourceParams,
+    tileParams,
     zoomExtent,
-    assetUrl,
     hidden,
-    opacity
+    opacity,
+    colorMap,
+    generatorPrefix = 'raster',
   } = props;
 
   const { updateStyle } = useMapStyle();
   const [minZoom] = zoomExtent ?? [0, 20];
-  const generatorId = `zarr-timeseries-${id}`;
+  const generatorId = `${generatorPrefix}-${id}`;
+
+  const updatedTileParams = useMemo(() => {
+    return { ...tileParams, ...colorMap &&  {colormap_name: colorMap}};
+  }, [tileParams, colorMap]);
 
   //
   // Generate Mapbox GL layers and sources for raster timeseries
   //
-  const haveSourceParamsChanged = useMemo(
-    () => JSON.stringify(sourceParams),
-    [sourceParams]
+  const haveTileParamsChanged = useMemo(
+    () => JSON.stringify(updatedTileParams),
+    [updatedTileParams]
   );
 
   const generatorParams = useGeneratorParams(props);
 
   useEffect(
     () => {
-      if (!assetUrl) return;
-
-      const tileParams = qs.stringify({
-        url: assetUrl,
-        time_slice: date,
-        ...sourceParams
-      });
+      const tileParamsAsString = qs.stringify(updatedTileParams, { arrayFormat: 'comma' });
 
       const zarrSource: RasterSource = {
         type: 'raster',
-        url: `${tileApiEndpoint}?${tileParams}`
+        url: `${tileApiEndpoint}?${tileParamsAsString}`
       };
 
       const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
@@ -65,8 +63,8 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
         paint: {
           'raster-opacity': hidden ? 0 : rasterOpacity,
           'raster-opacity-transition': {
-            duration: 320
-          }
+            duration: 320,
+          },
         },
         minzoom: minZoom,
         metadata: {
@@ -91,12 +89,11 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     [
       updateStyle,
       id,
-      date,
-      assetUrl,
       minZoom,
       tileApiEndpoint,
-      haveSourceParamsChanged,
-      generatorParams
+      haveTileParamsChanged,
+      generatorParams,
+      colorMap
       // generatorParams includes hidden and opacity
       // hidden,
       // opacity,

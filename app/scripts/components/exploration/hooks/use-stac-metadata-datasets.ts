@@ -11,7 +11,11 @@ import {
   DatasetStatus,
   VizDataset
 } from '../types.d.ts';
-import { resolveLayerTemporalExtent } from '../data-utils-no-faux-module';
+import {
+  resolveLayerTemporalExtent,
+  resolveRenderParams,
+  isRenderParamsApplicable
+} from '../data-utils-no-faux-module';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { SetState } from '$types/aliases';
 
@@ -43,12 +47,23 @@ function reconcileQueryDataWithDataset(
 
     if (queryData.status === DatasetStatus.SUCCESS) {
       const domain = resolveLayerTemporalExtent(base.data.id, queryData.data);
+
+      let renderParams;
+
+      if (isRenderParamsApplicable(base.data.type)) {
+        renderParams = resolveRenderParams(
+          base.data.sourceParams,
+          queryData.data.renders
+        );
+      }
+
       base = {
         ...base,
         data: {
           ...base.data,
           ...queryData.data,
-          domain
+          domain,
+          ...(renderParams && { sourceParams: renderParams })
         }
       };
     }
@@ -112,13 +127,16 @@ async function fetchStacDatasetById(
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
+    const renders = data.renders;
+
     if (!domain?.length || domain.some((d) => !d)) {
       throw new Error('Invalid datetime domain');
     }
 
     return {
       ...commonTimeseriesParams,
-      domain
+      domain,
+      renders
     };
   }
 }

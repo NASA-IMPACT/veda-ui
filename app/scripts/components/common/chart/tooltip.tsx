@@ -38,7 +38,7 @@ const TooltipItem = styled(ListItem)`
 export default function TooltipComponent(props: TooltipComponentProps) {
   const { dateFormat, uniqueKeys, active, payload, label } =
     props;
-  
+
   const inactiveKeys = uniqueKeys.filter((e) => !e.active).map((e) => e.label);
   if (active && payload && payload.length) {
     return (
