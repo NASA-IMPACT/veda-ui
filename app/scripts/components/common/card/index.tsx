@@ -307,6 +307,7 @@ function CardComponent(props: CardComponentPropsType) {
         as: linkProperties.LinkElement,
         [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
         onLinkClick: linkProperties.onLinkClick,
+        isLinkExternal: isExternalLink
       }}
       as={CardItem}
       cardType={cardType}

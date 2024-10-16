@@ -11,7 +11,7 @@ interface SmartLinkProps {
 }
 
 /**
- * Switches between a `a` and a `Link` depending on the url.
+ * Switches between a `a` and a `Link` depending on the optional `isLinkExternal` prop or the url.
  */
 export default function SmartLink(props: SmartLinkProps) {
   const { to, isLinkExternal, onLinkClick, children, ...rest } = props;
@@ -28,14 +28,15 @@ export default function SmartLink(props: SmartLinkProps) {
 
 interface CustomLinkProps {
   href: string;
+  isLinkExternal?: boolean;
 }
 
 /**
- * For links defined as markdown, this component will open the external link in a new tab.
+ * For links defined as markdown, this component will open the external link in a new tab depending on the optional `isLinkExternal` prop or the url.
  */
 export function CustomLink(props: CustomLinkProps) {
-  const { href, ...rest } = props;
-  const isExternalLink = /^https?:\/\//.test(href);
+  const { href, isLinkExternal, ...rest } = props;
+  const isExternalLink = isLinkExternal ?? /^https?:\/\//.test(href);
   const linkProps = getLinkProps(href);
   return isExternalLink ? (
       <a {...linkProps} {...rest} />
