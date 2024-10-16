@@ -168,7 +168,8 @@ export default function HubContent(props:HubContentProps) {
                 linkProperties={{
                   linkTo: `${d.asLink?.url ?? d.path}`,
                   LinkElement,
-                  pathAttributeKeyName
+                  pathAttributeKeyName,
+                  isLinkExternal: d.isLinkExternal
                 }}
                 title={
                   <TextHighlight

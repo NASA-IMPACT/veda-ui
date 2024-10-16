@@ -110,7 +110,8 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       linkProperties={{
                         linkTo: `${d.asLink?.url ?? getItemPath(d)}`,
                         pathAttributeKeyName: 'to',
-                        LinkElement: SmartLink
+                        LinkElement: SmartLink,
+                        isLinkExternal: d.isLinkExternal
                       }}
                       title={d.name}
                       overline={

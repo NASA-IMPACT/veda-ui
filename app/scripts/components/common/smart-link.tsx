@@ -5,17 +5,18 @@ import { getLinkProps } from '$utils/url';
 
 interface SmartLinkProps {
   to: string;
+  isLinkExternal?: boolean;
   onLinkClick?: ()=> void;
   children?: ReactNode;
 }
 
 /**
- * Switches between a `a` and a `Link` depending on the url.
+ * Switches between a `a` and a `Link` depending on the optional `isLinkExternal` prop or the url.
  */
 export default function SmartLink(props: SmartLinkProps) {
-  const { to, onLinkClick, children, ...rest } = props;
-  const isExternalLink = /^https?:\/\//.test(to);
-  const linkProps = getLinkProps(to, undefined, onLinkClick);
+  const { to, isLinkExternal, onLinkClick, children, ...rest } = props;
+  const isExternalLink = isLinkExternal ?? /^https?:\/\//.test(to);
+  const linkProps = getLinkProps(to, isLinkExternal, undefined, onLinkClick);
 
   return isExternalLink ? (
     <a {...linkProps} {...rest}> {children} </a>
@@ -27,14 +28,15 @@ export default function SmartLink(props: SmartLinkProps) {
 
 interface CustomLinkProps {
   href: string;
+  isLinkExternal?: boolean;
 }
 
 /**
- * For links defined as markdown, this component will open the external link in a new tab.
+ * For links defined as markdown, this component will open the external link in a new tab depending on the optional `isLinkExternal` prop or the url.
  */
 export function CustomLink(props: CustomLinkProps) {
-  const { href, ...rest } = props;
-  const isExternalLink = /^https?:\/\//.test(href);
+  const { href, isLinkExternal, ...rest } = props;
+  const isExternalLink = isLinkExternal ?? /^https?:\/\//.test(href);
   const linkProps = getLinkProps(href);
   return isExternalLink ? (
       <a {...linkProps} {...rest} />

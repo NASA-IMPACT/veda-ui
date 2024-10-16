@@ -82,7 +82,8 @@ function FeaturedStories() {
                     linkProperties={{
                       linkTo: `${d.asLink?.url ?? getStoryPath(d)}`,
                       LinkElement: SmartLink,
-                      pathAttributeKeyName: 'to'
+                      pathAttributeKeyName: 'to',
+                      isLinkExternal: d.isLinkExternal
                     }}
                     title={d.name}
                     tagLabels={[getString('stories').one]}

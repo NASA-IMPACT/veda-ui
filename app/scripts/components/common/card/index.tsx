@@ -2,7 +2,6 @@ import React, { lazy, MouseEventHandler, ComponentType } from 'react';
 import styled, { css } from 'styled-components';
 import { format } from 'date-fns';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
-const SmartLink = lazy(() => import('../smart-link'));
 import {
   glsp,
   media,
@@ -10,6 +9,7 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
+const SmartLink = lazy(() => import('../smart-link'));
 
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
@@ -227,6 +227,7 @@ export interface LinkProperties {
 
 export interface LinkWithPathProperties extends LinkProperties {
   linkTo: string;
+  isLinkExternal?: boolean;
 }
 
 export interface CardComponentBaseProps {
@@ -250,6 +251,7 @@ export interface CardComponentBaseProps {
 export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
   linkTo: string;
   onLinkClick?: MouseEventHandler;
+  isLinkExternal?: boolean;
 }
 export interface CardComponentProps extends CardComponentBaseProps {
   linkProperties: LinkWithPathProperties;
@@ -287,16 +289,17 @@ function CardComponent(props: CardComponentPropsType) {
     const { linkProperties: linkPropertiesProps } = props;
     linkProperties = linkPropertiesProps;
   } else {
-    const { linkTo, onLinkClick,  } = props;
+    const { linkTo, onLinkClick, isLinkExternal } = props;
     linkProperties = {
       linkTo,
       onLinkClick,
       pathAttributeKeyName: 'to',
-      LinkElement: SmartLink
+      LinkElement: SmartLink,
+      isLinkExternal
     };
   }
 
-  const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);
+  const isExternalLink = linkProperties.isLinkExternal ?? /^https?:\/\//.test(linkProperties.linkTo);
 
   return (
     <ElementInteractive
@@ -304,6 +307,7 @@ function CardComponent(props: CardComponentPropsType) {
         as: linkProperties.LinkElement,
         [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
         onLinkClick: linkProperties.onLinkClick,
+        isLinkExternal: isExternalLink
       }}
       as={CardItem}
       cardType={cardType}

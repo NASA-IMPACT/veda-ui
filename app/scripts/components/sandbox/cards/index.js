@@ -13,6 +13,7 @@ function SandboxCards() {
           <Card
             linkLabel='View more'
             linkTo='/'
+            isLinkExternal={false}
             title='Cities Experiencing Clearer Air During Lockdowns'
             description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce varius erat in vulputate.'
             date={new Date('2021-10-26')}
@@ -28,6 +29,7 @@ function SandboxCards() {
             cardType='cover'
             linkLabel='View more'
             linkTo='/'
+            isLinkExternal={false}
             title='Nitrogen Dioxide (NO₂)'
             description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce varius erat in vulputate.'
             tagLabels={['Dataset']}
