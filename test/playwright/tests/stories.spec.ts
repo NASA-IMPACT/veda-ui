@@ -4,6 +4,7 @@ const stories = JSON.parse(require('fs').readFileSync('test/playwright/playwrigh
 
 test('load stories on /stories route', async ({
   page,
+  consentBanner,
   storiesPage,
  }) => {
 
@@ -17,6 +18,7 @@ test('load stories on /stories route', async ({
   });
 
   await page.goto('/stories');
+  await consentBanner.acceptButton.click();
   await expect(storiesPage.header, `data stories page should load`).toBeVisible();
 
   for (const item of stories) {

@@ -8,10 +8,12 @@ test.describe('catalog card taxonomy pills have valid hyperlinks', () => {
   test(`${item} details page has taxonomy hyperlinks`, async({
     page,
     catalogPage,
+    consentBanner,
     datasetPage,
   }) => {
 
     await page.goto('/data-catalog');
+    await consentBanner.acceptButton.click();
     await expect(catalogPage.header, `catalog page should load`).toHaveText(/data catalog/i);
 
     await catalogPage.clickCatalogCard(item);

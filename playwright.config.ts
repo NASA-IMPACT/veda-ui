@@ -11,7 +11,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  timeout: 30000,
+  timeout: 45000,
   // For expect calls
   expect: {
       timeout: 180000,

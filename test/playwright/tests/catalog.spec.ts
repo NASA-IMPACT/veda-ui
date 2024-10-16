@@ -5,6 +5,7 @@ const catalogs = JSON.parse(require('fs').readFileSync('test/playwright/playwrig
 test('catalogs displayed on /data-catalog route', async ({
   page,
   catalogPage,
+  consentBanner,
  }) => {
   let pageErrorCalled = false;
   // Log all uncaught errors to the terminal
@@ -14,6 +15,7 @@ test('catalogs displayed on /data-catalog route', async ({
   });
 
   await page.goto('/data-catalog');
+  await consentBanner.acceptButton.click();
   await expect(catalogPage.header, `catalog page should load`).toHaveText(/data catalog/i);
 
   for (const item of catalogs) {

@@ -54,9 +54,11 @@ test("external link on Stories page opens in new tab", async({
 
 test("internal link on Stories page opens in same tab", async({
   page,
+  consentBanner,
   storiesPage,
 }) => {
   await page.goto('/stories');
+  await consentBanner.acceptButton.click();
   await expect(storiesPage.header, `stories page should load`).toBeVisible();
 
   await test.step('click on Internal Link Test card', async() => {

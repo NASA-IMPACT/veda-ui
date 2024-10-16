@@ -8,6 +8,7 @@ test.describe('explore dataset', () => {
   for (const dataset of datasetIds) {
     test(`${dataset} explore page functions`, async({
       page,
+      consentBanner,
       datasetSelectorComponent,
       explorePage,
     }) => {
@@ -19,6 +20,8 @@ test.describe('explore dataset', () => {
       });
 
       await page.goto(`/exploration?search=${dataset}&datasets=%5B%5D`);
+      await consentBanner.acceptButton.click();
+
 
       if(disabledDatasets.includes(dataset)){
         await expect(datasetSelectorComponent.noDatasetMessage, 'dataset set to disabled').toBeVisible();

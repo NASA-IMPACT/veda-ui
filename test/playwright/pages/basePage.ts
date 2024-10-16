@@ -2,6 +2,7 @@ import { test as base } from '@playwright/test';
 import AboutPage from './aboutPage';
 import CatalogPage from './catalogPage';
 import ContactModal from './contactModal';
+import ConsentBanner from './consentBanner';
 import DatasetPage from './datasetPage';
 import DatasetSelectorComponent from './datasetSelectorComponent';
 import ExplorePage from './explorePage';
@@ -15,6 +16,7 @@ export const test = base.extend<{
   aboutPage: AboutPage;
   catalogPage: CatalogPage;
   contactModal: ContactModal;
+  consentBanner: ConsentBanner;
   datasetSelectorComponent: DatasetSelectorComponent;
   datasetPage: DatasetPage;
   explorePage: ExplorePage;
@@ -31,6 +33,9 @@ export const test = base.extend<{
   },
   contactModal: async ({page}, use) => {
     await use(new ContactModal(page));
+  },
+  consentBanner: async ({page}, use) => {
+    await use(new ConsentBanner(page));
   },
   datasetPage: async ({page}, use) => {
     await use(new DatasetPage(page));

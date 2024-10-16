@@ -8,8 +8,8 @@ test.describe('catalog card routing', () => {
   test(`${item} routes from catalog to details page`, async({
     page,
     catalogPage,
+    consentBanner,
     datasetPage,
-    notebookConnectModal,
   }) => {
     let pageErrorCalled = false;
     // Log all uncaught errors to the terminal
@@ -19,6 +19,7 @@ test.describe('catalog card routing', () => {
     });
 
     await page.goto('/data-catalog');
+    await consentBanner.acceptButton.click();
     await expect(catalogPage.header, `catalog page should load`).toBeVisible();
     await catalogPage.clickCatalogCard(item);
 

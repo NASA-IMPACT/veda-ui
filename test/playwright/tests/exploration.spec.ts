@@ -3,6 +3,7 @@ import { test, expect } from '../pages/basePage';
 test('explore a dataset', async ({
   page,
   explorePage,
+  consentBanner,
   datasetSelectorComponent,
  }) => {
   let pageErrorCalled = false;
@@ -14,6 +15,7 @@ test('explore a dataset', async ({
 
   const mapboxResponsePromise = page.waitForResponse(/api\.mapbox.com\/v4\/mapbox\.mapbox-streets-v8/i);
   await page.goto('/exploration');
+  await consentBanner.acceptButton.click();
 
   await datasetSelectorComponent.addFirstDataset();
 
