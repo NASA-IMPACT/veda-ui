@@ -5,8 +5,8 @@ const fg = require('fast-glob');
 const dedent = require('dedent');
 const _ = require('lodash');
 const { Resolver } = require('@parcel/plugin');
-
 const markdownit = require('markdown-it');
+const generatedDatasets = require('./dataset-output.json');
 const stringifyYmlWithFns = require('./stringify-yml-func');
 const { loadVedaConfig } = require('./config');
 const { getFrontmatterData } = require('./frontmatter');
@@ -86,9 +86,12 @@ function generateMdxDataObject(data) {
 function getCookieConsentForm(result) {
   if (!result.cookieConsentForm) return undefined;
   else {
-    const parsedCopy =  md.render(result.cookieConsentForm.copy)
+    const parsedCopy = md.render(result.cookieConsentForm.copy);
     const trimmedCopy = parsedCopy.replace(/(\r\n|\n|\r)/gm, '');
-    return JSON.stringify({ title: result.cookieConsentForm.title, copy: trimmedCopy});
+    return JSON.stringify({
+      title: result.cookieConsentForm.title,
+      copy: trimmedCopy
+    });
   }
 }
 
@@ -187,6 +190,7 @@ module.exports = new Resolver({
         .thru((value) => processTaxonomies(value))
         .value();
 
+      // eslint-disable-next-line no-unused-vars
       const datasetsImportData = datasetsData.data.map((o, i) => ({
         key: o.id,
         data: o,
@@ -232,7 +236,7 @@ module.exports = new Resolver({
         export const getCookieConsentFromVedaConfig = () => config.cookieConsentForm;
 
 
-        export const datasets = ${generateMdxDataObject(datasetsImportData)};
+        export const datasets = ${generateMdxDataObject(generatedDatasets)};
         export const stories = ${generateMdxDataObject(storiesImportData)};
       `;
 
