@@ -13,6 +13,7 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
   colorMap?: string | undefined;
   tileParams: Record<string, any>;
   generatorPrefix?: string;
+  reScale?: { min: number; max: number };
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
@@ -24,7 +25,8 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     hidden,
     opacity,
     colorMap,
-    generatorPrefix = 'raster',
+    reScale,
+    generatorPrefix = 'raster'
   } = props;
 
   const { updateStyle } = useMapStyle();
@@ -32,8 +34,14 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
   const generatorId = `${generatorPrefix}-${id}`;
 
   const updatedTileParams = useMemo(() => {
-    return { ...tileParams, ...colorMap &&  {colormap_name: colorMap}};
-  }, [tileParams, colorMap]);
+    return {
+      ...tileParams,
+      ...(colorMap && {
+        colormap_name: colorMap
+      }),
+      ...(reScale && { rescale: Object.values(reScale) })
+    };
+  }, [tileParams, colorMap, reScale]);
 
   //
   // Generate Mapbox GL layers and sources for raster timeseries
@@ -47,7 +55,9 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
 
   useEffect(
     () => {
-      const tileParamsAsString = qs.stringify(updatedTileParams, { arrayFormat: 'comma' });
+      const tileParamsAsString = qs.stringify(updatedTileParams, {
+        arrayFormat: 'comma'
+      });
 
       const zarrSource: RasterSource = {
         type: 'raster',
@@ -63,8 +73,8 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
         paint: {
           'raster-opacity': hidden ? 0 : rasterOpacity,
           'raster-opacity-transition': {
-            duration: 320,
-          },
+            duration: 320
+          }
         },
         minzoom: minZoom,
         metadata: {
@@ -93,7 +103,8 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       tileApiEndpoint,
       haveTileParamsChanged,
       generatorParams,
-      colorMap
+      colorMap,
+      reScale
       // generatorParams includes hidden and opacity
       // hidden,
       // opacity,
