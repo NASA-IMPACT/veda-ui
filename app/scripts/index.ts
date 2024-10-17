@@ -14,9 +14,10 @@ import DevseedUiThemeProvider from './theme-provider';
 import CatalogView from './components/common/catalog';
 import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
-import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
-
+import ExplorationAndAnalysis from '$components/exploration';
+import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
+import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
 
 export {
   // COMPONENTS
@@ -37,7 +38,10 @@ export {
   PageMainContent,
   PageHero,
   ReactQueryProvider,
-  StoriesHubContent,
-  // HOOKS and utility functions
-  useFiltersWithQS
+  ExplorationAndAnalysis,
+  DatasetSelectorModal,
+  // HOOKS
+  useFiltersWithQS,
+  // STATE
+  timelineDatasetsAtom
 };
