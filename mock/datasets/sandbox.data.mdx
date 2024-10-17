@@ -22,31 +22,33 @@ layers:
     stacCol: combined_CMIP6_daily_GISS-E2-1-G_tas_kerchunk_DEMO
     name: CMIP6 Daily GISS-E2-1-G Near-Surface Air Temperature (demo subset)
     type: zarr
-    tileApiEndpoint: https://prod-titiler-xarray.delta-backend.com/tilejson.json
-    description: "Historical (1950-2014) daily-mean near-surface (usually, 2 meter) air temperature in Kelvin."
+    tileApiEndpoint: https://dev-titiler-xarray.delta-backend.com/tilejson.json
+    description: 'Historical (1950-2014) daily-mean near-surface (usually, 2 meter) air temperature in Kelvin.'
     zoomExtent:
       - 0
       - 20
     sourceParams:
-      reference: "true"
+      reference: 'true'
       resampling_method: bilinear
       variable: tas
       colormap_name: coolwarm
-      rescale: 232,312
+      rescale:
+        - 232
+        - 312
       maxzoom: 12
     legend:
-      unit: 
+      unit:
         label: K
       type: gradient
       min: 232
       max: 312
       stops:
-      - '#3b4cc0'
-      - '#7b9ff9'
-      - '#c0d4f5'
-      - '#f2cbb7'
-      - '#ee8468'
-      - '#b40426'
+        - '#3b4cc0'
+        - '#7b9ff9'
+        - '#c0d4f5'
+        - '#f2cbb7'
+        - '#ee8468'
+        - '#b40426'
   - id: blue-tarp-planetscope
     stacCol: blue-tarp-planetscope
     name: Blue tarp test
@@ -64,7 +66,7 @@ layers:
       - 10
       - 16
     sourceParams:
-      post_process: "swir"
+      post_process: 'swir'
       assets:
         - B12
         - B8A
@@ -76,8 +78,8 @@ layers:
     description: 'Household Composition & Disability (Aged 65 or Older, Aged 17 or Younger, Civilian with a Disability, Single-Parent Households) - Percentile ranking'
     projection:
       name: 'lambertConformalConic'
-      center: [0,30]
-      parallels: [30,30]
+      center: [0, 30]
+      parallels: [30, 30]
     zoomExtent:
       - 2
       - 16
@@ -97,15 +99,15 @@ layers:
         }
     legend:
       type: gradient
-      min: "0"
-      max: "1"
+      min: '0'
+      max: '1'
       stops:
-      - "#fff5eb"
-      - "#fdd9b4"
-      - "#fda762"
-      - "#f3701b"
-      - "#c54102"
-      - "#7f2704"
+        - '#fff5eb'
+        - '#fdd9b4'
+        - '#fda762'
+        - '#f3701b'
+        - '#c54102'
+        - '#7f2704'
   - id: social-vul-2
     stacCol: social-vulnerability-index-household
     name: Household and Disability Score 2
@@ -123,11 +125,11 @@ layers:
         - 0.5
     legend:
       type: gradient
-      min: "0"
-      max: "1"
+      min: '0'
+      max: '1'
       stops:
-      - "#ffffff"
-      - "#0000ff"
+        - '#ffffff'
+        - '#0000ff'
   - id: epa-annual-emissions_1b1a_coal_mining_underground
     stacCol: EPA-annual-emissions_1B1a_Coal_Mining_Underground
     name: Underground Coal Mines
@@ -177,20 +179,20 @@ layers:
     legend:
       type: categorical
       stops:
-        - color: "#3A8DC6"
-          label: "Exceptional"
-        - color: "#62D246"
-          label: "Favourable"
-        - color: "#FFFF00"
-          label: "Watch"
-        - color: "#EC5830"
-          label: "Poor"
-        - color: "#891911"
-          label: "Failure"
-        - color: "#787878"
-          label: "Out of season"
-        - color: "#804115"
-          label: "No data"
+        - color: '#3A8DC6'
+          label: 'Exceptional'
+        - color: '#62D246'
+          label: 'Favourable'
+        - color: '#FFFF00'
+          label: 'Watch'
+        - color: '#EC5830'
+          label: 'Poor'
+        - color: '#891911'
+          label: 'Failure'
+        - color: '#787878'
+          label: 'Out of season'
+        - color: '#804115'
+          label: 'No data'
   - id: facebook_population_density
     stacCol: facebook_population_density
     name: 'Facebook Population Density'
@@ -208,15 +210,15 @@ layers:
         - 69
     legend:
       type: gradient
-      min: "0"
-      max: "69"
+      min: '0'
+      max: '69'
       stops:
-      - "#ffffcc"
-      - "#fee187"
-      - "#feab49"
-      - "#fc5b2e"
-      - "#d41020"
-      - "#800026"
+        - '#ffffcc'
+        - '#fee187'
+        - '#feab49'
+        - '#fc5b2e'
+        - '#d41020'
+        - '#800026'
 related:
   - type: dataset
     id: no2
@@ -239,6 +241,7 @@ Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. 
 Cras eget eleifend ligula. Curabitur ac nisi tempor, molestie lorem vitae, consectetur turpis. Etiam hendrerit et sapien ac interdum.
 
 Vestibulum justo ante, bibendum at vehicula sit amet, dignissim sit amet augue. Nunc luctus orci mi, sed pretium nibh consequat sit amet. In congue metus a ullamcorper sollicitudin.
+
 </Prose>
 </Block>
 <Block>

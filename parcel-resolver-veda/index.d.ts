@@ -207,6 +207,7 @@ declare module 'veda' {
     taxonomy: Taxonomy[];
     related?: RelatedContentData[];
     asLink?: LinkContentData;
+    isLinkExternal?: boolean;
     isHidden?: boolean;
   }
 
@@ -266,6 +267,11 @@ declare module 'veda' {
     url: string;
     text: string;
     type?: BannerType;
+  }
+
+  interface CookieConsentData {
+    title: string;
+    copy: string;
   }
 
   interface InternalNavLink {
@@ -334,6 +340,10 @@ declare module 'veda' {
   export const getBoolean: (variable: string) => boolean;
 
   export const getBannerFromVedaConfig: () => BannerData | undefined;
+  export const getCookieConsentFromVedaConfig: () =>
+    | CookieConsentData
+    | undefined;
+
   export const getNavItemsFromVedaConfig: () =>
     | {
         mainNavItems:

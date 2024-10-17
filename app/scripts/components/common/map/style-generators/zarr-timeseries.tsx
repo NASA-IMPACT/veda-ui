@@ -11,9 +11,15 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
     stacApiEndpoint,
     date,
     onStatusChange,
+    sourceParams,
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
   const assetUrl = useZarr({id, stacCol, stacApiEndpointToUse, date, onStatusChange});
-  return <RasterPaintLayer {...props} assetUrl={assetUrl} />;
+  const tileParams = {
+    url: assetUrl,
+    datetime: date,
+    ...sourceParams,
+  };
+  return <RasterPaintLayer {...props} tileParams={tileParams} generatorPrefix='zarr-timeseries' />;
 }

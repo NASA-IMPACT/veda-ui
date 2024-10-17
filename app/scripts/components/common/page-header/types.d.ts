@@ -12,12 +12,15 @@ export interface InternalNavLink {
   to: string;
   type: NavItemType.INTERNAL_LINK;
 }
+
 export interface ExternalNavLink {
   title: string;
   href: string;
   type: NavItemType.EXTERNAL_LINK;
 }
+
 export type NavLinkItem = (ExternalNavLink | InternalNavLink);
+
 export interface ModalNavLink {
   title: string;
   type: NavItemType.MODAL;

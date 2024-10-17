@@ -1,9 +1,7 @@
-import React, { MouseEventHandler } from 'react';
+import React, { lazy, MouseEventHandler, ComponentType } from 'react';
 import styled, { css } from 'styled-components';
-import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
-
 import {
   glsp,
   media,
@@ -11,6 +9,8 @@ import {
   themeVal,
   listReset,
 } from '@devseed-ui/theme-provider';
+const SmartLink = lazy(() => import('../smart-link'));
+
 import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
 import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
@@ -220,16 +220,18 @@ export function ExternalLinkFlag() {
 }
 
 export interface LinkProperties {
-  LinkElement: JSX.Element | ((props: any) => JSX.Element);
+  LinkElement: string | ComponentType<any> | undefined;
   pathAttributeKeyName: string;
   onLinkClick?: MouseEventHandler;
 }
 
-export interface CardComponentProps {
+export interface LinkWithPathProperties extends LinkProperties {
+  linkTo: string;
+  isLinkExternal?: boolean;
+}
+
+export interface CardComponentBaseProps {
   title: JSX.Element | string;
-  linkProperties: {
-    linkTo: string,
-  } & LinkProperties;
   linkLabel?: string;
   className?: string;
   cardType?: CardType;
@@ -244,7 +246,25 @@ export interface CardComponentProps {
   onCardClickCapture?: MouseEventHandler;
 }
 
-function CardComponent(props: CardComponentProps) {
+// @TODO: Consolidate these props when the instance adapts the new syntax
+// Specifically: https://github.com/US-GHG-Center/veda-config-ghg/blob/develop/custom-pages/news-and-events/component.tsx#L108
+export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
+  linkTo: string;
+  onLinkClick?: MouseEventHandler;
+  isLinkExternal?: boolean;
+}
+export interface CardComponentProps extends CardComponentBaseProps {
+  linkProperties: LinkWithPathProperties;
+}
+
+type CardComponentPropsType = CardComponentProps | CardComponentPropsDeprecated;
+
+// Type guard to check if props has linkProperties
+function hasLinkProperties(props: CardComponentPropsType): props is CardComponentProps {
+  return !!((props as CardComponentProps).linkProperties);
+}
+
+function CardComponent(props: CardComponentPropsType) {
   const {
     className,
     title,
@@ -258,11 +278,28 @@ function CardComponent(props: CardComponentProps) {
     tagLabels,
     parentTo,
     footerContent,
-    onCardClickCapture,
-    linkProperties
+    onCardClickCapture
   } = props;
+// @TODO: This process is not necessary once all the instances adapt the linkProperties syntax
+// Consolidate them to use LinkProperties only
+  let linkProperties: LinkWithPathProperties;
 
-  const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);
+  if (hasLinkProperties(props)) {
+    // Handle new props with linkProperties
+    const { linkProperties: linkPropertiesProps } = props;
+    linkProperties = linkPropertiesProps;
+  } else {
+    const { linkTo, onLinkClick, isLinkExternal } = props;
+    linkProperties = {
+      linkTo,
+      onLinkClick,
+      pathAttributeKeyName: 'to',
+      LinkElement: SmartLink,
+      isLinkExternal
+    };
+  }
+
+  const isExternalLink = linkProperties.isLinkExternal ?? /^https?:\/\//.test(linkProperties.linkTo);
 
   return (
     <ElementInteractive
@@ -270,6 +307,7 @@ function CardComponent(props: CardComponentProps) {
         as: linkProperties.LinkElement,
         [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
         onLinkClick: linkProperties.onLinkClick,
+        isLinkExternal: isExternalLink
       }}
       as={CardItem}
       cardType={cardType}
@@ -287,7 +325,7 @@ function CardComponent(props: CardComponentProps) {
                   {isExternalLink && <ExternalLinkFlag />}
                   {!isExternalLink && tagLabels && parentTo && (
                     tagLabels.map((label) => (
-                      <CardLabel as={Link} to={parentTo} key={label}>
+                      <CardLabel as={linkProperties.LinkElement} to={parentTo} key={label}>
                         {label}
                       </CardLabel>
                     ))

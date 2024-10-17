@@ -1,9 +1,7 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { useAtom } from 'jotai';
-import { format } from 'date-fns';
-import startOfYear from 'date-fns/startOfYear';
-import endOfYear from 'date-fns/endOfYear';
+import { useAtom, useAtomValue } from 'jotai';
+import { endOfYear, format, startOfYear } from 'date-fns';
 import { scaleTime, ScaleTime } from 'd3';
 
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
@@ -11,14 +9,19 @@ import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
 import { isEqual } from 'lodash';
 import { View } from 'react-calendar/dist/cjs/shared/types';
-import {
-  TimeDensity,
-} from './../../types.d.ts';
+import { TimeDensity } from './../../types.d.ts';
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
 import { TimelineDatePicker } from './timeline-datepicker';
 import { TimelineHead } from './timeline';
-import { TemporalExtent } from './timeline-utils.js';
+import { TemporalExtent } from './timeline-utils';
+
+import {
+  timelineWidthAtom,
+  zoomTransformAtom
+} from '$components/exploration/atoms/timeline';
+
+import { useScales } from '$components/exploration/hooks/scales-hooks';
 import {
   selectedCompareDateAtom,
   selectedDateAtom,
@@ -29,6 +32,11 @@ import { CollecticonCalendarMinus } from '$components/common/icons/calendar-minu
 import { CollecticonCalendarPlus } from '$components/common/icons/calendar-plus';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import useAois from '$components/common/map/controls/hooks/use-aois';
+import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
+import {
+  RIGHT_AXIS_SPACE,
+  HEADER_COLUMN_WIDTH
+} from '$components/exploration/constants';
 
 const TimelineControlsSelf = styled.div`
   width: 100%;
@@ -77,7 +85,6 @@ interface TimelineControlsProps {
   minMaxTemporalExtent: TemporalExtent;
 }
 
-
 export function getInitialScale(width) {
   const now = new Date();
   return scaleTime()
@@ -85,9 +92,13 @@ export function getInitialScale(width) {
     .range([0, width]);
 }
 
-export function TimelineDateAxis(props: Omit<TimelineControlsProps, "onZoom" | "timeDensity" | "timelineLabelsFormat" | "minMaxTemporalExtent">) {
+export function TimelineDateAxis(
+  props: Omit<
+    TimelineControlsProps,
+    'onZoom' | 'timeDensity' | 'timelineLabelsFormat' | 'minMaxTemporalExtent'
+  >
+) {
   const { xScaled, width } = props;
-
   const initialScale = useMemo(() => {
     return getInitialScale(width);
   }, [width]);
@@ -119,14 +130,15 @@ interface PlayheadProps {
 const TimelinePlayheadBase = styled.div<PlayheadProps>`
   background-color: ${TIMELINE_PLAYHEAD_COLOR_PRIMARY};
   color: ${TIMELINE_PLAYHEAD_COLOR_TEXT};
-  padding: ${glsp(0.15)} ${glsp(0.30)};
+  padding: ${glsp(0.15)} ${glsp(0.3)};
   border-radius: ${themeVal('shape.rounded')};
   font-size: 0.75rem;
   position: relative;
   width: max-content;
   font-weight: ${themeVal('type.base.regular')};
 
-  &::after, &::before {
+  &::after,
+  &::before {
     content: '';
     position: absolute;
     bottom: 1px;
@@ -138,7 +150,8 @@ const TimelinePlayheadBase = styled.div<PlayheadProps>`
 `;
 
 const PlayheadArrow = css<PlayheadProps>`
-  &::after, &::before {
+  &::after,
+  &::before {
     content: '';
     position: absolute;
     bottom: 1px;
@@ -152,30 +165,44 @@ const PlayheadArrow = css<PlayheadProps>`
 const LeftPlayheadArrow = css<PlayheadProps>`
   ${PlayheadArrow}
   &::after {
-    border-right: 8px solid ${props => props.secondary ? TIMELINE_PLAYHEAD_COLOR_PRIMARY : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+    border-right: 8px solid
+      ${(props) =>
+        props.secondary
+          ? TIMELINE_PLAYHEAD_COLOR_PRIMARY
+          : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   }
 `;
 
 const RightPlayheadArrow = css<PlayheadProps>`
   ${PlayheadArrow}
   &::before {
-    border-left: 8px solid ${props => props.secondary ? TIMELINE_PLAYHEAD_COLOR_PRIMARY : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+    border-left: 8px solid
+      ${(props) =>
+        props.secondary
+          ? TIMELINE_PLAYHEAD_COLOR_PRIMARY
+          : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   }
 `;
 
 const TimelinePlayheadLeftIndicator = styled(TimelinePlayheadBase)`
-  background-color: ${props => props.secondary ? TIMELINE_PLAYHEAD_COLOR_PRIMARY : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+  background-color: ${(props) =>
+    props.secondary
+      ? TIMELINE_PLAYHEAD_COLOR_PRIMARY
+      : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   ${LeftPlayheadArrow}
   &::after {
-    left: ${props => props.secondary ? '-28%' : '-8%'};
+    left: ${(props) => (props.secondary ? '-28%' : '-8%')};
   }
 `;
 
 const TimelinePlayheadRightIndicator = styled(TimelinePlayheadBase)`
-  background-color: ${props => props.secondary ? TIMELINE_PLAYHEAD_COLOR_PRIMARY : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
+  background-color: ${(props) =>
+    props.secondary
+      ? TIMELINE_PLAYHEAD_COLOR_PRIMARY
+      : TIMELINE_PLAYHEAD_COLOR_SECONDARY};
   ${RightPlayheadArrow}
   &::before {
-    right: ${props => props.secondary ? '-28%' : '-8%'};
+    right: ${(props) => (props.secondary ? '-28%' : '-8%')};
   }
 `;
 
@@ -195,45 +222,65 @@ const TimelineHeadRightIndicators = styled(TimelineHeadIndicatorsBase)`
   flex-direction: row-reverse;
 `;
 
-export const TimelineHeadIndicators = memo(({ outOfViewHeads, timelineLabelsFormat }: { outOfViewHeads: TimelineHead[], timelineLabelsFormat: string }) => {
-  // Filter the out-of-view heads to get those that are out to the left
-  const leftHeads = outOfViewHeads.filter(head => head.outDirection === 'left');
-  // Filter the out-of-view heads to get those that are out to the right
-  const rightHeads = outOfViewHeads.filter(head => head.outDirection === 'right');
+export const TimelineHeadIndicators = memo(
+  ({
+    outOfViewHeads,
+    timelineLabelsFormat
+  }: {
+    outOfViewHeads: TimelineHead[];
+    timelineLabelsFormat: string;
+  }) => {
+    // Filter the out-of-view heads to get those that are out to the left
+    const leftHeads = outOfViewHeads.filter(
+      (head) => head.outDirection === 'left'
+    );
+    // Filter the out-of-view heads to get those that are out to the right
+    const rightHeads = outOfViewHeads.filter(
+      (head) => head.outDirection === 'right'
+    );
 
-  return (
-    <>
-      {/* If there are any heads out to the left, render the left indicators */}
-      {leftHeads.length > 0 && (
-        <TimelineHeadLeftIndicators>
-        <TimelinePlayheadLeftIndicator>
-          <span>{format(leftHeads[0].date, timelineLabelsFormat)}</span>
-        </TimelinePlayheadLeftIndicator>
-        {leftHeads.length > 1 &&
-          <TimelinePlayheadLeftIndicator secondary>
-            +{leftHeads.length - 1}
-          </TimelinePlayheadLeftIndicator>}
-        </TimelineHeadLeftIndicators>
-      )}
-      {/* If there are any heads out to the right, render the right indicators */}
-      {rightHeads.length > 0 && (
-       <TimelineHeadRightIndicators>
-       <TimelinePlayheadRightIndicator>
-       <span>{format(rightHeads[rightHeads.length - 1].date, timelineLabelsFormat)}</span>
-       </TimelinePlayheadRightIndicator>
-       {rightHeads.length > 1 &&
-         <TimelinePlayheadRightIndicator secondary>
-           +{rightHeads.length - 1}
-         </TimelinePlayheadRightIndicator>}
-       </TimelineHeadRightIndicators>
-      )}
-    </>
-  );
-}, (prevProps, nextProps) => {
-  // React.memo does a shallow comparison of props, so we need to supply
-  // a custom comparison function to compare the outOfViewHead objects
-  return isEqual(prevProps.outOfViewHeads, nextProps.outOfViewHeads);
-});
+    return (
+      <>
+        {/* If there are any heads out to the left, render the left indicators */}
+        {leftHeads.length > 0 && (
+          <TimelineHeadLeftIndicators data-tour='left-indicator'>
+            <TimelinePlayheadLeftIndicator>
+              <span>{format(leftHeads[0].date, timelineLabelsFormat)}</span>
+            </TimelinePlayheadLeftIndicator>
+            {leftHeads.length > 1 && (
+              <TimelinePlayheadLeftIndicator secondary>
+                +{leftHeads.length - 1}
+              </TimelinePlayheadLeftIndicator>
+            )}
+          </TimelineHeadLeftIndicators>
+        )}
+        {/* If there are any heads out to the right, render the right indicators */}
+        {rightHeads.length > 0 && (
+          <TimelineHeadRightIndicators data-tour='left-indicator'>
+            <TimelinePlayheadRightIndicator>
+              <span>
+                {format(
+                  rightHeads[rightHeads.length - 1].date,
+                  timelineLabelsFormat
+                )}
+              </span>
+            </TimelinePlayheadRightIndicator>
+            {rightHeads.length > 1 && (
+              <TimelinePlayheadRightIndicator secondary>
+                +{rightHeads.length - 1}
+              </TimelinePlayheadRightIndicator>
+            )}
+          </TimelineHeadRightIndicators>
+        )}
+      </>
+    );
+  },
+  (prevProps, nextProps) => {
+    // React.memo does a shallow comparison of props, so we need to supply
+    // a custom comparison function to compare the outOfViewHead objects
+    return isEqual(prevProps.outOfViewHeads, nextProps.outOfViewHeads);
+  }
+);
 
 TimelineHeadIndicators.displayName = 'TimelineHeadIndicators';
 
@@ -257,9 +304,18 @@ const getCalendarView = (timeDensity: TimeDensity): View => {
 };
 
 export function TimelineControls(props: TimelineControlsProps) {
-  const { xScaled, width, outOfViewHeads, onZoom, timeDensity, timelineLabelsFormat, minMaxTemporalExtent } = props;
+  const {
+    xScaled,
+    width,
+    outOfViewHeads,
+    onZoom,
+    timeDensity,
+    timelineLabelsFormat,
+    minMaxTemporalExtent
+  } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
+
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
     selectedCompareDateAtom
   );
@@ -267,16 +323,125 @@ export function TimelineControls(props: TimelineControlsProps) {
   const { features } = useAois();
 
   // Scale to use when there are no datasets with data (loading or error)
-  const initialScale = useMemo(() => getInitialScale(width) ,[width]);
+  const initialScale = useMemo(() => getInitialScale(width), [width]);
 
-  const calendarView = useMemo(() => getCalendarView(timeDensity), [timeDensity]);
+  const calendarView = useMemo(
+    () => getCalendarView(timeDensity),
+    [timeDensity]
+  );
+  //Center to selected point
+  const { onTOIZoom } = useOnTOIZoom();
+  const timelineWidth = useAtomValue(timelineWidthAtom);
+  const { k: currentZoomTransformRatio } = useAtomValue(zoomTransformAtom);
+  const { main } = useScales();
+  const visualBufferSizing = 0.9;
+  const startPoint = 0;
+
+  const calculateNewTOIZoom = (
+    dateStart: number,
+    dateEnd: number,
+    widthToFit: number
+  ): { zTransform: number; panPosition: number } => {
+    const zTransform = widthToFit / (dateEnd - dateStart);
+    const panPosition = startPoint - zTransform * dateStart;
+    return { zTransform, panPosition };
+  };
+
+  const centerTimelineOnSelections = useCallback(
+    (newDate: {
+      selectedDay?: Date | null;
+      start?: Date | null;
+      end?: Date | null;
+      selectedCompareDay?: Date | null;
+    }) => {
+      if (!timelineWidth || !main) return;
+
+      //defining width of visible area after confirming we have a timeline width
+      const widthToFit =
+        (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) *
+        visualBufferSizing;
+
+      //setting most recent date value depending on interaction
+      const newSelectedDay = newDate.selectedDay ?? selectedDay;
+      const newSelectedCompareDay =
+        newDate.selectedCompareDay ?? selectedCompareDay;
+      const newSelectedStartInterval = newDate.start ?? selectedInterval?.start;
+      const newSelectedEndInterval = newDate.end ?? selectedInterval?.end;
+
+      let newZoomArgs: { zTransform: number; panPosition: number } = {
+        zTransform: 0,
+        panPosition: 0
+      };
+
+      if (newSelectedDay) {
+        const calcNewSelectedDay = main(newSelectedDay);
+
+        const halfOfCurrentWidth = 0.5;
+        const timelineCenter = widthToFit * halfOfCurrentWidth;
+
+        newZoomArgs.zTransform = currentZoomTransformRatio;
+        newZoomArgs.panPosition =
+          startPoint -
+          newZoomArgs.zTransform * calcNewSelectedDay +
+          timelineCenter;
+
+        if (newSelectedCompareDay) {
+          const calcNewSelectedCompareDay = main(newSelectedCompareDay);
+
+          if (newSelectedDay < newSelectedCompareDay) {
+            newZoomArgs = calculateNewTOIZoom(
+              calcNewSelectedDay,
+              calcNewSelectedCompareDay,
+              widthToFit
+            );
+          } else {
+            newZoomArgs = calculateNewTOIZoom(
+              calcNewSelectedCompareDay,
+              calcNewSelectedDay,
+              widthToFit
+            );
+          }
+        }
+      }
+      if (newSelectedStartInterval && newSelectedEndInterval) {
+        const calcNewSelectedEndInterval = main(newSelectedEndInterval);
+        const calcNewSelectedStartInterval = main(newSelectedStartInterval);
+        if (newSelectedStartInterval > newSelectedEndInterval) {
+          newZoomArgs = calculateNewTOIZoom(
+            calcNewSelectedEndInterval,
+            calcNewSelectedStartInterval,
+            widthToFit
+          );
+        } else {
+          newZoomArgs = calculateNewTOIZoom(
+            calcNewSelectedStartInterval,
+            calcNewSelectedEndInterval,
+            widthToFit
+          );
+        }
+      }
+      return onTOIZoom(newZoomArgs.panPosition, newZoomArgs.zTransform);
+    },
+    [
+      selectedDay,
+      selectedInterval,
+      selectedCompareDay,
+      currentZoomTransformRatio,
+      main,
+      timelineWidth,
+      onTOIZoom
+    ]
+  );
 
   return (
     <TimelineControlsSelf>
-        <ControlsToolbar>
+      <ControlsToolbar>
         {outOfViewHeads && outOfViewHeads.length > 0 && (
           <TimelineHeadIndicatorsWrapper>
-            <TimelineHeadIndicators outOfViewHeads={outOfViewHeads} timelineLabelsFormat={timelineLabelsFormat} />
+            <TimelineHeadIndicators
+              outOfViewHeads={outOfViewHeads}
+              timelineLabelsFormat={timelineLabelsFormat}
+            />
           </TimelineHeadIndicatorsWrapper>
         )}
         <ToolbarFullWidth>
@@ -303,8 +468,10 @@ export function TimelineControls(props: TimelineControlsProps) {
                       const newDate = xScaled.invert(
                         nextX > max ? currentX - DAY_SIZE_MAX : nextX
                       );
-
                       setSelectedCompareDay(newDate);
+                      centerTimelineOnSelections({
+                        selectedCompareDay: newDate
+                      });
                     }}
                   >
                     <CollecticonCalendarPlus
@@ -346,6 +513,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                       ...selectedInterval,
                       start: new Date(d)
                     });
+                    centerTimelineOnSelections({ start: new Date(d) });
                   }}
                   disabled={!xScaled}
                   tipContent='Start date for analysis'
@@ -362,9 +530,14 @@ export function TimelineControls(props: TimelineControlsProps) {
                   onConfirm={(d) => {
                     if (!d) return;
                     setSelectedDay(new Date(d));
+                    centerTimelineOnSelections({ selectedDay: new Date(d) });
                   }}
                   disabled={!xScaled}
-                  tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
+                  tipContent={
+                    selectedCompareDay
+                      ? 'Date shown on left map '
+                      : 'Date shown on map'
+                  }
                   dataTourId='date-picker-a'
                   calendarView={calendarView}
                   triggerLabelFormat={timelineLabelsFormat}
@@ -381,6 +554,7 @@ export function TimelineControls(props: TimelineControlsProps) {
                       ...selectedInterval,
                       end: new Date(d)
                     });
+                    centerTimelineOnSelections({ end: new Date(d) });
                   }}
                   disabled={!xScaled}
                   tipContent='End date for analysis'
@@ -392,48 +566,59 @@ export function TimelineControls(props: TimelineControlsProps) {
             ) : (
               <>
                 <DatePickersWrapper>
-                <TimelineDatePicker
-                  minDate={minMaxTemporalExtent[0]}
-                  maxDate={minMaxTemporalExtent[1]}
-                  triggerHeadReference={selectedCompareDay ? 'A:' : ''}
-                  selectedDay={selectedDay}
-                  onConfirm={(d) => {
-                    if (!d) return;
-                    setSelectedDay(new Date(d));
-                  }}
-                  disabled={!xScaled}
-                  tipContent={selectedCompareDay ? 'Date shown on left map ' : 'Date shown on map'}
-                  dataTourId='date-picker-a'
-                  calendarView={calendarView}
-                  triggerLabelFormat={timelineLabelsFormat}
-                />
-                {selectedCompareDay && (
-                  <>
-                    <VerticalDivider />
-                    <TimelineDatePicker
-                      minDate={minMaxTemporalExtent[0]}
-                      maxDate={minMaxTemporalExtent[1]}
-                      triggerHeadReference='B:'
-                      selectedDay={selectedCompareDay}
-                      onConfirm={(d) => {
-                        if (!d) return;
-                        setSelectedCompareDay(new Date(d));
-                      }}
-                      disabled={!xScaled}
-                      tipContent='Date shown on right map'
-                      dataTourId='date-picker-b'
-                      calendarView={calendarView}
-                      triggerLabelFormat={timelineLabelsFormat}
-                    />
-                  </>
-                )}
+                  {/* DEFAULT DATE PICKER */}
+
+                  <TimelineDatePicker
+                    minDate={minMaxTemporalExtent[0]}
+                    maxDate={minMaxTemporalExtent[1]}
+                    triggerHeadReference={selectedCompareDay ? 'A:' : ''}
+                    selectedDay={selectedDay}
+                    onConfirm={(d) => {
+                      if (!d) return;
+
+                      setSelectedDay(new Date(d));
+                      centerTimelineOnSelections({ selectedDay: new Date(d) });
+                    }}
+                    disabled={!xScaled}
+                    tipContent={
+                      selectedCompareDay
+                        ? 'Date shown on left map '
+                        : 'Date shown on map'
+                    }
+                    dataTourId='date-picker-a'
+                    calendarView={calendarView}
+                    triggerLabelFormat={timelineLabelsFormat}
+                  />
+                  {selectedCompareDay && (
+                    <>
+                      <VerticalDivider />
+                      <TimelineDatePicker
+                        minDate={minMaxTemporalExtent[0]}
+                        maxDate={minMaxTemporalExtent[1]}
+                        triggerHeadReference='B:'
+                        selectedDay={selectedCompareDay}
+                        onConfirm={(d) => {
+                          if (!d) return;
+                          setSelectedCompareDay(new Date(d));
+                          centerTimelineOnSelections({
+                            selectedCompareDay: new Date(d)
+                          });
+                        }}
+                        disabled={!xScaled}
+                        tipContent='Date shown on right map'
+                        dataTourId='date-picker-b'
+                        calendarView={calendarView}
+                        triggerLabelFormat={timelineLabelsFormat}
+                      />
+                    </>
+                  )}
                 </DatePickersWrapper>
               </>
             )}
             <TimelineZoomControls onZoom={onZoom} />
           </ToolbarGroup>
         </ToolbarFullWidth>
-        </ControlsToolbar>
+      </ControlsToolbar>
 
       <DateAxis xScaled={xScaled ?? initialScale} width={width} />
     </TimelineControlsSelf>

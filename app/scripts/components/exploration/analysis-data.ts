@@ -8,10 +8,11 @@ import {
   DatasetStatus
 } from './types.d.ts';
 import { ExtendedError } from './data-utils';
+import { utcString2userTzDate } from '$utils/date';
 import {
   fixAoiFcForStacSearch,
-  getFilterPayload
-} from '$components/analysis/utils';
+  getFilterPayloadWithAOI
+} from '$components/common/map/utils';
 
 interface DatasetAssetsRequestParams {
   stacCol: string;
@@ -54,14 +55,13 @@ async function getDatasetAssets(
         ],
         exclude: ['collection', 'links']
       },
-      filter: getFilterPayload(dateStart, dateEnd, aoi, [stacCol])
+      filter: getFilterPayloadWithAOI(dateStart, dateEnd, aoi, [stacCol])
     },
     opts
   );
-
   return {
     assets: searchReqRes.data.features.map((o) => ({
-      date: new Date(o.properties.start_datetime || o.properties.datetime),
+      date: utcString2userTzDate(o.properties.start_datetime || o.properties.datetime),
       url: o.assets[assets].href
     }))
   };
@@ -101,6 +101,18 @@ export async function requestDatasetTimeseriesData({
       meta: {},
       error: new ExtendedError(
         'Analysis is only supported for raster datasets',
+        'ANALYSIS_NOT_SUPPORTED'
+      ),
+      data: null
+    };
+  }
+
+  if (datasetData.analysis?.exclude) {
+    return {
+      status: DatasetStatus.ERROR,
+      meta: {},
+      error: new ExtendedError(
+        'Analysis is turned off for the dataset',
         'ANALYSIS_NOT_SUPPORTED'
       ),
       data: null
@@ -218,6 +230,7 @@ export async function requestDatasetTimeseriesData({
             );
           }
         );
+
         onProgress({
           status: DatasetStatus.LOADING,
           error: null,

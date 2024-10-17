@@ -507,7 +507,7 @@ export default function Timeline(props: TimelineProps) {
     // the timeline.
     let newSelectedDay; // needed for the interval
     if (!selectedDay || !isWithinInterval(selectedDay, { start, end })) {
-      const maxDate = max(successDatasets.map((d) => d.data.domain.last));
+      const maxDate = max(successDatasets.map((d) => d.data.domain.last) as Date[]);
       setSelectedDay(maxDate);
       newSelectedDay = maxDate;
     } else {
