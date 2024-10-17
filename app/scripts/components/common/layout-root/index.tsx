@@ -9,7 +9,6 @@ import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 import Banner from '../banner';
 import { CookieConsent } from '../cookie-consent';
-import { COOKIE_CONSENT_KEY, NO_COOKIE } from '../cookie-consent/utils';
 
 import { LayoutRootContext } from './context';
 
@@ -44,39 +43,11 @@ const PageBody = styled.div`
 
 function LayoutRoot(props: { children?: ReactNode }) {
   const cookieConsentContent = getCookieConsentFromVedaConfig();
-  const readCookie = (name) => {
-    const nameEQ = name + '=';
-    const attribute = document.cookie.split(';');
-    for (let i = 0; i < attribute.length; i++) {
-      let c = attribute[i];
-      while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-  };
 
-  const getCookie = () => {
-    const cookie = readCookie(COOKIE_CONSENT_KEY);
-    if (cookie) {
-      const cookieContents = JSON.parse(cookie);
-      if (cookieContents.answer) setGoogleTagManager();
-      return cookieContents;
-    }
-    return NO_COOKIE;
-  };
-
-  const showForm = () => {
-    const cookieContents = getCookie();
-    if (cookieContents === NO_COOKIE) {
-      return true;
-    } else {
-      return !cookieContents.responded;
-    }
-  };
   const { children } = props;
 
-
   useEffect(() => {
+    // window.sessionStorage.setItem("sessionStart", "true");
     !cookieConsentContent && setGoogleTagManager();
   }, []);
 
@@ -103,10 +74,10 @@ function LayoutRoot(props: { children?: ReactNode }) {
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
-        {cookieConsentContent && showForm() && (
+        {cookieConsentContent && (
           <CookieConsent
             {...cookieConsentContent}
-            onFormInteraction={getCookie}
+            setGoogleTagManager={setGoogleTagManager}
           />
         )}
       </PageBody>
