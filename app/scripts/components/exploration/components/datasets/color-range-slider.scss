@@ -1,12 +1,3 @@
-
-.slider__track {
-  background-color: #dddfe2;
-}
-
-.slider__range {
-  background-color: #1565ef;
-}
-
 /* Removing the default appearance */
 .thumb,
 .thumb::-webkit-slider-thumb {
@@ -18,9 +9,6 @@
 
 .thumb {
   pointer-events: none;
-}
-.middle-marker {
-  background-color: #1b2631;
 }
 /* For Chrome browsers */
 .thumb::-webkit-slider-thumb {
