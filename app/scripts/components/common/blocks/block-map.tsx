@@ -113,6 +113,8 @@ interface MapBlockProps {
   datasets: VedaDatum<DatasetData>;
   dateTime?: string;
   compareDateTime?: string;
+  compareDatasetId?: string;
+  compareLayerId?: string;
   center?: [number, number];
   zoom?: number;
   compareLabel?: string;
@@ -147,6 +149,8 @@ function MapBlock(props: MapBlockProps) {
     layerId,
     dateTime,
     compareDateTime,
+    compareDatasetId,
+    compareLayerId,
     compareLabel,
     center,
     zoom,
@@ -166,7 +170,13 @@ function MapBlock(props: MapBlockProps) {
   const layersToFetch = useMemo(() => {
     const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
     let totalLayers = [baseMapStaticData];
-    const baseMapStaticCompareData = baseMapStaticData.data.compare;
+    const baseMapStaticCompareData =
+      (!!compareDatasetId && !!compareLayerId)
+        ? {
+            datasetId: compareDatasetId,
+            layerId: compareLayerId
+          }
+        : baseMapStaticData.data.compare;
     if (baseMapStaticCompareData && 'layerId' in baseMapStaticCompareData) {
       const compareLayerId = baseMapStaticCompareData.layerId;
       const [compareMapStaticData] = reconcileDatasets(
