@@ -98,3 +98,12 @@ The proposed data layer is designed to handle all data fetching, including STAC 
 *  [Refactoring vs Rewrite article](https://methodpoet.com/refactoring-vs-rewrite/)
 * [Team Brainstorming session for VEDA V2 Refactor Miro Board](https://miro.com/app/board/uXjVN6lkBnc=/?share_link_id=238172590342)
 * [Stac-react Repo](https://github.com/developmentseed/stac-react)
+
+## Updates
+
+* Added 10/24
+![Original Architecture Diagram](./diagrams/original_veda_arch_diagram.png)
+![Post Refactor Architecture Diagram](./diagrams/post_refactor_veda_arch_diagram.png)
+
+
+
