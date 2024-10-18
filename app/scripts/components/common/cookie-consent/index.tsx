@@ -12,6 +12,7 @@ import './index.scss';
 interface CookieConsentProps {
   title?: string | undefined;
   copy?: string | undefined;
+  sessionStart: string | undefined;
   setGoogleTagManager: () => void;
 }
 interface CookieConsentShape {
@@ -26,6 +27,7 @@ function addAttribute(copy) {
 export const CookieConsent = ({
   title,
   copy,
+  sessionStart,
   setGoogleTagManager
 }: CookieConsentProps) => {
   const readCookie = (name) => {
@@ -73,15 +75,12 @@ export const CookieConsent = ({
     const checkForSessionDate = window.sessionStorage.getItem(SESSION_KEY);
     if (!checkForSessionDate) {
       window.sessionStorage.setItem(SESSION_KEY, 'true');
-      return true;
-    } else {
-      return false;
     }
   };
 
   useEffect(() => {
     setSessionData();
-    if (setSessionData()) {
+    if (sessionStart == 'true') {
       const cookieValue = {
         responded: cookieConsentResponded,
         answer: cookieConsentAnswer
