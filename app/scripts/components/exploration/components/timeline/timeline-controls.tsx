@@ -1,7 +1,7 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { useAtom, useAtomValue } from 'jotai';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import startOfYear from 'date-fns/startOfYear';
 import endOfYear from 'date-fns/endOfYear';
 import { scaleTime, ScaleTime } from 'd3';
