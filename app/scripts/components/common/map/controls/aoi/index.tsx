@@ -2,7 +2,7 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import { useTheme } from 'styled-components';
 import { useAtomValue } from 'jotai';
-import { useRef } from 'react';
+import { useEffect } from 'react';
 import { useControl } from 'react-map-gl';
 import useAois from '../hooks/use-aois';
 import { aoisFeaturesAtom } from './atoms';
@@ -30,13 +30,12 @@ const customDirectSelect = {
 
 export default function DrawControl(props: DrawControlProps) {
   const theme = useTheme();
-  const control = useRef<MapboxDraw>();
   const aoisFeatures = useAtomValue(aoisFeaturesAtom);
   const { onUpdate, onDelete, onSelectionChange, onDrawModeChange } = useAois();
 
-  useControl<MapboxDraw>(
-    () => {
-      control.current = new MapboxDraw({
+  const drawControl = useControl<MapboxDraw>(
+    () =>
+      new MapboxDraw({
         displayControlsDefault: false,
         styles: computeDrawStyles(theme),
         modes: {
@@ -46,24 +45,17 @@ export default function DrawControl(props: DrawControlProps) {
           [DIRECT_SELECT]: customDirectSelect
         },
         ...props
-      });
-      return control.current;
-    },
-    ({ map }: { map: any }) => {
-      map._drawControl = control.current;
+      }),
+    ({ map }) => {
+      // @ts-expect-error - private prop
+      map._drawControl = drawControl;
       map.on('draw.create', onUpdate);
       map.on('draw.update', onUpdate);
       map.on('draw.delete', onDelete);
       map.on('draw.selectionchange', onSelectionChange);
       map.on('draw.modechange', onDrawModeChange);
-      map.on('load', () => {
-        control.current?.set({
-          type: 'FeatureCollection',
-          features: aoisFeatures
-        });
-      });
     },
-    ({ map }: { map: any }) => {
+    ({ map }) => {
       map.off('draw.create', onUpdate);
       map.off('draw.update', onUpdate);
       map.off('draw.delete', onDelete);
@@ -74,6 +66,15 @@ export default function DrawControl(props: DrawControlProps) {
       position: 'top-left'
     }
   );
+
+  useEffect(() => {
+    if (drawControl?.map) {
+      drawControl.set({
+        type: 'FeatureCollection',
+        features: aoisFeatures
+      });
+    }
+  }, [drawControl, aoisFeatures]);
 
   return null;
 }

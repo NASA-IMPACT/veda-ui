@@ -4,13 +4,13 @@ import { DevTools } from 'jotai-devtools';
 import { useAtom } from 'jotai';
 import { PopoverTourComponent, TourManager } from './tour-manager';
 import { timelineDatasetsAtom } from './atoms/datasets';
+import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import ExplorationAndAnalysis from '.';
 import { urlAtom } from '$utils/params-location-atom/url';
 import { EXPLORATION_PATH } from '$utils/routes';
 import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import { DatasetSelectorModal } from './components/dataset-selector-modal';
 
 
 /**
