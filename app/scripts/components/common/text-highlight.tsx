@@ -22,7 +22,9 @@ export default function TextHighlight(props: TextHighlightProps) {
 
   // Highlight is done index based because it has to take case insensitive
   // searches into account.
-  const regex = new RegExp(value, 'ig');
+  const escapedValue = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(escapedValue, 'ig');
+
   /* eslint-disable-next-line prefer-const */
   let highlighted: ReactNode[] = [];
   let workingIdx = 0;
