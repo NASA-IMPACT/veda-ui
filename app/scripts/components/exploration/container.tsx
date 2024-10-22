@@ -5,14 +5,15 @@ import { useAtom } from 'jotai';
 import { PopoverTourComponent, TourManager } from './tour-manager';
 import { timelineDatasetsAtom } from './atoms/datasets';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
+import { allExploreDatasets} from './data-utils';
 import ExplorationAndAnalysis from '.';
 import { urlAtom } from '$utils/params-location-atom/url';
-import { EXPLORATION_PATH } from '$utils/routes';
+import { DATASETS_PATH, EXPLORATION_PATH } from '$utils/routes';
 import { PageMainContent } from '$styles/page';
+
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-
-
+import SmartLink from '$components/common/smart-link';
 /**
  * @VEDA2-REFACTOR-WORK
  *
@@ -62,6 +63,12 @@ export default function ExplorationAndAnalysisContainer() {
         <DatasetSelectorModal
           revealed={datasetModalRevealed}
           close={closeModal}
+          datasets={allExploreDatasets}
+          datasetPathName={DATASETS_PATH}
+          linkProperties={{
+            LinkElement: SmartLink,
+            pathAttributeKeyName: 'to'
+          }}
         />
       </PageMainContent>
     </TourProvider>
