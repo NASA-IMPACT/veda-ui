@@ -10,7 +10,7 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
-import { getCookieConsentFromVedaConfig } from 'veda';
+import { getBannerFromVedaConfig, getCookieConsentFromVedaConfig } from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 import Banner from '../banner';
@@ -50,7 +50,7 @@ const PageBody = styled.div`
 
 function LayoutRoot(props: { children?: ReactNode }) {
   const cookieConsentContent = getCookieConsentFromVedaConfig();
-
+  const bannerContent = getBannerFromVedaConfig();
   const { children } = props;
   const [sessionStart, setSesstionStart] = useState<string | undefined>();
   const sessionItem = window.sessionStorage.getItem(SESSION_KEY);
@@ -61,6 +61,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
 
   const { title, thumbnail, description, banner, hideFooter } =
     useContext(LayoutRootContext);
+    console.log(bannerContent, 'banner: ', banner)
 
   const truncatedTitle =
     title?.length > 32 ? `${title.slice(0, 32)}...` : title;
@@ -73,7 +74,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
-      {banner && <Banner appTitle={title} {...banner} />}
+      {bannerContent && <Banner appTitle={bannerContent.title} {...bannerContent} />}
       <NavWrapper
         mainNavItems={mainNavItems}
         subNavItems={subNavItems}
