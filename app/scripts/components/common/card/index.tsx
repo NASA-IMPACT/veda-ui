@@ -1,4 +1,4 @@
-import React, { lazy, MouseEventHandler, ComponentType } from 'react';
+import React, { lazy, MouseEventHandler } from 'react';
 import styled, { css } from 'styled-components';
 import { format } from 'date-fns';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
@@ -16,6 +16,7 @@ import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
+import { LinkProperties } from '$types/veda';
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -217,12 +218,6 @@ export function ExternalLinkFlag() {
       <CollecticonExpandTopRight size='small' meaningful={false} />
     </ExternalLinkMark>
   );
-}
-
-export interface LinkProperties {
-  LinkElement: string | ComponentType<any> | undefined;
-  pathAttributeKeyName: string;
-  onLinkClick?: MouseEventHandler;
 }
 
 export interface LinkWithPathProperties extends LinkProperties {
