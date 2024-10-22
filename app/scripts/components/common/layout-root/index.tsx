@@ -61,7 +61,6 @@ function LayoutRoot(props: { children?: ReactNode }) {
 
   const { title, thumbnail, description, banner, hideFooter } =
     useContext(LayoutRootContext);
-    console.log(bannerContent, 'banner: ', banner)
 
   const truncatedTitle =
     title?.length > 32 ? `${title.slice(0, 32)}...` : title;
@@ -83,7 +82,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
-        {cookieConsentContent && !sessionStart && (
+        {cookieConsentContent && (
           <CookieConsent
             {...cookieConsentContent}
             sessionStart={sessionStart}

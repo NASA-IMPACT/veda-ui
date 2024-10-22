@@ -16,8 +16,8 @@ interface CookieConsentProps {
   setGoogleTagManager: () => void;
 }
 interface CookieConsentShape {
-  responded: boolean;
-  answer: boolean;
+  responded: boolean | undefined;
+  answer: boolean | undefined;
 }
 
 function addAttribute(copy) {
@@ -44,19 +44,17 @@ export const CookieConsent = ({
   const getCookie = () => {
     const cookie = readCookie(COOKIE_CONSENT_KEY);
     if (cookie) {
-      const cookieContents: CookieConsentShape = JSON.parse(cookie);
+      const cookieContents = JSON.parse(cookie);
       if (cookieContents.answer) setGoogleTagManager();
-
-      return cookieContents;
+      SetCookieConsentResponded(cookieContents.responded);
+      SetCookieConsentAnswer(cookieContents.answer);
     }
   };
 
-  const [cookieConsentResponded, SetCookieConsentResponded] = useState<boolean>(
-    getCookie()?.responded ?? false
-  );
-  const [cookieConsentAnswer, SetCookieConsentAnswer] = useState<boolean>(
-    getCookie()?.answer ?? false
-  );
+  const [cookieConsentResponded, SetCookieConsentResponded] =
+    useState<boolean>(false);
+  const [cookieConsentAnswer, SetCookieConsentAnswer] =
+    useState<boolean>(false);
   const [closeConsent, setCloseConsent] = useState<boolean>(false);
   //Setting expiration date for cookie to expire and re-ask user for consent.
   const setCookieExpiration = () => {
@@ -77,16 +75,19 @@ export const CookieConsent = ({
       window.sessionStorage.setItem(SESSION_KEY, 'true');
     }
   };
-
   useEffect(() => {
-    setSessionData();
-    if (sessionStart == 'true') {
-      const cookieValue = {
-        responded: cookieConsentResponded,
-        answer: cookieConsentAnswer
-      };
-      setCookie(cookieValue, closeConsent);
+    if (sessionStart !== 'true' && !cookieConsentResponded) {
+      setSessionData();
+      getCookie();
     }
+  }, []);
+  useEffect(() => {
+    const cookieValue = {
+      responded: cookieConsentResponded,
+      answer: cookieConsentAnswer
+    };
+    setCookie(cookieValue, closeConsent);
+
     // Ignoring setcookie for now since it will make infinite rendering
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

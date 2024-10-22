@@ -2,7 +2,7 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import { render, screen, fireEvent } from '@testing-library/react';
-import { COOKIE_CONSENT_KEY } from './utils';
+import { COOKIE_CONSENT_KEY, SESSION_KEY } from './utils';
 import { CookieConsent } from './index';
 
 describe('Cookie consent form should render with correct content.', () => {
@@ -40,6 +40,9 @@ describe('Cookie consent form should render with correct content.', () => {
     expect(resultCookie).toBe(
       `${COOKIE_CONSENT_KEY}={"responded":false,"answer":false}`
     );
+  });
+  it('Check for session initialization', () => {
+    expect(sessionStorage.getItem(SESSION_KEY)).toBe(`true`);
   });
 
   it('Check correct cookie content on Decline click', () => {
