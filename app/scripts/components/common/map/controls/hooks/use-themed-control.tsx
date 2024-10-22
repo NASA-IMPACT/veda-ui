@@ -45,11 +45,17 @@ export default function useThemedControl(
 
   // Listen for changes in dependencies and re-render if necessary
   useEffect(() => {
-    if (rootRef.current && elementRef.current) {
+    let isMounted = true;
+
+    if (rootRef.current && elementRef.current && isMounted) {
       rootRef.current.render(
         <ThemeProvider theme={theme}>{renderFn() as any}</ThemeProvider>
       );
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [renderFn, theme]);
 
   useControl(() => new ThemedControl(), opts);
