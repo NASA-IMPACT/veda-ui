@@ -295,13 +295,14 @@ function CardComponent(props: CardComponentPropsType) {
   }
 
   const isExternalLink = linkProperties.isLinkExternal ?? /^https?:\/\//.test(linkProperties.linkTo);
-
   return (
     <ElementInteractive
       linkProps={{
         as: linkProperties.LinkElement,
         [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
+        // onLinkClick is to support SmartLink
         onLinkClick: linkProperties.onLinkClick,
+        onClick: linkProperties.onLinkClick,
         isLinkExternal: isExternalLink
       }}
       as={CardItem}
