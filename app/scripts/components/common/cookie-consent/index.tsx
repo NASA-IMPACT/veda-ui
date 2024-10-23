@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Icon } from '@trussworks/react-uswds';
+import { useLocation } from 'react-router-dom';
+
 import { COOKIE_CONSENT_KEY, SESSION_KEY } from './utils';
 import {
   USWDSAlert,
@@ -14,10 +16,6 @@ interface CookieConsentProps {
   copy?: string | undefined;
   sessionStart: string | undefined;
   setGoogleTagManager: () => void;
-}
-interface CookieConsentShape {
-  responded: boolean | undefined;
-  answer: boolean | undefined;
 }
 
 function addAttribute(copy) {
@@ -40,12 +38,15 @@ export const CookieConsent = ({
     }
     return null;
   };
+  const location = useLocation();
 
   const getCookie = () => {
+
     const cookie = readCookie(COOKIE_CONSENT_KEY);
     if (cookie) {
       const cookieContents = JSON.parse(cookie);
       if (cookieContents.answer) setGoogleTagManager();
+      !cookieContents.responded && setCloseConsent(true);
       SetCookieConsentResponded(cookieContents.responded);
       SetCookieConsentAnswer(cookieContents.answer);
     }
@@ -56,6 +57,7 @@ export const CookieConsent = ({
   const [cookieConsentAnswer, SetCookieConsentAnswer] =
     useState<boolean>(false);
   const [closeConsent, setCloseConsent] = useState<boolean>(false);
+
   //Setting expiration date for cookie to expire and re-ask user for consent.
   const setCookieExpiration = () => {
     const today = new Date();
@@ -80,7 +82,10 @@ export const CookieConsent = ({
       setSessionData();
       getCookie();
     }
-  }, []);
+    if (!cookieConsentResponded && closeConsent) {
+      setCloseConsent(false);
+    }
+  }, [location]);
   useEffect(() => {
     const cookieValue = {
       responded: cookieConsentResponded,
@@ -95,7 +100,8 @@ export const CookieConsent = ({
     cookieConsentAnswer,
     closeConsent,
     getCookie,
-    setSessionData
+    setSessionData,
+    location
   ]);
 
   return (
