@@ -233,6 +233,7 @@ export function ExternalLinkFlag() {
 
 export interface LinkWithPathProperties extends LinkProperties {
   linkTo: string;
+  isLinkExternal?: boolean;
 }
 
 export interface CardComponentBaseProps {
@@ -306,14 +307,14 @@ function CardComponent(props: CardComponentPropsType) {
     };
   }
 
-  const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);
-
+  const isExternalLink = linkProperties.isLinkExternal ?? /^https?:\/\//.test(linkProperties.linkTo);
   return (
     <ElementInteractive
       linkProps={{
         as: linkProperties.LinkElement,
         [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
-        onLinkClick: linkProperties.onLinkClick
+        onClick: linkProperties.onLinkClick,
+        isLinkExternal: isExternalLink
       }}
       as={CardItem}
       cardType={cardType}
