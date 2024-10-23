@@ -59,7 +59,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
     sessionItem && setSesstionStart(sessionItem);
   }, []);
 
-  const { title, thumbnail, description, banner, hideFooter } =
+  const { title, thumbnail, description, hideFooter } =
     useContext(LayoutRootContext);
 
   const truncatedTitle =
