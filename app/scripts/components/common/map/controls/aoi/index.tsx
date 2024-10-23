@@ -2,13 +2,18 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import { useTheme } from 'styled-components';
 import { useAtomValue } from 'jotai';
-import { useEffect } from 'react';
+import { useRef } from 'react';
 import { useControl } from 'react-map-gl';
+import type { MapRef } from 'react-map-gl';
 import useAois from '../hooks/use-aois';
 import { aoisFeaturesAtom } from './atoms';
 import { computeDrawStyles } from './style';
 
 type DrawControlProps = MapboxDraw.DrawOptions;
+
+interface ExtendedMapRef extends MapRef {
+  _drawControl?: MapboxDraw;
+}
 
 export const STATIC_MODE = 'static_mode';
 export const SIMPLE_SELECT = 'simple_select';
@@ -32,10 +37,11 @@ export default function DrawControl(props: DrawControlProps) {
   const theme = useTheme();
   const aoisFeatures = useAtomValue(aoisFeaturesAtom);
   const { onUpdate, onDelete, onSelectionChange, onDrawModeChange } = useAois();
+  const mapRef = useRef<ExtendedMapRef | null>(null);
 
   const drawControl = useControl<MapboxDraw>(
-    () =>
-      new MapboxDraw({
+    () => {
+      const control = new MapboxDraw({
         displayControlsDefault: false,
         styles: computeDrawStyles(theme),
         modes: {
@@ -45,15 +51,26 @@ export default function DrawControl(props: DrawControlProps) {
           [DIRECT_SELECT]: customDirectSelect
         },
         ...props
-      }),
+      });
+      return control;
+    },
     ({ map }) => {
-      // @ts-expect-error - private prop
-      map._drawControl = drawControl;
+      mapRef.current = map as ExtendedMapRef;
+      const extendedMap = map as ExtendedMapRef;
+      // We're making the controls available on the map instance for later use throughout
+      // the app (e.g in the CustomAoIControl)
+      extendedMap._drawControl = drawControl;
       map.on('draw.create', onUpdate);
       map.on('draw.update', onUpdate);
       map.on('draw.delete', onDelete);
       map.on('draw.selectionchange', onSelectionChange);
       map.on('draw.modechange', onDrawModeChange);
+      map.on('load', () => {
+        drawControl.set({
+          type: 'FeatureCollection',
+          features: aoisFeatures
+        });
+      });
     },
     ({ map }) => {
       map.off('draw.create', onUpdate);
@@ -61,20 +78,12 @@ export default function DrawControl(props: DrawControlProps) {
       map.off('draw.delete', onDelete);
       map.off('draw.selectionchange', onSelectionChange);
       map.off('draw.modechange', onDrawModeChange);
+      mapRef.current = null;
     },
     {
       position: 'top-left'
     }
   );
-
-  useEffect(() => {
-    if (drawControl?.map) {
-      drawControl.set({
-        type: 'FeatureCollection',
-        features: aoisFeatures
-      });
-    }
-  }, [drawControl, aoisFeatures]);
 
   return null;
 }
