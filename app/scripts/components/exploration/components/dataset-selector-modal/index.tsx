@@ -9,8 +9,6 @@ import {
   ModalHeader
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-
-
 import { Link } from 'react-router-dom';
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
@@ -19,9 +17,7 @@ import {
 import {   datasetLayers,
   allExploreDatasets} from '../../data-utils';
 import RenderModalHeader from './header';
-
 import ModalFooterRender from './footer';
-
 import CatalogContent from '$components/common/catalog/catalog-content';
 import { DATASETS_PATH } from '$utils/routes';
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
