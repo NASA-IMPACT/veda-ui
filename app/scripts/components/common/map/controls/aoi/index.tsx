@@ -2,7 +2,6 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import { useTheme } from 'styled-components';
 import { useAtomValue } from 'jotai';
-import { useRef } from 'react';
 import { useControl } from 'react-map-gl';
 import type { MapRef } from 'react-map-gl';
 import useAois from '../hooks/use-aois';
@@ -37,7 +36,6 @@ export default function DrawControl(props: DrawControlProps) {
   const theme = useTheme();
   const aoisFeatures = useAtomValue(aoisFeaturesAtom);
   const { onUpdate, onDelete, onSelectionChange, onDrawModeChange } = useAois();
-  const mapRef = useRef<ExtendedMapRef | null>(null);
 
   const drawControl = useControl<MapboxDraw>(
     () => {
@@ -55,11 +53,9 @@ export default function DrawControl(props: DrawControlProps) {
       return control;
     },
     ({ map }) => {
-      mapRef.current = map as ExtendedMapRef;
-      const extendedMap = map as ExtendedMapRef;
       // We're making the controls available on the map instance for later use throughout
       // the app (e.g in the CustomAoIControl)
-      extendedMap._drawControl = drawControl;
+      (map as ExtendedMapRef)._drawControl = drawControl;
       map.on('draw.create', onUpdate);
       map.on('draw.update', onUpdate);
       map.on('draw.delete', onDelete);
@@ -78,7 +74,6 @@ export default function DrawControl(props: DrawControlProps) {
       map.off('draw.delete', onDelete);
       map.off('draw.selectionchange', onSelectionChange);
       map.off('draw.modechange', onDrawModeChange);
-      mapRef.current = null;
     },
     {
       position: 'top-left'
