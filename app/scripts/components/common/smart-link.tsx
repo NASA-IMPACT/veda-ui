@@ -5,7 +5,8 @@ import { getLinkProps } from '$utils/url';
 
 interface SmartLinkProps {
   to: string;
-  onLinkClick?: ()=> void;
+  isLinkExternal?: boolean;
+  onClick?: ()=> void;
   children?: ReactNode;
 }
 
@@ -13,9 +14,9 @@ interface SmartLinkProps {
  * Switches between a `a` and a `Link` depending on the url.
  */
 export default function SmartLink(props: SmartLinkProps) {
-  const { to, onLinkClick, children, ...rest } = props;
-  const isExternalLink = /^https?:\/\//.test(to);
-  const linkProps = getLinkProps(to, undefined, onLinkClick);
+  const { to, isLinkExternal, onClick, children, ...rest } = props;
+  const isExternalLink = isLinkExternal ?? /^https?:\/\//.test(to);
+  const linkProps = getLinkProps(to, isLinkExternal, undefined, onClick);
 
   return isExternalLink ? (
     <a {...linkProps} {...rest}> {children} </a>
