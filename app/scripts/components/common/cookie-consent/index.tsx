@@ -46,7 +46,6 @@ export const CookieConsent = ({
     if (cookie) {
       const cookieContents = JSON.parse(cookie);
       if (cookieContents.answer) setGoogleTagManager();
-      !cookieContents.responded && setCloseConsent(true);
       SetCookieConsentResponded(cookieContents.responded);
       SetCookieConsentAnswer(cookieContents.answer);
     }
