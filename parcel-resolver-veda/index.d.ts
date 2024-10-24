@@ -264,6 +264,7 @@ declare module 'veda' {
   const infoTypeFlag = BannerType.info;
   interface BannerData {
     expires: Date;
+    title: string;
     url: string;
     text: string;
     type?: BannerType;
