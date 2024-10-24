@@ -1,7 +1,7 @@
 import * as dateFns from 'date-fns';
 import mapboxgl from 'mapbox-gl';
 import { MDXModule } from 'mdx/types';
-
+import { MouseEventHandler, ComponentType } from 'react';
 // ///////////////////////////////////////////////////////////////////////////
 //  Datasets                                                                //
 // ///////////////////////////////////////////////////////////////////////////
@@ -273,4 +273,12 @@ export interface EnhancedDatasetLayer extends DatasetLayer {
 
 export interface DatasetDataWithEnhancedLayers extends DatasetData {
   layers: EnhancedDatasetLayer[];
+}
+
+// Types needed for library
+
+export interface LinkProperties {
+  LinkElement: string | ComponentType<any> | undefined;
+  pathAttributeKeyName: string;
+  onClick?: MouseEventHandler;
 }

@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { LinkProperties } from '../card';
 import CatalogContent from './catalog-content';
-import { DatasetData } from '$types/veda';
+import { DatasetData, LinkProperties } from '$types/veda';
 import {
   useSlidingStickyHeaderProps
 } from '$components/common/layout-root/useSlidingStickyHeaderProps';
