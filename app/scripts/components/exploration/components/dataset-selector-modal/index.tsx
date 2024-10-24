@@ -12,7 +12,7 @@ import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
   reconcileDatasets
 } from '../../data-utils-no-faux-module';
-import {   datasetLayers } from '../../data-utils';
+import { datasetLayers } from '../../data-utils';
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
 import CatalogContent from '$components/common/catalog/catalog-content';

@@ -280,5 +280,5 @@ export interface DatasetDataWithEnhancedLayers extends DatasetData {
 export interface LinkProperties {
   LinkElement: string | ComponentType<any> | undefined;
   pathAttributeKeyName: string;
-  onLinkClick?: MouseEventHandler;
+  onClick?: MouseEventHandler;
 }

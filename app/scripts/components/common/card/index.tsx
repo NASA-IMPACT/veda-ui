@@ -245,7 +245,7 @@ export interface CardComponentBaseProps {
 // Specifically: https://github.com/US-GHG-Center/veda-config-ghg/blob/develop/custom-pages/news-and-events/component.tsx#L108
 export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
   linkTo: string;
-  onLinkClick?: MouseEventHandler;
+  onClick?: MouseEventHandler;
   isLinkExternal?: boolean;
 }
 export interface CardComponentProps extends CardComponentBaseProps {
@@ -284,10 +284,10 @@ function CardComponent(props: CardComponentPropsType) {
     const { linkProperties: linkPropertiesProps } = props;
     linkProperties = linkPropertiesProps;
   } else {
-    const { linkTo, onLinkClick, isLinkExternal } = props;
+    const { linkTo, onClick, isLinkExternal } = props;
     linkProperties = {
       linkTo,
-      onLinkClick,
+      onClick,
       pathAttributeKeyName: 'to',
       LinkElement: SmartLink,
       isLinkExternal
@@ -300,9 +300,7 @@ function CardComponent(props: CardComponentPropsType) {
       linkProps={{
         as: linkProperties.LinkElement,
         [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
-        // onLinkClick is to support SmartLink
-        onLinkClick: linkProperties.onLinkClick,
-        onClick: linkProperties.onLinkClick,
+        onClick: linkProperties.onClick,
         isLinkExternal: isExternalLink
       }}
       as={CardItem}

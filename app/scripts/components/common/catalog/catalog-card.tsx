@@ -155,7 +155,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
           ) : null}
         </>
       }
-      linkProperties={{...linkProperties, linkTo: linkTo, onLinkClick: handleClick}}
+      linkProperties={{...linkProperties, linkTo: linkTo, onClick: handleClick}}
     />
   );
 };
