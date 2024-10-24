@@ -88,7 +88,9 @@ const SelectorWrapper = styled.div`
   position: relative;
 `;
 
-const PresetSelect = styled.select`
+const PresetSelect = styled.select.attrs({
+    'data-testid': 'preset-selector'
+  })`
   max-width: 200px;
   height: ${selectorHeight};
   color: transparent;
