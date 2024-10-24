@@ -323,23 +323,35 @@ export default function CustomAoIControl({
   disableReason?: React.ReactNode;
 }) {
   const { main } = useMaps();
-
   const { isDrawing } = useAois();
 
   // Start/stop the drawing.
   useEffect(() => {
-    // Property was added to access draw control.
-    const mbDraw = main?._drawControl;
-    if (!mbDraw) return;
+    if (!main) return;
 
-    if (isDrawing) {
-      mbDraw.changeMode(DRAW_POLYGON);
+    const changeDrawMode = () => {
+      const mbDraw = main._drawControl;
+      if (!mbDraw) return;
+
+      if (isDrawing) {
+        mbDraw.changeMode(DRAW_POLYGON);
+      } else {
+        mbDraw.changeMode(SIMPLE_SELECT, {
+          featureIds: mbDraw.getSelectedIds()
+        });
+      }
+    };
+
+    if (main.loaded()) {
+      changeDrawMode();
     } else {
-      mbDraw.changeMode(SIMPLE_SELECT, {
-        featureIds: mbDraw.getSelectedIds()
-      });
+      main.on('load', changeDrawMode);
+      return () => {
+        main.off('load', changeDrawMode);
+      };
     }
   }, [main, isDrawing]);
+
 
   useThemedControl(
     () => <CustomAoI map={main} disableReason={disableReason} />,
@@ -347,5 +359,7 @@ export default function CustomAoIControl({
       position: 'top-left'
     }
   );
+
   return null;
 }
+

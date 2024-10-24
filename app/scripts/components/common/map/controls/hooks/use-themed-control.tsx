@@ -38,17 +38,24 @@ export default function useThemedControl(
           rootRef.current = null;
         }
 
+        elementRef.current = null;
       }, 1);
     }
   }
 
   // Listen for changes in dependencies and re-render if necessary
   useEffect(() => {
-    if (rootRef.current) {
+    let isMounted = true;
+
+    if (rootRef.current && elementRef.current && isMounted) {
       rootRef.current.render(
         <ThemeProvider theme={theme}>{renderFn() as any}</ThemeProvider>
       );
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [renderFn, theme]);
 
   useControl(() => new ThemedControl(), opts);

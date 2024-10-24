@@ -8,7 +8,7 @@ import {
   TimelineDatasetSuccess
 } from '../../types.d.ts';
 import { Layer } from './layer';
-// import { AnalysisMessageControl } from './analysis-message-control'; // @TODO: This breaks - need to fix
+import { AnalysisMessageControl } from './analysis-message-control';
 import { ShowTourControl } from './tour-control';
 
 import Map, { Compare, MapControls } from '$components/common/map';
@@ -22,10 +22,10 @@ import MapCoordsControl from '$components/common/map/controls/coords';
 import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
-import DrawControl from '$components/common/map/controls/aoi';
-// import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control'; // @TODO: This breaks - need to fix
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { ExtendedStyle } from '$components/common/map/styles';
+import DrawControl from '$components/common/map/controls/aoi';
+import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 
 interface ExplorationMapProps {
   datasets: TimelineDataset[];
@@ -141,12 +141,12 @@ export function ExplorationMap(props: ExplorationMapProps) {
       {/* Map controls */}
       <MapControls>
         <DrawControl />
-        {/* <CustomAoIControl
+        <CustomAoIControl
           disableReason={
             comparing && 'Analysis is not possible when comparing dates'
           }
-        /> */}
-        {/* <AnalysisMessageControl /> */}
+        />
+        <AnalysisMessageControl />
         <GeocoderControl />
         <MapOptionsControl
           projection={projection}
