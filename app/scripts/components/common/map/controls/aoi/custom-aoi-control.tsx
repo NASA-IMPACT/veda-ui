@@ -325,33 +325,20 @@ export default function CustomAoIControl({
   const { main } = useMaps();
   const { isDrawing } = useAois();
 
-  // Start/stop the drawing.
+  // Start the drawing mode when isDrawing is true
+  // There's no need to switch back to 'simple_select' mode when !isDrawing
+  // as Mapbox Draw handles this internally when the drawing is completed
   useEffect(() => {
     if (!main) return;
 
-    const changeDrawMode = () => {
-      const mbDraw = main._drawControl;
-      if (!mbDraw) return;
+    const mbDraw = main._drawControl;
 
-      if (isDrawing) {
-        mbDraw.changeMode(DRAW_POLYGON);
-      } else {
-        mbDraw.changeMode(SIMPLE_SELECT, {
-          featureIds: mbDraw.getSelectedIds()
-        });
-      }
-    };
+    if (!mbDraw) return;
 
-    if (main.loaded()) {
-      changeDrawMode();
-    } else {
-      main.on('load', changeDrawMode);
-      return () => {
-        main.off('load', changeDrawMode);
-      };
+    if (isDrawing) {
+      mbDraw.changeMode(DRAW_POLYGON);
     }
   }, [main, isDrawing]);
-
 
   useThemedControl(
     () => <CustomAoI map={main} disableReason={disableReason} />,
