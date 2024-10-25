@@ -194,6 +194,9 @@ export function resolveRenderParams(
   datasetSourceParams: Record<string, any> | undefined,
   queryDataRenders: Record<string, any> | undefined
 ): Record<string, any> | undefined {
+  // Return empty parameters if there are no user-configured sourcparams nor render parameter
+  if (!datasetSourceParams && !queryDataRenders) return {};
+
   // Start with sourceParams from the dataset.
   // Return the source param as it is if exists
   if (hasValidSourceParams(datasetSourceParams)) {
