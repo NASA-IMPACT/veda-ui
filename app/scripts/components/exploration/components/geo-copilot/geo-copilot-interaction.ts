@@ -53,9 +53,11 @@ export async function askGeoCoPilot(
     }
   ).then((answer) => {
     const extractedAnswer = JSON.parse(answer.data.answer);
-    content[content.length - 1].explanations = extractedAnswer.explanation.verification;
+    ERROR_RESPONSE['summary'] = extractedAnswer['summary'] || ERROR_RESPONSE['summary']
+    if (extractedAnswer.explanation?.verification)
+      content[content.length - 1].explanations = extractedAnswer.explanation.verification;
     setSystemResponse(JSON.parse(answer.data.answer), content);
-  }).catch(() => {
+  }).catch((error) => {
     setSystemResponse(ERROR_RESPONSE, content);
   });
 }
