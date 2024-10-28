@@ -1,5 +1,8 @@
 import React from 'react';
-import { CollecticonCode } from '@devseed-ui/collecticons';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faRobot} from  '@fortawesome/free-solid-svg-icons';
+
 import useMaps from '$components/common/map/hooks/use-maps';
 import { SelectorButton } from '$components/common/map/style/button';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
@@ -18,7 +21,7 @@ export function GeoCoPilotComponent({onClick}: {
       tipProps={{ placement: 'left' }}
       onClick={onClick}
     >
-      <CollecticonCode />
+      <FontAwesomeIcon icon={faRobot} />
     </SelectorButton>
   );
 }
