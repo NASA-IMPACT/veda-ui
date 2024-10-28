@@ -40,30 +40,43 @@ const Query = styled.span`
   cursor: pointer;
   display: inline-block;
   padding-bottom: 1px;
-  border-bottom: 1px solid;
+  // border-bottom: 1px solid;
 
   &[data-explanation-index='0'] {
-    border-bottom-color: blue;
+    // text-decoration: underline;
+    text-decoration-color: blue;
+    color: blue;
   }
 
   &[data-explanation-index='1'] {
-    border-bottom-color: red;
+    // text-decoration: underline;
+    // text-decoration-color: red;
+    color: red;
   }
 
   &[data-explanation-index='2'] {
-    border-bottom-color: black;
+    // text-decoration: underline;
+    // text-decoration-color: black;
+    color: green;
   }
 
   &[data-explanation-index='3'] {
-    border-bottom-color: orange;
+    // text-decoration: underline;
+    // text-decoration-color: orange;
+    color: orange;
   }
 
   &[data-explanation-index='4'] {
-    border-bottom-color: yellow;
+    // text-decoration: underline;
+    // text-decoration-color: yellow;
+    color: yellow;
   }
 
   &[data-explanation-index='5'] {
-    border-bottom-color: pink;
+    // text-decoration: underline;
+    // text-decoration-color: pink;
+    // border-bottom-color: pink;
+    color: pink;
   }
 `;
 
@@ -78,7 +91,8 @@ export function GeoCoPilotUserDialogComponent({explanations, query}: {
 }) {
   // Function to dynamically split the query and insert Query parts
   const renderHighlightedQuery = (query: string, explanations: any) => {
-    const elementsToRender: string[] = query.toLowerCase().split(' ');
+    const lowerQuery: string = query.toLowerCase();
+    const elementsToRender: string[] = lowerQuery.toLowerCase().split(' ');
 
     explanations.forEach(({ query_part, matchup }, internalIndex) => {
       const index = query.indexOf(query_part.toLowerCase());
@@ -94,9 +108,22 @@ export function GeoCoPilotUserDialogComponent({explanations, query}: {
         `<Query key="${query_part}" data-tooltip="${matchup}" data-explanation-index="${internalIndex.toString()}">`
       );
       const lastWordIndex = elementsToRender.indexOf(lastWord.toLowerCase());
-      elementsToRender.splice(lastWordIndex + 1, 0, '</Query>');
+      if (lastWordIndex > 0) {
+        console.log(lastWordIndex, lastWord, query, elementsToRender);
+        elementsToRender.splice(lastWordIndex + 1, 0, '</Query>');
+      }
     });
-    return elementsToRender.join(' ');
+    let joinedElements = elementsToRender.join(' ');
+    const startingQueryCount = (joinedElements.match(/<Query/g) || []).length;
+    const endingQueryCount = (joinedElements.match(/<\/Query/g) || []).length;
+
+    // for now a Hacky way of making sure the responses are rendered;
+    if (startingQueryCount != endingQueryCount) {
+      for(let iterator = 1; iterator <= (startingQueryCount - endingQueryCount); iterator++) {
+        joinedElements += '</Query>'
+      }
+    }
+    return joinedElements;
   };
 
   const resetToolTip = (e) => {
