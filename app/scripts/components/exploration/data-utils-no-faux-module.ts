@@ -64,8 +64,10 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
   return foundMetrics;
 }
 
-function getInitialColorMap(dataset: DatasetLayer): string {
-  return dataset.sourceParams?.colormap_name ?? DEFAULT_COLORMAP;
+// Shamelessly copied over from https://github.com/NASA-IMPACT/veda-ui/pull/1218, credits to @hanbuyl.
+// will resolve in favor of her changes later
+function getInitialColorMap(dataset: DatasetLayer): string|undefined {
+  return dataset.sourceParams?.colormap_name;
 }
 
 export function reconcileDatasets(
