@@ -1,23 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { Icon } from "@trussworks/react-uswds";
+import { Icon } from '@trussworks/react-uswds';
 import { CollecticonDrop } from '@devseed-ui/collecticons';
-import { sequentialColorMaps, divergingColorMaps, restColorMaps } from './colorMaps';
+
+import {
+  sequentialColorMaps,
+  divergingColorMaps,
+  restColorMaps
+} from './colorMaps';
 
 import './colormap-options.scss';
+import { ColorRangeSlider } from './colorRangeSlider';
+import { colorMapScale } from '$components/exploration/types.d.ts';
 
 export const DEFAULT_COLORMAP = 'viridis';
 
 const CURATED_SEQUENTIAL_COLORMAPS = [
-  'viridis', 'plasma', 'inferno', 'magma', 'cividis',
-  'purples', 'blues', 'reds', 'greens', 'oranges',
-  'ylgnbu', 'ylgn', 'gnbu'
+  'viridis',
+  'plasma',
+  'inferno',
+  'magma',
+  'cividis',
+  'purples',
+  'blues',
+  'reds',
+  'greens',
+  'oranges',
+  'ylgnbu',
+  'ylgn',
+  'gnbu'
 ];
 
-const CURATED_DIVERGING_COLORMAPS = [
-  'rdbu', 'rdylbu', 'bwr', 'coolwarm'
-];
+const CURATED_DIVERGING_COLORMAPS = ['rdbu', 'rdylbu', 'bwr', 'coolwarm'];
 
-export const classifyColormap = (colormapName: string): 'sequential' | 'diverging' | 'rest' | 'unknown' => {
+export const classifyColormap = (
+  colormapName: string
+): 'sequential' | 'diverging' | 'rest' | 'unknown' => {
   const baseName = normalizeColorMap(colormapName);
 
   if (sequentialColorMaps[baseName]) {
@@ -33,9 +50,16 @@ export const classifyColormap = (colormapName: string): 'sequential' | 'divergin
 interface ColormapOptionsProps {
   colorMap: string | undefined;
   setColorMap: (colorMap: string) => void;
+  min: number;
+  max: number;
+  setColorMapScale: (colorMapScale: colorMapScale) => void;
+  colorMapScale: colorMapScale | undefined;
 }
 
-export const getColormapColors = (colormapName: string, isReversed: boolean): string[] => {
+export const getColormapColors = (
+  colormapName: string,
+  isReversed: boolean
+): string[] => {
   const baseName = normalizeColorMap(colormapName);
   const colormapData =
     sequentialColorMaps[baseName] ||
@@ -49,10 +73,19 @@ export const getColormapColors = (colormapName: string, isReversed: boolean): st
     return `rgba(${r}, ${g}, ${b}, ${a})`;
   });
 
-  return isReversed ? colors.reduceRight((acc, color) => [...acc, color], []) : colors;
+  return isReversed
+    ? colors.reduceRight((acc, color) => [...acc, color], [])
+    : colors;
 };
 
-export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: ColormapOptionsProps) {
+export function ColormapOptions({
+  colorMap = DEFAULT_COLORMAP,
+  min,
+  max,
+  setColorMap,
+  setColorMapScale,
+  colorMapScale
+}: ColormapOptionsProps) {
   const initialIsReversed = colorMap.endsWith('_r');
   const initialColorMap = normalizeColorMap(colorMap);
 
@@ -63,9 +96,15 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
   const [customColorMap, setCustomColorMap] = useState<string | null>(null);
 
   useEffect(() => {
-    if (colormapType === 'sequential' && !CURATED_SEQUENTIAL_COLORMAPS.includes(selectedColorMap)) {
+    if (
+      colormapType === 'sequential' &&
+      !CURATED_SEQUENTIAL_COLORMAPS.includes(selectedColorMap)
+    ) {
       setCustomColorMap(selectedColorMap);
-    } else if (colormapType === 'diverging' && !CURATED_DIVERGING_COLORMAPS.includes(selectedColorMap)) {
+    } else if (
+      colormapType === 'diverging' &&
+      !CURATED_DIVERGING_COLORMAPS.includes(selectedColorMap)
+    ) {
       setCustomColorMap(selectedColorMap);
     }
   }, [selectedColorMap, colormapType]);
@@ -74,15 +113,25 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
 
   if (colormapType === 'sequential') {
     if (customColorMap) {
-      availableColormaps = [{ name: customColorMap }, ...CURATED_SEQUENTIAL_COLORMAPS.map(name => ({ name }))];
+      availableColormaps = [
+        { name: customColorMap },
+        ...CURATED_SEQUENTIAL_COLORMAPS.map((name) => ({ name }))
+      ];
     } else {
-      availableColormaps = CURATED_SEQUENTIAL_COLORMAPS.map(name => ({ name }));
+      availableColormaps = CURATED_SEQUENTIAL_COLORMAPS.map((name) => ({
+        name
+      }));
     }
   } else if (colormapType === 'diverging') {
     if (customColorMap) {
-      availableColormaps = [{ name: customColorMap }, ...CURATED_DIVERGING_COLORMAPS.map(name => ({ name }))];
+      availableColormaps = [
+        { name: customColorMap },
+        ...CURATED_DIVERGING_COLORMAPS.map((name) => ({ name }))
+      ];
     } else {
-      availableColormaps = CURATED_DIVERGING_COLORMAPS.map(name => ({ name }));
+      availableColormaps = CURATED_DIVERGING_COLORMAPS.map((name) => ({
+        name
+      }));
     }
   } else if (colormapType === 'rest') {
     availableColormaps = [{ name: selectedColorMap }];
@@ -105,17 +154,36 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
 
   return (
     <div className='colormap-options__container bg-white shadow-1 maxh-mobile-lg'>
-      <div className='display-flex flex-align-center text-gray-90 padding-2 font-heading-xs text-bold'><CollecticonDrop className='margin-right-1' /> Colormap options</div>
+      <div className='display-flex flex-align-center text-gray-90 padding-2 font-heading-xs text-bold'>
+        <CollecticonDrop className='margin-right-1' /> Colormap options
+      </div>
 
-      <div className='display-flex flex-align-center flex-justify border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2'>
-        <div className='display-flex flex-align-center' onClick={handleReverseToggle}>
-          <label className='font-ui-3xs text-gray-90 text-semibold margin-right-1'>Reverse</label>
+      <div className='display-flex flex-align-center flex-column flex-justify border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2'>
+        <ColorRangeSlider
+          min={min}
+          max={max}
+          colorMapScale={colorMapScale}
+          setColorMapScale={setColorMapScale}
+        />
+        <div
+          className='display-flex flex-align-center width-full padding-top-1'
+          onClick={handleReverseToggle}
+        >
+          <label className='font-ui-3xs text-gray-90 text-semibold margin-right-1'>
+            Reverse
+          </label>
+
           {isReversed ? (
             <Icon.ToggleOn className='text-primary' size={4} />
           ) : (
             <Icon.ToggleOff className='text-base-light' size={4} />
           )}
-          <input className='colormap-options__input' checked={isReversed} type='checkbox' readOnly />
+          <input
+            className='colormap-options__input'
+            checked={isReversed}
+            type='checkbox'
+            readOnly
+          />
         </div>
       </div>
 
@@ -125,13 +193,21 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
 
           return (
             <div
-              className={`colormap-options__item display-flex flex-align-center flex-justify padding-2 border-bottom-1px border-base-lightest radius-md ${selectedColorMap.toLowerCase() === name.toLowerCase() ? 'selected' : ''}`}
+              className={`colormap-options__item display-flex flex-align-center flex-justify padding-2 border-bottom-1px border-base-lightest radius-md ${
+                selectedColorMap.toLowerCase() === name.toLowerCase()
+                  ? 'selected'
+                  : ''
+              }`}
               key={name}
               onClick={() => handleColorMapSelect(name.toLowerCase())}
             >
               <div
                 className='colormap-options__preview display-flex border-1px border-base-lightest radius-md margin-right-2'
-                style={{ background: `linear-gradient(to right, ${previewColors.join(', ')})` }}
+                style={{
+                  background: `linear-gradient(to right, ${previewColors.join(
+                    ', '
+                  )})`
+                }}
               />
               <label className='colormap-options__label text-gray-90 font-heading-xs flex-1'>
                 {name}
@@ -143,7 +219,6 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
     </div>
   );
 }
-
 
 function normalizeColorMap(colorMap: string): string {
   return colorMap.replace(/_r$/, '');

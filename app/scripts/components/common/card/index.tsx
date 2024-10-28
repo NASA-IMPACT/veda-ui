@@ -375,3 +375,4 @@ function CardComponent(props: CardComponentPropsType) {
 export const Card = styled(CardComponent)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
+
