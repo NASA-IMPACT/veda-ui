@@ -9,7 +9,7 @@ import { ComponentOverride } from '$components/common/page-overrides';
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
 
-const Brand = styled.div`
+export const Brand = styled.div`
   display: flex;
   flex-shrink: 0;
 
@@ -74,7 +74,7 @@ const Brand = styled.div`
   }
 `;
 
-const PageTitleSecLink = styled.a`
+export const PageTitleSecLink = styled.a`
   align-self: end;
   font-size: 0.75rem;
   font-weight: ${themeVal('type.base.bold')};

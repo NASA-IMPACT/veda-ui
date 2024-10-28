@@ -17,7 +17,7 @@ import PageHero from '$components/common/page-hero';
 import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import PageHeader from '$components/common/page-header';
-import Logo from '$components/common/page-header/logo';
+import LogoContainer from '$components/common/page-header/logo-container';
 
 
 export {
@@ -41,7 +41,7 @@ export {
   PageHeader,
   ReactQueryProvider,
   StoriesHubContent,
-  Logo,
+  LogoContainer,
   // HOOKS and utility functions
   useFiltersWithQS
 };
