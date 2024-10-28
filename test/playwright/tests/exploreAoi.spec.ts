@@ -23,33 +23,38 @@ test.describe('Area of Interest (AOI) Analysis', () => {
   );
 
   test('User selects a pre-defined AOI', async ({ page }) => {
-    // When I select the "Analyze an area" tool (Dropdown menu)
-    const toolbar = page.getByTestId('preset-selector');
-    // And choose one of the listed regions
-    await toolbar.selectOption('Hawaii');
+    await test.step('When I select the "Analyze an area" tool (Dropdown menu)', async () => {
+      const toolbar = page.getByTestId('preset-selector');
 
-    // Then map should display the selected area as the AOI
-    // const aoi = await page.$('selector-for-aoi'); // Adjust the selector as needed
-    // expect(aoi).not.toBeNull();
+      await test.step('And choose one of the listed regions', async () => {
+        toolbar.selectOption('Hawaii');
+      });
+    });
 
-    // // And the AOI should not be editable when clicking on it
-    // await page.click('selector-for-aoi'); // Adjust the selector as needed
-    // const isEditable = await page.$eval('selector-for-aoi', el => console.log(el)); // Adjust the selector as needed
-    // expect(isEditable).toBe(false);
+    await test.step('Then the map should display the selected area as the AOI', async () => {
+      // const aoi = await page.$('selector-for-aoi'); // Adjust the selector as needed
+      // expect(aoi).not.toBeNull();
 
-    // And the analysis message should display the size of the area
-    const analysisMessage = await page
-      .getByTestId('analysis-message')
-      .textContent()
+      await test.step('And the AOI should not be editable when clicking on it', async () => {
+        // await page.click('selector-for-aoi'); // Adjust the selector as needed
+        // const isEditable = await page.$eval('selector-for-aoi', el => console.log(el)); // Adjust the selector as needed
+        // expect(isEditable).toBe(false);
+      });
+    });
 
-    expect(analysisMessage).toContain('An area of 17 K km2 is selected.');
+    await expect(
+      page.getByTestId('analysis-message'),
+      'And the analysis message should display the size of the area'
+    ).toHaveText(/An area of 17 K km2/i);
 
-    // And the 'Delete all areas' button should be shown
-    const deleteButton = await page.$('text=Delete all areas');
-    expect(deleteButton).not.toBeNull();
+    await expect(
+      page.getByRole('button', { name: 'Delete all areas' }),
+      'And the "Delete all areas" button should be shown'
+    ).toBeVisible();
 
-    // And the 'Run analysis' button should be shown
-    const runButton = await page.$('text=Run analysis');
-    expect(runButton).not.toBeNull();
+    await expect(
+      page.getByRole('button', { name: 'Run analysis' }),
+      'And the "Run analysis" button should be shown'
+    ).toBeVisible();
   });
 });
