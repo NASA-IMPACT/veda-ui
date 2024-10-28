@@ -17,7 +17,6 @@ import {
   DATA_METRICS,
   DEFAULT_DATA_METRICS
 } from './components/datasets/analysis-metrics';
-import { DEFAULT_COLORMAP } from './components/datasets/colormap-options';
 import { utcString2userTzDate } from '$utils/date';
 import {
   DatasetLayer,
@@ -64,8 +63,6 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
   return foundMetrics;
 }
 
-// Shamelessly copied over from https://github.com/NASA-IMPACT/veda-ui/pull/1218, credits to @hanbuyl.
-// will resolve in favor of her changes later
 function getInitialColorMap(dataset: DatasetLayer): string|undefined {
   return dataset.sourceParams?.colormap_name;
 }
@@ -196,6 +193,10 @@ export function resolveRenderParams(
   datasetSourceParams: Record<string, any> | undefined,
   queryDataRenders: Record<string, any> | undefined
 ): Record<string, any> | undefined {
+  // Return null if there are no user-configured sourcparams nor render parameter
+  // so it doesn't get subbed with default values
+  if (!datasetSourceParams && !queryDataRenders) return undefined;
+
   // Start with sourceParams from the dataset.
   // Return the source param as it is if exists
   if (hasValidSourceParams(datasetSourceParams)) {

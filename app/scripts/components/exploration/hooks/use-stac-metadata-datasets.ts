@@ -50,12 +50,12 @@ function reconcileQueryDataWithDataset(
 
       let renderParams;
 
-      if (isRenderParamsApplicable(base.data.type)) {
-        renderParams = resolveRenderParams(
-          base.data.sourceParams,
-          queryData.data.renders
-        );
-      }
+      // if (isRenderParamsApplicable(base.data.type)) {
+      //   renderParams = resolveRenderParams(
+      //     base.data.sourceParams,
+      //     queryData.data.renders
+      //   );
+      // }
 
       base = {
         ...base,
