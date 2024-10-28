@@ -13,9 +13,11 @@ import { reveal } from '@devseed-ui/animation';
 import { getBannerFromVedaConfig, getCookieConsentFromVedaConfig } from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
-import Banner from '../banner';
-import { CookieConsent } from '../cookie-consent';
+// import Banner from '../banner';
+// import { CookieConsent } from '../cookie-consent';
 import { SESSION_KEY } from '../cookie-consent/utils';
+const Banner = React.lazy(() => import('../banner'));
+const CookieConsent = React.lazy(() => import('../cookie-consent'));
 
 import { LayoutRootContext } from './context';
 
@@ -73,7 +75,9 @@ function LayoutRoot(props: { children?: ReactNode }) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
-      {bannerContent && <Banner appTitle={bannerContent.title} {...bannerContent} />}
+      {bannerContent && (
+        <Banner appTitle={bannerContent.title} {...bannerContent} />
+      )}
       <NavWrapper
         mainNavItems={mainNavItems}
         subNavItems={subNavItems}

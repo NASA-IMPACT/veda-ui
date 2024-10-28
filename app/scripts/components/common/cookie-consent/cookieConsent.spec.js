@@ -7,7 +7,7 @@ import { MemoryRouter } from 'react-router-dom'; // For testing
 import { createMemoryHistory } from 'history';
 
 import { COOKIE_CONSENT_KEY, SESSION_KEY } from './utils';
-import { CookieConsent } from './index';
+import CookieConsent from './index';
 
 describe('Cookie consent form should render with correct content.', () => {
   const cookieData = {

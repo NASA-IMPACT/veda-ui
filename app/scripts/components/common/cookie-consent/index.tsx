@@ -28,20 +28,16 @@ export const CookieConsent = ({
   sessionStart,
   setGoogleTagManager
 }: CookieConsentProps) => {
-  const readCookie = (name) => {
-    const nameEQ = name + '=';
-    const attribute = document.cookie.split(';');
-    for (let i = 0; i < attribute.length; i++) {
-      let c = attribute[i];
-      while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-  };
+ const readCookie = (name) => {
+  const nameEQ = name + '=';
+  const attribute = document.cookie.split(';');
+  const cookie = attribute.find(cookie => cookie.trim().startsWith(nameEQ));
+  return cookie ? cookie.substring(nameEQ.length).trim() : null;
+};
+
   const location = useLocation();
 
   const getCookie = () => {
-
     const cookie = readCookie(COOKIE_CONSENT_KEY);
     if (cookie) {
       const cookieContents = JSON.parse(cookie);
@@ -71,9 +67,11 @@ export const CookieConsent = ({
   };
 
   const setSessionData = () => {
-    const checkForSessionDate = window.sessionStorage.getItem(SESSION_KEY);
-    if (!checkForSessionDate) {
-      window.sessionStorage.setItem(SESSION_KEY, 'true');
+    if (typeof window !== 'undefined') {
+      const checkForSessionDate = window.sessionStorage.getItem(SESSION_KEY);
+      if (!checkForSessionDate) {
+        window.sessionStorage.setItem(SESSION_KEY, 'true');
+      }
     }
   };
   useEffect(() => {
@@ -167,3 +165,5 @@ export const CookieConsent = ({
     </div>
   );
 };
+
+export default CookieConsent;
