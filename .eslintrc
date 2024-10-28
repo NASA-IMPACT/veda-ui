@@ -99,7 +99,7 @@
       "files": ["**/*.ts", "**/*.tsx"],
       "plugins": ["@typescript-eslint"],
       "rules": {
-        "prettier/prettier": 0,
+        "prettier/prettier": 2,
         "@typescript-eslint/no-unused-vars": 2,
         "@typescript-eslint/no-non-null-assertion": 0
       },
