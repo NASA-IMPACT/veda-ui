@@ -2,13 +2,17 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import { useTheme } from 'styled-components';
 import { useAtomValue } from 'jotai';
-import { useRef } from 'react';
 import { useControl } from 'react-map-gl';
+import type { MapRef } from 'react-map-gl';
 import useAois from '../hooks/use-aois';
 import { aoisFeaturesAtom } from './atoms';
 import { computeDrawStyles } from './style';
 
 type DrawControlProps = MapboxDraw.DrawOptions;
+
+interface ExtendedMapRef extends MapRef {
+  _drawControl?: MapboxDraw;
+}
 
 export const STATIC_MODE = 'static_mode';
 export const SIMPLE_SELECT = 'simple_select';
@@ -30,13 +34,12 @@ const customDirectSelect = {
 
 export default function DrawControl(props: DrawControlProps) {
   const theme = useTheme();
-  const control = useRef<MapboxDraw>();
   const aoisFeatures = useAtomValue(aoisFeaturesAtom);
   const { onUpdate, onDelete, onSelectionChange, onDrawModeChange } = useAois();
 
-  useControl<MapboxDraw>(
+  const drawControl = useControl<MapboxDraw>(
     () => {
-      control.current = new MapboxDraw({
+      const control = new MapboxDraw({
         displayControlsDefault: false,
         styles: computeDrawStyles(theme),
         modes: {
@@ -47,23 +50,25 @@ export default function DrawControl(props: DrawControlProps) {
         },
         ...props
       });
-      return control.current;
+      return control;
     },
-    ({ map }: { map: any }) => {
-      map._drawControl = control.current;
+    ({ map }) => {
+      // We're making the controls available on the map instance for later use throughout
+      // the app (e.g in the CustomAoIControl)
+      (map as ExtendedMapRef)._drawControl = drawControl;
       map.on('draw.create', onUpdate);
       map.on('draw.update', onUpdate);
       map.on('draw.delete', onDelete);
       map.on('draw.selectionchange', onSelectionChange);
       map.on('draw.modechange', onDrawModeChange);
       map.on('load', () => {
-        control.current?.set({
+        drawControl.set({
           type: 'FeatureCollection',
           features: aoisFeatures
         });
       });
     },
-    ({ map }: { map: any }) => {
+    ({ map }) => {
       map.off('draw.create', onUpdate);
       map.off('draw.update', onUpdate);
       map.off('draw.delete', onDelete);

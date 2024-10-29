@@ -323,21 +323,20 @@ export default function CustomAoIControl({
   disableReason?: React.ReactNode;
 }) {
   const { main } = useMaps();
-
   const { isDrawing } = useAois();
 
-  // Start/stop the drawing.
+  // Start the drawing mode when isDrawing is true
+  // There's no need to switch back to 'simple_select' mode when !isDrawing
+  // as Mapbox Draw handles this internally when the drawing is completed
   useEffect(() => {
-    // Property was added to access draw control.
-    const mbDraw = main?._drawControl;
+    if (!main) return;
+
+    const mbDraw = main._drawControl;
+
     if (!mbDraw) return;
 
     if (isDrawing) {
       mbDraw.changeMode(DRAW_POLYGON);
-    } else {
-      mbDraw.changeMode(SIMPLE_SELECT, {
-        featureIds: mbDraw.getSelectedIds()
-      });
     }
   }, [main, isDrawing]);
 
@@ -347,5 +346,7 @@ export default function CustomAoIControl({
       position: 'top-left'
     }
   );
+
   return null;
 }
+

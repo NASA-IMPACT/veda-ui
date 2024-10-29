@@ -5,7 +5,7 @@ import { useAtom } from 'jotai';
 import { PopoverTourComponent, TourManager } from './tour-manager';
 import { timelineDatasetsAtom } from './atoms/datasets';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
-import { allExploreDatasets} from './data-utils';
+import { allExploreDatasets } from './data-utils';
 import ExplorationAndAnalysis from '.';
 import { urlAtom } from '$utils/params-location-atom/url';
 import { DATASETS_PATH, EXPLORATION_PATH } from '$utils/routes';
