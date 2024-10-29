@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Icon } from '@trussworks/react-uswds';
-import { useLocation } from 'react-router-dom';
 
-import { COOKIE_CONSENT_KEY, SESSION_KEY } from './utils';
+import {
+  COOKIE_CONSENT_KEY,
+  SESSION_KEY,
+
+  getCookie
+} from './utils';
 import {
   USWDSAlert,
   USWDSButton,
@@ -28,25 +32,6 @@ export const CookieConsent = ({
   sessionStart,
   setGoogleTagManager
 }: CookieConsentProps) => {
- const readCookie = (name) => {
-  const nameEQ = name + '=';
-  const attribute = document.cookie.split(';');
-  const cookie = attribute.find(cookie => cookie.trim().startsWith(nameEQ));
-  return cookie ? cookie.substring(nameEQ.length).trim() : null;
-};
-
-  const location = useLocation();
-
-  const getCookie = () => {
-    const cookie = readCookie(COOKIE_CONSENT_KEY);
-    if (cookie) {
-      const cookieContents = JSON.parse(cookie);
-      if (cookieContents.answer) setGoogleTagManager();
-      SetCookieConsentResponded(cookieContents.responded);
-      SetCookieConsentAnswer(cookieContents.answer);
-    }
-  };
-
   const [cookieConsentResponded, SetCookieConsentResponded] =
     useState<boolean>(false);
   const [cookieConsentAnswer, SetCookieConsentAnswer] =
@@ -66,6 +51,9 @@ export const CookieConsent = ({
     )}; path=/; expires=${closeConsent ? '0' : setCookieExpiration()}`;
   };
 
+  const currentURL =
+    typeof window !== 'undefined' ? window.location.href : null;
+
   const setSessionData = () => {
     if (typeof window !== 'undefined') {
       const checkForSessionDate = window.sessionStorage.getItem(SESSION_KEY);
@@ -77,12 +65,16 @@ export const CookieConsent = ({
   useEffect(() => {
     if (sessionStart !== 'true' && !cookieConsentResponded) {
       setSessionData();
-      getCookie();
+      getCookie(
+        SetCookieConsentResponded,
+        SetCookieConsentAnswer,
+        setGoogleTagManager
+      );
     }
     if (!cookieConsentResponded && closeConsent) {
       setCloseConsent(false);
     }
-  }, [location]);
+  }, [currentURL]);
   useEffect(() => {
     const cookieValue = {
       responded: cookieConsentResponded,
@@ -98,7 +90,7 @@ export const CookieConsent = ({
     closeConsent,
     getCookie,
     setSessionData,
-    location
+    currentURL
   ]);
 
   return (
