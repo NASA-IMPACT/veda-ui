@@ -1,6 +1,6 @@
 import React, { lazy, MouseEventHandler } from 'react';
 import styled, { css } from 'styled-components';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 import {
   glsp,

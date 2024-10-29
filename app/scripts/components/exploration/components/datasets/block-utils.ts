@@ -1,11 +1,9 @@
-import {
-  endOfDay,
-  endOfMonth,
-  endOfYear,
-  startOfDay,
-  startOfMonth,
-  startOfYear,
-} from 'date-fns';
+import endOfDay from 'date-fns/endOfDay';
+import endOfMonth from 'date-fns/endOfMonth';
+import endOfYear from 'date-fns/endOfYear';
+import startOfDay from 'date-fns/startOfDay';
+import startOfMonth from 'date-fns/startOfMonth';
+import startOfYear from 'date-fns/startOfYear';
 import { TimeDensity } from '$components/exploration/types.d.ts';
 
 /**
