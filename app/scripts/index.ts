@@ -18,6 +18,7 @@ import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import PageHeader from '$components/common/page-header';
 import LogoContainer from '$components/common/page-header/logo-container';
+import type { NavItem, InternalNavLink } from '$components/common/page-header/types';
 
 
 export {
@@ -42,6 +43,11 @@ export {
   ReactQueryProvider,
   StoriesHubContent,
   LogoContainer,
+
   // HOOKS and utility functions
-  useFiltersWithQS
+  useFiltersWithQS,
+
+  // TYPES
+  NavItem,
+  InternalNavLink
 };
