@@ -89,13 +89,20 @@ function CustomAoI({
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
     const aoiSelectedFor = selectedForEditing ? SIMPLE_SELECT : STATIC_MODE;
-    mbDraw.changeMode(aoiSelectedFor);
+    const selectedFeatures = features.filter(f => f.selected);
+
+    if (selectedFeatures.length > 0) {
+      const selectedIds = selectedFeatures.map(f => f.id);
+      mbDraw.changeMode(aoiSelectedFor, {
+        featureIds: selectedIds
+      });
+    }
     const onSelChange = () => forceUpdate(Date.now());
     map.on('draw.selectionchange', onSelChange);
     return () => {
       map.off('draw.selectionchange', onSelChange);
     };
-  }, [map, selectedForEditing]);
+  }, [selectedForEditing]);
 
   const resetAoisOnMap = useCallback(() => {
     const mbDraw = map?._drawControl;
