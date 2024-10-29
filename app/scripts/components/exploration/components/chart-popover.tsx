@@ -6,7 +6,7 @@ import React, {
   useMemo
 } from 'react';
 import { createPortal } from 'react-dom';
-import styled, {css} from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   useFloating,
   autoUpdate,
@@ -15,7 +15,7 @@ import {
   shift
 } from '@floating-ui/react';
 import { bisector, ScaleTime, sort } from 'd3';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { AnalysisTimeseriesEntry, TimeDensity, TimelineDatasetSuccess } from '../types.d.ts';

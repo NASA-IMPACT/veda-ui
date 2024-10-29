@@ -6,7 +6,9 @@ import {
   VectorSourceImpl
 } from 'mapbox-gl';
 import { useTheme } from 'styled-components';
-import { endOfDay, startOfDay } from 'date-fns';
+import endOfDay from 'date-fns/endOfDay';
+import startOfDay from 'date-fns/startOfDay';
+
 import centroid from '@turf/centroid';
 import { LngLatLike } from 'react-map-gl';
 import { Feature } from 'geojson';

@@ -6,15 +6,13 @@ import {
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
 import { select, zoom } from 'd3';
-import {
-  add,
-  isAfter,
-  isBefore,
-  isWithinInterval,
-  max,
-  sub
-} from 'date-fns';
+import add from 'date-fns/add';
+import isAfter from 'date-fns/isAfter';
+import isBefore from 'date-fns/isBefore';
+import max from 'date-fns/max';
+import sub from 'date-fns/sub';
 import startOfDay from 'date-fns/startOfDay';
+import isWithinInterval from 'date-fns/isWithinInterval';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, {
   useCallback,
