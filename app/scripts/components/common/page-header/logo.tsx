@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { ComponentType } from 'react';
 import styled from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
-import { Link } from 'react-router-dom';
 import NasaLogo from '../nasa-logo';
 import { Tip } from '../tip';
+import { LinkProperties } from '../card';
 import { ComponentOverride } from '$components/common/page-overrides';
 
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
 
-const Brand = styled.div`
+export const Brand = styled.div`
   display: flex;
   flex-shrink: 0;
 
@@ -74,7 +74,7 @@ const Brand = styled.div`
   }
 `;
 
-const PageTitleSecLink = styled(Link)`
+export const PageTitleSecLink = styled.a`
   align-self: end;
   font-size: 0.75rem;
   font-weight: ${themeVal('type.base.bold')};
@@ -98,16 +98,18 @@ const PageTitleSecLink = styled(Link)`
   `}
 `;
 
-export default function Logo () {
+export default function Logo ({ linkProperties }: { linkProperties: LinkProperties }) {
+  const LinkElement: ComponentType<any> = linkProperties.LinkElement as ComponentType<any>;
+
   return (
   <ComponentOverride with='headerBrand'>
     <Brand>
-      <Link to='/'>
+      <LinkElement {...{[linkProperties.pathAttributeKeyName]: '/'}}>
         <NasaLogo />
         <span>Earthdata</span> <span>{appTitle}</span>
-      </Link>
+      </LinkElement>
       <Tip content={`v${appVersion}`}>
-        <PageTitleSecLink to='/development'>Beta</PageTitleSecLink>
+      <PageTitleSecLink {...{as: linkProperties.LinkElement as ComponentType<any>, [linkProperties.pathAttributeKeyName]: '/development'}}>Beta</PageTitleSecLink>
       </Tip>
     </Brand>
   </ComponentOverride>);

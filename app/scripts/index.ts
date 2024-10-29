@@ -16,6 +16,8 @@ import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
 import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
+import PageHeader from '$components/common/page-header';
+import LogoContainer from '$components/common/page-header/logo-container';
 
 
 export {
@@ -36,8 +38,10 @@ export {
   DevseedUiThemeProvider,
   PageMainContent,
   PageHero,
+  PageHeader,
   ReactQueryProvider,
   StoriesHubContent,
+  LogoContainer,
   // HOOKS and utility functions
   useFiltersWithQS
 };
