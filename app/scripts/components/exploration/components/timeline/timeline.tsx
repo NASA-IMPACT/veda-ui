@@ -12,6 +12,7 @@ import isBefore from 'date-fns/isBefore';
 import max from 'date-fns/max';
 import sub from 'date-fns/sub';
 import startOfDay from 'date-fns/startOfDay';
+import isWithinInterval from 'date-fns/isWithinInterval';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, {
   useCallback,
