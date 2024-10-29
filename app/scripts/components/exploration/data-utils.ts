@@ -1,10 +1,8 @@
-import {
-  eachDayOfInterval,
-  eachYearOfInterval,
-  format,
-  startOfDay,
-  startOfYear
-} from 'date-fns';
+import eachDayOfInterval from 'date-fns/eachDayOfInterval';
+import eachYearOfInterval from 'date-fns/eachYearOfInterval';
+import format from 'date-fns/format';
+import startOfDay from 'date-fns/startOfDay';
+import startOfYear from 'date-fns/startOfYear';
 import startOfMonth from 'date-fns/startOfMonth';
 import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
 import {

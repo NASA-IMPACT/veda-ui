@@ -1,7 +1,9 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { drag, ScaleTime, select } from 'd3';
-import { clamp, format, startOfDay } from 'date-fns';
+import clamp from 'date-fns/clamp';
+import format from 'date-fns/format';
+import startOfDay from 'date-fns/startOfDay';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { TIMELINE_PLAYHEAD_COLOR_LABEL, TIMELINE_PLAYHEAD_COLOR_PRIMARY, TIMELINE_PLAYHEAD_COLOR_SECONDARY, TIMELINE_PLAYHEAD_COLOR_TEXT } from './timeline-controls';
