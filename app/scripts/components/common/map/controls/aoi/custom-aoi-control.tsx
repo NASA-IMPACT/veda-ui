@@ -102,7 +102,7 @@ function CustomAoI({
     return () => {
       map.off('draw.selectionchange', onSelChange);
     };
-  }, [map, selectedForEditing]);
+  }, [selectedForEditing]);
 
   const resetAoisOnMap = useCallback(() => {
     const mbDraw = map?._drawControl;
