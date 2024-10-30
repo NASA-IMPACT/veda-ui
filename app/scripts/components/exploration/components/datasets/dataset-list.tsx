@@ -7,6 +7,7 @@ import { listReset } from '@devseed-ui/theme-provider';
 
 import { DatasetListItem } from './dataset-list-item';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
+import { LinkProperties } from '$types/veda';
 
 const DatasetListSelf = styled.ul`
   ${listReset()}
@@ -16,10 +17,11 @@ const DatasetListSelf = styled.ul`
 interface DatasetListProps {
   width: number;
   xScaled?: ScaleTime<number, number>;
+  linkProperties: LinkProperties;
 }
 
 export function DatasetList(props: DatasetListProps) {
-  const { width, xScaled } = props;
+  const { width, xScaled, linkProperties } = props;
   const [isDragging, setIsDragging] = useState(false);
 
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
@@ -35,6 +37,7 @@ export function DatasetList(props: DatasetListProps) {
       {datasets.map((dataset) => (
         <DatasetListItem
           key={dataset.data.id}
+          linkProperties={linkProperties}
           datasetId={dataset.data.id}
           width={width}
           xScaled={xScaled}
