@@ -22,7 +22,7 @@ interface LayerProps {
 
 export function Layer(props: LayerProps) {
   const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
-  const { isVisible, opacity, colorMap, scale } = dataset.settings;
+  const { isVisible, opacity, colorMap } = dataset.settings;
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(
@@ -40,6 +40,7 @@ export function Layer(props: LayerProps) {
     };
     return resolveConfigFunctions(dataset.data, bag);
   }, [dataset, relevantDate]);
+
   switch (dataset.data.type) {
     case 'vector':
       return (
@@ -71,7 +72,6 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
-          reScale={scale}
         />
       );
     case 'cmr':
@@ -88,7 +88,6 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
-          reScale={scale}
         />
       );
     case 'raster':
@@ -106,7 +105,6 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
-          reScale={scale}
         />
       );
     default:
