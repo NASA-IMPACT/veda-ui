@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAtom } from 'jotai';
 import {
   Modal,
   ModalBody,
@@ -8,16 +7,18 @@ import {
   ModalHeader
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
-  reconcileDatasets
+  reconcileDatasets,
+  getLayersFromDataset
 } from '../../data-utils-no-faux-module';
-import { datasetLayers } from '../../data-utils';
+import { TimelineDataset } from '../../types.d.ts';
+
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
 import CatalogContent from '$components/common/catalog/catalog-content';
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';
+
 import { DatasetData, LinkProperties, DatasetLayer } from '$types/veda';
 
 const DatasetModal = styled(Modal)`
@@ -68,16 +69,20 @@ interface DatasetSelectorModalProps {
   linkProperties: LinkProperties;
   datasets: DatasetData[];
   datasetPathName: string;
+  timelineDatasets: TimelineDataset[];
+  setTimelineDatasets: (datasets: TimelineDataset[]) => void;
 }
 
 export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
-  const { revealed, linkProperties, datasets, datasetPathName, close } = props;
+  const { revealed, linkProperties, datasets, datasetPathName, timelineDatasets, setTimelineDatasets, close } = props;
   const { LinkElement , pathAttributeKeyName } = linkProperties as { LinkElement: React.ElementType, pathAttributeKeyName: string };
 
-  const [timelineDatasets, setTimelineDatasets] = useAtom(timelineDatasetsAtom);
+  const datasetLayers = getLayersFromDataset(datasets);
+
   const [selectedIds, setSelectedIds] = useState<string[]>(
     timelineDatasets.map((dataset) => dataset.data.id)
   );
+  const enhancedDatasetLayers = datasetLayers.flatMap(e => e);
 
   // Use Jotai controlled atoms for query parameter manipulation on new E&A page
   const {search: searchTerm, taxonomies, onAction } = useFiltersWithURLAtom();
@@ -95,11 +100,12 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
 
   const onConfirm = useCallback(() => {
     setTimelineDatasets(
-      reconcileDatasets(selectedIds, datasetLayers, timelineDatasets)
+      reconcileDatasets(selectedIds, enhancedDatasetLayers, timelineDatasets)
     );
     onAction(FilterActions.CLEAR);
     close();
-  }, [close, selectedIds, timelineDatasets, setTimelineDatasets, onAction]);
+  }, [close, selectedIds, timelineDatasets, enhancedDatasetLayers, setTimelineDatasets, onAction]);
+
   const linkElementProps = {[pathAttributeKeyName]: datasetPathName};
   return (
     <DatasetModal

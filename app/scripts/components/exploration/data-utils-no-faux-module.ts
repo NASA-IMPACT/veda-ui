@@ -39,6 +39,16 @@ export const getDatasetLayers = (datasets: VedaDatum<DatasetData>) =>
     }));
   });
 
+  export const getLayersFromDataset = (datasets: DatasetData[]) =>
+    Object.values(datasets).map((dataset: DatasetData) => {
+      return dataset!.layers.map((l) => ({
+        ...l,
+        parentDataset: {
+          id: dataset!.id,
+          name: dataset!.name
+        }
+      }));
+    });
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
  * If the layer has metrics defined, it returns only the metrics that match the

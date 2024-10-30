@@ -21,6 +21,7 @@ import LogoContainer from '$components/common/page-header/logo-container';
 import type { NavItem, InternalNavLink, NavItemType } from '$components/common/page-header/types';
 
 import ExplorationAndAnalysis from '$components/exploration';
+import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
 
@@ -48,8 +49,9 @@ export {
   LogoContainer,
   ExplorationAndAnalysis,
   DatasetSelectorModal,
-
-  // HOOKS and utility functions
+  
+  // HOOKS
+  useTimelineDatasetAtom,
   useFiltersWithQS,
 
   // TYPES

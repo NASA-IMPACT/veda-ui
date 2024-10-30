@@ -10,6 +10,7 @@ import { useAnalysisController } from './hooks/use-analysis-data-request';
 import { TimelineDataset } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
+import { LinkProperties } from '$types/veda';
 
 // @TODO: "height: 100%" Added for exploration container to show correctly in NextJs instance but investigate why this is needed and possibly work to remove
 const Container = styled.div`
@@ -59,10 +60,11 @@ interface ExplorationAndAnalysisProps {
   datasets: TimelineDataset[];
   setDatasets: (datasets: TimelineDataset[]) => void;
   openDatasetsSelectionModal?: () => void;
+  linkProperties: LinkProperties;
 }
 
 function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
-  const { datasets, setDatasets, openDatasetsSelectionModal } = props;
+  const { datasets, setDatasets, linkProperties, openDatasetsSelectionModal } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
 
@@ -111,6 +113,7 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
             setSelectedCompareDay={setSelectedCompareDay}
             onDatasetAddClick={openDatasetsSelectionModal}
             panelHeight={panelHeight}
+            linkProperties={linkProperties}
           />
         </Panel>
       </PanelGroup>
