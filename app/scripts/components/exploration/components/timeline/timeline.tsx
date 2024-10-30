@@ -69,7 +69,6 @@ import { useAnalysisController } from '$components/exploration/hooks/use-analysi
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import Pluralize from '$utils/pluralize';
 import { getLowestCommonTimeDensity } from '$components/exploration/data-utils-no-faux-module';
-import { LinkProperties } from '$types/veda';
 
 const TimelineWrapper = styled.div`
   position: relative;
@@ -171,7 +170,6 @@ interface TimelineProps {
   setSelectedCompareDay: (d: Date | null) => void;
   onDatasetAddClick?: () => void;
   panelHeight: number;
-  linkProperties: LinkProperties;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -202,8 +200,7 @@ export default function Timeline(props: TimelineProps) {
     selectedCompareDay,
     setSelectedCompareDay,
     onDatasetAddClick,
-    panelHeight,
-    linkProperties
+    panelHeight
   } = props;
 
   // Refs for non react based interactions.
@@ -801,7 +798,7 @@ export default function Timeline(props: TimelineProps) {
           ref={datasetsContainerRef}
           panelHeight={panelHeight}
         >
-          <DatasetList width={width} xScaled={xScaled} linkProperties={linkProperties} />
+          <DatasetList width={width} xScaled={xScaled} />
         </TimelineContentInner>
       </TimelineContent>
     </TimelineWrapper>
