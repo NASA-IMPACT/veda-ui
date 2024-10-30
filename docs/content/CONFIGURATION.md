@@ -67,6 +67,19 @@ type?: BannerType
 | text | string | The text content to display in the banner. This can be an HTML string. | 'Read the new data insight on using EMIT and AVIRIS-3 for monitoring large methane emission events.' |
 | type | enum('info', 'warning') |The type of information delivered by the banner, which determines its background color. | 'info'|
 
+### Cookie Consent Form
+
+`cookieConsentForm` object allows you to display a site-wide Cookie Consent form that sits atop your application. To create a Cookie Consent form, you need to provide two attributes as outlined below. 
+
+```
+title: string,
+copy: string,
+``` 
+
+| Option | Type | Description| Example|
+|---|---|---|---|
+| title | string | 	The text content to display in the title of the cookie consent form. This can be an HTML string. | 'Cookie Consent'|
+| copy | string | The content of the Cookie Consent form, typically is a string that follows MDX documentation format. Allowing flexibility to link to different data management policy.  | 'To learn more about it, see our [Privacy Policy ]\(https://www.nasa.gov/privacy/#cookies)\'  |
 
 ## Meta files
 
