@@ -62,10 +62,6 @@ export default function ExplorationAndAnalysisContainer() {
       <PageMainContent>
         <PageHero title='Exploration' isHidden />
         <ExplorationAndAnalysis
-          linkProperties={{
-            LinkElement: SmartLink,
-            pathAttributeKeyName: 'to'
-          }}
           datasets={timelineDatasets}
           setDatasets={setTimelineDatasets}
           openDatasetsSelectionModal={openModal}

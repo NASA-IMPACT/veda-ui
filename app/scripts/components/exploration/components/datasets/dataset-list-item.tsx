@@ -41,7 +41,6 @@ import {
   useAnalysisController,
   useAnalysisDataRequest
 } from '$components/exploration/hooks/use-analysis-data-request';
-import { LinkProperties } from '$types/veda';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -94,11 +93,10 @@ interface DatasetListItemProps {
   xScaled?: ScaleTime<number, number>;
   onDragStart?: () => void;
   onDragEnd?: () => void;
-  linkProperties: LinkProperties;
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
-  const { datasetId, width, xScaled, linkProperties, onDragStart, onDragEnd } = props;
+  const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
@@ -220,7 +218,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
                 revealed={!!modalLayerInfo}
                 close={() => setModalLayerInfo(undefined)}
                 layerData={modalLayerInfo}
-                linkProperties={linkProperties}
               />
             )}
           </DatasetHeaderInner>

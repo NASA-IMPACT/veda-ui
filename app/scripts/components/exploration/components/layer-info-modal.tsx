@@ -15,7 +15,6 @@ import { LayerInfo } from 'veda';
 import { getDatasetPath } from '$utils/routes';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
-import { LinkProperties } from '$types/veda';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -75,8 +74,7 @@ export interface LayerInfoModalData {
 interface LayerInfoModalProps {
   revealed: boolean;
   close: () => void;
-  layerData: LayerInfoModalData,
-  linkProperties: LinkProperties;
+  layerData: LayerInfoModalData
 }
 
 export function LayerInfoLiner(props: { info: LayerInfo }) {
@@ -102,8 +100,8 @@ const LayerInfoLinerModal = styled.div`
 `;
 
 export default function LayerInfoModal(props: LayerInfoModalProps) {
-  const { revealed, close, layerData, linkProperties } = props;
-  const { LinkElement, pathAttributeKeyName } = linkProperties;
+  const { revealed, close, layerData } = props;
+
   const { parentData } = layerData;
   const dataCatalogPage = getDatasetPath(parentData.id);
   return (
@@ -135,7 +133,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
         <div dangerouslySetInnerHTML={{__html: parentData.infoDescription?? 'Currently, we are unable to display the layer information, but you can find it in the data catalog.' }} />
       }
       footerContent={
-        <ButtonStyleLink as={LinkElement} {...{[pathAttributeKeyName]: dataCatalogPage }} onClick={close} variation='primary-fill' size='medium' target='_blank'>
+        <ButtonStyleLink href={dataCatalogPage} rel='noopener noreferrer' onClick={close} variation='primary-fill' size='medium' target='_blank'>
           Open in Data Catalog
         </ButtonStyleLink>
       }
