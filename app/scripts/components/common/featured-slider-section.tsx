@@ -93,7 +93,10 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
               return sortedFeaturedItems.map((d) => {
                 const date = new Date(d[dateProperty ?? '']);
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
-
+                const linkProperties = {
+                  pathAttributeKeyName: 'to',
+                  LinkElement: SmartLink
+                };
                 return (
                   <ContinuumGridItem {...bag} key={d.id}>
                     <Card
@@ -108,9 +111,8 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       cardType='featured'
                       linkLabel='View more'
                       linkProperties={{
+                        ...linkProperties,
                         linkTo: `${d.asLink?.url ?? getItemPath(d)}`,
-                        pathAttributeKeyName: 'to',
-                        LinkElement: SmartLink,
                         isLinkExternal: d.isLinkExternal
                       }}
                       title={d.name}
@@ -120,6 +122,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                             <DatasetClassification dataset={d} />
                           )}
                           <CardSourcesList
+                            linkProperties={linkProperties}
                             sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                           />
                           <VerticalDivider variation='light' />
