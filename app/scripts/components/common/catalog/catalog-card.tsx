@@ -133,7 +133,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
       overline={
         <CardMeta>
           <DatasetClassification dataset={dataset} />
-          <CardSourcesList sources={sources} />
+          <CardSourcesList sources={sources} linkProperties={linkProperties} />
         </CardMeta>
       }
       linkLabel='View dataset'
