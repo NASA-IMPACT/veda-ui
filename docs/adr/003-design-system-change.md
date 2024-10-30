@@ -45,6 +45,7 @@ The preliminary systems we are considering are:
 
 Any option we choose will have to be extended for data visualization components (charts, maps, widgets, etc.) and themed for the 3 current VEDA instances: VEDA Dashboard, U.S. GHG Center, Earth.gov.
 
+The final choice for a web design system is not subject of this ADR and will be documented separately.
 
 ## Pros and Cons of the Options
 
