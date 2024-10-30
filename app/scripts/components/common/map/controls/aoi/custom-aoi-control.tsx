@@ -86,6 +86,7 @@ function CustomAoI({
   // from feature to point.
   const [, forceUpdate] = useState(0);
   useEffect(() => {
+    if(!map.loaded()) return;
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
     const aoiSelectedFor = selectedForEditing ? SIMPLE_SELECT : STATIC_MODE;
@@ -220,6 +221,7 @@ function CustomAoI({
     // selected, the trash method doesn't do anything. So, in this case, we
     // trigger the delete for the whole feature.
     const selectedFeatures = mbDraw.getSelected()?.features;
+
     if (
       mbDraw.getMode() === DIRECT_SELECT &&
       selectedFeatures.length &&
@@ -248,9 +250,19 @@ function CustomAoI({
     mbDraw.trash();
   }, [features, aoiDeleteAll, map]);
 
-  const isAreaSelected = !!map?._drawControl?.getSelected().features.length;
-  const isPointSelected =
-    !!map?._drawControl.getSelectedPoints().features.length;
+  const isAreaSelected = false;
+  const isPointSelected = false;
+
+  // try {
+  // @TODO: the function below gets called boefore the store of mapboxdraw is initialized (before being added to map)
+  // isAreaSelected = !!map?._drawControl?.getSelected().features.length;
+  // isPointSelected =
+  //   !!map?._drawControl?.getSelectedPoints()?.features.length;
+  // } catch(e) {
+  //   console.error(e);
+  //   isAreaSelected = false;
+  //   isPointSelected = false;
+  // }
   const hasFeatures = !!features.length;
 
   return (
@@ -337,7 +349,6 @@ export default function CustomAoIControl({
   // as Mapbox Draw handles this internally when the drawing is completed
   useEffect(() => {
     if (!main) return;
-
     const mbDraw = main._drawControl;
 
     if (!mbDraw) return;
