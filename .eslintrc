@@ -40,15 +40,7 @@
     "sourceType": "module" // Allows for the use of imports
   },
   "rules": {
-    "prettier/prettier": [
-      2,
-      {
-        "semi": true,
-        "singleQuote": true,
-        "jsxSingleQuote": true,
-        "parser": "flow"
-      }
-    ],
+    "prettier/prettier": 2,
     "inclusive-language/use-inclusive-words": 2,
     "semi": [2, "always"],
     "jsx-quotes": [2, "prefer-single"],
@@ -99,7 +91,12 @@
       "files": ["**/*.ts", "**/*.tsx"],
       "plugins": ["@typescript-eslint"],
       "rules": {
-        "prettier/prettier": 2,
+        "prettier/prettier": [
+          1,
+          {
+            "parser": "typescript"
+          }
+        ],
         "@typescript-eslint/no-unused-vars": 2,
         "@typescript-eslint/no-non-null-assertion": 0
       },
