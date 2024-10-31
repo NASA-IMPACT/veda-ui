@@ -32,13 +32,11 @@ test.describe('Area of Interest (AOI) Analysis', () => {
     });
 
     await test.step('Then the map should display the selected area as the AOI', async () => {
-      // const aoi = await page.$('selector-for-aoi'); // Adjust the selector as needed
-      // expect(aoi).not.toBeNull();
+      // How to check if the pre-defined AOI is created? Can we access the canvas, or methods of mbDraw?
 
       await test.step('And the AOI should not be editable when clicking on it', async () => {
-        // await page.click('selector-for-aoi'); // Adjust the selector as needed
-        // const isEditable = await page.$eval('selector-for-aoi', el => console.log(el)); // Adjust the selector as needed
-        // expect(isEditable).toBe(false);
+        // How to check that the drawing mode did not change for the AOI? 
+        // Can we access the canvas, or methods of mbDraw?
       });
     });
 
@@ -56,5 +54,25 @@ test.describe('Area of Interest (AOI) Analysis', () => {
       page.getByRole('button', { name: 'Run analysis' }),
       'And the "Run analysis" button should be shown'
     ).toBeVisible();
+  });
+
+  test('User draws AOI when pre-defined AOI exists', async ({ page }) => {
+    await test.step('Given that there is a pre-defined AOI on the map', async () => {
+      const toolbar = page.getByTestId('preset-selector');
+      await toolbar.selectOption('Hawaii');
+    });
+
+    await test.step('When I click on a pen tool to draw custom AOI', async () => {
+      await page.getByRole('button', { name: 'Draw AOI' }).click();
+    });
+
+    await test.step('Then the AOI from pre-defined AOIs should be deleted', async () => {
+      // How to check if the pre-defined AOI is deleted? Can we access the canvas, or methods of mbDraw?
+    });
+
+    await test.step('And the pre-defined selector should be reset and display the placeholder text', async () => {
+      const toolbar = page.getByTestId('preset-selector');
+      expect(toolbar).toHaveValue('Analyze an area');
+    });
   });
 });
