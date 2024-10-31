@@ -168,8 +168,7 @@ export default function HubContent(props:HubContentProps) {
                 linkProperties={{
                   linkTo: `${d.asLink?.url ?? d.path}`,
                   LinkElement,
-                  pathAttributeKeyName,
-                  isLinkExternal: d.isLinkExternal
+                  pathAttributeKeyName
                 }}
                 title={
                   <TextHighlight
@@ -187,6 +186,7 @@ export default function HubContent(props:HubContentProps) {
                     {d.description}
                   </TextHighlight>
                 }
+                hideExternalLinkBadge={d.hideExternalLinkBadge}
                 imgSrc={d.media?.src}
                 imgAlt={d.media?.alt}
                 footerContent={

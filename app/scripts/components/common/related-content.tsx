@@ -52,7 +52,6 @@ interface FormatBlock {
   date: string;
   link: string;
   asLink?: LinkContentData;
-  isLinkExternal?: boolean;
   parentLink: string;
   media: Media;
   parent: RelatedContentData['type'];
@@ -152,8 +151,7 @@ export default function RelatedContent(props: RelatedContentProps) {
                 linkProperties={{
                   linkTo: `${t.asLink?.url ?? t.link}`,
                   LinkElement: SmartLink,
-                  pathAttributeKeyName: 'to',
-                  isLinkExternal: t.isLinkExternal
+                  pathAttributeKeyName: 'to'
                 }}
                 title={t.name}
                 date={
