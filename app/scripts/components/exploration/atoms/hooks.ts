@@ -157,17 +157,6 @@ export function useTimelineDatasetColormap(
   return useAtom(colorMapAtom);
 }
 
-export function useTimelineDatasetColormapScale(
-  datasetAtom: PrimitiveAtom<TimelineDataset>
-) {
-  const colorMapScaleAtom = useMemo(() => {
-    return focusAtom(datasetAtom, (optic) =>
-      optic.prop('settings').prop('scale')
-    );
-  }, [datasetAtom]);
-
-  return useAtom(colorMapScaleAtom);
-}
 export const useTimelineDatasetAnalysis = (
   datasetAtom: PrimitiveAtom<TimelineDataset>
 ) => {
