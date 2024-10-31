@@ -190,15 +190,14 @@ export function GeoCoPilotComponent({
   };
 
   const loadInMap = (answer: any) => {
-    const geojson = JSON.parse(JSON.stringify(answer.bbox).replace('coordinates:', 'coordinates'));
-    const bounds = bbox(geojson);
-    const center = centroid(geojson as AllGeoJSON).geometry.coordinates;
+    const bounds = bbox(answer.bbox);
+    const center = centroid(answer.bbox as AllGeoJSON).geometry.coordinates;
 
     map.flyTo({
       center,
       zoom: getZoomFromBbox(bounds)
     });
-    return geojson;
+    return answer.bbox;
   };
 
   const aoisUpdateGeometry = useSetAtom(aoisUpdateGeometryAtom);
@@ -248,27 +247,28 @@ export function GeoCoPilotComponent({
 
     answer['contentType'] = 'system';
 
+    mbDraw.deleteAll();
     aoiDeleteAll();
+
     setDatasets(newDatasets);
     try {
       switch(action) {
         case 'load': {
-          mbDraw.deleteAll();
-          aoiDeleteAll();
-
           loadInMap(answer);
           setSelectedCompareDay(null);
           setSelectedDay(endDate);
           break;
         }
         case 'compare': {
-          mbDraw.deleteAll();
-          aoiDeleteAll();
           cancelAnalysis();
 
           loadInMap(answer);
-          setSelectedDay(endDate);
-          setSelectedCompareDay(startDate);
+          setSelectedDay(startDate);
+
+          // hacky way of handling enddate issues (probably better to use useeffect)
+          setTimeout(() => {
+            setSelectedCompareDay(endDate);
+          }, 1000);
           break;
         }
         case 'statistics': {
@@ -289,23 +289,23 @@ export function GeoCoPilotComponent({
           onUpdate(updatedGeojson);
 
           aoisUpdateGeometry(updatedGeojson.features);
-
           setStartEndDates([startDate, endDate]);
-
           const pids = mbDraw.add(updatedGeojson);
 
           mbDraw.changeMode(SIMPLE_SELECT, {
             featureIds: pids
           });
 
-          runAnalysis(newDatasetIds);
-
-          setTimeDensity(
-            getLowestCommonTimeDensity(
-              datasets.filter((dataset):
-                dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
-            )
-          );
+          // make sure analysis and timedensities are set properly based on dates
+          setTimeout(() => {
+            runAnalysis(newDatasetIds);
+            setTimeDensity(
+              getLowestCommonTimeDensity(
+                datasets.filter((dataset):
+                  dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
+              )
+            );
+          }, (2000));
           break;
         }
       }

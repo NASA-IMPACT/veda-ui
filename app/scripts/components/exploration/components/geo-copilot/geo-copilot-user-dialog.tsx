@@ -109,7 +109,6 @@ export function GeoCoPilotUserDialogComponent({explanations, query}: {
       );
       const lastWordIndex = elementsToRender.indexOf(lastWord.toLowerCase());
       if (lastWordIndex > 0) {
-        console.log(lastWordIndex, lastWord, query, elementsToRender);
         elementsToRender.splice(lastWordIndex + 1, 0, '</Query>');
       }
     });

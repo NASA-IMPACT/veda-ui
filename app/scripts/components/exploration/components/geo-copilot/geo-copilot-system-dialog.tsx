@@ -16,6 +16,7 @@ import {
 } from '@devseed-ui/collecticons';
 
 import centroid from '@turf/centroid';
+import { AllGeoJSON, Feature, Polygon } from '@turf/helpers';
 
 import styled from 'styled-components';
 import { geolocationUrl } from './geo-copilot-interaction';
@@ -98,8 +99,9 @@ export function GeoCoPilotSystemDialogComponent({summary, dataset_ids, bbox, dat
     };
 
     if (Object.keys(bbox).length > 0) {
-      const geojson = JSON.parse(JSON.stringify(bbox).replace('coordinates:', 'coordinates'));
-      const center = centroid(geojson).geometry.coordinates;
+      bbox.features = bbox.features as Feature<Polygon>[];
+      const center = centroid(bbox as AllGeoJSON).geometry.coordinates;
+      console.log(bbox);
       fetchGeolocation(center);
     }
   }, [bbox]);
