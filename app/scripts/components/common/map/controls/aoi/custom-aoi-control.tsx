@@ -243,19 +243,19 @@ function CustomAoI({
     mbDraw.trash();
   }, [features, aoiDeleteAll, map]);
 
-  const isAreaSelected = false;
-  const isPointSelected = false;
+  let isAreaSelected = false;
+  let isPointSelected = false;
 
-  // try {
-  // @TODO: the function below gets called boefore the store of mapboxdraw is initialized (before being added to map)
-  // isAreaSelected = !!map?._drawControl?.getSelected().features.length;
-  // isPointSelected =
-  //   !!map?._drawControl?.getSelectedPoints()?.features.length;
-  // } catch(e) {
-  //   console.error(e);
-  //   isAreaSelected = false;
-  //   isPointSelected = false;
-  // }
+  // @NOTE: map?._drawControl?.getSelected() needs access to mapboxgl draw context store,
+  // but the function gets called before mapboxdraw store is initialized (before being added to map) resulting in an error
+  // Wrapping with try block so the values get subbed even when the store is not available
+  try {
+    isAreaSelected = !!(map?._drawControl?.getSelected().features.length);
+    isPointSelected = !!(map?._drawControl?.getSelectedPoints()?.features.length);
+  } catch(e) {
+    isAreaSelected = false;
+    isPointSelected = false;
+  }
   const hasFeatures = !!features.length;
 
   return (
