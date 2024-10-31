@@ -13,6 +13,7 @@ This style guide is an evolving document and will be updated as the VEDA UI proj
 ### Naming for Branches
 
 - Use the related GitHub issue number; if not available, use `hotfix` or `update`.
+- The ideal pattern would be {issue#}-{some}-{meaningful}-{title}
 
 ## Tagging in PRs
 
