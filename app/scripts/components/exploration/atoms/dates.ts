@@ -29,12 +29,7 @@ export const selectedDateAtom = atomWithUrlValueStability<Date | null>({
     return prev.getTime() === next.getTime();
   },
   dehydrate: (d) => {
-    // @TODO: temporary to work around
-    try {
-      return d?.toISOString() ?? '';
-    } catch(e) {
-      return '';
-    }
+    return d?.toISOString() ?? '';
   }
 });
 
