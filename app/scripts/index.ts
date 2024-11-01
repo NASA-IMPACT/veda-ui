@@ -20,6 +20,17 @@ import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-d
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
 
+// Adding .last property to array
+/* eslint-disable-next-line fp/no-mutating-methods */
+Object.defineProperty(Array.prototype, 'last', {
+  enumerable: false,
+  configurable: true,
+  get: function () {
+    return this[this.length - 1];
+  },
+  set: undefined
+});
+
 export {
   // COMPONENTS
   Block,
