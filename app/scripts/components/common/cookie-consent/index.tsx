@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Icon } from '@trussworks/react-uswds';
 
-import {
-  COOKIE_CONSENT_KEY,
-  SESSION_KEY,
-
-  getCookie
-} from './utils';
+import { COOKIE_CONSENT_KEY, SESSION_KEY, getCookie } from './utils';
 import {
   USWDSAlert,
   USWDSButton,
@@ -18,6 +13,7 @@ import './index.scss';
 interface CookieConsentProps {
   title?: string | undefined;
   copy?: string | undefined;
+  pathname: string;
   sessionStart: string | undefined;
   setGoogleTagManager: () => void;
 }
@@ -30,6 +26,7 @@ export const CookieConsent = ({
   title,
   copy,
   sessionStart,
+  pathname,
   setGoogleTagManager
 }: CookieConsentProps) => {
   const [cookieConsentResponded, SetCookieConsentResponded] =
@@ -51,9 +48,6 @@ export const CookieConsent = ({
     )}; path=/; expires=${closeConsent ? '0' : setCookieExpiration()}`;
   };
 
-  const currentURL =
-    typeof window !== 'undefined' ? window.location.href : null;
-
   const setSessionData = () => {
     if (typeof window !== 'undefined') {
       const checkForSessionDate = window.sessionStorage.getItem(SESSION_KEY);
@@ -62,6 +56,7 @@ export const CookieConsent = ({
       }
     }
   };
+
   useEffect(() => {
     if (sessionStart !== 'true' && !cookieConsentResponded) {
       setSessionData();
@@ -74,7 +69,10 @@ export const CookieConsent = ({
     if (!cookieConsentResponded && closeConsent) {
       setCloseConsent(false);
     }
-  }, [currentURL]);
+    // to Rerender on route change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
   useEffect(() => {
     const cookieValue = {
       responded: cookieConsentResponded,
@@ -84,19 +82,12 @@ export const CookieConsent = ({
 
     // Ignoring setcookie for now since it will make infinite rendering
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    cookieConsentResponded,
-    cookieConsentAnswer,
-    closeConsent,
-    getCookie,
-    setSessionData,
-    currentURL
-  ]);
+  }, [cookieConsentResponded, cookieConsentAnswer, closeConsent]);
 
   return (
     <div>
       {
-        //Adding debounce to conditional for animation out
+        // Adding debounce to conditional for animation out
         setTimeout(() => {
           !cookieConsentResponded;
         }, 500) && (

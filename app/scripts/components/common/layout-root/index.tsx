@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState
 } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
@@ -56,6 +56,8 @@ function LayoutRoot(props: { children?: ReactNode }) {
   const { children } = props;
   const [sessionStart, setSesstionStart] = useState<string | undefined>();
   const sessionItem = window.sessionStorage.getItem(SESSION_KEY);
+  const { pathname } = useLocation();
+
   useEffect(() => {
     !cookieConsentContent && setGoogleTagManager();
     sessionItem && setSesstionStart(sessionItem);
@@ -81,7 +83,11 @@ function LayoutRoot(props: { children?: ReactNode }) {
       <NavWrapper
         mainNavItems={mainNavItems}
         subNavItems={subNavItems}
-        logo={<Logo linkProperties={{LinkElement: Link, pathAttributeKeyName: 'to'}} />}
+        logo={
+          <Logo
+            linkProperties={{ LinkElement: Link, pathAttributeKeyName: 'to' }}
+          />
+        }
       />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
@@ -91,6 +97,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
             {...cookieConsentContent}
             sessionStart={sessionStart}
             setGoogleTagManager={setGoogleTagManager}
+            pathname={pathname}
           />
         )}
       </PageBody>

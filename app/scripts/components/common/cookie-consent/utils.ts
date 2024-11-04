@@ -1,6 +1,15 @@
 export const COOKIE_CONSENT_KEY = `veda--CookieConsent`;
 export const SESSION_KEY = `veda--NewSession`;
 
+export const readCookie = (name: string): string => {
+  // Get name followed by anything except a semicolon
+  const cookiestring = RegExp(name + '=[^;]+').exec(document.cookie);
+  // Return everything after the equal sign, or an empty string if the cookie name not found
+  return decodeURIComponent(
+    cookiestring ? cookiestring.toString().replace(/^[^=]+./, '') : ''
+  );
+};
+
 export const getCookie = (
   SetCookieConsentResponded,
   SetCookieConsentAnswer,
@@ -13,11 +22,4 @@ export const getCookie = (
     SetCookieConsentResponded(cookieContents.responded);
     SetCookieConsentAnswer(cookieContents.answer);
   }
-};
-
-const readCookie = (name) => {
-  // Get name followed by anything except a semicolon
-  const cookiestring = RegExp(name+'=[^;]+').exec(document.cookie);
-  // Return everything after the equal sign, or an empty string if the cookie name not found
-  return decodeURIComponent(cookiestring ? cookiestring.toString().replace(/^[^=]+./,'') : '');
 };
