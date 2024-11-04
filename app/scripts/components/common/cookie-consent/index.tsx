@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { debounce } from 'lodash';
 import { Icon } from '@trussworks/react-uswds';
 
 import { setCookie, getCookie } from './utils';
@@ -31,23 +32,36 @@ export const CookieConsent = ({
 }: CookieConsentProps) => {
   const [cookieConsentResponded, setCookieConsentResponded] =
     useState<boolean>(false);
+  // Debounce the setDisplayCookieConsentForm function
+  const debouncedSetCookieConsentResponded = debounce(
+    setCookieConsentResponded,
+    500
+  );
+
   const [cookieConsentAnswer, setCookieConsentAnswer] =
     useState<boolean>(false);
   const [closeConsent, setCloseConsent] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!cookieConsentResponded) {
-      const cookieContents = getCookie();
-      if (cookieContents) {
-        cookieContents.answer && setGoogleTagManager();
-        setCookieConsentResponded(cookieContents.responded);
-        setCookieConsentAnswer(cookieContents.answer);
-        if (!cookieContents.responded) setCloseConsent(false);
-      } else {
+    const cookieContents = getCookie();
+    if (cookieContents) {
+      if (!cookieContents.responded) {
         setCloseConsent(false);
+        return;
       }
+      cookieContents.answer && setGoogleTagManager();
+      setCookieConsentResponded(cookieContents.responded);
+      setCookieConsentAnswer(cookieContents.answer);
+      setDisplayCookieConsentForm(false);
+    } else {
+      setCloseConsent(false);
     }
-    // to Rerender on route change
+    // Only run on the first render
+  }, [setGoogleTagManager, setDisplayCookieConsentForm]);
+
+  useEffect(() => {
+    if (!cookieConsentResponded) setCloseConsent(false);
+    // To render the component when user hasn't answered yet
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
@@ -65,7 +79,9 @@ export const CookieConsent = ({
     setCookie(cookieValue, closeConsent);
     // 3. Tell the layout that we don't have to render this consent form
     // from the next render of layout.
-    setDisplayCookieConsentForm(false);
+    setTimeout(() => {
+      setDisplayCookieConsentForm(false);
+    }, 500);
   }, [
     cookieConsentResponded,
     cookieConsentAnswer,
@@ -109,8 +125,9 @@ export const CookieConsent = ({
             <USWDSButtonGroup className='padding-top-2'>
               <USWDSButton
                 onClick={() => {
-                  setCookieConsentResponded(true);
+                  debouncedSetCookieConsentResponded(true);
                   setCookieConsentAnswer(false);
+                  setCloseConsent(true);
                 }}
                 outline={true}
                 type='button'
@@ -119,8 +136,9 @@ export const CookieConsent = ({
               </USWDSButton>
               <USWDSButton
                 onClick={() => {
-                  setCookieConsentResponded(true);
+                  debouncedSetCookieConsentResponded(true);
                   setCookieConsentAnswer(true);
+                  setCloseConsent(true);
                 }}
                 type='button'
               >
