@@ -14,9 +14,10 @@ export const getCookie = (
     SetCookieConsentAnswer(cookieContents.answer);
   }
 };
+
 const readCookie = (name) => {
-  const nameEQ = name + '=';
-  const attribute = document.cookie.split(';');
-  const cookie = attribute.find((cookie) => cookie.trim().startsWith(nameEQ));
-  return cookie ? cookie.substring(nameEQ.length).trim() : null;
+  // Get name followed by anything except a semicolon
+  const cookiestring = RegExp(name+'=[^;]+').exec(document.cookie);
+  // Return everything after the equal sign, or an empty string if the cookie name not found
+  return decodeURIComponent(cookiestring ? cookiestring.toString().replace(/^[^=]+./,'') : '');
 };
