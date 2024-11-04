@@ -13,9 +13,6 @@ import { reveal } from '@devseed-ui/animation';
 import { getBannerFromVedaConfig, getCookieConsentFromVedaConfig } from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
-// import Banner from '../banner';
-// import { CookieConsent } from '../cookie-consent';
-import { SESSION_KEY } from '../cookie-consent/utils';
 const Banner = React.lazy(() => import('../banner'));
 const CookieConsent = React.lazy(() => import('../cookie-consent'));
 
@@ -54,13 +51,13 @@ function LayoutRoot(props: { children?: ReactNode }) {
   const cookieConsentContent = getCookieConsentFromVedaConfig();
   const bannerContent = getBannerFromVedaConfig();
   const { children } = props;
-  const [sessionStart, setSesstionStart] = useState<string | undefined>();
-  const sessionItem = window.sessionStorage.getItem(SESSION_KEY);
+  const [displayCookieConsentForm, setDisplayCookieConsentForm] =
+    useState<boolean>(true);
   const { pathname } = useLocation();
 
   useEffect(() => {
+    // When there is no cookie consent form set up
     !cookieConsentContent && setGoogleTagManager();
-    sessionItem && setSesstionStart(sessionItem);
   }, []);
 
   const { title, thumbnail, description, hideFooter } =
@@ -92,10 +89,10 @@ function LayoutRoot(props: { children?: ReactNode }) {
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
-        {cookieConsentContent && (
+        {cookieConsentContent && displayCookieConsentForm && (
           <CookieConsent
             {...cookieConsentContent}
-            sessionStart={sessionStart}
+            setDisplayCookieConsentForm={setDisplayCookieConsentForm}
             setGoogleTagManager={setGoogleTagManager}
             pathname={pathname}
           />
