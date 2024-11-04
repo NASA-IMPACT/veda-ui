@@ -78,7 +78,9 @@ const MessageStatusIndicator = styled.div<MessageStatusIndicatorProps>`
     }
   }}
 `;
-const MessageContent = styled.div`
+const MessageContent = styled.div.attrs({
+    'data-testid': 'analysis-message'
+  })`
   line-height: 1.5rem;
   max-height: 1.5rem;
 

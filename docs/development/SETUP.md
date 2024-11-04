@@ -62,6 +62,20 @@ VEDA-UI includes a GitHub action for checking TypeScript and lint errors. If you
 #### Pre-commit Hook
 Additionally, there's a pre-commit hook that performs the same error checks. This helps developers identify and address issues at an earlier stage. If you need to bypass the check (to make a local temporary commit etc.), include the `--no-verify`` flag in your commit command.
 
+### Testing
+
+## Unit tests
+
+`yarn test`
+
+## End-to-end tests
+Make sure the development server is running (`yarn serve`)
+
+`yarn test:e2e --ui`
+
+Alternatively, you can install the playwright extension for vs code (ms-playwright.playwright) and run the tests directly from there. It allows to run the tests in watch mode, open the browser or trace viewer, set breakpoints,... 
+Again, make sure that the development server is running (`yarn serve`).
+
 ## Deployment
 To prepare the app for deployment run:
 
