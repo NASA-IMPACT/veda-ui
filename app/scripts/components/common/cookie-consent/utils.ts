@@ -10,16 +10,23 @@ export const readCookie = (name: string): string => {
   );
 };
 
-export const getCookie = (
-  SetCookieConsentResponded,
-  SetCookieConsentAnswer,
-  setGoogleTagManager
-) => {
+export const getCookie = () => {
   const cookie = readCookie(COOKIE_CONSENT_KEY);
   if (cookie) {
     const cookieContents = JSON.parse(cookie);
-    if (cookieContents.answer) setGoogleTagManager();
-    SetCookieConsentResponded(cookieContents.responded);
-    SetCookieConsentAnswer(cookieContents.answer);
+    return cookieContents;
   }
+};
+
+//Setting expiration date for cookie to expire and re-ask user for consent.
+export const setCookieExpiration = () => {
+  const today = new Date();
+  today.setMonth(today.getMonth() + 3);
+  return today.toUTCString();
+};
+
+export const setCookie = (cookieValue, closeConsent) => {
+  document.cookie = `${COOKIE_CONSENT_KEY}=${JSON.stringify(
+    cookieValue
+  )}; path=/; expires=${closeConsent ? '0' : setCookieExpiration()}`;
 };
