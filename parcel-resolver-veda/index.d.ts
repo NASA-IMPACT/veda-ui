@@ -207,7 +207,7 @@ declare module 'veda' {
     taxonomy: Taxonomy[];
     related?: RelatedContentData[];
     asLink?: LinkContentData;
-    isLinkExternal?: boolean;
+    hideExternalLinkBadge?: boolean;
     isHidden?: boolean;
   }
 

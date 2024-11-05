@@ -206,7 +206,7 @@ export interface StoryData {
   taxonomy: Taxonomy[];
   related?: RelatedContentData[];
   asLink?: LinkContentData;
-  isLinkExternal?: boolean;
+  hideExternalLinkBadge?: boolean;
   isHidden?: boolean;
 }
 
