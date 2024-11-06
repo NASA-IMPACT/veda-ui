@@ -182,8 +182,10 @@ declare module 'veda' {
     infoDescription?: string;
     taxonomy: Taxonomy[];
     description: string;
+    cardDescription?: string;
     usage?: DatasetUsage[];
     media?: Media;
+    cardMedia?: Media;
     layers: DatasetLayer[];
     related?: RelatedContentData[];
     disableExplore?: boolean;
@@ -202,8 +204,10 @@ declare module 'veda' {
     id: string;
     name: string;
     description: string;
+    cardDescription?: string;
     pubDate: string;
     media?: Media;
+    cardMedia?: Media;
     taxonomy: Taxonomy[];
     related?: RelatedContentData[];
     asLink?: LinkContentData;

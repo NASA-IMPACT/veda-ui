@@ -87,10 +87,12 @@ function FeaturedStories() {
                     title={d.name}
                     tagLabels={[getString('stories').one]}
                     parentTo={STORIES_PATH}
-                    description={i === 0 ? d.description : undefined}
+                    description={
+                      i === 0 ? d.cardDescription ?? d.description : undefined
+                    }
                     date={d.pubDate ? new Date(d.pubDate) : undefined}
-                    imgSrc={d.media?.src}
-                    imgAlt={d.media?.alt}
+                    imgSrc={d.cardMedia?.src ?? d.media?.src}
+                    imgAlt={d.cardMedia?.alt ?? d.media?.alt}
                   />
                 </li>
               );

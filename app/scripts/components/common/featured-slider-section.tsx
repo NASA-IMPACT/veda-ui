@@ -70,12 +70,15 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
 
   // Disable no-mutating rule since the copy of the array is being mutated
   // eslint-disable-next-line fp/no-mutating-methods
-  const sortedFeaturedItems  = dateProperty? [...featuredItems].sort((itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
-    const pubDateOfItemA = new Date(itemA[dateProperty]);
-    const pubDateOfItemB = new Date(itemB[dateProperty]);
-    return pubDateOfItemB.getTime() - pubDateOfItemA.getTime();
-  }) as StoryData[] | DatasetData[]: featuredItems;
-
+  const sortedFeaturedItems = dateProperty
+    ? ([...featuredItems].sort(
+        (itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
+          const pubDateOfItemA = new Date(itemA[dateProperty]);
+          const pubDateOfItemB = new Date(itemB[dateProperty]);
+          return pubDateOfItemB.getTime() - pubDateOfItemA.getTime();
+        }
+      ) as StoryData[] | DatasetData[])
+    : featuredItems;
 
   return (
     <FoldFeatured>
@@ -93,6 +96,16 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
               return sortedFeaturedItems.map((d) => {
                 const date = new Date(d[dateProperty ?? '']);
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
+
+                const cardDescription =
+                  'cardDescription' in d
+                    ? (d as StoryData).cardDescription ?? d.description
+                    : d.description;
+
+                const cardMedia =
+                  'cardMedia' in d
+                    ? (d as StoryData).cardMedia ?? d.media
+                    : d.media;
 
                 return (
                   <ContinuumGridItem {...bag} key={d.id}>
@@ -127,9 +140,9 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                           )}
                         </CardMeta>
                       }
-                      description={d.description}
-                      imgSrc={d.media?.src}
-                      imgAlt={d.media?.alt}
+                      description={cardDescription}
+                      imgSrc={cardMedia?.src}
+                      imgAlt={cardMedia?.alt}
                       footerContent={
                         <>
                           {topics?.length ? (

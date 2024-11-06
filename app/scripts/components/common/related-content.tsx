@@ -49,11 +49,13 @@ interface FormatBlock {
   id: string;
   name: string;
   description: string;
+  cardDescription?: string;
   date: string;
   link: string;
   asLink?: LinkContentData;
   parentLink: string;
   media: Media;
+  cardMedia?: Media;
   parent: RelatedContentData['type'];
 }
 
@@ -78,8 +80,10 @@ function formatBlock({
   id,
   name,
   description,
+  cardDescription,
   date,
   media,
+  cardMedia,
   asLink,
   type
 }): FormatBlock {
@@ -87,8 +91,10 @@ function formatBlock({
     id,
     name,
     description,
+    cardDescription,
     date,
     media,
+    cardMedia,
     asLink,
     ...formatUrl(id, type),
     parent: type
@@ -110,14 +116,17 @@ function formatContents(relatedData: RelatedContentData[]) {
       );
     }
 
-    const { name, description, media } = matchingContent;
+    const { name, description, media, cardDescription, cardMedia } =
+      matchingContent;
     return formatBlock({
       id,
       name,
       description,
+      cardDescription,
       asLink: (matchingContent as StoryData).asLink,
       date: (matchingContent as StoryData).pubDate,
       media,
+      cardMedia,
       type
     });
   });
@@ -159,11 +168,11 @@ export default function RelatedContent(props: RelatedContentProps) {
                     ? utcString2userTzDate(t.date)
                     : undefined
                 }
-                description={t.description}
+                description={t.cardDescription ?? t.description}
                 tagLabels={[t.parent]}
                 parentTo={t.parentLink}
-                imgSrc={t.media.src}
-                imgAlt={t.media.alt}
+                imgSrc={t.cardMedia?.src ?? t.media.src}
+                imgAlt={t.cardMedia?.alt ?? t.media.alt}
               />
             </li>
           ))}
