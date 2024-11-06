@@ -86,9 +86,27 @@ function generateMdxDataObject(data) {
 function getCookieConsentForm(result) {
   if (!result.cookieConsentForm) return undefined;
   else {
-    const parsedCopy =  md.render(result.cookieConsentForm.copy)
+    const parsedCopy = md.render(result.cookieConsentForm.copy);
     const trimmedCopy = parsedCopy.replace(/(\r\n|\n|\r)/gm, '');
-    return JSON.stringify({ title: result.cookieConsentForm.title, copy: trimmedCopy});
+    return JSON.stringify({
+      title: result.cookieConsentForm.title,
+      copy: trimmedCopy
+    });
+  }
+}
+
+function getBannerContent(result) {
+  if (!result.banner) return undefined;
+  else {
+    const parsedCopy = md.render(result.banner.text);
+    const trimmedCopy = parsedCopy.replace(/(\r\n|\n|\r)/gm, '');
+    return JSON.stringify({
+      title: result.banner.title,
+      text: trimmedCopy,
+      url: result.banner.url,
+      expires: result.banner.expires,
+      type: result.banner.type
+    });
   }
 }
 
@@ -207,7 +225,7 @@ module.exports = new Resolver({
           )},
           strings: ${JSON.stringify(withDefaultStrings(result.strings))},
           booleans: ${JSON.stringify(withDefaultStrings(result.booleans))},
-          banner: ${JSON.stringify(result.banner)},
+          banner: ${getBannerContent(result)},
           navItems: ${JSON.stringify(result.navItems)},
           cookieConsentForm: ${getCookieConsentForm(result)}
         };
