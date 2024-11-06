@@ -213,6 +213,7 @@ function CustomAoI({
     // selected, the trash method doesn't do anything. So, in this case, we
     // trigger the delete for the whole feature.
     const selectedFeatures = mbDraw.getSelected()?.features;
+
     if (
       mbDraw.getMode() === DIRECT_SELECT &&
       selectedFeatures.length &&
@@ -241,9 +242,19 @@ function CustomAoI({
     mbDraw.trash();
   }, [features, aoiDeleteAll, map]);
 
-  const isAreaSelected = !!map?._drawControl?.getSelected().features.length;
-  const isPointSelected =
-    !!map?._drawControl.getSelectedPoints().features.length;
+  let isAreaSelected = false;
+  let isPointSelected = false;
+
+  // @NOTE: map?._drawControl?.getSelected() needs access to mapboxgl draw context store,
+  // but the function gets called before mapboxdraw store is initialized (before being added to map) resulting in an error
+  // Wrapping with try block so the values get subbed even when the store is not available
+  try {
+    isAreaSelected = !!(map?._drawControl?.getSelected().features.length);
+    isPointSelected = !!(map?._drawControl?.getSelectedPoints()?.features.length);
+  } catch(e) {
+    isAreaSelected = false;
+    isPointSelected = false;
+  }
   const hasFeatures = !!features.length;
 
   return (
@@ -330,7 +341,6 @@ export default function CustomAoIControl({
   // as Mapbox Draw handles this internally when the drawing is completed
   useEffect(() => {
     if (!main) return;
-
     const mbDraw = main._drawControl;
 
     if (!mbDraw) return;

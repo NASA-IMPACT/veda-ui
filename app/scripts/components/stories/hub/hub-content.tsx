@@ -149,6 +149,7 @@ export default function HubContent(props:HubContentProps) {
                     <CardSourcesList
                       sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                       rootPath={pathname}
+                      linkProperties={linkProperties}
                       onSourceClick={(id) => {
                         onAction(FilterActions.TAXONOMY_MULTISELECT, {
                           key: TAXONOMY_SOURCE,
@@ -166,9 +167,8 @@ export default function HubContent(props:HubContentProps) {
                 }
                 linkLabel='View more'
                 linkProperties={{
+                  ...linkProperties,
                   linkTo: `${d.asLink?.url ?? d.path}`,
-                  LinkElement,
-                  pathAttributeKeyName,
                   isLinkExternal: d.isLinkExternal
                 }}
                 title={

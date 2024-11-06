@@ -16,8 +16,20 @@ import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import ExplorationAndAnalysis from '$components/exploration';
+import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
+
+// Adding .last property to array
+/* eslint-disable-next-line fp/no-mutating-methods */
+Object.defineProperty(Array.prototype, 'last', {
+  enumerable: false,
+  configurable: true,
+  get: function () {
+    return this[this.length - 1];
+  },
+  set: undefined
+});
 
 export {
   // COMPONENTS
@@ -41,6 +53,7 @@ export {
   ExplorationAndAnalysis,
   DatasetSelectorModal,
   // HOOKS
+  useTimelineDatasetAtom,
   useFiltersWithQS,
   // STATE
   timelineDatasetsAtom

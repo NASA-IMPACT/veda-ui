@@ -12,7 +12,6 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { createButtonStyles } from '@devseed-ui/button';
 import { LayerInfo } from 'veda';
 
-import SmartLink from '$components/common/smart-link';
 import { getDatasetPath } from '$utils/routes';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
@@ -54,7 +53,8 @@ const ParentDatasetHeading = styled.h2`
   padding: ${glsp(0.5)} 0;
 `;
 
-const ButtonStyleLink = styled(SmartLink)<any>`
+// override with 'as' as LinkComponent
+const ButtonStyleLink = styled.a<any>`
   &&& {
     ${({ variation, size }) => createButtonStyles({ variation, size })}
   }
@@ -101,6 +101,7 @@ const LayerInfoLinerModal = styled.div`
 
 export default function LayerInfoModal(props: LayerInfoModalProps) {
   const { revealed, close, layerData } = props;
+
   const { parentData } = layerData;
   const dataCatalogPage = getDatasetPath(parentData.id);
   return (
@@ -132,7 +133,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
         <div dangerouslySetInnerHTML={{__html: parentData.infoDescription?? 'Currently, we are unable to display the layer information, but you can find it in the data catalog.' }} />
       }
       footerContent={
-        <ButtonStyleLink to={dataCatalogPage} onClick={close} variation='primary-fill' size='medium' target='_blank'>
+        <ButtonStyleLink href={dataCatalogPage} rel='noopener noreferrer' onClick={close} variation='primary-fill' size='medium' target='_blank'>
           Open in Data Catalog
         </ButtonStyleLink>
       }
