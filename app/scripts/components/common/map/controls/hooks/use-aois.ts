@@ -58,6 +58,7 @@ export default function useAois() {
 
   const onSelectionChange = useCallback(
     (e) => {
+      console.log('onSelectionChange:', e);
       const selectedIds = e.features.map((f) => toAoIid(f.id));
       aoiSetSelected(selectedIds);
     },

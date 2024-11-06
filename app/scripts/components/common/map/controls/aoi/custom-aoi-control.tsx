@@ -88,9 +88,11 @@ function CustomAoI({
   // Needed so that this component re-renders to when the draw selection changes
   // from feature to point.
   const [, forceUpdate] = useState(0);
+  console.log("selectedForEditing:", selectedForEditing);
   useEffect(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
+    console.log("use Effect is not triggered! selectedForEditing:", selectedForEditing);
     const aoiSelectedFor = selectedForEditing ? SIMPLE_SELECT : STATIC_MODE;
     mbDraw.changeMode(aoiSelectedFor);
     const onSelChange = () => forceUpdate(Date.now());
