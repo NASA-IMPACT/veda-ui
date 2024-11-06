@@ -95,13 +95,15 @@ function CustomAoI({
     return () => {
       map.off('draw.selectionchange', onSelChange);
     };
-  }, [map, selectedForEditing]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedForEditing]);
 
   const resetAoisOnMap = useCallback(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
     mbDraw.deleteAll();
     aoiDeleteAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aoiDeleteAll]);
 
   const resetForPresetSelect = useCallback(() => {
@@ -142,6 +144,7 @@ function CustomAoI({
     setFileUplaodedIds([]);
     setPresetIds([]);
     setSelectedState('');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[presetIds, fileUploadedIds]);
 
   const onConfirm = useCallback((features: Feature<Polygon>[]) => {
@@ -197,6 +200,7 @@ function CustomAoI({
     resetForDrawingAoi();
     setIsDrawing(!isDrawing);
     setSelectedForEditing(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, isDrawing, setIsDrawing, resetForDrawingAoi]);
 
   const onTrashClick = useCallback(() => {
@@ -348,7 +352,8 @@ export default function CustomAoIControl({
     if (isDrawing) {
       mbDraw.changeMode(DRAW_POLYGON);
     }
-  }, [main, isDrawing]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDrawing]);
 
   useThemedControl(
     () => <CustomAoI map={main} disableReason={disableReason} />,

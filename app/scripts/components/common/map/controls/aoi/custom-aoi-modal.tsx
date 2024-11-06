@@ -131,7 +131,8 @@ export default function CustomAoIModal({
 
   useEffect(() => {
     if (revealed) reset();
-  }, [revealed, reset]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [revealed]);
 
   const hasInfo = !!uploadFileWarnings.length || !!features || uploadFileError;
 
