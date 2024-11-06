@@ -3,11 +3,13 @@ import { useCallback } from 'react';
 import { Feature, Polygon } from 'geojson';
 import { toAoIid } from '../../utils';
 import {
+  aoiDeleteAllAtom,
   aoisDeleteAtom,
   aoisFeaturesAtom,
   aoisSetSelectedAtom,
   aoisUpdateGeometryAtom,
-  isDrawingAtom
+  isDrawingAtom,
+  selectedForEditingAtom
 } from '../aoi/atoms';
 import { SIMPLE_SELECT } from '../aoi';
 
@@ -15,8 +17,13 @@ export default function useAois() {
   const features = useAtomValue(aoisFeaturesAtom);
 
   const [isDrawing, setIsDrawing] = useAtom(isDrawingAtom);
+  const [selectedForEditing, setSelectedForEditing] = useAtom(selectedForEditingAtom);
 
+  const aoiDelete = useSetAtom(aoisDeleteAtom);
   const aoisUpdateGeometry = useSetAtom(aoisUpdateGeometryAtom);
+  const aoiSetSelected = useSetAtom(aoisSetSelectedAtom);
+  const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
+
   const update = useCallback(
     (features: Feature<Polygon>[]) => {
       aoisUpdateGeometry(features);
@@ -34,7 +41,6 @@ export default function useAois() {
     [update]
   );
 
-  const aoiDelete = useSetAtom(aoisDeleteAtom);
   const onDelete = useCallback(
     (e) => {
       const selectedIds = e.features.map((f) => toAoIid(f.id));
@@ -43,7 +49,13 @@ export default function useAois() {
     [aoiDelete]
   );
 
-  const aoiSetSelected = useSetAtom(aoisSetSelectedAtom);
+  const onDeleteAll = useCallback(
+    () => {
+      aoiDeleteAll();
+    },
+    [aoiDeleteAll]
+  );
+
   const onSelectionChange = useCallback(
     (e) => {
       const selectedIds = e.features.map((f) => toAoIid(f.id));
@@ -63,9 +75,12 @@ export default function useAois() {
     update,
     onUpdate,
     onDelete,
+    onDeleteAll,
     onSelectionChange,
     onDrawModeChange,
     isDrawing,
-    setIsDrawing
+    setIsDrawing,
+    selectedForEditing,
+    setSelectedForEditing
   };
 }

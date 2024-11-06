@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
-import { useAtom, useSetAtom } from 'jotai';
 import bbox from '@turf/bbox';
 import centroid from '@turf/centroid';
 import {
@@ -19,7 +18,6 @@ import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
-import { aoiDeleteAllAtom, selectedForEditingAtom } from './atoms';
 import PresetSelector from './preset-selector';
 import { DIRECT_SELECT, DRAW_POLYGON, SIMPLE_SELECT, STATIC_MODE } from './';
 
@@ -77,10 +75,15 @@ function CustomAoI({
   const [presetIds, setPresetIds] = useState([]);
   const [fileUploadedIds, setFileUplaodedIds] = useState([]);
 
-  const [selectedForEditing, setSelectedForEditing] = useAtom(selectedForEditingAtom);
-
-  const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
-  const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
+  const {
+    onUpdate,
+    onDeleteAll,
+    isDrawing,
+    setIsDrawing,
+    selectedForEditing,
+    setSelectedForEditing,
+    features
+  } = useAois();
 
   // Needed so that this component re-renders to when the draw selection changes
   // from feature to point.
@@ -102,9 +105,9 @@ function CustomAoI({
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
     mbDraw.deleteAll();
-    aoiDeleteAll();
+    onDeleteAll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [aoiDeleteAll]);
+    }, [onDeleteAll]);
 
   const resetForPresetSelect = useCallback(() => {
     resetAoisOnMap();
@@ -240,11 +243,11 @@ function CustomAoI({
       mbDraw.deleteAll();
       // The delete all method does not trigger the delete event, so we need to
       // manually delete all the feature from the atom.
-      aoiDeleteAll();
+      onDeleteAll();
       return;
     }
     mbDraw.trash();
-  }, [features, aoiDeleteAll, map]);
+  }, [features, onDeleteAll, map]);
 
   let isAreaSelected = false;
   let isPointSelected = false;
