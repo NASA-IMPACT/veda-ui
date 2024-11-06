@@ -79,15 +79,15 @@ function CustomAoI({
 
   const [selectedForEditing, setSelectedForEditing] = useAtom(selectedForEditingAtom);
 
-  const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
+  const { drawToolInitialized, onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
 
   // Needed so that this component re-renders to when the draw selection changes
   // from feature to point.
   const [, forceUpdate] = useState(0);
   useEffect(() => {
-    const mbDraw = map?._drawControl;
-    if (!mbDraw) return;
+    if (!drawToolInitialized) return;
+    const mbDraw = map._drawControl;
     const aoiSelectedFor = selectedForEditing ? SIMPLE_SELECT : STATIC_MODE;
     const selectedFeatures = features.filter(f => f.selected);
 
@@ -102,7 +102,7 @@ function CustomAoI({
     return () => {
       map.off('draw.selectionchange', onSelChange);
     };
-  }, [selectedForEditing]);
+  }, [drawToolInitialized, selectedForEditing]);
 
   const resetAoisOnMap = useCallback(() => {
     const mbDraw = map?._drawControl;

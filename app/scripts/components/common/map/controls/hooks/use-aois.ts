@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Feature, Polygon } from 'geojson';
 import { toAoIid } from '../../utils';
 import {
@@ -15,6 +15,7 @@ export default function useAois() {
   const features = useAtomValue(aoisFeaturesAtom);
 
   const [isDrawing, setIsDrawing] = useAtom(isDrawingAtom);
+  const [drawToolInitialized, setDrawToolInitialized] = useState(false);
 
   const aoisUpdateGeometry = useSetAtom(aoisUpdateGeometryAtom);
   const update = useCallback(
@@ -33,6 +34,10 @@ export default function useAois() {
     },
     [update]
   );
+
+  const onDrawToolInitialized = () => {
+    setDrawToolInitialized(true);
+  };
 
   const aoiDelete = useSetAtom(aoisDeleteAtom);
   const onDelete = useCallback(
@@ -65,7 +70,9 @@ export default function useAois() {
     onDelete,
     onSelectionChange,
     onDrawModeChange,
+    onDrawToolInitialized,
     isDrawing,
+    drawToolInitialized,
     setIsDrawing
   };
 }

@@ -32,7 +32,7 @@ export default function DrawControl(props: DrawControlProps) {
   const theme = useTheme();
   const control = useRef<MapboxDraw>();
   const aoisFeatures = useAtomValue(aoisFeaturesAtom);
-  const { onUpdate, onDelete, onSelectionChange, onDrawModeChange } = useAois();
+  const { onDrawToolInitialized, onUpdate, onDelete, onSelectionChange, onDrawModeChange } = useAois();
 
   useControl<MapboxDraw>(
     () => {
@@ -56,6 +56,7 @@ export default function DrawControl(props: DrawControlProps) {
       map.on('draw.delete', onDelete);
       map.on('draw.selectionchange', onSelectionChange);
       map.on('draw.modechange', onDrawModeChange);
+      map.on('draw.actionable', onDrawToolInitialized);
       map.on('load', () => {
         control.current?.set({
           type: 'FeatureCollection',
@@ -69,6 +70,7 @@ export default function DrawControl(props: DrawControlProps) {
       map.off('draw.delete', onDelete);
       map.off('draw.selectionchange', onSelectionChange);
       map.off('draw.modechange', onDrawModeChange);
+      map.off('draw.actionable', onDrawToolInitialized);
     },
     {
       position: 'top-left'
