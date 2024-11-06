@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { NavLink } from 'react-router-dom';
+// import PageHeader from './page-header/index-old';
 import PageHeader from './page-header';
 import { useSlidingStickyHeaderProps } from './layout-root/useSlidingStickyHeaderProps';
 
