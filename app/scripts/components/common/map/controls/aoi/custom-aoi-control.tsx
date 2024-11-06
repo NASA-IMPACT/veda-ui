@@ -86,7 +86,6 @@ function CustomAoI({
   // from feature to point.
   const [, forceUpdate] = useState(0);
   useEffect(() => {
-    if(!map.loaded()) return;
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
     const aoiSelectedFor = selectedForEditing ? SIMPLE_SELECT : STATIC_MODE;
