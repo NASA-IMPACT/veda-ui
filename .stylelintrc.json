@@ -4,7 +4,8 @@
   ],
   "extends": [
     "stylelint-config-recommended",
-    "stylelint-config-styled-components"
+    "stylelint-config-styled-components",
+    "stylelint-config-prettier-scss"
   ],
   "rules": {
     "font-family-no-missing-generic-family-keyword": null,
