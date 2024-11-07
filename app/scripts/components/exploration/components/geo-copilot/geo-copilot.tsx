@@ -161,7 +161,7 @@ export function GeoCoPilotComponent({
   setTimeDensity: (timeDensity: TimeDensity) => void;
 }) {
   const defaultSystemComment = {
-    summary: "Welcome to Earth Co-Pilot! I'm here to assist you with identifying datasets with location and date information. Whether you're analyzing time-sensitive trends or working with geospatial data, I've got you covered. Let me know how I can assist you today!",
+    summary: "Welcome to Earth Copilot! I'm here to assist you with identifying datasets with location and date information. Whether you're analyzing time-sensitive trends or working with geospatial data, I've got you covered. Let me know how I can assist you today!",
     dataset_ids: [],
     bbox: {},
     dateRange: {},
@@ -362,7 +362,7 @@ export function GeoCoPilotComponent({
   return (
     <GeoCoPilotWrapper>
       <GeoCoPilotTitleWrapper>
-        <GeoCoPilotTitle>Earth Co-Pilot</GeoCoPilotTitle>
+        <GeoCoPilotTitle>Earth Copilot</GeoCoPilotTitle>
         <RestartSession size='small' onClick={clearSession}>
           <CollecticonArrowLoop /> Restart Session
         </RestartSession>
