@@ -23,8 +23,6 @@ interface PageHeaderProps {
 
 export default function PageHeader(props: PageHeaderProps) {
   const { mainNavItems, subNavItems, logo, linkProperties } = props;
-  console.log(`mainNavItems: `, mainNavItems)
-  console.log(`subNavItems: `, subNavItems)
   const [expanded, setExpanded] = useState(false);
   const onClick = (): void => setExpanded((prvExpanded) => !prvExpanded);
 
@@ -39,15 +37,6 @@ export default function PageHeader(props: PageHeaderProps) {
       return newIsOpen;
     });
   };
-
-  const testMenuItems = [
-    <a href='#linkOne' key='one'>
-      Simple link dog
-    </a>,
-    <a href='#linkTwo' key='two'>
-      Simple link cat
-    </a>
-  ];
 
   const CreateNavMenu = (navItems: NavItem[]) => {
     return (
