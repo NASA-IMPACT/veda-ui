@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { Button } from '@devseed-ui/button';
 import { Modal } from '@devseed-ui/modal';
 import { media, themeVal } from '@devseed-ui/theme-provider';
+import {
+  USWDSButton,
+} from '$components/common/uswds';
 
 import { useFeedbackModal } from './layout-root';
 
@@ -16,46 +19,20 @@ interface BtnMediaProps {
   active?: boolean;
 }
 
-// Global menu link style
-const ButtonAsNavLink = styled(Button)`
-  ${media.mediumUp<BtnMediaProps>`
-    background-color: ${themeVal('color.primary-700')};
-
-    &:hover {
-      background-color: ${themeVal('color.primary-800')};
-    }
-
-    /* Print & when prop is passed */
-    ${({ active }) => active && '&,'}
-    &:active,
-    &.active {
-      background-color: ${themeVal('color.primary-900')};
-    }
-
-    &:focus-visible {
-      background-color: ${themeVal('color.primary-200a')};
-    }
-  `}
-
-  ${media.mediumDown`
-    ${GlobalMenuLinkCSS}
-  `}
-`;
-
 const GoogleForm: React.FC<{ title: string, src: string }> = (props) => {
   const { title, src } = props;
   const { isRevealed, show, hide } = useFeedbackModal();
 
   return (
     <>
-      <ButtonAsNavLink
-        type='button'
-        size='large'
+      <USWDSButton
         onClick={show}
-        style={{ color: 'white' }}
+        outline={true}
+        type='button'
+        size='small'
       >
         {title}
-      </ButtonAsNavLink>
+      </USWDSButton>
       <Modal
         id='modal'
         size='large'

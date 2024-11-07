@@ -12,7 +12,7 @@ import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from '../dropdown-scrollable';
 import GoogleForm from '../google-form';
-import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, ModalNavLink, NavItem, NavItemType } from './types';
+import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, ButtonNavLink, NavItem, NavItemType } from './types';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { LinkProperties } from '$types/veda';
@@ -130,8 +130,9 @@ export default function NavMenuItem({ item, alignment, onClick, linkProperties }
       </li>
 
     );
-  } else if (type === NavItemType.MODAL) {
-    return (<li><GoogleForm title={title} src={(item as ModalNavLink).src} /></li>);
+  }
+  else if (type === NavItemType.BUTTON && title.toLocaleLowerCase() == 'contact us') {
+    return (<li><GoogleForm title={title} src={(item as ButtonNavLink).src} /></li>);
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   } else if (type === NavItemType.DROPDOWN) {
     const { title } = item as DropdownNavLink;

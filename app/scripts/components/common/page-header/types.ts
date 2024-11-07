@@ -4,7 +4,7 @@ export enum NavItemType {
   INTERNAL_LINK= 'internalLink',
   EXTERNAL_LINK= 'externalLink',
   DROPDOWN= 'dropdown',
-  MODAL= 'modal'
+  BUTTON= 'button' // @NOTE: Change this to a button type and button should provide callback on action => aka whether it should open a modal or not or do another action
 }
 
 export interface InternalNavLink {
@@ -21,9 +21,10 @@ export interface ExternalNavLink {
 
 export type NavLinkItem = (ExternalNavLink | InternalNavLink);
 
-export interface ModalNavLink {
+export interface ButtonNavLink {
   title: string;
-  type: NavItemType.MODAL;
+  type: NavItemType.BUTTON;
+  action?: () => void; // @NOTE-SANDRA: This should be required, workaround for now because googleform comes with button
   src: string;
 }
 
@@ -33,4 +34,4 @@ export interface DropdownNavLink {
   children: NavLinkItem[];
 }
 
-export type NavItem = (NavLinkItem | ModalNavLink | DropdownNavLink);
+export type NavItem = (NavLinkItem | ButtonNavLink | DropdownNavLink);

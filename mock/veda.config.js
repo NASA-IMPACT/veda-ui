@@ -10,7 +10,7 @@ let mainNavItems = [
     type: 'dropdown',
     children: [
       {
-        title: 'test dropdown',
+        title: 'dropdown menu item 1',
         to: '/stories',
         type: 'internalLink'
       }
@@ -57,7 +57,9 @@ if (config.GOOGLE_FORM) {
     {
       title: 'Contact us',
       src: config.GOOGLE_FORM,
-      type: 'modal'
+      type: 'button'
+      // @NOTE: action attribute is required here but we cant pass in a callback that opens appropriate modal because this file is outside the modules
+      // Will provide a work around for this for not but this will soon go away with the refactor anyways
     }
   ];
 }

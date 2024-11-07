@@ -9,6 +9,10 @@ import { USWDSMenu } from '../uswds/header/menu';
 import { USWDSNavDropDownButton } from '$components/common/uswds/header/nav-drop-down-button';
 import { USWDSNavMenuButton } from '$components/common/uswds/header/nav-menu-button';
 import { USWDSExtendedNav } from '$components/common/uswds/header/extended-nav';
+import {
+  USWDSButton,
+} from '$components/common/uswds';
+import GoogleForm from '../google-form';
 
 interface PageHeaderProps {
   mainNavItems: NavItem[];
@@ -91,7 +95,27 @@ export default function PageHeader(props: PageHeaderProps) {
               </span>
             </a>
           );
-        }
+        } else if (item.type == NavItemType.BUTTON && item.title.toLocaleLowerCase() == 'contact us') {
+            // @NOTE: This is a workaround right now because we can't provide a callback that returns some jsx element from veda.config.js where this nav config is being defined
+            // This ideally would just go away once we migrate the instances over and there is no need for the veda.config file. The nav config can just specify the action attribute directly
+
+            // @NOTE: Also GoogleForm component is coupled with the button component already, Ideally it would be broken out, possible @TECH-DEBT but since it is currently coupled...
+            // we either have to decouple it or we would create another Nav Item Type where it is a more generic component type
+            return (
+              <GoogleForm title={item.title} src={(item as ButtonNavLink).src} />
+           )
+        } else if (item.type == NavItemType.BUTTON) {
+            return (
+            <USWDSButton
+              onClick={item.action}
+              outline={true}
+              type='button'
+              size='small'
+            >
+              {item.title}
+            </USWDSButton>
+          )
+      }
     }))
   };
   
