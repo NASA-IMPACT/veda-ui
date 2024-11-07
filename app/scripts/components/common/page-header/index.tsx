@@ -20,7 +20,18 @@ interface PageHeaderProps {
 export default function PageHeader(props: PageHeaderProps) {
   const [expanded, setExpanded] = useState(false);
   const onClick = (): void => setExpanded((prvExpanded) => !prvExpanded);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const [isOpen, setIsOpen] = useState([false]);
+  const onToggle = (
+    index: number,
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>>
+  ): void => {
+    setIsOpen((prevIsOpen) => {
+      const newIsOpen = [...prevIsOpen];
+      newIsOpen[index] = !newIsOpen[index];
+      return newIsOpen;
+    });
+  };
 
   const testMenuItems = [
     <a href='#linkOne' key='one'>
@@ -31,13 +42,11 @@ export default function PageHeader(props: PageHeaderProps) {
     </a>
   ];
 
-  const onToggle = () => setIsOpen(!isOpen);
-
   const testItemsMenu = [
     <>
       <USWDSNavDropDownButton
         onToggle={(): void => {
-          onToggle();
+          onToggle(0, setIsOpen);
         }}
         menuId='testDropDownOne'
         isOpen={isOpen[0]}
