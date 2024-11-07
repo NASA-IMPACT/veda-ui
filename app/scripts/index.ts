@@ -18,7 +18,7 @@ import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import PageHeader from '$components/common/page-header';
 import LogoContainer from '$components/common/page-header/logo-container';
-import type { NavItem, InternalNavLink } from '$components/common/page-header/types';
+import type { NavItem, InternalNavLink, NavItemType } from '$components/common/page-header/types';
 
 
 export {
@@ -49,5 +49,6 @@ export {
 
   // TYPES
   NavItem,
+  NavItemType,
   InternalNavLink
 };
