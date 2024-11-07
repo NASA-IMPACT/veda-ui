@@ -6,6 +6,7 @@ import { getLinkProps } from '$utils/url';
 interface SmartLinkProps {
   to: string;
   children?: ReactNode;
+  className?: string;
 }
 
 /**

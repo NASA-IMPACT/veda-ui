@@ -18,6 +18,9 @@ interface PageHeaderProps {
 }
 
 export default function PageHeader(props: PageHeaderProps) {
+  const { mainNavItems, subNavItems, logo, linkProperties } = props;
+  console.log(`mainNavItems: `, mainNavItems)
+  console.log(`subNavItems: `, subNavItems)
   const [expanded, setExpanded] = useState(false);
   const onClick = (): void => setExpanded((prvExpanded) => !prvExpanded);
 
@@ -35,39 +38,63 @@ export default function PageHeader(props: PageHeaderProps) {
 
   const testMenuItems = [
     <a href='#linkOne' key='one'>
-      Simple link one
+      Simple link dog
     </a>,
     <a href='#linkTwo' key='two'>
-      Simple link two
+      Simple link cat
     </a>
   ];
 
-  const testItemsMenu = [
-    <>
-      <USWDSNavDropDownButton
-        onToggle={(): void => {
-          onToggle(0, setIsOpen);
-        }}
-        menuId='testDropDownOne'
-        isOpen={isOpen[0]}
-        label='Nav Label'
-        isCurrent={true}
-      />
-      <USWDSMenu
-        key='one'
-        items={testMenuItems}
-        isOpen={isOpen[0]}
-        id='testDropDownOne'
-      />
-    </>,
-    <a href='#two' key='two' className='usa-nav__link'>
-      <span>Parent link</span>
-    </a>,
-    <a href='#three' key='three' className='usa-nav__link'>
-      <span>Parent link</span>
-    </a>
-  ];
-
+  const CreateNavMenu = (navItems: NavItem[]) => {
+    return (
+      navItems.map((item) => {
+        if(item.type == NavItemType.DROPDOWN) {
+          return (
+            <>
+              <USWDSNavDropDownButton
+                onToggle={(): void => {
+                  onToggle(0, setIsOpen);
+                }}
+                menuId={item.title}
+                isOpen={isOpen[0]}
+                label={item.title}
+              />
+              <USWDSMenu
+                key='one'
+                items={CreateNavMenu(item.children)}
+                isOpen={isOpen[0]}
+                id={`${item.title}-dropdown`}
+              />
+            </>
+          )
+        } else if (item.type == NavItemType.INTERNAL_LINK && linkProperties.LinkElement) {
+          const path = {[linkProperties.pathAttributeKeyName]: (item as InternalNavLink).to}
+          const LinkElement = linkProperties.LinkElement;
+          return (
+            <LinkElement {...path} className='usa-nav__link'>
+              <span>
+                {item.title}
+              </span>
+            </LinkElement>
+          );
+        } else if (item.type == NavItemType.EXTERNAL_LINK) {
+          return (
+            <a
+              target='_blank'
+              rel='noopener'
+              onClick={onClick}
+              href={(item as ExternalNavLink).href}
+              className='usa-nav__link'
+            >
+              <span>
+                {item.title}
+              </span>
+            </a>
+          );
+        }
+    }))
+  };
+  
   return (
     <>
       <USWDSHeader extended={true} showMobileOverlay={expanded}>
@@ -76,8 +103,8 @@ export default function PageHeader(props: PageHeaderProps) {
           <USWDSNavMenuButton onClick={onClick} label='Menu' />
         </div>
         <USWDSExtendedNav
-          primaryItems={testItemsMenu}
-          secondaryItems={testMenuItems}
+          primaryItems={CreateNavMenu(mainNavItems)}
+          secondaryItems={CreateNavMenu(subNavItems)}
           mobileExpanded={expanded}
           onToggleMobileNav={onClick}
         />

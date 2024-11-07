@@ -17,6 +17,8 @@ import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { LinkProperties } from '$types/veda';
 
+// @NOTE: likely able to deprecate this file with the new page-header
+// @DEPRECATE: Look at note above
 
 const rgbaFixed = rgba as any;
 
