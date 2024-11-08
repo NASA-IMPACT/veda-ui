@@ -81,14 +81,15 @@ export default function HorizontalInfoCard(props: Props) {
         <div id='description'>
           <p>{description}</p>
         </div>
-        <div id='tags'>
-          {tagLabels &&
-            tagLabels.map((label) => (
+        {tagLabels && tagLabels.length > 0 && (
+          <div id='tags'>
+            {tagLabels.map((label) => (
               <Pill variation='primary' key={label}>
                 {label}
               </Pill>
             ))}
-        </div>
+          </div>
+        )}
       </CardContent>
     </HorizontalCard>
   );

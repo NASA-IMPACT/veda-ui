@@ -2,15 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { media } from '@devseed-ui/theme-provider';
 
-import {
-  stories,
-  datasets,
-  Media,
-  RelatedContentData,
-  LinkContentData,
-  StoryData
-} from 'veda';
+import { stories, datasets, RelatedContentData, StoryData } from 'veda';
 import SmartLink from './smart-link';
+import { getDescription, getMediaProperty } from './catalog/utils';
+import { FormatBlock } from './types';
 import { utcString2userTzDate } from '$utils/date';
 import {
   getDatasetPath,
@@ -44,20 +39,6 @@ const RelatedContentInner = styled.div`
   grid-column:  content-3 / content-11;
 `}
 `;
-
-interface FormatBlock {
-  id: string;
-  name: string;
-  description: string;
-  cardDescription?: string;
-  date: string;
-  link: string;
-  asLink?: LinkContentData;
-  parentLink: string;
-  media: Media;
-  cardMedia?: Media;
-  parent: RelatedContentData['type'];
-}
 
 function formatUrl(id: string, parent: string) {
   switch (parent) {
@@ -168,11 +149,11 @@ export default function RelatedContent(props: RelatedContentProps) {
                     ? utcString2userTzDate(t.date)
                     : undefined
                 }
-                description={t.cardDescription ?? t.description}
+                description={getDescription(t)}
                 tagLabels={[t.parent]}
                 parentTo={t.parentLink}
-                imgSrc={t.cardMedia?.src ?? t.media.src}
-                imgAlt={t.cardMedia?.alt ?? t.media.alt}
+                imgSrc={getMediaProperty(undefined, t, 'src')}
+                imgAlt={getMediaProperty(undefined, t, 'alt')}
               />
             </li>
           ))}

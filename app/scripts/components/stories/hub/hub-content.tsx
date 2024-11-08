@@ -8,7 +8,11 @@ import { VerticalDivider } from '@devseed-ui/toolbar';
 import { Subtitle } from '@devseed-ui/typography';
 import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
-import { FilterActions } from '$components/common/catalog/utils';
+import {
+  FilterActions,
+  getDescription,
+  getMediaProperty
+} from '$components/common/catalog/utils';
 import {
   Fold,
   FoldHeader,
@@ -192,12 +196,12 @@ export default function HubContent(props: HubContentProps) {
                   }
                   description={
                     <TextHighlight value={search} disabled={search.length < 3}>
-                      {d.cardDescription ?? d.description}
+                      {getDescription(d)}
                     </TextHighlight>
                   }
                   hideExternalLinkBadge={d.hideExternalLinkBadge}
-                  imgSrc={d.cardMedia?.src ?? d.media?.src}
-                  imgAlt={d.cardMedia?.alt ?? d.media?.alt}
+                  imgSrc={getMediaProperty(undefined, d, 'src')}
+                  imgAlt={getMediaProperty(undefined, d, 'alt')}
                   footerContent={
                     <>
                       {topics?.length ? (

@@ -12,6 +12,7 @@ import { CardMeta, CardTopicsList } from '../card/styles';
 import { DatasetClassification } from '../dataset-classification';
 import { CardSourcesList } from '../card-sources';
 import TextHighlight from '../text-highlight';
+import { getDatasetDescription, getMediaProperty } from './utils';
 import { DatasetData, DatasetLayer } from '$types/veda';
 import { getDatasetPath } from '$utils/routes';
 import {
@@ -102,42 +103,6 @@ const CardSelectable = styled(Card)<{
     `}
 `;
 
-/**
- * Returns the description for a dataset or layer, prioritizing cardDescription prop set in the .mdx
- */
-const getDescription = (
-  layer: DatasetLayer | undefined,
-  dataset: DatasetData
-): string => {
-  if (!layer) {
-    return dataset.cardDescription ?? dataset.description;
-  }
-  return layer.cardDescription ?? layer.description;
-};
-
-/**
- * Retrieves media properties (src or alt) from either layer or dataset objects
- * Follows a specific precedence order to find the first available value:
- * 1. Layer card media property
- * 2. Layer media property
- * 3. Dataset card media property
- * 4. Dataset media property
- */
-const getMediaProperty = <T extends 'src' | 'alt'>(
-  layer: DatasetLayer | undefined,
-  dataset: DatasetData,
-  property: T
-): string => {
-  const sources = [
-    layer?.cardMedia?.[property],
-    layer?.media?.[property],
-    dataset.cardMedia?.[property],
-    dataset.media?.[property]
-  ];
-
-  return sources.find(Boolean) ?? '';
-};
-
 export const CatalogCard = (props: CatalogCardProps) => {
   const {
     dataset,
@@ -155,7 +120,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
   const allTaxonomyValues = getAllTaxonomyValues(dataset).map((v) => v.name);
 
   const title = layer ? layer.name : dataset.name;
-  const description = getDescription(layer, dataset);
+  const description = getDatasetDescription(layer, dataset);
   const imgSrc = getMediaProperty(layer, dataset, 'src');
   const imgAlt = getMediaProperty(layer, dataset, 'alt');
 

@@ -6,6 +6,7 @@ import SmartLink from './smart-link';
 import PublishedDate from './pub-date';
 import { CardSourcesList } from './card-sources';
 import { DatasetClassification } from './dataset-classification';
+import { getDescription, getMediaProperty } from './catalog/utils';
 import { Card } from '$components/common/card';
 import { CardMeta, CardTopicsList } from '$components/common/card/styles';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
@@ -97,16 +98,6 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                 const date = new Date(d[dateProperty ?? '']);
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
 
-                const cardDescription =
-                  'cardDescription' in d
-                    ? (d as StoryData).cardDescription ?? d.description
-                    : d.description;
-
-                const cardMedia =
-                  'cardMedia' in d
-                    ? (d as StoryData).cardMedia ?? d.media
-                    : d.media;
-
                 return (
                   <ContinuumGridItem {...bag} key={d.id}>
                     <Card
@@ -140,9 +131,9 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                           )}
                         </CardMeta>
                       }
-                      description={cardDescription}
-                      imgSrc={cardMedia?.src}
-                      imgAlt={cardMedia?.alt}
+                      description={getDescription(d)}
+                      imgSrc={getMediaProperty(undefined, d, 'src')}
+                      imgAlt={getMediaProperty(undefined, d, 'alt')}
                       footerContent={
                         <>
                           {topics?.length ? (
