@@ -1690,6 +1690,39 @@
   resolved "http://verdaccio.ds.io:4873/@floating-ui%2futils/-/utils-0.2.1.tgz#16308cea045f0fc777b6ff20a9f25474dd8293d2"
   integrity sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==
 
+"@fortawesome/fontawesome-common-types@6.6.0":
+  version "6.6.0"
+  resolved "http://verdaccio.ds.io:4873/@fortawesome%2ffontawesome-common-types/-/fontawesome-common-types-6.6.0.tgz#31ab07ca6a06358c5de4d295d4711b675006163f"
+  integrity sha512-xyX0X9mc0kyz9plIyryrRbl7ngsA9jz77mCZJsUkLl+ZKs0KWObgaEBoSgQiYWAsSmjz/yjl0F++Got0Mdp4Rw==
+
+"@fortawesome/fontawesome-svg-core@^6.6.0":
+  version "6.6.0"
+  resolved "http://verdaccio.ds.io:4873/@fortawesome%2ffontawesome-svg-core/-/fontawesome-svg-core-6.6.0.tgz#2a24c32ef92136e98eae2ff334a27145188295ff"
+  integrity sha512-KHwPkCk6oRT4HADE7smhfsKudt9N/9lm6EJ5BVg0tD1yPA5hht837fB87F8pn15D8JfTqQOjhKTktwmLMiD7Kg==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "6.6.0"
+
+"@fortawesome/free-regular-svg-icons@^6.6.0":
+  version "6.6.0"
+  resolved "http://verdaccio.ds.io:4873/@fortawesome%2ffree-regular-svg-icons/-/free-regular-svg-icons-6.6.0.tgz#fc49a947ac8dfd20403c9ea5f37f0919425bdf04"
+  integrity sha512-Yv9hDzL4aI73BEwSEh20clrY8q/uLxawaQ98lekBx6t9dQKDHcDzzV1p2YtBGTtolYtNqcWdniOnhzB+JPnQEQ==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "6.6.0"
+
+"@fortawesome/free-solid-svg-icons@^6.6.0":
+  version "6.6.0"
+  resolved "http://verdaccio.ds.io:4873/@fortawesome%2ffree-solid-svg-icons/-/free-solid-svg-icons-6.6.0.tgz#061751ca43be4c4d814f0adbda8f006164ec9f3b"
+  integrity sha512-IYv/2skhEDFc2WGUcqvFJkeK39Q+HyPf5GHUrT/l2pKbtgEIv1al1TKd6qStR5OIwQdN1GZP54ci3y4mroJWjA==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "6.6.0"
+
+"@fortawesome/react-fontawesome@^0.2.2":
+  version "0.2.2"
+  resolved "http://verdaccio.ds.io:4873/@fortawesome%2freact-fontawesome/-/react-fontawesome-0.2.2.tgz#68b058f9132b46c8599875f6a636dad231af78d4"
+  integrity sha512-EnkrprPNqI6SXJl//m29hpaNzOp1bruISWaOiRtkMi/xSvHJlzc2j2JAYS7egxt/EbjSNV/k6Xy0AQI6vB2+1g==
+  dependencies:
+    prop-types "^15.8.1"
+
 "@gulp-sourcemaps/identity-map@^2.0.1":
   version "2.0.1"
   resolved "http://verdaccio.ds.io:4873/@gulp-sourcemaps%2fidentity-map/-/identity-map-2.0.1.tgz#a6e8b1abec8f790ec6be2b8c500e6e68037c0019"
@@ -4536,7 +4569,14 @@
   dependencies:
     "@types/react" "^17"
 
-"@types/react@*", "@types/react@18.0.32", "@types/react@^17":
+"@types/react-dom@^18.3.0":
+  version "18.3.0"
+  resolved "http://verdaccio.ds.io:4873/@types%2freact-dom/-/react-dom-18.3.0.tgz#0cbc818755d87066ab6ca74fbedb2547d74a82b0"
+  integrity sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react@*", "@types/react@18.0.32", "@types/react@^17", "@types/react@^18.3.3":
   version "18.0.32"
   resolved "http://verdaccio.ds.io:4873/@types%2freact/-/react-18.0.32.tgz#5e88b2af6833251d54ec7fe86d393224499f41d5"
   integrity sha512-gYGXdtPQ9Cj0w2Fwqg5/ak6BcK3Z15YgjSqtyDizWUfx7mQ8drs0NBUzRRsAdoFVTO8kJ8L2TL8Skm7OFPnLUw==
@@ -4768,6 +4808,11 @@ acorn@^8.0.0, acorn@^8.5.0, acorn@^8.7.1:
   version "8.7.1"
   resolved "http://verdaccio.ds.io:4873/acorn/-/acorn-8.7.1.tgz#0197122c843d1bf6d0a5e83220a788f278f63c30"
   integrity sha512-Xx54uLJQZ19lKygFXOWsscKUbsBZW0CPykPhVQdhIeIwrbPmJzqeASDInc8nKBnp/JT6igTs82qPXz069H8I/A==
+
+acorn@^8.12.1:
+  version "8.12.1"
+  resolved "http://verdaccio.ds.io:4873/acorn/-/acorn-8.12.1.tgz#71616bdccbe25e27a54439e0046e89ca76df2248"
+  integrity sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==
 
 adler-32@~1.3.0:
   version "1.3.1"
@@ -5584,20 +5629,10 @@ camelize@^1.0.0:
   resolved "http://verdaccio.ds.io:4873/camelize/-/camelize-1.0.0.tgz#164a5483e630fa4321e5af07020e531831b2609b"
   integrity sha1-FkpUg+Yw+kMh5a8HAg5TGDGyYJs=
 
-caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001366:
-  version "1.0.30001441"
-  resolved "http://verdaccio.ds.io:4873/caniuse-lite/-/caniuse-lite-1.0.30001441.tgz"
-  integrity sha512-OyxRR4Vof59I3yGWXws6i908EtGbMzVUi3ganaZQHmydk1iwDhRnvaPG2WaR0KcqrDFKrxVZHULT396LEPhXfg==
-
-caniuse-lite@^1.0.30001538:
-  version "1.0.30001640"
-  resolved "http://verdaccio.ds.io:4873/caniuse-lite/-/caniuse-lite-1.0.30001640.tgz#32c467d4bf1f1a0faa63fc793c2ba81169e7652f"
-  integrity sha512-lA4VMpW0PSUrFnkmVuEKBUovSWKhj7puyCg8StBChgu298N1AtuF1sKWEvfDuimSEDbhlb/KqPKC3fs1HbuQUA==
-
-caniuse-lite@^1.0.30001599, caniuse-lite@^1.0.30001629:
-  version "1.0.30001639"
-  resolved "http://verdaccio.ds.io:4873/caniuse-lite/-/caniuse-lite-1.0.30001639.tgz#972b3a6adeacdd8f46af5fc7f771e9639f6c1521"
-  integrity sha512-eFHflNTBIlFwP2AIKaYuBQN/apnUoKNhBdza8ZnW/h2di4LCZ4xFqYlxUxo+LQ76KFI1PGcC1QDxMbxTZpSCAg==
+caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001366, caniuse-lite@^1.0.30001538, caniuse-lite@^1.0.30001599, caniuse-lite@^1.0.30001629:
+  version "1.0.30001658"
+  resolved "http://verdaccio.ds.io:4873/caniuse-lite/-/caniuse-lite-1.0.30001658.tgz"
+  integrity sha512-N2YVqWbJELVdrnsW5p+apoQyYt51aBMSsBZki1XZEfeBCexcM/sf4xiAHcXQBkuOwJBXtWF7aW1sYX6tKebPHw==
 
 ccount@^1.0.0:
   version "1.1.0"
@@ -12681,6 +12716,17 @@ react-json-tree@^0.18.0:
     "@types/lodash" "^4.14.191"
     react-base16-styling "^0.9.1"
 
+react-jsx-parser@^2.1.0:
+  version "2.1.0"
+  resolved "http://verdaccio.ds.io:4873/react-jsx-parser/-/react-jsx-parser-2.1.0.tgz#605960947100625f70afc73f4ab915d92130f157"
+  integrity sha512-cGp8ceqA6j7OylsqeK2kuCGRitHpWzximsxsQyqkQO+1fwyG82Mb1l2nx9ImrfdCO6GT2kgt7C6cX9vJ46B7ow==
+  dependencies:
+    acorn "^8.12.1"
+    acorn-jsx "^5.3.2"
+  optionalDependencies:
+    "@types/react" "^18.3.3"
+    "@types/react-dom" "^18.3.0"
+
 react-lazyload@^3.2.0:
   version "3.2.0"
   resolved "http://verdaccio.ds.io:4873/react-lazyload/-/react-lazyload-3.2.0.tgz#497bd06a6dbd7015e3376e1137a67dc47d2dd021"
@@ -12780,6 +12826,11 @@ react-smooth@^2.0.1:
   dependencies:
     fast-equals "^2.0.0"
     react-transition-group "2.9.0"
+
+react-spinners@^0.14.1:
+  version "0.14.1"
+  resolved "http://verdaccio.ds.io:4873/react-spinners/-/react-spinners-0.14.1.tgz#de7d7d6b3e6d4f29d9620c65495b502c7dd90812"
+  integrity sha512-2Izq+qgQ08HTofCVEdcAQCXFEYfqTDdfeDQJeo/HHQiQJD4imOicNLhkfN2eh1NYEWVOX4D9ok2lhuDB0z3Aag==
 
 react-style-singleton@^2.2.1:
   version "2.2.1"
