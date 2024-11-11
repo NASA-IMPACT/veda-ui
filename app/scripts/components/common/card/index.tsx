@@ -304,7 +304,8 @@ function CardComponent(props: CardComponentPropsType) {
       linkTo,
       onClick,
       pathAttributeKeyName: 'to',
-      LinkElement: SmartLink
+      LinkElement: SmartLink,
+      isLinkExternal
     };
   }
 
