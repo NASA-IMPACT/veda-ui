@@ -36,7 +36,7 @@ export function CustomLink(props: CustomLinkProps) {
   const isExternalLink = /^https?:\/\//.test(href);
   const linkProps = getLinkProps(href);
   return isExternalLink ? (
-    // @ts-expect-error
+    // @ts-expect-error linkProps returned from getLinkProps are not being recognized suddenly
     <a {...linkProps} {...rest} />
   ) : (
     <Link {...linkProps} {...rest} />
