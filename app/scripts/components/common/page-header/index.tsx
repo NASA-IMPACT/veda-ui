@@ -10,12 +10,15 @@ import {
   ExternalNavLink,
   ButtonNavLink
 } from './types';
-import Logo from './logo';
+import LogoContainer from './logo-container';
 import { USWDSHeader, USWDSHeaderTitle } from '$components/common/uswds/header';
 import { USWDSNavDropDownButton } from '$components/common/uswds/header/nav-drop-down-button';
 import { USWDSNavMenuButton } from '$components/common/uswds/header/nav-menu-button';
 import { USWDSExtendedNav } from '$components/common/uswds/header/extended-nav';
 import { USWDSButton } from '$components/common/uswds';
+
+const appTitle = process.env.APP_TITLE;
+const appVersion = process.env.APP_VERSION;
 
 interface PageHeaderProps {
   mainNavItems: NavItem[];
@@ -25,7 +28,7 @@ interface PageHeaderProps {
 }
 
 export default function PageHeader(props: PageHeaderProps) {
-  const { mainNavItems, subNavItems, logo, linkProperties } = props;
+  const { mainNavItems, subNavItems, logo: Logo, linkProperties } = props;
   const [expanded, setExpanded] = useState(false);
   const onClick = (): void => setExpanded((prvExpanded) => !prvExpanded);
 
@@ -119,14 +122,16 @@ export default function PageHeader(props: PageHeaderProps) {
       <USWDSHeader extended={true} showMobileOverlay={expanded}>
         <div className='usa-navbar'>
           <USWDSHeaderTitle>
-            {logo ?? (
-              <Logo
-                linkProperties={{
-                  LinkElement: Link,
-                  pathAttributeKeyName: 'to'
-                }}
-              />
-            )}
+            <LogoContainer
+              linkProperties={{
+                LinkElement: Link,
+                pathAttributeKeyName: 'to'
+              }}
+              Logo={Logo}
+              title='Earthdata'
+              subTitle={appTitle}
+              version={appVersion}
+            />
           </USWDSHeaderTitle>
           <USWDSNavMenuButton onClick={onClick} label='Menu' />
         </div>

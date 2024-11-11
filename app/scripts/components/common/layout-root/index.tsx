@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState
 } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
@@ -21,7 +21,7 @@ import { LayoutRootContext } from './context';
 import { setGoogleTagManager } from '$utils/use-google-tag-manager';
 
 import NavWrapper from '$components/common/nav-wrapper';
-import Logo from '$components/common/page-header/logo';
+import NasaLogo from '$components/common/nasa-logo';
 import {
   mainNavItems,
   subNavItems
@@ -80,11 +80,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
       <NavWrapper
         mainNavItems={mainNavItems}
         subNavItems={subNavItems}
-        logo={
-          <Logo
-            linkProperties={{ LinkElement: Link, pathAttributeKeyName: 'to' }}
-          />
-        }
+        logo={<NasaLogo />}
       />
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
