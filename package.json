@@ -27,6 +27,7 @@
     "lint:css": "stylelint 'app/styles/**/**' 'app/scripts/**/*.(js|ts|tsx|jsx)'",
     "ts-check": "yarn tsc --noEmit --skipLibCheck",
     "test": "jest",
+    "release": "release-it",
     "pretest:e2e": "node test/playwright/generateTestData.js",
     "test:e2e": "yarn playwright test"
   },
@@ -218,6 +219,7 @@
     "react-transition-group": "^4.4.2",
     "react-virtual": "^2.10.4",
     "recharts": "2.1.12",
+    "release-it": "^17.10.0",
     "rodemirror": "^2.0.0",
     "scrollama": "^3.1.0",
     "shpjs": "^4.0.4",
