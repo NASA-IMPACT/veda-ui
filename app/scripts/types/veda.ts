@@ -1,7 +1,7 @@
 import * as dateFns from 'date-fns';
 import mapboxgl from 'mapbox-gl';
 import { MDXModule } from 'mdx/types';
-import { MouseEventHandler, ComponentType } from 'react';
+import { ComponentType } from 'react';
 // ///////////////////////////////////////////////////////////////////////////
 //  Datasets                                                                //
 // ///////////////////////////////////////////////////////////////////////////

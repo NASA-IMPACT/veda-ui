@@ -15,7 +15,6 @@ import {
 } from '@devseed-ui/collecticons';
 
 import UnscrollableBody from '../unscrollable-body';
-import { LinkProperties } from '../card';
 import NavMenuItem from './nav-menu-item';
 import { NavItem } from './types';
 
@@ -23,6 +22,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { PAGE_BODY_ID } from '$components/common/layout-root';
 import { useMediaQuery } from '$utils/use-media-query';
 import { HEADER_ID } from '$utils/use-sliding-sticky-header';
+import { LinkProperties } from '$types/veda';
 
 
 const PageHeaderSelf = styled.header`

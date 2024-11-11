@@ -92,9 +92,9 @@ function CustomAoI({
 
     const mbDraw = map?._drawControl;
     setAreaSelected(mbDraw?.getSelected().features.length);
-    setPointSelected(mbDraw?.getSelectedPoints()?.features.length)
-  }, [map])
-  
+    setPointSelected(mbDraw?.getSelectedPoints()?.features.length);
+  }, [map]);
+
   useEffect(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;

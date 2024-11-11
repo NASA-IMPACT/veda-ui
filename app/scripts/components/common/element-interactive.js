@@ -73,7 +73,13 @@ const InteractiveLink = styled.a`
  */
 export const ElementInteractive = React.forwardRef(
   function ElementInteractiveFwd(props, ref) {
-    const { linkProps = {}, linkLabel = 'View', children, onClick, ...rest } = props;
+    const {
+      linkProps = {},
+      linkLabel = 'View',
+      children,
+      onClick,
+      ...rest
+    } = props;
     const [isStateOver, setStateOver] = useState(false);
     const [isStateActive, setStateActive] = useState(false);
     const [isStateFocus, setStateFocus] = useState(false);
@@ -95,19 +101,15 @@ export const ElementInteractive = React.forwardRef(
         onClick={onClick}
       >
         {children}
-        {
-          linkProps && (
-            <InteractiveLink
-              {...linkProps}
-              onMouseDown={useCallback(() => setStateActive(true), [])}
-              onMouseUp={useCallback(() => setStateActive(false), [])}
-              onFocus={useCallback(() => setStateFocus(true), [])}
-              onBlur={useCallback(() => setStateFocus(false), [])}
-            >
-              {linkLabel}
-            </InteractiveLink>
-          )
-        }
+        <InteractiveLink
+          {...linkProps}
+          onMouseDown={useCallback(() => setStateActive(true), [])}
+          onMouseUp={useCallback(() => setStateActive(false), [])}
+          onFocus={useCallback(() => setStateFocus(true), [])}
+          onBlur={useCallback(() => setStateFocus(false), [])}
+        >
+          {linkLabel}
+        </InteractiveLink>
       </Wrapper>
     );
   }

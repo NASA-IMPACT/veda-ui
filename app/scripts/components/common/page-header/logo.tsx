@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { glsp, media, themeVal } from '@devseed-ui/theme-provider';
 import NasaLogo from '../nasa-logo';
 import { Tip } from '../tip';
-import { LinkProperties } from '../card';
 import { ComponentOverride } from '$components/common/page-overrides';
+import { LinkProperties } from '$types/veda';
 
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;

@@ -12,10 +12,10 @@ import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from '../dropdown-scrollable';
 import GoogleForm from '../google-form';
-import { LinkProperties } from '../card';
 import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, ModalNavLink, NavItem, NavItemType } from './types';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
+import { LinkProperties } from '$types/veda';
 
 
 const rgbaFixed = rgba as any;

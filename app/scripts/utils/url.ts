@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import { LinkProps } from 'react-router-dom';
 
 export function isExternalLink(link: string): boolean {
