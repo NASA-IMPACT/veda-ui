@@ -8,7 +8,11 @@ import { VerticalDivider } from '@devseed-ui/toolbar';
 import { Subtitle } from '@devseed-ui/typography';
 import PublishedDate from '$components/common/pub-date';
 import BrowseControls from '$components/common/browse-controls';
-import { FilterActions } from '$components/common/catalog/utils';
+import {
+  FilterActions,
+  getDescription,
+  getMediaProperty
+} from '$components/common/catalog/utils';
 import {
   Fold,
   FoldHeader,
@@ -17,7 +21,11 @@ import {
 } from '$components/common/fold';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
 import { Card, LinkProperties } from '$components/common/card';
-import { CardListGrid, CardMeta, CardTopicsList } from '$components/common/card/styles';
+import {
+  CardListGrid,
+  CardMeta,
+  CardTopicsList
+} from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { prepareDatasets } from '$components/common/catalog/prepare-datasets';
 
@@ -54,17 +62,25 @@ const FoldWithTopMargin = styled(Fold)`
   margin-top: ${glsp()};
 `;
 
-interface StoryDataWithPath extends StoryData {path: string}
+interface StoryDataWithPath extends StoryData {
+  path: string;
+}
 interface HubContentProps {
   allStories: StoryDataWithPath[];
   linkProperties: LinkProperties;
   pathname: string;
-  storiesString: {one: string, other: string};
+  storiesString: { one: string; other: string };
   onFilterchanges: () => UseFiltersWithQueryResult;
 }
 
-export default function HubContent(props:HubContentProps) {
-  const { allStories, linkProperties, pathname, storiesString, onFilterchanges } = props;
+export default function HubContent(props: HubContentProps) {
+  const {
+    allStories,
+    linkProperties,
+    pathname,
+    storiesString,
+    onFilterchanges
+  } = props;
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
   const { search, taxonomies, onAction } = onFilterchanges();
@@ -77,10 +93,12 @@ export default function HubContent(props:HubContentProps) {
     [pathAttributeKeyName]: pathname
   };
 
-  function getPillLinkProps(t){
+  function getPillLinkProps(t) {
     return {
       as: LinkElement,
-      [pathAttributeKeyName]: `${pathname}?${FilterActions.TAXONOMY}=${encodeURIComponent(JSON.stringify({ Topics: t.id }))}`
+      [pathAttributeKeyName]: `${pathname}?${
+        FilterActions.TAXONOMY
+      }=${encodeURIComponent(JSON.stringify({ Topics: t.id }))}`
     };
   }
   const displayStories = useMemo(
@@ -89,142 +107,138 @@ export default function HubContent(props:HubContentProps) {
         search,
         taxonomies,
         sortField: 'pubDate',
-        sortDir: 'desc',
+        sortDir: 'desc'
       }) as StoryDataWithPath[],
     [search, taxonomies, allStories]
   );
 
   const isFiltering = !!(
-    (taxonomies && Object.keys(taxonomies).length )||
+    (taxonomies && Object.keys(taxonomies).length) ||
     search
   );
 
-  return (        <FoldWithTopMargin>
-    <BrowseFoldHeader
-      ref={browseControlsHeaderRef}
-      style={{
-        scrollMarginTop: `${headerHeight + 16}px`
-      }}
-    >
-      <FoldHeadline>
-        <FoldTitle>Browse</FoldTitle>
-      </FoldHeadline>
-      <BrowseControls
-        search={search}
-        taxonomies={taxonomies}
-        onAction={onAction}
-        taxonomiesOptions={storyTaxonomies}
-      />
-    </BrowseFoldHeader>
+  return (
+    <FoldWithTopMargin>
+      <BrowseFoldHeader
+        ref={browseControlsHeaderRef}
+        style={{
+          scrollMarginTop: `${headerHeight + 16}px`
+        }}
+      >
+        <FoldHeadline>
+          <FoldTitle>Browse</FoldTitle>
+        </FoldHeadline>
+        <BrowseControls
+          search={search}
+          taxonomies={taxonomies}
+          onAction={onAction}
+          taxonomiesOptions={storyTaxonomies}
+        />
+      </BrowseFoldHeader>
 
-    <StoryCount>
-      <span>
-        Showing{' '}
-        <Pluralize
-          singular={storiesString.one}
-          plural={storiesString.other}
-          count={displayStories.length}
-          showCount={true}
-        />{' '}
-        out of {allStories.length}.
-      </span>
-      {isFiltering && (
-        <Button {...ButtonLinkProps} size='small'>
-          Clear filters <CollecticonXmarkSmall />
-        </Button>
-      )}
-    </StoryCount>
+      <StoryCount>
+        <span>
+          Showing{' '}
+          <Pluralize
+            singular={storiesString.one}
+            plural={storiesString.other}
+            count={displayStories.length}
+            showCount={true}
+          />{' '}
+          out of {allStories.length}.
+        </span>
+        {isFiltering && (
+          <Button {...ButtonLinkProps} size='small'>
+            Clear filters <CollecticonXmarkSmall />
+          </Button>
+        )}
+      </StoryCount>
 
-    {displayStories.length ? (
-      <CardListGrid>
-        {displayStories.map((d) => {
-          const pubDate = new Date(d.pubDate);
-          const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
-          return (
-            <li key={d.id}>
-              <Card
-                cardType='classic'
-                overline={
-                  <CardMeta>
-                    <CardSourcesList
-                      sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
-                      rootPath={pathname}
-                      onSourceClick={(id) => {
-                        onAction(FilterActions.TAXONOMY_MULTISELECT, {
-                          key: TAXONOMY_SOURCE,
-                          value: id
-                        });
-                        browseControlsHeaderRef.current?.scrollIntoView();
-                      }}
-                    />
-                    <VerticalDivider variation='dark' />
+      {displayStories.length ? (
+        <CardListGrid>
+          {displayStories.map((d) => {
+            const pubDate = new Date(d.pubDate);
+            const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
+            return (
+              <li key={d.id}>
+                <Card
+                  cardType='classic'
+                  overline={
+                    <CardMeta>
+                      <CardSourcesList
+                        sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
+                        rootPath={pathname}
+                        onSourceClick={(id) => {
+                          onAction(FilterActions.TAXONOMY_MULTISELECT, {
+                            key: TAXONOMY_SOURCE,
+                            value: id
+                          });
+                          browseControlsHeaderRef.current?.scrollIntoView();
+                        }}
+                      />
+                      <VerticalDivider variation='dark' />
 
-                    {!isNaN(pubDate.getTime()) && (
+                      {!isNaN(pubDate.getTime()) && (
                         <PublishedDate date={pubDate} />
-                    )}
-                  </CardMeta>
-                }
-                linkLabel='View more'
-                linkProperties={{
-                  linkTo: `${d.asLink?.url ?? d.path}`,
-                  LinkElement,
-                  pathAttributeKeyName
-                }}
-                title={
-                  <TextHighlight
-                    value={search}
-                    disabled={search.length < 3}
-                  >
-                    {d.name}
-                  </TextHighlight>
-                }
-                description={
-                  <TextHighlight
-                    value={search}
-                    disabled={search.length < 3}
-                  >
-                    {d.description}
-                  </TextHighlight>
-                }
-                hideExternalLinkBadge={d.hideExternalLinkBadge}
-                imgSrc={d.media?.src}
-                imgAlt={d.media?.alt}
-                footerContent={
-                  <>
-                    {topics?.length ? (
-                      <CardTopicsList>
-                        <dt>Topics</dt>
-                        {topics.map((t) => (
-                          <dd key={t.id}>
-                            <Pill
-                              {...getPillLinkProps(t)}
-                              onClick={() => {
-                                browseControlsHeaderRef.current?.scrollIntoView();
-                              }}
-                            >
-                              <TextHighlight
-                                value={search}
-                                disabled={search.length < 3}
+                      )}
+                    </CardMeta>
+                  }
+                  linkLabel='View more'
+                  linkProperties={{
+                    linkTo: `${d.asLink?.url ?? d.path}`,
+                    LinkElement,
+                    pathAttributeKeyName
+                  }}
+                  title={
+                    <TextHighlight value={search} disabled={search.length < 3}>
+                      {d.name}
+                    </TextHighlight>
+                  }
+                  description={
+                    <TextHighlight value={search} disabled={search.length < 3}>
+                      {getDescription(d)}
+                    </TextHighlight>
+                  }
+                  hideExternalLinkBadge={d.hideExternalLinkBadge}
+                  imgSrc={getMediaProperty(undefined, d, 'src')}
+                  imgAlt={getMediaProperty(undefined, d, 'alt')}
+                  footerContent={
+                    <>
+                      {topics?.length ? (
+                        <CardTopicsList>
+                          <dt>Topics</dt>
+                          {topics.map((t) => (
+                            <dd key={t.id}>
+                              <Pill
+                                {...getPillLinkProps(t)}
+                                onClick={() => {
+                                  browseControlsHeaderRef.current?.scrollIntoView();
+                                }}
                               >
-                                {t.name}
-                              </TextHighlight>
-                            </Pill>
-                          </dd>
-                        ))}
-                      </CardTopicsList>
-                    ) : null}
-                  </>
-                }
-              />
-            </li>
-          );
-        })}
-      </CardListGrid>
-    ) : (
-      <EmptyHub>
-        There are no {storiesString.other.toLocaleLowerCase()} to
-        show with the selected filters.
-      </EmptyHub>
-    )}
-                  </FoldWithTopMargin>);
+                                <TextHighlight
+                                  value={search}
+                                  disabled={search.length < 3}
+                                >
+                                  {t.name}
+                                </TextHighlight>
+                              </Pill>
+                            </dd>
+                          ))}
+                        </CardTopicsList>
+                      ) : null}
+                    </>
+                  }
+                />
+              </li>
+            );
+          })}
+        </CardListGrid>
+      ) : (
+        <EmptyHub>
+          There are no {storiesString.other.toLocaleLowerCase()} to show with
+          the selected filters.
+        </EmptyHub>
+      )}
+    </FoldWithTopMargin>
+  );
 }

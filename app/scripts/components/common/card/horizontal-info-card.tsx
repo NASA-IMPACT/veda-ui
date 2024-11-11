@@ -1,9 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import {
-  glsp,
-  themeVal,
-} from '@devseed-ui/theme-provider';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { CardTitle } from './styles';
 import { variableBaseType } from '$styles/variable-utils';
 import { Pill } from '$styles/pill';
@@ -17,6 +14,8 @@ const CardImage = styled.div`
   min-width: 10rem;
   width: 10rem;
   height: 100%;
+  background: ${themeVal('color.primary-100')};
+
   img {
     width: 100%;
     height: 100%;
@@ -48,8 +47,8 @@ export const HorizontalCardStyles = css`
     /* stylelint-disable-next-line value-no-vendor-prefix */
     display: -webkit-box;
     -webkit-line-clamp: 2; /* number of lines to show */
-            line-clamp: 2;
-  
+    line-clamp: 2;
+
     /* stylelint-disable-next-line property-no-vendor-prefix */
     -webkit-box-orient: vertical;
   }
@@ -70,35 +69,27 @@ interface Props {
 }
 
 export default function HorizontalInfoCard(props: Props) {
-    const {
-    title,
-    description,
-    imgSrc,
-    imgAlt,
-    tagLabels,
-  } = props;
+  const { title, description, imgSrc, imgAlt, tagLabels } = props;
 
   return (
     <HorizontalCard>
       <CardImage>
-        <img src={imgSrc} alt={imgAlt} loading='lazy' />
+        {imgSrc && <img src={imgSrc} alt={imgAlt} loading='lazy' />}
       </CardImage>
       <CardContent>
         <CardTitle>{title}</CardTitle>
         <div id='description'>
           <p>{description}</p>
         </div>
-        <div id='tags'>
-          {
-            tagLabels && (
-              tagLabels.map((label) => (
-                <Pill variation='primary' key={label}>
-                  {label}
-                </Pill>
-              ))
-            )
-          }
-        </div>
+        {tagLabels && tagLabels.length > 0 && (
+          <div id='tags'>
+            {tagLabels.map((label) => (
+              <Pill variation='primary' key={label}>
+                {label}
+              </Pill>
+            ))}
+          </div>
+        )}
       </CardContent>
     </HorizontalCard>
   );

@@ -2,15 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { media } from '@devseed-ui/theme-provider';
 
-import {
-  stories,
-  datasets,
-  Media,
-  RelatedContentData,
-  LinkContentData,
-  StoryData
-} from 'veda';
+import { stories, datasets, RelatedContentData, StoryData } from 'veda';
 import SmartLink from './smart-link';
+import { getDescription, getMediaProperty } from './catalog/utils';
+import { FormatBlock } from './types';
 import { utcString2userTzDate } from '$utils/date';
 import {
   getDatasetPath,
@@ -45,18 +40,6 @@ const RelatedContentInner = styled.div`
 `}
 `;
 
-interface FormatBlock {
-  id: string;
-  name: string;
-  description: string;
-  date: string;
-  link: string;
-  asLink?: LinkContentData;
-  parentLink: string;
-  media: Media;
-  parent: RelatedContentData['type'];
-}
-
 function formatUrl(id: string, parent: string) {
   switch (parent) {
     case datasetString:
@@ -78,8 +61,10 @@ function formatBlock({
   id,
   name,
   description,
+  cardDescription,
   date,
   media,
+  cardMedia,
   asLink,
   type
 }): FormatBlock {
@@ -87,8 +72,10 @@ function formatBlock({
     id,
     name,
     description,
+    cardDescription,
     date,
     media,
+    cardMedia,
     asLink,
     ...formatUrl(id, type),
     parent: type
@@ -110,14 +97,17 @@ function formatContents(relatedData: RelatedContentData[]) {
       );
     }
 
-    const { name, description, media } = matchingContent;
+    const { name, description, media, cardDescription, cardMedia } =
+      matchingContent;
     return formatBlock({
       id,
       name,
       description,
+      cardDescription,
       asLink: (matchingContent as StoryData).asLink,
       date: (matchingContent as StoryData).pubDate,
       media,
+      cardMedia,
       type
     });
   });
@@ -159,11 +149,11 @@ export default function RelatedContent(props: RelatedContentProps) {
                     ? utcString2userTzDate(t.date)
                     : undefined
                 }
-                description={t.description}
+                description={getDescription(t)}
                 tagLabels={[t.parent]}
                 parentTo={t.parentLink}
-                imgSrc={t.media.src}
-                imgAlt={t.media.alt}
+                imgSrc={getMediaProperty(undefined, t, 'src')}
+                imgAlt={getMediaProperty(undefined, t, 'alt')}
               />
             </li>
           ))}

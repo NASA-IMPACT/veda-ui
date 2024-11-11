@@ -7,12 +7,21 @@ import {
   media,
   multiply,
   themeVal,
-  listReset,
+  listReset
 } from '@devseed-ui/theme-provider';
 const SmartLink = lazy(() => import('../smart-link'));
 
-import { CardBody, CardBlank, CardHeader, CardHeadline, CardTitle, CardOverline } from './styles';
-import HorizontalInfoCard, { HorizontalCardStyles } from './horizontal-info-card';
+import {
+  CardBody,
+  CardBlank,
+  CardHeader,
+  CardHeadline,
+  CardTitle,
+  CardOverline
+} from './styles';
+import HorizontalInfoCard, {
+  HorizontalCardStyles
+} from './horizontal-info-card';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
@@ -175,15 +184,17 @@ const CardLabel = styled.span`
   }
 `;
 
-
 const CardFigure = styled(Figure)`
   order: -1;
+  background: ${themeVal('color.primary-100')};
+  min-height: ${variableGlsp(12)};
 
   img {
     height: 100%;
     width: 100%;
     object-fit: cover;
     mix-blend-mode: multiply;
+    display: ${(props) => (props.src ? 'inline-block' : 'none')};
   }
 `;
 
@@ -259,8 +270,10 @@ export interface CardComponentProps extends CardComponentBaseProps {
 type CardComponentPropsType = CardComponentProps | CardComponentPropsDeprecated;
 
 // Type guard to check if props has linkProperties
-function hasLinkProperties(props: CardComponentPropsType): props is CardComponentProps {
-  return !!((props as CardComponentProps).linkProperties);
+function hasLinkProperties(
+  props: CardComponentPropsType
+): props is CardComponentProps {
+  return !!(props as CardComponentProps).linkProperties;
 }
 
 function CardComponent(props: CardComponentPropsType) {
@@ -280,8 +293,8 @@ function CardComponent(props: CardComponentPropsType) {
     hideExternalLinkBadge,
     onCardClickCapture
   } = props;
-// @TODO: This process is not necessary once all the instances adapt the linkProperties syntax
-// Consolidate them to use LinkProperties only
+  // @TODO: This process is not necessary once all the instances adapt the linkProperties syntax
+  // Consolidate them to use LinkProperties only
   let linkProperties: LinkWithPathProperties;
 
   if (hasLinkProperties(props)) {
@@ -313,59 +326,60 @@ function CardComponent(props: CardComponentPropsType) {
       linkLabel={linkLabel ?? 'View more'}
       onClickCapture={onCardClickCapture}
     >
-      {
-        cardType !== 'horizontal-info' && (
-          <>
-            <CardHeader>
-              <CardHeadline>
-                <CardTitle>{title}</CardTitle>
-                <CardOverline as='div'>
-                  {(hideExternalLinkBadge !== true && isExternalLink) && <ExternalLinkFlag />}
-                  {!isExternalLink && tagLabels && parentTo && (
-                    tagLabels.map((label) => (
-                      <CardLabel as={linkProperties.LinkElement} to={parentTo} key={label}>
-                        {label}
-                      </CardLabel>
-                    ))
-                  )}
-                  {date ? (
-                    <>
-                      published on{' '}
-                      <time dateTime={format(date, 'yyyy-MM-dd')}>
-                        {format(date, 'MMM d, yyyy')}
-                      </time>
-                    </>
-                  ) : (
-                    overline
-                  )}
-                </CardOverline>
-              </CardHeadline>
-            </CardHeader>
-            {description && (
-              <CardBody>
-                <p>{description}</p>
-              </CardBody>
-            )}
-            {footerContent && <CardFooter>{footerContent}</CardFooter>}
-            {imgSrc && (
-              <CardFigure>
-                <img src={imgSrc} alt={imgAlt} loading='lazy' />
-              </CardFigure>
-            )}
-          </>
-        )
-      }
-      {
-        cardType === 'horizontal-info' && (
-          <HorizontalInfoCard
-            title={title}
-            description={description}
-            imgSrc={imgSrc}
-            imgAlt={imgAlt}
-            tagLabels={tagLabels}
-          />
-        )
-      }
+      {cardType !== 'horizontal-info' && (
+        <>
+          <CardHeader>
+            <CardHeadline>
+              <CardTitle>{title}</CardTitle>
+              <CardOverline as='div'>
+                {hideExternalLinkBadge !== true && isExternalLink && (
+                  <ExternalLinkFlag />
+                )}
+                {!isExternalLink &&
+                  tagLabels &&
+                  parentTo &&
+                  tagLabels.map((label) => (
+                    <CardLabel
+                      as={linkProperties.LinkElement}
+                      to={parentTo}
+                      key={label}
+                    >
+                      {label}
+                    </CardLabel>
+                  ))}
+                {date ? (
+                  <>
+                    published on{' '}
+                    <time dateTime={format(date, 'yyyy-MM-dd')}>
+                      {format(date, 'MMM d, yyyy')}
+                    </time>
+                  </>
+                ) : (
+                  overline
+                )}
+              </CardOverline>
+            </CardHeadline>
+          </CardHeader>
+          {description && (
+            <CardBody>
+              <p>{description}</p>
+            </CardBody>
+          )}
+          {footerContent && <CardFooter>{footerContent}</CardFooter>}
+          <CardFigure src={imgSrc}>
+            <img src={imgSrc} alt={imgAlt} loading='lazy' />
+          </CardFigure>
+        </>
+      )}
+      {cardType === 'horizontal-info' && (
+        <HorizontalInfoCard
+          title={title}
+          description={description}
+          imgSrc={imgSrc}
+          imgAlt={imgAlt}
+          tagLabels={tagLabels}
+        />
+      )}
     </ElementInteractive>
   );
 }
@@ -373,4 +387,3 @@ function CardComponent(props: CardComponentPropsType) {
 export const Card = styled(CardComponent)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
-

@@ -63,10 +63,12 @@ export interface DatasetLayer extends DatasetLayerCommonProps {
   id: string;
   stacCol: string;
   media?: Media;
+  cardMedia?: Media;
   stacApiEndpoint?: string;
   tileApiEndpoint?: string;
   name: string;
   description: string;
+  cardDescription?: string;
   initialDatetime?: 'newest' | 'oldest' | string;
   projection?: ProjectionOptions;
   basemapId?: 'dark' | 'light' | 'satellite' | 'topo';
@@ -180,8 +182,10 @@ export interface DatasetData {
   infoDescription?: string;
   taxonomy: Taxonomy[];
   description: string;
+  cardDescription?: string;
   usage?: DatasetUsage[];
   media?: Media;
+  cardMedia?: Media;
   layers: DatasetLayer[];
   related?: RelatedContentData[];
   disableExplore?: boolean;
@@ -200,9 +204,11 @@ export interface StoryData {
   id: string;
   name: string;
   description: string;
+  cardDescription?: string;
   pubDate: string;
   path?: string;
   media?: Media;
+  cardMedia?: Media;
   taxonomy: Taxonomy[];
   related?: RelatedContentData[];
   asLink?: LinkContentData;
