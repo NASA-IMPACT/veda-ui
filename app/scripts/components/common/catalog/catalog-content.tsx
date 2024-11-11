@@ -264,7 +264,6 @@ function CatalogContent({
                           selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
                           onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
-                          linkProperties={linkProperties}
                           pathname={pathname}
                         />
                       </li>

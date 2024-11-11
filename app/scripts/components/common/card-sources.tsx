@@ -22,7 +22,7 @@ interface SourcesListProps {
   sources?: TaxonomyItem[];
   onSourceClick?: (v: string) => void;
   rootPath?: string;
-  linkProperties: LinkProperties;
+  linkProperties?: LinkProperties;
 }
 
 export function CardSourcesList(props: SourcesListProps) {
