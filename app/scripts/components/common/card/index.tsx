@@ -233,7 +233,6 @@ export function ExternalLinkFlag() {
 
 export interface LinkWithPathProperties extends LinkProperties {
   linkTo: string;
-  isLinkExternal?: boolean;
 }
 
 export interface CardComponentBaseProps {
@@ -254,12 +253,12 @@ export interface CardComponentBaseProps {
   onClick?: MouseEventHandler;
 }
 
-// @TODO: Consolidate these props when the instance adapts the new syntax
+// @TODO: Created because GHG uses the card component directly and passes in "linkTo" prop. Consolidate these props when the instance adapts the new syntax
 // Specifically: https://github.com/US-GHG-Center/veda-config-ghg/blob/develop/custom-pages/news-and-events/component.tsx#L108
 export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
   linkTo: string;
-  isLinkExternal?: boolean; // @TODO-SANDRA: Why does this overlap with LinkWithPathProperties
 }
+
 export interface CardComponentProps extends CardComponentBaseProps {
   linkProperties?: LinkWithPathProperties;
 }

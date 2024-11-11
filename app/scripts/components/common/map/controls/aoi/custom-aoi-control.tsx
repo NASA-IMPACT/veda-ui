@@ -76,15 +76,25 @@ function CustomAoI({
   const [selectedState, setSelectedState] = useState('');
   const [presetIds, setPresetIds] = useState([]);
   const [fileUploadedIds, setFileUplaodedIds] = useState([]);
+  const [, forceUpdate] = useState(0);   // @NOTE:  Needed so that this component re-renders to when the draw selection changes from feature to point.
+  const [isAreaSelected, setAreaSelected] = useState<boolean>(false);
+  const [isPointSelected, setPointSelected] = useState<boolean>(false);
 
   const [selectedForEditing, setSelectedForEditing] = useAtom(selectedForEditingAtom);
 
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
 
-  // Needed so that this component re-renders to when the draw selection changes
-  // from feature to point.
-  const [, forceUpdate] = useState(0);
+  // @NOTE: map?._drawControl?.getSelected() needs access to mapboxgl draw context store,
+  // but the function gets called before mapboxdraw store is initialized (before being added to map) resulting in an error
+  useEffect(() => {
+    if (!map) return;
+
+    const mbDraw = map?._drawControl;
+    setAreaSelected(mbDraw?.getSelected().features.length);
+    setPointSelected(mbDraw?.getSelectedPoints()?.features.length)
+  }, [map])
+  
   useEffect(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
@@ -249,19 +259,6 @@ function CustomAoI({
     mbDraw.trash();
   }, [features, aoiDeleteAll, map]);
 
-  let isAreaSelected = false;
-  let isPointSelected = false;
-
-  // @NOTE: map?._drawControl?.getSelected() needs access to mapboxgl draw context store,
-  // but the function gets called before mapboxdraw store is initialized (before being added to map) resulting in an error
-  // Wrapping with try block so the values get subbed even when the store is not available
-  try {
-    isAreaSelected = !!(map?._drawControl?.getSelected().features.length);
-    isPointSelected = !!(map?._drawControl?.getSelectedPoints()?.features.length);
-  } catch(e) {
-    isAreaSelected = false;
-    isPointSelected = false;
-  }
   const hasFeatures = !!features.length;
 
   return (
