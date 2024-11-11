@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react';
 import { Tip } from '../tip';
-import { LinkProperties } from '../card';
+import { LinkProperties } from '$types/veda';
 import { Brand, PageTitleSecLink } from './logo';
 /**
  * LogoContainer that is meant to integrate in the default page header without the dependencies of the veda virtual modules
