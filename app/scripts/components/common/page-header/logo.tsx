@@ -25,26 +25,14 @@ export const Brand = styled.div`
     }
 
     #nasa-logo-neg-mono {
-      opacity: 1;
+      opacity: 0;
       transition: all 0.32s ease 0s;
     }
 
     #nasa-logo-pos {
-      opacity: 0;
+      opacity: 1;
       transform: translate(0, -100%);
       transition: all 0.32s ease 0s;
-    }
-
-    &:hover {
-      opacity: 1;
-
-      #nasa-logo-neg-mono {
-        opacity: 0;
-      }
-
-      #nasa-logo-pos {
-        opacity: 1;
-      }
     }
 
     svg {
@@ -98,19 +86,33 @@ export const PageTitleSecLink = styled.a`
   `}
 `;
 
-export default function Logo ({ linkProperties }: { linkProperties: LinkProperties }) {
-  const LinkElement: ComponentType<any> = linkProperties.LinkElement as ComponentType<any>;
+// @TODO: Reactor to use new USWDS components
+export default function Logo({
+  linkProperties
+}: {
+  linkProperties: LinkProperties;
+}) {
+  const LinkElement: ComponentType<any> =
+    linkProperties.LinkElement as ComponentType<any>;
 
   return (
-  <ComponentOverride with='headerBrand'>
-    <Brand>
-      <LinkElement {...{[linkProperties.pathAttributeKeyName]: '/'}}>
-        <NasaLogo />
-        <span>Earthdata</span> <span>{appTitle}</span>
-      </LinkElement>
-      <Tip content={`v${appVersion}`}>
-      <PageTitleSecLink {...{as: linkProperties.LinkElement as ComponentType<any>, [linkProperties.pathAttributeKeyName]: '/development'}}>Beta</PageTitleSecLink>
-      </Tip>
-    </Brand>
-  </ComponentOverride>);
+    <ComponentOverride with='headerBrand'>
+      <Brand>
+        <LinkElement {...{ [linkProperties.pathAttributeKeyName]: '/' }}>
+          <NasaLogo />
+          <span>Earthdata</span> <span>{appTitle}</span>
+        </LinkElement>
+        <Tip content={`v${appVersion}`}>
+          <PageTitleSecLink
+            {...{
+              as: linkProperties.LinkElement as ComponentType<any>,
+              [linkProperties.pathAttributeKeyName]: '/development'
+            }}
+          >
+            Beta
+          </PageTitleSecLink>
+        </Tip>
+      </Brand>
+    </ComponentOverride>
+  );
 }
