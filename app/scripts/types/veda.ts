@@ -213,6 +213,7 @@ export interface StoryData {
   related?: RelatedContentData[];
   asLink?: LinkContentData;
   hideExternalLinkBadge?: boolean;
+  isLinkExternal?: boolean;
   isHidden?: boolean;
 }
 
