@@ -1,21 +1,14 @@
 import React, { ReactElement, useState } from 'react';
 import { Link } from 'react-router-dom';
+
 import { LinkProperties } from '$types/veda';
-import { USWDSMenu } from '../uswds/header/menu';
-import GoogleForm from '../google-form';
-import {
-  NavItem,
-  NavItemType,
-  InternalNavLink,
-  ExternalNavLink,
-  ButtonNavLink
-} from './types';
+import { NavItem } from './types';
 import LogoContainer from './logo-container';
+import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
 import { USWDSHeader, USWDSHeaderTitle } from '$components/common/uswds/header';
-import { USWDSNavDropDownButton } from '$components/common/uswds/header/nav-drop-down-button';
 import { USWDSNavMenuButton } from '$components/common/uswds/header/nav-menu-button';
 import { USWDSExtendedNav } from '$components/common/uswds/header/extended-nav';
-import { USWDSButton } from '$components/common/uswds';
+import './styles.scss';
 
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
@@ -25,101 +18,42 @@ interface PageHeaderProps {
   subNavItems: NavItem[];
   logo?: ReactElement;
   linkProperties: LinkProperties;
+  mode?: 'dark' | 'light';
 }
 
-export default function PageHeader(props: PageHeaderProps) {
-  const { mainNavItems, subNavItems, logo: Logo, linkProperties } = props;
+const PageHeader: React.FC<PageHeaderProps> = ({
+  mainNavItems,
+  subNavItems,
+  logo: Logo,
+  linkProperties,
+  mode
+}) => {
+  //@TODO: toggle expanded on window resize! Or on click anywhere?
+  // weird, should be implemented on the library side of things, see https://vscode.dev/github/NASA-IMPACT/veda-ui/blob/1137-implement-new-ds-page-header/node_modules/%40uswds/uswds/packages/usa-header/src/index.js#L155-L156
+
   const [expanded, setExpanded] = useState(false);
-  const onClick = (): void => setExpanded((prvExpanded) => !prvExpanded);
-
-  const [isOpen, setIsOpen] = useState([false]);
-  const onToggle = (
-    index: number,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>>
-  ): void => {
-    setIsOpen((prevIsOpen) => {
-      const newIsOpen = [...prevIsOpen];
-      newIsOpen[index] = !newIsOpen[index];
-      return newIsOpen;
+  const toggleExpansion = (): void =>
+    setExpanded((prvExpanded) => {
+      return !prvExpanded;
     });
-  };
 
-  const CreateNavMenu = (navItems: NavItem[]) => {
-    return navItems.map((item) => {
-      if (item.type == NavItemType.DROPDOWN) {
-        return (
-          <>
-            <USWDSNavDropDownButton
-              onToggle={(): void => {
-                onToggle(0, setIsOpen);
-              }}
-              menuId={item.title}
-              isOpen={isOpen[0]}
-              label={item.title}
-            />
-            <USWDSMenu
-              key='one'
-              items={CreateNavMenu(item.children)}
-              isOpen={isOpen[0]}
-              id={`${item.title}-dropdown`}
-            />
-          </>
-        );
-      } else if (
-        item.type == NavItemType.INTERNAL_LINK &&
-        linkProperties.LinkElement
-      ) {
-        const path = {
-          [linkProperties.pathAttributeKeyName]: (item as InternalNavLink).to
-        };
-        const LinkElement = linkProperties.LinkElement;
-        return (
-          <LinkElement {...path} className='usa-nav__link'>
-            <span>{item.title}</span>
-          </LinkElement>
-        );
-      } else if (item.type == NavItemType.EXTERNAL_LINK) {
-        return (
-          <a
-            target='_blank'
-            rel='noopener noreferrer'
-            onClick={onClick}
-            href={(item as ExternalNavLink).href}
-            className='usa-nav__link'
-          >
-            <span>{item.title}</span>
-          </a>
-        );
-      } else if (
-        item.type == NavItemType.BUTTON &&
-        item.title.toLocaleLowerCase() == 'contact us'
-      ) {
-        // @NOTE: This is a workaround right now because we can't provide a callback that returns some jsx element from veda.config.js where this nav config is being defined
-        // This ideally would just go away once we migrate the instances over and there is no need for the veda.config file. The nav config can just specify the action attribute directly
+  const [isOpen, setIsOpen] = useState<boolean[]>(
+    mainNavItems.map(() => false)
+  );
 
-        // @NOTE: Also GoogleForm component is coupled with the button component already, Ideally it would be broken out, possible @TECH-DEBT but since it is currently coupled...
-        // we either have to decouple it or we would create another Nav Item Type where it is a more generic component type
-        return (
-          <GoogleForm title={item.title} src={(item as ButtonNavLink).src} />
-        );
-      } else if (item.type == NavItemType.BUTTON) {
-        return (
-          <USWDSButton
-            onClick={item.action}
-            outline={true}
-            type='button'
-            size='small'
-          >
-            {item.title}
-          </USWDSButton>
-        );
-      }
-    });
-  };
+  const primaryItems = createDynamicNavMenuList(
+    mainNavItems,
+    linkProperties,
+    isOpen,
+    setIsOpen
+  );
 
+  const secondaryItems = createDynamicNavMenuList(subNavItems, linkProperties);
+  // @TODO: we should close the menu when the user clicks on a link (internal or other cta)
+  const themeMode = mode ? `mode-${mode}` : 'mode-light';
   return (
     <>
-      <USWDSHeader extended={true} showMobileOverlay={expanded}>
+      <USWDSHeader id={themeMode} extended={true} showMobileOverlay={expanded}>
         <div className='usa-navbar'>
           <USWDSHeaderTitle>
             <LogoContainer
@@ -128,20 +62,23 @@ export default function PageHeader(props: PageHeaderProps) {
                 pathAttributeKeyName: 'to'
               }}
               Logo={Logo}
-              title='Earthdata'
+              title='Earthdata VEDA Dashboard'
               subTitle={appTitle}
               version={appVersion}
+              themeMode={themeMode}
             />
           </USWDSHeaderTitle>
-          <USWDSNavMenuButton onClick={onClick} label='Menu' />
+          <USWDSNavMenuButton onClick={toggleExpansion} label='Menu' />
         </div>
         <USWDSExtendedNav
-          primaryItems={CreateNavMenu(mainNavItems)}
-          secondaryItems={CreateNavMenu(subNavItems)}
+          primaryItems={primaryItems}
+          secondaryItems={secondaryItems}
           mobileExpanded={expanded}
-          onToggleMobileNav={onClick}
+          onToggleMobileNav={toggleExpansion}
         />
       </USWDSHeader>
     </>
   );
-}
+};
+
+export default PageHeader;

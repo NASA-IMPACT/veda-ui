@@ -2,8 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { NavLink } from 'react-router-dom';
-// import PageHeader from './page-header/index-old';
 import PageHeader from './page-header';
+import PageHeaderUSWDS from './page-header-uswds';
 import { useSlidingStickyHeaderProps } from './layout-root/useSlidingStickyHeaderProps';
 
 import {
@@ -11,7 +11,7 @@ import {
   HEADER_TRANSITION_DURATION
 } from '$utils/use-sliding-sticky-header';
 
-const NavWrapper = styled.div`
+const NavWrapperContainer = styled.div`
   position: sticky;
   top: 0;
   width: 100%;
@@ -28,20 +28,27 @@ const NavWrapper = styled.div`
     `}
 `;
 
-function PageNavWrapper(props) {
+function NavWrapper(props) {
   const { isHeaderHidden, headerHeight } = useSlidingStickyHeaderProps();
   return (
-    <NavWrapper
+    <NavWrapperContainer
       id={HEADER_WRAPPER_ID}
       shouldSlideHeader={isHeaderHidden}
       headerHeight={headerHeight}
     >
-      <PageHeader
-        {...props}
-        linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
-      />
-    </NavWrapper>
+      {process.env.FEATURE_FLAG_USWDS === 'TRUE' ? (
+        <PageHeaderUSWDS
+          {...props}
+          linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
+        />
+      ) : (
+        <PageHeader
+          {...props}
+          linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
+        />
+      )}
+    </NavWrapperContainer>
   );
 }
 
-export default PageNavWrapper;
+export default NavWrapper;

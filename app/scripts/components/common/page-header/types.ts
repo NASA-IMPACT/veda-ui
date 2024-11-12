@@ -24,7 +24,6 @@ export type NavLinkItem = (ExternalNavLink | InternalNavLink);
 export interface ButtonNavLink {
   title: string;
   type: NavItemType.BUTTON;
-  action?: () => void; // @NOTE-SANDRA: This should be required, workaround for now because googleform comes with button
   src: string;
 }
 

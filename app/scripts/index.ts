@@ -16,8 +16,7 @@ import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
 import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
-import PageHeader from '$components/common/page-header/index-old';
-import LogoContainer from '$components/common/page-header/logo-container';
+import PageHeader from '$components/common/page-header';
 import type {
   NavItem,
   InternalNavLink,
@@ -63,7 +62,6 @@ export {
   ReactQueryProvider,
   EnvConfigProvider,
   StoriesHubContent,
-  LogoContainer,
   ExplorationAndAnalysis,
   DatasetSelectorModal,
 

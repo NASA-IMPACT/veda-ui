@@ -17,8 +17,6 @@ import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { LinkProperties } from '$types/veda';
 
-// @NOTE: likely able to deprecate this file with the new page-header
-// @DEPRECATE: Look at note above
 
 const rgbaFixed = rgba as any;
 
@@ -130,8 +128,7 @@ export default function NavMenuItem({ item, alignment, onClick, linkProperties }
       </li>
 
     );
-  }
-  else if (type === NavItemType.BUTTON && title.toLocaleLowerCase() == 'contact us') {
+  } else if (type === NavItemType.BUTTON) {
     return (<li><GoogleForm title={title} src={(item as ButtonNavLink).src} /></li>);
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   } else if (type === NavItemType.DROPDOWN) {
