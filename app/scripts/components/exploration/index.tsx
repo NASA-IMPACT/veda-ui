@@ -129,6 +129,7 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
             onDatasetAddClick={openModal}
             panelHeight={panelHeight}
             envApiStacEndpoint={envApiStacEndpoint}
+            envApiRasterEndpoint={envApiRasterEndpoint}
           />
         </Panel>
       </PanelGroup>

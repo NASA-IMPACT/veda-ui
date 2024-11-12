@@ -17,10 +17,11 @@ interface DatasetListProps {
   width: number;
   xScaled?: ScaleTime<number, number>;
   envApiStacEndpoint: string | undefined;
+  envApiRasterEndpoint: string | undefined;
 }
 
 export function DatasetList(props: DatasetListProps) {
-  const { width, xScaled, envApiStacEndpoint } = props;
+  const { width, xScaled, envApiStacEndpoint, envApiRasterEndpoint } = props;
   const [isDragging, setIsDragging] = useState(false);
 
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
@@ -42,6 +43,7 @@ export function DatasetList(props: DatasetListProps) {
           onDragStart={() => setIsDragging(true)}
           onDragEnd={() => setIsDragging(false)}
           envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       ))}
     </Reorder.Group>

@@ -92,6 +92,7 @@ interface DatasetListItemProps {
   onDragStart?: () => void;
   onDragEnd?: () => void;
   envApiStacEndpoint: string | undefined;
+  envApiRasterEndpoint: string | undefined;
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
@@ -101,7 +102,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
     xScaled,
     onDragStart,
     onDragEnd,
-    envApiStacEndpoint
+    envApiStacEndpoint,
+    envApiRasterEndpoint
   } = props;
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
@@ -179,7 +181,11 @@ export function DatasetListItem(props: DatasetListItemProps) {
     dataset: timeSeriesData
   });
 
-  useAnalysisDataRequest({ datasetAtom, envApiStacEndpoint });
+  useAnalysisDataRequest({
+    datasetAtom,
+    envApiStacEndpoint,
+    envApiRasterEndpoint
+  });
 
   const isDatasetError = dataset.status === DatasetStatus.ERROR;
   const isDatasetLoading = dataset.status === DatasetStatus.LOADING;

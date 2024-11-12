@@ -66,10 +66,12 @@ export function useAnalysisController() {
 
 export function useAnalysisDataRequest({
   datasetAtom,
-  envApiStacEndpoint
+  envApiStacEndpoint,
+  envApiRasterEndpoint
 }: {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
   envApiStacEndpoint: string | undefined;
+  envApiRasterEndpoint: string | undefined;
 }) {
   const queryClient = useQueryClient();
 
@@ -133,7 +135,8 @@ export function useAnalysisDataRequest({
         onProgress: (data) => {
           setAnalysis(data);
         },
-        envApiStacEndpoint
+        envApiStacEndpoint,
+        envApiRasterEndpoint
       });
       setAnalysisResult(stat);
     })();

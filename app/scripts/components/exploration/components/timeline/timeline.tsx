@@ -179,6 +179,7 @@ interface TimelineProps {
   onDatasetAddClick: () => void;
   panelHeight: number;
   envApiStacEndpoint: string | undefined;
+  envApiRasterEndpoint: string | undefined;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -210,7 +211,8 @@ export default function Timeline(props: TimelineProps) {
     setSelectedCompareDay,
     onDatasetAddClick,
     panelHeight,
-    envApiStacEndpoint
+    envApiStacEndpoint,
+    envApiRasterEndpoint
   } = props;
 
   // Refs for non react based interactions.
@@ -822,6 +824,7 @@ export default function Timeline(props: TimelineProps) {
             width={width}
             xScaled={xScaled}
             envApiStacEndpoint={envApiStacEndpoint}
+            envApiRasterEndpoint={envApiRasterEndpoint}
           />
         </TimelineContentInner>
       </TimelineContent>
