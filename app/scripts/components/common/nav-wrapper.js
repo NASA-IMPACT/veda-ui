@@ -6,6 +6,7 @@ import PageHeader from './page-header';
 import PageHeaderUSWDS from './page-header-uswds';
 import { useSlidingStickyHeaderProps } from './layout-root/useSlidingStickyHeaderProps';
 
+import NasaLogoColor from './nasa-logo-color';
 import {
   HEADER_WRAPPER_ID,
   HEADER_TRANSITION_DURATION
@@ -39,6 +40,7 @@ function NavWrapper(props) {
       {process.env.FEATURE_FLAG_USWDS === 'TRUE' ? (
         <PageHeaderUSWDS
           {...props}
+          logo={<NasaLogoColor />} // Override the composition from old page-header with simple svg
           linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
         />
       ) : (
