@@ -2,10 +2,9 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { NavLink } from 'react-router-dom';
+import { default as PageHeaderLegacy } from './page-header-legacy';
 import PageHeader from './page-header';
-import PageHeaderUSWDS from './page-header-uswds';
 import { useSlidingStickyHeaderProps } from './layout-root/useSlidingStickyHeaderProps';
-
 import NasaLogoColor from './nasa-logo-color';
 import {
   HEADER_WRAPPER_ID,
@@ -31,8 +30,9 @@ const NavWrapperContainer = styled.div`
 
 function NavWrapper(props) {
   const { isHeaderHidden, headerHeight } = useSlidingStickyHeaderProps();
-  return process.env.FEATURE_FLAG_USWDS === 'TRUE' ? (
-    <PageHeaderUSWDS
+
+  return process.env.ENABLE_USWDS_PAGE_HEADER === 'true' ? (
+    <PageHeader
       {...props}
       logo={<NasaLogoColor />} // Override the composition from old page-header with simple svg
       linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
@@ -43,7 +43,7 @@ function NavWrapper(props) {
       shouldSlideHeader={isHeaderHidden}
       headerHeight={headerHeight}
     >
-      <PageHeader
+      <PageHeaderLegacy
         {...props}
         linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
       />
