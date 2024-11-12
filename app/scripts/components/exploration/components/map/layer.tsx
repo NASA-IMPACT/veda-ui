@@ -18,10 +18,20 @@ interface LayerProps {
   order?: number;
   selectedDay: Date;
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+  envApiStacEndpoint: string | undefined;
+  envApiRasterEndpoint: string | undefined;
 }
 
 export function Layer(props: LayerProps) {
-  const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
+  const {
+    id: layerId,
+    dataset,
+    order,
+    selectedDay,
+    onStatusChange,
+    envApiStacEndpoint,
+    envApiRasterEndpoint
+  } = props;
   const { isVisible, opacity, colorMap } = dataset.settings;
 
   // The date needs to match the dataset's time density.
@@ -55,6 +65,7 @@ export function Layer(props: LayerProps) {
           hidden={!isVisible}
           opacity={opacity}
           onStatusChange={onStatusChange}
+          envApiStacEndpoint={envApiStacEndpoint}
         />
       );
     case 'zarr':
@@ -72,6 +83,7 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       );
     case 'cmr':
@@ -105,6 +117,8 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
+          envApiRasterEndpoint={envApiRasterEndpoint}
+          envApiStacEndpoint={envApiStacEndpoint}
         />
       );
     default:

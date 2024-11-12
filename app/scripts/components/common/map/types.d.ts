@@ -54,6 +54,8 @@ export interface BaseTimeseriesProps extends BaseGeneratorParams {
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   colorMap?: string;
+  envApiRasterEndpoint?: string | undefined;
+  envApiStacEndpoint?: string | undefined;
 }
 
 // export interface ZarrTimeseriesProps extends BaseTimeseriesProps {

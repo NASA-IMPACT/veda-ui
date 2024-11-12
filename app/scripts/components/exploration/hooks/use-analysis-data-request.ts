@@ -65,9 +65,11 @@ export function useAnalysisController() {
 }
 
 export function useAnalysisDataRequest({
-  datasetAtom
+  datasetAtom,
+  envApiStacEndpoint
 }: {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
+  envApiStacEndpoint: string | undefined;
 }) {
   const queryClient = useQueryClient();
 
@@ -130,7 +132,8 @@ export function useAnalysisDataRequest({
         concurrencyManager: analysisConcurrencyManager,
         onProgress: (data) => {
           setAnalysis(data);
-        }
+        },
+        envApiStacEndpoint
       });
       setAnalysisResult(stat);
     })();

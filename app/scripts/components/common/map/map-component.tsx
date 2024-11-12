@@ -13,21 +13,25 @@ const maxMapBounds: LngLatBoundsLike = [
   [540, 90] // NE
 ];
 
-export default function MapComponent({
-  controls,
-  isCompared,
-  projection,
-  mapRef,
-  onMapLoad,
-  interactive = true
-}: {
+interface MapComponentProps {
+  mapboxToken: string | undefined;
   controls: ReactElement[];
   isCompared?: boolean;
   projection?: ProjectionOptions;
   mapRef?: Ref<MapRef>;
   onMapLoad?: () => void;
   interactive?: boolean;
-}) {
+}
+
+export default function MapComponent({
+  mapboxToken,
+  controls,
+  isCompared,
+  projection,
+  mapRef,
+  onMapLoad,
+  interactive = true
+}: MapComponentProps) {
   const { initialViewState, setInitialViewState, mainId, comparedId } =
     useMapsContext();
   const { style } = useMapStyle();
@@ -69,7 +73,7 @@ export default function MapComponent({
     <ReactMapGlMap
       id={id}
       ref={mapRef}
-      mapboxAccessToken={process.env.MAPBOX_TOKEN}
+      mapboxAccessToken={mapboxToken}
       dragRotate={false}
       touchPitch={false}
       pitchWithRotate={false}

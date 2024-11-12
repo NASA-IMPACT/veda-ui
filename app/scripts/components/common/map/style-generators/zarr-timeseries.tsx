@@ -12,14 +12,27 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
     date,
     onStatusChange,
     sourceParams,
+    envApiStacEndpoint
   } = props;
 
-  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
-  const assetUrl = useZarr({id, stacCol, stacApiEndpointToUse, date, onStatusChange});
+  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint;
+  const assetUrl = useZarr({
+    id,
+    stacCol,
+    stacApiEndpointToUse,
+    date,
+    onStatusChange
+  });
   const tileParams = {
     url: assetUrl,
     datetime: date,
-    ...sourceParams,
+    ...sourceParams
   };
-  return <RasterPaintLayer {...props} tileParams={tileParams} generatorPrefix='zarr-timeseries' />;
+  return (
+    <RasterPaintLayer
+      {...props}
+      tileParams={tileParams}
+      generatorPrefix='zarr-timeseries'
+    />
+  );
 }

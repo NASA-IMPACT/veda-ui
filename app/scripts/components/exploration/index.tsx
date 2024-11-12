@@ -57,10 +57,19 @@ const Container = styled.div`
 interface ExplorationAndAnalysisProps {
   datasets: TimelineDataset[];
   setDatasets: (datasets: TimelineDataset[]) => void;
+  mapboxToken: string | undefined;
+  envApiStacEndpoint: string | undefined;
+  envApiRasterEndpoint: string | undefined;
 }
 
 function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
-  const { datasets, setDatasets } = props;
+  const {
+    datasets,
+    setDatasets,
+    mapboxToken,
+    envApiStacEndpoint,
+    envApiRasterEndpoint
+  } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
 
@@ -104,6 +113,9 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
             setDatasets={setDatasets}
             selectedDay={selectedDay}
             selectedCompareDay={selectedCompareDay}
+            mapboxToken={mapboxToken}
+            envApiStacEndpoint={envApiStacEndpoint}
+            envApiRasterEndpoint={envApiRasterEndpoint}
           />
         </Panel>
         <PanelResizeHandle className='resize-handle' />
@@ -116,6 +128,7 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
             setSelectedCompareDay={setSelectedCompareDay}
             onDatasetAddClick={openModal}
             panelHeight={panelHeight}
+            envApiStacEndpoint={envApiStacEndpoint}
           />
         </Panel>
       </PanelGroup>

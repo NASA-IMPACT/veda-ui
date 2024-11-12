@@ -11,7 +11,6 @@ import { PageMainContent } from '$styles/page';
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 
-
 /**
  * @VEDA2-REFACTOR-WORK
  *
@@ -32,8 +31,8 @@ export default function ExplorationAndAnalysisContainer() {
   // @NOTE: When Exploration page is preloaded (ex. Linked with react-router)
   // atomWithLocation gets initialized outside of Exploration page and returns the previous page's value
   // We check if url Atom actually returns the values for exploration page here.
-  const [currentUrl]= useAtom(urlAtom);
-  if(!currentUrl.pathname?.includes(EXPLORATION_PATH)) return null;
+  const [currentUrl] = useAtom(urlAtom);
+  if (!currentUrl.pathname?.includes(EXPLORATION_PATH)) return null;
 
   return (
     <TourProvider
@@ -50,7 +49,13 @@ export default function ExplorationAndAnalysisContainer() {
       <TourManager />
       <PageMainContent>
         <PageHero title='Exploration' isHidden />
-        <ExplorationAndAnalysis datasets={datasets} setDatasets={setDatasets} />
+        <ExplorationAndAnalysis
+          datasets={datasets}
+          setDatasets={setDatasets}
+          mapboxToken={process.env.MAPBOX_TOKEN}
+          envApiStacEndpoint={process.env.API_STAC_ENDPOINT}
+          envApiRasterEndpoint={process.env.API_RASTER_ENDPOINT}
+        />
       </PageMainContent>
     </TourProvider>
   );

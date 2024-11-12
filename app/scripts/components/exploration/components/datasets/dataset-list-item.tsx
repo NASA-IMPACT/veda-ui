@@ -91,10 +91,18 @@ interface DatasetListItemProps {
   xScaled?: ScaleTime<number, number>;
   onDragStart?: () => void;
   onDragEnd?: () => void;
+  envApiStacEndpoint: string | undefined;
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
-  const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
+  const {
+    datasetId,
+    width,
+    xScaled,
+    onDragStart,
+    onDragEnd,
+    envApiStacEndpoint
+  } = props;
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
@@ -103,7 +111,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
-  const [modalLayerInfo, setModalLayerInfo] = React.useState<LayerInfoModalData>();
+  const [modalLayerInfo, setModalLayerInfo] =
+    React.useState<LayerInfoModalData>();
   const [, setSetting] = useTimelineDatasetSettings(datasetAtom);
 
   const queryClient = useQueryClient();
@@ -119,7 +128,10 @@ export function DatasetListItem(props: DatasetListItemProps) {
   }, [queryClient, datasetId]);
 
   const onClickLayerInfo = useCallback(() => {
-    const parentInfoDesc = findDatasetAttribute({datasetId: dataset.data.parentDataset.id, attr: 'infoDescription'});
+    const parentInfoDesc = findDatasetAttribute({
+      datasetId: dataset.data.parentDataset.id,
+      attr: 'infoDescription'
+    });
     const data: LayerInfoModalData = {
       name: dataset.data.name,
       description: dataset.data.description,
@@ -167,7 +179,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
     dataset: timeSeriesData
   });
 
-  useAnalysisDataRequest({ datasetAtom });
+  useAnalysisDataRequest({ datasetAtom, envApiStacEndpoint });
 
   const isDatasetError = dataset.status === DatasetStatus.ERROR;
   const isDatasetLoading = dataset.status === DatasetStatus.LOADING;
@@ -185,7 +197,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
   );
-
 
   const onDragging = (e) => {
     controls.start(e);
@@ -208,8 +219,17 @@ export function DatasetListItem(props: DatasetListItemProps) {
       <DatasetItem>
         <DatasetHeader>
           <DatasetHeaderInner>
-            <div style={{width: '100%'}} onPointerDown={onDragging}>
-              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} colorMap={colorMap} setColorMap={setColorMap} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} onClickLayerInfo={onClickLayerInfo} />
+            <div style={{ width: '100%' }} onPointerDown={onDragging}>
+              <DataLayerCard
+                dataset={dataset}
+                datasetAtom={datasetAtom}
+                colorMap={colorMap}
+                setColorMap={setColorMap}
+                isVisible={isVisible}
+                setVisible={setVisible}
+                datasetLegend={datasetLegend}
+                onClickLayerInfo={onClickLayerInfo}
+              />
             </div>
             {modalLayerInfo && (
               <LayerInfoModal

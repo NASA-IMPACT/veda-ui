@@ -29,11 +29,17 @@ import styled from 'styled-components';
 
 import { DatasetList } from '../datasets/dataset-list';
 
-import { applyTransform, getLabelFormat, getTemporalExtent, isEqualTransform, rescaleX } from './timeline-utils';
+import {
+  applyTransform,
+  getLabelFormat,
+  getTemporalExtent,
+  isEqualTransform,
+  rescaleX
+} from './timeline-utils';
 import {
   TimelineControls,
   getInitialScale,
-  TimelineDateAxis,
+  TimelineDateAxis
 } from './timeline-controls';
 import {
   TimelineHeadIn,
@@ -172,6 +178,7 @@ interface TimelineProps {
   setSelectedCompareDay: (d: Date | null) => void;
   onDatasetAddClick: () => void;
   panelHeight: number;
+  envApiStacEndpoint: string | undefined;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -202,7 +209,8 @@ export default function Timeline(props: TimelineProps) {
     selectedCompareDay,
     setSelectedCompareDay,
     onDatasetAddClick,
-    panelHeight
+    panelHeight,
+    envApiStacEndpoint
   } = props;
 
   // Refs for non react based interactions.
@@ -297,15 +305,21 @@ export default function Timeline(props: TimelineProps) {
     const [extentStart, extentEnd] = xScaled.domain();
 
     // Initialize the heads array with the selected day point
-    let heads: { name: 'Point' | 'PointCompare' | 'In' | 'Out'; ref: React.MutableRefObject<any>; date: Date | null }[] = [
-      { name: 'Point', ref: headPointRef, date: selectedDay }
-    ];
+    let heads: {
+      name: 'Point' | 'PointCompare' | 'In' | 'Out';
+      ref: React.MutableRefObject<any>;
+      date: Date | null;
+    }[] = [{ name: 'Point', ref: headPointRef, date: selectedDay }];
 
     // If there is a selected compare day, add it to the heads array
     if (selectedCompareDay) {
       heads = [
         ...heads,
-        { name: 'PointCompare', ref: headPointCompareRef, date: selectedCompareDay }
+        {
+          name: 'PointCompare',
+          ref: headPointCompareRef,
+          date: selectedCompareDay
+        }
       ];
     }
 
@@ -320,8 +334,8 @@ export default function Timeline(props: TimelineProps) {
 
     // Filter heads that are not currently in view and map them to the OutOfViewHead type
     const outOfViewHeads: TimelineHead[] = heads
-      .filter(head => !head.ref.current)
-      .map(head => {
+      .filter((head) => !head.ref.current)
+      .map((head) => {
         let outDirection: 'left' | 'right' | undefined;
         if (head.date && head.date < extentStart) {
           outDirection = 'left';
@@ -339,9 +353,13 @@ export default function Timeline(props: TimelineProps) {
       });
 
     setOutOfViewHeads(outOfViewHeads);
-
-  }, [selectedDay, selectedInterval, selectedCompareDay, xScaled, zoomBehavior]);
-
+  }, [
+    selectedDay,
+    selectedInterval,
+    selectedCompareDay,
+    xScaled,
+    zoomBehavior
+  ]);
 
   useEffect(() => {
     if (!interactionRef.current) return;
@@ -437,8 +455,7 @@ export default function Timeline(props: TimelineProps) {
   const successDatasets = useMemo(
     () =>
       datasets.filter(
-        (d): d is TimelineDatasetSuccess =>
-          d.status === DatasetStatus.SUCCESS
+        (d): d is TimelineDatasetSuccess => d.status === DatasetStatus.SUCCESS
       ),
     [datasets]
   );
@@ -507,7 +524,9 @@ export default function Timeline(props: TimelineProps) {
     // the timeline.
     let newSelectedDay; // needed for the interval
     if (!selectedDay || !isWithinInterval(selectedDay, { start, end })) {
-      const maxDate = max(successDatasets.map((d) => d.data.domain.last) as Date[]);
+      const maxDate = max(
+        successDatasets.map((d) => d.data.domain.last) as Date[]
+      );
       setSelectedDay(maxDate);
       newSelectedDay = maxDate;
     } else {
@@ -626,10 +645,14 @@ export default function Timeline(props: TimelineProps) {
   const initialScale = useMemo(() => getInitialScale(width), [width]);
 
   const minMaxTemporalExtent = useMemo(
-    () => getTemporalExtent(
-      // Filter the datasets to only include those with status 'SUCCESS'.
-      datasets.filter((dataset): dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
-    ),
+    () =>
+      getTemporalExtent(
+        // Filter the datasets to only include those with status 'SUCCESS'.
+        datasets.filter(
+          (dataset): dataset is TimelineDatasetSuccess =>
+            dataset.status === DatasetStatus.SUCCESS
+        )
+      ),
     [datasets]
   );
 
@@ -639,7 +662,10 @@ export default function Timeline(props: TimelineProps) {
         // Filter the datasets to only include those with status 'SUCCESS'.
         // The function getLowestCommonTimeDensity expects an array of TimelineDatasetSuccess objects,
         // which have the 'data.timeDensity' property (formated as such).
-        datasets.filter((dataset): dataset is TimelineDatasetSuccess => dataset.status === DatasetStatus.SUCCESS)
+        datasets.filter(
+          (dataset): dataset is TimelineDatasetSuccess =>
+            dataset.status === DatasetStatus.SUCCESS
+        )
       ),
     [datasets]
   );
@@ -792,7 +818,11 @@ export default function Timeline(props: TimelineProps) {
           ref={datasetsContainerRef}
           panelHeight={panelHeight}
         >
-          <DatasetList width={width} xScaled={xScaled} />
+          <DatasetList
+            width={width}
+            xScaled={xScaled}
+            envApiStacEndpoint={envApiStacEndpoint}
+          />
         </TimelineContentInner>
       </TimelineContent>
     </TimelineWrapper>

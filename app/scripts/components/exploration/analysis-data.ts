@@ -61,7 +61,9 @@ async function getDatasetAssets(
   );
   return {
     assets: searchReqRes.data.features.map((o) => ({
-      date: utcString2userTzDate(o.properties.start_datetime || o.properties.datetime),
+      date: utcString2userTzDate(
+        o.properties.start_datetime || o.properties.datetime
+      ),
       url: o.assets[assets].href
     }))
   };
@@ -76,6 +78,8 @@ interface TimeseriesRequesterParams {
   queryClient: QueryClient;
   concurrencyManager: ConcurrencyManagerInstance;
   onProgress: (data: TimelineDatasetAnalysis) => void;
+  envApiStacEndpoint: string | undefined;
+  envApiRasterEndpoint: string | undefined;
 }
 
 /**
@@ -90,7 +94,9 @@ export async function requestDatasetTimeseriesData({
   dataset,
   queryClient,
   concurrencyManager,
-  onProgress
+  onProgress,
+  envApiStacEndpoint,
+  envApiRasterEndpoint
 }: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
@@ -129,7 +135,7 @@ export async function requestDatasetTimeseriesData({
   });
 
   const stacApiEndpointToUse =
-    datasetData.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
+    datasetData.stacApiEndpoint ?? envApiStacEndpoint ?? '';
 
   try {
     const layerInfoFromSTAC = await concurrencyManager.queue(
@@ -200,7 +206,7 @@ export async function requestDatasetTimeseriesData({
     let loaded = 0; //new Array(assets.length).fill(0);
 
     const tileEndpointToUse =
-      datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
+      datasetData.tileApiEndpoint ?? envApiRasterEndpoint ?? '';
 
     const analysisParams = datasetData.analysis?.sourceParams ?? {};
 

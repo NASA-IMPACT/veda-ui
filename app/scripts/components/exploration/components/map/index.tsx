@@ -32,10 +32,21 @@ interface ExplorationMapProps {
   setDatasets: (datasets: TimelineDataset[]) => void;
   selectedDay: Date | null;
   selectedCompareDay: Date | null;
+  mapboxToken: string | undefined;
+  envApiStacEndpoint: string | undefined;
+  envApiRasterEndpoint: string | undefined;
 }
 
 export function ExplorationMap(props: ExplorationMapProps) {
-  const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
+  const {
+    datasets,
+    setDatasets,
+    selectedDay,
+    selectedCompareDay,
+    mapboxToken,
+    envApiStacEndpoint,
+    envApiRasterEndpoint
+  } = props;
 
   const [projection, setProjection] =
     useState<ProjectionOptions>(projectionDefault);
@@ -48,7 +59,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
     onOptionChange
   } = useBasemap();
 
-  useReconcileWithStacMetadata(datasets, setDatasets);
+  useReconcileWithStacMetadata(datasets, setDatasets, envApiStacEndpoint);
 
   // Different datasets may have a different default projection.
   // When datasets are selected the first time, we set the map projection to the
@@ -85,8 +96,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
   // eslint-disable-next-line fp/no-mutating-methods
   const loadedDatasets = datasets
     .filter(
-      (d): d is TimelineDatasetSuccess =>
-        d.status === DatasetStatus.SUCCESS
+      (d): d is TimelineDatasetSuccess => d.status === DatasetStatus.SUCCESS
     )
     .slice()
     .reverse();
@@ -125,17 +135,25 @@ export function ExplorationMap(props: ExplorationMapProps) {
   );
 
   return (
-    <Map id='exploration' projection={projection} onStyleUpdate={onStyleUpdate}>
+    <Map
+      id='exploration'
+      mapboxToken={mapboxToken}
+      projection={projection}
+      onStyleUpdate={onStyleUpdate}
+    >
       {/* Map layers */}
       <Basemap
         basemapStyleId={mapBasemapId}
         labelsOption={labelsOption}
         boundariesOption={boundariesOption}
+        mapboxToken={mapboxToken}
       />
       {selectedDay && (
         <ExplorationMapLayers
           datasets={loadedDatasets}
           selectedDay={selectedDay}
+          envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       )}
       {/* Map controls */}
@@ -147,7 +165,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
           }
         />
         <AnalysisMessageControl />
-        <GeocoderControl />
+        <GeocoderControl mapboxToken={mapboxToken} />
         <MapOptionsControl
           projection={projection}
           onProjectionChange={setProjection}
@@ -156,6 +174,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
           labelsOption={labelsOption}
           boundariesOption={boundariesOption}
           onOptionChange={onOptionChange}
+          mapboxToken={mapboxToken}
         />
         <ScaleControl />
         <ShowTourControl />
@@ -169,12 +188,15 @@ export function ExplorationMap(props: ExplorationMapProps) {
             basemapStyleId={mapBasemapId}
             labelsOption={labelsOption}
             boundariesOption={boundariesOption}
+            mapboxToken={mapboxToken}
           />
           {selectedDay && (
             <ExplorationMapLayers
               datasets={loadedDatasets}
               selectedDay={selectedCompareDay}
               idSuffix='-compare'
+              envApiStacEndpoint={envApiStacEndpoint}
+              envApiRasterEndpoint={envApiRasterEndpoint}
             />
           )}
         </Compare>
@@ -187,10 +209,18 @@ interface ExplorationMapLayersProps {
   datasets: TimelineDatasetSuccess[];
   selectedDay: Date;
   idSuffix?: string;
+  envApiRasterEndpoint: string | undefined;
+  envApiStacEndpoint: string | undefined;
 }
 
 export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
-  const { datasets, selectedDay, idSuffix = '' } = props;
+  const {
+    datasets,
+    selectedDay,
+    idSuffix = '',
+    envApiRasterEndpoint,
+    envApiStacEndpoint
+  } = props;
 
   return (
     <>
@@ -201,6 +231,8 @@ export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
           dataset={dataset}
           selectedDay={selectedDay}
           order={idx}
+          envApiRasterEndpoint={envApiRasterEndpoint}
+          envApiStacEndpoint={envApiStacEndpoint}
         />
       ))}
     </>

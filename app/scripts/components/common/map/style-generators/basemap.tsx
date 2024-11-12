@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { AnySourceImpl, Layer, Style } from 'mapbox-gl';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  BasemapId,
-  BASEMAP_STYLES,
-  getStyleUrl,
-  GROUPS_BY_OPTION
+  BasemapId, getStyleUrl,
+  GROUPS_BY_OPTION,
+  getBasemapStyles
 } from '../controls/map-options/basemap';
 import { ExtendedLayer } from '../types';
 import useMapStyle from '../hooks/use-map-style';
@@ -14,6 +13,7 @@ interface BasemapProps {
   basemapStyleId?: BasemapId;
   labelsOption?: boolean;
   boundariesOption?: boolean;
+  mapboxToken: string | undefined;
 }
 
 function mapGroupNameToGroupId(
@@ -30,21 +30,27 @@ function mapGroupNameToGroupId(
 export function Basemap({
   basemapStyleId = 'satellite',
   labelsOption = true,
-  boundariesOption = true
+  boundariesOption = true,
+  mapboxToken
 }: BasemapProps) {
   const { updateStyle } = useMapStyle();
 
   const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
 
+  const basemapStyles = useMemo(
+    () => getBasemapStyles(mapboxToken),
+    [mapboxToken]
+  );
+
   const { data: styleJson } = useQuery(
     ['basemap', basemapStyleId],
     async ({ signal }) => {
       const mapboxId = basemapStyleId
-        ? BASEMAP_STYLES.find((b) => b.id === basemapStyleId)!.mapboxId
-        : BASEMAP_STYLES[0].mapboxId;
+        ? basemapStyles.find((b) => b.id === basemapStyleId)!.mapboxId
+        : basemapStyles[0].mapboxId;
 
       try {
-        const url = getStyleUrl(mapboxId);
+        const url = getStyleUrl(mapboxId, mapboxToken);
         const styleRaw = await fetch(url, { signal });
         const styleJson = await styleRaw.json();
         return styleJson;

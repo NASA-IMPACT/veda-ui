@@ -11,10 +11,7 @@ import { Basemap } from '../map/style-generators/basemap';
 import { LayerLegend, LayerLegendContainer } from '../map/layer-legend';
 import MapCoordsControl from '../map/controls/coords';
 import MapMessage from '../map/map-message';
-import {
-  formatCompareDate,
-  formatSingleDate,
-} from '../map/utils';
+import { formatCompareDate, formatSingleDate } from '../map/utils';
 import {
   BasemapId,
   DEFAULT_MAP_STYLE_URL
@@ -34,7 +31,10 @@ import {
   DatasetStatus
 } from '$components/exploration/types.d.ts';
 
-import { reconcileDatasets, getDatasetLayers } from '$components/exploration/data-utils-no-faux-module';
+import {
+  reconcileDatasets,
+  getDatasetLayers
+} from '$components/exploration/data-utils-no-faux-module';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { ProjectionOptions, VedaDatum, DatasetData } from '$types/veda';
 
@@ -123,9 +123,15 @@ interface MapBlockProps {
   basemapId?: BasemapId;
   datasetId?: string;
   layerId: string;
+  mapboxToken: string | undefined;
+  envApiStacEndpoint: string | undefined;
+  envApiRasterEndpoint: string | undefined;
 }
 
-const getDataLayer = (layerIndex: number, layers: VizDataset[] | undefined): (VizDatasetSuccess | null) => {
+const getDataLayer = (
+  layerIndex: number,
+  layers: VizDataset[] | undefined
+): VizDatasetSuccess | null => {
   if (!layers || layers.length <= layerIndex) return null;
   const layer = layers[layerIndex];
   // @NOTE: What to do when data returns ERROR
@@ -153,7 +159,12 @@ function MapBlock(props: MapBlockProps) {
     projectionId,
     projectionCenter,
     projectionParallels,
-    basemapId
+    basemapId,
+    // Default values for environment variables for
+    // backward compatibility with existing instances
+    mapboxToken = process.env.MAPBOX_TOKEN,
+    envApiStacEndpoint = process.env.API_STAC_ENDPOINT,
+    envApiRasterEndpoint = process.env.API_RASTER_ENDPOINT
   } = props;
 
   const errors = validateBlockProps(props);
@@ -177,16 +188,16 @@ function MapBlock(props: MapBlockProps) {
       totalLayers = [...totalLayers, compareMapStaticData];
     }
     return totalLayers;
-  },[layerId]);
+  }, [layerId]);
 
   const [layers, setLayers] = useState<VizDataset[]>(layersToFetch);
 
-  useReconcileWithStacMetadata(layers, setLayers);
+  useReconcileWithStacMetadata(layers, setLayers, envApiStacEndpoint);
 
-  const selectedDatetime: (Date | undefined) = dateTime
+  const selectedDatetime: Date | undefined = dateTime
     ? utcString2userTzDate(dateTime)
     : undefined;
-  const selectedCompareDatetime: (Date | undefined) = compareDateTime
+  const selectedCompareDatetime: Date | undefined = compareDateTime
     ? utcString2userTzDate(compareDateTime)
     : undefined;
 
@@ -210,8 +221,14 @@ function MapBlock(props: MapBlockProps) {
 
   const [, setProjection] = useState(projectionStart);
 
-  const baseDataLayer: (VizDatasetSuccess | null) = useMemo(() => getDataLayer(0, layers), [layers]);
-  const compareDataLayer: (VizDatasetSuccess | null) = useMemo(() => getDataLayer(1, layers), [layers]);
+  const baseDataLayer: VizDatasetSuccess | null = useMemo(
+    () => getDataLayer(0, layers),
+    [layers]
+  );
+  const compareDataLayer: VizDatasetSuccess | null = useMemo(
+    () => getDataLayer(1, layers),
+    [layers]
+  );
 
   const baseTimeDensity = baseDataLayer?.data.timeDensity;
   const compareTimeDensity = compareDataLayer?.data.timeDensity;
@@ -262,9 +279,16 @@ function MapBlock(props: MapBlockProps) {
     if (compareLabel) return compareLabel as string;
     // Use label function from originalData.Compare
     else if (baseDataLayer?.data.compare?.mapLabel) {
-      if (typeof baseDataLayer.data.compare.mapLabel === 'string') return baseDataLayer.data.compare.mapLabel;
-      const labelFn = baseDataLayer.data.compare.mapLabel as (unknown) => string;
-      return labelFn({dateFns, datetime: selectedDatetime, compareDatetime: compareToDate });
+      if (typeof baseDataLayer.data.compare.mapLabel === 'string')
+        return baseDataLayer.data.compare.mapLabel;
+      const labelFn = baseDataLayer.data.compare.mapLabel as (
+        unknown
+      ) => string;
+      return labelFn({
+        dateFns,
+        datetime: selectedDatetime,
+        compareDatetime: compareToDate
+      });
     }
 
     // Default to date comparison.
@@ -292,18 +316,21 @@ function MapBlock(props: MapBlockProps) {
     <Carto>
       <Map
         id={generatedId}
+        mapboxToken={mapboxToken}
         mapOptions={{
           ...mapOptions,
           ...getMapPositionOptions(initialPosition)
         }}
       >
-        <Basemap basemapStyleId={mapBasemapId} />
+        <Basemap basemapStyleId={mapBasemapId} mapboxToken={mapboxToken} />
         {selectedDatetime && baseDataLayer && (
           <Layer
             key={baseDataLayer.data.id}
             id={`base-${baseDataLayer.data.id}`}
             dataset={baseDataLayer}
             selectedDay={selectedDatetime}
+            envApiRasterEndpoint={envApiRasterEndpoint}
+            envApiStacEndpoint={envApiStacEndpoint}
           />
         )}
         {baseDataLayer?.data.legend && (
@@ -354,15 +381,17 @@ function MapBlock(props: MapBlockProps) {
         </MapControls>
         {selectedCompareDatetime && (
           <Compare>
-            <Basemap basemapStyleId={mapBasemapId} />
+            <Basemap basemapStyleId={mapBasemapId} mapboxToken={mapboxToken} />
             {compareDataLayer && (
-                <Layer
-                  key={compareDataLayer.data.id}
-                  id={`compare-${compareDataLayer.data.id}`}
-                  dataset={compareDataLayer}
-                  selectedDay={selectedCompareDatetime}
-                />
-              )}
+              <Layer
+                key={compareDataLayer.data.id}
+                id={`compare-${compareDataLayer.data.id}`}
+                dataset={compareDataLayer}
+                selectedDay={selectedCompareDatetime}
+                envApiRasterEndpoint={envApiRasterEndpoint}
+                envApiStacEndpoint={envApiStacEndpoint}
+              />
+            )}
           </Compare>
         )}
       </Map>

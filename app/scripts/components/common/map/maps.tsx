@@ -85,13 +85,21 @@ const MapsContainer = styled.div`
 
 type MapsProps = Pick<
   MapsContextWrapperProps,
-  'projection' | 'onStyleUpdate' | 'mapRef' | 'onMapLoad'
+  'projection' | 'onStyleUpdate' | 'mapRef' | 'onMapLoad' | 'mapboxToken'
 > & {
   children: ReactNode;
   interactive?: boolean;
 };
 
-function Maps({ children, projection, onStyleUpdate, mapRef, onMapLoad, interactive }: MapsProps) {
+function Maps({
+  children,
+  projection,
+  onStyleUpdate,
+  mapRef,
+  onMapLoad,
+  interactive,
+  mapboxToken
+}: MapsProps) {
   // Instantiate MGL Compare, if compare is enabled
   useMapCompare();
 
@@ -145,12 +153,20 @@ function Maps({ children, projection, onStyleUpdate, mapRef, onMapLoad, interact
     <MapsContainer id={containerId} ref={observe}>
       <Styles onStyleUpdate={onStyleUpdate}>
         {generators}
-        <MapComponent interactive={interactive} mapRef={mapRef} onMapLoad={onMapLoad} controls={controls} projection={projection} />
+        <MapComponent
+          mapboxToken={mapboxToken}
+          interactive={interactive}
+          mapRef={mapRef}
+          onMapLoad={onMapLoad}
+          controls={controls}
+          projection={projection}
+        />
       </Styles>
       {!!compareGenerators.length && (
         <Styles isCompared>
           {compareGenerators}
           <MapComponent
+            mapboxToken={mapboxToken}
             interactive={interactive}
             mapRef={mapRef}
             isCompared
@@ -167,6 +183,7 @@ function Maps({ children, projection, onStyleUpdate, mapRef, onMapLoad, interact
 export interface MapsContextWrapperProps {
   children: ReactNode;
   id: string;
+  mapboxToken: string | undefined;
   mapRef?: Ref<MapRef>;
   onMapLoad?: () => void;
   projection?: ProjectionOptions;
@@ -197,7 +214,14 @@ export default function MapsContextWrapper(props: MapsContextWrapperProps) {
         containerId
       }}
     >
-      <Maps interactive={mapOptions?.interactive} onMapLoad={onMapLoad} mapRef={mapRef} {...props}>{props.children}</Maps>
+      <Maps
+        interactive={mapOptions?.interactive}
+        onMapLoad={onMapLoad}
+        mapRef={mapRef}
+        {...props}
+      >
+        {props.children}
+      </Maps>
     </MapsContext.Provider>
   );
 }
