@@ -31,24 +31,22 @@ const NavWrapperContainer = styled.div`
 
 function NavWrapper(props) {
   const { isHeaderHidden, headerHeight } = useSlidingStickyHeaderProps();
-  return (
+  return process.env.FEATURE_FLAG_USWDS === 'TRUE' ? (
+    <PageHeaderUSWDS
+      {...props}
+      logo={<NasaLogoColor />} // Override the composition from old page-header with simple svg
+      linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
+    />
+  ) : (
     <NavWrapperContainer
       id={HEADER_WRAPPER_ID}
       shouldSlideHeader={isHeaderHidden}
       headerHeight={headerHeight}
     >
-      {process.env.FEATURE_FLAG_USWDS === 'TRUE' ? (
-        <PageHeaderUSWDS
-          {...props}
-          logo={<NasaLogoColor />} // Override the composition from old page-header with simple svg
-          linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
-        />
-      ) : (
-        <PageHeader
-          {...props}
-          linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
-        />
-      )}
+      <PageHeader
+        {...props}
+        linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
+      />
     </NavWrapperContainer>
   );
 }
