@@ -76,7 +76,7 @@ function CustomAoI({
   const [selectedState, setSelectedState] = useState('');
   const [presetIds, setPresetIds] = useState([]);
   const [fileUploadedIds, setFileUplaodedIds] = useState([]);
-  const [, forceUpdate] = useState(0);   // @NOTE:  Needed so that this component re-renders to when the draw selection changes from feature to point.
+  const [updated, forceUpdate] = useState(0);   // @NOTE:  Needed so that this component re-renders to when the draw selection changes from feature to point.
   const [isAreaSelected, setAreaSelected] = useState<boolean>(false);
   const [isPointSelected, setPointSelected] = useState<boolean>(false);
 
@@ -91,9 +91,9 @@ function CustomAoI({
     if (!map) return;
 
     const mbDraw = map?._drawControl;
-    setAreaSelected(mbDraw?.getSelected().features.length);
-    setPointSelected(mbDraw?.getSelectedPoints()?.features.length);
-  }, [map]);
+    setAreaSelected(!!(mbDraw?.getSelected().features.length));
+    setPointSelected(!!(mbDraw?.getSelectedPoints()?.features.length));
+  }, [map, updated]);
 
   useEffect(() => {
     const mbDraw = map?._drawControl;
