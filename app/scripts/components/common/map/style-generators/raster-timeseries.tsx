@@ -63,6 +63,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     stacApiEndpoint,
     tileApiEndpoint,
     colorMap,
+    envApiStacEndpoint,
+    envApiRasterEndpoint
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -73,10 +75,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   const minZoom = zoomExtent?.[0] ?? 0;
   const generatorId = `raster-timeseries-${id}`;
 
-  const stacApiEndpointToUse =
-    stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
-  const tileApiEndpointToUse =
-    tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
+  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint ?? '';
+  const tileApiEndpointToUse = tileApiEndpoint ?? envApiRasterEndpoint ?? '';
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
@@ -270,7 +270,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             controller
           });
           const mosaicUrl = responseData.links[1].href;
-          setMosaicUrl(mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad'));
+          setMosaicUrl(
+            mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad')
+          );
         } catch (error) {
           // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance...
           if (error.request) {
@@ -284,10 +286,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             const mosaicUrl = responseData.links[1].href;
             setMosaicUrl(mosaicUrl);
           } else {
-              LOG &&
+            LOG &&
               /* eslint-disable-next-line no-console */
-              console.log('Titiler /register %cEndpoint error', 'color: red;', error);
-              throw error;
+              console.log(
+                'Titiler /register %cEndpoint error',
+                'color: red;',
+                error
+              );
+            throw error;
           }
         }
 
@@ -361,7 +367,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           {
             assets: 'cog_default',
             ...(sourceParams ?? {}),
-            ...colorMap &&  {colormap_name: colorMap}
+            ...(colorMap && { colormap_name: colorMap })
           },
           // Temporary solution to pass different tile parameters for hls data
           {

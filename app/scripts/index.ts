@@ -18,12 +18,17 @@ import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import PageHeader from '$components/common/page-header';
 import LogoContainer from '$components/common/page-header/logo-container';
-import type { NavItem, InternalNavLink, NavItemType } from '$components/common/page-header/types';
+import type {
+  NavItem,
+  InternalNavLink,
+  NavItemType
+} from '$components/common/page-header/types';
 
 import ExplorationAndAnalysis from '$components/exploration';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
+import { VedauiConfigProvider } from '$context/config-context';
 
 // Adding .last property to array
 /* eslint-disable-next-line fp/no-mutating-methods */
@@ -56,6 +61,7 @@ export {
   PageHero,
   PageHeader,
   ReactQueryProvider,
+  VedauiConfigProvider,
   StoriesHubContent,
   LogoContainer,
   ExplorationAndAnalysis,

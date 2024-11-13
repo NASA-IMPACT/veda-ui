@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { AnySourceImpl, Layer, Style } from 'mapbox-gl';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import {
   BasemapId,
-  BASEMAP_STYLES,
   getStyleUrl,
-  GROUPS_BY_OPTION
+  GROUPS_BY_OPTION,
+  getBasemapStyles
 } from '../controls/map-options/basemap';
 import { ExtendedLayer } from '../types';
 import useMapStyle from '../hooks/use-map-style';
+import { VedauiConfigContext } from '$context/config-context';
 
 interface BasemapProps {
   basemapStyleId?: BasemapId;
@@ -32,18 +33,24 @@ export function Basemap({
   labelsOption = true,
   boundariesOption = true
 }: BasemapProps) {
+  const config = useContext(VedauiConfigContext);
   const { updateStyle } = useMapStyle();
   const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
+
+  const basemapStyles = useMemo(
+    () => getBasemapStyles(config.mapboxToken),
+    [config.mapboxToken]
+  );
 
   const { data: styleJson } = useQuery(
     ['basemap', basemapStyleId],
     async ({ signal }) => {
       const mapboxId = basemapStyleId
-        ? BASEMAP_STYLES.find((b) => b.id === basemapStyleId)!.mapboxId
-        : BASEMAP_STYLES[0].mapboxId;
+        ? basemapStyles.find((b) => b.id === basemapStyleId)!.mapboxId
+        : basemapStyles[0].mapboxId;
 
       try {
-        const url = getStyleUrl(mapboxId);
+        const url = getStyleUrl(mapboxId, config.mapboxToken);
         const styleRaw = await fetch(url, { signal });
         const styleJson = await styleRaw.json();
         return styleJson;

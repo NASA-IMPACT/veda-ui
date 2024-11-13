@@ -49,12 +49,24 @@ import {
   STORIES_PATH,
   EXPLORATION_PATH
 } from '$utils/routes';
+import { VedauiConfigProvider } from '$context/config-context';
 
 const composingComponents = [
   // Add contexts here.
   ErrorBoundary,
   ReactQueryProvider,
-  LayoutRootContextProvider
+  LayoutRootContextProvider,
+  ({ children }) => (
+    <VedauiConfigProvider
+      config={{
+        mapboxToken: process.env.MAPBOX_TOKEN ?? '',
+        envApiStacEndpoint: process.env.API_STAC_ENDPOINT ?? '',
+        envApiRasterEndpoint: process.env.API_RASTER_ENDPOINT ?? ''
+      }}
+    >
+      {children}
+    </VedauiConfigProvider>
+  )
 ];
 
 function ScrollTop() {
