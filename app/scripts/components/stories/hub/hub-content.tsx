@@ -184,7 +184,6 @@ export default function HubContent(props: HubContentProps) {
                   linkProperties={{
                     ...linkProperties,
                     linkTo: `${d.asLink?.url ?? d.path}`,
-                    isLinkExternal: d.isLinkExternal
                   }}
                   title={
                     <TextHighlight value={search} disabled={search.length < 3}>

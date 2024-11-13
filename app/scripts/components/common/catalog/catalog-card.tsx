@@ -22,7 +22,7 @@ interface CatalogCardProps {
   selected?: boolean;
   onDatasetClick?: () => void;
   pathname?: string;
-  linkProperties: LinkProperties;
+  linkProperties?: LinkProperties;
 }
 
 const CardSelectable = styled(Card)<{
@@ -137,6 +137,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
         </CardMeta>
       }
       linkLabel='View dataset'
+      onClick={handleClick}
       title={
         <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
           {title}
@@ -170,7 +171,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
           ) : null}
         </>
       }
-      linkProperties={{...linkProperties, linkTo: linkTo, onClick: handleClick}}
+      {...(linkProperties ? {linkProperties: {...linkProperties, linkTo: linkTo}} : {})}
     />
   );
 };

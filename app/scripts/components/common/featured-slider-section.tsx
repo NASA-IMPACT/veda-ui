@@ -116,8 +116,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                       linkLabel='View more'
                       linkProperties={{
                         ...linkProperties,
-                        linkTo: `${d.asLink?.url ?? getItemPath(d)}`,
-                        isLinkExternal: d.isLinkExternal
+                        linkTo: `${d.asLink?.url ?? getItemPath(d)}`
                       }}
                       title={d.name}
                       overline={

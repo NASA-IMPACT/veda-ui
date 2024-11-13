@@ -5,8 +5,6 @@ import { getLinkProps } from '$utils/url';
 
 interface SmartLinkProps {
   to: string;
-  isLinkExternal?: boolean;
-  onClick?: ()=> void;
   children?: ReactNode;
 }
 
@@ -14,9 +12,9 @@ interface SmartLinkProps {
  * Switches between a `a` and a `Link` depending on the url.
  */
 export default function SmartLink(props: SmartLinkProps) {
-  const { to, isLinkExternal, onClick, children, ...rest } = props;
-  const isExternalLink = isLinkExternal ?? /^https?:\/\//.test(to);
-  const linkProps = getLinkProps(to, isLinkExternal, undefined, onClick);
+  const { to, children, ...rest } = props;
+  const isExternalLink = /^https?:\/\//.test(to);
+  const linkProps = getLinkProps(to);
 
   return isExternalLink ? (
     <a {...linkProps} {...rest}> {children} </a>
@@ -38,7 +36,8 @@ export function CustomLink(props: CustomLinkProps) {
   const isExternalLink = /^https?:\/\//.test(href);
   const linkProps = getLinkProps(href);
   return isExternalLink ? (
-      <a {...linkProps} {...rest} />
+    // @ts-expect-error linkProps returned from getLinkProps are not being recognized suddenly
+    <a {...linkProps} {...rest} />
   ) : (
     <Link {...linkProps} {...rest} />
   );

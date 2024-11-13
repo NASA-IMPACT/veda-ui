@@ -233,7 +233,6 @@ export function ExternalLinkFlag() {
 
 export interface LinkWithPathProperties extends LinkProperties {
   linkTo: string;
-  isLinkExternal?: boolean;
 }
 
 export interface CardComponentBaseProps {
@@ -251,17 +250,17 @@ export interface CardComponentBaseProps {
   footerContent?: JSX.Element;
   hideExternalLinkBadge?: boolean;
   onCardClickCapture?: MouseEventHandler;
+  onClick?: MouseEventHandler;
 }
 
-// @TODO: Consolidate these props when the instance adapts the new syntax
+// @TODO: Created because GHG uses the card component directly and passes in "linkTo" prop. Consolidate these props when the instance adapts the new syntax
 // Specifically: https://github.com/US-GHG-Center/veda-config-ghg/blob/develop/custom-pages/news-and-events/component.tsx#L108
 export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
   linkTo: string;
-  onClick?: MouseEventHandler;
-  isLinkExternal?: boolean; // @TODO-SANDRA: Why does this overlap with LinkWithPathProperties
 }
+
 export interface CardComponentProps extends CardComponentBaseProps {
-  linkProperties: LinkWithPathProperties;
+  linkProperties?: LinkWithPathProperties;
 }
 
 type CardComponentPropsType = CardComponentProps | CardComponentPropsDeprecated;
@@ -288,40 +287,37 @@ function CardComponent(props: CardComponentPropsType) {
     parentTo,
     footerContent,
     hideExternalLinkBadge,
-    onCardClickCapture
+    onCardClickCapture,
+    onClick,
   } = props;
   // @TODO: This process is not necessary once all the instances adapt the linkProperties syntax
   // Consolidate them to use LinkProperties only
-  let linkProperties: LinkWithPathProperties;
+  let linkProperties: LinkWithPathProperties | undefined;
 
   if (hasLinkProperties(props)) {
     // Handle new props with linkProperties
     const { linkProperties: linkPropertiesProps } = props;
     linkProperties = linkPropertiesProps;
   } else {
-    const { linkTo, onClick, isLinkExternal } = props;
-    linkProperties = {
+    const { linkTo } = props;
+    linkProperties = linkTo ? {
       linkTo,
-      onClick,
       pathAttributeKeyName: 'to',
       LinkElement: SmartLink
-    };
+    } : undefined;
   }
 
-  const isExternalLink = linkProperties.isLinkExternal ?? /^https?:\/\//.test(linkProperties.linkTo);
+  const isExternalLink = linkProperties ? /^https?:\/\//.test(linkProperties.linkTo) : false;
+
   return (
     <ElementInteractive
-      linkProps={{
-        as: linkProperties.LinkElement,
-        [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
-        onClick: linkProperties.onClick,
-        isLinkExternal: isExternalLink
-      }}
+      {...(linkProperties ? {linkProps: {as: linkProperties.LinkElement, [linkProperties.pathAttributeKeyName]: linkProperties.linkTo}} : {})}
       as={CardItem}
       cardType={cardType}
       className={className}
       linkLabel={linkLabel ?? 'View more'}
       onClickCapture={onCardClickCapture}
+      onClick={onClick}
     >
       {cardType !== 'horizontal-info' && (
         <>
@@ -337,7 +333,7 @@ function CardComponent(props: CardComponentPropsType) {
                   parentTo &&
                   tagLabels.map((label) => (
                     <CardLabel
-                      as={linkProperties.LinkElement}
+                      as={linkProperties?.LinkElement}
                       to={parentTo}
                       key={label}
                     >
