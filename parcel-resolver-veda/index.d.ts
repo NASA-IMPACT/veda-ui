@@ -290,7 +290,7 @@ declare module 'veda' {
     type: 'externalLink';
   }
   type NavLinkItem = ExternalNavLink | InternalNavLink;
-  export interface ButtonNavLink {
+  export interface ButtonNavItem {
     title: string;
     type: 'button';
     action: () => void;
@@ -353,10 +353,10 @@ declare module 'veda' {
   export const getNavItemsFromVedaConfig: () =>
     | {
         mainNavItems:
-          | (NavLinkItem | ButtonNavLink | DropdownNavLink)[]
+          | (NavLinkItem | ButtonNavItem | DropdownNavLink)[]
           | undefined;
         subNavItems:
-          | (NavLinkItem | ButtonNavLink | DropdownNavLink)[]
+          | (NavLinkItem | ButtonNavItem | DropdownNavLink)[]
           | undefined;
       }
     | undefined;

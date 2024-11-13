@@ -16,8 +16,8 @@ import {
 
 import UnscrollableBody from '../unscrollable-body';
 import { LinkProperties } from '../card';
+import { NavItem } from '../page-header/types';
 import NavMenuItem from './nav-menu-item';
-import { NavItem } from './types';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { PAGE_BODY_ID } from '$components/common/layout-root';

@@ -27,7 +27,7 @@ let mainNavItems = [
     type: 'internalLink'
   },
   {
-    title: 'stories',
+    title: 'Stories',
     to: '/stories',
     type: 'internalLink'
   }
@@ -52,16 +52,25 @@ let subNavItems = [
 ];
 
 if (config.GOOGLE_FORM) {
-  subNavItems = [
-    ...subNavItems,
-    {
-      title: 'Contact us',
-      src: config.GOOGLE_FORM,
-      type: 'button'
-      // @NOTE: action attribute is required here but we cant pass in a callback that opens appropriate modal because this file is outside the modules
-      // Will provide a work around for this for not but this will soon go away with the refactor anyways
-    }
-  ];
+  if (config.ENABLE_USWDS_PAGE_HEADER) {
+    subNavItems = [
+      ...subNavItems,
+      {
+        title: 'Contact us',
+        actionId: 'open-google-form',
+        type: 'action'
+      }
+    ];
+  } else {
+    subNavItems = [
+      ...subNavItems,
+      {
+        title: 'Contact us',
+        actionId: 'open-google-form',
+        type: 'button'
+      }
+    ];
+  }
 }
 
 module.exports = {

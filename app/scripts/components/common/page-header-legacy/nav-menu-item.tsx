@@ -12,7 +12,9 @@ import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from '../dropdown-scrollable';
 import GoogleForm from '../google-form';
-import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, ButtonNavLink, NavItem, NavItemType } from './types';
+import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, NavItem, NavItemType } from '../page-header/types';
+import { USWDSButton } from '../uswds/button';
+import { useFeedbackModal } from '../layout-root';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { LinkProperties } from '$types/veda';
@@ -98,6 +100,7 @@ function LinkDropMenuNavItem({ child, onClick, linkProperties }: { child: NavLin
 
 export default function NavMenuItem({ item, alignment, onClick, linkProperties }: {item: NavItem, alignment?: AlignmentEnum, onClick?: () => void, linkProperties: LinkProperties }) {
   const { isMediumDown } = useMediaQuery();
+  const { isRevealed, show, hide } = useFeedbackModal();
   const { title, type, ...rest } = item;
 
   if (type === NavItemType.INTERNAL_LINK) {
@@ -128,8 +131,23 @@ export default function NavMenuItem({ item, alignment, onClick, linkProperties }
       </li>
 
     );
-  } else if (type === NavItemType.BUTTON) {
-    return (<li><GoogleForm title={title} src={(item as ButtonNavLink).src} /></li>);
+  } else if (type == NavItemType.BUTTON || type == NavItemType.ACTION) {
+    return (
+      <li>
+        <USWDSButton
+          onClick={show}
+          type='button'
+          size='small'
+          inverse={true}
+          outline={false}
+        >
+          {item.title}
+        </USWDSButton>
+        {
+          process.env.GOOGLE_FORM && <GoogleForm src={process.env.GOOGLE_FORM} isRevealed={isRevealed} hide={hide} />
+        }
+      </li>
+    );
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   } else if (type === NavItemType.DROPDOWN) {
     const { title } = item as DropdownNavLink;

@@ -2,9 +2,10 @@ import { getString, getNavItemsFromVedaConfig } from 'veda';
 import {
   InternalNavLink,
   ExternalNavLink,
-  ButtonNavLink,
+  ButtonNavItem,
   DropdownNavLink,
-  NavItemType
+  NavItemType,
+  ActionNavItem
 } from '$components/common/page-header/types';
 
 import {
@@ -18,7 +19,8 @@ let defaultMainNavItems: (
   | ExternalNavLink
   | InternalNavLink
   | DropdownNavLink
-  | ButtonNavLink
+  | ButtonNavItem
+  | ActionNavItem
 )[] = [
   {
     title: 'Data Catalog',
@@ -51,7 +53,8 @@ let defaultSubNavItems: (
   | ExternalNavLink
   | InternalNavLink
   | DropdownNavLink
-  | ButtonNavLink
+  | ButtonNavItem
+  | ActionNavItem
 )[] = [
   {
     title: 'About',
@@ -60,15 +63,27 @@ let defaultSubNavItems: (
   }
 ];
 
-if (process.env.GOOGLE_FORM) {
-  defaultSubNavItems = [
-    ...defaultSubNavItems,
-    {
-      title: 'Contact us',
-      src: process.env.GOOGLE_FORM,
-      type: NavItemType.BUTTON
-    }
-  ];
+if (process.env.GOOGLE_FORM !== undefined) {
+  if (process.env.ENABLE_USWDS_PAGE_HEADER) {
+    defaultSubNavItems = [
+      ...defaultSubNavItems,
+      {
+        title: 'Contact us',
+        actionId: 'open-google-form',
+        type: NavItemType.ACTION
+      }
+    ];
+  } else {
+    defaultSubNavItems = [
+      ...defaultSubNavItems,
+      {
+        title: 'Contact us',
+        actionId: 'open-google-form',
+        src: process.env.GOOGLE_FORM,
+        type: NavItemType.BUTTON
+      }
+    ];
+  }
 }
 
 const mainNavItems =
