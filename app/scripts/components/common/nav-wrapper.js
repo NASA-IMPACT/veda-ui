@@ -10,6 +10,7 @@ import {
   HEADER_WRAPPER_ID,
   HEADER_TRANSITION_DURATION
 } from '$utils/use-sliding-sticky-header';
+import { checkEnvFlag } from '$utils/utils';
 
 const NavWrapperContainer = styled.div`
   position: sticky;
@@ -27,11 +28,13 @@ const NavWrapperContainer = styled.div`
       top: -${headerHeight}px;
     `}
 `;
+// Hiding configurable map for now until Instances are ready to adapt it
+const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_HEADER);
 
 function NavWrapper(props) {
   const { isHeaderHidden, headerHeight } = useSlidingStickyHeaderProps();
 
-  return process.env.ENABLE_USWDS_PAGE_HEADER === 'true' ? (
+  return isUSWDSEnabled ? (
     <PageHeader
       {...props}
       logo={<NasaLogoColor />} // Override the composition from old page-header with simple svg

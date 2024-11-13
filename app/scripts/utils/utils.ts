@@ -87,12 +87,11 @@ export function composeVisuallyDisabled(
   `;
 }
 
-
 /**
  * Checks if the given environment variable is set to 'true', ignoring case.
  * @param value - The value of the environment variable.
  * @returns A boolean indicating whether the flag is true.
  */
-export function checkEnvFlag(value?: string) {
+export function checkEnvFlag(value?: string): boolean {
   return (value ?? '').toLowerCase() === 'true';
 }
