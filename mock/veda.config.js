@@ -17,6 +17,17 @@ let mainNavItems = [
     ]
   },
   {
+    title: 'Another Test',
+    type: 'dropdown',
+    children: [
+      {
+        title: 'dropdown menu item 2',
+        to: '/stories',
+        type: 'internalLink'
+      }
+    ]
+  },
+  {
     title: 'Data Catalog',
     to: '/data-catalog',
     type: 'internalLink'
