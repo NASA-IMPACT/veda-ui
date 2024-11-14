@@ -1,27 +1,18 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import {
-  CollecticonPlus,
-  CollecticonTickSmall,
-  iconDataURI
-} from '@devseed-ui/collecticons';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
-
-import { Card, LinkProperties } from '../card';
-import { CardMeta, CardTopicsList } from '../card/styles';
-import { DatasetClassification } from '../dataset-classification';
-import { CardSourcesList } from '../card-sources';
-import TextHighlight from '../text-highlight';
+import React from "react";
+import styled, { css } from "styled-components";
+import { CollecticonPlus, CollecticonTickSmall, iconDataURI } from "@devseed-ui/collecticons";
+import { glsp, themeVal } from "@devseed-ui/theme-provider";
+import { Card } from "../card";
+import { CardMeta, CardTopicsList } from "../card/styles";
+import { DatasetClassification } from "../dataset-classification";
+import { CardSourcesList } from "../card-sources";
+import TextHighlight from "../text-highlight";
 import { getDatasetDescription, getMediaProperty } from './utils';
-import { DatasetData, DatasetLayer } from '$types/veda';
-import { getDatasetPath } from '$utils/routes';
-import {
-  TAXONOMY_SOURCE,
-  TAXONOMY_TOPICS,
-  getAllTaxonomyValues,
-  getTaxonomy
-} from '$utils/veda-data/taxonomies';
-import { Pill } from '$styles/pill';
+import { LinkProperties } from '$types/veda';
+import { DatasetData, DatasetLayer } from "$types/veda";
+import { getDatasetPath } from "$utils/routes";
+import { TAXONOMY_SOURCE, TAXONOMY_TOPICS, getAllTaxonomyValues, getTaxonomy } from "$utils/veda-data/taxonomies";
+import { Pill } from "$styles/pill";
 
 interface CatalogCardProps {
   dataset: DatasetData;
@@ -31,7 +22,7 @@ interface CatalogCardProps {
   selected?: boolean;
   onDatasetClick?: () => void;
   pathname?: string;
-  linkProperties: LinkProperties;
+  linkProperties?: LinkProperties;
 }
 
 const CardSelectable = styled(Card)<{
@@ -142,10 +133,11 @@ export const CatalogCard = (props: CatalogCardProps) => {
       overline={
         <CardMeta>
           <DatasetClassification dataset={dataset} />
-          <CardSourcesList sources={sources} />
+          <CardSourcesList sources={sources} linkProperties={linkProperties} />
         </CardMeta>
       }
       linkLabel='View dataset'
+      onClick={handleClick}
       title={
         <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
           {title}
@@ -179,11 +171,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
           ) : null}
         </>
       }
-      linkProperties={{
-        ...linkProperties,
-        linkTo: linkTo,
-        onLinkClick: handleClick
-      }}
+      {...(linkProperties ? {linkProperties: {...linkProperties, linkTo: linkTo}} : {})}
     />
   );
 };

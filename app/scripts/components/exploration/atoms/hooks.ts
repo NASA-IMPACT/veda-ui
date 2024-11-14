@@ -3,7 +3,8 @@ import { extent } from 'd3';
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 import { focusAtom } from 'jotai-optics';
-import { add, max } from 'date-fns';
+import add from 'date-fns/add';
+import max from 'date-fns/max';
 
 import { DAY_SIZE_MAX } from '../constants';
 import {

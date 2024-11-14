@@ -76,15 +76,25 @@ function CustomAoI({
   const [selectedState, setSelectedState] = useState('');
   const [presetIds, setPresetIds] = useState([]);
   const [fileUploadedIds, setFileUplaodedIds] = useState([]);
+  const [updated, forceUpdate] = useState(0);   // @NOTE:  Needed so that this component re-renders to when the draw selection changes from feature to point.
+  const [isAreaSelected, setAreaSelected] = useState<boolean>(false);
+  const [isPointSelected, setPointSelected] = useState<boolean>(false);
 
   const [selectedForEditing, setSelectedForEditing] = useAtom(selectedForEditingAtom);
 
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
 
-  // Needed so that this component re-renders to when the draw selection changes
-  // from feature to point.
-  const [, forceUpdate] = useState(0);
+  // @NOTE: map?._drawControl?.getSelected() needs access to mapboxgl draw context store,
+  // but the function gets called before mapboxdraw store is initialized (before being added to map) resulting in an error
+  useEffect(() => {
+    if (!map) return;
+
+    const mbDraw = map?._drawControl;
+    setAreaSelected(!!(mbDraw?.getSelected().features.length));
+    setPointSelected(!!(mbDraw?.getSelectedPoints()?.features.length));
+  }, [map, updated]);
+
   useEffect(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
@@ -220,6 +230,7 @@ function CustomAoI({
     // selected, the trash method doesn't do anything. So, in this case, we
     // trigger the delete for the whole feature.
     const selectedFeatures = mbDraw.getSelected()?.features;
+
     if (
       mbDraw.getMode() === DIRECT_SELECT &&
       selectedFeatures.length &&
@@ -248,9 +259,6 @@ function CustomAoI({
     mbDraw.trash();
   }, [features, aoiDeleteAll, map]);
 
-  const isAreaSelected = !!map?._drawControl?.getSelected().features.length;
-  const isPointSelected =
-    !!map?._drawControl.getSelectedPoints().features.length;
   const hasFeatures = !!features.length;
 
   return (
@@ -330,21 +338,19 @@ export default function CustomAoIControl({
   disableReason?: React.ReactNode;
 }) {
   const { main } = useMaps();
-
   const { isDrawing } = useAois();
 
-  // Start/stop the drawing.
+  // Start the drawing mode when isDrawing is true
+  // There's no need to switch back to 'simple_select' mode when !isDrawing
+  // as Mapbox Draw handles this internally when the drawing is completed
   useEffect(() => {
-    // Property was added to access draw control.
-    const mbDraw = main?._drawControl;
+    if (!main) return;
+    const mbDraw = main._drawControl;
+
     if (!mbDraw) return;
 
     if (isDrawing) {
       mbDraw.changeMode(DRAW_POLYGON);
-    } else {
-      mbDraw.changeMode(SIMPLE_SELECT, {
-        featureIds: mbDraw.getSelectedIds()
-      });
     }
   }, [main, isDrawing]);
 
@@ -354,5 +360,7 @@ export default function CustomAoIControl({
       position: 'top-left'
     }
   );
+
   return null;
 }
+

@@ -20,6 +20,21 @@ import PageHeader from '$components/common/page-header';
 import LogoContainer from '$components/common/page-header/logo-container';
 import type { NavItem, InternalNavLink, NavItemType } from '$components/common/page-header/types';
 
+import ExplorationAndAnalysis from '$components/exploration';
+import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
+import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
+import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
+
+// Adding .last property to array
+/* eslint-disable-next-line fp/no-mutating-methods */
+Object.defineProperty(Array.prototype, 'last', {
+  enumerable: false,
+  configurable: true,
+  get: function () {
+    return this[this.length - 1];
+  },
+  set: undefined
+});
 
 export {
   // COMPONENTS
@@ -43,12 +58,18 @@ export {
   ReactQueryProvider,
   StoriesHubContent,
   LogoContainer,
+  ExplorationAndAnalysis,
+  DatasetSelectorModal,
 
-  // HOOKS and utility functions
+  // HOOKS
+  useTimelineDatasetAtom,
   useFiltersWithQS,
 
   // TYPES
   NavItem,
   NavItemType,
-  InternalNavLink
+  InternalNavLink,
+
+  // STATE
+  timelineDatasetsAtom
 };

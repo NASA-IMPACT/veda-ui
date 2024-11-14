@@ -1,6 +1,6 @@
-import React, { lazy, MouseEventHandler, ComponentType } from 'react';
+import React, { lazy, MouseEventHandler } from 'react';
 import styled, { css } from 'styled-components';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 import {
   glsp,
@@ -25,6 +25,7 @@ import HorizontalInfoCard, {
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
+import { LinkProperties } from '$types/veda';
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
 
@@ -230,12 +231,6 @@ export function ExternalLinkFlag() {
   );
 }
 
-export interface LinkProperties {
-  LinkElement: string | ComponentType<any> | undefined;
-  pathAttributeKeyName: string;
-  onLinkClick?: MouseEventHandler;
-}
-
 export interface LinkWithPathProperties extends LinkProperties {
   linkTo: string;
 }
@@ -255,16 +250,17 @@ export interface CardComponentBaseProps {
   footerContent?: JSX.Element;
   hideExternalLinkBadge?: boolean;
   onCardClickCapture?: MouseEventHandler;
+  onClick?: MouseEventHandler;
 }
 
-// @TODO: Consolidate these props when the instance adapts the new syntax
+// @TODO: Created because GHG uses the card component directly and passes in "linkTo" prop. Consolidate these props when the instance adapts the new syntax
 // Specifically: https://github.com/US-GHG-Center/veda-config-ghg/blob/develop/custom-pages/news-and-events/component.tsx#L108
 export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
   linkTo: string;
-  onLinkClick?: MouseEventHandler;
 }
+
 export interface CardComponentProps extends CardComponentBaseProps {
-  linkProperties: LinkWithPathProperties;
+  linkProperties?: LinkWithPathProperties;
 }
 
 type CardComponentPropsType = CardComponentProps | CardComponentPropsDeprecated;
@@ -291,40 +287,37 @@ function CardComponent(props: CardComponentPropsType) {
     parentTo,
     footerContent,
     hideExternalLinkBadge,
-    onCardClickCapture
+    onCardClickCapture,
+    onClick,
   } = props;
   // @TODO: This process is not necessary once all the instances adapt the linkProperties syntax
   // Consolidate them to use LinkProperties only
-  let linkProperties: LinkWithPathProperties;
+  let linkProperties: LinkWithPathProperties | undefined;
 
   if (hasLinkProperties(props)) {
     // Handle new props with linkProperties
     const { linkProperties: linkPropertiesProps } = props;
     linkProperties = linkPropertiesProps;
   } else {
-    const { linkTo, onLinkClick } = props;
-    linkProperties = {
+    const { linkTo } = props;
+    linkProperties = linkTo ? {
       linkTo,
-      onLinkClick,
       pathAttributeKeyName: 'to',
       LinkElement: SmartLink
-    };
+    } : undefined;
   }
 
-  const isExternalLink = /^https?:\/\//.test(linkProperties.linkTo);
+  const isExternalLink = linkProperties ? /^https?:\/\//.test(linkProperties.linkTo) : false;
 
   return (
     <ElementInteractive
-      linkProps={{
-        as: linkProperties.LinkElement,
-        [linkProperties.pathAttributeKeyName]: linkProperties.linkTo,
-        onLinkClick: linkProperties.onLinkClick
-      }}
+      {...(linkProperties ? {linkProps: {as: linkProperties.LinkElement, [linkProperties.pathAttributeKeyName]: linkProperties.linkTo}} : {})}
       as={CardItem}
       cardType={cardType}
       className={className}
       linkLabel={linkLabel ?? 'View more'}
       onClickCapture={onCardClickCapture}
+      onClick={onClick}
     >
       {cardType !== 'horizontal-info' && (
         <>
@@ -340,7 +333,7 @@ function CardComponent(props: CardComponentPropsType) {
                   parentTo &&
                   tagLabels.map((label) => (
                     <CardLabel
-                      as={linkProperties.LinkElement}
+                      as={linkProperties?.LinkElement}
                       to={parentTo}
                       key={label}
                     >

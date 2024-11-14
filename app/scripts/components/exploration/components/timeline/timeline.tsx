@@ -6,15 +6,13 @@ import {
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
 import { select, zoom } from 'd3';
-import {
-  add,
-  isAfter,
-  isBefore,
-  isWithinInterval,
-  max,
-  startOfDay,
-  sub
-} from 'date-fns';
+import add from 'date-fns/add';
+import isAfter from 'date-fns/isAfter';
+import isBefore from 'date-fns/isBefore';
+import max from 'date-fns/max';
+import sub from 'date-fns/sub';
+import startOfDay from 'date-fns/startOfDay';
+import isWithinInterval from 'date-fns/isWithinInterval';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, {
   useCallback,
@@ -170,7 +168,7 @@ interface TimelineProps {
   setSelectedDay: (d: Date | null) => void;
   selectedCompareDay: Date | null;
   setSelectedCompareDay: (d: Date | null) => void;
-  onDatasetAddClick: () => void;
+  onDatasetAddClick?: () => void;
   panelHeight: number;
 }
 
@@ -612,13 +610,17 @@ export default function Timeline(props: TimelineProps) {
     return (
       <Headline>
         <TimelineHeading as='h2'>Data layers</TimelineHeading>
-        <Button
-          variation='primary-fill'
-          size='small'
-          onClick={onDatasetAddClick}
-        >
-          <CollecticonPlusSmall title='Add layer' /> Add layer
-        </Button>
+        {
+          onDatasetAddClick && (
+            <Button
+              variation='primary-fill'
+              size='small'
+              onClick={onDatasetAddClick}
+            >
+              <CollecticonPlusSmall title='Add layer' /> Add layer
+            </Button>
+          )
+        }
       </Headline>
     );
   };
@@ -666,13 +668,17 @@ export default function Timeline(props: TimelineProps) {
               <div>
                 <CollecticonIsoStack size='xxlarge' />
                 <p>No data layer added to the map!</p>
-                <Button
-                  variation='base-text'
-                  size='small'
-                  onClick={onDatasetAddClick}
-                >
-                  Add a layer here
-                </Button>
+                {
+                  onDatasetAddClick && (
+                    <Button
+                      variation='base-text'
+                      size='small'
+                      onClick={onDatasetAddClick}
+                    >
+                      Add a layer here
+                    </Button>
+                  )
+                }
               </div>
             </LayerActionBox>
           </EmptyTimelineContentInner>

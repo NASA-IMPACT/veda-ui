@@ -1,7 +1,7 @@
 import * as dateFns from 'date-fns';
 import mapboxgl from 'mapbox-gl';
 import { MDXModule } from 'mdx/types';
-
+import { ComponentType } from 'react';
 // ///////////////////////////////////////////////////////////////////////////
 //  Datasets                                                                //
 // ///////////////////////////////////////////////////////////////////////////
@@ -213,6 +213,7 @@ export interface StoryData {
   related?: RelatedContentData[];
   asLink?: LinkContentData;
   hideExternalLinkBadge?: boolean;
+  isLinkExternal?: boolean;
   isHidden?: boolean;
 }
 
@@ -279,4 +280,11 @@ export interface EnhancedDatasetLayer extends DatasetLayer {
 
 export interface DatasetDataWithEnhancedLayers extends DatasetData {
   layers: EnhancedDatasetLayer[];
+}
+
+// Types needed for library
+
+export interface LinkProperties {
+  LinkElement: string | ComponentType<any> | undefined;
+  pathAttributeKeyName: string;
 }

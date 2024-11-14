@@ -73,7 +73,13 @@ const InteractiveLink = styled.a`
  */
 export const ElementInteractive = React.forwardRef(
   function ElementInteractiveFwd(props, ref) {
-    const { linkProps = {}, linkLabel = 'View', children, ...rest } = props;
+    const {
+      linkProps = {},
+      linkLabel = 'View',
+      children,
+      onClick,
+      ...rest
+    } = props;
     const [isStateOver, setStateOver] = useState(false);
     const [isStateActive, setStateActive] = useState(false);
     const [isStateFocus, setStateFocus] = useState(false);
@@ -92,6 +98,7 @@ export const ElementInteractive = React.forwardRef(
           setStateOver(false);
           setStateActive(false);
         }, [])}
+        onClick={onClick}
       >
         {children}
         <InteractiveLink
@@ -111,7 +118,8 @@ export const ElementInteractive = React.forwardRef(
 ElementInteractive.propTypes = {
   children: T.node.isRequired,
   linkLabel: T.string.isRequired,
-  linkProps: T.object
+  linkProps: T.object,
+  onClick: T.func
 };
 
 /**

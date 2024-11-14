@@ -20,12 +20,8 @@ import {
   FoldTitle
 } from '$components/common/fold';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
-import { Card, LinkProperties } from '$components/common/card';
-import {
-  CardListGrid,
-  CardMeta,
-  CardTopicsList
-} from '$components/common/card/styles';
+import { Card } from '$components/common/card';
+import { CardListGrid, CardMeta, CardTopicsList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { prepareDatasets } from '$components/common/catalog/prepare-datasets';
 
@@ -40,7 +36,7 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data/taxonomies';
 import { generateTaxonomies } from '$utils/veda-data/taxonomies';
-import { StoryData } from '$types/veda';
+import { StoryData, LinkProperties } from '$types/veda';
 import { UseFiltersWithQueryResult } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 
 const StoryCount = styled(Subtitle)`
@@ -168,6 +164,7 @@ export default function HubContent(props: HubContentProps) {
                       <CardSourcesList
                         sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                         rootPath={pathname}
+                        linkProperties={linkProperties}
                         onSourceClick={(id) => {
                           onAction(FilterActions.TAXONOMY_MULTISELECT, {
                             key: TAXONOMY_SOURCE,
@@ -185,9 +182,8 @@ export default function HubContent(props: HubContentProps) {
                   }
                   linkLabel='View more'
                   linkProperties={{
+                    ...linkProperties,
                     linkTo: `${d.asLink?.url ?? d.path}`,
-                    LinkElement,
-                    pathAttributeKeyName
                   }}
                   title={
                     <TextHighlight value={search} disabled={search.length < 3}>

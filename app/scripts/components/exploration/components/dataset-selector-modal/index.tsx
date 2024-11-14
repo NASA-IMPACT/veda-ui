@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAtom } from 'jotai';
-import { DatasetData, DatasetLayer } from 'veda';
 import {
   Modal,
   ModalBody,
@@ -9,24 +7,19 @@ import {
   ModalHeader
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-
-
-import { Link } from 'react-router-dom';
-import { timelineDatasetsAtom } from '../../atoms/datasets';
 import {
-  reconcileDatasets
+  reconcileDatasets,
+  getLayersFromDataset
 } from '../../data-utils-no-faux-module';
-import {   datasetLayers,
-  allExploreDatasets} from '../../data-utils';
+import { TimelineDataset } from '../../types.d.ts';
+
 import RenderModalHeader from './header';
-
 import ModalFooterRender from './footer';
-
 import CatalogContent from '$components/common/catalog/catalog-content';
-import { DATASETS_PATH } from '$utils/routes';
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';
-import SmartLink from '$components/common/smart-link';
+
+import { DatasetData, LinkProperties, DatasetLayer } from '$types/veda';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -73,15 +66,23 @@ const DatasetModal = styled(Modal)`
 interface DatasetSelectorModalProps {
   revealed: boolean;
   close: () => void;
+  linkProperties: LinkProperties;
+  datasets: DatasetData[];
+  datasetPathName: string;
+  timelineDatasets: TimelineDataset[];
+  setTimelineDatasets: (datasets: TimelineDataset[]) => void;
 }
 
 export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
-  const { revealed, close } = props;
+  const { revealed, linkProperties, datasets, datasetPathName, timelineDatasets, setTimelineDatasets, close } = props;
+  const { LinkElement , pathAttributeKeyName } = linkProperties as { LinkElement: React.ElementType, pathAttributeKeyName: string };
 
-  const [timelineDatasets, setTimelineDatasets] = useAtom(timelineDatasetsAtom);
+  const datasetLayers = getLayersFromDataset(datasets);
+
   const [selectedIds, setSelectedIds] = useState<string[]>(
     timelineDatasets.map((dataset) => dataset.data.id)
   );
+  const enhancedDatasetLayers = datasetLayers.flatMap(e => e);
 
   // Use Jotai controlled atoms for query parameter manipulation on new E&A page
   const {search: searchTerm, taxonomies, onAction } = useFiltersWithURLAtom();
@@ -99,12 +100,13 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
 
   const onConfirm = useCallback(() => {
     setTimelineDatasets(
-      reconcileDatasets(selectedIds, datasetLayers, timelineDatasets)
+      reconcileDatasets(selectedIds, enhancedDatasetLayers, timelineDatasets)
     );
     onAction(FilterActions.CLEAR);
     close();
-  }, [close, selectedIds, timelineDatasets, setTimelineDatasets, onAction]);
+  }, [close, selectedIds, timelineDatasets, enhancedDatasetLayers, setTimelineDatasets, onAction]);
 
+  const linkElementProps = {[pathAttributeKeyName]: datasetPathName};
   return (
     <DatasetModal
       id='modal'
@@ -117,21 +119,19 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       )}
       content={
         <CatalogContent
-          datasets={allExploreDatasets}
+          datasets={datasets}
           search={searchTerm}
           taxonomies={taxonomies}
           selectedIds={selectedIds}
           setSelectedIds={setSelectedIds}
           onAction={onAction}
           filterLayers={true}
-          linkProperties={{
-            LinkElement: SmartLink,
-            pathAttributeKeyName: 'to'
-          }}
+          linkProperties={linkProperties}
+          pathname={datasetPathName}
           emptyStateContent={
             <>
               <p>There are no datasets to show with the selected filters.</p>
-              <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <Link to={DATASETS_PATH} target='_blank'>Data Catalog</Link>.</p>
+              <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <LinkElement {...linkElementProps} target='_blank'>Data Catalog</LinkElement>.</p>
             </>
           }
         />
