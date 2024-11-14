@@ -1,21 +1,25 @@
 import React from 'react';
+import { LinkProperties } from '../card';
 import { USWDSNavDropDownButton } from '../uswds/header/nav-drop-down-button';
 import { USWDSMenu } from '../uswds/header/menu';
+import { renderDynamicNavMenu } from './dynamic-nav-menu';
 
 interface NavDropDownButtonProps {
   item: { title: string; children: any[] };
   isOpen: boolean[];
   setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>>;
+  toggleExpansion: () => void;
   index: number;
-  CreateNavMenu: (children: any[]) => React.ReactNode;
+  linkProperties: LinkProperties;
 }
 
 export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
   item,
   isOpen,
   setIsOpen,
+  toggleExpansion,
   index,
-  CreateNavMenu
+  linkProperties
 }) => {
   const onToggle = (
     index: number,
@@ -32,6 +36,14 @@ export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
     });
   };
 
+  const submenuItems = renderDynamicNavMenu({
+    navItems: item.children,
+    linkProperties,
+    toggleExpansion,
+    isOpen,
+    setIsOpen
+  });
+
   return (
     <React.Fragment key={item.title}>
       <USWDSNavDropDownButton
@@ -41,7 +53,7 @@ export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
         label={item.title}
       />
       <USWDSMenu
-        items={CreateNavMenu(item.children)}
+        items={submenuItems}
         isOpen={isOpen[index]}
         id={`${item.title}-dropdown`}
       />

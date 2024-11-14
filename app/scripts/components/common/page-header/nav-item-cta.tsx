@@ -18,6 +18,7 @@ const mapActionNavItemId = (
   hide
 ) => {
   switch (item.actionId) {
+    // @TODO: what are the other cases?
     case 'open-google-form': {
       return (
         <>
@@ -55,7 +56,6 @@ export const NavItemCTAButton: React.FC<NavItemCTAButtonProps> = ({
   const { isRevealed, show, hide } = useFeedbackModal();
   return (
     <React.Fragment key={item.title}>
-      {/* //@TODO: Ask Sandra about this conditional */}
       {item.actionId === 'open-google-form' ? (
         mapActionNavItemId(item, isRevealed, show, hide)
       ) : (
