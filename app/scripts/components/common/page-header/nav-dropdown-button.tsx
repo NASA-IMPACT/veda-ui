@@ -8,7 +8,6 @@ interface NavDropDownButtonProps {
   item: { title: string; children: any[] };
   isOpen: boolean[];
   setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>>;
-  toggleExpansion: () => void;
   index: number;
   linkProperties: LinkProperties;
 }
@@ -17,7 +16,6 @@ export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
   item,
   isOpen,
   setIsOpen,
-  toggleExpansion,
   index,
   linkProperties
 }) => {
@@ -39,7 +37,6 @@ export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
   const submenuItems = renderDynamicNavMenu({
     navItems: item.children,
     linkProperties,
-    toggleExpansion,
     isOpen,
     setIsOpen
   });

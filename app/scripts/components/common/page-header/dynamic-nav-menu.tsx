@@ -8,7 +8,6 @@ import { NavItemCTAAction, NavItemCTAButton } from './nav-item-cta';
 export interface renderDynamicNavMenuProps {
   navItems: NavItem[];
   linkProperties: LinkProperties | null;
-  toggleExpansion: (() => void) | null;
   isOpen;
   setIsOpen;
 }
@@ -16,7 +15,6 @@ export interface renderDynamicNavMenuProps {
 export const renderDynamicNavMenu = ({
   navItems,
   linkProperties,
-  toggleExpansion,
   isOpen,
   setIsOpen
 }): renderDynamicNavMenuProps => {
@@ -29,7 +27,6 @@ export const renderDynamicNavMenu = ({
               item,
               isOpen,
               setIsOpen,
-              toggleExpansion,
               index,
               linkProperties
             }}
@@ -44,11 +41,7 @@ export const renderDynamicNavMenu = ({
         );
 
       case NavItemType.EXTERNAL_LINK:
-        return (
-          toggleExpansion && (
-            <NavItemExternalLink {...{ item, toggleExpansion }} />
-          )
-        );
+        return <NavItemExternalLink {...{ item }} />;
 
       case NavItemType.BUTTON:
         return <NavItemCTAButton {...{ item }} />;

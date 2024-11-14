@@ -4,7 +4,6 @@ import { ExternalNavLink, InternalNavLink } from './types';
 
 interface NavItemExternalLinkProps {
   item: ExternalNavLink;
-  toggleExpansion: () => void;
 }
 
 interface NavItemInternalLinkProps {
@@ -13,15 +12,13 @@ interface NavItemInternalLinkProps {
 }
 
 export const NavItemExternalLink: React.FC<NavItemExternalLinkProps> = ({
-  item,
-  toggleExpansion
+  item
 }): JSX.Element => {
   return (
     <a
       key={item.title}
       target='_blank'
       rel='noopener noreferrer'
-      onClick={toggleExpansion}
       href={item.href}
       className='usa-nav__link'
     >
