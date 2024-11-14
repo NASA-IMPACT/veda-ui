@@ -6,10 +6,6 @@ interface NavDropDownButtonProps {
   item: { title: string; children: any[] };
   isOpen: boolean[];
   setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>>;
-  onToggle: (
-    index: number,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>>
-  ) => void;
   index: number;
   CreateNavMenu: (children: any[]) => React.ReactNode;
 }
@@ -18,10 +14,24 @@ export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
   item,
   isOpen,
   setIsOpen,
-  onToggle,
   index,
   CreateNavMenu
 }) => {
+  const onToggle = (
+    index: number,
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>>
+  ): void => {
+    setIsOpen((prevIsOpen) => {
+      const newIsOpen = prevIsOpen.map(
+        (prev, i) =>
+          i === index
+            ? !prev // toggle the current dropdown
+            : false // close all other dropdowns
+      );
+      return newIsOpen;
+    });
+  };
+
   return (
     <React.Fragment key={item.title}>
       <USWDSNavDropDownButton

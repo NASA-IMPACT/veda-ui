@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { LinkProperties } from '@types/veda';
+import { LinkProperties } from '../card';
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
 import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
