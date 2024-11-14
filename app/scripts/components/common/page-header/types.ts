@@ -8,7 +8,7 @@ export enum NavItemType {
   BUTTON = 'button' // @NOTE: Change this to a button type and button should provide callback on action => aka whether it should open a modal or not or do another action
 }
 
-export type ActionId = 'open-google-form'; // @NOTE: ActionIds are nav items that perform some type of action but without it being a button
+export type ActionId = 'open-google-form' | undefined; // @NOTE: ActionIds are nav items that perform some type of action but without it being a button
 
 export interface InternalNavLink {
   title: string;
@@ -30,7 +30,6 @@ export interface ActionNavItem {
   type: NavItemType.ACTION;
 }
 
-
 export interface ButtonNavItem {
   title: string;
   type: NavItemType.BUTTON;
@@ -44,4 +43,8 @@ export interface DropdownNavLink {
   children: NavLinkItem[];
 }
 
-export type NavItem = NavLinkItem | ButtonNavItem | DropdownNavLink | ActionNavItem;
+export type NavItem =
+  | NavLinkItem
+  | ButtonNavItem
+  | DropdownNavLink
+  | ActionNavItem;
