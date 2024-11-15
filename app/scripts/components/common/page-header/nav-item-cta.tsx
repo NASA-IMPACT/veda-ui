@@ -3,11 +3,11 @@ import GoogleForm from '../google-form';
 import { useFeedbackModal } from '../layout-root';
 import { ActionNavItem } from './types';
 
-interface NavItemCTAActionProps {
+interface NavItemCTAProps {
   item: ActionNavItem;
 }
 
-export const NavItemCTAAction: React.FC<NavItemCTAActionProps> = ({
+export const NavItemCTA: React.FC<NavItemCTAProps> = ({
   item
 }): JSX.Element => {
   const { isRevealed, show, hide } = useFeedbackModal();
