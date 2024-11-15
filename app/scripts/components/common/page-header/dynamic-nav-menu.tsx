@@ -5,22 +5,16 @@ import { NavDropDownButton } from './nav-dropdown-button';
 import { NavItemExternalLink, NavItemInternalLink } from './nav-item-links';
 import { NavItemCTAAction, NavItemCTAButton } from './nav-item-cta';
 
-export interface renderDynamicNavMenuProps {
-  navItems: NavItem[];
-  linkProperties: LinkProperties | null;
-  isOpen;
-  setIsOpen;
-}
-
-export const renderDynamicNavMenu = ({
-  navItems,
-  linkProperties,
-  isOpen,
-  setIsOpen
-}): renderDynamicNavMenuProps => {
+export const createDynamicNavMenuList = (
+  navItems: NavItem[],
+  linkProperties: LinkProperties,
+  isOpen: boolean[] | undefined = undefined,
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>> | undefined = undefined
+): JSX.Element[] => {
   return navItems.map((item, index) => {
     switch (item.type) {
       case NavItemType.DROPDOWN:
+        if (isOpen === undefined || setIsOpen === undefined) return <></>;
         return (
           <NavDropDownButton
             {...{
@@ -50,7 +44,7 @@ export const renderDynamicNavMenu = ({
         return <NavItemCTAAction {...{ item }} />;
 
       default:
-        return null;
+        return <></>;
     }
   });
 };
