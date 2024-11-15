@@ -30,13 +30,6 @@ export interface ActionNavItem {
   type: NavItemType.ACTION;
 }
 
-export interface ButtonNavItem {
-  title: string;
-  type: NavItemType.BUTTON;
-  actionId: ActionId;
-  src?: string;
-}
-
 export interface DropdownNavLink {
   title: string;
   type: NavItemType.DROPDOWN;
@@ -44,7 +37,6 @@ export interface DropdownNavLink {
 }
 
 export type NavItem =
-  | NavLinkItem
-  | ButtonNavItem
+  | NavLinkItems
   | DropdownNavLink
   | ActionNavItem;

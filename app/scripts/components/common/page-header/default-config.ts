@@ -2,7 +2,6 @@ import { getString, getNavItemsFromVedaConfig } from 'veda';
 import {
   InternalNavLink,
   ExternalNavLink,
-  ButtonNavItem,
   DropdownNavLink,
   NavItemType,
   ActionNavItem
@@ -19,7 +18,6 @@ let defaultMainNavItems: (
   | ExternalNavLink
   | InternalNavLink
   | DropdownNavLink
-  | ButtonNavItem
   | ActionNavItem
 )[] = [
   {
@@ -53,7 +51,6 @@ let defaultSubNavItems: (
   | ExternalNavLink
   | InternalNavLink
   | DropdownNavLink
-  | ButtonNavItem
   | ActionNavItem
 )[] = [
   {

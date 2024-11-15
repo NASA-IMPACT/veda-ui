@@ -3,7 +3,7 @@ import { LinkProperties } from '../card';
 import { NavItem, NavItemType } from './types';
 import { NavDropDownButton } from './nav-dropdown-button';
 import { NavItemExternalLink, NavItemInternalLink } from './nav-item-links';
-import { NavItemCTAAction, NavItemCTAButton } from './nav-item-cta';
+import { NavItemCTAAction } from './nav-item-cta';
 
 export const createDynamicNavMenuList = (
   navItems: NavItem[],
@@ -36,9 +36,6 @@ export const createDynamicNavMenuList = (
 
       case NavItemType.EXTERNAL_LINK:
         return <NavItemExternalLink {...{ item }} />;
-
-      case NavItemType.BUTTON:
-        return <NavItemCTAButton {...{ item }} />;
 
       case NavItemType.ACTION:
         return <NavItemCTAAction {...{ item }} />;

@@ -2,7 +2,7 @@ import React from 'react';
 import { LinkProperties } from '../card';
 import { USWDSNavDropDownButton } from '../uswds/header/nav-drop-down-button';
 import { USWDSMenu } from '../uswds/header/menu';
-import { createDynamicNavMenuList } from './dynamic-nav-menu';
+import { createDynamicNavMenuList } from './create-dynamic-nav-menu-list';
 
 interface NavDropDownButtonProps {
   item: { title: string; children: any[] };
@@ -34,12 +34,10 @@ export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
     });
   };
 
-  const submenuItems = createDynamicNavMenuList({
-    navItems: item.children,
-    linkProperties,
-    isOpen,
-    setIsOpen
-  });
+  const submenuItems = createDynamicNavMenuList(
+    item.children,
+    linkProperties
+  );
 
   return (
     <React.Fragment key={item.title}>
