@@ -1,6 +1,6 @@
 import React from 'react';
-import { LinkProperties } from '../card';
-import { ExternalNavLink, InternalNavLink } from './types';
+import { LinkProperties } from '../../card';
+import { ExternalNavLink, InternalNavLink } from '../types';
 
 interface NavItemExternalLinkProps {
   item: ExternalNavLink;

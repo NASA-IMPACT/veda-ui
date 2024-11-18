@@ -1,7 +1,7 @@
 import React from 'react';
-import { LinkProperties } from '../card';
-import { USWDSNavDropDownButton } from '../uswds/header/nav-drop-down-button';
-import { USWDSMenu } from '../uswds/header/menu';
+import { LinkProperties } from '../../card';
+import { USWDSNavDropDownButton } from '../../uswds/header/nav-drop-down-button';
+import { USWDSMenu } from '../../uswds/header/menu';
 import { createDynamicNavMenuList } from './create-dynamic-nav-menu-list';
 
 interface NavDropDownButtonProps {

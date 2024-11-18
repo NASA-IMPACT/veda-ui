@@ -2,20 +2,22 @@
 
 #logo-container {
   display: flex;
-  flex-shrink: 0;
   font-family: veda-theme.$veda-uswds-basefont-sans;
   gap: veda-theme.$veda-uswds-spacing-105;
+
+  #logo-container-link {
+    display: flex;
+    align-items: center;
+  }
+  
   span {
     color: veda-theme.$veda-uswds-color-base-darkest;
   }
 
   a {
-    display: grid;
-    align-items: center;
-
     #nasa-logo-pos {
       opacity: 1;
-      transform: translate(0, -100%); //@TODO: fix svg translate
+      transform: translate(0, -100%);
     }
     svg {
       height: 2.5rem;
@@ -25,12 +27,11 @@
 
   #logo-container-beta-tag {
     color: white;
-    align-self: end;
+    align-self: center;
     font-size: 0.75rem;
     font-weight: bold;
     line-height: 1rem;
     padding: 0 veda-theme.$veda-uswds-spacing-5;
-    justify-content: center;
     border-radius: 2px;
     background-color: veda-theme.$veda-uswds-color-secondary;
   }
@@ -43,7 +44,6 @@
   }
 
   span:last-of-type {
-    // grid-row: 2;
     font-size: 1.25rem;
     line-height: 1.5rem;
     font-weight: regular;

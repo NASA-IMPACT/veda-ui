@@ -27,7 +27,7 @@ export default function LogoContainer({
 
   return (
     <div id='logo-container'>
-      <LinkElement {...{ [linkProperties.pathAttributeKeyName]: '/' }}>
+      <LinkElement id='logo-container-link' {...{ [linkProperties.pathAttributeKeyName]: '/' }}>
         {Logo}
         <span>{title}</span>
       </LinkElement>

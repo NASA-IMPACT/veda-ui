@@ -1,6 +1,6 @@
 import React from 'react';
-import { LinkProperties } from '../card';
-import { NavItem, NavItemType } from './types';
+import { LinkProperties } from '../../card';
+import { NavItem, NavItemType } from '../types';
 import { NavDropDownButton } from './nav-dropdown-button';
 import { NavItemExternalLink, NavItemInternalLink } from './nav-item-links';
 import { NavItemCTA } from './nav-item-cta';
