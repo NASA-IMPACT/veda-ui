@@ -52,7 +52,7 @@ import {
   formatSingleDate,
   reconcileVizDataset
 } from '$components/common/map/utils';
-import { VedauiConfigContext } from '$context/config-context';
+import { EnvConfigContext } from '$context/env-config';
 
 type ResolvedScrollyMapLayer = {
   vizDataset: VizDatasetSuccess;
@@ -260,7 +260,7 @@ const MAP_OPTIONS = {
 function Scrollytelling(props) {
   const { children } = props;
 
-  const { envApiStacEndpoint } = useContext(VedauiConfigContext);
+  const { envApiStacEndpoint } = useContext(EnvConfigContext);
 
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();

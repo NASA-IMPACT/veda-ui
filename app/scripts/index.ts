@@ -28,7 +28,7 @@ import ExplorationAndAnalysis from '$components/exploration';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
-import { VedauiConfigProvider } from '$context/config-context';
+import { EnvConfigProvider } from '$context/env-config';
 
 // Adding .last property to array
 /* eslint-disable-next-line fp/no-mutating-methods */
@@ -61,7 +61,7 @@ export {
   PageHero,
   PageHeader,
   ReactQueryProvider,
-  VedauiConfigProvider,
+  EnvConfigProvider,
   StoriesHubContent,
   LogoContainer,
   ExplorationAndAnalysis,

@@ -1,27 +1,27 @@
 import React, { createContext } from 'react';
 
-interface VedauiConfig {
+interface EnvConfig {
   envMapboxToken: string;
   envApiStacEndpoint: string;
   envApiRasterEndpoint: string;
 }
 
-export const VedauiConfigContext = createContext<VedauiConfig>({
+export const EnvConfigContext = createContext<EnvConfig>({
   envMapboxToken: '',
   envApiStacEndpoint: '',
   envApiRasterEndpoint: ''
 });
 
-export function VedauiConfigProvider({
+export function EnvConfigProvider({
   config,
   children
 }: {
-  config: VedauiConfig;
+  config: EnvConfig;
   children: any;
 }) {
   return (
-    <VedauiConfigContext.Provider value={config}>
+    <EnvConfigContext.Provider value={config}>
       {children}
-    </VedauiConfigContext.Provider>
+    </EnvConfigContext.Provider>
   );
 }

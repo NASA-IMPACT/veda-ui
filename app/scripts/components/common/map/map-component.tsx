@@ -13,7 +13,7 @@ import { convertProjectionToMapbox } from './controls/map-options/projections';
 import { ProjectionOptions } from '$types/veda';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
-import { VedauiConfigContext } from '$context/config-context';
+import { EnvConfigContext } from '$context/env-config';
 
 const maxMapBounds: LngLatBoundsLike = [
   [-540, -90], // SW
@@ -35,7 +35,7 @@ export default function MapComponent({
   onMapLoad?: () => void;
   interactive?: boolean;
 }) {
-  const { envMapboxToken } = useContext(VedauiConfigContext);
+  const { envMapboxToken } = useContext(EnvConfigContext);
 
   const { initialViewState, setInitialViewState, mainId, comparedId } =
     useMapsContext();

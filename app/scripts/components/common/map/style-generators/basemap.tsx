@@ -9,7 +9,7 @@ import {
 } from '../controls/map-options/basemap';
 import { ExtendedLayer } from '../types';
 import useMapStyle from '../hooks/use-map-style';
-import { VedauiConfigContext } from '$context/config-context';
+import { EnvConfigContext } from '$context/env-config';
 
 interface BasemapProps {
   basemapStyleId?: BasemapId;
@@ -33,7 +33,7 @@ export function Basemap({
   labelsOption = true,
   boundariesOption = true
 }: BasemapProps) {
-  const { envMapboxToken } = useContext(VedauiConfigContext);
+  const { envMapboxToken } = useContext(EnvConfigContext);
   const { updateStyle } = useMapStyle();
   const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
 

@@ -26,7 +26,7 @@ import { usePreviousValue } from '$utils/use-effect-previous';
 import { ExtendedStyle } from '$components/common/map/styles';
 import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
-import { VedauiConfigContext } from '$context/config-context';
+import { EnvConfigContext } from '$context/env-config';
 
 interface ExplorationMapProps {
   datasets: TimelineDataset[];
@@ -37,7 +37,7 @@ interface ExplorationMapProps {
 
 export function ExplorationMap(props: ExplorationMapProps) {
   const { envApiStacEndpoint, envMapboxToken } =
-    useContext(VedauiConfigContext);
+    useContext(EnvConfigContext);
 
   const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
 

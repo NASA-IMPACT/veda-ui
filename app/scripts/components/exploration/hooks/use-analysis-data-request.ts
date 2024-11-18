@@ -15,7 +15,7 @@ import {
 } from '../types.d.ts';
 import { MAX_QUERY_NUM } from '../constants';
 import useAois from '$components/common/map/controls/hooks/use-aois';
-import { VedauiConfigContext } from '$context/config-context';
+import { EnvConfigContext } from '$context/env-config';
 
 export function useAnalysisController() {
   const [controller, setController] = useAtom(analysisControllerAtom);
@@ -73,7 +73,7 @@ export function useAnalysisDataRequest({
   const queryClient = useQueryClient();
 
   const { envApiRasterEndpoint, envApiStacEndpoint } =
-    useContext(VedauiConfigContext);
+    useContext(EnvConfigContext);
 
   const selectedInterval = useAtomValue(selectedIntervalAtom);
   const { features } = useAois();

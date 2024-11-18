@@ -11,7 +11,7 @@ import { VectorTimeseries } from '$components/common/map/style-generators/vector
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
 import { ActionStatus } from '$utils/status';
-import { VedauiConfigContext } from '$context/config-context';
+import { EnvConfigContext } from '$context/env-config';
 
 interface LayerProps {
   id: string;
@@ -23,7 +23,7 @@ interface LayerProps {
 
 export function Layer(props: LayerProps) {
   const { envApiStacEndpoint, envApiRasterEndpoint } =
-    useContext(VedauiConfigContext);
+    useContext(EnvConfigContext);
 
   const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
   const { isVisible, opacity, colorMap } = dataset.settings;
