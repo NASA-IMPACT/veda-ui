@@ -35,10 +35,10 @@ export const createDynamicNavMenuList = (
         );
 
       case NavItemType.EXTERNAL_LINK:
-        return <NavItemExternalLink {...{ item }} />;
+        return <NavItemExternalLink item={item} />;
 
       case NavItemType.ACTION:
-        return <NavItemCTA {...{ item }} />;
+        return <NavItemCTA item={item} />;
 
       default:
         return <></>;

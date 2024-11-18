@@ -1,0 +1,52 @@
+@use '$styles/veda-ui-theme-vars' as veda-theme; 
+
+#logo-container {
+  display: flex;
+  flex-shrink: 0;
+  font-family: veda-theme.$veda-uswds-basefont-sans;
+  gap: veda-theme.$veda-uswds-spacing-105;
+  span {
+    color: veda-theme.$veda-uswds-color-base-darkest;
+  }
+
+  a {
+    display: grid;
+    align-items: center;
+
+    #nasa-logo-pos {
+      opacity: 1;
+      transform: translate(0, -100%); //@TODO: fix svg translate
+    }
+    svg {
+      height: 2.5rem;
+      width: auto;
+    }
+  }
+
+  #logo-container-beta-tag {
+    color: white;
+    align-self: end;
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 1rem;
+    padding: 0 veda-theme.$veda-uswds-spacing-5;
+    justify-content: center;
+    border-radius: 2px;
+    background-color: veda-theme.$veda-uswds-color-secondary;
+  }
+
+
+  span:first-of-type {
+    font-size: 0.875rem;
+    line-height: 1rem;
+    font-weight: extrabold;
+  }
+
+  span:last-of-type {
+    // grid-row: 2;
+    font-size: 1.25rem;
+    line-height: 1.5rem;
+    font-weight: regular;
+    letter-spacing: -0.025em;
+  }
+}

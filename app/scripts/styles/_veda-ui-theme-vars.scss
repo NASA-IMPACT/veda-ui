@@ -1,0 +1,19 @@
+@use "uswds-core/src/styles/functions/utilities" as utils;
+@use "uswds-core/src/styles/functions/units" as spacing;
+// @use "uswds-core/src/styles/functions/font" as font;
+@use "uswds-core/src/styles/mixins/utilities" as mixins;
+@use "uswds-core/src/styles/mixins/typography" as typography;
+
+/*********** VEDAUI THEME PALETTE ***********/
+// These map to the uswds design tokens found at https://designsystem.digital.gov/design-tokens/
+
+// TYPOGRAPHY
+$veda-uswds-basefont-sans: utils.family('sans');
+
+// COLORS
+$veda-uswds-color-secondary: utils.color('secondary');
+$veda-uswds-color-base-darkest: utils.color('base-darkest');
+
+// SPACING
+$veda-uswds-spacing-5: spacing.units(0.5);
+$veda-uswds-spacing-105: spacing.units(1.5);
