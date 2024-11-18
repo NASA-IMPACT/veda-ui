@@ -9,34 +9,34 @@
 
 export const BASE_STYLE_PATH = 'https://api.mapbox.com/styles/v1/covid-nasa';
 
-export const getStyleUrl = (mapboxId: string, mapboxToken: string) =>
-  `${BASE_STYLE_PATH}/${mapboxId}?access_token=${mapboxToken}`;
+export const getStyleUrl = (mapboxId: string, envMapboxToken: string) =>
+  `${BASE_STYLE_PATH}/${mapboxId}?access_token=${envMapboxToken}`;
 
-export const getBasemapStyles = (mapboxToken: string | undefined) =>
+export const getBasemapStyles = (envMapboxToken: string | undefined) =>
   [
     {
       id: 'satellite',
       label: 'Satellite',
       mapboxId: 'cldu1cb8f00ds01p6gi583w1m',
-      thumbnailUrl: `https://api.mapbox.com/styles/v1/covid-nasa/cldu1cb8f00ds01p6gi583w1m/static/-9.14,38.7,10.5,0/480x320?access_token=${mapboxToken}`
+      thumbnailUrl: `https://api.mapbox.com/styles/v1/covid-nasa/cldu1cb8f00ds01p6gi583w1m/static/-9.14,38.7,10.5,0/480x320?access_token=${envMapboxToken}`
     },
     {
       id: 'dark',
       label: 'Default dark',
       mapboxId: 'cldu14gii006801mgq3dn1jpd',
-      thumbnailUrl: `https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${mapboxToken}`
+      thumbnailUrl: `https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${envMapboxToken}`
     },
     {
       id: 'light',
       label: 'Default light',
       mapboxId: 'cldu0tceb000701qnrl7p9woh',
-      thumbnailUrl: `https://api.mapbox.com/styles/v1/mapbox/light-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${mapboxToken}`
+      thumbnailUrl: `https://api.mapbox.com/styles/v1/mapbox/light-v10/static/-9.14,38.7,10.5,0/480x320?access_token=${envMapboxToken}`
     },
     {
       id: 'topo',
       label: 'Topo',
       mapboxId: 'cldu1yayu00au01qqrbdahb3m',
-      thumbnailUrl: `https://api.mapbox.com/styles/v1/covid-nasa/cldu1yayu00au01qqrbdahb3m/static/-9.14,38.7,10.5,0/480x320?access_token=${mapboxToken}`
+      thumbnailUrl: `https://api.mapbox.com/styles/v1/covid-nasa/cldu1yayu00au01qqrbdahb3m/static/-9.14,38.7,10.5,0/480x320?access_token=${envMapboxToken}`
     }
   ] as const;
 

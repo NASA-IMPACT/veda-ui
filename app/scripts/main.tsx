@@ -59,7 +59,7 @@ const composingComponents = [
   ({ children }) => (
     <VedauiConfigProvider
       config={{
-        mapboxToken: process.env.MAPBOX_TOKEN ?? '',
+        envMapboxToken: process.env.MAPBOX_TOKEN ?? '',
         envApiStacEndpoint: process.env.API_STAC_ENDPOINT ?? '',
         envApiRasterEndpoint: process.env.API_RASTER_ENDPOINT ?? ''
       }}

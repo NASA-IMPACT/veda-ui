@@ -5,9 +5,9 @@ import { useControl } from 'react-map-gl';
 import { getZoomFromBbox } from '$components/common/map/utils';
 
 export default function GeocoderControl({
-  mapboxToken
+  envMapboxToken
 }: {
-  mapboxToken: string;
+  envMapboxToken: string;
 }) {
   const handleGeocoderResult = useCallback(
     (map, geocoder) =>
@@ -27,7 +27,7 @@ export default function GeocoderControl({
   useControl(
     ({ map }) => {
       const geocoder = new MapboxGeocoder({
-        accessToken: mapboxToken,
+        accessToken: envMapboxToken,
         marker: false,
         collapsed: true,
         // Because of Mapbox issue: https://github.com/mapbox/mapbox-gl-js/issues/12565

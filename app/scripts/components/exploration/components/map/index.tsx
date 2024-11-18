@@ -36,7 +36,8 @@ interface ExplorationMapProps {
 }
 
 export function ExplorationMap(props: ExplorationMapProps) {
-  const { envApiStacEndpoint, mapboxToken } = useContext(VedauiConfigContext);
+  const { envApiStacEndpoint, envMapboxToken } =
+    useContext(VedauiConfigContext);
 
   const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
 
@@ -149,9 +150,9 @@ export function ExplorationMap(props: ExplorationMapProps) {
           }
         />
         <AnalysisMessageControl />
-        <GeocoderControl mapboxToken={mapboxToken} />
+        <GeocoderControl mapboxToken={envMapboxToken} />
         <MapOptionsControl
-          mapboxToken={mapboxToken}
+          mapboxToken={envMapboxToken}
           projection={projection}
           onProjectionChange={setProjection}
           basemapStyleId={mapBasemapId}

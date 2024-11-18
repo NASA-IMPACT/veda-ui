@@ -1,13 +1,13 @@
 import React, { createContext } from 'react';
 
 interface VedauiConfig {
-  mapboxToken: string;
+  envMapboxToken: string;
   envApiStacEndpoint: string;
   envApiRasterEndpoint: string;
 }
 
 export const VedauiConfigContext = createContext<VedauiConfig>({
-  mapboxToken: '',
+  envMapboxToken: '',
   envApiStacEndpoint: '',
   envApiRasterEndpoint: ''
 });

@@ -111,10 +111,10 @@ function MapOptions(props: MapOptionsProps) {
     labelsOption,
     boundariesOption,
     onOptionChange,
-    mapboxToken
+    envMapboxToken
   } = props;
 
-  const basemapStyles = getBasemapStyles(mapboxToken);
+  const basemapStyles = getBasemapStyles(envMapboxToken);
 
   return (
     <MapOptionsDropdown

@@ -260,7 +260,7 @@ const MAP_OPTIONS = {
 function Scrollytelling(props) {
   const { children } = props;
 
-  const config = useContext(VedauiConfigContext);
+  const { envApiStacEndpoint } = useContext(VedauiConfigContext);
 
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();
@@ -273,7 +273,7 @@ function Scrollytelling(props) {
 
   const [resolvedLayers, resolvedStatus] = useMapLayersFromChapters(
     chapterProps,
-    config.envApiStacEndpoint
+    envApiStacEndpoint
   );
 
   const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(

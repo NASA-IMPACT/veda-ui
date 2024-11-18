@@ -33,13 +33,13 @@ export function Basemap({
   labelsOption = true,
   boundariesOption = true
 }: BasemapProps) {
-  const config = useContext(VedauiConfigContext);
+  const { envMapboxToken } = useContext(VedauiConfigContext);
   const { updateStyle } = useMapStyle();
   const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
 
   const basemapStyles = useMemo(
-    () => getBasemapStyles(config.mapboxToken),
-    [config.mapboxToken]
+    () => getBasemapStyles(envMapboxToken),
+    [envMapboxToken]
   );
 
   const { data: styleJson } = useQuery(
@@ -50,7 +50,7 @@ export function Basemap({
         : basemapStyles[0].mapboxId;
 
       try {
-        const url = getStyleUrl(mapboxId, config.mapboxToken);
+        const url = getStyleUrl(mapboxId, envMapboxToken);
         const styleRaw = await fetch(url, { signal });
         const styleJson = await styleRaw.json();
         return styleJson;

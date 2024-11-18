@@ -35,7 +35,7 @@ export default function MapComponent({
   onMapLoad?: () => void;
   interactive?: boolean;
 }) {
-  const config = useContext(VedauiConfigContext);
+  const { envMapboxToken } = useContext(VedauiConfigContext);
 
   const { initialViewState, setInitialViewState, mainId, comparedId } =
     useMapsContext();
@@ -78,7 +78,7 @@ export default function MapComponent({
     <ReactMapGlMap
       id={id}
       ref={mapRef}
-      mapboxAccessToken={config.mapboxToken}
+      mapboxAccessToken={envMapboxToken}
       dragRotate={false}
       touchPitch={false}
       pitchWithRotate={false}

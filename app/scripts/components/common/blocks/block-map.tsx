@@ -185,9 +185,9 @@ function MapBlock(props: MapBlockProps) {
 
   const [layers, setLayers] = useState<VizDataset[]>(layersToFetch);
 
-  const config = useContext(VedauiConfigContext);
+  const { envApiStacEndpoint } = useContext(VedauiConfigContext);
 
-  useReconcileWithStacMetadata(layers, setLayers, config.envApiStacEndpoint);
+  useReconcileWithStacMetadata(layers, setLayers, envApiStacEndpoint);
 
   const selectedDatetime: Date | undefined = dateTime
     ? utcString2userTzDate(dateTime)

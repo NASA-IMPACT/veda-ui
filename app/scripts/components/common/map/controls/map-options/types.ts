@@ -9,7 +9,7 @@ export interface MapOptionsProps {
   labelsOption?: boolean;
   boundariesOption?: boolean;
   onOptionChange?: (option: Option, value: boolean) => void;
-  mapboxToken: string;
+  envMapboxToken: string;
 }
 
 export interface ProjectionConicOptions {

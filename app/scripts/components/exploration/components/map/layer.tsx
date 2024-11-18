@@ -22,7 +22,8 @@ interface LayerProps {
 }
 
 export function Layer(props: LayerProps) {
-  const config = useContext(VedauiConfigContext);
+  const { envApiStacEndpoint, envApiRasterEndpoint } =
+    useContext(VedauiConfigContext);
 
   const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
   const { isVisible, opacity, colorMap } = dataset.settings;
@@ -58,7 +59,7 @@ export function Layer(props: LayerProps) {
           hidden={!isVisible}
           opacity={opacity}
           onStatusChange={onStatusChange}
-          envApiStacEndpoint={config.envApiStacEndpoint}
+          envApiStacEndpoint={envApiStacEndpoint}
         />
       );
     case 'zarr':
@@ -76,8 +77,8 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
-          envApiStacEndpoint={config.envApiStacEndpoint}
-          envApiRasterEndpoint={config.envApiRasterEndpoint}
+          envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       );
     case 'cmr':
@@ -94,8 +95,8 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
-          envApiStacEndpoint={config.envApiStacEndpoint}
-          envApiRasterEndpoint={config.envApiRasterEndpoint}
+          envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       );
     case 'raster':
@@ -113,8 +114,8 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
-          envApiStacEndpoint={config.envApiStacEndpoint}
-          envApiRasterEndpoint={config.envApiRasterEndpoint}
+          envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       );
     default:
