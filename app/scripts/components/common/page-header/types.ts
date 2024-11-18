@@ -36,7 +36,4 @@ export interface DropdownNavLink {
   children: NavLinkItem[];
 }
 
-export type NavItem =
-  | NavLinkItems
-  | DropdownNavLink
-  | ActionNavItem;
+export type NavItem = NavLinkItem | DropdownNavLink | ActionNavItem;
