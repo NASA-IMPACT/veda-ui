@@ -45,7 +45,7 @@ const mockLinkProperties: LinkProperties = {
 };
 
 describe('PageHeader', () => {
-  test('renders the PageHeader component', () => {
+  beforeAll(() => {
     render(
       <PageHeader
         mainNavItems={mockMainNavItems}
@@ -54,9 +54,15 @@ describe('PageHeader', () => {
         linkProperties={mockLinkProperties}
       />
     );
+  });
 
+  test('renders the PageHeader component title', () => {
     expect(screen.getByTestId('header')).toHaveTextContent(
       'Earthdata VEDA Dashboard'
     );
+  });
+
+  test('renders the PageHeader nav items', () => {
+    expect(screen.getByTestId('extended-nav')).toHaveTextContent('Exploration');
   });
 });

@@ -75,6 +75,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           secondaryItems={secondaryItems}
           mobileExpanded={expanded}
           onToggleMobileNav={toggleExpansion}
+          data-testid='extended-nav'
         />
       </USWDSHeader>
     </>
