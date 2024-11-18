@@ -1,9 +1,9 @@
-@use '$styles/veda-ui-theme-vars' as veda-theme; 
+@use '$styles/veda-ui-theme-vars' as themeVars; 
 
 #logo-container {
   display: flex;
-  font-family: veda-theme.$veda-uswds-basefont-sans;
-  gap: veda-theme.$veda-uswds-spacing-105;
+  font-family: themeVars.$veda-uswds-basefont-sans;
+  gap: themeVars.$veda-uswds-spacing-105;
 
   #logo-container-link {
     display: flex;
@@ -11,7 +11,7 @@
   }
   
   span {
-    color: veda-theme.$veda-uswds-color-base-darkest;
+    color: themeVars.$veda-uswds-color-base-darkest !important;
   }
 
   a {
@@ -31,9 +31,9 @@
     font-size: 0.75rem;
     font-weight: bold;
     line-height: 1rem;
-    padding: 0 veda-theme.$veda-uswds-spacing-5;
+    padding: 0 themeVars.$veda-uswds-spacing-5;
     border-radius: 2px;
-    background-color: veda-theme.$veda-uswds-color-secondary;
+    background-color: themeVars.$veda-uswds-color-secondary;
   }
 
 
@@ -48,5 +48,11 @@
     line-height: 1.5rem;
     font-weight: regular;
     letter-spacing: -0.025em;
+  }
+}
+
+.mode-dark {
+  span {
+    color: themeVars.$veda-uswds-color-base-white !important;
   }
 }

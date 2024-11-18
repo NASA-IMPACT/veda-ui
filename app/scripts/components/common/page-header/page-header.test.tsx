@@ -8,6 +8,10 @@ import NasaLogoColor from '../nasa-logo-color';
 import { NavItem, NavItemType } from './types';
 import PageHeader from './index';
 
+// @NOTE: Possible Test cases
+// light vs dark mode
+// config & create dynamic nav menu list fn - different scenerios, happy vs unhappy path
+
 const mockMainNavItems: NavItem[] = [
   {
     title: 'Data Catalog',

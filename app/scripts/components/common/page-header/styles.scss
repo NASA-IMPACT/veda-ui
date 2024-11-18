@@ -1,3 +1,18 @@
+@use '$styles/veda-ui-theme-vars' as themeVars; 
+
+#mode-light {
+  .usa-nav__link {
+    span {
+      color: themeVars.$veda-uswds-color-base-ink;
+      font-weight: themeVars.$veda-uswds-fontweight-regular;
+    }
+  }
+}
+
+#mode-dark {
+  background-color: themeVars.$veda-uswds-color-primary-darker;
+}
+
 .usa-logo {
   max-width: none !important;
 }

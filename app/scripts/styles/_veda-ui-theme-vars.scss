@@ -1,18 +1,27 @@
 @use "uswds-core/src/styles/functions/utilities" as utils;
 @use "uswds-core/src/styles/functions/units" as spacing;
-// @use "uswds-core/src/styles/functions/font" as font;
 @use "uswds-core/src/styles/mixins/utilities" as mixins;
 @use "uswds-core/src/styles/mixins/typography" as typography;
 
 /*********** VEDAUI THEME PALETTE ***********/
-// These map to the uswds design tokens found at https://designsystem.digital.gov/design-tokens/
+// These map to the veda defined styles between https://www.figma.com/design/5mclPTReHcRIzKbJm8YA6a/VEDA---USWDS?node-id=139-14&node-type=canvas&t=7Qa02mMKUgBy5Qho-0 
+// and uswds found at https://designsystem.digital.gov/design-tokens/
 
 // TYPOGRAPHY
 $veda-uswds-basefont-sans: utils.family('sans');
 
+// FONT-WEIGHT
+$veda-uswds-fontweight-light: utils.font-weight('light');
+$veda-uswds-fontweight-regular: utils.font-weight('normal');  
+$veda-uswds-fontweight-bold: utils.font-weight('bold'); 
+
 // COLORS
+$veda-uswds-color-primary-darker: utils.color('primary-darker');
 $veda-uswds-color-secondary: utils.color('secondary');
 $veda-uswds-color-base-darkest: utils.color('base-darkest');
+$veda-uswds-color-base-white: #FFFFFF;
+$veda-uswds-color-base-light: utils.color('base-light');
+$veda-uswds-color-base-ink: utils.color('ink');
 
 // SPACING
 $veda-uswds-spacing-5: spacing.units(0.5);
