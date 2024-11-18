@@ -150,9 +150,9 @@ export function ExplorationMap(props: ExplorationMapProps) {
           }
         />
         <AnalysisMessageControl />
-        <GeocoderControl mapboxToken={envMapboxToken} />
+        <GeocoderControl envMapboxToken={envMapboxToken} />
         <MapOptionsControl
-          mapboxToken={envMapboxToken}
+          envMapboxToken={envMapboxToken}
           projection={projection}
           onProjectionChange={setProjection}
           basemapStyleId={mapBasemapId}
