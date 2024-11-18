@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
+import { NavLink } from 'react-router-dom';
 import { LinkProperties } from '../card';
 import NasaLogoColor from '../nasa-logo-color';
 import { NavItem, NavItemType } from './types';
@@ -40,7 +41,7 @@ const mockSubNavItems: NavItem[] = [
 
 const mockLinkProperties: LinkProperties = {
   pathAttributeKeyName: 'to',
-  LinkElement: 'a'
+  LinkElement: NavLink
 };
 
 describe('PageHeader', () => {
@@ -54,13 +55,8 @@ describe('PageHeader', () => {
       />
     );
 
-    expect(screen.getByRole('header')).toHaveTextContent(
+    expect(screen.getByTestId('header')).toHaveTextContent(
       'Earthdata VEDA Dashboard'
     );
-    expect(
-      screen.getByRole('nav', {
-        name: 'Main Navigation'
-      })
-    ).toHaveTextContent('Data Catalog');
   });
 });

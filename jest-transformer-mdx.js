@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const mdx = require('@mdx-js/react');
+// const mdx = require('@mdx-js/react');
 
 /**
  * Currently, Jest tests for components importing MDX content will fail.

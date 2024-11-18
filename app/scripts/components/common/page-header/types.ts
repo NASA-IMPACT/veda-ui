@@ -27,6 +27,7 @@ export type NavLinkItem = ExternalNavLink | InternalNavLink;
 export interface ActionNavItem {
   title: string;
   actionId: ActionId;
+  src?: string;
   type: NavItemType.ACTION;
 }
 

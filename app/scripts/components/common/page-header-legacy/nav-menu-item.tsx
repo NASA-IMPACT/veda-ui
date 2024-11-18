@@ -1,24 +1,26 @@
 import React, { ComponentType } from 'react';
 import styled from 'styled-components';
-import {
-  glsp,
-  media,
-  rgba,
-  themeVal
-} from '@devseed-ui/theme-provider';
+import { glsp, media, rgba, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { CollecticonChevronDownSmall } from '@devseed-ui/collecticons';
 import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from '../dropdown-scrollable';
 import GoogleForm from '../google-form';
-import { AlignmentEnum, InternalNavLink, ExternalNavLink, NavLinkItem, DropdownNavLink, NavItem, NavItemType } from '../page-header/types';
+import {
+  AlignmentEnum,
+  InternalNavLink,
+  ExternalNavLink,
+  NavLinkItem,
+  DropdownNavLink,
+  NavItem,
+  NavItemType
+} from '../page-header/types';
 import { USWDSButton } from '../uswds/button';
 import { useFeedbackModal } from '../layout-root';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { LinkProperties } from '$types/veda';
-
 
 const rgbaFixed = rgba as any;
 
@@ -64,27 +66,46 @@ const DropMenuNavItem = styled(DropMenuItem)`
 
 const LOG = true;
 
-function LinkDropMenuNavItem({ child, onClick, linkProperties }: { child: NavLinkItem, onClick?:() => void, linkProperties: LinkProperties }) {
+function LinkDropMenuNavItem({
+  child,
+  onClick,
+  linkProperties
+}: {
+  child: NavLinkItem;
+  onClick?: () => void;
+  linkProperties: LinkProperties;
+}) {
   const { title, type, ...rest } = child;
   const linkProps = {
     as: linkProperties.LinkElement as ComponentType<any>,
-    [linkProperties.pathAttributeKeyName]: (rest as InternalNavLink).to,
+    [linkProperties.pathAttributeKeyName]: (rest as InternalNavLink).to
   };
 
   if (type === NavItemType.INTERNAL_LINK) {
     return (
-    <li>
-      <DropMenuNavItem {...linkProps} onClick={onClick} data-dropdown='click.close'>
-        {title}
-      </DropMenuNavItem>
-    </li>
+      <li>
+        <DropMenuNavItem
+          {...linkProps}
+          onClick={onClick}
+          data-dropdown='click.close'
+        >
+          {title}
+        </DropMenuNavItem>
+      </li>
     );
     // In case a user inputs a wrong type
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   } else if (type === NavItemType.EXTERNAL_LINK) {
     return (
       <li key={`${title}-dropdown-menu`}>
-        <DropMenuNavItem as='a' target='blank' rel='noopener' href={(rest as ExternalNavLink).href} onClick={onClick} data-dropdown='click.close'>
+        <DropMenuNavItem
+          as='a'
+          target='blank'
+          rel='noopener'
+          href={(rest as ExternalNavLink).href}
+          onClick={onClick}
+          data-dropdown='click.close'
+        >
           {title}
         </DropMenuNavItem>
       </li>
@@ -92,13 +113,25 @@ function LinkDropMenuNavItem({ child, onClick, linkProperties }: { child: NavLin
   } else {
     LOG &&
       /* eslint-disable-next-line no-console */
-      console.error(`Invalid child Nav Item type, type "${type}" is not of `, NavItemType);
+      console.error(
+        `Invalid child Nav Item type, type "${type}" is not of `,
+        NavItemType
+      );
     return null;
   }
 }
 
-
-export default function NavMenuItem({ item, alignment, onClick, linkProperties }: {item: NavItem, alignment?: AlignmentEnum, onClick?: () => void, linkProperties: LinkProperties }) {
+export default function NavMenuItem({
+  item,
+  alignment,
+  onClick,
+  linkProperties
+}: {
+  item: NavItem;
+  alignment?: AlignmentEnum;
+  onClick?: () => void;
+  linkProperties: LinkProperties;
+}) {
   const { isMediumDown } = useMediaQuery();
   const { isRevealed, show, hide } = useFeedbackModal();
   const { title, type, ...rest } = item;
@@ -106,32 +139,30 @@ export default function NavMenuItem({ item, alignment, onClick, linkProperties }
   if (type === NavItemType.INTERNAL_LINK) {
     const linkProps = {
       as: linkProperties.LinkElement as ComponentType<any>,
-      [linkProperties.pathAttributeKeyName]: (rest as InternalNavLink).to,
+      [linkProperties.pathAttributeKeyName]: (rest as InternalNavLink).to
     };
     return (
       <li key={`${title}-nav-item`}>
-      <GlobalMenuLink {...linkProps} onClick={onClick}>
-        {title}
-      </GlobalMenuLink>
+        <GlobalMenuLink {...linkProps} onClick={onClick}>
+          {title}
+        </GlobalMenuLink>
       </li>
-
     );
   } else if (item.type === NavItemType.EXTERNAL_LINK) {
     return (
       <li key={`${title}-nav-item`}>
-      <GlobalMenuLink
-        as='a'
-        target='_blank'
-        rel='noopener'
-        onClick={onClick}
-        href={(rest as ExternalNavLink).href}
-      >
-        {title}
-      </GlobalMenuLink>
+        <GlobalMenuLink
+          as='a'
+          target='_blank'
+          rel='noopener'
+          onClick={onClick}
+          href={(rest as ExternalNavLink).href}
+        >
+          {title}
+        </GlobalMenuLink>
       </li>
-
     );
-  } else if (type == NavItemType.BUTTON || type == NavItemType.ACTION) {
+  } else if (item.type === NavItemType.ACTION) {
     return (
       <li>
         <USWDSButton
@@ -143,47 +174,75 @@ export default function NavMenuItem({ item, alignment, onClick, linkProperties }
         >
           {item.title}
         </USWDSButton>
-        {
-          process.env.GOOGLE_FORM && <GoogleForm src={process.env.GOOGLE_FORM} isRevealed={isRevealed} hide={hide} />
-        }
+        {process.env.GOOGLE_FORM && (
+          <GoogleForm
+            src={process.env.GOOGLE_FORM}
+            isRevealed={isRevealed}
+            hide={hide}
+          />
+        )}
       </li>
     );
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   } else if (type === NavItemType.DROPDOWN) {
     const { title } = item as DropdownNavLink;
     // Mobile view
     if (isMediumDown) {
       return (
         <>
-        <li><GlobalMenuItem>{title} </GlobalMenuItem></li>
+          <li>
+            <GlobalMenuItem>{title} </GlobalMenuItem>
+          </li>
           {item.children.map((child) => {
-            return <LinkDropMenuNavItem key={`${title}-dropdown-menu`} child={child} onClick={onClick} linkProperties={linkProperties} />;
+            return (
+              <LinkDropMenuNavItem
+                key={`${title}-dropdown-menu`}
+                child={child}
+                onClick={onClick}
+                linkProperties={linkProperties}
+              />
+            );
           })}
         </>
       );
     } else {
-     return (<li>
-      <DropdownScrollable
-        alignment={alignment?? 'left'}
-        triggerElement={(props) => (
-          // @ts-expect-error achromic text exists
-          <GlobalMenuButton {...props} variation='achromic-text' fitting='skinny'>
-            {title} <CollecticonChevronDownSmall size='small' />
-          </GlobalMenuButton>
-        )}
-      >
-        <DropMenu>
-          {(item as DropdownNavLink).children.map((child) => {
-            return <LinkDropMenuNavItem key={`${title}-dropdown-menu`} child={child} linkProperties={linkProperties} />;
-          })}
-        </DropMenu>
-      </DropdownScrollable>
-             </li>);
+      return (
+        <li>
+          <DropdownScrollable
+            alignment={alignment ?? 'left'}
+            triggerElement={(props) => (
+              <GlobalMenuButton
+                {...props}
+                // @ts-expect-error achromic text exists
+                variation='achromic-text'
+                fitting='skinny'
+              >
+                {title} <CollecticonChevronDownSmall size='small' />
+              </GlobalMenuButton>
+            )}
+          >
+            <DropMenu>
+              {(item as DropdownNavLink).children.map((child) => {
+                return (
+                  <LinkDropMenuNavItem
+                    key={`${title}-dropdown-menu`}
+                    child={child}
+                    linkProperties={linkProperties}
+                  />
+                );
+              })}
+            </DropMenu>
+          </DropdownScrollable>
+        </li>
+      );
     }
   } else {
     LOG &&
       /* eslint-disable-next-line no-console */
-      console.error(`Invalid type for Nav Items, type "${type}" is not of `, NavItemType);
+      console.error(
+        `Invalid type for Nav Items, type "${type}" is not of `,
+        NavItemType
+      );
     return null;
   }
 }

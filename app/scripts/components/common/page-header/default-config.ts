@@ -77,7 +77,7 @@ if (process.env.GOOGLE_FORM !== undefined) {
         title: 'Contact us',
         actionId: 'open-google-form',
         src: process.env.GOOGLE_FORM,
-        type: NavItemType.BUTTON
+        type: NavItemType.ACTION
       }
     ];
   }
