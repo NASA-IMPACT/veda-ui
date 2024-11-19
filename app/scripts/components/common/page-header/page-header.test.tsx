@@ -70,8 +70,8 @@ describe('PageHeader', () => {
     const navElement = screen.getByRole('navigation');
     expect(navElement).toBeInTheDocument();
 
-    const primaryNav = screen.getAllByRole('list')[0];
-    const secondaryNav = screen.getAllByRole('list')[1];
+    const primaryNav = within(navElement).getAllByRole('list')[0];
+    const secondaryNav = within(navElement).getAllByRole('list')[1];
 
     expect(primaryNav.childElementCount).toEqual(mockMainNavItems.length);
     expect(secondaryNav.childElementCount).toEqual(mockSubNavItems.length);
