@@ -2,6 +2,7 @@
 @use 'uswds-core' as * with (
     $utilities-use-important: true,
     $theme-show-notifications: false,
+    $theme-font-weight-semibold: '600',
     // To add more custom fonts, see 'Adding fonts to USWDS':
     // https://designsystem.digital.gov/design-tokens/typesetting/font-family/
     $theme-typeface-tokens: (

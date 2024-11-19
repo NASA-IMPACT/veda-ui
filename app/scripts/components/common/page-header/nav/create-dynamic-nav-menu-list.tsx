@@ -1,5 +1,5 @@
 import React from 'react';
-import { LinkProperties } from '../../card';
+import { LinkProperties } from '$types/veda';
 import { NavItem, NavItemType } from '../types';
 import { NavDropDownButton } from './nav-dropdown-button';
 import { NavItemExternalLink, NavItemInternalLink } from './nav-item-links';

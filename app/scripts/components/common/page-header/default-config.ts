@@ -21,16 +21,19 @@ let defaultMainNavItems: (
   | ActionNavItem
 )[] = [
   {
+    id: 'data-catalog',
     title: 'Data Catalog',
     to: DATASETS_PATH,
     type: NavItemType.INTERNAL_LINK
   },
   {
+    id: 'exploration',
     title: 'Exploration',
     to: EXPLORATION_PATH,
     type: NavItemType.INTERNAL_LINK
   },
   {
+    id: 'stories',
     title: getString('stories').other,
     to: STORIES_PATH,
     type: NavItemType.INTERNAL_LINK
@@ -54,6 +57,7 @@ let defaultSubNavItems: (
   | ActionNavItem
 )[] = [
   {
+    id: 'about',
     title: 'About',
     to: ABOUT_PATH,
     type: NavItemType.INTERNAL_LINK
@@ -65,6 +69,7 @@ if (process.env.GOOGLE_FORM !== undefined) {
     defaultSubNavItems = [
       ...defaultSubNavItems,
       {
+        id: 'contact-us',
         title: 'Contact us',
         actionId: 'open-google-form',
         type: NavItemType.ACTION
@@ -74,6 +79,7 @@ if (process.env.GOOGLE_FORM !== undefined) {
     defaultSubNavItems = [
       ...defaultSubNavItems,
       {
+        id: 'contact-us',
         title: 'Contact us',
         actionId: 'open-google-form',
         src: process.env.GOOGLE_FORM,

@@ -3,7 +3,7 @@ import { getByText, render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import { NavLink } from 'react-router-dom';
-import { LinkProperties } from '../card';
+import { LinkProperties } from '$types/veda';
 import NasaLogoColor from '../nasa-logo-color';
 import { NavItem, NavItemType } from './types';
 import PageHeader from './index';
@@ -14,16 +14,19 @@ import PageHeader from './index';
 
 const mockMainNavItems: NavItem[] = [
   {
+    id: 'data-catalog',
     title: 'Data Catalog',
     to: '/data-catalog',
     type: NavItemType.INTERNAL_LINK
   },
   {
+    id: 'exploration',
     title: 'Exploration',
     to: '/exploration',
     type: NavItemType.INTERNAL_LINK
   },
   {
+    id: 'stories',
     title: 'Stories',
     to: '/stories',
     type: NavItemType.INTERNAL_LINK
@@ -32,11 +35,13 @@ const mockMainNavItems: NavItem[] = [
 
 const mockSubNavItems: NavItem[] = [
   {
+    id: 'about',
     title: 'About',
     to: '/about',
     type: NavItemType.INTERNAL_LINK
   },
   {
+    id: 'contact',
     title: 'Contact',
     to: '/contact',
     type: NavItemType.INTERNAL_LINK

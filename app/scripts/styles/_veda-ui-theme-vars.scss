@@ -14,12 +14,13 @@ $veda-uswds-basefont-sans: utils.family('sans');
 $veda-uswds-fontweight-light: utils.font-weight('light');
 $veda-uswds-fontweight-regular: utils.font-weight('normal');  
 $veda-uswds-fontweight-bold: utils.font-weight('bold'); 
+$veda-uswds-fontweight-semibold: 600; // @TODO: needs to map to uswds token 
 
 // COLORS
 $veda-uswds-color-primary-darker: utils.color('primary-darker');
 $veda-uswds-color-secondary: utils.color('secondary');
 $veda-uswds-color-base-darkest: utils.color('base-darkest');
-$veda-uswds-color-base-white: #FFFFFF;
+$veda-uswds-color-base-white: #FFFFFF; // @TODO: wasn't able to find this token
 $veda-uswds-color-base-light: utils.color('base-light');
 $veda-uswds-color-base-ink: utils.color('ink');
 

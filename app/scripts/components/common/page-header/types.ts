@@ -10,29 +10,30 @@ export enum NavItemType {
 
 export type ActionId = 'open-google-form' | undefined; // @NOTE: ActionIds are nav items that perform some type of action but without it being a button
 
-export interface InternalNavLink {
+interface BaseNavItems {
+  id: string;
   title: string;
+}
+
+export interface InternalNavLink extends BaseNavItems {
   to: string;
   type: NavItemType.INTERNAL_LINK;
 }
 
-export interface ExternalNavLink {
-  title: string;
+export interface ExternalNavLink extends BaseNavItems {
   href: string;
   type: NavItemType.EXTERNAL_LINK;
 }
 
 export type NavLinkItem = ExternalNavLink | InternalNavLink;
 
-export interface ActionNavItem {
-  title: string;
+export interface ActionNavItem extends BaseNavItems {
   actionId: ActionId;
   src?: string;
   type: NavItemType.ACTION;
 }
 
-export interface DropdownNavLink {
-  title: string;
+export interface DropdownNavLink extends BaseNavItems {
   type: NavItemType.DROPDOWN;
   children: NavLinkItem[];
 }

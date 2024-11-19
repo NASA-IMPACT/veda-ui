@@ -1,5 +1,5 @@
 import React from 'react';
-import { LinkProperties } from '../../card';
+import { LinkProperties } from '$types/veda';
 import { ExternalNavLink, InternalNavLink } from '../types';
 
 interface NavItemExternalLinkProps {

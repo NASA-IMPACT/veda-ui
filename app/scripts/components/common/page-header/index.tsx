@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { LinkProperties } from '@types/veda';
+import { LinkProperties } from '$types/veda';
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
 import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
@@ -51,6 +51,13 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   const secondaryItems = createDynamicNavMenuList(subNavItems, linkProperties);
   // @TODO: we should close the menu when the user clicks on a link (internal or other cta)
   const themeMode = mode ? `mode-${mode}` : 'mode-light';
+
+  const handleExtendedNavClick = (e) => {
+    console.log(`ecurrenttarget: `, e.currentTarget)
+    console.log(`eparentnode: `, e.target.parentNode)
+
+  }
+
   return (
     <>
       <USWDSHeader id={themeMode} extended={true} showMobileOverlay={expanded}>
@@ -75,6 +82,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           secondaryItems={secondaryItems}
           mobileExpanded={expanded}
           onToggleMobileNav={toggleExpansion}
+          onClick={handleExtendedNavClick}
         />
       </USWDSHeader>
     </>

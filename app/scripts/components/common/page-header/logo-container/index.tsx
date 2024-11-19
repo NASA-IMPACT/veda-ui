@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react';
 import { Tip } from '../../tip';
-import { LinkProperties } from '../../card';
+import { LinkProperties } from '$types/veda';
 import './styles.scss';
 
 /**
