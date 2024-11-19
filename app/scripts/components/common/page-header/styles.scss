@@ -9,6 +9,31 @@
   }
 }
 
+.usa-nav__link {
+  &[aria-current="page"] {
+    span {
+      font-weight: themeVars.$veda-uswds-fontweight-bold !important;
+    }
+  }
+}
+
+.usa-nav__primary-item {
+  button {
+    &[aria-expanded="true"] {
+      span {
+        font-weight: themeVars.$veda-uswds-fontweight-bold !important;
+        color: themeVars.$veda-uswds-color-base-white !important;
+      }
+    }
+  }
+
+  .usa-nav__submenu {
+    span {
+      color: themeVars.$veda-uswds-color-base-white !important;
+    }
+  }
+}
+
 #mode-dark {
   background-color: themeVars.$veda-uswds-color-primary-darker;
 }

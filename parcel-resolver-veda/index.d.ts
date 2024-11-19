@@ -280,11 +280,13 @@ declare module 'veda' {
   }
 
   interface InternalNavLink {
+    id: string;
     title: string;
     to: string;
     type: 'internalLink';
   }
   interface ExternalNavLink {
+    id: string;
     title: string;
     href: string;
     type: 'externalLink';
@@ -292,6 +294,7 @@ declare module 'veda' {
   type NavLinkItem = ExternalNavLink | InternalNavLink;
 
   export interface DropdownNavLink {
+    id: string;
     title: string;
     type: 'dropdown';
     children: NavLinkItem[];

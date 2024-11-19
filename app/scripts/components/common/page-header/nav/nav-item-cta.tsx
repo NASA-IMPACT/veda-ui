@@ -12,10 +12,10 @@ export const NavItemCTA: React.FC<NavItemCTAProps> = ({
 }): JSX.Element => {
   const { isRevealed, show, hide } = useFeedbackModal();
   return (
-    <React.Fragment key={item.title}>
+    <React.Fragment key={item.id}>
       {item.actionId === 'open-google-form' && (
         <>
-          <a className='usa-nav__link'>
+          <a className='usa-nav__link' id={item.id}>
             <span onClick={show}>{item.title}</span>
           </a>
           <GoogleForm

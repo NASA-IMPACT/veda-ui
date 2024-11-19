@@ -11,6 +11,7 @@ let mainNavItems = [
     type: 'dropdown',
     children: [
       {
+        id: 'dropdown-menu-item-1',
         title: 'dropdown menu item 1',
         to: '/stories',
         type: 'internalLink'
@@ -23,6 +24,7 @@ let mainNavItems = [
     type: 'dropdown',
     children: [
       {
+        id: 'dropdown-menu-item-2',
         title: 'dropdown menu item 2',
         to: '/stories',
         type: 'internalLink'

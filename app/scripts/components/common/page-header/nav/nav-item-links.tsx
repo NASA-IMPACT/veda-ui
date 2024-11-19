@@ -12,15 +12,16 @@ interface NavItemInternalLinkProps {
 }
 
 export const NavItemExternalLink: React.FC<NavItemExternalLinkProps> = ({
-  item
+  item,
 }): JSX.Element => {
   return (
     <a
-      key={item.title}
+      key={item.id}
       target='_blank'
       rel='noopener noreferrer'
       href={item.href}
       className='usa-nav__link'
+      id={item.id}
     >
       <span>{item.title}</span>
     </a>
@@ -29,7 +30,7 @@ export const NavItemExternalLink: React.FC<NavItemExternalLinkProps> = ({
 
 export const NavItemInternalLink: React.FC<NavItemInternalLinkProps> = ({
   item,
-  linkProperties
+  linkProperties,
 }): JSX.Element | null => {
   if (linkProperties.LinkElement) {
     const path = {
@@ -37,7 +38,7 @@ export const NavItemInternalLink: React.FC<NavItemInternalLinkProps> = ({
     };
     const LinkElement = linkProperties.LinkElement;
     return (
-      <LinkElement key={item.title} {...path} className='usa-nav__link'>
+      <LinkElement key={item.id} {...path} className='usa-nav__link' id={item.id}>
         <span>{item.title}</span>
       </LinkElement>
     );

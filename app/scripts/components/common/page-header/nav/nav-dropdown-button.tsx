@@ -3,9 +3,10 @@ import { LinkProperties } from '$types/veda';
 import { USWDSNavDropDownButton } from '../../uswds/header/nav-drop-down-button';
 import { USWDSMenu } from '../../uswds/header/menu';
 import { createDynamicNavMenuList } from './create-dynamic-nav-menu-list';
+import { DropdownNavLink } from '../types';
 
 interface NavDropDownButtonProps {
-  item: { title: string; children: any[] };
+  item: DropdownNavLink;
   isOpen: boolean[];
   setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>>;
   index: number;
@@ -40,7 +41,7 @@ export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
   );
 
   return (
-    <React.Fragment key={item.title}>
+    <React.Fragment key={item.id}>
       <USWDSNavDropDownButton
         onToggle={() => onToggle(index, setIsOpen)}
         menuId={item.title}
@@ -50,7 +51,7 @@ export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
       <USWDSMenu
         items={submenuItems}
         isOpen={isOpen[index]}
-        id={`${item.title}-dropdown`}
+        id={`${item.id}-dropdown`}
       />
     </React.Fragment>
   );

@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { LinkProperties } from '$types/veda';
@@ -31,32 +31,28 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   //@TODO: toggle expanded on window resize! Or on click anywhere?
   // weird, should be implemented on the library side of things, see https://vscode.dev/github/NASA-IMPACT/veda-ui/blob/1137-implement-new-ds-page-header/node_modules/%40uswds/uswds/packages/usa-header/src/index.js#L155-L156
 
-  const [expanded, setExpanded] = useState(false);
-  const toggleExpansion = (): void =>
-    setExpanded((prvExpanded) => {
-      return !prvExpanded;
-    });
-
+  const [expanded, setExpanded] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean[]>(
     mainNavItems.map(() => false)
   );
 
-  const primaryItems = createDynamicNavMenuList(
-    mainNavItems,
-    linkProperties,
-    isOpen,
-    setIsOpen
-  );
+  const toggleExpansion = (): void => {
+    setExpanded((prvExpanded) => {
+      return !prvExpanded;
+    });
+  }
 
-  const secondaryItems = createDynamicNavMenuList(subNavItems, linkProperties);
   // @TODO: we should close the menu when the user clicks on a link (internal or other cta)
   const themeMode = mode ? `mode-${mode}` : 'mode-light';
 
-  const handleExtendedNavClick = (e) => {
-    console.log(`ecurrenttarget: `, e.currentTarget)
-    console.log(`eparentnode: `, e.target.parentNode)
+  const primaryItems = useMemo(() => createDynamicNavMenuList(
+    mainNavItems,
+    linkProperties,
+    isOpen,
+    setIsOpen,
+  ), [mainNavItems, isOpen]);
 
-  }
+  const secondaryItems = useMemo(() => createDynamicNavMenuList(subNavItems, linkProperties), [subNavItems]);
 
   return (
     <>
@@ -82,7 +78,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           secondaryItems={secondaryItems}
           mobileExpanded={expanded}
           onToggleMobileNav={toggleExpansion}
-          onClick={handleExtendedNavClick}
         />
       </USWDSHeader>
     </>
