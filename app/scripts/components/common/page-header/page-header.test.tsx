@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { getByText, render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import { NavLink } from 'react-router-dom';
@@ -49,7 +49,7 @@ const mockLinkProperties: LinkProperties = {
 };
 
 describe('PageHeader', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     render(
       <PageHeader
         mainNavItems={mockMainNavItems}
@@ -67,6 +67,22 @@ describe('PageHeader', () => {
   });
 
   test('renders the PageHeader nav items', () => {
-    expect(screen.getByTestId('extended-nav')).toHaveTextContent('Exploration');
+    const navElement = screen.getByRole('navigation');
+    expect(navElement).toBeInTheDocument();
+
+    const primaryNav = screen.getAllByRole('list')[0];
+    const secondaryNav = screen.getAllByRole('list')[1];
+
+    expect(primaryNav.childElementCount).toEqual(mockMainNavItems.length);
+    expect(secondaryNav.childElementCount).toEqual(mockSubNavItems.length);
+
+    // @TODO: can't find the text content!
+    expect(getByText(primaryNav, 'Data Catalog')).toBeInTheDocument();
+    expect(within(primaryNav).getByText(/Data Catalog/)).toBeInTheDocument();
+    expect(within(primaryNav).getByText('Exploration')).toBeInTheDocument();
+    expect(within(primaryNav).getByText('Stories')).toBeInTheDocument();
+
+    expect(within(secondaryNav).getByText('About')).toBeInTheDocument();
+    expect(within(secondaryNav).getByText('Contact')).toBeInTheDocument();
   });
 });
