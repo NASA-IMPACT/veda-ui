@@ -49,12 +49,24 @@ import {
   STORIES_PATH,
   EXPLORATION_PATH
 } from '$utils/routes';
+import { EnvConfigProvider } from '$context/env-config';
 
 const composingComponents = [
   // Add contexts here.
   ErrorBoundary,
   ReactQueryProvider,
-  LayoutRootContextProvider
+  LayoutRootContextProvider,
+  ({ children }) => (
+    <EnvConfigProvider
+      config={{
+        envMapboxToken: process.env.MAPBOX_TOKEN ?? '',
+        envApiStacEndpoint: process.env.API_STAC_ENDPOINT ?? '',
+        envApiRasterEndpoint: process.env.API_RASTER_ENDPOINT ?? ''
+      }}
+    >
+      {children}
+    </EnvConfigProvider>
+  )
 ];
 
 function ScrollTop() {

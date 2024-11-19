@@ -83,11 +83,12 @@ function reconcileQueryDataWithDataset(
 }
 
 async function fetchStacDatasetById(
-  dataset: TimelineDataset | VizDataset
+  dataset: TimelineDataset | VizDataset,
+  envApiStacEndpoint: string
 ): Promise<StacDatasetData> {
   const { type, stacCol, stacApiEndpoint, time_density } = dataset.data;
 
-  const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
+  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint;
 
   const { data } = await axios.get(
     `${stacApiEndpointToUse}/collections/${stacCol}`
@@ -143,11 +144,12 @@ async function fetchStacDatasetById(
 
 // Create a query object for react query.
 function makeQueryObject(
-  dataset: TimelineDataset | VizDataset
+  dataset: TimelineDataset | VizDataset,
+  envApiStacEndpoint: string
 ): UseQueryOptions<unknown, unknown, StacDatasetData> {
   return {
     queryKey: ['dataset', dataset.data.id],
-    queryFn: () => fetchStacDatasetById(dataset),
+    queryFn: () => fetchStacDatasetById(dataset, envApiStacEndpoint),
     // This data will not be updated in the context of a browser session, so it is
     // safe to set the staleTime to Infinity. As specified by react-query's
     // "Important Defaults", cached data is considered stale which means that
@@ -169,7 +171,8 @@ function makeQueryObject(
  */
 export function useReconcileWithStacMetadata(
   datasets: TimelineDataset[] | VizDataset[],
-  handleUpdate: SetState<TimelineDataset[] | VizDataset[] | undefined>
+  handleUpdate: SetState<TimelineDataset[] | VizDataset[] | undefined>,
+  envApiStacEndpoint: string
 ) {
   const noDatasetsToQuery: boolean =
     !datasets || (datasets.length === 1 && datasets[0] === undefined);
@@ -179,7 +182,7 @@ export function useReconcileWithStacMetadata(
       ? []
       : datasets
           .filter((d) => !(d as any)?.mocked)
-          .map((dataset) => makeQueryObject(dataset))
+          .map((dataset) => makeQueryObject(dataset, envApiStacEndpoint))
   });
 
   useEffectPrevious<

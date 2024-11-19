@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import { ProjectionOptions } from 'veda';
 import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
@@ -26,6 +26,7 @@ import { usePreviousValue } from '$utils/use-effect-previous';
 import { ExtendedStyle } from '$components/common/map/styles';
 import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
+import { EnvConfigContext } from '$context/env-config';
 
 interface ExplorationMapProps {
   datasets: TimelineDataset[];
@@ -35,6 +36,9 @@ interface ExplorationMapProps {
 }
 
 export function ExplorationMap(props: ExplorationMapProps) {
+  const { envApiStacEndpoint, envMapboxToken } =
+    useContext(EnvConfigContext);
+
   const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
 
   const [projection, setProjection] =
@@ -48,7 +52,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
     onOptionChange
   } = useBasemap();
 
-  useReconcileWithStacMetadata(datasets, setDatasets);
+  useReconcileWithStacMetadata(datasets, setDatasets, envApiStacEndpoint);
 
   // Different datasets may have a different default projection.
   // When datasets are selected the first time, we set the map projection to the
@@ -85,8 +89,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
   // eslint-disable-next-line fp/no-mutating-methods
   const loadedDatasets = datasets
     .filter(
-      (d): d is TimelineDatasetSuccess =>
-        d.status === DatasetStatus.SUCCESS
+      (d): d is TimelineDatasetSuccess => d.status === DatasetStatus.SUCCESS
     )
     .slice()
     .reverse();
@@ -147,8 +150,9 @@ export function ExplorationMap(props: ExplorationMapProps) {
           }
         />
         <AnalysisMessageControl />
-        <GeocoderControl />
+        <GeocoderControl envMapboxToken={envMapboxToken} />
         <MapOptionsControl
+          envMapboxToken={envMapboxToken}
           projection={projection}
           onProjectionChange={setProjection}
           basemapStyleId={mapBasemapId}

@@ -1,4 +1,10 @@
-import React, { useCallback, ReactElement, useMemo, Ref } from 'react';
+import React, {
+  useCallback,
+  ReactElement,
+  useMemo,
+  Ref,
+  useContext
+} from 'react';
 import ReactMapGlMap, { LngLatBoundsLike, MapRef } from 'react-map-gl';
 import { debounce } from 'lodash';
 import useMapStyle from './hooks/use-map-style';
@@ -7,6 +13,7 @@ import { convertProjectionToMapbox } from './controls/map-options/projections';
 import { ProjectionOptions } from '$types/veda';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
+import { EnvConfigContext } from '$context/env-config';
 
 const maxMapBounds: LngLatBoundsLike = [
   [-540, -90], // SW
@@ -28,6 +35,8 @@ export default function MapComponent({
   onMapLoad?: () => void;
   interactive?: boolean;
 }) {
+  const { envMapboxToken } = useContext(EnvConfigContext);
+
   const { initialViewState, setInitialViewState, mainId, comparedId } =
     useMapsContext();
   const { style } = useMapStyle();
@@ -69,7 +78,7 @@ export default function MapComponent({
     <ReactMapGlMap
       id={id}
       ref={mapRef}
-      mapboxAccessToken={process.env.MAPBOX_TOKEN}
+      mapboxAccessToken={envMapboxToken}
       dragRotate={false}
       touchPitch={false}
       pitchWithRotate={false}

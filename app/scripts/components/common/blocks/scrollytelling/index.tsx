@@ -1,6 +1,8 @@
 import React, {
-  Children, ReactElement,
+  Children,
+  ReactElement,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -33,12 +35,24 @@ import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useS
 import { HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import Map from '$components/common/map';
-import { LayerLegend, LayerLegendContainer } from '$components/common/map/layer-legend';
+import {
+  LayerLegend,
+  LayerLegendContainer
+} from '$components/common/map/layer-legend';
 import { Layer } from '$components/exploration/components/map/layer';
 import { MapLoading } from '$components/common/loading-skeleton';
-import { DatasetData, DatasetStatus, VizDataset, VizDatasetSuccess } from '$components/exploration/types.d.ts';
+import {
+  DatasetData,
+  DatasetStatus,
+  VizDataset,
+  VizDatasetSuccess
+} from '$components/exploration/types.d.ts';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
-import { formatSingleDate, reconcileVizDataset } from '$components/common/map/utils';
+import {
+  formatSingleDate,
+  reconcileVizDataset
+} from '$components/common/map/utils';
+import { EnvConfigContext } from '$context/env-config';
 
 type ResolvedScrollyMapLayer = {
   vizDataset: VizDatasetSuccess;
@@ -125,10 +139,10 @@ function getChapterLayerKey(ch: ScrollyChapter) {
  *
  * @param {array} chList List of chapters with related layers.
  */
-function useMapLayersFromChapters(chList: ScrollyChapter[]): [
-  ResolvedScrollyMapLayer[],
-  string[]
-] {
+function useMapLayersFromChapters(
+  chList: ScrollyChapter[],
+  envApiStacEndpoint: string
+): [ResolvedScrollyMapLayer[], string[]] {
   // The layers are unique based on the dataset, layer id and datetime.
   // First we filter out any scrollytelling block that doesn't have layer.
   const uniqueChapterLayers = useMemo(() => {
@@ -141,7 +155,6 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]): [
       }, {});
 
     return Object.values(unique);
-
   }, [chList]);
 
   // Create an array of datasetId & layerId pairs which we can easily validate when creating
@@ -149,31 +162,37 @@ function useMapLayersFromChapters(chList: ScrollyChapter[]): [
   const uniqueLayerRefs = useMemo(() => {
     return uniqueChapterLayers.map(({ datasetId, layerId }) => ({
       datasetId,
-      layerId,
+      layerId
     }));
   }, [uniqueChapterLayers]);
 
   // Validate that all layers are defined in the configuration.
   // They must be defined in the configuration otherwise it is not possible to load them.
-  const reconciledVizDatasets = uniqueLayerRefs.map(({ datasetId, layerId }) => {
-    const layers = datasets[datasetId]?.data.layers;
+  const reconciledVizDatasets = uniqueLayerRefs.map(
+    ({ datasetId, layerId }) => {
+      const layers = datasets[datasetId]?.data.layers;
 
-    const layer = layers?.find(
-      (l) => l.id === layerId
-    ) as DatasetData | null;
+      const layer = layers?.find((l) => l.id === layerId) as DatasetData | null;
 
-    if (!layer) {
-      throw new Error(
-        `Layer [${layerId}] not found in dataset [${datasetId}]`
-      );
+      if (!layer) {
+        throw new Error(
+          `Layer [${layerId}] not found in dataset [${datasetId}]`
+        );
+      }
+
+      return reconcileVizDataset(layer);
     }
+  );
 
-    return reconcileVizDataset(layer);
-  });
+  const [resolvedDatasetsWithStac, setResolvedDatasetsWithStac] = useState<
+    VizDataset[]
+  >([]);
 
-  const [resolvedDatasetsWithStac, setResolvedDatasetsWithStac] = useState<VizDataset[]>([]);
-
-  useReconcileWithStacMetadata(reconciledVizDatasets, setResolvedDatasetsWithStac);
+  useReconcileWithStacMetadata(
+    reconciledVizDatasets,
+    setResolvedDatasetsWithStac,
+    envApiStacEndpoint
+  );
 
   // Each resolved layer will be an object with:
   // layer: The resolved layerData
@@ -241,6 +260,8 @@ const MAP_OPTIONS = {
 function Scrollytelling(props) {
   const { children } = props;
 
+  const { envApiStacEndpoint } = useContext(EnvConfigContext);
+
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();
 
@@ -250,13 +271,16 @@ function Scrollytelling(props) {
   // Extract the props from the chapters.
   const chapterProps = useChapterPropsFromChildren(children);
 
-  const [resolvedLayers, resolvedStatus] =
-    useMapLayersFromChapters(chapterProps);
+  const [resolvedLayers, resolvedStatus] = useMapLayersFromChapters(
+    chapterProps,
+    envApiStacEndpoint
+  );
 
   const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(
     null
   );
-  const [projection, setProjection] = useState<ProjectionOptions>(projectionDefault);
+  const [projection, setProjection] =
+    useState<ProjectionOptions>(projectionDefault);
 
   // All layers must be loaded, resolved, and added to the map before we
   // initialize scrollama. This is needed because in a scrollytelling map we
@@ -334,9 +358,12 @@ function Scrollytelling(props) {
     : // Otherwise it's the full header height.
       wrapperHeight;
 
-  const activeChapterLayerData = activeChapterLayer ? activeChapterLayer.vizDataset.data : null;
+  const activeChapterLayerData = activeChapterLayer
+    ? activeChapterLayer.vizDataset.data
+    : null;
 
-  const { description, id, name, legend, timeDensity } = activeChapterLayerData ?? {};
+  const { description, id, name, legend, timeDensity } =
+    activeChapterLayerData ?? {};
 
   return (
     <>
@@ -438,7 +465,7 @@ function Scrollytelling(props) {
                     ...vizDataset,
                     settings: {
                       opacity: 100,
-                      isVisible: !isHidden,
+                      isVisible: !isHidden
                     }
                   }}
                   selectedDay={runtimeData.datetime ?? new Date()}
