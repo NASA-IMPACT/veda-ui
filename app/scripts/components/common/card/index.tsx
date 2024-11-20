@@ -187,14 +187,17 @@ const CardLabel = styled.span`
 
 const CardFigure = styled(Figure)`
   order: -1;
-  background: ${themeVal('color.primary-100')};
+  width: 100%;
+  ${(props) => !props.isCoverOrFeatured && `aspect-ratio: 2/1;`}
+  background: ${(props) =>
+    props.src ? 'none' : props.theme.color['primary-100']};
 
   img {
     height: 100%;
     width: 100%;
     object-fit: cover;
     mix-blend-mode: multiply;
-    display: ${(props) => (props.src ? 'inline-block' : 'none')};
+    display: ${(props) => (props.src ? 'block' : 'none')};
   }
 `;
 
@@ -287,7 +290,7 @@ function CardComponent(props: CardComponentPropsType) {
     footerContent,
     hideExternalLinkBadge,
     onCardClickCapture,
-    onClick,
+    onClick
   } = props;
   // @TODO: This process is not necessary once all the instances adapt the linkProperties syntax
   // Consolidate them to use LinkProperties only
@@ -299,18 +302,29 @@ function CardComponent(props: CardComponentPropsType) {
     linkProperties = linkPropertiesProps;
   } else {
     const { linkTo } = props;
-    linkProperties = linkTo ? {
-      linkTo,
-      pathAttributeKeyName: 'to',
-      LinkElement: SmartLink
-    } : undefined;
+    linkProperties = linkTo
+      ? {
+          linkTo,
+          pathAttributeKeyName: 'to',
+          LinkElement: SmartLink
+        }
+      : undefined;
   }
 
-  const isExternalLink = linkProperties ? /^https?:\/\//.test(linkProperties.linkTo) : false;
+  const isExternalLink = linkProperties
+    ? /^https?:\/\//.test(linkProperties.linkTo)
+    : false;
 
   return (
     <ElementInteractive
-      {...(linkProperties ? {linkProps: {as: linkProperties.LinkElement, [linkProperties.pathAttributeKeyName]: linkProperties.linkTo}} : {})}
+      {...(linkProperties
+        ? {
+            linkProps: {
+              as: linkProperties.LinkElement,
+              [linkProperties.pathAttributeKeyName]: linkProperties.linkTo
+            }
+          }
+        : {})}
       as={CardItem}
       cardType={cardType}
       className={className}
@@ -358,7 +372,10 @@ function CardComponent(props: CardComponentPropsType) {
             </CardBody>
           )}
           {footerContent && <CardFooter>{footerContent}</CardFooter>}
-          <CardFigure src={imgSrc}>
+          <CardFigure
+            src={imgSrc}
+            isCoverOrFeatured={cardType === 'cover' || cardType === 'featured'}
+          >
             <img src={imgSrc} alt={imgAlt} loading='lazy' />
           </CardFigure>
         </>
