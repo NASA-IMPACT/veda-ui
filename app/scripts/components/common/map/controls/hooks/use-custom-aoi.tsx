@@ -7,7 +7,7 @@ import { multiPolygonToPolygons } from '../../utils';
 import { round } from '$utils/format';
 
 const extensions = ['geojson', 'json', 'zip'];
-const eachFeatureMaxPointNum = 100;
+const eachFeatureMaxPointNum = 500;
 export const acceptExtensions = extensions.map((ext) => `.${ext}`).join(', ');
 
 export interface FileInfo {
@@ -17,8 +17,8 @@ export interface FileInfo {
 }
 
 interface PolygonGeojson {
-  "type": "FeatureCollection",
-  "features": Feature<Polygon | MultiPolygon>[];
+  type: 'FeatureCollection';
+  features: Feature<Polygon | MultiPolygon>[];
 }
 
 function getNumPoints(feature: Feature<Polygon>): number {
@@ -28,13 +28,11 @@ function getNumPoints(feature: Feature<Polygon>): number {
 }
 
 export function getAoiAppropriateFeatures(geojson: PolygonGeojson) {
-
   let warnings: string[] = [];
 
   if (
     geojson.features.some(
-      (feature) =>
-        !['MultiPolygon', 'Polygon'].includes(feature.geometry.type)
+      (feature) => !['MultiPolygon', 'Polygon'].includes(feature.geometry.type)
     )
   ) {
     throw new Error(
@@ -93,11 +91,14 @@ export function getAoiAppropriateFeatures(geojson: PolygonGeojson) {
   // Simplify each feature if needed to reduce point count to less than 50 points per feature
   simplifiedFeatures = features.map((feature) => {
     const numPoints = getNumPoints(feature);
-    if (numPoints > 30) {
+    if (numPoints > eachFeatureMaxPointNum) {
       let tolerance = 0.001;
       let simplifiedFeature = feature;
       // Continuously simplify the feature until it has less than or equal to 30 points
-      while (getNumPoints(simplifiedFeature) > eachFeatureMaxPointNum && tolerance < 5) {
+      while (
+        getNumPoints(simplifiedFeature) > eachFeatureMaxPointNum &&
+        tolerance < 5
+      ) {
         simplifiedFeature = simplify(simplifiedFeature, { tolerance });
         tolerance *= 2; // Increase tolerance to simplify more aggressively if needed
       }
@@ -107,26 +108,29 @@ export function getAoiAppropriateFeatures(geojson: PolygonGeojson) {
   });
 
   // Add a warning if any feature has been simplified to less than 30 points
-  const numberOfSimplifedFeatures = simplifiedFeatures.filter((feature, index) => {
-    return getNumPoints(feature) < getNumPoints(features[index]);
-  }).length;
+  const numberOfSimplifedFeatures = simplifiedFeatures.filter(
+    (feature, index) => {
+      return getNumPoints(feature) < getNumPoints(features[index]);
+    }
+  ).length;
 
   if (numberOfSimplifedFeatures > 0) {
-    const featureWPrefix = numberOfSimplifedFeatures === 1? 'feature was': 'features were';
+    const featureWPrefix =
+      numberOfSimplifedFeatures === 1 ? 'feature was' : 'features were';
     // eslint-disable-next-line fp/no-mutating-methods
-    warnings= [...warnings, `${numberOfSimplifedFeatures} ${featureWPrefix} simplified to have less than ${eachFeatureMaxPointNum} points.`];
+    warnings = [
+      ...warnings,
+      `${numberOfSimplifedFeatures} ${featureWPrefix} simplified to have less than ${eachFeatureMaxPointNum} points.`
+    ];
   }
 
   // Further Simplify features in case there are a lot of features
   // so the sum of the points doesn't exceed 1000
-  while (numPoints > 1000 && tolerance < 5) {
+  while (numPoints > 5000 && tolerance < 5) {
     simplifiedFeatures = simplifiedFeatures.map((feature) =>
       simplify(feature, { tolerance })
     );
-    numPoints = simplifiedFeatures.reduce(
-      (acc, f) => acc + getNumPoints(f),
-      0
-    );
+    numPoints = simplifiedFeatures.reduce((acc, f) => acc + getNumPoints(f), 0);
     tolerance = Math.min(tolerance * 1.8, 5);
   }
 
@@ -191,7 +195,8 @@ function useCustomAoI() {
         return;
       }
       try {
-        const { simplifiedFeatures, warnings } = getAoiAppropriateFeatures(geojson);
+        const { simplifiedFeatures, warnings } =
+          getAoiAppropriateFeatures(geojson);
         setUploadFileWarnings(warnings);
         setUploadFileError(null);
         setFeatures(
