@@ -1,9 +1,7 @@
-import React from 'react';
-import { getByText, render, screen, within } from '@testing-library/react';
+import React, { ComponentType } from 'react';
+import { render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-import { NavLink } from 'react-router-dom';
-import { LinkProperties } from '$types/veda';
 import NasaLogoColor from '../nasa-logo-color';
 import { NavItem, NavItemType } from './types';
 import PageHeader from './index';
@@ -48,9 +46,9 @@ const mockSubNavItems: NavItem[] = [
   }
 ];
 
-const mockLinkProperties: LinkProperties = {
+const mockLinkProperties = {
   pathAttributeKeyName: 'to',
-  LinkElement: NavLink
+  LinkElement: 'a' as unknown as ComponentType
 };
 
 describe('PageHeader', () => {
@@ -80,10 +78,7 @@ describe('PageHeader', () => {
 
     expect(primaryNav.childElementCount).toEqual(mockMainNavItems.length);
     expect(secondaryNav.childElementCount).toEqual(mockSubNavItems.length);
-
-    // @TODO: can't find the text content!
-    expect(getByText(primaryNav, 'Data Catalog')).toBeInTheDocument();
-    expect(within(primaryNav).getByText(/Data Catalog/)).toBeInTheDocument();
+    expect(within(primaryNav).getByText('Data Catalog')).toBeInTheDocument();
     expect(within(primaryNav).getByText('Exploration')).toBeInTheDocument();
     expect(within(primaryNav).getByText('Stories')).toBeInTheDocument();
 
