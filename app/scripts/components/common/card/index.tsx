@@ -188,7 +188,6 @@ const CardLabel = styled.span`
 const CardFigure = styled(Figure)`
   order: -1;
   background: ${themeVal('color.primary-100')};
-  min-height: ${variableGlsp(12)};
 
   img {
     height: 100%;
