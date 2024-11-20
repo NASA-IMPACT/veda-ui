@@ -57,10 +57,15 @@ interface StableAtomOptions<Value, ValueUrl> {
    * the information that goes to the url needs to be simplified.
    * @param urlValue The value stored in the URL parameter after hydration.
    * @param storageValue The value stored in the atom.
+   * @param get A getter function to access other atom values during reconciliation.
    * @returns The reconciled value. If the function is not provided the urlValue
    * is considered the reconciled value.
    */
-  reconcile?: (urlValue: ValueUrl, storageValue: Value) => Value;
+  reconcile?: (
+    urlValue: ValueUrl,
+    storageValue: Value,
+    get: (atom: any) => any
+  ) => Value;
   /**
    * An optional function to compare two atom values for equality.
    * @param prev The previous atom value.
@@ -93,7 +98,7 @@ export function atomWithUrlValueStability<T, TUrl = T>(
       const storageValue = get(storage);
 
       // Reconcile the hydrated value with the storage value.
-      const reconciled = reconcile(hydrated, storageValue);
+      const reconciled = reconcile(hydrated, storageValue, get);
 
       // If the reconciled value is equal to the storage value, return the
       // storage value to ensure equality.
