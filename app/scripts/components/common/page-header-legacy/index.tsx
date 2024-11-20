@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState, ReactElement } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  ReactElement
+} from 'react';
 import styled, { css } from 'styled-components';
 import {
   glsp,
@@ -10,20 +16,17 @@ import {
 import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
-import {
-  CollecticonHamburgerMenu
-} from '@devseed-ui/collecticons';
+import { CollecticonHamburgerMenu } from '@devseed-ui/collecticons';
 
 import UnscrollableBody from '../unscrollable-body';
-import { LinkProperties } from '../card';
 import { NavItem } from '../page-header/types';
 import NavMenuItem from './nav-menu-item';
+import { LinkProperties } from '$types/veda';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { PAGE_BODY_ID } from '$components/common/layout-root';
 import { useMediaQuery } from '$utils/use-media-query';
 import { HEADER_ID } from '$utils/use-sliding-sticky-header';
-
 
 const PageHeaderSelf = styled.header`
   display: flex;
@@ -40,7 +43,6 @@ const PageHeaderSelf = styled.header`
     color: ${themeVal('color.surface')};
   }
 `;
-
 
 const GlobalNav = styled.nav<{ revealed: boolean }>`
   position: fixed;
@@ -268,71 +270,89 @@ function PageHeader(props: PageHeaderProps) {
     // Then find a next focusable element in pagebody,focus it.
     const pageBody = document.getElementById(PAGE_BODY_ID);
     if (pageBody) {
-        pageBody.focus();
+      pageBody.focus();
     }
   }
 
   return (
     <>
-    <SROnly href='#' onClick={skipNav}>Skip to main content</SROnly>
-    <PageHeaderSelf id={HEADER_ID}>
-      {globalNavRevealed && isMediumDown && <UnscrollableBody />}
-      {logo}
-      {isMediumDown && (
-        <GlobalNavActions>
-          <GlobalNavToggle
-            aria-label={
-              globalNavRevealed
-                ? 'Close Global Navigation'
-                : 'Open Global Navigation'
-            }
-            // @ts-expect-error UI lib error. achromic-text does exit
-            variation='achromic-text'
-            fitting='skinny'
-            onClick={() => setGlobalNavRevealed((v) => !v)}
-            active={globalNavRevealed}
-          >
-            <CollecticonHamburgerMenu />
-          </GlobalNavToggle>
-        </GlobalNavActions>
-      )}
-      <GlobalNav
-        aria-label='Global Navigation'
-        role='navigation'
-        revealed={globalNavRevealed}
-        onClick={onGlobalNavClick}
-      >
-        <GlobalNavInner ref={globalNavBodyRef}>
-          {isMediumDown && (
-            <>
-              <GlobalNavHeader>
-                <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
-              </GlobalNavHeader>
-            </>
-          )}
-          <GlobalNavBody as={isMediumDown ? undefined : 'div'}>
-            <GlobalNavBodyInner>
-              <SectionsNavBlock>
-                <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
-                <GlobalMenu>
-                  {mainNavItems.map((item) => {
-                    return <NavMenuItem linkProperties={linkProperties} key={`${item.title}-nav-item`} item={item} alignment='left' onClick={closeNavOnClick} />;
-                  })}
-                </GlobalMenu>
-              </SectionsNavBlock>
-              <SectionsNavBlock>
-                <GlobalNavBlockTitle>Meta</GlobalNavBlockTitle>
-                <GlobalMenu>
-                  {subNavItems.map((item) => {
-                    return <NavMenuItem linkProperties={linkProperties} key={`${item.title}-nav-item`} item={item} alignment='right' onClick={closeNavOnClick} />;
-                  })}
-                </GlobalMenu>
-              </SectionsNavBlock>
-            </GlobalNavBodyInner>
-          </GlobalNavBody>
-        </GlobalNavInner>
-      </GlobalNav>
-    </PageHeaderSelf>
+      <SROnly href='#' onClick={skipNav}>
+        Skip to main content
+      </SROnly>
+      <PageHeaderSelf id={HEADER_ID}>
+        {globalNavRevealed && isMediumDown && <UnscrollableBody />}
+        {logo}
+        {isMediumDown && (
+          <GlobalNavActions>
+            <GlobalNavToggle
+              aria-label={
+                globalNavRevealed
+                  ? 'Close Global Navigation'
+                  : 'Open Global Navigation'
+              }
+              // @ts-expect-error UI lib error. achromic-text does exit
+              variation='achromic-text'
+              fitting='skinny'
+              onClick={() => setGlobalNavRevealed((v) => !v)}
+              active={globalNavRevealed}
+            >
+              <CollecticonHamburgerMenu />
+            </GlobalNavToggle>
+          </GlobalNavActions>
+        )}
+        <GlobalNav
+          aria-label='Global Navigation'
+          role='navigation'
+          revealed={globalNavRevealed}
+          onClick={onGlobalNavClick}
+        >
+          <GlobalNavInner ref={globalNavBodyRef}>
+            {isMediumDown && (
+              <>
+                <GlobalNavHeader>
+                  <GlobalNavTitle aria-hidden='true'>Browse</GlobalNavTitle>
+                </GlobalNavHeader>
+              </>
+            )}
+            <GlobalNavBody as={isMediumDown ? undefined : 'div'}>
+              <GlobalNavBodyInner>
+                <SectionsNavBlock>
+                  <GlobalNavBlockTitle>Global</GlobalNavBlockTitle>
+                  <GlobalMenu>
+                    {mainNavItems.map((item) => {
+                      return (
+                        <NavMenuItem
+                          linkProperties={linkProperties}
+                          key={`${item.title}-nav-item`}
+                          item={item}
+                          alignment='left'
+                          onClick={closeNavOnClick}
+                        />
+                      );
+                    })}
+                  </GlobalMenu>
+                </SectionsNavBlock>
+                <SectionsNavBlock>
+                  <GlobalNavBlockTitle>Meta</GlobalNavBlockTitle>
+                  <GlobalMenu>
+                    {subNavItems.map((item) => {
+                      return (
+                        <NavMenuItem
+                          linkProperties={linkProperties}
+                          key={`${item.title}-nav-item`}
+                          item={item}
+                          alignment='right'
+                          onClick={closeNavOnClick}
+                        />
+                      );
+                    })}
+                  </GlobalMenu>
+                </SectionsNavBlock>
+              </GlobalNavBodyInner>
+            </GlobalNavBody>
+          </GlobalNavInner>
+        </GlobalNav>
+      </PageHeaderSelf>
     </>
   );
 }

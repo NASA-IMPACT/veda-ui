@@ -1,10 +1,10 @@
-import React, { ReactElement, useState, useMemo, useEffect } from 'react';
+import React, { ReactElement, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
-import { LinkProperties } from '$types/veda';
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
 import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
+import { LinkProperties } from '$types/veda';
 import { USWDSHeader, USWDSHeaderTitle } from '$components/common/uswds/header';
 import { USWDSNavMenuButton } from '$components/common/uswds/header/nav-menu-button';
 import { USWDSExtendedNav } from '$components/common/uswds/header/extended-nav';
@@ -40,19 +40,21 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     setExpanded((prvExpanded) => {
       return !prvExpanded;
     });
-  }
+  };
 
   // @TODO: we should close the menu when the user clicks on a link (internal or other cta)
   const themeMode = mode ? `mode-${mode}` : 'mode-light';
 
-  const primaryItems = useMemo(() => createDynamicNavMenuList(
-    mainNavItems,
-    linkProperties,
-    isOpen,
-    setIsOpen,
-  ), [mainNavItems, isOpen]);
+  const primaryItems = useMemo(
+    () =>
+      createDynamicNavMenuList(mainNavItems, linkProperties, isOpen, setIsOpen),
+    [mainNavItems, isOpen]
+  );
 
-  const secondaryItems = useMemo(() => createDynamicNavMenuList(subNavItems, linkProperties), [subNavItems]);
+  const secondaryItems = useMemo(
+    () => createDynamicNavMenuList(subNavItems, linkProperties),
+    [subNavItems]
+  );
 
   return (
     <>
