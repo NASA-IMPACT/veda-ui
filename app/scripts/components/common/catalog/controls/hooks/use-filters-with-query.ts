@@ -33,7 +33,21 @@ export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
 }
 
 export function useFiltersWithQS(): UseFiltersWithQueryResult {
-  const useQsState = useQsStateCreator();
+  const useQsState = useQsStateCreator({
+    commit: ({ search }) => {
+      if (typeof window !== 'undefined') {
+        const currentUrl = new URL(window.location.href);
+        const searchParams = search.startsWith('?') ? search.slice(1) : search;
+        currentUrl.search = searchParams;
+        window.history.pushState({}, '', currentUrl.toString());
+      } else {
+        // eslint-disable-next-line no-console
+        console.log(
+          'useFiltersWithQS: window is undefined, query string will update.'
+        );
+      }
+    }
+  });
 
   const [search, setSearch] = useQsState.memo(
     {
