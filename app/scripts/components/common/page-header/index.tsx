@@ -28,9 +28,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   linkProperties,
   mode
 }) => {
-  //@TODO: toggle expanded on window resize! Or on click anywhere?
-  // weird, should be implemented on the library side of things, see https://vscode.dev/github/NASA-IMPACT/veda-ui/blob/1137-implement-new-ds-page-header/node_modules/%40uswds/uswds/packages/usa-header/src/index.js#L155-L156
-
   const [expanded, setExpanded] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean[]>(
     mainNavItems.map(() => false)
@@ -42,7 +39,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     });
   };
 
-  // @TODO: we should close the menu when the user clicks on a link (internal or other cta)
   const themeMode = mode ? `mode-${mode}` : 'mode-light';
 
   const primaryItems = useMemo(
