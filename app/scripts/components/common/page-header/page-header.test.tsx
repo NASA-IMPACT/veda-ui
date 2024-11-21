@@ -8,7 +8,6 @@ import { NavItem, NavItemType } from './types';
 import PageHeader from './index';
 
 // @NOTE: Possible Test cases
-// light vs dark mode
 // config & create dynamic nav menu list fn - different scenerios, happy vs unhappy path
 
 const mockMainNavItems: NavItem[] = [
@@ -117,5 +116,38 @@ describe('PageHeader', () => {
     expect(within(primaryNav).getByText('Submenu 1')).not.toBeVisible();
     await user.click(navItem);
     expect(within(primaryNav).getByText('Submenu 1')).toBeVisible();
+  });
+});
+
+describe('PageHeader light and dark mode', () => {
+  // @NOTE: We do not test css here, only attributes accessible via DOM
+  test('the header is in light mode by default', () => {
+    render(
+      <PageHeader
+        mainNavItems={mockMainNavItems}
+        subNavItems={mockSubNavItems}
+        logo={<NasaLogoColor />}
+        linkProperties={mockLinkProperties}
+        // no mode specified
+      />
+    );
+    const header = screen.getByTestId('header');
+
+    expect(header.id).toEqual('mode-light');
+  });
+
+  test('the header can be changed to dark mode using the prop', () => {
+    render(
+      <PageHeader
+        mainNavItems={mockMainNavItems}
+        subNavItems={mockSubNavItems}
+        logo={<NasaLogoColor />}
+        linkProperties={mockLinkProperties}
+        mode='dark'
+      />
+    );
+    const header = screen.getByTestId('header');
+
+    expect(header.id).toEqual('mode-dark');
   });
 });
