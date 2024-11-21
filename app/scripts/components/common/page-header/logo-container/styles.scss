@@ -1,4 +1,4 @@
-@use '$styles/veda-ui-theme-vars' as themeVars; 
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
 
 #logo-container {
   display: flex;
@@ -9,7 +9,7 @@
     display: flex;
     align-items: center;
   }
-  
+
   span {
     color: themeVars.$veda-uswds-color-base-darkest !important;
   }
