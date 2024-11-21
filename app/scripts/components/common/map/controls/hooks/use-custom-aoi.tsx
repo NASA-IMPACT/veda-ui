@@ -29,15 +29,11 @@ function getNumPoints(feature: Feature<Polygon>): number {
   }, 0);
 }
 
-function validateGeometryType(geojson: PolygonGeojson): void {
+function validateGeometryType(geojson: PolygonGeojson): boolean {
   const hasInvalidGeometry = geojson.features.some(
     (feature) => !['MultiPolygon', 'Polygon'].includes(feature.geometry.type)
   );
-  if (hasInvalidGeometry) {
-    throw new Error(
-      'Wrong geometry type. Only polygons or multi polygons are accepted.'
-    );
-  }
+  return !hasInvalidGeometry;
 }
 
 function extractPolygonsFromGeojson(
@@ -56,10 +52,8 @@ function extractPolygonsFromGeojson(
   );
 }
 
-function validateFeatureCount(features: Feature<Polygon>[]): void {
-  if (features.length > maxPolygonNum) {
-    throw new Error('Only files with up to 200 polygons are accepted.');
-  }
+function validateFeatureCount(features: Feature<Polygon>[]): boolean {
+  if (features.length > maxPolygonNum) return false;
 }
 
 function removePolygonHoles(features: Feature<Polygon>[]): {
@@ -160,11 +154,18 @@ function simplifyFeatures(features: Feature<Polygon>[]): {
 }
 
 export function getAoiAppropriateFeatures(geojson: PolygonGeojson) {
-  validateGeometryType(geojson);
+  const geometryValidated = validateGeometryType(geojson);
+  if (!geometryValidated) {
+    throw new Error(
+      'Wrong geometry type. Only polygons or multi polygons are accepted.'
+    );
+  }
 
   const features = extractPolygonsFromGeojson(geojson);
-  validateFeatureCount(features);
-
+  const featureCountValidated = validateFeatureCount(features);
+  if (!featureCountValidated) {
+    throw new Error('Only files with up to 200 polygons are accepted.');
+  }
   const { simplifiedFeatures: noHolesFeatures, warnings: holeWarnings } =
     removePolygonHoles(features);
 
@@ -195,7 +196,6 @@ function useCustomAoI() {
 
     const onLoad = async () => {
       if (!reader.current) return;
-
       let geojson;
       if (typeof reader.current.result === 'string') {
         const rawGeoJSON = reader.current.result;
@@ -218,7 +218,7 @@ function useCustomAoI() {
         }
       }
       if (!geojson?.features?.length) {
-        setError('Error uploading file: Invalid GeoJSON');
+        setError('Error uploading file: Invalid data');
         return;
       }
       try {
@@ -233,7 +233,7 @@ function useCustomAoI() {
           }))
         );
       } catch (e) {
-        setError(e);
+        setError(e.message);
         return;
       }
     };
