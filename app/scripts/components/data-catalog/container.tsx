@@ -25,8 +25,14 @@ export default function DataCatalogContainer() {
 
   return (
     <PageMainContent>
-      <LayoutProps title='Data Catalog' description={getString('dataCatalogBanner').other} />
-      <PageHero title='Data Catalog' description={getString('dataCatalogBanner').other} />
+      <LayoutProps
+        title='Data Catalog'
+        description={getString('dataCatalogBanner').other}
+      />
+      <PageHero
+        title='Data Catalog'
+        description={getString('dataCatalogBanner').other}
+      />
       <FeaturedDatasets />
       <CatalogView
         datasets={allDatasets}
