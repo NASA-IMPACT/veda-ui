@@ -7,7 +7,7 @@ import { multiPolygonToPolygons } from '../../utils';
 import { round } from '$utils/format';
 
 const extensions = ['geojson', 'json', 'zip'];
-const eachFeatureMaxPointNum = 1000;
+const eachFeatureMaxPointNum = 500;
 const maxTolerance = 5;
 const maxPolygonNum = 200;
 export const acceptExtensions = extensions.map((ext) => `.${ext}`).join(', ');
@@ -135,8 +135,8 @@ function simplifyFeatures(features: Feature<Polygon>[]): {
   );
 
   // Further Simplify features in case there are a lot of features
-  // to control the number of the total points
-  while (totalPoints > 50000 && tolerance < maxTolerance) {
+  // to control the number of the total points (10000 for now)
+  while (totalPoints > 10000 && tolerance < maxTolerance) {
     simplifiedFeatures.forEach((feature, i) => {
       simplifiedFeatures[i] = simplify(feature, { tolerance });
     });
