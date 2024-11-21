@@ -8,7 +8,7 @@ import { FilterActions, FilterAction, onFilterAction } from '../../utils';
 export interface UseFiltersWithQueryResult {
   search: string;
   taxonomies: Record<string, string[]> | Record<string, never>;
-  onAction: FilterAction
+  onAction: FilterAction;
 }
 
 // @TECH-DEBT: We have diverged ways of dealing with query parameters and need to consolidate them.
@@ -28,19 +28,18 @@ export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
   return {
     search,
     taxonomies,
-    onAction,
+    onAction
   };
 }
 
-  export function useFiltersWithQS({
-    navigate
-  }: {
-    navigate: any
-  }): UseFiltersWithQueryResult {
-
-    const useQsState = useQsStateCreator({
-      commit: navigate
-    });
+export function useFiltersWithQS({
+  navigate
+}: {
+  navigate: any;
+}): UseFiltersWithQueryResult {
+  const useQsState = useQsStateCreator({
+    commit: navigate
+  });
 
   const [search, setSearch] = useQsState.memo(
     {
@@ -60,16 +59,16 @@ export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
     []
   );
 
-
   const onAction = useCallback<FilterAction>(
     (action, value) => {
-      onFilterAction(action, value, taxonomies, setSearch, setTaxonomies);},
+      onFilterAction(action, value, taxonomies, setSearch, setTaxonomies);
+    },
     [setSearch, setTaxonomies, taxonomies]
   );
 
   return {
-    search: search?? '',
-    taxonomies: taxonomies?? {},
-    onAction,
+    search: search ?? '',
+    taxonomies: taxonomies ?? {},
+    onAction
   };
 }
