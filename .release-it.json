@@ -1,0 +1,29 @@
+{
+  "hooks": {},
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": {
+        "name": "conventionalcommits"
+      }
+    }
+  },
+  "git": {
+    "changelog": "git log --pretty=format:\"* %s (%h)\" ${from}...${to}",
+    "commitMessage": "chore(release): update to version v${version}",
+    "tagName": "v${version}",
+    "tagAnnotation": "Release v${version}",
+    "pushArgs": ["--follow-tags"],
+    "getLatestTagFromAllRefs": true
+  },
+  "npm": {
+    "publish": false
+  },
+  "github": {
+    "release": true,
+    "releaseName": "V${version}",
+    "releaseNotes": null,
+    "autoGenerate": true,
+    "preRelease": false,
+    "draft": false
+  }
+}

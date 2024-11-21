@@ -28,7 +28,8 @@
     "ts-check": "yarn tsc --noEmit --skipLibCheck",
     "test": "jest",
     "pretest:e2e": "node test/playwright/generateTestData.js",
-    "test:e2e": "yarn playwright test"
+    "test:e2e": "yarn playwright test",
+    "release": "release-it --"
   },
   "targets": {
     "veda-app": {
