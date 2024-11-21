@@ -32,14 +32,8 @@ export function useFiltersWithURLAtom(): UseFiltersWithQueryResult {
   };
 }
 
-export function useFiltersWithQS({
-  navigate
-}: {
-  navigate: any;
-}): UseFiltersWithQueryResult {
-  const useQsState = useQsStateCreator({
-    commit: navigate
-  });
+export function useFiltersWithQS(): UseFiltersWithQueryResult {
+  const useQsState = useQsStateCreator();
 
   const [search, setSearch] = useQsState.memo(
     {

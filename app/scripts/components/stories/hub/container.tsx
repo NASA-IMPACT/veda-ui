@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router';
 
 import { stories, getString } from 'veda';
 import HubContent from './hub-content';
@@ -25,7 +24,7 @@ const allStories = Object.values(stories)
   .map((d) => ({ ...d, path: getStoryPath(d) }));
 
 function StoriesHubContainer() {
-  const controlVars = useFiltersWithQS({ navigate: useNavigate() });
+  const controlVars = useFiltersWithQS();
   return (
     <PageMainContent>
       <LayoutProps
