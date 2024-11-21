@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
   # @TODO: byweekly check
   # Run action at 16:15 PM on Monday (UTC)
-  schedule:
-    - cron: '15 16 * * 1'
+  # schedule:
+  #   - cron: '15 16 * * 1'
 
 # Sets the GITHUB_TOKEN permissions to allow release
 permissions:
