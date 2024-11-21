@@ -34,7 +34,6 @@ export function ColorRangeSlider({
   colorMapScale,
   setColorMapScale
 }: ColorrangeRangeSlideProps) {
-
   const setDefaultMin = colorMapScale?.min ? colorMapScale.min : min;
   const setDefaultMax = colorMapScale?.max ? colorMapScale.max : max;
 
@@ -164,6 +163,7 @@ export function ColorRangeSlider({
                 ? 'border-secondary-vivid text-secondary-vivid'
                 : ' border-base-light'
             }`}
+            data-testid='minInput'
             value={
               fieldFocused
                 ? minValRef.current.actual
@@ -206,6 +206,7 @@ export function ColorRangeSlider({
         <div className='position-relative container display-flex flex-align-center flex-justify-center padding-x-105'>
           <input
             type='range'
+            data-testid='minSlider'
             min={min}
             max={max}
             step={calculateStep(max, min, digitCount)}
@@ -226,6 +227,7 @@ export function ColorRangeSlider({
           />
           <input
             type='range'
+            data-testid='maxSlider'
             min={min}
             max={max}
             step={calculateStep(max, min, digitCount)}
@@ -272,6 +274,7 @@ export function ColorRangeSlider({
             data-validate-numerical='[0-9]*'
             id='range slider max'
             name='max'
+            data-testid='maxInput'
             className={`${textInputClasses} ${
               inputError.max || inputError.lessThanMin
                 ? 'border-secondary-vivid text-secondary-vivid'
