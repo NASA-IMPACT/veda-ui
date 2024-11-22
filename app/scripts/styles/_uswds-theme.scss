@@ -16,6 +16,12 @@
         "mobile-lg": false,
         "desktop": false
     ),
-    $theme-font-type-sans: baseFontFamily,
     $theme-font-type-serif: baseFontFamily,
+    $theme-font-type-sans: 'public-sans',
 );
+
+
+// @NOTE: 'ui' & 'body' (role-based tokens) seems to be the default font-family setting token ($theme-font-role-ui) across components https://designsystem.digital.gov/documentation/settings/#typography-settings, 
+// for example footer, header, form, button, banner, etc. Could we just ovewrite those to look at public-sans which  is what we want our default?
+// $theme-font-role-ui role-based token maps to 'sans' type-based token
+// $theme-font-role-body maps to 'sans' type-based token
