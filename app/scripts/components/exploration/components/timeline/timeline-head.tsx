@@ -8,7 +8,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { TIMELINE_PLAYHEAD_COLOR_LABEL, TIMELINE_PLAYHEAD_COLOR_PRIMARY, TIMELINE_PLAYHEAD_COLOR_SECONDARY, TIMELINE_PLAYHEAD_COLOR_TEXT } from './timeline-controls';
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
-import { DateRange } from '$components/exploration/types.d.ts';
+import { DateRange } from '$components/exploration/types.d';
 
 // Needs padding so that the timeline head is fully visible.
 // This value gets added to the width.

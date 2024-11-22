@@ -25,7 +25,7 @@ import { findDatasetAttribute } from '$components/exploration/data-utils';
 import {
   DatasetStatus,
   TimelineDatasetSuccess
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types.d';
 import {
   DATASET_TRACK_BLOCK_HEIGHT,
   HEADER_COLUMN_WIDTH

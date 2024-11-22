@@ -1,5 +1,5 @@
 import { ScaleTime, Selection, ZoomBehavior, ZoomTransform } from 'd3';
-import { TimelineDatasetSuccess } from '$components/exploration/types.d.ts';
+import { TimelineDatasetSuccess } from '$components/exploration/types.d';
 
 /**
  * Clamps the given value to the given range.

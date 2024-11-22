@@ -63,7 +63,7 @@ import {
   DatasetStatus,
   TimelineDatasetSuccess,
   ZoomTransformPlain
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types.d';
 import { useInteractionRectHover } from '$components/exploration/hooks/use-dataset-hover';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useAois from '$components/common/map/controls/hooks/use-aois';

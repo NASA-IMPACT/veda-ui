@@ -16,7 +16,7 @@ import { TipButton } from '$components/common/tip-button';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
 import { NativeSliderInput, SliderInputProps } from '$styles/range-slider';
-import { TimelineDataset } from '$components/exploration/types.d.ts';
+import { TimelineDataset } from '$components/exploration/types.d';
 
 
 interface LayerMenuOptionsProps {
