@@ -39,8 +39,8 @@ export function ColorRangeSlider({
 
   const [minVal, setMinVal] = useState(setDefaultMin);
   const [maxVal, setMaxVal] = useState(setDefaultMax);
-  const minValRef = useRef({ actual: setDefaultMin, display: '' });
-  const maxValRef = useRef({ actual: setDefaultMax, display: '' });
+  const minValRef = useRef({ actual: setDefaultMin, display: setDefaultMin });
+  const maxValRef = useRef({ actual: setDefaultMax, display: setDefaultMax });
   const [maxIsHovering, setMaxIsHovering] = useState(false);
   const [minIsHovering, setMinIsHovering] = useState(false);
   const digitCount = useRef<number>(1);
