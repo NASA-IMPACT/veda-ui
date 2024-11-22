@@ -67,7 +67,7 @@ describe('colorRangeSlider should render with correct content.', () => {
   });
 });
 
-describe('colorRangeSlider should render with correct display content.', () => {
+describe('colorRangeSlider should render with correct display content', () => {
   const colorRangeData = {
     min: -0.0000003,
     max: 0.0000003,
