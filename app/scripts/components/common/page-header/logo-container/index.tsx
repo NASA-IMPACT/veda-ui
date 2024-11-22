@@ -15,20 +15,18 @@ export default function LogoContainer({
   Logo,
   title,
   version,
-  themeMode = 'mode-light',
 }: {
   linkProperties: LinkProperties;
   Logo?: JSX.Element;
   title: string;
   subTitle?: string;
   version?: string;
-  themeMode?: string;
 }) {
   const LinkElement: ComponentType<any> =
     linkProperties.LinkElement as ComponentType<any>;
 
   return (
-    <div id='logo-container' className={themeMode}>
+    <div id='logo-container'>
       <LinkElement id='logo-container-link' {...{ [linkProperties.pathAttributeKeyName]: '/' }}>
         {Logo}
         <span>{title}</span>

@@ -18,15 +18,13 @@ interface PageHeaderProps {
   subNavItems: NavItem[];
   logo?: ReactElement;
   linkProperties: LinkProperties;
-  mode?: 'dark' | 'light';
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({
   mainNavItems,
   subNavItems,
   logo: Logo,
-  linkProperties,
-  mode
+  linkProperties
 }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean[]>(
@@ -38,8 +36,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({
       return !prvExpanded;
     });
   };
-
-  const themeMode = mode ? `mode-${mode}` : 'mode-light';
 
   const primaryItems = useMemo(
     () =>
@@ -54,7 +50,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   return (
     <>
-      <USWDSHeader id={themeMode} extended={true} showMobileOverlay={expanded}>
+      <USWDSHeader extended={true} showMobileOverlay={expanded}>
         <div className='usa-navbar'>
           <USWDSHeaderTitle>
             <LogoContainer
@@ -66,7 +62,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               title='Earthdata VEDA Dashboard'
               subTitle={appTitle}
               version={appVersion}
-              themeMode={themeMode}
             />
           </USWDSHeaderTitle>
           <USWDSNavMenuButton onClick={toggleExpansion} label='Menu' />
