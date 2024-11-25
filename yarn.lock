@@ -13975,11 +13975,6 @@ styled-components@^5.3.3:
     shallowequal "^1.1.0"
     supports-color "^5.5.0"
 
-stylelint-config-prettier-scss@^1.0.0:
-  version "1.0.0"
-  resolved "http://verdaccio.ds.io:4873/stylelint-config-prettier-scss/-/stylelint-config-prettier-scss-1.0.0.tgz#4125152ce9ee39ec233ce14436fc0818fa866aee"
-  integrity sha512-Gr2qLiyvJGKeDk0E/+awNTrZB/UtNVPLqCDOr07na/sLekZwm26Br6yYIeBYz3ulsEcQgs5j+2IIMXCC+wsaQA==
-
 stylelint-config-recommended-scss@^14.0.0:
   version "14.1.0"
   resolved "http://verdaccio.ds.io:4873/stylelint-config-recommended-scss/-/stylelint-config-recommended-scss-14.1.0.tgz#1a5855655cddcb5f77c10f38c76567adf2bb9aa3"
