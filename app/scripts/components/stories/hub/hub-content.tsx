@@ -21,7 +21,11 @@ import {
 } from '$components/common/fold';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
 import { Card } from '$components/common/card';
-import { CardListGrid, CardMeta, CardTopicsList } from '$components/common/card/styles';
+import {
+  CardListGrid,
+  CardMeta,
+  CardTopicsList
+} from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import { prepareDatasets } from '$components/common/catalog/prepare-datasets';
 
@@ -183,7 +187,7 @@ export default function HubContent(props: HubContentProps) {
                   linkLabel='View more'
                   linkProperties={{
                     ...linkProperties,
-                    linkTo: `${d.asLink?.url ?? d.path}`,
+                    linkTo: `${d.asLink?.url ?? d.path}`
                   }}
                   title={
                     <TextHighlight value={search} disabled={search.length < 3}>

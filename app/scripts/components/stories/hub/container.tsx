@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router';
 
 import { stories, getString } from 'veda';
 import HubContent from './hub-content';
@@ -19,10 +18,13 @@ import {
 
 import SmartLink from '$components/common/smart-link';
 
-const allStories = Object.values(stories).map((d) => d!.data).filter(d => !d.isHidden).map((d) => ({ ...d, path: getStoryPath(d)}));
+const allStories = Object.values(stories)
+  .map((d) => d!.data)
+  .filter((d) => !d.isHidden)
+  .map((d) => ({ ...d, path: getStoryPath(d) }));
 
 function StoriesHubContainer() {
-  const controlVars = useFiltersWithQS({navigate: useNavigate()});
+  const controlVars = useFiltersWithQS();
   return (
     <PageMainContent>
       <LayoutProps
@@ -40,9 +42,15 @@ function StoriesHubContainer() {
         <HubContent
           allStories={allStories}
           onFilterchanges={() => controlVars}
-          linkProperties={{ LinkElement: SmartLink, pathAttributeKeyName: 'to'}}
+          linkProperties={{
+            LinkElement: SmartLink,
+            pathAttributeKeyName: 'to'
+          }}
           pathname={STORIES_PATH}
-          storiesString={{one: getString('stories').one,other: getString('stories').other}}
+          storiesString={{
+            one: getString('stories').one,
+            other: getString('stories').other
+          }}
         />
       </ContentOverride>
     </PageMainContent>

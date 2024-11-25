@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router';
+import { useLocation } from 'react-router';
 import { getString } from 'veda';
 import { getAllDatasetsProps } from '$utils/veda-data';
 import CatalogView from '$components/common/catalog';
@@ -21,13 +21,18 @@ import SmartLink from '$components/common/smart-link';
 export default function DataCatalogContainer() {
   const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
   const pathname = useLocation().pathname;
-  const navigate = useNavigate();
-  const controlVars = useFiltersWithQS({navigate: navigate});
+  const controlVars = useFiltersWithQS();
 
   return (
     <PageMainContent>
-      <LayoutProps title='Data Catalog' description={getString('dataCatalogBanner').other} />
-      <PageHero title='Data Catalog' description={getString('dataCatalogBanner').other} />
+      <LayoutProps
+        title='Data Catalog'
+        description={getString('dataCatalogBanner').other}
+      />
+      <PageHero
+        title='Data Catalog'
+        description={getString('dataCatalogBanner').other}
+      />
       <FeaturedDatasets />
       <CatalogView
         datasets={allDatasets}
