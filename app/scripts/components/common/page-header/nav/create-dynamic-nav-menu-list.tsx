@@ -1,15 +1,17 @@
 import React from 'react';
-import { LinkProperties } from '$types/veda';
 import { NavItem, NavItemType } from '../types';
 import { NavDropDownButton } from './nav-dropdown-button';
 import { NavItemExternalLink, NavItemInternalLink } from './nav-item-links';
 import { NavItemCTA } from './nav-item-cta';
+import { LinkProperties } from '$types/veda';
 
 export const createDynamicNavMenuList = (
   navItems: NavItem[],
   linkProperties: LinkProperties,
   isOpen: boolean[] | undefined = undefined,
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>> | undefined = undefined
+  setIsOpen:
+    | React.Dispatch<React.SetStateAction<boolean[]>>
+    | undefined = undefined
 ): JSX.Element[] => {
   return navItems.map((item, index) => {
     switch (item.type) {

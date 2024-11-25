@@ -1,9 +1,9 @@
 import React from 'react';
-import { LinkProperties } from '$types/veda';
 import { USWDSNavDropDownButton } from '../../uswds/header/nav-drop-down-button';
 import { USWDSMenu } from '../../uswds/header/menu';
-import { createDynamicNavMenuList } from './create-dynamic-nav-menu-list';
 import { DropdownNavLink } from '../types';
+import { createDynamicNavMenuList } from './create-dynamic-nav-menu-list';
+import { LinkProperties } from '$types/veda';
 
 interface NavDropDownButtonProps {
   item: DropdownNavLink;
@@ -35,10 +35,7 @@ export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
     });
   };
 
-  const submenuItems = createDynamicNavMenuList(
-    item.children,
-    linkProperties
-  );
+  const submenuItems = createDynamicNavMenuList(item.children, linkProperties);
 
   return (
     <React.Fragment key={item.id}>

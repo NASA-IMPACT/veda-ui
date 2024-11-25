@@ -1,6 +1,6 @@
 import React from 'react';
-import { LinkProperties } from '$types/veda';
 import { ExternalNavLink, InternalNavLink } from '../types';
+import { LinkProperties } from '$types/veda';
 
 interface NavItemExternalLinkProps {
   item: ExternalNavLink;
@@ -12,7 +12,7 @@ interface NavItemInternalLinkProps {
 }
 
 export const NavItemExternalLink: React.FC<NavItemExternalLinkProps> = ({
-  item,
+  item
 }): JSX.Element => {
   return (
     <a
@@ -30,7 +30,7 @@ export const NavItemExternalLink: React.FC<NavItemExternalLinkProps> = ({
 
 export const NavItemInternalLink: React.FC<NavItemInternalLinkProps> = ({
   item,
-  linkProperties,
+  linkProperties
 }): JSX.Element | null => {
   if (linkProperties.LinkElement) {
     const path = {
@@ -38,7 +38,12 @@ export const NavItemInternalLink: React.FC<NavItemInternalLinkProps> = ({
     };
     const LinkElement = linkProperties.LinkElement;
     return (
-      <LinkElement key={item.id} {...path} className='usa-nav__link' id={item.id}>
+      <LinkElement
+        key={item.id}
+        {...path}
+        className='usa-nav__link'
+        id={item.id}
+      >
         <span>{item.title}</span>
       </LinkElement>
     );
