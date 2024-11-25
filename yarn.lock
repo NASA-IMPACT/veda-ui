@@ -402,7 +402,7 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.12.7", "@babel/parser@^7.14.7", "@babel/parser@^7.18.6", "@babel/parser@^7.18.8", "@babel/parser@^7.8.3":
+"@babel/parser@^7.1.0", "@babel/parser@^7.12.7", "@babel/parser@^7.14.7", "@babel/parser@^7.18.6", "@babel/parser@^7.18.8":
   version "7.18.8"
   resolved "http://verdaccio.ds.io:4873/@babel%2fparser/-/parser-7.18.8.tgz#822146080ac9c62dac0823bb3489622e0bc1cbdf"
   integrity sha512-RSKRfYX20dyH+elbJK2uqAkVyucL+xXzhqlMD5/ZXx+dAAwpyB7HsvnHe/ZUGOF+xLr5Wx9/JoXVTj6BQE2/oA==
@@ -1157,7 +1157,7 @@
     "@babel/parser" "^7.18.10"
     "@babel/types" "^7.18.10"
 
-"@babel/traverse@^7.12.9", "@babel/traverse@^7.13.0", "@babel/traverse@^7.18.6", "@babel/traverse@^7.18.8", "@babel/traverse@^7.4.5", "@babel/traverse@^7.7.2", "@babel/traverse@^7.8.3":
+"@babel/traverse@^7.12.9", "@babel/traverse@^7.13.0", "@babel/traverse@^7.18.6", "@babel/traverse@^7.18.8", "@babel/traverse@^7.4.5", "@babel/traverse@^7.7.2":
   version "7.18.8"
   resolved "http://verdaccio.ds.io:4873/@babel%2ftraverse/-/traverse-7.18.8.tgz#f095e62ab46abf1da35e5a2011f43aee72d8d5b0"
   integrity sha512-UNg/AcSySJYR/+mIcJQDCv00T+AqRO7j/ZEJLzpaYtgM48rMg5MnkJgyNqkzo88+p4tfRvZJCEiwwfG6h4jkRg==
@@ -7844,9 +7844,9 @@ flatted@^3.1.0:
   integrity sha512-0sQoMh9s0BYsm+12Huy/rkKxVu4R1+r96YX5cG44rHV0pQ6iC3Q+mkoMFaGWObMFYQxCVT+ssG1ksneA2MI9KQ==
 
 flatted@^3.3.1:
-  version "3.3.1"
-  resolved "http://verdaccio.ds.io:4873/flatted/-/flatted-3.3.1.tgz#21db470729a6734d4997002f439cb308987f567a"
-  integrity sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==
+  version "3.3.2"
+  resolved "http://verdaccio.ds.io:4873/flatted/-/flatted-3.3.2.tgz#adba1448a9841bec72b42c532ea23dbbedef1a27"
+  integrity sha512-AiwGJM8YcNOaobumgtng+6NHuOqC3A7MixFeDafM3X9cIUM+xUXoS5Vfgf+OihAYe20fxqNM9yPBXJzRtZ/4eA==
 
 flush-write-stream@^1.0.2:
   version "1.1.1"
@@ -11122,7 +11122,7 @@ micromark@^3.0.0:
     micromark-util-types "^1.0.1"
     uvu "^0.5.0"
 
-micromatch@4.0.5, micromatch@^4.0.2, micromatch@^4.0.4:
+micromatch@4.0.5, micromatch@^4.0.4:
   version "4.0.5"
   resolved "http://verdaccio.ds.io:4873/micromatch/-/micromatch-4.0.5.tgz#bc8999a7cbbf77cdc89f132f6e467051b49090c6"
   integrity sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==
@@ -11991,7 +11991,7 @@ picocolors@^1.0.1:
   resolved "http://verdaccio.ds.io:4873/picocolors/-/picocolors-1.0.1.tgz#a8ad579b571952f0e5d25892de5445bcfe25aaa1"
   integrity sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==
 
-picocolors@^1.1.0:
+picocolors@^1.1.1:
   version "1.1.1"
   resolved "http://verdaccio.ds.io:4873/picocolors/-/picocolors-1.1.1.tgz#3d321af3eab939b083c8f929a1d12cda81c26b6b"
   integrity sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==
@@ -12165,6 +12165,13 @@ postcss-selector-parser@^6.1.2:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
 
+postcss-styled-syntax@^0.7.0:
+  version "0.7.0"
+  resolved "http://verdaccio.ds.io:4873/postcss-styled-syntax/-/postcss-styled-syntax-0.7.0.tgz#7ae2f5e9af36af3e81fc96f0e92c98d27b21be9d"
+  integrity sha512-OeStzPkHJ1/WDGRKm/JuVK8UdJbjt3U7AFC+zUc9omJ79SaXSxWoy+PXxJz7t8vOO8HcUgCLndNEQfLvZ74TuQ==
+  dependencies:
+    typescript "^5.6.3"
+
 postcss-value-parser@^3.3.0:
   version "3.3.1"
   resolved "http://verdaccio.ds.io:4873/postcss-value-parser/-/postcss-value-parser-3.3.1.tgz#9ff822547e2893213cf1c30efa51ac5fd1ba8281"
@@ -12184,7 +12191,7 @@ postcss@8.4.31:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-postcss@^7.0.16, postcss@^7.0.26:
+postcss@^7.0.16:
   version "7.0.39"
   resolved "http://verdaccio.ds.io:4873/postcss/-/postcss-7.0.39.tgz#9624375d965630e2e1f2c02a935c82a59cb48309"
   integrity sha512-yioayjNbHn6z1/Bywyb2Y4s3yvDAeXGOyxqD+LnVOinq6Mdmd++SW2wUNVzavyyHxd6+DxzWGIuosg6P1Rj8uA==
@@ -12211,12 +12218,12 @@ postcss@^8.4.39:
     source-map-js "^1.2.0"
 
 postcss@^8.4.47:
-  version "8.4.47"
-  resolved "http://verdaccio.ds.io:4873/postcss/-/postcss-8.4.47.tgz#5bf6c9a010f3e724c503bf03ef7947dcb0fea365"
-  integrity sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==
+  version "8.4.49"
+  resolved "http://verdaccio.ds.io:4873/postcss/-/postcss-8.4.49.tgz#4ea479048ab059ab3ae61d082190fabfd994fe19"
+  integrity sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==
   dependencies:
     nanoid "^3.3.7"
-    picocolors "^1.1.0"
+    picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
 posthtml-expressions@^1.9.0:
@@ -14012,16 +14019,6 @@ stylelint-config-styled-components@^0.1.1:
   resolved "http://verdaccio.ds.io:4873/stylelint-config-styled-components/-/stylelint-config-styled-components-0.1.1.tgz#b408388d7c687833ab4be4c4e6522d97d2827ede"
   integrity sha512-z5Xz/9GmvxO6e/DLzBMwkB85zHxEEjN6K7Cj80Bi+o/9vR9eS3GX3E9VuMnX9WLFYulqbqLtTapGGY28JBiy9Q==
 
-stylelint-processor-styled-components@^1.10.0:
-  version "1.10.0"
-  resolved "http://verdaccio.ds.io:4873/stylelint-processor-styled-components/-/stylelint-processor-styled-components-1.10.0.tgz#8082fc68779476aac411d3afffac0bc833d77a29"
-  integrity sha512-g4HpN9rm0JD0LoHuIOcd/FIjTZCJ0ErQ+dC3VTxp+dSvnkV+MklKCCmCQEdz5K5WxF4vPuzfVgdbSDuPYGZhoA==
-  dependencies:
-    "@babel/parser" "^7.8.3"
-    "@babel/traverse" "^7.8.3"
-    micromatch "^4.0.2"
-    postcss "^7.0.26"
-
 stylelint-scss@^6.4.0:
   version "6.8.1"
   resolved "http://verdaccio.ds.io:4873/stylelint-scss/-/stylelint-scss-6.8.1.tgz#b6554d93f2ea0bf37ffdcae571bbfaa35d79ba8a"
@@ -14532,6 +14529,11 @@ typescript@^4.5.5:
   version "4.7.4"
   resolved "http://verdaccio.ds.io:4873/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
+
+typescript@^5.6.3:
+  version "5.7.2"
+  resolved "http://verdaccio.ds.io:4873/typescript/-/typescript-5.7.2.tgz#3169cf8c4c8a828cde53ba9ecb3d2b1d5dd67be6"
+  integrity sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==
 
 typewise-core@^1.2, typewise-core@^1.2.0:
   version "1.2.0"
