@@ -1,6 +1,4 @@
 import React, { ReactElement, useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
 import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
@@ -54,10 +52,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         <div className='usa-navbar'>
           <USWDSHeaderTitle>
             <LogoContainer
-              linkProperties={{
-                LinkElement: Link,
-                pathAttributeKeyName: 'to'
-              }}
+              linkProperties={linkProperties}
               Logo={Logo}
               title='Earthdata VEDA Dashboard'
               subTitle={appTitle}
