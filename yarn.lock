@@ -14009,11 +14009,6 @@ stylelint-config-standard@^36.0.0:
   dependencies:
     stylelint-config-recommended "^14.0.1"
 
-stylelint-config-styled-components@^0.1.1:
-  version "0.1.1"
-  resolved "http://verdaccio.ds.io:4873/stylelint-config-styled-components/-/stylelint-config-styled-components-0.1.1.tgz#b408388d7c687833ab4be4c4e6522d97d2827ede"
-  integrity sha512-z5Xz/9GmvxO6e/DLzBMwkB85zHxEEjN6K7Cj80Bi+o/9vR9eS3GX3E9VuMnX9WLFYulqbqLtTapGGY28JBiy9Q==
-
 stylelint-scss@^6.4.0:
   version "6.8.1"
   resolved "http://verdaccio.ds.io:4873/stylelint-scss/-/stylelint-scss-6.8.1.tgz#b6554d93f2ea0bf37ffdcae571bbfaa35d79ba8a"
