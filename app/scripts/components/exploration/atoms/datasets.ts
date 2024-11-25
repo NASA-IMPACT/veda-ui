@@ -1,6 +1,6 @@
-import { datasetLayers } from '../data-utils';
 import { reconcileDatasets } from '../data-utils-no-faux-module';
 import { TimelineDataset, TimelineDatasetForUrl } from '../types.d.ts';
+import { datasetLayersAtom } from './datasetLayers';
 import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 
 function urlDatasetsDehydrate(datasets: TimelineDataset[]) {
@@ -38,7 +38,7 @@ export const timelineDatasetsAtom = atomWithUrlValueStability<
   dehydrate: (datasets) => {
     return urlDatasetsDehydrate(datasets);
   },
-  reconcile: (urlDatasets, storageDatasets) => {
+  reconcile: (urlDatasets, storageDatasets, get) => {
     // Reconcile what needs to be reconciled.
     const reconciledDatasets = urlDatasets.map((enc) => {
       // We only want to do this on load. If the dataset was already
@@ -49,10 +49,14 @@ export const timelineDatasetsAtom = atomWithUrlValueStability<
       if (readyDataset) {
         return readyDataset;
       }
+      const currentDatasetLayers = get(datasetLayersAtom);
       // Reconcile the dataset with the internal data (from VEDA config files)
       // and then add the url stored settings.
-      // @TODO - replace datasetLayers
-      const [reconciled] = reconcileDatasets([enc.id], datasetLayers, []);
+      const [reconciled] = reconcileDatasets(
+        [enc.id],
+        currentDatasetLayers,
+        []
+      );
       if (enc.settings) {
         reconciled.settings = enc.settings;
       }
