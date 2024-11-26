@@ -164,6 +164,7 @@ export const CookieConsent = ({
             >
               <Icon.Close
                 size={3}
+                // @ts-expect-error css is not assignable to type 'IntrinsicAttributes & USWDSIconProps & SVGProps<SVGSVGElement>'.
                 css={css`
                   ${transitionSettings}
                   ${themeValueCheck(theme?.iconColor?.default) &&
@@ -177,6 +178,7 @@ export const CookieConsent = ({
 
             {copy && (
               <div
+                // @ts-expect-error css does not exist on type 'DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>'
                 css={css`
                   ${themeValueCheck(theme?.card?.textColor) &&
                   `color: ` + theme?.card?.textColor};
