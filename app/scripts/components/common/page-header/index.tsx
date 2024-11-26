@@ -11,7 +11,7 @@ import './styles.scss';
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
-  logo?: ReactElement;
+  logoSvg?: SVGElement;
   linkProperties: LinkProperties;
   title: string;
   version?: string;
@@ -20,7 +20,7 @@ interface PageHeaderProps {
 export default function PageHeader ({
   mainNavItems,
   subNavItems,
-  logo: Logo,
+  logoSvg: Logo,
   linkProperties,
   title,
   version
@@ -54,7 +54,7 @@ export default function PageHeader ({
           <USWDSHeaderTitle>
             <LogoContainer
               linkProperties={linkProperties}
-              Logo={Logo}
+              LogoSvg={Logo}
               title={title}
               version={version}
             />

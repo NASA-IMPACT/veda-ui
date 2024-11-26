@@ -39,7 +39,7 @@ function NavWrapper(props) {
     isUSWDSEnabled ? (
       <PageHeader
         {...props}
-        logo={<NasaLogoColor />}
+        logoSvg={<NasaLogoColor />}
         linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
         title={appTitle}
       />

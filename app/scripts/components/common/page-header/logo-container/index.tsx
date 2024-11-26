@@ -12,12 +12,12 @@ import './styles.scss';
 
 export default function LogoContainer({
   linkProperties,
-  Logo,
+  LogoSvg,
   title,
   version,
 }: {
   linkProperties: LinkProperties;
-  Logo?: JSX.Element;
+  LogoSvg?: SVGElement;
   title: string;
   version?: string;
 }) {
@@ -27,7 +27,7 @@ export default function LogoContainer({
   return (
     <div id='logo-container'>
       <LinkElement id='logo-container-link' {...{ [linkProperties.pathAttributeKeyName]: '/' }}>
-        {Logo}
+        {LogoSvg}
         <span>{title}</span>
       </LinkElement>
       <Tip content={`v${version}`}>
