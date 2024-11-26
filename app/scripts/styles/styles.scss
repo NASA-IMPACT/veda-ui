@@ -10,3 +10,7 @@
 @use 'usa-icon';
 @use 'usa-modal';
 @use 'usa-header';
+
+// Custom VEDA UI styles
+@use "../components/common/page-header/styles.scss";
+@use "../components/common/cookie-consent/index.scss";
