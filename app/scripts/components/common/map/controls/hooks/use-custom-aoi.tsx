@@ -7,36 +7,43 @@ import { multiPolygonToPolygons } from '../../utils';
 import { round } from '$utils/format';
 
 const extensions = ['geojson', 'json', 'zip'];
-const eachFeatureMaxPointNum = 500;
 const maxTolerance = 5;
-const maxPolygonNum = 200;
+
+export const eachFeatureMaxPointNum = 500;
+export const maxPolygonNum = 200;
 export const acceptExtensions = extensions.map((ext) => `.${ext}`).join(', ');
 
+export const INVALID_GEOMETRY_ERROR =
+  'Wrong geometry type. Only polygons or multi polygons are accepted.';
+export const TOO_MANY_POLYGON_ERROR =
+  'Only files with up to 200 polygons are accepted.';
+const RING_POLYGON_WARNING =
+  'Polygons with rings are not supported and were simplified to remove them';
 export interface FileInfo {
   name: string;
   extension: string;
   type: 'Shapefile' | 'GeoJSON';
 }
 
-interface PolygonGeojson {
+export interface PolygonGeojson {
   type: 'FeatureCollection';
   features: Feature<Polygon | MultiPolygon>[];
 }
 
-function getNumPoints(feature: Feature<Polygon>): number {
+export function getNumPoints(feature: Feature<Polygon>): number {
   return feature.geometry.coordinates.reduce((acc, current) => {
     return acc + current.length;
   }, 0);
 }
 
-function validateGeometryType(geojson: PolygonGeojson): boolean {
+export function validateGeometryType(geojson: PolygonGeojson): boolean {
   const hasInvalidGeometry = geojson.features.some(
     (feature) => !['MultiPolygon', 'Polygon'].includes(feature.geometry.type)
   );
   return !hasInvalidGeometry;
 }
 
-function extractPolygonsFromGeojson(
+export function extractPolygonsFromGeojson(
   geojson: PolygonGeojson
 ): Feature<Polygon>[] {
   return geojson.features.reduce(
@@ -52,11 +59,11 @@ function extractPolygonsFromGeojson(
   );
 }
 
-function validateFeatureCount(features: Feature<Polygon>[]): boolean {
+export function validateFeatureCount(features: Feature<Polygon>[]): boolean {
   return features.length <= maxPolygonNum;
 }
 
-function removePolygonHoles(features: Feature<Polygon>[]): {
+export function removePolygonHoles(features: Feature<Polygon>[]): {
   simplifiedFeatures: Feature<Polygon>[];
   warnings: string[];
 } {
@@ -76,15 +83,11 @@ function removePolygonHoles(features: Feature<Polygon>[]): {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  const warnings = polygonHasRings
-    ? [
-        'Polygons with rings are not supported and were simplified to remove them'
-      ]
-    : [];
+  const warnings = polygonHasRings ? [RING_POLYGON_WARNING] : [];
   return { simplifiedFeatures, warnings };
 }
 
-function simplifyFeatures(features: Feature<Polygon>[]): {
+export function simplifyFeatures(features: Feature<Polygon>[]): {
   simplifiedFeatures: Feature<Polygon>[];
   warnings: string[];
 } {
@@ -156,15 +159,13 @@ function simplifyFeatures(features: Feature<Polygon>[]): {
 export function getAoiAppropriateFeatures(geojson: PolygonGeojson) {
   const geometryValidated = validateGeometryType(geojson);
   if (!geometryValidated) {
-    throw new Error(
-      'Wrong geometry type. Only polygons or multi polygons are accepted.'
-    );
+    throw new Error(INVALID_GEOMETRY_ERROR);
   }
 
   const features = extractPolygonsFromGeojson(geojson);
   const featureCountValidated = validateFeatureCount(features);
   if (!featureCountValidated) {
-    throw new Error('Only files with up to 200 polygons are accepted.');
+    throw new Error(TOO_MANY_POLYGON_ERROR);
   }
   const { simplifiedFeatures: noHolesFeatures, warnings: holeWarnings } =
     removePolygonHoles(features);
