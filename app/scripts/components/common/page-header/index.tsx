@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
 import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
@@ -17,7 +17,7 @@ interface PageHeaderProps {
   version?: string;
 }
 
-export default function PageHeader ({
+export default function PageHeader({
   mainNavItems,
   subNavItems,
   logoSvg: Logo,
@@ -34,17 +34,17 @@ export default function PageHeader ({
     setExpanded((prvExpanded) => {
       return !prvExpanded;
     });
-  }, [expanded]);
+  }, []);
 
   const primaryItems = useMemo(
     () =>
       createDynamicNavMenuList(mainNavItems, linkProperties, isOpen, setIsOpen),
-    [mainNavItems, isOpen]
+    [mainNavItems, linkProperties, isOpen]
   );
 
   const secondaryItems = useMemo(
     () => createDynamicNavMenuList(subNavItems, linkProperties),
-    [subNavItems]
+    [subNavItems, linkProperties]
   );
 
   return (
@@ -70,4 +70,4 @@ export default function PageHeader ({
       </USWDSHeader>
     </>
   );
-};
+}
