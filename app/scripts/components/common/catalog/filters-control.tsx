@@ -5,6 +5,7 @@ import { Taxonomy } from '$types/veda';
 import SearchField from '$components/common/search-field';
 import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
 import { useSlidingStickyHeader, HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
+import { usePathname } from '$utils/use-pathname';
 
 const ControlsWrapper = styled.div<{ widthValue?: string; heightValue?: string; topValue: string }>`
   min-width: 20rem;
@@ -27,7 +28,6 @@ interface FiltersMenuProps {
   exclusiveSourceSelected?: string | null;
   customTopOffset?: number;
   openByDefault?: boolean;
-  pathname?: string;
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
@@ -48,8 +48,9 @@ export default function FiltersControl(props: FiltersMenuProps) {
     // uses as a reference (the main page header). To avoid changing the reference IDs in the
     // main logic of the sliding sticky header hook, we provide this custom top offset for more control.
     customTopOffset = 0,
-    pathname,
   } = props;
+
+  const pathname = usePathname();
 
   const controlsRef = useRef<HTMLDivElement>(null);
   const [controlsHeight, setControlsHeight] =  useState<number>(0);
