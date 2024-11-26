@@ -8,6 +8,7 @@
     "declaration": true,
     "baseUrl": "./",
     "jsx": "react",
+    "types": ["@emotion/react/types/css-prop"],
     "paths": {
       "$components/*": ["app/scripts/components/*"],
       "$styles/*": ["app/scripts/styles/*"],

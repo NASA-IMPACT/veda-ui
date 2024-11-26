@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import { Icon } from '@trussworks/react-uswds';
-
+import { css } from '@emotion/react';
 import { setCookie, getCookie } from './utils';
 import {
   USWDSAlert,
@@ -10,11 +10,40 @@ import {
 } from '$components/common/uswds';
 
 import './index.scss';
-
+interface cookieConsentTheme {
+  card?: {
+    backgroundColor?: string;
+    sideBarColor?: string;
+    textColor?: string;
+    linkColor?: string;
+  };
+  acceptButton?: {
+    default?: {
+      backgroundColor?: string;
+      textColor?: string;
+    };
+    hover?: {
+      backgroundColor?: string;
+      textColor?: string;
+    };
+  };
+  declineButton?: {
+    default?: {
+      borderColor?: string;
+      textColor?: string;
+    };
+    hover?: {
+      borderColor?: string;
+      textColor?: string;
+    };
+  };
+  iconColor?: { default?: string; hover?: string };
+}
 interface CookieConsentProps {
   title?: string | undefined;
   copy?: string | undefined;
   pathname: string;
+  theme?: cookieConsentTheme;
   setDisplayCookieConsentForm: (boolean) => void;
   setGoogleTagManager: () => void;
 }
@@ -27,6 +56,7 @@ export const CookieConsent = ({
   title,
   copy,
   pathname,
+  theme,
   setDisplayCookieConsentForm,
   setGoogleTagManager
 }: CookieConsentProps) => {
@@ -90,6 +120,12 @@ export const CookieConsent = ({
     setGoogleTagManager
   ]);
 
+  const transitionSettings = ` -webkit-transition: all 0.24s ease 0s; transition: all 0.24s ease 0s;`;
+
+  const themeValueCheck = (themeItem) => {
+    //checking for null, undefined or empty string values
+    return themeItem !== undefined || themeItem !== '' ? true : false;
+  };
   return (
     <div>
       {!cookieConsentResponded && (
@@ -102,11 +138,21 @@ export const CookieConsent = ({
           }`}
         >
           <USWDSAlert
-            type='info'
+            type={!themeValueCheck(theme?.card?.backgroundColor) && 'info'}
             heading={title && title}
             headingLevel='h2'
             noIcon={true}
             className='radius-lg'
+            css={css`
+              ${themeValueCheck(theme?.card?.backgroundColor) &&
+              `background-color: ` + theme?.card?.backgroundColor};
+
+              ${themeValueCheck(theme?.card?.sideBarColor) &&
+              `border-left: 0.5rem solid ` + theme?.card?.sideBarColor};
+              ${themeValueCheck(theme?.card?.textColor) &&
+              `h2 {
+                color:` + theme?.card?.textColor}
+            `}
           >
             <USWDSButton
               type='button '
@@ -116,11 +162,31 @@ export const CookieConsent = ({
               }}
               unstyled
             >
-              <Icon.Close size={3} />
+              <Icon.Close
+                size={3}
+                css={css`
+                  ${transitionSettings}
+                  ${themeValueCheck(theme?.iconColor?.default) &&
+                  `color: ` + theme?.iconColor?.default};
+                  ${themeValueCheck(theme?.iconColor?.hover) &&
+                  `:hover {
+                    color: ` + theme?.iconColor?.hover};
+                `}
+              />
             </USWDSButton>
 
             {copy && (
-              <div dangerouslySetInnerHTML={{ __html: addAttribute(copy) }} />
+              <div
+                css={css`
+                  ${themeValueCheck(theme?.card?.textColor) &&
+                  `color: ` + theme?.card?.textColor};
+                  ${transitionSettings}
+                  ${themeValueCheck(theme?.card?.linkColor) &&
+                  ` a:not([class]):visited {
+                        color: ` + theme?.card?.linkColor}
+                `}
+                dangerouslySetInnerHTML={{ __html: addAttribute(copy) }}
+              />
             )}
             <USWDSButtonGroup className='padding-top-2'>
               <USWDSButton
@@ -131,6 +197,24 @@ export const CookieConsent = ({
                 }}
                 outline={true}
                 type='button'
+                css={css`
+                  ${transitionSettings}
+
+                  ${themeValueCheck(theme?.iconColor?.default) &&
+                  `box-shadow: inset 0 0 0 2px ` +
+                    theme?.declineButton?.default?.borderColor};
+
+                  ${themeValueCheck(theme?.declineButton?.default?.textColor) &&
+                  `color: ` + theme?.declineButton?.default?.textColor};
+
+                  ${themeValueCheck(theme?.declineButton?.hover?.borderColor) &&
+                  `:hover {
+                    box-shadow: inset 0 0 0 2px ` +
+                    theme?.declineButton?.hover?.borderColor};
+
+                  ${themeValueCheck(theme?.declineButton?.hover?.textColor) &&
+                  `color: ` + theme?.declineButton?.hover?.textColor};
+                `}
               >
                 Decline Cookies
               </USWDSButton>
@@ -141,6 +225,24 @@ export const CookieConsent = ({
                   setCloseConsent(true);
                 }}
                 type='button'
+                css={css`
+                  ${transitionSettings}
+                  ${themeValueCheck(
+                    theme?.acceptButton?.default?.backgroundColor
+                  ) &&
+                  `background-color:  ` +
+                    theme?.acceptButton?.default?.backgroundColor};
+                  ${themeValueCheck(theme?.acceptButton?.default?.textColor) &&
+                  `color: ` + theme?.acceptButton?.default?.textColor};
+                  ${themeValueCheck(
+                    theme?.acceptButton?.hover?.backgroundColor
+                  ) &&
+                  `:hover {
+                    background-color: ` +
+                    theme?.acceptButton?.hover?.backgroundColor};
+                  ${themeValueCheck(theme?.acceptButton?.hover?.textColor) &&
+                  `color: ` + theme?.acceptButton?.hover?.textColor};
+                `}
               >
                 Accept Cookies
               </USWDSButton>
