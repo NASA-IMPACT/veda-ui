@@ -53,7 +53,7 @@ function extractPolygonsFromGeojson(
 }
 
 function validateFeatureCount(features: Feature<Polygon>[]): boolean {
-  if (features.length > maxPolygonNum) return false;
+  return features.length <= maxPolygonNum;
 }
 
 function removePolygonHoles(features: Feature<Polygon>[]): {
