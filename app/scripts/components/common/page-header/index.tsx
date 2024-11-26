@@ -55,8 +55,7 @@ export default function PageHeader ({
             <LogoContainer
               linkProperties={linkProperties}
               Logo={Logo}
-              title='Earthdata VEDA Dashboard'
-              subTitle={title}
+              title={title}
               version={version}
             />
           </USWDSHeaderTitle>

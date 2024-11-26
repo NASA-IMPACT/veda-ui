@@ -19,7 +19,6 @@ export default function LogoContainer({
   linkProperties: LinkProperties;
   Logo?: JSX.Element;
   title: string;
-  subTitle?: string;
   version?: string;
 }) {
   const LinkElement: ComponentType<any> =
