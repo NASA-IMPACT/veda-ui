@@ -18,6 +18,7 @@ const mockLinkProperties = {
   pathAttributeKeyName: 'to',
   LinkElement: 'a' as unknown as ComponentType
 };
+const testTitle= 'Test Title';
 
 describe('PageHeader', () => {
   beforeEach(() => {
@@ -25,7 +26,8 @@ describe('PageHeader', () => {
       <PageHeader
         mainNavItems={mockMainNavItems}
         subNavItems={mockSubNavItems}
-        logo={<NasaLogoColor />}
+        logoSvg={<NasaLogoColor />}
+        title={testTitle}
         linkProperties={mockLinkProperties}
       />
     );
@@ -33,7 +35,7 @@ describe('PageHeader', () => {
 
   test('renders the PageHeader component title', () => {
     expect(screen.getByTestId('header')).toHaveTextContent(
-      'Earthdata VEDA Dashboard'
+      testTitle
     );
   });
 

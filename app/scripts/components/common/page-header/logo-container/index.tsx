@@ -17,7 +17,7 @@ export default function LogoContainer({
   version,
 }: {
   linkProperties: LinkProperties;
-  LogoSvg?: SVGElement;
+  LogoSvg?: SVGElement | JSX.Element;
   title: string;
   version?: string;
 }) {

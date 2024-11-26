@@ -11,7 +11,7 @@ import './styles.scss';
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
-  logoSvg?: SVGElement;
+  logoSvg?: SVGElement | JSX.Element;
   linkProperties: LinkProperties;
   title: string;
   version?: string;
