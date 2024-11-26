@@ -31,19 +31,17 @@ export default function LogoContainer({
         {Logo}
         <span>{title}</span>
       </LinkElement>
-      {version && (
-        <Tip content={`v${version}`}>
-          <div
-            id='logo-container-beta-tag'
-            {...{
-              as: linkProperties.LinkElement as ComponentType<any>,
-              [linkProperties.pathAttributeKeyName]: '/development'
-            }}
-          >
-            BETA
-          </div>
-        </Tip>
-      )}
+      <Tip content={`v${version}`}>
+        <div
+          id='logo-container-beta-tag'
+          {...{
+            as: linkProperties.LinkElement as ComponentType<any>,
+            [linkProperties.pathAttributeKeyName]: '/development'
+          }}
+        >
+          {version || 'BETA'}
+        </div>
+      </Tip>
     </div>
   );
 }

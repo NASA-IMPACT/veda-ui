@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useMemo } from 'react';
+import React, { ReactElement, useCallback, useState, useMemo } from 'react';
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
 import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
@@ -8,32 +8,33 @@ import { USWDSNavMenuButton } from '$components/common/uswds/header/nav-menu-but
 import { USWDSExtendedNav } from '$components/common/uswds/header/extended-nav';
 import './styles.scss';
 
-const appTitle = process.env.APP_TITLE;
-const appVersion = process.env.APP_VERSION;
-
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
   logo?: ReactElement;
   linkProperties: LinkProperties;
+  title: string;
+  version?: string;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({
+export default function PageHeader ({
   mainNavItems,
   subNavItems,
   logo: Logo,
-  linkProperties
-}) => {
+  linkProperties,
+  title,
+  version
+}: PageHeaderProps) {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean[]>(
     mainNavItems.map(() => false)
   );
 
-  const toggleExpansion = (): void => {
+  const toggleExpansion: () => void = useCallback(() => {
     setExpanded((prvExpanded) => {
       return !prvExpanded;
     });
-  };
+  }, [expanded]);
 
   const primaryItems = useMemo(
     () =>
@@ -55,8 +56,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               linkProperties={linkProperties}
               Logo={Logo}
               title='Earthdata VEDA Dashboard'
-              subTitle={appTitle}
-              version={appVersion}
+              subTitle={title}
+              version={version}
             />
           </USWDSHeaderTitle>
           <USWDSNavMenuButton onClick={toggleExpansion} label='Menu' />
@@ -71,5 +72,3 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     </>
   );
 };
-
-export default PageHeader;
