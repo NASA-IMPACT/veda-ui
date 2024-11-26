@@ -1,3 +1,4 @@
+@forward 'uswds-theme';
 @use "uswds-core/src/styles/functions/utilities" as utils;
 @use "uswds-core/src/styles/functions/units" as spacing;
 @use "uswds-core/src/styles/mixins/utilities" as mixins;
@@ -14,13 +15,12 @@ $veda-uswds-basefont-sans: utils.family('sans');
 $veda-uswds-fontweight-light: utils.font-weight('light');
 $veda-uswds-fontweight-regular: utils.font-weight('normal');  
 $veda-uswds-fontweight-bold: utils.font-weight('bold'); 
-$veda-uswds-fontweight-semibold: 600; // @TODO: needs to map to uswds token 
+$veda-uswds-fontweight-semibold: utils.font-weight('semibold');
 
 // COLORS
 $veda-uswds-color-primary-darker: utils.color('primary-darker');
 $veda-uswds-color-secondary: utils.color('secondary');
 $veda-uswds-color-base-darkest: utils.color('base-darkest');
-$veda-uswds-color-base-white: #FFFFFF; // @TODO: wasn't able to find this token
 $veda-uswds-color-base-light: utils.color('base-light');
 $veda-uswds-color-base-ink: utils.color('ink');
 
