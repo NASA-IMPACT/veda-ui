@@ -34,24 +34,26 @@ const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_HEADER);
 function NavWrapper(props) {
   const { isHeaderHidden, headerHeight } = useSlidingStickyHeaderProps();
 
-  return isUSWDSEnabled ? (
-    <PageHeader
-      {...props}
-      logo={<NasaLogoColor />} // Override the composition from old page-header with simple svg
-      linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
-    />
-  ) : (
-    <NavWrapperContainer
-      id={HEADER_WRAPPER_ID}
-      shouldSlideHeader={isHeaderHidden}
-      headerHeight={headerHeight}
-    >
-      <PageHeaderLegacy
+  return (
+    isUSWDSEnabled ? (
+      <PageHeader
         {...props}
+        logo={<NasaLogoColor />}
         linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
       />
-    </NavWrapperContainer>
-  );
+    ) : (
+      <NavWrapperContainer
+        id={HEADER_WRAPPER_ID}
+        shouldSlideHeader={isHeaderHidden}
+        headerHeight={headerHeight}
+      >
+        <PageHeaderLegacy
+          {...props}
+          linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
+        />
+      </NavWrapperContainer>
+    )
+  )
 }
 
 export default NavWrapper;

@@ -65,28 +65,15 @@ let defaultSubNavItems: (
 ];
 
 if (process.env.GOOGLE_FORM !== undefined) {
-  if (process.env.ENABLE_USWDS_PAGE_HEADER) {
-    defaultSubNavItems = [
-      ...defaultSubNavItems,
-      {
-        id: 'contact-us',
-        title: 'Contact us',
-        actionId: 'open-google-form',
-        type: NavItemType.ACTION
-      }
-    ];
-  } else {
-    defaultSubNavItems = [
-      ...defaultSubNavItems,
-      {
-        id: 'contact-us',
-        title: 'Contact us',
-        actionId: 'open-google-form',
-        src: process.env.GOOGLE_FORM,
-        type: NavItemType.ACTION
-      }
-    ];
-  }
+  defaultSubNavItems = [
+    ...defaultSubNavItems,
+    {
+      id: 'contact-us',
+      title: 'Contact us',
+      actionId: 'open-google-form',
+      type: NavItemType.ACTION
+    }
+  ];
 }
 
 const mainNavItems =

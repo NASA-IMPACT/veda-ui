@@ -5,7 +5,6 @@ export enum NavItemType {
   EXTERNAL_LINK = 'externalLink',
   DROPDOWN = 'dropdown',
   ACTION = 'action', // styled as the link but performs some type of action instead of re-routing
-  BUTTON = 'button' // @NOTE: Change this to a button type and button should provide callback on action => aka whether it should open a modal or not or do another action
 }
 
 export type ActionId = 'open-google-form' | undefined; // @NOTE: ActionIds are nav items that perform some type of action but without it being a button

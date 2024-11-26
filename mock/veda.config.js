@@ -72,27 +72,15 @@ let subNavItems = [
 ];
 
 if (config.GOOGLE_FORM) {
-  if (config.ENABLE_USWDS_PAGE_HEADER) {
-    subNavItems = [
-      ...subNavItems,
-      {
-        id: 'contact-us',
-        title: 'Contact us',
-        actionId: 'open-google-form',
-        type: 'action'
-      }
-    ];
-  } else {
-    subNavItems = [
-      ...subNavItems,
-      {
-        id: 'contact-us',
-        title: 'Contact us',
-        actionId: 'open-google-form',
-        type: 'button'
-      }
-    ];
-  }
+  subNavItems = [
+    ...subNavItems,
+    {
+      id: 'contact-us',
+      title: 'Contact us',
+      actionId: 'open-google-form',
+      type: 'action'
+    }
+  ];
 }
 
 module.exports = {
