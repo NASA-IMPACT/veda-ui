@@ -36,7 +36,7 @@ function useMobileMenuFix(expanded, setExpanded) {
       window.removeEventListener('resize', handleResize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // We want to register the event listeners only once, when the component mounts
+  }, [expanded]); // We want to register the event listeners only once, when the component mounts, and when the expanded state changes
 }
 
 export default useMobileMenuFix;
