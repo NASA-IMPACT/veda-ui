@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
+import useMobileMenuFix from './use-mobile-menu-fix';
 import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
 import { LinkProperties } from '$types/veda';
 import { USWDSHeader, USWDSHeaderTitle } from '$components/common/uswds/header';
@@ -26,6 +27,8 @@ export default function PageHeader({
   version
 }: PageHeaderProps) {
   const [expanded, setExpanded] = useState<boolean>(false);
+  useMobileMenuFix(expanded, setExpanded);
+
   const [isOpen, setIsOpen] = useState<boolean[]>(
     mainNavItems.map(() => false)
   );
