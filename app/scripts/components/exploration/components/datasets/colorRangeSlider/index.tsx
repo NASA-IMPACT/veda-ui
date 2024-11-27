@@ -117,12 +117,12 @@ export function ColorRangeSlider({
     const minCharacterCount = minVal.toString().length + 1;
 
     let updatedDisplay;
-    maxCharacterCount <= 6
+    maxCharacterCount <= 7
       ? (updatedDisplay = maxVal)
       : (updatedDisplay = maxVal.toExponential());
     maxValRef.current.display = updatedDisplay;
 
-    minCharacterCount <= 6
+    minCharacterCount <= 7
       ? (updatedDisplay = minVal)
       : (updatedDisplay = minVal.toExponential());
     minValRef.current.display = updatedDisplay;
