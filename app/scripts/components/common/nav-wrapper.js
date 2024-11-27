@@ -30,32 +30,32 @@ const NavWrapperContainer = styled.div`
 `;
 // Hiding configurable map for now until Instances are ready to adapt it
 const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_HEADER);
-const appTitle = isUSWDSEnabled ? 'Earthdata VEDA Dashboard' : process.env.APP_TITLE;
+const appTitle = isUSWDSEnabled
+  ? 'Earthdata VEDA Dashboard'
+  : process.env.APP_TITLE;
 
 function NavWrapper(props) {
   const { isHeaderHidden, headerHeight } = useSlidingStickyHeaderProps();
 
-  return (
-    isUSWDSEnabled ? (
-      <PageHeader
+  return isUSWDSEnabled ? (
+    <PageHeader
+      {...props}
+      logoSvg={<NasaLogoColor />}
+      linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
+      title={appTitle}
+    />
+  ) : (
+    <NavWrapperContainer
+      id={HEADER_WRAPPER_ID}
+      shouldSlideHeader={isHeaderHidden}
+      headerHeight={headerHeight}
+    >
+      <PageHeaderLegacy
         {...props}
-        logoSvg={<NasaLogoColor />}
         linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
-        title={appTitle}
       />
-    ) : (
-      <NavWrapperContainer
-        id={HEADER_WRAPPER_ID}
-        shouldSlideHeader={isHeaderHidden}
-        headerHeight={headerHeight}
-      >
-        <PageHeaderLegacy
-          {...props}
-          linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
-        />
-      </NavWrapperContainer>
-    )
-  )
+    </NavWrapperContainer>
+  );
 }
 
 export default NavWrapper;

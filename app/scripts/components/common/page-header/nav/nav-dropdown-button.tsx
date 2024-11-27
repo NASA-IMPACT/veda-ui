@@ -3,27 +3,25 @@ import { USWDSNavDropDownButton } from '../../uswds/header/nav-drop-down-button'
 import { USWDSMenu } from '../../uswds/header/menu';
 import { DropdownNavLink } from '../types';
 import { createDynamicNavMenuList } from './create-dynamic-nav-menu-list';
+import { SetState } from '$types/aliases';
 import { LinkProperties } from '$types/veda';
 
 interface NavDropDownButtonProps {
   item: DropdownNavLink;
   isOpen: boolean[];
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>>;
+  setIsOpen: SetState<boolean[]>;
   index: number;
   linkProperties: LinkProperties;
 }
 
-export const NavDropDownButton: React.FC<NavDropDownButtonProps> = ({
+export const NavDropDownButton = ({
   item,
   isOpen,
   setIsOpen,
   index,
   linkProperties
-}) => {
-  const onToggle = (
-    index: number,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean[]>>
-  ): void => {
+}: NavDropDownButtonProps) => {
+  const onToggle = (index: number, setIsOpen: SetState<boolean[]>): void => {
     setIsOpen((prevIsOpen) => {
       const newIsOpen = prevIsOpen.map(
         (prev, i) =>
