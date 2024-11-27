@@ -88,12 +88,10 @@ describe('colorRangeSlider should render with correct display content', () => {
     const maxInput = screen.getByTestId('maxInput');
     const minInput = screen.getByTestId('minInput');
 
-    screen.debug();
-
     expect(screen.getByText('Rescale')).toBeInTheDocument();
     await waitFor(() => {
-      expect(minSlider).toHaveValue("-1.31e-7");
-      expect(maxSlider).toHaveValue("2.63e-7");
+      expect(minSlider).toHaveValue('-1.31e-7');
+      expect(maxSlider).toHaveValue('2.63e-7');
       expect(minInput).toHaveValue(-1.31e-7);
       expect(maxInput).toHaveValue(2.63e-7);
     });

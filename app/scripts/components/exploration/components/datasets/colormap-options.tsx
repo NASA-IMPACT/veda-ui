@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Icon } from "@trussworks/react-uswds";
+import { Icon } from '@trussworks/react-uswds';
 import { CollecticonDrop } from '@devseed-ui/collecticons';
 import {
   sequentialColorMaps,
@@ -13,16 +13,26 @@ import { colorMapScale } from '$components/exploration/types.d.ts';
 export const DEFAULT_COLORMAP = 'viridis';
 
 const CURATED_SEQUENTIAL_COLORMAPS = [
-  'viridis', 'plasma', 'inferno', 'magma', 'cividis',
-  'purples', 'blues', 'reds', 'greens', 'oranges',
-  'ylgnbu', 'ylgn', 'gnbu'
+  'viridis',
+  'plasma',
+  'inferno',
+  'magma',
+  'cividis',
+  'purples',
+  'blues',
+  'reds',
+  'greens',
+  'oranges',
+  'ylgnbu',
+  'ylgn',
+  'gnbu'
 ];
 
-const CURATED_DIVERGING_COLORMAPS = [
-  'rdbu', 'rdylbu', 'bwr', 'coolwarm'
-];
+const CURATED_DIVERGING_COLORMAPS = ['rdbu', 'rdylbu', 'bwr', 'coolwarm'];
 
-export const classifyColormap = (colormapName: string): 'sequential' | 'diverging' | 'rest' | 'unknown' => {
+export const classifyColormap = (
+  colormapName: string
+): 'sequential' | 'diverging' | 'rest' | 'unknown' => {
   const baseName = normalizeColorMap(colormapName);
 
   if (sequentialColorMaps[baseName]) {
@@ -38,9 +48,16 @@ export const classifyColormap = (colormapName: string): 'sequential' | 'divergin
 interface ColormapOptionsProps {
   colorMap: string | undefined;
   setColorMap: (colorMap: string) => void;
+  min: number;
+  max: number;
+  setColorMapScale: (colorMapScale: colorMapScale) => void;
+  colorMapScale: colorMapScale | undefined;
 }
 
-export const getColormapColors = (colormapName: string, isReversed: boolean): string[] => {
+export const getColormapColors = (
+  colormapName: string,
+  isReversed: boolean
+): string[] => {
   const baseName = normalizeColorMap(colormapName);
   const colormapData =
     sequentialColorMaps[baseName] ||
@@ -54,10 +71,19 @@ export const getColormapColors = (colormapName: string, isReversed: boolean): st
     return `rgba(${r}, ${g}, ${b}, ${a})`;
   });
 
-  return isReversed ? colors.reduceRight((acc, color) => [...acc, color], []) : colors;
+  return isReversed
+    ? colors.reduceRight((acc, color) => [...acc, color], [])
+    : colors;
 };
 
-export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: ColormapOptionsProps) {
+export function ColormapOptions({
+  colorMap = DEFAULT_COLORMAP,
+  min,
+  max,
+  setColorMap,
+  setColorMapScale,
+  colorMapScale
+}: ColormapOptionsProps) {
   const initialIsReversed = colorMap.endsWith('_r');
   const initialColorMap = normalizeColorMap(colorMap);
 
@@ -68,9 +94,15 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
   const [customColorMap, setCustomColorMap] = useState<string | null>(null);
 
   useEffect(() => {
-    if (colormapType === 'sequential' && !CURATED_SEQUENTIAL_COLORMAPS.includes(selectedColorMap)) {
+    if (
+      colormapType === 'sequential' &&
+      !CURATED_SEQUENTIAL_COLORMAPS.includes(selectedColorMap)
+    ) {
       setCustomColorMap(selectedColorMap);
-    } else if (colormapType === 'diverging' && !CURATED_DIVERGING_COLORMAPS.includes(selectedColorMap)) {
+    } else if (
+      colormapType === 'diverging' &&
+      !CURATED_DIVERGING_COLORMAPS.includes(selectedColorMap)
+    ) {
       setCustomColorMap(selectedColorMap);
     }
   }, [selectedColorMap, colormapType]);
@@ -79,15 +111,25 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
 
   if (colormapType === 'sequential') {
     if (customColorMap) {
-      availableColormaps = [{ name: customColorMap }, ...CURATED_SEQUENTIAL_COLORMAPS.map(name => ({ name }))];
+      availableColormaps = [
+        { name: customColorMap },
+        ...CURATED_SEQUENTIAL_COLORMAPS.map((name) => ({ name }))
+      ];
     } else {
-      availableColormaps = CURATED_SEQUENTIAL_COLORMAPS.map(name => ({ name }));
+      availableColormaps = CURATED_SEQUENTIAL_COLORMAPS.map((name) => ({
+        name
+      }));
     }
   } else if (colormapType === 'diverging') {
     if (customColorMap) {
-      availableColormaps = [{ name: customColorMap }, ...CURATED_DIVERGING_COLORMAPS.map(name => ({ name }))];
+      availableColormaps = [
+        { name: customColorMap },
+        ...CURATED_DIVERGING_COLORMAPS.map((name) => ({ name }))
+      ];
     } else {
-      availableColormaps = CURATED_DIVERGING_COLORMAPS.map(name => ({ name }));
+      availableColormaps = CURATED_DIVERGING_COLORMAPS.map((name) => ({
+        name
+      }));
     }
   } else if (colormapType === 'rest') {
     availableColormaps = [{ name: selectedColorMap }];
@@ -133,7 +175,12 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
           ) : (
             <Icon.ToggleOff className='text-base-light' size={4} />
           )}
-          <input className='colormap-options__input' checked={isReversed} type='checkbox' readOnly />
+          <input
+            className='colormap-options__input'
+            checked={isReversed}
+            type='checkbox'
+            readOnly
+          />
         </div>
       </div>
 
@@ -143,13 +190,21 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
 
           return (
             <div
-              className={`colormap-options__item display-flex flex-align-center flex-justify padding-2 border-bottom-1px border-base-lightest radius-md ${selectedColorMap.toLowerCase() === name.toLowerCase() ? 'selected' : ''}`}
+              className={`colormap-options__item display-flex flex-align-center flex-justify padding-2 border-bottom-1px border-base-lightest radius-md ${
+                selectedColorMap.toLowerCase() === name.toLowerCase()
+                  ? 'selected'
+                  : ''
+              }`}
               key={name}
               onClick={() => handleColorMapSelect(name.toLowerCase())}
             >
               <div
                 className='colormap-options__preview display-flex border-1px border-base-lightest radius-md margin-right-2'
-                style={{ background: `linear-gradient(to right, ${previewColors.join(', ')})` }}
+                style={{
+                  background: `linear-gradient(to right, ${previewColors.join(
+                    ', '
+                  )})`
+                }}
               />
               <label className='colormap-options__label text-gray-90 font-heading-xs flex-1'>
                 {name}
@@ -161,7 +216,6 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
     </div>
   );
 }
-
 
 function normalizeColorMap(colorMap: string): string {
   return colorMap.replace(/_r$/, '');

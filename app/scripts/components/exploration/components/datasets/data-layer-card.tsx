@@ -17,7 +17,8 @@ import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
 import { TipButton } from '$components/common/tip-button';
 import {
-  LayerCategoricalGraphic, LayerGradientColormapGraphic
+  LayerCategoricalGraphic,
+  LayerGradientColormapGraphic
 } from '$components/common/map/layer-legend';
 
 import {
@@ -109,7 +110,9 @@ const LegendColorMapTrigger = styled.div`
 `;
 
 // Hiding configurable map for now until Instances are ready to adapt it
-const showConfigurableColorMap = checkEnvFlag(process.env.SHOW_CONFIGURABLE_COLOR_MAP);
+const showConfigurableColorMap = checkEnvFlag(
+  process.env.SHOW_CONFIGURABLE_COLOR_MAP
+);
 
 export default function DataLayerCard(props: CardProps) {
   const {
@@ -119,6 +122,8 @@ export default function DataLayerCard(props: CardProps) {
     setVisible,
     colorMap,
     setColorMap,
+    colorMapScale,
+    setColorMapScale,
     datasetLegend,
     onClickLayerInfo
   } = props;
@@ -137,9 +142,16 @@ export default function DataLayerCard(props: CardProps) {
     }
   };
 
-  const showLoadingConfigurableCmapSkeleton = showConfigurableColorMap && dataset.status === 'loading' && datasetLegend?.type === 'gradient';
-  const showConfigurableCmap = showConfigurableColorMap && dataset.status === 'success' && datasetLegend?.type === 'gradient';
-  const showNonConfigurableCmap = !showConfigurableColorMap && datasetLegend?.type === 'gradient';
+  const showLoadingConfigurableCmapSkeleton =
+    showConfigurableColorMap &&
+    dataset.status === 'loading' &&
+    datasetLegend?.type === 'gradient';
+  const showConfigurableCmap =
+    showConfigurableColorMap &&
+    dataset.status === 'success' &&
+    datasetLegend?.type === 'gradient';
+  const showNonConfigurableCmap =
+    !showConfigurableColorMap && datasetLegend?.type === 'gradient';
 
   return (
     <>
@@ -163,7 +175,10 @@ export default function DataLayerCard(props: CardProps) {
                 onPointerDownCapture={(e) => e.stopPropagation()}
                 onClick={onClickLayerInfo}
               >
-                <CollecticonCircleInformation meaningful title='View dataset page' />
+                <CollecticonCircleInformation
+                  meaningful
+                  title='View dataset page'
+                />
               </TipButton>
               <TipButton
                 tipContent={isVisible ? 'Hide layer' : 'Show layer'}
@@ -173,9 +188,15 @@ export default function DataLayerCard(props: CardProps) {
                 onClick={() => setVisible((v) => !v)}
               >
                 {isVisible ? (
-                  <CollecticonEye meaningful title='Toggle dataset visibility' />
+                  <CollecticonEye
+                    meaningful
+                    title='Toggle dataset visibility'
+                  />
                 ) : (
-                  <CollecticonEyeDisabled meaningful title='Toggle dataset visibility' />
+                  <CollecticonEyeDisabled
+                    meaningful
+                    title='Toggle dataset visibility'
+                  />
                 )}
               </TipButton>
               <LayerMenuOptions datasetAtom={datasetAtom} />
@@ -187,49 +208,66 @@ export default function DataLayerCard(props: CardProps) {
           </DatasetMetricInfo>
         </DatasetCardInfo>
         {datasetLegend?.type === 'categorical' && (
-          <LayerCategoricalGraphic type='categorical' stops={datasetLegend.stops} />
+          <LayerCategoricalGraphic
+            type='categorical'
+            stops={datasetLegend.stops}
+          />
         )}
 
-          {/* Show a loading skeleton when the color map is not categorical and the dataset
+        {/* Show a loading skeleton when the color map is not categorical and the dataset
           status is 'loading'. This is because we color map sometimes might come from the titiler
           which could introduce a visual flash when going from the 'default' color map to the one
           configured in titiler */}
 
-          {showLoadingConfigurableCmapSkeleton && <div className='display-flex flex-align-center height-8'><LoadingSkeleton /></div>}
-          {showConfigurableCmap && (
-            <div className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md' ref={triggerRef}>
-              <LayerGradientColormapGraphic
-                min={min}
-                max={max}
-                colorMap={colorMap}
-              />
-              <Tippy
-                className='colormap-options'
-                content={
-                  <ColormapOptions
-                    colorMap={colorMap}
-                    setColorMap={setColorMap}
-                  />
-                }
-                appendTo={() => document.body}
-                visible={isColorMapOpen}
-                interactive={true}
-                placement='top'
-                onClickOutside={(_, event) => handleClickOutside(event)}
+        {showLoadingConfigurableCmapSkeleton && (
+          <div className='display-flex flex-align-center height-8'>
+            <LoadingSkeleton />
+          </div>
+        )}
+        {showConfigurableCmap && (
+          <div
+            className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md'
+            ref={triggerRef}
+          >
+            <LayerGradientColormapGraphic
+              min={min}
+              max={max}
+              colorMap={colorMap}
+            />
+            <Tippy
+              className='colormap-options'
+              content={
+                <ColormapOptions
+                  min={min}
+                  max={max}
+                  colorMap={colorMap}
+                  setColorMap={setColorMap}
+                  setColorMapScale={setColorMapScale}
+                  colorMapScale={colorMapScale}
+                />
+              }
+              appendTo={() => document.body}
+              visible={isColorMapOpen}
+              interactive={true}
+              placement='top'
+              onClickOutside={(_, event) => handleClickOutside(event)}
+            >
+              <LegendColorMapTrigger
+                className='display-flex flex-align-center flex-justify bg-base-lightest margin-left-1 padding-05'
+                onClick={handleColorMapTriggerClick}
               >
-                <LegendColorMapTrigger className='display-flex flex-align-center flex-justify bg-base-lightest margin-left-1 padding-05' onClick={handleColorMapTriggerClick}>
-                  <CollecticonChevronDownSmall />
-                </LegendColorMapTrigger>
-              </Tippy>
-            </div>
-          )}
-        {showNonConfigurableCmap &&
+                <CollecticonChevronDownSmall />
+              </LegendColorMapTrigger>
+            </Tippy>
+          </div>
+        )}
+        {showNonConfigurableCmap && (
           <LayerGradientColormapGraphic
             min={min}
             max={max}
             colorMap={colorMap}
-          />}
-
+          />
+        )}
       </DatasetInfo>
     </>
   );

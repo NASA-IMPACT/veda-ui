@@ -35,7 +35,8 @@ import {
   useTimelineDatasetAtom,
   useTimelineDatasetColormap,
   useTimelineDatasetSettings,
-  useTimelineDatasetVisibility
+  useTimelineDatasetVisibility,
+  useTimelineDatasetColormapScale
 } from '$components/exploration/atoms/hooks';
 import {
   useAnalysisController,
