@@ -4,14 +4,13 @@ import { NavDropDownButton } from './nav-dropdown-button';
 import { NavItemExternalLink, NavItemInternalLink } from './nav-item-links';
 import { NavItemCTA } from './nav-item-cta';
 import { LinkProperties } from '$types/veda';
+import { SetState } from '$types/aliases';
 
 export const createDynamicNavMenuList = (
   navItems: NavItem[],
   linkProperties: LinkProperties,
-  isOpen: boolean[] | undefined = undefined,
-  setIsOpen:
-    | React.Dispatch<React.SetStateAction<boolean[]>>
-    | undefined = undefined
+  isOpen?: boolean[],
+  setIsOpen?: SetState<boolean[]>
 ): JSX.Element[] => {
   return navItems.map((item, index) => {
     switch (item.type) {
