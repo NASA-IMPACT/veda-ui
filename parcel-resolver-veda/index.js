@@ -86,11 +86,13 @@ function generateMdxDataObject(data) {
 function getCookieConsentForm(result) {
   if (!result.cookieConsentForm) return undefined;
   else {
+
     const parsedCopy = md.render(result.cookieConsentForm.copy);
     const trimmedCopy = parsedCopy.replace(/(\r\n|\n|\r)/gm, '');
     return JSON.stringify({
       title: result.cookieConsentForm.title,
-      copy: trimmedCopy
+      copy: trimmedCopy,
+      theme: result.cookieConsentForm.theme
     });
   }
 }
