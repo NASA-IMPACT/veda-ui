@@ -170,3 +170,15 @@ export const useTimelineDatasetAnalysis = (
     )
   );
 };
+
+export function useTimelineDatasetColormapScale(
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+) {
+  const colorMapScaleAtom = useMemo(() => {
+    return focusAtom(datasetAtom, (optic) =>
+      optic.prop('settings').prop('scale')
+    );
+  }, [datasetAtom]);
+
+  return useAtom(colorMapScaleAtom);
+}

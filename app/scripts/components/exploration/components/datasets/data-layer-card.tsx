@@ -20,7 +20,10 @@ import {
   LayerCategoricalGraphic, LayerGradientColormapGraphic
 } from '$components/common/map/layer-legend';
 
-import { TimelineDataset } from '$components/exploration/types.d.ts';
+import {
+  TimelineDataset,
+  colorMapScale
+} from '$components/exploration/types.d.ts';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
 import { checkEnvFlag } from '$utils/utils';
@@ -35,6 +38,8 @@ interface CardProps {
   setVisible: any;
   colorMap: string | undefined;
   setColorMap: (colorMap: string) => void;
+  colorMapScale: colorMapScale | undefined;
+  setColorMapScale: (colorMapScale: colorMapScale) => void;
   onClickLayerInfo: () => void;
   datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
 }

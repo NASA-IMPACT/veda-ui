@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Icon } from "@trussworks/react-uswds";
 import { CollecticonDrop } from '@devseed-ui/collecticons';
-import { sequentialColorMaps, divergingColorMaps, restColorMaps } from './colorMaps';
+import {
+  sequentialColorMaps,
+  divergingColorMaps,
+  restColorMaps
+} from './colorMaps';
 
 import './colormap-options.scss';
-
+import { ColorRangeSlider } from './colorRangeSlider/index';
+import { colorMapScale } from '$components/exploration/types.d.ts';
 export const DEFAULT_COLORMAP = 'viridis';
 
 const CURATED_SEQUENTIAL_COLORMAPS = [
@@ -105,11 +110,24 @@ export function ColormapOptions({ colorMap = DEFAULT_COLORMAP, setColorMap}: Col
 
   return (
     <div className='colormap-options__container bg-white shadow-1 maxh-mobile-lg'>
-      <div className='display-flex flex-align-center text-gray-90 padding-2 font-heading-xs text-bold'><CollecticonDrop className='margin-right-1' /> Colormap options</div>
+      <div className='display-flex flex-align-center text-gray-90 padding-2 font-heading-xs text-bold'>
+        <CollecticonDrop className='margin-right-1' /> Colormap options
+      </div>
 
-      <div className='display-flex flex-align-center flex-justify border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2'>
-        <div className='display-flex flex-align-center' onClick={handleReverseToggle}>
-          <label className='font-ui-3xs text-gray-90 text-semibold margin-right-1'>Reverse</label>
+      <div className='display-flex flex-align-center flex-column flex-justify border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2'>
+        <ColorRangeSlider
+          min={min}
+          max={max}
+          colorMapScale={colorMapScale}
+          setColorMapScale={setColorMapScale}
+        />
+        <div
+          className='display-flex flex-align-center width-full padding-top-1'
+          onClick={handleReverseToggle}
+        >
+          <label className='font-ui-3xs text-gray-90 text-semibold margin-right-1'>
+            Reverse
+          </label>
           {isReversed ? (
             <Icon.ToggleOn className='text-primary' size={4} />
           ) : (

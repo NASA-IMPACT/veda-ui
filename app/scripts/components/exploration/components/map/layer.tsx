@@ -77,6 +77,7 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
+          reScale={scale}
           envApiStacEndpoint={envApiStacEndpoint}
           envApiRasterEndpoint={envApiRasterEndpoint}
         />
@@ -95,6 +96,7 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
+          reScale={scale}
           envApiStacEndpoint={envApiStacEndpoint}
           envApiRasterEndpoint={envApiRasterEndpoint}
         />
@@ -114,6 +116,7 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
+          reScale={scale}
           envApiStacEndpoint={envApiStacEndpoint}
           envApiRasterEndpoint={envApiRasterEndpoint}
         />

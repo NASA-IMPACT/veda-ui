@@ -105,6 +105,9 @@ export interface DatasetSettings {
   analysisMetrics?: DataMetric[];
   // Active colormap of the layer.
   colorMap?: string;
+  // Active colormap scale.
+
+  scale?: colorMapScale;
 }
 
 // Any sort of meta information the dataset like:
