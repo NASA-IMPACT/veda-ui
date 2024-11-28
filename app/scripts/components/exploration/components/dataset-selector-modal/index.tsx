@@ -127,7 +127,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
           onAction={onAction}
           filterLayers={true}
           linkProperties={linkProperties}
-          pathname={datasetPathName}
           emptyStateContent={
             <>
               <p>There are no datasets to show with the selected filters.</p>

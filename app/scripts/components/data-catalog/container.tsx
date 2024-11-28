@@ -1,5 +1,4 @@
 import React from 'react';
-import { useLocation } from 'react-router';
 import { getString } from 'veda';
 import { getAllDatasetsProps } from '$utils/veda-data';
 import CatalogView from '$components/common/catalog';
@@ -20,7 +19,6 @@ import SmartLink from '$components/common/smart-link';
 
 export default function DataCatalogContainer() {
   const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
-  const pathname = useLocation().pathname;
   const controlVars = useFiltersWithQS();
 
   return (
@@ -37,7 +35,6 @@ export default function DataCatalogContainer() {
       <CatalogView
         datasets={allDatasets}
         onFilterChanges={() => controlVars}
-        pathname={pathname}
         linkProperties={{
           LinkElement: SmartLink,
           pathAttributeKeyName: 'to'
