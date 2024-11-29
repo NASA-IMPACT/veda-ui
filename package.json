@@ -1,7 +1,7 @@
 {
   "name": "@developmentseed/veda-ui",
   "description": "Dashboard",
-  "version": "5.10.0",
+  "version": "5.11.0-uswds",
   "author": {
     "name": "Development Seed",
     "url": "https://developmentseed.org/"
@@ -152,6 +152,7 @@
     "@tanstack/react-query-devtools": "^4.3.9",
     "@tanstack/react-table": "^8.9.3",
     "@tippyjs/react": "^4.2.6",
+    "@trussworks/react-uswds": "^9.0.0",
     "@turf/area": "^6.5.0",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-polygon": "^6.5.0",
@@ -169,6 +170,7 @@
     "@types/react-dom": "18.0.11",
     "@types/styled-components": "^5.1.26",
     "@uswds/compile": "^1.1.0",
+    "@uswds/uswds": "^3.8.1",
     "autoprefixer": "^10.4.19",
     "axios": "^0.25.0",
     "clipboard": "^2.0.11",

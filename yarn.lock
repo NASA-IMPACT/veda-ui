@@ -3968,10 +3968,10 @@
   resolved "http://verdaccio.ds.io:4873/@tootallnate%2fonce/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@trussworks/react-uswds@9.0.0":
-  version "9.0.0"
-  resolved "http://verdaccio.ds.io:4873/@trussworks%2freact-uswds/-/react-uswds-9.0.0.tgz#640d798e3fe99a03caf8c2442ef17eb7e1f88408"
-  integrity sha512-zAUuQf6QYZFqS6321F/mFHgFSTz7Fi5VFdxcwel7mv2gFdIry6+sJOu7gzaXTZLxaWXArMfH/36uzzicOjyhfQ==
+"@trussworks/react-uswds@^9.0.0":
+  version "9.1.0"
+  resolved "http://verdaccio.ds.io:4873/@trussworks%2freact-uswds/-/react-uswds-9.1.0.tgz#6a60156fd7b7ee90484ccbe2d898784d34f7cb36"
+  integrity sha512-vQsr73oMtDIzLHVtkgD81tL7YxzygTyH9e1P3Lv/C1tGlqoNEUmUgVEmUVzo/IwOvMN0XxxSkNkOpnM9rDzRMg==
 
 "@trysound/sax@0.2.0":
   version "0.2.0"
@@ -4810,13 +4810,11 @@
     postcss-csso "6.0.1"
     sass-embedded "1.69.5"
 
-"@uswds/uswds@3.8.1":
-  version "3.8.1"
-  resolved "http://verdaccio.ds.io:4873/@uswds%2fuswds/-/uswds-3.8.1.tgz#3d834559498ae1bb7d3a618f3f85a5f4e9818497"
-  integrity sha512-bKG/B9mJF1v0yoqth48wQDzST5Xyu3OxxpePIPDyhKWS84oDrCehnu3Z88JhSjdIAJMl8dtjtH8YvdO9kZUpAg==
+"@uswds/uswds@^3.8.1":
+  version "3.10.0"
+  resolved "http://verdaccio.ds.io:4873/@uswds%2fuswds/-/uswds-3.10.0.tgz#f78ab69e26dec0080a92845b3dd1d9ddab26e6e9"
+  integrity sha512-LWFTQzp4e3kqtnD/Wsyfx9uGTkn5GEpzhscNWJMIsdWBGKtiu96QT99oRJUmcsB6HbGhR0Th0FtlK/Zzx2WghA==
   dependencies:
-    classlist-polyfill "1.2.0"
-    object-assign "4.1.1"
     receptor "1.0.0"
     resolve-id-refs "0.1.0"
 
@@ -5873,11 +5871,6 @@ class-utils@^0.3.5:
     define-property "^0.2.5"
     isobject "^3.0.0"
     static-extend "^0.1.1"
-
-classlist-polyfill@1.2.0:
-  version "1.2.0"
-  resolved "http://verdaccio.ds.io:4873/classlist-polyfill/-/classlist-polyfill-1.2.0.tgz#935bc2dfd9458a876b279617514638bcaa964a2e"
-  integrity sha512-GzIjNdcEtH4ieA2S8NmrSxv7DfEV5fmixQeyTmqmRmRJPGpRBaSnA2a0VrCjyT8iW8JjEdMbKzDotAJf+ajgaQ==
 
 classnames@^2.2.5:
   version "2.3.1"
@@ -11639,7 +11632,7 @@ nwsapi@^2.2.0:
   resolved "http://verdaccio.ds.io:4873/nwsapi/-/nwsapi-2.2.1.tgz#10a9f268fbf4c461249ebcfe38e359aa36e2577c"
   integrity sha512-JYOWTeFoS0Z93587vRJgASD5Ut11fYl5NyihP3KrYBvMe1FRRs6RN7m20SA/16GM4P6hTnZjT+UmDOt38UeXNg==
 
-object-assign@4.1.1, object-assign@4.X, object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
+object-assign@4.X, object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
   resolved "http://verdaccio.ds.io:4873/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
