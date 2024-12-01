@@ -15,7 +15,7 @@ export const acceptExtensions = extensions.map((ext) => `.${ext}`).join(', ');
 
 export const INVALID_GEOMETRY_ERROR =
   'Wrong geometry type. Only polygons or multi polygons are accepted.';
-export const TOO_MANY_POLYGON_ERROR =
+export const TOO_MANY_POLYGONS_ERROR =
   'Only files with up to 200 polygons are accepted.';
 const RING_POLYGON_WARNING =
   'Polygons with rings are not supported and were simplified to remove them';
@@ -165,7 +165,7 @@ export function getAoiAppropriateFeatures(geojson: PolygonGeojson) {
   const features = extractPolygonsFromGeojson(geojson);
   const featureCountValidated = validateFeatureCount(features);
   if (!featureCountValidated) {
-    throw new Error(TOO_MANY_POLYGON_ERROR);
+    throw new Error(TOO_MANY_POLYGONS_ERROR);
   }
   const { simplifiedFeatures: noHolesFeatures, warnings: holeWarnings } =
     removePolygonHoles(features);

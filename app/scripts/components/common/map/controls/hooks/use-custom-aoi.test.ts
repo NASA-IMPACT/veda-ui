@@ -11,7 +11,7 @@ import {
   eachFeatureMaxPointNum,
   maxPolygonNum,
   INVALID_GEOMETRY_ERROR,
-  TOO_MANY_POLYGON_ERROR
+  TOO_MANY_POLYGONS_ERROR
 } from './use-custom-aoi';
 
 // Mock data
@@ -189,7 +189,7 @@ describe('getAoiAppropriateFeatures', () => {
       features: Array(maxPolygonNum + 1).fill(mockPolygon)
     };
     expect(() => getAoiAppropriateFeatures(tooManyFeatures)).toThrow(
-      TOO_MANY_POLYGON_ERROR
+      TOO_MANY_POLYGONS_ERROR
     );
   });
 });
