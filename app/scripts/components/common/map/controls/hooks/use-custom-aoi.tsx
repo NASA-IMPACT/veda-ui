@@ -19,6 +19,8 @@ export const TOO_MANY_POLYGONS_ERROR =
   'Only files with up to 200 polygons are accepted.';
 const RING_POLYGON_WARNING =
   'Polygons with rings are not supported and were simplified to remove them';
+const TOLERANCE_ACCELERATOR = 1.5;
+
 export interface FileInfo {
   name: string;
   extension: string;
@@ -103,7 +105,7 @@ export function simplifyFeatures(features: Feature<Polygon>[]): {
         tolerance < maxTolerance
       ) {
         simplifiedFeature = simplify(simplifiedFeature, { tolerance });
-        tolerance *= 1.5;
+        tolerance *= TOLERANCE_ACCELERATOR;
       }
       return simplifiedFeature;
     }
@@ -141,7 +143,7 @@ export function simplifyFeatures(features: Feature<Polygon>[]): {
       (acc, f) => acc + getNumPoints(f),
       0
     );
-    tolerance = Math.min(tolerance * 1.5, 5);
+    tolerance = Math.min(tolerance * TOLERANCE_ACCELERATOR, 5);
   }
 
   if (originalTotalPoints !== totalPoints) {
