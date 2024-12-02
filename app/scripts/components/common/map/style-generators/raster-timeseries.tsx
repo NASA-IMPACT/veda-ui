@@ -497,6 +497,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   }, [
     mosaicUrl,
     colorMap,
+    reScale,
     points,
     minZoom,
     haveSourceParamsChanged,
