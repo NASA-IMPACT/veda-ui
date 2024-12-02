@@ -1,7 +1,7 @@
 import React, { ComponentType } from 'react';
 import { Tip } from '../../tip';
 import { LinkProperties } from '$types/veda';
-import './styles.scss';
+import './logo-container.scss';
 
 /**
  * LogoContainer that is meant to integrate in the default
@@ -14,7 +14,7 @@ export default function LogoContainer({
   linkProperties,
   LogoSvg,
   title,
-  version,
+  version
 }: {
   linkProperties: LinkProperties;
   LogoSvg?: SVGElement | JSX.Element;
@@ -26,7 +26,10 @@ export default function LogoContainer({
 
   return (
     <div id='logo-container'>
-      <LinkElement id='logo-container-link' {...{ [linkProperties.pathAttributeKeyName]: '/' }}>
+      <LinkElement
+        id='logo-container-link'
+        {...{ [linkProperties.pathAttributeKeyName]: '/' }}
+      >
         {LogoSvg}
         <span>{title}</span>
       </LinkElement>

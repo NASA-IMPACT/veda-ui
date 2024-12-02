@@ -7,7 +7,6 @@ import { LinkProperties } from '$types/veda';
 import { USWDSHeader, USWDSHeaderTitle } from '$components/common/uswds/header';
 import { USWDSNavMenuButton } from '$components/common/uswds/header/nav-menu-button';
 import { USWDSExtendedNav } from '$components/common/uswds/header/extended-nav';
-import './styles.scss';
 
 interface PageHeaderProps {
   mainNavItems: NavItem[];

@@ -5,14 +5,11 @@ const plugins = [
   require('postcss-import'),
   url({
     url: (asset) => {
-      const uswdsBasePath =
-        '/node_modules/@developmentseed/veda-ui/node_modules/@uswds/uswds/dist';
-
       if (asset.url.startsWith('../fonts/')) {
-        return `${uswdsBasePath}/fonts/${asset.url.slice('../fonts/'.length)}`;
+        return `./fonts/${asset.url.slice('../fonts/'.length)}`;
       }
       if (asset.url.startsWith('../img/')) {
-        return `${uswdsBasePath}/img/${asset.url.slice('../img/'.length)}`;
+        return `./img/${asset.url.slice('../img/'.length)}`;
       }
       return asset.url;
     }
