@@ -46,7 +46,7 @@ import {
   DatasetStatus,
   VizDataset,
   VizDatasetSuccess
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types.d';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import {
   formatSingleDate,

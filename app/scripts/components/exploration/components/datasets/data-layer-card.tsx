@@ -20,7 +20,7 @@ import {
   LayerCategoricalGraphic, LayerGradientColormapGraphic
 } from '$components/common/map/layer-legend';
 
-import { TimelineDataset } from '$components/exploration/types.d.ts';
+import { TimelineDataset } from '$components/exploration/types.d';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
 import { checkEnvFlag } from '$utils/utils';

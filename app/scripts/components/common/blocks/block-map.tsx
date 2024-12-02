@@ -29,7 +29,7 @@ import {
   VizDataset,
   VizDatasetSuccess,
   DatasetStatus
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types.d';
 
 import {
   reconcileDatasets,

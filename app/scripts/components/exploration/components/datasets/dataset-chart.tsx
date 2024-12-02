@@ -15,7 +15,7 @@ import { getNumForChart } from '$components/common/chart/utils';
 import {
   TimelineDatasetAnalysisSuccess,
   TimelineDatasetSuccess
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types.d';
 
 const CHART_MARGIN = 8;
 

@@ -4,7 +4,7 @@ import endOfYear from 'date-fns/endOfYear';
 import startOfDay from 'date-fns/startOfDay';
 import startOfMonth from 'date-fns/startOfMonth';
 import startOfYear from 'date-fns/startOfYear';
-import { TimeDensity } from '$components/exploration/types.d.ts';
+import { TimeDensity } from '$components/exploration/types.d';
 
 /**
  * Calculate the start and end of a block of time, given a date and a time

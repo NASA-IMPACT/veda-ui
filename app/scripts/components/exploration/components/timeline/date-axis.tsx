@@ -7,7 +7,7 @@ import startOfYear from 'date-fns/startOfYear';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
-import { TimeDensity } from '$components/exploration/types.d.ts';
+import { TimeDensity } from '$components/exploration/types.d';
 
 const GridLine = styled.line`
   stroke: ${themeVal('color.base-200')};

@@ -19,7 +19,7 @@ import {
   DatasetStatus,
   DatasetData,
   VizDataset
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types.d';
 import { fixAntimeridian } from '$utils/antimeridian';
 
 export const FIT_BOUNDS_PADDING = 32;
