@@ -6,9 +6,6 @@ const del = require('del');
 const portscanner = require('portscanner');
 const log = require('fancy-log');
 const uswds = require('@uswds/compile');
-const sass = require('gulp-sass')(require('sass'));
-const postcss = require('gulp-postcss');
-const url = require('postcss-url');
 
 uswds.settings.version = 3;
 
@@ -76,64 +73,6 @@ function copyNetlifyCMS() {
 
 function copyUswdsImages() {
   return uswds.copyImages();
-}
-
-function copyUswdsAssets() {
-  return gulp
-    .src(
-      [
-        './node_modules/@uswds/uswds/dist/fonts/**/*',
-        './node_modules/@uswds/uswds/dist/img/**/*'
-      ],
-      { base: './node_modules/@uswds/uswds/dist' }
-    )
-    .pipe(gulp.dest('lib'));
-}
-
-function parcelBuildLib(cb) {
-  const args = [
-    'build',
-    'app/scripts/index.ts',
-    '--dist-dir=lib',
-    '--config',
-    '.parcelrc-lib'
-  ];
-
-  const pr = spawn('node', [parcelCli, ...args], {
-    stdio: 'inherit'
-  });
-  pr.on('close', (code) => {
-    cb(code ? 'Build failed' : undefined);
-  });
-}
-
-function buildStyles() {
-  return gulp
-    .src('app/scripts/styles/styles.scss')
-    .pipe(
-      sass({
-        includePaths: [
-          './node_modules/@uswds/uswds/packages',
-          path.resolve(__dirname, 'app/scripts/components')
-        ]
-      }).on('error', sass.logError)
-    )
-    .pipe(
-      postcss([
-        url({
-          url: (asset) => {
-            if (asset.url.startsWith('../fonts/')) {
-              return asset.url.replace('../fonts/', '/fonts/');
-            }
-            if (asset.url.startsWith('../img/')) {
-              return asset.url.replace('../img/', '/img/');
-            }
-            return asset.url;
-          }
-        })
-      ])
-    )
-    .pipe(gulp.dest('lib/styles'));
 }
 
 // Below are the parcel related tasks. One for the build process and other to
@@ -207,17 +146,5 @@ const parallelTasks =
     ? gulp.parallel(copyFiles, copyUswdsImages)
     : gulp.parallel(copyFiles, copyNetlifyCMS, copyUswdsImages);
 
-module.exports.buildlib = gulp.series(
-  clean,
-  buildStyles,
-  copyUswdsAssets,
-  parcelBuildLib
-);
-
 // Task orchestration used during the production process.
-module.exports.default = gulp.series(
-  clean,
-  parallelTasks,
-  buildStyles,
-  parcelBuild
-);
+module.exports.default = gulp.series(clean, parallelTasks, parcelBuild);
