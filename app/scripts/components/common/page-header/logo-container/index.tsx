@@ -14,7 +14,7 @@ export default function LogoContainer({
   linkProperties,
   LogoSvg,
   title,
-  version,
+  version
 }: {
   linkProperties: LinkProperties;
   LogoSvg?: SVGElement | JSX.Element;
@@ -26,11 +26,14 @@ export default function LogoContainer({
 
   return (
     <div id='logo-container'>
-      <LinkElement id='logo-container-link' {...{ [linkProperties.pathAttributeKeyName]: '/' }}>
+      <LinkElement
+        id='logo-container-link'
+        {...{ [linkProperties.pathAttributeKeyName]: '/' }}
+      >
         {LogoSvg}
         <span>{title}</span>
       </LinkElement>
-      <Tip content={`v${version}`}>
+      <Tip content={version ? `v${version}` : 'beta version'}>
         <div
           id='logo-container-beta-tag'
           {...{
