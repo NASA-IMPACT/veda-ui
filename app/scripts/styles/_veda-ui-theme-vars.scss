@@ -1,20 +1,26 @@
 @forward 'uswds-theme';
-@use "uswds-core/src/styles/functions/utilities" as utils;
-@use "uswds-core/src/styles/functions/units" as spacing;
-@use "uswds-core/src/styles/mixins/utilities" as mixins;
-@use "uswds-core/src/styles/mixins/typography" as typography;
+@use 'uswds-core/src/styles/functions/utilities' as utils;
+@use 'uswds-core/src/styles/functions/units' as spacing;
+@use 'uswds-core/src/styles/mixins/utilities' as mixins;
+@use 'uswds-core/src/styles/mixins/typography' as typography;
 
 /*********** VEDAUI THEME PALETTE ***********/
-// These map to the veda defined styles between https://www.figma.com/design/5mclPTReHcRIzKbJm8YA6a/VEDA---USWDS?node-id=139-14&node-type=canvas&t=7Qa02mMKUgBy5Qho-0 
+// These map to the veda defined styles between https://www.figma.com/design/5mclPTReHcRIzKbJm8YA6a/VEDA---USWDS?node-id=139-14&node-type=canvas&t=7Qa02mMKUgBy5Qho-0
 // and uswds found at https://designsystem.digital.gov/design-tokens/
 
 // TYPOGRAPHY
 $veda-uswds-basefont-sans: utils.family('sans');
 
+// FONT-SIZE
+$veda-uswds-fontsize-3xs: 12px;
+$veda-uswds-fontsize-lg: 22px;
+// $veda-uswds-fontsize-3xs: utils.font-size('3xs');
+// TODO: How to access font scales?
+
 // FONT-WEIGHT
 $veda-uswds-fontweight-light: utils.font-weight('light');
-$veda-uswds-fontweight-regular: utils.font-weight('normal');  
-$veda-uswds-fontweight-bold: utils.font-weight('bold'); 
+$veda-uswds-fontweight-regular: utils.font-weight('normal');
+$veda-uswds-fontweight-bold: utils.font-weight('bold');
 $veda-uswds-fontweight-semibold: utils.font-weight('semibold');
 
 // COLORS

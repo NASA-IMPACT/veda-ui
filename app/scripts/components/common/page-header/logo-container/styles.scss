@@ -8,6 +8,9 @@
   #logo-container-link {
     display: flex;
     align-items: center;
+    gap: themeVars.$veda-uswds-spacing-105;
+    font-weight: themeVars.$veda-uswds-fontweight-bold;
+    font-size: themeVars.$veda-uswds-fontsize-lg;
   }
 
   #nasa-logo-pos {
@@ -26,10 +29,10 @@
   #logo-container-beta-tag {
     color: white;
     align-self: center;
-    font-size: 0.75rem;
-    font-weight: themeVars.$veda-uswds-fontweight-semibold;
-    line-height: 1rem;
-    padding: 0 themeVars.$veda-uswds-spacing-5;
+    font-size: themeVars.$veda-uswds-fontsize-3xs;
+    font-weight: themeVars.$veda-uswds-fontweight-regular;
+    padding-left: themeVars.$veda-uswds-spacing-5;
+    padding-right: themeVars.$veda-uswds-spacing-5;
     border-radius: 2px;
     background-color: themeVars.$veda-uswds-color-secondary;
   }
