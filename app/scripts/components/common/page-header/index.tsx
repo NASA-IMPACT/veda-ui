@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { ComponentType, useCallback, useState, useMemo } from 'react';
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
 import useMobileMenuFix from './use-mobile-menu-fix';
@@ -16,6 +16,7 @@ interface PageHeaderProps {
   linkProperties: LinkProperties;
   title: string;
   version?: string;
+  accessibilityHomeShortCutText?: string;
 }
 
 export default function PageHeader({
@@ -24,7 +25,8 @@ export default function PageHeader({
   logoSvg: Logo,
   linkProperties,
   title,
-  version
+  version,
+  accessibilityHomeShortCutText
 }: PageHeaderProps) {
   const [expanded, setExpanded] = useState<boolean>(false);
   useMobileMenuFix(expanded, setExpanded);
@@ -50,8 +52,17 @@ export default function PageHeader({
     [subNavItems, linkProperties]
   );
 
+  const LinkElement: ComponentType<any> =
+  linkProperties.LinkElement as ComponentType<any>;
+
   return (
     <>
+      <LinkElement
+        className="usa-skipnav"
+        {...{ [linkProperties.pathAttributeKeyName]: '/' }}
+      >
+        {accessibilityHomeShortCutText || 'Skip to main content'}
+      </LinkElement>
       <USWDSHeader extended={true} showMobileOverlay={expanded}>
         <div className='usa-navbar'>
           <USWDSHeaderTitle>
