@@ -7,3 +7,15 @@
 .usa-nav__secondary-item {
   font-weight: themeVars.$veda-uswds-fontweight-regular;
 }
+
+@media (width >= 64em) {
+  .usa-nav__secondary-links {
+    margin-bottom: 1.5rem;
+  }
+
+  .usa-nav__secondary-item .usa-nav__link  {
+    padding: 0;
+    color: themeVars.$veda-uswds-color-base-dark;
+  }
+}
+
