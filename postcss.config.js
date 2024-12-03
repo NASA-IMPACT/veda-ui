@@ -3,15 +3,13 @@ const url = require('postcss-url');
 const plugins = [
   require('autoprefixer'),
   require('postcss-import'),
+  // USWDS SCSS files use relative paths like '../fonts/' to reference assets
+  // When we compile these SCSS files, PostCSS needs to resolve these paths
+  // We convert '../' to './' because he final './' paths work correctly in
+  // Next.js when it resolves paths relative to the built CSS file in node_modules/veda-ui/lib/
   url({
     url: (asset) => {
-      if (asset.url.startsWith('../fonts/')) {
-        return `./fonts/${asset.url.slice('../fonts/'.length)}`;
-      }
-      if (asset.url.startsWith('../img/')) {
-        return `./img/${asset.url.slice('../img/'.length)}`;
-      }
-      return asset.url;
+      return asset.url.replace('../', './');
     }
   })
 ];
