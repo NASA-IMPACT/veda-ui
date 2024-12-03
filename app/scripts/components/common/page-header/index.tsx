@@ -58,7 +58,7 @@ export default function PageHeader({
   return (
     <>
       <LinkElement
-        className="usa-skipnav"
+        className='usa-skipnav'
         {...{ [linkProperties.pathAttributeKeyName]: '/' }}
       >
         {accessibilityHomeShortCutText || 'Skip to main content'}
