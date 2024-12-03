@@ -95,10 +95,10 @@ function parcelBuildLib(cb) {
   });
 }
 
+// Copy the uswds assets to the veda-ui lib directory.
+// This makes things easier for the veda components to consume
+// when the veda-ui library is used as a dependency.
 function copyUswdsAssetsToLibBundle() {
-  // Copy the uswds assets to the veda-ui lib directory.
-  // This makes things easier for the veda components to consume
-  // when the veda-ui library is used as a dependency.
   return gulp
     .src(
       [
