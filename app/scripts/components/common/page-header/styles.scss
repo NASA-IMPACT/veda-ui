@@ -17,5 +17,9 @@
     padding: 0;
     color: themeVars.$veda-uswds-color-base-dark;
   }
+
+  .usa-nav__primary button[aria-expanded="false"] span:after {
+    background-color: themeVars.$veda-uswds-color-base-dark;
+  }
 }
 
