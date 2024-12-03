@@ -1,3 +1,9 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+
 .usa-logo {
   max-width: none !important;
+}
+
+.usa-nav__secondary-item {
+  font-weight: themeVars.$veda-uswds-fontweight-regular;
 }
