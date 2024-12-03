@@ -12,7 +12,7 @@ import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
 import { getBannerFromVedaConfig, getCookieConsentFromVedaConfig } from 'veda';
 import MetaTags from '../meta-tags';
-import PageFooter from '../page-footer';
+import PageFooter from '../page-footer/index';
 const Banner = React.lazy(() => import('../banner'));
 const CookieConsent = React.lazy(() => import('../cookie-consent'));
 
@@ -98,7 +98,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
           />
         )}
       </PageBody>
-      <PageFooter isHidden={hideFooter} />
+      <PageFooter />
     </Page>
   );
 }
