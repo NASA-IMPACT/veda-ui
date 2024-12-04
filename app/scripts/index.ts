@@ -28,6 +28,10 @@ import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-d
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
 import { EnvConfigProvider } from '$context/env-config';
+import {
+  datasetLayersAtom,
+  externalDatasetsAtom
+} from '$components/exploration/atoms/datasetLayers';
 
 // Adding .last property to array
 /* eslint-disable-next-line fp/no-mutating-methods */
@@ -75,5 +79,7 @@ export {
   InternalNavLink,
 
   // STATE
-  timelineDatasetsAtom
+  timelineDatasetsAtom,
+  externalDatasetsAtom,
+  datasetLayersAtom
 };
