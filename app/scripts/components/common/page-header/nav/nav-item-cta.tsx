@@ -15,9 +15,16 @@ export const NavItemCTA: React.FC<NavItemCTAProps> = ({
     <React.Fragment key={item.id}>
       {item.actionId === 'open-google-form' && (
         <>
-          <a className='usa-nav__link' id={item.id}>
-            <span onClick={show}>{item.title}</span>
-          </a>
+          <button 
+            className='usa-nav__link'
+            role="button"
+            tabIndex="0"
+            id={item.id}
+            onClick={show}
+            style={{background: 'none', border: 'none', cursor: 'pointer'}}
+          >
+            {item.title}
+          </button>
           <GoogleForm
             src={process.env.GOOGLE_FORM || ''}
             isRevealed={isRevealed}
