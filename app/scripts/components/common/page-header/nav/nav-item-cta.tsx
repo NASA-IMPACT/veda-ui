@@ -18,7 +18,7 @@ export const NavItemCTA: React.FC<NavItemCTAProps> = ({
           <button
             className='usa-nav__link'
             type='button'
-            tabIndex='0'
+            tabIndex={0}
             id={item.id}
             onClick={show}
             style={{background: 'none', border: 'none', cursor: 'pointer'}}
