@@ -21,6 +21,12 @@
      */
   }
 
+  @media (width <= 64em) {
+    #nasa-logo-pos {
+      display: none;
+    }
+  }
+
   svg {
     height: 2.5rem;
     width: auto;
