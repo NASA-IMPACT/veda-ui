@@ -1,4 +1,4 @@
-import React, { ComponentType, useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
@@ -56,17 +56,22 @@ export default function PageHeader({
     [subNavItems, linkProperties]
   );
 
-  const LinkElement: ComponentType<any> =
-    linkProperties.LinkElement as ComponentType<any>;
+  const skipNav = (e) => {
+    e.preventDefault();
+    const pageBody = document.getElementById('pagebody');
+    if (pageBody) {
+      pageBody.focus();
+    }
+  }
 
   return (
     <>
-      <LinkElement
+      <button
         className='usa-skipnav'
-        {...{ [linkProperties.pathAttributeKeyName]: '/' }}
+        onClick={skipNav}
       >
         {accessibilityHomeShortCutText || 'Skip to main content'}
-      </LinkElement>
+      </button>
       <USWDSHeader extended={true} showMobileOverlay={expanded}>
         <div className='usa-navbar'>
           <USWDSHeaderTitle>
