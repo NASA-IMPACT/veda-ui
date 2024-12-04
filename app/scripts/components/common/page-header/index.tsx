@@ -62,11 +62,12 @@ export default function PageHeader({
     if (pageBody) {
       pageBody.focus();
     }
-  }
+  };
 
   return (
     <>
       <button
+        type='button'
         className='usa-skipnav'
         onClick={skipNav}
       >

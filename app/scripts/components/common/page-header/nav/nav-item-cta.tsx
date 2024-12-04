@@ -15,10 +15,10 @@ export const NavItemCTA: React.FC<NavItemCTAProps> = ({
     <React.Fragment key={item.id}>
       {item.actionId === 'open-google-form' && (
         <>
-          <button 
+          <button
             className='usa-nav__link'
-            role="button"
-            tabIndex="0"
+            type='button'
+            tabIndex='0'
             id={item.id}
             onClick={show}
             style={{background: 'none', border: 'none', cursor: 'pointer'}}
