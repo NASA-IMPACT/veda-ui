@@ -8,7 +8,7 @@
   font-weight: themeVars.$veda-uswds-fontweight-regular;
 }
 
-@media (width >= 64em) {
+@media (width >= themeVars.$veda-uswds-spacing-desktop) {
   .usa-nav__secondary-links {
     margin-bottom: 1.5rem;
   }
