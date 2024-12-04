@@ -1,5 +1,12 @@
 import React from 'react';
-import { Footer, FooterNav, SocialLink, Logo, Address } from '@trussworks/react-uswds';
+import {
+  Footer,
+  FooterNav,
+  SocialLink,
+  Logo,
+  Address,
+  FooterExtendedNavList
+} from '@trussworks/react-uswds';
 
 export function USWDSFooter(props) {
   return <Footer {...props} />;
@@ -15,4 +22,7 @@ export function USWDSLogo(props) {
 }
 export function USWDSAddress(props) {
   return <Address {...props} />;
+}
+export function USWDSFooterExtendedNavList(props) {
+  return <FooterExtendedNavList {...props} />;
 }

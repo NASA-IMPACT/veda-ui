@@ -98,7 +98,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
           />
         )}
       </PageBody>
-      <PageFooter />
+      <PageFooter hideFooter />
     </Page>
   );
 }

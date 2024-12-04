@@ -7,5 +7,6 @@ export {
   USWDSSocialLink,
   USWDSLogo,
   USWDSAddress,
-  USWDSFooterNav
+  USWDSFooterNav,
+  USWDSFooterExtendedNavList
 } from './footer';
