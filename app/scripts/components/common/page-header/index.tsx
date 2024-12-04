@@ -1,12 +1,16 @@
 import React, { ComponentType, useCallback, useState, useMemo } from 'react';
+
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
 import useMobileMenuFix from './use-mobile-menu-fix';
 import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
+import {
+  USWDSHeader,
+  USWDSHeaderTitle,
+  USWDSNavMenuButton,
+  USWDSExtendedNav
+} from '$components/common/uswds';
 import { LinkProperties } from '$types/veda';
-import { USWDSHeader, USWDSHeaderTitle } from '$components/common/uswds/header';
-import { USWDSNavMenuButton } from '$components/common/uswds/header/nav-menu-button';
-import { USWDSExtendedNav } from '$components/common/uswds/header/extended-nav';
 import './styles.scss';
 
 interface PageHeaderProps {
@@ -53,7 +57,7 @@ export default function PageHeader({
   );
 
   const LinkElement: ComponentType<any> =
-  linkProperties.LinkElement as ComponentType<any>;
+    linkProperties.LinkElement as ComponentType<any>;
 
   return (
     <>
