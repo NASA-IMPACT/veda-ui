@@ -1,0 +1,71 @@
+/* Removing the default appearance */
+.thumb,
+.thumb::-webkit-slider-thumb {
+  touch-action: 'none';
+
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.thumb {
+  pointer-events: none;
+}
+/* For Chrome browsers */
+.thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 2px solid #1565ef;
+  border-width: 1px;
+  box-shadow: 0 0 0 1px #c6c6c6;
+  cursor: pointer;
+}
+
+/* For Firefox browsers */
+.thumb::-moz-range-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 2px solid #1565ef;
+  border-width: 1px;
+  box-shadow: 0 0 0 1px #c6c6c6;
+  cursor: pointer;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.tooltiptext {
+  background-color: #2c3e50;
+}
+
+.tooltipmin::after {
+  left: 10px;
+}
+
+.tooltipmax::after {
+  right: 10px;
+}
+
+.tooltiptext::after {
+  content: '';
+  position: absolute;
+  top: 95%;
+  border-width: 10px 10px 0px 10px;
+  border-style: solid;
+  border-color: #2c3e50 transparent;
+}

@@ -26,7 +26,7 @@ export function Layer(props: LayerProps) {
     useContext(EnvConfigContext);
 
   const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
-  const { isVisible, opacity, colorMap } = dataset.settings;
+  const { isVisible, opacity, colorMap, scale } = dataset.settings;
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(
@@ -77,6 +77,7 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
+          reScale={scale}
           envApiStacEndpoint={envApiStacEndpoint}
           envApiRasterEndpoint={envApiRasterEndpoint}
         />
@@ -95,6 +96,7 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
+          reScale={scale}
           envApiStacEndpoint={envApiStacEndpoint}
           envApiRasterEndpoint={envApiRasterEndpoint}
         />
@@ -114,6 +116,7 @@ export function Layer(props: LayerProps) {
           opacity={opacity}
           onStatusChange={onStatusChange}
           colorMap={colorMap}
+          reScale={scale}
           envApiStacEndpoint={envApiStacEndpoint}
           envApiRasterEndpoint={envApiRasterEndpoint}
         />
