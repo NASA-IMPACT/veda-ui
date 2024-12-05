@@ -109,7 +109,7 @@ const InfoList = styled.dl`
   }
 `;
 
-function PageFooter(props) {
+function PageFooterLegacy(props) {
   const nowDate = new Date();
 
   return (
@@ -174,8 +174,8 @@ function PageFooter(props) {
   );
 }
 
-export default PageFooter;
+export default PageFooterLegacy;
 
-PageFooter.propTypes = {
+PageFooterLegacy.propTypes = {
   isHidden: T.bool
 };

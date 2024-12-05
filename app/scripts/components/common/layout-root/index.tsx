@@ -11,8 +11,11 @@ import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
 import { getBannerFromVedaConfig, getCookieConsentFromVedaConfig } from 'veda';
+
 import MetaTags from '../meta-tags';
-import PageFooter from '../page-footer/index';
+import PageFooter from '../page-footer';
+import PageFooterLegacy from '../page-footer-legacy';
+
 const Banner = React.lazy(() => import('../banner'));
 const CookieConsent = React.lazy(() => import('../cookie-consent'));
 
@@ -26,9 +29,11 @@ import {
   mainNavItems,
   subNavItems
 } from '$components/common/page-header/default-config';
+import { checkEnvFlag } from '$utils/utils';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
+const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_FOOTER);
 
 export const PAGE_BODY_ID = 'pagebody';
 
@@ -98,7 +103,11 @@ function LayoutRoot(props: { children?: ReactNode }) {
           />
         )}
       </PageBody>
-      <PageFooter hideFooter />
+      {isUSWDSEnabled ? (
+        <PageFooter />
+      ) : (
+        <PageFooterLegacy hideFooter={hideFooter} />
+      )}
     </Page>
   );
 }
