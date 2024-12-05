@@ -148,7 +148,7 @@ export default function HubContent(props: HubContentProps) {
           out of {allStories.length}.
         </span>
         {isFiltering && (
-          <Button {...ButtonLinkProps} size='small'>
+          <Button {...ButtonLinkProps} size='small' onClick={() => onAction(FilterActions.CLEAR)}>
             Clear filters <CollecticonXmarkSmall />
           </Button>
         )}
