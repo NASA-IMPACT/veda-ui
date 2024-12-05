@@ -28,7 +28,8 @@
     "ts-check": "yarn tsc --noEmit --skipLibCheck",
     "test": "jest",
     "pretest:e2e": "node test/playwright/generateTestData.js",
-    "test:e2e": "yarn playwright test"
+    "test:e2e": "yarn playwright test",
+    "release": "release-it --"
   },
   "targets": {
     "veda-app": {
@@ -57,6 +58,7 @@
     "@parcel/transformer-typescript-types": "2.12.0",
     "@parcel/transformer-webmanifest": "2.7.0",
     "@playwright/test": "^1.46.1",
+    "@release-it/conventional-changelog": "^9.0.3",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@types/d3": "^7.4.0",
@@ -100,6 +102,7 @@
     "posthtml-expressions": "^1.9.0",
     "prettier": "^2.4.1",
     "process": "^0.11.10",
+    "release-it": "^17.10.0",
     "remark-gfm": "^3.0.1",
     "stream-browserify": "^3.0.0",
     "string_decoder": "^1.3.0",
