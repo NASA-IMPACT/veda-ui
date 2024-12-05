@@ -7,10 +7,9 @@ import {
   USWDSFooterNav,
   USWDSLogo
 } from '$components/common/uswds';
-export default function PageFooter(hideFooter) {
+export default function PageFooter() {
   return (
     <>
-      {/* //commenting out hidefooter functionality for inflight work{!hideFooter && ( */}
       <USWDSFooter
         size='slim'
         // returnToTop={returnToTop}
@@ -41,7 +40,6 @@ export default function PageFooter(hideFooter) {
           />
         }
       />
-      {/*  )} */}
     </>
   );
 }
