@@ -63,7 +63,8 @@ function LayoutRoot(props: { children?: ReactNode }) {
   useEffect(() => {
     // When there is no cookie consent form set up
     !cookieConsentContent && setGoogleTagManager();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array ensures this effect runs only once, and not during SSR
 
   const { title, thumbnail, description, hideFooter } =
     useContext(LayoutRootContext);
