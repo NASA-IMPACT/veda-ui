@@ -11,6 +11,7 @@ export default function PageFooter(hideFooter) {
   return (
     <>
       {/* //commenting out hidefooter functionality for inflight work{!hideFooter && ( */}
+      {NasaLogoColor}
       <USWDSFooter
         size='slim'
         // returnToTop={returnToTop}
