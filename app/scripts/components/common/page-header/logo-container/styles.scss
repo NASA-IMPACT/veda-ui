@@ -21,7 +21,7 @@
      */
   }
 
-  @media (width <= 64em) {
+  @media (width <= themeVars.$veda-uswds-spacing-desktop) {
     #nasa-logo-pos {
       display: none;
     }
