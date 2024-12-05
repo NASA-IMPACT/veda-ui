@@ -32,11 +32,18 @@ export function useZarr({ id, stacCol, stacApiEndpointToUse, date, onStatusChang
     async function load() {
       try {
         onStatusChange?.({ status: S_LOADING, id });
-        const data:ZarrResponseData = await requestQuickCache({
-          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
-          method: 'GET',
-          controller
-        });
+        const data: ZarrResponseData = {
+          assets: {
+            zarr: {
+              href: 's3://nasa-veda-scratch/MiCASA/MiCASA_v1_flux_x3600_y1800_monthly_200301.nc4'
+            }
+          }
+        };
+        // await requestQuickCache({
+        //   url: `${stacApiEndpointToUse}/collections/${stacCol}`,
+        //   method: 'GET',
+        //   controller
+        // });
 
         setAssetUrl(data.assets.zarr.href);
         onStatusChange?.({ status: S_SUCCEEDED, id });
