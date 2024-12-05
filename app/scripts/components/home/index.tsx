@@ -68,7 +68,9 @@ const ConnectionsBlock = styled.div`
 const ConnectionsBlockTitle = styled(Heading).attrs({
   as: 'h2',
   size: 'medium'
-})``;
+})`
+  /* no style, only attrs */
+`;
 
 const ConnectionsList = styled.ul`
   ${listReset()};

@@ -6,28 +6,46 @@ function checkEnvFlag(value) {
 
 let mainNavItems = [
   {
+    id: 'test',
     title: 'Test',
     type: 'dropdown',
     children: [
       {
-        title: 'test dropdown',
+        id: 'dropdown-menu-item-1',
+        title: 'dropdown menu item 1',
         to: '/stories',
         type: 'internalLink'
       }
     ]
   },
   {
+    id: 'another-test',
+    title: 'Another Test',
+    type: 'dropdown',
+    children: [
+      {
+        id: 'dropdown-menu-item-2',
+        title: 'dropdown menu item 2',
+        to: '/stories',
+        type: 'internalLink'
+      }
+    ]
+  },
+  {
+    id: 'data-catalog',
     title: 'Data Catalog',
     to: '/data-catalog',
     type: 'internalLink'
   },
   {
+    id: 'exploration',
     title: 'Exploration',
     to: '/exploration',
     type: 'internalLink'
   },
   {
-    title: 'stories',
+    id: 'stories',
+    title: 'Stories',
     to: '/stories',
     type: 'internalLink'
   }
@@ -37,6 +55,7 @@ if (!!config.HUB_URL && !!config.HUB_NAME)
   mainNavItems = [
     ...mainNavItems,
     {
+      id: 'hub',
       title: process.env.HUB_NAME,
       href: process.env.HUB_URL,
       type: 'externalLink'
@@ -45,6 +64,7 @@ if (!!config.HUB_URL && !!config.HUB_NAME)
 
 let subNavItems = [
   {
+    id: 'about',
     title: 'About',
     to: '/about',
     type: 'internalLink'
@@ -55,9 +75,10 @@ if (config.GOOGLE_FORM) {
   subNavItems = [
     ...subNavItems,
     {
+      id: 'contact-us',
       title: 'Contact us',
-      src: config.GOOGLE_FORM,
-      type: 'modal'
+      actionId: 'open-google-form',
+      type: 'action'
     }
   ];
 }
