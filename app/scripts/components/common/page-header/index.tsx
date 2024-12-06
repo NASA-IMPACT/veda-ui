@@ -11,8 +11,6 @@ import {
   USWDSExtendedNav
 } from '$components/common/uswds';
 import { LinkProperties } from '$types/veda';
-import './styles.scss';
-
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];

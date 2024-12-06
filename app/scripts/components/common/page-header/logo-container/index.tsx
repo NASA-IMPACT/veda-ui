@@ -1,7 +1,7 @@
 import React, { ComponentType } from 'react';
 import { Tip } from '../../tip';
 import { LinkProperties } from '$types/veda';
-import './styles.scss';
+import './logo-container.scss';
 
 /**
  * LogoContainer that is meant to integrate in the default
