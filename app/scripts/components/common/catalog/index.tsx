@@ -42,13 +42,11 @@ export interface CatalogViewProps {
     onAction: () => void,
   } | any;
   linkProperties: LinkProperties;
-  pathname: string;
 }
 
 function CatalogView({
   datasets,
   onFilterChanges,
-  pathname,
   linkProperties,
 }: CatalogViewProps) {
 
@@ -72,7 +70,6 @@ function CatalogView({
         search={search}
         taxonomies={taxonomies}
         onAction={onAction}
-        pathname={pathname}
         linkProperties={linkProperties}
       />
     </CatalogWrapper>

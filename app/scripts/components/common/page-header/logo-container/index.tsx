@@ -33,7 +33,7 @@ export default function LogoContainer({
         {LogoSvg}
         <span>{title}</span>
       </LinkElement>
-      <Tip content={`v${version}`}>
+      <Tip content={version ? `v${version}` : 'beta version'}>
         <div
           id='logo-container-beta-tag'
           {...{

@@ -1,3 +1,25 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+
 .usa-logo {
   max-width: none !important;
 }
+
+.usa-nav__secondary-item {
+  font-weight: themeVars.$veda-uswds-fontweight-regular;
+}
+
+@media (width >= themeVars.$veda-uswds-spacing-desktop) {
+  .usa-nav__secondary-links {
+    margin-bottom: 1.5rem;
+  }
+
+  .usa-nav__secondary-item .usa-nav__link  {
+    padding: 0;
+    color: themeVars.$veda-uswds-color-base-dark;
+  }
+
+  .usa-nav__primary button[aria-expanded="false"] span:after {
+    background-color: themeVars.$veda-uswds-color-base-dark;
+  }
+}
+

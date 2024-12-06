@@ -1,13 +1,16 @@
 import React, { useCallback, useState, useMemo } from 'react';
+
 import { NavItem } from './types';
 import LogoContainer from './logo-container';
 import useMobileMenuFix from './use-mobile-menu-fix';
 import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
+import {
+  USWDSHeader,
+  USWDSHeaderTitle,
+  USWDSNavMenuButton,
+  USWDSExtendedNav
+} from '$components/common/uswds';
 import { LinkProperties } from '$types/veda';
-import { USWDSHeader, USWDSHeaderTitle } from '$components/common/uswds/header';
-import { USWDSNavMenuButton } from '$components/common/uswds/header/nav-menu-button';
-import { USWDSExtendedNav } from '$components/common/uswds/header/extended-nav';
-
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
@@ -15,6 +18,7 @@ interface PageHeaderProps {
   linkProperties: LinkProperties;
   title: string;
   version?: string;
+  accessibilityHomeShortCutText?: string;
 }
 
 export default function PageHeader({
@@ -23,7 +27,8 @@ export default function PageHeader({
   logoSvg: Logo,
   linkProperties,
   title,
-  version
+  version,
+  accessibilityHomeShortCutText
 }: PageHeaderProps) {
   const [expanded, setExpanded] = useState<boolean>(false);
   useMobileMenuFix(expanded, setExpanded);
@@ -49,8 +54,23 @@ export default function PageHeader({
     [subNavItems, linkProperties]
   );
 
+  const skipNav = (e) => {
+    e.preventDefault();
+    const pageBody = document.getElementById('pagebody');
+    if (pageBody) {
+      pageBody.focus();
+    }
+  };
+
   return (
     <>
+      <button
+        type='button'
+        className='usa-skipnav'
+        onClick={skipNav}
+      >
+        {accessibilityHomeShortCutText || 'Skip to main content'}
+      </button>
       <USWDSHeader extended={true} showMobileOverlay={expanded}>
         <div className='usa-navbar'>
           <USWDSHeaderTitle>

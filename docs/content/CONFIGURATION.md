@@ -74,12 +74,41 @@ type?: BannerType
 ```
 title: string,
 copy: string,
+theme: {
+      card: {
+        backgroundColor: string,
+        sideBarColor: string,
+        textColor: string,
+        linkColor: string
+      },
+      acceptButton: {
+        default: { backgroundColor: string, textColor: 'string },
+        hover: { backgroundColor: string, textColor:string }
+      },
+      declineButton: {
+        default: { borderColor: string, textColor: string },
+        hover: { borderColor: string, textColor: string }
+      },
+      iconColor: { default: string, hover: string }
+    }
 ``` 
 
 | Option | Type | Description| Example|
 |---|---|---|---|
 | title | string | 	The text content to display in the title of the cookie consent form. This can be an HTML string. | 'Cookie Consent'|
 | copy | string | The content of the Cookie Consent form, typically is a string that follows MDX documentation format. Allowing flexibility to link to different data management policy.  | 'To learn more about it, see our [Privacy Policy ]\(https://www.nasa.gov/privacy/#cookies)\'  |
+| theme | object | 	Object of Cookie Consent styling options ||
+| theme.card.backgroundColor | String | Pass a hex or accepted color name as a string to style background of card  | backgroundColor: '#2276ac'|
+| theme.card.sideBarColor | String | Pass a hex or accepted color name as a string to style sidebar or accent bar of card  | SideBarColor: '#2276ac'|
+| theme.card.textColor | String | Pass a hex or accepted color name as a string to style the text color of the card content | textColor: '#2276ac'|
+| theme.card.linkColor | String | Pass a hex or accepted color name as a string to style the Privacy Policy link color  | linkColor: '#2276ac'|
+| theme.acceptButton.default | String | Pass a hex or accepted color name as a string to accept button |  default: { backgroundColor: '#175074', textColor: 'white' }|
+| theme.acceptButton.hover | String | Pass a hex or accepted color name as a string to style accept button  |  hover: { backgroundColor: '#175074', textColor: 'white' }|
+| theme.declineButton.default | String | Pass a hex or accepted color name as a string to decline button |  default: { backgroundColor: '#175074', textColor: 'white' }|
+| theme.declineButton.hover | String | Pass a hex or accepted color name as a string to style decline button  |  hover: { backgroundColor: '#175074', textColor: 'white' }|
+| theme.iconColor | String | Pass a hex or accepted color name as a string to style the X close button| { default: '#175074', hover: 'white' }|
+
+
 
 ## Meta files
 

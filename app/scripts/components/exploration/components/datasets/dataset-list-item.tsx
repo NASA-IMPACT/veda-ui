@@ -35,7 +35,8 @@ import {
   useTimelineDatasetAtom,
   useTimelineDatasetColormap,
   useTimelineDatasetSettings,
-  useTimelineDatasetVisibility
+  useTimelineDatasetVisibility,
+  useTimelineDatasetColormapScale
 } from '$components/exploration/atoms/hooks';
 import {
   useAnalysisController,
@@ -105,7 +106,10 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
-  const [modalLayerInfo, setModalLayerInfo] = React.useState<LayerInfoModalData>();
+  const [colorMapScale, setColorMapScale] =
+    useTimelineDatasetColormapScale(datasetAtom);
+  const [modalLayerInfo, setModalLayerInfo] =
+    React.useState<LayerInfoModalData>();
   const [, setSetting] = useTimelineDatasetSettings(datasetAtom);
 
   const queryClient = useQueryClient();
@@ -121,7 +125,10 @@ export function DatasetListItem(props: DatasetListItemProps) {
   }, [queryClient, datasetId]);
 
   const onClickLayerInfo = useCallback(() => {
-    const parentInfoDesc = findDatasetAttribute({datasetId: dataset.data.parentDataset.id, attr: 'infoDescription'});
+    const parentInfoDesc = findDatasetAttribute({
+      datasetId: dataset.data.parentDataset.id,
+      attr: 'infoDescription'
+    });
     const data: LayerInfoModalData = {
       name: dataset.data.name,
       description: dataset.data.description,
@@ -188,7 +195,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
     [dataset]
   );
 
-
   const onDragging = (e) => {
     controls.start(e);
   };
@@ -210,8 +216,19 @@ export function DatasetListItem(props: DatasetListItemProps) {
       <DatasetItem>
         <DatasetHeader>
           <DatasetHeaderInner>
-            <div style={{width: '100%'}} onPointerDown={onDragging}>
-              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} colorMap={colorMap} setColorMap={setColorMap} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} onClickLayerInfo={onClickLayerInfo} />
+            <div style={{ width: '100%' }} onPointerDown={onDragging}>
+              <DataLayerCard
+                dataset={dataset}
+                datasetAtom={datasetAtom}
+                colorMap={colorMap}
+                colorMapScale={colorMapScale}
+                setColorMap={setColorMap}
+                setColorMapScale={setColorMapScale}
+                isVisible={isVisible}
+                setVisible={setVisible}
+                datasetLegend={datasetLegend}
+                onClickLayerInfo={onClickLayerInfo}
+              />
             </div>
             {modalLayerInfo && (
               <LayerInfoModal
