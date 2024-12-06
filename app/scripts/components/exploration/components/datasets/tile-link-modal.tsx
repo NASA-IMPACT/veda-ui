@@ -6,7 +6,8 @@ import { Button } from '@devseed-ui/button';
 import { Heading, Overline } from '@devseed-ui/typography';
 import {
   CollecticonClipboard,
-  CollecticonClipboardTick
+  CollecticonClipboardTick,
+  CollecticonShare
 } from '@devseed-ui/collecticons';
 import { Modal, ModalHeadline } from '@devseed-ui/modal';
 import { CopyField } from '$components/common/copy-field';
@@ -19,7 +20,11 @@ const FormInputSubmitWrapper = styled.div`
     border-radius: ${themeVal('shape.rounded')} 0 0 ${themeVal('shape.rounded')};
   }
 
-  > button {
+  > button:not(:last-child) {
+    border-radius: 0;
+  }
+
+  > button:last-child {
     border-radius: 0 ${themeVal('shape.rounded')} ${themeVal('shape.rounded')} 0;
   }
 `;
@@ -29,8 +34,29 @@ export function TileUrlModal(props: {
   tileUrls?: Record<string, string>;
   revealed: boolean;
   onClose: () => void;
+  jupyterUrl: string;
 }) {
-  const { datasetName, tileUrls, revealed, onClose } = props;
+  const { datasetName, tileUrls, revealed, onClose, jupyterUrl } = props;
+
+  const generateQgisUrl = (tileUrl: string) => {
+    const currentDate = new Date().toISOString().split('T')[0];
+    const siteTitle = document.title;
+    const layerName = `${datasetName} at ${currentDate}`;
+    const quotedTileUrl = encodeURIComponent(tileUrl);
+    console.log(
+      `${jupyterUrl}/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
+        layerName
+      )}&project_name=${encodeURIComponent(siteTitle)}`
+    );
+
+    return `${jupyterUrl}/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
+      layerName
+    )}&project_name=${encodeURIComponent(siteTitle)}`;
+  };
+
+  const handleOpenInQgis = (tileUrl: string) => {
+    window.open(generateQgisUrl(tileUrl), '_blank');
+  };
 
   return (
     <Modal
@@ -49,8 +75,16 @@ export function TileUrlModal(props: {
       content={
         <Form>
           {[
-            { label: 'XYZ Tile URL', value: tileUrls?.xyzTileUrl },
-            { label: 'WMTS Tile URL', value: tileUrls?.wmtsTileUrl }
+            {
+              label: 'XYZ Tile URL',
+              value: tileUrls?.xyzTileUrl,
+              canOpenInQgis: true
+            },
+            {
+              label: 'WMTS Tile URL',
+              value: tileUrls?.wmtsTileUrl,
+              canOpenInQgis: false
+            }
           ].map((tileUrl) =>
             tileUrl.value ? (
               <FormGroupStructure
@@ -84,6 +118,15 @@ export function TileUrlModal(props: {
                             />
                           )}
                         </Button>
+                        {tileUrl.canOpenInQgis && (
+                          <Button
+                            size='medium'
+                            variation='primary-fill'
+                            onClick={() => handleOpenInQgis(tileUrl.value)}
+                          >
+                            <CollecticonShare meaningful title='Open in QGIS' />
+                          </Button>
+                        )}
                       </FormInputSubmitWrapper>
                     );
                   }}

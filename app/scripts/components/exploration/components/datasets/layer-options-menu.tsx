@@ -9,7 +9,7 @@ import {
   CollecticonXmarkSmall,
   CollecticonArrowDown,
   CollecticonArrowUp,
-  CollecticonShare,
+  CollecticonShare
 } from '@devseed-ui/collecticons';
 import { TileUrlModal } from './tile-link-modal';
 import { TipButton } from '$components/common/tip-button';
@@ -17,7 +17,6 @@ import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
 import { NativeSliderInput, SliderInputProps } from '$styles/range-slider';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
-
 
 interface LayerMenuOptionsProps {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
@@ -33,7 +32,7 @@ const StyledDropdown = styled(Dropdown)`
     padding: ${glsp(0.25)};
     border-bottom: 1px solid ${themeVal('color.base-200')};
     ${DropMenuItem} {
-      cursor:pointer;
+      cursor: pointer;
     }
   }
 
@@ -44,7 +43,7 @@ const StyledDropdown = styled(Dropdown)`
   li:first-child {
     padding-top: 0;
   }
-  
+
   & .${classNamePrefix}-opacity {
     min-width: 1.5rem;
     font-size: 0.875rem;
@@ -59,7 +58,7 @@ const StyledDropdown = styled(Dropdown)`
   }
 `;
 
-export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
+export default function LayerMenuOptions(props: LayerMenuOptionsProps) {
   const { datasetAtom } = props;
 
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
@@ -69,19 +68,22 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
 
   const [tileModalRevealed, setTileModalRevealed] = useState(false);
 
-  const currentIndex = datasets.findIndex(d => d.data.id === dataset.data.id);
+  const currentIndex = datasets.findIndex((d) => d.data.id === dataset.data.id);
 
   const handleRemove = () => {
-      setDatasets((prevDatasets) =>
+    setDatasets((prevDatasets) =>
       prevDatasets.filter((d) => d.data.id !== dataset.data.id)
     );
   };
 
   const moveUp = () => {
-    if (currentIndex > 0 ) {
+    if (currentIndex > 0) {
       setDatasets((prevDatasets) => {
         const arr = [...prevDatasets];
-        [arr[currentIndex], arr[currentIndex - 1]] = [arr[currentIndex - 1], arr[currentIndex]];
+        [arr[currentIndex], arr[currentIndex - 1]] = [
+          arr[currentIndex - 1],
+          arr[currentIndex]
+        ];
         return arr;
       });
     }
@@ -91,7 +93,10 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
     if (currentIndex < datasets.length - 1) {
       setDatasets((prevDatasets) => {
         const arr = [...prevDatasets];
-        [arr[currentIndex], arr[currentIndex + 1]] = [arr[currentIndex + 1], arr[currentIndex]];
+        [arr[currentIndex], arr[currentIndex + 1]] = [
+          arr[currentIndex + 1],
+          arr[currentIndex]
+        ];
         return arr;
       });
     }
@@ -142,27 +147,23 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
           </li>
           <li>
             <DropMenuItem
-              disabled={currentIndex === datasets.length -1}
+              disabled={currentIndex === datasets.length - 1}
               aria-disabled={currentIndex === 0}
               onClick={moveDown}
               data-dropdown='click.close'
             >
               <CollecticonArrowDown />
-                Move down
+              Move down
             </DropMenuItem>
           </li>
           <li>
-            <DropMenuItem
-              onClick={handleLoadIntoGIS}
-            >
+            <DropMenuItem onClick={handleLoadIntoGIS}>
               <CollecticonShare />
               Load into GIS
             </DropMenuItem>
           </li>
           <li className={`${classNamePrefix}-remove-layer`}>
-            <DropMenuItem
-              onClick={handleRemove}
-            >
+            <DropMenuItem onClick={handleRemove}>
               <CollecticonXmarkSmall />
               Remove layer
             </DropMenuItem>
@@ -171,9 +172,10 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
       </StyledDropdown>
       <TileUrlModal
         datasetName={dataset.data.name}
+        tileUrls={dataset.meta?.tileUrls}
         revealed={tileModalRevealed}
         onClose={() => setTileModalRevealed(false)}
-        tileUrls={dataset.meta?.tileUrls}
+        jupyterUrl='https://hub.openveda.cloud/user-redirect'
       />
     </>
   );
