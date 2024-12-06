@@ -38,18 +38,36 @@ export function TileUrlModal(props: {
 }) {
   const { datasetName, tileUrls, revealed, onClose, jupyterUrl } = props;
 
+  const encodeTileUrl = (url: string) => {
+    try {
+      const [baseUrl, queryString] = url.split('?');
+
+      if (!queryString) {
+        return baseUrl;
+      }
+
+      const decodedParams = decodeURIComponent(queryString);
+      const quotedParams = encodeURIComponent(decodedParams + '\n\n\n\n\n');
+
+      return `${baseUrl}?${quotedParams}`;
+    } catch (e) {
+      console.error('URL parsing failed:', e);
+      return url;
+    }
+  };
+
   const generateQgisUrl = (tileUrl: string) => {
     const currentDate = new Date().toISOString().split('T')[0];
     const siteTitle = document.title;
     const layerName = `${datasetName} at ${currentDate}`;
-    const quotedTileUrl = encodeURIComponent(tileUrl);
+    const quotedTileUrl = encodeTileUrl(tileUrl);
+
     console.log(
-      `${jupyterUrl}/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
+      `${jupyterUrl}/user-redirect/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
         layerName
       )}&project_name=${encodeURIComponent(siteTitle)}`
     );
-
-    return `${jupyterUrl}/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
+    return `${jupyterUrl}/user-redirect/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
       layerName
     )}&project_name=${encodeURIComponent(siteTitle)}`;
   };
