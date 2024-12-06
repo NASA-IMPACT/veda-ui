@@ -63,11 +63,11 @@ export function TileUrlModal(props: {
     const quotedTileUrl = encodeTileUrl(tileUrl);
 
     console.log(
-      `${jupyterUrl}/user-redirect/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
+      `${jupyterUrl}/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
         layerName
       )}&project_name=${encodeURIComponent(siteTitle)}`
     );
-    return `${jupyterUrl}/user-redirect/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
+    return `${jupyterUrl}/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
       layerName
     )}&project_name=${encodeURIComponent(siteTitle)}`;
   };
