@@ -62,6 +62,24 @@ VEDA-UI includes a GitHub action for checking TypeScript and lint errors. If you
 #### Pre-commit Hook
 Additionally, there's a pre-commit hook that performs the same error checks. This helps developers identify and address issues at an earlier stage. If you need to bypass the check (to make a local temporary commit etc.), include the `--no-verify`` flag in your commit command.
 
+#### Format on Save
+While the existing checks ensure that no linting errors are introduced into the main branch, enabling "Format on Save" in your code editor provides an additional layer of convenience. It helps catch formatting issues early in the development process, minimizing the risk of committing errors and ensuring consistent code style across the team.
+
+##### How to Set Up Format on Save in VS Code
+Install Required Extensions:
+
+1. Install the ESLint extension ("dbaeumer.vscode-eslint").
+2. Enable Format on Save in the settings (Cmd+, on macOS)
+3. Configure Formatter Settings:
+   Ensure ESLint is set as the default formatter:
+   ```json
+   "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+   ```
+5. Test the Configuration:
+   Make a change to any file in your project, save it, and verify that it is automatically formatted.
+
+Note: The project contains a file `.vscode/settings.json.sample` with our recommended vscode settings.
+
 ### Testing
 
 ## Unit tests
