@@ -1,0 +1,32 @@
+name: Release Every Other Monday
+on:
+  workflow_dispatch:
+  # Run action at 16:15 PM on Monday (UTC)
+  # schedule:
+  # @TODO: the schedule below is weekly. Do byweekly check.
+  #   - cron: '15 16 * * 1'
+
+# Sets the GITHUB_TOKEN permissions to allow release
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+      - name: git config
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+      - name: Use Node.js ${{ env.NODE }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE }}
+      - run: yarn
+      - run: yarn release  --ci --verbose
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
