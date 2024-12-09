@@ -24,8 +24,9 @@ import {
   ComponentOverride,
   ContentOverride
 } from '$components/common/page-overrides';
+import { checkEnvFlag } from '$utils/utils';
 
-
+const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_FOOTER);
 const homeContent = getOverride('homeContent');
 
 const Connections = styled(Hug)`
@@ -113,10 +114,10 @@ const getCoverProps = () => {
 
     return author
       ? {
-        ...coverProps,
-        attributionAuthor: author.name,
-        attributionUrl: author.url
-      }
+          ...coverProps,
+          attributionAuthor: author.name,
+          attributionUrl: author.url
+        }
       : coverProps;
   } else {
     return {
@@ -171,36 +172,37 @@ function RootHome() {
       </ComponentOverride>
 
       <ContentOverride with='homeContent'>
-
         <Audience />
 
         <FeaturedStories />
 
         <ValueProposition />
 
-        <Connections>
-          <ConnectionsBlock>
-            <ConnectionsBlockTitle>About</ConnectionsBlockTitle>
-            <ConnectionsList>
-              <li>
-                <Link to='/about'>
-                  <CollecticonChevronRightSmall /> Learn more
-                </Link>
-              </li>
-              <li>
-                <a
-                  href='#'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    showFeedbackModal();
-                  }}
-                >
-                  <CollecticonChevronRightSmall /> Give feedback
-                </a>
-              </li>
-            </ConnectionsList>
-          </ConnectionsBlock>
-        </Connections>
+        {!isUSWDSEnabled && (
+          <Connections>
+            <ConnectionsBlock>
+              <ConnectionsBlockTitle>About</ConnectionsBlockTitle>
+              <ConnectionsList>
+                <li>
+                  <Link to='/about'>
+                    <CollecticonChevronRightSmall /> Learn more
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href='#'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      showFeedbackModal();
+                    }}
+                  >
+                    <CollecticonChevronRightSmall /> Give feedback
+                  </a>
+                </li>
+              </ConnectionsList>
+            </ConnectionsBlock>
+          </Connections>
+        )}
       </ContentOverride>
     </PageMainContent>
   );
