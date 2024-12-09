@@ -7,10 +7,8 @@ import { CardTopicsList } from "../card/styles";
 import TextHighlight from "../text-highlight";
 import { getDatasetDescription, getMediaProperty } from './utils';
 import { DatasetData, DatasetLayer } from "$types/veda";
-import { getDatasetPath } from "$utils/routes";
 import { TAXONOMY_SOURCE, TAXONOMY_TOPICS, getAllTaxonomyValues, getTaxonomy } from "$utils/veda-data/taxonomies";
 import { Pill } from "$styles/pill";
-import { usePathname } from "$utils/use-pathname";
 
 interface CatalogCardProps {
   dataset: DatasetData;
@@ -100,8 +98,6 @@ export const CatalogCard = (props: CatalogCardProps) => {
     onDatasetClick
   } = props;
 
-  const pathname = usePathname();
-
   const topics = getTaxonomy(dataset, TAXONOMY_TOPICS)?.values;
   const sources = getTaxonomy(dataset, TAXONOMY_SOURCE)?.values;
   const allTaxonomyValues = getAllTaxonomyValues(dataset).map((v) => v.name);
@@ -117,8 +113,6 @@ export const CatalogCard = (props: CatalogCardProps) => {
       onDatasetClick();
     }
   };
-
-  const linkTo = getDatasetPath(dataset, pathname);
 
   return (
     <CardSelectable
