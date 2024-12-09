@@ -3,25 +3,24 @@ import { Icon } from '@trussworks/react-uswds';
 import NasaLogoColor from '../../nasa-logo-color.js';
 import {
   USWDSFooter,
-  USWDSLink,
   USWDSFooterNav,
-  USWDSLogo,
   USWDSAddress
 } from '$components/common/uswds';
 import './styles.scss';
 
 interface PageFooterProps {
-  mainNavItems: NavItem[];
-  subNavItems: NavItem[];
-  logoSvg?: SVGElement | JSX.Element;
-  linkProperties: LinkProperties;
-  title: string;
-  version?: string;
+  primarySection: any;
+  settings: any;
   hidefooter?: boolean;
 }
 
-export default function PageFooter({ hidefooter }: PageFooterProps) {
-  const returnToTop = () => {
+export default function PageFooter({
+  settings,
+  primarySection,
+  hidefooter
+}: PageFooterProps) {
+  console.log(settings, primarySection, hidefooter);
+  const returnToTopButton = () => {
     return (
       <div
         id='return-to-top-container'
@@ -34,11 +33,13 @@ export default function PageFooter({ hidefooter }: PageFooterProps) {
     );
   };
 
+  const { returnToTop, secondarySection } = settings;
+  const { footerPrimaryContactItems, footerPrimaryNavItems } = primarySection;
   return (
     <>
       <USWDSFooter
         size='slim'
-        returnToTop={returnToTop()}
+        returnToTop={returnToTop && returnToTopButton()}
         // className={hidefooter && 'display-none'}
         primary={
           <div
@@ -88,12 +89,15 @@ export default function PageFooter({ hidefooter }: PageFooterProps) {
             </div>
             <div className='grid-col-4 footer-text grid-gap-6'>
               <span>NASA Official: </span>
-              <a key='email' href='mailto:info@agency.gov'>
+              <a
+                key={secondarySection.type}
+                href={`mailto:${secondarySection.to}`}
+              >
                 <Icon.Mail
                   className='margin-right-1 width-205 height-auto position-relative'
                   id='mail_icon'
                 />
-                info@agency.gov
+                {secondarySection.title}
               </a>
             </div>
           </div>

@@ -360,6 +360,20 @@ declare module 'veda' {
       }
     | undefined;
 
+  export const getFooterItemsFromVedaConfig: () =>
+    | {
+        footerSettings:
+          | (NavLinkItem | ModalNavLink | DropdownNavLink)[]
+          | undefined;
+        footerPrimaryContactItems:
+          | (NavLinkItem | ModalNavLink | DropdownNavLink)[]
+          | undefined;
+        footerPrimaryNavItems:
+          | (NavLinkItem | ModalNavLink | DropdownNavLink)[]
+          | undefined;
+      }
+    | undefined;
+
   /**
    * List of custom user defined pages.
    */

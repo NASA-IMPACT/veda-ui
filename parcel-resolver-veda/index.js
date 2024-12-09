@@ -86,7 +86,6 @@ function generateMdxDataObject(data) {
 function getCookieConsentForm(result) {
   if (!result.cookieConsentForm) return undefined;
   else {
-
     const parsedCopy = md.render(result.cookieConsentForm.copy);
     const trimmedCopy = parsedCopy.replace(/(\r\n|\n|\r)/gm, '');
     return JSON.stringify({
@@ -229,7 +228,9 @@ module.exports = new Resolver({
           booleans: ${JSON.stringify(withDefaultStrings(result.booleans))},
           banner: ${getBannerContent(result)},
           navItems: ${JSON.stringify(result.navItems)},
-          cookieConsentForm: ${getCookieConsentForm(result)}
+          cookieConsentForm: ${getCookieConsentForm(result)},
+          footerItems: ${JSON.stringify(result.footerItems)}
+
         };
 
         export const theme = ${JSON.stringify(result.theme) || null};
@@ -250,7 +251,7 @@ module.exports = new Resolver({
         export const getBannerFromVedaConfig = () => config.banner;
         export const getNavItemsFromVedaConfig = () => config.navItems;
         export const getCookieConsentFromVedaConfig = () => config.cookieConsentForm;
-
+        export const getFooterItemsFromVedaConfig = () => config.footerItems
 
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
         export const stories = ${generateMdxDataObject(storiesImportData)};
