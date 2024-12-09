@@ -3,12 +3,9 @@ import styled, { css } from "styled-components";
 import { CollecticonPlus, CollecticonTickSmall, iconDataURI } from "@devseed-ui/collecticons";
 import { glsp, themeVal } from "@devseed-ui/theme-provider";
 import { Card } from "../card";
-import { CardMeta, CardTopicsList } from "../card/styles";
-import { DatasetClassification } from "../dataset-classification";
-import { CardSourcesList } from "../card-sources";
+import { CardTopicsList } from "../card/styles";
 import TextHighlight from "../text-highlight";
 import { getDatasetDescription, getMediaProperty } from './utils';
-import { LinkProperties } from '$types/veda';
 import { DatasetData, DatasetLayer } from "$types/veda";
 import { getDatasetPath } from "$utils/routes";
 import { TAXONOMY_SOURCE, TAXONOMY_TOPICS, getAllTaxonomyValues, getTaxonomy } from "$utils/veda-data/taxonomies";
@@ -22,7 +19,6 @@ interface CatalogCardProps {
   selectable?: boolean;
   selected?: boolean;
   onDatasetClick?: () => void;
-  linkProperties?: LinkProperties;
 }
 
 const CardSelectable = styled(Card)<{
@@ -101,8 +97,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
     searchTerm,
     selectable,
     selected,
-    onDatasetClick,
-    linkProperties
+    onDatasetClick
   } = props;
 
   const pathname = usePathname();
@@ -131,12 +126,6 @@ export const CatalogCard = (props: CatalogCardProps) => {
       checked={selectable ? selected : undefined}
       selectable={selectable}
       tagLabels={allTaxonomyValues}
-      overline={
-        <CardMeta>
-          <DatasetClassification dataset={dataset} />
-          <CardSourcesList sources={sources} linkProperties={linkProperties} />
-        </CardMeta>
-      }
       linkLabel='View dataset'
       onClick={handleClick}
       title={
@@ -172,7 +161,6 @@ export const CatalogCard = (props: CatalogCardProps) => {
           ) : null}
         </>
       }
-      {...(linkProperties ? {linkProperties: {...linkProperties, linkTo: linkTo}} : {})}
     />
   );
 };
