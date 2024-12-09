@@ -11,25 +11,25 @@ permissions:
   contents: write
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
-      - name: git config
-        run: |
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-      - name: Use Node.js ${{ env.NODE }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE }}
-      - run: yarn
-      - run: yarn release  --ci --verbose
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # release:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #         ssh-key: ${{ secrets.DEPLOY_KEY }}
+  #     - name: git config
+  #       run: |
+  #         git config user.name "${GITHUB_ACTOR}"
+  #         git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+  #     - name: Use Node.js ${{ env.NODE }}
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE }}
+  #     - run: yarn
+  #     - run: yarn release  --ci --verbose
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   preview-build:
     runs-on: ubuntu-latest
     needs: "release"
@@ -37,4 +37,4 @@ jobs:
       - name: Call Instance Build
         uses: nasa-impact/veda-config/.github/preview-build/preview-build.yml@1242-preview-build-action
         with:
-          ui-version: "${{ env.VERSION_NUMBER }}"
+          ui-version: "v5.11.3"
