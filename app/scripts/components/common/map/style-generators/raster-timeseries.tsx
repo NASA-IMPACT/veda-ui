@@ -63,6 +63,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     stacApiEndpoint,
     tileApiEndpoint,
     colorMap,
+    reScale,
     envApiStacEndpoint,
     envApiRasterEndpoint
   } = props;
@@ -367,7 +368,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           {
             assets: 'cog_default',
             ...(sourceParams ?? {}),
-            ...(colorMap && { colormap_name: colorMap })
+            ...(colorMap && { colormap_name: colorMap }),
+            ...(reScale && { rescale: Object.values(reScale) })
           },
           // Temporary solution to pass different tile parameters for hls data
           {
@@ -495,6 +497,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   }, [
     mosaicUrl,
     colorMap,
+    reScale,
     points,
     minZoom,
     haveSourceParamsChanged,

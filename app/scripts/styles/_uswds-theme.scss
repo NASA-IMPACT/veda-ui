@@ -1,19 +1,22 @@
+// @QUESTION: Move to under uswds dir?
 @use 'uswds-core' as * with (
-    $utilities-use-important: true,
-    $theme-show-notifications: false,
-    // To add more custom fonts, see 'Adding fonts to USWDS':
-    // https://designsystem.digital.gov/design-tokens/typesetting/font-family/
-    $theme-typeface-tokens: (
-        baseFontFamily: (
-            "display-name": var(--base-font-family),
-            "cap-height": 364px,
-        ),
+  $utilities-use-important: true,
+  $theme-show-notifications: false,
+  $theme-font-weight-semibold: '600',
+  // To add more custom fonts, see 'Adding fonts to USWDS':
+  // https://designsystem.digital.gov/design-tokens/typesetting/font-family/
+  $theme-typeface-tokens:
+    (
+      baseFontFamily: (
+        'display-name': var(--base-font-family),
+        'cap-height': 364px
+      )
     ),
-    $theme-type-scale-md: 8,
-    $theme-utility-breakpoints: (
-        "mobile-lg": false,
-        "desktop": false
-    ),
-    $theme-font-type-sans: baseFontFamily,
-    $theme-font-type-serif: baseFontFamily,
+  $theme-type-scale-md: 8,
+  $theme-utility-breakpoints: (
+    'mobile-lg': false,
+    'desktop': false
+  ),
+  $theme-font-type-serif: baseFontFamily,
+  $theme-font-type-sans: baseFontFamily
 );

@@ -24,7 +24,7 @@ import { LayoutRootContext } from './context';
 import { setGoogleTagManager } from '$utils/use-google-tag-manager';
 
 import NavWrapper from '$components/common/nav-wrapper';
-import Logo from '$components/common/page-header/logo';
+import Logo from '$components/common/page-header-legacy/logo';
 import {
   mainNavItems,
   subNavItems
