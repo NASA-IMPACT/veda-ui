@@ -30,3 +30,11 @@ jobs:
       - run: yarn release  --ci --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  preview-build:
+    runs-on: ubuntu-latest
+    needs: "release"
+    steps:
+      - name: Call Instance Build
+        uses: nasa-impact/veda-config/.github/preview-build/preview-build.yml@1242-preview-build-action
+        with:
+          ui-version: "${{ env.VERSION_NUMBER }}"
