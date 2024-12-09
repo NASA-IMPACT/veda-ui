@@ -1,48 +1,87 @@
-import React from 'react';
-import NasaLogoColor from '../../nasa-logo-color';
+import React, { ComponentType } from 'react';
+import NasaLogoColor from '../../nasa-logo-color.js';
+import { Icon } from '@trussworks/react-uswds';
 
 import {
   USWDSFooter,
   USWDSLink,
   USWDSFooterNav,
-  USWDSLogo
+  USWDSLogo,
+  USWDSAddress
 } from '$components/common/uswds';
-export default function PageFooter(hideFooter) {
+import './styles.scss';
+
+export default function PageFooter() {
+  const returnToTop = () => {
+    return (
+      <div className='maxw-desktop margin-left-auto margin-right-auto padding-x-4'>
+        <a className='usa-link text-primary' href='#'>
+          Return to top
+        </a>
+      </div>
+    );
+  };
   return (
     <>
-      {/* //commenting out hidefooter functionality for inflight work{!hideFooter && ( */}
-      {NasaLogoColor}
       <USWDSFooter
         size='slim'
-        // returnToTop={returnToTop}
+        returnToTop={returnToTop()}
         primary={
-          <div className='usa-footer__primary-container grid-row bg-base-lightest'>
-            <div className='mobile-lg:grid-col-8'>
+          <div
+            id='footer_primary_container'
+            className=' grid-row bg-base-lightest'
+          >
+            <div className='grid-row'>
               <USWDSFooterNav
                 size='slim'
+                className='flex'
                 links={Array(4).fill(
-                  <USWDSLink
-                    variant='nav'
-                    href='#'
-                    className='usa-footer__primary-link'
-                  >
+                  <a className='usa-footer__primary-link' href='#'>
                     Primary Link
-                  </USWDSLink>
+                  </a>
                 )}
               />
+              <div className='flex'>
+                <USWDSAddress
+                  size='slim'
+                  className=''
+                  items={[
+                    <a className='usa-link text-base-dark' key='#' href='#'>
+                      News and Events
+                    </a>,
+                    <a className='usa-link text-base-dark' key='#' href='#'>
+                      About
+                    </a>,
+                    <a className='usa-link text-base-dark' key='#' href='#'>
+                      Contact Us
+                    </a>
+                  ]}
+                />
+              </div>
             </div>
           </div>
         }
         secondary={
-          <USWDSLogo
-            size='slim'
-            //Nasa logo not showing.
-            image={<NasaLogoColor />}
-            heading={<p className='usa-footer__logo-heading'>Name of Agency</p>}
-          />
+          <div className='grid-row'>
+            <div id='logo-container'>
+              <a id='logo-container-link' href='#'>
+                {NasaLogoColor()}
+                <span className='footer-text'>
+                  NASA EarthData 2024 • v0.17.0
+                  {/* {version} */}
+                </span>
+              </a>
+            </div>
+            <div className='grid-col-4 footer-text flex'>
+              <span>NASA Official:</span>
+              <a key='email' href='mailto:info@agency.gov'>
+                <Icon.Mail />
+                info@agency.gov
+              </a>
+            </div>
+          </div>
         }
       />
-      {/*  )} */}
     </>
   );
 }
