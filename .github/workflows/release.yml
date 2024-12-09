@@ -35,6 +35,6 @@ jobs:
     # needs: "release"
     steps:
       - name: Call Instance Build
-        uses: nasa-impact/veda-config/.github/preview-build/preview-build.yml@1242-preview-build-action
+        uses: nasa-impact/veda-config/.github/preview-build/@1242-preview-build-action
         with:
           ui-version: "v5.11.3"
