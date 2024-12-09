@@ -105,7 +105,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
         )}
       </PageBody>
       {isUSWDSEnabled ? (
-        <PageFooter />
+        <PageFooter hideFooter={hideFooter}  />
       ) : (
         <PageFooterLegacy hideFooter={hideFooter} />
       )}

@@ -14,8 +14,8 @@
     ),
   $theme-type-scale-md: 8,
   $theme-utility-breakpoints: (
-    'mobile-lg': false,
-    'desktop': false
+    'mobile-lg': true,
+    'desktop': true
   ),
   $theme-font-type-serif: baseFontFamily,
   $theme-font-type-sans: baseFontFamily

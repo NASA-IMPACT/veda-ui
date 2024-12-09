@@ -1,7 +1,6 @@
 import React, { ComponentType } from 'react';
-import NasaLogoColor from '../../nasa-logo-color.js';
 import { Icon } from '@trussworks/react-uswds';
-
+import NasaLogoColor from '../../nasa-logo-color.js';
 import {
   USWDSFooter,
   USWDSLink,
@@ -11,58 +10,73 @@ import {
 } from '$components/common/uswds';
 import './styles.scss';
 
-export default function PageFooter() {
+interface PageFooterProps {
+  mainNavItems: NavItem[];
+  subNavItems: NavItem[];
+  logoSvg?: SVGElement | JSX.Element;
+  linkProperties: LinkProperties;
+  title: string;
+  version?: string;
+  hidefooter?: boolean;
+}
+
+export default function PageFooter({ hidefooter }: PageFooterProps) {
   const returnToTop = () => {
     return (
-      <div className='maxw-desktop margin-left-auto margin-right-auto padding-x-4'>
+      <div
+        id='return-to-top-container'
+        className=' margin-left-auto margin-right-auto padding-x-4'
+      >
         <a className='usa-link text-primary' href='#'>
           Return to top
         </a>
       </div>
     );
   };
+
   return (
     <>
       <USWDSFooter
         size='slim'
         returnToTop={returnToTop()}
+        // className={hidefooter && 'display-none'}
         primary={
           <div
             id='footer_primary_container'
             className=' grid-row bg-base-lightest'
           >
-            <div className='grid-row'>
+            <div className='mobile-lg:grid-col-8'>
               <USWDSFooterNav
+                aria-label='Footer navigation'
                 size='slim'
-                className='flex'
                 links={Array(4).fill(
                   <a className='usa-footer__primary-link' href='#'>
-                    Primary Link
+                    PrimaryLink
                   </a>
                 )}
               />
-              <div className='flex'>
-                <USWDSAddress
-                  size='slim'
-                  className=''
-                  items={[
-                    <a className='usa-link text-base-dark' key='#' href='#'>
-                      News and Events
-                    </a>,
-                    <a className='usa-link text-base-dark' key='#' href='#'>
-                      About
-                    </a>,
-                    <a className='usa-link text-base-dark' key='#' href='#'>
-                      Contact Us
-                    </a>
-                  ]}
-                />
-              </div>
+            </div>
+            <div className='tablet:grid-col-4'>
+              <USWDSAddress
+                size='slim'
+                className='flex-justify-end'
+                items={[
+                  <a className='usa-link text-base-dark' key='#' href='#'>
+                    News and Events
+                  </a>,
+                  <a className='usa-link text-base-dark' key='#' href='#'>
+                    About
+                  </a>,
+                  <a className='usa-link text-base-dark' key='#' href='#'>
+                    Contact Us
+                  </a>
+                ]}
+              />
             </div>
           </div>
         }
         secondary={
-          <div className='grid-row'>
+          <div id='footer_secondary_container' className='grid-row'>
             <div id='logo-container'>
               <a id='logo-container-link' href='#'>
                 {NasaLogoColor()}
@@ -72,10 +86,13 @@ export default function PageFooter() {
                 </span>
               </a>
             </div>
-            <div className='grid-col-4 footer-text flex'>
-              <span>NASA Official:</span>
+            <div className='grid-col-4 footer-text grid-gap-6'>
+              <span>NASA Official: </span>
               <a key='email' href='mailto:info@agency.gov'>
-                <Icon.Mail />
+                <Icon.Mail
+                  className='margin-right-1 width-205 height-auto position-relative'
+                  id='mail_icon'
+                />
                 info@agency.gov
               </a>
             </div>
