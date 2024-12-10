@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import React from 'react';
 import { Icon } from '@trussworks/react-uswds';
 import NasaLogoColor from '../../nasa-logo-color.js';
 import {
@@ -19,7 +19,7 @@ export default function PageFooter({
   primarySection,
   hidefooter
 }: PageFooterProps) {
-  console.log(settings, primarySection, hidefooter);
+  // console.log(settings, primarySection, hidefooter);
   const returnToTopButton = () => {
     return (
       <div
@@ -34,13 +34,14 @@ export default function PageFooter({
   };
 
   const { returnToTop, secondarySection } = settings;
+  /* eslint-disable */
   const { footerPrimaryContactItems, footerPrimaryNavItems } = primarySection;
   return (
     <>
       <USWDSFooter
         size='slim'
         returnToTop={returnToTop && returnToTopButton()}
-        // className={hidefooter && 'display-none'}
+        className={hidefooter && 'display-none'}
         primary={
           <div
             id='footer_primary_container'
