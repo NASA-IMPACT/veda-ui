@@ -27,7 +27,10 @@ import NavWrapper from '$components/common/nav-wrapper';
 import Logo from '$components/common/page-header-legacy/logo';
 import {
   mainNavItems,
-  subNavItems
+  subNavItems,
+  footerSettings,
+  footerPrimaryContactItems,
+  footerPrimaryNavItems
 } from '$components/common/page-header/default-config';
 import { checkEnvFlag } from '$utils/utils';
 
@@ -105,7 +108,14 @@ function LayoutRoot(props: { children?: ReactNode }) {
         )}
       </PageBody>
       {isUSWDSEnabled ? (
-        <PageFooter />
+        <PageFooter
+          settings={footerSettings}
+          primarySection={{
+            footerPrimaryContactItems,
+            footerPrimaryNavItems
+          }} // @ts-expect-error: NEED TO DELETE
+          hideFooter={hideFooter}
+        />
       ) : (
         <PageFooterLegacy hideFooter={hideFooter} />
       )}

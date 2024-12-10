@@ -50,6 +50,49 @@ let mainNavItems = [
     type: 'internalLink'
   }
 ];
+let footerPrimaryNavItems = [
+  {
+    title: 'Data Catalog',
+    to: '/data-catalog',
+    type: 'internalLink'
+  },
+  {
+    title: 'Data Catalog 2',
+    to: '/data-catalog',
+    type: 'internalLink'
+  },
+  {
+    title: 'Data Catalog3',
+    to: '/data-catalog',
+    type: 'internalLink'
+  }
+];
+let footerPrimaryContactItems = [
+  {
+    title: 'News and Events',
+    to: '/data-catalog',
+    type: 'internalLink'
+  },
+  {
+    title: 'About',
+    to: '/data-catalog',
+    type: 'internalLink'
+  },
+  {
+    title: 'Contact Us',
+    to: '/data-catalog',
+    type: 'internalLink'
+  }
+];
+
+let footerSettings = {
+  secondarySection: {
+    title: 'email test',
+    to: '/data-catalog',
+    type: 'Email'
+  },
+  returnToTop: true
+};
 
 if (!!config.HUB_URL && !!config.HUB_NAME)
   mainNavItems = [
@@ -111,6 +154,11 @@ module.exports = {
   navItems: {
     mainNavItems,
     subNavItems
+  },
+  footerItems: {
+    footerSettings,
+    footerPrimaryContactItems,
+    footerPrimaryNavItems
   },
   cookieConsentForm: {
     title: 'Cookie Consent',

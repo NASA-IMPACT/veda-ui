@@ -1,43 +1,108 @@
 import React from 'react';
-import NasaLogoColor from '../../nasa-logo-color';
-
+import { Icon } from '@trussworks/react-uswds';
+//TO DO: need to move NasaLogoColor outside of component and pass down as props
+import NasaLogoColor from '../../nasa-logo-color.js';
 import {
   USWDSFooter,
-  USWDSLink,
   USWDSFooterNav,
-  USWDSLogo
+  USWDSAddress
 } from '$components/common/uswds';
-export default function PageFooter() {
+import './styles.scss';
+
+interface PageFooterProps {
+  primarySection: any;
+  settings: any;
+  hidefooter?: boolean;
+}
+//TODO: clean up PageFooterProps
+export default function PageFooter({
+  settings,
+  primarySection,
+  hidefooter
+}: PageFooterProps) {
+  // console.log(settings, primarySection, hidefooter);
+  const returnToTopButton = () => {
+    return (
+      <div
+        id='return-to-top-container'
+        className=' margin-left-auto margin-right-auto padding-x-4'
+      >
+        <a className='usa-link text-primary' href='#'>
+          Return to top
+        </a>
+      </div>
+    );
+  };
+
+  const { returnToTop, secondarySection } = settings;
+  /* eslint-disable */
+  const { footerPrimaryContactItems, footerPrimaryNavItems } = primarySection;
   return (
     <>
       <USWDSFooter
         size='slim'
-        // returnToTop={returnToTop}
+        returnToTop={returnToTop && returnToTopButton()}
+        className={hidefooter && 'display-none'}
         primary={
-          <div className='usa-footer__primary-container grid-row bg-base-lightest'>
+          <div
+            id='footer_primary_container'
+            className=' grid-row bg-base-lightest usa-footer__primary-container'
+          >
             <div className='mobile-lg:grid-col-8'>
               <USWDSFooterNav
+                aria-label='Footer navigation'
                 size='slim'
                 links={Array(4).fill(
-                  <USWDSLink
-                    variant='nav'
-                    href='#'
-                    className='usa-footer__primary-link'
-                  >
-                    Primary Link
-                  </USWDSLink>
+                  <a className='usa-footer__primary-link' href='#'>
+                    PrimaryLink
+                  </a>
                 )}
+              />
+            </div>
+            <div className='tablet:grid-col-4'>
+              <USWDSAddress
+                size='slim'
+                className='flex-justify-end'
+                items={[
+                  <a className='usa-link text-base-dark' key='#' href='#'>
+                    News and Events
+                  </a>,
+                  <a className='usa-link text-base-dark' key='#' href='#'>
+                    About
+                  </a>,
+                  <a className='usa-link text-base-dark' key='#' href='#'>
+                    Contact Us
+                  </a>
+                ]}
               />
             </div>
           </div>
         }
         secondary={
-          <USWDSLogo
-            size='slim'
-            //Nasa logo not showing.
-            image={<NasaLogoColor />}
-            heading={<p className='usa-footer__logo-heading'>Name of Agency</p>}
-          />
+          <div id='footer_secondary_container' className='grid-row'>
+            <div id='logo-container'>
+              <a id='logo-container-link' href='#'>
+                {NasaLogoColor()}
+                <span className='footer-text'>
+                  NASA EarthData 2024 • v0.17.0
+                  {/* {version} */}
+                </span>
+              </a>
+            </div>
+            <div className='grid-col-4 footer-text grid-gap-6 flex-justify-end'>
+              <span>NASA Official: </span>
+              <a
+                key={secondarySection.type}
+                href={`mailto:${secondarySection.to}`}
+              >
+                <Icon.Mail
+                  className='margin-right-1 width-205 height-auto position-relative'
+                  id='mail_icon'
+                />
+                {secondarySection.title}
+              </a>
+            </div>
+          </div>
         }
       />
     </>

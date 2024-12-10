@@ -1,7 +1,70 @@
 @use '$styles/veda-ui-theme-vars.scss' as themeVars;
-.usa-footer__secondary-section {
-  color: themeVars.$veda-uswds-color-base-dark;
+
+#logo-container {
+  display: flex;
+  font-family: themeVars.$veda-uswds-basefont-sans;
+  gap: themeVars.$veda-uswds-spacing-105;
+
+  #logo-container-link {
+    display: flex;
+    align-items: center;
+    gap: themeVars.$veda-uswds-spacing-105;
+    font-weight: themeVars.$veda-uswds-fontweight-bold;
+    font-size: themeVars.$veda-uswds-fontsize-lg;
+  }
+
+  #nasa-logo-pos {
+    opacity: 1;
+    transform: translate(0, -100%);
+    /* TODO: Fix the svg to not require any styles!
+     * - set opacity to 1 in svg and fix translation
+     */
+  }
+
+  svg {
+    height: 2.75rem;
+    width: auto;
+  }
 }
+.footer-text {
+  color: white;
+  align-self: center;
+  display: flex;
+  font-size: themeVars.$veda-uswds-fontsize-sm;
+  font-weight: themeVars.$veda-uswds-fontweight-regular;
+  gap: themeVars.$veda-uswds-spacing-105;
+}
+
+#return-to-top-container {
+  padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
+  max-width: 64rem;
+}
+#footer_primary_container {
+  padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
+  background-color: themeVars.$veda-uswds-color-base-lightest;
+}
+.usa-footer__secondary-section {
+  background-color: themeVars.$veda-uswds-color-base-darkest;
+}
+
 .usa-footer__primary-section {
-  color: themeVars.$veda-uswds-color-base-lightest;
+  background-color: themeVars.$veda-uswds-color-base-lightest;
+  text-underline-offset: themeVars.$veda-uswds-spacing-5;
+
+}
+
+#mail_icon {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.usa-footer__address > .grid-row {
+  justify-content: flex-end;
+}
+
+address {
+  font-style: normal;
+  font-weight: themeVars.$veda-uswds-fontweight-regular;
+  font-size: themeVars.$veda-uswds-fontsize-sm;
+  text-underline-offset: themeVars.$veda-uswds-spacing-5;
 }

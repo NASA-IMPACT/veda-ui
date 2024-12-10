@@ -349,12 +349,18 @@ declare module 'veda' {
 
   export const getNavItemsFromVedaConfig: () =>
     | {
-        mainNavItems:
+        mainNavItems: (NavLinkItem | DropdownNavLink)[] | undefined;
+        subNavItems: (NavLinkItem | DropdownNavLink)[] | undefined;
+      }
+    | undefined;
+
+  export const getFooterItemsFromVedaConfig: () =>
+    | {
+        footerSettings: (NavLinkItem | DropdownNavLink)[] | undefined;
+        footerPrimaryContactItems:
           | (NavLinkItem | DropdownNavLink)[]
           | undefined;
-        subNavItems:
-          | (NavLinkItem | DropdownNavLink)[]
-          | undefined;
+        footerPrimaryNavItems: (NavLinkItem | DropdownNavLink)[] | undefined;
       }
     | undefined;
 
