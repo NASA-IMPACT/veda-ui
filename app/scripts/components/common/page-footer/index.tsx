@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon } from '@trussworks/react-uswds';
+//TO DO: need to move NasaLogoColor outside of component and pass down as props
 import NasaLogoColor from '../../nasa-logo-color.js';
 import {
   USWDSFooter,
@@ -13,7 +14,7 @@ interface PageFooterProps {
   settings: any;
   hidefooter?: boolean;
 }
-
+//TODO: clean up PageFooterProps
 export default function PageFooter({
   settings,
   primarySection,
@@ -45,7 +46,7 @@ export default function PageFooter({
         primary={
           <div
             id='footer_primary_container'
-            className=' grid-row bg-base-lightest'
+            className=' grid-row bg-base-lightest usa-footer__primary-container'
           >
             <div className='mobile-lg:grid-col-8'>
               <USWDSFooterNav
@@ -61,6 +62,7 @@ export default function PageFooter({
             <div className='tablet:grid-col-4'>
               <USWDSAddress
                 size='slim'
+                id='footer_address_links'
                 className='flex-justify-end'
                 items={[
                   <a className='usa-link text-base-dark' key='#' href='#'>

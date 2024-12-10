@@ -21,12 +21,6 @@
      */
   }
 
-  // @media (width <= themeVars.$veda-uswds-spacing-desktop) {
-  //   #nasa-logo-pos {
-  //     display: none;
-  //   }
-  // }
-
   svg {
     height: 2.75rem;
     width: auto;
@@ -43,21 +37,16 @@
 
 #return-to-top-container {
   padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
+  max-width: 64rem;
 }
 #footer_primary_container {
   padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
   background-color: themeVars.$veda-uswds-color-base-lightest;
 }
-
 .usa-footer__secondary-section {
   background-color: themeVars.$veda-uswds-color-base-darkest;
-  padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
-  & > .grid-container {
-    max-width: 100%;
-    padding: 0;
-    //NEED to determine how to remove 64rem max-width on grid-container
-  }
 }
+
 .usa-footer__primary-section {
   background-color: themeVars.$veda-uswds-color-base-lightest;
 }
@@ -69,4 +58,8 @@
 
 .usa-footer__address > .grid-row {
   justify-content: flex-end;
+}
+#footer_address_links {
+  color: themeVars.$veda-uswds-color-base-dark;
+  font-style: normal;
 }
