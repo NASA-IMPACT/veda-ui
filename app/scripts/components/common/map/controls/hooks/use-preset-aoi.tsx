@@ -2,6 +2,7 @@ import { Feature, Polygon } from 'geojson';
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { getAoiAppropriateFeatures } from './use-custom-aoi';
+import { isNextJs } from '$utils/utils';
 
 function usePresetAOI(selectedState) {
   const [error, setError] = useState<string | null>('');
@@ -18,10 +19,9 @@ function usePresetAOI(selectedState) {
         // We're dynamically adjusting the base path based on the environment:
         // 1. If running in Next.js, omit "/public" from the path
         // 2. For legacy instances, we include "/public" as part of the path
-        const basePath =
-          typeof window !== 'undefined'
-            ? `/geo-data/states/`
-            : `${process.env.PUBLIC_URL ?? ''}/public/geo-data/states/`;
+        const basePath = isNextJs()
+          ? `/geo-data/states/`
+          : `${process.env.PUBLIC_URL ?? ''}/public/geo-data/states/`;
 
         const res = await axios.get(`${basePath}${selectedState}.geojson`, {
           signal: abortController.signal

@@ -95,3 +95,11 @@ export function composeVisuallyDisabled(
 export function checkEnvFlag(value?: string): boolean {
   return (value ?? '').toLowerCase() === 'true';
 }
+
+/**
+ * Helper to detect if code is running in a Next.js environment
+ * by checking for Next.js-specific 'next' property on window.
+ * Will return false on server-side and in non-Next.js environments
+ * @returns boolean indicating if running in Next.js
+ */
+export const isNextJs = () => 'next' in window;
