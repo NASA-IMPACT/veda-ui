@@ -1,10 +1,14 @@
-import { getString, getNavItemsFromVedaConfig } from 'veda';
+import {
+  getString,
+  getNavItemsFromVedaConfig,
+  getFooterItemsFromVedaConfig
+} from 'veda';
 import {
   InternalNavLink,
   ExternalNavLink,
+  ActionNavItem,
   DropdownNavLink,
-  NavItemType,
-  ActionNavItem
+  NavItemType
 } from '$components/common/page-header/types';
 
 import {
@@ -22,6 +26,7 @@ let defaultMainNavItems: (
 )[] = [
   {
     id: 'data-catalog',
+
     title: 'Data Catalog',
     to: DATASETS_PATH,
     type: NavItemType.INTERNAL_LINK
@@ -64,6 +69,51 @@ let defaultSubNavItems: (
   }
 ];
 
+const defaultFooterSettings = {
+  secondarySection: {
+    title: 'email test',
+    to: '/data-catalog',
+    type: 'Email'
+  },
+  returnToTop: true
+};
+
+const defaultFooterPrimaryContactItems = [
+  {
+    title: 'News and Events',
+    to: '/data-catalog',
+    type: 'internalLink'
+  },
+  {
+    title: 'About',
+    to: '/data-catalog',
+    type: 'internalLink'
+  },
+  {
+    title: 'Contact Us',
+    to: '/data-catalog',
+    type: 'internalLink'
+  }
+];
+
+const defaultFooterPrimaryNavItems = [
+  {
+    title: 'Stories',
+    to: '/data-catalog',
+    type: 'internalLink'
+  },
+  {
+    title: 'Topics',
+    to: '/data-catalog',
+    type: 'internalLink'
+  },
+  {
+    title: 'Data Toolkit',
+    to: '/data-catalog',
+    type: 'internalLink'
+  }
+];
+
 if (process.env.GOOGLE_FORM !== undefined) {
   defaultSubNavItems = [
     ...defaultSubNavItems,
@@ -80,5 +130,19 @@ const mainNavItems =
   getNavItemsFromVedaConfig()?.mainNavItems ?? defaultMainNavItems;
 const subNavItems =
   getNavItemsFromVedaConfig()?.subNavItems ?? defaultSubNavItems;
+const footerSettings =
+  getFooterItemsFromVedaConfig()?.footerSettings ?? defaultFooterSettings;
+const footerPrimaryContactItems =
+  getFooterItemsFromVedaConfig()?.footerPrimaryContactItems ??
+  defaultFooterPrimaryContactItems;
+const footerPrimaryNavItems =
+  getFooterItemsFromVedaConfig()?.footerPrimaryNavItems ??
+  defaultFooterPrimaryNavItems;
 
-export { mainNavItems, subNavItems };
+export {
+  mainNavItems,
+  subNavItems,
+  footerSettings,
+  footerPrimaryContactItems,
+  footerPrimaryNavItems
+};
