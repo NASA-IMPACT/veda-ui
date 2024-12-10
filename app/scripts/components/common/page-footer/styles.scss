@@ -48,18 +48,25 @@
   padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
   background-color: themeVars.$veda-uswds-color-base-lightest;
 }
-#footer_secondary_container {
-  padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
-}
 
 .usa-footer__secondary-section {
   background-color: themeVars.$veda-uswds-color-base-darkest;
+  padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
+  & > .grid-container {
+    max-width: 100%;
+    padding: 0;
+    //NEED to determine how to remove 64rem max-width on grid-container
+  }
 }
 .usa-footer__primary-section {
   background-color: themeVars.$veda-uswds-color-base-lightest;
 }
 
-#mail_icon{
-  top:50%;
+#mail_icon {
+  top: 50%;
   transform: translateY(-50%);
+}
+
+.usa-footer__address > .grid-row {
+  justify-content: flex-end;
 }

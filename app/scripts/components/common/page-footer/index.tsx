@@ -87,7 +87,7 @@ export default function PageFooter({
                 </span>
               </a>
             </div>
-            <div className='grid-col-4 footer-text grid-gap-6'>
+            <div className='grid-col-4 footer-text grid-gap-6 flex-justify-end'>
               <span>NASA Official: </span>
               <a
                 key={secondarySection.type}
