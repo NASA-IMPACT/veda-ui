@@ -1,4 +1,3 @@
-
 import {
   getString,
   getNavItemsFromVedaConfig,
@@ -7,10 +6,9 @@ import {
 import {
   InternalNavLink,
   ExternalNavLink,
-  ModalNavLink,
+  ActionNavItem,
   DropdownNavLink,
   NavItemType
-
 } from '$components/common/page-header/types';
 
 import {
@@ -24,7 +22,6 @@ let defaultMainNavItems: (
   | ExternalNavLink
   | InternalNavLink
   | DropdownNavLink
-
   | ActionNavItem
 )[] = [
   {
@@ -35,14 +32,12 @@ let defaultMainNavItems: (
     type: NavItemType.INTERNAL_LINK
   },
   {
-
     id: 'exploration',
     title: 'Exploration',
     to: EXPLORATION_PATH,
     type: NavItemType.INTERNAL_LINK
   },
   {
-
     id: 'stories',
     title: getString('stories').other,
     to: STORIES_PATH,
@@ -64,7 +59,6 @@ let defaultSubNavItems: (
   | ExternalNavLink
   | InternalNavLink
   | DropdownNavLink
-
   | ActionNavItem
 )[] = [
   {
@@ -74,8 +68,6 @@ let defaultSubNavItems: (
     type: NavItemType.INTERNAL_LINK
   }
 ];
-
-
 
 const defaultFooterSettings = {
   secondarySection: {
@@ -154,4 +146,3 @@ export {
   footerPrimaryContactItems,
   footerPrimaryNavItems
 };
-
