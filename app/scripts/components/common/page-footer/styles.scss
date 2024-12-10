@@ -1,0 +1,7 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+.usa-footer__secondary-section {
+  color: themeVars.$veda-uswds-color-base-dark;
+}
+.usa-footer__primary-section {
+  color: themeVars.$veda-uswds-color-base-lightest;
+}
