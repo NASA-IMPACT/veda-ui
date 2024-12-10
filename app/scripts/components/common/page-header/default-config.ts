@@ -1,3 +1,4 @@
+
 import {
   getString,
   getNavItemsFromVedaConfig,
@@ -9,6 +10,7 @@ import {
   ModalNavLink,
   DropdownNavLink,
   NavItemType
+
 } from '$components/common/page-header/types';
 
 import {
@@ -22,19 +24,26 @@ let defaultMainNavItems: (
   | ExternalNavLink
   | InternalNavLink
   | DropdownNavLink
-  | ModalNavLink
+
+  | ActionNavItem
 )[] = [
   {
+    id: 'data-catalog',
+
     title: 'Data Catalog',
     to: DATASETS_PATH,
     type: NavItemType.INTERNAL_LINK
   },
   {
+
+    id: 'exploration',
     title: 'Exploration',
     to: EXPLORATION_PATH,
     type: NavItemType.INTERNAL_LINK
   },
   {
+
+    id: 'stories',
     title: getString('stories').other,
     to: STORIES_PATH,
     type: NavItemType.INTERNAL_LINK
@@ -55,25 +64,18 @@ let defaultSubNavItems: (
   | ExternalNavLink
   | InternalNavLink
   | DropdownNavLink
-  | ModalNavLink
+
+  | ActionNavItem
 )[] = [
   {
+    id: 'about',
     title: 'About',
     to: ABOUT_PATH,
     type: NavItemType.INTERNAL_LINK
   }
 ];
 
-if (process.env.GOOGLE_FORM) {
-  defaultSubNavItems = [
-    ...defaultSubNavItems,
-    {
-      title: 'Contact us',
-      src: process.env.GOOGLE_FORM,
-      type: NavItemType.MODAL
-    }
-  ];
-}
+
 
 const defaultFooterSettings = {
   secondarySection: {
@@ -120,6 +122,18 @@ const defaultFooterPrimaryNavItems = [
   }
 ];
 
+if (process.env.GOOGLE_FORM !== undefined) {
+  defaultSubNavItems = [
+    ...defaultSubNavItems,
+    {
+      id: 'contact-us',
+      title: 'Contact us',
+      actionId: 'open-google-form',
+      type: NavItemType.ACTION
+    }
+  ];
+}
+
 const mainNavItems =
   getNavItemsFromVedaConfig()?.mainNavItems ?? defaultMainNavItems;
 const subNavItems =
@@ -140,3 +154,4 @@ export {
   footerPrimaryContactItems,
   footerPrimaryNavItems
 };
+

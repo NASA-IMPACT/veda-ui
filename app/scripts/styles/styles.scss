@@ -1,4 +1,7 @@
+
 @forward 'uswds-theme';
+@forward 'veda-ui-theme-vars';
+
 
 @use 'uswds-utilities';
 @use 'usa-layout-grid';
@@ -15,3 +18,4 @@
 @use 'usa-input';
 @use 'usa-label';
 @use 'uswds-fonts';
+@use 'usa-header';

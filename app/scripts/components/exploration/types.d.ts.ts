@@ -95,7 +95,10 @@ export interface DatasetData extends EnhancedDatasetLayer {
   timeDensity: TimeDensity;
   domain: Date[];
 }
-
+export interface colorMapScale {
+  min: number;
+  max: number;
+}
 export interface DatasetSettings {
   // Whether or not the layer should be shown on the map.
   isVisible?: boolean;
@@ -105,6 +108,9 @@ export interface DatasetSettings {
   analysisMetrics?: DataMetric[];
   // Active colormap of the layer.
   colorMap?: string;
+  // Active colormap scale.
+
+  scale?: colorMapScale;
 }
 
 // Any sort of meta information the dataset like:
