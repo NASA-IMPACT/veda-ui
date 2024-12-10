@@ -49,6 +49,8 @@
 
 .usa-footer__primary-section {
   background-color: themeVars.$veda-uswds-color-base-lightest;
+  text-underline-offset: themeVars.$veda-uswds-spacing-5;
+
 }
 
 #mail_icon {
@@ -59,7 +61,10 @@
 .usa-footer__address > .grid-row {
   justify-content: flex-end;
 }
-#footer_address_links {
-  color: themeVars.$veda-uswds-color-base-dark;
+
+address {
   font-style: normal;
+  font-weight: themeVars.$veda-uswds-fontweight-regular;
+  font-size: themeVars.$veda-uswds-fontsize-sm;
+  text-underline-offset: themeVars.$veda-uswds-spacing-5;
 }

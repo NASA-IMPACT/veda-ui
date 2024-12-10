@@ -62,7 +62,6 @@ export default function PageFooter({
             <div className='tablet:grid-col-4'>
               <USWDSAddress
                 size='slim'
-                id='footer_address_links'
                 className='flex-justify-end'
                 items={[
                   <a className='usa-link text-base-dark' key='#' href='#'>
