@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Icon } from '@trussworks/react-uswds';
 //TO DO: need to move NasaLogoColor outside of component and pass down as props
 import NasaLogoColor from '../../nasa-logo-color.js';
+import { NavItemType } from '../page-header/types.js';
+import { NavItemCTA } from '../page-header/nav/nav-item-cta.js';
 import {
   USWDSFooter,
   USWDSFooterNav,
   USWDSAddress
 } from '$components/common/uswds';
+
 import './styles.scss';
 
 interface PageFooterProps {
@@ -20,7 +23,7 @@ export default function PageFooter({
   primarySection,
   hidefooter
 }: PageFooterProps) {
-  // console.log(settings, primarySection, hidefooter);
+  console.log(settings, primarySection, hidefooter);
   const returnToTopButton = () => {
     return (
       <div
@@ -36,7 +39,53 @@ export default function PageFooter({
 
   const { returnToTop, secondarySection } = settings;
   /* eslint-disable */
-  const { footerPrimaryContactItems, footerPrimaryNavItems } = primarySection;
+  const {
+    footerPrimaryContactItems,
+    footerPrimaryNavItems,
+    mainNavItems,
+    subNavItems
+  } = primarySection;
+
+  const createNavElement = (navItems, linkClasses) => {
+    //removing 'dropdown' items from array
+    let cleanedNavItems = navItems.filter((a) => {
+      if (a.type !== 'dropdown') {
+        return a;
+      }
+    });
+
+    return cleanedNavItems.map((item) => {
+      switch (item.type) {
+        case NavItemType.ACTION:
+          return <NavItemCTA item={item} />;
+
+        case NavItemType.EXTERNAL_LINK:
+          return (
+            <a className={linkClasses} href={item.to} key={item.id}>
+              {item.title}
+            </a>
+          );
+        case NavItemType.INTERNAL_LINK:
+          return (
+            <a className={linkClasses} href={item.to} key={item.id}>
+              {item.title}
+            </a>
+          );
+
+        default:
+          return <></>;
+      }
+    });
+  };
+
+  const primaryItems = useMemo(
+    () => createNavElement(mainNavItems, 'usa-footer__primary-link'),
+    [mainNavItems]
+  );
+  const secondaryItems = useMemo(
+    () => createNavElement(subNavItems, 'usa-link text-base-dark'),
+    [mainNavItems]
+  );
   return (
     <>
       <USWDSFooter
@@ -52,28 +101,14 @@ export default function PageFooter({
               <USWDSFooterNav
                 aria-label='Footer navigation'
                 size='slim'
-                links={Array(4).fill(
-                  <a className='usa-footer__primary-link' href='#'>
-                    PrimaryLink
-                  </a>
-                )}
+                links={primaryItems}
               />
             </div>
             <div className='tablet:grid-col-4'>
               <USWDSAddress
                 size='slim'
                 className='flex-justify-end'
-                items={[
-                  <a className='usa-link text-base-dark' key='#' href='#'>
-                    News and Events
-                  </a>,
-                  <a className='usa-link text-base-dark' key='#' href='#'>
-                    About
-                  </a>,
-                  <a className='usa-link text-base-dark' key='#' href='#'>
-                    Contact Us
-                  </a>
-                ]}
+                items={secondaryItems}
               />
             </div>
           </div>
