@@ -112,8 +112,10 @@ function LayoutRoot(props: { children?: ReactNode }) {
           settings={footerSettings}
           primarySection={{
             footerPrimaryContactItems,
-            footerPrimaryNavItems
-          }} // @ts-expect-error: NEED TO DELETE
+            footerPrimaryNavItems,
+            mainNavItems,
+            subNavItems
+          }}
           hideFooter={hideFooter}
         />
       ) : (
