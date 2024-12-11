@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from '@trussworks/react-uswds';
 //TO DO: need to move NasaLogoColor outside of component and pass down as props
-import NasaLogoColor from '../../nasa-logo-color.js';
+import NasaLogoColor from '../../common/nasa-logo-color';
 import {
   USWDSFooter,
   USWDSFooterNav,
@@ -82,7 +82,7 @@ export default function PageFooter({
           <div id='footer_secondary_container' className='grid-row'>
             <div id='logo-container'>
               <a id='logo-container-link' href='#'>
-                {NasaLogoColor()}
+                <NasaLogoColor />
                 <span className='footer-text'>
                   NASA EarthData 2024 • v0.17.0
                   {/* {version} */}
