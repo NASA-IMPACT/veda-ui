@@ -13,16 +13,8 @@
     font-size: themeVars.$veda-uswds-fontsize-lg;
   }
 
-  #nasa-logo-pos {
-    opacity: 1;
-    transform: translate(0, -100%);
-    /* TODO: Fix the svg to not require any styles!
-     * - set opacity to 1 in svg and fix translation
-     */
-  }
-
   @media (width <= themeVars.$veda-uswds-spacing-desktop) {
-    #nasa-logo-pos {
+    svg {
       display: none;
     }
   }
