@@ -74,6 +74,9 @@ Additionally, there's a pre-commit hook that performs the same error checks. Thi
 
 The title of any PR to `main` should follow [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/). This is to make sure the versioning of the automatic release works without additional effort. Please give it a read to [its summary](https://www.conventionalcommits.org/en/v1.0.0/#summary) before making a PR.
 
+An example PR title could look like this:
+`feat: Implement new component` or `fix: typo in description`
+
 ### Testing
 
 ## Unit tests
