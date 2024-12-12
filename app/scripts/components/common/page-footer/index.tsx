@@ -12,15 +12,15 @@ import './styles.scss';
 interface PageFooterProps {
   primarySection: any;
   settings: any;
-  hidefooter?: boolean;
+  hideFooter?: boolean;
 }
-//TODO: clean up PageFooterProps
+//TODO: clean up PageFooterProps, Unexpected any. Specify a different interface.
+
 export default function PageFooter({
   settings,
   primarySection,
-  hidefooter
+  hideFooter
 }: PageFooterProps) {
-  // console.log(settings, primarySection, hidefooter);
   const returnToTopButton = () => {
     return (
       <div
@@ -42,7 +42,7 @@ export default function PageFooter({
       <USWDSFooter
         size='slim'
         returnToTop={returnToTop && returnToTopButton()}
-        className={hidefooter && 'display-none'}
+        className={hideFooter && 'display-none'}
         primary={
           <div
             id='footer_primary_container'
