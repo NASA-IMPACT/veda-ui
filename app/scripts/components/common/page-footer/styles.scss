@@ -1,31 +1,5 @@
 @use '$styles/veda-ui-theme-vars.scss' as themeVars;
 
-#logo-container {
-  display: flex;
-  font-family: themeVars.$veda-uswds-basefont-sans;
-  gap: themeVars.$veda-uswds-spacing-105;
-
-  #logo-container-link {
-    display: flex;
-    align-items: center;
-    gap: themeVars.$veda-uswds-spacing-105;
-    font-weight: themeVars.$veda-uswds-fontweight-bold;
-    font-size: themeVars.$veda-uswds-fontsize-lg;
-  }
-
-  #nasa-logo-pos {
-    opacity: 1;
-    transform: translate(0, -100%);
-    /* TODO: Fix the svg to not require any styles!
-     * - set opacity to 1 in svg and fix translation
-     */
-  }
-
-  svg {
-    height: 2.75rem;
-    width: auto;
-  }
-}
 .footer-text {
   color: white;
   align-self: center;
@@ -50,7 +24,6 @@
 .usa-footer__primary-section {
   background-color: themeVars.$veda-uswds-color-base-lightest;
   text-underline-offset: themeVars.$veda-uswds-spacing-5;
-
 }
 
 #mail_icon {

@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { Icon } from '@trussworks/react-uswds';
 //TO DO: need to move NasaLogoColor outside of component and pass down as props
-import NasaLogoColor from '../../nasa-logo-color.js';
 import { NavItemType } from '../page-header/types.js';
 import { NavItemCTA } from '../page-header/nav/nav-item-cta.js';
 import {
@@ -15,13 +14,16 @@ import './styles.scss';
 interface PageFooterProps {
   primarySection: any;
   settings: any;
-  hidefooter?: boolean;
+  hideFooter?: boolean;
+  logoSvg?: SVGElement | JSX.Element;
 }
-//TODO: clean up PageFooterProps
+//TODO: clean up PageFooterProps, Unexpected any. Specify a different interface.
+
 export default function PageFooter({
   settings,
   primarySection,
-  hidefooter
+  hideFooter,
+  logoSvg
 }: PageFooterProps) {
   const returnToTopButton = () => {
     return (
@@ -91,7 +93,7 @@ export default function PageFooter({
       <USWDSFooter
         size='slim'
         returnToTop={returnToTop && returnToTopButton()}
-        className={hidefooter && 'display-none'}
+        className={hideFooter && 'display-none'}
         primary={
           <div
             id='footer_primary_container'
@@ -117,7 +119,7 @@ export default function PageFooter({
           <div id='footer_secondary_container' className='grid-row'>
             <div id='logo-container'>
               <a id='logo-container-link' href='#'>
-                {NasaLogoColor()}
+                <>{logoSvg}</>
                 <span className='footer-text'>
                   NASA EarthData 2024 • v0.17.0
                   {/* {version} */}
