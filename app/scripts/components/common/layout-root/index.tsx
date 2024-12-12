@@ -15,6 +15,7 @@ import { getBannerFromVedaConfig, getCookieConsentFromVedaConfig } from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 import PageFooterLegacy from '../page-footer-legacy';
+import NasaLogoColor from '../nasa-logo-color';
 
 const Banner = React.lazy(() => import('../banner'));
 const CookieConsent = React.lazy(() => import('../cookie-consent'));
@@ -115,6 +116,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
             footerPrimaryNavItems
           }}
           hideFooter={hideFooter}
+          logoSvg={<NasaLogoColor />}
         />
       ) : (
         <PageFooterLegacy hideFooter={hideFooter} />
