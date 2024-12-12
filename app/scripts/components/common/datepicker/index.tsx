@@ -1,12 +1,11 @@
-import React, { ReactNode, useRef, useState } from "react";
-import { Icon } from "@trussworks/react-uswds";
-import { View } from "react-calendar/dist/cjs/shared/types";
+import React, { ReactNode, useRef, useState } from 'react';
+import { Icon } from '@trussworks/react-uswds';
+import { View } from 'react-calendar/dist/cjs/shared/types';
 import Calendar from 'react-calendar';
-import Tippy from "@tippyjs/react";
-import styled from "styled-components";
+import Tippy from '@tippyjs/react';
+import styled from 'styled-components';
 
 import 'react-calendar/dist/Calendar.css';
-import './index.scss';
 
 interface SimpleDatePickerProps {
   disabled: boolean;
@@ -39,7 +38,7 @@ export const SimpleDatePicker = ({
   renderTriggerElement,
   calendarView,
   minDate,
-  maxDate,
+  maxDate
 }: SimpleDatePickerProps) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -54,7 +53,10 @@ export const SimpleDatePicker = ({
   };
 
   const handleClickOutside = (event) => {
-    if (triggerRef.current && !triggerRef.current.contains(event.target as Node)) {
+    if (
+      triggerRef.current &&
+      !triggerRef.current.contains(event.target as Node)
+    ) {
       setIsCalendarOpen(false);
     }
   };
@@ -67,7 +69,7 @@ export const SimpleDatePicker = ({
           disabled,
           tipContent,
           triggerHeadReference,
-          selectedDay,
+          selectedDay
         })}
       </TriggerWrapper>
       {isCalendarOpen && (

@@ -82,7 +82,7 @@ export default function PageFooter({
           <div id='footer_secondary_container' className='grid-row'>
             <div id='logo-container'>
               <a id='logo-container-link' href='#'>
-                {NasaLogoColor()}
+                <NasaLogoColor />
                 <span className='footer-text'>
                   NASA EarthData 2024 • v0.17.0
                   {/* {version} */}
