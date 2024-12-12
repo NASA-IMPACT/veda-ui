@@ -72,10 +72,16 @@ Additionally, there's a pre-commit hook that performs the same error checks. Thi
 
 ### Conventional Commit
 
-The title of any PR to `main` should follow [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/). This is to make sure the versioning of the automatic release works without additional effort. Please give it a read to [its summary](https://www.conventionalcommits.org/en/v1.0.0/#summary) before making a PR.
+The title of any PR to `main` should follow [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/). This is to make sure the automatic versioning and release works seamlessly. Please give it a read to [its summary](https://www.conventionalcommits.org/en/v1.0.0/#summary) before making a PR.
 
 An example PR title could look like this:
-`feat: Implement new component` or `fix: typo in description`
+
+- `feat: Implement new component`: This commit will bump the minor version.
+- `fix: typo in description`: This commit will bump the patch version.
+- `feat!: New component that is not compatible`: `!` is a shortcut for `BREAKING CHANGE`. This commit will bump the major version.
+
+We currently support the following task types. Any type other than `feat` will be treated as a patch version change (unless it is a breaking change):
+`["feat","fix", "docs", "test", "ci", "refactor", "chore", "revert"]'`
 
 ### Testing
 
