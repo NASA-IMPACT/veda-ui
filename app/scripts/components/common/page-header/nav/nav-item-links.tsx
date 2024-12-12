@@ -11,9 +11,7 @@ interface NavItemInternalLinkProps {
   linkProperties: LinkProperties;
 }
 
-export const NavItemExternalLink: React.FC<NavItemExternalLinkProps> = ({
-  item
-}): JSX.Element => {
+export const NavItemExternalLink = ({ item }: NavItemExternalLinkProps) => {
   return (
     <a
       key={item.id}
@@ -28,10 +26,10 @@ export const NavItemExternalLink: React.FC<NavItemExternalLinkProps> = ({
   );
 };
 
-export const NavItemInternalLink: React.FC<NavItemInternalLinkProps> = ({
+export const NavItemInternalLink = ({
   item,
   linkProperties
-}): JSX.Element | null => {
+}: NavItemInternalLinkProps) => {
   if (linkProperties.LinkElement) {
     const path = {
       [linkProperties.pathAttributeKeyName]: (item as InternalNavLink).to
