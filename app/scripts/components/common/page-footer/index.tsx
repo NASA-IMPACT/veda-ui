@@ -23,7 +23,6 @@ export default function PageFooter({
   primarySection,
   hidefooter
 }: PageFooterProps) {
-  console.log(settings, primarySection, hidefooter);
   const returnToTopButton = () => {
     return (
       <div
@@ -57,7 +56,7 @@ export default function PageFooter({
     return cleanedNavItems.map((item) => {
       switch (item.type) {
         case NavItemType.ACTION:
-          return <NavItemCTA item={item} />;
+          return <NavItemCTA item={item} customClasses={linkClasses} />;
 
         case NavItemType.EXTERNAL_LINK:
           return (
@@ -83,7 +82,8 @@ export default function PageFooter({
     [mainNavItems]
   );
   const secondaryItems = useMemo(
-    () => createNavElement(subNavItems, 'usa-link text-base-dark'),
+    () =>
+      createNavElement(subNavItems, 'usa-link text-base-dark text-underline'),
     [mainNavItems]
   );
   return (

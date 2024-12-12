@@ -5,10 +5,12 @@ import { ActionNavItem } from '../types';
 
 interface NavItemCTAProps {
   item: ActionNavItem;
+  customClasses?: string;
 }
 
 export const NavItemCTA: React.FC<NavItemCTAProps> = ({
-  item
+  item,
+  customClasses
 }): JSX.Element => {
   const { isRevealed, show, hide } = useFeedbackModal();
   return (
@@ -16,12 +18,16 @@ export const NavItemCTA: React.FC<NavItemCTAProps> = ({
       {item.actionId === 'open-google-form' && (
         <>
           <button
-            className='usa-nav__link'
+            className={
+              customClasses && customClasses != ''
+                ? customClasses
+                : 'usa-nav__link'
+            }
             type='button'
             tabIndex={0}
             id={item.id}
             onClick={show}
-            style={{background: 'none', border: 'none', cursor: 'pointer'}}
+            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
           >
             {item.title}
           </button>
