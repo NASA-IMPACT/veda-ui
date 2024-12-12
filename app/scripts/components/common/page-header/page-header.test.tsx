@@ -1,7 +1,6 @@
 import React, { ComponentType } from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import '@testing-library/jest-dom/extend-expect';
 
 import { navItems } from '../../../../../mock/veda.config.js';
 import NasaLogoColor from '../nasa-logo-color';
@@ -18,7 +17,7 @@ const mockLinkProperties = {
   pathAttributeKeyName: 'to',
   LinkElement: 'a' as unknown as ComponentType
 };
-const testTitle= 'Test Title';
+const testTitle = 'Test Title';
 
 describe('PageHeader', () => {
   beforeEach(() => {
@@ -34,9 +33,7 @@ describe('PageHeader', () => {
   });
 
   test('renders the PageHeader component title', () => {
-    expect(screen.getByTestId('header')).toHaveTextContent(
-      testTitle
-    );
+    expect(screen.getByTestId('header')).toHaveTextContent(testTitle);
   });
 
   test('renders the PageHeader nav items', () => {
