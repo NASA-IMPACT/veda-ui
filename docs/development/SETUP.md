@@ -69,7 +69,7 @@ While the existing checks ensure that no linting errors are introduced into the 
 Install Required Extensions:
 
 1. Install the ESLint extension ("dbaeumer.vscode-eslint").
-2. Enable Format on Save in the settings (Cmd+, on macOS)
+2. Enable Format on Save in the settings (<kbd>⌘ Command</kbd> + <kbd>,</kbd> on macOS)
 3. Configure Formatter Settings:
    Ensure ESLint is set as the default formatter:
    ```json
