@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { Icon } from '@trussworks/react-uswds';
 //TO DO: need to move NasaLogoColor outside of component and pass down as props
-import { NavItemType } from '../page-header/types.js';
-import { NavItemCTA } from '../page-header/nav/nav-item-cta.js';
+import { NavItemType } from '../page-header/types';
+import { NavItemCTA } from '../page-header/nav/nav-item-cta';
 import {
   USWDSFooter,
   USWDSFooterNav,
@@ -29,7 +29,7 @@ export default function PageFooter({
     return (
       <div
         id='return-to-top-container'
-        className=' margin-left-auto margin-right-auto padding-x-4'
+        className=' margin-left-auto margin-right-auto'
       >
         <a className='usa-link text-primary' href='#'>
           Return to top
@@ -40,12 +40,7 @@ export default function PageFooter({
 
   const { returnToTop, secondarySection } = settings;
   /* eslint-disable */
-  const {
-    footerPrimaryContactItems,
-    footerPrimaryNavItems,
-    mainNavItems,
-    subNavItems
-  } = primarySection;
+  const { mainNavItems, subNavItems } = primarySection;
 
   const createNavElement = (navItems, linkClasses) => {
     //removing 'dropdown' items from array

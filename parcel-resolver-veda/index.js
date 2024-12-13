@@ -229,8 +229,7 @@ module.exports = new Resolver({
           banner: ${getBannerContent(result)},
           navItems: ${JSON.stringify(result.navItems)},
           cookieConsentForm: ${getCookieConsentForm(result)},
-          footerItems: ${JSON.stringify(result.footerItems)}
-
+          footerSettings: ${JSON.stringify(result.footerSettings)}
         };
 
         export const theme = ${JSON.stringify(result.theme) || null};
@@ -251,7 +250,7 @@ module.exports = new Resolver({
         export const getBannerFromVedaConfig = () => config.banner;
         export const getNavItemsFromVedaConfig = () => config.navItems;
         export const getCookieConsentFromVedaConfig = () => config.cookieConsentForm;
-        export const getFooterItemsFromVedaConfig = () => config.footerItems
+        export const getFooterSettingsFromVedaConfig = () => config.footerSettings;
 
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
         export const stories = ${generateMdxDataObject(storiesImportData)};

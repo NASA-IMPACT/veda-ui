@@ -293,6 +293,16 @@ declare module 'veda' {
   }
   type NavLinkItem = ExternalNavLink | InternalNavLink;
 
+  interface FooterSettings {
+    secondarySection: {
+      id: string;
+      title: string;
+      href: string;
+      type: 'Email';
+    };
+    returnToTop: boolean;
+  }
+
   export interface DropdownNavLink {
     id: string;
     title: string;
@@ -354,13 +364,9 @@ declare module 'veda' {
       }
     | undefined;
 
-  export const getFooterItemsFromVedaConfig: () =>
+  export const getFooterSettingsFromVedaConfig: () =>
     | {
-        footerSettings: (NavLinkItem | DropdownNavLink)[] | undefined;
-        footerPrimaryContactItems:
-          | (NavLinkItem | DropdownNavLink)[]
-          | undefined;
-        footerPrimaryNavItems: (NavLinkItem | DropdownNavLink)[] | undefined;
+        footerSettings: FooterSettings;
       }
     | undefined;
 
