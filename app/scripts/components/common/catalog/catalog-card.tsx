@@ -7,7 +7,7 @@ import { CardTopicsList } from "../card/styles";
 import TextHighlight from "../text-highlight";
 import { getDatasetDescription, getMediaProperty } from './utils';
 import { DatasetData, DatasetLayer } from "$types/veda";
-import { TAXONOMY_SOURCE, TAXONOMY_TOPICS, getAllTaxonomyValues, getTaxonomy } from "$utils/veda-data/taxonomies";
+import { TAXONOMY_TOPICS, getAllTaxonomyValues, getTaxonomy } from "$utils/veda-data/taxonomies";
 import { Pill } from "$styles/pill";
 
 interface CatalogCardProps {
@@ -99,7 +99,6 @@ export const CatalogCard = (props: CatalogCardProps) => {
   } = props;
 
   const topics = getTaxonomy(dataset, TAXONOMY_TOPICS)?.values;
-  const sources = getTaxonomy(dataset, TAXONOMY_SOURCE)?.values;
   const allTaxonomyValues = getAllTaxonomyValues(dataset).map((v) => v.name);
 
   const title = layer ? layer.name : dataset.name;
