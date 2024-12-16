@@ -14,10 +14,17 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PEM }}
+          owner: ${{ github.repository_owner }}
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          token: ${{ steps.generate-token.outputs.token }}
       - name: git config
         run: |
           git config user.name "${GITHUB_ACTOR}"
@@ -30,3 +37,14 @@ jobs:
       - run: yarn release  --ci --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  preview-build:
+    runs-on: ubuntu-latest
+    needs: "release"
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          repository: nasa-impact/veda-config
+          event-type: update-version
+          client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ env.VERSION_NUMBER }}"}'
