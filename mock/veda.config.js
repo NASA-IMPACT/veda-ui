@@ -50,43 +50,10 @@ let mainNavItems = [
     type: 'internalLink'
   }
 ];
-let footerPrimaryNavItems = [
-  {
-    title: 'Data Catalog',
-    to: '/data-catalog',
-    type: 'internalLink'
-  },
-  {
-    title: 'Data Catalog 2',
-    to: '/data-catalog',
-    type: 'internalLink'
-  },
-  {
-    title: 'Data Catalog3',
-    to: '/data-catalog',
-    type: 'internalLink'
-  }
-];
-let footerPrimaryContactItems = [
-  {
-    title: 'News and Events',
-    to: '/data-catalog',
-    type: 'internalLink'
-  },
-  {
-    title: 'About',
-    to: '/data-catalog',
-    type: 'internalLink'
-  },
-  {
-    title: 'Contact Us',
-    to: '/data-catalog',
-    type: 'internalLink'
-  }
-];
 
 let footerSettings = {
   secondarySection: {
+    id: 'stories',
     title: 'email test',
     to: '/data-catalog',
     type: 'Email'
@@ -155,11 +122,8 @@ module.exports = {
     mainNavItems,
     subNavItems
   },
-  footerItems: {
-    footerSettings,
-    footerPrimaryContactItems,
-    footerPrimaryNavItems
-  },
+
+  footerSettings,
   cookieConsentForm: {
     title: 'Cookie Consent',
     copy: 'We use cookies to enhance your browsing experience and to help us understand how our website is used. These cookies allow us to collect data on site usage and improve our services based on your interactions. To learn more about it, see our [Privacy Policy](https://www.nasa.gov/privacy/#cookies)',

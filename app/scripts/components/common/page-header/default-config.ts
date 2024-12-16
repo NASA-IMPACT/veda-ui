@@ -1,7 +1,7 @@
 import {
   getString,
   getNavItemsFromVedaConfig,
-  getFooterItemsFromVedaConfig
+  getFooterSettingsFromVedaConfig
 } from 'veda';
 import {
   InternalNavLink,
@@ -78,42 +78,6 @@ const defaultFooterSettings = {
   returnToTop: true
 };
 
-const defaultFooterPrimaryContactItems = [
-  {
-    title: 'News and Events',
-    to: '/data-catalog',
-    type: 'internalLink'
-  },
-  {
-    title: 'About',
-    to: '/data-catalog',
-    type: 'internalLink'
-  },
-  {
-    title: 'Contact Us',
-    to: '/data-catalog',
-    type: 'internalLink'
-  }
-];
-
-const defaultFooterPrimaryNavItems = [
-  {
-    title: 'Stories',
-    to: '/data-catalog',
-    type: 'internalLink'
-  },
-  {
-    title: 'Topics',
-    to: '/data-catalog',
-    type: 'internalLink'
-  },
-  {
-    title: 'Data Toolkit',
-    to: '/data-catalog',
-    type: 'internalLink'
-  }
-];
-
 if (process.env.GOOGLE_FORM !== undefined) {
   defaultSubNavItems = [
     ...defaultSubNavItems,
@@ -131,18 +95,6 @@ const mainNavItems =
 const subNavItems =
   getNavItemsFromVedaConfig()?.subNavItems ?? defaultSubNavItems;
 const footerSettings =
-  getFooterItemsFromVedaConfig()?.footerSettings ?? defaultFooterSettings;
-const footerPrimaryContactItems =
-  getFooterItemsFromVedaConfig()?.footerPrimaryContactItems ??
-  defaultFooterPrimaryContactItems;
-const footerPrimaryNavItems =
-  getFooterItemsFromVedaConfig()?.footerPrimaryNavItems ??
-  defaultFooterPrimaryNavItems;
+  getFooterSettingsFromVedaConfig() ?? defaultFooterSettings;
 
-export {
-  mainNavItems,
-  subNavItems,
-  footerSettings,
-  footerPrimaryContactItems,
-  footerPrimaryNavItems
-};
+export { mainNavItems, subNavItems, footerSettings };
