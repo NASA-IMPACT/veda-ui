@@ -75,6 +75,41 @@ function copyUswdsImages() {
   return uswds.copyImages();
 }
 
+// Task that uses Parcel to build the library version of the VEDA UI.
+// It specifies the entry file, output directory, and custom Parcel configuration file.
+// This task will generate distributable library (`lib` folder) that other projects can consume.
+function parcelBuildLib(cb) {
+  const args = [
+    'build',
+    'app/scripts/index.ts',
+    '--dist-dir=lib',
+    '--config',
+    '.parcelrc-lib'
+  ];
+
+  const pr = spawn('node', [parcelCli, ...args], {
+    stdio: 'inherit'
+  });
+  pr.on('close', (code) => {
+    cb(code ? 'Build failed' : undefined);
+  });
+}
+
+// Copy the uswds assets to the veda-ui lib directory.
+// This makes things easier for the veda components to consume
+// when the veda-ui library is used as a dependency.
+function copyUswdsAssetsToLibBundle() {
+  return gulp
+    .src(
+      [
+        './node_modules/@uswds/uswds/dist/fonts/**/*',
+        './node_modules/@uswds/uswds/dist/img/**/*'
+      ],
+      { base: './node_modules/@uswds/uswds/dist' }
+    )
+    .pipe(gulp.dest('lib'));
+}
+
 // Below are the parcel related tasks. One for the build process and other to
 // start the development server.
 
@@ -145,6 +180,12 @@ const parallelTasks =
   process.env.NODE_ENV === 'production'
     ? gulp.parallel(copyFiles, copyUswdsImages)
     : gulp.parallel(copyFiles, copyNetlifyCMS, copyUswdsImages);
+
+module.exports.buildlib = gulp.series(
+  clean,
+  copyUswdsAssetsToLibBundle,
+  parcelBuildLib
+);
 
 // Task orchestration used during the production process.
 module.exports.default = gulp.series(clean, parallelTasks, parcelBuild);
