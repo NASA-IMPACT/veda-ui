@@ -17,6 +17,7 @@ import PageHero from '$components/common/page-hero';
 import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import PageHeader from '$components/common/page-header';
+import PageFooter from '$components/common/page-footer';
 import type {
   NavItem,
   InternalNavLink,
@@ -65,6 +66,7 @@ export {
   PageMainContent,
   PageHero,
   PageHeader,
+  PageFooter,
   ReactQueryProvider,
   EnvConfigProvider,
   StoriesHubContent,
