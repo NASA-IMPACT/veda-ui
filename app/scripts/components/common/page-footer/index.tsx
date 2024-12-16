@@ -1,18 +1,20 @@
 import React, { useMemo } from 'react';
 import { Icon } from '@trussworks/react-uswds';
-import { NavItemType } from '../page-header/types';
+import { DropdownNavLink, FooterSettings, NavLinkItem } from 'veda';
+import { ActionNavItem, NavItemType } from '../page-header/types';
 import { NavItemCTA } from '../page-header/nav/nav-item-cta';
 import {
   USWDSFooter,
   USWDSFooterNav,
   USWDSAddress
 } from '$components/common/uswds';
-
 import './styles.scss';
 
 interface PageFooterProps {
-  primarySection: any;
-  settings: any;
+  //use of NavItem is causing issues with TS and throwing erros in the .
+  mainNavItems: (NavLinkItem | DropdownNavLink | ActionNavItem)[];
+  subNavItems: (NavLinkItem | DropdownNavLink | ActionNavItem)[];
+  settings: FooterSettings;
   hideFooter?: boolean;
   logoSvg?: SVGElement | JSX.Element;
 }
@@ -20,7 +22,8 @@ interface PageFooterProps {
 
 export default function PageFooter({
   settings,
-  primarySection,
+  mainNavItems,
+  subNavItems,
   hideFooter,
   logoSvg
 }: PageFooterProps) {
@@ -39,7 +42,6 @@ export default function PageFooter({
 
   const { returnToTop, secondarySection } = settings;
   /* eslint-disable */
-  const { mainNavItems, subNavItems } = primarySection;
 
   const createNavElement = (navItems, linkClasses) => {
     //removing 'dropdown' items from array
@@ -82,12 +84,13 @@ export default function PageFooter({
       createNavElement(subNavItems, 'usa-link text-base-dark text-underline'),
     [mainNavItems]
   );
-  return (
+  return hideFooter ? (
+    <></>
+  ) : (
     <>
       <USWDSFooter
         size='slim'
         returnToTop={returnToTop && returnToTopButton()}
-        className={hideFooter && 'display-none'}
         primary={
           <div
             id='footer_primary_container'

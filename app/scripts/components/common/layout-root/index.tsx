@@ -109,10 +109,8 @@ function LayoutRoot(props: { children?: ReactNode }) {
       {isUSWDSEnabled ? (
         <PageFooter
           settings={footerSettings}
-          primarySection={{
-            mainNavItems,
-            subNavItems
-          }}
+          mainNavItems={mainNavItems}
+          subNavItems={subNavItems}
           hideFooter={hideFooter}
           logoSvg={<NasaLogoColor />}
         />
