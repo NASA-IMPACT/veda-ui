@@ -22,7 +22,6 @@ export default function DataCatalogContainer() {
   const controlVars = useFiltersWithQS();
   const navigate = useNavigate();
 
-  // @NOTE: Navigation as a callback passed into catalog core feature to decouple cards from naviation & routing logic
   const handleCardNavigation = (path: string) => {
     navigate(path);
   };
