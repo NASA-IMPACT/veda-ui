@@ -30,7 +30,7 @@ interface SiteAlertProps {
   className?: string;
 }
 
-export default function SiteAlertMessage({
+export default function SiteAlert({
   appTitle,
   expires,
   content,

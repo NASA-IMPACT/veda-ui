@@ -49,7 +49,7 @@ const defaultGuidance = {
   }
 };
 
-export default function GovBanner({
+export default function Banner({
   headerText,
   headerActionText = "Here's how you know",
   ariaLabel,
