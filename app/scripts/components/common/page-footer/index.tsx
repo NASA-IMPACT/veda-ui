@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { Icon } from '@trussworks/react-uswds';
-//TO DO: need to move NasaLogoColor outside of component and pass down as props
 import { NavItemType } from '../page-header/types';
 import { NavItemCTA } from '../page-header/nav/nav-item-cta';
 import {
@@ -29,7 +28,7 @@ export default function PageFooter({
     return (
       <div
         id='return-to-top-container'
-        className=' margin-left-auto margin-right-auto'
+        className='margin-left-auto margin-right-auto'
       >
         <a className='usa-link text-primary' href='#'>
           Return to top
@@ -114,7 +113,7 @@ export default function PageFooter({
           <div id='footer_secondary_container' className='grid-row'>
             <div id='logo-container'>
               <a id='logo-container-link' href='#'>
-                <>{logoSvg}</>
+                {logoSvg as JSX.Element}
                 <span className='footer-text'>
                   NASA EarthData 2024 • v0.17.0
                   {/* {version} */}
