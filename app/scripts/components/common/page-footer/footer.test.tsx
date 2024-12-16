@@ -31,6 +31,8 @@ describe('PageFooter', () => {
     const footerElement = document.querySelector('footer');
 
     expect(footerElement).toBeInTheDocument();
+    expect(footerElement).not.toHaveClass('display-none');
+
   });
   test('renders correct buttons and links', () => {
     expect(screen.getByText('Data Catalog')).toBeInTheDocument();
@@ -70,6 +72,6 @@ describe('PageFooter dynamic functionality', () => {
       />
     );
     const footerElement = document.querySelector('footer');
-    expect(footerElement).toBeNull();
+    expect(footerElement).toHaveClass('display-none');
   });
 });

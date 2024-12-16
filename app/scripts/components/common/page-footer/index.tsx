@@ -84,13 +84,12 @@ export default function PageFooter({
       createNavElement(subNavItems, 'usa-link text-base-dark text-underline'),
     [mainNavItems]
   );
-  return hideFooter ? (
-    <></>
-  ) : (
+  return (
     <>
       <USWDSFooter
         size='slim'
         returnToTop={returnToTop && returnToTopButton()}
+        className={hideFooter && 'display-none'}
         primary={
           <div
             id='footer_primary_container'
