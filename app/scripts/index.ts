@@ -33,6 +33,8 @@ import {
   externalDatasetsAtom
 } from '$components/exploration/atoms/datasetLayers';
 
+import './styles/styles.scss';
+
 // Adding .last property to array
 /* eslint-disable-next-line fp/no-mutating-methods */
 Object.defineProperty(Array.prototype, 'last', {

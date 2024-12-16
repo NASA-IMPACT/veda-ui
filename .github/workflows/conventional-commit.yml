@@ -1,11 +1,12 @@
-name: PR Title Checks
+name: PR Title Check
 
 on:
   pull_request:
+    branches: [main]
     types: [opened, synchronize, reopened, edited]
 
 jobs:
-  validate-pr-title:
+  conventional-commit-check:
     runs-on: ubuntu-latest
     steps:
       - name: Conventional Commit Validation
