@@ -5,7 +5,7 @@ import { Button } from '@devseed-ui/button';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
 import { CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
-import { getOverride, getBannerFromVedaConfig } from 'veda';
+import { getOverride, getSiteAlertFromVedaConfig } from 'veda';
 
 import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
 
@@ -24,7 +24,6 @@ import {
   ComponentOverride,
   ContentOverride
 } from '$components/common/page-overrides';
-
 
 const homeContent = getOverride('homeContent');
 
@@ -115,10 +114,10 @@ const getCoverProps = () => {
 
     return author
       ? {
-        ...coverProps,
-        attributionAuthor: author.name,
-        attributionUrl: author.url
-      }
+          ...coverProps,
+          attributionAuthor: author.name,
+          attributionUrl: author.url
+        }
       : coverProps;
   } else {
     return {
@@ -134,14 +133,14 @@ const getCoverProps = () => {
 function RootHome() {
   const { show: showFeedbackModal } = useFeedbackModal();
 
-  const banner = getBannerFromVedaConfig();
-  const renderBanner = !!banner && banner.text && banner.url && banner.expires;
+  const siteAlert = getSiteAlertFromVedaConfig();
+  const renderSiteAlert = !!siteAlert && siteAlert.content && siteAlert.expires;
 
   return (
     <PageMainContent>
       <LayoutProps
         title='Welcome'
-        banner={renderBanner ? { ...banner } : null}
+        siteAlert={renderSiteAlert ? { ...siteAlert } : null}
       />
       <ComponentOverride with='homeHero'>
         <PageHeroHome
@@ -173,7 +172,6 @@ function RootHome() {
       </ComponentOverride>
 
       <ContentOverride with='homeContent'>
-
         <Audience />
 
         <FeaturedStories />

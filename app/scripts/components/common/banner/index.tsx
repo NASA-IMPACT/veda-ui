@@ -1,78 +1,141 @@
 import React, { useState } from 'react';
-import { Icon } from '@trussworks/react-uswds';
+import { decode } from 'he';
 import {
   USWDSBanner,
-  USWDSBannerContent
+  USWDSBannerContent,
+  USWDSBannerButton,
+  USWDSBannerFlag,
+  USWDSBannerHeader,
+  USWDSBannerIcon,
+  USWDSBannerGuidance,
+  USWDSMediaBlockBody
 } from '$components/common/uswds/banner';
 
-const BANNER_KEY = 'dismissedBannerUrl';
-
-function hasExpired(expiryDatetime) {
-  const expiryDate = new Date(expiryDatetime);
-  const currentDate = new Date();
-  return !!(currentDate > expiryDate);
-}
-
-enum BannerType {
-  info = 'info',
-  warning = 'warning'
-}
-
-const infoTypeFlag = BannerType.info;
-interface BannerProps {
-  appTitle: string;
-  expires: Date;
-  url: string;
+interface GuidanceContent {
+  icon: string;
+  iconAlt?: string;
+  title: string;
   text: string;
-  type?: BannerType;
 }
 
-export default function Banner({
-  appTitle,
-  expires,
-  url,
-  text,
-  type = infoTypeFlag
-}: BannerProps) {
+interface BannerProps {
+  headerText?: string;
+  headerActionText?: string;
+  ariaLabel?: string;
+  flagImgAlt?: string;
+  leftGuidance?: GuidanceContent;
+  rightGuidance?: GuidanceContent;
+  className?: string;
+  defaultIsOpen?: boolean;
+  contentId?: string;
+}
 
-  const showBanner = localStorage.getItem(BANNER_KEY) !== url;
-  const [isOpen, setIsOpen] = useState(showBanner && !hasExpired(expires));
-
-  function onClose() {
-    localStorage.setItem(BANNER_KEY, url);
-    setIsOpen(false);
+const defaultGuidance = {
+  left: {
+    title: 'Official websites use .gov',
+    text: 'A .gov website belongs to an official government organization in the United States.',
+    iconAlt: 'Dot gov icon',
+    icon: '/img/icon-dot-gov.svg'
+  },
+  right: {
+    title: 'Secure .gov websites use HTTPS',
+    text: `<>
+        A <strong>lock</strong> or <strong>https://</strong> means you've safely
+        connected to the .gov website. Share sensitive information only on
+        official, secure websites.
+      </>`,
+    iconAlt: 'HTTPS icon',
+    icon: '/img/icon-https.svg'
   }
+};
+
+export default function GovBanner({
+  headerText,
+  headerActionText = "Here's how you know",
+  ariaLabel,
+  flagImgAlt = '',
+  leftGuidance,
+  rightGuidance,
+  className = '',
+  defaultIsOpen = false,
+  contentId = 'gov-banner-content'
+}: BannerProps) {
+  const [isOpen, setIsOpen] = useState(defaultIsOpen);
+
+  const defaultHeaderText =
+    'An official website of the United States government';
+
+  const leftContent = {
+    ...defaultGuidance.left,
+    ...leftGuidance
+  };
+
+  const rightContent = {
+    ...defaultGuidance.right,
+    ...rightGuidance
+  };
 
   return (
-    <div>
-      {isOpen && (
-        <div className='position-relative'>
-          <USWDSBanner
-            aria-label={appTitle}
-            className={type !== infoTypeFlag ? 'bg-secondary-lighter' : ''}
-          >
-            <a href={url} target='_blank' rel='noreferrer'>
-              <USWDSBannerContent
-                className='padding-top-1 padding-bottom-1'
-                isOpen={true}
-              >
-                <div dangerouslySetInnerHTML={{ __html: text }} />
+    <USWDSBanner
+      aria-label={ariaLabel ?? defaultHeaderText}
+      className={className}
+    >
+      <USWDSBannerHeader
+        isOpen={isOpen}
+        flagImg={
+          <USWDSBannerFlag src='/img/us_flag_small.png' alt={flagImgAlt} />
+        }
+        headerText={headerText ?? defaultHeaderText}
+        headerActionText={headerActionText}
+      >
+        <USWDSBannerButton
+          isOpen={isOpen}
+          onClick={() => setIsOpen((prev) => !prev)}
+          aria-controls={contentId}
+        >
+          {headerActionText}
+        </USWDSBannerButton>
+      </USWDSBannerHeader>
 
-              </USWDSBannerContent>
-            </a>
-          </USWDSBanner>
-          <div className='position-absolute top-0 right-0 margin-right-3 height-full display-flex'>
-            <button
-              className='usa-button usa-button--unstyled'
-              type='button'
-              aria-label='Close Banner'
-              onClick={onClose}
-            >
-              <Icon.Close />
-            </button>
-          </div>
+      <USWDSBannerContent id={contentId} isOpen={isOpen}>
+        <div className='grid-row grid-gap-lg'>
+          <USWDSBannerGuidance className='tablet:grid-col-6'>
+            <USWDSBannerIcon
+              src={leftContent.icon}
+              alt={leftContent.iconAlt || ''}
+            />
+            <USWDSMediaBlockBody>
+              <p>
+                <strong>{leftContent.title}</strong>
+                <br />
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: decode(leftContent.text)
+                  }}
+                />
+              </p>
+            </USWDSMediaBlockBody>
+          </USWDSBannerGuidance>
+
+          <USWDSBannerGuidance className='tablet:grid-col-6'>
+            <USWDSBannerIcon
+              src={rightContent.icon}
+              alt={rightContent.iconAlt || ''}
+            />
+            <USWDSMediaBlockBody>
+              <p>
+                <strong>{rightContent.title}</strong>
+                <br />
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: decode(rightContent.text)
+                  }}
+                />
+              </p>
+            </USWDSMediaBlockBody>
+          </USWDSBannerGuidance>
         </div>
-      )}
-    </div>
+      </USWDSBannerContent>
+    </USWDSBanner>
   );
 }
