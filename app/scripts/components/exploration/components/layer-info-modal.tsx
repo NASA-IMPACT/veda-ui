@@ -101,9 +101,10 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
   const handleButtonClick = () => {
     close();
     if (onNavigation) {
-      onNavigation(dataCatalogPage)
+      onNavigation(dataCatalogPage);
     }
   };
+
   return (
     <DatasetModal
       id='modal'
