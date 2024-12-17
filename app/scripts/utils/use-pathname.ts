@@ -1,5 +1,20 @@
 import { useEffect, useState } from 'react';
 
+const appPathname = (() => {
+  try {
+    const publicUrl = process.env.PUBLIC_URL;
+    if (!publicUrl || typeof publicUrl !== 'string') return '';
+
+    // Use base URL fallback
+    const url = new URL(publicUrl, window.location.origin);
+
+    // Remove trailing slash if present
+    return url.pathname.replace(/\/$/, '');
+  } catch {
+    return '';
+  }
+})();
+
 /**
  * usePathname
  * *
@@ -14,7 +29,7 @@ import { useEffect, useState } from 'react';
 export const usePathname = () => {
   const [pathname, setPathname] = useState(
     typeof window !== 'undefined'
-      ? window.location.pathname.replace(process.env.PUBLIC_URL ?? '', '')
+      ? window.location.pathname.replace(appPathname, '')
       : ''
   );
 
@@ -22,9 +37,7 @@ export const usePathname = () => {
     if (typeof window === 'undefined') return;
 
     const updatePathname = () => {
-      setPathname(
-        window.location.pathname.replace(process.env.PUBLIC_URL ?? '', '')
-      );
+      setPathname(window.location.pathname.replace(appPathname, ''));
     };
 
     // Listen to popstate events (back/forward navigation)
