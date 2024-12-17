@@ -56,7 +56,7 @@ let footerSettings = {
     id: 'stories',
     title: 'email test',
     to: '/data-catalog',
-    type: 'Email'
+    type: 'email'
   },
   returnToTop: true
 };

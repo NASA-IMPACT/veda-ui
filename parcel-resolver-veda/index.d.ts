@@ -292,14 +292,14 @@ declare module 'veda' {
     type: 'externalLink';
   }
   type NavLinkItem = ExternalNavLink | InternalNavLink;
-
-  interface FooterSettings {
-    secondarySection: {
-      id: string;
-      title: string;
-      href: string;
-      type: 'Email';
-    };
+  export interface SecondarySection {
+    id: string;
+    title: string;
+    to: string;
+    type: string;
+  }
+  export interface FooterSettings {
+    secondarySection: SecondarySection;
     returnToTop: boolean;
   }
 
@@ -365,9 +365,7 @@ declare module 'veda' {
     | undefined;
 
   export const getFooterSettingsFromVedaConfig: () =>
-    | {
-        footerSettings: FooterSettings;
-      }
+    | FooterSettings
     | undefined;
 
   /**

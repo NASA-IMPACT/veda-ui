@@ -71,6 +71,7 @@ let defaultSubNavItems: (
 
 const defaultFooterSettings = {
   secondarySection: {
+    id: 'email test',
     title: 'email test',
     to: '/data-catalog',
     type: 'Email'

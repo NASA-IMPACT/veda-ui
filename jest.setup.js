@@ -6,6 +6,8 @@ jest.mock('veda', () => ({
     one: variable,
     other: variable
   }),
-  getNavItemsFromVedaConfig: () => []
+  getNavItemsFromVedaConfig: () => [],
+  getFooterSettingsFromVedaConfig: () => []
 }));
+
 export default undefined;
