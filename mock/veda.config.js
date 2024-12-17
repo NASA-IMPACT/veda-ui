@@ -1,8 +1,5 @@
 const dotEnvConfig = require('dotenv').config();
 const { parsed: config } = dotEnvConfig;
-function checkEnvFlag(value) {
-  return (value ?? '').toLowerCase() === 'true';
-}
 
 let mainNavItems = [
   {
@@ -53,9 +50,11 @@ let mainNavItems = [
 
 let footerSettings = {
   secondarySection: {
-    id: 'stories',
-    title: 'email test',
-    to: '/data-catalog',
+    division: 'NASA EarthData 2024',
+    version: process.env.APP_VERSION ?? 'BETA VERSION',
+    title: 'NASA Official',
+    name: 'Manil Maskey',
+    to: 'test@example.com',
     type: 'email'
   },
   returnToTop: true

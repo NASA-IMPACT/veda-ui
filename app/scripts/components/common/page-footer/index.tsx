@@ -117,13 +117,12 @@ export default function PageFooter({
               <a id='logo-container-link' href='#'>
                 {logoSvg as JSX.Element}
                 <span className='footer-text'>
-                  NASA EarthData 2024 • v0.17.0
-                  {/* {version} */}
+                  {secondarySection.division} • {secondarySection.version}
                 </span>
               </a>
             </div>
             <div className='grid-col-4 footer-text grid-gap-6 flex-justify-end'>
-              <span>NASA Official: </span>
+              <span>{secondarySection.title}: </span>
               <a
                 key={secondarySection.type}
                 href={`mailto:${secondarySection.to}`}
@@ -132,7 +131,7 @@ export default function PageFooter({
                   className='margin-right-1 width-205 height-auto position-relative'
                   id='mail_icon'
                 />
-                {secondarySection.title}
+                {secondarySection.name}
               </a>
             </div>
           </div>

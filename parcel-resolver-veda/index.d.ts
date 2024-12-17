@@ -285,19 +285,25 @@ declare module 'veda' {
     to: string;
     type: 'internalLink';
   }
+
   interface ExternalNavLink {
     id: string;
     title: string;
     href: string;
     type: 'externalLink';
   }
+
   type NavLinkItem = ExternalNavLink | InternalNavLink;
+
   export interface SecondarySection {
-    id: string;
+    division: string;
+    version: string;
     title: string;
+    name: string;
     to: string;
     type: string;
   }
+
   export interface FooterSettings {
     secondarySection: SecondarySection;
     returnToTop: boolean;

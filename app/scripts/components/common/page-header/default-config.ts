@@ -71,10 +71,12 @@ let defaultSubNavItems: (
 
 const defaultFooterSettings = {
   secondarySection: {
-    id: 'email test',
-    title: 'email test',
-    to: '/data-catalog',
-    type: 'Email'
+    division: 'NASA EarthData 2024',
+    version: 'BETA VERSION',
+    title: 'NASA Official',
+    name: 'Manil Maskey',
+    to: 'test@example.com',
+    type: 'email'
   },
   returnToTop: true
 };
