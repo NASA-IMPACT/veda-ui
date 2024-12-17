@@ -66,7 +66,7 @@ const DatasetModal = styled(Modal)`
 interface DatasetSelectorModalProps {
   revealed: boolean;
   close: () => void;
-  linkProperties: LinkProperties;
+  linkProperties?: LinkProperties;
   datasets: DatasetData[];
   datasetPathName: string;
   timelineDatasets: TimelineDataset[];
@@ -126,7 +126,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
           setSelectedIds={setSelectedIds}
           onAction={onAction}
           filterLayers={true}
-          linkProperties={linkProperties}
           emptyStateContent={
             <>
               <p>There are no datasets to show with the selected filters.</p>

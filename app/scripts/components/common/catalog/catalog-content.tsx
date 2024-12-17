@@ -9,7 +9,6 @@ import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
 
 import { FilterActions } from './utils';
-import { LinkProperties } from '$types/veda';
 import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
@@ -22,6 +21,8 @@ import {
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
+import { getDatasetPath } from '$utils/routes';
+import { usePathname } from "$utils/use-pathname";
 
 const EXCLUSIVE_SOURCE_WARNING = "Can only be analyzed with layers from the same source";
 
@@ -34,7 +35,7 @@ export interface CatalogContentProps {
   search: string;
   taxonomies: Record<string, string[]>;
   onAction: (action: FilterActions, value?: any) => void;
-  linkProperties: LinkProperties;
+  onCardNavigate?: (path: string) => void;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -71,7 +72,7 @@ function CatalogContent({
   search,
   taxonomies,
   onAction,
-  linkProperties
+  onCardNavigate
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
   const isSelectable = selectedIds !== undefined;
@@ -94,6 +95,8 @@ function CatalogContent({
   const [clearedTagItem, setClearedTagItem] = useState<OptionItem>();
 
   const prevSelectedFilters = usePreviousValue(selectedFilters) ?? [];
+
+  const pathname = usePathname();
 
   // Handlers
   const updateSelectedFilters = useCallback((item: OptionItem, action: 'add' | 'remove') => {
@@ -275,7 +278,7 @@ function CatalogContent({
                   <CatalogCard
                     dataset={d}
                     searchTerm={search}
-                    linkProperties={linkProperties}
+                    {...(onCardNavigate && {onDatasetClick: () => onCardNavigate(getDatasetPath(d, pathname))})}
                   />
                 </li>
               ))}
