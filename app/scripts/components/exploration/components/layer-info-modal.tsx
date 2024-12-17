@@ -9,9 +9,8 @@ import {
   ModalHeadline
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { createButtonStyles } from '@devseed-ui/button';
+import { Button } from '@devseed-ui/button';
 import { LayerInfo } from 'veda';
-
 import { getDatasetPath } from '$utils/routes';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
@@ -53,13 +52,6 @@ const ParentDatasetHeading = styled.h2`
   padding: ${glsp(0.5)} 0;
 `;
 
-// override with 'as' as LinkComponent
-const ButtonStyleLink = styled.a<any>`
-  &&& {
-    ${({ variation, size }) => createButtonStyles({ variation, size })}
-  }
-`;
-
 export interface LayerInfoModalData {
   name: string;
   info?: LayerInfo;
@@ -75,6 +67,7 @@ interface LayerInfoModalProps {
   revealed: boolean;
   close: () => void;
   layerData: LayerInfoModalData
+  onNavigation?: (path: string) => void;
 }
 
 export function LayerInfoLiner(props: { info: LayerInfo }) {
@@ -100,10 +93,17 @@ const LayerInfoLinerModal = styled.div`
 `;
 
 export default function LayerInfoModal(props: LayerInfoModalProps) {
-  const { revealed, close, layerData } = props;
+  const { revealed, close, layerData, onNavigation } = props;
 
   const { parentData } = layerData;
   const dataCatalogPage = getDatasetPath(parentData.id);
+
+  const handleButtonClick = () => {
+    close();
+    if (onNavigation) {
+      onNavigation(dataCatalogPage)
+    }
+  };
   return (
     <DatasetModal
       id='modal'
@@ -133,9 +133,9 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
         <div dangerouslySetInnerHTML={{__html: parentData.infoDescription?? 'Currently, we are unable to display the layer information, but you can find it in the data catalog.' }} />
       }
       footerContent={
-        <ButtonStyleLink href={dataCatalogPage} rel='noopener noreferrer' onClick={close} variation='primary-fill' size='medium' target='_blank'>
+        <Button onClick={handleButtonClick} variation='primary-fill' size='medium'>
           Open in Data Catalog
-        </ButtonStyleLink>
+        </Button>
       }
     />
   );
