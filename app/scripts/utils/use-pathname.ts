@@ -13,14 +13,18 @@ import { useEffect, useState } from 'react';
  */
 export const usePathname = () => {
   const [pathname, setPathname] = useState(
-    typeof window !== 'undefined' ? window.location.pathname : ''
+    typeof window !== 'undefined'
+      ? window.location.pathname.replace(process.env.PUBLIC_URL ?? '', '')
+      : ''
   );
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const updatePathname = () => {
-      setPathname(window.location.pathname);
+      setPathname(
+        window.location.pathname.replace(process.env.PUBLIC_URL ?? '', '')
+      );
     };
 
     // Listen to popstate events (back/forward navigation)
