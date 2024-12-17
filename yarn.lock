@@ -11378,7 +11378,7 @@ macos-release@^3.1.0:
   resolved "http://verdaccio.ds.io:4873/macos-release/-/macos-release-3.3.0.tgz#92cb67bc66d67c3fde4a9e14f5f909afa418b072"
   integrity sha512-tPJQ1HeyiU2vRruNGhZ+VleWuMQRro8iFtJxYgnS4NQe+EukKF6aGiIT+7flZhISAt2iaXBCfFGvAyif7/f8nQ==
 
-make-dir@^3.0.0:
+make-dir@^3.0.0, make-dir@~3.1.0:
   version "3.1.0"
   resolved "http://verdaccio.ds.io:4873/make-dir/-/make-dir-3.1.0.tgz#415e967046b3a7f1d185277d84aa58203726a13f"
   integrity sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==
@@ -13400,10 +13400,10 @@ postcss-selector-parser@^6.0.6:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
 
-postcss-selector-parser@^6.1.2:
-  version "6.1.2"
-  resolved "http://verdaccio.ds.io:4873/postcss-selector-parser/-/postcss-selector-parser-6.1.2.tgz#27ecb41fb0e3b6ba7a1ec84fff347f734c7929de"
-  integrity sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==
+postcss-selector-parser@^7.0.0:
+  version "7.0.0"
+  resolved "http://verdaccio.ds.io:4873/postcss-selector-parser/-/postcss-selector-parser-7.0.0.tgz#41bd8b56f177c093ca49435f65731befe25d6b9c"
+  integrity sha512-9RbEr1Y7FFfptd/1eEdntyjMwLeghW1bHX9GWjXo19vx4ytPQhANltvVxDggzJl7mnWM+dX28kb6cyS/4iQjlQ==
   dependencies:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
@@ -16895,7 +16895,7 @@ yaml@^2.4.2:
   resolved "http://verdaccio.ds.io:4873/yaml/-/yaml-2.6.1.tgz#42f2b1ba89203f374609572d5349fb8686500773"
   integrity sha512-7r0XPzioN/Q9kXBro/XPnA6kznR73DHq+GXh5ON7ZozRO6aMjbmiBuKste2wslTFkC5d1dw0GooOCepZXJ2SAg==
 
-yargs-parser@>=5.0.0-security.0:
+yargs-parser@21.1.1, yargs-parser@>=5.0.0-security.0:
   version "21.1.1"
   resolved "http://verdaccio.ds.io:4873/yargs-parser/-/yargs-parser-21.1.1.tgz#9096bceebf990d21bb31fa9516e0ede294a77d35"
   integrity sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==
