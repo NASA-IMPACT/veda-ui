@@ -40,12 +40,11 @@ export default function SiteAlert({
   slim = false,
   className = ''
 }: SiteAlertProps) {
-  const alertId = content;
-  const showAlert = localStorage.getItem(ALERT_KEY) !== alertId;
+  const showAlert = localStorage.getItem(ALERT_KEY) !== content;
   const [isOpen, setIsOpen] = useState(showAlert && !hasExpired(expires));
 
   function onClose() {
-    localStorage.setItem(ALERT_KEY, alertId);
+    localStorage.setItem(ALERT_KEY, content);
     setIsOpen(false);
   }
 

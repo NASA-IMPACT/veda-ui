@@ -130,8 +130,10 @@ module.exports = {
     contentId: 'gov-banner-content'
   },
   siteAlert: {
-    content:
-      '<p class="usa-alert__text"><a target="_blank" rel="noreferrer" href="stories/emit-and-aviris-3">Read the new data insight</a> on using EMIT and AVIRIS-3 for monitoring large methane emission events.</p>',
+    content: `<p class="usa-alert__text">
+        <a target="_blank" rel="noreferrer" href="stories/life-of-water">
+          Discover insights on how the COVID-19 pandemic
+      </a> impacted air quality worldwide, observed through NASA's satellite data.</p>`,
     expires: '2026-08-03T12:00:00-04:00',
     type: 'info',
     slim: true,
