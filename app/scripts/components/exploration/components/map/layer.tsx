@@ -10,6 +10,7 @@ import { RasterTimeseries } from '$components/common/map/style-generators/raster
 import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
+import { FeatureTimeseries } from '$components/common/map/style-generators/feature-timeseries';
 import { ActionStatus } from '$utils/status';
 import { EnvConfigContext } from '$context/env-config';
 
@@ -49,6 +50,22 @@ export function Layer(props: LayerProps) {
     case 'vector':
       return (
         <VectorTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          date={relevantDate}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          hidden={!isVisible}
+          opacity={opacity}
+          onStatusChange={onStatusChange}
+          envApiStacEndpoint={envApiStacEndpoint}
+        />
+      );
+    case 'feature':
+      return (
+        <FeatureTimeseries
           id={layerId}
           stacCol={dataset.data.stacCol}
           stacApiEndpoint={dataset.data.stacApiEndpoint}
