@@ -44,23 +44,14 @@ layers:
     zoomExtent:
       - 0
       - 20
-    legend:
-      unit:
-        label: kg Carbon/m²/mon
-      type: gradient
-      min: 0
-      max: 0.3
-      stops:
-        - '#F7F4F9'
-        - '#E9E3F0'
-        - '#D9C3DF'
-        - '#CDA0CD'
-        - '#D57ABA'
-        - '#E34A9F'
-        - '#DF2179'
-        - '#C10E51'
-        - '#92003F'
-        - '#67001F'
+    sourceParams:
+      colormap_name: blues
+      rescale:
+        - 0
+        - 0.3
+      layer: 0
+      lineColor: purple
+      fillColor: blue
     info:
       source: NASA
       spatialExtent: Global

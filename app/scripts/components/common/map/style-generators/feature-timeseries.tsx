@@ -6,6 +6,7 @@ import endOfDay from 'date-fns/endOfDay';
 import startOfDay from 'date-fns/startOfDay';
 
 import centroid from '@turf/centroid';
+import bbox from '@turf/bbox';
 import { LngLatLike } from 'react-map-gl';
 import { Feature } from 'geojson';
 
@@ -21,7 +22,7 @@ import useGeneratorParams from '../hooks/use-generator-params';
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
 
-export interface VectorTimeseriesProps extends BaseGeneratorParams {
+export interface FeatureTimeseriesProps extends BaseGeneratorParams {
   id: string;
   stacCol: string;
   date: Date;
@@ -34,7 +35,7 @@ export interface VectorTimeseriesProps extends BaseGeneratorParams {
   envApiStacEndpoint: string;
 }
 
-export function FeatureTimeseries(props: VectorTimeseriesProps) {
+export function FeatureTimeseries(props: FeatureTimeseriesProps) {
   const {
     id,
     stacCol,
@@ -59,7 +60,7 @@ export function FeatureTimeseries(props: VectorTimeseriesProps) {
     useState<[number, number, number, number]>();
 
   const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
-  const generatorId = `vector-timeseries-${id}`;
+  const generatorId = `feature-timeseries-${id}`;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint ?? '';
 
@@ -82,14 +83,13 @@ export function FeatureTimeseries(props: VectorTimeseriesProps) {
         setFeaturesApiEndpoint(endpoint);
 
         const featuresData = await requestQuickCache<any>({
-          url: endpoint,
+          url: `${endpoint}/${sourceParams?.layer || 0}/query?where=1=1&f=pgeojson&outFields=*`,
           method: 'GET',
           controller
         });
 
-        if (featuresData.extent.spatial.bbox) {
-          setFeaturesBbox(featuresData.extent.spatial.bbox[0]);
-        }
+        const box = bbox(featuresData);
+        setFeaturesBbox(box as [number, number, number, number]);
 
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
@@ -119,27 +119,18 @@ export function FeatureTimeseries(props: VectorTimeseriesProps) {
   const generatorParams = useGeneratorParams(props);
 
   useEffect(() => {
-    console.log(date)
-    console.log(featuresApiEndpoint)
     if (!date || !featuresApiEndpoint) return;
-    console.log("Feature timeseries")
 
     const start = userTzDate2utcString(startOfDay(date));
     const end = userTzDate2utcString(endOfDay(date));
 
-    const tileParams = qs.stringify({
-      ...sourceParams,
-      datetime: `${start}/${end}`
-    });
-
     const vectorOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
-    console.log(`${featuresApiEndpoint}/0/query?where=1=1&f=pgeojson&outFields=*`)
 
     const sources: Record<string, AnySourceImpl> = {
       [id]: {
         type: 'geojson',
         // data: "https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson"
-        data: `${featuresApiEndpoint}/2/query?where=1=1&f=pgeojson&outFields=*`
+        data: `${featuresApiEndpoint}/${sourceParams?.layer || 0}/query?where=1=1&f=pgeojson&outFields=*`
       } as unknown as GeoJSONSource
     };
 
@@ -153,7 +144,7 @@ export function FeatureTimeseries(props: VectorTimeseriesProps) {
           'line-opacity-transition': {
             duration: 320
           },
-          'line-color': theme.color?.['danger-300'],
+          'line-color': sourceParams?.lineColor || theme.color?.['danger-300'],
           'line-width': [
             'interpolate',
             ['linear'],
@@ -173,6 +164,23 @@ export function FeatureTimeseries(props: VectorTimeseriesProps) {
         }
       },
       {
+        id: `${id}-fill-fg`,
+        type: 'fill',
+        source: id,
+        paint: {
+          'fill-opacity': hidden ? 0 : Math.min(vectorOpacity, 0.8),
+          'fill-opacity-transition': {
+            duration: 320
+          },
+          'fill-color': sourceParams?.fillColor || theme.color?.infographicB
+        },
+        filter: ['==', '$type', 'Polygon'],
+        minzoom: minZoom,
+        metadata: {
+          layerOrderPosition: 'raster'
+        }
+      },
+      {
         id: `${id}-line-fg`,
         type: 'line',
         source: id,
@@ -181,7 +189,7 @@ export function FeatureTimeseries(props: VectorTimeseriesProps) {
           'line-opacity-transition': {
             duration: 320
           },
-          'line-color': theme.color?.infographicB,
+          'line-color': sourceParams?.lineColor || theme.color?.infographicB,
           'line-width': [
             'interpolate',
             ['linear'],
@@ -192,24 +200,7 @@ export function FeatureTimeseries(props: VectorTimeseriesProps) {
             5
           ]
         },
-        filter: ['==', '$type', 'LineString'],
-        minzoom: minZoom,
-        metadata: {
-          layerOrderPosition: 'raster'
-        }
-      },
-      {
-        id: `${id}-fill-fg`,
-        type: 'fill',
-        source: id,
-        paint: {
-          'fill-opacity': hidden ? 0 : Math.min(vectorOpacity, 0.8),
-          'fill-opacity-transition': {
-            duration: 320
-          },
-          'fill-color': theme.color?.infographicB
-        },
-        filter: ['==', '$type', 'Polygon'],
+        // filter: ['==', '$type', 'LineString'],
         minzoom: minZoom,
         metadata: {
           layerOrderPosition: 'raster'
