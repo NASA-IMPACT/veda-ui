@@ -21,6 +21,9 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PEM }}
           owner: ${{ github.repository_owner }}
+          repositories: |
+            veda-ui
+            veda-config
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0

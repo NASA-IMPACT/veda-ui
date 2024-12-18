@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TourProvider } from '@reactour/tour';
+import { useNavigate } from "react-router-dom";
 import { DevTools } from 'jotai-devtools';
 import { useAtom, useSetAtom } from 'jotai';
 import { PopoverTourComponent, TourManager } from './tour-manager';
@@ -39,6 +40,7 @@ export default function ExplorationAndAnalysisContainer() {
   const [datasetModalRevealed, setDatasetModalRevealed] = useState(
     !timelineDatasets.length
   );
+  const navigate = useNavigate();
 
   // @NOTE: When Exploration page is preloaded (ex. Linked with react-router)
   // atomWithLocation gets initialized outside of Exploration page and returns the previous page's value
@@ -48,6 +50,15 @@ export default function ExplorationAndAnalysisContainer() {
 
   const openModal = () => setDatasetModalRevealed(true);
   const closeModal = () => setDatasetModalRevealed(false);
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
+  const linkProps = {
+    LinkElement: SmartLink,
+    pathAttributeKeyName: 'to'
+  };
 
   return (
     <TourProvider
@@ -68,6 +79,7 @@ export default function ExplorationAndAnalysisContainer() {
           datasets={timelineDatasets}
           setDatasets={setTimelineDatasets}
           openDatasetsSelectionModal={openModal}
+          onNavigation={handleNavigation}
         />
         <DatasetSelectorModal
           revealed={datasetModalRevealed}
@@ -76,10 +88,7 @@ export default function ExplorationAndAnalysisContainer() {
           timelineDatasets={timelineDatasets}
           setTimelineDatasets={setTimelineDatasets}
           datasetPathName={DATASETS_PATH}
-          linkProperties={{
-            LinkElement: SmartLink,
-            pathAttributeKeyName: 'to'
-          }}
+          linkProperties={linkProps} // @TODO: To be removed and replaced with handleNavigation callback
         />
       </PageMainContent>
     </TourProvider>
