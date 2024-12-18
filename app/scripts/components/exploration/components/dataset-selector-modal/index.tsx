@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+
 import {
   reconcileDatasets,
   getLayersFromDataset
@@ -10,11 +11,13 @@ import { TimelineDataset } from '../../types.d.ts';
 
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
+import { DATASETS_PATH } from '$utils/routes';
 import CatalogContent from '$components/common/catalog/catalog-content';
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';
 
-import { DatasetData, LinkProperties, DatasetLayer } from '$types/veda';
+import { DatasetData, DatasetLayer } from '$types/veda';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -61,27 +64,18 @@ const DatasetModal = styled(Modal)`
 interface DatasetSelectorModalProps {
   revealed: boolean;
   close: () => void;
-  linkProperties?: LinkProperties;
   datasets: DatasetData[];
-  datasetPathName: string;
   timelineDatasets: TimelineDataset[];
   setTimelineDatasets: (datasets: TimelineDataset[]) => void;
 }
 
 export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
+  const { revealed, datasets, timelineDatasets, setTimelineDatasets, close } =
+    props;
+
   const {
-    revealed,
-    linkProperties,
-    datasets,
-    datasetPathName,
-    timelineDatasets,
-    setTimelineDatasets,
-    close
-  } = props;
-  const { LinkElement, pathAttributeKeyName } = linkProperties as {
-    LinkElement: React.ElementType;
-    pathAttributeKeyName: string;
-  };
+    navigation: { LinkComponent }
+  } = useVedaUI();
 
   const datasetLayers = getLayersFromDataset(datasets);
 
@@ -119,7 +113,6 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     onAction
   ]);
 
-  const linkElementProps = { [pathAttributeKeyName]: datasetPathName };
   return (
     <DatasetModal
       id='modal'
@@ -144,9 +137,9 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
                 This tool allows the exploration and analysis of time-series
                 datasets in raster format. For a comprehensive list of available
                 datasets, please visit the{' '}
-                <LinkElement {...linkElementProps} target='_blank'>
+                <LinkComponent to={DATASETS_PATH} target='_blank'>
                   Data Catalog
-                </LinkElement>
+                </LinkComponent>
                 .
               </p>
             </>
