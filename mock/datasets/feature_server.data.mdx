@@ -1,0 +1,75 @@
+---
+id: climate_mapping_resilience_and_adaptation_(cmra)_climate_and_coastal_inundation_projections
+name: Climate Mapping Resilience and Adaptation
+description: "TBD"
+media:
+  src: ::file ./east_coast_mar_20.jpg
+  alt: wildfire
+  author:
+    name: Marcus Kauffman
+taxonomy:
+  - name: Topics
+    values:
+      - Natural Emissions and Sinks
+  - name: Source
+    values:
+      - NASA
+  - name: Gas
+    values:
+      - CO₂
+  - name: Product Type
+    values:
+      - Model Output
+infoDescription: |
+  ::markdown
+    - Temporal Extent: January 2000 - December 2021
+    - Temporal Resolution: Monthly
+    - Spatial Extent: Global
+    - Spatial Resolution: 1 km x 1 km
+    - Data Units: Tons of carbon per 1 km x 1 km cell (monthly total)
+    - Data Type: Research
+    - Data Latency: Updated annually, following the release of an updated [BP Statistical Review of World Energy report]
+layers:
+  - id: climate_mapping_resilience_and_adaptation_(cmra)_climate_and_coastal_inundation_projections
+    stacApiEndpoint: http://dev.openveda.cloud/api/stac/
+    tileApiEndpoint: https://earth.gov/ghgcenter/api/raster
+    stacCol: climate_mapping_resilience_and_adaptation_(cmra)_climate_and_coastal_inundation_projections
+    name: Climate Mapping Resilience and Adaptation
+    type: feature
+    description: "tbd"
+    initialDatetime: newest
+    projection:
+      id: 'equirectangular'
+    basemapId: 'light'
+    zoomExtent:
+      - 0
+      - 20
+    legend:
+      unit:
+        label: kg Carbon/m²/mon
+      type: gradient
+      min: 0
+      max: 0.3
+      stops:
+        - '#F7F4F9'
+        - '#E9E3F0'
+        - '#D9C3DF'
+        - '#CDA0CD'
+        - '#D57ABA'
+        - '#E34A9F'
+        - '#DF2179'
+        - '#C10E51'
+        - '#92003F'
+        - '#67001F'
+    info:
+      source: NASA
+      spatialExtent: Global
+      temporalResolution: Monthly
+      unit: 10¹⁵ molecules cm⁻²
+---
+
+<Block type='wide'>
+  <Prose>
+    Feature Server
+  </Prose>
+</Block>
