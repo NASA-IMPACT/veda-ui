@@ -33,7 +33,8 @@ import {
   externalDatasetsAtom
 } from '$components/exploration/atoms/datasetLayers';
 
-import './styles/styles.scss';
+// Include only the custom stylings for the VEDA components into the library build
+import './styles/veda-components.scss';
 
 // Adding .last property to array
 /* eslint-disable-next-line fp/no-mutating-methods */
