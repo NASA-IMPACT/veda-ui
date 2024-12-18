@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader
-} from '@devseed-ui/modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
   reconcileDatasets,
@@ -74,25 +69,36 @@ interface DatasetSelectorModalProps {
 }
 
 export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
-  const { revealed, linkProperties, datasets, datasetPathName, timelineDatasets, setTimelineDatasets, close } = props;
-  const { LinkElement , pathAttributeKeyName } = linkProperties as { LinkElement: React.ElementType, pathAttributeKeyName: string };
+  const {
+    revealed,
+    linkProperties,
+    datasets,
+    datasetPathName,
+    timelineDatasets,
+    setTimelineDatasets,
+    close
+  } = props;
+  const { LinkElement, pathAttributeKeyName } = linkProperties as {
+    LinkElement: React.ElementType;
+    pathAttributeKeyName: string;
+  };
 
   const datasetLayers = getLayersFromDataset(datasets);
 
   const [selectedIds, setSelectedIds] = useState<string[]>(
     timelineDatasets.map((dataset) => dataset.data.id)
   );
-  const enhancedDatasetLayers = datasetLayers.flatMap(e => e);
+  const enhancedDatasetLayers = datasetLayers.flatMap((e) => e);
 
   // Use Jotai controlled atoms for query parameter manipulation on new E&A page
-  const {search: searchTerm, taxonomies, onAction } = useFiltersWithURLAtom();
+  const { search: searchTerm, taxonomies, onAction } = useFiltersWithURLAtom();
 
   useEffect(() => {
     // Reset filter when modal is hidden
-    if(!revealed) {
+    if (!revealed) {
       onAction(FilterActions.CLEAR);
     }
-  },[revealed, onAction]);
+  }, [revealed, onAction]);
 
   useEffect(() => {
     setSelectedIds(timelineDatasets.map((dataset) => dataset.data.id));
@@ -104,9 +110,16 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     );
     onAction(FilterActions.CLEAR);
     close();
-  }, [close, selectedIds, timelineDatasets, enhancedDatasetLayers, setTimelineDatasets, onAction]);
+  }, [
+    close,
+    selectedIds,
+    timelineDatasets,
+    enhancedDatasetLayers,
+    setTimelineDatasets,
+    onAction
+  ]);
 
-  const linkElementProps = {[pathAttributeKeyName]: datasetPathName};
+  const linkElementProps = { [pathAttributeKeyName]: datasetPathName };
   return (
     <DatasetModal
       id='modal'
@@ -114,9 +127,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       title='Select data layers'
       revealed={revealed}
       onCloseClick={close}
-      renderHeadline={() => (
-        <RenderModalHeader />
-      )}
+      renderHeadline={() => <RenderModalHeader />}
       content={
         <CatalogContent
           datasets={datasets}
@@ -129,7 +140,15 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
           emptyStateContent={
             <>
               <p>There are no datasets to show with the selected filters.</p>
-              <p>This tool allows the exploration and analysis of time-series datasets in raster format. For a comprehensive list of available datasets, please visit the <LinkElement {...linkElementProps} target='_blank'>Data Catalog</LinkElement>.</p>
+              <p>
+                This tool allows the exploration and analysis of time-series
+                datasets in raster format. For a comprehensive list of available
+                datasets, please visit the{' '}
+                <LinkElement {...linkElementProps} target='_blank'>
+                  Data Catalog
+                </LinkElement>
+                .
+              </p>
             </>
           }
         />
