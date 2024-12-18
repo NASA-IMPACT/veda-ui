@@ -27,7 +27,7 @@ import ExplorationAndAnalysis from '$components/exploration';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
-import { EnvConfigProvider } from '$context/env-config';
+import { VedaUIProvider } from '$context/veda-ui-provider';
 import {
   datasetLayersAtom,
   externalDatasetsAtom
@@ -66,7 +66,7 @@ export {
   PageHero,
   PageHeader,
   ReactQueryProvider,
-  EnvConfigProvider,
+  VedaUIProvider,
   StoriesHubContent,
   ExplorationAndAnalysis,
   DatasetSelectorModal,

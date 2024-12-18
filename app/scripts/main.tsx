@@ -49,7 +49,7 @@ import {
   STORIES_PATH,
   EXPLORATION_PATH
 } from '$utils/routes';
-import { EnvConfigProvider } from '$context/env-config';
+import { VedaUIProvider } from '$context/veda-ui-provider';
 
 const composingComponents = [
   // Add contexts here.
@@ -57,7 +57,7 @@ const composingComponents = [
   ReactQueryProvider,
   LayoutRootContextProvider,
   ({ children }) => (
-    <EnvConfigProvider
+    <VedaUIProvider
       config={{
         envMapboxToken: process.env.MAPBOX_TOKEN ?? '',
         envApiStacEndpoint: process.env.API_STAC_ENDPOINT ?? '',
@@ -65,7 +65,7 @@ const composingComponents = [
       }}
     >
       {children}
-    </EnvConfigProvider>
+    </VedaUIProvider>
   )
 ];
 
