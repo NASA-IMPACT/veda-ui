@@ -1,6 +1,6 @@
 {
   "hooks": {
-    "after:release": "echo \"VERSION_NUMBER=v${version}\" >> \"$GITHUB_ENV\" "
+    "after:release": "echo \"VERSION_NUMBER=v${version}\" >> \"$GITHUB_OUTPUT\" "
   },
   "plugins": {
     "@release-it/conventional-changelog": {
