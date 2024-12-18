@@ -36,11 +36,10 @@ function validateConfig(config: VedaUIConfig) {
   ] as const;
 
   requiredFields.forEach((field) => {
-    if (!config[field]) {
+    const value = config[field];
+    if (!value || (typeof value === 'string' && value.trim().length === 0)) {
       // eslint-disable-next-line no-console
-      console.warn(
-        `VedaUIProvider: ${field} is required for proper functionality.`
-      );
+      console.warn(`VedaUIProvider: ${field} is required and cannot be empty.`);
     }
   });
 }
