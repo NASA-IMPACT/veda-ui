@@ -301,6 +301,7 @@ function CardComponent(props: CardComponentPropsType) {
     const { linkProperties: linkPropertiesProps } = props;
     linkProperties = linkPropertiesProps;
   } else {
+    // @NOTE: This currently just exists for GHG which uses the Card component
     const { linkTo } = props;
     linkProperties = linkTo
       ? {
