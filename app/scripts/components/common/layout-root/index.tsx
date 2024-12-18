@@ -10,10 +10,15 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
-import { getBannerFromVedaConfig, getCookieConsentFromVedaConfig } from 'veda';
+import {
+  getBannerFromVedaConfig,
+  getCookieConsentFromVedaConfig,
+  getSiteAlertFromVedaConfig
+} from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 const Banner = React.lazy(() => import('../banner'));
+const SiteAlert = React.lazy(() => import('../site-alert'));
 const CookieConsent = React.lazy(() => import('../cookie-consent'));
 
 import { LayoutRootContext } from './context';
@@ -50,6 +55,7 @@ const PageBody = styled.div`
 function LayoutRoot(props: { children?: ReactNode }) {
   const cookieConsentContent = getCookieConsentFromVedaConfig();
   const bannerContent = getBannerFromVedaConfig();
+  const siteAlertContent = getSiteAlertFromVedaConfig();
   const { children } = props;
   const [displayCookieConsentForm, setDisplayCookieConsentForm] =
     useState<boolean>(true);
@@ -74,8 +80,9 @@ function LayoutRoot(props: { children?: ReactNode }) {
         description={description || appDescription}
         thumbnail={thumbnail}
       />
-      {bannerContent && (
-        <Banner appTitle={bannerContent.title} {...bannerContent} />
+      {bannerContent && <Banner {...bannerContent} />}
+      {siteAlertContent && (
+        <SiteAlert appTitle={siteAlertContent.title} {...siteAlertContent} />
       )}
       <NavWrapper
         mainNavItems={mainNavItems}
