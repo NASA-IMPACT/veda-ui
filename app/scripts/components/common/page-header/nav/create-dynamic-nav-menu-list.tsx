@@ -12,6 +12,11 @@ export const createDynamicNavMenuList = (
   isOpen?: boolean[],
   setIsOpen?: SetState<boolean[]>
 ): JSX.Element[] => {
+  const setDropDownState = () => {
+    if (isOpen !== undefined && setIsOpen !== undefined) {
+      return setIsOpen(() => isOpen.fill(false));
+    }
+  };
   return navItems.map((item, index) => {
     switch (item.type) {
       case NavItemType.DROPDOWN:
@@ -23,7 +28,8 @@ export const createDynamicNavMenuList = (
               isOpen,
               setIsOpen,
               index,
-              linkProperties
+              linkProperties,
+              setDropDownState
             }}
           />
         );
@@ -32,10 +38,15 @@ export const createDynamicNavMenuList = (
         return <NavItemInternalLink {...{ item, linkProperties }} />;
 
       case NavItemType.EXTERNAL_LINK:
-        return <NavItemExternalLink item={item} />;
+        return (
+          <NavItemExternalLink
+            item={item}
+            setDropDownState={setDropDownState}
+          />
+        );
 
       case NavItemType.ACTION:
-        return <NavItemCTA item={item} />;
+        return <NavItemCTA item={item} setDropDownState={setDropDownState} />;
 
       default:
         return <></>;

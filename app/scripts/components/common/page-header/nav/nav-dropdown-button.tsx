@@ -12,6 +12,7 @@ interface NavDropDownButtonProps {
   setIsOpen: SetState<boolean[]>;
   index: number;
   linkProperties: LinkProperties;
+  setDropDownState: () => void;
 }
 
 export const NavDropDownButton = ({
@@ -19,7 +20,8 @@ export const NavDropDownButton = ({
   isOpen,
   setIsOpen,
   index,
-  linkProperties
+  linkProperties,
+  setDropDownState
 }: NavDropDownButtonProps) => {
   const onToggle = (index: number, setIsOpen: SetState<boolean[]>): void => {
     setIsOpen((prevIsOpen) => {
@@ -47,6 +49,7 @@ export const NavDropDownButton = ({
         items={submenuItems}
         isOpen={isOpen[index]}
         id={`${item.id}-dropdown`}
+        onClick={setDropDownState()}
       />
     </React.Fragment>
   );
