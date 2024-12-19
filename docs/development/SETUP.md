@@ -80,6 +80,9 @@ Install Required Extensions:
 2. Enable Format on Save in the settings (<kbd>⌘ Command</kbd> + <kbd>,</kbd> on macOS)
 3. Configure Formatter Settings:
    Ensure ESLint is set as the default formatter:
+      **Using Settings UI**: Open the Command Palette (Cmd+Shift+P or Ctrl+Shift+P), select Preferences: Open Settings (UI), search "default formatter," and select ESLint.
+
+   **Using JSON**: Open Preferences: Open User Settings (JSON) and add:
    ```json
    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
    ```
