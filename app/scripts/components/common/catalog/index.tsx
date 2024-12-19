@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import CatalogContent from './catalog-content';
-import { DatasetData, LinkProperties } from '$types/veda';
+import { DatasetData } from '$types/veda';
 import {
   useSlidingStickyHeaderProps
 } from '$components/common/layout-root/useSlidingStickyHeaderProps';
@@ -41,13 +41,13 @@ export interface CatalogViewProps {
     taxonomies: Record<string, string[]> | Record<string, never>,
     onAction: () => void,
   } | any;
-  linkProperties: LinkProperties;
+  onCardNavigate?: (path: string) => void;
 }
 
 function CatalogView({
   datasets,
   onFilterChanges,
-  linkProperties,
+  onCardNavigate
 }: CatalogViewProps) {
 
   const { headerHeight } = useSlidingStickyHeaderProps();
@@ -70,7 +70,7 @@ function CatalogView({
         search={search}
         taxonomies={taxonomies}
         onAction={onAction}
-        linkProperties={linkProperties}
+        onCardNavigate={onCardNavigate}
       />
     </CatalogWrapper>
   );

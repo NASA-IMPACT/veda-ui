@@ -260,18 +260,37 @@ declare module 'veda' {
    * Since we are moving forward to ditching VEDA faux module
    */
 
-  enum BannerType {
+  enum SiteAlertType {
     info = 'info',
-    warning = 'warning'
+    emergency = 'emergency'
   }
 
-  const infoTypeFlag = BannerType.info;
-  interface BannerData {
+  const infoTypeFlag = SiteAlertType.info;
+  interface SiteAlertData {
     expires: Date;
     title: string;
-    url: string;
+    content: string;
+    type?: SiteAlertType;
+  }
+
+  interface BannerData {
+    headerText?: string;
+    headerActionText?: string;
+    ariaLabel?: string;
+    flagImgSrc: string;
+    flagImgAlt?: string;
+    leftGuidance?: GuidanceContent;
+    rightGuidance?: GuidanceContent;
+    className?: string;
+    defaultIsOpen?: boolean;
+    contentId?: string;
+  }
+
+  interface GuidanceContent {
+    icon: string;
+    iconAlt?: string;
+    title: string;
     text: string;
-    type?: BannerType;
   }
 
   interface CookieConsentData {
@@ -342,6 +361,7 @@ declare module 'veda' {
 
   export const getBoolean: (variable: string) => boolean;
 
+  export const getSiteAlertFromVedaConfig: () => SiteAlertData | undefined;
   export const getBannerFromVedaConfig: () => BannerData | undefined;
   export const getCookieConsentFromVedaConfig: () =>
     | CookieConsentData
@@ -349,12 +369,8 @@ declare module 'veda' {
 
   export const getNavItemsFromVedaConfig: () =>
     | {
-        mainNavItems:
-          | (NavLinkItem | DropdownNavLink)[]
-          | undefined;
-        subNavItems:
-          | (NavLinkItem | DropdownNavLink)[]
-          | undefined;
+        mainNavItems: (NavLinkItem | DropdownNavLink)[] | undefined;
+        subNavItems: (NavLinkItem | DropdownNavLink)[] | undefined;
       }
     | undefined;
 

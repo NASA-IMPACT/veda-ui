@@ -4669,6 +4669,11 @@
   dependencies:
     "@types/unist" "*"
 
+"@types/he@^1.2.3":
+  version "1.2.3"
+  resolved "http://verdaccio.ds.io:4873/@types%2fhe/-/he-1.2.3.tgz#c33ca3096f30cbd5d68d78211572de3f9adff75a"
+  integrity sha512-q67/qwlxblDzEDvzHhVkwc1gzVWxaNxeyHUBF4xElrvjL11O+Ytze+1fGpBHlr/H9myiBUaUXNnNPmBHxxfAcA==
+
 "@types/hoist-non-react-statics@*":
   version "3.3.1"
   resolved "http://verdaccio.ds.io:4873/@types%2fhoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
@@ -9500,6 +9505,11 @@ hat@0.0.3:
   version "0.0.3"
   resolved "http://verdaccio.ds.io:4873/hat/-/hat-0.0.3.tgz#bb014a9e64b3788aed8005917413d4ff3d502d8a"
   integrity sha1-uwFKnmSzeIrtgAWRdBPU/z1QLYo=
+
+he@^1.2.0:
+  version "1.2.0"
+  resolved "http://verdaccio.ds.io:4873/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
+  integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
 history@^5.1.0, history@^5.2.0:
   version "5.3.0"
