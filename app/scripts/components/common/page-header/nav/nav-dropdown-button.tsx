@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { USWDSNavDropDownButton } from '../../uswds/header/nav-drop-down-button';
 import { USWDSMenu } from '../../uswds/header/menu';
 import { DropdownNavLink } from '../types';
 import { createDynamicNavMenuList } from './create-dynamic-nav-menu-list';
 import { SetState } from '$types/aliases';
 import { LinkProperties } from '$types/veda';
+import { useClickOutside } from '$utils/use-click-outside';
 
 interface NavDropDownButtonProps {
   item: DropdownNavLink;
@@ -12,7 +13,6 @@ interface NavDropDownButtonProps {
   setIsOpen: SetState<boolean[]>;
   index: number;
   linkProperties: LinkProperties;
-  setDropDownState: () => void;
 }
 
 export const NavDropDownButton = ({
@@ -20,8 +20,7 @@ export const NavDropDownButton = ({
   isOpen,
   setIsOpen,
   index,
-  linkProperties,
-  setDropDownState
+  linkProperties
 }: NavDropDownButtonProps) => {
   const onToggle = (index: number, setIsOpen: SetState<boolean[]>): void => {
     setIsOpen((prevIsOpen) => {
@@ -34,11 +33,20 @@ export const NavDropDownButton = ({
       return newIsOpen;
     });
   };
-
+  const handleClickOutside = useCallback(() => {
+    if (isOpen[index]) {
+      setIsOpen((prevIsOpen) => {
+        const newIsOpen = [...prevIsOpen];
+        newIsOpen[index] = false;
+        return newIsOpen;
+      });
+    }
+  }, [index, isOpen, setIsOpen]);
+  const dropdownRef = useClickOutside(handleClickOutside);
   const submenuItems = createDynamicNavMenuList(item.children, linkProperties);
 
   return (
-    <React.Fragment key={item.id}>
+    <div key={item.id} ref={dropdownRef}>
       <USWDSNavDropDownButton
         onToggle={() => onToggle(index, setIsOpen)}
         menuId={item.title}
@@ -49,8 +57,7 @@ export const NavDropDownButton = ({
         items={submenuItems}
         isOpen={isOpen[index]}
         id={`${item.id}-dropdown`}
-        onClick={setDropDownState()}
       />
-    </React.Fragment>
+    </div>
   );
 };
