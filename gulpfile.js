@@ -29,6 +29,7 @@ process.env.APP_BUILD_TIME = Date.now();
 
 const parcelCli = path.join(__dirname, './node_modules/parcel/lib/cli.js');
 const parcelConfig = path.join(__dirname, '.parcelrc');
+const parcelLibConfig = path.join(__dirname, '.parcelrc-lib');
 
 // /////////////////////////////////////////////////////////////////////////////
 // ----------------------- Watcher and custom tasks --------------------------//
@@ -51,7 +52,7 @@ function watcher() {
 
 function clean() {
   // Remove build cache and dist.
-  return del(['dist', '.parcel-cache']);
+  return del(['dist', 'lib', '.parcel-cache']);
 }
 
 // Simple task to copy the static files to the dist directory. The static
@@ -84,7 +85,7 @@ function parcelBuildLib(cb) {
     'app/scripts/index.ts',
     '--dist-dir=lib',
     '--config',
-    '.parcelrc-lib'
+    parcelLibConfig
   ];
 
   const pr = spawn('node', [parcelCli, ...args], {
@@ -183,8 +184,8 @@ const parallelTasks =
 
 module.exports.buildlib = gulp.series(
   clean,
-  copyUswdsAssetsToLibBundle,
-  parcelBuildLib
+  parcelBuildLib,
+  copyUswdsAssetsToLibBundle
 );
 
 // Task orchestration used during the production process.
