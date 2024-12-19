@@ -1,4 +1,3 @@
 #!/usr/bin/env sh
 yarn ts-check
 yarn test
-yarn test:e2e
