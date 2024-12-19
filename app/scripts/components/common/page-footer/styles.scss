@@ -1,7 +1,7 @@
 @use '$styles/veda-ui-theme-vars.scss' as themeVars;
 
 .footer-text {
-  color: white;
+  color: themeVars.$veda-uswds-color-base-white;
   align-self: center;
   display: flex;
   font-size: themeVars.$veda-uswds-fontsize-sm;
@@ -11,7 +11,7 @@
 
 #return-to-top-container {
   padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
-  max-width: 64rem;
+  max-width: themeVars.$veda-uswds-spacing-desktop;
 }
 #footer_primary_container {
   padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
