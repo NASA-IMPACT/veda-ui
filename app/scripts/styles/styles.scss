@@ -12,9 +12,4 @@
 @use 'usa-site-alert';
 @use 'usa-banner';
 
-// Custom VEDA UI styles should be added here, so that they can be
-// picked up by Parcel and included in the final CSS bundle for the veda-ui library.
-@use "../components/common/page-header/page-header.scss";
-@use "../components/common/banner/banner.scss";
-@use "../components/common/page-header/logo-container/logo-container.scss";
-@use "../components/common/datepicker/datepicker.scss";
+@use './veda-components';
