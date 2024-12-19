@@ -87,6 +87,7 @@ Install Required Extensions:
    Make a change to any file in your project, save it, and verify that it is automatically formatted.
 
 Note: The project contains a file `.vscode/settings.json.sample` with our recommended vscode settings.
+To apply these settings to your workspace in VS Code, rename the file to `.vscode/settings.json` by removing the `.sample` extension.
 
 ### Conventional Commit
 
