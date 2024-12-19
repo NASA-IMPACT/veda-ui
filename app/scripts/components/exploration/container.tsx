@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TourProvider } from '@reactour/tour';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { DevTools } from 'jotai-devtools';
 import { useAtom, useSetAtom } from 'jotai';
 import { PopoverTourComponent, TourManager } from './tour-manager';
@@ -11,12 +11,11 @@ import useTimelineDatasetAtom from './hooks/use-timeline-dataset-atom';
 import { externalDatasetsAtom } from './atoms/datasetLayers';
 import ExplorationAndAnalysis from '.';
 import { urlAtom } from '$utils/params-location-atom/url';
-import { DATASETS_PATH, EXPLORATION_PATH } from '$utils/routes';
+import { EXPLORATION_PATH } from '$utils/routes';
 import { PageMainContent } from '$styles/page';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import SmartLink from '$components/common/smart-link';
 
 /**
  * @VEDA2-REFACTOR-WORK
@@ -55,11 +54,6 @@ export default function ExplorationAndAnalysisContainer() {
     navigate(path);
   };
 
-  const linkProps = {
-    LinkElement: SmartLink,
-    pathAttributeKeyName: 'to'
-  };
-
   return (
     <TourProvider
       steps={[]}
@@ -87,8 +81,6 @@ export default function ExplorationAndAnalysisContainer() {
           datasets={allExploreDatasets}
           timelineDatasets={timelineDatasets}
           setTimelineDatasets={setTimelineDatasets}
-          datasetPathName={DATASETS_PATH}
-          linkProperties={linkProps} // @TODO: To be removed and replaced with handleNavigation callback
         />
       </PageMainContent>
     </TourProvider>
