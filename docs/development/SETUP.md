@@ -70,6 +70,29 @@ VEDA-UI includes a GitHub action for checking TypeScript and lint errors. If you
 
 Additionally, there's a pre-commit hook that performs the same error checks. This helps developers identify and address issues at an earlier stage. If you need to bypass the check (to make a local temporary commit etc.), include the `--no-verify`` flag in your commit command.
 
+#### Format on Save
+While the existing checks ensure that no linting errors are introduced into the main branch, enabling "Format on Save" in your code editor provides an additional layer of convenience. It helps catch formatting issues early in the development process, minimizing the risk of committing errors and ensuring consistent code style across the team.
+
+##### How to Set Up Format on Save in VS Code
+Install Required Extensions:
+
+1. Install the ESLint extension ("dbaeumer.vscode-eslint").
+2. Enable Format on Save in the settings (<kbd>⌘ Command</kbd> + <kbd>,</kbd> on macOS)
+3. Configure Formatter Settings:
+   Ensure ESLint is set as the default formatter:
+
+      **Using Settings UI**: Open the Command Palette (<kbd>⌘ Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> on macOS), select Preferences: Open Settings (UI), search "default formatter," and select ESLint _dbaeumer.vscode-eslint_.
+
+   **Using JSON**: Open Preferences: Open User Settings (JSON) and add:
+   ```json
+   "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+   ```
+5. Test the Configuration:
+   Make a change to any file in your project, save it, and verify that it is automatically formatted.
+
+Note: The project contains a file `.vscode/settings.json.sample` with our recommended vscode settings.
+To apply these settings to your workspace in VS Code, rename the file to `.vscode/settings.json` by removing the `.sample` extension.
+
 ### Conventional Commit
 
 The title of any PR to `main` should follow [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/). This is to make sure the automatic versioning and release works seamlessly. Please give it a read to [its summary](https://www.conventionalcommits.org/en/v1.0.0/#summary) before making a PR.
