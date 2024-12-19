@@ -80,6 +80,21 @@ let subNavItems = [
   }
 ];
 
+const defaultGuidance = {
+  left: {
+    title: 'Official websites use .gov',
+    text: 'A <strong>.gov</strong> website belongs to an official government organization in the United States.',
+    iconAlt: 'Dot gov icon',
+    icon: '/img/icon-dot-gov.svg'
+  },
+  right: {
+    title: 'Secure .gov websites use HTTPS',
+    text: `A <strong>lock icon</strong> or <strong>https://</strong> means you've safely connected to the .gov website. Share sensitive information only on official, secure websites.`,
+    iconAlt: 'HTTPS icon',
+    icon: '/img/icon-https.svg'
+  }
+};
+
 if (config.GOOGLE_FORM) {
   subNavItems = [
     ...subNavItems,
@@ -112,10 +127,26 @@ module.exports = {
     }
   },
   banner: {
-    text: 'Read the new data insight on using EMIT and AVIRIS-3 for monitoring large methane emission events.',
-    url: 'stories/emit-and-aviris-3',
-    expires: '2024-08-03T12:00:00-04:00',
-    type: 'info'
+    headerText: 'An official website of the United States government',
+    headerActionText: "Here's how you know",
+    ariaLabel: 'Banner for official government website',
+    flagImgSrc: '/img/us_flag_small.png',
+    flagImgAlt: 'US flag',
+    leftGuidance: defaultGuidance.left,
+    rightGuidance: defaultGuidance.right,
+    className: '',
+    defaultIsOpen: false,
+    contentId: 'gov-banner-content'
+  },
+  siteAlert: {
+    content: `<p class="usa-alert__text">
+        <a target="_blank" rel="noreferrer" href="stories/life-of-water">
+          Discover insights on how the COVID-19 pandemic
+      </a> impacted air quality worldwide, observed through NASA's satellite data.</p>`,
+    expires: '2026-08-03T12:00:00-04:00',
+    type: 'info',
+    slim: true,
+    showIcon: true
   },
   navItems: {
     mainNavItems,

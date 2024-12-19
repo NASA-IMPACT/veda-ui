@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import { getString } from 'veda';
 import { getAllDatasetsProps } from '$utils/veda-data';
 import CatalogView from '$components/common/catalog';
@@ -8,7 +9,6 @@ import PageHero from '$components/common/page-hero';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
-import SmartLink from '$components/common/smart-link';
 
 /**
  * @VEDA2-REFACTOR-WORK
@@ -20,6 +20,11 @@ import SmartLink from '$components/common/smart-link';
 export default function DataCatalogContainer() {
   const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
   const controlVars = useFiltersWithQS();
+  const navigate = useNavigate();
+
+  const handleCardNavigation = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <PageMainContent>
@@ -35,10 +40,7 @@ export default function DataCatalogContainer() {
       <CatalogView
         datasets={allDatasets}
         onFilterChanges={() => controlVars}
-        linkProperties={{
-          LinkElement: SmartLink,
-          pathAttributeKeyName: 'to'
-        }}
+        onCardNavigate={handleCardNavigation}
       />
     </PageMainContent>
   );
