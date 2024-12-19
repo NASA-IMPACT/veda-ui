@@ -29,11 +29,7 @@ export const createDynamicNavMenuList = (
         );
 
       case NavItemType.INTERNAL_LINK:
-        return (
-          linkProperties && (
-            <NavItemInternalLink {...{ item, linkProperties }} />
-          )
-        );
+        return <NavItemInternalLink {...{ item, linkProperties }} />;
 
       case NavItemType.EXTERNAL_LINK:
         return <NavItemExternalLink item={item} />;

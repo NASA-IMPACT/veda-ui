@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom';
+
 jest.mock('@mdx-js/react', () => ({
   MDXProvider: () => null
 }));
@@ -8,4 +10,5 @@ jest.mock('veda', () => ({
   }),
   getNavItemsFromVedaConfig: () => []
 }));
+
 export default undefined;
