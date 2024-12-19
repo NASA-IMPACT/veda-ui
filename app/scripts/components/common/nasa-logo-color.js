@@ -5,6 +5,8 @@ import React from 'react';
 export default function NasaLogoColor() {
   return (
     <svg
+      role='img'
+      aria-label='NASA Logo'
       width='44'
       height='44'
       viewBox='0 0 44 44'
