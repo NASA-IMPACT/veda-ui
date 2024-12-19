@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 // Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import * as dateFns from 'date-fns';
 
@@ -11,7 +11,7 @@ import { VectorTimeseries } from '$components/common/map/style-generators/vector
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
 import { ActionStatus } from '$utils/status';
-import { EnvConfigContext } from '$context/env-config';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 interface LayerProps {
   id: string;
@@ -22,8 +22,7 @@ interface LayerProps {
 }
 
 export function Layer(props: LayerProps) {
-  const { envApiStacEndpoint, envApiRasterEndpoint } =
-    useContext(EnvConfigContext);
+  const { envApiStacEndpoint, envApiRasterEndpoint } = useVedaUI();
 
   const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
   const { isVisible, opacity, colorMap, scale } = dataset.settings;
