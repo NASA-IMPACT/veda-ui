@@ -6,7 +6,11 @@ const StyledGoogleForm = styled.iframe`
   width: 100%;
 `;
 
-const GoogleForm: React.FC<{ src: string, isRevealed: boolean, hide: () => void }> = (props) => {
+const GoogleForm = (props: {
+  src: string;
+  isRevealed: boolean;
+  hide: () => void;
+}) => {
   const { src, isRevealed, hide } = props;
 
   return (

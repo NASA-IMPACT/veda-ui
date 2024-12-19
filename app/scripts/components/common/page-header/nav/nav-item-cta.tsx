@@ -8,10 +8,7 @@ interface NavItemCTAProps {
   customClasses?: string;
 }
 
-export const NavItemCTA: React.FC<NavItemCTAProps> = ({
-  item,
-  customClasses
-}): JSX.Element => {
+export const NavItemCTA = ({ item, customClasses }: NavItemCTAProps) => {
   const { isRevealed, show, hide } = useFeedbackModal();
   return (
     <React.Fragment key={item.id}>
