@@ -13,6 +13,8 @@ on:
 permissions:
   contents: write
 
+# This action requires a GitHub app with content write access installed 
+# to bypass the main branch  protection rule and dispatch the event to a different repo
 jobs:
   release:
     runs-on: ubuntu-latest
