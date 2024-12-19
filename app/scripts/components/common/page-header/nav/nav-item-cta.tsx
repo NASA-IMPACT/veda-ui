@@ -7,9 +7,7 @@ interface NavItemCTAProps {
   item: ActionNavItem;
 }
 
-export const NavItemCTA: React.FC<NavItemCTAProps> = ({
-  item
-}): JSX.Element => {
+export const NavItemCTA = ({ item }: NavItemCTAProps) => {
   const { isRevealed, show, hide } = useFeedbackModal();
   return (
     <React.Fragment key={item.id}>
@@ -21,7 +19,7 @@ export const NavItemCTA: React.FC<NavItemCTAProps> = ({
             tabIndex={0}
             id={item.id}
             onClick={show}
-            style={{background: 'none', border: 'none', cursor: 'pointer'}}
+            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
           >
             {item.title}
           </button>
