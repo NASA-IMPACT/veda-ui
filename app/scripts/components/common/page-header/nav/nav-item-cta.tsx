@@ -5,16 +5,21 @@ import { ActionNavItem } from '../types';
 
 interface NavItemCTAProps {
   item: ActionNavItem;
+  customClasses?: string;
 }
 
-export const NavItemCTA = ({ item }: NavItemCTAProps) => {
+export const NavItemCTA = ({ item, customClasses }: NavItemCTAProps) => {
   const { isRevealed, show, hide } = useFeedbackModal();
   return (
     <React.Fragment key={item.id}>
       {item.actionId === 'open-google-form' && (
         <>
           <button
-            className='usa-nav__link'
+            className={
+              customClasses && customClasses != ''
+                ? customClasses
+                : 'usa-nav__link'
+            }
             type='button'
             tabIndex={0}
             id={item.id}

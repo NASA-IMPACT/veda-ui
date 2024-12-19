@@ -1,10 +1,14 @@
-import { getString, getNavItemsFromVedaConfig } from 'veda';
+import {
+  getString,
+  getNavItemsFromVedaConfig,
+  getFooterSettingsFromVedaConfig
+} from 'veda';
 import {
   InternalNavLink,
   ExternalNavLink,
+  ActionNavItem,
   DropdownNavLink,
-  NavItemType,
-  ActionNavItem
+  NavItemType
 } from '$components/common/page-header/types';
 
 import {
@@ -22,6 +26,7 @@ let defaultMainNavItems: (
 )[] = [
   {
     id: 'data-catalog',
+
     title: 'Data Catalog',
     to: DATASETS_PATH,
     type: NavItemType.INTERNAL_LINK
@@ -64,6 +69,18 @@ let defaultSubNavItems: (
   }
 ];
 
+const defaultFooterSettings = {
+  secondarySection: {
+    division: 'NASA EarthData 2024',
+    version: 'BETA VERSION',
+    title: 'NASA Official',
+    name: 'Manil Maskey',
+    to: 'test@example.com',
+    type: 'email'
+  },
+  returnToTop: true
+};
+
 if (process.env.GOOGLE_FORM !== undefined) {
   defaultSubNavItems = [
     ...defaultSubNavItems,
@@ -80,5 +97,7 @@ const mainNavItems =
   getNavItemsFromVedaConfig()?.mainNavItems ?? defaultMainNavItems;
 const subNavItems =
   getNavItemsFromVedaConfig()?.subNavItems ?? defaultSubNavItems;
+const footerSettings =
+  getFooterSettingsFromVedaConfig() ?? defaultFooterSettings;
 
-export { mainNavItems, subNavItems };
+export { mainNavItems, subNavItems, footerSettings };
