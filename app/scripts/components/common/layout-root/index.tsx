@@ -17,6 +17,9 @@ import {
 } from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
+import PageFooterLegacy from '../page-footer-legacy';
+import NasaLogoColor from '../nasa-logo-color';
+
 const Banner = React.lazy(() => import('../banner'));
 const SiteAlert = React.lazy(() => import('../site-alert'));
 const CookieConsent = React.lazy(() => import('../cookie-consent'));
@@ -29,11 +32,14 @@ import NavWrapper from '$components/common/nav-wrapper';
 import Logo from '$components/common/page-header-legacy/logo';
 import {
   mainNavItems,
-  subNavItems
+  subNavItems,
+  footerSettings
 } from '$components/common/page-header/default-config';
+import { checkEnvFlag } from '$utils/utils';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
+const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_FOOTER);
 
 export const PAGE_BODY_ID = 'pagebody';
 
@@ -64,7 +70,8 @@ function LayoutRoot(props: { children?: ReactNode }) {
   useEffect(() => {
     // When there is no cookie consent form set up
     !cookieConsentContent && setGoogleTagManager();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array ensures this effect runs only once, and not during SSR
 
   const { title, thumbnail, description, hideFooter } =
     useContext(LayoutRootContext);
@@ -105,7 +112,17 @@ function LayoutRoot(props: { children?: ReactNode }) {
           />
         )}
       </PageBody>
-      <PageFooter isHidden={hideFooter} />
+      {isUSWDSEnabled ? (
+        <PageFooter
+          settings={footerSettings}
+          mainNavItems={mainNavItems}
+          subNavItems={subNavItems}
+          hideFooter={hideFooter}
+          logoSvg={<NasaLogoColor />}
+        />
+      ) : (
+        <PageFooterLegacy hideFooter={hideFooter} />
+      )}
     </Page>
   );
 }
