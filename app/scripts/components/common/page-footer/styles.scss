@@ -41,3 +41,6 @@ address {
   font-size: themeVars.$veda-uswds-fontsize-sm;
   text-underline-offset: themeVars.$veda-uswds-spacing-5;
 }
+.usa-footer__contact-info {
+  line-height: unset;
+}

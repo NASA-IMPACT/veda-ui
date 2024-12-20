@@ -85,58 +85,57 @@ export default function PageFooter({
     [mainNavItems]
   );
   return (
-    <>
-      <USWDSFooter
-        size='slim'
-        returnToTop={returnToTop && returnToTopButton()}
-        className={hideFooter && 'display-none'}
-        primary={
-          <div
-            id='footer_primary_container'
-            className=' grid-row bg-base-lightest usa-footer__primary-container'
-          >
-            <div className='mobile-lg:grid-col-8'>
-              <USWDSFooterNav
-                aria-label='Footer navigation'
-                size='slim'
-                links={primaryItems}
-              />
-            </div>
-            <div className='tablet:grid-col-4'>
-              <USWDSAddress
-                size='slim'
-                className='flex-justify-end'
-                items={secondaryItems}
-              />
-            </div>
+    <USWDSFooter
+      size='slim'
+      returnToTop={returnToTop && returnToTopButton()}
+      className={hideFooter && 'display-none'}
+      primary={
+        <div
+          id='footer_primary_container'
+          className=' grid-row  usa-footer__primary-container'
+        >
+          <div className='mobile-lg:grid-col-8'>
+            <USWDSFooterNav
+              aria-label='Footer navigation'
+              size='slim'
+              links={primaryItems}
+            />
           </div>
-        }
-        secondary={
-          <div id='footer_secondary_container' className='grid-row'>
-            <div id='logo-container'>
-              <a id='logo-container-link' href='#'>
-                {logoSvg as JSX.Element}
-                <span className='footer-text'>
-                  {secondarySection.division} • {secondarySection.version}
-                </span>
-              </a>
-            </div>
-            <div className='grid-col-4 footer-text grid-gap-6 flex-justify-end'>
-              <span>{secondarySection.title}: </span>
-              <a
-                key={secondarySection.type}
-                href={`mailto:${secondarySection.to}`}
-              >
-                <Icon.Mail
-                  className='margin-right-1 width-205 height-auto position-relative'
-                  id='mail_icon'
-                />
-                {secondarySection.name}
-              </a>
-            </div>
+          <div className='tablet:grid-col-4'>
+            <USWDSAddress
+              size='slim'
+              className='flex-justify-end'
+              items={secondaryItems}
+            />
           </div>
-        }
-      />
-    </>
+        </div>
+      }
+      secondary={
+        <div id='footer_secondary_container' className='grid-row'>
+          <div id='logo-container'>
+            <a id='logo-container-link' href='#'>
+              {logoSvg as JSX.Element}
+              <span className='footer-text'>
+                {secondarySection.division} • {secondarySection.version}
+              </span>
+            </a>
+          </div>
+          <div className='grid-col-4 footer-text grid-gap-6 flex-justify-end'>
+            <span>{secondarySection.title}: </span>
+            <a
+              key={secondarySection.type}
+              href={`mailto:${secondarySection.to}`}
+              className='text-primary-light'
+            >
+              <Icon.Mail
+                className='margin-right-1 width-205 height-auto position-relative'
+                id='mail_icon'
+              />
+              {secondarySection.name}
+            </a>
+          </div>
+        </div>
+      }
+    />
   );
 }
