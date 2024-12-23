@@ -111,7 +111,9 @@ theme: {
 
 ### Footer
 
-The footer component dynamically pulls its content from the `mainNavItems` and `subNavItems` that are also leveraged by the header component from [veda.config.js](#vedaconfigjs). The footer component does not currently render any child navigation elements passed down from the `mainNavItems` or `subNavItems`. The footer also requires `footerSettings` object to be passed to set `secondary section` and `return to top` button functionality.
+To turn on the footer compomnent set `ENABLE_USWDS_PAGE_FOOTER` to TRUE within the `.env` file.
+
+The footer component dynamically pulls its content from the `mainNavItems` and `subNavItems` that are also leveraged by the header component from `veda.config.js`. The footer component does not currently render any child navigation elements passed down from the `mainNavItems` or `subNavItems`. The footer also requires `footerSettings` object to be passed to set `secondary section` and `return to top` button functionality.
 
 ```
 secondarySection: {
