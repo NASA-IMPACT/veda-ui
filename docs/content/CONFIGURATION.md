@@ -109,6 +109,31 @@ theme: {
 | theme.iconColor | String | Pass a hex or accepted color name as a string to style the X close button| { default: '#175074', hover: 'white' }|
 
 
+### Footer
+
+The footer component dynamically pulls its content from the `mainNavItems` and `subNavItems` that are also leveraged by the header component from [veda.config.js](#vedaconfigjs). The footer component does not currently render any child navigation elements passed down from the `mainNavItems` or `subNavItems`. The footer also requires `footerSettings` object to be passed to set `secondary section` and `return to top` button functionality.
+
+```
+secondarySection: {
+        division: string,
+        version: string,
+        title: string,
+        name: string,
+        to: string,
+        type: string,
+    },
+returnToTop: boolean
+``` 
+
+| Option | Type | Description| Example|
+|---|---|---|---|
+| returnToTop | boolean | Set to display a return to top button above the primary and secondary secionts of the footer ||
+| secondarySection.division | String | Pass a string for the content you would like to display in the division section  | NASA EarthData 2024 |
+| secondarySection.version | String | Set what version to display next to Nasa logo and title | BETA VERSION |
+| secondarySection.title | String |  | NASA Official |
+| secondarySection.name | String | Name of individual you would like users to contact | NASA EarthData 2024 |
+| secondarySection.to | String | Individuals email contact information to link to  | NASA EarthData 2024 |
+| secondarySection.type | String | Currently hard coded to accept only email type | NASA EarthData 2024 |
 
 ## Meta files
 
