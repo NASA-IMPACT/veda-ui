@@ -2,7 +2,7 @@
 
 ## Overview
 
-VEDA UI library uses the U.S. Web Design System (USWDS) as its foundation for styling and theming. This guide explains how to set up and customize styles in your application when using VEDA UI components.
+VEDA UI library uses the [U.S. Web Design System (USWDS)](https://designsystem.digital.gov/) as its foundation for styling and theming. This guide explains how to set up and customize styles in your application when using VEDA UI components.
 
 ## Setup requirements
 
