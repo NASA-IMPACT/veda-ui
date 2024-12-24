@@ -16,6 +16,9 @@
   "module": "lib/module.js",
   "types": "lib/index.d.ts",
   "browserslist": "> 0.5%, last 2 versions, not dead",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "serve": "NODE_ENV=development gulp serve",
     "build": "NODE_ENV=production gulp",
