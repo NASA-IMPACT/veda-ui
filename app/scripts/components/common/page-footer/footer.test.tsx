@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { navItems, footerSettings } from '../../../../../mock/veda.config.js';
 import NasaLogoColor from '../nasa-logo-color';
 import { NavItem } from '../page-header/types.js';
-import '@testing-library/jest-dom/extend-expect';
 
 import PageFooter from './index';
 
@@ -32,7 +31,6 @@ describe('PageFooter', () => {
 
     expect(footerElement).toBeInTheDocument();
     expect(footerElement).not.toHaveClass('display-none');
-
   });
   test('renders correct buttons and links', () => {
     expect(screen.getByText('Data Catalog')).toBeInTheDocument();
