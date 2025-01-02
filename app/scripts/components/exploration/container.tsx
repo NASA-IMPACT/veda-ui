@@ -11,12 +11,11 @@ import useTimelineDatasetAtom from './hooks/use-timeline-dataset-atom';
 import { externalDatasetsAtom } from './atoms/datasetLayers';
 import ExplorationAndAnalysis from '.';
 import { urlAtom } from '$utils/params-location-atom/url';
-import { EXPLORATION_PATH } from '$utils/routes';
 import { PageMainContent } from '$styles/page';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
-import { DATASETS_PATH } from '$utils/routes';
+import { DATASETS_PATH, EXPLORATION_PATH } from '$utils/routes';
 
 /**
  * @VEDA2-REFACTOR-WORK

@@ -136,7 +136,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
             size='small'
             inverse={true}
             outline={false}
-            tabindex="-1"
+            tabindex='-1'
           >
             Open in Data Catalog
           </USWDSButton>
