@@ -16,8 +16,8 @@ import {
   NavItem,
   NavItemType
 } from '../page-header/types';
-import { USWDSButton } from '$uswds';
 import { useFeedbackModal } from '../layout-root';
+import { USWDSButton } from '$uswds';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { LinkProperties } from '$types/veda';

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
-import { USWDSNavDropDownButton, USWDSMenu } from '$uswds';
 import { DropdownNavLink } from '../types';
 import { createDynamicNavMenuList } from './create-dynamic-nav-menu-list';
+import { USWDSNavDropDownButton, USWDSMenu } from '$uswds';
 import { SetState } from '$types/aliases';
 import { LinkProperties } from '$types/veda';
 import { useClickOutside } from '$utils/use-click-outside';
