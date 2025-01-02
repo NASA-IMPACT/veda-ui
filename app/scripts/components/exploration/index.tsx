@@ -59,11 +59,10 @@ interface ExplorationAndAnalysisProps {
   datasets: TimelineDataset[];
   setDatasets: (datasets: TimelineDataset[]) => void;
   openDatasetsSelectionModal?: () => void;
-  onNavigation?: (path: string) => void;
 }
 
 function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
-  const { datasets, setDatasets, openDatasetsSelectionModal, onNavigation } = props;
+  const { datasets, setDatasets, openDatasetsSelectionModal } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
 
@@ -112,7 +111,6 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
             setSelectedCompareDay={setSelectedCompareDay}
             onDatasetAddClick={openDatasetsSelectionModal}
             panelHeight={panelHeight}
-            onNavigation={onNavigation}
           />
         </Panel>
       </PanelGroup>

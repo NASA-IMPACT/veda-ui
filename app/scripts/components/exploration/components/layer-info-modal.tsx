@@ -66,8 +66,7 @@ export interface LayerInfoModalData {
 interface LayerInfoModalProps {
   revealed: boolean;
   close: () => void;
-  layerData: LayerInfoModalData
-  onNavigation?: (path: string) => void;
+  layerData: LayerInfoModalData;
 }
 
 export function LayerInfoLiner(props: { info: LayerInfo }) {
@@ -93,7 +92,7 @@ const LayerInfoLinerModal = styled.div`
 `;
 
 export default function LayerInfoModal(props: LayerInfoModalProps) {
-  const { revealed, close, layerData, onNavigation } = props;
+  const { revealed, close, layerData } = props;
   const {
     navigation: { LinkComponent },
     routes: { dataCatalogPath }
