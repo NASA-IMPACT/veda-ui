@@ -2,7 +2,6 @@ import React, {
   Children,
   ReactElement,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -52,7 +51,7 @@ import {
   formatSingleDate,
   reconcileVizDataset
 } from '$components/common/map/utils';
-import { EnvConfigContext } from '$context/env-config';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 type ResolvedScrollyMapLayer = {
   vizDataset: VizDatasetSuccess;
@@ -260,7 +259,7 @@ const MAP_OPTIONS = {
 function Scrollytelling(props) {
   const { children } = props;
 
-  const { envApiStacEndpoint } = useContext(EnvConfigContext);
+  const { envApiStacEndpoint } = useVedaUI();
 
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();

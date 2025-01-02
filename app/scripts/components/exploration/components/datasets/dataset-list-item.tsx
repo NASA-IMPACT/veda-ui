@@ -94,11 +94,10 @@ interface DatasetListItemProps {
   xScaled?: ScaleTime<number, number>;
   onDragStart?: () => void;
   onDragEnd?: () => void;
-  onNavigation?: (path: string) => void;
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
-  const { datasetId, width, xScaled, onDragStart, onDragEnd, onNavigation } = props;
+  const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
@@ -236,7 +235,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
                 revealed={!!modalLayerInfo}
                 close={() => setModalLayerInfo(undefined)}
                 layerData={modalLayerInfo}
-                onNavigation={onNavigation}
               />
             )}
           </DatasetHeaderInner>
