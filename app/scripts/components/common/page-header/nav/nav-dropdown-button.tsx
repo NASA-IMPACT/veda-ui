@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
-import { USWDSNavDropDownButton } from '../../uswds/header/nav-drop-down-button';
-import { USWDSMenu } from '../../uswds/header/menu';
+import { USWDSNavDropDownButton, USWDSMenu } from '$uswds';
 import { DropdownNavLink } from '../types';
 import { createDynamicNavMenuList } from './create-dynamic-nav-menu-list';
 import { SetState } from '$types/aliases';

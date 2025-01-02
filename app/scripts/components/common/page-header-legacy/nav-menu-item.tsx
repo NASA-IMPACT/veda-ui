@@ -16,7 +16,7 @@ import {
   NavItem,
   NavItemType
 } from '../page-header/types';
-import { USWDSButton } from '../uswds/button';
+import { USWDSButton } from '$uswds';
 import { useFeedbackModal } from '../layout-root';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
