@@ -1,4 +1,5 @@
 import React, { createContext, ReactNode, useContext } from 'react';
+import { DATASETS_PATH, STORIES_PATH } from '$utils/routes';
 
 interface EnvironmentConfig {
   envMapboxToken: string;
@@ -17,22 +18,34 @@ interface NavigationConfig {
   linkPropName: string;
 }
 
-const defaultNavigation: NavigationConfig = {
-  LinkComponent: 'a',
-  linkPropName: 'href'
-};
+interface RoutesConfig {
+  dataCatalogPath?: string;
+  storiesCatalogPath?: string;
+}
 
 interface VedaUIConfig extends EnvironmentConfig {
   navigation: NavigationConfig;
+  routes: RoutesConfig;
   Link: React.FC<LinkProps>;
 }
 
 interface VedaUIProviderProps {
   config: EnvironmentConfig & {
     navigation?: Partial<NavigationConfig>;
+    routes?: RoutesConfig;
   };
   children: ReactNode;
 }
+
+const defaultNavigation: NavigationConfig = {
+  LinkComponent: 'a',
+  linkPropName: 'href'
+};
+
+const defaultRoutes: RoutesConfig = {
+  dataCatalogPath: DATASETS_PATH,
+  storiesCatalogPath: STORIES_PATH
+};
 
 const VedaUIContext = createContext<VedaUIConfig | null>(null);
 VedaUIContext.displayName = 'VedaUIContext';
@@ -67,6 +80,11 @@ export function VedaUIProvider({ config, children }: VedaUIProviderProps) {
     ...config.navigation
   };
 
+  const routes = {
+    ...defaultRoutes,
+    ...config.routes
+  }
+
   const Link: React.FC<LinkProps> = ({ to, children, ...props }) => {
     const { LinkComponent, linkPropName } = navigation;
     return (
@@ -79,6 +97,7 @@ export function VedaUIProvider({ config, children }: VedaUIProviderProps) {
   const fullConfig: VedaUIConfig = {
     ...config,
     navigation,
+    routes,
     Link
   };
 
