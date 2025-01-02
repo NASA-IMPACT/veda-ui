@@ -7,7 +7,7 @@ import {
   USWDSAlert,
   USWDSButton,
   USWDSButtonGroup
-} from '$components/common/uswds';
+} from '$uswds';
 
 import './index.scss';
 interface cookieConsentTheme {

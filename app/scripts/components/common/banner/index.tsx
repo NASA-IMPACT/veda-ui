@@ -9,7 +9,7 @@ import {
   USWDSBannerIcon,
   USWDSBannerGuidance,
   USWDSMediaBlockBody
-} from '$components/common/uswds/banner';
+} from '$uswds';
 
 interface Guidance {
   left?: GuidanceContent;

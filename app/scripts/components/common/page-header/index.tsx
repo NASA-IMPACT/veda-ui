@@ -9,7 +9,7 @@ import {
   USWDSHeaderTitle,
   USWDSNavMenuButton,
   USWDSExtendedNav
-} from '$components/common/uswds';
+} from '$uswds';
 import { LinkProperties } from '$types/veda';
 interface PageHeaderProps {
   mainNavItems: NavItem[];
