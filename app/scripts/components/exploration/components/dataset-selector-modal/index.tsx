@@ -11,13 +11,11 @@ import { TimelineDataset } from '../../types.d.ts';
 
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
-import { DATASETS_PATH } from '$utils/routes';
 import CatalogContent from '$components/common/catalog/catalog-content';
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';
 
 import { DatasetData, DatasetLayer } from '$types/veda';
-import { useVedaUI } from '$context/veda-ui-provider';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -67,15 +65,12 @@ interface DatasetSelectorModalProps {
   datasets: DatasetData[];
   timelineDatasets: TimelineDataset[];
   setTimelineDatasets: (datasets: TimelineDataset[]) => void;
+  emptyStateContent?: React.ReactNode;
 }
 
 export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
-  const { revealed, datasets, timelineDatasets, setTimelineDatasets, close } =
+  const { revealed, datasets, timelineDatasets, setTimelineDatasets, close, emptyStateContent } =
     props;
-
-  const {
-    navigation: { LinkComponent }
-  } = useVedaUI();
 
   const datasetLayers = getLayersFromDataset(datasets);
 
@@ -130,20 +125,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
           setSelectedIds={setSelectedIds}
           onAction={onAction}
           filterLayers={true}
-          emptyStateContent={
-            <>
-              <p>There are no datasets to show with the selected filters.</p>
-              <p>
-                This tool allows the exploration and analysis of time-series
-                datasets in raster format. For a comprehensive list of available
-                datasets, please visit the{' '}
-                <LinkComponent to={DATASETS_PATH} target='_blank'>
-                  Data Catalog
-                </LinkComponent>
-                .
-              </p>
-            </>
-          }
+          {...(emptyStateContent ? {emptyStateContent} : {})}
         />
       }
       footerContent={

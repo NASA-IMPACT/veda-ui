@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TourProvider } from '@reactour/tour';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { DevTools } from 'jotai-devtools';
 import { useAtom, useSetAtom } from 'jotai';
 import { PopoverTourComponent, TourManager } from './tour-manager';
@@ -16,6 +16,7 @@ import { PageMainContent } from '$styles/page';
 
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
+import { DATASETS_PATH } from '$utils/routes';
 
 /**
  * @VEDA2-REFACTOR-WORK
@@ -81,6 +82,20 @@ export default function ExplorationAndAnalysisContainer() {
           datasets={allExploreDatasets}
           timelineDatasets={timelineDatasets}
           setTimelineDatasets={setTimelineDatasets}
+          emptyStateContent={
+            <>
+              <p>There are no datasets to show with the selected filters.</p>
+              <p>
+                This tool allows the exploration and analysis of time-series
+                datasets in raster format. For a comprehensive list of available
+                datasets, please visit the{' '}
+                <Link to={DATASETS_PATH}>
+                  Data Catalog
+                </Link>
+                .
+              </p>
+            </>
+          }
         />
       </PageMainContent>
     </TourProvider>
