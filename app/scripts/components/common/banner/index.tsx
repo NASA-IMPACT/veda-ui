@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { decode } from 'he';
 import {
   USWDSBanner,
   USWDSBannerContent,
@@ -72,9 +71,7 @@ const GuidanceBlock = ({
       <p>
         <strong>{content.title}</strong>
         <br />
-        <span
-          dangerouslySetInnerHTML={{ __html: decode(content.text ?? '') }}
-        />
+        <span dangerouslySetInnerHTML={{ __html: content.text ?? '' }} />
       </p>
     </USWDSMediaBlockBody>
   </USWDSBannerGuidance>
