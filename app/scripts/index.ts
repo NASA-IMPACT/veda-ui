@@ -1,7 +1,7 @@
 import Block from './components/common/blocks';
 import Image from './components/common/blocks/images';
 import MapBlock from './components/common/blocks/block-map';
-import { ScrollytellingBlock } from './components/common/blocks/scrollytelling';
+import { ScrollytellingBlock } from './components/common/blocks/scrollytelling/no-faux-module';
 import Figure from './components/common/blocks/figure';
 import { ContentBlockProse as Prose } from './styles/content-block';
 import MDXImage, { Caption } from './components/common/blocks/images';
