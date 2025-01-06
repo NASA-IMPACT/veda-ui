@@ -83,7 +83,7 @@ export function prepareDatasets(
   sortField &&
     /* eslint-disable-next-line fp/no-mutating-methods */
     filtered.sort((a, b) => {
-      if (!a[sortField]) return Infinity;
+      if (!a[sortField] || typeof a[sortField] !== 'string') return Infinity;
 
       return a[sortField]?.localeCompare(b[sortField]);
     });
