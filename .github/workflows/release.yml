@@ -1,9 +1,6 @@
 name: Release Every Other Monday
 on:
   workflow_dispatch:
-    inputs:
-      VERSION_NUMBER:
-        type: string
   # Run action at 16:15 PM on Monday (UTC)
   # schedule:
   # @TODO: the schedule below is weekly. Do byweekly check.
@@ -53,4 +50,4 @@ jobs:
           token: ${{steps.generate-token.outputs.token}}
           repository: nasa-impact/veda-config
           event-type: update-version
-          client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER || inputs.VERSION_NUMBER }}"}'
+          client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'
