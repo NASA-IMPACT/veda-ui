@@ -2,6 +2,7 @@ import React, {
   Children,
   ReactElement,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -15,7 +16,8 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
 import { MapRef } from 'react-map-gl';
-import { datasets, ProjectionOptions } from 'veda';
+// import { datasets, ProjectionOptions } from 'veda';
+import { ProjectionOptions, VedaDatum } from '$types/veda';
 import { BlockErrorBoundary } from '..';
 import {
   chapterDisplayName,
@@ -51,11 +53,11 @@ import {
   formatSingleDate,
   reconcileVizDataset
 } from '$components/common/map/utils';
-import { useVedaUI } from '$context/veda-ui-provider';
+import { EnvConfigContext } from '$context/env-config';
 
 /**
- * @NOTE: File to be @DEPRECATED when moved over to new refactored architecture, this file remains
- * since it still depends of the datasets from the veda virtual modules. We are to move over to use the `./no-faux-module.tsx` file
+ * @NOTE: This file removed dependency from veda virtual modules for the new architecture, we are moving towards this file 
+ * but still need to keep the old because of current legacy dependencies
  */
 
 type ResolvedScrollyMapLayer = {
@@ -100,12 +102,12 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
       ChapterProps,
       any
     >[];
-
-    if (chapters.some((c) => c.type.displayName !== chapterDisplayName)) {
-      throw new HintedError('Invalid ScrollytellingBlock children', [
-        'You can only use <Chapter> inside <ScrollytellingBlock>'
-      ]);
-    }
+    console.log(`chapters: `, chapters)
+    // if (chapters.some((c) => c.type.displayName !== chapterDisplayName)) {
+    //   throw new HintedError('Invalid ScrollytellingBlock children', [
+    //     'You can only use <Chapter> inside <ScrollytellingBlock>'
+    //   ]);
+    // }
 
     const chErrors = chapters.reduce<string[]>(
       (acc, ch, idx) => acc.concat(validateChapter(ch.props, idx)),
@@ -145,7 +147,8 @@ function getChapterLayerKey(ch: ScrollyChapter) {
  */
 function useMapLayersFromChapters(
   chList: ScrollyChapter[],
-  envApiStacEndpoint: string
+  envApiStacEndpoint: string,
+  datasets: VedaDatum<DatasetData>,
 ): [ResolvedScrollyMapLayer[], string[]] {
   // The layers are unique based on the dataset, layer id and datetime.
   // First we filter out any scrollytelling block that doesn't have layer.
@@ -160,6 +163,7 @@ function useMapLayersFromChapters(
 
     return Object.values(unique);
   }, [chList]);
+
   // Create an array of datasetId & layerId pairs which we can easily validate when creating
   // the layers array.
   const uniqueLayerRefs = useMemo(() => {
@@ -261,9 +265,9 @@ const MAP_OPTIONS = {
 };
 
 function Scrollytelling(props) {
-  const { children } = props;
+  const { children, datasets } = props;
 
-  const { envApiStacEndpoint } = useVedaUI();
+  const { envApiStacEndpoint } = useContext(EnvConfigContext);
 
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();
@@ -276,7 +280,8 @@ function Scrollytelling(props) {
 
   const [resolvedLayers, resolvedStatus] = useMapLayersFromChapters(
     chapterProps,
-    envApiStacEndpoint
+    envApiStacEndpoint,
+    datasets
   );
 
   const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(
@@ -486,7 +491,8 @@ function Scrollytelling(props) {
 }
 
 Scrollytelling.propTypes = {
-  children: T.node
+  children: T.node,
+  datasets: T.any
 };
 
 export function ScrollytellingBlock(props) {
