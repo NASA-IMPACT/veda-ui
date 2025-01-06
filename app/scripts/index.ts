@@ -1,6 +1,7 @@
 import Block from './components/common/blocks';
 import Image from './components/common/blocks/images';
 import MapBlock from './components/common/blocks/block-map';
+import { ScrollytellingBlock } from './components/common/blocks/scrollytelling';
 import Figure from './components/common/blocks/figure';
 import { ContentBlockProse as Prose } from './styles/content-block';
 import MDXImage, { Caption } from './components/common/blocks/images';
@@ -58,6 +59,7 @@ export {
   Caption,
   Chapter,
   Chart,
+  ScrollytellingBlock,
   Table,
   Embed,
   MapBlock,
