@@ -102,13 +102,7 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
       ChapterProps,
       any
     >[];
-    console.log(`chapters: `, chapters)
-    // if (chapters.some((c) => c.type.displayName !== chapterDisplayName)) {
-    //   throw new HintedError('Invalid ScrollytellingBlock children', [
-    //     'You can only use <Chapter> inside <ScrollytellingBlock>'
-    //   ]);
-    // }
-
+    
     const chErrors = chapters.reduce<string[]>(
       (acc, ch, idx) => acc.concat(validateChapter(ch.props, idx)),
       []
