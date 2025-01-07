@@ -20,7 +20,7 @@ The automated process handles
 
 #### Trigger Through UI
 
-If you are a contributor, you can trigger an action through the Actions tab. Navigate to Actions, select the release action Release every other Monday, and click the Run workflow button to initiate a release. Select the branch only if you need to make a hotfix patch release. Keep in mind that your commit message should follow the Conventional Commit format when releasing a hotfix, as the action only recognizes commits made to the production branch.
+If you are a contributor, you can trigger a release action through the Actions tab. Navigate to Actions, select the release action Release every other Monday (with the default branch set to `main`), and click the Run workflow button to initiate a release. Select a different branch if you need to make a hotfix patch release. Keep in mind that your commit message should follow the Conventional Commit format when releasing a hotfix, as the action only recognizes commits made to the production branch (`main`).
 
 ![Screenshot of Github Action](../media/workflow-screenshot.png)
 
