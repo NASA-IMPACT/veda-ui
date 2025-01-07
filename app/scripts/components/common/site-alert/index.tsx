@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Icon } from '@trussworks/react-uswds';
-import { USWDSSiteAlert } from '$components/common/uswds/site-alert';
+import { USWDSSiteAlert } from '$uswds';
 
 const ALERT_KEY = 'dismissedSiteAlertUrl';
 
