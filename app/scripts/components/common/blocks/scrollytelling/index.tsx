@@ -16,10 +16,9 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
 import { MapRef } from 'react-map-gl';
-import { datasets, ProjectionOptions } from 'veda';
+import { ProjectionOptions, VedaDatum } from '$types/veda';
 import { BlockErrorBoundary } from '..';
 import {
-  chapterDisplayName,
   ChapterProps,
   ScrollyChapter,
   validateChapter
@@ -53,11 +52,6 @@ import {
   reconcileVizDataset
 } from '$components/common/map/utils';
 import { EnvConfigContext } from '$context/env-config';
-
-/**
- * @NOTE: File to be @DEPRECATED when moved over to new refactored architecture, this file remains
- * since it still depends on the datasets from the veda virtual modules. We are to move over to use the `./no-faux-module.tsx` file
- */
 
 type ResolvedScrollyMapLayer = {
   vizDataset: VizDatasetSuccess;
@@ -102,12 +96,6 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
       any
     >[];
 
-    if (chapters.some((c) => c.type.displayName !== chapterDisplayName)) {
-      throw new HintedError('Invalid ScrollytellingBlock children', [
-        'You can only use <Chapter> inside <ScrollytellingBlock>'
-      ]);
-    }
-
     const chErrors = chapters.reduce<string[]>(
       (acc, ch, idx) => acc.concat(validateChapter(ch.props, idx)),
       []
@@ -146,7 +134,8 @@ function getChapterLayerKey(ch: ScrollyChapter) {
  */
 function useMapLayersFromChapters(
   chList: ScrollyChapter[],
-  envApiStacEndpoint: string
+  envApiStacEndpoint: string,
+  datasets: VedaDatum<DatasetData>,
 ): [ResolvedScrollyMapLayer[], string[]] {
   // The layers are unique based on the dataset, layer id and datetime.
   // First we filter out any scrollytelling block that doesn't have layer.
@@ -262,7 +251,7 @@ const MAP_OPTIONS = {
 };
 
 function Scrollytelling(props) {
-  const { children } = props;
+  const { children, datasets } = props;
 
   const { envApiStacEndpoint } = useContext(EnvConfigContext);
 
@@ -277,7 +266,8 @@ function Scrollytelling(props) {
 
   const [resolvedLayers, resolvedStatus] = useMapLayersFromChapters(
     chapterProps,
-    envApiStacEndpoint
+    envApiStacEndpoint,
+    datasets
   );
 
   const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(
@@ -487,7 +477,8 @@ function Scrollytelling(props) {
 }
 
 Scrollytelling.propTypes = {
-  children: T.node
+  children: T.node,
+  datasets: T.any,
 };
 
 export function ScrollytellingBlock(props) {
