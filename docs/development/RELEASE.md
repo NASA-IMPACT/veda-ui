@@ -16,6 +16,8 @@ The automated process handles
 - Creating GitHub Release
 - Creating [VEDA configuration instance](https://github.com/nasa-impact/veda-config) preview using VEDA UI version (When the release is made from `main` branch)
 
+After the last step, we can manually test if the release did not introduce any unexpected regression through the Preview URL.
+
 ### GitHub Action Integration
 
 #### Trigger Through UI
