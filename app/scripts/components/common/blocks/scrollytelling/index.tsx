@@ -55,7 +55,7 @@ import { useVedaUI } from '$context/veda-ui-provider';
 
 /**
  * @NOTE: File to be @DEPRECATED when moved over to new refactored architecture, this file remains
- * since it still depends of the datasets from the veda virtual modules. We are to move over to use the `./no-faux-module.tsx` file
+ * since it still depends on the datasets from the veda virtual modules. We are to move over to use the `./no-faux-module.tsx` file
  */
 
 type ResolvedScrollyMapLayer = {
