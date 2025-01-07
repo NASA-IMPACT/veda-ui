@@ -14,7 +14,7 @@ The automated process handles
 - Creating Git tag using the version number
 - Creating a commit bumping the version number up in `package.json`
 - Creating GitHub Release
-- Creating VEDA instance preview using VEDA UI version (When the release is made from `main` branch)
+- Creating [VEDA configuration instance](https://github.com/nasa-impact/veda-config) preview using VEDA UI version (When the release is made from `main` branch)
 
 ### GitHub Action Integration
 
@@ -26,7 +26,7 @@ If you are a contributor, you can trigger a release action through the Actions t
 
 #### Instance Build
 
-Upon triggering, the GitHub Action builds the Configuration (veda-config) instances using the specified release. It will create a Pull Request, as shown below, on veda-config, building a preview using the released UI.
+Upon triggering, the GitHub Action builds the [Configuration (veda-config) instance](https://github.com/nasa-impact/veda-config) using the specified release. It will create a Pull Request, as shown below, on veda-config, building a preview using the released UI.
 
 ![Screenshot of generated PR ](../media/preview-pr.png)
 
