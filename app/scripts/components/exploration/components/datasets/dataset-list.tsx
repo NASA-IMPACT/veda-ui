@@ -16,11 +16,10 @@ const DatasetListSelf = styled.ul`
 interface DatasetListProps {
   width: number;
   xScaled?: ScaleTime<number, number>;
-  onNavigation?: (path: string) => void;
 }
 
 export function DatasetList(props: DatasetListProps) {
-  const { width, xScaled, onNavigation } = props;
+  const { width, xScaled } = props;
   const [isDragging, setIsDragging] = useState(false);
 
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
@@ -41,7 +40,6 @@ export function DatasetList(props: DatasetListProps) {
           xScaled={xScaled}
           onDragStart={() => setIsDragging(true)}
           onDragEnd={() => setIsDragging(false)}
-          onNavigation={onNavigation}
         />
       ))}
     </Reorder.Group>

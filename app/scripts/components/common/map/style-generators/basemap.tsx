@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { AnySourceImpl, Layer, Style } from 'mapbox-gl';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   BasemapId,
   getStyleUrl,
@@ -9,7 +9,7 @@ import {
 } from '../controls/map-options/basemap';
 import { ExtendedLayer } from '../types';
 import useMapStyle from '../hooks/use-map-style';
-import { EnvConfigContext } from '$context/env-config';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 interface BasemapProps {
   basemapStyleId?: BasemapId;
@@ -33,7 +33,7 @@ export function Basemap({
   labelsOption = true,
   boundariesOption = true
 }: BasemapProps) {
-  const { envMapboxToken } = useContext(EnvConfigContext);
+  const { envMapboxToken } = useVedaUI();
   const { updateStyle } = useMapStyle();
   const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
 

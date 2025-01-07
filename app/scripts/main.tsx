@@ -1,7 +1,13 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import T from 'prop-types';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import {
+  Link,
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation
+} from 'react-router-dom';
 
 import '$styles/styles.scss';
 
@@ -49,7 +55,7 @@ import {
   STORIES_PATH,
   EXPLORATION_PATH
 } from '$utils/routes';
-import { EnvConfigProvider } from '$context/env-config';
+import { VedaUIProvider } from '$context/veda-ui-provider';
 
 const composingComponents = [
   // Add contexts here.
@@ -57,15 +63,21 @@ const composingComponents = [
   ReactQueryProvider,
   LayoutRootContextProvider,
   ({ children }) => (
-    <EnvConfigProvider
+    <VedaUIProvider
       config={{
         envMapboxToken: process.env.MAPBOX_TOKEN ?? '',
         envApiStacEndpoint: process.env.API_STAC_ENDPOINT ?? '',
-        envApiRasterEndpoint: process.env.API_RASTER_ENDPOINT ?? ''
+        envApiRasterEndpoint: process.env.API_RASTER_ENDPOINT ?? '',
+        navigation: {
+          LinkComponent: Link,
+          linkProps: {
+            pathAttributeKeyName: 'to'
+          }
+        }
       }}
     >
       {children}
-    </EnvConfigProvider>
+    </VedaUIProvider>
   )
 ];
 

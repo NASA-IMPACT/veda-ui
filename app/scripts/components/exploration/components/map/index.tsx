@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { ProjectionOptions } from 'veda';
 import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
@@ -26,7 +26,7 @@ import { usePreviousValue } from '$utils/use-effect-previous';
 import { ExtendedStyle } from '$components/common/map/styles';
 import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
-import { EnvConfigContext } from '$context/env-config';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 interface ExplorationMapProps {
   datasets: TimelineDataset[];
@@ -36,8 +36,7 @@ interface ExplorationMapProps {
 }
 
 export function ExplorationMap(props: ExplorationMapProps) {
-  const { envApiStacEndpoint, envMapboxToken } =
-    useContext(EnvConfigContext);
+  const { envApiStacEndpoint, envMapboxToken } = useVedaUI();
 
   const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
 
