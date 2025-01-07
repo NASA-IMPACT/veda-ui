@@ -22,7 +22,7 @@
   },
   "github": {
     "release": true,
-    "releaseName": "V${version}",
+    "releaseName": "v${version}",
     "releaseNotes": null,
     "autoGenerate": true,
     "preRelease": false,
