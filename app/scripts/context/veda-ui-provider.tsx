@@ -18,7 +18,7 @@ interface NavigationConfig {
   linkProps: {
     pathAttributeKeyName: string; // href, to, ...
     [key: string]: any;
-  }
+  };
 }
 
 interface RoutesConfig {
@@ -92,7 +92,10 @@ export function VedaUIProvider({ config, children }: VedaUIProviderProps) {
   const Link: React.FC<LinkProps> = ({ to, children, ...props }) => {
     const { LinkComponent, linkProps } = navigation;
     return (
-      <LinkComponent {...{ [linkProps.pathAttributeKeyName]: to , ...linkProps}} {...props}>
+      <LinkComponent
+        {...{ [linkProps.pathAttributeKeyName]: to, ...linkProps }}
+        {...props}
+      >
         {children}
       </LinkComponent>
     );
