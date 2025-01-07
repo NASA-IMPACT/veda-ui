@@ -17,12 +17,8 @@ import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
 import { MapRef } from 'react-map-gl';
 import { BlockErrorBoundary } from '..';
-import {
-  ChapterProps,
-  ScrollyChapter,
-  validateChapter
-} from './chapter';
-import { ProjectionOptions, VedaDatum } from '$types/veda';
+import { ChapterProps, ScrollyChapter, validateChapter } from './chapter';
+import { ProjectionOptions, VedaData } from '$types/veda';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { S_FAILED, S_SUCCEEDED } from '$utils/status';
@@ -41,11 +37,12 @@ import {
 import { Layer } from '$components/exploration/components/map/layer';
 import { MapLoading } from '$components/common/loading-skeleton';
 import {
-  DatasetData,
+  type DatasetData as EADatasetData,
   DatasetStatus,
   VizDataset,
   VizDatasetSuccess
 } from '$components/exploration/types.d.ts';
+import { DatasetData } from '$types/veda';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import {
   formatSingleDate,
@@ -135,7 +132,7 @@ function getChapterLayerKey(ch: ScrollyChapter) {
 function useMapLayersFromChapters(
   chList: ScrollyChapter[],
   envApiStacEndpoint: string,
-  datasets: VedaDatum<DatasetData>,
+  datasets: VedaData<DatasetData>
 ): [ResolvedScrollyMapLayer[], string[]] {
   // The layers are unique based on the dataset, layer id and datetime.
   // First we filter out any scrollytelling block that doesn't have layer.
@@ -165,7 +162,9 @@ function useMapLayersFromChapters(
     ({ datasetId, layerId }) => {
       const layers = datasets[datasetId]?.data.layers;
 
-      const layer = layers?.find((l) => l.id === layerId) as DatasetData | null;
+      const layer = layers?.find(
+        (l) => l.id === layerId
+      ) as EADatasetData | null;
 
       if (!layer) {
         throw new Error(
@@ -478,7 +477,7 @@ function Scrollytelling(props) {
 
 Scrollytelling.propTypes = {
   children: T.node,
-  datasets: T.any,
+  datasets: T.any
 };
 
 export function ScrollytellingBlock(props) {
