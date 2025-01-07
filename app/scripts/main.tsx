@@ -70,7 +70,9 @@ const composingComponents = [
         envApiRasterEndpoint: process.env.API_RASTER_ENDPOINT ?? '',
         navigation: {
           LinkComponent: Link,
-          linkPropName: 'to'
+          linkProps: {
+            pathAttributeKeyName: 'to'
+          }
         }
       }}
     >
