@@ -15,13 +15,13 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
 import { MapRef } from 'react-map-gl';
-import { ProjectionOptions, VedaDatum } from '$types/veda';
 import { BlockErrorBoundary } from '..';
 import {
   ChapterProps,
   ScrollyChapter,
   validateChapter
 } from './chapter';
+import { ProjectionOptions, VedaDatum } from '$types/veda';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { S_FAILED, S_SUCCEEDED } from '$utils/status';
