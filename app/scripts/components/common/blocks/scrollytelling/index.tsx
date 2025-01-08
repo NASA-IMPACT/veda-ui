@@ -36,7 +36,7 @@ import {
 import { Layer } from '$components/exploration/components/map/layer';
 import { MapLoading } from '$components/common/loading-skeleton';
 import {
-  type DatasetData as EADatasetData,
+  EADatasetDataLayer,
   DatasetStatus,
   VizDataset,
   VizDatasetSuccess
@@ -160,10 +160,10 @@ function useMapLayersFromChapters(
   const reconciledVizDatasets = uniqueLayerRefs.map(
     ({ datasetId, layerId }) => {
       const layers = datasets[datasetId]?.data.layers;
-
+      // @TECH-DEBT: We are casting which we shouldn't, look into types and clean up because this is masking bad typing issues
       const layer = layers?.find(
         (l) => l.id === layerId
-      ) as EADatasetData | null;
+      ) as EADatasetDataLayer | null;
 
       if (!layer) {
         throw new Error(
