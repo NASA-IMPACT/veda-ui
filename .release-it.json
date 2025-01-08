@@ -24,7 +24,7 @@
     "release": true,
     "releaseName": "v${version}",
     "releaseNotes": null,
-    "autoGenerate": true,
+    "autoGenerate": false,
     "preRelease": false,
     "draft": false
   }
