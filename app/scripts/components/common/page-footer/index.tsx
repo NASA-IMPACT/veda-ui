@@ -3,6 +3,7 @@ import { Icon } from '@trussworks/react-uswds';
 import { DropdownNavLink, FooterSettings, NavLinkItem } from 'veda';
 import { ActionNavItem, NavItemType } from '../page-header/types';
 import { NavItemCTA } from '../page-header/nav/nav-item-cta';
+import ReturnToTopButton from './return-to-top-button';
 import {
   USWDSFooter,
   USWDSFooterNav,
@@ -27,19 +28,6 @@ export default function PageFooter({
   hideFooter,
   logoSvg
 }: PageFooterProps) {
-  const returnToTopButton = () => {
-    return (
-      <div
-        id='return-to-top-container'
-        className='margin-left-auto margin-right-auto'
-      >
-        <a className='usa-link text-primary' href='#'>
-          Return to top
-        </a>
-      </div>
-    );
-  };
-
   const { returnToTop, secondarySection } = settings;
   /* eslint-disable */
 
@@ -87,7 +75,7 @@ export default function PageFooter({
   return (
     <USWDSFooter
       size='slim'
-      returnToTop={returnToTop && returnToTopButton()}
+      returnToTop={returnToTop && <ReturnToTopButton />}
       className={hideFooter && 'display-none'}
       primary={
         <div
