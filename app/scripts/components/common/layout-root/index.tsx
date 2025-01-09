@@ -112,7 +112,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
           />
         )}
       </PageBody>
-      {isUSWDSEnabled ? (
+      {isUswdsFooterEnabled ? (
         <PageFooter
           settings={footerSettings}
           mainNavItems={mainNavItems}
