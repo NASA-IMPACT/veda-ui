@@ -1,4 +1,4 @@
-import React, { lazy, MouseEventHandler } from 'react';
+import React, { MouseEventHandler } from 'react';
 import styled, { css } from 'styled-components';
 import format from 'date-fns/format';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
@@ -9,7 +9,6 @@ import {
   themeVal,
   listReset
 } from '@devseed-ui/theme-provider';
-const SmartLink = lazy(() => import('../smart-link'));
 
 import {
   CardBody,
@@ -25,6 +24,7 @@ import HorizontalInfoCard, {
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
+import { useVedaUI } from '$context/veda-ui-provider';
 import { LinkProperties } from '$types/veda';
 
 type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
@@ -34,6 +34,48 @@ interface CardItemProps {
   isStateOver?: boolean;
   isStateActive?: boolean;
   cardType?: CardType;
+}
+
+interface BaseCardComponentProps {
+  title: JSX.Element | string;
+  linkLabel?: string;
+  className?: string;
+  cardType?: CardType;
+  description?: JSX.Element | string;
+  date?: Date;
+  overline?: JSX.Element;
+  imgSrc?: string;
+  imgAlt?: string;
+  parentTo?: string;
+  tagLabels?: string[];
+  footerContent?: JSX.Element;
+  hideExternalLinkBadge?: boolean;
+  onCardClickCapture?: MouseEventHandler;
+}
+
+interface LinkCardComponentProps extends BaseCardComponentProps {
+  to: string;
+  onClick?: never;
+}
+
+interface ClickCardComponentProps extends BaseCardComponentProps {
+  to?: never;
+  onClick: MouseEventHandler;
+}
+
+interface NonInteractiveCardComponentProps extends BaseCardComponentProps {
+  to?: never;
+  onClick?: never;
+}
+
+export type CardComponentProps =
+  | LinkCardComponentProps
+  | ClickCardComponentProps
+  | NonInteractiveCardComponentProps;
+
+export interface DeprecatedCardComponentProps {
+  linkProperties?: LinkProperties & { linkTo?: string };
+  linkTo?: string;
 }
 
 /**
@@ -233,48 +275,34 @@ export function ExternalLinkFlag() {
   );
 }
 
-export interface LinkWithPathProperties extends LinkProperties {
-  linkTo: string;
-}
-
-export interface CardComponentBaseProps {
-  title: JSX.Element | string;
-  linkLabel?: string;
-  className?: string;
-  cardType?: CardType;
-  description?: JSX.Element | string;
-  date?: Date;
-  overline?: JSX.Element;
-  imgSrc?: string;
-  imgAlt?: string;
-  parentTo?: string;
-  tagLabels?: string[];
-  footerContent?: JSX.Element;
-  hideExternalLinkBadge?: boolean;
-  onCardClickCapture?: MouseEventHandler;
-  onClick?: MouseEventHandler;
-}
-
-// @TODO: Created because GHG uses the card component directly and passes in "linkTo" prop. Consolidate these props when the instance adapts the new syntax
-// Specifically: https://github.com/US-GHG-Center/veda-config-ghg/blob/develop/custom-pages/news-and-events/component.tsx#L108
-export interface CardComponentPropsDeprecated extends CardComponentBaseProps {
-  linkTo: string;
-}
-
-export interface CardComponentProps extends CardComponentBaseProps {
-  linkProperties?: LinkWithPathProperties;
-}
-
-type CardComponentPropsType = CardComponentProps | CardComponentPropsDeprecated;
-
-// Type guard to check if props has linkProperties
-function hasLinkProperties(
-  props: CardComponentPropsType
-): props is CardComponentProps {
-  return !!(props as CardComponentProps).linkProperties;
-}
-
-function CardComponent(props: CardComponentPropsType) {
+/**
+ * CardComponent
+ *
+ * This component renders a card with various styles and content based on the provided props.
+ * It can behave as a link if the `to` prop is provided, using the `Link` component from the Veda UI provider.
+ * The `onClick` and `to` props are mutually exclusive.
+ *
+ * @param {string | JSX.Element} title - The title of the card.
+ * @param {string} [linkLabel] - The label for the link.
+ * @param {string} [className] - Additional class names for the card.
+ * @param {CardType} [cardType] - The type of the card, which determines its style.
+ * @param {string | JSX.Element} [description] - The description of the card.
+ * @param {Date} [date] - The date associated with the card.
+ * @param {JSX.Element} [overline] - The overline content for the card.
+ * @param {string} [imgSrc] - The source URL for the card image.
+ * @param {string} [imgAlt] - The alt text for the card image.
+ * @param {string} [parentTo] - The URL for the parent link.
+ * @param {string[]} [tagLabels] - The labels for the tags.
+ * @param {JSX.Element} [footerContent] - The content for the card footer.
+ * @param {boolean} [hideExternalLinkBadge] - Whether to hide the external link badge.
+ * @param {MouseEventHandler} [onCardClickCapture] - The click capture handler for the card.
+ * @param {MouseEventHandler} [onClick] - The click handler for the card. Mutually exclusive with `to`.
+ * @param {string} [to] - The URL to link to. If provided, the card behaves as a link. Mutually exclusive with `onClick`.
+ * @returns {JSX.Element} The rendered CardComponent.
+ */
+function CardComponent(
+  props: CardComponentProps & DeprecatedCardComponentProps
+) {
   const {
     className,
     title,
@@ -292,47 +320,30 @@ function CardComponent(props: CardComponentPropsType) {
     onCardClickCapture,
     onClick
   } = props;
-  // @TODO: This process is not necessary once all the instances adapt the linkProperties syntax
-  // Consolidate them to use LinkProperties only
-  let linkProperties: LinkWithPathProperties | undefined;
 
-  if (hasLinkProperties(props)) {
-    // Handle new props with linkProperties
-    const { linkProperties: linkPropertiesProps } = props;
-    linkProperties = linkPropertiesProps;
-  } else {
-    // @NOTE: This currently just exists for GHG which uses the Card component
-    const { linkTo } = props;
-    linkProperties = linkTo
-      ? {
-          linkTo,
-          pathAttributeKeyName: 'to',
-          LinkElement: SmartLink
-        }
-      : undefined;
+  const { Link } = useVedaUI();
+
+  // For backwards compatibility with deprecated props
+  const to = props.to || props.linkTo || props.linkProperties?.linkTo;
+
+  if (props.linkProperties || props.linkTo) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      'linkProperties and linkTo are deprecated in Card component. Please use the "to" prop instead.'
+    );
+
+    if (onClick) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        'onClick and linkProperties/linkTo are mutually exclusive. Please use only one of them.'
+      );
+    }
   }
 
-  const isExternalLink = linkProperties
-    ? /^https?:\/\//.test(linkProperties.linkTo)
-    : false;
+  const isExternalLink = to ? /^https?:\/\//.test(to) : false;
 
-  return (
-    <ElementInteractive
-      {...(linkProperties
-        ? {
-            linkProps: {
-              as: linkProperties.LinkElement,
-              [linkProperties.pathAttributeKeyName]: linkProperties.linkTo
-            }
-          }
-        : {})}
-      as={CardItem}
-      cardType={cardType}
-      className={className}
-      linkLabel={linkLabel ?? 'View more'}
-      onClickCapture={onCardClickCapture}
-      onClick={onClick}
-    >
+  const CardContent = (
+    <>
       {cardType !== 'horizontal-info' && (
         <>
           <CardHeader>
@@ -346,11 +357,7 @@ function CardComponent(props: CardComponentPropsType) {
                   tagLabels &&
                   parentTo &&
                   tagLabels.map((label) => (
-                    <CardLabel
-                      as={linkProperties?.LinkElement}
-                      to={parentTo}
-                      key={label}
-                    >
+                    <CardLabel as={Link} to={parentTo} key={label}>
                       {label}
                     </CardLabel>
                   ))}
@@ -390,6 +397,54 @@ function CardComponent(props: CardComponentPropsType) {
           tagLabels={tagLabels}
         />
       )}
+    </>
+  );
+
+  // Link Card
+  if (to) {
+    return (
+      <ElementInteractive
+        linkProps={{
+          as: Link,
+          to
+        }}
+        as={CardItem}
+        cardType={cardType}
+        className={className}
+        linkLabel={linkLabel ?? 'View more'}
+        onClickCapture={onCardClickCapture}
+      >
+        {CardContent}
+      </ElementInteractive>
+    );
+  }
+
+  // Click Card
+  if (onClick) {
+    return (
+      <ElementInteractive
+        as={CardItem}
+        cardType={cardType}
+        className={className}
+        linkLabel={linkLabel ?? 'View more'}
+        onClickCapture={onCardClickCapture}
+        onClick={onClick}
+      >
+        {CardContent}
+      </ElementInteractive>
+    );
+  }
+
+  // Non-interactive Card
+  return (
+    <ElementInteractive
+      as={CardItem}
+      cardType={cardType}
+      className={className}
+      linkLabel={linkLabel ?? 'View more'}
+      onClickCapture={onCardClickCapture}
+    >
+      {CardContent}
     </ElementInteractive>
   );
 }
