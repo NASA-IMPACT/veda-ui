@@ -9,7 +9,7 @@ import {
   USWDSFooterNav,
   USWDSAddress
 } from '$components/common/uswds';
-import './styles.scss';
+
 
 interface PageFooterProps {
   //use of NavItem is causing issues with TS and throwing erros in the .
@@ -29,11 +29,10 @@ export default function PageFooter({
   logoSvg
 }: PageFooterProps) {
   const { returnToTop, secondarySection } = settings;
-  /* eslint-disable */
 
   const createNavElement = (navItems, linkClasses) => {
     //removing 'dropdown' items from array
-    let cleanedNavItems = navItems.filter((a) => {
+    const cleanedNavItems = navItems.filter((a) => {
       if (a.type !== 'dropdown') {
         return a;
       }
