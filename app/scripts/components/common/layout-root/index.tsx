@@ -39,7 +39,7 @@ import { checkEnvFlag } from '$utils/utils';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
-const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_FOOTER);
+const isUswdsFooterEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_FOOTER);
 
 export const PAGE_BODY_ID = 'pagebody';
 
