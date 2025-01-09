@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { PrimitiveAtom } from 'jotai';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { LayerLegendCategorical, LayerLegendGradient } from 'veda';
 import {
   CollecticonCircleInformation,
   CollecticonEyeDisabled,
@@ -15,6 +14,7 @@ import Tippy from '@tippyjs/react';
 import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
+import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
 import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,

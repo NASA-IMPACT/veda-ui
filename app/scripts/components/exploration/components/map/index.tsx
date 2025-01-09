@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { ProjectionOptions } from 'veda';
 import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
 import {
   TimelineDataset,
@@ -10,6 +9,7 @@ import {
 import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
 import { ShowTourControl } from './tour-control';
+import { ProjectionOptions } from '$types/veda';
 
 import Map, { Compare, MapControls } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';

@@ -39,16 +39,16 @@ export const getDatasetLayers = (datasets: VedaDatum<DatasetData>) =>
     }));
   });
 
-  export const getLayersFromDataset = (datasets: DatasetData[]) =>
-    Object.values(datasets).map((dataset: DatasetData) => {
-      return dataset!.layers.map((l) => ({
-        ...l,
-        parentDataset: {
-          id: dataset!.id,
-          name: dataset!.name
-        }
-      }));
-    });
+export const getLayersFromDataset = (datasets: DatasetData[]) =>
+  Object.values(datasets).map((dataset: DatasetData) => {
+    return dataset!.layers.map((l) => ({
+      ...l,
+      parentDataset: {
+        id: dataset!.id,
+        name: dataset!.name
+      }
+    }));
+  });
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
  * If the layer has metrics defined, it returns only the metrics that match the
@@ -73,7 +73,7 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
   return foundMetrics;
 }
 
-function getInitialColorMap(dataset: DatasetLayer): string|undefined {
+function getInitialColorMap(dataset: DatasetLayer): string | undefined {
   return dataset.sourceParams?.colormap_name;
 }
 
@@ -274,3 +274,26 @@ export const getLowestCommonTimeDensity = (
         : lowestDensity,
     TimeDensity.YEAR
   );
+
+export class ExtendedError extends Error {
+  code: string;
+  details?: any;
+
+  constructor(message: string, code: string) {
+    super(message);
+    this.code = code;
+  }
+}
+
+export const findDatasetAttribute = (
+  datasets,
+  {
+    datasetId,
+    attr
+  }: {
+    datasetId: string;
+    attr: string;
+  }
+) => {
+  return datasets[datasetId]?.data[attr];
+};

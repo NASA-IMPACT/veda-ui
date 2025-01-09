@@ -21,9 +21,10 @@ import {
 import { DatasetChart } from './dataset-chart';
 import { getBlockBoundaries, lumpBlocks } from './block-utils';
 import DataLayerCard from './data-layer-card';
-import { findDatasetAttribute } from '$components/exploration/data-utils';
+import { findDatasetAttribute } from '$components/exploration/data-utils-no-faux-module';
 import {
   DatasetStatus,
+  TimelineDataset,
   TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
 import {
@@ -89,6 +90,7 @@ const DatasetData = styled.div`
 `;
 
 interface DatasetListItemProps {
+  datasets: TimelineDataset[];
   datasetId: string;
   width: number;
   xScaled?: ScaleTime<number, number>;
@@ -97,7 +99,7 @@ interface DatasetListItemProps {
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
-  const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
+  const { datasets, datasetId, width, xScaled, onDragStart, onDragEnd } = props;
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
@@ -125,7 +127,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
   }, [queryClient, datasetId]);
 
   const onClickLayerInfo = useCallback(() => {
-    const parentInfoDesc = findDatasetAttribute({
+    const parentInfoDesc = findDatasetAttribute(datasets, {
       datasetId: dataset.data.parentDataset.id,
       attr: 'infoDescription'
     });

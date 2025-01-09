@@ -6,10 +6,10 @@ import { useAtom, useSetAtom } from 'jotai';
 import { PopoverTourComponent, TourManager } from './tour-manager';
 
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
-import { allExploreDatasets } from './data-utils';
 import useTimelineDatasetAtom from './hooks/use-timeline-dataset-atom';
 import { externalDatasetsAtom } from './atoms/datasetLayers';
 import ExplorationAndAnalysis from '.';
+import { allExploreDatasets } from '$data-layer/datasets';
 import { urlAtom } from '$utils/params-location-atom/url';
 import { PageMainContent } from '$styles/page';
 
