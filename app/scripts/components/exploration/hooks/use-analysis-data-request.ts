@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useContext } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
 import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
@@ -15,7 +15,7 @@ import {
 } from '../types.d.ts';
 import { MAX_QUERY_NUM } from '../constants';
 import useAois from '$components/common/map/controls/hooks/use-aois';
-import { EnvConfigContext } from '$context/env-config';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 export function useAnalysisController() {
   const [controller, setController] = useAtom(analysisControllerAtom);
@@ -72,8 +72,7 @@ export function useAnalysisDataRequest({
 }) {
   const queryClient = useQueryClient();
 
-  const { envApiRasterEndpoint, envApiStacEndpoint } =
-    useContext(EnvConfigContext);
+  const { envApiRasterEndpoint, envApiStacEndpoint } = useVedaUI();
 
   const selectedInterval = useAtomValue(selectedIntervalAtom);
   const { features } = useAois();

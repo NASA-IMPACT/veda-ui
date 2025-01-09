@@ -118,19 +118,26 @@ function getSiteAlertContent(result) {
 function getBannerContent(result) {
   if (!result.banner) return undefined;
 
-  const { title, text, leftGuidance, rightGuidance } = result.banner;
+  const { title, leftGuidance, rightGuidance } = result.banner;
 
-  const parsedText = text ? md.render(text) : '';
-  const trimmedText = parsedText.replace(/(\r\n|\n|\r)/gm, '');
+  const processedLeftGuidance = {
+    ...leftGuidance,
+    text: md.render(leftGuidance.text).replace(/(\r\n|\n|\r)/gm, '')
+  };
+
+  const processedRightGuidance = {
+    ...rightGuidance,
+    text: md.render(rightGuidance.text).replace(/(\r\n|\n|\r)/gm, '')
+  };
 
   return JSON.stringify({
     headerText: title,
     headerActionText: "Here's how you know",
-    ariaLabel: trimmedText || title,
+    ariaLabel: title,
     flagImgSrc: '/img/us_flag_small.png',
     flagImgAlt: '',
-    leftGuidance,
-    rightGuidance,
+    leftGuidance: processedLeftGuidance,
+    rightGuidance: processedRightGuidance,
     className: '',
     defaultIsOpen: false,
     contentId: 'gov-banner-content'

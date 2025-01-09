@@ -12,7 +12,7 @@ import {
 } from './utils';
 
 import { colorMapScale } from '$components/exploration/types.d.ts';
-import { USWDSTextInput } from '$components/common/uswds';
+import { USWDSTextInput } from '$uswds';
 
 interface ColorrangeRangeSlideProps {
   // Absolute minimum of color range

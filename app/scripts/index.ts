@@ -23,12 +23,13 @@ import type {
   InternalNavLink,
   NavItemType
 } from '$components/common/page-header/types';
+import type { DatasetData, StoryData } from '$types/veda';
 
 import ExplorationAndAnalysis from '$components/exploration';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
-import { EnvConfigProvider } from '$context/env-config';
+import { VedaUIProvider } from '$context/veda-ui-provider';
 import {
   datasetLayersAtom,
   externalDatasetsAtom
@@ -69,7 +70,7 @@ export {
   PageHeader,
   PageFooter,
   ReactQueryProvider,
-  EnvConfigProvider,
+  VedaUIProvider,
   StoriesHubContent,
   ExplorationAndAnalysis,
   DatasetSelectorModal,
@@ -82,6 +83,8 @@ export {
   NavItem,
   NavItemType,
   InternalNavLink,
+  DatasetData,
+  StoryData,
 
   // STATE
   timelineDatasetsAtom,

@@ -1,18 +1,50 @@
 name: Release Every Other Monday
 on:
   workflow_dispatch:
-  # Run action at 16:15 PM on Monday (UTC)
-  # schedule:
-  # @TODO: the schedule below is weekly. Do byweekly check.
-  #   - cron: '15 16 * * 1'
+  schedule:
+    # At 10AM EST Monday
+    - cron: '0 15 * * 1'
 
 # Sets the GITHUB_TOKEN permissions to allow release
 permissions:
   contents: write
+env:
+  # Solutions is from https://github.com/wham/bi-weekly-action/blob/main/.github/workflows/bi-weekly-action.yml
+  # The date of the first run of the action. It has to be set to a date that is on the same weekday as the cron.
+  FIRST_RUN_DATE: 2025-01-06
+
+# This action requires a GitHub app with content write access installed 
+# to bypass the main branch  protection rule and dispatch the event to a different repo
 
 jobs:
-  release:
+  weekindex:
     runs-on: ubuntu-latest
+    outputs:
+      weekindex: ${{ steps.calculate.outputs.weekindex }}
+    steps:
+      - name: Calculate weekdiff
+        id: calculate
+        run: |
+          current_date=$(date +%Y-%m-%d)
+          start=$(date -d ${{ env.FIRST_RUN_DATE }} +%s)
+          end=$(date -d $current_date +%s)
+          weekdiff=$(((end-start) / 60 / 60 / 24 / 7))
+          weekindex=$((weekdiff % 2))
+          echo "weekindex=$weekindex" >> "$GITHUB_OUTPUT"
+          echo "FIRST_RUN_DATE: ${{ env.FIRST_RUN_DATE }}" >> $GITHUB_STEP_SUMMARY
+          echo "current_date: $current_date" >> $GITHUB_STEP_SUMMARY
+          echo "weekdiff: $weekdiff" >> $GITHUB_STEP_SUMMARY
+          echo "weekindex: $weekindex" >> $GITHUB_STEP_SUMMARY
+          if [ $weekindex -eq 0 ]; then
+            echo "🟢 The week index is 0. The action is going to run." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "🔴 The week index is 1. The action is going to be skipped." >> $GITHUB_STEP_SUMMARY
+          fi
+  release:
+    if: ${{ needs.weekindex.outputs.weekindex == 0 }}
+    runs-on: ubuntu-latest
+    needs:
+      - weekindex
     steps:
       - name: Generate a token
         id: generate-token
@@ -37,17 +69,15 @@ jobs:
         with:
           node-version: ${{ env.NODE }}
       - run: yarn
-      - run: yarn release  --ci --verbose
+      - name: Release through Git
+        id: git-release
+        run: yarn release  --ci --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  preview-build:
-    runs-on: ubuntu-latest
-    needs: "release"
-    steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ steps.generate-token.outputs.token }}
+          token: ${{steps.generate-token.outputs.token}}
           repository: nasa-impact/veda-config
           event-type: update-version
-          client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ env.VERSION_NUMBER }}"}'
+          client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'

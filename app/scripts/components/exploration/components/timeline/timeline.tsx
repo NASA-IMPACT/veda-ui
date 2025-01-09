@@ -170,7 +170,6 @@ interface TimelineProps {
   setSelectedCompareDay: (d: Date | null) => void;
   onDatasetAddClick?: () => void;
   panelHeight: number;
-  onNavigation?: (path: string) => void;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -202,7 +201,6 @@ export default function Timeline(props: TimelineProps) {
     setSelectedCompareDay,
     onDatasetAddClick,
     panelHeight,
-    onNavigation,
   } = props;
 
   // Refs for non react based interactions.
@@ -800,7 +798,7 @@ export default function Timeline(props: TimelineProps) {
           ref={datasetsContainerRef}
           panelHeight={panelHeight}
         >
-          <DatasetList width={width} xScaled={xScaled} onNavigation={onNavigation} />
+          <DatasetList width={width} xScaled={xScaled} />
         </TimelineContentInner>
       </TimelineContent>
     </TimelineWrapper>

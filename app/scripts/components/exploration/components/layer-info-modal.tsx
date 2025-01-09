@@ -9,13 +9,13 @@ import {
   ModalHeadline
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Button } from '@devseed-ui/button';
 import { LayerInfo } from 'veda';
-import { getDatasetPath } from '$utils/routes';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
+import { useVedaUI } from '$context/veda-ui-provider';
+import { USWDSButton } from '$components/common/uswds/button';
 
-const DatasetModal = styled(Modal)`
+const StyledModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
   /* Override ModalContents */
   > div {
@@ -66,8 +66,7 @@ export interface LayerInfoModalData {
 interface LayerInfoModalProps {
   revealed: boolean;
   close: () => void;
-  layerData: LayerInfoModalData
-  onNavigation?: (path: string) => void;
+  layerData: LayerInfoModalData;
 }
 
 export function LayerInfoLiner(props: { info: LayerInfo }) {
@@ -93,20 +92,16 @@ const LayerInfoLinerModal = styled.div`
 `;
 
 export default function LayerInfoModal(props: LayerInfoModalProps) {
-  const { revealed, close, layerData, onNavigation } = props;
+  const { revealed, close, layerData } = props;
+  const {
+    navigation: { LinkComponent },
+    routes: { dataCatalogPath }
+  } = useVedaUI();
 
   const { parentData } = layerData;
-  const dataCatalogPage = getDatasetPath(parentData.id);
-
-  const handleButtonClick = () => {
-    close();
-    if (onNavigation) {
-      onNavigation(dataCatalogPage);
-    }
-  };
 
   return (
-    <DatasetModal
+    <StyledModal
       id='modal'
       size='xlarge'
       revealed={revealed}
@@ -134,9 +129,18 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
         <div dangerouslySetInnerHTML={{__html: parentData.infoDescription?? 'Currently, we are unable to display the layer information, but you can find it in the data catalog.' }} />
       }
       footerContent={
-        <Button onClick={handleButtonClick} variation='primary-fill' size='medium'>
-          Open in Data Catalog
-        </Button>
+        <LinkComponent to={dataCatalogPath}>
+          <USWDSButton
+            onClick={close}
+            type='button'
+            size='small'
+            inverse={true}
+            outline={false}
+            tabindex='-1'
+          >
+            Open in Data Catalog
+          </USWDSButton>
+        </LinkComponent>
       }
     />
   );
