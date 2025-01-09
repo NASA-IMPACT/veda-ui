@@ -1,7 +1,5 @@
 import React from 'react';
 
-// svg from https://www.figma.com/design/5mclPTReHcRIzKbJm8YA6a/VEDA---USWDS?node-id=241-1609&node-type=symbol&t=H3LqNnn3tzAsfBg1-0
-
 export default function NasaLogoColor() {
   return (
     <svg
