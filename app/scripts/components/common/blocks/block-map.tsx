@@ -37,7 +37,7 @@ import {
 } from '$components/exploration/data-utils-no-faux-module';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { ProjectionOptions, VedaData, DatasetData } from '$types/veda';
-import { EnvConfigContext } from '$context/env-config';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
