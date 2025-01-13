@@ -21,6 +21,7 @@ import {
 import HorizontalInfoCard, {
   HorizontalCardStyles
 } from './horizontal-info-card';
+import * as utils from '$utils/utils';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { Figure } from '$components/common/figure';
@@ -340,7 +341,7 @@ function CardComponent(
     }
   }
 
-  const isExternalLink = to ? /^https?:\/\//.test(to) : false;
+  const isExternalLink = to ? utils.isExternalLink(to) : false;
 
   const CardContent = (
     <>
