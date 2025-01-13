@@ -36,7 +36,7 @@ import {
   getDatasetLayers
 } from '$components/exploration/data-utils-no-faux-module';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
-import { ProjectionOptions, VedaDatum, DatasetData } from '$types/veda';
+import { ProjectionOptions, VedaData, DatasetData } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 
 export const mapHeight = '32rem';
@@ -111,7 +111,7 @@ function validateBlockProps(props: MapBlockProps) {
 }
 
 interface MapBlockProps {
-  datasets: VedaDatum<DatasetData>;
+  datasets: VedaData<DatasetData>;
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
