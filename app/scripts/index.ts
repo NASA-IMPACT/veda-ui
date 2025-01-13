@@ -23,7 +23,7 @@ import type {
   InternalNavLink,
   NavItemType
 } from '$components/common/page-header/types';
-import type { DatasetData, StoryData } from '$types/veda';
+import type { DatasetData, StoryData, VedaData } from '$types/veda';
 
 import ExplorationAndAnalysis from '$components/exploration';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
@@ -85,6 +85,7 @@ export {
   InternalNavLink,
   DatasetData,
   StoryData,
+  VedaData,
 
   // STATE
   timelineDatasetsAtom,
