@@ -309,7 +309,7 @@ function CardComponent(
     title,
     cardType,
     description,
-    linkLabel,
+    linkLabel = 'View more',
     date,
     overline,
     imgSrc,
@@ -401,53 +401,35 @@ function CardComponent(
     </>
   );
 
-  // Link Card
+  const baseProps = {
+    as: CardItem,
+    cardType,
+    className,
+    linkLabel,
+    onCardClickCapture,
+    children: CardContent
+  };
+
+  // Link variant
   if (to) {
     return (
       <ElementInteractive
+        {...baseProps}
         linkProps={{
           as: Link,
           to
         }}
-        as={CardItem}
-        cardType={cardType}
-        className={className}
-        linkLabel={linkLabel ?? 'View more'}
-        onClickCapture={onCardClickCapture}
-      >
-        {CardContent}
-      </ElementInteractive>
+      />
     );
   }
 
-  // Click Card
+  // Clickable variant
   if (onClick) {
-    return (
-      <ElementInteractive
-        as={CardItem}
-        cardType={cardType}
-        className={className}
-        linkLabel={linkLabel ?? 'View more'}
-        onClickCapture={onCardClickCapture}
-        onClick={onClick}
-      >
-        {CardContent}
-      </ElementInteractive>
-    );
+    return <ElementInteractive {...baseProps} onClick={onClick} />;
   }
 
-  // Non-interactive Card
-  return (
-    <ElementInteractive
-      as={CardItem}
-      cardType={cardType}
-      className={className}
-      linkLabel={linkLabel ?? 'View more'}
-      onClickCapture={onCardClickCapture}
-    >
-      {CardContent}
-    </ElementInteractive>
-  );
+  // Non-interactive variant
+  return <ElementInteractive {...baseProps} />;
 }
 
 export const Card = styled(CardComponent)`
