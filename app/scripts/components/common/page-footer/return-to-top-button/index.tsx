@@ -1,4 +1,5 @@
 import React from 'react';
+import { USWDSButton } from '$components/common/uswds';
 
 export default function ReturnToTopButton() {
   return (
@@ -6,9 +7,16 @@ export default function ReturnToTopButton() {
       id='return-to-top-container'
       className='margin-left-auto margin-right-auto'
     >
-      <a className='usa-link text-primary' href='#'>
+      <USWDSButton
+        onClick={() => {
+          if (typeof window !== 'undefined') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}
+        unstyled
+      >
         Return to top
-      </a>
+      </USWDSButton>
     </div>
   );
 }
