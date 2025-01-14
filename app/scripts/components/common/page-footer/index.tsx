@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Icon } from '@trussworks/react-uswds';
-import { DropdownNavLink, NavLinkItem } from 'veda';
+import { DropdownNavLink, NavLinkItem } from '../types';
 import { ActionNavItem, NavItemType } from '../page-header/types';
 import { NavItemCTA } from '../page-header/nav/nav-item-cta';
 import ReturnToTopButton from './return-to-top-button';
