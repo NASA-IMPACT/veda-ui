@@ -64,15 +64,10 @@ interface ClickCardComponentProps extends BaseCardComponentProps {
   onClick: MouseEventHandler;
 }
 
-interface NonInteractiveCardComponentProps extends BaseCardComponentProps {
-  to?: never;
-  onClick?: never;
-}
-
 export type CardComponentProps =
   | LinkCardComponentProps
   | ClickCardComponentProps
-  | NonInteractiveCardComponentProps;
+  | BaseCardComponentProps;
 
 export interface DeprecatedCardComponentProps {
   linkProperties?: LinkProperties & { linkTo?: string };
@@ -318,14 +313,14 @@ function CardComponent(
     parentTo,
     footerContent,
     hideExternalLinkBadge,
-    onCardClickCapture,
-    onClick
+    onCardClickCapture
   } = props;
 
   const { Link } = useVedaUI();
 
   // For backwards compatibility with deprecated props
-  const to = props.to || props.linkTo || props.linkProperties?.linkTo;
+  const to =
+    ('to' in props && props.to) || props.linkTo || props.linkProperties?.linkTo;
 
   if (props.linkProperties || props.linkTo) {
     // eslint-disable-next-line no-console
@@ -333,7 +328,7 @@ function CardComponent(
       'linkProperties and linkTo are deprecated in Card component. Please use the "to" prop instead.'
     );
 
-    if (onClick) {
+    if ('onClick' in props && props.onClick) {
       // eslint-disable-next-line no-console
       console.warn(
         'onClick and linkProperties/linkTo are mutually exclusive. Please use only one of them.'
@@ -424,8 +419,8 @@ function CardComponent(
   }
 
   // Clickable variant
-  if (onClick) {
-    return <ElementInteractive {...baseProps} onClick={onClick} />;
+  if ('onClick' in props && props.onClick) {
+    return <ElementInteractive {...baseProps} onClick={props.onClick} />;
   }
 
   // Non-interactive variant
