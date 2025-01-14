@@ -35,7 +35,6 @@ export interface CatalogContentProps {
   search: string;
   taxonomies: Record<string, string[]>;
   onAction: (action: FilterActions, value?: any) => void;
-  onCardNavigate?: (path: string) => void;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -72,7 +71,6 @@ function CatalogContent({
   search,
   taxonomies,
   onAction,
-  onCardNavigate
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
   const isSelectable = selectedIds !== undefined;
@@ -278,7 +276,6 @@ function CatalogContent({
                   <CatalogCard
                     dataset={d}
                     searchTerm={search}
-                    {...(onCardNavigate && {onDatasetClick: () => onCardNavigate(getDatasetPath(d, pathname))})}
                   />
                 </li>
               ))}

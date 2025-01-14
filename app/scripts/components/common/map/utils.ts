@@ -17,7 +17,7 @@ import { userTzDate2utcString } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
 import {
   DatasetStatus,
-  DatasetData,
+  EADatasetDataLayer,
   VizDataset
 } from '$components/exploration/types.d.ts';
 import { fixAntimeridian } from '$utils/antimeridian';
@@ -282,7 +282,7 @@ export function getZoomFromBbox(bbox: BBox): number {
   }
 }
 
-export function reconcileVizDataset(dataset: DatasetData): VizDataset {
+export function reconcileVizDataset(dataset: EADatasetDataLayer): VizDataset {
   return {
     status: DatasetStatus.SUCCESS,
     data: dataset,

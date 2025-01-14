@@ -20,6 +20,7 @@ import {
 import { utcString2userTzDate } from '$utils/date';
 import {
   DatasetLayer,
+  VedaData,
   VedaDatum,
   DatasetData,
   DatasetLayerType
@@ -28,27 +29,28 @@ import {
 // @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
 // `./date-utils` to be deprecated!!
 
-export const getDatasetLayers = (datasets: VedaDatum<DatasetData>) =>
+export const getDatasetLayers = (datasets: VedaData<DatasetData>) =>
   Object.values(datasets).flatMap((dataset: VedaDatum<DatasetData>) => {
-    return dataset!.data.layers.map((l) => ({
+    return dataset.data.layers.map((l) => ({
       ...l,
       parentDataset: {
-        id: dataset!.data.id,
-        name: dataset!.data.name
+        id: dataset.data.id,
+        name: dataset.data.name
       }
     }));
   });
 
 export const getLayersFromDataset = (datasets: DatasetData[]) =>
   Object.values(datasets).map((dataset: DatasetData) => {
-    return dataset!.layers.map((l) => ({
+    return dataset.layers.map((l) => ({
       ...l,
       parentDataset: {
-        id: dataset!.id,
-        name: dataset!.name
+        id: dataset.id,
+        name: dataset.name
       }
     }));
   });
+
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
  * If the layer has metrics defined, it returns only the metrics that match the
@@ -66,6 +68,7 @@ function getInitialMetrics(data: DatasetLayer): DataMetric[] {
 
   const foundMetrics = metricsIds
     .map((metric: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return DATA_METRICS.find((m) => m.id === metric)!;
     })
     .filter(Boolean);
