@@ -42,7 +42,7 @@ describe('PageFooter', () => {
   });
 });
 
-describe('PageFooter dynamic functionality', () => {
+describe('PageFooter dynamic settings', () => {
   test('Return to top does not show', () => {
     const updatedMockSettings = { ...mockFooterSettings, returnToTop: false };
 
