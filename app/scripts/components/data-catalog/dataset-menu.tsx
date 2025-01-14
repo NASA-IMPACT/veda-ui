@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { visuallyDisabled } from '@devseed-ui/theme-provider';
 import { Link } from 'react-router-dom';
-import { DatasetData } from 'veda';
 import {
   DropMenu,
   Dropdown,
@@ -16,6 +15,7 @@ import {
   CollecticonPage
 } from '@devseed-ui/collecticons';
 import { Button } from '@devseed-ui/button';
+import { DatasetData } from '$types/veda';
 
 import { getDatasetPath, getDatasetExplorePath } from '$utils/routes';
 import { NotebookConnectModal } from '$components/common/notebook-connect';

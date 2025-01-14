@@ -50,6 +50,7 @@ export const getLayersFromDataset = (datasets: DatasetData[]) =>
       }
     }));
   });
+
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
  * If the layer has metrics defined, it returns only the metrics that match the
@@ -276,3 +277,26 @@ export const getLowestCommonTimeDensity = (
         : lowestDensity,
     TimeDensity.YEAR
   );
+
+export class ExtendedError extends Error {
+  code: string;
+  details?: any;
+
+  constructor(message: string, code: string) {
+    super(message);
+    this.code = code;
+  }
+}
+
+export const findDatasetAttribute = (
+  datasets,
+  {
+    datasetId,
+    attr
+  }: {
+    datasetId: string;
+    attr: string;
+  }
+) => {
+  return datasets[datasetId]?.data[attr];
+};

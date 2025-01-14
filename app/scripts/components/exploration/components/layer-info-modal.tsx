@@ -9,7 +9,7 @@ import {
   ModalHeadline
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { LayerInfo } from 'veda';
+import { LayerInfo } from '$types/veda';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
 import { useVedaUI } from '$context/veda-ui-provider';
@@ -60,7 +60,7 @@ export interface LayerInfoModalData {
     id: string;
     name: string;
     infoDescription?: string;
-  }
+  };
 }
 
 interface LayerInfoModalProps {
@@ -73,14 +73,14 @@ export function LayerInfoLiner(props: { info: LayerInfo }) {
   const { info } = props;
   return (
     <span>
-    {Object.keys(info).map((key, idx, arr) => {
-      const currentValue = info[key];
-      return idx !== arr.length - 1 ? (
-        <span key={key}>{currentValue} · </span>
+      {Object.keys(info).map((key, idx, arr) => {
+        const currentValue = info[key];
+        return idx !== arr.length - 1 ? (
+          <span key={key}>{currentValue} · </span>
         ) : (
-        <span key={key}>{currentValue} </span>
-      );
-    })}
+          <span key={key}>{currentValue} </span>
+        );
+      })}
     </span>
   );
 }
@@ -114,19 +114,24 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
             </ParentDatasetTitle>
             <ParentDatasetHeading> {layerData.name} </ParentDatasetHeading>
             <p>
-              {
-                layerData.info && (
-                  <LayerInfoLinerModal>
-                    <LayerInfoLiner info={layerData.info} />
-                  </LayerInfoLinerModal>
-                )
-              }
+              {layerData.info && (
+                <LayerInfoLinerModal>
+                  <LayerInfoLiner info={layerData.info} />
+                </LayerInfoLinerModal>
+              )}
             </p>
             <p>{layerData.description}</p>
-          </ModalHeadline>);
+          </ModalHeadline>
+        );
       }}
       content={
-        <div dangerouslySetInnerHTML={{__html: parentData.infoDescription?? 'Currently, we are unable to display the layer information, but you can find it in the data catalog.' }} />
+        <div
+          dangerouslySetInnerHTML={{
+            __html:
+              parentData.infoDescription ??
+              'Currently, we are unable to display the layer information, but you can find it in the data catalog.'
+          }}
+        />
       }
       footerContent={
         <LinkComponent to={dataCatalogPath}>
