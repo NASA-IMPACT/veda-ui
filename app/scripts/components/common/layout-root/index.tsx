@@ -10,6 +10,8 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
+import { NavLink } from 'react-router-dom';
+
 import {
   getBannerFromVedaConfig,
   getCookieConsentFromVedaConfig,
@@ -118,6 +120,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
           mainNavItems={mainNavItems}
           subNavItems={subNavItems}
           hideFooter={hideFooter}
+          linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
           logoSvg={<NasaLogoColor />}
         />
       ) : (

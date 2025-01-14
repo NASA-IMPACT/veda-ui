@@ -4,12 +4,13 @@ import { DropdownNavLink, FooterSettings, NavLinkItem } from 'veda';
 import { ActionNavItem, NavItemType } from '../page-header/types';
 import { NavItemCTA } from '../page-header/nav/nav-item-cta';
 import ReturnToTopButton from './return-to-top-button';
+import { LinkProperties } from '$types/veda';
+
 import {
   USWDSFooter,
   USWDSFooterNav,
   USWDSAddress
 } from '$components/common/uswds';
-
 
 interface PageFooterProps {
   //use of NavItem is causing issues with TS and throwing erros in the .
@@ -18,7 +19,9 @@ interface PageFooterProps {
   settings: FooterSettings;
   hideFooter?: boolean;
   logoSvg?: SVGElement | JSX.Element;
+  linkProperties: LinkProperties;
 }
+
 //TODO: clean up PageFooterProps, Unexpected any. Specify a different interface.
 
 export default function PageFooter({
@@ -26,9 +29,32 @@ export default function PageFooter({
   mainNavItems,
   subNavItems,
   hideFooter,
-  logoSvg
+  logoSvg,
+  linkProperties
 }: PageFooterProps) {
   const { returnToTop, secondarySection } = settings;
+
+  const FooterNavItemInternalLink = (item) => {
+    const { item: linkContents, linkClasses, linkProperties } = item;
+    if (linkProperties.LinkElement) {
+      const path = {
+        [linkProperties.pathAttributeKeyName]: linkContents.to
+      };
+      const LinkElement = linkProperties.LinkElement;
+      return (
+        <LinkElement
+          key={linkContents.id}
+          {...path}
+          className={linkClasses}
+          id={linkContents.id}
+        >
+          <span>{linkContents.title}</span>
+        </LinkElement>
+      );
+    }
+    // If the link provided is invalid, do not render the element
+    return null;
+  };
 
   const createNavElement = (navItems, linkClasses) => {
     //removing 'dropdown' items from array
@@ -51,9 +77,11 @@ export default function PageFooter({
           );
         case NavItemType.INTERNAL_LINK:
           return (
-            <a className={linkClasses} href={item.to} key={item.id}>
-              {item.title}
-            </a>
+            <FooterNavItemInternalLink
+              item={item}
+              linkClasses={linkClasses}
+              linkProperties={linkProperties}
+            />
           );
 
         default:
