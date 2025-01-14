@@ -20,11 +20,6 @@ import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-
 export default function DataCatalogContainer() {
   const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
   const controlVars = useFiltersWithQS();
-  const navigate = useNavigate();
-
-  const handleCardNavigation = (path: string) => {
-    navigate(path);
-  };
 
   return (
     <PageMainContent>
@@ -40,7 +35,6 @@ export default function DataCatalogContainer() {
       <CatalogView
         datasets={allDatasets}
         onFilterChanges={() => controlVars}
-        onCardNavigate={handleCardNavigation}
       />
     </PageMainContent>
   );
