@@ -17,6 +17,7 @@ import {
   getTaxonomy
 } from '$utils/veda-data/taxonomies';
 import { Pill } from '$styles/pill';
+import { DATASETS_PATH } from '$utils/routes';
 
 interface CatalogCardProps {
   dataset: DatasetData;
@@ -115,6 +116,10 @@ export const CatalogCard = (props: CatalogCardProps) => {
     }
   };
 
+  const interactionProps = selectable
+    ? { onClick: handleClick }
+    : { to: `${DATASETS_PATH}/${dataset.id}` };
+
   return (
     <CardSelectable
       cardType='horizontal-info'
@@ -122,7 +127,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
       selectable={selectable}
       tagLabels={allTaxonomyValues}
       linkLabel='View dataset'
-      onClick={handleClick}
+      {...interactionProps}
       title={
         <TextHighlight value={searchTerm} disabled={searchTerm.length < 3}>
           {title}
