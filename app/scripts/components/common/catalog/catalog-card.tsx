@@ -1,14 +1,22 @@
-import React from "react";
-import styled, { css } from "styled-components";
-import { CollecticonPlus, CollecticonTickSmall, iconDataURI } from "@devseed-ui/collecticons";
-import { glsp, themeVal } from "@devseed-ui/theme-provider";
-import { Card } from "../card";
-import { CardTopicsList } from "../card/styles";
-import TextHighlight from "../text-highlight";
+import React from 'react';
+import styled, { css } from 'styled-components';
+import {
+  CollecticonPlus,
+  CollecticonTickSmall,
+  iconDataURI
+} from '@devseed-ui/collecticons';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { Card } from '../card';
+import { CardTopicsList } from '../card/styles';
+import TextHighlight from '../text-highlight';
 import { getDatasetDescription, getMediaProperty } from './utils';
-import { DatasetData, DatasetLayer } from "$types/veda";
-import { TAXONOMY_TOPICS, getAllTaxonomyValues, getTaxonomy } from "$utils/veda-data/taxonomies";
-import { Pill } from "$styles/pill";
+import { DatasetData, DatasetLayer } from '$types/veda';
+import {
+  TAXONOMY_TOPICS,
+  getAllTaxonomyValues,
+  getTaxonomy
+} from '$utils/veda-data/taxonomies';
+import { Pill } from '$styles/pill';
 
 interface CatalogCardProps {
   dataset: DatasetData;
@@ -89,14 +97,8 @@ const CardSelectable = styled(Card)<{
 `;
 
 export const CatalogCard = (props: CatalogCardProps) => {
-  const {
-    dataset,
-    layer,
-    searchTerm,
-    selectable,
-    selected,
-    onDatasetClick
-  } = props;
+  const { dataset, layer, searchTerm, selectable, selected, onDatasetClick } =
+    props;
 
   const topics = getTaxonomy(dataset, TAXONOMY_TOPICS)?.values;
   const allTaxonomyValues = getAllTaxonomyValues(dataset).map((v) => v.name);
