@@ -1,7 +1,6 @@
 import {
   getString,
-  getNavItemsFromVedaConfig,
-  getFooterSettingsFromVedaConfig
+  getNavItemsFromVedaConfig
 } from 'veda';
 import {
   InternalNavLink,
@@ -69,18 +68,6 @@ let defaultSubNavItems: (
   }
 ];
 
-const defaultFooterSettings = {
-  secondarySection: {
-    division: 'NASA EarthData 2024',
-    version: 'BETA VERSION',
-    title: 'NASA Official',
-    name: 'Manil Maskey',
-    to: 'test@example.com',
-    type: 'email'
-  },
-  returnToTop: true
-};
-
 if (process.env.GOOGLE_FORM !== undefined) {
   defaultSubNavItems = [
     ...defaultSubNavItems,
@@ -97,7 +84,4 @@ const mainNavItems =
   getNavItemsFromVedaConfig()?.mainNavItems ?? defaultMainNavItems;
 const subNavItems =
   getNavItemsFromVedaConfig()?.subNavItems ?? defaultSubNavItems;
-const footerSettings =
-  getFooterSettingsFromVedaConfig() ?? defaultFooterSettings;
-
-export { mainNavItems, subNavItems, footerSettings };
+export { mainNavItems, subNavItems };

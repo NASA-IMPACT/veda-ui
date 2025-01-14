@@ -34,8 +34,7 @@ import NavWrapper from '$components/common/nav-wrapper';
 import Logo from '$components/common/page-header-legacy/logo';
 import {
   mainNavItems,
-  subNavItems,
-  footerSettings
+  subNavItems
 } from '$components/common/page-header/default-config';
 import { checkEnvFlag } from '$utils/utils';
 
@@ -116,7 +115,6 @@ function LayoutRoot(props: { children?: ReactNode }) {
       </PageBody>
       {isUswdsFooterEnabled ? (
         <PageFooter
-          settings={footerSettings}
           mainNavItems={mainNavItems}
           subNavItems={subNavItems}
           hideFooter={hideFooter}

@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 import { Icon } from '@trussworks/react-uswds';
-import { DropdownNavLink, FooterSettings, NavLinkItem } from 'veda';
+import { DropdownNavLink, NavLinkItem } from 'veda';
 import { ActionNavItem, NavItemType } from '../page-header/types';
 import { NavItemCTA } from '../page-header/nav/nav-item-cta';
 import ReturnToTopButton from './return-to-top-button';
-import { LinkProperties } from '$types/veda';
+import { footerSettings } from './default-config';
 
+import { LinkProperties } from '$types/veda';
 import {
   USWDSFooter,
   USWDSFooterNav,
@@ -16,7 +17,6 @@ interface PageFooterProps {
   //use of NavItem is causing issues with TS and throwing erros in the .
   mainNavItems: (NavLinkItem | DropdownNavLink | ActionNavItem)[];
   subNavItems: (NavLinkItem | DropdownNavLink | ActionNavItem)[];
-  settings: FooterSettings;
   hideFooter?: boolean;
   logoSvg?: SVGElement | JSX.Element;
   linkProperties: LinkProperties;
@@ -25,15 +25,13 @@ interface PageFooterProps {
 //TODO: clean up PageFooterProps, Unexpected any. Specify a different interface.
 
 export default function PageFooter({
-  settings,
   mainNavItems,
   subNavItems,
   hideFooter,
   logoSvg,
   linkProperties
 }: PageFooterProps) {
-  const { returnToTop, secondarySection } = settings;
-
+  const { returnToTop, secondarySection } = footerSettings;
   const FooterNavItemInternalLink = (item) => {
     const { item: linkContents, linkClasses, linkProperties } = item;
     if (linkProperties.LinkElement) {
@@ -99,6 +97,7 @@ export default function PageFooter({
       createNavElement(subNavItems, 'usa-link text-base-dark text-underline'),
     [mainNavItems]
   );
+
   return (
     <USWDSFooter
       size='slim'
