@@ -20,9 +20,9 @@ import PageHeader from '$components/common/page-header';
 import PageFooter from '$components/common/page-footer';
 import type {
   NavItem,
-  InternalNavLink,
   NavItemType
 } from '$components/common/page-header/types';
+import type { InternalNavLink } from '$components/common/types';
 import type { DatasetData, StoryData } from '$types/veda';
 
 import ExplorationAndAnalysis from '$components/exploration';

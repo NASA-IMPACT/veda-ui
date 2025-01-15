@@ -11,19 +11,19 @@ export interface FormatBlock {
   cardMedia?: Media;
   parent: RelatedContentData['type'];
 }
-interface InternalNavLink {
+export interface InternalNavLink {
   id: string;
   title: string;
   to: string;
   type: 'internalLink';
 }
-interface ExternalNavLink {
+export interface ExternalNavLink {
   id: string;
   title: string;
   href: string;
   type: 'externalLink';
 }
-type NavLinkItem = ExternalNavLink | InternalNavLink;
+export type NavLinkItem = ExternalNavLink | InternalNavLink;
 
 export interface DropdownNavLink {
   id: string;
