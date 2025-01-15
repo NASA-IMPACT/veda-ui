@@ -10,13 +10,11 @@ import {
   USWDSNavMenuButton,
   USWDSExtendedNav
 } from '$uswds';
-import { LinkProperties } from '$types/veda';
 
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
   logoSvg?: SVGElement | JSX.Element;
-  linkProperties: LinkProperties;
   title: string;
   version?: string;
   accessibilityHomeShortCutText?: string;
@@ -26,7 +24,6 @@ export default function PageHeader({
   mainNavItems,
   subNavItems,
   logoSvg: Logo,
-  linkProperties,
   title,
   version,
   accessibilityHomeShortCutText
@@ -70,12 +67,7 @@ export default function PageHeader({
       <USWDSHeader extended={true} showMobileOverlay={expanded}>
         <div className='usa-navbar'>
           <USWDSHeaderTitle>
-            <LogoContainer
-              linkProperties={linkProperties}
-              LogoSvg={Logo}
-              title={title}
-              version={version}
-            />
+            <LogoContainer LogoSvg={Logo} title={title} version={version} />
           </USWDSHeaderTitle>
           <USWDSNavMenuButton onClick={toggleExpansion} label='Menu' />
         </div>

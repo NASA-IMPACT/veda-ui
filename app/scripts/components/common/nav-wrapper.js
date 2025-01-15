@@ -38,12 +38,7 @@ function NavWrapper(props) {
   const { isHeaderHidden, headerHeight } = useSlidingStickyHeaderProps();
 
   return isUSWDSEnabled ? (
-    <PageHeader
-      {...props}
-      logoSvg={<NasaLogoColor />}
-      linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
-      title={appTitle}
-    />
+    <PageHeader {...props} logoSvg={<NasaLogoColor />} title={appTitle} />
   ) : (
     <NavWrapperContainer
       id={HEADER_WRAPPER_ID}

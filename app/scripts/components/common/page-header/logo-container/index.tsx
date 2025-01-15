@@ -1,7 +1,7 @@
 import React, { ComponentType } from 'react';
 import { Tip } from '../../tip';
-import { LinkProperties } from '$types/veda';
 import './logo-container.scss';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 /**
  * LogoContainer that is meant to integrate in the default
@@ -11,34 +11,33 @@ import './logo-container.scss';
  */
 
 export default function LogoContainer({
-  linkProperties,
   LogoSvg,
   title,
   version
 }: {
-  linkProperties: LinkProperties;
   LogoSvg?: SVGElement | JSX.Element;
   title: string;
   version?: string;
 }) {
-  const LinkElement: ComponentType<any> =
-    linkProperties.LinkElement as ComponentType<any>;
+  const {
+    navigation: { LinkComponent, linkProps }
+  } = useVedaUI();
 
   return (
     <div id='logo-container'>
-      <LinkElement
+      <LinkComponent
         id='logo-container-link'
-        {...{ [linkProperties.pathAttributeKeyName]: '/' }}
+        {...{ [linkProps.pathAttributeKeyName]: '/' }}
       >
-        {LogoSvg}
+        {LogoSvg as any}
         <span>{title}</span>
-      </LinkElement>
+      </LinkComponent>
       <Tip content={version ? `v${version}` : 'beta version'}>
         <div
           id='logo-container-beta-tag'
           {...{
-            as: linkProperties.LinkElement as ComponentType<any>,
-            [linkProperties.pathAttributeKeyName]: '/development'
+            as: LinkComponent as ComponentType<any>,
+            [linkProps.pathAttributeKeyName]: '/development'
           }}
         >
           {version || 'BETA'}
