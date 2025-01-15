@@ -229,14 +229,14 @@ const GlobalMenu = styled.ul`
   `}
 `;
 
-interface PageHeaderProps {
+interface PageHeaderLegacyProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
   logo: ReactElement;
   linkProperties: LinkProperties;
 }
 
-function PageHeader(props: PageHeaderProps) {
+function PageHeaderLegacy(props: PageHeaderLegacyProps) {
   const { mainNavItems, subNavItems, logo, linkProperties } = props;
   const { isMediumDown } = useMediaQuery();
   const [globalNavRevealed, setGlobalNavRevealed] = useState(false);
@@ -357,4 +357,4 @@ function PageHeader(props: PageHeaderProps) {
   );
 }
 
-export default PageHeader;
+export default PageHeaderLegacy;

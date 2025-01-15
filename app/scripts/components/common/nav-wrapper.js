@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { NavLink } from 'react-router-dom';
-import { default as PageHeaderLegacy } from './page-header-legacy';
+import PageHeaderLegacy from './page-header-legacy';
 import PageHeader from './page-header';
 import { useSlidingStickyHeaderProps } from './layout-root/useSlidingStickyHeaderProps';
 import NasaLogoColor from './nasa-logo-color';
