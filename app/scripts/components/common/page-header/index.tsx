@@ -11,6 +11,7 @@ import {
   USWDSExtendedNav
 } from '$uswds';
 import { LinkProperties } from '$types/veda';
+
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
@@ -44,14 +45,13 @@ export default function PageHeader({
   }, []);
 
   const primaryItems = useMemo(
-    () =>
-      createDynamicNavMenuList(mainNavItems, linkProperties, isOpen, setIsOpen),
-    [mainNavItems, linkProperties, isOpen]
+    () => createDynamicNavMenuList(mainNavItems, isOpen, setIsOpen),
+    [mainNavItems, isOpen]
   );
 
   const secondaryItems = useMemo(
-    () => createDynamicNavMenuList(subNavItems, linkProperties),
-    [subNavItems, linkProperties]
+    () => createDynamicNavMenuList(subNavItems),
+    [subNavItems]
   );
 
   const skipNav = (e) => {
@@ -64,11 +64,7 @@ export default function PageHeader({
 
   return (
     <>
-      <button
-        type='button'
-        className='usa-skipnav'
-        onClick={skipNav}
-      >
+      <button type='button' className='usa-skipnav' onClick={skipNav}>
         {accessibilityHomeShortCutText || 'Skip to main content'}
       </button>
       <USWDSHeader extended={true} showMobileOverlay={expanded}>

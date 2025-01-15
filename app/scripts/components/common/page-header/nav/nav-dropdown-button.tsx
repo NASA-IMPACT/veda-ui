@@ -3,7 +3,6 @@ import { DropdownNavLink } from '../types';
 import { createDynamicNavMenuList } from './create-dynamic-nav-menu-list';
 import { USWDSNavDropDownButton, USWDSMenu } from '$uswds';
 import { SetState } from '$types/aliases';
-import { LinkProperties } from '$types/veda';
 import { useClickOutside } from '$utils/use-click-outside';
 
 interface NavDropDownButtonProps {
@@ -11,15 +10,13 @@ interface NavDropDownButtonProps {
   isOpen: boolean[];
   setIsOpen: SetState<boolean[]>;
   index: number;
-  linkProperties: LinkProperties;
 }
 
 export const NavDropDownButton = ({
   item,
   isOpen,
   setIsOpen,
-  index,
-  linkProperties
+  index
 }: NavDropDownButtonProps) => {
   const onToggle = (index: number, setIsOpen: SetState<boolean[]>): void => {
     setIsOpen((prevIsOpen) => {
@@ -42,7 +39,7 @@ export const NavDropDownButton = ({
     }
   }, [index, isOpen, setIsOpen]);
   const dropdownRef = useClickOutside(handleClickOutside);
-  const submenuItems = createDynamicNavMenuList(item.children, linkProperties);
+  const submenuItems = createDynamicNavMenuList(item.children);
 
   return (
     <div key={item.id} ref={dropdownRef}>
