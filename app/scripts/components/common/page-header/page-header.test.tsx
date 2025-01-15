@@ -6,7 +6,6 @@ import { BrowserRouter } from 'react-router-dom';
 import UIProviders from '../../../ui-providers';
 import { navItems } from '../../../../../mock/veda.config.js';
 import NasaLogoColor from '../nasa-logo-color';
-import { getAppURL } from '../../../utils/history';
 import { NavItem } from './types';
 import PageHeader from './index';
 
@@ -21,7 +20,7 @@ const testTitle = 'Test Title';
 describe('PageHeader', () => {
   beforeEach(() => {
     render(
-      <BrowserRouter basename={getAppURL().pathname}>
+      <BrowserRouter basename=''>
         <UIProviders>
           <PageHeader
             mainNavItems={mockMainNavItems}

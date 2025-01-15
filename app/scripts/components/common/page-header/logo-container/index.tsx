@@ -36,7 +36,7 @@ export default function LogoContainer({
         <div
           id='logo-container-beta-tag'
           {...{
-            as: LinkComponent as ComponentType<any>,
+            as: LinkComponent,
             [linkProps.pathAttributeKeyName]: '/development'
           }}
         >

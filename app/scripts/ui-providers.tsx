@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { VedaUIProvider } from '$context/veda-ui-provider';
 
-export default function UIProviders({ children }: { children: any }) {
+export default function UIProviders({ children }: { children: ReactNode }) {
   return (
     <VedaUIProvider
       config={{
