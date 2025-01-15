@@ -13,10 +13,6 @@ import PageHeader from './index';
 const mockMainNavItems: NavItem[] = navItems.mainNavItems;
 const mockSubNavItems: NavItem[] = navItems.subNavItems;
 
-const mockLinkProperties = {
-  pathAttributeKeyName: 'to',
-  LinkElement: 'a' as unknown as ComponentType
-};
 const testTitle = 'Test Title';
 
 describe('PageHeader', () => {
@@ -27,7 +23,6 @@ describe('PageHeader', () => {
         subNavItems={mockSubNavItems}
         logoSvg={<NasaLogoColor />}
         title={testTitle}
-        linkProperties={mockLinkProperties}
       />
     );
   });
