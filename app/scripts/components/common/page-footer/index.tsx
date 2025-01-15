@@ -104,10 +104,7 @@ export default function PageFooter({
       returnToTop={returnToTop && <ReturnToTopButton />}
       className={hideFooter && 'display-none'}
       primary={
-        <div
-          id='footer_primary_container'
-          className=' grid-row  usa-footer__primary-container'
-        >
+        <div className='grid-row  usa-footer__primary-container footer_primary_container'>
           <div className='mobile-lg:grid-col-8'>
             <USWDSFooterNav
               aria-label='Footer navigation'

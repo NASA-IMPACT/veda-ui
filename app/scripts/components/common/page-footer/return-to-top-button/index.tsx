@@ -19,10 +19,7 @@ export default function ReturnToTopButton() {
   };
 
   return (
-    <div
-      id='return-to-top-container'
-      className='margin-left-auto margin-right-auto'
-    >
+    <div className='margin-left-auto margin-right-auto return-to-top-container'>
       <USWDSButton onClick={onClick} unstyled>
         Return to top
       </USWDSButton>
