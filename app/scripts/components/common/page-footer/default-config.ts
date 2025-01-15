@@ -8,7 +8,7 @@ const defaultFooterSettings = {
     to: 'test@example.com',
     type: 'email'
   },
-  returnToTop: false
+  returnToTop: true
 };
 const footerSettings =
   getFooterSettingsFromVedaConfig() ?? defaultFooterSettings;
