@@ -41,13 +41,11 @@ export interface CatalogViewProps {
     taxonomies: Record<string, string[]> | Record<string, never>,
     onAction: () => void,
   } | any;
-  onCardNavigate?: (path: string) => void;
 }
 
 function CatalogView({
   datasets,
   onFilterChanges,
-  onCardNavigate
 }: CatalogViewProps) {
 
   const { headerHeight } = useSlidingStickyHeaderProps();
@@ -70,7 +68,6 @@ function CatalogView({
         search={search}
         taxonomies={taxonomies}
         onAction={onAction}
-        onCardNavigate={onCardNavigate}
       />
     </CatalogWrapper>
   );

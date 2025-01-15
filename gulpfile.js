@@ -72,8 +72,15 @@ function copyNetlifyCMS() {
   return gulp.src('admin/**/*').pipe(gulp.dest('dist/admin'));
 }
 
+// Copy the USWDS image assets from node_modules to the dist directory.
+// This ensures all USWDS images are available for the instances during deployment.
 function copyUswdsImages() {
-  return uswds.copyImages();
+  return gulp
+    .src([
+      path.join(__dirname, 'node_modules/@uswds/uswds/dist/img/**/*'),
+      'node_modules/@uswds/uswds/dist/img/**/*'
+    ])
+    .pipe(gulp.dest('dist/img'));
 }
 
 // Task that uses Parcel to build the library version of the VEDA UI.

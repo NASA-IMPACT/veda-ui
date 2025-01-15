@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Taxonomy } from 'veda';
 import { Overline } from '@devseed-ui/typography';
 import { Button, ButtonProps } from '@devseed-ui/button';
 import {
@@ -12,6 +11,7 @@ import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
 
 import { useFiltersWithQS } from '../catalog/controls/hooks/use-filters-with-query';
 import { optionAll } from './constants';
+import { Taxonomy } from '$types/veda';
 import { FilterActions } from '$components/common/catalog/utils';
 
 import DropdownScrollable from '$components/common/dropdown-scrollable';
@@ -74,18 +74,11 @@ interface BrowseControlsProps extends ReturnType<typeof useFiltersWithQS> {
 }
 
 function BrowseControls(props: BrowseControlsProps) {
-  const {
-    taxonomiesOptions,
-    taxonomies,
-    search,
-    onAction,
-    ...rest
-  } = props;
+  const { taxonomiesOptions, taxonomies, search, onAction, ...rest } = props;
 
   const { isLargeUp } = useMediaQuery();
   const filterWrapConstant = 4;
   const wrapTaxonomies = taxonomiesOptions.length > filterWrapConstant; // wrap list of taxonomies when more then 4 filter options
-
 
   const createFilterList = (filterList: Taxonomy[]) => {
     return filterList.map(({ name, values }) => (
@@ -93,7 +86,9 @@ function BrowseControls(props: BrowseControlsProps) {
         key={name}
         prefix={name}
         items={[optionAll].concat(values)}
-        currentId={(taxonomies[name]? taxonomies[name] as unknown as string : 'all')}
+        currentId={
+          taxonomies[name] ? (taxonomies[name] as unknown as string) : 'all'
+        }
         onChange={(v) => {
           onAction(FilterActions.TAXONOMY, { key: name, value: v });
         }}
@@ -116,13 +111,16 @@ function BrowseControls(props: BrowseControlsProps) {
           {createFilterList(taxonomiesOptions.slice(0, filterWrapConstant))}
         </FilterOptionsWrapper>
       </SearchWrapper>
-      {
-        wrapTaxonomies && (
-          <FilterOptionsWrapper>
-            {createFilterList(taxonomiesOptions.slice(filterWrapConstant, taxonomiesOptions.length))}
-          </FilterOptionsWrapper>
-        )
-      }
+      {wrapTaxonomies && (
+        <FilterOptionsWrapper>
+          {createFilterList(
+            taxonomiesOptions.slice(
+              filterWrapConstant,
+              taxonomiesOptions.length
+            )
+          )}
+        </FilterOptionsWrapper>
+      )}
     </BrowseControlsWrapper>
   );
 }

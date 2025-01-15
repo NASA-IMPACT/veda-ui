@@ -1,5 +1,6 @@
 import React, { createContext, ReactNode, useContext } from 'react';
 import { DATASETS_PATH, STORIES_PATH } from '$utils/routes';
+import { isExternalLink } from '$utils/url';
 
 interface EnvironmentConfig {
   envMapboxToken: string;
@@ -91,6 +92,15 @@ export function VedaUIProvider({ config, children }: VedaUIProviderProps) {
 
   const Link: React.FC<LinkProps> = ({ to, children, ...props }) => {
     const { LinkComponent, linkProps } = navigation;
+
+    if (isExternalLink(to)) {
+      return (
+        <a href={to} target='_blank' rel='noopener noreferrer' {...props}>
+          {children}
+        </a>
+      );
+    }
+
     return (
       <LinkComponent
         {...{ [linkProps.pathAttributeKeyName]: to, ...linkProps }}

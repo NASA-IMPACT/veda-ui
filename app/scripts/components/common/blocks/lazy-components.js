@@ -37,7 +37,7 @@ export function LazyScrollyTelling(props) {
       offset={100}
       once
     >
-      <ScrollytellingBlock {...props} />
+      <ScrollytellingBlock {...props} datasets={veda_faux_module_datasets} />
     </LazyLoad>
   );
 }

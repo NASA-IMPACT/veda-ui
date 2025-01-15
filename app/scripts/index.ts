@@ -1,6 +1,7 @@
 import Block from './components/common/blocks';
 import Image from './components/common/blocks/images';
 import MapBlock from './components/common/blocks/block-map';
+import { ScrollytellingBlock } from './components/common/blocks/scrollytelling';
 import Figure from './components/common/blocks/figure';
 import { ContentBlockProse as Prose } from './styles/content-block';
 import MDXImage, { Caption } from './components/common/blocks/images';
@@ -22,8 +23,10 @@ import type {
   NavItem,
   NavItemType
 } from '$components/common/page-header/types';
+
 import type { InternalNavLink } from '$components/common/types';
-import type { DatasetData, StoryData } from '$types/veda';
+import type { DatasetData, StoryData, VedaData } from '$types/veda';
+
 
 import ExplorationAndAnalysis from '$components/exploration';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
@@ -59,6 +62,7 @@ export {
   Caption,
   Chapter,
   Chart,
+  ScrollytellingBlock,
   Table,
   Embed,
   MapBlock,
@@ -85,6 +89,7 @@ export {
   InternalNavLink,
   DatasetData,
   StoryData,
+  VedaData,
 
   // STATE
   timelineDatasetsAtom,

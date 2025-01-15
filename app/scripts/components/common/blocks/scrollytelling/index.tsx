@@ -15,14 +15,9 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
 import { MapRef } from 'react-map-gl';
-import { datasets, ProjectionOptions } from 'veda';
 import { BlockErrorBoundary } from '..';
-import {
-  chapterDisplayName,
-  ChapterProps,
-  ScrollyChapter,
-  validateChapter
-} from './chapter';
+import { ChapterProps, ScrollyChapter, validateChapter } from './chapter';
+import { ProjectionOptions, VedaData } from '$types/veda';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
 import { S_FAILED, S_SUCCEEDED } from '$utils/status';
@@ -41,11 +36,12 @@ import {
 import { Layer } from '$components/exploration/components/map/layer';
 import { MapLoading } from '$components/common/loading-skeleton';
 import {
-  DatasetData,
+  EADatasetDataLayer,
   DatasetStatus,
   VizDataset,
   VizDatasetSuccess
 } from '$components/exploration/types.d.ts';
+import { DatasetData } from '$types/veda';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import {
   formatSingleDate,
@@ -96,12 +92,6 @@ function useChapterPropsFromChildren(children): ScrollyChapter[] {
       any
     >[];
 
-    if (chapters.some((c) => c.type.displayName !== chapterDisplayName)) {
-      throw new HintedError('Invalid ScrollytellingBlock children', [
-        'You can only use <Chapter> inside <ScrollytellingBlock>'
-      ]);
-    }
-
     const chErrors = chapters.reduce<string[]>(
       (acc, ch, idx) => acc.concat(validateChapter(ch.props, idx)),
       []
@@ -140,7 +130,8 @@ function getChapterLayerKey(ch: ScrollyChapter) {
  */
 function useMapLayersFromChapters(
   chList: ScrollyChapter[],
-  envApiStacEndpoint: string
+  envApiStacEndpoint: string,
+  datasets: VedaData<DatasetData>
 ): [ResolvedScrollyMapLayer[], string[]] {
   // The layers are unique based on the dataset, layer id and datetime.
   // First we filter out any scrollytelling block that doesn't have layer.
@@ -155,7 +146,6 @@ function useMapLayersFromChapters(
 
     return Object.values(unique);
   }, [chList]);
-
   // Create an array of datasetId & layerId pairs which we can easily validate when creating
   // the layers array.
   const uniqueLayerRefs = useMemo(() => {
@@ -170,8 +160,10 @@ function useMapLayersFromChapters(
   const reconciledVizDatasets = uniqueLayerRefs.map(
     ({ datasetId, layerId }) => {
       const layers = datasets[datasetId]?.data.layers;
-
-      const layer = layers?.find((l) => l.id === layerId) as DatasetData | null;
+      // @TECH-DEBT: We are casting which we shouldn't, look into types and clean up because this is masking bad typing issues
+      const layer = layers?.find(
+        (l) => l.id === layerId
+      ) as EADatasetDataLayer | null;
 
       if (!layer) {
         throw new Error(
@@ -257,7 +249,7 @@ const MAP_OPTIONS = {
 };
 
 function Scrollytelling(props) {
-  const { children } = props;
+  const { children, datasets } = props;
 
   const { envApiStacEndpoint } = useVedaUI();
 
@@ -272,7 +264,8 @@ function Scrollytelling(props) {
 
   const [resolvedLayers, resolvedStatus] = useMapLayersFromChapters(
     chapterProps,
-    envApiStacEndpoint
+    envApiStacEndpoint,
+    datasets
   );
 
   const [activeChapter, setActiveChapter] = useState<ScrollyChapter | null>(
@@ -482,7 +475,8 @@ function Scrollytelling(props) {
 }
 
 Scrollytelling.propTypes = {
-  children: T.node
+  children: T.node,
+  datasets: T.any
 };
 
 export function ScrollytellingBlock(props) {

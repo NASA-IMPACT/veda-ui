@@ -95,3 +95,15 @@ export function composeVisuallyDisabled(
 export function checkEnvFlag(value?: string): boolean {
   return (value ?? '').toLowerCase() === 'true';
 }
+
+/**
+ * Checks if a given URL is an external link.
+ *
+ * An external link is defined as a URL that starts with "http://" or "https://".
+ *
+ * @param {string} url - The URL to check.
+ * @returns {boolean} True if the URL is an external link, false otherwise.
+ */
+export const isExternalLink = (url: string): boolean => {
+  return /^https?:\/\//.test(url);
+};

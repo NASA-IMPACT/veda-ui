@@ -90,7 +90,7 @@ export interface EnhancedDatasetLayer extends DatasetLayer {
   parentDataset: ParentDatset;
 }
 
-export interface DatasetData extends EnhancedDatasetLayer {
+export interface EADatasetDataLayer extends EnhancedDatasetLayer {
   isPeriodic: boolean;
   timeDensity: TimeDensity;
   domain: Date[];
@@ -145,7 +145,7 @@ export interface VizDatasetError {
 
 export interface VizDatasetSuccess {
   status: DatasetStatus.SUCCESS;
-  data: DatasetData;
+  data: EADatasetDataLayer;
   error: null;
   settings: DatasetSettings;
   meta?: DatasetMeta;

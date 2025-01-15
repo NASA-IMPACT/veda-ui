@@ -7,7 +7,7 @@ import {
   TimelineDatasetAnalysis,
   DatasetStatus
 } from './types.d.ts';
-import { ExtendedError } from './data-utils';
+import { ExtendedError } from './data-utils-no-faux-module';
 import { utcString2userTzDate } from '$utils/date';
 import {
   fixAoiFcForStacSearch,
