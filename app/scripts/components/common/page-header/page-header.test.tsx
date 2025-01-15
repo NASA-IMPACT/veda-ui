@@ -1,7 +1,8 @@
-import React, { ComponentType } from 'react';
+import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import UIProviders from 'app/scripts/ui-providers';
 import { navItems } from '../../../../../mock/veda.config.js';
 import NasaLogoColor from '../nasa-logo-color';
 import { NavItem } from './types';
@@ -18,12 +19,14 @@ const testTitle = 'Test Title';
 describe('PageHeader', () => {
   beforeEach(() => {
     render(
-      <PageHeader
-        mainNavItems={mockMainNavItems}
-        subNavItems={mockSubNavItems}
-        logoSvg={<NasaLogoColor />}
-        title={testTitle}
-      />
+      <UIProviders>
+        <PageHeader
+          mainNavItems={mockMainNavItems}
+          subNavItems={mockSubNavItems}
+          logoSvg={<NasaLogoColor />}
+          title={testTitle}
+        />
+      </UIProviders>
     );
   });
 
