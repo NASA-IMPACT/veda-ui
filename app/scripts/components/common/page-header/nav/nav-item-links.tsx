@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalNavLink, InternalNavLink } from '../types';
+import { ExternalNavLink, InternalNavLink } from '../../types';
 import { LinkProperties } from '$types/veda';
 
 interface NavItemExternalLinkProps {

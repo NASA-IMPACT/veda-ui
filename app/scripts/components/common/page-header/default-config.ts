@@ -1,15 +1,11 @@
+import { getString, getNavItemsFromVedaConfig } from 'veda';
+import { InternalNavLink, ExternalNavLink } from '../types';
+
 import {
-  getString,
-  getNavItemsFromVedaConfig
-} from 'veda';
-import {
-  InternalNavLink,
-  ExternalNavLink,
   ActionNavItem,
   DropdownNavLink,
   NavItemType
 } from '$components/common/page-header/types';
-
 import {
   STORIES_PATH,
   DATASETS_PATH,

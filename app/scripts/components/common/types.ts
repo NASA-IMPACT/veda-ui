@@ -1,3 +1,5 @@
+import { LinkContentData, Media, RelatedContentData } from 'veda';
+
 export interface FormatBlock {
   id: string;
   name: string;
