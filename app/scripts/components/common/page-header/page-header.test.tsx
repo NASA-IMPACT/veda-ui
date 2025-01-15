@@ -2,9 +2,11 @@ import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import UIProviders from 'app/scripts/ui-providers';
+import { BrowserRouter } from 'react-router-dom';
+import UIProviders from '../../../ui-providers';
 import { navItems } from '../../../../../mock/veda.config.js';
 import NasaLogoColor from '../nasa-logo-color';
+import { getAppURL } from '../../../utils/history';
 import { NavItem } from './types';
 import PageHeader from './index';
 
@@ -19,14 +21,16 @@ const testTitle = 'Test Title';
 describe('PageHeader', () => {
   beforeEach(() => {
     render(
-      <UIProviders>
-        <PageHeader
-          mainNavItems={mockMainNavItems}
-          subNavItems={mockSubNavItems}
-          logoSvg={<NasaLogoColor />}
-          title={testTitle}
-        />
-      </UIProviders>
+      <BrowserRouter basename={getAppURL().pathname}>
+        <UIProviders>
+          <PageHeader
+            mainNavItems={mockMainNavItems}
+            subNavItems={mockSubNavItems}
+            logoSvg={<NasaLogoColor />}
+            title={testTitle}
+          />
+        </UIProviders>
+      </BrowserRouter>
     );
   });
 
@@ -43,7 +47,7 @@ describe('PageHeader', () => {
 
     expect(primaryNav.childElementCount).toEqual(mockMainNavItems.length);
     expect(secondaryNav.childElementCount).toEqual(mockSubNavItems.length);
-    expect(within(primaryNav).getByText('Test')).toBeInTheDocument();
+    expect(within(primaryNav).getByText('TestDropdown1')).toBeInTheDocument();
     expect(within(primaryNav).getByText('Data Catalog')).toBeInTheDocument();
     expect(within(primaryNav).getByText('Exploration')).toBeInTheDocument();
     expect(within(primaryNav).getByText('Stories')).toBeInTheDocument();
@@ -57,11 +61,9 @@ describe('PageHeader', () => {
     expect(navElement).toBeInTheDocument();
 
     const primaryNav = within(navElement).getAllByRole('list')[0];
-    const navItem = screen.getByText('Test');
-    expect(
-      within(primaryNav).getByText('dropdown menu item 1')
-    ).not.toBeVisible();
+    const navItem = screen.getByText('TestDropdown1');
+    expect(within(primaryNav).getByText('route to stories')).not.toBeVisible();
     await user.click(navItem);
-    expect(within(primaryNav).getByText('dropdown menu item 1')).toBeVisible();
+    expect(within(primaryNav).getByText('route to stories')).toBeVisible();
   });
 });
