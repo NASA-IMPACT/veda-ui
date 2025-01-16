@@ -34,9 +34,11 @@ import {
   datasetLayersAtom,
   externalDatasetsAtom
 } from '$components/exploration/atoms/datasetLayers';
+import Audience from '$components/home/audience';
 
 // Include only the custom stylings for the VEDA components into the library build
 import './styles/veda-components.scss';
+import ValueProposition from '$components/home/value-propostion';
 
 // Adding .last property to array
 /* eslint-disable-next-line fp/no-mutating-methods */
@@ -74,6 +76,8 @@ export {
   StoriesHubContent,
   ExplorationAndAnalysis,
   DatasetSelectorModal,
+  Audience,
+  ValueProposition,
 
   // HOOKS
   useTimelineDatasetAtom,

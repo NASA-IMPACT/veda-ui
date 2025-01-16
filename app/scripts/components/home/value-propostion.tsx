@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { getString } from 'veda';
-
 import imgVP01 from '../../../graphics/layout/vp-01-illu.png';
 import imgVP02 from '../../../graphics/layout/vp-02-illu.png';
 import imgVP03 from '../../../graphics/layout/vp-03-illu.png';
@@ -90,8 +88,8 @@ function ValueProposition() {
           <ContentBlockProseAlt>
             <h3>Science communication platform</h3>
             <p>
-              Share your {getString('stories').other.toLocaleLowerCase()} with
-              others through the VEDA Dashboard. Submit a{' '}
+              Share your data stories with others through the VEDA Dashboard.
+              Submit a{' '}
               <a
                 href='#'
                 onClick={(e) => {
