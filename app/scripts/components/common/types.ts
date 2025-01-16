@@ -1,4 +1,4 @@
-import { LinkContentData, Media, RelatedContentData } from 'veda';
+import { LinkContentData, Media, RelatedContentData } from '$types/veda';
 
 export interface FormatBlock {
   id: string;
