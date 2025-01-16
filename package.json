@@ -29,6 +29,8 @@
     "lint:scripts": "eslint app/scripts/",
     "lint:css": "stylelint 'app/styles/**/**' 'app/scripts/**/*.(js|ts|tsx|jsx)'",
     "postinstall": "husky",
+    "prepack": "pinst --disable",
+    "postpack": "pinst --enable",
     "ts-check": "yarn tsc --noEmit --skipLibCheck",
     "test": "jest",
     "pretest:e2e": "node test/playwright/generateTestData.js",
