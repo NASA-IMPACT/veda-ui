@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Layer as MapGLLayer, Source as MapGLSource } from 'react-map-gl';
+import type { LineLayer } from 'react-map-gl';
 
 import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
 import {
@@ -19,6 +21,7 @@ import {
   ScaleControl
 } from '$components/common/map/controls';
 import MapCoordsControl from '$components/common/map/controls/coords';
+import useAois from '$components/common/map/controls/hooks/use-aois';
 import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
@@ -125,6 +128,8 @@ export function ExplorationMap(props: ExplorationMapProps) {
     [datasets, setDatasets]
   );
 
+  const { aoi } = useAois();
+
   return (
     <Map id='exploration' projection={projection} onStyleUpdate={onStyleUpdate}>
       {/* Map layers */}
@@ -146,6 +151,26 @@ export function ExplorationMap(props: ExplorationMapProps) {
             comparing && 'Analysis is not possible when comparing dates'
           }
         />
+
+        {aoi && (
+          // This is a GeoJSON source and Layer to display the AOI
+          <MapGLSource id='aoi' key='aoi' type='geojson' data={aoi}>
+            <MapGLLayer
+              {...({
+                id: 'aoi-layer',
+                source: 'aoi', // References the GeoJSON source defined above
+                // // and does not require a `source-layer`
+                // 'source-layer': 'aoi',
+                type: 'line',
+                paint: {
+                  'line-color': '#008888',
+                  'line-width': 5
+                }
+              } as LineLayer)}
+            />
+          </MapGLSource>
+        )}
+
         <AnalysisMessageControl />
         <GeocoderControl envMapboxToken={envMapboxToken} />
         <MapOptionsControl

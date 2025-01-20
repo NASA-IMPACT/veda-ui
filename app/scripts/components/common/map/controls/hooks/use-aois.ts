@@ -1,6 +1,7 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 import { Feature, Polygon } from 'geojson';
+import union from '@turf/union';
 import { toAoIid } from '../../utils';
 import {
   aoisDeleteAtom,
@@ -12,6 +13,10 @@ import {
 
 export default function useAois() {
   const features = useAtomValue(aoisFeaturesAtom);
+
+  const aoi: Feature | null = features.slice(1).reduce((acc, feature) => {
+    return union(acc, feature);
+  }, features[0]);
 
   const [isDrawing, setIsDrawing] = useAtom(isDrawingAtom);
 
@@ -53,6 +58,7 @@ export default function useAois() {
 
   return {
     features,
+    aoi,
     update,
     onUpdate,
     onDelete,
