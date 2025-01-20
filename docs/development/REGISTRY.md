@@ -12,7 +12,7 @@ yarn buildlib
 After successfully building the library, link the project to your local environment with the following command, executed inside the VEDA-UI directory:
 
 ```
-yarn link 
+yarn link
 ```
 Then change your directory to the project that is using veda-ui, which has `@developmentseed/veda-ui` as a dependency. Create a local alias for VEDA-UI by running:
 ```
@@ -29,7 +29,7 @@ Note: Package publishing is not yet part of the CI system since the library is s
 
 ### Publish
 
-As of September 2024, VEDA-UI is being published to Development Seed's Verdaccio instance.To publish the package, authenticate using Development Seed's NPM credentials. Run the following command to test the publishing process before pushing live:
+As of January 2025, VEDA-UI is being published to the public NPM registry under the @developmentseed scope. To publish the package, authenticate using your NPM credentials. Run the following command to test the publishing process before pushing live:
 
 ```
 npm publish --dry-run
