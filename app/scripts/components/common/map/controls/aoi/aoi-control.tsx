@@ -6,6 +6,8 @@ import styled, { css } from 'styled-components';
 import bbox from '@turf/bbox';
 
 import {
+  CollecticonCircleTick,
+  CollecticonCircleXmark,
   CollecticonPencil,
   CollecticonTrashBin,
   CollecticonUpload2
@@ -134,28 +136,50 @@ function AoiControl({
             size='small'
             data-tour='analysis-tour'
           >
-            <PresetSelector
-              selectedState={selectedState}
-              setSelectedState={setSelectedState}
-              onConfirm={onPresetConfirm}
-              resetPreset={resetAoi}
-            />
-            <VerticalDivider />
-            <TipToolbarIconButton
-              tipContent='Draw an area of interest'
-              tipProps={{ placement: 'bottom' }}
-              active={isDrawing}
-              onClick={drawingActions.toggle}
-            >
-              <CollecticonPencil meaningful title='Draw AOI' />
-            </TipToolbarIconButton>
-            <TipToolbarIconButton
-              tipContent='Upload area of interest'
-              tipProps={{ placement: 'bottom' }}
-              onClick={() => setAoIModalRevealed(true)}
-            >
-              <CollecticonUpload2 title='Upload geoJSON' meaningful />
-            </TipToolbarIconButton>
+            {isDrawing ? (
+              <>
+                <TipToolbarIconButton
+                  tipContent='Confirm AOI'
+                  tipProps={{ placement: 'bottom' }}
+                  onClick={drawingActions.confirm}
+                  disabled={!drawingIsValid}
+                >
+                  <CollecticonCircleTick meaningful title='Confirm AOI' />
+                </TipToolbarIconButton>
+
+                <TipToolbarIconButton
+                  tipContent='Cancel drawing'
+                  tipProps={{ placement: 'bottom' }}
+                  onClick={drawingActions.cancel}
+                >
+                  <CollecticonCircleXmark meaningful title='Cancel drawing' />
+                </TipToolbarIconButton>
+              </>
+            ) : (
+              <>
+                <PresetSelector
+                  selectedState={selectedState}
+                  setSelectedState={setSelectedState}
+                  onConfirm={onPresetConfirm}
+                  resetPreset={resetAoi}
+                />
+                <VerticalDivider />
+                <TipToolbarIconButton
+                  tipContent='Draw an area of interest'
+                  tipProps={{ placement: 'bottom' }}
+                  onClick={drawingActions.start}
+                >
+                  <CollecticonPencil meaningful title='Draw AOI' />
+                </TipToolbarIconButton>
+                <TipToolbarIconButton
+                  tipContent='Upload area of interest'
+                  tipProps={{ placement: 'bottom' }}
+                  onClick={() => setAoIModalRevealed(true)}
+                >
+                  <CollecticonUpload2 meaningful title='Upload geoJSON' />
+                </TipToolbarIconButton>
+              </>
+            )}
           </AnalysisToolbar>
         </div>
       </Tip>
