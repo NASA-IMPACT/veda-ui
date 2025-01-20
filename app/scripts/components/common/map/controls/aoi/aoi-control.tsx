@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { LngLatBoundsLike } from 'react-map-gl';
 import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
-import { useSetAtom } from 'jotai';
 import bbox from '@turf/bbox';
 
 import {
@@ -19,12 +18,10 @@ import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
-import { aoiDeleteAllAtom } from './atoms';
 import PresetSelector from './preset-selector';
 
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
-import { ShortcutCode } from '$styles/shortcut-code';
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
@@ -61,65 +58,32 @@ function AoiControl({
   mapboxMap: mapboxgl.Map;
   disableReason?: React.ReactNode;
 }) {
+  const { isDrawing, aoi, updateAoi, aoiDeleteAll } = useAois();
+
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
   const [selectedState, setSelectedState] = useState('');
 
-  const [isAreaSelected] = useState<boolean>(false);
-  const [isPointSelected] = useState<boolean>(false);
-
-  const { aoi, onUpdate, isDrawing, setIsDrawing, features } = useAois();
-  const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
-
-  const resetAoisOnMap = useCallback(() => {
+  const resetAoi = () => {
     aoiDeleteAll();
-  }, [aoiDeleteAll]);
-
-  const resetForPresetSelect = useCallback(() => {
-    resetAoisOnMap();
-  }, [resetAoisOnMap]);
-
-  const resetForFileUploaded = useCallback(() => {
-    resetAoisOnMap();
     setSelectedState('');
-  }, [resetAoisOnMap]);
+  };
 
-  const resetForEmptyState = useCallback(() => {
-    resetAoisOnMap();
-    setSelectedState('');
-  }, [resetAoisOnMap]);
+  const onUploadConfirm = (features: Feature<Polygon>[]) => {
+    resetAoi(); // delete all previous AOIs and clear selections
+    setAoIModalRevealed(false); // close modal
 
-  const resetForDrawingAoi = useCallback(() => {
-    setSelectedState('');
-  }, []);
+    updateAoi({ features });
+  };
 
-  const onConfirm = useCallback(
-    (features: Feature<Polygon>[]) => {
-      setAoIModalRevealed(false);
+  const onPresetConfirm = (features: Feature<Polygon>[]) => {
+    aoiDeleteAll(); // delete all previous AOIs but keep preset selection
 
-      resetForFileUploaded();
-      onUpdate({ features });
-    },
-    [onUpdate, resetForFileUploaded]
-  );
+    updateAoi({ features });
+  };
 
-  const onPresetConfirm = useCallback(
-    (features: Feature<Polygon>[]) => {
-      resetForPresetSelect();
-      onUpdate({ features });
-    },
-    [onUpdate, resetForPresetSelect]
-  );
-
-  const toggleDrawing = useCallback(() => {
-    resetForDrawingAoi();
-    setIsDrawing(!isDrawing);
-  }, [isDrawing, setIsDrawing, resetForDrawingAoi]);
-
-  const onTrashClick = useCallback(() => {
-    setSelectedState('');
-  }, []);
-
-  const hasFeatures = !!features.length;
+  const onTrashClick = () => {
+    resetAoi();
+  };
 
   useEffect(() => {
     if (mapboxMap && aoi) {
@@ -144,17 +108,16 @@ function AoiControl({
               selectedState={selectedState}
               setSelectedState={setSelectedState}
               onConfirm={onPresetConfirm}
-              resetPreset={resetForEmptyState}
+              resetPreset={resetAoi}
             />
             <VerticalDivider />
-            <TipToolbarIconButton
+            {/* <TipToolbarIconButton
               tipContent='Draw an area of interest'
               tipProps={{ placement: 'bottom' }}
               active={isDrawing}
-              onClick={toggleDrawing}
             >
               <CollecticonPencil meaningful title='Draw AOI' />
-            </TipToolbarIconButton>
+            </TipToolbarIconButton> */}
             <TipToolbarIconButton
               tipContent='Upload area of interest'
               tipProps={{ placement: 'bottom' }}
@@ -166,26 +129,16 @@ function AoiControl({
         </div>
       </Tip>
       <FloatingBar container={mapboxMap.getContainer()}>
-        {hasFeatures && (
+        {!!aoi && (
           <Button size='small' variation='base-fill' onClick={onTrashClick}>
-            <CollecticonTrashBin title='Delete selected' />{' '}
-            {isPointSelected ? (
-              <>
-                Delete point <ShortcutCode>del</ShortcutCode>
-              </>
-            ) : isAreaSelected ? (
-              <>
-                Delete area <ShortcutCode>del</ShortcutCode>
-              </>
-            ) : (
-              <>Delete all areas</>
-            )}
+            <CollecticonTrashBin title='Delete area' />
+            Delete area
           </Button>
         )}
       </FloatingBar>
       <CustomAoIModal
         revealed={aoiModalRevealed}
-        onConfirm={onConfirm}
+        onConfirm={onUploadConfirm}
         onCloseClick={() => setAoIModalRevealed(false)}
       />
     </>
