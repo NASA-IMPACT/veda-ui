@@ -15,9 +15,7 @@ import { selectedIntervalAtom } from '../../atoms/dates';
 import { useScales } from '../../hooks/scales-hooks';
 import useMaps from '$components/common/map/hooks/use-maps';
 import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';
-import {
-  timelineWidthAtom
-} from '$components/exploration/atoms/timeline';
+import { timelineWidthAtom } from '$components/exploration/atoms/timeline';
 
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { calcFeatCollArea } from '$components/common/map/controls/aoi/utils';
@@ -27,7 +25,10 @@ import useThemedControl from '$components/common/map/controls/hooks/use-themed-c
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { AoIFeature } from '$components/common/map/types';
 import { ShortcutCode } from '$styles/shortcut-code';
-import { RIGHT_AXIS_SPACE, HEADER_COLUMN_WIDTH } from '$components/exploration/constants';
+import {
+  RIGHT_AXIS_SPACE,
+  HEADER_COLUMN_WIDTH
+} from '$components/exploration/constants';
 
 const AnalysisMessageWrapper = styled.div.attrs({
   'data-tour': 'analysis-message'
@@ -79,8 +80,8 @@ const MessageStatusIndicator = styled.div<MessageStatusIndicatorProps>`
   }}
 `;
 const MessageContent = styled.div.attrs({
-    'data-testid': 'analysis-message'
-  })`
+  'data-testid': 'analysis-message'
+})`
   line-height: 1.5rem;
   max-height: 1.5rem;
 
@@ -122,23 +123,34 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
       type: 'FeatureCollection',
       features: selectedFeatures
     });
-    const zoom = bboxToFit? getZoomFromBbox(bboxToFit): 14;
+    const zoom = bboxToFit ? getZoomFromBbox(bboxToFit) : 14;
     mainMap?.flyTo({
-      center:[ (bboxToFit[2] + bboxToFit[0])/2, (bboxToFit[3] + bboxToFit[1])/2],
+      center: [
+        (bboxToFit[2] + bboxToFit[0]) / 2,
+        (bboxToFit[3] + bboxToFit[1]) / 2
+      ],
       zoom
     });
 
     // Fit TOI
-    if (!main || !timelineWidth || !selectedInterval?.start ) return;
+    if (!main || !timelineWidth || !selectedInterval?.start) return;
 
-    const widthToFit = (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) * 0.9;
+    const widthToFit =
+      (timelineWidth - RIGHT_AXIS_SPACE - HEADER_COLUMN_WIDTH) * 0.9;
     const startPoint = 0;
-    const new_k = widthToFit/(main(selectedInterval.end) - main(selectedInterval.start));
+    const new_k =
+      widthToFit / (main(selectedInterval.end) - main(selectedInterval.start));
     const new_x = startPoint - new_k * main(selectedInterval.start);
 
     onTOIZoom(new_x, new_k);
-
-  }, [selectedFeatures, mainMap, main, timelineWidth, onTOIZoom, selectedInterval]);
+  }, [
+    selectedFeatures,
+    mainMap,
+    main,
+    timelineWidth,
+    onTOIZoom,
+    selectedInterval
+  ]);
 
   if (isAnalyzing) {
     return (
@@ -166,7 +178,9 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
 
 export function AnalysisMessageControl() {
   const { main } = useMaps();
-  useThemedControl(() => <AnalysisMessage mainMap={main} />, { position: 'top-left' });
+  useThemedControl(() => <AnalysisMessage mainMap={main} />, {
+    position: 'top-left'
+  });
 
   return null;
 }
@@ -183,8 +197,14 @@ interface MessagesProps {
 function MessagesWhileAnalyzing(
   props: MessagesProps & { isObsolete: boolean }
 ) {
-  const { isObsolete, features, selectedFeatures, datasetIds, dateLabel, analysisCallback } =
-    props;
+  const {
+    isObsolete,
+    features,
+    selectedFeatures,
+    datasetIds,
+    dateLabel,
+    analysisCallback
+  } = props;
 
   const area = calcFeatCollArea({
     type: 'FeatureCollection',
@@ -231,7 +251,10 @@ function MessagesWhileAnalyzing(
           </MessageContent>
         </AnalysisMessageInner>
         <MessageControls>
-          <ButtonObsolete datasetIds={datasetIds} analysisCallback={analysisCallback} />
+          <ButtonObsolete
+            datasetIds={datasetIds}
+            analysisCallback={analysisCallback}
+          />
           <ButtonExit />
         </MessageControls>
       </AnalysisMessageWrapper>
@@ -277,7 +300,13 @@ function MessagesWhileAnalyzing(
 }
 
 function MessagesWhileNotAnalyzing(props: MessagesProps) {
-  const { features, selectedFeatures, datasetIds, dateLabel, analysisCallback } = props;
+  const {
+    features,
+    selectedFeatures,
+    datasetIds,
+    dateLabel,
+    analysisCallback
+  } = props;
 
   if (selectedFeatures.length) {
     // Not analyzing, but there are selected features.
@@ -306,7 +335,10 @@ function MessagesWhileNotAnalyzing(props: MessagesProps) {
           </MessageContent>
         </AnalysisMessageInner>
         <MessageControls>
-          <ButtonAnalyze analysisCallback={analysisCallback} datasetIds={datasetIds} />
+          <ButtonAnalyze
+            analysisCallback={analysisCallback}
+            datasetIds={datasetIds}
+          />
         </MessageControls>
       </AnalysisMessageWrapper>
     );
@@ -371,21 +403,20 @@ const Btn = styled(Button)`
   }
 `;
 
-function ButtonObsolete(props: { datasetIds: string[], analysisCallback: () => void }) {
+function ButtonObsolete(props: {
+  datasetIds: string[];
+  analysisCallback: () => void;
+}) {
   const { datasetIds, analysisCallback } = props;
   const { runAnalysis } = useAnalysisController();
 
   const handleClick = useCallback(() => {
     runAnalysis(datasetIds);
     analysisCallback();
-  },[datasetIds, analysisCallback, runAnalysis]);
+  }, [datasetIds, analysisCallback, runAnalysis]);
 
   return (
-    <Btn
-      variation='primary-fill'
-      size='small'
-      onClick={handleClick}
-    >
+    <Btn variation='primary-fill' size='small' onClick={handleClick}>
       Apply changes
     </Btn>
   );
@@ -406,21 +437,20 @@ function ButtonExit() {
   );
 }
 
-function ButtonAnalyze(props: { datasetIds: string[], analysisCallback: () => void }) {
+function ButtonAnalyze(props: {
+  datasetIds: string[];
+  analysisCallback: () => void;
+}) {
   const { datasetIds, analysisCallback } = props;
   const { runAnalysis } = useAnalysisController();
 
   const handleClick = useCallback(() => {
     runAnalysis(datasetIds);
     analysisCallback();
-  },[datasetIds, runAnalysis, analysisCallback]);
+  }, [datasetIds, runAnalysis, analysisCallback]);
 
   return (
-    <Btn
-      variation='primary-fill'
-      size='small'
-      onClick={handleClick}
-    >
+    <Btn variation='primary-fill' size='small' onClick={handleClick}>
       Run analysis
     </Btn>
   );

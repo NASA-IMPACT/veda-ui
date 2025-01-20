@@ -24,12 +24,16 @@ export const DRAW_POLYGON = 'draw_polygon';
 // accidentally dragging the selected or hand-drawn AOIs
 const customSimpleSelect = {
   ...MapboxDraw.modes.simple_select,
-  dragMove() { return; }
+  dragMove() {
+    return;
+  }
 };
 
 const customDirectSelect = {
   ...MapboxDraw.modes.direct_select,
-  dragFeature() { return; },
+  dragFeature() {
+    return;
+  }
 };
 
 export default function DrawControl(props: DrawControlProps) {

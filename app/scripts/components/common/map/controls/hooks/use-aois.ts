@@ -52,11 +52,14 @@ export default function useAois() {
     [aoiSetSelected]
   );
 
-  const onDrawModeChange = useCallback((e) => {
-    if (e.mode === SIMPLE_SELECT) {
-      setIsDrawing(false);
-    }
-  }, [setIsDrawing]);
+  const onDrawModeChange = useCallback(
+    (e) => {
+      if (e.mode === SIMPLE_SELECT) {
+        setIsDrawing(false);
+      }
+    },
+    [setIsDrawing]
+  );
 
   return {
     features,

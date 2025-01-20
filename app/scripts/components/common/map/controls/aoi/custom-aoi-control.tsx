@@ -76,11 +76,13 @@ function CustomAoI({
   const [selectedState, setSelectedState] = useState('');
   const [presetIds, setPresetIds] = useState([]);
   const [fileUploadedIds, setFileUplaodedIds] = useState([]);
-  const [updated, forceUpdate] = useState(0);   // @NOTE:  Needed so that this component re-renders to when the draw selection changes from feature to point.
+  const [updated, forceUpdate] = useState(0); // @NOTE:  Needed so that this component re-renders to when the draw selection changes from feature to point.
   const [isAreaSelected, setAreaSelected] = useState<boolean>(false);
   const [isPointSelected, setPointSelected] = useState<boolean>(false);
 
-  const [selectedForEditing, setSelectedForEditing] = useAtom(selectedForEditingAtom);
+  const [selectedForEditing, setSelectedForEditing] = useAtom(
+    selectedForEditingAtom
+  );
 
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
@@ -91,18 +93,18 @@ function CustomAoI({
     if (!map) return;
 
     const mbDraw = map?._drawControl;
-    setAreaSelected(!!(mbDraw?.getSelected().features.length));
-    setPointSelected(!!(mbDraw?.getSelectedPoints()?.features.length));
+    setAreaSelected(!!mbDraw?.getSelected().features.length);
+    setPointSelected(!!mbDraw?.getSelectedPoints()?.features.length);
   }, [map, updated]);
 
   useEffect(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
     const aoiSelectedFor = selectedForEditing ? SIMPLE_SELECT : STATIC_MODE;
-    const selectedFeatures = features.filter(f => f.selected);
+    const selectedFeatures = features.filter((f) => f.selected);
 
     if (selectedFeatures.length > 0) {
-      const selectedIds = selectedFeatures.map(f => f.id);
+      const selectedIds = selectedFeatures.map((f) => f.id);
       mbDraw.changeMode(aoiSelectedFor, {
         featureIds: selectedIds
       });
@@ -124,22 +126,22 @@ function CustomAoI({
   const resetForPresetSelect = useCallback(() => {
     resetAoisOnMap();
     setFileUplaodedIds([]);
-  },[resetAoisOnMap]);
+  }, [resetAoisOnMap]);
 
-  const resetForFileUploaded = useCallback(()=> {
+  const resetForFileUploaded = useCallback(() => {
     resetAoisOnMap();
     setSelectedState('');
     setPresetIds([]);
-  },[resetAoisOnMap]);
+  }, [resetAoisOnMap]);
 
-  const resetForEmptyState = useCallback(()=> {
+  const resetForEmptyState = useCallback(() => {
     resetAoisOnMap();
     setSelectedState('');
     setPresetIds([]);
     setFileUplaodedIds([]);
-  },[resetAoisOnMap]);
+  }, [resetAoisOnMap]);
 
-  const resetForDrawingAoi = useCallback(() =>  {
+  const resetForDrawingAoi = useCallback(() => {
     const mbDraw = map?._drawControl;
     if (!mbDraw) return;
 
@@ -159,54 +161,60 @@ function CustomAoI({
     setFileUplaodedIds([]);
     setPresetIds([]);
     setSelectedState('');
-  },[presetIds, fileUploadedIds]);
+  }, [presetIds, fileUploadedIds]);
 
-  const onConfirm = useCallback((features: Feature<Polygon>[]) => {
-    const mbDraw = map?._drawControl;
-    setAoIModalRevealed(false);
-    if (!mbDraw) return;
-    resetForFileUploaded();
-    onUpdate({ features });
-    const fc = {
-      type: 'FeatureCollection',
-      features
-    };
-    const bounds = bbox(fc);
-    const center = centroid(fc as AllGeoJSON).geometry.coordinates;
-    map.flyTo({
-      center,
-      zoom: getZoomFromBbox(bounds)
-    });
-    const addedAoisId = mbDraw.add(fc);
-    mbDraw.changeMode(STATIC_MODE, {
-      featureIds: addedAoisId
-    });
-    setFileUplaodedIds(addedAoisId);
-    setSelectedForEditing(false);
-  },[map, onUpdate, resetForFileUploaded, setSelectedForEditing]);
+  const onConfirm = useCallback(
+    (features: Feature<Polygon>[]) => {
+      const mbDraw = map?._drawControl;
+      setAoIModalRevealed(false);
+      if (!mbDraw) return;
+      resetForFileUploaded();
+      onUpdate({ features });
+      const fc = {
+        type: 'FeatureCollection',
+        features
+      };
+      const bounds = bbox(fc);
+      const center = centroid(fc as AllGeoJSON).geometry.coordinates;
+      map.flyTo({
+        center,
+        zoom: getZoomFromBbox(bounds)
+      });
+      const addedAoisId = mbDraw.add(fc);
+      mbDraw.changeMode(STATIC_MODE, {
+        featureIds: addedAoisId
+      });
+      setFileUplaodedIds(addedAoisId);
+      setSelectedForEditing(false);
+    },
+    [map, onUpdate, resetForFileUploaded, setSelectedForEditing]
+  );
 
-  const onPresetConfirm = useCallback((features: Feature<Polygon>[]) => {
-    const mbDraw = map?._drawControl;
-    if (!mbDraw) return;
-    resetForPresetSelect();
-    onUpdate({ features });
-    const fc = {
-      type: 'FeatureCollection',
-      features
-    };
-    const bounds = bbox(fc);
-    const center = centroid(fc as AllGeoJSON).geometry.coordinates;
-    map.flyTo({
-      center,
-      zoom: getZoomFromBbox(bounds)
-    });
-    const pids = mbDraw.add(fc);
-    setPresetIds(pids);
-    mbDraw.changeMode(STATIC_MODE, {
-      featureIds: pids
-    });
-    setSelectedForEditing(false);
-  },[map, onUpdate, resetForPresetSelect, setSelectedForEditing]);
+  const onPresetConfirm = useCallback(
+    (features: Feature<Polygon>[]) => {
+      const mbDraw = map?._drawControl;
+      if (!mbDraw) return;
+      resetForPresetSelect();
+      onUpdate({ features });
+      const fc = {
+        type: 'FeatureCollection',
+        features
+      };
+      const bounds = bbox(fc);
+      const center = centroid(fc as AllGeoJSON).geometry.coordinates;
+      map.flyTo({
+        center,
+        zoom: getZoomFromBbox(bounds)
+      });
+      const pids = mbDraw.add(fc);
+      setPresetIds(pids);
+      mbDraw.changeMode(STATIC_MODE, {
+        featureIds: pids
+      });
+      setSelectedForEditing(false);
+    },
+    [map, onUpdate, resetForPresetSelect, setSelectedForEditing]
+  );
 
   const toggleDrawing = useCallback(() => {
     const mbDraw = map?._drawControl;
@@ -363,4 +371,3 @@ export default function CustomAoIControl({
 
   return null;
 }
-

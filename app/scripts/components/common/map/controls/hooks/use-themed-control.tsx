@@ -37,7 +37,6 @@ export default function useThemedControl(
           rootRef.current?.unmount();
           rootRef.current = null;
         }
-
       }, 1);
     }
   }
