@@ -2,8 +2,8 @@ import { RefObject, useCallback, useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { Map as MapboxMap } from 'mapbox-gl';
 
-import { AoiChangeListenerOverload, AoiState } from './types';
-import { makeFeatureCollection } from './utils';
+import { AoiChangeListenerOverload, AoiState } from '../aoi/types';
+import { makeFeatureCollection } from '../aoi/utils';
 
 const DEFAULT_PARAMETERS = {
   drawing: false,

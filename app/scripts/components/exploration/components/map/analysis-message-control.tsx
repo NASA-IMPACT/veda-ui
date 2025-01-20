@@ -20,7 +20,7 @@ import {
 } from '$components/exploration/atoms/timeline';
 
 import useAois from '$components/common/map/controls/hooks/use-aois';
-import { calcFeatCollArea } from '$components/common/aoi/utils';
+import { calcFeatCollArea } from '$components/common/map/controls/aoi/utils';
 import { formatDateRange } from '$utils/date';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
