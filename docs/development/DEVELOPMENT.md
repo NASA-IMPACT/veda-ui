@@ -2,7 +2,7 @@
 
 ## Related Documentation
 - Read the [SETUP GUIDE](./SETUP.md) first to learn how to run the project locally.
-- Refer to [STYLE_GUIDE](./STYLE_GUIDE.md) docs to read about contribution guidelines.
+- Refer to [COLLABORATION](./COLLABORATION.md) docs to read about contribution guidelines.
 - Refer to [ARCHITECTURE](./ARCHITECTURE.md) docs to read about architecture.
 - Refer to [PAGE_OVERRIDES](./PAGE_OVERRIDES.md) for information about the component/content overriding feature.
 - Refer to [DEPLOYMENT](./DEPLOYMENT.md) for instructions how to deploy the project

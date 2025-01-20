@@ -1,4 +1,4 @@
-# Style Guide
+# Collaboration Guide
 
 This style guide is an evolving document and will be updated as the VEDA UI project develops. The following guidelines are designed to streamline the current development experience and ensure consistency among contributors. Please review and adhere to these guidelines when contributing to the project.
 
