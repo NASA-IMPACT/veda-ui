@@ -55,11 +55,11 @@ const FloatingBarSelf = styled.div`
   z-index: 100;
 `;
 
-function CustomAoI({
-  map,
+function AoiControl({
+  mapboxMap,
   disableReason
 }: {
-  map: mapboxgl.Map;
+  mapboxMap: mapboxgl.Map;
   disableReason?: React.ReactNode;
 }) {
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
@@ -108,12 +108,12 @@ function CustomAoI({
         number,
         number
       ];
-      map.flyTo({
+      mapboxMap.flyTo({
         center,
         zoom: getZoomFromBbox(bounds)
       });
     },
-    [map, onUpdate, resetForFileUploaded]
+    [mapboxMap, onUpdate, resetForFileUploaded]
   );
 
   const onPresetConfirm = useCallback(
@@ -129,12 +129,12 @@ function CustomAoI({
         number,
         number
       ];
-      map.flyTo({
+      mapboxMap.flyTo({
         center,
         zoom: getZoomFromBbox(bounds)
       });
     },
-    [map, onUpdate, resetForPresetSelect]
+    [mapboxMap, onUpdate, resetForPresetSelect]
   );
 
   const toggleDrawing = useCallback(() => {
@@ -182,7 +182,7 @@ function CustomAoI({
           </AnalysisToolbar>
         </div>
       </Tip>
-      <FloatingBar container={map.getContainer()}>
+      <FloatingBar container={mapboxMap.getContainer()}>
         {hasFeatures && (
           <Button size='small' variation='base-fill' onClick={onTrashClick}>
             <CollecticonTrashBin title='Delete selected' />{' '}
@@ -219,7 +219,7 @@ function FloatingBar(props: FloatingBarProps) {
   return createPortal(<FloatingBarSelf>{children}</FloatingBarSelf>, container);
 }
 
-export default function CustomAoIControl({
+export default function Wrapper({
   disableReason
 }: {
   disableReason?: React.ReactNode;
@@ -227,7 +227,7 @@ export default function CustomAoIControl({
   const { main } = useMaps();
 
   useThemedControl(
-    () => <CustomAoI map={main} disableReason={disableReason} />,
+    () => <AoiControl mapboxMap={main} disableReason={disableReason} />,
     {
       position: 'top-left'
     }
