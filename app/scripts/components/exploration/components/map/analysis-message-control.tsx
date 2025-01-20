@@ -118,6 +118,15 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
   }, [setObsolete, features]);
 
   const analysisCallback = useCallback(() => {
+    /*
+    const bounds = bbox(aoi) as LngLatBoundsLike;
+    mapboxMap.fitBounds(bounds, {
+      padding: 60
+    });
+
+    Using fitBounds causes an offset in the map, so we use flyTo instead.
+    */
+
     // Fit AOI
     const bboxToFit = bbox({
       type: 'FeatureCollection',
@@ -126,8 +135,8 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
     const zoom = bboxToFit ? getZoomFromBbox(bboxToFit) : 14;
     mainMap?.flyTo({
       center: [
-        (bboxToFit[2] + bboxToFit[0]) / 2,
-        (bboxToFit[3] + bboxToFit[1]) / 2
+        (bboxToFit[2] + bboxToFit[0]) / 2, // correcting the map offset by /2
+        (bboxToFit[3] + bboxToFit[1]) / 2 // correcting the map offset by /2
       ],
       zoom
     });

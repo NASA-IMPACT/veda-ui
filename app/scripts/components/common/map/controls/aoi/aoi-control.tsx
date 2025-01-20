@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { LngLatBoundsLike } from 'react-map-gl';
 import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
 import bbox from '@turf/bbox';
@@ -25,6 +24,7 @@ import PresetSelector from './preset-selector';
 
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
+import { getZoomFromBbox } from '$components/common/map/utils';
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
@@ -119,9 +119,24 @@ function AoiControl({
 
   useEffect(() => {
     if (mapboxMap && aoi) {
+      /*
       const bounds = bbox(aoi) as LngLatBoundsLike;
       mapboxMap.fitBounds(bounds, {
         padding: 60
+      });
+
+      Using fitBounds causes an offset in the map, so we use flyTo instead.
+      */
+
+      // Fit AOI
+      const bboxToFit = bbox(aoi);
+      const zoom = bboxToFit ? getZoomFromBbox(bboxToFit) : 14;
+      mapboxMap?.flyTo({
+        center: [
+          (bboxToFit[2] + bboxToFit[0]) / 2, // correcting the map offset by /2
+          (bboxToFit[3] + bboxToFit[1]) / 2 // correcting the map offset by /2
+        ],
+        zoom
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
