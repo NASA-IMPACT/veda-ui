@@ -24,7 +24,6 @@ import { projectionDefault } from '$components/common/map/controls/map-options/p
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { ExtendedStyle } from '$components/common/map/styles';
-import DrawControl from '$components/common/map/controls/aoi';
 import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 import { useVedaUI } from '$context/veda-ui-provider';
 
@@ -142,7 +141,6 @@ export function ExplorationMap(props: ExplorationMapProps) {
       )}
       {/* Map controls */}
       <MapControls>
-        <DrawControl />
         <CustomAoIControl
           disableReason={
             comparing && 'Analysis is not possible when comparing dates'

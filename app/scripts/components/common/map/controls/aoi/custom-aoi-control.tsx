@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
-import { useAtom, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import bbox from '@turf/bbox';
 import centroid from '@turf/centroid';
 import {
@@ -19,23 +19,13 @@ import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
 import CustomAoIModal from './custom-aoi-modal';
-import { aoiDeleteAllAtom, selectedForEditingAtom } from './atoms';
+import { aoiDeleteAllAtom } from './atoms';
 import PresetSelector from './preset-selector';
-import { DIRECT_SELECT, DRAW_POLYGON, SIMPLE_SELECT, STATIC_MODE } from './';
 
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
 import { getZoomFromBbox } from '$components/common/map/utils';
 import { ShortcutCode } from '$styles/shortcut-code';
-
-// 'moving' feature is disabled, match the cursor style accoringly
-export const aoiCustomCursorStyle = css`
-  &.mode-${STATIC_MODE} .mapboxgl-canvas-container,
-  &.feature-feature.mouse-drag .mapboxgl-canvas-container,
-  &.mouse-move .mapboxgl-canvas-container {
-    cursor: default;
-  }
-`;
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
@@ -69,105 +59,44 @@ function CustomAoI({
   map,
   disableReason
 }: {
-  map: any;
+  map: mapboxgl.Map;
   disableReason?: React.ReactNode;
 }) {
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
   const [selectedState, setSelectedState] = useState('');
-  const [presetIds, setPresetIds] = useState([]);
-  const [fileUploadedIds, setFileUplaodedIds] = useState([]);
-  const [updated, forceUpdate] = useState(0); // @NOTE:  Needed so that this component re-renders to when the draw selection changes from feature to point.
-  const [isAreaSelected, setAreaSelected] = useState<boolean>(false);
-  const [isPointSelected, setPointSelected] = useState<boolean>(false);
 
-  const [selectedForEditing, setSelectedForEditing] = useAtom(
-    selectedForEditingAtom
-  );
+  const [isAreaSelected] = useState<boolean>(false);
+  const [isPointSelected] = useState<boolean>(false);
 
   const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
 
-  // @NOTE: map?._drawControl?.getSelected() needs access to mapboxgl draw context store,
-  // but the function gets called before mapboxdraw store is initialized (before being added to map) resulting in an error
-  useEffect(() => {
-    if (!map) return;
-
-    const mbDraw = map?._drawControl;
-    setAreaSelected(!!mbDraw?.getSelected().features.length);
-    setPointSelected(!!mbDraw?.getSelectedPoints()?.features.length);
-  }, [map, updated]);
-
-  useEffect(() => {
-    const mbDraw = map?._drawControl;
-    if (!mbDraw) return;
-    const aoiSelectedFor = selectedForEditing ? SIMPLE_SELECT : STATIC_MODE;
-    const selectedFeatures = features.filter((f) => f.selected);
-
-    if (selectedFeatures.length > 0) {
-      const selectedIds = selectedFeatures.map((f) => f.id);
-      mbDraw.changeMode(aoiSelectedFor, {
-        featureIds: selectedIds
-      });
-    }
-    const onSelChange = () => forceUpdate(Date.now());
-    map.on('draw.selectionchange', onSelChange);
-    return () => {
-      map.off('draw.selectionchange', onSelChange);
-    };
-  }, [selectedForEditing]);
-
   const resetAoisOnMap = useCallback(() => {
-    const mbDraw = map?._drawControl;
-    if (!mbDraw) return;
-    mbDraw.deleteAll();
     aoiDeleteAll();
   }, [aoiDeleteAll]);
 
   const resetForPresetSelect = useCallback(() => {
     resetAoisOnMap();
-    setFileUplaodedIds([]);
   }, [resetAoisOnMap]);
 
   const resetForFileUploaded = useCallback(() => {
     resetAoisOnMap();
     setSelectedState('');
-    setPresetIds([]);
   }, [resetAoisOnMap]);
 
   const resetForEmptyState = useCallback(() => {
     resetAoisOnMap();
     setSelectedState('');
-    setPresetIds([]);
-    setFileUplaodedIds([]);
   }, [resetAoisOnMap]);
 
   const resetForDrawingAoi = useCallback(() => {
-    const mbDraw = map?._drawControl;
-    if (!mbDraw) return;
-
-    if (fileUploadedIds.length) {
-      mbDraw.changeMode(SIMPLE_SELECT, {
-        featureIds: fileUploadedIds
-      });
-      mbDraw.trash();
-    }
-
-    if (presetIds.length) {
-      mbDraw.changeMode(SIMPLE_SELECT, {
-        featureIds: presetIds
-      });
-      mbDraw.trash();
-    }
-    setFileUplaodedIds([]);
-    setPresetIds([]);
     setSelectedState('');
-  }, [presetIds, fileUploadedIds]);
+  }, []);
 
   const onConfirm = useCallback(
     (features: Feature<Polygon>[]) => {
-      const mbDraw = map?._drawControl;
       setAoIModalRevealed(false);
-      if (!mbDraw) return;
+
       resetForFileUploaded();
       onUpdate({ features });
       const fc = {
@@ -175,25 +104,20 @@ function CustomAoI({
         features
       };
       const bounds = bbox(fc);
-      const center = centroid(fc as AllGeoJSON).geometry.coordinates;
+      const center = centroid(fc as AllGeoJSON).geometry.coordinates as [
+        number,
+        number
+      ];
       map.flyTo({
         center,
         zoom: getZoomFromBbox(bounds)
       });
-      const addedAoisId = mbDraw.add(fc);
-      mbDraw.changeMode(STATIC_MODE, {
-        featureIds: addedAoisId
-      });
-      setFileUplaodedIds(addedAoisId);
-      setSelectedForEditing(false);
     },
-    [map, onUpdate, resetForFileUploaded, setSelectedForEditing]
+    [map, onUpdate, resetForFileUploaded]
   );
 
   const onPresetConfirm = useCallback(
     (features: Feature<Polygon>[]) => {
-      const mbDraw = map?._drawControl;
-      if (!mbDraw) return;
       resetForPresetSelect();
       onUpdate({ features });
       const fc = {
@@ -201,71 +125,26 @@ function CustomAoI({
         features
       };
       const bounds = bbox(fc);
-      const center = centroid(fc as AllGeoJSON).geometry.coordinates;
+      const center = centroid(fc as AllGeoJSON).geometry.coordinates as [
+        number,
+        number
+      ];
       map.flyTo({
         center,
         zoom: getZoomFromBbox(bounds)
       });
-      const pids = mbDraw.add(fc);
-      setPresetIds(pids);
-      mbDraw.changeMode(STATIC_MODE, {
-        featureIds: pids
-      });
-      setSelectedForEditing(false);
     },
-    [map, onUpdate, resetForPresetSelect, setSelectedForEditing]
+    [map, onUpdate, resetForPresetSelect]
   );
 
   const toggleDrawing = useCallback(() => {
-    const mbDraw = map?._drawControl;
-    if (!mbDraw) return;
     resetForDrawingAoi();
     setIsDrawing(!isDrawing);
-    setSelectedForEditing(true);
-  }, [map, isDrawing, setIsDrawing, resetForDrawingAoi]);
+  }, [isDrawing, setIsDrawing, resetForDrawingAoi]);
 
   const onTrashClick = useCallback(() => {
-    // We need to programmatically access the mapbox draw trash method which
-    // will do different things depending on the selected mode.
-    const mbDraw = map?._drawControl;
-    if (!mbDraw) return;
-
     setSelectedState('');
-    setPresetIds([]);
-    setFileUplaodedIds([]);
-    // This is a peculiar situation:
-    // If we are in direct select (to select/add vertices) but not vertex is
-    // selected, the trash method doesn't do anything. So, in this case, we
-    // trigger the delete for the whole feature.
-    const selectedFeatures = mbDraw.getSelected()?.features;
-
-    if (
-      mbDraw.getMode() === DIRECT_SELECT &&
-      selectedFeatures.length &&
-      !mbDraw.getSelectedPoints().features.length
-    ) {
-      // Change mode so that the trash action works.
-      mbDraw.changeMode(SIMPLE_SELECT, {
-        featureIds: selectedFeatures.map((f) => f.id)
-      });
-    }
-    // If we are in static mode, we need to change to simple_select to be able
-    // to delete those features
-    if (mbDraw.getMode() === STATIC_MODE) {
-      mbDraw.changeMode(SIMPLE_SELECT, {
-        featureIds: features.map((f) => f.id)
-      });
-    }
-    // If nothing selected, delete all.
-    if (features.every((f) => !f.selected)) {
-      mbDraw.deleteAll();
-      // The delete all method does not trigger the delete event, so we need to
-      // manually delete all the feature from the atom.
-      aoiDeleteAll();
-      return;
-    }
-    mbDraw.trash();
-  }, [features, aoiDeleteAll, map]);
+  }, []);
 
   const hasFeatures = !!features.length;
 
@@ -346,21 +225,6 @@ export default function CustomAoIControl({
   disableReason?: React.ReactNode;
 }) {
   const { main } = useMaps();
-  const { isDrawing } = useAois();
-
-  // Start the drawing mode when isDrawing is true
-  // There's no need to switch back to 'simple_select' mode when !isDrawing
-  // as Mapbox Draw handles this internally when the drawing is completed
-  useEffect(() => {
-    if (!main) return;
-    const mbDraw = main._drawControl;
-
-    if (!mbDraw) return;
-
-    if (isDrawing) {
-      mbDraw.changeMode(DRAW_POLYGON);
-    }
-  }, [main, isDrawing]);
 
   useThemedControl(
     () => <CustomAoI map={main} disableReason={disableReason} />,
