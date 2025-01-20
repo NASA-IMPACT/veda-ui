@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { LngLatBoundsLike } from 'react-map-gl';
 import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
 import { useSetAtom } from 'jotai';
 import bbox from '@turf/bbox';
-import centroid from '@turf/centroid';
+
 import {
   CollecticonPencil,
   CollecticonTrashBin,
@@ -14,7 +15,6 @@ import { Toolbar, ToolbarLabel, VerticalDivider } from '@devseed-ui/toolbar';
 import { Button } from '@devseed-ui/button';
 import { themeVal, glsp, disabled } from '@devseed-ui/theme-provider';
 
-import { AllGeoJSON } from '@turf/helpers';
 import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
@@ -24,7 +24,6 @@ import PresetSelector from './preset-selector';
 
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
-import { getZoomFromBbox } from '$components/common/map/utils';
 import { ShortcutCode } from '$styles/shortcut-code';
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
@@ -68,7 +67,7 @@ function AoiControl({
   const [isAreaSelected] = useState<boolean>(false);
   const [isPointSelected] = useState<boolean>(false);
 
-  const { onUpdate, isDrawing, setIsDrawing, features } = useAois();
+  const { aoi, onUpdate, isDrawing, setIsDrawing, features } = useAois();
   const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
 
   const resetAoisOnMap = useCallback(() => {
@@ -99,42 +98,16 @@ function AoiControl({
 
       resetForFileUploaded();
       onUpdate({ features });
-      const fc = {
-        type: 'FeatureCollection',
-        features
-      };
-      const bounds = bbox(fc);
-      const center = centroid(fc as AllGeoJSON).geometry.coordinates as [
-        number,
-        number
-      ];
-      mapboxMap.flyTo({
-        center,
-        zoom: getZoomFromBbox(bounds)
-      });
     },
-    [mapboxMap, onUpdate, resetForFileUploaded]
+    [onUpdate, resetForFileUploaded]
   );
 
   const onPresetConfirm = useCallback(
     (features: Feature<Polygon>[]) => {
       resetForPresetSelect();
       onUpdate({ features });
-      const fc = {
-        type: 'FeatureCollection',
-        features
-      };
-      const bounds = bbox(fc);
-      const center = centroid(fc as AllGeoJSON).geometry.coordinates as [
-        number,
-        number
-      ];
-      mapboxMap.flyTo({
-        center,
-        zoom: getZoomFromBbox(bounds)
-      });
     },
-    [mapboxMap, onUpdate, resetForPresetSelect]
+    [onUpdate, resetForPresetSelect]
   );
 
   const toggleDrawing = useCallback(() => {
@@ -147,6 +120,16 @@ function AoiControl({
   }, []);
 
   const hasFeatures = !!features.length;
+
+  useEffect(() => {
+    if (mapboxMap && aoi) {
+      const bounds = bbox(aoi) as LngLatBoundsLike;
+      mapboxMap.fitBounds(bounds, {
+        padding: 60
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aoi]); // only run on aoi change
 
   return (
     <>
