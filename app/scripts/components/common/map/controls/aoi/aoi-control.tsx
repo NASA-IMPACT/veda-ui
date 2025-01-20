@@ -17,6 +17,7 @@ import { themeVal, glsp, disabled } from '@devseed-ui/theme-provider';
 import useMaps from '../../hooks/use-maps';
 import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
+import { useDrawControl } from '../hooks/use-draw-control';
 import CustomAoIModal from './custom-aoi-modal';
 import PresetSelector from './preset-selector';
 
@@ -58,7 +59,7 @@ function AoiControl({
   mapboxMap: mapboxgl.Map;
   disableReason?: React.ReactNode;
 }) {
-  const { isDrawing, aoi, updateAoi, aoiDeleteAll } = useAois();
+  const { isDrawing, setIsDrawing, aoi, updateAoi, aoiDeleteAll } = useAois();
 
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
   const [selectedState, setSelectedState] = useState('');
@@ -83,6 +84,35 @@ function AoiControl({
 
   const onTrashClick = () => {
     resetAoi();
+  };
+
+  const [drawing, drawingIsValid] = useDrawControl({
+    mapboxMap: mapboxMap,
+    isDrawing
+  });
+
+  const drawingActions = {
+    confirm() {
+      if (drawingIsValid) {
+        resetAoi(); // delete all previous AOIs and clear selections
+
+        updateAoi({ features: drawing }); // set the drawn AOI
+        setIsDrawing(false); // leave drawing mode
+      }
+    },
+    cancel() {
+      setIsDrawing(false); // leave drawing mode, nothing else
+    },
+    start() {
+      setIsDrawing(true); // start drawing
+    },
+    toggle() {
+      if (isDrawing) {
+        drawingActions.confirm(); // finish drawing
+      } else {
+        drawingActions.start(); // start drawing
+      }
+    }
   };
 
   useEffect(() => {
@@ -111,13 +141,14 @@ function AoiControl({
               resetPreset={resetAoi}
             />
             <VerticalDivider />
-            {/* <TipToolbarIconButton
+            <TipToolbarIconButton
               tipContent='Draw an area of interest'
               tipProps={{ placement: 'bottom' }}
               active={isDrawing}
+              onClick={drawingActions.toggle}
             >
               <CollecticonPencil meaningful title='Draw AOI' />
-            </TipToolbarIconButton> */}
+            </TipToolbarIconButton>
             <TipToolbarIconButton
               tipContent='Upload area of interest'
               tipProps={{ placement: 'bottom' }}
