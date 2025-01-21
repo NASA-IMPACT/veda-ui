@@ -37,7 +37,8 @@ const getCoords = (mapInstance?: MapRef) => {
 export default function MapCoordsControl() {
   const { main } = useMaps();
 
-  const [position, setPosition] = useState(getCoords(main));
+  const defaultPosition = getCoords(main);
+  const [position, setPosition] = useState(defaultPosition);
 
   useEffect(() => {
     const posListener = (e) => {
@@ -49,7 +50,8 @@ export default function MapCoordsControl() {
     return () => {
       if (main) main.off('moveend', posListener);
     };
-  }, [main]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // do not include 'main' map instance to avoid unintended re-renders
 
   const { lng, lat } = position;
   const value = `W ${lng}, N ${lat}`;

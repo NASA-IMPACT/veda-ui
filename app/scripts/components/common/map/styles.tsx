@@ -172,7 +172,8 @@ export function Styles({
     );
     onStyleUpdate?.(mapStyle);
     setStyle(mapStyle as any);
-  }, [stylesData, onStyleUpdate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stylesData]);
 
   return (
     <StylesContext.Provider value={{ updateStyle, style, isCompared }}>

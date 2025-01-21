@@ -1,4 +1,3 @@
-
 import { Feature } from 'geojson';
 import { useEffect } from 'react';
 import useMaps from './use-maps';
@@ -36,5 +35,6 @@ export default function useLayerInteraction({
       mapInstance.off('mouseenter', layerId, onPointsEnter);
       mapInstance.off('mouseleave', layerId, onPointsLeave);
     };
-  }, [layerId, mapInstance, onClick]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [layerId]); // do not include mapInstance to avoid unintended re-renders
 }

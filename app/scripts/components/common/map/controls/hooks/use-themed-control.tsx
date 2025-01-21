@@ -48,7 +48,8 @@ export default function useThemedControl(
         <ThemeProvider theme={theme}>{renderFn() as any}</ThemeProvider>
       );
     }
-  }, [renderFn, theme]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [theme]); // Only re-render if the theme changes. Adding renderFn here would cause infinite loop
 
   useControl(() => new ThemedControl(), opts);
 
