@@ -2,15 +2,7 @@
   "hooks": {
     "after:release": "echo \"VERSION_NUMBER=v${version}\" >> \"$GITHUB_OUTPUT\" "
   },
-  "plugins": {
-    "@release-it/conventional-changelog": {
-      "preset": {
-        "name": "conventionalcommits"
-      }
-    }
-  },
   "git": {
-    "changelog": "git log --pretty=format:\"* %s (%h)\" ${from}...${to}",
     "commitMessage": "chore(release): update to version v${version}",
     "tagName": "v${version}",
     "tagAnnotation": "Release v${version}",
@@ -23,9 +15,30 @@
   "github": {
     "release": true,
     "releaseName": "v${version}",
-    "releaseNotes": null,
     "autoGenerate": false,
     "preRelease": false,
     "draft": false
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "infile": "CHANGELOG.md",
+      "preset": {
+        "name": "conventionalcommits",
+        "header": "",
+        "type": [
+          {
+            "type": "feat",
+            "section": "Features"
+          },
+          {
+            "type": "fix",
+            "section": "Bug Fixes"
+          }
+        ],
+        "parserOpts": {
+          "mergePattern": "^(feat|fix|docs|test|ci|refactor|chore|revert)"
+        }
+      }
+    }
   }
 }
