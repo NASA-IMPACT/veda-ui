@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Layer as MapGLLayer, Source as MapGLSource } from 'react-map-gl';
-import type { LineLayer } from 'react-map-gl';
 
 import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
 import {
@@ -11,6 +9,7 @@ import {
 import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
 import { ShowTourControl } from './tour-control';
+import AoiLayer from './aoi-layer';
 import { ProjectionOptions } from '$types/veda';
 
 import Map, { Compare, MapControls } from '$components/common/map';
@@ -152,24 +151,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
           }
         />
 
-        {aoi && (
-          // This is a GeoJSON source and Layer to display the AOI
-          <MapGLSource id='aoi' key='aoi' type='geojson' data={aoi}>
-            <MapGLLayer
-              {...({
-                id: 'aoi-layer',
-                source: 'aoi', // References the GeoJSON source defined above
-                // // and does not require a `source-layer`
-                // 'source-layer': 'aoi',
-                type: 'line',
-                paint: {
-                  'line-color': '#008888',
-                  'line-width': 5
-                }
-              } as LineLayer)}
-            />
-          </MapGLSource>
-        )}
+        {aoi && <AoiLayer aoi={aoi} />}
 
         <AnalysisMessageControl />
         <GeocoderControl envMapboxToken={envMapboxToken} />
