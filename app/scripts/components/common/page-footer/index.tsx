@@ -22,7 +22,6 @@ interface PageFooterProps {
   linkProperties: LinkProperties;
 }
 
-//TODO: clean up PageFooterProps, Unexpected any. Specify a different interface.
 
 export default function PageFooter({
   mainNavItems,
