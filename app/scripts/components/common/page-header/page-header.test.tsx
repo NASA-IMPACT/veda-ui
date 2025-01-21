@@ -3,9 +3,9 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { BrowserRouter } from 'react-router-dom';
-import UIProviders from '../../../ui-providers';
 import { navItems } from '../../../../../mock/veda.config.js';
 import NasaLogoColor from '../nasa-logo-color';
+import { VedaUIConfigProvider } from '../../../../../test/utils.js';
 import { NavItem } from './types';
 import PageHeader from './index';
 
@@ -21,14 +21,14 @@ describe('PageHeader', () => {
   beforeEach(() => {
     render(
       <BrowserRouter basename=''>
-        <UIProviders>
+        <VedaUIConfigProvider>
           <PageHeader
             mainNavItems={mockMainNavItems}
             subNavItems={mockSubNavItems}
             logoSvg={<NasaLogoColor />}
             title={testTitle}
           />
-        </UIProviders>
+        </VedaUIConfigProvider>
       </BrowserRouter>
     );
   });

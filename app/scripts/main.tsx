@@ -1,7 +1,13 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import T from 'prop-types';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import {
+  Link,
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation
+} from 'react-router-dom';
 
 import '$styles/styles.scss';
 
@@ -9,7 +15,6 @@ import { userPages } from 'veda';
 import DevseedUiThemeProvider from './theme-provider';
 
 import { discoveryRoutes } from './redirects';
-import UIProviders from './ui-providers';
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
 import LayoutRoot from '$components/common/layout-root';
@@ -50,13 +55,30 @@ import {
   STORIES_PATH,
   EXPLORATION_PATH
 } from '$utils/routes';
+import { VedaUIProvider } from '$context/veda-ui-provider';
 
 const composingComponents = [
   // Add contexts here.
   ErrorBoundary,
   ReactQueryProvider,
   LayoutRootContextProvider,
-  ({ children }) => <UIProviders>{children}</UIProviders>
+  ({ children }) => (
+    <VedaUIProvider
+      config={{
+        envMapboxToken: process.env.MAPBOX_TOKEN ?? '',
+        envApiStacEndpoint: process.env.API_STAC_ENDPOINT ?? '',
+        envApiRasterEndpoint: process.env.API_RASTER_ENDPOINT ?? '',
+        navigation: {
+          LinkComponent: Link,
+          linkProps: {
+            pathAttributeKeyName: 'to'
+          }
+        }
+      }}
+    >
+      {children}
+    </VedaUIProvider>
+  )
 ];
 
 function ScrollTop() {
