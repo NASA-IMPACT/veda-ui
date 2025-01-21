@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExternalNavLink, InternalNavLink } from '../types';
-import { LinkProperties } from '$types/veda';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 interface NavItemExternalLinkProps {
   item: ExternalNavLink;
@@ -8,7 +8,6 @@ interface NavItemExternalLinkProps {
 
 interface NavItemInternalLinkProps {
   item: InternalNavLink;
-  linkProperties: LinkProperties;
 }
 
 export const NavItemExternalLink = ({ item }: NavItemExternalLinkProps) => {
@@ -26,26 +25,22 @@ export const NavItemExternalLink = ({ item }: NavItemExternalLinkProps) => {
   );
 };
 
-export const NavItemInternalLink = ({
-  item,
-  linkProperties
-}: NavItemInternalLinkProps) => {
-  if (linkProperties.LinkElement) {
-    const path = {
-      [linkProperties.pathAttributeKeyName]: (item as InternalNavLink).to
-    };
-    const LinkElement = linkProperties.LinkElement;
-    return (
-      <LinkElement
-        key={item.id}
-        {...path}
-        className='usa-nav__link'
-        id={item.id}
-      >
-        <span>{item.title}</span>
-      </LinkElement>
-    );
-  }
-  // If the link provided is invalid, do not render the element
-  return null;
+export const NavItemInternalLink = ({ item }: NavItemInternalLinkProps) => {
+  const {
+    navigation: { LinkComponent, linkProps }
+  } = useVedaUI();
+
+  const path = {
+    [linkProps.pathAttributeKeyName]: (item as InternalNavLink).to
+  };
+  return (
+    <LinkComponent
+      key={item.id}
+      {...path}
+      className='usa-nav__link'
+      id={item.id}
+    >
+      <span>{item.title}</span>
+    </LinkComponent>
+  );
 };

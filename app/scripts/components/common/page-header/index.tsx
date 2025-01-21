@@ -10,12 +10,11 @@ import {
   USWDSNavMenuButton,
   USWDSExtendedNav
 } from '$uswds';
-import { LinkProperties } from '$types/veda';
+
 interface PageHeaderProps {
   mainNavItems: NavItem[];
   subNavItems: NavItem[];
   logoSvg?: SVGElement | JSX.Element;
-  linkProperties: LinkProperties;
   title: string;
   version?: string;
   accessibilityHomeShortCutText?: string;
@@ -25,7 +24,6 @@ export default function PageHeader({
   mainNavItems,
   subNavItems,
   logoSvg: Logo,
-  linkProperties,
   title,
   version,
   accessibilityHomeShortCutText
@@ -44,14 +42,13 @@ export default function PageHeader({
   }, []);
 
   const primaryItems = useMemo(
-    () =>
-      createDynamicNavMenuList(mainNavItems, linkProperties, isOpen, setIsOpen),
-    [mainNavItems, linkProperties, isOpen]
+    () => createDynamicNavMenuList(mainNavItems, isOpen, setIsOpen),
+    [mainNavItems, isOpen]
   );
 
   const secondaryItems = useMemo(
-    () => createDynamicNavMenuList(subNavItems, linkProperties),
-    [subNavItems, linkProperties]
+    () => createDynamicNavMenuList(subNavItems),
+    [subNavItems]
   );
 
   const skipNav = (e) => {
@@ -64,22 +61,13 @@ export default function PageHeader({
 
   return (
     <>
-      <button
-        type='button'
-        className='usa-skipnav'
-        onClick={skipNav}
-      >
+      <button type='button' className='usa-skipnav' onClick={skipNav}>
         {accessibilityHomeShortCutText || 'Skip to main content'}
       </button>
       <USWDSHeader extended={true} showMobileOverlay={expanded}>
         <div className='usa-navbar'>
           <USWDSHeaderTitle>
-            <LogoContainer
-              linkProperties={linkProperties}
-              LogoSvg={Logo}
-              title={title}
-              version={version}
-            />
+            <LogoContainer LogoSvg={Logo} title={title} version={version} />
           </USWDSHeaderTitle>
           <USWDSNavMenuButton onClick={toggleExpansion} label='Menu' />
         </div>
