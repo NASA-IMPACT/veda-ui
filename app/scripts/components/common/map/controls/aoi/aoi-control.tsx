@@ -171,14 +171,16 @@ function AoiControl({
           </AnalysisToolbar>
         </div>
       </Tip>
-      <FloatingBar container={mapboxMap.getContainer()}>
-        {!!aoi && (
-          <Button size='small' variation='base-fill' onClick={onTrashClick}>
-            <CollecticonTrashBin title='Delete area' />
-            Delete area
-          </Button>
-        )}
-      </FloatingBar>
+      {!isDrawing && (
+        <FloatingBar container={mapboxMap.getContainer()}>
+          {!!aoi && (
+            <Button size='small' variation='base-fill' onClick={onTrashClick}>
+              <CollecticonTrashBin title='Delete area' />
+              Delete area
+            </Button>
+          )}
+        </FloatingBar>
+      )}
       <CustomAoIModal
         revealed={aoiModalRevealed}
         onConfirm={onUploadConfirm}

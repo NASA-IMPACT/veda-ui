@@ -127,7 +127,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
     [datasets, setDatasets]
   );
 
-  const { aoi } = useAois();
+  const { aoi, isDrawing } = useAois();
 
   return (
     <Map id='exploration' projection={projection} onStyleUpdate={onStyleUpdate}>
@@ -153,7 +153,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
 
         {aoi && <AoiLayer aoi={aoi} />}
 
-        <AnalysisMessageControl />
+        {!isDrawing && <AnalysisMessageControl />}
         <GeocoderControl envMapboxToken={envMapboxToken} />
         <MapOptionsControl
           envMapboxToken={envMapboxToken}
