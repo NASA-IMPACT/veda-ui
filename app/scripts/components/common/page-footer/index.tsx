@@ -14,7 +14,6 @@ import {
 } from '$components/common/uswds';
 
 interface PageFooterProps {
-  //use of NavItem is causing issues with TS and throwing erros in the .
   mainNavItems: (NavLinkItem | DropdownNavLink | ActionNavItem)[];
   subNavItems: (NavLinkItem | DropdownNavLink | ActionNavItem)[];
   hideFooter?: boolean;
