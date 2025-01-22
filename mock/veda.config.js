@@ -4,12 +4,12 @@ const { parsed: config } = dotEnvConfig;
 let mainNavItems = [
   {
     id: 'test',
-    title: 'Test',
+    title: 'TestDropdown1',
     type: 'dropdown',
     children: [
       {
         id: 'dropdown-menu-item-1',
-        title: 'dropdown menu item 1',
+        title: 'route to stories',
         to: '/stories',
         type: 'internalLink'
       }
@@ -17,13 +17,13 @@ let mainNavItems = [
   },
   {
     id: 'another-test',
-    title: 'Another Test',
+    title: 'TestDropdown2',
     type: 'dropdown',
     children: [
       {
         id: 'dropdown-menu-item-2',
-        title: 'dropdown menu item 2',
-        to: '/stories',
+        title: 'route to about',
+        to: '/about',
         type: 'internalLink'
       }
     ]
