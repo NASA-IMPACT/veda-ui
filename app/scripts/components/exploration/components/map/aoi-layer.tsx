@@ -20,11 +20,10 @@ const AoiLayer = ({ aoi }: AoiLayerProps) => {
       mapboxMap.fitBounds(bounds, {
         padding: 60
       });
-
-      Using fitBounds causes an offset in the map, so we use flyTo instead.
       */
 
       // Fit AOI
+      // The `flyTo` method is used instead of `fitBounds` to ensure compatibility with map projections other than Web Mercator.
       const bboxToFit = bbox(aoi);
       const zoom = bboxToFit ? getZoomFromBbox(bboxToFit) : 14;
       mapboxMap?.flyTo({
