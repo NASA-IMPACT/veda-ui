@@ -1,6 +1,7 @@
-import React, { createContext, ReactNode, useContext } from 'react';
+import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { DATASETS_PATH, STORIES_PATH } from '$utils/routes';
 import { isExternalLink } from '$utils/url';
+import { SetState } from '$types/aliases';
 
 interface EnvironmentConfig {
   envMapboxToken: string;
@@ -31,6 +32,8 @@ interface VedaUIConfig extends EnvironmentConfig {
   navigation: NavigationConfig;
   routes: RoutesConfig;
   Link: React.FC<LinkProps>;
+  feedbackModalRevealed: boolean;
+  setFeedbackModalRevealed: SetState<boolean>;
 }
 
 interface VedaUIProviderProps {
@@ -81,6 +84,9 @@ export function useVedaUI(): VedaUIConfig {
 }
 
 export function VedaUIProvider({ config, children }: VedaUIProviderProps) {
+  const [feedbackModalRevealed, setFeedbackModalRevealed] =
+    useState<boolean>(false);
+
   const navigation = {
     ...defaultNavigation,
     ...config.navigation
@@ -115,7 +121,9 @@ export function VedaUIProvider({ config, children }: VedaUIProviderProps) {
     ...config,
     navigation,
     routes,
-    Link
+    Link,
+    feedbackModalRevealed,
+    setFeedbackModalRevealed
   };
 
   validateConfig(fullConfig);

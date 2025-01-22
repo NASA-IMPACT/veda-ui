@@ -1,7 +1,7 @@
 import React from 'react';
 import GoogleForm from '../../google-form';
-import { useFeedbackModal } from '../../layout-root';
 import { ActionNavItem } from '../types';
+import { useFeedbackModal } from '$utils/use-feedback-modal';
 
 interface NavItemCTAProps {
   item: ActionNavItem;
