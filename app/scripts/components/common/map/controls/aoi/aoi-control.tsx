@@ -4,14 +4,13 @@ import { Feature, Polygon } from 'geojson';
 import styled, { css } from 'styled-components';
 
 import {
-  CollecticonCircleTick,
-  CollecticonCircleXmark,
+  CollecticonTick,
+  CollecticonXmark,
   CollecticonPencil,
   CollecticonTrashBin,
   CollecticonUpload2
 } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarLabel, VerticalDivider } from '@devseed-ui/toolbar';
-import { Button } from '@devseed-ui/button';
 import { themeVal, glsp, disabled } from '@devseed-ui/theme-provider';
 
 import useMaps from '../../hooks/use-maps';
@@ -23,6 +22,7 @@ import PresetSelector from './preset-selector';
 
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
+import { USWDSButton, USWDSButtonGroup } from '$components/common/uswds';
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
@@ -125,24 +125,29 @@ function AoiControl({
             data-tour='analysis-tour'
           >
             {isDrawing ? (
-              <>
-                <TipToolbarIconButton
-                  tipContent='Confirm AOI'
-                  tipProps={{ placement: 'bottom' }}
+              <USWDSButtonGroup className='margin-neg-05 margin-right-0'>
+                <USWDSButton
                   onClick={drawingActions.confirm}
+                  type='button'
+                  inverse
                   disabled={!drawingIsValid}
+                  size='small'
+                  className='padding-top-05 padding-right-105 padding-bottom-05 padding-left-105'
                 >
-                  <CollecticonCircleTick meaningful title='Confirm AOI' />
-                </TipToolbarIconButton>
-
-                <TipToolbarIconButton
-                  tipContent='Cancel drawing'
-                  tipProps={{ placement: 'bottom' }}
+                  <CollecticonTick aria-hidden='true' />
+                  Confirm Area
+                </USWDSButton>
+                <USWDSButton
                   onClick={drawingActions.cancel}
+                  type='button'
+                  base
+                  size='small'
+                  className='padding-top-05 padding-right-105 padding-bottom-05 padding-left-105'
                 >
-                  <CollecticonCircleXmark meaningful title='Cancel drawing' />
-                </TipToolbarIconButton>
-              </>
+                  <CollecticonXmark aria-hidden='true' />
+                  Cancel
+                </USWDSButton>
+              </USWDSButtonGroup>
             ) : (
               <>
                 <PresetSelector
@@ -171,16 +176,22 @@ function AoiControl({
           </AnalysisToolbar>
         </div>
       </Tip>
-      {!isDrawing && (
+
+      {!isDrawing && !!aoi && (
         <FloatingBar container={mapboxMap.getContainer()}>
-          {!!aoi && (
-            <Button size='small' variation='base-fill' onClick={onTrashClick}>
-              <CollecticonTrashBin title='Delete area' />
-              Delete area
-            </Button>
-          )}
+          <USWDSButton
+            onClick={onTrashClick}
+            type='button'
+            base
+            size='small'
+            className='padding-top-05 padding-right-105 padding-bottom-05 padding-left-105'
+          >
+            <CollecticonTrashBin title='Delete area' />
+            Delete area
+          </USWDSButton>
         </FloatingBar>
       )}
+
       <CustomAoIModal
         revealed={aoiModalRevealed}
         onConfirm={onUploadConfirm}
