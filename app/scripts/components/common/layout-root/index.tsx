@@ -11,12 +11,12 @@ import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
 import { NavLink } from 'react-router-dom';
-
 import {
   getBannerFromVedaConfig,
   getCookieConsentFromVedaConfig,
   getSiteAlertFromVedaConfig
 } from 'veda';
+import { footerSettings } from '../page-footer/default-config';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
 import PageFooterLegacy from '../page-footer-legacy';
@@ -120,6 +120,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
           hideFooter={hideFooter}
           linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
           logoSvg={<NasaLogoColor />}
+          footerSettings={footerSettings}
         />
       ) : (
         <PageFooterLegacy hideFooter={hideFooter} />
