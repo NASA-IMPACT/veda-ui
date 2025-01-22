@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Feature, Polygon } from 'geojson';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import {
   CollecticonTick,
@@ -20,6 +20,7 @@ import { useDrawControl } from '../hooks/use-draw-control';
 import CustomAoIModal from './custom-aoi-modal';
 import PresetSelector from './preset-selector';
 
+import { computeDrawStyles } from './style';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
 import { USWDSButton, USWDSButtonGroup } from '$components/common/uswds';
@@ -59,6 +60,7 @@ function AoiControl({
   mapboxMap: mapboxgl.Map;
   disableReason?: React.ReactNode;
 }) {
+  const theme = useTheme();
   const { isDrawing, setIsDrawing, aoi, updateAoi, aoiDeleteAll } = useAois();
 
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
@@ -88,7 +90,8 @@ function AoiControl({
 
   const [drawing, drawingIsValid] = useDrawControl({
     mapboxMap: mapboxMap,
-    isDrawing
+    isDrawing,
+    styles: computeDrawStyles(theme)
   });
 
   const drawingActions = {

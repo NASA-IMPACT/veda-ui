@@ -6,6 +6,7 @@ import { Feature } from 'geojson';
 interface DrawAOIProps {
   mapboxMap: mapboxgl.Map | null;
   isDrawing: boolean;
+  styles: Array<object>;
 }
 
 interface DrawControlState {
@@ -25,7 +26,8 @@ interface DrawControlState {
  */
 export const useDrawControl = ({
   mapboxMap,
-  isDrawing
+  isDrawing,
+  styles
 }: DrawAOIProps): [Feature | Feature[] | null, boolean] => {
   const [{ drawing, isValid }, setDrawing] = useState<DrawControlState>({
     drawing: null,
@@ -42,8 +44,8 @@ export const useDrawControl = ({
 
       drawControl.current = new MapboxDraw({
         displayControlsDefault: false,
-        defaultMode: 'draw_polygon'
-        // styles: props.styles, // TODO
+        defaultMode: 'draw_polygon',
+        styles
       }); // init drawControl
 
       mapboxMap.addControl(drawControl.current);
