@@ -4,6 +4,7 @@
   display: flex;
   font-family: themeVars.$veda-uswds-basefont-sans;
   gap: themeVars.$veda-uswds-spacing-105;
+  max-height: 2.5rem;
 
   #logo-container-link {
     display: flex;
@@ -14,23 +15,10 @@
     color: themeVars.$veda-uswds-color-base-ink;
   }
 
-  #nasa-logo-pos {
-    opacity: 1;
-    transform: translate(0, -100%);
-    /* TODO: Fix the svg to not require any styles!
-     * - set opacity to 1 in svg and fix translation
-     */
-  }
-
   @media (width <= themeVars.$veda-uswds-spacing-desktop) {
-    #nasa-logo-pos {
+    svg {
       display: none;
     }
-  }
-
-  svg {
-    height: 2.5rem;
-    width: auto;
   }
 
   #logo-container-beta-tag {

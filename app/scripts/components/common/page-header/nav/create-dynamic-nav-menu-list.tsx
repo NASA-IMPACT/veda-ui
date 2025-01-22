@@ -10,6 +10,7 @@ export const createDynamicNavMenuList = (
   isOpen?: boolean[],
   setIsOpen?: SetState<boolean[]>
 ): JSX.Element[] => {
+  // @TODO:Need to elevate this functionality to outside of the header. Allow this function to take classname as an argument so we can dynamcally create different types of links across multiple compoenents and apply various visual styling.
   return navItems.map((item, index) => {
     switch (item.type) {
       case NavItemType.DROPDOWN:

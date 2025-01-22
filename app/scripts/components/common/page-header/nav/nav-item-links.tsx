@@ -1,6 +1,7 @@
 import React from 'react';
-import { ExternalNavLink, InternalNavLink } from '../types';
+import { ExternalNavLink, InternalNavLink } from '../../types';
 import { useVedaUI } from '$context/veda-ui-provider';
+
 
 interface NavItemExternalLinkProps {
   item: ExternalNavLink;

@@ -1,12 +1,11 @@
 import { getString, getNavItemsFromVedaConfig } from 'veda';
-import {
-  InternalNavLink,
-  ExternalNavLink,
-  DropdownNavLink,
-  NavItemType,
-  ActionNavItem
-} from '$components/common/page-header/types';
+import { InternalNavLink, ExternalNavLink } from '../types';
 
+import {
+  ActionNavItem,
+  DropdownNavLink,
+  NavItemType
+} from '$components/common/page-header/types';
 import {
   STORIES_PATH,
   DATASETS_PATH,
@@ -22,6 +21,7 @@ let defaultMainNavItems: (
 )[] = [
   {
     id: 'data-catalog',
+
     title: 'Data Catalog',
     to: DATASETS_PATH,
     type: NavItemType.INTERNAL_LINK
@@ -80,5 +80,4 @@ const mainNavItems =
   getNavItemsFromVedaConfig()?.mainNavItems ?? defaultMainNavItems;
 const subNavItems =
   getNavItemsFromVedaConfig()?.subNavItems ?? defaultSubNavItems;
-
 export { mainNavItems, subNavItems };
