@@ -206,7 +206,7 @@ function MapBlock(props: MapBlockProps) {
         parallels: projectionParallels
       });
       return {
-        ...projection,
+        ...(projection as object),
         id: projectionId
       };
     } else {

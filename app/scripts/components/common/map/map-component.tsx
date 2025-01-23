@@ -1,6 +1,7 @@
 import React, { useCallback, ReactElement, useMemo, Ref } from 'react';
 import ReactMapGlMap, { LngLatBoundsLike, MapRef } from 'react-map-gl';
 import { debounce } from 'lodash';
+import { ProjectionSpecification } from 'mapbox-gl';
 import useMapStyle from './hooks/use-map-style';
 import { useMapsContext } from './hooks/use-maps';
 import { convertProjectionToMapbox } from './controls/map-options/projections';
@@ -81,7 +82,7 @@ export default function MapComponent({
       mapStyle={style as any}
       onMove={onMove}
       onLoad={onMapLoad}
-      projection={mapboxProjection}
+      projection={mapboxProjection as ProjectionSpecification}
       maxBounds={maxMapBounds}
       interactive={interactive}
     >

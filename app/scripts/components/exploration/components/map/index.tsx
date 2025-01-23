@@ -102,7 +102,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
 
         // Check if there's layer information for this dataset.
         const layerMetadata = style.layers.find(
-          (l) => l.metadata?.id === dataset.data.id
+          (l) => (l.metadata as { id: string }).id === dataset.data.id
         );
 
         // Skip if no metadata.
@@ -115,8 +115,10 @@ export function ExplorationMap(props: ExplorationMapProps) {
           meta: {
             ...currentMeta,
             tileUrls: {
-              wmtsTileUrl: layerMetadata.metadata.wmtsTileUrl,
-              xyzTileUrl: layerMetadata.metadata.xyzTileUrl
+              wmtsTileUrl: (layerMetadata.metadata as { wmtsTileUrl: string })
+                .wmtsTileUrl,
+              xyzTileUrl: (layerMetadata.metadata as { xyzTileUrl: string })
+                .xyzTileUrl
             }
           }
         };

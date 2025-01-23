@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import qs from 'qs';
-import { RasterSource, RasterLayer } from 'mapbox-gl';
+import { RasterSourceSpecification, RasterLayerSpecification } from 'mapbox-gl';
 
 import { BaseGeneratorParams } from '../types';
 import useMapStyle from '../hooks/use-map-style';
@@ -56,14 +56,14 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
         arrayFormat: 'comma'
       });
 
-      const zarrSource: RasterSource = {
+      const zarrSource: RasterSourceSpecification = {
         type: 'raster',
         url: `${tileApiEndpoint}?${tileParamsAsString}`
       };
 
       const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
-      const zarrLayer: RasterLayer = {
+      const zarrLayer: RasterLayerSpecification = {
         id: id,
         type: 'raster',
         source: id,
@@ -93,6 +93,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     },
     // sourceParams not included, but using a stringified version of it to
     // detect changes (haveSourceParamsChanged)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       updateStyle,
       id,
