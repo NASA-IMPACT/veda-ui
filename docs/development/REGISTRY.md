@@ -14,9 +14,9 @@ After successfully building the library, link the project to your local environm
 ```
 yarn link
 ```
-Then change your directory to the project that is using veda-ui, which has `@developmentseed/veda-ui` as a dependency. Create a local alias for VEDA-UI by running:
+Then change your directory to the project that is using veda-ui, which has `@teamimpact/veda-ui` as a dependency. Create a local alias for VEDA-UI by running:
 ```
-yarn link @developmentseed/veda-ui
+yarn link @teamimpact/veda-ui
 ```
 
 Your project should now use the local version of the VEDA-UI library.
@@ -29,7 +29,26 @@ Note: Package publishing is not yet part of the CI system since the library is s
 
 ### Publish
 
-As of January 2025, VEDA-UI is being published to the public NPM registry under the @developmentseed scope. To publish the package, authenticate using your NPM credentials. Run the following command to test the publishing process before pushing live:
+As of January 2025, VEDA-UI is published to NASA IMPACT's npm registry.
+
+## Authentication
+
+To publish the package, make sure you are authenticated with teamimpact's NPM registry. Use the following steps to set up authentication and scope:
+
+1. Set the scoped registry for @teamimpact:
+
+```
+npm config set @teamimpact:registry=https://registry.npmjs.org/
+```
+
+2. Add your authentication token for the registry:
+
+```
+npm config set //registry.npmjs.org/:_authToken=<your-token>
+```
+Replace <your-token> with the actual token provided to you.
+
+Before publishing live, test the process with:
 
 ```
 npm publish --dry-run
@@ -49,7 +68,7 @@ For example, if the current version is v5.7.0 and further changes are necessary 
 To check the latest version in the registry and ensure proper versioning, run:
 
 ```
-npm view @developmentseed/veda-ui version
+npm view @teamimpact/veda-ui version
 ```
 
 Currently, developers manually update the version number in the package.json file to publish with pre-release tags (instead of using npm tag) because a formal release cycle for the library has not yet been established.
