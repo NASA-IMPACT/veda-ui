@@ -33,7 +33,7 @@ import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 
-import { CardSourcesList } from '$components/common/card-sources';
+import { CardSourcesList } from '$components/common/card-sources-list';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,

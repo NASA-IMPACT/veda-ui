@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { listReset } from '@devseed-ui/theme-provider';
 import { useVedaUI } from '$context/veda-ui-provider';
-import { LinkProperties, TaxonomyItem } from '$types/veda';
+import { TaxonomyItem } from '$types/veda';
 
 import { FilterActions } from '$components/common//catalog/utils';
 
