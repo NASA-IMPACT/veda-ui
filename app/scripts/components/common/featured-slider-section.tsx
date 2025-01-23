@@ -125,7 +125,6 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                             <DatasetClassification dataset={d} />
                           )}
                           <CardSourcesList
-                            linkProperties={linkProperties}
                             sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                           />
                           <VerticalDivider variation='light' />

@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { listReset } from '@devseed-ui/theme-provider';
+import { useVedaUI } from '$context/veda-ui-provider';
 import { LinkProperties, TaxonomyItem } from '$types/veda';
+
 import { FilterActions } from '$components/common//catalog/utils';
 
 const SourcesUl = styled.ul`
@@ -20,18 +22,18 @@ const SourcesUl = styled.ul`
 
 interface SourcesListProps {
   sources?: TaxonomyItem[];
-  onSourceClick?: (v: string) => void;
   rootPath?: string;
-  linkProperties?: LinkProperties;
 }
 
 export function CardSourcesList(props: SourcesListProps) {
-  const { sources, onSourceClick, linkProperties, rootPath } = props;
-  const { LinkElement, pathAttributeKeyName } = linkProperties as { LinkElement: React.ElementType, pathAttributeKeyName: string };
+  const { sources, rootPath } = props;
+
+  const { Link } = useVedaUI();
+
   if (!sources?.length) return null;
 
   // No link rendering
-  if (!rootPath || !onSourceClick) {
+  if (!rootPath) {
     return (
       <div>
         <span>By</span>{' '}
@@ -50,19 +52,15 @@ export function CardSourcesList(props: SourcesListProps) {
       <SourcesUl>
         {sources.map((source) => (
           <li key={source.id}>
-            <LinkElement
-              {...{[pathAttributeKeyName]:`${rootPath}?${FilterActions.TAXONOMY}=${encodeURIComponent(
+            <Link
+              to={`${rootPath}?${FilterActions.TAXONOMY}=${encodeURIComponent(
                 JSON.stringify({
                   Source: source.id
                 })
-              )}`}}
-              onClick={(e) => {
-                e.preventDefault();
-                onSourceClick(source.id);
-              }}
+              )}`}
             >
               {source.name}
-            </LinkElement>
+            </Link>
           </li>
         ))}
       </SourcesUl>
