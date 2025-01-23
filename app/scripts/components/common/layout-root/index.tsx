@@ -10,6 +10,8 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
+import { NavLink } from 'react-router-dom';
+
 import {
   getBannerFromVedaConfig,
   getCookieConsentFromVedaConfig,
@@ -17,6 +19,9 @@ import {
 } from 'veda';
 import MetaTags from '../meta-tags';
 import PageFooter from '../page-footer';
+import PageFooterLegacy from '../page-footer-legacy';
+import NasaLogoColor from '../nasa-logo-color';
+
 const Banner = React.lazy(() => import('../banner'));
 const SiteAlert = React.lazy(() => import('../site-alert'));
 const CookieConsent = React.lazy(() => import('../cookie-consent'));
@@ -31,9 +36,11 @@ import {
   mainNavItems,
   subNavItems
 } from '$components/common/page-header/default-config';
+import { checkEnvFlag } from '$utils/utils';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
+const isUswdsFooterEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_FOOTER);
 
 export const PAGE_BODY_ID = 'pagebody';
 
@@ -64,6 +71,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
   useEffect(() => {
     // When there is no cookie consent form set up
     !cookieConsentContent && setGoogleTagManager();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { title, thumbnail, description, hideFooter } =
@@ -105,7 +113,17 @@ function LayoutRoot(props: { children?: ReactNode }) {
           />
         )}
       </PageBody>
-      <PageFooter isHidden={hideFooter} />
+      {isUswdsFooterEnabled ? (
+        <PageFooter
+          mainNavItems={mainNavItems}
+          subNavItems={subNavItems}
+          hideFooter={hideFooter}
+          linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
+          logoSvg={<NasaLogoColor />}
+        />
+      ) : (
+        <PageFooterLegacy hideFooter={hideFooter} />
+      )}
     </Page>
   );
 }

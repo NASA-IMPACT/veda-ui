@@ -1,13 +1,11 @@
+/** @jsxImportSource @emotion/react */
+
 import React, { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import { Icon } from '@trussworks/react-uswds';
 import { css } from '@emotion/react';
 import { setCookie, getCookie } from './utils';
-import {
-  USWDSAlert,
-  USWDSButton,
-  USWDSButtonGroup
-} from '$uswds';
+import { USWDSAlert, USWDSButton, USWDSButtonGroup } from '$uswds';
 
 import './index.scss';
 interface cookieConsentTheme {
@@ -164,7 +162,6 @@ export const CookieConsent = ({
             >
               <Icon.Close
                 size={3}
-                // @ts-expect-error css is not assignable to type 'IntrinsicAttributes & USWDSIconProps & SVGProps<SVGSVGElement>'.
                 css={css`
                   ${transitionSettings}
                   ${themeValueCheck(theme?.iconColor?.default) &&
@@ -178,7 +175,6 @@ export const CookieConsent = ({
 
             {copy && (
               <div
-                // @ts-expect-error css does not exist on type 'DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>'
                 css={css`
                   ${themeValueCheck(theme?.card?.textColor) &&
                   `color: ` + theme?.card?.textColor};

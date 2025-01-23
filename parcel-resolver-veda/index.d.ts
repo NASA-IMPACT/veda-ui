@@ -304,13 +304,29 @@ declare module 'veda' {
     to: string;
     type: 'internalLink';
   }
+
   interface ExternalNavLink {
     id: string;
     title: string;
     href: string;
     type: 'externalLink';
   }
+
   type NavLinkItem = ExternalNavLink | InternalNavLink;
+
+  export interface SecondarySection {
+    division: string;
+    version: string;
+    title: string;
+    name: string;
+    to: string;
+    type: string;
+  }
+
+  export interface FooterSettings {
+    secondarySection: SecondarySection;
+    returnToTop: boolean;
+  }
 
   export interface DropdownNavLink {
     id: string;
@@ -372,6 +388,10 @@ declare module 'veda' {
         mainNavItems: (NavLinkItem | DropdownNavLink)[] | undefined;
         subNavItems: (NavLinkItem | DropdownNavLink)[] | undefined;
       }
+    | undefined;
+
+  export const getFooterSettingsFromVedaConfig: () =>
+    | FooterSettings
     | undefined;
 
   /**

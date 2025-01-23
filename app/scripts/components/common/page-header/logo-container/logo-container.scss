@@ -4,6 +4,7 @@
   display: flex;
   font-family: themeVars.$veda-uswds-basefont-sans;
   gap: themeVars.$veda-uswds-spacing-105;
+  max-height: 2.5rem;
 
   #logo-container-link {
     display: flex;
@@ -11,6 +12,7 @@
     gap: themeVars.$veda-uswds-spacing-105;
     font-weight: themeVars.$veda-uswds-fontweight-bold;
     font-size: themeVars.$veda-uswds-fontsize-lg;
+    color: themeVars.$veda-uswds-color-base-ink;
   }
 
   #nasa-logo-pos {
@@ -22,7 +24,7 @@
   }
 
   @media (width <= themeVars.$veda-uswds-spacing-desktop) {
-    #nasa-logo-pos {
+    svg {
       display: none;
     }
   }
