@@ -401,7 +401,7 @@ function CardComponent(
     cardType,
     className,
     linkLabel,
-    onCardClickCapture,
+    onClickCapture: onCardClickCapture,
     children: CardContent
   };
 

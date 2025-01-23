@@ -9,13 +9,12 @@ import DropdownScrollable from '../dropdown-scrollable';
 import GoogleForm from '../google-form';
 import {
   AlignmentEnum,
-  InternalNavLink,
-  ExternalNavLink,
   NavLinkItem,
   DropdownNavLink,
   NavItem,
   NavItemType
 } from '../page-header/types';
+import { InternalNavLink, ExternalNavLink } from '../types';
 import { useFeedbackModal } from '../layout-root';
 import { USWDSButton } from '$uswds';
 import GlobalMenuLinkCSS from '$styles/menu-link';

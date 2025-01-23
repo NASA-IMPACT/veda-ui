@@ -18,12 +18,15 @@ import PageHero from '$components/common/page-hero';
 import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import PageHeader from '$components/common/page-header';
+import PageFooter from '$components/common/page-footer';
 import type {
   NavItem,
-  InternalNavLink,
   NavItemType
 } from '$components/common/page-header/types';
+
+import type { InternalNavLink } from '$components/common/types';
 import type { DatasetData, StoryData, VedaData } from '$types/veda';
+
 
 import ExplorationAndAnalysis from '$components/exploration';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
@@ -69,6 +72,7 @@ export {
   PageMainContent,
   PageHero,
   PageHeader,
+  PageFooter,
   ReactQueryProvider,
   VedaUIProvider,
   StoriesHubContent,

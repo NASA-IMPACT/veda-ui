@@ -1,18 +1,15 @@
 const dotEnvConfig = require('dotenv').config();
 const { parsed: config } = dotEnvConfig;
-function checkEnvFlag(value) {
-  return (value ?? '').toLowerCase() === 'true';
-}
 
 let mainNavItems = [
   {
     id: 'test',
-    title: 'Test',
+    title: 'TestDropdown1',
     type: 'dropdown',
     children: [
       {
         id: 'dropdown-menu-item-1',
-        title: 'dropdown menu item 1',
+        title: 'route to stories',
         to: '/stories',
         type: 'internalLink'
       }
@@ -20,13 +17,13 @@ let mainNavItems = [
   },
   {
     id: 'another-test',
-    title: 'Another Test',
+    title: 'TestDropdown2',
     type: 'dropdown',
     children: [
       {
         id: 'dropdown-menu-item-2',
-        title: 'dropdown menu item 2',
-        to: '/stories',
+        title: 'route to about',
+        to: '/about',
         type: 'internalLink'
       }
     ]
@@ -50,6 +47,18 @@ let mainNavItems = [
     type: 'internalLink'
   }
 ];
+
+let footerSettings = {
+  secondarySection: {
+    division: 'NASA EarthData 2024',
+    version: process.env.APP_VERSION ?? 'BETA VERSION',
+    title: 'NASA Official',
+    name: 'Manil Maskey',
+    to: 'test@example.com',
+    type: 'email'
+  },
+  returnToTop: true
+};
 
 if (!!config.HUB_URL && !!config.HUB_NAME)
   mainNavItems = [
@@ -140,6 +149,8 @@ module.exports = {
     mainNavItems,
     subNavItems
   },
+
+  footerSettings,
   cookieConsentForm: {
     title: 'Cookie Consent',
     copy: 'We use cookies to enhance your browsing experience and to help us understand how our website is used. These cookies allow us to collect data on site usage and improve our services based on your interactions. To learn more about it, see our [Privacy Policy](https://www.nasa.gov/privacy/#cookies)',

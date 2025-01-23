@@ -262,7 +262,8 @@ module.exports = new Resolver({
           banner: ${getBannerContent(result)},
           siteAlert: ${getSiteAlertContent(result)},
           navItems: ${JSON.stringify(result.navItems)},
-          cookieConsentForm: ${getCookieConsentForm(result)}
+          cookieConsentForm: ${getCookieConsentForm(result)},
+          footerSettings: ${JSON.stringify(result.footerSettings)}
         };
 
         export const theme = ${JSON.stringify(result.theme) || null};
@@ -284,7 +285,7 @@ module.exports = new Resolver({
         export const getSiteAlertFromVedaConfig = () => config.siteAlert;
         export const getNavItemsFromVedaConfig = () => config.navItems;
         export const getCookieConsentFromVedaConfig = () => config.cookieConsentForm;
-
+        export const getFooterSettingsFromVedaConfig = () => config.footerSettings;
 
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
         export const stories = ${generateMdxDataObject(storiesImportData)};
