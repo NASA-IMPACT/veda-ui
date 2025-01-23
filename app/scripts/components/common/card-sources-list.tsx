@@ -22,11 +22,12 @@ const SourcesUl = styled.ul`
 
 interface SourcesListProps {
   sources?: TaxonomyItem[];
+  onSourceClick?: (sourceId: string) => void;
   rootPath?: string;
 }
 
 export function CardSourcesList(props: SourcesListProps) {
-  const { sources, rootPath } = props;
+  const { sources, rootPath, onSourceClick } = props;
 
   const { Link } = useVedaUI();
 
@@ -58,6 +59,12 @@ export function CardSourcesList(props: SourcesListProps) {
                   Source: source.id
                 })
               )}`}
+              onClick={(e) => {
+                if (onSourceClick) {
+                  e.preventDefault();
+                  onSourceClick(source.id);
+                }
+              }}
             >
               {source.name}
             </Link>

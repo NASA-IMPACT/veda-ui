@@ -172,6 +172,13 @@ export default function HubContent(props: HubContentProps) {
                       <CardSourcesList
                         sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                         rootPath={pathname}
+                        onSourceClick={(id) => {
+                          onAction(FilterActions.TAXONOMY_MULTISELECT, {
+                            key: TAXONOMY_SOURCE,
+                            value: id
+                          });
+                          browseControlsHeaderRef.current?.scrollIntoView();
+                        }}
                       />
                       <VerticalDivider variation='dark' />
 
