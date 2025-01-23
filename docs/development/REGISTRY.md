@@ -48,6 +48,8 @@ npm config set //registry.npmjs.org/:_authToken=<your-token>
 ```
 Replace <your-token> with the actual token provided to you.
 
+> **Important:** Avoid using `npm logout` while working with the registry locally. Logging out invalidates the authentication token globally, which will disrupt publishing and other registry-related actions.
+
 Before publishing live, test the process with:
 
 ```
