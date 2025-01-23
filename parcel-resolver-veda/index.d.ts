@@ -1,6 +1,5 @@
 declare module 'veda' {
   import * as dateFns from 'date-fns';
-  import mapboxgl from 'mapbox-gl';
   import { MDXModule } from 'mdx/types';
   import { DefaultTheme } from 'styled-components';
 
@@ -13,15 +12,14 @@ declare module 'veda' {
   // Dataset Layers
   //
   export type MbProjectionOptions = Exclude<
-    mapboxgl.MapboxOptions['projection'],
+    mapboxgl.MapOptions['projection'],
     undefined
   >;
 
-  export type ProjectionOptions = Pick<
-    MbProjectionOptions,
-    'parallels' | 'center'
-  > & {
-    id: MbProjectionOptions['name'] | 'polarNorth' | 'polarSouth';
+  export type ProjectionOptions = {
+    id: mapboxgl.ProjectionSpecification['name'] | 'polarNorth' | 'polarSouth';
+    parallels?: number[];
+    center?: [number, number];
   };
 
   interface DatasetLayerCommonCompareProps {
