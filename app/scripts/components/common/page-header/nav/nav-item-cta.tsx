@@ -1,7 +1,7 @@
 import React from 'react';
 import GoogleForm from '../../google-form';
 import { ActionNavItem } from '../types';
-import { useFeedbackModal } from '$utils/use-feedback-modal';
+import { useDisplay } from '$utils/use-display';
 
 interface NavItemCTAProps {
   item: ActionNavItem;
@@ -9,7 +9,8 @@ interface NavItemCTAProps {
 }
 
 export const NavItemCTA = ({ item, customClasses }: NavItemCTAProps) => {
-  const { isRevealed, show, hide } = useFeedbackModal();
+  const { isRevealed, show, hide } = useDisplay();
+
   return (
     <React.Fragment key={item.id}>
       {item.actionId === 'open-google-form' && (
