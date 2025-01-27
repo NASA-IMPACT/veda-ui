@@ -78,8 +78,7 @@ export const convertProjectionToMapbox = (
 
   return {
     center: p.conicValues?.center || projection.center,
-    parallels:
-      p.conicValues?.parallels || (projection.parallels as [number, number]),
+    parallels: p.conicValues?.parallels || projection.parallels,
     name: p.mbId
   };
 };

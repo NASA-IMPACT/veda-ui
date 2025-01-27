@@ -18,7 +18,7 @@ declare module 'veda' {
 
   export type ProjectionOptions = {
     id: mapboxgl.ProjectionSpecification['name'] | 'polarNorth' | 'polarSouth';
-    parallels?: number[];
+    parallels?: [number, number];
     center?: [number, number];
   };
 

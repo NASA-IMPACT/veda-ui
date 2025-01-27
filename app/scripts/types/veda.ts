@@ -16,7 +16,7 @@ export type MbProjectionOptions = Exclude<
 >;
 
 export type ProjectionOptions = {
-  parallels?: number[];
+  parallels?: [number, number];
   center?: [number, number];
   id: mapboxgl.ProjectionSpecification['name'] | 'polarNorth' | 'polarSouth';
 };
