@@ -1,6 +1,12 @@
 import React, { MouseEventHandler } from 'react';
-import { listReset, media } from '@devseed-ui/theme-provider';
+import {
+  listReset,
+  media,
+  multiply,
+  themeVal
+} from '@devseed-ui/theme-provider';
 import styled from 'styled-components';
+import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 import ClassicCard, { ClassicCardItem } from './classic';
 import CoverCard, { CoverCardItem } from './cover';
 import FeaturedCard, { FeaturedCardItem } from './featured';
@@ -188,3 +194,37 @@ export default function CardComponent(
 export const Card = styled(CardComponent)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
+
+const ExternalLinkMark = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: ${variableGlsp(0.25)};
+  right: ${variableGlsp(0.25)};
+  padding: ${variableGlsp(0.125)} ${variableGlsp(0.25)};
+  background-color: ${themeVal('color.primary')};
+  color: ${themeVal('color.surface')};
+  text-transform: none;
+  border-radius: calc(
+    ${multiply(themeVal('shape.rounded'), 2)} - ${variableGlsp(0.125)}
+  );
+  z-index: 1;
+`;
+
+const FlagText = styled.div`
+  display: inline;
+  font-weight: bold;
+  font-size: 0.825rem;
+  margin-right: ${variableGlsp(0.25)};
+`;
+
+// @NOTE: ExternalLinkFlag should be broken out but currently GHG instance directly imports this from here
+
+export function ExternalLinkFlag() {
+  return (
+    <ExternalLinkMark>
+      <FlagText>External Link</FlagText>
+      <CollecticonExpandTopRight size='small' meaningful={false} />
+    </ExternalLinkMark>
+  );
+}

@@ -13,9 +13,7 @@ import {
   CardBlank,
   CardFigure
 } from './styles';
-import { ExternalLinkFlag } from './external-link-flag';
-import { CardItemProps } from './index';
-import { CardComponentProps } from './index';
+import { CardItemProps, CardComponentProps, ExternalLinkFlag } from '.';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
