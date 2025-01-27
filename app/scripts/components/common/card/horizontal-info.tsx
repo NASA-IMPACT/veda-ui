@@ -1,8 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { CardBlank, CardTitle } from './styles';
-import { CardItemProps } from '.';
+import { CardItem, CardTitle } from './styles';
 import { variableBaseType } from '$styles/variable-utils';
 import { Pill } from '$styles/pill';
 
@@ -61,27 +60,8 @@ export const HorizontalCardStyles = css`
   }
 `;
 
-export const HorizontalInfoCardItem = styled(CardBlank)<CardItemProps>`
+export const HorizontalInfoCardItem = styled(CardItem)`
   ${HorizontalCardStyles}
-
-  ${({ isStateFocus }) =>
-    isStateFocus &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationC')};
-      transform: translate(0, 0.125rem);
-    `}
-  ${({ isStateOver }) =>
-    isStateOver &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationC')};
-      transform: translate(0, 0.125rem);
-    `}
-  ${({ isStateActive }) =>
-    isStateActive &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationB')};
-      transform: translate(0, 0.125rem);
-    `}
 `;
 
 interface Props {

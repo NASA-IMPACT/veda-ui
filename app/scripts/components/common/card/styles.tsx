@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   glsp,
   listReset,
@@ -9,6 +9,7 @@ import {
 } from '@devseed-ui/theme-provider';
 import { Overline } from '@devseed-ui/typography';
 import { VerticalDivider } from '@devseed-ui/toolbar';
+import { CardItemProps } from '.';
 import { variableGlsp } from '$styles/variable-utils';
 import { Figure } from '$components/common/figure';
 import { VarHeading } from '$styles/variable-components';
@@ -201,4 +202,25 @@ export const CardFigure = styled(Figure)`
     mix-blend-mode: multiply;
     display: ${(props) => (props.src ? 'block' : 'none')};
   }
+`;
+
+export const CardItem = styled(CardBlank)<CardItemProps>`
+  ${({ isStateFocus }) =>
+    isStateFocus &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationC')};
+      transform: translate(0, 0.125rem);
+    `}
+  ${({ isStateOver }) =>
+    isStateOver &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationC')};
+      transform: translate(0, 0.125rem);
+    `}
+  ${({ isStateActive }) =>
+    isStateActive &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationB')};
+      transform: translate(0, 0.125rem);
+    `}
 `;

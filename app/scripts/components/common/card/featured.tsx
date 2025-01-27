@@ -1,6 +1,6 @@
 import React from 'react';
 import format from 'date-fns/format';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { media, themeVal } from '@devseed-ui/theme-provider';
 import {
   CardBody,
@@ -10,14 +10,14 @@ import {
   CardOverline,
   CardLabel,
   CardFooter,
-  CardBlank,
-  CardFigure
+  CardFigure,
+  CardItem
 } from './styles';
-import { CardItemProps, CardComponentProps, ExternalLinkFlag } from '.';
+import { CardComponentProps, ExternalLinkFlag } from '.';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
-export const FeaturedCardItem = styled(CardBlank)<CardItemProps>`
+export const FeaturedCardItem = styled(CardItem)`
   padding-top: ${variableGlsp()};
   color: ${themeVal('color.surface')};
   justify-content: flex-end;
@@ -47,25 +47,6 @@ export const FeaturedCardItem = styled(CardBlank)<CardItemProps>`
     font-size: ${variableBaseType('1rem')};
     max-width: 52rem;
   }
-
-  ${({ isStateFocus }) =>
-    isStateFocus &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationC')};
-      transform: translate(0, 0.125rem);
-    `}
-  ${({ isStateOver }) =>
-    isStateOver &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationC')};
-      transform: translate(0, 0.125rem);
-    `}
-  ${({ isStateActive }) =>
-    isStateActive &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationB')};
-      transform: translate(0, 0.125rem);
-    `}
 `;
 
 export default function FeaturedCard(props: CardComponentProps) {

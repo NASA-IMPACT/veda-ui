@@ -1,7 +1,6 @@
 import React from 'react';
 import format from 'date-fns/format';
-import styled, { css } from 'styled-components';
-import { themeVal } from '@devseed-ui/theme-provider';
+import styled from 'styled-components';
 import {
   CardBody,
   CardHeader,
@@ -10,33 +9,14 @@ import {
   CardOverline,
   CardLabel,
   CardFooter,
-  CardBlank,
-  CardFigure
+  CardFigure,
+  CardItem
 } from './styles';
-import { CardItemProps, CardComponentProps, ExternalLinkFlag } from '.';
+import { CardComponentProps, ExternalLinkFlag } from '.';
 import { useVedaUI } from '$context/veda-ui-provider';
 
-export const ClassicCardItem = styled(CardBlank)<CardItemProps>`
+export const ClassicCardItem = styled(CardItem)`
   background: transparent;
-
-  ${({ isStateFocus }) =>
-    isStateFocus &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationC')};
-      transform: translate(0, 0.125rem);
-    `}
-  ${({ isStateOver }) =>
-    isStateOver &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationC')};
-      transform: translate(0, 0.125rem);
-    `}
-  ${({ isStateActive }) =>
-    isStateActive &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationB')};
-      transform: translate(0, 0.125rem);
-    `}
 `;
 
 export default function ClassicCard(props: CardComponentProps) {
