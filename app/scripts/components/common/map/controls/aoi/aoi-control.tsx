@@ -161,14 +161,14 @@ function AoiControl({
                 />
                 <VerticalDivider />
                 <TipToolbarIconButton
-                  tipContent='Draw an area of interest'
+                  tipContent='Draw a new area of interest'
                   tipProps={{ placement: 'bottom' }}
                   onClick={drawingActions.start}
                 >
-                  <CollecticonPencil meaningful title='Draw AOI' />
+                  <CollecticonPencil meaningful title='Draw new AOI' />
                 </TipToolbarIconButton>
                 <TipToolbarIconButton
-                  tipContent='Upload area of interest'
+                  tipContent='Upload a new area of interest'
                   tipProps={{ placement: 'bottom' }}
                   onClick={() => setAoIModalRevealed(true)}
                 >

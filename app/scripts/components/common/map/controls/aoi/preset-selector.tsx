@@ -182,7 +182,7 @@ export default function PresetSelector({
 
       <PresetSelect
         id='preset-selector'
-        name='presetSelector'
+        name='Select a new area of interest'
         value={selectedState}
         onChange={(e) => setSelectedState(e.target.value)}
       >
