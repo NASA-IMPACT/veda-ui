@@ -76,7 +76,7 @@ export interface DeprecatedCardComponentProps {
 
 /**
   @NOTE: CardList & CardFooter have been moved over to /common/card/styles and has modified styles
-  These styles are used in GHG instance, so we leave these for now. We should move these styles to GHG instances
+  These styles are used in GHG instance & EIC instance, so we leave these for now. We should move these styles to GHG instances
   since these styles are not used by UI instance anymore.
 */
 export const CardList = styled.ol`

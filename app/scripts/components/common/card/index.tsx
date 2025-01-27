@@ -1,4 +1,5 @@
 import React, { MouseEventHandler } from 'react';
+import { listReset, media } from '@devseed-ui/theme-provider';
 import styled from 'styled-components';
 import ClassicCard, { ClassicCardItem } from './classic';
 import CoverCard, { CoverCardItem } from './cover';
@@ -10,6 +11,7 @@ import { LinkProperties } from '$types/veda';
 import * as utils from '$utils/utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { useVedaUI } from '$context/veda-ui-provider';
+import { variableGlsp } from '$styles/variable-utils';
 
 /**
  * @NOTE: This component is the controller where a cardType can be passed in.
@@ -68,6 +70,47 @@ export interface DeprecatedCardComponentProps {
   linkProperties?: LinkProperties & { linkTo?: string };
   linkTo?: string;
 }
+
+/**
+  @NOTE: CardList & CardFooter have been moved over to /common/card/styles and has modified styles.
+  These styles are directly imported in GHG instance & EIC instance, so we leave these here for now. We should move these styles to GHG instances
+  since these styles are not used by UI instance anymore.
+*/
+export const CardList = styled.ol`
+  ${listReset()}
+  grid-column: 1 / -1;
+  display: grid;
+  gap: ${variableGlsp()};
+  grid-template-columns: repeat(1, 1fr);
+
+  ${media.mediumUp`
+    grid-template-columns: repeat(2, 1fr);
+  `}
+
+  ${media.largeUp`
+    grid-template-columns: repeat(3, 1fr);
+  `}
+
+  > li {
+    min-width: 0;
+  }
+`;
+
+export const CardFooter = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${variableGlsp(0.5)};
+  padding: ${variableGlsp()};
+
+  &:not(:first-child) {
+    padding-top: 0;
+    margin-top: ${variableGlsp(-0.5)};
+  }
+
+  button {
+    pointer-events: all;
+  }
+`;
 
 export default function CardComponent(
   data: CardComponentProps & DeprecatedCardComponentProps

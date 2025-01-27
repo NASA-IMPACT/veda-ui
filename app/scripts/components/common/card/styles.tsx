@@ -13,6 +13,8 @@ import { variableGlsp } from '$styles/variable-utils';
 import { Figure } from '$components/common/figure';
 import { VarHeading } from '$styles/variable-components';
 
+/**@NOTE: Ideally this would go away once we move cards over to USWDS */
+
 export const CardBlank = styled.article`
   position: relative;
   display: flex;
