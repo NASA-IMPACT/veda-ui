@@ -10,9 +10,7 @@ import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 import ClassicCard, { ClassicCardItem } from './classic';
 import CoverCard, { CoverCardItem } from './cover';
 import FeaturedCard, { FeaturedCardItem } from './featured';
-import HorizontalInfoCard, {
-  HorizontalInfoCardItem
-} from './horizontal-info-card';
+import HorizontalInfoCard, { HorizontalInfoCardItem } from './horizontal-info';
 import { LinkProperties } from '$types/veda';
 import * as utils from '$utils/utils';
 import { ElementInteractive } from '$components/common/element-interactive';
