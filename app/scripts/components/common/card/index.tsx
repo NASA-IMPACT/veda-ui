@@ -22,7 +22,7 @@ import { variableGlsp } from '$styles/variable-utils';
 /**
  * @NOTE: This component is the controller where a cardType can be passed in.
  * This is to support how card is currently used in legacy code.
- * This can controller type file can be used moving forward but instances and veda-ui can also now just use the specific card type directly with the different types now broken out
+ * This controller file can be used moving forward but instances and veda-ui can also now just use the specific card type directly with the different types now broken out
  */
 
 export enum CardType {
@@ -121,7 +121,12 @@ export const CardFooter = styled.div`
 export default function CardComponent(
   data: CardComponentProps & DeprecatedCardComponentProps
 ) {
-  const { cardType, className, linkLabel, onCardClickCapture } = data;
+  const {
+    cardType = CardType.CLASSIC,
+    className,
+    linkLabel,
+    onCardClickCapture
+  } = data;
   const { Link } = useVedaUI();
 
   // For backwards compatibility with deprecated props
