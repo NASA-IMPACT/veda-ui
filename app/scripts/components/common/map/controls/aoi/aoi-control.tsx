@@ -120,14 +120,18 @@ function AoiControl({
 
   return (
     <>
-      <Tip disabled={!disableReason} content={disableReason} placement='bottom'>
-        <div>
+      {!aoi && ( // only show the toolbar when there is no AOI
+        <Tip
+          disabled={!disableReason}
+          content={disableReason}
+          placement='bottom'
+        >
           <AnalysisToolbar
             visuallyDisabled={!!disableReason}
             size='small'
             data-tour='analysis-tour'
           >
-            {isDrawing ? (
+            {isDrawing ? ( // toolbar for drawing mode
               <USWDSButtonGroup className='margin-neg-05 margin-right-0'>
                 <USWDSButton
                   onClick={drawingActions.confirm}
@@ -177,10 +181,11 @@ function AoiControl({
               </>
             )}
           </AnalysisToolbar>
-        </div>
-      </Tip>
+        </Tip>
+      )}
 
       {!isDrawing && !!aoi && (
+        // a way to delete the AOI
         <FloatingBar container={mapboxMap.getContainer()}>
           <USWDSButton
             onClick={onTrashClick}
