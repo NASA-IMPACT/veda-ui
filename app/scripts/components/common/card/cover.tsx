@@ -59,8 +59,6 @@ export const CoverCardItem = styled(CardBlank)<CardItemProps>`
 export default function CoverCard(props: CardComponentProps) {
   const {
     title,
-    linkLabel,
-    className,
     description,
     date,
     overline,
@@ -69,13 +67,16 @@ export default function CoverCard(props: CardComponentProps) {
     parentTo,
     tagLabels,
     footerContent,
-    hideExternalLinkBadge,
-    onCardClickCapture,
-    to,
-    isExternalLink
+    hideExternalLinkBadge
   } = props;
 
-  const { Link } = useVedaUI(); // @TODO: Move to parent
+  let isExternalLink;
+
+  if ('isExternalLink' in props) {
+    ({ isExternalLink } = props);
+  }
+
+  const { Link } = useVedaUI();
 
   const CardContent = (
     <>
