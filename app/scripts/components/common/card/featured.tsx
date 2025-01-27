@@ -1,0 +1,137 @@
+import React from 'react';
+import format from 'date-fns/format';
+import styled, { css } from 'styled-components';
+import { media, themeVal } from '@devseed-ui/theme-provider';
+import {
+  CardBody,
+  CardHeader,
+  CardHeadline,
+  CardTitle,
+  CardOverline,
+  CardLabel,
+  CardFooter,
+  CardBlank,
+  CardFigure
+} from './styles';
+import { ExternalLinkFlag } from './external-link-flag';
+import { CardItemProps } from './index';
+import { CardComponentProps } from './index';
+import { useVedaUI } from '$context/veda-ui-provider';
+import { variableBaseType, variableGlsp } from '$styles/variable-utils';
+
+export const FeaturedCardItem = styled(CardBlank)<CardItemProps>`
+  padding-top: ${variableGlsp()};
+  color: ${themeVal('color.surface')};
+  justify-content: flex-end;
+  min-height: 16rem;
+
+  ${media.mediumUp`
+          min-height: 28rem;
+        `}
+
+  ${CardFigure} {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: ${themeVal('color.base-400')};
+  }
+
+  ${CardTitle} {
+    font-size: ${variableBaseType('1.5rem')};
+    max-width: 52rem;
+  }
+
+  ${CardOverline} {
+    color: ${themeVal('color.surface-400a')};
+  }
+
+  ${CardBody} {
+    font-size: ${variableBaseType('1rem')};
+    max-width: 52rem;
+  }
+
+  ${({ isStateFocus }) =>
+    isStateFocus &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationC')};
+      transform: translate(0, 0.125rem);
+    `}
+  ${({ isStateOver }) =>
+    isStateOver &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationC')};
+      transform: translate(0, 0.125rem);
+    `}
+  ${({ isStateActive }) =>
+    isStateActive &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationB')};
+      transform: translate(0, 0.125rem);
+    `}
+`;
+
+export default function FeaturedCard(props: CardComponentProps) {
+  const {
+    title,
+    linkLabel,
+    className,
+    description,
+    date,
+    overline,
+    imgSrc,
+    imgAlt,
+    parentTo,
+    tagLabels,
+    footerContent,
+    hideExternalLinkBadge,
+    onCardClickCapture,
+    to,
+    isExternalLink
+  } = props;
+
+  const { Link } = useVedaUI(); // @TODO: Move to parent
+
+  const CardContent = (
+    <>
+      <CardHeader>
+        <CardHeadline>
+          <CardTitle>{title}</CardTitle>
+          <CardOverline as='div'>
+            {hideExternalLinkBadge !== true && isExternalLink && (
+              <ExternalLinkFlag />
+            )}
+            {!isExternalLink &&
+              tagLabels &&
+              parentTo &&
+              tagLabels.map((label) => (
+                <CardLabel as={Link} to={parentTo} key={label}>
+                  {label}
+                </CardLabel>
+              ))}
+            {date ? (
+              <>
+                published on{' '}
+                <time dateTime={format(date, 'yyyy-MM-dd')}>
+                  {format(date, 'MMM d, yyyy')}
+                </time>
+              </>
+            ) : (
+              overline
+            )}
+          </CardOverline>
+        </CardHeadline>
+      </CardHeader>
+      {description && (
+        <CardBody>
+          <p>{description}</p>
+        </CardBody>
+      )}
+      {footerContent && <CardFooter>{footerContent}</CardFooter>}
+      <CardFigure src={imgSrc} isCoverOrFeatured={true}>
+        <img src={imgSrc} alt={imgAlt} loading='lazy' />
+      </CardFigure>
+    </>
+  );
+
+  return CardContent;
+}

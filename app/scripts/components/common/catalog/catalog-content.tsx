@@ -16,15 +16,14 @@ import {
   getTaxonomyByIds,
   generateTaxonomies,
   getTaxonomy,
-  TAXONOMY_SOURCE,
+  TAXONOMY_SOURCE
 } from '$utils/veda-data/taxonomies';
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
-import { getDatasetPath } from '$utils/routes';
-import { usePathname } from "$utils/use-pathname";
 
-const EXCLUSIVE_SOURCE_WARNING = "Can only be analyzed with layers from the same source";
+const EXCLUSIVE_SOURCE_WARNING =
+  'Can only be analyzed with layers from the same source';
 
 export interface CatalogContentProps {
   datasets: DatasetData[];
@@ -41,26 +40,28 @@ const DEFAULT_SORT_OPTION = 'asc';
 const DEFAULT_SORT_FIELD = 'name';
 
 export const findParentDataset = (layerId: string, datasets) => {
-  const parentDataset: DatasetData | undefined = Object.values(datasets).find((dataset: DatasetData) =>
-    dataset!.layers.find((l) => l.id === layerId)
+  const parentDataset: DatasetData | undefined = Object.values(datasets).find(
+    (dataset: DatasetData) => dataset!.layers.find((l) => l.id === layerId)
   ) as DatasetData | undefined;
   return parentDataset;
 };
 
 function enhanceDatasetLayers(dataset) {
   return {
-      ...dataset,
-      layers: dataset.layers.map(layer => ({
-          ...layer,
-          parentDataset: {
-              id: dataset.id,
-              name: dataset.name
-          }
-      }))
+    ...dataset,
+    layers: dataset.layers.map((layer) => ({
+      ...layer,
+      parentDataset: {
+        id: dataset.id,
+        name: dataset.name
+      }
+    }))
   };
 }
 
-export const getAllDatasetsWithEnhancedLayers = (dataset): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
+export const getAllDatasetsWithEnhancedLayers = (
+  dataset
+): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
 
 function CatalogContent({
   datasets,
@@ -70,49 +71,71 @@ function CatalogContent({
   emptyStateContent,
   search,
   taxonomies,
-  onAction,
+  onAction
 }: CatalogContentProps) {
-  const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<string | null>(null);
+  const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<
+    string | null
+  >(null);
   const isSelectable = selectedIds !== undefined;
 
   const datasetTaxonomies = generateTaxonomies(datasets);
-  const urlTaxonomyItems = taxonomies ? Object.entries(taxonomies).map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies)).flat() : [];
+  const urlTaxonomyItems = taxonomies
+    ? Object.entries(taxonomies)
+        .map(([key, val]) => getTaxonomyByIds(key, val, datasetTaxonomies))
+        .flat()
+    : [];
 
-  const allDatasetsWithEnhancedLayers = useMemo(() => getAllDatasetsWithEnhancedLayers(datasets), [datasets]);
+  const allDatasetsWithEnhancedLayers = useMemo(
+    () => getAllDatasetsWithEnhancedLayers(datasets),
+    [datasets]
+  );
 
   const [datasetsToDisplay, setDatasetsToDisplay] = useState<DatasetData[]>(
     prepareDatasets(allDatasetsWithEnhancedLayers, {
-    search,
-    taxonomies,
-    sortField: DEFAULT_SORT_FIELD,
-    sortDir: DEFAULT_SORT_OPTION,
-    filterLayers: filterLayers ?? false
-  }));
+      search,
+      taxonomies,
+      sortField: DEFAULT_SORT_FIELD,
+      sortDir: DEFAULT_SORT_OPTION,
+      filterLayers: filterLayers ?? false
+    })
+  );
 
-  const [selectedFilters, setSelectedFilters] = useState<OptionItem[]>(urlTaxonomyItems);
+  const [selectedFilters, setSelectedFilters] =
+    useState<OptionItem[]>(urlTaxonomyItems);
   const [clearedTagItem, setClearedTagItem] = useState<OptionItem>();
 
   const prevSelectedFilters = usePreviousValue(selectedFilters) ?? [];
 
-  const pathname = usePathname();
-
   // Handlers
-  const updateSelectedFilters = useCallback((item: OptionItem, action: 'add' | 'remove') => {
-    if (action == 'add') {
-      setSelectedFilters([...selectedFilters, item]);
-    }
+  const updateSelectedFilters = useCallback(
+    (item: OptionItem, action: 'add' | 'remove') => {
+      if (action == 'add') {
+        setSelectedFilters([...selectedFilters, item]);
+      }
 
-    if (action == 'remove') {
-      setSelectedFilters(selectedFilters.filter((selected) => selected.id !== item.id));
-    }
+      if (action == 'remove') {
+        setSelectedFilters(
+          selectedFilters.filter((selected) => selected.id !== item.id)
+        );
+      }
 
-    onAction(FilterActions.TAXONOMY_MULTISELECT, { key: item.taxonomy, value: item.id });
-  }, [setSelectedFilters, selectedFilters, onAction]);
+      onAction(FilterActions.TAXONOMY_MULTISELECT, {
+        key: item.taxonomy,
+        value: item.id
+      });
+    },
+    [setSelectedFilters, selectedFilters, onAction]
+  );
 
-  const handleClearTag = useCallback((item: OptionItem) => {
-    setSelectedFilters(selectedFilters.filter((selected) => selected !== item));
-    setClearedTagItem(item);
-  }, [selectedFilters]);
+  const handleClearTag = useCallback(
+    (item: OptionItem) => {
+      setSelectedFilters(
+        selectedFilters.filter((selected) => selected !== item)
+      );
+      setClearedTagItem(item);
+    },
+    [selectedFilters]
+  );
 
   const handleClearTags = useCallback(() => {
     setSelectedFilters([]);
@@ -121,11 +144,17 @@ function CatalogContent({
   }, [onAction]);
 
   useEffect(() => {
-    if (clearedTagItem && (selectedFilters.length == prevSelectedFilters.length - 1)) {
-      onAction(FilterActions.TAXONOMY_MULTISELECT, { key: clearedTagItem.taxonomy, value: clearedTagItem.id});
+    if (
+      clearedTagItem &&
+      selectedFilters.length == prevSelectedFilters.length - 1
+    ) {
+      onAction(FilterActions.TAXONOMY_MULTISELECT, {
+        key: clearedTagItem.taxonomy,
+        value: clearedTagItem.id
+      });
       setClearedTagItem(undefined);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilters, clearedTagItem]);
 
   useEffect(() => {
@@ -134,56 +163,85 @@ function CatalogContent({
     }
 
     setExclusiveSourceSelected(null);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilters]);
 
-  const filterRelevantIdsBasedOnExclusion = (selectedIdsWithParentData, exclusionSelected) => {
+  const filterRelevantIdsBasedOnExclusion = (
+    selectedIdsWithParentData,
+    exclusionSelected
+  ) => {
     if (exclusionSelected) {
-      return selectedIdsWithParentData.filter((x) => x.values?.includes(x.sourceExclusive)).map((x) => x.id);
+      return selectedIdsWithParentData
+        .filter((x) => x.values?.includes(x.sourceExclusive))
+        .map((x) => x.id);
     } else {
-      return selectedIdsWithParentData.filter((x) => !x.values?.includes(x.sourceExclusive)).map((x) => x.id);
+      return selectedIdsWithParentData
+        .filter((x) => !x.values?.includes(x.sourceExclusive))
+        .map((x) => x.id);
     }
   };
 
-  const onCardSelect = useCallback((id: string, currentDataset: DatasetData) => {
+  const onCardSelect = useCallback(
+    (id: string, currentDataset: DatasetData) => {
+      if (!setSelectedIds || selectedIds === undefined) return;
 
-    if (!setSelectedIds || selectedIds === undefined) return;
+      const getSelectedIdsWithParentData = (selectedIds) => {
+        return selectedIds.map((selectedId: string) => {
+          const parentData = findParentDataset(selectedId, datasets);
+          const exclusiveSource = parentData?.sourceExclusive;
+          const parentDataSourceValues = parentData?.taxonomy
+            .filter((x) => x.name === 'Source')[0]
+            ?.values.map((value) => value.id);
+          return {
+            id: selectedId,
+            values: parentDataSourceValues,
+            sourceExclusive: exclusiveSource?.toLowerCase() ?? ''
+          };
+        });
+      };
 
-    const getSelectedIdsWithParentData = (selectedIds) => {
-      return selectedIds.map((selectedId: string) => {
-        const parentData = findParentDataset(selectedId, datasets);
-        const exclusiveSource = parentData?.sourceExclusive;
-        const parentDataSourceValues = parentData?.taxonomy.filter((x) => x.name === 'Source')[0]?.values.map((value) => value.id);
-        return { id: selectedId, values: parentDataSourceValues, sourceExclusive: exclusiveSource?.toLowerCase() ?? '' };
-      });
-    };
+      const exclusiveSource = currentDataset.sourceExclusive?.toLowerCase();
+      const sources = getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values;
+      const sourceIds = sources?.map((source) => source.id);
 
-    const exclusiveSource = currentDataset.sourceExclusive?.toLowerCase();
-    const sources = getTaxonomy(currentDataset, TAXONOMY_SOURCE)?.values;
-    const sourceIds = sources?.map(source => source.id);
+      const newSelectedIds = selectedIds.includes(id)
+        ? selectedIds.filter((i) => i !== id)
+        : [...selectedIds, id];
 
-    const newSelectedIds = selectedIds.includes(id) ? selectedIds.filter((i) => i !== id) : [...selectedIds, id];
+      let selectedIdsWithParentData =
+        getSelectedIdsWithParentData(newSelectedIds);
 
-    let selectedIdsWithParentData = getSelectedIdsWithParentData(newSelectedIds);
+      // @NOTE: Check if the new exclusiveSource is selected. Filter out the old one.
+      let prevExclusiveSourceValue;
+      if (exclusiveSourceSelected)
+        prevExclusiveSourceValue = exclusiveSourceSelected;
+      else if (selectedIdsWithParentData.length)
+        prevExclusiveSourceValue = selectedIdsWithParentData.find(
+          (d) => d.sourceExclusive
+        )?.sourceExclusive;
+      if (exclusiveSource !== prevExclusiveSourceValue) {
+        selectedIdsWithParentData = selectedIdsWithParentData.filter(
+          (d) => d.sourceExclusive !== prevExclusiveSourceValue
+        );
+      }
 
-    // @NOTE: Check if the new exclusiveSource is selected. Filter out the old one.
-    let prevExclusiveSourceValue;
-    if (exclusiveSourceSelected) prevExclusiveSourceValue = exclusiveSourceSelected;
-    else if (selectedIdsWithParentData.length) prevExclusiveSourceValue = selectedIdsWithParentData.find(d => d.sourceExclusive)?.sourceExclusive;
-    if (exclusiveSource !== prevExclusiveSourceValue) {
-      selectedIdsWithParentData = selectedIdsWithParentData.filter(d => d.sourceExclusive !== prevExclusiveSourceValue);
-    }
+      const relevantIdsBasedOnExclusion = filterRelevantIdsBasedOnExclusion(
+        selectedIdsWithParentData,
+        exclusiveSource && sourceIds?.includes(exclusiveSource)
+      );
 
-    const relevantIdsBasedOnExclusion = filterRelevantIdsBasedOnExclusion(selectedIdsWithParentData, exclusiveSource && sourceIds?.includes(exclusiveSource));
+      if (exclusiveSource && sourceIds?.includes(exclusiveSource)) {
+        setExclusiveSourceSelected(exclusiveSource);
+      } else {
+        setExclusiveSourceSelected(null);
+      }
 
-    if (exclusiveSource && sourceIds?.includes(exclusiveSource)) {
-      setExclusiveSourceSelected(exclusiveSource);
-    } else {
-      setExclusiveSourceSelected(null);
-    }
-
-    setSelectedIds(newSelectedIds.filter((id) => relevantIdsBasedOnExclusion.includes(id)));
-  }, [selectedIds, setSelectedIds, exclusiveSourceSelected, datasets]);
+      setSelectedIds(
+        newSelectedIds.filter((id) => relevantIdsBasedOnExclusion.includes(id))
+      );
+    },
+    [selectedIds, setSelectedIds, exclusiveSourceSelected, datasets]
+  );
 
   useEffect(() => {
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
@@ -194,11 +252,12 @@ function CatalogContent({
       filterLayers: filterLayers ?? false
     });
     setDatasetsToDisplay(updated);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilters, taxonomies, search]);
 
   const getSelectedLayerCount = (dataset) => {
-    return dataset.layers.filter((layer) => selectedIds?.includes(layer.id)).length;
+    return dataset.layers.filter((layer) => selectedIds?.includes(layer.id))
+      .length;
   };
 
   return (
@@ -233,7 +292,9 @@ function CatalogContent({
                         <CollecticonDatasetLayers /> {currentDataset.name}
                         {getSelectedLayerCount(currentDataset) > 0 && (
                           <SelectedCard>
-                            <span>{getSelectedLayerCount(currentDataset)} selected</span>
+                            <span>
+                              {getSelectedLayerCount(currentDataset)} selected
+                            </span>
                           </SelectedCard>
                         )}
                       </ParentDatasetTitle>
@@ -261,7 +322,8 @@ function CatalogContent({
                           dataset={currentDataset}
                           selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
-                          onDatasetClick={() => onCardSelect(datasetLayer.id, currentDataset)}
+                          onDatasetClick={() =>
+                            onCardSelect(datasetLayer.id, currentDataset)}
                         />
                       </li>
                     ))}
@@ -273,10 +335,7 @@ function CatalogContent({
             <Cards>
               {datasetsToDisplay.map((d) => (
                 <li key={d.id}>
-                  <CatalogCard
-                    dataset={d}
-                    searchTerm={search}
-                  />
+                  <CatalogCard dataset={d} searchTerm={search} />
                 </li>
               ))}
             </Cards>
@@ -291,7 +350,6 @@ function CatalogContent({
       </Catalog>
     </Content>
   );
-
 }
 
 export default CatalogContent;
@@ -299,13 +357,13 @@ const WarningPill = styled(Pill)`
   margin-left: 8px;
 `;
 
-
-export const ParentDatasetTitle = styled.h2<{size?: string}>`
+export const ParentDatasetTitle = styled.h2<{ size?: string }>`
   color: ${themeVal('color.primary')};
   text-align: left;
-  font-size: ${(props => props.size=='small'? '0.75rem': '1rem')};
+  font-size: ${(props) => (props.size == 'small' ? '0.75rem' : '1rem')};
   line-height: 0.75rem;
-  font-weight: normal; ${(props => props.size=='small'? '400': 'normal')};
+  font-weight: normal;
+  ${(props) => (props.size == 'small' ? '400' : 'normal')};
   display: flex;
   min-width: 0;
   justify-content: center;
@@ -320,7 +378,7 @@ export const ParentDatasetTitle = styled.h2<{size?: string}>`
 
   svg {
     fill: ${themeVal('color.primary')};
-    min-width: ${(props => props.size=='small' ? '1rem': 'auto')};
+    min-width: ${(props) => (props.size == 'small' ? '1rem' : 'auto')};
   }
 `;
 
