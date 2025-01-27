@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { listReset, media } from '@devseed-ui/theme-provider';
 import { stories, getString } from 'veda';
 
-import { Card } from '$components/common/card';
+import { Card, CardType } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle, FoldBody } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 import { STORIES_PATH, getStoryPath } from '$utils/routes';
@@ -81,7 +81,7 @@ function FeaturedStories() {
               return (
                 <li key={d.id}>
                   <Card
-                    cardType='cover'
+                    cardType={CardType.COVER}
                     linkLabel='View more'
                     linkProperties={{
                       linkTo: `${d.asLink?.url ?? getStoryPath(d)}`,

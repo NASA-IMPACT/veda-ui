@@ -122,7 +122,6 @@ export const CatalogCard = (props: CatalogCardProps) => {
 
   return (
     <CardSelectable
-      // cardType='horizontal-info'
       cardType={CardType.HORIZONTALINFO}
       checked={selectable ? selected : undefined}
       selectable={selectable}

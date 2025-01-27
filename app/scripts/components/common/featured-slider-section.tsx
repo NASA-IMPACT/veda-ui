@@ -7,7 +7,7 @@ import PublishedDate from './pub-date';
 import { CardSourcesList } from './card-sources';
 import { DatasetClassification } from './dataset-classification';
 import { getDescription, getMediaProperty } from './catalog/utils';
-import { Card } from '$components/common/card';
+import { Card, CardType } from '$components/common/card';
 import { CardMeta, CardTopicsList } from '$components/common/card/styles';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
 import {
@@ -112,7 +112,7 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                           e.preventDefault();
                         }
                       }}
-                      cardType='featured'
+                      cardType={CardType.FEATURED}
                       linkLabel='View more'
                       linkProperties={{
                         ...linkProperties,
