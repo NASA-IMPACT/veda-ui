@@ -68,15 +68,17 @@ interface StoryDataWithPath extends StoryData {
 }
 interface HubContentProps {
   allStories: StoryDataWithPath[];
-  pathname: string;
   storiesString: { one: string; other: string };
   onFilterchanges: () => UseFiltersWithQueryResult;
 }
 
 export default function HubContent(props: HubContentProps) {
-  const { allStories, pathname, storiesString, onFilterchanges } = props;
+  const { allStories, storiesString, onFilterchanges } = props;
 
-  const { Link } = useVedaUI();
+  const {
+    Link,
+    routes: { storiesCatalogPath }
+  } = useVedaUI();
 
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
@@ -133,7 +135,7 @@ export default function HubContent(props: HubContentProps) {
         {isFiltering && (
           <Button
             forwardedAs={Link}
-            to={pathname}
+            to={storiesCatalogPath}
             size='small'
             onClick={() => onAction(FilterActions.CLEAR)}
           >
@@ -155,7 +157,7 @@ export default function HubContent(props: HubContentProps) {
                     <CardMeta>
                       <CardSourcesList
                         sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
-                        rootPath={pathname}
+                        rootPath={storiesCatalogPath}
                         onSourceClick={(id) => {
                           onAction(FilterActions.TAXONOMY_MULTISELECT, {
                             key: TAXONOMY_SOURCE,
@@ -195,7 +197,7 @@ export default function HubContent(props: HubContentProps) {
                             <dd key={t.id}>
                               <Pill
                                 as={Link}
-                                to={`${pathname}?${
+                                to={`${storiesCatalogPath}?${
                                   FilterActions.TAXONOMY
                                 }=${encodeURIComponent(
                                   JSON.stringify({ Topics: t.id })
