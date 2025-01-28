@@ -50,7 +50,7 @@ module.exports = {
       const changelog = Object.entries(groupedCommits)
         .map(([prefix, commits]) => {
           if (commits.length > 0) {
-            return `### ${prefix}\n ${commits.join('\n')}`;
+            return `## What's changed \n ### ${prefix}\n ${commits.join('\n')}`;
           }
         })
         .join('\n');
@@ -59,8 +59,8 @@ module.exports = {
     }
   },
   plugins: {
-    // @release-it/conventional-changelog is mainly for the verion bump
-    // due to the challenges we faced during github release note generation
+    // The @release-it/conventional-changelog plugin is primarily used for handling version bumps
+    // because we encountered difficulties generating GitHub release notes with the plugin.
     '@release-it/conventional-changelog': {
       preset: 'conventionalcommits'
     }
