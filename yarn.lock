@@ -3934,10 +3934,10 @@
     "@babel/runtime" "^7.23.2"
     immutable "^4.3.4"
 
-"@release-it/conventional-changelog@^9.0.3":
-  version "9.0.3"
-  resolved "http://verdaccio.ds.io:4873/@release-it%2fconventional-changelog/-/conventional-changelog-9.0.3.tgz#4d8a4b07a7bba8c6ed151ea8ae75bca15d3219eb"
-  integrity sha512-+3TL+B89Kc+VTbfGxpTvJkbegWt5XIzkovsYVJyoZpOZDG07v25FU8c5R5Q8yNUs76Ikfq0sp+ZTTxmefG4Hiw==
+"@release-it/conventional-changelog@^10.0.0":
+  version "10.0.0"
+  resolved "http://verdaccio.ds.io:4873/@release-it%2fconventional-changelog/-/conventional-changelog-10.0.0.tgz#25a9b4785d59ea1c2dce9acafc3c0cc86552826f"
+  integrity sha512-49qf9phGmPUIGpY2kwfgehs9en1znbPv2zdNn1WMLAH9DtHUh4m6KNSB+mLFGAMUhv24JhsA8ruYRYgluc2UJw==
   dependencies:
     concat-stream "^2.0.0"
     conventional-changelog "^6.0.0"
