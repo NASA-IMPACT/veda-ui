@@ -33,7 +33,7 @@ import TextHighlight from '$components/common/text-highlight';
 import Pluralize from '$utils/pluralize';
 import { Pill } from '$styles/pill';
 
-import { CardSourcesList } from '$components/common/card-sources';
+import { CardSourcesList } from '$components/common/card-sources-list';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,
@@ -148,7 +148,11 @@ export default function HubContent(props: HubContentProps) {
           out of {allStories.length}.
         </span>
         {isFiltering && (
-          <Button {...ButtonLinkProps} size='small' onClick={() => onAction(FilterActions.CLEAR)}>
+          <Button
+            {...ButtonLinkProps}
+            size='small'
+            onClick={() => onAction(FilterActions.CLEAR)}
+          >
             Clear filters <CollecticonXmarkSmall />
           </Button>
         )}
@@ -168,7 +172,6 @@ export default function HubContent(props: HubContentProps) {
                       <CardSourcesList
                         sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                         rootPath={pathname}
-                        linkProperties={linkProperties}
                         onSourceClick={(id) => {
                           onAction(FilterActions.TAXONOMY_MULTISELECT, {
                             key: TAXONOMY_SOURCE,

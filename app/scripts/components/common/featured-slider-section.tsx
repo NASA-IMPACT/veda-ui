@@ -4,7 +4,7 @@ import { DatasetData, StoryData, datasets, stories, getString } from 'veda';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 import SmartLink from './smart-link';
 import PublishedDate from './pub-date';
-import { CardSourcesList } from './card-sources';
+import { CardSourcesList } from './card-sources-list';
 import { DatasetClassification } from './dataset-classification';
 import { getDescription, getMediaProperty } from './catalog/utils';
 import { Card } from '$components/common/card';
@@ -125,7 +125,6 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                             <DatasetClassification dataset={d} />
                           )}
                           <CardSourcesList
-                            linkProperties={linkProperties}
                             sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                           />
                           <VerticalDivider variation='light' />
