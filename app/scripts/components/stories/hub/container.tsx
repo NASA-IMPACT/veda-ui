@@ -16,8 +16,6 @@ import {
   ContentOverride
 } from '$components/common/page-overrides';
 
-import SmartLink from '$components/common/smart-link';
-
 const allStories = Object.values(stories)
   .map((d) => d!.data)
   .filter((d) => !d.isHidden)
@@ -42,10 +40,6 @@ function StoriesHubContainer() {
         <HubContent
           allStories={allStories}
           onFilterchanges={() => controlVars}
-          linkProperties={{
-            LinkElement: SmartLink,
-            pathAttributeKeyName: 'to'
-          }}
           pathname={STORIES_PATH}
           storiesString={{
             one: getString('stories').one,

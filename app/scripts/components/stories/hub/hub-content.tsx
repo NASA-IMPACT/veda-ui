@@ -40,8 +40,9 @@ import {
   TAXONOMY_TOPICS
 } from '$utils/veda-data/taxonomies';
 import { generateTaxonomies } from '$utils/veda-data/taxonomies';
-import { StoryData, LinkProperties } from '$types/veda';
+import { StoryData } from '$types/veda';
 import { UseFiltersWithQueryResult } from '$components/common/catalog/controls/hooks/use-filters-with-query';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 const StoryCount = styled(Subtitle)`
   grid-column: 1 / -1;
@@ -67,40 +68,22 @@ interface StoryDataWithPath extends StoryData {
 }
 interface HubContentProps {
   allStories: StoryDataWithPath[];
-  linkProperties: LinkProperties;
   pathname: string;
   storiesString: { one: string; other: string };
   onFilterchanges: () => UseFiltersWithQueryResult;
 }
 
 export default function HubContent(props: HubContentProps) {
-  const {
-    allStories,
-    linkProperties,
-    pathname,
-    storiesString,
-    onFilterchanges
-  } = props;
+  const { allStories, pathname, storiesString, onFilterchanges } = props;
+
+  const { Link } = useVedaUI();
+
   const browseControlsHeaderRef = useRef<HTMLDivElement>(null);
   const { headerHeight } = useSlidingStickyHeaderProps();
   const { search, taxonomies, onAction } = onFilterchanges();
 
-  const { LinkElement, pathAttributeKeyName } = linkProperties;
   const storyTaxonomies = generateTaxonomies(allStories);
 
-  const ButtonLinkProps = {
-    forwardedAs: LinkElement,
-    [pathAttributeKeyName]: pathname
-  };
-
-  function getPillLinkProps(t) {
-    return {
-      as: LinkElement,
-      [pathAttributeKeyName]: `${pathname}?${
-        FilterActions.TAXONOMY
-      }=${encodeURIComponent(JSON.stringify({ Topics: t.id }))}`
-    };
-  }
   const displayStories = useMemo(
     () =>
       prepareDatasets(allStories, {
@@ -149,7 +132,8 @@ export default function HubContent(props: HubContentProps) {
         </span>
         {isFiltering && (
           <Button
-            {...ButtonLinkProps}
+            forwardedAs={Link}
+            to={pathname}
             size='small'
             onClick={() => onAction(FilterActions.CLEAR)}
           >
@@ -188,10 +172,7 @@ export default function HubContent(props: HubContentProps) {
                     </CardMeta>
                   }
                   linkLabel='View more'
-                  linkProperties={{
-                    ...linkProperties,
-                    linkTo: `${d.asLink?.url ?? d.path}`
-                  }}
+                  to={`${d.asLink?.url ?? d.path}`}
                   title={
                     <TextHighlight value={search} disabled={search.length < 3}>
                       {d.name}
@@ -213,7 +194,12 @@ export default function HubContent(props: HubContentProps) {
                           {topics.map((t) => (
                             <dd key={t.id}>
                               <Pill
-                                {...getPillLinkProps(t)}
+                                as={Link}
+                                to={`${pathname}?${
+                                  FilterActions.TAXONOMY
+                                }=${encodeURIComponent(
+                                  JSON.stringify({ Topics: t.id })
+                                )}`}
                                 onClick={() => {
                                   browseControlsHeaderRef.current?.scrollIntoView();
                                 }}
