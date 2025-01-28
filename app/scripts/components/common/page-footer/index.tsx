@@ -95,9 +95,10 @@ export default function PageFooter({
       }
     });
   };
-
+//FIND a way to remove util classes at this level tablet:padding-0 padding-x-0 padding-y-4
   const primaryItems = useMemo(
-    () => createNavElement(mainNavItems, 'usa-footer__primary-link'),
+    () =>
+      createNavElement(mainNavItems, 'usa-footer__primary-link tablet:padding-0 padding-x-0 padding-y-4'),
     [mainNavItems]
   );
   const secondaryItems = useMemo(
@@ -112,19 +113,20 @@ export default function PageFooter({
       returnToTop={returnToTop && <ReturnToTopButton />}
       className={hideFooter && 'display-none'}
       primary={
-        <div className='grid-row  usa-footer__primary-container footer_primary_container'>
-          <div className='mobile-lg:grid-col-8'>
+        <div className='grid-row usa-footer__primary-container footer_primary_container'>
+          <div className='mobile-lg:grid-col-8 mobile-lg:padding-x-0'>
             <USWDSFooterNav
               aria-label='Footer navigation'
               size='slim'
               links={primaryItems}
+              className='padding-x-0'
             />
           </div>
-          <div className='tablet:grid-col-4'>
+          <div className='tablet:grid-col-4 mobile-lg:grid-col-8'>
             <USWDSAddress
               size='slim'
-              className='flex-justify-end'
               items={secondaryItems}
+
             />
           </div>
         </div>
