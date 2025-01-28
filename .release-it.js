@@ -36,9 +36,7 @@ module.exports = {
     tagName: 'v${version}',
     tagAnnotation: 'Release v${version}',
     pushArgs: ['--follow-tags'],
-    getLatestTagFromAllRefs: true,
-    requireUpstream: false,
-    requireCleanWorkingDir: false
+    getLatestTagFromAllRefs: true
   },
   npm: {
     publish: false
