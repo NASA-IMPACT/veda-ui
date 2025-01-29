@@ -56,7 +56,7 @@ export default function MapCoordsControl() {
   const { lng, lat } = position;
   const value = `W ${lng}, N ${lat}`;
 
-  useThemedControl(
+  const control = useThemedControl(
     () => (
       <MapCoordsWrapper>
         <CopyField value={value}>
@@ -77,5 +77,5 @@ export default function MapCoordsControl() {
     { position: 'bottom-left' }
   );
 
-  return null;
+  return control;
 }

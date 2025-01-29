@@ -37,11 +37,11 @@ export function ShowTourControl() {
     setIsOpen(true);
   }, [setIsOpen, setCurrentStep, setSteps]);
 
-  useThemedControl(
+  const control = useThemedControl(
     () => <TourButtonComponent onClick={reopenTour} disabled={disabled} />,
     {
       position: 'top-right'
     }
   );
-  return null;
+  return control;
 }

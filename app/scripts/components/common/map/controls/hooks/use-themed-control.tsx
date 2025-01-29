@@ -1,6 +1,6 @@
 import { IControl } from 'mapbox-gl';
-import React, { ReactNode, useEffect, useRef } from 'react';
-import { createRoot } from 'react-dom/client';
+import React, { ReactNode, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useControl } from 'react-map-gl';
 import { useTheme, ThemeProvider } from 'styled-components';
 
@@ -9,49 +9,35 @@ export default function useThemedControl(
   opts?: any
 ) {
   const theme = useTheme();
-  const elementRef = useRef<HTMLDivElement | null>(null);
-  const rootRef = useRef<ReturnType<typeof createRoot> | null>(null);
 
+  const [controlContainer, setControlContainer] = useState<HTMLElement | null>(
+    null
+  );
   // Define the control methods and its lifecycle
   class ThemedControl implements IControl {
     onAdd() {
-      const el = document.createElement('div');
-      el.className = 'mapboxgl-ctrl';
-      elementRef.current = el;
+      const div = document.createElement('div');
+      div.className = 'mapboxgl-ctrl';
 
-      // Create a root and render the component
-      rootRef.current = createRoot(el);
-
-      rootRef.current.render(
-        <ThemeProvider theme={theme}>{renderFn() as any}</ThemeProvider>
-      );
-
-      return el;
+      // Store the DOM node so you can render into it:
+      setControlContainer(div);
+      return div;
     }
 
     onRemove() {
       // Cleanup if necessary.
-      // Defer to next tick.
-      setTimeout(() => {
-        if (elementRef.current) {
-          rootRef.current?.unmount();
-          rootRef.current = null;
-        }
-      }, 1);
     }
   }
 
-  // Listen for changes in dependencies and re-render if necessary
-  useEffect(() => {
-    if (rootRef.current) {
-      rootRef.current.render(
-        <ThemeProvider theme={theme}>{renderFn() as any}</ThemeProvider>
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [theme]); // Only re-render if the theme changes. Adding renderFn here would cause infinite loop
-
   useControl(() => new ThemedControl(), opts);
 
-  return null;
+  // use createPortal to render React content into controlContainer once it becomes available:
+  return controlContainer !== null ? (
+    createPortal(
+      <ThemeProvider theme={theme}>{renderFn()}</ThemeProvider>,
+      controlContainer
+    )
+  ) : (
+    <></>
+  );
 }

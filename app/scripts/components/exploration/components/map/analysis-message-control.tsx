@@ -186,11 +186,11 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
 
 export function AnalysisMessageControl() {
   const { main } = useMaps();
-  useThemedControl(() => <AnalysisMessage mainMap={main} />, {
+  const control = useThemedControl(() => <AnalysisMessage mainMap={main} />, {
     position: 'top-left'
   });
 
-  return null;
+  return control;
 }
 
 // / / / / / /      Analysis messages for different states        / / / / / / //
