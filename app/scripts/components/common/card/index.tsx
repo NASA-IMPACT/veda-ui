@@ -116,6 +116,32 @@ export const CardFooter = styled.div`
   }
 `;
 
+/**
+ * CardComponent
+ *
+ * This component renders a card with various styles and content based on the provided props.
+ * It can behave as a link if the `to` prop is provided, using the `Link` component from the Veda UI provider.
+ * The `onClick` and `to` props are mutually exclusive.
+ *
+ * @param {string | JSX.Element} title - The title of the card.
+ * @param {string} [linkLabel] - The label for the link.
+ * @param {string} [className] - Additional class names for the card.
+ * @param {CardType} [cardType] - The type of the card, which determines its style.
+ * @param {string | JSX.Element} [description] - The description of the card.
+ * @param {Date} [date] - The date associated with the card.
+ * @param {JSX.Element} [overline] - The overline content for the card.
+ * @param {string} [imgSrc] - The source URL for the card image.
+ * @param {string} [imgAlt] - The alt text for the card image.
+ * @param {string} [parentTo] - The URL for the parent link.
+ * @param {string[]} [tagLabels] - The labels for the tags.
+ * @param {JSX.Element} [footerContent] - The content for the card footer.
+ * @param {boolean} [hideExternalLinkBadge] - Whether to hide the external link badge.
+ * @param {MouseEventHandler} [onCardClickCapture] - The click capture handler for the card.
+ * @param {MouseEventHandler} [onClick] - The click handler for the card. Mutually exclusive with `to`.
+ * @param {string} [to] - The URL to link to. If provided, the card behaves as a link. Mutually exclusive with `onClick`.
+ * @returns {JSX.Element} The rendered CardComponent.
+ */
+
 export default function CardComponent(
   data: CardComponentProps & DeprecatedCardComponentProps
 ) {
