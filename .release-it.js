@@ -17,11 +17,11 @@ function groupCommitsByCategory(logs) {
     grouped[category] = [];
   });
 
-  // Loop through each prefix and categorize commits
+  // Loop through each prefix to find conventional commit pattern ex. feat: , feat(card):
   Object.entries(prefixes).forEach(([prefix, category]) => {
-    const regex = new RegExp(`^\\* ${prefix}: .*?\\)$`, 'gm');
+    const regex = new RegExp(`^\\* ${prefix}(\\(.*?\\))?: .*?\\)$`, 'gm');
     const matches = logs.match(regex) || [];
-    grouped[category].push(...matches);
+    grouped[category] = [...matches, ...grouped[category]];
   });
 
   return grouped;
