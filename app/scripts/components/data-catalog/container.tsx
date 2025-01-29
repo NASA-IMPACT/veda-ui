@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
 import { getString } from 'veda';
 import { getAllDatasetsProps } from '$utils/veda-data';
 import CatalogView from '$components/common/catalog';
@@ -32,10 +31,7 @@ export default function DataCatalogContainer() {
         description={getString('dataCatalogBanner').other}
       />
       <FeaturedDatasets />
-      <CatalogView
-        datasets={allDatasets}
-        onFilterChanges={() => controlVars}
-      />
+      <CatalogView datasets={allDatasets} onFilterChanges={() => controlVars} />
     </PageMainContent>
   );
 }

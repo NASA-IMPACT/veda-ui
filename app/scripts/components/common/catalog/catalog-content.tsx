@@ -41,7 +41,7 @@ const DEFAULT_SORT_FIELD = 'name';
 
 export const findParentDataset = (layerId: string, datasets) => {
   const parentDataset: DatasetData | undefined = Object.values(datasets).find(
-    (dataset: DatasetData) => dataset!.layers.find((l) => l.id === layerId)
+    (dataset: DatasetData) => dataset?.layers.find((l) => l.id === layerId)
   ) as DatasetData | undefined;
   return parentDataset;
 };
@@ -322,8 +322,9 @@ function CatalogContent({
                           dataset={currentDataset}
                           selectable={true}
                           selected={selectedIds.includes(datasetLayer.id)}
-                          onDatasetClick={() =>
-                            onCardSelect(datasetLayer.id, currentDataset)}
+                          onDatasetClick={() => {
+                            onCardSelect(datasetLayer.id, currentDataset);
+                          }}
                         />
                       </li>
                     ))}
