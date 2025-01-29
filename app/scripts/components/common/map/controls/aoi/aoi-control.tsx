@@ -221,12 +221,12 @@ export default function Wrapper({
 }) {
   const { main } = useMaps();
 
-  useThemedControl(
+  const control = useThemedControl(
     () => <AoiControl mapboxMap={main} disableReason={disableReason} />,
     {
       position: 'top-left'
     }
   );
 
-  return null;
+  return control;
 }
