@@ -160,7 +160,6 @@ export default function CardComponent(
   const isExternalLink = to ? utils.isExternalLink(to) : false;
 
   const cardData = {
-    to: to,
     isExternalLink: isExternalLink,
     ...data
   };
