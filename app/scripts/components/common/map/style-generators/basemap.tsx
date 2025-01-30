@@ -1,9 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  SourceSpecification,
-  LayerSpecification,
-  StyleSpecification
-} from 'mapbox-gl';
+import { StyleSpecification } from 'mapbox-gl';
 import { useEffect, useMemo, useState } from 'react';
 import {
   BasemapId,
@@ -90,9 +86,7 @@ export function Basemap({
     );
 
     const layers = baseStyle.layers.map((layer) => {
-      const layerGroup = (layer as LayerSpecification).metadata?.[
-        'mapbox:group'
-      ];
+      const layerGroup = layer.metadata?.['mapbox:group'];
 
       if (layerGroup) {
         const isLabelsLayer = labelsGroupIds.includes(layerGroup);
@@ -108,7 +102,7 @@ export function Basemap({
           return {
             ...layer,
             layout: {
-              ...(layer as LayerSpecification).layout,
+              ...layer.layout,
               visibility
             },
             metadata: {
@@ -123,7 +117,7 @@ export function Basemap({
 
     updateStyle({
       generatorId: 'basemap',
-      sources: baseStyle.sources as Record<string, SourceSpecification>,
+      sources: baseStyle.sources,
       layers: layers as ExtendedLayer[]
     });
   }, [updateStyle, labelsOption, boundariesOption, baseStyle]);
