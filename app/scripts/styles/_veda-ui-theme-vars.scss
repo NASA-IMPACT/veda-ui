@@ -25,9 +25,9 @@ $veda-uswds-color-primary-darker: utils.color('blue-warm-80v');
 $veda-uswds-color-primary-light: utils.color('blue-30');
 $veda-uswds-color-secondary: utils.color('red-50');
 $veda-uswds-color-base-dark: utils.color('gray-cool-60');
-$veda-uswds-color-base-darkest: utils.color(
-  'gray-cool-80'
-); // re-mapped, theme-token 'base-darkest' originally mapped to 'gray-90'
+$veda-uswds-color-base-darkest: utils.color('gray-cool-80');
+$veda-uswds-color-gray-cool: utils.color('gray-cool-50');
+// re-mapped, theme-token 'base-darkest' originally mapped to 'gray-90'
 $veda-uswds-color-base-light: utils.color('gray-cool-30');
 $veda-uswds-color-base-lightest: utils.color('gray-cool-4');
 $veda-uswds-color-base-white: utils.color('white');

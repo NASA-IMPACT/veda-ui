@@ -13,13 +13,23 @@
     margin-bottom: 1.5rem;
   }
 
-  .usa-nav__secondary-item .usa-nav__link  {
+  .usa-nav__secondary-item .usa-nav__link {
     padding: 0;
     color: themeVars.$veda-uswds-color-base-dark;
   }
 
-  .usa-nav__primary button[aria-expanded="false"] span:after {
+  .usa-nav__primary button[aria-expanded='false'] span:after {
     background-color: themeVars.$veda-uswds-color-base-dark;
   }
 }
 
+// @media (width <= themeVars.$veda-uswds-spacing-tablet) {
+//   //need to extend usa-nav__secondary-links to assign to the button for mobile presentation.
+.usa-nav__secondary-links button {
+  color: themeVars.$veda-uswds-color-gray-cool;
+  font-size: 0.87rem;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0;
+}
+// }
