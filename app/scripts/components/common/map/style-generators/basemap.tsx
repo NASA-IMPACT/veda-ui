@@ -78,11 +78,11 @@ export function Basemap({
     // this id from the list of groups in the metadata section of the style.
     const labelsGroupIds = mapGroupNameToGroupId(
       GROUPS_BY_OPTION.labels,
-      (baseStyle.metadata as Record<string, any>)['mapbox:groups']
+      baseStyle.metadata?.['mapbox:groups']
     );
     const boundariesGroupIds = mapGroupNameToGroupId(
       GROUPS_BY_OPTION.boundaries,
-      (baseStyle.metadata as Record<string, any>)['mapbox:groups']
+      baseStyle.metadata?.['mapbox:groups']
     );
 
     const layers = baseStyle.layers.map((layer) => {
