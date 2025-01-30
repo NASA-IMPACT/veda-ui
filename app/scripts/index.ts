@@ -27,7 +27,6 @@ import type {
 import type { InternalNavLink } from '$components/common/types';
 import type { DatasetData, StoryData, VedaData } from '$types/veda';
 
-
 import ExplorationAndAnalysis from '$components/exploration';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';

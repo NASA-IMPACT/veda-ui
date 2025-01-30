@@ -4,7 +4,6 @@ import { DropdownNavLink, NavLinkItem } from '../types';
 import { ActionNavItem, NavItemType } from '../page-header/types';
 import { NavItemCTA } from '../page-header/nav/nav-item-cta';
 import ReturnToTopButton from './return-to-top-button';
-import { footerSettings } from './default-config';
 
 import { LinkProperties } from '$types/veda';
 import {
@@ -19,15 +18,26 @@ interface PageFooterProps {
   hideFooter?: boolean;
   logoSvg?: SVGElement | JSX.Element;
   linkProperties: LinkProperties;
+  footerSettings: {
+    secondarySection: {
+      division: string;
+      version: string;
+      title: string;
+      name: string;
+      to: string;
+      type: string;
+    };
+    returnToTop: boolean;
+  };
 }
-
 
 export default function PageFooter({
   mainNavItems,
   subNavItems,
   hideFooter,
   logoSvg,
-  linkProperties
+  linkProperties,
+  footerSettings
 }: PageFooterProps) {
   const { returnToTop, secondarySection } = footerSettings;
   const FooterNavItemInternalLink = (item) => {

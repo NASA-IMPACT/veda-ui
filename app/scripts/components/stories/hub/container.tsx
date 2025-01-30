@@ -9,14 +9,12 @@ import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 
 import { PageMainContent } from '$styles/page';
-import { STORIES_PATH, getStoryPath } from '$utils/routes';
+import { getStoryPath } from '$utils/routes';
 import { FeaturedStories } from '$components/common/featured-slider-section';
 import {
   ComponentOverride,
   ContentOverride
 } from '$components/common/page-overrides';
-
-import SmartLink from '$components/common/smart-link';
 
 const allStories = Object.values(stories)
   .map((d) => d!.data)
@@ -42,11 +40,6 @@ function StoriesHubContainer() {
         <HubContent
           allStories={allStories}
           onFilterchanges={() => controlVars}
-          linkProperties={{
-            LinkElement: SmartLink,
-            pathAttributeKeyName: 'to'
-          }}
-          pathname={STORIES_PATH}
           storiesString={{
             one: getString('stories').one,
             other: getString('stories').other

@@ -359,7 +359,7 @@ function Scrollytelling(props) {
 
   return (
     <>
-      <ScrollyMapContainer topOffset={topOffset}>
+      <ScrollyMapContainer topOffset={topOffset || 0}>
         {areLayersLoading && <MapLoading />}
 
         {/*

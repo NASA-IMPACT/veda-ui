@@ -4,6 +4,7 @@ import { NavItem } from './types';
 import LogoContainer from './logo-container';
 import useMobileMenuFix from './use-mobile-menu-fix';
 import { createDynamicNavMenuList } from './nav/create-dynamic-nav-menu-list';
+
 import {
   USWDSHeader,
   USWDSHeaderTitle,

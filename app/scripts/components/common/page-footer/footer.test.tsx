@@ -6,6 +6,18 @@ import { NavItem } from '../page-header/types.js';
 
 import PageFooter from './index';
 
+const defaultFooterSetting = {
+  secondarySection: {
+    division: 'NASA EarthData 2024',
+    version: 'BETA VERSION',
+    title: 'NASA Official',
+    name: 'Manil Maskey',
+    to: 'test@example.com',
+    type: 'email'
+  },
+  returnToTop: true
+};
+
 const mockMainNavItems: NavItem[] = navItems.mainNavItems;
 const mockSubNavItems: NavItem[] = navItems.subNavItems;
 // const mockFooterSettings = footerSettings;
@@ -40,6 +52,7 @@ describe('PageFooter', () => {
         hideFooter={hideFooter}
         logoSvg={<NasaLogoColor />}
         linkProperties={mockLinkProperties}
+        footerSettings={defaultFooterSetting}
       />
     );
     const footerElement = document.querySelector('footer');
@@ -56,6 +69,7 @@ describe('PageFooter', () => {
         hideFooter={hideFooter}
         logoSvg={<NasaLogoColor />}
         linkProperties={mockLinkProperties}
+        footerSettings={defaultFooterSetting}
       />
     );
     expect(screen.getByText('Data Catalog')).toBeInTheDocument();
@@ -89,6 +103,7 @@ describe('PageFooter dynamic settings', () => {
         subNavItems={mockSubNavItems}
         hideFooter={true}
         logoSvg={<NasaLogoColor />}
+        footerSettings={defaultFooterSetting}
       />
     );
     const footerElement = document.querySelector('footer');
