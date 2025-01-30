@@ -214,7 +214,7 @@ export function resolveConfigFunctions(
   return datum;
 }
 
-export function toAoIid(drawId: string) {
+export function toAoIid(drawId: string | number) {
   return drawId.toString().slice(-6);
 }
 
