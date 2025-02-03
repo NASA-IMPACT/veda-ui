@@ -159,7 +159,7 @@ export default function HubContent(props: HubContentProps) {
                         sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                         rootPath={storiesCatalogPath}
                         onSourceClick={(id) => {
-                          onAction(FilterActions.TAXONOMY_MULTISELECT, {
+                          onAction(FilterActions.TAXONOMY, {
                             key: TAXONOMY_SOURCE,
                             value: id
                           });
@@ -203,6 +203,10 @@ export default function HubContent(props: HubContentProps) {
                                   JSON.stringify({ Topics: t.id })
                                 )}`}
                                 onClick={() => {
+                                  onAction(FilterActions.TAXONOMY, {
+                                    key: TAXONOMY_TOPICS,
+                                    value: t.id
+                                  });
                                   browseControlsHeaderRef.current?.scrollIntoView();
                                 }}
                               >
