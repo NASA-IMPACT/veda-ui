@@ -71,7 +71,7 @@ jobs:
       - run: yarn
       - name: Release through Git
         id: git-release
-        run: yarn release  --ci --verbose
+        run: yarn release --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Repository Dispatch
