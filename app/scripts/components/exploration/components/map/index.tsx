@@ -101,9 +101,15 @@ export function ExplorationMap(props: ExplorationMapProps) {
         if (dataset.status !== DatasetStatus.SUCCESS) return dataset;
 
         // Check if there's layer information for this dataset.
-        const layerMetadata = style.layers.find(
-          (l) => (l.metadata as { id: string }).id === dataset.data.id
-        );
+        let layerMetadata;
+        try {
+          layerMetadata = style.layers.find(
+            (l) => (l.metadata as { id: string }).id === dataset.data.id
+          );
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log('Can not find metadata for', dataset.data.id);
+        }
 
         // Skip if no metadata.
         if (!layerMetadata) return dataset;
