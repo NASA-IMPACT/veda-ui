@@ -4,8 +4,6 @@ import { Feature, Polygon } from 'geojson';
 import styled, { css, useTheme } from 'styled-components';
 
 import {
-  CollecticonTick,
-  CollecticonXmark,
   CollecticonPencil,
   CollecticonTrashBin,
   CollecticonUpload2
@@ -21,9 +19,10 @@ import CustomAoIModal from './custom-aoi-modal';
 import PresetSelector from './preset-selector';
 
 import { computeDrawStyles } from './style';
+import { DrawTools } from './draw-tools';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
-import { USWDSButton, USWDSButtonGroup } from '$components/common/uswds';
+import { USWDSButton } from '$components/common/uswds';
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};
@@ -123,29 +122,7 @@ const AoiControl = ({ disableReason }: { disableReason?: React.ReactNode }) => {
             data-tour='analysis-tour'
           >
             {isDrawing ? (
-              <USWDSButtonGroup className='margin-neg-05 margin-right-0'>
-                <USWDSButton
-                  onClick={drawingActions.confirm}
-                  type='button'
-                  inverse
-                  disabled={!drawingIsValid}
-                  size='small'
-                  className='padding-top-05 padding-right-105 padding-bottom-05 padding-left-105'
-                >
-                  <CollecticonTick aria-hidden='true' />
-                  Confirm Area
-                </USWDSButton>
-                <USWDSButton
-                  onClick={drawingActions.cancel}
-                  type='button'
-                  base
-                  size='small'
-                  className='padding-top-05 padding-right-105 padding-bottom-05 padding-left-105'
-                >
-                  <CollecticonXmark aria-hidden='true' />
-                  Cancel
-                </USWDSButton>
-              </USWDSButtonGroup>
+              <DrawTools {...{ drawingActions, drawingIsValid }} />
             ) : (
               <>
                 <PresetSelector
