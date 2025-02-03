@@ -10,7 +10,6 @@ import {
   Fold,
   FoldHeader,
   FoldTitle,
-  FoldLead,
   FoldBody
 } from '$components/common/fold';
 import { Figure } from '$components/common/figure';
@@ -59,10 +58,6 @@ function Audience() {
     <Fold>
       <FoldHeader>
         <FoldTitle>VEDA serves a wide scientific audience</FoldTitle>
-        <FoldLead>
-          VEDA makes science based on NASA datasets inclusive, accessible, and
-          reproducible.
-        </FoldLead>
       </FoldHeader>
       <FoldBody>
         <AudienceList>
