@@ -53,14 +53,9 @@ const FloatingBarSelf = styled.div`
   z-index: 100;
 `;
 
-function AoiControl({
-  mapboxMap,
-  disableReason
-}: {
-  mapboxMap: mapboxgl.Map;
-  disableReason?: React.ReactNode;
-}) {
+const AoiControl = ({ disableReason }: { disableReason?: React.ReactNode }) => {
   const theme = useTheme();
+  const { main: mapboxMap } = useMaps();
   const { isDrawing, setIsDrawing, aoi, updateAoi, aoiDeleteAll } = useAois();
 
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
@@ -118,7 +113,7 @@ function AoiControl({
     }
   };
 
-  return (
+  const control = (
     <>
       <Tip disabled={!disableReason} content={disableReason} placement='bottom'>
         <div>
@@ -202,7 +197,11 @@ function AoiControl({
       />
     </>
   );
-}
+
+  return useThemedControl(() => control, {
+    position: 'top-left'
+  });
+};
 
 interface FloatingBarProps {
   children: React.ReactNode;
@@ -214,19 +213,4 @@ function FloatingBar(props: FloatingBarProps) {
   return createPortal(<FloatingBarSelf>{children}</FloatingBarSelf>, container);
 }
 
-export default function Wrapper({
-  disableReason
-}: {
-  disableReason?: React.ReactNode;
-}) {
-  const { main } = useMaps();
-
-  const control = useThemedControl(
-    () => <AoiControl mapboxMap={main} disableReason={disableReason} />,
-    {
-      position: 'top-left'
-    }
-  );
-
-  return control;
-}
+export default AoiControl;
