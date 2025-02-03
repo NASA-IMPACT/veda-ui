@@ -22,9 +22,6 @@
     background-color: themeVars.$veda-uswds-color-base-dark;
   }
 }
-
-// @media (width <= themeVars.$veda-uswds-spacing-tablet) {
-//   //need to extend usa-nav__secondary-links to assign to the button for mobile presentation.
 .usa-nav__secondary-links button {
   color: themeVars.$veda-uswds-color-gray-cool;
   font-size: 0.87rem;
@@ -32,4 +29,30 @@
   display: inline-block;
   padding: 0;
 }
-// }
+
+.usa-nav__primary button {
+  font-weight: themeVars.$veda-uswds-fontweight-light;
+
+  &[aria-expanded='false'] span:after,
+  &[aria-expanded='true'] span:after {
+    display: none;
+  }
+
+  &[aria-expanded='true'] {
+    font-weight: themeVars.$veda-uswds-fontweight-bold;
+
+    &:after {
+      background-color: themeVars.$veda-uswds-color-primary;
+      content: '';
+      display: block;
+      position: absolute;
+      bottom: 0.25rem;
+      top: 0.25rem;
+      width: 0.25rem;
+      left: 0.25rem;
+    }
+  }
+  &:hover {
+  background-color: themeVars.$veda-uswds-color-base-white;
+  }
+}
