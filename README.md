@@ -17,7 +17,6 @@ The following documentation will guide you through the process of configuring th
 - Check [CONTENT](./docs/content/CONTENT.md) for how to structure the content pieces.
 - Check [PAGE_OVERRIDES](./docs/content/PAGE_OVERRIDES.md) for all the layout overrides available to you and how they work.
 
-
 ## Development documentation
 
 Check the documentation below for how to setup and develop features for `veda-ui`.
@@ -27,4 +26,7 @@ Check the documentation below for how to setup and develop features for `veda-ui
 - Check [PAGE_OVERRIDES](./docs/development/PAGE_OVERRIDES.md) for information about the component/content overriding feature.
 
 ## License
+
 This project is licensed under **Apache 2**, see the [LICENSE](./LICENSE) file for more details.
+
+Change
