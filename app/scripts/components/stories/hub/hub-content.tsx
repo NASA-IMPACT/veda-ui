@@ -20,7 +20,7 @@ import {
   FoldTitle
 } from '$components/common/fold';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
-import { Card } from '$components/common/card';
+import { Card, CardType } from '$components/common/card';
 import {
   CardListGrid,
   CardMeta,
@@ -152,7 +152,7 @@ export default function HubContent(props: HubContentProps) {
             return (
               <li key={d.id}>
                 <Card
-                  cardType='classic'
+                  cardType={CardType.CLASSIC}
                   overline={
                     <CardMeta>
                       <CardSourcesList

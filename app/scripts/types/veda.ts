@@ -282,7 +282,7 @@ export interface DatasetDataWithEnhancedLayers extends DatasetData {
 }
 
 // Types needed for library
-
+// @NOTE: Moving towards being decrecated in favor of VedaUIProvider
 export interface LinkProperties {
   LinkElement: string | ComponentType<any> | undefined;
   pathAttributeKeyName: string;

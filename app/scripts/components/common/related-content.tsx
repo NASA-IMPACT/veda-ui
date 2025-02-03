@@ -13,7 +13,7 @@ import {
   STORIES_PATH,
   DATASETS_PATH
 } from '$utils/routes';
-import { Card } from '$components/common/card';
+import { Card, CardType } from '$components/common/card';
 import { CardListGrid } from '$components/common/card/styles';
 import { FoldHeader, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
@@ -136,7 +136,7 @@ export default function RelatedContent(props: RelatedContentProps) {
           {relatedContents.map((t) => (
             <li key={t.id}>
               <Card
-                cardType='cover'
+                cardType={CardType.COVER}
                 linkLabel={`View ${t.parent} ${t.name}`}
                 linkProperties={{
                   linkTo: `${t.asLink?.url ?? t.link}`,

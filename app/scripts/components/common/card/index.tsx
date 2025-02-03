@@ -1,36 +1,36 @@
 import React, { MouseEventHandler } from 'react';
-import styled, { css } from 'styled-components';
-import format from 'date-fns/format';
-import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 import {
-  glsp,
+  listReset,
   media,
   multiply,
-  themeVal,
-  listReset
+  themeVal
 } from '@devseed-ui/theme-provider';
-
-import {
-  CardBody,
-  CardBlank,
-  CardHeader,
-  CardHeadline,
-  CardTitle,
-  CardOverline
-} from './styles';
-import HorizontalInfoCard, {
-  HorizontalCardStyles
-} from './horizontal-info-card';
-import * as utils from '$utils/utils';
-import { variableBaseType, variableGlsp } from '$styles/variable-utils';
-import { ElementInteractive } from '$components/common/element-interactive';
-import { Figure } from '$components/common/figure';
-import { useVedaUI } from '$context/veda-ui-provider';
+import styled from 'styled-components';
+import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
+import ClassicCard, { ClassicCardItem } from './classic';
+import CoverCard, { CoverCardItem } from './cover';
+import FeaturedCard, { FeaturedCardItem } from './featured';
+import HorizontalInfoCard, { HorizontalInfoCardItem } from './horizontal-info';
 import { LinkProperties } from '$types/veda';
+import * as utils from '$utils/utils';
+import { ElementInteractive } from '$components/common/element-interactive';
+import { useVedaUI } from '$context/veda-ui-provider';
+import { variableGlsp } from '$styles/variable-utils';
 
-type CardType = 'classic' | 'cover' | 'featured' | 'horizontal-info';
+/**
+ * @NOTE: This component is the controller where a cardType can be passed in.
+ * This is to support how card is currently used in legacy code.
+ * This controller file can be used moving forward but instances and veda-ui can also now just use the specific card type directly with the different types now broken out
+ */
 
-interface CardItemProps {
+export enum CardType {
+  CLASSIC = 'classic',
+  COVER = 'cover',
+  FEATURED = 'featured',
+  HORIZONTALINFO = 'horizontal-info'
+}
+
+export interface CardItemProps {
   isStateFocus?: boolean;
   isStateOver?: boolean;
   isStateActive?: boolean;
@@ -57,6 +57,7 @@ interface BaseCardComponentProps {
 interface LinkCardComponentProps extends BaseCardComponentProps {
   to: string;
   onClick?: never;
+  isExternalLink?: boolean;
 }
 
 interface ClickCardComponentProps extends BaseCardComponentProps {
@@ -75,8 +76,8 @@ export interface DeprecatedCardComponentProps {
 }
 
 /**
-  @NOTE: CardList & CardFooter have been moved over to /common/card/styles and has modified styles
-  These styles are used in GHG instance, so we leave these for now. We should move these styles to GHG instances
+  @NOTE: CardList & CardFooter have been moved over to /common/card/styles and has modified styles.
+  These styles are directly imported in GHG instance & EIC instance, so we leave these here for now. We should move these styles to GHG instances
   since these styles are not used by UI instance anymore.
 */
 export const CardList = styled.ol`
@@ -115,162 +116,6 @@ export const CardFooter = styled.div`
   }
 `;
 
-function renderCardType({ cardType }: CardItemProps) {
-  switch (cardType) {
-    case 'cover':
-      return css`
-        padding-top: ${variableGlsp(2)};
-        background: ${themeVal('color.base-400')};
-        color: ${themeVal('color.surface')};
-        justify-content: flex-end;
-
-        ${CardFigure} {
-          position: absolute;
-          inset: 0;
-          z-index: -1;
-          background: ${themeVal('color.base-400')};
-        }
-
-        ${CardOverline} {
-          color: ${themeVal('color.surface-400a')};
-        }
-      `;
-    case 'featured':
-      return css`
-        padding-top: ${variableGlsp()};
-        color: ${themeVal('color.surface')};
-        justify-content: flex-end;
-        min-height: 16rem;
-
-        ${media.mediumUp`
-          min-height: 28rem;
-        `}
-
-        ${CardFigure} {
-          position: absolute;
-          inset: 0;
-          z-index: -1;
-          background: ${themeVal('color.base-400')};
-        }
-
-        ${CardTitle} {
-          font-size: ${variableBaseType('1.5rem')};
-          max-width: 52rem;
-        }
-
-        ${CardOverline} {
-          color: ${themeVal('color.surface-400a')};
-        }
-
-        ${CardBody} {
-          font-size: ${variableBaseType('1rem')};
-          max-width: 52rem;
-        }
-      `;
-    case 'horizontal-info':
-      return HorizontalCardStyles;
-    default:
-      return css`
-        background: transparent;
-      `;
-  }
-}
-
-export const CardItem = styled(CardBlank)<CardItemProps>`
-  ${renderCardType}
-
-  ${({ isStateFocus }) =>
-    isStateFocus &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationC')};
-      transform: translate(0, 0.125rem);
-    `}
-  ${({ isStateOver }) =>
-    isStateOver &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationC')};
-      transform: translate(0, 0.125rem);
-    `}
-  ${({ isStateActive }) =>
-    isStateActive &&
-    css`
-      box-shadow: ${themeVal('boxShadow.elevationB')};
-      transform: translate(0, 0.125rem);
-    `}
-`;
-
-const CardLabel = styled.span`
-  position: absolute;
-  z-index: 1;
-  top: ${variableGlsp()};
-  right: ${variableGlsp()};
-  display: inline-block;
-  vertical-align: top;
-  color: ${themeVal('color.surface')};
-  border-radius: ${themeVal('shape.ellipsoid')};
-  padding: ${glsp(0.125, 0.5)};
-  background: ${themeVal('color.base-400a')};
-  pointer-events: auto;
-  transition: all 0.24s ease 0s;
-
-  &,
-  &:visited {
-    text-decoration: none;
-  }
-
-  &:hover {
-    opacity: 0.64;
-  }
-`;
-
-const CardFigure = styled(Figure)`
-  order: -1;
-  width: 100%;
-  ${(props) => !props.isCoverOrFeatured && `aspect-ratio: 2/1;`}
-  background: ${(props) =>
-    props.src ? 'none' : props.theme.color['primary-100']};
-
-  img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    mix-blend-mode: multiply;
-    display: ${(props) => (props.src ? 'block' : 'none')};
-  }
-`;
-
-const ExternalLinkMark = styled.div`
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: ${variableGlsp(0.25)};
-  right: ${variableGlsp(0.25)};
-  padding: ${variableGlsp(0.125)} ${variableGlsp(0.25)};
-  background-color: ${themeVal('color.primary')};
-  color: ${themeVal('color.surface')};
-  text-transform: none;
-  border-radius: calc(
-    ${multiply(themeVal('shape.rounded'), 2)} - ${variableGlsp(0.125)}
-  );
-  z-index: 1;
-`;
-
-const FlagText = styled.div`
-  display: inline;
-  font-weight: bold;
-  font-size: 0.825rem;
-  margin-right: ${variableGlsp(0.25)};
-`;
-
-export function ExternalLinkFlag() {
-  return (
-    <ExternalLinkMark>
-      <FlagText>External Link</FlagText>
-      <CollecticonExpandTopRight size='small' meaningful={false} />
-    </ExternalLinkMark>
-  );
-}
-
 /**
  * CardComponent
  *
@@ -296,114 +141,61 @@ export function ExternalLinkFlag() {
  * @param {string} [to] - The URL to link to. If provided, the card behaves as a link. Mutually exclusive with `onClick`.
  * @returns {JSX.Element} The rendered CardComponent.
  */
-function CardComponent(
-  props: CardComponentProps & DeprecatedCardComponentProps
+
+export default function CardComponent(
+  data: CardComponentProps & DeprecatedCardComponentProps
 ) {
   const {
+    cardType = CardType.CLASSIC,
     className,
-    title,
-    cardType,
-    description,
-    linkLabel = 'View more',
-    date,
-    overline,
-    imgSrc,
-    imgAlt,
-    tagLabels,
-    parentTo,
-    footerContent,
-    hideExternalLinkBadge,
+    linkLabel,
     onCardClickCapture
-  } = props;
-
+  } = data;
   const { Link } = useVedaUI();
 
   // For backwards compatibility with deprecated props
   const to =
-    ('to' in props && props.to) || props.linkTo || props.linkProperties?.linkTo;
-
-  if (props.linkProperties || props.linkTo) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      'linkProperties and linkTo are deprecated in Card component. Please use the "to" prop instead.'
-    );
-
-    if ('onClick' in props && props.onClick) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        'onClick and linkProperties/linkTo are mutually exclusive. Please use only one of them.'
-      );
-    }
-  }
+    ('to' in data && data.to) || data.linkTo || data.linkProperties?.linkTo;
 
   const isExternalLink = to ? utils.isExternalLink(to) : false;
 
-  const CardContent = (
-    <>
-      {cardType !== 'horizontal-info' && (
-        <>
-          <CardHeader>
-            <CardHeadline>
-              <CardTitle>{title}</CardTitle>
-              <CardOverline as='div'>
-                {hideExternalLinkBadge !== true && isExternalLink && (
-                  <ExternalLinkFlag />
-                )}
-                {!isExternalLink &&
-                  tagLabels &&
-                  parentTo &&
-                  tagLabels.map((label) => (
-                    <CardLabel as={Link} to={parentTo} key={label}>
-                      {label}
-                    </CardLabel>
-                  ))}
-                {date ? (
-                  <>
-                    published on{' '}
-                    <time dateTime={format(date, 'yyyy-MM-dd')}>
-                      {format(date, 'MMM d, yyyy')}
-                    </time>
-                  </>
-                ) : (
-                  overline
-                )}
-              </CardOverline>
-            </CardHeadline>
-          </CardHeader>
-          {description && (
-            <CardBody>
-              <p>{description}</p>
-            </CardBody>
-          )}
-          {footerContent && <CardFooter>{footerContent}</CardFooter>}
-          <CardFigure
-            src={imgSrc}
-            isCoverOrFeatured={cardType === 'cover' || cardType === 'featured'}
-          >
-            <img src={imgSrc} alt={imgAlt} loading='lazy' />
-          </CardFigure>
-        </>
-      )}
-      {cardType === 'horizontal-info' && (
-        <HorizontalInfoCard
-          title={title}
-          description={description}
-          imgSrc={imgSrc}
-          imgAlt={imgAlt}
-          tagLabels={tagLabels}
-        />
-      )}
-    </>
-  );
-
-  const baseProps = {
-    as: CardItem,
-    cardType,
-    className,
-    linkLabel,
-    onClickCapture: onCardClickCapture,
-    children: CardContent
+  const cardData = {
+    isExternalLink: isExternalLink,
+    ...data
   };
+
+  const defineBaseProps = () => {
+    const baseProps = {
+      className,
+      linkLabel,
+      onClickCapture: onCardClickCapture
+    };
+
+    if (cardType === CardType.CLASSIC) {
+      baseProps['as'] = ClassicCardItem;
+      baseProps['children'] = <ClassicCard {...cardData} />;
+    } else if (cardType === CardType.COVER) {
+      baseProps['as'] = CoverCardItem;
+      baseProps['children'] = <CoverCard {...cardData} />;
+    } else if (cardType === CardType.FEATURED) {
+      baseProps['as'] = FeaturedCardItem;
+      baseProps['children'] = <FeaturedCard {...cardData} />;
+    } else if (cardType === CardType.HORIZONTALINFO) {
+      baseProps['as'] = HorizontalInfoCardItem;
+      baseProps['children'] = (
+        <HorizontalInfoCard
+          title={data.title}
+          description={data.description}
+          imgSrc={data.imgSrc}
+          imgAlt={data.imgAlt}
+          tagLabels={data.tagLabels}
+        />
+      );
+    }
+    return baseProps;
+  };
+
+  const baseProps = defineBaseProps();
 
   // Link variant
   if (to) {
@@ -419,8 +211,8 @@ function CardComponent(
   }
 
   // Clickable variant
-  if ('onClick' in props && props.onClick) {
-    return <ElementInteractive {...baseProps} onClick={props.onClick} />;
+  if ('onClick' in data && data.onClick) {
+    return <ElementInteractive {...baseProps} onClick={data.onClick} />;
   }
 
   // Non-interactive variant
@@ -430,3 +222,37 @@ function CardComponent(
 export const Card = styled(CardComponent)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
+
+const ExternalLinkMark = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: ${variableGlsp(0.25)};
+  right: ${variableGlsp(0.25)};
+  padding: ${variableGlsp(0.125)} ${variableGlsp(0.25)};
+  background-color: ${themeVal('color.primary')};
+  color: ${themeVal('color.surface')};
+  text-transform: none;
+  border-radius: calc(
+    ${multiply(themeVal('shape.rounded'), 2)} - ${variableGlsp(0.125)}
+  );
+  z-index: 1;
+`;
+
+const FlagText = styled.div`
+  display: inline;
+  font-weight: bold;
+  font-size: 0.825rem;
+  margin-right: ${variableGlsp(0.25)};
+`;
+
+// @NOTE: ExternalLinkFlag should be broken out but currently GHG instance directly imports this from here
+
+export function ExternalLinkFlag() {
+  return (
+    <ExternalLinkMark>
+      <FlagText>External Link</FlagText>
+      <CollecticonExpandTopRight size='small' meaningful={false} />
+    </ExternalLinkMark>
+  );
+}
