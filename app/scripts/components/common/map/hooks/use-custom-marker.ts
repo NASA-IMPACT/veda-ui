@@ -22,5 +22,6 @@ export default function useCustomMarker(mapInstance) {
       // add image to the active style and make it SDF-enabled
       mapInstance.addImage(CUSTOM_MARKER_ID, image, { sdf: true });
     });
-  }, [mapInstance]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // do not include mapInstance to avoid unintended re-renders
 }

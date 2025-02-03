@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { AnySourceImpl, Layer, Style } from 'mapbox-gl';
+import { StyleSpecification } from 'mapbox-gl';
 import { useEffect, useMemo, useState } from 'react';
 import {
   BasemapId,
@@ -35,7 +35,9 @@ export function Basemap({
 }: BasemapProps) {
   const { envMapboxToken } = useVedaUI();
   const { updateStyle } = useMapStyle();
-  const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
+  const [baseStyle, setBaseStyle] = useState<StyleSpecification | undefined>(
+    undefined
+  );
 
   const basemapStyles = useMemo(
     () => getBasemapStyles(envMapboxToken),
@@ -62,7 +64,7 @@ export function Basemap({
   );
 
   useEffect(() => {
-    setBaseStyle(styleJson as Style);
+    setBaseStyle(styleJson as StyleSpecification);
   }, [styleJson]);
 
   // Apply labels and boundaries options, by setting visibility on related
@@ -76,15 +78,15 @@ export function Basemap({
     // this id from the list of groups in the metadata section of the style.
     const labelsGroupIds = mapGroupNameToGroupId(
       GROUPS_BY_OPTION.labels,
-      baseStyle.metadata['mapbox:groups']
+      baseStyle.metadata?.['mapbox:groups']
     );
     const boundariesGroupIds = mapGroupNameToGroupId(
       GROUPS_BY_OPTION.boundaries,
-      baseStyle.metadata['mapbox:groups']
+      baseStyle.metadata?.['mapbox:groups']
     );
 
     const layers = baseStyle.layers.map((layer) => {
-      const layerGroup = (layer as Layer).metadata?.['mapbox:group'];
+      const layerGroup = layer.metadata?.['mapbox:group'];
 
       if (layerGroup) {
         const isLabelsLayer = labelsGroupIds.includes(layerGroup);
@@ -100,7 +102,7 @@ export function Basemap({
           return {
             ...layer,
             layout: {
-              ...(layer as Layer).layout,
+              ...layer.layout,
               visibility
             },
             metadata: {
@@ -115,7 +117,7 @@ export function Basemap({
 
     updateStyle({
       generatorId: 'basemap',
-      sources: baseStyle.sources as Record<string, AnySourceImpl>,
+      sources: baseStyle.sources,
       layers: layers as ExtendedLayer[]
     });
   }, [updateStyle, labelsOption, boundariesOption, baseStyle]);
