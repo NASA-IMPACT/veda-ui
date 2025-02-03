@@ -54,9 +54,11 @@ export function checkFitBoundsFromLayer(
   if (!layerBounds || !mapInstance) return false;
 
   const [minXLayer, minYLayer, maxXLayer, maxYLayer] = layerBounds;
-  const [[minXMap, minYMap], [maxXMap, maxYMap]] = mapInstance
-    .getBounds()
-    .toArray();
+  const bounds = mapInstance.getBounds();
+  if (!bounds) {
+    return false;
+  }
+  const [[minXMap, minYMap], [maxXMap, maxYMap]] = bounds.toArray();
   const isOutside =
     maxXLayer < minXMap ||
     minXLayer > maxXMap ||

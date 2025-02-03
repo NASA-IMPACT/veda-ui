@@ -1,5 +1,5 @@
 import { BasemapId, Option } from './basemap';
-import { MbProjectionOptions, ProjectionOptions } from '$types/veda';
+import { ProjectionOptions } from '$types/veda';
 
 export interface MapOptionsProps {
   onProjectionChange: (projection: ProjectionOptions) => void;
@@ -19,7 +19,7 @@ export interface ProjectionConicOptions {
 
 export interface ProjectionListItem {
   id: ProjectionOptions['id'];
-  mbId: MbProjectionOptions['name'];
+  mbId: mapboxgl.ProjectionSpecification['name'];
   label: string;
   isCustom?: boolean;
   conicValues?: ProjectionConicOptions;

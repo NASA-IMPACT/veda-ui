@@ -1,13 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import qs from 'qs';
 import {
-  AnyLayer,
-  AnySourceImpl,
-  GeoJSONSourceRaw,
+  LayerSpecification,
+  SourceSpecification,
+  GeoJSONSourceSpecification,
   LngLatBoundsLike,
-  RasterLayer,
-  RasterSource,
-  SymbolLayer
+  RasterLayerSpecification,
+  RasterSourceSpecification,
+  SymbolLayerSpecification
 } from 'mapbox-gl';
 import { useTheme } from 'styled-components';
 import { featureCollection, point } from '@turf/helpers';
@@ -360,8 +361,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     const controller = new AbortController();
 
     async function run() {
-      let layers: AnyLayer[] = [];
-      let sources: Record<string, AnySourceImpl> = {};
+      let layers: LayerSpecification[] = [];
+      let sources: Record<string, SourceSpecification> = {};
 
       if (mosaicUrl) {
         const tileParams = qs.stringify(
@@ -392,14 +393,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             'WMTSCapabilities.xml'
           );
 
-          const mosaicSource: RasterSource = {
+          const mosaicSource: RasterSourceSpecification = {
             type: 'raster',
             url: tilejsonUrl
           };
 
           const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
-          const mosaicLayer: RasterLayer = {
+          const mosaicLayer: RasterLayerSpecification = {
             id: id,
             type: 'raster',
             source: id,
@@ -449,14 +450,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
 
       if (points && minZoom > 0) {
         const pointsSourceId = `${id}-points`;
-        const pointsSource: GeoJSONSourceRaw = {
+        const pointsSource: GeoJSONSourceSpecification = {
           type: 'geojson',
           data: featureCollection(
             points.map((p) => point(p.center, { bounds: p.bounds }))
           )
         };
 
-        const pointsLayer: SymbolLayer = {
+        const pointsLayer: SymbolLayerSpecification = {
           type: 'symbol',
           id: pointsSourceId,
           source: pointsSourceId,
@@ -476,7 +477,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         };
         sources = {
           ...sources,
-          [pointsSourceId]: pointsSource as AnySourceImpl
+          [pointsSourceId]: pointsSource as SourceSpecification
         };
         layers = [...layers, pointsLayer];
       }

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useAtomValue } from 'jotai';
 import styled, { css } from 'styled-components';
-import { MapRef } from 'react-map-gl';
+import { LngLatBoundsLike, MapRef } from 'react-map-gl';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button, createButtonStyles } from '@devseed-ui/button';
 import bbox from '@turf/bbox';
