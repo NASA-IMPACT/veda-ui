@@ -1,9 +1,9 @@
 import bbox from '@turf/bbox';
 import React, { useEffect } from 'react';
 import { Layer as MapGLLayer, Source as MapGLSource } from 'react-map-gl';
-import type { LineLayer } from 'react-map-gl';
+import type { LngLatBoundsLike } from 'react-map-gl';
 import { Feature } from 'geojson';
-import { getZoomFromBbox } from '$components/common/map/utils';
+import { LineLayerSpecification } from 'mapbox-gl';
 import useMaps from '$components/common/map/hooks/use-maps';
 
 interface AoiLayerProps {
@@ -15,23 +15,10 @@ const AoiLayer = ({ aoi }: AoiLayerProps) => {
 
   useEffect(() => {
     if (mapboxMap && aoi) {
-      /*
+      // Fit AOI
       const bounds = bbox(aoi) as LngLatBoundsLike;
       mapboxMap.fitBounds(bounds, {
         padding: 60
-      });
-      */
-
-      // Fit AOI
-      // The `flyTo` method is used instead of `fitBounds` to ensure compatibility with map projections other than Web Mercator.
-      const bboxToFit = bbox(aoi);
-      const zoom = bboxToFit ? getZoomFromBbox(bboxToFit) : 14;
-      mapboxMap?.flyTo({
-        center: [
-          (bboxToFit[2] + bboxToFit[0]) / 2, // correcting the map offset by /2
-          (bboxToFit[3] + bboxToFit[1]) / 2 // correcting the map offset by /2
-        ],
-        zoom
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,7 +38,7 @@ const AoiLayer = ({ aoi }: AoiLayerProps) => {
             'line-color': '#008888',
             'line-width': 5
           }
-        } as LineLayer)}
+        } as LineLayerSpecification)}
       />
     </MapGLSource>
   );

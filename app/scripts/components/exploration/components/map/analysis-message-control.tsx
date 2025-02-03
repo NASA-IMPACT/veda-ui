@@ -104,7 +104,7 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
   const { main } = useScales();
   const { onTOIZoom } = useOnTOIZoom();
 
-  const { features } = useAois();
+  const { aoi, features } = useAois();
   const selectedInterval = useAtomValue(selectedIntervalAtom);
 
   const dateLabel =
@@ -118,26 +118,10 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
   }, [setObsolete, features]);
 
   const analysisCallback = useCallback(() => {
-    /*
-    const bounds = bbox(aoi) as LngLatBoundsLike;
-    mapboxMap.fitBounds(bounds, {
-      padding: 60
-    });
-    */
-
     // Fit AOI
-    // The `flyTo` method is used instead of `fitBounds` to ensure compatibility with map projections other than Web Mercator.
-    const bboxToFit = bbox({
-      type: 'FeatureCollection',
-      features: selectedFeatures
-    });
-    const zoom = bboxToFit ? getZoomFromBbox(bboxToFit) : 14;
-    mainMap?.flyTo({
-      center: [
-        (bboxToFit[2] + bboxToFit[0]) / 2, // correcting the map offset by /2
-        (bboxToFit[3] + bboxToFit[1]) / 2 // correcting the map offset by /2
-      ],
-      zoom
+    const bounds = bbox(aoi) as LngLatBoundsLike;
+    mainMap?.fitBounds(bounds, {
+      padding: 60
     });
 
     // Fit TOI
@@ -151,14 +135,7 @@ export function AnalysisMessage({ mainMap }: { mainMap: MapRef | undefined }) {
     const new_x = startPoint - new_k * main(selectedInterval.start);
 
     onTOIZoom(new_x, new_k);
-  }, [
-    selectedFeatures,
-    mainMap,
-    main,
-    timelineWidth,
-    onTOIZoom,
-    selectedInterval
-  ]);
+  }, [aoi, mainMap, main, timelineWidth, onTOIZoom, selectedInterval]);
 
   if (isAnalyzing) {
     return (
