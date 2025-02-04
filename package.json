@@ -1,7 +1,7 @@
 {
-  "name": "@developmentseed/veda-ui",
+  "name": "@teamimpact/veda-ui",
   "description": "Dashboard",
-  "version": "5.11.6",
+  "version": "5.12.1",
   "author": {
     "name": "Development Seed",
     "url": "https://developmentseed.org/"
@@ -22,7 +22,7 @@
   "scripts": {
     "serve": "NODE_ENV=development gulp serve",
     "build": "NODE_ENV=production gulp",
-    "buildlib": "gulp buildlib",
+    "buildlib": "gulp buildlib && cp README-lib.md lib/README.md",
     "stage": "yarn buildlib && NODE_ENV=staging gulp",
     "clean": "gulp clean",
     "lint": "yarn lint:scripts && yarn lint:css",
