@@ -3,15 +3,9 @@ import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
 import CatalogContent from './catalog-content';
 import { DatasetData } from '$types/veda';
-import {
-  useSlidingStickyHeaderProps
-} from '$components/common/layout-root/useSlidingStickyHeaderProps';
+import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
 
-import {
-  FoldHeader,
-  FoldHeadline,
-  FoldTitle
-} from '$components/common/fold';
+import { FoldHeader, FoldHeadline, FoldTitle } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 /**
  * CATALOG Feature component
@@ -36,21 +30,19 @@ export const sortOptions = [{ id: 'name', name: 'Name' }];
 
 export interface CatalogViewProps {
   datasets: DatasetData[];
-  onFilterChanges: () => {
-    search: string,
-    taxonomies: Record<string, string[]> | Record<string, never>,
-    onAction: () => void,
-  } | any;
+  onFilterChanges: () =>
+    | {
+        search: string;
+        taxonomies: Record<string, string[]> | Record<string, never>;
+        onAction: () => void;
+      }
+    | any;
 }
 
-function CatalogView({
-  datasets,
-  onFilterChanges,
-}: CatalogViewProps) {
-
+function CatalogView({ datasets, onFilterChanges }: CatalogViewProps) {
   const { headerHeight } = useSlidingStickyHeaderProps();
 
-  const { search, taxonomies , onAction } = onFilterChanges();
+  const { search, taxonomies, onAction } = onFilterChanges();
 
   return (
     <CatalogWrapper>

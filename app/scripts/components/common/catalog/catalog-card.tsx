@@ -6,7 +6,7 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Card } from '../card';
+import { Card, CardType } from '../card';
 import { CardTopicsList } from '../card/styles';
 import TextHighlight from '../text-highlight';
 import { getDatasetDescription, getMediaProperty } from './utils';
@@ -122,7 +122,7 @@ export const CatalogCard = (props: CatalogCardProps) => {
 
   return (
     <CardSelectable
-      cardType='horizontal-info'
+      cardType={CardType.HORIZONTALINFO}
       checked={selectable ? selected : undefined}
       selectable={selectable}
       tagLabels={allTaxonomyValues}

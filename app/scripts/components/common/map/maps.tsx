@@ -24,7 +24,6 @@ import { ExtendedStyle, Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
 import useMaps, { useMapsContext } from './hooks/use-maps';
-import { aoiCustomCursorStyle } from './controls/aoi/custom-aoi-control';
 import { COMPARE_CONTAINER_NAME, CONTROLS_CONTAINER_NAME } from '.';
 import { ProjectionOptions } from '$types/veda';
 
@@ -55,7 +54,13 @@ const MapsContainer = styled.div`
     &.mouse-move .mapboxgl-canvas-container {
       cursor: move;
     }
-    ${aoiCustomCursorStyle}
+
+    /* 'moving' feature is disabled, match the cursor style accordingly */
+    &.mode-static_mode .mapboxgl-canvas-container,
+    &.feature-feature.mouse-drag .mapboxgl-canvas-container,
+    &.mouse-move .mapboxgl-canvas-container {
+      cursor: default;
+    }
   }
 
   .mapboxgl-compare .compare-swiper-vertical {
@@ -91,7 +96,14 @@ type MapsProps = Pick<
   interactive?: boolean;
 };
 
-function Maps({ children, projection, onStyleUpdate, mapRef, onMapLoad, interactive }: MapsProps) {
+function Maps({
+  children,
+  projection,
+  onStyleUpdate,
+  mapRef,
+  onMapLoad,
+  interactive
+}: MapsProps) {
   // Instantiate MGL Compare, if compare is enabled
   useMapCompare();
 
@@ -145,7 +157,13 @@ function Maps({ children, projection, onStyleUpdate, mapRef, onMapLoad, interact
     <MapsContainer id={containerId} ref={observe}>
       <Styles onStyleUpdate={onStyleUpdate}>
         {generators}
-        <MapComponent interactive={interactive} mapRef={mapRef} onMapLoad={onMapLoad} controls={controls} projection={projection} />
+        <MapComponent
+          interactive={interactive}
+          mapRef={mapRef}
+          onMapLoad={onMapLoad}
+          controls={controls}
+          projection={projection}
+        />
       </Styles>
       {!!compareGenerators.length && (
         <Styles isCompared>
@@ -197,7 +215,14 @@ export default function MapsContextWrapper(props: MapsContextWrapperProps) {
         containerId
       }}
     >
-      <Maps interactive={mapOptions?.interactive} onMapLoad={onMapLoad} mapRef={mapRef} {...props}>{props.children}</Maps>
+      <Maps
+        interactive={mapOptions?.interactive}
+        onMapLoad={onMapLoad}
+        mapRef={mapRef}
+        {...props}
+      >
+        {props.children}
+      </Maps>
     </MapsContext.Provider>
   );
 }

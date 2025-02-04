@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import { OptionalBbox } from "../types";
-import { FIT_BOUNDS_PADDING, checkFitBoundsFromLayer } from "../utils";
-import useMaps from "./use-maps";
+import { useEffect } from 'react';
+import { OptionalBbox } from '../types';
+import { FIT_BOUNDS_PADDING, checkFitBoundsFromLayer } from '../utils';
+import useMaps from './use-maps';
 
 /**
  * Centers on the given bounds if the current position is not within the bounds,
@@ -19,7 +19,7 @@ export default function useFitBbox(
 ) {
   const { current: mapInstance } = useMaps();
   useEffect(() => {
-    if (isUserPositionSet  || !mapInstance) return;
+    if (isUserPositionSet || !mapInstance) return;
 
     // Prefer layer defined bounds to STAC collection bounds.
     const bounds = (initialBbox ?? stacBbox) as
@@ -29,5 +29,6 @@ export default function useFitBbox(
     if (bounds?.length && checkFitBoundsFromLayer(bounds, mapInstance)) {
       mapInstance.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
     }
-  }, [mapInstance, isUserPositionSet, initialBbox, stacBbox]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isUserPositionSet, initialBbox, stacBbox]); // do not include mapInstance to avoid unintended re-renders
 }

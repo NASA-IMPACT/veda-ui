@@ -2271,14 +2271,6 @@
   resolved "http://verdaccio.ds.io:4873/@mapbox%2fgeojson-normalize/-/geojson-normalize-0.0.1.tgz#1da1e6b3a7add3ad29909b30f438f60581b7cd80"
   integrity sha1-HaHms6et060pkJsw9Dj2BYG3zYA=
 
-"@mapbox/geojson-rewind@^0.5.2":
-  version "0.5.2"
-  resolved "http://verdaccio.ds.io:4873/@mapbox%2fgeojson-rewind/-/geojson-rewind-0.5.2.tgz#591a5d71a9cd1da1a0bf3420b3bea31b0fc7946a"
-  integrity sha512-tJaT+RbYGJYStt7wI3cq4Nl4SXxG8W7JDG5DMJu97V25RnbNg3QtQtf+KD+VLjNpWKYsRvXDNmNrBgEETr1ifA==
-  dependencies:
-    get-stream "^6.0.1"
-    minimist "^1.2.6"
-
 "@mapbox/jsonlint-lines-primitives@^2.0.2", "@mapbox/jsonlint-lines-primitives@~2.0.2":
   version "2.0.2"
   resolved "http://verdaccio.ds.io:4873/@mapbox%2fjsonlint-lines-primitives/-/jsonlint-lines-primitives-2.0.2.tgz#ce56e539f83552b58d10d672ea4d6fc9adc7b234"
@@ -2315,10 +2307,10 @@
     suggestions "^1.6.0"
     xtend "^4.0.1"
 
-"@mapbox/mapbox-gl-supported@^2.0.1":
-  version "2.0.1"
-  resolved "http://verdaccio.ds.io:4873/@mapbox%2fmapbox-gl-supported/-/mapbox-gl-supported-2.0.1.tgz#c15367178d8bfe4765e6b47b542fe821ce259c7b"
-  integrity sha512-HP6XvfNIzfoMVfyGjBckjiAOQK9WfX0ywdLubuPMPv+Vqf5fj0uCbgBQYpiqcWZT6cbyyRnTSXDheT1ugvF6UQ==
+"@mapbox/mapbox-gl-supported@^3.0.0":
+  version "3.0.0"
+  resolved "http://verdaccio.ds.io:4873/@mapbox%2fmapbox-gl-supported/-/mapbox-gl-supported-3.0.0.tgz#bebd3d5da3c1fd988011bb79718a39f63f5e16ac"
+  integrity sha512-2XghOwu16ZwPJLOFVuIOaLbN0iKMn867evzXFyf0P22dqugezfJwLmdanAgU25ITvz1TvOfVP4jsDImlDJzcWg==
 
 "@mapbox/mapbox-gl-sync-move@^0.3.0":
   version "0.3.0"
@@ -4645,6 +4637,13 @@
   resolved "http://verdaccio.ds.io:4873/@types%2fexpect/-/expect-1.20.4.tgz#8288e51737bf7e3ab5d7c77bfa695883745264e5"
   integrity sha512-Q5Vn3yjTDyCMV50TB6VRIbQNxSE4OmZR86VSbGaNpfUolm0iePBB4KdEEHmxoY5sT2+2DIvXW0rvMDP2nHZ4Mg==
 
+"@types/geojson-vt@^3.2.5":
+  version "3.2.5"
+  resolved "http://verdaccio.ds.io:4873/@types%2fgeojson-vt/-/geojson-vt-3.2.5.tgz#b6c356874991d9ab4207533476dfbcdb21e38408"
+  integrity sha512-qDO7wqtprzlpe8FfQ//ClPV9xiuoh2nkIgiouIptON9w5jvD/fA4szvP9GBlDVdJ5dldAl0kX/sy3URbWwLx0g==
+  dependencies:
+    "@types/geojson" "*"
+
 "@types/geojson@*", "@types/geojson@^7946.0.10":
   version "7946.0.10"
   resolved "http://verdaccio.ds.io:4873/@types%2fgeojson/-/geojson-7946.0.10.tgz#6dfbf5ea17142f7f9a043809f1cd4c448cb68249"
@@ -4654,6 +4653,11 @@
   version "7946.0.8"
   resolved "http://verdaccio.ds.io:4873/@types%2fgeojson/-/geojson-7946.0.8.tgz#30744afdb385e2945e22f3b033f897f76b1f12ca"
   integrity sha512-1rkryxURpr6aWP7R786/UQOkJ3PcpQiWkAXBmdWc7ryFWqN6a4xfK7BtjXvFBKO9LjQ+MWQSWxYeZX1OApnArA==
+
+"@types/geojson@^7946.0.15":
+  version "7946.0.15"
+  resolved "http://verdaccio.ds.io:4873/@types%2fgeojson/-/geojson-7946.0.15.tgz#f9d55fd5a0aa2de9dc80b1b04e437538b7298868"
+  integrity sha512-9oSxFzDCT2Rj6DfcHF8G++jxBKS7mBqXl5xrRW+Kbvjry6Uduya2iiwqHPhVXpasAVMBYKkEPGgKhd3+/HZ6xA==
 
 "@types/graceful-fs@^4.1.3":
   version "4.1.9"
@@ -4752,12 +4756,19 @@
   dependencies:
     "@types/geojson" "*"
 
-"@types/mapbox-gl@^2.7.5":
-  version "2.7.5"
-  resolved "http://verdaccio.ds.io:4873/@types%2fmapbox-gl/-/mapbox-gl-2.7.5.tgz#9e31fc592adb2762e4e5c7727dca5ec367dfc780"
-  integrity sha512-T8gACm3oGKMlBo2l/9vnKEAxgCc0g2mr8g6dI1d3ZO6EzRe7JALBONlWRmc7SOHV79kiarkcdLdDVEnfd+jilA==
+"@types/mapbox__point-geometry@*", "@types/mapbox__point-geometry@^0.1.4":
+  version "0.1.4"
+  resolved "http://verdaccio.ds.io:4873/@types%2fmapbox__point-geometry/-/mapbox__point-geometry-0.1.4.tgz#0ef017b75eedce02ff6243b4189210e2e6d5e56d"
+  integrity sha512-mUWlSxAmYLfwnRBmgYV86tgYmMIICX4kza8YnE/eIlywGe2XoOxlpVnXWwir92xRLjwyarqwpu2EJKD2pk0IUA==
+
+"@types/mapbox__vector-tile@^1.3.4":
+  version "1.3.4"
+  resolved "http://verdaccio.ds.io:4873/@types%2fmapbox__vector-tile/-/mapbox__vector-tile-1.3.4.tgz#ad757441ef1d34628d9e098afd9c91423c1f8734"
+  integrity sha512-bpd8dRn9pr6xKvuEBQup8pwQfD4VUyqO/2deGjfpe6AwC8YRlyEipvefyRJUSiCJTZuCb8Pl1ciVV5ekqJ96Bg==
   dependencies:
     "@types/geojson" "*"
+    "@types/mapbox__point-geometry" "*"
+    "@types/pbf" "*"
 
 "@types/mdast@^3.0.0":
   version "3.0.10"
@@ -4818,6 +4829,11 @@
   resolved "http://verdaccio.ds.io:4873/@types%2fparse5/-/parse5-5.0.3.tgz#e7b5aebbac150f8b5fdd4a46e7f0bd8e65e19109"
   integrity sha512-kUNnecmtkunAoQ3CnjmMkzNU/gtxG8guhi+Fk2U/kOpIKjIMKnXGp4IJCgQJrXSgMsWYimYG4TGjz/UzbGEBTw==
 
+"@types/pbf@*", "@types/pbf@^3.0.5":
+  version "3.0.5"
+  resolved "http://verdaccio.ds.io:4873/@types%2fpbf/-/pbf-3.0.5.tgz#a9495a58d8c75be4ffe9a0bd749a307715c07404"
+  integrity sha512-j3pOPiEcWZ34R6a6mN07mUkM4o4Lwf6hPNt8eilOeZhTFbxFXmKhvXl9Y28jotFPaI1bpPDJsbCprUoNke6OrA==
+
 "@types/prop-types@*":
   version "15.7.5"
   resolved "http://verdaccio.ds.io:4873/@types%2fprop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
@@ -4869,6 +4885,13 @@
     "@types/hoist-non-react-statics" "*"
     "@types/react" "*"
     csstype "^3.0.2"
+
+"@types/supercluster@^7.1.3":
+  version "7.1.3"
+  resolved "http://verdaccio.ds.io:4873/@types%2fsupercluster/-/supercluster-7.1.3.tgz#1a1bc2401b09174d9c9e44124931ec7874a72b27"
+  integrity sha512-Z0pOY34GDFl3Q6hUFYf3HkTwKEE02e7QgtJppBt+beEAxnyOpJua+voGFvxINBHa06GwLFFym7gRPY2SiKIfIA==
+  dependencies:
+    "@types/geojson" "*"
 
 "@types/tough-cookie@*":
   version "4.0.5"
@@ -6092,6 +6115,11 @@ chardet@^0.7.0:
   version "0.7.0"
   resolved "http://verdaccio.ds.io:4873/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
+
+cheap-ruler@^4.0.0:
+  version "4.0.0"
+  resolved "http://verdaccio.ds.io:4873/cheap-ruler/-/cheap-ruler-4.0.0.tgz#bdc984de7e0e3f748bdfd2dbe23ec6b9dc820a09"
+  integrity sha512-0BJa8f4t141BYKQyn9NSQt1PguFQXMXwZiA5shfoaBYHAb2fFk2RAX+tiWMoQU+Agtzt3mdt0JtuyshAXqZ+Vw==
 
 cheerio-select@^2.1.0:
   version "2.1.0"
@@ -7689,10 +7717,10 @@ each-props@^1.3.2:
     is-plain-object "^2.0.1"
     object.defaults "^1.1.0"
 
-earcut@^2.2.4:
-  version "2.2.4"
-  resolved "http://verdaccio.ds.io:4873/earcut/-/earcut-2.2.4.tgz#6d02fd4d68160c114825d06890a92ecaae60343a"
-  integrity sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==
+earcut@^3.0.0:
+  version "3.0.1"
+  resolved "http://verdaccio.ds.io:4873/earcut/-/earcut-3.0.1.tgz#f60b3f671c5657cca9d3e131c5527c5dde00ef38"
+  integrity sha512-0l1/0gOjESMeQyYaK5IDiPNvFeu93Z/cO0TjZh9eZ1vyCtZnA7KMZ8rQggpsJHIbGSdrqYq9OhuveadOVHCshw==
 
 easy-bem@^1.1.1:
   version "1.1.1"
@@ -8764,10 +8792,10 @@ geojson-validation@^1.0.2:
   resolved "http://verdaccio.ds.io:4873/geojson-validation/-/geojson-validation-1.0.2.tgz#5c11a83afbec9a1cb9d76c73d47843dbd154d3ff"
   integrity sha512-K5jrJ4wFvORn2pRKeg181LL0QPYuEKn2KHPvfH1m2QtFlAXFLKdseqt0XwBM3ELOY7kNM1fglRQ6ZwUQZ5S00A==
 
-geojson-vt@^3.2.1:
-  version "3.2.1"
-  resolved "http://verdaccio.ds.io:4873/geojson-vt/-/geojson-vt-3.2.1.tgz#f8adb614d2c1d3f6ee7c4265cad4bbf3ad60c8b7"
-  integrity sha512-EvGQQi/zPrDA6zr6BnJD/YhwAkBP8nnJ9emh3EnHQKVMfg/MRVtPbMYdgVy/IaEmn4UfagD2a6fafPDL5hbtwg==
+geojson-vt@^4.0.2:
+  version "4.0.2"
+  resolved "http://verdaccio.ds.io:4873/geojson-vt/-/geojson-vt-4.0.2.tgz#1162f6c7d61a0ba305b1030621e6e111f847828a"
+  integrity sha512-AV9ROqlNqoZEIJGfm1ncNjEXfkz2hdFlZf0qkVfmkwdKa8vj7H16YUOT81rJw1rdFhyEDlN2Tds91p/glzbl5A==
 
 get-caller-file@^1.0.1:
   version "1.0.3"
@@ -8815,7 +8843,7 @@ get-stream@^5.0.0, get-stream@^5.1.0:
   dependencies:
     pump "^3.0.0"
 
-get-stream@^6.0.0, get-stream@^6.0.1:
+get-stream@^6.0.0:
   version "6.0.1"
   resolved "http://verdaccio.ds.io:4873/get-stream/-/get-stream-6.0.1.tgz#a262d8eef67aced57c2852ad6167526a43cbf7b7"
   integrity sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==
@@ -10939,7 +10967,7 @@ just-debounce@^1.0.0:
   resolved "http://verdaccio.ds.io:4873/just-debounce/-/just-debounce-1.1.0.tgz#2f81a3ad4121a76bc7cb45dbf704c0d76a8e5ddf"
   integrity sha512-qpcRocdkUmf+UTNBYx5w6dexX5J31AKK1OmPwH630a83DdVVUIngk55RSAiIGpQyoH0dlr872VHfPjnQnK1qDQ==
 
-kdbush@^4.0.1, kdbush@^4.0.2:
+kdbush@^4.0.2:
   version "4.0.2"
   resolved "http://verdaccio.ds.io:4873/kdbush/-/kdbush-4.0.2.tgz#2f7b7246328b4657dd122b6c7f025fbc2c868e39"
   integrity sha512-WbCVYJ27Sz8zi9Q7Q0xHC+05iwkm3Znipc2XTlrnJbsHMYktW4hPhXUE8Ys1engBrvffoSCqbil1JQAa7clRpA==
@@ -11532,32 +11560,38 @@ mapbox-gl-draw-rectangle-mode@^1.0.4:
   resolved "http://verdaccio.ds.io:4873/mapbox-gl-draw-rectangle-mode/-/mapbox-gl-draw-rectangle-mode-1.0.4.tgz#42987d68872a5fb5cc5d76d3375ee20cd8bab8f7"
   integrity sha512-BdF6nwEK2p8n9LQoMPzBO8LhddW1fe+d5vK8HQIei+4VcRnUbKNsEj7Z15FsJxCHzsc2BQKXbESx5GaE8x0imQ==
 
-mapbox-gl@^2.15.0:
-  version "2.15.0"
-  resolved "http://verdaccio.ds.io:4873/mapbox-gl/-/mapbox-gl-2.15.0.tgz#9439828d0bae1e7b464ae08b30cb2e65a7e2256d"
-  integrity sha512-fjv+aYrd5TIHiL7wRa+W7KjtUqKWziJMZUkK5hm8TvJ3OLeNPx4NmW/DgfYhd/jHej8wWL+QJBDbdMMAKvNC0A==
+mapbox-gl@^3.9.3:
+  version "3.9.3"
+  resolved "http://verdaccio.ds.io:4873/mapbox-gl/-/mapbox-gl-3.9.3.tgz#07e67fd774af52b6e50e82172ee8f1f016d74618"
+  integrity sha512-31mh95f35srpBMxAP32F9dKQXz7pT5VxQA5r6bFY6Aa5G6Z6NC/SVOTyWR+G/wY8wXWTHAnOaAAf5UkD5++/Kg==
   dependencies:
-    "@mapbox/geojson-rewind" "^0.5.2"
     "@mapbox/jsonlint-lines-primitives" "^2.0.2"
-    "@mapbox/mapbox-gl-supported" "^2.0.1"
+    "@mapbox/mapbox-gl-supported" "^3.0.0"
     "@mapbox/point-geometry" "^0.1.0"
     "@mapbox/tiny-sdf" "^2.0.6"
     "@mapbox/unitbezier" "^0.0.1"
     "@mapbox/vector-tile" "^1.3.1"
     "@mapbox/whoots-js" "^3.1.0"
+    "@types/geojson" "^7946.0.15"
+    "@types/geojson-vt" "^3.2.5"
+    "@types/mapbox__point-geometry" "^0.1.4"
+    "@types/mapbox__vector-tile" "^1.3.4"
+    "@types/pbf" "^3.0.5"
+    "@types/supercluster" "^7.1.3"
+    cheap-ruler "^4.0.0"
     csscolorparser "~1.0.3"
-    earcut "^2.2.4"
-    geojson-vt "^3.2.1"
+    earcut "^3.0.0"
+    geojson-vt "^4.0.2"
     gl-matrix "^3.4.3"
     grid-index "^1.1.0"
-    kdbush "^4.0.1"
+    kdbush "^4.0.2"
     murmurhash-js "^1.0.0"
     pbf "^3.2.1"
     potpack "^2.0.0"
-    quickselect "^2.0.0"
-    rw "^1.3.3"
-    supercluster "^8.0.0"
-    tinyqueue "^2.0.3"
+    quickselect "^3.0.0"
+    serialize-to-js "^3.1.2"
+    supercluster "^8.0.1"
+    tinyqueue "^3.0.0"
     vt-pbf "^3.1.3"
 
 markdown-escapes@^1.0.0:
@@ -13856,6 +13890,11 @@ quickselect@^2.0.0:
   resolved "http://verdaccio.ds.io:4873/quickselect/-/quickselect-2.0.0.tgz#f19680a486a5eefb581303e023e98faaf25dd018"
   integrity sha512-RKJ22hX8mHe3Y6wH/N3wCM6BWtjaxIyyUIkpHOvfFnxdI4yD4tBXEBKSbriGujF6jnSVkJrffuo6vxACiSSxIw==
 
+quickselect@^3.0.0:
+  version "3.0.0"
+  resolved "http://verdaccio.ds.io:4873/quickselect/-/quickselect-3.0.0.tgz#a37fc953867d56f095a20ac71c6d27063d2de603"
+  integrity sha512-XdjUArbK4Bm5fLLvlm5KpTFOiOThgfWWI4axAZDWg4E/0mKdZyI9tNEfds27qCi1ze/vwTR16kvmmGhRra3c2g==
+
 rbush@^3.0.1:
   version "3.0.1"
   resolved "http://verdaccio.ds.io:4873/rbush/-/rbush-3.0.1.tgz#5fafa8a79b3b9afdfe5008403a720cc1de882ecf"
@@ -15012,6 +15051,11 @@ semver@^7.5.2:
   resolved "http://verdaccio.ds.io:4873/semver/-/semver-7.6.2.tgz#1e3b34759f896e8f14d6134732ce798aeb0c6e13"
   integrity sha512-FNAIBWCx9qcRhoHcgcJ0gvU7SN1lYU2ZXuSfl04bSC5OpvDHFyJCjdNHomPXxjQlCBU67YW64PzY7/VIEH7F2w==
 
+serialize-to-js@^3.1.2:
+  version "3.1.2"
+  resolved "http://verdaccio.ds.io:4873/serialize-to-js/-/serialize-to-js-3.1.2.tgz#844b8a1c2d72412f68ea30da55090b3fc8e95790"
+  integrity sha512-owllqNuDDEimQat7EPG0tH7JjO090xKNzUtYz6X+Sk2BXDnOCilDdNLwjWeFywG9xkJul1ULvtUQa9O4pUaY0w==
+
 set-blocking@^2.0.0:
   version "2.0.0"
   resolved "http://verdaccio.ds.io:4873/set-blocking/-/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
@@ -15675,7 +15719,7 @@ suggestions@^1.6.0:
     fuzzy "^0.1.1"
     xtend "^4.0.0"
 
-supercluster@^8.0.0:
+supercluster@^8.0.1:
   version "8.0.1"
   resolved "http://verdaccio.ds.io:4873/supercluster/-/supercluster-8.0.1.tgz#9946ba123538e9e9ab15de472531f604e7372df5"
   integrity sha512-IiOea5kJ9iqzD2t7QJq/cREyLHTtSmUT6gQsweojg9WH2sYJqZK9SswTu6jrscO6D1G5v5vYZ9ru/eq85lXeZQ==
@@ -15844,10 +15888,10 @@ tiny-emitter@^2.0.0:
   resolved "http://verdaccio.ds.io:4873/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
   integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
 
-tinyqueue@^2.0.3:
-  version "2.0.3"
-  resolved "http://verdaccio.ds.io:4873/tinyqueue/-/tinyqueue-2.0.3.tgz#64d8492ebf39e7801d7bd34062e29b45b2035f08"
-  integrity sha512-ppJZNDuKGgxzkHihX8v9v9G5f+18gzaTfrukGrq6ueg0lmH4nqVnA2IPG0AEH3jKEk2GRJCUhDoqpoiw3PHLBA==
+tinyqueue@^3.0.0:
+  version "3.0.0"
+  resolved "http://verdaccio.ds.io:4873/tinyqueue/-/tinyqueue-3.0.0.tgz#101ea761ccc81f979e29200929e78f1556e3661e"
+  integrity sha512-gRa9gwYU3ECmQYv3lslts5hxuIa90veaEcxDYuu3QGOIAEM2mOZkVHp48ANJuu1CURtRdHKUBY5Lm1tHV+sD4g==
 
 tippy.js@^6.3.1, tippy.js@^6.3.7:
   version "6.3.7"

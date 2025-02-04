@@ -11,15 +11,14 @@ export type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr';
 // Dataset Layers
 //
 export type MbProjectionOptions = Exclude<
-  mapboxgl.MapboxOptions['projection'],
+  mapboxgl.MapOptions['projection'],
   undefined
 >;
 
-export type ProjectionOptions = Pick<
-  MbProjectionOptions,
-  'parallels' | 'center'
-> & {
-  id: MbProjectionOptions['name'] | 'polarNorth' | 'polarSouth';
+export type ProjectionOptions = {
+  parallels?: [number, number];
+  center?: [number, number];
+  id: mapboxgl.ProjectionSpecification['name'] | 'polarNorth' | 'polarSouth';
 };
 
 interface DatasetLayerCommonCompareProps {
@@ -283,7 +282,7 @@ export interface DatasetDataWithEnhancedLayers extends DatasetData {
 }
 
 // Types needed for library
-
+// @NOTE: Moving towards being decrecated in favor of VedaUIProvider
 export interface LinkProperties {
   LinkElement: string | ComponentType<any> | undefined;
   pathAttributeKeyName: string;
