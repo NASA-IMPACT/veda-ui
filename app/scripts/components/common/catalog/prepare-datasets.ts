@@ -24,15 +24,12 @@ export function prepareDatasets(
   options: FilterOptionsType
 ): StoryData[];
 export function prepareDatasets(
-  data: DatasetData[] | StoryData[],
+  data: (DatasetData | StoryData)[],
   options: FilterOptionsType
 ) {
   const { sortField, sortDir, search, taxonomies, filterLayers } = options;
-  let filtered = [...data];
+  let filtered = data.filter((d) => !d.isHidden);
 
-  filtered = filtered.filter((d) => !d.isHidden);
-
-  // Does the free text search appear in specific fields?
   if (search && search.length >= 3) {
     const searchLower = search.toLowerCase();
     // Function to check if searchLower is included in any of the string fields
