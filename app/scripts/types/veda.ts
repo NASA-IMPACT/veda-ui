@@ -179,7 +179,7 @@ export interface ContentDataBase {
   id: string;
   name: string;
   taxonomy: Taxonomy[];
-  description: string;
+
   cardDescription?: string;
   media?: Media;
   cardMedia?: Media;
@@ -195,6 +195,7 @@ export interface DatasetData extends ContentDataBase {
   infoDescription?: string;
   usage?: DatasetUsage[];
   layers: DatasetLayer[];
+  description: string;
   disableExplore?: boolean;
 }
 
@@ -213,6 +214,7 @@ export interface StoryData extends ContentDataBase {
   path?: string;
   asLink?: LinkContentData;
   hideExternalLinkBadge?: boolean;
+  description?: string; // Description is optional for StoryData
   isLinkExternal?: boolean;
 }
 
