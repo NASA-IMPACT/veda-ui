@@ -100,6 +100,9 @@ async function fetchStacDatasetById(
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
+    // @TODO: remove this after the collection is fixed
+    domain = domain.map((d: string) => d.endsWith('Z') ? d.slice(0, -1) : d);
+
     // @TODO: what to do with timeless data? Setting up as today as a temporary solution
     if (data['dashboard:is_timeless']) {
       const date = new Date();
