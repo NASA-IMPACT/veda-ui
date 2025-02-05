@@ -88,7 +88,7 @@ type DataObject = DatasetData | DatasetLayer | StoryData | FormatBlock;
  * @returns The appropriate description string
  */
 export const getDescription = (data: DataObject): string => {
-  return data.cardDescription ?? data.description;
+  return data.cardDescription ?? data.description ?? '';
 };
 
 /**

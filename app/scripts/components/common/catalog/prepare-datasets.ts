@@ -24,15 +24,12 @@ export function prepareDatasets(
   options: FilterOptionsType
 ): StoryData[];
 export function prepareDatasets(
-  data: DatasetData[] | StoryData[],
+  data: (DatasetData | StoryData)[],
   options: FilterOptionsType
 ) {
   const { sortField, sortDir, search, taxonomies, filterLayers } = options;
-  let filtered = [...data];
+  let filtered = data.filter((d) => !d.isHidden);
 
-  filtered = filtered.filter((d) => !d.isHidden);
-
-  // Does the free text search appear in specific fields?
   if (search && search.length >= 3) {
     const searchLower = search.toLowerCase();
     // Function to check if searchLower is included in any of the string fields
@@ -50,13 +47,15 @@ export function prepareDatasets(
       // Pre-calculate lowercased versions to use in comparisons
       const idLower = d.id.toLowerCase();
       const nameLower = d.name.toLowerCase();
-      const descriptionLower = d.description.toLowerCase();
+      const descriptionLower = d.description?.toLowerCase();
+      const cardDescriptionLower = d.cardDescription?.toLowerCase();
       const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
       // Check if any of the conditions for including the item are met
       return (
         idLower.includes(searchLower) ||
         nameLower.includes(searchLower) ||
-        descriptionLower.includes(searchLower) ||
+        descriptionLower?.includes(searchLower) ||
+        cardDescriptionLower?.includes(searchLower) ||
         (isDatasetData(d) && d.layers.some(layerMatchesSearch)) ||
         topicsTaxonomy?.values.some((t) => includesSearchLower(t.name))
       );
