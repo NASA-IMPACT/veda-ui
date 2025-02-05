@@ -1,5 +1,5 @@
 ---
-id: power_901_annual_meterology_utc
+id: power_power_901_annual_meteorology_utc
 name: 'POWER meteorology'
 featured: true
 description: "Meteorology"
@@ -16,8 +16,7 @@ taxonomy:
 layers:
   - id: cdd10
     stacApiEndpoint: https://dev.openveda.cloud/api/stac
-    tileApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
-    stacCol: power_901_annual_meterology_utc
+    stacCol: power_power_901_annual_meteorology_utc
     name: Cooling Degree Days Above 10 C
     type: arc
     description:
@@ -30,8 +29,8 @@ layers:
       version: 1.1.0
       srs: EPSG:3857
     compare:
-      datasetId: power_901_annual_meterology_utc
-      layerId: power_901_annual_meterology_utc_DISPH
+      datasetId: power_power_901_annual_meteorology_utc
+      layerId: DISPH
       mapLabel: |
         ::js ({ dateFns, datetime, compareDatetime }) => {
           return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
@@ -52,8 +51,7 @@ layers:
     #   exclude: true
   - id: cdd18_3
     stacApiEndpoint: https://dev.openveda.cloud/api/stac
-    tileApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
-    stacCol: power_power_901_annual_meterology_utc
+    stacCol: power_power_901_annual_meteorology_utc
     name: Cooling Degree Days Above 18.3 C
     type: arc
     description:
@@ -67,7 +65,7 @@ layers:
       srs: EPSG:3857
     # TODO: get this from `/legend` endpoint? ex - https://arcgis.asdc.larc.nasa.gov/server/rest/services/POWER/power_901_annual_meterology_utc/ImageServer/legend
     compare:
-      datasetId: power_901_annual_meterology_utc
+      datasetId: power_power_901_annual_meteorology_utc
       layerId: cdd10
       mapLabel: |
         ::js ({ dateFns, datetime, compareDatetime }) => {
@@ -87,10 +85,10 @@ layers:
         - rgb(255,70,35)
     # analysis:
     #   exclude: true
-  - id: power_901_annual_meterology_utc_DISPH
+  - id: DISPH
     stacApiEndpoint: https://dev.openveda.cloud/api/stac
     tileApiEndpoint: https://hh76k5rqdh.execute-api.us-west-2.amazonaws.com/dev
-    stacCol: power_power_901_annual_meterology_utc
+    stacCol: power_power_901_annual_meteorology_utc
     name: Zero Plane Displacement Height
     type: arc
     description:
@@ -104,7 +102,7 @@ layers:
       srs: EPSG:3857
     compare:
       datasetId: power_901_annual_meterology_utc
-      layerId: power_901_annual_meterology_utc_DISPH
+      layerId: DISPH
       mapLabel: |
         ::js ({ dateFns, datetime, compareDatetime }) => {
           return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
