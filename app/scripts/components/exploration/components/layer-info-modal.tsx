@@ -100,7 +100,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
 
   const { parentData } = layerData;
   const path = {
-    [linkProps.pathAttributeKeyName]: dataCatalogPath
+    [linkProps.pathAttributeKeyName]: `${dataCatalogPath}/${parentData.id}`
   };
 
   return (
@@ -144,6 +144,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
             size='small'
             inverse={true}
             outline={false}
+            tabIndex='-1'
           >
             Open in Data Catalog
           </USWDSButton>
