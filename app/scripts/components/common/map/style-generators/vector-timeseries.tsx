@@ -1,33 +1,28 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import qs from 'qs';
 import {
-  AnyLayer,
-  AnySourceImpl,
-  VectorSourceImpl
+  LayerSpecification,
+  SourceSpecification,
+  VectorSourceSpecification
 } from 'mapbox-gl';
 import { useTheme } from 'styled-components';
-import { endOfDay, startOfDay } from 'date-fns';
+import endOfDay from 'date-fns/endOfDay';
+import startOfDay from 'date-fns/startOfDay';
+
 import centroid from '@turf/centroid';
 import { LngLatLike } from 'react-map-gl';
 import { Feature } from 'geojson';
 
 import { BaseGeneratorParams } from '../types';
 import useMapStyle from '../hooks/use-map-style';
-import {
-  requestQuickCache
-} from '../utils';
+import { requestQuickCache } from '../utils';
 import useFitBbox from '../hooks/use-fit-bbox';
 import useLayerInteraction from '../hooks/use-layer-interaction';
 import { MARKER_LAYOUT } from '../hooks/use-custom-marker';
 import useMaps from '../hooks/use-maps';
 import useGeneratorParams from '../hooks/use-generator-params';
 
-import {
-  ActionStatus,
-  S_FAILED,
-  S_LOADING,
-  S_SUCCEEDED
-} from '$utils/status';
+import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
 
 export interface VectorTimeseriesProps extends BaseGeneratorParams {
@@ -40,8 +35,8 @@ export interface VectorTimeseriesProps extends BaseGeneratorParams {
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   isPositionSet?: boolean;
   stacApiEndpoint?: string;
+  envApiStacEndpoint: string;
 }
-
 
 export function VectorTimeseries(props: VectorTimeseriesProps) {
   const {
@@ -55,7 +50,8 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
     isPositionSet,
     hidden,
     opacity,
-    stacApiEndpoint
+    stacApiEndpoint,
+    envApiStacEndpoint
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -66,11 +62,10 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
   const [featuresBbox, setFeaturesBbox] =
     useState<[number, number, number, number]>();
 
-    const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
+  const [minZoom, maxZoom] = zoomExtent ?? [0, 20];
   const generatorId = `vector-timeseries-${id}`;
 
-  const stacApiEndpointToUse =
-    stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
+  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint ?? '';
 
   //
   // Get the tiles url
@@ -117,7 +112,6 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
     };
   }, [id, stacCol, stacApiEndpointToUse, onStatusChange]);
 
-
   //
   // Generate Mapbox GL layers and sources for vector timeseries
   //
@@ -141,11 +135,11 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
 
     const vectorOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
-    const sources: Record<string, AnySourceImpl> = {
+    const sources: Record<string, SourceSpecification> = {
       [id]: {
         type: 'vector',
         tiles: [`${featuresApiEndpoint}/tiles/{z}/{x}/{y}?${tileParams}`]
-      } as VectorSourceImpl
+      } as VectorSourceSpecification
     };
 
     const layers = [
@@ -155,7 +149,7 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
         source: id,
         'source-layer': 'default',
         paint: {
-          'line-opacity':  hidden ? 0 : vectorOpacity,
+          'line-opacity': hidden ? 0 : vectorOpacity,
           'line-opacity-transition': {
             duration: 320
           },
@@ -184,7 +178,7 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
         source: id,
         'source-layer': 'default',
         paint: {
-          'line-opacity':  hidden ? 0 : vectorOpacity,
+          'line-opacity': hidden ? 0 : vectorOpacity,
           'line-opacity-transition': {
             duration: 320
           },
@@ -211,11 +205,11 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
         source: id,
         'source-layer': 'default',
         paint: {
-          'fill-opacity':  hidden ? 0 : Math.min(vectorOpacity, 0.8),
+          'fill-opacity': hidden ? 0 : Math.min(vectorOpacity, 0.8),
           'fill-opacity-transition': {
             duration: 320
           },
-          'fill-color': theme.color?.infographicB,
+          'fill-color': theme.color?.infographicB
         },
         filter: ['==', '$type', 'Polygon'],
         minzoom: minZoom,
@@ -244,7 +238,7 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
             }
           }
         : undefined
-    ].filter(Boolean) as AnyLayer[];
+    ].filter(Boolean) as LayerSpecification[];
 
     updateStyle({
       generatorId,

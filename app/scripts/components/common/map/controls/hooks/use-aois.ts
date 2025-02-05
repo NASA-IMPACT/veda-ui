@@ -1,70 +1,40 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { useCallback } from 'react';
 import { Feature, Polygon } from 'geojson';
+import union from '@turf/union';
 import { toAoIid } from '../../utils';
 import {
-  aoisDeleteAtom,
   aoisFeaturesAtom,
-  aoisSetSelectedAtom,
+  aoiDeleteAllAtom,
   aoisUpdateGeometryAtom,
   isDrawingAtom
 } from '../aoi/atoms';
-import { SIMPLE_SELECT } from '../aoi';
 
 export default function useAois() {
   const features = useAtomValue(aoisFeaturesAtom);
 
+  const aoi: Feature | null = features.slice(1).reduce((acc, feature) => {
+    return union(acc, feature);
+  }, features[0]);
+
   const [isDrawing, setIsDrawing] = useAtom(isDrawingAtom);
 
   const aoisUpdateGeometry = useSetAtom(aoisUpdateGeometryAtom);
-  const update = useCallback(
-    (features: Feature<Polygon>[]) => {
-      aoisUpdateGeometry(features);
-    },
-    [aoisUpdateGeometry]
-  );
-  const onUpdate = useCallback(
-    (e) => {
-      const updates = e.features.map((f) => ({
-        id: toAoIid(f.id),
-        geometry: f.geometry as Polygon
-      }));
-      update(updates);
-    },
-    [update]
-  );
 
-  const aoiDelete = useSetAtom(aoisDeleteAtom);
-  const onDelete = useCallback(
-    (e) => {
-      const selectedIds = e.features.map((f) => toAoIid(f.id));
-      aoiDelete(selectedIds);
-    },
-    [aoiDelete]
-  );
+  const updateAoi = (fc) => {
+    const updates = fc.features.map((f) => ({
+      id: toAoIid(f.id),
+      geometry: f.geometry as Polygon
+    }));
+    aoisUpdateGeometry(updates);
+  };
 
-  const aoiSetSelected = useSetAtom(aoisSetSelectedAtom);
-  const onSelectionChange = useCallback(
-    (e) => {
-      const selectedIds = e.features.map((f) => toAoIid(f.id));
-      aoiSetSelected(selectedIds);
-    },
-    [aoiSetSelected]
-  );
-
-  const onDrawModeChange = useCallback((e) => {
-    if (e.mode === SIMPLE_SELECT) {
-      setIsDrawing(false);
-    }
-  }, [setIsDrawing]);
+  const aoiDeleteAll = useSetAtom(aoiDeleteAllAtom);
 
   return {
     features,
-    update,
-    onUpdate,
-    onDelete,
-    onSelectionChange,
-    onDrawModeChange,
+    aoi,
+    updateAoi,
+    aoiDeleteAll,
     isDrawing,
     setIsDrawing
   };

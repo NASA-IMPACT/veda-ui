@@ -1,6 +1,5 @@
 declare module 'veda' {
   import * as dateFns from 'date-fns';
-  import mapboxgl from 'mapbox-gl';
   import { MDXModule } from 'mdx/types';
   import { DefaultTheme } from 'styled-components';
 
@@ -13,22 +12,21 @@ declare module 'veda' {
   // Dataset Layers
   //
   export type MbProjectionOptions = Exclude<
-    mapboxgl.MapboxOptions['projection'],
+    mapboxgl.MapOptions['projection'],
     undefined
   >;
 
-  export type ProjectionOptions = Pick<
-    MbProjectionOptions,
-    'parallels' | 'center'
-  > & {
-    id: MbProjectionOptions['name'] | 'polarNorth' | 'polarSouth';
+  export type ProjectionOptions = {
+    id: mapboxgl.ProjectionSpecification['name'] | 'polarNorth' | 'polarSouth';
+    parallels?: [number, number];
+    center?: [number, number];
   };
 
   interface DatasetLayerCommonCompareProps {
     mapLabel?: string | DatasetDatumFn<DatasetDatumReturnType>;
   }
 
-  interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps{
+  interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps {
     zoomExtent?: number[];
     bounds?: number[];
     sourceParams?: Record<string, any>;
@@ -36,9 +34,8 @@ declare module 'veda' {
 
   export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
   export type DatasetDatumReturnType = Primitives | Date;
-  
-  export interface DatasetLayerCompareSTAC
-    extends DatasetLayerCommonProps {
+
+  export interface DatasetLayerCompareSTAC extends DatasetLayerCommonProps {
     stacCol: string;
     type: DatasetLayerType;
     name: string;
@@ -46,8 +43,7 @@ declare module 'veda' {
     legend?: LayerLegendCategorical | LayerLegendGradient;
   }
 
-  export interface DatasetLayerCompareInternal
-    extends DatasetLayerCommonProps {
+  export interface DatasetLayerCompareInternal extends DatasetLayerCommonProps {
     datasetId: string;
     layerId: string;
   }
@@ -57,12 +53,12 @@ declare module 'veda' {
     MONTH = 'month',
     DAY = 'day'
   }
-export interface LayerInfo {
-  source: string;
-  spatialExtent: string;
-  temporalResolution: string;
-  unit: string;
-}
+  export interface LayerInfo {
+    source: string;
+    spatialExtent: string;
+    temporalResolution: string;
+    unit: string;
+  }
   export interface DatasetLayer extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
@@ -85,7 +81,7 @@ export interface LayerInfo {
     assetUrlReplacements?: {
       from: string;
       to: string;
-    },
+    };
     time_density?: TimeDensity;
     info?: LayerInfo;
   }
@@ -93,8 +89,7 @@ export interface LayerInfo {
   // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
   // difference with a "base" dataset layer is not having a name and
   // description.
-  export interface DatasetLayerCompareBase
-    extends DatasetLayerCommonProps {
+  export interface DatasetLayerCompareBase extends DatasetLayerCommonProps {
     id: string;
     stacCol: string;
     type: DatasetLayerType;
@@ -185,11 +180,14 @@ export interface LayerInfo {
     infoDescription?: string;
     taxonomy: Taxonomy[];
     description: string;
+    cardDescription?: string;
     usage?: DatasetUsage[];
     media?: Media;
+    cardMedia?: Media;
     layers: DatasetLayer[];
     related?: RelatedContentData[];
     disableExplore?: boolean;
+    isHidden?: boolean;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -204,11 +202,15 @@ export interface LayerInfo {
     id: string;
     name: string;
     description: string;
+    cardDescription?: string;
     pubDate: string;
     media?: Media;
+    cardMedia?: Media;
     taxonomy: Taxonomy[];
     related?: RelatedContentData[];
     asLink?: LinkContentData;
+    hideExternalLinkBadge?: boolean;
+    isHidden?: boolean;
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -250,6 +252,85 @@ export interface LayerInfo {
   interface TaxonomyItem {
     id: string;
     name: string;
+  }
+  /**
+   * Not exporting this type
+   * Since we are moving forward to ditching VEDA faux module
+   */
+
+  enum SiteAlertType {
+    info = 'info',
+    emergency = 'emergency'
+  }
+
+  const infoTypeFlag = SiteAlertType.info;
+  interface SiteAlertData {
+    expires: Date;
+    title: string;
+    content: string;
+    type?: SiteAlertType;
+  }
+
+  interface BannerData {
+    headerText?: string;
+    headerActionText?: string;
+    ariaLabel?: string;
+    flagImgSrc: string;
+    flagImgAlt?: string;
+    leftGuidance?: GuidanceContent;
+    rightGuidance?: GuidanceContent;
+    className?: string;
+    defaultIsOpen?: boolean;
+    contentId?: string;
+  }
+
+  interface GuidanceContent {
+    icon: string;
+    iconAlt?: string;
+    title: string;
+    text: string;
+  }
+
+  interface CookieConsentData {
+    title: string;
+    copy: string;
+  }
+
+  interface InternalNavLink {
+    id: string;
+    title: string;
+    to: string;
+    type: 'internalLink';
+  }
+
+  interface ExternalNavLink {
+    id: string;
+    title: string;
+    href: string;
+    type: 'externalLink';
+  }
+
+  type NavLinkItem = ExternalNavLink | InternalNavLink;
+
+  export interface SecondarySection {
+    division: string;
+    version: string;
+    title: string;
+    name: string;
+    to: string;
+    type: string;
+  }
+
+  export interface FooterSettings {
+    secondarySection: SecondarySection;
+    returnToTop: boolean;
+  }
+
+  export interface DropdownNavLink {
+    id: string;
+    title: string;
+    type: 'dropdown';
+    children: NavLinkItem[];
   }
 
   /**
@@ -293,6 +374,23 @@ export interface LayerInfo {
   };
 
   export const getBoolean: (variable: string) => boolean;
+
+  export const getSiteAlertFromVedaConfig: () => SiteAlertData | undefined;
+  export const getBannerFromVedaConfig: () => BannerData | undefined;
+  export const getCookieConsentFromVedaConfig: () =>
+    | CookieConsentData
+    | undefined;
+
+  export const getNavItemsFromVedaConfig: () =>
+    | {
+        mainNavItems: (NavLinkItem | DropdownNavLink)[] | undefined;
+        subNavItems: (NavLinkItem | DropdownNavLink)[] | undefined;
+      }
+    | undefined;
+
+  export const getFooterSettingsFromVedaConfig: () =>
+    | FooterSettings
+    | undefined;
 
   /**
    * List of custom user defined pages.

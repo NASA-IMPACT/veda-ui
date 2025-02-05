@@ -8,9 +8,14 @@ import { analysisControllerAtom } from '../atoms/analysis';
 import { selectedIntervalAtom } from '../atoms/dates';
 import { useTimelineDatasetAnalysis } from '../atoms/hooks';
 import { analysisConcurrencyManager } from '../concurrency';
-import { TimelineDataset, TimelineDatasetAnalysis, TimelineDatasetStatus } from '../types.d.ts';
+import {
+  TimelineDataset,
+  TimelineDatasetAnalysis,
+  DatasetStatus
+} from '../types.d.ts';
 import { MAX_QUERY_NUM } from '../constants';
 import useAois from '$components/common/map/controls/hooks/use-aois';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 export function useAnalysisController() {
   const [controller, setController] = useAtom(analysisControllerAtom);
@@ -67,6 +72,8 @@ export function useAnalysisDataRequest({
 }) {
   const queryClient = useQueryClient();
 
+  const { envApiRasterEndpoint, envApiStacEndpoint } = useVedaUI();
+
   const selectedInterval = useAtomValue(selectedIntervalAtom);
   const { features } = useAois();
   const selectedFeatures = features.filter((f) => f.selected);
@@ -79,14 +86,15 @@ export function useAnalysisDataRequest({
   const setAnalysis = useTimelineDatasetAnalysis(datasetAtom);
 
   const analysisRunId = getRunId(dataset.data.id);
-  
-  const [analysisResult, setAnalysisResult] = useState<TimelineDatasetAnalysis>({
-    status: TimelineDatasetStatus.IDLE,
-    error: null,
-    data: null,
-    meta: {}
-  });
 
+  const [analysisResult, setAnalysisResult] = useState<TimelineDatasetAnalysis>(
+    {
+      status: DatasetStatus.IDLE,
+      error: null,
+      data: null,
+      meta: {}
+    }
+  );
 
   useEffect(() => {
     if (!isAnalyzing) {
@@ -101,7 +109,7 @@ export function useAnalysisDataRequest({
   useEffect(() => {
     if (
       !isAnalyzing ||
-      datasetStatus !== TimelineDatasetStatus.SUCCESS ||
+      datasetStatus !== DatasetStatus.SUCCESS ||
       !selectedInterval ||
       !selectedFeatures.length ||
       analysisRunId === 0 // Avoid running the analysis on the first render
@@ -114,8 +122,8 @@ export function useAnalysisDataRequest({
       features: selectedFeatures
     };
     const { start, end } = selectedInterval;
-      (async () => {
-        const stat = await requestDatasetTimeseriesData({
+    (async () => {
+      const stat = await requestDatasetTimeseriesData({
         maxItems: MAX_QUERY_NUM,
         start,
         end,
@@ -123,6 +131,8 @@ export function useAnalysisDataRequest({
         dataset,
         queryClient,
         concurrencyManager: analysisConcurrencyManager,
+        envApiRasterEndpoint,
+        envApiStacEndpoint,
         onProgress: (data) => {
           setAnalysis(data);
         }
@@ -136,12 +146,10 @@ export function useAnalysisDataRequest({
     // the hook to continuously run.
   }, [analysisRunId, datasetStatus, isAnalyzing]);
 
-
   useEffect(() => {
     // @TECH-DEBT
-    // The `setAnalysis` function is designed to update the Jotai Atom's state to reflect the progress of an analysis operation, ideally moving through 'idle', 'loading', and finally 'success' states. However, the function fails to accurately transition between these states. Specifically, it bypasses the expected incremental 'loading' updates and may incorrectly remain in a 'loading' state even after the analysis has successfully completed. This behavior leads to a discrepancy between the actual analysis status and the state represented in the UI, potentially confusing users and undermining the UI's reliability. 
+    // The `setAnalysis` function is designed to update the Jotai Atom's state to reflect the progress of an analysis operation, ideally moving through 'idle', 'loading', and finally 'success' states. However, the function fails to accurately transition between these states. Specifically, it bypasses the expected incremental 'loading' updates and may incorrectly remain in a 'loading' state even after the analysis has successfully completed. This behavior leads to a discrepancy between the actual analysis status and the state represented in the UI, potentially confusing users and undermining the UI's reliability.
     // The function currently attempts to rectify this by overwriting the Atom's value with the final result, ensuring the state accurately reflects the analysis outcome. This workaround does not address the root cause of the flawed state transitions. A revision of the state management logic is needed to ensure the Atom's state progresses correctly and reflects the actual status of the analysis process.
     setAnalysis(analysisResult);
-  },[setAnalysis, analysisResult]);
-
+  }, [setAnalysis, analysisResult]);
 }

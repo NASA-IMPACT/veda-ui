@@ -1,4 +1,8 @@
-import { AnySourceImpl, Layer, Style } from 'mapbox-gl';
+import {
+  LayerSpecification,
+  SourceSpecification,
+  StyleSpecification
+} from 'mapbox-gl';
 import React, {
   ReactNode,
   createContext,
@@ -14,9 +18,9 @@ import {
   LayerOrderPosition
 } from './types';
 
-interface StylesContextType {
+export interface StylesContextType {
   updateStyle: (params: GeneratorStyleParams) => void;
-  style?: Style;
+  style?: StyleSpecification;
   updateMetaData?: (params: unknown) => void;
   metaData?: unknown;
   isCompared?: boolean;
@@ -53,7 +57,7 @@ const generateStyle = (
   stylesData: Record<string, GeneratorStyleParams>,
   currentMapStyle
 ) => {
-  let sources: Record<string, AnySourceImpl> = {};
+  let sources: Record<string, SourceSpecification> = {};
   let layers: ExtendedLayer[] = [];
 
   Object.entries(stylesData).forEach(([generatorId, generatorParams]) => {
@@ -64,10 +68,12 @@ const generateStyle = (
     };
 
     const generatorLayers = generatorParams.layers.map((generatorLayer) => {
-      const metadata: ExtendedMetadata = generatorLayer.metadata ?? {};
-      metadata.generatorId = generatorId;
+      const metadata: ExtendedMetadata = {
+        ...(generatorLayer.metadata ?? {}),
+        generatorId
+      };
 
-      const mapLayer = { ...generatorLayer, metadata } as Layer;
+      const mapLayer = { ...generatorLayer, metadata } as LayerSpecification;
 
       if (generatorParams.params?.hidden) {
         mapLayer.layout = {
@@ -84,13 +90,19 @@ const generateStyle = (
   // Allow sort as it uses a copy of the array so mutating is ok
   /* eslint-disable-next-line fp/no-mutating-methods */
   layers = [...layers].sort((layerA, layerB) => {
-    const layerAOrder = layerA.metadata?.layerOrderPosition;
-    const layerBOrder = layerB.metadata?.layerOrderPosition;
+    const layerAOrder =
+      (layerA.metadata as ExtendedMetadata).layerOrderPosition ??
+      'basemap-background';
+    const layerBOrder =
+      (layerB.metadata as ExtendedMetadata).layerOrderPosition ??
+      'basemap-background';
     const layerAIndex = LAYER_ORDER.indexOf(layerAOrder);
     const layerBIndex = LAYER_ORDER.indexOf(layerBOrder);
     const layerOrder = layerAIndex - layerBIndex;
-    const generatorA = stylesData[layerA.metadata?.generatorId];
-    const generatorB = stylesData[layerB.metadata?.generatorId];
+    const generatorA =
+      stylesData[(layerA.metadata as ExtendedMetadata).generatorId];
+    const generatorB =
+      stylesData[(layerB.metadata as ExtendedMetadata).generatorId];
     const generatorOrder =
       generatorA.params?.generatorOrder !== undefined &&
       generatorB.params?.generatorOrder !== undefined
@@ -146,7 +158,7 @@ export function Styles({
     Record<string, GeneratorStyleParams>
   >({});
 
-  const [style, setStyle] = useState<Style>({
+  const [style, setStyle] = useState<StyleSpecification>({
     version: DEFAULT_MAPBOX_STYLE_VERSION,
     glyphs: DEFAULT_GLYPHS_SOURCE,
     sprite: DEFAULT_SPRITE_SOURCE,
@@ -172,7 +184,8 @@ export function Styles({
     );
     onStyleUpdate?.(mapStyle);
     setStyle(mapStyle as any);
-  }, [stylesData, onStyleUpdate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stylesData]);
 
   return (
     <StylesContext.Provider value={{ updateStyle, style, isCompared }}>

@@ -9,15 +9,13 @@ import {
   ModalHeadline
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { createButtonStyles } from '@devseed-ui/button';
-import { LayerInfo } from 'veda';
-
-import { ParentDatasetTitle } from './dataset-selector-modal/content';
-import SmartLink from '$components/common/smart-link';
-import { getDatasetPath } from '$utils/routes';
+import { LayerInfo } from '$types/veda';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
+import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
+import { useVedaUI } from '$context/veda-ui-provider';
+import { USWDSButton } from '$components/common/uswds/button';
 
-const DatasetModal = styled(Modal)`
+const StyledModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
   /* Override ModalContents */
   > div {
@@ -54,12 +52,6 @@ const ParentDatasetHeading = styled.h2`
   padding: ${glsp(0.5)} 0;
 `;
 
-const ButtonStyleLink = styled(SmartLink)<any>`
-  &&& {
-    ${({ variation, size }) => createButtonStyles({ variation, size })}
-  }
-`;
-
 export interface LayerInfoModalData {
   name: string;
   info?: LayerInfo;
@@ -68,27 +60,27 @@ export interface LayerInfoModalData {
     id: string;
     name: string;
     infoDescription?: string;
-  }
+  };
 }
 
 interface LayerInfoModalProps {
   revealed: boolean;
   close: () => void;
-  layerData: LayerInfoModalData
+  layerData: LayerInfoModalData;
 }
 
 export function LayerInfoLiner(props: { info: LayerInfo }) {
   const { info } = props;
   return (
     <span>
-    {Object.keys(info).map((key, idx, arr) => {
-      const currentValue = info[key];
-      return idx !== arr.length - 1 ? (
-        <span>{currentValue} · </span>
-      ) : (
-        <span>{currentValue} </span>
-      );
-    })}
+      {Object.keys(info).map((key, idx, arr) => {
+        const currentValue = info[key];
+        return idx !== arr.length - 1 ? (
+          <span key={key}>{currentValue} · </span>
+        ) : (
+          <span key={key}>{currentValue} </span>
+        );
+      })}
     </span>
   );
 }
@@ -101,10 +93,15 @@ const LayerInfoLinerModal = styled.div`
 
 export default function LayerInfoModal(props: LayerInfoModalProps) {
   const { revealed, close, layerData } = props;
+  const {
+    navigation: { LinkComponent },
+    routes: { dataCatalogPath }
+  } = useVedaUI();
+
   const { parentData } = layerData;
-  const dataCatalogPage = getDatasetPath(parentData.id);
+
   return (
-    <DatasetModal
+    <StyledModal
       id='modal'
       size='xlarge'
       revealed={revealed}
@@ -117,24 +114,38 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
             </ParentDatasetTitle>
             <ParentDatasetHeading> {layerData.name} </ParentDatasetHeading>
             <p>
-              {
-                layerData.info && (
-                  <LayerInfoLinerModal>
-                    <LayerInfoLiner info={layerData.info} />
-                  </LayerInfoLinerModal>
-                )
-              }
+              {layerData.info && (
+                <LayerInfoLinerModal>
+                  <LayerInfoLiner info={layerData.info} />
+                </LayerInfoLinerModal>
+              )}
             </p>
             <p>{layerData.description}</p>
-          </ModalHeadline>);
+          </ModalHeadline>
+        );
       }}
       content={
-        <div dangerouslySetInnerHTML={{__html: parentData.infoDescription?? 'Currently, we are unable to display the layer information, but you can find it in the data catalog.' }} />
+        <div
+          dangerouslySetInnerHTML={{
+            __html:
+              parentData.infoDescription ??
+              'Currently, we are unable to display the layer information, but you can find it in the data catalog.'
+          }}
+        />
       }
       footerContent={
-        <ButtonStyleLink to={dataCatalogPage} onClick={close} variation='primary-fill' size='medium' target='_blank'>
-          Open in Data Catalog
-        </ButtonStyleLink>
+        <LinkComponent to={dataCatalogPath}>
+          <USWDSButton
+            onClick={close}
+            type='button'
+            size='small'
+            inverse={true}
+            outline={false}
+            tabindex='-1'
+          >
+            Open in Data Catalog
+          </USWDSButton>
+        </LinkComponent>
       }
     />
   );

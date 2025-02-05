@@ -1,22 +1,30 @@
 import axios, { Method } from 'axios';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { Map as MapboxMap } from 'mapbox-gl';
 import { MapRef } from 'react-map-gl';
-import { endOfDay, startOfDay } from 'date-fns';
-import { Feature, MultiPolygon, Polygon } from 'geojson';
-import { BBox } from "@turf/helpers";
+import startOfDay from 'date-fns/startOfDay';
+import endOfDay from 'date-fns/endOfDay';
+import { BBox } from '@turf/helpers';
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+import combine from '@turf/combine';
+import { StacFeature } from './types';
 import {
   DatasetDatumFn,
   DatasetDatumFnResolverBag,
   DatasetDatumReturnType
-} from 'veda';
-
-import { StacFeature } from './types';
-import { TimeDensity } from '$context/layer-data';
+} from '$types/veda';
 import { userTzDate2utcString } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
+import {
+  DatasetStatus,
+  EADatasetDataLayer,
+  VizDataset
+} from '$components/exploration/types.d.ts';
+import { fixAntimeridian } from '$utils/antimeridian';
 
 export const FIT_BOUNDS_PADDING = 32;
+
+export type TimeDensity = 'day' | 'month' | 'year' | null;
 
 export const validateLon = validateRangeNum(-180, 180);
 export const validateLat = validateRangeNum(-90, 90);
@@ -46,9 +54,11 @@ export function checkFitBoundsFromLayer(
   if (!layerBounds || !mapInstance) return false;
 
   const [minXLayer, minYLayer, maxXLayer, maxYLayer] = layerBounds;
-  const [[minXMap, minYMap], [maxXMap, maxYMap]] = mapInstance
-    .getBounds()
-    .toArray();
+  const bounds = mapInstance.getBounds();
+  if (!bounds) {
+    return false;
+  }
+  const [[minXMap, minYMap], [maxXMap, maxYMap]] = bounds.toArray();
   const isOutside =
     maxXLayer < minXMap ||
     minXLayer > maxXMap ||
@@ -206,8 +216,8 @@ export function resolveConfigFunctions(
   return datum;
 }
 
-export function toAoIid(drawId: string) {
-  return drawId.slice(-6);
+export function toAoIid(drawId: string | number) {
+  return drawId.toString().slice(-6);
 }
 
 /**
@@ -265,9 +275,113 @@ export function getZoomFromBbox(bbox: BBox): number {
   const maxDiff = Math.max(latMax - latMin, lngMax - lngMin);
   if (maxDiff < 360 / Math.pow(2, 20)) {
     return 21;
-} else {
-    const zoomLevel = Math.floor(-1*( (Math.log(maxDiff)/Math.log(2)) - (Math.log(360)/Math.log(2))));
+  } else {
+    const zoomLevel = Math.floor(
+      -1 * (Math.log(maxDiff) / Math.log(2) - Math.log(360) / Math.log(2))
+    );
     if (zoomLevel < 1) return 1;
     else return zoomLevel;
   }
+}
+
+export function reconcileVizDataset(dataset: EADatasetDataLayer): VizDataset {
+  return {
+    status: DatasetStatus.SUCCESS,
+    data: dataset,
+    error: null,
+    settings: {
+      isVisible: true,
+      opacity: 100
+    }
+  };
+}
+
+/**
+ * Converts a Feature Collection of polygons into a MultiPolygon
+ *
+ * @param featureCollection Feature Collection of Polygons
+ *
+ * @see multiPolygonToPolygons() for opposite
+ *
+ * @returns MultiPolygon Feature
+ */
+export function combineFeatureCollection(
+  featureCollection: FeatureCollection<Polygon>
+): Feature<MultiPolygon> {
+  const combined = combine(featureCollection);
+  return {
+    type: 'Feature',
+    properties: {},
+    geometry: combined.features[0].geometry as MultiPolygon
+  };
+}
+
+/**
+ * Fixes the AOI feature collection for a STAC search by converting all polygons
+ * to a single multipolygon and ensuring that every polygon is inside the
+ * -180/180 range.
+ * @param aoi The AOI feature collection
+ * @returns AOI as a multipolygon with every polygon inside the -180/180 range
+ */
+export function fixAoiFcForStacSearch(aoi: FeatureCollection<Polygon>) {
+  // Stac search spatial intersect needs to be done on a single feature.
+  // Using a Multipolygon
+  const singleMultiPolygon = combineFeatureCollection(aoi);
+  // And every polygon must be inside the -180/180 range.
+  // See: https://github.com/NASA-IMPACT/veda-ui/issues/732
+  const aoiMultiPolygon = fixAntimeridian(singleMultiPolygon);
+  return aoiMultiPolygon;
+}
+
+/**
+ * Creates the appropriate filter object to send to STAC.
+ *
+ * @param {Date} start Start date to request
+ * @param {Date} end End date to request
+ * @param {string} collection STAC collection to request
+ * @returns Object
+ */
+export function getFilterPayloadWithAOI(
+  start: Date,
+  end: Date,
+  aoi: FeatureCollection<Polygon>,
+  collections: string[]
+) {
+  const aoiMultiPolygon = fixAoiFcForStacSearch(aoi);
+
+  const filterPayload = {
+    op: 'and',
+    args: [
+      {
+        op: 't_intersects',
+        args: [
+          { property: 'datetime' },
+          {
+            interval: [
+              userTzDate2utcString(startOfDay(start)),
+              userTzDate2utcString(endOfDay(end))
+            ]
+          }
+        ]
+      },
+      {
+        op: 's_intersects',
+        args: [{ property: 'geometry' }, aoiMultiPolygon.geometry]
+      },
+      {
+        op: 'in',
+        args: [{ property: 'collection' }, collections]
+      }
+    ]
+  };
+  return filterPayload;
+}
+
+export function fixAoiForArcGISAnalysis(aoi: FeatureCollection<Polygon>) {
+  
+  const fixedAois = aoi.features.map(fixAntimeridian);
+  return {
+    type: 'FeatureCollection',
+    features: fixedAois
+  };
 }

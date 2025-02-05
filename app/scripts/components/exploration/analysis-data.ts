@@ -5,15 +5,14 @@ import { ConcurrencyManagerInstance } from './concurrency';
 import {
   TimelineDataset,
   TimelineDatasetAnalysis,
-  TimelineDatasetStatus
+  DatasetStatus
 } from './types.d.ts';
-import { ExtendedError } from './data-utils';
+import { ExtendedError } from './data-utils-no-faux-module';
+import { utcString2userTzDate } from '$utils/date';
 import {
   fixAoiFcForStacSearch,
-  fixAoiForArcGISAnalysis,
-  getFilterPayload
-} from '$components/analysis/utils';
-import { userTzDate2utcString } from '$utils/date';
+  getFilterPayloadWithAOI
+} from '$components/common/map/utils';
 
 interface DatasetAssetsRequestParams {
   stacCol: string;
@@ -71,14 +70,15 @@ async function getDatasetAssets(
         ],
         exclude: ['collection', 'links']
       },
-      filter: getFilterPayload(dateStart, dateEnd, aoi, [stacCol])
+      filter: getFilterPayloadWithAOI(dateStart, dateEnd, aoi, [stacCol])
     },
     opts
   );
-
   return {
     assets: searchReqRes.data.features.map((o) => ({
-      date: new Date(o.properties.start_datetime || o.properties.datetime),
+      date: utcString2userTzDate(
+        o.properties.start_datetime || o.properties.datetime
+      ),
       url: o.assets[assets].href
     }))
   };
@@ -93,6 +93,8 @@ interface TimeseriesRequesterParams {
   queryClient: QueryClient;
   concurrencyManager: ConcurrencyManagerInstance;
   onProgress: (data: TimelineDatasetAnalysis) => void;
+  envApiRasterEndpoint: string;
+  envApiStacEndpoint: string;
 }
 
 /**
@@ -107,11 +109,37 @@ export async function requestDatasetTimeseriesData({
   dataset,
   queryClient,
   concurrencyManager,
+  envApiRasterEndpoint,
+  envApiStacEndpoint,
   onProgress
-}: TimeseriesRequesterParams)
-:  Promise<TimelineDatasetAnalysis> {
+}: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
+
+  if (datasetData.type !== 'raster') {
+    return {
+      status: DatasetStatus.ERROR,
+      meta: {},
+      error: new ExtendedError(
+        'Analysis is only supported for raster datasets',
+        'ANALYSIS_NOT_SUPPORTED'
+      ),
+      data: null
+    };
+  }
+
+  if (datasetData.analysis?.exclude) {
+    return {
+      status: DatasetStatus.ERROR,
+      meta: {},
+      error: new ExtendedError(
+        'Analysis is turned off for the dataset',
+        'ANALYSIS_NOT_SUPPORTED'
+      ),
+      data: null
+    };
+  }
+
   const id = datasetData.id;
   const arcFlag =  datasetData.type === 'arc';
   if (!arcFlag) {
@@ -127,10 +155,45 @@ export async function requestDatasetTimeseriesData({
       };
     }
 
-    // const id = datasetData.id;
+  onProgress({
+    status: DatasetStatus.LOADING,
+    error: null,
+    data: null,
+    meta: {}
+  });
+
+  const stacApiEndpointToUse =
+    datasetData.stacApiEndpoint ?? envApiStacEndpoint ?? '';
+
+  try {
+    const layerInfoFromSTAC = await concurrencyManager.queue(
+      `${id}-analysis`,
+      () => {
+        return queryClient.fetchQuery(
+          ['analysis', 'dataset', id, aoi, start, end],
+          ({ signal }) =>
+            getDatasetAssets(
+              {
+                stacEndpoint: stacApiEndpointToUse,
+                stacCol: datasetData.stacCol,
+                assets: datasetData.sourceParams?.assets || 'cog_default',
+                aoi,
+                dateStart: start,
+                dateEnd: end
+              },
+              { signal }
+            ),
+          {
+            staleTime: Infinity
+          }
+        );
+      }
+    );
+
+    const { assets } = layerInfoFromSTAC;
 
     onProgress({
-      status: TimelineDatasetStatus.LOADING,
+      status: DatasetStatus.LOADING,
       error: null,
       data: null,
       meta: {}
@@ -139,35 +202,113 @@ export async function requestDatasetTimeseriesData({
     const stacApiEndpointToUse =
       datasetData.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
 
-    try {
-      const layerInfoFromSTAC = await concurrencyManager.queue(
-        `${id}-analysis`,
-        () => {
-          return queryClient.fetchQuery(
-            ['analysis', 'dataset', id, aoi, start, end],
-            ({ signal }) =>
-              getDatasetAssets(
-                {
-                  stacEndpoint: stacApiEndpointToUse,
-                  stacCol: datasetData.stacCol,
-                  assets: datasetData.sourceParams?.assets || 'cog_default',
-                  aoi,
-                  dateStart: start,
-                  dateEnd: end
-                },
-                { signal }
-              ),
-            {
-              staleTime: Infinity
-            }
-          );
-        }
-      );
+      return {
+        ...datasetAnalysis,
+        status: DatasetStatus.ERROR,
+        error: e,
+        data: null
+      };
+    }
 
-      const { assets } = layerInfoFromSTAC;
+    if (!assets.length) {
+      return {
+        ...datasetAnalysis,
+        status: DatasetStatus.ERROR,
+        error: new ExtendedError(
+          'No data in the given time range and area of interest',
+          'ANALYSIS_NO_DATA'
+        ),
+        data: null
+      };
+    }
 
-      onProgress({
-        status: TimelineDatasetStatus.LOADING,
+    let loaded = 0; //new Array(assets.length).fill(0);
+
+    const tileEndpointToUse =
+      datasetData.tileApiEndpoint ?? envApiRasterEndpoint ?? '';
+
+    const analysisParams = datasetData.analysis?.sourceParams ?? {};
+
+    const layerStatistics = await Promise.all(
+      assets.map(async ({ date, url }) => {
+        const statistics = await concurrencyManager.queue(
+          `${id}-analysis-asset`,
+          () => {
+            return queryClient.fetchQuery(
+              ['analysis', id, 'asset', url, aoi],
+              async ({ signal }) => {
+                const { data } = await axios.post(
+                  `${tileEndpointToUse}/cog/statistics`,
+                  // Making a request with a FC causes a 500 (as of 2023/01/20)
+                  fixAoiFcForStacSearch(aoi),
+                  { params: { url, ...analysisParams }, signal }
+                );
+                return {
+                  date,
+
+                  ...data.properties.statistics.b1
+                };
+              },
+              {
+                staleTime: Infinity
+              }
+            );
+          }
+        );
+
+        onProgress({
+          status: DatasetStatus.LOADING,
+          error: null,
+          data: null,
+          meta: {
+            total: assets.length,
+            loaded: ++loaded
+          }
+        });
+
+        return statistics;
+      })
+    );
+
+    if (layerStatistics.filter((e) => e.mean).length === 0) {
+      return {
+        ...datasetAnalysis,
+        status: DatasetStatus.ERROR,
+        error: new ExtendedError(
+          'The selected time and area of interest contains no valid data. Please adjust your selection.',
+          'ANALYSIS_NO_VALID_DATA'
+        ),
+        data: null
+      };
+    }
+
+    onProgress({
+      status: DatasetStatus.SUCCESS,
+      meta: {
+        total: assets.length,
+        loaded: assets.length
+      },
+      error: null,
+      data: {
+        timeseries: layerStatistics
+      }
+    });
+    return {
+      status: DatasetStatus.SUCCESS,
+      meta: {
+        total: assets.length,
+        loaded: assets.length
+      },
+      error: null,
+      data: {
+        timeseries: layerStatistics
+      }
+    };
+  } catch (error) {
+    // Discard abort related errors.
+    if (error.revert) {
+      return {
+        status: DatasetStatus.LOADING,
         error: null,
         data: null,
         meta: {
@@ -322,89 +463,15 @@ export async function requestDatasetTimeseriesData({
           }
         });
 
-      const { data: stacData } = await axios.get(`${datasetData.stacApiEndpoint}/collections/${datasetData.stacCol}`);
-
-      const serverBaseUrl = stacData?.links.find(e => e.rel === 'via')?.href;
-      
-      const tileEndpointToUse =
-      datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
-      const collectionId = datasetData.stacCol;
-      const variable = datasetData.sourceParams?.layers;
-      const dateTimeRange = [userTzDate2utcString(start), userTzDate2utcString(end)];
-      const ffAoi = fixAoiForArcGISAnalysis(aoi);
-      const fAoi = {
-        ...ffAoi,
-        features: ffAoi.features.map(fromMultiPolygontoPolygon)
-      };
-
-      const reqBody = {
-        server_url: serverBaseUrl, collection_id: collectionId, variable, datetime_range: dateTimeRange,  aoi: fAoi
-      };
-
-      const stats = await queryClient.fetchQuery(
-        ['analysis', id, 'asset', variable, start, end,  aoi],
-        async ({ signal }) => {
-          const { data } = await axios.post(
-            `${tileEndpointToUse}/statistics`,
-            // Making a request with a FC causes a 500 (as of 2023/01/20)
-            reqBody,
-            { signal }
-          );
-          // Mimick statistics response
-          // Since we are mutating the copy
-          // eslint-disable-next-line fp/no-mutating-methods
-          return [...Object.keys(data).map(dataDate => ({
-              date: new Date(dataDate),
-              ...data[dataDate]
-          }))].reverse();
-        },
-        {
-          staleTime: Infinity
-        }
-      );
-      // return response 500 when there is no return :[
-      // if (stats.length === 0) {
-      //   return {
-      //     ...datasetAnalysis,
-      //     status: TimelineDatasetStatus.ERROR,
-      //     error: new ExtendedError(
-      //       'No data in the given time range and area of interest',
-      //       'ANALYSIS_NO_DATA'
-      //     ),
-      //     data: null
-      //   };
-      // }
-
-      onProgress({
-        status: TimelineDatasetStatus.SUCCESS,
-        meta: {
-          total: stats.length,
-          loaded: stats.length
-        },
-        error: null,
-        data: {
-          timeseries: stats
-        }
-      });
-      return {
-        status: TimelineDatasetStatus.SUCCESS,
-        meta: {
-          total: stats.length,
-          loaded: stats.length
-        },
-        error: null,
-        data: {
-          timeseries: stats
-        }
-      };
-    } catch (error) {
-      return {
-        ...datasetAnalysis,
-        status: TimelineDatasetStatus.ERROR,
-        error,
-        data: null
-      };
-    }
+    // Cancel any inflight queries.
+    queryClient.cancelQueries({ queryKey: ['analysis', id] });
+    // Remove other requests from the queue.
+    concurrencyManager.dequeue(`${id}-analysis-asset`);
+    return {
+      ...datasetAnalysis,
+      status: DatasetStatus.ERROR,
+      error,
+      data: null
+    };
   }
 }
-

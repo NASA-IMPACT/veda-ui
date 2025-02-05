@@ -1,13 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { ScaleTime } from 'd3';
-import {
-  format,
-  isSameMonth,
-  isSameYear,
-  startOfMonth,
-  startOfYear
-} from 'date-fns';
+import format from 'date-fns/format';
+import startOfMonth from 'date-fns/startOfMonth';
+import startOfYear from 'date-fns/startOfYear';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
@@ -18,13 +14,11 @@ const GridLine = styled.line`
 `;
 
 const DateAxisSVG = styled.svg`
+  border-top: 1px solid ${themeVal('color.base-200')};
+
   text {
     font-size: 0.75rem;
     fill: ${themeVal('color.base')};
-
-    &.parent {
-      font-size: 0.625rem;
-    }
   }
 `;
 
@@ -45,14 +39,14 @@ function getTimeDensity(domain) {
   }
 }
 
-function timeDensityFormat(date: Date, timeDensity: TimeDensity) {
+function dateAxisLabelFormat(date: Date, timeDensity: TimeDensity) {
   switch (timeDensity) {
     case TimeDensity.YEAR:
       return format(date, 'yyyy');
     case TimeDensity.MONTH:
-      return format(date, 'MMM dd');
+      return format(date, 'MMM');
     case TimeDensity.DAY:
-      return format(date, 'iii dd');
+      return format(date, 'dd');
   }
 }
 
@@ -73,6 +67,66 @@ function getTicks(scale: ScaleTime<number, number>) {
     .filter((v, i, a) => (width / a.length < 60 ? !(i % 2) : true));
 }
 
+/**
+ * Generates minor ticks for the date axis based on the major ticks and time density.
+ * Minor ticks are shown between major ticks and provide finer granularity on the timeline.
+
+ * @param {ScaleTime<number, number>} scale - The scale function for the timeline, mapping dates to pixel positions.
+ * @param {Date[]} majorTicks - The major tick points on the timeline (e.g., start of the month).
+ * @param {TimeDensity} timeDensity - The density of the timeline aka the level of detail (e.g., year, month, day).
+ * @returns {Date[]} - An array of minor tick dates.
+ */
+function getMinorTicks(scale: ScaleTime<number, number>, majorTicks: Date[], timeDensity: TimeDensity): Date[] {
+  if (timeDensity === TimeDensity.DAY || majorTicks.length < 2) {
+    return [];
+  }
+
+  const [viewStart, viewEnd] = scale.domain();
+
+  // Number of segments to divide the interval between major ticks
+  // Set to 10 to for a balance between the level of detail, but also
+  // it offers a better alignment of the timeline playhead over the
+  // minor ticks.
+  const segments = 10;
+
+  // Calculate the interval between minor ticks based on the first two major ticks
+  const minorTickInterval = (majorTicks[1].getTime() - majorTicks[0].getTime()) / segments;
+
+  // Initialize minorTicks as an array of Date objects
+  let minorTicks: Date[] = [];
+
+  // Add minor ticks before the first major tick (left hand side of
+  // the timeline) until reaching the view start
+  let tickTime = majorTicks[0].getTime() - minorTickInterval;
+
+  while (tickTime > viewStart.getTime()) {
+    minorTicks = [new Date(tickTime), ...minorTicks];
+    tickTime -= minorTickInterval;
+  }
+
+  // Add minor ticks between each pair of major ticks on the timeline
+  for (let i = 0; i < majorTicks.length - 1; i++) {
+    const start = majorTicks[i].getTime();
+    const end = majorTicks[i + 1].getTime();
+    for (let j = 1; j < segments; j++) {
+      tickTime = start + minorTickInterval * j;
+      if (tickTime < end) {
+        minorTicks = [...minorTicks, new Date(tickTime)];
+      }
+    }
+  }
+
+  // Add minor ticks after the last major tick (right hand side of
+  // the timeline) until reaching the timeline end
+  tickTime = majorTicks[majorTicks.length - 1].getTime() + minorTickInterval;
+  while (tickTime < viewEnd.getTime()) {
+    minorTicks = [...minorTicks, new Date(tickTime)];
+    tickTime += minorTickInterval;
+  }
+
+  return minorTicks;
+}
+
 interface DateAxisProps {
   xScaled: ScaleTime<number, number>;
   width: number;
@@ -81,64 +135,36 @@ interface DateAxisProps {
 export function DateAxis(props: DateAxisProps) {
   const { xScaled, width } = props;
 
-  const ticks = getTicks(xScaled);
-  const axisDensity = getTimeDensity(ticks);
+  const majorTicks = useMemo(() => getTicks(xScaled), [xScaled]);
+  const axisDensity = useMemo(() => getTimeDensity(majorTicks), [majorTicks]);
+  const minorTicks = useMemo(() => getMinorTicks(xScaled, majorTicks, axisDensity), [xScaled, majorTicks, axisDensity]);
 
   return (
     <DateAxisSVG className='date-axis' width={width} height={32}>
-      {ticks.map((d) => {
+      {minorTicks.map((d: Date) => {
         const xPos = xScaled(d);
         return (
-          <React.Fragment key={d.getTime()}>
-            <GridLine x1={xPos} x2={xPos} y1={0} y2={32} />
-            <text y={0} x={xPos} dy='1em' dx={8}>
-              {timeDensityFormat(d, axisDensity)}
+          <GridLine
+            key={`minor-${d.getTime()}`}
+            x1={xPos}
+            x2={xPos}
+            y1={26}
+            y2={32}
+          />
+        );
+      })}
+      {majorTicks.map((d) => {
+        const xPos = xScaled(d);
+        return (
+          <React.Fragment key={`major-${d.getTime()}`}>
+            <GridLine x1={xPos} x2={xPos} y1={24} y2={32} />
+            <text y={0} x={xPos} dy='1.5em' dx={0} textAnchor='middle'>
+              {dateAxisLabelFormat(d, axisDensity)}
             </text>
-            <ParentIndicator
-              timeDensity={axisDensity}
-              date={d}
-              domain={ticks}
-              xScaled={xScaled}
-            />
           </React.Fragment>
         );
       })}
     </DateAxisSVG>
-  );
-}
-
-interface ParentIndicatorProps {
-  timeDensity: TimeDensity;
-  date: Date;
-  domain: Date[];
-  xScaled: ScaleTime<number, number>;
-}
-
-function ParentIndicator(props: ParentIndicatorProps) {
-  const { timeDensity, date, domain, xScaled } = props;
-
-  if (timeDensity === TimeDensity.YEAR) return <>{false}</>;
-
-  let dateFormat: string;
-  if (timeDensity === TimeDensity.MONTH) {
-    // Only render the first date for a given month.
-    // Get the first date that has the same month as the one being rendered and
-    // check if they're the same.
-    const firstDate = domain.find((d) => isSameYear(d, date));
-    if (firstDate !== date) return <>{false}</>;
-
-    dateFormat = 'yyyy';
-  } else {
-    const firstDate = domain.find((d) => isSameMonth(d, date));
-    if (firstDate !== date) return <>{false}</>;
-
-    dateFormat = 'MMM yyyy';
-  }
-
-  return (
-    <text y={16} x={xScaled(date)} dy='1em' dx={8} className='parent'>
-      {format(date, dateFormat)}
-    </text>
   );
 }
 

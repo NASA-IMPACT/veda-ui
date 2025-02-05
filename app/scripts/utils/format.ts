@@ -145,7 +145,7 @@ export function formatAsScientificNotation(num: number, decimals = 2) {
     .split('')
     .map((v) => sups[v])
     .join('');
-  
+
   const sign = exponent < 0 ? '⁻':'';
 
   return `${round(coefficient, decimals)}x10${sign}${exponentSup}`;

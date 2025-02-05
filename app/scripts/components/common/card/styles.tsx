@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   glsp,
   listReset,
@@ -9,8 +9,12 @@ import {
 } from '@devseed-ui/theme-provider';
 import { Overline } from '@devseed-ui/typography';
 import { VerticalDivider } from '@devseed-ui/toolbar';
+import { CardItemProps } from '.';
 import { variableGlsp } from '$styles/variable-utils';
+import { Figure } from '$components/common/figure';
 import { VarHeading } from '$styles/variable-components';
+
+/**@NOTE: Ideally this would go away once we move cards over to USWDS */
 
 export const CardBlank = styled.article`
   position: relative;
@@ -158,4 +162,65 @@ export const CardTopicsList = styled.dl`
   > dt {
     ${visuallyHidden()}
   }
+`;
+
+export const CardLabel = styled.span`
+  position: absolute;
+  z-index: 1;
+  top: ${variableGlsp()};
+  right: ${variableGlsp()};
+  display: inline-block;
+  vertical-align: top;
+  color: ${themeVal('color.surface')};
+  border-radius: ${themeVal('shape.ellipsoid')};
+  padding: ${glsp(0.125, 0.5)};
+  background: ${themeVal('color.base-400a')};
+  pointer-events: auto;
+  transition: all 0.24s ease 0s;
+
+  &,
+  &:visited {
+    text-decoration: none;
+  }
+
+  &:hover {
+    opacity: 0.64;
+  }
+`;
+
+export const CardFigure = styled(Figure)`
+  order: -1;
+  width: 100%;
+  ${(props) => !props.isCoverOrFeatured && `aspect-ratio: 2/1;`}
+  background: ${(props) =>
+    props.src ? 'none' : props.theme.color['primary-100']};
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    mix-blend-mode: multiply;
+    display: ${(props) => (props.src ? 'block' : 'none')};
+  }
+`;
+
+export const CardItem = styled(CardBlank)<CardItemProps>`
+  ${({ isStateFocus }) =>
+    isStateFocus &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationC')};
+      transform: translate(0, 0.125rem);
+    `}
+  ${({ isStateOver }) =>
+    isStateOver &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationC')};
+      transform: translate(0, 0.125rem);
+    `}
+  ${({ isStateActive }) =>
+    isStateActive &&
+    css`
+      box-shadow: ${themeVal('boxShadow.elevationB')};
+      transform: translate(0, 0.125rem);
+    `}
 `;

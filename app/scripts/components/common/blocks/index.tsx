@@ -249,10 +249,23 @@ export function BlockComponent(props: BlockComponentProps) {
   const childrenAsArray = Children.toArray(children);
 
   const childrenComponents: string[] = childrenAsArray.map(
+    (e) => {
     // @ts-expect-error type may not exist depending on the node, but the error
     // will be caught and this won't break.
-    (e) => e.type?.displayName ?? 'undefined'
+    const typeVal = e.type;
+      // When children components are loaded as lazy component - and the component is not resolved yet
+      if (typeVal?._payload && !!typeVal._payload?.value.length) {
+        return typeVal._payload.value[typeVal._payload.value.length-1];
+      // When children components are loaded as lazy component - and the component is resolved
+      } else if (typeVal?._payload?.value?.displayName) {
+        return typeVal._payload.value.displayName;
+      } else {
+        return typeVal?.displayName ?? 'undefined';
+      }
+
+    }
   );
+
   const childrenNames = childrenComponents.reduce(
     (acc, curr) => acc + curr,
     ''

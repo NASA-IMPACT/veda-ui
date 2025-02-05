@@ -1,17 +1,20 @@
-import { datasets } from 'veda';
-
+import { datasets, stories } from 'veda';
+import { VedaDatum, DatasetData } from 'veda';
 // @VEDA2-REFACTOR-WORK
 
 /**
  * @NOTE
- * This file ideally is used to provide different collection datasets from different sources 
- * and is still a WIP so may change
- * 
- * All datasets should now be referenced from the data-layer, as this should serve as the main source of truth
- * 
+ *
+ * All datasets should now be referenced to use this data-layer, as this should serve as the main source of truth
+ * Eventually this would go away as we wont depend on the veda faux modules anymore and data would eventually come down from the instances
+ *
  * @TECH-DEBT
  * veda virtual modules may go away, but this is used here for now until it is removed entirely or updated
  */
 
+export const veda_faux_module_datasets = datasets;
+export const veda_faux_module_stories = stories;
 
-export const veda_datasets = datasets;
+export const allExploreDatasets = Object.values(veda_faux_module_datasets)
+  .map((d: VedaDatum<DatasetData>) => d!.data)
+  .filter((d: DatasetData) => !d.disableExplore);

@@ -4,7 +4,8 @@ import React, {
   useMemo,
   ReactElement,
   useState,
-  createContext
+  createContext,
+  Ref
 } from 'react';
 import styled from 'styled-components';
 import { MapboxOptions } from 'mapbox-gl';
@@ -14,17 +15,17 @@ import {
   iconDataURI
 } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { ProjectionOptions } from 'veda';
 import useDimensions from 'react-cool-dimensions';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
+import { MapRef } from 'react-map-gl';
 import MapboxStyleOverride from './mapbox-style-override';
 import { ExtendedStyle, Styles } from './styles';
 import useMapCompare from './hooks/use-map-compare';
 import MapComponent from './map-component';
 import useMaps, { useMapsContext } from './hooks/use-maps';
-import { aoiCustomCursorStyle } from './controls/aoi/custom-aoi-control';
 import { COMPARE_CONTAINER_NAME, CONTROLS_CONTAINER_NAME } from '.';
+import { ProjectionOptions } from '$types/veda';
 
 const chevronRightURI = () =>
   iconDataURI(CollecticonChevronRightSmall, {
@@ -53,7 +54,13 @@ const MapsContainer = styled.div`
     &.mouse-move .mapboxgl-canvas-container {
       cursor: move;
     }
-    ${aoiCustomCursorStyle}
+
+    /* 'moving' feature is disabled, match the cursor style accordingly */
+    &.mode-static_mode .mapboxgl-canvas-container,
+    &.feature-feature.mouse-drag .mapboxgl-canvas-container,
+    &.mouse-move .mapboxgl-canvas-container {
+      cursor: default;
+    }
   }
 
   .mapboxgl-compare .compare-swiper-vertical {
@@ -83,12 +90,20 @@ const MapsContainer = styled.div`
 
 type MapsProps = Pick<
   MapsContextWrapperProps,
-  'projection' | 'onStyleUpdate'
+  'projection' | 'onStyleUpdate' | 'mapRef' | 'onMapLoad'
 > & {
   children: ReactNode;
+  interactive?: boolean;
 };
 
-function Maps({ children, projection, onStyleUpdate }: MapsProps) {
+function Maps({
+  children,
+  projection,
+  onStyleUpdate,
+  mapRef,
+  onMapLoad,
+  interactive
+}: MapsProps) {
   // Instantiate MGL Compare, if compare is enabled
   useMapCompare();
 
@@ -142,15 +157,24 @@ function Maps({ children, projection, onStyleUpdate }: MapsProps) {
     <MapsContainer id={containerId} ref={observe}>
       <Styles onStyleUpdate={onStyleUpdate}>
         {generators}
-        <MapComponent controls={controls} projection={projection} />
+        <MapComponent
+          interactive={interactive}
+          mapRef={mapRef}
+          onMapLoad={onMapLoad}
+          controls={controls}
+          projection={projection}
+        />
       </Styles>
       {!!compareGenerators.length && (
         <Styles isCompared>
           {compareGenerators}
           <MapComponent
+            interactive={interactive}
+            mapRef={mapRef}
             isCompared
             controls={controls}
             projection={projection}
+            onMapLoad={onMapLoad}
           />
         </Styles>
       )}
@@ -161,13 +185,15 @@ function Maps({ children, projection, onStyleUpdate }: MapsProps) {
 export interface MapsContextWrapperProps {
   children: ReactNode;
   id: string;
+  mapRef?: Ref<MapRef>;
+  onMapLoad?: () => void;
   projection?: ProjectionOptions;
   onStyleUpdate?: (style: ExtendedStyle) => void;
   mapOptions?: Partial<Omit<MapboxOptions, 'container'>>;
 }
 
 export default function MapsContextWrapper(props: MapsContextWrapperProps) {
-  const { id, mapOptions } = props;
+  const { id, mapOptions, mapRef, onMapLoad } = props;
   const mainId = `main-map-${id}`;
   const comparedId = `compared-map-${id}`;
   const containerId = `comparison-container-${id}`;
@@ -189,12 +215,19 @@ export default function MapsContextWrapper(props: MapsContextWrapperProps) {
         containerId
       }}
     >
-      <Maps {...props}>{props.children}</Maps>
+      <Maps
+        interactive={mapOptions?.interactive}
+        onMapLoad={onMapLoad}
+        mapRef={mapRef}
+        {...props}
+      >
+        {props.children}
+      </Maps>
     </MapsContext.Provider>
   );
 }
 
-interface MapsContextType {
+export interface MapsContextType {
   initialViewState: any;
   setInitialViewState: (viewState: any) => void;
   mainId: string;

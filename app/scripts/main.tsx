@@ -1,38 +1,43 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import T from 'prop-types';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
-import { DevseedUiThemeProvider as DsTp } from '@devseed-ui/theme-provider';
+import {
+  Link,
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation
+} from 'react-router-dom';
+
+import '$styles/styles.scss';
+
 import { userPages } from 'veda';
+import DevseedUiThemeProvider from './theme-provider';
 
 import { discoveryRoutes } from './redirects';
 import theme, { GlobalStyles } from '$styles/theme';
 import { getAppURL } from '$utils/history';
-import LayoutRoot, {
-  LayoutRootContextProvider
-} from '$components/common/layout-root';
+import LayoutRoot from '$components/common/layout-root';
+import { LayoutRootContextProvider } from '$components/common/layout-root/context';
 import { useScrollbarWidthAsCssVar } from '$utils/use-scrollbar-width-css';
-import { checkEnvFlag } from '$utils/utils';
-
 // Page loading
 import { PageLoading } from '$components/common/loading-skeleton';
 // Views
 import UhOh from '$components/uhoh';
 import ErrorBoundary from '$components/uhoh/fatal-error';
 
+import '$types/array.d';
+
 const Home = lazy(() => import('$components/home'));
 const About = lazy(() => import('$components/about'));
 const Development = lazy(() => import('$components/development'));
 
-const StoriesHub = lazy(() => import('$components/stories/hub'));
+const StoriesHub = lazy(() => import('$components/stories/hub/container'));
 const StoriesSingle = lazy(() => import('$components/stories/single'));
 
 const DataCatalog = lazy(() => import('$components/data-catalog/container'));
-const DatasetsExplore = lazy(() => import('$components/datasets/s-explore'));
-const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
-const Analysis = lazy(() => import('$components/analysis/define'));
-const AnalysisResults = lazy(() => import('$components/analysis/results'));
+const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
 const ExplorationAndAnalysis = lazy(
   () => import('$components/exploration/container')
@@ -42,27 +47,39 @@ const Sandbox = lazy(() => import('$components/sandbox'));
 
 const UserPagesComponent = lazy(() => import('$components/user-pages'));
 
-// Handle wrong types from devseed-ui.
-const DevseedUiThemeProvider = DsTp as any;
-
 // Contexts
-import { ReactQueryProvider } from '$context/react-query';
+import ReactQueryProvider from '$context/react-query';
 import {
   ABOUT_PATH,
-  ANALYSIS_PATH,
-  ANALYSIS_RESULTS_PATH,
   DATASETS_PATH,
-  STORIES_PATH
+  STORIES_PATH,
+  EXPLORATION_PATH
 } from '$utils/routes';
+import { VedaUIProvider } from '$context/veda-ui-provider';
 
 const composingComponents = [
   // Add contexts here.
   ErrorBoundary,
   ReactQueryProvider,
-  LayoutRootContextProvider
+  LayoutRootContextProvider,
+  ({ children }) => (
+    <VedaUIProvider
+      config={{
+        envMapboxToken: process.env.MAPBOX_TOKEN ?? '',
+        envApiStacEndpoint: process.env.API_STAC_ENDPOINT ?? '',
+        envApiRasterEndpoint: process.env.API_RASTER_ENDPOINT ?? '',
+        navigation: {
+          LinkComponent: Link,
+          linkProps: {
+            pathAttributeKeyName: 'to'
+          }
+        }
+      }}
+    >
+      {children}
+    </VedaUIProvider>
+  )
 ];
-
-const useNewExploration = checkEnvFlag(process.env.FEATURE_NEW_EXPLORATION);
 
 function ScrollTop() {
   const { pathname } = useLocation();
@@ -105,28 +122,12 @@ function Root() {
                   element={<StoriesSingle />}
                 />
 
-                {!useNewExploration && (
-                  <>
-                    <Route
-                      path={`${DATASETS_PATH}/:datasetId/explore`}
-                      element={<DatasetsExplore />}
-                    />
-                    <Route path={ANALYSIS_PATH} element={<Analysis />} />
-                    <Route
-                      path={ANALYSIS_RESULTS_PATH}
-                      element={<AnalysisResults />}
-                    />
-                  </>
-                )}
-
                 <Route path='development' element={<Development />} />
 
-                {/* {useNewExploration && ( */}
                 <Route
-                  path='exploration'
+                  path={EXPLORATION_PATH}
                   element={<ExplorationAndAnalysis />}
                 />
-                {/* )} */}
 
                 {process.env.NODE_ENV !== 'production' && (
                   <Route path='/sandbox/*' element={<Sandbox />} />

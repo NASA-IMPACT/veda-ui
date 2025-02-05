@@ -4,18 +4,20 @@ import {
   UseQueryResult
 } from '@tanstack/react-query';
 import axios from 'axios';
-import { SetStateAction } from 'react';
 import {
   StacDatasetData,
   TimeDensity,
   TimelineDataset,
-  TimelineDatasetStatus
+  DatasetStatus,
+  VizDataset
 } from '../types.d.ts';
-import { resolveLayerTemporalExtent } from '../data-utils';
-
+import {
+  resolveLayerTemporalExtent,
+  resolveRenderParams,
+  isRenderParamsApplicable
+} from '../data-utils-no-faux-module';
 import { useEffectPrevious } from '$utils/use-effect-previous';
-
-export type SetAtom<Args extends any[], Result> = (...args: Args) => Result;
+import { SetState } from '$types/aliases';
 
 function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
   const currKey = `${curr.errorUpdatedAt}-${curr.dataUpdatedAt}-${curr.failureCount}`;
@@ -34,28 +36,39 @@ function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
  */
 function reconcileQueryDataWithDataset(
   queryData: UseQueryResult<StacDatasetData>,
-  dataset: TimelineDataset
-): TimelineDataset {
+  dataset: TimelineDataset | VizDataset
+): TimelineDataset | VizDataset {
   try {
     let base = {
       ...dataset,
-      status: queryData.status as TimelineDatasetStatus,
+      status: queryData.status as DatasetStatus,
       error: queryData.error
     };
 
-    if (queryData.status === TimelineDatasetStatus.SUCCESS) {
+    if (queryData.status === DatasetStatus.SUCCESS) {
       const domain = resolveLayerTemporalExtent(base.data.id, queryData.data);
+
+      let renderParams;
+
+      if (isRenderParamsApplicable(base.data.type)) {
+        renderParams = resolveRenderParams(
+          base.data.sourceParams,
+          queryData.data.renders
+        );
+      }
+
       base = {
         ...base,
         data: {
           ...base.data,
           ...queryData.data,
-          domain
+          domain,
+          ...(renderParams && { sourceParams: renderParams })
         }
       };
     }
 
-    return base as TimelineDataset;
+    return base as TimelineDataset | VizDataset;
   } catch (error) {
     const e = new Error('Error reconciling query data with dataset');
     // @ts-expect-error detail is not a property of Error
@@ -63,18 +76,19 @@ function reconcileQueryDataWithDataset(
 
     return {
       ...dataset,
-      status: TimelineDatasetStatus.ERROR,
+      status: DatasetStatus.ERROR,
       error: e
-    } as TimelineDataset;
+    } as TimelineDataset | VizDataset;
   }
 }
 
 async function fetchStacDatasetById(
-  dataset: TimelineDataset
+  dataset: TimelineDataset | VizDataset,
+  envApiStacEndpoint: string
 ): Promise<StacDatasetData> {
   const { type, stacCol, stacApiEndpoint, time_density } = dataset.data;
 
-  const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
+  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint;
 
   const { data } = await axios.get(
     `${stacApiEndpointToUse}/collections/${stacCol}`
@@ -82,6 +96,7 @@ async function fetchStacDatasetById(
 
   const commonTimeseriesParams = {
     isPeriodic: !!data['dashboard:is_periodic'],
+    isTimeless: !!data['dashboard:is_timeless'],
     timeDensity: data['dashboard:time_density'] || TimeDensity.DAY
   };
 
@@ -116,12 +131,12 @@ async function fetchStacDatasetById(
     };
   } else if (type === 'cmr') {
     const domain = data.summaries?.datetime?.[0]
-    ? data.summaries.datetime
-    : data.extent.temporal.interval[0];
-  const domainStart = domain[0];
-  
-  // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
-  const lastDatetime = domain[domain.length - 1] ||  new Date().toISOString();
+      ? data.summaries.datetime
+      : data.extent.temporal.interval[0];
+    const domainStart = domain[0];
+
+    // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
+    const lastDatetime = domain[domain.length - 1] || new Date().toISOString();
     // CMR STAC misses the dashboard specific attributes, shim these values
     return {
       isPeriodic: true,
@@ -133,24 +148,28 @@ async function fetchStacDatasetById(
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
+    const renders = data.renders;
+
     if (!domain?.length || domain.some((d) => !d)) {
       throw new Error('Invalid datetime domain');
     }
 
     return {
       ...commonTimeseriesParams,
-      domain
+      domain,
+      renders
     };
   }
 }
 
 // Create a query object for react query.
 function makeQueryObject(
-  dataset: TimelineDataset
+  dataset: TimelineDataset | VizDataset,
+  envApiStacEndpoint: string
 ): UseQueryOptions<unknown, unknown, StacDatasetData> {
   return {
     queryKey: ['dataset', dataset.data.id],
-    queryFn: () => fetchStacDatasetById(dataset),
+    queryFn: () => fetchStacDatasetById(dataset, envApiStacEndpoint),
     // This data will not be updated in the context of a browser session, so it is
     // safe to set the staleTime to Infinity. As specified by react-query's
     // "Important Defaults", cached data is considered stale which means that
@@ -171,16 +190,24 @@ function makeQueryObject(
  * metadata for that dataset and add it to the dataset state atom.
  */
 export function useReconcileWithStacMetadata(
-  datasets: TimelineDataset[],
-  handleUpdate: SetAtom<[updates: SetStateAction<TimelineDataset[]>], void> | React.Dispatch<React.SetStateAction<undefined | TimelineDataset[]>>
+  datasets: TimelineDataset[] | VizDataset[],
+  handleUpdate: SetState<TimelineDataset[] | VizDataset[] | undefined>,
+  envApiStacEndpoint: string
 ) {
-  const noDatasetsToQuery: boolean = !datasets || (datasets.length === 1 && datasets[0] === undefined);
+  const noDatasetsToQuery: boolean =
+    !datasets || (datasets.length === 1 && datasets[0] === undefined);
 
   const datasetsQueryData = useQueries({
-    queries: noDatasetsToQuery ? [] : datasets.filter((d) => !(d as any)?.mocked).map((dataset) => makeQueryObject(dataset))
+    queries: noDatasetsToQuery
+      ? []
+      : datasets
+          .filter((d) => !(d as any)?.mocked)
+          .map((dataset) => makeQueryObject(dataset, envApiStacEndpoint))
   });
 
-  useEffectPrevious<[typeof datasetsQueryData, TimelineDataset[]]>(
+  useEffectPrevious<
+    [typeof datasetsQueryData, TimelineDataset[] | VizDataset[]]
+  >(
     (prev) => {
       if (noDatasetsToQuery) return;
 
@@ -190,7 +217,7 @@ export function useReconcileWithStacMetadata(
         .filter((d) => !(d as any)?.mocked)
         .reduce<{
           updated: boolean;
-          data: TimelineDataset[];
+          data: TimelineDataset[] | VizDataset[];
         }>(
           (acc, dataset, idx) => {
             const curr = datasetsQueryData[idx];
@@ -216,11 +243,7 @@ export function useReconcileWithStacMetadata(
       if (updated) {
         handleUpdate(updatedDatasets);
       }
-
     },
     [datasetsQueryData, datasets]
   );
 }
-
-
-

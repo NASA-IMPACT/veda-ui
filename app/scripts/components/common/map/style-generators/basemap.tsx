@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { AnySourceImpl, Layer, Style } from 'mapbox-gl';
-import { useEffect, useState } from 'react';
+import { StyleSpecification } from 'mapbox-gl';
+import { useEffect, useMemo, useState } from 'react';
 import {
   BasemapId,
-  BASEMAP_STYLES,
   getStyleUrl,
-  GROUPS_BY_OPTION
+  GROUPS_BY_OPTION,
+  getBasemapStyles
 } from '../controls/map-options/basemap';
 import { ExtendedLayer } from '../types';
 import useMapStyle from '../hooks/use-map-style';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 interface BasemapProps {
   basemapStyleId?: BasemapId;
@@ -32,19 +33,26 @@ export function Basemap({
   labelsOption = true,
   boundariesOption = true
 }: BasemapProps) {
+  const { envMapboxToken } = useVedaUI();
   const { updateStyle } = useMapStyle();
+  const [baseStyle, setBaseStyle] = useState<StyleSpecification | undefined>(
+    undefined
+  );
 
-  const [baseStyle, setBaseStyle] = useState<Style | undefined>(undefined);
+  const basemapStyles = useMemo(
+    () => getBasemapStyles(envMapboxToken),
+    [envMapboxToken]
+  );
 
   const { data: styleJson } = useQuery(
     ['basemap', basemapStyleId],
     async ({ signal }) => {
       const mapboxId = basemapStyleId
-        ? BASEMAP_STYLES.find((b) => b.id === basemapStyleId)!.mapboxId
-        : BASEMAP_STYLES[0].mapboxId;
+        ? basemapStyles.find((b) => b.id === basemapStyleId)!.mapboxId
+        : basemapStyles[0].mapboxId;
 
       try {
-        const url = getStyleUrl(mapboxId);
+        const url = getStyleUrl(mapboxId, envMapboxToken);
         const styleRaw = await fetch(url, { signal });
         const styleJson = await styleRaw.json();
         return styleJson;
@@ -56,7 +64,7 @@ export function Basemap({
   );
 
   useEffect(() => {
-    setBaseStyle(styleJson as Style);
+    setBaseStyle(styleJson as StyleSpecification);
   }, [styleJson]);
 
   // Apply labels and boundaries options, by setting visibility on related
@@ -70,15 +78,15 @@ export function Basemap({
     // this id from the list of groups in the metadata section of the style.
     const labelsGroupIds = mapGroupNameToGroupId(
       GROUPS_BY_OPTION.labels,
-      baseStyle.metadata['mapbox:groups']
+      baseStyle.metadata?.['mapbox:groups']
     );
     const boundariesGroupIds = mapGroupNameToGroupId(
       GROUPS_BY_OPTION.boundaries,
-      baseStyle.metadata['mapbox:groups']
+      baseStyle.metadata?.['mapbox:groups']
     );
 
     const layers = baseStyle.layers.map((layer) => {
-      const layerGroup = (layer as Layer).metadata?.['mapbox:group'];
+      const layerGroup = layer.metadata?.['mapbox:group'];
 
       if (layerGroup) {
         const isLabelsLayer = labelsGroupIds.includes(layerGroup);
@@ -94,7 +102,7 @@ export function Basemap({
           return {
             ...layer,
             layout: {
-              ...(layer as Layer).layout,
+              ...layer.layout,
               visibility
             },
             metadata: {
@@ -109,7 +117,7 @@ export function Basemap({
 
     updateStyle({
       generatorId: 'basemap',
-      sources: baseStyle.sources as Record<string, AnySourceImpl>,
+      sources: baseStyle.sources,
       layers: layers as ExtendedLayer[]
     });
   }, [updateStyle, labelsOption, boundariesOption, baseStyle]);

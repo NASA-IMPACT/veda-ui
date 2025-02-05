@@ -31,6 +31,7 @@ export const VEDA_OVERRIDE_THEME = {
   },
   type: {
     base: {
+      family: '"Public Sans",sans-serif',
       leadSize: '1.25rem',
       extrabold: '800',
       // Increments to the type.base.size for each media breakpoint.
@@ -79,6 +80,11 @@ export const GlobalStyles = createGlobalStyle`
 
   :root {
     --base-space-multiplier: ${themeVal('layout.glspMultiplier.xsmall')};
+    --base-font-family: ${themeVal('type.base.family')};
+    --veda-color-primary: ${themeVal('color.primary')};
+    --veda-color-secondary: ${themeVal('color.secondary')};
+    --veda-color-link: ${themeVal('color.link')};
+    --veda-color-base: ${themeVal('color.base')};
   }
 
   ${media.smallUp`

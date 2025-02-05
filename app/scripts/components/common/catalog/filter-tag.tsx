@@ -17,7 +17,8 @@ const Tag = styled.span`
   width: fit-content;
   justify-content: center;
   background-color: ${themeVal('color.base-50')};
-  margin: ${glsp(0.25)};
+  margin: 0 ${glsp(0.5)} 0 0;
+  height: fit-content;
   padding: 6px 0 6px 6px;
   outline-width: 1px;
   outline-color: ${themeVal('color.base-200')};
@@ -41,7 +42,7 @@ export default function FilterTag(props: FilterTagProps) {
   const handleClick = () => {
     onClick(item);
   };
-  
+
   return (
     <Tag>
       {item.name}

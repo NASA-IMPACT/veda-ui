@@ -20,7 +20,7 @@ import {
 } from './projection-items';
 import { MapOptionsProps } from './types';
 import { projectionsList } from './projections';
-import { BASEMAP_STYLES } from './basemap';
+import { getBasemapStyles } from './basemap';
 
 import { SelectorButton } from '$components/common/map/style/button';
 
@@ -110,8 +110,11 @@ function MapOptions(props: MapOptionsProps) {
     onBasemapStyleIdChange,
     labelsOption,
     boundariesOption,
-    onOptionChange
+    onOptionChange,
+    envMapboxToken
   } = props;
+
+  const basemapStyles = getBasemapStyles(envMapboxToken);
 
   return (
     <MapOptionsDropdown
@@ -137,7 +140,7 @@ function MapOptions(props: MapOptionsProps) {
           </ContentGroupHeader>
           <ContentGroupBody>
             <DropMenu as='ol'>
-              {BASEMAP_STYLES.map((basemap) => (
+              {basemapStyles.map((basemap) => (
                 <li key={basemap.id}>
                   <DropMenuItem
                     href='#'
@@ -251,8 +254,8 @@ function MapOptions(props: MapOptionsProps) {
 }
 
 export default function MapOptionsControl(props: MapOptionsProps) {
-  useThemedControl(() => <MapOptions {...props} />, {
+  const control = useThemedControl(() => <MapOptions {...props} />, {
     position: 'top-right'
   });
-  return null;
+  return control;
 }

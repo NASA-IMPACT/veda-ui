@@ -1,60 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@devseed-ui/button';
 import { Modal } from '@devseed-ui/modal';
-import { media, themeVal } from '@devseed-ui/theme-provider';
-
-import { useFeedbackModal } from './layout-root';
-
-import GlobalMenuLinkCSS from '$styles/menu-link';
 
 const StyledGoogleForm = styled.iframe`
   width: 100%;
 `;
 
-interface BtnMediaProps {
-  active?: boolean;
-}
-
-// Global menu link style
-const ButtonAsNavLink = styled(Button)`
-  ${media.mediumUp<BtnMediaProps>`
-    background-color: ${themeVal('color.primary-700')};
-
-    &:hover {
-      background-color: ${themeVal('color.primary-800')};
-    }
-
-    /* Print & when prop is passed */
-    ${({ active }) => active && '&,'}
-    &:active,
-    &.active {
-      background-color: ${themeVal('color.primary-900')};
-    }
-
-    &:focus-visible {
-      background-color: ${themeVal('color.primary-200a')};
-    }
-  `}
-
-  ${media.mediumDown`
-    ${GlobalMenuLinkCSS}
-  `}
-`;
-
-function GoogleForm() {
-  const { isRevealed, show, hide } = useFeedbackModal();
+const GoogleForm = (props: {
+  src: string;
+  isRevealed: boolean;
+  hide: () => void;
+}) => {
+  const { src, isRevealed, hide } = props;
 
   return (
     <>
-      <ButtonAsNavLink
-        type='button'
-        size='large'
-        onClick={show}
-        style={{ color: 'white' }}
-      >
-        Contact Us
-      </ButtonAsNavLink>
       <Modal
         id='modal'
         size='large'
@@ -65,7 +25,7 @@ function GoogleForm() {
         closeButton
         content={
           <StyledGoogleForm
-            src={process.env.GOOGLE_FORM}
+            src={src}
             height={504}
             frameBorder={0}
             marginHeight={0}
@@ -77,6 +37,6 @@ function GoogleForm() {
       />
     </>
   );
-}
+};
 
 export default GoogleForm;

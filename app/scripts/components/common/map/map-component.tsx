@@ -1,12 +1,14 @@
-import React, { useCallback, ReactElement, useMemo } from 'react';
-import ReactMapGlMap, { LngLatBoundsLike } from 'react-map-gl';
+import React, { useCallback, ReactElement, useMemo, Ref } from 'react';
+import ReactMapGlMap, { LngLatBoundsLike, MapRef } from 'react-map-gl';
 import { debounce } from 'lodash';
-import { ProjectionOptions } from 'veda';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
+import { ProjectionSpecification } from 'mapbox-gl';
 import useMapStyle from './hooks/use-map-style';
 import { useMapsContext } from './hooks/use-maps';
 import { convertProjectionToMapbox } from './controls/map-options/projections';
+import { ProjectionOptions } from '$types/veda';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 const maxMapBounds: LngLatBoundsLike = [
   [-540, -90], // SW
@@ -16,12 +18,20 @@ const maxMapBounds: LngLatBoundsLike = [
 export default function MapComponent({
   controls,
   isCompared,
-  projection
+  projection,
+  mapRef,
+  onMapLoad,
+  interactive = true
 }: {
   controls: ReactElement[];
   isCompared?: boolean;
   projection?: ProjectionOptions;
+  mapRef?: Ref<MapRef>;
+  onMapLoad?: () => void;
+  interactive?: boolean;
 }) {
+  const { envMapboxToken } = useVedaUI();
+
   const { initialViewState, setInitialViewState, mainId, comparedId } =
     useMapsContext();
   const { style } = useMapStyle();
@@ -62,7 +72,8 @@ export default function MapComponent({
   return (
     <ReactMapGlMap
       id={id}
-      mapboxAccessToken={process.env.MAPBOX_TOKEN}
+      ref={mapRef}
+      mapboxAccessToken={envMapboxToken}
       dragRotate={false}
       touchPitch={false}
       pitchWithRotate={false}
@@ -70,8 +81,10 @@ export default function MapComponent({
       initialViewState={initialViewState}
       mapStyle={style as any}
       onMove={onMove}
-      projection={mapboxProjection}
+      onLoad={onMapLoad}
+      projection={mapboxProjection as ProjectionSpecification}
       maxBounds={maxMapBounds}
+      interactive={interactive}
     >
       {controls}
     </ReactMapGlMap>

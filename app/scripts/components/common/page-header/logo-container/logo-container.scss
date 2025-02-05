@@ -1,0 +1,47 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+
+#logo-container {
+  display: flex;
+  font-family: themeVars.$veda-uswds-basefont-sans;
+  gap: themeVars.$veda-uswds-spacing-105;
+  max-height: 2.5rem;
+
+  #logo-container-link {
+    display: flex;
+    align-items: center;
+    gap: themeVars.$veda-uswds-spacing-105;
+    font-weight: themeVars.$veda-uswds-fontweight-bold;
+    font-size: themeVars.$veda-uswds-fontsize-lg;
+    color: themeVars.$veda-uswds-color-base-ink;
+  }
+
+  #nasa-logo-pos {
+    opacity: 1;
+    transform: translate(0, -100%);
+    /* TODO: Fix the svg to not require any styles!
+     * - set opacity to 1 in svg and fix translation
+     */
+  }
+
+  @media (width <= themeVars.$veda-uswds-spacing-desktop) {
+    svg {
+      display: none;
+    }
+  }
+
+  svg {
+    height: 2.5rem;
+    width: auto;
+  }
+
+  #logo-container-beta-tag {
+    color: white;
+    align-self: center;
+    font-size: themeVars.$veda-uswds-fontsize-3xs;
+    font-weight: themeVars.$veda-uswds-fontweight-regular;
+    padding-left: themeVars.$veda-uswds-spacing-5;
+    padding-right: themeVars.$veda-uswds-spacing-5;
+    border-radius: 2px;
+    background-color: themeVars.$veda-uswds-color-secondary;
+  }
+}

@@ -2,7 +2,9 @@ import React, { useCallback, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
-import { addDays, subDays, areIntervalsOverlapping } from 'date-fns';
+import addDays from 'date-fns/addDays';
+import subDays from 'date-fns/subDays';
+import areIntervalsOverlapping from 'date-fns/areIntervalsOverlapping';
 import { useQueryClient } from '@tanstack/react-query';
 import { ScaleTime } from 'd3';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
@@ -19,9 +21,10 @@ import {
 import { DatasetChart } from './dataset-chart';
 import { getBlockBoundaries, lumpBlocks } from './block-utils';
 import DataLayerCard from './data-layer-card';
-import { findDatasetAttribute } from '$components/exploration/data-utils';
+import { findDatasetAttribute } from '$components/exploration/data-utils-no-faux-module';
 import {
-  TimelineDatasetStatus,
+  DatasetStatus,
+  TimelineDataset,
   TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
 import {
@@ -31,8 +34,10 @@ import {
 import { useDatasetHover } from '$components/exploration/hooks/use-dataset-hover';
 import {
   useTimelineDatasetAtom,
+  useTimelineDatasetColormap,
   useTimelineDatasetSettings,
-  useTimelineDatasetVisibility
+  useTimelineDatasetVisibility,
+  useTimelineDatasetColormapScale
 } from '$components/exploration/atoms/hooks';
 import {
   useAnalysisController,
@@ -85,6 +90,7 @@ const DatasetData = styled.div`
 `;
 
 interface DatasetListItemProps {
+  datasets: TimelineDataset[];
   datasetId: string;
   width: number;
   xScaled?: ScaleTime<number, number>;
@@ -93,7 +99,7 @@ interface DatasetListItemProps {
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
-  const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
+  const { datasets, datasetId, width, xScaled, onDragStart, onDragEnd } = props;
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
@@ -101,7 +107,11 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const { isAnalyzing, runAnalysis } = useAnalysisController();
 
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
-  const [modalLayerInfo, setModalLayerInfo] = React.useState<LayerInfoModalData>();
+  const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
+  const [colorMapScale, setColorMapScale] =
+    useTimelineDatasetColormapScale(datasetAtom);
+  const [modalLayerInfo, setModalLayerInfo] =
+    React.useState<LayerInfoModalData>();
   const [, setSetting] = useTimelineDatasetSettings(datasetAtom);
 
   const queryClient = useQueryClient();
@@ -117,7 +127,10 @@ export function DatasetListItem(props: DatasetListItemProps) {
   }, [queryClient, datasetId]);
 
   const onClickLayerInfo = useCallback(() => {
-    const parentInfoDesc = findDatasetAttribute({datasetId: dataset.data.parentDataset.id, attr: 'infoDescription'});
+    const parentInfoDesc = findDatasetAttribute(datasets, {
+      datasetId: dataset.data.parentDataset.id,
+      attr: 'infoDescription'
+    });
     const data: LayerInfoModalData = {
       name: dataset.data.name,
       description: dataset.data.description,
@@ -167,23 +180,22 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   useAnalysisDataRequest({ datasetAtom });
 
-  const isDatasetError = dataset.status === TimelineDatasetStatus.ERROR;
-  const isDatasetLoading = dataset.status === TimelineDatasetStatus.LOADING;
-  const isDatasetSuccess = dataset.status === TimelineDatasetStatus.SUCCESS;
+  const isDatasetError = dataset.status === DatasetStatus.ERROR;
+  const isDatasetLoading = dataset.status === DatasetStatus.LOADING;
+  const isDatasetSuccess = dataset.status === DatasetStatus.SUCCESS;
 
   const isAnalysisAndError =
-    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.ERROR;
+    isAnalyzing && dataset.analysis.status === DatasetStatus.ERROR;
   const isAnalysisAndLoading =
-    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.LOADING;
+    isAnalyzing && dataset.analysis.status === DatasetStatus.LOADING;
   const isAnalysisAndSuccess =
-    isAnalyzing && dataset.analysis.status === TimelineDatasetStatus.SUCCESS;
+    isAnalyzing && dataset.analysis.status === DatasetStatus.SUCCESS;
 
   const datasetLegend = dataset.data.legend;
   const analysisMetrics = useMemo(
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
   );
-
 
   const onDragging = (e) => {
     controls.start(e);
@@ -206,8 +218,19 @@ export function DatasetListItem(props: DatasetListItemProps) {
       <DatasetItem>
         <DatasetHeader>
           <DatasetHeaderInner>
-            <div style={{width: '100%'}} onPointerDown={onDragging}>
-              <DataLayerCard dataset={dataset} datasetAtom={datasetAtom} isVisible={isVisible} setVisible={setVisible} datasetLegend={datasetLegend} onClickLayerInfo={onClickLayerInfo} />
+            <div style={{ width: '100%' }} onPointerDown={onDragging}>
+              <DataLayerCard
+                dataset={dataset}
+                datasetAtom={datasetAtom}
+                colorMap={colorMap}
+                colorMapScale={colorMapScale}
+                setColorMap={setColorMap}
+                setColorMapScale={setColorMapScale}
+                isVisible={isVisible}
+                setVisible={setVisible}
+                datasetLegend={datasetLegend}
+                onClickLayerInfo={onClickLayerInfo}
+              />
             </div>
             {modalLayerInfo && (
               <LayerInfoModal

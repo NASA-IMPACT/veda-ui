@@ -34,7 +34,7 @@ export default forwardRef<DropdownRef, DropdownProps>(
     const { children, ...rest } = props;
     return (
       <DropdownWithScroll ref={ref} {...rest}>
-        {children}  
+        {children}
       </DropdownWithScroll>
     );
   }

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { scaleTime } from 'd3';
 import { useAtomValue } from 'jotai';
-import { differenceInCalendarDays } from 'date-fns';
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 import { timelineSizesAtom, zoomTransformAtom } from '../atoms/timeline';
 import { DAY_SIZE_MAX } from '../constants';

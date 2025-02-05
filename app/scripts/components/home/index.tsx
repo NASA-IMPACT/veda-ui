@@ -5,7 +5,7 @@ import { Button } from '@devseed-ui/button';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
 import { CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
-import { getOverride } from 'veda';
+import { getOverride, getSiteAlertFromVedaConfig } from 'veda';
 
 import rootCoverImage from '../../../graphics/layout/root-welcome--cover.jpg';
 
@@ -13,7 +13,8 @@ import FeaturedStories from './featured-stories';
 import ValueProposition from './value-propostion';
 import Audience from './audience';
 
-import { LayoutProps, useFeedbackModal } from '$components/common/layout-root';
+import { LayoutProps } from '$components/common/layout-root';
+import { useFeedbackModal } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { PageMainContent } from '$styles/page';
 import { variableGlsp } from '$styles/variable-utils';
@@ -23,6 +24,9 @@ import {
   ComponentOverride,
   ContentOverride
 } from '$components/common/page-overrides';
+import { checkEnvFlag } from '$utils/utils';
+
+const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_FOOTER);
 
 const homeContent = getOverride('homeContent');
 
@@ -66,7 +70,9 @@ const ConnectionsBlock = styled.div`
 const ConnectionsBlockTitle = styled(Heading).attrs({
   as: 'h2',
   size: 'medium'
-})``;
+})`
+  /* no style, only attrs */
+`;
 
 const ConnectionsList = styled.ul`
   ${listReset()};
@@ -130,10 +136,15 @@ const getCoverProps = () => {
 function RootHome() {
   const { show: showFeedbackModal } = useFeedbackModal();
 
+  const siteAlert = getSiteAlertFromVedaConfig();
+  const renderSiteAlert = !!siteAlert && siteAlert.content && siteAlert.expires;
+
   return (
     <PageMainContent>
-      <LayoutProps title='Welcome' />
-
+      <LayoutProps
+        title='Welcome'
+        siteAlert={renderSiteAlert ? { ...siteAlert } : null}
+      />
       <ComponentOverride with='homeHero'>
         <PageHeroHome
           title={homeContent?.data.title ?? `Welcome to the ${appTitle}`}
@@ -170,29 +181,31 @@ function RootHome() {
 
         <ValueProposition />
 
-        <Connections>
-          <ConnectionsBlock>
-            <ConnectionsBlockTitle>About</ConnectionsBlockTitle>
-            <ConnectionsList>
-              <li>
-                <Link to='/about'>
-                  <CollecticonChevronRightSmall /> Learn more
-                </Link>
-              </li>
-              <li>
-                <a
-                  href='#'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    showFeedbackModal();
-                  }}
-                >
-                  <CollecticonChevronRightSmall /> Give feedback
-                </a>
-              </li>
-            </ConnectionsList>
-          </ConnectionsBlock>
-        </Connections>
+        {!isUSWDSEnabled && (
+          <Connections>
+            <ConnectionsBlock>
+              <ConnectionsBlockTitle>About</ConnectionsBlockTitle>
+              <ConnectionsList>
+                <li>
+                  <Link to='/about'>
+                    <CollecticonChevronRightSmall /> Learn more
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href='#'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      showFeedbackModal();
+                    }}
+                  >
+                    <CollecticonChevronRightSmall /> Give feedback
+                  </a>
+                </li>
+              </ConnectionsList>
+            </ConnectionsBlock>
+          </Connections>
+        )}
       </ContentOverride>
     </PageMainContent>
   );

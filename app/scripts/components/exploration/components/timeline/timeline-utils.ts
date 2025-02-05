@@ -1,4 +1,5 @@
 import { ScaleTime, Selection, ZoomBehavior, ZoomTransform } from 'd3';
+import { TimelineDatasetSuccess } from '$components/exploration/types.d.ts';
 
 /**
  * Clamps the given value to the given range.
@@ -82,3 +83,65 @@ export function applyTransform(
   // is set on the state, so there's no need to do it here.
   zoomBehavior.transform(element, newTransform);
 }
+
+export const getLabelFormat = (timeDensity) => {
+  switch (timeDensity) {
+    case 'month':
+      return 'MMM yyyy';
+    case 'year':
+      return 'yyyy';
+    default:
+      return 'MMM d yyyy';
+  }
+};
+
+export type TemporalExtent = [Date | undefined, Date | undefined];
+
+/**
+ * getTemporalExtent calculates the overall minimum and maximum temporal extent
+ * from a set of selected Timeline datasets. Each dataset has a domain that represents
+ * the time range it covers. The function returns the earliest start date and the latest end date
+ * across all datasets.
+ *
+ * @param datasets - An array of datasets where each dataset contains a domain array of date strings.
+ * @returns A tuple [minDate, maxDate] where minDate is the earliest date and maxDate is the latest date
+ *          across all domains, or [undefined, undefined] if no valid dates are found.
+ */
+export const getTemporalExtent = (
+  datasets: TimelineDatasetSuccess[]
+): TemporalExtent => {
+  const extents: TemporalExtent[] = datasets.map((dataset) => {
+    const { domain } = dataset.data;
+
+    if (domain.length === 0) {
+      return [undefined, undefined];
+    }
+
+    const firstDate = new Date(domain[0]);
+    const lastDate = new Date(domain[domain.length - 1]);
+
+    if (isNaN(firstDate.getTime()) || isNaN(lastDate.getTime())) {
+      return [undefined, undefined];
+    }
+
+    return [firstDate, lastDate];
+  });
+
+  // Ensure that both min and max are defined
+  const validExtents = extents.filter(
+    ([min, max]) => min !== undefined && max !== undefined
+  ) as [Date, Date][];
+
+  if (validExtents.length === 0) {
+    return [undefined, undefined];
+  }
+
+  const minDate = new Date(
+    Math.min(...validExtents.map(([min]) => min.getTime()))
+  );
+  const maxDate = new Date(
+    Math.max(...validExtents.map(([, max]) => max.getTime()))
+  );
+
+  return [minDate, maxDate];
+};

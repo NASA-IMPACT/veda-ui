@@ -2,15 +2,6 @@ import React, { useCallback, useState } from 'react';
 import T from 'prop-types';
 import styled from 'styled-components';
 
-const InteractiveLink = styled.a`
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: auto;
-  font-size: 0;
-  margin: 0;
-`;
-
 export const Wrapper = styled.div`
   position: relative;
   z-index: 1;
@@ -18,6 +9,15 @@ export const Wrapper = styled.div`
   > *:not(a) {
     pointer-events: none;
   }
+`;
+
+const InteractiveLink = styled.a`
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: auto;
+  font-size: 0;
+  margin: 0;
 `;
 
 /**
@@ -73,7 +73,13 @@ export const Wrapper = styled.div`
  */
 export const ElementInteractive = React.forwardRef(
   function ElementInteractiveFwd(props, ref) {
-    const { linkProps = {}, linkLabel = 'View', children, ...rest } = props;
+    const {
+      linkProps = {},
+      linkLabel = 'View',
+      children,
+      onClick,
+      ...rest
+    } = props;
     const [isStateOver, setStateOver] = useState(false);
     const [isStateActive, setStateActive] = useState(false);
     const [isStateFocus, setStateFocus] = useState(false);
@@ -92,6 +98,7 @@ export const ElementInteractive = React.forwardRef(
           setStateOver(false);
           setStateActive(false);
         }, [])}
+        onClick={onClick}
       >
         {children}
         <InteractiveLink
@@ -111,7 +118,8 @@ export const ElementInteractive = React.forwardRef(
 ElementInteractive.propTypes = {
   children: T.node.isRequired,
   linkLabel: T.string.isRequired,
-  linkProps: T.object
+  linkProps: T.object,
+  onClick: T.func
 };
 
 /**

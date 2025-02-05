@@ -1,11 +1,9 @@
-import {
-  format,
-  isSameMonth,
-  isSameYear,
-  parse,
-  startOfYear,
-  sub
-} from 'date-fns';
+import format from 'date-fns/format';
+import isSameMonth from 'date-fns/isSameMonth';
+import isSameYear from 'date-fns/isSameYear';
+import parse from 'date-fns/parse';
+import startOfYear from 'date-fns/startOfYear';
+import sub from 'date-fns/sub';
 
 /**
  * Create a date which matches the input date offsetting the timezone to match

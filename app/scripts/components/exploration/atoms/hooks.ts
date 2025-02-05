@@ -3,13 +3,14 @@ import { extent } from 'd3';
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 import { focusAtom } from 'jotai-optics';
-import { add, max } from 'date-fns';
+import add from 'date-fns/add';
+import max from 'date-fns/max';
 
 import { DAY_SIZE_MAX } from '../constants';
 import {
   TimeDensity,
   TimelineDataset,
-  TimelineDatasetStatus,
+  DatasetStatus,
   TimelineDatasetSuccess
 } from '../types.d.ts';
 import { timelineSizesAtom } from './timeline';
@@ -26,7 +27,13 @@ function addDurationToDate(date, timeDensity: TimeDensity) {
 }
 
 /**
- * Calculates the date domain of the datasets, if any are selected.
+ * Calculates the date domain of the datasets, if any are selected, adjusting
+ * based on the available content width. The domain is expanded to ensure that
+ * the timeline displays at least a minimum number of days (minDays), which is
+ * derived from the content width. This function does not determine the absolute
+ * maximum temporal extent of all datasets but ensures the timeline covers a
+ * suitable range of dates based on the current width of the timeline.
+ *
  * @returns Dataset date domain or undefined.
  */
 export function useTimelineDatasetsDomain() {
@@ -37,8 +44,7 @@ export function useTimelineDatasetsDomain() {
 
   return useMemo(() => {
     const successDatasets = datasets.filter(
-      (d): d is TimelineDatasetSuccess =>
-        d.status === TimelineDatasetStatus.SUCCESS
+      (d): d is TimelineDatasetSuccess => d.status === DatasetStatus.SUCCESS
     );
     if (!successDatasets.length) return undefined;
 
@@ -140,13 +146,39 @@ export function useTimelineDatasetVisibility(
   return useAtom(visibilityAtom);
 }
 
-export const useTimelineDatasetAnalysis = (datasetAtom: PrimitiveAtom<TimelineDataset>) => {
+export function useTimelineDatasetColormap(
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+) {
+  const colorMapAtom = useMemo(() => {
+    return focusAtom(datasetAtom, (optic) =>
+      optic.prop('settings').prop('colorMap')
+    );
+  }, [datasetAtom]);
+
+  return useAtom(colorMapAtom);
+}
+
+export const useTimelineDatasetAnalysis = (
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+) => {
   return useSetAtom(
     focusAtom(
       datasetAtom,
       // (Use OpticsFor type from optics-ts)
-      // @ts-expect-error:  For now until making sure this is the solution 
-      useCallback((optic) => optic.prop("analysis"), [])
+      // @ts-expect-error:  For now until making sure this is the solution
+      useCallback((optic) => optic.prop('analysis'), [])
     )
   );
 };
+
+export function useTimelineDatasetColormapScale(
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+) {
+  const colorMapScaleAtom = useMemo(() => {
+    return focusAtom(datasetAtom, (optic) =>
+      optic.prop('settings').prop('scale')
+    );
+  }, [datasetAtom]);
+
+  return useAtom(colorMapScaleAtom);
+}

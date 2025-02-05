@@ -2,12 +2,8 @@ import React, { useMemo } from 'react';
 // Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import * as dateFns from 'date-fns';
 
-import { TimelineDatasetSuccess } from '../../types.d.ts';
-import { getRelavantDate, getTimeDensityStartDate } from '../../data-utils';
-import {
-  useTimelineDatasetAtom,
-  useTimelineDatasetSettings
-} from '../../atoms/hooks';
+import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types.d.ts';
+import { getTimeDensityStartDate, getRelavantDate } from '../../data-utils-no-faux-module.js';
 
 import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
@@ -16,34 +12,22 @@ import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-tim
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
 import { Arc } from '$components/common/map/style-generators/arc';
 
+import { ActionStatus } from '$utils/status';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 interface LayerProps {
   id: string;
-  dataset: TimelineDatasetSuccess;
+  dataset: TimelineDatasetSuccess | VizDatasetSuccess;
   order?: number;
   selectedDay: Date;
+  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
 
 export function Layer(props: LayerProps) {
-  const { id: layerId, dataset, order, selectedDay } = props;
+  const { envApiStacEndpoint, envApiRasterEndpoint } = useVedaUI();
 
-  let isVisible: boolean | undefined;
-  let opacity: number | undefined;
-
-  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
-  
-  try {
-    // @TECH-DEBT: Wrapping this logic with a try/catch because jotai errors because it is unable to find
-    // 'settings' on undefined value even when dataset has 'settings' key. This is a workaround for now but
-    // should be revisited. Ideally type should be fine with 'Partial<TimelineDataset>'
-    const [getSettings] = useTimelineDatasetSettings(datasetAtom);
-  
-    isVisible = getSettings('isVisible');
-    opacity = getSettings('opacity');
-  } catch {
-    isVisible = true;
-    opacity = undefined;
-  }
+  const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
+  const { isVisible, opacity, colorMap, scale } = dataset.settings;
 
   // The date needs to match the dataset's time density.
   // But ArcGIS data?
@@ -76,6 +60,8 @@ export function Layer(props: LayerProps) {
           generatorOrder={order}
           hidden={!isVisible}
           opacity={opacity}
+          onStatusChange={onStatusChange}
+          envApiStacEndpoint={envApiStacEndpoint}
         />
       );
     case 'zarr':
@@ -91,6 +77,11 @@ export function Layer(props: LayerProps) {
           generatorOrder={order}
           hidden={!isVisible}
           opacity={opacity}
+          onStatusChange={onStatusChange}
+          colorMap={colorMap}
+          reScale={scale}
+          envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       );
     case 'cmr':
@@ -98,15 +89,18 @@ export function Layer(props: LayerProps) {
         <CMRTimeseries
           id={layerId}
           stacCol={dataset.data.stacCol}
-          stacApiEndpoint={dataset.data.stacApiEndpoint}
           tileApiEndpoint={dataset.data.tileApiEndpoint}
-          assetUrlReplacements={dataset.data.assetUrlReplacements}
           date={relevantDate}
           zoomExtent={params.zoomExtent}
           sourceParams={params.sourceParams}
           generatorOrder={order}
           hidden={!isVisible}
           opacity={opacity}
+          onStatusChange={onStatusChange}
+          colorMap={colorMap}
+          reScale={scale}
+          envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       );
     case 'arc':
@@ -121,6 +115,11 @@ export function Layer(props: LayerProps) {
           date={relevantDate}
           hidden={!isVisible}
           opacity={opacity}
+          onStatusChange={onStatusChange}
+          colorMap={colorMap}
+          reScale={scale}
+          envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       );
       case 'raster':

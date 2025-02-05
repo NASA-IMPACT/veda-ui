@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
@@ -6,16 +6,17 @@ import { themeVal } from '@devseed-ui/theme-provider';
 import { useAtom, useSetAtom } from 'jotai';
 import Timeline from './components/timeline/timeline';
 import { ExplorationMap } from './components/map';
-import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import { useAnalysisController } from './hooks/use-analysis-data-request';
 import { TimelineDataset } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
 
+// @TODO: "height: 100%" Added for exploration container to show correctly in NextJs instance but investigate why this is needed and possibly work to remove
 const Container = styled.div`
   display: flex;
   flex-flow: column;
   flex-grow: 1;
+  height: 100%;
 
   .panel-wrapper {
     flex-grow: 1;
@@ -57,10 +58,11 @@ const Container = styled.div`
 interface ExplorationAndAnalysisProps {
   datasets: TimelineDataset[];
   setDatasets: (datasets: TimelineDataset[]) => void;
+  openDatasetsSelectionModal?: () => void;
 }
 
 function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
-  const { datasets, setDatasets } = props;
+  const { datasets, setDatasets, openDatasetsSelectionModal } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
 
@@ -68,15 +70,8 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
     selectedCompareDateAtom
   );
 
-  const [datasetModalRevealed, setDatasetModalRevealed] = useState(
-    !datasets.length
-  );
-
   // @TECH-DEBT: panelHeight  needs to be passed to work around Safari CSS
   const [panelHeight, setPanelHeight] = useState(0);
-
-  const openModal = useCallback(() => setDatasetModalRevealed(true), []);
-  const closeModal = useCallback(() => setDatasetModalRevealed(false), []);
 
   const setUrl = useSetAtom(urlAtom);
   const { reset: resetAnalysisController } = useAnalysisController();
@@ -87,7 +82,8 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
       resetAnalysisController();
       setUrl(CLEAR_LOCATION);
     };
-  }, [resetAnalysisController, setUrl]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container>
@@ -114,15 +110,11 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
             setSelectedDay={setSelectedDay}
             selectedCompareDay={selectedCompareDay}
             setSelectedCompareDay={setSelectedCompareDay}
-            onDatasetAddClick={openModal}
+            onDatasetAddClick={openDatasetsSelectionModal}
             panelHeight={panelHeight}
           />
         </Panel>
       </PanelGroup>
-      <DatasetSelectorModal
-        revealed={datasetModalRevealed}
-        close={closeModal}
-      />
     </Container>
   );
 }

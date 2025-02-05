@@ -3,7 +3,7 @@ import { getFData } from '$components/common/chart/utils';
 describe('uniqueKey of formatted data from getFData', () => {
 
   it('checks how alpha + nummeric characters get sorted', () => {
-    
+
     const idValues = ['a6','b','a22','c', 'z'];
 
     const uniqueKeyTestData = new Array(idValues.length)
@@ -13,7 +13,7 @@ describe('uniqueKey of formatted data from getFData', () => {
       xKey: '2022',
       yKey: '10'
     }));
-    
+
     const { uniqueKeys }  = getFData({
       data: uniqueKeyTestData,
       idKey: 'idKey',
@@ -26,7 +26,7 @@ describe('uniqueKey of formatted data from getFData', () => {
   });
 
   it('checks characters with diacritic marks don\'t impact the sorting', () => {
-    
+
     const idValues = ['Z', 'a2', 'z', 'ä1'];
 
     const uniqueKeyTestData = new Array(idValues.length)
@@ -36,7 +36,7 @@ describe('uniqueKey of formatted data from getFData', () => {
       xKey: '2022',
       yKey: '10'
     }));
-    
+
     const { uniqueKeys }  = getFData({
       data: uniqueKeyTestData,
       idKey: 'idKey',
@@ -58,7 +58,7 @@ describe('uniqueKey of formatted data from getFData', () => {
       xKey: '2022',
       yKey: '10'
     }));
-    
+
     const { uniqueKeys }  = getFData({
       data: uniqueKeyTestData,
       idKey: 'idKey',
@@ -71,7 +71,7 @@ describe('uniqueKey of formatted data from getFData', () => {
   });
 
   it('checks how non-alphanumeric characters get sorted', () => {
-    
+
     const idValues = ['00-05% SVI',
     '05-10% SVI',
     '10-15% SVI',
@@ -85,7 +85,7 @@ describe('uniqueKey of formatted data from getFData', () => {
       xKey: '2022',
       yKey: '10'
     }));
-    
+
     const { uniqueKeys }  = getFData({
       data: uniqueKeyTestData,
       idKey: 'idKey',
@@ -102,7 +102,7 @@ describe('uniqueKey of formatted data from getFData', () => {
   });
 
   it('checks how negative numbers are sorted', () => {
-    
+
     const idValues = ['-1','-2','-4','-5','-3'];
 
     const uniqueKeyTestData = new Array(idValues.length)
@@ -112,7 +112,7 @@ describe('uniqueKey of formatted data from getFData', () => {
       xKey: '2022',
       yKey: '10'
     }));
-    
+
     const { uniqueKeys }  = getFData({
       data: uniqueKeyTestData,
       idKey: 'idKey',

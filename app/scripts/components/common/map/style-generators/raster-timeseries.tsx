@@ -1,17 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import qs from 'qs';
 import {
-  AnyLayer,
-  AnySourceImpl,
-  GeoJSONSourceRaw,
+  LayerSpecification,
+  SourceSpecification,
+  GeoJSONSourceSpecification,
   LngLatBoundsLike,
-  RasterLayer,
-  RasterSource,
-  SymbolLayer
+  RasterLayerSpecification,
+  RasterSourceSpecification,
+  SymbolLayerSpecification
 } from 'mapbox-gl';
 import { useTheme } from 'styled-components';
 import { featureCollection, point } from '@turf/helpers';
-import { BaseGeneratorParams, StacFeature } from '../types';
+import { RasterTimeseriesProps, StacFeature } from '../types';
 import useMapStyle from '../hooks/use-map-style';
 import {
   FIT_BOUNDS_PADDING,
@@ -35,19 +36,6 @@ import {
 
 // Whether or not to print the request logs.
 const LOG = true;
-
-export interface RasterTimeseriesProps extends BaseGeneratorParams {
-  id: string;
-  stacCol: string;
-  date?: Date;
-  sourceParams?: Record<string, any>;
-  zoomExtent?: number[];
-  bounds?: number[];
-  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  isPositionSet?: boolean;
-  stacApiEndpoint?: string;
-  tileApiEndpoint?: string;
-}
 
 enum STATUS_KEY {
   Global,
@@ -74,7 +62,11 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     hidden,
     opacity,
     stacApiEndpoint,
-    tileApiEndpoint
+    tileApiEndpoint,
+    colorMap,
+    reScale,
+    envApiStacEndpoint,
+    envApiRasterEndpoint
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -85,10 +77,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   const minZoom = zoomExtent?.[0] ?? 0;
   const generatorId = `raster-timeseries-${id}`;
 
-  const stacApiEndpointToUse =
-    stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
-  const tileApiEndpointToUse =
-    tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
+  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint ?? '';
+  const tileApiEndpointToUse = tileApiEndpoint ?? envApiRasterEndpoint ?? '';
 
   // Status tracking.
   // A raster timeseries layer has a base layer and may have markers.
@@ -204,6 +194,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             'color: red;',
             id
           );
+        // Temporarily turning on log for debugging
+        /* eslint-disable-next-line no-console */
+        console.log(error);
         return;
       }
     };
@@ -270,13 +263,41 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const responseData = await requestQuickCache<any>({
-          url: `${tileApiEndpointToUse}/mosaic/register`,
-          payload,
-          controller
-        });
+        let responseData;
 
-        setMosaicUrl(responseData.links[1].href);
+        try {
+          responseData = await requestQuickCache<any>({
+            url: `${tileApiEndpointToUse}/searches/register`,
+            payload,
+            controller
+          });
+          const mosaicUrl = responseData.links[1].href;
+          setMosaicUrl(
+            mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad')
+          );
+        } catch (error) {
+          // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance...
+          if (error.request) {
+            // The request was made but no response was received
+            responseData = await requestQuickCache<any>({
+              url: `${tileApiEndpointToUse}/mosaic/register`, // @NOTE: This will fail anyways with "staging-raster.delta-backend.com" because its already deprecated...
+              payload,
+              controller
+            });
+
+            const mosaicUrl = responseData.links[1].href;
+            setMosaicUrl(mosaicUrl);
+          } else {
+            LOG &&
+              /* eslint-disable-next-line no-console */
+              console.log(
+                'Titiler /register %cEndpoint error',
+                'color: red;',
+                error
+              );
+            throw error;
+          }
+        }
 
         /* eslint-disable no-console */
         LOG &&
@@ -309,6 +330,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       changeStatus({ status: 'idle', context: STATUS_KEY.Layer });
     };
   }, [
+    colorMap,
     stacCollection
     // This hook depends on a series of properties, but whenever they change the
     // `stacCollection` is guaranteed to change because a new STAC request is
@@ -339,14 +361,16 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     const controller = new AbortController();
 
     async function run() {
-      let layers: AnyLayer[] = [];
-      let sources: Record<string, AnySourceImpl> = {};
+      let layers: LayerSpecification[] = [];
+      let sources: Record<string, SourceSpecification> = {};
 
       if (mosaicUrl) {
         const tileParams = qs.stringify(
           {
             assets: 'cog_default',
-            ...(sourceParams ?? {})
+            ...(sourceParams ?? {}),
+            ...(colorMap && { colormap_name: colorMap }),
+            ...(reScale && { rescale: Object.values(reScale) })
           },
           // Temporary solution to pass different tile parameters for hls data
           {
@@ -355,7 +379,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         );
 
         const tilejsonUrl = `${mosaicUrl}?${tileParams}`;
-
         try {
           const tilejsonData = await requestQuickCache<any>({
             url: tilejsonUrl,
@@ -363,7 +386,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             payload: null,
             controller
           });
-
           const tileServerUrl = tilejsonData.tiles[0];
 
           const wmtsBaseUrl = mosaicUrl.replace(
@@ -371,14 +393,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             'WMTSCapabilities.xml'
           );
 
-          const mosaicSource: RasterSource = {
+          const mosaicSource: RasterSourceSpecification = {
             type: 'raster',
             url: tilejsonUrl
           };
 
           const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
-          const mosaicLayer: RasterLayer = {
+          const mosaicLayer: RasterLayerSpecification = {
             id: id,
             type: 'raster',
             source: id,
@@ -414,6 +436,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
               context: STATUS_KEY.StacSearch
             });
           }
+
           LOG &&
             /* eslint-disable-next-line no-console */
             console.log(
@@ -427,14 +450,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
 
       if (points && minZoom > 0) {
         const pointsSourceId = `${id}-points`;
-        const pointsSource: GeoJSONSourceRaw = {
+        const pointsSource: GeoJSONSourceSpecification = {
           type: 'geojson',
           data: featureCollection(
             points.map((p) => point(p.center, { bounds: p.bounds }))
           )
         };
 
-        const pointsLayer: SymbolLayer = {
+        const pointsLayer: SymbolLayerSpecification = {
           type: 'symbol',
           id: pointsSourceId,
           source: pointsSourceId,
@@ -454,7 +477,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         };
         sources = {
           ...sources,
-          [pointsSourceId]: pointsSource as AnySourceImpl
+          [pointsSourceId]: pointsSource as SourceSpecification
         };
         layers = [...layers, pointsLayer];
       }
@@ -474,6 +497,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     };
   }, [
     mosaicUrl,
+    colorMap,
+    reScale,
     points,
     minZoom,
     haveSourceParamsChanged,

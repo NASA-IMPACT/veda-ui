@@ -1,6 +1,6 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
-import { FormGroupStructure, FormCheckableGroup,  FormCheckable} from '@devseed-ui/form';
+import { FormGroupStructure, FormCheckableGroup, FormCheckable } from '@devseed-ui/form';
 import { CollecticonChevronDown, CollecticonChevronUp } from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { themeVal } from '@devseed-ui/theme-provider';
@@ -18,6 +18,7 @@ const FilterMenu = styled.div`
 const FilterTitle = styled.div`
   display: flex;
   justify-content: space-between;
+  cursor: pointer;
 
   #title-selected {
     display: flex;
@@ -42,7 +43,7 @@ const Options = styled(FormCheckableGroup)`
     width: 100%;
     padding: 4px 8px;
   }
-  
+
   .checked {
     background-color: ${themeVal('color.primary-100')};
     outline-width: 1px;
@@ -73,7 +74,8 @@ interface CheckableFiltersProps {
   tagItemCleared?: { // An option item that was removed globally
     item?: OptionItem;
     callback?: React.Dispatch<React.SetStateAction<any>>;
-  }
+  },
+  openByDefault?: boolean;
 }
 
 export interface OptionItem {
@@ -88,9 +90,10 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
     title,
     onChanges,
     globallySelected,
-    tagItemCleared
+    tagItemCleared,
+    openByDefault = true
   } = props;
-  const [show, setShow] = useState<boolean>(true);
+  const [show, setShow] = useState<boolean>(openByDefault);
   const [count, setCount] = useState<number>(0);
   const [selected, setSelected] = useState<OptionItem[]>([]);
 
@@ -123,8 +126,9 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
     if(!globallySelected || globallySelected.length === 0) {
       setCount(0);
     }
-    
+
     if(globallySelected.length > 0) {
+      setCount(globallySelected.filter(item => items.some(i => i.id === item.id)).length);
       setSelected(selected.filter((item) => item.id));
     } else {
       setSelected([]);
@@ -135,30 +139,29 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
     if(tagItemCleared?.item && globallySelected.length > 0) {
       setCount((prevValue) => prevValue - 1);
       setSelected(selected.filter((item) => item.id !== tagItemCleared.item?.id));
-      tagItemCleared?.callback?.(undefined);
+      tagItemCleared.callback?.(undefined);
     }
   }, [tagItemCleared, globallySelected]);
 
   return (
     <FilterMenu>
-      <FilterTitle>
+      <FilterTitle onClick={() => setShow(!show)}>
         <div id='title-selected'>
           <CardTitle>{title}</CardTitle>
           {
             count > 0 && (
-              <span>{count} selected</span> 
+              <span>{count} selected</span>
             )
           }
         </div>
         <Toggle size='small'>
           <ToggleIconButton
             active={show}
-            onClick={() => setShow(!show)}
           >
             {
-              show ? 
+              show ?
               <CollecticonChevronUp />
-              : 
+              :
               <CollecticonChevronDown />
             }
           </ToggleIconButton>

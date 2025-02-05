@@ -1,10 +1,15 @@
-const fs = require('fs-extra');
 const path = require('path');
 const { spawn } = require('child_process');
+const fs = require('fs-extra');
 const gulp = require('gulp');
 const del = require('del');
 const portscanner = require('portscanner');
 const log = require('fancy-log');
+const uswds = require('@uswds/compile');
+
+uswds.settings.version = 3;
+
+uswds.paths.dist.img = './dist/img';
 
 // /////////////////////////////////////////////////////////////////////////////
 // --------------------------- Variables -------------------------------------//
@@ -24,6 +29,7 @@ process.env.APP_BUILD_TIME = Date.now();
 
 const parcelCli = path.join(__dirname, './node_modules/parcel/lib/cli.js');
 const parcelConfig = path.join(__dirname, '.parcelrc');
+const parcelLibConfig = path.join(__dirname, '.parcelrc-lib');
 
 // /////////////////////////////////////////////////////////////////////////////
 // ----------------------- Watcher and custom tasks --------------------------//
@@ -46,7 +52,7 @@ function watcher() {
 
 function clean() {
   // Remove build cache and dist.
-  return del(['dist', '.parcel-cache']);
+  return del(['dist', 'lib', '.parcel-cache']);
 }
 
 // Simple task to copy the static files to the dist directory. The static
@@ -64,6 +70,52 @@ function copyFiles() {
 function copyNetlifyCMS() {
   // Copy Netifly CMS file to static folder
   return gulp.src('admin/**/*').pipe(gulp.dest('dist/admin'));
+}
+
+// Copy the USWDS image assets from node_modules to the dist directory.
+// This ensures all USWDS images are available for the instances during deployment.
+function copyUswdsImages() {
+  return gulp
+    .src([
+      path.join(__dirname, 'node_modules/@uswds/uswds/dist/img/**/*'),
+      'node_modules/@uswds/uswds/dist/img/**/*'
+    ])
+    .pipe(gulp.dest('dist/img'));
+}
+
+// Task that uses Parcel to build the library version of the VEDA UI.
+// It specifies the entry file, output directory, and custom Parcel configuration file.
+// This task will generate distributable library (`lib` folder) that other projects can consume.
+function parcelBuildLib(cb) {
+  const args = [
+    'build',
+    'app/scripts/index.ts',
+    '--dist-dir=lib',
+    '--config',
+    parcelLibConfig
+  ];
+
+  const pr = spawn('node', [parcelCli, ...args], {
+    stdio: 'inherit'
+  });
+  pr.on('close', (code) => {
+    cb(code ? 'Build failed' : undefined);
+  });
+}
+
+// Copy the uswds assets to the veda-ui lib directory.
+// This makes things easier for the veda components to consume
+// when the veda-ui library is used as a dependency.
+function copyUswdsAssetsToLibBundle() {
+  return gulp
+    .src(
+      [
+        './node_modules/@uswds/uswds/dist/fonts/**/*',
+        './node_modules/@uswds/uswds/dist/img/**/*'
+      ],
+      { base: './node_modules/@uswds/uswds/dist' }
+    )
+    .pipe(gulp.dest('lib'));
 }
 
 // Below are the parcel related tasks. One for the build process and other to
@@ -98,13 +150,15 @@ function parcelBuild(cb) {
   // listen for it to mark the gulp task as finished.
 
   const args = [
+    '--target',
+    'veda-app',
     '--config',
     parcelConfig,
     '--public-url',
     process.env.PUBLIC_URL || '/'
   ];
 
-  const pr = spawn('node', [parcelCli, 'build', ...args, ...parcelTarget], {
+  const pr = spawn('node', [parcelCli, 'build', ...args], {
     stdio: 'inherit'
   });
   pr.on('close', (code) => {
@@ -123,7 +177,8 @@ module.exports.serve = gulp.series(
   gulp.parallel(
     // Task to copy the files. DO NOT REMOVE
     copyFiles,
-    copyNetlifyCMS
+    copyNetlifyCMS,
+    copyUswdsImages
   ),
   gulp.parallel(watcher, parcelServe)
 );
@@ -131,8 +186,14 @@ module.exports.serve = gulp.series(
 // do not deploy netlify cms to production
 const parallelTasks =
   process.env.NODE_ENV === 'production'
-    ? gulp.parallel(copyFiles)
-    : gulp.parallel(copyFiles, copyNetlifyCMS);
+    ? gulp.parallel(copyFiles, copyUswdsImages)
+    : gulp.parallel(copyFiles, copyNetlifyCMS, copyUswdsImages);
+
+module.exports.buildlib = gulp.series(
+  clean,
+  parcelBuildLib,
+  copyUswdsAssetsToLibBundle
+);
 
 // Task orchestration used during the production process.
 module.exports.default = gulp.series(clean, parallelTasks, parcelBuild);

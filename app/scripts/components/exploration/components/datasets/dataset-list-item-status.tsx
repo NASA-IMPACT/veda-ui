@@ -9,7 +9,7 @@ import {
   DATASET_TRACK_BLOCK_HEIGHT,
   MAX_QUERY_NUM
 } from '$components/exploration/constants';
-import { ExtendedError } from '$components/exploration/data-utils';
+import { ExtendedError } from '$components/exploration/data-utils-no-faux-module';
 
 const loadingPattern = '.-.. --- .- -.. .. -. --.'
   .split(' ')
@@ -142,7 +142,7 @@ export function DatasetTrackError(props: {
       </>
     );
   }
-  
+
   if (error instanceof ExtendedError && error.code === 'ANALYSIS_NO_DATA') {
     return (
       <>
@@ -153,7 +153,10 @@ export function DatasetTrackError(props: {
       </>
     );
   }
-  if (error instanceof ExtendedError && error.code === 'ANALYSIS_NO_VALID_DATA') {
+  if (
+    error instanceof ExtendedError &&
+    error.code === 'ANALYSIS_NO_VALID_DATA'
+  ) {
     return (
       <>
         {patternContent}

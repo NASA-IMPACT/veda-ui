@@ -6,6 +6,7 @@ const dedent = require('dedent');
 const _ = require('lodash');
 const { Resolver } = require('@parcel/plugin');
 
+const markdownit = require('markdown-it');
 const stringifyYmlWithFns = require('./stringify-yml-func');
 const { loadVedaConfig } = require('./config');
 const { getFrontmatterData } = require('./frontmatter');
@@ -18,6 +19,8 @@ const {
   generateTaxonomiesModuleOutput
 } = require('./taxonomies');
 const { withDefaultStrings } = require('./defaults');
+
+const md = markdownit();
 
 async function loadOptionalContent(logger, root, globPath, type) {
   try {
@@ -78,6 +81,67 @@ function generateMdxDataObject(data) {
   return `{
       ${imports.join(',\n')}
     }`;
+}
+
+function getCookieConsentForm(result) {
+  if (!result.cookieConsentForm) return undefined;
+  else {
+    const parsedCopy = md.render(result.cookieConsentForm.copy);
+    const trimmedCopy = parsedCopy.replace(/(\r\n|\n|\r)/gm, '');
+    return JSON.stringify({
+      title: result.cookieConsentForm.title,
+      copy: trimmedCopy,
+      theme: result.cookieConsentForm.theme
+    });
+  }
+}
+
+function getSiteAlertContent(result) {
+  if (!result.siteAlert) return undefined;
+
+  const { title, content, expires, type, slim, showIcon, className } =
+    result.siteAlert;
+
+  const parsedText = content ? md.render(content) : '';
+  const trimmedText = parsedText.replace(/(\r\n|\n|\r)/gm, '');
+  return JSON.stringify({
+    title,
+    content: trimmedText,
+    expires,
+    type,
+    slim,
+    showIcon,
+    className
+  });
+}
+
+function getBannerContent(result) {
+  if (!result.banner) return undefined;
+
+  const { title, leftGuidance, rightGuidance } = result.banner;
+
+  const processedLeftGuidance = {
+    ...leftGuidance,
+    text: md.render(leftGuidance.text).replace(/(\r\n|\n|\r)/gm, '')
+  };
+
+  const processedRightGuidance = {
+    ...rightGuidance,
+    text: md.render(rightGuidance.text).replace(/(\r\n|\n|\r)/gm, '')
+  };
+
+  return JSON.stringify({
+    headerText: title,
+    headerActionText: "Here's how you know",
+    ariaLabel: title,
+    flagImgSrc: '/img/us_flag_small.png',
+    flagImgAlt: '',
+    leftGuidance: processedLeftGuidance,
+    rightGuidance: processedRightGuidance,
+    className: '',
+    defaultIsOpen: false,
+    contentId: 'gov-banner-content'
+  });
 }
 
 // Using all the "key: path" combinations under config.pageOverrides, load the
@@ -194,7 +258,12 @@ module.exports = new Resolver({
             logger
           )},
           strings: ${JSON.stringify(withDefaultStrings(result.strings))},
-          booleans: ${JSON.stringify(withDefaultStrings(result.booleans))}
+          booleans: ${JSON.stringify(withDefaultStrings(result.booleans))},
+          banner: ${getBannerContent(result)},
+          siteAlert: ${getSiteAlertContent(result)},
+          navItems: ${JSON.stringify(result.navItems)},
+          cookieConsentForm: ${getCookieConsentForm(result)},
+          footerSettings: ${JSON.stringify(result.footerSettings)}
         };
 
         export const theme = ${JSON.stringify(result.theme) || null};
@@ -210,6 +279,13 @@ module.exports = new Resolver({
 
         export const getString = (variable) => config.strings[variable];
         export const getBoolean = (variable) => config.booleans[variable];
+
+        export const getConfig = () => config;
+        export const getBannerFromVedaConfig = () => config.banner;
+        export const getSiteAlertFromVedaConfig = () => config.siteAlert;
+        export const getNavItemsFromVedaConfig = () => config.navItems;
+        export const getCookieConsentFromVedaConfig = () => config.cookieConsentForm;
+        export const getFooterSettingsFromVedaConfig = () => config.footerSettings;
 
         export const datasets = ${generateMdxDataObject(datasetsImportData)};
         export const stories = ${generateMdxDataObject(storiesImportData)};
@@ -249,9 +325,5 @@ module.exports = new Resolver({
       // console.log('resolved', resolved);
       return resolved;
     }
-
-    // Let the next resolver in the pipeline handle
-    // this dependency.
-    return null;
   }
 });

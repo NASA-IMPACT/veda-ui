@@ -3,10 +3,15 @@ import styled from 'styled-components';
 import { listReset, media } from '@devseed-ui/theme-provider';
 import { stories, getString } from 'veda';
 
-import { Card } from '$components/common/card';
+import { Card, CardType } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle, FoldBody } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 import { STORIES_PATH, getStoryPath } from '$utils/routes';
+import SmartLink from '$components/common/smart-link';
+import {
+  getDescription,
+  getMediaProperty
+} from '$components/common/catalog/utils';
 
 const FeaturedStoryList = styled.ol`
   ${listReset()}
@@ -76,16 +81,20 @@ function FeaturedStories() {
               return (
                 <li key={d.id}>
                   <Card
-                    cardType='cover'
+                    cardType={CardType.COVER}
                     linkLabel='View more'
-                    linkTo={d.asLink?.url ?? getStoryPath(d)}
+                    linkProperties={{
+                      linkTo: `${d.asLink?.url ?? getStoryPath(d)}`,
+                      LinkElement: SmartLink,
+                      pathAttributeKeyName: 'to'
+                    }}
                     title={d.name}
                     tagLabels={[getString('stories').one]}
                     parentTo={STORIES_PATH}
-                    description={i === 0 ? d.description : undefined}
+                    description={i === 0 ? getDescription(d) : undefined}
                     date={d.pubDate ? new Date(d.pubDate) : undefined}
-                    imgSrc={d.media?.src}
-                    imgAlt={d.media?.alt}
+                    imgSrc={getMediaProperty(undefined, d, 'src')}
+                    imgAlt={getMediaProperty(undefined, d, 'alt')}
                   />
                 </li>
               );

@@ -87,12 +87,23 @@ export function composeVisuallyDisabled(
   `;
 }
 
-
 /**
  * Checks if the given environment variable is set to 'true', ignoring case.
  * @param value - The value of the environment variable.
  * @returns A boolean indicating whether the flag is true.
  */
-export function checkEnvFlag(value?: string) {
+export function checkEnvFlag(value?: string): boolean {
   return (value ?? '').toLowerCase() === 'true';
 }
+
+/**
+ * Checks if a given URL is an external link.
+ *
+ * An external link is defined as a URL that starts with "http://" or "https://".
+ *
+ * @param {string} url - The URL to check.
+ * @returns {boolean} True if the URL is an external link, false otherwise.
+ */
+export const isExternalLink = (url: string): boolean => {
+  return /^https?:\/\//.test(url);
+};

@@ -122,3 +122,39 @@ jobs:
 
       - name: Test
         run: yarn test
+
+  playwright:
+    timeout-minutes: 60
+    needs: prep
+    runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'release')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ env.NODE }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE }}
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
+
+      - name: Install
+        run: yarn install
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: MAPBOX_TOKEN="${{secrets.MAPBOX_TOKEN}}" yarn test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

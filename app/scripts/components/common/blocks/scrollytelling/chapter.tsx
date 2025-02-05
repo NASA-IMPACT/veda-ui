@@ -1,13 +1,13 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { themeVal, media, multiply } from '@devseed-ui/theme-provider';
-import { ProjectionOptions } from 'veda';
+import { ProjectionOptions } from '$types/veda';
 
 import { variableGlsp } from '$styles/variable-utils';
 import { ContentBlockProse } from '$styles/content-block';
 import { utcString2userTzDate } from '$utils/date';
 import { validateRangeNum } from '$utils/utils';
-import { validateProjectionBlockProps } from '$components/common/mapbox/map-options/utils';
+import { validateProjectionBlockProps } from '$components/common/map/controls/map-options/projections';
 
 /* eslint-disable react/no-unused-prop-types */
 export interface ChapterProps {
@@ -87,7 +87,7 @@ export function validateChapter(chapter: ChapterProps, index) {
     '- Missing content. Add some between <Chapter ...props>content here</Chapter>';
 
   const centerValid =
-    lngValidator(chapter?.center?.[0]) && latValidator(chapter?.center?.[1]);
+    lngValidator(chapter.center[0]) && latValidator(chapter.center[1]);
   const centerError =
     !centerValid && '- Invalid center coordinates. Use [longitude, latitude]';
 

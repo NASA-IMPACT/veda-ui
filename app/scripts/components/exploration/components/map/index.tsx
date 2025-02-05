@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { ProjectionOptions } from 'veda';
 import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
 import {
   TimelineDataset,
-  TimelineDatasetStatus,
+  DatasetStatus,
   TimelineDatasetSuccess
 } from '../../types.d.ts';
 import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
 import { ShowTourControl } from './tour-control';
+import AoiLayer from './aoi-layer';
+import { ProjectionOptions } from '$types/veda';
 
 import Map, { Compare, MapControls } from '$components/common/map';
 import { Basemap } from '$components/common/map/style-generators/basemap';
@@ -19,13 +20,14 @@ import {
   ScaleControl
 } from '$components/common/map/controls';
 import MapCoordsControl from '$components/common/map/controls/coords';
+import useAois from '$components/common/map/controls/hooks/use-aois';
 import MapOptionsControl from '$components/common/map/controls/map-options';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
-import DrawControl from '$components/common/map/controls/aoi';
-import CustomAoIControl from '$components/common/map/controls/aoi/custom-aoi-control';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { ExtendedStyle } from '$components/common/map/styles';
+import AoiControl from '$components/common/map/controls/aoi/aoi-control';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 interface ExplorationMapProps {
   datasets: TimelineDataset[];
@@ -35,6 +37,8 @@ interface ExplorationMapProps {
 }
 
 export function ExplorationMap(props: ExplorationMapProps) {
+  const { envApiStacEndpoint, envMapboxToken } = useVedaUI();
+
   const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
 
   const [projection, setProjection] =
@@ -48,7 +52,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
     onOptionChange
   } = useBasemap();
 
-  useReconcileWithStacMetadata(datasets, setDatasets);
+  useReconcileWithStacMetadata(datasets, setDatasets, envApiStacEndpoint);
 
   // Different datasets may have a different default projection.
   // When datasets are selected the first time, we set the map projection to the
@@ -85,8 +89,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
   // eslint-disable-next-line fp/no-mutating-methods
   const loadedDatasets = datasets
     .filter(
-      (d): d is TimelineDatasetSuccess =>
-        d.status === TimelineDatasetStatus.SUCCESS
+      (d): d is TimelineDatasetSuccess => d.status === DatasetStatus.SUCCESS
     )
     .slice()
     .reverse();
@@ -95,12 +98,18 @@ export function ExplorationMap(props: ExplorationMapProps) {
     (style: ExtendedStyle) => {
       const updatedDatasets = datasets.map((dataset) => {
         // Skip non loaded datasets
-        if (dataset.status !== TimelineDatasetStatus.SUCCESS) return dataset;
+        if (dataset.status !== DatasetStatus.SUCCESS) return dataset;
 
         // Check if there's layer information for this dataset.
-        const layerMetadata = style.layers.find(
-          (l) => l.metadata?.id === dataset.data.id
-        );
+        let layerMetadata;
+        try {
+          layerMetadata = style.layers.find(
+            (l) => (l.metadata as { id: string }).id === dataset.data.id
+          );
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log('Can not find metadata for', dataset.data.id);
+        }
 
         // Skip if no metadata.
         if (!layerMetadata) return dataset;
@@ -112,8 +121,10 @@ export function ExplorationMap(props: ExplorationMapProps) {
           meta: {
             ...currentMeta,
             tileUrls: {
-              wmtsTileUrl: layerMetadata.metadata.wmtsTileUrl,
-              xyzTileUrl: layerMetadata.metadata.xyzTileUrl
+              wmtsTileUrl: (layerMetadata.metadata as { wmtsTileUrl: string })
+                .wmtsTileUrl,
+              xyzTileUrl: (layerMetadata.metadata as { xyzTileUrl: string })
+                .xyzTileUrl
             }
           }
         };
@@ -123,6 +134,8 @@ export function ExplorationMap(props: ExplorationMapProps) {
     },
     [datasets, setDatasets]
   );
+
+  const { aoi, isDrawing } = useAois();
 
   return (
     <Map id='exploration' projection={projection} onStyleUpdate={onStyleUpdate}>
@@ -140,15 +153,18 @@ export function ExplorationMap(props: ExplorationMapProps) {
       )}
       {/* Map controls */}
       <MapControls>
-        <DrawControl />
-        <CustomAoIControl
+        <AoiControl
           disableReason={
             comparing && 'Analysis is not possible when comparing dates'
           }
         />
-        <AnalysisMessageControl />
-        <GeocoderControl />
+
+        {aoi && <AoiLayer aoi={aoi} />}
+
+        {!isDrawing && <AnalysisMessageControl />}
+        <GeocoderControl envMapboxToken={envMapboxToken} />
         <MapOptionsControl
+          envMapboxToken={envMapboxToken}
           projection={projection}
           onProjectionChange={setProjection}
           basemapStyleId={mapBasemapId}

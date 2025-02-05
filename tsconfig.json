@@ -1,15 +1,21 @@
 {
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "strictNullChecks": true,
+    "declaration": true,
     "baseUrl": "./",
     "jsx": "react",
     "paths": {
       "$components/*": ["app/scripts/components/*"],
       "$styles/*": ["app/scripts/styles/*"],
       "$utils/*": ["app/scripts/utils/*"],
+      "$types/*": ["app/scripts/types/*"],
       "$context/*": ["app/scripts/context/*"],
-      "$data-layer/*": ["app/scripts/data-layer/*"]
+      "$data-layer/*": ["app/scripts/data-layer/*"],
+      "$uswds": ["app/scripts/components/common/uswds/"],
     }
   },
   "exclude": [
@@ -22,6 +28,6 @@
     "dist",
     "dist*",
     "node_modules",
-    "**/node_modules/*",
+    "**/node_modules/*"
   ]
 }

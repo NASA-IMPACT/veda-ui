@@ -1,5 +1,5 @@
-import { DatasetLayer } from 'veda';
 import { DataMetric } from './components/datasets/analysis-metrics';
+import { DatasetLayer } from '$types/veda';
 
 export enum TimeDensity {
   YEAR = 'year',
@@ -7,7 +7,7 @@ export enum TimeDensity {
   DAY = 'day'
 }
 
-export enum TimelineDatasetStatus {
+export enum DatasetStatus {
   IDLE = 'idle',
   LOADING = 'loading',
   SUCCESS = 'success',
@@ -16,8 +16,10 @@ export enum TimelineDatasetStatus {
 
 export interface StacDatasetData {
   isPeriodic: boolean;
+  isTimeless?: boolean;
   timeDensity: TimeDensity;
   domain: string[];
+  renders?: Record<string, any> | undefined;
 }
 
 export interface AnalysisTimeseriesEntry {
@@ -47,25 +49,25 @@ interface AnalysisMeta {
 
 // TimelineDatasetAnalysis type discriminants
 export interface TimelineDatasetAnalysisIdle {
-  status: TimelineDatasetStatus.IDLE;
+  status: DatasetStatus.IDLE;
   data: null;
   error: null;
   meta: Record<string, never>;
 }
 export interface TimelineDatasetAnalysisLoading {
-  status: TimelineDatasetStatus.LOADING;
+  status: DatasetStatus.LOADING;
   data: null;
   error: null;
-  meta: Partial<AnalysisMeta>
+  meta: Partial<AnalysisMeta>;
 }
 export interface TimelineDatasetAnalysisError {
-  status: TimelineDatasetStatus.ERROR;
+  status: DatasetStatus.ERROR;
   data: null;
   error: any;
-  meta: Partial<AnalysisMeta>
+  meta: Partial<AnalysisMeta>;
 }
 export interface TimelineDatasetAnalysisSuccess {
-  status: TimelineDatasetStatus.SUCCESS;
+  status: DatasetStatus.SUCCESS;
   data: {
     timeseries: AnalysisTimeseriesEntry[];
   };
@@ -85,64 +87,89 @@ export interface ParentDatset {
   name: string;
 }
 export interface EnhancedDatasetLayer extends DatasetLayer {
+  id: string;
   parentDataset: ParentDatset;
 }
 
-export interface TimelineDatasetData extends EnhancedDatasetLayer {
+export interface EADatasetDataLayer extends EnhancedDatasetLayer {
   isPeriodic: boolean;
   timeDensity: TimeDensity;
   domain: Date[];
 }
-
-export interface TimelineDatasetSettings {
+export interface colorMapScale {
+  min: number;
+  max: number;
+}
+export interface DatasetSettings {
   // Whether or not the layer should be shown on the map.
   isVisible?: boolean;
   // Opacity of the layer on the map.
   opacity?: number;
   // Active metrics for the analysis chart.
   analysisMetrics?: DataMetric[];
+  // Active colormap of the layer.
+  colorMap?: string;
+  // Active colormap scale.
+
+  scale?: colorMapScale;
 }
 
 // Any sort of meta information the dataset like:
 // Tile endpoints for the layer given the current map view.
-type TimelineDatasetMeta = Record<string, any>;
+type DatasetMeta = Record<string, any>;
 
-// TimelineDataset type discriminants
-export interface TimelineDatasetIdle {
-  status: TimelineDatasetStatus.IDLE;
+// Holds only dataset needed for visualization (Subset of timeline dataset)
+// @ TODO: Rename Timeline specific variable names
+export interface VizDatasetIdle {
+  status: DatasetStatus.IDLE;
   data: EnhancedDatasetLayer;
   error: null;
-  // User controlled settings like visibility, opacity.
-  settings: TimelineDatasetSettings;
-  analysis: TimelineDatasetAnalysisIdle;
-  meta?: TimelineDatasetMeta;
+  settings: DatasetSettings;
+  meta?: DatasetMeta;
 }
-export interface TimelineDatasetLoading {
-  status: TimelineDatasetStatus.LOADING;
+
+export interface VizDatasetLoading {
+  status: DatasetStatus.LOADING;
   data: EnhancedDatasetLayer;
   error: null;
-  // User controlled settings like visibility, opacity.
-  settings: TimelineDatasetSettings;
-  analysis: TimelineDatasetAnalysisIdle;
-  meta?: TimelineDatasetMeta;
+  settings: DatasetSettings;
+  meta?: DatasetMeta;
 }
-export interface TimelineDatasetError {
-  status: TimelineDatasetStatus.ERROR;
+
+export interface VizDatasetError {
+  status: DatasetStatus.ERROR;
   data: EnhancedDatasetLayer;
   error: unknown;
-  // User controlled settings like visibility, opacity.
-  settings: TimelineDatasetSettings;
-  analysis: TimelineDatasetAnalysisIdle;
-  meta?: TimelineDatasetMeta;
+  settings: DatasetSettings;
+  meta?: DatasetMeta;
 }
-export interface TimelineDatasetSuccess {
-  status: TimelineDatasetStatus.SUCCESS;
-  data: TimelineDatasetData;
+
+export interface VizDatasetSuccess {
+  status: DatasetStatus.SUCCESS;
+  data: EADatasetDataLayer;
   error: null;
-  // User controlled settings like visibility, opacity.
-  settings: TimelineDatasetSettings;
+  settings: DatasetSettings;
+  meta?: DatasetMeta;
+}
+
+export type VizDataset =
+  | VizDatasetLoading
+  | VizDatasetIdle
+  | VizDatasetError
+  | VizDatasetSuccess;
+
+// TimelineDataset type discriminants
+export interface TimelineDatasetIdle extends VizDatasetIdle {
+  analysis: TimelineDatasetAnalysisIdle;
+}
+export interface TimelineDatasetLoading extends VizDatasetLoading {
+  analysis: TimelineDatasetAnalysisIdle;
+}
+export interface TimelineDatasetError extends VizDatasetError {
+  analysis: TimelineDatasetAnalysisIdle;
+}
+export interface TimelineDatasetSuccess extends VizDatasetSuccess {
   analysis: TimelineDatasetAnalysis;
-  meta?: TimelineDatasetMeta;
 }
 
 export type TimelineDataset =
@@ -155,7 +182,7 @@ export type TimelineDataset =
 
 export interface TimelineDatasetForUrl {
   id: string;
-  settings?: TimelineDatasetSettings;
+  settings: DatasetSettings;
 }
 
 export interface DateRange {

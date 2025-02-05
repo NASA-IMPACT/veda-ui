@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { DatasetData, StoryData, datasets, stories, getString } from 'veda';
 import { VerticalDivider } from '@devseed-ui/toolbar';
-
+import SmartLink from './smart-link';
 import PublishedDate from './pub-date';
-import { CardSourcesList } from './card-sources';
+import { CardSourcesList } from './card-sources-list';
 import { DatasetClassification } from './dataset-classification';
-
-import { Card } from '$components/common/card';
+import { getDescription, getMediaProperty } from './catalog/utils';
+import { Card, CardType } from '$components/common/card';
 import { CardMeta, CardTopicsList } from '$components/common/card/styles';
 import { FoldGrid, FoldHeader, FoldTitle } from '$components/common/fold';
 import {
@@ -20,12 +20,12 @@ import { useReactIndianaScrollControl } from '$styles/continuum/use-react-indian
 import { ContinuumScrollIndicator } from '$styles/continuum/continuum-scroll-indicator';
 import { getDatasetPath, getStoryPath } from '$utils/routes';
 import { Pill } from '$styles/pill';
-import DatasetMenu from '$components/data-catalog/dataset-menu';
 import {
   getTaxonomy,
   TAXONOMY_SOURCE,
   TAXONOMY_TOPICS
-} from '$utils/veda-data';
+} from '$utils/veda-data/taxonomies';
+import DatasetMenu from '$components/data-catalog/dataset-menu';
 
 const allFeaturedStories = Object.values(stories)
   .map((d) => d!.data)
@@ -70,13 +70,16 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
   if (!featuredItems.length) return null;
 
   // Disable no-mutating rule since the copy of the array is being mutated
-  // eslint-disable-next-line fp/no-mutating-methods 
-  const sortedFeaturedItems  = dateProperty? [...featuredItems].sort((itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
-    const pubDateOfItemA = new Date(itemA[dateProperty]);
-    const pubDateOfItemB = new Date(itemB[dateProperty]);
-    return pubDateOfItemB.getTime() - pubDateOfItemA.getTime();
-  }) as StoryData[] | DatasetData[]: featuredItems;
-  
+  // eslint-disable-next-line fp/no-mutating-methods
+  const sortedFeaturedItems = dateProperty
+    ? ([...featuredItems].sort(
+        (itemA: StoryData | DatasetData, itemB: StoryData | DatasetData) => {
+          const pubDateOfItemA = new Date(itemA[dateProperty]);
+          const pubDateOfItemB = new Date(itemB[dateProperty]);
+          return pubDateOfItemB.getTime() - pubDateOfItemA.getTime();
+        }
+      ) as StoryData[] | DatasetData[])
+    : featuredItems;
 
   return (
     <FoldFeatured>
@@ -94,7 +97,6 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
               return sortedFeaturedItems.map((d) => {
                 const date = new Date(d[dateProperty ?? '']);
                 const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
-
                 return (
                   <ContinuumGridItem {...bag} key={d.id}>
                     <Card
@@ -106,9 +108,9 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                           e.preventDefault();
                         }
                       }}
-                      cardType='featured'
+                      cardType={CardType.FEATURED}
                       linkLabel='View more'
-                      linkTo={d.asLink?.url ?? getItemPath(d)}
+                      to={`${d.asLink?.url ?? getItemPath(d)}`}
                       title={d.name}
                       overline={
                         <CardMeta>
@@ -124,9 +126,9 @@ function FeaturedSliderSection(props: FeaturedSliderSectionProps) {
                           )}
                         </CardMeta>
                       }
-                      description={d.description}
-                      imgSrc={d.media?.src}
-                      imgAlt={d.media?.alt}
+                      description={getDescription(d)}
+                      imgSrc={getMediaProperty(undefined, d, 'src')}
+                      imgAlt={getMediaProperty(undefined, d, 'alt')}
                       footerContent={
                         <>
                           {topics?.length ? (

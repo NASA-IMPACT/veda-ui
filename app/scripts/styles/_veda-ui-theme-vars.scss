@@ -1,0 +1,47 @@
+@forward 'uswds-theme';
+@use 'uswds-core/src/styles/functions/utilities' as utils;
+@use 'uswds-core/src/styles/functions/units' as spacing;
+
+/*********** VEDAUI THEME PALETTE ***********/
+// These references map to the veda defined styles between https://www.figma.com/design/5mclPTReHcRIzKbJm8YA6a/VEDA---USWDS?node-id=139-14&node-type=canvas&t=7Qa02mMKUgBy5Qho-0
+// and uswds found at https://designsystem.digital.gov/design-tokens/
+
+// TYPOGRAPHY
+$veda-uswds-basefont-sans: utils.family('sans');
+
+// // FONT-SIZE
+$veda-uswds-fontsize-3xs: utils.size('body', '3xs');
+$veda-uswds-fontsize-lg: utils.size('body', 'lg');
+$veda-uswds-fontsize-sm: utils.size('body', 'sm');
+
+// FONT-WEIGHT
+$veda-uswds-fontweight-light: utils.font-weight('light');
+$veda-uswds-fontweight-regular: utils.font-weight('normal');
+$veda-uswds-fontweight-bold: utils.font-weight('bold');
+$veda-uswds-fontweight-semibold: utils.font-weight('semibold');
+
+// COLORS
+$veda-uswds-color-primary-darker: utils.color('blue-warm-80v');
+$veda-uswds-color-primary-light: utils.color('blue-30');
+$veda-uswds-color-secondary: utils.color('red-50');
+$veda-uswds-color-base-dark: utils.color('gray-cool-60');
+$veda-uswds-color-base-darkest: utils.color(
+  'gray-cool-80'
+); // re-mapped, theme-token 'base-darkest' originally mapped to 'gray-90'
+$veda-uswds-color-base-light: utils.color('gray-cool-30');
+$veda-uswds-color-base-lightest: utils.color('gray-cool-4');
+$veda-uswds-color-base-white: utils.color('white');
+$veda-uswds-color-base-ink: utils.color(
+  'gray-cool-90'
+); // re-mapped, theme-token 'ink' originally mapped to 'gray-90'
+
+// SPACING
+$veda-uswds-spacing-5: spacing.units(0.5);
+
+$veda-uswds-spacing-1: spacing.units(1);
+$veda-uswds-spacing-105: spacing.units(1.5);
+$veda-uswds-spacing-desktop: spacing.units('desktop');
+
+//PADDING
+$veda-uswds-padding-4: spacing.units(4);
+$veda-uswds-padding-5: spacing.units(5);

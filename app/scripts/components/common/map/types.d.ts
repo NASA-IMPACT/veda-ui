@@ -1,13 +1,15 @@
 import { Feature, Polygon } from 'geojson';
-import { AnyLayer, AnySourceImpl } from 'mapbox-gl';
+import { LayerSpecification, SourceSpecification } from 'mapbox-gl';
+import { ActionStatus } from '$utils/status';
 
 export interface ExtendedMetadata {
   layerOrderPosition?: LayerOrderPosition;
+  generatorId: string;
   [key: string]: any;
 }
 
-export type ExtendedLayer = AnyLayer & {
-  metadata?: ExtendedMetadata;
+export type ExtendedLayer = LayerSpecification & {
+  metadata?: ExtendedMetadata | unknown;
 };
 
 export interface BaseGeneratorParams {
@@ -18,7 +20,7 @@ export interface BaseGeneratorParams {
 export interface GeneratorStyleParams {
   generatorId: string;
   layers: ExtendedLayer[];
-  sources: Record<string, AnySourceImpl>;
+  sources: Record<string, SourceSpecification>;
   metadata?: Record<string, unknown>;
   params?: BaseGeneratorParams;
 }
@@ -42,3 +44,37 @@ export type AoIFeature = Feature<Polygon> & {
   selected: boolean;
   id: string;
 };
+
+export interface BaseTimeseriesProps extends BaseGeneratorParams {
+  id: string;
+  stacCol: string;
+  date: Date;
+  sourceParams?: Record<string, any>;
+  stacApiEndpoint?: string;
+  tileApiEndpoint?: string;
+  zoomExtent?: number[];
+  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+  colorMap?: string;
+  reScale?: { min: number; max: number };
+  envApiStacEndpoint: string;
+  envApiRasterEndpoint: string;
+}
+
+// export interface ZarrTimeseriesProps extends BaseTimeseriesProps {
+//   // No additional properties, using BaseTimeseriesProps as is
+// }
+
+export interface RasterTimeseriesProps extends BaseTimeseriesProps {
+  bounds?: number[];
+  isPositionSet?: boolean;
+  envApiStacEndpoint: string;
+}
+
+interface AssetUrlReplacement {
+  from: string;
+  to: string;
+}
+
+export interface CMRTimeseriesProps extends BaseTimeseriesProps {
+  assetUrlReplacements?: AssetUrlReplacement;
+}

@@ -5,10 +5,8 @@ import nl2br from 'react-nl2br';
 import { CollecticonArrowRight } from '@devseed-ui/collecticons';
 
 import UhOh from '.';
-import LayoutRoot, {
-  LayoutProps,
-  LayoutRootContextProvider
-} from '$components/common/layout-root';
+import LayoutRoot, { LayoutProps } from '$components/common/layout-root';
+import { LayoutRootContextProvider } from '$components/common/layout-root/context';
 import PageHero from '$components/common/page-hero';
 import { FoldProse } from '$components/common/fold';
 import { PageMainContent } from '$styles/page';

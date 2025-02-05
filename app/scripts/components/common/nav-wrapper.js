@@ -1,16 +1,18 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
-
+import { NavLink } from 'react-router-dom';
+import PageHeaderLegacy from './page-header-legacy';
 import PageHeader from './page-header';
-import { useSlidingStickyHeaderProps } from './layout-root';
-
+import { useSlidingStickyHeaderProps } from './layout-root/useSlidingStickyHeaderProps';
+import NasaLogoColor from './nasa-logo-color';
 import {
   HEADER_WRAPPER_ID,
   HEADER_TRANSITION_DURATION
 } from '$utils/use-sliding-sticky-header';
+import { checkEnvFlag } from '$utils/utils';
 
-const NavWrapper = styled.div`
+const NavWrapperContainer = styled.div`
   position: sticky;
   top: 0;
   width: 100%;
@@ -26,19 +28,29 @@ const NavWrapper = styled.div`
       top: -${headerHeight}px;
     `}
 `;
+// Hiding configurable map for now until Instances are ready to adapt it
+const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_HEADER);
+const appTitle = isUSWDSEnabled
+  ? 'Earthdata VEDA Dashboard'
+  : process.env.APP_TITLE;
 
-function PageNavWrapper() {
+function NavWrapper(props) {
   const { isHeaderHidden, headerHeight } = useSlidingStickyHeaderProps();
 
-  return (
-    <NavWrapper
+  return isUSWDSEnabled ? (
+    <PageHeader {...props} logoSvg={<NasaLogoColor />} title={appTitle} />
+  ) : (
+    <NavWrapperContainer
       id={HEADER_WRAPPER_ID}
       shouldSlideHeader={isHeaderHidden}
       headerHeight={headerHeight}
     >
-      <PageHeader />
-    </NavWrapper>
+      <PageHeaderLegacy
+        {...props}
+        linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
+      />
+    </NavWrapperContainer>
   );
 }
 
-export default PageNavWrapper;
+export default NavWrapper;

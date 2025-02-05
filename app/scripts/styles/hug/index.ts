@@ -103,7 +103,7 @@ type GridderDefinition = {
   [K in MdQueryUp]?: GridderRange;
 };
 
-interface HugProps {
+export interface HugProps {
   // Remap the keys
   // https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as
   readonly grid?:
@@ -128,7 +128,7 @@ const validateGridLineNames = (cols) => {
   ['full-start', 'full-end']`;
   }
 
-  if (cols.some((v) => gridLineNames.indexOf(v) === -1)) {
+  if (cols.some((v) => !gridLineNames.includes(v))) {
     error = `The grid line names not valid. Please provide a valid name for the grid definition`;
   }
 
