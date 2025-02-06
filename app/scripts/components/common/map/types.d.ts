@@ -48,7 +48,7 @@ export type AoIFeature = Feature<Polygon> & {
 export interface BaseTimeseriesProps extends BaseGeneratorParams {
   id: string;
   stacCol: string;
-  date: Date;
+  date?: Date;
   sourceParams?: Record<string, any>;
   stacApiEndpoint?: string;
   tileApiEndpoint?: string;

@@ -23,21 +23,6 @@ interface DatasetAssetsRequestParams {
   aoi: FeatureCollection<Polygon>;
 }
 
-
-function fromMultiPolygontoPolygon(feature) {
-  if (feature.geometry.type === 'Polygon') {
-    return feature;
-  }
-  return {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'Polygon',
-      coordinates: feature.geometry.coordinates[0]
-    }
-  };
-}
-
 /**
  * Gets the asset urls for all datasets in the results of a STAC search given by
  * the input parameters.
@@ -141,19 +126,6 @@ export async function requestDatasetTimeseriesData({
   }
 
   const id = datasetData.id;
-  const arcFlag =  datasetData.type === 'arc';
-  if (!arcFlag) {
-    if (datasetData.type !== 'raster') {
-      return {
-        status: TimelineDatasetStatus.ERROR,
-        meta: {},
-        error: new ExtendedError(
-          'Analysis is only supported for raster datasets',
-          'ANALYSIS_NOT_SUPPORTED'
-        ),
-        data: null
-      };
-    }
 
   onProgress({
     status: DatasetStatus.LOADING,
@@ -196,11 +168,20 @@ export async function requestDatasetTimeseriesData({
       status: DatasetStatus.LOADING,
       error: null,
       data: null,
-      meta: {}
+      meta: {
+        total: assets.length,
+        loaded: 0
+      }
     });
 
-    const stacApiEndpointToUse =
-      datasetData.stacApiEndpoint ?? process.env.API_STAC_ENDPOINT ?? '';
+    if (assets.length > maxItems) {
+      const e = new ExtendedError(
+        'Too many assets to analyze',
+        'ANALYSIS_TOO_MANY_ASSETS'
+      );
+      e.details = {
+        assetCount: assets.length
+      };
 
       return {
         ...datasetAnalysis,
@@ -311,157 +292,9 @@ export async function requestDatasetTimeseriesData({
         status: DatasetStatus.LOADING,
         error: null,
         data: null,
-        meta: {
-          total: assets.length,
-          loaded: 0
-        }
-      });
-
-      if (assets.length > maxItems) {
-        const e = new ExtendedError(
-          'Too many assets to analyze',
-          'ANALYSIS_TOO_MANY_ASSETS'
-        );
-        e.details = {
-          assetCount: assets.length
-        };
-
-        return {
-          ...datasetAnalysis,
-          status: TimelineDatasetStatus.ERROR,
-          error: e,
-          data: null
-        };
-      }
-
-      if (!assets.length) {
-        return {
-          ...datasetAnalysis,
-          status: TimelineDatasetStatus.ERROR,
-          error: new ExtendedError(
-            'No data in the given time range and area of interest',
-            'ANALYSIS_NO_DATA'
-          ),
-          data: null
-        };
-      }
-
-      let loaded = 0;//new Array(assets.length).fill(0);
-
-      const tileEndpointToUse =
-        datasetData.tileApiEndpoint ?? process.env.API_RASTER_ENDPOINT ?? '';
-
-      const analysisParams = datasetData.analysis?.sourceParams ?? {};
-      const layerStatistics = await Promise.all(
-        assets.map(
-          async ({ date, url }) => {
-          const statistics = await concurrencyManager.queue(
-            `${id}-analysis-asset`,
-            () => {
-              return queryClient.fetchQuery(
-                ['analysis', id, 'asset', url, aoi],
-                async ({ signal }) => {
-                  const { data } = await axios.post(
-                    `${tileEndpointToUse}/cog/statistics`,
-                    // Making a request with a FC causes a 500 (as of 2023/01/20)
-                    fixAoiFcForStacSearch(aoi),
-                    { params: { url, ...analysisParams }, signal }
-                  );
-                  return {
-                    date,
-                    
-                    ...data.properties.statistics.b1
-                  };
-                },
-                {
-                  staleTime: Infinity
-                }
-              );
-            }
-              );
-            onProgress({
-              status: TimelineDatasetStatus.LOADING,
-              error: null,
-              data: null,
-              meta: {
-                total: assets.length,
-                loaded: ++loaded
-              }
-            });
-
-          return statistics;
-        }
-        )
-      );
-
-      if (layerStatistics.filter(e => e.mean).length === 0) {
-        return {
-          ...datasetAnalysis,
-          status: TimelineDatasetStatus.ERROR,
-          error: new ExtendedError(
-            'The selected time and area of interest contains no valid data. Please adjust your selection.',
-            'ANALYSIS_NO_VALID_DATA'
-          ),
-          data: null
-        };
-      }
-
-      onProgress({
-        status: TimelineDatasetStatus.SUCCESS,
-        meta: {
-          total: assets.length,
-          loaded: assets.length
-        },
-        error: null,
-        data: {
-          timeseries: layerStatistics
-        }
-      });
-      return {
-        status: TimelineDatasetStatus.SUCCESS,
-        meta: {
-          total: assets.length,
-          loaded: assets.length
-        },
-        error: null,
-        data: {
-          timeseries: layerStatistics
-        }
-      };
-      
-    } catch (error) {
-      // Discard abort related errors.
-      if (error.revert) {
-        return {
-          status: TimelineDatasetStatus.LOADING,
-          error: null,
-          data: null,
-          meta: {}
-        };
-      }
-      // Cancel any inflight queries.
-      queryClient.cancelQueries({ queryKey: ['analysis', id] });
-      // Remove other requests from the queue.
-      concurrencyManager.dequeue(`${id}-analysis-asset`);
-      return {
-        ...datasetAnalysis,
-        status: TimelineDatasetStatus.ERROR,
-        error,
-        data: null
+        meta: {}
       };
     }
-    // Isolate arc layer logic here for now
-  } else {
-      try {
-        onProgress({
-          status: TimelineDatasetStatus.LOADING,
-          error: null,
-          data: null,
-          meta: {
-            total: undefined,
-            loaded: 0
-          }
-        });
 
     // Cancel any inflight queries.
     queryClient.cancelQueries({ queryKey: ['analysis', id] });

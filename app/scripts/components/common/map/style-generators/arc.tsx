@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import qs from 'qs';
-import { RasterSource, RasterLayer } from 'mapbox-gl';
+import { RasterSourceSpecification, RasterLayerSpecification } from 'mapbox-gl';
 
 import useGeneratorParams from '../hooks/use-generator-params';
 import useMapStyle from '../hooks/use-map-style';
@@ -11,7 +11,7 @@ import { ActionStatus } from '$utils/status';
 
 import { userTzDate2utcString } from '$utils/date';
 
-// @NOTE: ArcGIS Layer doens't have a timestamp
+// @NOTE: Some ArcGIS Layers don't have a timestamp
 export interface MapLayerArcProps extends BaseGeneratorParams {
   id: string;
   date?: Date;
@@ -22,7 +22,7 @@ export interface MapLayerArcProps extends BaseGeneratorParams {
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
 
-interface ArcPaintLayerProps extends BaseGeneratorParams{
+interface ArcPaintLayerProps extends BaseGeneratorParams {
   id: string;
   sourceParams?: Record<string, any>;
   date?: Date;
@@ -47,8 +47,12 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
   const [minZoom] = zoomExtent ?? [0, 20];
 
   const generatorId = 'arc-' + id;
-  
-  const generatorParams = useGeneratorParams( {generatorOrder, hidden, opacity });
+
+  const generatorParams = useGeneratorParams({
+    generatorOrder,
+    hidden,
+    opacity
+  });
 
   // Generate Mapbox GL layers and sources for raster layer
   //
@@ -63,24 +67,24 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
 
       const tileParams = qs.stringify({
         format: 'image/png',
-        service: "WMS",
-        request: "GetMap",
-        transparent: "true", // TODO: get from sourceparams maybe
-        width: "256",
-        height: "256",
+        service: 'WMS',
+        request: 'GetMap',
+        transparent: 'true', // @TODO: get from sourceparams maybe
+        width: '256',
+        height: '256',
         ...(date && { DIM_StdTime: userTzDate2utcString(date) }),
         ...sourceParams
       });
-      
-      const arcSource: RasterSource = {
+
+      const arcSource: RasterSourceSpecification = {
         type: 'raster',
         tiles: [`${wmsUrl}?${tileParams}&bbox={bbox-epsg-3857}`],
-        tileSize: 256,
+        tileSize: 256
       };
 
       const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
-      const arcLayer: RasterLayer = {
+      const arcLayer: RasterLayerSpecification = {
         id: id,
         type: 'raster',
         source: id,
@@ -146,15 +150,10 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
   return null;
 }
 
-export function Arc(props:MapLayerArcProps) {
-  const {
-    id,
-    stacCol,
-    stacApiEndpoint,
-    onStatusChange,
-  } = props;
+export function Arc(props: MapLayerArcProps) {
+  const { id, stacCol, stacApiEndpoint, onStatusChange } = props;
 
-  const stacApiEndpointToUse = stacApiEndpoint?? process.env.API_STAC_ENDPOINT;
+  const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
   const wmsUrl = useArc({ id, stacCol, stacApiEndpointToUse, onStatusChange });
 
   return <ArcPaintLayer {...props} wmsUrl={wmsUrl} />;

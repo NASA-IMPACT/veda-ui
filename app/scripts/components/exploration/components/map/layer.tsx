@@ -3,7 +3,10 @@ import React, { useMemo } from 'react';
 import * as dateFns from 'date-fns';
 
 import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types.d.ts';
-import { getTimeDensityStartDate, getRelavantDate } from '../../data-utils-no-faux-module.js';
+import {
+  getTimeDensityStartDate,
+  getRelavantDate
+} from '../../data-utils-no-faux-module.js';
 
 import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
@@ -32,8 +35,20 @@ export function Layer(props: LayerProps) {
   // The date needs to match the dataset's time density.
   // But ArcGIS data?
   const relevantDate = useMemo(
-    () => dataset.data.type === 'arc'? getRelavantDate(selectedDay, dataset.data.domain, dataset.data.timeDensity) : getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
-    [selectedDay, dataset.data.timeDensity, dataset.data.domain, dataset.data.type]
+    () =>
+      dataset.data.type === 'arc'
+        ? getRelavantDate(
+            selectedDay,
+            dataset.data.domain,
+            dataset.data.timeDensity
+          )
+        : getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
+    [
+      selectedDay,
+      dataset.data.timeDensity,
+      dataset.data.domain,
+      dataset.data.type
+    ]
   );
 
   // Resolve config functions.
@@ -116,27 +131,28 @@ export function Layer(props: LayerProps) {
           hidden={!isVisible}
           opacity={opacity}
           onStatusChange={onStatusChange}
+        />
+      );
+    case 'raster':
+      return (
+        <RasterTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          tileApiEndpoint={dataset.data.tileApiEndpoint}
+          date={relevantDate}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          hidden={!isVisible}
+          opacity={opacity}
+          onStatusChange={onStatusChange}
           colorMap={colorMap}
           reScale={scale}
           envApiStacEndpoint={envApiStacEndpoint}
           envApiRasterEndpoint={envApiRasterEndpoint}
         />
       );
-      case 'raster':
-        return (
-          <RasterTimeseries
-            id={layerId}
-            stacCol={dataset.data.stacCol}
-            stacApiEndpoint={dataset.data.stacApiEndpoint}
-            tileApiEndpoint={dataset.data.tileApiEndpoint}
-            date={relevantDate}
-            zoomExtent={params.zoomExtent}
-            sourceParams={params.sourceParams}
-            generatorOrder={order}
-            hidden={!isVisible}
-            opacity={opacity}
-          />
-        );
     default:
       throw new Error(`No layer generator for type: ${dataset.data.type}`);
   }
