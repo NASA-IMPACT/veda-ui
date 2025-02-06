@@ -60,6 +60,7 @@
   flex-direction: row;
   @media (width <= themeVars.$veda-uswds-spacing-mobile-lg) {
     flex-direction: column;
+    
   }
 }
 address {

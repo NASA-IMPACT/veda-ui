@@ -29,30 +29,34 @@
   display: inline-block;
   padding: 0;
 }
+@media (width <= themeVars.$veda-uswds-spacing-tablet) {
+  .usa-nav__primary button {
+    font-weight: themeVars.$veda-uswds-fontweight-light;
 
-.usa-nav__primary button {
-  font-weight: themeVars.$veda-uswds-fontweight-light;
+    &[aria-expanded='false'] span:after,
+    &[aria-expanded='true'] span:after {
+      display: none;
+    }
 
-  &[aria-expanded='false'] span:after,
-  &[aria-expanded='true'] span:after {
-    display: none;
-  }
+    &[aria-expanded='true'] {
+      font-weight: themeVars.$veda-uswds-fontweight-bold;
 
-  &[aria-expanded='true'] {
-    font-weight: themeVars.$veda-uswds-fontweight-bold;
-
-    &:after {
-      background-color: themeVars.$veda-uswds-color-primary;
-      content: '';
-      display: block;
-      position: absolute;
-      bottom: 0.25rem;
-      top: 0.25rem;
-      width: 0.25rem;
-      left: 0.25rem;
+      &:after {
+        background-color: themeVars.$veda-uswds-color-primary;
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 0.25rem;
+        top: 0.25rem;
+        width: 0.25rem;
+        left: 0.25rem;
+      }
+    }
+    &:hover {
+      background-color: themeVars.$veda-uswds-color-base-white;
     }
   }
-  &:hover {
-  background-color: themeVars.$veda-uswds-color-base-white;
+  .usa-nav__submenu-item{
+    font-size: themeVars.$veda-uswds-fontsize-sm;
   }
 }

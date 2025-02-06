@@ -12,6 +12,8 @@ $veda-uswds-basefont-sans: utils.family('sans');
 // // FONT-SIZE
 $veda-uswds-fontsize-3xs: utils.size('body', '3xs');
 $veda-uswds-fontsize-lg: utils.size('body', 'lg');
+$veda-uswds-fontsize-md: utils.size('body', 'md');
+
 $veda-uswds-fontsize-sm: utils.size('body', 'sm');
 
 // FONT-WEIGHT
@@ -41,6 +43,8 @@ $veda-uswds-spacing-5: spacing.units(0.5);
 $veda-uswds-spacing-1: spacing.units(1);
 $veda-uswds-spacing-105: spacing.units(1.5);
 $veda-uswds-spacing-desktop: spacing.units('desktop');
+$veda-uswds-spacing-tablet: spacing.units('tablet');
+
 $veda-uswds-spacing-mobile-lg: spacing.units('mobile-lg');
 
 //PADDING

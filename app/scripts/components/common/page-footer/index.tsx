@@ -95,10 +95,13 @@ export default function PageFooter({
       }
     });
   };
-//FIND a way to remove util classes at this level tablet:padding-0 padding-x-0 padding-y-4
+  //FIND a way to remove util classes at this level tablet:padding-0 padding-x-0 padding-y-4
   const primaryItems = useMemo(
     () =>
-      createNavElement(mainNavItems, 'usa-footer__primary-link tablet:padding-0 padding-x-0 padding-y-4'),
+      createNavElement(
+        mainNavItems,
+        'usa-footer__primary-link tablet:padding-0 padding-x-0 padding-y-4'
+      ),
     [mainNavItems]
   );
   const secondaryItems = useMemo(
@@ -113,8 +116,8 @@ export default function PageFooter({
       returnToTop={returnToTop && <ReturnToTopButton />}
       className={hideFooter && 'display-none'}
       primary={
-        <div className='grid-row usa-footer__primary-container footer_primary_container'>
-          <div className='mobile-lg:grid-col-8 mobile-lg:padding-x-0'>
+        <div className='grid-row usa-footer__primary-container footer_primary_container '>
+          <div className='mobile-lg:grid-col-8 mobile-lg:padding-x-0 flex-align-self-center'>
             <USWDSFooterNav
               aria-label='Footer navigation'
               size='slim'
@@ -123,17 +126,13 @@ export default function PageFooter({
             />
           </div>
           <div className='tablet:grid-col-4 mobile-lg:grid-col-8'>
-            <USWDSAddress
-              size='slim'
-              items={secondaryItems}
-
-            />
+            <USWDSAddress size='slim' items={secondaryItems} />
           </div>
         </div>
       }
       secondary={
         <div id='footer_secondary_container' className='grid-row'>
-          <div id='logo-container'>
+          <div id='logo-container' className='margin-bottom-2 mobile-lg:margin-bottom-0'>
             <a id='logo-container-link' href='#'>
               {logoSvg as JSX.Element}
               <span className='footer-text'>
@@ -141,7 +140,7 @@ export default function PageFooter({
               </span>
             </a>
           </div>
-          <div className='grid-col-4 footer-text grid-gap-6 flex-justify-end'>
+          <div className=' mobile-lg:grid-col-4 footer-text  mobile-lg:grid-gap-6  mobile-lg:flex-justify-end mobile-lg:width-tablet width-full'>
             <span>{secondarySection.title}: </span>
             <a
               key={secondarySection.type}

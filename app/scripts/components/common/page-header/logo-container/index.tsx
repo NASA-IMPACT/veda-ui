@@ -13,11 +13,13 @@ import { useVedaUI } from '$context/veda-ui-provider';
 export default function LogoContainer({
   LogoSvg,
   title,
-  version
+  version,
+  className
 }: {
   LogoSvg?: SVGElement | JSX.Element;
   title: string;
   version?: string;
+  className?: string;
 }) {
   const {
     navigation: { LinkComponent, linkProps }
@@ -29,7 +31,7 @@ export default function LogoContainer({
         id='logo-container-link'
         {...{ [linkProps.pathAttributeKeyName]: '/' }}
       >
-        {LogoSvg as any}
+        <span className={className}>{LogoSvg as any}</span>
         <span>{title}</span>
       </LinkComponent>
       <Tip content={version ? `v${version}` : 'beta version'}>
