@@ -5,7 +5,13 @@ import { ComponentType } from 'react';
 // ///////////////////////////////////////////////////////////////////////////
 //  Datasets                                                                //
 // ///////////////////////////////////////////////////////////////////////////
-export type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr' | 'arc';
+export type DatasetLayerType =
+  | 'raster'
+  | 'vector'
+  | 'zarr'
+  | 'cmr'
+  | 'arc'
+  | 'feature';
 
 //
 // Dataset Layers
