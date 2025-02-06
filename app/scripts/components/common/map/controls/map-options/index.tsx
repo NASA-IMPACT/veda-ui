@@ -254,8 +254,8 @@ function MapOptions(props: MapOptionsProps) {
 }
 
 export default function MapOptionsControl(props: MapOptionsProps) {
-  useThemedControl(() => <MapOptions {...props} />, {
+  const control = useThemedControl(() => <MapOptions {...props} />, {
     position: 'top-right'
   });
-  return null;
+  return control;
 }

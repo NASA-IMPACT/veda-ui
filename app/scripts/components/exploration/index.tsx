@@ -82,7 +82,8 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
       resetAnalysisController();
       setUrl(CLEAR_LOCATION);
     };
-  }, [resetAnalysisController, setUrl]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container>

@@ -9,7 +9,7 @@ export const aoisSerialized = atomWithUrlValueStability<string>({
   initialValue: new URLSearchParams(window.location.search).get('aois') ?? '',
   urlParam: 'aois',
   hydrate: (v) => v ?? '',
-  dehydrate: (v) => v,
+  dehydrate: (v) => v
 });
 
 // Getter atom to get AoiS as GeoJSON features from the hash.
@@ -67,10 +67,12 @@ export const aoiDeleteAllAtom = atom(null, (get, set) => {
 
 // Atom that tracks whether an AOI can be edited or not.
 export const selectedForEditingAtom = atomWithUrlValueStability({
-  initialValue: (new URLSearchParams(window.location.search).get('selectedForEditing') !== 'false'),
+  initialValue:
+    new URLSearchParams(window.location.search).get('selectedForEditing') !==
+    'false',
   urlParam: 'selectedForEditing',
   hydrate: (value) => value !== 'false',
-  dehydrate: (value) => value ? 'true' : 'false'
+  dehydrate: (value) => (value ? 'true' : 'false')
 });
 
 export const isDrawingAtom = atom(false);

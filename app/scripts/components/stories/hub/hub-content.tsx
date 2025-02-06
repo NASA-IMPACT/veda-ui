@@ -20,7 +20,7 @@ import {
   FoldTitle
 } from '$components/common/fold';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
-import { Card } from '$components/common/card';
+import { Card, CardType } from '$components/common/card';
 import {
   CardListGrid,
   CardMeta,
@@ -152,14 +152,14 @@ export default function HubContent(props: HubContentProps) {
             return (
               <li key={d.id}>
                 <Card
-                  cardType='classic'
+                  cardType={CardType.CLASSIC}
                   overline={
                     <CardMeta>
                       <CardSourcesList
                         sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
                         rootPath={storiesCatalogPath}
                         onSourceClick={(id) => {
-                          onAction(FilterActions.TAXONOMY_MULTISELECT, {
+                          onAction(FilterActions.TAXONOMY, {
                             key: TAXONOMY_SOURCE,
                             value: id
                           });
@@ -203,6 +203,10 @@ export default function HubContent(props: HubContentProps) {
                                   JSON.stringify({ Topics: t.id })
                                 )}`}
                                 onClick={() => {
+                                  onAction(FilterActions.TAXONOMY, {
+                                    key: TAXONOMY_TOPICS,
+                                    value: t.id
+                                  });
                                   browseControlsHeaderRef.current?.scrollIntoView();
                                 }}
                               >

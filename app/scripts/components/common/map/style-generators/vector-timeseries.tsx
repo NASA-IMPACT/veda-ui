@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import qs from 'qs';
-import { AnyLayer, AnySourceImpl, VectorSourceImpl } from 'mapbox-gl';
+import {
+  LayerSpecification,
+  SourceSpecification,
+  VectorSourceSpecification
+} from 'mapbox-gl';
 import { useTheme } from 'styled-components';
 import endOfDay from 'date-fns/endOfDay';
 import startOfDay from 'date-fns/startOfDay';
@@ -131,11 +135,11 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
 
     const vectorOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
-    const sources: Record<string, AnySourceImpl> = {
+    const sources: Record<string, SourceSpecification> = {
       [id]: {
         type: 'vector',
         tiles: [`${featuresApiEndpoint}/tiles/{z}/{x}/{y}?${tileParams}`]
-      } as VectorSourceImpl
+      } as VectorSourceSpecification
     };
 
     const layers = [
@@ -234,7 +238,7 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
             }
           }
         : undefined
-    ].filter(Boolean) as AnyLayer[];
+    ].filter(Boolean) as LayerSpecification[];
 
     updateStyle({
       generatorId,

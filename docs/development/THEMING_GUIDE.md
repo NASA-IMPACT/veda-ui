@@ -59,7 +59,7 @@ The order of importing styles is important so that proper styles cascading can b
 // Note: For custom styles that override VEDA UI and/or USWDS,
 // create a separate custom.scss file and import it last in your application
 // Import order in your app:
-// 1. import '@developmentseed/veda-ui/lib/main.css';
+// 1. import '@teamimpact/veda-ui/lib/main.css';
 // 2. import './styles/index.scss';
 // 3. import './styles/custom.scss';
 ```
@@ -123,7 +123,7 @@ module.exports = {
 
 ```typescript
 import './styles/index.scss';
-import '@developmentseed/veda-ui/lib/main.css';
+import '@teamimpact/veda-ui/lib/main.css';
 // Any other custom styles
 import './styles/custom.scss';
 ```

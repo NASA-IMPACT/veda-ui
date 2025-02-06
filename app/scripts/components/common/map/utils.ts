@@ -54,9 +54,11 @@ export function checkFitBoundsFromLayer(
   if (!layerBounds || !mapInstance) return false;
 
   const [minXLayer, minYLayer, maxXLayer, maxYLayer] = layerBounds;
-  const [[minXMap, minYMap], [maxXMap, maxYMap]] = mapInstance
-    .getBounds()
-    .toArray();
+  const bounds = mapInstance.getBounds();
+  if (!bounds) {
+    return false;
+  }
+  const [[minXMap, minYMap], [maxXMap, maxYMap]] = bounds.toArray();
   const isOutside =
     maxXLayer < minXMap ||
     minXLayer > maxXMap ||
@@ -214,8 +216,8 @@ export function resolveConfigFunctions(
   return datum;
 }
 
-export function toAoIid(drawId: string) {
-  return drawId.slice(-6);
+export function toAoIid(drawId: string | number) {
+  return drawId.toString().slice(-6);
 }
 
 /**
