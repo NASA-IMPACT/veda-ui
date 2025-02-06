@@ -94,11 +94,14 @@ const LayerInfoLinerModal = styled.div`
 export default function LayerInfoModal(props: LayerInfoModalProps) {
   const { revealed, close, layerData } = props;
   const {
-    navigation: { LinkComponent },
+    navigation: { LinkComponent, linkProps },
     routes: { dataCatalogPath }
   } = useVedaUI();
 
   const { parentData } = layerData;
+  const path = {
+    [linkProps.pathAttributeKeyName]: `${dataCatalogPath}/${parentData.id}`
+  };
 
   return (
     <StyledModal
@@ -134,14 +137,14 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
         />
       }
       footerContent={
-        <LinkComponent to={dataCatalogPath}>
+        <LinkComponent {...path}>
           <USWDSButton
             onClick={close}
             type='button'
             size='small'
             inverse={true}
             outline={false}
-            tabindex='-1'
+            tabIndex='-1'
           >
             Open in Data Catalog
           </USWDSButton>
