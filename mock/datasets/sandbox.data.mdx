@@ -18,37 +18,6 @@ taxonomy:
       - Experimental
       - Untested
 layers:
-  - id: combined_CMIP6_daily_GISS-E2-1-G_tas_kerchunk_DEMO
-    stacCol: combined_CMIP6_daily_GISS-E2-1-G_tas_kerchunk_DEMO
-    name: CMIP6 Daily GISS-E2-1-G Near-Surface Air Temperature (demo subset)
-    type: zarr
-    tileApiEndpoint: https://dev-titiler-xarray.delta-backend.com/tilejson.json
-    description: 'Historical (1950-2014) daily-mean near-surface (usually, 2 meter) air temperature in Kelvin.'
-    zoomExtent:
-      - 0
-      - 20
-    sourceParams:
-      reference: 'true'
-      resampling_method: bilinear
-      variable: tas
-      colormap_name: coolwarm
-      rescale:
-        - 232
-        - 312
-      maxzoom: 12
-    legend:
-      unit:
-        label: K
-      type: gradient
-      min: 232
-      max: 312
-      stops:
-        - '#3b4cc0'
-        - '#7b9ff9'
-        - '#c0d4f5'
-        - '#f2cbb7'
-        - '#ee8468'
-        - '#b40426'
   - id: blue-tarp-planetscope
     stacCol: blue-tarp-planetscope
     name: Blue tarp test
