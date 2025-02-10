@@ -16,7 +16,6 @@ import {
 } from '../page-header/types';
 import { InternalNavLink, ExternalNavLink } from '../types';
 import { useFeedbackModal } from '../layout-root';
-import { USWDSButton } from '$uswds';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { LinkProperties } from '$types/veda';
@@ -120,6 +119,32 @@ function LinkDropMenuNavItem({
   }
 }
 
+interface BtnMediaProps {
+  active?: boolean;
+}
+
+// Global menu link style
+const ButtonAsNavLink = styled(Button)`
+  ${media.mediumUp<BtnMediaProps>`
+    background-color: ${themeVal('color.primary-700')};
+    &:hover {
+      background-color: ${themeVal('color.primary-800')};
+    }
+    /* Print & when prop is passed */
+    ${({ active }) => active && '&,'}
+    &:active,
+    &.active {
+      background-color: ${themeVal('color.primary-900')};
+    }
+    &:focus-visible {
+      background-color: ${themeVal('color.primary-200a')};
+    }
+  `}
+  ${media.mediumDown`
+    ${GlobalMenuLinkCSS}
+  `}
+`;
+
 export default function NavMenuItem({
   item,
   alignment,
@@ -164,15 +189,14 @@ export default function NavMenuItem({
   } else if (item.type === NavItemType.ACTION) {
     return (
       <li>
-        <USWDSButton
-          onClick={show}
+        <ButtonAsNavLink
           type='button'
-          size='small'
-          inverse={true}
-          outline={false}
+          size='large'
+          onClick={show}
+          style={{ color: 'white' }}
         >
-          {item.title}
-        </USWDSButton>
+          {title}
+        </ButtonAsNavLink>
         {process.env.GOOGLE_FORM && (
           <GoogleForm
             src={process.env.GOOGLE_FORM}
