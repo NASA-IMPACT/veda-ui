@@ -41,7 +41,8 @@ jobs:
             echo "🔴 The week index is 1. The action is going to be skipped." >> $GITHUB_STEP_SUMMARY
           fi
   release:
-    if: ${{ needs.weekindex.outputs.weekindex == 0 }}
+    # Trigger events regardless of weekindex if it is manually triggered 
+    if: ${{github.event_name == 'workflow_dispatch' || needs.weekindex.outputs.weekindex == 0}}
     runs-on: ubuntu-latest
     needs:
       - weekindex
