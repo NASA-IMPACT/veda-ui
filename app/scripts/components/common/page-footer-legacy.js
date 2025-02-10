@@ -113,7 +113,7 @@ function PageFooterLegacy(props) {
   const nowDate = new Date();
 
   return (
-    <PageFooterSelf isHidden={props.isHidden}>
+    <PageFooterSelf isHidden={props.hideFooter}>
       <ComponentOverride
         with='pageFooter'
         appVersion={process.env.APP_VERSION}
@@ -177,5 +177,5 @@ function PageFooterLegacy(props) {
 export default PageFooterLegacy;
 
 PageFooterLegacy.propTypes = {
-  isHidden: T.bool
+  hideFooter: T.bool
 };
