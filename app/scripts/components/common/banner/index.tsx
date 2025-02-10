@@ -27,6 +27,7 @@ interface BannerProps {
   headerActionText?: string;
   ariaLabel?: string;
   flagImgAlt?: string;
+  flagImgSrc?: string;
   leftGuidance?: GuidanceContent;
   rightGuidance?: GuidanceContent;
   className?: string;
@@ -38,6 +39,10 @@ const DEFAULT_HEADER_TEXT =
   'An official website of the United States government';
 
 const DEFAULT_HEADER_ACTION_TEXT = "Here's how you know";
+
+const DEFAULT_FLAG_SRC = '/img/us_flag_small.png';
+
+const DEFAULT_FLAG_ALT = 'U.S. flag';
 
 const DEFAULT_GUIDANCE: Guidance = {
   left: {
@@ -82,6 +87,7 @@ export default function Banner({
   headerActionText,
   ariaLabel,
   flagImgAlt = '',
+  flagImgSrc,
   leftGuidance,
   rightGuidance,
   className = '',
@@ -108,7 +114,10 @@ export default function Banner({
       <USWDSBannerHeader
         isOpen={isOpen}
         flagImg={
-          <USWDSBannerFlag src='/img/us_flag_small.png' alt={flagImgAlt} />
+          <USWDSBannerFlag
+            src={flagImgSrc ?? DEFAULT_FLAG_SRC}
+            alt={flagImgAlt ?? DEFAULT_FLAG_ALT}
+          />
         }
         headerText={headerText ?? DEFAULT_HEADER_TEXT}
         headerActionText={headerActionText ?? DEFAULT_HEADER_ACTION_TEXT}
