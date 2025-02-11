@@ -1,3 +1,5 @@
+const debug = process.argv.includes('--debug');
+
 const prefixes = {
   feat: '🎉 Features',
   fix: '🐛 Fixes',
@@ -19,7 +21,7 @@ function groupCommitsByCategory(logs) {
 
   // Loop through each prefix to find conventional commit pattern ex. feat: , feat(card):
   Object.entries(prefixes).forEach(([prefix, category]) => {
-    const regex = new RegExp(`^\\* ${prefix}(\\(.*?\\))?: .*?\\)$`, 'gm');
+    const regex = new RegExp(`^\\* ${prefix}!?\\(.*?\\)?: .*?\\)$`, 'gm');
     const matches = logs.match(regex) || [];
     grouped[category] = [...matches, ...grouped[category]];
   });
@@ -32,17 +34,20 @@ module.exports = {
     'after:release': 'echo "VERSION_NUMBER=v${version}" >> "$GITHUB_OUTPUT" '
   },
   git: {
+    release: debug ? false : true,
     commitMessage: 'chore(release): update to version v${version}',
     tagName: 'v${version}',
     tagAnnotation: 'Release v${version}',
     pushArgs: ['--follow-tags'],
-    getLatestTagFromAllRefs: true
+    getLatestTagFromAllRefs: debug ? false : true,
+    requireCleanWorkingDir: debug ? false : true,
+    requireUpstream: debug ? false : true
   },
   npm: {
     publish: false
   },
   github: {
-    release: true,
+    release: debug ? false : true,
     releaseName: 'v${version}',
     autoGenerate: false,
     releaseNotes: function (context) {
@@ -54,14 +59,11 @@ module.exports = {
           }
         })
         .join('\n');
-
       return changelog;
     }
   },
   plugins: {
-    // The @release-it/conventional-changelog plugin is primarily used for handling version bumps
-    // because we encountered difficulties generating GitHub release notes with the plugin.
-    '@release-it/conventional-changelog': {
+    './recommended-bump/index.mjs': {
       preset: 'conventionalcommits'
     }
   }
