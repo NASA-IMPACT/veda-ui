@@ -129,7 +129,7 @@ export const CookieConsent = ({
       {!cookieConsentResponded && (
         <div
           id='cookie-consent'
-          className={`margin-0 tablet:margin-2 shadow-2 position-fixed z-top maxw-tablet animation--fade-out right-0 bottom-0 ${
+          className={`margin-0 tablet:margin-2 shadow-2 position-fixed z-top maxw-full tablet:maxw-tablet-lg animation--fade-out right-0 bottom-0 ${
             closeConsent
               ? ' opacity-0 z-bottom pointer-events--none'
               : 'opacity-1 z-top'
