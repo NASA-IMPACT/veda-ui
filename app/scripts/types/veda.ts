@@ -170,33 +170,25 @@ export interface DatasetUsage {
   label: string;
   title: string;
 }
-
 /**
- * Data structure shared between DatasetData and StoryData
+ * Data structure for the Datasets frontmatter.
  */
-export interface ContentDataBase {
+export interface DatasetData {
   featured?: boolean;
+  sourceExclusive?: string;
   id: string;
   name: string;
+  infoDescription?: string;
   taxonomy: Taxonomy[];
-
+  description: string;
   cardDescription?: string;
+  usage?: DatasetUsage[];
   media?: Media;
   cardMedia?: Media;
-  related?: RelatedContentData[];
-  isHidden?: boolean;
-}
-
-/**
- * Data structure unique to the Datasets frontmatter.
- */
-export interface DatasetData extends ContentDataBase {
-  sourceExclusive?: string;
-  infoDescription?: string;
-  usage?: DatasetUsage[];
   layers: DatasetLayer[];
-  description: string;
+  related?: RelatedContentData[];
   disableExplore?: boolean;
+  isHidden?: boolean;
 }
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -204,18 +196,24 @@ export interface DatasetData extends ContentDataBase {
 // ///////////////////////////////////////////////////////////////////////////
 
 /**
- * Data structure unique to the Stories frontmatter.
+ * Data structure for the Stories frontmatter.
  */
-export interface StoryData extends ContentDataBase {
+export interface StoryData {
   featured?: boolean;
   id: string;
   name: string;
+  description: string;
+  cardDescription?: string;
   pubDate: string;
   path?: string;
+  media?: Media;
+  cardMedia?: Media;
+  taxonomy: Taxonomy[];
+  related?: RelatedContentData[];
   asLink?: LinkContentData;
   hideExternalLinkBadge?: boolean;
-  description?: string; // Description is optional for StoryData
   isLinkExternal?: boolean;
+  isHidden?: boolean;
 }
 
 // ///////////////////////////////////////////////////////////////////////////
