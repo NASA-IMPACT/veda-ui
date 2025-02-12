@@ -155,8 +155,13 @@ export function resolveLayerTemporalExtent(
   }
 }
 
+// What is a valid source params to make the dataset render as expected?
 const hasValidSourceParams = (params) => {
-  return params && 'colormap_name' in params && 'rescale' in params;
+  return (
+    params &&
+    ('colormap_name' in params || 'colormap' in params) &&
+    'rescale' in params
+  );
 };
 
 /**
