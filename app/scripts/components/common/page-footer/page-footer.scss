@@ -41,7 +41,6 @@
   text-underline-offset: themeVars.$veda-uswds-spacing-5;
 }
 
-
 .usa-footer__address {
   & > .grid-row {
     justify-content: flex-end;
@@ -85,21 +84,20 @@ address {
 }
 
 //TABLET FOOTER STYLING
+//Need to override base component styling.
 @media (width <= themeVars.$veda-uswds-spacing-tablet) {
   .usa-footer__address .grid-row [class*='grid-col'] {
     width: auto !important;
   }
   .usa-footer .grid-row [class*='grid-col'] {
-    position: relative;
     width: 100%;
-    box-sizing: border-box;
   }
   .usa-footer__primary-content {
-    border-top: 1px solid #a9aeb1;
+    border-top: 1px solid themeVars.$veda-uswds-color-base-light;
     padding-left: 0 !important;
     padding-right: 0 !important;
     &:last-child {
-      border-bottom: 1px solid #a9aeb1;
+      border-bottom: 1px solid themeVars.$veda-uswds-color-base-light;
       @media (width <= themeVars.$veda-uswds-spacing-mobile-lg) {
         border-bottom: 0;
       }

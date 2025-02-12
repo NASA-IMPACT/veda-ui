@@ -134,7 +134,7 @@ export default function PageFooter({
         <div id='footer_secondary_container' className='grid-row'>
           <div
             id='logo-container'
-            className='margin-bottom-2 mobile-lg:margin-bottom-0'
+            className='margin-bottom-2 tablet:margin-bottom-0'
           >
             <a id='logo-container-link' href='#'>
               {logoSvg as JSX.Element}
