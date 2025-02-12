@@ -378,7 +378,6 @@ export function getFilterPayloadWithAOI(
 }
 
 export function fixAoiForArcGISAnalysis(aoi: FeatureCollection<Polygon>) {
-  
   const fixedAois = aoi.features.map(fixAntimeridian);
   return {
     type: 'FeatureCollection',
