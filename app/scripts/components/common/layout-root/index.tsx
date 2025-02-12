@@ -41,7 +41,6 @@ import { checkEnvFlag } from '$utils/utils';
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
 const isUswdsFooterEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_FOOTER);
-const isCookieConsentEnabled = checkEnvFlag(process.env.ENABLE_COOKIE_CONSENT_FORM);
 
 export const PAGE_BODY_ID = 'pagebody';
 
@@ -105,7 +104,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
-        {isCookieConsentEnabled && displayCookieConsentForm && (
+        {cookieConsentContent && displayCookieConsentForm && (
           <CookieConsent
             {...cookieConsentContent}
             setDisplayCookieConsentForm={setDisplayCookieConsentForm}
