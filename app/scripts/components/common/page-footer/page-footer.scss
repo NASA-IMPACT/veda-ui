@@ -12,14 +12,14 @@
 .return-to-top-container {
   padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
   max-width: themeVars.$veda-uswds-spacing-desktop;
-  @media (width <= themeVars.$veda-uswds-spacing-mobile-lg) {
+  @media (width <= themeVars.$veda-uswds-spacing-tablet) {
     padding: themeVars.$veda-uswds-padding-3;
   }
 }
 .footer_primary_container {
   padding: themeVars.$veda-uswds-padding-4 themeVars.$veda-uswds-padding-5;
   background-color: themeVars.$veda-uswds-color-base-lightest;
-  @media (width <= themeVars.$veda-uswds-spacing-mobile-lg) {
+  @media (width <= themeVars.$veda-uswds-spacing-tablet) {
     padding: themeVars.$veda-uswds-padding-3;
     .grid-row.grid-gap {
       margin-left: 0 !important;
@@ -48,19 +48,18 @@
 .usa-footer__address {
   & > .grid-row {
     justify-content: flex-end;
-    @media (width <= themeVars.$veda-uswds-spacing-mobile-lg) {
+    @media (width <= themeVars.$veda-uswds-spacing-tablet) {
       justify-content: flex-start;
     }
   }
-  @media (width <= themeVars.$veda-uswds-spacing-mobile-lg) {
+  @media (width <= themeVars.$veda-uswds-spacing-tablet) {
     padding: themeVars.$veda-uswds-padding-4 0 !important;
   }
 }
 #footer_secondary_container {
   flex-direction: row;
-  @media (width <= themeVars.$veda-uswds-spacing-mobile-lg) {
+  @media (width <= themeVars.$veda-uswds-spacing-tablet) {
     flex-direction: column;
-    
   }
 }
 address {
@@ -71,8 +70,35 @@ address {
 }
 .usa-footer__contact-info {
   line-height: unset;
+  @media (width <= themeVars.$veda-uswds-spacing-tablet) {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
 }
 
 .usa-footer__primary-content:first-child {
   border-top: none !important;
+}
+
+//TABLET FOOTER STYLING
+@media (width <= themeVars.$veda-uswds-spacing-tablet) {
+  .usa-footer__address .grid-row [class*='grid-col'] {
+    width: auto !important;
+  }
+  .usa-footer .grid-row [class*='grid-col'] {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .usa-footer__primary-content {
+    border-top: 1px solid #a9aeb1;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    &:last-child {
+      border-bottom: 1px solid #a9aeb1;
+      @media (width <= themeVars.$veda-uswds-spacing-mobile-lg) {
+        border-bottom: 0;
+      }
+    }
+  }
 }

@@ -132,7 +132,10 @@ export default function PageFooter({
       }
       secondary={
         <div id='footer_secondary_container' className='grid-row'>
-          <div id='logo-container' className='margin-bottom-2 mobile-lg:margin-bottom-0'>
+          <div
+            id='logo-container'
+            className='margin-bottom-2 mobile-lg:margin-bottom-0'
+          >
             <a id='logo-container-link' href='#'>
               {logoSvg as JSX.Element}
               <span className='footer-text'>
@@ -140,7 +143,7 @@ export default function PageFooter({
               </span>
             </a>
           </div>
-          <div className=' mobile-lg:grid-col-4 footer-text  mobile-lg:grid-gap-6  mobile-lg:flex-justify-end mobile-lg:width-tablet width-full'>
+          <div className=' mobile-lg:grid-col-4 footer-text  mobile-lg:grid-gap-6  tablet:flex-justify-end mobile-lg:width-tablet width-full'>
             <span>{secondarySection.title}: </span>
             <a
               key={secondarySection.type}
