@@ -26,9 +26,6 @@ import {
   DatasetLayerType
 } from '$types/veda';
 
-// @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
-// `./date-utils` to be deprecated!!
-
 export const getDatasetLayers = (datasets: VedaData<DatasetData>) =>
   Object.values(datasets).flatMap((dataset: VedaDatum<DatasetData>) => {
     return dataset.data.layers.map((l) => ({
@@ -152,8 +149,13 @@ export function resolveLayerTemporalExtent(
   }
 }
 
+// What is a valid source params to make the dataset render as expected?
 const hasValidSourceParams = (params) => {
-  return params && 'colormap_name' in params && 'rescale' in params;
+  return (
+    params &&
+    ('colormap_name' in params || 'colormap' in params) &&
+    'rescale' in params
+  );
 };
 
 /**
