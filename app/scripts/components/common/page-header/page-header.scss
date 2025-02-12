@@ -29,7 +29,7 @@
   display: inline-block;
   padding: 0;
 }
-@media (width <= themeVars.$veda-uswds-spacing-tablet) {
+@media (width <= themeVars.$veda-uswds-spacing-desktop) {
   .usa-nav__primary button {
     font-weight: themeVars.$veda-uswds-fontweight-light;
 
