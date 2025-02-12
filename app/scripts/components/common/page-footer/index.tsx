@@ -95,7 +95,7 @@ export default function PageFooter({
       }
     });
   };
-  //FIND a way to remove util classes at this level tablet:padding-0 padding-x-0 padding-y-4
+
   const primaryItems = useMemo(
     () =>
       createNavElement(

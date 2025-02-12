@@ -2,7 +2,6 @@
 
 .footer-text {
   color: themeVars.$veda-uswds-color-base-white;
-  // align-self: center;
   vertical-align: baseline;
   display: flex;
   font-size: themeVars.$veda-uswds-fontsize-sm;
@@ -76,6 +75,7 @@ address {
   border-top: none !important;
 }
 //DESKTOP FOOTER STYLING
+//Need to override base component styling.
 @media (width <= themeVars.$veda-uswds-spacing-desktop) {
   .usa-footer__address .mobile-lg\:grid-col-12,
   .usa-footer__nav .mobile-lg\:grid-col-6 {
@@ -94,8 +94,6 @@ address {
   }
   .usa-footer__primary-content {
     border-top: 1px solid themeVars.$veda-uswds-color-base-light;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
     &:last-child {
       border-bottom: 1px solid themeVars.$veda-uswds-color-base-light;
       @media (width <= themeVars.$veda-uswds-spacing-mobile-lg) {
