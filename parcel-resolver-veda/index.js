@@ -118,8 +118,7 @@ function getSiteAlertContent(result) {
 function getBannerContent(result) {
   if (!result.banner) return undefined;
 
-  const { title, leftGuidance, rightGuidance, flagImgSrc, flagImgAlt } =
-    result.banner;
+  const { title, leftGuidance, rightGuidance } = result.banner;
 
   const processedLeftGuidance = {
     ...leftGuidance,
@@ -135,8 +134,8 @@ function getBannerContent(result) {
     headerText: title,
     headerActionText: "Here's how you know",
     ariaLabel: title,
-    flagImgSrc: flagImgSrc,
-    flagImgAlt: flagImgAlt,
+    flagImgSrc: '/img/us_flag_small.png',
+    flagImgAlt: '',
     leftGuidance: processedLeftGuidance,
     rightGuidance: processedRightGuidance,
     className: '',
