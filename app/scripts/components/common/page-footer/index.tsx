@@ -122,7 +122,7 @@ export default function PageFooter({
               aria-label='Footer navigation'
               size='slim'
               links={primaryItems}
-              className='padding-x-0'
+              className='padding-x-0 width-auto'
             />
           </div>
           <div className='tablet:grid-col-4 mobile-lg:grid-col-8'>
@@ -143,17 +143,14 @@ export default function PageFooter({
               </span>
             </a>
           </div>
-          <div className=' mobile-lg:grid-col-4 footer-text  mobile-lg:grid-gap-6  tablet:flex-justify-end mobile-lg:width-tablet width-full'>
+          <div className=' mobile-lg:grid-col-4 footer-text  mobile-lg:grid-gap-6 tablet:flex-justify-end mobile-lg:width-auto width-full flex-align-center'>
             <span>{secondarySection.title}: </span>
             <a
               key={secondarySection.type}
               href={`mailto:${secondarySection.to}`}
-              className='text-primary-light'
+              className='text-primary-light display-flex flex-align-center'
             >
-              <Icon.Mail
-                className='margin-right-1 width-205 height-auto position-relative'
-                id='mail_icon'
-              />
+              <Icon.Mail className='margin-right-1 width-205 height-auto position-relative' />
               {secondarySection.name}
             </a>
           </div>

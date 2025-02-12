@@ -2,7 +2,8 @@
 
 .footer-text {
   color: themeVars.$veda-uswds-color-base-white;
-  align-self: center;
+  // align-self: center;
+  vertical-align: baseline;
   display: flex;
   font-size: themeVars.$veda-uswds-fontsize-sm;
   font-weight: themeVars.$veda-uswds-fontweight-regular;
@@ -40,10 +41,6 @@
   text-underline-offset: themeVars.$veda-uswds-spacing-5;
 }
 
-#mail_icon {
-  top: 50%;
-  transform: translateY(-50%);
-}
 
 .usa-footer__address {
   & > .grid-row {
@@ -78,6 +75,13 @@ address {
 
 .usa-footer__primary-content:first-child {
   border-top: none !important;
+}
+//DESKTOP FOOTER STYLING
+@media (width <= themeVars.$veda-uswds-spacing-desktop) {
+  .usa-footer__address .mobile-lg\:grid-col-12,
+  .usa-footer__nav .mobile-lg\:grid-col-6 {
+    width: auto;
+  }
 }
 
 //TABLET FOOTER STYLING
