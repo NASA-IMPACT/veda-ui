@@ -37,6 +37,7 @@ export default function LogoContainer({
       <Tip content={version ? `v${version}` : 'beta version'}>
         <div
           id='logo-container-beta-tag'
+          className='display-none mobile-lg:display-block'
           {...{
             as: LinkComponent,
             [linkProps.pathAttributeKeyName]: '/development'
