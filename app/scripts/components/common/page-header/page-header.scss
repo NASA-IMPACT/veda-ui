@@ -24,7 +24,7 @@
 }
 .usa-nav__secondary-links button {
   color: themeVars.$veda-uswds-color-gray-cool;
-  font-size: 0.87rem;
+  font-size: themeVars.$veda-uswds-fontsize-2xs;
   text-decoration: none;
   display: inline-block;
   padding: 0;
@@ -46,10 +46,10 @@
         content: '';
         display: block;
         position: absolute;
-        bottom: 0.25rem;
-        top: 0.25rem;
-        width: 0.25rem;
-        left: 0.25rem;
+        bottom: themeVars.$veda-uswds-spacing-5;
+        top: themeVars.$veda-uswds-spacing-5;
+        width: themeVars.$veda-uswds-spacing-5;
+        left: themeVars.$veda-uswds-spacing-5;
       }
     }
     &:hover {

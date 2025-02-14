@@ -10,11 +10,13 @@
 $veda-uswds-basefont-sans: utils.family('sans');
 
 // // FONT-SIZE
-$veda-uswds-fontsize-3xs: utils.size('body', '3xs');
+
 $veda-uswds-fontsize-lg: utils.size('body', 'lg');
 $veda-uswds-fontsize-md: utils.size('body', 'md');
-
 $veda-uswds-fontsize-sm: utils.size('body', 'sm');
+$veda-uswds-fontsize-xs: utils.size('body', 'xs');
+$veda-uswds-fontsize-2xs: utils.size('body', '2xs');
+$veda-uswds-fontsize-3xs: utils.size('body', '3xs');
 
 // FONT-WEIGHT
 $veda-uswds-fontweight-light: utils.font-weight('light');
