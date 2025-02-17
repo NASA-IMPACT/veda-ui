@@ -68,7 +68,12 @@ export default function PageHeader({
       <USWDSHeader extended={true} showMobileOverlay={expanded}>
         <div className='usa-navbar'>
           <USWDSHeaderTitle>
-            <LogoContainer LogoSvg={Logo} title={title} version={version} />
+            <LogoContainer
+              LogoSvg={Logo}
+              title={title}
+              version={version}
+              className='mobile-lg:display-block display-none'
+            />
           </USWDSHeaderTitle>
           <USWDSNavMenuButton onClick={toggleExpansion} label='Menu' />
         </div>
