@@ -135,7 +135,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   //
   const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
   useEffect(() => {
-    if (!id || !stacCol) return;
+    if (!id || !stacCol || !date) return;
 
     const controller = new AbortController();
 
@@ -231,7 +231,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   //
   const [mosaicUrl, setMosaicUrl] = useState<string | null>(null);
   useEffect(() => {
-    if (!id || !stacCol) return;
+    if (!id || !stacCol || !date) return;
 
     // If the search returned no data, remove anything previously there so we
     // don't run the risk that the selected date and data don't match, even

@@ -3,13 +3,18 @@ import React, { useMemo } from 'react';
 import * as dateFns from 'date-fns';
 
 import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types.d.ts';
-import { getTimeDensityStartDate } from '../../data-utils-no-faux-module.js';
+import {
+  getTimeDensityStartDate,
+  getRelavantDate
+} from '../../data-utils-no-faux-module.js';
 
 import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
 import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
+import { Arc } from '$components/common/map/style-generators/arc';
+import { FeatureTimeseries } from '$components/common/map/style-generators/feature-timeseries';
 import { ActionStatus } from '$utils/status';
 import { useVedaUI } from '$context/veda-ui-provider';
 
@@ -28,9 +33,22 @@ export function Layer(props: LayerProps) {
   const { isVisible, opacity, colorMap, scale } = dataset.settings;
 
   // The date needs to match the dataset's time density.
+  // But ArcGIS data?
   const relevantDate = useMemo(
-    () => getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
-    [selectedDay, dataset.data.timeDensity]
+    () =>
+      dataset.data.type === 'arc'
+        ? getRelavantDate(
+            selectedDay,
+            dataset.data.domain,
+            dataset.data.timeDensity
+          )
+        : getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
+    [
+      selectedDay,
+      dataset.data.timeDensity,
+      dataset.data.domain,
+      dataset.data.type
+    ]
   );
 
   // Resolve config functions.
@@ -48,6 +66,22 @@ export function Layer(props: LayerProps) {
     case 'vector':
       return (
         <VectorTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          date={relevantDate}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          hidden={!isVisible}
+          opacity={opacity}
+          onStatusChange={onStatusChange}
+          envApiStacEndpoint={envApiStacEndpoint}
+        />
+      );
+    case 'feature':
+      return (
+        <FeatureTimeseries
           id={layerId}
           stacCol={dataset.data.stacCol}
           stacApiEndpoint={dataset.data.stacApiEndpoint}
@@ -98,6 +132,21 @@ export function Layer(props: LayerProps) {
           reScale={scale}
           envApiStacEndpoint={envApiStacEndpoint}
           envApiRasterEndpoint={envApiRasterEndpoint}
+        />
+      );
+    case 'arc':
+      return (
+        <Arc
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          date={relevantDate}
+          hidden={!isVisible}
+          opacity={opacity}
+          onStatusChange={onStatusChange}
         />
       );
     case 'raster':

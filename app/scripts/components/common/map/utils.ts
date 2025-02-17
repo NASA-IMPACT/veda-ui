@@ -376,3 +376,11 @@ export function getFilterPayloadWithAOI(
   };
   return filterPayload;
 }
+
+export function fixAoiForArcGISAnalysis(aoi: FeatureCollection<Polygon>) {
+  const fixedAois = aoi.features.map(fixAntimeridian);
+  return {
+    type: 'FeatureCollection',
+    features: fixedAois
+  };
+}
