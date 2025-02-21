@@ -21,7 +21,6 @@ import {
 import { DatasetChart } from './dataset-chart';
 import { getBlockBoundaries, lumpBlocks } from './block-utils';
 import DataLayerCard from './data-layer-card';
-import { findDatasetAttribute } from '$components/exploration/data-utils-no-faux-module';
 import {
   DatasetStatus,
   TimelineDataset,
@@ -99,7 +98,7 @@ interface DatasetListItemProps {
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
-  const { datasets, datasetId, width, xScaled, onDragStart, onDragEnd } = props;
+  const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
@@ -131,9 +130,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
       name: dataset.data.name,
       description: dataset.data.description,
       info: dataset.data.info,
-      parentData: {
-        ...dataset.data.parentDataset
-      }
+      parentData: dataset.data.parentDataset
     };
     setModalLayerInfo(data);
   }, [dataset]);

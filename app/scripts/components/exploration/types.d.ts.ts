@@ -1,5 +1,5 @@
 import { DataMetric } from './components/datasets/analysis-metrics';
-import { DatasetLayer } from '$types/veda';
+import { DatasetLayer, ParentDatset } from '$types/veda';
 
 export enum TimeDensity {
   YEAR = 'year',
@@ -81,10 +81,6 @@ export type TimelineDatasetAnalysis =
   | TimelineDatasetAnalysisSuccess;
 
 // END TimelineDatasetAnalysis type discriminants
-export interface ParentDatset {
-  id: string;
-  name: string;
-}
 export interface EnhancedDatasetLayer extends DatasetLayer {
   id: string;
   parentDataset: ParentDatset;
