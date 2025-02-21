@@ -127,17 +127,12 @@ export function DatasetListItem(props: DatasetListItemProps) {
   }, [queryClient, datasetId]);
 
   const onClickLayerInfo = useCallback(() => {
-    const parentInfoDesc = findDatasetAttribute(datasets, {
-      datasetId: dataset.data.parentDataset.id,
-      attr: 'infoDescription'
-    });
     const data: LayerInfoModalData = {
       name: dataset.data.name,
       description: dataset.data.description,
       info: dataset.data.info,
       parentData: {
-        ...dataset.data.parentDataset,
-        infoDescription: parentInfoDesc
+        ...dataset.data.parentDataset
       }
     };
     setModalLayerInfo(data);
