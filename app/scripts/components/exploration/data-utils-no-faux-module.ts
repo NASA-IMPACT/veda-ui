@@ -23,8 +23,17 @@ import {
   VedaData,
   VedaDatum,
   DatasetData,
-  DatasetLayerType
+  DatasetLayerType,
+  ParentDatset
 } from '$types/veda';
+
+export function getParentDataset(data: DatasetData): ParentDatset {
+  return {
+    id: data.id,
+    name: data.name,
+    infoDescription: data.infoDescription
+  };
+}
 
 // @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
 // `./date-utils` to be deprecated!!
@@ -33,11 +42,7 @@ export const getDatasetLayers = (datasets: VedaData<DatasetData>) =>
   Object.values(datasets).flatMap((dataset: VedaDatum<DatasetData>) => {
     return dataset.data.layers.map((l) => ({
       ...l,
-      parentDataset: {
-        id: dataset.data.id,
-        name: dataset.data.name,
-        infoDescription: dataset.data.infoDescription
-      }
+      parentDataset: getParentDataset(dataset.data)
     }));
   });
 
@@ -45,11 +50,7 @@ export const getLayersFromDataset = (datasets: DatasetData[]) =>
   Object.values(datasets).map((dataset: DatasetData) => {
     return dataset.layers.map((l) => ({
       ...l,
-      parentDataset: {
-        id: dataset.id,
-        name: dataset.name,
-        infoDescription: dataset.infoDescription
-      }
+      parentDataset: getParentDataset(dataset)
     }));
   });
 
