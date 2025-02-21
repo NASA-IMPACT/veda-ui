@@ -9,6 +9,7 @@ import {
   USWDSBannerGuidance,
   USWDSMediaBlockBody
 } from '$uswds';
+import { checkEnvFlag } from '$utils/utils';
 
 interface Guidance {
   left?: GuidanceContent;
@@ -100,7 +101,7 @@ export default function Banner({
     ...DEFAULT_GUIDANCE.left,
     ...leftGuidance
   } as GuidanceContent;
-
+  const uswdsHeaderActive = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_HEADER);
   const rightContent = {
     ...DEFAULT_GUIDANCE.right,
     ...rightGuidance
@@ -109,7 +110,7 @@ export default function Banner({
   return (
     <USWDSBanner
       aria-label={ariaLabel ?? DEFAULT_HEADER_TEXT}
-      className={`${className} ${!process.env.ENABLE_USWDS_PAGE_HEADER && 'veda_one_padding'}`}
+      className={`${className} ${!uswdsHeaderActive && 'veda_one_padding'}`}
     >
       <USWDSBannerHeader
         isOpen={isOpen}
