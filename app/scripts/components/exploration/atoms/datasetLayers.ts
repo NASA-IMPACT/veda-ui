@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+import { getParentDataset } from '../data-utils-no-faux-module';
 import { DatasetLayer } from '$types/veda';
 
 /**
@@ -18,11 +19,7 @@ export const datasetLayersAtom = atom<DatasetLayer[]>((get) => {
   return datasets.flatMap((dataset) => {
     return (dataset.layers || []).map((l: any) => ({
       ...l,
-      parentDataset: {
-        id: dataset.id,
-        name: dataset.name,
-        infoDescription: dataset.infoDescription
-      }
+      parentDataset: getParentDataset(dataset)
     }));
   });
 });
