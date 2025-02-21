@@ -59,7 +59,7 @@ export interface LayerInfoModalData {
   parentData: {
     id: string;
     name: string;
-    infoDescription?: string;
+    infoDescription: string | undefined;
   };
 }
 
@@ -102,7 +102,6 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
   const path = {
     [linkProps.pathAttributeKeyName]: `${dataCatalogPath}/${parentData.id}`
   };
-
   return (
     <StyledModal
       id='modal'
