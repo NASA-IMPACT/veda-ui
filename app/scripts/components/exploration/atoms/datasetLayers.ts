@@ -20,7 +20,8 @@ export const datasetLayersAtom = atom<DatasetLayer[]>((get) => {
       ...l,
       parentDataset: {
         id: dataset.id,
-        name: dataset.name
+        name: dataset.name,
+        infoDescription: dataset.infoDescription
       }
     }));
   });
