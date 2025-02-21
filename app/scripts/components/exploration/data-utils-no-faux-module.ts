@@ -35,7 +35,8 @@ export const getDatasetLayers = (datasets: VedaData<DatasetData>) =>
       ...l,
       parentDataset: {
         id: dataset.data.id,
-        name: dataset.data.name
+        name: dataset.data.name,
+        infoDescription: dataset.data.infoDescription
       }
     }));
   });
@@ -46,7 +47,8 @@ export const getLayersFromDataset = (datasets: DatasetData[]) =>
       ...l,
       parentDataset: {
         id: dataset.id,
-        name: dataset.name
+        name: dataset.name,
+        infoDescription: dataset.infoDescription
       }
     }));
   });
