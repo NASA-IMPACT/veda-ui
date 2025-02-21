@@ -89,7 +89,6 @@ const DatasetData = styled.div`
 `;
 
 interface DatasetListItemProps {
-  datasets: TimelineDataset[];
   datasetId: string;
   width: number;
   xScaled?: ScaleTime<number, number>;
