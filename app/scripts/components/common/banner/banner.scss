@@ -1,6 +1,9 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+
 .usa-banner__button:after {
   top: 3px;
 }
-.usa-banner__inner {
-  justify-content: center;
+
+.veda_one_padding .usa-banner__inner {
+  margin: 0;
 }

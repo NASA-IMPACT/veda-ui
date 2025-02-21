@@ -109,7 +109,7 @@ export default function Banner({
   return (
     <USWDSBanner
       aria-label={ariaLabel ?? DEFAULT_HEADER_TEXT}
-      className={className}
+      className={`${className} ${!process.env.ENABLE_USWDS_PAGE_HEADER && 'veda_one_padding'}`}
     >
       <USWDSBannerHeader
         isOpen={isOpen}
