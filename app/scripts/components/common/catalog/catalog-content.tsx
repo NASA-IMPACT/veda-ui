@@ -21,6 +21,7 @@ import {
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
+import { getParentDataset } from '$components/exploration/data-utils-no-faux-module';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -51,10 +52,7 @@ function enhanceDatasetLayers(dataset) {
     ...dataset,
     layers: dataset.layers.map((layer) => ({
       ...layer,
-      parentDataset: {
-        id: dataset.id,
-        name: dataset.name
-      }
+      parentDataset: getParentDataset(dataset)
     }))
   };
 }
