@@ -71,15 +71,18 @@ let headerNavItems = [
 let footerNavItems = [
   {
     ...dataCatalogNavItem,
-    customClassNames: 'usa-footer__primary-link'
+    customClassNames:
+      'usa-footer__primary-link tablet:padding-0 padding-x-0 padding-y-4'
   },
   {
     ...explorationNavItem,
-    customClassNames: 'usa-footer__primary-link'
+    customClassNames:
+      'usa-footer__primary-link tablet:padding-0 padding-x-0 padding-y-4'
   },
   {
     ...storiesNavItem,
-    customClassNames: 'usa-footer__primary-link'
+    customClassNames:
+      'usa-footer__primary-link tablet:padding-0 padding-x-0 padding-y-4'
   }
 ];
 

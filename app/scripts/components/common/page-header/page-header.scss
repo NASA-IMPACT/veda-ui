@@ -13,13 +13,50 @@
     margin-bottom: 1.5rem;
   }
 
-  .usa-nav__secondary-item .usa-nav__link  {
+  .usa-nav__secondary-item .usa-nav__link {
     padding: 0;
     color: themeVars.$veda-uswds-color-base-dark;
   }
 
-  .usa-nav__primary button[aria-expanded="false"] span:after {
+  .usa-nav__primary button[aria-expanded='false'] span:after {
     background-color: themeVars.$veda-uswds-color-base-dark;
   }
 }
+.usa-nav__secondary-links button {
+  color: themeVars.$veda-uswds-color-gray-cool;
+  font-size: themeVars.$veda-uswds-fontsize-2xs;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0;
+}
+@media (width <= themeVars.$veda-uswds-spacing-desktop) {
+  .usa-nav__primary button {
+    font-weight: themeVars.$veda-uswds-fontweight-light;
 
+    &[aria-expanded='false'] span:after,
+    &[aria-expanded='true'] span:after {
+      display: none;
+    }
+
+    &[aria-expanded='true'] {
+      font-weight: themeVars.$veda-uswds-fontweight-bold;
+      //BLUE VERTICAL INDICATOR
+      &:after {
+        background-color: themeVars.$veda-uswds-color-primary;
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: themeVars.$veda-uswds-spacing-5;
+        top: themeVars.$veda-uswds-spacing-5;
+        width: themeVars.$veda-uswds-spacing-5;
+        left: themeVars.$veda-uswds-spacing-5;
+      }
+    }
+    &:hover {
+      background-color: themeVars.$veda-uswds-color-base-white;
+    }
+  }
+  .usa-nav__submenu-item {
+    font-size: themeVars.$veda-uswds-fontsize-sm;
+  }
+}
