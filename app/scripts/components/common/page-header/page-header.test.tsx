@@ -12,7 +12,7 @@ import PageHeader from './index';
 // @NOTE: Possible Test cases
 // config & create dynamic nav menu list fn - different scenerios, happy vs unhappy path
 
-const mockMainNavItems: NavItem[] = navItems.mainNavItems;
+const mockMainNavItems: NavItem[] = navItems.headerNavItems;
 const mockSubNavItems: NavItem[] = navItems.subNavItems;
 
 const testTitle = 'Test Title';
