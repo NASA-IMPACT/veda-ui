@@ -4,6 +4,9 @@
   top: 3px;
 }
 
-.veda_one_padding .usa-banner__inner {
-  margin: 0;
+.veda_one_padding {
+  & .usa-banner__inner,
+  & .usa-banner__content {
+    margin: 0;
+  }
 }
