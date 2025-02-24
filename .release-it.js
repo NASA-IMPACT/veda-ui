@@ -21,8 +21,10 @@ function groupCommitsByCategory(logs) {
 
   // Loop through each prefix to find conventional commit pattern ex. feat: , feat(card):
   Object.entries(prefixes).forEach(([prefix, category]) => {
-    const regex = new RegExp(`^${prefix}!?\\(.*?\\)?: .*?\\)$`, 'gm');
-    const matches = logs.match(regex) || [];
+    const regex = new RegExp(
+      `^(((Initial commit)|(Merge [^\r\n]+(\s)[^\r\n]+((\s)((\s)[^\r\n]+)+)*(\s)?)|^((${prefix})(\([\w\-]+\))?!?: [^\r\n]+((\s)((\s)[^\r\n]+)+)*))(\s)?)$`
+    );
+    const matches = logs.filter((l) => l.match(regex));
     grouped[category] = [...matches, ...grouped[category]];
   });
 
@@ -34,7 +36,7 @@ module.exports = {
     'after:release': 'echo "VERSION_NUMBER=v${version}" >> "$GITHUB_OUTPUT" '
   },
   git: {
-    release: debug ? true : true,
+    release: debug ? false : true,
     commitMessage: 'chore(release): update to version v${version}',
     tagName: 'v${version}',
     tagAnnotation: 'Release v${version}',
@@ -51,20 +53,21 @@ module.exports = {
     releaseName: 'v${version}',
     autoGenerate: false,
     releaseNotes: function (context) {
-      const groupedCommits = groupCommitsByCategory(context.changelog);
+      const logs = context.changelog.split('\n');
+      const groupedCommits = groupCommitsByCategory(logs);
+      const title = `## What's changed \n ### ${prefix}\n`;
       const changelog = Object.entries(groupedCommits)
         .map(([prefix, commits]) => {
           if (commits.length > 0) {
-            return `## What's changed \n ### ${prefix}\n ${commits.join('\n')}`;
+            return `${commits.join('\n')}`;
           }
         })
         .join('\n');
-      return context.changelog;
+
+      return title + changelog;
     }
   },
   plugins: {
-    './recommended-bump/index.mjs': {
-      preset: 'angular'
-    }
+    './recommended-bump/index.mjs': {}
   }
 };
