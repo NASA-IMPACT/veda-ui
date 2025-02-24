@@ -12,9 +12,9 @@ export const getLinkProps = (
   >
 ) => {
   // Open the link in a new tab when link is external
-  const isExternalLink = /^https?:\/\//.test(linkTo);
-  const isMailtoLink = /^mailto?:/.test(linkTo);
-  return (isExternalLink || isMailtoLink)
+  const isExternalLink = /^(https?:\/\/|mailto:)/i.test(linkTo);
+
+  return (isExternalLink)
     ? {
         href: linkTo,
         to: linkTo,
