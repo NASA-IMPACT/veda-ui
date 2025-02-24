@@ -92,11 +92,10 @@ export default function Banner({
   leftGuidance,
   rightGuidance,
   className = '',
-  defaultIsOpen = false,
+  defaultIsOpen = true,
   contentId = 'gov-banner-content'
 }: BannerProps) {
   const [isOpen, setIsOpen] = useState(defaultIsOpen);
-
   const leftContent = {
     ...DEFAULT_GUIDANCE.left,
     ...leftGuidance

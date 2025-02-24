@@ -140,7 +140,7 @@ function getBannerContent(result) {
     leftGuidance: processedLeftGuidance,
     rightGuidance: processedRightGuidance,
     className: '',
-    defaultIsOpen: false,
+    defaultIsOpen: true,
     contentId: 'gov-banner-content'
   });
 }
