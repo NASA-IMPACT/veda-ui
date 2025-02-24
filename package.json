@@ -160,6 +160,7 @@
     "@parcel/transformer-postcss": "^2.12.0",
     "@parcel/transformer-raw": "~2.7.0",
     "@reactour/tour": "^3.6.1",
+    "@release-it/conventional-changelog": "^10.0.0",
     "@tanstack/react-query": "^4.3.9",
     "@tanstack/react-query-devtools": "^4.3.9",
     "@tanstack/react-table": "^8.9.3",
