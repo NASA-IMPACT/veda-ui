@@ -41,8 +41,7 @@ module.exports = {
     pushArgs: ['--follow-tags'],
     getLatestTagFromAllRefs: debug ? false : true,
     requireCleanWorkingDir: debug ? false : true,
-    requireUpstream: debug ? false : true,
-    changelog: 'git log --pretty=format:%s ${latestTag}...HEAD'
+    requireUpstream: debug ? false : true
   },
   npm: {
     publish: false
