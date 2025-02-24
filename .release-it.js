@@ -30,18 +30,19 @@ function groupCommitsByCategory(logs) {
 }
 
 module.exports = {
-  hooks: {
+  hooks: !debug && {
     'after:release': 'echo "VERSION_NUMBER=v${version}" >> "$GITHUB_OUTPUT" '
   },
   git: {
-    release: debug ? false : true,
+    release: debug ? true : true,
     commitMessage: 'chore(release): update to version v${version}',
     tagName: 'v${version}',
     tagAnnotation: 'Release v${version}',
     pushArgs: ['--follow-tags'],
     getLatestTagFromAllRefs: debug ? false : true,
     requireCleanWorkingDir: debug ? false : true,
-    requireUpstream: debug ? false : true
+    requireUpstream: debug ? false : true,
+    changelog: 'git log --pretty=format:%s ${latestTag}...HEAD'
   },
   npm: {
     publish: false
@@ -63,8 +64,8 @@ module.exports = {
     }
   },
   plugins: {
-    './recommended-bump/index.mjs': {
-      preset: 'conventionalcommits'
+    '@release-it/conventional-changelog': {
+      preset: 'angular'
     }
   }
 };
