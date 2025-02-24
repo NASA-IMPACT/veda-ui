@@ -51,14 +51,14 @@ module.exports = {
     releaseName: 'v${version}',
     autoGenerate: false,
     releaseNotes: function (context) {
-      // const groupedCommits = groupCommitsByCategory(context.changelog);
-      // const changelog = Object.entries(groupedCommits)
-      //   .map(([prefix, commits]) => {
-      //     if (commits.length > 0) {
-      //       return `## What's changed \n ### ${prefix}\n ${commits.join('\n')}`;
-      //     }
-      //   })
-      //   .join('\n');
+      const groupedCommits = groupCommitsByCategory(context.changelog);
+      const changelog = Object.entries(groupedCommits)
+        .map(([prefix, commits]) => {
+          if (commits.length > 0) {
+            return `## What's changed \n ### ${prefix}\n ${commits.join('\n')}`;
+          }
+        })
+        .join('\n');
       return context.changelog;
     }
   },
