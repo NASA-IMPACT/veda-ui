@@ -21,7 +21,7 @@ function groupCommitsByCategory(logs) {
 
   // Loop through each prefix to find conventional commit pattern ex. feat: , feat(card):
   Object.entries(prefixes).forEach(([prefix, category]) => {
-    const regex = new RegExp(`^\\* ${prefix}!?\\(.*?\\)?: .*?\\)$`, 'gm');
+    const regex = new RegExp(`^${prefix}!?\\(.*?\\)?: .*?\\)$`, 'gm');
     const matches = logs.match(regex) || [];
     grouped[category] = [...matches, ...grouped[category]];
   });
@@ -39,7 +39,6 @@ module.exports = {
     tagName: 'v${version}',
     tagAnnotation: 'Release v${version}',
     pushArgs: ['--follow-tags'],
-    getLatestTagFromAllRefs: debug ? false : true,
     requireCleanWorkingDir: debug ? false : true,
     requireUpstream: debug ? false : true,
     changelog: 'git log --pretty=format:%s ${latestTag}...HEAD'
@@ -52,19 +51,19 @@ module.exports = {
     releaseName: 'v${version}',
     autoGenerate: false,
     releaseNotes: function (context) {
-      const groupedCommits = groupCommitsByCategory(context.changelog);
-      const changelog = Object.entries(groupedCommits)
-        .map(([prefix, commits]) => {
-          if (commits.length > 0) {
-            return `## What's changed \n ### ${prefix}\n ${commits.join('\n')}`;
-          }
-        })
-        .join('\n');
-      return changelog;
+      // const groupedCommits = groupCommitsByCategory(context.changelog);
+      // const changelog = Object.entries(groupedCommits)
+      //   .map(([prefix, commits]) => {
+      //     if (commits.length > 0) {
+      //       return `## What's changed \n ### ${prefix}\n ${commits.join('\n')}`;
+      //     }
+      //   })
+      //   .join('\n');
+      return context.changelog;
     }
   },
   plugins: {
-    '@release-it/conventional-changelog': {
+    './recommended-bump/index.mjs': {
       preset: 'angular'
     }
   }
