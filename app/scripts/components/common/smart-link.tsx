@@ -33,7 +33,7 @@ interface CustomLinkProps {
  */
 export function CustomLink(props: CustomLinkProps) {
   const { href, ...rest } = props;
-  const isExternalLink = /^https?:\/\//.test(href);
+  const isExternalLink = /^(https?:\/\/|mailto:)/i.test(href);
   const linkProps = getLinkProps(href);
   return isExternalLink ? (
     // @ts-expect-error linkProps returned from getLinkProps are not being recognized suddenly
