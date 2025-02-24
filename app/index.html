@@ -101,7 +101,18 @@
     });
   </script>
 
-  <link rel="stylesheet" href="../dist/styles/theme.css">
+<script>
+  // Conditionally load theme CSS only if it exists (prevents 404 errors)
+  // This is only needed for older VEDA-config instances and not for standalone
+  // VEDA UI mode nor for newer Next.js instances
+  fetch('{{baseurl}}/dist/styles/theme.css')
+    .then(response => {
+      if (response.ok) {
+        document.head.innerHTML += '<link rel="stylesheet" href="{{baseurl}}/dist/styles/theme.css">';
+      }
+    })
+    .catch(() => {});
+</script>
 
 </head>
 
