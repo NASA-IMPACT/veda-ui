@@ -1,14 +1,18 @@
-import { Plugin } from 'release-it';
 import { Bumper } from 'conventional-recommended-bump';
 import semver from 'semver';
 import { getSemverTags } from 'git-semver-tags';
+import ConventionalChangelog from '@release-it/conventional-changelog';
 import createPreset from 'conventional-changelog-conventionalcommits';
 
 // Detect the version number based on conventional commits
 // This does not handle pre-release
-class RecommendedBump extends Plugin {
-  async getIncrementedVersion(options) {
-    // loadPreset('conventional') shows different result
+class RecommendedBump extends ConventionalChangelog {
+  constructor(...args) {
+    super(...args); // Initialize Conventional Changelog
+  }
+
+  // Somehow loadPreset('conventional') shows different result
+  async getIncrementedVersion() {
     const bumper = new Bumper(process.cwd());
     const conventionalCommitPreset = await createPreset();
     const recommendation = await bumper.bump(conventionalCommitPreset.whatBump);

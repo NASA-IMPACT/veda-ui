@@ -34,7 +34,7 @@ module.exports = {
     'after:release': 'echo "VERSION_NUMBER=v${version}" >> "$GITHUB_OUTPUT" '
   },
   git: {
-    release: debug ? true : true,
+    release: debug ? false : true,
     commitMessage: 'chore(release): update to version v${version}',
     tagName: 'v${version}',
     tagAnnotation: 'Release v${version}',
@@ -63,8 +63,8 @@ module.exports = {
     }
   },
   plugins: {
-    '@release-it/conventional-changelog': {
-      preset: 'angular'
+    '/recommended-bump/index.mjs': {
+      preset: 'conventionalcommits'
     }
   }
 };
