@@ -21,7 +21,6 @@ import {
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
-import { getParentDataset } from '$components/exploration/data-utils-no-faux-module';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -47,20 +46,6 @@ export const findParentDataset = (layerId: string, datasets) => {
   return parentDataset;
 };
 
-function enhanceDatasetLayers(dataset) {
-  return {
-    ...dataset,
-    layers: dataset.layers.map((layer) => ({
-      ...layer,
-      parentDataset: getParentDataset(dataset)
-    }))
-  };
-}
-
-export const getAllDatasetsWithEnhancedLayers = (
-  dataset
-): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
-
 function CatalogContent({
   datasets,
   selectedIds,
@@ -83,13 +68,8 @@ function CatalogContent({
         .flat()
     : [];
 
-  const allDatasetsWithEnhancedLayers = useMemo(
-    () => getAllDatasetsWithEnhancedLayers(datasets),
-    [datasets]
-  );
-
   const [datasetsToDisplay, setDatasetsToDisplay] = useState<DatasetData[]>(
-    prepareDatasets(allDatasetsWithEnhancedLayers, {
+    prepareDatasets(datasets, {
       search,
       taxonomies,
       sortField: DEFAULT_SORT_FIELD,
@@ -242,7 +222,7 @@ function CatalogContent({
   );
 
   useEffect(() => {
-    const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
+    const updated = prepareDatasets(datasets, {
       search,
       taxonomies,
       sortField: DEFAULT_SORT_FIELD,
