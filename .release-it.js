@@ -64,7 +64,9 @@ module.exports = {
   },
   plugins: {
     '/recommended-bump/index.mjs': {
-      preset: 'conventionalcommits'
+      preset: {
+        name: 'conventionalcommits'
+      }
     }
   }
 };
