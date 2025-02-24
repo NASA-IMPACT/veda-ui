@@ -1,11 +1,8 @@
 import React, { useMemo } from 'react';
 import { Icon } from '@trussworks/react-uswds';
-import { DropdownNavLink, NavLinkItem } from '../types';
-import { ActionNavItem, NavItemType } from '../page-header/types';
-import { NavItemCTA } from '../page-header/nav/nav-item-cta';
+import { NavItem } from '../page-header/types';
+import { createDynamicNavMenuList } from '../page-header/nav/create-dynamic-nav-menu-list';
 import ReturnToTopButton from './return-to-top-button';
-
-import { LinkProperties } from '$types/veda';
 import {
   USWDSFooter,
   USWDSFooterNav,
@@ -13,11 +10,10 @@ import {
 } from '$components/common/uswds';
 
 interface PageFooterProps {
-  mainNavItems: (NavLinkItem | DropdownNavLink | ActionNavItem)[];
-  subNavItems: (NavLinkItem | DropdownNavLink | ActionNavItem)[];
+  mainNavItems: NavItem[];
+  subNavItems: NavItem[];
   hideFooter?: boolean;
   logoSvg?: SVGElement | JSX.Element;
-  linkProperties: LinkProperties;
   footerSettings: {
     secondarySection: {
       division: string;
@@ -36,74 +32,17 @@ export default function PageFooter({
   subNavItems,
   hideFooter,
   logoSvg,
-  linkProperties,
   footerSettings
 }: PageFooterProps) {
   const { returnToTop, secondarySection } = footerSettings;
-  const FooterNavItemInternalLink = (item) => {
-    const { item: linkContents, linkClasses, linkProperties } = item;
-    if (linkProperties.LinkElement) {
-      const path = {
-        [linkProperties.pathAttributeKeyName]: linkContents.to
-      };
-      const LinkElement = linkProperties.LinkElement;
-      return (
-        <LinkElement
-          key={linkContents.id}
-          {...path}
-          className={linkClasses}
-          id={linkContents.id}
-        >
-          <span>{linkContents.title}</span>
-        </LinkElement>
-      );
-    }
-    // If the link provided is invalid, do not render the element
-    return null;
-  };
-
-  const createNavElement = (navItems, linkClasses) => {
-    //removing 'dropdown' items from array
-    const cleanedNavItems = navItems.filter((a) => {
-      if (a.type !== 'dropdown') {
-        return a;
-      }
-    });
-
-    return cleanedNavItems.map((item) => {
-      switch (item.type) {
-        case NavItemType.ACTION:
-          return <NavItemCTA item={item} customClasses={linkClasses} />;
-
-        case NavItemType.EXTERNAL_LINK:
-          return (
-            <a className={linkClasses} href={item.to} key={item.id}>
-              {item.title}
-            </a>
-          );
-        case NavItemType.INTERNAL_LINK:
-          return (
-            <FooterNavItemInternalLink
-              item={item}
-              linkClasses={linkClasses}
-              linkProperties={linkProperties}
-            />
-          );
-
-        default:
-          return <></>;
-      }
-    });
-  };
 
   const primaryItems = useMemo(
-    () => createNavElement(mainNavItems, 'usa-footer__primary-link'),
+    () => createDynamicNavMenuList({ navItems: mainNavItems }),
     [mainNavItems]
   );
   const secondaryItems = useMemo(
-    () =>
-      createNavElement(subNavItems, 'usa-link text-base-dark text-underline'),
-    [mainNavItems]
+    () => createDynamicNavMenuList({ navItems: subNavItems }),
+    [subNavItems]
   );
 
   return (

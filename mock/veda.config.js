@@ -1,7 +1,42 @@
 const dotEnvConfig = require('dotenv').config();
 const { parsed: config } = dotEnvConfig;
 
-let mainNavItems = [
+const dataCatalogNavItem = {
+  id: 'data-catalog',
+  title: 'Data Catalog',
+  to: '/data-catalog',
+  type: 'internalLink'
+};
+
+const explorationNavItem = {
+  id: 'exploration',
+  title: 'Exploration',
+  to: '/exploration',
+  type: 'internalLink'
+};
+
+const storiesNavItem = {
+  id: 'stories',
+  title: 'Stories',
+  to: '/stories',
+  type: 'internalLink'
+};
+
+const aboutNavItem = {
+  id: 'about',
+  title: 'About',
+  to: '/about',
+  type: 'internalLink'
+};
+
+const contactUsNavItem = {
+  id: 'contact-us',
+  title: 'Contact us',
+  actionId: 'open-google-form',
+  type: 'action'
+};
+
+let headerNavItems = [
   {
     id: 'test',
     title: 'TestDropdown1',
@@ -28,23 +63,23 @@ let mainNavItems = [
       }
     ]
   },
+  dataCatalogNavItem,
+  explorationNavItem,
+  storiesNavItem
+];
+
+let footerNavItems = [
   {
-    id: 'data-catalog',
-    title: 'Data Catalog',
-    to: '/data-catalog',
-    type: 'internalLink'
+    ...dataCatalogNavItem,
+    customClassNames: 'usa-footer__primary-link'
   },
   {
-    id: 'exploration',
-    title: 'Exploration',
-    to: '/exploration',
-    type: 'internalLink'
+    ...explorationNavItem,
+    customClassNames: 'usa-footer__primary-link'
   },
   {
-    id: 'stories',
-    title: 'Stories',
-    to: '/stories',
-    type: 'internalLink'
+    ...storiesNavItem,
+    customClassNames: 'usa-footer__primary-link'
   }
 ];
 
@@ -61,8 +96,8 @@ let footerSettings = {
 };
 
 if (!!config.HUB_URL && !!config.HUB_NAME)
-  mainNavItems = [
-    ...mainNavItems,
+  headerNavItems = [
+    ...headerNavItems,
     {
       id: 'hub',
       title: process.env.HUB_NAME,
@@ -71,12 +106,12 @@ if (!!config.HUB_URL && !!config.HUB_NAME)
     }
   ];
 
-let subNavItems = [
+let subNavItems = [aboutNavItem];
+
+let footerSubNavItems = [
   {
-    id: 'about',
-    title: 'About',
-    to: '/about',
-    type: 'internalLink'
+    ...aboutNavItem,
+    customClassNames: 'usa-link text-base-dark text-underline'
   }
 ];
 
@@ -96,15 +131,14 @@ const defaultGuidance = {
 };
 
 if (config.GOOGLE_FORM) {
-  subNavItems = [
-    ...subNavItems,
+  footerSubNavItems = [
+    ...footerSubNavItems,
     {
-      id: 'contact-us',
-      title: 'Contact us',
-      actionId: 'open-google-form',
-      type: 'action'
+      ...contactUsNavItem,
+      customClassNames: 'usa-link text-base-dark text-underline'
     }
   ];
+  subNavItems = [...subNavItems, contactUsNavItem];
 }
 
 module.exports = {
@@ -146,8 +180,10 @@ module.exports = {
     showIcon: true
   },
   navItems: {
-    mainNavItems,
-    subNavItems
+    headerNavItems,
+    footerNavItems,
+    subNavItems,
+    footerSubNavItems
   },
 
   footerSettings,

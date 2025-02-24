@@ -20,7 +20,6 @@ const defaultFooterSetting = {
 
 const mockMainNavItems: NavItem[] = navItems.mainNavItems;
 const mockSubNavItems: NavItem[] = navItems.subNavItems;
-// const mockFooterSettings = footerSettings;
 const hideFooter = false;
 const mockLinkProperties = {
   pathAttributeKeyName: 'to',
@@ -51,7 +50,6 @@ describe('PageFooter', () => {
         subNavItems={mockSubNavItems}
         hideFooter={hideFooter}
         logoSvg={<NasaLogoColor />}
-        linkProperties={mockLinkProperties}
         footerSettings={defaultFooterSetting}
       />
     );
@@ -68,7 +66,6 @@ describe('PageFooter', () => {
         subNavItems={mockSubNavItems}
         hideFooter={hideFooter}
         logoSvg={<NasaLogoColor />}
-        linkProperties={mockLinkProperties}
         footerSettings={defaultFooterSetting}
       />
     );
@@ -98,7 +95,6 @@ describe('PageFooter dynamic settings', () => {
     }));
     render(
       <PageFooter
-        linkProperties={mockLinkProperties}
         mainNavItems={mockMainNavItems}
         subNavItems={mockSubNavItems}
         hideFooter={true}

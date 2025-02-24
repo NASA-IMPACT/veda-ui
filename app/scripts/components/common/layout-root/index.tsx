@@ -36,12 +36,18 @@ import {
   mainNavItems,
   subNavItems
 } from '$components/common/page-header/default-config';
+import {
+  footerNavItems,
+  footerSubNavItems
+} from '$components/common/page-footer/default-config';
 import { checkEnvFlag } from '$utils/utils';
 
 const appTitle = process.env.APP_TITLE;
 const appDescription = process.env.APP_DESCRIPTION;
 const isUswdsFooterEnabled = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_FOOTER);
-const isCookieConsentEnabled = checkEnvFlag(process.env.ENABLE_COOKIE_CONSENT_FORM);
+const isCookieConsentEnabled = checkEnvFlag(
+  process.env.ENABLE_COOKIE_CONSENT_FORM
+);
 
 export const PAGE_BODY_ID = 'pagebody';
 
@@ -116,10 +122,9 @@ function LayoutRoot(props: { children?: ReactNode }) {
       </PageBody>
       {isUswdsFooterEnabled ? (
         <PageFooter
-          mainNavItems={mainNavItems}
-          subNavItems={subNavItems}
+          mainNavItems={footerNavItems}
+          subNavItems={footerSubNavItems}
           hideFooter={hideFooter}
-          linkProperties={{ LinkElement: NavLink, pathAttributeKeyName: 'to' }}
           logoSvg={<NasaLogoColor />}
           footerSettings={footerSettings}
         />
