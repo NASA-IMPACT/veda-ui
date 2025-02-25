@@ -34,7 +34,6 @@ export function DatasetList(props: DatasetListProps) {
     >
       {datasets.map((dataset) => (
         <DatasetListItem
-          datasets={datasets}
           key={dataset.data.id}
           datasetId={dataset.data.id}
           width={width}
