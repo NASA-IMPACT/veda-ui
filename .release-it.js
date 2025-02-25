@@ -19,7 +19,7 @@ function groupCommitsByCategory(logs) {
     grouped[category] = [];
   });
 
-  // Loop through each prefix to find conventional commit pattern ex. feat: , feat(card):
+  // Loop through each prefix to find conventional commit pattern ex. feat: , feat(card):, feat(card)! including some edge cases
   Object.entries(prefixes).forEach(([prefix, category]) => {
     const regex = new RegExp(
       `^(((Initial commit)|(Merge [^\r\n]+(\s)[^\r\n]+((\s)((\s)[^\r\n]+)+)*(\s)?)|^((${prefix})(\([\w\-]+\))?!?: [^\r\n]+((\s)((\s)[^\r\n]+)+)*))(\s)?)$`
@@ -43,7 +43,7 @@ module.exports = {
     pushArgs: ['--follow-tags'],
     requireCleanWorkingDir: debug ? false : true,
     requireUpstream: debug ? false : true,
-    changelog: 'git log --pretty=format:%s ${latestTag}...HEAD'
+    changelog: 'git log --pretty=format:%s ${latestTag}...HEAD' // The output will be passed to releaseNotes context.changelog
   },
   npm: {
     publish: false
@@ -55,11 +55,11 @@ module.exports = {
     releaseNotes: function (context) {
       const logs = context.changelog.split('\n');
       const groupedCommits = groupCommitsByCategory(logs);
-      const title = `## What's changed \n ### ${prefix}\n`;
+      const title = `## What's changed \n`;
       const changelog = Object.entries(groupedCommits)
         .map(([prefix, commits]) => {
           if (commits.length > 0) {
-            return `${commits.join('\n')}`;
+            return `### ${prefix}\n ${commits.join('\n')}`;
           }
         })
         .join('\n');
@@ -67,6 +67,7 @@ module.exports = {
       return title + changelog;
     }
   },
+  // Only to bump the version with conventional commits
   plugins: {
     './recommended-bump/index.mjs': {}
   }
