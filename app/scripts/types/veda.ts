@@ -28,7 +28,7 @@ interface DatasetLayerCommonCompareProps {
 interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps {
   zoomExtent?: number[];
   bounds?: number[];
-  sourceParams?: Record<string, any>;
+  sourceParams?: SourceParameters;
 }
 
 export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
@@ -77,7 +77,7 @@ export interface DatasetLayer extends DatasetLayerCommonProps {
   analysis?: {
     metrics: string[];
     exclude: boolean;
-    sourceParams?: Record<string, any>;
+    sourceParams?: SourceParameters;
   };
   assetUrlReplacements?: {
     from: string;
