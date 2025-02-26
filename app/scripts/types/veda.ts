@@ -127,7 +127,11 @@ interface LayerLegendUnit {
   label: string;
 }
 // These two values don't match what is returned from stac vs. what dashboard needs
-// ex. colormap value from stac endpoint can be {0: [0,0,0,0]}, while key should be string to for titiler
+// ex. colormap value from stac endpoint is an object {'0': [0,0,0,0]}
+// But this will be translated colorMap[0] = [0,0,0,0] when passed as a query string parameter
+// See how qs (library we are using to format query string) parses object: https://www.npmjs.com/package/qs#parsing-objects
+// rescale value can be [number,number][] while dashboard expects it to be [number, number] for dynamic rescaling
+// So we make sure these two are formatted as we expect for dashboard
 export interface SourceParameters {
   colormap?: string;
   rescale?: [number, number];

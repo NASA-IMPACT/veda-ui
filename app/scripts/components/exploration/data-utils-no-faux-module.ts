@@ -12,6 +12,7 @@ import {
   TimeDensity,
   TimelineDatasetSuccess
 } from './types.d.ts';
+import { RENDER_KEY } from './constants';
 import {
   DataMetric,
   DATA_METRICS,
@@ -198,12 +199,15 @@ function flattenAndCalculateMinMax(rescale: number[]): [number, number] {
   return [min, max];
 }
 
-function formatRenderExtensionData(renderData): SourceParameters {
+export function formatRenderExtensionData(renderData): SourceParameters {
   return {
     ...renderData,
-    colormap: renderData.colormap && JSON.stringify(renderData.colormap),
-    rescale:
-      renderData.rescale && flattenAndCalculateMinMax([renderData.rescale])
+    ...(renderData.colormap && {
+      colormap: JSON.stringify(renderData.colormap)
+    }),
+    ...(renderData.rescale && {
+      rescale: flattenAndCalculateMinMax([renderData.rescale])
+    })
   };
 }
 
@@ -219,8 +223,6 @@ export function resolveRenderParams(
   datasetSourceParams: Record<string, any> | undefined,
   queryDataRenders: Record<string, any> | undefined
 ): SourceParameters | undefined {
-  const renderKey = 'dashboard';
-
   // @NOTE: Render extension might not have separate namespaces for each asset yet. (2025 Feb)
   // Fallback to manual source parameters when assets are specified
   if (datasetSourceParams?.assets) {
@@ -232,8 +234,8 @@ export function resolveRenderParams(
   }
 
   // return render extension data
-  if (queryDataRenders && queryDataRenders[renderKey]) {
-    const renderParams = queryDataRenders[renderKey];
+  if (queryDataRenders && queryDataRenders[RENDER_KEY]) {
+    const renderParams = queryDataRenders[RENDER_KEY];
     return formatRenderExtensionData(renderParams);
   }
   // return user defined source params (which can be undefined)
