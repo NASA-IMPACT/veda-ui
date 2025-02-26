@@ -172,7 +172,7 @@ module.exports.serve = gulp.series(
 const parallelTasks =
   process.env.NODE_ENV === 'production'
     ? gulp.parallel(copyFiles)
-    : gulp.parallel(copyFiles, copyNetlifyCMS);
+    : gulp.parallel(copyFiles, copyNetlifyCMS, copyUswdsImages);
 
 module.exports.buildlib = gulp.series(clean, parcelBuildLib);
 
