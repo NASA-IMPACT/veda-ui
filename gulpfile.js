@@ -171,7 +171,7 @@ module.exports.serve = gulp.series(
 // do not deploy netlify cms to production
 const parallelTasks =
   process.env.NODE_ENV === 'production'
-    ? gulp.parallel(copyFiles)
+    ? gulp.parallel(copyFiles, copyUswdsImages)
     : gulp.parallel(copyFiles, copyNetlifyCMS, copyUswdsImages);
 
 module.exports.buildlib = gulp.series(clean, parcelBuildLib);
