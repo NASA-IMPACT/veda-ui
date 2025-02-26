@@ -109,7 +109,7 @@ export default function Banner({
   return (
     <USWDSBanner
       aria-label={ariaLabel ?? DEFAULT_HEADER_TEXT}
-      className={`${className} ${!uswdsHeaderActive && 'veda_one_padding'}`}
+      className={`${className} ${!uswdsHeaderActive && 'banner--left-aligned'}`}
     >
       <USWDSBannerHeader
         isOpen={isOpen}
