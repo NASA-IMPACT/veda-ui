@@ -9,7 +9,7 @@ import {
   ModalHeadline
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { LayerInfo } from '$types/veda';
+import { LayerInfo, ParentDatset } from '$types/veda';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
 import { useVedaUI } from '$context/veda-ui-provider';
@@ -56,11 +56,7 @@ export interface LayerInfoModalData {
   name: string;
   info?: LayerInfo;
   description: string;
-  parentData: {
-    id: string;
-    name: string;
-    infoDescription?: string;
-  };
+  parentData: ParentDatset;
 }
 
 interface LayerInfoModalProps {
@@ -102,7 +98,6 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
   const path = {
     [linkProps.pathAttributeKeyName]: `${dataCatalogPath}/${parentData.id}`
   };
-
   return (
     <StyledModal
       id='modal'

@@ -10,9 +10,13 @@
 $veda-uswds-basefont-sans: utils.family('sans');
 
 // // FONT-SIZE
-$veda-uswds-fontsize-3xs: utils.size('body', '3xs');
+
 $veda-uswds-fontsize-lg: utils.size('body', 'lg');
+$veda-uswds-fontsize-md: utils.size('body', 'md');
 $veda-uswds-fontsize-sm: utils.size('body', 'sm');
+$veda-uswds-fontsize-xs: utils.size('body', 'xs');
+$veda-uswds-fontsize-2xs: utils.size('body', '2xs');
+$veda-uswds-fontsize-3xs: utils.size('body', '3xs');
 
 // FONT-WEIGHT
 $veda-uswds-fontweight-light: utils.font-weight('light');
@@ -22,12 +26,13 @@ $veda-uswds-fontweight-semibold: utils.font-weight('semibold');
 
 // COLORS
 $veda-uswds-color-primary-darker: utils.color('blue-warm-80v');
+$veda-uswds-color-primary: utils.color('blue-60v');
 $veda-uswds-color-primary-light: utils.color('blue-30');
 $veda-uswds-color-secondary: utils.color('red-50');
 $veda-uswds-color-base-dark: utils.color('gray-cool-60');
-$veda-uswds-color-base-darkest: utils.color(
-  'gray-cool-80'
-); // re-mapped, theme-token 'base-darkest' originally mapped to 'gray-90'
+$veda-uswds-color-base-darkest: utils.color('gray-cool-80');
+$veda-uswds-color-gray-cool: utils.color('gray-cool-50');
+// re-mapped, theme-token 'base-darkest' originally mapped to 'gray-90'
 $veda-uswds-color-base-light: utils.color('gray-cool-30');
 $veda-uswds-color-base-lightest: utils.color('gray-cool-4');
 $veda-uswds-color-base-white: utils.color('white');
@@ -37,11 +42,16 @@ $veda-uswds-color-base-ink: utils.color(
 
 // SPACING
 $veda-uswds-spacing-5: spacing.units(0.5);
-
 $veda-uswds-spacing-1: spacing.units(1);
 $veda-uswds-spacing-105: spacing.units(1.5);
 $veda-uswds-spacing-desktop: spacing.units('desktop');
+$veda-uswds-spacing-tablet: spacing.units('tablet');
+
+$veda-uswds-spacing-mobile-lg: spacing.units('mobile-lg');
 
 //PADDING
+$veda-uswds-padding-1: spacing.units(1);
+$veda-uswds-padding-2: spacing.units(2);
+$veda-uswds-padding-3: spacing.units(3);
 $veda-uswds-padding-4: spacing.units(4);
 $veda-uswds-padding-5: spacing.units(5);

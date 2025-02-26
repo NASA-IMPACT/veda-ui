@@ -23,11 +23,6 @@
      */
   }
 
-  @media (width <= themeVars.$veda-uswds-spacing-desktop) {
-    svg {
-      display: none;
-    }
-  }
 
   svg {
     height: 2.5rem;

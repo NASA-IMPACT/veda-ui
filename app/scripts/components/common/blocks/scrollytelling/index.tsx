@@ -358,7 +358,9 @@ function Scrollytelling(props) {
     activeChapterLayerData ?? {};
 
   return (
+
     <div>
+
       <ScrollyMapContainer topOffset={topOffset || 0}>
         {areLayersLoading && <MapLoading />}
 

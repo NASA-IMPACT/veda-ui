@@ -1,3 +1,5 @@
+const debug = process.argv.includes('--debug');
+
 const prefixes = {
   feat: '🎉 Features',
   fix: '🐛 Fixes',
@@ -17,10 +19,12 @@ function groupCommitsByCategory(logs) {
     grouped[category] = [];
   });
 
-  // Loop through each prefix to find conventional commit pattern ex. feat: , feat(card):
+  // Loop through each prefix to find conventional commit pattern ex. feat: , feat(card):, feat(card)! including some edge cases
   Object.entries(prefixes).forEach(([prefix, category]) => {
-    const regex = new RegExp(`^\\* ${prefix}(\\(.*?\\))?: .*?\\)$`, 'gm');
-    const matches = logs.match(regex) || [];
+    const regex = new RegExp(
+      `^(((Initial commit)|(Merge [^\r\n]+(\s)[^\r\n]+((\s)((\s)[^\r\n]+)+)*(\s)?)|^((${prefix})(\([\w\-]+\))?!?: [^\r\n]+((\s)((\s)[^\r\n]+)+)*))(\s)?)$`
+    );
+    const matches = logs.filter((l) => l.match(regex));
     grouped[category] = [...matches, ...grouped[category]];
   });
 
@@ -28,41 +32,43 @@ function groupCommitsByCategory(logs) {
 }
 
 module.exports = {
-  hooks: {
+  hooks: !debug && {
     'after:release': 'echo "VERSION_NUMBER=v${version}" >> "$GITHUB_OUTPUT" '
   },
   git: {
+    release: debug ? false : true,
     commitMessage: 'chore(release): update to version v${version}',
     tagName: 'v${version}',
     tagAnnotation: 'Release v${version}',
     pushArgs: ['--follow-tags'],
-    getLatestTagFromAllRefs: true
+    requireCleanWorkingDir: debug ? false : true,
+    requireUpstream: debug ? false : true,
+    changelog: 'git log --pretty=format:%s ${latestTag}...HEAD' // The output will be passed to releaseNotes context.changelog
   },
   npm: {
     publish: false
   },
   github: {
-    release: true,
+    release: debug ? false : true,
     releaseName: 'v${version}',
     autoGenerate: false,
     releaseNotes: function (context) {
-      const groupedCommits = groupCommitsByCategory(context.changelog);
+      const logs = context.changelog.split('\n');
+      const groupedCommits = groupCommitsByCategory(logs);
+      const title = `## What's changed \n`;
       const changelog = Object.entries(groupedCommits)
         .map(([prefix, commits]) => {
           if (commits.length > 0) {
-            return `## What's changed \n ### ${prefix}\n ${commits.join('\n')}`;
+            return `### ${prefix}\n ${commits.join('\n')}`;
           }
         })
         .join('\n');
 
-      return changelog;
+      return title + changelog;
     }
   },
+  // Only to bump the version with conventional commits
   plugins: {
-    // The @release-it/conventional-changelog plugin is primarily used for handling version bumps
-    // because we encountered difficulties generating GitHub release notes with the plugin.
-    '@release-it/conventional-changelog': {
-      preset: 'conventionalcommits'
-    }
+    './recommended-bump/index.mjs': {}
   }
 };
