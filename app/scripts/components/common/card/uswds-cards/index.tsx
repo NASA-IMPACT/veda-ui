@@ -1,4 +1,5 @@
 import React from 'react';
+import { CardProps } from './types';
 import {
   USWDSCardComponent,
   USWDSCardBody,
@@ -8,40 +9,28 @@ import {
 } from '$uswds';
 import './styles.scss';
 
-interface CardStyleOverrides {
-  headerClassNames?: string;
-  bodyClassNames?: string;
-}
-
-interface FlayLayoutCardProps {
-  layout?: 'flagDefault' | 'flagMediaRight';
-  heading: string | JSX.Element;
-  footer: JSX.Element;
-  imgSrc: string;
-  imgAlt: string;
-  description: string | JSX.Element;
-  styleOverrides?: CardStyleOverrides;
-}
+// @TODO: Implement overrideable Card Acessibility States
 
 function isString(value: string | JSX.Element): boolean {
   return typeof value === 'string';
 }
 
-export default function FlagLayoutCard({
-  layout = 'flagDefault',
+export default function BaseCard({
+  layout,
   imgSrc,
   imgAlt,
   heading,
   description,
   styleOverrides,
-  footer
-}: FlayLayoutCardProps) {
+  footer,
+  gridLayout
+}: CardProps) {
   const headerClassNames =
     styleOverrides?.headerClassNames || 'usa-card__heading card-header';
   const bodyClassNames = styleOverrides?.bodyClassNames || 'font-body-xs';
 
   return (
-    <USWDSCardComponent layout={layout} className='card-general'>
+    <USWDSCardComponent layout={layout} gridLayout={gridLayout}>
       <USWDSCardHeader>
         {isString(heading) ? (
           <h2 className={headerClassNames}>{heading}</h2>

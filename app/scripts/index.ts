@@ -39,7 +39,8 @@ import {
 // Include only the custom stylings for the VEDA components into the library build
 import './styles/veda-components.scss';
 import CatalogContent from '$components/common/catalog/catalog-content';
-import FlagLayoutCard from '$components/common/card/flag-layout-card';
+import DefaultCard from '$components/common/card/uswds-cards/default-card';
+import FlagCard from '$components/common/card/uswds-cards/flag-card';
 
 // Adding .last property to array
 /* eslint-disable-next-line fp/no-mutating-methods */
@@ -80,7 +81,8 @@ export {
   DatasetSelectorModal,
 
   // CARDS
-  FlagLayoutCard,
+  FlagCard,
+  DefaultCard,
 
   // HOOKS
   useTimelineDatasetAtom,

@@ -12,7 +12,7 @@ import ClassicCard, { ClassicCardItem } from './classic';
 import CoverCard, { CoverCardItem } from './cover';
 import FeaturedCard, { FeaturedCardItem } from './featured';
 import HorizontalInfoCard, { HorizontalInfoCardItem } from './horizontal-info';
-import FlagLayoutCard from './flag-layout-card';
+import FlagCard from './uswds-cards/flag-card';
 import { LinkProperties } from '$types/veda';
 import * as utils from '$utils/utils';
 import { ElementInteractive } from '$components/common/element-interactive';
@@ -203,7 +203,7 @@ export default function CardComponent(
       data.tagLabels
     ) {
       baseProps['children'] = (
-        <FlagLayoutCard
+        <FlagCard
           imgSrc={data.imgSrc}
           imgAlt={data.imgAlt}
           heading={data.title}
@@ -211,6 +211,7 @@ export default function CardComponent(
           footer={<Tags items={data.tagLabels} />}
         />
       );
+      baseProps['style'] = { width: '100%' };
     }
 
     return baseProps;
