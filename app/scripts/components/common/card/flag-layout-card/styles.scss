@@ -1,0 +1,14 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+
+.usa-card-group {
+  flex-direction: column;
+}
+
+@media (width >= 40em) {
+  .usa-card-group {
+    flex-direction: column;
+  }
+}
+.card-header {
+  color: themeVars.$veda-uswds-color-base-ink;
+}

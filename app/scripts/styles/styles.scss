@@ -1,7 +1,5 @@
-
 @forward 'uswds-theme';
 @forward 'veda-ui-theme-vars';
-
 
 @use 'uswds-utilities';
 @use 'usa-layout-grid';
@@ -20,5 +18,6 @@
 @use 'usa-alert';
 @use 'usa-site-alert';
 @use 'usa-banner';
+@use 'usa-tag';
 
 @use './veda-components';

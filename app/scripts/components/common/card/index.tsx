@@ -7,10 +7,12 @@ import {
 } from '@devseed-ui/theme-provider';
 import styled from 'styled-components';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
+import { Tags } from '../tags';
 import ClassicCard, { ClassicCardItem } from './classic';
 import CoverCard, { CoverCardItem } from './cover';
 import FeaturedCard, { FeaturedCardItem } from './featured';
 import HorizontalInfoCard, { HorizontalInfoCardItem } from './horizontal-info';
+import FlagLayoutCard from './flag-layout-card';
 import { LinkProperties } from '$types/veda';
 import * as utils from '$utils/utils';
 import { ElementInteractive } from '$components/common/element-interactive';
@@ -27,7 +29,8 @@ export enum CardType {
   CLASSIC = 'classic',
   COVER = 'cover',
   FEATURED = 'featured',
-  HORIZONTALINFO = 'horizontal-info'
+  HORIZONTALINFO = 'horizontal-info',
+  FLAGLAYOUT = 'flag-layout'
 }
 
 export interface CardItemProps {
@@ -191,7 +194,25 @@ export default function CardComponent(
           tagLabels={data.tagLabels}
         />
       );
+    } else if (
+      cardType === CardType.FLAGLAYOUT &&
+      data.imgSrc &&
+      data.imgAlt &&
+      data.title &&
+      data.description &&
+      data.tagLabels
+    ) {
+      baseProps['children'] = (
+        <FlagLayoutCard
+          imgSrc={data.imgSrc}
+          imgAlt={data.imgAlt}
+          heading={data.title}
+          description={data.description}
+          footer={<Tags items={data.tagLabels} />}
+        />
+      );
     }
+
     return baseProps;
   };
 

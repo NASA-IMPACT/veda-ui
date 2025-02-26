@@ -3,18 +3,12 @@ import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
-import { USWDSCardGroup } from '../uswds';
-import { Card, CardType } from '../card';
 import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
 
-import {
-  FilterActions,
-  getDatasetDescription,
-  getMediaProperty
-} from './utils';
+import { FilterActions } from './utils';
 import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
@@ -22,14 +16,12 @@ import {
   getTaxonomyByIds,
   generateTaxonomies,
   getTaxonomy,
-  TAXONOMY_SOURCE,
-  getAllTaxonomyValues
+  TAXONOMY_SOURCE
 } from '$utils/veda-data/taxonomies';
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { getParentDataset } from '$components/exploration/data-utils-no-faux-module';
-import { useVedaUI } from '$context/veda-ui-provider';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -83,9 +75,7 @@ function CatalogContent({
     string | null
   >(null);
   const isSelectable = selectedIds !== undefined;
-  const {
-    routes: { dataCatalogPath }
-  } = useVedaUI();
+
   const datasetTaxonomies = generateTaxonomies(datasets);
   const urlTaxonomyItems = taxonomies
     ? Object.entries(taxonomies)
@@ -251,30 +241,6 @@ function CatalogContent({
     [selectedIds, setSelectedIds, exclusiveSourceSelected, datasets]
   );
 
-  const generateCardsWhomRoute = () => (
-    <USWDSCardGroup>
-      {datasetsToDisplay.map((d) => {
-        const imgSrc = getMediaProperty(undefined, d, 'src');
-        const imgAlt = getMediaProperty(undefined, d, 'alt');
-        const description = getDatasetDescription(undefined, d);
-        const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
-
-        return (
-          <Card
-            cardType={CardType.FLAGLAYOUT}
-            key={d.id}
-            imgSrc={imgSrc}
-            imgAlt={imgAlt}
-            title={d.name}
-            description={description}
-            tagLabels={allTaxonomyValues}
-            to={`${dataCatalogPath}/${d.id}`}
-          />
-        );
-      })}
-    </USWDSCardGroup>
-  );
-
   useEffect(() => {
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
       search,
@@ -365,7 +331,13 @@ function CatalogContent({
               ))}
             </Cards>
           ) : (
-            <>{generateCardsWhomRoute()}</>
+            <Cards>
+              {datasetsToDisplay.map((d) => (
+                <li key={d.id}>
+                  <CatalogCard dataset={d} searchTerm={search} />
+                </li>
+              ))}
+            </Cards>
           )
         ) : (
           <EmptyState>
