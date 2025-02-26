@@ -1,6 +1,7 @@
 ## DRAFT LOG OF COMPONENTS
 
 ### Cards
+View Cards at `/sandbox/cards`
 ##### Common props across cards
 | props          | type                                                                  | required | description |
 |----------------|-----------------------------------------------------------------------|----------|-------------|

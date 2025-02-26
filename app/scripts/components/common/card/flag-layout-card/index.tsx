@@ -36,18 +36,15 @@ export default function FlagLayoutCard({
   styleOverrides,
   footer
 }: FlayLayoutCardProps) {
+  const headerClassNames =
+    styleOverrides?.headerClassNames || 'usa-card__heading card-header';
+  const bodyClassNames = styleOverrides?.bodyClassNames || 'font-body-xs';
+
   return (
     <USWDSCardComponent layout={layout} className='card-general'>
       <USWDSCardHeader>
         {isString(heading) ? (
-          <h2
-            className={
-              styleOverrides?.headerClassNames ||
-              'usa-card__heading card-header'
-            }
-          >
-            {heading}
-          </h2>
+          <h2 className={headerClassNames}>{heading}</h2>
         ) : (
           heading
         )}
@@ -57,9 +54,7 @@ export default function FlagLayoutCard({
       </USWDSCardMedia>
       <USWDSCardBody>
         {isString(description) ? (
-          <p className={styleOverrides?.bodyClassNames || 'font-body-xs'}>
-            {description}
-          </p>
+          <p className={bodyClassNames}>{description}</p>
         ) : (
           description
         )}
