@@ -126,6 +126,13 @@ export interface DatasetDatumFnResolverBag {
 interface LayerLegendUnit {
   label: string;
 }
+// These two values don't match what is returned from stac vs. what dashboard needs
+// ex. colormap value from stac endpoint can be {0: [0,0,0,0]}, while key should be string to for titiler
+export interface SourceParameters {
+  colormap?: string;
+  rescale?: [number, number];
+  [key: string]: any;
+}
 
 export interface LayerLegendGradient {
   type: 'gradient';

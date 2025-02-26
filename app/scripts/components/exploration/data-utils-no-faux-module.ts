@@ -24,7 +24,8 @@ import {
   VedaDatum,
   DatasetData,
   DatasetLayerType,
-  ParentDatset
+  ParentDatset,
+  SourceParameters
 } from '$types/veda';
 
 export function getParentDataset(data: DatasetData): ParentDatset {
@@ -155,15 +156,6 @@ export function resolveLayerTemporalExtent(
   }
 }
 
-// What is a valid source params to make the dataset render as expected?
-const hasValidSourceParams = (params) => {
-  return (
-    params &&
-    ('colormap_name' in params || 'colormap' in params) &&
-    'rescale' in params
-  );
-};
-
 /**
  * Utility to check if render parameters are applicable based on dataset type.
  *
@@ -206,48 +198,46 @@ function flattenAndCalculateMinMax(rescale: number[]): [number, number] {
   return [min, max];
 }
 
-// renderParams precedence: Start with sourceParams from the dataset.
-// If it's not defined, check for the dashboard render configuration in queryData.
-// If still undefined, check for asset-specific renders using the sourceParams' assets
-// property.
+function formatRenderExtensionData(renderData): SourceParameters {
+  return {
+    ...renderData,
+    colormap: renderData.colormap && JSON.stringify(renderData.colormap),
+    rescale:
+      renderData.rescale && flattenAndCalculateMinMax([renderData.rescale])
+  };
+}
+
+// renderParams precedence
+// 1. if the layer requires specific asset first,
+// 1-1. If so, check if renderExtension has that asset as a name space.
+// 1-1-1. If so, use the data.
+// 1-1-2. If not, fallback to user defined source parameters
+// 2. if renderExtension data exists
+// 2-1. If so, use the render Extension
+// 3. return user defined source parameters (which can be undefined)
 export function resolveRenderParams(
   datasetSourceParams: Record<string, any> | undefined,
   queryDataRenders: Record<string, any> | undefined
-): Record<string, any> | undefined {
-  // Return null if there are no user-configured sourcparams nor render parameter
-  // so it doesn't get subbed with default values
-  if (!datasetSourceParams && !queryDataRenders) return undefined;
+): SourceParameters | undefined {
+  const renderKey = 'dashboard';
 
-  // Start with sourceParams from the dataset.
-  // Return the source param as it is if exists
-  if (hasValidSourceParams(datasetSourceParams)) {
+  // @NOTE: Render extension might not have separate namespaces for each asset yet. (2025 Feb)
+  // Fallback to manual source parameters when assets are specified
+  if (datasetSourceParams?.assets) {
+    if (queryDataRenders && queryDataRenders[datasetSourceParams.assets])
+      return formatRenderExtensionData(
+        queryDataRenders[datasetSourceParams.assets]
+      );
     return datasetSourceParams;
   }
 
-  // Check for the dashboard render configuration in queryData
-  if (!queryDataRenders)
-    throw new Error('No render parameter exists from stac endpoint.');
-
-  // Check the namespace from render extension
-  const renderKey = queryDataRenders.dashboard
-    ? 'dashboard'
-    : datasetSourceParams?.assets;
-  if (!queryDataRenders[renderKey])
-    throw new Error(
-      'No proper render parameter for dashboard namespace exists.'
-    );
-
-  // Return the render extension parameter
-  if (
-    queryDataRenders[renderKey] &&
-    hasValidSourceParams(queryDataRenders[renderKey])
-  ) {
+  // return render extension data
+  if (queryDataRenders && queryDataRenders[renderKey]) {
     const renderParams = queryDataRenders[renderKey];
-    return {
-      ...renderParams,
-      rescale: flattenAndCalculateMinMax([renderParams.rescale])
-    };
+    return formatRenderExtensionData(renderParams);
   }
+  // return user defined source params (which can be undefined)
+  return datasetSourceParams;
 }
 
 export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
