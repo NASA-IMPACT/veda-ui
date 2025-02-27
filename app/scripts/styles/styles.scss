@@ -1,24 +1,10 @@
 
 @forward 'uswds-theme';
+
+@forward 'uswds';
+
+@use 'uswds-core' as *;
+
 @forward 'veda-ui-theme-vars';
-
-
-@use 'uswds-utilities';
-@use 'usa-layout-grid';
-@use 'usa-button';
-@use 'usa-icon';
-@use 'usa-card';
-@use 'usa-button-group';
-@use 'usa-modal';
-@use 'usa-footer';
-@use 'usa-list';
-@use 'usa-form';
-@use 'usa-input';
-@use 'usa-label';
-@use 'uswds-fonts';
-@use 'usa-header';
-@use 'usa-alert';
-@use 'usa-site-alert';
-@use 'usa-banner';
 
 @use './veda-components';
