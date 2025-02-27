@@ -39,7 +39,7 @@ export const NavDropDownButton = ({
     }
   }, [index, isOpen, setIsOpen]);
   const dropdownRef = useClickOutside(handleClickOutside);
-  const submenuItems = createDynamicNavMenuList(item.children);
+  const submenuItems = createDynamicNavMenuList({ navItems: item.children });
 
   return (
     <div key={item.id} ref={dropdownRef}>
