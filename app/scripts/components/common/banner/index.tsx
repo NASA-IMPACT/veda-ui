@@ -9,6 +9,7 @@ import {
   USWDSBannerGuidance,
   USWDSMediaBlockBody
 } from '$uswds';
+import { checkEnvFlag } from '$utils/utils';
 
 interface Guidance {
   left?: GuidanceContent;
@@ -95,12 +96,11 @@ export default function Banner({
   contentId = 'gov-banner-content'
 }: BannerProps) {
   const [isOpen, setIsOpen] = useState(defaultIsOpen);
-
   const leftContent = {
     ...DEFAULT_GUIDANCE.left,
     ...leftGuidance
   } as GuidanceContent;
-
+  const uswdsHeaderActive = checkEnvFlag(process.env.ENABLE_USWDS_PAGE_HEADER);
   const rightContent = {
     ...DEFAULT_GUIDANCE.right,
     ...rightGuidance
@@ -109,7 +109,7 @@ export default function Banner({
   return (
     <USWDSBanner
       aria-label={ariaLabel ?? DEFAULT_HEADER_TEXT}
-      className={className}
+      className={`${className} ${!uswdsHeaderActive && 'banner--left-aligned'}`}
     >
       <USWDSBannerHeader
         isOpen={isOpen}
