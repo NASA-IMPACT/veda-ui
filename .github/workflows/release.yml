@@ -46,9 +46,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - weekindex
-    strategy:
-      matrix:
-        repo: ['nasa-impact/veda-config', 'US-GHG-Center/veda-config-ghg']
     steps:
       - name: Generate a token
         id: generate-token
@@ -92,7 +89,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{steps.generate-token.outputs.token}}
-          repository: ${{ matrix.repo }}
+          repository: nasa-impact/veda-config
           event-type: update-version
           client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'
   notify:
@@ -100,7 +97,6 @@ jobs:
     if: failure() 
     runs-on: ubuntu-latest
     needs:
-      - weekindex
       - release
     steps:
       - name: Notify failure through Slack
@@ -109,7 +105,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*VEDA UI Release ${{ steps.git-release.outputs.VERSION_NUMBER || '' }} failed*: "
+            text: "*VEDA UI Release failed*: "
             blocks:
               - type: "section"
                 text:
