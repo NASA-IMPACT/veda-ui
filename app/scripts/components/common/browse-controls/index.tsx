@@ -132,14 +132,16 @@ export default styled(BrowseControls)`
 interface DropdownOptionsProps {
   size: ButtonProps['size'];
   items: FilterOption[];
-  currentId?: string;
+  currentId?: string | string[];
   onChange: (value: FilterOption['id']) => void;
   prefix: string;
 }
 
 function DropdownOptions(props: DropdownOptionsProps) {
   const { size, items, currentId, onChange, prefix } = props;
-  const currentItem = items.find((d) => d.id === currentId);
+  const currentItem = Array.isArray(currentId)
+  ? items.find(item => item.id === currentId[0])
+  : items.find(item => item.id === currentId);
 
   return (
     <DropdownScrollable
