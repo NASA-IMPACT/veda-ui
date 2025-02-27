@@ -6,7 +6,10 @@ interface TagsProps {
   items: string[];
   classNames?: string;
 }
-export const Tags = ({ items, classNames = 'default-veda-tag' }: TagsProps) => {
+export const Tags = ({
+  items,
+  classNames = 'default-veda-tag text-no-uppercase'
+}: TagsProps) => {
   return (
     <div
       style={{

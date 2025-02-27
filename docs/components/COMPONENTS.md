@@ -2,7 +2,7 @@
 
 ### Cards
 View Cards at `/sandbox/cards`
-##### Common props across cards
+
 | props          | type                                                                  | required | description |
 |----------------|-----------------------------------------------------------------------|----------|-------------|
 | layout         | string                                                                | no       |             |
@@ -20,3 +20,9 @@ View Cards at `/sandbox/cards`
 #### FlagCard
 * `layout` defaults to `flagDefault`
 * `gridLayout` defaults to `{ desktop: { col: 12 } }` for a full width
+
+### Tags
+| props      | type     | required | description |
+|------------|----------|----------|-------------|
+| items      | string[] | yes      |             |
+| classNames | string   | no       |             |
