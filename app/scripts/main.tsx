@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 
 import '$styles/styles.scss';
+import '$styles/veda-styles.scss';
 
 import { userPages } from 'veda';
 import DevseedUiThemeProvider from './theme-provider';
