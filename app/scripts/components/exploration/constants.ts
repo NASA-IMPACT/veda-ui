@@ -18,3 +18,5 @@ export const AXIS_BG_COLOR = '#F0F0F0';
 export const HIGHLIGHT_LINE_COLOR = '#CCCCCC';
 export const FADED_TEXT_COLOR = '#83868A';
 export const TEXT_TITLE_BG_COLOR = '#FAFAFA';
+
+export const RENDER_KEY = 'dashboard';
