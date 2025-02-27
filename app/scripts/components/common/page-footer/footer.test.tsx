@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { navItems } from '../../../../../mock/veda.config.js';
 import { VedaUIConfigProvider } from '../../../../../test/utils.js';
@@ -44,7 +44,7 @@ describe('PageFooter', () => {
   });
   test('renders the PageFooter', () => {
     render(
-      <BrowserRouter basename=''>
+      <MemoryRouter basename=''>
         <VedaUIConfigProvider>
           <PageFooter
             mainNavItems={mockMainNavItems}
@@ -54,7 +54,7 @@ describe('PageFooter', () => {
             footerSettings={defaultFooterSetting}
           />
         </VedaUIConfigProvider>
-      </BrowserRouter>
+      </MemoryRouter>
     );
     const footerElement = document.querySelector('footer');
 
@@ -64,7 +64,7 @@ describe('PageFooter', () => {
 
   test('renders correct buttons and links', () => {
     render(
-      <BrowserRouter basename=''>
+      <MemoryRouter basename=''>
         <VedaUIConfigProvider>
           <PageFooter
             mainNavItems={mockMainNavItems}
@@ -74,7 +74,7 @@ describe('PageFooter', () => {
             footerSettings={defaultFooterSetting}
           />
         </VedaUIConfigProvider>
-      </BrowserRouter>
+      </MemoryRouter>
     );
     expect(screen.getByText('Data Catalog')).toBeInTheDocument();
     expect(screen.getByText('Exploration')).toBeInTheDocument();
@@ -101,7 +101,7 @@ describe('PageFooter dynamic settings', () => {
       }
     }));
     render(
-      <BrowserRouter basename=''>
+      <MemoryRouter basename=''>
         <VedaUIConfigProvider>
           <PageFooter
             mainNavItems={mockMainNavItems}
@@ -111,7 +111,7 @@ describe('PageFooter dynamic settings', () => {
             footerSettings={defaultFooterSetting}
           />
         </VedaUIConfigProvider>
-      </BrowserRouter>
+      </MemoryRouter>
     );
     const footerElement = document.querySelector('footer');
     expect(footerElement).toHaveClass('display-none');
