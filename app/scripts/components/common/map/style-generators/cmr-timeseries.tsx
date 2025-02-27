@@ -6,5 +6,11 @@ import { RasterPaintLayer } from './raster-paint-layer';
 export function CMRTimeseries(props: BaseTimeseriesProps) {
   const { date, sourceParams } = props;
   const tileParams = { datetime: date, ...sourceParams };
-  return <RasterPaintLayer {...props} tileParams={tileParams} generatorPrefix='cmr-timeseries' />;
+  return (
+    <RasterPaintLayer
+      {...props}
+      tileParams={tileParams}
+      generatorPrefix='cmr-timeseries'
+    />
+  );
 }

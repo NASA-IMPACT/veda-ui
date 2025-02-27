@@ -96,6 +96,7 @@ async function fetchStacDatasetById(
 
   const commonTimeseriesParams = {
     isPeriodic: !!data['dashboard:is_periodic'],
+    isTimeless: !!data['dashboard:is_timeless'],
     timeDensity: data['dashboard:time_density'] || TimeDensity.DAY
   };
 
@@ -108,6 +109,35 @@ async function fetchStacDatasetById(
     return {
       ...commonTimeseriesParams,
       domain: featuresApiData.extent.temporal.interval[0]
+    };
+  } else if (type === 'arc') {
+    let domain = data.summaries?.datetime?.[0]
+      ? data.summaries.datetime
+      : data.extent.temporal.interval[0];
+
+    // @TODO: remove this after the collection is fixed
+    domain = domain.map((d: string) => d.endsWith('Z') ? d.slice(0, -1) : d);
+
+    // @TODO: what to do with timeless data? Setting up as today as a temporary solution
+    if (data['dashboard:is_timeless']) {
+      const date = new Date();
+      const tempStart = new Date(date.setDate(date.getDate() - 10));
+      domain = [tempStart.toISOString(), new Date().toISOString()];
+    }
+
+    return {
+      ...commonTimeseriesParams,
+      domain
+    };
+  } else if (type === 'feature') {
+    // const featuresApiEndpoint = data.links.find(
+    //   (l) => l.rel === 'featureserver'
+    // ).href;
+    // const { data: featuresApiData } = await axios.get(`${featuresApiEndpoint}/0/query?where=1=1&f=pgeojson&outFields=*`);
+
+    return {
+      ...commonTimeseriesParams,
+      domain: ['2024-11-27T00:00:00+00:00', '2024-12-17T12:00:00+00:00']
     };
   } else if (type === 'cmr') {
     const domain = data.summaries?.datetime?.[0]
