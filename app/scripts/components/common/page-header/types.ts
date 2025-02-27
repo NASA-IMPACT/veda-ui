@@ -21,6 +21,7 @@ export interface ActionNavItem extends BaseNavItems {
   actionId: ActionId;
   src?: string;
   type: NavItemType.ACTION;
+  customClassNames?: string;
 }
 
 export interface DropdownNavLink extends BaseNavItems {

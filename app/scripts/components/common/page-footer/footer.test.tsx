@@ -1,6 +1,8 @@
-import React, { ComponentType } from 'react';
+import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { navItems } from '../../../../../mock/veda.config.js';
+import { VedaUIConfigProvider } from '../../../../../test/utils.js';
 import NasaLogoColor from '../nasa-logo-color';
 import { NavItem } from '../page-header/types.js';
 
@@ -18,14 +20,10 @@ const defaultFooterSetting = {
   returnToTop: true
 };
 
-const mockMainNavItems: NavItem[] = navItems.mainNavItems;
-const mockSubNavItems: NavItem[] = navItems.subNavItems;
-// const mockFooterSettings = footerSettings;
+const mockMainNavItems: NavItem[] = navItems.footerNavItems;
+const mockSubNavItems: NavItem[] = navItems.footerSubNavItems;
 const hideFooter = false;
-const mockLinkProperties = {
-  pathAttributeKeyName: 'to',
-  LinkElement: 'a' as unknown as ComponentType
-};
+
 jest.mock('./default-config', () => ({
   footerSettings: {
     secondarySection: {
@@ -46,14 +44,17 @@ describe('PageFooter', () => {
   });
   test('renders the PageFooter', () => {
     render(
-      <PageFooter
-        mainNavItems={mockMainNavItems}
-        subNavItems={mockSubNavItems}
-        hideFooter={hideFooter}
-        logoSvg={<NasaLogoColor />}
-        linkProperties={mockLinkProperties}
-        footerSettings={defaultFooterSetting}
-      />
+      <MemoryRouter basename=''>
+        <VedaUIConfigProvider>
+          <PageFooter
+            mainNavItems={mockMainNavItems}
+            subNavItems={mockSubNavItems}
+            hideFooter={hideFooter}
+            logoSvg={<NasaLogoColor />}
+            footerSettings={defaultFooterSetting}
+          />
+        </VedaUIConfigProvider>
+      </MemoryRouter>
     );
     const footerElement = document.querySelector('footer');
 
@@ -63,14 +64,17 @@ describe('PageFooter', () => {
 
   test('renders correct buttons and links', () => {
     render(
-      <PageFooter
-        mainNavItems={mockMainNavItems}
-        subNavItems={mockSubNavItems}
-        hideFooter={hideFooter}
-        logoSvg={<NasaLogoColor />}
-        linkProperties={mockLinkProperties}
-        footerSettings={defaultFooterSetting}
-      />
+      <MemoryRouter basename=''>
+        <VedaUIConfigProvider>
+          <PageFooter
+            mainNavItems={mockMainNavItems}
+            subNavItems={mockSubNavItems}
+            hideFooter={hideFooter}
+            logoSvg={<NasaLogoColor />}
+            footerSettings={defaultFooterSetting}
+          />
+        </VedaUIConfigProvider>
+      </MemoryRouter>
     );
     expect(screen.getByText('Data Catalog')).toBeInTheDocument();
     expect(screen.getByText('Exploration')).toBeInTheDocument();
@@ -97,14 +101,17 @@ describe('PageFooter dynamic settings', () => {
       }
     }));
     render(
-      <PageFooter
-        linkProperties={mockLinkProperties}
-        mainNavItems={mockMainNavItems}
-        subNavItems={mockSubNavItems}
-        hideFooter={true}
-        logoSvg={<NasaLogoColor />}
-        footerSettings={defaultFooterSetting}
-      />
+      <MemoryRouter basename=''>
+        <VedaUIConfigProvider>
+          <PageFooter
+            mainNavItems={mockMainNavItems}
+            subNavItems={mockSubNavItems}
+            hideFooter={true}
+            logoSvg={<NasaLogoColor />}
+            footerSettings={defaultFooterSetting}
+          />
+        </VedaUIConfigProvider>
+      </MemoryRouter>
     );
     const footerElement = document.querySelector('footer');
     expect(footerElement).toHaveClass('display-none');
