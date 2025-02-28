@@ -1,5 +1,4 @@
 import React from 'react';
-import T from 'prop-types';
 import styled from 'styled-components';
 import format from 'date-fns/format';
 
@@ -23,7 +22,7 @@ import { ComponentOverride } from '$components/common/page-overrides';
 
 import SmartLink from '$components/common/smart-link';
 
-const PageFooterSelf = styled.footer`
+const PageFooterSelf = styled.footer<{ isHidden: boolean }>`
   padding: ${variableGlsp(0.75, 1)};
   background: ${themeVal('color.base-50')};
   animation: ${reveal} 0.32s ease 0s 1;
@@ -109,11 +108,15 @@ const InfoList = styled.dl`
   }
 `;
 
-function PageFooterLegacy(props) {
+interface PageFooterLegacyProps {
+  hideFooter: boolean;
+}
+
+function PageFooterLegacy(props: PageFooterLegacyProps) {
   const nowDate = new Date();
 
   return (
-    <PageFooterSelf isHidden={props.isHidden}>
+    <PageFooterSelf isHidden={props.hideFooter}>
       <ComponentOverride
         with='pageFooter'
         appVersion={process.env.APP_VERSION}
@@ -154,14 +157,16 @@ function PageFooterLegacy(props) {
           <p>
             <SmartLink to='https://earthdata.nasa.gov/'>
               <span>By</span> NASA <strong>Earthdata</strong> <span>on</span>{' '}
-              <time dateTime={nowDate.getFullYear()}>
+              <time dateTime={nowDate.getFullYear().toString()}>
                 {nowDate.getFullYear()}
               </time>
             </SmartLink>
             {' • '}
             <Tip
               content={`Released on ${format(
-                new Date(+process.env.APP_BUILD_TIME),
+                new Date(
+                  process.env.APP_BUILD_TIME ? +process.env.APP_BUILD_TIME : ''
+                ),
                 'PPPP'
               )} (veda-ui v${process.env.APP_VERSION}))`}
             >
@@ -175,7 +180,3 @@ function PageFooterLegacy(props) {
 }
 
 export default PageFooterLegacy;
-
-PageFooterLegacy.propTypes = {
-  isHidden: T.bool
-};
