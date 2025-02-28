@@ -7,7 +7,6 @@ import {
 } from '@devseed-ui/theme-provider';
 import styled from 'styled-components';
 import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
-import { Tags } from '../tags';
 import ClassicCard, { ClassicCardItem } from './classic';
 import CoverCard, { CoverCardItem } from './cover';
 import FeaturedCard, { FeaturedCardItem } from './featured';
@@ -200,7 +199,7 @@ export default function CardComponent(
       data.imgAlt &&
       data.title &&
       data.description &&
-      data.tagLabels
+      data.footerContent
     ) {
       baseProps['children'] = (
         <FlagCard
@@ -208,7 +207,7 @@ export default function CardComponent(
           imgAlt={data.imgAlt}
           heading={data.title}
           description={data.description}
-          footer={<Tags items={data.tagLabels} />}
+          footer={data.footerContent}
         />
       );
       baseProps['style'] = { width: '100%' };

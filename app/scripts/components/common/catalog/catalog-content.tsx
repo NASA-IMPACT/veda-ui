@@ -5,6 +5,7 @@ import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
 import { USWDSCardGroup } from '../uswds';
 import { Card, CardType } from '../card';
+import { Tags } from '../tags';
 import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
@@ -251,28 +252,31 @@ function CatalogContent({
     [selectedIds, setSelectedIds, exclusiveSourceSelected, datasets]
   );
 
-  const generateCardsWhomRoute = () => (
-    <USWDSCardGroup>
-      {datasetsToDisplay.map((d) => {
-        const imgSrc = getMediaProperty(undefined, d, 'src');
-        const imgAlt = getMediaProperty(undefined, d, 'alt');
-        const description = getDatasetDescription(undefined, d);
-        const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
+  const generateCardsWhomRoute = useMemo(
+    () => (
+      <USWDSCardGroup>
+        {datasetsToDisplay.map((d) => {
+          const imgSrc = getMediaProperty(undefined, d, 'src');
+          const imgAlt = getMediaProperty(undefined, d, 'alt');
+          const description = getDatasetDescription(undefined, d);
+          const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
 
-        return (
-          <Card
-            cardType={CardType.FLAGLAYOUT}
-            key={d.id}
-            imgSrc={imgSrc}
-            imgAlt={imgAlt}
-            title={d.name}
-            description={description}
-            tagLabels={allTaxonomyValues}
-            to={`${dataCatalogPath}/${d.id}`}
-          />
-        );
-      })}
-    </USWDSCardGroup>
+          return (
+            <Card
+              cardType={CardType.FLAGLAYOUT}
+              key={d.id}
+              imgSrc={imgSrc}
+              imgAlt={imgAlt}
+              title={d.name}
+              description={description}
+              footerContent={<Tags items={allTaxonomyValues} />}
+              to={`${dataCatalogPath}/${d.id}`}
+            />
+          );
+        })}
+      </USWDSCardGroup>
+    ),
+    [datasetsToDisplay, dataCatalogPath]
   );
 
   useEffect(() => {
@@ -365,7 +369,7 @@ function CatalogContent({
               ))}
             </Cards>
           ) : (
-            <>{generateCardsWhomRoute()}</>
+            generateCardsWhomRoute
           )
         ) : (
           <EmptyState>
