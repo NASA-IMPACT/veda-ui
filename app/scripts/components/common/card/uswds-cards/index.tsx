@@ -21,19 +21,17 @@ export default function BaseCard({
   imgAlt,
   heading,
   description,
-  styleOverrides,
   footer,
   gridLayout
 }: CardProps) {
-  const headerClassNames =
-    styleOverrides?.headerClassNames || 'usa-card__heading card-header';
-  const bodyClassNames = styleOverrides?.bodyClassNames || 'font-body-xs';
+  const defaultHeaderClassNames = 'usa-card__heading card-header';
+  const defaultBodyClassNames = 'font-body-xs';
 
   return (
     <USWDSCardComponent layout={layout} gridLayout={gridLayout}>
       <USWDSCardHeader>
         {isString(heading) ? (
-          <h2 className={headerClassNames}>{heading}</h2>
+          <h2 className={defaultHeaderClassNames}>{heading}</h2>
         ) : (
           heading
         )}
@@ -43,7 +41,7 @@ export default function BaseCard({
       </USWDSCardMedia>
       <USWDSCardBody>
         {isString(description) ? (
-          <p className={bodyClassNames}>{description}</p>
+          <p className={defaultBodyClassNames}>{description}</p>
         ) : (
           description
         )}

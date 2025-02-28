@@ -12,7 +12,6 @@ View Cards at `/sandbox/cards`
 | imgAlt         | string                                                                | yes      |             |
 | description    | string \| JSX.Element                                                 | yes      |             |
 | gridLayout     | any                                                                   | no       | reference link [here](https://github.com/trussworks/react-uswds/blob/main/src/components/grid/types.ts) for type references |
-| styleOverrides | {    headerClassNames ?:   string ;    bodyClassNames ?:   string ; } | no       |             |
 
 #### DefaultCard
 * `gridLayout` defaults to `{ desktop: { col: 3 } }`

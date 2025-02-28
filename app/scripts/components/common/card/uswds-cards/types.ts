@@ -1,8 +1,3 @@
-export interface CardStyleOverrides {
-  headerClassNames?: string;
-  bodyClassNames?: string;
-}
-
 export interface CardProps {
   layout?: string;
   heading: string | JSX.Element;
@@ -11,5 +6,4 @@ export interface CardProps {
   imgAlt: string;
   description: string | JSX.Element;
   gridLayout?: any;
-  styleOverrides?: CardStyleOverrides;
 }
