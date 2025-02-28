@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import React from 'react';
 import { Tip } from '../../tip';
 import './logo-container.scss';
 import { useVedaUI } from '$context/veda-ui-provider';

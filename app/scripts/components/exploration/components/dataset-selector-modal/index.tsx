@@ -11,7 +11,7 @@ import { TimelineDataset } from '../../types.d.ts';
 
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
-import CatalogContent from '$components/common/catalog/catalog-content';
+import CatalogContent from '$components/common/catalog/catalog-content-legacy';
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';
 

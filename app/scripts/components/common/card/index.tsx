@@ -11,6 +11,7 @@ import ClassicCard, { ClassicCardItem } from './classic';
 import CoverCard, { CoverCardItem } from './cover';
 import FeaturedCard, { FeaturedCardItem } from './featured';
 import HorizontalInfoCard, { HorizontalInfoCardItem } from './horizontal-info';
+import FlagCard from './uswds-cards/flag-card';
 import { LinkProperties } from '$types/veda';
 import * as utils from '$utils/utils';
 import { ElementInteractive } from '$components/common/element-interactive';
@@ -27,7 +28,8 @@ export enum CardType {
   CLASSIC = 'classic',
   COVER = 'cover',
   FEATURED = 'featured',
-  HORIZONTALINFO = 'horizontal-info'
+  HORIZONTALINFO = 'horizontal-info',
+  FLAGLAYOUT = 'flag-layout'
 }
 
 export interface CardItemProps {
@@ -191,7 +193,26 @@ export default function CardComponent(
           tagLabels={data.tagLabels}
         />
       );
+    } else if (
+      cardType === CardType.FLAGLAYOUT &&
+      data.imgSrc &&
+      data.imgAlt &&
+      data.title &&
+      data.description &&
+      data.footerContent
+    ) {
+      baseProps['children'] = (
+        <FlagCard
+          imgSrc={data.imgSrc}
+          imgAlt={data.imgAlt}
+          heading={data.title}
+          description={data.description}
+          footer={data.footerContent}
+        />
+      );
+      baseProps['style'] = { width: '100%' };
     }
+
     return baseProps;
   };
 
