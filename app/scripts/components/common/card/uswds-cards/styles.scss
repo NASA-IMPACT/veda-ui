@@ -1,5 +1,9 @@
 @use '$styles/veda-ui-theme-vars.scss' as themeVars;
 
+.usa-card {
+  margin-bottom: 0;
+}
+
 .card-header {
   color: themeVars.$veda-uswds-color-base-ink;
 }

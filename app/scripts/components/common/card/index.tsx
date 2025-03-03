@@ -29,7 +29,7 @@ export enum CardType {
   COVER = 'cover',
   FEATURED = 'featured',
   HORIZONTALINFO = 'horizontal-info',
-  FLAGLAYOUT = 'flag-layout'
+  FLAG = 'flag'
 }
 
 export interface CardItemProps {
@@ -194,10 +194,9 @@ export default function CardComponent(
         />
       );
     } else if (
-      cardType === CardType.FLAGLAYOUT &&
+      cardType === CardType.FLAG &&
       data.imgSrc &&
       data.imgAlt &&
-      data.title &&
       data.description &&
       data.footerContent
     ) {

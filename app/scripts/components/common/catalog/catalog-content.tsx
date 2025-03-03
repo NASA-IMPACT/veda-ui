@@ -252,9 +252,9 @@ function CatalogContent({
     [selectedIds, setSelectedIds, exclusiveSourceSelected, datasets]
   );
 
-  const generateCardsWhomRoute = useMemo(
+  const generateCardsWithRoute = useMemo(
     () => (
-      <USWDSCardGroup>
+      <USWDSCardGroup style={{ gap: '40px' }}>
         {datasetsToDisplay.map((d) => {
           const imgSrc = getMediaProperty(undefined, d, 'src');
           const imgAlt = getMediaProperty(undefined, d, 'alt');
@@ -263,7 +263,7 @@ function CatalogContent({
 
           return (
             <Card
-              cardType={CardType.FLAGLAYOUT}
+              cardType={CardType.FLAG}
               key={d.id}
               imgSrc={imgSrc}
               imgAlt={imgAlt}
@@ -369,7 +369,7 @@ function CatalogContent({
               ))}
             </Cards>
           ) : (
-            generateCardsWhomRoute
+            generateCardsWithRoute
           )
         ) : (
           <EmptyState>
