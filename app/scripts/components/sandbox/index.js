@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, Route, Routes, useParams } from 'react-router-dom';
+import { GridContainer, Grid } from '@trussworks/react-uswds';
 
 import SandboxTypography from './typography';
 import SandboxHug from './hug';
@@ -127,9 +128,23 @@ function Sandbox() {
           <PageMainContent>
             <LayoutProps title='Sandbox' />
             <PageHero title='Sandbox' />
+            <GridContainer>
+              <Grid row>
+                <Grid col='12'>
+                  <h2>Browse USWDS Components</h2>
+                </Grid>
+              </Grid>
+            </GridContainer>
+            <div className='grid-container'>
+              <div className='grid-row'>
+                <div className='tablet:grid-col'>tablet:grid-col</div>
+                <div className='tablet:grid-col'>tablet:grid-col</div>
+                <div className='tablet:grid-col'>tablet:grid-col</div>
+              </div>
+            </div>
             <Fold>
               <FoldHeader>
-                <FoldTitle>Browse</FoldTitle>
+                <FoldTitle>Browse Legacy Components</FoldTitle>
               </FoldHeader>
               <CardListGrid>
                 {pages.map((p) => (
