@@ -5,22 +5,18 @@ import { useDisplay } from '$utils/use-display';
 
 interface NavItemCTAProps {
   item: ActionNavItem;
-  customClasses?: string;
 }
 
-export const NavItemCTA = ({ item, customClasses }: NavItemCTAProps) => {
+export const NavItemCTA = ({ item }: NavItemCTAProps) => {
   const { isRevealed, show, hide } = useDisplay();
+  const defaultClassName = 'usa-nav__link';
 
   return (
     <React.Fragment key={item.id}>
       {item.actionId === 'open-google-form' && (
         <>
           <button
-            className={
-              customClasses && customClasses != ''
-                ? customClasses
-                : 'usa-nav__link'
-            }
+            className={item.customClassNames || defaultClassName}
             type='button'
             tabIndex={0}
             id={item.id}

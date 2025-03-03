@@ -118,9 +118,14 @@ function getSiteAlertContent(result) {
 function getBannerContent(result) {
   if (!result.banner) return undefined;
 
-  const { title, leftGuidance, rightGuidance, flagImgSrc, flagImgAlt } =
-    result.banner;
-
+  const {
+    title,
+    leftGuidance,
+    rightGuidance,
+    flagImgSrc,
+    flagImgAlt,
+    defaultIsOpen
+  } = result.banner;
   const processedLeftGuidance = {
     ...leftGuidance,
     text: md.render(leftGuidance.text).replace(/(\r\n|\n|\r)/gm, '')
@@ -140,7 +145,7 @@ function getBannerContent(result) {
     leftGuidance: processedLeftGuidance,
     rightGuidance: processedRightGuidance,
     className: '',
-    defaultIsOpen: false,
+    defaultIsOpen,
     contentId: 'gov-banner-content'
   });
 }
