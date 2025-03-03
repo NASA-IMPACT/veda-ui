@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, Route, Routes, useParams } from 'react-router-dom';
+import styled from 'styled-components';
 import { GridContainer, Grid } from '@trussworks/react-uswds';
 
 import SandboxTypography from './typography';
@@ -18,8 +19,6 @@ import SandboxTable from './table';
 import SandboxLayerInfo from './layer-info';
 import { resourceNotFound } from '$components/uhoh';
 import { Card } from '$components/common/card';
-import { CardListGrid } from '$components/common/card/styles';
-import { Fold, FoldHeader, FoldTitle } from '$components/common/fold';
 import PageHero from '$components/common/page-hero';
 import { LayoutProps } from '$components/common/layout-root';
 import { PageMainContent } from '$styles/page';
@@ -118,6 +117,10 @@ function SandboxLayout() {
   );
 }
 
+const HugResetter = styled.div`
+  /* To escape from HUG grid */
+`;
+
 function Sandbox() {
   return (
     <Routes>
@@ -128,40 +131,40 @@ function Sandbox() {
           <PageMainContent>
             <LayoutProps title='Sandbox' />
             <PageHero title='Sandbox' />
-            <GridContainer>
-              <Grid row>
-                <Grid col='12'>
-                  <h2>Browse USWDS Components</h2>
+            <HugResetter>
+              <GridContainer>
+                <Grid row>
+                  <Grid col='12'>
+                    <h2>Browse USWDS Components</h2>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </GridContainer>
-            <div className='grid-container'>
-              <div className='grid-row'>
-                <div className='tablet:grid-col'>tablet:grid-col</div>
-                <div className='tablet:grid-col'>tablet:grid-col</div>
-                <div className='tablet:grid-col'>tablet:grid-col</div>
-              </div>
-            </div>
-            <Fold>
-              <FoldHeader>
-                <FoldTitle>Browse Legacy Components</FoldTitle>
-              </FoldHeader>
-              <CardListGrid>
-                {pages.map((p) => (
-                  <li key={p.id}>
-                    <Card
-                      linkLabel='View more'
-                      title={p.name}
-                      linkProperties={{
-                        linkTo: p.id,
-                        LinkElement: Link,
-                        pathAttributeKeyName: 'to'
-                      }}
-                    />
-                  </li>
-                ))}
-              </CardListGrid>
-            </Fold>
+              </GridContainer>
+            </HugResetter>
+
+            <HugResetter>
+              <GridContainer>
+                <Grid row>
+                  <Grid col='12'>
+                    <h2>Browse Legacy Components</h2>
+                  </Grid>
+                </Grid>
+                <Grid row gap={3}>
+                  {pages.map((p) => (
+                    <Grid col='4' key={p.id} className='margin-bottom-3'>
+                      <Card
+                        linkLabel='View more'
+                        title={p.name}
+                        linkProperties={{
+                          linkTo: p.id,
+                          LinkElement: Link,
+                          pathAttributeKeyName: 'to'
+                        }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </GridContainer>
+            </HugResetter>
           </PageMainContent>
         }
       />
