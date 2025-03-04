@@ -19,6 +19,7 @@ import SandboxLayerInfo from './legacy/layer-info';
 import SandboxOverride from './override';
 
 import { USWDSColors } from './colors';
+import Pagination from './pagination';
 import { resourceNotFound } from '$components/uhoh';
 import { Card } from '$components/common/card';
 import PageHero from '$components/common/page-hero';
@@ -100,6 +101,11 @@ const pages = [
     id: 'colors',
     name: 'USWDS Colors',
     component: USWDSColors
+  },
+  {
+    id: 'pagination',
+    name: 'USWDS Pagination',
+    component: Pagination
   }
 ];
 
@@ -140,7 +146,7 @@ function Sandbox() {
             <PageHero title='Sandbox' />
             <HugResetter>
               <GridContainer>
-                <Grid row>
+                <Grid row gap={3}>
                   <Grid col={12} className='margin-top-2 margin-bottom-3'>
                     <h2>Browse USWDS Components</h2>
                   </Grid>
@@ -151,6 +157,17 @@ function Sandbox() {
                       title='USWDS Colors'
                       linkProperties={{
                         linkTo: 'colors',
+                        LinkElement: Link,
+                        pathAttributeKeyName: 'to'
+                      }}
+                    />
+                  </Grid>
+                  <Grid col={4} className='margin-bottom-3'>
+                    <Card
+                      linkLabel='View more'
+                      title='USWDS Pagination'
+                      linkProperties={{
+                        linkTo: 'pagination',
                         LinkElement: Link,
                         pathAttributeKeyName: 'to'
                       }}
