@@ -14,6 +14,8 @@ if (process.env.NODE_ENV !== 'production') {
   require('$styles/styles.scss');
 }
 
+import '$static/styles/theme.css';
+
 import '$styles/veda-styles.scss';
 
 import { userPages } from 'veda';
