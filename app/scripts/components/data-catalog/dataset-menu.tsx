@@ -14,13 +14,13 @@ import {
   CollecticonEllipsisVertical,
   CollecticonPage
 } from '@devseed-ui/collecticons';
-import { Button } from '@trussworks/react-uswds';
 import { DatasetData } from '$types/veda';
 
 import { getDatasetPath, getDatasetExplorePath } from '$utils/routes';
 import { NotebookConnectModal } from '$components/common/notebook-connect';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { Tip } from '$components/common/tip';
+import { USWDSButton } from '$components/common/uswds';
 
 const DropMenuItemButtonDisable = styled(DropMenuItemButton)<{
   visuallyDisabled: boolean;
@@ -52,7 +52,7 @@ function DatasetMenu(props: DatasetMenuProps) {
         direction='up'
         triggerElement={({ className, onClick, ref, ...rest }) => (
           <div ref={ref}>
-            <Button
+            <USWDSButton
               type='button'
               unstyled
               onClick={onClick}
@@ -60,7 +60,7 @@ function DatasetMenu(props: DatasetMenuProps) {
               {...rest}
             >
               <CollecticonEllipsisVertical color='white' />
-            </Button>
+            </USWDSButton>
           </div>
         )}
       >
