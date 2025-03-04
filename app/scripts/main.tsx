@@ -9,7 +9,11 @@ import {
   useLocation
 } from 'react-router-dom';
 
-import '$styles/styles.scss';
+if (process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('$styles/styles.scss');
+}
+
 import '$styles/veda-styles.scss';
 
 import { userPages } from 'veda';
