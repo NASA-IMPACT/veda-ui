@@ -211,35 +211,33 @@ export function formatRenderExtensionData(renderData): SourceParameters {
   };
 }
 
+export type SourceParametersWithLayerId = SourceParameters & {
+  layerId: string;
+};
 // renderParams precedence
-// 1. if the layer requires specific asset first,
-// 1-1. If so, check if renderExtension has that asset as a name space.
-// 1-1-1. If so, use the data.
-// 1-1-2. If not, fallback to user defined source parameters
-// 2. if renderExtension data exists
-// 2-1. If so, use the render Extension
-// 3. return user defined source parameters (which can be undefined)
+// 1. Check if render extension has a layer specific namespace from render extension
+// 1-1. If so, return the layer specific render data
+// 2. Check if user-defined source parameters haave assets defined
+// 2-1. If so, return user defined source parameters
+// 3. Check if render extension has dashboard namespace
+// 3-1. If so, use the render Extension data
+// 4. return user defined source parameters (which can be an empty object)
 export function resolveRenderParams(
-  datasetSourceParams: Record<string, any> | undefined,
+  datasetSourceParams: SourceParametersWithLayerId,
   queryDataRenders: Record<string, any> | undefined
-): SourceParameters | undefined {
-  // @NOTE: Render extension might not have separate namespaces for each asset yet. (2025 Feb)
-  // Fallback to manual source parameters when assets are specified
-  if (datasetSourceParams?.assets) {
-    if (queryDataRenders && queryDataRenders[datasetSourceParams.assets])
-      return formatRenderExtensionData(
-        queryDataRenders[datasetSourceParams.assets]
-      );
-    return datasetSourceParams;
-  }
-
-  // return render extension data
-  if (queryDataRenders && queryDataRenders[RENDER_KEY]) {
-    const renderParams = queryDataRenders[RENDER_KEY];
-    return formatRenderExtensionData(renderParams);
-  }
-  // return user defined source params (which can be undefined)
-  return datasetSourceParams;
+): SourceParameters {
+  const { layerId, ...rest } = datasetSourceParams;
+  // 1. Check if render extension has a layer specific namespace from render extension
+  if (queryDataRenders && queryDataRenders[layerId])
+    return formatRenderExtensionData(queryDataRenders[layerId]);
+  // 2. (TO DEPRECATE Once all the assets specific source parameters are namespaced with render extension)
+  // Return user defined source parameters if there is one
+  if (datasetSourceParams?.assets) return rest;
+  // 3. Return dashboard namespace render extension data
+  if (queryDataRenders && queryDataRenders[RENDER_KEY])
+    return formatRenderExtensionData(queryDataRenders[RENDER_KEY]);
+  // 4. return user defined source params (which can be an empty object)
+  return rest;
 }
 
 export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
