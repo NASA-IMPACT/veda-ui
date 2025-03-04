@@ -7,7 +7,7 @@ import createPreset from 'conventional-changelog-conventionalcommits';
 // Detect the version number based on conventional commits
 // This does not handle pre-release
 class RecommendedBump extends Plugin {
-  async getIncrementedVersion(options) {
+  async getIncrementedVersion() {
     // loadPreset('conventional') shows different result
     const bumper = new Bumper(process.cwd());
     const conventionalCommitPreset = await createPreset();

@@ -23,8 +23,17 @@ import {
   VedaData,
   VedaDatum,
   DatasetData,
-  DatasetLayerType
+  DatasetLayerType,
+  ParentDatset
 } from '$types/veda';
+
+export function getParentDataset(data: DatasetData): ParentDatset {
+  return {
+    id: data.id,
+    name: data.name,
+    infoDescription: data.infoDescription
+  };
+}
 
 // @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
 // `./date-utils` to be deprecated!!

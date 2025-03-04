@@ -2,7 +2,6 @@ import React from 'react';
 import { ExternalNavLink, InternalNavLink } from '../../types';
 import { useVedaUI } from '$context/veda-ui-provider';
 
-
 interface NavItemExternalLinkProps {
   item: ExternalNavLink;
 }
@@ -12,13 +11,14 @@ interface NavItemInternalLinkProps {
 }
 
 export const NavItemExternalLink = ({ item }: NavItemExternalLinkProps) => {
+  const defaultClassName = 'usa-nav__link';
   return (
     <a
       key={item.id}
       target='_blank'
       rel='noopener noreferrer'
       href={item.href}
-      className='usa-nav__link'
+      className={item.customClassNames || defaultClassName}
       id={item.id}
     >
       <span>{item.title}</span>
@@ -34,11 +34,12 @@ export const NavItemInternalLink = ({ item }: NavItemInternalLinkProps) => {
   const path = {
     [linkProps.pathAttributeKeyName]: (item as InternalNavLink).to
   };
+  const defaultClassName = 'usa-nav__link';
   return (
     <LinkComponent
       key={item.id}
       {...path}
-      className='usa-nav__link'
+      className={item.customClassNames || defaultClassName}
       id={item.id}
     >
       <span>{item.title}</span>

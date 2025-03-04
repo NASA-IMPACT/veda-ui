@@ -17,12 +17,14 @@ export interface InternalNavLink {
   id: string;
   title: string;
   to: string;
+  customClassNames?: string;
   type: 'internalLink';
 }
 export interface ExternalNavLink {
   id: string;
   title: string;
   href: string;
+  customClassNames?: string;
   type: 'externalLink';
 }
 export type NavLinkItem = ExternalNavLink | InternalNavLink;

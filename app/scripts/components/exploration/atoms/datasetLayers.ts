@@ -1,5 +1,4 @@
 import { atom } from 'jotai';
-
 import { DatasetLayer } from '$types/veda';
 
 /**

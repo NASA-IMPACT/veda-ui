@@ -14,17 +14,13 @@ import {
   CollecticonEllipsisVertical,
   CollecticonPage
 } from '@devseed-ui/collecticons';
-import { Button } from '@devseed-ui/button';
 import { DatasetData } from '$types/veda';
 
 import { getDatasetPath, getDatasetExplorePath } from '$utils/routes';
 import { NotebookConnectModal } from '$components/common/notebook-connect';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { Tip } from '$components/common/tip';
-
-const TriggerButton = styled(Button)`
-  margin-left: auto;
-`;
+import { USWDSButton } from '$components/common/uswds';
 
 const DropMenuItemButtonDisable = styled(DropMenuItemButton)<{
   visuallyDisabled: boolean;
@@ -54,17 +50,18 @@ function DatasetMenu(props: DatasetMenuProps) {
       <Dropdown
         alignment='right'
         direction='up'
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        triggerElement={({ className, ...rest }) => (
-          <TriggerButton
-            // @ts-expect-error achromic-text exists. The problem is bad typing in the UI library.
-            variation='achromic-text'
-            fitting='skinny'
-            size='small'
-            {...rest}
-          >
-            <CollecticonEllipsisVertical />
-          </TriggerButton>
+        triggerElement={({ className, onClick, ref, ...rest }) => (
+          <div ref={ref}>
+            <USWDSButton
+              type='button'
+              unstyled
+              onClick={onClick}
+              className={className}
+              {...rest}
+            >
+              <CollecticonEllipsisVertical color='white' />
+            </USWDSButton>
+          </div>
         )}
       >
         <DropTitle>Options</DropTitle>

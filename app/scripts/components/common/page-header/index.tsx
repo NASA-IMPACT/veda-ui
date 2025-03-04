@@ -43,12 +43,17 @@ export default function PageHeader({
   }, []);
 
   const primaryItems = useMemo(
-    () => createDynamicNavMenuList(mainNavItems, isOpen, setIsOpen),
+    () =>
+      createDynamicNavMenuList({
+        navItems: mainNavItems,
+        dropdownIsOpen: isOpen,
+        dropdownSetIsOpen: setIsOpen
+      }),
     [mainNavItems, isOpen]
   );
 
   const secondaryItems = useMemo(
-    () => createDynamicNavMenuList(subNavItems),
+    () => createDynamicNavMenuList({ navItems: subNavItems }),
     [subNavItems]
   );
 
