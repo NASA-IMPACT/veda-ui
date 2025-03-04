@@ -17,6 +17,8 @@ import SandboxMDXEditor from './legacy/mdx-editor';
 import SandboxTable from './legacy/table';
 import SandboxLayerInfo from './legacy/layer-info';
 import SandboxOverride from './override';
+
+import { USWDSColors } from './colors';
 import { resourceNotFound } from '$components/uhoh';
 import { Card } from '$components/common/card';
 import PageHero from '$components/common/page-hero';
@@ -75,7 +77,7 @@ const pages = [
     component: SandboxOverride
   },
   {
-    id: 'colors',
+    id: 'legacy-colors',
     name: 'Colors',
     component: SandboxColors
   },
@@ -93,6 +95,11 @@ const pages = [
     id: 'sandboxLayerInfo',
     name: 'Layer Info',
     component: SandboxLayerInfo
+  },
+  {
+    id: 'colors',
+    name: 'USWDS Colors',
+    component: USWDSColors
   }
 ];
 
@@ -117,7 +124,7 @@ function SandboxLayout() {
   );
 }
 
-const HugResetter = styled.div`
+export const HugResetter = styled.div`
   /* To escape from HUG grid */
 `;
 
@@ -134,8 +141,20 @@ function Sandbox() {
             <HugResetter>
               <GridContainer>
                 <Grid row>
-                  <Grid col='12'>
+                  <Grid col={12} className='margin-top-2 margin-bottom-3'>
                     <h2>Browse USWDS Components</h2>
+                  </Grid>
+
+                  <Grid col={4} className='margin-bottom-3'>
+                    <Card
+                      linkLabel='View more'
+                      title='USWDS Colors'
+                      linkProperties={{
+                        linkTo: 'colors',
+                        LinkElement: Link,
+                        pathAttributeKeyName: 'to'
+                      }}
+                    />
                   </Grid>
                 </Grid>
               </GridContainer>
@@ -144,13 +163,13 @@ function Sandbox() {
             <HugResetter>
               <GridContainer>
                 <Grid row>
-                  <Grid col='12'>
+                  <Grid col={12} className='margin-top-2 margin-bottom-3'>
                     <h2>Browse Legacy Components</h2>
                   </Grid>
                 </Grid>
                 <Grid row gap={3}>
                   {pages.map((p) => (
-                    <Grid col='4' key={p.id} className='margin-bottom-3'>
+                    <Grid col={4} key={p.id} className='margin-bottom-3'>
                       <Card
                         linkLabel='View more'
                         title={p.name}
