@@ -7,3 +7,9 @@
   font-weight: themeVars.$veda-uswds-fontweight-regular;
   font-size: themeVars.$veda-uswds-fontsize-3xs;
 }
+
+.label-tag {
+  color: themeVars.$veda-uswds-color-base-dark;
+  background: themeVars.$veda-uswds-color-base-lightest;
+  gap: themeVars.$veda-uswds-spacing-1;
+}

@@ -1,3 +1,5 @@
+export type LabelType = 'data_collection' | 'story';
+
 export interface CardProps {
   layout?: string;
   heading: string | JSX.Element;
@@ -6,4 +8,5 @@ export interface CardProps {
   imgAlt: string;
   description: string | JSX.Element;
   gridLayout?: any;
+  cardLabel?: LabelType;
 }

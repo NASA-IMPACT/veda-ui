@@ -6,6 +6,7 @@ import { CollecticonDatasetLayers } from '../icons/dataset-layers';
 import { USWDSCardGroup } from '../uswds';
 import { Card, CardType } from '../card';
 import { Tags } from '../tags';
+import { createCardLabel } from '../card/uswds-cards/utils';
 import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
@@ -271,6 +272,7 @@ function CatalogContent({
               description={description}
               footerContent={<Tags items={allTaxonomyValues} />}
               to={`${dataCatalogPath}/${d.id}`}
+              cardLabel='data_collection'
             />
           );
         })}

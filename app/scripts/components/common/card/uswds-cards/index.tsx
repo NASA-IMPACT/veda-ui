@@ -1,5 +1,6 @@
 import React from 'react';
 import { CardProps } from './types';
+import { createCardLabel } from './utils';
 import {
   USWDSCardComponent,
   USWDSCardBody,
@@ -22,7 +23,8 @@ export default function BaseCard({
   heading,
   description,
   footer,
-  gridLayout
+  gridLayout,
+  cardLabel
 }: CardProps) {
   const defaultHeaderClassNames = 'usa-card__heading card-header';
   const defaultBodyClassNames = 'font-body-xs';
@@ -37,6 +39,11 @@ export default function BaseCard({
         )}
       </USWDSCardHeader>
       <USWDSCardMedia>
+        {cardLabel && (
+          <div style={{ position: 'absolute', padding: '15px' }}>
+            {createCardLabel(cardLabel)}
+          </div>
+        )}
         <img src={imgSrc} alt={imgAlt} />
       </USWDSCardMedia>
       <USWDSCardBody>

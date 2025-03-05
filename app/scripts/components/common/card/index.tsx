@@ -12,6 +12,7 @@ import CoverCard, { CoverCardItem } from './cover';
 import FeaturedCard, { FeaturedCardItem } from './featured';
 import HorizontalInfoCard, { HorizontalInfoCardItem } from './horizontal-info';
 import FlagCard from './uswds-cards/flag-card';
+import { LabelType } from './uswds-cards/types';
 import { LinkProperties } from '$types/veda';
 import * as utils from '$utils/utils';
 import { ElementInteractive } from '$components/common/element-interactive';
@@ -54,6 +55,7 @@ interface BaseCardComponentProps {
   footerContent?: JSX.Element;
   hideExternalLinkBadge?: boolean;
   onCardClickCapture?: MouseEventHandler;
+  cardLabel?: LabelType;
 }
 
 interface LinkCardComponentProps extends BaseCardComponentProps {
@@ -207,6 +209,7 @@ export default function CardComponent(
           heading={data.title}
           description={data.description}
           footer={data.footerContent}
+          cardLabel='data_collection'
         />
       );
       baseProps['style'] = { width: '100%' };

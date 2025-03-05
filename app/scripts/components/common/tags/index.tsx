@@ -4,10 +4,12 @@ import './styles.scss';
 
 interface TagsProps {
   items: string[];
+  icon?: JSX.Element;
   classNames?: string;
 }
 export const Tags = ({
   items,
+  icon,
   classNames = 'default-veda-tag text-no-uppercase'
 }: TagsProps) => {
   return (
@@ -19,7 +21,17 @@ export const Tags = ({
     >
       {items.map((t) => (
         <USWDSTag key={t} className={classNames}>
-          {t}
+          {icon ? (
+            <div
+              style={{ display: 'flex', alignItems: 'center' }}
+              className='label-tag'
+            >
+              {icon}
+              <p>{t}</p>
+            </div>
+          ) : (
+            t
+          )}
         </USWDSTag>
       ))}
     </div>
