@@ -39,16 +39,24 @@ const CatalogTagsContainer: React.FC<CatalogTagsContainerProps> = ({
 }) => {
   if (allSelectedFilters.length > 0 || urlTaxonomyItems.length > 0) {
     return (
-      <Tags>
+      <div className='display-flex flex-wrap margin-bottom-3'>
         {allSelectedFilters.length > 0
           ? allSelectedFilters.map((filter) => (
-              <FilterTag key={`${filter.taxonomy}-${filter.id}`} item={filter} onClick={handleClearTag} />
+              <FilterTag
+                key={`${filter.taxonomy}-${filter.id}`}
+                item={filter}
+                onClick={handleClearTag}
+              />
             ))
           : urlTaxonomyItems.map((filter) => (
-              <FilterTag key={`${filter.taxonomy}-${filter.id}`} item={filter} onClick={handleClearTag} />
+              <FilterTag
+                key={`${filter.taxonomy}-${filter.id}`}
+                item={filter}
+                onClick={handleClearTag}
+              />
             ))}
         <PlainTextButton onClick={handleClearTags}>Clear all</PlainTextButton>
-      </Tags>
+      </div>
     );
   }
   return null;
