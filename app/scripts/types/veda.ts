@@ -28,7 +28,7 @@ interface DatasetLayerCommonCompareProps {
 interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps {
   zoomExtent?: number[];
   bounds?: number[];
-  sourceParams?: Record<string, any>;
+  sourceParams?: SourceParameters;
 }
 
 export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
@@ -77,7 +77,7 @@ export interface DatasetLayer extends DatasetLayerCommonProps {
   analysis?: {
     metrics: string[];
     exclude: boolean;
-    sourceParams?: Record<string, any>;
+    sourceParams?: SourceParameters;
   };
   assetUrlReplacements?: {
     from: string;
@@ -125,6 +125,17 @@ export interface DatasetDatumFnResolverBag {
 
 interface LayerLegendUnit {
   label: string;
+}
+// These two values don't match what is returned from stac vs. what dashboard needs
+// ex. colormap value from stac endpoint is an object {'0': [0,0,0,0]}
+// But this will be translated colorMap[0] = [0,0,0,0] when passed as a query string parameter
+// See how qs (library we are using to format query string) parses object: https://www.npmjs.com/package/qs#parsing-objects
+// rescale value can be [number,number][] while dashboard expects it to be [number, number] for dynamic rescaling
+// So we make sure these two are formatted as we expect for dashboard
+export interface SourceParameters {
+  colormap?: string;
+  rescale?: [number, number];
+  [key: string]: any;
 }
 
 export interface LayerLegendGradient {
