@@ -12,6 +12,7 @@ export {
   USWDSBannerGuidance,
   USWDSMediaBlockBody
 } from './banner';
+export { USWDSGridContainer, USWDSGrid } from './grid';
 export { USWDSHeader, USWDSHeaderTitle } from './header';
 export {
   USWDSFooterNav,
@@ -26,3 +27,4 @@ export { USWDSNavMenuButton } from './header/nav-menu-button';
 export { USWDSNavDropDownButton } from './header/nav-drop-down-button';
 export { USWDSExtendedNav } from './header/extended-nav';
 export { USWDSTextInput, USWDSTextInputMask } from './input';
+export { USWDSPagination } from './pagination';

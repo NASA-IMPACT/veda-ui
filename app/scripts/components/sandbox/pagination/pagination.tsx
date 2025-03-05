@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  GridContainer as USWDSGridContainer,
-  Grid as USWDSGrid,
-  Pagination as USWDSPagination
-} from '@trussworks/react-uswds';
-
 import { HugResetter } from '../index';
+import { USWDSGridContainer, USWDSGrid, USWDSPagination } from '$uswds';
 
 interface PaginationProps {
   currentPage: number;
