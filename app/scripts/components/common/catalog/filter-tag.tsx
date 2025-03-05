@@ -44,7 +44,7 @@ export default function FilterTag(props: FilterTagProps) {
   };
 
   return (
-    <USWDSTag className='border-1px radius-md border-base-light padding-y-05 padding-x-1 margin-right-2 font-sans-2xs display-flex flex-align-center text-normal text-base-darkest'>
+    <USWDSTag className='border-1px radius-md border-base-light padding-y-05 padding-x-1 margin-right-2 font-sans-2xs display-flex flex-align-center text-normal text-base-darkest bg-white text-no-uppercase'>
       {item.name}
       <USWDSButton
         type='button'
@@ -52,7 +52,7 @@ export default function FilterTag(props: FilterTagProps) {
         unstyled
         className='text-base margin-y-2px margin-left-2px'
       >
-        <Icon.Close size={3} />
+        <Icon.Close />
       </USWDSButton>
     </USWDSTag>
   );
