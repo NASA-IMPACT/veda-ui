@@ -185,19 +185,21 @@ function Sandbox() {
                   </Grid>
                 </Grid>
                 <Grid row gap={3}>
-                  {pages.map((p) => (
-                    <Grid col={4} key={p.id} className='margin-bottom-3'>
-                      <Card
-                        linkLabel='View more'
-                        title={p.name}
-                        linkProperties={{
-                          linkTo: p.id,
-                          LinkElement: Link,
-                          pathAttributeKeyName: 'to'
-                        }}
-                      />
-                    </Grid>
-                  ))}
+                  {pages
+                    .filter((p) => !p.name.startsWith('USWDS'))
+                    .map((p) => (
+                      <Grid col={4} key={p.id} className='margin-bottom-3'>
+                        <Card
+                          linkLabel='View more'
+                          title={p.name}
+                          linkProperties={{
+                            linkTo: p.id,
+                            LinkElement: Link,
+                            pathAttributeKeyName: 'to'
+                          }}
+                        />
+                      </Grid>
+                    ))}
                 </Grid>
               </GridContainer>
             </HugResetter>
