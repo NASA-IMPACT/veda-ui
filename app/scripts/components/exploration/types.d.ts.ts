@@ -81,12 +81,8 @@ export type TimelineDatasetAnalysis =
   | TimelineDatasetAnalysisSuccess;
 
 // END TimelineDatasetAnalysis type discriminants
-export interface EnhancedDatasetLayer extends DatasetLayer {
-  id: string;
-  parentDataset: ParentDatset;
-}
 
-export interface EADatasetDataLayer extends EnhancedDatasetLayer {
+export interface EADatasetDataLayer extends DatasetLayer {
   isPeriodic: boolean;
   timeDensity: TimeDensity;
   domain: Date[];
@@ -117,7 +113,7 @@ type DatasetMeta = Record<string, any>;
 // @ TODO: Rename Timeline specific variable names
 export interface VizDatasetIdle {
   status: DatasetStatus.IDLE;
-  data: EnhancedDatasetLayer;
+  data: DatasetLayer;
   error: null;
   settings: DatasetSettings;
   meta?: DatasetMeta;
@@ -125,7 +121,7 @@ export interface VizDatasetIdle {
 
 export interface VizDatasetLoading {
   status: DatasetStatus.LOADING;
-  data: EnhancedDatasetLayer;
+  data: DatasetLayer;
   error: null;
   settings: DatasetSettings;
   meta?: DatasetMeta;
@@ -133,7 +129,7 @@ export interface VizDatasetLoading {
 
 export interface VizDatasetError {
   status: DatasetStatus.ERROR;
-  data: EnhancedDatasetLayer;
+  data: DatasetLayer;
   error: unknown;
   settings: DatasetSettings;
   meta?: DatasetMeta;

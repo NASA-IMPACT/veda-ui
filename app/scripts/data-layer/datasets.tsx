@@ -1,5 +1,5 @@
 import { datasets, stories } from 'veda';
-import { VedaDatum, DatasetData } from 'veda';
+import { VedaData, VedaDatum, DatasetData, StoryData } from '$types/veda';
 // @VEDA2-REFACTOR-WORK
 
 /**
@@ -12,8 +12,8 @@ import { VedaDatum, DatasetData } from 'veda';
  * veda virtual modules may go away, but this is used here for now until it is removed entirely or updated
  */
 
-export const veda_faux_module_datasets = datasets;
-export const veda_faux_module_stories = stories;
+export const veda_faux_module_datasets = datasets as VedaData<DatasetData>;
+export const veda_faux_module_stories = stories as VedaData<StoryData>;
 
 export const allExploreDatasets = Object.values(veda_faux_module_datasets)
   .map((d: VedaDatum<DatasetData>) => d!.data)

@@ -5,7 +5,6 @@ import startOfDay from 'date-fns/startOfDay';
 import startOfMonth from 'date-fns/startOfMonth';
 import startOfYear from 'date-fns/startOfYear';
 import {
-  EnhancedDatasetLayer,
   TimelineDataset,
   DatasetStatus,
   StacDatasetData,
@@ -40,18 +39,12 @@ export function getParentDataset(data: DatasetData): ParentDatset {
 
 export const getDatasetLayers = (datasets: VedaData<DatasetData>) =>
   Object.values(datasets).flatMap((dataset: VedaDatum<DatasetData>) => {
-    return dataset.data.layers.map((l) => ({
-      ...l,
-      parentDataset: getParentDataset(dataset.data)
-    }));
+    return dataset.data.layers;
   });
 
-export const getLayersFromDataset = (datasets: DatasetData[]) =>
-  Object.values(datasets).map((dataset: DatasetData) => {
-    return dataset.layers.map((l) => ({
-      ...l,
-      parentDataset: getParentDataset(dataset)
-    }));
+export const getLayersFromDatasetLayers = (datasets: DatasetData[]) =>
+  Object.values(datasets).flatMap((data: DatasetData) => {
+    return data.layers;
   });
 
 /**
@@ -85,7 +78,7 @@ function getInitialColorMap(dataset: DatasetLayer): string | undefined {
 
 export function reconcileDatasets(
   ids: string[],
-  datasetsList: EnhancedDatasetLayer[],
+  datasetsList: DatasetLayer[],
   reconciledDatasets: TimelineDataset[]
 ): TimelineDataset[] {
   return ids.map((id) => {

@@ -29,6 +29,7 @@ interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps {
   zoomExtent?: number[];
   bounds?: number[];
   sourceParams?: Record<string, any>;
+  parentDataset: ParentDatset;
 }
 
 export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
@@ -278,10 +279,6 @@ export interface ParentDatset {
 export interface EnhancedDatasetLayer extends DatasetLayer {
   id: string;
   parentDataset: ParentDatset;
-}
-
-export interface DatasetDataWithEnhancedLayers extends DatasetData {
-  layers: EnhancedDatasetLayer[];
 }
 
 // Types needed for library

@@ -5,7 +5,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import {
   reconcileDatasets,
-  getLayersFromDataset
+  getLayersFromDatasetLayers
 } from '../../data-utils-no-faux-module';
 import { TimelineDataset } from '../../types.d.ts';
 
@@ -69,15 +69,20 @@ interface DatasetSelectorModalProps {
 }
 
 export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
-  const { revealed, datasets, timelineDatasets, setTimelineDatasets, close, emptyStateContent } =
-    props;
+  const {
+    revealed,
+    datasets,
+    timelineDatasets,
+    setTimelineDatasets,
+    close,
+    emptyStateContent
+  } = props;
 
-  const datasetLayers = getLayersFromDataset(datasets);
+  const datasetLayers = getLayersFromDatasetLayers(datasets);
 
   const [selectedIds, setSelectedIds] = useState<string[]>(
     timelineDatasets.map((dataset) => dataset.data.id)
   );
-  const enhancedDatasetLayers = datasetLayers.flatMap((e) => e);
 
   // Use Jotai controlled atoms for query parameter manipulation on new E&A page
   const { search: searchTerm, taxonomies, onAction } = useFiltersWithURLAtom();
@@ -95,7 +100,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
 
   const onConfirm = useCallback(() => {
     setTimelineDatasets(
-      reconcileDatasets(selectedIds, enhancedDatasetLayers, timelineDatasets)
+      reconcileDatasets(selectedIds, datasetLayers, timelineDatasets)
     );
     onAction(FilterActions.CLEAR);
     close();
@@ -103,7 +108,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     close,
     selectedIds,
     timelineDatasets,
-    enhancedDatasetLayers,
+    datasetLayers,
     setTimelineDatasets,
     onAction
   ]);
@@ -125,7 +130,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
           setSelectedIds={setSelectedIds}
           onAction={onAction}
           filterLayers={true}
-          {...(emptyStateContent ? {emptyStateContent} : {})}
+          {...(emptyStateContent ? { emptyStateContent } : {})}
         />
       }
       footerContent={
