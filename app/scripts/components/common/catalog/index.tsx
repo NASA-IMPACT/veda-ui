@@ -1,8 +1,6 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
-import CatalogContent from './catalog-content';
-import CatalogContentLegacy from './catalog-content-legacy';
 import { DatasetData } from '$types/veda';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
 
@@ -28,6 +26,9 @@ const CatalogFoldHeader = styled(FoldHeader)`
 `;
 
 export const sortOptions = [{ id: 'name', name: 'Name' }];
+
+const CatalogContent = lazy(() => import('./catalog-content'));
+const CatalogContentLegacy = lazy(() => import('./catalog-content-legacy'));
 
 export interface CatalogViewProps {
   datasets: DatasetData[];
