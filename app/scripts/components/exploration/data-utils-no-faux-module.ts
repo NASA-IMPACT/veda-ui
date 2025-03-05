@@ -5,7 +5,6 @@ import startOfDay from 'date-fns/startOfDay';
 import startOfMonth from 'date-fns/startOfMonth';
 import startOfYear from 'date-fns/startOfYear';
 import {
-  EnhancedDatasetLayer,
   TimelineDataset,
   DatasetStatus,
   StacDatasetData,
@@ -43,8 +42,10 @@ export const getDatasetLayers = (datasets: VedaData<DatasetData>) =>
     return dataset.data.layers;
   });
 
-export const getLayersFromDataset = (datasets: DatasetData[]) =>
-  Object.values(datasets);
+export const getLayersFromDatasetLayers = (datasets: DatasetData[]) =>
+  Object.values(datasets).flatMap((data: DatasetData) => {
+    return data.layers;
+  });
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
@@ -77,7 +78,7 @@ function getInitialColorMap(dataset: DatasetLayer): string | undefined {
 
 export function reconcileDatasets(
   ids: string[],
-  datasetsList: EnhancedDatasetLayer[],
+  datasetsList: DatasetLayer[],
   reconciledDatasets: TimelineDataset[]
 ): TimelineDataset[] {
   return ids.map((id) => {

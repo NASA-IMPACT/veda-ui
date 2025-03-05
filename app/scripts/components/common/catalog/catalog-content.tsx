@@ -9,7 +9,7 @@ import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
 
 import { FilterActions } from './utils';
-import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
+import { DatasetData } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import {
@@ -21,7 +21,6 @@ import {
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
-import { getParentDataset } from '$components/exploration/data-utils-no-faux-module';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
