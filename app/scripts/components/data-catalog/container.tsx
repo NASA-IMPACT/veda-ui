@@ -8,6 +8,7 @@ import PageHero from '$components/common/page-hero';
 import { FeaturedDatasets } from '$components/common/featured-slider-section';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
+import { checkEnvFlag } from '$utils/utils';
 
 /**
  * @VEDA2-REFACTOR-WORK
@@ -19,7 +20,9 @@ import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-
 export default function DataCatalogContainer() {
   const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
   const controlVars = useFiltersWithQS();
-
+  const isUSWDSDataCatalogEnabled = checkEnvFlag(
+    process.env.ENABLE_USWDS_DATA_CATALOG
+  );
   return (
     <PageMainContent>
       <LayoutProps
@@ -31,7 +34,11 @@ export default function DataCatalogContainer() {
         description={getString('dataCatalogBanner').other}
       />
       <FeaturedDatasets />
-      <CatalogView datasets={allDatasets} onFilterChanges={() => controlVars} />
+      <CatalogView
+        datasets={allDatasets}
+        onFilterChanges={() => controlVars}
+        enableUSWDSDataCatalog={isUSWDSDataCatalogEnabled}
+      />
     </PageMainContent>
   );
 }

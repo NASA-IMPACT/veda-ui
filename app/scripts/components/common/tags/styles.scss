@@ -1,0 +1,15 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+
+.default-veda-tag {
+  background: themeVars.$veda-uswds-color-primary-lightest;
+  margin-right: themeVars.$veda-uswds-spacing-105;
+  color: themeVars.$veda-uswds-color-primary;
+  font-weight: themeVars.$veda-uswds-fontweight-regular;
+  font-size: themeVars.$veda-uswds-fontsize-3xs;
+}
+
+.label-tag {
+  color: themeVars.$veda-uswds-color-base-dark;
+  background: themeVars.$veda-uswds-color-base-lightest;
+  gap: themeVars.$veda-uswds-spacing-1;
+}
