@@ -1,12 +1,19 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
-import { FormGroupStructure, FormCheckableGroup, FormCheckable } from '@devseed-ui/form';
-import { CollecticonChevronDown, CollecticonChevronUp } from '@devseed-ui/collecticons';
+import {
+  FormGroupStructure,
+  FormCheckableGroup,
+  FormCheckable
+} from '@devseed-ui/form';
+import {
+  CollecticonChevronDown,
+  CollecticonChevronUp
+} from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { CardTitle } from '$components/common/card/styles';
-
+import { USWDSAccordion, USWDSCheckbox } from '$components/common/uswds';
 
 const FilterMenu = styled.div`
   border: 2px solid ${themeVal('color.base-200')};
@@ -71,10 +78,11 @@ interface CheckableFiltersProps {
   items: OptionItem[];
   onChanges: (items: OptionItem) => void;
   globallySelected: OptionItem[]; // Selected values across all filters
-  tagItemCleared?: { // An option item that was removed globally
+  tagItemCleared?: {
+    // An option item that was removed globally
     item?: OptionItem;
     callback?: React.Dispatch<React.SetStateAction<any>>;
-  },
+  };
   openByDefault?: boolean;
 }
 
@@ -97,38 +105,46 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
   const [count, setCount] = useState<number>(0);
   const [selected, setSelected] = useState<OptionItem[]>([]);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const idInfo = e.target.id.split('&&');
-    const taxonomy = idInfo[0];
-    const id = idInfo[1];
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const idInfo = e.target.id.split('&&');
+      const taxonomy = idInfo[0];
+      const id = idInfo[1];
 
-    const optionItem = {
-      taxonomy: taxonomy,
-      name: e.target.name,
-      id: id,
-    };
+      const optionItem = {
+        taxonomy: taxonomy,
+        name: e.target.name,
+        id: id
+      };
 
-    if(e.target.checked) {
-      setCount((prevValue) => prevValue + 1);
-      setSelected([...selected, optionItem]); // Local
-      onChanges(optionItem); // Global to filters-control
-    }
-    else {
-      setCount((prevValue) => prevValue - 1);
-      setSelected(selected.filter((item) => item.id !== e.target.id));
-      onChanges(optionItem);
-    }
-  }, [selected]);
+      if (e.target.checked) {
+        setCount((prevValue) => prevValue + 1);
+        setSelected([...selected, optionItem]); // Local
+        onChanges(optionItem); // Global to filters-control
+      } else {
+        setCount((prevValue) => prevValue - 1);
+        setSelected(selected.filter((item) => item.id !== e.target.id));
+        onChanges(optionItem);
+      }
+    },
+    [selected]
+  );
 
-  const isChecked = (item: OptionItem) => globallySelected.some((selected) => selected.id == item.id && selected.taxonomy == item.taxonomy);
+  const isChecked = (item: OptionItem) =>
+    globallySelected.some(
+      (selected) => selected.id == item.id && selected.taxonomy == item.taxonomy
+    );
 
   useEffect(() => {
-    if(!globallySelected || globallySelected.length === 0) {
+    if (!globallySelected || globallySelected.length === 0) {
       setCount(0);
     }
 
-    if(globallySelected.length > 0) {
-      setCount(globallySelected.filter(item => items.some(i => i.id === item.id)).length);
+    if (globallySelected.length > 0) {
+      setCount(
+        globallySelected.filter((item) => items.some((i) => i.id === item.id))
+          .length
+      );
       setSelected(selected.filter((item) => item.id));
     } else {
       setSelected([]);
@@ -136,65 +152,59 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
   }, [globallySelected]);
 
   useEffect(() => {
-    if(tagItemCleared?.item && globallySelected.length > 0) {
+    if (tagItemCleared?.item && globallySelected.length > 0) {
       setCount((prevValue) => prevValue - 1);
-      setSelected(selected.filter((item) => item.id !== tagItemCleared.item?.id));
+      setSelected(
+        selected.filter((item) => item.id !== tagItemCleared.item?.id)
+      );
       tagItemCleared.callback?.(undefined);
     }
   }, [tagItemCleared, globallySelected]);
 
-  return (
-    <FilterMenu>
-      <FilterTitle onClick={() => setShow(!show)}>
-        <div id='title-selected'>
-          <CardTitle>{title}</CardTitle>
-          {
-            count > 0 && (
-              <span>{count} selected</span>
-            )
-          }
+  const createCheckboxes = (items) => {
+    const newItem = items.map((item) => {
+      const { id, name, taxonomy } = item;
+      const checked = isChecked(item);
+
+      return (
+        <div
+          key={id}
+          id='veda-checkbox-container'
+          className={`border-2px radius-md  margin-bottom-105 ${
+            checked
+              ? 'border-primary-light bg-primary-lighter'
+              : 'border-base-light'
+          }`}
+        >
+          <USWDSCheckbox
+            id={`${taxonomy}&&${id}`}
+            name={name}
+            label={name}
+            checked={checked}
+            onChange={(e) => handleChange(e)}
+            className={`margin-bottom-105 margin-x-1 ${
+              checked && 'bg-primary-lighter'
+            }`}
+          />
         </div>
-        <Toggle size='small'>
-          <ToggleIconButton
-            active={show}
-          >
-            {
-              show ?
-              <CollecticonChevronUp />
-              :
-              <CollecticonChevronDown />
-            }
-          </ToggleIconButton>
-        </Toggle>
-      </FilterTitle>
-      {
-        show && (
-          <FormGroupStructure label='' id=''>
-            <Options>
-              {
-                items.map((item) => {
-                  const checked = isChecked(item);
-                  return (
-                    <div className={checked ? 'checked' : 'unchecked'} key={item.id}>
-                      <Option
-                        key={item.id}
-                        value={item.name}
-                        onChange={(e) => handleChange(e)}
-                        checked={checked}
-                        type='checkbox'
-                        name={item.name}
-                        id={`${item.taxonomy}&&${item.id}`}
-                      >
-                        {item.name}
-                      </Option>
-                    </div>
-                  );
-                })
-              }
-            </Options>
-          </FormGroupStructure>
-        )
-      }
-    </FilterMenu>
+      );
+    });
+
+    return newItem;
+  };
+  return (
+    <USWDSAccordion
+      key={title}
+      title={title}
+      bordered={true}
+      items={[
+        {
+          title: title,
+          id: 'testing',
+          headingLevel: 'h1',
+          content: createCheckboxes(items)
+        }
+      ]}
+    />
   );
 }

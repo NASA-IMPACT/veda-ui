@@ -26,3 +26,8 @@ export { USWDSNavMenuButton } from './header/nav-menu-button';
 export { USWDSNavDropDownButton } from './header/nav-drop-down-button';
 export { USWDSExtendedNav } from './header/extended-nav';
 export { USWDSTextInput, USWDSTextInputMask } from './input';
+export { USWDSCheckbox } from './checkbox';
+export { USWDSTag } from './tag';
+export { USWDSAccordion } from './accordion';
+export { USWDSSearch } from './search';
+
