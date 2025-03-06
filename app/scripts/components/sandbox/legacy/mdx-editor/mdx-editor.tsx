@@ -20,8 +20,8 @@ import { Extension } from '@codemirror/state';
 import styled from 'styled-components';
 import Draggable from 'react-draggable';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { generalErrorMessage } from '../../common/blocks/block-constant';
 import { MDX_LOCAL_STORAGE_KEY, MDX_SOURCE_DEFAULT } from '.';
+import { generalErrorMessage } from '$components/common/blocks/block-constant';
 import { BlockComponent } from '$components/common/blocks';
 import { HintedErrorDisplay, docsMessage } from '$utils/hinted-error';
 
