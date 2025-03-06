@@ -85,6 +85,11 @@ const FormInputSearch = styled(FormInput)`
   padding-left: 0;
   padding-right: 0;
   width: 100%;
+  /* Delegated focus style to parent div, SearchFieldContainer */
+  &:focus,
+  &:active {
+    outline: 0 !important;
+  }
 `;
 
 interface SearchFieldProps

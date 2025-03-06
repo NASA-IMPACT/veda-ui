@@ -59,7 +59,7 @@ module.exports = {
       const changelog = Object.entries(groupedCommits)
         .map(([prefix, commits]) => {
           if (commits.length > 0) {
-            return `### ${prefix}\n ${commits.join('\n')}`;
+            return `### ${prefix}\n ${commits.map((c) => '* ' + c).join('\n')}`;
           }
         })
         .join('\n');
