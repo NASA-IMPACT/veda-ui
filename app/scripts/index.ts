@@ -13,7 +13,6 @@ import ReactQueryProvider from './context/react-query';
 import Embed from './components/common/blocks/embed';
 import DevseedUiThemeProvider from './theme-provider';
 import CatalogView from './components/common/catalog';
-import { PageMainContent } from '$styles/page';
 import PageHero from '$components/common/page-hero';
 import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
@@ -68,7 +67,6 @@ export {
   Image,
   CatalogView,
   DevseedUiThemeProvider,
-  PageMainContent,
   PageHero,
   PageHeader,
   PageFooter,
