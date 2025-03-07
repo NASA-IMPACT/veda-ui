@@ -34,7 +34,7 @@ export function TileUrlModal(props: {
   tileUrls?: Record<string, string>;
   revealed: boolean;
   onClose: () => void;
-  jupyterUrl: string;
+  jupyterUrl?: string;
 }) {
   const { datasetName, tileUrls, revealed, onClose, jupyterUrl } = props;
 
@@ -51,7 +51,6 @@ export function TileUrlModal(props: {
 
       return `${baseUrl}?${quotedParams}`;
     } catch (e) {
-      console.error('URL parsing failed:', e);
       return url;
     }
   };
@@ -62,11 +61,6 @@ export function TileUrlModal(props: {
     const layerName = `${datasetName} at ${currentDate}`;
     const quotedTileUrl = encodeTileUrl(tileUrl);
 
-    console.log(
-      `${jupyterUrl}/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
-        layerName
-      )}&project_name=${encodeURIComponent(siteTitle)}`
-    );
     return `${jupyterUrl}/qgis/?action=add_xyz_tile_layer&url=${quotedTileUrl}&layer_name=${encodeURIComponent(
       layerName
     )}&project_name=${encodeURIComponent(siteTitle)}`;
@@ -140,7 +134,7 @@ export function TileUrlModal(props: {
                           <Button
                             size='medium'
                             variation='primary-fill'
-                            onClick={() => handleOpenInQgis(tileUrl.value)}
+                            onClick={() => tileUrl.value && handleOpenInQgis(tileUrl.value)}
                           >
                             <CollecticonShare meaningful title='Open in QGIS' />
                           </Button>

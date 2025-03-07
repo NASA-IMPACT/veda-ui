@@ -170,13 +170,16 @@ export default function LayerMenuOptions(props: LayerMenuOptionsProps) {
           </li>
         </DropMenu>
       </StyledDropdown>
-      <TileUrlModal
-        datasetName={dataset.data.name}
-        tileUrls={dataset.meta?.tileUrls}
-        revealed={tileModalRevealed}
-        onClose={() => setTileModalRevealed(false)}
-        jupyterUrl='https://hub.openveda.cloud/user-redirect'
-      />
+      {
+        !!process.env.HUB_URL &&
+        <TileUrlModal
+          datasetName={dataset.data.name}
+          tileUrls={dataset.meta?.tileUrls}
+          revealed={tileModalRevealed}
+          onClose={() => setTileModalRevealed(false)}
+          jupyterUrl={`${process.env.HUB_URL.replace(/\/$/, "")}/user-redirect`}
+        />
+      }
     </>
   );
 }
