@@ -44,13 +44,13 @@ export default function FilterTag(props: FilterTagProps) {
   };
 
   return (
-    <USWDSTag className='border-1px radius-md border-base-light padding-y-05 padding-x-1 margin-right-2 font-sans-2xs display-flex flex-align-center text-normal text-base-darkest bg-white text-no-uppercase'>
+    <USWDSTag className='border-1px radius-md border-base-light tablet:padding-y-05 tablet:padding-x-1 padding-y-0 padding-x-05 margin-right-2 tablet:font-sans-2xs font-sans-3xs display-flex flex-align-center text-normal text-base-darkest bg-white text-no-uppercase'>
       {item.name}
       <USWDSButton
         type='button'
         onClick={handleClick}
         unstyled
-        className='text-base margin-y-2px margin-left-2px'
+        className='text-base tablet:margin-y-2px margin-left-2px margin-y-0'
       >
         <Icon.Close />
       </USWDSButton>
