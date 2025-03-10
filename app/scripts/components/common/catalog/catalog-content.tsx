@@ -22,6 +22,7 @@ import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { getParentDataset } from '$components/exploration/data-utils-no-faux-module';
+import Pagination from '$components/common/pagination';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -258,6 +259,9 @@ function CatalogContent({
       .length;
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7; // QUESTION: Should this value be controlled by the user (UI)?
+
   return (
     <Content>
       <FiltersControl
@@ -280,65 +284,83 @@ function CatalogContent({
           handleClearTags={handleClearTags}
         />
         {datasetsToDisplay.length ? (
-          isSelectable ? (
-            <Cards>
-              {datasetsToDisplay.map((currentDataset) => (
-                <div key={currentDataset.id}>
-                  <div>
-                    <Headline>
-                      <ParentDatasetTitle>
-                        <CollecticonDatasetLayers /> {currentDataset.name}
-                        {getSelectedLayerCount(currentDataset) > 0 && (
-                          <SelectedCard>
-                            <span>
-                              {getSelectedLayerCount(currentDataset)} selected
-                            </span>
-                          </SelectedCard>
-                        )}
-                      </ParentDatasetTitle>
-                      {currentDataset.sourceExclusive && (
-                        <WarningPill variation='warning'>
-                          {EXCLUSIVE_SOURCE_WARNING}
-                        </WarningPill>
-                      )}
-                    </Headline>
-                    <Paragraph>
-                      <TextHighlight
-                        value={search}
-                        disabled={search.length < 3}
-                      >
-                        {currentDataset.description}
-                      </TextHighlight>
-                    </Paragraph>
-                  </div>
-                  <Cards>
-                    {currentDataset.layers.map((datasetLayer) => (
-                      <li key={datasetLayer.id}>
-                        <CatalogCard
-                          searchTerm={search}
-                          layer={datasetLayer}
-                          dataset={currentDataset}
-                          selectable={true}
-                          selected={selectedIds.includes(datasetLayer.id)}
-                          onDatasetClick={() => {
-                            onCardSelect(datasetLayer.id, currentDataset);
-                          }}
-                        />
-                      </li>
-                    ))}
-                  </Cards>
-                </div>
-              ))}
-            </Cards>
-          ) : (
-            <Cards>
-              {datasetsToDisplay.map((d) => (
-                <li key={d.id}>
-                  <CatalogCard dataset={d} searchTerm={search} />
-                </li>
-              ))}
-            </Cards>
-          )
+          <>
+            {isSelectable ? (
+              <Cards>
+                {datasetsToDisplay
+                  .slice(
+                    (currentPage - 1) * itemsPerPage,
+                    currentPage * itemsPerPage
+                  )
+                  .map((currentDataset) => (
+                    <div key={currentDataset.id}>
+                      <div>
+                        <Headline>
+                          <ParentDatasetTitle>
+                            <CollecticonDatasetLayers /> {currentDataset.name}
+                            {getSelectedLayerCount(currentDataset) > 0 && (
+                              <SelectedCard>
+                                <span>
+                                  {getSelectedLayerCount(currentDataset)}{' '}
+                                  selected
+                                </span>
+                              </SelectedCard>
+                            )}
+                          </ParentDatasetTitle>
+                          {currentDataset.sourceExclusive && (
+                            <WarningPill variation='warning'>
+                              {EXCLUSIVE_SOURCE_WARNING}
+                            </WarningPill>
+                          )}
+                        </Headline>
+                        <Paragraph>
+                          <TextHighlight
+                            value={search}
+                            disabled={search.length < 3}
+                          >
+                            {currentDataset.description}
+                          </TextHighlight>
+                        </Paragraph>
+                      </div>
+                      <Cards>
+                        {currentDataset.layers.map((datasetLayer) => (
+                          <li key={datasetLayer.id}>
+                            <CatalogCard
+                              searchTerm={search}
+                              layer={datasetLayer}
+                              dataset={currentDataset}
+                              selectable={true}
+                              selected={selectedIds.includes(datasetLayer.id)}
+                              onDatasetClick={() => {
+                                onCardSelect(datasetLayer.id, currentDataset);
+                              }}
+                            />
+                          </li>
+                        ))}
+                      </Cards>
+                    </div>
+                  ))}
+              </Cards>
+            ) : (
+              <Cards>
+                {datasetsToDisplay
+                  .slice(
+                    (currentPage - 1) * itemsPerPage,
+                    currentPage * itemsPerPage
+                  )
+                  .map((d) => (
+                    <li key={d.id}>
+                      <CatalogCard dataset={d} searchTerm={search} />
+                    </li>
+                  ))}
+              </Cards>
+            )}
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalPages={Math.ceil(datasetsToDisplay.length / itemsPerPage)}
+            />
+          </>
         ) : (
           <EmptyState>
             {emptyStateContent ?? (
