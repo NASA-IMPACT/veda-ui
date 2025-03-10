@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Route, Routes, useParams } from 'react-router-dom';
+import { Route, Routes, useParams } from 'react-router-dom';
 
 import SandboxTypography from './typography';
 import SandboxHug from './hug';
@@ -134,15 +134,7 @@ function Sandbox() {
               <CardListGrid>
                 {pages.map((p) => (
                   <li key={p.id}>
-                    <Card
-                      linkLabel='View more'
-                      title={p.name}
-                      linkProperties={{
-                        linkTo: p.id,
-                        LinkElement: Link,
-                        pathAttributeKeyName: 'to'
-                      }}
-                    />
+                    <Card linkLabel='View more' title={p.name} to={p.id} />
                   </li>
                 ))}
               </CardListGrid>

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { media } from '@devseed-ui/theme-provider';
 
 import { stories, datasets, RelatedContentData, StoryData } from 'veda';
-import SmartLink from './smart-link';
 import { getDescription, getMediaProperty } from './catalog/utils';
 import { FormatBlock } from './types';
 import { utcString2userTzDate } from '$utils/date';
@@ -138,11 +137,7 @@ export default function RelatedContent(props: RelatedContentProps) {
               <Card
                 cardType={CardType.COVER}
                 linkLabel={`View ${t.parent} ${t.name}`}
-                linkProperties={{
-                  linkTo: `${t.asLink?.url ?? t.link}`,
-                  LinkElement: SmartLink,
-                  pathAttributeKeyName: 'to'
-                }}
+                to={`${t.asLink?.url ?? t.link}`}
                 title={t.name}
                 date={
                   t.parent === storyString

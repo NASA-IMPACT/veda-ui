@@ -7,7 +7,6 @@ import { Card, CardType } from '$components/common/card';
 import { Fold, FoldHeader, FoldTitle, FoldBody } from '$components/common/fold';
 import { variableGlsp } from '$styles/variable-utils';
 import { STORIES_PATH, getStoryPath } from '$utils/routes';
-import SmartLink from '$components/common/smart-link';
 import {
   getDescription,
   getMediaProperty
@@ -83,11 +82,7 @@ function FeaturedStories() {
                   <Card
                     cardType={CardType.COVER}
                     linkLabel='View more'
-                    linkProperties={{
-                      linkTo: `${d.asLink?.url ?? getStoryPath(d)}`,
-                      LinkElement: SmartLink,
-                      pathAttributeKeyName: 'to'
-                    }}
+                    to={`${d.asLink?.url ?? getStoryPath(d)}`}
                     title={d.name}
                     tagLabels={[getString('stories').one]}
                     parentTo={STORIES_PATH}
