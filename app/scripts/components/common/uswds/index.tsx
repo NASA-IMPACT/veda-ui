@@ -40,4 +40,3 @@ export { USWDSTag } from './tag';
 export { USWDSCheckbox } from './checkbox';
 export { USWDSAccordion } from './accordion';
 export { USWDSSearch } from './search';
-

@@ -1,14 +1,17 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { Icon } from '@trussworks/react-uswds';
+
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
 import { USWDSCardGroup } from '../uswds';
 import { Card, CardType } from '../card';
 import { Tags } from '../tags';
 import { createCardLabel } from '../card/uswds-cards/utils';
+import { USWDSButton, USWDSTag } from '../uswds';
 import { prepareDatasets } from './prepare-datasets';
-import FiltersControl from './filters-control';
+import FiltersControl from './filters-controls/filters-control';
 import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
 
@@ -32,6 +35,7 @@ import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { getParentDataset } from '$components/exploration/data-utils-no-faux-module';
 import { useVedaUI } from '$context/veda-ui-provider';
+import './catalog-content.scss';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -113,6 +117,7 @@ function CatalogContent({
   const [selectedFilters, setSelectedFilters] =
     useState<OptionItem[]>(urlTaxonomyItems);
   const [clearedTagItem, setClearedTagItem] = useState<OptionItem>();
+  const [mobileFilterMenu, setMobileFilterMenu] = useState<boolean>(false);
 
   const prevSelectedFilters = usePreviousValue(selectedFilters) ?? [];
 
@@ -297,91 +302,123 @@ function CatalogContent({
     return dataset.layers.filter((layer) => selectedIds?.includes(layer.id))
       .length;
   };
-
+  const Content = styled.div`
+    display: flex;
+    margin-bottom: 8rem;
+    position: relative;
+    gap: 24px;
+  `;
   return (
-    <Content>
-      <FiltersControl
-        search={search}
-        onAction={onAction}
-        taxonomiesOptions={datasetTaxonomies}
-        onFilterChange={updateSelectedFilters}
-        clearedTagItem={clearedTagItem}
-        setClearedTagItem={handleClearTag}
-        allSelected={selectedFilters}
-        exclusiveSourceSelected={exclusiveSourceSelected}
-        customTopOffset={isSelectable ? 50 : 0}
-        openByDefault={false}
-      />
-      <Catalog>
-        <CatalogTagsContainer
-          allSelectedFilters={selectedFilters}
-          urlTaxonomyItems={urlTaxonomyItems}
-          handleClearTag={handleClearTag}
-          handleClearTags={handleClearTags}
+    <div className=' margin-bottom-15 grid-row grip-gap-sm '>
+      <div className='tablet:grid-col-3'>
+        <FiltersControl
+          search={search}
+          onAction={onAction}
+          taxonomiesOptions={datasetTaxonomies}
+          onFilterChange={updateSelectedFilters}
+          clearedTagItem={clearedTagItem}
+          setClearedTagItem={handleClearTag}
+          allSelected={selectedFilters}
+          exclusiveSourceSelected={exclusiveSourceSelected}
+          customTopOffset={isSelectable ? 50 : 0}
+          openByDefault={false}
+          mobileFilterMenu={mobileFilterMenu}
+          setMobileFilterMenu={setMobileFilterMenu}
         />
-        {datasetsToDisplay.length ? (
-          isSelectable ? (
-            <Cards>
-              {datasetsToDisplay.map((currentDataset) => (
-                <div key={currentDataset.id}>
-                  <div>
-                    <Headline>
-                      <ParentDatasetTitle>
-                        <CollecticonDatasetLayers /> {currentDataset.name}
-                        {getSelectedLayerCount(currentDataset) > 0 && (
-                          <SelectedCard>
-                            <span>
-                              {getSelectedLayerCount(currentDataset)} selected
-                            </span>
-                          </SelectedCard>
+      </div>
+      <div className='tablet:grid-col-9 tablet:bg-red'>
+        <Catalog>
+          <div
+            id='veda__modile-catalog'
+            className='padding-2 margin-y-2 padding-y-4 margin-x-neg-2 tablet:margin-0 tablet:padding-0'
+          >
+            <div className='tablet:display-none display-flex margin-bottom-2 flex-justify flex-align-center'>
+              <p className='text-normal'>
+                Datasets{' '}
+                <USWDSTag className='bg-base margin-x-05'>
+                  {datasetsToDisplay.length}
+                </USWDSTag>
+              </p>
+              <USWDSButton
+                size='small'
+                className='maxw-card padding-x-1 padding-y-1 font-sans-xs'
+                onClick={() => setMobileFilterMenu(!mobileFilterMenu)}
+              >
+                Search and Filter
+                <Icon.Search />
+              </USWDSButton>
+            </div>
+            <CatalogTagsContainer
+              allSelectedFilters={selectedFilters}
+              urlTaxonomyItems={urlTaxonomyItems}
+              handleClearTag={handleClearTag}
+              handleClearTags={handleClearTags}
+            />
+          </div>
+          {datasetsToDisplay.length ? (
+            isSelectable ? (
+              <Cards>
+                {datasetsToDisplay.map((currentDataset) => (
+                  <div key={currentDataset.id}>
+                    <div>
+                      <Headline>
+                        <ParentDatasetTitle>
+                          <CollecticonDatasetLayers /> {currentDataset.name}
+                          {getSelectedLayerCount(currentDataset) > 0 && (
+                            <SelectedCard>
+                              <span>
+                                {getSelectedLayerCount(currentDataset)} selected
+                              </span>
+                            </SelectedCard>
+                          )}
+                        </ParentDatasetTitle>
+                        {currentDataset.sourceExclusive && (
+                          <WarningPill variation='warning'>
+                            {EXCLUSIVE_SOURCE_WARNING}
+                          </WarningPill>
                         )}
-                      </ParentDatasetTitle>
-                      {currentDataset.sourceExclusive && (
-                        <WarningPill variation='warning'>
-                          {EXCLUSIVE_SOURCE_WARNING}
-                        </WarningPill>
-                      )}
-                    </Headline>
-                    <Paragraph>
-                      <TextHighlight
-                        value={search}
-                        disabled={search.length < 3}
-                      >
-                        {currentDataset.description}
-                      </TextHighlight>
-                    </Paragraph>
+                      </Headline>
+                      <Paragraph>
+                        <TextHighlight
+                          value={search}
+                          disabled={search.length < 3}
+                        >
+                          {currentDataset.description}
+                        </TextHighlight>
+                      </Paragraph>
+                    </div>
+                    <Cards>
+                      {currentDataset.layers.map((datasetLayer) => (
+                        <li key={datasetLayer.id}>
+                          <CatalogCard
+                            searchTerm={search}
+                            layer={datasetLayer}
+                            dataset={currentDataset}
+                            selectable={true}
+                            selected={selectedIds.includes(datasetLayer.id)}
+                            onDatasetClick={() => {
+                              onCardSelect(datasetLayer.id, currentDataset);
+                            }}
+                          />
+                        </li>
+                      ))}
+                    </Cards>
                   </div>
-                  <Cards>
-                    {currentDataset.layers.map((datasetLayer) => (
-                      <li key={datasetLayer.id}>
-                        <CatalogCard
-                          searchTerm={search}
-                          layer={datasetLayer}
-                          dataset={currentDataset}
-                          selectable={true}
-                          selected={selectedIds.includes(datasetLayer.id)}
-                          onDatasetClick={() => {
-                            onCardSelect(datasetLayer.id, currentDataset);
-                          }}
-                        />
-                      </li>
-                    ))}
-                  </Cards>
-                </div>
-              ))}
-            </Cards>
+                ))}
+              </Cards>
+            ) : (
+              generateCardsWithRoute
+            )
           ) : (
-            generateCardsWithRoute
-          )
-        ) : (
-          <EmptyState>
-            {emptyStateContent ?? (
-              <p>There are no datasets to show with the selected filters.</p>
-            )}
-          </EmptyState>
-        )}
-      </Catalog>
-    </Content>
+            <EmptyState>
+              {emptyStateContent ?? (
+                <p>There are no datasets to show with the selected filters.</p>
+              )}
+            </EmptyState>
+          )}
+        </Catalog>
+      </div>
+    </div>
   );
 }
 
@@ -421,13 +458,6 @@ const Headline = styled.div`
   flex-direction: column;
   align-items: baseline;
   margin-bottom: ${glsp(1)};
-`;
-
-const Content = styled.div`
-  display: flex;
-  margin-bottom: 8rem;
-  position: relative;
-  gap: 24px;
 `;
 
 const Catalog = styled.div`
