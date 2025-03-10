@@ -103,21 +103,6 @@ function parcelBuildLib(cb) {
   });
 }
 
-// Copy the uswds assets to the veda-ui lib directory.
-// This makes things easier for the veda components to consume
-// when the veda-ui library is used as a dependency.
-function copyUswdsAssetsToLibBundle() {
-  return gulp
-    .src(
-      [
-        './node_modules/@uswds/uswds/dist/fonts/**/*',
-        './node_modules/@uswds/uswds/dist/img/**/*'
-      ],
-      { base: './node_modules/@uswds/uswds/dist' }
-    )
-    .pipe(gulp.dest('lib'));
-}
-
 // Below are the parcel related tasks. One for the build process and other to
 // start the development server.
 
@@ -189,11 +174,7 @@ const parallelTasks =
     ? gulp.parallel(copyFiles, copyUswdsImages)
     : gulp.parallel(copyFiles, copyNetlifyCMS, copyUswdsImages);
 
-module.exports.buildlib = gulp.series(
-  clean,
-  parcelBuildLib,
-  copyUswdsAssetsToLibBundle
-);
+module.exports.buildlib = gulp.series(clean, parcelBuildLib);
 
 // Task orchestration used during the production process.
 module.exports.default = gulp.series(clean, parallelTasks, parcelBuild);
