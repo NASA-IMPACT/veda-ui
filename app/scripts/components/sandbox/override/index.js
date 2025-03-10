@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Constrainer from '../../../styles/constrainer';
-import { PageMainContent } from '../../../styles/page';
+import Constrainer from '$styles/constrainer';
+import { PageMainContent } from '$styles/page';
 import { ComponentOverride } from '$components/common/page-overrides';
 import { VarProse } from '$styles/variable-components';
 
