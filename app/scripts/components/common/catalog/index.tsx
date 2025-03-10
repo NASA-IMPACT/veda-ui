@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
-import CatalogContent from './catalog-content';
 import { DatasetData } from '$types/veda';
 import { useSlidingStickyHeaderProps } from '$components/common/layout-root/useSlidingStickyHeaderProps';
 
@@ -28,6 +27,9 @@ const CatalogFoldHeader = styled(FoldHeader)`
 
 export const sortOptions = [{ id: 'name', name: 'Name' }];
 
+const CatalogContent = lazy(() => import('./catalog-content'));
+const CatalogContentLegacy = lazy(() => import('./catalog-content-legacy'));
+
 export interface CatalogViewProps {
   datasets: DatasetData[];
   onFilterChanges: () =>
@@ -37,9 +39,14 @@ export interface CatalogViewProps {
         onAction: () => void;
       }
     | any;
+  enableUSWDSDataCatalog: boolean;
 }
 
-function CatalogView({ datasets, onFilterChanges }: CatalogViewProps) {
+function CatalogView({
+  datasets,
+  onFilterChanges,
+  enableUSWDSDataCatalog
+}: CatalogViewProps) {
   const { headerHeight } = useSlidingStickyHeaderProps();
 
   const { search, taxonomies, onAction } = onFilterChanges();
@@ -55,12 +62,21 @@ function CatalogView({ datasets, onFilterChanges }: CatalogViewProps) {
           <FoldTitle>Search datasets</FoldTitle>
         </FoldHeadline>
       </CatalogFoldHeader>
-      <CatalogContent
-        datasets={datasets}
-        search={search}
-        taxonomies={taxonomies}
-        onAction={onAction}
-      />
+      {enableUSWDSDataCatalog ? (
+        <CatalogContent
+          datasets={datasets}
+          search={search}
+          taxonomies={taxonomies}
+          onAction={onAction}
+        />
+      ) : (
+        <CatalogContentLegacy
+          datasets={datasets}
+          search={search}
+          taxonomies={taxonomies}
+          onAction={onAction}
+        />
+      )}
     </CatalogWrapper>
   );
 }
