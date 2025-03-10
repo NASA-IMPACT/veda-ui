@@ -61,6 +61,10 @@ const BrowseFoldHeader = styled(FoldHeader)`
 
 const FoldWithTopMargin = styled(Fold)`
   margin-top: ${glsp()};
+  /* Moving global style of devseed ui library */
+  * {
+    line-height: calc(0.5rem + 1em);
+  }
 `;
 
 interface StoryDataWithPath extends StoryData {

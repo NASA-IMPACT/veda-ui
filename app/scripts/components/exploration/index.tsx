@@ -18,6 +18,10 @@ const Container = styled.div`
   flex-grow: 1;
   height: 100%;
 
+  /* Moving global style of devseed ui library */
+  * {
+    line-height: calc(0.5rem + 1em);
+  }
   .panel-wrapper {
     flex-grow: 1;
   }

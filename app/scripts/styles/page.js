@@ -10,6 +10,10 @@ export const PageMainContent = styled.main`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  /* Moving global style of devseed ui library */
+  * {
+    line-height: calc(0.5rem + 1em);
+  }
 `;
 
 export const PageMainTitle = styled(VarHeading).attrs((props) => ({

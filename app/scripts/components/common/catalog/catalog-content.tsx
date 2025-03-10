@@ -406,6 +406,10 @@ const Content = styled.div`
   margin-bottom: 8rem;
   position: relative;
   gap: 24px;
+  /* Moving global style of devseed ui library */
+  * {
+    line-height: calc(0.5rem + 1em);
+  }
 `;
 
 const Catalog = styled.div`
