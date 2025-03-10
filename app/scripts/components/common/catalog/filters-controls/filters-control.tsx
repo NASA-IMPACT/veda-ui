@@ -130,7 +130,8 @@ export default function FiltersControl(props: FiltersMenuProps) {
                 allSelected.some((selected) => selected.id === item.id)
                   ? 'remove'
                   : 'add'
-              )}
+              )
+            }
             globallySelected={allSelected}
             tagItemCleared={{
               item: clearedTagItem,
