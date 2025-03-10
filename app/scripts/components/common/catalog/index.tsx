@@ -53,15 +53,17 @@ function CatalogView({
 
   return (
     <CatalogWrapper>
-      <CatalogFoldHeader
-        style={{
-          scrollMarginTop: `${headerHeight + 16}px`
-        }}
-      >
-        <FoldHeadline>
-          <FoldTitle>Search datasets</FoldTitle>
-        </FoldHeadline>
-      </CatalogFoldHeader>
+      <div className='display-none tablet:display-block'>
+        <CatalogFoldHeader
+          style={{
+            scrollMarginTop: `${headerHeight + 16}px`
+          }}
+        >
+          <FoldHeadline>
+            <FoldTitle>Search datasets</FoldTitle>
+          </FoldHeadline>
+        </CatalogFoldHeader>
+      </div>
       {enableUSWDSDataCatalog ? (
         <CatalogContent
           datasets={datasets}

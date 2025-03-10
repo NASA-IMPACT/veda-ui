@@ -6,11 +6,13 @@ import React, {
   useMemo
 } from 'react';
 import styled from 'styled-components';
-import { USWDSSearch } from '../uswds';
+import { Icon } from '@trussworks/react-uswds';
+import { FilterActions } from '../utils';
 
-import { FilterActions } from './utils';
+import { USWDSSearch, USWDSButton } from '$uswds';
+
 import { Taxonomy } from '$types/veda';
-import SearchField from '$components/common/search-field';
+
 import CheckableFilters, {
   OptionItem
 } from '$components/common/form/checkable-filter';
@@ -48,6 +50,8 @@ interface FiltersMenuProps {
   exclusiveSourceSelected?: string | null;
   customTopOffset?: number;
   openByDefault?: boolean;
+  mobileFilterMenu: boolean;
+  setMobileFilterMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function FiltersControl(props: FiltersMenuProps) {
@@ -67,7 +71,9 @@ export default function FiltersControl(props: FiltersMenuProps) {
     // has a different header reference as opposed to what the useSlidingStickyHeader hook
     // uses as a reference (the main page header). To avoid changing the reference IDs in the
     // main logic of the sliding sticky header hook, we provide this custom top offset for more control.
-    customTopOffset = 0
+    customTopOffset = 0,
+    mobileFilterMenu,
+    setMobileFilterMenu
   } = props;
 
   const pathname = usePathname();
@@ -135,23 +141,41 @@ export default function FiltersControl(props: FiltersMenuProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exclusiveSourceSelected]);
-
   return (
-    <ControlsWrapper
-      widthValue={width}
-      heightValue={controlsHeight + 'px'}
-      topValue={
-        isHeaderHidden && wrapperHeight
-          ? '0px'
-          : `${wrapperHeight - customTopOffset}px`
-      }
-    >
-      <div ref={controlsRef}>
+    <div className=' tablet:z-auto z-500 wrapper margin-right-3'>
+      {/* Commenting out for now until direction is clarified on EA page implementation */}
+      {/* <ControlsWrapper
+        widthValue={width}
+        heightValue={controlsHeight + 'px'}
+        topValue={
+          isHeaderHidden && wrapperHeight
+            ? '0px'
+            : `${wrapperHeight - customTopOffset}px`
+        }
+      > */}
+      <div
+        id='dataset__search'
+        ref={controlsRef}
+        className={` tablet:display-block tablet:width-auto width-full overflow-x-hidden tablet:bg-none bg-white bottom-0 tablet:bottom-auto top-0 tablet:top-auto right-0 tablet:right-auto tablet:padding-05 ${
+          mobileFilterMenu ? 'isVisible display-block' : 'display-none'
+        }`}
+      >
+        <div className='tablet:display-none display-flex flex-justify padding-bottom-3'>
+          <h1>Search and Filter</h1>
+          <USWDSButton
+            type='button'
+            onClick={() => setMobileFilterMenu(false)}
+            unstyled
+            className='text-base tablet:margin-y-2px margin-left-2px margin-y-0'
+          >
+            <Icon.Close size={3} />
+          </USWDSButton>
+        </div>
         <USWDSSearch
           placeholder='Search by title, description'
           value={search ?? ''}
           onChange={(v) => onAction(FilterActions.SEARCH, v.target.value)}
-          className='margin-bottom-3'
+          className='margin-bottom-3 '
         />
         {taxonomiesItems.map(({ title, items }) => (
           <CheckableFilters
@@ -174,6 +198,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
           />
         ))}
       </div>
-    </ControlsWrapper>
+      {/* </ControlsWrapper> */}
+    </div>
   );
 }
