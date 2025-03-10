@@ -26,3 +26,12 @@ export { USWDSNavMenuButton } from './header/nav-menu-button';
 export { USWDSNavDropDownButton } from './header/nav-drop-down-button';
 export { USWDSExtendedNav } from './header/extended-nav';
 export { USWDSTextInput, USWDSTextInputMask } from './input';
+export {
+  USWDSCardComponent,
+  USWDSCardBody,
+  USWDSCardGroup,
+  USWDSCardHeader,
+  USWDSCardMedia,
+  USWDSCardFooter
+} from './card';
+export { USWDSTag } from './tag';

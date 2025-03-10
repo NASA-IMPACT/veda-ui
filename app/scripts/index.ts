@@ -12,7 +12,6 @@ import CompareImage from './components/common/blocks/images/compare';
 import ReactQueryProvider from './context/react-query';
 import Embed from './components/common/blocks/embed';
 import DevseedUiThemeProvider from './theme-provider';
-import CatalogView from './components/common/catalog';
 import PageHero from '$components/common/page-hero';
 import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
@@ -38,6 +37,9 @@ import {
 
 // Include only the custom stylings for the VEDA components into the library build
 import './styles/veda-components.scss';
+import CatalogContent from '$components/common/catalog/catalog-content';
+import DefaultCard from '$components/common/card/uswds-cards/default-card';
+import FlagCard from '$components/common/card/uswds-cards/flag-card';
 
 // Adding .last property to array
 /* eslint-disable-next-line fp/no-mutating-methods */
@@ -65,7 +67,7 @@ export {
   Embed,
   MapBlock,
   Image,
-  CatalogView,
+  CatalogContent,
   DevseedUiThemeProvider,
   PageHero,
   PageHeader,
@@ -75,6 +77,10 @@ export {
   StoriesHubContent,
   ExplorationAndAnalysis,
   DatasetSelectorModal,
+
+  // CARDS
+  FlagCard,
+  DefaultCard,
 
   // HOOKS
   useTimelineDatasetAtom,
