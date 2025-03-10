@@ -1,5 +1,11 @@
-import React, { useRef, useEffect, useCallback, useMemo } from 'react';
-
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo
+} from 'react';
+import styled from 'styled-components';
 import { Icon } from '@trussworks/react-uswds';
 import { FilterActions } from '../utils';
 
@@ -10,7 +16,25 @@ import { Taxonomy } from '$types/veda';
 import CheckableFilters, {
   OptionItem
 } from '$components/common/form/checkable-filter';
+import {
+  useSlidingStickyHeader,
+  HEADER_TRANSITION_DURATION
+} from '$utils/use-sliding-sticky-header';
+import { usePathname } from '$utils/use-pathname';
 import './filter-controls.scss';
+
+const ControlsWrapper = styled.div<{
+  widthValue?: string;
+  heightValue?: string;
+  topValue: string;
+}>`
+  min-width: 20rem;
+  width: ${(props) => props.widthValue ?? '20rem'};
+  position: sticky;
+  top: calc(${(props) => props.topValue} + 1rem);
+  height: ${(props) => props.heightValue};
+  transition: top ${HEADER_TRANSITION_DURATION}ms ease-out;
+`;
 
 interface FiltersMenuProps {
   onAction: (action: FilterActions, value: any) => void;
@@ -21,10 +45,10 @@ interface FiltersMenuProps {
   setClearedTagItem?: React.Dispatch<
     React.SetStateAction<OptionItem | undefined>
   >;
-
+  width?: string;
   onFilterChange?: (item: OptionItem, action: 'add' | 'remove') => void;
   exclusiveSourceSelected?: string | null;
-
+  customTopOffset?: number;
   openByDefault?: boolean;
   mobileFilterMenu: boolean;
   setMobileFilterMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -36,6 +60,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
     onAction,
     taxonomiesOptions,
     search,
+    width,
     onFilterChange,
     clearedTagItem,
     setClearedTagItem,
@@ -46,11 +71,17 @@ export default function FiltersControl(props: FiltersMenuProps) {
     // has a different header reference as opposed to what the useSlidingStickyHeader hook
     // uses as a reference (the main page header). To avoid changing the reference IDs in the
     // main logic of the sliding sticky header hook, we provide this custom top offset for more control.
+    customTopOffset = 0,
     mobileFilterMenu,
     setMobileFilterMenu
   } = props;
 
+  const pathname = usePathname();
+
   const controlsRef = useRef<HTMLDivElement>(null);
+
+  const [controlsHeight, setControlsHeight] = useState<number>(0);
+  const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader(pathname);
 
   const handleChanges = useCallback(
     (item: OptionItem, action: 'add' | 'remove') => {
@@ -67,6 +98,23 @@ export default function FiltersControl(props: FiltersMenuProps) {
     },
     [allSelected, onFilterChange]
   );
+
+  useEffect(() => {
+    if (!controlsRef.current) return;
+
+    const height = controlsRef.current.offsetHeight;
+    setControlsHeight(height);
+    // Observe the height change of controls (from accordion folding)
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      if (entry.borderBoxSize.length > 0) {
+        const borderBoxSize = entry.borderBoxSize[0];
+        // blockSize: For boxes with a horizontal writing-mode, this is the vertical dimension
+        setControlsHeight(borderBoxSize.blockSize);
+      }
+    });
+    resizeObserver.observe(controlsRef.current);
+    return () => resizeObserver.disconnect();
+  }, [controlsRef]);
 
   const taxonomiesItems = useMemo(
     () =>
@@ -94,11 +142,21 @@ export default function FiltersControl(props: FiltersMenuProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exclusiveSourceSelected]);
   return (
-    <div className=' tablet:z-auto z-500 wrapper margin-right-3 position-absolute tablet:position-relative'>
+    <div className=' tablet:z-auto z-500 wrapper margin-right-3'>
+      {/* Commenting out for now until direction is clarified on EA page implementation */}
+      {/* <ControlsWrapper
+        widthValue={width}
+        heightValue={controlsHeight + 'px'}
+        topValue={
+          isHeaderHidden && wrapperHeight
+            ? '0px'
+            : `${wrapperHeight - customTopOffset}px`
+        }
+      > */}
       <div
         id='dataset__search'
         ref={controlsRef}
-        className={`tablet:display-block tablet:width-auto width-full overflow-x-hidden tablet:bg-none bg-white bottom-0 tablet:bottom-auto top-0 tablet:top-auto right-0 tablet:right-auto tablet:padding-05 padding-3 position-fixed tablet:position-relative ${
+        className={` tablet:display-block tablet:width-auto width-full overflow-x-hidden tablet:bg-none bg-white bottom-0 tablet:bottom-auto top-0 tablet:top-auto right-0 tablet:right-auto tablet:padding-05 ${
           mobileFilterMenu ? 'isVisible display-block' : 'display-none'
         }`}
       >
@@ -117,7 +175,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
           placeholder='Search by title, description'
           value={search ?? ''}
           onChange={(v) => onAction(FilterActions.SEARCH, v.target.value)}
-          className='margin-bottom-3'
+          className='margin-bottom-3 '
         />
         {taxonomiesItems.map(({ title, items }) => (
           <CheckableFilters
@@ -137,9 +195,11 @@ export default function FiltersControl(props: FiltersMenuProps) {
               item: clearedTagItem,
               callback: setClearedTagItem
             }}
+            openByDefault={openByDefault}
           />
         ))}
       </div>
+      {/* </ControlsWrapper> */}
     </div>
   );
 }
