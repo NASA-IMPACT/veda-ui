@@ -46,6 +46,7 @@ export interface CatalogContentProps {
   search: string;
   taxonomies: Record<string, string[]>;
   onAction: (action: FilterActions, value?: any) => void;
+  itemsPerPage?: number;
 }
 
 const DEFAULT_SORT_OPTION = 'asc';
@@ -80,14 +81,14 @@ function CatalogContent({
   emptyStateContent,
   search,
   taxonomies,
-  onAction
+  onAction,
+  itemsPerPage = 7
 }: CatalogContentProps) {
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<
     string | null
   >(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3; // QUESTION: Should this value be controlled by the user (UI)?
 
   const isSelectable = selectedIds !== undefined;
   const {
