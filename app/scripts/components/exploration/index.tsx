@@ -10,7 +10,7 @@ import { useAnalysisController } from './hooks/use-analysis-data-request';
 import { TimelineDataset } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
-import { globalStyleCSSBlock } from '$styles/theme';
+import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
 
 // @TODO: "height: 100%" Added for exploration container to show correctly in NextJs instance but investigate why this is needed and possibly work to remove
 const Container = styled.div`
@@ -18,8 +18,9 @@ const Container = styled.div`
   flex-flow: column;
   flex-grow: 1;
   height: 100%;
-
-  ${globalStyleCSSBlock}
+  * {
+    ${legacyGlobalStyleCSSBlock}
+  }
 
   .panel-wrapper {
     flex-grow: 1;

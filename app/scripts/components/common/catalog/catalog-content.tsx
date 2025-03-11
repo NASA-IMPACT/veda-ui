@@ -33,7 +33,7 @@ import { usePreviousValue } from '$utils/use-effect-previous';
 
 import { useVedaUI } from '$context/veda-ui-provider';
 import { findParentDatasetFromLayer } from '$utils/data-utils';
-import { globalStyleCSSBlock } from '$styles/theme';
+import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -407,7 +407,9 @@ const Content = styled.div`
   margin-bottom: 8rem;
   position: relative;
   gap: 24px;
-  ${globalStyleCSSBlock}
+  * {
+    ${legacyGlobalStyleCSSBlock}
+  }
 `;
 
 const Catalog = styled.div`
