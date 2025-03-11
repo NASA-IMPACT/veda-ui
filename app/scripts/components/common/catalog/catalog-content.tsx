@@ -85,6 +85,10 @@ function CatalogContent({
   const [exclusiveSourceSelected, setExclusiveSourceSelected] = useState<
     string | null
   >(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3; // QUESTION: Should this value be controlled by the user (UI)?
+
   const isSelectable = selectedIds !== undefined;
   const {
     routes: { dataCatalogPath }
@@ -257,29 +261,33 @@ function CatalogContent({
   const generateCardsWithRoute = useMemo(
     () => (
       <USWDSCardGroup style={{ gap: '40px' }}>
-        {datasetsToDisplay.map((d) => {
-          const imgSrc = getMediaProperty(undefined, d, 'src');
-          const imgAlt = getMediaProperty(undefined, d, 'alt');
-          const description = getDatasetDescription(undefined, d);
-          const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
+        {datasetsToDisplay
+          .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+          .map((d) => {
+            const imgSrc = getMediaProperty(undefined, d, 'src');
+            const imgAlt = getMediaProperty(undefined, d, 'alt');
+            const description = getDatasetDescription(undefined, d);
+            const allTaxonomyValues = getAllTaxonomyValues(d).map(
+              (v) => v.name
+            );
 
-          return (
-            <Card
-              cardType={CardType.FLAG}
-              key={d.id}
-              imgSrc={imgSrc}
-              imgAlt={imgAlt}
-              title={d.name}
-              description={description}
-              footerContent={<Tags items={allTaxonomyValues} />}
-              to={`${dataCatalogPath}/${d.id}`}
-              cardLabel='data_collection'
-            />
-          );
-        })}
+            return (
+              <Card
+                cardType={CardType.FLAG}
+                key={d.id}
+                imgSrc={imgSrc}
+                imgAlt={imgAlt}
+                title={d.name}
+                description={description}
+                footerContent={<Tags items={allTaxonomyValues} />}
+                to={`${dataCatalogPath}/${d.id}`}
+                cardLabel='data_collection'
+              />
+            );
+          })}
       </USWDSCardGroup>
     ),
-    [datasetsToDisplay, dataCatalogPath]
+    [currentPage, itemsPerPage, datasetsToDisplay, dataCatalogPath]
   );
 
   useEffect(() => {
@@ -298,9 +306,6 @@ function CatalogContent({
     return dataset.layers.filter((layer) => selectedIds?.includes(layer.id))
       .length;
   };
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7; // QUESTION: Should this value be controlled by the user (UI)?
 
   return (
     <Content>
