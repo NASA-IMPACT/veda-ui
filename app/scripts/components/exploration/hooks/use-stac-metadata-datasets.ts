@@ -52,7 +52,7 @@ function reconcileQueryDataWithDataset(
 
       if (isRenderParamsApplicable(base.data.type)) {
         renderParams = resolveRenderParams(
-          base.data.sourceParams,
+          { ...base.data.sourceParams, layerId: base.data.id },
           queryData.data.renders
         );
       }

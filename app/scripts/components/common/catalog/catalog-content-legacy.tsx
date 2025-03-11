@@ -3,20 +3,12 @@ import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
-import { USWDSCardGroup } from '../uswds';
-import { Card, CardType } from '../card';
-import { Tags } from '../tags';
-import { createCardLabel } from '../card/uswds-cards/utils';
 import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-control';
 import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
 
-import {
-  FilterActions,
-  getDatasetDescription,
-  getMediaProperty
-} from './utils';
+import { FilterActions } from './utils';
 import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
@@ -24,15 +16,12 @@ import {
   getTaxonomyByIds,
   generateTaxonomies,
   getTaxonomy,
-  TAXONOMY_SOURCE,
-  getAllTaxonomyValues
+  TAXONOMY_SOURCE
 } from '$utils/veda-data/taxonomies';
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { getParentDataset } from '$components/exploration/data-utils-no-faux-module';
-import Pagination from '$components/common/pagination';
-import { useVedaUI } from '$context/veda-ui-provider';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -86,9 +75,7 @@ function CatalogContent({
     string | null
   >(null);
   const isSelectable = selectedIds !== undefined;
-  const {
-    routes: { dataCatalogPath }
-  } = useVedaUI();
+
   const datasetTaxonomies = generateTaxonomies(datasets);
   const urlTaxonomyItems = taxonomies
     ? Object.entries(taxonomies)
@@ -254,34 +241,6 @@ function CatalogContent({
     [selectedIds, setSelectedIds, exclusiveSourceSelected, datasets]
   );
 
-  const generateCardsWithRoute = useMemo(
-    () => (
-      <USWDSCardGroup style={{ gap: '40px' }}>
-        {datasetsToDisplay.map((d) => {
-          const imgSrc = getMediaProperty(undefined, d, 'src');
-          const imgAlt = getMediaProperty(undefined, d, 'alt');
-          const description = getDatasetDescription(undefined, d);
-          const allTaxonomyValues = getAllTaxonomyValues(d).map((v) => v.name);
-
-          return (
-            <Card
-              cardType={CardType.FLAG}
-              key={d.id}
-              imgSrc={imgSrc}
-              imgAlt={imgAlt}
-              title={d.name}
-              description={description}
-              footerContent={<Tags items={allTaxonomyValues} />}
-              to={`${dataCatalogPath}/${d.id}`}
-              cardLabel='data_collection'
-            />
-          );
-        })}
-      </USWDSCardGroup>
-    ),
-    [datasetsToDisplay, dataCatalogPath]
-  );
-
   useEffect(() => {
     const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
       search,
@@ -298,9 +257,6 @@ function CatalogContent({
     return dataset.layers.filter((layer) => selectedIds?.includes(layer.id))
       .length;
   };
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7; // QUESTION: Should this value be controlled by the user (UI)?
 
   return (
     <Content>
@@ -324,72 +280,65 @@ function CatalogContent({
           handleClearTags={handleClearTags}
         />
         {datasetsToDisplay.length ? (
-          <>
-            {isSelectable ? (
-              <Cards>
-                {datasetsToDisplay
-                  .slice(
-                    (currentPage - 1) * itemsPerPage,
-                    currentPage * itemsPerPage
-                  )
-                  .map((currentDataset) => (
-                    <div key={currentDataset.id}>
-                      <div>
-                        <Headline>
-                          <ParentDatasetTitle>
-                            <CollecticonDatasetLayers /> {currentDataset.name}
-                            {getSelectedLayerCount(currentDataset) > 0 && (
-                              <SelectedCard>
-                                <span>
-                                  {getSelectedLayerCount(currentDataset)}{' '}
-                                  selected
-                                </span>
-                              </SelectedCard>
-                            )}
-                          </ParentDatasetTitle>
-                          {currentDataset.sourceExclusive && (
-                            <WarningPill variation='warning'>
-                              {EXCLUSIVE_SOURCE_WARNING}
-                            </WarningPill>
-                          )}
-                        </Headline>
-                        <Paragraph>
-                          <TextHighlight
-                            value={search}
-                            disabled={search.length < 3}
-                          >
-                            {currentDataset.description}
-                          </TextHighlight>
-                        </Paragraph>
-                      </div>
-                      <Cards>
-                        {currentDataset.layers.map((datasetLayer) => (
-                          <li key={datasetLayer.id}>
-                            <CatalogCard
-                              searchTerm={search}
-                              layer={datasetLayer}
-                              dataset={currentDataset}
-                              selectable={true}
-                              selected={selectedIds.includes(datasetLayer.id)}
-                              onDatasetClick={() => {
-                                onCardSelect(datasetLayer.id, currentDataset);
-                              }}
-                            />
-                          </li>
-                        ))}
-                      </Cards>
-                    </div>
-                  ))}
-              </Cards>
-            ) : (
-              generateCardsWithRoute
-            )}
-            <Pagination
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              totalPages={Math.ceil(datasetsToDisplay.length / itemsPerPage)}
-            />
-          </>
+          isSelectable ? (
+            <Cards>
+              {datasetsToDisplay.map((currentDataset) => (
+                <div key={currentDataset.id}>
+                  <div>
+                    <Headline>
+                      <ParentDatasetTitle>
+                        <CollecticonDatasetLayers /> {currentDataset.name}
+                        {getSelectedLayerCount(currentDataset) > 0 && (
+                          <SelectedCard>
+                            <span>
+                              {getSelectedLayerCount(currentDataset)} selected
+                            </span>
+                          </SelectedCard>
+                        )}
+                      </ParentDatasetTitle>
+                      {currentDataset.sourceExclusive && (
+                        <WarningPill variation='warning'>
+                          {EXCLUSIVE_SOURCE_WARNING}
+                        </WarningPill>
+                      )}
+                    </Headline>
+                    <Paragraph>
+                      <TextHighlight
+                        value={search}
+                        disabled={search.length < 3}
+                      >
+                        {currentDataset.description}
+                      </TextHighlight>
+                    </Paragraph>
+                  </div>
+                  <Cards>
+                    {currentDataset.layers.map((datasetLayer) => (
+                      <li key={datasetLayer.id}>
+                        <CatalogCard
+                          searchTerm={search}
+                          layer={datasetLayer}
+                          dataset={currentDataset}
+                          selectable={true}
+                          selected={selectedIds.includes(datasetLayer.id)}
+                          onDatasetClick={() => {
+                            onCardSelect(datasetLayer.id, currentDataset);
+                          }}
+                        />
+                      </li>
+                    ))}
+                  </Cards>
+                </div>
+              ))}
+            </Cards>
+          ) : (
+            <Cards>
+              {datasetsToDisplay.map((d) => (
+                <li key={d.id}>
+                  <CatalogCard dataset={d} searchTerm={search} />
+                </li>
+              ))}
+            </Cards>
+          )
         ) : (
           <EmptyState>
             {emptyStateContent ?? (

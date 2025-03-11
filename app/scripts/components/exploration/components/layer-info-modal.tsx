@@ -11,7 +11,7 @@ import {
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { LayerInfo, ParentDatset } from '$types/veda';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
-import { ParentDatasetTitle } from '$components/common/catalog/catalog-content';
+import { ParentDatasetTitle } from '$components/common/catalog/catalog-content-legacy';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { USWDSButton } from '$components/common/uswds/button';
 

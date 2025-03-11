@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Route, Routes, useParams } from 'react-router-dom';
+import { Route, Routes, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { GridContainer, Grid } from '@trussworks/react-uswds';
 
@@ -155,22 +155,14 @@ function Sandbox() {
                     <Card
                       linkLabel='View more'
                       title='USWDS Colors'
-                      linkProperties={{
-                        linkTo: 'colors',
-                        LinkElement: Link,
-                        pathAttributeKeyName: 'to'
-                      }}
+                      to='colors'
                     />
                   </Grid>
                   <Grid col={4} className='margin-bottom-3'>
                     <Card
                       linkLabel='View more'
                       title='USWDS Pagination'
-                      linkProperties={{
-                        linkTo: 'pagination',
-                        LinkElement: Link,
-                        pathAttributeKeyName: 'to'
-                      }}
+                      to='pagination'
                     />
                   </Grid>
                 </Grid>
@@ -189,15 +181,7 @@ function Sandbox() {
                     .filter((p) => !p.name.startsWith('USWDS'))
                     .map((p) => (
                       <Grid col={4} key={p.id} className='margin-bottom-3'>
-                        <Card
-                          linkLabel='View more'
-                          title={p.name}
-                          linkProperties={{
-                            linkTo: p.id,
-                            LinkElement: Link,
-                            pathAttributeKeyName: 'to'
-                          }}
-                        />
+                        <Card linkLabel='View more' title={p.name} to={p.id} />
                       </Grid>
                     ))}
                 </Grid>
