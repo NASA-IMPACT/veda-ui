@@ -1,10 +1,10 @@
 import { atom } from 'jotai';
-import { DatasetLayer } from '$types/veda';
+import { DatasetLayer, DatasetData } from '$types/veda';
 
 /**
  * This is the primary storage atom for external datasets (e.g. passed from Next.js).
  */
-export const externalDatasetsAtom = atom<any[]>([]);
+export const externalDatasetsAtom = atom<DatasetData[]>([]);
 
 /**
  * Derived atom that transforms the provided datasets into layers.

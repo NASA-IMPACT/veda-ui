@@ -3,14 +3,12 @@ import styled from 'styled-components';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
-import {
-  reconcileDatasets,
-  getLayersFromDatasetLayers
-} from '../../data-utils-no-faux-module';
 import { TimelineDataset } from '../../types.d.ts';
 
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
+import { reconcileDatasets } from '$components/exploration/data-utils';
+import { getLayersFromDatasetLayers } from '$utils/data-utils';
 import CatalogContent from '$components/common/catalog/catalog-content-legacy';
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';

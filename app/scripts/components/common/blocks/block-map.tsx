@@ -30,11 +30,8 @@ import {
   VizDatasetSuccess,
   DatasetStatus
 } from '$components/exploration/types.d.ts';
-
-import {
-  reconcileDatasets,
-  getDatasetLayers
-} from '$components/exploration/data-utils-no-faux-module';
+import { reconcileDatasets } from '$components/exploration/data-utils';
+import { getDatasetLayers } from '$utils/data-utils';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { ProjectionOptions, VedaData, DatasetData } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';

@@ -4,50 +4,21 @@ import eachYearOfInterval from 'date-fns/eachYearOfInterval';
 import startOfDay from 'date-fns/startOfDay';
 import startOfMonth from 'date-fns/startOfMonth';
 import startOfYear from 'date-fns/startOfYear';
+import { RENDER_KEY } from '$components/exploration/constants';
+import {
+  DataMetric,
+  DATA_METRICS,
+  DEFAULT_DATA_METRICS
+} from '$components/exploration/components/datasets/analysis-metrics';
 import {
   TimelineDataset,
   DatasetStatus,
   StacDatasetData,
   TimeDensity,
   TimelineDatasetSuccess
-} from './types.d.ts';
-import { RENDER_KEY } from './constants';
-import {
-  DataMetric,
-  DATA_METRICS,
-  DEFAULT_DATA_METRICS
-} from './components/datasets/analysis-metrics';
+} from '$components/exploration/types.d.ts';
 import { utcString2userTzDate } from '$utils/date';
-import {
-  DatasetLayer,
-  VedaData,
-  VedaDatum,
-  DatasetData,
-  DatasetLayerType,
-  ParentDatset,
-  SourceParameters
-} from '$types/veda';
-
-export function getParentDataset(data: DatasetData): ParentDatset {
-  return {
-    id: data.id,
-    name: data.name,
-    infoDescription: data.infoDescription
-  };
-}
-
-// @NOTE: All fns from './date-utils` should eventually move here to get rid of their faux modules dependencies
-// `./date-utils` to be deprecated!!
-
-export const getDatasetLayers = (datasets: VedaData<DatasetData>) =>
-  Object.values(datasets).flatMap((dataset: VedaDatum<DatasetData>) => {
-    return dataset.data.layers;
-  });
-
-export const getLayersFromDatasetLayers = (datasets: DatasetData[]) =>
-  Object.values(datasets).flatMap((data: DatasetData) => {
-    return data.layers;
-  });
+import { DatasetLayer, DatasetLayerType, SourceParameters } from '$types/veda';
 
 /**
  * Returns an array of metrics based on the given Dataset Layer configuration.
@@ -278,16 +249,3 @@ export class ExtendedError extends Error {
     this.code = code;
   }
 }
-
-export const findDatasetAttribute = (
-  datasets,
-  {
-    datasetId,
-    attr
-  }: {
-    datasetId: string;
-    attr: string;
-  }
-) => {
-  return datasets[datasetId]?.data[attr];
-};

@@ -15,7 +15,7 @@ import {
   resolveLayerTemporalExtent,
   resolveRenderParams,
   isRenderParamsApplicable
-} from '../data-utils-no-faux-module';
+} from '$components/exploration/data-utils';
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { SetState } from '$types/aliases';
 

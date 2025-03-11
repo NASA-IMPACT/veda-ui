@@ -92,7 +92,6 @@ interface DatasetListItemProps {
   datasetId: string;
   width: number;
   xScaled?: ScaleTime<number, number>;
-  parentDataset: any;
   onDragStart?: () => void;
   onDragEnd?: () => void;
 }
@@ -126,7 +125,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
   }, [queryClient, datasetId]);
 
   const onClickLayerInfo = useCallback(() => {
-    console.log(dataset);
     const data: LayerInfoModalData = {
       name: dataset.data.name,
       description: dataset.data.description,

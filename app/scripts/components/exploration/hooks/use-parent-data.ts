@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { externalDatasetsAtom } from '../atoms/datasetLayers';
-import { findParentDataset } from '$utils/data-utils-no-faux-module';
+import { findParentDataset } from '$utils/data-utils';
+import { DatasetData } from '$types/veda';
 
-export default function useParentDataset({ datasetId }) {
-  const [currentDataset, setCurrentDataset] = useState(null);
+export default function useParentDataset({ datasetId }: { datasetId: string }) {
+  const [currentDataset, setCurrentDataset] = useState<DatasetData | undefined>(
+    undefined
+  );
   const [allDatasets] = useAtom(externalDatasetsAtom);
 
   useEffect(() => {
@@ -13,9 +16,9 @@ export default function useParentDataset({ datasetId }) {
       datasets: allDatasets,
       datasetId
     });
-    console.log('matcha!');
+
     setCurrentDataset(matchingDataset);
-  }, [datasetId, allDatasets]); // Add dependencies here
+  }, [datasetId, allDatasets]);
 
   return { parentDataset: currentDataset };
 }
