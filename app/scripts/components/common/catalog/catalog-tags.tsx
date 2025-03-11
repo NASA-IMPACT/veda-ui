@@ -39,9 +39,10 @@ const CatalogTagsContainer: React.FC<CatalogTagsContainerProps> = ({
 }) => {
   if (allSelectedFilters.length > 0 || urlTaxonomyItems.length > 0) {
     return (
-
-
-      <div className='display-flex flex-wrap tablet:margin-bottom-3'>
+      <div
+        className='display-flex flex-wrap tablet:margin-bottom-2'
+        style={{ rowGap: '8px', columnGap: '8px' }}
+      >
         {allSelectedFilters.length > 0
           ? allSelectedFilters.map((filter) => (
               <FilterTag
