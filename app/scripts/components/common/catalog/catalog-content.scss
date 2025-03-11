@@ -1,8 +1,0 @@
-@use '$styles/veda-ui-theme-vars.scss' as themeVars;
-
-#veda__modile-catalog {
-  @media (width <= themeVars.$veda-uswds-spacing-tablet) {
-    background-color: themeVars.$veda-uswds-color-base-lightest;
-  }
-  background-color: themeVars.$veda-uswds-color-base-white;
-}
