@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Route, Routes, useParams } from 'react-router-dom';
+import { Route, Routes, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { GridContainer, Grid } from '@trussworks/react-uswds';
 
@@ -19,6 +19,7 @@ import SandboxLayerInfo from './legacy/layer-info';
 import SandboxOverride from './override';
 
 import { USWDSColors } from './colors';
+import Pagination from './pagination';
 import { resourceNotFound } from '$components/uhoh';
 import { Card } from '$components/common/card';
 import PageHero from '$components/common/page-hero';
@@ -100,6 +101,11 @@ const pages = [
     id: 'colors',
     name: 'USWDS Colors',
     component: USWDSColors
+  },
+  {
+    id: 'pagination',
+    name: 'USWDS Pagination',
+    component: Pagination
   }
 ];
 
@@ -140,7 +146,7 @@ function Sandbox() {
             <PageHero title='Sandbox' />
             <HugResetter>
               <GridContainer>
-                <Grid row>
+                <Grid row gap={3}>
                   <Grid col={12} className='margin-top-2 margin-bottom-3'>
                     <h2>Browse USWDS Components</h2>
                   </Grid>
@@ -149,11 +155,14 @@ function Sandbox() {
                     <Card
                       linkLabel='View more'
                       title='USWDS Colors'
-                      linkProperties={{
-                        linkTo: 'colors',
-                        LinkElement: Link,
-                        pathAttributeKeyName: 'to'
-                      }}
+                      to='colors'
+                    />
+                  </Grid>
+                  <Grid col={4} className='margin-bottom-3'>
+                    <Card
+                      linkLabel='View more'
+                      title='USWDS Pagination'
+                      to='pagination'
                     />
                   </Grid>
                 </Grid>
@@ -172,15 +181,7 @@ function Sandbox() {
                     .filter((p) => !p.name.startsWith('USWDS'))
                     .map((p) => (
                       <Grid col={4} key={p.id} className='margin-bottom-3'>
-                        <Card
-                          linkLabel='View more'
-                          title={p.name}
-                          linkProperties={{
-                            linkTo: p.id,
-                            LinkElement: Link,
-                            pathAttributeKeyName: 'to'
-                          }}
-                        />
+                        <Card linkLabel='View more' title={p.name} to={p.id} />
                       </Grid>
                     ))}
                 </Grid>

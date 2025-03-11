@@ -1,7 +1,5 @@
 export { USWDSAlert } from './alert';
-export { USWDSSiteAlert } from './site-alert';
 export { USWDSButtonGroup, USWDSButton } from './button';
-export { USWDSLink } from './link';
 export {
   USWDSBanner,
   USWDSBannerContent,
@@ -12,20 +10,6 @@ export {
   USWDSBannerGuidance,
   USWDSMediaBlockBody
 } from './banner';
-export { USWDSHeader, USWDSHeaderTitle } from './header';
-export {
-  USWDSFooterNav,
-  USWDSFooter,
-  USWDSSocialLink,
-  USWDSLogo,
-  USWDSAddress,
-  USWDSFooterExtendedNavList
-} from './footer';
-export { USWDSMenu } from './header/menu';
-export { USWDSNavMenuButton } from './header/nav-menu-button';
-export { USWDSNavDropDownButton } from './header/nav-drop-down-button';
-export { USWDSExtendedNav } from './header/extended-nav';
-export { USWDSTextInput, USWDSTextInputMask } from './input';
 export {
   USWDSCardComponent,
   USWDSCardBody,
@@ -34,4 +18,22 @@ export {
   USWDSCardMedia,
   USWDSCardFooter
 } from './card';
+export {
+  USWDSFooterNav,
+  USWDSFooter,
+  USWDSSocialLink,
+  USWDSLogo,
+  USWDSAddress,
+  USWDSFooterExtendedNavList
+} from './footer';
+export { USWDSGridContainer, USWDSGrid } from './grid';
+export { USWDSHeader, USWDSHeaderTitle } from './header';
+export { USWDSMenu } from './header/menu';
+export { USWDSNavMenuButton } from './header/nav-menu-button';
+export { USWDSNavDropDownButton } from './header/nav-drop-down-button';
+export { USWDSExtendedNav } from './header/extended-nav';
+export { USWDSTextInput, USWDSTextInputMask } from './input';
+export { USWDSLink } from './link';
+export { USWDSPagination } from './pagination';
+export { USWDSSiteAlert } from './site-alert';
 export { USWDSTag } from './tag';
