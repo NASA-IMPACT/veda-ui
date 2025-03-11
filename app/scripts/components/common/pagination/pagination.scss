@@ -1,0 +1,13 @@
+/**
+ * For some reason, the pagination button loses its bottom border when hovered, 
+ * because the button on hover has border-bottom set to 0.
+ * It works fine in the official USWDS component, but it's the same behavior in 
+ * the react-uswds variant. 
+ * This overwrites the border style only for this component.
+ */
+
+.usa-pagination__button:hover,
+.usa-pagination__button:focus,
+.usa-pagination__button:active {
+  border-bottom: 1px solid;
+}
