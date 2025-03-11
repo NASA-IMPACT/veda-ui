@@ -39,13 +39,6 @@ export interface CatalogContentProps {
 const DEFAULT_SORT_OPTION = 'asc';
 const DEFAULT_SORT_FIELD = 'name';
 
-export const findParentDataset = (layerId: string, datasets) => {
-  const parentDataset: DatasetData | undefined = Object.values(datasets).find(
-    (dataset: DatasetData) => dataset?.layers.find((l) => l.id === layerId)
-  ) as DatasetData | undefined;
-  return parentDataset;
-};
-
 function CatalogContent({
   datasets,
   selectedIds,
@@ -165,9 +158,8 @@ function CatalogContent({
 
       const getSelectedIdsWithParentData = (selectedIds) => {
         return selectedIds.map((selectedId: string) => {
-          const parentData = findParentDataset(selectedId, datasets);
-          const exclusiveSource = parentData?.sourceExclusive;
-          const parentDataSourceValues = parentData?.taxonomy
+          const exclusiveSource = currentDataset?.sourceExclusive;
+          const parentDataSourceValues = currentDataset?.taxonomy
             .filter((x) => x.name === 'Source')[0]
             ?.values.map((value) => value.id);
           return {
