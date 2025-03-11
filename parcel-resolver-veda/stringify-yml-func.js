@@ -3,14 +3,6 @@ const path = require('path');
 const markdownit = require('markdown-it');
 const md = markdownit();
 
-function getParentDataset(data) {
-  return {
-    id: data.id,
-    name: data.name,
-    infoDescription: data.infoDescription
-  };
-}
-
 /**
  * Stringify the given object so that it can be used in the veda module.
  *
@@ -50,7 +42,7 @@ function stringifyYmlWithFns(data, filePath) {
     ...data,
     layers: data.layers?.map((l) => ({
       ...l,
-      parentDataset: getParentDataset(data)
+      parentDataset: { id: data.id }
     }))
   };
 

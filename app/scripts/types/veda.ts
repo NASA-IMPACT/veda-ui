@@ -284,8 +284,6 @@ export type PageOverrides =
 
 export interface ParentDatset {
   id: string;
-  name: string;
-  infoDescription: string | undefined;
 }
 export interface EnhancedDatasetLayer extends DatasetLayer {
   id: string;
