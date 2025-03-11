@@ -305,17 +305,16 @@ function CatalogContent({
           setClearedTagItem={handleClearTag}
           allSelected={selectedFilters}
           exclusiveSourceSelected={exclusiveSourceSelected}
-          customTopOffset={isSelectable ? 50 : 0}
           openByDefault={false}
           mobileFilterMenu={mobileFilterMenu}
           setMobileFilterMenu={setMobileFilterMenu}
         />
       </div>
-      <div className='tablet:grid-col-9 tablet:bg-red'>
+      <div className='tablet:grid-col-9'>
         <Catalog>
           <div
             id='veda__modile-catalog'
-            className='padding-2 margin-y-2 padding-y-4 margin-x-neg-2 tablet:margin-0 tablet:padding-0'
+            className='padding-2 margin-y-2 padding-y-4 margin-x-neg-2 tablet:margin-0 tablet:padding-0 bg-base-lightest tablet:bg-white'
           >
             <div className='tablet:display-none display-flex margin-bottom-2 flex-justify flex-align-center'>
               <p className='text-normal'>

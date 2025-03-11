@@ -6,13 +6,4 @@
 
 #dataset__search.isVisible {
   animation: 0.3s ease-in-out slidein-left;
-  @media (width <= themeVars.$veda-uswds-spacing-tablet) {
-    position: fixed;
-    padding: 1.5rem;
-  }
-}
-@media (width <= themeVars.$veda-uswds-spacing-tablet) {
-  .wrapper {
-    position: absolute;
-  }
 }
