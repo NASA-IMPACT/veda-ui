@@ -33,6 +33,7 @@ import { usePreviousValue } from '$utils/use-effect-previous';
 
 import { useVedaUI } from '$context/veda-ui-provider';
 import { findParentDatasetFromLayer } from '$utils/data-utils';
+import { globalStyleCSSBlock } from '$styles/theme';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -406,10 +407,7 @@ const Content = styled.div`
   margin-bottom: 8rem;
   position: relative;
   gap: 24px;
-  /* Moving global style of devseed ui library */
-  * {
-    line-height: calc(0.5rem + 1em);
-  }
+  ${globalStyleCSSBlock}
 `;
 
 const Catalog = styled.div`

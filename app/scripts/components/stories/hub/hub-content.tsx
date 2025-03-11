@@ -43,6 +43,7 @@ import { generateTaxonomies } from '$utils/veda-data/taxonomies';
 import { StoryData } from '$types/veda';
 import { UseFiltersWithQueryResult } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { useVedaUI } from '$context/veda-ui-provider';
+import { globalStyleCSSBlock } from '$styles/theme';
 
 const StoryCount = styled(Subtitle)`
   grid-column: 1 / -1;
@@ -61,10 +62,7 @@ const BrowseFoldHeader = styled(FoldHeader)`
 
 const FoldWithTopMargin = styled(Fold)`
   margin-top: ${glsp()};
-  /* Moving global style of devseed ui library */
-  * {
-    line-height: calc(0.5rem + 1em);
-  }
+  ${globalStyleCSSBlock}
 `;
 
 interface StoryDataWithPath extends StoryData {

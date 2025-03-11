@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { css, createGlobalStyle } from 'styled-components';
 import { createUITheme, media, themeVal } from '@devseed-ui/theme-provider';
 import { defaultsDeep } from 'lodash';
 import { theme } from 'veda';
@@ -59,6 +59,11 @@ export const VEDA_OVERRIDE_THEME = {
     }
   }
 };
+
+export const globalStyleCSSBlock = css`
+  font-size: 16px;
+  line-height: calc(0.5rem + 1em);
+`;
 
 export default function themeOverrides() {
   if (theme) {

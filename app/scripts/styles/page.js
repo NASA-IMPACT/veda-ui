@@ -5,15 +5,13 @@ import { media } from '@devseed-ui/theme-provider';
 
 import { VarHeading, VarLead } from './variable-components';
 import { variableBaseType, variableGlsp } from './variable-utils';
+import { globalStyleCSSBlock } from '$styles/theme';
 
 export const PageMainContent = styled.main`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  /* Moving global style of devseed ui library */
-  * {
-    line-height: calc(0.5rem + 1em);
-  }
+  ${globalStyleCSSBlock};
 `;
 
 export const PageMainTitle = styled(VarHeading).attrs((props) => ({

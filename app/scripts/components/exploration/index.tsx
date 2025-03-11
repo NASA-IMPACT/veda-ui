@@ -10,6 +10,7 @@ import { useAnalysisController } from './hooks/use-analysis-data-request';
 import { TimelineDataset } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
+import { globalStyleCSSBlock } from '$styles/theme';
 
 // @TODO: "height: 100%" Added for exploration container to show correctly in NextJs instance but investigate why this is needed and possibly work to remove
 const Container = styled.div`
@@ -18,10 +19,8 @@ const Container = styled.div`
   flex-grow: 1;
   height: 100%;
 
-  /* Moving global style of devseed ui library */
-  * {
-    line-height: calc(0.5rem + 1em);
-  }
+  ${globalStyleCSSBlock}
+
   .panel-wrapper {
     flex-grow: 1;
   }
