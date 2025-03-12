@@ -32,6 +32,7 @@ import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 
 import { useVedaUI } from '$context/veda-ui-provider';
+import { findParentDatasetFromLayer } from '$utils/data-utils';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -171,8 +172,12 @@ function CatalogContent({
 
       const getSelectedIdsWithParentData = (selectedIds) => {
         return selectedIds.map((selectedId: string) => {
-          const exclusiveSource = currentDataset?.sourceExclusive;
-          const parentDataSourceValues = currentDataset?.taxonomy
+          const parentData = findParentDatasetFromLayer({
+            layerId: selectedId,
+            datasets
+          });
+          const exclusiveSource = parentData?.sourceExclusive;
+          const parentDataSourceValues = parentData?.taxonomy
             .filter((x) => x.name === 'Source')[0]
             ?.values.map((value) => value.id);
           return {
