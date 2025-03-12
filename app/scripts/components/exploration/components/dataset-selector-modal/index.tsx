@@ -12,12 +12,14 @@ import { getLayersFromDatasetLayers } from '$utils/data-utils';
 import CatalogContent from '$components/common/catalog/catalog-content-legacy';
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';
-
+import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
 import { DatasetData, DatasetLayer } from '$types/veda';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
-
+  * {
+    ${legacyGlobalStyleCSSBlock}
+  }
   /* Override ModalContents */
   > div {
     display: flex;

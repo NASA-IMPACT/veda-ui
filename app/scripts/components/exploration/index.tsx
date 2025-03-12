@@ -18,9 +18,6 @@ const Container = styled.div`
   flex-flow: column;
   flex-grow: 1;
   height: 100%;
-  * {
-    ${legacyGlobalStyleCSSBlock}
-  }
 
   .panel-wrapper {
     flex-grow: 1;
@@ -31,7 +28,9 @@ const Container = styled.div`
     flex-direction: column;
     position: relative;
   }
-
+  * {
+    ${legacyGlobalStyleCSSBlock}
+  }
   .panel-timeline {
     box-shadow: 0 -1px 0 0 ${themeVal('color.base-100')};
   }
