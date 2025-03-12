@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import FilterTag from './filter-tag';
-import FilterTagLegacy from './catalog-legacy/filter-tag-legacy';
+import FilterTagLegacy from './filter-tag-legacy';
 
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { variableBaseType } from '$styles/variable-utils';
@@ -33,7 +32,7 @@ interface CatalogTagsContainerProps {
   handleClearTags: () => void;
 }
 
-const CatalogTagsContainer: React.FC<CatalogTagsContainerProps> = ({
+const CatalogTagsContainerLegacy: React.FC<CatalogTagsContainerProps> = ({
   allSelectedFilters,
   urlTaxonomyItems,
   handleClearTag,
@@ -41,30 +40,27 @@ const CatalogTagsContainer: React.FC<CatalogTagsContainerProps> = ({
 }) => {
   if (allSelectedFilters.length > 0 || urlTaxonomyItems.length > 0) {
     return (
-      <div
-        className='display-flex flex-wrap tablet:margin-bottom-2'
-        style={{ rowGap: '8px', columnGap: '8px' }}
-      >
+      <Tags>
         {allSelectedFilters.length > 0
           ? allSelectedFilters.map((filter) => (
-              <FilterTag
+              <FilterTagLegacy
                 key={`${filter.taxonomy}-${filter.id}`}
                 item={filter}
                 onClick={handleClearTag}
               />
             ))
           : urlTaxonomyItems.map((filter) => (
-              <FilterTag
+              <FilterTagLegacy
                 key={`${filter.taxonomy}-${filter.id}`}
                 item={filter}
                 onClick={handleClearTag}
               />
             ))}
         <PlainTextButton onClick={handleClearTags}>Clear all</PlainTextButton>
-      </div>
+      </Tags>
     );
   }
   return null;
 };
 
-export default CatalogTagsContainer;
+export default CatalogTagsContainerLegacy;

@@ -296,6 +296,7 @@ function CatalogContent({
   return (
     <div className=' margin-bottom-15 grid-row grip-gap-sm '>
       <div className='tablet:grid-col-3'>
+
         <FiltersControl
           search={search}
           onAction={onAction}
