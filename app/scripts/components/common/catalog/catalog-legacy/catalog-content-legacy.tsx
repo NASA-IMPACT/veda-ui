@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import TextHighlight from '../text-highlight';
-import { CollecticonDatasetLayers } from '../icons/dataset-layers';
-import { prepareDatasets } from './prepare-datasets';
-import FiltersControl from './filters-control';
-import { CatalogCard } from './catalog-card';
-import CatalogTagsContainer from './catalog-tags';
+import TextHighlight from '../../text-highlight';
+import { CollecticonDatasetLayers } from '../../icons/dataset-layers';
+import { prepareDatasets } from '../prepare-datasets';
+import { CatalogCard } from '../catalog-card';
+import { FilterActions } from '../utils';
 
-import { FilterActions } from './utils';
-import { DatasetData } from '$types/veda';
+import FiltersControlLegacy from './filters-control-legacy';
+
+import CatalogTagsContainerLegacy from './catalog-tags-legacy';
+
+import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import {
@@ -237,7 +239,7 @@ function CatalogContent({
 
   return (
     <Content>
-      <FiltersControl
+      <FiltersControlLegacy
         search={search}
         onAction={onAction}
         taxonomiesOptions={datasetTaxonomies}
@@ -250,7 +252,7 @@ function CatalogContent({
         openByDefault={false}
       />
       <Catalog>
-        <CatalogTagsContainer
+        <CatalogTagsContainerLegacy
           allSelectedFilters={selectedFilters}
           urlTaxonomyItems={urlTaxonomyItems}
           handleClearTag={handleClearTag}

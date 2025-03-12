@@ -281,15 +281,10 @@ function CatalogContent({
     return dataset.layers.filter((layer) => selectedIds?.includes(layer.id))
       .length;
   };
-  const Content = styled.div`
-    display: flex;
-    margin-bottom: 8rem;
-    position: relative;
-    gap: 24px;
-  `;
   return (
     <div className=' margin-bottom-15 grid-row grip-gap-sm '>
       <div className='tablet:grid-col-3'>
+
         <FiltersControl
           search={search}
           onAction={onAction}
