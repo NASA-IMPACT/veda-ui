@@ -43,6 +43,8 @@ cp .env.local-sample .env.local
 
 Get your Mapbox access token from Mapbox Dashboard. Put the key in `.env.local` file.
 
+Note: the default config uses a mapbox style stored in the covid-dashboard mapbox account. You will need to use a mapbox token associated with this account. Ask a Development Seed developer for that Mapbox token.
+
 ### Starting the app
 
 ```
