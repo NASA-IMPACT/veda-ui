@@ -308,6 +308,8 @@ function CatalogContent({
       .length;
   };
 
+  const totalPages = Math.ceil(datasetsToDisplay.length / itemsPerPage);
+
   return (
     <Content>
       <FiltersControl
@@ -390,11 +392,13 @@ function CatalogContent({
             ) : (
               generateCardsWithRoute
             )}
-            <Pagination
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              totalPages={Math.ceil(datasetsToDisplay.length / itemsPerPage)}
-            />
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                totalPages={totalPages}
+              />
+            )}
           </>
         ) : (
           <EmptyState>
