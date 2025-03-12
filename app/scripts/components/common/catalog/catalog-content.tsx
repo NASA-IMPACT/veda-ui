@@ -289,6 +289,8 @@ function CatalogContent({
       .length;
   };
 
+  const totalPages = Math.ceil(datasetsToDisplay.length / itemsPerPage);
+
   return (
     <div className=' margin-bottom-15 grid-row grip-gap-sm '>
       <div className='tablet:grid-col-3'>
@@ -394,24 +396,15 @@ function CatalogContent({
                     ))}
                 </Cards>
               ) : (
-                <Cards>
-                  {datasetsToDisplay
-                    .slice(
-                      (currentPage - 1) * itemsPerPage,
-                      currentPage * itemsPerPage
-                    )
-                    .map((d) => (
-                      <li key={d.id}>
-                        <CatalogCard dataset={d} searchTerm={search} />
-                      </li>
-                    ))}
-                </Cards>
+                generateCardsWithRoute
               )}
-              <Pagination
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                totalPages={Math.ceil(datasetsToDisplay.length / itemsPerPage)}
-              />
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  totalPages={totalPages}
+                />
+              )}
             </>
           ) : (
             <EmptyState>
