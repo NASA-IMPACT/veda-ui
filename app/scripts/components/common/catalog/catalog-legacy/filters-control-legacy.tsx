@@ -1,18 +1,35 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo
+} from 'react';
 import styled from 'styled-components';
-import { FilterActions } from './utils';
+import { FilterActions } from '../utils';
+import CheckableFiltersLegacy from '../../form/checkable-filter-legacy';
+
 import { Taxonomy } from '$types/veda';
 import SearchField from '$components/common/search-field';
-import CheckableFilters, { OptionItem } from '$components/common/form/checkable-filter';
-import { useSlidingStickyHeader, HEADER_TRANSITION_DURATION } from '$utils/use-sliding-sticky-header';
+import CheckableFilters, {
+  OptionItem
+} from '$components/common/form/checkable-filter';
+import {
+  useSlidingStickyHeader,
+  HEADER_TRANSITION_DURATION
+} from '$utils/use-sliding-sticky-header';
 import { usePathname } from '$utils/use-pathname';
 
-const ControlsWrapper = styled.div<{ widthValue?: string; heightValue?: string; topValue: string }>`
+const ControlsWrapper = styled.div<{
+  widthValue?: string;
+  heightValue?: string;
+  topValue: string;
+}>`
   min-width: 20rem;
-  width: ${props => props.widthValue ?? '20rem'};
+  width: ${(props) => props.widthValue ?? '20rem'};
   position: sticky;
-  top: calc(${props => props.topValue} + 1rem);
-  height: ${props => props.heightValue};
+  top: calc(${(props) => props.topValue} + 1rem);
+  height: ${(props) => props.heightValue};
   transition: top ${HEADER_TRANSITION_DURATION}ms ease-out;
 `;
 
@@ -22,7 +39,9 @@ interface FiltersMenuProps {
   taxonomiesOptions: Taxonomy[];
   allSelected: OptionItem[];
   clearedTagItem?: OptionItem;
-  setClearedTagItem?: React.Dispatch<React.SetStateAction<OptionItem | undefined>>;
+  setClearedTagItem?: React.Dispatch<
+    React.SetStateAction<OptionItem | undefined>
+  >;
   width?: string;
   onFilterChange?: (item: OptionItem, action: 'add' | 'remove') => void;
   exclusiveSourceSelected?: string | null;
@@ -30,7 +49,7 @@ interface FiltersMenuProps {
   openByDefault?: boolean;
 }
 
-export default function FiltersControl(props: FiltersMenuProps) {
+export default function FiltersControlLegacy(props: FiltersMenuProps) {
   const {
     allSelected,
     onAction,
@@ -47,21 +66,30 @@ export default function FiltersControl(props: FiltersMenuProps) {
     // has a different header reference as opposed to what the useSlidingStickyHeader hook
     // uses as a reference (the main page header). To avoid changing the reference IDs in the
     // main logic of the sliding sticky header hook, we provide this custom top offset for more control.
-    customTopOffset = 0,
+    customTopOffset = 0
   } = props;
 
   const pathname = usePathname();
 
   const controlsRef = useRef<HTMLDivElement>(null);
-  const [controlsHeight, setControlsHeight] =  useState<number>(0);
+  const [controlsHeight, setControlsHeight] = useState<number>(0);
   const { isHeaderHidden, wrapperHeight } = useSlidingStickyHeader(pathname);
 
-  const handleChanges = useCallback((item: OptionItem, action: 'add' | 'remove') => {
-    const isSelected = allSelected.some(selected => selected.id === item.id && selected.taxonomy === item.taxonomy);
-    if ((action === 'remove' && isSelected) || (action === 'add' && !isSelected)) {
-      onFilterChange?.(item, action);
-    }
-  }, [allSelected, onFilterChange]);
+  const handleChanges = useCallback(
+    (item: OptionItem, action: 'add' | 'remove') => {
+      const isSelected = allSelected.some(
+        (selected) =>
+          selected.id === item.id && selected.taxonomy === item.taxonomy
+      );
+      if (
+        (action === 'remove' && isSelected) ||
+        (action === 'add' && !isSelected)
+      ) {
+        onFilterChange?.(item, action);
+      }
+    },
+    [allSelected, onFilterChange]
+  );
 
   useEffect(() => {
     if (!controlsRef.current) return;
@@ -72,7 +100,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
     const resizeObserver = new ResizeObserver(([entry]) => {
       if (entry.borderBoxSize.length > 0) {
         const borderBoxSize = entry.borderBoxSize[0];
-         // blockSize: For boxes with a horizontal writing-mode, this is the vertical dimension
+        // blockSize: For boxes with a horizontal writing-mode, this is the vertical dimension
         setControlsHeight(borderBoxSize.blockSize);
       }
     });
@@ -80,10 +108,17 @@ export default function FiltersControl(props: FiltersMenuProps) {
     return () => resizeObserver.disconnect();
   }, [controlsRef]);
 
-  const taxonomiesItems = useMemo(() => taxonomiesOptions.map(taxonomy => ({
-    title: taxonomy.name,
-    items: taxonomy.values.map(value => ({ ...value, taxonomy: taxonomy.name }))
-  })), [taxonomiesOptions]);
+  const taxonomiesItems = useMemo(
+    () =>
+      taxonomiesOptions.map((taxonomy) => ({
+        title: taxonomy.name,
+        items: taxonomy.values.map((value) => ({
+          ...value,
+          taxonomy: taxonomy.name
+        }))
+      })),
+    [taxonomiesOptions]
+  );
 
   useEffect(() => {
     // Pre-select the exclusive source if a card with it is selected
@@ -96,11 +131,19 @@ export default function FiltersControl(props: FiltersMenuProps) {
         });
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exclusiveSourceSelected]);
 
   return (
-    <ControlsWrapper widthValue={width} heightValue={controlsHeight+'px'} topValue={isHeaderHidden && wrapperHeight ? '0px': `${wrapperHeight - customTopOffset}px`}>
+    <ControlsWrapper
+      widthValue={width}
+      heightValue={controlsHeight + 'px'}
+      topValue={
+        isHeaderHidden && wrapperHeight
+          ? '0px'
+          : `${wrapperHeight - customTopOffset}px`
+      }
+    >
       <div ref={controlsRef}>
         <SearchField
           size='large'
@@ -109,13 +152,22 @@ export default function FiltersControl(props: FiltersMenuProps) {
           onChange={(v) => onAction(FilterActions.SEARCH, v)}
         />
         {taxonomiesItems.map(({ title, items }) => (
-          <CheckableFilters
+          <CheckableFiltersLegacy
             key={title}
             items={items}
             title={title}
-            onChanges={item => handleChanges(item, allSelected.some(selected => selected.id === item.id) ? 'remove' : 'add')}
+            onChanges={(item) =>
+              handleChanges(
+                item,
+                allSelected.some((selected) => selected.id === item.id)
+                  ? 'remove'
+                  : 'add'
+              )}
             globallySelected={allSelected}
-            tagItemCleared={{ item: clearedTagItem, callback: setClearedTagItem }}
+            tagItemCleared={{
+              item: clearedTagItem,
+              callback: setClearedTagItem
+            }}
             openByDefault={openByDefault}
           />
         ))}
