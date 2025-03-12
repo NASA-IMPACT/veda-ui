@@ -10,6 +10,7 @@ import { useAnalysisController } from './hooks/use-analysis-data-request';
 import { TimelineDataset } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
+import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
 
 // @TODO: "height: 100%" Added for exploration container to show correctly in NextJs instance but investigate why this is needed and possibly work to remove
 const Container = styled.div`
@@ -27,7 +28,9 @@ const Container = styled.div`
     flex-direction: column;
     position: relative;
   }
-
+  * {
+    ${legacyGlobalStyleCSSBlock}
+  }
   .panel-timeline {
     box-shadow: 0 -1px 0 0 ${themeVal('color.base-100')};
   }

@@ -35,6 +35,8 @@ import {
   externalDatasetsAtom
 } from '$components/exploration/atoms/datasetLayers';
 
+import { GlobalStyles as LegacyGlobalStyles } from '$styles/legacy-global-styles';
+
 // Include only the custom stylings for the VEDA components into the library build
 import './styles/veda-components.scss';
 import CatalogContent from '$components/common/catalog/catalog-content';
@@ -97,5 +99,8 @@ export {
   // STATE
   timelineDatasetsAtom,
   externalDatasetsAtom,
-  datasetLayersAtom
+  datasetLayersAtom,
+
+  // STYLE
+  LegacyGlobalStyles
 };
