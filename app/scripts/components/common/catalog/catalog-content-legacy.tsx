@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../text-highlight';
@@ -9,7 +9,7 @@ import { CatalogCard } from './catalog-card';
 import CatalogTagsContainer from './catalog-tags';
 
 import { FilterActions } from './utils';
-import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
+import { DatasetData } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import {
@@ -21,7 +21,7 @@ import {
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
-import { getParentDataset } from '$components/exploration/data-utils-no-faux-module';
+import { findParentDatasetFromLayer } from '$utils/data-utils';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -39,27 +39,6 @@ export interface CatalogContentProps {
 
 const DEFAULT_SORT_OPTION = 'asc';
 const DEFAULT_SORT_FIELD = 'name';
-
-export const findParentDataset = (layerId: string, datasets) => {
-  const parentDataset: DatasetData | undefined = Object.values(datasets).find(
-    (dataset: DatasetData) => dataset?.layers.find((l) => l.id === layerId)
-  ) as DatasetData | undefined;
-  return parentDataset;
-};
-
-function enhanceDatasetLayers(dataset) {
-  return {
-    ...dataset,
-    layers: dataset.layers.map((layer) => ({
-      ...layer,
-      parentDataset: getParentDataset(dataset)
-    }))
-  };
-}
-
-export const getAllDatasetsWithEnhancedLayers = (
-  dataset
-): DatasetDataWithEnhancedLayers[] => dataset.map(enhanceDatasetLayers);
 
 function CatalogContent({
   datasets,
@@ -83,13 +62,8 @@ function CatalogContent({
         .flat()
     : [];
 
-  const allDatasetsWithEnhancedLayers = useMemo(
-    () => getAllDatasetsWithEnhancedLayers(datasets),
-    [datasets]
-  );
-
   const [datasetsToDisplay, setDatasetsToDisplay] = useState<DatasetData[]>(
-    prepareDatasets(allDatasetsWithEnhancedLayers, {
+    prepareDatasets(datasets, {
       search,
       taxonomies,
       sortField: DEFAULT_SORT_FIELD,
@@ -185,7 +159,10 @@ function CatalogContent({
 
       const getSelectedIdsWithParentData = (selectedIds) => {
         return selectedIds.map((selectedId: string) => {
-          const parentData = findParentDataset(selectedId, datasets);
+          const parentData = findParentDatasetFromLayer({
+            layerId: selectedId,
+            datasets
+          });
           const exclusiveSource = parentData?.sourceExclusive;
           const parentDataSourceValues = parentData?.taxonomy
             .filter((x) => x.name === 'Source')[0]
@@ -242,7 +219,7 @@ function CatalogContent({
   );
 
   useEffect(() => {
-    const updated = prepareDatasets(allDatasetsWithEnhancedLayers, {
+    const updated = prepareDatasets(datasets, {
       search,
       taxonomies,
       sortField: DEFAULT_SORT_FIELD,

@@ -1,6 +1,6 @@
-import { reconcileDatasets } from '../data-utils-no-faux-module';
 import { TimelineDataset, TimelineDatasetForUrl } from '../types.d.ts';
 import { datasetLayersAtom } from './datasetLayers';
+import { reconcileDatasets } from '$components/exploration/data-utils';
 import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 
 function urlDatasetsDehydrate(datasets: TimelineDataset[]) {

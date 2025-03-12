@@ -30,11 +30,8 @@ import {
   VizDatasetSuccess,
   DatasetStatus
 } from '$components/exploration/types.d.ts';
-
-import {
-  reconcileDatasets,
-  getDatasetLayers
-} from '$components/exploration/data-utils-no-faux-module';
+import { reconcileDatasets } from '$components/exploration/data-utils';
+import { getDatasetLayers } from '$utils/data-utils';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { ProjectionOptions, VedaData, DatasetData } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
@@ -86,8 +83,10 @@ function validateBlockProps(props: MapBlockProps) {
     '- Invalid center. Use [longitude, latitude].';
 
   // zoom is not required, but if provided must be in the correct range.
-  const zoomError = zoom && (isNaN(zoom) || zoom < 0);
-  ('- Invalid zoom. Use number greater than 0');
+  const zoomError =
+    zoom &&
+    (isNaN(zoom) || zoom < 0) &&
+    '- Invalid zoom. Use number greater than 0';
 
   const compareDateError =
     compareDateTime &&
@@ -181,7 +180,7 @@ function MapBlock(props: MapBlockProps) {
       totalLayers = [...totalLayers, compareMapStaticData];
     }
     return totalLayers;
-  }, [layerId]);
+  }, [layerId, datasetLayers]);
 
   const [layers, setLayers] = useState<VizDataset[]>(layersToFetch);
 

@@ -2,8 +2,8 @@ import {
   resolveRenderParams,
   formatRenderExtensionData,
   SourceParametersWithLayerId
-} from './data-utils-no-faux-module';
-import { RENDER_KEY } from './constants';
+} from './data-utils';
+import { RENDER_KEY } from '$components/exploration/constants';
 
 const LAYER_KEY = 'layer-1';
 const renderExtensionData = {

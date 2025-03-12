@@ -9,7 +9,7 @@ import {
   DATASET_TRACK_BLOCK_HEIGHT,
   MAX_QUERY_NUM
 } from '$components/exploration/constants';
-import { ExtendedError } from '$components/exploration/data-utils-no-faux-module';
+import { ExtendedError } from '$components/exploration/data-utils';
 
 const loadingPattern = '.-.. --- .- -.. .. -. --.'
   .split(' ')

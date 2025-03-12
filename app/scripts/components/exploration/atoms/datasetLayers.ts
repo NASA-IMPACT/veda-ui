@@ -1,11 +1,10 @@
 import { atom } from 'jotai';
-import { getParentDataset } from '../data-utils-no-faux-module';
-import { DatasetLayer } from '$types/veda';
+import { DatasetLayer, DatasetData } from '$types/veda';
 
 /**
  * This is the primary storage atom for external datasets (e.g. passed from Next.js).
  */
-export const externalDatasetsAtom = atom<any[]>([]);
+export const externalDatasetsAtom = atom<DatasetData[]>([]);
 
 /**
  * Derived atom that transforms the provided datasets into layers.
@@ -17,9 +16,6 @@ export const datasetLayersAtom = atom<DatasetLayer[]>((get) => {
   const datasets = get(externalDatasetsAtom);
 
   return datasets.flatMap((dataset) => {
-    return (dataset.layers || []).map((l: any) => ({
-      ...l,
-      parentDataset: getParentDataset(dataset)
-    }));
+    return dataset.layers || [];
   });
 });
