@@ -172,7 +172,7 @@ module.exports = {
     leftGuidance: defaultGuidance.left,
     rightGuidance: defaultGuidance.right,
     className: '',
-    defaultIsOpen: true,
+    defaultIsOpen: false,
     contentId: 'gov-banner-content'
   },
   siteAlert: {

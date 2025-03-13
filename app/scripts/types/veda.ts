@@ -29,6 +29,7 @@ interface DatasetLayerCommonProps extends DatasetLayerCommonCompareProps {
   zoomExtent?: number[];
   bounds?: number[];
   sourceParams?: SourceParameters;
+  parentDataset: ParentDatset;
 }
 
 export type DatasetDatumFn<T> = (bag: DatasetDatumFnResolverBag) => T;
@@ -283,16 +284,10 @@ export type PageOverrides =
 
 export interface ParentDatset {
   id: string;
-  name: string;
-  infoDescription: string | undefined;
 }
 export interface EnhancedDatasetLayer extends DatasetLayer {
   id: string;
   parentDataset: ParentDatset;
-}
-
-export interface DatasetDataWithEnhancedLayers extends DatasetData {
-  layers: EnhancedDatasetLayer[];
 }
 
 // Types needed for library

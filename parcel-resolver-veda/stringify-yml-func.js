@@ -38,7 +38,15 @@ const md = markdownit();
  * @returns string
  */
 function stringifyYmlWithFns(data, filePath) {
-  const jsonVal = JSON.stringify(data, (k, v) => {
+  const mdxData = {
+    ...data,
+    layers: data.layers?.map((l) => ({
+      ...l,
+      parentDataset: { id: data.id }
+    }))
+  };
+
+  const jsonVal = JSON.stringify(mdxData, (k, v) => {
     if (typeof v === 'string') {
       if (v.match(/^(\r|\n\s)*::js/gim)) {
         return `${v} ::js`;

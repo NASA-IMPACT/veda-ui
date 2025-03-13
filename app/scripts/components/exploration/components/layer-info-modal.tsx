@@ -9,6 +9,7 @@ import {
   ModalHeadline
 } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import useParentDataset from '../hooks/use-parent-data';
 import { LayerInfo, ParentDatset } from '$types/veda';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-content-legacy';
@@ -94,9 +95,12 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
     routes: { dataCatalogPath }
   } = useVedaUI();
 
-  const { parentData } = layerData;
+  const { parentDataset } = useParentDataset({
+    datasetId: layerData.parentData.id
+  });
+
   const path = {
-    [linkProps.pathAttributeKeyName]: `${dataCatalogPath}/${parentData.id}`
+    [linkProps.pathAttributeKeyName]: `${dataCatalogPath}/${parentDataset?.id}`
   };
   return (
     <StyledModal
@@ -108,7 +112,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
         return (
           <ModalHeadline>
             <ParentDatasetTitle>
-              <CollecticonDatasetLayers /> {layerData.parentData.name}
+              <CollecticonDatasetLayers /> {parentDataset?.name}
             </ParentDatasetTitle>
             <ParentDatasetHeading> {layerData.name} </ParentDatasetHeading>
             <p>
@@ -126,7 +130,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
         <div
           dangerouslySetInnerHTML={{
             __html:
-              parentData.infoDescription ??
+              parentDataset?.infoDescription ??
               'Currently, we are unable to display the layer information, but you can find it in the data catalog.'
           }}
         />

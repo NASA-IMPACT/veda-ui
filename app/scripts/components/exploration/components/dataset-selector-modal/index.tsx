@@ -3,14 +3,12 @@ import styled from 'styled-components';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
-import {
-  reconcileDatasets,
-  getLayersFromDataset
-} from '../../data-utils-no-faux-module';
 import { TimelineDataset } from '../../types.d.ts';
 
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
+import { reconcileDatasets } from '$components/exploration/data-utils';
+import { getLayersFromDatasetLayers } from '$utils/data-utils';
 import CatalogContent from '$components/common/catalog/catalog-content-legacy';
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';
@@ -69,15 +67,20 @@ interface DatasetSelectorModalProps {
 }
 
 export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
-  const { revealed, datasets, timelineDatasets, setTimelineDatasets, close, emptyStateContent } =
-    props;
+  const {
+    revealed,
+    datasets,
+    timelineDatasets,
+    setTimelineDatasets,
+    close,
+    emptyStateContent
+  } = props;
 
-  const datasetLayers = getLayersFromDataset(datasets);
+  const datasetLayers = getLayersFromDatasetLayers(datasets);
 
   const [selectedIds, setSelectedIds] = useState<string[]>(
     timelineDatasets.map((dataset) => dataset.data.id)
   );
-  const enhancedDatasetLayers = datasetLayers.flatMap((e) => e);
 
   // Use Jotai controlled atoms for query parameter manipulation on new E&A page
   const { search: searchTerm, taxonomies, onAction } = useFiltersWithURLAtom();
@@ -95,7 +98,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
 
   const onConfirm = useCallback(() => {
     setTimelineDatasets(
-      reconcileDatasets(selectedIds, enhancedDatasetLayers, timelineDatasets)
+      reconcileDatasets(selectedIds, datasetLayers, timelineDatasets)
     );
     onAction(FilterActions.CLEAR);
     close();
@@ -103,7 +106,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     close,
     selectedIds,
     timelineDatasets,
-    enhancedDatasetLayers,
+    datasetLayers,
     setTimelineDatasets,
     onAction
   ]);
@@ -125,7 +128,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
           setSelectedIds={setSelectedIds}
           onAction={onAction}
           filterLayers={true}
-          {...(emptyStateContent ? {emptyStateContent} : {})}
+          {...(emptyStateContent ? { emptyStateContent } : {})}
         />
       }
       footerContent={

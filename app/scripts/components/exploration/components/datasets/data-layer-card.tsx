@@ -20,7 +20,7 @@ import {
   LayerCategoricalGraphic,
   LayerGradientColormapGraphic
 } from '$components/common/map/layer-legend';
-
+import useParentDataset from '$components/exploration/hooks/use-parent-data';
 import {
   TimelineDataset,
   colorMapScale
@@ -142,6 +142,10 @@ export default function DataLayerCard(props: CardProps) {
     }
   };
 
+  const { parentDataset } = useParentDataset({
+    datasetId: dataset.data.parentDataset.id
+  });
+
   const showLoadingConfigurableCmapSkeleton =
     showConfigurableColorMap &&
     dataset.status === 'loading' &&
@@ -159,8 +163,7 @@ export default function DataLayerCard(props: CardProps) {
         <DatasetCardInfo>
           <Header>
             <ParentDatasetTitle size='small'>
-              <CollecticonDatasetLayers />{' '}
-              <p>{dataset.data.parentDataset.name}</p>
+              <CollecticonDatasetLayers /> <p>{parentDataset?.name}</p>
             </ParentDatasetTitle>
           </Header>
           <DatasetHeadline>
