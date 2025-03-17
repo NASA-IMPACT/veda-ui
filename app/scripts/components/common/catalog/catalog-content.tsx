@@ -459,15 +459,6 @@ const Headline = styled.div`
   align-items: baseline;
   margin-bottom: ${glsp(1)};
 `;
-const Content = styled.div`
-  display: flex;
-  margin-bottom: 8rem;
-  position: relative;
-  gap: 24px;
-  * {
-    ${legacyGlobalStyleCSSBlock}
-  }
-`;
 
 const Catalog = styled.div`
   width: 100%;
