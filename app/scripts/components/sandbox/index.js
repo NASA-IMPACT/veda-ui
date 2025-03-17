@@ -17,9 +17,12 @@ import SandboxMDXEditor from './legacy/mdx-editor';
 import SandboxTable from './legacy/table';
 import SandboxLayerInfo from './legacy/layer-info';
 import SandboxOverride from './override';
-
 import { USWDSColors } from './colors';
 import Pagination from './pagination';
+import {
+  FullscreenWidget,
+  FullpageModalWidget
+} from '$components/common/widget';
 import { resourceNotFound } from '$components/uhoh';
 import { Card } from '$components/common/card';
 import PageHero from '$components/common/page-hero';
@@ -164,6 +167,66 @@ function Sandbox() {
                       title='USWDS Pagination'
                       to='pagination'
                     />
+                  </Grid>
+
+                  <Grid col={12} className='margin-top-2 margin-bottom-3'>
+                    <h2>Explore widget possibilities</h2>
+                  </Grid>
+                  <Grid col={6} className='margin-bottom-3'>
+                    <FullscreenWidget heading='Fullscreen API'>
+                      <p>
+                        This is using the fullscreen API, displaying the content
+                        in full screen size.
+                      </p>
+                      <img
+                        src='https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXZrcmlkeGVreDFlbGRpNm9leTMxOTh1ZTFocHhtdmxhODZvaWt1biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPnAiaMCws8nOsE/giphy.gif'
+                        width='457'
+                        height='480'
+                      />
+                      <p>
+                        <a href='https://giphy.com/gifs/cat-kitten-computer-3oKIPnAiaMCws8nOsE'>
+                          via GIPHY
+                        </a>
+                      </p>
+                    </FullscreenWidget>
+                  </Grid>
+                  <Grid col={6} className='margin-bottom-3'>
+                    <FullpageModalWidget heading='Fullpage Modal'>
+                      <p>
+                        This is using the a modal approach with a micro
+                        animation. The extend spans the whole page, but does not
+                        cover the browser tools.
+                      </p>
+                      <img
+                        src='https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaXc3azJsZmxoaTE1cXR4dDlvem5taHFlMXJwOWcwZDJrMnoza2YzMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/q5Wtr34IBE1KOYHkyN/giphy.gif'
+                        width='480'
+                        height='360'
+                      />
+                      <p>
+                        <a href='https://giphy.com/gifs/epic-bots-epicbots-q5Wtr34IBE1KOYHkyN'>
+                          via GIPHY
+                        </a>
+                      </p>
+                    </FullpageModalWidget>
+                  </Grid>
+                  <Grid col={6} className='margin-bottom-3'>
+                    <FullpageModalWidget heading='Fullpage Modal 2'>
+                      <p>
+                        This is using the a modal approach with a micro
+                        animation. The extend spans the whole page, but does not
+                        cover the browser tools.
+                      </p>
+                      <img
+                        src='https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWJqMzdnMTUxZG5mc3R2aWlka3ZtaTZvaXdvZjRkOGx1MjB1NGU2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lzz3B3xLZluuY/giphy.gif'
+                        width='480'
+                        height='350'
+                      />
+                      <p>
+                        <a href='https://giphy.com/gifs/cat-hacker-lzz3B3xLZluuY'>
+                          via GIPHY
+                        </a>
+                      </p>
+                    </FullpageModalWidget>
                   </Grid>
                 </Grid>
               </GridContainer>
