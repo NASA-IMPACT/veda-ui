@@ -8,7 +8,6 @@ import { CollecticonDatasetLayers } from '../icons/dataset-layers';
 import { USWDSCardGroup } from '../uswds';
 import { Card, CardType } from '../card';
 import { Tags } from '../tags';
-import { createCardLabel } from '../card/uswds-cards/utils';
 import { USWDSButton, USWDSTag } from '../uswds';
 import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-controls/filters-control';
@@ -37,7 +36,6 @@ import Pagination from '$components/common/pagination';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { findParentDatasetFromLayer } from '$utils/data-utils';
 import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
-import './catalog-content.scss';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -296,7 +294,6 @@ function CatalogContent({
   return (
     <div className=' margin-bottom-15 grid-row grip-gap-sm '>
       <div className='tablet:grid-col-3'>
-
         <FiltersControl
           search={search}
           onAction={onAction}
@@ -458,6 +455,15 @@ const Headline = styled.div`
   flex-direction: column;
   align-items: baseline;
   margin-bottom: ${glsp(1)};
+`;
+const Content = styled.div`
+  display: flex;
+  margin-bottom: 8rem;
+  position: relative;
+  gap: 24px;
+  * {
+    ${legacyGlobalStyleCSSBlock}
+  }
 `;
 
 const Catalog = styled.div`

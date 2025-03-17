@@ -11,7 +11,7 @@ import FiltersControlLegacy from './filters-control-legacy';
 
 import CatalogTagsContainerLegacy from './catalog-tags-legacy';
 
-import { DatasetData, DatasetDataWithEnhancedLayers } from '$types/veda';
+import { DatasetData } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
 import {
