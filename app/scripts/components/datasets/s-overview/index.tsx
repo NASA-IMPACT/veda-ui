@@ -12,11 +12,9 @@ import { NotebookConnectButton } from '$components/common/notebook-connect';
 
 import {
   TAXONOMY_GRADE,
-  TAXONOMY_UNCERTAINTY,
+  TAXONOMY_UNCERTAINTY
 } from '$utils/veda-data/taxonomies';
-import {
-  useDataset
-} from '$utils/veda-data';
+import { useDataset } from '$utils/veda-data';
 import { DATASETS_PATH, getDatasetExplorePath } from '$utils/routes';
 import { ContentTaxonomy } from '$components/common/content-taxonomy';
 import { DatasetClassification } from '$components/common/dataset-classification';
