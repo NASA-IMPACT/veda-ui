@@ -32,6 +32,7 @@ export { USWDSMenu } from './header/menu';
 export { USWDSNavMenuButton } from './header/nav-menu-button';
 export { USWDSNavDropDownButton } from './header/nav-drop-down-button';
 export { USWDSExtendedNav } from './header/extended-nav';
+export { USWDSIcon } from './icon';
 export { USWDSTextInput, USWDSTextInputMask } from './input';
 export { USWDSLink } from './link';
 export { USWDSPagination } from './pagination';
