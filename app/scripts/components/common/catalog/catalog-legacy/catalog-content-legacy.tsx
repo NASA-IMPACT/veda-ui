@@ -24,6 +24,7 @@ import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { findParentDatasetFromLayer } from '$utils/data-utils';
+import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -373,8 +374,10 @@ const Content = styled.div`
   margin-bottom: 8rem;
   position: relative;
   gap: 24px;
+  * {
+    ${legacyGlobalStyleCSSBlock}
+  }
 `;
-
 const Catalog = styled.div`
   width: 100%;
 `;
