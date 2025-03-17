@@ -209,7 +209,7 @@ function Sandbox() {
                       </p>
                     </FullpageModalWidget>
                   </Grid>
-                  <Grid col={6} className='margin-bottom-3'>
+                  <Grid col={8} className='margin-bottom-3'>
                     <FullpageModalWidget heading='Fullpage Modal 2'>
                       <p>
                         This is using the a modal approach with a micro
