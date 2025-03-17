@@ -19,6 +19,9 @@ import SandboxLayerInfo from './legacy/layer-info';
 import SandboxOverride from './override';
 import { USWDSColors } from './colors';
 import Pagination from './pagination';
+import { Figure } from '$components/common/figure';
+import { Caption } from '$components/common/blocks/images';
+import { LazyMap as Map } from '$components/common/blocks/lazy-components';
 import {
   FullscreenWidget,
   FullpageModalWidget
@@ -209,7 +212,7 @@ function Sandbox() {
                       </p>
                     </FullpageModalWidget>
                   </Grid>
-                  <Grid col={8} className='margin-bottom-3'>
+                  <Grid col={4} className='margin-bottom-3'>
                     <FullpageModalWidget heading='Fullpage Modal 2'>
                       <p>
                         This is using the a modal approach with a micro
@@ -226,6 +229,27 @@ function Sandbox() {
                           via GIPHY
                         </a>
                       </p>
+                    </FullpageModalWidget>
+                  </Grid>
+
+                  <Grid col={8} className='margin-bottom-3'>
+                    <FullpageModalWidget heading='Widget with Map'>
+                      <Figure>
+                        <Map
+                          datasetId='no2'
+                          layerId='no2-monthly'
+                          center={[-84.39, 33.75]}
+                          zoom={9.5}
+                          dateTime='2019-06-01'
+                          compareDateTime='2020-06-01'
+                        />
+                        <Caption attrAuthor='NASA' attrUrl='https://nasa.gov/'>
+                          Levels in 10¹⁵ molecules cm⁻². Darker colors indicate
+                          higher nitrogen dioxide (NO₂) levels associated and
+                          more activity. Lighter colors indicate lower levels of
+                          NO₂ and less activity.
+                        </Caption>
+                      </Figure>
                     </FullpageModalWidget>
                   </Grid>
                 </Grid>
