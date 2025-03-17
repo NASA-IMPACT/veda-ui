@@ -44,7 +44,7 @@ const FullscreenWidget = ({
   };
 
   return (
-    <div // widget-container
+    <div
       ref={widgetRef}
       className='width-full height-full border border-base-light radius-md'
     >
@@ -53,11 +53,7 @@ const FullscreenWidget = ({
         heading={heading}
         handleExpansion={handleFullscreen}
       />
-      <div // widget-content
-        className='padding-2'
-      >
-        {children}
-      </div>
+      <div className='padding-2'>{children}</div>
     </div>
   );
 };

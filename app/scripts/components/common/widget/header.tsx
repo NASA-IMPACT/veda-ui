@@ -43,13 +43,13 @@ const Header = ({
   }, [updateButtonVisibility]);
 
   return (
-    <div // widget-header
+    <div
       ref={containerRef}
       className='padding-2 display-flex flex-justify space-between flex-align-center'
     >
       {isExpanded ? <h1>{heading}</h1> : <h6>{heading}</h6>}
 
-      <USWDSButton // fullscreen-button
+      <USWDSButton
         type='button'
         outline={true}
         className='margin-0 margin-left-3'
