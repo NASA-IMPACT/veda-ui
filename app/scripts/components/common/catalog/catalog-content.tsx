@@ -297,7 +297,6 @@ function CatalogContent({
   return (
     <div className=' margin-bottom-15 grid-row grip-gap-sm '>
       <div className='tablet:grid-col-3'>
-
         <FiltersControl
           search={search}
           onAction={onAction}
@@ -459,6 +458,15 @@ const Headline = styled.div`
   flex-direction: column;
   align-items: baseline;
   margin-bottom: ${glsp(1)};
+`;
+const Content = styled.div`
+  display: flex;
+  margin-bottom: 8rem;
+  position: relative;
+  gap: 24px;
+  * {
+    ${legacyGlobalStyleCSSBlock}
+  }
 `;
 
 const Catalog = styled.div`
