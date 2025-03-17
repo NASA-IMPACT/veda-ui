@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { USWDSIcon, USWDSButton } from '$uswds';
 
 /**
@@ -27,24 +27,39 @@ const Header = ({
   heading: string;
   handleExpansion: () => void;
 }) => {
+  const [showText, setShowText] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const updateButtonVisibility = useCallback(() => {
+    if (containerRef.current) {
+      setShowText(containerRef.current.offsetWidth > 450);
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    updateButtonVisibility(); // ensures that the button text visibility is set correctly when the component first renders.
+    window.addEventListener('resize', updateButtonVisibility);
+    return () => window.removeEventListener('resize', updateButtonVisibility);
+  }, [updateButtonVisibility]);
+
   return (
     <div // widget-header
-      className='padding-2 display-flex flex-justify space-between flex-align-center border-bottom border-base-light'
+      ref={containerRef}
+      className='padding-2 display-flex flex-justify space-between flex-align-center'
     >
       {isExpanded ? <h1>{heading}</h1> : <h6>{heading}</h6>}
 
       <USWDSButton // fullscreen-button
         type='button'
         outline={true}
-        className='margin-0'
+        className='margin-0 margin-left-3'
         onClick={handleExpansion}
       >
-        {isExpanded ? (
-          <USWDSIcon.Close size={5} />
-        ) : (
-          <USWDSIcon.ZoomOutMap size={4} />
+        {isExpanded ? <USWDSIcon.Close size={3} /> : <USWDSIcon.ZoomOutMap />}
+
+        {showText && (
+          <span>{isExpanded ? 'Exit fullscreen' : 'Enter fullscreen'}</span>
         )}
-        {isExpanded ? 'Exit fullscreen' : 'Enter fullscreen'}
       </USWDSButton>
     </div>
   );
