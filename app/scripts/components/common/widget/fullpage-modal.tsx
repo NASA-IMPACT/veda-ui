@@ -35,25 +35,19 @@ const FullpageModalWidget = ({
   return (
     <>
       {!isFullPage && (
-        <div // widget-container
-          className='width-full height-full border border-base-light radius-md'
-        >
+        <div className='width-full height-full border border-base-light radius-md'>
           <Header
             isExpanded={isFullPage}
             heading={heading}
             handleExpansion={() => setIsFullPage(true)}
           />
-          <div // widget-content
-            className='padding-2'
-          >
-            {children}
-          </div>
+          <div className='padding-2'>{children}</div>
         </div>
       )}
 
       <AnimatePresence>
         {isFullPage && (
-          <motion.div // fullpage-overlay
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
@@ -65,11 +59,7 @@ const FullpageModalWidget = ({
               heading={heading}
               handleExpansion={() => setIsFullPage(false)}
             />
-            <div // widget-content
-              className='padding-2'
-            >
-              {children}
-            </div>
+            <div className='padding-2'>{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
