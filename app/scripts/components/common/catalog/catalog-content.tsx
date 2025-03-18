@@ -322,7 +322,7 @@ function CatalogContent({
               </p>
               <USWDSButton
                 size='small'
-                className='maxw-card padding-x-1 padding-y-1 font-sans-xs'
+                className='maxw-card padding-x-1 padding-y-1 font-sans-3xs'
                 onClick={() => setMobileFilterMenu(!mobileFilterMenu)}
               >
                 Search and Filter
