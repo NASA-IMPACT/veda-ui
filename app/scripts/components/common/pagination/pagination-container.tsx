@@ -1,8 +1,4 @@
-import { useState } from 'react';
-
-export function PaginationContainer({ children }) {
-  const [currentPage, setCurrentPage] = useState(10);
-
+export function PaginationContainer({ currentPage, setCurrentPage, children }) {
   const onClickNext = () => {
     setCurrentPage(currentPage + 1);
   };
