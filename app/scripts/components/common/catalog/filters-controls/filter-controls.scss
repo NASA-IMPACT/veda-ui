@@ -1,0 +1,9 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+
+.usa-search [data-testid='searchField'] {
+  flex: 1;
+}
+
+#dataset__search.isVisible {
+  animation: 0.3s ease-in-out slidein-left;
+}
