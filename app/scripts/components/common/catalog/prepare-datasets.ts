@@ -1,5 +1,6 @@
 import { DatasetData, StoryData } from '$types/veda';
 import { optionAll } from '$components/common/browse-controls/constants';
+import { findParentDatasetFromLayer } from '$utils/data-utils';
 
 const TAXONOMY_TOPICS = 'Topics';
 
@@ -36,12 +37,19 @@ export function prepareDatasets(
     const includesSearchLower = (str) =>
       str.toLowerCase().includes(searchLower);
     // Function to determine if a layer matches the search criteria
-    const layerMatchesSearch = (layer) =>
-      includesSearchLower(layer.stacCol) ||
-      includesSearchLower(layer.name) ||
-      includesSearchLower(layer.parentDataset.name) ||
-      includesSearchLower(layer.parentDataset.id) ||
-      includesSearchLower(layer.description);
+    const layerMatchesSearch = (layer) => {
+      const parentDataset = findParentDatasetFromLayer({
+        datasets: data as DatasetData[],
+        layerId: layer.id
+      });
+      return (
+        includesSearchLower(layer.stacCol) ||
+        includesSearchLower(layer.name) ||
+        includesSearchLower(parentDataset?.name) ||
+        includesSearchLower(parentDataset?.id) ||
+        includesSearchLower(layer.description)
+      );
+    };
 
     filtered = filtered.filter((d) => {
       // Pre-calculate lowercased versions to use in comparisons
@@ -50,6 +58,7 @@ export function prepareDatasets(
       const descriptionLower = d.description?.toLowerCase();
       const cardDescriptionLower = d.cardDescription?.toLowerCase();
       const topicsTaxonomy = d.taxonomy.find((t) => t.name === TAXONOMY_TOPICS);
+
       // Check if any of the conditions for including the item are met
       return (
         idLower.includes(searchLower) ||
