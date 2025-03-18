@@ -117,7 +117,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
           placeholder='Search by title, description'
           value={search ?? ''}
           onChange={(v) => onAction(FilterActions.SEARCH, v.target.value)}
-          className='margin-bottom-3 '
+          className='margin-bottom-3'
         />
         {taxonomiesItems.map(({ title, items }) => (
           <CheckableFilters
@@ -137,7 +137,6 @@ export default function FiltersControl(props: FiltersMenuProps) {
               item: clearedTagItem,
               callback: setClearedTagItem
             }}
-            openByDefault={openByDefault}
           />
         ))}
       </div>
