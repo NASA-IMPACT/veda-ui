@@ -1,77 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import styled from 'styled-components';
-import {
-  FormGroupStructure,
-  FormCheckableGroup,
-  FormCheckable
-} from '@devseed-ui/form';
-import {
-  CollecticonChevronDown,
-  CollecticonChevronUp
-} from '@devseed-ui/collecticons';
-import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
-import { themeVal } from '@devseed-ui/theme-provider';
-import { variableBaseType, variableGlsp } from '$styles/variable-utils';
-import { CardTitle } from '$components/common/card/styles';
 import { USWDSAccordion, USWDSCheckbox } from '$components/common/uswds';
-
-const FilterMenu = styled.div`
-  border: 2px solid ${themeVal('color.base-200')};
-  border-radius: ${themeVal('shape.rounded')};
-  padding: 12px;
-  margin-bottom: 1.5rem;
-`;
-
-const FilterTitle = styled.div`
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-
-  #title-selected {
-    display: flex;
-    flex-direction: column;
-    gap: ${variableGlsp(0.1)};
-
-    ${CardTitle} {
-      font-size: ${variableBaseType('0.7rem')};
-    }
-  }
-
-  span {
-    font-size: 1rem;
-    color: ${themeVal('color.base-500')};
-  }
-`;
-
-const Options = styled(FormCheckableGroup)`
-  padding-top: 6px;
-
-  div {
-    width: 100%;
-    padding: 4px 8px;
-  }
-
-  .checked {
-    background-color: ${themeVal('color.primary-100')};
-    outline-width: 1px;
-    outline-color: ${themeVal('color.primary-300')};
-    outline-style: solid;
-  }
-`;
-
-const Option = styled(FormCheckable)`
-  font-size: ${variableBaseType('0.6rem')};
-  display: flex;
-  align-items: center;
-`;
-
-const Toggle = styled(Toolbar)`
-  align-items: start;
-`;
-
-const ToggleIconButton = styled(ToolbarIconButton)`
-  background-color: inherit;
-`;
 
 interface CheckableFiltersProps {
   title: string;
@@ -83,7 +11,6 @@ interface CheckableFiltersProps {
     item?: OptionItem;
     callback?: React.Dispatch<React.SetStateAction<any>>;
   };
-  openByDefault?: boolean;
 }
 
 export interface OptionItem {
@@ -93,15 +20,7 @@ export interface OptionItem {
 }
 
 export default function CheckableFilters(props: CheckableFiltersProps) {
-  const {
-    items,
-    title,
-    onChanges,
-    globallySelected,
-    tagItemCleared,
-    openByDefault = true
-  } = props;
-  const [show, setShow] = useState<boolean>(openByDefault);
+  const { items, title, onChanges, globallySelected, tagItemCleared } = props;
   const [count, setCount] = useState<number>(0);
   const [selected, setSelected] = useState<OptionItem[]>([]);
 
@@ -192,15 +111,16 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
 
     return newItem;
   };
+
   return (
     <USWDSAccordion
       key={title}
       title={title}
       bordered={true}
+      className='bg-base-lightest'
       items={[
         {
           title: title,
-          id: 'testing',
           headingLevel: 'h1',
           content: createCheckboxes(items)
         }
