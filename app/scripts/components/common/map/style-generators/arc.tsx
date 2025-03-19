@@ -72,7 +72,7 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
         transparent: 'true', // @TODO: get from sourceparams maybe
         width: '256',
         height: '256',
-        ...(date && { DIM_StdTime: userTzDate2utcString(date) }),
+        ...(date && { date: userTzDate2utcString(date) }),
         ...sourceParams
       });
 

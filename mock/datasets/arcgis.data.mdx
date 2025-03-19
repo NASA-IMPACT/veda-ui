@@ -1,0 +1,427 @@
+---
+id: arcgis
+name: Sample dataset with different arcgis layers
+featured: true
+description: ARC GIS
+media:
+  src: https://blink.ucsd.edu/_images/technology-tab/software/esri-logo.png
+infoDescription: |
+  ::markdown
+    ARC GIS
+layers:
+  - id: esi_4wk_layer
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: global_esi_4wk
+    name: Evaporative Stress Index (ESI)
+    type: arc 
+    description: The new global dataset, called the Evaporative Stress Index (ESI), available online and produced weekly at 5-kilometer resolution for the entire globe, reveals regions of drought where vegetation is stressed due to lack of water, enabling agriculture ministries to provide farmers with actionable advice about irrigation.
+    sourceParams:
+      layers: 1
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: nrt_lis_rsm_conus
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: nrt_lis_rsm_conus
+    name: NRT LIS RSM CONUS
+    type: arc 
+    description: NRT LIS RSM CONUS
+    sourceParams:
+      layers: 1
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: lis_ak_green_veg_fraction
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: nrt_lis_ak_green_veg_fraction
+    name: lis_ak_green_veg_fraction
+    type: arc 
+    description: lis_ak_green_veg_fraction
+    sourceParams:
+      layers: lis_ak_green_veg_fraction:lis_ak_green_veg_fraction_arcmap
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: lis_ak_rsm_10cm
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: nrt_lis_ak_rsm_10cm
+    name: lis_ak_rsm_10cm
+    type: arc
+    description: lis_ak_rsm_10cm
+    sourceParams:
+      layers: lis_ak_rsm_10cm:lis_rsm
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: lis_ak_rsm_40cm
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: nrt_lis_ak_rsm_40cm
+    name: lis_ak_rsm_40cm
+    type: arc
+    description: lis_ak_rsm_40cm
+    sourceParams:
+      layers: lis_ak_rsm_40cm:lis_rsm
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: lis_ak_snow_depth
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: nrt_lis_ak_snow_depth
+    name: lis_ak_snow_depth
+    type: arc 
+    description: lis_ak_snow_depth
+    sourceParams:
+      layers: lis_ak_snow_depth:lis_ak_snow_depth
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: lis_rsm_2m
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: nrt_lis_rsm_2m
+    name: lis_rsm_2m
+    type: arc
+    description: lis_rsm_2m
+    sourceParams:
+      layers: lis_rsm_2m:lis_rsm
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: lis_vsm_percentile_100cm
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: nrt_lis_vsm_percentile_100cm
+    name: lis_vsm_percentile_100cm
+    type: arc 
+    description: lis_vsm_percentile_100cm
+    sourceParams:
+      layers: lis_vsm_percentile_100cm:lis_percentile_red-blue
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: lis_vsm_percentile_10cm
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: nrt_lis_vsm_percentile_10cm
+    name: lis_vsm_percentile_10cm
+    type: arc 
+    description: lis_vsm_percentile_10cm
+    sourceParams:
+      layers: lis_vsm_percentile_10cm:lis_percentile_red-blue
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: lis_vsm_percentile_200cm
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: nrt_lis_vsm_percentile_200cm
+    name: lis_vsm_percentile_200cm
+    type: arc 
+    description: lis_vsm_percentile_200cm
+    sourceParams:
+      layers: lis_vsm_percentile_200cm:lis_percentile_red-blue
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: lis_vsm_percentile_40cm
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: nrt_lis_vsm_percentile_40cm
+    name: lis_vsm_percentile_40cm
+    type: arc 
+    description: lis_vsm_percentile_40cm
+    sourceParams:
+      layers: lis_vsm_percentile_40cm:lis_percentile_red-blue
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: modis_flood_1_day
+    stacApiEndpoint: http://localhost:3000
+    stacCol: modis_flood_1_day.json
+    name: modis_flood_1_day
+    type: arc 
+    description: modis_flood_1_day
+    sourceParams:
+      layers: modis_flood_1_day:modis_flood_lance
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: modis_flood_2_day
+    stacApiEndpoint: http://localhost:3000
+    stacCol: modis_flood_2_day.json
+    name: modis_flood_2_day
+    type: arc 
+    description: modis_flood_2_day
+    sourceParams:
+      layers: modis_flood_2_day:modis_flood_lance
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+  - id: modis_flood_3_day
+    stacApiEndpoint: http://localhost:3000
+    stacCol: modis_flood_3_day.json
+    name: modis_flood_3_day
+    type: arc 
+    description: modis_flood_3_day
+    sourceParams:
+      layers: modis_flood_3_day:modis_flood_lance
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
+
+  
+---
+<Block>
+<Prose>
+
+ESRI ESRI
+
+</Prose>
+</Block>
