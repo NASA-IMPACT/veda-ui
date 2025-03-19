@@ -388,4 +388,5 @@ function MapBlock(props: MapBlockProps) {
   );
 }
 
+export { MapBlock };
 export default MapBlock;

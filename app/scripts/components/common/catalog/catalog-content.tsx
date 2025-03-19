@@ -52,7 +52,7 @@ export interface CatalogContentProps {
 const DEFAULT_SORT_OPTION = 'asc';
 const DEFAULT_SORT_FIELD = 'name';
 
-function CatalogContent({
+export default function CatalogContent({
   datasets,
   selectedIds,
   setSelectedIds,
@@ -389,7 +389,6 @@ function CatalogContent({
   );
 }
 
-export default CatalogContent;
 const WarningPill = styled(Pill)`
   margin-left: 8px;
 `;

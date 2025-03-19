@@ -15,7 +15,9 @@ interface LinkProps {
 }
 
 interface NavigationConfig {
-  LinkComponent: React.ElementType<Record<string, any>>;
+  LinkComponent:
+    | React.ElementType<Record<string, any>>
+    | React.ComponentType<Record<string, any>>;
   linkProps: {
     pathAttributeKeyName: string; // href, to, ...
     [key: string]: any;

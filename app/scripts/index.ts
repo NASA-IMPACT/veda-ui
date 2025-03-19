@@ -1,6 +1,6 @@
 import Block from './components/common/blocks';
 import Image from './components/common/blocks/images';
-import MapBlock from './components/common/blocks/block-map';
+import { MapBlock } from './components/common/blocks/block-map';
 import { ScrollytellingBlock } from './components/common/blocks/scrollytelling';
 import Figure from './components/common/blocks/figure';
 import { ContentBlockProse as Prose } from './styles/content-block';
@@ -11,16 +11,14 @@ import Table from './components/common/table';
 import CompareImage from './components/common/blocks/images/compare';
 import ReactQueryProvider from './context/react-query';
 import Embed from './components/common/blocks/embed';
-import DevseedUiThemeProvider from './theme-provider';
-import PageHero from '$components/common/page-hero';
+import { DevseedUiThemeProvider } from './theme-provider';
+import { PageHero } from '$components/common/page-hero';
 import StoriesHubContent from '$components/stories/hub/hub-content';
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import PageHeader from '$components/common/page-header';
 import PageFooter from '$components/common/page-footer';
-import type {
-  NavItem,
-  NavItemType
-} from '$components/common/page-header/types';
+import type { NavItem } from '$components/common/page-header/types';
+import { NavItemType } from '$components/common/page-header/types'; //enum
 
 import type { InternalNavLink } from '$components/common/types';
 import type { DatasetData, StoryData, VedaData } from '$types/veda';
