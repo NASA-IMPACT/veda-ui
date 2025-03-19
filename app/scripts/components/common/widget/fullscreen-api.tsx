@@ -47,13 +47,19 @@ const FullscreenWidget = ({
     <div
       ref={widgetRef}
       className='width-full height-full border border-base-light radius-md'
+      data-testid='widget-container'
     >
       <Header
         isExpanded={isFullscreen}
         heading={heading}
         handleExpansion={handleFullscreen}
       />
-      <div className='padding-2'>{children}</div>
+      <div
+        className='padding-2'
+        data-testid={isFullscreen ? 'full-content' : 'widget-content'}
+      >
+        {children}
+      </div>
     </div>
   );
 };
