@@ -1,6 +1,7 @@
 import { PageHero } from '$components/common/page-hero';
-import { GlobalStyles as LegacyGlobalStyles } from '$styles/legacy-global-styles';
+import { GlobalStyles } from '$styles/legacy-global-styles';
 
+const LegacyGlobalStyles = GlobalStyles;
 // Include only the custom stylings for the VEDA components into the library build
 import '$styles/veda-components.scss';
 

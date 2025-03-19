@@ -85,7 +85,8 @@
     ],
     "react-hooks/rules-of-hooks": 2, // Checks rules of Hooks
     "react-hooks/exhaustive-deps": 1, // Checks effect dependencies
-    "fp/no-mutating-methods": 1
+    "fp/no-mutating-methods": 1,
+    "func-style": 2
   },
   "overrides": [
     {
