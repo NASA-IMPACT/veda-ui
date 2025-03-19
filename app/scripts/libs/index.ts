@@ -16,16 +16,45 @@ Object.defineProperty(Array.prototype, 'last', {
   set: undefined
 });
 
-export * from './atoms';
+// Files with only named exports
 export * from './enum';
-export * from './hooks';
-export * from './mdx-components';
-export * from './page-components';
 export * from './types';
-export * from './uswds-components';
+export * from './atoms';
 
 export {
-  PageHero,
-  // STYLE
-  LegacyGlobalStyles
-};
+  DevseedUiThemeProvider,
+  VedaUIProvider,
+  ReactQueryProvider,
+  useTimelineDatasetAtom,
+  useFiltersWithQS
+} from './hooks';
+export {
+  Block,
+  Image,
+  MapBlock,
+  ScrollytellingBlock,
+  Figure,
+  Prose,
+  MDXImage,
+  Caption,
+  Chapter,
+  Chart,
+  Table,
+  CompareImage,
+  Embed
+} from './mdx-components';
+export {
+  CatalogContent,
+  ExplorationAndAnalysis,
+  StoriesHubContent,
+  DatasetSelectorModal
+} from './page-components';
+
+export {
+  PageHeader,
+  PageFooter,
+  DefaultCard,
+  FlagCard
+} from './uswds-components';
+
+export { PageHero, LegacyGlobalStyles };
