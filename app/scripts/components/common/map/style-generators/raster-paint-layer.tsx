@@ -53,7 +53,13 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
   useEffect(
     () => {
       // Create a modified version of the parameters
-      const processedParams = { ...updatedTileParams };
+      const processedParams = { ...updatedTileParams } as {
+        reScale?: number[];
+        colormap_name?: string;
+        bands?: string;
+        assets?: string;
+        [key: string]: any;
+      };
 
       if (Array.isArray(processedParams.bands)) {
         // Convert array to string manually using the format you want
